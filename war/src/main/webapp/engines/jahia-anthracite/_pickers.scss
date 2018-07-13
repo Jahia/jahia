@@ -12,17 +12,17 @@ body[indigo-dragging-panel="true"] {
 
 
 #indigoSplitter {
-	width: 5px;
-	height: 100%;
-	position: fixed;
-	left: 360px;
-	top: 0;
-	z-index: 1000;
-	background: url($SIDE_PANEL--ICON--SPLIITER) no-repeat center center #d2d2d2;
-	background-size: 5px 10px;
-	border-left: 1px solid transparent;
-
-	display: none;
+	width: 9px;
+    height: 100%;
+    position: fixed;
+    left: 360px;
+    top: 0;
+    z-index: 1000;
+    background: url(./images/icons/splitter@X2.png) no-repeat center center #f8f8f8;
+    background-size: 5px 10px;
+    border-left: 1px solid transparent;
+    display: none;
+    margin-left: -11px;
 
 	body[data-indigo-gwt-side-panel="open"] & {
 		display: block;
@@ -84,16 +84,17 @@ body[indigo-dragging-panel="true"] {
 #JahiaGxtContentPicker {
 	.x-vsplitbar {
 		z-index: 2147483647;
-		background: url($SIDE_PANEL--ICON--SPLIITER) no-repeat center center #d2d2d2;
+		background: url($SIDE_PANEL--ICON--SPLIITER) no-repeat center center;
 		opacity: 1;
 		display: block;
 		position: fixed !important;
 		border-left: 1px solid transparent;
 		background-size: 5px 10px;
+		margin-left: -8px;
 
 		&:hover {
-			background-color: #FFF;
-			border-left-color: #444749;
+			background-color: #f5f5f5;
+			// border-left-color: #444749;
 
 		}
 
@@ -114,7 +115,7 @@ body[indigo-dragging-panel="true"] {
 
 #JahiaGxtContentPicker {
 	.x-vsplitbar {
-		height: calc(100% - 79px)!important;
+		height: calc(100% - 54px)!important;
 		top:0!important;
 	}
 }
@@ -134,8 +135,8 @@ body[indigo-dragging-panel="true"] {
 	body.ext-safari & {
 		top: 0!important;
 	}
-	background: _property($BODY--BG, $PICKER);
-	box-shadow: inset 0px 37px 0px _theme-color(primary, g), inset 0px 38px 7px #222;
+	background: linear-gradient(to bottom, #dbdbdb 1%, #d5d5d5 100%);
+	// box-shadow: inset 0px 37px 0px #f1f0f0, inset 0px 38px 7px rgba(28, 28, 28, 0.2);
 	z-index: 1100!important;
 
 
@@ -238,7 +239,7 @@ body[indigo-dragging-panel="true"] {
 			display: none;
 		}
 
-		box-shadow: inset 0px 41px 0px _theme-color(primary, g), inset 0px 79px 0px #515356, inset 0px 80px 1px #222;
+		box-shadow: inset 0px 41px 0px #F5F5F5, inset 0px 79px 0px #F5F5F5, inset 0px 80px 1px rgba(34, 34, 34, 0.33);
 
 		.toggle-picker-files {
 			display: none;
@@ -295,7 +296,7 @@ body[indigo-dragging-panel="true"] {
 			left: 0px!important;
 			top: 94px!important;
 			width: 100%!important;
-			height: calc(100% - 212px) !important;
+			height: calc(100% - 147px) !important;
 		}
 
 
@@ -361,8 +362,7 @@ body[indigo-dragging-panel="true"] {
 			top: 6px!important;
 			font-size: 22px!important;
 			left: 13px!important;
-			color: _property($SIDE-PANEL-TITLE--COLOR, LIGHT)!important;
-			opacity: 0.5!important;
+			opacity: 1!important;
 		}
 
 		// TOOLBAR
@@ -405,7 +405,7 @@ body[indigo-dragging-panel="true"] {
 		// TOGGLE BUTTON
 		.toggle-picker-files {
 			left: 0 !important;
-			background-image: url(./images/icons/toggle-WE-white@X2.png);
+			background-image: url(./images/icons/toggle-WE@X2.png);
 		}
 
 		#JahiaGxtManagerLeftTree + div #images-view .x-toolbar {
@@ -542,7 +542,7 @@ body[indigo-dragging-panel="true"] {
 		display: inline-block;
 		box-sizing: border-box;
 		width: 20px;
-		height: 20px;
+		height: 26px;
 		margin-right: 4px;
 		background-repeat: no-repeat;
 		background-position: center;
@@ -584,12 +584,24 @@ body[indigo-dragging-panel="true"] {
 
 	// IMAGE ICON
 	img[src$="/jnt_file_img.png"] {
-		background-image: url(./images/icons/icon-image-white@X2.png);
+		background-image: url(./images/icons/icon-image@X2.png);
 	}
 
 	// PAGE ICON
 	img[src$="/jnt_page.png"] {
 		background-image: url(./images/tabs-pages-dark@X2.png);
+	}
+
+	.x-grid3-row-selected {
+		// IMAGE ICON
+		img[src$="/jnt_file_img.png"] {
+			background-image: url(./images/icons/icon-image-white@X2.png);
+		}
+
+		// PAGE ICON
+		img[src$="/jnt_page.png"] {
+			background-image: url(./images/tabs-pages-white@X2.png);
+		}
 	}
 
 	#JahiaGxtManagerTobTable {
@@ -599,7 +611,7 @@ body[indigo-dragging-panel="true"] {
 			display: none;
 
 			body[data-indigo-picker-search="open"] & {
-				display: block;
+				// display: block;
 			}
 
 			/* PAGINATION */
@@ -1062,9 +1074,9 @@ body[indigo-dragging-panel="true"] {
 	    display: inline-block;
 	    position: fixed !important;
 	    margin-right: 20px;
-	    background: _property($SIDE-PANEL--BG, $PICKER);
+	    background: linear-gradient(to right bottom, whitesmoke 50%, #e5e4e4 100%);
 	    padding-top: 80px;
-		box-shadow: _property($SIDE-PANEL--SHADOW, $PICKER);
+		box-shadow: 0px 2px 12px 0px rgba(58, 58, 58, 0.4);
 		z-index: 99;
 
 		// Fix GWT problem
@@ -1201,7 +1213,7 @@ body[indigo-dragging-panel="true"] {
 			    display: block;
 			    font-size: 12px;
 			    font-family: Nunito Sans;
-			    color: _theme-color(secondary, d);
+			    color: #007cb0;
 			}
 
 			&:hover {
@@ -1257,9 +1269,10 @@ body[indigo-dragging-panel="true"] {
 									}
 
 									input {
-										width: 400px!important;
+										width: 450px!important;
 
 										@include _input-search(LIGHT);
+										padding: 7px 58px 6px 25px !important;
 
 										margin: 0 auto;
 										pointer-events: all;
@@ -1272,11 +1285,11 @@ body[indigo-dragging-panel="true"] {
 									> table {
 										position: fixed;
 										top: 6px;
-										right: calc(50% - 242px);
+										right: calc(50% - 226px);
 										width: 25px;
 										height: 24px;
 
-									    background: _theme-color(quinary);
+									    background: #007cb0;
 									    padding: 7px 10px;
 
 										body.ext-gecko & {
@@ -1364,7 +1377,10 @@ body[indigo-dragging-panel="true"] {
 									}
 
 									&::before {
-										@include _drop-down-fake(DARK);
+										@include _drop-down-fake(LIGHT);
+										background: #F5F5F5!important;
+										box-shadow: none!important;
+
 										// background-image: url("./images/icons/combo-arrow.png");
 										// background-position: right 5px center;
 										// background-repeat: no-repeat;
@@ -1414,8 +1430,8 @@ body[indigo-dragging-panel="true"] {
 
 									// LANGUAGE
 									&:nth-child(2) {
-										border-right: 1px solid _theme-color(primary);
-										border-right: 1px solid _theme-color(primary);
+										// border-right: 1px solid _theme-color(primary);
+										// border-right: 1px solid _theme-color(primary);
 
 										> label {
 											display: none!important;
@@ -1429,7 +1445,7 @@ body[indigo-dragging-panel="true"] {
 
 									// META DATA
 									&:nth-child(3) {
-										border-right: 1px solid _theme-color(primary);
+										// border-right: 1px solid _theme-color(primary);
 
 										&::before {
 											content: attr(data-indigo-meta-label);
@@ -1467,7 +1483,7 @@ body[indigo-dragging-panel="true"] {
 											.x-component {
 											    position: fixed;
 												width: 130px!important;
-												background: _theme-color(quinary);
+												background: #007cb0;
 
 
 												.x-component {
@@ -1691,6 +1707,10 @@ body[indigo-dragging-panel="true"] {
 
 						.x-panel-header-text {
 							@include _drop-down-fake(LIGHT);
+							input {
+								background: #F5F5F5!important;
+								box-shadow: none!important;
+							}
 
 							width: 80% !important;
 						    max-width: 240px;
@@ -1815,6 +1835,8 @@ body[indigo-dragging-panel="true"] {
 
 		#images-view {
 			background: transparent!important;
+			padding: 40px 20px 0px;
+		    box-sizing: border-box;
 
 			.x-panel-body {
 				background: transparent!important;
@@ -1858,7 +1880,7 @@ body[indigo-dragging-panel="true"] {
 			.x-grid3-col-displayName,
 			.x-grid3-col-path,
 			.x-grid3-col-providerKey {
-				color: _property($ROW--COLOR, $PICKER)!important;
+				// color: _property($ROW--COLOR, $PICKER)!important;
 			}
 
 			.x-grid3-col-size,
@@ -1866,82 +1888,91 @@ body[indigo-dragging-panel="true"] {
 			.x-grid3-col-jcr\:lastModified,
 			.x-grid3-col-jcr\:created,
 			.x-grid3-col-jcr\:createdBy {
-				color: _property($ROW--COLOR--DIMMED, $PICKER)!important;
+				color: #6a6a6a!important;
 			}
 
 			// SELECTED ROW
 			&.x-grid3-row-selected {
-				background: _property($ROW--BG---SELECTED, $PICKER)!important;
+				background: #007cb0 !important;
+
+				.x-grid3-col-size,
+				.x-grid3-col-primaryTypeLabel,
+				.x-grid3-col-jcr\:lastModified,
+				.x-grid3-col-jcr\:created,
+				.x-grid3-col-jcr\:createdBy {
+					color: #F5F5F5!important;
+				}
 			}
 
 			// OVER
 			&.x-grid3-row-over {
-				background: _property($ROW--BG---HOVER, $PICKER)!important;
+				background: #cecccc !important;
 			}
 
 			// SELECTED OVER
 			&.x-grid3-row-selected.x-grid3-row-over {
-				background: _property($ROW--BG---SELECTED, $PICKER)!important;
+				background: #007cb0 !important;
 			}
 		}
 
 		// THUMBS / DETAILS VIEWS
 		.x-view {
 			background: transparent!important;
-			min-height: 100%!important;
-			height: auto!important;
-			padding: 20px;
-
-			-webkit-column-count: 3;
-			-webkit-column-gap: 5px;
-			-webkit-column-fill: balance;
-			-moz-column-count: 3;
-			-moz-column-gap: 5px;
-			-moz-column-fill: balance;
-			column-count: 3;
-			column-gap: 5px;
-			column-fill: balance;
+			height: 100%!important;
+			padding: 0;
 
 			box-sizing: border-box;
+
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			align-content: flex-start;
 
 
 
 			&[indigo-thumb-zoom="1"] {
-				column-count: 6;
+				.thumb-wrap {
+					width: 25%!important;
+				}
 			}
 
 			&[indigo-thumb-zoom="2"] {
-				column-count: 5;
+				.thumb-wrap {
+					width: 30%!important;
+				}
 			}
 
 			&[indigo-thumb-zoom="3"] {
-				column-count: 4;
+				.thumb-wrap {
+					width: 35%!important;
+				}
 			}
 
 			&[indigo-thumb-zoom="4"] {
-				column-count: 3;
+				.thumb-wrap {
+					width: 50%!important;
+				}
 			}
 
 			&[indigo-thumb-zoom="5"] {
-				column-count: 2;
+				.thumb-wrap {
+					width: 75%!important;
+				}
 			}
 
 			&[indigo-thumb-zoom="6"] {
-				column-count: 1;
+				.thumb-wrap {
+					width: 100%!important;
+				}
 			}
 
 			// FILES
 			.thumb-wrap {
-				display: inline-block;
-				-webkit-column-break-inside: avoid;
-				-moz-column-break-inside: avoid;
-				column-break-inside: avoid;
 				opacity: 1;
 
-				height: initial!important;
-				max-height: initial!important;
 				margin: 0 0 5px 0!important;
-				width: 100%!important;
+				width: 150px!important;
 
 				img {
 					width: 100%!important;
@@ -1954,32 +1985,45 @@ body[indigo-dragging-panel="true"] {
 
 				span {
 					// THUMB VIE DETAILS
-					display: none;
-
-					position: absolute;
 					width: 100%;
-					@include text(14px, _property($THUMB--COLOR, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
+					@include text(12px, _property($THUMB--COLOR, $PICKER), $FONT--WEIGHT---LIGHT);
 					z-index: 999;
-					margin-top: -2px;
 
 					// Filesize
 					&:nth-child(3) {
-						@include text(10px, _property($THUMB--COLOR--DIMMED, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
+						@include text(10px, _property($THUMB--COLOR--DIMMED, $PICKER), $FONT--WEIGHT---LIGHT);
 						margin-top: 0;
 					    z-index: 9;
-						padding-bottom: 10px;
-						padding-top: 21px;
 					}
 				}
 
 				// Hover / force hover (used when the context menu is opened)
-				&.x-view-over,
+				&.x-view-over {
+					background: _property($THUMB--BG---HOVER, $PICKER);
+
+					span {
+						display: block;
+						color: _property($THUMB--COLOR, $PICKER)!important;
+					}
+
+					.thumbDetails {
+						div {
+							color: #363636!important;
+							b {
+								color: #363636!important;
+
+							}
+						}
+					}
+
+				}
+
 				&.indigo-force-open {
 					background: _property($THUMB--BG---SELECTED, $PICKER);
 
 					span {
-						background: _property($THUMB--BG---SELECTED, $PICKER);
 						display: block;
+						color: _property($THUMB--COLOR---SELECTED, $PICKER)!important;
 					}
 
 				}
@@ -1990,6 +2034,7 @@ body[indigo-dragging-panel="true"] {
 
 					span {
 						background: _property($THUMB--BG---SELECTED, $PICKER)!important;
+						color: _property($THUMB--COLOR---SELECTED, $PICKER)!important;
 					}
 
 					.thumb {
@@ -2000,12 +2045,22 @@ body[indigo-dragging-panel="true"] {
 						background: _property($THUMB--BG---SELECTED, $PICKER);
 					}
 
+					.thumbDetails {
+						div {
+							color: #F5F5F5!important;
+							b {
+								color: #F5F5F5!important;
+
+							}
+						}
+					}
+
 
 				}
 			}
 
 			.thumb {
-				padding: 10px!important;
+				padding: 10px 10px 2px !important;
 				width: 100%!important;
 				float: none!important;
 
@@ -2017,12 +2072,12 @@ body[indigo-dragging-panel="true"] {
 				display: block!important;
 				top: 0;
 				left: 0;
-				padding: 0 10px 10px 10px;
+				padding: 5px 10px 0px 10px;
 				width: 100%;
 				box-sizing: border-box;
 
 				div {
-					@include text(10px, _property($THUMB--COLOR, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
+					@include text(12px, #363636, $FONT--WEIGHT---EXTRALIGHT);
 
 					display: block!important;
 					overflow: hidden;
@@ -2031,7 +2086,7 @@ body[indigo-dragging-panel="true"] {
 					margin-bottom: 5px;
 
 					b {
-						@include text(8px, _property($THUMB--COLOR--DIMMED, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
+						@include text(8px, #6a6a6a, $FONT--WEIGHT---EXTRALIGHT);
 						display: block;
 					    margin-right: 5px;
 						text-transform: uppercase;
@@ -2050,9 +2105,11 @@ body[indigo-dragging-panel="true"] {
 		// Toolbar (filter, sort, etc, ...)
 		.x-panel-tbar {
 			position: fixed;
-			top: 6px;
+			top: 36px;
 			left: calc(#{$PICKER_SIDEPANEL_WIDTH} + 90px);
 			width: auto!important;
+			z-index: 99999;
+			margin-left: -7px;
 
 			> .x-toolbar {
 				background: transparent;
@@ -2129,10 +2186,10 @@ body[indigo-dragging-panel="true"] {
 
 						.x-btn-pressed {
 							&.x-btn.x-btn-noicon button {
-								background-image: url($ICON--DESC--WHITE)!important;
+								background-image: url($ICON--DESC--DARK)!important;
 
 								&:hover {
-									background-color: _theme-color(primary, b) !important;
+									background-color: #ebe6e6 !important;
 								}
 							}
 						}
@@ -2170,20 +2227,24 @@ body[indigo-dragging-panel="true"] {
 				&:hover {
 					cursor: pointer;
 				}
-				background: url($ICON--MORE_OPTIONS---WHITE) no-repeat center center;
+				background: url($ICON--MORE_OPTIONS---GREY) no-repeat center center;
 				background-size: 10px 2px;
 
 
 				body[indigo-picker-display="detailedview"] & {
-					background-color: _theme-color(quinary);
+					background-color: #007cb0;
+					background-color: #cecccc;
 				}
 
 				body[indigo-picker-display="thumbsview"] & {
-					background-color: _theme-color(quinary);
+					background-color: #007cb0;
+					background-color: #cecccc;
 				}
 
 				body[indigo-picker-display="listview"] & {
-					background-color: _theme-color(primary, c);
+					background: url($ICON--MORE_OPTIONS---GREY) no-repeat center center;
+					background-size: 10px 2px;
+					background-color: #cecccc;
 				}
 			}
 
@@ -2205,14 +2266,16 @@ body[indigo-dragging-panel="true"] {
 				&:hover {
 					cursor: pointer;
 				}
-				background: url(./images/icons/icon_preview_small_white.png) no-repeat center center;
+				background: url(./images/icons/icon_preview_small_grey.png) no-repeat center center;
 
 				body[indigo-picker-display="detailedview"] & {
-					background-color: _theme-color(quinary);
+					background-color: #007cb0;
+					background-color: #cecccc;
 				}
 
 				body[indigo-picker-display="thumbsview"] & {
-					background-color: _theme-color(quinary);
+					background-color: #007cb0;
+					background-color: #cecccc;
 				}
 
 				body[indigo-picker-display="listview"] & {
@@ -2242,11 +2305,13 @@ body[indigo-dragging-panel="true"] {
 				background: url("./images/icons/tabs-edit.png") no-repeat center center;
 
 				body[indigo-picker-display="detailedview"] & {
-					background-color: _theme-color(quinary);
+					background-color: #007cb0;
+					background-color: #cecccc;
 				}
 
 				body[indigo-picker-display="thumbsview"] & {
-					background-color: _theme-color(quinary);
+					background-color: #007cb0;
+					background-color: #cecccc;
 				}
 
 				body[indigo-picker-display="listview"] & {
@@ -2262,21 +2327,26 @@ body[indigo-dragging-panel="true"] {
 			&.x-grid3-row-selected {
 				// More info button SELECTED
 				.more-info-button {
-					background-color: _theme-color(tertiary);
+					background-color: #007cb0 !important;
+					background: url($ICON--MORE_OPTIONS---WHITE) no-repeat center center;
+					background-size: 10px 2px;
 				}
 
 				.preview-button {
-					background-color: _theme-color(tertiary);
+					background-color: #007cb0 !important;
+					background: url(./images/icons/icon_preview_small_white.png) no-repeat center center;
 				}
 
 				.edit-button {
-					background-color: _theme-color(tertiary);
+					background-color: #007cb0 !important;
 				}
 
 				body[indigo-picker-display="listview"] & {
 
 					.more-info-button {
 						background-color: transparent;
+						background: url($ICON--MORE_OPTIONS---WHITE) no-repeat center center;
+						background-size: 10px 2px;
 					}
 
 					.preview-button {
@@ -2324,7 +2394,7 @@ body[indigo-dragging-panel="true"] {
 	    background: _property($DARK-FOOTER--BG, $PICKER);
 	    z-index: 99;
 	    box-shadow: _property($DARK-FOOTER--SHADOW, $PICKER);
-	    height: 87px;
+	    height: 61px;
 	    width: calc(100% + 60px)!important;
 	    padding-right: 30px;
 
@@ -2336,11 +2406,15 @@ body[indigo-dragging-panel="true"] {
 		// Push buttons to right of screen
 		.x-panel-fbar {
 			width: 100%!important;
-			padding: 20px 17px;
+			padding: 9px 3px;
 			box-sizing: border-box;
 
 			.x-toolbar-ct {
 				float: right;
+			}
+
+			body[data-indigo-picker-search="open"] & {
+				display: none;
 			}
 		}
 
@@ -2401,7 +2475,7 @@ body[indigo-dragging-panel="true"] {
 			height: 12px;
 			width: 12px;
 			border-radius: 100%;
-			background: _theme-color(secondary, a);
+			background: #363636;
 			cursor: pointer;
 			margin-top: -5px;
 		}
@@ -2421,7 +2495,7 @@ body[indigo-dragging-panel="true"] {
 			height: 12px;
 			width: 12px;
 			border-radius: 100%;
-			background: _theme-color(secondary);
+			background: #363636;
 			cursor: pointer;
 		}
 	}
@@ -2430,7 +2504,7 @@ body[indigo-dragging-panel="true"] {
 	.toggle-picker-files {
 		position: fixed;
 		top: calc(50% - 49px);
-		left: $PICKER_SIDEPANEL_WIDTH - 23px;
+		left: 0!important;
 		background: red;
 		color: white;
 		z-index: 99999;
@@ -2469,6 +2543,7 @@ body[indigo-dragging-panel="true"] {
 		    top: auto;
 		    right: auto;
 		    width: auto;
+			padding-left: 6px;
 
 			.x-toolbar-cell {
 				display: inline-block;
@@ -2596,7 +2671,7 @@ body[indigo-dragging-panel="true"] {
 			// Add New Folder
 			&.toolbar-item-newfolder {
 				display: block!important;
-			    background-image: url(./images/buttons_light/new-folder.png);
+			    background-image: url(./images/buttons_dark/new-folder.svg);
 
 				&::before {
 					content: $text_tooltip_new_folder;
@@ -2607,7 +2682,7 @@ body[indigo-dragging-panel="true"] {
 			// Add New Content Folder
 			&.toolbar-item-newcontentfolder { // editorial content manager
 				display: block!important;
-				background-image: url(./images/buttons_light/new-content-folder.png);
+				background-image: url(./images/buttons_dark/new-content-folder.svg);
 				background-size: 19px;
 
 				&::before {
@@ -2618,7 +2693,7 @@ body[indigo-dragging-panel="true"] {
 			// Add New Portlet Folder
 			&.toolbar-item-newportletfolder { // portlet manager
 				display: block!important;
-				background-image: url(./images/buttons_light/new-content-folder.png);
+				background-image: url(./images/buttons_dark/new-content-folder.svg);
 				background-size: 19px;
 
 				&::before {
@@ -2629,7 +2704,7 @@ body[indigo-dragging-panel="true"] {
 			// New Category
 			&.toolbar-item-newcategory {
 				display: block!important;
-				background-image: url(./images/buttons_light/new-content.png);
+				background-image: url(./images/buttons_dark/new-content.svg);
 				background-size: 17px;
 
 				&::before {
@@ -2640,7 +2715,7 @@ body[indigo-dragging-panel="true"] {
 			// Upload File
 			&.toolbar-item-upload {
 				display: block!important;
-				background-image: url(./images/icons/add-media@X2.png);
+				background-image: url(./images/icons/add-media-dark@X2.png);
 				background-size: 23px;
 				background-position: top 5px center;
 
@@ -2652,7 +2727,7 @@ body[indigo-dragging-panel="true"] {
 			// New Content
 			&.toolbar-item-newcontent {
 				display: block!important;
-				background-image: url(./images/buttons_light/new-content.png);
+				background-image: url(./images/buttons_dark/new-content.svg);
 				background-size: 17px;
 
 				&::before {
@@ -2663,7 +2738,7 @@ body[indigo-dragging-panel="true"] {
 			// New Portlet
 			&.toolbar-item-newportlet {
 				display: block!important;
-				background-image: url(./images/buttons_light/new-portlet.png);
+				background-image: url(./images/buttons_dark/new-portlet.svg);
 				background-position: top 7px center;
 
 				&::before {
@@ -2674,7 +2749,7 @@ body[indigo-dragging-panel="true"] {
 			// New Page
 			&.toolbar-item-newpage {
 				display: block!important;
-				background-image: url(./images/buttons_light/new-page.png);
+				background-image: url(./images/buttons_dark/new-page.svg);
 				background-size: 14px;
 
 				&::before {
@@ -2783,37 +2858,36 @@ body[indigo-dragging-panel="true"] {
 
 			// List View
 			&.toolbar-item-listview {
-				background-image: url($ICON--DISPLAY--LIST--WHITE);
+				background-image: url($ICON--DISPLAY--LIST--GREY);
 				right: 8px;
+				opacity: 1;
 
 				body[indigo-PICKER-DISPLAY="listview"] & {
-					background-image: url($ICON--DISPLAY--LIST--GREY);
-					opacity: 1;
-					background-color: _theme-color(secondary, b);
+					background-image: url($ICON--DISPLAY--LIST--WHITE);
+					background-color: #363636;
 				}
 			}
 
 			// Thumbs View
 			&.toolbar-item-thumbsview {
-				background-image: url($ICON--DISPLAY--THUMBS--WHITE);
+				background-image: url($ICON--DISPLAY--THUMBS--GREY);
 				right: 32px;
+				opacity: 1;
 
 				body[indigo-PICKER-DISPLAY="thumbsview"] & {
-					background-image: url($ICON--DISPLAY--THUMBS--GREY);
-					opacity: 1;
-					background-color: _theme-color(secondary, b);
+					background-image: url($ICON--DISPLAY--THUMBS--WHITE);
+					background-color: #363636;
 				}
 			}
 
 			// Display View
 			&.toolbar-item-detailedview {
-				background-image: url($ICON--DISPLAY--DETAILS--WHITE);
+				background-image: url($ICON--DISPLAY--DETAILS--GREY);
 				right: 56px;
 
 				body[indigo-PICKER-DISPLAY="detailedview"] & {
-					background-image: url($ICON--DISPLAY--DETAILS--GREY);
-					opacity: 1;
-					background-color: _theme-color(secondary, b);
+					background-image: url($ICON--DISPLAY--DETAILS--WHITE);
+					background-color: #363636;
 				}
 			}
 
@@ -3310,9 +3384,9 @@ body[indigo-dragging-panel="true"] {
 			// THUMBS / DETAILS VIEWS
 			.x-view {
 				background: transparent!important;
-				min-height: 100%!important;
-				height: auto!important;
-				padding: 10px 20px 0 10px;
+				min-height: calc(100% + 26px) !important;
+				height: calc(100% + 26px) !important;
+				padding: 40px 20px 0px;
 
 				-webkit-column-count: unset!important;
 				-moz-column-count: unset!important;

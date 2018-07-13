@@ -381,7 +381,7 @@ body[indigo-dragging-panel] {
 		// Fix the padding issue on icons
 		body[data-sitesettings="false"][data-indigo-app="edit"] & {
 			.x-tree3-node-text {
-				padding-left: 5px;
+				padding-left: 2px;
 			}
 		}
 
@@ -791,9 +791,9 @@ body[indigo-dragging-panel] {
 	    background-repeat: no-repeat;
 	    padding-left: 18px;
 	    width: 18px;
-	    height: 23px;
+	    height: 27px;
 		opacity: 0.8;
-		background-position: center top 2px;
+		background-position: center top 3px;
 
 		// Default
 		//background-image: url(./images/tabs-pages-dark@X2.png);
@@ -945,6 +945,7 @@ body[indigo-dragging-panel] {
 	    width: 18px;
 	    height: 23px;
 		opacity: 0.8;
+		background-position: center top 1px;
 
 		// FOLDER ICON
 		&[src$="/jnt_contentFolder.png"],
@@ -971,6 +972,10 @@ body[indigo-dragging-panel] {
 				background-image: url(./images/icons/tabs-site-white@X2.png);
 			}
 		}
+	}
+
+	.x-tree3-el > span {
+		top: -1px!important;
 	}
 
 }
@@ -1046,32 +1051,27 @@ body[indigo-dragging-panel] {
 			width: 47%!important;
 
 			&.x-view-over {
-				background: _property($THUMB--BG---SELECTED, $SIDE-PANEL)!important;
+				background: _property($THUMB--BG---HOVER, $SIDE-PANEL)!important;
+			}
+
+			&.x-view-over.x-view-item-sel {
+				background: #007cb0 !important;
 			}
 
 		}
 
-		.thumb-wrap:hover .thumbDetails {
-			background: _property($THUMB--BG---SELECTED, $SIDE-PANEL);
 
-			div:first-child {
-					color: _theme-color(secondary, a);
-			}
-
-		}
 
 		.thumbDetails {
-			position: absolute;
-			bottom: -25px;
+			position: relative;;
 			left: 0;
 			width: 100%;
 	    top: auto!important;
 	    padding: 6px;
 	    box-sizing: border-box;
+		float: left;
 
-			div {
-				text-align: center;
-			}
+
 
 		}
 
@@ -1171,10 +1171,12 @@ body[indigo-dragging-panel] {
 	}
 
 	.results-column {
-	    height: calc(100% - 57px)!important;
-	    top: 27px;
-	    display: block;
+		display: flex;
 	    position: relative;
+	    flex-direction: row;
+	    flex-wrap: wrap;
+	    justify-content: space-between;
+		align-content: flex-start;
 	}
 
 }

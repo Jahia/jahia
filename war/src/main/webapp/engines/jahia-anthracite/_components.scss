@@ -636,8 +636,8 @@
 
 .thumb-wrap {
 	border: none!important;
-	padding: 0!important;
-	display: inline-block;
+	padding: 0 0 5px 0 !important;
+	// display: inline-block;
 	float: none!important;
 	position: relative;
 	background: none;
@@ -686,25 +686,29 @@
 
 		div {
 			/* Hide ALL */
-			display: none;
+			// display: none;
 
 
-			&:first-child {
-				/* Just Show the File Name Meta Container */
-				display: block;
+			/* Just Show the File Name Meta Container */
 
-				@extend %CSS_BLOCK--THUMB--LABEL !optional;
+			font-family: "Nunito Sans", sans-serif;
+		    font-size: 12px;
+		    color: #363636;
+		    font-weight: 300;
+		    display: block !important;
+		    overflow: hidden;
+		    white-space: nowrap;
+		    text-overflow: ellipsis;
+		    margin-bottom: 5px;
 
-				background: transparent;
-				color: _theme-color(primary);
-				text-align: left;
-				padding: 0;
-
-				b {
-					/* Hide Label */
-					display: none;
-				}
-
+			b {
+				font-family: "Nunito Sans", sans-serif;
+			    font-size: 8px;
+			    color: #6a6a6a;
+			    font-weight: 300;
+			    display: block;
+			    margin-right: 5px;
+			    text-transform: uppercase;
 			}
 		}
 
@@ -724,16 +728,25 @@
 	}
 
 
-	&.x-view-item-sel {
+	&.x-view-item-sel,
+	&.x-view-item-sel.x-view-over {
 		z-index: 99999999;
+		background: #007cb0 !important;
 		.thumbDetails {
 			/* Selected State */
-			display: none;
+			// display: none;
+
+			div {
+				color: #F5F5F5!important;
+				b {
+					color: #F5F5F5!important;
+				}
+			}
 
 		}
 
 		.thumb {
-			@extend %CSS_BLOCK--THUMB--BG---SELECTED !optional;
+			// @extend %CSS_BLOCK--THUMB--BG---SELECTED !optional;
 
 		}
 
@@ -742,16 +755,6 @@
 	&.x-view-item-sel.x-view-over {
 		z-index: 99999999999;
 
-		.thumbDetails {
-			/* Selected State */
-			display: block;
-
-		}
-
-		.thumb {
-			@extend %CSS_BLOCK--THUMB--BG---HOVER !optional;
-
-		}
 
 	}
 }
@@ -1503,7 +1506,7 @@ form,
 
 	.x-grid3-row {
 		/* List Item */
-		height: 25px!important;
+		height: 27px!important;
 		width: 100%!important;
 		border: none;
 
@@ -1726,7 +1729,7 @@ form,
 		/* List Item Text Label */
 		// @extend %CSS_BLOCK--TREE--ROW--TEXT---UP !optional;
 
-		@include text(12px !important, _property($ROW--COLOR, $SIDE-PANEL) !important, $FONT--WEIGHT---EXTRALIGHT !important);
+		@include text(13px !important, _property($ROW--COLOR, $SIDE-PANEL) !important, $FONT--WEIGHT---LIGHT !important);
 
 		body[data-INDIGO-PICKER-SEARCH="open"] & {
 			@include text(12px !important, _property($ROW--COLOR, $SIDE-PANEL) !important, $FONT--WEIGHT---EXTRALIGHT !important);

@@ -340,8 +340,8 @@ $FOOTER--SHADOW:(
 
 
 $DARK-FOOTER--BG:(
-	LIGHT: _theme-color(primary, g),
-	DARK: _theme-color(primary, g),
+	LIGHT: #363636,
+	DARK: #363636,
 );
 
 $DARK-FOOTER--SHADOW:(
@@ -773,23 +773,29 @@ $CKE--TOOL--BG---SELECTED: (
 /* THUMBS */
 /****************************/
 $THUMB--COLOR: (
-	LIGHT: _theme-color(secondary),
-	DARK: _theme-color(secondary),
+	LIGHT: #363636,
+	DARK: #363636,
 );
 
 $THUMB--COLOR---HOVER: (
-	LIGHT: _theme-color(secondary),
-	DARK: _theme-color(secondary),
+	LIGHT: #363636,
+	DARK: #363636,
+);
+
+$THUMB--COLOR---SELECTED: (
+	LIGHT: #F5F5F5,
+	DARK: #F5F5F5,
 );
 
 $THUMB--COLOR--DIMMED: (
-	LIGHT: _theme-color(secondary),
-	DARK: _theme-color(secondary, c),
+	LIGHT: #6A6A6A,
+	DARK: #6A6A6A,
 );
 
+
 $THUMB--COLOR--DIMMED---HOVER: (
-	LIGHT: _theme-color(secondary),
-	DARK: _theme-color(secondary),
+	LIGHT: #6A6A6A,
+	DARK: #6A6A6A,
 );
 
 $THUMB--BG: (
@@ -798,13 +804,13 @@ $THUMB--BG: (
 );
 
 $THUMB--BG---HOVER: (
-	LIGHT: _theme-color(secondary, f),
-	DARK: _theme-color(secondary, f),
+	LIGHT: #cecccc,
+	DARK: #cecccc,
 );
 
 $THUMB--BG---SELECTED: (
-	LIGHT: _theme-color(quinary),
-	DARK: _theme-color(quinary),
+	LIGHT: #007cb0,
+	DARK: #007cb0,
 );
 
 
@@ -1126,8 +1132,8 @@ $COMMENTS--BG:(
 
 // UP
 $ROW--COLOR:(
-	LIGHT: _theme-color(primary),
-	DARK: _theme-color(secondary),
+	LIGHT: #454545,
+	DARK: #454545,
 );
 
 $ROW--COLOR--DIMMED:(

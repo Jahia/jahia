@@ -1530,7 +1530,7 @@
 	// INVERT
 	%CSS_BLOCK--BUTTON--TEXT\:TOGGLE_ASC {
 	    background-color: transparent !important;
-	    background-image: url($ICON--ASC--WHITE)!important;
+	    background-image: url($ICON--ASC--DARK)!important;
 	    text-indent: -50000px;
 	    width: 22px!important;
 	    background-position: center center!important;
@@ -1542,7 +1542,7 @@
 
 	%CSS_BLOCK--BUTTON--TEXT---HOVER\:TOGGLE_ASC {
 		opacity: 1;
-		background-color: _theme-color(primary, b) !important;
+		background-color: #ebe6e6 !important;
     }
 
 
@@ -1644,7 +1644,7 @@
 
 	// LABELS
 	%CSS_BLOCK--TREE--ROW--TEXT---UP {
-		@include text(12px, _property($ROW--COLOR, $SIDE-PANEL), $FONT--WEIGHT---EXTRALIGHT);
+		@include text(13px, _property($ROW--COLOR, $SIDE-PANEL), $FONT--WEIGHT---LIGHT);
 	}
 
 	%CSS_BLOCK--TREE--ROW--TEXT---HOVER {
@@ -1806,7 +1806,7 @@
         padding: 3px 10px;
 
         @extend %ellipsis_overflow;
-        @include text(10px, _property($THUMB--COLOR, $THUMBS), $FONT--WEIGHT---BOLD);
+        @include text(12px, _property($THUMB--COLOR, $THUMBS), $FONT--WEIGHT---LIGHT);
     }
 
     %CSS_BLOCK--THUMB--BG---UP {
@@ -1814,7 +1814,7 @@
     }
 
     %CSS_BLOCK--THUMB--BG---HOVER {
-        background: _property($THUMB--BG---HOVER, $THUMBS);
+        // background: red;
     }
 
     %CSS_BLOCK--THUMB--BG---SELECTED {

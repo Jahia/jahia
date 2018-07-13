@@ -1226,6 +1226,22 @@ body[indigo-dragging-panel] {
  		width: 300px;
  		display: none;
 
+		// Search loader info
+		.x-toolbar-left-row td.x-toolbar-cell:last-child > table.x-btn.x-component.x-unselectable.x-btn-icon.x-item-disabled {
+			background: transparent;
+			position: absolute;
+			top: -15px;
+			right: -69px;
+			color: _theme-color(secondary);
+			font-weight: 700;
+			text-transform: uppercase;
+
+			&:after {
+				content: $text_searchLoading;
+			}
+
+		}
+
 		.x-panel-bwrap {
 			position: fixed;
 		    top: -20px;

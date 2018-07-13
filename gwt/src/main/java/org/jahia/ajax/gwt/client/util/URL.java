@@ -45,7 +45,6 @@ package org.jahia.ajax.gwt.client.util;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
-
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
@@ -199,6 +198,9 @@ public class URL {
         }
         if (value.contains("$site-path")) {
             value = value.replace("$site-path", JahiaGWTParameters.getSiteNode().getPath());
+        }
+        if (value.contains("$site-key")) {
+            value = value.replace("$site-key", JahiaGWTParameters.getSiteNode().getSiteKey());
         }
         if (value.contains("$site-homepage-path")) {
             String home = JahiaGWTParameters.getSiteNode().get(GWTJahiaNode.HOMEPAGE_PATH);

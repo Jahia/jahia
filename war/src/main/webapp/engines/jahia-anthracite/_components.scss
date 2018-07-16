@@ -3941,7 +3941,7 @@ body[data-indigo-gwt-side-panel="open"] {
 	left: 0;
 	width: 100%!important;
 	height: 100%;
-	background: _property($MODAL-SOLID--BG---LEGACY, LIGHT) !important;
+	background: radial-gradient(ellipse at bottom right, rgba(38, 38, 38, 0.5) 0%, rgba(38, 38, 38, 0.71) 50%)!important;
 	z-index: 9;
 }
 

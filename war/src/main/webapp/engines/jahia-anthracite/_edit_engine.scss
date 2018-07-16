@@ -404,7 +404,6 @@ div.engine-window {
 		}
 
 		.x-form-group.list-store-field {
-			margin-bottom: 36px !important;
 		}
 
 	}
@@ -423,6 +422,11 @@ div.engine-window {
 	    top: 20px;
 		font-weight: 100;
 		z-index: 99999;
+
+		body[data-indigo-editing-condition="new"] &,
+		body[data-indigo-editing-condition="true"] & {
+			display: none;
+		}
 
 	}
 
@@ -1528,7 +1532,7 @@ div.engine-window {
 
 			&[src$="/visibilityStatusUnknown.png"] {
 				// Find better icon for Unknow Status ?
-				background: url(./images/icons/unknown.png) no-repeat center center;
+				background: url(./images/icons_dark/unknown.svg) no-repeat center center;
 				background-size: 22px;
 				opacity: .67;
 			}
@@ -1573,7 +1577,7 @@ div.engine-window {
 				height: auto!important;
 				position: relative;
 				width: 100%!important;
-				margin: 95px 0 10px 0!important;
+				margin: 0px 0 10px 0 !important;
 			    overflow: visible!important;
 
 				.gwt-HTML {
@@ -1591,16 +1595,16 @@ div.engine-window {
 							// Publication status label
 							&:nth-child(5) {
 								position: fixed;
-							    top: 95px;
-							    left: 408px;
-							    z-index: 99;
+								top: 55px;
+								left: 638px;
+								z-index: 99;
 							}
 
 							// Publication icon
 							&:nth-child(6) {
 								position: fixed;
-								top: 93px;
-								left: 517px;
+								top: 54px;
+								left: 745px;
 								z-index: 99;
 							}
 
@@ -1643,8 +1647,8 @@ div.engine-window {
 							// All conditions should match label
 							&:nth-child(1) {
 								position: fixed;
-							    top: 251px;
-							    right: 114px;
+							    top: 120px;
+							    right: 48px;
 							    z-index: 99;
 
 								div {
@@ -1656,8 +1660,8 @@ div.engine-window {
 							// All conditions should match checkbox
 							&:nth-child(2) {
 								position: fixed;
-							    right: 85px;
-							    top: 252px;
+							    right: 17px;
+							    top: 120px;
 							    z-index: 99;
 							}
 
@@ -1679,8 +1683,8 @@ div.engine-window {
 									width: 15px!important;
 									height: 15px !important;
 									position: fixed !important;
-									top: 250px;
-									left: 490px;
+									top: 30px;
+									right: 30px;
 									z-index: 99;
 									background-size: 14px!important;
 									background-color: _property($BUTTON--BG, $EDIT-ENGINE)!important;
@@ -1762,7 +1766,7 @@ div.engine-window {
 				    right: 0;
 				    top: 0;
 					pointer-events: all;
-					background: url(./images/icons/tabs-edit-DARK.png) right 5px center no-repeat!important;
+					background: url(./images/icons_dark/edit.svg) right 5px center no-repeat !important;
 					background-size: 16px 16px!important;
 					opacity: 0.8;
 
@@ -1776,8 +1780,8 @@ div.engine-window {
 					width: 20px;
 					height: 20px !important;
 					background: transparent;
-					background: url($ICON--CLOSE_LARGE---GREY) no-repeat center top 10px;
-					background-size: 8px 8px;
+					background: url("./images/icons_dark/deleted.svg") no-repeat center center;
+					background-size: 21px;
 
 					> table {
 						width: 100%;
@@ -1806,6 +1810,7 @@ div.engine-window {
 
 				&.indigo-show {
 					display: block;
+					background: radial-gradient(ellipse at bottom right, rgba(38, 38, 38, 0.5) 0%, rgba(38, 38, 38, 0.71) 50%);
 				}
 
 				.x-panel-footer {
@@ -1878,6 +1883,12 @@ div.engine-window {
 					width: 460px!important;
 					margin: 0 auto;
 
+					> .x-panel-bwrap {
+						background: #f4f4f4;
+					    padding: 19px;
+						box-shadow: 1px 1px 2px 0px rgba(38, 38, 38, 0.4);
+					}
+
 					// Hide occasional duplication of the window
 					&:nth-child(2),
 					&:nth-child(3) {
@@ -1886,7 +1897,7 @@ div.engine-window {
 
 					fieldset {
 						padding: 43px 10px 20px 19px !important;
-						background: _property($FIELDSET--BG, $EDIT-ENGINE);
+						background: transparent!important;
 
 						legend  {
 							.x-fieldset-header-text {
@@ -2694,6 +2705,11 @@ div.engine-window {
 			height: 109px;
 			z-index: 999;
 
+			body[data-indigo-editing-condition="new"] &,
+			body[data-indigo-editing-condition="true"] & {
+				display: none;
+			}
+
 			.x-panel-fbar {
 				width: 100%!important;
 				height: 100%;
@@ -3263,9 +3279,9 @@ body[data-indigo-add-visibility-condition="new"] {
 		width: auto!important;
 
 		> div {
-			margin-left: 89px;
-		    margin-top: 51px;
-			// width: calc(100% + 64px) !important;
+			position: fixed;
+		    top: 30px;
+		    right: 30px;
 		}
 	}
 }
@@ -3547,8 +3563,8 @@ body[data-indigo-add-visibility-condition="new"] {
 		background-color: transparent !important;
 
 		img {
-			background: url(./images/icons/remove_circle.png) no-repeat center center !important;
-			background-size: 18px !important;
+			background: url(./images/icons_dark/deleted.svg) no-repeat center center !important;
+			background-size: 22px !important;
 			opacity: .64;
 
 			&:hover {

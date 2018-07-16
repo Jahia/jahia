@@ -1170,7 +1170,7 @@ public class JCRPublicationService extends JahiaService {
                 }
             }
 
-            if (!node.isNodeType(JAHIAMIX_MARKED_FOR_DELETION) && node.hasProperty(Constants.WORKINPROGRESS_STATUS)) {
+            if (!node.isMarkedForDeletion() && node.hasProperty(Constants.WORKINPROGRESS_STATUS)) {
                 String wipStatus = node.getProperty(Constants.WORKINPROGRESS_STATUS).getString();
                 if (wipStatus.equals(Constants.WORKINPROGRESS_STATUS_ALLCONTENT)) {
                     info.setWorkInProgress(true);
@@ -1320,7 +1320,7 @@ public class JCRPublicationService extends JahiaService {
                 // No modification date - node is published
                 status = PublicationInfo.PUBLISHED;
             } else {
-                if (node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION)) {
+                if (node.isMarkedForDeletion()) {
                     status = PublicationInfo.MARKED_FOR_DELETION;
                 } else {
                     Date pubProp = node.getLastPublishedAsDate();

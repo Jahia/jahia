@@ -1584,20 +1584,20 @@ div[role="combobox"].toolbar-itemsgroup-languageswitcher {
     	margin: 0;
 
         /* Container */
-		z-index: $ZINDEX--MAINMODULE--HEADER;
-		right: 69px;
-		position: fixed !important;
-		overflow: visible;
-		text-align: center;
-		left: 60px;
-		width: calc(100% - 124px) !important;
-		top: 0 !important;
-		padding: 0;
-		height: 51px!important;
+  		z-index: $ZINDEX--MAINMODULE--HEADER;
+  		right: 69px;
+  		position: fixed !important;
+  		overflow: visible;
+  		text-align: center;
+  		left: 60px;
+  		width: calc(100% - 124px) !important;
+  		top: 0 !important;
+  		padding: 0;
+  		height: 51px!important;
 
-		body[data-sitesettings="true"] & {
-			// visibility: hidden;
-		}
+  		body[data-sitesettings="true"] & {
+  			visibility: hidden;
+  		}
 
     }
 

@@ -5312,6 +5312,10 @@ XXX.x-window.modal-deletealljob-confirm {
 .x-window.compare-engine {
 	background: _theme-color(primary, a) !important;
 
+	label {
+		color: #F5F5F5!important;
+	}
+
 	.x-window-header {
 		height: 64px !important;
 		line-height: 64px;
@@ -5389,7 +5393,7 @@ XXX.x-window.modal-deletealljob-confirm {
 			text-transform: uppercase;
 			padding: 0 4px !important;
 			font-weight: 500;
-			color: _theme-color(primary, g); /* TO THEME */
+			color: #F5F5F5; /* TO THEME */
 		}
 
 		table.x-btn-pressed .x-btn-mc button.x-btn-text {

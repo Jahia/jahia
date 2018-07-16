@@ -5625,21 +5625,25 @@ XXX.x-window.modal-deletealljob-confirm {
 			width: calc(100% - 10px);
 			margin-left: 8px !important;
 
-			.x-form-text,
-			textarea.x-form-field,
-			div[role="combobox"] input.x-form-text {
-				background: _theme-color(secondary, g) !important;
-				color: _theme-color(primary);
-			}
 
-			.x-form-readonly input {
-				background: _theme-color(secondary, g) !important;
-				box-shadow: none !important;
-				cursor: default;
-			}
 
 		}
 
+	}
+
+	fieldset {
+		.x-form-text,
+		textarea.x-form-field,
+		div[role="combobox"] input.x-form-text {
+			background: #f7f700;
+			color: _theme-color(primary);
+		}
+
+		.x-form-readonly input {
+			background: rgba(245, 245, 245, 0.58)!important;
+			box-shadow: none !important;
+			cursor: default;
+		}
 	}
 
 }

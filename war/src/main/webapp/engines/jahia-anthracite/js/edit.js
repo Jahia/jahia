@@ -1,5 +1,4 @@
 // Polyfills
-
 if (!Element.prototype.matches) {
     Element.prototype.matches =
         Element.prototype.matchesSelector ||
@@ -3255,25 +3254,25 @@ if (!Element.prototype.matches) {
                 open: false
             },
 			resizeLanguageInput: function(){
-				var languageInput = DexV2(".toolbar-itemsgroup-languageswitcher input")
+				var languageInput = DexV2(".toolbar-itemsgroup-languageswitcher input");
 
 				if(languageInput.nodes[0]){
-					var languageInputValue = DexV2(".toolbar-itemsgroup-languageswitcher input").nodes[0].value
+					var languageInputValue = DexV2(".toolbar-itemsgroup-languageswitcher input").nodes[0].value;
 
-					var wideChars = "ABCDEFGHJKLMNOPQRSTUVWXYZ"
-					var mediumChars = "abcdefghkmnopqrstuvwxyzI"
-					var slimChars = "ijl"
+					var wideChars = "ABCDEFGHJKLMNOPQRSTUVWXYZ";
+					var mediumChars = "abcdefghkmnopqrstuvwxyzI";
+					var slimChars = "ijl";
 
 					var textWidth = function(languageInputValue){
 						var returnWidth = 0;
 
-						for(var char of languageInputValue){
-							var isWide = (wideChars.indexOf(char) > -1) ? 10 : 0;
-							var isMedium = (mediumChars.indexOf(char) > -1) ? 7 : 0;
-							var isSlim = (slimChars.indexOf(char) > -1) ? 5 : 0;
-							var addWidth = (isWide + isMedium + isSlim)
+						for(var charIndex in languageInputValue){
+							var isWide = (wideChars.indexOf(languageInputValue[charIndex]) > -1) ? 10 : 0;
+							var isMedium = (mediumChars.indexOf(languageInputValue[charIndex]) > -1) ? 7 : 0;
+							var isSlim = (slimChars.indexOf(languageInputValue[charIndex]) > -1) ? 5 : 0;
+							var addWidth = (isWide + isMedium + isSlim);
 
-							returnWidth = returnWidth + (addWidth || 10)
+							returnWidth = returnWidth + (addWidth || 10);
 						}
 
 						return returnWidth;
@@ -3975,25 +3974,25 @@ if (!Element.prototype.matches) {
                 returnURL: null
 			},
 			resizeLanguageInput: function(){
-				var languageInput = DexV2(".toolbar-itemsgroup-languageswitcher input")
+				var languageInput = DexV2(".toolbar-itemsgroup-languageswitcher input");
 
 				if(languageInput.nodes[0]){
-					var languageInputValue = DexV2(".toolbar-itemsgroup-languageswitcher input").nodes[0].value
+					var languageInputValue = DexV2(".toolbar-itemsgroup-languageswitcher input").nodes[0].value;
 
-					var wideChars = "ABCDEFGHJKLMNOPQRSTUVWXYZ"
-					var mediumChars = "abcdefghkmnopqrstuvwxyzI"
-					var slimChars = "ijl"
+					var wideChars = "ABCDEFGHJKLMNOPQRSTUVWXYZ";
+					var mediumChars = "abcdefghkmnopqrstuvwxyzI";
+					var slimChars = "ijl";
 
 					var textWidth = function(languageInputValue){
 						var returnWidth = 0;
 
-						for(var char of languageInputValue){
-							var isWide = (wideChars.indexOf(char) > -1) ? 10 : 0;
-							var isMedium = (mediumChars.indexOf(char) > -1) ? 7 : 0;
-							var isSlim = (slimChars.indexOf(char) > -1) ? 5 : 0;
-							var addWidth = (isWide + isMedium + isSlim)
+						for(var charIndex in languageInputValue){
+							var isWide = (wideChars.indexOf(languageInputValue[charIndex]) > -1) ? 10 : 0;
+							var isMedium = (mediumChars.indexOf(languageInputValue[charIndex]) > -1) ? 7 : 0;
+							var isSlim = (slimChars.indexOf(languageInputValue[charIndex]) > -1) ? 5 : 0;
+							var addWidth = (isWide + isMedium + isSlim);
 
-							returnWidth = returnWidth + (addWidth || 10)
+							returnWidth = returnWidth + (addWidth || 10);
 						}
 
 						return returnWidth;
@@ -4910,9 +4909,7 @@ if (!Element.prototype.matches) {
 
 				},
 				close: function(){
-					console.log("Attempt close ...")
 					if(DexV2.getCached("body").getAttribute("data-edit-window-style") !== "settings" && DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open" && DexV2.getCached("body").getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes" && DexV2.getCached("body").getAttribute("data-INDIGO-SIDEPANEL-PINNED") != "true"){
-						console.log("... actually closed")
 						app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: CLOSE");
 
 						var siteCombo = DexV2("body[data-indigo-gwt-side-panel='open'] .window-side-panel div[role='combobox']");
@@ -4928,7 +4925,6 @@ if (!Element.prototype.matches) {
                         DexV2.iframe(".window-iframe").filter("body").nodes[0].style.pointerEvents = "all";
 
 						if(DexV2.id("JahiaGxtSidePanelTabs").exists()){
-							console.log("do it here")
 							DexV2.id("JahiaGxtSidePanelTabs").nodes[0].style.setProperty("width", "60px", "important");
 							DexV2.getCached("body").setAttribute("data-indigo-gwt-side-panel", "")
 						}
@@ -5595,25 +5591,25 @@ if (!Element.prototype.matches) {
 				.onAttribute("body", "data-sitekey", function(){
 
 
-					var languageInput = DexV2(".edit-menu-sites input")
+					var languageInput = DexV2(".edit-menu-sites input");
 
 					if(languageInput.nodes[0]){
-						var languageInputValue = DexV2(".edit-menu-sites input").nodes[0].value
+						var languageInputValue = DexV2(".edit-menu-sites input").nodes[0].value;
 
-						var wideChars = "ABCDEFGHJKLMNOPQRSTUVWXYZ "
-						var mediumChars = "abcdefghkmnopqrstuvwxyzI"
-						var slimChars = "ijl"
+						var wideChars = "ABCDEFGHJKLMNOPQRSTUVWXYZ ";
+						var mediumChars = "abcdefghkmnopqrstuvwxyzI";
+						var slimChars = "ijl";
 
 						var textWidth = function(languageInputValue){
 							var returnWidth = 0;
 
-							for(var char of languageInputValue){
-								var isWide = (wideChars.indexOf(char) > -1) ? 10 : 0;
-								var isMedium = (mediumChars.indexOf(char) > -1) ? 7 : 0;
-								var isSlim = (slimChars.indexOf(char) > -1) ? 5 : 0;
-								var addWidth = (isWide + isMedium + isSlim)
+							for(var charIndex in languageInputValue){
+								var isWide = (wideChars.indexOf(languageInputValue[charIndex]) > -1) ? 10 : 0;
+								var isMedium = (mediumChars.indexOf(languageInputValue[charIndex]) > -1) ? 7 : 0;
+								var isSlim = (slimChars.indexOf(languageInputValue[charIndex]) > -1) ? 5 : 0;
+								var addWidth = (isWide + isMedium + isSlim);
 
-								returnWidth = returnWidth + (addWidth || 10)
+								returnWidth = returnWidth + (addWidth || 10);
 							}
 
 							return returnWidth;

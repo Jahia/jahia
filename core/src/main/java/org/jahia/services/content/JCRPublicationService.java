@@ -1170,7 +1170,7 @@ public class JCRPublicationService extends JahiaService {
                 }
             }
 
-            if (node.hasProperty(Constants.WORKINPROGRESS_STATUS)) {
+            if (!node.isNodeType(JAHIAMIX_MARKED_FOR_DELETION) && node.hasProperty(Constants.WORKINPROGRESS_STATUS)) {
                 String wipStatus = node.getProperty(Constants.WORKINPROGRESS_STATUS).getString();
                 if (wipStatus.equals(Constants.WORKINPROGRESS_STATUS_ALLCONTENT)) {
                     info.setWorkInProgress(true);

@@ -1009,7 +1009,8 @@ body[data-indigo-app="contribute"] {
 }
 
 // Background Jobs Button
-.toolbar-item-workinprogressadmin {
+.toolbar-item-workinprogressadmin,
+.toolbar-item-workinprogress {
   background: url(./images/icons_light/jobs.svg) no-repeat top center;
   background-size: 23px 23px;
   width: 51px !important;

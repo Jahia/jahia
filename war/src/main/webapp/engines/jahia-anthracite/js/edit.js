@@ -4167,25 +4167,29 @@ if (!Element.prototype.matches) {
 						// 	return false;
 						// }
 
+
+
+						var workInProgressAdminButton = (DexV2.node(this).hasClass("toolbar-item-workinprogressadmin")) ? "toolbar-item-workinprogressadmin" : "toolbar-item-workinprogress";
+
 						app.edit.infoBar.jobs.data.classes = attrValue;
 
 						app.dev.log("::: APP ::: EDIT ::: INFOBAR ::: JOBS ::: ONCHANGE");
 
-                        var jobButton = DexV2(".toolbar-item-workinprogressadmin button");
+                        var jobButton = DexV2("." + workInProgressAdminButton + " button");
 
                         if(jobButton.exists()){
                             var jobStringSplit = jobButton.getHTML().split("<"),
                             	jobString = jobStringSplit[0],
                             	jobIcon = jobButton.filter("img"),
 								activeJob,
-								buttonParent = DexV2.class("toolbar-item-workinprogressadmin"),
+								buttonParent = DexV2.class(workInProgressAdminButton),
 								jobTooltip;
 
                             if(jobIcon.getAttribute("src").indexOf("workInProgress.png") == -1){
                                 // A job is active
 								activeJob = true;
 								jobTooltip = jobString;
-								DexV2(".toolbar-item-workinprogressadmin").setAttribute("job-in-progress", "true");
+								DexV2.class(workInProgressAdminButton).setAttribute("job-in-progress", "true");
 								DexV2(".x-viewport-editmode .action-toolbar .x-toolbar-cell:nth-child(10)").addClass("indigo-job-running");
 
                             } else {
@@ -4193,7 +4197,7 @@ if (!Element.prototype.matches) {
 								activeJob = false;
 								jobTooltip = localisedStrings[app.data.UILanguage].jobs;
 
-								DexV2(".toolbar-item-workinprogressadmin").setAttribute("job-in-progress", "");
+								DexV2.class(workInProgressAdminButton).setAttribute("job-in-progress", "");
 
 								DexV2(".x-viewport-editmode .action-toolbar .x-toolbar-cell:nth-child(10)").removeClass("indigo-job-running");
 
@@ -6002,7 +6006,7 @@ if (!Element.prototype.matches) {
                 .onOpen("#JahiaGxtImagePopup", app.imagePreview.onOpen)
                 .onAttribute(".edit-menu-tasks", "class", app.edit.infoBar.tasks.onChange)
                 .onAttribute(".contribute-menu-tasks", "class", app.edit.infoBar.tasks.onChange)
-                .onAttribute(".toolbar-item-workinprogressadmin", "class", app.edit.infoBar.jobs.onChange)
+                .onAttribute(".toolbar-item-workinprogressadmin, .toolbar-item-workinprogress", "class", app.edit.infoBar.jobs.onChange)
                 .onOpen(".x-dd-drag-proxy", app.edit.sidepanel.onStartDrag)
                 .onClose(".x-dd-drag-proxy", app.edit.sidepanel.onStopDrag)
                 .onAttribute("body", "data-sitesettings", app.edit.settings.onChange)

@@ -2340,7 +2340,6 @@ form,
 
 	.cke_dialog_ui_labeled_content {
 		display: inline-block!important;
-		width: calc(100% - 100px)!important;
 	}
 
 	.cke_dialog_ui_input_select {
@@ -2353,22 +2352,26 @@ form,
 
 		// SELECT
 		select {
-
-			width: 100%;
-			border: none;
-			line-height: normal;
-			background: transparent;
-			border-radius: 0;
-			box-shadow: none;
-
 			appearance: none;
 			-moz-appearance: none;
 			-webkit-appearance: none;
 
-			background: url($ICON--ARROW_DOWN---WHITE) no-repeat right 5px center;
-			background-color: _theme-color(primary, c); /* TO THEME */
-			padding: 3px 5px !important;
-			@include text(12px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
+			@include text(12px, #363636, $FONT--WEIGHT---LIGHT); /* TO THEME */
+			border: none;
+		    line-height: normal;
+		    border-radius: 0;
+		    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+		    background: url(./images/icons/combo-arrow-grey.png) no-repeat right 5px center;
+		    background-color: white;
+		    padding: 7px 10px 6px 10px !important;
+		    font-family: "Nunito Sans", sans-serif;
+		    font-size: 12px;
+		    color: #363636;
+		    font-weight: 100;
+		    box-sizing: border-box;
+		    height: 30px;
+			width: calc(100% - 4px)!important;
+		    margin-left: 2px;
 
 
 			&:focus {
@@ -2430,10 +2433,13 @@ form,
 	// Dialogue Body Container
 	.cke_dialog_contents_body {
 		margin: 0;
-		height: auto!important;
+		height: 50vh !important;
 		padding: 0;
 	    box-sizing: border-box;
 		overflow: hidden;
+		display: block;
+		overflow-y: scroll;
+		min-width: 540px!important;
 	}
 
 	iframe.cke_pasteframe {
@@ -2531,7 +2537,7 @@ form,
 		background: transparent;
 		text-align: left;
 
-		margin-top: 50px;
+		margin-top: 10px;
 	    display: block;
 	}
 
@@ -2565,7 +2571,7 @@ form,
 			> td {
 				width: auto!important;
 				display: inline-block!important;
-				float: none;
+				float: left!important;
 			}
 		}
 

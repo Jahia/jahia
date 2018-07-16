@@ -3956,6 +3956,12 @@ body[data-indigo-gwt-side-panel="open"] {
 .x-window.modal-deletealljob-confirm {
 	z-index: 99999!important;
 
+	> .x-window-tl,
+	> .x-window-bwrap {
+		width: auto!important;
+		min-width: 440px;
+	}
+
 	.x-window-header {
 		&:before {
 			content: $text_confirm_delete;
@@ -3984,27 +3990,27 @@ body[data-indigo-gwt-side-panel="open"] {
 		margin-top: 10px;
 
 		.x-grid3-row {
-			background: rgba(_theme-color(primary, c), .6) !important; /* TO THEME */
+			background: #F5F5F5 !important; /* TO THEME */
 			padding: 3px;
 			box-sizing: border-box;
 
 			&.x-grid3-row-over {
-				background: rgba(_theme-color(primary, c), 1) !important; /* TO THEME */
+				background: #dfdfdf !important; /* TO THEME */
+			}
+
+			&.x-grid3-row-selected {
+				.x-grid3-cell-inner {
+					color: #363636!important;
+				}
 			}
 
 			.x-grid3-col-pagePath {
-				background: url(./images/tabs-pages-white@X2.png) no-repeat left center;
+				background: url(./images/tabs-pages-dark@X2.png) no-repeat left center;
 				background-size: 23px;
 				padding-left: 25px;
 
 				a {
-					text-decoration: none;
-					@include text(11px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
-
-					&:hover {
-						text-decoration: underline;
-					}
-
+					@include text(12px, #363636, $FONT--WEIGHT---LIGHT); /* TO THEME */
 				}
 			}
 
@@ -4018,216 +4024,6 @@ body[data-indigo-gwt-side-panel="open"] {
 		@include button("ACTIONBAR", "remove-icons");
 	}
 }
-
-XXX.x-window.delete-item-window,
-XXX.x-window.modal-deletejob-confirm,
-XXX.x-window.modal-deletealljob-confirm {
-    // background: transparent;
-	// width: 460px !important;
-	// height: auto!important;
-	// z-index: 9999!important;
-
-
-
-		.x-panel-toolbar {
-		    // display: none;
-		}
-
-		.x-window-header {
-		    // padding: 0 !important;
-			// margin-bottom: 10px;
-			//
-			// @include text(36px, _property($TITLE--COLOR, $APP), $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
-			//
-			// img {
-			// 	display: none;
-			// }
-
-			.x-window-header-text {
-				display: none;
-			}
-
-			&:before {
-				content: $text_confirm_delete;
-			}
-		}
-
-		// .x-window-body {
-		// 	width: auto!important;
-		// 	height: auto!important;
-		// 	position: relative;
-		// 	z-index: 99;
-		//
-		// 	> .x-panel {
-		// 		width: auto!important;
-		// 	}
-		// }
-
-		.x-window-bwrap {
-		    // padding: 0;
-		    // color: _theme-color(black, d);
-		    // padding-top: 0;
-		    // background: transparent;
-		    // height: 302px;
-		    // overflow: visible;
-
-			.x-form-textarea {
-					// margin-top: 8px;
-					// color: _theme-color(black); /* TO THEME */
-					// width: 100% !important;
-					//
-					// &:focus {
-					// 	background: _theme-color(white) !important; /* TO THEME */
-					// }
-
-			}
-
-			.x-panel-body {
-				// padding: 0;
-				// width: auto!important;
-				// height: auto!important;
-				//
-				// overflow: visible;
-
-				form {
-					overflow: visible;
-					height: auto!important;
-
-					> div {
-
-						padding: 0 19px;
-						background: _property($FIELDSET--BG, LIGHT)!important; /* TO THEME */
-
-						&:first-child {
-							padding-top: 19px;
-						}
-
-						&:nth-last-child(2) {
-							padding-bottom: 19px;
-							width: 100%!important;
-						}
-
-						@include text(13px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
-
-						&.x-panel-fbar {
-							background: transparent!important;
-							padding: 0!important;
-							width: 100%!important;
-
-							.x-toolbar-ct {
-								> tbody {
-									float: right;
-								}
-							}
-
-							.x-toolbar-cell {
-								float: right;
-
-								table {
-									margin-right: 0;
-								}
-
-								&:nth-child(1) {
-									margin-left: 5px;
-								}
-							}
-
-						}
-
-						.x-grid-panel {
-							max-height: 61px!important;
-							height: auto!important;
-							overflow-y: scroll;
-							margin-top: 10px;
-
-							.x-grid3-row {
-								background: rgba(_theme-color(primary, c), .6) !important; /* TO THEME */
-								padding: 3px;
-								box-sizing: border-box;
-
-								&.x-grid3-row-over {
-									background: rgba(_theme-color(primary, c), 1) !important; /* TO THEME */
-								}
-
-								.x-grid3-col-pagePath {
-									background: url(./images/tabs-pages-white@X2.png) no-repeat left center;
-									background-size: 23px;
-									padding-left: 25px;
-
-									a {
-										text-decoration: none;
-										@include text(11px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
-
-										&:hover {
-											text-decoration: underline;
-										}
-
-									}
-								}
-
-								.x-grid3-td-path {
-									@include text(11px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
-								}
-							}
-						}
-
-						textarea {
-							background: rgba(_theme-color(primary, c), .6) !important; /* TO THEME */
-							box-sizing: border-box;
-							margin: 0;
-							padding: 10px!important;
-							color: _theme-color(secondary); /* TO THEME */
-							height: 75px!important;
-
-							transition: all 0.3s ease-in 0s!important;
-
-							&:hover {
-								background: rgba(_theme-color(primary, c), 1) !important; /* TO THEME */
-
-							}
-
-							&:focus {
-								background: _theme-color(secondary)!important; /* TO THEME */
-								color: _theme-color(primary, g); /* TO THEME */
-							}
-						}
-
-						span[style='font-style:bold;color:red;'] {
-							display: block;
-						    font-weight: 500;
-						    position: relative;
-						    width: 100%;
-						    color: _theme-color(status, error) !important; /* TO THEME */
-						    padding-bottom: 19px;
-						}
-					}
-
-				}
-
-				.x-form-field-wrap {
-					height: auto!important;
-				}
-
-				.x-panel-fbar {
-					margin-top: 20px;
-				}
-
-			}
-
-		}
-
-		// .x-toolbar-left-row .x-toolbar-cell:first-child .x-btn-text {
-		// 	background: _theme-color(tertiary) !important; /* TO THEME */
-		// 	color: _theme-color(secondary) !important; /* TO THEME */
-		// }
-		//
-		// .x-toolbar-left-row .x-toolbar-cell:nth-child(2) .x-btn-text {
-		// 	background: _theme-color(secondary, b) !important; /* TO THEME */
-		// }
-
-}
-
-
 
 /////////////////////////////////////////////////
 // MODALS ///////////////////////////////////////

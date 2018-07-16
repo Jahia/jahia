@@ -2917,6 +2917,10 @@ body[indigo-dragging-panel="true"] {
 #contentmanager {
 
 	//
+	#images-view {
+		box-shadow: inset 0px 0px 0px #e5e3e3, inset 0px 2px 0px #b4b2b2, inset 0px 3px 5px rgba(38, 38, 38, 0.2)!important;
+		padding-top: 0!important;
+	}
 
 	&.search-panel-opened {
 		#JahiaGxtManagerTobTable {

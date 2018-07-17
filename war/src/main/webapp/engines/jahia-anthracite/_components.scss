@@ -25,7 +25,7 @@
 	&.x-menu {
 
 		body[data-indigo-styled-combos="true"] & {
-			z-index: 1068 !important;
+			z-index: 9999999 !important;
 		}
 
 	}
@@ -38,7 +38,7 @@
 	.x-menu-list {
 		padding: 5px 10px 10px;
 	    background: _property($DATE-PICKER--BG, $DATE-PICKER);
-		box-shadow: _property($DATE-PICKER--SHADOW, $DATE-PICKER);
+		box-shadow: 2px 2px 10px rgba(38, 38, 38, 0.5);
 
 		body[data-indigo-gwt-side-panel="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] & {
 			margin-left: 67px;

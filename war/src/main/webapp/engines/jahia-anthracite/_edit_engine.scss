@@ -1518,48 +1518,57 @@ div.engine-window {
 		// Deals with status of visibility and publication
 
 		img {
-			width: 20px;
-			height: 20px;
-			padding-left: 20px;
-			overflow: hidden;
-			box-sizing: border-box;
+			// For non styled image status ...
+			width: 12px;
+		    height: 12px;
+		    margin-top: 3px;
+
+			// Styled image status ...
+			&[src$="/visibilityStatusRed.png"],
+			&[src$="/visibilityStatusUnknown.png"],
+			&[src$="/visibilityStatusGreen.png"],
+			// &[src$="/notpublished.png"],
+			// &[src$="/modified.png"]
+			&[src$="/published.png"]{
+				width: 20px;
+				height: 20px;
+				padding-left: 20px;
+				overflow: hidden;
+				box-sizing: border-box;
+				background-size: 22px;
+				opacity: .67;
+				margin-top: 0;
+			}
+
+			&.x-form-trigger {
+				padding-left: 0!important;
+			}
 
 			&[src$="/visibilityStatusRed.png"] {
 				background: url(./images/icons_dark/visibilityoff.svg) no-repeat center center;
-				background-size: 22px;
-				opacity: .67;
 			}
 
 			&[src$="/visibilityStatusUnknown.png"] {
-				// Find better icon for Unknow Status ?
 				background: url(./images/icons_dark/unknown.svg) no-repeat center center;
-				background-size: 22px;
-				opacity: .67;
 			}
 
 			&[src$="/visibilityStatusGreen.png"] {
 				background: url(./images/icons_dark/visibility.svg) no-repeat center center;
-				background-size: 22px;
-				opacity: .67;
 			}
 
-			&[src$="/publication/notpublished.png"] {
-				background: url(./images/icons_dark/unpublished.svg) no-repeat center center;
-				background-size: 22px;
-				opacity: .67;
-			}
+			// &[src$="/publication/notpublished.png"] {
+			// 	background: url(./images/icons_dark/unpublished.svg) no-repeat center center;
+			// }
 
-			&[src$="/publication/modified.png"] {
-				background: url(./images/icons_dark/modified.svg) no-repeat center center;
-				background-size: 22px;
-				opacity: .67;
-			}
+			// &[src$="/publication/modified.png"] {
+			// 	background: url(./images/icons_dark/modified.svg) no-repeat center center;
+			// }
 
 			&[src$="/publication/published.png"] {
 				background: url(./images/icons_dark/published.svg) no-repeat center center;
-				background-size: 22px;
-				opacity: .67;
 			}
+
+
 		}
 
 		> .x-component {

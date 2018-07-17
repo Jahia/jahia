@@ -43,10 +43,7 @@
  */
 package org.jahia.services.publication;
 
-import java.util.*;
-
-import javax.jcr.*;
-
+import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
@@ -55,10 +52,13 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.framework.AbstractJUnitTest;
 import org.jahia.test.utils.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.slf4j.Logger;
 
-import com.google.common.collect.Lists;
+import javax.jcr.*;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -641,7 +641,7 @@ public class PublicationIT extends AbstractJUnitTest {
         englishEditSession.save();
         getCleanSession();
         infos = jcrService.getPublicationInfo(testHomeEdit.getIdentifier(), languages, false, true, false, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
-        assertEquals("Invalid 'work in progress' info for content", true, getWipFor(infos, editTextNode1.getIdentifier()));
+        assertEquals("Invalid 'work in progress' info for content", false, getWipFor(infos, editTextNode1.getIdentifier()));
 
         editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
         editTextNode1.unmarkForDeletion();

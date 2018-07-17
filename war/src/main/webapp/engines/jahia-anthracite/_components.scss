@@ -2571,7 +2571,10 @@ form,
 			> td {
 				width: auto!important;
 				display: inline-block!important;
-				float: left!important;
+
+				body:not(.ext-windows) & {
+					float: left!important;
+				}
 			}
 		}
 

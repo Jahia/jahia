@@ -2007,7 +2007,6 @@ if (!Element.prototype.matches) {
 			},
 			repositionSidePanel: function(splitterLeft){
 				app.dev.log("::: APP ::: PICKER ::: REPOSITIONSIDEPANEL");
-                console.log("picker.repositionSidePanel(" + splitterLeft + ")")
 
                 var isNestedPicker = DexV2.getCached("body").getAttribute("data-indigo-sub-picker") == "open";
 
@@ -2120,7 +2119,6 @@ if (!Element.prototype.matches) {
 			},
 			onResize: function(attr, value){
 				app.dev.log("::: APP ::: PICKER ::: ONRESIZE");
-                console.log("picker.onResize(" + attr + ", " + value + ")", this)
 
 				// User has resized the left panel in a picker
 
@@ -2780,19 +2778,19 @@ if (!Element.prototype.matches) {
 			},
 			previewButton: {
 				onMouseOver: function(){
-					app.dev.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: ONMOUSEOVER", true);
+					app.dev.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: ONMOUSEOVER");
 					DexV2.node(app.picker.data.currentItem)
 		                .addClass("x-view-over")
 		                .addClass("x-grid3-row-over");
 				},
 				onMouseOut: function(){
-					app.dev.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: ONMOUSEOUT", true);
+					app.dev.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: ONMOUSEOUT");
 					DexV2.node(app.picker.data.currentItem)
 		                .removeClass("x-view-over")
 		                .removeClass("x-grid3-row-over");
 				},
 				onClick: function(e){
-					app.dev.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: ONCLICK", true);
+					app.dev.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: ONCLICK");
 
 					if(e.detail.secondClick){
 						// Just set the good title
@@ -2820,7 +2818,7 @@ if (!Element.prototype.matches) {
 		            DexV2.class("toolbar-item-filepreview").setAttribute("indigo-preview-button", "hide");
 				},
 				reposition: function(node, offset){
-					app.dev.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: REPOSITION", true);
+					app.dev.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: REPOSITION");
 					var offset = offset || {
 		                    left: 0,
 		                    top: 0
@@ -3230,19 +3228,17 @@ if (!Element.prototype.matches) {
 		},
 		imagePreview: {
 			onOpen: function(){
-				app.dev.log("::: APP ::: PICKER ::: IMAGEPREVIEW ::: ONOPEN", true);
+				app.dev.log("::: APP ::: PICKER ::: IMAGEPREVIEW ::: ONOPEN");
 				DexV2.getCached("body").setAttribute("data-INDIGO-IMAGE-PREVIEW", "open");
 
 				// Attribute used to display the friendly name in edit panel
 				DexV2(".engine-panel > div.x-panel-header .x-panel-header-text").setAttribute("data-friendly-name", "nodeDisplayName");
 			},
 			onClose: function(){
-				app.dev.log("::: APP ::: PICKER ::: IMAGEPREVIEW ::: ONCLOSE", true);
+				app.dev.log("::: APP ::: PICKER ::: IMAGEPREVIEW ::: ONCLOSE");
 				DexV2.getCached("body").setAttribute("data-INDIGO-IMAGE-PREVIEW", "");
 				// DexV2.getCached("body").setAttribute("data-indigo-gwt-side-panel", "open")
 				var sidePanel = DexV2.id("JahiaGxtSidePanelTabs").nodes[0];
-
-				console.log("sidePanel:", sidePanel)
 
 				sidePanel.style.setProperty("width", "360px", "important");
 
@@ -4005,6 +4001,9 @@ if (!Element.prototype.matches) {
 			// Event Handlers
 			onOpen: function(){
 				app.dev.log("::: APP ::: EDIT ::: ONOPEN");
+
+				DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.removeProperty("width");
+				DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.removeProperty("left");
 
 				DexV2(".window-side-panel > .x-panel-bwrap > div:nth-child(2).x-panel-footer").addClass("side-panel-pin")
 

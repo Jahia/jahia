@@ -427,18 +427,16 @@
 	}
 
 	div.x-window-header .x-window-header-text {
-		color: _theme-color(primary, c) !important;
-		display: inline-block!important;
-		position: fixed !important;
-		width: 100% !important;
-		left: 30px !important;
-		top: 60px !important;
-		font-weight: 100 !important;
-		max-width: calc(100% - 100px) !important;
+		display: inline-block !important;
+	    position: fixed !important;
+	    width: 100% !important;
+	    max-width: calc(100% - 100px) !important;
+	    font-size: 18px!important;
+	    font-weight: 300!important;
 	}
 
 	> .x-window-bwrap {
-		margin-top: 96px;
+		margin-top: 126px;
 
 		.x-window-body.x-window-body-noborder {
 			overflow: hidden;
@@ -450,9 +448,14 @@
 
 	}
 
-	.x-grid3 .x-grid3-row-table {
-		width: 100% !important;
+	.x-grid3 {
+		.x-grid3-row-table {
+			width: 100% !important;
+		}
+
 	}
+
+
 
 	.x-toolbar-left {
 		bottom: 0 !important;
@@ -462,9 +465,29 @@
 		overflow: hidden !important;
 	}
 
-	.workflow-action-dialog .x-tab-panel-body-top .x-border-layout-ct {
+
+
+	.workflowactiondialog-ctn .x-border-layout-ct:nth-child(2) {
+		> div.x-component:nth-child(1) {
+			height: calc(100% - 193px) !important;
+		}
+	}
+
+	.workflowactiondialog-ctn .x-border-layout-ct:nth-child(3) {
+		width: 100%!important;
+
+		> div {
+			width: 100%!important;
+		}
+	}
+
+	.workflow-action-dialog .x-tab-panel-body-top > div {
 		height: 100% !important;
-		width: calc(100% + 162px) !important;
+		width: 100% !important;
+
+		> div {
+			width: 100% !important;
+		}
 	}
 
 	.publicationstatuswindow-ctn .x-border-layout-ct:nth-child(2) > .x-border-panel .x-form-element .x-form-field-wrap.x-component {
@@ -477,7 +500,7 @@
 	}
 
 	.x-border-layout-ct:nth-child(2) > .x-border-panel:nth-child(2) .x-panel-bwrap {
-		width: calc(100% - 162px) !important;
+		// width: calc(100% - 162px) !important;
 	}
 
 	.x-tab-panel-body-top .x-component.x-border {
@@ -624,7 +647,7 @@
 			}
 
 			&:last-child {
-			    width: 340px !important;
+			    width: 400px !important;
 			}
 
 		}

@@ -1226,22 +1226,6 @@ body[indigo-dragging-panel] {
  		width: 300px;
  		display: none;
 
-		// Search loader info
-		.x-toolbar-left-row td.x-toolbar-cell:last-child > table.x-btn.x-component.x-unselectable.x-btn-icon.x-item-disabled {
-			background: transparent;
-			position: absolute;
-			top: -15px;
-			right: -69px;
-			color: _theme-color(secondary);
-			font-weight: 700;
-			text-transform: uppercase;
-
-			&:after {
-				content: $text_searchLoading;
-			}
-
-		}
-
 		.x-panel-bwrap {
 			position: fixed;
 		    top: -20px;
@@ -1706,6 +1690,43 @@ body[indigo-dragging-panel] {
 
 .results-column {
 	height: 100%!important;
+}
+
+#JahiaGxtSearchTab {
+	.results-column {
+		&:before {
+			font-size: 14px;
+		    color: red;
+		    display: block;
+		    position: absolute;
+		    top: 0px;
+		    left: 9px;
+		    z-index: 99999;
+		    color: #363636;
+		    font-style: italic;
+
+		}
+
+		&[data-results-status="no-results"]:before {
+			content: $text_no_results
+		}
+
+		&[data-results-status="results"]:before {}
+
+		&[data-results-status="searching"]:before {
+			content: "Searching ...";
+			font-size: 26px;
+		    top: 35%;
+		    left: 50%;
+		    background: url(./images/loader_dark.svg) no-repeat center center;
+		    width: 40px;
+		    height: 40px;
+		    text-indent: -50000px;
+			pointer-events: none;
+		}
+
+		&[data-results-status="init"]:before {}
+	}
 }
 //
 //

@@ -3967,6 +3967,11 @@ if (!Element.prototype.matches) {
 					settingspage: null,
 					editpage: null,
 				},
+				search: {
+					refreshButtonClasslist: null,
+					emptyGridStyle: null,
+					status: null
+				},
                 returnURL: null
 			},
 			resizeLanguageInput: function(){
@@ -5913,7 +5918,41 @@ if (!Element.prototype.matches) {
     			})
     			.onOpen("#JahiaGxtSearchTab", function(){
     				DexV2.node(this).filter(".JahiaGxtSearchTab-results .x-grid3-body").addClass("results-column");
+
+					DexV2("#JahiaGxtSearchTab.tab_search .JahiaGxtSearchTab-results .x-toolbar-left-row td.x-toolbar-cell:last-child > table.x-btn.x-component.x-unselectable.x-btn-icon").addClass("search-side-panel-refresh-button"); // Ask thomas to add a classname here
     			})
+				.onOpen(".results-column .x-grid-empty", function(){
+
+						var myPagingDisplay = DexV2.id("JahiaGxtSearchTab").filter(".my-paging-display")
+						var pagingValue = myPagingDisplay.nodes[0].innerHTML
+						var noResults = pagingValue === "No data to display" || pagingValue === "Aucune donnée à afficher" || pagingValue === "Keine Daten vorhanden"
+						var status = null
+
+						if(noResults){
+							status = "no-results"
+						} else if(pagingValue === "") {
+							status = "init"
+						} else {
+							status = "searching"
+						}
+
+						if(app.edit.data.search.status !== status){
+							app.edit.data.search.status = status
+
+							DexV2.id("JahiaGxtSearchTab").filter(".results-column").setAttribute("data-results-status", app.edit.data.search.status)
+						}
+
+				})
+				.onOpen(".results-column .x-grid3-row", function(){
+						var status = "results"
+
+						if(app.edit.data.search.status !== status){
+							app.edit.data.search.status = status
+
+							DexV2.id("JahiaGxtSearchTab").filter(".results-column").setAttribute("data-results-status", app.edit.data.search.status)
+						}
+
+				})
     			.onOpen("#JahiaGxtCreateContentTab", function(){
     				DexV2.node(this).filter("input.x-form-text").setAttribute("placeholder", localisedStrings[app.data.UILanguage].filterContent)
     			})

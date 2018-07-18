@@ -64,7 +64,7 @@
         <connection>scm:git:git@github.com:Jahia/dxm-private.git</connection>
         <developerConnection>scm:git:git@github.com:Jahia/dxm-private.git</developerConnection>
         <url>https://github.com/Jahia/dxm-private</url>
-        <tag>HEAD</tag>
+        <tag>JAHIA_7_2_3_1_RC</tag>
     </scm>
 
     <repositories>

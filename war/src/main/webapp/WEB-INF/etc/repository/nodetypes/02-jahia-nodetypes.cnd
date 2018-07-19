@@ -215,6 +215,7 @@
 [jnt:folder] > nt:folder, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable, jmix:list, jmix:searchable
 
 [jnt:file] > nt:file, jmix:lockable, jmix:nodenameInfo, jmix:basemetadata, jmix:thumbnail, jmix:publication, jmix:observable, mix:title, jmix:searchable
+ - j:filename (string) protected
 
 [jmix:image] mixin
  - j:height (long) protected

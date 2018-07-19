@@ -359,6 +359,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         CacheEntry<?> cacheEntry = (CacheEntry<?>) element.getObjectValue();
         String cachedContent = (String) cacheEntry.getObject();
 
+        restorePropertiesFromCacheEntry(cacheEntry, renderContext);
+
         // Calls aggregation on the fragment content
         cachedContent = aggregateContent(cache, cachedContent, renderContext,
                 (String) cacheEntry.getProperty("areaResource"), new Stack<String>(),
@@ -826,12 +828,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                             try {
                                 if (!cachedContent.equals(content)) {
                                     try {
-                                        if (cacheEntry.getProperty("requestAttributes") != null) {
-                                            Map<String,Serializable> requestAttributesToCache = (Map<String, Serializable>) cacheEntry.getProperty("requestAttributes");
-                                            for (Map.Entry<String, Serializable> entry : requestAttributesToCache.entrySet()) {
-                                                renderContext.getRequest().setAttribute(entry.getKey(), entry.getValue());
-                                            }
-                                        }
+                                        restorePropertiesFromCacheEntry(cacheEntry, renderContext);
 
                                         esiTagStartIndex = replaceInContent(sb, esiTagStartIndex, esiTagEndIndex + CACHE_ESI_TAG_END_LENGTH,
                                                 aggregateContent(cache, content, renderContext, (String) cacheEntry.getProperty("areaResource"), cacheKeyStack, (Set<String>) cacheEntry.getProperty("allPaths")));
@@ -876,6 +873,19 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 }
             }
             return sb.toString();
+        }
+    }
+
+    /**
+     * Restore properties that have been stored in cache entry
+     */
+    @SuppressWarnings("unchecked")
+    private void restorePropertiesFromCacheEntry(CacheEntry<?> cacheEntry, RenderContext renderContext) {
+        if (cacheEntry.getProperty("requestAttributes") != null) {
+            Map<String,Serializable> requestAttributesToCache = (Map<String, Serializable>) cacheEntry.getProperty("requestAttributes");
+            for (Map.Entry<String, Serializable> entry : requestAttributesToCache.entrySet()) {
+                renderContext.getRequest().setAttribute(entry.getKey(), entry.getValue());
+            }
         }
     }
 

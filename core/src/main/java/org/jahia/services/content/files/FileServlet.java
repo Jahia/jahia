@@ -160,11 +160,11 @@ public class FileServlet extends HttpServlet {
                     }
 
                     if (isNotModified(fileKey, lastModifiedEntry, req, res)) {
-                        if (n.hasProperty("jcr:title")) {
+                        if (n.hasProperty("j:name")) {
                             res.setHeader(
                                     "Content-Disposition",
                                     "inline; filename=\""
-                                    + n.getProperty("jcr:title").getValue().getString() + "\"");
+                                    + n.getProperty("j:name").getValue().getString() + "\"");
                         }    
                     
                         // resource is not changed
@@ -205,11 +205,11 @@ public class FileServlet extends HttpServlet {
                     ranges = useRanges ? RangeUtils.parseRange(req, res, fileEntry.getETag(), fileEntry.getLastModified(), fileEntry.getContentLength()) : null;
                     
                     final JCRNodeWrapper node = getNode(fileKey);
-                    if (node != null && node.hasProperty("jcr:title")) {
+                    if (node != null && node.hasProperty("j:name")) {
                         res.setHeader(
                                 "Content-Disposition",
                                 "inline; filename=\""
-                                + node.getProperty("jcr:title").getValue().getString() + "\"");
+                                + node.getProperty("j:name").getValue().getString() + "\"");
                     } else if (fileKey.getPath().indexOf('%', fileKey.getPath().lastIndexOf('/')) != -1) {
                         res.setHeader(
                                 "Content-Disposition",

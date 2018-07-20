@@ -43,7 +43,6 @@
  */
 package org.jahia.services.query;
 
-
 import java.util.Arrays;
 
 import javax.jcr.RepositoryException;
@@ -55,7 +54,6 @@ import org.apache.jackrabbit.value.ValueFactoryImpl;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.query.QueryModifierAndOptimizerVisitor.TraversingMode;
 import org.slf4j.Logger;
-
 
 /**
  * The default implementation of Jahia's QueryService.
@@ -75,7 +73,8 @@ import org.slf4j.Logger;
  * @author Benjamin Papez
  */
 public class QueryServiceImpl extends QueryService {
-    static transient Logger logger = org.slf4j.LoggerFactory.getLogger(QueryService.class);
+
+    static final Logger logger = org.slf4j.LoggerFactory.getLogger(QueryService.class);
 
     /**
      * The initialization mode for the first QOM traversing iteration
@@ -114,20 +113,23 @@ public class QueryServiceImpl extends QueryService {
     /**
      * Initializes the service.
      */
+    @Override
     public void start() {
         // do nothing
     }
 
+    @Override
     public void stop() {
         // do nothing
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.jahia.services.query.QueryService#modifyAndOptimizeQuery(javax.jcr.query.qom.QueryObjectModel,
      * javax.jcr.query.qom.QueryObjectModelFactory, org.jahia.services.content.JCRSessionWrapper)
      */
+    @Override
     public QueryObjectModel modifyAndOptimizeQuery(QueryObjectModel qom,
                                                    QueryObjectModelFactory qomFactory, JCRSessionWrapper session)
             throws RepositoryException {
@@ -138,11 +140,12 @@ public class QueryServiceImpl extends QueryService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.jahia.services.query.QueryService#modifyAndOptimizeQuery(javax.jcr.query.qom.Source, javax.jcr.query.qom.Constraint,
      * javax.jcr.query.qom.Ordering[], javax.jcr.query.qom.Column[], javax.jcr.query.qom.QueryObjectModelFactory,
      * org.jahia.services.content.JCRSessionWrapper)
      */
+    @Override
     public QueryObjectModel modifyAndOptimizeQuery(Source source, Constraint constraint,
                                                    Ordering[] orderings, Column[] columns, QueryObjectModelFactory qomFactory,
                                                    JCRSessionWrapper session) throws RepositoryException {
@@ -218,24 +221,27 @@ public class QueryServiceImpl extends QueryService {
         info.setMode(TraversingMode.MODIFY_MODE);
 
         try {
+
             int i = 0;
             Ordering[] newOrderings = null;
             if (orderings != null) {
                 newOrderings = new Ordering[orderings.length];
                 for (Ordering ordering : orderings) {
                     Ordering newOrdering = ordering;
-
                     newOrdering = (Ordering) ((OrderingImpl) ordering).accept(visitor, null);
                     newOrderings[i++] = newOrdering;
                 }
             }
-            Column[] newColumns = new Column[columns.length];
-            i = 0;
-            for (Column column : columns) {
-                Column newColumn = column;
 
-                newColumn = (Column) ((ColumnImpl) column).accept(visitor, null);
-                newColumns[i++] = newColumn;
+            Column[] newColumns = null;
+            if (columns != null) {
+                newColumns = new Column[columns.length];
+                i = 0;
+                for (Column column : columns) {
+                    Column newColumn = column;
+                    newColumn = (Column) ((ColumnImpl) column).accept(visitor, null);
+                    newColumns[i++] = newColumn;
+                }
             }
 
             Constraint newConstraint = null;
@@ -261,7 +267,7 @@ public class QueryServiceImpl extends QueryService {
                         + Arrays.toString(((SourceImpl)info.getModifiedSource(source)).getSelectors())
                         + "- Modification mode: " + info.getMode());
             }
-            
+
             info.setNewQueryObjectModel(info.getQueryObjectModelFactory().createQuery(newSource,
                     newConstraint, newOrderings, newColumns));
         } catch (Exception e) {
@@ -272,9 +278,10 @@ public class QueryServiceImpl extends QueryService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.jahia.services.query.QueryService#getValueFactory()
      */
+    @Override
     public ValueFactory getValueFactory() {
         return this.valueFactory;
     }

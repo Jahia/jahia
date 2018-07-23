@@ -450,6 +450,12 @@ public class MainModule extends Module {
     }
 
     public boolean needRefresh(Map<String, Object> data) {
+
+        GWTJahiaNode node = (GWTJahiaNode) data.get("node");
+        if (node != null && node.getPath().equals(path)) {
+            return true;
+        }
+
         @SuppressWarnings("unchecked") List<String> paths = (List<String>) data.get("publishedNodes");
         if (paths != null) {
             for (String s : paths) {

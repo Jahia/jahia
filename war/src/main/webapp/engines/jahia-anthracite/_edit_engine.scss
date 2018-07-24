@@ -4090,3 +4090,9 @@ img.invalid-icon {
 body[data-indigo-edit-engine-locked="true"] .JahiaEditEngineButtonBar button[aria-disabled="true"] {
     opacity: .5;
 }
+
+.JahiaEditEngineButtonBar {
+	label {
+		@include text(14px, #F5F5F5 !important, $FONT--WEIGHT---LIGHT);
+	}
+}

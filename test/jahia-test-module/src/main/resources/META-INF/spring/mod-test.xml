@@ -24,6 +24,7 @@
                 <value>org.jahia.test.bin.FindPrincipalTest</value>
                 <value>org.jahia.test.bin.FindTest</value>
                 <value>org.jahia.test.bin.RenderTest</value>
+                <value>org.jahia.test.bin.actions.ChainActionHttpTest</value>
                 <value>org.jahia.test.osgi.SpringBridgeTest</value>
                 <value>org.jahia.test.osgi.SpringContextSingletonTest</value>
                 <value>org.jahia.test.services.acl.AclTest</value>
@@ -450,4 +451,15 @@
 
     <bean id="ReadOnlyModeCapablePlaceholder" class="org.jahia.test.services.readonly.ReadOnlyModeCapablePlaceholder"/>
 
+    <bean id="testPingProtectedAction" class="org.jahia.test.bin.actions.TestPingAction">
+        <property name="name" value="testPingProtected"/>
+    </bean>
+    <bean id="testPingPublicFirstAction" class="org.jahia.test.bin.actions.TestPingAction">
+        <property name="name" value="testPingPublicFirst"/>
+        <property name="requireAuthenticatedUser" value="false"/>
+    </bean>
+    <bean id="testPingPublicSecondAction" class="org.jahia.test.bin.actions.TestPingAction">
+        <property name="name" value="testPingPublicSecond"/>
+        <property name="requireAuthenticatedUser" value="false"/>
+    </bean>
 </beans>

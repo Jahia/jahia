@@ -1006,27 +1006,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 };
         }
 
-        if (!(action instanceof SystemAction)) {
-            if (action.getRequiredWorkspace() != null
-                    && !action.getRequiredWorkspace().equals(urlResolver.getWorkspace())) {
-                throw new PathNotFoundException("Action is not supported for this workspace");
-            }
-            if (action.isRequireAuthenticatedUser() && !renderContext.isLoggedIn()) {
-                throw new AccessDeniedException("Action '" + action.getName() + "' requires an authenticated user");
-            }
-            if (!action.isPermitted(urlResolver.getNode())) {
-                throw new AccessDeniedException("Action '" + action.getName() + "' requires '" + action.getRequiredPermission() + "' permission.");
-            }
-        } else if (originalAction instanceof LicensedAction) {
-            LicensedAction licensedAction = (LicensedAction) originalAction;
-            if (!licensedAction.isAllowedByLicense()) {
-                logger.error("Action '{}' requires a licene feature '{}'"
-                                + " which is not allowed by the current license terms", originalAction.getName(),
-                        licensedAction.getLicenseFeature());
-                throw new AccessDeniedException("Action '" + action.getName() + "' requires a licene feature '"
-                        + licensedAction.getLicenseFeature() + "' which is not allowed by the current license terms");
-            }
-        }
+        checkActionRequirements(action, originalAction, renderContext, urlResolver);
 
         JCRSessionWrapper session = null;
         if (resource != null) {
@@ -1073,6 +1053,45 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 resp.sendError(result.getResultCode());
             }
         }
+    }
+
+    private static void checkActionRequirements(Action action, final Action originalAction, RenderContext renderContext,
+            URLResolver urlResolver) throws RepositoryException {
+        if (!(action instanceof SystemAction)) {
+            if (action.getRequiredWorkspace() != null
+                    && !action.getRequiredWorkspace().equals(urlResolver.getWorkspace())) {
+                throw new PathNotFoundException("Action is not supported for this workspace");
+            }
+            if (action.isRequireAuthenticatedUser() && !renderContext.isLoggedIn()) {
+                throw new AccessDeniedException("Action '" + action.getName() + "' requires an authenticated user");
+            }
+            if (StringUtils.isNotEmpty(action.getRequiredPermission()) && !action.isPermitted(urlResolver.getNode())) {
+                throw new AccessDeniedException("Action '" + action.getName() + "' requires '" + action.getRequiredPermission() + "' permission.");
+            }
+        } else if (originalAction instanceof LicensedAction) {
+            LicensedAction licensedAction = (LicensedAction) originalAction;
+            if (!licensedAction.isAllowedByLicense()) {
+                logger.error("Action '{}' requires a licene feature '{}'"
+                                + " which is not allowed by the current license terms", originalAction.getName(),
+                        licensedAction.getLicenseFeature());
+                throw new AccessDeniedException("Action '" + action.getName() + "' requires a licene feature '"
+                        + licensedAction.getLicenseFeature() + "' which is not allowed by the current license terms");
+            }
+        }
+    }
+
+    /**
+     * Performs all required checks for this action.
+     * 
+     * @param action the action to check requirements for 
+     * @param renderContext current render context instance
+     * @param urlResolver the URL resolver instance
+     * @throws RepositoryException in case of requirements violation
+     * @since 7.2.3.2
+     */
+    public static void checkActionRequirements(Action action, RenderContext renderContext, URLResolver urlResolver)
+            throws RepositoryException {
+        checkActionRequirements(action, null, renderContext, urlResolver);
     }
 
     protected boolean isMethodAllowed(String method) {

@@ -113,7 +113,7 @@
         <property name="priority" value="0"/>
         <property name="description"
                   value="Render filter that 'injects' the static assets into the HEAD section of the rendered HTML document."/>
-        <property name="applyOnConfigurations" value="page,gwt"/>
+        <property name="applyOnConfigurations" value="page,gwt,preview"/>
         <property name="applyOnTemplateTypes" value="html,edit,html-.*"/>
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
         <property name="ajaxTemplate" value="/WEB-INF/scripts/ajaxResources.groovy"/>

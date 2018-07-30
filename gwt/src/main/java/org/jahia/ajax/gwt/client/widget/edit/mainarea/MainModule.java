@@ -51,9 +51,7 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.util.Point;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
@@ -67,6 +65,7 @@ import com.google.gwt.http.client.URL;
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.*;
 import com.google.gwt.user.client.EventListener;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HTML;
@@ -559,6 +558,20 @@ public class MainModule extends Module {
             GWTJahiaNode n = getGwtJahiaNode(path, name, nodeTypes, inheritedNodeTypes);
             EngineLoader.showEditEngine(getInstance().getEditLinker(), n, null);
         }
+    }
+
+    public static void displayAlert(String title, String message) {
+        MessageBox.alert(title, message,null);
+    }
+
+    public static void displayAlertInfo(String title, String message) {
+        MessageBox.info(title, message,null);
+    }
+
+    public static void displayInfo(String title, String message, int duration) {
+        InfoConfig infoConfig = new InfoConfig(title, message);
+        infoConfig.display = duration;
+        Info.display(infoConfig);
     }
 
     protected static GWTJahiaNode getGwtJahiaNode(String path, String name, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes) {
@@ -1192,6 +1205,15 @@ public class MainModule extends Module {
         };
         $wnd.disableGlobalSelection = function (value) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::globalSelectionDisabled = value;
+        };
+        $wnd.displayAlert = function (title, message) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::displayAlert(*)(title,message);
+        };
+        $wnd.displayAlertInfo = function (title, message) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::displayAlertInfo(*)(title,message);
+        };
+        $wnd.displayInfo = function (title, message, duration) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::displayInfo(*)(title,message,duration);
         };
     }-*/;
 

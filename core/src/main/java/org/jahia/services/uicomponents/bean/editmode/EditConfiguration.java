@@ -81,6 +81,7 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     private GWTConfiguration.DragAndDropBehavior dragAndDropBehavior;
     private boolean refreshOnExternalModification = true;
+    private boolean refreshEnabled = true;
 
     private String requiredPermission;
     private String nodeCheckPermission;
@@ -399,5 +400,13 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     public void setNeedFrameParsing(boolean needFrameParsing) {
         this.needFrameParsing = needFrameParsing;
+    }
+
+    public boolean isRefreshEnabled() {
+        return refreshEnabled;
+    }
+
+    public void setRefreshEnabled(boolean refreshEnabled) {
+        this.refreshEnabled = refreshEnabled;
     }
 }

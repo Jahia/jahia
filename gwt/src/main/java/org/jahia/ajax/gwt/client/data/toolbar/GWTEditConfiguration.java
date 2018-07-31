@@ -66,6 +66,7 @@ public class GWTEditConfiguration extends GWTConfiguration implements Serializab
     private boolean supportChannelsDisplay;
     private boolean refreshOnExternalModification = true;
     private boolean needFrameParsing = true;
+    private boolean refreshEnabled = true;
 
     private List<GWTSidePanelTab> tabs;
 
@@ -174,5 +175,13 @@ public class GWTEditConfiguration extends GWTConfiguration implements Serializab
 
     public void setNeedFrameParsing(boolean needFrameParsing) {
         this.needFrameParsing = needFrameParsing;
+    }
+
+    public boolean isRefreshEnabled() {
+        return refreshEnabled;
+    }
+
+    public void setRefreshEnabled(boolean refreshEnabled) {
+        this.refreshEnabled = refreshEnabled;
     }
 }

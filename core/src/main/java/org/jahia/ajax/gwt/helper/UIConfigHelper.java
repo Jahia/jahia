@@ -723,6 +723,7 @@ public class UIConfigHelper {
                 gwtConfig.setUseFullPublicationInfoInMainAreaModules(config.isUseFullPublicationInfoInMainAreaModules());
                 gwtConfig.setSupportChannelsDisplay(config.isSupportChannelsDisplay());
                 gwtConfig.setNeedFrameParsing(config.isNeedFrameParsing());
+                gwtConfig.setRefreshEnabled(config.isRefreshEnabled());
                 return gwtConfig;
             } else {
                 throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.bean.editconfig.not.found.in.spring.config.file", uiLocale));

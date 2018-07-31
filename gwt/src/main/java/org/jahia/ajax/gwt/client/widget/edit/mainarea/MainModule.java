@@ -431,6 +431,10 @@ public class MainModule extends Module {
      * @param data the refresh data
      */
     public void refresh(Map<String, Object> data) {
+
+        if (!config.isRefreshEnabled()) {
+            return;
+        }
         if (data != null && (data.containsKey(Linker.REFRESH_ALL) || data.containsKey(Linker.REFRESH_MAIN) || needRefresh(data))) {
             saveCurrentFramePosition();
             boolean forceCssRefresh = false;

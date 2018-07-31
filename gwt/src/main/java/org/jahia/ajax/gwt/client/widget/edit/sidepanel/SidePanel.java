@@ -263,6 +263,10 @@ public class SidePanel extends ContentPanel {
      * @param data the refresh data
      */
     public void refresh(Map<String, Object> data) {
+        if (!config.isRefreshEnabled()) {
+            return;
+        }
+
         if (tabPanel.getSelectedItem() != null) {
             SidePanelTabItem selected = ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem"));
 

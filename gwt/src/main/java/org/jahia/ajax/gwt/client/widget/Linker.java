@@ -59,6 +59,7 @@ public interface Linker {
     String REFRESH_ALL = "refreshAll";
     String REFRESH_MAIN = "refreshMain";
     String EXTERNAL_REFRESH = "externalRefresh";
+    String MAIN_DELETED = "mainDeleted";
 
     void loaded();
 

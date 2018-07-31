@@ -53,7 +53,6 @@ import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Dialog;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -69,7 +68,6 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
-import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineContainer;
@@ -213,14 +211,14 @@ public class TrashboardEngine extends Window {
                                 new Listener<MessageBoxEvent>() {
                                     public void handleEvent(MessageBoxEvent be) {
                                         if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.YES)) {
-                                            service.deletePaths(Arrays.asList(gwtJahiaNode.getPath()), new BaseAsyncCallback() {
+                                            service.deletePaths(Arrays.asList(gwtJahiaNode.getPath()), new BaseAsyncCallback<GWTJahiaNode>() {
                                                 @Override
                                                 public void onApplicationFailure(Throwable throwable) {
                                                     Log.error(throwable.getMessage(), throwable);
                                                     MessageBox.alert(Messages.get("label.error", "Error"), throwable.getMessage(), null);
                                                 }
 
-                                                public void onSuccess(Object result) {
+                                                public void onSuccess(GWTJahiaNode result) {
                                                     deletedNodes.remove(gwtJahiaNode);
                                                 }
                                             });

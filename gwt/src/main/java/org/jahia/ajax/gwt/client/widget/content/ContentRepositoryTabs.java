@@ -169,7 +169,7 @@ public class ContentRepositoryTabs extends LeftComponent {
                 if (item != null) {
                     List<String> queryNode = new ArrayList<String>();
                     queryNode.add(item.getPath());
-                    service.deletePaths(queryNode, new BaseAsyncCallback<Object>() {
+                    service.deletePaths(queryNode, new BaseAsyncCallback<GWTJahiaNode>() {
 
                         @Override
                         public void onApplicationFailure(Throwable throwable) {
@@ -177,7 +177,7 @@ public class ContentRepositoryTabs extends LeftComponent {
                         }
 
                         @Override
-                        public void onSuccess(Object o) {
+                        public void onSuccess(GWTJahiaNode o) {
                             queryList.getStore().remove(item);
                             retrieveSavedSearch();
                         }

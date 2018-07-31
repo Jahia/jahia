@@ -46,7 +46,6 @@ package org.jahia.ajax.gwt.content.server;
 import com.extjs.gxt.ui.client.data.*;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
-
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
@@ -603,8 +602,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     @Override
-    public void deletePaths(List<String> paths) throws GWTJahiaServiceException {
-        contentManager.deletePaths(paths, true, null, getUser(), retrieveCurrentSession(), getUILocale());
+    public GWTJahiaNode deletePaths(List<String> paths) throws GWTJahiaServiceException {
+        return contentManager.deletePaths(paths, true, null, getUser(), retrieveCurrentSession(), getUILocale());
     }
 
     @Override

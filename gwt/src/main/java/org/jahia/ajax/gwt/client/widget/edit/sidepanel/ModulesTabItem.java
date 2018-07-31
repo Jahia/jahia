@@ -190,7 +190,9 @@ public class ModulesTabItem extends BrowseTabItem {
                 return true;
             }
         }
-        if (data.containsKey("event") && ("commit".equals(data.get("event")) || "update".equals(data.get("event")))) {
+        if (data.containsKey("event") && ("commit".equals(data.get("event"))
+                || "update".equals(data.get("event")))
+                || (data.containsKey(Linker.MAIN_DELETED) && (Boolean) data.get(Linker.MAIN_DELETED))) {
             return true;
         }
         return super.needRefresh(data);

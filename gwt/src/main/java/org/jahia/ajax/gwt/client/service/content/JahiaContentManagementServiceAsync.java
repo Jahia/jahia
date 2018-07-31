@@ -131,7 +131,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void deleteJob(String jobName, String groupName, AsyncCallback<Boolean> async);
 
-    void deletePaths(List<String> paths, AsyncCallback async);
+    void deletePaths(List<String> paths, AsyncCallback<GWTJahiaNode> async);
 
     void deployTemplates(String templatesPath, String sitePath, AsyncCallback asyncCallback);
 

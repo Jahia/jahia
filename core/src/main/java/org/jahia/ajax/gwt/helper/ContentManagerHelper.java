@@ -72,6 +72,7 @@ import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.importexport.ImportJob;
 import org.jahia.services.importexport.ReferencesHelper;
 import org.jahia.services.importexport.validation.*;
+import org.jahia.services.render.RenderContext;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
@@ -551,9 +552,10 @@ public class ContentManagerHelper {
         return targetNode.getNode(name);
     }
 
-    public void deletePaths(List<String> paths, boolean permanentlyDelete, String comment, JahiaUser user, JCRSessionWrapper currentUserSession, Locale uiLocale)
+    public GWTJahiaNode deletePaths(List<String> paths, boolean permanentlyDelete, String comment, JahiaUser user, JCRSessionWrapper currentUserSession, Locale uiLocale)
             throws GWTJahiaServiceException {
         List<String> missedPaths = new ArrayList<String>();
+        JCRNodeWrapper displayableParentNode = null;
         for (String path : paths) {
             JCRNodeWrapper nodeToDelete = null;
             try {
@@ -587,6 +589,16 @@ public class ContentManagerHelper {
                     }
 
                     nodeToDelete.saveSession();
+
+                    // return a displayable node
+                    if (displayableParentNode == null) {
+                        displayableParentNode = JCRContentUtils.findDisplayableNode(permanentlyDelete ? nodeToDelete.getParent() : nodeToDelete, new RenderContext(null, null, currentUserSession.getUser()));
+                        // if unable to find a displayable node, return homepage of the site
+                        if (displayableParentNode == null) {
+                            displayableParentNode = nodeToDelete.getResolveSite().getHome();
+                        }
+                    }
+
                 }
             } catch (PathNotFoundException e) {
                 missedPaths.add(path + Messages.getInternal("label.gwt.error.could.not.be.accessed", uiLocale) + e.toString());
@@ -606,6 +618,8 @@ public class ContentManagerHelper {
             }
             throw new GWTJahiaServiceException(errors.toString());
         }
+
+        return navigation.getGWTJahiaNode(displayableParentNode);
     }
 
     public void undeletePaths(List<String> paths, JahiaUser user, JCRSessionWrapper currentUserSession, Locale uiLocale)

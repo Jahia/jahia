@@ -435,23 +435,33 @@ public class MainModule extends Module {
             saveCurrentFramePosition();
             boolean forceCssRefresh = false;
             boolean forceJavascriptRefresh = false;
+            String newPath = null;
             if (data.containsKey("node")) {
                 GWTJahiaNode n = (GWTJahiaNode) data.get("node");
                 if (n != null) {
+                    newPath = n.getPath();
                     forceCssRefresh = n.getNodeTypes().contains("jnt:cssFile");
                     forceJavascriptRefresh = n.getNodeTypes().contains("jnt:javascriptFile");
                 }
             }
+            boolean isMainDeleted = newPath != null && data.containsKey(Linker.MAIN_DELETED) && (Boolean) data.get(Linker.MAIN_DELETED);
             // we preserve the available query string during refresh of main area
-            final String url = getUrl(path, template, activeChannel != null ? activeChannel.getValue() : null, activeChannelVariant, true);
+            // change the url to the parent path if main url has been deleted
+            final String url = getUrl(isMainDeleted ? newPath : path, template, activeChannel != null ? activeChannel.getValue() : null, activeChannelVariant, true);
             goToUrl(url, data.containsKey("forceImageRefresh"), forceCssRefresh, forceJavascriptRefresh);
         }
     }
 
     public boolean needRefresh(Map<String, Object> data) {
 
+        // refresh if node is modified
         GWTJahiaNode node = (GWTJahiaNode) data.get("node");
         if (node != null && node.getPath().equals(path)) {
+            return true;
+        }
+
+        // refresh if main node has been deleted
+        if (data.containsKey(Linker.MAIN_DELETED) && (Boolean) data.get(Linker.MAIN_DELETED)) {
             return true;
         }
 

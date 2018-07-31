@@ -150,7 +150,7 @@ public interface JahiaContentManagementService extends RemoteService {
      */
     Boolean deleteJob(String jobName, String groupName) throws GWTJahiaServiceException;
 
-    void deletePaths(List<String> paths) throws GWTJahiaServiceException;
+    GWTJahiaNode deletePaths(List<String> paths) throws GWTJahiaServiceException;
 
     void deployTemplates(String templatesPath, String sitePath) throws GWTJahiaServiceException;
     GWTJahiaPortletOutputBean drawPortletInstanceOutput(String windowID, String entryPointIDStr, String pathInfo, String queryString);

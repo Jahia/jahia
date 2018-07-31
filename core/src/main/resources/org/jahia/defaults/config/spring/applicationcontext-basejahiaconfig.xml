@@ -2,7 +2,9 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
     <bean name="jahiaProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="ignoreResourceNotFound" value="true"/>
@@ -54,7 +56,36 @@
         </constructor-arg>
         <property name="dataSource" ref="dataSource"/>
         <property name="clusterSettingsInitializer" ref="clusterSettingsInitializer"/>
+        <property name="startupOptionsMapping" ref="startupOptionsMapping"/>
     </bean>
+
+    <util:map id="startupOptionsMapping" key-type="java.lang.String" value-type="java.util.Set">
+        <description>
+            The key represents the marker file on the file system,
+            whereas the value represents a set of "actions" to be taken on
+            startup when such marker file is detected
+        </description>
+        <entry key="#jahia.jackrabbit.home#/index-check" value="index-check"/>
+        <entry key="#jahia.jackrabbit.home#/index-fix" value="index-fix"/>
+        <entry key="#jahia.jackrabbit.home#/reindex" value="reindex"/>
+
+        <entry key="#jahia.data.dir#/disable-mail-service" value="disable-mail-service"/>
+        <entry key="#jahia.data.dir#/reset-discovery-info" value="reset-discovery-info"/>
+        <entry key="#jahia.data.dir#/rolling-upgrade" value="reset-discovery-info"/>
+
+        <entry key="#jahia.data.dir#/backup-restore">
+            <set>
+                <value>disable-mail-service</value>
+                <value>reset-discovery-info</value>
+            </set>
+        </entry>
+        <entry key="#jahia.data.dir#/safe-env-clone">
+            <set>
+                <value>disable-mail-service</value>
+                <value>reset-discovery-info</value>
+            </set>
+        </entry>
+    </util:map>
 
     <bean id="JCRContentUtils" class="org.jahia.services.content.JCRContentUtils">
         <constructor-arg index="0">

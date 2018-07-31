@@ -61,6 +61,8 @@
 
 package org.jahia.settings;
 
+import static org.jahia.settings.StartupOptions.*;
+
 import net.htmlparser.jericho.Config;
 import net.htmlparser.jericho.LoggerProvider;
 import org.apache.commons.collections.FastHashMap;
@@ -132,7 +134,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     }
 
     public static final String JAHIA_PROPERTIES_FILE_PATH = "/WEB-INF/etc/config/jahia.properties";
-    private static final String JAHIA_BACKUP_RESTORE_MARKER = "backup-restore";
+    /**
+     * @deprecated Use {@link #isStartupOptionSet(String)} instead
+     */
+    @Deprecated
     public static final String JAHIA_BACKUP_RESTORE_SYSTEM_PROP = "jahia.backup-restore";
     private static final Logger logger = LoggerFactory.getLogger(SettingsBean.class);
 
@@ -221,6 +226,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private String  jahiaGeneratedResourcesDiskPath;
 
     private int moduleStartLevel;
+
+    private StartupOptions startupOptions;
+    private Map<String, Set<String>> startupOptionsMapping;
 
     /**
      * @param   pathResolver a path resolver used to locate files on the disk.
@@ -471,13 +479,13 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             DatabaseUtils.setDatasource(dataSource);
 
-            checkSafeBackupRestore();
+            initJcrSystemProperties();
+
+            initStartupOptions();
 
             if (clusterActivated) {
                 clusterSettingsInitializer.initClusterSettings(this);
             }
-
-            initJcrSystemProperties();
 
             checkIndexConsistencyIfNeeded();
 
@@ -498,6 +506,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         }
     } // end load
 
+    private void initStartupOptions() {
+        startupOptions = new StartupOptions(this, startupOptionsMapping);
+    }
+
     public int getModuleStartLevel() {
         return moduleStartLevel;
     }
@@ -509,16 +521,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         // if logging for Jericho is not explicitly enabled, we disable it by default
         if (!getBoolean("jahia.jericho.logging.enabled", false)) {
             Config.LoggerProvider = LoggerProvider.DISABLED;
-        }
-    }
-
-    private void checkSafeBackupRestore() {
-        File marker = new File(getJahiaVarDiskPath(), JAHIA_BACKUP_RESTORE_MARKER);
-        if (marker.exists()) {
-            setSystemProperty(JAHIA_BACKUP_RESTORE_SYSTEM_PROP, "true");
-
-            // delete marker
-            marker.delete();
         }
     }
 
@@ -776,27 +778,15 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     }
 
     private void checkIndexConsistencyIfNeeded() {
-        File repoHome = null;
-        try {
-            repoHome = getRepositoryHome();
-            if (repoHome != null) {
-                File check = new File(repoHome, "index-check");
-                File repair = new File(repoHome, "index-fix");
-                if (check.exists()) {
-                    setSystemProperty("jahia.jackrabbit.searchIndex.enableConsistencyCheck", "true");
-                    setSystemProperty("jahia.jackrabbit.searchIndex.forceConsistencyCheck", "true");
-                    setSystemProperty("jahia.jackrabbit.searchIndex.autoRepair", "false");
-                    FileUtils.deleteQuietly(check);
-                }
-                if (repair.exists()) {
-                    setSystemProperty("jahia.jackrabbit.searchIndex.enableConsistencyCheck", "true");
-                    setSystemProperty("jahia.jackrabbit.searchIndex.forceConsistencyCheck", "true");
-                    setSystemProperty("jahia.jackrabbit.searchIndex.autoRepair", "true");
-                    FileUtils.deleteQuietly(repair);
-                }
-            }
-        } catch (IOException e) {
-            logger.error("Unable to delete JCR repository index folders in home " + repoHome, e);
+        if (isStartupOptionSet(OPTION_INDEX_CHECK)) {
+            setSystemProperty("jahia.jackrabbit.searchIndex.enableConsistencyCheck", "true");
+            setSystemProperty("jahia.jackrabbit.searchIndex.forceConsistencyCheck", "true");
+            setSystemProperty("jahia.jackrabbit.searchIndex.autoRepair", "false");
+        }
+        if (isStartupOptionSet(OPTION_INDEX_FIX)) {
+            setSystemProperty("jahia.jackrabbit.searchIndex.enableConsistencyCheck", "true");
+            setSystemProperty("jahia.jackrabbit.searchIndex.forceConsistencyCheck", "true");
+            setSystemProperty("jahia.jackrabbit.searchIndex.autoRepair", "true");
         }
     }
 
@@ -805,15 +795,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         try {
             repoHome = getRepositoryHome();
             if (repoHome != null) {
-                boolean doReindex = getBoolean("jahia.jackrabbit.reindexOnStartup", false);
-                if (!doReindex) {
-                    File reindex = new File(repoHome, "reindex");
-                    if (reindex.exists()) {
-                        doReindex = true;
-                        FileUtils.deleteQuietly(reindex);
-                    }
-                }
-                if (doReindex) {
+                if (getBoolean("jahia.jackrabbit.reindexOnStartup", false) || isStartupOptionSet(OPTION_REINDEX)) {
                     JCRContentUtils.deleteJackrabbitIndexes(repoHome);
                 }
             }
@@ -1457,5 +1439,28 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public void setLicenseFile(Resource licenseFile) {
         this.licenseFile = licenseFile;
+    }
+
+    /**
+     * Returns the startup options, which are set.
+     * 
+     * @return the startup options, which are set
+     */
+    public StartupOptions getStartupOptions() {
+        return startupOptions;
+    }
+
+    /**
+     * Checks if the specified startup option is set.
+     * 
+     * @param option the option key
+     * @return <code>true</code> if the specified option is set; <code>false</code> otherwise
+     */
+    public boolean isStartupOptionSet(String option) {
+        return startupOptions.isSet(option);
+    }
+
+    public void setStartupOptionsMapping(Map<String, Set<String>> startupOptionsMapping) {
+        this.startupOptionsMapping = startupOptionsMapping;
     }
 }

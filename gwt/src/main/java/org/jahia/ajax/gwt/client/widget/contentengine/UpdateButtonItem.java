@@ -48,7 +48,6 @@ import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.Field;
-
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -162,37 +161,54 @@ public class UpdateButtonItem extends SaveButtonItem {
         JahiaContentManagementService.App.getInstance().saveNode(engine.getNode(),
                 engine.getAcl(), engine.getChangedI18NProperties(), engine.getChangedProperties(),
                 removedTypes, new BaseAsyncCallback<RpcMap>() {
-            public void onApplicationFailure(Throwable throwable) {
-                failSave(engine, throwable);
-            }
-
-            @SuppressWarnings("unchecked")
-            public void onSuccess(RpcMap o) {
-                Info.display(Messages.get("label.information", "Information"), Messages.get("saved_prop", "Properties saved\n\n"));
-                Map<String, Object> data = new HashMap<String, Object>();
-                data.put(Linker.REFRESH_MAIN, true);
-                data.put("forceImageRefresh", true);
-                EditLinker l = null;
-                if (engine.getLinker() instanceof SidePanelTabItem.SidePanelLinker) {
-                    l = ((SidePanelTabItem.SidePanelLinker) engine.getLinker()).getEditLinker();
-                } else if (engine.getLinker() instanceof EditLinker) {
-                    l = (EditLinker) engine.getLinker();
-                }
-                GWTJahiaNode node = engine.getNode();
-                if (l != null && node.equals(l.getMainModule().getNode()) && !node.getName().equals(l.getMainModule().getNode().getName())) {
-                    l.getMainModule().handleNewMainSelection(node.getPath().substring(0, node.getPath().lastIndexOf("/") + 1) + node.getName(), l.getMainModule().getTemplate());
-                }
-                data.put("node", node);
-                ((EditContentEngine) engine).closeEngine();
-                if (o != null && o.containsKey(GWTJahiaNode.SITE_LANGUAGES)) {
-                    JahiaGWTParameters.getSiteNode().set(GWTJahiaNode.SITE_LANGUAGES, o.get(GWTJahiaNode.SITE_LANGUAGES));
-                    if (o.containsKey(GWTJahiaNode.PERMISSIONS)) {
-                        PermissionsUtils.loadPermissions((List<String>) o.get(GWTJahiaNode.PERMISSIONS));
+                    public void onApplicationFailure(Throwable throwable) {
+                        failSave(engine, throwable);
                     }
-                }
-                engine.getLinker().refresh(data);
-            }
-        });
-    }
 
+                    @SuppressWarnings("unchecked")
+                    public void onSuccess(RpcMap o) {
+                        Info.display(Messages.get("label.information", "Information"), Messages.get("saved_prop", "Properties saved\n\n"));
+                        Map<String, Object> data = new HashMap<String, Object>();
+                        data.put(Linker.REFRESH_MAIN, true);
+                        data.put("forceImageRefresh", true);
+                        EditLinker l = null;
+                        if (engine.getLinker() instanceof SidePanelTabItem.SidePanelLinker) {
+                            l = ((SidePanelTabItem.SidePanelLinker) engine.getLinker()).getEditLinker();
+                        } else if (engine.getLinker() instanceof EditLinker) {
+                            l = (EditLinker) engine.getLinker();
+                        }
+                        GWTJahiaNode node = engine.getNode();
+                        if (l != null && node.equals(l.getMainModule().getNode()) && !node.getName().equals(l.getMainModule().getNode().getName())) {
+                            l.getMainModule().handleNewMainSelection(node.getPath().substring(0, node.getPath().lastIndexOf("/") + 1) + node.getName(), l.getMainModule().getTemplate());
+                        }
+                        data.put("node", node);
+                        ((EditContentEngine) engine).closeEngine();
+                        if (o != null && o.containsKey(GWTJahiaNode.SITE_LANGUAGES)) {
+                            JahiaGWTParameters.getSiteNode().set(GWTJahiaNode.SITE_LANGUAGES, o.get(GWTJahiaNode.SITE_LANGUAGES));
+                            if (o.containsKey(GWTJahiaNode.PERMISSIONS)) {
+                                PermissionsUtils.loadPermissions((List<String>) o.get(GWTJahiaNode.PERMISSIONS));
+                            }
+                        }
+                        engine.getLinker().refresh(data);
+                        // execute external callbacks
+                        executeCallBack(node.getPath());
+
+
+                    }
+
+                    private native void executeCallBack(String path) /*-{
+                        if ($wnd.updateButtonItemCallback) {
+                            switch (typeof $wnd.updateButtonItemCallback) {
+                                case 'function':
+                                    $wnd.updateButtonItemCallback();
+                                    break;
+                                case 'object':
+                                    $wnd.updateButtonItemCallback.forEach(function(func) {
+                                        func(path);
+                                    });
+                            }
+                        }
+                    }-*/;
+                });
+    }
 }

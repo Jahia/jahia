@@ -564,12 +564,12 @@ public class MainModule extends Module {
         getInstance().unmask();
     }
 
-    public static void editContent(String path, String name, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes) {
-        if (name == null) {
+    public static void editContent(String path, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes) {
+        if (ModuleHelper.getModulesByPath() != null) {
             List<Module> modules = ModuleHelper.getModulesByPath().get(path);
             EngineLoader.showEditEngine(getInstance().getEditLinker(), modules.get(0).getNode(), null);
         } else {
-            GWTJahiaNode n = getGwtJahiaNode(path, name, nodeTypes, inheritedNodeTypes);
+            GWTJahiaNode n = getGwtJahiaNode(path, path.substring(path.lastIndexOf("/")  + 1), nodeTypes, inheritedNodeTypes);
             EngineLoader.showEditEngine(getInstance().getEditLinker(), n, null);
         }
     }
@@ -1214,8 +1214,8 @@ public class MainModule extends Module {
         $wnd.hideMask = function () {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::hideMask()();
         };
-        $wnd.editContent = function (path, name, types, inheritedTypes) {
-            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::editContent(*)(path,name,types, inheritedTypes);
+        $wnd.editContent = function (path, types, inheritedTypes) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::editContent(*)(path, types, inheritedTypes);
         };
         $wnd.disableGlobalSelection = function (value) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::globalSelectionDisabled = value;

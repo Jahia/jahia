@@ -194,7 +194,7 @@ public class UpdateButtonItem extends SaveButtonItem {
                         executeCallBack(node.getPath(), engine.getNodeName());
                     }
 
-                    private native void executeCallBack(String path, String newName) /*-{
+                    private native void executeCallBack(String path, String nodeName) /*-{
                         if ($wnd.updateButtonItemCallback) {
                             switch (typeof $wnd.updateButtonItemCallback) {
                                 case 'function':

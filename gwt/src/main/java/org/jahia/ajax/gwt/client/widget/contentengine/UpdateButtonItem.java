@@ -191,18 +191,18 @@ public class UpdateButtonItem extends SaveButtonItem {
                         }
                         engine.getLinker().refresh(data);
                         // execute external callbacks
-                        executeCallBack(node.getPath(), engine.getNodeName());
+                        sendExternalEvent(node.getPath(), engine.getNodeName());
                     }
 
-                    private native void executeCallBack(String path, String nodeName) /*-{
-                        if ($wnd.updateButtonItemCallback) {
-                            switch (typeof $wnd.updateButtonItemCallback) {
+                    private native void sendExternalEvent(String path, String nodeName) /*-{
+                        if ($wnd.updateButtonItemEventHandlers) {
+                            switch (typeof $wnd.updateButtonItemEventHandlers) {
                                 case 'function':
-                                    $wnd.updateButtonItemCallback(path, nodeName);
+                                    $wnd.updateButtonItemEventHandlers.call(null, path, nodeName);
                                     break;
                                 case 'object':
-                                    $wnd.updateButtonItemCallback.forEach(function(func) {
-                                        func(path, nodeName);
+                                    $wnd.updateButtonItemEventHandlers.forEach(function(func) {
+                                        func.call(null, path, nodeName);
                                     });
                             }
                         }

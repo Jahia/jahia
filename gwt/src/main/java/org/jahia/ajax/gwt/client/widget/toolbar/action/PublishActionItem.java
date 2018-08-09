@@ -345,11 +345,6 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
     private void updateItem(LinkerSelectionContext ctx, GWTJahiaNode gwtJahiaNode, String title) {
         if (!isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
             setEnabled(true);
-            if (gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {
-                if (gwtJahiaNode.isFile()) {
-                    setEnabled(false);
-                }
-            }
             updateTitle(title);
         }
     }

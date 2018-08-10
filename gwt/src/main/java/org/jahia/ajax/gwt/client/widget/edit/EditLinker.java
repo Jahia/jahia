@@ -467,10 +467,14 @@ public class EditLinker implements Linker {
         selectionContext.setSelectedNodes(nodes);
         selectionContext.refresh(context);
         if (selectionContext.getSingleSelection() != null) {
-            Document.get().getBody().setAttribute("data-singleselection-node-displayname", selectionContext.getSingleSelection().getDisplayName());
-            Document.get().getBody().setAttribute("data-singleselection-node-path", selectionContext.getSingleSelection().getPath());
+            setSelectionOnBodyAttributes(selectionContext.getSingleSelection());
         }
         Document.get().getBody().setAttribute("data-selection-count", selectionContext.getSelectedNodes() != null ? Integer.toString(selectionContext.getSelectedNodes().size()): "0");
+    }
+
+    public static void setSelectionOnBodyAttributes(GWTJahiaNode node) {
+        Document.get().getBody().setAttribute("data-singleselection-node-displayname", node.getDisplayName());
+        Document.get().getBody().setAttribute("data-singleselection-node-path", node.getPath());
     }
 
     /**

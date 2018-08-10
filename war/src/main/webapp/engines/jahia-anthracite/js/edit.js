@@ -3367,7 +3367,7 @@ if (!Element.prototype.matches) {
 
                 }, "EDIT-ENGINE-INDIGO-SWITCH-LISTENER");
 
-				if(app.data.HTTP.app == "edit"){
+				if(app.data.HTTP.app == "edit" || app.data.HTTP.app == "contentmanager"){
 					// Engine has been opened in Edit Mode
 					// Wait a sec, ...
 					// Then work out if the node has been locked

@@ -60,11 +60,13 @@
     </bean>
 
     <util:map id="startupOptionsMapping" key-type="java.lang.String" value-type="java.util.Set">
+
         <description>
             The key represents the marker file on the file system,
             whereas the value represents a set of "actions" to be taken on
             startup when such marker file is detected
         </description>
+
         <entry key="#jahia.jackrabbit.home#/index-check" value="index-check"/>
         <entry key="#jahia.jackrabbit.home#/index-fix" value="index-fix"/>
         <entry key="#jahia.jackrabbit.home#/reindex" value="reindex"/>

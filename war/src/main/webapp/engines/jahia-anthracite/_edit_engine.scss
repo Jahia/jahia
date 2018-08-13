@@ -1394,6 +1394,10 @@ div.engine-window {
 		// border:1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE)!important;
 		box-sizing: border-box;
 		padding-bottom: 1px;
+		overflow-y: scroll;
+		overflow-x: hidden;
+		max-height: 100%;
+		max-width: calc(100% - 7px);
 
 		.x-grid3-header {
 			display: none;

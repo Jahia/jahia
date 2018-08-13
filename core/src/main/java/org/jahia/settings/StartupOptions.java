@@ -77,7 +77,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Handler for the startup options, which are "instructions" to DX about actions to be performed on startup. The options are determined,
  * based on so called marker files on file system.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class StartupOptions {
@@ -99,7 +99,7 @@ public class StartupOptions {
 
     /**
      * Returns the startup options, which are set.
-     * 
+     *
      * @return the startup options, which are set
      */
     public Map<String, String> getOptions() {
@@ -109,13 +109,10 @@ public class StartupOptions {
     @SuppressWarnings("deprecation")
     private void init(SettingsBean settings, Map<String, Set<String>> mapping) {
         Map<String, String> opts = new HashMap<>();
-        if (logger.isDebugEnabled()) {
-            logger.debug("Initializing startup options using mapping: {}", mapping);
-        }
-
+        logger.debug("Initializing startup options using mapping: {}", mapping);
         try {
             for (Map.Entry<String, Set<String>> mappingEntry : mapping.entrySet()) {
-                if (isMarkerPresent(mappingEntry.getKey(), settings)) {
+                if (deleteMarkerIfPresent(mappingEntry.getKey(), settings)) {
                     for (String option : mappingEntry.getValue()) {
                         opts.put(option, Boolean.TRUE.toString());
                     }
@@ -127,16 +124,14 @@ public class StartupOptions {
                     }
                 }
             }
-
             options = Collections.unmodifiableMap(opts);
-
             logger.info("Initialized startup options: {}", options);
         } catch (IOException e) {
             logger.error("Unable to initialize startup options", e);
         }
     }
 
-    private String interpolate(String marker, SettingsBean settings) throws IOException {
+    private static String interpolate(String marker, SettingsBean settings) throws IOException {
         if (marker.indexOf("#jahia.data.dir#") != -1) {
             return StringUtils.replace(marker, "#jahia.data.dir#", settings.getJahiaVarDiskPath());
         } else if (marker.indexOf("#jahia.jackrabbit.home#") != -1) {
@@ -145,7 +140,7 @@ public class StartupOptions {
         return marker;
     }
 
-    private boolean isMarkerPresent(String markerPath, SettingsBean settings) throws IOException {
+    private static boolean deleteMarkerIfPresent(String markerPath, SettingsBean settings) throws IOException {
         File marker = new File(interpolate(markerPath, settings));
         boolean present = marker.exists();
         if (present) {
@@ -157,7 +152,7 @@ public class StartupOptions {
 
     /**
      * Checks if the specified startup option is set.
-     * 
+     *
      * @param option the option key
      * @return <code>true</code> if the specified option is set; <code>false</code> otherwise
      */

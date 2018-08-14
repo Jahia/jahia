@@ -566,8 +566,8 @@ public class MainModule extends Module {
     }
 
     /**
-     * Function, exposed into JSNI (native JavaScript), to call the create content wizzard.
-     * 
+     * Function, exposed into JSNI (native JavaScript), to call the create content wizard.
+     *
      * @param path the node path, where the content will be created
      * @param nodeTypes the allowed node types to show in the content type selector
      * @param includeSubTypes if <code>true</code>, also the sub-types of the specified types will be shown in the content type selector;
@@ -593,11 +593,11 @@ public class MainModule extends Module {
     }
 
     public static void displayAlert(String title, String message) {
-        MessageBox.alert(title, message,null);
+        MessageBox.alert(title, message, null);
     }
 
     public static void displayAlertInfo(String title, String message) {
-        MessageBox.info(title, message,null);
+        MessageBox.info(title, message, null);
     }
 
     public static void displayInfo(String title, String message, int duration) {
@@ -1235,9 +1235,9 @@ public class MainModule extends Module {
         };
         $wnd.createContent = function (path, types, includeSubTypes) {
             if (typeof includeSubTypes !== 'undefined') {
-                @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::createContent(Ljava/lang/String;Ljava/lang/String;Z)(path,types,includeSubTypes);
+                @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::createContent(Ljava/lang/String;Ljava/lang/String;Z)(path, types, includeSubTypes);
             } else {
-                @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::createContent(Ljava/lang/String;Ljava/lang/String;Z)(path,types,true);
+                @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::createContent(Ljava/lang/String;Ljava/lang/String;Z)(path, types, true);
             }
         };
         $wnd.editContent = function (path, displayName, types, inheritedTypes) {
@@ -1247,13 +1247,13 @@ public class MainModule extends Module {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::globalSelectionDisabled = value;
         };
         $wnd.displayAlert = function (title, message) {
-            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::displayAlert(*)(title,message);
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::displayAlert(*)(title, message);
         };
         $wnd.displayAlertInfo = function (title, message) {
-            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::displayAlertInfo(*)(title,message);
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::displayAlertInfo(*)(title, message);
         };
         $wnd.displayInfo = function (title, message, duration) {
-            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::displayInfo(*)(title,message,duration);
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::displayInfo(*)(title, message, duration);
         };
     }-*/;
 

@@ -61,14 +61,26 @@ public class ConstraintsHelper {
         return getConstraints(node, null);
     }
 
+    public static Set<String> getConstraintSet(JCRNodeWrapper node) throws RepositoryException {
+        return getConstraintSet(node, null);
+    }
+
     public static String getConstraints(JCRNodeWrapper node, String targetChildName) throws RepositoryException {
+        return StringUtils.join(getConstraintSet(node, targetChildName), ' ');
+    }
+
+    public static Set<String> getConstraintSet(JCRNodeWrapper node, String targetChildName) throws RepositoryException {
         List<ExtendedNodeType> list = new ArrayList<ExtendedNodeType>(Arrays.asList(node.getMixinNodeTypes()));
         list.add(node.getPrimaryNodeType());
-        return getConstraints(list, targetChildName);
+        return getConstraintSet(list, targetChildName);
     }
 
     public static String getConstraints(List<ExtendedNodeType> nodeType, String targetChildName) {
-        StringBuilder constraints = new StringBuilder();
+        return StringUtils.join(getConstraintSet(nodeType, targetChildName), ' ');
+    }
+
+    public static Set<String> getConstraintSet(List<ExtendedNodeType> nodeType, String targetChildName) {
+
         Set<String> nodeTypeNames = new HashSet<String>();
 
         if (targetChildName == null) {
@@ -76,13 +88,7 @@ public class ConstraintsHelper {
             for (ExtendedNodeType type : nodeType) {
                 Set<String> cons = type.getUnstructuredChildNodeDefinitions().keySet();
                 for (String s : cons) {
-                    if (!s.equals(Constants.JAHIANT_TRANSLATION) &&
-                            !s.equals(Constants.JAHIANT_REFERENCEINFIELD) &&
-                            !nodeTypeNames.contains(s)) {
-                        if (constraints.length() > 0) {
-                            constraints.append(' ');
-                        }
-                        constraints.append(s);
+                    if (!s.equals(Constants.JAHIANT_TRANSLATION) && !s.equals(Constants.JAHIANT_REFERENCEINFIELD)) {
                         nodeTypeNames.add(s);
                     }
                 }
@@ -104,14 +110,7 @@ public class ConstraintsHelper {
                     if (useCurrentChild) {
                         String[] typeNames = nodeDefinitionEntry.getValue().getRequiredPrimaryTypeNames();
                         for (String typeName : typeNames) {
-                            if (!typeName.equals("jnt:conditionalVisibility") &&
-                                    !typeName.equals("jnt:vanityUrls") &&
-                                    !typeName.equals("jnt:acl") &&
-                                    !nodeTypeNames.contains(typeName)) {
-                                if (constraints.length() > 0) {
-                                    constraints.append(' ');
-                                }
-                                constraints.append(typeName);
+                            if (!typeName.equals("jnt:conditionalVisibility") && !typeName.equals("jnt:vanityUrls") && !typeName.equals("jnt:acl")) {
                                 nodeTypeNames.add(typeName);
                             }
                         }
@@ -119,7 +118,8 @@ public class ConstraintsHelper {
                 }
             }
         }
-        return constraints.toString();
+
+        return nodeTypeNames;
     }
 
     /**

@@ -256,4 +256,18 @@ public abstract class SaveButtonItem implements ButtonItem {
         engine.setButtonsEnabled(true);
     }
 
+    protected native void sendExternalEvent(String path, String nodeName, String uuid, String handlersName) /*-{
+        if ($wnd.updateButtonItemEventHandlers) {
+            switch (typeof $wnd[handlersName]) {
+                case 'function':
+                    $wnd[handlersName].call(null, path, nodeName, uuid);
+                    break;
+                case 'object':
+                    $wnd[handlersName].forEach(function(func) {
+                        func.call(null, path, nodeName, uuid);
+                    });
+            }
+        }
+    }-*/;
+
 }

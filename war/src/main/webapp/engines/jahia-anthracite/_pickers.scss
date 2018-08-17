@@ -77,6 +77,16 @@ body[indigo-dragging-panel="true"] {
 	}
 }
 
+/* Show buttons when searching on multiple selection picker */
+#JahiaGxtContentPickerWindow {
+	.x-window-bbar {
+		.x-panel-fbar {
+			body[data-indigo-picker-search="open"] & {
+				display: block !important;
+			}
+		}
+	}
+}
 
 #JahiaGxtContentPickerWindow,
 #contentpicker,

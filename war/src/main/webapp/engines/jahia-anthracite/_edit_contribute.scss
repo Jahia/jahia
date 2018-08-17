@@ -552,9 +552,7 @@ body[data-indigo-app="contribute"] {
 .window-actions-refresh {
     pointer-events: all;
     background: url(./images/tabs-publish-white@X2.png) no-repeat center;
-    left: 301px;
     position: fixed;
-    top: 22px;
     background-size: 23px 23px;
 
     overflow: visible;
@@ -562,13 +560,17 @@ body[data-indigo-app="contribute"] {
     height: 20px;
     width: 20px;
 
-    display: none;
+    right: 20px;
+    left: auto;
+    top: 20px;
+
+    //display: none;
 
     body[data-multiselect="on"] & {
         display: none;
     }
 
-    @include tooltip($text_tooltip_refresh_page, "BOTTOM");
+    @include tooltip($text_tooltip_refresh_page, "LEFT");
 }
 
 
@@ -1530,7 +1532,7 @@ div[role="combobox"].toolbar-itemsgroup-languageswitcher {
     top: 20px !important;
 
     transition: background 0.3s ease-in 0s;
-
+    margin-right: 44px !important;
     pointer-events: all;
     z-index: $ZINDEX--MAINMODULE--LANGUAGE_SWITCHER;
 

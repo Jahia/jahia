@@ -573,11 +573,11 @@ public class MainModule extends Module {
      * @param includeSubTypes if <code>true</code>, also the sub-types of the specified types will be shown in the content type selector;
      *            <code>false</code> means only the specified node types will be allowed
      */
-    public static void createContent(String path, String nodeTypes, boolean includeSubTypes) {
+    public static void createContent(String path, JsArrayString nodeTypes, boolean includeSubTypes) {
         GWTJahiaNode parent = new GWTJahiaNode();
         parent.setPath(path);
         ContentActions.showContentWizard(getInstance().getEditLinker(),
-                nodeTypes != null && nodeTypes.length() > 0 ? nodeTypes : "jmix:droppableContent", parent,
+                nodeTypes != null && nodeTypes.length() > 0 ? nodeTypes.join(" ") : "jmix:droppableContent", parent,
                 includeSubTypes);
     }
 
@@ -1235,9 +1235,9 @@ public class MainModule extends Module {
         };
         $wnd.createContent = function (path, types, includeSubTypes) {
             if (typeof includeSubTypes !== 'undefined') {
-                @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::createContent(Ljava/lang/String;Ljava/lang/String;Z)(path,types,includeSubTypes);
+                @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::createContent(*)(path,types,includeSubTypes);
             } else {
-                @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::createContent(Ljava/lang/String;Ljava/lang/String;Z)(path,types,true);
+                @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::createContent(*)(path,types,true);
             }
         };
         $wnd.editContent = function (path, displayName, types, inheritedTypes) {

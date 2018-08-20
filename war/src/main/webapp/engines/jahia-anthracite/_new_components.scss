@@ -51,10 +51,10 @@
 			}
 
 			&.x-menu-item-arrow {
-				background-image: url(./images/icons/toggle-WE-white@X2.png);
+				/*background-image: url(./images/icons/toggle-WE-white@X2.png);
 				background-position: right 6px center;
 				background-repeat: no-repeat;
-			    background-size: 13px;
+			    background-size: 13px;*/
 			}
 
 	        @include text(13px, _property($MENU-OPENED--COLOR, $type), $FONT--WEIGHT---LIGHT);
@@ -78,7 +78,9 @@
 			&.toolbar-item-publishinalllanguages,
 			&.toolbar-item-publishall,
 			&.toolbar-item-publishallinalllanguages,
-			&.toolbar-item-publish {
+			&.toolbar-item-publish,
+			&.toolbar-item-publishone,
+			&.toolbar-item-unpublish {
 				background: url(./images/icons/context-menu/publish.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
 			}
 
@@ -109,6 +111,18 @@
 
 			&.toolbar-item-translatemenu {
 				background: url(./images/icons/context-menu/translate.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+			}
+
+			&.toolbar-item-translatemenu:after {
+				background-image: url(./images/icons/toggle-WE-white@X2.png);
+				background-position: 5px 1px;
+				background-repeat: no-repeat;
+				background-size: 13px;
+				content: '';
+				height: 24px;
+				width: 24px;
+				position: absolute;
+				right: 0;
 			}
 
 			&.toolbar-item-gotoviewdefinition {

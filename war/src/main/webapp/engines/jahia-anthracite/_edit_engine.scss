@@ -4100,3 +4100,9 @@ body[data-indigo-edit-engine-locked="true"] .JahiaEditEngineButtonBar button[ari
 		@include text(14px, #F5F5F5 !important, $FONT--WEIGHT---LIGHT);
 	}
 }
+
+
+// Fix z-index for New portlet Modal
+div#JahiaGXTPortletWizardWindow {
+	z-index: 9999 !important;
+}

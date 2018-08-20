@@ -80,7 +80,7 @@ public class UpdateButtonItem extends SaveButtonItem {
             if (item instanceof ContentTabItem) {
                 if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
                     Field<String> name = ((ContentTabItem) item).getName();
-                    if(!name.isValid()) {
+                    if (!name.isValid()) {
                         com.google.gwt.user.client.Window.alert(name.getErrorMessage());
                         engine.unmask();
                         engine.setButtonsEnabled(true);
@@ -161,10 +161,13 @@ public class UpdateButtonItem extends SaveButtonItem {
         JahiaContentManagementService.App.getInstance().saveNode(engine.getNode(),
                 engine.getAcl(), engine.getChangedI18NProperties(), engine.getChangedProperties(),
                 removedTypes, new BaseAsyncCallback<RpcMap>() {
+
+                    @Override
                     public void onApplicationFailure(Throwable throwable) {
                         failSave(engine, throwable);
                     }
 
+                    @Override
                     @SuppressWarnings("unchecked")
                     public void onSuccess(RpcMap o) {
                         Info.display(Messages.get("label.information", "Information"), Messages.get("saved_prop", "Properties saved\n\n"));
@@ -190,11 +193,8 @@ public class UpdateButtonItem extends SaveButtonItem {
                             }
                         }
                         engine.getLinker().refresh(data);
-                        // execute external callbacks
                         sendExternalEvent(node.getPath(), engine.getNodeName(), node.getUUID(), "updateButtonItemEventHandlers");
                     }
-
-
                 });
     }
 }

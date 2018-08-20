@@ -188,7 +188,6 @@ public class CreateButtonItem extends SaveButtonItem {
                     engine.setButtonsEnabled(true);
                     engine.setChildCount(engine.getChildCount() + 1);
                 }
-                // send external events
                 sendExternalEvent(node.getPath(), node.getName(), node.getUUID(), "createButtonItemEventHandlers");
             }
         };
@@ -263,5 +262,4 @@ public class CreateButtonItem extends SaveButtonItem {
     public void setRedirectToCreatedPage(boolean redirectToCreatedPage) {
         this.redirectToCreatedPage = redirectToCreatedPage;
     }
-
 }

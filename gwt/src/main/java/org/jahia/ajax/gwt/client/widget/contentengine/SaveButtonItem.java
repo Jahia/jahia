@@ -73,12 +73,15 @@ import java.util.Map;
  */
 public abstract class SaveButtonItem implements ButtonItem {
 
+    @Override
     public BoxComponent create(final AbstractContentEngine engine) {
         Button button = new Button(Messages.get("label.save"));
         button.addStyleName("button-save");
         button.setHeight(BUTTON_HEIGHT);
         button.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+            @Override
             public void componentSelected(ButtonEvent event) {
                 save(engine, true, false);
             }
@@ -107,6 +110,8 @@ public abstract class SaveButtonItem implements ButtonItem {
                 final Map<String, CKEditorField> fieldsForValidation = toValidate;
                 // we have texts to validate against WCAG rules
                 JahiaContentManagementService.App.getInstance().validateWCAG(textForWCAGValidation, new BaseAsyncCallback<Map<String, WCAGValidationResult>>() {
+
+                    @Override
                     public void onSuccess(Map<String, WCAGValidationResult> result) {
                         boolean wcagOK = true;
                         for (Map.Entry<String, WCAGValidationResult> wcagEntry : result.entrySet()) {
@@ -237,6 +242,8 @@ public abstract class SaveButtonItem implements ButtonItem {
                     ) : "")
                             + nodeLevelMessages.toString(),
                     new Listener<MessageBoxEvent>() {
+
+                        @Override
                         public void handleEvent(MessageBoxEvent be) {
                             if (fHasFieldErrors) {
                                 EngineValidation e = new EngineValidation(engine, engine.getTabs(), engine.getSelectedLanguage(), engine.getChangedI18NProperties());
@@ -269,5 +276,4 @@ public abstract class SaveButtonItem implements ButtonItem {
             }
         }
     }-*/;
-
 }

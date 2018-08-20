@@ -71,6 +71,10 @@
 				background: url(./images/icons/context-menu/copy.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
 			}
 
+			&.toolbar-item-cut {
+				background: url(./images/icons/context-menu/cut.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+			}
+
 			&.toolbar-item-publishinalllanguages,
 			&.toolbar-item-publishall,
 			&.toolbar-item-publishallinalllanguages {

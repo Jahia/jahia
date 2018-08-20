@@ -566,9 +566,9 @@ body[data-indigo-app="contribute"] {
 
     //display: none;
 
-    body[data-multiselect="on"] & {
+    /*body[data-multiselect="on"] & {
         display: none;
-    }
+    }*/
 
     @include tooltip($text_tooltip_refresh_page, "LEFT");
 }

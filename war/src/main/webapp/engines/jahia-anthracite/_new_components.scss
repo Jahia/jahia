@@ -111,6 +111,10 @@
 				background: url(./images/icons/context-menu/translate.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
 			}
 
+			&.toolbar-item-gotoviewdefinition {
+				background: url(./images/icons/context-menu/view-source.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+			}
+
 		}
 
 		&.x-item-disabled  {

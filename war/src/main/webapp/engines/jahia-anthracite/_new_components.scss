@@ -77,8 +77,21 @@
 
 			&.toolbar-item-publishinalllanguages,
 			&.toolbar-item-publishall,
-			&.toolbar-item-publishallinalllanguages {
+			&.toolbar-item-publishallinalllanguages,
+			&.toolbar-item-publish {
 				background: url(./images/icons/context-menu/publish.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+			}
+
+			&.toolbar-item-publish:after {
+				background-image: url(./images/icons/toggle-WE-white@X2.png);
+				background-position: 5px 1px;
+				background-repeat: no-repeat;
+				background-size: 13px;
+				content: '';
+				height: 24px;
+				width: 24px;
+				position: absolute;
+				right: 0;
 			}
 
 			&.toolbar-item-lock {

@@ -519,6 +519,14 @@ body[data-indigo-app="contribute"] {
 
 }
 
+
+// Fix for x-hide-display when windows is resized.
+.edit-menu-topright > table > tbody > tr > td > table > tbody > tr:first-child > td.x-toolbar-cell.x-hide-display,
+.edit-menu-topright > table > tbody > tr > td > table > tbody > tr:first-child > td.x-toolbar-cell.x-hide-display > table.x-hide-display:not(.x-item-disabled) {
+    display: block !important;
+}
+
+
 // More info button
 .edit-menu-edit {
     /* More Info Button */

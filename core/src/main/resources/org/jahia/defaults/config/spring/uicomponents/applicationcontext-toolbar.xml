@@ -709,6 +709,12 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
                 <property name="allLanguages" value="true"/>
+                <property name="forbiddenNodeTypes">
+                    <list>
+                        <value>nt:file</value>
+                        <value>nt:folder</value>
+                    </list>
+                </property>
             </bean>
         </property>
         <property name="titleKey" value="label.publish.languages"/>

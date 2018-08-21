@@ -51,28 +51,52 @@
 			}
 
 			&.x-menu-item-arrow {
-				/*background-image: url(./images/icons/toggle-WE-white@X2.png);
+				background-image: url(./images/icons/toggle-WE-white@X2.png);
 				background-position: right 6px center;
 				background-repeat: no-repeat;
-			    background-size: 13px;*/
+			    background-size: 13px;
 			}
 
 	        @include text(13px, _property($MENU-OPENED--COLOR, $type), $FONT--WEIGHT---LIGHT);
 
 			&.toolbar-item-editcontent {
-				background: url(./images/icons/context-menu/edit.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+				//background: url(./images/icons/context-menu/edit.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+				background-image: url(./images/icons/context-menu/edit.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
 			}
 
 			&.toolbar-item-delete {
-				background: url(./images/icons/context-menu/delete.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+				//background: url(./images/icons/context-menu/delete.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+				background-image: url(./images/icons/context-menu/delete.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
 			}
 
 			&.toolbar-item-copy {
-				background: url(./images/icons/context-menu/copy.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+				//background: url(./images/icons/context-menu/copy.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+				background-image: url(./images/icons/context-menu/copy.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
 			}
 
 			&.toolbar-item-cut {
-				background: url(./images/icons/context-menu/cut.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+				//background: url(./images/icons/context-menu/cut.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+				background-image: url(./images/icons/context-menu/cut.svg);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
 			}
 
 			&.toolbar-item-publishinalllanguages,
@@ -81,7 +105,13 @@
 			&.toolbar-item-publish,
 			&.toolbar-item-publishone,
 			&.toolbar-item-unpublish {
-				background: url(./images/icons/context-menu/publish.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+				//background: url(./images/icons/context-menu/publish.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+				background-image: url(./images/icons/context-menu/publish.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
 			}
 
 			&.toolbar-item-publish:after {
@@ -97,20 +127,44 @@
 			}
 
 			&.toolbar-item-lock {
-				background: url(./images/icons/context-menu/lock.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+				//background: url(./images/icons/context-menu/lock.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+				background-image: url(./images/icons/context-menu/lock.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
 			}
 
 			&.toolbar-item-openincontentmanager-newtab {
-				background: url(./images/icons/context-menu/preview.svg) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+				//background: url(./images/icons/context-menu/preview.svg) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+				background-image: url(./images/icons/context-menu/preview.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
 			}
 
 			&.toolbar-item-export,
 			&.toolbar-item-import {
-				background: url(./images/icons/context-menu/import-export.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+				//background: url(./images/icons/context-menu/import-export.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+				background-image: url(./images/icons/context-menu/import-export.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
 			}
 
 			&.toolbar-item-translatemenu {
-				background: url(./images/icons/context-menu/translate.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+				//background: url(./images/icons/context-menu/translate.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+				background-image: url(./images/icons/context-menu/translate.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
 			}
 
 			&.toolbar-item-translatemenu:after {
@@ -126,7 +180,13 @@
 			}
 
 			&.toolbar-item-gotoviewdefinition {
-				background: url(./images/icons/context-menu/view-source.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+				//background: url(./images/icons/context-menu/view-source.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+				background-image: url(./images/icons/context-menu/view-source.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
 			}
 
 		}
@@ -152,10 +212,10 @@
 				background-color: _property($MENU-OPENED--BG---HOVER, $type);
 
 				&.x-menu-item-arrow {
-					background-image: url(./images/icons/toggle-WE-white@X2.png);
+					/*background-image: url(./images/icons/toggle-WE-white@X2.png);
 					background-position: right 6px center;
 					background-repeat: no-repeat;
-				    background-size: 13px;
+				    background-size: 13px;*/
 				}
 			}
 

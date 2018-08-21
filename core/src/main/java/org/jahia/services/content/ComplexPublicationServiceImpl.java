@@ -118,6 +118,8 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
                     JCRNodeWrapper translationNode = node.getNode(translationNodeName);
                     PublicationInfo translationInfo = publicationService.getPublicationInfo(translationNode.getIdentifier(), Collections.singleton(language), references, false, false, sourceSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
                     publicationInfo.getRoot().addChild(translationInfo.getRoot());
+                } else if (publicationInfo.getRoot().getStatus() == PublicationInfo.PUBLISHED && node.getNodes("j:translation_*").hasNext()) {
+                    publicationInfo.getRoot().setStatus(PublicationInfo.NOT_PUBLISHED);
                 }
             }
 

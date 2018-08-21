@@ -658,23 +658,6 @@
         </property>
     </bean>
 
-    <bean id="Toolbar.Item.PublishFile" class="org.jahia.services.uicomponents.bean.toolbar.Menu" scope="prototype">
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="needAuthentication" value="true"/>
-            </bean>
-        </property>
-        <property name="titleKey" value="label.publish"/>
-        <property name="icon" value="publish"/>
-        <property name="items">
-            <list>
-                <ref bean="Toolbar.Item.PublishOne"/>
-                <ref bean="Toolbar.Item.PublishAll"/>
-                <ref bean="Toolbar.Item.Unpublish"/>
-            </list>
-        </property>
-    </bean>
-
     <bean id="Toolbar.Item.PublishOne" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
@@ -694,6 +677,11 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
                 <property name="allSubTree" value="true"/>
+                <property name="forbiddenNodeTypes">
+                    <list>
+                        <value>nt:file</value>
+                    </list>
+                </property>
             </bean>
         </property>
         <property name="titleKey" value="label.publishall"/>
@@ -705,6 +693,12 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
                 <property name="allLanguages" value="true"/>
                 <property name="allSubTree" value="true"/>
+                <property name="forbiddenNodeTypes">
+                    <list>
+                        <value>nt:file</value>
+                        <value>nt:folder</value>
+                    </list>
+                </property>
             </bean>
         </property>
         <property name="titleKey" value="label.publishall.all.languages"/>

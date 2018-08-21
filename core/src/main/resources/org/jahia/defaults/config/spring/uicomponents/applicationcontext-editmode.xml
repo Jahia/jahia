@@ -505,7 +505,9 @@
                                     <ref bean="Toolbar.Item.Upload"/>
                                     <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.PublishOne"/>
+                                    <ref bean="Toolbar.Item.PublishInAllLanguages"/>
                                     <ref bean="Toolbar.Item.PublishAll"/>
+                                    <ref bean="Toolbar.Item.PublishAllInAllLanguages"/>
                                     <ref bean="Toolbar.Item.Unpublish"/>
                                     <ref bean="Toolbar.Item.Delete"/>
                                     <ref bean="Toolbar.Item.Undelete"/>
@@ -526,7 +528,9 @@
                                     <ref bean="Toolbar.Item.FilePreview"/>
                                     <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.PublishOne"/>
+                                    <ref bean="Toolbar.Item.PublishInAllLanguages"/>
                                     <ref bean="Toolbar.Item.PublishAll"/>
+                                    <ref bean="Toolbar.Item.PublishAllInAllLanguages"/>
                                     <ref bean="Toolbar.Item.Unpublish"/>
                                     <ref bean="Toolbar.Item.Delete"/>
                                     <ref bean="Toolbar.Item.Undelete"/>

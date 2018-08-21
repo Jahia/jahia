@@ -178,7 +178,7 @@
                         <ref bean="Toolbar.Item.Resize"/>
                         <ref bean="Toolbar.Item.Rotate"/>
                         <ref bean="Toolbar.Item.WebdavUrlCopy"/>
-                        <ref bean="Toolbar.Item.PublishFile"/>
+                        <ref bean="Toolbar.Item.Publish"/>
                    </list>
                 </property>
             </bean>

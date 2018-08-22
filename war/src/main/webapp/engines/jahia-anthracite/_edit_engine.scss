@@ -297,7 +297,7 @@ div.engine-window {
 			width: calc(100% - 310px) !important;
 			box-sizing: border-box;
 			vertical-align: top;
-			height: calc(100% - 111px)!important;
+			height: calc(100% - 58px)!important;
 			background: none;
 			margin-left: 316px;
 
@@ -2227,6 +2227,10 @@ div.engine-window {
 
 
 
+		}
+
+		.x-panel-bwrap .x-panel-body {
+			height: calc(100% - 40px) !important;
 		}
 
 	}

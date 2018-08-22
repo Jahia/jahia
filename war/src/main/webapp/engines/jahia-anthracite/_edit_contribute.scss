@@ -1648,6 +1648,16 @@ div[role="combobox"].toolbar-itemsgroup-languageswitcher {
 
 }
 
+
+.x-jahia-root:not(.x-viewport-contributemode) .mainmodule > div:nth-child(2) {
+
+  body[data-INDIGO-SIDEPANEL-PINNED="true"] & {
+    left: 410px !important;
+    width: calc(100% - 405px) !important;
+  }
+
+}
+
 .mainmodule {
     height: 100% !important;
 	background: transparent !important;
@@ -1688,11 +1698,6 @@ div[role="combobox"].toolbar-itemsgroup-languageswitcher {
             overflow: visible!important;
             box-shadow: 0 13px 10px 1px rgba(49, 49, 49, 0.5)!important;
         }
-
-        body[data-INDIGO-SIDEPANEL-PINNED="true"] & {
-			left: 410px !important;
-		    width: calc(100% - 405px) !important;
-		}
 
         // body[data-INDIGO-SIDEPANEL-PINNED="true"] &,
         // body[data-channel][data-indigo-gwt-side-panel="open"] & {

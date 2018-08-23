@@ -228,6 +228,25 @@
 				background-size: 16px;
 			}
 
+			&.toolbar-item-undelete {
+				background-image: url(./images/icons/context-menu/undo.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
+
+			&.toolbar-item-clearlock,
+			&.toolbar-item-clearalllocks {
+				background-image: url(./images/icons/context-menu/clear.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
+
 		}
 
 		&.x-item-disabled  {

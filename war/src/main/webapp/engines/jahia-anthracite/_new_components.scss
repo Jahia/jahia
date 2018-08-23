@@ -42,9 +42,14 @@
 			border:none;
 			display: block;
 			text-align: left!important;
-	        background: _property($MENU-OPENED--BG, $type);
-	        padding: 8px 9px 8px 24px !important;
-	        border: none;
+			background: _property($MENU-OPENED--BG, $type);
+			padding: 8px 9px 8px 24px !important;
+			border: none;
+			background-image: url(./images/icons/context-menu/placeholder.png);
+			background-position-x: 5px;
+			background-position-y: 7px;
+			background-repeat: no-repeat;
+			background-size: 16px;
 
 			&.x-menu-check-item {
 			    padding-left: 25px !important;
@@ -245,6 +250,42 @@
 				background-position-y: 7px;
 				background-repeat: no-repeat;
 				background-size: 16px;
+			}
+
+			&.toolbar-item-newfolder {
+				background-image: url(./images/icons/context-menu/new-folder.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
+
+			&.toolbar-item-upload {
+				background-image: url(./images/icons/context-menu/upload.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
+
+			&.toolbar-item-zip {
+				background-image: url(./images/icons/context-menu/zip.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
+
+			&.toolbar-item-webdavurlcopy {
+				/*background-image: url(./images/icons/context-menu/zip.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;*/
 			}
 
 		}

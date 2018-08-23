@@ -59,7 +59,8 @@
 
 	        @include text(13px, _property($MENU-OPENED--COLOR, $type), $FONT--WEIGHT---LIGHT);
 
-			&.toolbar-item-editcontent {
+			&.toolbar-item-editcontent,
+			&.toolbar-item-editcontentrootnodeeditable {
 				//background: url(./images/icons/context-menu/edit.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
 				background-image: url(./images/icons/context-menu/edit.png);
 				background-color: _property($MENU-OPENED--BG, $type);
@@ -182,6 +183,42 @@
 			&.toolbar-item-gotoviewdefinition {
 				//background: url(./images/icons/context-menu/view-source.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
 				background-image: url(./images/icons/context-menu/view-source.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
+
+			&.toolbar-item-newpage {
+				background-image: url(./images/icons/context-menu/new-page.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
+
+			&.toolbar-item-newinternallink {
+				background-image: url(./images/icons/context-menu/link.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
+
+			&.toolbar-item-newexternallink {
+				background-image: url(./images/icons/context-menu/link.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
+
+			&.toolbar-item-navmenutext {
+				background-image: url(./images/icons/context-menu/menu-label.png);
 				background-color: _property($MENU-OPENED--BG, $type);
 				background-position-x: 5px;
 				background-position-y: 7px;

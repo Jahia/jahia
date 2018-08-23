@@ -121,6 +121,11 @@ body[indigo-dragging-panel="true"] {
 	body[data-indigo-edit-engine="open"] & {
 		display: none;
 	}
+
+	#JahiaGxtManagerToolbar .action-bar-tool-item.repositoryexplorer-menu-view {
+		background-image: url(./images/icons/icon_preview_dark.png);
+	}
+
 }
 
 #JahiaGxtContentPicker {

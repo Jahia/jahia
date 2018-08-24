@@ -44,6 +44,7 @@
 package org.jahia.ajax.gwt.client.util;
 
 import java.util.Date;
+import java.util.List;
 
 import org.jahia.ajax.gwt.client.messages.Messages;
 
@@ -196,5 +197,21 @@ public class Formatter {
         }
     }
 
+    /**
+     * Util to join
+     * @param list the list of item to joins
+     * @param separator the separator
+     */
+    public static String join(List<?> list, String separator) {
+        if(list == null || list.isEmpty()) {
+            return "";
+        }
 
+        StringBuilder str = new StringBuilder(list.get(0).toString());
+        for (int i = 1; i < list.size(); i++) {
+            str.append(separator);
+            str.append(list.get(i).toString());
+        }
+        return str.toString();
+    }
 }

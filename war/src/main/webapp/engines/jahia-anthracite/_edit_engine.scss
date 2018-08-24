@@ -2750,7 +2750,13 @@ div.engine-window {
 						> div {
 							position: fixed!important;
 							left: 0;
-						    bottom: 10px!important;
+					    bottom: 10px!important;
+
+							&.x-form-check-wrap {
+								left: 16px;
+								bottom: 16px !important;
+							}
+
 						}
 					}
 

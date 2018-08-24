@@ -1,0 +1,19 @@
+# Jahia Derby Database configuration file
+
+jahia.database.name     =  MariaDB 10.x
+jahia.database.driver   =  org.mariadb.jdbc.Driver
+jahia.database.url      =  jdbc:mariadb://localhost/jahia?useUnicode=true&characterEncoding=UTF-8&useServerPrepStmts=false
+jahia.database.user     =  jahia
+jahia.database.pass     =  jahia
+jahia.database.validationQuery = /* ping */
+jahia.database.popuplationscriptdir = sql/population
+jahia.database.datasource = jdbc/jahia
+jahia.quartz.jdbcDelegate = org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+jahia.jackrabbit.persistence = org.apache.jackrabbit.core.persistence.pool.MySqlPersistenceManager
+jahia.jackrabbit.filesystem = org.apache.jackrabbit.core.fs.db.DbFileSystem
+jahia.jackrabbit.journal = org.jahia.services.content.impl.jackrabbit.JahiaDatabaseJournal
+jahia.jackrabbit.schema = mysql
+
+jahia.database.schemascriptdir = sql/schema/mysql
+jahia.database.transactions = false
+jahia.database.hibernate.dialect = ${hibernateDialect.mysql}

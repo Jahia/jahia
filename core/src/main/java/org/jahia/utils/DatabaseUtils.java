@@ -74,7 +74,7 @@ import org.slf4j.LoggerFactory;
 public final class DatabaseUtils {
 
     public static enum DatabaseType {
-        derby, mssql, mysql, oracle, postgresql;
+        derby, mssql, mysql, oracle, postgresql, mariadb;
     }
 
     private static volatile DatabaseType dbType;

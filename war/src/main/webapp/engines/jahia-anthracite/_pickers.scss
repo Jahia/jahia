@@ -1995,6 +1995,11 @@ body[indigo-dragging-panel="true"] {
 
 				img {
 					width: 100%!important;
+
+					&[src$="/jnt_folder_large.png"] {
+						visibility: hidden;
+					}
+
 				}
 
 				// Make sure that which ever thumb is being hovered is pulled to the top
@@ -2084,6 +2089,23 @@ body[indigo-dragging-panel="true"] {
 				float: none!important;
 
 				overflow: visible;
+
+				&[data-nodetypes="jnt:folder"]:after {
+					content: '';
+					background-image: url(./images/icons/folder.svg) !important;
+					background-repeat: no-repeat;
+					background-position: center center;
+					overflow: hidden;
+					box-sizing: border-box;
+					width: 100%;
+					height: 100%;
+					background-size: 50%;
+					position: absolute;
+					top: 0;
+					left: 0;
+					opacity: .8;
+				}
+
 			}
 
 			.thumbDetails {

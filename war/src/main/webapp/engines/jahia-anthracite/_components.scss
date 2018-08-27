@@ -5625,3 +5625,59 @@ body[data-indigo-gwt-side-panel="open"] {
 		}
 
 	}
+
+
+	/////////////////////////////////////////////////
+	// LOGIN MODAL //////////////////////////////////
+	/////////////////////////////////////////////////
+
+	.x-window.login-box {
+
+		.x-panel-fbar {
+		    height: 60px !important;
+
+				.x-toolbar-ct {
+					width: 100% !important;
+					position: absolute;
+					bottom: 0;
+					left: 5px;
+				}
+
+		}
+
+		.x-panel-btns {
+			position: relative;
+		}
+
+		.x-component label {
+			text-transform: none;
+			font-size: 14px;
+		}
+
+		.x-form-item {
+			margin-top: 10px;
+		}
+
+		.x-window-body {
+			height: 245px !important;
+		}
+
+		> .x-window-bwrap {
+			height: 270px;
+		}
+
+		.x-panel-body-noheader > form > div > table tr:nth-child(2) > td.x-table-layout-cell {
+			position: absolute;
+			right: 0;
+			bottom: 44px;
+			z-index: 99;
+
+			> label {
+				color: #F44336 !important;
+				font-weight: 600;
+				font-size: 12px;
+			}
+
+		}
+
+	}

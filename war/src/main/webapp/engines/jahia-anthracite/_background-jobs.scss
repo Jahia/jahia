@@ -443,7 +443,9 @@
                             .x-grid3-viewport {
 
                                 .x-grid3-scroller {
-                                    width: 100%!important;
+                                  width: 100%!important;
+                                  overflow-y: scroll !important;
+                                  max-height: 500px !important;
 
                                     .x-grid-empty {
                                         &:before {

@@ -1531,7 +1531,6 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
 }
 
 
-
 // Language Switcher
 div[role="combobox"].toolbar-itemsgroup-languageswitcher {
     position: fixed;
@@ -1543,6 +1542,10 @@ div[role="combobox"].toolbar-itemsgroup-languageswitcher {
     margin-right: 44px !important;
     pointer-events: all;
     z-index: $ZINDEX--MAINMODULE--LANGUAGE_SWITCHER;
+
+    body[data-indigo-app="contribute"] & {
+      margin-right: 0 !important;
+    }
 
 	input {
 		background: transparent;

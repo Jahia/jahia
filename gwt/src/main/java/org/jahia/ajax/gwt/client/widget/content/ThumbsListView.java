@@ -92,7 +92,7 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
         } else {
             model.set("markedForDeletion", "false" );
         }
-        model.set("nodeTypes", SafeHtmlUtils.htmlEscape(Formatter.join(model.getNodeTypes(), " ")));
+        model.set("formattedNodeTypes", SafeHtmlUtils.htmlEscape(Formatter.join(model.getNodeTypes(), " ")));
         model.set("shortName",  SafeHtmlUtils.htmlEscape(Format.ellipse(model.getName(), 14)));
         model.set("nameLabel", Messages.get("label.name", "Name"));
         model.set("titleLabel", Messages.get("label.title", "Title"));
@@ -147,7 +147,7 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
     public native String getSimpleTemplate() /*-{
         return ['<tpl for=".">',
             '<div title="{name}" class="thumb-wrap" id="{name}">',
-            '<div class="thumb" data-nodetypes="{nodeTypes}">{nodeImg}</div>',
+            '<div class="thumb" data-nodetypes="{formattedNodeTypes}">{nodeImg}</div>',
             '<tpl if="markedForDeletion == \'true\'">',
             '<span class="markedForDeletion">',
             '</tpl>',
@@ -167,7 +167,7 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
     public native String getDetailedTemplate() /*-{
         return ['<tpl for=".">',
             '<div style="padding: 5px ;border-bottom: 1px solid #D9E2F4;float: left;width: 100%;" class="thumb-wrap" id="{name}">',
-            '<div><div style="width: 140px; float: left; text-align: center;" class="thumb" data-nodetypes="{nodeTypes}">{nodeImg}</div>',
+            '<div><div style="width: 140px; float: left; text-align: center;" class="thumb" data-nodetypes="{formattedNodeTypes}">{nodeImg}</div>',
             '<div style="margin-left: 160px; " class="thumbDetails">',
             '<div><tpl if="markedForDeletion == \'true\'">',
             '<span class="markedForDeletion" style="text-align:left;">',

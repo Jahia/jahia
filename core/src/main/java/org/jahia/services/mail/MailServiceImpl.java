@@ -55,6 +55,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.settings.SettingsBean;
 import org.jahia.settings.StartupOptions;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.ScriptEngineUtils;
@@ -517,12 +518,14 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
         session.save();
     }
 
+    @SuppressWarnings("deprecation")
     public void onApplicationEvent(ApplicationEvent evt) {
         if (evt instanceof RootContextInitializedEvent || evt instanceof MailSettingsChangedEvent) {
             sendMailEndpointUri = null;
 
             if (evt instanceof RootContextInitializedEvent
-                    && settingsBean.isStartupOptionSet(StartupOptions.OPTION_DISABLE_MAIL_SERVICE)) {
+                    && (settingsBean.isStartupOptionSet(StartupOptions.OPTION_DISABLE_MAIL_SERVICE)
+                        || Boolean.getBoolean(SettingsBean.JAHIA_BACKUP_RESTORE_SYSTEM_PROP))) {
                 logger.info("Detected startup option for disabling mail service. Checking if the mail service needs to be disabled...");
 
                 try {

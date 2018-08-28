@@ -518,6 +518,13 @@ public class ErrorFileDumper {
                         strOut.println("   " + curPropertyName + " = " + curPropertyValue);
                     }
                 }
+                if (settings.getStartupOptions() != null && !settings.getStartupOptions().getOptions().isEmpty()) {
+                    strOut.println();
+                    strOut.append("Server startup options:");
+                    strOut.println();
+                    strOut.println("---------------------");
+                    strOut.println(StringUtils.join(settings.getStartupOptions().getOptions(), ", "));
+                }
             }
         }
 

@@ -323,6 +323,43 @@
 				background-size: 16px;
 			}
 
+			&.toolbar-item-previewasguest {
+				background-image: url(./images/icons/context-menu/custom-preview.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
+
+			&.toolbar-item-showcompareengine,
+			&.toolbar-item-showversionengine {
+				background-image: url(./images/icons/context-menu/compare.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
+
+			&.toolbar-item-showconsultpreviousversionengine {
+				background-image: url(./images/icons/context-menu/published-versions.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
+
+			&.toolbar-item-openWindow {
+				background-image: url(./images/icons/context-menu/open-new.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
+
 			&.toolbar-item-webdavurlcopy {
 				/*background-image: url(./images/icons/context-menu/zip.png);
 				background-color: _property($MENU-OPENED--BG, $type);

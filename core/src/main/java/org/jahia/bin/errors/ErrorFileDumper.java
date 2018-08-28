@@ -518,7 +518,7 @@ public class ErrorFileDumper {
                         strOut.println("   " + curPropertyName + " = " + curPropertyValue);
                     }
                 }
-                if (!settings.getStartupOptions().getOptions().isEmpty()) {
+                if (settings.getStartupOptions() != null && !settings.getStartupOptions().getOptions().isEmpty()) {
                     strOut.println();
                     strOut.append("Server startup options:");
                     strOut.println();

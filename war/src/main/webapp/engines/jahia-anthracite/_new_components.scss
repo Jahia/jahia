@@ -459,6 +459,12 @@
 	}
 }
 
+.x-viewport-contributemode div[role="combobox"].toolbar-itemsgroup-languageswitcher input.x-form-text {
+	padding: 0 17px 0 0 !important;
+	background: none !important;
+	font-size: 14px;
+}
+
 @mixin _combo-muted($type: $APP) {
 
 	width: auto!important;

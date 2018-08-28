@@ -52,6 +52,7 @@ import org.slf4j.Logger;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
+import java.io.*;
 import java.util.List;
 
 /**
@@ -179,9 +180,20 @@ public class SuggestionsTag extends ResultsTag {
                 }
                 if (runQuery) {
                     // we've found a suggestion
-                    suggestedCriteria = (SearchCriteria) SerializationUtils.clone(criteria);
+                    try {
+                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                        ObjectOutputStream out = new ObjectOutputStream(bos);
+                        out.writeObject(criteria);
+                        out.close();
+                        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
+                        suggestedCriteria = (SearchCriteria) in.readObject();
+                    } catch(IOException | ClassNotFoundException e) {
+                        logger.error("Cannot copy criteria",e);
+                        return null;
+                    }
+
                     suggestedCriteria.getTerms().get(0).setTerm(suggestion.getSuggestedQuery());
-                }    
+                }
             }
         }
 

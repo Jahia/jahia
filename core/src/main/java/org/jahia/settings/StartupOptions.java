@@ -41,30 +41,13 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-// $Id$
-//
-//  JahiaPrivateSettings
-//
-//  18.11.2000  EV  added in jahia.
-//  22.01.2001  FH  created readJahiaPropertiesFile() method and changed.
-//  06.02.2001  AK  set readJahiaPropertiesFile as static method.
-//  27.03.2001  AK  use the properties manager from org.jahia.utils.properties.
-//  27.07.2001  SB  added jahiaLdapDiskPath
-//  15.01.2002  NK  added mime types. mime types are loaded from web.xml files.
-//  24.08.2003  FH  - removed redundant casts
-//                  - removed private attribute privateSettings, as it was never used.
-//                  - javadoc fixes
-//
-// @author  Eric Vassalli
-// @author  Fulco Houkes
-// @author  Alexandre Kraft
 
 package org.jahia.settings;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -90,45 +73,14 @@ public class StartupOptions {
     public static final String OPTION_REINDEX = "reindex";
     public static final String OPTION_RESET_DISCOVERY_INFO = "reset-discovery-info";
 
-    private Map<String, String> options = Collections.emptyMap();
-
-    StartupOptions(SettingsBean settings, Map<String, Set<String>> mapping) {
-        super();
-        init(settings, mapping);
-    }
-
-    /**
-     * Returns the startup options, which are set.
-     *
-     * @return the startup options, which are set
-     */
-    public Map<String, String> getOptions() {
-        return options;
-    }
-
-    @SuppressWarnings("deprecation")
-    private void init(SettingsBean settings, Map<String, Set<String>> mapping) {
-        Map<String, String> opts = new HashMap<>();
-        logger.debug("Initializing startup options using mapping: {}", mapping);
-        try {
-            for (Map.Entry<String, Set<String>> mappingEntry : mapping.entrySet()) {
-                if (deleteMarkerIfPresent(mappingEntry.getKey(), settings)) {
-                    for (String option : mappingEntry.getValue()) {
-                        opts.put(option, Boolean.TRUE.toString());
-                    }
-                    if (mappingEntry.getKey().endsWith("/backup-restore")
-                            || mappingEntry.getKey().endsWith("/safe-env-clone")) {
-                        // support deprecated system property, if someone still relies on it
-                        JahiaContextLoaderListener.setSystemProperty(SettingsBean.JAHIA_BACKUP_RESTORE_SYSTEM_PROP,
-                                "true");
-                    }
-                }
-            }
-            options = Collections.unmodifiableMap(opts);
-            logger.info("Initialized startup options: {}", options);
-        } catch (IOException e) {
-            logger.error("Unable to initialize startup options", e);
+    private static boolean deleteMarkerIfPresent(String markerPath, SettingsBean settings) throws IOException {
+        File marker = new File(interpolate(markerPath, settings));
+        boolean present = marker.exists();
+        if (present) {
+            FileUtils.deleteQuietly(marker);
         }
+
+        return present;
     }
 
     private static String interpolate(String marker, SettingsBean settings) throws IOException {
@@ -140,14 +92,47 @@ public class StartupOptions {
         return marker;
     }
 
-    private static boolean deleteMarkerIfPresent(String markerPath, SettingsBean settings) throws IOException {
-        File marker = new File(interpolate(markerPath, settings));
-        boolean present = marker.exists();
-        if (present) {
-            FileUtils.deleteQuietly(marker);
-        }
+    private Set<String> options = Collections.emptySet();
 
-        return present;
+    StartupOptions(SettingsBean settings, Map<String, Set<String>> mapping) {
+        super();
+        init(settings, mapping);
+    }
+
+    /**
+     * Returns the startup options, which are set.
+     *
+     * @return the startup options, which are set
+     */
+    public Set<String> getOptions() {
+        return options;
+    }
+
+    @SuppressWarnings("deprecation")
+    private void init(SettingsBean settings, Map<String, Set<String>> mapping) {
+        Set<String> opts = new HashSet<>();
+        if (logger.isDebugEnabled()) {
+            logger.debug("Initializing startup options using mapping: {}", mapping);
+        }
+        try {
+            for (Map.Entry<String, Set<String>> mappingEntry : mapping.entrySet()) {
+                if (deleteMarkerIfPresent(mappingEntry.getKey(), settings)) {
+                    for (String option : mappingEntry.getValue()) {
+                        opts.add(option);
+                    }
+                    if (mappingEntry.getKey().endsWith("/backup-restore")
+                            || mappingEntry.getKey().endsWith("/safe-env-clone")) {
+                        // support deprecated system property, if someone still relies on it
+                        JahiaContextLoaderListener.setSystemProperty(SettingsBean.JAHIA_BACKUP_RESTORE_SYSTEM_PROP,
+                                "true");
+                    }
+                }
+            }
+            options = Collections.unmodifiableSet(opts);
+            logger.info("Initialized startup options: {}", options);
+        } catch (IOException e) {
+            logger.error("Unable to initialize startup options", e);
+        }
     }
 
     /**
@@ -157,6 +142,6 @@ public class StartupOptions {
      * @return <code>true</code> if the specified option is set; <code>false</code> otherwise
      */
     public boolean isSet(String option) {
-        return options.containsKey(option);
+        return options.contains(option);
     }
 }

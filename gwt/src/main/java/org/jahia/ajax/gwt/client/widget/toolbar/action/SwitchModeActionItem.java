@@ -70,6 +70,7 @@ public class SwitchModeActionItem extends NodeTypeAwareBaseActionItem {
         Menu m = new Menu();
         MenuItem menuItem = new MenuItem(Messages.get("label.openInNewWindow","Open in new window"));
         menuItem.setIcon(ToolbarIconProvider.getInstance().getIcon("openWindow"));
+        menuItem.addStyleName(getGwtToolbarItem().getClassName() + "-openWindow");
         menuItem.addSelectionListener(new SelectionListener<MenuEvent>() {
             @Override
             public void componentSelected(MenuEvent ce) {

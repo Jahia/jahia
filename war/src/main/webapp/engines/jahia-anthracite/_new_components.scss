@@ -351,7 +351,8 @@
 				background-size: 16px;
 			}
 
-			&.toolbar-item-openWindow {
+			&.toolbar-item-live-openWindow,
+			&.toolbar-item-preview-openWindow {
 				background-image: url(./images/icons/context-menu/open-new.png);
 				background-color: _property($MENU-OPENED--BG, $type);
 				background-position-x: 5px;

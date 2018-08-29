@@ -1477,6 +1477,10 @@ form,
 		height: 100%!important;
 		width: calc(100% - 10px)!important;
 
+		.modal-editorialpicker & {
+			height: calc(100% - 24px) !important;
+		}
+
 		body[data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] & {
 			width: calc(100% - 25px) !important;
 		}

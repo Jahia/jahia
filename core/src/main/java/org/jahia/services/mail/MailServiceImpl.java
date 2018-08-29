@@ -79,17 +79,17 @@ import java.util.ResourceBundle;
 
 /**
  * This service define method to send e-mails.
- * 
+ *
  * @author MAP
  * @author Serge Huber
  */
 public class MailServiceImpl extends MailService implements CamelContextAware, InitializingBean, DisposableBean, ApplicationListener<ApplicationEvent> {
-    
+
     private static final String MAIL_SERVER_SETTINGS_NODE = "/settings/mail-server";
 
     /**
      * This event is fired when the changes in mail server connection settings are detected (notification from other cluster nodes).
-     * 
+     *
      * @author Sergiy Shyrkov
      */
     public static class MailSettingsChangedEvent extends ApplicationEvent {
@@ -100,21 +100,21 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
         }
     }
 
-    private static Logger logger = LoggerFactory.getLogger(MailServiceImpl.class);
-    
+    private static final Logger logger = LoggerFactory.getLogger(MailServiceImpl.class);
+
     private String charset;
-    
+
     private ProducerTemplate template;
-    
+
     private String templateCharset;
-    
+
     private ScriptEngineUtils scriptEngineUtils;
-    
+
     private JahiaTemplateManagerService templateManagerService;
 
     /**
      * Validates entered values for mail settings.
-     * 
+     *
      * @param cfg the mail settings, entered by user
      * @param skipIfEmpty skips the validation and returns successful result if
      *            all values are empty
@@ -147,7 +147,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
     private CamelContext camelContext;
 
     private String mailEndpointUri;
-    
+
     private String sendMailEndpointUri;
 
     // Mail settings
@@ -163,15 +163,17 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
         return settings.getFrom();
     }
 
+    @Override
     public CamelContext getCamelContext() {
         return camelContext;
     }
 
     /**
      * Returns the settings.
-     * 
+     *
      * @return the settings
      */
+    @Override
     public MailSettings getSettings() {
         return settings;
     }
@@ -186,16 +188,14 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
         if (charset != null && exchange.getProperty(Exchange.CHARSET_NAME) == null) {
             exchange.setProperty(Exchange.CHARSET_NAME, charset);
         }
-        
-    	//if to in exchange message is set it must be initialized correctly if the To is initialized with null
+
+        //if to in exchange message is set it must be initialized correctly if the To is initialized with null
         if (exchange.getIn().getHeader("From") != null && exchange.getIn().getHeader("To") == null) {
-        	exchange.getIn().setHeader("To", settings.getTo());
-        }        
-        
-        long timer = System.currentTimeMillis();
-        if (logger.isDebugEnabled()) {
-            logger.debug("Sending message: " + exchange);
+            exchange.getIn().setHeader("To", settings.getTo());
         }
+
+        long timer = System.currentTimeMillis();
+        logger.debug("Sending message: {}", exchange);
         try {
             template.send(getEndpointUri(), exchange);
         } catch (RuntimeException e) {
@@ -217,9 +217,9 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
             if (StringUtils.isNotEmpty(settings.getTo())) {
                 uri.append(uri.indexOf("?") != -1 ? "&" : "?").append("to=").append(settings.getTo());
             }
-            
+
             sendMailEndpointUri = uri.toString();
-            
+
             logger.debug("Using mail endpoint: {}", sendMailEndpointUri);
         }
 
@@ -295,8 +295,10 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
             headers.put("contentType", charset != null ? "text/plain; charset=" + charset : "text/plain");
             body = textBody;
         }
-        
+
         template.send(endpointUri, new Processor() {
+
+            @Override
             public void process(Exchange exchange) throws Exception {
                 if (charset != null) {
                     exchange.setProperty(Exchange.CHARSET_NAME, charset);
@@ -309,7 +311,8 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
             }
         });
     }
-    
+
+    @Override
     public void setCamelContext(CamelContext camelContext) {
         this.camelContext = camelContext;
         template = camelContext.createProducerTemplate();
@@ -317,17 +320,19 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
 
     /**
      * Sets the URI of the default mail sending endpoint.
-     * 
+     *
      * @param mailEndpointUri the URI of the default mail sending endpoint
      */
     public void setMailEndpointUri(String mailEndpointUri) {
         this.mailEndpointUri = mailEndpointUri;
     }
 
+    @Override
     public void start() {
         // do nothing
     }
 
+    @Override
     public void stop() {
         logger.info("Mail Service successfully stopped");
     }
@@ -338,16 +343,16 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
             throws RepositoryException, ScriptException {
         // Resolve template :
         ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(StringUtils.substringAfterLast(template, "."));
-        ScriptContext scriptContext = new SimpleScriptContext();    	
-    	
-    	//try if it is multilingual 
+        ScriptContext scriptContext = new SimpleScriptContext();
+
+        //try if it is multilingual
         String suffix = StringUtils.substringAfterLast(template, ".");
-    	String languageMailConfTemplate = template.substring(0, template.length() - (suffix.length()+1)) + "_" + locale.toString() + "." + suffix;
+        String languageMailConfTemplate = template.substring(0, template.length() - (suffix.length() + 1)) + "_" + locale.toString() + "." + suffix;
         JahiaTemplatesPackage templatePackage = templateManagerService.getTemplatePackage(templatePackageName);
         Resource templateRealPath = templatePackage.getResource(languageMailConfTemplate);
-    	if(templateRealPath == null) {
+        if (templateRealPath == null) {
           templateRealPath = templatePackage.getResource(template);
-    	}  
+        }
         InputStream scriptInputStream = null;
         try {
             scriptInputStream = templateRealPath.getInputStream();
@@ -372,7 +377,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
             // Subject
             String subject;
             try {
-                String subjectTemplatePath = StringUtils.substringBeforeLast(template, ".") + ".subject."+ StringUtils.substringAfterLast(template, ".");
+                String subjectTemplatePath = StringUtils.substringBeforeLast(template, ".") + ".subject." + StringUtils.substringAfterLast(template, ".");
                 InputStream stream = templatePackage.getResource(subjectTemplatePath).getInputStream();
                 scriptContent = templateCharset != null ? new InputStreamReader(stream, templateCharset) : new InputStreamReader(stream);
                 scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
@@ -383,9 +388,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
             } catch (Exception e) {
                 logger.warn("Not able to render mail subject using " + StringUtils.substringBeforeLast(template, ".") + ".subject."
                                         + StringUtils.substringAfterLast(template, ".") + " template file - set org.jahia.services.mail.MailService in debug for more information");
-                if (logger.isDebugEnabled()) {
-                    logger.debug("generating the mail subject throw an exception : ", e);
-                }
+                logger.debug("Generating the mail subject threw an exception: {}", e);
                 subject = resourceBundle.getString(StringUtils.substringBeforeLast(StringUtils.substringAfterLast(template, "/"), ".") + ".subject");
             } finally {
                 IOUtils.closeQuietly(scriptContent);
@@ -405,7 +408,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
                 scriptEngine.eval(scriptContent, scriptContext);
                 StringWriter writer = (StringWriter) scriptContext.getWriter();
                 String body = writer.toString();
- 
+
                 sendMessage(fromMail, toMail, ccList, bcclist, subject, null, body);
             } finally {
                 IOUtils.closeQuietly(scriptContent);
@@ -415,6 +418,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
         }
     }
 
+    @Override
     public void destroy() throws Exception {
         if (template != null) {
             template.stop();
@@ -427,11 +431,13 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
 
     protected void load() {
         sendMailEndpointUri = null;
-        
+
         settings = new MailSettings();
         try {
             // read mail settings
             settings = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.EDIT_WORKSPACE, null, new JCRCallback<MailSettings>() {
+
+                @Override
                 public MailSettings doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     MailSettings cfg = new MailSettings();
 
@@ -460,7 +466,6 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
                     + " Mail server will be disabled.", e);
         }
 
-        
         if (settings.isServiceActivated()) {
             MailSettingsValidationResult result = validateSettings(settings, false);
             if (result.isSuccess()) {
@@ -480,10 +485,13 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
         }
     }
 
+    @Override
     public void store(final MailSettings cfg) {
         try {
             // store mail settings
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+
+                @Override
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     store(cfg, session);
                     return Boolean.TRUE;
@@ -508,7 +516,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
                         .addNode("mail-server", "jnt:mailServerSettings");
             }
         }
-        
+
         mailNode.setProperty("j:activated", cfg.isServiceActivated());
         mailNode.setProperty("j:uri", cfg.getUri());
         mailNode.setProperty("j:from", cfg.getFrom());
@@ -518,6 +526,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
         session.save();
     }
 
+    @Override
     @SuppressWarnings("deprecation")
     public void onApplicationEvent(ApplicationEvent evt) {
         if (evt instanceof RootContextInitializedEvent || evt instanceof MailSettingsChangedEvent) {
@@ -531,6 +540,8 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
                 try {
                     JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.EDIT_WORKSPACE, null,
                             new JCRCallback<Void>() {
+
+                                @Override
                                 public Void doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                     if (session.nodeExists(MAIL_SERVER_SETTINGS_NODE)) {
                                         JCRNodeWrapper node = session.getNode(MAIL_SERVER_SETTINGS_NODE);
@@ -555,6 +566,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
         }
     }
 
+    @Override
     public void afterPropertiesSet() throws Exception {
         if (charset == null) {
             charset = settingsBean.getCharacterEncoding();

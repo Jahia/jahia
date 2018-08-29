@@ -111,9 +111,7 @@ public class StartupOptions {
     @SuppressWarnings("deprecation")
     private void init(SettingsBean settings, Map<String, Set<String>> mapping) {
         Set<String> opts = new HashSet<>();
-        if (logger.isDebugEnabled()) {
-            logger.debug("Initializing startup options using mapping: {}", mapping);
-        }
+        logger.debug("Initializing startup options using mapping: {}", mapping);
         try {
             for (Map.Entry<String, Set<String>> mappingEntry : mapping.entrySet()) {
                 if (deleteMarkerIfPresent(mappingEntry.getKey(), settings)) {

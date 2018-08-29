@@ -111,6 +111,7 @@ public class ErrorFileDumper {
      */
     private static class LowPriorityThreadFactory implements ThreadFactory {
 
+        @Override
         public Thread newThread(Runnable runnable) {
             Thread lowPriorityThread = new Thread(runnable);
             lowPriorityThread.setName("LowPriorityThread");
@@ -196,6 +197,7 @@ public class ErrorFileDumper {
             this.requestData = requestData;
         }
 
+        @Override
         public void run() {
             try {
                 performDumpToFile(t, requestData);

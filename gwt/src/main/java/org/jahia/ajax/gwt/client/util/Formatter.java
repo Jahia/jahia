@@ -43,8 +43,7 @@
  */
 package org.jahia.ajax.gwt.client.util;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import org.jahia.ajax.gwt.client.messages.Messages;
 
@@ -213,5 +212,18 @@ public class Formatter {
             str.append(list.get(i).toString());
         }
         return str.toString();
+    }
+
+    /**
+     * Utils to concatenate two arrays
+     * @param first first array
+     * @param second second array
+     * @return concatenate array
+     */
+    public static String[] concat(String[] first, String[] second) {
+        List<String> both = new ArrayList<String>(first.length + second.length);
+        Collections.addAll(both, first);
+        Collections.addAll(both, second);
+        return both.toArray(new String[0]);
     }
 }

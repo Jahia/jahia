@@ -273,10 +273,7 @@ public class RenderContext {
     }
 
     public Locale getFallbackLocale() {
-        if (site != null) {
-            return site.isMixLanguagesActive() ? LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()) : null;
-        }
-        return null;
+        return ((site != null && site.isMixLanguagesActive()) || isShowUntranslatedContents()) ? LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()) : null;
     }
 
     public boolean isLiveMode() {
@@ -444,5 +441,9 @@ public class RenderContext {
     public boolean isReadOnly() {
         SettingsBean settings = SettingsBean.getInstance();
         return (settings.isReadOnlyMode() || settings.isMaintenanceMode() || settings.isFullReadOnlyMode());
+    }
+
+    public boolean isShowUntranslatedContents() {
+        return request.getParameter("showUntranslatedContents") != null;
     }
 }

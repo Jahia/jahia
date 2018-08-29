@@ -59,6 +59,7 @@ import javax.servlet.http.HttpServletRequest;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.ShowUntranslatedContentsActionItem;
 import org.jahia.bin.Render;
 import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.exceptions.JahiaException;
@@ -201,7 +202,7 @@ public class URLResolver {
                 }
             }
         }
-        this.showUntranslatedNodes = request.getParameter("showUntranslatedContents") != null;
+        this.showUntranslatedNodes = request.getParameter(ShowUntranslatedContentsActionItem.SHOW_UNTRANSLATED_CONTENTS_PARAM) != null;
     }
 
     private void redirect(HttpServletRequest request, VanityUrl defaultVanityUrl) {

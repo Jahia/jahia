@@ -44,6 +44,7 @@
 package org.jahia.services.render;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.ShowUntranslatedContentsActionItem;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.services.channels.Channel;
@@ -444,6 +445,6 @@ public class RenderContext {
     }
 
     public boolean isShowUntranslatedContents() {
-        return request.getParameter("showUntranslatedContents") != null;
+        return request.getParameter(ShowUntranslatedContentsActionItem.SHOW_UNTRANSLATED_CONTENTS_PARAM) != null;
     }
 }

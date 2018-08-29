@@ -498,15 +498,15 @@
 		display: block;
 		padding: 7px 37px 6px 10px !important;
 
-		background: radial-gradient(ellipse at bottom right, _theme-color(primary, b) 0%, _theme-color(primary, a) 70%);
-		//box-shadow: _property($MENU-CLOSED--SHADOW, $type);
+		background: _property($MENU-CLOSED--BG, $type);
+		box-shadow: _property($MENU-CLOSED--SHADOW, $type);
 
-		@include text(12px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT);
+		@include text(12px, _property($MENU-CLOSED--COLOR, $type), $FONT--WEIGHT---EXTRALIGHT);
 
 		&:hover {
-			color: _theme-color(secondary);
-			//background: _property($MENU-CLOSED--BG---HOVER, $type);
-			//box-shadow: _property($MENU-CLOSED--SHADOW---HOVER, $type);
+			color: _property($MENU-CLOSED--COLOR---HOVER, $type);
+			background: _property($MENU-CLOSED--BG---HOVER, $type);
+			box-shadow: _property($MENU-CLOSED--SHADOW---HOVER, $type);
 		}
 
 		&::-webkit-input-placeholder{
@@ -545,6 +545,8 @@
 	padding: 0 17px 0 0 !important;
 	background: none !important;
 	font-size: 14px;
+	box-shadow: none !important;
+	color: _theme-color(secondary);
 }
 
 @mixin _combo-muted($type: $APP) {

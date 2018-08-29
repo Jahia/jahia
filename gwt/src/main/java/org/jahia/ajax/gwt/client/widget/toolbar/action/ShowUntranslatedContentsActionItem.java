@@ -58,6 +58,9 @@ import java.util.List;
  * Display untranslated contents action
  */
 public class ShowUntranslatedContentsActionItem extends BaseActionItem {
+
+    public static final String SHOW_UNTRANSLATED_CONTENTS_PARAM = "showUntranslatedContents";
+
     private boolean checked;
 
     public void setChecked(boolean checked) {
@@ -78,13 +81,13 @@ public class ShowUntranslatedContentsActionItem extends BaseActionItem {
                     activeChannel != null ? activeChannel.getValue() : null, mainModule.getActiveChannelVariant(), true));
 
             List<String[]> params = new ArrayList<String[]>();
-            params.add(new String[]{"showUntranslatedContents", "true"});
+            params.add(new String[]{SHOW_UNTRANSLATED_CONTENTS_PARAM, "true"});
 
             MainModule.appendParamsToUrl(url, params);
         } else {
             url = new StringBuilder(mainModule.getUrl(mainModule.getPath(), mainModule.getTemplate(),
                     activeChannel != null ? activeChannel.getValue() : null, mainModule.getActiveChannelVariant(), true,
-                    new String[] {"showUntranslatedContents"}));
+                    new String[] {SHOW_UNTRANSLATED_CONTENTS_PARAM}));
         }
 
         mainModule.goToUrl(url.toString(), false, false, false);

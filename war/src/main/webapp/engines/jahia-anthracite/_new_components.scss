@@ -549,6 +549,10 @@
 	color: _theme-color(secondary);
 }
 
+.x-viewport-contributemode div[role="combobox"].toolbar-itemsgroup-languageswitcher input.x-form-text:hover {
+    color: white;
+}
+
 @mixin _combo-muted($type: $APP) {
 
 	width: auto!important;

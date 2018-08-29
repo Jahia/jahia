@@ -124,6 +124,7 @@ public class URLResolver {
     private String siteKey;
     private String siteKeyByServerName;
     private boolean mappable = false;
+    private boolean showUntranslatedNodes = false;
 
     private String redirectUrl;
     private String vanityUrl;
@@ -200,6 +201,7 @@ public class URLResolver {
                 }
             }
         }
+        this.showUntranslatedNodes = request.getParameter("showUntranslatedContents") != null;
     }
 
     private void redirect(HttpServletRequest request, VanityUrl defaultVanityUrl) {
@@ -239,6 +241,7 @@ public class URLResolver {
             path = getUrlPathInfo().substring(1);
             init();
         }
+        this.showUntranslatedNodes = renderContext.isShowUntranslatedContents();
     }
 
     private void init() {
@@ -494,7 +497,7 @@ public class URLResolver {
                             if (siteName != null && session.itemExists("/sites/" + siteName)) {
                                 siteInfo = new SiteInfo((JCRSiteNode) session.getNode("/sites/" + siteName));
 
-                                if (siteInfo.isMixLanguagesActive() && siteInfo.getDefaultLanguage() != null) {
+                                if ((siteInfo.isMixLanguagesActive() || showUntranslatedNodes) && siteInfo.getDefaultLanguage() != null) {
                                     session.setFallbackLocale(LanguageCodeConverters.getLocaleFromCode(siteInfo.getDefaultLanguage()));
                                 }
                             }
@@ -527,7 +530,7 @@ public class URLResolver {
             siteInfoCache.remove(cacheKey);
             throw new RepositoryException("could not resolve site for " + path + " in workspace " + workspace + " in language " + locale);
         }
-        if (siteInfo.isMixLanguagesActive() && siteInfo.getDefaultLanguage() != null) {
+        if ((siteInfo.isMixLanguagesActive() || showUntranslatedNodes) && siteInfo.getDefaultLanguage() != null) {
             JCRSessionFactory.getInstance().setFallbackLocale(LanguageCodeConverters.getLocaleFromCode(siteInfo.getDefaultLanguage()));
         }
         JCRSessionWrapper userSession = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);

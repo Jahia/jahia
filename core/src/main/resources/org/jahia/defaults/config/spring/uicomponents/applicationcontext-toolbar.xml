@@ -44,6 +44,12 @@
     </bean>
 
     <!-- ////// items -->
+    <bean id="Toolbar.Item.ViewUntranslatedContents" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ShowUntranslatedContentsActionItem"/>
+        </property>
+        <property name="titleKey" value="label.showUntranslatedContents"/>
+    </bean>
 
     <bean id="Toolbar.Item.ViewACLStatus" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">

@@ -312,6 +312,7 @@
                                         <ref bean="Toolbar.Item.ViewPublishStatus"/>
                                         <ref bean="Toolbar.Item.ViewACLStatus"/>
                                         <ref bean="Toolbar.Item.ViewVisibilityStatus"/>
+                                        <ref bean="Toolbar.Item.ViewUntranslatedContents"/>
                                     </list>
                                 </property>
                             </bean>

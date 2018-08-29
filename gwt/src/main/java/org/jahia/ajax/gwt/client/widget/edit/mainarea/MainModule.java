@@ -88,6 +88,7 @@ import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.InfoLayers;
 import org.jahia.ajax.gwt.client.widget.edit.ToolbarHeader;
+import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
 
 import java.util.*;
@@ -604,6 +605,10 @@ public class MainModule extends Module {
         InfoConfig infoConfig = new InfoConfig(title, message);
         infoConfig.display = duration;
         Info.display(infoConfig);
+    }
+
+    public static void openPublicationWorkflow(JsArrayString uuids, boolean allSubTree, boolean allLanguages, boolean checkForUnpublication) {
+        PublicationWorkflow.openPublicationWorkflow(convertArray(uuids), getInstance().getEditLinker(), allSubTree, allLanguages, checkForUnpublication);
     }
 
     protected static GWTJahiaNode getGwtJahiaNode(String path, String name, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes) {
@@ -1255,6 +1260,9 @@ public class MainModule extends Module {
         $wnd.displayInfo = function (title, message, duration) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::displayInfo(*)(title, message, duration);
         };
+        $wnd.openPublicationWorkflow = function (uuids, allSubTree, allLanguages, checkForUnpublication) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::openPublicationWorkflow(*)(uuids, allSubTree, allLanguages, checkForUnpublication)
+        }
     }-*/;
 
     public InfoLayers getInfoLayers() {

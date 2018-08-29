@@ -43,21 +43,13 @@
  */
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.widget.Dialog;
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.google.gwt.user.client.Window;
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowType;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
@@ -236,95 +228,11 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                 uuids.add(ctx.getSingleSelection().getUUID());
             }
             linker.loading(Messages.get("label.gettingPublicationInfo", "Getting publication information"));
-            BaseAsyncCallback<List<GWTJahiaPublicationInfo>> asyncCallback = new BaseAsyncCallback<List<GWTJahiaPublicationInfo>>() {
-
-                @Override
-                public void onApplicationFailure(Throwable caught) {
-                    linker.loaded();
-                    Window.alert("Cannot get status: " + caught.getMessage());
-                }
-
-                @Override
-                public void onSuccess(List<GWTJahiaPublicationInfo> result) {
-                    linker.loaded();
-                    callback(result);
-                }
-            };
-            if (!allLanguages) {
-                JahiaContentManagementService.App.getInstance().getPublicationInfo(uuids, allSubTree, checkForUnpublication, asyncCallback);
-            } else {
-                Set<String> languages = new HashSet<String>();
-                for (GWTJahiaLanguage gwtJahiaLanguage : JahiaGWTParameters.getSiteLanguages()) {
-                    if (gwtJahiaLanguage.isActive()) {
-                        languages.add(gwtJahiaLanguage.getLanguage());
-                    }
-                }
-                JahiaContentManagementService.App.getInstance().getPublicationInfo(uuids, allSubTree, checkForUnpublication, languages, asyncCallback);
-            }
+            PublicationWorkflow.openPublicationWorkflow(uuids, linker, allSubTree, allLanguages, checkForUnpublication);
         }
     }
 
-    protected void callback(final List<GWTJahiaPublicationInfo> result) {
-        if (result.isEmpty()) {
-            MessageBox.info(Messages.get("label.publish", "Publication"), Messages.get("label.publication.nothingToPublish", "Nothing to publish"), null);
-        } else {
-            List<GWTJahiaPublicationInfo> unpublishable = new ArrayList<GWTJahiaPublicationInfo>();
-            for (GWTJahiaPublicationInfo info : result) {
-                Integer status = info.getStatus();
-                if (status == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE || status == GWTJahiaPublicationInfo.CONFLICT) {
-                    unpublishable.add(info);
-                }
-            }
 
-            result.removeAll(unpublishable);
-
-            if (unpublishable.isEmpty()) {
-                PublicationWorkflow.create(result, linker, checkForUnpublication);
-            } else {
-                StringBuilder message = new StringBuilder();
-
-                Map<Integer, List<String>> unpublishableMap = new HashMap<Integer, List<String>>();
-                for (GWTJahiaPublicationInfo info : unpublishable) {
-                    Integer status = info.getStatus();
-                    if (!unpublishableMap.containsKey(status)) {
-                        unpublishableMap.put(status, new ArrayList<String>());
-                    }
-                    unpublishableMap.get(status).add(info.getTitle() + " (" + info.getPath() + ")");
-                }
-
-                for (Map.Entry<Integer, List<String>> entry : unpublishableMap.entrySet()) {
-                    Integer status = entry.getKey();
-                    List<String> values = entry.getValue();
-                    final String labelKey = GWTJahiaPublicationInfo.statusToLabel.get(status);
-                    message.append(Messages.get("label.publication." + labelKey, labelKey)).append(" : ").append(values.get(0));
-                    if (values.size() > 10) {
-                        for (int i = 1; i < 10; i++) {
-                            message.append(", ").append(values.get(i));
-                        }
-                        message.append(", ...");
-                    } else {
-                        for (int i = 1; i < values.size(); i++) {
-                            message.append(", ").append(values.get(i));
-                        }
-                    }
-                }
-                if (!result.isEmpty()) {
-                    message.append("<br/>").append(Messages.get("message.continue"));
-                    MessageBox.confirm(Messages.get("label.publish", "Publication"), message.toString(), new Listener<MessageBoxEvent>() {
-
-                        @Override
-                        public void handleEvent(MessageBoxEvent be) {
-                            if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.YES)) {
-                                PublicationWorkflow.create(result, linker, checkForUnpublication);
-                            }
-                        }
-                    });
-                } else {
-                    MessageBox.info(Messages.get("label.publish", "Publication"), message.toString(), null);
-                }
-            }
-        }
-    }
 
     /**
      *

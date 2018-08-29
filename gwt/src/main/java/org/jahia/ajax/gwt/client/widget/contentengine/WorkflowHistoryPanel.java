@@ -78,14 +78,14 @@ import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.poller.Poller;
 import org.jahia.ajax.gwt.client.widget.poller.TaskEvent;
+import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
+import org.jahia.ajax.gwt.client.widget.workflow.CustomWorkflow;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowActionDialog;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowDashboardEngine;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -174,7 +174,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
         ColumnConfig column = new ColumnConfig("displayName", Messages.get("label.name", "Name"), 160);
         column.setRenderer(new WidgetTreeGridCellRenderer<GWTJahiaWorkflowHistoryItem>() {
             @Override
-            public Widget getWidget(final GWTJahiaWorkflowHistoryItem historyItem, String property, ColumnData config,
+            public Widget getWidget(GWTJahiaWorkflowHistoryItem historyItem, String property, ColumnData config,
                                     int rowIndex, int colIndex,
                                     ListStore<GWTJahiaWorkflowHistoryItem> gwtJahiaWorkflowHistoryItemListStore,
                                     Grid<GWTJahiaWorkflowHistoryItem> grid) {
@@ -189,15 +189,13 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                                 @Override
                                 public void componentSelected(ButtonEvent ce) {
                                     EnginePanel container = new EnginePanel();
-                                    // Keep previsous selection to restore it once the engine will be processed.
-                                    List<GWTJahiaNode> selectedNodes = new ArrayList<GWTJahiaNode>();
-                                    selectedNodes.addAll(linker.getSelectionContext().getSelectedNodes());
-                                    // set the current selection to the current workflow parent node. It is needed to build the engine
-                                    final GWTJahiaNode nodewrapper = (GWTJahiaNode) parent.get("nodeWrapper");
-                                    linker.getSelectionContext().setSelectedNodes(Arrays.asList(nodewrapper));
-                                    linker.getSelectionContext().refresh(LinkerSelectionContext.SELECTED_NODE_ONLY);
-                                    new WorkflowActionDialog(parent.getRunningWorkflow(), task, linker,
-                                            parent.getRunningWorkflow().getCustomWorkflowInfo(), container, selectedNodes);
+                                    // get path from the publication info, not used for unpublished
+                                    CustomWorkflow customWorkflowInfo = parent.getRunningWorkflow().getCustomWorkflowInfo();
+                                    String path = "";
+                                    if (customWorkflowInfo instanceof PublicationWorkflow && ((PublicationWorkflow) customWorkflowInfo).getPublicationInfos().size() > 0) {
+                                        path = ((PublicationWorkflow) customWorkflowInfo).getPublicationInfos().get(0).getMainPath();
+                                    }
+                                    new WorkflowActionDialog(path, parent.getRunningWorkflow(), task, linker, customWorkflowInfo, container);
                                     container.showEngine();
                                     container.addListener(Events.Close, new Listener<BaseEvent>() {
                                         @Override

@@ -686,6 +686,17 @@ div.engine-window {
 							.x-grid3-scroller {
 								width: 100%!important;
 
+								.x-grid3-body {
+									background: white !important;
+									height: calc(100% - 150px) !important;
+									position: fixed;
+									width: calc(100% - 368px);
+									overflow: scroll;
+									right: 6px;
+									padding: 16px 24px;
+									margin-top: -16px;
+								}
+
 								.x-grid-empty {
 									&:before {
 										content: $text_no_results;

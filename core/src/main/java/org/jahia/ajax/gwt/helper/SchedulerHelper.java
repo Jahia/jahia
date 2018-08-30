@@ -149,9 +149,13 @@ public class SchedulerHelper {
             if (BackgroundJob.getGroupName(PublicationJob.class).equals(jobDetail.getGroup())) {
                 @SuppressWarnings("unchecked")
                 List<GWTJahiaNodeProperty> publicationInfos = (List<GWTJahiaNodeProperty>) jobDataMap.get(PublicationJob.PUBLICATION_PROPERTIES);
+                String publicationTitle = (String) jobDataMap.get(PublicationJob.PUBLICATION_TITLE);
                 if (publicationInfos != null && publicationInfos.size() > 0) {
                     description += " " + publicationInfos.get(0).getValues();
+                } else if (StringUtils.isNotEmpty(publicationTitle)) {
+                    description += " [" + publicationTitle + "]";
                 }
+
                 List<String> publicationPathsFromJob = (List<String>) jobDataMap.get(PublicationJob.PUBLICATION_PATHS);
                 // get target paths from job if specified, if not, use uuids to get the nodes
                 if(publicationPathsFromJob != null && publicationPathsFromJob.size() > 0) {

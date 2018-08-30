@@ -41,7 +41,7 @@
     </c:if>
 </head>
 
-<body>
+<body ${theme != null ? "class=\"theme-"+theme+"\"" : ""}>
     <div class="jahia-template-gxt editmode-gxt" jahiatype="editmode" id="editmode" config="${renderContext.editModeConfigName}" path="${currentResource.node.path}" locale="${currentResource.locale}" template="${currentResource.template}" nodetypes="${fn:replace(jcr:getConstraints(renderContext.mainResource.node),',',' ')}"></div>
 </body>
 

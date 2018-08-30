@@ -43,6 +43,7 @@
  */
 package org.jahia.services.workflow.jbpm.custom;
 
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;
@@ -50,6 +51,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.PublicationJob;
 import org.jahia.services.scheduler.BackgroundJob;
+import org.jahia.services.workflow.WorkflowVariable;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -105,6 +107,9 @@ public class PublishWorkItemHandler extends AbstractWorkItemHandler implements W
         jobDataMap.put(BackgroundJob.JOB_USERKEY, userKey);
         jobDataMap.put(PublicationJob.PUBLICATION_UUIDS, uuids);
         jobDataMap.put(PublicationJob.PUBLICATION_PATHS, publicationPath);
+        if (workItem.getParameter("jcr:title") != null) {
+            jobDataMap.put(PublicationJob.PUBLICATION_TITLE, ((WorkflowVariable) workItem.getParameter("jcr:title")).getValue());
+        }
         jobDataMap.put(PublicationJob.SOURCE, workspace);
         jobDataMap.put(PublicationJob.DESTINATION, Constants.LIVE_WORKSPACE);
         jobDataMap.put(PublicationJob.LOCK, "publication-process-" + workItem.getProcessInstanceId());

@@ -43,7 +43,13 @@
  */
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.widget.Linker;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * An action item for executing JS
@@ -51,24 +57,125 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
  */
 public class JSActionItem extends NodeTypeAwareBaseActionItem {
     private static final long serialVersionUID = -1317342305404063292L;
-    protected String js;
+
+    private String init;
+    private String execute;
+    private String handleNewSelection;
+    private String handleNewMainNodeLoaded;
+    private String selectionTarget;
+
+
+    @Override
+    public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
+        super.init(gwtToolbarItem, linker);
+        if (init != null) {
+            doCall(init, getNative(this));
+        }
+    }
 
     public void onComponentSelection() {
-        GWTJahiaNode gwtJahiaNodes = linker.getSelectionContext().getSingleSelection();
-
-        String res = doIt(js, gwtJahiaNodes.getPath());
-
-//        JSONValue jsondata = JSONParser.parseStrict(res);
+        if (execute != null) {
+            doCall(execute, getSelection(selectionTarget, linker));
+        }
     }
 
-    public native String doIt(String js, String path) /*-{
-        var call = eval("(function (path) { return " + js + " })");
-        return JSON.stringify(call(path));
+    @Override
+    public void handleNewMainNodeLoaded(GWTJahiaNode node) {
+        if (handleNewMainNodeLoaded != null) {
+            doCall(handleNewMainNodeLoaded, node.getPath());
+        }
+    }
+
+    @Override
+    public void handleNewLinkerSelection() {
+        if (handleNewSelection != null) {
+            doCall(handleNewSelection, getSelection(selectionTarget, linker));
+        } else {
+            setEnabled(isNodeTypeAllowed());
+        }
+    }
+
+    public boolean isNodeTypeAllowed() {
+        if (selectionTarget == null || selectionTarget.equals("single")) {
+            return isNodeTypeAllowed(linker.getSelectionContext().getSingleSelection());
+        } else if (selectionTarget.equals("multiple")) {
+            return isNodeTypeAllowed(linker.getSelectionContext().getMultipleSelection());
+        } else if (selectionTarget.equals("main")) {
+            return isNodeTypeAllowed(linker.getSelectionContext().getMainNode());
+        }
+        return false;
+    }
+
+    public void refresh() {
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put(Linker.REFRESH_MAIN, true);
+        linker.refresh(data);
+    }
+
+
+    private static String getSelection(String selectionTarget, Linker linker) {
+        if (selectionTarget == null || selectionTarget.equals("single")) {
+            GWTJahiaNode singleSelection = linker.getSelectionContext().getSingleSelection();
+            return singleSelection != null ? singleSelection.getPath() : null;
+        } else if (selectionTarget.equals("multiple")) {
+//            List<String> paths = new ArrayList<>();
+//            List<GWTJahiaNode> nodes = linker.getSelectionContext().getMultipleSelection();
+//            if (nodes != null) {
+//                for (GWTJahiaNode node : nodes) {
+//                    paths.add(node.getPath());
+//                }
+//            }
+//            return  paths;
+        } else if (selectionTarget.equals("main")) {
+            GWTJahiaNode node = linker.getSelectionContext().getMainNode();
+            return node != null ? node.getPath() : null;
+        }
+        return null;
+    }
+
+    public static native void doCall(String key, Object param) /*-{
+        eval('$wnd.' + key)(param);
     }-*/;
 
-    public void setJs(String js) {
-        this.js = js;
+    public void setInit(String init) {
+        this.init = init;
     }
+
+    public void setExecute(String execute) {
+        this.execute = execute;
+    }
+
+    public void setHandleNewSelection(String handleNewSelection) {
+        this.handleNewSelection = handleNewSelection;
+    }
+
+    public void setHandleNewMainNodeLoaded(String handleNewMainNodeLoaded) {
+        this.handleNewMainNodeLoaded = handleNewMainNodeLoaded;
+    }
+
+    public void setSelectionTarget(String selectionTarget) {
+        this.selectionTarget = selectionTarget;
+    }
+
+    public static native JavaScriptObject getNative(JSActionItem actionItem) /*-{
+        return {
+            'setTitle': function (text) {
+                actionItem.@org.jahia.ajax.gwt.client.widget.toolbar.action.BaseActionItem::updateTitle(*)(text);
+            },
+            'setEnabled': function(b) {
+                actionItem.@org.jahia.ajax.gwt.client.widget.toolbar.action.BaseActionItem::setEnabled(*)(b);
+            },
+            'setVisible': function(b) {
+                actionItem.@org.jahia.ajax.gwt.client.widget.toolbar.action.BaseActionItem::setVisible(*)(b);
+            },
+            'isNodeTypeAllowed': function() {
+                actionItem.@org.jahia.ajax.gwt.client.widget.toolbar.action.JSActionItem::isNodeTypeAllowed()();
+            },
+            'refresh': function() {
+                actionItem.@org.jahia.ajax.gwt.client.widget.toolbar.action.JSActionItem::refresh()();
+            }
+        }
+    }-*/;
 
 }
 

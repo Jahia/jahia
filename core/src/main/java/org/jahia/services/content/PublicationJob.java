@@ -63,6 +63,7 @@ public class PublicationJob extends BackgroundJob {
     public static final String PUBLICATION_PATHS = "publicationPaths";
     public static final String PUBLICATION_PROPERTIES = "publicationProperties";
     public static final String PUBLICATION_COMMENTS = "publicationComments";
+    public static final String PUBLICATION_TITLE = "publicationTitle";
     public static final String SOURCE = "source";
     public static final String DESTINATION = "destination";
     public static final String LOCK = "lock";

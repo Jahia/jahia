@@ -84,7 +84,7 @@ public abstract class Module extends LayoutContainer {
     protected HTML overlayLabel = null;
     protected String opacity = "";
     protected String overlayColorText = "";
-    protected boolean translatable = false;
+    protected String translatableFromLanguage = null;
 
     public Module() {
         super();
@@ -119,7 +119,7 @@ public abstract class Module extends LayoutContainer {
             sourceInfo = divElement.getAttribute("sourceInfo");
         }
         if (divElement.hasAttribute("translatable")) {
-            translatable = Boolean.valueOf(divElement.getAttribute("translatable"));
+            translatableFromLanguage = divElement.getAttribute("translatable");
         }
 
         this.mainModule = mainModule;
@@ -151,7 +151,7 @@ public abstract class Module extends LayoutContainer {
             scriptInfo = divElement.getAttribute("scriptInfo");
         }
         if (divElement.hasAttribute("translatable")) {
-            translatable = Boolean.valueOf(divElement.getAttribute("translatable"));
+            translatableFromLanguage = divElement.getAttribute("translatable");
         }
 
         this.mainModule = mainModule;
@@ -318,7 +318,7 @@ public abstract class Module extends LayoutContainer {
         overlayColorText = "#39f";
     }
 
-    public boolean isTranslatable() {
-        return translatable;
+    public String getTranslatableFromLanguage() {
+        return translatableFromLanguage;
     }
 }

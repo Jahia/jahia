@@ -232,7 +232,6 @@ public class MainModule extends Module {
     public static boolean checkAndResetSkipRefreshAfterSave() {
         boolean currentValue = skipRefreshAfterSaveFromEngine;
         skipRefreshAfterSaveFromEngine = false;
-        log("do refresh :" + currentValue);
         return currentValue;
     }
 
@@ -1573,10 +1572,6 @@ public class MainModule extends Module {
 
     public final native void scrollTo(IFrameElement iFrameElement, int x, int y) /*-{
         iFrameElement.contentWindow.scrollTo(x, y);
-    }-*/;
-
-    public static native void log(String txt) /*-{
-        console.log(txt);
     }-*/;
 
 }

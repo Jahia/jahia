@@ -1272,9 +1272,9 @@ public class MainModule extends Module {
         };
         $wnd.createContent = function (path, types, includeSubTypes, skipRefresh) {
             if (typeof includeSubTypes !== 'undefined') {
-                @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::createContent(*)(path,types,includeSubTypes, skipRefresh);
+                @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::createContent(*)(path, types, includeSubTypes, skipRefresh);
             } else {
-                @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::createContent(*)(path,types,true, skipRefresh);
+                @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::createContent(*)(path, types, true, skipRefresh);
             }
         };
         $wnd.editContent = function (path, displayName, types, inheritedTypes, skipRefresh) {

@@ -2996,6 +2996,16 @@ form,
     //
 		// }
 
+		&:after {
+			content: '';
+			background: linear-gradient(to right bottom, whitesmoke 50%, #e5e4e4 100%) !important;
+			height: 100%;
+			width: 100%;
+			position: fixed;
+			top: 0;
+			left: 0;
+		}
+
 	}
 
 

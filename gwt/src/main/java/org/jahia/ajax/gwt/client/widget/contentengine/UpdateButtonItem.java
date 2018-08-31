@@ -59,6 +59,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
 
 import java.util.*;
@@ -189,7 +190,9 @@ public class UpdateButtonItem extends SaveButtonItem {
                                 PermissionsUtils.loadPermissions((List<String>) o.get(GWTJahiaNode.PERMISSIONS));
                             }
                         }
-                        engine.getLinker().refresh(data);
+                        if (!MainModule.checkAndResetSkipRefreshAfterSave()) {
+                            engine.getLinker().refresh(data);
+                        }
                         // execute external callbacks
                         sendExternalEvent(node.getPath(), engine.getNodeName(), node.getUUID(), "updateButtonItemEventHandlers");
                     }

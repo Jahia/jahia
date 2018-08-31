@@ -582,6 +582,7 @@ public class MainModule extends Module {
      * @param nodeTypes the allowed node types to show in the content type selector
      * @param includeSubTypes if <code>true</code>, also the sub-types of the specified types will be shown in the content type selector;
      *            <code>false</code> means only the specified node types will be allowed
+     * @param skipRefresh whether to avoid refreshing the edit engine on content save
      */
     public static void createContent(String path, JsArrayString nodeTypes, boolean includeSubTypes, boolean skipRefresh) {
         skipRefreshAfterSaveFromEngine = skipRefresh;

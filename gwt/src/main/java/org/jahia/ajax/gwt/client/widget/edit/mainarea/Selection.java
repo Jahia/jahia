@@ -58,14 +58,14 @@ import org.jahia.ajax.gwt.client.util.WindowUtil;
 public class Selection extends LayoutContainer {
 
     private MainModule mainModule;
-    private Module module;
+    Module module;
 
-    private BoxComponent top;
-    private BoxComponent bottom;
-    private BoxComponent left;
-    private BoxComponent right;
+    BoxComponent top;
+    BoxComponent bottom;
+    BoxComponent left;
+    BoxComponent right;
 
-    private LayoutContainer currentContainer;
+    LayoutContainer currentContainer;
 
     public Selection(Module m) {
         setBorders(true);
@@ -78,7 +78,7 @@ public class Selection extends LayoutContainer {
         mainModule = m!=null?m.getMainModule():null;
     }
 
-    public void select() {
+    public void configure() {
         this.currentContainer = module.getContainer();
         if (module instanceof ListModule) {
             top.setStyleName("selection-top-list");
@@ -100,6 +100,10 @@ public class Selection extends LayoutContainer {
         bottom.setStyleAttribute("z-index", "995");
         left.setStyleAttribute("z-index", "995");
         right.setStyleAttribute("z-index", "995");
+    }
+
+    public void select() {
+        configure();
         show();
     }
 

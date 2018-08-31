@@ -1234,9 +1234,9 @@ public class MainModule extends Module {
             for (Module m : modules) {
                 if (m.isTranslatable() && m instanceof SimpleModule) {
                     if (activeLayers.containsKey("translate")) {
-                        ((SimpleModule) m).displayPlaceholder("TO BE TRANSLATED");
+                        ((SimpleModule) m).showTranslatableModule();
                     } else {
-                        ((SimpleModule) m).removePlaceholder();
+                        ((SimpleModule) m).hideTranslatableModule();
                     }
                 }
             }

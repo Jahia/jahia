@@ -63,10 +63,7 @@ import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.AccessDeniedException;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
+import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.servlet.http.HttpServletRequest;
@@ -257,6 +254,14 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                         }
                         if (node.isNodeType(Constants.JAHIAMIX_BOUND_COMPONENT)) {
                             add += " bindable=\"true\"";
+                        }
+
+                        if (node.getI18Ns().getSize() > 0) {
+                            try {
+                                node.getI18N(renderContext.getMainResourceLocale());
+                            } catch (ItemNotFoundException e) {
+                                add += " translatable=\"true\"";
+                            }
                         }
 
                         Script script = null;

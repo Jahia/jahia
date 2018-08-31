@@ -93,6 +93,7 @@ public class SimpleModule extends Module {
     private DragSource dragSource = null;
     private DropTarget dragTarget = null;
     private String boundProperty = "j:bindedComponent";
+    private HTML placeholder;
 
     public SimpleModule(String id, String path, Element divElement, MainModule mainModule) {
         super(id, path, divElement, mainModule);
@@ -241,7 +242,23 @@ public class SimpleModule extends Module {
                     }
                 }
             });
+        }
+    }
 
+    public void displayPlaceholder(String label) {
+        // only add placeholder if module is empty
+        if(html.getOffsetHeight() == 0) {
+            placeholder = new HTML(label);
+            insert(placeholder, 0);
+            layout();
+        }
+    }
+
+    public void removePlaceholder() {
+        if(placeholder != null) {
+            remove(placeholder);
+            placeholder = null;
+            layout();
         }
     }
 

@@ -59,7 +59,6 @@ import javax.servlet.http.HttpServletRequest;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.ShowUntranslatedContentsActionItem;
 import org.jahia.bin.Render;
 import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.exceptions.JahiaException;
@@ -125,7 +124,6 @@ public class URLResolver {
     private String siteKey;
     private String siteKeyByServerName;
     private boolean mappable = false;
-    private boolean showUntranslatedNodes = false;
 
     private String redirectUrl;
     private String vanityUrl;
@@ -202,7 +200,6 @@ public class URLResolver {
                 }
             }
         }
-        this.showUntranslatedNodes = request.getParameter(ShowUntranslatedContentsActionItem.SHOW_UNTRANSLATED_CONTENTS_PARAM) != null;
     }
 
     private void redirect(HttpServletRequest request, VanityUrl defaultVanityUrl) {
@@ -242,7 +239,6 @@ public class URLResolver {
             path = getUrlPathInfo().substring(1);
             init();
         }
-        this.showUntranslatedNodes = renderContext.isShowUntranslatedContents();
     }
 
     private void init() {
@@ -498,7 +494,7 @@ public class URLResolver {
                             if (siteName != null && session.itemExists("/sites/" + siteName)) {
                                 siteInfo = new SiteInfo((JCRSiteNode) session.getNode("/sites/" + siteName));
 
-                                if ((siteInfo.isMixLanguagesActive() || showUntranslatedNodes) && siteInfo.getDefaultLanguage() != null) {
+                                if (siteInfo.isMixLanguagesActive() && siteInfo.getDefaultLanguage() != null) {
                                     session.setFallbackLocale(LanguageCodeConverters.getLocaleFromCode(siteInfo.getDefaultLanguage()));
                                 }
                             }
@@ -531,7 +527,7 @@ public class URLResolver {
             siteInfoCache.remove(cacheKey);
             throw new RepositoryException("could not resolve site for " + path + " in workspace " + workspace + " in language " + locale);
         }
-        if ((siteInfo.isMixLanguagesActive() || showUntranslatedNodes) && siteInfo.getDefaultLanguage() != null) {
+        if (siteInfo.isMixLanguagesActive() && siteInfo.getDefaultLanguage() != null) {
             JCRSessionFactory.getInstance().setFallbackLocale(LanguageCodeConverters.getLocaleFromCode(siteInfo.getDefaultLanguage()));
         }
         JCRSessionWrapper userSession = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);

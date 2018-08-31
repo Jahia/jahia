@@ -44,7 +44,6 @@
 package org.jahia.services.render;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.ShowUntranslatedContentsActionItem;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.services.channels.Channel;
@@ -274,7 +273,10 @@ public class RenderContext {
     }
 
     public Locale getFallbackLocale() {
-        return ((site != null && site.isMixLanguagesActive()) || isShowUntranslatedContents()) ? LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()) : null;
+        if (site != null) {
+            return site.isMixLanguagesActive() ? LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()) : null;
+        }
+        return null;
     }
 
     public boolean isLiveMode() {
@@ -442,9 +444,5 @@ public class RenderContext {
     public boolean isReadOnly() {
         SettingsBean settings = SettingsBean.getInstance();
         return (settings.isReadOnlyMode() || settings.isMaintenanceMode() || settings.isFullReadOnlyMode());
-    }
-
-    public boolean isShowUntranslatedContents() {
-        return request.getParameter(ShowUntranslatedContentsActionItem.SHOW_UNTRANSLATED_CONTENTS_PARAM) != null;
     }
 }

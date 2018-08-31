@@ -79,7 +79,6 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.WindowUtil;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
@@ -647,10 +646,6 @@ public class MainModule extends Module {
     }
 
     public String getUrl(String path, String template, String channel, String variant, boolean preserveQueryString) {
-        return getUrl(path, template, channel, variant, preserveQueryString, null);
-    }
-
-    public String getUrl(String path, String template, String channel, String variant, boolean preserveQueryString, String[] paramsToIgnore) {
         if (template != null && "default".equals(template)) {
             template = null;
         }
@@ -672,7 +667,7 @@ public class MainModule extends Module {
         }
 
         if (preserveQueryString) {
-            appendQueryString(url, paramsToIgnore);
+            appendQueryString(url);
         }
 
         return url.toString();
@@ -682,30 +677,16 @@ public class MainModule extends Module {
      * Appends the current URL query string (if present) to the specified one.
      */
     private static void appendQueryString(StringBuilder url) {
-        appendParamsToUrl(url, null);
-    }
+        List<String[]> paramsToPreserve = getQueryStringParametersToPreserve(RESERVED_REQUESTPARAMETERS);
 
-    /**
-     * Appends the current URL query string (if present) to the specified one.
-     */
-    private static void appendQueryString(StringBuilder url, String[] paramsToIgnore) {
-        if (paramsToIgnore != null) {
-            paramsToIgnore = Formatter.concat(paramsToIgnore, RESERVED_REQUESTPARAMETERS);
-        } else {
-            paramsToIgnore = RESERVED_REQUESTPARAMETERS;
-        }
-        appendParamsToUrl(url, getQueryStringParametersToPreserve(paramsToIgnore));
-    }
-
-    public static void appendParamsToUrl(StringBuilder url, List<String[]> params) {
-        if (params == null || params.isEmpty()) {
+        if (paramsToPreserve == null || paramsToPreserve.isEmpty()) {
             // no query string available
             return;
         }
 
         url.append(url.indexOf("?") == -1 ? '?' : '&');
         boolean first = true;
-        for (String[] p : params) {
+        for (String[] p : paramsToPreserve) {
             if (!first) {
                 url.append('&');
             } else {
@@ -1121,6 +1102,9 @@ public class MainModule extends Module {
 
     public void refreshInfoLayer() {
         infoLayers.removeAll();
+
+        handleTranslateStatus();
+
         if (!activeLayers.isEmpty()) {
             infoLayers.setMainModule(this);
 
@@ -1236,6 +1220,22 @@ public class MainModule extends Module {
                                 infoLayers.addInfoLayer(m, images, null, true, "1");
                             }
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    private void handleTranslateStatus() {
+        List<Module> modules = ModuleHelper.getModules();
+
+        if (modules != null) {
+            for (Module m : modules) {
+                if (m.isTranslatable() && m instanceof SimpleModule) {
+                    if (activeLayers.containsKey("translate")) {
+                        ((SimpleModule) m).displayPlaceholder("TO BE TRANSLATED");
+                    } else {
+                        ((SimpleModule) m).removePlaceholder();
                     }
                 }
             }
@@ -1572,13 +1572,6 @@ public class MainModule extends Module {
         return template;
     }
 
-    public GWTJahiaChannel getActiveChannel() {
-        return activeChannel;
-    }
-
-    public String getActiveChannelVariant() {
-        return activeChannelVariant;
-    }
 
     public final int getIE10FrameTop() {
         return getIE10FrameTop(IFrameElement.as(frame.getElement()));

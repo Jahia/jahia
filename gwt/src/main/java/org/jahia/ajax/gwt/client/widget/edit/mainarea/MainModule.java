@@ -1232,7 +1232,7 @@ public class MainModule extends Module {
 
         if (modules != null) {
             for (Module m : modules) {
-                if (m.isTranslatable() && m instanceof SimpleModule) {
+                if (m instanceof SimpleModule) {
                     if (activeLayers.containsKey("translate")) {
                         ((SimpleModule) m).showTranslatableModule();
                     } else {

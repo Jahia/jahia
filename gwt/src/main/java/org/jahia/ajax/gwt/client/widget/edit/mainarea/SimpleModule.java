@@ -70,8 +70,11 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEnginePopupListener;
+import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
+import org.jahia.ajax.gwt.client.widget.contentengine.TranslateContentEngine;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 import org.jahia.ajax.gwt.client.widget.edit.ModuleSelectionListener;
 
@@ -95,10 +98,13 @@ public class SimpleModule extends Module {
     private String boundProperty = "j:bindedComponent";
     private HTML placeholder;
     private TranslatableHighlight translatableHighlight;
+    private Listener openEditEngineListener;
+    private Listener openTranslateEngineListener;
 
     public SimpleModule(String id, String path, Element divElement, MainModule mainModule) {
         super(id, path, divElement, mainModule);
         editable = !"false".equals(DOM.getElementAttribute(divElement, "editable"));
+        initializeListeners();
     }
 
     public SimpleModule(String id, final String path, Element divElement, final MainModule mainModule, boolean header) {
@@ -124,6 +130,31 @@ public class SimpleModule extends Module {
         if (bindable && head !=null) {
             head.addTool(new ToolButton("x-tool-pin", new BindSelectionListener(mainModule)));
         }
+
+        initializeListeners();
+    }
+
+    private void initializeListeners() {
+        openEditEngineListener = new EditContentEnginePopupListener(this, mainModule.getEditLinker());
+
+        final Module m = this;
+        openTranslateEngineListener = new Listener<ComponentEvent>() {
+
+            @Override
+            public void handleEvent(ComponentEvent be) {
+                if (!m.isSelectable() || MainModule.isGlobalSelectionDisabled()) {
+                    return;
+                }
+
+                if (ModuleHelper.canUseComponentForEdit(ModuleHelper.getNodeType(m.getNode().getNodeTypes().get(0))) &&
+                        PermissionsUtils.isPermitted("jcr:modifyProperties", m.getNode().getPermissions())) {
+
+                    new TranslateContentEngine(m.getNode(), mainModule.getEditLinker(),
+                            JahiaGWTParameters.getLanguage(m.getTranslatableFromLanguage()),
+                            JahiaGWTParameters.getLanguage(JahiaGWTParameters.getLanguage())).show();
+                }
+            }
+        };
     }
 
     @Override
@@ -170,7 +201,7 @@ public class SimpleModule extends Module {
             };
             addListener(Events.OnClick, listener);
             addListener(Events.OnContextMenu, listener);
-            addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this, mainModule.getEditLinker()));
+            addListener(Events.OnDoubleClick, openEditEngineListener);
 
             Listener<ComponentEvent> hoverListener = new Listener<ComponentEvent>() {
 
@@ -247,18 +278,30 @@ public class SimpleModule extends Module {
     }
 
     public void showTranslatableModule() {
-        if (translatableHighlight == null) {
+        if (translatableHighlight == null && getTranslatableFromLanguage() != null) {
+
+            // add a placeholder if necessary
             displayPlaceholder("TO BE TRANSLATED");
+
+            // set highlight around module
             translatableHighlight = new TranslatableHighlight(this);
             translatableHighlight.select();
+
+            // open translate engine on double click
+            removeListener(Events.OnDoubleClick, openEditEngineListener);
+            addListener(Events.OnDoubleClick, openTranslateEngineListener);
         }
     }
 
     public void hideTranslatableModule() {
         if (translatableHighlight != null) {
             removePlaceholder();
+
             translatableHighlight.hide();
             translatableHighlight = null;
+
+            removeListener(Events.OnDoubleClick, openTranslateEngineListener);
+            addListener(Events.OnDoubleClick, openEditEngineListener);
         }
     }
 

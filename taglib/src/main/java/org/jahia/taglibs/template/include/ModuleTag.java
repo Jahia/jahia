@@ -256,11 +256,12 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                             add += " bindable=\"true\"";
                         }
 
-                        if (node.getI18Ns().getSize() > 0) {
+                        List<Locale> existingTranslations = node.getExistingLocales();
+                        if (existingTranslations != null && existingTranslations.size() > 0) {
                             try {
                                 node.getI18N(renderContext.getMainResourceLocale());
                             } catch (ItemNotFoundException e) {
-                                add += " translatable=\"true\"";
+                                add += " translatable=\"" + existingTranslations.get(0) + "\"";
                             }
                         }
 

@@ -593,8 +593,8 @@ public class MainModule extends Module {
                 includeSubTypes);
     }
 
-    public static void editContent(String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, boolean disableRefreshAfterSave) {
-        skipRefreshAfterSaveFromEngine = disableRefreshAfterSave;
+    public static void editContent(String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, boolean skipRefresh) {
+        skipRefreshAfterSaveFromEngine = skipRefresh;
         if (displayName == null) {
             List<Module> modules = ModuleHelper.getModulesByPath().get(path);
             EngineLoader.showEditEngine(getInstance().getEditLinker(), modules.get(0).getNode(), null);

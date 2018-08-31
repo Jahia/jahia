@@ -94,6 +94,7 @@ public class SimpleModule extends Module {
     private DropTarget dragTarget = null;
     private String boundProperty = "j:bindedComponent";
     private HTML placeholder;
+    private TranslatableHighlight translatableHighlight;
 
     public SimpleModule(String id, String path, Element divElement, MainModule mainModule) {
         super(id, path, divElement, mainModule);
@@ -242,6 +243,22 @@ public class SimpleModule extends Module {
                     }
                 }
             });
+        }
+    }
+
+    public void showTranslatableModule() {
+        if (translatableHighlight == null) {
+            displayPlaceholder("TO BE TRANSLATED");
+            translatableHighlight = new TranslatableHighlight(this);
+            translatableHighlight.select();
+        }
+    }
+
+    public void hideTranslatableModule() {
+        if (translatableHighlight != null) {
+            removePlaceholder();
+            translatableHighlight.hide();
+            translatableHighlight = null;
         }
     }
 

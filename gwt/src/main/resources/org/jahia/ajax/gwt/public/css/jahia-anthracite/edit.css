@@ -447,6 +447,54 @@ button.button-disable:hover, div.button-disable:hover {
     margin-left: -3px
 }
 
+.translatable-top-list {
+    border-top: 3px solid #09cc18;
+}
+.translatable-bottom-list {
+    border-bottom: 3px solid #09cc18;
+    margin-top: -3px;
+}
+.translatable-left-list {
+    border-left: 3px solid #09cc18;
+}
+.translatable-right-list {
+    border-left: 3px solid #09cc18;
+    margin-left: -3px;
+}
+
+
+
+.translatable-top-simple {
+    border-top: 3px solid #09cc18;
+}
+.translatable-bottom-simple {
+    border-bottom: 3px solid #09cc18;
+    margin-top: -3px;
+}
+.translatable-left-simple {
+    border-left: 3px solid #09cc18;
+}
+.translatable-right-simple {
+    border-left: 3px solid #09cc18;
+    margin-left: -3px;
+}
+
+
+.translatable-top-area {
+    border-top: 3px solid #09cc18;
+}
+.translatable-bottom-area {
+    border-bottom: 3px solid #09cc18;
+    margin-top: -3px;
+}
+.translatable-left-area {
+    border-left: 3px solid #09cc18;
+}
+.translatable-right-area {
+    border-left: 3px solid #09cc18;
+    margin-left: -3px
+}
+
 
 .hover-top-list {
     border-top: 3px solid #39f;

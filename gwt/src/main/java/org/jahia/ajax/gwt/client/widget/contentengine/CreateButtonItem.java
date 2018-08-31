@@ -167,15 +167,17 @@ public class CreateButtonItem extends SaveButtonItem {
                     engine.close();
 
                     engine.getLinker().setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
-                    Map<String, Object> data = new HashMap<String, Object>();
-                    data.put(Linker.REFRESH_MAIN, true);
-                    data.put("node", node);
-                    engine.getLinker().refresh(data);
+                    if (!MainModule.checkAndResetSkipRefreshAfterSave()) {
+                        Map<String, Object> data = new HashMap<String, Object>();
+                        data.put(Linker.REFRESH_MAIN, true);
+                        data.put("node", node);
+                        engine.getLinker().refresh(data);
 
-                    MainModule mainModule = MainModule.getInstance();
-                    if (redirectToCreatedPage && mainModule != null && mainModule.getEditLinker() != null && node.isPage()) {
-                        // if redirection for a newly created page is activated, we refresh the left-side panel and navigate to the created page
-                        MainModule.staticGoTo(node.getPath(), null);
+                        MainModule mainModule = MainModule.getInstance();
+                        if (redirectToCreatedPage && mainModule != null && mainModule.getEditLinker() != null && node.isPage()) {
+                            // if redirection for a newly created page is activated, we refresh the left-side panel and navigate to the created page
+                            MainModule.staticGoTo(node.getPath(), null);
+                        }
                     }
                 } else {
                     engine.getTabs().removeAll();

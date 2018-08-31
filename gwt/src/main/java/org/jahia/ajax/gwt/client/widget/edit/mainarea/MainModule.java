@@ -133,6 +133,9 @@ public class MainModule extends Module {
     private String activeChannelVariant;
     private static boolean globalSelectionDisabled = false;
 
+    // global variable use to prevent refresh after save in edit engines
+    private static boolean skipRefreshAfterSaveFromEngine = false;
+
     protected Point framePosition = new Point(0, 0);
 
     public MainModule(final String path, final String template, String nodeTypes, GWTEditConfiguration config) {
@@ -225,6 +228,14 @@ public class MainModule extends Module {
 
     public static boolean isGlobalSelectionDisabled() {
         return globalSelectionDisabled;
+    }
+
+    // Returns the value of disable refresh and set it back to false.
+    public static boolean checkAndResetSkipRefreshAfterSave() {
+        boolean currentValue = skipRefreshAfterSaveFromEngine;
+        skipRefreshAfterSaveFromEngine = false;
+        log("do refresh :" + currentValue);
+        return currentValue;
     }
 
     public Map<Module, Selection> getSelections() {
@@ -575,7 +586,8 @@ public class MainModule extends Module {
      * @param includeSubTypes if <code>true</code>, also the sub-types of the specified types will be shown in the content type selector;
      *            <code>false</code> means only the specified node types will be allowed
      */
-    public static void createContent(String path, JsArrayString nodeTypes, boolean includeSubTypes) {
+    public static void createContent(String path, JsArrayString nodeTypes, boolean includeSubTypes, boolean skipRefresh) {
+        skipRefreshAfterSaveFromEngine = skipRefresh;
         GWTJahiaNode parent = new GWTJahiaNode();
         parent.setPath(path);
         ContentActions.showContentWizard(getInstance().getEditLinker(),
@@ -583,7 +595,8 @@ public class MainModule extends Module {
                 includeSubTypes);
     }
 
-    public static void editContent(String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes) {
+    public static void editContent(String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, boolean disableRefreshAfterSave) {
+        skipRefreshAfterSaveFromEngine = disableRefreshAfterSave;
         if (displayName == null) {
             List<Module> modules = ModuleHelper.getModulesByPath().get(path);
             EngineLoader.showEditEngine(getInstance().getEditLinker(), modules.get(0).getNode(), null);
@@ -1257,15 +1270,15 @@ public class MainModule extends Module {
         $wnd.hideMask = function () {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::hideMask()();
         };
-        $wnd.createContent = function (path, types, includeSubTypes) {
+        $wnd.createContent = function (path, types, includeSubTypes, skipRefresh) {
             if (typeof includeSubTypes !== 'undefined') {
-                @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::createContent(*)(path,types,includeSubTypes);
+                @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::createContent(*)(path,types,includeSubTypes, skipRefresh);
             } else {
-                @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::createContent(*)(path,types,true);
+                @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::createContent(*)(path,types,true, skipRefresh);
             }
         };
-        $wnd.editContent = function (path, displayName, types, inheritedTypes) {
-            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::editContent(*)(path, displayName, types, inheritedTypes);
+        $wnd.editContent = function (path, displayName, types, inheritedTypes, skipRefresh) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::editContent(*)(path, displayName, types, inheritedTypes, skipRefresh);
         };
         $wnd.disableGlobalSelection = function (value) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::globalSelectionDisabled = value;
@@ -1594,6 +1607,10 @@ public class MainModule extends Module {
 
     public final native void scrollTo(IFrameElement iFrameElement, int x, int y) /*-{
         iFrameElement.contentWindow.scrollTo(x, y);
+    }-*/;
+
+    public static native void log(String txt) /*-{
+        console.log(txt);
     }-*/;
 
 }

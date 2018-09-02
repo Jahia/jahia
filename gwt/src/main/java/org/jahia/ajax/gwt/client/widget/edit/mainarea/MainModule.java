@@ -99,7 +99,7 @@ import java.util.*;
  */
 public class MainModule extends Module {
 
-    private static final String[] RESERVED_REQUESTPARAMETERS = new String[] {"channel", "variant"};
+    private static final String[] RESERVED_REQUESTPARAMETERS = new String[]{"channel", "variant"};
 
     private static MainModule module;
 
@@ -131,9 +131,6 @@ public class MainModule extends Module {
     private GWTJahiaChannel activeChannel;
     private String activeChannelVariant;
     private static boolean globalSelectionDisabled = false;
-
-    // global variable use to prevent refresh after save in edit engines
-    private static boolean skipRefreshAfterSaveFromEngine = false;
 
     protected Point framePosition = new Point(0, 0);
 
@@ -227,13 +224,6 @@ public class MainModule extends Module {
 
     public static boolean isGlobalSelectionDisabled() {
         return globalSelectionDisabled;
-    }
-
-    // Returns the value of disable refresh and set it back to false.
-    public static boolean checkAndResetSkipRefreshAfterSave() {
-        boolean currentValue = skipRefreshAfterSaveFromEngine;
-        skipRefreshAfterSaveFromEngine = false;
-        return currentValue;
     }
 
     public Map<Module, Selection> getSelections() {
@@ -585,24 +575,22 @@ public class MainModule extends Module {
      *            <code>false</code> means only the specified node types will be allowed
      * @param skipRefresh whether to avoid refreshing the edit engine on content save
      */
-    public static void createContent(String path, JsArrayString nodeTypes, boolean includeSubTypes, boolean skipRefresh) {
-        skipRefreshAfterSaveFromEngine = skipRefresh;
+    public static void createContent(String path, JsArrayString nodeTypes, boolean includeSubTypes, boolean skipRefreshOnClose) {
         GWTJahiaNode parent = new GWTJahiaNode();
         parent.setPath(path);
         ContentActions.showContentWizard(getInstance().getEditLinker(),
                 nodeTypes != null && nodeTypes.length() > 0 ? nodeTypes.join(" ") : "jmix:droppableContent", parent,
-                includeSubTypes);
+                includeSubTypes, skipRefreshOnClose);
     }
 
-    public static void editContent(String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, boolean skipRefresh) {
-        skipRefreshAfterSaveFromEngine = skipRefresh;
+    public static void editContent(String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, boolean skipRefreshOnClose) {
         if (displayName == null) {
             List<Module> modules = ModuleHelper.getModulesByPath().get(path);
             EngineLoader.showEditEngine(getInstance().getEditLinker(), modules.get(0).getNode(), null);
         } else {
-            GWTJahiaNode n = getGwtJahiaNode(path, path.substring(path.lastIndexOf("/")  + 1), displayName, nodeTypes, inheritedNodeTypes);
+            GWTJahiaNode n = getGwtJahiaNode(path, path.substring(path.lastIndexOf("/") + 1), displayName, nodeTypes, inheritedNodeTypes);
             EditLinker.setSelectionOnBodyAttributes(n);
-            EngineLoader.showEditEngine(getInstance().getEditLinker(), n, null);
+            EngineLoader.showEditEngine(getInstance().getEditLinker(), n, null, skipRefreshOnClose);
         }
     }
 
@@ -727,7 +715,7 @@ public class MainModule extends Module {
         List<String[]> toAppend = new ArrayList<String[]>();
         for (Map.Entry<String, List<String>> p : params.entrySet()) {
             for (String v : p.getValue()) {
-                toAppend.add(new String[] { p.getKey(), v });
+                toAppend.add(new String[]{p.getKey(), v});
             }
         }
 
@@ -921,7 +909,7 @@ public class MainModule extends Module {
                 String pathWithoutFrame = path.replaceFirst("frame/", "/");
                 if (Window.Location.getQueryString().contains("gwt.codesvr")) {
                     Map<String, String> m = getParamsFromUrl(Window.Location.getQueryString());
-                    pathWithoutFrame += (pathWithoutFrame.contains("?") ? '&': '?') + "gwt.codesvr=" + m.get("gwt.codesvr");
+                    pathWithoutFrame += (pathWithoutFrame.contains("?") ? '&' : '?') + "gwt.codesvr=" + m.get("gwt.codesvr");
                 }
                 if (!pathWithoutFrame.equals(currentHref) || firstLoad) {
                     firstLoad = false;
@@ -1406,8 +1394,8 @@ public class MainModule extends Module {
             framePosition.x = WindowUtil.getScrollLeft(getInnerElement());
             framePosition.y = WindowUtil.getScrollTop(getInnerElement());
         } else {
-            framePosition.x=getIE10FrameLeft();
-            framePosition.y=getIE10FrameTop();
+            framePosition.x = getIE10FrameLeft();
+            framePosition.y = getIE10FrameTop();
         }
         return framePosition;
     }
@@ -1474,7 +1462,7 @@ public class MainModule extends Module {
                                                         + " due to maintenance downtime or capacity problems.")
                                                 + "<br>"
                                                 + Messages.get("label.error.maintenance.description",
-                                                        "We are sorry for the inconvenience. Please check back later."),
+                                                "We are sorry for the inconvenience. Please check back later."),
                                         null);
                             }
                         });

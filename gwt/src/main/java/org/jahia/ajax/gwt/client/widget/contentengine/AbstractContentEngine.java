@@ -76,7 +76,6 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.AreaModule;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageSwitcherActionItem;
 
 import java.util.*;
@@ -116,7 +115,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected GWTJahiaNode.WipStatus wipStatus = GWTJahiaNode.WipStatus.DISABLED;
     private boolean wipModified;
     protected boolean closed = false;
-    private boolean skipRefreshOnClose = false;
+    private boolean skipRefreshOnClose;
 
     // general properties
     protected final List<GWTJahiaNodeProperty> changedProperties = new ArrayList<GWTJahiaNodeProperty>();
@@ -126,12 +125,12 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
 
     protected String parentPath;
 
-    protected AbstractContentEngine(GWTEngineConfiguration config, Linker linker, String parentPath) {
+    protected AbstractContentEngine(GWTEngineConfiguration config, Linker linker, String parentPath,boolean skipRefreshOnClose) {
         this.config = config;
         this.linker = linker;
         this.parentPath = parentPath;
         setId("JahiaGxtContentEngine");
-        this.skipRefreshOnClose = MainModule.checkAndResetSkipRefreshAfterSave();
+        this.skipRefreshOnClose = skipRefreshOnClose;
     }
 
     protected void init(EngineContainer container) {

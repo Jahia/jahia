@@ -312,12 +312,16 @@ public class ContentActions {
     }
 
     public static void showContentWizard(final Linker linker, final String nodeTypes, final GWTJahiaNode parent, String name, boolean includeSubTypes) {
-        showContentWizard(linker, nodeTypes, parent, name, includeSubTypes, null);
+        showContentWizard(linker, nodeTypes, parent, name, includeSubTypes, null, false);
     }
 
-    public static void showContentWizard(final Linker linker, final String nodeTypes, final GWTJahiaNode parent, String name, boolean includeSubTypes, Set<String> displayedNodeTypes) {
+    public static void showContentWizard(final Linker linker, final String nodeTypes, final GWTJahiaNode parent, boolean includeSubTypes, boolean skipRefreshOnClose) {
+        showContentWizard(linker, nodeTypes, parent, null, includeSubTypes, null, skipRefreshOnClose);
+    }
+
+    public static void showContentWizard(final Linker linker, final String nodeTypes, final GWTJahiaNode parent, String name, boolean includeSubTypes, Set<String> displayedNodeTypes, boolean skipRefreshOnClose) {
         if (parent != null) {
-            ContentTypeWindow.createContent(linker, name, nodeTypes != null ? Arrays.asList(nodeTypes.split(" ")) : null, new HashMap<String, GWTJahiaNodeProperty>(), parent, includeSubTypes, false, displayedNodeTypes);
+            ContentTypeWindow.createContent(linker, name, nodeTypes != null ? Arrays.asList(nodeTypes.split(" ")) : null, new HashMap<String, GWTJahiaNodeProperty>(), parent, includeSubTypes, false, displayedNodeTypes, skipRefreshOnClose);
         }
     }
 

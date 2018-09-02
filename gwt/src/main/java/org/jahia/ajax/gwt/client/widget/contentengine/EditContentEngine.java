@@ -95,8 +95,8 @@ public class EditContentEngine extends AbstractContentEngine {
      * @param node   the content object to be edited
      * @param linker the edit linker for refresh purpose
      */
-    public EditContentEngine(GWTEngineConfiguration configuration, GWTJahiaNode node, Linker linker, EngineContainer engineContainer) {
-        super(configuration, linker, node.getPath().substring(0, node.getPath().lastIndexOf('/')));
+    public EditContentEngine(GWTEngineConfiguration configuration, GWTJahiaNode node, Linker linker, EngineContainer engineContainer, boolean skipRefreshOnClose) {
+        super(configuration, linker, node.getPath().substring(0, node.getPath().lastIndexOf('/')), skipRefreshOnClose);
         contentPath = node.getPath();
         nodeName = node.getName();
         this.node = node;
@@ -145,7 +145,7 @@ public class EditContentEngine extends AbstractContentEngine {
             EditEngineTabItem tabItem = tabConfig.getTabItem();
             if (tabConfig.showInEngine() && (tabConfig.getRequiredPermission() == null || PermissionsUtils.isPermitted(tabConfig.getRequiredPermission(), JahiaGWTParameters.getSiteNode()))) {
                 if ((tabItem.getHideForTypes().isEmpty() || !node.isNodeType(tabItem.getHideForTypes())) &&
-                        ((hasOrderableChildNodes && tabItem.isOrderableTab()) || ( !tabItem.isOrderableTab() && (tabItem.getShowForTypes().isEmpty() || node.isNodeType(tabItem.getShowForTypes()))))) {
+                        ((hasOrderableChildNodes && tabItem.isOrderableTab()) || (!tabItem.isOrderableTab() && (tabItem.getShowForTypes().isEmpty() || node.isNodeType(tabItem.getShowForTypes()))))) {
                     tabs.add(tabItem.create(tabConfig, this));
                 }
             }
@@ -272,7 +272,7 @@ public class EditContentEngine extends AbstractContentEngine {
                         }
                     }
                     // if no language set and the state is LANGUAGES, we change it to DISABLED
-                    wipStatus = status == WipStatus.LANGUAGES && workInProgressLanguages.isEmpty() ? WipStatus.DISABLED : status; 
+                    wipStatus = status == WipStatus.LANGUAGES && workInProgressLanguages.isEmpty() ? WipStatus.DISABLED : status;
 
                     // update button
                     updateWipControls();

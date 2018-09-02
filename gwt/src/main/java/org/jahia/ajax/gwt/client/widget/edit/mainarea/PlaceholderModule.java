@@ -124,7 +124,7 @@ public class PlaceholderModule extends Module {
         }
 
         if (getParentModule() instanceof AreaModule && getParentModule().getChildCount() == 0 && ((AreaModule) getParentModule()).editable) {
-           ((AreaModule) getParentModule()).setEnabledEmptyArea();
+            ((AreaModule) getParentModule()).setEnabledEmptyArea();
         }
 
         String[] nodeTypesArray = null;
@@ -152,7 +152,7 @@ public class PlaceholderModule extends Module {
                     }
                 }
                 Image icon = ContentModelIconProvider.getInstance().getIcon(nodeType).createImage();
-                icon.setTitle(nodeType != null ? nodeType.getLabel() : s );
+                icon.setTitle(nodeType != null ? nodeType.getLabel() : s);
                 LayoutContainer p = new HorizontalPanel();
                 p.add(icon);
 
@@ -174,7 +174,7 @@ public class PlaceholderModule extends Module {
                             if ((path != null) && !"*".equals(path) && !path.startsWith("/")) {
                                 nodeName = path;
                             }
-                            ContentActions.showContentWizard(mainModule.getEditLinker(), s, parentNode, nodeName, true, displayedNodeTypes);
+                            ContentActions.showContentWizard(mainModule.getEditLinker(), s, parentNode, nodeName, true, displayedNodeTypes, false);
                         }
                     }
                 });

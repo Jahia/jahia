@@ -95,8 +95,8 @@ public class CreateContentEngine extends AbstractContentEngine {
      * @param targetName                  The name of the new node, or null if automatically defined
      * @param createInParentAndMoveBefore
      */
-    public CreateContentEngine(GWTEngineConfiguration configuration, Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, Map<String, GWTJahiaNodeProperty> props, String targetName, boolean createInParentAndMoveBefore, EngineContainer engineContainer) {
-        super(configuration, linker, createInParentAndMoveBefore ? parent.getPath().substring(0, parent.getPath().lastIndexOf('/')) : parent.getPath());
+    public CreateContentEngine(GWTEngineConfiguration configuration, Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, Map<String, GWTJahiaNodeProperty> props, String targetName, boolean createInParentAndMoveBefore, EngineContainer engineContainer, boolean skipRefreshOnClose) {
+        super(configuration, linker, createInParentAndMoveBefore ? parent.getPath().substring(0, parent.getPath().lastIndexOf('/')) : parent.getPath(), skipRefreshOnClose);
         this.existingNode = false;
         this.targetNode = parent;
         this.type = type;
@@ -128,10 +128,10 @@ public class CreateContentEngine extends AbstractContentEngine {
         for (GWTEngineTab tabConfig : config.getEngineTabs()) {
             EditEngineTabItem tabItem = tabConfig.getTabItem();
             if (tabConfig.showInEngine() && (tabConfig.getRequiredPermission() == null ||
-                PermissionsUtils.isPermitted(tabConfig.getRequiredPermission(), JahiaGWTParameters.getSiteNode()))) {
+                    PermissionsUtils.isPermitted(tabConfig.getRequiredPermission(), JahiaGWTParameters.getSiteNode()))) {
                 if (tabItem.isHandleCreate() &&
-                    (tabItem.getHideForTypes().isEmpty() || !tabItem.getHideForTypes().contains(type.getName())) &&
-                    (tabItem.getShowForTypes().isEmpty() || tabItem.getShowForTypes().contains(type.getName()))) {
+                        (tabItem.getHideForTypes().isEmpty() || !tabItem.getHideForTypes().contains(type.getName())) &&
+                        (tabItem.getShowForTypes().isEmpty() || tabItem.getShowForTypes().contains(type.getName()))) {
                     tabs.add(tabItem.create(tabConfig, this));
                 }
             }
@@ -181,7 +181,7 @@ public class CreateContentEngine extends AbstractContentEngine {
                 }
                 Object itemData = item.getData("item");
                 if (itemData instanceof EditEngineTabItem) {
-                    ((EditEngineTabItem)itemData).onLanguageChange(getSelectedLanguage(), item);
+                    ((EditEngineTabItem) itemData).onLanguageChange(getSelectedLanguage(), item);
                 }
             }
         }

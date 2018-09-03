@@ -506,26 +506,21 @@ public class JCRPublicationService extends JahiaService {
             JCRObservationManager.popEventListenersAvailableDuringPublishOnly();
         }
 
-        boolean doLogging = loggingService.isEnabled();
-        if (doLogging) {
+        if (loggingService.isEnabled()) {
             Integer operationType = JCRObservationManager.getCurrentOperationType();
-            if (operationType != null && operationType == JCRObservationManager.IMPORT) {
-                doLogging = false;
-            }
-        }
-        if (doLogging) {
-            // now let's output the publication information to the logging service.
-            for (JCRNodeWrapper publishedNode : toPublish) {
-                StringBuilder commentBuf = null;
-                if (comments != null && comments.size() > 0) {
-                    commentBuf = new StringBuilder();
-                    for (String comment : comments) {
-                        commentBuf.append(comment);
+            if (operationType == null || operationType != JCRObservationManager.IMPORT) {
+                for (JCRNodeWrapper publishedNode : toPublish) {
+                    StringBuilder commentBuf = null;
+                    if (comments != null && comments.size() > 0) {
+                        commentBuf = new StringBuilder();
+                        for (String comment : comments) {
+                            commentBuf.append(comment);
+                        }
                     }
+                    loggingService.logContentEvent(userID, "", "", publishedNode.getIdentifier(), publishedNode.getPath(),
+                            publishedNode.getPrimaryNodeTypeName(), "publishedNode", sourceSession.getWorkspace().getName(),
+                            destinationSession.getWorkspace().getName(), commentBuf != null ? commentBuf.toString() : "");
                 }
-                loggingService.logContentEvent(userID, "", "", publishedNode.getIdentifier(), publishedNode.getPath(),
-                        publishedNode.getPrimaryNodeTypeName(), "publishedNode", sourceSession.getWorkspace().getName(),
-                        destinationSession.getWorkspace().getName(), commentBuf != null ? commentBuf.toString() : "");
             }
         }
 

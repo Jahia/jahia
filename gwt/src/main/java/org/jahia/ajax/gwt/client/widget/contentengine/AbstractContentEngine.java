@@ -115,7 +115,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected GWTJahiaNode.WipStatus wipStatus = GWTJahiaNode.WipStatus.DISABLED;
     private boolean wipModified;
     protected boolean closed = false;
-    private boolean skipRefreshOnClose;
+    private boolean skipRefreshOnSave;
 
     // general properties
     protected final List<GWTJahiaNodeProperty> changedProperties = new ArrayList<GWTJahiaNodeProperty>();
@@ -125,12 +125,12 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
 
     protected String parentPath;
 
-    protected AbstractContentEngine(GWTEngineConfiguration config, Linker linker, String parentPath,boolean skipRefreshOnClose) {
+    protected AbstractContentEngine(GWTEngineConfiguration config, Linker linker, String parentPath, boolean skipRefreshOnSave) {
         this.config = config;
         this.linker = linker;
         this.parentPath = parentPath;
+        this.skipRefreshOnSave = skipRefreshOnSave;
         setId("JahiaGxtContentEngine");
-        this.skipRefreshOnClose = skipRefreshOnClose;
     }
 
     protected void init(EngineContainer container) {
@@ -645,7 +645,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     /**
      * @return true if closing the engine should not trigger a refresh
      */
-    public boolean skipRefreshOnClose() {
-        return skipRefreshOnClose;
+    public boolean skipRefreshOnSave() {
+        return skipRefreshOnSave;
     }
 }

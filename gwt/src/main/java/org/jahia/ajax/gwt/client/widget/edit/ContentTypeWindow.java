@@ -84,7 +84,7 @@ public class ContentTypeWindow extends Window {
     private Button cancel;
     private ContentTypeTree contentTypeTree;
 
-    public ContentTypeWindow(final Linker linker, GWTJahiaNode parent, List<GWTJahiaNodeType> components, final Map<String, GWTJahiaNodeProperty> props, final String nodeName, final boolean createInParentAndMoveBefore, final boolean skipRefreshOnClose) {
+    public ContentTypeWindow(final Linker linker, GWTJahiaNode parent, List<GWTJahiaNodeType> components, final Map<String, GWTJahiaNodeProperty> props, final String nodeName, final boolean createInParentAndMoveBefore, final boolean skipRefreshOnSave) {
         addStyleName("content-type-window");
         this.linker = linker;
         this.parentNode = parent;
@@ -103,7 +103,7 @@ public class ContentTypeWindow extends Window {
             public void handleEvent(TreeGridEvent<GWTJahiaNodeType> baseEvent) {
                 GWTJahiaNodeType gwtJahiaNodeType = baseEvent.getModel();
                 if (gwtJahiaNodeType != null && linker != null && !gwtJahiaNodeType.isMixin()) {
-                    EngineLoader.showCreateEngine(linker, parentNode, gwtJahiaNodeType, props, nodeName, createInParentAndMoveBefore, null, skipRefreshOnClose);
+                    EngineLoader.showCreateEngine(linker, parentNode, gwtJahiaNodeType, props, nodeName, createInParentAndMoveBefore, null, skipRefreshOnSave);
                     hide();
                 }
             }
@@ -130,7 +130,7 @@ public class ContentTypeWindow extends Window {
             public void componentSelected(ButtonEvent buttonEvent) {
                 GWTJahiaNodeType selectedItem = contentTypeTree.getTreeGrid().getSelectionModel().getSelectedItem();
                 if (selectedItem != null && !selectedItem.isMixin()) {
-                    EngineLoader.showCreateEngine(ContentTypeWindow.this.linker, parentNode, selectedItem, props, nodeName, createInParentAndMoveBefore, null, skipRefreshOnClose);
+                    EngineLoader.showCreateEngine(ContentTypeWindow.this.linker, parentNode, selectedItem, props, nodeName, createInParentAndMoveBefore, null, skipRefreshOnSave);
                     window.hide();
                 }
             }
@@ -163,7 +163,7 @@ public class ContentTypeWindow extends Window {
         createContent(linker, name, nodeTypes, props, targetNode, includeSubTypes, createInParentAndMoveBefore, null, false);
     }
 
-    public static void createContent(final Linker linker, final String name, final List<String> nodeTypes, final Map<String, GWTJahiaNodeProperty> props, final GWTJahiaNode targetNode, boolean includeSubTypes, final boolean createInParentAndMoveBefore, final Set<String> displayedNodeTypes, final boolean skipRefreshOnClose) {
+    public static void createContent(final Linker linker, final String name, final List<String> nodeTypes, final Map<String, GWTJahiaNodeProperty> props, final GWTJahiaNode targetNode, boolean includeSubTypes, final boolean createInParentAndMoveBefore, final Set<String> displayedNodeTypes, final boolean skipRefreshOnSave) {
         linker.loading(Messages.get("label.loading", "Loading"));
         List<String> excluded = new ArrayList<String>();
         if (linker.getConfig().getNonEditableTypes() != null) {
@@ -187,11 +187,11 @@ public class ContentTypeWindow extends Window {
                     if (nodeTypes != null && nodeTypes.size() == 1 && displayedNodeTypes != null) {
                         GWTJahiaNodeType targetNodeType = getTargetNodeType(nodeTypes.get(0), result, displayedNodeTypes);
                         if (targetNodeType != null) {
-                            EngineLoader.showCreateEngine(linker, targetNode, targetNodeType, props, name, createInParentAndMoveBefore, null, skipRefreshOnClose);
+                            EngineLoader.showCreateEngine(linker, targetNode, targetNodeType, props, name, createInParentAndMoveBefore, null, skipRefreshOnSave);
                             return;
                         }
                     }
-                    new ContentTypeWindow(linker, targetNode, result, props, name, createInParentAndMoveBefore, skipRefreshOnClose).show();
+                    new ContentTypeWindow(linker, targetNode, result, props, name, createInParentAndMoveBefore, skipRefreshOnSave).show();
                 }
             }
 

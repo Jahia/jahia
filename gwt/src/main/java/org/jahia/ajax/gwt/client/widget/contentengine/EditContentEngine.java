@@ -95,8 +95,8 @@ public class EditContentEngine extends AbstractContentEngine {
      * @param node   the content object to be edited
      * @param linker the edit linker for refresh purpose
      */
-    public EditContentEngine(GWTEngineConfiguration configuration, GWTJahiaNode node, Linker linker, EngineContainer engineContainer, boolean skipRefreshOnClose) {
-        super(configuration, linker, node.getPath().substring(0, node.getPath().lastIndexOf('/')), skipRefreshOnClose);
+    public EditContentEngine(GWTEngineConfiguration configuration, GWTJahiaNode node, Linker linker, EngineContainer engineContainer, boolean skipRefreshOnSave) {
+        super(configuration, linker, node.getPath().substring(0, node.getPath().lastIndexOf('/')), skipRefreshOnSave);
         contentPath = node.getPath();
         nodeName = node.getName();
         this.node = node;

@@ -585,7 +585,7 @@ public class MainModule extends Module {
     public static void editContent(String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, boolean skipRefreshOnClose) {
         if (displayName == null) {
             List<Module> modules = ModuleHelper.getModulesByPath().get(path);
-            EngineLoader.showEditEngine(getInstance().getEditLinker(), modules.get(0).getNode(), null);
+            EngineLoader.showEditEngine(getInstance().getEditLinker(), modules.get(0).getNode(), null, skipRefreshOnClose);
         } else {
             GWTJahiaNode n = getGwtJahiaNode(path, path.substring(path.lastIndexOf("/") + 1), displayName, nodeTypes, inheritedNodeTypes);
             EditLinker.setSelectionOnBodyAttributes(n);

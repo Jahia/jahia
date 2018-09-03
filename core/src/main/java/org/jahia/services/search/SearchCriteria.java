@@ -83,12 +83,13 @@ public class SearchCriteria implements Serializable {
      * Note, please, if you are creating a sub-class for this class and adding fields, be sure to override {@link #hashCode()} and
      * {@link #equals(Object)} methods.
      */
-    abstract public static class BaseFacetDefinition implements Serializable {
+    public static class BaseFacetDefinition implements Serializable {
 
         private static final long serialVersionUID = 7275734915870152689L;
 
         private String id;
         private int maxFacetResults;
+        private Map<String, Object> data = new HashMap<>();
 
         /**
          * Create a facet definition instance.
@@ -97,7 +98,7 @@ public class SearchCriteria implements Serializable {
          *           are of the same type but are operating on different data objects
          * @param maxFacetResults the maximum number of facet results (different facet values) the facet should return
          */
-        protected BaseFacetDefinition(String id, int maxFacetResults) {
+        public BaseFacetDefinition(String id, int maxFacetResults) {
             if (id == null || id.length() == 0) {
                 throw new IllegalArgumentException("Facet definition ID should not be null or empty");
             }
@@ -125,6 +126,7 @@ public class SearchCriteria implements Serializable {
             int result = 1;
             result = prime * result + ((id == null) ? 0 : id.hashCode());
             result = prime * result + maxFacetResults;
+            result = prime * result + data.hashCode();
             return result;
         }
 
@@ -144,7 +146,39 @@ public class SearchCriteria implements Serializable {
                 return false;
             if (maxFacetResults != other.maxFacetResults)
                 return false;
+            if (!data.equals(other.data)) {
+                return false;
+            }
             return true;
+        }
+
+        /**
+         * Returns a map with facet definition data, which could hold arbitrary fields.
+         * 
+         * @return map with facet definition data
+         */
+        public Map<String, Object> getData() {
+            return data;
+        }
+
+        /**
+         * Retrieves the value of the specified data field.
+         * 
+         * @param dataField the data field name to retrieve value for
+         * @return the value of the requested data field
+         */
+        public Object getField(String dataField) {
+            return getData().get(dataField);
+        }
+
+        /**
+         * Sets the value of the data field to the specified one.
+         * 
+         * @param dataField the data field name
+         * @param value the value
+         */
+        public void setField(String dataField, Object value) {
+            getData().put(dataField, value);
         }
     }
 

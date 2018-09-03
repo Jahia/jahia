@@ -64,8 +64,6 @@ public class FacetData {
 
     /**
      * Initializes an instance of this class.
-     * 
-     * @param facetId the facet identifier
      */
     FacetData() {
         super();

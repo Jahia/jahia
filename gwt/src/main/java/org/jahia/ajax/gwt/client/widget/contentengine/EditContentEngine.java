@@ -208,7 +208,6 @@ public class EditContentEngine extends AbstractContentEngine {
         JahiaContentManagementService.App.getInstance().initializeEditEngine(contentPath, true, new BaseAsyncCallback<GWTJahiaEditEngineInitBean>() {
 
             @Override
-            @SuppressWarnings("unchecked")
             public void onSuccess(GWTJahiaEditEngineInitBean result) {
                 if (closed) {
                     return;
@@ -290,6 +289,8 @@ public class EditContentEngine extends AbstractContentEngine {
                 initTabs();
 
                 tabs.addListener(Events.Select, new Listener<ComponentEvent>() {
+
+                    @Override
                     public void handleEvent(ComponentEvent event) {
                         fillCurrentTab();
                     }

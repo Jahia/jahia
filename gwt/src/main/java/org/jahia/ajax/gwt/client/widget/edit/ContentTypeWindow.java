@@ -97,9 +97,11 @@ public class ContentTypeWindow extends Window {
         setMaximizable(true);
         contentTypeTree = new ContentTypeTree();
         contentTypeTree.fillStore(components);
-        TreeGrid treeGrid = contentTypeTree.getTreeGrid();
+        TreeGrid<?> treeGrid = contentTypeTree.getTreeGrid();
         treeGrid.sinkEvents(Event.ONDBLCLICK + Event.ONCLICK);
         treeGrid.addListener(Events.OnDoubleClick, new Listener<TreeGridEvent<GWTJahiaNodeType>>() {
+
+            @Override
             public void handleEvent(TreeGridEvent<GWTJahiaNodeType> baseEvent) {
                 GWTJahiaNodeType gwtJahiaNodeType = baseEvent.getModel();
                 if (gwtJahiaNodeType != null && linker != null && !gwtJahiaNodeType.isMixin()) {
@@ -177,6 +179,8 @@ public class ContentTypeWindow extends Window {
         }
 
         JahiaContentManagementService.App.getInstance().getContentTypesAsTree(nodeTypes, excluded, includeSubTypes, new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
+
+            @Override
             public void onSuccess(List<GWTJahiaNodeType> result) {
                 linker.loaded();
                 if (result.size() == 1 && result.get(0).getChildren().isEmpty()) {

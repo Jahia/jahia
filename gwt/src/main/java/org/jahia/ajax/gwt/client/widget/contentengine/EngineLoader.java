@@ -96,10 +96,13 @@ public class EngineLoader {
                                    final String targetName, final boolean createInParentAndMoveBefore,
                                    final boolean forceEngineWindow, final GWTEngineConfiguration engineConfiguration, final boolean skipRefreshOnSave) {
         GWT.runAsync(new RunAsyncCallback() {
+
+            @Override
             public void onFailure(Throwable reason) {
 
             }
 
+            @Override
             public void onSuccess() {
                 EngineContainer container = createContainer(linker, forceEngineWindow);
 
@@ -113,8 +116,6 @@ public class EngineLoader {
                 Hover.getInstance().removeAll();
             }
         });
-
-
     }
 
     private static EngineContainer createContainer(Linker linker, boolean forceEngineWindow) {

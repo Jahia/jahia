@@ -3902,11 +3902,10 @@ body[data-indigo-add-visibility-condition="new"] {
 // Input Error icon
 
 img.invalid-icon {
-	background: _theme-color(status, error) !important;
-	height: 29px !important;
+	background: #f44336 !important;
+	height: 31px !important;
 	width: 4px !important;
-	border-radius: 2px;
-	left: -10px !important;
+	left: 0 !important;
 	top: 0 !important;
 }
 

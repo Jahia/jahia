@@ -189,7 +189,7 @@ public class UpdateButtonItem extends SaveButtonItem {
                                 PermissionsUtils.loadPermissions((List<String>) o.get(GWTJahiaNode.PERMISSIONS));
                             }
                         }
-                        if (!engine.skipRefreshOnClose()) {
+                        if (!engine.skipRefreshOnSave()) {
                             engine.getLinker().refresh(data);
                         }
                         // execute external callbacks

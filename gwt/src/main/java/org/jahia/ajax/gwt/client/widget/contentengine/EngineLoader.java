@@ -71,8 +71,8 @@ public class EngineLoader {
         showEngine(EDIT, linker, node, null, null, null, false, false, engineConfiguration, false);
     }
 
-    public static void showEditEngine(final Linker linker, final GWTJahiaNode node, GWTEngineConfiguration engineConfiguration, boolean skipRefreshOnClose) {
-        showEngine(EDIT, linker, node, null, null, null, false, false, engineConfiguration, skipRefreshOnClose);
+    public static void showEditEngine(final Linker linker, final GWTJahiaNode node, GWTEngineConfiguration engineConfiguration, boolean skipRefreshOnSave) {
+        showEngine(EDIT, linker, node, null, null, null, false, false, engineConfiguration, skipRefreshOnSave);
     }
 
     public static void showEditEngine(final Linker linker, final GWTJahiaNode node, boolean forceEngineWindow, GWTEngineConfiguration engineConfiguration) {
@@ -87,14 +87,14 @@ public class EngineLoader {
 
     public static void showCreateEngine(final Linker linker, final GWTJahiaNode node, final GWTJahiaNodeType type,
                                         final Map<String, GWTJahiaNodeProperty> props, final String targetName,
-                                        final boolean createInParentAndMoveBefore, GWTEngineConfiguration engineConfiguration, boolean skipRefreshOnClose) {
-        showEngine(CREATE, linker, node, type, props, targetName, createInParentAndMoveBefore, false, engineConfiguration, skipRefreshOnClose);
+                                        final boolean createInParentAndMoveBefore, GWTEngineConfiguration engineConfiguration, boolean skipRefreshOnSave) {
+        showEngine(CREATE, linker, node, type, props, targetName, createInParentAndMoveBefore, false, engineConfiguration, skipRefreshOnSave);
     }
 
     private static void showEngine(final int t, final Linker linker, final GWTJahiaNode node,
                                    final GWTJahiaNodeType type, final Map<String, GWTJahiaNodeProperty> props,
                                    final String targetName, final boolean createInParentAndMoveBefore,
-                                   final boolean forceEngineWindow, final GWTEngineConfiguration engineConfiguration, final boolean skipRefreshOnClose) {
+                                   final boolean forceEngineWindow, final GWTEngineConfiguration engineConfiguration, final boolean skipRefreshOnSave) {
         GWT.runAsync(new RunAsyncCallback() {
             public void onFailure(Throwable reason) {
 
@@ -105,9 +105,9 @@ public class EngineLoader {
 
                 if (t == CREATE) {
                     new CreateContentEngine(engineConfiguration == null ? linker.getConfig().getEngineConfiguration(type) : engineConfiguration, linker, node, type, props, targetName, createInParentAndMoveBefore,
-                            container, skipRefreshOnClose);
+                            container, skipRefreshOnSave);
                 } else if (t == EDIT) {
-                    new EditContentEngine(engineConfiguration == null ? linker.getConfig().getEngineConfiguration(node) : engineConfiguration, node, linker, container, skipRefreshOnClose);
+                    new EditContentEngine(engineConfiguration == null ? linker.getConfig().getEngineConfiguration(node) : engineConfiguration, node, linker, container, skipRefreshOnSave);
                 }
                 container.showEngine();
                 Hover.getInstance().removeAll();

@@ -572,24 +572,24 @@ public class MainModule extends Module {
      * @param nodeTypes the allowed node types to show in the content type selector
      * @param includeSubTypes if <code>true</code>, also the sub-types of the specified types will be shown in the content type selector;
      *            <code>false</code> means only the specified node types will be allowed
-     * @param skipRefresh whether to avoid refreshing the edit engine on content save
+     * @param skipRefreshOnSave whether to avoid refreshing the edit engine on content save
      */
-    public static void createContent(String path, JsArrayString nodeTypes, boolean includeSubTypes, boolean skipRefreshOnClose) {
+    public static void createContent(String path, JsArrayString nodeTypes, boolean includeSubTypes, boolean skipRefreshOnSave) {
         GWTJahiaNode parent = new GWTJahiaNode();
         parent.setPath(path);
         ContentActions.showContentWizard(getInstance().getEditLinker(),
                 nodeTypes != null && nodeTypes.length() > 0 ? nodeTypes.join(" ") : "jmix:droppableContent", parent,
-                includeSubTypes, skipRefreshOnClose);
+                includeSubTypes, skipRefreshOnSave);
     }
 
-    public static void editContent(String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, boolean skipRefreshOnClose) {
+    public static void editContent(String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, boolean skipRefreshOnSave) {
         if (displayName == null) {
             List<Module> modules = ModuleHelper.getModulesByPath().get(path);
-            EngineLoader.showEditEngine(getInstance().getEditLinker(), modules.get(0).getNode(), null, skipRefreshOnClose);
+            EngineLoader.showEditEngine(getInstance().getEditLinker(), modules.get(0).getNode(), null, skipRefreshOnSave);
         } else {
             GWTJahiaNode n = getGwtJahiaNode(path, path.substring(path.lastIndexOf("/") + 1), displayName, nodeTypes, inheritedNodeTypes);
             EditLinker.setSelectionOnBodyAttributes(n);
-            EngineLoader.showEditEngine(getInstance().getEditLinker(), n, null, skipRefreshOnClose);
+            EngineLoader.showEditEngine(getInstance().getEditLinker(), n, null, skipRefreshOnSave);
         }
     }
 
@@ -1234,15 +1234,15 @@ public class MainModule extends Module {
         $wnd.hideMask = function () {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::hideMask()();
         };
-        $wnd.createContent = function (path, types, includeSubTypes, skipRefresh) {
+        $wnd.createContent = function (path, types, includeSubTypes, skipRefreshOnSave) {
             if (typeof includeSubTypes !== 'undefined') {
-                @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::createContent(*)(path,types,includeSubTypes, skipRefresh);
+                @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::createContent(*)(path,types,includeSubTypes, skipRefreshOnSave);
             } else {
-                @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::createContent(*)(path,types,true, skipRefresh);
+                @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::createContent(*)(path,types,true, skipRefreshOnSave);
             }
         };
-        $wnd.editContent = function (path, displayName, types, inheritedTypes, skipRefresh) {
-            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::editContent(*)(path, displayName, types, inheritedTypes, skipRefresh);
+        $wnd.editContent = function (path, displayName, types, inheritedTypes, skipRefreshOnSave) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::editContent(*)(path, displayName, types, inheritedTypes, skipRefreshOnSave);
         };
         $wnd.disableGlobalSelection = function (value) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::globalSelectionDisabled = value;

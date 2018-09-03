@@ -95,8 +95,8 @@ public class CreateContentEngine extends AbstractContentEngine {
      * @param targetName                  The name of the new node, or null if automatically defined
      * @param createInParentAndMoveBefore
      */
-    public CreateContentEngine(GWTEngineConfiguration configuration, Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, Map<String, GWTJahiaNodeProperty> props, String targetName, boolean createInParentAndMoveBefore, EngineContainer engineContainer, boolean skipRefreshOnClose) {
-        super(configuration, linker, createInParentAndMoveBefore ? parent.getPath().substring(0, parent.getPath().lastIndexOf('/')) : parent.getPath(), skipRefreshOnClose);
+    public CreateContentEngine(GWTEngineConfiguration configuration, Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, Map<String, GWTJahiaNodeProperty> props, String targetName, boolean createInParentAndMoveBefore, EngineContainer engineContainer, boolean skipRefreshOnSave) {
+        super(configuration, linker, createInParentAndMoveBefore ? parent.getPath().substring(0, parent.getPath().lastIndexOf('/')) : parent.getPath(), skipRefreshOnSave);
         this.existingNode = false;
         this.targetNode = parent;
         this.type = type;

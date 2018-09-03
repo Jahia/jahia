@@ -10,7 +10,7 @@ public class FieldFacetDefinition extends SearchCriteria.BaseFacetDefinition {
 
     private static final long serialVersionUID = -8262925411007789117L;
 
-    private String fieldName;
+    private static final String FIELD_NAME = "fieldName";
 
     /**
      * Create a field facet definition instance.
@@ -21,38 +21,13 @@ public class FieldFacetDefinition extends SearchCriteria.BaseFacetDefinition {
      */
     public FieldFacetDefinition(String id, String fieldName, int maxGroups) {
         super(id, maxGroups);
-        this.fieldName = fieldName;
+        setField(FIELD_NAME, fieldName);
     }
 
     /**
      * @return Facet field name
      */
     public String getFieldName() {
-        return fieldName;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + ((fieldName == null) ? 0 : fieldName.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!super.equals(obj))
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        FieldFacetDefinition other = (FieldFacetDefinition) obj;
-        if (fieldName == null) {
-            if (other.fieldName != null)
-                return false;
-        } else if (!fieldName.equals(other.fieldName))
-            return false;
-        return true;
+        return (String) getField(FIELD_NAME);
     }
 }

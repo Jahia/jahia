@@ -79,7 +79,7 @@ public class SearchCriteria implements Serializable {
 
     /**
      * Base class for all facet definitions; encapsulates any common facet definition attributes like sort order of aggregated results.
-     * 
+     *
      * Note, please, if you are creating a sub-class for this class and adding fields, be sure to override {@link #hashCode()} and
      * {@link #equals(Object)} methods.
      */
@@ -89,7 +89,7 @@ public class SearchCriteria implements Serializable {
 
         private String id;
         private int maxFacetResults;
-        private Map<String, Object> data = new HashMap<>();
+        private Map<String, Object> fields = new HashMap<>();
 
         /**
          * Create a facet definition instance.
@@ -126,59 +126,56 @@ public class SearchCriteria implements Serializable {
             int result = 1;
             result = prime * result + ((id == null) ? 0 : id.hashCode());
             result = prime * result + maxFacetResults;
-            result = prime * result + data.hashCode();
+            result = prime * result + fields.hashCode();
             return result;
         }
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj)
+            if (this == obj) {
                 return true;
-            if (obj == null)
+            }
+            if (obj == null) {
                 return false;
-            if (getClass() != obj.getClass())
+            }
+            if (getClass() != obj.getClass()) {
                 return false;
+            }
             BaseFacetDefinition other = (BaseFacetDefinition) obj;
             if (id == null) {
-                if (other.id != null)
+                if (other.id != null) {
                     return false;
-            } else if (!id.equals(other.id))
+                }
+            } else if (!id.equals(other.id)) {
                 return false;
-            if (maxFacetResults != other.maxFacetResults)
+            }
+            if (maxFacetResults != other.maxFacetResults) {
                 return false;
-            if (!data.equals(other.data)) {
+            }
+            if (!fields.equals(other.fields)) {
                 return false;
             }
             return true;
         }
 
         /**
-         * Returns a map with facet definition data, which could hold arbitrary fields.
-         * 
-         * @return map with facet definition data
-         */
-        public Map<String, Object> getData() {
-            return data;
-        }
-
-        /**
          * Retrieves the value of the specified data field.
-         * 
+         *
          * @param dataField the data field name to retrieve value for
          * @return the value of the requested data field
          */
         public Object getField(String dataField) {
-            return getData().get(dataField);
+            return fields.get(dataField);
         }
 
         /**
          * Sets the value of the data field to the specified one.
-         * 
+         *
          * @param dataField the data field name
          * @param value the value
          */
         public void setField(String dataField, Object value) {
-            getData().put(dataField, value);
+            fields.put(dataField, value);
         }
     }
 
@@ -1293,7 +1290,7 @@ public class SearchCriteria implements Serializable {
      */
     private Map<String, Map<String, FacetValue>> facets = LazyMap.decorate(new HashMap<String, Map<String, FacetValue>>(),
             new FacetMapFactory());
-    
+
     private HierarchicalValue filePath = new HierarchicalValue();
 
     private String fileType;
@@ -1354,7 +1351,7 @@ public class SearchCriteria implements Serializable {
 
     /**
      * Return active facet filters.
-     * 
+     *
      * @return active facet filters
      */
     public Map<String, Map<String, FacetValue>> getFacets() {
@@ -1519,7 +1516,7 @@ public class SearchCriteria implements Serializable {
 
     /**
      * Sets the active facet filters.
-     * 
+     *
      * @param facets the active facet filters
      */
     public void setFacets(Map<String, Map<String, FacetValue>> facets) {
@@ -1682,7 +1679,7 @@ public class SearchCriteria implements Serializable {
         }
         return isPropertiesSearchOnContent();
     }
-    
+
     private boolean isPropertiesSearchOnContent() {
         for (NodeProperty property : getPropertiesAll()) {
             try {

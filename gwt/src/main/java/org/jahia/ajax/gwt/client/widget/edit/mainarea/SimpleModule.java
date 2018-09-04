@@ -281,7 +281,7 @@ public class SimpleModule extends Module {
         if (translatableHighlight == null && getTranslatableFromLanguage() != null) {
 
             // add a placeholder if necessary
-            displayPlaceholder("TO BE TRANSLATED");
+            displayPlaceholder(this.getNode().getName(), Messages.get("notTranslated.label", "Not translated"), "gwt-translate-placeholder");
 
             // set highlight around module
             translatableHighlight = new TranslatableHighlight(this);
@@ -305,10 +305,11 @@ public class SimpleModule extends Module {
         }
     }
 
-    public void displayPlaceholder(String label) {
+    public void displayPlaceholder(String title, String subTitle, String placeholderClass) {
         // only add placeholder if module is empty
         if(html.getOffsetHeight() == 0) {
-            placeholder = new HTML(label);
+            placeholder = new HTML("<span class='gwt-placeholder-title'>" + title + "</span><br /><span class='gwt-placeholder-subTitle'>" + subTitle + "</span>");
+            placeholder.setStyleName(placeholderClass);
             insert(placeholder, 0);
             layout();
         }

@@ -448,51 +448,60 @@ button.button-disable:hover, div.button-disable:hover {
 }
 
 .translatable-top-list {
-    border-top: 3px solid #09cc18;
+    border-top: 6px solid #e67d3a;
 }
 .translatable-bottom-list {
-    border-bottom: 3px solid #09cc18;
-    margin-top: -3px;
+    border-bottom: 6px solid #e67d3a;
+    margin-top: -6px;
 }
 .translatable-left-list {
-    border-left: 3px solid #09cc18;
+    border-left: 6px solid #e67d3a;
 }
 .translatable-right-list {
-    border-left: 3px solid #09cc18;
-    margin-left: -3px;
+    border-left: 6px solid #e67d3a;
+    margin-left: -6px;
 }
-
-
 
 .translatable-top-simple {
-    border-top: 3px solid #09cc18;
+    border-top: 6px solid #e67d3a;
 }
 .translatable-bottom-simple {
-    border-bottom: 3px solid #09cc18;
-    margin-top: -3px;
+    border-bottom: 6px solid #e67d3a;
+    margin-top: -6px;
 }
 .translatable-left-simple {
-    border-left: 3px solid #09cc18;
+    border-left: 6px solid #e67d3a;
 }
 .translatable-right-simple {
-    border-left: 3px solid #09cc18;
-    margin-left: -3px;
+    border-left: 6px solid #e67d3a;
+    margin-left: -6px;
 }
-
 
 .translatable-top-area {
-    border-top: 3px solid #09cc18;
+    border-top: 6px solid #e67d3a;
 }
 .translatable-bottom-area {
-    border-bottom: 3px solid #09cc18;
-    margin-top: -3px;
+    border-bottom: 6px solid #e67d3a;
+    margin-top: -6px;
 }
 .translatable-left-area {
-    border-left: 3px solid #09cc18;
+    border-left: 6px solid #e67d3a;
 }
 .translatable-right-area {
-    border-left: 3px solid #09cc18;
-    margin-left: -3px
+    border-left: 6px solid #e67d3a;
+    margin-left: -6px
+}
+
+.gwt-translate-placeholder {
+    padding: 15px;
+    background-color: #e67d3a;
+    color: white;
+}
+
+.gwt-translate-placeholder .gwt-placeholder-title {
+    font-weight: bold;
+    font-size: large;
+    line-height: 17px;
 }
 
 

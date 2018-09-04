@@ -185,7 +185,7 @@ public class ContentTypeWindow extends Window {
                 linker.loaded();
                 if (result.size() == 1 && result.get(0).getChildren().isEmpty()) {
                     EngineLoader.showCreateEngine(linker, targetNode, result.get(0), props,
-                            name, createInParentAndMoveBefore, null);
+                            name, createInParentAndMoveBefore, null, skipRefreshOnSave);
 
                 } else {
                     if (nodeTypes != null && nodeTypes.size() == 1 && displayedNodeTypes != null) {

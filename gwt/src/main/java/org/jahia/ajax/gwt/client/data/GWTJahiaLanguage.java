@@ -59,6 +59,12 @@ public class GWTJahiaLanguage extends BaseModelData {
 
     }
 
+    public GWTJahiaLanguage(String lang, String displayName) {
+        this();
+        setLanguage(lang);
+        setDisplayName(displayName);
+    }
+
     public String getDisplayName() {
         return get("displayName");
     }

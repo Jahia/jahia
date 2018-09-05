@@ -70,6 +70,8 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
+
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -79,6 +81,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.WindowUtil;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
@@ -628,6 +631,47 @@ public class MainModule extends Module {
             l.add((String) jsArrayString.get(i));
         }
         return l;
+    }
+
+    /**
+     * Function, exposed into JSNI (native JavaScript), to switch edit mode linker language to the specified one
+     *
+     * @param lang the target langugage coe
+     * @param langDisplayName the display name of the target language
+     */
+    public static void switchEditLinkerLanguage(String lang, String langDisplayName) {
+        if (!lang.equals(JahiaGWTParameters.getLanguage())) {
+            getInstance().getEditLinker().setLocale(new GWTJahiaLanguage(lang, langDisplayName));
+        }
+    }
+
+    /**
+     * Function, exposed into JSNI (native JavaScript), to switch to the specified site.
+     * 
+     * @param siteKey the target site key
+     */
+    public static void switchSite(String siteKey) {
+        if (!siteKey.equals(JahiaGWTParameters.getSiteKey())) {
+
+            JahiaContentManagementService.App.getInstance().getNodes(Arrays.asList("/sites/" + siteKey),
+                    GWTJahiaNode.DEFAULT_SITE_FIELDS, new BaseAsyncCallback<List<GWTJahiaNode>>() {
+                        @Override
+                        public void onSuccess(List<GWTJahiaNode> result) {
+                            GWTJahiaNode siteNode = result.get(0);
+                            EditLinker linker = getInstance().getEditLinker();
+
+                            @SuppressWarnings("unchecked")
+                            List<String> langs = (List<String>) siteNode.get("j:languages");
+                            if (langs != null && langs.size() > 0 && !langs.contains(JahiaGWTParameters.getLanguage())
+                                    && siteNode.get(GWTJahiaNode.DEFAULT_LANGUAGE) != null) {
+                                // target site has no language, matching current one -> switch to site's default one
+                                linker.setLocale((GWTJahiaLanguage) siteNode.get(GWTJahiaNode.DEFAULT_LANGUAGE));
+                            }
+
+                            JahiaGWTParameters.setSiteNode(siteNode);
+                        }
+                    });
+        }
     }
 
     public String getUrl(String path, String template, String channel, String variant) {
@@ -1241,10 +1285,13 @@ public class MainModule extends Module {
     }
 
     public static native void exportStaticMethod() /*-{
-        $wnd.goTo = function (path, template, params) {
+        var nsAuthoringApi = $wnd.authoringApi || {};
+        $wnd.authoringApi = nsAuthoringApi;
+
+        nsAuthoringApi.goTo = $wnd.goTo = function (path, template, params) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::staticGoTo(Ljava/lang/String;Ljava/lang/String;)(path, template);
         }
-        $wnd.goToUrl = function (path, template, params) {
+        nsAuthoringApi.goToUrl = $wnd.goToUrl = function (path, template, params) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::staticGoToUrl(Ljava/lang/String;)(path);
         }
         $wnd.addEventListener("popstate", function (event) {
@@ -1252,36 +1299,42 @@ public class MainModule extends Module {
                 @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::popState(Ljava/lang/String;Ljava/lang/String;)(event.state.location, event.state.config);
             }
         });
-        $wnd.waitingMask = function (text) {
+        nsAuthoringApi.waitingMask = $wnd.waitingMask = function (text) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::waitingMask(Ljava/lang/String;)(text);
         };
-        $wnd.hideMask = function () {
+        nsAuthoringApi.hideMask = $wnd.hideMask = function () {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::hideMask()();
         };
-        $wnd.createContent = function (path, types, includeSubTypes, skipRefreshOnSave) {
+        nsAuthoringApi.createContent = function (path, types, includeSubTypes, skipRefreshOnSave) {
             if (typeof includeSubTypes !== 'undefined') {
                 @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::createContent(*)(path, types, includeSubTypes, skipRefreshOnSave);
             } else {
                 @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::createContent(*)(path, types, true, skipRefreshOnSave);
             }
         };
-        $wnd.editContent = function (path, displayName, types, inheritedTypes, skipRefreshOnSave) {
+        nsAuthoringApi.editContent = $wnd.editContent = function (path, displayName, types, inheritedTypes, skipRefreshOnSave) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::editContent(*)(path, displayName, types, inheritedTypes, skipRefreshOnSave);
         };
-        $wnd.disableGlobalSelection = function (value) {
+        nsAuthoringApi.disableGlobalSelection = $wnd.disableGlobalSelection = function (value) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::globalSelectionDisabled = value;
         };
-        $wnd.displayAlert = function (title, message) {
+        nsAuthoringApi.displayAlert = $wnd.displayAlert = function (title, message) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::displayAlert(*)(title, message);
         };
-        $wnd.displayAlertInfo = function (title, message) {
+        nsAuthoringApi.displayAlertInfo = $wnd.displayAlertInfo = function (title, message) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::displayAlertInfo(*)(title, message);
         };
-        $wnd.displayInfo = function (title, message, duration) {
+        nsAuthoringApi.displayInfo = $wnd.displayInfo = function (title, message, duration) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::displayInfo(*)(title, message, duration);
         };
-        $wnd.openPublicationWorkflow = function (uuids, allSubTree, allLanguages, checkForUnpublication) {
+        nsAuthoringApi.openPublicationWorkflow = function (uuids, allSubTree, allLanguages, checkForUnpublication) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::openPublicationWorkflow(*)(uuids, allSubTree, allLanguages, checkForUnpublication)
+        };
+        nsAuthoringApi.switchEditLinkerLanguage = function (lang, displayName) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::switchEditLinkerLanguage(*)(lang, displayName);
+        }
+        nsAuthoringApi.switchSite = function (siteKey) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::switchSite(*)(siteKey);
         }
     }-*/;
 

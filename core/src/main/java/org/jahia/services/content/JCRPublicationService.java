@@ -402,9 +402,10 @@ public class JCRPublicationService extends JahiaService {
             }
         }
 
+        Set<JCRNodeWrapper> toCheckpoint = new HashSet<JCRNodeWrapper>();
+
         JCRObservationManager.pushEventListenersAvailableDuringPublishOnly();
         try {
-
             List<String> toDelete = new ArrayList<String>();
             List<JCRNodeWrapper> toDeleteOnSource = new ArrayList<JCRNodeWrapper>();
             for (Iterator<JCRNodeWrapper> nodeIterator = toPublish.iterator(); nodeIterator.hasNext(); ) {
@@ -420,8 +421,10 @@ public class JCRPublicationService extends JahiaService {
                 }
                 if (nodeWrapper.isNodeType(JAHIAMIX_MARKED_FOR_DELETION_ROOT)) {
                     nodeWrapper.unmarkForDeletion();
+
                     toDeleteOnSource.add(nodeWrapper);
                     toDelete.add(nodeWrapper.getIdentifier());
+
                     nodeIterator.remove();
                 } else {
                     for (JCRNodeWrapper nodeToDelete : toDeleteOnSource) {
@@ -433,9 +436,29 @@ public class JCRPublicationService extends JahiaService {
                 }
             }
 
-            Set<JCRNodeWrapper> toCheckpoint = new HashSet<JCRNodeWrapper>();
-            Set<String> allCloned = new HashSet<String>();
+            for (JCRNodeWrapper nodeWrapper : toDeleteOnSource) {
+                try {
+                    addRemovedLabel(nodeWrapper, nodeWrapper.getSession().getWorkspace().getName() + "_removed_at_" + JCRVersionService.DATE_FORMAT.print(calendar.getTime().getTime()));
+                    nodeWrapper.remove();
+                } catch (InvalidItemStateException e) {
+                    logger.warn("Already deleted : " + nodeWrapper.getPath());
+                }
+            }
+            for (String nodeUuid : toDelete) {
+                try {
+                    JCRNodeWrapper node = destinationSession.getNodeByIdentifier(nodeUuid);
+                    addRemovedLabel(node, node.getSession().getWorkspace().getName() + "_removed_at_" + JCRVersionService.DATE_FORMAT.print(calendar.getTime().getTime()));
+                    node.remove();
+                } catch (ItemNotFoundException e) {
+                    logger.warn("Already deleted : " + nodeUuid);
+                } catch (InvalidItemStateException e) {
+                    logger.warn("Already deleted : " + nodeUuid);
+                }
+            }
+            sourceSession.save();
+            destinationSession.save();
 
+            Set<String> allCloned = new HashSet<String>();
             for (JCRNodeWrapper sourceNode : toPublish) {
                 try {
                     try {
@@ -467,31 +490,6 @@ public class JCRPublicationService extends JahiaService {
             for (JCRNodeWrapper nodeWrapper : toCheckpoint) {
                 checkpoint(destinationSession, nodeWrapper, destinationVersionManager);
             }
-
-            // Defer deletion of any nodes till the very end of the process to let the comparison and publishing logic smoothly handle
-            // certain specific cases like move of a node whose ancestor node is removed afterwards.
-            for (JCRNodeWrapper nodeWrapper : toDeleteOnSource) {
-                try {
-                    addRemovedLabel(nodeWrapper, nodeWrapper.getSession().getWorkspace().getName() + "_removed_at_" + JCRVersionService.DATE_FORMAT.print(calendar.getTime().getTime()));
-                    nodeWrapper.remove();
-                } catch (InvalidItemStateException e) {
-                    logger.warn("Already deleted : " + nodeWrapper.getPath());
-                }
-            }
-            for (String nodeUuid : toDelete) {
-                try {
-                    JCRNodeWrapper node = destinationSession.getNodeByIdentifier(nodeUuid);
-                    addRemovedLabel(node, node.getSession().getWorkspace().getName() + "_removed_at_" + JCRVersionService.DATE_FORMAT.print(calendar.getTime().getTime()));
-                    node.remove();
-                } catch (ItemNotFoundException e) {
-                    logger.warn("Already deleted : " + nodeUuid);
-                } catch (InvalidItemStateException e) {
-                    logger.warn("Already deleted : " + nodeUuid);
-                }
-            }
-            sourceSession.save();
-            destinationSession.save();
-
         } catch (RepositoryException e) {
             for (Map.Entry<String, Map<String, Value>> nodeEntry : previousPropertyByNodeUuidByName.entrySet()) {
                 String nodeUuid = nodeEntry.getKey();

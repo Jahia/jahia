@@ -43,7 +43,7 @@
  */
 package org.jahia.taglibs.search;
 
-import org.apache.commons.lang.SerializationUtils;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.search.SearchCriteria;
@@ -128,7 +128,7 @@ public class SuggestionsTag extends ResultsTag {
             int iterationCount = 1;
             while (count == 0 && iterationCount < allSuggestions.size()) {
                 SearchCriteria criteria = (SearchCriteria)pageContext.getAttribute(getSearchCriteriaVar());
-                SearchCriteria suggestedCriteria = (SearchCriteria) SerializationUtils.clone(criteria);
+                SearchCriteria suggestedCriteria = cloneCriteria(criteria);
                 suggestedCriteria.getTerms().get(0).setTerm(allSuggestions.get(iterationCount));
                 
                 count = searchAndSetAttributes(suggestedCriteria, getRenderContext());
@@ -180,24 +180,47 @@ public class SuggestionsTag extends ResultsTag {
                 }
                 if (runQuery) {
                     // we've found a suggestion
-                    try {
-                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                        ObjectOutputStream out = new ObjectOutputStream(bos);
-                        out.writeObject(criteria);
-                        out.close();
-                        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
-                        suggestedCriteria = (SearchCriteria) in.readObject();
-                    } catch(IOException | ClassNotFoundException e) {
-                        logger.error("Cannot copy criteria",e);
-                        return null;
-                    }
-
+                    suggestedCriteria = cloneCriteria(criteria);
                     suggestedCriteria.getTerms().get(0).setTerm(suggestion.getSuggestedQuery());
                 }
             }
         }
 
         return suggestedCriteria;
+    }
+
+    private static SearchCriteria cloneCriteria(SearchCriteria criteria) {
+        SearchCriteria clone;
+
+        ObjectOutputStream out = null;
+        ObjectInputStream in = null;
+
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream(512);
+            out = new ObjectOutputStream(bos);
+            out.writeObject(criteria);
+            in = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
+            clone = (SearchCriteria) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            throw new JahiaRuntimeException("Cannot clone criteria object", e);
+        } finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    // ignore
+                }
+            }
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    // ignore
+                }
+            }
+        }
+
+        return clone;
     }
 
     public void setRunQuery(boolean runQuery) {

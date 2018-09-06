@@ -46,7 +46,7 @@ package org.jahia.ajax.gwt.client.data;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
- * 
+ *
  * User: rincevent
  * Date: 4 mars 2009
  * Time: 15:59:05
@@ -56,7 +56,6 @@ public class GWTJahiaLanguage extends BaseModelData {
     private static final long serialVersionUID = 673867224721055777L;
 
     public GWTJahiaLanguage() {
-
     }
 
     public GWTJahiaLanguage(String lang, String displayName) {

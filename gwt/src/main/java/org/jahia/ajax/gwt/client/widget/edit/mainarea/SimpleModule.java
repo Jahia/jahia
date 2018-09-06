@@ -277,7 +277,7 @@ public class SimpleModule extends Module {
         }
     }
 
-    public void showTranslatableModule() {
+    void showTranslatableModule() {
         if (translatableHighlight == null && getTranslatableFromLanguage() != null) {
 
             // add a placeholder if necessary
@@ -293,7 +293,7 @@ public class SimpleModule extends Module {
         }
     }
 
-    public void hideTranslatableModule() {
+    void hideTranslatableModule() {
         if (translatableHighlight != null) {
             removePlaceholder();
 
@@ -305,7 +305,7 @@ public class SimpleModule extends Module {
         }
     }
 
-    public void displayPlaceholder(String title, String subTitle, String placeholderClass) {
+    private void displayPlaceholder(String title, String subTitle, String placeholderClass) {
         // only add placeholder if module is empty
         if(html.getOffsetHeight() == 0) {
             placeholder = new HTML("<span class='gwt-placeholder-title'>" + title + "</span><br /><span class='gwt-placeholder-subTitle'>" + subTitle + "</span>");
@@ -315,7 +315,7 @@ public class SimpleModule extends Module {
         }
     }
 
-    public void removePlaceholder() {
+    private void removePlaceholder() {
         if(placeholder != null) {
             remove(placeholder);
             placeholder = null;

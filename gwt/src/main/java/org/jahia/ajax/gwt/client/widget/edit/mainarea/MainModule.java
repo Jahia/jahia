@@ -636,7 +636,7 @@ public class MainModule extends Module {
     /**
      * Function, exposed into JSNI (native JavaScript), to switch edit mode linker language to the specified one
      *
-     * @param lang the target langugage coe
+     * @param lang the target language code
      * @param langDisplayName the display name of the target language
      */
     public static void switchEditLinkerLanguage(String lang, String langDisplayName) {
@@ -647,7 +647,7 @@ public class MainModule extends Module {
 
     /**
      * Function, exposed into JSNI (native JavaScript), to switch to the specified site.
-     * 
+     *
      * @param siteKey the target site key
      */
     public static void switchSite(String siteKey) {
@@ -655,17 +655,20 @@ public class MainModule extends Module {
 
             JahiaContentManagementService.App.getInstance().getNodes(Arrays.asList("/sites/" + siteKey),
                     GWTJahiaNode.DEFAULT_SITE_FIELDS, new BaseAsyncCallback<List<GWTJahiaNode>>() {
+
                         @Override
                         public void onSuccess(List<GWTJahiaNode> result) {
+
                             GWTJahiaNode siteNode = result.get(0);
                             EditLinker linker = getInstance().getEditLinker();
 
-                            @SuppressWarnings("unchecked")
-                            List<String> langs = (List<String>) siteNode.get("j:languages");
-                            if (langs != null && langs.size() > 0 && !langs.contains(JahiaGWTParameters.getLanguage())
-                                    && siteNode.get(GWTJahiaNode.DEFAULT_LANGUAGE) != null) {
-                                // target site has no language, matching current one -> switch to site's default one
-                                linker.setLocale((GWTJahiaLanguage) siteNode.get(GWTJahiaNode.DEFAULT_LANGUAGE));
+                            @SuppressWarnings("unchecked") List<String> langs = (List<String>) siteNode.get("j:languages");
+                            if (langs != null && !langs.contains(JahiaGWTParameters.getLanguage())) {
+                                // target site has no language, matching current one -> switch to site's default one if any
+                                GWTJahiaLanguage defaultLang = (GWTJahiaLanguage) siteNode.get(GWTJahiaNode.DEFAULT_LANGUAGE);
+                                if (defaultLang != null) {
+                                    linker.setLocale((GWTJahiaLanguage) siteNode.get(GWTJahiaNode.DEFAULT_LANGUAGE));
+                                }
                             }
 
                             JahiaGWTParameters.setSiteNode(siteNode);

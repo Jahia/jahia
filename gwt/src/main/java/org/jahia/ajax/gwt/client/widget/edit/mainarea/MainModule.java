@@ -634,46 +634,46 @@ public class MainModule extends Module {
     }
 
     /**
-     * Function, exposed into JSNI (native JavaScript), to switch edit mode linker language to the specified one
+     * Function, exposed into JSNI (native JavaScript), to switch language to the specified one
      *
      * @param lang the target language code
-     * @param langDisplayName the display name of the target language
      */
-    public static void switchEditLinkerLanguage(String lang, String langDisplayName) {
-        if (!lang.equals(JahiaGWTParameters.getLanguage())) {
-            getInstance().getEditLinker().setLocale(new GWTJahiaLanguage(lang, langDisplayName));
+    public static void switchLanguage(String lang) {
+        if (lang.equals(JahiaGWTParameters.getLanguage())) {
+            return;
         }
+        validateSiteLanguage(JahiaGWTParameters.getSiteNode(), lang);
+        getInstance().getEditLinker().setLocale(JahiaGWTParameters.getLanguage(lang));
     }
 
     /**
-     * Function, exposed into JSNI (native JavaScript), to switch to the specified site.
+     * Function, exposed into JSNI (native JavaScript), to switch to the specified site and language
      *
      * @param siteKey the target site key
+     * @param lang the target language code
      */
-    public static void switchSite(String siteKey) {
-        if (!siteKey.equals(JahiaGWTParameters.getSiteKey())) {
+    public static void switchSite(final String siteKey, final String lang) {
 
-            JahiaContentManagementService.App.getInstance().getNodes(Arrays.asList("/sites/" + siteKey),
-                    GWTJahiaNode.DEFAULT_SITE_FIELDS, new BaseAsyncCallback<List<GWTJahiaNode>>() {
+        if (siteKey.equals(JahiaGWTParameters.getSiteKey()) && lang.equals(JahiaGWTParameters.getLanguage())) {
+            return;
+        }
 
-                        @Override
-                        public void onSuccess(List<GWTJahiaNode> result) {
+        JahiaContentManagementService.App.getInstance().getNodes(Arrays.asList("/sites/" + siteKey), GWTJahiaNode.DEFAULT_SITE_FIELDS, new BaseAsyncCallback<List<GWTJahiaNode>>() {
 
-                            GWTJahiaNode siteNode = result.get(0);
-                            EditLinker linker = getInstance().getEditLinker();
+            @Override
+            public void onSuccess(List<GWTJahiaNode> result) {
+                GWTJahiaNode siteNode = result.get(0);
+                validateSiteLanguage(siteNode, lang);
+                JahiaGWTParameters.setSiteNode(siteNode);
+                getInstance().getEditLinker().setLocale(JahiaGWTParameters.getLanguage(lang));
+            }
+        });
+    }
 
-                            @SuppressWarnings("unchecked") List<String> langs = (List<String>) siteNode.get("j:languages");
-                            if (langs != null && !langs.contains(JahiaGWTParameters.getLanguage())) {
-                                // target site has no language, matching current one -> switch to site's default one if any
-                                GWTJahiaLanguage defaultLang = (GWTJahiaLanguage) siteNode.get(GWTJahiaNode.DEFAULT_LANGUAGE);
-                                if (defaultLang != null) {
-                                    linker.setLocale((GWTJahiaLanguage) siteNode.get(GWTJahiaNode.DEFAULT_LANGUAGE));
-                                }
-                            }
-
-                            JahiaGWTParameters.setSiteNode(siteNode);
-                        }
-                    });
+    private static void validateSiteLanguage(GWTJahiaNode siteNode, String lang) {
+        @SuppressWarnings("unchecked") List<String> langs = (List<String>) siteNode.get("j:languages");
+        if (!langs.contains(lang)) {
+            throw new RuntimeException("Language '" + lang + "' is not a valid '" + siteNode.getName() + "' site language");
         }
     }
 
@@ -1333,11 +1333,11 @@ public class MainModule extends Module {
         nsAuthoringApi.openPublicationWorkflow = function (uuids, allSubTree, allLanguages, checkForUnpublication) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::openPublicationWorkflow(*)(uuids, allSubTree, allLanguages, checkForUnpublication)
         };
-        nsAuthoringApi.switchEditLinkerLanguage = function (lang, displayName) {
-            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::switchEditLinkerLanguage(*)(lang, displayName);
+        nsAuthoringApi.switchLanguage = function (lang) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::switchLanguage(*)(lang);
         }
-        nsAuthoringApi.switchSite = function (siteKey) {
-            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::switchSite(*)(siteKey);
+        nsAuthoringApi.switchSite = function (siteKey, lang) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::switchSite(*)(siteKey, lang);
         }
     }-*/;
 

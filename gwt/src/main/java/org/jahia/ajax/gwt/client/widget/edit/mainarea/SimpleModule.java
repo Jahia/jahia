@@ -147,7 +147,7 @@ public class SimpleModule extends Module {
                 }
 
                 if (ModuleHelper.canUseComponentForEdit(ModuleHelper.getNodeType(m.getNode().getNodeTypes().get(0))) &&
-                        PermissionsUtils.isPermitted("jcr:modifyProperties", m.getNode().getPermissions())) {
+                        PermissionsUtils.isPermitted("jcr:modifyProperties_"  + JahiaGWTParameters.getWorkspace() + "_" + JahiaGWTParameters.getLanguage(), m.getNode().getPermissions())) {
 
                     new TranslateContentEngine(m.getNode(), mainModule.getEditLinker(),
                             JahiaGWTParameters.getLanguage(m.getTranslatableFromLanguage()),

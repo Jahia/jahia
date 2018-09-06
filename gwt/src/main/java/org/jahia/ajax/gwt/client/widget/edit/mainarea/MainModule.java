@@ -66,6 +66,7 @@ import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.*;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HTML;
@@ -79,6 +80,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.WindowUtil;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
@@ -1417,7 +1419,18 @@ public class MainModule extends Module {
                                     if (frameError.equals("503")) {
                                         handleError503();
                                     }
-                                    setUrl(getBaseUrl() + config.getDefaultLocation());
+                                    String currentPath = node.getPath();
+                                    JahiaContentManagementService.App.getInstance().getDisplayableNodePath(currentPath.substring(0, currentPath.lastIndexOf("/")), new AsyncCallback<String>() {
+                                        @Override
+                                        public void onFailure(Throwable throwable) {
+                                            setUrl(getBaseUrl() + config.getDefaultLocation());
+                                        }
+
+                                        @Override
+                                        public void onSuccess(String path) {
+                                            staticGoTo(path, null);
+                                        }
+                                    });
                                 } else {
                                     frameErrorRedirect = false;
                                     onGWTFrameReady(iframe);

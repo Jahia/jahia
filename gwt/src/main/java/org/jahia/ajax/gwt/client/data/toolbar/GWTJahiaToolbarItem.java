@@ -47,10 +47,10 @@ import com.extjs.gxt.ui.client.widget.Component;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.io.Serializable;
 
 /**
  * User: jahia
@@ -188,7 +188,8 @@ public class GWTJahiaToolbarItem implements Serializable {
             // We are not sure each toolbar item has an ID.
             return "";
         }
-        return getId().toLowerCase().replace('.', '-');
+        String className = getId().toLowerCase().replace('.', '-');
+        return className.contains("$") ? className.substring(0, className.indexOf("$")) : className;
     }
 
     public void addClasses(Component component) {
@@ -200,6 +201,4 @@ public class GWTJahiaToolbarItem implements Serializable {
             }
         }
     }
-
-
 }

@@ -406,18 +406,6 @@ public class JCRPublicationService extends JahiaService {
 
         JCRObservationManager.pushEventListenersAvailableDuringPublishOnly();
         try {
-
-            for (JCRNodeWrapper sourceNode : toPublish) {
-                String destinationPath;
-                try {
-                    destinationPath = sourceNode.getCorrespondingNodePath(destinationWorkspace);
-                } catch (ItemNotFoundException e) {
-                    continue;
-                }
-                JCRNodeWrapper destinationNode = destinationSession.getNode(destinationPath);
-                handleMovedOrRenamedNode(sourceNode, destinationSession, destinationPath, destinationNode, toCheckpoint);
-            }
-
             List<String> toDelete = new ArrayList<String>();
             List<JCRNodeWrapper> toDeleteOnSource = new ArrayList<JCRNodeWrapper>();
             for (Iterator<JCRNodeWrapper> nodeIterator = toPublish.iterator(); nodeIterator.hasNext(); ) {
@@ -722,6 +710,13 @@ public class JCRPublicationService extends JahiaService {
             logger.debug("Merge node : " + path + " source v=" + node.getBaseVersion().getName() + " , dest node v=" + destinationNode.getBaseVersion().getName());
         }
 
+        // handle potential move or rename
+        String newDestinationPath = handleMoveOrRenamedNode(node, destinationSession, destinationPath, destinationNode, toCheckpoint);
+        if (!destinationPath.equals(newDestinationPath)) {
+            destinationPath = newDestinationPath;
+            destinationNode = destinationSession.getNode(destinationPath);
+        }
+
         destinationSession.save();
 
         if (versionable) {
@@ -747,7 +742,7 @@ public class JCRPublicationService extends JahiaService {
         }
     }
 
-    private String handleMovedOrRenamedNode(JCRNodeWrapper node, JCRSessionWrapper destinationSession, String destinationPath, JCRNodeWrapper destinationNode, Set<JCRNodeWrapper> toCheckpoint) throws RepositoryException {
+    private String handleMoveOrRenamedNode(JCRNodeWrapper node, JCRSessionWrapper destinationSession, String destinationPath, JCRNodeWrapper destinationNode, Set<JCRNodeWrapper> toCheckpoint) throws RepositoryException {
         String expectedDestinationPath = null;
         try {
             String parentDestinationPath = node.getParent().getPath().equals("/") ? "" : node.getParent().getCorrespondingNodePath(destinationSession.getWorkspace().getName());

@@ -2989,13 +2989,16 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     @Override
-    public String getDisplayableNodePath(String nodePath) throws GWTJahiaServiceException {
+    public String getDisplayableNodePath(String nodePath, boolean fallbackToHomePage) throws GWTJahiaServiceException {
         enableJcrSessionReadOnlyCache();
         try {
             JCRSessionWrapper session = retrieveCurrentSession();
             JCRNodeWrapper node = session.getNode(nodePath);
             RenderContext renderContext = new RenderContext(null, null, session.getUser());
             JCRNodeWrapper displayableNode = JCRContentUtils.findDisplayableNode(node, renderContext);
+            if (displayableNode == null && fallbackToHomePage) {
+                displayableNode = node.getResolveSite().getHome();
+            }
             return displayableNode != null ? displayableNode.getPath() : null;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

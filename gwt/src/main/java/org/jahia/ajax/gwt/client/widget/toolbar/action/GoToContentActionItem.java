@@ -87,7 +87,7 @@ public class GoToContentActionItem extends BaseActionItem {
             return;
         }
         GWTJahiaNode selectedNode = linker.getSelectionContext().getSingleSelection();
-        JahiaContentManagementService.App.getInstance().getDisplayableNodePath(selectedNode.getPath(),
+        JahiaContentManagementService.App.getInstance().getDisplayableNodePath(selectedNode.getPath(), false,
                 new BaseAsyncCallback<String>() {
                     @Override
                     public void onSuccess(String path) {

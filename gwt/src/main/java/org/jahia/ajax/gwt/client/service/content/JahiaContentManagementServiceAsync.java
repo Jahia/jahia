@@ -453,9 +453,9 @@ public interface JahiaContentManagementServiceAsync {
 
     /**
      * Finds the path of the displayble node for the specified one.
-     *
-     * @param nodePath the path of the target node
+     *  @param nodePath the path of the target node
+     * @param fallbackToHomePage if true, use the homepage as fallback if no resource found
      * @param async the asynchronous callback instance to handle the result of the call
      */
-    void getDisplayableNodePath(String nodePath, AsyncCallback<String> async);
+    void getDisplayableNodePath(String nodePath, boolean fallbackToHomePage, AsyncCallback<String> async);
 }

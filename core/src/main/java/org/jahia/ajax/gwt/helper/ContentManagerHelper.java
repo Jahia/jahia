@@ -1367,4 +1367,6 @@ public class ContentManagerHelper {
             throw new GWTJahiaServiceException(e);
         }
     }
+
+
 }

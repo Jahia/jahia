@@ -1420,7 +1420,7 @@ public class MainModule extends Module {
                                         handleError503();
                                     }
                                     String currentPath = node.getPath();
-                                    JahiaContentManagementService.App.getInstance().getDisplayableNodePath(currentPath.substring(0, currentPath.lastIndexOf("/")), new AsyncCallback<String>() {
+                                    JahiaContentManagementService.App.getInstance().getDisplayableNodePath(currentPath.substring(0, currentPath.lastIndexOf("/")), true, new AsyncCallback<String>() {
                                         @Override
                                         public void onFailure(Throwable throwable) {
                                             setUrl(getBaseUrl() + config.getDefaultLocation());
@@ -1428,7 +1428,11 @@ public class MainModule extends Module {
 
                                         @Override
                                         public void onSuccess(String path) {
-                                            staticGoTo(path, null);
+                                            if (path != null) {
+                                                staticGoTo(path, null);
+                                            } else {
+                                                setUrl(getBaseUrl() + config.getDefaultLocation());
+                                            }
                                         }
                                     });
                                 } else {

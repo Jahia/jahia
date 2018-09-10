@@ -533,7 +533,7 @@ public interface JahiaContentManagementService extends RemoteService {
      * Returns the path of the displayble node for the specified one.
      *
      * @param nodePath the path of the target node
-     * @param fallbackToHomePage
+     * @param fallbackToHomePage if true, use the homepage as fallback if no resource found
      * @return the path of the displayble node for the specified one
      * @throws GWTJahiaServiceException in case of a JCR access error
      */

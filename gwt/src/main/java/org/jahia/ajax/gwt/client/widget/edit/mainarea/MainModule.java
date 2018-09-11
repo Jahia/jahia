@@ -94,6 +94,7 @@ import org.jahia.ajax.gwt.client.widget.edit.InfoLayers;
 import org.jahia.ajax.gwt.client.widget.edit.ToolbarHeader;
 import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.WorkflowDashboardActionItem;
 
 import java.util.*;
 
@@ -614,6 +615,10 @@ public class MainModule extends Module {
 
     public static void openPublicationWorkflow(JsArrayString uuids, boolean allSubTree, boolean allLanguages, boolean checkForUnpublication) {
         PublicationWorkflow.openPublicationWorkflow(convertArray(uuids), getInstance().getEditLinker(), allSubTree, allLanguages, checkForUnpublication);
+    }
+
+    public static void openWorkflowsEngine(){
+        new WorkflowDashboardActionItem().onComponentSelection();
     }
 
     protected static GWTJahiaNode getGwtJahiaNode(String path, String name, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes) {
@@ -1333,6 +1338,9 @@ public class MainModule extends Module {
         };
         nsAuthoringApi.openPublicationWorkflow = function (uuids, allSubTree, allLanguages, checkForUnpublication) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::openPublicationWorkflow(*)(uuids, allSubTree, allLanguages, checkForUnpublication)
+        };
+        nsAuthoringApi.openWorkflowsEngine = function () {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::openWorkflowsEngine(*)()
         };
         nsAuthoringApi.switchLanguage = function (lang) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::switchLanguage(*)(lang);

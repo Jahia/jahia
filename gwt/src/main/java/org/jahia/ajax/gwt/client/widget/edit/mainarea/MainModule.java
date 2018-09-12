@@ -599,6 +599,10 @@ public class MainModule extends Module {
         }
     }
 
+    public static void deleteContent(String path, boolean skipRefreshOnDelete) {
+        displayAlert("Delete", "MainModule.deleteContent invoked");
+    }
+
     public static void displayAlert(String title, String message) {
         MessageBox.alert(title, message, null);
     }
@@ -1323,6 +1327,9 @@ public class MainModule extends Module {
         };
         nsAuthoringApi.editContent = $wnd.editContent = function (path, displayName, types, inheritedTypes, skipRefreshOnSave) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::editContent(*)(path, displayName, types, inheritedTypes, skipRefreshOnSave);
+        };
+        nsAuthoringApi.deleteContent = $wnd.deleteContent = function (path, skipRefreshOnDelete) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::deleteContent(*)(path, skipRefreshOnDelete);
         };
         nsAuthoringApi.disableGlobalSelection = $wnd.disableGlobalSelection = function (value) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::globalSelectionDisabled = value;

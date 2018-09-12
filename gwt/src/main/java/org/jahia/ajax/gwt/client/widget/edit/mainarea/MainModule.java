@@ -87,6 +87,8 @@ import org.jahia.ajax.gwt.client.util.WindowUtil;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
+import org.jahia.ajax.gwt.client.widget.content.DeleteItemWindow;
 import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEnginePopupListener;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
@@ -589,18 +591,26 @@ public class MainModule extends Module {
     }
 
     public static void editContent(String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, boolean skipRefreshOnSave) {
-        if (displayName == null) {
-            List<Module> modules = ModuleHelper.getModulesByPath().get(path);
-            EngineLoader.showEditEngine(getInstance().getEditLinker(), modules.get(0).getNode(), null, skipRefreshOnSave);
-        } else {
-            GWTJahiaNode n = getGwtJahiaNode(path, path.substring(path.lastIndexOf("/") + 1), displayName, nodeTypes, inheritedNodeTypes);
-            EditLinker.setSelectionOnBodyAttributes(n);
-            EngineLoader.showEditEngine(getInstance().getEditLinker(), n, null, skipRefreshOnSave);
+        GWTJahiaNode node = getGwtJahiaNode(path, displayName, nodeTypes, inheritedNodeTypes);
+        if (node.getDisplayName() != null) {
+            EditLinker.setSelectionOnBodyAttributes(node);
         }
+        EngineLoader.showEditEngine(getInstance().getEditLinker(), node, null, skipRefreshOnSave);
     }
 
-    public static void deleteContent(String path, boolean skipRefreshOnDelete) {
-        displayAlert("Delete", "MainModule.deleteContent invoked");
+    public static void deleteContent(String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, boolean skipRefreshOnDelete) {
+
+        GWTJahiaNode node = getGwtJahiaNode(path, displayName, nodeTypes, inheritedNodeTypes);
+        if (node.getDisplayName() != null) {
+            EditLinker.setSelectionOnBodyAttributes(node);
+        }
+
+        LinkerSelectionContext selectionContext = new LinkerSelectionContext();
+        selectionContext.setSelectedNodes(Collections.singletonList(node));
+        selectionContext.refresh(LinkerSelectionContext.SELECTED_NODE_ONLY);
+
+        DeleteItemWindow window = new DeleteItemWindow(getInstance().getEditLinker(), selectionContext, false);
+        window.show();
     }
 
     public static void displayAlert(String title, String message) {
@@ -625,7 +635,16 @@ public class MainModule extends Module {
         new WorkflowDashboardActionItem().onComponentSelection();
     }
 
-    protected static GWTJahiaNode getGwtJahiaNode(String path, String name, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes) {
+    private static GWTJahiaNode getGwtJahiaNode(String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes) {
+        if (displayName == null) {
+            List<Module> modules = ModuleHelper.getModulesByPath().get(path);
+            return modules.get(0).getNode();
+        } else {
+            return getGwtJahiaNode(path, path.substring(path.lastIndexOf("/") + 1), displayName, nodeTypes, inheritedNodeTypes);
+        }
+    }
+
+    private static GWTJahiaNode getGwtJahiaNode(String path, String name, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes) {
         GWTJahiaNode n = new GWTJahiaNode();
         n.setName(name);
         n.setDisplayName(displayName);
@@ -1328,8 +1347,8 @@ public class MainModule extends Module {
         nsAuthoringApi.editContent = $wnd.editContent = function (path, displayName, types, inheritedTypes, skipRefreshOnSave) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::editContent(*)(path, displayName, types, inheritedTypes, skipRefreshOnSave);
         };
-        nsAuthoringApi.deleteContent = $wnd.deleteContent = function (path, skipRefreshOnDelete) {
-            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::deleteContent(*)(path, skipRefreshOnDelete);
+        nsAuthoringApi.deleteContent = $wnd.deleteContent = function (path, displayName, types, inheritedTypes, skipRefreshOnDelete) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::deleteContent(*)(path, displayName, types, inheritedTypes, skipRefreshOnDelete);
         };
         nsAuthoringApi.disableGlobalSelection = $wnd.disableGlobalSelection = function (value) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::globalSelectionDisabled = value;
@@ -1632,8 +1651,6 @@ public class MainModule extends Module {
                 iFrameElement.contentWindow.onGWTFrameLoaded = [];
             }
         }-*/;
-
-
     }
 
     private String getPathFromUrl(String url) {
@@ -1647,7 +1664,6 @@ public class MainModule extends Module {
     public String getTemplate() {
         return template;
     }
-
 
     public final int getIE10FrameTop() {
         return getIE10FrameTop(IFrameElement.as(frame.getElement()));
@@ -1676,5 +1692,4 @@ public class MainModule extends Module {
     public final native void scrollTo(IFrameElement iFrameElement, int x, int y) /*-{
         iFrameElement.contentWindow.scrollTo(x, y);
     }-*/;
-
 }

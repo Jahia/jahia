@@ -111,7 +111,7 @@
         <jahia.tomcat.version>9.0.10</jahia.tomcat.version>
 
         <driver.derby.version>10.12.1.1</driver.derby.version>
-        <driver.mssql.version>4.2.6420.100</driver.mssql.version>
+        <driver.mssql.version>7.0.0.jre8</driver.mssql.version>
         <driver.mysql.version>5.1.47</driver.mysql.version>
         <driver.oracle.version>12.1.0.2</driver.oracle.version>
         <driver.postgresql.version>42.2.5</driver.postgresql.version>

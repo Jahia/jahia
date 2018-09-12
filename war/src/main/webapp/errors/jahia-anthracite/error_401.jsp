@@ -88,32 +88,9 @@
   			</div>
 
   		</div>
-  		<div class="login-footer">Digital Experience Manager 7.2 - Copyrights © 2002-2018 All Rights Reserved by Jahia Solutions Group SA.</div>
+  		<div class="login-footer">Digital Experience Manager - Copyrights © 2002-2018 All Rights Reserved by Jahia Solutions Group SA.</div>
   	</div>
   </section>
-
-  <script>
-    $(window, document, undefined).ready(function() {
-
-    	// Input label
-    	setTimeout(function() {
-    		var loginInput = $("input[name='username'],input[name='password']")
-    		loginInput.blur(function() {
-    			var $this = $(this);
-    			if ($this.val())
-    				$this.addClass('used');
-    			else
-    				$this.removeClass('used');
-    		});
-
-    		// Fix for autofill
-    		if ($("input[name='username']").val()) {
-    			loginInput.addClass('used');
-    		}
-    	}, 40);
-
-    });
-  </script>
 
 </body>
 </html>

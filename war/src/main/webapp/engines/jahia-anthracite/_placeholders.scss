@@ -164,7 +164,7 @@
 
 	%CSS_BLOCK--TOOLTIP---BOTTOM {
 		&::before {
-			bottom: -41px;
+			bottom: -36px;
 			left: -10px;
 		}
 
@@ -185,6 +185,7 @@
 		&::after {
             top: 12px;
             left: -9px;
+            transform: rotate(90deg);
 		}
 	}
 
@@ -1832,12 +1833,12 @@
     }
 
     %CSS_BLOCK--SIDE_PANEL--CONTAINER---OPEN {
-        background: _property($BODY--BG, $SIDE-PANEL) !important;
-        box-shadow: _property($BODY--BG--SHADOW, $SIDE-PANEL);
+
+
     }
 
     %CSS_BLOCK--SIDE_PANEL--TITLE {
-        @include text(26px, _property($TITLE--COLOR, $SIDE-PANEL), $FONT--WEIGHT---EXTRALIGHT);
+        @include text(33px, _property($TITLE--COLOR, $SIDE-PANEL), $FONT--WEIGHT---EXTRALIGHT);
     }
 
 
@@ -1907,11 +1908,12 @@
 
 	position: relative;
 
-	padding-left: 11px;
+	padding-left: 30px;
 
 	body[data-indigo-gwt-side-panel="open"] & {
 		display: block;
 	}
+
 
 	transition: all 0.2s ease-in 0s;
 }

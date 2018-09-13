@@ -1363,6 +1363,22 @@ if (!Element.prototype.matches) {
 	}
 
 	var app = {
+        config: {
+            help: function(){
+                console.log("=== CONFIG ===========\n\n")
+                console.log("You can stop the side panel from automatically closing with the following toggle:")
+                console.log("DX.config.toggleAutoHide()\n\n");
+                console.log("You can toggle the Log with the following:")
+                console.log("DX.config.toggleLog()\n\n");
+                console.log("======================")
+            },
+            toggleLog: function(){
+                app.dev.data.on = !app.dev.data.on
+            },
+            toggleAutoHide: function(){
+                app.nav.data.autoHideSidePanel = !app.nav.data.autoHideSidePanel
+            }
+        },
 		data: {
 			openedXWindows: [],
 			currentApp: null,
@@ -1451,6 +1467,7 @@ if (!Element.prototype.matches) {
 		},
         nav: {
             data: {
+                autoHideSidePanel: true
             },
 			pullState: function(closeButton){
                 app.dev.log("APP ::: NAV ::: PULLSTATE");
@@ -1544,23 +1561,24 @@ if (!Element.prototype.matches) {
 			}
 		},
 		onBlur: function(){
-			app.dev.log("::: APP ::: ONBLUR");
+			app.dev.log("::: APP ::: ONBLUR", true);
 			// Window has lost focus, so presume that the user has clicked in the iframe.
             // If the side panel is open, then close it
-            if(DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
+            if(DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open" && app.nav.data.autoHideSidePanel){
                 app.edit.sidepanel.close();
-
-                // Trigger mousedown / mouseup on body to close any open context menus and combo menus
+                //
+                // // Trigger mousedown / mouseup on body to close any open context menus and combo menus
                 DexV2.tag("body").trigger("mousedown").trigger("mouseup");
 
             }
 		},
 		onClick: function(e){
-            app.dev.log("CLICKED APP");
+            app.dev.log("CLICKED APP", true);
 			if(DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
-                var inSidePanel = DexV2.node(e.target).closest(".window-side-panel");
+                var inSidePanel = DexV2.node(e.target).closest(".window-side-panel"),
+                    inSideToolBar = DexV2.node(e.target).closest(".edit-menu-righttop");
 
-		        if(inSidePanel.nodes.length == 0){
+		        if(inSidePanel.nodes.length == 0 && inSideToolBar.nodes.length == 0 && app.nav.data.autoHideSidePanel){
 					app.dev.log("::: APP ::: ONCLICK");
 	                app.edit.sidepanel.close();
 	            }
@@ -3646,6 +3664,8 @@ if (!Element.prototype.matches) {
 			onChangeSRC: function(attrKey, attrValue){
 				app.dev.log("::: APP ::: IFRAME ::: ONCHANGESRC [src='" + attrValue + "' ::: currentApp='" + app.data.currentApp + "']");
 
+
+
 				app.iframe.data.previousUrl = app.iframe.data.currentUrl;
 				app.iframe.data.currentUrl = attrValue;
 
@@ -3685,6 +3705,11 @@ if (!Element.prototype.matches) {
 	                        elements.title.style.opacity = 0;
 
 	                }
+
+                    // app.edit.sidepanel.buildSplitter();
+                    // app.edit.sidepanel.resizeSidePanel();
+                    DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.removeProperty("width");
+                    DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.removeProperty("left");
 
 	                // if( elements.publishButton &&
 	                //     elements.publishButton.style){
@@ -4393,8 +4418,10 @@ if (!Element.prototype.matches) {
 
 				},
 				reposition: function(e){
-					app.dev.log("::: APP ::: EDIT ::: TOPBAR ::: REPOSITION");
+					app.dev.log("::: APP ::: EDIT ::: TOPBAR ::: REPOSITION", true);
 					// Center title to page and move surrounding menus to right and left.
+                    app.edit.sidepanel.resizeSidePanel();
+
 					var offset = (DexV2.getCached("body").getAttribute("data-indigo-sidepanel-pinned") == "true") ? 160 : 0;
 
 					if(document.getElementsByClassName("x-current-page-path").length > 0){
@@ -4427,7 +4454,7 @@ if (!Element.prototype.matches) {
                                     boxes.innerTitle = elements.innerTitle.getBoundingClientRect();
 
                                     // Center Inner title bounding box
-                                    elements.innerTitle.style.left = ((boxes.body.width / 2) - (boxes.innerTitle.width / 2)) + 5 + "px";
+                                    elements.innerTitle.style.left = ((boxes.body.width / 2) - (boxes.innerTitle.width / 2)) + 5 + offset + "px";
                                 }
 
 
@@ -4485,7 +4512,6 @@ if (!Element.prototype.matches) {
                     }
 				},
                 resizeSidePanel: function(xPos){
-
                     xPos = xPos || function(){
                         var splitter = DexV2.id("indigoSplitter"),
                             splitterXPos = (splitter.exists()) ? parseInt(splitter.nodes[0].style.getPropertyValue("left")) : null;
@@ -4496,8 +4522,6 @@ if (!Element.prototype.matches) {
                     if(xPos == null){
                         return false;
                     }
-
-
 
                     // Block the minimum and maximum widths of the side panel
                     if(xPos < 360){
@@ -4519,13 +4543,14 @@ if (!Element.prototype.matches) {
                     }
 
                     // Reposition the main frame
-                    var settingsMode = DexV2.getCached("body").getAttribute("data-edit-window-style") == "settings" || DexV2.getCached("body").getAttribute("data-indigo-app") == "admin",
-                        mainFrameWidth = (settingsMode) ? xPos - 50 : xPos + 45,
-                        mainFrameLeft = (settingsMode) ? xPos : xPos + 50;
+                    var dashboardMode = app.data.currentApp === "dashboard",
+                        settingsMode = DexV2.getCached("body").getAttribute("data-edit-window-style") == "settings" || DexV2.getCached("body").getAttribute("data-sitesettings") == "true" || DexV2.getCached("body").getAttribute("data-indigo-app") == "admin",
+                        mainFrameWidth = (settingsMode || dashboardMode) ? xPos - 68 : xPos + 5,
+                        mainFrameLeft = (settingsMode || dashboardMode) ? xPos : xPos + 10;
 
 
                     // Side Panel is currently pinned, so we need to adjust the width and left position of the main window
-                    if(DexV2.getCached("body").getAttribute("data-INDIGO-SIDEPANEL-PINNED") == "true" || settingsMode){
+                    if(DexV2.getCached("body").getAttribute("data-INDIGO-SIDEPANEL-PINNED") == "true" || settingsMode || dashboardMode){
                         DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.setProperty("width", "calc(100% - " + mainFrameWidth + "px)", "important");
                         DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.setProperty("left", mainFrameLeft + "px", "important");
                     }
@@ -4543,13 +4568,19 @@ if (!Element.prototype.matches) {
                     var contentCreateFilter = DexV2("#JahiaGxtCreateContentTab > .x-border-layout-ct > .x-form-field-wrap");
 
                     if(contentCreateFilter.exists()){
-                        contentCreateFilter.nodes[0].style.setProperty("width", (xPos - 100) + "px", "important");
+                        contentCreateFilter.nodes[0].style.setProperty("width", (xPos - 109) + "px", "important");
                     }
 
                     // Set position of Results panels
                     var categoriesResultsPane = DexV2("#JahiaGxtCategoryBrowseTab.tab_categories .x-box-inner .x-box-item:nth-child(2)"),
+                        searchResultPane = DexV2("#JahiaGxtSearchTab.tab_search .JahiaGxtSearchTab-results .x-panel-bwrap"),
                         imagesResultPane = DexV2("#JahiaGxtFileImagesBrowseTab.tab_filesimages #images-view"),
                         contentResultsPane = DexV2("#JahiaGxtContentBrowseTab.tab_content .x-box-inner .x-box-item:nth-child(2)");
+
+                        if(searchResultPane.exists()){
+                            searchResultPane.nodes[0].style.setProperty("left", xPos + "px", "important");
+
+                        }
 
                         if(categoriesResultsPane.exists()){
                             categoriesResultsPane.nodes[0].style.setProperty("left", xPos + "px", "important");
@@ -4828,8 +4859,8 @@ if (!Element.prototype.matches) {
                         DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.removeProperty("left");
                     } else {
                         var xPos = parseInt(DexV2.id("indigoSplitter").nodes[0].style.getPropertyValue("left"));
-                        DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.setProperty("width", "calc(100% - " + (xPos + 45) + "px)", "important");
-                        DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.setProperty("left", (xPos + 50) + "px", "important");
+                        DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.setProperty("width", "calc(100% - " + (xPos + 5) + "px)", "important");
+                        DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.setProperty("left", (xPos + 10) + "px", "important");
                     }
 
 					app.edit.topbar.reposition();
@@ -4917,7 +4948,7 @@ if (!Element.prototype.matches) {
 
 				},
 				close: function(){
-					if(DexV2.getCached("body").getAttribute("data-edit-window-style") !== "settings" && DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open" && DexV2.getCached("body").getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes" && DexV2.getCached("body").getAttribute("data-INDIGO-SIDEPANEL-PINNED") != "true"){
+					if(DexV2.getCached("body").getAttribute("data-sitesettings") !== "true" && DexV2.getCached("body").getAttribute("data-edit-window-style") !== "settings" && DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open" && DexV2.getCached("body").getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes" && DexV2.getCached("body").getAttribute("data-INDIGO-SIDEPANEL-PINNED") != "true"){
 						app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: CLOSE");
 
 						var siteCombo = DexV2("body[data-indigo-gwt-side-panel='open'] .window-side-panel div[role='combobox']");
@@ -4955,7 +4986,19 @@ if (!Element.prototype.matches) {
 						app.edit.sidepanel.data.previousTab = app.edit.sidepanel.data.currentTab;
 						app.edit.sidepanel.data.currentTab = clickedTabID;
 
-						app.dev.log("app.edit.sidepanel.data.currentTab: " + app.edit.sidepanel.data.currentTab);
+                        if(app.edit.sidepanel.data.previousTab === app.edit.sidepanel.data.currentTab){
+
+                            if(DexV2.getCached("body").getAttribute("data-sitesettings") == "true" && clickedTabID !== "JahiaGxtSidePanelTabs__JahiaGxtSettingsTab"){
+                                setTimeout(function(){
+                                    DexV2.id("JahiaGxtSidePanelTabs__JahiaGxtSettingsTab").trigger("mousedown").trigger("mouseup").trigger("click");
+                                }, 0)
+                            } else if(DexV2.getCached("body").getAttribute("data-sitesettings") !== "true" && DexV2.getCached("body").getAttribute("data-indigo-sidepanel-pinned") == "true" && clickedTabID === "JahiaGxtSidePanelTabs__JahiaGxtSettingsTab") {
+                                setTimeout(function(){
+                                    DexV2.id("JahiaGxtSidePanelTabs__JahiaGxtPagesTab").trigger("mousedown").trigger("mouseup").trigger("click");
+                                }, 0)
+                            }
+
+                        }
 
 			            DexV2.getCached("body").setAttribute("data-INDIGO-GWT-PANEL-TAB", clickedTabID);
 
@@ -5015,37 +5058,37 @@ if (!Element.prototype.matches) {
                     iframeCSSOverRide: ".well{border:none!important; box-shadow: none!important;} body{background-image: none!important; background-color:#f5f5f5!important}"
 				},
                 onTreeLoad: function(nodeGroup, arg1, arg2){
-					DexV2.node(this)
-						.trigger("mousedown")
-						.trigger("click");
+					// DexV2.node(this)
+					// 	.trigger("mousedown")
+					// 	.trigger("click");
 
                 },
                 onTreeChange: function(firstNode, arg1, arg2){
-                    var nodeGroup = this,
-                        firstBranch = firstNode,
-                        parentBranch = firstBranch.previousSibling,
-                        branch,
-                        nodeJoint;
-
-                    for (n = 0;  n < nodeGroup.length; n++){
-
-                        branch = nodeGroup[n],
-                        nodeJoint = branch.querySelectorAll(".x-tree3-node-joint")[0];
-
-                        // See if Node joint is activated ( activation is assumed when a background image is assigned to the button )
-                        if(	nodeJoint &&
-                            nodeJoint.style &&
-                            nodeJoint.style.backgroundImage){
-
-                            // Branch has children, so disable clicks by adding class name "unselectable-row"
-                            branch.classList.add("unselectable-row");
-                        }
-
-                    }
-
-                    if(parentBranch){
-                        parentBranch.classList.add("indigo-opened");
-                    }
+                    // var nodeGroup = this,
+                    //     firstBranch = firstNode,
+                    //     parentBranch = firstBranch.previousSibling,
+                    //     branch,
+                    //     nodeJoint;
+                    //
+                    // for (n = 0;  n < nodeGroup.length; n++){
+                    //
+                    //     branch = nodeGroup[n],
+                    //     nodeJoint = branch.querySelectorAll(".x-tree3-node-joint")[0];
+                    //
+                    //     // See if Node joint is activated ( activation is assumed when a background image is assigned to the button )
+                    //     if(	nodeJoint &&
+                    //         nodeJoint.style &&
+                    //         nodeJoint.style.backgroundImage){
+                    //
+                    //         // Branch has children, so disable clicks by adding class name "unselectable-row"
+                    //         branch.classList.add("unselectable-row");
+                    //     }
+                    //
+                    // }
+                    //
+                    // if(parentBranch){
+                    //     parentBranch.classList.add("indigo-opened");
+                    // }
 
 
                 },
@@ -5062,175 +5105,181 @@ if (!Element.prototype.matches) {
 				},
 				onReady: function(e, directAccess){
 					app.dev.log("::: APP ::: EDIT ::: SETTINGS ::: ONREADY");
-
-					if(directAccess){
-						// Need to set back to the settings tree list (the onChangeSite will have switched it back to pages)
-						DexV2.id("JahiaGxtSidePanelTabs__JahiaGxtSettingsTab").trigger("click");
-					}
-
-					// Setup CSS to display page with settings style
-					app.edit.settings.data.opened = true;
-					app.edit.sidepanel.data.open = true;
-					DexV2.getCached("body").setAttribute("data-edit-window-style", "settings");
-					DexV2.getCached("body").setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
-
-					if(directAccess){
-						// Settings page was opened directly ( no passing via edit mode )
-
-						// Find the selected page in the tree by looking for the added class x-grid3-row-selected
-						DexV2.id("JahiaGxtSettingsTab").onAttribute(".x-grid3-row", "class", function(){
-							// DEV NOTE ::: Need to add a way of killing a listener when it is no longer needed
-
-							if(!app.edit.history.get("settingspage")){
-								if(DexV2.node(this).hasClass("x-grid3-row-selected")) {
-									// Save this page as the currently selected settings page
-									app.edit.history.add("settingspage", this);
-								}
-							}
-
-						});
-
-					} else {
-						// User has opened the settings from the edit mode
-						if(app.edit.history.get("settingspage")){
-							// There is already a settings page in the history, so select it
-							DexV2.node(app.edit.history.get("settingspage")).trigger("mousedown").trigger("click");
-
-						} else {
-							// Could not find a previously selected settings page - this is a first run (or edit page has been changed)
-
-                            // DEV NOTE :: DONT LIKE HAVING TO WAIT LIKE THIS ...
-                            setTimeout(function(){
-                                DexV2.id("JahiaGxtRefreshSidePanelButton").trigger("click");
-
-                                // Listen for first settings page to be added to tree, select it then stop listening.
-    							DexV2("#JahiaGxtSettingsTab").onGroupOpen(".x-grid3-row", function(nodeGroup){
-
-                                    if(app.edit.settings.data.opened){
-                                        var firstRow = this[0];
-                                        // DEV NOTE ::: May need to loop through nodeGroup to get first actual available PAGE (ie. not a folder)
-
-                                        DexV2.node(firstRow)
-        									.trigger("mousedown")
-        									.trigger("click");
-                                    } else {
-                                    }
-
-
-    							});
-                            }, 50);
-
-                            DexV2("#JahiaGxtSettingsTab .x-grid3-row")
-                            .trigger("mousedown")
-                            .trigger("click");
-
-
-
-						}
-					}
-
-					if(app.data.currentApp == "edit"){
-						// Jeremys code START
-						// Position the language selector dropdown.
-						// var siteSettingsList = DexV2.id("JahiaGxtSettingsTab").filter(".x-panel.x-component").nodes[0];
-						// var langSelector = DexV2.class("toolbar-itemsgroup-languageswitcher").nodes[0];
-						//
-						// function offset(el) {
-						//   var rect = el.getBoundingClientRect(),
-						//   scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
-						//   scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-						//   return {
-						// 	top: rect.top + scrollTop
-						//   }
-						// }
-						// var siteSettingsListTop = offset(siteSettingsList).top;
-						//
-						// if(siteSettingsListTop <= 145) {
-						//   langSelector.style.cssText='top: 112px !important';
-						// } else if (siteSettingsListTop >= 185) {
-						//   langSelector.style.cssText='top: 152px !important';
-						// };
-						// Jeremys code END
-					}
-
+                    //
+					// if(directAccess){
+					// 	// Need to set back to the settings tree list (the onChangeSite will have switched it back to pages)
+					// 	DexV2.id("JahiaGxtSidePanelTabs__JahiaGxtSettingsTab").trigger("click");
+					// }
+                    //
+					// // Setup CSS to display page with settings style
+					// app.edit.settings.data.opened = true;
+					// app.edit.sidepanel.data.open = true;
+					// DexV2.getCached("body").setAttribute("data-edit-window-style", "settings");
+					// DexV2.getCached("body").setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
+                    //
+					// if(directAccess){
+					// 	// Settings page was opened directly ( no passing via edit mode )
+                    //
+					// 	// Find the selected page in the tree by looking for the added class x-grid3-row-selected
+					// 	DexV2.id("JahiaGxtSettingsTab").onAttribute(".x-grid3-row", "class", function(){
+					// 		// DEV NOTE ::: Need to add a way of killing a listener when it is no longer needed
+                    //
+					// 		if(!app.edit.history.get("settingspage")){
+					// 			if(DexV2.node(this).hasClass("x-grid3-row-selected")) {
+					// 				// Save this page as the currently selected settings page
+					// 				app.edit.history.add("settingspage", this);
+					// 			}
+					// 		}
+                    //
+					// 	});
+                    //
+					// } else {
+					// 	// User has opened the settings from the edit mode
+					// 	if(app.edit.history.get("settingspage")){
+					// 		// There is already a settings page in the history, so select it
+					// 		DexV2.node(app.edit.history.get("settingspage")).trigger("mousedown").trigger("click");
+                    //
+					// 	} else {
+					// 		// Could not find a previously selected settings page - this is a first run (or edit page has been changed)
+                    //
+                    //         // DEV NOTE :: DONT LIKE HAVING TO WAIT LIKE THIS ...
+                    //         setTimeout(function(){
+                    //             DexV2.id("JahiaGxtRefreshSidePanelButton").trigger("click");
+                    //
+                    //             // Listen for first settings page to be added to tree, select it then stop listening.
+    				// 			DexV2("#JahiaGxtSettingsTab").onGroupOpen(".x-grid3-row", function(nodeGroup){
+                    //
+                    //                 if(app.edit.settings.data.opened){
+                    //                     var firstRow = this[0];
+                    //                     // DEV NOTE ::: May need to loop through nodeGroup to get first actual available PAGE (ie. not a folder)
+                    //
+                    //                     DexV2.node(firstRow)
+        			// 						.trigger("mousedown")
+        			// 						.trigger("click");
+                    //                 } else {
+                    //                 }
+                    //
+                    //
+    				// 			});
+                    //         }, 50);
+                    //
+                    //         DexV2("#JahiaGxtSettingsTab .x-grid3-row")
+                    //         .trigger("mousedown")
+                    //         .trigger("click");
+                    //
+                    //
+                    //
+					// 	}
+					// }
+                    //
+					// if(app.data.currentApp == "edit"){
+					// 	// Jeremys code START
+					// 	// Position the language selector dropdown.
+					// 	// var siteSettingsList = DexV2.id("JahiaGxtSettingsTab").filter(".x-panel.x-component").nodes[0];
+					// 	// var langSelector = DexV2.class("toolbar-itemsgroup-languageswitcher").nodes[0];
+					// 	//
+					// 	// function offset(el) {
+					// 	//   var rect = el.getBoundingClientRect(),
+					// 	//   scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
+					// 	//   scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+					// 	//   return {
+					// 	// 	top: rect.top + scrollTop
+					// 	//   }
+					// 	// }
+					// 	// var siteSettingsListTop = offset(siteSettingsList).top;
+					// 	//
+					// 	// if(siteSettingsListTop <= 145) {
+					// 	//   langSelector.style.cssText='top: 112px !important';
+					// 	// } else if (siteSettingsListTop >= 185) {
+					// 	//   langSelector.style.cssText='top: 152px !important';
+					// 	// };
+					// 	// Jeremys code END
+					// }
+                    //
 
 
 				},
 				open:function(e, directAccess){
                     app.dev.log("::: APP ::: EDIT ::: SETTINGS ::: OPEN");
-					app.edit.sidepanel.data.previousTab = app.edit.sidepanel.data.currentTab;
-
+					// app.edit.sidepanel.data.previousTab = app.edit.sidepanel.data.currentTab;
+                    //
                     app.edit.sidepanel.buildSplitter();
                     app.edit.sidepanel.resizeSidePanel();
 
-					// Check if the Settings Tab has already been loaded
-					if(DexV2.id("JahiaGxtSettingsTab").exists()){
-					  // Already loaded, so we can execute the onReady function
-					  app.edit.settings.onReady(e, directAccess);
-					} else {
-					  // Doesnt yet exist, so listen for it being added to the DOM, then execute the onReady function
-					  DexV2("body").onOpen("#JahiaGxtSettingsTab", function(){
-						  app.edit.settings.onReady(e, directAccess);
-					  });
-					}
+                    DexV2.getCached("body").setAttribute("data-indigo-gwt-side-panel", "open");
+
+                    DexV2.id("JahiaGxtSidePanelTabs__JahiaGxtSettingsTab")
+                        .trigger("click");
+
+                    //
+					// // Check if the Settings Tab has already been loaded
+					// if(DexV2.id("JahiaGxtSettingsTab").exists()){
+					//   // Already loaded, so we can execute the onReady function
+					//   app.edit.settings.onReady(e, directAccess);
+					// } else {
+					//   // Doesnt yet exist, so listen for it being added to the DOM, then execute the onReady function
+					//   DexV2("body").onOpen("#JahiaGxtSettingsTab", function(){
+					// 	  app.edit.settings.onReady(e, directAccess);
+					//   });
+					// }
 
 				},
 				close: function(){
                     app.dev.log("::: APP ::: EDIT ::: SETTINGS ::: CLOSE");
-
-                    DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.removeProperty("width");
-                    DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.removeProperty("left");
-
-					var previousEditPage = app.edit.history.get("editpage");
-
-					app.edit.settings.data.opened = false;
-					DexV2.getCached("body").setAttribute("data-edit-window-style", "default");
-
-		            app.edit.sidepanel.close();
-
-		            if(previousEditPage && document.body.contains(previousEditPage)){
-		                // Trigger click on last viewed settings page
-						DexV2.node(previousEditPage)
-							.trigger("mousedown")
-							.trigger("mouseup");
-		            } else {
-                        // DEV NOTE ::: This is causing problems when switching site, not selecting a page in the new sites tree openeing settings then closing.
-						// Trigger Click on Second page (first row is not an actual page)
-						// Need to set side panel tab as pages to allow the capture of the click to save the page in history...
-						DexV2.getCached("body").setAttribute("data-indigo-gwt-panel-tab", "JahiaGxtSidePanelTabs__JahiaGxtPagesTab");
-
-                        var clickablePage = DexV2("#JahiaGxtPagesTab .x-grid3-row:nth-child(2)");
-
-                        if(clickablePage.exists()){
-                            clickablePage
-                                .trigger("mousedown")
-                                .trigger("mouseup");
-                        } else {
-                            window.location = app.edit.data.returnURL;
-
-                        }
-
-					}
-
-
-          // Position for the language picker.
-
-          // EDIT: It seems to work fine as is.
-          //DexV2("body").onChange(".toolbar-itemsgroup-languageswitcher", function(){
-            var langSelector = DexV2.class("toolbar-itemsgroup-languageswitcher").nodes[0];
-            langSelector.style.cssText='top: 0';
-          //})
-
-
-					if(DexV2.getCached("body").getAttribute("data-indigo-sidepanel-pinned") == "true"){
-						// The side panel has been pinned, need to reselect the previously opened tab
-
-						if(app.edit.sidepanel.data.previousTab){
-							DexV2.id(app.edit.sidepanel.data.previousTab).trigger("click");
-						}
-					}
-
-					app.edit.resizeLanguageInput()
+          //
+          //           DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.removeProperty("width");
+          //           DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.removeProperty("left");
+          //
+			// 		var previousEditPage = app.edit.history.get("editpage");
+          //
+			// 		app.edit.settings.data.opened = false;
+			// 		DexV2.getCached("body").setAttribute("data-edit-window-style", "default");
+          //
+		  //           app.edit.sidepanel.close();
+          //
+		  //           if(previousEditPage && document.body.contains(previousEditPage)){
+		  //               // Trigger click on last viewed settings page
+			// 			DexV2.node(previousEditPage)
+			// 				.trigger("mousedown")
+			// 				.trigger("mouseup");
+		  //           } else {
+          //               // DEV NOTE ::: This is causing problems when switching site, not selecting a page in the new sites tree openeing settings then closing.
+			// 			// Trigger Click on Second page (first row is not an actual page)
+			// 			// Need to set side panel tab as pages to allow the capture of the click to save the page in history...
+			// 			DexV2.getCached("body").setAttribute("data-indigo-gwt-panel-tab", "JahiaGxtSidePanelTabs__JahiaGxtPagesTab");
+          //
+          //               var clickablePage = DexV2("#JahiaGxtPagesTab .x-grid3-row:nth-child(2)");
+          //
+          //               if(clickablePage.exists()){
+          //                   clickablePage
+          //                       .trigger("mousedown")
+          //                       .trigger("mouseup");
+          //               } else {
+          //                   window.location = app.edit.data.returnURL;
+          //
+          //               }
+          //
+			// 		}
+          //
+          //
+          // // Position for the language picker.
+          //
+          // // EDIT: It seems to work fine as is.
+          // //DexV2("body").onChange(".toolbar-itemsgroup-languageswitcher", function(){
+          //   var langSelector = DexV2.class("toolbar-itemsgroup-languageswitcher").nodes[0];
+          //   langSelector.style.cssText='top: 0';
+          // //})
+          //
+          //
+			// 		if(DexV2.getCached("body").getAttribute("data-indigo-sidepanel-pinned") == "true"){
+			// 			// The side panel has been pinned, need to reselect the previously opened tab
+          //
+			// 			if(app.edit.sidepanel.data.previousTab){
+			// 				DexV2.id(app.edit.sidepanel.data.previousTab).trigger("click");
+			// 			}
+			// 		}
+          //
+			// 		app.edit.resizeLanguageInput()
 
 
 				}
@@ -5260,7 +5309,8 @@ if (!Element.prototype.matches) {
 
                 } else {
                     DexV2.getCached("body").setAttribute("data-INDIGO-BETA", "");
-
+                    app.edit.sidepanel.buildSplitter();
+                    app.edit.sidepanel.resizeSidePanel();
                 }
 
             },
@@ -6114,8 +6164,8 @@ if (!Element.prototype.matches) {
 				.onMouseOver("#" + app.picker.data.ID + " #JahiaGxtManagerTobTable .x-grid3-row", app.picker.row.onMouseOver)
 				.onMouseOver("#" + app.picker.data.ID + " #JahiaGxtManagerTobTable .thumb-wrap", app.picker.thumb.onMouseOver)
                 // .onMouseEnter("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree + div #images-view .x-view", app.picker.thumb.onMouseOut)
-                .onMouseUp("#JahiaGxtSidePanelTabs__JahiaGxtPagesTab, #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab, #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtSearchTab, #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab", app.edit.sidepanel.tab.onClick, "OPEN-SIDE-PANEL-TAB")
-				.onMouseUp("#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", app.edit.settings.open)
+                .onMouseUp("#JahiaGxtSidePanelTabs__JahiaGxtPagesTab, #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab, #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtSearchTab, #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab, #JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", app.edit.sidepanel.tab.onClick, "OPEN-SIDE-PANEL-TAB")
+				// .onMouseUp("#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", app.edit.settings.open)
 				.onMouseDown("#JahiaGxtContentBrowseTab .x-box-item:nth-child(1) .x-grid3-row, #JahiaGxtFileImagesBrowseTab .x-grid3-row, #JahiaGxtCategoryBrowseTab .x-grid3-row", app.edit.sidepanel.row.onMouseDown)
 				.onClick("#images-view, .x-box-inner .x-box-item:nth-child(2), .JahiaGxtSearchTab-results .x-panel-bwrap", app.edit.sidepanel.toggleFloatingPanel)
 

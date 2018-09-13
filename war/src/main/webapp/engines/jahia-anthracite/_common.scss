@@ -80,10 +80,15 @@ html {
 
 body {
 	background: _property($BODY--BG, $APP);
+    background: #585757;
 	transition: all 0.2s ease-in 0s;
 
     &[data-channel] {
         box-shadow: inset 0px -120px 260px #343638;
+    }
+
+    &[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"] {
+        background: #fcfdfd
     }
 
 
@@ -126,6 +131,10 @@ body {
 
 		}
 	}
+
+    &[data-sitesettings="true"] {
+        background: #fcfdfd;
+    }
 
 
 }

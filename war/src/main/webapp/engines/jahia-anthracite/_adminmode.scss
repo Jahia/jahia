@@ -9,6 +9,15 @@
 
 .x-viewport-adminmode {
 
+	#JahiaGxtSidePanelTabs {
+		border-right-width: 0!important;
+		box-shadow: none!important;
+
+		&:before {
+			opacity: 0!important;
+		}
+	}
+
 	.action-toolbar {
 		background-size: 32px 32px;
 		background: none !important;

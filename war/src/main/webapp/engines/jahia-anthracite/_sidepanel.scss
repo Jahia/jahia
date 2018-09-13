@@ -31,17 +31,72 @@ body[indigo-dragging-panel] {
 	.edit-menu-sites {
 		/* Site Selector */
 
+		// Edit Mode
+		position: fixed;
+		left: 60px;
+		top: 20px !important;
+		background: transparent;
+		pointer-events: all;
+		z-index: $ZINDEX--MAINMODULE--LANGUAGE_SWITCHER;
+
+		body[data-sitesettings="true"] & {
+			transition: left 0.2s ease-in 0s;
+		}
+
+
+		// Side Panel
+		body[data-indigo-gwt-side-panel="open"] & {
+			top: 36px !important;
+			left: 89px!important;
+
+			div[role="combobox"] {
+				input.x-form-text {
+					background: transparent;
+					box-shadow: none;
+					color: #363636;
+					padding: 0 17px 0 0 !important;
+					font-size: 14px;
+				}
+
+				img {
+					width: 15px !important;
+				    background: url(./images/expanded-black.png) no-repeat left center transparent !important;
+				    background-size: 14px !important;
+
+
+				}
+			}
+		}
+
+
+
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] &,
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab"] &,
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"] &,
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"] &,
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] &,
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"] & {
+			left: 99px!important;
+		}
+
+		body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSettingsTab"] & {
+			left: 99px!important;
+		}
+
+		html.ext-strict body.ext-gecko[data-indigo-gwt-side-panel="open"] & {
+			div[role="combobox"] {
+				img {
+					height: 21px!important;
+				}
+			}
+		}
+
 		div[role="combobox"] {
 			input.x-form-text {
 				background: transparent;
 			    font-size: 14px;
 			    padding: 0 17px 0 0 !important;
 			    box-shadow: none;
-
-				// &:focus,
-				// &:active {
-				// 	width: 123px!important;
-				// }
 			}
 
 			img {
@@ -51,131 +106,7 @@ body[indigo-dragging-panel] {
 			}
 		}
 
-
-
-		body[data-sitesettings="true"][data-indigo-gwt-side-panel="open"] &,
-		body[data-sitesettings="true"][data-indigo-gwt-side-panel="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] & {
-			display: none!important;
-			// display: block!important;
-			// overflow: visible;
-		    // z-index: 9;
-		    // top: 29px!important;
-		    // left: 76px!important;
-			//
-			// .x-form-field-wrap {
-			// 	// Need to resize this with JS
-			// 	// width: 58px!important;
-			// }
-			//
-			// input[type="text"] {
-			// 	// width: 123px;
-			// 	box-shadow: none;
-			// 	background: #fafafa;
-			// 	width: 100%!important;
-			// 	font-size: 14px;
-			// 	padding: 0 16px 0 0!important;
-			//
-			//
-			// }
-			//
-			// img {
-			// 	position: absolute;
-			//     top: 0;
-			//     right: 0;
-			//     width: 15px !important;
-			//     height: 100% !important;
-			//     border: none !important;
-			//     background: url(./images/expanded-black.png) no-repeat left center transparent !important;
-			//     background-size: 14px!important;
-			// }
-		}
-
-		position: fixed;
-        left: 60px;
-        top: 20px !important;
-        // background: radial-gradient(ellipse at bottom right, rgba(255, 255, 255, 0.07) 0%,rgba(255, 255, 255, 0) 70%);
-		background: transparent;
-
-        pointer-events: all;
-		z-index: $ZINDEX--MAINMODULE--LANGUAGE_SWITCHER;
-
-		body[data-indigo-gwt-side-panel="open"] & {
-			display: none!important;
-		}
-
-		body[data-indigo-gwt-side-panel="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] & {
-			top: 62px!important;
-			left: 70px!important;
-
-			background: transparent;
-			display: block!important;
-
-			input[type="text"] {
-				background: transparent;
-				font-size: 14px;
-				padding: 0 17px 0 0 !important;
-				box-shadow: none;
-			}
-
-			img {
-				width: 15px !important;
-			    background: url(./images/expanded-black.png) no-repeat left center transparent !important;
-			    background-size: 14px !important;
-			}
-		}
-
-
-		.x-form-field-wrap {
-			body[data-indigo-gwt-side-panel="open"] & {
-
-				// width: 265px!important
-			}
-		}
-
-
-
-        input {
-			// @extend %CSS_BLOCK--COMBO;
-
-			body[data-indigo-gwt-side-panel="open"] & {
-				// @extend %CSS_BLOCK--COMBO--SIDE-PANEL;
-
-
-				// background: _theme-color(secondary);
-				// color: _theme-color(primary);
-				// transition: none;
-				// padding: 3px 40px 3px 5px !important;
-				// text-transform: none;
-				// color: _theme-color(primary, c)!important;
-				// font-size: 12px!important;
-				// font-weight: 200!important;
-
-				&:hover {
-					background: rgba(38, 38, 38, 0.11)!important;
-				}
-			}
-        }
-
         img {
-            // height: 30px!important;
-			// width: 27px!important;
-			// background-color: transparent!important;
-
-			// body[data-indigo-gwt-side-panel="open"] & {
-			// 	background-image: url($ICON--ARROW_DOWN---GREY);
-			// 	opacity: 0.7;
-			// 	height: 23px!important;
-			// 	width: 17px!important;
-			//
-			// 	&:hover {
-			// 		background-color: rgba(_theme-color(primary, c), 0.3)!important;
-			// 		opacity: 1;
-			// 	}
-			// 	// background-color: _theme-color(secondary, b) !important
-			// }
-
-
-
 			// Sticky override ...
 			html.ext-strict body.ext-gecko & {
 
@@ -186,41 +117,45 @@ body[indigo-dragging-panel] {
 
             }
         }
-		// width: 250px!important;
-		// display:none;
-		//
-		// > table {
-		// 	width: 100%!important;
-		// }
-		//
-		// .x-form-field-wrap {
-		// 	width:auto!important;
-		//
-		// }
-		//
-		// body[data-INDIGO-GWT-PANEL-TAB="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] & {
-		// 	display: block;
-		// }
+
 	}
 
 	#JahiaGxtRefreshSidePanelButton {
 		/* Refresh side panel button */
 		pointer-events: all;
-		background: url($ICON--REFRESH--SMALL_GREY) no-repeat center center _theme-color(secondary);
+		background: url(./images/icons_grey/refresh.svg) no-repeat center;
+		background-size: 23px;
 		left: 275px;
 		position: fixed;
-		top: 27px;
+		top: 25px;
 		border-radius: 100%;
-		background-size: 18px;
-		height: 25px;
-		width: 25px;
-		opacity: 0.7;
+		height: 30px;
+	    width: 30px;
+		opacity: 1;
 		display: none;
+		transition: all 0.2s ease-in 0s;
+
+		body[indigo-dragging-panel="true"] & {
+			transition: none;
+		}
+
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] &,
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab"] &,
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"] &,
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"] &,
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] &,
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"] & {
+			margin-left: 47px;
+		}
 
 		&.x-tool-refresh-red {
 			background: url(./images/icons/tabs-publish-modified@X2.png) no-repeat center center _theme-color(secondary);
 			background-size: 32px;
-	    opacity: .9;
+		    opacity: .9;
+		}
+
+		body[data-sitesettings="true"] & {
+			margin-left: 37px;
 		}
 
 		body[data-edit-window-style="settings"] &,
@@ -243,6 +178,11 @@ body[indigo-dragging-panel] {
 		body[data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] & {
 			display: none!important;
 		}
+
+		// body[data-indigo-gwt-side-panel="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"]:not(.minimise-results) &,
+		// body[data-indigo-gwt-side-panel="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"]:not(.minimise-results) & {
+		// 	margin-left: 354px;
+		// }
 	}
 
 	.x-panel-header-text {
@@ -305,7 +245,7 @@ body[indigo-dragging-panel] {
 	.show-results .JahiaGxtSearchTab-form .x-panel-body {
 
 		body[data-indigo-GWT-SIDE-PANEL="open"] & {
-			width: calc(50% - 20px) !important;
+			width: calc(100% - 26px) !important;
 		}
 
 	}
@@ -326,7 +266,7 @@ body[indigo-dragging-panel] {
 
 				display: none;
 
-				body[data-edit-window-style="default"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-app="edit"] & {
+				body[data-edit-window-style="default"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-app="edit"][data-sitesettings="false"] & {
 					top: 30px;
 					left: 315px;
 					width: 20px !important;
@@ -342,8 +282,13 @@ body[indigo-dragging-panel] {
 
 				body[data-edit-window-style="default"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-app="edit"][data-indigo-sidepanel-pinned="true"] & {
 					background-image: url(./images/icons_blue/pin.svg);
-			    opacity: 1;
+				    opacity: 1;
 				}
+
+				// body[data-indigo-gwt-side-panel="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"]:not(.minimise-results) &,
+				// body[data-indigo-gwt-side-panel="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"]:not(.minimise-results) & {
+				// 	margin-left: 354px;
+				// }
 
 				&:hover {
 					cursor: pointer;
@@ -356,27 +301,76 @@ body[indigo-dragging-panel] {
 	}
 
 	#JahiaGxtSidePanelTabs {
+		border-right: 0 solid #f8f8f8;
+		transition: all 0.2s ease-in 0s;
+
+		body[indigo-dragging-panel="true"] & {
+			transition: none!important;
+		}
+
 		@extend %CSS_BLOCK--SIDE_PANEL--CONTAINER;
 
-		body[data-indigo-gwt-side-panel="open"] &,
-		.x-viewport-adminmode &,
-		.x-viewport-dashboardmode & {
-			@extend %CSS_BLOCK--SIDE_PANEL--CONTAINER---OPEN;
+		&::before {
+			content: " ";
+			background: linear-gradient(to right, #fcfdfd 0%, rgba(252, 253, 253, 0.92) 100%) !important;
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			top: 0;
+			left: 0;
+			opacity: 0;
+			transition: all 0.2s ease-in 0s;
+		}
 
-
+		body[data-indigo-sidepanel-pinned="true"] & {
+			&::before {
+				opacity: 1;
+			}
 
 		}
 
-		body[data-indigo-gwt-side-panel="open"][data-sitesettings="true"] &,
-		.x-viewport-adminmode &,
 		.x-viewport-dashboardmode & {
-			padding-top: 46px!important;
+			transition: none;
+			&::before {
+				// transition: none;
+				// opacity: 1;
+			}
 
+		}
 
+		body[data-indigo-app="edit"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-sidepanel-pinned="false"] & {
+			 width: 360px !important;
+			 overflow: visible;
+
+			 &::before {
+ 	            opacity: 1;
+				box-shadow: _property($BODY--BG--SHADOW, $SIDE-PANEL);
+
+ 	        }
+
+		}
+
+		body[data-indigo-app="edit"][data-INDIGO-GWT-SIDE-PANEL="open"][data-sitesettings="true"] & {
+			 width: 360px !important;
+			 overflow: visible;
+
+			 &::before {
+ 	            opacity: 1;
+				box-shadow: none;
+ 	        }
 
 		}
 
 
+		body[data-indigo-app="edit"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"]:not(.minimise-results) &,
+		body[data-indigo-app="edit"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"]:not(.minimise-results) &,
+		body[data-indigo-app="edit"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"]:not(.minimise-results) &,
+		body[data-indigo-app="edit"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"]:not(.minimise-results) & {
+			&::before {
+			   width: calc(100% + 353px);
+			   box-shadow: _property($BODY--BG--SHADOW, $SIDE-PANEL);
+		   }
+		}
 
 		// Fix the padding issue on icons
 		body[data-sitesettings="false"][data-indigo-app="edit"] & {
@@ -387,38 +381,45 @@ body[indigo-dragging-panel] {
 
 
 
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] &,
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab"] &,
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"] &,
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"] &,
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] &,
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"] & {
+			border-right: 10px solid #f8f8f8;
+			box-shadow: 0 5px 14px 14px rgba(0, 0, 0, 0.4);
+		}
+
+		body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSettingsTab"] & {
+			border-right: 10px solid #f8f8f8;
+			box-shadow: 0 5px 14px 14px rgba(0, 0, 0, 0.4);
+		}
+
 		position: fixed;
 	    width: 60px !important;
 	    top: 0;
 	    height: 100%;
 	    padding-top: 60px;
-
-		// body[data-channel] & {
-		// 	overflow: visible;
-		// }
-
+		overflow: visible;
 
 		li {
 			/* Side Panel Buttons */
 			float: none;
-      width: 50px;
-      height: 40px;
-      margin-bottom: 10px;
-      margin-left: 0;
-      opacity: 0.8;
-      display: block;
-      pointer-events: all;
+			width: 50px;
+			height: 40px;
+			margin-bottom: 10px;
+			margin-left: 0;
+			opacity: 0.8;
+			display: block;
+			pointer-events: all;
 			outline: none;
 
 			&.x-item-disabled {
 				display: none;
 			}
 
-			// body[data-multiselect="on"] & {
-			// 	pointer-events: none!important;
-			// }
 
-			body[data-sitesettings="true"] &,
 			.x-viewport-adminmode & {
 				display: none!important;
 			}
@@ -447,10 +448,6 @@ body[indigo-dragging-panel] {
 
 				@extend %CSS_BLOCK--TOOL_BUTTON;
 
-				// body[data-multiselect="on"] & {
-				// 	@extend %CSS_BLOCK--TOOL_BUTTON---MULTI_SELECT;
-				// }
-
 				body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
 					@extend %CSS_BLOCK--TOOL_BUTTON---SIDE_PANEL_OPEN;
 				}
@@ -477,19 +474,11 @@ body[indigo-dragging-panel] {
 			width: 100%!important;
 			top: 0!important;
 
-			// .x-viewport-adminmode &,
-			// .x-viewport-dashboardmode & {
-			// 	display: block;
-			// }
 		}
 
-		body[data-indigo-app="edit"][data-sitesettings="false"][data-INDIGO-GWT-SIDE-PANEL="open"] & {
-			 width: 360px !important;
-			 overflow: visible;
-		}
+
 
 		[data-INDIGO-GWT-SIDE-PANEL="open"] & {
-
 			.x-grid-panel {
 				display: block;
 			}
@@ -507,18 +496,17 @@ body[indigo-dragging-panel] {
 			z-index: $ZINDEX--SIDE_PANEL--CONTAINER_SUB;
 			overflow: visible;
 
-			// .x-viewport-adminmode &,
-			// .x-viewport-dashboardmode & {
-			// 	display: none;
-			// 	display: block;
-			// }
-
 			ul.x-tab-strip-top {
 				// List for Tab Buttons
 				background-color: transparent!important;
 				border:none;
 				padding: 0;
 				margin: 0 0 0 5px;
+				transition: all 0.2s ease-in 0s;
+
+				body[data-indigo-gwt-side-panel="open"] & {
+					margin: 0 0 0 10px;
+				}
 
 				body[data-edit-window-style="settings"] &,
 				.x-viewport-adminmode &,
@@ -533,6 +521,7 @@ body[indigo-dragging-panel] {
 			}
 
 			body[data-edit-window-style="settings"] & {
+				// DEVNOTE Still need this ?
 
 				.x-tab-strip-spacer {
 					/* Close settings Button */
@@ -578,51 +567,27 @@ body[indigo-dragging-panel] {
 
 			width: calc(100% - 71px) !important;
 
-
 			height: 100%!important;
 			vertical-align: top;
 			background: transparent;
 			// margin-left: 11px;
-			margin-top: 13px;
+			margin-top: -37px;
 
-			body[data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] & {
-				margin-top: 43px;
+			transition: all 0.2s ease-in 0s;
 
+
+			body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] &,
+			body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab"] &,
+			body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"] &,
+			body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"] &,
+			body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] &,
+			body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"] & {
+				margin-left: 10px;
 			}
 
-			body[data-INDIGO-GWT-PANEL-TAB="JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab"] & {
-				margin-top: 50px;
+			body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSettingsTab"] & {
+				margin-left: 10px;
 			}
-
-			body[data-sitesettings="true"] .x-viewport-editmode & ,
-			.x-viewport-adminmode & {
-				margin-top: 52px;
-				height: calc(100% - 206px)!important;
-				overflow: auto;
-				overflow-x: hidden;
-				width: 100%!important;
-			    padding-left: 14px;
-			    padding-right: 14px;
-			}
-
-			body[data-sitesettings="true"] .x-viewport-editmode & {
-				margin-top: 0;
-
-
-			}
-
-			.x-viewport-adminmode & {
-				margin-top: 62px!important;
-				padding: 20px 30px 0;
-			}
-
-			.x-viewport-dashboardmode & {
-				margin-top: 42px;
-				height: calc(100% - 150px)!important;
-
-			}
-
-
 
 
 		}
@@ -925,6 +890,10 @@ body[indigo-dragging-panel] {
 
 	}
 
+	.x-grid-panel {
+		margin-top: 50px;
+	}
+
 }
 
 //
@@ -1038,14 +1007,6 @@ body[indigo-dragging-panel] {
 	}
 
 	#images-view {
-		position: fixed!important;
-		top: -20px!important;
-		left: 360px!important;
-		width: 0px!important;
-		padding-left: 0px;
-		box-shadow: inset 3px 0px 7px #babbbc, inset -24px 0px 0 0 transparent, 3px 0px 3px 0 rgba(0, 0, 0, 0.4);
-		height: calc(100% + 40px)!important;
-		overflow: scroll!important;
 
 		.thumb-wrap {
 			width: 47%!important;
@@ -1057,117 +1018,17 @@ body[indigo-dragging-panel] {
 			&.x-view-over.x-view-item-sel {
 				background: #007cb0 !important;
 			}
-
 		}
-
-
 
 		.thumbDetails {
 			position: relative;;
 			left: 0;
 			width: 100%;
-	    top: auto!important;
-	    padding: 6px;
-	    box-sizing: border-box;
-		float: left;
-
-
-
+		    top: auto!important;
+		    padding: 6px;
+		    box-sizing: border-box;
+			float: left;
 		}
-
-
-
-
-	}
-
-	&.show-results {
-
-		#images-view {
-			left: 360px!important;
-			width: 297px!important;
-			padding-left: 10px;
-			transition: all 0.2s ease-in 0s;
-			padding-right: 25px;
-			pointer-events: none;
-			background: linear-gradient(to top right, #e0e0e0 0%, rgba(#fafafa, .93) 50%) !important;
-
-			&:hover {
-				cursor: pointer;
-			}
-
-			&:before {
-				content: " ";
-				color: red;
-				z-index: 99999;
-				position: absolute;
-				text-indent: -50000px;
-				right: -6px;
-				background: url(./images/icons/toggle-EW@X2.png) no-repeat center center;
-				background-size: 15px;
-				top: calc(50% - 12px);
-				width: 25px;
-				height: 25px;
-				pointer-events: all;
-				transition: all 0.1s ease-in 0s;
-			}
-
-			body.ext-gecko & {
-				&:before {
-					right: 1px;
-
-				}
-			}
-
-			> div {
-				pointer-events: all;
-			}
-
-
-
-			// Dragging has started
-			body.indigo-drag-to-drop & {
-				opacity: 0;
-				width: 0px!important;
-			}
-
-			body.minimise-results & {
-
-				&:before {
-				    background: url(./images/icons/toggle-WE-white@X2.png) no-repeat center center;
-					background-size: 15px;
-				}
-
-				pointer-events: none;
-			    width: 0px!important;
-				padding: 0 0 0 24px;
-				pointer-events: all;
-				box-shadow: inset 3px 0px 7px rgba(0,0,0,0.4), inset -24px 0px 0 0 #06a1e3, 3px 0px 3px 0 rgba(0, 0, 0, 0.4) !important;
-
-				&:hover {
-					box-shadow: inset 1px 0px 7px rgba(0, 0, 0, 0.4), inset -24px 0px 0 0 #06a1e3, 7px 0px 10px 0 rgba(0, 0, 0, 0.4) !important;
-
-					&:before {
-						right: -8px;
-
-						body.ext-gecko & {
-							right: -1px;
-						}
-					}
-				}
-
-				> div {
-					overflow: hidden;
-				}
-			}
-
-			body.minimise-results.ext-gecko & {
-				&:before {
-					right: -1px;
-
-				}
-			}
-		}
-
 	}
 
 	.results-column {
@@ -1228,13 +1089,13 @@ body[indigo-dragging-panel] {
 
 		.x-panel-bwrap {
 			position: fixed;
-		    top: -20px;
-		    left: 360px;
-		    width: 297px;
-		    background: linear-gradient(to top right, #e0e0e0 0%, _theme-color(secondary) 50%)!important;
-		    padding-left: 10px;
-		    box-shadow: inset 3px 0px 7px #babbbc, inset -24px 0px 0 0 transparent, 3px 0px 3px 0 rgba(0, 0, 0, 0.4);
-		    height: calc(100% + 40px)!important;
+			top: -20px;
+			left: 360px;
+			width: 318px;
+			background: transparent !important;
+			padding-left: 10px;
+			box-shadow: inset 3px 0px 7px #babbbc, inset -24px 0px 0 0 transparent;
+			height: calc(100% + 40px) !important;
 
 			&::before {
 				content: $text_results;
@@ -1505,37 +1366,125 @@ body[indigo-dragging-panel] {
 
 	.x-box-inner .x-box-item:nth-child(2) {
 		display: inline-block;
-		position: fixed!important;
-		top: -20px!important;
-			left: 360px!important;
-			width: 0px!important;
-		background: linear-gradient(to top right, #e0e0e0 0%, _theme-color(secondary) 50%)!important;
+		position: fixed !important;
+		top: -20px !important;
+		left: 360px !important;
 		padding-left: 0px;
-		box-shadow: inset 3px 0px 7px #babbbc, inset -24px 0px 0 0 transparent, 3px 0px 3px 0 rgba(0, 0, 0, 0.4);
-		height: calc(100% + 40px)!important;
-		overflow: scroll!important;
-
+		height: calc(100% + 14px) !important;
+		overflow: scroll !important;
 		transition: width 0.2s ease-in 0s;
+		padding-top: 20px;
+		padding-bottom: 20px;
+		top: -7px !important;
+		box-sizing: border-box;
+		width: 354px !important;
+		box-shadow: inset 3px 0px 7px #babbbc, inset -24px 0px 0 0 transparent;
+
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"]:not([data-indigo-app="admin"].minimise-results) &,
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab"]:not([data-indigo-app="admin"].minimise-results) &,
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"]:not([data-indigo-app="admin"].minimise-results) &,
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"]:not([data-indigo-app="admin"].minimise-results) &,
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"]:not([data-indigo-app="admin"].minimise-results) &,
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"]:not([data-indigo-app="admin"].minimise-results) & {
+			margin-left: 15px!important;
+			width: 339px !important;
+		}
+
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"].minimise-results:not([data-indigo-app="admin"]) &,
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab"].minimise-results:not([data-indigo-app="admin"]) &,
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"].minimise-results:not([data-indigo-app="admin"]) &,
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"].minimise-results:not([data-indigo-app="admin"]) &,
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"].minimise-results:not([data-indigo-app="admin"]) &,
+		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"].minimise-results:not([data-indigo-app="admin"]) & {
+			margin-left: 15px!important;
+			width: 0 !important;
+		}
 
 		> div {
-			top: 30px!important;
-			height: calc(100% - 60px)!important;
+			height: 100% !important;
+		}
+
+		&:after {
+			@include text(14px, _theme-color(primary), $FONT--WEIGHT---SEMILIGHT);
+			content: $text_empty;
+			display: block;
+			padding: 16px;
+			position: absolute;
+			top: 0;
+		}
+
+		&:before {
+			content: " ";
+			color: red;
+			z-index: 99999;
+			position: absolute;
+			text-indent: -50000px;
+			right: -6px;
+			background: url(./images/icons/toggle-EW@X2.png) no-repeat center center;
+			background-size: 15px;
+			top: calc(50% - 12px);
+			width: 25px;
+			height: 25px;
+			pointer-events: all;
+			transition: all 0.1s ease-in 0s;
+			padding: 0;
+		}
+
+		body.ext-gecko & {
+			&:before {
+				right: 6px;
+
+			}
+		}
+
+		body.minimise-results & {
+
+			&:before {
+				background: url(./images/icons/toggle-WE-white@X2.png) no-repeat center center;
+				background-size: 15px;
+			}
+
+			pointer-events: none;
+			width: 0px!important;
+			padding: 80px 0 0 24px;
+			pointer-events: all;
+			box-shadow: inset 3px 0px 7px rgba(0,0,0,0.4), inset -24px 0px 0 0 #06a1e3, 3px 0px 3px 0 rgba(0, 0, 0, 0.4) !important;
+
+			&:hover {
+				box-shadow: inset 1px 0px 7px rgba(0, 0, 0, 0.4), inset -24px 0px 0 0 #06a1e3, 7px 0px 10px 0 rgba(0, 0, 0, 0.4) !important;
+
+				&:before {
+					right: -8px;
+
+				}
+			}
+
+			> div {
+				overflow: hidden;
+			}
+		}
+
+		body.minimise-results.ext-gecko & {
+			&:before {
+				right: -1px;
+
+			}
 		}
 	}
 
 	&.show-results {
-		width: 600px!important;
+		// width: 600px!important;
 
 		.x-box-inner .x-box-item:nth-child(2) {
-			left: 360px!important;
-			width: 297px!important;
+			left: 360px !important;
 			padding-left: 10px;
-			background: linear-gradient(to top right, #e0e0e0 0%, rgba(#fafafa, .93) 50%) !important;
+			background: none !important;
 			transition: all 0.2s ease-in 0s;
-
 			transition: all 0.2s ease-in 0s;
-			padding-right: 25px;
 			pointer-events: none;
+			padding-right: 25px;
+
+
 
 			body[indigo-dragging-panel="true"] & {
 				transition: none!important
@@ -1545,28 +1494,13 @@ body[indigo-dragging-panel] {
 				cursor: pointer;
 			}
 
-			&:before {
-				content: " ";
-				color: red;
-				z-index: 99999;
-				position: absolute;
-				text-indent: -50000px;
-				right: -6px;
-				background: url(./images/icons/toggle-EW@X2.png) no-repeat center center;
-				background-size: 15px;
-				top: calc(50% - 12px);
-				width: 25px;
-				height: 25px;
-				pointer-events: all;
-				transition: all 0.1s ease-in 0s;
+
+
+			&:after {
+				display: none;
 			}
 
-			body.ext-gecko & {
-				&:before {
-					right: 1px;
 
-				}
-			}
 
 			> div {
 				pointer-events: all;
@@ -1581,46 +1515,13 @@ body[indigo-dragging-panel] {
 				width: 0px!important;
 			}
 
-			body.minimise-results & {
 
-				&:before {
-				    background: url(./images/icons/toggle-WE-white@X2.png) no-repeat center center;
-					background-size: 15px;
-				}
-
-				pointer-events: none;
-			    width: 0px!important;
-				padding: 0 0 0 24px;
-				pointer-events: all;
-				box-shadow: inset 3px 0px 7px rgba(0,0,0,0.4), inset -24px 0px 0 0 #06a1e3, 3px 0px 3px 0 rgba(0, 0, 0, 0.4) !important;
-
-				&:hover {
-					box-shadow: inset 1px 0px 7px rgba(0, 0, 0, 0.4), inset -24px 0px 0 0 #06a1e3, 7px 0px 10px 0 rgba(0, 0, 0, 0.4) !important;
-
-					&:before {
-						right: -8px;
-
-					}
-				}
-
-				> div {
-					overflow: hidden;
-				}
-			}
-
-			body.minimise-results.ext-gecko & {
-				&:before {
-					right: -1px;
-
-				}
-			}
 		}
 
 		.JahiaGxtSearchTab-results {
 			display: block;
 
 			.x-panel-bwrap {
-				transition: all 0.2s ease-in 0s;
 
 				padding-right: 25px;
 				pointer-events: none;
@@ -2044,7 +1945,6 @@ $side_panel__tab_buttons: (
 // }
 
 #JahiaGxtSettingsTab {
-	body[data-sitesettings="true"] .x-viewport-editmode & ,
 	.x-viewport-adminmode &,
 	.x-viewport-dashboardmode & {
 		height: 100%!important;
@@ -2120,7 +2020,10 @@ $side_panel__tab_buttons: (
 
 					body[data-uilang="de"] & {
 						bottom: 60px;
+					}
 
+					body[data-sitesettings="true"] & {
+						bottom: 8px;
 					}
 
 					.x-viewport-dashboardmode & {
@@ -2323,19 +2226,29 @@ body[data-edit-window-style="settings"] {
 }
 
 #JahiaGxtContentBrowseTab {
-}
-
-body[data-indigo-gwt-side-panel="open"] .x-viewport-editmode #JahiaGxtSettingsTab {
-
-	&::before {
-		position: relative;
-	    line-height: 40px;
-	    margin-bottom: 45px;
-		top: 0;
-		left: 45px;
+	.x-grid-empty {
+		&:before {
+			@include text(14px, _theme-color(primary), $FONT--WEIGHT---SEMILIGHT);
+			content: $text_empty;
+			display: block;
+			padding: 16px;
+			position: absolute;
+			top: 0;
+		}
 	}
-
 }
+
+// body[data-indigo-gwt-side-panel="open"] .x-viewport-editmode #JahiaGxtSettingsTab {
+//
+// 	&::before {
+// 		position: relative;
+// 	    line-height: 40px;
+// 	    margin-bottom: 45px;
+// 		top: 0;
+// 		left: 0;
+// 	}
+//
+// }
 
 #JahiaGxtPagesTab,
 #JahiaGxtCreateContentTab,
@@ -2361,7 +2274,9 @@ body[data-indigo-gwt-side-panel="open"] .x-viewport-editmode #JahiaGxtSettingsTa
 	.x-viewport-dashboardmode & {
 
 		height:auto !important; // DEV TEMP
+
 		&.tab_serverSettings {
+			margin-top: 90px;
 
 			&.x-hide-display {
 				display: block!important;
@@ -2403,33 +2318,29 @@ body[data-indigo-gwt-side-panel="open"] .x-viewport-editmode #JahiaGxtSettingsTa
 		content: $text_site_settings;
 		@extend %CSS_BLOCK--SIDE_PANEL--TITLE;
 		display: block;
-
-		position: fixed;
-		top: 23px;
-		left: 70px;
-
-		/* DEV TEMP */
+		margin: 24px 0 30px -3px;
 
 
 
 		body[data-edit-window-style="settings"] &,
 		.x-viewport-adminmode &,
 		.x-viewport-dashboardmode & {
-			top:50px;
-			left: 70px;
-
 			font-size: 36px;
 			font-weight: 100;
+
+			padding-left: 0px;
+		    position: fixed;
+		    top: 15px!important;
+		    left: 84px!important;
 		}
 
 		.x-viewport-adminmode & {
 			content: $text_administration !important;
-			// letter-spacing: -1px;
+		    // padding-left: 0px;
+		    // position: fixed;
+		    // top: 15px!important;
+		    // left: 84px!important;
 
-			padding-left: 39px;
-			padding-left: 0px;
-			top: 40px!important;
-		    left: 75px!important;
 		}
 
 		.x-viewport-dashboardmode & {
@@ -2448,11 +2359,11 @@ body[data-indigo-gwt-side-panel="open"] .x-viewport-editmode #JahiaGxtSettingsTa
 
 		> .x-form-field-wrap {
 			/* Contains CREATE Search input */
-			position: fixed!important;
-			bottom: 10px;
-			top:auto!important;
-			height: auto!important;
-			width: auto!important;
+			// position: fixed!important;
+			// bottom: 10px;
+			// top:auto!important;
+			// height: auto!important;
+			// width: auto!important;
 		}
 
 	}

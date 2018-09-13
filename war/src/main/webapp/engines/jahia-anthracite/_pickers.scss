@@ -12,26 +12,57 @@ body[indigo-dragging-panel="true"] {
 
 
 #indigoSplitter {
-	width: 9px;
+	width: 16px;
     height: 100%;
     position: fixed;
-    left: 360px;
+    left: 0;
     top: 0;
     z-index: 1000;
-    background: url(./images/icons/splitter@X2.png) no-repeat center center #f8f8f8;
+    background: url(./images/icons/splitter@X2.png) no-repeat center right 6px transparent;
     background-size: 5px 10px;
     border-left: 1px solid transparent;
-    display: none;
-    margin-left: -11px;
+    display: block;
+    margin-left: -370px;
+    transition: all 0.2s ease-in 0s;
+    opacity: 0;
 
-	body[data-indigo-gwt-side-panel="open"] & {
-		display: block;
+	body[indigo-dragging-panel="true"] & {
+		transition: none;
+	}
+
+	body[data-indigo-gwt-side-panel="open"][data-sitesettings="false"] & {
+		margin-left: -17px;
+		opacity: 1;
+	}
+
+	body[data-indigo-gwt-side-panel="open"][data-sitesettings="true"] & {
+		margin-left: -17px;
+		opacity: 1;
+	}
+
+
+
+
+	body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"]:not([data-indigo-app="admin"]) &,
+	body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab"]:not([data-indigo-app="admin"]) &,
+	body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"]:not([data-indigo-app="admin"]) &,
+	body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"]:not([data-indigo-app="admin"]) &,
+	body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"]:not([data-indigo-app="admin"]) &,
+	body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"]:not([data-indigo-app="admin"]) & {
+		width: 23px;
+		background-color: #fcfdfd;
+		margin-left: -7px;
+	}
+
+	body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSettingsTab"] & {
+		width: 23px;
+		background-color: #fcfdfd;
+		margin-left: -12px;
 	}
 
 	&:hover {
 		cursor: ew-resize;
-		background-color: #FFF;
-		border-left-color: #444749;
+		background-color: #e8ebed;
 	}
 
 	&.move-east-only:hover {

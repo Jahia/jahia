@@ -25,15 +25,7 @@
 			overflow: visible!important;
 		}
 
-		body[data-edit-window-style="settings"] #JahiaGxtSidePanelTabs,
-		.x-viewport-adminmode #JahiaGxtSidePanelTabs,
-		.x-viewport-dashboardmode #JahiaGxtSidePanelTabs {
-			border:none!important;
-			background: _theme-color(primary);
 
-			box-shadow: 2px 0 24px rgba(40, 43, 45, 0.52) !important;
-			width: 360px!important;
-		}
 
 		body[data-edit-window-style="settings"][data-selection-count] .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > iframe:nth-child(1),
 		body[data-edit-window-style="settings"][data-selection-count] .x-viewport-adminmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > iframe:nth-child(1),
@@ -54,6 +46,7 @@
 			top: -43px !important;
 			height: calc(100% + 65px) !important;
 			width: calc(100% + 21px) !important;
+			box-shadow: none!important;
 		}
 
 
@@ -80,7 +73,7 @@
 
 
 		#JahiaGxtSidePanelTabs {
-			background: red!important;
+			// background: red!important;
 		}
 
 		#JahiaGxtSidePanelTabs .tab_systemSiteSettings {

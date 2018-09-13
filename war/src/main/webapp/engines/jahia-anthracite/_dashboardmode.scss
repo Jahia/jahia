@@ -7,13 +7,19 @@
 .x-viewport-dashboardmode {
 
 	#JahiaGxtSidePanelTabs {
+		background: blue;
+
 		.x-tab-panel-body {
 			height: calc(100% - 206px) !important;
 			overflow: auto;
 			overflow-x: hidden;
 			width: 100% !important;
 			margin-top: 52px !important;
-		    padding: 20px 30px 0;
+		    padding: 0px 25px 0 57px;
+		}
+
+		&:before {
+			opacity: 0!important;
 		}
 	}
 
@@ -170,6 +176,7 @@
 
 	> div:nth-child(1) {
 		height: 100%;
+		background: #FAFAFA;
 
 		> div:nth-child(2) {
 			height: 100%;

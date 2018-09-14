@@ -1663,14 +1663,28 @@ if (!Element.prototype.matches) {
 					modifyMenuItem("toolbar-item-sitemanager-newtab", jahia_gwt_messages.label_sitemanager_title);
 
 					if(!DexV2.class("menu-editmode-managers-menu").hasClass("managers-menu-built")){
+						var footerContainer = document.createElement("div");
+
+						footerContainer.classList.add("footer");
+
+						var loggedUserLabel = document.createElement("label"),
+							loggedUser = DexV2.getCached("body").getAttribute("data-currentuser");
+
 						var closeButton = document.createElement("button"),
 							closeButtonLabel = document.createTextNode("Close"),
 							backgroundMask = document.createElement("div");
+
+						loggedUserLabel.innerHTML = "Logged in as <span>" + loggedUser + "</span>";
+						loggedUserLabel.classList.add("user");
 
 						backgroundMask.classList.add("managers-menu-mask");
 						closeButton.classList.add("managers-menu-close");
 						closeButton.appendChild(closeButtonLabel);
 
+						footerContainer.appendChild(loggedUserLabel)
+						footerContainer.appendChild(loggedUserLabel)
+
+						DexV2.class("menu-editmode-managers-menu").prepend(footerContainer);
 						DexV2.class("menu-editmode-managers-menu").prepend(closeButton);
 						DexV2.class("menu-editmode-managers-menu").append(backgroundMask);
 

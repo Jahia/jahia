@@ -99,6 +99,9 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
 
     private ThreadLocal<List<JobDetail>> ramScheduledAtEndOfRequest = new ThreadLocal<List<JobDetail>>();
 
+    private JahiaJobListener jahiaGlobalJobListener = new JahiaJobListener(false);
+    private JahiaJobListener jahiaGlobalRamJobListener = new JahiaJobListener(true);
+
     public Integer deleteAllCompletedJobs() throws SchedulerException {
         return deleteAllCompletedJobs(PURGE_ALL_STRATEGY, true);
     }
@@ -357,6 +360,32 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
         this.timeoutSwitchingToReadOnlyMode = timeoutSwitchingToReadOnlyMode;
     }
 
+    /**
+     * Add a global job listener
+     * @param jobListener the listener
+     * @param useRamScheduler add listener on ramScheduler or scheduler
+     */
+    public void addJobListener(JobListener jobListener, boolean useRamScheduler) {
+        if(useRamScheduler) {
+            jahiaGlobalRamJobListener.addJobListener(jobListener);
+        } else {
+            jahiaGlobalJobListener.addJobListener(jobListener);
+        }
+    }
+
+    /**
+     * Remove a global job listener
+     * @param name the listener name
+     * @param useRamScheduler remove listener from ramScheduler or scheduler
+     */
+    public void removeJobListener(String name, boolean useRamScheduler) {
+        if(useRamScheduler) {
+            jahiaGlobalRamJobListener.removeJobListener(name);
+        } else {
+            jahiaGlobalJobListener.removeJobListener(name);
+        }
+    }
+
     @Override
     public synchronized void start() throws JahiaInitializationException {
 
@@ -364,8 +393,8 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
             ramScheduler.addSchedulerListener(new JahiaSchedulerListener(ramScheduler));
             scheduler.addSchedulerListener(new JahiaSchedulerListener(scheduler));
 
-            ramScheduler.addGlobalJobListener(new JahiaJobListener(true));
-            scheduler.addGlobalJobListener(new JahiaJobListener(false));
+            ramScheduler.addGlobalJobListener(jahiaGlobalRamJobListener);
+            scheduler.addGlobalJobListener(jahiaGlobalJobListener);
 
             // new LoggingJobHistoryPlugin().initialize("LoggingJobListener", scheduler);
             // new LoggingJobHistoryPlugin().initialize("RAMLoggingJobListener", ramScheduler);

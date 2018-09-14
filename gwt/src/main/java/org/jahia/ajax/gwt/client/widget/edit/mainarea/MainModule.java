@@ -1338,7 +1338,7 @@ public class MainModule extends Module {
         nsAuthoringApi.hideMask = $wnd.hideMask = function () {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::hideMask()();
         };
-        nsAuthoringApi.createContent = function (path, types, includeSubTypes, skipRefreshOnSave) {
+        nsAuthoringApi.createContent = $wnd.createContent = function (path, types, includeSubTypes, skipRefreshOnSave) {
             if (typeof includeSubTypes !== 'undefined') {
                 @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::createContent(*)(path, types, includeSubTypes, skipRefreshOnSave);
             } else {

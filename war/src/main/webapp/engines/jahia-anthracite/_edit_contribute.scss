@@ -53,11 +53,12 @@
     padding: 0;
     background: transparent;
     pointer-events: none;
+	display: none;
 
     opacity: 0.4;
 
-    body[data-sitesettings="true"] & {
-        display: none;
+    body[data-indigo-app="edit"]:not([data-sitesettings="true"]) & {
+        display: block;
     }
 
     body[data-indigo-app="edit"][data-sitesettings="false"] & {

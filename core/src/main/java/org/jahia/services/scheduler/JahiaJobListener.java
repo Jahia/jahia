@@ -46,12 +46,13 @@ package org.jahia.services.scheduler;
 import static org.jahia.services.scheduler.BackgroundJob.*;
 
 import org.apache.commons.lang.time.FastDateFormat;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.SchedulerException;
+import org.quartz.*;
 import org.quartz.listeners.JobListenerSupport;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Job listener that does status changes and logging.
@@ -65,6 +66,8 @@ class JahiaJobListener extends JobListenerSupport {
     private static final String MSG_FINISHED = "Background job {} (of type {}) finished with status '{}' in {} {}";
 
     private static final String MSG_STARTED = "Background job {} (of type {}) started @ {}";
+
+    private final Map<String, JobListener> jobListeners = new HashMap<>();
 
     private boolean isRamScheduler;
 
@@ -101,6 +104,21 @@ class JahiaJobListener extends JobListenerSupport {
         } catch (SchedulerException e) {
             SchedulerService.logger.warn("Cannot update job", e);
         }
+
+        synchronized (jobListeners) {
+            for (JobListener jobListener : jobListeners.values()) {
+                jobListener.jobToBeExecuted(ctx);
+            }
+        }
+    }
+
+    @Override
+    public void jobExecutionVetoed(JobExecutionContext ctx) {
+        synchronized (jobListeners) {
+            for (JobListener jobListener : jobListeners.values()) {
+                jobListener.jobExecutionVetoed(ctx);
+            }
+        }
     }
 
     @Override
@@ -129,6 +147,24 @@ class JahiaJobListener extends JobListenerSupport {
             } else {
                 SchedulerService.logger.info(MSG_FINISHED, params);
             }
+        }
+
+        synchronized (jobListeners) {
+            for (JobListener jobListener : jobListeners.values()) {
+                jobListener.jobWasExecuted(ctx, jobException);
+            }
+        }
+    }
+
+    void addJobListener(JobListener jobListener) {
+        synchronized (jobListeners) {
+            jobListeners.put(jobListener.getName(), jobListener);
+        }
+    }
+
+    void removeJobListener(String name) {
+        synchronized (jobListeners) {
+            jobListeners.remove(name);
         }
     }
 }

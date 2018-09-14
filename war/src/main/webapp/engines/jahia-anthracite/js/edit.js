@@ -1561,7 +1561,7 @@ if (!Element.prototype.matches) {
 			}
 		},
 		onBlur: function(){
-			app.dev.log("::: APP ::: ONBLUR", true);
+			app.dev.log("::: APP ::: ONBLUR");
 			// Window has lost focus, so presume that the user has clicked in the iframe.
             // If the side panel is open, then close it
             if(DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open" && app.nav.data.autoHideSidePanel){
@@ -1573,7 +1573,7 @@ if (!Element.prototype.matches) {
             }
 		},
 		onClick: function(e){
-            app.dev.log("CLICKED APP", true);
+            app.dev.log("CLICKED APP");
 			if(DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
                 var inSidePanel = DexV2.node(e.target).closest(".window-side-panel"),
                     inSideToolBar = DexV2.node(e.target).closest(".edit-menu-righttop");
@@ -1636,31 +1636,9 @@ if (!Element.prototype.matches) {
 			managerMenu: {
 				onOpen: function(contextmenu){
 					app.dev.log("::: APP ::: CONTEXTMENUS ::: MANAGERMENU ::: ONOPEN");
-                    var returnText,
-						modifyMenuItem = function(menuItem, label){
-							var img = document.createElement("img"),
-								label = document.createTextNode(label);
-
-							img.classList.add("x-menu-item-icon");
-
-							DexV2.class(menuItem)
-								.setHTML("")
-								.append(img)
-								.append(label);
-
-						};
-
                     DexV2.getCached("body").setAttribute("data-indigo-hamburger-menu", "open");
 
                     DexV2.node(this).setAttribute("data-indigo-current-app", app.data.currentApp);
-
-					// Update titles - this can be deleted once the titles have been changed in the GWT config
-					modifyMenuItem("toolbar-item-editorialcontentmanager-newtab", jahia_gwt_messages.label_editorialcontentmanager_title);
-					modifyMenuItem("toolbar-item-categorymanager-newtab", jahia_gwt_messages.label_categorymanager_title);
-					modifyMenuItem("toolbar-item-filemanager-newtab", jahia_gwt_messages.label_filemanager_title);
-					modifyMenuItem("toolbar-item-portletmanager-newtab", jahia_gwt_messages.label_portletmanager_title);
-					modifyMenuItem("toolbar-item-repositoryexplorer-newtab", jahia_gwt_messages.label_repositoryexplorer_title);
-					modifyMenuItem("toolbar-item-sitemanager-newtab", jahia_gwt_messages.label_sitemanager_title);
 
 					if(!DexV2.class("menu-editmode-managers-menu").hasClass("managers-menu-built")){
 						var footerContainer = document.createElement("div");
@@ -1695,6 +1673,7 @@ if (!Element.prototype.matches) {
 						});
 
 						DexV2.class("menu-editmode-managers-menu").addClass("managers-menu-built")
+
 					}
 
                 },
@@ -4432,7 +4411,7 @@ if (!Element.prototype.matches) {
 
 				},
 				reposition: function(e){
-					app.dev.log("::: APP ::: EDIT ::: TOPBAR ::: REPOSITION", true);
+					app.dev.log("::: APP ::: EDIT ::: TOPBAR ::: REPOSITION");
 					// Center title to page and move surrounding menus to right and left.
                     app.edit.sidepanel.resizeSidePanel();
 

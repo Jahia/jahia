@@ -69,7 +69,7 @@ public class JBPMMailSession implements DisposableBean {
     private ProducerTemplate template;
     
     public boolean isEnabled() {
-        return mailService.isEnabled();
+        return mailService.isEnabled() && !mailService.getSettings().isWorkflowNotificationsDisabled();
     }
 
     public void setMailService(MailServiceImpl mailService) {
@@ -78,7 +78,7 @@ public class JBPMMailSession implements DisposableBean {
     }
 
     public void send(Collection<Message> emails) {
-        if (mailService.isEnabled()) {
+        if (isEnabled()) {
             for (Message email : emails) {
                 try {
                     CamelContext context = mailService.getCamelContext();

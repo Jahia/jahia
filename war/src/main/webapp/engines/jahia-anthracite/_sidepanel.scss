@@ -403,6 +403,10 @@ body[indigo-dragging-panel] {
 	    padding-top: 60px;
 		overflow: visible;
 
+		body[data-indigo-app="admin"] & {
+			min-width: 360px !important;
+		}
+
 		li {
 			/* Side Panel Buttons */
 			float: none;

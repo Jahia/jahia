@@ -56,6 +56,7 @@ import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
@@ -89,6 +90,7 @@ import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.content.DeleteItemWindow;
+import org.jahia.ajax.gwt.client.widget.content.util.ContentHelper;
 import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEnginePopupListener;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
@@ -614,6 +616,32 @@ public class MainModule extends Module {
 
         DeleteItemWindow window = new DeleteItemWindow(editLinker, selectionContext, false, skipRefreshOnDelete);
         window.show();
+    }
+
+    public static void unDeleteContent(final String nodePath, String displayName, final String nodeName, final JavaScriptObject gwtUpdateFunction){
+        String message = Messages.getWithArgs(
+                "message.undelete.confirm",
+                "Do you really want to undelete the selected resource {0}?", new String[]{displayName});
+        MessageBox.confirm(
+                Messages.get("label.information", "Information"), message, new Listener<MessageBoxEvent>() {
+                    public void handleEvent(MessageBoxEvent be) {
+                        if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.YES)) {
+                            final List<String> l = new ArrayList<String>();
+                            l.add(nodePath);
+                            JahiaContentManagementService.App.getInstance().undeletePaths(l, new BaseAsyncCallback() {
+                                @Override public void onApplicationFailure(Throwable throwable) {
+                                    Log.error(throwable.getMessage(), throwable);
+                                    MessageBox.alert(Messages.get("label.error", "Error"), throwable.getMessage(), null);
+                                }
+
+                                public void onSuccess(Object result) {
+                                    ContentHelper.sendContentModificationEvent(nodePath, nodeName, "unDelete");
+                                }
+                            });
+                        }
+                    }
+                });
+
     }
 
     public static void displayAlert(String title, String message) {
@@ -1356,6 +1384,9 @@ public class MainModule extends Module {
         nsAuthoringApi.deleteContent = $wnd.deleteContent = function (path, displayName, types, inheritedTypes, skipRefreshOnDelete) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::deleteContent(*)(path, displayName, types, inheritedTypes, skipRefreshOnDelete);
         };
+        nsAuthoringApi.unDeleteContent = $wnd.unDeleteContent = function (nodePath, displayName, nodeName,  gwtUpdateFunction) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::unDeleteContent(*)(nodePath, displayName, nodeName, gwtUpdateFunction);
+        };
         nsAuthoringApi.disableGlobalSelection = $wnd.disableGlobalSelection = function (value) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::globalSelectionDisabled = value;
         };
@@ -1392,6 +1423,10 @@ public class MainModule extends Module {
         } else {
             return false;
         }
+    }-*/;
+
+    private static native void log(String message) /*-{
+        console.log(message);
     }-*/;
 
     private native boolean pushState(String path, String location, String config) /*-{

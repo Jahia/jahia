@@ -89,6 +89,8 @@ public class MailSettings implements Serializable {
 
     private String to;
 
+    private boolean workflowNotificationsDisabled;
+
     /**
      * Initializes an instance of this class.
      */
@@ -334,6 +336,25 @@ public class MailSettings implements Serializable {
         }
 
         return options;
+    }
+
+    /**
+     * Returns the value of the flag for workflow tasks e-mail notifications.
+     * 
+     * @return <code>true</code> if the e-mail notifications for workflow tasks are globally enabled; <code>false</code> if they are
+     *         disabled globally
+     */
+    public boolean isWorkflowNotificationsDisabled() {
+        return workflowNotificationsDisabled;
+    }
+
+    /**
+     * Updates the flag for disabling e-mail notifications for workflow tasks.
+     * 
+     * @param workflowNotificationsDisabled <code>true</code> to disable workflow task notifications; <code>false</code> to enable it
+     */
+    public void setWorkflowNotificationsDisabled(boolean workflowNotificationsDisabled) {
+        this.workflowNotificationsDisabled = workflowNotificationsDisabled;
     }
 
 }

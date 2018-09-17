@@ -1554,6 +1554,8 @@ if (!Element.prototype.matches) {
 				app.edit.topbar.reposition();
                 app.edit.sidepanel.onWindowResize();
 
+			} else if(app.data.currentApp == "admin" || app.data.currentApp == "dashboard"){
+				app.edit.sidepanel.resizeSidePanel()
 			}
 
 			if(app.data.currentApp == "contribute"){
@@ -3789,6 +3791,7 @@ if (!Element.prototype.matches) {
 						// Need to update the header bar
 						app.edit.topbar.build();
 
+
 						if(app.edit.sidepanel.isOpen()){
 							app.iframe.disableClicks();
 						}
@@ -4050,6 +4053,8 @@ if (!Element.prototype.matches) {
 					.setAttribute("data-edit-window-style", "default")
                 	.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "")
                 	.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "yes");
+
+
 
                 // Setup the alternative channels system
                 app.edit.sidepanel.initChannels();
@@ -4507,10 +4512,14 @@ if (!Element.prototype.matches) {
                 resizeSidePanel: function(xPos){
                     xPos = xPos || function(){
                         var splitter = DexV2.id("indigoSplitter"),
+							splitterOpacity = (splitter.exists()) ? splitter.nodes[0].style.getPropertyValue("opacity") : "doesnt exist",
                             splitterXPos = (splitter.exists()) ? parseInt(splitter.nodes[0].style.getPropertyValue("left")) : null;
+
 
                         return splitterXPos || null;
                     }();
+
+
 
                     if(xPos == null){
                         return false;
@@ -4959,6 +4968,8 @@ if (!Element.prototype.matches) {
 						if(DexV2.id("JahiaGxtSidePanelTabs").exists()){
 							DexV2.id("JahiaGxtSidePanelTabs").nodes[0].style.setProperty("width", "60px", "important");
 							DexV2.getCached("body").setAttribute("data-indigo-gwt-side-panel", "")
+						} else {
+
 						}
 		            }
 

@@ -1405,6 +1405,10 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
 	    background-size: 321px;
 	    margin-bottom: 30px;
 	    text-indent: -50000px;
+
+		&:hover {
+			cursor: pointer;
+		}
 	}
 
 	.managers-menu-mask {

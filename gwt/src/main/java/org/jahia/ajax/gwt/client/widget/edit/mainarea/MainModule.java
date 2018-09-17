@@ -96,7 +96,6 @@ import org.jahia.ajax.gwt.client.widget.edit.InfoLayers;
 import org.jahia.ajax.gwt.client.widget.edit.ToolbarHeader;
 import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.WorkflowDashboardActionItem;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowDashboardEngine;
 
 import java.util.*;
@@ -606,11 +605,14 @@ public class MainModule extends Module {
             EditLinker.setSelectionOnBodyAttributes(node);
         }
 
-        LinkerSelectionContext selectionContext = new LinkerSelectionContext();
+        EditLinker editLinker = getInstance().getEditLinker();
+        LinkerSelectionContext selectionContext = editLinker.getSelectionContext();
+
+        selectionContext.setMainNode(node);
         selectionContext.setSelectedNodes(Collections.singletonList(node));
         selectionContext.refresh(LinkerSelectionContext.SELECTED_NODE_ONLY);
 
-        DeleteItemWindow window = new DeleteItemWindow(getInstance().getEditLinker(), selectionContext, false);
+        DeleteItemWindow window = new DeleteItemWindow(editLinker, selectionContext, false, skipRefreshOnDelete);
         window.show();
     }
 
@@ -646,13 +648,16 @@ public class MainModule extends Module {
     }
 
     private static GWTJahiaNode getGwtJahiaNode(String path, String name, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes) {
-        GWTJahiaNode n = new GWTJahiaNode();
-        n.setName(name);
-        n.setDisplayName(displayName);
-        n.setPath(path);
-        n.setNodeTypes(convertArray(nodeTypes));
-        n.setInheritedNodeTypes(convertArray(inheritedNodeTypes));
-        return n;
+        List<String> types = convertArray(nodeTypes);
+        List<String> inheritedTypes = convertArray(inheritedNodeTypes);
+        GWTJahiaNode node = new GWTJahiaNode();
+        node.setName(name);
+        node.setDisplayName(displayName);
+        node.setPath(path);
+        node.setNodeTypes(types);
+        node.setInheritedNodeTypes(inheritedTypes);
+        node.setFile(types.contains("nt:file") || inheritedTypes.contains("nt:file"));
+        return node;
     }
 
     private static List<String> convertArray(JsArrayString jsArrayString) {

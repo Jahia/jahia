@@ -65,16 +65,16 @@ import java.util.List;
 
 /**
  * Action item responsible for deleting the content.
- * 
+ *
  * User: toto
  * Date: Sep 25, 2009
  * Time: 6:59:06 PM
  */
 @SuppressWarnings("serial")
 public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
-    
+
     private boolean noMarkForDeletion;
-    
+
     private boolean permanentlyDelete;
 
     private String referenceTitleKey;
@@ -99,7 +99,7 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
                         enabled = false;
                         break;
                     }
-    
+
                     if (selected.get("everPublished") != null && ((Boolean)selected.get("everPublished"))) {
                         // the node is already published or it is locked (not for deletion)
                         enabled = false;
@@ -109,7 +109,7 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
             }
         } else {
             // we are dealing with mark for delete action
-            
+
             enabled = !lh.isLocked();
             if (enabled) {
 
@@ -122,17 +122,18 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
                 }
             }
         }
-        
+
         return enabled;
     }
 
+    @Override
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         List<GWTJahiaNode> selection = lh.getMultipleSelection();
         if (selection != null && selection.size() > 0) {
             if (selection.size() == 1) {
                 if (selection.get(0).getInheritedNodeTypes().contains("jmix:nodeReference")) {
-                    updateTitle(Messages.get(referenceTitleKey,referenceTitleKey));
+                    updateTitle(Messages.get(referenceTitleKey, referenceTitleKey));
                 } else {
                     updateTitle(getGwtToolbarItem().getTitle() + " : " + selection.get(0).getDisplayName());
                 }
@@ -162,7 +163,7 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
                 && !lh.isRootNode()
                 && hasPermission(lh.getSelectionPermissions()) && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions())
                 && isNodeTypeAllowed(selection);
-        
+
         if (enabled) {
             enabled = checkEnabledWithMarkedForDeletion(lh);
         }
@@ -170,11 +171,15 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
         setEnabled(enabled);
     }
 
+    @Override
     public void onComponentSelection() {
         GWT.runAsync(new RunAsyncCallback() {
+
+            @Override
             public void onFailure(Throwable reason) {
             }
 
+            @Override
             public void onSuccess() {
                 final LinkerSelectionContext lh = linker.getSelectionContext();
                 if (!lh.getMultipleSelection().isEmpty()) {
@@ -187,12 +192,15 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
                     final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
 
                         async.getUsages(l, new BaseAsyncCallback<List<GWTJahiaNodeUsage>>() {
+
+                            @Override
                             public void onApplicationFailure(Throwable caught) {
                                 com.google.gwt.user.client.Window.alert("Cannot get status: " + caught.getMessage());
                             }
 
+                            @Override
                             public void onSuccess(List<GWTJahiaNodeUsage> result) {
-                            	new DeleteItemWindow(linker, linker.getSelectionContext(), permanentlyDelete).show();
+                                new DeleteItemWindow(linker, linker.getSelectionContext(), permanentlyDelete, false).show();
                             }
                         });
                 }

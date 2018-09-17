@@ -406,6 +406,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
                 bindings.put("out", new PrintWriter(scriptContext.getWriter()));
                 scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
                 scriptEngine.eval(scriptContent, scriptContext);
+                @SuppressWarnings("resource")
                 StringWriter writer = (StringWriter) scriptContext.getWriter();
                 String body = writer.toString();
 
@@ -454,6 +455,10 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
                                 .getString() : null);
                         cfg.setNotificationLevel(mailNode.hasProperty("j:notificationLevel") ? mailNode
                                 .getProperty("j:notificationLevel").getString() : "Disabled");
+                        cfg.setWorkflowNotificationsDisabled(
+                                mailNode.hasProperty("j:workflowNotificationsDisabled")
+                                        ? mailNode.getProperty("j:workflowNotificationsDisabled").getBoolean()
+                                        : false);
                     } catch (PathNotFoundException e) {
                         store(cfg, session);
                     }
@@ -474,7 +479,8 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
                 logger.info("Mail Service is using following settings: host=["
                         + settings.getSmtpHost() + "] to=[" + settings.getTo() + "] from=["
                         + settings.getFrom() + "] notificationLevel=["
-                        + settings.getNotificationLevel() + "]");
+                        + settings.getNotificationLevel() + "] workflowNotificationsDisabled=["
+                        + settings.isWorkflowNotificationsDisabled() + "]");
             } else {
                 settings.setConfigurationValid(false);
                 logger.info("Mail settings are not set or invalid."
@@ -522,6 +528,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
         mailNode.setProperty("j:from", cfg.getFrom());
         mailNode.setProperty("j:to", cfg.getTo());
         mailNode.setProperty("j:notificationLevel", cfg.getNotificationLevel());
+        mailNode.setProperty("j:workflowNotificationsDisabled", cfg.isWorkflowNotificationsDisabled());
 
         session.save();
     }

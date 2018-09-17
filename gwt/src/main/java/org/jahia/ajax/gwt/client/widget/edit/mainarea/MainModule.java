@@ -56,7 +56,6 @@ import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
@@ -72,7 +71,6 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
-
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
@@ -618,7 +616,7 @@ public class MainModule extends Module {
         window.show();
     }
 
-    public static void unDeleteContent(final String nodePath, String displayName, final String nodeName, final JavaScriptObject gwtUpdateFunction){
+    public static void unDeleteContent(final String nodePath, String displayName, final String nodeName){
         String message = Messages.getWithArgs(
                 "message.undelete.confirm",
                 "Do you really want to undelete the selected resource {0}?", new String[]{displayName});
@@ -1384,8 +1382,8 @@ public class MainModule extends Module {
         nsAuthoringApi.deleteContent = $wnd.deleteContent = function (path, displayName, types, inheritedTypes, skipRefreshOnDelete) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::deleteContent(*)(path, displayName, types, inheritedTypes, skipRefreshOnDelete);
         };
-        nsAuthoringApi.unDeleteContent = $wnd.unDeleteContent = function (nodePath, displayName, nodeName,  gwtUpdateFunction) {
-            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::unDeleteContent(*)(nodePath, displayName, nodeName, gwtUpdateFunction);
+        nsAuthoringApi.unDeleteContent = $wnd.unDeleteContent = function (nodePath, displayName, nodeName) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::unDeleteContent(*)(nodePath, displayName, nodeName);
         };
         nsAuthoringApi.disableGlobalSelection = $wnd.disableGlobalSelection = function (value) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::globalSelectionDisabled = value;

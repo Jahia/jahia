@@ -50,13 +50,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
+ *
  * User: ktlili
  * Date: Aug 21, 2009
  * Time: 2:01:49 PM
- * 
+ *
  */
 public class ContentHelper {
+
     public static List<GWTJahiaNode> getSelectedContentNodesFromHTML() {
         List<GWTJahiaNode> selectedContentNodes = new ArrayList<GWTJahiaNode>();
         JsArray<ContentNodeJavaScriptObject> contentNodeJavaScriptObjectJsArray = getContentNodeOverlayTypes();
@@ -84,7 +85,15 @@ public class ContentHelper {
     }-*/;
 
     private static native JsArray<ContentNodeJavaScriptObject> getContentNodeOverlayTypes() /*-{
-    // Get a reference to the first customer in the JSON array from earlier
-    return $wnd.sContentNodes;
-  }-*/;
+        // Get a reference to the first customer in the JSON array from earlier
+        return $wnd.sContentNodes;
+    }-*/;
+
+    public static native void sendContentModificationEvent(String nodePath, String nodeName, String operation) /*-{
+        if ($wnd.contentModificationEventHandlers) {
+            $wnd.contentModificationEventHandlers.forEach(function(func) {
+                func.call(null, nodePath, nodeName, operation);
+            });
+        }
+    }-*/;
 }

@@ -115,7 +115,7 @@
         <driver.mysql.version>5.1.47</driver.mysql.version>
         <driver.oracle.version>12.2.0.1</driver.oracle.version>
         <driver.postgresql.version>42.2.5</driver.postgresql.version>
-        <driver.mariadb.version>2.2.6</driver.mariadb.version>
+        <driver.mariadb.version>2.3.0</driver.mariadb.version>
 
         <hibernateDialect.derby>org.hibernate.dialect.DerbyTenSevenDialect</hibernateDialect.derby>
         <hibernateDialect.mssql>org.hibernate.dialect.SQLServer2008Dialect</hibernateDialect.mssql>

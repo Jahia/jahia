@@ -95,6 +95,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final String SITE_UUID = "siteUUID";
     public static final String SITE_TYPE = "siteType";
     public static final String SITE_KEY = "siteKey";
+    public static final String SITE_SERVERNAME = "siteServername";
     public static final String CURRENT_VERSION = "currentVersion";
     public static final String VERSIONS = "versions";
     public static final String CHILDREN_INFO = "childrenInfo";
@@ -393,6 +394,14 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public String getSiteKey() {
         return get(SITE_KEY);
+    }
+
+    public String getSiteServername() {
+        return get(SITE_SERVERNAME);
+    }
+
+    public void setSiteServername(String siteServername) {
+        set(SITE_SERVERNAME, siteServername);
     }
 
     public void setVisibilityInfo(Map<GWTJahiaNode, ModelData> visible) {

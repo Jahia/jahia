@@ -122,13 +122,15 @@ public class OpenWindowActionItem extends BaseActionItem {
         if (!hasPermission(JahiaGWTParameters.getSiteNode())) {
             setEnabled(false);
         } else {
-            if (windowUrl != null && windowUrl.getValue() != null) {
+            if (windowUrl != null && windowUrl.getValue() != null && !windowUrl.getValue().isEmpty()) {
                 try {
                     URL.replacePlaceholders(windowUrl.getValue(), linker.getSelectionContext().getSingleSelection());
                     setEnabled(true);
                 } catch (Exception e) {
                     setEnabled(false);
                 }
+            } else if (preferences.get("js.url") == null) {
+                setEnabled(false);
             }
         }
     }

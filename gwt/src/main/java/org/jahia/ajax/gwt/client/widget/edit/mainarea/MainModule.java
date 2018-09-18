@@ -598,7 +598,8 @@ public class MainModule extends Module {
         EngineLoader.showEditEngine(getInstance().getEditLinker(), node, null, skipRefreshOnSave);
     }
 
-    public static void deleteContent(String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, boolean skipRefreshOnDelete) {
+    public static void deleteContent(String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes,
+            boolean skipRefreshOnDelete, boolean deletePermanently) {
 
         GWTJahiaNode node = getGwtJahiaNode(path, displayName, nodeTypes, inheritedNodeTypes);
         if (node.getDisplayName() != null) {
@@ -612,7 +613,7 @@ public class MainModule extends Module {
         selectionContext.setSelectedNodes(Collections.singletonList(node));
         selectionContext.refresh(LinkerSelectionContext.SELECTED_NODE_ONLY);
 
-        DeleteItemWindow window = new DeleteItemWindow(editLinker, selectionContext, false, skipRefreshOnDelete);
+        DeleteItemWindow window = new DeleteItemWindow(editLinker, selectionContext, deletePermanently, skipRefreshOnDelete);
         window.show();
     }
 
@@ -1379,8 +1380,8 @@ public class MainModule extends Module {
         nsAuthoringApi.editContent = $wnd.editContent = function (path, displayName, types, inheritedTypes, skipRefreshOnSave) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::editContent(*)(path, displayName, types, inheritedTypes, skipRefreshOnSave);
         };
-        nsAuthoringApi.deleteContent = $wnd.deleteContent = function (path, displayName, types, inheritedTypes, skipRefreshOnDelete) {
-            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::deleteContent(*)(path, displayName, types, inheritedTypes, skipRefreshOnDelete);
+        nsAuthoringApi.deleteContent = $wnd.deleteContent = function (path, displayName, types, inheritedTypes, skipRefreshOnDelete, deletePermanently) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::deleteContent(*)(path, displayName, types, inheritedTypes, skipRefreshOnDelete, deletePermanently);
         };
         nsAuthoringApi.unDeleteContent = $wnd.unDeleteContent = function (nodePath, displayName, nodeName) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::unDeleteContent(*)(nodePath, displayName, nodeName);

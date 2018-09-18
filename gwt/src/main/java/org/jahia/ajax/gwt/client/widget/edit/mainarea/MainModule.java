@@ -1405,7 +1405,7 @@ public class MainModule extends Module {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::openWorkflowDashboard(*)()
         };
         nsAuthoringApi.switchLanguage = function (lang) {
-            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::switchLanguage(*)(lang);
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::switchLanguage(Ljava/lang/String;)(lang);
         }
         nsAuthoringApi.switchSite = function (siteKey, lang) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::switchSite(*)(siteKey, lang);

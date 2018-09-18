@@ -89,6 +89,7 @@ public class JahiaGWTParameters {
     public static final String TOOLBAR_MESSAGES = "toolbarMessages";
     public static final String USE_WEBSOCKETS = "useWebsockets";
     public static final String AREA_AUTO_ACTIVATED = "areaAutoActivated";
+    public static final String DX_VERSION = "dxVersion";
 
     public static final String SYSTEM_USER = " system "; // org.jahia.jaas.JahiaLoginModule.SYSTEM
 
@@ -159,6 +160,10 @@ public class JahiaGWTParameters {
 
     public static String getUILanguage() {
         return jahiaParamDictionary.get(UI_LANGUAGE);
+    }
+
+    public static String getDxVersion() {
+        return jahiaParamDictionary.get(DX_VERSION);
     }
 
     public static String getUILanguageDisplayName() {

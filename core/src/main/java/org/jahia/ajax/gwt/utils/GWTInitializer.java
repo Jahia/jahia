@@ -48,6 +48,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.api.Constants;
+import org.jahia.bin.Jahia;
 import org.jahia.bin.Render;
 import org.jahia.bin.filters.ContentManagerAccessCheckFilter;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -140,6 +141,7 @@ public class GWTInitializer {
         params.put(JahiaGWTParameters.SERVICE_ENTRY_POINT, serviceEntrypoint);
         String contextPath = request.getContextPath();
         params.put(JahiaGWTParameters.CONTEXT_PATH, contextPath);
+        params.put(JahiaGWTParameters.DX_VERSION, Jahia.VERSION);
         params.put(JahiaGWTParameters.SERVLET_PATH, (request.getAttribute("servletPath") == null) ? request.getServletPath() : (String) request.getAttribute("servletPath"));
         params.put(JahiaGWTParameters.PATH_INFO, request.getPathInfo());
         params.put(JahiaGWTParameters.QUERY_STRING, request.getQueryString());

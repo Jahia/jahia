@@ -135,7 +135,7 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
 
             final boolean useSamePath = linker.getConfig().getSamePathConfigsList().contains(configurationName);
             String path = null;
-            if (useSamePath && !forceRootChange) {
+            if (useSamePath && !forceRootChange && linker.getSelectionContext().getMainNode() != null) {
                 path = linker.getSelectionContext().getMainNode().getPath();
             } else if (storage != null) {
                 path = storage.getItem(configurationName + "_nodePath");

@@ -1132,10 +1132,19 @@ public class MainModule extends Module {
 
         activeChannel = null;
         activeChannelVariant = null;
+        String currentFrameUrl = frame.getCurrentFrameUrl();
+        // detect if the configuration use the same url format as the default one.
+        // used for the content manager configuration that has a custom url resolver
+        String urlPart = "frame/" + JahiaGWTParameters.getWorkspace() + "/" +
+                (editLinker.getLocale() == null ? JahiaGWTParameters.getLanguage() : editLinker.getLocale());
+        boolean canSwitchConfig = currentFrameUrl.contains(this.config.getDefaultUrlMapping() + urlPart);
         if (newPath != null) {
             newLocation = newPath;
+        } else if (canSwitchConfig) {
+            newLocation = currentFrameUrl.replaceFirst(this.config.getDefaultUrlMapping(), config.getDefaultUrlMapping());
         } else {
-            newLocation = frame.getCurrentFrameUrl().replaceFirst(this.config.getDefaultUrlMapping(), config.getDefaultUrlMapping());
+            newLocation = currentFrameUrl.substring(0, currentFrameUrl.indexOf(this.config.getDefaultUrlMapping())) +
+                    config.getDefaultLocation() + urlPart + config.getDefaultLocation();
         }
 
         this.config = config;

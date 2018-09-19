@@ -91,7 +91,7 @@ public class CategoryKey extends ObjectKey {
      * @param keys
      * @return
      */
-    public static    Set<CategoryKey> getCategories(String[] keys) {
+    public static Set<CategoryKey> getCategories(String[] keys) {
         Set<CategoryKey> categories = new HashSet<CategoryKey>();
         for ( int i=0; i<keys.length; i++ ){
             try {

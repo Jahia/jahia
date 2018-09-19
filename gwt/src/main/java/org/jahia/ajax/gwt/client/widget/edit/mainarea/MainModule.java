@@ -1149,7 +1149,7 @@ public class MainModule extends Module {
             newLocation = currentFrameUrl.replaceFirst(this.config.getDefaultUrlMapping(), config.getDefaultUrlMapping());
         } else {
             newLocation = currentFrameUrl.substring(0, currentFrameUrl.indexOf(this.config.getDefaultUrlMapping())) +
-                    config.getDefaultLocation() + urlPart + config.getDefaultLocation();
+                   urlPart +  JahiaGWTParameters.getSiteNode().get(GWTJahiaNode.HOMEPAGE_PATH) + ".html";
         }
 
         this.config = config;

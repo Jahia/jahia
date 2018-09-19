@@ -84,7 +84,6 @@ public abstract class ObjectKey implements
     protected final String key;
     private String type = OBJECT_TYPE;
     private String IDInType;
-    private int idInType = -1;
 
     /**
      * Making default constructor protected, should not be used, except for
@@ -109,11 +108,6 @@ public abstract class ObjectKey implements
         buf.append(KEY_SEPARATOR);
         buf.append(IDInType);
         this.key = buf.toString();
-        try {
-            idInType = Integer.parseInt(IDInType);
-        } catch (NumberFormatException e) {
-            idInType = -1;
-        }
     }
 
     /**
@@ -130,11 +124,6 @@ public abstract class ObjectKey implements
         this.type = type;
         this.IDInType = IDInType;
         this.key = key;
-        try {
-            idInType = Integer.parseInt(IDInType);
-        } catch (NumberFormatException e) {
-            idInType = -1;
-        }
     }
 
     /**
@@ -222,15 +211,11 @@ public abstract class ObjectKey implements
         return this.IDInType;
     }
 
+    /**
+     * @deprecated {@link #getIDInType()} should be used instead.
+     */
     public int getIdInType() {
-        if(idInType==-1) {
-            try {
-                idInType = Integer.parseInt(IDInType);
-            } catch (NumberFormatException e) {
-                idInType = -1;
-            }
-        }
-        return idInType;
+        return -1;
     }
     /**
      * Redefinition of the equality comparison, since ObjectKey objects are

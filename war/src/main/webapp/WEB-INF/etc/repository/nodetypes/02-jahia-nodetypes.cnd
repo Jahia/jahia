@@ -297,6 +297,7 @@
  - j:from (string) indexed=no
  - j:to (string) indexed=no
  - j:notificationLevel (string,choicelist[resourceBundle]) = 'Disabled' indexed=no < 'Disabled','Standard','Wary','Paranoid'
+ - j:workflowNotificationsDisabled (boolean) = false indexed=no
 
 [jnt:searchServerSettings] > nt:base
  - j:provider (string) indexed=no

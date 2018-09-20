@@ -701,6 +701,20 @@ public class JahiaNodeIndexer extends NodeIndexer {
         return doc;
     }
 
+    @Override
+    protected void addParentChildRelation(Document doc, NodeId parentId) throws ItemStateException {
+        try {
+            super.addParentChildRelation(doc, parentId);
+        } catch (RepositoryException e) {
+            logger.warn(e.getMessage());
+            // Sometime in cluster inconsistencies can happen inside the itmMgr because node have been created, and move consecutively,
+            // in that case sometimes it's not possible to create parent-child relationship because:
+            // - the added node have a parent
+            // - but this parent doesn't have the child anymore
+            // So we just ignore this because the next events will fix the index and the relationship will be good at the end
+        }
+    }
+
     private void cleanupNodeProperties() {
         Set<Name> props = node.getPropertyNames();
         Set<Name> toRemove = null;

@@ -75,6 +75,9 @@ public class CategoryKey extends ObjectKey {
         super(CATEGORY_TYPE, categoryID, objectKey);
     }
 
+    /**
+     * @deprecated {@link #getIDInType()} should be used instead.
+     */
     public int getCategoryID() {
         return getIdInType();
     }

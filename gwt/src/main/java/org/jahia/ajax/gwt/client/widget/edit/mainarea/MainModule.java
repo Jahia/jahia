@@ -1143,8 +1143,12 @@ public class MainModule extends Module {
         } else if (canSwitchConfig) {
             newLocation = currentFrameUrl.replaceFirst(this.config.getDefaultUrlMapping(), config.getDefaultUrlMapping());
         } else {
+            // switch to default site when current site is system site
+            String path = JahiaGWTParameters.getSiteNode().getSiteKey().equals("systemsite") ?
+                    config.getDefaultLocation() :
+                    JahiaGWTParameters.getSiteNode().get(GWTJahiaNode.HOMEPAGE_PATH) + ".html";
             newLocation = currentFrameUrl.substring(0, currentFrameUrl.indexOf(this.config.getDefaultUrlMapping())) +
-                   urlPart +  JahiaGWTParameters.getSiteNode().get(GWTJahiaNode.HOMEPAGE_PATH) + ".html";
+                    config.getDefaultUrlMapping() + urlPart + path;
         }
 
         this.config = config;

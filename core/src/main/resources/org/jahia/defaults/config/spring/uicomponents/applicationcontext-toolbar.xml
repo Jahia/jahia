@@ -1515,7 +1515,7 @@
 
     <util:properties id="whatsNewProps">
         <prop key="display">${whatsNew.display:true}</prop>
-        <prop key="link">${whatsNew.link:<![CDATA[https://www.jahia.com/customers/$ui-lang([en,fr],en)/whatsnew?dxversion=$dx-version&site=$site-servername]]>}</prop>
+        <prop key="link">${whatsNew.link:<![CDATA[https://www.jahia.com/$ui-lang([en,fr],en)/customers/whatsnew?dxversion=$dx-version&site=$site-servername]]>}</prop>
     </util:properties>
 
     <bean id="Toolbar.Item.WhatsNew" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">

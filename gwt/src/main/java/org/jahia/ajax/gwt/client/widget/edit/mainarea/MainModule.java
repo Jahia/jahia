@@ -618,25 +618,20 @@ public class MainModule extends Module {
     }
 
     public static void unDeleteContent(final String nodePath, String displayName, final String nodeName) {
-
         String message = Messages.getWithArgs(
                 "message.undelete.confirm",
+
                 "Do you really want to undelete the selected resource {0}?", new String[] {displayName});
-
-        MessageBox.confirm(Messages.get("label.information", "Information"), message, new Listener<MessageBoxEvent>() {
-
-            @Override
-            public void handleEvent(MessageBoxEvent event) {
-                if (event.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.YES)) {
-                    final List<String> nodePaths = new ArrayList<String>();
-                    nodePaths.add(nodePath);
-                    JahiaContentManagementService.App.getInstance().undeletePaths(nodePaths, new BaseAsyncCallback<Object>() {
-
-                        @Override
-                        public void onApplicationFailure(Throwable throwable) {
-                            Log.error(throwable.getMessage(), throwable);
-                            MessageBox.alert(Messages.get("label.error", "Error"), throwable.getMessage(), null);
-                        }
+        MessageBox.confirm(
+                Messages.get("label.information", "Information"), message, new Listener<MessageBoxEvent>() {
+                    public void handleEvent(MessageBoxEvent be) {
+                        if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.YES)) {
+                            List<String> l = Collections.singletonList(nodePath);
+                            JahiaContentManagementService.App.getInstance().undeletePaths(l, new BaseAsyncCallback() {
+                                @Override public void onApplicationFailure(Throwable throwable) {
+                                    Log.error(throwable.getMessage(), throwable);
+                                    MessageBox.alert(Messages.get("label.error", "Error"), throwable.getMessage(), null);
+                                }
 
                         @Override
                         public void onSuccess(Object result) {

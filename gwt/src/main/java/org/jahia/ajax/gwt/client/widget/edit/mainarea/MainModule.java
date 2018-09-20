@@ -71,7 +71,6 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
-
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
@@ -89,6 +88,7 @@ import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.content.DeleteItemWindow;
+import org.jahia.ajax.gwt.client.widget.content.util.ContentHelper;
 import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEnginePopupListener;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
@@ -96,7 +96,6 @@ import org.jahia.ajax.gwt.client.widget.edit.InfoLayers;
 import org.jahia.ajax.gwt.client.widget.edit.ToolbarHeader;
 import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.WorkflowDashboardActionItem;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowDashboardEngine;
 
 import java.util.*;
@@ -599,19 +598,49 @@ public class MainModule extends Module {
         EngineLoader.showEditEngine(getInstance().getEditLinker(), node, null, skipRefreshOnSave);
     }
 
-    public static void deleteContent(String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, boolean skipRefreshOnDelete) {
+    public static void deleteContent(String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes,
+            boolean skipRefreshOnDelete, boolean deletePermanently) {
 
         GWTJahiaNode node = getGwtJahiaNode(path, displayName, nodeTypes, inheritedNodeTypes);
         if (node.getDisplayName() != null) {
             EditLinker.setSelectionOnBodyAttributes(node);
         }
 
-        LinkerSelectionContext selectionContext = new LinkerSelectionContext();
+        EditLinker editLinker = getInstance().getEditLinker();
+        LinkerSelectionContext selectionContext = editLinker.getSelectionContext();
+
+        selectionContext.setMainNode(node);
         selectionContext.setSelectedNodes(Collections.singletonList(node));
         selectionContext.refresh(LinkerSelectionContext.SELECTED_NODE_ONLY);
 
-        DeleteItemWindow window = new DeleteItemWindow(getInstance().getEditLinker(), selectionContext, false);
+        DeleteItemWindow window = new DeleteItemWindow(editLinker, selectionContext, deletePermanently, skipRefreshOnDelete);
         window.show();
+    }
+
+    public static void unDeleteContent(final String nodePath, String displayName, final String nodeName) {
+        String message = Messages.getWithArgs(
+                "message.undelete.confirm",
+
+                "Do you really want to undelete the selected resource {0}?", new String[] {displayName});
+        MessageBox.confirm(
+                Messages.get("label.information", "Information"), message, new Listener<MessageBoxEvent>() {
+                    public void handleEvent(MessageBoxEvent be) {
+                        if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.YES)) {
+                            List<String> l = Collections.singletonList(nodePath);
+                            JahiaContentManagementService.App.getInstance().undeletePaths(l, new BaseAsyncCallback() {
+                                @Override public void onApplicationFailure(Throwable throwable) {
+                                    Log.error(throwable.getMessage(), throwable);
+                                    MessageBox.alert(Messages.get("label.error", "Error"), throwable.getMessage(), null);
+                                }
+
+                        @Override
+                        public void onSuccess(Object result) {
+                            ContentHelper.sendContentModificationEvent(nodePath, nodeName, "update");
+                        }
+                    });
+                }
+            }
+        });
     }
 
     public static void displayAlert(String title, String message) {
@@ -646,13 +675,16 @@ public class MainModule extends Module {
     }
 
     private static GWTJahiaNode getGwtJahiaNode(String path, String name, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes) {
-        GWTJahiaNode n = new GWTJahiaNode();
-        n.setName(name);
-        n.setDisplayName(displayName);
-        n.setPath(path);
-        n.setNodeTypes(convertArray(nodeTypes));
-        n.setInheritedNodeTypes(convertArray(inheritedNodeTypes));
-        return n;
+        List<String> types = convertArray(nodeTypes);
+        List<String> inheritedTypes = convertArray(inheritedNodeTypes);
+        GWTJahiaNode node = new GWTJahiaNode();
+        node.setName(name);
+        node.setDisplayName(displayName);
+        node.setPath(path);
+        node.setNodeTypes(types);
+        node.setInheritedNodeTypes(inheritedTypes);
+        node.setFile(types.contains("nt:file") || inheritedTypes.contains("nt:file"));
+        return node;
     }
 
     private static List<String> convertArray(JsArrayString jsArrayString) {
@@ -1100,10 +1132,19 @@ public class MainModule extends Module {
 
         activeChannel = null;
         activeChannelVariant = null;
+        String currentFrameUrl = frame.getCurrentFrameUrl();
+        // detect if the configuration use the same url format as the default one.
+        // used for the content manager configuration that has a custom url resolver
+        String urlPart = "frame/" + JahiaGWTParameters.getWorkspace() + "/" +
+                (editLinker.getLocale() == null ? JahiaGWTParameters.getLanguage() : editLinker.getLocale());
+        boolean canSwitchConfig = currentFrameUrl.contains(this.config.getDefaultUrlMapping() + urlPart);
         if (newPath != null) {
             newLocation = newPath;
+        } else if (canSwitchConfig) {
+            newLocation = currentFrameUrl.replaceFirst(this.config.getDefaultUrlMapping(), config.getDefaultUrlMapping());
         } else {
-            newLocation = frame.getCurrentFrameUrl().replaceFirst(this.config.getDefaultUrlMapping(), config.getDefaultUrlMapping());
+            newLocation = currentFrameUrl.substring(0, currentFrameUrl.indexOf(this.config.getDefaultUrlMapping())) +
+                   urlPart +  JahiaGWTParameters.getSiteNode().get(GWTJahiaNode.HOMEPAGE_PATH) + ".html";
         }
 
         this.config = config;
@@ -1338,7 +1379,7 @@ public class MainModule extends Module {
         nsAuthoringApi.hideMask = $wnd.hideMask = function () {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::hideMask()();
         };
-        nsAuthoringApi.createContent = function (path, types, includeSubTypes, skipRefreshOnSave) {
+        nsAuthoringApi.createContent = $wnd.createContent = function (path, types, includeSubTypes, skipRefreshOnSave) {
             if (typeof includeSubTypes !== 'undefined') {
                 @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::createContent(*)(path, types, includeSubTypes, skipRefreshOnSave);
             } else {
@@ -1348,8 +1389,11 @@ public class MainModule extends Module {
         nsAuthoringApi.editContent = $wnd.editContent = function (path, displayName, types, inheritedTypes, skipRefreshOnSave) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::editContent(*)(path, displayName, types, inheritedTypes, skipRefreshOnSave);
         };
-        nsAuthoringApi.deleteContent = $wnd.deleteContent = function (path, displayName, types, inheritedTypes, skipRefreshOnDelete) {
-            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::deleteContent(*)(path, displayName, types, inheritedTypes, skipRefreshOnDelete);
+        nsAuthoringApi.deleteContent = $wnd.deleteContent = function (path, displayName, types, inheritedTypes, skipRefreshOnDelete, deletePermanently) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::deleteContent(*)(path, displayName, types, inheritedTypes, skipRefreshOnDelete, deletePermanently);
+        };
+        nsAuthoringApi.unDeleteContent = $wnd.unDeleteContent = function (nodePath, displayName, nodeName) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::unDeleteContent(*)(nodePath, displayName, nodeName);
         };
         nsAuthoringApi.disableGlobalSelection = $wnd.disableGlobalSelection = function (value) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::globalSelectionDisabled = value;
@@ -1370,7 +1414,7 @@ public class MainModule extends Module {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::openWorkflowDashboard(*)()
         };
         nsAuthoringApi.switchLanguage = function (lang) {
-            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::switchLanguage(*)(lang);
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::switchLanguage(Ljava/lang/String;)(lang);
         }
         nsAuthoringApi.switchSite = function (siteKey, lang) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::switchSite(*)(siteKey, lang);

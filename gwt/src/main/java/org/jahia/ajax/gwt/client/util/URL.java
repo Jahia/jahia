@@ -48,6 +48,8 @@ import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
+import java.util.*;
+
 /**
  * URL related utility functions.
  * @author ktlili
@@ -202,6 +204,9 @@ public class URL {
         if (value.contains("$site-key")) {
             value = value.replace("$site-key", JahiaGWTParameters.getSiteNode().getSiteKey());
         }
+        if (value.contains("$site-servername")) {
+            value = value.replace("$site-servername", ((String) JahiaGWTParameters.getSiteNode().get("j:serverName")));
+        }
         if (value.contains("$site-homepage-path")) {
             String home = JahiaGWTParameters.getSiteNode().get(GWTJahiaNode.HOMEPAGE_PATH);
             if (home != null) {
@@ -210,6 +215,32 @@ public class URL {
         }
         if (value.contains("$lang")) {
             value = value.replace("$lang", JahiaGWTParameters.getLanguage());
+        }
+        if (value.contains("$ui-lang(")) {
+            // handle pattern like: $uiLang([fr,en],en)
+            int uiLangIndex = value.indexOf("$ui-lang(");
+            int startLangIndex = uiLangIndex + "$ui-lang(".length();
+            int endLangIndex = value.indexOf(")", startLangIndex);
+
+            String paramStr = value.substring(startLangIndex, endLangIndex);
+            String[] params = paramStr.split(",");
+
+            Set<String> acceptedLangs = new HashSet<String>();
+            String defaultLang = params[params.length - 1].trim();
+
+            for (int i = 0; i < (params.length - 1); i++) {
+                String param = params[i].trim();
+                if (param.startsWith("[")) {
+                    param = param.substring(1);
+                }
+                if (param.endsWith("]")) {
+                    param = param.substring(0, param.length() - 1);
+                }
+                acceptedLangs.add(param);
+            }
+
+            String finalLang = acceptedLangs.contains(JahiaGWTParameters.getUILanguage()) ? JahiaGWTParameters.getUILanguage() : defaultLang;
+            value = value.replace(value.substring(uiLangIndex, endLangIndex + 1), finalLang);
         }
         if (value.contains("$nodepathnoescape") && selectedNode != null) {
             value = value.replace("$nodepathnoescape", selectedNode.getPath());
@@ -225,6 +256,9 @@ public class URL {
         }
         if (value.contains("$location-hash")) {
             value = value.replace("$location-hash", com.google.gwt.http.client.URL.encodeQueryString(Window.Location.getHash()));
+        }
+        if (value.contains("$dx-version")) {
+            value = value.replace("$dx-version", JahiaGWTParameters.getDxVersion());
         }
         return value;
     }

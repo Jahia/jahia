@@ -247,6 +247,9 @@
         <bean parent="Toolbar.Item.Documentation" scope="prototype">
             <property name="icon" value="/engines/jahia-anthracite/images/logos/app-documentation.svg"/>
         </bean>
+        <bean parent="Toolbar.Item.WhatsNew" scope="prototype">
+            <property name="icon" value="/engines/jahia-anthracite/images/logos/app-whatsNew.svg"/>
+        </bean>
     </util:list>
 
 

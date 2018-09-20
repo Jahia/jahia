@@ -136,7 +136,7 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
             final boolean useSamePath = linker.getConfig().getSamePathConfigsList().contains(configurationName);
             String path = null;
             if (useSamePath && !forceRootChange) {
-                path = linker.getSelectionContext().getMainNode().getPath();
+                path = linker.getSelectionContext().getMainNode() == null ? JahiaGWTParameters.getSiteNode().getPath() : linker.getSelectionContext().getMainNode().getPath();
             } else if (storage != null) {
                 path = storage.getItem(configurationName + "_nodePath");
             }

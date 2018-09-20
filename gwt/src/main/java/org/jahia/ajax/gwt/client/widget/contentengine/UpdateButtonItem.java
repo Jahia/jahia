@@ -58,6 +58,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.content.util.ContentHelper;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
 
@@ -158,46 +159,43 @@ public class UpdateButtonItem extends SaveButtonItem {
 
         engine.removeUneditedLanguages();
 
-        JahiaContentManagementService.App.getInstance().saveNode(engine.getNode(),
-                engine.getAcl(), engine.getChangedI18NProperties(), engine.getChangedProperties(),
-                removedTypes, new BaseAsyncCallback<RpcMap>() {
+        JahiaContentManagementService.App.getInstance().saveNode(engine.getNode(), engine.getAcl(), engine.getChangedI18NProperties(), engine.getChangedProperties(), removedTypes, new BaseAsyncCallback<RpcMap>() {
 
-                    @Override
-                    public void onApplicationFailure(Throwable throwable) {
-                        failSave(engine, throwable);
-                    }
+            @Override
+            public void onApplicationFailure(Throwable throwable) {
+                failSave(engine, throwable);
+            }
 
-                    @Override
-                    @SuppressWarnings("unchecked")
-                    public void onSuccess(RpcMap o) {
-                        Info.display(Messages.get("label.information", "Information"), Messages.get("saved_prop", "Properties saved\n\n"));
-                        Map<String, Object> data = new HashMap<String, Object>();
-                        data.put(Linker.REFRESH_MAIN, true);
-                        data.put("forceImageRefresh", true);
-                        EditLinker l = null;
-                        if (engine.getLinker() instanceof SidePanelTabItem.SidePanelLinker) {
-                            l = ((SidePanelTabItem.SidePanelLinker) engine.getLinker()).getEditLinker();
-                        } else if (engine.getLinker() instanceof EditLinker) {
-                            l = (EditLinker) engine.getLinker();
-                        }
-                        GWTJahiaNode node = engine.getNode();
-                        if (l != null && node.equals(l.getMainModule().getNode()) && !node.getName().equals(l.getMainModule().getNode().getName())) {
-                            l.getMainModule().handleNewMainSelection(node.getPath().substring(0, node.getPath().lastIndexOf("/") + 1) + node.getName(), l.getMainModule().getTemplate());
-                        }
-                        data.put("node", node);
-                        ((EditContentEngine) engine).closeEngine();
-                        if (o != null && o.containsKey(GWTJahiaNode.SITE_LANGUAGES)) {
-                            JahiaGWTParameters.getSiteNode().set(GWTJahiaNode.SITE_LANGUAGES, o.get(GWTJahiaNode.SITE_LANGUAGES));
-                            if (o.containsKey(GWTJahiaNode.PERMISSIONS)) {
-                                PermissionsUtils.loadPermissions((List<String>) o.get(GWTJahiaNode.PERMISSIONS));
-                            }
-                        }
-                        if (!engine.skipRefreshOnSave()) {
-                            engine.getLinker().refresh(data);
-                        }
-                        // execute external callbacks
-                        sendExternalEvent(node.getPath(), engine.getNodeName(), node.getUUID(), "updateButtonItemEventHandlers");
+            @Override
+            @SuppressWarnings("unchecked")
+            public void onSuccess(RpcMap o) {
+                Info.display(Messages.get("label.information", "Information"), Messages.get("saved_prop", "Properties saved\n\n"));
+                Map<String, Object> data = new HashMap<String, Object>();
+                data.put(Linker.REFRESH_MAIN, true);
+                data.put("forceImageRefresh", true);
+                EditLinker editLinker = null;
+                if (engine.getLinker() instanceof SidePanelTabItem.SidePanelLinker) {
+                    editLinker = ((SidePanelTabItem.SidePanelLinker) engine.getLinker()).getEditLinker();
+                } else if (engine.getLinker() instanceof EditLinker) {
+                    editLinker = (EditLinker) engine.getLinker();
+                }
+                GWTJahiaNode node = engine.getNode();
+                if (editLinker != null && node.equals(editLinker.getMainModule().getNode()) && !node.getName().equals(editLinker.getMainModule().getNode().getName())) {
+                    editLinker.getMainModule().handleNewMainSelection(node.getPath().substring(0, node.getPath().lastIndexOf("/") + 1) + node.getName(), editLinker.getMainModule().getTemplate());
+                }
+                data.put("node", node);
+                ((EditContentEngine) engine).closeEngine();
+                if (o != null && o.containsKey(GWTJahiaNode.SITE_LANGUAGES)) {
+                    JahiaGWTParameters.getSiteNode().set(GWTJahiaNode.SITE_LANGUAGES, o.get(GWTJahiaNode.SITE_LANGUAGES));
+                    if (o.containsKey(GWTJahiaNode.PERMISSIONS)) {
+                        PermissionsUtils.loadPermissions((List<String>) o.get(GWTJahiaNode.PERMISSIONS));
                     }
-                });
+                }
+                if (!engine.skipRefreshOnSave()) {
+                    engine.getLinker().refresh(data);
+                }
+                ContentHelper.sendContentModificationEvent(node.getPath(), engine.getNodeName(), "update");
+            }
+        });
     }
 }

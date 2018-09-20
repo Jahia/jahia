@@ -127,7 +127,8 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final String HOMEPAGE_PATH = "homepage-path";
 
     public static final List<String> DEFAULT_SITE_FIELDS =
-            Arrays.asList("j:moduleType", "j:installedModules", "j:templatesSet", "j:dependencies", "j:languages", "j:defaultLanguage", HOMEPAGE_PATH, SITE_LANGUAGES, "j:versionInfo", PERMISSIONS, LOCKS_INFO, "j:resolvedDependencies");
+            Arrays.asList("j:moduleType", "j:installedModules", "j:templatesSet", "j:dependencies", "j:languages",
+                    "j:defaultLanguage", HOMEPAGE_PATH, SITE_LANGUAGES, "j:versionInfo", PERMISSIONS, LOCKS_INFO, "j:resolvedDependencies", "j:serverName");
 
     public static final List<String> DEFAULT_USER_FIELDS =
             Arrays.asList("j:firstName", "j:lastName");

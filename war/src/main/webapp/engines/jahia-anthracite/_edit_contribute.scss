@@ -398,7 +398,7 @@ body[data-indigo-app="contribute"] {
 			top: 0;
 		    right: 0;
 		    width: auto;
-		    padding: 4px 0px 0 0 !important;
+		    padding: 5px 0px 0 0 !important;
 		    height: 15px !important;
 		    background: linear-gradient(to right, rgba(78, 81, 86, 0) 0%, #4e5156 100%)!important;
 			min-width: 50%;
@@ -435,7 +435,7 @@ body[data-indigo-app="contribute"] {
 			width: auto;
 		    height: auto!important;
 			display: inline-block;
-			top: 36px;
+			top: 41px;
 
 			.x-toolbar-cell {
 				display: inline-block;
@@ -1192,9 +1192,13 @@ body[data-indigo-app="contribute"] {
 		background: _theme-color(status, attention);
 
 		body[data-V2="true"] & {
-			right: -17px;
-			top: -3px;
-			box-shadow: 1px 1px 1px 0px rgba(38, 38, 38, 0.3);
+			right: -13px;
+		    top: -3px;
+		    box-shadow: 1px 1px 1px 0px rgba(38, 38, 38, 0.3);
+		    font-size: 8px;
+		    width: 14px;
+		    height: 14px;
+		    line-height: 15px;
 		}
     }
 

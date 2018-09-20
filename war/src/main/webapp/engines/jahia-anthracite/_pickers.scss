@@ -40,6 +40,10 @@ body[indigo-dragging-panel="true"] {
 		opacity: 1;
 	}
 
+	body[data-V2="true"] & {
+		margin-left: 12px!important;
+	}
+
 
 
 

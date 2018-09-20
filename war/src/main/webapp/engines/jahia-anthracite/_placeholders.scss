@@ -1852,6 +1852,11 @@
         text-transform: uppercase;
 
         @include text(8px, _property($TOOL-BUTTON--COLOR, $APP), $FONT--WEIGHT---BOLD);
+
+		body[data-V2="true"] & {
+			@include text(8.5px, whitesmoke, $FONT--WEIGHT---SEMIBOLD);
+			margin-bottom: 0;
+		}
     }
 
 
@@ -1909,6 +1914,10 @@
 	position: relative;
 
 	padding-left: 30px;
+
+	body[data-V2="true"] & {
+		padding-left: 25px;
+	}
 
 	body[data-indigo-gwt-side-panel="open"] & {
 		display: block;

@@ -1368,8 +1368,10 @@ if (!Element.prototype.matches) {
                 console.log("=== CONFIG ===========\n\n")
                 console.log("You can stop the side panel from automatically closing with the following toggle:")
                 console.log("DX.config.toggleAutoHide()\n\n");
-                console.log("You can toggle the Log with the following:")
+				console.log("You can toggle the Log with the following:")
                 console.log("DX.config.toggleLog()\n\n");
+				console.log("You can toggle the V2 edit mode with:")
+                console.log("DX.config.toggleV2()\n\n");
                 console.log("======================")
             },
             toggleLog: function(){
@@ -1377,9 +1379,16 @@ if (!Element.prototype.matches) {
             },
             toggleAutoHide: function(){
                 app.nav.data.autoHideSidePanel = !app.nav.data.autoHideSidePanel
-            }
+            },
+			toggleV2: function(){
+				var toggleState = !app.data.V2;
+
+				app.V2(toggleState)
+			}
         },
 		data: {
+			V2: false,
+			V2Disabled: false,
 			openedXWindows: [],
 			currentApp: null,
 			currentSite: null,
@@ -1522,14 +1531,17 @@ if (!Element.prototype.matches) {
 
                     switch (cl) {
                         case "x-viewport-editmode":
-                            app.switch("edit");
+							app.V2(app.data.V2Disabled);
+							app.switch("edit");
 
                             break;
                         case "x-viewport-adminmode":
+							app.disableV2();
                             app.switch("admin");
 
                             break;
                         case "x-viewport-dashboardmode":
+							app.disableV2();
                             app.switch("dashboard");
 
                             break;
@@ -1538,6 +1550,7 @@ if (!Element.prototype.matches) {
 
                             break;
                         case "x-viewport-contributemode":
+							app.disableV2();
                             app.switch("contribute");
 
                             break;
@@ -1589,6 +1602,74 @@ if (!Element.prototype.matches) {
 
 
 
+		},
+		disableV2: function(){
+			if(app.data.V2){
+				// Just disable it
+				app.data.V2Disabled = true
+			} else {
+				app.data.V2Disabled = false
+			}
+
+			DexV2.getCached("body").setAttribute("data-V2-disabled", app.data.V2Disabled);
+
+			app.V2(false);
+		},
+		V2: function(state){
+			app.data.V2 = state;
+
+			DexV2.getCached("body").setAttribute("data-V2", app.data.V2);
+
+			if(state === true){
+				var publishMenuButton = document.querySelectorAll(".edit-menu-publication")[0]
+				var statusMenuButton = document.querySelectorAll(".edit-menu-status")[0]
+				var targetMenu = document.querySelectorAll(".edit-menu-centertop .x-toolbar-left-row")[0]
+				var editMenuButton = document.querySelectorAll(".edit-menu-edit")[0].parentNode
+
+				if(targetMenu && publishMenuButton){
+					targetMenu.insertBefore(publishMenuButton.parentNode, editMenuButton)
+				}
+
+				if(targetMenu && statusMenuButton){
+					targetMenu.insertBefore(statusMenuButton.parentNode, editMenuButton)
+				}
+
+				var backGroundMaskExists = document.querySelectorAll(".background-mask")[0],
+					backGroundMask = (!backGroundMaskExists) ? document.createElement("div") : null;
+
+				if(backGroundMask){
+					backGroundMask.classList.add("background-mask")
+					DexV2.getCached("body").append(backGroundMask);
+				}
+
+
+
+
+
+			} else {
+				var publishMenuButton = document.querySelectorAll(".edit-menu-publication")[0]
+				var statusMenuButton = document.querySelectorAll(".edit-menu-status")[0]
+
+				var targetMenu = document.querySelectorAll(".edit-menu-topright .x-toolbar-left-row")[0]
+
+				if(publishMenuButton){
+					targetMenu.prepend(publishMenuButton.parentNode)
+				}
+
+				if(statusMenuButton){
+					targetMenu.prepend(statusMenuButton.parentNode)
+				}
+
+
+			}
+
+			if(app.data.currentApp == "edit"){
+				app.edit.topbar.reposition();
+
+			} else if(app.data.currentApp == "contribute"){
+				app.contribute.topbar.reposition();
+
+			}
 		},
 		switch: function(appID){
 
@@ -4432,7 +4513,7 @@ if (!Element.prototype.matches) {
                                     title: document.getElementsByClassName("x-current-page-path")[0],
                                     innerTitle: document.getElementsByClassName("node-path-text-inner")[0],
                                     publishButton: document.getElementsByClassName("edit-menu-publication")[0],
-                                    // refreshButton: document.getElementsByClassName("window-actions-refresh")[0],
+                                    refreshButton: document.getElementsByClassName("window-actions-refresh")[0],
                                     nodePathTitle: document.getElementsByClassName("node-path-title")[0],
                                     previewButton: document.getElementsByClassName("edit-menu-view")[0],
                                     moreInfo: document.getElementsByClassName("edit-menu-edit")[0],
@@ -4470,7 +4551,9 @@ if (!Element.prototype.matches) {
                                 } else {
                                     // No Select
                                     // elements.publishButton.style.left = (boxes.title.left - 20) + "px";
-                                    // elements.refreshButton.style.left = (boxes.title.left + boxes.title.width + 10) + "px";
+                                    if(app.data.V2 && elements.refreshButton){
+										elements.refreshButton.style.left = (boxes.title.left + boxes.title.width) + "px";
+									}
                                     elements.previewButton.style.left = (boxes.title.left + boxes.title.width + 9) + "px";
                                     elements.moreInfo.style.left = (boxes.title.left + boxes.title.width + 33) + "px";
                                     elements.nodePathTitle.style.left = (boxes.title.left - 20) + "px";
@@ -4550,12 +4633,34 @@ if (!Element.prototype.matches) {
                         mainFrameWidth = (settingsMode || dashboardMode) ? xPos - 68 : xPos + 5,
                         mainFrameLeft = (settingsMode || dashboardMode) ? xPos : xPos + 10;
 
+					if(app.data.V2){
+
+
+						if(DexV2.getCached("body").getAttribute("data-INDIGO-SIDEPANEL-PINNED") == "true"){
+							mainFrameLeft = mainFrameLeft + 29;
+							mainFrameWidth = mainFrameWidth - 23;
+						} else {
+							mainFrameLeft = mainFrameLeft + 29;
+							mainFrameWidth = mainFrameWidth + 28;
+						}
+
+					}
+
 
                     // Side Panel is currently pinned, so we need to adjust the width and left position of the main window
                     if(DexV2.getCached("body").getAttribute("data-INDIGO-SIDEPANEL-PINNED") == "true" || settingsMode || dashboardMode){
                         DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.setProperty("width", "calc(100% - " + mainFrameWidth + "px)", "important");
                         DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.setProperty("left", mainFrameLeft + "px", "important");
                     }
+
+					if(app.data.V2 && DexV2.getCached("body").getAttribute("data-indigo-sidepanel-pinned") == "true"){
+						// Need to shift the page title and stuff too.
+						DexV2.class("node-path-container").nodes[0].style.setProperty("left", (mainFrameLeft - 5) + "px", "important");
+					}
+
+
+
+
 
                     // Reposition the pin button
                     DexV2(".window-side-panel > .x-panel-bwrap > div:nth-child(2).x-panel-footer").css({
@@ -4577,25 +4682,26 @@ if (!Element.prototype.matches) {
                     var categoriesResultsPane = DexV2("#JahiaGxtCategoryBrowseTab.tab_categories .x-box-inner .x-box-item:nth-child(2)"),
                         searchResultPane = DexV2("#JahiaGxtSearchTab.tab_search .JahiaGxtSearchTab-results .x-panel-bwrap"),
                         imagesResultPane = DexV2("#JahiaGxtFileImagesBrowseTab.tab_filesimages #images-view"),
-                        contentResultsPane = DexV2("#JahiaGxtContentBrowseTab.tab_content .x-box-inner .x-box-item:nth-child(2)");
+                        contentResultsPane = DexV2("#JahiaGxtContentBrowseTab.tab_content .x-box-inner .x-box-item:nth-child(2)"),
+						V2Offset = (app.data.V2) ? 30 : 0;
 
                         if(searchResultPane.exists()){
-                            searchResultPane.nodes[0].style.setProperty("left", xPos + "px", "important");
+                            searchResultPane.nodes[0].style.setProperty("left", (xPos + V2Offset) + "px", "important");
 
                         }
 
                         if(categoriesResultsPane.exists()){
-                            categoriesResultsPane.nodes[0].style.setProperty("left", xPos + "px", "important");
+                            categoriesResultsPane.nodes[0].style.setProperty("left", (xPos + V2Offset) + "px", "important");
 
                         }
 
                         if(imagesResultPane.exists()){
-                            imagesResultPane.nodes[0].style.setProperty("left", xPos + "px", "important");
+                            imagesResultPane.nodes[0].style.setProperty("left", (xPos + V2Offset) + "px", "important");
 
                         }
 
                         if(contentResultsPane.exists()){
-                            contentResultsPane.nodes[0].style.setProperty("left", xPos + "px", "important");
+                            contentResultsPane.nodes[0].style.setProperty("left", (xPos + V2Offset) + "px", "important");
 
                         }
 

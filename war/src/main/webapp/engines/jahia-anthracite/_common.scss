@@ -79,6 +79,31 @@ html {
 }
 
 body {
+
+	.background-mask {
+		position: fixed;
+		width: 100%;
+		height: 100%;
+		top: 0;
+		left: 0;
+		background: #fcfdfd;
+		opacity: 0;
+		pointer-events: none;
+		transition: all 0.3s ease-in 0s;
+	}
+
+	&[data-V2="true"][data-sitesettings="true"] {
+		.background-mask {
+			opacity: 1;
+		}
+    }
+
+	&[data-V2="true"][data-multiselect="on"] {
+		.background-mask {
+			opacity: 0.15;
+		}
+	}
+
 	background: _property($BODY--BG, $APP);
     background: #585757;
 	transition: all 0.2s ease-in 0s;
@@ -87,11 +112,13 @@ body {
         box-shadow: inset 0px -120px 260px #343638;
     }
 
+	&[data-V2="true"] {
+		background: linear-gradient(to bottom right, #3b3d40 1%, #333537 100%);
+	}
+
     &[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"] {
         background: #fcfdfd
     }
-
-
 
 	// DELETE START ::: Check if this can be deleted ...
 	&[data-main-node-displayname] {
@@ -132,7 +159,7 @@ body {
 		}
 	}
 
-    &[data-sitesettings="true"] {
+    &[data-sitesettings="true"]:not([data-V2="true"]) {
         background: #fcfdfd;
     }
 

@@ -39,6 +39,21 @@ body[indigo-dragging-panel] {
 		pointer-events: all;
 		z-index: $ZINDEX--MAINMODULE--LANGUAGE_SWITCHER;
 
+		body[data-V2="true"] & {
+			left: 105px!important;
+			top: 24px!important;
+			transition: left 0.2s ease-in 0s;
+		}
+
+		body[data-V2="true"][data-multiselect="on"] & {
+			display: none;
+		}
+
+		body[data-V2="true"][data-indigo-gwt-side-panel="open"] & {
+			left: 115px!important;
+			top: 24px!important;
+		}
+
 		body[data-sitesettings="true"] & {
 			transition: left 0.2s ease-in 0s;
 		}
@@ -79,8 +94,21 @@ body[indigo-dragging-panel] {
 			left: 99px!important;
 		}
 
+		body[data-V2="true"][data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] &,
+		body[data-V2="true"][data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab"] &,
+		body[data-V2="true"][data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"] &,
+		body[data-V2="true"][data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"] &,
+		body[data-V2="true"][data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] &,
+		body[data-V2="true"][data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"] & {
+			left: 124px!important;
+		}
+
 		body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSettingsTab"] & {
 			left: 99px!important;
+		}
+
+		body[data-V2="true"][data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSettingsTab"] & {
+			left: 124px!important;
 		}
 
 		html.ext-strict body.ext-gecko[data-indigo-gwt-side-panel="open"] & {
@@ -146,6 +174,15 @@ body[indigo-dragging-panel] {
 		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] &,
 		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"] & {
 			margin-left: 47px;
+		}
+
+		body[data-V2="true"][data-INDIGO-SIDEPANEL-PINNED="true"] &,
+		body[data-V2="true"][data-indigo-gwt-side-panel="open"] & {
+			margin-left: 30px;
+		}
+
+		body[data-V2="true"][data-sitesettings="true"] & {
+			margin-left: 60px!important;
 		}
 
 		&.x-tool-refresh-red {
@@ -285,6 +322,11 @@ body[indigo-dragging-panel] {
 				    opacity: 1;
 				}
 
+				body[data-V2="true"][data-INDIGO-SIDEPANEL-PINNED="true"] &,
+					body[data-V2="true"][data-indigo-gwt-side-panel="open"] & {
+					margin-left: 30px;
+				}
+
 				// body[data-indigo-gwt-side-panel="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"]:not(.minimise-results) &,
 				// body[data-indigo-gwt-side-panel="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"]:not(.minimise-results) & {
 				// 	margin-left: 354px;
@@ -306,6 +348,11 @@ body[indigo-dragging-panel] {
 
 		body[indigo-dragging-panel="true"] & {
 			transition: none!important;
+		}
+
+		body[data-V2="true"] & {
+			padding-left: 31px;
+			padding-top: 49px;
 		}
 
 		@extend %CSS_BLOCK--SIDE_PANEL--CONTAINER;
@@ -388,12 +435,13 @@ body[indigo-dragging-panel] {
 		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] &,
 		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"] & {
 			border-right: 10px solid #f8f8f8;
-			box-shadow: 0 5px 14px 14px rgba(0, 0, 0, 0.4);
+			box-shadow: 0px 4px 29px 5px rgba(38, 38, 38, 0.4);
 		}
 
 		body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSettingsTab"] & {
 			border-right: 10px solid #f8f8f8;
 			box-shadow: 0 5px 14px 14px rgba(0, 0, 0, 0.4);
+			box-shadow: 0px 4px 29px 5px rgba(38, 38, 38, 0.4);
 		}
 
 		position: fixed;
@@ -419,6 +467,11 @@ body[indigo-dragging-panel] {
 			pointer-events: all;
 			outline: none;
 
+			body[data-V2="true"] & {
+				opacity: 1;
+				width: 62px;
+			}
+
 			&.x-item-disabled {
 				display: none;
 			}
@@ -440,6 +493,10 @@ body[indigo-dragging-panel] {
 	            display: block;
 	            left: 14px;
 	            position: relative;
+
+				body[data-V2="true"] & {
+					left: 20px;
+				}
 			}
 
 			a {
@@ -499,6 +556,11 @@ body[indigo-dragging-panel] {
 			position: relative;
 			z-index: $ZINDEX--SIDE_PANEL--CONTAINER_SUB;
 			overflow: visible;
+
+			body[data-V2="true"] & {
+				top: 57px;
+			    width: 62px!important;
+			}
 
 			ul.x-tab-strip-top {
 				// List for Tab Buttons
@@ -570,6 +632,10 @@ body[indigo-dragging-panel] {
 			box-sizing: border-box;
 
 			width: calc(100% - 71px) !important;
+
+			body[data-V2="true"] & {
+				width: calc(100% - 81px) !important
+			}
 
 			height: 100%!important;
 			vertical-align: top;
@@ -2022,6 +2088,11 @@ $side_panel__tab_buttons: (
 					left: 4px;
 				    bottom: 50px;
 
+					body[data-V2="true"] & {
+						left: 37px;
+					    bottom: 74px;
+					}
+
 					body[data-uilang="de"] & {
 						bottom: 60px;
 					}
@@ -2323,6 +2394,16 @@ body[data-edit-window-style="settings"] {
 		@extend %CSS_BLOCK--SIDE_PANEL--TITLE;
 		display: block;
 		margin: 24px 0 30px -3px;
+
+		body[data-V2="true"] & {
+			margin: 22px 0 30px -15px;
+		    font-size: 32px;
+			transition: all 0.2s ease-in 0s;
+		}
+
+		body[data-indigo-gwt-side-panel="open"][data-V2="true"] & {
+			margin: 22px 0 30px -5px;
+		}
 
 
 

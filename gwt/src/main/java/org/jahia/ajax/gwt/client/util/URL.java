@@ -205,7 +205,7 @@ public class URL {
             value = value.replace("$site-key", JahiaGWTParameters.getSiteNode().getSiteKey());
         }
         if (value.contains("$site-servername")) {
-            value = value.replace("$site-servername", JahiaGWTParameters.getSiteNode().getSiteServername());
+            value = value.replace("$site-servername", ((String) JahiaGWTParameters.getSiteNode().get("j:serverName")));
         }
         if (value.contains("$site-homepage-path")) {
             String home = JahiaGWTParameters.getSiteNode().get(GWTJahiaNode.HOMEPAGE_PATH);

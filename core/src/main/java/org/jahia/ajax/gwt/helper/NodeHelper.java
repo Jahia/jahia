@@ -893,7 +893,6 @@ class NodeHelper {
             if (site != null) {
                 n.setSiteUUID(site.getUUID());
                 n.setSiteKey(site.getSiteKey());
-                n.setSiteServername(site.getServerName());
                 if (site.getTemplatePackage() != null) {
                     n.set(GWTJahiaNode.EDIT_MODE_BLOCKED, site.getTemplatePackage().isEditModeBlocked());
                 }

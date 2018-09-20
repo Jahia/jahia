@@ -1505,6 +1505,11 @@
         </property>
     </bean>
 
+    <util:properties id="whatsNewProps">
+        <prop key="display">${whatsNew.display:true}</prop>
+        <prop key="link">${whatsNew.link:<![CDATA[https://www.jahia.com/customers/$ui-lang([en,fr],en)/whatsnew?dxversion=$dx-version&site=$site-servername]]>}</prop>
+    </util:properties>
+
     <bean id="Toolbar.Item.WhatsNew" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
@@ -1517,7 +1522,7 @@
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
                     <property name="value"
-                              value="${whatsNew.link:}"/>
+                              value="#{whatsNewProps['display'] ? whatsNewProps['link'] : null}"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="target"/>

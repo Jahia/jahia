@@ -616,25 +616,30 @@ public class MainModule extends Module {
         window.show();
     }
 
-    public static void unDeleteContent(final String nodeUuid, final String nodePath, String displayName, final String nodeName) {
-        String message = Messages.getWithArgs(
-                "message.undelete.confirm",
+    public static void undeleteContent(final String uuid, final String path, String displayName, final String nodeName) {
 
-                "Do you really want to undelete the selected resource {0}?", new String[] {displayName});
-        MessageBox.confirm(
-                Messages.get("label.information", "Information"), message, new Listener<MessageBoxEvent>() {
-                    public void handleEvent(MessageBoxEvent be) {
-                        if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.YES)) {
-                            List<String> l = Collections.singletonList(nodePath);
-                            JahiaContentManagementService.App.getInstance().undeletePaths(l, new BaseAsyncCallback() {
-                                @Override public void onApplicationFailure(Throwable throwable) {
-                                    Log.error(throwable.getMessage(), throwable);
-                                    MessageBox.alert(Messages.get("label.error", "Error"), throwable.getMessage(), null);
-                                }
+        String message = Messages.getWithArgs(
+            "message.undelete.confirm",
+            "Do you really want to undelete the selected resource {0}?",
+            new String[] {displayName}
+        );
+
+        MessageBox.confirm(Messages.get("label.information", "Information"), message, new Listener<MessageBoxEvent>() {
+
+            @Override
+            public void handleEvent(MessageBoxEvent event) {
+                if (event.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.YES)) {
+                    JahiaContentManagementService.App.getInstance().undeletePaths(Collections.singletonList(path), new BaseAsyncCallback<Object>() {
+
+                        @Override
+                        public void onApplicationFailure(Throwable throwable) {
+                            Log.error(throwable.getMessage(), throwable);
+                            MessageBox.alert(Messages.get("label.error", "Error"), throwable.getMessage(), null);
+                        }
 
                         @Override
                         public void onSuccess(Object result) {
-                            ContentHelper.sendContentModificationEvent(nodeUuid, nodePath, nodeName, "update");
+                            ContentHelper.sendContentModificationEvent(uuid, path, nodeName, "update");
                         }
                     });
                 }
@@ -1396,8 +1401,8 @@ public class MainModule extends Module {
         nsAuthoringApi.deleteContent = $wnd.deleteContent = function (uuid, path, displayName, types, inheritedTypes, skipRefreshOnDelete, deletePermanently) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::deleteContent(*)(uuid, path, displayName, types, inheritedTypes, skipRefreshOnDelete, deletePermanently);
         };
-        nsAuthoringApi.unDeleteContent = $wnd.unDeleteContent = function (nodeUuid, nodePath, displayName, nodeName) {
-            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::unDeleteContent(*)(nodeUuid, nodePath, displayName, nodeName);
+        nsAuthoringApi.undeleteContent = $wnd.undeleteContent = function (uuid, path, displayName, nodeName) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::undeleteContent(*)(uuid, path, displayName, nodeName);
         };
         nsAuthoringApi.disableGlobalSelection = $wnd.disableGlobalSelection = function (value) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::globalSelectionDisabled = value;

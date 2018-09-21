@@ -1854,7 +1854,7 @@
         @include text(8px, _property($TOOL-BUTTON--COLOR, $APP), $FONT--WEIGHT---BOLD);
 
 		body[data-V2="true"] & {
-			@include text(8px, whitesmoke, $FONT--WEIGHT---SEMIBOLD);
+			@include text(9px, whitesmoke, $FONT--WEIGHT---LIGHT);
 			margin-bottom: 0;
 		}
     }
@@ -1916,7 +1916,7 @@
 	padding-left: 30px;
 
 	body[data-V2="true"] & {
-		padding-left: 25px;
+		padding-left: 19px;
 	}
 
 	body[data-indigo-gwt-side-panel="open"] & {

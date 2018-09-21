@@ -3317,6 +3317,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
 	#JahiaGxtSidePanelTabs .x-tab-panel-body.x-tab-panel-body-top > .x-component.tab_createContent {
 		height: calc(100% - 168px) !important;
+		width: calc(100% - 20px)!important;
 
 		.x-grid3 {
 			.x-grid3-row.x-grid3-row-selected {

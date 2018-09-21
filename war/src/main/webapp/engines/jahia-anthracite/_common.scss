@@ -172,6 +172,14 @@ body {
     display: none!important;
 }
 
+.x-hide-display.force-display-block {
+	display: block!important
+}
+
+.x-hide-display.force-display-inline-block {
+	display: inline-block!important
+}
+
 
 
 /////////////////////////////////////////////////

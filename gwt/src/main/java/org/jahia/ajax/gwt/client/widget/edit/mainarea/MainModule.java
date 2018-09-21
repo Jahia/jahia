@@ -598,10 +598,9 @@ public class MainModule extends Module {
         EngineLoader.showEditEngine(getInstance().getEditLinker(), node, null, skipRefreshOnSave);
     }
 
-    public static void deleteContent(String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes,
-            boolean skipRefreshOnDelete, boolean deletePermanently) {
+    public static void deleteContent(String uuid, String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, boolean skipRefreshOnDelete, boolean deletePermanently) {
 
-        GWTJahiaNode node = getGwtJahiaNode(null, path, displayName, nodeTypes, inheritedNodeTypes);
+        GWTJahiaNode node = getGwtJahiaNode(uuid, path, displayName, nodeTypes, inheritedNodeTypes);
         if (node.getDisplayName() != null) {
             EditLinker.setSelectionOnBodyAttributes(node);
         }
@@ -617,7 +616,7 @@ public class MainModule extends Module {
         window.show();
     }
 
-    public static void unDeleteContent(final String nodePath, String displayName, final String nodeName) {
+    public static void unDeleteContent(final String nodeUuid, final String nodePath, String displayName, final String nodeName) {
         String message = Messages.getWithArgs(
                 "message.undelete.confirm",
 
@@ -635,7 +634,7 @@ public class MainModule extends Module {
 
                         @Override
                         public void onSuccess(Object result) {
-                            ContentHelper.sendContentModificationEvent(null, nodePath, nodeName, "update");
+                            ContentHelper.sendContentModificationEvent(nodeUuid, nodePath, nodeName, "update");
                         }
                     });
                 }
@@ -1394,11 +1393,11 @@ public class MainModule extends Module {
         nsAuthoringApi.editContent = $wnd.editContent = function(uuid, path, displayName, types, inheritedTypes, skipRefreshOnSave) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::editContent(*)(uuid, path, displayName, types, inheritedTypes, skipRefreshOnSave);
         };
-        nsAuthoringApi.deleteContent = $wnd.deleteContent = function (path, displayName, types, inheritedTypes, skipRefreshOnDelete, deletePermanently) {
-            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::deleteContent(*)(path, displayName, types, inheritedTypes, skipRefreshOnDelete, deletePermanently);
+        nsAuthoringApi.deleteContent = $wnd.deleteContent = function (uuid, path, displayName, types, inheritedTypes, skipRefreshOnDelete, deletePermanently) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::deleteContent(*)(uuid, path, displayName, types, inheritedTypes, skipRefreshOnDelete, deletePermanently);
         };
-        nsAuthoringApi.unDeleteContent = $wnd.unDeleteContent = function (nodePath, displayName, nodeName) {
-            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::unDeleteContent(*)(nodePath, displayName, nodeName);
+        nsAuthoringApi.unDeleteContent = $wnd.unDeleteContent = function (nodeUuid, nodePath, displayName, nodeName) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::unDeleteContent(*)(nodeUuid, nodePath, displayName, nodeName);
         };
         nsAuthoringApi.disableGlobalSelection = $wnd.disableGlobalSelection = function (value) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::globalSelectionDisabled = value;

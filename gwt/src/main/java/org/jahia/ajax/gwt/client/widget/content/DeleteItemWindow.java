@@ -212,9 +212,9 @@ public class DeleteItemWindow extends Window {
 
                         for (GWTJahiaNode selectedNode : selectedNodeList) {
                             if (permanentlyDelete) {
-                                ContentHelper.sendContentModificationEvent(null, selectedNode.getPath(), selectedNode.getName(), "delete");
+                                ContentHelper.sendContentModificationEvent(selectedNode.getUUID(), selectedNode.getPath(), selectedNode.getName(), "delete");
                             } else {
-                                ContentHelper.sendContentModificationEvent(null, selectedNode.getPath(), selectedNode.getName(), "update");
+                                ContentHelper.sendContentModificationEvent(selectedNode.getUUID(), selectedNode.getPath(), selectedNode.getName(), "update");
                             }
                         }
                     }

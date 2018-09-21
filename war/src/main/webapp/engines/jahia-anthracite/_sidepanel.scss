@@ -40,8 +40,8 @@ body[indigo-dragging-panel] {
 		z-index: $ZINDEX--MAINMODULE--LANGUAGE_SWITCHER;
 
 		body[data-V2="true"] & {
-			left: 105px!important;
-			top: 24px!important;
+			left: 95px!important;
+			top: 29px!important;
 			transition: left 0.2s ease-in 0s;
 		}
 
@@ -51,7 +51,7 @@ body[indigo-dragging-panel] {
 
 		body[data-V2="true"][data-indigo-gwt-side-panel="open"] & {
 			left: 115px!important;
-			top: 24px!important;
+			top: 29px!important;
 		}
 
 		body[data-sitesettings="true"] & {
@@ -351,7 +351,7 @@ body[indigo-dragging-panel] {
 		}
 
 		body[data-V2="true"] & {
-			padding-left: 31px;
+			padding-left: 21px;
 			padding-top: 49px;
 		}
 
@@ -559,7 +559,7 @@ body[indigo-dragging-panel] {
 
 			body[data-V2="true"] & {
 				top: 57px;
-			    width: 62px!important;
+			    width: 72px !important;
 			}
 
 			ul.x-tab-strip-top {
@@ -652,11 +652,11 @@ body[indigo-dragging-panel] {
 			body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"] &,
 			body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] &,
 			body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"] & {
-				margin-left: 10px;
+				padding-left: 10px;
 			}
 
 			body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSettingsTab"] & {
-				margin-left: 10px;
+				padding-left: 10px;
 			}
 
 
@@ -2089,7 +2089,7 @@ $side_panel__tab_buttons: (
 				    bottom: 50px;
 
 					body[data-V2="true"] & {
-						left: 37px;
+						left: 27px;
 					    bottom: 74px;
 					}
 
@@ -2099,6 +2099,10 @@ $side_panel__tab_buttons: (
 
 					body[data-sitesettings="true"] & {
 						bottom: 8px;
+					}
+
+					body[data-V2="true"][data-sitesettings="true"] & {
+						bottom: 28px;
 					}
 
 					.x-viewport-dashboardmode & {
@@ -2402,7 +2406,7 @@ body[data-edit-window-style="settings"] {
 		}
 
 		body[data-indigo-gwt-side-panel="open"][data-V2="true"] & {
-			margin: 22px 0 30px -5px;
+			margin: 26px 0 30px 1px;
 		}
 
 

@@ -1447,6 +1447,16 @@ if (!Element.prototype.matches) {
 				};
 			}(),
 		},
+		hideChrome: function(){
+			app.data.chrome = false;
+
+			DexV2.getCached("body").setAttribute("data-chrome", false)
+		},
+		showChrome: function(){
+			app.data.chrome = true;
+
+			DexV2.getCached("body").setAttribute("data-chrome", true)
+		},
 		dev: {
 			data: {
 				on: false
@@ -1622,16 +1632,27 @@ if (!Element.prototype.matches) {
 
 			if(state === true){
 				var publishMenuButton = document.querySelectorAll(".edit-menu-publication")[0]
+				var advancedPublishMenuButton = document.querySelectorAll(".toolbar-item-publishone")[0]
 				var statusMenuButton = document.querySelectorAll(".edit-menu-status")[0]
 				var targetMenu = document.querySelectorAll(".edit-menu-centertop .x-toolbar-left-row")[0]
 				var editMenuButton = document.querySelectorAll(".edit-menu-edit")[0].parentNode
 
-				if(targetMenu && publishMenuButton){
-					targetMenu.insertBefore(publishMenuButton.parentNode, editMenuButton)
-				}
 
-				if(targetMenu && statusMenuButton){
-					targetMenu.insertBefore(statusMenuButton.parentNode, editMenuButton)
+
+				if(targetMenu){
+					if(advancedPublishMenuButton){
+						advancedPublishMenuButton.parentNode.classList.remove("x-hide-display")
+						advancedPublishMenuButton.parentNode.classList.add("force-display-inline-block")
+						targetMenu.insertBefore(advancedPublishMenuButton.parentNode, editMenuButton)
+					}
+
+					if(publishMenuButton){
+						targetMenu.insertBefore(publishMenuButton.parentNode, editMenuButton)
+					}
+
+					if(statusMenuButton){
+						targetMenu.insertBefore(statusMenuButton.parentNode, editMenuButton)
+					}
 				}
 
 				var backGroundMaskExists = document.querySelectorAll(".background-mask")[0],
@@ -1648,16 +1669,24 @@ if (!Element.prototype.matches) {
 
 			} else {
 				var publishMenuButton = document.querySelectorAll(".edit-menu-publication")[0]
+				var advancedPublishMenuButton = document.querySelectorAll(".toolbar-item-publishone")[0]
 				var statusMenuButton = document.querySelectorAll(".edit-menu-status")[0]
 
 				var targetMenu = document.querySelectorAll(".edit-menu-topright .x-toolbar-left-row")[0]
 
-				if(publishMenuButton){
-					targetMenu.prepend(publishMenuButton.parentNode)
-				}
+				if(targetMenu){
+					if(advancedPublishMenuButton){
+						advancedPublishMenuButton.parentNode.classList.remove("x-hide-display")
+						targetMenu.prepend(advancedPublishMenuButton.parentNode)
+					}
 
-				if(statusMenuButton){
-					targetMenu.prepend(statusMenuButton.parentNode)
+					if(publishMenuButton){
+						targetMenu.prepend(publishMenuButton.parentNode)
+					}
+
+					if(statusMenuButton){
+						targetMenu.prepend(statusMenuButton.parentNode)
+					}
 				}
 
 
@@ -4635,9 +4664,11 @@ if (!Element.prototype.matches) {
 
 					if(app.data.V2){
 
-
-						if(DexV2.getCached("body").getAttribute("data-INDIGO-SIDEPANEL-PINNED") == "true"){
-							mainFrameLeft = mainFrameLeft + 29;
+						if(settingsMode){
+							mainFrameLeft = mainFrameLeft + 20;
+							mainFrameWidth = mainFrameWidth - 31;
+						} else if(DexV2.getCached("body").getAttribute("data-INDIGO-SIDEPANEL-PINNED") == "true"){
+							mainFrameLeft = mainFrameLeft + 14;
 							mainFrameWidth = mainFrameWidth - 23;
 						} else {
 							mainFrameLeft = mainFrameLeft + 29;
@@ -4683,7 +4714,7 @@ if (!Element.prototype.matches) {
                         searchResultPane = DexV2("#JahiaGxtSearchTab.tab_search .JahiaGxtSearchTab-results .x-panel-bwrap"),
                         imagesResultPane = DexV2("#JahiaGxtFileImagesBrowseTab.tab_filesimages #images-view"),
                         contentResultsPane = DexV2("#JahiaGxtContentBrowseTab.tab_content .x-box-inner .x-box-item:nth-child(2)"),
-						V2Offset = (app.data.V2) ? 30 : 0;
+						V2Offset = (app.data.V2) ? 20 : 0;
 
                         if(searchResultPane.exists()){
                             searchResultPane.nodes[0].style.setProperty("left", (xPos + V2Offset) + "px", "important");
@@ -5824,6 +5855,51 @@ if (!Element.prototype.matches) {
 					app.nav.pullState(closeButton);
 
 				})
+
+				.onMouseOver(".edit-menu-publication", function(){
+					var editMenuCentertop = document.querySelectorAll(".edit-menu-centertop")[0]
+
+					editMenuCentertop.classList.add("hover-publish-advanced")
+				})
+				.onMouseOut(".edit-menu-publication", function(){
+					var editMenuCentertop = document.querySelectorAll(".edit-menu-centertop")[0]
+
+					editMenuCentertop.classList.remove("hover-publish-advanced")
+				})
+
+				.onMouseOver(".edit-menu-view", function(){
+					var editMenuCentertop = document.querySelectorAll(".edit-menu-centertop")[0]
+
+					editMenuCentertop.classList.add("hover-preview-advanced")
+				})
+				.onMouseOut(".edit-menu-view", function(){
+					var editMenuCentertop = document.querySelectorAll(".edit-menu-centertop")[0]
+
+					editMenuCentertop.classList.remove("hover-preview-advanced")
+				})
+
+				.onMouseOver(".toolbar-item-preview", function(){
+					var editMenuCentertop = document.querySelectorAll(".edit-menu-centertop")[0]
+
+					editMenuCentertop.classList.add("hover-preview")
+				})
+				.onMouseOut(".toolbar-item-preview", function(){
+					var editMenuCentertop = document.querySelectorAll(".edit-menu-centertop")[0]
+
+					editMenuCentertop.classList.remove("hover-preview")
+				})
+
+				.onMouseOver(".toolbar-item-publishone", function(){
+					var editMenuCentertop = document.querySelectorAll(".edit-menu-centertop")[0]
+
+					editMenuCentertop.classList.add("hover-publish")
+				})
+				.onMouseOut(".toolbar-item-publishone", function(){
+					var editMenuCentertop = document.querySelectorAll(".edit-menu-centertop")[0]
+
+					editMenuCentertop.classList.remove("hover-publish")
+				})
+
 				.onceOpen(".editmode-managers-menu", function(){
 					// editmode-managers-menu is now available
 					// ======= Menu (jahia logo animation) =======

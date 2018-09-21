@@ -194,7 +194,7 @@ public class UpdateButtonItem extends SaveButtonItem {
                             engine.getLinker().refresh(data);
                         }
                         // execute external callbacks
-                        ContentHelper.sendContentModificationEvent(node.getPath(), engine.getNodeName(), "update");
+                        ContentHelper.sendContentModificationEvent(node.getUUID(), node.getPath(), engine.getNodeName(), "update");
                     }
 
 

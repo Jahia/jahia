@@ -192,7 +192,7 @@ public class CreateButtonItem extends SaveButtonItem {
                     engine.setChildCount(engine.getChildCount() + 1);
                 }
                 // send external events
-                ContentHelper.sendContentModificationEvent(node.getPath(), node.getName(), "create");
+                ContentHelper.sendContentModificationEvent(node.getUUID(), node.getPath(), node.getName(), "create");
             }
         };
 

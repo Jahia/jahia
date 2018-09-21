@@ -66,6 +66,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.content.util.ContentHelper;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 import java.util.*;
@@ -191,7 +192,7 @@ public class CreateButtonItem extends SaveButtonItem {
                     engine.setChildCount(engine.getChildCount() + 1);
                 }
                 // send external events
-                sendExternalEvent(node.getPath(), node.getName(), node.getUUID(), "createButtonItemEventHandlers");
+                ContentHelper.sendContentModificationEvent(node.getPath(), node.getName(), "create");
             }
         };
 

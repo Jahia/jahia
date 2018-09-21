@@ -1394,9 +1394,6 @@ public class MainModule extends Module {
         nsAuthoringApi.editContent = $wnd.editContent = function(uuid, path, displayName, types, inheritedTypes, skipRefreshOnSave) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::editContent(*)(uuid, path, displayName, types, inheritedTypes, skipRefreshOnSave);
         };
-        $wnd.editContent = function (uuid, path, displayName, types, inheritedTypes, skipRefreshOnSave) {
-            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::editContent(*)(uuid, path, displayName, types, inheritedTypes, skipRefreshOnSave);
-        };
         nsAuthoringApi.deleteContent = $wnd.deleteContent = function (path, displayName, types, inheritedTypes, skipRefreshOnDelete, deletePermanently) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::deleteContent(*)(path, displayName, types, inheritedTypes, skipRefreshOnDelete, deletePermanently);
         };

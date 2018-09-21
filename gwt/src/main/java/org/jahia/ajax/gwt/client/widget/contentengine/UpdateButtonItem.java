@@ -194,7 +194,7 @@ public class UpdateButtonItem extends SaveButtonItem {
                 if (!engine.skipRefreshOnSave()) {
                     engine.getLinker().refresh(data);
                 }
-                ContentHelper.sendContentModificationEvent(node.getPath(), engine.getNodeName(), "update");
+                ContentHelper.sendContentModificationEvent(node.getUUID(), node.getPath(), engine.getNodeName(), "update");
             }
         });
     }

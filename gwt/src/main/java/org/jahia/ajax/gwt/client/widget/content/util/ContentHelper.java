@@ -89,10 +89,10 @@ public class ContentHelper {
         return $wnd.sContentNodes;
     }-*/;
 
-    public static native void sendContentModificationEvent(String nodePath, String nodeName, String operation) /*-{
+    public static native void sendContentModificationEvent(String nodeUuid, String nodePath, String nodeName, String operation) /*-{
         if ($wnd.contentModificationEventHandlers) {
             $wnd.contentModificationEventHandlers.forEach(function(func) {
-                func.call(null, nodePath, nodeName, operation);
+                func.call(null, nodeUuid, nodePath, nodeName, operation);
             });
         }
     }-*/;

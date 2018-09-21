@@ -590,8 +590,8 @@ public class MainModule extends Module {
                 includeSubTypes, skipRefreshOnSave);
     }
 
-    public static void editContent(String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, boolean skipRefreshOnSave) {
-        GWTJahiaNode node = getGwtJahiaNode(path, displayName, nodeTypes, inheritedNodeTypes);
+    public static void editContent(String uuid, String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, boolean skipRefreshOnSave) {
+        GWTJahiaNode node = getGwtJahiaNode(uuid, path, displayName, nodeTypes, inheritedNodeTypes);
         if (node.getDisplayName() != null) {
             EditLinker.setSelectionOnBodyAttributes(node);
         }
@@ -601,7 +601,7 @@ public class MainModule extends Module {
     public static void deleteContent(String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes,
             boolean skipRefreshOnDelete, boolean deletePermanently) {
 
-        GWTJahiaNode node = getGwtJahiaNode(path, displayName, nodeTypes, inheritedNodeTypes);
+        GWTJahiaNode node = getGwtJahiaNode(null, path, displayName, nodeTypes, inheritedNodeTypes);
         if (node.getDisplayName() != null) {
             EditLinker.setSelectionOnBodyAttributes(node);
         }
@@ -635,7 +635,7 @@ public class MainModule extends Module {
 
                         @Override
                         public void onSuccess(Object result) {
-                            ContentHelper.sendContentModificationEvent(nodePath, nodeName, "update");
+                            ContentHelper.sendContentModificationEvent(null, nodePath, nodeName, "update");
                         }
                     });
                 }
@@ -665,21 +665,22 @@ public class MainModule extends Module {
         new WorkflowDashboardEngine(getInstance().getEditLinker()).show();
     }
 
-    private static GWTJahiaNode getGwtJahiaNode(String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes) {
+    private static GWTJahiaNode getGwtJahiaNode(String uuid, String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes) {
         if (displayName == null) {
             List<Module> modules = ModuleHelper.getModulesByPath().get(path);
             return modules.get(0).getNode();
         } else {
-            return getGwtJahiaNode(path, path.substring(path.lastIndexOf("/") + 1), displayName, nodeTypes, inheritedNodeTypes);
+            return getGwtJahiaNode(uuid, path, path.substring(path.lastIndexOf("/") + 1), displayName, nodeTypes, inheritedNodeTypes);
         }
     }
 
-    private static GWTJahiaNode getGwtJahiaNode(String path, String name, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes) {
+    private static GWTJahiaNode getGwtJahiaNode(String uuid, String path, String name, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes) {
         List<String> types = convertArray(nodeTypes);
         List<String> inheritedTypes = convertArray(inheritedNodeTypes);
         GWTJahiaNode node = new GWTJahiaNode();
         node.setName(name);
         node.setDisplayName(displayName);
+        node.setUUID(uuid);
         node.setPath(path);
         node.setNodeTypes(types);
         node.setInheritedNodeTypes(inheritedTypes);
@@ -1390,8 +1391,11 @@ public class MainModule extends Module {
                 @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::createContent(*)(path, types, true, skipRefreshOnSave);
             }
         };
-        nsAuthoringApi.editContent = $wnd.editContent = function (path, displayName, types, inheritedTypes, skipRefreshOnSave) {
-            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::editContent(*)(path, displayName, types, inheritedTypes, skipRefreshOnSave);
+        nsAuthoringApi.editContent = $wnd.editContent = function(uuid, path, displayName, types, inheritedTypes, skipRefreshOnSave) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::editContent(*)(uuid, path, displayName, types, inheritedTypes, skipRefreshOnSave);
+        };
+        $wnd.editContent = function (uuid, path, displayName, types, inheritedTypes, skipRefreshOnSave) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::editContent(*)(uuid, path, displayName, types, inheritedTypes, skipRefreshOnSave);
         };
         nsAuthoringApi.deleteContent = $wnd.deleteContent = function (path, displayName, types, inheritedTypes, skipRefreshOnDelete, deletePermanently) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::deleteContent(*)(path, displayName, types, inheritedTypes, skipRefreshOnDelete, deletePermanently);

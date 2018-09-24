@@ -163,6 +163,12 @@ body[indigo-dragging-panel] {
 		display: none;
 		transition: all 0.2s ease-in 0s;
 
+		body[data-V2="true"] & {
+			background-size: 20px;
+			height: 26px;
+			width: 23px;
+		}
+
 		body[indigo-dragging-panel="true"] & {
 			transition: none;
 		}
@@ -323,8 +329,9 @@ body[indigo-dragging-panel] {
 				}
 
 				body[data-V2="true"][data-INDIGO-SIDEPANEL-PINNED="true"] &,
-					body[data-V2="true"][data-indigo-gwt-side-panel="open"] & {
-					margin-left: 30px;
+				body[data-V2="true"][data-indigo-gwt-side-panel="open"] & {
+					margin-left: 20px;
+					top: 28px !important;
 				}
 
 				// body[data-indigo-gwt-side-panel="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"]:not(.minimise-results) &,

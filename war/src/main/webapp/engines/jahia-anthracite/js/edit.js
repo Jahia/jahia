@@ -1638,6 +1638,15 @@ if (!Element.prototype.matches) {
 				var editMenuButton = document.querySelectorAll(".edit-menu-edit")[0].parentNode
 
 
+                if(!DexV2.class("publication-status").exists()){
+                    // Create div for publication status of page / slected element because currently it is a pseudo element and we cant reposition when in pinned mode
+                    var publicationStatus = document.createElement("div")
+                    publicationStatus.classList.add("publication-status", app.iframe.data.publication.status)
+                    publicationStatus.setAttribute("data-publication-status", app.iframe.data.publication.status)
+                    DexV2.getCached("body").prepend(publicationStatus);
+
+                }
+
 
 				if(targetMenu){
 					if(advancedPublishMenuButton){
@@ -4595,6 +4604,11 @@ if (!Element.prototype.matches) {
                                 elements.publishButton.setAttribute("data-publication-status", app.iframe.data.publication.status)
 
 
+                                if(DexV2.class("publication-status").exists()){
+                                    DexV2.class("publication-status").setAttribute("data-publication-status", app.iframe.data.publication.status)
+                                }
+
+
 
 
                         } else {
@@ -4616,6 +4630,7 @@ if (!Element.prototype.matches) {
 					open: false,
 					currentTab: null,
 					previousTab: null,
+                    pinned: false,
                     channel: {
                         autofit: false,
                         opened: false
@@ -4630,8 +4645,6 @@ if (!Element.prototype.matches) {
 
                         return splitterXPos || null;
                     }();
-
-
 
                     if(xPos == null){
                         return false;
@@ -4662,45 +4675,107 @@ if (!Element.prototype.matches) {
                         mainFrameWidth = (settingsMode || dashboardMode) ? xPos - 68 : xPos + 5,
                         mainFrameLeft = (settingsMode || dashboardMode) ? xPos : xPos + 10;
 
-					if(app.data.V2){
 
-						if(settingsMode){
-							mainFrameLeft = mainFrameLeft + 20;
-							mainFrameWidth = mainFrameWidth - 31;
-						} else if(DexV2.getCached("body").getAttribute("data-INDIGO-SIDEPANEL-PINNED") == "true"){
-							mainFrameLeft = mainFrameLeft + 14;
-							mainFrameWidth = mainFrameWidth - 23;
-						} else {
-							mainFrameLeft = mainFrameLeft + 29;
-							mainFrameWidth = mainFrameWidth + 28;
-						}
+                        var siteSettings = DexV2.getCached("body").getAttribute("data-sitesettings") === "true";
 
-					}
+                    if(siteSettings || app.data.currentApp === "admin" || app.data.currentApp === "dashboard"){
+                        // Site Settings, Admin or Dashboard
 
+                        if(app.data.V2){
+                            mainFrameWidth = xPos - 47;
+                            mainFrameLeft = xPos + 21;
+                        } else {
+                            mainFrameWidth = xPos - 78;
+                            mainFrameLeft = xPos;
+                        }
 
-                    // Side Panel is currently pinned, so we need to adjust the width and left position of the main window
-                    if(DexV2.getCached("body").getAttribute("data-INDIGO-SIDEPANEL-PINNED") == "true" || settingsMode || dashboardMode){
                         DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.setProperty("width", "calc(100% - " + mainFrameWidth + "px)", "important");
                         DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.setProperty("left", mainFrameLeft + "px", "important");
+
+                    } else if(app.edit.sidepanel.data.pinned) {
+                        // Edit Mode pinned
+
+                        if(app.data.V2){
+                            mainFrameWidth = xPos - 15;
+                            mainFrameLeft = xPos + 25;
+
+                        } else {
+                            mainFrameWidth = xPos + 5;
+                            mainFrameLeft = xPos + 10;
+                        }
+
+                        if(DexV2.class("publication-status").exists()){
+                            DexV2.class("publication-status").nodes[0].style.setProperty("left", mainFrameLeft + "px", "important");
+                        }
+
+                        DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.setProperty("width", "calc(100% - " + mainFrameWidth + "px)", "important");
+                        DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.setProperty("left", mainFrameLeft + "px", "important");
+
+                        // Title
+                        DexV2.class("node-path-container").nodes[0].style.setProperty("left", (mainFrameLeft - 5) + "px", "important");
+                    	DexV2.class("node-path-text").nodes[0].style.setProperty("max-width", "calc(100vw - " + (mainFrameLeft + 60 + 380) + "px)", "important");
+
+                        if(app.data.V2){
+                            // Refresh button
+                            var pageTitle = document.getElementsByClassName("x-current-page-path")[0],
+                                pageTitleBox = (pageTitle) ? pageTitle.getBoundingClientRect() : null;
+
+                            if(DexV2.class("window-actions-refresh").exists() && pageTitleBox){
+                                DexV2.class("window-actions-refresh").nodes[0].style.setProperty("left", (pageTitleBox.left + pageTitleBox.width) + "px", "important");
+                            }
+                        }
+
+
+                    } else if(app.data.currentApp === "edit") {
+                        // Edit Mode Unpinned
+
+                        if(app.data.V2){
+                            mainFrameWidth = xPos - 15;
+                            mainFrameLeft = xPos + 25;
+
+                        } else {
+                            mainFrameWidth = xPos + 5;
+                            mainFrameLeft = xPos + 10;
+                        }
+
+                        DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.removeProperty("width");
+                        DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.removeProperty("left");
+
+                        // Title
+                        if(DexV2.class("publication-status").exists()){
+                            DexV2.class("publication-status").nodes[0].style.removeProperty("left");
+                        }
+
+                        if(DexV2.class("node-path-container").exists() && DexV2.class("node-path-text").exists()){
+                            DexV2.class("node-path-container").nodes[0].style.removeProperty("left");
+                            DexV2.class("node-path-text").nodes[0].style.removeProperty("max-width");
+                        }
+
+                        if(app.data.V2){
+                            // Refresh button
+                            var pageTitle = document.getElementsByClassName("x-current-page-path")[0],
+                                pageTitleBox = (pageTitle) ? pageTitle.getBoundingClientRect() : null;
+
+                            if(DexV2.class("window-actions-refresh").exists() && pageTitleBox){
+                                DexV2.class("window-actions-refresh").nodes[0].style.setProperty("left", (pageTitleBox.left + pageTitleBox.width) + "px", "important");
+                            }
+                        }
+
+
                     }
 
-					if(app.data.V2 && DexV2.getCached("body").getAttribute("data-indigo-sidepanel-pinned") == "true"){
-						// Need to shift the page title and stuff too.
-						DexV2.class("node-path-container").nodes[0].style.setProperty("left", (mainFrameLeft - 5) + "px", "important");
-					}
-
-
-
-
-
                     // Reposition the pin button
-                    DexV2(".window-side-panel > .x-panel-bwrap > div:nth-child(2).x-panel-footer").css({
-                        left: (xPos - 45) + "px"
-                    });
+                    if(DexV2.class("side-panel-pin").exists()){
+                        DexV2.class("side-panel-pin").css({
+                            left: (xPos - 45) + "px"
+                        });
+                    }
 
-                    DexV2(".window-side-panel #JahiaGxtRefreshSidePanelButton").css({
-                        left: (xPos - 85) + "px"
-                    });
+                    if(DexV2.id("JahiaGxtRefreshSidePanelButton")){
+                        DexV2.id("JahiaGxtRefreshSidePanelButton").css({
+                            left: (xPos - 85) + "px"
+                        });
+                    }
 
                     // Set position of content create text filter
                     var contentCreateFilter = DexV2("#JahiaGxtCreateContentTab > .x-border-layout-ct > .x-form-field-wrap");
@@ -4718,22 +4793,18 @@ if (!Element.prototype.matches) {
 
                         if(searchResultPane.exists()){
                             searchResultPane.nodes[0].style.setProperty("left", (xPos + V2Offset) + "px", "important");
-
                         }
 
                         if(categoriesResultsPane.exists()){
                             categoriesResultsPane.nodes[0].style.setProperty("left", (xPos + V2Offset) + "px", "important");
-
                         }
 
                         if(imagesResultPane.exists()){
                             imagesResultPane.nodes[0].style.setProperty("left", (xPos + V2Offset) + "px", "important");
-
                         }
 
                         if(contentResultsPane.exists()){
                             contentResultsPane.nodes[0].style.setProperty("left", (xPos + V2Offset) + "px", "important");
-
                         }
 
 
@@ -4751,7 +4822,9 @@ if (!Element.prototype.matches) {
 					}
 
                     // Move the split bar to the position of the mouse
-                    DexV2.id("indigoSplitter").nodes[0].style.setProperty("left", xPos + "px", "important");
+                    if(DexV2.id("indigoSplitter").exists()){
+                        DexV2.id("indigoSplitter").nodes[0].style.setProperty("left", xPos + "px", "important");
+                    }
                 },
                 onStartResize: function(e){
                     app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: ONSTARTRESIZE");
@@ -4990,16 +5063,19 @@ if (!Element.prototype.matches) {
                     });
                 },
 				togglePin: function(){
-					DexV2.getCached("body").toggleAttribute("data-INDIGO-SIDEPANEL-PINNED", ["true", "false"]);
+
+                    app.edit.sidepanel.data.pinned = !app.edit.sidepanel.data.pinned;
+
+					DexV2.getCached("body").setAttribute("data-INDIGO-SIDEPANEL-PINNED", app.edit.sidepanel.data.pinned);
 					DexV2.iframe(".window-iframe").filter("body").nodes[0].style.pointerEvents = "all";
 
-                    if(DexV2.getCached("body").getAttribute("data-INDIGO-SIDEPANEL-PINNED") == "false"){
-                        DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.removeProperty("width");
-                        DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.removeProperty("left");
-                    } else {
+                    if(app.edit.sidepanel.data.pinned){
                         var xPos = parseInt(DexV2.id("indigoSplitter").nodes[0].style.getPropertyValue("left"));
                         DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.setProperty("width", "calc(100% - " + (xPos + 5) + "px)", "important");
                         DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.setProperty("left", (xPos + 10) + "px", "important");
+                    } else {
+                        DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.removeProperty("width");
+                        DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.removeProperty("left");
                     }
 
 					app.edit.topbar.reposition();
@@ -5775,6 +5851,10 @@ if (!Element.prototype.matches) {
 
                             // Make sure correct class is added to publication button
                             elements.publishButton.setAttribute("data-publication-status", app.iframe.data.publication.status)
+
+                            if(DexV2.class("publication-status").exists()){
+                                DexV2.class("publication-status").setAttribute("data-publication-status", app.iframe.data.publication.status)
+                            }
                     }
 
 				}

@@ -894,3 +894,7 @@ button.button-disable:hover, div.button-disable:hover {
 .gwt-content-label {
     margin-left: 5px;
 }
+
+.x-form-textarea {
+	white-space: pre-wrap;
+}

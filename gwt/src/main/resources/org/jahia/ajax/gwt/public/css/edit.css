@@ -906,3 +906,7 @@ button.button-disable:hover, div.button-disable:hover {
     color: blue;
     font-weight: bold;
 }
+
+.x-form-textarea {
+	white-space: pre-wrap;
+}

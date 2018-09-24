@@ -1541,7 +1541,7 @@ if (!Element.prototype.matches) {
 
                     switch (cl) {
                         case "x-viewport-editmode":
-							app.V2(app.data.V2Disabled);
+							app.V2(app.data.V2 || app.data.V2Disabled);
 							app.switch("edit");
 
                             break;
@@ -1640,9 +1640,10 @@ if (!Element.prototype.matches) {
 
                 if(!DexV2.class("publication-status").exists()){
                     // Create div for publication status of page / slected element because currently it is a pseudo element and we cant reposition when in pinned mode
-                    var publicationStatus = document.createElement("div")
-                    publicationStatus.classList.add("publication-status", app.iframe.data.publication.status)
-                    publicationStatus.setAttribute("data-publication-status", app.iframe.data.publication.status)
+                    var publicationStatus = document.createElement("div");
+                    var status = (app.iframe.data.publication && app.iframe.data.publication.status) ? app.iframe.data.publication.status : "unknown"
+                    publicationStatus.classList.add("publication-status")
+                    publicationStatus.setAttribute("data-publication-status", status)
                     DexV2.getCached("body").prepend(publicationStatus);
 
                 }

@@ -51,6 +51,7 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -64,11 +65,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 
+ *
  * User: toto
  * Date: Jan 6, 2010
  * Time: 7:44:45 PM
- * 
+ *
  */
 public class UsagesTabItem extends EditEngineTabItem {
 
@@ -81,17 +82,14 @@ public class UsagesTabItem extends EditEngineTabItem {
         tab.setLayout(new RowLayout());
 
         if (engine.getNode() != null) {
-            Grid<GWTJahiaNodeUsage> grid = NodeUsagesGrid.createUsageGrid(Arrays.asList(engine.getNode()));
+            Grid<GWTJahiaNodeUsage> grid = NodeUsagesGrid.createUsageGrid(Arrays.asList(engine.getNode()), JahiaGWTParameters.getBaseUrl());
             Button button = new Button(Messages.get("label.usages.clean"), new SelectionListener<ButtonEvent>() {
                 @Override
                 public void componentSelected(ButtonEvent ce) {
                     final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
-                    service.cleanReferences(engine.getNode().getPath(), new BaseAsyncCallback() {
-                        /**
-                         * Called when an asynchronous call completes successfully.
-                         *
-                         * @param result the return value of the remote produced call
-                         */
+                    service.cleanReferences(engine.getNode().getPath(), new BaseAsyncCallback<Object>() {
+
+                        @Override
                         public void onSuccess(Object result) {
                             Map<String, Object> data = new HashMap<String, Object>();
                             data.put(Linker.REFRESH_ALL, true);

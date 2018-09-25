@@ -80,15 +80,15 @@ import java.util.List;
 import java.util.Map;
 
 public class DeleteItemWindow extends Window {
-    private final int windowHeight = 500;
 
+    private final int windowHeight = 500;
     private final int windowWidth = 650;
 
     final Grid<GWTJahiaNodeUsage> usagesGrid;
     final FormPanel formPanel;
 
-    public DeleteItemWindow(final Linker linker, final LinkerSelectionContext lh, final boolean permanentlyDelete, final boolean skipRefreshOnDelete) {
-        super();
+    public DeleteItemWindow(final Linker linker, final LinkerSelectionContext lh, final boolean permanentlyDelete, final boolean skipRefreshOnDelete, String baseUsageUrl) {
+
         addStyleName("delete-item-window");
         setSize(windowWidth, windowHeight);
         setHeadingHtml("Informations");
@@ -119,7 +119,7 @@ public class DeleteItemWindow extends Window {
         cp.setLayout(new FitLayout());
         cp.setBorders(false);
         cp.setHeaderVisible(false);
-        usagesGrid = NodeUsagesGrid.createUsageGrid(selectedNodeList);
+        usagesGrid = NodeUsagesGrid.createUsageGrid(selectedNodeList, baseUsageUrl);
         usagesGrid.setSize(windowWidth, 200);
         cp.add(usagesGrid);
         formPanel.add(cp);

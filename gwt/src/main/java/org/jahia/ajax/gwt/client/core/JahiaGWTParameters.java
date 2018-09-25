@@ -45,7 +45,6 @@ package org.jahia.ajax.gwt.client.core;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.i18n.client.Dictionary;
-import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -60,9 +59,10 @@ import java.util.MissingResourceException;
  * User: ktlili
  * Date: 31 oct. 2007
  * Time: 11:01:16
- * 
+ *
  */
 public class JahiaGWTParameters {
+
     public static final String SERVICE_ENTRY_POINT = "serviceEntryPoint";
     public static final String JAHIA_GWT_PARAMETERS = "jahiaGWTParameters";
     public static final String CURRENT_USER_NAME = "currentUser";
@@ -83,6 +83,7 @@ public class JahiaGWTParameters {
     public static final String QUERY_STRING = "queryString";
     public static final String STUDIO_URL = "studioUrl";
     public static final String STUDIO_VISUAL_URL = "studioVisualUrl";
+    public static final String EDIT_URL = "editUrl";
     public static final String BASE_URL = "baseUrl";
     public static final String DEVELOPMENT_MODE = "developmentMode";
     public static final String MODULES_SOURCES_DISK_PATH = "modulesSourcesDiskPath";
@@ -95,6 +96,7 @@ public class JahiaGWTParameters {
 
     private static Dictionary jahiaParamDictionary = Dictionary.getDictionary(JAHIA_GWT_PARAMETERS);
     private static String baseUrl;
+    private static String baseEditUrl;
     private static String language;
     private static String languageDisplayName;
     private static String siteUUID;
@@ -142,7 +144,7 @@ public class JahiaGWTParameters {
     static {
         for (String s : jahiaParamDictionary.keySet()) {
             String param = jahiaParamDictionary.get(s);
-            Document.get().getBody().setAttribute("data-"+s, param);
+            Document.get().getBody().setAttribute("data-" + s, param);
         }
     }
 
@@ -176,7 +178,7 @@ public class JahiaGWTParameters {
         }
         return languageDisplayName;
     }
-    
+
     public static String getLanguage() {
         if (language == null) {
             language = jahiaParamDictionary.get(LANGUAGE);
@@ -191,15 +193,20 @@ public class JahiaGWTParameters {
         for (UrlUpdater urlUpdater : updaters) {
             urlUpdater.updateEntryPointUrl();
         }
-        baseUrl = getBaseUrl();
-        baseUrl = baseUrl.substring(0,baseUrl.lastIndexOf('/')+1) + language;
+        baseUrl = newBaseUrl(getBaseUrl(), language);
+        baseEditUrl = newBaseUrl(getBaseEditUrl(), language);
         setNativeLanguage(newLanguage.getLanguage());
         Document.get().getBody().setAttribute("data-lang", language);
         Document.get().getBody().setAttribute("data-langdisplayname", languageDisplayName);
     }
 
+    private static String newBaseUrl(String baseUrl, String language) {
+        return baseUrl.substring(0, baseUrl.lastIndexOf('/') + 1) + language;
+    }
+
     public static void changeServletMapping(String oldMapping, String newMapping) {
         baseUrl = baseUrl.replaceFirst(oldMapping, newMapping);
+        baseEditUrl = baseEditUrl.replaceFirst(oldMapping, newMapping);
     }
 
     private static native void setNativeLanguage(String newLanguage) /*-{
@@ -272,6 +279,7 @@ public class JahiaGWTParameters {
      * Getter for the list of GWTJahiaLanguage available on this site
      * @return List of GWTJahiaLanguage available on the current site.
      */
+    @SuppressWarnings("unchecked")
     public static List<GWTJahiaLanguage> getSiteLanguages() {
         return (List<GWTJahiaLanguage>) getSiteNode().get(GWTJahiaNode.SITE_LANGUAGES);
     }
@@ -298,6 +306,7 @@ public class JahiaGWTParameters {
      * Return a list of mandatory languages defined on current site.
      * @return a list of mandatory languages defined on current site.
      */
+    @SuppressWarnings("unchecked")
     public static List<String> getSiteMandatoryLanguages() {
         return (List<String>) getSiteNode().get(GWTJahiaNode.SITE_MANDATORY_LANGUAGES);
     }
@@ -323,6 +332,7 @@ public class JahiaGWTParameters {
 
     public static void setWorkspace(String newWorkspace) {
         baseUrl = baseUrl.replaceFirst(workspace, newWorkspace);
+        baseEditUrl = baseEditUrl.replaceFirst(workspace, newWorkspace);
         workspace = newWorkspace;
         for (UrlUpdater urlUpdater : updaters) {
             urlUpdater.updateEntryPointUrl();
@@ -354,6 +364,13 @@ public class JahiaGWTParameters {
         return baseUrl;
     }
 
+    public static String getBaseEditUrl() {
+        if (baseEditUrl == null) {
+            baseEditUrl = jahiaParamDictionary.get(EDIT_URL);
+        }
+        return baseEditUrl;
+    }
+
     /**
      * @param name the parameter to get
      * @return return null if the param is not present in the dictionary instead of throwing
@@ -383,5 +400,4 @@ public class JahiaGWTParameters {
     public static interface UrlUpdater {
         void updateEntryPointUrl();
     }
-
 }

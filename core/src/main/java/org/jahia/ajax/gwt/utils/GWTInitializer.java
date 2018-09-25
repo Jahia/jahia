@@ -199,6 +199,7 @@ public class GWTInitializer {
         if (request.getAttribute("url") != null) {
             URLGenerator url = (URLGenerator) request.getAttribute("url");
             params.put(JahiaGWTParameters.BASE_URL, url.getContext() + url.getBase());
+            params.put(JahiaGWTParameters.EDIT_URL, url.getContext() + url.getBaseEdit());
             params.put(JahiaGWTParameters.STUDIO_URL, url.getContext() + url.getStudio());
             params.put(JahiaGWTParameters.STUDIO_VISUAL_URL, url.getContext() + url.getStudioVisual());
             addLanguageSwitcherLinks(renderContext, params, url);
@@ -287,7 +288,7 @@ public class GWTInitializer {
                         css = themedCss;
                     }
                 } catch (MalformedURLException e) {
-                    logger.error("Invalid path",e);
+                    logger.error("Invalid path", e);
                 }
             }
             buf.append("<link type=\"text/css\" href=\"").append(context).append(css)
@@ -377,5 +378,4 @@ public class GWTInitializer {
     private static String buildServiceBaseEntrypointUrl(HttpServletRequest request) {
         return new StringBuilder(request.getContextPath()).append("/gwt/").toString();
     }
-
 }

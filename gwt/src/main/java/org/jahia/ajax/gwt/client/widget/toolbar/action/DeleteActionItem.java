@@ -200,7 +200,7 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
 
                             @Override
                             public void onSuccess(List<GWTJahiaNodeUsage> result) {
-                                new DeleteItemWindow(linker, linker.getSelectionContext(), permanentlyDelete, false).show();
+                                new DeleteItemWindow(linker, linker.getSelectionContext(), permanentlyDelete, false, JahiaGWTParameters.getBaseUrl()).show();
                             }
                         });
                 }

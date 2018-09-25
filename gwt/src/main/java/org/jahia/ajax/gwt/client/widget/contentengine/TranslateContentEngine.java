@@ -291,9 +291,12 @@ public class TranslateContentEngine extends Window {
                 public void onSuccess(Object o) {
                     Info.display(Messages.get("label.information", "Information"), Messages.get("saved_prop", "Properties saved\n\n"));
                     TranslateContentEngine.this.hide();
-                    Map<String, Object> data = new HashMap<String, Object>();
-                    data.put(Linker.REFRESH_MAIN, true);
-                    linker.refresh(data);
+
+                    if (linker != null) {
+                        Map<String, Object> data = new HashMap<String, Object>();
+                        data.put(Linker.REFRESH_MAIN, true);
+                        linker.refresh(data);
+                    }
                 }
             });
         }

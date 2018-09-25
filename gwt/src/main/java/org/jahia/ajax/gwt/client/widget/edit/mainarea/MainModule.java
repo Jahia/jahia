@@ -91,6 +91,7 @@ import org.jahia.ajax.gwt.client.widget.content.DeleteItemWindow;
 import org.jahia.ajax.gwt.client.widget.content.util.ContentHelper;
 import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEnginePopupListener;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
+import org.jahia.ajax.gwt.client.widget.contentengine.TranslateContentEngine;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.InfoLayers;
 import org.jahia.ajax.gwt.client.widget.edit.ToolbarHeader;
@@ -645,6 +646,26 @@ public class MainModule extends Module {
                 }
             }
         });
+    }
+
+    public static void translateContent(String path, final String sourceLang, final String destLang) {
+        final List<Module> modules = ModuleHelper.getModulesByPath().get(path);
+        if (modules != null && modules.size() > 0) {
+            new TranslateContentEngine(modules.get(0).getNode(), null,
+                    JahiaGWTParameters.getLanguage(sourceLang),
+                    JahiaGWTParameters.getLanguage(destLang)).show();
+        } else {
+            JahiaContentManagementService.App.getInstance().getNodes(Collections.singletonList(path), GWTJahiaNode.DEFAULT_FIELDS, new BaseAsyncCallback<List<GWTJahiaNode>>() {
+                @Override
+                public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
+                    if (gwtJahiaNodes.size() > 0) {
+                        new TranslateContentEngine(gwtJahiaNodes.get(0), null,
+                                JahiaGWTParameters.getLanguage(sourceLang),
+                                JahiaGWTParameters.getLanguage(destLang)).show();
+                    }
+                }
+            });
+        }
     }
 
     public static void displayAlert(String title, String message) {
@@ -1428,6 +1449,9 @@ public class MainModule extends Module {
         nsAuthoringApi.switchSite = function (siteKey, lang) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::switchSite(*)(siteKey, lang);
         }
+        nsAuthoringApi.translateContent = function (nodePath, sourceLang, destLang) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::translateContent(*)(nodePath, sourceLang, destLang);
+        };
     }-*/;
 
     public InfoLayers getInfoLayers() {

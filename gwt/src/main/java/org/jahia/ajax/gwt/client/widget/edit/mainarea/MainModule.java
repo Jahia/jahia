@@ -613,7 +613,7 @@ public class MainModule extends Module {
         selectionContext.setSelectedNodes(Collections.singletonList(node));
         selectionContext.refresh(LinkerSelectionContext.SELECTED_NODE_ONLY);
 
-        DeleteItemWindow window = new DeleteItemWindow(editLinker, selectionContext, deletePermanently, skipRefreshOnDelete);
+        DeleteItemWindow window = new DeleteItemWindow(editLinker, selectionContext, deletePermanently, skipRefreshOnDelete, JahiaGWTParameters.getBaseEditUrl());
         window.show();
     }
 

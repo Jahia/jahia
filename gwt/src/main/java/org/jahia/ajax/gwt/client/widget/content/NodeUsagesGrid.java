@@ -71,7 +71,7 @@ import java.util.List;
 public class NodeUsagesGrid {
     private static final JahiaContentManagementServiceAsync instance = JahiaContentManagementService.App.getInstance();
 
-    public static Grid<GWTJahiaNodeUsage> createUsageGrid(final List<GWTJahiaNode> nodes) {
+    public static Grid<GWTJahiaNodeUsage> createUsageGrid(final List<GWTJahiaNode> nodes, final String baseUsageUrl) {
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
         ColumnConfig col = new ColumnConfig("pagePath", Messages.get("label.pageUrl", "Page URL"), 300);
@@ -87,13 +87,13 @@ public class NodeUsagesGrid {
                     ListStore<GWTJahiaNodeUsage> gwtJahiaNodeUsageListStore,
                     com.extjs.gxt.ui.client.widget.grid.Grid<GWTJahiaNodeUsage> gwtJahiaNodeUsageGrid) {
                 if (gwtJahiaNodeUsage.getLanguage() == null) {
-                return
-                        "<a href=\"" + JahiaGWTParameters.getBaseUrl() +
-                                gwtJahiaNodeUsage.getPagePath() + ".html\" target=\"_blank\">" +
-                                gwtJahiaNodeUsage.getPageTitle() + "<a>";
+                    return
+                            "<a href=\"" + baseUsageUrl +
+                                    gwtJahiaNodeUsage.getPagePath() + ".html\" target=\"_blank\">" +
+                                    gwtJahiaNodeUsage.getPageTitle() + "<a>";
                 } else {
                     return
-                            "<a href=\"" + JahiaGWTParameters.getBaseUrl() + "/../" + gwtJahiaNodeUsage.getLanguage() +
+                            "<a href=\"" + baseUsageUrl + "/../" + gwtJahiaNodeUsage.getLanguage() +
                                     gwtJahiaNodeUsage.getPagePath() + ".html\" target=\"_blank\">" +
                                     gwtJahiaNodeUsage.getPageTitle() + " (" + gwtJahiaNodeUsage.getLanguage() + ")<a>";
 

@@ -739,6 +739,31 @@
         <property name="icon" value="publishSite"/>
     </bean>
 
+    <bean id="Toolbar.Item.PublishSite.SiteNode" parent="Toolbar.Item.PublishSite" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishSiteActionItem">
+                <property name="allowedNodeTypes">
+                    <list>
+                        <value>jnt:virtualsite</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="Toolbar.Item.PublishSiteInAllLanguages.SiteNode" parent="Toolbar.Item.PublishSiteInAllLanguages" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishSiteActionItem">
+                <property name="allLanguages" value="true"/>
+                <property name="allowedNodeTypes">
+                    <list>
+                        <value>jnt:virtualsite</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
     <!-- new edit mode buttons: unpublish -->
     <bean id="Toolbar.Item.Unpublish" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">

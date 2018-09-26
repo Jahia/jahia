@@ -2079,6 +2079,7 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
 	box-sizing: border-box;
 	box-shadow: 0px 0px 12px 1px rgba(20, 20, 21, 0.9);
 	animation: expandManagersMenu 0.2s ease-in;
+    border:none;
 
 	.managers-menu-close {
 		width: 321px;
@@ -2204,6 +2205,7 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
 	}
 
 	// Highlght the selected app button
+    &[data-indigo-current-app="contentmanager"] .toolbar-item-contentmanager,
     &[data-indigo-current-app="dashboard"] .toolbar-item-start,
     &[data-indigo-current-app="edit"] .toolbar-item-edit,
     &[data-indigo-current-app="admin"] .toolbar-item-admin,

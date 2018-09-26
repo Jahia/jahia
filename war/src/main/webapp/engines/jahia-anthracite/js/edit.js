@@ -1447,16 +1447,17 @@ if (!Element.prototype.matches) {
 				};
 			}(),
 		},
-		hideChrome: function(){
-			app.data.chrome = false;
+        hideChrome: function(){
+            // Delete : Legacy
+        },
+        showChrome: function(){
+            // Delete : Legacy
+        },
+        chrome: function(status){
+            app.data.chrome = status;
 
-			DexV2.getCached("body").setAttribute("data-chrome", false)
-		},
-		showChrome: function(){
-			app.data.chrome = true;
-
-			DexV2.getCached("body").setAttribute("data-chrome", true)
-		},
+			DexV2.getCached("body").setAttribute("data-chrome", status)
+        },
 		dev: {
 			data: {
 				on: false
@@ -1635,8 +1636,7 @@ if (!Element.prototype.matches) {
 				var advancedPublishMenuButton = document.querySelectorAll(".toolbar-item-publishone")[0]
 				var statusMenuButton = document.querySelectorAll(".edit-menu-status")[0]
 				var targetMenu = document.querySelectorAll(".edit-menu-centertop .x-toolbar-left-row")[0]
-				var editMenuButton = document.querySelectorAll(".edit-menu-edit")[0].parentNode
-
+				var editMenuButton = (document.querySelectorAll(".edit-menu-edit")[0]) ? document.querySelectorAll(".edit-menu-edit")[0].parentNode : null;
 
                 if(!DexV2.class("publication-status").exists()){
                     // Create div for publication status of page / slected element because currently it is a pseudo element and we cant reposition when in pinned mode
@@ -1710,18 +1710,34 @@ if (!Element.prototype.matches) {
 
 			}
 		},
-		switch: function(appID){
+		switch: function(appID, _config){
+            app.dev.log("::: APP ::: SWITCH: " + appID);
 
 			if(app.data.currentApp == appID){
+                // Not switching apps, so no point in continuing with app inits
 				return false;
-
 			}
-			app.dev.log("::: APP ::: SWITCH: " + appID);
+
+            app.data.previousApp = app.data.currentApp;
 			app.data.currentApp = appID;
 
             DexV2.getCached("body").setAttribute("data-INDIGO-APP", appID);
 
-			app[appID].onOpen();
+            if(app[app.data.currentApp] && app[app.data.currentApp].onOpen){
+                var appConfig = app[app.data.currentApp].config;
+                app[app.data.currentApp].onOpen();
+            }
+
+            if(app[app.data.previousApp] && app[app.data.previousApp].onClose){
+                app[app.data.previousApp].onClose();
+            }
+
+            var config = appConfig || _config || {}
+
+            if(typeof config.chrome !== "undefined"){
+                // Deal with Chrome
+                app.chrome(config.chrome);
+            }
 
 		},
 		contextMenus: {
@@ -1792,7 +1808,7 @@ if (!Element.prototype.matches) {
 							DexV2.getCached("body")
 								.trigger("mousedown")
 								.trigger("mouseup");
-						});
+						}, "CLOSE-DX-MENU");
 
 						DexV2.class("menu-editmode-managers-menu").addClass("managers-menu-built")
 
@@ -3955,6 +3971,9 @@ if (!Element.prototype.matches) {
 			}
 		},
 		admin: {
+            config: {
+                chrome: true
+            },
 			// Event Handlers
 			onOpen: function(){
 				app.dev.log("::: APP ::: ADMIN ::: OPENED");
@@ -4101,7 +4120,10 @@ if (!Element.prototype.matches) {
                 }
             }
         },
-		edit: {
+        edit: {
+            config: {
+                chrome: true
+            },
 			// Data
 			data: {
 				history: {
@@ -5505,6 +5527,9 @@ if (!Element.prototype.matches) {
 
 		},
 		dashboard: {
+            config: {
+                chrome: true
+            },
 			// Event Handlers
             data: {
                 beta: false
@@ -5566,6 +5591,9 @@ if (!Element.prototype.matches) {
 
 		},
 		contribute: {
+            config: {
+                chrome: true
+            },
 			// Event Handlers
             data: {
                 mode: null

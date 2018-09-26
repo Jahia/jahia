@@ -476,4 +476,52 @@
 
     </bean>
 
+    <bean id="SidePanelTab.Pages.Anthracite" parent="SidePanelTab.Pages">
+        <property name="parent" ref="editmode-jahia-anthracite"/>
+        <property name="position" value="0"/>
+        <property name="treeContextMenu" ref="pagesContextMenuAnthracite"/>
+    </bean>
+    <bean id="pagesContextMenuAnthracite" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+        <property name="items">
+            <list>
+                <ref bean="Toolbar.Item.NewPage"/>
+                <ref bean="Toolbar.Item.NewContentFolder"/>
+                <ref bean="Toolbar.Item.PagesTab.AddMenu"/>
+                <ref bean="Toolbar.Item.PublishOne"/>
+                <ref bean="Toolbar.Item.PublishInAllLanguages"/>
+                <ref bean="Toolbar.Item.PublishSite.SiteNode"/>
+                <ref bean="Toolbar.Item.PublishSiteInAllLanguages.SiteNode"/>
+                <ref bean="Toolbar.Item.Unpublish"/>
+                <ref bean="Toolbar.Item.Separator"/>
+                <ref bean="Toolbar.Item.EditContentRootNodeEditable"/>
+                <ref bean="Toolbar.Item.Delete"/>
+                <ref bean="Toolbar.Item.Undelete"/>
+                <ref bean="Toolbar.Item.DeletePermanently"/>
+                <ref bean="Toolbar.Item.Copy"/>
+                <ref bean="Toolbar.Item.Cut"/>
+                <ref bean="Toolbar.Item.Paste"/>
+                <ref bean="Toolbar.Item.PasteCurrentPage"/>
+                <ref bean="Toolbar.Item.PasteReference"/>
+                <ref bean="Toolbar.Item.TranslateMenu"/>
+                <ref bean="Toolbar.Item.Export"/>
+                <ref bean="Toolbar.Item.Import"/>
+                <ref bean="Toolbar.Item.Lock"/>
+                <ref bean="Toolbar.Item.Unlock"/>
+                <ref bean="Toolbar.Item.ClearLock"/>
+                <ref bean="Toolbar.Item.ClearAllLocks"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Toolbar.Item.PagesTab.AddMenu" class="org.jahia.services.uicomponents.bean.toolbar.Menu" scope="prototype">
+        <property name="titleKey" value="label.add"/>
+        <property name="icon" value="newPage"/>
+        <property name="items">
+            <list>
+                <ref bean="Toolbar.Item.NewInternalLink"/>
+                <ref bean="Toolbar.Item.NewExternalLink"/>
+                <ref bean="Toolbar.Item.NavMenuText"/>
+            </list>
+        </property>
+    </bean>
 </beans>

@@ -291,87 +291,8 @@
         <!-- tabs -->
         <property name="tabs">
             <list>
-                <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
-                    <property name="key" value="pages"/>
-                    <property name="icon" value="tab-pages"/>
-                    <property name="tabItem">
-                        <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.PagesTabItem">
-                            <property name="paths">
-                                <list>
-                                    <value>$site</value>
-                                </list>
-                            </property>
-                            <property name="folderTypes">
-                                <list>
-                                    <value>jmix:navMenuItem</value>
-                                    <value>jmix:visibleInPagesTree</value>
-                                </list>
-                            </property>
-                        </bean>
-                    </property>
-                    <property name="treeColumns" ref="#{jahiaProperties['useFullPublicationInfoInMainAreaModules'] == 'true' ? 'editModePagesTreeColumnListWithPublicationInfo' : 'editModePagesTreeColumnList'}"/>
-                    <property name="treeContextMenu">
-                        <bean id="pagesContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                            <property name="items">
-                                <list>
-                                    <ref bean="Toolbar.Item.NewPage"/>
-                                    <ref bean="Toolbar.Item.NewContentFolder"/>
-                                    <ref bean="Toolbar.Item.NewInternalLink"/>
-                                    <ref bean="Toolbar.Item.NewExternalLink"/>
-                                    <ref bean="Toolbar.Item.NavMenuText"/>
-                                    <ref bean="Toolbar.Item.PublishOne"/>
-                                    <ref bean="Toolbar.Item.PublishInAllLanguages"/>
-                                    <bean id="Toolbar.Item.PublishSite" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-                                        <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishSiteActionItem">
-                                                <property name="allowedNodeTypes">
-                                                    <list>
-                                                        <value>jnt:virtualsite</value>
-                                                    </list>
-                                                </property>
-                                            </bean>
-                                        </property>
-                                        <property name="titleKey" value="label.publishSite"/>
-                                        <property name="icon" value="publishSite"/>
-                                    </bean>
-                                    <bean id="Toolbar.Item.PublishSiteInAllLanguages" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-                                        <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishSiteActionItem">
-                                                <property name="allLanguages" value="true"/>
-                                                <property name="allowedNodeTypes">
-                                                    <list>
-                                                        <value>jnt:virtualsite</value>
-                                                    </list>
-                                                </property>
-                                            </bean>
-                                        </property>
-                                        <property name="titleKey" value="label.publishSite"/>
-                                        <property name="icon" value="publishSite"/>
-                                    </bean>
-                                    <ref bean="Toolbar.Item.Unpublish"/>
-                                    <ref bean="Toolbar.Item.Separator"/>
-                                    <ref bean="Toolbar.Item.EditContentRootNodeEditable"/>
-                                    <ref bean="Toolbar.Item.Delete"/>
-                                    <ref bean="Toolbar.Item.Undelete"/>
-                                    <ref bean="Toolbar.Item.DeletePermanently"/>
-                                    <ref bean="Toolbar.Item.Copy"/>
-                                    <ref bean="Toolbar.Item.Cut"/>
-                                    <ref bean="Toolbar.Item.Paste"/>
-                                    <ref bean="Toolbar.Item.PasteCurrentPage"/>
-                                    <ref bean="Toolbar.Item.PasteReference"/>
-                                    <ref bean="Toolbar.Item.TranslateMenu"/>
-                                    <ref bean="Toolbar.Item.Export"/>
-                                    <ref bean="Toolbar.Item.Import"/>
-                                    <ref bean="Toolbar.Item.Lock"/>
-                                    <ref bean="Toolbar.Item.Unlock"/>
-                                    <ref bean="Toolbar.Item.ClearLock"/>
-                                    <ref bean="Toolbar.Item.ClearAllLocks"/>
-                                </list>
-                            </property>
-                        </bean>
-                    </property>
-                    <property name="requiredPermission" value="sitemapSelector"/>
-                </bean>
+                <ref bean="SidePanelTab.Pages"/>
+
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="createContent"/>
                     <property name="icon" value="tab-createcontent"/>
@@ -736,6 +657,63 @@
 
 
     <!-- side tabs-->
+
+    <bean id="SidePanelTab.Pages" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
+        <property name="key" value="pages"/>
+        <property name="icon" value="tab-pages"/>
+        <property name="tabItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.PagesTabItem">
+                <property name="paths">
+                    <list>
+                        <value>$site</value>
+                    </list>
+                </property>
+                <property name="folderTypes">
+                    <list>
+                        <value>jmix:navMenuItem</value>
+                        <value>jmix:visibleInPagesTree</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="treeColumns" ref="#{jahiaProperties['useFullPublicationInfoInMainAreaModules'] == 'true' ? 'editModePagesTreeColumnListWithPublicationInfo' : 'editModePagesTreeColumnList'}"/>
+        <property name="treeContextMenu" ref="pagesContextMenu"/>
+        <property name="requiredPermission" value="sitemapSelector"/>
+    </bean>
+
+    <bean id="pagesContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+        <property name="items">
+            <list>
+                <ref bean="Toolbar.Item.NewPage"/>
+                <ref bean="Toolbar.Item.NewContentFolder"/>
+                <ref bean="Toolbar.Item.NewInternalLink"/>
+                <ref bean="Toolbar.Item.NewExternalLink"/>
+                <ref bean="Toolbar.Item.NavMenuText"/>
+                <ref bean="Toolbar.Item.PublishOne"/>
+                <ref bean="Toolbar.Item.PublishInAllLanguages"/>
+                <ref bean="Toolbar.Item.PublishSite.SiteNode"/>
+                <ref bean="Toolbar.Item.PublishSiteInAllLanguages.SiteNode"/>
+                <ref bean="Toolbar.Item.Unpublish"/>
+                <ref bean="Toolbar.Item.Separator"/>
+                <ref bean="Toolbar.Item.EditContentRootNodeEditable"/>
+                <ref bean="Toolbar.Item.Delete"/>
+                <ref bean="Toolbar.Item.Undelete"/>
+                <ref bean="Toolbar.Item.DeletePermanently"/>
+                <ref bean="Toolbar.Item.Copy"/>
+                <ref bean="Toolbar.Item.Cut"/>
+                <ref bean="Toolbar.Item.Paste"/>
+                <ref bean="Toolbar.Item.PasteCurrentPage"/>
+                <ref bean="Toolbar.Item.PasteReference"/>
+                <ref bean="Toolbar.Item.TranslateMenu"/>
+                <ref bean="Toolbar.Item.Export"/>
+                <ref bean="Toolbar.Item.Import"/>
+                <ref bean="Toolbar.Item.Lock"/>
+                <ref bean="Toolbar.Item.Unlock"/>
+                <ref bean="Toolbar.Item.ClearLock"/>
+                <ref bean="Toolbar.Item.ClearAllLocks"/>
+            </list>
+        </property>
+    </bean>
 
     <bean id="sidePanelTab.siteSettings" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="siteSettings"/>

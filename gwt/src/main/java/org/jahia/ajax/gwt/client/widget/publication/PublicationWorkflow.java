@@ -494,8 +494,7 @@ public class PublicationWorkflow implements CustomWorkflow {
         }
 
         final Button button =
-                new Button(Messages.get((cards.getComponents().size()==1? (unpublish? "label.workflow.unpublish.start": "label.workflow"
-                        + ".unpublish.start") :"label.workflow.start.all"), (cards.getComponents().size()==1? (unpublish? "Request unpublication": "Request publication"):"Request publication for all")));
+                new Button(Messages.get((cards.getComponents().size()==1? (unpublish? "label.workflow.unpublish.start": "label.workflow.start") :"label.workflow.start.all"), (cards.getComponents().size()==1? (unpublish? "Request unpublication": "Request publication"):"Request publication for all")));
         button.addStyleName("button-start");
 
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {

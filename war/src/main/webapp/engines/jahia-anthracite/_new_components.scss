@@ -831,33 +831,18 @@
 	box-sizing: border-box;
 	box-shadow: _property($INPUT--SHADOW, $type);
 
-	body[data-V2="true"] & {
-		box-shadow: 0px 5px 1px -4px rgba(38, 38, 38, 0.4);
-	}
-
 	@include text(13px, _property($INPUT--COLOR, $type), $FONT--WEIGHT---SEMILIGHT);
 
 	&:hover {
 		background: _property($INPUT--BG---HOVER, $type);
         color: _property($INPUT--COLOR---HOVER, $type);
 		box-shadow: _property($INPUT--SHADOW---HOVER, $type);
-
-
-		body[data-V2="true"] & {
-			color: #504e4d;
-			box-shadow: 0px 5px 4px -4px rgba(38, 38, 38, 0.4)!important;
-		}
 	}
 
 	&:focus {
 		background: _property($INPUT--BG---FOCUS, $type);
 		color: _property($INPUT--COLOR---FOCUS, $type);
 		box-shadow: _property($INPUT--SHADOW---FOCUS, $type);
-
-		body[data-V2="true"] & {
-			color: #504e4d;
-			box-shadow: 0px 4px 1px -4px rgba(38, 38, 38, 0.4)!important;
-		}
 	}
 
 	&[disabled] {
@@ -866,15 +851,6 @@
 		// border: 1px solid _property($INPUT--BORDER---DISABLED, $type);
 		transition: $DEFAULT--TRANSITION;
 		color: _property($INPUT--COLOR---DISABLED, $type) !important;
-
-		body[data-V2="true"] & {
-			color: #504e4d;
-			background: #b2bcc2;
-
-			&:hover {
-				box-shadow: none!important;
-			}
-		}
 	}
 
 	// Single trigger

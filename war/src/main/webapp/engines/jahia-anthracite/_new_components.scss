@@ -75,7 +75,8 @@
 				background-size: 16px;
 			}
 
-			&.toolbar-item-delete {
+			&.toolbar-item-delete,
+			&.toolbar-item-deletepermanently {
 				//background: url(./images/icons/context-menu/delete.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
 				background-image: url(./images/icons/context-menu/delete.png);
 				background-color: _property($MENU-OPENED--BG, $type);

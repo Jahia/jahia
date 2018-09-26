@@ -113,6 +113,11 @@ div.engine-window {
 	z-index: 1031!important;
 
 	background: linear-gradient(to bottom, #DBDBDB 1%, #d5d5d5 100%);
+
+	body[data-V2="true"] & {
+		background: #f9fbfb;
+	}
+
     position: fixed!important;
     top: 0!important;
     left: 0!important;
@@ -135,6 +140,18 @@ div.engine-window {
 				left: -1px;
 				background: #F1F1F1;
 				border-color:#F1F1F1;
+
+				body[data-V2="true"] & {
+					background: #F1F1F1;
+					border-color:#F1F1F1;
+				}
+			}
+
+			.indigo-switch--rail {
+
+				body[data-V2="true"] & {
+					background: #6b6866;
+				}
 			}
 
 		}
@@ -165,6 +182,11 @@ div.engine-window {
 		    transition: left 0.3s ease, background 0.3s ease, box-shadow 0.1s ease;
 		    border: 1px solid #5ddf15;
 
+			body[data-V2="true"] & {
+				background: #007cb0;
+				border: none!important;
+			}
+
 			&:hover {
 				cursor: pointer;
 			}
@@ -177,6 +199,12 @@ div.engine-window {
 			position: absolute;
 			top: 3px;
 			background: rgba(80, 80, 80, 0.7);
+
+			body[data-V2="true"] & {
+				background: rgba(112, 187, 219, 0.71);
+			}
+
+			/// #6b6866
 		}
 
 
@@ -217,6 +245,10 @@ div.engine-window {
 		    position: fixed;
 			box-shadow: 0px 2px 12px 0px rgba(58, 58, 58, 0.4);
 			background: linear-gradient(to right bottom, #F5F5F5 50%, #e5e4e4 100%);
+			body[data-V2="true"] & {
+				background: transparent;
+				box-shadow: none;
+			}
 			z-index: 99;
 
 			.x-tab-strip-wrap {
@@ -298,6 +330,10 @@ div.engine-window {
 			height: calc(100% - 58px)!important;
 			background: none;
 			margin-left: 316px;
+
+			body[data-V2="true"] & {
+				width: calc(100% - 340px) !important;
+			}
 
 			> .x-panel-mc {
 				// Default tab content window
@@ -458,6 +494,10 @@ div.engine-window {
 
 		&:nth-child(odd) {
 			background: linear-gradient(to right, #e3e2e2 50%, rgba(227, 226, 226, 0) 100%)!important;
+
+			body[data-V2="true"] & {
+				background: #e8ebed!important;
+			}
 		}
 
 		border: none!important;
@@ -1041,6 +1081,12 @@ div.engine-window {
 					border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE) !important;
 				    box-sizing: border-box;
 
+					body[data-V2="true"] & {
+						box-shadow: 0px 6px 3px -6px rgba(20, 20, 21, 0.45);
+						border:none;
+						background: #e8ebed!important;
+					}
+
 					// List of Workflow types
 					> .x-grid-panel {
 						// background: purple;
@@ -1211,6 +1257,12 @@ div.engine-window {
 					background: _property($FIELDSET--BG, $EDIT-ENGINE);
 					border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE) !important;
 					box-sizing: border-box;
+
+					body[data-V2="true"] & {
+						box-shadow: 0px 6px 3px -6px rgba(20, 20, 21, 0.45);
+						border:none;
+						background: #e8ebed!important;
+					}
 
 					&:before {
 						content: "Workflow History";
@@ -1408,6 +1460,13 @@ div.engine-window {
 		max-height: 100%;
 		max-width: calc(100% - 7px);
 
+		body[data-V2="true"] & {
+			background: #e8ebed !important;
+			box-shadow: 0px 6px 3px -6px rgba(20, 20, 21, 0.45);
+			margin-bottom: 15px !important;
+			padding-bottom: 20px;
+		}
+
 		.x-grid3-header {
 			display: none;
 		}
@@ -1422,6 +1481,11 @@ div.engine-window {
 				// text-transform: uppercase;
 
 				@include text(18px, #363636, $FONT--WEIGHT---LIGHT);
+
+				body[data-V2="true"] & {
+					color: #504e4d;
+					font-size: 16px;
+				}
 			}
 
 		}
@@ -1502,6 +1566,10 @@ div.engine-window {
 			    margin: 0 25px!important;
 			    padding: 15px 20px 20px 20px;
 			    box-sizing: border-box;
+
+				body[data-V2="true"] & {
+					width: calc(100% - 47px) !important;
+				}
 
 				.x-grid3-scroller {
 					width: auto!important;
@@ -1601,6 +1669,12 @@ div.engine-window {
 				width: 100%!important;
 				margin: 0px 0 10px 0 !important;
 			    overflow: visible!important;
+
+				body[data-V2="true"] & {
+					box-shadow: 0px 6px 3px -6px rgba(20, 20, 21, 0.45);
+					border:none;
+					background: #e8ebed!important;
+				}
 
 				.gwt-HTML {
 					@include text(12px, _property($LABEL--COLOR, $EDIT-ENGINE) !important, $FONT--WEIGHT---EXTRALIGHT)
@@ -1743,6 +1817,12 @@ div.engine-window {
 				padding: 43px 10px 20px 29px;
 				box-sizing: border-box;
 				height: auto!important;
+
+				body[data-V2="true"] & {
+					box-shadow: 0px 6px 3px -6px rgba(20, 20, 21, 0.45);
+					border:none;
+					background: #e8ebed!important;
+				}
 
 				&:before {
 					content: $text_visibility_conditions;
@@ -2581,8 +2661,10 @@ div.engine-window {
 			input {
 				padding: 0!important;
 				background: transparent;
-				box-shadow: none;
+				box-shadow: none!important;
 				font-size: 14px;
+
+
 			}
 
 			img {
@@ -2665,6 +2747,11 @@ div.engine-window {
 	    top: 10px;
 	    padding: 0px !important;
 
+		body[data-V2="true"] & {
+		    top: 40px;
+		    height: calc(100% - 24px);
+		}
+
 
 		.x-panel-tbar {
 			// Top action bar
@@ -2723,6 +2810,11 @@ div.engine-window {
 			body[data-indigo-editing-condition="new"] &,
 			body[data-indigo-editing-condition="true"] & {
 				display: none;
+			}
+
+			body[data-V2="true"] & {
+				background: #363f45;
+				box-shadow: inset 0px 7px 3px -6px #141415;
 			}
 
 			.x-panel-fbar {
@@ -3320,6 +3412,12 @@ body[data-indigo-add-visibility-condition="new"] {
 	padding: 8px 0 0 29px;
 	height: auto !important;
 
+	body[data-V2="true"] & {
+		background: #e8ebed !important;
+		box-shadow: 0px 6px 3px -6px rgba(20, 20, 21, 0.45);
+		margin-bottom: 15px !important;
+	}
+
 	.seo-title-path {
 		font-family: $FONT--FAMILY---NUNITO;
 		font-size: 14px;
@@ -3336,6 +3434,11 @@ body[data-indigo-add-visibility-condition="new"] {
 		font-size: 18px;
 		color: #363636;
 		font-weight: $FONT--WEIGHT---LIGHT;
+
+		body[data-V2="true"] & {
+			color: #504e4d;
+			font-size: 16px;
+		}
 	}
 
 	.x-panel-header {

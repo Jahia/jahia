@@ -2474,6 +2474,11 @@ body[indigo-dragging-panel="true"] {
 	    width: calc(100% + 60px)!important;
 	    padding-right: 30px;
 
+		body[data-V2="true"] & {
+			background: #363f45;
+			box-shadow: inset 0px 7px 3px -6px #141415;
+		}
+
 		// Full page picker correction
 		> div {
 			width: 100%!important

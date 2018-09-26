@@ -648,25 +648,41 @@ public class MainModule extends Module {
         });
     }
 
-    public static void translateContent(String path, final String sourceLang, final String destLang) {
+    public static void translateContent(String path, final String sourceLang, final String destLang, final String saveCallback) {
         final List<Module> modules = ModuleHelper.getModulesByPath().get(path);
+
+        final TranslateContentEngine.TranslateContentEngineSaveCallback translateContentEngineSaveCallback = saveCallback != null ? new TranslateContentEngine.TranslateContentEngineSaveCallback() {
+            @Override
+            public void onSave() {
+                doCall(saveCallback);
+            }
+        } : null;
+
         if (modules != null && modules.size() > 0) {
-            new TranslateContentEngine(modules.get(0).getNode(), null,
-                    JahiaGWTParameters.getLanguage(sourceLang),
-                    JahiaGWTParameters.getLanguage(destLang)).show();
+            displayTranslateEngine(modules.get(0).getNode(), sourceLang, destLang, translateContentEngineSaveCallback);
         } else {
             JahiaContentManagementService.App.getInstance().getNodes(Collections.singletonList(path), GWTJahiaNode.DEFAULT_FIELDS, new BaseAsyncCallback<List<GWTJahiaNode>>() {
                 @Override
                 public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
                     if (gwtJahiaNodes.size() > 0) {
-                        new TranslateContentEngine(gwtJahiaNodes.get(0), null,
-                                JahiaGWTParameters.getLanguage(sourceLang),
-                                JahiaGWTParameters.getLanguage(destLang)).show();
+                        displayTranslateEngine(gwtJahiaNodes.get(0), sourceLang, destLang, translateContentEngineSaveCallback);
                     }
                 }
             });
         }
     }
+
+    private static void displayTranslateEngine(GWTJahiaNode node, String sourceLang, String destLang, TranslateContentEngine.TranslateContentEngineSaveCallback saveCallback) {
+        TranslateContentEngine engine = new TranslateContentEngine(node, null,
+                JahiaGWTParameters.getLanguage(sourceLang),
+                JahiaGWTParameters.getLanguage(destLang));
+        engine.setTranslateContentEngineSaveCallback(saveCallback);
+        engine.show();
+    }
+
+    private static native void doCall(String key) /*-{
+        eval('$wnd.' + key)();
+    }-*/;
 
     public static void displayAlert(String title, String message) {
         MessageBox.alert(title, message, null);
@@ -1449,8 +1465,8 @@ public class MainModule extends Module {
         nsAuthoringApi.switchSite = function (siteKey, lang) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::switchSite(*)(siteKey, lang);
         }
-        nsAuthoringApi.translateContent = function (nodePath, sourceLang, destLang) {
-            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::translateContent(*)(nodePath, sourceLang, destLang);
+        nsAuthoringApi.translateContent = function (nodePath, sourceLang, destLang, saveCallback) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::translateContent(*)(nodePath, sourceLang, destLang, saveCallback);
         };
     }-*/;
 

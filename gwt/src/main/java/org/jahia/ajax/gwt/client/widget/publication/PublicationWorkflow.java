@@ -172,7 +172,9 @@ public class PublicationWorkflow implements CustomWorkflow {
     }
 
     public Button getStartWorkflowButton(final GWTJahiaWorkflowDefinition wf, final WorkflowActionDialog dialog) {
-        final Button button = new Button(Messages.get("label.workflow.start", "Start workflow"));
+        final boolean unpublish = this instanceof UnpublicationWorkflow;
+        final Button button = new Button(Messages.get(unpublish ? "label.workflow.unpublish.start" : "label.workflow.start",
+                unpublish ? "Request unpublication": "Request publication"));
         button.addStyleName("button-start");
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -195,7 +197,8 @@ public class PublicationWorkflow implements CustomWorkflow {
                 // enable buttons before close the engine to avoid layout side effect (the remaining button at the same index is disabled)
                 dialog.enableButtons();
                 closeDialog(dialog);
-                Info.display(Messages.get("label.workflow.start", "Start Workflow"), Messages.get(
+                Info.display(Messages.get(unpublish ? "label.workflow.unpublish.start" : "label.workflow.start",
+                        unpublish ? "Request unpublication": "Request publication"), Messages.get(
                         "message.workflow.starting", "Starting publication workflow"));
                 final String status = Messages.get("label.workflow.task", "Executing workflow task");
                 WorkInProgressActionItem.setStatus(status);
@@ -218,7 +221,8 @@ public class PublicationWorkflow implements CustomWorkflow {
 
                             @Override
                             public void onSuccess(Object result) {
-                                Info.display(Messages.get("label.workflow.start", "Start Workflow"), Messages.get(
+                                Info.display(Messages.get(unpublish ? "label.workflow.unpublish.start" : "label.workflow.start",
+                                        unpublish ? "Request unpublication": "Request publication"), Messages.get(
                                         "message.workflow.started", "Workflow started"));
                                 WorkInProgressActionItem.removeStatus(status);
                                 // if one wf has been started, do a refresh even on cancel
@@ -240,7 +244,7 @@ public class PublicationWorkflow implements CustomWorkflow {
 
     public Button getBypassWorkflowButton(final GWTJahiaWorkflowDefinition wf, final WorkflowActionDialog dialog) {
         if (!publicationInfos.isEmpty() && publicationInfos.get(0).isAllowedToPublishWithoutWorkflow()) {
-            final Button button = new Button(Messages.get("label.bypassWorkflow", "Bypass selected workflow"));
+            final Button button = new Button(Messages.get(this instanceof UnpublicationWorkflow?"label.bypassUnpublishWorkflow":"label.bypassWorkflow", this instanceof UnpublicationWorkflow?"Unpublish":"Publish"));
             button.addStyleName("button-bypassworkflow");
             button.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
@@ -376,8 +380,8 @@ public class PublicationWorkflow implements CustomWorkflow {
                 new PublicationStatusWindow(linker, getAllUuids(infoList), infoList, cards, unpublish);
             }
         }
-        cards.addGlobalButton(getStartAllWorkflows(cards, linker));
-        cards.addGlobalButton(getBypassAllWorkflowsButton(cards, linker));
+        cards.addGlobalButton(getStartAllWorkflows(cards, linker, unpublish));
+        cards.addGlobalButton(getBypassAllWorkflowsButton(cards, linker, unpublish));
         Button button = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
 
             @Override
@@ -396,7 +400,7 @@ public class PublicationWorkflow implements CustomWorkflow {
         cards.showEngine();
     }
 
-    private static Button getBypassAllWorkflowsButton(final EngineCards cards, final Linker linker) {
+    private static Button getBypassAllWorkflowsButton(final EngineCards cards, final Linker linker, final boolean unpublish) {
         boolean hasBypassAll = false;
         for (Component component : cards.getComponents()) {
             if (component instanceof WorkflowActionDialog) {
@@ -414,7 +418,13 @@ public class PublicationWorkflow implements CustomWorkflow {
             return null;
         }
 
-        final Button button = new Button(Messages.get((cards.getComponents().size()==1?"label.bypassWorkflow":"label.bypassWorkflow.all"), (cards.getComponents().size()==1?"Bypass workflow":"Bypass all workflows")));
+        final Button button;
+        if(unpublish){
+            button = new Button(Messages.get((cards.getComponents().size()==1?"label.bypassUnpublishWorkflow":"label.bypassUnpublishWorkflow.all"), (cards.getComponents().size()==1?"Unpublish":"Unpublish all")));
+        } else {
+            button = new Button(Messages.get((cards.getComponents().size()==1?"label.bypassWorkflow":"label.bypassWorkflow.all"), (cards.getComponents().size()==1?"Publish":"Publish all")));
+        }
+
         button.addStyleName("button-bypassworkflow");
 
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -471,7 +481,7 @@ public class PublicationWorkflow implements CustomWorkflow {
         return button;
     }
 
-    private static Button getStartAllWorkflows(final EngineCards cards, final Linker linker) {
+    private static Button getStartAllWorkflows(final EngineCards cards, final Linker linker, final boolean unpublish) {
         boolean hasWorkflow = false;
         for (Component component : cards.getComponents()) {
             if (component instanceof WorkflowActionDialog) {
@@ -483,14 +493,16 @@ public class PublicationWorkflow implements CustomWorkflow {
             return null;
         }
 
-        final Button button = new Button(Messages.get((cards.getComponents().size()==1?"label.workflow.start":"label.workflow.start.all"), (cards.getComponents().size()==1?"Start workflow":"Start all workflows")));
+        final Button button =
+                new Button(Messages.get((cards.getComponents().size()==1? (unpublish? "label.workflow.unpublish.start": "label.workflow"
+                        + ".unpublish.start") :"label.workflow.start.all"), (cards.getComponents().size()==1? (unpublish? "Request unpublication": "Request publication"):"Request publication for all")));
         button.addStyleName("button-start");
 
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
 
-                Info.display(Messages.get("label.workflow.start", "Start Workflow"), Messages.get(
+                Info.display(Messages.get("label.workflow.start", "Request publication"), Messages.get(
                         "message.workflow.starting", "Starting publication workflow"));
                 final String status = Messages.get("label.workflow.task", "Executing workflow task");
                 WorkInProgressActionItem.setStatus(status);
@@ -522,7 +534,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                                         Messages.get("label.workflow.cannotStart", "Cannot start workflow"), status, linker, refreshData)
                         );
                     } else {
-                        close(cards, nbWF, Messages.get("label.workflow.start", "Start Workflow"), status, linker, refreshData);
+                        close(cards, nbWF, Messages.get("label.workflow.start", "Request publication"), status, linker, refreshData);
                     }
                 }
             }

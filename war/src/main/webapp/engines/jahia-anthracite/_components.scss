@@ -3788,6 +3788,10 @@ body[data-indigo-gwt-side-panel="open"] {
 		border:none!important;
 		top: 0;
 		background: linear-gradient(to bottom, #DBDBDB 1%, #d5d5d5 100%)!important;
+
+		body[data-V2="true"] & {
+			background: transparent!important;
+		}
 	}
 
 	.x-tool-restore {
@@ -5358,6 +5362,11 @@ body[data-indigo-gwt-side-panel="open"] {
 		padding: 20px 0px 30px 50px;
 		height: 109px;
 		z-index: 999;
+
+		body[data-V2="true"] & {
+			background: #363f45;
+			box-shadow: inset 0px 7px 3px -6px #141415;
+		}
 
 		.x-panel-fbar {
 			width: 100%!important;

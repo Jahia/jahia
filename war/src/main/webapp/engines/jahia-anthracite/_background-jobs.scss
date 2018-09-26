@@ -198,6 +198,11 @@
 			padding: 20px 0px 30px 50px;
 			height: 109px;
 
+            body[data-V2="true"] & {
+				background: #363f45;
+				box-shadow: inset 0px 7px 3px -6px #141415;
+			}
+
 
             // Button
             .x-tool-close {

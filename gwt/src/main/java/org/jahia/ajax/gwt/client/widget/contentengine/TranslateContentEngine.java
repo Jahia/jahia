@@ -92,8 +92,19 @@ public class TranslateContentEngine extends Window {
     private LangPropertiesEditor sourceLangPropertiesEditor;
     private LangPropertiesEditor targetLangPropertiesEditor;
     protected ButtonBar buttonBar;
+    private TranslateContentEngineSaveCallback translateContentEngineSaveCallback;
 
     private Set<String> workInProgressByLocale = new HashSet<String>();
+
+    /**
+     * Save callback
+     */
+    public interface TranslateContentEngineSaveCallback {
+        /**
+         * Called after successful save
+         */
+        void onSave();
+    }
 
     /**
      * Initializes an instance of this class.
@@ -297,6 +308,10 @@ public class TranslateContentEngine extends Window {
                         data.put(Linker.REFRESH_MAIN, true);
                         linker.refresh(data);
                     }
+
+                    if (translateContentEngineSaveCallback != null) {
+                        translateContentEngineSaveCallback.onSave();
+                    }
                 }
             });
         }
@@ -309,6 +324,10 @@ public class TranslateContentEngine extends Window {
         } else {
             workInProgressByLocale.remove(targetLangPropertiesEditor.getDisplayedLocale().getLanguage());
         }
+    }
+
+    public void setTranslateContentEngineSaveCallback(TranslateContentEngineSaveCallback translateContentEngineSaveCallback) {
+        this.translateContentEngineSaveCallback = translateContentEngineSaveCallback;
     }
 
     @Override

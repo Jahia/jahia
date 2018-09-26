@@ -650,32 +650,52 @@ body[data-indigo-app="contribute"] {
         display: none;
     }
 
-	body[data-V2="true"] & {
-
-		width: 24px;
-	    background-position: center;
-	    height: 24px;
-	    left: auto !important;
-	    top: auto !important;
-	    position: relative;
-	    background-image: url(./images/more-options.svg);
-	    background-size: 20px;
-	    border-radius: 2px;
+    body[data-V2="true"] & {
+        width: auto;
+        background: url(./images/icons_light/edit.svg) left 3px center no-repeat, url(./images/expanded-white.png) no-repeat right 2px center transparent;
+        background-size: 18px, 15px;
+        padding-left: 17px;
+        height: 22px;
+        left: auto !important;
+        top: auto !important;
+        position: relative;
+        margin-right: 3px !important;
+        padding-right: 25px;
+        border-radius: 2px;
+        transition: all 0.1s ease-in 0s;
+        margin-top: 0;
+        display: inline-block;
 
 		&:hover {
 			background-color: #007cb0;
-		}
-
-		&::before,
-		&::after {
-			display: none;
 		}
 
 		.x-btn-mc {
 			display: none;
 		}
 
+		&::after {
+            content: $text_context_menu_edit_page;
+            display: block;
+            font-family: "Nunito Sans", sans-serif;
+            font-size: 13px !important;
+            color: whitesmoke;
+            font-weight: 300 !important;
+            text-transform: none !important;
+            top: 3px;
+            position: relative;
+            opacity: 1;
+            text-indent: 0;
+            width: auto;
+            border: none;
+		}
 	}
+
+    body[data-V2="true"][data-multiselect="on"] & {
+        &::after {
+            content: $text_context_menu_edit_selection;
+        }
+    }
 
 
 }
@@ -820,7 +840,7 @@ body[data-indigo-app="contribute"] {
 		}
 
 		&::before {
-			content: "Preview Page";
+			content: $text_context_menu_preview_page;
 			display: block;
 			@include text(13px, whitesmoke, $FONT--WEIGHT---LIGHT);
 			top: 3px;
@@ -849,7 +869,7 @@ body[data-indigo-app="contribute"] {
 
 	body[data-V2="true"][data-multiselect="on"] & {
 		&::before {
-			content: "Preview Selection";
+			content: $text_context_menu_preview_selection;
 		}
 	}
 
@@ -1344,7 +1364,7 @@ div.x-jahia-root {
 		}
 
 		&::after {
-			content: "Publish Page";
+			content: $text_context_menu_publication_page;
 		    display: block;
 		    font-family: "Nunito Sans", sans-serif;
 		    font-size: 13px!important;
@@ -1367,7 +1387,7 @@ div.x-jahia-root {
 
 	body[data-V2="true"][data-multiselect="on"] & {
 		&::after {
-			content: "Publish Selection";
+			content: $text_context_menu_publication_selection;
 		}
 	}
 

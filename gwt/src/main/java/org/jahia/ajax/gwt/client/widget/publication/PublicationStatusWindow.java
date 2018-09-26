@@ -108,7 +108,12 @@ public class PublicationStatusWindow extends LayoutContainer {
 
         String language = null;
         if (uuids != null && infos != null && !infos.isEmpty() && infos.get(0).isAllowedToPublishWithoutWorkflow()) {
-            noWorkflow = new Button(Messages.get("label.bypassWorkflow", "Bypass workflow"));
+            if (unpublish){
+                noWorkflow = new Button(Messages.get("label.bypassUnpublishWorkflow", "Unpublish"));
+            } else {
+                noWorkflow = new Button(Messages.get("label.bypassWorkflow", "Publish"));
+            }
+
             noWorkflow.addStyleName("button-noworkflow");
             noWorkflow.addSelectionListener(new ButtonEventSelectionListener(uuids));
             String workflowGroup = infos.get(0).getWorkflowGroup();

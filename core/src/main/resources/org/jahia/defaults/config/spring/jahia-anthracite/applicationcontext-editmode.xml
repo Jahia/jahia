@@ -263,10 +263,6 @@
         <ref bean="Toolbar.Item.Separator"/>
         <ref bean="Toolbar.Item.Copy"/>
         <ref bean="Toolbar.Item.Cut"/>
-        <ref bean="Toolbar.Item.Paste"/>
-        <ref bean="Toolbar.Item.PasteReference"/>
-        <ref bean="Toolbar.Item.Separator"/>
-        <ref bean="Toolbar.Item.Publish"/>
         <ref bean="Toolbar.Item.Separator"/>
         <ref bean="Toolbar.Item.TranslateMenu"/>
         <ref bean="Toolbar.Item.Separator"/>

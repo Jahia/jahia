@@ -1854,7 +1854,7 @@
         @include text(8px, _property($TOOL-BUTTON--COLOR, $APP), $FONT--WEIGHT---BOLD);
 
 		body[data-V2="true"] & {
-			@include text(9px, whitesmoke, $FONT--WEIGHT---LIGHT);
+			@include text(9px, whitesmoke, $FONT--WEIGHT---NORMAL);
 			margin-bottom: 0;
             opacity: 0.9;
 		}

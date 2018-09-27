@@ -1279,8 +1279,8 @@ if (!Element.prototype.matches) {
             publishMultipleSelection: "Veröffentlichen",
 
             optionsPage: "Seiten-Optionen",
-            optionsSingleSelection: "{{node}} optionen",
-            optionsMultipleSelection: "{{count}} ausgewählter inhalt",
+            optionsSingleSelection: "{{node}} Optionen",
+            optionsMultipleSelection: "{{count}} ausgewählte Inhalte",
 
 			pickerTitles: {
 				default: "File Picker",

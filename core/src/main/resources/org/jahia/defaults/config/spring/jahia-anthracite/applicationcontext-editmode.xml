@@ -526,7 +526,7 @@
 
     <bean id="Toolbar.Item.PagesTab.AddMenu" class="org.jahia.services.uicomponents.bean.toolbar.Menu" scope="prototype">
         <property name="titleKey" value="label.add"/>
-        <property name="icon" value="newPage"/>
+        <property name="icon" value="newAction"/>
         <property name="items">
             <list>
                 <ref bean="Toolbar.Item.NewInternalLink"/>

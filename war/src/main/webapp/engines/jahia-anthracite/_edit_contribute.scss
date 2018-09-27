@@ -729,7 +729,7 @@ body[data-indigo-app="contribute"] {
 
     body[data-V2="true"] & {
 		position: fixed;
-		top: 45px;
+		top: 46px;
 		left: 0;
 
         background: url(./images/icons_grey/refresh.svg) no-repeat center #fff;
@@ -803,6 +803,10 @@ body[data-indigo-app="contribute"] {
 		    left: -19px !important;
 		    border-radius: 0 1px 1px 0;
 		}
+
+        .x-btn-mc {
+            display: none;
+        }
 	}
 
 	body[data-V2="true"] .hover-preview & {
@@ -980,7 +984,7 @@ body[data-indigo-app="contribute"] {
     display: none;
     position: fixed;
     left: 96px;
-    top: 47px;
+    top: 44px;
     border-radius: 0;
     width: 5px;
     height: 24px;
@@ -1506,7 +1510,7 @@ div.x-jahia-root {
 		background: url(./images/logos/dx_logo_solid-white.png) no-repeat top 3px left 10px;
 		background-size: 56px;
 		background-position: center;
-		top: 32px;
+		top: 30px;
 		width: 56px;
 		height: 56px;
 		left: 29px;
@@ -1824,7 +1828,7 @@ div.x-jahia-root {
 	body[data-V2="true"] & {
 		position: fixed;
 		left: 99px;
-		top: 47px;
+		top: 44px;
 	}
 
 	body[data-V2="true"][data-multiselect="on"] & {
@@ -2273,13 +2277,13 @@ div[role="combobox"].toolbar-itemsgroup-languageswitcher {
 	body[data-V2="true"] & {
 		right: auto;
 		left: 95px!important;
-		top: 71px!important;
+		top: 69px!important;
 	}
 
 	body[data-V2="true"][data-indigo-gwt-side-panel="open"] .x-viewport-editmode & {
 		right: auto;
 		left: 115px!important;
-		top: 71px!important;
+		top: 69px!important;
 	}
 
 	body[data-V2="true"][data-multiselect="on"] & {

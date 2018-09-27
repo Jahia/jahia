@@ -1269,6 +1269,19 @@ if (!Element.prototype.matches) {
 			save: "Speichern",
             backgroundJobs: "Hintergrund-Tasks",
             filterContent: "Content filtern",
+
+            previewPage: "Vorschau",
+            previewSingleSelection: "Vorschau",
+            previewMultipleSelection: "Vorschau",
+
+            publishPage: "Veröffentlichen",
+            publishSingleSelection: "Veröffentlichen",
+            publishMultipleSelection: "Veröffentlichen",
+
+            optionsPage: "Seiten-Optionen",
+            optionsSingleSelection: "{{node}} optionen",
+            optionsMultipleSelection: "{{count}} ausgewählter inhalt",
+
 			pickerTitles: {
 				default: "File Picker",
                 imagepicker: jahia_gwt_messages.label_imagepicker,
@@ -1308,6 +1321,19 @@ if (!Element.prototype.matches) {
 			save: "Save",
 			filterContent: "Filter Content",
             backgroundJobs: "Background Jobs",
+
+            previewPage: "Preview",
+            previewSingleSelection: "Preview",
+            previewMultipleSelection: "Preview",
+
+            publishPage: "Publish",
+            publishSingleSelection: "Publish",
+            publishMultipleSelection: "Publish",
+
+            optionsPage: "Page Options",
+            optionsSingleSelection: "{{node}} Options",
+            optionsMultipleSelection: "{{count}} Selected Contents",
+
 			pickerTitles: {
 				default: "File Picker",
 				imagepicker: jahia_gwt_messages.label_imagepicker,
@@ -1347,6 +1373,19 @@ if (!Element.prototype.matches) {
 			save: "Sauvegarder",
 			filterContent: "Filtrer le contenu",
             backgroundJobs: "Tâches de fond",
+
+            previewPage: "Aperçu",
+            previewSingleSelection: "Aperçu",
+            previewMultipleSelection: "Aperçu",
+
+            publishPage: "Publier",
+            publishSingleSelection: "Publier",
+            publishMultipleSelection: "Publier",
+
+            optionsPage: "Options de page",
+            optionsSingleSelection: "Options de {{node}}",
+            optionsMultipleSelection: "{{count}} contenus sélectionnés",
+
 			pickerTitles: {
 				default: "File Picker",
                 imagepicker: jahia_gwt_messages.label_imagepicker,
@@ -1761,6 +1800,7 @@ if (!Element.prototype.matches) {
                         default:
                             // Multiple selection
                             contextMenuTitle = params.multipleSelection;
+                            contextMenuTitle = params.multipleSelection.replace("{{count}}", app.iframe.data.selectionCount);
                             break;
                     }
 
@@ -1828,33 +1868,33 @@ if (!Element.prototype.matches) {
 			},
             previewMenu: {
                 onOpen: function(){
-					app.dev.log("::: APP ::: CONTEXTMENUS ::: PREVIEWMENU ::: ONOPEN");
+					app.dev.log("::: APP ::: CONTEXTMENUS ::: PREVIEWMENU ::: ONOPEN", true);
                     app.contextMenus.setTitle(this, {
-                        noSelection: "Page Preview",
-                        singleSelection: "Preview {{node}}",
-                        multipleSelection: "Preview selection"
+                        noSelection: localisedStrings[app.data.UILanguage].previewPage,
+                        singleSelection: localisedStrings[app.data.UILanguage].previewSingleSelection,
+                        multipleSelection: localisedStrings[app.data.UILanguage].previewMultipleSelection
                     });
 
                 }
             },
             publicationMenu: {
                 onOpen: function(contextmenu){
-					app.dev.log("::: APP ::: CONTEXTMENUS ::: PUBLICATIONMENU ::: ONOPEN");
+					app.dev.log("::: APP ::: CONTEXTMENUS ::: PUBLICATIONMENU ::: ONOPEN", true);
                     app.contextMenus.setTitle(this, {
-                        noSelection: "Publish Page",
-                        singleSelection: "Publish {{node}}",
-                        multipleSelection: "Publish selection"
+                        noSelection: localisedStrings[app.data.UILanguage].publishPage,
+                        singleSelection: localisedStrings[app.data.UILanguage].publishSingleSelection,
+                        multipleSelection: localisedStrings[app.data.UILanguage].publishMultipleSelection
                     });
 
                 }
             },
             moreInfoMenu: {
                 onOpen: function(){
-					app.dev.log("::: APP ::: CONTEXTMENUS ::: MOREINFOMENU ::: ONOPEN");
+					app.dev.log("::: APP ::: CONTEXTMENUS ::: MOREINFOMENU ::: ONOPEN", true);
                     app.contextMenus.setTitle(this, {
-                        noSelection: "Page Options",
-                        singleSelection: "{{node}} Options",
-                        multipleSelection: "Selection Options"
+                        noSelection: localisedStrings[app.data.UILanguage].optionsPage,
+                        singleSelection: localisedStrings[app.data.UILanguage].optionsSingleSelection,
+                        multipleSelection: localisedStrings[app.data.UILanguage].optionsMultipleSelection
                     });
 
                 }

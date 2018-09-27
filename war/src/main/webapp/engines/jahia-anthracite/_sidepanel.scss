@@ -159,7 +159,7 @@ body[indigo-dragging-panel] {
 		background-size: 23px;
 		left: 275px;
 		position: fixed;
-		top: 25px;
+		top: 29px;
 		border-radius: 100%;
 		height: 30px;
 	    width: 30px;
@@ -171,6 +171,7 @@ body[indigo-dragging-panel] {
 			background-size: 20px;
 			height: 26px;
 			width: 23px;
+			top: 21px;
 		}
 
 		body[indigo-dragging-panel="true"] & {
@@ -314,7 +315,7 @@ body[indigo-dragging-panel] {
 				display: none;
 
 				body[data-edit-window-style="default"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-app="edit"][data-sitesettings="false"] & {
-					top: 30px;
+					top: 34px;
 					left: 315px;
 					width: 20px !important;
 					height: 20px !important;
@@ -335,7 +336,7 @@ body[indigo-dragging-panel] {
 				body[data-V2="true"][data-INDIGO-SIDEPANEL-PINNED="true"] &,
 				body[data-V2="true"][data-indigo-gwt-side-panel="open"] & {
 					margin-left: 20px;
-					top: 28px !important;
+					top: 24px !important;
 				}
 
 				// body[data-indigo-gwt-side-panel="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"]:not(.minimise-results) &,
@@ -2412,9 +2413,13 @@ body[data-edit-window-style="settings"] {
 
 		body[data-V2="true"] & {
 			margin: 22px 0 30px -15px;
-		    font-size: 32px;
 			transition: all 0.2s ease-in 0s;
+			line-height: 40px;
 		}
+
+		font-size: 30px;
+		line-height: 47px;
+		letter-spacing: -0.5px;
 
 		body[data-indigo-gwt-side-panel="open"][data-V2="true"] & {
 			margin: 26px 0 30px 1px;

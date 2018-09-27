@@ -106,6 +106,17 @@
 				background-size: 16px;
 			}
 
+			&.toolbar-item-paste,
+			&.toolbar-item-pastecurrentpage,
+			&.toolbar-item-pastereference {
+				background-image: url(./images/icons/context-menu/paste.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
+
 			&.toolbar-item-publishinalllanguages,
 			&.toolbar-item-publishall,
 			&.toolbar-item-publishallinalllanguages,
@@ -178,6 +189,27 @@
 			}
 
 			&.toolbar-item-translatemenu:after {
+				background-image: url(./images/icons/toggle-WE-white@X2.png);
+				background-position: 5px 1px;
+				background-repeat: no-repeat;
+				background-size: 13px;
+				content: '';
+				height: 24px;
+				width: 24px;
+				position: absolute;
+				right: 0;
+			}
+
+			&.toolbar-item-pagestab-addmenu {
+				background-image: url(./images/icons/context-menu/add.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
+
+			&.toolbar-item-pagestab-addmenu:after {
 				background-image: url(./images/icons/toggle-WE-white@X2.png);
 				background-position: 5px 1px;
 				background-repeat: no-repeat;

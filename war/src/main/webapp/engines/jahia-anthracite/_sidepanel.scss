@@ -36,8 +36,12 @@ body[indigo-dragging-panel] {
 		left: 60px;
 		top: 20px !important;
 		background: transparent;
-		pointer-events: all;
+		pointer-events: none;
 		z-index: $ZINDEX--MAINMODULE--LANGUAGE_SWITCHER;
+
+		> table {
+			pointer-events: all;
+		}
 
 		body[data-V2="true"] & {
 			left: 95px!important;

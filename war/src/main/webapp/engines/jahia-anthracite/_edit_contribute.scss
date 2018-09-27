@@ -2390,6 +2390,11 @@ div[role="combobox"].toolbar-itemsgroup-languageswitcher {
   		height: 51px!important;
 
 
+        body[data-sitesettings="true"] & {
+            display: none;
+        }
+
+
 
     }
 

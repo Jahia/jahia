@@ -704,14 +704,12 @@ body[data-indigo-app="contribute"] {
 .window-actions-refresh {
     pointer-events: all;
     background: url(./images/icons_light/refresh.svg) no-repeat center;
-    position: fixed;
-    background-size: 23px;
+    background-size: 19px;
     overflow: visible;
-    height: 30px;
-    width: 30px;
-    right: 16px;
-    left: auto;
-    bottom: 14px;
+    height: 25px;
+    width: 25px;
+    top: 19px;
+    position: fixed;
 
 	body[data-chrome="false"] & {
 		display: none;
@@ -721,11 +719,9 @@ body[data-indigo-app="contribute"] {
         background-image: url(./images/icons_grey/refresh.svg);
     }
 
-    @include tooltip($text_tooltip_refresh_page, "LEFT");
+    @include tooltip($text_tooltip_refresh_page, "BOTTOM");
 
-    &:before {
-        right: 33px;
-    }
+
 
     body[data-V2="true"] & {
 		position: fixed;

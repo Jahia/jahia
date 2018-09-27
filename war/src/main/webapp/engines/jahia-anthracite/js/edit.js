@@ -4587,7 +4587,7 @@ if (!Element.prototype.matches) {
 
 
                                 // Center Page Title
-                                elements.title.style.left = (((boxes.body.width / 2) - (boxes.title.width / 2)) + offset) + "px";
+                                elements.title.style.left = (((boxes.body.width / 2) - (boxes.title.width / 2)) + offset - 30) + "px";
 
                                 if(elements.innerTitle){
                                     // Get Inner title bunding box
@@ -4614,9 +4614,12 @@ if (!Element.prototype.matches) {
                                     // elements.publishButton.style.left = (boxes.title.left - 20) + "px";
                                     if(app.data.V2 && elements.refreshButton){
 										elements.refreshButton.style.left = (boxes.title.left + boxes.title.width) + "px";
-									}
-                                    elements.previewButton.style.left = (boxes.title.left + boxes.title.width + 9) + "px";
-                                    elements.moreInfo.style.left = (boxes.title.left + boxes.title.width + 33) + "px";
+									} else if(elements.refreshButton){
+                                        elements.refreshButton.style.left = (boxes.title.left + boxes.title.width + 9) + "px";
+
+                                    }
+                                    elements.previewButton.style.left = (boxes.title.left + boxes.title.width + 39) + "px";
+                                    elements.moreInfo.style.left = (boxes.title.left + boxes.title.width + 63) + "px";
                                     elements.nodePathTitle.style.left = (boxes.title.left - 20) + "px";
 
                                     elements.nodePathTitle.setAttribute("data-indigo-file-path", DexV2.getCached("body").getAttribute("data-main-node-path"));

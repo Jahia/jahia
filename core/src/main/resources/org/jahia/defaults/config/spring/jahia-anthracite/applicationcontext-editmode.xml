@@ -357,10 +357,6 @@
                                     <list>
                                         <ref bean="Toolbar.Item.PublishOne"/>
                                         <ref bean="Toolbar.Item.PublishInAllLanguages"/>
-                                        <ref bean="Toolbar.Item.PublishAll"/>
-                                        <ref bean="Toolbar.Item.PublishAllInAllLanguages"/>
-                                        <ref bean="Toolbar.Item.PublishSite"/>
-                                        <ref bean="Toolbar.Item.PublishSiteInAllLanguages"/>
                                         <ref bean="Toolbar.Item.Unpublish"/>
                                         <ref bean="Toolbar.Item.PublicationManager"/>
                                     </list>

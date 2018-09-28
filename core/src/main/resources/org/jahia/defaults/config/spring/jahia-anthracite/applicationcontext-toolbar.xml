@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+    <bean id="Toolbar.Item.PublishAll.Pages" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
+                <property name="allSubTree" value="true"/>
+                <property name="forbiddenNodeTypes">
+                    <list>
+                        <value>nt:file</value>
+                        <value>jnt:virtualsite</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="titleKey" value="label.publishall"/>
+        <property name="icon" value="publishAll"/>
+    </bean>
+
+    <bean id="Toolbar.Item.PublishAllInAllLanguages.Pages" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
+                <property name="allLanguages" value="true"/>
+                <property name="allSubTree" value="true"/>
+                <property name="forbiddenNodeTypes">
+                    <list>
+                        <value>nt:file</value>
+                        <value>nt:folder</value>
+                        <value>jnt:virtualsite</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="titleKey" value="label.publishall.all.languages"/>
+        <property name="icon" value="publishAll"/>
+    </bean>
+
+    <bean id="Toolbar.Item.PublishInAllLanguages.Pages" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
+                <property name="allLanguages" value="true"/>
+                <property name="forbiddenNodeTypes">
+                    <list>
+                        <value>nt:file</value>
+                        <value>jnt:virtualsite</value>
+                        <value>nt:folder</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="titleKey" value="label.publish.languages"/>
+        <property name="icon" value="publish"/>
+    </bean>
+
+    <bean id="Toolbar.Item.PagesTab.PublicationMenu" class="org.jahia.services.uicomponents.bean.toolbar.Menu" scope="prototype">
+        <property name="titleKey" value="label.PublicationJob.task"/>
+        <property name="icon" value="newAction"/>
+        <property name="items">
+            <list>
+                <ref bean="Toolbar.Item.PublishOne"/>
+                <ref bean="Toolbar.Item.PublishInAllLanguages.Pages"/>
+                <ref bean="Toolbar.Item.PublishAll.Pages"/>
+                <ref bean="Toolbar.Item.PublishAllInAllLanguages.Pages"/>
+                <ref bean="Toolbar.Item.Unpublish"/>
+            </list>
+        </property>
+    </bean>
+
+</beans>

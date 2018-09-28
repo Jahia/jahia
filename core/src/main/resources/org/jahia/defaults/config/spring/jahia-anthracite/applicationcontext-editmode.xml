@@ -255,25 +255,19 @@
 
     <util:list id="anthraciteEditmodeMainModuleMenuItems">
         <ref bean="Toolbar.Item.EditContent"/>
+        <ref bean="Toolbar.Item.EditSourceContent"/>
         <ref bean="Toolbar.Item.Delete"/>
         <ref bean="Toolbar.Item.Undelete"/>
         <ref bean="Toolbar.Item.DeletePermanently"/>
-        <ref bean="Toolbar.Item.Separator"/>
-        <ref bean="Toolbar.Item.EditSourceContent"/>
-        <ref bean="Toolbar.Item.Separator"/>
         <ref bean="Toolbar.Item.Copy"/>
         <ref bean="Toolbar.Item.Cut"/>
-        <ref bean="Toolbar.Item.Separator"/>
         <ref bean="Toolbar.Item.TranslateMenu"/>
-        <ref bean="Toolbar.Item.Separator"/>
         <ref bean="Toolbar.Item.Export"/>
         <ref bean="Toolbar.Item.Import"/>
-        <ref bean="Toolbar.Item.Separator"/>
         <ref bean="Toolbar.Item.Lock"/>
         <ref bean="Toolbar.Item.Unlock"/>
         <ref bean="Toolbar.Item.ClearLock"/>
         <ref bean="Toolbar.Item.ClearAllLocks"/>
-        <ref bean="Toolbar.Item.Separator"/>
         <ref bean="Toolbar.Item.OpenInContentManager.NewTab"/>
     </util:list>
 
@@ -446,15 +440,15 @@
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.EditContent"/>
+                        <ref bean="Toolbar.Item.EditSourceContent"/>
+                        <ref bean="Toolbar.Item.Contextual.Publish"/>
                         <ref bean="Toolbar.Item.Delete"/>
                         <ref bean="Toolbar.Item.Undelete"/>
                         <ref bean="Toolbar.Item.DeletePermanently"/>
-                        <ref bean="Toolbar.Item.EditSourceContent"/>
                         <ref bean="Toolbar.Item.Copy"/>
                         <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.Paste"/>
                         <ref bean="Toolbar.Item.PasteReference"/>
-                        <ref bean="Toolbar.Item.Contextual.Publish"/>
                         <ref bean="Toolbar.Item.TranslateMenu"/>
                         <ref bean="Toolbar.Item.Export"/>
                         <ref bean="Toolbar.Item.Import"/>
@@ -493,11 +487,10 @@
                 <ref bean="Toolbar.Item.NewPage"/>
                 <ref bean="Toolbar.Item.NewContentFolder"/>
                 <ref bean="Toolbar.Item.PagesTab.AddMenu"/>
+                <ref bean="Toolbar.Item.EditContentRootNodeEditable"/>
                 <ref bean="Toolbar.Item.PagesTab.PublicationMenu"/>
                 <ref bean="Toolbar.Item.PublishSite.SiteNode"/>
                 <ref bean="Toolbar.Item.PublishSiteInAllLanguages.SiteNode"/>
-                <ref bean="Toolbar.Item.Separator"/>
-                <ref bean="Toolbar.Item.EditContentRootNodeEditable"/>
                 <ref bean="Toolbar.Item.Delete"/>
                 <ref bean="Toolbar.Item.Undelete"/>
                 <ref bean="Toolbar.Item.DeletePermanently"/>

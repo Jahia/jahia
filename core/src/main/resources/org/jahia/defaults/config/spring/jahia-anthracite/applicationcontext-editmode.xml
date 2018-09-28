@@ -529,18 +529,4 @@
             </list>
         </property>
     </bean>
-
-    <bean id="Toolbar.Item.PagesTab.PublicationMenu" class="org.jahia.services.uicomponents.bean.toolbar.Menu" scope="prototype">
-        <property name="titleKey" value="label.PublicationJob.task"/>
-        <property name="icon" value="newAction"/>
-        <property name="items">
-            <list>
-                <ref bean="Toolbar.Item.PublishOne"/>
-                <ref bean="Toolbar.Item.PublishInAllLanguages"/>
-                <ref bean="Toolbar.Item.PublishAll.Pages"/>
-                <ref bean="Toolbar.Item.PublishAllInAllLanguages.Pages"/>
-                <ref bean="Toolbar.Item.Unpublish"/>
-            </list>
-        </property>
-    </bean>
 </beans>

@@ -696,6 +696,22 @@
         <property name="icon" value="publishAll"/>
     </bean>
 
+    <bean id="Toolbar.Item.PublishAll.Pages" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
+                <property name="allSubTree" value="true"/>
+                <property name="forbiddenNodeTypes">
+                    <list>
+                        <value>nt:file</value>
+                        <value>jnt:virtualsite</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="titleKey" value="label.publishall"/>
+        <property name="icon" value="publishAll"/>
+    </bean>
+
     <bean id="Toolbar.Item.PublishAllInAllLanguages" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
@@ -713,6 +729,24 @@
         <property name="icon" value="publishAll"/>
     </bean>
 
+    <bean id="Toolbar.Item.PublishAllInAllLanguages.Pages" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
+                <property name="allLanguages" value="true"/>
+                <property name="allSubTree" value="true"/>
+                <property name="forbiddenNodeTypes">
+                    <list>
+                        <value>nt:file</value>
+                        <value>nt:folder</value>
+                        <value>jnt:virtualsite</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="titleKey" value="label.publishall.all.languages"/>
+        <property name="icon" value="publishAll"/>
+    </bean>
+
     <bean id="Toolbar.Item.PublishInAllLanguages" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
@@ -720,6 +754,7 @@
                 <property name="forbiddenNodeTypes">
                     <list>
                         <value>nt:file</value>
+                        <value>jnt:virtualsite</value>
                         <value>nt:folder</value>
                     </list>
                 </property>

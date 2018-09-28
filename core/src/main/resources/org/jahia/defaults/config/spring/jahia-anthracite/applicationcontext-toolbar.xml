@@ -58,7 +58,7 @@
 
     <bean id="Toolbar.Item.PagesTab.PublicationMenu" class="org.jahia.services.uicomponents.bean.toolbar.Menu" scope="prototype">
         <property name="titleKey" value="label.PublicationJob.task"/>
-        <property name="icon" value="newAction"/>
+        <property name="icon" value="publish"/>
         <property name="items">
             <list>
                 <ref bean="Toolbar.Item.PublishOne"/>

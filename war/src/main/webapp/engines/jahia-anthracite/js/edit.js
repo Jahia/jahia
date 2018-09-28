@@ -1669,7 +1669,7 @@ if (!Element.prototype.matches) {
                     inSideToolBar = DexV2.node(e.target).closest(".edit-menu-righttop");
 
 		        if(inSidePanel.nodes.length == 0 && inSideToolBar.nodes.length == 0 && app.nav.data.autoHideSidePanel){
-					app.dev.log("::: APP ::: ONCLICK");
+                    app.dev.log("::: APP ::: ONCLICK");
 	                app.edit.sidepanel.close();
 	            }
 
@@ -1892,7 +1892,7 @@ if (!Element.prototype.matches) {
 			},
             previewMenu: {
                 onOpen: function(){
-					app.dev.log("::: APP ::: CONTEXTMENUS ::: PREVIEWMENU ::: ONOPEN", true);
+					app.dev.log("::: APP ::: CONTEXTMENUS ::: PREVIEWMENU ::: ONOPEN");
                     app.contextMenus.setTitle(this, {
                         noSelection: localisedStrings[app.data.UILanguage].previewPage,
                         singleSelection: localisedStrings[app.data.UILanguage].previewSingleSelection,
@@ -1903,7 +1903,7 @@ if (!Element.prototype.matches) {
             },
             publicationMenu: {
                 onOpen: function(contextmenu){
-					app.dev.log("::: APP ::: CONTEXTMENUS ::: PUBLICATIONMENU ::: ONOPEN", true);
+					app.dev.log("::: APP ::: CONTEXTMENUS ::: PUBLICATIONMENU ::: ONOPEN");
                     app.contextMenus.setTitle(this, {
                         noSelection: localisedStrings[app.data.UILanguage].publishPage,
                         singleSelection: localisedStrings[app.data.UILanguage].publishSingleSelection,
@@ -1914,7 +1914,7 @@ if (!Element.prototype.matches) {
             },
             moreInfoMenu: {
                 onOpen: function(){
-					app.dev.log("::: APP ::: CONTEXTMENUS ::: MOREINFOMENU ::: ONOPEN", true);
+					app.dev.log("::: APP ::: CONTEXTMENUS ::: MOREINFOMENU ::: ONOPEN");
                     app.contextMenus.setTitle(this, {
                         noSelection: localisedStrings[app.data.UILanguage].optionsPage,
                         singleSelection: localisedStrings[app.data.UILanguage].optionsSingleSelection,
@@ -3508,6 +3508,7 @@ if (!Element.prototype.matches) {
                     .setAttribute("data-indigo-edit-engine-locked", "false")
                     .setAttribute("data-INDIGO-EDIT-ENGINE", "open");
 
+
                 // Add Friendly Name to attribute of header
                 if(app.data.HTTP.app == "manager"){
                     DexV2(".engine-window .x-window-header .x-window-header-text").setAttribute("data-friendly-name", nodeDisplayName);
@@ -4262,6 +4263,7 @@ if (!Element.prototype.matches) {
 
 
 
+
                 // Setup the alternative channels system
                 app.edit.sidepanel.initChannels();
 
@@ -4736,9 +4738,10 @@ if (!Element.prototype.matches) {
                         return splitterXPos || null;
                     }();
 
-                    if(xPos == null){
+                    if(xPos == null || DexV2.getCached("body").getAttribute("data-indigo-gwt-side-panel") !== "open"){
                         return false;
                     }
+
 
                     // Block the minimum and maximum widths of the side panel
                     if(xPos < 360){
@@ -5224,16 +5227,16 @@ if (!Element.prototype.matches) {
                 },
 				open: function(isSettings){
 					app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: OPEN [isSettings='" + isSettings + "']");
-
+                    // Set CSS to open side panel
+                    DexV2.getCached("body").setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
+                    app.edit.sidepanel.data.open = true;
 					app.edit.sidepanel.resizeSidePanel();
 
                     app.edit.sidepanel.buildSplitter();
 
 					var keepCheckingForEmpties = true;
 
-					// Set CSS to open side panel
-					DexV2.getCached("body").setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
-					app.edit.sidepanel.data.open = true;
+
 
 					// Check if there are any empty rows, if so then refresh the panel
 					DexV2.id("JahiaGxtPagesTab").filter(".x-grid3-row").each(function(dexObject, index){
@@ -5252,9 +5255,9 @@ if (!Element.prototype.matches) {
                     }
 
 				},
-				close: function(){
+				close: function(force){
 					if(DexV2.getCached("body").getAttribute("data-sitesettings") !== "true" && DexV2.getCached("body").getAttribute("data-edit-window-style") !== "settings" && DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open" && DexV2.getCached("body").getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes" && DexV2.getCached("body").getAttribute("data-INDIGO-SIDEPANEL-PINNED") != "true"){
-						app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: CLOSE");
+                        app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: CLOSE");
 
 						var siteCombo = DexV2("body[data-indigo-gwt-side-panel='open'] .window-side-panel div[role='combobox']");
 

@@ -70,4 +70,45 @@
         </property>
     </bean>
 
+    <bean id="Toolbar.Item.Publish.ContentAndFiles" parent="Toolbar.Item.Publish" scope="prototype">
+        <property name="items">
+            <list>
+                <ref bean="Toolbar.Item.PublishOne"/>
+                <ref bean="Toolbar.Item.PublishInAllLanguages"/>
+                <ref bean="Toolbar.Item.PublishAll.ContentAndFiles"/>
+                <ref bean="Toolbar.Item.PublishAllInAllLanguages.ContentAndFiles"/>
+                <ref bean="Toolbar.Item.Unpublish"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Toolbar.Item.PublishAll.ContentAndFiles" parent="Toolbar.Item.PublishAll" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
+                <property name="allSubTree" value="true"/>
+                <property name="allowedNodeTypes">
+                    <list>
+                        <value>nt:folder</value>
+                        <value>jnt:contentFolder</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="Toolbar.Item.PublishAllInAllLanguages.ContentAndFiles" parent="Toolbar.Item.PublishAllInAllLanguages" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
+                <property name="allLanguages" value="true"/>
+                <property name="allSubTree" value="true"/>
+                <property name="allowedNodeTypes">
+                    <list>
+                        <value>nt:folder</value>
+                        <value>jnt:contentFolder</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
 </beans>

@@ -121,7 +121,7 @@
                         <ref bean="Toolbar.Item.Resize"/>
                         <ref bean="Toolbar.Item.Rotate"/>
                         <ref bean="Toolbar.Item.WebdavUrlCopy"/>
-                        <ref bean="Toolbar.Item.Publish.Managers"/>
+                        <ref bean="Toolbar.Item.Publish.ContentAndFiles"/>
                     </list>
                 </property>
             </bean>
@@ -626,7 +626,7 @@
                         <ref bean="Toolbar.Item.Unlock"/>
                         <ref bean="Toolbar.Item.ClearLock"/>
                         <ref bean="Toolbar.Item.ClearAllLocks"/>
-                        <ref bean="Toolbar.Item.Publish.Managers"/>
+                        <ref bean="Toolbar.Item.Publish.ContentAndFiles"/>
                         <ref bean="Toolbar.Item.Export"/>
                         <ref bean="Toolbar.Item.Import"/>
                     </list>
@@ -778,45 +778,4 @@
         </property>
     </bean>
 
-
-    <bean id="Toolbar.Item.Publish.Managers" parent="Toolbar.Item.Publish" scope="prototype">
-        <property name="items">
-            <list>
-                <ref bean="Toolbar.Item.PublishOne"/>
-                <ref bean="Toolbar.Item.PublishInAllLanguages"/>
-                <ref bean="Toolbar.Item.PublishAll.Managers"/>
-                <ref bean="Toolbar.Item.PublishAllInAllLanguages.Managers"/>
-                <ref bean="Toolbar.Item.Unpublish"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="Toolbar.Item.PublishAll.Managers" parent="Toolbar.Item.PublishAll" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
-                <property name="allSubTree" value="true"/>
-                <property name="allowedNodeTypes">
-                    <list>
-                        <value>nt:folder</value>
-                        <value>jnt:contentFolder</value>
-                    </list>
-                </property>
-            </bean>
-        </property>
-    </bean>
-
-    <bean id="Toolbar.Item.PublishAllInAllLanguages.Managers" parent="Toolbar.Item.PublishAllInAllLanguages" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
-                <property name="allLanguages" value="true"/>
-                <property name="allSubTree" value="true"/>
-                <property name="allowedNodeTypes">
-                    <list>
-                        <value>nt:folder</value>
-                        <value>jnt:contentFolder</value>
-                    </list>
-                </property>
-            </bean>
-        </property>
-    </bean>
 </beans>

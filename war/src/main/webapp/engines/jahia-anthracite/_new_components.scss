@@ -119,8 +119,11 @@
 
 			&.toolbar-item-publishinalllanguages,
 			&.toolbar-item-publishall,
+			&.toolbar-item-publishall-managers,
+			&.toolbar-item-publishallinalllanguages-managers,
 			&.toolbar-item-publishallinalllanguages,
 			&.toolbar-item-publish,
+			&.toolbar-item-publish-managers,
 			&.toolbar-item-contextual-publish,
 			&.toolbar-item-publishone,
 			&.toolbar-item-publishsite,
@@ -135,6 +138,7 @@
 			}
 
 			&.toolbar-item-contextual-publish:after,
+			&.toolbar-item-publish-managers:after,
 			&.toolbar-item-publish:after {
 				background-image: url(./images/icons/toggle-WE-white@X2.png);
 				background-position: 5px 1px;

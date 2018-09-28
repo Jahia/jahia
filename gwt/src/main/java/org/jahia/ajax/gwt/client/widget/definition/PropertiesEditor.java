@@ -100,7 +100,7 @@ public class PropertiesEditor extends FormPanel {
     private boolean fieldSetGrouping = false;
     private Set<String> addedTypes = new HashSet<String>();
     private Set<String> removedTypes = new HashSet<String>();
-    private Set<String> externalMixin = new HashSet<String>();
+    private Map<String, Set<GWTJahiaNodeType>> externalMixin = new HashMap<String, Set<GWTJahiaNodeType>>();
     private String locale = "";
     private GWTBitSet permissions;
     private LangPropertiesEditor translationSource;
@@ -465,7 +465,7 @@ public class PropertiesEditor extends FormPanel {
                         @Override
                         public void selectionChanged(SelectionChangedEvent<GWTJahiaValueDisplayBean> event) {
                             removeExternalMixin(oldSelection, adapterField);
-                            setExternalMixin(adapterField, true);
+                            setExternalMixin(adapterField);
                             if (oldSelection.size() > 0) {
                                 oldSelection.remove(0);
                             }
@@ -474,7 +474,7 @@ public class PropertiesEditor extends FormPanel {
                         }
                     });
                     if (c.getValue() != null) {
-                        setExternalMixin(adapterField, false);
+                        setExternalMixin(adapterField);
                     }
                 }
                 if (defaultedProperties.contains(field.getName())) {
@@ -485,34 +485,80 @@ public class PropertiesEditor extends FormPanel {
     }
 
     @SuppressWarnings("unchecked")
-    public void setExternalMixin(PropertyAdapterField c, boolean b) {
+    public void setExternalMixin(PropertyAdapterField c) {
         String addMixin = null;
         if (c.getValue() != null) {
             addMixin = ((ComboBox<GWTJahiaValueDisplayBean>)c.getField()).getValue().get("addMixin");
         }
-        if (addMixin != null && mixin != null) {
-            for (GWTJahiaNodeType mix : mixin) {
-                if (mix.getName().equals(addMixin)) {
-                    if (!b || !externalMixin.contains(addMixin)) {
-                        externalMixin.add(mix.getName());
-                        addItems(mix, mix.getItems(), false, false, c);
+        if (addMixin != null) {
+            GWTJahiaNodeType mix = getMixin(addMixin);
+            if (mix != null && !externalMixinExist(addMixin)) {
+
+                // handle inherited mixins
+                Set<GWTJahiaNodeType> inheritedMixins = new HashSet<GWTJahiaNodeType>();
+                if (mix.getSuperTypes() != null) {
+                    for (String superType : mix.getSuperTypes()) {
+                        GWTJahiaNodeType superMix = getMixin(superType);
+                        if (superMix != null && !externalMixinExist(superMix.getName())) {
+                            inheritedMixins.add(superMix);
+                        }
                     }
+                }
+
+                externalMixin.put(mix.getName(), inheritedMixins);
+                addItems(mix, mix.getItems(), false, false, c);
+                for (GWTJahiaNodeType inheritedMixin : inheritedMixins) {
+                    addItems(inheritedMixin, inheritedMixin.getItems(), false, false, c);
                 }
             }
         }
     }
 
+    private boolean externalMixinExist(String mixinName) {
+        for (String externalMixinKey : externalMixin.keySet()) {
+            if (externalMixinKey.equals(mixinName)) {
+                return true;
+            }
+            for (GWTJahiaNodeType externalInheritedMixinKey : externalMixin.get(externalMixinKey)) {
+                if (externalInheritedMixinKey.getName().equals(mixinName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private GWTJahiaNodeType getMixin(String mixinName) {
+        if (mixin != null) {
+            for (GWTJahiaNodeType mix : mixin) {
+                if (mix.getName().equals(mixinName)) {
+                    return mix;
+                }
+            }
+        }
+        return null;
+    }
+
     private void removeExternalMixin(List<GWTJahiaValueDisplayBean> oldSelection, PropertyAdapterField c) {
         if (oldSelection != null && oldSelection.size() > 0 && oldSelection.get(0).getValue() != null) {
             String removeMixin = oldSelection.get(0).get("addMixin");
-            if (externalMixin.contains(removeMixin)) {
+            if (externalMixin.containsKey(removeMixin)) {
                 removedTypes.add(removeMixin);
-                externalMixin.remove(removeMixin);
+                Set<GWTJahiaNodeType> inheritedMixins = externalMixin.remove(removeMixin);
                 FieldSet fs = (FieldSet) c.getParent();
                 Set<Component> compToRemove = new HashSet<Component>();
+
                 for (Component co : fs.getItems()) {
-                    if (co instanceof PropertyAdapterField && ((PropertyAdapterField) co).getDefinition().getDeclaringNodeType().equals(removeMixin)) {
-                        compToRemove.add(co);
+                    if (co instanceof PropertyAdapterField) {
+                        String fieldDeclaringNodeType = ((PropertyAdapterField) co).getDefinition().getDeclaringNodeType();
+                        if (fieldDeclaringNodeType.equals(removeMixin)) {
+                            compToRemove.add(co);
+                        }
+                        for (GWTJahiaNodeType inheritedMixin : inheritedMixins) {
+                            if (fieldDeclaringNodeType.equals(inheritedMixin.getName())) {
+                                compToRemove.add(co);
+                            }
+                        }
                     }
                 }
                 for (Component co : compToRemove) {
@@ -563,7 +609,7 @@ public class PropertiesEditor extends FormPanel {
                 if (addedTypes.contains(type.getName())) {
                     l.add(type);
                 }
-                if (externalMixin.contains(type.getName())) {
+                if (externalMixin.containsKey(type.getName())) {
                     l.add(type);
                 }
                 if (removedTypes.contains(type.getName())) {
@@ -614,7 +660,7 @@ public class PropertiesEditor extends FormPanel {
     }
 
     public Set<String> getExternalMixin() {
-        return externalMixin;
+        return externalMixin.keySet();
     }
 
     public List<GWTJahiaNodeType> getNodeTypes() {

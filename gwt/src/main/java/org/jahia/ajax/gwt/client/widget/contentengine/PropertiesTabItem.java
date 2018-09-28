@@ -201,7 +201,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
                                         PropertyAdapterField remote = (PropertyAdapterField) remoteField;
                                         PropertyAdapterField field = langPropEditor.getFieldsMap().get(remote.getDefinition().getName());
                                         ((Field) (field.getField())).setValue(remote.getField().getValue());
-                                        langPropEditor.setExternalMixin(field, true);
+                                        langPropEditor.setExternalMixin(field);
                                     }
                                     Field<?> f = langPropEditor.getFieldsMap().get(prop.getName()).getField();
                                     FormFieldCreator.copyValue(prop, f);

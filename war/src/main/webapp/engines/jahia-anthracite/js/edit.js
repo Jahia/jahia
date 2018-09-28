@@ -1357,7 +1357,7 @@ if (!Element.prototype.matches) {
 
             optionsPage: "Page Options",
             optionsSingleSelection: "{{node}} Options",
-            optionsMultipleSelection: "{{count}} Selected Contents",
+            optionsMultipleSelection: "{{count}} Selected Items",
 
 			pickerTitles: {
 				default: "File Picker",
@@ -1407,9 +1407,9 @@ if (!Element.prototype.matches) {
             publishSingleSelection: "Publier",
             publishMultipleSelection: "Publier",
 
-            optionsPage: "Options de page",
+            optionsPage: "Options de la page",
             optionsSingleSelection: "Options de {{node}}",
-            optionsMultipleSelection: "{{count}} contenus sélectionnés",
+            optionsMultipleSelection: "{{count}} éléments sélectionnés",
 
 			pickerTitles: {
 				default: "File Picker",
@@ -1824,7 +1824,6 @@ if (!Element.prototype.matches) {
 
                         default:
                             // Multiple selection
-                            contextMenuTitle = params.multipleSelection;
                             contextMenuTitle = params.multipleSelection.replace("{{count}}", app.iframe.data.selectionCount);
                             break;
                     }
@@ -4580,7 +4579,7 @@ if (!Element.prototype.matches) {
 								break;
 
 							default:
-								pageTitle = app.iframe.data.selectionCount + " selected items";
+								pageTitle = localisedStrings[app.data.UILanguage].optionsMultipleSelection.replace("{{count}}", app.iframe.data.selectionCount);
 								multiselect = "on";
 	                            selectType = "multiple";
 								break;

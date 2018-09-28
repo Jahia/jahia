@@ -124,8 +124,7 @@
 			&.toolbar-item-contextual-publish,
 			&.toolbar-item-publishone,
 			&.toolbar-item-publishsite,
-			&.toolbar-item-publishsiteinalllanguages,
-			&.toolbar-item-unpublish {
+			&.toolbar-item-publishsiteinalllanguages {
 				//background: url(./images/icons/context-menu/publish.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
 				background-image: url(./images/icons/context-menu/publish.png);
 				background-color: _property($MENU-OPENED--BG, $type);
@@ -146,6 +145,15 @@
 				width: 24px;
 				position: absolute;
 				right: 0;
+			}
+
+			&.toolbar-item-unpublish {
+				background-image: url(./images/icons/context-menu/unpublish.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
 			}
 
 			&.toolbar-item-lock {

@@ -195,7 +195,8 @@
 
 			&.toolbar-item-contextual-publish:after,
 			&.toolbar-item-publish-contentandfiles:after,
-			&.toolbar-item-publish:after {
+			&.toolbar-item-publish:after,
+			&.toolbar-item-pagestab-publicationmenu:after {
 				background-image: url(./images/icons/toggle-WE-white@X2.png);
 				background-position: 5px 1px;
 				background-repeat: no-repeat;

@@ -775,6 +775,10 @@
     <build>
         <pluginManagement>
             <plugins>
+				<plugin>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>2.5.2</version>
+				</plugin>
                 <plugin>
                     <artifactId>maven-antrun-plugin</artifactId>
                     <version>${antrun.plugin.version}</version>

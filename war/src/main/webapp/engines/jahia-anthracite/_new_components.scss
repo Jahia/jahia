@@ -77,7 +77,8 @@
 			}
 
 			&.toolbar-item-delete,
-			&.toolbar-item-deletepermanently {
+			&.toolbar-item-deletepermanently,
+			&.toolbar-item-deletepermanentlynomarkfordeletion {
 				//background: url(./images/icons/context-menu/delete.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
 				background-image: url(./images/icons/context-menu/delete.png);
 				background-color: _property($MENU-OPENED--BG, $type);
@@ -87,7 +88,8 @@
 				background-size: 16px;
 			}
 
-			&.toolbar-item-copy {
+			&.toolbar-item-copy,
+			&.toolbar-item-webdavurlcopy {
 				//background: url(./images/icons/context-menu/copy.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
 				background-image: url(./images/icons/context-menu/copy.png);
 				background-color: _property($MENU-OPENED--BG, $type);
@@ -100,6 +102,53 @@
 			&.toolbar-item-cut {
 				//background: url(./images/icons/context-menu/cut.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
 				background-image: url(./images/icons/context-menu/cut.svg);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
+
+			&.toolbar-item-crop {
+				background-image: url(./images/icons/context-menu/crop.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
+
+			&.toolbar-item-rename {
+				background-image: url(./images/icons/context-menu/rename.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
+
+			&.toolbar-item-resize {
+				background-image: url(./images/icons/context-menu/resize.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
+
+			&.toolbar-item-rotate {
+				background-image: url(./images/icons/context-menu/rotate-right.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
+
+			&.toolbar-item-flush,
+			&.toolbar-item-flushsite,
+			&.toolbar-item-flushall {
+				background-image: url(./images/icons/context-menu/delete-outline.png);
 				background-color: _property($MENU-OPENED--BG, $type);
 				background-position-x: 5px;
 				background-position-y: 7px;
@@ -186,6 +235,24 @@
 				background-size: 16px;
 			}
 
+			&.toolbar-item-publicationmanager {
+				background-image: url(./images/icons/context-menu/publication-manager.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
+
+			&.toolbar-item-workflowdashboard {
+				background-image: url(./images/icons/context-menu/workflow.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
+
 			&.toolbar-item-filepreview,
 			&.toolbar-item-openincontentmanager-newtab {
 				//background: url(./images/icons/context-menu/preview.svg) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
@@ -198,7 +265,8 @@
 			}
 
 			&.toolbar-item-export,
-			&.toolbar-item-import {
+			&.toolbar-item-import,
+			&.toolbar-item-update {
 				//background: url(./images/icons/context-menu/import-export.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
 				background-image: url(./images/icons/context-menu/import-export.png);
 				background-color: _property($MENU-OPENED--BG, $type);
@@ -314,7 +382,8 @@
 				background-size: 16px;
 			}
 
-			&.toolbar-item-newpage {
+			&.toolbar-item-newpage,
+			&.toolbar-item-newcategory {
 				background-image: url(./images/icons/context-menu/new-page.png);
 				background-color: _property($MENU-OPENED--BG, $type);
 				background-position-x: 5px;
@@ -369,8 +438,18 @@
 				background-size: 16px;
 			}
 
-			&.toolbar-item-newfolder {
+			&.toolbar-item-newfolder,
+			&.toolbar-item-newcontentfolder {
 				background-image: url(./images/icons/context-menu/new-folder.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
+
+			&.toolbar-item-newcontent {
+				background-image: url(./images/icons/context-menu/new-content.png);
 				background-color: _property($MENU-OPENED--BG, $type);
 				background-position-x: 5px;
 				background-position-y: 7px;

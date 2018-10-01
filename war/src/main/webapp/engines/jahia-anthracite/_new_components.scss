@@ -256,8 +256,7 @@
 
 			&.toolbar-item-filepreview,
 			&.toolbar-item-openincontentmanager-newtab {
-				//background: url(./images/icons/context-menu/preview.svg) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
-				background-image: url(./images/icons/context-menu/preview.svg);
+				background-image: url(./images/icons/context-menu/preview.png);
 				background-color: _property($MENU-OPENED--BG, $type);
 				background-position-x: 5px;
 				background-position-y: 7px;
@@ -343,8 +342,7 @@
 			}
 
 			&.toolbar-item-preview {
-				//background: url(./images/icons/context-menu/translate.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
-				background-image: url(./images/icons/context-menu/preview.svg);
+				background-image: url(./images/icons/context-menu/preview.png);
 				background-color: _property($MENU-OPENED--BG, $type);
 				background-position-x: 5px;
 				background-position-y: 7px;

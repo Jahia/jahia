@@ -462,7 +462,9 @@ public class EditLinker implements Linker {
             nodes.addAll(selectionContext.getSelectedNodes());
         }
         if (getSelectedModule() != null && getSelectedModule().getNode() != null && !(getSelectedModule() instanceof MainModule)) {
-            nodes.add(getSelectedModule().getNode());
+            if (!nodes.contains(getSelectedModule().getNode())) {
+                nodes.add(getSelectedModule().getNode());
+            }
         }
         selectionContext.setSelectedNodes(nodes);
         selectionContext.refresh(context);

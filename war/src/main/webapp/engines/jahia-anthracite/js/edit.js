@@ -1451,7 +1451,7 @@ if (!Element.prototype.matches) {
 			}
         },
 		data: {
-			V2: false,
+			V2: true,
 			V2Disabled: false,
 			openedXWindows: [],
 			currentApp: null,

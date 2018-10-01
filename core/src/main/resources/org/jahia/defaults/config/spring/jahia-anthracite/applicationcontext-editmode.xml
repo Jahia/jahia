@@ -212,7 +212,7 @@
     <util:list id="bluemenu">
         <ref bean="Toolbar.Item.Logout"/>
         <bean parent="Toolbar.Item.Start" scope="prototype">
-            <property name="icon" value="/engines/jahia-anthracite/images/logos/app-studio.svg"/>
+            <property name="icon" value="/engines/jahia-anthracite/images/logos/app-dashboard.svg"/>
         </bean>
         <bean parent="Toolbar.Item.Edit" scope="prototype">
             <property name="icon" value="/engines/jahia-anthracite/images/logos/app-edit.svg"/>

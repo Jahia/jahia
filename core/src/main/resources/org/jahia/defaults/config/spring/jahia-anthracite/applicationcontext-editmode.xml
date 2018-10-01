@@ -295,6 +295,8 @@
                         <list>
                             <ref bean="Toolbar.Item.NodePath"/>
 
+                            <ref bean="Toolbar.Item.DirectPreview"/>
+
                             <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Edit.Menu.View">
                                 <property name="titleKey" value="label.view"/>
                                 <!-- <property name="icon" value="preview"/> -->
@@ -344,6 +346,7 @@
                                     </list>
                                 </property>
                             </bean>
+                            <ref bean="Toolbar.Item.PublishOne"/>
                             <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Edit.Menu.Publication">
                                 <property name="titleKey" value="label.publication"/>
                                 <!-- <property name="icon" value="publicationAction"/> -->

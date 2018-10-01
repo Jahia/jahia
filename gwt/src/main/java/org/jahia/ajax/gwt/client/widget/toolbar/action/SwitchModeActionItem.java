@@ -66,19 +66,23 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
  */
 public class SwitchModeActionItem extends NodeTypeAwareBaseActionItem {
 
+    private boolean showOpenInNewWindowSubmenu = true;
+
     public void handleNewLinkerSelection() {
-        Menu m = new Menu();
-        MenuItem menuItem = new MenuItem(Messages.get("label.openInNewWindow","Open in new window"));
-        menuItem.setIcon(ToolbarIconProvider.getInstance().getIcon("openWindow"));
-        menuItem.addStyleName(getGwtToolbarItem().getClassName() + "-openWindow");
-        menuItem.addSelectionListener(new SelectionListener<MenuEvent>() {
-            @Override
-            public void componentSelected(MenuEvent ce) {
-                onComponentSelection(true);
-            }
-        });
-        m.add(menuItem);
-        setSubMenu(m);
+        if (showOpenInNewWindowSubmenu) {
+            Menu m = new Menu();
+            MenuItem menuItem = new MenuItem(Messages.get("label.openInNewWindow","Open in new window"));
+            menuItem.setIcon(ToolbarIconProvider.getInstance().getIcon("openWindow"));
+            menuItem.addStyleName(getGwtToolbarItem().getClassName() + "-openWindow");
+            menuItem.addSelectionListener(new SelectionListener<MenuEvent>() {
+                @Override
+                public void componentSelected(MenuEvent ce) {
+                    onComponentSelection(true);
+                }
+            });
+            m.add(menuItem);
+            setSubMenu(m);
+        }
 
         final String workspace = getPropertyValue(getGwtToolbarItem(), "workspace");
         if ((linker instanceof EditLinker && ((EditLinker) linker).isInSettingsPage()) ||
@@ -132,6 +136,15 @@ public class SwitchModeActionItem extends NodeTypeAwareBaseActionItem {
                         }
                     });
         }
+    }
+
+    /**
+     * Flag to indicate if the sub-menu to open the target mode in a new window should be shown or not.
+     * 
+     * @param showOpenInNewWindowSubmenu <code>true</code> if the sub-menu should be shown; <code>false</code> if not.
+     */
+    public void setShowOpenInNewWindowSubmenu(boolean showOpenInNewWindowSubmenu) {
+        this.showOpenInNewWindowSubmenu = showOpenInNewWindowSubmenu;
     }
 
 }

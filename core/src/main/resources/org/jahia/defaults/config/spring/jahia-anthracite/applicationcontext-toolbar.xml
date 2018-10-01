@@ -109,4 +109,19 @@
         </property>
     </bean>
 
+    <bean id="Toolbar.Item.DirectPreview" parent="Toolbar.Item.Preview" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchModeActionItem">
+                <property name="showOpenInNewWindowSubmenu" value="false"/>
+            </bean>
+        </property>
+        <property name="properties">
+            <list merge="true">
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="additional-classes"/>
+                    <property name="value" value="toolbar-item-preview"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
 </beans>

@@ -1267,7 +1267,7 @@ public class MainModule extends Module {
         nsAuthoringApi.goToUrl = $wnd.goToUrl = function (path, template, params) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::staticGoToUrl(Ljava/lang/String;)(path);
         }
-        nsAuthoringApi.addEventListener = $wnd.addEventListener("popstate", function (event) {
+        $wnd.addEventListener("popstate", function (event) {
             if (event.state) {
                 @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::popState(Ljava/lang/String;Ljava/lang/String;)(event.state.location, event.state.config);
             }

@@ -3777,6 +3777,36 @@ body[data-indigo-gwt-side-panel="open"] {
 }
 
 .x-window.engine-window {
+	&::before {
+		display: none!important;
+	}
+
+	#JahiaGxtContentEngine,
+	#JahiaGxtCreateContentEngine {
+		&::before {
+		    display: block;
+		    position: fixed;
+		    width: 290px;
+			left: 46px;
+			top: 37px;
+		    z-index: 99999;
+
+			@include text(36px, #363636, $FONT--WEIGHT---EXTRALIGHT)
+		}
+	}
+
+	#JahiaGxtContentEngine {
+		&::before {
+			content: $text_edit_engine;
+		}
+	}
+
+	#JahiaGxtCreateContentEngine {
+		&::before {
+			content: $text_edit_engine_create;
+		}
+	}
+
 	> .x-window-tl {
 		z-index: 9999;
 		border:none!important;

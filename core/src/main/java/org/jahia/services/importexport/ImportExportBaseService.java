@@ -75,6 +75,8 @@ import org.jahia.services.content.nodetypes.ParseException;
 import org.jahia.services.deamons.filewatcher.JahiaFileWatcherService;
 import org.jahia.services.importexport.validation.*;
 import org.jahia.services.render.RenderContext;
+import org.jahia.services.scheduler.BackgroundJob;
+import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.sites.SiteCreationInfo;
@@ -82,6 +84,7 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.TemplatePackageRegistry;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.DateUtils;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
@@ -89,6 +92,9 @@ import org.jahia.utils.Url;
 import org.jahia.utils.xml.JahiaSAXParserFactory;
 import org.jahia.utils.zip.DirectoryZipInputStream;
 import org.jahia.utils.zip.DirectoryZipOutputStream;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
@@ -108,8 +114,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -153,6 +158,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     private JahiaFileWatcherService fileWatcherService;
     private JCRStoreService jcrStoreService;
     private CategoryService categoryService;
+    private SchedulerService schedulerService;
 
     private long observerInterval = 10000;
     private static FileCleaningTracker fileCleaningTracker = new FileCleaningTracker();
@@ -263,37 +269,64 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 @SuppressWarnings("unchecked")
                 final List<File> files = (List<File>) args;
                 if (!files.isEmpty()) {
-                    try {
-                        JahiaUser user = JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser();
-                        JCRSessionFactory.getInstance().setCurrentUser(user);
-                        JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, null, null, new JCRCallback<Object>() {
+                    JahiaUser user = JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser();
 
-                            @Override
-                            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                                JCRNodeWrapper dest = session.getNode("/imports");
-                                for (File file : files) {
-                                    try {
-                                        InputStream is = new BufferedInputStream(new FileInputStream(file));
-                                        try {
-                                            dest.uploadFile(file.getName(), is, JCRContentUtils.getMimeType(file.getName()));
-                                        } finally {
-                                            IOUtils.closeQuietly(is);
-                                        }
-                                    } catch (Exception t) {
-                                        logger.error("file observer error : ", t);
-                                    }
+                    if (SettingsBean.getInstance().isProcessingServer()) {
+                        for (File file : files) {
+                            if (file.isFile()) {
+                                try {
+                                    logger.info("Detected new file to import: [" + file.toPath() + "]");
+                                    // move file out of file watcher to avoid multiple imports of the same file
+                                    Path target = Paths.get(SettingsBean.getInstance().getTmpContentDiskPath()).resolve(file.getName());
+                                    Files.move(file.toPath(), target, StandardCopyOption.REPLACE_EXISTING);
+                                    JobDetail jobDetail = BackgroundJob.createJahiaJob("Import dropped site zip file job", SiteImportJob.class);
+                                    logger.info("Import file moved to: [" + target + "]");
+
+                                    // start import job
+                                    logger.info("Scheduling import job for file: [" + target + "] " +
+                                            "(This file will be definitely remove at the end of the job execution)");
+                                    JobDataMap jobDataMap = jobDetail.getJobDataMap();
+                                    jobDataMap.put(BackgroundJob.JOB_USERKEY, user.getUserKey());
+                                    jobDataMap.put(SiteImportJob.FILE_PATH, target.toString());
+                                    jobDataMap.put(SiteImportJob.DELETE_FILE, true);
+                                    schedulerService.scheduleJobNow(jobDetail);
+                                } catch (SchedulerException | IOException e) {
+                                    logger.error("Cannot import file for " + file.getPath(), e);
                                 }
-                                session.save();
-                                return null;
                             }
-                        });
-                    } catch (RepositoryException e) {
-                        logger.error("error", e);
-                    } finally {
-                        JCRSessionFactory.getInstance().setCurrentUser(null);
-                    }
-                    for (File file : files) {
-                        file.delete();
+                        }
+                    } else {
+                        try {
+                            JCRSessionFactory.getInstance().setCurrentUser(user);
+                            JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, null, null, new JCRCallback<Object>() {
+
+                                @Override
+                                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                                    JCRNodeWrapper dest = session.getNode("/imports");
+                                    for (File file : files) {
+                                        try {
+                                            InputStream is = new BufferedInputStream(new FileInputStream(file));
+                                            try {
+                                                dest.uploadFile(file.getName(), is, JCRContentUtils.getMimeType(file.getName()));
+                                            } finally {
+                                                IOUtils.closeQuietly(is);
+                                            }
+                                        } catch (Exception t) {
+                                            logger.error("file observer error : ", t);
+                                        }
+                                    }
+                                    session.save();
+                                    return null;
+                                }
+                            });
+                        } catch (RepositoryException e) {
+                            logger.error("error", e);
+                        } finally {
+                            JCRSessionFactory.getInstance().setCurrentUser(null);
+                        }
+                        for (File file : files) {
+                            file.delete();
+                        }
                     }
                 }
             }
@@ -306,6 +339,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     public void setSitesService(JahiaSitesService sitesService) {
         this.sitesService = sitesService;
+    }
+
+    public void setSchedulerService(SchedulerService schedulerService) {
+        this.schedulerService = schedulerService;
     }
 
     public void setJcrStoreService(JCRStoreService jcrStoreService) {
@@ -861,6 +898,13 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         ZipInputStream zis = new ZipInputStream(contentNode.getProperty(Constants.JCR_DATA).getBinary().getStream());
 
         importSiteZip(zis, uri, null, nodeWrapper.getSession());
+    }
+
+    @Override
+    public void importSiteZip(File file, JCRSessionWrapper session) throws RepositoryException, IOException, JahiaException {
+        ZipInputStream zis = new ZipInputStream(new FileInputStream(file));
+
+        importSiteZip(zis, null, null, session);
     }
 
     @Override

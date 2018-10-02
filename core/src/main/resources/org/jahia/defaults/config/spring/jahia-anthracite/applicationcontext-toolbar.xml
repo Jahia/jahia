@@ -68,14 +68,80 @@
         </property>
     </bean>
 
+    <bean id="Toolbar.Item.PublishFileOnly" parent="Toolbar.Item.PublishOne" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
+                <property name="allowedNodeTypes">
+                    <list>
+                        <value>nt:file</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="properties">
+            <list merge="true">
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="additional-classes"/>
+                    <property name="value" value="toolbar-item-publishone"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Toolbar.Item.PublishNonFiles" parent="Toolbar.Item.PublishFileOnly" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
+                <property name="forbiddenNodeTypes">
+                    <list>
+                        <value>nt:file</value>
+                        <value>jnt:virtualsite</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="Toolbar.Item.UnpublishFileOnly" parent="Toolbar.Item.Unpublish" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UnpublishActionItem">
+                <property name="allowedNodeTypes">
+                    <list>
+                        <value>nt:file</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="properties">
+            <list merge="true">
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="additional-classes"/>
+                    <property name="value" value="toolbar-item-unpublish"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Toolbar.Item.UnpublishNonFiles" parent="Toolbar.Item.UnpublishFileOnly" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UnpublishActionItem">
+                <property name="forbiddenNodeTypes">
+                    <list>
+                        <value>nt:file</value>
+                        <value>jnt:virtualsite</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
     <bean id="Toolbar.Item.Publish.ContentAndFiles" parent="Toolbar.Item.Publish" scope="prototype">
         <property name="items">
             <list>
-                <ref bean="Toolbar.Item.PublishOne"/>
+                <ref bean="Toolbar.Item.PublishNonFiles"/>
                 <ref bean="Toolbar.Item.PublishInAllLanguages"/>
                 <ref bean="Toolbar.Item.PublishAll.ContentAndFiles"/>
                 <ref bean="Toolbar.Item.PublishAllInAllLanguages.ContentAndFiles"/>
-                <ref bean="Toolbar.Item.Unpublish"/>
+                <ref bean="Toolbar.Item.UnpublishNonFiles"/>
             </list>
         </property>
     </bean>

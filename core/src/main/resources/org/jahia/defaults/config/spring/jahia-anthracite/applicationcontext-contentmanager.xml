@@ -121,6 +121,8 @@
                         <ref bean="Toolbar.Item.Resize"/>
                         <ref bean="Toolbar.Item.Rotate"/>
                         <ref bean="Toolbar.Item.WebdavUrlCopy"/>
+                        <ref bean="Toolbar.Item.PublishFileOnly"/>
+                        <ref bean="Toolbar.Item.UnpublishFileOnly"/>
                         <ref bean="Toolbar.Item.Publish.ContentAndFiles"/>
                     </list>
                 </property>

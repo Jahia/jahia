@@ -610,6 +610,7 @@ body[data-indigo-app="contribute"] {
 .edit-menu-topright > table > tbody > tr > td > table > tbody > tr:first-child > td.x-toolbar-cell.x-hide-display,
 .edit-menu-topright > table > tbody > tr > td > table > tbody > tr:first-child > td.x-toolbar-cell.x-hide-display > table.x-hide-display:not(.x-item-disabled) {
     display: block !important;
+    float: left;
 }
 
 

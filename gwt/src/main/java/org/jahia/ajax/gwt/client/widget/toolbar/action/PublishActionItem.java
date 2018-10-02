@@ -124,10 +124,12 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                     setEnabled(false);
                 } else if (gwtJahiaNode != null) {
                     String title;
+                    String displayName = gwtJahiaNode.getDisplayName().length() > 40 ? gwtJahiaNode.getDisplayName().substring(0, 40)+"..." : gwtJahiaNode.getDisplayName();
                     if (allSubTree) {
-                        title = Messages.getWithArgs("label.publishall.all.languages", "Publish all under {0} in all languages", new String[] {gwtJahiaNode.getDisplayName()});
+                        title = Messages.getWithArgs("label.publishall.all.languages", "Publish all under <i>{0}</i> in all languages", new String[] {displayName});
                     } else {
-                        title = Messages.getWithArgs("label.publish.languages", "Publish {0} in all languages", new String[] {gwtJahiaNode.getDisplayName()});
+                        title = Messages.getWithArgs("label.publish.languages", "Publish <i>{0}</i> in all languages",
+                                new String[] {displayName});
                     }
                     updateItem(ctx, gwtJahiaNode, title);
                 }
@@ -146,8 +148,8 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                 if (isWorkInProgress(gwtJahiaNode)) {
                     setEnabled(false);
                 } else if (gwtJahiaNode != null) {
-                    String title = Messages.get("label.publishall") + " " + gwtJahiaNode.getDisplayName() +
-                            " - " + JahiaGWTParameters.getLanguageDisplayName();
+                    String title = Messages.get("label.publishall") + " <i>" + gwtJahiaNode.getDisplayName() +
+                            "</i> - " + JahiaGWTParameters.getLanguageDisplayName();
                     updateItem(ctx, gwtJahiaNode, title);
                 }
             }
@@ -184,12 +186,12 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
 
                         setEnabled(info.isPublishable() && (def != null || info.isAllowedToPublishWithoutWorkflow()));
                     }
-
+                    String displayName = gwtJahiaNode.getDisplayName().length() > 40 ? gwtJahiaNode.getDisplayName().substring(0, 40)+"..." : gwtJahiaNode.getDisplayName();
                     if (gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {
-                        updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName());
+                        updateTitle(getGwtToolbarItem().getTitle() + " <i>" + displayName + "</i>");
                     } else {
-                        updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() +
-                                " - " + JahiaGWTParameters.getLanguageDisplayName());
+                        updateTitle(getGwtToolbarItem().getTitle() + " <i>" + displayName +
+                                "</i> - " + JahiaGWTParameters.getLanguageDisplayName());
                     }
                 }
             }

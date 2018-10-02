@@ -132,10 +132,11 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
         List<GWTJahiaNode> selection = lh.getMultipleSelection();
         if (selection != null && selection.size() > 0) {
             if (selection.size() == 1) {
+                String displayName = selection.get(0).getDisplayName().length() > 40 ? selection.get(0).getDisplayName().substring(0,40)+ "..." : selection.get(0).getDisplayName();
                 if (selection.get(0).getInheritedNodeTypes().contains("jmix:nodeReference")) {
                     updateTitle(Messages.get(referenceTitleKey, referenceTitleKey));
                 } else {
-                    updateTitle(getGwtToolbarItem().getTitle() + " : " + selection.get(0).getDisplayName());
+                    updateTitle(getGwtToolbarItem().getTitle() + " : <i>" + displayName + "<i>");
                 }
             } else {
                 updateTitle(getGwtToolbarItem().getTitle() + " " + selection.size() + " " + Messages.get("label.items"));

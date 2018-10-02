@@ -239,7 +239,7 @@ public interface ImportExportService {
     ValidationResults validateImportFile(JCRSessionWrapper session, InputStream is, String contentType, List<String> installedModules);
 
     /**
-     * Import the size from the specified file node.
+     * Import the site from the specified file node.
      *
      * @param nodeWrapper
      *            the file node to read content of the imported site from
@@ -253,7 +253,23 @@ public interface ImportExportService {
     void importSiteZip(JCRNodeWrapper nodeWrapper) throws RepositoryException, IOException, JahiaException;
 
     /**
-     * Import the size from the specified resource.
+     * Import the sitee from the specified file.
+     *
+     * @param file
+     *            the file to read content of the imported site from
+     * @param session
+     *            current JCR session instance
+     * @throws RepositoryException
+     *             in case of a JCR error
+     * @throws IOException
+     *             in case of an I/O exception
+     * @throws JahiaException
+     *             if a processing error happens
+     */
+    void importSiteZip(File file, JCRSessionWrapper session) throws RepositoryException, IOException, JahiaException;
+
+    /**
+     * Import the site from the specified resource.
      *
      * @param resource
      *            the resource to read content of the imported site from
@@ -267,7 +283,7 @@ public interface ImportExportService {
     void importSiteZip(Resource resource) throws RepositoryException, IOException, JahiaException;
 
     /**
-     * Import the size from the specified resource using the provided JCR session.
+     * Import the site from the specified resource using the provided JCR session.
      *
      * @param resource
      *            the resource to read content of the imported site from

@@ -361,13 +361,13 @@ public abstract class BaseActionItem implements ActionItem {
             ((Button) textToolitem).setText(title);
         }
         if (menuItem != null) {
-            menuItem.setText(title);
+            menuItem.setHtml(title);
             if (menuItem.getParentMenu() != null) {
                 menuItem.getParentMenu().recalculate();
             }
         }
         if (contextMenuItem != null) {
-            contextMenuItem.setText(title);
+            contextMenuItem.setHtml(title);
             if (menuItem !=null && menuItem.getParentMenu() != null) {
                 menuItem.getParentMenu().recalculate();
             }

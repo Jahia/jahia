@@ -190,7 +190,7 @@ public class PublicationHelper {
         GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(info.getNodeIdentifier(), info.getPublicationStatus());
         gwtInfo.setPath(info.getNodePath());
         gwtInfo.setTitle(info.getNodeTitle());
-        gwtInfo.setNodetype(info.getNodeType().getLabel(session.getLocale()));
+        gwtInfo.setNodetype(info.getNodeType() != null ? info.getNodeType().getLabel(session.getLocale()) : "");
         gwtInfo.setMainUUID(info.getPublicationRootNodeIdentifier());
         gwtInfo.setMainPath(info.getPublicationRootNodePath());
         gwtInfo.setMainPathIndex(info.getPublicationRootNodePathIndex());

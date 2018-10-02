@@ -108,6 +108,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.security.Privilege;
@@ -2048,6 +2049,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             final List<ExtendedNodeType> availableMixins = contentDefinition.getAvailableMixin(typename, parent.getResolveSite());
 
             List<GWTJahiaNodeType> gwtMixin = contentDefinition.getGWTNodeTypes(availableMixins, getUILocale());
+            addInheritedMixin(gwtMixin);
 
             result.setMixin(gwtMixin);
 
@@ -2119,6 +2121,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
             List<GWTJahiaNodeType> gwtMixin = contentDefinition.getGWTNodeTypes(availableMixins, getUILocale());
 
+            addInheritedMixin(gwtMixin);
+
             result.setMixin(gwtMixin);
 
             List<ExtendedNodeType> allTypes = new ArrayList<ExtendedNodeType>();
@@ -2171,6 +2175,20 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         } catch (RepositoryException e) {
             logger.error("Cannot get node", e);
             throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.get.node", getUILocale(), getLocalizedMessage(e)));
+        }
+    }
+
+    private void addInheritedMixin(List<GWTJahiaNodeType> gwtMixin) throws NoSuchNodeTypeException, GWTJahiaServiceException {
+        if (gwtMixin != null) {
+            List<GWTJahiaNodeType> gwtMixinCopy = new ArrayList<>(gwtMixin);
+            for (GWTJahiaNodeType type : gwtMixinCopy) {
+                for (String superType : type.getSuperTypes()) {
+                    GWTJahiaNodeType nodeType = contentDefinition.getGWTJahiaNodeType(NodeTypeRegistry.getInstance().getNodeType(superType), getUILocale());
+                    if (!gwtMixin.contains(nodeType)) {
+                        gwtMixin.add(nodeType);
+                    }
+                }
+            }
         }
     }
 
@@ -2293,6 +2311,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 allTypes.addAll(Arrays.asList(nodeWrapper.getMixinNodeTypes()));
                 allTypes.addAll(availableMixins);
             }
+
+            addInheritedMixin(gwtMixin);
 
             final GWTJahiaEditEngineInitBean result =
                     new GWTJahiaEditEngineInitBean(nodeTypes, new HashMap<String, GWTJahiaNodeProperty>());

@@ -605,7 +605,8 @@
                 <ref bean="Toolbar.Item.Download"/>
                 <ref bean="Toolbar.Item.FilePreview"/>
                 <ref bean="Toolbar.Item.EditContent"/>
-                <ref bean="Toolbar.Item.Publish.ContentAndFiles"/>
+                <ref bean="Toolbar.Item.PublishFileOnly"/>
+                <ref bean="Toolbar.Item.UnpublishFileOnly"/>
                 <ref bean="Toolbar.Item.Delete"/>
                 <ref bean="Toolbar.Item.Undelete"/>
                 <ref bean="Toolbar.Item.DeletePermanently"/>

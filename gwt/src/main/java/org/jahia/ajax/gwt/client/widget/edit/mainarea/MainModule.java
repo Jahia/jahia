@@ -586,7 +586,7 @@ public class MainModule extends Module {
                 includeSubTypes, skipRefreshOnSave);
     }
 
-    public static void editContent(String uuid, String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, boolean skipRefreshOnSave) {
+    public static void editContent(String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, String uuid, boolean skipRefreshOnSave) {
         if (displayName == null) {
             List<Module> modules = ModuleHelper.getModulesByPath().get(path);
             EngineLoader.showEditEngine(getInstance().getEditLinker(), modules.get(0).getNode(), null, skipRefreshOnSave);
@@ -1285,7 +1285,7 @@ public class MainModule extends Module {
                 @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::createContent(*)(path,types,true, skipRefreshOnSave);
             }
         };
-        nsAuthoringApi.editContent = $wnd.editContent = function (uuid, path, displayName, types, inheritedTypes, skipRefreshOnSave) {
+        nsAuthoringApi.editContent = $wnd.editContent = function (path, displayName, types, inheritedTypes, uuid, skipRefreshOnSave) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::editContent(*)(uuid, path, displayName, types, inheritedTypes, skipRefreshOnSave);
         };
         nsAuthoringApi.disableGlobalSelection = $wnd.disableGlobalSelection = function (value) {

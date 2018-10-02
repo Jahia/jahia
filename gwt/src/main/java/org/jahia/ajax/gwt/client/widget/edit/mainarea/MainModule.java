@@ -640,7 +640,7 @@ public class MainModule extends Module {
 
                         @Override
                         public void onSuccess(Object result) {
-                            ContentHelper.sendContentModificationEvent(uuid, path, nodeName, "update");
+                            ContentHelper.sendContentModificationEvent(uuid, path, nodeName, "update", null);
                         }
                     });
                 }

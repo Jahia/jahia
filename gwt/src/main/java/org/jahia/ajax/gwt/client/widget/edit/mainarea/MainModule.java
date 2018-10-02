@@ -1433,7 +1433,7 @@ public class MainModule extends Module {
             }
         };
         nsAuthoringApi.editContent = $wnd.editContent = function (path, displayName, types, inheritedTypes, uuid, skipRefreshOnSave) {
-            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::editContent(*)(uuid, path, displayName, types, inheritedTypes, skipRefreshOnSave);
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::editContent(*)(path, displayName, types, inheritedTypes, uuid, skipRefreshOnSave);
         };
         nsAuthoringApi.deleteContent = $wnd.deleteContent = function (uuid, path, displayName, types, inheritedTypes, skipRefreshOnDelete, deletePermanently) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::deleteContent(*)(uuid, path, displayName, types, inheritedTypes, skipRefreshOnDelete, deletePermanently);

@@ -2093,6 +2093,10 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
 	animation: expandManagersMenu 0.2s ease-in;
     border:none;
 
+    .x-item-disabled {
+        display: none;
+    }
+
 	.managers-menu-close {
 		width: 321px;
 	    height: 57px;

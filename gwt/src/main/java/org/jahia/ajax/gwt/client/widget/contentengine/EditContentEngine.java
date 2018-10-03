@@ -53,6 +53,7 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -225,6 +226,15 @@ public class EditContentEngine extends AbstractContentEngine {
                     heading = Messages.getWithArgs("label.edit.engine.heading.read.only", "Read {0} ({1})", new String[]{nodeName, nodeTypes.get(0).getLabel()});
                 } else {
                     heading = Messages.getWithArgs("label.edit.engine.heading.edit", "Edit {0} ({1})", new String[]{nodeName, nodeTypes.get(0).getLabel()});
+                }
+                Element headerElement = container.getPanel().getHeader().getElement();
+                for (int i = 0; i < headerElement.getChildNodes().getLength(); i++) {
+                    if (headerElement.getChild(i) instanceof Element) {
+                        Element el = (Element) headerElement.getChild(i);
+                        if (el.getClassName().contains("-header-text")) {
+                            el.setAttribute("data-friendly-name", node.getDisplayName());
+                        }
+                    }
                 }
                 container.getPanel().setHeadingHtml(heading);
                 if (node.isLocked()) {

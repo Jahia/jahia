@@ -2106,7 +2106,12 @@ $side_panel__tab_buttons: (
 					}
 
 					body[data-uilang="de"] & {
-						bottom: 60px;
+						bottom: 80px;
+						left: 20px;
+
+						img {
+							left: 26px!important;
+						}
 					}
 
 					body[data-sitesettings="true"] & {

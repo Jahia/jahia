@@ -28,8 +28,15 @@
     bottom: 6px !important;
     top: auto !important;
     left: 60px !important;
+    height: auto!important;
+
+    .x-combo-list-inner {
+        height: auto!important;
+    }
 
     .thumb-wrap {
+        padding-bottom: 0!important;
+
         &:nth-child(1) {
             display: none;
         }

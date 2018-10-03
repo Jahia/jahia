@@ -1133,9 +1133,9 @@ body[indigo-dragging-panel] {
 	}
 
 	 .x-panel-btns {
-		 position: fixed;
-	     bottom: 32px;
-	     left: 71px;
+		 margin-top: 20px;
+		left: 1px;
+		position: relative;
 
 	 }
 
@@ -1147,7 +1147,7 @@ body[indigo-dragging-panel] {
 
 	 > div {
  		overflow: visible!important;
-		height: calc(100% - 50px) !important;
+		height: 100% !important;
 		overflow: scroll !important;
 		width: 100%!important;
 

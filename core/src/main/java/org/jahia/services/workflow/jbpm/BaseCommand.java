@@ -94,11 +94,20 @@ import javax.jcr.RepositoryException;
 import javax.persistence.EntityManager;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
 * Created by toto on 16/12/13.
 */
 public abstract class BaseCommand<T> implements GenericCommand<T> {
+    private static final Comparator<Constraint> CONSTRAINT_PRIORITY_COMPARATOR = new Comparator<Constraint>() {
+        @Override
+        public int compare(Constraint o1, Constraint o2) {
+            return Integer.compare(o2.getPriority(), o1.getPriority());
+        }
+        
+    };
+
     private static final long serialVersionUID = -2742789169791810141L;
 
     private transient static Logger logger = LoggerFactory.getLogger(BaseCommand.class);
@@ -404,7 +413,7 @@ public abstract class BaseCommand<T> implements GenericCommand<T> {
     }
 
     protected Set<String> getTaskOutcomes(final Node node) {
-        Set<String> connectionIds = new TreeSet<String>();
+        Set<String> connectionIds = new LinkedHashSet<String>();
         if (node != null) {
             getOutgoingConnectionNames(connectionIds, node);
         }
@@ -416,15 +425,21 @@ public abstract class BaseCommand<T> implements GenericCommand<T> {
         for (Map.Entry<String, List<Connection>> outgoingConnectionEntry : outgoingConnections.entrySet()) {
             for (Connection connection : outgoingConnectionEntry.getValue()) {
                 if (connection.getTo() instanceof Split) {
-                    for (Constraint constraint : ((Split) connection.getTo()).getConstraints().values()) {
-                        connectionIds.add(constraint.getName());
-                    }
+                    connectionIds.addAll(getConstraintNamesOrderedByPriority(((Split) connection.getTo()).getConstraints().values()));
                 } else {
                     String uniqueId = (String) connection.getMetaData().get("UniqueId");
                     connectionIds.add(uniqueId);
                 }
             }
         }
+    }
+
+    private Collection<String> getConstraintNamesOrderedByPriority(Collection<Constraint> constraints) {
+        List<Constraint> orderedConstraints = new LinkedList<>(constraints);
+
+        Collections.sort(orderedConstraints, CONSTRAINT_PRIORITY_COMPARATOR);
+
+        return orderedConstraints.stream().map(c -> c.getName()).collect(Collectors.toList());
     }
 
     protected void updateTaskNode(final JahiaUser user, final String taskUuid) {

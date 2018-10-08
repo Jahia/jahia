@@ -164,7 +164,7 @@ public class WorkflowActionDialog extends LayoutContainer {
                 }
             });
             cancel.addStyleName("button-cancel");
-            buttonsBar.add(cancel);
+            buttonsBar.insert(cancel, 0);
         }
     }
 
@@ -181,15 +181,12 @@ public class WorkflowActionDialog extends LayoutContainer {
     }
 
     public void initStartWorkflowDialog(final GWTJahiaWorkflowDefinition workflowDefinition) {
-        Button button = generateStartWorkflowButton(workflowDefinition);
-        buttonsBar.insert(button, buttonsBar.getItems().size() > 0 ? buttonsBar.getItems().size() - 1 : 0);
+        buttonsBar.add(generateStartWorkflowButton(workflowDefinition));
     }
 
     public void initExecuteActionDialog(final GWTJahiaWorkflowTask task) {
-        List<Button> buttons = generateActionButtons(task);
-
-        for (Button button : buttons) {
-            buttonsBar.insert(button, buttonsBar.getItems().size() > 0 ? buttonsBar.getItems().size() - 1 : 0);
+        for (Button button : generateActionButtons(task)) {
+            buttonsBar.add(button);
         }
 
     }

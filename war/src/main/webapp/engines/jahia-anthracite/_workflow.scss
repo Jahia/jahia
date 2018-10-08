@@ -1025,7 +1025,7 @@
 					.x-panel-fbar .x-toolbar-cell {
 
 						padding-bottom: 0!important;
-					    float: right;
+					    float: unset;
 					    margin-left: 5px !important;
 
 						> table:not(.button-cancel) {

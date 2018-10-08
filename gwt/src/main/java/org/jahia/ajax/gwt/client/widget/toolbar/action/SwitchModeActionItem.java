@@ -66,6 +66,10 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
  */
 public class SwitchModeActionItem extends NodeTypeAwareBaseActionItem {
 
+    private static final long serialVersionUID = 4479018020274946474L;
+
+    private boolean openInNewWindow;
+
     private boolean showOpenInNewWindowSubmenu = true;
 
     public void handleNewLinkerSelection() {
@@ -113,7 +117,7 @@ public class SwitchModeActionItem extends NodeTypeAwareBaseActionItem {
 
     @Override
     public void onComponentSelection() {
-        onComponentSelection(false);
+        onComponentSelection(openInNewWindow);
     }
 
     private void onComponentSelection(final boolean openWindow) {
@@ -136,6 +140,16 @@ public class SwitchModeActionItem extends NodeTypeAwareBaseActionItem {
                         }
                     });
         }
+    }
+
+    /**
+     * Indicates if the action is performed in a new window or not.
+     * 
+     * @param openInNewWindow <code>true</code> if the switch mode action should be performed in a new window; <code>false</code> in case of
+     *            the same window
+     */
+    public void setOpenInNewWindow(boolean openInNewWindow) {
+        this.openInNewWindow = openInNewWindow;
     }
 
     /**

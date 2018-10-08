@@ -178,6 +178,7 @@
     <bean id="Toolbar.Item.DirectPreview" parent="Toolbar.Item.Preview" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchModeActionItem">
+                <property name="openInNewWindow" value="true"/>
                 <property name="showOpenInNewWindowSubmenu" value="false"/>
             </bean>
         </property>

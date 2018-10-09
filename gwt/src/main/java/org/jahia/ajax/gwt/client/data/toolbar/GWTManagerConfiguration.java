@@ -112,6 +112,8 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
 
     private boolean editableGrid = false;
 
+    private boolean useLargeThumbnails;
+
     public GWTManagerConfiguration() {
         super();
         treeColumns = new ArrayList<GWTColumn>();
@@ -439,5 +441,23 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
 
     public void setSuppressPublicationInfo(boolean suppressPublicationInfo) {
         this.suppressPublicationInfo = suppressPublicationInfo;
+    }
+
+    /**
+     * Indicates if larger thumbnails should be used in the thumbnails view of this manager.
+     * 
+     * @return <code>true</code> if larger thumbnails should be used; <code>false</code> - if standard ones
+     */
+    public boolean isUseLargeThumbnails() {
+        return useLargeThumbnails;
+    }
+
+    /**
+     * Flag to indicate if larger thumbnails should be used in the thumbnails view of this manager.
+     * 
+     * @param useLargeThumbnails <code>true</code> if larger thumbnails should be used; <code>false</code> - if standard ones
+     */
+    public void setUseLargeThumbnails(boolean useLargeThumbnails) {
+        this.useLargeThumbnails = useLargeThumbnails;
     }
 }

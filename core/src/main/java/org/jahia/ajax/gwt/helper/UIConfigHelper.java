@@ -391,6 +391,8 @@ public class UIConfigHelper {
                 gwtConfig.setSiteNode(navigation.getGWTJahiaNode(site, GWTJahiaNode.DEFAULT_SITE_FIELDS, uiLocale));
                 gwtConfig.setPermissions(JahiaPrivilegeRegistry.getRegisteredPrivilegeNames());
 
+                gwtConfig.setUseLargeThumbnails(config.isUseLargeThumbnails());
+
                 return gwtConfig;
             } else {
                 logger.error("Config. " + name + " not found.");

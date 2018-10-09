@@ -54,6 +54,7 @@
         </property>
 
         <property name="forbiddenNodeTypesForDragAndDrop" ref="forbidDeleteRenameCutForNodeTypes"/>
+        <property name="useLargeThumbnails" value="true"/>
     </bean>
 
     <!-- file manager -->

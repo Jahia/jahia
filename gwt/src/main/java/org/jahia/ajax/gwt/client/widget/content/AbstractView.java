@@ -109,6 +109,9 @@ public abstract class AbstractView extends TopRightComponent {
                 keys.add(GWTJahiaNode.LOCKS_INFO);
                 keys.add(GWTJahiaNode.ICON);
                 keys.add("jcr:createdBy");
+                if (configuration.isUseLargeThumbnails()) {
+                    keys.add(GWTJahiaNode.PREVIEW_LARGE);
+                }
                 JahiaContentManagementService.App.getInstance().lsLoad(root.getPath(),
                         configuration.getNodeTypes(),
                         configuration.getMimeTypes(), configuration.getFilters(), keys,

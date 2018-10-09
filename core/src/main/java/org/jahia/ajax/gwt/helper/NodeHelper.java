@@ -255,7 +255,7 @@ class NodeHelper {
             populateIcon(n, node);
         }
 
-        populateThumbnails(n, node);
+        populateThumbnails(n, node, fields.contains(GWTJahiaNode.PREVIEW_LARGE));
 
         // count
         if (fields.contains(GWTJahiaNode.COUNT)) {
@@ -971,13 +971,19 @@ class NodeHelper {
         }
     }
 
-    private void populateThumbnails(GWTJahiaNode n, JCRNodeWrapper node) {
+    private void populateThumbnails(GWTJahiaNode n, JCRNodeWrapper node, boolean useLargeThumbnails) {
         try {
-            if (!n.isNodeType("jmix:thumbnail") || !node.hasNode("thumbnail")) {
+            if (!n.isNodeType("jmix:thumbnail")) {
                 return;
             }
-            n.setPreview(node.getThumbnailUrl("thumbnail"));
-            n.setDisplayable(true);
+            if (node.hasNode("thumbnail")) {
+                n.setPreview(node.getThumbnailUrl("thumbnail"));
+                n.setDisplayable(true);
+            }
+            if (useLargeThumbnails && node.hasNode("thumbnail2")) {
+                n.setPreviewLarge(node.getThumbnailUrl("thumbnail2"));
+                n.setDisplayable(true);
+            }
         } catch (RepositoryException e) {
             logger.warn("Error checking thumbnails for node " + n.getPath(), e);
         }

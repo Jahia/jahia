@@ -68,6 +68,7 @@ import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 public class ThumbsListView extends ListView<GWTJahiaNode> {
 
     private boolean detailed = false;
+    private boolean useLargePreview;
 
     public ThumbsListView() {
         setItemSelector("div.thumb-wrap");
@@ -83,6 +84,11 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
         } else {
             setTemplate(getSimpleTemplate());
         }
+    }
+
+    public ThumbsListView(boolean detailed, boolean useLargePreview) {
+        this(detailed);
+        this.useLargePreview = useLargePreview; 
     }
 
     @Override
@@ -104,7 +110,7 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
             if (Integer.parseInt(width) < 80) {
                 model.set("nodeImg", "<img src=\"" + URL.appendTimestamp(model.getUrl()) + "\" title=\"" + SafeHtmlUtils.htmlEscape(model.getName()) + "\">");
             } else {
-                model.set("nodeImg", "<img src=\"" + URL.appendTimestamp(model.getPreview()) + "\" title=\"" + SafeHtmlUtils.htmlEscape(model.getName()) + "\">");
+                model.set("nodeImg", "<img src=\"" + URL.appendTimestamp(getPreview(model)) + "\" title=\"" + SafeHtmlUtils.htmlEscape(model.getName()) + "\">");
             }
             if (detailed) {
                 model.set("widthHTML", "<div><b>" + Messages.get("width.label", "Width") + " </b>" + model.get("j:width") + " px</div>");
@@ -112,8 +118,8 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
             } else {
                 model.set("widthAndHeightHTML", model.get("j:width") + " x " + model.get("j:height"));
             }
-        } else if (model.getPreview() != null) {
-            model.set("nodeImg", "<img src=\"" + URL.appendTimestamp(model.getPreview()) + "\" title=\"" + SafeHtmlUtils.htmlEscape(model.getName()) + "\">");
+        } else if (hasPreview(model)) {
+            model.set("nodeImg", "<img src=\"" + URL.appendTimestamp(getPreview(model)) + "\" title=\"" + SafeHtmlUtils.htmlEscape(model.getName()) + "\">");
         } else {
             model.set("nodeImg", ContentModelIconProvider.getInstance().getIcon(model, true).getHTML());
         }
@@ -122,6 +128,16 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
             model.set("tagsHTML", "<div><b>" + model.get("tagsLabel") + ": </b>" + SafeHtmlUtils.htmlEscape(model.getTags()) + "</div>");
         }
         return model;
+    }
+
+
+    private String getPreview(GWTJahiaNode model) {
+        return useLargePreview && model.getPreviewLarge() != null ? model.getPreviewLarge() : model.getPreview();
+    }
+
+
+    private boolean hasPreview(GWTJahiaNode model) {
+        return getPreview(model) != null || useLargePreview && model.getPreviewLarge() != null;
     }
 
     protected void onMouseDown(ListViewEvent<GWTJahiaNode> e) {

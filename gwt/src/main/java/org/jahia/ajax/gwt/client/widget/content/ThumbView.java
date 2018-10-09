@@ -165,7 +165,7 @@ public class ThumbView extends AbstractView {
 
         m_component.setTopComponent(bar);
 
-        view = new ThumbsListView(detailed);
+        view = new ThumbsListView(detailed, config.isUseLargeThumbnails());
         view.setStore(store);
 
         selectionModel = view.getSelectionModel();

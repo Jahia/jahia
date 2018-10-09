@@ -118,6 +118,8 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
 
     private boolean suppressPublicationInfo;
 
+    private boolean useLargeThumbnails;
+
     public ManagerConfiguration() {
         tableColumns = new ArrayList<Column>();
         treeColumns = new ArrayList<Column>();
@@ -454,5 +456,23 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
      */
     @Deprecated
     public void setShowWorkInProgress(boolean showWorkInProgress) {
+    }
+
+    /**
+     * Indicates if larger thumbnails should be used in the thumbnails view of this manager.
+     * 
+     * @return <code>true</code> if larger thumbnails should be used; <code>false</code> - if standard ones
+     */
+    public boolean isUseLargeThumbnails() {
+        return useLargeThumbnails;
+    }
+
+    /**
+     * Flag to indicate if larger thumbnails should be used in the thumbnails view of this manager.
+     * 
+     * @param useLargeThumbnails <code>true</code> if larger thumbnails should be used; <code>false</code> - if standard ones
+     */
+    public void setUseLargeThumbnails(boolean useLargeThumbnails) {
+        this.useLargeThumbnails = useLargeThumbnails;
     }
 }

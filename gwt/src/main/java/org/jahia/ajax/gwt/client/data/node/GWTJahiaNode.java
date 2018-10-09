@@ -91,6 +91,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final String INHERITED_NODE_TYPES = "inheritedNodeTypes";
     public static final String PROVIDER_KEY = "providerKey";
     public static final String PREVIEW = "preview";
+    public static final String PREVIEW_LARGE = "previewLarge";
     public static final String THUMBNAILS = "thumbnails";
     public static final String SITE_UUID = "siteUUID";
     public static final String SITE_TYPE = "siteType";
@@ -360,6 +361,14 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public String getPreview() {
         return get(PREVIEW);
+    }
+
+    public void setPreviewLarge(String preview) {
+        set(PREVIEW_LARGE, preview);
+    }
+
+    public String getPreviewLarge() {
+        return get(PREVIEW_LARGE);
     }
 
     @Deprecated

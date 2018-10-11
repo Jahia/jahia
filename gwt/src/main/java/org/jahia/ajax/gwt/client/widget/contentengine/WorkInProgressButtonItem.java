@@ -120,6 +120,7 @@ public class WorkInProgressButtonItem implements ButtonItem {
                         engine.setWipStatus(GWTJahiaNode.WipStatus.DISABLED);
                     }
                     engine.setWorkInProgressLanguages(langs);
+                    engine.updateWipStyle();
                 }
             });
 

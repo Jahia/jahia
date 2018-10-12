@@ -1889,4 +1889,21 @@ public final class JCRContentUtils implements ServletContextAware {
 
         return session.getNode(userPath + path);
     }
+
+    /**
+     * Check if user is member of the given group
+     * @param siteKey the site key
+     * @param groupName the group name
+     * @param userName the user name
+     * @param userRealm hte user realm
+     * @param isRoot is the user root ?
+     * @return true in case the user is member of the group
+     */
+    public static boolean isUserMemberOfGroup(String siteKey, String groupName, String userName, String userRealm, boolean isRoot) {
+        return JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupName) ||
+                JahiaGroupManagerService.USERS_GROUPNAME.equals(groupName) ||
+                (JahiaGroupManagerService.SITE_USERS_GROUPNAME.equals(groupName) && (userRealm == null || userRealm.equals(siteKey))) ||
+                (isRoot && JahiaGroupManagerService.POWERFUL_GROUPS.contains(groupName)) ||
+                JahiaGroupManagerService.getInstance().isMember(userName, userRealm, groupName, siteKey);
+    }
 }

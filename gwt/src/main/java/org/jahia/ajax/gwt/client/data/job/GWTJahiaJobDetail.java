@@ -48,6 +48,9 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
+import org.jahia.ajax.gwt.client.util.JsonSerializable;
 
 /**
  * 
@@ -56,7 +59,7 @@ import java.util.List;
  * Time: 2:13:35 PM
  * 
  */
-public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Comparable<GWTJahiaJobDetail> {
+public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Comparable<GWTJahiaJobDetail>, JsonSerializable {
 
     public GWTJahiaJobDetail() {
     }
@@ -281,5 +284,10 @@ public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Co
             }
         }
         return 0;
+    }
+
+    @Override
+    public Map<String, Object> getDataForJsonSerialization() {
+        return this.getProperties();
     }
 }

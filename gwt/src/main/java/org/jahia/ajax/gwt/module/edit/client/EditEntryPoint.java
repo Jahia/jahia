@@ -57,6 +57,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.WorkInProgress;
 import org.jahia.ajax.gwt.client.widget.edit.EditPanelViewport;
+import org.jahia.ajax.gwt.client.widget.poller.EventDispatcherPollListener;
 
 /**
  * Edit mode GWT entry point.
@@ -80,6 +81,9 @@ public class EditEntryPoint extends CommonEntryPoint {
             JahiaContentManagementService.App.getInstance().getEditConfiguration(path, config,"default", new BaseAsyncCallback<GWTEditConfiguration>() {
                 public void onSuccess(GWTEditConfiguration gwtEditConfiguration) {
                     PermissionsUtils.loadPermissions(gwtEditConfiguration.getPermissions());
+                    if (gwtEditConfiguration.isEventDispatchingEnabled()) {
+                        EventDispatcherPollListener.register();
+                    }
                     DOM.setInnerHTML(element, "");
                     panel.add(EditPanelViewport.createInstance(
                             path,

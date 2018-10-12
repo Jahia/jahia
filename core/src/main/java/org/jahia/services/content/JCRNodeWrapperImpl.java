@@ -2326,7 +2326,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         if (copy != null && !copy.getParent().getDefinition().allowsSameNameSiblings()) {
             if (namingConflictResolutionStrategy == NodeNamingConflictResolutionStrategy.FAIL) {
-                throw new ItemExistsException("Node '" + copy.getPath() + "' already exists");
+                throw new ItemExistsException("Same name siblings are not allowed: node " + copy.getPath());
             }
         }
 

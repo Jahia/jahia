@@ -44,56 +44,46 @@
 package org.jahia.ajax.gwt.client.widget.poller;
 
 import org.atmosphere.gwt20.client.managed.RPCEvent;
-import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.util.JsonSerializable;
+import org.jahia.ajax.gwt.client.util.JsonUtils;
+import org.jahia.ajax.gwt.client.widget.poller.Poller.PollListener;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.google.gwt.core.client.JavaScriptObject;
 
-public class ProcessPollingEvent extends RPCEvent implements Serializable, JsonSerializable  {
-    private static final long serialVersionUID = -4426085851435410969L;
+/**
+ * Event dispatcher that listens on broadcasted events (Atmosphere) and dispatches them to listeners, registered via JavaScript callbacks.
+ * 
+ * @author Sergiy Shyrkov
+ */
+public class EventDispatcherPollListener implements PollListener<RPCEvent> {
 
-    private int totalCount = 0;
-    private List<GWTJahiaJobDetail> startedJob;
-    private List<GWTJahiaJobDetail> endedJob;
-
-    public ProcessPollingEvent() {
-    }
-
-    public int getTotalCount() {
-        return totalCount;
-    }
-
-    public void setTotalCount(int totalCount) {
-        this.totalCount = totalCount;
-    }
-
-    public List<GWTJahiaJobDetail> getStartedJob() {
-        return startedJob;
-    }
-
-    public void setStartedJob(List<GWTJahiaJobDetail> startedJob) {
-        this.startedJob = startedJob;
-    }
-
-    public List<GWTJahiaJobDetail> getEndedJob() {
-        return endedJob;
-    }
-
-    public void setEndedJob(List<GWTJahiaJobDetail> endedJob) {
-        this.endedJob = endedJob;
+    public static void register() {
+        PollListener<RPCEvent> listener = new EventDispatcherPollListener();
+        Poller poller = Poller.getInstance();
+        poller.registerListener(listener, TaskEvent.class);
+        poller.registerListener(listener, ProcessPollingEvent.class);
     }
 
     @Override
-    public Map<String, Object> getDataForJsonSerialization() {
-        Map<String, Object> data = new HashMap<String, Object>(3);
-        data.put("type", "job");
-        data.put("endedJob", getEndedJob());
-        data.put("startedJob", getStartedJob());
-        data.put("totalCount", getTotalCount());
-
-        return data;
+    public void handlePollingResult(RPCEvent result) {
+        if (result instanceof JsonSerializable && isConsumerRegistered()) {
+            dispatchToConsumers(JsonUtils.serialize(((JsonSerializable) result).getDataForJsonSerialization()).getJavaScriptObject());
+        }
     }
+
+    private native void dispatchToConsumers(JavaScriptObject eventData) /*-{
+        if ($wnd.authoringApi && $wnd.authoringApi.pushEventConsumers && $wnd.authoringApi.pushEventConsumers.length > 0) {
+            $wnd.authoringApi.pushEventConsumers.forEach(function(consumer) {
+                consumer.call(null, eventData);
+            });
+        }
+    }-*/;
+
+    private native boolean isConsumerRegistered() /*-{
+        if ($wnd.authoringApi && $wnd.authoringApi.pushEventConsumers && $wnd.authoringApi.pushEventConsumers.length > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }-*/;
 }

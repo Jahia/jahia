@@ -41,59 +41,22 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.client.widget.poller;
 
-import org.atmosphere.gwt20.client.managed.RPCEvent;
-import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
-import org.jahia.ajax.gwt.client.util.JsonSerializable;
+package org.jahia.ajax.gwt.client.util;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public class ProcessPollingEvent extends RPCEvent implements Serializable, JsonSerializable  {
-    private static final long serialVersionUID = -4426085851435410969L;
+/**
+ * Implementors of this interface can provide data to be serialized into a JSON representation.
+ * 
+ * @author Sergiy Shyrkov
+ */
+public interface JsonSerializable {
 
-    private int totalCount = 0;
-    private List<GWTJahiaJobDetail> startedJob;
-    private List<GWTJahiaJobDetail> endedJob;
-
-    public ProcessPollingEvent() {
-    }
-
-    public int getTotalCount() {
-        return totalCount;
-    }
-
-    public void setTotalCount(int totalCount) {
-        this.totalCount = totalCount;
-    }
-
-    public List<GWTJahiaJobDetail> getStartedJob() {
-        return startedJob;
-    }
-
-    public void setStartedJob(List<GWTJahiaJobDetail> startedJob) {
-        this.startedJob = startedJob;
-    }
-
-    public List<GWTJahiaJobDetail> getEndedJob() {
-        return endedJob;
-    }
-
-    public void setEndedJob(List<GWTJahiaJobDetail> endedJob) {
-        this.endedJob = endedJob;
-    }
-
-    @Override
-    public Map<String, Object> getDataForJsonSerialization() {
-        Map<String, Object> data = new HashMap<String, Object>(3);
-        data.put("type", "job");
-        data.put("endedJob", getEndedJob());
-        data.put("startedJob", getStartedJob());
-        data.put("totalCount", getTotalCount());
-
-        return data;
-    }
+    /**
+     * Returns data, which will be used for serialization into JSON.
+     * 
+     * @return a map with data, used for JSON serialization
+     */
+    Map<String, Object> getDataForJsonSerialization();
 }

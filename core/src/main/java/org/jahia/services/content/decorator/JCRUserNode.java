@@ -47,11 +47,11 @@ package org.jahia.services.content.decorator;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.pwd.PasswordService;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PasswordHistoryEntry;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserImpl;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -187,11 +187,7 @@ public class JCRUserNode extends JCRProtectedNodeAbstractDecorator {
     }
 
     public boolean isMemberOfGroup(String siteKey, String name) {
-        return JahiaGroupManagerService.GUEST_GROUPNAME.equals(name) ||
-                JahiaGroupManagerService.USERS_GROUPNAME.equals(name) ||
-                (JahiaGroupManagerService.SITE_USERS_GROUPNAME.equals(name) && (getRealm() == null || getRealm().equals(siteKey))) ||
-                (isRoot() && JahiaGroupManagerService.POWERFUL_GROUPS.contains(name)) ||
-                JahiaGroupManagerService.getInstance().isMember(getName(), getRealm(), name, siteKey);
+        return JCRContentUtils.isUserMemberOfGroup(siteKey, name, getName(), getRealm(), isRoot());
     }
 
     public String getRealm() {

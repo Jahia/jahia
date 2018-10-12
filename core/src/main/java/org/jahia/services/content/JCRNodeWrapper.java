@@ -95,6 +95,15 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     };
 
     /**
+     * Defines ways to deal with duplicate node names when copying a node to a different parent
+     * that already contains a node with the same name and same name siblings are not allowed.
+     */
+    enum NodeNamingConflictResolutionStrategy {
+        MERGE,
+        FAIL
+    }
+
+    /**
      * Gets the real <code>Node</code> wrapped by this <code>JCRNodeWrapper</code>
      *
      * @return the real JCR <code>Node</code>
@@ -587,7 +596,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     boolean copy(String dest) throws RepositoryException;
 
     /**
-     * Copy the current file node to another destination and name it differently
+     * Copy the current file node to another destination supplying it given name
      *
      * @param dest The destination name for the file node
      * @param name The new name of the copied file node
@@ -597,21 +606,55 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     boolean copy(String dest, String name) throws RepositoryException;
 
     /**
-     * Copy the current file node to another destination node and name it differently
+     * Copy the current file node to another destination supplying it given name
      *
-     * @param node                      The destination node
-     * @param name                      The new name of the copied file node
+     * @param dest The destination name for the file node
+     * @param name The new name of the copied file node
+     * @param namingConflictResolutionStrategy The way to deal with possible node naming conflict when node with given name already exists while same sibling names are not allowed
+     * @return true if action was successful, or false if not
+     * @throws RepositoryException in case of JCR-related errors
+     */
+    boolean copy(String dest, String name, NodeNamingConflictResolutionStrategy namingConflictResolutionStrategy) throws RepositoryException;
+
+    /**
+     * Copy the current file node to another destination node supplying it given name
+     *
+     * @param node The destination node
+     * @param name The new name of the copied file node
      * @param allowsExternalSharedNodes
      * @return true if action was successful, or false if not
      * @throws RepositoryException in case of JCR-related errors
      */
     boolean copy(JCRNodeWrapper node, String name, boolean allowsExternalSharedNodes) throws RepositoryException;
 
+    /**
+     * Copy the current file node to another destination node supplying it given name
+     *
+     * @param node The destination node
+     * @param name The new name of the copied file node
+     * @param allowsExternalSharedNodes
+     * @param namingConflictResolutionStrategy The way to deal with possible node naming conflict when node with given name already exists while same sibling names are not allowed
+     * @return true if action was successful, or false if not
+     * @throws RepositoryException in case of JCR-related errors
+     */
+    boolean copy(JCRNodeWrapper node, String name, boolean allowsExternalSharedNodes, NodeNamingConflictResolutionStrategy namingConflictResolutionStrategy) throws RepositoryException;
+
     boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Map<String, List<String>> references) throws RepositoryException;
 
     boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, List<String> ignoreNodeTypes, int maxBatch) throws RepositoryException;
 
     boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Map<String, List<String>> references, List<String> ignoreNodeTypes, int maxBatch, MutableInt batch) throws RepositoryException;
+
+    boolean copy(
+        JCRNodeWrapper dest,
+        String name,
+        boolean allowsExternalSharedNodes,
+        Map<String, List<String>> references,
+        List<String> ignoreNodeTypes,
+        int maxBatch,
+        MutableInt batch,
+        NodeNamingConflictResolutionStrategy namingConflictResolutionStrategy
+    ) throws RepositoryException;
 
     void copyProperties(JCRNodeWrapper destinationNode, Map<String, List<String>> references) throws RepositoryException;
 

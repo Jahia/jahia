@@ -45,6 +45,7 @@ package org.jahia.services.content.decorator;
 
 import org.apache.commons.lang.mutable.MutableInt;
 import org.jahia.services.content.*;
+import org.jahia.services.content.JCRNodeWrapper.NodeNamingConflictResolutionStrategy;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -274,8 +275,16 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.copy(dest, name);
     }
 
+    public boolean copy(String dest, String name, NodeNamingConflictResolutionStrategy namingConflictResolutionStrategy) throws RepositoryException {
+        return node.copy(dest, name, namingConflictResolutionStrategy);
+    }
+
     public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes) throws RepositoryException {
         return node.copy(dest, name, allowsExternalSharedNodes);
+    }
+
+    public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, NodeNamingConflictResolutionStrategy namingConflictResolutionStrategy) throws RepositoryException {
+        return node.copy(dest, name, allowsExternalSharedNodes, namingConflictResolutionStrategy);
     }
 
     public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Map<String, List<String>> references) throws RepositoryException {
@@ -290,11 +299,29 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return internalCopy(dest, name, allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batch, true);
     }
 
+    public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Map<String, List<String>> references, List<String> ignoreNodeTypes, int maxBatch, MutableInt batch, NodeNamingConflictResolutionStrategy namingConflictResolutionStrategy) throws RepositoryException {
+        return internalCopy(dest, name, allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batch, true, namingConflictResolutionStrategy);
+    }
+
     public boolean internalCopy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Map<String, List<String>> references, List<String> ignoreNodeTypes, int maxBatch, MutableInt batch, boolean isTopObject) throws RepositoryException {
+        return internalCopy(dest, name, allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batch, isTopObject, NodeNamingConflictResolutionStrategy.MERGE);
+    }
+
+    private boolean internalCopy(
+        JCRNodeWrapper dest,
+        String name,
+        boolean allowsExternalSharedNodes,
+        Map<String, List<String>> references,
+        List<String> ignoreNodeTypes,
+        int maxBatch,
+        MutableInt batch,
+        boolean isTopObject,
+        NodeNamingConflictResolutionStrategy namingConflictResolutionStrategy
+    ) throws RepositoryException {
         if (!isTopObject && node instanceof JCRNodeWrapperImpl) {
-            return ((JCRNodeWrapperImpl) node).internalCopy(dest, name, allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batch, isTopObject);
+            return ((JCRNodeWrapperImpl) node).internalCopy(dest, name, allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batch, isTopObject, namingConflictResolutionStrategy);
         } else {
-            return node.copy(dest, name, allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batch);
+            return node.copy(dest, name, allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batch, namingConflictResolutionStrategy);
         }
     }
 

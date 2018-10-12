@@ -2217,13 +2217,18 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     @Override
     public boolean copy(String dest, String name) throws RepositoryException {
+        return copy(dest, name, NodeNamingConflictResolutionStrategy.MERGE);
+    }
+
+    @Override
+    public boolean copy(String dest, String name, NodeNamingConflictResolutionStrategy namingConflictResolutionStrategy) throws RepositoryException {
         JCRNodeWrapper node = (JCRNodeWrapper) session.getItem(dest);
         boolean sameProvider = (provider.getKey().equals(node.getProvider().getKey()));
         if (!sameProvider) {
-            copy(node, name, true);
+            copy(node, name, true, namingConflictResolutionStrategy);
             node.save();
         } else {
-            copy(node, name, true);
+            copy(node, name, true, namingConflictResolutionStrategy);
         }
         return true;
     }
@@ -2233,8 +2238,16 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     @Override
     public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes) throws RepositoryException {
+        return copy(dest, name, allowsExternalSharedNodes, NodeNamingConflictResolutionStrategy.MERGE);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, NodeNamingConflictResolutionStrategy namingConflictResolutionStrategy) throws RepositoryException {
         Map<String, List<String>> references = new HashMap<String, List<String>>();
-        boolean copy = copy(dest, name, allowsExternalSharedNodes, references, null, 0, new MutableInt(0));
+        boolean copy = copy(dest, name, allowsExternalSharedNodes, references, null, 0, new MutableInt(0), namingConflictResolutionStrategy);
         ReferencesHelper.resolveCrossReferences(getSession(), references, false);
         return copy;
     }
@@ -2263,20 +2276,58 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     @Override
     public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Map<String, List<String>> references, List<String> ignoreNodeTypes, int maxBatch, MutableInt batchCount) throws RepositoryException {
-        return internalCopy(dest, name, allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batchCount, true);
+        return copy(dest, name, allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batchCount, NodeNamingConflictResolutionStrategy.MERGE);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean copy(
+        JCRNodeWrapper dest,
+        String name,
+        boolean allowsExternalSharedNodes,
+        Map<String, List<String>> references,
+        List<String> ignoreNodeTypes,
+        int maxBatch,
+        MutableInt batchCount,
+        NodeNamingConflictResolutionStrategy namingConflictResolutionStrategy
+    ) throws RepositoryException {
+        return internalCopy(dest, name, allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batchCount, true, namingConflictResolutionStrategy);
     }
 
     public boolean internalCopy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Map<String, List<String>> references, List<String> ignoreNodeTypes, int maxBatch, MutableInt batchCount, boolean isTopObject) throws RepositoryException {
+        return internalCopy(dest, name, allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batchCount, isTopObject, NodeNamingConflictResolutionStrategy.MERGE);
+    }
+
+    public boolean internalCopy(
+        JCRNodeWrapper dest,
+        String name,
+        boolean allowsExternalSharedNodes,
+        Map<String, List<String>> references,
+        List<String> ignoreNodeTypes,
+        int maxBatch,
+        MutableInt batchCount,
+        boolean isTopObject,
+        NodeNamingConflictResolutionStrategy namingConflictResolutionStrategy
+    ) throws RepositoryException {
+
         if (isTopObject) {
             getSession().getUuidMapping().put("top-" + getIdentifier(), StringUtils.EMPTY);
         }
+
         JCRNodeWrapper copy = null;
         try {
-            copy = (JCRNodeWrapper) session
-                    .getItem(dest.getPath() + "/" + name);
+            copy = (JCRNodeWrapper) session.getItem(dest.getPath() + "/" + name);
             getSession().checkout(copy);
         } catch (PathNotFoundException ex) {
             // node does not exist
+        }
+
+        if (copy != null && !copy.getParent().getDefinition().allowsSameNameSiblings()) {
+            if (namingConflictResolutionStrategy == NodeNamingConflictResolutionStrategy.FAIL) {
+                throw new ItemExistsException("Node '" + copy.getPath() + "' already exists");
+            }
         }
 
         if (ignoreNodeTypes != null) {

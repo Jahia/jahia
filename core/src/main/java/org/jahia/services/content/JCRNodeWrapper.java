@@ -122,6 +122,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @return The updated <code>Property</code> object wrapped in <code>JCRPropertywWrapper</code>
      */
+    @Override
     JCRPropertyWrapper setProperty(String name, Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
 
     /**
@@ -130,6 +131,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * @return the <code>Property</code> object wrapped in <code>JCRPropertywWrapper</code> set, or <code>null</code>
      * if this method was used to remove a property (by setting its value to <code>null</code>).
      */
+    @Override
     JCRPropertyWrapper setProperty(String name, Value value, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
 
     /**
@@ -137,6 +139,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @return The updated <code>Property</code> object wrapped in <code>JCRPropertywWrapper</code>
      */
+    @Override
     JCRPropertyWrapper setProperty(String name, Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
 
     /**
@@ -144,6 +147,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @return The updated <code>Property</code> object wrapped in <code>JCRPropertywWrapper</code>
      */
+    @Override
     JCRPropertyWrapper setProperty(String name, Value[] values, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
 
     /**
@@ -151,6 +155,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @return The updated <code>Property</code> object wrapped in <code>JCRPropertywWrapper</code>
      */
+    @Override
     JCRPropertyWrapper setProperty(String name, String[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
 
     /**
@@ -158,6 +163,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @return The updated <code>Property</code> object wrapped in <code>JCRPropertywWrapper</code>
      */
+    @Override
     JCRPropertyWrapper setProperty(String name, String[] values, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
 
     /**
@@ -165,6 +171,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @return The updated <code>Property</code> object wrapped in <code>JCRPropertywWrapper</code>
      */
+    @Override
     JCRPropertyWrapper setProperty(String name, String value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
 
     /**
@@ -173,6 +180,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * @return the <code>Property</code> object wrapped in <code>JCRPropertywWrapper</code> set, or <code>null</code>
      * if this method was used to remove a property (by setting its value to <code>null</code>).
      */
+    @Override
     JCRPropertyWrapper setProperty(String name, String value, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
 
     /**
@@ -182,6 +190,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * @deprecated As of JCR 2.0, {@link #setProperty(String, javax.jcr.Binary)} should
      * be used instead.
      */
+    @Override
     JCRPropertyWrapper setProperty(String name, InputStream value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
 
     /**
@@ -189,6 +198,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @return The updated <code>Property</code> object wrapped in <code>JCRPropertywWrapper</code>
      */
+    @Override
     JCRPropertyWrapper setProperty(String name, Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
 
     /**
@@ -196,6 +206,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @return The updated <code>Property</code> object wrapped in <code>JCRPropertywWrapper</code>
      */
+    @Override
     JCRPropertyWrapper setProperty(String name, boolean value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
 
     /**
@@ -203,6 +214,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @return The updated <code>Property</code> object wrapped in <code>JCRPropertywWrapper</code>
      */
+    @Override
     JCRPropertyWrapper setProperty(String name, double value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
 
     /**
@@ -210,6 +222,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @return The updated <code>Property</code> object wrapped in <code>JCRPropertywWrapper</code>
      */
+    @Override
     JCRPropertyWrapper setProperty(String name, BigDecimal value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
 
     /**
@@ -217,6 +230,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @return The updated <code>Property</code> object wrapped in <code>JCRPropertywWrapper</code>
      */
+    @Override
     JCRPropertyWrapper setProperty(String name, long value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
 
     /**
@@ -224,6 +238,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @return The updated <code>Property</code> object wrapped in <code>JCRPropertywWrapper</code>
      */
+    @Override
     JCRPropertyWrapper setProperty(String name, Calendar value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
 
     /**
@@ -231,6 +246,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @return The updated <code>Property</code> object wrapped in <code>JCRPropertywWrapper</code>
      */
+    @Override
     JCRPropertyWrapper setProperty(String name, Node value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
 
     /**
@@ -238,6 +254,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @return The wrapped node at <code>relPath</code>.
      */
+    @Override
     JCRNodeWrapper getNode(String relPath) throws PathNotFoundException, RepositoryException;
 
     /**
@@ -257,6 +274,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @return The wrapped property at <code>relPath</code>.
      */
+    @Override
     JCRPropertyWrapper getProperty(String relPath) throws PathNotFoundException, RepositoryException;
 
     /**
@@ -264,6 +282,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @return the wrapped primary child item.
      */
+    @Override
     JCRItemWrapper getPrimaryItem() throws ItemNotFoundException, RepositoryException;
 
     /**
@@ -271,6 +290,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @return a <code>ExtendedNodeType</code> object.
      */
+    @Override
     ExtendedNodeType getPrimaryNodeType() throws RepositoryException;
 
     /**
@@ -278,6 +298,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @return an array of  <code>ExtendedNodeType</code> objects.
      */
+    @Override
     ExtendedNodeType[] getMixinNodeTypes() throws RepositoryException;
 
     /**
@@ -285,6 +306,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @return an <code>ExtendedNodeDefinition</code> object.
      */
+    @Override
     ExtendedNodeDefinition getDefinition() throws RepositoryException;
 
     /**
@@ -681,14 +703,19 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     /**
      * {@inheritDoc}
      */
+    @Override
     boolean isLocked();
 
+    @Override
     Lock lock(boolean isDeep, boolean isSessionScoped) throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException;
 
+    @Override
     Lock getLock() throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, RepositoryException;
 
+    @Override
     boolean holdsLock() throws RepositoryException;
 
+    @Override
     void unlock() throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException;
 
     void unlock(String type) throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException;
@@ -825,12 +852,14 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @return The wrapped node that was added.
      */
+    @Override
     JCRNodeWrapper addNode(String s) throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, RepositoryException;
 
     /**
      * @return The wrapped node that was added.
      * @see Node#addNode(String, String)
      */
+    @Override
     JCRNodeWrapper addNode(String relPath, String primaryNodeTypeName) throws ItemExistsException, PathNotFoundException, NoSuchNodeTypeException, LockException, VersionException, ConstraintViolationException, RepositoryException;
 
     /**
@@ -850,11 +879,13 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     /**
      * {@inheritDoc}
      */
+    @Override
     String getName();
 
     /**
      * {@inheritDoc}
      */
+    @Override
     String getPath();
 
     /**

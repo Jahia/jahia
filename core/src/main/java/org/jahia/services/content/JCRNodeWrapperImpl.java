@@ -98,9 +98,9 @@ import static org.jahia.api.Constants.*;
  * @author toto
  */
 public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWrapper {
-    protected static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRNodeWrapperImpl.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRNodeWrapperImpl.class);
 
-    private static final String[] TRANSLATION_NODES_PATTERN = new String[]{"j:translation_*"};
+    private static final String[] TRANSLATION_NODES_PATTERN = new String[] {"j:translation_*"};
     private static final String TRANSLATION_PREFIX = "j:translation_";
 
     protected Node objectNode = null;
@@ -276,11 +276,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                                 if (!ace.isNodeType("jnt:externalAce")) {
                                     String type = ace.getProperty("j:aceType").getString();
                                     for (Value role : roles) {
-                                        entries.get(principal).add(new String[]{path, type, role.getString()});
+                                        entries.get(principal).add(new String[] {path, type, role.getString()});
                                     }
                                 } else {
                                     for (Value role : roles) {
-                                        entries.get(principal).add(new String[]{path, "EXTERNAL", role.getString() + "/" + ace.getProperty("j:externalPermissionsName").getString()});
+                                        entries.get(principal).add(new String[] {path, "EXTERNAL", role.getString() + "/" + ace.getProperty("j:externalPermissionsName").getString()});
                                     }
                                 }
                             }
@@ -310,9 +310,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                             }
                         }
                     } catch (ItemNotFoundException e) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug(e.getMessage(), e);
-                        }
+                        logger.debug(e.getMessage(), e);
                     }
                 }
                 if (session.isReadOnlyCacheEnabled()) {
@@ -411,7 +409,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
 
             AccessControlManager accessControlManager = getAccessControlManager();
-            return accessControlManager == null || accessControlManager.hasPrivileges(localPathInProvider, new Privilege[]{accessControlManager.privilegeFromName(perm)});
+            return accessControlManager == null || accessControlManager.hasPrivileges(localPathInProvider, new Privilege[] {accessControlManager.privilegeFromName(perm)});
         } catch (RepositoryException re) {
             logger.error("Cannot check permission " + perm, re);
             return false;
@@ -556,13 +554,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
         }
         if (aceg == null) {
-            aceg = acl.addNode("GRANT_" + JCRContentUtils.replaceColon(principalKey).replaceAll("/","_"), "jnt:ace");
+            aceg = acl.addNode("GRANT_" + JCRContentUtils.replaceColon(principalKey).replaceAll("/", "_"), "jnt:ace");
             aceg.setProperty("j:principal", principalKey);
             aceg.setProperty("j:protected", false);
             aceg.setProperty("j:aceType", "GRANT");
         }
         if (aced == null) {
-            aced = acl.addNode("DENY_" + JCRContentUtils.replaceColon(principalKey).replaceAll("/","_"), "jnt:ace");
+            aced = acl.addNode("DENY_" + JCRContentUtils.replaceColon(principalKey).replaceAll("/", "_"), "jnt:ace");
             aced.setProperty("j:principal", principalKey);
             aced.setProperty("j:protected", false);
             aced.setProperty("j:aceType", "DENY");
@@ -1494,7 +1492,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     @Override
     public boolean hasI18N(Locale locale, boolean fallback) throws RepositoryException {
-        return hasI18N(locale,fallback, true);
+        return hasI18N(locale, fallback, true);
     }
 
     private boolean hasI18N(Locale locale, boolean fallback, boolean checkPublication) throws RepositoryException {
@@ -2604,7 +2602,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 property.setValue(newValues);
             }
         } else {
-            objectNode.setProperty("j:lockTypes", new String[]{l});
+            objectNode.setProperty("j:lockTypes", new String[] {l});
         }
     }
 
@@ -3283,7 +3281,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     @Override
     public ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName)  throws RepositoryException {
-        return getApplicablePropertyDefinition(propertyName,0,false);
+        return getApplicablePropertyDefinition(propertyName, 0, false);
     }
 
     /**
@@ -3676,7 +3674,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
         } catch (RepositoryException e) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Node " + this.getPath() + " is not valid due to an Exception during validity check", e);
+                logger.debug("Node " + getPath() + " is not valid due to an Exception during validity check", e);
             }
             return false;
         }

@@ -46,7 +46,7 @@
     <!-- ////// items -->
     <bean id="Toolbar.Item.ViewUntranslatedContents" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ViewIconStatusActionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ShowUntranslatedContentStatusActionItem">
                 <property name="type" value="translate"/>
             </bean>
         </property>

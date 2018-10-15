@@ -1606,7 +1606,7 @@ if (!Element.prototype.matches) {
 
                     switch (cl) {
                         case "x-viewport-editmode":
-							app.V2(app.data.V2 || app.data.V2Disabled);
+							app.V2(true);
 							app.switch("edit");
 
                             break;

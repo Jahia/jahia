@@ -4242,7 +4242,7 @@ if (!Element.prototype.matches) {
 
 				DexV2.getCached("body").setAttribute("data-indigo-styled-combos", "true");
                 DexV2.getCached("body").setAttribute("data-indigo-sidepanel-pinned", "false");
-
+				app.edit.sidepanel.data.pinned = false;
                 app.edit.data.returnURL = window.location.pathname;
 
 				// Reset History
@@ -4805,8 +4805,13 @@ if (!Element.prototype.matches) {
                         DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.setProperty("left", mainFrameLeft + "px", "important");
 
                         // Title
-                        DexV2.class("node-path-container").nodes[0].style.setProperty("left", (mainFrameLeft - 5) + "px", "important");
-                    	DexV2.class("node-path-text").nodes[0].style.setProperty("max-width", "calc(100vw - " + (mainFrameLeft + 60 + 380) + "px)", "important");
+						if(DexV2.class("node-path-container").exists()){
+							DexV2.class("node-path-container").nodes[0].style.setProperty("left", (mainFrameLeft - 5) + "px", "important");
+						}
+
+						if(DexV2.class("node-path-text").exists()){
+							DexV2.class("node-path-text").nodes[0].style.setProperty("max-width", "calc(100vw - " + (mainFrameLeft + 60 + 380) + "px)", "important");
+						}
 
                         if(app.data.V2){
                             // Refresh button

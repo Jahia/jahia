@@ -5676,12 +5676,17 @@ if (!Element.prototype.matches) {
 			onOpen: function(){
 				app.dev.log("::: APP ::: CONTRIBUTE ::: OPENED");
 
-				app.contribute.topbar.build();
 
                 // Set attributes to be used by CSS
                 DexV2.getCached("body")
 					.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "")
-                	.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "yes");
+                	.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "yes")
+					.setAttribute("data-indigo-sidepanel-pinned", "false");
+
+				app.edit.sidepanel.data.pinned = false;
+
+				app.contribute.topbar.build();
+
 			},
 			onClose: function(){},
 
@@ -5910,6 +5915,9 @@ if (!Element.prototype.matches) {
 					app.dev.log("::: APP ::: CONTRIBUTE ::: TOPBAR ::: REPOSITION");
 
                     if(DexV2.class("toolbar-item-publicationstatus").getAttribute("data-page-name") != null){
+							DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.removeProperty("width");
+		                    DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.removeProperty("left");
+
                             var elements = {
                                 body: document.getElementsByTagName("body")[0],
                                 title: document.getElementsByClassName("toolbar-item-publicationstatus")[0],

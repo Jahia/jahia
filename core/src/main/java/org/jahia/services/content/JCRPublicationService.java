@@ -960,10 +960,11 @@ public class JCRPublicationService extends JahiaService {
      * Referenced Node will not be unpublished.
      *
      * @param uuids uuids of the node to unpublish
-     * @throws javax.jcr.RepositoryException
+     * @return the list of node UUIDs that the unpublish action was executed for
+     * @throws javax.jcr.RepositoryException in case of an error during this operation
      */
-    public void unpublish(final List<String> uuids) throws RepositoryException {
-        unpublish(uuids, true);
+    public List<String> unpublish(final List<String> uuids) throws RepositoryException {
+        return unpublish(uuids, true);
     }
 
     /**
@@ -971,9 +972,11 @@ public class JCRPublicationService extends JahiaService {
      * Referenced Node will not be unpublished.
      *
      * @param uuids uuids of the node to unpublish
-     * @throws javax.jcr.RepositoryException
+     * @param checkPermissions do we need to check publish permissions on the provided nodes?
+     * @return the list of node UUIDs that the unpublish action was executed for
+     * @throws javax.jcr.RepositoryException in case of an error during this operation
      */
-    public void unpublish(final List<String> uuids, boolean checkPermissions) throws RepositoryException {
+    public List<String> unpublish(final List<String> uuids, boolean checkPermissions) throws RepositoryException {
         final JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
 
         final List<String> checkedUuids = new ArrayList<String>();
@@ -986,6 +989,10 @@ public class JCRPublicationService extends JahiaService {
             }
         } else {
             checkedUuids.addAll(uuids);
+        }
+
+        if (checkedUuids.isEmpty()) {
+            return checkedUuids;
         }
 
         JCRCallback<Object> callback = new JCRCallback<Object>() {
@@ -1027,6 +1034,8 @@ public class JCRPublicationService extends JahiaService {
         } finally {
             JCRObservationManager.popEventListenersAvailableDuringPublishOnly();
         }
+        
+        return checkedUuids;
     }
 
     public List<PublicationInfo> getPublicationInfos(List<String> uuids, Set<String> languages,

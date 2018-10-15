@@ -41,50 +41,62 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
+
 package org.jahia.ajax.gwt.client.widget.poller;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.atmosphere.gwt20.client.managed.RPCEvent;
 import org.jahia.ajax.gwt.client.util.JsonSerializable;
-import org.jahia.ajax.gwt.client.util.JsonUtils;
-import org.jahia.ajax.gwt.client.widget.poller.Poller.PollListener;
-
-import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * Event dispatcher that listens on broadcasted events (Atmosphere) and dispatches them to listeners, registered via JavaScript callbacks.
+ * Notification event sent after unpublication of a content has been performed.
  * 
  * @author Sergiy Shyrkov
+ *
  */
-public class EventDispatcherPollListener implements PollListener<RPCEvent> {
+public class ContentUnpublishedEvent extends RPCEvent implements Serializable, JsonSerializable {
 
-    public static void register() {
-        PollListener<RPCEvent> listener = new EventDispatcherPollListener();
-        Poller poller = Poller.getInstance();
-        poller.registerListener(listener, TaskEvent.class);
-        poller.registerListener(listener, ProcessPollingEvent.class);
-        poller.registerListener(listener, ContentUnpublishedEvent.class);
+    private static final long serialVersionUID = -4629106522818813015L;
+
+    private List<String> uuids;
+
+    /**
+     * Initializes an instance of this class.
+     */
+    public ContentUnpublishedEvent() {
+        this(null);
+    }
+
+    /**
+     * Initializes an instance of this class.
+     * 
+     * @param uuids the list of node UUIDs the unpublication was performed for
+     */
+    public ContentUnpublishedEvent(List<String> uuids) {
+        super();
+        this.uuids = uuids != null ? new ArrayList<String>(uuids) : new ArrayList<String>();
     }
 
     @Override
-    public void handlePollingResult(RPCEvent result) {
-        if (result instanceof JsonSerializable && isConsumerRegistered()) {
-            dispatchToConsumers(JsonUtils.serialize(((JsonSerializable) result).getDataForJsonSerialization()).getJavaScriptObject());
-        }
+    public Map<String, Object> getDataForJsonSerialization() {
+        Map<String, Object> data = new HashMap<String, Object>(3);
+        data.put("type", "contentUnpublished");
+        data.put("uuids", getUuids());
+
+        return data;
     }
 
-    private native void dispatchToConsumers(JavaScriptObject eventData) /*-{
-        if ($wnd.authoringApi && $wnd.authoringApi.pushEventConsumers && $wnd.authoringApi.pushEventConsumers.length > 0) {
-            $wnd.authoringApi.pushEventConsumers.forEach(function(consumer) {
-                consumer.call(null, eventData);
-            });
-        }
-    }-*/;
+    public List<String> getUuids() {
+        return uuids;
+    }
 
-    private native boolean isConsumerRegistered() /*-{
-        if ($wnd.authoringApi && $wnd.authoringApi.pushEventConsumers && $wnd.authoringApi.pushEventConsumers.length > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }-*/;
+    public void setUuids(List<String> uuids) {
+        this.uuids = uuids;
+    }
+
 }

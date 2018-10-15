@@ -126,7 +126,8 @@ body[indigo-dragging-panel="true"] {
 #JahiaGxtContentPickerWindow,
 #contentpicker,
 #contentmanager,
-#JahiaGxtContentPicker {
+#JahiaGxtContentPicker,
+#JahiaGxtCustomContentPicker {
 	.x-vsplitbar {
 		z-index: 2147483647;
 		background: url($SIDE_PANEL--ICON--SPLIITER) no-repeat center center;
@@ -163,7 +164,8 @@ body[indigo-dragging-panel="true"] {
 
 }
 
-#JahiaGxtContentPicker {
+#JahiaGxtContentPicker,
+#JahiaGxtCustomContentPicker {
 	.x-vsplitbar {
 		height: calc(100% - 54px)!important;
 		top:0!important;
@@ -174,6 +176,9 @@ body[indigo-dragging-panel="true"] {
 
 // PICKER CONTAINER
 #JahiaGxtContentPickerWindow,
+#JahiaGxtCustomContentPickerWindow,
+#JahiaGxtCustomContentPicker,
+#JahiaGxtCustomContentPicker > .x-component,
 #contentpicker,
 #contentmanager {
 	// Reset global position of picker as whole page
@@ -3598,4 +3603,13 @@ body[indigo-dragging-panel="true"] {
 			}
 		}
 	}
+}
+
+#JahiaGxtCustomContentPickerWindow {
+	box-shadow: none !important;
+	background: white !important;
+}
+
+.x-shadow.x-ignore + #JahiaGxtCustomContentPickerWindow {
+	z-index: 99999!important;
 }

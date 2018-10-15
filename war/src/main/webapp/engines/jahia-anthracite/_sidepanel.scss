@@ -2026,6 +2026,8 @@ $side_panel__tab_buttons: (
 // 	}
 // }
 
+
+
 #JahiaGxtSettingsTab {
 	.x-viewport-adminmode &,
 	.x-viewport-dashboardmode & {
@@ -2033,6 +2035,14 @@ $side_panel__tab_buttons: (
 		width: calc(100% + 22px) !important;
 		left:5px;
 	}
+
+	.x-viewport-editmode & {
+		background: red;
+	    height: calc(100% - 38px) !important;
+	}
+
+
+
 
 	> .x-component {
 		width: 100%!important;
@@ -2206,6 +2216,8 @@ body[data-edit-window-style="settings"] {
 	#JahiaGxtSidePanelTabs .x-tab-panel-body {
 		// height: calc(100% - 230px)!important;
 		overflow-y: scroll;
+		margin-top: 53px;
+		height: calc(100% - 113px)!important;
 	}
 
 	.x-grid3 {
@@ -2372,7 +2384,7 @@ body[data-edit-window-style="settings"] {
 		height:auto !important; // DEV TEMP
 
 		&.tab_serverSettings {
-			margin-top: 90px;
+			// margin-top: 90px;
 
 			&.x-hide-display {
 				display: block!important;

@@ -1462,6 +1462,7 @@ if (!Element.prototype.matches) {
 			startedOnEditPage: true,
 			firstApp: null,
             ckeditorVersion: CKEDITOR.version,
+			resizingWindow: false,
 			HTTP: function(){
 
                 var contextIndexOffset = (jahiaGWTParameters.contextPath) ? 1 : 0, // DX is running under a context, need to take this into account with the URL
@@ -1636,11 +1637,12 @@ if (!Element.prototype.matches) {
 
 
 		},
-		onResize: function(){
-			app.dev.log("::: APP ::: ONRESIZE");
+		resized: function(){
+			// Executed AS the window is resized and at the end ONCE it has STOPPED being resized
+			app.dev.log("::: APP ::: RESIZED");
 			if(app.data.currentApp == "edit"){
 				app.edit.topbar.reposition();
-                app.edit.sidepanel.onWindowResize();
+				app.edit.sidepanel.onWindowResize();
 
 			} else if(app.data.currentApp == "admin" || app.data.currentApp == "dashboard"){
 				app.edit.sidepanel.resizeSidePanel()
@@ -1649,6 +1651,21 @@ if (!Element.prototype.matches) {
 			if(app.data.currentApp == "contribute"){
 				app.contribute.topbar.reposition();
 			}
+		},
+		onResizeFinish: function(){
+			// Called ONCE the resizing has stopped
+			app.dev.log("::: APP ::: ONRESIZEFINISH");
+			app.resized();
+		},
+		onResize: function(){
+			// Called AS the window is resizing
+			app.dev.log("::: APP ::: ONRESIZE");
+
+			clearTimeout(app.data.resizingWindow);
+			app.data.resizingWindow = setTimeout(app.onResizeFinish, 500);
+
+			app.resized();
+
 		},
 		onBlur: function(){
 			app.dev.log("::: APP ::: ONBLUR");
@@ -3904,7 +3921,7 @@ if (!Element.prototype.matches) {
 
                     // app.edit.sidepanel.buildSplitter();
                     // app.edit.sidepanel.resizeSidePanel();
-                    DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.removeProperty("width");
+					DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.removeProperty("width");
                     DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.removeProperty("left");
 
 	                // if( elements.publishButton &&
@@ -4729,6 +4746,7 @@ if (!Element.prototype.matches) {
                     }
 				},
                 resizeSidePanel: function(xPos){
+					app.dev.log("APP ::: SIDEPANEL ::: RESIZESIDEPANEL (" + xPos + ")")
                     xPos = xPos || function(){
                         var splitter = DexV2.id("indigoSplitter"),
 							splitterOpacity = (splitter.exists()) ? splitter.nodes[0].style.getPropertyValue("opacity") : "doesnt exist",
@@ -4741,7 +4759,6 @@ if (!Element.prototype.matches) {
                     if(xPos == null || DexV2.getCached("body").getAttribute("data-indigo-gwt-side-panel") !== "open"){
                         return false;
                     }
-
 
                     // Block the minimum and maximum widths of the side panel
                     if(xPos < 360){
@@ -5169,7 +5186,7 @@ if (!Element.prototype.matches) {
 
                     if(app.edit.sidepanel.data.pinned){
                         var xPos = parseInt(DexV2.id("indigoSplitter").nodes[0].style.getPropertyValue("left"));
-                        DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.setProperty("width", "calc(100% - " + (xPos + 5) + "px)", "important");
+						DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.setProperty("width", "calc(100% - " + (xPos + 5) + "px)", "important");
                         DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.setProperty("left", (xPos + 10) + "px", "important");
                     } else {
                         DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.removeProperty("width");

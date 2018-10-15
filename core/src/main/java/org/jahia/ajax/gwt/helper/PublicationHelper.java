@@ -47,13 +47,18 @@ import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang.StringUtils;
+import org.atmosphere.cpr.Broadcaster;
+import org.atmosphere.cpr.BroadcasterFactory;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.client.widget.poller.ContentUnpublishedEvent;
 import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
+import org.jahia.ajax.gwt.commons.server.ManagedGWTResource;
 import org.jahia.api.Constants;
 import org.jahia.bin.Render;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.atmosphere.AtmosphereServlet;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.notification.HttpClientService;
@@ -314,10 +319,21 @@ public class PublicationHelper {
      */
     public void unpublish(List<String> uuids, Set<String> languages, JahiaUser user) throws GWTJahiaServiceException {
         try {
-            publicationService.unpublish(uuids);
+            sendPushNotiticationEvent(publicationService.unpublish(uuids));
         } catch (RepositoryException e) {
             logger.error("repository exception", e);
             throw new GWTJahiaServiceException("Cannot get unpublish nodes " + uuids + ". Cause: " + e.getLocalizedMessage(), e);
+        }
+    }
+
+    private void sendPushNotiticationEvent(List<String> uuids) {
+        BroadcasterFactory broadcasterFactory = AtmosphereServlet.getBroadcasterFactory();
+        if (broadcasterFactory != null) {
+            Broadcaster broadcaster = broadcasterFactory.lookup(ManagedGWTResource.GWT_BROADCASTER_ID);
+            if (broadcaster != null) {
+                // we send an event only in case there are active broadcasters (listeners) registered and we do not propagate this to cluster
+                broadcaster.broadcast(new ContentUnpublishedEvent(uuids));
+            }
         }
     }
 

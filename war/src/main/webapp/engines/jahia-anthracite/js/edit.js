@@ -3460,9 +3460,6 @@ if (!Element.prototype.matches) {
 			onOpen: function(){
 				app.dev.log("::: APP ::: PICKER ::: IMAGEPREVIEW ::: ONOPEN");
 				DexV2.getCached("body").setAttribute("data-INDIGO-IMAGE-PREVIEW", "open");
-
-				// Attribute used to display the friendly name in edit panel
-				DexV2(".engine-panel > div.x-panel-header .x-panel-header-text").setAttribute("data-friendly-name", "nodeDisplayName");
 			},
 			onClose: function(){
 				app.dev.log("::: APP ::: PICKER ::: IMAGEPREVIEW ::: ONCLOSE");
@@ -3525,14 +3522,6 @@ if (!Element.prototype.matches) {
                     .setAttribute("data-indigo-edit-engine-locked", "false")
                     .setAttribute("data-INDIGO-EDIT-ENGINE", "open");
 
-
-                // Add Friendly Name to attribute of header
-                if(app.data.HTTP.app == "manager"){
-                    DexV2(".engine-window .x-window-header .x-window-header-text").setAttribute("data-friendly-name", nodeDisplayName);
-                } else {
-                    DexV2(".engine-panel > div.x-panel-header .x-panel-header-text").setAttribute("data-friendly-name", nodeDisplayName);
-
-                }
 
 				/* TEST CODE START */
 

@@ -18,6 +18,6 @@
     <extend-property name="locale" values="en,fr,de"/> 
 	<set-property-fallback name="locale" value="en"/> 
 	<set-property name="locale" value="en,fr,de"/>
-    <add-linker name="xsiframe" />
-    <set-configuration-property name="devModeRedirectEnabled" value="true" />
+    <!--<add-linker name="xsiframe" />-->
+    <!--<set-configuration-property name="devModeRedirectEnabled" value="true" />-->
 </module>

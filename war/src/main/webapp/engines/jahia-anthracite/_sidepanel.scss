@@ -68,7 +68,7 @@ body[indigo-dragging-panel] {
 			transition: left 0.2s ease-in 0s;
 		}
 
-		body[data-V2="true"][data-multiselect="on"] & {
+		body[data-V2="true"][data-multiselect="on"]:not([data-indigo-gwt-side-panel="open"]) & {
 			display: none;
 		}
 

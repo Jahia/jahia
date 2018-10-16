@@ -1770,23 +1770,25 @@ div.x-jahia-root {
     body[data-multiselect="on"][data-V2="true"][data-indigo-sidepanel-pinned="true"] & {
 
         position: absolute;
-        top: 2px !important;
+        top: 8px !important;
         right: -30px;
         left: auto !important;
-        background-color: transparent!important;
-        background-position: left 6px center;
+        background-color: transparent !important;
+        background-position: left 3px top 2px;
         width: 22px;
+        background-size: 11px!important;
 
         &::before {
             color: #fdfdfd;
             background: #5c6164;
             border-radius: 21px;
-            padding: 3px 10px 3px 32px !important;
+            padding: 3px 10px 3px 24px !important;
             left: -5px;
             top: -4px;
-            height: 21px;
+            height: 16px;
             font-weight: 300;
             z-index: -1;
+            font-size: 12px;
         }
 
 	}
@@ -1873,6 +1875,8 @@ div.x-jahia-root {
 
     body[data-multiselect="on"][data-V2="true"][data-INDIGO-SIDEPANEL-PINNED="true"] & {
 		background-image: url(./images/icons/multiple_selection-grey@2x.png);
+        top: -25px!important;
+        left: 3px!important;
 	}
 
     body[data-V2="true"] & {
@@ -2285,7 +2289,7 @@ div[role="combobox"].toolbar-itemsgroup-languageswitcher {
 		top: 69px!important;
 	}
 
-	body[data-V2="true"][data-multiselect="on"] & {
+	body[data-V2="true"][data-multiselect="on"]:not([data-indigo-gwt-side-panel="open"]) & {
 		display: none;
 	}
 

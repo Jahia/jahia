@@ -2,44 +2,44 @@
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
- *
- *                                 http://www.jahia.com
- *
- *     Copyright (C) 2002-2018 Jahia Solutions Group SA. All rights reserved.
- *
- *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
- *     1/GPL OR 2/JSEL
- *
- *     1/ GPL
- *     ==================================================================================
- *
- *     IF YOU DECIDE TO CHOOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
- *
- *     2/ JSEL - Commercial and Supported Versions of the program
- *     ===================================================================================
- *
- *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
- *
- *     Alternatively, commercial and supported versions of the program - also known as
- *     Enterprise Distributions - must be used in accordance with the terms and conditions
- *     contained in a separate written agreement between you and Jahia Solutions Group SA.
- *
- *     If you are unsure which license is appropriate for your use,
- *     please contact the sales department at sales@jahia.com.
+ * <p>
+ * http://www.jahia.com
+ * <p>
+ * Copyright (C) 2002-2018 Jahia Solutions Group SA. All rights reserved.
+ * <p>
+ * THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
+ * 1/GPL OR 2/JSEL
+ * <p>
+ * 1/ GPL
+ * ==================================================================================
+ * <p>
+ * IF YOU DECIDE TO CHOOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * <p>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * <p>
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * <p>
+ * <p>
+ * 2/ JSEL - Commercial and Supported Versions of the program
+ * ===================================================================================
+ * <p>
+ * IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * <p>
+ * Alternatively, commercial and supported versions of the program - also known as
+ * Enterprise Distributions - must be used in accordance with the terms and conditions
+ * contained in a separate written agreement between you and Jahia Solutions Group SA.
+ * <p>
+ * If you are unsure which license is appropriate for your use,
+ * please contact the sales department at sales@jahia.com.
  */
 package org.jahia.ajax.gwt.client.widget.content;
 
@@ -96,7 +96,7 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
                 for (Iterator<GWTJahiaNode> it = value.iterator(); it.hasNext(); ) {
                     GWTJahiaNode currentNode = it.next();
                     if (currentNode.get("j:url") != null) {
-                        s.append((Object)currentNode.get("j:url"));
+                        s.append((Object) currentNode.get("j:url"));
                     } else {
                         s.append(currentNode.getName());
                     }
@@ -149,6 +149,76 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
             new UserGroupSelect(new UserPickerAdder(), UserGroupSelect.VIEW_USERS, JahiaGWTParameters.getSiteNode().getName(), !multiple);
         } else if (configuration.equals("usergrouppicker")) {
             new UserGroupSelect(new UserPickerAdder(), UserGroupSelect.VIEW_TABS, JahiaGWTParameters.getSiteNode().getName(), !multiple);
+        } else if (configuration.equals("custompicker")) {
+            JahiaContentManagementService.App.getInstance()
+                    .getManagerConfiguration(selectorOptions.get("config"), null, new BaseAsyncCallback<GWTManagerConfiguration>() {
+                        public void onSuccess(GWTManagerConfiguration config) {
+                            PermissionsUtils.loadPermissions(config.getPermissions());
+                            final Window w = new Window();
+                            w.setLayout(new FitLayout());
+                            w.setId("JahiaGxtCustomContentPickerWindow");
+                            w.addStyleName("modal-" + configuration);
+
+
+                            final CustomContentPicker contentPicker = new CustomContentPicker(config.getCustomPickerConfiguration(), getValue(), config.getSiteNode());
+
+                            if (config.getTitle() != null) {
+                                w.setHeadingHtml(config.getTitle());
+                            } else {
+                                w.setHeadingHtml(Messages.get("label." + config.getName(), config.getName()));
+                            }
+                            int windowHeight = com.google.gwt.user.client.Window.getClientHeight() - 10;
+
+                            w.setModal(true);
+                            w.setSize(900, windowHeight);
+                            w.setResizable(true);
+                            w.setMaximizable(true);
+                            w.setBodyBorder(false);
+
+                            final ButtonBar bar = new ButtonBar();
+                            bar.setAlignment(Style.HorizontalAlignment.CENTER);
+
+                            final Button ok = new Button(Messages.get("label.save"), new SelectionListener<ButtonEvent>() {
+                                public void componentSelected(ButtonEvent event) {
+                                    List<String> values = contentPicker.getValues();
+
+                                    JahiaContentManagementService.App.getInstance().getNodes(values, null, new BaseAsyncCallback<List<GWTJahiaNode>>() {
+                                        @Override
+                                        public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
+                                            setValue(gwtJahiaNodes);
+                                            w.hide();
+                                        }
+                                    });
+                                }
+                            });
+                            ok.addStyleName("button-save");
+                            ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
+                            bar.add(ok);
+
+                            if (getValue() == null || getValue().size() == 0) {
+                                ok.setEnabled(false);
+                            }
+                            ok.setEnabled(true);
+                            final Button cancel =
+                                    new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
+                                        public void componentSelected(ButtonEvent event) {
+                                            w.hide();
+                                        }
+                                    });
+                            cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
+                            cancel.addStyleName("button-cancel");
+
+                            bar.add(cancel);
+                            w.add(contentPicker);
+                            w.setBottomComponent(bar);
+                            w.show();
+                            contentPicker.loadData();
+                        }
+
+                        public void onApplicationFailure(Throwable throwable) {
+                            Log.error("Error while loading user permission", throwable);
+                        }
+                    });
         } else {
             JahiaContentManagementService.App.getInstance()
                     .getManagerConfiguration(configuration, null, new BaseAsyncCallback<GWTManagerConfiguration>() {

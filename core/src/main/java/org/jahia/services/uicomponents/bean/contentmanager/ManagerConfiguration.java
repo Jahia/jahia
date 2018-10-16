@@ -43,6 +43,7 @@
  */
 package org.jahia.services.uicomponents.bean.contentmanager;
 
+import org.jahia.ajax.gwt.client.widget.content.CustomPickerConfiguration;
 import org.jahia.services.uicomponents.bean.editmode.EngineConfiguration;
 import org.jahia.services.uicomponents.bean.editmode.EngineTab;
 import org.jahia.services.uicomponents.bean.toolbar.Toolbar;
@@ -119,6 +120,8 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
     private boolean suppressPublicationInfo;
 
     private boolean useLargeThumbnails;
+
+    private CustomPickerConfiguration customPickerConfiguration;
 
     public ManagerConfiguration() {
         tableColumns = new ArrayList<Column>();
@@ -460,7 +463,7 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
 
     /**
      * Indicates if larger thumbnails should be used in the thumbnails view of this manager.
-     * 
+     *
      * @return <code>true</code> if larger thumbnails should be used; <code>false</code> - if standard ones
      */
     public boolean isUseLargeThumbnails() {
@@ -469,10 +472,20 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
 
     /**
      * Flag to indicate if larger thumbnails should be used in the thumbnails view of this manager.
-     * 
+     *
      * @param useLargeThumbnails <code>true</code> if larger thumbnails should be used; <code>false</code> - if standard ones
      */
     public void setUseLargeThumbnails(boolean useLargeThumbnails) {
         this.useLargeThumbnails = useLargeThumbnails;
     }
+
+
+    public CustomPickerConfiguration getCustomPickerConfiguration() {
+        return customPickerConfiguration;
+    }
+
+    public void setCustomPickerConfiguration(CustomPickerConfiguration customPickerConfiguration) {
+        this.customPickerConfiguration = customPickerConfiguration;
+    }
+
 }

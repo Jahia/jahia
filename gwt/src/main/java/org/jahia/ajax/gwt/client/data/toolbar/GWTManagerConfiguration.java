@@ -44,6 +44,7 @@
 package org.jahia.ajax.gwt.client.data.toolbar;
 
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.widget.content.CustomPickerConfiguration;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -113,6 +114,8 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
     private boolean editableGrid = false;
 
     private boolean useLargeThumbnails;
+
+    private CustomPickerConfiguration customPickerConfiguration;
 
     public GWTManagerConfiguration() {
         super();
@@ -445,7 +448,7 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
 
     /**
      * Indicates if larger thumbnails should be used in the thumbnails view of this manager.
-     * 
+     *
      * @return <code>true</code> if larger thumbnails should be used; <code>false</code> - if standard ones
      */
     public boolean isUseLargeThumbnails() {
@@ -454,10 +457,18 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
 
     /**
      * Flag to indicate if larger thumbnails should be used in the thumbnails view of this manager.
-     * 
+     *
      * @param useLargeThumbnails <code>true</code> if larger thumbnails should be used; <code>false</code> - if standard ones
      */
     public void setUseLargeThumbnails(boolean useLargeThumbnails) {
         this.useLargeThumbnails = useLargeThumbnails;
+    }
+
+    public CustomPickerConfiguration getCustomPickerConfiguration() {
+        return customPickerConfiguration;
+    }
+
+    public void setCustomPickerConfiguration(CustomPickerConfiguration customPickerConfiguration) {
+        this.customPickerConfiguration = customPickerConfiguration;
     }
 }

@@ -159,35 +159,31 @@ public class FileServlet extends HttpServlet {
                         }
                     }
 
-                    fileEntry = getFileEntry(fileKey, n, lastModifiedEntry);
-                    
-                    if (fileEntry != null ){
-                        entries = contentCache.get(fileKey.getCacheKey());
-                        if (entries == null) {
-                            entries = new HashMap<>(1);
+                    if (isNotModified(fileKey, lastModifiedEntry, req, res)) {
+                        if (n.hasProperty("j:filename")) {
+                            res.setHeader(
+                                    "Content-Disposition",
+                                    "inline; filename=\""
+                                    + n.getProperty("j:filename").getValue().getString() + "\"");
                         }
-                        entries.put(fileKey.getThumbnail(), fileEntry);
-                        contentCache.put(fileKey.getCacheKey(), entries);
-                    }
-                    
-                    if (isNotModified(fileKey, lastModifiedEntry, req, res)) {                    
+
                         // resource is not changed
-                        if(fileEntry != null) {
-                            final String fileName = fileEntry.getFileName();
-                            if (fileName != null) {
-                                res.setHeader(
-                                        "Content-Disposition",
-                                        "inline; filename=\""
-                                        + fileName + "\"");
-                            }
-                        }
                         code = HttpServletResponse.SC_NOT_MODIFIED;
                         res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
                         logAccess(fileKey, req, "ok-not-modified");
                         return;
                     }
-                    logAccess(fileKey, req, "ok");
 
+                    fileEntry = getFileEntry(fileKey, n, lastModifiedEntry);
+                    if (fileEntry != null && fileEntry.getData() != null) {
+                        entries = contentCache.get(fileKey.getCacheKey());
+                        if (entries == null) {
+                            entries = new HashMap<String, FileCacheEntry>(1);
+                        }
+                        entries.put(fileKey.getThumbnail(), fileEntry);
+                        contentCache.put(fileKey.getCacheKey(), entries);
+                        logAccess(fileKey, req, "ok");
+                    }
                 } else {
                     if (lastModifiedEntry == null) {
                         lastModifiedEntry = new FileLastModifiedCacheEntry(fileEntry.getETag(), fileEntry.getLastModified());

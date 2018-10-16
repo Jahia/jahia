@@ -1307,17 +1307,15 @@ if (!Element.prototype.matches) {
             optionsSingleSelection: "{{node}} Optionen",
             optionsMultipleSelection: "{{count}} ausgewählte Inhalte",
 
-			pickerTitles: {
-				default: "File Picker",
-                imagepicker: jahia_gwt_messages.label_imagepicker,
-				editoriallinkpicker: jahia_gwt_messages.label_editorialpicker,
-				"filemanager-anthracite": jahia_gwt_messages.label_filemanager_title,
-				"editorialcontentmanager-anthracite": jahia_gwt_messages.label_editorialcontentmanager_title,
-				"portletmanager-anthracite": jahia_gwt_messages.label_portletmanager_title,
-                "repositoryexplorer-anthracite": jahia_gwt_messages.label_repositoryexplorer_title,
-                "categorymanager-anthracite": jahia_gwt_messages.label_categorymanager_title,
-                "sitemanager-anthracite": jahia_gwt_messages.label_sitemanager_title
-			},
+            "pickerTitle-default": "File Picker",
+            "pickerTitle-imagepicker": jahia_gwt_messages.label_imagepicker,
+            "pickerTitle-editoriallinkpicker": jahia_gwt_messages.label_editorialpicker,
+            "pickerTitle-filemanager-anthracite": jahia_gwt_messages.label_filemanager_title,
+            "pickerTitle-editorialcontentmanager-anthracite": jahia_gwt_messages.label_editorialcontentmanager_title,
+            "pickerTitle-portletmanager-anthracite": jahia_gwt_messages.label_portletmanager_title,
+            "pickerTitle-repositoryexplorer-anthracite": jahia_gwt_messages.label_repositoryexplorer_title,
+            "pickerTitle-categorymanager-anthracite": jahia_gwt_messages.label_categorymanager_title,
+            "pickerTitle-sitemanager-anthracite": jahia_gwt_messages.label_sitemanager_title
         },
 		"EN": {
 			autoRefresh: "Auto refresh",
@@ -1359,17 +1357,15 @@ if (!Element.prototype.matches) {
             optionsSingleSelection: "{{node}} Options",
             optionsMultipleSelection: "{{count}} Selected Items",
 
-			pickerTitles: {
-				default: "File Picker",
-				imagepicker: jahia_gwt_messages.label_imagepicker,
-				editoriallinkpicker: jahia_gwt_messages.label_editorialpicker,
-				"filemanager-anthracite": jahia_gwt_messages.label_filemanager_title,
-				"editorialcontentmanager-anthracite": jahia_gwt_messages.label_editorialcontentmanager_title,
-				"portletmanager-anthracite": jahia_gwt_messages.label_portletmanager_title,
-                "repositoryexplorer-anthracite": jahia_gwt_messages.label_repositoryexplorer_title,
-				"categorymanager-anthracite": jahia_gwt_messages.label_categorymanager_title,
-                "sitemanager-anthracite": jahia_gwt_messages.label_sitemanager_title
-			},
+            "pickerTitle-default": "File Picker",
+            "pickerTitle-imagepicker": jahia_gwt_messages.label_imagepicker,
+            "pickerTitle-editoriallinkpicker": jahia_gwt_messages.label_editorialpicker,
+            "pickerTitle-filemanager-anthracite": jahia_gwt_messages.label_filemanager_title,
+            "pickerTitle-editorialcontentmanager-anthracite": jahia_gwt_messages.label_editorialcontentmanager_title,
+            "pickerTitle-portletmanager-anthracite": jahia_gwt_messages.label_portletmanager_title,
+            "pickerTitle-repositoryexplorer-anthracite": jahia_gwt_messages.label_repositoryexplorer_title,
+            "pickerTitle-categorymanager-anthracite": jahia_gwt_messages.label_categorymanager_title,
+            "pickerTitle-sitemanager-anthracite": jahia_gwt_messages.label_sitemanager_title
 		},
 		"FR": {
 			autoRefresh: "Rafraîchissement automatique",
@@ -1411,18 +1407,15 @@ if (!Element.prototype.matches) {
             optionsSingleSelection: "Options de {{node}}",
             optionsMultipleSelection: "{{count}} éléments sélectionnés",
 
-			pickerTitles: {
-				default: "File Picker",
-                imagepicker: jahia_gwt_messages.label_imagepicker,
-				editoriallinkpicker: jahia_gwt_messages.label_editorialpicker,
-				"filemanager-anthracite": jahia_gwt_messages.label_filemanager_title,
-				"editorialcontentmanager-anthracite": jahia_gwt_messages.label_editorialcontentmanager_title,
-				"portletmanager-anthracite": jahia_gwt_messages.label_portletmanager_title,
-				"repositoryexplorer-anthracite": jahia_gwt_messages.label_repositoryexplorer_title,
-                "categorymanager-anthracite": jahia_gwt_messages.label_categorymanager_title,
-				"sitemanager-anthracite": jahia_gwt_messages.label_sitemanager_title
-
-			},
+            "pickerTitle-default": "File Picker",
+            "pickerTitle-imagepicker": jahia_gwt_messages.label_imagepicker,
+            "pickerTitle-editoriallinkpicker": jahia_gwt_messages.label_editorialpicker,
+            "pickerTitle-filemanager-anthracite": jahia_gwt_messages.label_filemanager_title,
+            "pickerTitle-editorialcontentmanager-anthracite": jahia_gwt_messages.label_editorialcontentmanager_title,
+            "pickerTitle-portletmanager-anthracite": jahia_gwt_messages.label_portletmanager_title,
+            "pickerTitle-repositoryexplorer-anthracite": jahia_gwt_messages.label_repositoryexplorer_title,
+            "pickerTitle-categorymanager-anthracite": jahia_gwt_messages.label_categorymanager_title,
+            "pickerTitle-sitemanager-anthracite": jahia_gwt_messages.label_sitemanager_title
 		}
 	}
 
@@ -1463,6 +1456,7 @@ if (!Element.prototype.matches) {
 			firstApp: null,
             ckeditorVersion: CKEDITOR.version,
 			resizingWindow: false,
+            fallbackLanguage: "EN",
 			HTTP: function(){
 
                 var contextIndexOffset = (jahiaGWTParameters.contextPath) ? 1 : 0, // DX is running under a context, need to take this into account with the URL
@@ -1512,6 +1506,19 @@ if (!Element.prototype.matches) {
 				};
 			}(),
 		},
+        dictionary: function(key, lang){
+            var lang = lang || app.data.UILanguage,
+                returnString = "not_found";
+
+            if(localisedStrings[lang] && localisedStrings[lang][key]){
+                returnString = localisedStrings[lang][key];
+            } else if(localisedStrings[app.data.fallbackLanguage] && localisedStrings[app.data.fallbackLanguage][key]) {
+                returnString = localisedStrings[app.data.fallbackLanguage][key];
+            }
+
+            return returnString
+
+        },
         hideChrome: function(){
             // Delete : Legacy
         },
@@ -1911,9 +1918,9 @@ if (!Element.prototype.matches) {
                 onOpen: function(){
 					app.dev.log("::: APP ::: CONTEXTMENUS ::: PREVIEWMENU ::: ONOPEN");
                     app.contextMenus.setTitle(this, {
-                        noSelection: localisedStrings[app.data.UILanguage].previewPage,
-                        singleSelection: localisedStrings[app.data.UILanguage].previewSingleSelection,
-                        multipleSelection: localisedStrings[app.data.UILanguage].previewMultipleSelection
+                        noSelection: app.dictionary("previewPage"),
+                        singleSelection: app.dictionary("previewSingleSelection"),
+                        multipleSelection: app.dictionary("previewMultipleSelection")
                     });
 
                 }
@@ -1922,9 +1929,9 @@ if (!Element.prototype.matches) {
                 onOpen: function(contextmenu){
 					app.dev.log("::: APP ::: CONTEXTMENUS ::: PUBLICATIONMENU ::: ONOPEN");
                     app.contextMenus.setTitle(this, {
-                        noSelection: localisedStrings[app.data.UILanguage].publishPage,
-                        singleSelection: localisedStrings[app.data.UILanguage].publishSingleSelection,
-                        multipleSelection: localisedStrings[app.data.UILanguage].publishMultipleSelection
+                        noSelection: app.dictionary("publishPage"),
+                        singleSelection: app.dictionary("publishSingleSelection"),
+                        multipleSelection: app.dictionary("publishMultipleSelection")
                     });
 
                 }
@@ -1933,9 +1940,9 @@ if (!Element.prototype.matches) {
                 onOpen: function(){
 					app.dev.log("::: APP ::: CONTEXTMENUS ::: MOREINFOMENU ::: ONOPEN");
                     app.contextMenus.setTitle(this, {
-                        noSelection: localisedStrings[app.data.UILanguage].optionsPage,
-                        singleSelection: localisedStrings[app.data.UILanguage].optionsSingleSelection,
-                        multipleSelection: localisedStrings[app.data.UILanguage].optionsMultipleSelection
+                        noSelection: app.dictionary("optionsPage"),
+                        singleSelection: app.dictionary("optionsSingleSelection"),
+                        multipleSelection: app.dictionary("optionsMultipleSelection")
                     });
 
                 }
@@ -1979,9 +1986,9 @@ if (!Element.prototype.matches) {
 
 
                 // Update title
-                DexV2.class("job-list-window").filter(".x-window-tl .x-window-header-text").setHTML(localisedStrings[app.data.UILanguage].backgroundJobs);
-				DexV2.class("job-list-window").filter(".x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-tbar").setAttribute("indigo-label", localisedStrings[app.data.UILanguage].jobs);
-				DexV2.class("job-list-window").filter(".x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-tbar .x-toolbar-left .x-toolbar-cell:nth-child(3) > div").setAttribute("indigo-label", localisedStrings[app.data.UILanguage].autoRefresh);
+                DexV2.class("job-list-window").filter(".x-window-tl .x-window-header-text").setHTML(app.dictionary("backgroundJobs"));
+				DexV2.class("job-list-window").filter(".x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-tbar").setAttribute("indigo-label", app.dictionary("jobs"));
+				DexV2.class("job-list-window").filter(".x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-tbar .x-toolbar-left .x-toolbar-cell:nth-child(3) > div").setAttribute("indigo-label", app.dictionary("autoRefresh"));
 
                 // Reset the filters array
                 app.backgroundJobs.data.filters = [];
@@ -2388,7 +2395,7 @@ if (!Element.prototype.matches) {
 
 					// Create title
 					var pickerH1 = document.createElement("h1"),
-						pickerH1Label = document.createTextNode(localisedStrings[app.data.UILanguage].pickerTitles[app.data.HTTP.picker]);
+						pickerH1Label = document.createTextNode(app.dictionary("pickerTitle-" + app.data.HTTP.picker));
 
 					pickerH1.id = "pickerTitle";
 					pickerH1.appendChild(pickerH1Label);
@@ -2573,8 +2580,8 @@ if (!Element.prototype.matches) {
 				var filterField = DexV2('body > #JahiaGxtContentPickerWindow #JahiaGxtManagerTobTable .x-panel-tbar .x-toolbar-cell:nth-child(2) .x-form-text'),
 					sortBy = DexV2('body > #JahiaGxtContentPickerWindow #JahiaGxtManagerTobTable .x-panel-tbar .x-toolbar-cell:nth-child(5) .x-form-text');
 
-				filterField.setAttribute("placeholder", localisedStrings[app.data.UILanguage].filterField);
-				sortBy.setAttribute("placeholder", localisedStrings[app.data.UILanguage].sortBy);
+				filterField.setAttribute("placeholder", app.dictionary("filterField"));
+				sortBy.setAttribute("placeholder", app.dictionary("sortBy"));
 
 				// Reset classes that may have been previously added
 				DexV2("body > #JahiaGxtContentPickerWindow").removeClass("search-panel-opened");
@@ -2706,16 +2713,16 @@ if (!Element.prototype.matches) {
 						var filterField = DexV2('#JahiaGxtManagerTobTable .x-panel-tbar .x-toolbar-cell:nth-child(2) .x-form-text'),
 							sortBy = DexV2('#JahiaGxtManagerTobTable .x-panel-tbar .x-toolbar-cell:nth-child(5) .x-form-text');
 
-						filterField.setAttribute("placeholder", localisedStrings[app.data.UILanguage].filterField);
-						sortBy.setAttribute("placeholder", localisedStrings[app.data.UILanguage].sortBy);
+						filterField.setAttribute("placeholder", app.dictionary("filterField"));
+						sortBy.setAttribute("placeholder", app.dictionary("sortBy"));
 					}, "UPDATE_PLACEHOLDERS");
 
 				} else {
 					var filterField = DexV2('#images-view .x-toolbar .x-toolbar-left .x-toolbar-cell:nth-child(2) .x-form-text'),
 	                	sortBy = DexV2('#images-view .x-toolbar .x-toolbar-left .x-toolbar-cell:nth-child(5) .x-form-text');
 
-					filterField.setAttribute("placeholder", localisedStrings[app.data.UILanguage].filterField);
-					sortBy.setAttribute("placeholder", localisedStrings[app.data.UILanguage].sortBy);
+					filterField.setAttribute("placeholder", app.dictionary("filterField"));
+					sortBy.setAttribute("placeholder", app.dictionary("sortBy"));
 				}
 
 
@@ -3129,13 +3136,13 @@ if (!Element.prototype.matches) {
 						toDate = DexV2('#' + app.picker.data.ID + ' #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(6) input'),
 						dateRange = DexV2('#' + app.picker.data.ID + ' #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(7) input');
 
-					searchField.setAttribute("placeholder", localisedStrings[app.data.UILanguage].search.replace("%n%", app.picker.data.pickerTitle));
+					searchField.setAttribute("placeholder", app.dictionary("search").replace("%n%", app.picker.data.pickerTitle));
 					// searchField.getNode(0).value = "";
-					languageField.setAttribute("placeholder", localisedStrings[app.data.UILanguage].languageField);
+					languageField.setAttribute("placeholder", app.dictionary("languageField"));
 
-					fromDate.setAttribute("placeholder", localisedStrings[app.data.UILanguage].fromDate);
-					toDate.setAttribute("placeholder", localisedStrings[app.data.UILanguage].toDate);
-					dateRange.setAttribute("placeholder", localisedStrings[app.data.UILanguage].dateAnyTime);
+					fromDate.setAttribute("placeholder", app.dictionary("fromDate"));
+					toDate.setAttribute("placeholder", app.dictionary("toDate"));
+					dateRange.setAttribute("placeholder", app.dictionary("dateAnyTime"));
 
 					// Callback when user opens Date Range context menu ...
 					DexV2('#' + app.picker.data.ID + ' #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(7)').oneClick("img", function(){
@@ -3145,11 +3152,11 @@ if (!Element.prototype.matches) {
 							var anyTimeButton = document.createElement("span"),
 								customRangeButton = document.createElement("span");
 
-							anyTimeButton.innerHTML = localisedStrings[app.data.UILanguage].dateAnyTime;
+							anyTimeButton.innerHTML = app.dictionary("dateAnyTime");
 							anyTimeButton.classList.add("search-anytime-button");
 							anyTimeButton.classList.add("x-combo-list-item");
 
-							customRangeButton.innerHTML = localisedStrings[app.data.UILanguage].dateCustomLabel;
+							customRangeButton.innerHTML = app.dictionary("dateCustomLabel");
 							customRangeButton.classList.add("search-custom-date-range-button");
 							customRangeButton.classList.add("x-combo-list-item");
 
@@ -3171,7 +3178,7 @@ if (!Element.prototype.matches) {
 							.onMouseDown(".search-custom-date-range-button", function(){
 								DexV2.id(app.picker.data.ID).setAttribute("data-indigo-search-date", "custom");
 
-								dateRange.setAttribute("placeholder", localisedStrings[app.data.UILanguage].dateCustom);
+								dateRange.setAttribute("placeholder", app.dictionary("dateCustom"));
 
 								// Close the context menu by trigger clicking the page
 								DexV2("#" + app.picker.data.ID).trigger("mousedown").trigger("mouseup");
@@ -3180,7 +3187,7 @@ if (!Element.prototype.matches) {
 							.onMouseDown(".search-anytime-button", function(){
 								// Clicked on Any TIme ( removes times filter )
 
-								dateRange.setAttribute("placeholder", localisedStrings[app.data.UILanguage].dateAnyTime);
+								dateRange.setAttribute("placeholder", app.dictionary("dateAnyTime"));
 								DexV2.id(app.picker.data.ID).setAttribute("data-indigo-search-date", "");
 
 								// Close the context menu by trigger clicking the page
@@ -3247,12 +3254,12 @@ if (!Element.prototype.matches) {
 						toDate = DexV2('body > #JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(6) input'),
 						dateRange = DexV2('body > #JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(7) input');
 
-					searchField.setAttribute("placeholder", localisedStrings[app.data.UILanguage].search.replace("%n%", app.picker.data.subPickerTitle));
-					languageField.setAttribute("placeholder", localisedStrings[app.data.UILanguage].languageField);
+					searchField.setAttribute("placeholder", app.dictionary("search").replace("%n%", app.picker.data.subPickerTitle));
+					languageField.setAttribute("placeholder", app.dictionary("languageField"));
 
-					fromDate.setAttribute("placeholder", localisedStrings[app.data.UILanguage].fromDate);
-					toDate.setAttribute("placeholder", localisedStrings[app.data.UILanguage].toDate);
-					dateRange.setAttribute("placeholder", localisedStrings[app.data.UILanguage].dateAnyTime);
+					fromDate.setAttribute("placeholder", app.dictionary("fromDate"));
+					toDate.setAttribute("placeholder", app.dictionary("toDate"));
+					dateRange.setAttribute("placeholder", app.dictionary("dateAnyTime"));
 
 					// Callback when user opens Date Range context menu ...
 					DexV2('body > #JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(7)').oneClick("img", function(){
@@ -3262,11 +3269,11 @@ if (!Element.prototype.matches) {
 							var anyTimeButton = document.createElement("span"),
 								customRangeButton = document.createElement("span");
 
-							anyTimeButton.innerHTML = localisedStrings[app.data.UILanguage].dateAnyTime;
+							anyTimeButton.innerHTML = app.dictionary("dateAnyTime");
 							anyTimeButton.classList.add("search-anytime-button");
 							anyTimeButton.classList.add("x-combo-list-item");
 
-							customRangeButton.innerHTML = localisedStrings[app.data.UILanguage].dateCustomLabel;
+							customRangeButton.innerHTML = app.dictionary("dateCustomLabel");
 							customRangeButton.classList.add("search-custom-date-range-button");
 							customRangeButton.classList.add("x-combo-list-item");
 
@@ -3288,7 +3295,7 @@ if (!Element.prototype.matches) {
 							.onMouseDown(".search-custom-date-range-button", function(){
 								DexV2("body > #JahiaGxtContentPickerWindow").setAttribute("data-indigo-search-date", "custom");
 
-								dateRange.setAttribute("placeholder", localisedStrings[app.data.UILanguage].dateCustom);
+								dateRange.setAttribute("placeholder", app.dictionary("dateCustom"));
 
 								// Close the context menu by trigger clicking the page
 								DexV2("body > #JahiaGxtContentPickerWindow").trigger("mousedown").trigger("mouseup");
@@ -3297,7 +3304,7 @@ if (!Element.prototype.matches) {
 							.onMouseDown(".search-anytime-button", function(){
 								// Clicked on Any TIme ( removes times filter )
 
-								dateRange.setAttribute("placeholder", localisedStrings[app.data.UILanguage].dateAnyTime);
+								dateRange.setAttribute("placeholder", app.dictionary("dateAnyTime"));
 								DexV2("body > #JahiaGxtContentPickerWindow").setAttribute("data-indigo-search-date", "");
 
 								// Close the context menu by trigger clicking the page
@@ -3366,7 +3373,7 @@ if (!Element.prototype.matches) {
 				},
 				updateModificationLabel: function(){
 					var dateType = DexV2.node(this).filter("label").getHTML(),
-						label = localisedStrings[app.data.UILanguage].dateType.replace("%n%", dateType);
+						label = app.dictionary("dateType").replace("%n%", dateType);
 
 					DexV2.node(this).closest(".x-form-item")
 						.removeClass("indigo-show-menu")
@@ -3389,12 +3396,12 @@ if (!Element.prototype.matches) {
 
 					if(selMeta.length == checkboxCount){
 						// ALL meta data
-						metaMenuLabel = localisedStrings[app.data.UILanguage].allMetadata;
+						metaMenuLabel = app.dictionary("allMetadata");
 
 					} else if(selMeta.length == 0){
-						metaMenuLabel = localisedStrings[app.data.UILanguage].ignoreMetadata;
+						metaMenuLabel = app.dictionary("ignoreMetadata");
 					} else {
-						metaMenuLabel = localisedStrings[app.data.UILanguage].metaLabel.replace("%n%", selMeta.join(", "))
+						metaMenuLabel = app.dictionary("metaLabel").replace("%n%", selMeta.join(", "))
 
 					}
 
@@ -3731,8 +3738,8 @@ if (!Element.prototype.matches) {
                 // Used to prefix the labels with the name of the Selected workflows ...
                 DexV2.node(this).onClick(".x-grid3-row", function(){
                     var label = DexV2.node(this).filter(".x-grid3-col-displayName").getHTML(),
-                        localisedLabel = localisedStrings[app.data.UILanguage].workflowType.replace("%n%", label),
-                        localisedChooseLabel = localisedStrings[app.data.UILanguage].chooseWorkflowType.replace("%n%", label);
+                        localisedLabel = app.dictionary("workflowType").replace("%n%", label),
+                        localisedChooseLabel = app.dictionary("chooseWorkflowType").replace("%n%", label);
 
                     // Update labels
                     DexV2("#JahiaGxtEditEnginePanel-workflow > div > div:nth-child(1) > .x-panel form > div:nth-child(1)").setAttribute("data-indigo-workflow-type", localisedLabel);
@@ -3765,7 +3772,7 @@ if (!Element.prototype.matches) {
                 // Create menu ...
                 var newMenu = document.createElement("menu"),
                     doneButton = document.createElement("button"),
-                    doneButtonLabel = document.createTextNode(localisedStrings[app.data.UILanguage].save);
+                    doneButtonLabel = document.createTextNode(app.dictionary("save"));
 
                 DexV2.node(doneButton).addClass("done-with-condition");
 
@@ -3787,9 +3794,9 @@ if (!Element.prototype.matches) {
 
 				var newMenu = document.createElement("menu"),
 					saveButton = document.createElement("button"),
-					saveButtonLabel = document.createTextNode(localisedStrings[app.data.UILanguage].create),
+					saveButtonLabel = document.createTextNode(app.dictionary("create")),
 					closeButton = document.createElement("button"),
-					closeButtonLabel = document.createTextNode(localisedStrings[app.data.UILanguage].cancel);
+					closeButtonLabel = document.createTextNode(app.dictionary("cancel"));
 
 				DexV2.node(saveButton).addClass("save-new-condition");
 				DexV2.node(closeButton).addClass("cancel-new-condition");
@@ -4353,15 +4360,15 @@ if (!Element.prototype.matches) {
 
 							switch(taskCount){
 								case 0:
-									dashboardButtonLabel = localisedStrings[app.data.UILanguage].zeroTasks;
+									dashboardButtonLabel = app.dictionary("zeroTasks");
 
 									break;
 								case 1:
-									dashboardButtonLabel = localisedStrings[app.data.UILanguage].singleTask.replace("%n%", taskCount);
+									dashboardButtonLabel = app.dictionary("singleTask").replace("%n%", taskCount);
 
 									break;
 								default:
-									dashboardButtonLabel = localisedStrings[app.data.UILanguage].multipleTasks.replace("%n%", taskCount);
+									dashboardButtonLabel = app.dictionary("multipleTasks").replace("%n%", taskCount);
 
 									break;
 							}
@@ -4436,7 +4443,7 @@ if (!Element.prototype.matches) {
                             } else {
                                 // No Jobs active
 								activeJob = false;
-								jobTooltip = localisedStrings[app.data.UILanguage].jobs;
+								jobTooltip = app.dictionary("jobs");
 
 								DexV2.class(workInProgressAdminButton).setAttribute("job-in-progress", "");
 
@@ -4587,7 +4594,7 @@ if (!Element.prototype.matches) {
 								break;
 
 							default:
-								pageTitle = localisedStrings[app.data.UILanguage].optionsMultipleSelection.replace("{{count}}", app.iframe.data.selectionCount);
+								pageTitle = app.dictionary("optionsMultipleSelection").replace("{{count}}", app.iframe.data.selectionCount);
 								multiselect = "on";
 	                            selectType = "multiple";
 								break;
@@ -6174,7 +6181,7 @@ if (!Element.prototype.matches) {
                 })
 				.onOpen(".content-type-window", function(){
 
-					DexV2(".content-type-window .x-form-field-wrap input").setAttribute("placeholder", localisedStrings[app.data.UILanguage].filterContent);
+					DexV2(".content-type-window .x-form-field-wrap input").setAttribute("placeholder", app.dictionary("filterContent"));
 
 					// Firefox has bug which doesnt always set focus on text input, wait a split second before settings focus
 					setTimeout(function(){
@@ -6388,7 +6395,7 @@ if (!Element.prototype.matches) {
 
 				})
     			.onOpen("#JahiaGxtCreateContentTab", function(){
-    				DexV2.node(this).filter("input.x-form-text").setAttribute("placeholder", localisedStrings[app.data.UILanguage].filterContent)
+    				DexV2.node(this).filter("input.x-form-text").setAttribute("placeholder", app.dictionary("filterContent"))
     			})
                 .onGroupOpen("#JahiaGxtSettingsTab .x-grid3-row", app.edit.settings.onTreeChange) // Once matchType is improved the target selector can be changed to #JahiaGxtSettingsTab .x-grid3-row
                 .onOpen(".x-grid-empty", function(value){

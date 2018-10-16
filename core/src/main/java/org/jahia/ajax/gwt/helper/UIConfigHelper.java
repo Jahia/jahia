@@ -393,6 +393,10 @@ public class UIConfigHelper {
 
                 gwtConfig.setUseLargeThumbnails(config.isUseLargeThumbnails());
 
+                if(config.getCustomPickerConfiguration() != null) {
+                    gwtConfig.setCustomPickerConfiguration(config.getCustomPickerConfiguration());
+                }
+
                 return gwtConfig;
             } else {
                 logger.error("Config. " + name + " not found.");

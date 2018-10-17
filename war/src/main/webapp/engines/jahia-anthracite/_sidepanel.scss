@@ -2439,6 +2439,12 @@ body[data-edit-window-style="settings"] {
 		}
 	}
 
+	&.x-masked {
+		&::before {
+			position: relative;
+		}
+	}
+
 
 	&::before {
 		content: $text_site_settings;

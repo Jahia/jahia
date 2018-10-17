@@ -45,14 +45,15 @@ package org.jahia.ajax.gwt.client.widget.poller;
 
 import org.atmosphere.gwt20.client.managed.RPCEvent;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
-import org.jahia.ajax.gwt.client.util.JsonSerializable;
+import org.jahia.ajax.gwt.client.util.EventDataSupplier;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ProcessPollingEvent extends RPCEvent implements Serializable, JsonSerializable  {
+public class ProcessPollingEvent extends RPCEvent implements Serializable, EventDataSupplier  {
+
     private static final long serialVersionUID = -4426085851435410969L;
 
     private int totalCount = 0;
@@ -87,13 +88,12 @@ public class ProcessPollingEvent extends RPCEvent implements Serializable, JsonS
     }
 
     @Override
-    public Map<String, Object> getDataForJsonSerialization() {
-        Map<String, Object> data = new HashMap<String, Object>(3);
+    public Map<String, Object> getEventData() {
+        Map<String, Object> data = new HashMap<String, Object>();
         data.put("type", "job");
         data.put("endedJob", getEndedJob());
         data.put("startedJob", getStartedJob());
         data.put("totalCount", getTotalCount());
-
         return data;
     }
 }

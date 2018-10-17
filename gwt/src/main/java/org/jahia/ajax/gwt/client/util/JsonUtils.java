@@ -41,7 +41,6 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.ajax.gwt.client.util;
 
 import java.util.Date;
@@ -57,25 +56,25 @@ import com.google.gwt.json.client.JSONString;
 
 /**
  * Utility class to serialize object into {@link JSONObject}.
- * 
+ *
  * @author Sergiy Shyrkov
  *
  */
 public class JsonUtils {
-    protected static String encodeValue(Object value) {
+
+    private JsonUtils() {
+    }
+
+    private static String encodeValue(Object value) {
         if (value instanceof Date) {
-            return "" + ((Date) value).getTime();
-        } else if (value instanceof Integer) {
-            return "" + value;
-        } else if (value instanceof Float) {
-            return "" + value;
+            return Long.toString(((Date) value).getTime());
         }
-        return "" + value.toString();
+        return value.toString();
     }
 
     /**
      * Returns a JSON representation for the specified data list.
-     * 
+     *
      * @param data the data to be serialized
      * @return a {@link JSONObject}, representing the supplied data
      */
@@ -100,8 +99,8 @@ public class JsonUtils {
                 jsona.set(i, new JSONString(encodeValue(val)));
             } else if (val instanceof ModelData) {
                 jsona.set(i, serialize(((ModelData) val).getProperties()));
-            } else if (val instanceof JsonSerializable) {
-                jsona.set(i, serialize(((JsonSerializable) val).getDataForJsonSerialization()));
+            } else if (val instanceof EventDataSupplier) {
+                jsona.set(i, serialize(((EventDataSupplier) val).getEventData()));
             }
         }
         return jsona;
@@ -109,7 +108,7 @@ public class JsonUtils {
 
     /**
      * Returns a JSON representation for the specified data map.
-     * 
+     *
      * @param data the data to be serialized
      * @return a {@link JSONObject}, representing the supplied data
      */
@@ -134,8 +133,8 @@ public class JsonUtils {
                 jsobj.put(key, serialize((List<Object>) val));
             } else if (val instanceof ModelData) {
                 jsobj.put(key, serialize(((ModelData) val).getProperties()));
-            } else if (val instanceof JsonSerializable) {
-                jsobj.put(key, serialize(((JsonSerializable) val).getDataForJsonSerialization()));
+            } else if (val instanceof EventDataSupplier) {
+                jsobj.put(key, serialize(((EventDataSupplier) val).getEventData()));
             }
         }
 
@@ -144,7 +143,7 @@ public class JsonUtils {
 
     /**
      * Returns a JSON representation for the specified model data.
-     * 
+     *
      * @param data the data to be serialized
      * @return a {@link JSONObject}, representing the supplied data
      */

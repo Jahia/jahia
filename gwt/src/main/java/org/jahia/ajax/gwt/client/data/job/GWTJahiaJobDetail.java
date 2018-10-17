@@ -50,16 +50,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.jahia.ajax.gwt.client.util.JsonSerializable;
+import org.jahia.ajax.gwt.client.util.EventDataSupplier;
 
 /**
- * 
+ *
  * User: toto
  * Date: Sep 17, 2010
  * Time: 2:13:35 PM
- * 
+ *
  */
-public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Comparable<GWTJahiaJobDetail>, JsonSerializable {
+public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Comparable<GWTJahiaJobDetail>, EventDataSupplier {
 
     public GWTJahiaJobDetail() {
     }
@@ -254,6 +254,7 @@ public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Co
         return get("targetWorkspace");
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -271,10 +272,12 @@ public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Co
         return true;
     }
 
+    @Override
     public int hashCode() {
         return getName() != null ? getName().hashCode() : 0;
     }
 
+    @Override
     public int compareTo(GWTJahiaJobDetail o) {
         if (getCreationTime() != null) {
             return getCreationTime().compareTo(o.getCreationTime());
@@ -287,7 +290,7 @@ public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Co
     }
 
     @Override
-    public Map<String, Object> getDataForJsonSerialization() {
-        return this.getProperties();
+    public Map<String, Object> getEventData() {
+        return getProperties();
     }
 }

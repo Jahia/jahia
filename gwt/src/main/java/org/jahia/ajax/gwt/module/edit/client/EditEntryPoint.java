@@ -49,6 +49,7 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -57,20 +58,29 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.WorkInProgress;
 import org.jahia.ajax.gwt.client.widget.edit.EditPanelViewport;
+import org.jahia.ajax.gwt.client.widget.poller.ContentUnpublishedEvent;
 import org.jahia.ajax.gwt.client.widget.poller.EventDispatcherPollListener;
+import org.jahia.ajax.gwt.client.widget.poller.ProcessPollingEvent;
+import org.jahia.ajax.gwt.client.widget.poller.TaskEvent;
 
 /**
  * Edit mode GWT entry point.
  * @author toto
  */
 public class EditEntryPoint extends CommonEntryPoint {
+
+    @Override
     public void onModuleLoad() {
+
         super.onModuleLoad();
+
         WorkInProgress.init();
         exposeFunctions();
         checkSession();
         final RootPanel panel = RootPanel.get("editmode");
+
         if (panel != null) {
+
             final Element element = panel.getElement();
             final String path = DOM.getElementAttribute(element, "path");
             String config = DOM.getElementAttribute(element, "config");
@@ -78,11 +88,14 @@ public class EditEntryPoint extends CommonEntryPoint {
             if (!hash.equals("") && hash.contains("|")) {
                 config = hash.substring(1, hash.indexOf('|'));
             }
-            JahiaContentManagementService.App.getInstance().getEditConfiguration(path, config,"default", new BaseAsyncCallback<GWTEditConfiguration>() {
+
+            JahiaContentManagementService.App.getInstance().getEditConfiguration(path, config, "default", new BaseAsyncCallback<GWTEditConfiguration>() {
+
+                @Override
                 public void onSuccess(GWTEditConfiguration gwtEditConfiguration) {
                     PermissionsUtils.loadPermissions(gwtEditConfiguration.getPermissions());
                     if (gwtEditConfiguration.isEventDispatchingEnabled()) {
-                        EventDispatcherPollListener.register();
+                        new EventDispatcherPollListener(TaskEvent.class, ProcessPollingEvent.class, ContentUnpublishedEvent.class);
                     }
                     DOM.setInnerHTML(element, "");
                     panel.add(EditPanelViewport.createInstance(
@@ -92,6 +105,7 @@ public class EditEntryPoint extends CommonEntryPoint {
                             DOM.getElementAttribute(element, "locale"), gwtEditConfiguration));
                 }
 
+                @Override
                 public void onApplicationFailure(Throwable throwable) {
                     Log.error("Error when loading EditConfiguration", throwable);
                     Window.Location.assign(JahiaGWTParameters.getContextPath() + "/errors/error_404.jsp");

@@ -51,7 +51,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.atmosphere.gwt20.client.managed.RPCEvent;
-import org.jahia.ajax.gwt.client.util.JsonSerializable;
+import org.jahia.ajax.gwt.client.util.EventDataSupplier;
 
 /**
  * Notification event sent after unpublication of a content has been performed.
@@ -59,7 +59,7 @@ import org.jahia.ajax.gwt.client.util.JsonSerializable;
  * @author Sergiy Shyrkov
  *
  */
-public class ContentUnpublishedEvent extends RPCEvent implements Serializable, JsonSerializable {
+public class ContentUnpublishedEvent extends RPCEvent implements Serializable, EventDataSupplier {
 
     private static final long serialVersionUID = -4629106522818813015L;
 
@@ -83,7 +83,7 @@ public class ContentUnpublishedEvent extends RPCEvent implements Serializable, J
     }
 
     @Override
-    public Map<String, Object> getDataForJsonSerialization() {
+    public Map<String, Object> getEventData() {
         Map<String, Object> data = new HashMap<String, Object>(3);
         data.put("type", "contentUnpublished");
         data.put("uuids", getUuids());

@@ -44,31 +44,30 @@
 package org.jahia.ajax.gwt.client.widget.poller;
 
 import org.atmosphere.gwt20.client.managed.RPCEvent;
-import org.jahia.ajax.gwt.client.util.JsonSerializable;
+import org.jahia.ajax.gwt.client.util.EventDataSupplier;
 import org.jahia.ajax.gwt.client.util.JsonUtils;
 import org.jahia.ajax.gwt.client.widget.poller.Poller.PollListener;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * Event dispatcher that listens on broadcasted events (Atmosphere) and dispatches them to listeners, registered via JavaScript callbacks.
- * 
+ * Event dispatcher that listens to broadcasted events (Atmosphere) and dispatches them to listeners, registered via JavaScript callbacks.
+ *
  * @author Sergiy Shyrkov
  */
 public class EventDispatcherPollListener implements PollListener<RPCEvent> {
 
-    public static void register() {
-        PollListener<RPCEvent> listener = new EventDispatcherPollListener();
+    public EventDispatcherPollListener(Class<?>... eventTypes) {
         Poller poller = Poller.getInstance();
-        poller.registerListener(listener, TaskEvent.class);
-        poller.registerListener(listener, ProcessPollingEvent.class);
-        poller.registerListener(listener, ContentUnpublishedEvent.class);
+        for (Class<?> eventType : eventTypes) {
+            poller.registerListener(this, eventType);
+        }
     }
 
     @Override
     public void handlePollingResult(RPCEvent result) {
-        if (result instanceof JsonSerializable && isConsumerRegistered()) {
-            dispatchToConsumers(JsonUtils.serialize(((JsonSerializable) result).getDataForJsonSerialization()).getJavaScriptObject());
+        if (result instanceof EventDataSupplier && isConsumerRegistered()) {
+            dispatchToConsumers(JsonUtils.serialize(((EventDataSupplier) result).getEventData()).getJavaScriptObject());
         }
     }
 

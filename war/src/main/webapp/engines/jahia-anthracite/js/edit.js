@@ -2238,7 +2238,7 @@ if (!Element.prototype.matches) {
                     width: 340
                 },
 				zooms: {
-					thumbsview: 2,
+					thumbsview: 1,
 					detailedview: 2
 				},
                 open: false

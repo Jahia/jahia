@@ -831,6 +831,11 @@
 									// Author / date
 									position: absolute;
 									top: 5px;
+									width: 100%;
+
+									> div {
+										width: 100%!important;
+									}
 
 									tr {
 										display: inline-block;

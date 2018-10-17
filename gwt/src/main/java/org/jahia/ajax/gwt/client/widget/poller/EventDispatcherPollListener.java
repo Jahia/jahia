@@ -72,15 +72,15 @@ public class EventDispatcherPollListener implements PollListener<RPCEvent> {
     }
 
     private native void dispatchToConsumers(JavaScriptObject eventData) /*-{
-        if ($wnd.authoringApi && $wnd.authoringApi.pushEventConsumers && $wnd.authoringApi.pushEventConsumers.length > 0) {
-            $wnd.authoringApi.pushEventConsumers.forEach(function(consumer) {
-                consumer.call(null, eventData);
+        if ($wnd.authoringApi && $wnd.authoringApi.pushEventHandlers && $wnd.authoringApi.pushEventHandlers.length > 0) {
+            $wnd.authoringApi.pushEventHandlers.forEach(function(pushEventHandler) {
+                pushEventHandler.call(null, eventData);
             });
         }
     }-*/;
 
     private native boolean isConsumerRegistered() /*-{
-        if ($wnd.authoringApi && $wnd.authoringApi.pushEventConsumers && $wnd.authoringApi.pushEventConsumers.length > 0) {
+        if ($wnd.authoringApi && $wnd.authoringApi.pushEventHandlers && $wnd.authoringApi.pushEventHandlers.length > 0) {
             return true;
         } else {
             return false;

@@ -73,6 +73,8 @@ public class FileCacheEntry implements Serializable {
     private List<String> nodeTypes = Collections.emptyList();
 
     private String identifier;
+    
+    private String fileName;
 
     /**
      * Initializes an instance of this class.
@@ -146,5 +148,13 @@ public class FileCacheEntry implements Serializable {
 
     public String getIdentifier() {
         return identifier;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 }

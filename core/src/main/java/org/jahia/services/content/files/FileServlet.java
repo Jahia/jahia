@@ -160,6 +160,14 @@ public class FileServlet extends HttpServlet {
                     }
 
                     if (isNotModified(fileKey, lastModifiedEntry, req, res)) {
+                        final String fileName = FileServlet.getFileName(n, fileKey);
+                        if (fileName != null) {
+                            res.setHeader(
+                                    "Content-Disposition",
+                                    "inline; filename=\""
+                                    + fileName + "\"");
+                        }
+
                         // resource is not changed
                         code = HttpServletResponse.SC_NOT_MODIFIED;
                         res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
@@ -196,14 +204,15 @@ public class FileServlet extends HttpServlet {
                     }
 
                     ranges = useRanges ? RangeUtils.parseRange(req, res, fileEntry.getETag(), fileEntry.getLastModified(), fileEntry.getContentLength()) : null;
-
-                    if (fileKey.getPath().indexOf('%', fileKey.getPath().lastIndexOf('/')) != -1) {
+                    
+                    final String fileName = fileEntry.getFileName();
+                    if (fileName != null) {
                         res.setHeader(
                                 "Content-Disposition",
                                 "inline; filename=\""
-                                        + JCRContentUtils.unescapeLocalNodeName(StringUtils
-                                        .substringAfterLast(fileKey.getPath(), "/")) + "\"");
+                                + fileName + "\"");
                     }
+
                     res.setDateHeader("Last-Modified", fileEntry.getLastModified());
                     res.setHeader("ETag", fileEntry.getETag());
                     InputStream is = null;
@@ -353,6 +362,12 @@ public class FileServlet extends HttpServlet {
         fileEntry = new FileCacheEntry(lastModifiedEntry.getETag(), content.getProperty(
                 Constants.JCR_MIMETYPE).getString(), contentLength,
                 lastModifiedEntry.getLastModified(), node.getIdentifier(), node.getNodeTypes());
+
+        final String fileName = FileServlet.getFileName(node, fileKey);
+        if (fileName != null) {
+            fileEntry.setFileName(fileName);
+        }
+
         if (contentLength <= cacheThreshold && canCache(node) && isVisibleForGuest(node)) {
             InputStream is = null;
             try {
@@ -530,6 +545,17 @@ public class FileServlet extends HttpServlet {
             }
         }
         return true;
+    }
+    
+    private static String getFileName(JCRNodeWrapper fileNode, FileKey fileKey) throws RepositoryException {
+        String fileName = null;
+        if (fileNode.hasProperty("j:filename")) {
+            fileName = fileNode.getProperty("j:filename").getValue().getString();
+        } else if (fileKey.getPath().indexOf('%', fileKey.getPath().lastIndexOf('/')) != -1) {
+            fileName = JCRContentUtils.unescapeLocalNodeName(StringUtils
+                    .substringAfterLast(fileKey.getPath(), "/")) + "\"";
+        }
+        return fileName;
     }
 
     public class FileDownloadEvent extends ApplicationEvent {

@@ -1672,6 +1672,7 @@ if (!Element.prototype.matches) {
 			app.data.resizingWindow = setTimeout(app.onResizeFinish, 500);
 
 			app.resized();
+            app.edit.sidepanel.clipPageTitle();
 
 		},
 		onBlur: function(){

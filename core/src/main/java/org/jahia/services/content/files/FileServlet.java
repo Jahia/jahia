@@ -160,11 +160,12 @@ public class FileServlet extends HttpServlet {
                     }
 
                     if (isNotModified(fileKey, lastModifiedEntry, req, res)) {
-                        if (n.hasProperty("j:filename")) {
+                        final String fileName = FileServlet.getFileName(n, fileKey);
+                        if (fileName != null) {
                             res.setHeader(
                                     "Content-Disposition",
                                     "inline; filename=\""
-                                    + n.getProperty("j:filename").getValue().getString() + "\"");
+                                    + fileName + "\"");
                         }
 
                         // resource is not changed

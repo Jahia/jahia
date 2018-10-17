@@ -4261,11 +4261,6 @@ if (!Element.prototype.matches) {
 				// Reset History
 				app.edit.history.reset();
 
-				// Reset to force reload of settings menu via triggering click on refresh button (later on)
-				app.edit.sidepanel.data.firstRun = true;
-				app.edit.sidepanel.data.firstRunSettings = true;
-				app.edit.sidepanel.data.firstRunPages = true;
-
 				app.edit.topbar.build();
 
                 // Set attributes to be used by CSS
@@ -4292,7 +4287,6 @@ if (!Element.prototype.matches) {
 
 				if(app.edit.settings.data.opened){
 					// CLicked on a settings page
-					app.edit.sidepanel.data.firstRun = false;
 
                     app.dev.log(["ONNAV ::: ", this]);
                     if(this.classList.contains("unselectable-row")){
@@ -4729,13 +4723,11 @@ if (!Element.prototype.matches) {
 
 			sidepanel: {
 				data: {
-					firstRun: true,
-					firstRunPages: true,
-					firstRunSettings: true,
 					open: false,
 					currentTab: null,
 					previousTab: null,
                     pinned: false,
+                    firstRun: true,
                     channel: {
                         autofit: false,
                         opened: false
@@ -4958,6 +4950,7 @@ if (!Element.prototype.matches) {
                     var xPos = e.clientX;
 
                     app.edit.sidepanel.resizeSidePanel(xPos);
+                    app.edit.sidepanel.clipPageTitle();
 
 
                 },
@@ -5190,6 +5183,7 @@ if (!Element.prototype.matches) {
                     }
 
 					app.edit.topbar.reposition();
+                    app.edit.sidepanel.clipPageTitle();
 				},
 
 				toggleFloatingPanel: function(e){
@@ -5207,6 +5201,8 @@ if (!Element.prototype.matches) {
 						}
 					}
 
+                    app.edit.sidepanel.clipPageTitle();
+
 
 				},
 				onStartDrag: function(){
@@ -5221,7 +5217,7 @@ if (!Element.prototype.matches) {
 
 				},
 				onStopDrag: function(){
-					app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: ONSTOPDRAG");
+                    app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: ONSTOPDRAG");
 					DexV2.getCached("body").removeClass("indigo-drag-to-drop");
 
 				},
@@ -5242,6 +5238,87 @@ if (!Element.prototype.matches) {
                         // Add the spliiter to the body
         				DexV2.getCached("body").prepend(sidePanelSplitter);
                     }
+                },
+                clipPageTitle: function(){
+                    app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: CLIPPAGETITLE");
+                    var sidepanelWidth = parseInt(document.getElementById("JahiaGxtSidePanelTabs").style.width) - 78,
+                        pageTitleClip = null,
+                        wideSidepanels = ["JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab", "JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab", "JahiaGxtSidePanelTabs__JahiaGxtSearchTab", "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"],
+                        isWide = wideSidepanels.indexOf(app.edit.sidepanel.data.currentTab) > -1,
+                        isMinimised = isWide && DexV2.getCached("body").hasClass("minimise-results"),
+                        isPinned = app.edit.sidepanel.data.pinned,
+                        topRightMenuClip = null,
+                        windowWidth = window.innerWidth,
+                        topRightMenuWidth = parseInt(window.getComputedStyle(DexV2.class("edit-menu-topright").nodes[0])["width"]),
+                        centerTopMenuWidth = parseInt(window.getComputedStyle(DexV2.class("edit-menu-centertop").nodes[0])["width"]);
+
+                        if(app.edit.sidepanel.data.firstRun){
+                            sidepanelWidth += 60;
+
+                            app.edit.sidepanel.data.firstRun = false;
+                        }
+
+                        if(app.edit.sidepanel.data.open){
+                            // PINNED - WIDE PANEL - EXPANDED
+                            if(         isPinned &&
+                                        isWide &&
+                                        !isMinimised){
+                                            pageTitleClip = 343;
+                                            topRightMenuClip = pageTitleClip - topRightMenuWidth + 128 + sidepanelWidth;
+
+                            // UNPINNED - WIDE PANEL - EXPANDED
+                            } else if(  !isPinned &&
+                                        isWide &&
+                                        !isMinimised){
+                                            pageTitleClip = sidepanelWidth + 353;
+                                            topRightMenuClip = pageTitleClip - topRightMenuWidth + 118;
+
+                            // PINNED - WIDE PANEL - COLLAPSED
+                            } else if(  isPinned &&
+                                        isWide &&
+                                        isMinimised){
+                                            pageTitleClip = 14;
+                                            topRightMenuClip = null;
+
+                            // UNPINNED - WIDE PANEL - COLLAPSED
+                            } else if( !isPinned &&
+                                        isWide &&
+                                        isMinimised){
+                                            pageTitleClip = sidepanelWidth + 24;
+                                            topRightMenuClip = pageTitleClip - topRightMenuWidth + 118;
+
+                            // PINNED - NORMAL PANEL
+                            } else if(  isPinned &&
+                                        !isWide){
+                                            pageTitleClip = null;
+                                            topRightMenuClip = null;
+
+                            // UNPINNED - NORMAL PANEL
+                            } else if(  !isPinned &&
+                                        !isWide){
+                                            pageTitleClip = sidepanelWidth;
+                                            topRightMenuClip = pageTitleClip - topRightMenuWidth + 118;
+
+                            }
+                        }
+
+                    if(pageTitleClip === null){
+                        DexV2.class("x-current-page-path").nodes[0].style.removeProperty("clip");
+                        DexV2.class("edit-menu-topright").nodes[0].style.removeProperty("clip");
+
+                    } else {
+                        DexV2.class("x-current-page-path").nodes[0].style.setProperty("clip", "rect(0px, 100vw, 30px, " + pageTitleClip + "px)", "important");
+
+                    }
+
+                    if(topRightMenuClip === null){
+                        DexV2.class("edit-menu-topright").nodes[0].style.removeProperty("clip");
+
+                    } else {
+                        DexV2.class("edit-menu-topright").nodes[0].style.setProperty("clip", "rect(0px, 100vw, 30px, " + topRightMenuClip + "px)", "important");
+
+                    }
+
                 },
 				open: function(isSettings){
 					app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: OPEN [isSettings='" + isSettings + "']");
@@ -5272,10 +5349,13 @@ if (!Element.prototype.matches) {
                         app.iframe.disableClicks();
                     }
 
+                    app.edit.sidepanel.clipPageTitle();
+
 				},
 				close: function(force){
 					if(DexV2.getCached("body").getAttribute("data-sitesettings") !== "true" && DexV2.getCached("body").getAttribute("data-edit-window-style") !== "settings" && DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open" && DexV2.getCached("body").getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes" && DexV2.getCached("body").getAttribute("data-INDIGO-SIDEPANEL-PINNED") != "true"){
                         app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: CLOSE");
+                        app.edit.sidepanel.data.open = false;
 
 						var siteCombo = DexV2("body[data-indigo-gwt-side-panel='open'] .window-side-panel div[role='combobox']");
 
@@ -5297,6 +5377,7 @@ if (!Element.prototype.matches) {
 						}
 		            }
 
+                    app.edit.sidepanel.clipPageTitle();
 					// app.edit.topbar.reposition();
 				},
 
@@ -5382,7 +5463,6 @@ if (!Element.prototype.matches) {
 			settings: {
 				data: {
 					opened: false,
-					firstRun: true,
                     iframeCSSOverRide: ".well{border:none!important; box-shadow: none!important;} body{background-image: none!important; background-color:#f5f5f5!important}"
 				},
                 onTreeLoad: function(nodeGroup, arg1, arg2){
@@ -6450,6 +6530,7 @@ if (!Element.prototype.matches) {
 
 
     						DexV2.getCached("body").addClass("show-results");
+
     					}
     				}
 

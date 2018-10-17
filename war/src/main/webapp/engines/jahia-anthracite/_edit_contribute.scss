@@ -1858,9 +1858,7 @@ div.x-jahia-root {
 	    left: 0!important;
 	}
 
-    body[data-indigo-gwt-side-panel="open"][data-V2="true"] & {
-        clip: rect(0px, 100vw, 30px, calc(360px - 78px));
-    }
+    
 
 	body[data-V2="true"][data-INDIGO-SIDEPANEL-PINNED="true"] & {
 	    left: 10px!important;

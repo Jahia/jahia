@@ -303,7 +303,10 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
                 ((Engine) parent).setTabs(tabs);
             }
         }
-        results.add(tabs);
+        // prevent adding engine tabs twice if themes share the same engine tabs configuration
+        if (!results.contains(tabs)) {
+            results.add(tabs);
+        }
         return results;
     }
 

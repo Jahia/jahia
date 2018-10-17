@@ -91,8 +91,8 @@ public class ProcessPollingEvent extends RPCEvent implements Serializable, Event
     public Map<String, Object> getEventData() {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("type", "job");
-        data.put("endedJob", getEndedJob());
-        data.put("startedJob", getStartedJob());
+        data.put("endedJobs", getEndedJob());
+        data.put("startedJobs", getStartedJob());
         data.put("totalCount", getTotalCount());
         return data;
     }

@@ -41,22 +41,21 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.ajax.gwt.client.util;
 
 import java.util.Map;
 
 /**
- * Implementors of this interface can provide data to be serialized into a JSON representation.
- * 
+ * Implementors of this interface provide event data passed to external event handlers.
+ *
  * @author Sergiy Shyrkov
  */
-public interface JsonSerializable {
+public interface EventDataSupplier {
 
     /**
-     * Returns data, which will be used for serialization into JSON.
-     * 
-     * @return a map with data, used for JSON serialization
+     * Returns event data which will be passed to external event handlers.
+     *
+     * @return event data which will be passed to external event handlers
      */
-    Map<String, Object> getDataForJsonSerialization();
+    Map<String, Object> getEventData();
 }

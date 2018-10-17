@@ -412,11 +412,10 @@ public class EditConfiguration implements Serializable, BeanNameAware {
         this.refreshEnabled = refreshEnabled;
     }
 
-
     /**
      * Indicates if the events (using Atmosphere framework) should be dispatched to consumers, registered via JavaScript callbacks.
-     * 
-     * @return <code>true</code> if the if the events should be dispatched; <code>false</code> if not
+     *
+     * @return <code>true</code> if the events should be dispatched; <code>false</code> if not
      */
     public boolean isEventDispatchingEnabled() {
         return eventDispatchingEnabled;
@@ -424,7 +423,7 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     /**
      * Should the events (using Atmosphere framework) be dispatched to consumers, registered via JavaScript callbacks or not.
-     * 
+     *
      * @param dispatchEvents <code>true</code> enables event dispatching; <code>false</code> disables it
      */
     public void setEventDispatchingEnabled(boolean dispatchEvents) {

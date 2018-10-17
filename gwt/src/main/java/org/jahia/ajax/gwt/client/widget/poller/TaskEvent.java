@@ -48,9 +48,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.atmosphere.gwt20.client.managed.RPCEvent;
-import org.jahia.ajax.gwt.client.util.JsonSerializable;
+import org.jahia.ajax.gwt.client.util.EventDataSupplier;
 
-public class TaskEvent extends RPCEvent implements Serializable, JsonSerializable {
+public class TaskEvent extends RPCEvent implements Serializable, EventDataSupplier {
+
     private static final long serialVersionUID = 7742645002324255207L;
     private String newTask;
     private String endedTask;
@@ -91,13 +92,12 @@ public class TaskEvent extends RPCEvent implements Serializable, JsonSerializabl
     }
 
     @Override
-    public Map<String, Object> getDataForJsonSerialization() {
-        Map<String, Object> data = new HashMap<String, Object>(3);
+    public Map<String, Object> getEventData() {
+        Map<String, Object> data = new HashMap<String, Object>();
         data.put("type", "workflowTask");
         data.put("endedTask", getEndedTask());
         data.put("endedWorkflow", getEndedWorkflow());
         data.put("newTask", getNewTask());
-
         return data;
     }
 }

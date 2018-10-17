@@ -97,6 +97,7 @@ import java.util.*;
  * Time: 5:25:09 PM
  */
 public class UIConfigHelper {
+
     private static final Logger logger = LoggerFactory.getLogger(UIConfigHelper.class);
     private LanguageHelper languages;
     private NavigationHelper navigation;
@@ -393,7 +394,7 @@ public class UIConfigHelper {
 
                 gwtConfig.setUseLargeThumbnails(config.isUseLargeThumbnails());
 
-                if(config.getCustomPickerConfiguration() != null) {
+                if (config.getCustomPickerConfiguration() != null) {
                     gwtConfig.setCustomPickerConfiguration(config.getCustomPickerConfiguration());
                 }
 

@@ -255,6 +255,7 @@
 			}
 
 			&.toolbar-item-filepreview,
+			&.toolbar-item-openincontentmanager,
 			&.toolbar-item-openincontentmanager-newtab {
 				background-image: url(./images/icons/context-menu/preview.png);
 				background-color: _property($MENU-OPENED--BG, $type);
@@ -276,7 +277,8 @@
 				background-size: 16px;
 			}
 
-			&.toolbar-item-translatemenu {
+			&.toolbar-item-translatemenu,
+			&.toolbar-item-translatemenu-item {
 				//background: url(./images/icons/context-menu/translate.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
 				background-image: url(./images/icons/context-menu/translate.png);
 				background-color: _property($MENU-OPENED--BG, $type);
@@ -530,6 +532,32 @@
 				background-size: 16px;*/
 			}
 
+			&.toolbar-item-newportletfolder {
+				background-image: url(./images/buttons_light/new-content-folder.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
+
+			&.toolbar-item-newportlet {
+				background-image: url(./images/buttons_light/new-portlet.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
+
+			&.toolbar-item-refresh {
+				background-image: url(./images/icons_light/refresh.svg);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
 		}
 
 		&.x-item-disabled  {

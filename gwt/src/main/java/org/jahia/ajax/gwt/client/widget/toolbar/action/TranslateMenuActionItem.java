@@ -95,6 +95,7 @@ public class TranslateMenuActionItem extends BaseActionItem {
                                             destLang).show();
                                 }
                             });
+                            item.addStyleName("toolbar-item-translatemenu-item");
                             menu.add(item);
                             notEmpty = true;
                         }

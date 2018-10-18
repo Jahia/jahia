@@ -233,7 +233,7 @@ public class EditContentEngine extends AbstractContentEngine {
                         Element el = (Element) headerElement.getChild(i);
                         if (el.getClassName().contains("-header-text")) {
                             el.setAttribute("data-friendly-name", node.getDisplayName());
-                            Boolean isLocked = node.isLocked();
+                            Boolean isLocked = node.isLocked() || node.getLockInfos() != null && !node.getLockInfos().isEmpty();
                             el.setAttribute("data-content-locked", isLocked.toString());
                         }
                     }

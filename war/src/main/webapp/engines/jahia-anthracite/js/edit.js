@@ -3527,7 +3527,6 @@ if (!Element.prototype.matches) {
 
                 // Register Edit Engine as Opened and set locked flag to off
                 DexV2.getCached("body")
-                    .setAttribute("data-indigo-edit-engine-locked", "false")
                     .setAttribute("data-INDIGO-EDIT-ENGINE", "open");
 
 
@@ -3594,32 +3593,6 @@ if (!Element.prototype.matches) {
                     checkbox.trigger("click");
 
                 }, "EDIT-ENGINE-INDIGO-SWITCH-LISTENER");
-
-				if(app.data.HTTP.app == "edit" || app.data.HTTP.app == "contentmanager"){
-					// Engine has been opened in Edit Mode
-					// Wait a sec, ...
-					// Then work out if the node has been locked
-					setTimeout(function(){
-						var nodeDetails = DexV2(".engine-panel > div.x-panel-header .x-panel-header-text").getHTML(),
-							regExp = /\[(.*?)\]/gi,
-							nodeStatus = nodeDetails.match(regExp),
-							isLocked = false;
-
-						// Square brackets have been found (suggesting its locked) ...
-						if(nodeStatus){
-							// See if the String contains the word locked, or verouillé or gesperrt
-							isLocked = nodeStatus[0].indexOf("locked") > -1 || nodeStatus[0].indexOf("verrouillé") > -1 || nodeStatus[0].indexOf("gesperrt") > -1;
-
-							// Register the Node as locked
-							DexV2.getCached("body").setAttribute("data-indigo-edit-engine-locked", isLocked);
-
-							// Add ONLY the lock message to the header, which will be displayed on a hover
-							DexV2(".engine-panel > div.x-panel-header .x-panel-header-text").setHTML(nodeStatus[0])
-
-						}
-
-					}, 500);
-				}
 
 			},
 			onClose: function(e){

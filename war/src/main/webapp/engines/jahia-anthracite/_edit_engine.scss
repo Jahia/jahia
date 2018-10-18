@@ -2596,20 +2596,22 @@ div.engine-window {
 		.x-panel-header-text {
 			// Element Title
 			position: fixed;
-		    top: 91px;
+			top: 91px;
 			width: 240px;
-		    max-width: calc(100% - 680px);
+			max-width: calc(100% - 680px);
 			overflow: visible;
-		    white-space: nowrap;
-		    text-overflow: ellipsis;
-		    height: 21px !important;
-		    left: -50000px;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			height: 21px !important;
+			left: -50000px;
 			display: block;
 			background-color: transparent;
 			padding: 37px 0 0 42px;
 
 			// Styles the Lock message
 			@include text(14px, _theme-color(status, locked), $FONT--WEIGHT---EXTRABOLD);
+
+
 
 			// Node Friendly Name
 			&::before {
@@ -2625,28 +2627,32 @@ div.engine-window {
 
 				@include text(18px !important, #007cb0, $FONT--WEIGHT---EXTRALIGHT);
 
-				// Add Locked icon if the node has been locked
-				body[data-indigo-edit-engine-locked="true"] & {
+
+
+			}
+
+			// Add Locked icon if the node has been locked
+			&[data-content-locked="true"] {
+				&::before {
 					background: url(./images/icons/icon-lock@X2.png) no-repeat left center;
 					background-size: 20px;
 					padding-left: 22px;
-
 				}
 
 			}
 
 			// Node has been locked, so modify styles ...
-			body[data-indigo-edit-engine-locked="true"] & {
+			&[data-content-locked="true"] {
 
 				&.hover-info,
 				&:hover {
 					white-space: pre-wrap;
-					background-color: _theme-color(secondary);
-				    /* width: 100%; */
-				    padding: 37px 20px 16px 42px;
-				    box-shadow: 3px 3px 10px rgba(0,0,0,0.4);
-				    height: auto!important;
-					left: 49px;
+				    background-color: #fafafa;
+				    padding: 16px 20px 16px 22px;
+				    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4);
+				    height: auto !important;
+				    left: 49px;
+				    top: 100px;
 				}
 			}
 
@@ -4098,7 +4104,7 @@ img.invalid-icon {
 }
 
 // Hidde disabled buttons if content is locked
-body[data-indigo-edit-engine-locked="true"] .JahiaEditEngineButtonBar button[aria-disabled="true"] {
+.JahiaEditEngineButtonBar button[aria-disabled="true"] {
     opacity: .5;
 }
 

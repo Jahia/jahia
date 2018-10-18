@@ -382,10 +382,10 @@
  + * (jnt:group) = jnt:group
  + * (jnt:groupsFolder)
 
-[jnt:member] > nt:base, jmix:observable, jmix:autoPublish, jmix:publication
+[jnt:member] > nt:base, jmix:observable, jmix:autoPublish, jmix:publication, jmix:unversionedBasemetadata
  - j:member (weakreference) < jnt:user, jnt:group
 
-[jnt:members] > nt:base, jmix:autoPublish, jmix:publication
+[jnt:members] > nt:base, jmix:autoPublish, jmix:publication, jmix:unversionedBasemetadata
  + * (jnt:members)
  + * (jnt:member)
 

@@ -1187,6 +1187,7 @@ body[indigo-dragging-panel] {
  		height: 100%;
  		width: 300px;
  		display: none;
+		pointer-events: none;
 
 		.x-panel-bwrap {
 			position: fixed;

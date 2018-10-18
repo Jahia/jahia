@@ -1798,6 +1798,12 @@ div.x-jahia-root {
         background-color: #a1a4a6;
     }
 
+    body[data-multiselect="on"][data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"] &,
+    body[data-multiselect="on"][data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"] &,
+    body[data-multiselect="on"][data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] &,
+    body[data-multiselect="on"][data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"] & {
+        display: none;
+    }
 
 
 
@@ -1858,7 +1864,7 @@ div.x-jahia-root {
 	    left: 0!important;
 	}
 
-    
+
 
 	body[data-V2="true"][data-INDIGO-SIDEPANEL-PINNED="true"] & {
 	    left: 10px!important;

@@ -194,7 +194,10 @@ public class JahiaGWTParameters {
             urlUpdater.updateEntryPointUrl();
         }
         baseUrl = newBaseUrl(getBaseUrl(), language);
-        baseEditUrl = newBaseUrl(getBaseEditUrl(), language);
+        String oldBaseEditUrl = getBaseEditUrl();
+        if (oldBaseEditUrl != null) {
+            baseEditUrl = newBaseUrl(oldBaseEditUrl, language);
+        }
         setNativeLanguage(newLanguage.getLanguage());
         Document.get().getBody().setAttribute("data-lang", language);
         Document.get().getBody().setAttribute("data-langdisplayname", languageDisplayName);
@@ -366,7 +369,7 @@ public class JahiaGWTParameters {
 
     public static String getBaseEditUrl() {
         if (baseEditUrl == null) {
-            baseEditUrl = jahiaParamDictionary.get(EDIT_URL);
+            baseEditUrl = getParam(EDIT_URL);
         }
         return baseEditUrl;
     }

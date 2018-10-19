@@ -5221,83 +5221,86 @@ if (!Element.prototype.matches) {
                 },
                 clipPageTitle: function(){
                     app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: CLIPPAGETITLE");
-                    var sidepanelWidth = parseInt(document.getElementById("JahiaGxtSidePanelTabs").style.width) - 78,
-                        pageTitleClip = null,
-                        wideSidepanels = ["JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab", "JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab", "JahiaGxtSidePanelTabs__JahiaGxtSearchTab", "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"],
-                        isWide = wideSidepanels.indexOf(app.edit.sidepanel.data.currentTab) > -1,
-                        isMinimised = isWide && DexV2.getCached("body").hasClass("minimise-results"),
-                        isPinned = app.edit.sidepanel.data.pinned,
-                        topRightMenuClip = null,
-                        windowWidth = window.innerWidth,
-                        topRightMenuWidth = parseInt(window.getComputedStyle(DexV2.class("edit-menu-topright").nodes[0])["width"]),
-                        centerTopMenuWidth = parseInt(window.getComputedStyle(DexV2.class("edit-menu-centertop").nodes[0])["width"]);
+					if(DX.data.currentApp === "edit"){
+						var sidepanelWidth = parseInt(document.getElementById("JahiaGxtSidePanelTabs").style.width) - 78,
+	                        pageTitleClip = null,
+	                        wideSidepanels = ["JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab", "JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab", "JahiaGxtSidePanelTabs__JahiaGxtSearchTab", "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"],
+	                        isWide = wideSidepanels.indexOf(app.edit.sidepanel.data.currentTab) > -1,
+	                        isMinimised = isWide && DexV2.getCached("body").hasClass("minimise-results"),
+	                        isPinned = app.edit.sidepanel.data.pinned,
+	                        topRightMenuClip = null,
+	                        windowWidth = window.innerWidth,
+	                        topRightMenuWidth = parseInt(window.getComputedStyle(DexV2.class("edit-menu-topright").nodes[0])["width"]),
+	                        centerTopMenuWidth = parseInt(window.getComputedStyle(DexV2.class("edit-menu-centertop").nodes[0])["width"]);
 
-                        if(app.edit.sidepanel.data.firstRun){
-                            sidepanelWidth += 60;
+	                        if(app.edit.sidepanel.data.firstRun){
+	                            sidepanelWidth += 60;
 
-                            app.edit.sidepanel.data.firstRun = false;
-                        }
+	                            app.edit.sidepanel.data.firstRun = false;
+	                        }
 
-                        if(app.edit.sidepanel.data.open){
-                            // PINNED - WIDE PANEL - EXPANDED
-                            if(         isPinned &&
-                                        isWide &&
-                                        !isMinimised){
-                                            pageTitleClip = 343;
-                                            topRightMenuClip = pageTitleClip - topRightMenuWidth + 128 + sidepanelWidth;
+	                        if(app.edit.sidepanel.data.open){
+	                            // PINNED - WIDE PANEL - EXPANDED
+	                            if(         isPinned &&
+	                                        isWide &&
+	                                        !isMinimised){
+	                                            pageTitleClip = 343;
+	                                            topRightMenuClip = pageTitleClip - topRightMenuWidth + 128 + sidepanelWidth;
 
-                            // UNPINNED - WIDE PANEL - EXPANDED
-                            } else if(  !isPinned &&
-                                        isWide &&
-                                        !isMinimised){
-                                            pageTitleClip = sidepanelWidth + 353;
-                                            topRightMenuClip = pageTitleClip - topRightMenuWidth + 118;
+	                            // UNPINNED - WIDE PANEL - EXPANDED
+	                            } else if(  !isPinned &&
+	                                        isWide &&
+	                                        !isMinimised){
+	                                            pageTitleClip = sidepanelWidth + 353;
+	                                            topRightMenuClip = pageTitleClip - topRightMenuWidth + 118;
 
-                            // PINNED - WIDE PANEL - COLLAPSED
-                            } else if(  isPinned &&
-                                        isWide &&
-                                        isMinimised){
-                                            pageTitleClip = 14;
-                                            topRightMenuClip = null;
+	                            // PINNED - WIDE PANEL - COLLAPSED
+	                            } else if(  isPinned &&
+	                                        isWide &&
+	                                        isMinimised){
+	                                            pageTitleClip = 14;
+	                                            topRightMenuClip = null;
 
-                            // UNPINNED - WIDE PANEL - COLLAPSED
-                            } else if( !isPinned &&
-                                        isWide &&
-                                        isMinimised){
-                                            pageTitleClip = sidepanelWidth + 24;
-                                            topRightMenuClip = pageTitleClip - topRightMenuWidth + 118;
+	                            // UNPINNED - WIDE PANEL - COLLAPSED
+	                            } else if( !isPinned &&
+	                                        isWide &&
+	                                        isMinimised){
+	                                            pageTitleClip = sidepanelWidth + 24;
+	                                            topRightMenuClip = pageTitleClip - topRightMenuWidth + 118;
 
-                            // PINNED - NORMAL PANEL
-                            } else if(  isPinned &&
-                                        !isWide){
-                                            pageTitleClip = null;
-                                            topRightMenuClip = null;
+	                            // PINNED - NORMAL PANEL
+	                            } else if(  isPinned &&
+	                                        !isWide){
+	                                            pageTitleClip = null;
+	                                            topRightMenuClip = null;
 
-                            // UNPINNED - NORMAL PANEL
-                            } else if(  !isPinned &&
-                                        !isWide){
-                                            pageTitleClip = sidepanelWidth;
-                                            topRightMenuClip = pageTitleClip - topRightMenuWidth + 118;
+	                            // UNPINNED - NORMAL PANEL
+	                            } else if(  !isPinned &&
+	                                        !isWide){
+	                                            pageTitleClip = sidepanelWidth;
+	                                            topRightMenuClip = pageTitleClip - topRightMenuWidth + 118;
 
-                            }
-                        }
+	                            }
+	                        }
 
-                    if(pageTitleClip === null){
-                        DexV2.class("x-current-page-path").nodes[0].style.removeProperty("clip");
-                        DexV2.class("edit-menu-topright").nodes[0].style.removeProperty("clip");
+	                    if(pageTitleClip === null){
+	                        DexV2.class("x-current-page-path").nodes[0].style.removeProperty("clip");
+	                        DexV2.class("edit-menu-topright").nodes[0].style.removeProperty("clip");
 
-                    } else {
-                        DexV2.class("x-current-page-path").nodes[0].style.setProperty("clip", "rect(0px, 100vw, 30px, " + pageTitleClip + "px)", "important");
+	                    } else {
+	                        DexV2.class("x-current-page-path").nodes[0].style.setProperty("clip", "rect(0px, 100vw, 30px, " + pageTitleClip + "px)", "important");
 
-                    }
+	                    }
 
-                    if(topRightMenuClip === null){
-                        DexV2.class("edit-menu-topright").nodes[0].style.removeProperty("clip");
+	                    if(topRightMenuClip === null){
+	                        DexV2.class("edit-menu-topright").nodes[0].style.removeProperty("clip");
 
-                    } else {
-                        DexV2.class("edit-menu-topright").nodes[0].style.setProperty("clip", "rect(0px, 100vw, 30px, " + topRightMenuClip + "px)", "important");
+	                    } else {
+	                        DexV2.class("edit-menu-topright").nodes[0].style.setProperty("clip", "rect(0px, 100vw, 30px, " + topRightMenuClip + "px)", "important");
 
-                    }
+	                    }
+					}
+
 
                 },
 				open: function(isSettings){

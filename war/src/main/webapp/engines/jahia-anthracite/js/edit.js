@@ -1861,9 +1861,13 @@ if (!Element.prototype.matches) {
 
             },
 			managerMenu: {
+				data: {
+					opened: false
+				},
 				onOpen: function(contextmenu){
 					app.dev.log("::: APP ::: CONTEXTMENUS ::: MANAGERMENU ::: ONOPEN");
                     DexV2.getCached("body").setAttribute("data-indigo-hamburger-menu", "open");
+					app.contextMenus.managerMenu.data.opened = true;
 
                     DexV2.node(this).setAttribute("data-indigo-current-app", app.data.currentApp);
 
@@ -1886,6 +1890,12 @@ if (!Element.prototype.matches) {
 						closeButton.classList.add("managers-menu-close");
 						closeButton.appendChild(closeButtonLabel);
 
+						backgroundMask.addEventListener("click", function(){
+							DexV2.getCached("body")
+								.trigger("mousedown")
+								.trigger("mouseup");
+						})
+
 						footerContainer.appendChild(loggedUserLabel)
 						footerContainer.appendChild(loggedUserLabel)
 
@@ -1907,12 +1917,8 @@ if (!Element.prototype.matches) {
 				onClose: function(){
 					app.dev.log("::: APP ::: CONTEXTMENUS ::: MANAGERMENU ::: ONCLOSE");
                     DexV2.getCached("body").setAttribute("data-indigo-hamburger-menu", "");
-					// Manager Menu has been closed by clicking on the X.
-		            // Can not remove the actual DOM node as it causes problems with GWT, so just hide it instead.
+					app.contextMenus.managerMenu.data.opened = false;
 
-		            DexV2(".menu-editmode-managers-menu").css({
-                        "display": "none"
-                    });
 				}
 			},
             previewMenu: {
@@ -6533,7 +6539,8 @@ if (!Element.prototype.matches) {
                 .onOpen(".menu-edit-menu-publication", app.contextMenus.publicationMenu.onOpen)
                 .onOpen(".menu-edit-menu-edit", app.contextMenus.moreInfoMenu.onOpen)
                 .onOpen(".editModeContextMenu", app.contextMenus.moreInfoMenu.onOpen)
-                .onOpen(".menu-editmode-managers-menu", app.contextMenus.managerMenu.onOpen)
+				.onOpen(".menu-editmode-managers-menu", app.contextMenus.managerMenu.onOpen)
+                .onClose(".menu-editmode-managers-menu", app.contextMenus.managerMenu.onClose)
                 .onOpen("#" + app.picker.data.ID, app.picker.onOpen)
                 .onOpen(".engine-window, .engine-panel", app.engine.onOpen)
                 // .onOpen("#JahiaGxtEngineWindow", app.picker.thumb.openEdit)

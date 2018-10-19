@@ -2134,7 +2134,7 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
 	    width: calc(100% - 400px);
 	    height: 100%;
 	    background: rgba(80, 78, 77, 0.85);
-		pointer-events: none;
+		pointer-events: all;
 		animation: fadeManagersMask 0.2s ease-in;
 	}
 

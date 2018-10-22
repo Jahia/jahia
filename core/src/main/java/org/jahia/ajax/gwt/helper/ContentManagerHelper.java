@@ -422,7 +422,8 @@ public class ContentManagerHelper {
                         String name = newName != null ? newName : node.getName();
                         try {
                             name = findAvailableName(targetParent, name);
-                            if (targetParent.hasPermission("jcr:addChildNodes") && !targetParent.isLocked()) {
+                            boolean canPaste = (!targetParent.isLocked() || Optional.ofNullable(targetParent.getLockInfos().get(null)).orElse(Collections.emptyList()).stream().allMatch(s->s.endsWith(JCRNodeLockType.ALLOWS_ADD_SUFFIX)));
+                            if (targetParent.hasPermission("jcr:addChildNodes") && canPaste) {
                                 final JCRNodeWrapper copy = doPaste(targetParent, node, name, cut, reference, childNodeTypesToSkip);
 
                                 if (moveOnTop && targetParent.getPrimaryNodeType().hasOrderableChildNodes()) {

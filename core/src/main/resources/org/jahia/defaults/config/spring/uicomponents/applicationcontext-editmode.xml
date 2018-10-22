@@ -1098,7 +1098,7 @@
 
     <bean id="Engine.Button.WorkInProgress" class="org.jahia.ajax.gwt.client.widget.contentengine.WorkInProgressButtonItem">
         <property name="checkedByDefault" value="${wip.checkbox.checked:false}" />
-        <property name="academyUrl" value="${wip.academy.url:https://academy.jahia.com/documentation/digital-experience-manager/7.2/functional/how-to-contribute-content#Work_in_Progress}"/>
+        <property name="academyUrl" value="${wip.academy.url:https://academy.jahia.com/documentation/digital-experience-manager/7.3/functional/how-to-contribute-content#Work_in_Progress}"/>
     </bean>
 
     <bean id="Engine.Button.Update" class="org.jahia.ajax.gwt.client.widget.contentengine.UpdateButtonItem" />

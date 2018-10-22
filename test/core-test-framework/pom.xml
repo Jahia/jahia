@@ -59,7 +59,7 @@
     <scm>
         <connection>scm:dummy:uri</connection>
         <developerConnection>scm:dummy:uri</developerConnection>
-      <tag>HEAD</tag>
+      <tag>JAHIA_7_3_0_0_RC</tag>
   </scm>
 
     <repositories>

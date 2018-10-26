@@ -130,8 +130,16 @@ public class AclListener extends DefaultEventListener {
                     parseEvents(systemSession, aclEvents, aceIdentifiers, addedAceIdentifiers, removedAcePaths, addedExtPermIds, removedExtPermissions, removedRoles);
 
                     handleAclModifications(systemSession, aceIdentifiers, addedAceIdentifiers, removedAcePaths, (JCREventIterator) events);
-                    handleRoleModifications(systemSession, addedExtPermIds, removedExtPermissions, removedRoles);
+                    handleRoleModifications(systemSession, addedExtPermIds, removedExtPermissions);
 
+                    if (removedRoles.size() > 0) {
+                        handleRemovedRole(systemSession, removedRoles);
+                        // roles are only available on default workspace, so we explicitly clean live nodes
+                        JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, liveSession -> {
+                            handleRemovedRole(liveSession, removedRoles);
+                            return null;
+                        });
+                    }
                     return null;
                 }
             });
@@ -450,7 +458,7 @@ public class AclListener extends DefaultEventListener {
         return rolesName;
     }
 
-    private void handleRoleModifications(JCRSessionWrapper session, Set<String> addedExtPermIds, Set<List<String>> removedExtPermissions, Set<String> removedRoles) {
+    private void handleRoleModifications(JCRSessionWrapper session, Set<String> addedExtPermIds, Set<List<String>> removedExtPermissions) {
 
         for (String extPermId : addedExtPermIds) {
             try {
@@ -489,7 +497,9 @@ public class AclListener extends DefaultEventListener {
                 logger.error("Cannot remove external ACE", e);
             }
         }
+    }
 
+    private void handleRemovedRole(JCRSessionWrapper session, Set<String> removedRoles) {
         for (String role : removedRoles) {
             try {
                 QueryManager q = session.getWorkspace().getQueryManager();

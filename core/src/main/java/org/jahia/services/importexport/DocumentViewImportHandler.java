@@ -784,7 +784,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             value = value.substring(1);
             String rootPath = nodes.firstElement().getPath();
             if (!rootPath.equals("/")) {
-                value = rootPath + value;
+                value = nodes.get(1).getPath() + value;
             }
         }
         return value;

@@ -313,6 +313,59 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
     }
 
     @Override
+    public void sendMessage(MailMessage message) {
+        sendMessage(mailEndpointUri, message);
+    }
+
+    /**
+     * Sends the provided mail message to the specified endpoint.
+     * 
+     * @param endpointUri the target endpoint URL to send the message
+     * @param message the mail message to be sent
+     */
+    public void sendMessage(String endpointUri, MailMessage message) {
+        final Map<String, Object> headers = new HashMap<String, Object>();
+        headers.put("To", message.getTo());
+        headers.put("From", StringUtils.defaultIfEmpty(message.getFrom(), settings.getFrom()));
+        if (StringUtils.isNotEmpty(message.getCc())) {
+            headers.put("Cc", message.getCc());
+        }
+        if (StringUtils.isNotEmpty(message.getBcc())) {
+            headers.put("Bcc", message.getBcc());
+        }
+        headers.put("Subject", message.getSubject());
+        final String body;
+        if (StringUtils.isNotEmpty(message.getHtmlBody())) {
+            headers.put("contentType", charset != null ? "text/html; charset=" + charset : "text/html");
+            headers.put("alternativeBodyHeader", message.getTextBody());
+            body = message.getHtmlBody();
+        } else {
+            headers.put("contentType", charset != null ? "text/plain; charset=" + charset : "text/plain");
+            body = message.getTextBody();
+        }
+
+        template.send(endpointUri, new Processor() {
+
+            @Override
+            public void process(Exchange exchange) throws Exception {
+                if (charset != null) {
+                    exchange.setProperty(Exchange.CHARSET_NAME, charset);
+                }
+                Message in = exchange.getIn();
+                for (Map.Entry<String, Object> header : headers.entrySet()) {
+                    in.setHeader(header.getKey(), header.getValue());
+                }
+                in.setBody(body);
+                if (!message.getAttachments().isEmpty()) {
+                    message.getAttachments().entrySet().stream().forEach(attachment -> {
+                        in.addAttachment(attachment.getKey(), attachment.getValue());
+                    });
+                }
+            }
+        });
+    }
+
+    @Override
     public void setCamelContext(CamelContext camelContext) {
         this.camelContext = camelContext;
         template = camelContext.createProducerTemplate();
@@ -341,6 +394,13 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
     public void sendMessageWithTemplate(String template, Map<String, Object> boundObjects, String toMail,
             String fromMail, String ccList, String bcclist, Locale locale, String templatePackageName)
             throws RepositoryException, ScriptException {
+        sendMessageWithTemplate(MailMessage.newMessage().to(toMail).from(fromMail).cc(ccList).bcc(bcclist).build(),
+                template, boundObjects, locale, templatePackageName);
+    }
+
+    @Override
+    public void sendMessageWithTemplate(MailMessage message, String template, Map<String, Object> boundObjects,
+            Locale locale, String templatePackageName) throws ScriptException {
         // Resolve template :
         ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(StringUtils.substringAfterLast(template, "."));
         ScriptContext scriptContext = new SimpleScriptContext();
@@ -410,7 +470,11 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
                 StringWriter writer = (StringWriter) scriptContext.getWriter();
                 String body = writer.toString();
 
-                sendMessage(fromMail, toMail, ccList, bcclist, subject, null, body);
+                message.setHtmlBody(body);
+                if (subject != null) {
+                    message.setSubject(subject);
+                }
+                sendMessage(message);
             } finally {
                 IOUtils.closeQuietly(scriptContent);
             }

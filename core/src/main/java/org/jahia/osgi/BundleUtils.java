@@ -341,7 +341,7 @@ public final class BundleUtils {
                             moduleForClass.put(className, new String[] { pkg.getId(), pkg.getVersion().toString() });
                             return clazz;
                         }
-                    } catch (ClassNotFoundException e) {
+                    } catch (ClassNotFoundException | IllegalStateException e) {
                         // continue searching class in other modules
                     }
                 }

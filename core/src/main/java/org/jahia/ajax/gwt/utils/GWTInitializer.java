@@ -69,6 +69,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.net.MalformedURLException;
 import java.util.*;
@@ -85,7 +86,7 @@ public class GWTInitializer {
     public static String generateInitializerStructureForFrame(RenderContext ctx) {
         StringBuilder buf = new StringBuilder();
 
-        addCss(buf, ctx.getRequest(), true);
+        addCss(buf, ctx.getRequest(), ctx.getResponse(), true);
 
         buf.append("<script type=\"text/javascript\">\n" + "var onGWTFrameLoaded = []; "
                 + "function onGWTFrameLoad(fun) { onGWTFrameLoaded[onGWTFrameLoaded.length] = fun; }; ");
@@ -99,11 +100,25 @@ public class GWTInitializer {
         return buf.toString();
     }
 
+    /**
+     * @deprecated since 7.2.3.3 / 7.3.0.1; use {@link #generateInitializerStructure(HttpServletRequest, HttpServletResponse, HttpSession, Locale, Locale)} instead
+     */
+    @SuppressWarnings("javadoc")
+    @Deprecated
     public static String generateInitializerStructure(HttpServletRequest request, HttpSession session) {
         return generateInitializerStructure(request, session, null, null);
     }
 
+    /**
+     * @deprecated since 7.2.3.3 / 7.3.0.1; use {@link #generateInitializerStructure(HttpServletRequest, HttpServletResponse, HttpSession, Locale, Locale)} instead
+     */
+    @SuppressWarnings("javadoc")
+    @Deprecated
     public static String generateInitializerStructure(HttpServletRequest request, HttpSession session, Locale locale, Locale uilocale) {
+        return generateInitializerStructure(request, null, session, locale, uilocale);
+    }
+
+    public static String generateInitializerStructure(HttpServletRequest request, HttpServletResponse response, HttpSession session, Locale locale, Locale uilocale) {
         StringBuilder buf = new StringBuilder();
         JahiaUser user = (JahiaUser) session.getAttribute(Constants.SESSION_USER);
         if (uilocale == null) {
@@ -130,12 +145,13 @@ public class GWTInitializer {
         }
 
         buf.append("<meta name=\"gwt:property\" content=\"locale=").append(StringEscapeUtils.escapeXml(uilocale.toString())).append("\"/>");
-        addCss(buf, request, false);
+
+        RenderContext renderContext = (RenderContext) request.getAttribute("renderContext");
+
+        addCss(buf, request, response != null ? response : (renderContext != null ? renderContext.getResponse() : null), false);
 
         // creat parameters map
         Map<String, String> params = new HashMap<String, String>();
-
-        RenderContext renderContext = (RenderContext) request.getAttribute("renderContext");
 
         String serviceEntrypoint = buildServiceBaseEntrypointUrl(request);
         params.put(JahiaGWTParameters.SERVICE_ENTRY_POINT, serviceEntrypoint);
@@ -220,7 +236,7 @@ public class GWTInitializer {
         buf.append(getJahiaGWTConfig(params));
         buf.append("\n</script>\n");
 
-        addJavaScript(buf, request, renderContext);
+        addJavaScript(buf, request, response, renderContext);
 
         return buf.toString();
     }
@@ -272,7 +288,7 @@ public class GWTInitializer {
         return pkg;
     }
 
-    private static void addCss(StringBuilder buf, HttpServletRequest request, boolean frame) {
+    private static void addCss(StringBuilder buf, HttpServletRequest request, HttpServletResponse response, boolean frame) {
         String context = request.getContextPath();
 
         String theme = (String) request.getSession().getAttribute(Constants.UI_THEME);
@@ -290,16 +306,26 @@ public class GWTInitializer {
                     logger.error("Invalid path",e);
                 }
             }
-            buf.append("<link type=\"text/css\" href=\"").append(context).append(css)
-                    .append("\" rel=\"stylesheet\"/>\n");
+            buf.append("<link type=\"text/css\" href=\"");
+            if (response != null) {
+                buf.append(context.isEmpty() ? response.encodeURL(css) : response.encodeURL(context + css));
+            } else {
+                buf.append(context).append(css);
+            }
+            buf.append("\" rel=\"stylesheet\"/>\n");
         }
     }
 
-    private static void addJavaScript(StringBuilder buf, HttpServletRequest request, RenderContext ctx) {
+    private static void addJavaScript(StringBuilder buf, HttpServletRequest request, HttpServletResponse response, RenderContext ctx) {
         String context = request.getContextPath();
         for (String js : getConfig().getJavaScripts()) {
-            buf.append("<script type=\"text/javascript\" src=\"")
-                    .append(context).append(js).append("\"></script>\n");
+            buf.append("<script type=\"text/javascript\" src=\"");
+            if (response != null) {
+                buf.append(context.isEmpty() ? response.encodeURL(js) : response.encodeURL(context + js));
+            } else {
+                buf.append(context).append(js);
+            }
+            buf.append("\"></script>\n");
         }
     }
 

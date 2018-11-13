@@ -44,6 +44,7 @@
 
 package org.jahia.services.seo.urlrewrite;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -51,6 +52,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jahia.utils.FileUtils;
+import org.jahia.utils.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,6 +74,14 @@ public class ResourceChecksumCalculator {
         checksums.clear();
     }
 
+    private static InputStream getResourceAsStream(String resourcePath) {
+        try {
+            return WebUtils.getResourceAsStream(resourcePath);
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
     /**
      * Calculates the checksum for the specified resource and sets it as a request attribute.
      *
@@ -87,7 +97,7 @@ public class ResourceChecksumCalculator {
         String checksum = checksums.get(resourcePath);
         if (checksum == null) {
             long startTime = System.currentTimeMillis();
-            @SuppressWarnings("resource") InputStream resourceAsStream = request.getServletContext().getResourceAsStream(resourcePath);
+            @SuppressWarnings("resource") InputStream resourceAsStream = getResourceAsStream(resourcePath);
             checksum = resourceAsStream != null ? FileUtils.calculateDigest(resourceAsStream) : "0";
             checksums.put(resourcePath, checksum);
             if (logger.isDebugEnabled()) {

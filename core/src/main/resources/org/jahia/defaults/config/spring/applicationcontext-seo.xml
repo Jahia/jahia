@@ -51,4 +51,6 @@
         <property name="urlRewriteService" ref="UrlRewriteService"/>
     </bean>
 
+
+    <bean id="ResourceChecksumCalculator" class="org.jahia.services.seo.urlrewrite.ResourceChecksumCalculator"/>
 </beans>

@@ -46,22 +46,26 @@ package org.jahia.services.seo.urlrewrite;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.utils.FileUtils;
 import org.jahia.utils.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationListener;
 
 /**
  * Utility class that calculates checksum for the specified Web resources.
  *
  * @author Sergiy Shyrkov
  */
-public class ResourceChecksumCalculator {
+public class ResourceChecksumCalculator implements ApplicationListener<TemplatePackageRedeployedEvent> {
 
     private static Map<String, String> checksums = new ConcurrentHashMap<>();
 
@@ -107,4 +111,21 @@ public class ResourceChecksumCalculator {
         }
         return checksum;
     }
+
+    @Override
+    public void onApplicationEvent(TemplatePackageRedeployedEvent event) {
+        logger.debug("Event received: {}", event);
+        String prefix = "/modules/";
+        if (event.getSource() instanceof String) {
+            prefix = prefix + (String) event.getSource() + "/"; 
+        }
+        for (Iterator<Map.Entry<String, String>> iterator = checksums.entrySet().iterator(); iterator.hasNext();) {
+            Entry<String, String> entry = iterator.next();
+            if (entry.getKey().startsWith(prefix)) {
+                logger.debug("Invalidating cached checksum entry for resource: {}", entry.getKey());
+                iterator.remove();
+            }
+        }
+    }
+
 }

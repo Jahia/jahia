@@ -57,6 +57,7 @@ import org.jahia.utils.i18n.ResourceBundles;
 import org.slf4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
@@ -200,39 +201,55 @@ public class AbstractJahiaTag extends BodyTagSupport {
     }
 
     /**
-     * Returns current {@link JahiaData} instance.
-     *
-     * @return current {@link JahiaData} instance
-     */
-
-    /*
-    protected JahiaData getJahiaData() {
-        return (JahiaData) pageContext.getAttribute("org.jahia.data.JahiaData",
-                PageContext.REQUEST_SCOPE);
-    }
-    */
-
-    /**
      * Generate jahia_gwt_dictionary JavaScript include
      *
      * @return jahia_gwt_dictionary JavaScript include
      */
     protected String getGwtDictionaryInclude() {
-        HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-        Locale locale = getUILocale();
-
-        return getGwtDictionnaryInclude(request, locale);
+        return getGwtDictionnaryInclude((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(), getUILocale());
     }
 
+    /**
+     * Returns the string, representing the JavaScript resource for GWT I18N messages.
+     * 
+     * @param request current HTTP request
+     * @param locale the UI locale
+     * @return the string, representing the JavaScript resource for GWT I18N messages
+     * @deprecated since 7.2.3.3 / 7.3.0.1; use {@link #getGwtDictionnaryInclude(HttpServletRequest, HttpServletResponse, Locale)} instead
+     */
+    @Deprecated
     public static String getGwtDictionnaryInclude(HttpServletRequest request, Locale locale) {
-        StringBuilder s = new StringBuilder();
-        s.append("<script type=\"text/javascript\" src=\"").append(
-                request.getContextPath())
-                .append("/gwt/resources/i18n/messages");
+        return getGwtDictionnaryInclude(request, null, locale);
+    }
+
+    /**
+     * Returns the string, representing the JavaScript resource for GWT I18N messages.
+     * 
+     * @param request current HTTP request
+     * @param response current HTTP response
+     * @param locale the UI locale
+     * @return the string, representing the JavaScript resource for GWT I18N messages
+     */
+    public static String getGwtDictionnaryInclude(HttpServletRequest request, HttpServletResponse response,
+            Locale locale) {
+        StringBuilder s = new StringBuilder(96);
+
+        String dictionaryUrl = getDictionaryUrl(request.getContextPath(), locale);
+
+        s.append("<script type=\"text/javascript\" src=\"");
+        s.append(response != null ? response.encodeURL(dictionaryUrl) : dictionaryUrl);
+        s.append("\"></script>");
+
+        return s.toString();
+    }
+
+    private static String getDictionaryUrl(String contextPath, Locale locale) {
+        StringBuilder s = new StringBuilder(64);
+        s.append(contextPath).append("/gwt/resources/i18n/messages");
         if (LanguageCodeConverters.getAvailableBundleLocales().contains(locale)) {
             s.append("_").append(locale.toString());
         }
-        s.append(".js\"></script>");
+        s.append(".js");
         return s.toString();
     }
 

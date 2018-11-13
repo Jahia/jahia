@@ -50,6 +50,7 @@ import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.ajax.gwt.utils.GWTInitializer;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
@@ -96,9 +97,10 @@ public class GWTInitTag extends AbstractJahiaTag {
         try {
             final JspWriter out = pageContext.getOut();
             final HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+            final HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
             final HttpSession session = request.getSession();
 
-            out.print(GWTInitializer.generateInitializerStructure(request, session,
+            out.print(GWTInitializer.generateInitializerStructure(request, response, session,
                     StringUtils.isEmpty(locale) ? null : LanguageCodeConverters.languageCodeToLocale(locale),
                     StringUtils.isEmpty(uilocale) ? null : LanguageCodeConverters.languageCodeToLocale(uilocale))) ;
 

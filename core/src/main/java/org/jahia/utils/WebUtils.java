@@ -157,17 +157,17 @@ public final class WebUtils {
     }
 
     /**
-     * Loads the content of the specified servlet context resource as text.
+     * Returns the InputStream for the specified servlet context resource.
      *
      * @param path
      *            the resource path (context relative)
-     * @return the text of the specified resource content or <code>null</code> if the corresponding resource does not exist
+     * @return an InputStream for the specified resource content or <code>null</code> if the corresponding resource does not exist
      * @throws IOException
      *             in case of a problem reading resource content
      */
-    public static String getResourceAsString(String path) throws IOException {
-        path = path.length() > 0 && path.charAt(0) != '/' ? "/" + path : path;
+    public static InputStream getResourceAsStream(String path) throws IOException {
         InputStream is = null;
+        path = path.length() > 0 && path.charAt(0) != '/' ? "/" + path : path;
         if (path.startsWith("/modules/")) {
             String module = StringUtils.substringAfter(path, "/modules/");
             String remainingPath = StringUtils.substringAfter(module, "/");
@@ -184,6 +184,20 @@ public final class WebUtils {
             is = JahiaContextLoaderListener.getServletContext().getResourceAsStream(path);
         }
 
+        return is;
+    }
+
+    /**
+     * Loads the content of the specified servlet context resource as text.
+     *
+     * @param path
+     *            the resource path (context relative)
+     * @return the text of the specified resource content or <code>null</code> if the corresponding resource does not exist
+     * @throws IOException
+     *             in case of a problem reading resource content
+     */
+    public static String getResourceAsString(String path) throws IOException {
+        InputStream is = getResourceAsStream(path);
         String content = null;
         if (is != null) {
             try {

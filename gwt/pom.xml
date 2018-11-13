@@ -212,7 +212,7 @@
                                 <cssSourceFile>diff.css</cssSourceFile>
                             </cssSourceFiles>
                             <cssTargetDir>gwt/edit/css</cssTargetDir>
-                            <cssFinalFile>gwt-1.8.css</cssFinalFile>
+                            <cssFinalFile>gwt.css</cssFinalFile>
                         </configuration>
                     </execution>
                 </executions>

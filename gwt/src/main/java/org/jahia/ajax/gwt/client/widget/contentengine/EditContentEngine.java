@@ -44,16 +44,18 @@
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -70,11 +72,15 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.jahia.ajax.gwt.client.util.content.actions.ContentActions.fillContentChanges;
 
 /**
  * Content editing widget.
@@ -85,6 +91,8 @@ public class EditContentEngine extends AbstractContentEngine {
 
     private String contentPath;
     private HandlerRegistration handlerRegistration;
+    private HandlerRegistration escHandler;
+    private AbstractContentEngine engine = this;
 
     private Map<String, GWTJahiaGetPropertiesResult> langCodeGWTJahiaGetPropertiesResultMap =
             new HashMap<String, GWTJahiaGetPropertiesResult>();
@@ -133,6 +141,7 @@ public class EditContentEngine extends AbstractContentEngine {
             handlerRegistration.removeHandler();
             handlerRegistration = null;
         }
+        escHandler.removeHandler();
         container.closeEngine();
     }
 
@@ -313,6 +322,25 @@ public class EditContentEngine extends AbstractContentEngine {
                 if (PermissionsUtils.isPermitted("jcr:modifyProperties", node) && !node.isLocked()) {
                     setButtonsEnabled(true);
                 }
+
+                //Handling escape button to leave the engine
+                escHandler = Event.addNativePreviewHandler(new Event.NativePreviewHandler() {
+                    public void onPreviewNativeEvent(final Event.NativePreviewEvent event) {
+                        NativeEvent nEvent = event.getNativeEvent();
+                        if ("keydown".equals(nEvent.getType())) {
+                            if (event.getNativeEvent().getKeyCode() == 27) {
+                                if (hasChanges()) {
+                                    if (Window.confirm("Some modifications have not been saved. Are you sure ? ")) {
+                                        closeEngine();
+                                    }
+                                } else {
+                                    closeEngine();
+                                }
+                            }
+                        }
+                    }
+                });
+
                 loaded();
             }
 
@@ -372,5 +400,24 @@ public class EditContentEngine extends AbstractContentEngine {
     @Override
     public String toString() {
         return node.getPath();
+    }
+
+    // return true if modifications has been done in the edit engine / and the opposite
+    private boolean hasChanges() {
+        int propertiesChanges = engine.getChangedProperties().size();
+
+        fillContentChanges(engine, false);
+
+        if (propertiesChanges != engine.getChangedProperties().size()) {
+            return true;
+        }
+
+        for (Map.Entry<String, List<GWTJahiaNodeProperty>> entry : getChangedI18NProperties().entrySet()) {
+            if (!entry.getValue().isEmpty()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

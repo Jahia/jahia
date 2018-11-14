@@ -46,7 +46,9 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.BoxComponent;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -141,8 +143,21 @@ public class EditContentEngine extends AbstractContentEngine {
             handlerRegistration.removeHandler();
             handlerRegistration = null;
         }
-        escHandler.removeHandler();
-        container.closeEngine();
+
+        if (hasChanges()) {
+            MessageBox.confirm(Messages.get("message.confirm.unsavedTitle","Changes won't be saved"),
+                    Messages.get("message.confirm.unsavedModifications","Close without saving?"), new Listener<MessageBoxEvent>() {
+                @Override public void handleEvent(MessageBoxEvent boxEvent) {
+                    if (Dialog.YES.equalsIgnoreCase(boxEvent.getButtonClicked().getItemId())) {
+                        container.closeEngine();
+                        escHandler.removeHandler();
+                    }
+                }
+            });
+        } else {
+            container.closeEngine();
+            escHandler.removeHandler();
+        }
     }
 
     /**
@@ -329,13 +344,7 @@ public class EditContentEngine extends AbstractContentEngine {
                         NativeEvent nEvent = event.getNativeEvent();
                         if ("keydown".equals(nEvent.getType())) {
                             if (event.getNativeEvent().getKeyCode() == 27) {
-                                if (hasChanges()) {
-                                    if (Window.confirm("Some modifications have not been saved. Are you sure ? ")) {
-                                        closeEngine();
-                                    }
-                                } else {
-                                    closeEngine();
-                                }
+                                closeEngine();
                             }
                         }
                     }

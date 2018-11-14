@@ -46,12 +46,18 @@ package org.jahia.ajax.gwt.client.util.content.actions;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -61,6 +67,9 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.FileUploader;
 import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.content.portlet.PortletWizardWindow;
+import org.jahia.ajax.gwt.client.widget.contentengine.AbstractContentEngine;
+import org.jahia.ajax.gwt.client.widget.contentengine.ContentTabItem;
+import org.jahia.ajax.gwt.client.widget.contentengine.EditEngineTabItem;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeWindow;
 
 import java.util.*;
@@ -358,6 +367,88 @@ public class ContentActions {
                 });
             }
         }
+    }
+
+    public static Set<String> fillContentChanges (final AbstractContentEngine engine, boolean saveChanges) {
+        // node
+        final Set<String> addedTypes = new HashSet<String>();
+        final Set<String> removedTypes = new HashSet<String>();
+
+        for (TabItem tab : engine.getTabs().getItems()) {
+            EditEngineTabItem item = tab.getData("item");
+            // case of contentTabItem
+            if (item instanceof ContentTabItem) {
+                final List<CheckBox> validLanguagesChecked = ((ContentTabItem) item).getCheckedLanguagesCheckBox();
+                if (validLanguagesChecked != null) {
+                    // Checkboxes are not null so they are displayed, if list is empty this means that this
+                    // content is not visible in any language
+                    final List<GWTJahiaLanguage> siteLanguages = JahiaGWTParameters.getSiteLanguages();
+                    List<String> invalidLanguages = engine.getNode().getInvalidLanguages();
+                    List<String> newInvalidLanguages = new ArrayList<String>();
+                    for (GWTJahiaLanguage language : siteLanguages) {
+                        boolean found = false;
+                        for (CheckBox validLang : validLanguagesChecked) {
+                            if (language.getLanguage().equals(validLang.getValueAttribute())) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            newInvalidLanguages.add(language.getLanguage());
+                        }
+                    }
+                    boolean hasChanged = newInvalidLanguages.size() != invalidLanguages.size();
+                    if (!hasChanged) {
+                        for (String lang : newInvalidLanguages) {
+                            if (!invalidLanguages.contains(lang)) {
+                                hasChanged = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (hasChanged) {
+                        List<String> strings = new ArrayList<String>(siteLanguages.size());
+                        for (GWTJahiaLanguage siteLanguage : siteLanguages) {
+                            strings.add(siteLanguage.getLanguage());
+                        }
+                        GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
+                        gwtJahiaNodeProperty.setName("j:invalidLanguages");
+                        gwtJahiaNodeProperty.setMultiple(true);
+                        for (CheckBox value : validLanguagesChecked) {
+                            if (value.getValue()) {
+                                strings.remove(value.getValueAttribute());
+                            }
+                        }
+                        if (strings.size() > 0) {
+                            gwtJahiaNodeProperty.setValues(new ArrayList<GWTJahiaNodePropertyValue>());
+                            for (String string : strings) {
+                                gwtJahiaNodeProperty.getValues().add(new GWTJahiaNodePropertyValue(string));
+                            }
+                        }
+                        final List<GWTJahiaNodePropertyValue> gwtJahiaNodePropertyValues = gwtJahiaNodeProperty.getValues();
+                        if (gwtJahiaNodePropertyValues != null && gwtJahiaNodePropertyValues.size() > 0) {
+                            engine.getChangedProperties().add(gwtJahiaNodeProperty);
+                            addedTypes.add("jmix:i18n");
+                        } else {
+                            gwtJahiaNodeProperty.setValues(new ArrayList<GWTJahiaNodePropertyValue>());
+                            engine.getChangedProperties().add(gwtJahiaNodeProperty);
+                        }
+                    }
+                }
+            }
+
+            // case of right tab
+            item.doSave(engine.getNode(), engine.getChangedProperties(), engine.getChangedI18NProperties(), addedTypes, removedTypes, null,
+                    engine.getAcl());
+
+            // distinct modifications save from a simple check
+            if (saveChanges) {
+                engine.getNode().getNodeTypes().removeAll(removedTypes);
+                engine.getNode().getNodeTypes().addAll(addedTypes);
+                return removedTypes;
+            }
+        }
+        return null;
     }
 
 }

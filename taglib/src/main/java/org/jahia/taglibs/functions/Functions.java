@@ -61,6 +61,7 @@ import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlService;
+import org.jahia.utils.CollectionUtils;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.Url;
 import org.joda.time.DateTime;
@@ -95,6 +96,8 @@ public class Functions {
     };
 
     private static final Logger logger = LoggerFactory.getLogger(Functions.class);
+
+    private static Map<String, Pattern> PATTERN_CACHE = Collections.synchronizedMap(CollectionUtils.lruCache(1000000));
 
     public static String attributes(Map<String, Object> attributes) {
         StringBuilder out = new StringBuilder();
@@ -280,7 +283,16 @@ public class Functions {
 
 
     public static boolean matches(String pattern, String str) {
-        return Pattern.compile(pattern).matcher(str).matches();
+        return getCompiledPattern(pattern).matcher(str).matches();
+    }
+
+    private static Pattern getCompiledPattern(String pattern) {
+        Pattern compiledPattern = PATTERN_CACHE.get(pattern);
+        if (compiledPattern == null) {
+            compiledPattern = Pattern.compile(pattern);
+            PATTERN_CACHE.put(pattern, compiledPattern);
+        }
+        return compiledPattern;
     }
 
     public static String removeCacheTags(String txt) {

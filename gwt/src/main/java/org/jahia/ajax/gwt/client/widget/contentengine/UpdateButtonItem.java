@@ -64,8 +64,6 @@ import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
 
 import java.util.*;
 
-import static org.jahia.ajax.gwt.client.util.content.actions.ContentActions.fillContentChanges;
-
 /**
  * Button Item for update - used for edit content.
  */
@@ -74,25 +72,7 @@ public class UpdateButtonItem extends SaveButtonItem {
     @Override
     protected void prepareAndSave(final AbstractContentEngine engine, final boolean closeAfterSave) {
 
-        for (TabItem tab : engine.getTabs().getItems()) {
-            EditEngineTabItem item = tab.getData("item");
-            // case of contentTabItem
-            if (item instanceof ContentTabItem) {
-                if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
-                    Field<String> name = ((ContentTabItem) item).getName();
-                    if (!name.isValid()) {
-                        com.google.gwt.user.client.Window.alert(name.getErrorMessage());
-                        engine.unmask();
-                        engine.setButtonsEnabled(true);
-                        return;
-                    }
-                    engine.setNodeName(name.getValue());
-                    engine.getNode().setName(engine.getNodeName());
-                }
-            }
-        }
-
-        Set<String> removedTypes = fillContentChanges(engine, true);
+        Set<String> removedTypes = engine.fillContentChanges(true);
 
         engine.removeUneditedLanguages();
 

@@ -51,6 +51,7 @@ import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DualListField;
 import com.extjs.gxt.ui.client.widget.form.Field;
@@ -76,8 +77,6 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.AreaModule;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageSwitcherActionItem;
 
 import java.util.*;
-
-import static org.jahia.ajax.gwt.client.util.content.actions.ContentActions.fillContentChanges;
 
 /**
  * Abstract Method for Content Engine
@@ -480,6 +479,99 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         getChangedI18NProperties().keySet().retainAll(editedLanguages);
     }
 
+    protected Set<String> fillContentChanges (boolean saveChanges) {
+        // node
+        final Set<String> addedTypes = new HashSet<String>();
+        final Set<String> removedTypes = new HashSet<String>();
+
+        for (TabItem tab : this.getTabs().getItems()) {
+            EditEngineTabItem item = tab.getData("item");
+            // case of contentTabItem
+            if (item instanceof ContentTabItem) {
+                if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
+                    Field<String> name = ((ContentTabItem) item).getName();
+                    if (!name.isValid()) {
+                        com.google.gwt.user.client.Window.alert(name.getErrorMessage());
+                        this.unmask();
+                        this.setButtonsEnabled(true);
+                        return null;
+                    }
+                    this.setNodeName(name.getValue());
+                    this.getNode().setName(this.getNodeName());
+                }
+                final List<CheckBox> validLanguagesChecked = ((ContentTabItem) item).getCheckedLanguagesCheckBox();
+                if (validLanguagesChecked != null) {
+                    // Checkboxes are not null so they are displayed, if list is empty this means that this
+                    // content is not visible in any language
+                    final List<GWTJahiaLanguage> siteLanguages = JahiaGWTParameters.getSiteLanguages();
+                    List<String> invalidLanguages = this.getNode().getInvalidLanguages();
+                    List<String> newInvalidLanguages = new ArrayList<String>();
+                    for (GWTJahiaLanguage language : siteLanguages) {
+                        boolean found = false;
+                        for (CheckBox validLang : validLanguagesChecked) {
+                            if (language.getLanguage().equals(validLang.getValueAttribute())) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            newInvalidLanguages.add(language.getLanguage());
+                        }
+                    }
+                    boolean hasChanged = newInvalidLanguages.size() != invalidLanguages.size();
+                    if (!hasChanged) {
+                        for (String lang : newInvalidLanguages) {
+                            if (!invalidLanguages.contains(lang)) {
+                                hasChanged = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (hasChanged) {
+                        List<String> strings = new ArrayList<String>(siteLanguages.size());
+                        for (GWTJahiaLanguage siteLanguage : siteLanguages) {
+                            strings.add(siteLanguage.getLanguage());
+                        }
+                        GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
+                        gwtJahiaNodeProperty.setName("j:invalidLanguages");
+                        gwtJahiaNodeProperty.setMultiple(true);
+                        for (CheckBox value : validLanguagesChecked) {
+                            if (value.getValue()) {
+                                strings.remove(value.getValueAttribute());
+                            }
+                        }
+                        if (strings.size() > 0) {
+                            gwtJahiaNodeProperty.setValues(new ArrayList<GWTJahiaNodePropertyValue>());
+                            for (String string : strings) {
+                                gwtJahiaNodeProperty.getValues().add(new GWTJahiaNodePropertyValue(string));
+                            }
+                        }
+                        final List<GWTJahiaNodePropertyValue> gwtJahiaNodePropertyValues = gwtJahiaNodeProperty.getValues();
+                        if (gwtJahiaNodePropertyValues != null && gwtJahiaNodePropertyValues.size() > 0) {
+                            this.getChangedProperties().add(gwtJahiaNodeProperty);
+                            addedTypes.add("jmix:i18n");
+                        } else {
+                            gwtJahiaNodeProperty.setValues(new ArrayList<GWTJahiaNodePropertyValue>());
+                            this.getChangedProperties().add(gwtJahiaNodeProperty);
+                        }
+                    }
+                }
+            }
+
+            // case of right tab
+            item.doSave(this.getNode(), this.getChangedProperties(), this.getChangedI18NProperties(), addedTypes, removedTypes, null,
+                    this.getAcl());
+
+            // distinct modifications save from a simple check
+            if (saveChanges) {
+                this.getNode().getNodeTypes().removeAll(removedTypes);
+                this.getNode().getNodeTypes().addAll(addedTypes);
+            }
+        }
+
+        return removedTypes;
+    }
+
     @Override
     public Linker getLinker() {
         return linker;
@@ -666,7 +758,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     private boolean hasChanges() {
         int propertiesChanges = this.getChangedProperties().size();
 
-        fillContentChanges(this, false);
+        fillContentChanges(false);
 
         if (propertiesChanges != this.getChangedProperties().size()) {
             return true;

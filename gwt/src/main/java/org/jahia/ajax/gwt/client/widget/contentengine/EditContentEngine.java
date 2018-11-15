@@ -82,8 +82,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.jahia.ajax.gwt.client.util.content.actions.ContentActions.fillContentChanges;
-
 /**
  * Content editing widget.
  *

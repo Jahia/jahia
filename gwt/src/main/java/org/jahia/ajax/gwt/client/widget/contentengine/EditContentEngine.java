@@ -94,7 +94,6 @@ public class EditContentEngine extends AbstractContentEngine {
     private String contentPath;
     private HandlerRegistration handlerRegistration;
     private HandlerRegistration escHandler;
-    private AbstractContentEngine engine = this;
 
     private Map<String, GWTJahiaGetPropertiesResult> langCodeGWTJahiaGetPropertiesResultMap =
             new HashMap<String, GWTJahiaGetPropertiesResult>();
@@ -144,20 +143,8 @@ public class EditContentEngine extends AbstractContentEngine {
             handlerRegistration = null;
         }
 
-        if (hasChanges()) {
-            MessageBox.confirm(Messages.get("message.confirm.unsavedTitle","Changes won't be saved"),
-                    Messages.get("message.confirm.unsavedModifications","Close without saving?"), new Listener<MessageBoxEvent>() {
-                @Override public void handleEvent(MessageBoxEvent boxEvent) {
-                    if (Dialog.YES.equalsIgnoreCase(boxEvent.getButtonClicked().getItemId())) {
-                        container.closeEngine();
-                        escHandler.removeHandler();
-                    }
-                }
-            });
-        } else {
-            container.closeEngine();
-            escHandler.removeHandler();
-        }
+        container.closeEngine();
+        escHandler.removeHandler();
     }
 
     /**
@@ -344,7 +331,7 @@ public class EditContentEngine extends AbstractContentEngine {
                         NativeEvent nEvent = event.getNativeEvent();
                         if ("keydown".equals(nEvent.getType())) {
                             if (event.getNativeEvent().getKeyCode() == 27) {
-                                closeEngine();
+                                cancelAndClose();
                             }
                         }
                     }
@@ -412,21 +399,5 @@ public class EditContentEngine extends AbstractContentEngine {
     }
 
     // return true if modifications has been done in the edit engine / and the opposite
-    private boolean hasChanges() {
-        int propertiesChanges = engine.getChangedProperties().size();
 
-        fillContentChanges(engine, false);
-
-        if (propertiesChanges != engine.getChangedProperties().size()) {
-            return true;
-        }
-
-        for (Map.Entry<String, List<GWTJahiaNodeProperty>> entry : getChangedI18NProperties().entrySet()) {
-            if (!entry.getValue().isEmpty()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 }

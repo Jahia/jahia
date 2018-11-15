@@ -50,13 +50,13 @@
     <rule>
         <name>Jahia Anthracite Theme resources - CSS/JavaScript (inbound)</name>
         <note>Handles checksum for the edit.js file of the Jahia Anthracite Theme for the proper cache support</note>
-        <from>^/engines/jahia-anthracite/(.*).v.*.(js|css)$</from>
+        <from>^/engines/jahia-anthracite/(.*)\.v[0-9a-f]+\.(js|css)$</from>
         <to last="true">/engines/jahia-anthracite/$1.$2</to>
     </rule>
     <rule>
         <name>Jahia GWT resources - CSS/JavaScript (inbound)</name>
         <note>Handles checksum for the GWT CSS/JS resources for the proper cache support</note>
-        <from>^/gwt/resources/(.*).v.*.(js|css)$</from>
+        <from>^/gwt/resources/(.*)\.v[0-9a-f]+\.(js|css)$</from>
         <to last="true">/gwt/resources/$1.$2</to>
     </rule>
     <outbound-rule>

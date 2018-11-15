@@ -165,7 +165,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     }
 
     protected void cancelAndClose() {
-        if (hasChanges()) {
+        if (this instanceof CreateContentEngine || hasChanges()) {
             MessageBox.confirm(Messages.get("message.confirm.unsavedTitle","Changes won't be saved"),
                     Messages.get("message.confirm.unsavedModifications","Close without saving?"), new Listener<MessageBoxEvent>() {
                         @Override public void handleEvent(MessageBoxEvent boxEvent) {

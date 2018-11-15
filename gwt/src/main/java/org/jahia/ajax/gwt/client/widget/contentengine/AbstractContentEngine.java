@@ -49,10 +49,7 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.store.StoreListener;
-import com.extjs.gxt.ui.client.widget.BoxComponent;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.TabPanel;
+import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DualListField;
@@ -79,6 +76,8 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.AreaModule;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageSwitcherActionItem;
 
 import java.util.*;
+
+import static org.jahia.ajax.gwt.client.util.content.actions.ContentActions.fillContentChanges;
 
 /**
  * Abstract Method for Content Engine
@@ -164,6 +163,21 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     @Override
     public void close() {
         closed = true;
+    }
+
+    protected void cancelAndClose() {
+        if (hasChanges()) {
+            MessageBox.confirm(Messages.get("message.confirm.unsavedTitle","Changes won't be saved"),
+                    Messages.get("message.confirm.unsavedModifications","Close without saving?"), new Listener<MessageBoxEvent>() {
+                        @Override public void handleEvent(MessageBoxEvent boxEvent) {
+                            if (Dialog.YES.equalsIgnoreCase(boxEvent.getButtonClicked().getItemId())) {
+                                close();
+                            }
+                        }
+                    });
+        } else {
+            close();
+        }
     }
 
     /**
@@ -647,5 +661,23 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
      */
     public boolean skipRefreshOnSave() {
         return skipRefreshOnSave;
+    }
+
+    private boolean hasChanges() {
+        int propertiesChanges = this.getChangedProperties().size();
+
+        fillContentChanges(this, false);
+
+        if (propertiesChanges != this.getChangedProperties().size()) {
+            return true;
+        }
+
+        for (Map.Entry<String, List<GWTJahiaNodeProperty>> entry : getChangedI18NProperties().entrySet()) {
+            if (!entry.getValue().isEmpty()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

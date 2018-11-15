@@ -49,6 +49,9 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.TabItem;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Event;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
@@ -81,6 +84,7 @@ public class CreateContentEngine extends AbstractContentEngine {
     protected GWTJahiaNodeType type = null;
     protected String targetName = null;
     protected boolean createInParentAndMoveBefore = false;
+    private HandlerRegistration escHandler;
 
     private int childCount;
     private int listLimit;
@@ -119,6 +123,7 @@ public class CreateContentEngine extends AbstractContentEngine {
     public void close() {
         super.close();
         container.closeEngine();
+        escHandler.removeHandler();
     }
 
     /**
@@ -224,6 +229,19 @@ public class CreateContentEngine extends AbstractContentEngine {
 
                 fillCurrentTab();
                 updateWipControls();
+
+                //Handling escape button to leave the engine
+                escHandler = Event.addNativePreviewHandler(new Event.NativePreviewHandler() {
+                    public void onPreviewNativeEvent(final Event.NativePreviewEvent event) {
+                        NativeEvent nEvent = event.getNativeEvent();
+                        if ("keydown".equals(nEvent.getType())) {
+                            if (event.getNativeEvent().getKeyCode() == 27) {
+                                cancelAndClose();
+                            }
+                        }
+                    }
+                });
+
                 loaded();
             }
 

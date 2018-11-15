@@ -62,7 +62,7 @@ public class CancelButtonItem implements ButtonItem {
         button.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
-                engine.close();
+                engine.cancelAndClose();
             }
         });
         return button;

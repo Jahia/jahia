@@ -48,6 +48,7 @@ import java.util.Map;
 
 import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleState;
+import org.jahia.services.modulemanager.BundleBucketInfo;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.InvalidTargetException;
 import org.jahia.services.modulemanager.ModuleManagementException;
@@ -173,6 +174,21 @@ public interface BundleService {
      * @return Local info about the bundle; represented by either a LocalModuleInfo instance in case the bundle is a DX module, or a LocalBundleInfo instance otherwise
      */
     BundleService.BundleInformation getLocalInfo(BundleInfo bundleInfo) throws ModuleManagementException, ModuleNotFoundException;
+
+    /**
+     * Get local info about multiple bundles belonging to a single bundle bucket.
+     *
+     * @param bundleBucketInfo The bundle bucket
+     * @return A map of bundle info by bundle key; each map value is either a LocalModuleInfo instance in case the bundle is a DX module, or a LocalBundleInfo instance otherwise
+     */
+    Map<String, BundleInformation> getLocalInfos(BundleBucketInfo bundleBucketInfo) throws ModuleManagementException;
+
+    /**
+     * Get local info about all installed bundles.
+     *
+     * @return A map of bundle info by bundle key; each map value is either a LocalModuleInfo instance in case the bundle is a DX module, or a LocalBundleInfo instance otherwise
+     */
+    Map<String, BundleInformation> getAllLocalInfos() throws ModuleManagementException;
 
     /**
      * Info about a bundle.

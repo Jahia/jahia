@@ -58,6 +58,7 @@ import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleState;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
+import org.jahia.services.modulemanager.BundleBucketInfo;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.Constants;
 import org.jahia.services.modulemanager.InvalidModuleException;
@@ -70,6 +71,7 @@ import org.jahia.services.modulemanager.persistence.BundlePersister;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.jahia.services.modulemanager.persistence.PersistentBundleInfoBuilder;
 import org.jahia.services.modulemanager.spi.BundleService;
+import org.jahia.services.modulemanager.spi.BundleService.BundleInformation;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
@@ -144,8 +146,19 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
             }
         }
 
-        return findTargetBundle(bundleKey, info != null ? info.getSymbolicName() : bundleKey,
-                info != null ? info.getVersion() : null);
+        return findTargetBundle(
+            bundleKey,
+            info != null ? info.getSymbolicName() : bundleKey,
+            info != null ? info.getVersion() : null
+        );
+    }
+
+    private static BundleBucketInfo getBundleBucketInfo(String bundleBucketKey) {
+        try {
+            return BundleBucketInfo.fromKey(bundleBucketKey);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidModuleKeyException(bundleBucketKey);
+        }
     }
 
     private static BundleInfo getBundleInfo(String bundleKey) {
@@ -465,6 +478,17 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
     public BundleService.BundleInformation getLocalInfo(String bundleKey) throws ModuleManagementException {
         BundleInfo bundleInfo = getBundleInfo(bundleKey);
         return bundleService.getLocalInfo(bundleInfo);
+    }
+
+    @Override
+    public Map<String, BundleInformation> getBucketLocalInfos(String bundleBucketKey) throws ModuleManagementException {
+        BundleBucketInfo bundleBucketInfo = getBundleBucketInfo(bundleBucketKey);
+        return bundleService.getLocalInfos(bundleBucketInfo);
+    }
+
+    @Override
+    public Map<String, BundleInformation> getAllLocalInfos() throws ModuleManagementException {
+        return bundleService.getAllLocalInfos();
     }
 
     private List<Bundle> getOtherVersionsToRefresh(BundleInfo thisVersionInfo) {

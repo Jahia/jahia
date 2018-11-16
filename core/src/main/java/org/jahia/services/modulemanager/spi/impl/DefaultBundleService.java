@@ -43,11 +43,13 @@
  */
 package org.jahia.services.modulemanager.spi.impl;
 
+import org.codehaus.plexus.util.StringUtils;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleState;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
+import org.jahia.services.modulemanager.BundleBucketInfo;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.InvalidTargetException;
 import org.jahia.services.modulemanager.ModuleManagementException;
@@ -268,6 +270,35 @@ public class DefaultBundleService implements BundleService {
                 return (moduleState == null ? null : moduleState.getState());
             }
         };
+    }
+
+    @Override
+    public Map<String, BundleInformation> getLocalInfos(BundleBucketInfo bundleBucketInfo) throws ModuleManagementException {
+        Bundle[] bundles = FrameworkService.getBundleContext().getBundles();
+        LinkedHashMap<String, BundleInformation> infoByKey = new LinkedHashMap<>();
+        for (Bundle bundle : bundles) {
+            if (!StringUtils.equals(bundleBucketInfo.getSymbolicName(), bundle.getSymbolicName())) {
+                continue;
+            }
+            addToBundleInfoMap(bundle, infoByKey);
+        }
+        return infoByKey;
+    }
+
+    @Override
+    public Map<String, BundleInformation> getAllLocalInfos() throws ModuleManagementException {
+        Bundle[] bundles = FrameworkService.getBundleContext().getBundles();
+        LinkedHashMap<String, BundleInformation> infoByKey = new LinkedHashMap<>(bundles.length);
+        for (Bundle bundle : bundles) {
+            addToBundleInfoMap(bundle, infoByKey);
+        }
+        return infoByKey;
+    }
+
+    private void addToBundleInfoMap(Bundle bundle, Map<String, BundleInformation> bundleInfoByKey) {
+        BundleInfo bundleInfo = BundleInfo.fromBundle(bundle);
+        BundleInformation bundleInformation = getLocalInfo(bundleInfo);
+        bundleInfoByKey.put(bundleInfo.getKey(), bundleInformation);
     }
 
     protected interface ExceptionProvider {

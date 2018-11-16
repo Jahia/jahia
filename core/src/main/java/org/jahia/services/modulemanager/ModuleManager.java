@@ -191,4 +191,19 @@ public interface ModuleManager {
      * @return Local info about the bundle; represented by either a BundleService.ModuleInfo instance in case the bundle is a DX module, or a BundleService.BundleInfo instance otherwise
      */
     BundleService.BundleInformation getLocalInfo(String bundleKey) throws ModuleManagementException;
+
+    /**
+     * Get local info about multiple bundles belonging to a single bundle bucket.
+     *
+     * @param bundleBucketKey Bundle bucket key
+     * @return A map of local bundle info by bundle key; each map value is either a BundleService.ModuleInfo instance in case the bundle is a DX module, or a BundleService.BundleInfo instance otherwise
+     */
+    Map<String, BundleService.BundleInformation> getBucketLocalInfos(String bundleBucketKey) throws ModuleManagementException;
+
+    /**
+     * Get local info about all installed bundles.
+     *
+     * @return A map of local bundle info by bundle key; each map value is either a BundleService.ModuleInfo instance in case the bundle is a DX module, or a BundleService.BundleInfo instance otherwise
+     */
+    Map<String, BundleService.BundleInformation> getAllLocalInfos() throws ModuleManagementException;
 }

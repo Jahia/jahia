@@ -48,6 +48,7 @@ import java.util.Map;
 
 import org.jahia.osgi.BundleState;
 import org.jahia.osgi.BundleUtils;
+import org.jahia.services.modulemanager.BundleBucketInfo;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.Constants;
 import org.jahia.services.modulemanager.InvalidTargetException;
@@ -116,6 +117,16 @@ public class BundleServiceDelegate implements BundleService {
     @Override
     public BundleInformation getLocalInfo(BundleInfo bundleInfo) throws ModuleManagementException, ModuleNotFoundException {
         return lookupService().getLocalInfo(bundleInfo);
+    }
+
+    @Override
+    public Map<String, BundleInformation> getLocalInfos(BundleBucketInfo bundleBucketInfo) throws ModuleManagementException {
+        return lookupService().getLocalInfos(bundleBucketInfo);
+    }
+
+    @Override
+    public Map<String, BundleInformation> getAllLocalInfos() throws ModuleManagementException {
+        return lookupService().getAllLocalInfos();
     }
 
     private BundleService lookupService() {

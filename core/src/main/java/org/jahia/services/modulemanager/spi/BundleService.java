@@ -48,6 +48,7 @@ import java.util.Map;
 
 import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleState;
+import org.jahia.services.modulemanager.BundleBucketInfo;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.InvalidTargetException;
 import org.jahia.services.modulemanager.ModuleManagementException;
@@ -159,6 +160,24 @@ public interface BundleService {
     Map<String, Map<String, BundleInformation>> getInfos(Collection<BundleInfo> bundleInfos, String target) throws ModuleManagementException, InvalidTargetException;
 
     /**
+     * Get info about multiple bundles belonging to a single bundle bucket.
+     *
+     * @param bundleBucketInfo The bundle bucket
+     * @param target The group of cluster nodes to get info from (see JavaDoc of the class)
+     * @return A map of bundle info by bundle key by cluster node name; each map value is either a LocalModuleInfo instance in case the bundle is a DX module, or a LocalBundleInfo instance otherwise
+     */
+    Map<String, Map<String, BundleInformation>> getInfos(BundleBucketInfo bundleBucketInfo, String target) throws ModuleManagementException, InvalidTargetException;
+
+    /**
+     * Get info about all installed bundles.
+     *
+     * @param target The group of cluster nodes to get info from (see JavaDoc of the class)
+     * @return A map of bundle info by bundle key by cluster node name; each map value is either a LocalModuleInfo instance in case the bundle is a DX module, or a LocalBundleInfo instance otherwise
+     * @throws InvalidTargetException in case the target is not a valid one
+     */
+    Map<String, Map<String, BundleInformation>> getAllInfos(String target) throws ModuleManagementException, InvalidTargetException;
+
+    /**
      * Get current local state of a bundle.
      *
      * @param bundleInfo The bundle to retrieve status
@@ -173,6 +192,21 @@ public interface BundleService {
      * @return Local info about the bundle; represented by either a LocalModuleInfo instance in case the bundle is a DX module, or a LocalBundleInfo instance otherwise
      */
     BundleService.BundleInformation getLocalInfo(BundleInfo bundleInfo) throws ModuleManagementException, ModuleNotFoundException;
+
+    /**
+     * Get local info about multiple bundles belonging to a single bundle bucket.
+     *
+     * @param bundleBucketInfo The bundle bucket
+     * @return A map of bundle info by bundle key; each map value is either a LocalModuleInfo instance in case the bundle is a DX module, or a LocalBundleInfo instance otherwise
+     */
+    Map<String, BundleInformation> getLocalInfos(BundleBucketInfo bundleBucketInfo) throws ModuleManagementException;
+
+    /**
+     * Get local info about all installed bundles.
+     *
+     * @return A map of bundle info by bundle key; each map value is either a LocalModuleInfo instance in case the bundle is a DX module, or a LocalBundleInfo instance otherwise
+     */
+    Map<String, BundleInformation> getAllLocalInfos() throws ModuleManagementException;
 
     /**
      * Info about a bundle.

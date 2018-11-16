@@ -45,26 +45,21 @@ package org.jahia.services.modulemanager;
 
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlType;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.jahia.osgi.BundleUtils;
 import org.osgi.framework.Bundle;
 
 /**
- * Represents the bundle basic information.
+ * Represents the bundle identifier.
  *
  * @author bdjiba
  */
-@XmlType(propOrder = { "groupId", "symbolicName", "version" })
 public class BundleInfo implements Serializable {
 
     private static final long serialVersionUID = -2594724069028562931L;
 
-    private String groupId;
-    private String key;
-    private String symbolicName;
+    private BundleBucketInfo bucketInfo;
     private String version;
 
     /**
@@ -77,8 +72,7 @@ public class BundleInfo implements Serializable {
         if (bundle == null) {
             throw new IllegalArgumentException("Bundle cannot be null");
         }
-        return new BundleInfo(BundleUtils.getModuleGroupId(bundle), bundle.getSymbolicName(),
-                bundle.getVersion().toString());
+        return new BundleInfo(BundleUtils.getModuleGroupId(bundle), bundle.getSymbolicName(), bundle.getVersion().toString());
     }
 
     /**
@@ -88,24 +82,17 @@ public class BundleInfo implements Serializable {
      * @return the {@link BundleInfo} instance using provided bundle key
      */
     public static BundleInfo fromKey(String key) {
-
         if (key == null || key.indexOf('/') == -1) {
             throw new IllegalArgumentException("Illegal bundle key: " + key);
         }
-
+        String bucketKey = StringUtils.substringBeforeLast(key, "/");
         String version = StringUtils.substringAfterLast(key, "/");
-        String symbolicName = StringUtils.substringBeforeLast(key, "/");
-        String groupId = null;
-        if (symbolicName.indexOf('/') != -1) {
-            groupId = StringUtils.substringBefore(symbolicName, "/");
-            symbolicName = StringUtils.substringAfter(symbolicName, "/");
-        }
-
-        return new BundleInfo(groupId, symbolicName, version);
+        BundleBucketInfo bucketInfo = BundleBucketInfo.fromKey(bucketKey);
+        return new BundleInfo(bucketInfo, version);
     }
 
     /**
-     * Creates the {@link BundleInfo} instance using provided module ID and version.
+     * Create a {@link BundleInfo} instance using provided module ID and version.
      *
      * @param moduleId The ID of the module
      * @param moduleVersion The module version
@@ -120,7 +107,7 @@ public class BundleInfo implements Serializable {
     }
 
     /**
-     * Initializes an instance of this class.
+     * Create an instance of this class.
      *
      * @param symbolicName The symbolic name of this bundle
      * @param version The version of this bundle
@@ -130,45 +117,53 @@ public class BundleInfo implements Serializable {
     }
 
     /**
-     * Initializes an instance of this class.
+     * Create an instance of this class.
      *
      * @param groupId The ID of the group for this bundle
      * @param symbolicName The symbolic name of this bundle
      * @param version The version of this bundle
      */
     public BundleInfo(String groupId, String symbolicName, String version) {
-        if (symbolicName == null || symbolicName.length() == 0 || version == null || version.length() == 0) {
-            throw new IllegalArgumentException("Symbolic name and version for the bundle cannot be null or empty");
+        this(new BundleBucketInfo(groupId, symbolicName), version);
+    }
+
+    /**
+     * Create an instance of this class.
+     *
+     * @param bucketInfo The bucket this bundle belongs to
+     * @param version The version of this bundle
+     */
+    public BundleInfo(BundleBucketInfo bucketInfo, String version) {
+        if (bucketInfo == null || version == null || version.isEmpty()) {
+            throw new IllegalArgumentException("Bundle bucket info and bundle version are required");
         }
-        this.groupId = groupId;
-        this.symbolicName = symbolicName;
+        this.bucketInfo = bucketInfo;
         this.version = version;
-        this.key = groupId != null ? (groupId + '/' + symbolicName + '/' + version) : (symbolicName + '/' + version);
     }
 
     /**
      * @return The ID of the group for this bundle; can be null
      */
     public String getGroupId() {
-        return groupId;
+        return bucketInfo.getGroupId();
     }
 
     /**
-     * @return The unique key of this bundle, which is composed of the group ID, symbolic name and version
+     * @return The key of this bundle, which is composed of the group ID, symbolic name and version
      */
     public String getKey() {
-        return key;
+        return bucketInfo.getKey() + '/' + version;
     }
 
     /**
      * @return The symbolic name for this bundle
      */
     public String getSymbolicName() {
-        return symbolicName;
+        return bucketInfo.getSymbolicName();
     }
 
     /**
-     * @return the version of this bundle
+     * @return The version of this bundle
      */
     public String getVersion() {
         return version;

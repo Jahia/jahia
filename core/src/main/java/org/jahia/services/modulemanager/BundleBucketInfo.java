@@ -43,17 +43,20 @@
  */
 package org.jahia.services.modulemanager;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
  * Represents the bundle bucket identifier.
  */
-public class BundleBucketInfo {
+public class BundleBucketInfo implements Serializable {
+
+    private static final long serialVersionUID = 9116182373302703262L;
 
     private String groupId;
     private String symbolicName;
-
 
     /**
      * Create a {@link BundleBucketInfo} instance using provided bundle bucket key.

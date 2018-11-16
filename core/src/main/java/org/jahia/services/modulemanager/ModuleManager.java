@@ -177,6 +177,23 @@ public interface ModuleManager {
     Map<String, Map<String, BundleService.BundleInformation>> getInfos(Collection<String> bundleKeys, String target) throws ModuleManagementException;
 
     /**
+     * Get info about multiple bundles belonging to a single bundle bucket.
+     *
+     * @param bundleBucketKey Bundle bucket key
+     * @param target The group of cluster nodes to get info from (see BundleService class JavaDoc)
+     * @return A map of bundle info by bundle key by cluster node name; each map value is either a BundleService.ModuleInfo instance in case the bundle is a DX module, or a BundleService.BundleInfo instance otherwise
+     */
+    Map<String, Map<String, BundleService.BundleInformation>> getBucketInfos(String bundleBucketKey, String target) throws ModuleManagementException;
+
+    /**
+     * Get info about all installed bundles.
+     *
+     * @param target The group of cluster nodes to get info from (see BundleService class JavaDoc)
+     * @return A map of bundle info by bundle key by cluster node name; each map value is either a BundleService.ModuleInfo instance in case the bundle is a DX module, or a BundleService.BundleInfo instance otherwise
+     */
+    Map<String, Map<String, BundleService.BundleInformation>> getAllInfos(String target) throws ModuleManagementException;
+
+    /**
      * Get current local state of a bundle.
      *
      * @param bundleKey Bundle key (see class JavaDoc for the supported key format; note that bundle version is required)

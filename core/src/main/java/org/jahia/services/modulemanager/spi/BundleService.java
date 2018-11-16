@@ -160,6 +160,24 @@ public interface BundleService {
     Map<String, Map<String, BundleInformation>> getInfos(Collection<BundleInfo> bundleInfos, String target) throws ModuleManagementException, InvalidTargetException;
 
     /**
+     * Get info about multiple bundles belonging to a single bundle bucket.
+     *
+     * @param bundleBucketInfo The bundle bucket
+     * @param target The group of cluster nodes to get info from (see JavaDoc of the class)
+     * @return A map of bundle info by bundle key by cluster node name; each map value is either a LocalModuleInfo instance in case the bundle is a DX module, or a LocalBundleInfo instance otherwise
+     */
+    Map<String, Map<String, BundleInformation>> getInfos(BundleBucketInfo bundleBucketInfo, String target) throws ModuleManagementException, InvalidTargetException;
+
+    /**
+     * Get info about all installed bundles.
+     *
+     * @param target The group of cluster nodes to get info from (see JavaDoc of the class)
+     * @return A map of bundle info by bundle key by cluster node name; each map value is either a LocalModuleInfo instance in case the bundle is a DX module, or a LocalBundleInfo instance otherwise
+     * @throws InvalidTargetException in case the target is not a valid one
+     */
+    Map<String, Map<String, BundleInformation>> getAllInfos(String target) throws ModuleManagementException, InvalidTargetException;
+
+    /**
      * Get current local state of a bundle.
      *
      * @param bundleInfo The bundle to retrieve status

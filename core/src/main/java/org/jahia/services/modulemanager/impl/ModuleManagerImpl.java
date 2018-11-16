@@ -469,6 +469,17 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
     }
 
     @Override
+    public Map<String, Map<String, BundleInformation>> getBucketInfos(String bundleBucketKey, String target) throws ModuleManagementException {
+        BundleBucketInfo bundleBucketInfo = getBundleBucketInfo(bundleBucketKey);
+        return bundleService.getInfos(bundleBucketInfo, target);
+    }
+
+    @Override
+    public Map<String, Map<String, BundleService.BundleInformation>> getAllInfos(String target) throws ModuleManagementException {
+        return bundleService.getAllInfos(target);
+    }
+
+    @Override
     public BundleState getLocalState(String bundleKey) throws ModuleManagementException {
         BundleInfo bundleInfo = getBundleInfo(bundleKey);
         return bundleService.getLocalState(bundleInfo);

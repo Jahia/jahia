@@ -110,6 +110,16 @@ public class BundleServiceDelegate implements BundleService {
     }
 
     @Override
+    public Map<String, Map<String, BundleInformation>> getInfos(BundleBucketInfo bundleBucketInfo, String target) throws ModuleManagementException, InvalidTargetException {
+        return lookupService().getInfos(bundleBucketInfo, target);
+    }
+
+    @Override
+    public Map<String, Map<String, BundleInformation>> getAllInfos(String target) throws ModuleManagementException, InvalidTargetException {
+        return lookupService().getAllInfos(target);
+    }
+
+    @Override
     public BundleState getLocalState(BundleInfo bundleInfo)	throws ModuleManagementException, ModuleNotFoundException {
         return lookupService().getLocalState(bundleInfo);
     }

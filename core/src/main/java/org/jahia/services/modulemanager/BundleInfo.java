@@ -43,6 +43,8 @@
  */
 package org.jahia.services.modulemanager;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.jahia.osgi.BundleUtils;
@@ -53,7 +55,9 @@ import org.osgi.framework.Bundle;
  *
  * @author bdjiba
  */
-public class BundleInfo {
+public class BundleInfo implements Serializable {
+
+    private static final long serialVersionUID = -2594724069028562931L;
 
     private BundleBucketInfo bucketInfo;
     private String version;

@@ -77,9 +77,9 @@ import java.util.Set;
  * bundle.start()/stop()/uninstall()). The implementation is used in a standalone DX instance or in case DX clustering is not activated (
  * <code>cluster.activated=false</code>).
  * <p>
- * getInfo/getInfos methods of this implementation return a map containing a single entry whose key is an empty string, and value is local
- * information about the bundle/bundles. These methods do not support the target parameter, because it only makes sense in a cluster;
- * InvalidTargetException will be thrown in case there is a non-null value passed.
+ * getInfo/getInfos/getAllInfos methods of this implementation return a map containing a single entry whose key is an empty string,
+ * and value is local information about the bundle/bundles. These methods do not support the target parameter, because it only makes sense
+ * in a cluster; InvalidTargetException will be thrown in case there is a non-null value passed.
  *
  * @author Sergiy Shyrkov
  */
@@ -179,9 +179,7 @@ public class DefaultBundleService implements BundleService {
     @Override
     public Map<String, BundleInformation> getInfo(BundleInfo bundleInfo, String target) throws ModuleManagementException, InvalidTargetException {
 
-        if (target != null) {
-            throw new InvalidTargetException(target);
-        }
+        assertNoTarget(target);
 
         BundleInformation info;
         try {
@@ -204,33 +202,62 @@ public class DefaultBundleService implements BundleService {
 
     @Override
     public Map<String, Map<String, BundleInformation>> getInfos(Collection<BundleInfo> bundleInfos, String target) throws ModuleManagementException, InvalidTargetException {
+        assertNoTarget(target);
+        Map<String, BundleInformation> infos;
+        try {
+            infos = new LinkedHashMap<String, BundleInformation>();
+            for (BundleInfo bundleInfo : new LinkedHashSet<BundleInfo>(bundleInfos)) {
+                BundleInformation info = getLocalInfo(bundleInfo);
+                infos.put(bundleInfo.getKey(), info);
+            }
+        } catch (final Exception e) {
+            logger.error("Error retrieving bundle infos", e);
+            infos = newFailingMap(e);
+        }
+        return Collections.singletonMap("", infos);
+    }
 
+    @Override
+    public Map<String, Map<String, BundleInformation>> getInfos(BundleBucketInfo bundleBucketInfo, String target) throws ModuleManagementException, InvalidTargetException {
+        assertNoTarget(target);
+        Map<String, BundleInformation> infos;
+        try {
+            infos = getLocalInfos(bundleBucketInfo);
+        } catch (final Exception e) {
+            logger.error("Error retrieving bundle infos", e);
+            infos = newFailingMap(e);
+        }
+        return Collections.singletonMap("", infos);
+    }
+
+    @Override
+    public Map<String, Map<String, BundleInformation>> getAllInfos(String target) throws ModuleManagementException, InvalidTargetException {
+        assertNoTarget(target);
+        Map<String, BundleInformation> infos;
+        try {
+            infos = getAllLocalInfos();
+        } catch (final Exception e) {
+            logger.error("Error retrieving bundle infos", e);
+            infos = newFailingMap(e);
+        }
+        return Collections.singletonMap("", infos);
+    }
+
+    private static void assertNoTarget(String target) {
         if (target != null) {
             throw new InvalidTargetException(target);
         }
+    }
 
-        Map<String, BundleInformation> result;
-        try {
-            result = new LinkedHashMap<String, BundleInformation>();
-            for (BundleInfo bundleInfo : new LinkedHashSet<BundleInfo>(bundleInfos)) {
-                BundleInformation info = getLocalInfo(bundleInfo);
-                result.put(bundleInfo.getKey(), info);
+    private static Map<String, BundleInformation> newFailingMap(Exception e) {
+
+        return new FailingMap<String, BundleInformation>(new ExceptionProvider() {
+
+            @Override
+            public RuntimeException get() {
+                return new ModuleManagementException(e.getMessage(), e);
             }
-        } catch (final Exception e) {
-
-            logger.error("Error retrieving bundle info", e);
-
-            // Return a special implementation of the Map to indicate failure.
-            result = new FailingMap<String, BundleInformation>(new ExceptionProvider() {
-
-                @Override
-                public RuntimeException get() {
-                    return new ModuleManagementException(e.getMessage(), e);
-                }
-            });
-        }
-
-        return Collections.singletonMap("", result);
+        });
     }
 
     @Override

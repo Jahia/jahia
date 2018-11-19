@@ -93,11 +93,11 @@ import com.ibm.icu.text.DateFormat;
  */
 public final class Jahia {
 
-    public static final String CODE_NAME = "Gaia";
+    public static final String CODE_NAME = "Hit-Girl";
     public static final String VENDOR_NAME = "Jahia Solutions Group SA";
     public static final String COPYRIGHT = "&copy; Copyright 2002-2018  <a href=\"http://www.jahia.com\" target=\"newJahia\">"
             + VENDOR_NAME + "</a> -";
-    public static final String COPYRIGHT_TXT = "2017 " + VENDOR_NAME;
+    public static final String COPYRIGHT_TXT = "2018 " + VENDOR_NAME;
 
     private static final Version JAHIA_VERSION;
     static {
@@ -106,7 +106,7 @@ public final class Jahia {
             v = new Version(Constants.JAHIA_PROJECT_VERSION);
         } catch (NumberFormatException e) {
         }
-        JAHIA_VERSION = v != null ? v : new Version("7.2.0.0");
+        JAHIA_VERSION = v != null ? v : new Version("7.3.0.0");
     }
 
     public static final String VERSION = JAHIA_VERSION.getMajorVersion() + "." +

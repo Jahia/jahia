@@ -676,6 +676,7 @@ public class FormFieldCreator {
                     nodeDefinition.getRequiredPrimaryTypes()[0].equals("nt:resource") ||
                     nodeDefinition.getRequiredPrimaryTypes()[0].equals("jnt:resource")) {
                 field.setValue(values.get(0).getString());
+                field.updateOriginalValue(values.get(0).getString());
             } else if (nodeDefinition.getRequiredPrimaryTypes()[0].equals("jmix:link")) {
                 List<GWTJahiaNode> v = new ArrayList<GWTJahiaNode>();
                 for (GWTJahiaNodePropertyValue value : values) {

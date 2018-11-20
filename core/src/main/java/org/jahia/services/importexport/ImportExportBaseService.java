@@ -649,26 +649,28 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
 //        final String xsl = (String) params.get(XSL_PATH);
         if (params.containsKey(INCLUDE_LIVE_EXPORT)) {
-            final JCRSessionWrapper liveSession = jcrStoreService.getSessionFactory().getCurrentUserSession("live");
-            JCRNodeWrapper liveRootNode = null;
-            try {
-                liveRootNode = liveSession.getNodeByIdentifier(rootNode.getIdentifier());
-            } catch (RepositoryException e) {
-            }
-            if (liveRootNode != null) {
-                for (JCRNodeWrapper node : nodes) {
-                    try {
-                        liveSortedNodes.add(liveSession.getNodeByIdentifier(node.getIdentifier()));
-                    } catch (ItemNotFoundException e) {
-                    }
+            if ( (boolean) params.get(INCLUDE_LIVE_EXPORT) ) {
+                final JCRSessionWrapper liveSession = jcrStoreService.getSessionFactory().getCurrentUserSession("live");
+                JCRNodeWrapper liveRootNode = null;
+                try {
+                    liveRootNode = liveSession.getNodeByIdentifier(rootNode.getIdentifier());
+                } catch (RepositoryException e) {
                 }
-                if (!liveSortedNodes.isEmpty()) {
-                    zout.putNextEntry(new ZipEntry(LIVE_REPOSITORY_XML));
-                    logger.info("Exporting live workspace for nodes {} ...", nodes);
-                    exportNodes(liveRootNode, liveSortedNodes, zout, typesToIgnore, externalReferences, params, logProgress);
-                    zout.closeEntry();
-                    exportNodesBinary(liveRootNode, liveSortedNodes, zout, typesToIgnore, "/live-content");
-                    logger.info("Live workspace exported for nodes {}", nodes);
+                if (liveRootNode != null) {
+                    for (JCRNodeWrapper node : nodes) {
+                        try {
+                            liveSortedNodes.add(liveSession.getNodeByIdentifier(node.getIdentifier()));
+                        } catch (ItemNotFoundException e) {
+                        }
+                    }
+                    if (!liveSortedNodes.isEmpty()) {
+                        zout.putNextEntry(new ZipEntry(LIVE_REPOSITORY_XML));
+                        logger.info("Exporting live workspace for nodes {} ...", nodes);
+                        exportNodes(liveRootNode, liveSortedNodes, zout, typesToIgnore, externalReferences, params, logProgress);
+                        zout.closeEntry();
+                        exportNodesBinary(liveRootNode, liveSortedNodes, zout, typesToIgnore, "/live-content");
+                        logger.info("Live workspace exported for nodes {}", nodes);
+                    }
                 }
             }
         }

@@ -45,6 +45,7 @@ package org.jahia.test.services.acl;
 
 import static org.assertj.core.api.Assertions.*;
 
+import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -66,6 +67,7 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -119,7 +121,7 @@ public class AclTest {
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
-        JahiaSite site = TestHelper.createSite(TESTSITE_NAME);
+        JahiaSite site = TestHelper.createSite(TESTSITE_NAME, TestHelper.DX_BASE_DEMO_TEMPLATES);
 
         jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
 
@@ -311,6 +313,55 @@ public class AclTest {
                 .doesNotContainKey("u:user2");
 
         session.save();
+    }
+
+    @Test
+    public void testPrivilegedAccess() throws Exception {
+        // Test case for the https://jira.jahia.org/browse/QA-9762
+
+        assertFalse("user1 should NOT have access to home page in edit mode", nodeExists(home.getPath(), user1));
+        assertFalse("user3 should NOT have access to home page in edit mode", nodeExists(home.getPath(), user3));
+
+        assertFalse("user1 should NOT have access to site in edit mode", nodeExists(home.getParent().getPath(), user1));
+        assertFalse("user3 should NOT have access to site in edit mode", nodeExists(home.getParent().getPath(), user3));
+
+        // grant group1 an editor role on home page
+        home.grantRoles("g:" + group1.getName(), Collections.singleton("editor"));
+        session.save();
+
+        assertTrue("user1 should have access to home page in edit mode", nodeExists(home.getPath(), user1));
+        assertFalse("user3 should NOT have access to home page in edit mode", nodeExists(home.getPath(), user3));
+
+        assertTrue("user1 should have access to site in edit mode", nodeExists(home.getParent().getPath(), user1));
+        assertFalse("user3 should NOT have access to site in edit mode", nodeExists(home.getParent().getPath(), user3));
+
+        // revoke an editor role on home page from group1 and grant it to user1 directly
+        home.revokeRolesForPrincipal("g:" + group1.getName());
+        home.grantRoles("u:" + user1.getName(), Collections.singleton("editor"));
+        session.save();
+
+        assertTrue("user1 should have access to home page in edit mode", nodeExists(home.getPath(), user1));
+        assertFalse("user2 should NOT have access to home page in edit mode", nodeExists(home.getPath(), user2));
+        assertFalse("user3 should NOT have access to home page in edit mode", nodeExists(home.getPath(), user3));
+
+        assertTrue("user1 should have access to site in edit mode", nodeExists(home.getParent().getPath(), user1));
+        assertFalse("user2 should NOT have access to site in edit mode", nodeExists(home.getParent().getPath(), user2));
+        assertFalse("user3 should NOT have access to site in edit mode", nodeExists(home.getParent().getPath(), user3));
+    }
+    
+    private boolean nodeExists(String path, JCRUserNode user) throws Exception {
+        return doInJcrAsUser(user, session -> {
+            try {
+                session.getNode(path);
+                return Boolean.TRUE;
+            } catch (PathNotFoundException e) {
+                return Boolean.FALSE;
+            }
+        });
+    }
+
+    private <T> T doInJcrAsUser(JCRUserNode user, JCRCallback<T> callback) throws Exception {
+        return JCRTemplate.getInstance().doExecute(user.getJahiaUser(), Constants.EDIT_WORKSPACE, Locale.ENGLISH, callback);
     }
 
     class CheckPermission implements JCRCallback<Boolean> {

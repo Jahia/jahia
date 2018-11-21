@@ -192,10 +192,11 @@ public final class BundleUtils {
 
         if (bundle.getState() == Bundle.UNINSTALLED) {
             // This should not happen: log detailed info if it does.
-            logger.warn(
-                "Uninstalled bundle passed; name: {0}, version: {1}, stack trace: {2}",
-                new Object[] {bundle.getSymbolicName(), bundle.getVersion(), Arrays.toString(Thread.currentThread().getStackTrace())}
-            );
+            if (logger.isWarnEnabled()) {
+                logger.warn("Uninstalled bundle passed; name: {}, version: {}, stack trace: {}",
+                        new Object[] { bundle.getSymbolicName(), bundle.getVersion(),
+                                Arrays.toString(Thread.currentThread().getStackTrace()) });
+            }
         }
 
         JahiaTemplatesPackage pkg = null;

@@ -132,7 +132,7 @@ public final class BundleUtils {
 
     /**
      * Returns the bundle with the specified identifier.
-     * 
+     *
      * @param id The identifier of the bundle to retrieve.
      * @return A {@code Bundle} object or {@code null} if the identifier does
      *         not match any installed bundle.
@@ -143,7 +143,7 @@ public final class BundleUtils {
 
     /**
      * Finds bundle by its location.
-     * 
+     *
      * @param location the location of the bundle to be found
      * @return bundle for the specified location or <code>null</code> if there is no matching bundle installed
      */
@@ -170,7 +170,7 @@ public final class BundleUtils {
         }
         return null;
     }
-    
+
     /**
      * Returns the bundle display name containing module name (ID) and the version.
      *
@@ -189,6 +189,14 @@ public final class BundleUtils {
      * @return the module instance that corresponds to the provided OSGi bundle
      */
     public static JahiaTemplatesPackage getModule(Bundle bundle) {
+
+        if (bundle.getState() == Bundle.UNINSTALLED) {
+            // This should not happen: log detailed info if it does.
+            logger.warn(
+                "Uninstalled bundle passed; name: {0}, version: {1}, stack trace: {2}",
+                new Object[] {bundle.getSymbolicName(), bundle.getVersion(), Arrays.toString(Thread.currentThread().getStackTrace())}
+            );
+        }
 
         JahiaTemplatesPackage pkg = null;
 
@@ -294,7 +302,7 @@ public final class BundleUtils {
 
     /**
      * Performs lookup of the specified class in classloaders of all modules, which are in state Resolved or Active.
-     * 
+     *
      * @param className the fully qualified class name to look up
      * @return the requested class
      * @throws ClassNotFoundException in case the corresponding class cannot be found
@@ -305,7 +313,7 @@ public final class BundleUtils {
 
     /**
      * Performs lookup of the specified class in classloaders of all modules, which are at least in the requested state.
-     * 
+     *
      * @param className the fully qualified class name to look up
      * @param requiredModuleStatus the minimal required state of the bundle to be considered for class lookup
      * @return the requested class
@@ -336,13 +344,20 @@ public final class BundleUtils {
                 if (pkgClassLoader != null) {
                     try {
                         clazz = pkgClassLoader.loadClass(className);
-                        Bundle bundle = getSourceBundleForClass(clazz);
-                        if (bundle != null && bundle.equals(pkg.getBundle()) && bundle.getState() >= requiredModuleStatus) {
-                            moduleForClass.put(className, new String[] { pkg.getId(), pkg.getVersion().toString() });
-                            return clazz;
-                        }
-                    } catch (ClassNotFoundException | IllegalStateException e) {
-                        // continue searching class in other modules
+                    } catch (IllegalStateException e) {
+                        // An un-installed bundle was likely cached in the modules. This should never happen, but if it does, log to have more info
+                        // and continue searching the class in other modules.
+                        String message = "Error loading class via module's class loader; group: " + pkg.getGroupId() + ", ID/version: " + pkg.getIdWithVersion();
+                        logger.warn(message, e);
+                        continue;
+                    } catch (ClassNotFoundException e) {
+                        // Continue searching the class in other modules.
+                        continue;
+                    }
+                    Bundle bundle = getSourceBundleForClass(clazz);
+                    if (bundle != null && bundle.equals(pkg.getBundle()) && bundle.getState() >= requiredModuleStatus) {
+                        moduleForClass.put(className, new String[] { pkg.getId(), pkg.getVersion().toString() });
+                        return clazz;
                     }
                 }
             }
@@ -490,7 +505,7 @@ public final class BundleUtils {
 
     /**
      * Checks if the provided bundle is a fragment bundle.
-     * 
+     *
      * @param bundle the bundle to be checked
      * @return <code>true</code> in case the supplied bundle is a fragment bundle; <code>false</code> otherwise
      */

@@ -319,37 +319,52 @@ public class AclTest {
     public void testPrivilegedAccess() throws Exception {
         // Test case for the https://jira.jahia.org/browse/QA-9762
 
-        assertFalse("user1 should NOT have access to home page in edit mode", nodeExists(home.getPath(), user1));
-        assertFalse("user3 should NOT have access to home page in edit mode", nodeExists(home.getPath(), user3));
+        assertFalse("user1 should NOT have access to home page in edit mode", nodeExists(home.getPath(), "user1"));
+        assertFalse("user3 should NOT have access to home page in edit mode", nodeExists(home.getPath(), "user3"));
 
-        assertFalse("user1 should NOT have access to site in edit mode", nodeExists(home.getParent().getPath(), user1));
-        assertFalse("user3 should NOT have access to site in edit mode", nodeExists(home.getParent().getPath(), user3));
+        assertFalse("user1 should NOT have access to site in edit mode", nodeExists(home.getParent().getPath(), "user1"));
+        assertFalse("user3 should NOT have access to site in edit mode", nodeExists(home.getParent().getPath(), "user3"));
 
         // grant group1 an editor role on home page
-        home.grantRoles("g:" + group1.getName(), Collections.singleton("editor"));
+        home.grantRoles("g:group1", Collections.singleton("editor"));
         session.save();
 
-        assertTrue("user1 should have access to home page in edit mode", nodeExists(home.getPath(), user1));
-        assertFalse("user3 should NOT have access to home page in edit mode", nodeExists(home.getPath(), user3));
+        assertTrue("user1 should have access to home page in edit mode", nodeExists(home.getPath(), "user1"));
+        assertFalse("user3 should NOT have access to home page in edit mode", nodeExists(home.getPath(), "user3"));
 
-        assertTrue("user1 should have access to site in edit mode", nodeExists(home.getParent().getPath(), user1));
-        assertFalse("user3 should NOT have access to site in edit mode", nodeExists(home.getParent().getPath(), user3));
+        assertTrue("user1 should have access to site in edit mode", nodeExists(home.getParent().getPath(), "user1"));
+        assertFalse("user3 should NOT have access to site in edit mode", nodeExists(home.getParent().getPath(), "user3"));
 
         // revoke an editor role on home page from group1 and grant it to user1 directly
-        home.revokeRolesForPrincipal("g:" + group1.getName());
-        home.grantRoles("u:" + user1.getName(), Collections.singleton("editor"));
+        home.revokeRolesForPrincipal("g:group1");
+        home.grantRoles("u:user1", Collections.singleton("editor"));
         session.save();
 
-        assertTrue("user1 should have access to home page in edit mode", nodeExists(home.getPath(), user1));
-        assertFalse("user2 should NOT have access to home page in edit mode", nodeExists(home.getPath(), user2));
-        assertFalse("user3 should NOT have access to home page in edit mode", nodeExists(home.getPath(), user3));
+        assertTrue("user1 should have access to home page in edit mode", nodeExists(home.getPath(), "user1"));
+        assertFalse("user2 should NOT have access to home page in edit mode", nodeExists(home.getPath(), "user2"));
+        assertFalse("user3 should NOT have access to home page in edit mode", nodeExists(home.getPath(), "user3"));
 
-        assertTrue("user1 should have access to site in edit mode", nodeExists(home.getParent().getPath(), user1));
-        assertFalse("user2 should NOT have access to site in edit mode", nodeExists(home.getParent().getPath(), user2));
-        assertFalse("user3 should NOT have access to site in edit mode", nodeExists(home.getParent().getPath(), user3));
+        assertTrue("user1 should have access to site in edit mode", nodeExists(home.getParent().getPath(), "user1"));
+        assertFalse("user2 should NOT have access to site in edit mode", nodeExists(home.getParent().getPath(), "user2"));
+        assertFalse("user3 should NOT have access to site in edit mode", nodeExists(home.getParent().getPath(), "user3"));
+
+        // revoke an editor role on home page from user1 and grant her editor-in-chief role
+        home.revokeRolesForPrincipal("u:user1");
+        home.grantRoles("u:user1", Collections.singleton("editor-in-chief"));
+        session.save();
+
+        assertTrue("user1 should have access to home page in edit mode", nodeExists(home.getPath(), "user1"));
+        assertTrue("user1 should have access to site in edit mode", nodeExists(home.getParent().getPath(), "user1"));
+
+        // revoke all roles on home page from user1
+        home.revokeRolesForPrincipal("u:user1");
+        session.save();
+
+        assertFalse("user1 should NOT have access to home page in edit mode", nodeExists(home.getPath(), "user1"));
+        assertFalse("user1 should NOT have access to site in edit mode", nodeExists(home.getParent().getPath(), "user1"));
     }
     
-    private boolean nodeExists(String path, JCRUserNode user) throws Exception {
+    private boolean nodeExists(String path, String user) throws Exception {
         return doInJcrAsUser(user, session -> {
             try {
                 session.getNode(path);
@@ -360,8 +375,8 @@ public class AclTest {
         });
     }
 
-    private <T> T doInJcrAsUser(JCRUserNode user, JCRCallback<T> callback) throws Exception {
-        return JCRTemplate.getInstance().doExecute(user.getJahiaUser(), Constants.EDIT_WORKSPACE, Locale.ENGLISH, callback);
+    private <T> T doInJcrAsUser(String user, JCRCallback<T> callback) throws Exception {
+        return JCRTemplate.getInstance().doExecute(user, null, Constants.EDIT_WORKSPACE, Locale.ENGLISH, callback);
     }
 
     class CheckPermission implements JCRCallback<Boolean> {

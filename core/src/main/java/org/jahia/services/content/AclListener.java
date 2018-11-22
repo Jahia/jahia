@@ -304,21 +304,7 @@ public class AclListener extends DefaultEventListener {
                 }
             }
 
-            for (Map.Entry<String, Set<String>> entry : privilegedAdded.entrySet()) {
-                final String site = entry.getKey();
-                final JCRGroupNode priv = groupService.lookupGroup(site, JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, systemSession);
-                if (priv != null) {
-                    for (String principal : entry.getValue()) {
-                        JCRNodeWrapper p = getPrincipal(site, principal);
-                        if (p == null || priv.isMember(p)) {
-                            continue;
-                        }
-                        logger.info(principal + " need privileged access");
-                        priv.addMember(p);
-                    }
-                }
-            }
-
+            Set<String> membeshipModifiedForGroups = new HashSet<>();
             for (Map.Entry<String, Set<String>> entry : privilegedToCheck.entrySet()) {
                 final String site = entry.getKey();
                 final JCRGroupNode priv = groupService.lookupGroup(site, JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, systemSession);
@@ -356,10 +342,40 @@ public class AclListener extends DefaultEventListener {
                         if (!needPrivileged) {
                             logger.info(principal + " do not need privileged access");
                             priv.removeMember(p);
+                            membeshipModifiedForGroups.add(priv.getPath());
                         }
                     }
                 }
             }
+            
+            for (Map.Entry<String, Set<String>> entry : privilegedAdded.entrySet()) {
+                final String site = entry.getKey();
+                final JCRGroupNode priv = groupService.lookupGroup(site, JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, systemSession);
+                if (priv != null) {
+                    for (String principal : entry.getValue()) {
+                        JCRNodeWrapper p = getPrincipal(site, principal);
+                        if (p == null) {
+                            continue;
+                        }
+                        if (priv.isMember(p)) {
+                            if (membeshipModifiedForGroups.contains(priv.getPath())) {
+                                // The membership was modified for group priv
+                                // Need to save changes and re-evaluate membership of principal p (QA-9762)
+                                systemSession.save();
+                                membeshipModifiedForGroups.clear();
+                                if (priv.isMember(p)) {
+                                    continue;
+                                } 
+                            } else {
+                                continue;
+                            }
+                        }
+                        logger.info(principal + " need privileged access");
+                        priv.addMember(p);
+                    }
+                }
+            }
+
         }
 
         systemSession.save();

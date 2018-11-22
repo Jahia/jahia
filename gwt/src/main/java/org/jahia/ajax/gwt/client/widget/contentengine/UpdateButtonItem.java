@@ -72,11 +72,15 @@ public class UpdateButtonItem extends SaveButtonItem {
     @Override
     protected void prepareAndSave(final AbstractContentEngine engine, final boolean closeAfterSave) {
 
-        Set<String> removedTypes = engine.fillContentChanges(true);
+        engine.prepare();
+
+        engine.getNode().getNodeTypes().removeAll(engine.getRemovedTypes());
+        engine.getNode().getNodeTypes().addAll(engine.getAddedTypes());
 
         engine.removeUneditedLanguages();
 
-        JahiaContentManagementService.App.getInstance().saveNode(engine.getNode(), engine.getAcl(), engine.getChangedI18NProperties(), engine.getChangedProperties(), removedTypes, new BaseAsyncCallback<RpcMap>() {
+        JahiaContentManagementService.App.getInstance().saveNode(engine.getNode(), engine.getAcl(), engine.getChangedI18NProperties(),
+                engine.getChangedProperties(), engine.getRemovedTypes(), new BaseAsyncCallback<RpcMap>() {
 
             @Override
             public void onApplicationFailure(Throwable throwable) {

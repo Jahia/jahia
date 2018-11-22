@@ -56,6 +56,10 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DualListField;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Event;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTChoiceListInitializer;
@@ -114,6 +118,11 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     private boolean wipModified;
     protected boolean closed = false;
     private boolean skipRefreshOnSave;
+    protected HandlerRegistration escHandler;
+    final Set<String> addedTypes = new HashSet<String>();
+    final Set<String> removedTypes = new HashSet<String>();
+    private GWTJahiaNodeACL newNodeACL = new GWTJahiaNodeACL();
+    private List<GWTJahiaNode> children = new ArrayList<GWTJahiaNode>();
 
     // general properties
     protected final List<GWTJahiaNodeProperty> changedProperties = new ArrayList<GWTJahiaNodeProperty>();
@@ -156,6 +165,9 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         initFooter();
 
         container.getPanel().setFooter(true);
+
+        initEscapeHandler();
+
         loading();
     }
 
@@ -164,20 +176,9 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         closed = true;
     }
 
-    protected void cancelAndClose() {
-        if (this instanceof CreateContentEngine || hasChanges()) {
-            MessageBox.confirm(Messages.get("message.confirm.unsavedTitle","Changes won't be saved"),
-                    Messages.get("message.confirm.unsavedModifications","Close without saving?"), new Listener<MessageBoxEvent>() {
-                        @Override public void handleEvent(MessageBoxEvent boxEvent) {
-                            if (Dialog.YES.equalsIgnoreCase(boxEvent.getButtonClicked().getItemId())) {
-                                close();
-                            }
-                        }
-                    });
-        } else {
-            close();
-        }
-    }
+    protected abstract void cancelAndClose();
+
+    protected abstract void prepare();
 
     /**
      * Called when the engine is loaded
@@ -479,99 +480,6 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         getChangedI18NProperties().keySet().retainAll(editedLanguages);
     }
 
-    protected Set<String> fillContentChanges (boolean saveChanges) {
-        // node
-        final Set<String> addedTypes = new HashSet<String>();
-        final Set<String> removedTypes = new HashSet<String>();
-
-        for (TabItem tab : this.getTabs().getItems()) {
-            EditEngineTabItem item = tab.getData("item");
-            // case of contentTabItem
-            if (item instanceof ContentTabItem) {
-                if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
-                    Field<String> name = ((ContentTabItem) item).getName();
-                    if (!name.isValid()) {
-                        com.google.gwt.user.client.Window.alert(name.getErrorMessage());
-                        this.unmask();
-                        this.setButtonsEnabled(true);
-                        return null;
-                    }
-                    this.setNodeName(name.getValue());
-                    this.getNode().setName(this.getNodeName());
-                }
-                final List<CheckBox> validLanguagesChecked = ((ContentTabItem) item).getCheckedLanguagesCheckBox();
-                if (validLanguagesChecked != null) {
-                    // Checkboxes are not null so they are displayed, if list is empty this means that this
-                    // content is not visible in any language
-                    final List<GWTJahiaLanguage> siteLanguages = JahiaGWTParameters.getSiteLanguages();
-                    List<String> invalidLanguages = this.getNode().getInvalidLanguages();
-                    List<String> newInvalidLanguages = new ArrayList<String>();
-                    for (GWTJahiaLanguage language : siteLanguages) {
-                        boolean found = false;
-                        for (CheckBox validLang : validLanguagesChecked) {
-                            if (language.getLanguage().equals(validLang.getValueAttribute())) {
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (!found) {
-                            newInvalidLanguages.add(language.getLanguage());
-                        }
-                    }
-                    boolean hasChanged = newInvalidLanguages.size() != invalidLanguages.size();
-                    if (!hasChanged) {
-                        for (String lang : newInvalidLanguages) {
-                            if (!invalidLanguages.contains(lang)) {
-                                hasChanged = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (hasChanged) {
-                        List<String> strings = new ArrayList<String>(siteLanguages.size());
-                        for (GWTJahiaLanguage siteLanguage : siteLanguages) {
-                            strings.add(siteLanguage.getLanguage());
-                        }
-                        GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
-                        gwtJahiaNodeProperty.setName("j:invalidLanguages");
-                        gwtJahiaNodeProperty.setMultiple(true);
-                        for (CheckBox value : validLanguagesChecked) {
-                            if (value.getValue()) {
-                                strings.remove(value.getValueAttribute());
-                            }
-                        }
-                        if (strings.size() > 0) {
-                            gwtJahiaNodeProperty.setValues(new ArrayList<GWTJahiaNodePropertyValue>());
-                            for (String string : strings) {
-                                gwtJahiaNodeProperty.getValues().add(new GWTJahiaNodePropertyValue(string));
-                            }
-                        }
-                        final List<GWTJahiaNodePropertyValue> gwtJahiaNodePropertyValues = gwtJahiaNodeProperty.getValues();
-                        if (gwtJahiaNodePropertyValues != null && gwtJahiaNodePropertyValues.size() > 0) {
-                            this.getChangedProperties().add(gwtJahiaNodeProperty);
-                            addedTypes.add("jmix:i18n");
-                        } else {
-                            gwtJahiaNodeProperty.setValues(new ArrayList<GWTJahiaNodePropertyValue>());
-                            this.getChangedProperties().add(gwtJahiaNodeProperty);
-                        }
-                    }
-                }
-            }
-
-            // case of right tab
-            item.doSave(this.getNode(), this.getChangedProperties(), this.getChangedI18NProperties(), addedTypes, removedTypes, null,
-                    this.getAcl());
-
-            // distinct modifications save from a simple check
-            if (saveChanges) {
-                this.getNode().getNodeTypes().removeAll(removedTypes);
-                this.getNode().getNodeTypes().addAll(addedTypes);
-            }
-        }
-
-        return removedTypes;
-    }
-
     @Override
     public Linker getLinker() {
         return linker;
@@ -691,6 +599,22 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         return parentPath;
     }
 
+    public Set<String> getAddedTypes() {
+        return addedTypes;
+    }
+
+    public Set<String> getRemovedTypes() {
+        return removedTypes;
+    }
+
+    public GWTJahiaNodeACL getNewNodeACL() {
+        return newNodeACL;
+    }
+
+    public List<GWTJahiaNode> getChildren() {
+        return children;
+    }
+
     @Override
     public Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> getDefaultValues() {
         return defaultValues;
@@ -755,21 +679,32 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         return skipRefreshOnSave;
     }
 
-    private boolean hasChanges() {
-        int propertiesChanges = this.getChangedProperties().size();
-
-        fillContentChanges(false);
-
-        if (propertiesChanges != this.getChangedProperties().size()) {
-            return true;
-        }
-
-        for (Map.Entry<String, List<GWTJahiaNodeProperty>> entry : getChangedI18NProperties().entrySet()) {
-            if (!entry.getValue().isEmpty()) {
-                return true;
+    protected void initEscapeHandler() {
+        //Handling escape button to leave the engine
+        escHandler = Event.addNativePreviewHandler(new Event.NativePreviewHandler() {
+            public void onPreviewNativeEvent(final Event.NativePreviewEvent event) {
+                NativeEvent nEvent = event.getNativeEvent();
+                if ("keydown".equals(nEvent.getType())) {
+                    if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ESCAPE) {
+                        escHandler.removeHandler();
+                        cancelAndClose();
+                    }
+                }
             }
-        }
+        });
+    }
 
-        return false;
+    protected void confirmCancel() {
+        escHandler.removeHandler();
+        MessageBox.confirm(Messages.get("message.confirm.unsavedTitle","Changes won't be saved"),
+                Messages.get("message.confirm.unsavedModifications","Close without saving?"), new Listener<MessageBoxEvent>() {
+                    @Override public void handleEvent(MessageBoxEvent boxEvent) {
+                        if (Dialog.YES.equalsIgnoreCase(boxEvent.getButtonClicked().getItemId())) {
+                            close();
+                        } else if (Dialog.NO.equalsIgnoreCase(boxEvent.getButtonClicked().getItemId())) {
+                            initEscapeHandler();
+                        }
+                    }
+                });
     }
 }

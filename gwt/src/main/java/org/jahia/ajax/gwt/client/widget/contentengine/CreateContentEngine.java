@@ -49,14 +49,14 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.TabItem;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Event;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineConfiguration;
@@ -68,10 +68,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * User: toto
@@ -84,7 +81,6 @@ public class CreateContentEngine extends AbstractContentEngine {
     protected GWTJahiaNodeType type = null;
     protected String targetName = null;
     protected boolean createInParentAndMoveBefore = false;
-    private HandlerRegistration escHandler;
 
     private int childCount;
     private int listLimit;
@@ -230,18 +226,6 @@ public class CreateContentEngine extends AbstractContentEngine {
                 fillCurrentTab();
                 updateWipControls();
 
-                //Handling escape button to leave the engine
-                escHandler = Event.addNativePreviewHandler(new Event.NativePreviewHandler() {
-                    public void onPreviewNativeEvent(final Event.NativePreviewEvent event) {
-                        NativeEvent nEvent = event.getNativeEvent();
-                        if ("keydown".equals(nEvent.getType())) {
-                            if (event.getNativeEvent().getKeyCode() == 27) {
-                                cancelAndClose();
-                            }
-                        }
-                    }
-                });
-
                 loaded();
             }
 
@@ -257,6 +241,58 @@ public class CreateContentEngine extends AbstractContentEngine {
         for (BoxComponent button : buttons) {
             button.setEnabled(enabled);
         }
+    }
+
+    @Override
+    protected void prepare() {
+
+        getNewNodeACL().setAce(new ArrayList<GWTJahiaNodeACE>());
+        for (TabItem tab : this.getTabs().getItems()) {
+            EditEngineTabItem item = tab.getData("item");
+            if (item instanceof ContentTabItem) {
+                if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
+                    nodeName = ((ContentTabItem) item).getName().getValue();
+                }
+                final List<CheckBox> values = ((ContentTabItem) item).getCheckedLanguagesCheckBox();
+                if (values != null) {
+                    // Checkboxes are not null so they are displayed, if list is empty this means that this
+                    // content is not visible in any language
+                    final List<GWTJahiaLanguage> siteLanguages = JahiaGWTParameters.getSiteLanguages();
+                    if (values.size() != siteLanguages.size()) {
+                        List<String> strings = new ArrayList<String>(siteLanguages.size());
+                        for (GWTJahiaLanguage siteLanguage : siteLanguages) {
+                            strings.add(siteLanguage.getLanguage());
+                        }
+                        GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
+                        gwtJahiaNodeProperty.setName("j:invalidLanguages");
+                        gwtJahiaNodeProperty.setMultiple(true);
+                        for (CheckBox value : values) {
+                            if (value.getValue()) {
+                                strings.remove(value.getValueAttribute());
+                            }
+                        }
+                        if (strings.size() > 0) {
+                            gwtJahiaNodeProperty.setValues(new ArrayList<GWTJahiaNodePropertyValue>());
+                            for (String string : strings) {
+                                gwtJahiaNodeProperty.getValues().add(new GWTJahiaNodePropertyValue(string));
+                            }
+                        }
+                        final List<GWTJahiaNodePropertyValue> gwtJahiaNodePropertyValues = gwtJahiaNodeProperty.getValues();
+                        if (gwtJahiaNodePropertyValues != null && gwtJahiaNodePropertyValues.size() > 0) {
+                            getChangedProperties().add(gwtJahiaNodeProperty);
+                            getAddedTypes().add("jmix:i18n");
+                        }
+                    }
+                }
+            }
+            item.doSave(this.getNode(), this.getChangedProperties(), this.getChangedI18NProperties(), getAddedTypes(),
+                    new HashSet<String>(), getChildren(), getNewNodeACL());
+        }
+    }
+
+    @Override
+    protected void cancelAndClose() {
+        confirmCancel();
     }
 
     public String getTargetName() {

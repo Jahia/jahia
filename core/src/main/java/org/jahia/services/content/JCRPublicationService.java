@@ -447,8 +447,10 @@ public class JCRPublicationService extends JahiaService {
             for (String nodeUuid : toDelete) {
                 try {
                     JCRNodeWrapper node = destinationSession.getNodeByIdentifier(nodeUuid);
-                    addRemovedLabel(node, node.getSession().getWorkspace().getName() + "_removed_at_" + JCRVersionService.DATE_FORMAT.print(calendar.getTime().getTime()));
-                    node.remove();
+                    if (!destinationSession.itemExists("/trash")) {
+                        destinationSession.getNode("/").addNode("trash", "nt:unstructured");
+                    }
+                    destinationSession.move(node.getPath(), "/trash/" + node.getIdentifier());
                 } catch (ItemNotFoundException e) {
                     logger.warn("Already deleted : " + nodeUuid);
                 } catch (InvalidItemStateException e) {
@@ -484,6 +486,18 @@ public class JCRPublicationService extends JahiaService {
                 } catch (RepositoryException e) {
                     logger.error("Error when merging differences", e);
                     restorePublicationStatus(sourceSession, node.getIdentifier(), previousPropertyByNodeUuidByName);
+                }
+            }
+
+            for (String nodeUuid : toDelete) {
+                try {
+                    JCRNodeWrapper node = destinationSession.getNodeByIdentifier(nodeUuid);
+                    addRemovedLabel(node, node.getSession().getWorkspace().getName() + "_removed_at_" + JCRVersionService.DATE_FORMAT.print(calendar.getTime().getTime()));
+                    node.remove();
+                } catch (ItemNotFoundException e) {
+                    logger.warn("Already deleted : " + nodeUuid);
+                } catch (InvalidItemStateException e) {
+                    logger.warn("Already deleted : " + nodeUuid);
                 }
             }
 

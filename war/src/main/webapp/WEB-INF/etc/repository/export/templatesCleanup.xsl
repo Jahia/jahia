@@ -24,9 +24,9 @@
             <xsl:when test="name()='jcr:lockIsDeep'"/>
             <xsl:when test="name()='j:locktoken'"/>
             <xsl:when test="name()='j:lockTypes'"/>
-            <xsl:when test="matches(.,'^/modules/.+/(\d+\.)*\d+(-SNAPSHOT)?/')">
+            <xsl:when test="matches(.,'^#?/modules/.+/(\d+\.)*\d+(-SNAPSHOT)?/')">
                 <xsl:attribute name="{name()}" namespace="{namespace-uri()}">
-                    <xsl:value-of select="replace(.,'^(/modules/.+)/(\d+\.)*\d+(-SNAPSHOT)?(/.+)$','$1$4')" />
+                    <xsl:value-of select="replace(.,'^(#?/modules/.+)/(\d+\.)*\d+(-SNAPSHOT)?(/.+)$','$1$4')" />
                 </xsl:attribute>
             </xsl:when>
             <xsl:otherwise>

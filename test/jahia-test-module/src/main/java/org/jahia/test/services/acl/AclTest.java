@@ -45,6 +45,7 @@ package org.jahia.test.services.acl;
 
 import static org.assertj.core.api.Assertions.*;
 
+import org.assertj.core.api.AbstractBooleanAssert;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;
@@ -62,6 +63,10 @@ import org.jahia.test.TestHelper;
 import org.jahia.test.services.content.*;
 import org.junit.*;
 import org.slf4j.Logger;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -108,6 +113,9 @@ public class AclTest {
     private static String content21Identifier;
     private static String content22Identifier;
 
+    private static JahiaGroupManagerService groupService;
+    private static JahiaUserManagerService userService;
+
     private static void assertRole(JCRNodeWrapper node, String principal, String grantType, String role) {
         Map<String, List<String[]>> aclEntries = node.getAclEntries();
         String path = node.getPath();
@@ -124,6 +132,8 @@ public class AclTest {
         JahiaSite site = TestHelper.createSite(TESTSITE_NAME, TestHelper.DX_BASE_DEMO_TEMPLATES);
 
         jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
+        groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
+        userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
 
         JCRSessionWrapper session = jcrService.getSessionFactory().getCurrentUserSession();
 
@@ -145,22 +155,17 @@ public class AclTest {
         content22Identifier = content22.getIdentifier();
         session.save();
 
-        final JahiaUserManagerService userMgr = ServicesRegistry
-                .getInstance().getJahiaUserManagerService();
+        assertNotNull("JahiaUserManagerService cannot be retrieved", userService);
 
-        JahiaUserManagerService userManager = ServicesRegistry.getInstance().getJahiaUserManagerService();
-        assertNotNull("JahiaUserManagerService cannot be retrieved", userManager);
+        user1 = userService.createUser("user1", "password", new Properties(), session);
+        user2 = userService.createUser("user2", "password", new Properties(), session);
+        user3 = userService.createUser("user3", "password", new Properties(), session);
+        user4 = userService.createUser("user4", "password", new Properties(), session);
 
-        user1 = userManager.createUser("user1", "password", new Properties(), session);
-        user2 = userManager.createUser("user2", "password", new Properties(), session);
-        user3 = userManager.createUser("user3", "password", new Properties(), session);
-        user4 = userManager.createUser("user4", "password", new Properties(), session);
+        assertNotNull("JahiaGroupManagerService cannot be retrieved", groupService);
 
-        JahiaGroupManagerService groupManager = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-        assertNotNull("JahiaGroupManagerService cannot be retrieved", groupManager);
-
-        group1 = groupManager.createGroup(site.getSiteKey(), "group1", new Properties(), false, session);
-        group2 = groupManager.createGroup(site.getSiteKey(), "group2", new Properties(), false, session);
+        group1 = groupService.createGroup(site.getSiteKey(), "group1", new Properties(), false, session);
+        group2 = groupService.createGroup(site.getSiteKey(), "group2", new Properties(), false, session);
 
         group1.addMember(user1);
         group1.addMember(user2);
@@ -319,51 +324,67 @@ public class AclTest {
     public void testPrivilegedAccess() throws Exception {
         // Test case for the https://jira.jahia.org/browse/QA-9762
 
-        assertFalse("user1 should NOT have access to home page in edit mode", nodeExists(home.getPath(), "user1"));
-        assertFalse("user3 should NOT have access to home page in edit mode", nodeExists(home.getPath(), "user3"));
-
-        assertFalse("user1 should NOT have access to site in edit mode", nodeExists(home.getParent().getPath(), "user1"));
-        assertFalse("user3 should NOT have access to site in edit mode", nodeExists(home.getParent().getPath(), "user3"));
+        assertAccess(ImmutableMap.of("user1", false, "user3", false));
 
         // grant group1 an editor role on home page
         home.grantRoles("g:group1", Collections.singleton("editor"));
         session.save();
 
-        assertTrue("user1 should have access to home page in edit mode", nodeExists(home.getPath(), "user1"));
-        assertFalse("user3 should NOT have access to home page in edit mode", nodeExists(home.getPath(), "user3"));
-
-        assertTrue("user1 should have access to site in edit mode", nodeExists(home.getParent().getPath(), "user1"));
-        assertFalse("user3 should NOT have access to site in edit mode", nodeExists(home.getParent().getPath(), "user3"));
+        assertAccess(ImmutableMap.of("user1", true, "user3", false));
 
         // revoke an editor role on home page from group1 and grant it to user1 directly
         home.revokeRolesForPrincipal("g:group1");
         home.grantRoles("u:user1", Collections.singleton("editor"));
         session.save();
 
-        assertTrue("user1 should have access to home page in edit mode", nodeExists(home.getPath(), "user1"));
-        assertFalse("user2 should NOT have access to home page in edit mode", nodeExists(home.getPath(), "user2"));
-        assertFalse("user3 should NOT have access to home page in edit mode", nodeExists(home.getPath(), "user3"));
-
-        assertTrue("user1 should have access to site in edit mode", nodeExists(home.getParent().getPath(), "user1"));
-        assertFalse("user2 should NOT have access to site in edit mode", nodeExists(home.getParent().getPath(), "user2"));
-        assertFalse("user3 should NOT have access to site in edit mode", nodeExists(home.getParent().getPath(), "user3"));
+        assertAccess(ImmutableMap.of("user1", true, "user2", false, "user3", false));
 
         // revoke an editor role on home page from user1 and grant her editor-in-chief role
         home.revokeRolesForPrincipal("u:user1");
         home.grantRoles("u:user1", Collections.singleton("editor-in-chief"));
         session.save();
 
-        assertTrue("user1 should have access to home page in edit mode", nodeExists(home.getPath(), "user1"));
-        assertTrue("user1 should have access to site in edit mode", nodeExists(home.getParent().getPath(), "user1"));
+        assertAccess(ImmutableMap.of("user1", true, "user2", false, "user3", false));
 
         // revoke all roles on home page from user1
         home.revokeRolesForPrincipal("u:user1");
         session.save();
 
-        assertFalse("user1 should NOT have access to home page in edit mode", nodeExists(home.getPath(), "user1"));
-        assertFalse("user1 should NOT have access to site in edit mode", nodeExists(home.getParent().getPath(), "user1"));
+        assertAccess(ImmutableMap.of("user1", false, "user2", false, "user3", false));
+
+        home.grantRoles("g:group1", Collections.singleton("editor"));
+        home.revokeRolesForPrincipal("g:group1");
+        session.save();
+
+        assertAccess(ImmutableMap.of("user1", false, "user2", false, "user3", false));
     }
     
+    private void assertAccess(ImmutableMap<String, Boolean> expectations) throws Exception {
+        for (Map.Entry<String, Boolean> expectationEntry : expectations.entrySet()) {
+
+            String principal = expectationEntry.getKey();
+            Boolean shouldHaveAccess = expectationEntry.getValue();
+
+            assertThat(isUserPrivileged(principal))
+                    .as("%s should %sbe in privileged group", principal, shouldHaveAccess ? "" : "NOT ")
+                    .isEqualTo(shouldHaveAccess);
+
+            assertThat(nodeExists(home.getPath(), principal))
+                    .as("%s should %shave access to home page in edit mode", principal, shouldHaveAccess ? "" : "NOT ")
+                    .isEqualTo(shouldHaveAccess);
+            assertThat(nodeExists(home.getParent().getPath(), principal))
+                    .as("%s should %shave access to site in edit mode", principal, shouldHaveAccess ? "" : "NOT ")
+                    .isEqualTo(shouldHaveAccess);
+        }
+    }
+
+    private boolean isUserPrivileged(String user) throws Exception {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
+            return groupService.lookupGroup(TESTSITE_NAME, JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, session)
+                    .isMember(userService.lookupUser(user, session));
+        });
+    }
+
     private boolean nodeExists(String path, String user) throws Exception {
         return doInJcrAsUser(user, session -> {
             try {

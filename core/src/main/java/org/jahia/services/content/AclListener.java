@@ -304,7 +304,7 @@ public class AclListener extends DefaultEventListener {
                 }
             }
 
-            Set<String> membeshipModifiedForGroups = new HashSet<>();
+            Set<String> membershipModifiedForGroups = new HashSet<>();
             for (Map.Entry<String, Set<String>> entry : privilegedToCheck.entrySet()) {
                 final String site = entry.getKey();
                 final JCRGroupNode priv = groupService.lookupGroup(site, JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, systemSession);
@@ -342,12 +342,12 @@ public class AclListener extends DefaultEventListener {
                         if (!needPrivileged) {
                             logger.info(principal + " do not need privileged access");
                             priv.removeMember(p);
-                            membeshipModifiedForGroups.add(priv.getPath());
+                            membershipModifiedForGroups.add(priv.getPath());
                         }
                     }
                 }
             }
-            
+
             for (Map.Entry<String, Set<String>> entry : privilegedAdded.entrySet()) {
                 final String site = entry.getKey();
                 final JCRGroupNode priv = groupService.lookupGroup(site, JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, systemSession);
@@ -358,14 +358,14 @@ public class AclListener extends DefaultEventListener {
                             continue;
                         }
                         if (priv.isMember(p)) {
-                            if (membeshipModifiedForGroups.contains(priv.getPath())) {
+                            if (membershipModifiedForGroups.contains(priv.getPath())) {
                                 // The membership was modified for group priv
-                                // Need to save changes and re-evaluate membership of principal p (QA-9762)
+                                // Need to save changes and re-evaluate membership of principal p
                                 systemSession.save();
-                                membeshipModifiedForGroups.clear();
+                                membershipModifiedForGroups.clear();
                                 if (priv.isMember(p)) {
                                     continue;
-                                } 
+                                }
                             } else {
                                 continue;
                             }

@@ -92,6 +92,8 @@ public class EditContentEngine extends AbstractContentEngine {
             new HashMap<String, GWTJahiaGetPropertiesResult>();
     private boolean hasOrderableChildNodes;
 
+    private int originalAclHash;
+
     /**
      * Initializes an instance of this class.
      *  @param configuration
@@ -224,6 +226,7 @@ public class EditContentEngine extends AbstractContentEngine {
                 hasOrderableChildNodes = result.hasOrderableChildNodes();
                 langCodeGWTJahiaGetPropertiesResultMap.put(currentLanguageBean.getLanguage(), result);
                 acl = result.getAcl();
+                originalAclHash = result.getAcl().hashCode();
                 referencesWarnings = result.getReferencesWarnings();
                 if (!PermissionsUtils.isPermitted("jcr:modifyProperties", node)) {
                     heading = Messages.getWithArgs("label.edit.engine.heading.read.only", "Read {0} ({1})", new String[]{nodeName, nodeTypes.get(0).getLabel()});
@@ -468,13 +471,9 @@ public class EditContentEngine extends AbstractContentEngine {
     }
 
     private boolean hasChanges() {
-        int propertiesChanges = getChangedProperties().size();
-        GWTJahiaNodeACL oldACL = new GWTJahiaNodeACL();
-        oldACL = getAcl().cloneObject();
-
         prepareSave();
 
-        if (propertiesChanges != getChangedProperties().size() || !oldACL.equals(getAcl())) {
+        if (getChangedProperties().size() > 0 || originalAclHash != getAcl().hashCode()) {
             return true;
         }
 
@@ -483,6 +482,8 @@ public class EditContentEngine extends AbstractContentEngine {
                 return true;
             }
         }
+
+        // todo handle removed types when an external mixin is removed, check for current node types
 
         return false;
     }

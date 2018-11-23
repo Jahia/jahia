@@ -391,6 +391,8 @@ public class EditContentEngine extends AbstractContentEngine {
 
     @Override
     protected void prepareSave() {
+        cleanPrepareSaveData();
+
         for (TabItem tab : getTabs().getItems()) {
             EditEngineTabItem item = tab.getData("item");
             // case of contentTabItem

@@ -448,12 +448,10 @@ public class JCRPublicationService extends JahiaService {
                 try {
                     JCRNodeWrapper node = destinationSession.getNodeByIdentifier(nodeUuid);
                     if (!destinationSession.itemExists("/trash")) {
-                        destinationSession.getNode("/").addNode("trash", "nt:unstructured");
+                        destinationSession.getNode("/").addNode("trash", Constants.NT_UNSTRUCTURED);
                     }
                     destinationSession.move(node.getPath(), "/trash/" + node.getIdentifier());
-                } catch (ItemNotFoundException e) {
-                    logger.warn("Already deleted : " + nodeUuid);
-                } catch (InvalidItemStateException e) {
+                } catch (ItemNotFoundException | InvalidItemStateException e) {
                     logger.warn("Already deleted : " + nodeUuid);
                 }
             }
@@ -494,9 +492,7 @@ public class JCRPublicationService extends JahiaService {
                     JCRNodeWrapper node = destinationSession.getNodeByIdentifier(nodeUuid);
                     addRemovedLabel(node, node.getSession().getWorkspace().getName() + "_removed_at_" + JCRVersionService.DATE_FORMAT.print(calendar.getTime().getTime()));
                     node.remove();
-                } catch (ItemNotFoundException e) {
-                    logger.warn("Already deleted : " + nodeUuid);
-                } catch (InvalidItemStateException e) {
+                } catch (ItemNotFoundException | InvalidItemStateException e) {
                     logger.warn("Already deleted : " + nodeUuid);
                 }
             }

@@ -122,8 +122,8 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     private HandlerRegistration cancelConfirmEscapeListener;
     private boolean cancelConfirmOpen = false;
 
-    final Set<String> addedTypes = new HashSet<String>();
-    final Set<String> removedTypes = new HashSet<String>();
+    private Set<String> addedTypes = new HashSet<String>();
+    private Set<String> removedTypes = new HashSet<String>();
     private GWTJahiaNodeACL newNodeACL = new GWTJahiaNodeACL();
     private List<GWTJahiaNode> children = new ArrayList<GWTJahiaNode>();
 
@@ -189,6 +189,13 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
      * Prepare engine object before save operation, useful to know properties that have been changed
      */
     protected abstract void prepareSave();
+
+    void cleanPrepareSaveData() {
+        changedProperties.clear();
+        changedI18NProperties.clear();
+        addedTypes.clear();
+        removedTypes.clear();
+    }
 
     /**
      * Called when the engine is loaded

@@ -244,6 +244,7 @@ public class CreateContentEngine extends AbstractContentEngine {
 
     @Override
     protected void prepareSave() {
+        cleanPrepareSaveData();
 
         getNewNodeACL().setAce(new ArrayList<GWTJahiaNodeACE>());
         for (TabItem tab : this.getTabs().getItems()) {

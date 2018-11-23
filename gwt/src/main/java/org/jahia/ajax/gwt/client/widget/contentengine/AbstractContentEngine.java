@@ -118,7 +118,10 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     private boolean wipModified;
     protected boolean closed = false;
     private boolean skipRefreshOnSave;
-    protected HandlerRegistration escHandler;
+
+    private HandlerRegistration cancelConfirmEscapeListener;
+    private boolean cancelConfirmOpen = false;
+
     final Set<String> addedTypes = new HashSet<String>();
     final Set<String> removedTypes = new HashSet<String>();
     private GWTJahiaNodeACL newNodeACL = new GWTJahiaNodeACL();
@@ -166,7 +169,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
 
         container.getPanel().setFooter(true);
 
-        initEscapeHandler();
+        initCancelConfirmEscapeListener();
 
         loading();
     }
@@ -174,11 +177,18 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     @Override
     public void close() {
         closed = true;
+        cancelConfirmEscapeListener.removeHandler();
     }
 
+    /**
+     * Cancel action
+     */
     protected abstract void cancelAndClose();
 
-    protected abstract void prepare();
+    /**
+     * Prepare engine object before save operation, useful to know properties that have been changed
+     */
+    protected abstract void prepareSave();
 
     /**
      * Called when the engine is loaded
@@ -679,15 +689,16 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         return skipRefreshOnSave;
     }
 
-    protected void initEscapeHandler() {
+    protected void initCancelConfirmEscapeListener() {
         //Handling escape button to leave the engine
-        escHandler = Event.addNativePreviewHandler(new Event.NativePreviewHandler() {
+        cancelConfirmEscapeListener = Event.addNativePreviewHandler(new Event.NativePreviewHandler() {
             public void onPreviewNativeEvent(final Event.NativePreviewEvent event) {
-                NativeEvent nEvent = event.getNativeEvent();
-                if ("keydown".equals(nEvent.getType())) {
-                    if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ESCAPE) {
-                        escHandler.removeHandler();
-                        cancelAndClose();
+                if (!cancelConfirmOpen) {
+                    NativeEvent nEvent = event.getNativeEvent();
+                    if ("keydown".equals(nEvent.getType())) {
+                        if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ESCAPE) {
+                            cancelAndClose();
+                        }
                     }
                 }
             }
@@ -695,14 +706,14 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     }
 
     protected void confirmCancel() {
-        escHandler.removeHandler();
+        cancelConfirmOpen = true;
         MessageBox.confirm(Messages.get("message.confirm.unsavedTitle","Changes won't be saved"),
                 Messages.get("message.confirm.unsavedModifications","Close without saving?"), new Listener<MessageBoxEvent>() {
                     @Override public void handleEvent(MessageBoxEvent boxEvent) {
                         if (Dialog.YES.equalsIgnoreCase(boxEvent.getButtonClicked().getItemId())) {
                             close();
-                        } else if (Dialog.NO.equalsIgnoreCase(boxEvent.getButtonClicked().getItemId())) {
-                            initEscapeHandler();
+                        } else if(Dialog.NO.equalsIgnoreCase(boxEvent.getButtonClicked().getItemId())) {
+                            cancelConfirmOpen = false;
                         }
                     }
                 });

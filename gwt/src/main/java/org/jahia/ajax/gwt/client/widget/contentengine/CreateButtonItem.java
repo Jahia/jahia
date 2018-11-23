@@ -96,7 +96,7 @@ public class CreateButtonItem extends SaveButtonItem {
     }
 
     protected void continuePrepareAndSave(final AbstractContentEngine engine, final boolean closeAfterSave) {
-        engine.prepare();
+        engine.prepareSave();
 
         doSave((CreateContentEngine)engine, engine.getNodeName(), engine.getChangedProperties(), engine.getChangedI18NProperties(),
                 new ArrayList<String>(engine.getAddedTypes()), engine.getChildren(), engine.getNewNodeACL(),

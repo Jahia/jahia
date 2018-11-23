@@ -137,7 +137,6 @@ public class EditContentEngine extends AbstractContentEngine {
         }
 
         container.closeEngine();
-        escHandler.removeHandler();
     }
 
     /**
@@ -391,7 +390,7 @@ public class EditContentEngine extends AbstractContentEngine {
     }
 
     @Override
-    protected void prepare() {
+    protected void prepareSave() {
 
         for (TabItem tab : getTabs().getItems()) {
             EditEngineTabItem item = tab.getData("item");
@@ -478,7 +477,7 @@ public class EditContentEngine extends AbstractContentEngine {
         GWTJahiaNodeACL oldACL = new GWTJahiaNodeACL();
         oldACL = getAcl().cloneObject();
 
-        prepare();
+        prepareSave();
 
         if (propertiesChanges != getChangedProperties().size() || !oldACL.equals(getAcl())) {
             return true;

@@ -119,7 +119,6 @@ public class CreateContentEngine extends AbstractContentEngine {
     public void close() {
         super.close();
         container.closeEngine();
-        escHandler.removeHandler();
     }
 
     /**
@@ -244,7 +243,7 @@ public class CreateContentEngine extends AbstractContentEngine {
     }
 
     @Override
-    protected void prepare() {
+    protected void prepareSave() {
 
         getNewNodeACL().setAce(new ArrayList<GWTJahiaNodeACE>());
         for (TabItem tab : this.getTabs().getItems()) {

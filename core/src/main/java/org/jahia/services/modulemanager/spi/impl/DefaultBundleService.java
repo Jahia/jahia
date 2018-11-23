@@ -96,6 +96,15 @@ public class DefaultBundleService implements BundleService {
         return bundle;
     }
 
+    /**
+     * Returns the cluster node ID of this DX node.
+     * 
+     * @return the cluster node ID of this DX node
+     */
+    public static String getClusterNodeId() {
+        return System.getProperty("cluster.node.serverId");
+    }
+
     private static boolean isGroupIdMatches(BundleBucketInfo bundleBucketInfo, Bundle bundle) {
         String expected = bundleBucketInfo.getGroupId();
         return expected == null || "*".equals(expected)
@@ -208,7 +217,7 @@ public class DefaultBundleService implements BundleService {
                 }
             };
         }
-        return Collections.singletonMap("", info);
+        return Collections.singletonMap(getClusterNodeId(), info);
     }
 
     @Override
@@ -225,7 +234,7 @@ public class DefaultBundleService implements BundleService {
             logger.error("Error retrieving bundle infos", e);
             infos = newFailingMap(e);
         }
-        return Collections.singletonMap("", infos);
+        return Collections.singletonMap(getClusterNodeId(), infos);
     }
 
     @Override
@@ -238,7 +247,7 @@ public class DefaultBundleService implements BundleService {
             logger.error("Error retrieving bundle infos", e);
             infos = newFailingMap(e);
         }
-        return Collections.singletonMap("", infos);
+        return Collections.singletonMap(getClusterNodeId(), infos);
     }
 
     @Override
@@ -251,7 +260,7 @@ public class DefaultBundleService implements BundleService {
             logger.error("Error retrieving bundle infos", e);
             infos = newFailingMap(e);
         }
-        return Collections.singletonMap("", infos);
+        return Collections.singletonMap(getClusterNodeId(), infos);
     }
 
     private static void assertNoTarget(String target) {

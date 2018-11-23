@@ -359,8 +359,9 @@ public class AclListener extends DefaultEventListener {
                         }
                         if (priv.isMember(p)) {
                             if (membershipModifiedForGroups.contains(priv.getPath())) {
-                                // The membership was modified for group priv
-                                // Need to save changes and re-evaluate membership of principal p
+                                // In case membership of the principal p in the privileged group was modified, we must save this change
+                                // to make it visible to the priv.isMember(p) invocation (which uses a different session to access JCR),
+                                // and check membership again.
                                 systemSession.save();
                                 membershipModifiedForGroups.clear();
                                 if (priv.isMember(p)) {

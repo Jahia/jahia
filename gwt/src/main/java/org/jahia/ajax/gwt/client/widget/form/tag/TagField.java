@@ -85,6 +85,9 @@ public class TagField extends MultiField<List<String>> {
 
     @Override
     public void setValue(List<String> value) {
+        // only used at initialisation, so set original value, for modification check using "isDirty"
+        setOriginalValue(value);
+
         for (String tag : value){
             addSplitedTag(tag);
         }

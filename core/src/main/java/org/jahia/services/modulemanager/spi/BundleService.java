@@ -221,6 +221,12 @@ public interface BundleService {
     }
 
     /**
+     * Info about a bundle fragment.
+     */
+    public interface FragmentInformation extends BundleInformation {
+    }
+
+    /**
      * Info about a bundle which is a DX module.
      */
     public interface ModuleInformation extends BundleInformation {

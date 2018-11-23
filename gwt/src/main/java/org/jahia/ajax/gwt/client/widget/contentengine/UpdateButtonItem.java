@@ -72,6 +72,23 @@ public class UpdateButtonItem extends SaveButtonItem {
     @Override
     protected void prepareAndSave(final AbstractContentEngine engine, final boolean closeAfterSave) {
 
+        // validate system name
+        for (TabItem tab : engine.getTabs().getItems()) {
+            EditEngineTabItem item = tab.getData("item");
+            // case of contentTabItem
+            if (item instanceof ContentTabItem) {
+                if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
+                    Field<String> name = ((ContentTabItem) item).getName();
+                    if (!name.isValid()) {
+                        com.google.gwt.user.client.Window.alert(name.getErrorMessage());
+                        engine.unmask();
+                        engine.setButtonsEnabled(true);
+                        return;
+                    }
+                }
+            }
+        }
+
         engine.prepareSave();
 
         engine.getNode().getNodeTypes().removeAll(engine.getRemovedTypes());

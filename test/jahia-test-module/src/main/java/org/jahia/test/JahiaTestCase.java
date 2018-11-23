@@ -75,7 +75,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Super class for Jahia tests
- *
+ * 
  * @author Guillaume Lucazeau
  */
 public class JahiaTestCase {
@@ -86,7 +86,7 @@ public class JahiaTestCase {
         public int statusCode;
         public String statusLine;
         public String responseBody;
-
+        
         PostResult(int statusCode, String statusLine, String responseBody) {
             super();
             this.statusCode = statusCode;
@@ -96,16 +96,16 @@ public class JahiaTestCase {
     }
 
     private final static String PORT = "9090";
-
+    
     private final static String BASE_URL = "http://localhost:" + PORT;
 
     private static boolean baseUrlForTestsLogged;
 
-    private static final Logger logger = LoggerFactory.getLogger(JahiaTestCase.class);
+    private static Logger logger = LoggerFactory.getLogger(JahiaTestCase.class);
 
     /**
      * Returns the <code>HttpServletRequest</code> object for the current call.
-     *
+     * 
      * @return current {@link HttpServletRequest} object
      */
     protected static final HttpServletRequest getRequest() {
@@ -114,7 +114,7 @@ public class JahiaTestCase {
 
     /**
      * Returns the <code>HttpServletResponse</code> object for the current call.
-     *
+     * 
      * @return current {@link HttpServletResponse} object
      */
     protected static final HttpServletResponse getResponse() {
@@ -192,7 +192,7 @@ public class JahiaTestCase {
         return new GetMethod(getBaseServerURL() + Jahia.getContextPath() + relativeUrl);
     }
 
-    protected static String getBaseServerURL() {
+    protected String getBaseServerURL() {
         HttpServletRequest req = getRequest();
         String url = req != null ? req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() : BASE_URL;
         if (!baseUrlForTestsLogged) {

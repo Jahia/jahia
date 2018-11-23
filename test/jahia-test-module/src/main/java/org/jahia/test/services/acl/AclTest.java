@@ -45,7 +45,6 @@ package org.jahia.test.services.acl;
 
 import static org.assertj.core.api.Assertions.*;
 
-import org.assertj.core.api.AbstractBooleanAssert;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;
@@ -65,8 +64,6 @@ import org.junit.*;
 import org.slf4j.Logger;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -75,16 +72,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
 public class AclTest {
-    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(ContentTest.class);
 
-    private final static String TESTSITE_NAME = "aclTestSite";
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(ContentTest.class);
+
+    private static final String TESTSITE_NAME = "aclTestSite";
 
     private static JCRUserNode user1;
     private static JCRUserNode user2;
@@ -129,6 +125,7 @@ public class AclTest {
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
+
         JahiaSite site = TestHelper.createSite(TESTSITE_NAME, TestHelper.DX_BASE_DEMO_TEMPLATES);
 
         jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
@@ -136,8 +133,6 @@ public class AclTest {
         userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
 
         JCRSessionWrapper session = jcrService.getSessionFactory().getCurrentUserSession();
-
-        Set<String> languages = null;
 
         home = session.getNode(HOMEPATH);
         homeIdentifier = home.getIdentifier();
@@ -155,14 +150,10 @@ public class AclTest {
         content22Identifier = content22.getIdentifier();
         session.save();
 
-        assertNotNull("JahiaUserManagerService cannot be retrieved", userService);
-
         user1 = userService.createUser("user1", "password", new Properties(), session);
         user2 = userService.createUser("user2", "password", new Properties(), session);
         user3 = userService.createUser("user3", "password", new Properties(), session);
         user4 = userService.createUser("user4", "password", new Properties(), session);
-
-        assertNotNull("JahiaGroupManagerService cannot be retrieved", groupService);
 
         group1 = groupService.createGroup(site.getSiteKey(), "group1", new Properties(), false, session);
         group2 = groupService.createGroup(site.getSiteKey(), "group2", new Properties(), false, session);
@@ -172,6 +163,7 @@ public class AclTest {
 
         group2.addMember(user3);
         group2.addMember(user4);
+
         session.save();
     }
 
@@ -321,8 +313,8 @@ public class AclTest {
     }
 
     @Test
+    // Test case for the https://jira.jahia.org/browse/QA-9762
     public void testPrivilegedAccess() throws Exception {
-        // Test case for the https://jira.jahia.org/browse/QA-9762
 
         assertAccess(ImmutableMap.of("user1", false, "user3", false));
 
@@ -358,8 +350,8 @@ public class AclTest {
 
         assertAccess(ImmutableMap.of("user1", false, "user2", false, "user3", false));
     }
-    
-    private void assertAccess(ImmutableMap<String, Boolean> expectations) throws Exception {
+
+    private static void assertAccess(ImmutableMap<String, Boolean> expectations) throws Exception {
         for (Map.Entry<String, Boolean> expectationEntry : expectations.entrySet()) {
 
             String principal = expectationEntry.getKey();
@@ -378,14 +370,14 @@ public class AclTest {
         }
     }
 
-    private boolean isUserPrivileged(String user) throws Exception {
+    private static boolean isUserPrivileged(String user) throws Exception {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
             return groupService.lookupGroup(TESTSITE_NAME, JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, session)
                     .isMember(userService.lookupUser(user, session));
         });
     }
 
-    private boolean nodeExists(String path, String user) throws Exception {
+    private static boolean nodeExists(String path, String user) throws Exception {
         return doInJcrAsUser(user, session -> {
             try {
                 session.getNode(path);
@@ -396,11 +388,12 @@ public class AclTest {
         });
     }
 
-    private <T> T doInJcrAsUser(String user, JCRCallback<T> callback) throws Exception {
+    private static <T> T doInJcrAsUser(String user, JCRCallback<T> callback) throws Exception {
         return JCRTemplate.getInstance().doExecute(user, null, Constants.EDIT_WORKSPACE, Locale.ENGLISH, callback);
     }
 
-    class CheckPermission implements JCRCallback<Boolean> {
+    private static class CheckPermission implements JCRCallback<Boolean> {
+
         private String path;
         private String permission;
 
@@ -409,6 +402,7 @@ public class AclTest {
             this.permission = permission;
         }
 
+        @Override
         public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
             try {
                 return session.getNode(path).hasPermission(permission);
@@ -417,6 +411,4 @@ public class AclTest {
             }
         }
     }
-
-
 }

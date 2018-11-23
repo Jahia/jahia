@@ -72,7 +72,7 @@ public class UpdateButtonItem extends SaveButtonItem {
     @Override
     protected void prepareAndSave(final AbstractContentEngine engine, final boolean closeAfterSave) {
 
-        engine.prepare();
+        engine.prepareSave();
 
         engine.getNode().getNodeTypes().removeAll(engine.getRemovedTypes());
         engine.getNode().getNodeTypes().addAll(engine.getAddedTypes());

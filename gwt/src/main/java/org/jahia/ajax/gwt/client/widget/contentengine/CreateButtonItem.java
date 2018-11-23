@@ -91,14 +91,14 @@ public class CreateButtonItem extends SaveButtonItem {
         if (useNamePopup) {
             showNamePopup(engine, closeAfterSave);
         } else {
-            continuePrepareAndSave(engine, closeAfterSave, ((CreateContentEngine) engine).getTargetName());
+            continuePrepareAndSave(engine, closeAfterSave);
         }
     }
 
-    protected void continuePrepareAndSave(final AbstractContentEngine engine, final boolean closeAfterSave, String nodeName) {
+    protected void continuePrepareAndSave(final AbstractContentEngine engine, final boolean closeAfterSave) {
         engine.prepare();
 
-        doSave((CreateContentEngine)engine, nodeName, engine.getChangedProperties(), engine.getChangedI18NProperties(),
+        doSave((CreateContentEngine)engine, engine.getNodeName(), engine.getChangedProperties(), engine.getChangedI18NProperties(),
                 new ArrayList<String>(engine.getAddedTypes()), engine.getChildren(), engine.getNewNodeACL(),
                 closeAfterSave);
     }
@@ -190,7 +190,7 @@ public class CreateButtonItem extends SaveButtonItem {
         b.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                continuePrepareAndSave(engine, closeAfterSave, name.getValue());
+                continuePrepareAndSave(engine, closeAfterSave);
                 popup.hide();
             }
         });

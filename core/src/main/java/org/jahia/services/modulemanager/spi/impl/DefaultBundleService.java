@@ -274,13 +274,23 @@ public class DefaultBundleService implements BundleService {
 
         if (!BundleUtils.isJahiaModuleBundle(bundle)) {
 
-            return new BundleService.BundleInformation() {
-
-                @Override
-                public BundleState getOsgiState() {
-                    return osgiState;
-                }
-            };
+            if (BundleUtils.isFragment(bundle)) {
+                return new BundleService.FragmentInformation() {
+                    
+                    @Override
+                    public BundleState getOsgiState() {
+                        return osgiState;
+                    }
+                };
+            } else {
+                return new BundleService.BundleInformation() {
+    
+                    @Override
+                    public BundleState getOsgiState() {
+                        return osgiState;
+                    }
+                };
+            }
         }
 
         final ModuleState moduleState = templateManagerService.getModuleStates().get(bundle);

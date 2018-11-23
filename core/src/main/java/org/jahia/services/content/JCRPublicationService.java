@@ -444,13 +444,12 @@ public class JCRPublicationService extends JahiaService {
                     logger.warn("Already deleted : " + nodeWrapper.getPath());
                 }
             }
+            JCRNodeWrapper trash = toDelete.isEmpty() ? null : destinationSession.getNode("/").addNode("trash-"+UUID.randomUUID().toString(), Constants.NT_UNSTRUCTURED);
             for (String nodeUuid : toDelete) {
                 try {
                     JCRNodeWrapper node = destinationSession.getNodeByIdentifier(nodeUuid);
-                    if (!destinationSession.itemExists("/trash")) {
-                        destinationSession.getNode("/").addNode("trash", Constants.NT_UNSTRUCTURED);
-                    }
-                    destinationSession.move(node.getPath(), "/trash/" + node.getIdentifier());
+                    addRemovedLabel(node, node.getSession().getWorkspace().getName() + "_removed_at_" + JCRVersionService.DATE_FORMAT.print(calendar.getTime().getTime()));
+                    destinationSession.move(node.getPath(), trash.getPath() + "/" + node.getIdentifier());
                 } catch (ItemNotFoundException | InvalidItemStateException e) {
                     logger.warn("Already deleted : " + nodeUuid);
                 }
@@ -487,13 +486,12 @@ public class JCRPublicationService extends JahiaService {
                 }
             }
 
-            for (String nodeUuid : toDelete) {
+            if (trash != null) {
                 try {
-                    JCRNodeWrapper node = destinationSession.getNodeByIdentifier(nodeUuid);
-                    addRemovedLabel(node, node.getSession().getWorkspace().getName() + "_removed_at_" + JCRVersionService.DATE_FORMAT.print(calendar.getTime().getTime()));
-                    node.remove();
+                    trash.remove();
+                    destinationSession.save();
                 } catch (ItemNotFoundException | InvalidItemStateException e) {
-                    logger.warn("Already deleted : " + nodeUuid);
+                    logger.warn("Already deleted");
                 }
             }
 

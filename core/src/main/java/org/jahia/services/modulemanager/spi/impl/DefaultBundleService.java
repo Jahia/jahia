@@ -96,6 +96,17 @@ public class DefaultBundleService implements BundleService {
         return bundle;
     }
 
+    private static boolean isGroupIdMatches(BundleBucketInfo bundleBucketInfo, Bundle bundle) {
+        String expected = bundleBucketInfo.getGroupId();
+        return expected == null || "*".equals(expected)
+                || StringUtils.equals(expected, BundleUtils.getModuleGroupId(bundle));
+    }
+
+    private static boolean isSymbolicNameMatches(BundleBucketInfo bundleBucketInfo, Bundle bundle) {
+        String expected = bundleBucketInfo.getSymbolicName();
+        return expected == null || "*".equals(expected) || StringUtils.equals(expected, bundle.getSymbolicName());
+    }
+
     /**
      * Injects an instance of the template manager service.
      *
@@ -314,7 +325,7 @@ public class DefaultBundleService implements BundleService {
         Bundle[] bundles = FrameworkService.getBundleContext().getBundles();
         LinkedHashMap<String, BundleInformation> infoByKey = new LinkedHashMap<>();
         for (Bundle bundle : bundles) {
-            if (!StringUtils.equals(bundleBucketInfo.getSymbolicName(), bundle.getSymbolicName())) {
+            if (!isSymbolicNameMatches(bundleBucketInfo, bundle) || !isGroupIdMatches(bundleBucketInfo, bundle)) {
                 continue;
             }
             addToBundleInfoMap(bundle, infoByKey);

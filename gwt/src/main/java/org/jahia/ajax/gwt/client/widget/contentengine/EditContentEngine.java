@@ -391,19 +391,12 @@ public class EditContentEngine extends AbstractContentEngine {
 
     @Override
     protected void prepareSave() {
-
         for (TabItem tab : getTabs().getItems()) {
             EditEngineTabItem item = tab.getData("item");
             // case of contentTabItem
             if (item instanceof ContentTabItem) {
                 if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
                     Field<String> name = ((ContentTabItem) item).getName();
-                    if (!name.isValid()) {
-                        com.google.gwt.user.client.Window.alert(name.getErrorMessage());
-                        unmask();
-                        setButtonsEnabled(true);
-                        return;
-                    }
                     setNodeName(name.getValue());
                     getNode().setName(getNodeName());
                 }

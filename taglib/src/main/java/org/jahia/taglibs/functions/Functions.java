@@ -84,8 +84,10 @@ import java.util.regex.Pattern;
  * @author Sergiy Shyrkov
  */
 public class Functions {
-    
+
     private static final Comparator<Map<String, Object>> DISPLAY_NAME_COMPARATOR = new Comparator<Map<String, Object>>() {
+
+        @Override
         public int compare(Map<String, Object> o1, Map<String, Object> o2) {
             return StringUtils
                     .defaultString((String) o1.get("displayName"))
@@ -155,16 +157,16 @@ public class Functions {
                 .length() > 0))) ? value : defaultValue;
     }
 
-
     public static java.lang.String displayLocaleNameWith(Locale localeToDisplay, Locale localeUsedForRendering) {
         return WordUtils.capitalizeFully(localeToDisplay.getDisplayName(localeUsedForRendering));
     }
 
     public static String getLangIcon(Locale localeToDisplay) {
-        if("".equals(localeToDisplay.getCountry()))
+        if ("".equals(localeToDisplay.getCountry())) {
             return "flag_" + localeToDisplay.getLanguage().toLowerCase() + "_on";
-        else
+        } else {
             return "flag_" + Patterns.SPACE.matcher(localeToDisplay.getDisplayCountry(Locale.ENGLISH).toLowerCase()).replaceAll("_");
+        }
     }
 
     /**
@@ -197,7 +199,7 @@ public class Functions {
         List<Map<String, Object>> results;
 
         boolean sortByDisplayName = sortType != null && sortType.equalsIgnoreCase("displayName");
-        results = JCRContentUtils.getRolesForNode(node, includeInherited, expandGroups, roles, limit,sortType != null && sortType.equalsIgnoreCase("latestFirst"));
+        results = JCRContentUtils.getRolesForNode(node, includeInherited, expandGroups, roles, limit, (sortType != null && sortType.equalsIgnoreCase("latestFirst")));
         if (sortByDisplayName) {
             for (Map<String, Object> result : results) {
                 result.put("displayName", PrincipalViewHelper.getFullName((JCRNodeWrapper) result.get("principal")));
@@ -209,7 +211,7 @@ public class Functions {
 
     /**
      * Checks if the provided node has the specified view.
-     * 
+     *
      * @param node
      *            the node to check the view for
      * @param viewName
@@ -246,7 +248,7 @@ public class Functions {
     /**
      * Joins the elements of the provided array/collection/iterator into a single String containing the provided elements with specified
      * separator.
-     * 
+     *
      * @param elements
      *            the set of values to join together, may be null
      * @param separator
@@ -279,8 +281,6 @@ public class Functions {
         return (obj != null && obj instanceof RangeIterator) ? JCRContentUtils.size((RangeIterator) obj)
                 : org.apache.taglibs.standard.functions.Functions.length(obj);
     }
-
-
 
     public static boolean matches(String pattern, String str) {
         return getCompiledPattern(pattern).matcher(str).matches();
@@ -326,7 +326,7 @@ public class Functions {
         textExtractor.setIncludeAttributes(false);
         return textExtractor.toString();
     }
-    
+
     /**
      * Reverse the content of a list. Only works with some List.
      *
@@ -339,7 +339,7 @@ public class Functions {
         Collections.reverse(copy);
         return copy;
     }
-    
+
     public static <T> Iterator<T> reverse(Iterator<T> it) {
         List<T> copy = new ArrayList<T>();
         while (it.hasNext()) {
@@ -376,26 +376,26 @@ public class Functions {
         }
         return buff.toString();
     }
-    
+
     public static String sqlEncode(String s) {
         return JCRContentUtils.sqlEncode(s);
     }
-    
+
     public static String xpathPathEncode(String s) {
         return JCRContentUtils.stringToJCRPathExp(s);
-    }    
-    
+    }
+
     public static String modulePath(HttpServletRequest req, String moduleId) {
         return req.getContextPath() + "/modules/" + moduleId;
     }
-    
+
     /**
      * Returns the first parent of the specified node, which has the ACL inheritance broken. If not found, null<code>null</code> is
      * returned.
-     * 
+     *
      * @param node
      *            the node to search parent for
-     * 
+     *
      * @return the first parent of the specified node, which has the ACL inheritance broken. If not found, null<code>null</code> is returned
      */
     public static JCRNodeWrapper getParentWithAclInheritanceBroken(JCRNodeWrapper node) {
@@ -413,19 +413,19 @@ public class Functions {
         return null;
     }
 
-    public static String formatISODate(java.lang.String dateToParse, String pattern, Locale locale){
+    public static String formatISODate(java.lang.String dateToParse, String pattern, Locale locale) {
         try{
             DateTime dateTime = ISODateTimeFormat.dateOptionalTimeParser().parseDateTime(dateToParse);
             return DateTimeFormat.forPattern(pattern).withLocale(locale != null ? locale : Locale.ENGLISH).print(!dateToParse.endsWith("Z") ? dateTime : dateTime.toDateTime(DateTimeZone.forID("UTC")));
         } catch (Exception e) {
-            logger.debug("Unable to parse date:"+dateToParse,e);
+            logger.debug("Unable to parse date:" + dateToParse, e);
             return null;
         }
     }
-    
+
     /**
      * Detects the current site key using data, available in the supplied request object.
-     * 
+     *
      * @param request
      *            the current HTTP request object
      * @return the current site key

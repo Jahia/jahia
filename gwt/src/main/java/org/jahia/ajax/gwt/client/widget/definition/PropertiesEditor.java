@@ -408,9 +408,13 @@ public class PropertiesEditor extends FormPanel {
 
                                 @Override
                                 public void handleEvent(FieldSetEvent componentEvent) {
+                                    final FieldSet  fs = (FieldSet) componentEvent.getBoxComponent();
+                                    // Do nothing if the FieldSet is collapse
+                                    if (!fs.isExpanded()) {
+                                        return;
+                                    }
                                     removedTypes.add(nodeType.getName());
                                     addedTypes.remove(nodeType.getName());
-                                    final FieldSet  fs = (FieldSet) componentEvent.getBoxComponent();
                                     for (Component component : fs.getItems()) {
                                         if (component instanceof PropertyAdapterField) {
                                             PropertyAdapterField adapterField = (PropertyAdapterField) component;

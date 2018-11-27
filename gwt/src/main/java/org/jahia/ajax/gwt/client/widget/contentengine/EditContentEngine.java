@@ -489,7 +489,10 @@ public class EditContentEngine extends AbstractContentEngine {
             return true;
         }
 
-        // todo handle removed types when an external mixin is removed, check for current node types
+        // Check for mixin removal
+        if (!getRemovedTypes().isEmpty()) {
+            return true;
+        }
 
         return false;
     }

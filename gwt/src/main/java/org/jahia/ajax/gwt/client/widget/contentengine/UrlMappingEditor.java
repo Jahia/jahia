@@ -43,20 +43,10 @@
  */
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.widget.Text;
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
-import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record.RecordUpdate;
 import com.extjs.gxt.ui.client.store.Store;
@@ -68,22 +58,22 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.grid.CellEditor;
-import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnData;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
-import com.extjs.gxt.ui.client.widget.grid.RowEditor;
+import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
-
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * URL mapping for the node.
@@ -96,6 +86,7 @@ public class UrlMappingEditor extends LayoutContainer {
     private String locale;
 
     private ListStore<GWTJahiaUrlMapping> store;
+    private List<GWTJahiaUrlMapping> initialMappings;
     /**
      * Initializes an instance of this class.
      * 
@@ -108,6 +99,7 @@ public class UrlMappingEditor extends LayoutContainer {
         this.editable = editable;
         setBorders(false);
         store = new ListStore<GWTJahiaUrlMapping>();
+        initialMappings = new ArrayList<GWTJahiaUrlMapping>();
         JahiaContentManagementService.App.getInstance().getUrlMappings(node, locale,
                 new BaseAsyncCallback<List<GWTJahiaUrlMapping>>() {
                     public void onApplicationFailure(Throwable throwable) {
@@ -119,12 +111,38 @@ public class UrlMappingEditor extends LayoutContainer {
 
                     public void onSuccess(List<GWTJahiaUrlMapping> mappings) {
                         store.add(mappings);
+                        for (GWTJahiaUrlMapping mapping : mappings) {
+                            initialMappings.add(new GWTJahiaUrlMapping(mapping.getPath(),
+                                    mapping.getUrl(),
+                                    mapping.getLanguage(),
+                                    mapping.isDefault(),
+                                    mapping.isActive()));
+                        }
                     }
                 });
     }
 
     public List<GWTJahiaUrlMapping> getMappings() {
         return store.getModels();
+    }
+
+    public boolean isDirty() {
+        if (getMappings().size() != initialMappings.size()) {
+            return true;
+        }
+        for (GWTJahiaUrlMapping initalMapping : initialMappings) {
+            boolean found = false;
+            for (GWTJahiaUrlMapping mapping : getMappings()) {
+                found = mapping.equals(initalMapping);
+                if (found) {
+                    break;
+                }
+            }
+            if (!found) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

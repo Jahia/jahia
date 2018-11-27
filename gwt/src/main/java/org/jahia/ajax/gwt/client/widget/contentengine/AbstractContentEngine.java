@@ -51,7 +51,6 @@ import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DualListField;
 import com.extjs.gxt.ui.client.widget.form.Field;
@@ -81,6 +80,8 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.AreaModule;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageSwitcherActionItem;
 
 import java.util.*;
+
+import static org.jahia.ajax.gwt.client.widget.contentengine.SeoTabItem.VANITY_MAPPINGS;
 
 /**
  * Abstract Method for Content Engine
@@ -195,6 +196,9 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         changedI18NProperties.clear();
         addedTypes.clear();
         removedTypes.clear();
+        if (node.get(VANITY_MAPPINGS) != null) {
+            node.remove(VANITY_MAPPINGS);
+        }
     }
 
     /**

@@ -79,6 +79,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.jahia.ajax.gwt.client.widget.contentengine.SeoTabItem.VANITY_MAPPINGS;
+
 /**
  * Content editing widget.
  *
@@ -494,6 +496,10 @@ public class EditContentEngine extends AbstractContentEngine {
             return true;
         }
 
+        // Check SEO
+        if (node.get(VANITY_MAPPINGS) != null) {
+            return true;
+        }
         return false;
     }
 

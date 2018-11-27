@@ -99,4 +99,21 @@ public class GWTJahiaUrlMapping extends BaseModel {
         set("default", Boolean.valueOf(isDefault));
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        return this.isActive() == ((GWTJahiaUrlMapping) obj).isActive() &&
+                this.getPath().equals(((GWTJahiaUrlMapping) obj).getPath()) &&
+                this.getUrl().equals(((GWTJahiaUrlMapping) obj).getUrl()) &&
+                this.getLanguage().equals(((GWTJahiaUrlMapping) obj).getLanguage()) &&
+                this.isDefault() == ((GWTJahiaUrlMapping) obj).isDefault();
+    }
 }

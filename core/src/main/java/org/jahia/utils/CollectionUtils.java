@@ -60,8 +60,20 @@ public final class CollectionUtils {
      * @return a bounded in size LRU map
      */
     public static <K, V> Map<K, V> lruCache(final int maxSize) {
-        return new LinkedHashMap<K, V>(maxSize * 4 / 3, 0.75f, true) {
-            private static final long serialVersionUID = 7345935529153553488L;
+        return lruCache(16, maxSize);
+    }
+
+    /**
+     * Returns a bounded in size LRU map.
+     * 
+     * @param initialCapacity the initial capacity of the map
+     * @param maxSize the maximum map size
+     * @return a bounded in size LRU map
+     */
+    public static <K, V> Map<K, V> lruCache(final int initialCapacity, final int maxSize) {
+        return new LinkedHashMap<K, V>(initialCapacity, 0.75f, true) {
+
+            private static final long serialVersionUID = 6773642631901363425L;
 
             @Override
             protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {

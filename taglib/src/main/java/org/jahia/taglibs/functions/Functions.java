@@ -97,7 +97,7 @@ public class Functions {
 
     private static final Logger logger = LoggerFactory.getLogger(Functions.class);
 
-    private static Map<String, Pattern> PATTERN_CACHE = Collections.synchronizedMap(CollectionUtils.lruCache(1000000));
+    private static Map<String, Pattern> PATTERN_CACHE = Collections.synchronizedMap(CollectionUtils.lruCache(10000));
 
     public static String attributes(Map<String, Object> attributes) {
         StringBuilder out = new StringBuilder();

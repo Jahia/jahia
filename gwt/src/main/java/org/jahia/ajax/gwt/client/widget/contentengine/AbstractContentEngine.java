@@ -196,7 +196,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         changedI18NProperties.clear();
         addedTypes.clear();
         removedTypes.clear();
-        if (node.get(VANITY_MAPPINGS) != null) {
+        if (node != null && node.get(VANITY_MAPPINGS) != null) {
             node.remove(VANITY_MAPPINGS);
         }
     }

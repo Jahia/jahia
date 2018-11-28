@@ -87,8 +87,8 @@ public class WorkflowTabItem extends EditEngineTabItem {
 
     private transient int initialWorkflowRulesHash;
 
-    private transient final CheckBox box = new CheckBox();
-    private transient final ComboBox<GWTJahiaWorkflowDefinition> combo = new ComboBox<GWTJahiaWorkflowDefinition>();
+    private transient CheckBox box;
+    private transient ComboBox<GWTJahiaWorkflowDefinition> combo;
 
     public WorkflowTabItem() {
         setHandleCreate(false);
@@ -122,6 +122,9 @@ public class WorkflowTabItem extends EditEngineTabItem {
         container.add(next, new BorderLayoutData(Style.LayoutRegion.CENTER));
 
         activePanel = next;
+
+        box = new CheckBox();
+        combo = new ComboBox<GWTJahiaWorkflowDefinition>();
 
         JahiaContentManagementService.App.getInstance().getWorkflowRules(engine.getNode().getPath(),
                 new BaseAsyncCallback<Map<GWTJahiaWorkflowType,List<GWTJahiaWorkflowDefinition>>>() {

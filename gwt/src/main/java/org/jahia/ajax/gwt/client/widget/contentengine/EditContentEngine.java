@@ -136,6 +136,7 @@ public class EditContentEngine extends AbstractContentEngine {
     }
 
     protected void closeEngine() {
+        super.close();
         if (handlerRegistration != null) {
             handlerRegistration.removeHandler();
             handlerRegistration = null;

@@ -53,7 +53,10 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * User: toto
@@ -64,6 +67,7 @@ public abstract class EditEngineTabItem implements Serializable {
     protected GWTEngineTab gwtEngineTab;
 
     protected boolean handleCreate = true;
+    private transient boolean dirty = false;
     private List<String> showForTypes = new ArrayList<String>();
     private List<String> hideForTypes = new ArrayList<String>();
 
@@ -83,10 +87,10 @@ public abstract class EditEngineTabItem implements Serializable {
         tab.setLayout(new FitLayout());
         tab.setStyleName("x-panel-mc");
         tab.setData("item", this);
-        
+
         tab.setId("JahiaGxtEditEnginePanel-"+engineTab.getId());
-        
-        
+
+
         return tab;
     }
 
@@ -157,5 +161,20 @@ public abstract class EditEngineTabItem implements Serializable {
 
     public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes, List<GWTJahiaNode> chidren, GWTJahiaNodeACL acl) {
 
+    }
+
+    /**
+     * @return true if the tab has been modified
+     */
+    protected boolean isDirty() {
+        return this.dirty;
+    }
+
+    /**
+     * Sets the tab modified status
+     * @param dirty
+     */
+    protected void setDirty(boolean dirty) {
+        this.dirty = dirty;
     }
 }

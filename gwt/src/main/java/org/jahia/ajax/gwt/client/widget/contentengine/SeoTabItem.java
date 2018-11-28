@@ -130,6 +130,8 @@ public class SeoTabItem extends EditEngineTabItem {
         if (isDirty) {
             node.set(VANITY_MAPPINGS, mappings);
         }
-
+        setDirty(isDirty);
     }
+
+
 }

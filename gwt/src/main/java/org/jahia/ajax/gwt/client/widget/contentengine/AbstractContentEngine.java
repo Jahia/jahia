@@ -648,4 +648,20 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     public boolean skipRefreshOnSave() {
         return skipRefreshOnSave;
     }
+
+    protected void handleLanguageChange(GWTJahiaLanguage previous) {
+        tabs.mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
+        if (previous != null) {
+            final String lang = previous.getLanguage();
+            for (TabItem item : tabs.getItems()) {
+                if (!changedI18NProperties.containsKey(lang)) {
+                    changedI18NProperties.put(lang, new ArrayList<GWTJahiaNodeProperty>());
+                }
+                Object itemData = item.getData("item");
+                if (itemData instanceof EditEngineTabItem) {
+                    ((EditEngineTabItem) itemData).onLanguageChange(getSelectedLanguage(), item);
+                }
+            }
+        }
+    }
 }

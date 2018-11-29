@@ -331,24 +331,13 @@ public class EditContentEngine extends AbstractContentEngine {
     }
 
     /**
-     * on language chnage, reload the node
+     * on language change, reload the node
      *
      * @param previous
      */
     @Override
     protected void onLanguageChange(GWTJahiaLanguage previous) {
-        if (previous != null) {
-            final String lang = previous.getLanguage();
-            for (TabItem item : tabs.getItems()) {
-                if (!changedI18NProperties.containsKey(lang)) {
-                    changedI18NProperties.put(lang, new ArrayList<GWTJahiaNodeProperty>());
-                }
-                Object itemData = item.getData("item");
-                if (itemData instanceof EditEngineTabItem) {
-                    ((EditEngineTabItem) itemData).onLanguageChange(getSelectedLanguage(), item);
-                }
-            }
-        }
+        handleLanguageChange(previous);
         GWTJahiaGetPropertiesResult result = langCodeGWTJahiaGetPropertiesResultMap.get(getSelectedLanguage());
         if (result == null) {
             loadProperties();
@@ -359,6 +348,7 @@ public class EditContentEngine extends AbstractContentEngine {
             currentLanguageBean = result.getCurrentLocale();
             fillCurrentTab();
         }
+        tabs.unmask();
     }
 
     @Override

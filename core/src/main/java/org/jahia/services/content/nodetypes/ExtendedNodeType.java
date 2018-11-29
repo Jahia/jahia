@@ -444,15 +444,24 @@ public class ExtendedNodeType implements NodeType {
 
 		            ExtendedNodeType[] supertypes = getSupertypes();
 		            for (int i = supertypes.length-1; i >=0 ; i--) {
-		                ExtendedNodeType nodeType = supertypes[i];
-		                Map<String, ExtendedPropertyDefinition> c = new HashMap<String, ExtendedPropertyDefinition>(nodeType.getDeclaredPropertyDefinitionsAsMap());
-		                Map<String, ExtendedPropertyDefinition> over = new HashMap<String, ExtendedPropertyDefinition>(properties);
-		                over.keySet().retainAll(c.keySet());
-		                for (ExtendedPropertyDefinition s : over.values()) {
-		                    s.setOverride(true);
-		                }
-		                c.keySet().removeAll(over.keySet());
-		                props.putAll(c);
+		                ExtendedNodeType superType = supertypes[i];
+		                Map<String, ExtendedPropertyDefinition> superTypeProps = new HashMap<String, ExtendedPropertyDefinition>(superType.getDeclaredPropertyDefinitionsAsMap());
+
+		                Map<String, ExtendedPropertyDefinition> overrideProps = new HashMap<String, ExtendedPropertyDefinition>(properties);
+                        overrideProps.keySet().retainAll(superTypeProps.keySet());
+
+                        for (Map.Entry<String, ExtendedPropertyDefinition> overridePropEntry : overrideProps.entrySet()) {
+                            overridePropEntry.getValue().setOverride(true);
+
+                            if (!overridePropEntry.getValue().isMandatory() &&
+                                    superTypeProps.get(overridePropEntry.getKey()).isMandatory()) {
+                                // if super is mandatory, override should be mandatory
+                                overridePropEntry.getValue().setMandatory(true);
+                            }
+                        }
+                        superTypeProps.keySet().removeAll(overrideProps.keySet());
+
+		                props.putAll(superTypeProps);
 		            }
 
 		            allProperties = Collections.unmodifiableMap(props);

@@ -740,8 +740,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         confirmCancelBox.setTitleHtml(Messages.get("message.confirm.unsavedTitle", "Changes won't be saved"));
         confirmCancelBox.setMessage(Messages.get("message.confirm.unsavedModifications", "Close without saving?"));
         confirmCancelBox.addCallback(new Listener<MessageBoxEvent>() {
-            @Override
-            public void handleEvent(MessageBoxEvent boxEvent) {
+            @Override public void handleEvent(MessageBoxEvent boxEvent) {
                 if (boxEvent.getButtonClicked() != null && Dialog.YES.equalsIgnoreCase(boxEvent.getButtonClicked().getItemId())) {
                     close();
                 } else {
@@ -752,5 +751,21 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         confirmCancelBox.setIcon(QUESTION);
         confirmCancelBox.setButtons(YESNO);
         confirmCancelBox.show();
+    }
+
+    protected void handleLanguageChange(GWTJahiaLanguage previous) {
+        tabs.mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
+        if (previous != null) {
+            final String lang = previous.getLanguage();
+            for (TabItem item : tabs.getItems()) {
+                if (!changedI18NProperties.containsKey(lang)) {
+                    changedI18NProperties.put(lang, new ArrayList<GWTJahiaNodeProperty>());
+                }
+                Object itemData = item.getData("item");
+                if (itemData instanceof EditEngineTabItem) {
+                    ((EditEngineTabItem) itemData).onLanguageChange(getSelectedLanguage(), item);
+                }
+            }
+        }
     }
 }

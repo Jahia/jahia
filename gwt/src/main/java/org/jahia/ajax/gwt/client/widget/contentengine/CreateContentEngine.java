@@ -167,25 +167,14 @@ public class CreateContentEngine extends AbstractContentEngine {
     }
 
     /**
-     * on language chnage, fill currentAzble
+     * on language change, fill current tab
      * @param previous
      */
     @Override
     protected void onLanguageChange(GWTJahiaLanguage previous) {
-
-        if (previous != null) {
-            final String lang = previous.getLanguage();
-            for (TabItem item : tabs.getItems()) {
-                if (!changedI18NProperties.containsKey(lang)) {
-                    changedI18NProperties.put(lang, new ArrayList<GWTJahiaNodeProperty>());
-                }
-                Object itemData = item.getData("item");
-                if (itemData instanceof EditEngineTabItem) {
-                    ((EditEngineTabItem) itemData).onLanguageChange(getSelectedLanguage(), item);
-                }
-            }
-        }
+        handleLanguageChange(previous);
         fillCurrentTab();
+        tabs.unmask();
     }
 
 

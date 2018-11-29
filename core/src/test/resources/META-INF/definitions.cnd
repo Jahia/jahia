@@ -216,3 +216,11 @@
 
 [test:i18nMixinAmbiguousProperty] mixin
  - jcr:language (string) i18n
+
+[test:mixinToOverride] mixin
+ - overrideProperty (string)
+ - mandatoryOverrideProperty (string) mandatory
+
+[test:nodeTypeOverride] > jnt:content, test:mixinToOverride
+ - overrideProperty (string) mandatory
+ - mandatoryOverrideProperty (string)

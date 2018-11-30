@@ -76,7 +76,6 @@ public abstract class EditEngineTabItem implements Serializable {
 
     public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {
         this.gwtEngineTab = engineTab;
-        this.dirty = false;
 
         AsyncTabItem tab = new AsyncTabItem(gwtEngineTab.getTitle()) {
             @Override public void setProcessed(boolean processed) {

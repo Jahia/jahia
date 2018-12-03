@@ -754,7 +754,6 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     }
 
     protected void handleLanguageChange(GWTJahiaLanguage previous) {
-        tabs.mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
         if (previous != null) {
             final String lang = previous.getLanguage();
             for (TabItem item : tabs.getItems()) {

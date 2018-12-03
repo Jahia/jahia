@@ -180,11 +180,13 @@ public abstract class BaseActionItem implements ActionItem {
 
         if (isMenuItem()) {
             MenuItem mi = getMenuItem();
+            mi.setHideOnClick(false);
             mi.setSubMenu(menu);
         }
 
         if (isContextMenuItem()) {
             MenuItem mi = getContextMenuItem();
+            mi.setHideOnClick(false);
             mi.setSubMenu(menu);
         }
     }

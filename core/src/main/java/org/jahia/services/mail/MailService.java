@@ -221,7 +221,7 @@ public abstract class MailService extends JahiaService {
      * Send provided mail message.
      *
      * @param message the mail message to be sent
-     * @since 7.3.0.1
+     * @since 7.2.3.3 / 7.3.0.1
      */
     public abstract void sendMessage(MailMessage message);
 
@@ -234,7 +234,7 @@ public abstract class MailService extends JahiaService {
      * @param locale the locale to find the appropriate template script
      * @param templatePackageName the module ID to lookup i18n resources from
      * @throws ScriptException in case of an error executing template script
-     * @since 7.3.0.1
+     * @since 7.2.3.3 / 7.3.0.1
      */
     public abstract void sendMessageWithTemplate(MailMessage message, String template, Map<String, Object> boundObjects,
             Locale locale, String templatePackageName) throws ScriptException;

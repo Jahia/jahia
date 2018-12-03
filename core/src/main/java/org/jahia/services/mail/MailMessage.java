@@ -53,7 +53,8 @@ import javax.activation.DataHandler;
  * Represents an e-mail message.
  * 
  * @author Sergiy Shyrkov
- * @since 7.3.0.1
+ *
+ * @since 7.2.3.3 / 7.3.0.1
  */
 public class MailMessage {
 

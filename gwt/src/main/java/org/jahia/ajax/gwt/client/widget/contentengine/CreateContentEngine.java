@@ -48,7 +48,6 @@ import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.BoxComponent;
-import com.extjs.gxt.ui.client.widget.TabItem;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
@@ -172,6 +171,7 @@ public class CreateContentEngine extends AbstractContentEngine {
      */
     @Override
     protected void onLanguageChange(GWTJahiaLanguage previous) {
+        tabs.mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
         handleLanguageChange(previous);
         fillCurrentTab();
         tabs.unmask();

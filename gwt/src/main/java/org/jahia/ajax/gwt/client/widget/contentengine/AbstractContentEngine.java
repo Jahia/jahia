@@ -708,6 +708,8 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected void initCancelConfirmEscapeListener() {
         //Handling escape button to leave the engine
         cancelConfirmEscapeListener = Event.addNativePreviewHandler(new Event.NativePreviewHandler() {
+
+            @Override
             public void onPreviewNativeEvent(final Event.NativePreviewEvent event) {
                 NativeEvent nEvent = event.getNativeEvent();
                 if (!cancelConfirmOpen) {
@@ -740,7 +742,9 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         confirmCancelBox.setTitleHtml(Messages.get("message.confirm.unsavedTitle", "Changes won't be saved"));
         confirmCancelBox.setMessage(Messages.get("message.confirm.unsavedModifications", "Close without saving?"));
         confirmCancelBox.addCallback(new Listener<MessageBoxEvent>() {
-            @Override public void handleEvent(MessageBoxEvent boxEvent) {
+
+            @Override
+            public void handleEvent(MessageBoxEvent boxEvent) {
                 if (boxEvent.getButtonClicked() != null && Dialog.YES.equalsIgnoreCase(boxEvent.getButtonClicked().getItemId())) {
                     close();
                 } else {

@@ -49,6 +49,7 @@ import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.GridDragSource;
 import com.extjs.gxt.ui.client.dnd.GridDropTarget;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -75,6 +76,7 @@ import java.util.*;
  */
 public class ManualListOrderingEditor extends ContentPanel {
     private GWTJahiaNode node;
+    private transient boolean dirty;
     private ListLoader<ListLoadResult<GWTJahiaNode>> loader;
     private Grid<GWTJahiaNode> childrenGrid;
     private List<GWTJahiaNode> removedNodes = new ArrayList<GWTJahiaNode>();
@@ -86,6 +88,7 @@ public class ManualListOrderingEditor extends ContentPanel {
     public ManualListOrderingEditor(GWTJahiaNode node) {
         super();
         this.node = node;
+        this.dirty = false;
         init();
     }
 
@@ -137,8 +140,21 @@ public class ManualListOrderingEditor extends ContentPanel {
         childrenGrid = new Grid<GWTJahiaNode>(store, new ColumnModel(columnConfigList));
         childrenGrid.setBorders(true);
         childrenGrid.setHeight(400);
+
+        class GridDropTargetOverride extends GridDropTarget {
+            private GridDropTargetOverride(Grid grid) {
+                super(grid);
+            }
+
+            @Override
+            protected void onDragDrop(DNDEvent e) {
+                super.onDragDrop(e);
+                setDirty(true);
+            }
+        }
+
         new GridDragSource(childrenGrid);
-        GridDropTarget target = new GridDropTarget(childrenGrid);
+        GridDropTarget target = new GridDropTargetOverride(childrenGrid);
         target.setAllowSelfAsSource(true);
         target.setFeedback(DND.Feedback.INSERT);
 
@@ -167,6 +183,7 @@ public class ManualListOrderingEditor extends ContentPanel {
                     childrenGrid.getStore().remove(selectedNode);
                     childrenGrid.getStore().insert(selectedNode, index - 1);
                     childrenGrid.getSelectionModel().select(index - 1, true);
+                    setDirty(true);
                 }
             }
 
@@ -192,6 +209,7 @@ public class ManualListOrderingEditor extends ContentPanel {
                 childrenGrid.getStore().insert(node, index);
                 childrenGrid.getSelectionModel().select(index, true);
                 childrenGrid.getView().refresh(false);
+                setDirty(true);
             }
         });
         moveFirst.setIcon(StandardIconsProvider.STANDARD_ICONS.moveFirst());
@@ -217,6 +235,7 @@ public class ManualListOrderingEditor extends ContentPanel {
                     childrenGrid.getStore().insert(selectedNode, index + 1);
                     childrenGrid.getSelectionModel().select(index + 1, true);
                     childrenGrid.getView().refresh(false);
+                    setDirty(true);
                 }
             }
         });
@@ -244,6 +263,7 @@ public class ManualListOrderingEditor extends ContentPanel {
                 childrenGrid.getStore().remove(node);
                 childrenGrid.getStore().insert(node, index);
                 childrenGrid.getSelectionModel().select(index, true);
+                setDirty(true);
 
             }
         });
@@ -259,6 +279,9 @@ public class ManualListOrderingEditor extends ContentPanel {
                     removedNodes.add(node);
                 }
                 childrenGrid.getView().refresh(false);
+                if (removedNodes.size() > 0) {
+                    setDirty(true);
+                }
             }
         });
         remove.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
@@ -311,4 +334,11 @@ public class ManualListOrderingEditor extends ContentPanel {
         return selectedNodes;
     }
 
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+    }
 }

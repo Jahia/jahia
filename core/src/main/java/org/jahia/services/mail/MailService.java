@@ -127,12 +127,11 @@ public abstract class MailService extends JahiaService {
      * @param subject The message subject.
      * @param textBody The text message to send
      * @param htmlBody The HTML message to send
-     * @return True if message is sent successfully, false otherwise
      */
     public abstract void sendMessage(String from, String to, String cc, String bcc,
             String subject, String textBody,
             String htmlBody);
-    
+
     /**
      * Send message in the HTML format to the desired destination with cc and bcc option. The
      * subject can also be mentioned.
@@ -217,4 +216,26 @@ public abstract class MailService extends JahiaService {
      *            the new mail settings to be stored
      */
     public abstract void store(final MailSettings cfg);
+
+    /**
+     * Send provided mail message.
+     *
+     * @param message the mail message to be sent
+     * @since 7.2.3.3 / 7.3.0.1
+     */
+    public abstract void sendMessage(MailMessage message);
+
+    /**
+     * Send provided mail message using specified template that is responsible for producing mail subject and body.
+     *
+     * @param message the mail message to be sent
+     * @param template the template script path
+     * @param boundObjects the objects for the script engine
+     * @param locale the locale to find the appropriate template script
+     * @param templatePackageName the module ID to lookup i18n resources from
+     * @throws ScriptException in case of an error executing template script
+     * @since 7.2.3.3 / 7.3.0.1
+     */
+    public abstract void sendMessageWithTemplate(MailMessage message, String template, Map<String, Object> boundObjects,
+            Locale locale, String templatePackageName) throws ScriptException;
 }

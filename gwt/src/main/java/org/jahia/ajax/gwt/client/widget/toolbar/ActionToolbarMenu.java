@@ -50,7 +50,6 @@ import com.extjs.gxt.ui.client.widget.menu.Item;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
-import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarMenu;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
@@ -112,12 +111,11 @@ public class ActionToolbarMenu extends Menu implements ToolbarGroup {
                                 }
                             }
                         }
-                        if (item.isVisible()) {
-                        }
                     }
                     subMenu.setVisible(show);
                 }
             });
+            subMenu.setHideOnClick(false);
             add(subMenu);
         } else {
             final ActionItem actionItem = gwtToolbarItem.getActionItem();

@@ -43,7 +43,6 @@
  */
 package org.jahia.ajax.gwt.client.widget.toolbar;
 
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
@@ -106,12 +105,6 @@ public class ActionContextMenu extends ActionToolbarMenu {
             } catch (Exception e) {
             }
         }
-    }
-
-    @Override
-    protected void onClick(ComponentEvent ce) {
-        super.onClick(ce);
-        hide();
     }
 
     protected Item createActionItem(ActionItem actionItem) {

@@ -409,8 +409,8 @@ public class PropertiesEditor extends FormPanel {
                                 @Override
                                 public void handleEvent(FieldSetEvent componentEvent) {
                                     final FieldSet  fs = (FieldSet) componentEvent.getBoxComponent();
-                                    // Do nothing if the FieldSet is collapse
-                                    if (!fs.isExpanded()) {
+                                    // Do nothing if the FieldSet is not yet attached
+                                    if (!isAttached()) {
                                         return;
                                     }
                                     removedTypes.add(nodeType.getName());

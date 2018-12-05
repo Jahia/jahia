@@ -43,9 +43,12 @@
  */
 package org.jahia.services.render.filter;
 
+import static org.jahia.services.render.RenderInfo.FilterEvent.*;
+
 import org.apache.commons.collections.list.UnmodifiableList;
 import org.jahia.exceptions.RenderTimeLimitExceededException;
 import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.RenderInfo;
 import org.jahia.services.render.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -137,6 +140,7 @@ public class RenderChain {
      * @throws RenderFilterException in case of a rendering errors
      */
     public String doFilter(RenderContext renderContext, Resource resource) throws RenderFilterException {
+        RenderInfo.pushResource(resource);
 
         String out = null;
         int index = 0;
@@ -159,6 +163,7 @@ public class RenderChain {
                 if (filter.areConditionsMatched(renderContext, resource)) {
                     long timer = System.currentTimeMillis();
                     finalFilterIndex = index;
+                    RenderInfo.addFilterEvent(filter, TYPE_PREPARE);
                     out = filter.prepare(renderContext, resource, this);
                     if (logger.isDebugEnabled()) {
                         logger.debug("{}: prepare filter {} done in {} ms", new Object[] {nodePath, filter.getClass().getName(), System.currentTimeMillis() - timer});
@@ -170,6 +175,7 @@ public class RenderChain {
                 RenderFilter filter = filters.get(index);
                 if (filter.areConditionsMatched(renderContext, resource)) {
                     long timer = System.currentTimeMillis();
+                    RenderInfo.addFilterEvent(filter, TYPE_EXECUTE);
                     out = filter.execute(out, renderContext, resource, this);
                     if (logger.isDebugEnabled()) {
                         logger.debug("{}: execute filter {} done in {} ms", new Object[] {nodePath, filter.getClass().getName(), System.currentTimeMillis() - timer});
@@ -184,6 +190,7 @@ public class RenderChain {
                 RenderFilter filter = filters.get(index-1);
                 if (filter.areConditionsMatched(renderContext, resource)) {
                     long timer = System.currentTimeMillis();
+                    RenderInfo.addFilterEvent(filter, TYPE_GET_ERROR_CONTENT);
                     out = filter.getContentForError(renderContext, resource, this, e);
                     if (logger.isDebugEnabled()) {
                         logger.debug("{}: handling error for filter {} done in {} ms", new Object[] {nodePath, filter.getClass().getName(), System.currentTimeMillis() - timer});
@@ -202,6 +209,7 @@ public class RenderChain {
                         RenderFilter filter = filters.get(index);
                         if (filter.areConditionsMatched(renderContext, resource)) {
                             long timer = System.currentTimeMillis();
+                            RenderInfo.addFilterEvent(filter, TYPE_FINALIZE);
                             filter.finalize(renderContext, resource, this);
                             if (logger.isDebugEnabled()) {
                                 logger.debug("{}: finalizing filter {} done in {} ms", new Object[] {nodePath, filter.getClass().getName(), System.currentTimeMillis() - timer});
@@ -213,6 +221,7 @@ public class RenderChain {
                 }
             }
             popAttributes(renderContext.getRequest());
+            RenderInfo.popResource();
         }
 
         return out;

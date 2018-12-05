@@ -45,6 +45,8 @@ package org.jahia.services.render;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jahia.services.render.filter.RenderFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -53,21 +55,43 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Represents an object with the information about rendering times of a resource including filter call events.
+ */
 public class RenderInfo {
 
+    private static final Logger logger = LoggerFactory.getLogger(RenderInfo.class);
+    
     private static ThreadLocal<RenderInfo> threadLocal = new ThreadLocal<RenderInfo>();
     private static List<RenderInfo> all = new ArrayList<>();
 
     private static boolean enabled = false;
 
+    /**
+     * Enables or disables rendering data collection.
+     * 
+     * @param enabled <code>true</code> to enable data collection; <code>false</code> to disable it
+     */
     public static void setEnabled(boolean enabled) {
         RenderInfo.enabled = enabled;
+        logger.info(enabled ? "The rendering data collection is now enabled"
+                : "The rendering data collection is now disabled");
     }
 
+    /**
+     * Checks if the rendering data collection is enabled or not.
+     * 
+     * @return <code>true</code> if data collection is enabled; <code>false</code> if is it disabled
+     */
     public static boolean isEnabled() {
         return enabled;
     }
 
+    /**
+     * Called on a start resource rendering.
+     * 
+     * @param resource the resource, the recording is started for
+     */
     public static void pushResource(Resource resource) {
         if (enabled) {
             RenderInfo r = new RenderInfo(resource);
@@ -82,30 +106,44 @@ public class RenderInfo {
         }
     }
 
-    public static void popResource(String output) {
+    /**
+     * Called when the rendering of the resource is finished to measure the ellapsed time.
+     */
+    public static void popResource() {
         RenderInfo info = threadLocal.get();
         if (info != null) {
             info.endTime = System.currentTimeMillis();
-            info.output = output;
             threadLocal.set(info.parent);
         }
     }
 
+    /**
+     * "Record" a filter call event of the specified type
+     * 
+     * @param filter the filter which is being called
+     * @param type the filter call type
+     */
     public static void addFilterEvent(RenderFilter filter, int type) {
-        if (threadLocal.get() != null) {
-            threadLocal.get().filterEvents.add(new FilterEvent(filter.getClass().getName(), System.currentTimeMillis(), type));
+        RenderInfo info = threadLocal.get();
+        if (info != null) {
+            info.filterEvents.add(new FilterEvent(filter.getClass().getName(), System.currentTimeMillis(), type));
         }
     }
 
+    /**
+     * Performs a dump of the collected data in JSON format and disables the collection of data.
+     * 
+     * @return a string representation of collected data in JSON format
+     */
     public static String dump() {
-        enabled = false;
+        setEnabled(false);
         StringWriter writer = null;
         try {
             writer = new StringWriter();
             new ObjectMapper().writeValue(writer, all);
             all.clear();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.warn("Error dumping rendering data into JSON. Cause: " + e.getMessage(), e);
         }
 
 
@@ -116,7 +154,6 @@ public class RenderInfo {
     private Resource resource;
     private long startTime = System.currentTimeMillis();
     private long endTime;
-    private String output;
     private List<FilterEvent> filterEvents = new ArrayList<>();
 
     private RenderInfo parent;
@@ -158,10 +195,6 @@ public class RenderInfo {
         return endTime;
     }
 
-    private String getOutput() {
-        return output;
-    }
-
     public List<FilterEvent> getFilterEvents() {
         return filterEvents;
     }
@@ -170,7 +203,15 @@ public class RenderInfo {
         return subResources;
     }
 
+    /**
+     * Represents a single filter call event.
+     */
     public static class FilterEvent {
+        public static final int TYPE_PREPARE = 0;
+        public static final int TYPE_EXECUTE = 1;
+        public static final int TYPE_GET_ERROR_CONTENT = 2;
+        public static final int TYPE_FINALIZE = 3;
+
         private String filter;
         private long date;
         private int type;

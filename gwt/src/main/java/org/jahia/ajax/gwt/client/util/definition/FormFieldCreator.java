@@ -47,7 +47,10 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
@@ -266,8 +269,7 @@ public class FormFieldCreator {
                         ListField<GWTJahiaValueDisplayBean> from = lists.getFromList();
                         from.setStore(store);
                         from.setDisplayField("display");
-                        store.setSortDir(Style.SortDir.ASC);
-                        store.setSortField("display");
+                        store.sort("display", Style.SortDir.ASC);
                         if (store.getCount() > DUAL_LIST_ITEM_COUNT_TO_FILTER) {
                             StoreFilterField<GWTJahiaValueDisplayBean> filterField = new StoreFilterField<GWTJahiaValueDisplayBean>() {
                                 @Override
@@ -288,8 +290,7 @@ public class FormFieldCreator {
                         to.setDisplayField("display");
                         ListStore<GWTJahiaValueDisplayBean> tostore = new ListStore<GWTJahiaValueDisplayBean>();
                         to.setStore(tostore);
-                        tostore.setSortDir(Style.SortDir.ASC);
-                        tostore.setSortField("display");
+                        tostore.sort("display", Style.SortDir.ASC);
                         field = lists;
                         className = "list-store-field";
                     } else {
@@ -807,6 +808,7 @@ public class FormFieldCreator {
                     Accessibility.setState(getToList().getElement(),"aria-required", "true");
                 }
             }
+
             toField.getStore().addListener(ListStore.Add, new Listener<BaseEvent>() {
                 public void handleEvent(BaseEvent be) {
                     validate();
@@ -815,37 +817,6 @@ public class FormFieldCreator {
             toField.setName("to-" + name);
             fromField.setName("from-" + name);
             setHeight(200);
-        }
-
-        @Override
-        protected void onButtonLeft(IconButtonEvent be) {
-            super.onButtonLeft(be);
-            getFromList().getStore().sort("display", Style.SortDir.ASC);
-        }
-
-        @Override
-        protected void onButtonAllLeft(IconButtonEvent be) {
-            super.onButtonAllLeft(be);
-            getFromList().getStore().sort("display", Style.SortDir.ASC);
-        }
-
-        @Override
-        protected void onButtonAllRight(IconButtonEvent be) {
-            super.onButtonAllRight(be);
-            getToList().getStore().sort("display", Style.SortDir.ASC);
-        }
-
-        @Override
-        protected void onButtonRight(IconButtonEvent be) {
-            super.onButtonRight(be);
-            getToList().getStore().sort("display", Style.SortDir.ASC);
-        }
-
-        @Override
-        public void onComponentEvent(ComponentEvent ce) {
-            super.onComponentEvent(ce);
-            getToList().getStore().sort("display", Style.SortDir.ASC);
-            getFromList().getStore().sort("display", Style.SortDir.ASC);
         }
 
         public StoreFilterField<D> getFilterField() {

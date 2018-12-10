@@ -351,8 +351,11 @@ public class PropertiesTabItem extends EditEngineTabItem {
      * @param tab
      */
     public void attachPropertiesEditor(NodeHolder engine, AsyncTabItem tab) {
+        propertiesEditor.setAttaching(true);
         tab.add(propertiesEditor);
         tab.layout();
+        propertiesEditor.setAttaching(false);
+
     }
 
     public boolean isMultiLang() {

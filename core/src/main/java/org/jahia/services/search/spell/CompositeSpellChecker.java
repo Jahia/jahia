@@ -150,12 +150,22 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
     private static Map<String, InternalSpellChecker> spellCheckers = new ConcurrentHashMap<String, InternalSpellChecker>(2);
 
     /**
-     * Triggers update of the spell checker dictionary index.
+     * Triggers update of the spell checker dictionary index, which is executed in a separate thread.
      */
     public static void updateSpellCheckerIndex() {
+        updateSpellCheckerIndex(true);
+    }
+
+    /**
+     * Triggers update of the spell checker dictionary index.
+     * 
+     * @param inBackground specifies if the update should be done in a separate thread; if <code>false</code> the update will be done in the
+     *            main thread, blocking the return until it is finished
+     */
+    public static void updateSpellCheckerIndex(boolean inBackground) {
         for (InternalSpellChecker checker : spellCheckers.values()) {
             checker.lastRefresh = 0;
-            checker.refreshSpellChecker();
+            checker.refreshSpellChecker(inBackground);
         }
     }
 

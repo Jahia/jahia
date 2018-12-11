@@ -43,6 +43,7 @@
  */
 package org.apache.lucene.search.spell;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -54,6 +55,8 @@ import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.store.AlreadyClosedException;
 import org.apache.lucene.store.Directory;
 import org.jahia.utils.LuceneUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.*;
@@ -88,6 +91,8 @@ public class JahiaExtendedSpellChecker implements java.io.Closeable {
     public static final String F_SITE = "site".intern();
     
     private static final String F_WORD_INTERNED = F_WORD.intern();
+
+    private static final Logger logger = LoggerFactory.getLogger(JahiaExtendedSpellChecker.class);
 
     /**
      * the spell index
@@ -226,14 +231,18 @@ public class JahiaExtendedSpellChecker implements java.io.Closeable {
      *            return only the suggest words that are as frequent or more
      *            frequent than the searched word (only if restricted mode =
      *            (indexReader!=null and field!=null)
-     * @throws IOException
+     * @param sites an array of site keys to search in
+     * @param language the current languages, used for the search
+     * @throws IOException in case of index read error
      * @return String[] the sorted list of the suggest words with these 2
      *         criteria: first criteria: the edit distance, second criteria
      *         (only if restricted mode): the popularity of the suggest words in
      *         the field of the user index
      */
+    @SuppressWarnings("resource")
     public String[] suggestSimilar(String word, int numSug, IndexReader ir, boolean morePopular,
                                    String[] sites, String language) throws IOException {
+        long startTime = System.currentTimeMillis();
         // obtainSearcher calls ensureOpen
         final IndexSearcher indexSearcher = obtainSearcher();
         try {
@@ -243,6 +252,10 @@ public class JahiaExtendedSpellChecker implements java.io.Closeable {
             List<String> fields = new ArrayList<>();
             for (String site : sites) {
                 fields.add(LuceneUtils.getFullTextFieldName(site, language));
+                if (language != null) {
+                    // we also consider non-language specific full text field to cover non-18n properties
+                    fields.add(LuceneUtils.getFullTextFieldName(site, null));
+                }
             }
 
             int freq = 0;
@@ -353,9 +366,23 @@ public class JahiaExtendedSpellChecker implements java.io.Closeable {
             }
 
             // convert to array string
-            String[] list = new String[sugQueue.size()];
-            for (int i = sugQueue.size() - 1; i >= 0; i--) {
-                list[i] = sugQueue.pop().string;
+            String[] list = null;
+            int queueSize = sugQueue.size();
+            if (queueSize > 0) {
+                list = new String[queueSize];
+                for (int i = sugQueue.size() - 1; i >= 0; i--) {
+                    list[i] = sugQueue.pop().string;
+                }
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Found suggestions for word '{}' (took {} ms): {}",
+                            new Object[] { word, System.currentTimeMillis() - startTime, list });
+                }
+            } else {
+                list = ArrayUtils.EMPTY_STRING_ARRAY;
+                if (logger.isDebugEnabled()) {
+                    logger.debug("No suggestions found for word {} (took {} ms)", word,
+                            System.currentTimeMillis() - startTime);
+                }
             }
 
             return list;

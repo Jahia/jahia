@@ -649,7 +649,8 @@ public class MainModule extends Module {
     }
 
     public static void translateContent(String path, final String sourceLang, final String destLang, final String saveCallback) {
-        final List<Module> modules = ModuleHelper.getModulesByPath().get(path);
+        Map<String, List<Module>> modulesByPath = ModuleHelper.getModulesByPath();
+        final List<Module> modules = (modulesByPath != null) ? modulesByPath.get(path):null;
 
         final TranslateContentEngine.TranslateContentEngineSaveCallback translateContentEngineSaveCallback = saveCallback != null ? new TranslateContentEngine.TranslateContentEngineSaveCallback() {
             @Override

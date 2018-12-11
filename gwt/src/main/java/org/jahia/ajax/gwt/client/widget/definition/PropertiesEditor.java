@@ -106,7 +106,7 @@ public class PropertiesEditor extends FormPanel {
     private LangPropertiesEditor translationSource;
     private LangPropertiesEditor translationTarget;
     private NodeHolder engine;
-    private boolean attaching;
+    private boolean initialized;
 
     public void setPermissions(GWTBitSet permissions) {
         this.permissions = permissions;
@@ -411,7 +411,7 @@ public class PropertiesEditor extends FormPanel {
                                 public void handleEvent(FieldSetEvent componentEvent) {
                                     final FieldSet  fs = (FieldSet) componentEvent.getBoxComponent();
                                     // Do nothing if the FieldSet is not yet attached
-                                    if (isAttaching()) {
+                                    if (!isInitialized()) {
                                         return;
                                     }
                                     removedTypes.add(nodeType.getName());
@@ -813,12 +813,12 @@ public class PropertiesEditor extends FormPanel {
         this.translationTarget = translationTarget;
     }
 
-    public boolean isAttaching() {
-        return attaching;
+    public boolean isInitialized() {
+        return initialized;
     }
 
-    public void setAttaching(boolean attaching) {
-        this.attaching = attaching;
+    public void setInitialized(boolean initialized) {
+        this.initialized = initialized;
     }
 
     public class PropertyAdapterField extends AdapterField {

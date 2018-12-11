@@ -142,13 +142,13 @@ $basic-colors: (
 		a: 		rgba($color-white, .4)
 	),
 	status: (
-		conflict:							yellow,
+		conflict:							#f6d62f,
 		deleted:							black,
-		livemodified:						orange,
-		liveonly:							orange,
+		livemodified:						#f6d62f,
+		liveonly:							#f6d62f,
 		locked:								#c48F00,
-		mandatorylanguageunpublishable:		orange,
-		mandatorylanguagevalid:				green,
+		mandatorylanguageunpublishable:		#f6d62f,
+		mandatorylanguagevalid:				#f6d62f,
 		markedfordeletion:					red,
 		modified:							orange,
 		multipleWF:							orange,

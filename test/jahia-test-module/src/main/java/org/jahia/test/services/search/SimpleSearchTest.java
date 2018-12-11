@@ -127,7 +127,7 @@ public class SimpleSearchTest extends JahiaTestCase {
     	return getContext(FIRST_SITECONTENT_ROOT_NODE, Locale.ENGLISH);
     }
     
-    private RenderContext getContext(String siteRootNode, Locale locale) throws RepositoryException {
+    protected static RenderContext getContext(String siteRootNode, Locale locale) throws RepositoryException {
         RenderContext context = new RenderContext(getRequest(), getResponse(), getUser());
         JCRSessionWrapper session = JCRSessionFactory.getInstance()
                 .getCurrentUserSession(null, locale);

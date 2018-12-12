@@ -85,11 +85,6 @@ public class WorkflowTabItem extends EditEngineTabItem {
     private transient GWTJahiaWorkflowDefinition previousSelection = null;
     private transient Map<GWTJahiaWorkflowType, List<GWTJahiaWorkflowDefinition>> workflowRules;
 
-    private transient int initialWorkflowRulesHash;
-
-    private transient CheckBox box;
-    private transient ComboBox<GWTJahiaWorkflowDefinition> combo;
-
     public WorkflowTabItem() {
         setHandleCreate(false);
     }
@@ -123,14 +118,10 @@ public class WorkflowTabItem extends EditEngineTabItem {
 
         activePanel = next;
 
-        box = new CheckBox();
-        combo = new ComboBox<GWTJahiaWorkflowDefinition>();
-
         JahiaContentManagementService.App.getInstance().getWorkflowRules(engine.getNode().getPath(),
                 new BaseAsyncCallback<Map<GWTJahiaWorkflowType,List<GWTJahiaWorkflowDefinition>>>() {
                     public void onSuccess(final Map<GWTJahiaWorkflowType,List<GWTJahiaWorkflowDefinition>> result) {
                         workflowRules = result;
-                        initialWorkflowRulesHash = result.hashCode();
                         for (List<GWTJahiaWorkflowDefinition> list : workflowRules.values()) {
                             for (GWTJahiaWorkflowDefinition definition : list) {
                                 if (Boolean.TRUE.equals(definition.get("active")) && engine.getNode().getPath().equals(definition.get("workflowRootPath"))) {
@@ -158,10 +149,12 @@ public class WorkflowTabItem extends EditEngineTabItem {
                         form.setHeaderVisible(false);
                         form.setLabelWidth(200);
                         form.setFieldWidth(300);
+                        final CheckBox box = new CheckBox();
                         box.setFieldLabel(Messages.get("label.workflow.inherited","Same workflow as parent"));
                         form.add(box);
 
                         final ListStore<GWTJahiaWorkflowDefinition> states = new ListStore<GWTJahiaWorkflowDefinition>();
+                        final ComboBox<GWTJahiaWorkflowDefinition> combo = new ComboBox<GWTJahiaWorkflowDefinition>();
                         combo.setFieldLabel(Messages.get("label.workflow","Workflow"));
                         combo.setForceSelection(true);
                         combo.setDisplayField("displayName");
@@ -265,7 +258,6 @@ public class WorkflowTabItem extends EditEngineTabItem {
         }
 
         node.set("activeWorkflows", activeWorkflows);
-        setDirty(initialWorkflowRulesHash != workflowRules.hashCode() || box.isDirty() || combo.isDirty());
     }
 
     @Override

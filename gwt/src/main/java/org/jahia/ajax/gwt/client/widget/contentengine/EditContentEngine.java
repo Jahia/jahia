@@ -50,8 +50,6 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.form.Field;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -62,7 +60,6 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode.WipStatus;
@@ -92,8 +89,6 @@ public class EditContentEngine extends AbstractContentEngine {
     private Map<String, GWTJahiaGetPropertiesResult> langCodeGWTJahiaGetPropertiesResultMap =
             new HashMap<String, GWTJahiaGetPropertiesResult>();
     private boolean hasOrderableChildNodes;
-
-    private int originalAclHash;
 
     /**
      * Initializes an instance of this class.
@@ -134,12 +129,10 @@ public class EditContentEngine extends AbstractContentEngine {
     }
 
     protected void closeEngine() {
-        super.close();
         if (handlerRegistration != null) {
             handlerRegistration.removeHandler();
             handlerRegistration = null;
         }
-
         container.closeEngine();
     }
 
@@ -228,7 +221,6 @@ public class EditContentEngine extends AbstractContentEngine {
                 hasOrderableChildNodes = result.hasOrderableChildNodes();
                 langCodeGWTJahiaGetPropertiesResultMap.put(currentLanguageBean.getLanguage(), result);
                 acl = result.getAcl();
-                originalAclHash = result.getAcl().hashCode();
                 referencesWarnings = result.getReferencesWarnings();
                 if (!PermissionsUtils.isPermitted("jcr:modifyProperties", node)) {
                     heading = Messages.getWithArgs("label.edit.engine.heading.read.only", "Read {0} ({1})", new String[]{nodeName, nodeTypes.get(0).getLabel()});
@@ -321,7 +313,6 @@ public class EditContentEngine extends AbstractContentEngine {
                 if (PermissionsUtils.isPermitted("jcr:modifyProperties", node) && !node.isLocked()) {
                     setButtonsEnabled(true);
                 }
-
                 loaded();
             }
 
@@ -372,127 +363,5 @@ public class EditContentEngine extends AbstractContentEngine {
     @Override
     public String toString() {
         return node.getPath();
-    }
-
-    // return true if modifications has been done in the edit engine / and the opposite
-
-    @Override
-    protected void cancelAndClose() {
-        if (hasChanges()) {
-            confirmCancel();
-        } else {
-            close();
-        }
-    }
-
-    @Override
-    protected void prepareSave() {
-        cleanPrepareSaveData();
-
-        for (TabItem tab : getTabs().getItems()) {
-            EditEngineTabItem item = tab.getData("item");
-            // case of contentTabItem
-            if (item instanceof ContentTabItem) {
-                if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
-                    Field<String> name = ((ContentTabItem) item).getName();
-                    setNodeName(name.getValue());
-                    getNode().setName(getNodeName());
-                }
-                final List<CheckBox> validLanguagesChecked = ((ContentTabItem) item).getCheckedLanguagesCheckBox();
-                if (validLanguagesChecked != null) {
-                    // Checkboxes are not null so they are displayed, if list is empty this means that this
-                    // content is not visible in any language
-                    final List<GWTJahiaLanguage> siteLanguages = JahiaGWTParameters.getSiteLanguages();
-                    List<String> invalidLanguages = getNode().getInvalidLanguages();
-                    List<String> newInvalidLanguages = new ArrayList<String>();
-                    for (GWTJahiaLanguage language : siteLanguages) {
-                        boolean found = false;
-                        for (CheckBox validLang : validLanguagesChecked) {
-                            if (language.getLanguage().equals(validLang.getValueAttribute())) {
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (!found) {
-                            newInvalidLanguages.add(language.getLanguage());
-                        }
-                    }
-                    boolean hasChanged = newInvalidLanguages.size() != invalidLanguages.size();
-                    if (!hasChanged) {
-                        for (String lang : newInvalidLanguages) {
-                            if (!invalidLanguages.contains(lang)) {
-                                hasChanged = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (hasChanged) {
-                        List<String> strings = new ArrayList<String>(siteLanguages.size());
-                        for (GWTJahiaLanguage siteLanguage : siteLanguages) {
-                            strings.add(siteLanguage.getLanguage());
-                        }
-                        GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
-                        gwtJahiaNodeProperty.setName("j:invalidLanguages");
-                        gwtJahiaNodeProperty.setMultiple(true);
-                        for (CheckBox value : validLanguagesChecked) {
-                            if (value.getValue()) {
-                                strings.remove(value.getValueAttribute());
-                            }
-                        }
-                        if (strings.size() > 0) {
-                            gwtJahiaNodeProperty.setValues(new ArrayList<GWTJahiaNodePropertyValue>());
-                            for (String string : strings) {
-                                gwtJahiaNodeProperty.getValues().add(new GWTJahiaNodePropertyValue(string));
-                            }
-                        }
-                        final List<GWTJahiaNodePropertyValue> gwtJahiaNodePropertyValues = gwtJahiaNodeProperty.getValues();
-                        if (gwtJahiaNodePropertyValues != null && gwtJahiaNodePropertyValues.size() > 0) {
-                            getChangedProperties().add(gwtJahiaNodeProperty);
-                            getAddedTypes().add("jmix:i18n");
-                        } else {
-                            gwtJahiaNodeProperty.setValues(new ArrayList<GWTJahiaNodePropertyValue>());
-                            getChangedProperties().add(gwtJahiaNodeProperty);
-                        }
-                    }
-                }
-            }
-
-            // case of right tab
-            item.doSave(getNode(), getChangedProperties(), getChangedI18NProperties(), getAddedTypes(), getRemovedTypes(), null,
-                    getAcl());
-        }
-    }
-
-    private boolean hasChanges() {
-        prepareSave();
-
-        if (getChangedProperties().size() > 0 || originalAclHash != getAcl().hashCode()) {
-            return true;
-        }
-
-        for (Map.Entry<String, List<GWTJahiaNodeProperty>> entry : getChangedI18NProperties().entrySet()) {
-            if (!entry.getValue().isEmpty()) {
-                return true;
-            }
-        }
-
-        // Check system name changed
-        if (!contentPath.endsWith("/" + getNodeName())) {
-            return true;
-        }
-
-        // Check for mixin removal
-        if (!getRemovedTypes().isEmpty()) {
-            return true;
-        }
-
-        // check each tab
-        for (TabItem tab : getTabs().getItems()) {
-            EditEngineTabItem item = tab.getData("item");
-            if (item.isDirty()) {
-                return true;
-            }
-        }
-        return false;
     }
 }

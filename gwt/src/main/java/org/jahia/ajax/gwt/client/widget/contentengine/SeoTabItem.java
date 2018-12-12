@@ -43,14 +43,18 @@
  */
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
-
-import java.util.*;
 
 /**
  * Represents a dedicated tab for configuring URL mapping for content objects
@@ -62,7 +66,6 @@ public class SeoTabItem extends EditEngineTabItem {
 
     /** The serialVersionUID. */
     private static final long serialVersionUID = -3131345831935771996L;
-    public static final String VANITY_MAPPINGS = "vanityMappings";
 
     private transient UrlMappingEditor activeEditor;
 
@@ -120,18 +123,13 @@ public class SeoTabItem extends EditEngineTabItem {
             return;
         }
         Map<String, List<GWTJahiaUrlMapping>> mappings = new HashMap<String, List<GWTJahiaUrlMapping>>();
-        boolean isDirty = false;
         for (Map.Entry<String, UrlMappingEditor> editor : editorsByLanguage.entrySet()) {
-            if (editor.getValue().isDirty()) {
-                isDirty = true;
-                mappings.put(editor.getKey(), editor.getValue().getMappings());
-            }
+            mappings.put(editor.getKey(), editor.getValue().getMappings());
         }
-        if (isDirty) {
-            node.set(VANITY_MAPPINGS, mappings);
+        if (!node.getNodeTypes().contains("jmix:vanityUrlMapped")) {
+            node.getNodeTypes().add("jmix:vanityUrlMapped");
         }
-        setDirty(isDirty);
+        node.set("vanityMappings", mappings);
+
     }
-
-
 }

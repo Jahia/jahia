@@ -101,33 +101,16 @@ public class ListOrderingContentTabItem extends ContentTabItem {
         final FieldSet fieldSet = new FieldSet();
         fieldSet.setCollapsible(true);
         fieldSet.setHeadingHtml(Messages.get("label.manualRanking", "Manual ranking"));
-
-        // update form components
-        final boolean isManual = !propertiesEditor.getNodeTypes().contains(new GWTJahiaNodeType(JMIX_ORDERED_LIST));
-        for (FieldSet component : propertiesEditor.getOrderingListFieldSet()) {
-            component.setEnabled(!isManual);
-            if (isManual) {
-                component.collapse();
-            }
-        }
-
         useManualRanking.setBoxLabel(Messages.get("label.useManualRanking", "Use manual ranking"));
-        useManualRanking.setOriginalValue(isManual);
-        useManualRanking.setValue(isManual);
+
         useManualRanking.addListener(Events.Change, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent componentEvent) {
-
-                if (useManualRanking.getValue() == isManual) {
-                    propertiesEditor.getRemovedTypes().clear();
-                    propertiesEditor.getAddedTypes().clear();
+                if (useManualRanking.getValue()) {
+                    propertiesEditor.getRemovedTypes().add(JMIX_ORDERED_LIST);
+                    propertiesEditor.getAddedTypes().remove(JMIX_ORDERED_LIST);
                 } else {
-                    if (useManualRanking.getValue()) {
-                        propertiesEditor.getRemovedTypes().add(JMIX_ORDERED_LIST);
-                        propertiesEditor.getAddedTypes().remove(JMIX_ORDERED_LIST);
-                    } else {
-                        propertiesEditor.getRemovedTypes().remove(JMIX_ORDERED_LIST);
-                        propertiesEditor.getAddedTypes().add(JMIX_ORDERED_LIST);
-                    }
+                    propertiesEditor.getRemovedTypes().remove(JMIX_ORDERED_LIST);
+                    propertiesEditor.getAddedTypes().add(JMIX_ORDERED_LIST);
                 }
 
                 // update form components
@@ -151,6 +134,16 @@ public class ListOrderingContentTabItem extends ContentTabItem {
             }
         });
 
+
+        // update form components
+        boolean isManual = !propertiesEditor.getNodeTypes().contains(new GWTJahiaNodeType(JMIX_ORDERED_LIST));
+        for (FieldSet component : propertiesEditor.getOrderingListFieldSet()) {
+            component.setEnabled(!isManual);
+            if (isManual) {
+                component.collapse();
+            }
+        }
+        useManualRanking.setValue(isManual);
         manualListOrderingEditor.setEnabled(isManual);
         if (!isManual) {
             manualListOrderingEditor.collapse();
@@ -172,8 +165,6 @@ public class ListOrderingContentTabItem extends ContentTabItem {
     @Override
     public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes, List<GWTJahiaNode> chidren, GWTJahiaNodeACL acl) {
         if (propertiesEditor != null) {
-            setDirty(useManualRanking.isDirty());
-
             if (manualListOrderingEditor != null && useManualRanking.getValue()) {
                 for (GWTJahiaNode child : manualListOrderingEditor.getOrderedNodes()) {
                     node.add(child);
@@ -183,7 +174,6 @@ public class ListOrderingContentTabItem extends ContentTabItem {
                     node.remove(child);
                 }
                 node.set(GWTJahiaNode.INCLUDE_CHILDREN, Boolean.TRUE);
-                setDirty(isDirty() || manualListOrderingEditor.isDirty());
             }
 
             addedTypes.addAll(propertiesEditor.getAddedTypes());

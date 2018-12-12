@@ -83,9 +83,6 @@ public class FileUploadField extends AdapterField {
 
     @Override
     public void setValue(Object o) {
-        // only used at initialisation, so set original value, for modification check using "isDirty"
-        setOriginalValue(o);
-
         ((Uploader)getWidget()).setValue((String)o,(String)o);
     }
 

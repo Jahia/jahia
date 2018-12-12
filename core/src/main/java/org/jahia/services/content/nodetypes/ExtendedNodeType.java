@@ -453,8 +453,7 @@ public class ExtendedNodeType implements NodeType {
                         for (Map.Entry<String, ExtendedPropertyDefinition> overridePropEntry : overrideProps.entrySet()) {
                             overridePropEntry.getValue().setOverride(true);
 
-                            if (!overridePropEntry.getValue().isMandatory() &&
-                                    superTypeProps.get(overridePropEntry.getKey()).isMandatory()) {
+                            if (superTypeProps.get(overridePropEntry.getKey()).isMandatory()) {
                                 // if super is mandatory, override should be mandatory
                                 overridePropEntry.getValue().setMandatory(true);
                             }

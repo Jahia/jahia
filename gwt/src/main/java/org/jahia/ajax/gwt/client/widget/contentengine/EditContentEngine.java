@@ -338,7 +338,7 @@ public class EditContentEngine extends AbstractContentEngine {
      */
     @Override
     protected void onLanguageChange(GWTJahiaLanguage previous) {
-        tabs.mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
+        loading();
         handleLanguageChange(previous);
         GWTJahiaGetPropertiesResult result = langCodeGWTJahiaGetPropertiesResultMap.get(getSelectedLanguage());
         if (result == null) {
@@ -350,7 +350,7 @@ public class EditContentEngine extends AbstractContentEngine {
             currentLanguageBean = result.getCurrentLocale();
             fillCurrentTab();
         }
-        tabs.unmask();
+        loaded();
     }
 
     @Override

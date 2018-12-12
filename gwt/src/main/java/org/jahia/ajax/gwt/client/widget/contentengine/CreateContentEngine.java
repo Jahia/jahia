@@ -171,10 +171,10 @@ public class CreateContentEngine extends AbstractContentEngine {
      */
     @Override
     protected void onLanguageChange(GWTJahiaLanguage previous) {
-        tabs.mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
+        loading();
         handleLanguageChange(previous);
         fillCurrentTab();
-        tabs.unmask();
+        loaded();
     }
 
 

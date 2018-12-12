@@ -71,8 +71,10 @@ public class UpdateButtonItem extends SaveButtonItem {
 
     @Override
     protected void prepareAndSave(final AbstractContentEngine engine, final boolean closeAfterSave) {
+        // node
+        final Set<String> addedTypes = new HashSet<String>();
+        final Set<String> removedTypes = new HashSet<String>();
 
-        // validate system name
         for (TabItem tab : engine.getTabs().getItems()) {
             EditEngineTabItem item = tab.getData("item");
             // case of contentTabItem
@@ -85,19 +87,79 @@ public class UpdateButtonItem extends SaveButtonItem {
                         engine.setButtonsEnabled(true);
                         return;
                     }
+                    engine.setNodeName(name.getValue());
+                    engine.getNode().setName(engine.getNodeName());
+                }
+                final List<CheckBox> validLanguagesChecked = ((ContentTabItem) item).getCheckedLanguagesCheckBox();
+                if (validLanguagesChecked != null) {
+                    // Checkboxes are not null so they are displayed, if list is empty this means that this
+                    // content is not visible in any language
+                    final List<GWTJahiaLanguage> siteLanguages = JahiaGWTParameters.getSiteLanguages();
+                    List<String> invalidLanguages = engine.getNode().getInvalidLanguages();
+                    List<String> newInvalidLanguages = new ArrayList<String>();
+                    for (GWTJahiaLanguage language : siteLanguages) {
+                        boolean found = false;
+                        for (CheckBox validLang : validLanguagesChecked) {
+                            if (language.getLanguage().equals(validLang.getValueAttribute())) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            newInvalidLanguages.add(language.getLanguage());
+                        }
+                    }
+                    boolean hasChanged = newInvalidLanguages.size() != invalidLanguages.size();
+                    if (!hasChanged) {
+                        for (String lang : newInvalidLanguages) {
+                            if (!invalidLanguages.contains(lang)) {
+                                hasChanged = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (hasChanged) {
+                        List<String> strings = new ArrayList<String>(siteLanguages.size());
+                        for (GWTJahiaLanguage siteLanguage : siteLanguages) {
+                            strings.add(siteLanguage.getLanguage());
+                        }
+                        GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
+                        gwtJahiaNodeProperty.setName("j:invalidLanguages");
+                        gwtJahiaNodeProperty.setMultiple(true);
+                        for (CheckBox value : validLanguagesChecked) {
+                            if (value.getValue()) {
+                                strings.remove(value.getValueAttribute());
+                            }
+                        }
+                        if (strings.size() > 0) {
+                            gwtJahiaNodeProperty.setValues(new ArrayList<GWTJahiaNodePropertyValue>());
+                            for (String string : strings) {
+                                gwtJahiaNodeProperty.getValues().add(new GWTJahiaNodePropertyValue(string));
+                            }
+                        }
+                        final List<GWTJahiaNodePropertyValue> gwtJahiaNodePropertyValues = gwtJahiaNodeProperty.getValues();
+                        if (gwtJahiaNodePropertyValues != null && gwtJahiaNodePropertyValues.size() > 0) {
+                            engine.getChangedProperties().add(gwtJahiaNodeProperty);
+                            addedTypes.add("jmix:i18n");
+                        } else {
+                            gwtJahiaNodeProperty.setValues(new ArrayList<GWTJahiaNodePropertyValue>());
+                            engine.getChangedProperties().add(gwtJahiaNodeProperty);
+                        }
+                    }
                 }
             }
+
+            // case of right tab
+            item.doSave(engine.getNode(), engine.getChangedProperties(), engine.getChangedI18NProperties(), addedTypes,
+                    removedTypes, null, engine.getAcl());
         }
 
-        engine.prepareSave();
-
-        engine.getNode().getNodeTypes().removeAll(engine.getRemovedTypes());
-        engine.getNode().getNodeTypes().addAll(engine.getAddedTypes());
+        engine.getNode().getNodeTypes().removeAll(removedTypes);
+        engine.getNode().getNodeTypes().addAll(addedTypes);
 
         engine.removeUneditedLanguages();
 
-        JahiaContentManagementService.App.getInstance().saveNode(engine.getNode(), engine.getAcl(), engine.getChangedI18NProperties(),
-                engine.getChangedProperties(), engine.getRemovedTypes(), new BaseAsyncCallback<RpcMap>() {
+        JahiaContentManagementService.App.getInstance().saveNode(engine.getNode(), engine.getAcl(), engine.getChangedI18NProperties(), engine.getChangedProperties(), removedTypes, new BaseAsyncCallback<RpcMap>() {
 
             @Override
             public void onApplicationFailure(Throwable throwable) {

@@ -215,7 +215,6 @@ public class PropertiesTabItem extends EditEngineTabItem {
                         }
                     }
                 };
-                propertiesEditor.setInitialized(false);
                 propertiesEditor.setLocale(language);
                 propertiesEditor.setMixin(engine.getMixin());
                 propertiesEditor.setChoiceListInitializersValues(engine.getChoiceListInitializersValues());
@@ -324,9 +323,6 @@ public class PropertiesTabItem extends EditEngineTabItem {
             propertiesEditor.setVisible(true);
             tab.layout();
         }
-        if (propertiesEditor != null) {
-            propertiesEditor.setInitialized(true);
-        }
     }
 
 
@@ -357,7 +353,6 @@ public class PropertiesTabItem extends EditEngineTabItem {
     public void attachPropertiesEditor(NodeHolder engine, AsyncTabItem tab) {
         tab.add(propertiesEditor);
         tab.layout();
-
     }
 
     public boolean isMultiLang() {

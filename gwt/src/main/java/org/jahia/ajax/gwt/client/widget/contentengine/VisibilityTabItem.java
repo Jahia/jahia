@@ -77,7 +77,6 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.HashUtils;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
@@ -104,8 +103,6 @@ public class VisibilityTabItem extends EditEngineTabItem {
     private transient boolean oneUnknown;
 
     private transient StatusBar statusBar;
-
-    private transient int initialConditionStoreHash;
 
     public VisibilityTabItem() {
         setHandleCreate(false);
@@ -377,7 +374,6 @@ public class VisibilityTabItem extends EditEngineTabItem {
                 conditionsStore.add((List<GWTJahiaNode>) result.get("conditions"));
 
                 refreshConditionsList();
-                initialConditionStoreHash = HashUtils.computeHashCode(conditionsStore.getModels());
 
                 allConditionsMatch.setOriginalValue(result.<Boolean>get("j:forceMatchAllConditions"));
                 allConditionsMatch.setValue(result.<Boolean>get("j:forceMatchAllConditions"));
@@ -487,7 +483,6 @@ public class VisibilityTabItem extends EditEngineTabItem {
             if (allConditionsMatch.isDirty()) {
                 node.set("node-visibility-forceMatchAllConditions", allConditionsMatch.getValue());
             }
-            setDirty(initialConditionStoreHash != HashUtils.computeHashCode(conditionsStore.getModels()) || allConditionsMatch.isDirty());
         }
     }
 

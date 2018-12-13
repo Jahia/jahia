@@ -9,3 +9,7 @@
 war/src/main/webapp/engines/quick-fix/*.css*
 war/src/main/webapp/engines/jahia-anthracite/*.css*
 .externalToolBuilders
+war/src/main/webapp/engines/jahia-anthracite/package-lock.json
+war/src/main/webapp/engines/jahia-anthracite/node_modules/
+war/src/main/webapp/engines/jahia-anthracite/gulpfile.js
+.DS_Store

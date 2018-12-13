@@ -1302,7 +1302,6 @@
 				    // FORM
 				    %CSS_BLOCK--BUTTON--TEXT\:FORM {
 				        background: _property($BUTTON--BG, $EDIT-ENGINE)!important;
-				        text-transform: uppercase;
 				        padding: 5px 10px !important;
 						margin-top: 2px;
 				        @include text(10px, _property($BUTTON--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---NORMAL);

@@ -453,7 +453,7 @@ body[indigo-dragging-panel] {
 		// Fix the padding issue on icons
 		body[data-sitesettings="false"][data-indigo-app="edit"] & {
 			.x-tree3-node-text {
-				padding-left: 2px;
+				padding-left: 8px;
 			}
 		}
 
@@ -1393,14 +1393,14 @@ body[indigo-dragging-panel] {
 			font-style: normal;
 			text-transform: uppercase;
 			cursor: default;
-
 			@include text(9px, rgba(_theme-color(secondary), 0.6), $FONT--WEIGHT---BOLD);
-
+			color: #fff!important;
 		}
 
 		.my-paging-text {
 			@include text(10px, _theme-color(secondary), $FONT--WEIGHT---NORMAL);
 			padding:0 5px;
+			color: #fff!important;
 
 		}
  	}
@@ -2384,7 +2384,7 @@ body[data-edit-window-style="settings"] {
 #JahiaGxtSearchTab,
 #JahiaGxtCategoryBrowseTab,
 #JahiaGxtChannelsTab,
-#JahiaGxtSettingsTab, {
+#JahiaGxtSettingsTab {
 	// Common for ALL Side Panel Contents
 
 	form {

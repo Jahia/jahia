@@ -26,8 +26,18 @@
         <property name="properties" ref="jahiaSystemProperties"/>
     </bean>
 
-    <bean id="jahiaSystemProperties" class="org.jahia.settings.SystemPropertiesFactoryBean">
-        <property name="prefix" value="jahiaConfig." />
+    <bean id="jahiaSystemProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="propertiesArray">
+            <list>
+                <bean class="org.jahia.settings.SystemPropertiesFactoryBean">
+                    <property name="prefix" value="jahiaConfig." />
+                </bean>
+                <bean class="org.jahia.settings.EnvironmentVariablesPropertiesFactoryBean">
+                    <property name="prefix" value="jahia_cfg_" />
+                    <property name="prefixMandatory" value="true" />
+                </bean>
+            </list>
+        </property>
     </bean>
 
     <bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">

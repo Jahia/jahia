@@ -66,6 +66,7 @@ import javax.script.SimpleScriptContext;
 import javax.servlet.ServletContext;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.reflect.MethodUtils;
 import org.apache.karaf.main.Main;
 import org.apache.karaf.util.config.PropertiesLoader;
@@ -323,10 +324,16 @@ public class FrameworkService implements FrameworkListener {
         for (Map.Entry<String,String> property : newSystemProperties.entrySet()) {
             String propertyName = property.getKey();
             String oldPropertyValue = System.getProperty(propertyName);
-            if (oldPropertyValue != null) {
-                logger.warn("Overriding system property " + propertyName + "=" + oldPropertyValue + " with new value=" + property.getValue());
+            String newPropertyValue = property.getValue();
+            boolean valueHasChanged = oldPropertyValue != null
+                    && !StringUtils.equals(oldPropertyValue, newPropertyValue);
+            if (valueHasChanged) {
+                logger.warn("Overriding system property " + propertyName + "=" + oldPropertyValue + " with new value="
+                        + newPropertyValue);
             }
-            JahiaContextLoaderListener.setSystemProperty(propertyName, property.getValue());
+            if (oldPropertyValue == null || valueHasChanged) {
+                JahiaContextLoaderListener.setSystemProperty(propertyName, newPropertyValue);
+            }
         }
 
         File file = new File(System.getProperty("karaf.etc"), "config.properties");

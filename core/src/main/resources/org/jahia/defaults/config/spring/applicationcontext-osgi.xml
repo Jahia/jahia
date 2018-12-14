@@ -71,7 +71,7 @@
 
     <bean id="osgiProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <!-- Effective OSGi properties: combined (defaults + configured in files) properties
-            are overridden with the system properties, having "jahiaConfig." prefix -->
+            are overridden with the DX specific system properties -->
         <property name="propertiesArray">
             <list>
                 <ref bean="combinedOsgiProperties"/>

@@ -118,7 +118,7 @@ public class SystemPropertiesFactoryBean extends PropertiesFactoryBean {
     }
 
     public void setPrefix(String prefix) {
-        this.prefix = prefix;
+        this.prefix = prefix != null ? prefix.toLowerCase() : prefix;
     }
 
     public void setPrefixMandatory(boolean isPrefixMandatory) {

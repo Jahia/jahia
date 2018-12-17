@@ -1946,7 +1946,8 @@ div.engine-window {
 		}
 	}
 
-	.multiple-text-field.x-form-group {
+	.multiple-text-field.x-form-group,
+	.multiple-number-field.x-form-group {
 		width: 100%!important;
 
 		> table {

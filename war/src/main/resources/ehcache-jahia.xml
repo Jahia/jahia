@@ -63,7 +63,7 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
          updateCheck="false" monitoring="autodetect"
          name="org.jahia.ehcachemanager"
          dynamicConfig="true"
-         maxBytesLocalHeap="15%">
+         maxBytesLocalHeap="${org.jahia.ehcachemanager.maxBytesLocalHeap:15%}">
 
     <!--
     DiskStore configuration

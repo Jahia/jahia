@@ -54,11 +54,11 @@ import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
-import org.apache.tika.io.IOUtils;
 import org.jahia.services.cache.CacheProvider;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.cache.CacheImplementation;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.PlaceholderUtils;
 import org.jahia.exceptions.JahiaInitializationException;
 
 import net.sf.ehcache.CacheManager;
@@ -88,14 +88,14 @@ public class EhCacheProvider implements CacheProvider {
         if (initialized) {
             return;
         }
-        InputStream is = null;
         try {
-            is = configurationResource.getInputStream();
-            cacheManager = CacheManager.newInstance(is);
+            try (InputStream is = configurationResource.getInputStream()) {
+                try (InputStream interpolatedInputStream = PlaceholderUtils.resolvePlaceholders(is, settingsBean, true)) {
+                    cacheManager = CacheManager.newInstance(interpolatedInputStream);
+                }
+            }
         } catch (IOException e) {
             throw new JahiaInitializationException(e.getMessage(), e);
-        } finally {
-            IOUtils.closeQuietly(is);
         }
         if (jmxActivated) {
             ManagementService.registerMBeans(cacheManager, ManagementFactory.getPlatformMBeanServer(), true, true,
@@ -159,8 +159,9 @@ public class EhCacheProvider implements CacheProvider {
     /**
      * This method register a SelfPopulatingCache in the CacheManager.
      * @param cacheName the name of the cache to be registered
+     * @param searchable optional search configuration for the cache 
      * @param factory the CacheFactory to be used to fill the CacheEntry
-     * @return teh instance of the registered cache
+     * @return the instance of the registered cache
      */
     public synchronized SelfPopulatingCache registerSelfPopulatingCache(String cacheName, Searchable searchable, CacheEntryFactory factory) {
         // Call getEhCache to be sure to have the decorated cache. We manipulate only EhCache not Cache object

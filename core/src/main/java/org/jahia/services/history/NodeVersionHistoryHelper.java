@@ -82,7 +82,7 @@ public final class NodeVersionHistoryHelper {
 
     private static boolean checkingUnused;
 
-    static final Logger logger = LoggerFactory.getLogger(NodeVersionHistoryHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(NodeVersionHistoryHelper.class);
 
     private static OrphanedVersionHistoryChecker orphanedChecker;
 
@@ -130,6 +130,8 @@ public final class NodeVersionHistoryHelper {
 
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+
+                @Override
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     orphanedChecker.perform(session);
                     return null;
@@ -184,6 +186,8 @@ public final class NodeVersionHistoryHelper {
 
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+
+                @Override
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
 
                     JCRNodeWrapper root = session.getRootNode();
@@ -397,6 +401,8 @@ public final class NodeVersionHistoryHelper {
         final VersionHistoryCheckStatus status = new VersionHistoryCheckStatus();
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+
+                @Override
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     purgeVersionHistoryForNodes(nodeIdentifiers, session, status);
                     return Boolean.TRUE;

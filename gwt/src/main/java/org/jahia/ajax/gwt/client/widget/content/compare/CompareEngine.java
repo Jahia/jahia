@@ -51,6 +51,7 @@ import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.content.util.ContentHelper;
 import org.jahia.ajax.gwt.client.widget.contentengine.NodeHolder;
 
 import java.util.Date;
@@ -167,6 +168,9 @@ public class CompareEngine extends Window {
         super.onHide();
         if (refreshOpener) {
             Map<String, Object> data = new HashMap<String, Object>();
+            if (uuid != null) {
+                ContentHelper.sendContentModificationEvent(uuid, path, null, "version", null);
+            }
             data.put(Linker.REFRESH_ALL, true);
             if (engine != null) {
                 engine.close();

@@ -63,15 +63,22 @@ public class PlaceholderUtils {
 
     private static class SettingsPlaceholderResolver implements PlaceholderResolver {
 
+        private boolean fallbackToSystemProperties;
+
         private SettingsBean settingsBean;
 
-        SettingsPlaceholderResolver(SettingsBean settingsBean) {
+        SettingsPlaceholderResolver(SettingsBean settingsBean, boolean fallbackToSystemProperties) {
             this.settingsBean = settingsBean;
+            this.fallbackToSystemProperties = fallbackToSystemProperties;
         }
 
         @Override
         public String resolvePlaceholder(String placeholderName) {
-            return settingsBean.getPropertiesFile().getProperty(placeholderName);
+            String value = settingsBean.getPropertiesFile().getProperty(placeholderName);
+            if (value == null && fallbackToSystemProperties) {
+                value = System.getProperty(placeholderName);
+            }
+            return value;
         }
     }
 
@@ -85,8 +92,8 @@ public class PlaceholderUtils {
 
     /**
      * Resolve {@code ${...}} placeholders in the given configuration resource stream, replacing them with corresponding values from DX
-     * settings ({@link SettingsBean}). Unresolvable placeholders with no default value are ignored and passed through unchanged if the flag
-     * is set to {@code true}.
+     * settings ({@link SettingsBean}) with a fallback to Java system properties. Unresolvable placeholders with no default value are
+     * ignored and passed through unchanged if the flag is set to {@code true}.
      * 
      * @param configInputStream the configuration resource input stream to relpace plpaceholders in
      * @param settingsBean the DX settings bean instance
@@ -104,8 +111,8 @@ public class PlaceholderUtils {
 
     /**
      * Resolve {@code ${...}} placeholders in the given text, replacing them with corresponding values from DX settings
-     * ({@link SettingsBean}). Unresolvable placeholders with no default value are ignored and passed through unchanged if the flag is set
-     * to {@code true}.
+     * ({@link SettingsBean}) with a fallback to Java system properties. Unresolvable placeholders with no default value are ignored and
+     * passed through unchanged if the flag is set to {@code true}.
      * 
      * @param text the String to resolve
      * @param settingsBean the DX settings bean instance
@@ -117,7 +124,7 @@ public class PlaceholderUtils {
     public static String resolvePlaceholders(String text, SettingsBean settingsBean,
             boolean ignoreUnresolvablePlaceholders) {
         return (ignoreUnresolvablePlaceholders ? PLACEHOLDER_HELPER_NON_STRICT : PLACEHOLDER_HELPER_STRICT)
-                .replacePlaceholders(text, new SettingsPlaceholderResolver(settingsBean));
+                .replacePlaceholders(text, new SettingsPlaceholderResolver(settingsBean, true));
     }
 
 }

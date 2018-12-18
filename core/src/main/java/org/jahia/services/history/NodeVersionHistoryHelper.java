@@ -62,7 +62,9 @@ import org.apache.jackrabbit.core.version.InternalVersionHistory;
 import org.apache.jackrabbit.core.version.InternalVersionManager;
 import org.apache.jackrabbit.core.version.InternalVersionManagerImpl;
 import org.apache.jackrabbit.core.version.InternalXAVersionManager;
+import org.jahia.api.Constants;
 import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.tools.OutWrapper;
@@ -71,7 +73,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Version history utility class for purging all version entries of the specified node.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public final class NodeVersionHistoryHelper {
@@ -87,14 +89,18 @@ public final class NodeVersionHistoryHelper {
     protected static final int PURGE_HISTORY_CHUNK = Integer.getInteger(
             "org.jahia.services.history.purgeVersionHistoryBatchSize", 100);
 
+    private static final String DATA_NODE_NAME = "unusedVersionChecker";
+
+    private static final String LAST_CHECKED_ID_PROPERTY = "lastCheckedNodeId";
+
     private static UnusedVersionChecker unusedChecker;
 
     /**
      * Triggers the process of orphaned version histories check. If the <code>deleteOrphans</code> is set to <code>true</code> also performs
      * the purge of found orphaned version histories.
-     * 
+     *
      * This method ensures that only one check process runs at a time.
-     * 
+     *
      * @param maxOrphans
      *            the maximum number of orphaned histories found at which the process is stopped
      * @param deleteOrphans
@@ -142,9 +148,9 @@ public final class NodeVersionHistoryHelper {
     /**
      * Triggers the process of unused versions check. If the <code>deleteUnused</code> is set to <code>true</code> also performs the purge
      * of found unused versions.
-     * 
+     *
      * This method ensures that only one check process runs at a time.
-     * 
+     *
      * @param maxUnused
      *            the maximum number of unused versions found at which the process is stopped
      * @param deleteUnused
@@ -179,7 +185,27 @@ public final class NodeVersionHistoryHelper {
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    unusedChecker.perform(session, purgeOlderThanTimestamp);
+
+                    JCRNodeWrapper root = session.getRootNode();
+
+                    NodeId lastCheckedNodeId = null;
+                    if (root.hasNode(DATA_NODE_NAME)) {
+                        JCRNodeWrapper data = root.getNode(DATA_NODE_NAME);
+                        String lastCheckedNodeUuid = data.getPropertyAsString(LAST_CHECKED_ID_PROPERTY);
+                        lastCheckedNodeId = (lastCheckedNodeUuid == null ? null : NodeId.valueOf(lastCheckedNodeUuid));
+                    }
+
+                    lastCheckedNodeId = unusedChecker.perform(session, purgeOlderThanTimestamp, lastCheckedNodeId);
+
+                    JCRNodeWrapper data;
+                    if (root.hasNode(DATA_NODE_NAME)) {
+                        data = root.getNode(DATA_NODE_NAME);
+                    } else {
+                        data = root.addNode(DATA_NODE_NAME, Constants.NT_UNSTRUCTURED);
+                    }
+                    data.setProperty(LAST_CHECKED_ID_PROPERTY, (lastCheckedNodeId == null ? null : lastCheckedNodeId.toString()));
+                    session.save();
+
                     return null;
                 }
             });
@@ -236,7 +262,7 @@ public final class NodeVersionHistoryHelper {
 
     /**
      * Returns <code>true</code> if the process for checking orphans is currently running.
-     * 
+     *
      * @return <code>true</code> if the process for checking orphans is currently running; <code>false</code> otherwise
      */
     public static boolean isCheckingOrphans() {
@@ -245,7 +271,7 @@ public final class NodeVersionHistoryHelper {
 
     /**
      * Returns <code>true</code> if the process for checking unused versions is currently running.
-     * 
+     *
      * @return <code>true</code> if the process for checking unused versions is currently running; <code>false</code> otherwise
      */
     public static boolean isCheckingUnused() {
@@ -297,7 +323,7 @@ public final class NodeVersionHistoryHelper {
 
     /**
      * Performs the removal of unused versions for the specified nodes. All unused versions are removed, no mater the "age" of the version.
-     * 
+     *
      * @param nodes
      *            an instance of {@link NodeIterator} for processing nodes
      * @param statusOut
@@ -340,7 +366,7 @@ public final class NodeVersionHistoryHelper {
 
     /**
      * Performs the removal of unused versions for the specified nodes. All unused versions are removed, no mater the "age" of the version.
-     * 
+     *
      * @param nodeIdentifiers
      *            a set of node IDs to process
      * @return the status object to indicate the result of the check
@@ -384,7 +410,7 @@ public final class NodeVersionHistoryHelper {
 
     /**
      * Performs the removal of unused versions for the specified nodes. All unused versions are removed, no mater the "age" of the version.
-     * 
+     *
      * @param nodeIdentifiers
      *            a set of node IDs to process
      * @param statusOut
@@ -397,7 +423,7 @@ public final class NodeVersionHistoryHelper {
         out.echo("Start checking version history for {} nodes", nodeIdentifiers.size());
 
         final VersionHistoryCheckStatus status = purgeVersionHistoryForNodes(nodeIdentifiers, out);
-        
+
         out.echo("Done checking version history for nodes. Version history status: {}", status.toString());
 
         return status;

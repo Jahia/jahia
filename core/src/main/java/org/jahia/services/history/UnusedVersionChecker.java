@@ -149,11 +149,10 @@ class UnusedVersionChecker {
         }
     }
 
-    private Map<NodeId, NodeInfo> getAllNodeInfos(NodeId bigger) {
-        int loadVersionBundleBatchSize = Integer.getInteger("org.jahia.services.history.loadVersionBundleBatchSize", 8000);
+    private Map<NodeId, NodeInfo> getAllNodeInfos(NodeId bigger, int maxCount) {
         Map<NodeId, NodeInfo> batch = Collections.emptyMap();
         try {
-            batch = persistenceManager.getAllNodeInfos(bigger, loadVersionBundleBatchSize);
+            batch = persistenceManager.getAllNodeInfos(bigger, maxCount);
         } catch (ItemStateException e) {
             logger.error(e.getMessage(), e);
         }
@@ -199,7 +198,11 @@ class UnusedVersionChecker {
         return predecessors == null || predecessors.isEmpty();
     }
 
-    void perform(JCRSessionWrapper session, long purgeOlderThanTimestamp) throws RepositoryException {
+    NodeId perform(JCRSessionWrapper session, long purgeOlderThanTimestamp) throws RepositoryException {
+        return perform(session, purgeOlderThanTimestamp, null);
+    }
+
+    NodeId perform(JCRSessionWrapper session, long purgeOlderThanTimestamp, NodeId lastCheckedNodeId) throws RepositoryException {
 
         SessionImpl providerSession = (SessionImpl) session.getProviderSession(session.getNode("/").getProvider());
         InternalVersionManager vm = providerSession.getInternalVersionManager();
@@ -215,31 +218,35 @@ class UnusedVersionChecker {
         if (pm == null || !(pm instanceof BundleDbPersistenceManager)) {
             out.echo("The provided PersistenceManager {} is not an instance"
                     + " of BundleDbPersistenceManager. Unable to proceed.", pm);
-            return;
+            return lastCheckedNodeId;
         }
 
         persistenceManager = (BundleDbPersistenceManager) pm;
 
-        traverse(session, purgeOlderThanTimestamp);
+        lastCheckedNodeId = traverse(session, purgeOlderThanTimestamp, lastCheckedNodeId);
 
         if (forceStop) {
             out.echo("Request received to stop checking nodes.");
         } else if (deleteUnused && unused.size() > 0) {
             delete(session);
         }
+
+        return lastCheckedNodeId;
     }
 
     void stop() {
         this.forceStop = true;
     }
 
-    private void traverse(JCRSessionWrapper session, long purgeOlderThanTimestamp) throws RepositoryException {
+    private NodeId traverse(JCRSessionWrapper session, long purgeOlderThanTimestamp, NodeId lastCheckedNodeId) throws RepositoryException {
+
+        int nodeInfosBatchSize = Integer.getInteger("org.jahia.services.history.loadVersionBundleBatchSize", 8000);
         int checkUnusedBatchSize = getCheckUnusedBatchSize();
-        Map<NodeId, NodeInfo> batch = getAllNodeInfos(null);
-        while (!batch.isEmpty()) {
-            NodeId lastId = null;
+
+        do {
+            Map<NodeId, NodeInfo> batch = getAllNodeInfos(lastCheckedNodeId, nodeInfosBatchSize);
             for (NodeInfo info : batch.values()) {
-                lastId = info.getId();
+                lastCheckedNodeId = info.getId();
                 if (NameConstants.NT_VERSION.equals(info.getNodeTypeName())) {
                     if (isRootVersion(info)) {
                         continue;
@@ -251,20 +258,24 @@ class UnusedVersionChecker {
                         checkUnused(session);
                     }
                 }
-                if (status.orphaned >= maxUnused) {
-                    break;
-                }
-                if (forceStop) {
-                    return;
+                if (status.orphaned >= maxUnused || forceStop) {
+                    return lastCheckedNodeId;
                 }
             }
-            batch = status.orphaned < maxUnused ? getAllNodeInfos(lastId) : Collections.<NodeId, NodeInfo> emptyMap();
-        }
+            if (batch.size() < nodeInfosBatchSize) {
+                // All the JCR nodes have been read: stop reading them at this point and return null to indicate the need to start from the very beginning next time.
+                lastCheckedNodeId = null;
+                break;
+            }
+        } while (true);
+
         if (nodesToCheck.size() > 0) {
             checkUnused(session);
         }
         if (deleteUnused && unused.size() > 0) {
             delete(session);
         }
+
+        return lastCheckedNodeId;
     }
 }

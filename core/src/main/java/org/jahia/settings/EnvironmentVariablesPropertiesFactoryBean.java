@@ -44,9 +44,11 @@
 package org.jahia.settings;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +62,6 @@ public class EnvironmentVariablesPropertiesFactoryBean extends SystemPropertiesF
 
     private static final Logger logger = LoggerFactory.getLogger(EnvironmentVariablesPropertiesFactoryBean.class);
 
-    @Override
     protected String convertKey(String key) {
         // We replace underscore with dots
         // Special case with two underscores (like an escaped one) will result in a single underscore after conversion
@@ -74,9 +75,38 @@ public class EnvironmentVariablesPropertiesFactoryBean extends SystemPropertiesF
         logger.info("Detected the following environment variables, which are converted into Java system properties"
                 + " and will be considered in the configuration: {}", (Object) props.keySet().toArray());
 
-        setSystemProperties(props, true);
+        setSystemProperties(props);
 
         return props;
     }
 
+    protected Properties processProperties(Map<String, String> availableProps) {
+        Properties props = new Properties();
+
+        for (Map.Entry<String, String> entry : availableProps.entrySet()) {
+            String key = entry.getKey();
+            String effectiveKey = null;
+            String value = entry.getValue();
+            if (value != null) {
+                if (StringUtils.isNotEmpty(getPrefix()) && key.toLowerCase().startsWith(getPrefix())
+                        && key.length() > getPrefix().length()) {
+                    effectiveKey = key.substring(getPrefix().length());
+                }
+                if (effectiveKey != null) {
+                    props.put(convertKey(effectiveKey), value);
+                }
+            }
+        }
+
+        return props;
+    }
+
+    protected void setSystemProperties(Properties props) {
+        for (Object keyObj : props.keySet()) {
+            String key = keyObj.toString();
+
+            logger.info("Setting system property: {}", key);
+            JahiaContextLoaderListener.setSystemProperty(key, props.getProperty(key));
+        }
+    }
 }

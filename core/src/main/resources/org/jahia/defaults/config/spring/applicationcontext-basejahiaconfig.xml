@@ -34,7 +34,6 @@
                 </bean>
                 <bean class="org.jahia.settings.EnvironmentVariablesPropertiesFactoryBean">
                     <property name="prefix" value="jahia_cfg_" />
-                    <property name="prefixMandatory" value="true" />
                 </bean>
             </list>
         </property>

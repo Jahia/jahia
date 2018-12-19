@@ -94,25 +94,26 @@ class UnusedVersionChecker {
         this.out = out;
     }
 
-    private void checkUnused(JCRSessionWrapper session) throws RepositoryException {
+    private NodeId checkUnused(JCRSessionWrapper session) throws RepositoryException {
+        NodeId lastCheckedNodeId = null;
         try {
             long timer = System.currentTimeMillis();
             Map<NodeId, Boolean> existsReferencesToNodes = persistenceManager.existsReferencesToNodes(nodesToCheck);
             if (logger.isDebugEnabled()) {
-                logger.debug("persistenceManager.existsReferencesToNodes took {} ms",
-                        (System.currentTimeMillis() - timer));
+                logger.debug("persistenceManager.existsReferencesToNodes took {} ms", (System.currentTimeMillis() - timer));
             }
-            status.checked += nodesToCheck.size();
             int purgeVersionsBatchSize = Integer.getInteger("org.jahia.services.history.purgeVersionsBatchSize", 100);
             for (Map.Entry<NodeId, Boolean> ref : existsReferencesToNodes.entrySet()) {
+                lastCheckedNodeId = ref.getKey();
+                status.checked++;
+                nodesToCheck.remove(ref.getKey());
                 if (!ref.getValue()) {
                     status.orphaned++;
                     if (deleteUnused) {
                         unused.add(ref.getKey());
                     }
                     if (status.orphaned >= maxUnused) {
-                        out.echo("{} versions checked and the limit of {}" + " versions is reached. Stopping checks.",
-                                status.checked, maxUnused);
+                        out.echo("{} versions checked and the limit of {} versions is reached. Stopping checks.", status.checked, maxUnused);
                         break;
                     }
                     if (deleteUnused && status.orphaned > 0 && unused.size() >= purgeVersionsBatchSize) {
@@ -120,17 +121,17 @@ class UnusedVersionChecker {
                     }
                 }
                 if (forceStop) {
-                    return;
+                    return lastCheckedNodeId;
                 }
             }
         } catch (ItemStateException e) {
             logger.warn(e.getMessage(), e);
         } finally {
-            nodesToCheck.clear();
             if (status.orphaned < maxUnused) {
                 out.echo(status.toString());
             }
         }
+        return lastCheckedNodeId;
     }
 
     private void delete(JCRSessionWrapper session) {
@@ -242,40 +243,51 @@ class UnusedVersionChecker {
 
         int nodeInfosBatchSize = Integer.getInteger("org.jahia.services.history.loadVersionBundleBatchSize", 8000);
         int checkUnusedBatchSize = getCheckUnusedBatchSize();
+        NodeId lastReadNodeId = lastCheckedNodeId;
+        boolean endReadingNodesSequence = false;
 
-        do {
-            Map<NodeId, NodeInfo> batch = getAllNodeInfos(lastCheckedNodeId, nodeInfosBatchSize);
+        batches: do {
+            Map<NodeId, NodeInfo> batch = getAllNodeInfos(lastReadNodeId, nodeInfosBatchSize);
+            if (batch.size() < nodeInfosBatchSize) {
+                // There was not enough nodes to fill the entire batch, which means we've reached the end of the nodes sequence when reading them.
+                endReadingNodesSequence = true;
+            }
             for (NodeInfo info : batch.values()) {
-                lastCheckedNodeId = info.getId();
-                if (NameConstants.NT_VERSION.equals(info.getNodeTypeName())) {
-                    if (isRootVersion(info)) {
-                        continue;
-                    }
-                    if (isOlder(info, purgeOlderThanTimestamp)) {
-                        nodesToCheck.add(info.getId());
-                    }
-                    if (nodesToCheck.size() >= checkUnusedBatchSize) {
-                        checkUnused(session);
-                    }
-                }
-                if (status.orphaned >= maxUnused || forceStop) {
+                lastReadNodeId = info.getId();
+                if (forceStop) {
                     return lastCheckedNodeId;
                 }
+                if (!NameConstants.NT_VERSION.equals(info.getNodeTypeName())) {
+                    continue;
+                }
+                if (isRootVersion(info)) {
+                    continue;
+                }
+                if (!isOlder(info, purgeOlderThanTimestamp)) {
+                    continue;
+                }
+                nodesToCheck.add(info.getId());
+                if (nodesToCheck.size() >= checkUnusedBatchSize) {
+                    lastCheckedNodeId = checkUnused(session);
+                    if (status.orphaned >= maxUnused) {
+                        break batches;
+                    }
+                }
             }
-            if (batch.size() < nodeInfosBatchSize) {
-                // All the JCR nodes have been read: stop reading them at this point and return null to indicate the need to start from the very beginning next time.
-                lastCheckedNodeId = null;
-                break;
-            }
-        } while (true);
+        } while (!endReadingNodesSequence);
 
-        if (nodesToCheck.size() > 0) {
-            checkUnused(session);
+        if (!nodesToCheck.isEmpty() && status.orphaned < maxUnused) {
+            lastCheckedNodeId = checkUnused(session);
         }
         if (deleteUnused && unused.size() > 0) {
             delete(session);
         }
 
-        return lastCheckedNodeId;
+        if (endReadingNodesSequence && nodesToCheck.isEmpty()) {
+            // We've reached the end of the nodes sequence when checking them: return null to indicate the need to start from the very beginning next time.
+            return null;
+        } else {
+            return lastCheckedNodeId;
+        }
     }
 }

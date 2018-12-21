@@ -92,7 +92,8 @@ import java.util.regex.Pattern;
  * @since JAHIA 6.5
  */
 public class JBPMMailProducer {
-    private transient static Logger logger = LoggerFactory.getLogger(JBPMMailProducer.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(JBPMMailProducer.class);
     private static final Pattern ACTORS_PATTERN = Pattern.compile("(assignableFor\\([^)]+\\))|([^,;\\s]+)");
     protected ScriptEngine scriptEngine;
     protected Bindings bindings;
@@ -135,6 +136,8 @@ public class JBPMMailProducer {
             final MailTemplate usedTemplate = template;
             try {
                 return JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.EDIT_WORKSPACE, locale, new JCRCallback<Collection<Message>>() {
+
+                    @Override
                     public Collection<Message> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         try {
                             scriptEngine = ScriptEngineUtils.getInstance().getEngineByName(usedTemplate.getLanguage());
@@ -256,7 +259,7 @@ public class JBPMMailProducer {
             for (String userId : userIds) {
                 if (userId.startsWith("assignableFor(")) {
                     String task = StringUtils.substringBetween(userId, "assignableFor(",")");
-                    WorkflowDefinition definition = WorkflowService.getInstance().getWorkflow("jBPM",Long.toString(workItem.getProcessInstanceId()), null).getWorkflowDefinition();
+                    WorkflowDefinition definition = WorkflowService.getInstance().getWorkflow("jBPM", Long.toString(workItem.getProcessInstanceId()), null).getWorkflowDefinition();
                     List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(definition, task, Long.toString(workItem.getProcessInstanceId()), session);
                     for (JahiaPrincipal principal : principals) {
                         if (principal instanceof JahiaUser) {
@@ -468,7 +471,7 @@ public class JBPMMailProducer {
         if (jahiaUser != null && !UserPreferencesHelper.areEmailNotificationsDisabled(jahiaUser)) {
             bindings.put("userNotificationEmail", UserPreferencesHelper.getPersonalizedEmailAddress(jahiaUser));
         }
-        if(vars.containsKey("comments")) {
+        if (vars.containsKey("comments")) {
             bindings.put("comments", vars.get("comments"));
         }
         bindings.put("date", new DateTool());
@@ -544,15 +547,14 @@ public class JBPMMailProducer {
             return new DataHandler(new FileDataSource(targetFile));
         }
 
-        // resolve external url
         URL targetUrl;
         String url = attachmentTemplate.getUrl();
         if (url != null) {
+            // resolve external url
             url = evaluateExpression(workItem, url, session);
             targetUrl = new URL(url);
-        }
-        // resolve classpath resource
-        else {
+        } else {
+            // resolve classpath resource
             String resource = evaluateExpression(workItem, attachmentTemplate.getResource(), session);
             targetUrl = Thread.currentThread().getContextClassLoader().getResource(resource);
             if (targetUrl == null) {
@@ -599,6 +601,4 @@ public class JBPMMailProducer {
         }
 
     }
-
-
 }

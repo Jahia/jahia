@@ -237,12 +237,15 @@ public class JBPMMailProducer {
     }
 
     protected void fillRecipients(AddressTemplate addressTemplate, Message email, Message.RecipientType recipientType, WorkItem workItem, JCRSessionWrapper session) throws Exception {
+
+        LinkedHashSet<Address> recipients = new LinkedHashSet<>();
+
         // resolve and parse addresses
         String addresses = addressTemplate.getAddresses();
         if (addresses != null) {
             addresses = evaluateExpression(workItem, addresses, session);
             // non-strict parsing applies to a list of mail addresses entered by a human
-            email.addRecipients(recipientType, InternetAddress.parse(addresses, false));
+            Collections.addAll(recipients, InternetAddress.parse(addresses, false));
         }
 
         // resolve and tokenize users
@@ -279,7 +282,7 @@ public class JBPMMailProducer {
                     }
                 }
             }
-            email.addRecipients(recipientType, getAddresses(users));
+            Collections.addAll(recipients, getAddresses(users));
         }
 
         // resolve and tokenize groups
@@ -287,9 +290,11 @@ public class JBPMMailProducer {
         if (groupList != null) {
             for (String groupId : tokenizeActors(groupList, workItem, session)) {
                 org.kie.api.task.model.Group group = taskIdentityService.getGroupById(groupId);
-                email.addRecipients(recipientType, getAddresses(group));
+                Collections.addAll(recipients, getAddresses(group));
             }
         }
+
+        email.addRecipients(recipientType, recipients.toArray(new Address[recipients.size()]));
     }
 
     protected String[] tokenizeActors(String recipients, WorkItem workItem, JCRSessionWrapper session) throws Exception {
@@ -464,8 +469,8 @@ public class JBPMMailProducer {
             bindings.put("userNotificationEmail", UserPreferencesHelper.getPersonalizedEmailAddress(jahiaUser));
         }
         if(vars.containsKey("comments")) {
-        	bindings.put("comments", vars.get("comments"));
-        }        
+            bindings.put("comments", vars.get("comments"));
+        }
         bindings.put("date", new DateTool());
         bindings.put("submissionDate", Calendar.getInstance());
         bindings.put("locale", locale);

@@ -45,6 +45,7 @@ package org.jahia.services.templates;
 
 import com.google.common.base.Functions;
 import com.google.common.collect.Ordering;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -62,6 +63,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NodeTypeIterator;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Components service.
@@ -150,6 +152,16 @@ public class ComponentRegistry {
                         finalComponents.put(type.getName(), type.getLabel(displayLocale));
                         break;
                     }
+                }
+            }
+        }
+
+        Set<String> duplicates = finalComponents.values().stream().filter(i -> Collections.frequency(finalComponents.values(), i) > 1)
+                .collect(Collectors.toSet());
+        for (String duplicate : duplicates) {
+            for (Map.Entry<String, String> component : finalComponents.entrySet()) {
+                if (StringUtils.equals(duplicate, component.getValue())) {
+                    component.setValue(component.getValue() + " (" + component.getKey() + ")");
                 }
             }
         }

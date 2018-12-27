@@ -3713,6 +3713,9 @@ body[data-indigo-gwt-side-panel="open"] {
 			color: #5c6164;
 		}
 	}
+	.x-form-element > .x-component {
+			width: unset!important
+	}
 
 	> .x-window-tl,
 	> .x-window-bwrap {
@@ -4161,7 +4164,6 @@ body[data-indigo-gwt-side-panel="open"] {
 			font-size: 11px;
 			font-weight: 600;
 			color: _theme-color(black, b); /* TO THEME */
-			max-width: 152px;
 			padding-right: 8px;
 		}
 

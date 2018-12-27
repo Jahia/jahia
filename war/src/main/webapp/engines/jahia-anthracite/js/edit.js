@@ -5172,6 +5172,7 @@ if (!Element.prototype.matches) {
 				},
 
 				toggleFloatingPanel: function(e){
+					app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: TOGGLEFLOATINGPANEL");
 
 
 					if(DexV2.node(e.target).getAttribute("id") == "images-view" ||
@@ -5190,16 +5191,24 @@ if (!Element.prototype.matches) {
 
 
 				},
-				onStartDrag: function(){
+				onStartDrag: function(e){
 					app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: ONSTARTDRAG");
 
 					DexV2.getCached("body").addClass("indigo-drag-to-drop");
 
-					// Do not close the side panel as the user wants to drag a page somewhere else
-					if(DexV2.getCached("body").getAttribute("data-indigo-gwt-panel-tab") != "JahiaGxtSidePanelTabs__JahiaGxtPagesTab"){
+					if(app.edit.sidepanel.data.pinned){
+						if(DexV2.getCached("body").hasClass("minimise-results") != true){
+							if(DexV2.getCached("body").hasClass("show-results")){
+								DexV2.getCached("body").toggleClass("minimise-results");
+							} else {
+								DexV2.getCached("body").removeClass("minimise-results");
+							}
+						}
+
+						app.edit.sidepanel.clipPageTitle();
+					} else if(DexV2.getCached("body").getAttribute("data-indigo-gwt-panel-tab") != "JahiaGxtSidePanelTabs__JahiaGxtPagesTab"){
 						app.edit.sidepanel.close();
 					}
-
 				},
 				onStopDrag: function(){
                     app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: ONSTOPDRAG");
@@ -5443,7 +5452,11 @@ if (!Element.prototype.matches) {
                                 }
                                 DexV2.node(this).addClass("indigo-selected");
 							}
+
+							app.edit.sidepanel.clipPageTitle();
 						}
+
+
 					}
 				}
 			},

@@ -266,6 +266,9 @@ public class ModuleFileInstallHandler implements CustomHandler {
         if (!removedDataOnUninstall) {
             return;
         }
+
+        removeLocationMapping(artifact.getPath());
+
         File transformed = artifact.getTransformed();
         if (transformed != null && !transformed.equals(artifact.getPath()) && !transformed.delete()) {
             logger.warn("Unable to delete transformed artifact: {}", transformed.getAbsolutePath());

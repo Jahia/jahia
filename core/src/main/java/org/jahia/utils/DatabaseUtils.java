@@ -44,6 +44,7 @@
 package org.jahia.utils;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -54,6 +55,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.io.Charsets;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
@@ -66,6 +68,8 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.Resource;
 
 /**
  * Database related utility tool.
@@ -111,6 +115,10 @@ public final class DatabaseUtils {
             }
 
         }
+    }
+
+    public static void executeScript(Resource sqlScript) throws SQLException, IOException {
+        executeScript(new InputStreamReader(sqlScript.getInputStream(), Charsets.UTF_8));
     }
 
     public static void executeScript(Reader sqlScript) throws SQLException, IOException {
@@ -223,7 +231,6 @@ public final class DatabaseUtils {
         }
 
         return supportedMode != null ? supportedMode : fallback;
-
     }
 
     public static boolean isDatabaseStructureInitialized() {
@@ -231,13 +238,33 @@ public final class DatabaseUtils {
             try (Statement stmt = conn.createStatement()) {
                 try {
                     stmt.executeQuery("select count(*) from " + TEST_TABLE);
-                    return true;
                 } catch (SQLException e) {
                     return false;
                 }
+                return true;
             }
         } catch (SQLException e) {
             throw new JahiaRuntimeException(e);
+        }
+    }
+
+    public static void initializeDatabaseStructure(String varDir, ApplicationContext applicationContext) {
+        try {
+            Resource[] scripts = getScripts(varDir + "/db/sql/schema", applicationContext);
+            for (Resource script : scripts) {
+                executeScript(script);
+            }
+        } catch (IOException | SQLException e) {
+            throw new JahiaRuntimeException(e);
+        }
+    }
+
+    public static Resource[] getScripts(String basePath, ApplicationContext applicationContext) throws IOException {
+        String folder = "file:" + basePath + '/' + getDatabaseType();
+        if (applicationContext.getResource(folder).exists()) {
+            return applicationContext.getResources(folder + "/**/*.sql");
+        } else {
+            return new Resource[] {};
         }
     }
 

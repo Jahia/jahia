@@ -46,9 +46,7 @@ package org.jahia.tools.patches;
 import static org.jahia.tools.patches.GroovyPatcher.rename;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 
-import org.apache.commons.io.Charsets;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.utils.DatabaseUtils;
 import org.slf4j.Logger;
@@ -58,7 +56,7 @@ import org.springframework.core.io.Resource;
 
 /**
  * Utility class for applying SQL-based patches on Jahia startup.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public final class SqlPatcher {
@@ -74,7 +72,7 @@ public final class SqlPatcher {
     }
 
     private ApplicationContext ctx;
-    
+
     private String varDir;
 
     private SqlPatcher(String varDir, ApplicationContext ctx) {
@@ -84,11 +82,13 @@ public final class SqlPatcher {
     }
 
     private void execute() throws IOException {
-        Resource[] patches = getPatches();
+
+        Resource[] patches = DatabaseUtils.getScripts(varDir + "/patches/sql", ctx);
         if (patches.length == 0) {
             logger.debug("No SQL patches to execute were found");
             return;
         }
+
         long timer = System.currentTimeMillis();
         logger.info("Found {} SQL patches to execute:\n{}", patches.length, StringUtils.join(patches));
 
@@ -99,25 +99,15 @@ public final class SqlPatcher {
         logger.info("Execution of SQL patches took {} ms", System.currentTimeMillis() - timer);
     }
 
-    private void execute(Resource r) {
+    private void execute(Resource resource) {
         try {
-            logger.info("Executing script {}", r);
-            DatabaseUtils.executeScript(new InputStreamReader(r.getInputStream(), Charsets.UTF_8));
-            logger.info("Script {} executed successfully", r);
-            rename(r, ".installed");
+            logger.info("Executing script {}", resource);
+            DatabaseUtils.executeScript(resource);
+            logger.info("Script {} executed successfully", resource);
+            rename(resource, ".installed");
         } catch (Exception e) {
-            logger.error("Execution of SQL script " + r + " failed with error: " + e.getMessage(), e);
-            rename(r, ".failed");
+            logger.error("Execution of SQL script " + resource + " failed with error: " + e.getMessage(), e);
+            rename(resource, ".failed");
         }
     }
-
-    private Resource[] getPatches() throws IOException {
-        String folder = "file:" + varDir + "/patches/sql/" + DatabaseUtils.getDatabaseType();
-        if (ctx.getResource(folder).exists()) {
-            return ctx.getResources(folder + "/**/*.sql");
-        } else {
-            return new Resource[] {};
-        }
-    }
-
 }

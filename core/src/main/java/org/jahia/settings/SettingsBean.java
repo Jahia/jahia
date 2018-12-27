@@ -503,7 +503,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
                     logger.info("Database structure is not initialized. Initalizing...");
                     // TODO: Initialize database structure
                 } else {
-                    logger.error("Database structure is not initialized. First start the processing node to get it initialized. Leaving...");
+                    logger.error("Database structure is not initialized. Leaving...");
                     throw new JahiaRuntimeException(new JahiaInitializationException("Database structure is not initialized"));
                 }
             }

@@ -78,7 +78,6 @@ import org.jahia.bin.errors.ErrorFileDumper;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.configuration.deployers.ServerDeploymentFactory;
 import org.jahia.configuration.deployers.ServerDeploymentInterface;
-import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
@@ -499,12 +498,18 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             if (DatabaseUtils.isDatabaseStructureInitialized()) {
                 logger.info("Database structure is initialized");
             } else {
-                if (isProcessingServer()) {
+                if (isProcessingServer() && getPropertyValue("initializeDatabaseWhenAppropriate").equalsIgnoreCase(Boolean.TRUE.toString())) {
                     logger.info("Database structure is not initialized. Initalizing...");
-                    // TODO: Initialize database structure
+                    try {
+                        DatabaseUtils.initializeDatabaseStructure(getJahiaVarDiskPath(), applicationContext);
+                    } catch (Exception e) {
+                        logger.error("Error initializing database structure", e);
+                        throw e;
+                    }
+                    logger.info("Finished initializing database structure");
                 } else {
                     logger.error("Database structure is not initialized. Leaving...");
-                    throw new JahiaRuntimeException(new JahiaInitializationException("Database structure is not initialized"));
+                    throw new JahiaRuntimeException("Database structure is not initialized");
                 }
             }
 

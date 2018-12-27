@@ -41,11 +41,12 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
- package org.jahia.hibernate.model;
+package org.jahia.hibernate.model;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.jahia.utils.DatabaseUtils;
 
 import java.io.Serializable;
 
@@ -55,11 +56,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "jahia_db_test")
+@Table(name = DatabaseUtils.TEST_TABLE)
 public class JahiaDbTest implements Serializable {
 
     private static final long serialVersionUID = 4666262312464819334L;
-	/**
+    /**
      * identifier field
      */
     private String testfield;
@@ -77,8 +78,8 @@ public class JahiaDbTest implements Serializable {
     public JahiaDbTest() {
     }
 
-	@Id
-	@Column(name = "testfield", nullable = false)
+    @Id
+    @Column(name = "testfield", nullable = false)
     public String getTestfield() {
         return this.testfield;
     }
@@ -87,15 +88,18 @@ public class JahiaDbTest implements Serializable {
         this.testfield = testfield;
     }
 
+    @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .append("testfield", getTestfield())
                 .toString();
     }
 
+    @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        
+        if (this == obj) {
+            return true;
+        }
         if (obj != null && this.getClass() == obj.getClass()) {
             final JahiaDbTest castOther = (JahiaDbTest) obj;
             return new EqualsBuilder()
@@ -105,10 +109,10 @@ public class JahiaDbTest implements Serializable {
         return false;
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(getTestfield())
                 .toHashCode();
     }
-
 }

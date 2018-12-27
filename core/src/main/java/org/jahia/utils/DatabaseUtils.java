@@ -61,6 +61,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.StatelessSession;
 import org.jahia.commons.DatabaseScripts;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
@@ -76,6 +77,8 @@ public final class DatabaseUtils {
     public static enum DatabaseType {
         derby, mssql, mysql, oracle, postgresql, mariadb;
     }
+
+    public static final String TEST_TABLE = "jahia_db_test";
 
     private static volatile DatabaseType dbType;
     private static volatile DataSource ds;
@@ -221,6 +224,21 @@ public final class DatabaseUtils {
 
         return supportedMode != null ? supportedMode : fallback;
 
+    }
+
+    public static boolean isDatabaseStructureInitialized() {
+        try (Connection conn = ds.getConnection()) {
+            try (Statement stmt = conn.createStatement()) {
+                try {
+                    stmt.executeQuery("select count(*) from " + TEST_TABLE);
+                    return true;
+                } catch (SQLException e) {
+                    return false;
+                }
+            }
+        } catch (SQLException e) {
+            throw new JahiaRuntimeException(e);
+        }
     }
 
     public static SessionFactory getHibernateSessionFactory() {

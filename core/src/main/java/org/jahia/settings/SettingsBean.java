@@ -58,7 +58,6 @@
 // @author  Eric Vassalli
 // @author  Fulco Houkes
 // @author  Alexandre Kraft
-
 package org.jahia.settings;
 
 import static org.jahia.settings.StartupOptions.*;
@@ -79,6 +78,8 @@ import org.jahia.bin.errors.ErrorFileDumper;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.configuration.deployers.ServerDeploymentFactory;
 import org.jahia.configuration.deployers.ServerDeploymentInterface;
+import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
 import org.jahia.settings.readonlymode.ReadOnlyModeController;
@@ -349,7 +350,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      * This method load and convert properties from the jahia.properties file,
      * and set some variables used by the SettingsBean class.
      */
-    public void load () {
+    public void load() {
 
         if (properties == null && propertiesFileName != null) {
             properties = new PropertiesManager(propertiesFileName).getPropertiesObject();
@@ -495,16 +496,26 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             initJerichoLogging();
 
+            if (DatabaseUtils.isDatabaseStructureInitialized()) {
+                logger.info("Database structure is initialized");
+            } else {
+                if (isProcessingServer()) {
+                    logger.info("Database structure is not initialized. Initalizing...");
+                    // TODO: Initialize database structure
+                } else {
+                    logger.error("Database structure is not initialized. First start the processing node to get it initialized. Leaving...");
+                    throw new JahiaRuntimeException(new JahiaInitializationException("Database structure is not initialized"));
+                }
+            }
+
             if (isProcessingServer()) {
                 SqlPatcher.apply(getJahiaVarDiskPath(), applicationContext);
                 GroovyPatcher.executeScripts(servletContext, "contextInitializing");
             }
-        } catch (NullPointerException npe) {
-            logger.error("Properties file is not valid...!", npe);
-        } catch (NumberFormatException nfe) {
-            logger.error("Properties file is not valid...!", nfe);
+        } catch (NullPointerException | NumberFormatException e) {
+            logger.error("Properties file is not valid...!", e);
         }
-    } // end load
+    }
 
     private void initStartupOptions() {
         startupOptions = new StartupOptions(this, startupOptionsMapping);
@@ -1443,7 +1454,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     /**
      * Returns the startup options, which are set.
-     * 
+     *
      * @return the startup options, which are set
      */
     public StartupOptions getStartupOptions() {
@@ -1452,7 +1463,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     /**
      * Checks if the specified startup option is set.
-     * 
+     *
      * @param option the option key
      * @return <code>true</code> if the specified option is set; <code>false</code> otherwise
      */

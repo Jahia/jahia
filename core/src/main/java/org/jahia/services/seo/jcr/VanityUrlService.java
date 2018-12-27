@@ -308,20 +308,23 @@ public class VanityUrlService {
      * @throws RepositoryException
      *             if there was an unexpected exception accessing the repository
      */
-    public List<VanityUrl> findExistingVanityUrls(final String url, final String site,
-            final String workspace) throws RepositoryException {
-        final String cacheKey = getCacheByUrlKey(url, site, workspace);
+    public List<VanityUrl> findExistingVanityUrls(String url, final String site, final String workspace) throws RepositoryException {
+
+        final String finalUrl = (url.endsWith("/") ? url.substring(0, url.length() - 1) : url);
+
+        final String cacheKey = getCacheByUrlKey(finalUrl, site, workspace);
         List<VanityUrl> result = (List<VanityUrl>) cacheByUrl.get(cacheKey);
         if (result != null) {
             return result;
         }
+
         return JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null,
                 new JCRCallback<List<VanityUrl>>() {
 
                     @Override
                     public List<VanityUrl> doInJCR(JCRSessionWrapper session)
                             throws RepositoryException {
-                        List<VanityUrl> vanityUrls = vanityUrlManager.findExistingVanityUrls(url, site, session);
+                        List<VanityUrl> vanityUrls = vanityUrlManager.findExistingVanityUrls(finalUrl, site, session);
                         cacheByUrl.put(cacheKey, vanityUrls);
                         return vanityUrls;
                     }

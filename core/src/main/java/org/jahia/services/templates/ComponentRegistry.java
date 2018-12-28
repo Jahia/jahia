@@ -45,7 +45,6 @@ package org.jahia.services.templates;
 
 import com.google.common.base.Functions;
 import com.google.common.collect.Ordering;
-import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -156,14 +155,14 @@ public class ComponentRegistry {
             }
         }
 
-        Set<String> duplicates = finalComponents.values().stream().filter(i -> Collections.frequency(finalComponents.values(), i) > 1)
+        // update entries that have duplicate labels, to distinguish them using system name.
+        Set<String> duplicateKeys = finalComponents.entrySet()
+                .stream()
+                .filter(entry -> Collections.frequency(finalComponents.values(), entry.getValue()) > 1)
+                .map(Map.Entry::getKey)
                 .collect(Collectors.toSet());
-        for (String duplicate : duplicates) {
-            for (Map.Entry<String, String> component : finalComponents.entrySet()) {
-                if (StringUtils.equals(duplicate, component.getValue())) {
-                    component.setValue(component.getValue() + " (" + component.getKey() + ")");
-                }
-            }
+        for (String duplicateKey : duplicateKeys) {
+            finalComponents.put(duplicateKey, finalComponents.get(duplicateKey) + " (" + duplicateKey + ")");
         }
 
         SortedMap<String, String> sortedComponents = new TreeMap<String, String>(

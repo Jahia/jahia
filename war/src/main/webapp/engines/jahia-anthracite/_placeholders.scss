@@ -1302,6 +1302,7 @@
 				    // FORM
 				    %CSS_BLOCK--BUTTON--TEXT\:FORM {
 				        background: _property($BUTTON--BG, $EDIT-ENGINE)!important;
+						text-transform: uppercase;
 				        padding: 5px 10px !important;
 						margin-top: 2px;
 				        @include text(10px, _property($BUTTON--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---NORMAL);
@@ -1501,6 +1502,7 @@
 
 	// ACTION BAR
 				%CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR {
+					text-transform: none;
 					padding: 8px 15px!important;
 			        background: _property($ACTION-DEFAULT--BG, $APP) !important;
 			    	@include text(14px, _property($ACTION-DEFAULT--COLOR, $APP) !important, $FONT--WEIGHT---EXTRALIGHT);

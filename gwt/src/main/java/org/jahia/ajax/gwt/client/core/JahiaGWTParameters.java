@@ -70,6 +70,7 @@ public class JahiaGWTParameters {
     public static final String COPYRIGHT = "copyright";
     public static final String UI_LANGUAGE = "uilang";
     public static final String UI_LANGUAGE_DISPLAY_NAME = "uilangdisplayname";
+    public static final String ENGINE_LANGUAGE = "enginelang";
     public static final String LANGUAGE = "lang";
     public static final String LANGUAGE_DISPLAY_NAME = "langdisplayname";
     public static final String CHANNEL_IDENTIFIER = "channelIdentifier";
@@ -206,6 +207,18 @@ public class JahiaGWTParameters {
         $wnd.jahiaGWTParameters.lang  = newLanguage;
         if ($wnd.contextJsParameters) {
             $wnd.contextJsParameters.lang = newLanguage;
+        }
+    }-*/;
+
+    public static native void setEngineLanguage (String engineLanguage) /*-{
+        if ($wnd.contextJsParameters) {
+            $wnd.contextJsParameters.engineLang = engineLanguage;
+        }
+    }-*/;
+
+    public static native void removeEngineLanguage () /*-{
+        if ($wnd.contextJsParameters) {
+            delete $wnd.contextJsParameters.engineLang;
         }
     }-*/;
 

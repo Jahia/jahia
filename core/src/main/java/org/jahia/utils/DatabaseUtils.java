@@ -252,7 +252,11 @@ public final class DatabaseUtils {
         try {
             Resource[] scripts = getScripts(varDir + "/db/sql/schema", applicationContext);
             for (Resource script : scripts) {
+                String path = script.getFile().getCanonicalPath();
+                logger.info("Excecuting {}...", path);
+                long startAt = System.currentTimeMillis();
                 executeScript(script);
+                logger.info("Finished excecuting {} in {} ms", path, (System.currentTimeMillis() - startAt));
             }
         } catch (IOException | SQLException e) {
             throw new JahiaRuntimeException(e);

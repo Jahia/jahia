@@ -170,6 +170,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
      * Called when the engine is loaded
      */
     public void loaded() {
+        JahiaGWTParameters.setEngineLanguage(getSelectedLanguage());
         unmask();
     }
 

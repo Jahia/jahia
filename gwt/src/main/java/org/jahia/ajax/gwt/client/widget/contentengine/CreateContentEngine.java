@@ -175,7 +175,6 @@ public class CreateContentEngine extends AbstractContentEngine {
         loading();
         handleLanguageChange(previous);
         fillCurrentTab();
-        JahiaGWTParameters.setEngineLanguage(getSelectedLanguage());
         loaded();
     }
 
@@ -215,7 +214,6 @@ public class CreateContentEngine extends AbstractContentEngine {
 
                 fillCurrentTab();
                 updateWipControls();
-                JahiaGWTParameters.setEngineLanguage(getSelectedLanguage());
                 loaded();
             }
 

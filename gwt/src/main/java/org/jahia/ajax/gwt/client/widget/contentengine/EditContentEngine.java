@@ -309,7 +309,6 @@ public class EditContentEngine extends AbstractContentEngine {
                 if (PermissionsUtils.isPermitted("jcr:modifyProperties", node) && !node.isLocked()) {
                     setButtonsEnabled(true);
                 }
-                JahiaGWTParameters.setEngineLanguage(getSelectedLanguage());
                 loaded();
             }
 
@@ -338,7 +337,6 @@ public class EditContentEngine extends AbstractContentEngine {
         loading();
         handleLanguageChange(previous);
         GWTJahiaGetPropertiesResult result = langCodeGWTJahiaGetPropertiesResultMap.get(getSelectedLanguage());
-        JahiaGWTParameters.setEngineLanguage(getSelectedLanguage());
         if (result == null) {
             loadProperties();
         } else {

@@ -5197,30 +5197,22 @@ if (!Element.prototype.matches) {
 
 
 				},
-				onStartDrag: function(e){
-					app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: ONSTARTDRAG");
+                onDrag: function(start) {
+                    app.dev.log("::: APP ::: EDIT ::: SIDEPANEL :::" + start ? "ONSTARTDRAG" : "ONSTOPDRAG");
 
-					DexV2.getCached("body").addClass("indigo-drag-to-drop");
+                    var cachedBody = DexV2.getCached("body");
+                    cachedBody.toggleClass("indigo-drag-to-drop");
+                    if (app.edit.sidepanel.data.pinned) {
+                        cachedBody.toggleClass("show-results");
+                        cachedBody.toggleClass("minimise-results");
+                        app.edit.sidepanel.clipPageTitle();
+                    } else if (cachedBody.getAttribute("data-indigo-gwt-panel-tab") === "JahiaGxtSidePanelTabs__JahiaGxtPagesTab") {
+                        // do nothing if pages is open
 
-					if(app.edit.sidepanel.data.pinned){
-						if(DexV2.getCached("body").hasClass("minimise-results") != true){
-							if(DexV2.getCached("body").hasClass("show-results")){
-								DexV2.getCached("body").toggleClass("minimise-results");
-							} else {
-								DexV2.getCached("body").removeClass("minimise-results");
-							}
-						}
-
-						app.edit.sidepanel.clipPageTitle();
-					} else if(DexV2.getCached("body").getAttribute("data-indigo-gwt-panel-tab") != "JahiaGxtSidePanelTabs__JahiaGxtPagesTab"){
-						app.edit.sidepanel.close();
-					}
-				},
-				onStopDrag: function(){
-                    app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: ONSTOPDRAG");
-					DexV2.getCached("body").removeClass("indigo-drag-to-drop");
-
-				},
+                    } else {
+                        start ? app.edit.sidepanel.close() : app.edit.sidepanel.open();
+                    }
+                },
                 buildSplitter: function(){
                     // Handle Splitter ( used for changing width of Side Panel )
                     if(!DexV2.id("indigoSplitter").exists()){
@@ -6583,8 +6575,8 @@ if (!Element.prototype.matches) {
                 .onAttribute(".edit-menu-tasks", "class", app.edit.infoBar.tasks.onChange)
                 .onAttribute(".contribute-menu-tasks", "class", app.edit.infoBar.tasks.onChange)
                 .onAttribute(".toolbar-item-workinprogressadmin, .toolbar-item-workinprogress", "class", app.edit.infoBar.jobs.onChange)
-                .onOpen(".x-dd-drag-proxy", app.edit.sidepanel.onStartDrag)
-                .onClose(".x-dd-drag-proxy", app.edit.sidepanel.onStopDrag)
+                .onOpen(".x-dd-drag-proxy", app.edit.sidepanel.onDrag.bind(this, true))
+                .onClose(".x-dd-drag-proxy", app.edit.sidepanel.onDrag.bind(this, false))
                 .onAttribute("body", "data-sitesettings", app.edit.settings.onChange)
                 .onAttribute("body", "data-selection-count", app.iframe.onSelect)
                 .onAttribute("body", "data-main-node-displayname", app.iframe.onChange)

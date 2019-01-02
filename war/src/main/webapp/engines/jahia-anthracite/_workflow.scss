@@ -1082,7 +1082,13 @@
 
 }
 
-
+.workflowactiondialog-ctn .x-small-editor .x-toolbar-left td.x-toolbar-cell:first-child {
+	float: right;
+}
+.workflowactiondialog-ctn .x-small-editor .x-toolbar-left td.x-toolbar-cell:last-child {
+	float: left;
+	margin-right:4px;
+}
 
 // ?
 // .workflowactiondialog-card.engine-panel-TEST {

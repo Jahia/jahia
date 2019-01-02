@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="studiomode.managers.menu.anthracite" class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                <property name="needAuthentication" value="true"/>
+            </bean>
+        </property>
+        <property name="titleKey" value="label.managers"/>
+        <property name="items">
+            <list>
+                <ref bean="Toolbar.Item.FileManager.Anthracite"/>
+                <ref bean="Toolbar.Item.PortletManager.Anthracite"/>
+                <ref bean="Toolbar.Item.RepositoryExplorer.Anthracite"/>
+                <ref bean="Toolbar.Item.CategoryManager.Anthracite"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="studiomode-jahia-anthracite" parent="studiomode">
+        <property name="topToolbar">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="layout" value="button-label"/>
+                <property name="items">
+                    <list>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Studiomode.Menu.Mode">
+                            <property name="titleKey" value="label.mode"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Edit"/>
+                                    <ref bean="Toolbar.Item.Admin"/>
+                                </list>
+                            </property>
+                        </bean>
+
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+                            <property name="actionItem">
+                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.GoToActionItem">
+                                    <property name="path" value="/settings"/>
+                                    <property name="template" value="manageModules"/>
+                                </bean>
+                            </property>
+                            <property name="titleKey" value="label.modulesList"/>
+                            <property name="icon" value="modulesList"/>
+                        </bean>
+
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+                            <property name="actionItem">
+                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.GoToModuleHomeActionItem"/>
+                            </property>
+                            <property name="titleKey" value="label.moduleHome"/>
+                            <property name="icon" value="moduleHome"/>
+                        </bean>
+
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Studiomode.Menu.Module">
+                            <property name="titleKey" value="label.new"/>
+                            <property name="items">
+                                <list>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                                        <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewModuleActionItem">
+                                            </bean>
+                                        </property>
+                                        <property name="titleKey" value="label.newModule"/>
+                                        <property name="icon" value="newModule"/>
+                                    </bean>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                                        <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.FetchModuleActionItem">
+                                            </bean>
+                                        </property>
+                                        <property name="titleKey" value="label.fetchModule"/>
+                                        <property name="icon" value="fetchModule"/>
+                                    </bean>
+                                </list>
+                            </property>
+                        </bean>
+
+                        <ref bean="Toolbar.Item.Separator"/>
+
+                        <ref bean="studiomode.managers.menu.anthracite"/>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Studiomode.Menu.Cache">
+                            <property name="titleKey" value="label.cache"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Flush"/>
+                                    <ref bean="Toolbar.Item.FlushSite"/>
+                                    <ref bean="Toolbar.Item.FlushAll"/>
+                                </list>
+                            </property>
+                        </bean>
+                        <ref bean="Toolbar.Item.ClipBoard"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Studiomode.Menu.User">
+                            <property name="icon" value="start"/>
+                            <property name="titleKey" value="label.user.loggedAs"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Start"/>
+                                    <ref bean="Toolbar.Item.Documentation"/>
+                                    <ref bean="Toolbar.Item.Logout"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <!-- File Manager -->
+    <bean id="Toolbar.Item.FileManager.Anthracite" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
+        </property>
+        <property name="titleKey" value="label.filemanager"/>
+        <property name="icon" value="fileManager"/>
+        <property name="requiredPermission" value="fileManager"/>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="url"/>
+                    <property name="value"
+                              value="$context/engines/manager.jsp?conf=filemanager-anthracite&amp;site=$siteuuid&amp;lang=$lang"/>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="width"/>
+                    <property name="value" value="1020"/>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="height"/>
+                    <property name="value" value="730"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Content Manager -->
+    <bean id="Toolbar.Item.RepositoryExplorer.Anthracite" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
+        </property>
+        <property name="titleKey" value="label.repositoryexplorer"/>
+        <property name="icon" value="repositoryExplorer"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                <property name="permission" value="repositoryExplorer"/>
+                <property name="contextNodePath" value="/"/>
+            </bean>
+        </property>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="url"/>
+                    <property name="value" value="$context/engines/manager.jsp?conf=repositoryexplorer-anthracite&amp;lang=$lang"/>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="width"/>
+                    <property name="value" value="1020"/>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="height"/>
+                    <property name="value" value="730"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Toolbar.Item.OpenInContentManager.Anthracite" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
+          parent="Toolbar.Item.RepositoryExplorer">
+        <property name="titleKey" value="label.openInContentManager"/>
+        <property name="icon" value="repositoryExplorer"/>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="url"/>
+                    <property name="value"
+                              value="$context/engines/manager.jsp?conf=repositoryexplorer-anthracite&amp;site=$siteuuid&amp;selectedPaths=$nodepath&amp;lang=$lang"/>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="width"/>
+                    <property name="value" value="1020"/>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="height"/>
+                    <property name="value" value="730"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Portlet Manager -->
+    <bean id="Toolbar.Item.PortletManager.Anthracite" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
+        </property>
+        <property name="titleKey" value="label.portletmanager"/>
+        <property name="icon" value="portletManager"/>
+        <property name="requiredPermission" value="portletManager"/>
+
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="url"/>
+                    <property name="value"
+                              value="$context/engines/manager.jsp?conf=portletmanager-anthracite&amp;site=$siteuuid&amp;lang=$lang"/>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="width"/>
+                    <property name="value" value="1020"/>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="height"/>
+                    <property name="value" value="730"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Category Manager -->
+    <bean id="Toolbar.Item.CategoryManager.Anthracite" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
+        </property>
+        <property name="titleKey" value="label.categorymanager"/>
+        <property name="icon" value="categoryManager"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                <property name="permission" value="categoryManager"/>
+                <property name="contextNodePath" value="/sites/systemsite"/>
+            </bean>
+        </property>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="url"/>
+                    <property name="value"
+                              value="$context/engines/manager.jsp?conf=categorymanager-anthracite&amp;lang=$lang"/>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="width"/>
+                    <property name="value" value="1020"/>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="height"/>
+                    <property name="value" value="730"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+</beans>

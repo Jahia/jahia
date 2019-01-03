@@ -379,16 +379,18 @@ public class DocumentViewExporter extends Observable {
                     if (!root && !path.startsWith(rootNode.getPath()+"/") && !path.equals(rootNode.getPath())) {
                         externalReferences.add(v.getString());
                     } else if (!typesToIgnore.contains(reference.getPrimaryNodeTypeName()) && reference.getResolveSite() != null) {
-                        boolean foundInExportedNodes = false;
+                        if (reference.getResolveSite().getSiteKey().equals(JahiaSitesService.SYSTEM_SITE_KEY)) {
+                            boolean foundInExportedNodes = false;
 
-                        for (JCRNodeWrapper node : nodesList) {
-                            if (path.startsWith(node.getPath()+"/") || path.equals(node.getPath())) {
-                                foundInExportedNodes = true;
-                                break;
+                            for (JCRNodeWrapper node : nodesList) {
+                                if (path.startsWith(node.getPath() + "/") || path.equals(node.getPath())) {
+                                    foundInExportedNodes = true;
+                                    break;
+                                }
                             }
-                        }
-                        if (!foundInExportedNodes) {
-                            nodesList.add(reference);
+                            if (!foundInExportedNodes) {
+                                nodesList.add(reference);
+                            }
                         }
                         if (rootNode.getPath().equals(path)) {
                             path = "#/";

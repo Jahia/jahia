@@ -10,6 +10,7 @@
             <outputDirectory>/</outputDirectory>
             <excludes>
                 <exclude>db/*.script</exclude>
+                <exclude>db/sql/schema/**</exclude>
                 <exclude>karaf/etc/branding-ssh.properties</exclude>
                 <exclude>karaf/etc/config.properties</exclude>
                 <exclude>karaf/etc/org.apache.karaf.features.cfg</exclude>
@@ -39,7 +40,12 @@
         </fileSet>
         <fileSet>
             <directory>${basedir}/target/generated-resources</directory>
-            <outputDirectory>karaf//etc</outputDirectory>
+            <outputDirectory>karaf/etc</outputDirectory>
+            <filtered>false</filtered>
+        </fileSet>
+        <fileSet>
+            <directory>${project.build.directory}/ddl</directory>
+            <outputDirectory>db/sql/schema</outputDirectory>
             <filtered>false</filtered>
         </fileSet>
     </fileSets>

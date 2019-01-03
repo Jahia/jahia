@@ -83,3 +83,4 @@
     create index IDX_bl2skw5rlmgsg4xi0f50061tm on jbpm_task_comment (added_by);
 
     create index IDX_nuqjfe1rpp1ad7jlfjjki6tog on jbpm_task_comment (task_data_comments_id);
+

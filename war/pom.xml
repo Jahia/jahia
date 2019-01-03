@@ -130,33 +130,69 @@
                         </configuration>
                         <executions>
                             <execution>
-                                <id>ddl-derby</id>
+                                <id>ddl-derby-drop</id>
                                 <goals>
                                     <goal>export</goal>
                                 </goals>
                                 <configuration>
                                     <hibernateDialect>${hibernateDialect.derby}</hibernateDialect>
-                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/derby/jahia-schema.sql</outputFile>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/derby/00-drop-jahia-schema.sql</outputFile>
+                                    <type>DROP</type>
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>ddl-mysql</id>
+                                <id>ddl-derby-create</id>
+                                <goals>
+                                    <goal>export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.derby}</hibernateDialect>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/derby/01-create-jahia-schema.sql</outputFile>
+                                    <type>CREATE</type>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>ddl-mysql-drop</id>
                                 <goals>
                                     <goal>export</goal>
                                 </goals>
                                 <configuration>
                                     <hibernateDialect>${hibernateDialect.mysql}</hibernateDialect>
-                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/mysql/jahia-schema.sql</outputFile>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/mysql/00-drop-jahia-schema.sql</outputFile>
+                                    <type>DROP</type>
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>ddl-postgresql</id>
+                                <id>ddl-mysql-create</id>
+                                <goals>
+                                    <goal>export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.mysql}</hibernateDialect>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/mysql/01-create-jahia-schema.sql</outputFile>
+                                    <type>CREATE</type>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>ddl-postgresql-drop</id>
                                 <goals>
                                     <goal>export</goal>
                                 </goals>
                                 <configuration>
                                     <hibernateDialect>${hibernateDialect.postgresql}</hibernateDialect>
-                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/postgresql/jahia-schema.sql</outputFile>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/postgresql/00-drop-jahia-schema.sql</outputFile>
+                                    <type>DROP</type>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>ddl-postgresql-create</id>
+                                <goals>
+                                    <goal>export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.postgresql}</hibernateDialect>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/postgresql/01-create-jahia-schema.sql</outputFile>
+                                    <type>CREATE</type>
                                 </configuration>
                             </execution>
                         </executions>
@@ -182,33 +218,69 @@
                         </configuration>
                         <executions>
                             <execution>
-                                <id>ddl-derby</id>
+                                <id>ddl-derby-drop</id>
                                 <goals>
                                     <goal>jpa-schema-export</goal>
                                 </goals>
                                 <configuration>
                                     <hibernateDialect>${hibernateDialect.derby}</hibernateDialect>
-                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/derby/jbpm-schema.sql</outputFile>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/derby/00-drop-jbpm-schema.sql</outputFile>
+                                    <statementType>DROP</statementType>
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>ddl-mysql</id>
+                                <id>ddl-derby-create</id>
+                                <goals>
+                                    <goal>jpa-schema-export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.derby}</hibernateDialect>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/derby/01-create-jbpm-schema.sql</outputFile>
+                                    <statementType>CREATE</statementType>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>ddl-mysql-drop</id>
                                 <goals>
                                     <goal>jpa-schema-export</goal>
                                 </goals>
                                 <configuration>
                                     <hibernateDialect>${hibernateDialect.mysql}</hibernateDialect>
-                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/mysql/jbpm-schema.sql</outputFile>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/mysql/00-drop-jbpm-schema.sql</outputFile>
+                                    <statementType>DROP</statementType>
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>ddl-postgresql</id>
+                                <id>ddl-mysql-create</id>
+                                <goals>
+                                    <goal>jpa-schema-export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.mysql}</hibernateDialect>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/mysql/01-create-jbpm-schema.sql</outputFile>
+                                    <statementType>CREATE</statementType>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>ddl-postgresql-drop</id>
                                 <goals>
                                     <goal>jpa-schema-export</goal>
                                 </goals>
                                 <configuration>
                                     <hibernateDialect>${hibernateDialect.postgresql}</hibernateDialect>
-                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/postgresql/jbpm-schema.sql</outputFile>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/postgresql/00-drop-jbpm-schema.sql</outputFile>
+                                    <statementType>DROP</statementType>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>ddl-postgresql-create</id>
+                                <goals>
+                                    <goal>jpa-schema-export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.postgresql}</hibernateDialect>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/postgresql/01-create-jbpm-schema.sql</outputFile>
+                                    <statementType>CREATE</statementType>
                                 </configuration>
                             </execution>
                         </executions>
@@ -570,6 +642,46 @@
                             </target>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>merge-ddl-files</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <concat destfile="${project.build.directory}/ddl/derby/00-drop-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/derby" includes="00-drop-*"/>
+                                </concat>
+                                <concat destfile="${project.build.directory}/ddl/derby/01-create-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/derby" includes="01-create-*" excludes="01-create-*-index.sql,01-create-*-triggers.sql"/>
+                                </concat>
+                                <concat destfile="${project.build.directory}/ddl/derby/01-create-jahia-core-schema.sql" append="yes" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/derby" includes="01-create-*-index.sql,01-create-*-triggers.sql"/>
+                                </concat>
+
+                                <concat destfile="${project.build.directory}/ddl/mysql/00-drop-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mysql" includes="00-drop-*"/>
+                                </concat>
+                                <concat destfile="${project.build.directory}/ddl/mysql/01-create-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mysql" includes="01-create-*" excludes="01-create-*-index.sql,01-create-*-triggers.sql"/>
+                                </concat>
+                                <concat destfile="${project.build.directory}/ddl/mysql/01-create-jahia-core-schema.sql" append="yes" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mysql" includes="01-create-*-index.sql,01-create-*-triggers.sql"/>
+                                </concat>
+
+                                <concat destfile="${project.build.directory}/ddl/postgresql/00-drop-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/postgresql" includes="00-drop-*"/>
+                                </concat>
+                                <concat destfile="${project.build.directory}/ddl/postgresql/01-create-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/postgresql" includes="01-create-*" excludes="01-create-*-index.sql,01-create-*-triggers.sql"/>
+                                </concat>
+                                <concat destfile="${project.build.directory}/ddl/postgresql/01-create-jahia-core-schema.sql" append="yes" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/postgresql" includes="01-create-*-index.sql,01-create-*-triggers.sql"/>
+                                </concat>
+                            </target>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -726,12 +838,23 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>package-jahia-data</id>
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
                         <configuration>
                             <descriptor>src/data/assembly/src.xml</descriptor>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>package-ddl</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptor>src/data/assembly/src-db-scripts.xml</descriptor>
                         </configuration>
                     </execution>
                 </executions>

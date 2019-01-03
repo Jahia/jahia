@@ -1,0 +1,14 @@
+<assembly>
+    <id>db-scripts</id>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <fileSets>
+        <fileSet>
+            <directory>${project.build.directory}/ddl</directory>
+            <outputDirectory>db/sql/schema</outputDirectory>
+            <filtered>false</filtered>
+        </fileSet>
+    </fileSets>
+</assembly>

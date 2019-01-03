@@ -7,7 +7,7 @@
     <fileSets>
         <fileSet>
             <directory>${project.build.directory}/ddl</directory>
-            <outputDirectory>db/sql/schema</outputDirectory>
+            <outputDirectory>/</outputDirectory>
             <filtered>false</filtered>
         </fileSet>
     </fileSets>

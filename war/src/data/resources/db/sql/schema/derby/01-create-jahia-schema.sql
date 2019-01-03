@@ -1,10 +1,4 @@
 
-    drop table jahia_contenthistory;
-
-    drop table jahia_db_test;
-
-    drop table jahia_nodetypes_provider;
-
     create table jahia_contenthistory (
         id varchar(32) not null,
         entry_action varchar(255),

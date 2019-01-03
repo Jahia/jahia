@@ -1,29 +1,3 @@
--- DbFileSystem
-drop table if exists JR_FSG_FSENTRY;
-
--- PersistenceManager
-drop table if exists JR_DEFAULT_BUNDLE;
-drop table if exists JR_DEFAULT_REFS;
-drop table if exists JR_DEFAULT_BINVAL;
-drop table if exists JR_DEFAULT_NAMES;
-drop table if exists JR_LIVE_BUNDLE;
-drop table if exists JR_LIVE_REFS;
-drop table if exists JR_LIVE_BINVAL;
-drop table if exists JR_LIVE_NAMES;
-drop table if exists JR_V_BUNDLE;
-drop table if exists JR_V_REFS;
-drop table if exists JR_V_BINVAL;
-drop table if exists JR_V_NAMES;
-
--- Journal
-drop table if exists JR_J_JOURNAL;
-drop table if exists JR_J_GLOBAL_REVISION;
-drop table if exists JR_J_LOCAL_REVISIONS;
-drop table if exists JR_J_LOCKS;
-
--- DbDataStore
-drop table if exists JR_DATASTORE;
-
 -- DbFileSystem - global
 create table JR_FSG_FSENTRY (FSENTRY_PATH text not null, FSENTRY_NAME varchar(255) not null, FSENTRY_DATA longblob null, FSENTRY_LASTMOD bigint not null, FSENTRY_LENGTH bigint not null) ENGINE=InnoDB character set latin1;
 create unique index JR_FSG_FSENTRY_IDX on JR_FSG_FSENTRY (FSENTRY_PATH(245), FSENTRY_NAME);
@@ -65,3 +39,4 @@ insert into JR_J_GLOBAL_REVISION VALUES(0);
 
 -- DbDataStore
 create table JR_DATASTORE (ID VARCHAR(255) PRIMARY KEY, LENGTH BIGINT, LAST_MODIFIED BIGINT, DATA BLOB(2147483647)) ENGINE=InnoDB;
+

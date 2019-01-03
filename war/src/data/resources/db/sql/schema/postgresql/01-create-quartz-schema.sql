@@ -1,21 +1,3 @@
--- Thanks to Patrick Lightbody for submitting this...
---
--- In your Quartz properties file, you'll need to set 
--- org.quartz.jobStore.driverDelegateClass = org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
-
-drop table jahia_qrtz_job_listeners;
-drop table jahia_qrtz_trigger_listeners;
-drop table jahia_qrtz_fired_triggers;
-drop table jahia_qrtz_paused_trigger_grps;
-drop table jahia_qrtz_scheduler_state;
-drop table jahia_qrtz_locks;
-drop table jahia_qrtz_simple_triggers;
-drop table jahia_qrtz_cron_triggers;
-drop table jahia_qrtz_blob_triggers;
-drop table jahia_qrtz_triggers;
-drop table jahia_qrtz_job_details;
-drop table jahia_qrtz_calendars;
-
 CREATE TABLE jahia_qrtz_job_details
   (
     JOB_NAME  VARCHAR(200) NOT NULL,
@@ -175,3 +157,4 @@ create index idx_jahia_qrtz_ft_job_stateful on jahia_qrtz_fired_triggers(IS_STAT
 create index idx_jahia_qrtz_ft_job_req_recovery on jahia_qrtz_fired_triggers(REQUESTS_RECOVERY);
 
 commit;
+

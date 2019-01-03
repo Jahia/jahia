@@ -44,6 +44,8 @@
 package org.jahia.utils;
 
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.settings.SettingsBean;
+import org.jahia.tools.jvm.ThreadMonitor;
 import org.slf4j.Logger;
 
 /**
@@ -93,6 +95,9 @@ public class RequestLoadAverage extends LoadAverage {
     public void tickCallback() {
         if (oneMinuteLoad > getLoggingTriggerValue()) {
             logger.info("Jahia Request Load = " + oneMinuteLoad + " " + fiveMinuteLoad + " " + fifteenMinuteLoad);
+            if (Boolean.parseBoolean(SettingsBean.getInstance().getPropertiesFile().getProperty("dumpOnHighRequestLoad", "false"))) {
+                ThreadMonitor.getInstance().dumpThreadInfo(false, true);
+            }
         }
     }
 }

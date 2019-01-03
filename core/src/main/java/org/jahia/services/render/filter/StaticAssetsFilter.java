@@ -302,6 +302,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             String templateContent = getAjaxResolvedTemplate();
             if (templateContent != null) {
                 for (Map.Entry<String, Map<String, Map<String, Map<String, String>>>> entry : assetsByTarget.entrySet()) {
+                    renderContext.getRequest().setAttribute(STATIC_ASSETS, entry.getValue());
                     Element element = source.getFirstElement(TARGET_TAG);
                     final EndTag tag = element != null ? element.getEndTag() : null;
                     ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(ajaxTemplateExtension);
@@ -392,7 +393,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     }
 
     private void addResources(RenderContext renderContext, org.jahia.services.render.Resource resource, Source source, OutputDocument outputDocument, String targetTag, Map<String, Map<String, Map<String, String>>> assetsByType) throws IOException, ScriptException {
-
+        renderContext.getRequest().setAttribute(STATIC_ASSETS, assetsByType);
         Element element = source.getFirstElement(targetTag);
         String templateContent = getResolvedTemplate();
         if (element == null) {

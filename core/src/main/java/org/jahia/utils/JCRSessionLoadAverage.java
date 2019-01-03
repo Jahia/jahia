@@ -44,6 +44,8 @@
 package org.jahia.utils;
 
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.settings.SettingsBean;
+import org.jahia.tools.jvm.ThreadMonitor;
 import org.slf4j.Logger;
 
 /**
@@ -72,6 +74,9 @@ public class JCRSessionLoadAverage extends LoadAverage {
     public void tickCallback() {
         if (oneMinuteLoad > getLoggingTriggerValue()) {
             logger.info("Jahia JCR Session Load = " + oneMinuteLoad + " " + fiveMinuteLoad + " " + fifteenMinuteLoad);
+            if (Boolean.parseBoolean(SettingsBean.getInstance().getPropertiesFile().getProperty("dumpOnHighJcrSessionLoad", "false"))) {
+                ThreadMonitor.getInstance().dumpThreadInfo(false, true);
+            }
         }
     }
 }

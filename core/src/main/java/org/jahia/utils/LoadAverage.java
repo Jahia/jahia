@@ -63,6 +63,7 @@ public abstract class LoadAverage implements Runnable {
 
     private long calcFreqMillis = 5000;
     private double loggingTriggerValue;
+    private double threadDumpTriggerValue;
 
     /**
      * Sets the value above which logging will be triggered for load averages.
@@ -90,7 +91,7 @@ public abstract class LoadAverage implements Runnable {
     public void tickCallback() {
         if (oneMinuteLoad > getLoggingTriggerValue()) {
             logger.info(getInfo());
-            if (isThreadDumpOnHighLoad()) {
+            if (isThreadDumpOnHighLoad() && oneMinuteLoad > getThreadDumpTriggerValue()) {
                 ThreadMonitor.getInstance().dumpThreadInfo(false, true);
             }
         }
@@ -187,5 +188,19 @@ public abstract class LoadAverage implements Runnable {
      */
     public void setThreadDumpOnHighLoad(boolean threadDumpOnHighLoad) {
         this.threadDumpOnHighLoad = threadDumpOnHighLoad;
+    }
+
+    /**
+     * @return the threadDumpTriggerValue
+     */
+    public double getThreadDumpTriggerValue() {
+        return threadDumpTriggerValue > 0 ? threadDumpTriggerValue : loggingTriggerValue;
+    }
+
+    /**
+     * @param threadDumpTriggerValue the threadDumpTriggerValue to set
+     */
+    public void setThreadDumpTriggerValue(double threadDumpTriggerValue) {
+        this.threadDumpTriggerValue = threadDumpTriggerValue;
     }
 }

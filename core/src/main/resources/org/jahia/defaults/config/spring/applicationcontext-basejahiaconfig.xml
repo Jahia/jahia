@@ -296,6 +296,7 @@
         <constructor-arg index="0" value="request-loadaverage"/>
         <property name="displayName" value="Jahia Request Load"/>
         <property name="loggingTriggerValue" value="${requestLoadAverage.loggingTriggerValue:2.0}"/>
+        <property name="threadDumpTriggerValue" value="${requestLoadAverage.threadDumpTriggerValue:20.0}"/>
         <property name="threadDumpOnHighLoad" value="${requestLoadAverage.threadDumpOnHighLoad:false}"/>
     </bean>
 
@@ -303,6 +304,7 @@
         <constructor-arg index="0" value="jcrsession-loadaverage"/>
         <property name="displayName" value="Jahia JCR Session Load"/>
         <property name="loggingTriggerValue" value="${jcrSessionLoadAverage.loggingTriggerValue:10.0}"/>
+        <property name="threadDumpTriggerValue" value="${jcrSessionLoadAverage.threadDumpTriggerValue:20.0}"/>
         <property name="threadDumpOnHighLoad" value="${jcrSessionLoadAverage.threadDumpOnHighLoad:false}"/>
     </bean>
 

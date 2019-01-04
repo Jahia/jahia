@@ -58,6 +58,7 @@ public class ThreadLocalAverageTest {
     @BeforeClass
     public static void oneTimeSetUp() {
         threadLoadAverage = new ThreadLoadAverage("load-test");
+        threadLoadAverage.setDisplayName("Thread load average");
         threadLoadAverage.start();
     }
 
@@ -69,9 +70,7 @@ public class ThreadLocalAverageTest {
     @Test
     public void testThreadLoadAverage() throws InterruptedException {
         for (int i = 0; i < MAX_LOOPS; i++) {
-            System.out.println("Thread load average=" + threadLoadAverage.getOneMinuteLoad() +
-                    ", " + threadLoadAverage.getFiveMinuteLoad() +
-                    ", " + threadLoadAverage.getFifteenMinuteLoad());
+            System.out.println(threadLoadAverage.getInfo());
             Thread.sleep(1000);
         }
     }

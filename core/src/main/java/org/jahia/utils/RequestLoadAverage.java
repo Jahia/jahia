@@ -44,16 +44,12 @@
 package org.jahia.utils;
 
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
-import org.jahia.settings.SettingsBean;
-import org.jahia.tools.jvm.ThreadMonitor;
-import org.slf4j.Logger;
 
 /**
- * Tomcat request load average tool.
+ * Request load average tool.
  */
 public class RequestLoadAverage extends LoadAverage {
 
-    private static transient Logger logger = org.slf4j.LoggerFactory.getLogger(RequestLoadAverage.class);
     private static transient RequestLoadAverage instance = null;
 
     public interface RequestCountProvider {
@@ -68,9 +64,9 @@ public class RequestLoadAverage extends LoadAverage {
     }
 
     /**
-     * This contructor is useful for unit testing.
-     * @param threadName
-     * @param requestCountProvider
+     * This constructor is useful for unit testing.
+     * @param threadName the name of the thread to run this class with
+     * @param requestCountProvider custom provider of the request count value
      */
     public RequestLoadAverage(String threadName, RequestCountProvider requestCountProvider) {
         super(threadName);
@@ -88,16 +84,6 @@ public class RequestLoadAverage extends LoadAverage {
             return (double) requestCountProvider.getRequestCount();
         } else {
             return (double) JahiaContextLoaderListener.getRequestCount();
-        }
-    }
-
-    @Override
-    public void tickCallback() {
-        if (oneMinuteLoad > getLoggingTriggerValue()) {
-            logger.info("Jahia Request Load = " + oneMinuteLoad + " " + fiveMinuteLoad + " " + fifteenMinuteLoad);
-            if (Boolean.parseBoolean(SettingsBean.getInstance().getPropertiesFile().getProperty("dumpOnHighRequestLoad", "false"))) {
-                ThreadMonitor.getInstance().dumpThreadInfo(false, true);
-            }
         }
     }
 }

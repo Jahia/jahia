@@ -43,33 +43,20 @@
  */
 package org.jahia.utils;
 
-import org.jahia.settings.SettingsBean;
-import org.jahia.tools.jvm.ThreadMonitor;
-import org.slf4j.Logger;
-
 /**
  * Load average class based on active thread count.
  */
 public class ThreadLoadAverage extends LoadAverage {
 
-    private static transient Logger logger = org.slf4j.LoggerFactory.getLogger(ThreadLoadAverage.class);
-
     public ThreadLoadAverage(String threadName) {
         super(threadName);
+        setDisplayName("Jahia Thread Load");
+        setLoggingTriggerValue(2.0);
     }
 
     @Override
     public double getCount() {
         return (double) Thread.activeCount();
-    }
-
-    public void tickCallback() {
-        if (oneMinuteLoad > 2.0) {
-            logger.info("Jahia Thread Load = " + oneMinuteLoad + " " + fiveMinuteLoad + " " + fifteenMinuteLoad);
-            if (Boolean.parseBoolean(SettingsBean.getInstance().getPropertiesFile().getProperty("dumpOnHighThreadLoad", "false"))) {
-                ThreadMonitor.getInstance().dumpThreadInfo(false, true);
-            }
-        }
     }
 
 }

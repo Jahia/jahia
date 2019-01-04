@@ -51,6 +51,8 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -88,6 +90,18 @@ public final class DatabaseUtils {
     private static volatile DataSource ds;
 
     private static final Logger logger = LoggerFactory.getLogger(DatabaseUtils.class);
+
+    private static final Comparator<Resource> SCRIPT_RESOURCE_COMPARATOR = new Comparator<Resource>() {
+
+        @Override
+        public int compare(Resource resource1, Resource resource2) {
+            try {
+                return resource1.getFile().getCanonicalPath().compareTo(resource2.getFile().getCanonicalPath());
+            } catch (IOException e) {
+                throw new JahiaRuntimeException(e);
+            }
+        }
+    };
 
     public static void closeQuietly(Object closable) {
         if (closable == null) {
@@ -233,6 +247,12 @@ public final class DatabaseUtils {
         return supportedMode != null ? supportedMode : fallback;
     }
 
+    /**
+     * Check whether necessary database structures like tables/indices/triggers are present;
+     * currently we simply check if the jahia_db_test table present and assume everything else is present too if so.
+     *
+     * @return Whether necessary database structures are present
+     */
     public static boolean isDatabaseStructureInitialized() {
         try (Connection conn = ds.getConnection()) {
             try (Statement stmt = conn.createStatement()) {
@@ -248,6 +268,12 @@ public final class DatabaseUtils {
         }
     }
 
+    /**
+     * (Re)create all the database structures like tables/indices/triggers from scratch.
+     *
+     * @param varDir The "var" directory of the DX installation
+     * @param applicationContext The DX application context
+     */
     public static void initializeDatabaseStructure(String varDir, ApplicationContext applicationContext) {
         try {
             Resource[] scripts = getScripts(varDir + "/db/sql/schema", applicationContext);
@@ -263,10 +289,19 @@ public final class DatabaseUtils {
         }
     }
 
+    /**
+     * Get all SQL scripts located within a base directory, as a resources.
+     *
+     * @param basePath The absolute path of the base directory to look for SQL script in
+     * @param applicationContext The DX application context
+     * @return All SQL scripts located within the base directory (along with sub-directories), as a resources, sorted by absolute script file path
+     */
     public static Resource[] getScripts(String basePath, ApplicationContext applicationContext) throws IOException {
         String folder = "file:" + basePath + '/' + getDatabaseType();
         if (applicationContext.getResource(folder).exists()) {
-            return applicationContext.getResources(folder + "/**/*.sql");
+            Resource[] scripts = applicationContext.getResources(folder + "/**/*.sql");
+            Arrays.sort(scripts, SCRIPT_RESOURCE_COMPARATOR);
+            return scripts;
         } else {
             return new Resource[] {};
         }

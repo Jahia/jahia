@@ -197,6 +197,7 @@ public class EditContentEngine extends AbstractContentEngine {
                 }
 
                 fillCurrentTab();
+                loaded();
             }
         });
 
@@ -350,8 +351,9 @@ public class EditContentEngine extends AbstractContentEngine {
             properties = result.getProperties();
             currentLanguageBean = result.getCurrentLocale();
             fillCurrentTab();
+            loaded();
         }
-        loaded();
+
     }
 
     @Override

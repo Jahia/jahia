@@ -157,7 +157,7 @@ public class PlaceholderModule extends Module {
                 p.add(icon);
 
                 Text label = new Text(nodeType != null ? nodeType.getLabel() : s);
-                if (getWidth() >= MIN_WIDTH) {
+                if (getWidth() >= MIN_WIDTH || getWidth() == 0) {
                     p.add(label);
                 } else {
                     p.setTitle(label.getText());

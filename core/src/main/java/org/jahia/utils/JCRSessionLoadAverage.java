@@ -44,16 +44,12 @@
 package org.jahia.utils;
 
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.settings.SettingsBean;
-import org.jahia.tools.jvm.ThreadMonitor;
-import org.slf4j.Logger;
 
 /**
  * A tracker for JCR sessions load.
  */
 public class JCRSessionLoadAverage extends LoadAverage {
 
-    private static transient Logger logger = org.slf4j.LoggerFactory.getLogger(JCRSessionLoadAverage.class);
     private static transient JCRSessionLoadAverage instance = null;
 
     public JCRSessionLoadAverage(String threadName) {
@@ -70,13 +66,4 @@ public class JCRSessionLoadAverage extends LoadAverage {
         return (double) JCRSessionWrapper.getActiveSessions();
     }
 
-    @Override
-    public void tickCallback() {
-        if (oneMinuteLoad > getLoggingTriggerValue()) {
-            logger.info("Jahia JCR Session Load = " + oneMinuteLoad + " " + fiveMinuteLoad + " " + fifteenMinuteLoad);
-            if (Boolean.parseBoolean(SettingsBean.getInstance().getPropertiesFile().getProperty("dumpOnHighJcrSessionLoad", "false"))) {
-                ThreadMonitor.getInstance().dumpThreadInfo(false, true);
-            }
-        }
-    }
 }

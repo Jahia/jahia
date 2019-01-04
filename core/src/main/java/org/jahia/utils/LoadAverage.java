@@ -43,6 +43,10 @@
  */
 package org.jahia.utils;
 
+import org.jahia.tools.jvm.ThreadMonitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This class makes it easy to calculate a load average, using an average calculation like the following formula:
  * load(t) = load(t – 1) e^(-5/60m) + n (1 – e^(-5/60m))
@@ -50,6 +54,8 @@ package org.jahia.utils;
  * and m = time in minutes over which to perform the average
  */
 public abstract class LoadAverage implements Runnable {
+
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     protected double oneMinuteLoad = 0.0;
     protected double fiveMinuteLoad = 0.0;
@@ -80,11 +86,27 @@ public abstract class LoadAverage implements Runnable {
     }
 
     public abstract double getCount();
-    public abstract void tickCallback();
+
+    public void tickCallback() {
+        if (oneMinuteLoad > getLoggingTriggerValue()) {
+            logger.info(getInfo());
+            if (isThreadDumpOnHighLoad()) {
+                ThreadMonitor.getInstance().dumpThreadInfo(false, true);
+            }
+        }
+    }
+
+    public String getInfo() {
+        return getDisplayName() + " = " + oneMinuteLoad + " " + fiveMinuteLoad + " " + fifteenMinuteLoad;
+    }
 
     private Thread loadCalcThread;
     private final String threadName;
     private boolean running = false;
+
+    private String displayName;
+
+    private boolean threadDumpOnHighLoad;
 
     public LoadAverage(String threadName) {
         this.threadName = threadName;
@@ -137,5 +159,33 @@ public abstract class LoadAverage implements Runnable {
 
     public double getFifteenMinuteLoad() {
         return fifteenMinuteLoad;
+    }
+
+    /**
+     * @return the displayName
+     */
+    public String getDisplayName() {
+        return displayName != null ? displayName : threadName;
+    }
+
+    /**
+     * @param displayName the displayName to set
+     */
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    /**
+     * @return the threadDumpOnHighLoad
+     */
+    public boolean isThreadDumpOnHighLoad() {
+        return threadDumpOnHighLoad;
+    }
+
+    /**
+     * @param threadDumpOnHighLoad the threadDumpOnHighLoad to set
+     */
+    public void setThreadDumpOnHighLoad(boolean threadDumpOnHighLoad) {
+        this.threadDumpOnHighLoad = threadDumpOnHighLoad;
     }
 }

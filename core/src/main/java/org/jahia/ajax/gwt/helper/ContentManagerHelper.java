@@ -1351,19 +1351,18 @@ public class ContentManagerHelper {
                     jcrCondition.remove();
                 }
             }
-
+            // First save used to send event on every deleted rule
+            session.save();
             if (parent.hasNode(VisibilityService.NODE_NAME)) {
                 JCRNodeWrapper wrapper = parent.getNode(VisibilityService.NODE_NAME);
                 if (node.get("node-visibility-forceMatchAllConditions") != null) {
                     wrapper.setProperty("j:forceMatchAllConditions", (Boolean) node.get("node-visibility-forceMatchAllConditions"));
                 }
                 if (!wrapper.hasNodes()) {
-                    wrapper.markForDeletion("");
-                } else if (wrapper.isMarkedForDeletion()) {
-                    wrapper.unmarkForDeletion();
+                    wrapper.remove();
                 }
+                session.save();
             }
-            session.save();
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(e);

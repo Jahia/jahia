@@ -1360,6 +1360,8 @@ public class ContentManagerHelper {
                 }
                 if (!wrapper.hasNodes()) {
                     wrapper.markForDeletion("");
+                } else if (wrapper.isMarkedForDeletion()) {
+                    wrapper.unmarkForDeletion();
                 }
             }
             session.save();

@@ -46,7 +46,6 @@ package org.jahia.hibernate.model;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.jahia.utils.DatabaseUtils;
 
 import java.io.Serializable;
 
@@ -56,7 +55,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = DatabaseUtils.TEST_TABLE)
+@Table(name = "jahia_db_test")
 public class JahiaDbTest implements Serializable {
 
     private static final long serialVersionUID = 4666262312464819334L;

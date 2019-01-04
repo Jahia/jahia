@@ -498,7 +498,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             if (DatabaseUtils.isDatabaseStructureInitialized()) {
                 logger.info("Database structure is initialized");
             } else {
-                if (isProcessingServer() && getPropertyValue("initializeDatabaseWhenAppropriate").equalsIgnoreCase(Boolean.TRUE.toString())) {
+                if (isProcessingServer() && Boolean.TRUE.toString().equalsIgnoreCase(getPropertyValue("initializeDatabaseWhenAppropriate"))) {
                     logger.info("Database structure is not initialized. Initalizing...");
                     try {
                         DatabaseUtils.initializeDatabaseStructure(getJahiaVarDiskPath(), applicationContext);

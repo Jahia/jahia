@@ -249,7 +249,7 @@ public final class DatabaseUtils {
 
     /**
      * Check whether necessary database structures like tables/indices/triggers are present;
-     * currently we simply check if the jahia_db_test table present and assume everything else is present too if so.
+     * currently we simply check if the jahia_nodetypes_provider table present and assume everything else is present too if so.
      *
      * @return Whether necessary database structures are present
      */

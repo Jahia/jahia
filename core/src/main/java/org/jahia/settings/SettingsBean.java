@@ -495,23 +495,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             initJerichoLogging();
 
-            if (DatabaseUtils.isDatabaseStructureInitialized()) {
-                logger.info("Database structure is initialized");
-            } else {
-                if (isProcessingServer() && Boolean.TRUE.toString().equalsIgnoreCase(getPropertyValue("initializeDatabaseWhenAppropriate"))) {
-                    logger.info("Database structure is not initialized. Initalizing...");
-                    try {
-                        DatabaseUtils.initializeDatabaseStructure(getJahiaVarDiskPath(), applicationContext);
-                    } catch (Exception e) {
-                        logger.error("Error initializing database structure", e);
-                        throw e;
-                    }
-                    logger.info("Finished initializing database structure");
-                } else {
-                    logger.error("Database structure is not initialized. Leaving...");
-                    throw new JahiaRuntimeException("Database structure is not initialized");
-                }
-            }
+            initDatabaseIfNeeded();
 
             if (isProcessingServer()) {
                 SqlPatcher.apply(getJahiaVarDiskPath(), applicationContext);
@@ -519,6 +503,26 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             }
         } catch (NullPointerException | NumberFormatException e) {
             logger.error("Properties file is not valid...!", e);
+        }
+    }
+
+    private void initDatabaseIfNeeded() throws JahiaRuntimeException {
+        if (DatabaseUtils.isDatabaseStructureInitialized()) {
+            logger.info("Database structure is initialized");
+        } else {
+            if (isProcessingServer() && getBoolean("db.init.auto", false)) {
+                logger.info("Database structure is not initialized. Initalizing...");
+                try {
+                    DatabaseUtils.initializeDatabaseStructure(getJahiaVarDiskPath(), applicationContext);
+                } catch (Exception e) {
+                    logger.error("Error initializing database structure", e);
+                    throw new JahiaRuntimeException("Error initializing database structure", e);
+                }
+                logger.info("Finished initializing database structure");
+            } else {
+                logger.error("Database structure is not initialized. Leaving...");
+                throw new JahiaRuntimeException("Database structure is not initialized");
+            }
         }
     }
 

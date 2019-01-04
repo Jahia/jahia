@@ -140,6 +140,9 @@ public final class DatabaseUtils {
     }
 
     public static void executeStatements(List<String> statements) throws SQLException {
+        logger.info("Executing {} statement(s)...", statements.size());
+        long startTime = System.currentTimeMillis();
+
         Connection conn = null;
         try {
             conn = getDatasource().getConnection();
@@ -159,6 +162,9 @@ public final class DatabaseUtils {
                     // ignore
                 }
             }
+
+            logger.info("Done executing {} statement(s) in {} ms", statements.size(),
+                    System.currentTimeMillis() - startTime);
         }
     }
 
@@ -249,7 +255,7 @@ public final class DatabaseUtils {
 
     /**
      * Check whether necessary database structures like tables/indices/triggers are present;
-     * currently we simply check if the jahia_nodetypes_provider table present and assume everything else is present too if so.
+     * currently we simply check if the {@link #TEST_TABLE} table is present and assume everything else is present too if so.
      *
      * @return Whether necessary database structures are present
      */
@@ -269,7 +275,7 @@ public final class DatabaseUtils {
     }
 
     /**
-     * (Re)create all the database structures like tables/indices/triggers from scratch.
+     * Create all the database structures like tables/indices/triggers.
      *
      * @param varDir The "var" directory of the DX installation
      * @param applicationContext The DX application context
@@ -295,6 +301,7 @@ public final class DatabaseUtils {
      * @param basePath The absolute path of the base directory to look for SQL script in
      * @param applicationContext The DX application context
      * @return All SQL scripts located within the base directory (along with sub-directories), as a resources, sorted by absolute script file path
+     * @throws IOException in case of an error when retrieving SQL scripts
      */
     public static Resource[] getScripts(String basePath, ApplicationContext applicationContext) throws IOException {
         String folder = "file:" + basePath + '/' + getDatabaseType();

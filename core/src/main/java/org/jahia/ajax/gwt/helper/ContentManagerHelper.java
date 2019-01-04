@@ -1324,7 +1324,7 @@ public class ContentManagerHelper {
             JCRNodeWrapper parent = session.getNode(node.getPath());
 
             if (!conditions.isEmpty() && !parent.hasNode(VisibilityService.NODE_NAME)) {
-                parent.addNode(VisibilityService.NODE_NAME, "jnt:conditionalVisibility");
+                parent.addNode(VisibilityService.NODE_NAME, Constants.JAHIANT_CONDITIONAL_VISIBILITY);
             }
 
             String path = node.getPath() + "/" + VisibilityService.NODE_NAME;
@@ -1346,23 +1346,32 @@ public class ContentManagerHelper {
                 logger.error(e.getMessage(), e);
                 throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.occur.when.trying.to.save.the.node", uiLocale, node.getPath() + " (saveVisibilityConditions)"));
             }
+            boolean doSave = false;
             for (GWTJahiaNode condition : conditions) {
                 if (condition.get("node-removed") != null) {
                     JCRNodeWrapper jcrCondition = session.getNode(condition.getPath());
                     jcrCondition.remove();
+                    doSave = true;
                 }
             }
             // First save used to send event on every deleted rule
-            session.save();
+            if (doSave) {
+                session.save();
+                doSave = false;
+            }
             if (parent.hasNode(VisibilityService.NODE_NAME)) {
                 JCRNodeWrapper wrapper = parent.getNode(VisibilityService.NODE_NAME);
                 if (node.get("node-visibility-forceMatchAllConditions") != null) {
                     wrapper.setProperty("j:forceMatchAllConditions", (Boolean) node.get("node-visibility-forceMatchAllConditions"));
+                    doSave = true;
                 }
                 if (!wrapper.hasNodes()) {
                     wrapper.remove();
+                    doSave = true;
                 }
-                session.save();
+                if (doSave) {
+                    session.save();
+                }
             }
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);

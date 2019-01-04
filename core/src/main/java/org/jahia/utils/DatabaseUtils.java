@@ -84,7 +84,7 @@ public final class DatabaseUtils {
         derby, mssql, mysql, oracle, postgresql, mariadb;
     }
 
-    public static final String TEST_TABLE = "jahia_db_test";
+    public static final String TEST_TABLE = "jahia_nodetypes_provider";
 
     private static volatile DatabaseType dbType;
     private static volatile DataSource ds;

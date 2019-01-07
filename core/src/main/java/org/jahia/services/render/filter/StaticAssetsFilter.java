@@ -405,8 +405,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
             final EndTag headEndTag = element.getEndTag();
             if (headEndTag == null)  {
-                throw new NullPointerException("Content of HTML " + element.getStartTag().toString() +
+                logger.warn("Content of HTML " + element.getStartTag().toString() +
                         " tag could not be parsed.");
+                return;
             }
             ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(templateExtension);
             ScriptContext scriptContext = new AssetsScriptContext();

@@ -65,10 +65,12 @@ import java.io.InputStream;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.commons.Version;
@@ -222,7 +224,7 @@ public final class Jahia {
                 Version currentJDKVersion;
                 try {
                     currentJDKVersion = new Version(System.getProperty("java.version"));
-                    if (!isSupportedJDKVersion(currentJDKVersion, supportedJDKVersions)) {
+                    if (Arrays.stream(StringUtils.split(supportedJDKVersions,',')).noneMatch(v -> isSupportedJDKVersion(currentJDKVersion, v.trim()))) {
                         StringBuilder jemsg = new StringBuilder(256);
                         jemsg.append("WARNING\n\n");
                         jemsg.append(

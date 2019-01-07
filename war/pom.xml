@@ -847,16 +847,6 @@
                             <descriptor>src/data/assembly/src.xml</descriptor>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>package-ddl</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <descriptor>src/data/assembly/src-db-scripts.xml</descriptor>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
             <plugin>

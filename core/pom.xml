@@ -768,12 +768,12 @@
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-core</artifactId>
-            <version>1.14</version>
+            <version>1.20</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-parsers</artifactId>
-            <version>1.14</version>
+            <version>1.20</version>
             <exclusions>
                 <exclusion>
                     <!--
@@ -906,7 +906,78 @@
                     <groupId>org.apache.commons</groupId>
                 </exclusion>
                 <!-- end of excluded dependencies for various formats -->
+
+                <!-- Exclude further dependencies from Tika -->
+                <exclusion>
+                    <groupId>org.glassfish.jaxb</groupId>
+                    <artifactId>jaxb-runtime</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.epam</groupId>
+                    <artifactId>parso</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>edu.usc.ir</groupId>
+                    <artifactId>sentiment-analysis-parser</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.uima</groupId>
+                    <artifactId>uimafit-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.uima</groupId>
+                    <artifactId>uimaj-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.github.openjson</groupId>
+                    <artifactId>openjson</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.annotation</groupId>
+                    <artifactId>javax.annotation-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sun.activation</groupId>
+                    <artifactId>javax.activation</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpmime</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.brotli</groupId>
+                    <artifactId>dec</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jul-to-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jsoup</groupId>
+                    <artifactId>jsoup</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jdom</groupId>
+                    <artifactId>jdom2</artifactId>
+                </exclusion>
+                <!-- We exclude asm to override it with a patched JAR -->
+                <exclusion>
+                    <groupId>org.ow2.asm</groupId>
+                    <artifactId>asm</artifactId>
+                </exclusion>
             </exclusions>
+        </dependency>
+
+        <!-- Tika dependency: repackaged JAR with a module-info.class file removed as it causes issues on JBoss startup -->
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+            <classifier>no-module-info</classifier>
+            <version>7.0</version>
         </dependency>
 
         <dependency>

@@ -177,18 +177,21 @@
                                     </fileset>
                                 </copy>
                                 <copy todir="${project.build.directory}/classes/WEB-INF/var/repository" file="${project.basedir}/../../war/src/data/resources/repository/indexing_configuration_version.xml" />
-                                <copy todir="${project.build.directory}/classes/WEB-INF/var/patches">
+                                <copy todir="${project.build.directory}/classes/WEB-INF/var/db">
                                     <fileset dir="${project.basedir}/../../war/src/data/resources/db">
                                         <include name="derby_embedded.script" />
                                     </fileset>
                                 </copy>
-                                <copy todir="${project.build.directory}/classes/WEB-INF/var/patches/sql">
-                                    <fileset dir="${project.basedir}/../../war/src/data/resources/db/sql/schema">
-                                        <include name="derby/**" />
-                                    </fileset>
-                                </copy>
-                                <replace file="${project.build.directory}/classes/WEB-INF/var/patches/derby_embedded.script" token="{hibernateDialect.derby}" value="hibernateDialect.derby" />
-                                <replace file="${project.build.directory}/classes/WEB-INF/var/patches/derby_embedded.script" token="$hibernateDialect.derby" value="${hibernateDialect.derby}" />
+
+                                <concat destfile="${project.build.directory}/classes/WEB-INF/var/db/sql/schema/derby/01-create-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${project.basedir}/../../war/src/data/resources/db/sql/schema/derby" includes="01-create-*" excludes="01-create-*-index.sql,01-create-*-triggers.sql"/>
+                                </concat>
+                                <concat destfile="${project.build.directory}/classes/WEB-INF/var/db/sql/schema/derby/01-create-jahia-core-schema.sql" append="yes" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${project.basedir}/../../war/src/data/resources/db/sql/schema/derby" includes="01-create-*-index.sql,01-create-*-triggers.sql"/>
+                                </concat>
+
+                                <replace file="${project.build.directory}/classes/WEB-INF/var/db/derby_embedded.script" token="{hibernateDialect.derby}" value="hibernateDialect.derby" />
+                                <replace file="${project.build.directory}/classes/WEB-INF/var/db/derby_embedded.script" token="$hibernateDialect.derby" value="${hibernateDialect.derby}" />
                             </target>
                         </configuration>
                     </execution>

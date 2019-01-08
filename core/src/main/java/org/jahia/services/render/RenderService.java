@@ -56,8 +56,6 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.query.QueryResultWrapper;
-import org.jahia.services.query.QueryWrapper;
 import org.jahia.services.render.filter.RenderChain;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.render.filter.RenderServiceAware;
@@ -72,17 +70,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import pl.touk.throwing.ThrowingFunction;
+import pl.touk.throwing.ThrowingPredicate;
 
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-import javax.jcr.query.Query;
+import javax.jcr.*;
 import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Service to render node
@@ -100,7 +99,30 @@ public class RenderService {
         }
     }
 
+    private static class TemplateNodePriorityComparator implements Comparator<JCRNodeWrapper>, Serializable {
+        private static final long serialVersionUID = 5584826951926361906L;
+
+        @Override
+        public int compare(JCRNodeWrapper node1, JCRNodeWrapper node2) {
+            long node1Priority = 0;
+            long node2Priority = 0;
+            try {
+                if (node1.hasProperty("j:priority")) {
+                    node1Priority = node1.getProperty("j:priority").getLong();
+                }
+                if (node2.hasProperty("j:priority")) {
+                    node2Priority = node2.getProperty("j:priority").getLong();
+                }
+            } catch (RepositoryException e) {
+                logger.error("Could not read property j:priority", e);
+            }
+            return - Long.compare(node1Priority, node2Priority);
+        }
+    }
+
     private static final Comparator<Template> TEMPLATE_PRIORITY_COMPARATOR = new TemplatePriorityComparator();
+
+    private static final Comparator<JCRNodeWrapper> TEMPLATE_NODE_PRIORITY_COMPARATOR = new TemplateNodePriorityComparator();
 
     public static final String RENDER_SERVICE_TEMPLATES_CACHE = "RenderService.TemplatesCache";
 
@@ -440,25 +462,31 @@ public class RenderService {
                 nodes.add(node);
             }
         } else {
-            String query =
-                    "select * from [" + type + "] as w where isdescendantnode(w, ['" + JCRContentUtils.sqlEncode(path) + "'])";
-            if (templateName != null) {
-                query += " and name(w)='" + JCRContentUtils.sqlEncode(templateName) + "'";
-            }
-            if (defaultOnly) {
-                query += " and [j:defaultTemplate]=true";
-            }
-            query += " order by [j:priority] desc";
-            QueryWrapper q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
-            QueryResultWrapper result = q.execute();
-            nodeIds = new ArrayList<String>();
-            for (JCRNodeWrapper wrapper : result.getNodes()) {
-                nodes.add(wrapper);
-                nodeIds.add(wrapper.getIdentifier());
-            }
+            List<JCRNodeWrapper> results = getDescendantNodesOfType(session.getNode(path).getNode("templates"), type);
+            Stream<JCRNodeWrapper> stream = results.stream();
+            nodes = stream.filter(ThrowingPredicate.unchecked(node -> (StringUtils.isBlank(templateName) || node.getName().equals(templateName))
+                    && (!defaultOnly || (node.hasProperty("j:defaultTemplate") && node.getProperty("j:defaultTemplate").getBoolean()))))
+                    .sorted(TEMPLATE_NODE_PRIORITY_COMPARATOR)
+                    .collect(Collectors.toList());
+
+            nodeIds = nodes.stream().map(ThrowingFunction.unchecked(Node::getIdentifier)).collect(Collectors.toList());
+
             templatesCache.put(key, null, nodeIds);
         }
         return nodes;
+    }
+
+    private List<JCRNodeWrapper> getDescendantNodesOfType(JCRNodeWrapper node, String type) {
+        List<JCRNodeWrapper> nodesToIterate = JCRContentUtils.getNodes(node, "jnt:template");
+        List<JCRNodeWrapper> nodesToAdd = JCRContentUtils.getNodes(node, type);
+        List<JCRNodeWrapper> results = new ArrayList<>(nodesToAdd);
+
+        nodesToIterate.addAll(nodesToAdd);
+        for (JCRNodeWrapper childNode : nodesToIterate) {
+            results.addAll(getDescendantNodesOfType(childNode, type));
+        }
+
+        return results;
     }
 
     private void addTemplate(Resource resource, RenderContext renderContext, JCRNodeWrapper templateNode, SortedSet<Template> templates)

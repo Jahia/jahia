@@ -896,10 +896,6 @@ public final class JCRContentUtils implements ServletContextAware {
                 }
             }
             return res;
-//            return node.getSession().getWorkspace().getQueryManager().createQuery("select * from ["+type+"] as sel where ischildnode(sel,['"+node.getPath()+"'])",
-//                                                                                  Query.JCR_SQL2).execute().getNodes();
-//        } catch (InvalidQueryException e) {
-//            logger.error("Error while retrieving nodes", e);
         } catch (RepositoryException e) {
             logger.error("Error while retrieving nodes", e);
         }

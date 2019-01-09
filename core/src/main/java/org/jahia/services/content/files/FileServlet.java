@@ -90,7 +90,7 @@ import static org.jahia.services.content.JCRTemplate.*;
  */
 public class FileServlet extends HttpServlet {
 
-    private static Logger logger = LoggerFactory.getLogger(FileServlet.class);
+    private static final Logger logger = LoggerFactory.getLogger(FileServlet.class);
 
     private static final long serialVersionUID = -414690364676304370L;
 
@@ -537,6 +537,8 @@ public class FileServlet extends HttpServlet {
             if (cacheForLoggedUsers) {
                 try {
                     getInstance().doExecute(JahiaUserManagerService.GUEST_USERNAME, null, n.getSession().getWorkspace().getName(), n.getSession().getLocale(), new JCRCallback<Node>() {
+
+                        @Override
                         public Node doInJCR(JCRSessionWrapper session)
                                 throws RepositoryException {
                             return session.getProviderSession(n.getProvider()).getNodeByIdentifier(n.getIdentifier());

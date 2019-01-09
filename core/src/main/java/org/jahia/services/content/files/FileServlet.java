@@ -49,6 +49,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.jcr.*;
 import javax.servlet.ServletConfig;
@@ -179,7 +180,7 @@ public class FileServlet extends HttpServlet {
                     if (fileEntry != null && fileEntry.getData() != null) {
                         entries = contentCache.get(fileKey.getCacheKey());
                         if (entries == null) {
-                            entries = new HashMap<String, FileCacheEntry>(1);
+                            entries = new ConcurrentHashMap<String, FileCacheEntry>(1);
                         }
                         entries.put(fileKey.getThumbnail(), fileEntry);
                         contentCache.put(fileKey.getCacheKey(), entries);
@@ -204,7 +205,7 @@ public class FileServlet extends HttpServlet {
                     }
 
                     ranges = useRanges ? RangeUtils.parseRange(req, res, fileEntry.getETag(), fileEntry.getLastModified(), fileEntry.getContentLength()) : null;
-                    
+
                     final String fileName = fileEntry.getFileName();
                     if (fileName != null) {
                         res.setHeader(
@@ -357,7 +358,12 @@ public class FileServlet extends HttpServlet {
             return null;
         }
 
-        int contentLength = (int) binary.getSize();
+        long contentLength = binary.getSize();
+        if (contentLength < 0) {
+            // Particularly, the BLOBInDataStore converts the DataStoreException to content length value of -1.
+            logger.warn("Unable to get binary size for node {}", content.getPath());
+            return null;
+        }
 
         fileEntry = new FileCacheEntry(lastModifiedEntry.getETag(), content.getProperty(
                 Constants.JCR_MIMETYPE).getString(), contentLength,
@@ -546,7 +552,7 @@ public class FileServlet extends HttpServlet {
         }
         return true;
     }
-    
+
     private static String getFileName(JCRNodeWrapper fileNode, FileKey fileKey) throws RepositoryException {
         String fileName = null;
         if (fileNode.hasProperty("j:filename")) {

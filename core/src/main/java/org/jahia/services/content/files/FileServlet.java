@@ -359,8 +359,8 @@ public class FileServlet extends HttpServlet {
         }
 
         long contentLength = binary.getSize();
+        // Particularly, the BLOBInDataStore.getSize() converts the DataStoreException to size value of -1.
         if (contentLength < 0) {
-            // Particularly, the BLOBInDataStore converts the DataStoreException to content length value of -1.
             logger.warn("Unable to get binary size for node {}", content.getPath());
             return null;
         }

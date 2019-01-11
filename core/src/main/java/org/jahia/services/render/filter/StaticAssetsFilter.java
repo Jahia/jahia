@@ -397,7 +397,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         Element element = source.getFirstElement(targetTag);
         String templateContent = getResolvedTemplate();
         if (element == null) {
-            logger.warn("Trying to add resources to output but didn't find {} tag", targetTag);
+            logger.warn("WARNING: Trying to add resources to output but didn't find the HTML tag '{}' while rendering resource '{}'. " +
+                    "Please check the structure of your HTML template", targetTag, renderContext.getRequest().getRequestURL());
             return;
         }
 
@@ -405,8 +406,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
             final EndTag headEndTag = element.getEndTag();
             if (headEndTag == null)  {
-                logger.warn("Content of HTML " + element.getStartTag().toString() +
-                        " tag could not be parsed.");
+                logger.warn("WARNING: Trying to add resources to HTML tag '{}', but didn't find corresponding end tag while rendering resource '{}'. " +
+                        "Please check the structure of your HTML template", targetTag, renderContext.getRequest().getRequestURL());
                 return;
             }
             ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(templateExtension);

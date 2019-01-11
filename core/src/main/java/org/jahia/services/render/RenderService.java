@@ -462,7 +462,7 @@ public class RenderService {
                 nodes.add(node);
             }
         } else {
-            List<JCRNodeWrapper> results = getDescendantNodesOfType(session.getNode(path).getNode("templates"), type);
+            List<JCRNodeWrapper> results = getDescendantNodesOfType(session.getNode(path + "/templates"), type);
             Stream<JCRNodeWrapper> stream = results.stream();
             nodes = stream.filter(ThrowingPredicate.unchecked(node -> (StringUtils.isBlank(templateName) || node.getName().equals(templateName))
                     && (!defaultOnly || (node.hasProperty("j:defaultTemplate") && node.getProperty("j:defaultTemplate").getBoolean()))))

@@ -77,6 +77,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
@@ -175,6 +176,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
                                  ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
                 String typeName = condition.getNodeTypes().get(0);
                 XTemplate tpl = typesMap.get(typeName).get("compiledTemplate");
+                convertStringToDate(condition);
                 return tpl.applyTemplate(com.extjs.gxt.ui.client.util.Util.getJsObject(condition));
             }
         });
@@ -383,6 +385,19 @@ public class VisibilityTabItem extends EditEngineTabItem {
         });
 
         tab.layout();
+    }
+
+    private void convertStringToDate(GWTJahiaNode condition) {
+        for (Map.Entry<String, Object> entry : condition.getProperties().entrySet()) {
+            if (entry.getValue() instanceof String) {
+                try {
+                    Date d = FormFieldCreator.dateTimeFormat.parseStrict((String)entry.getValue());
+                    condition.set(entry.getKey(), d);
+                } catch (IllegalArgumentException e) {
+                    // not a date, ignore
+                }
+            }
+        }
     }
 
     private void refreshConditionsList() {

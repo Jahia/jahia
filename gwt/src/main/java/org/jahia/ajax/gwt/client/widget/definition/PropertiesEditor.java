@@ -55,6 +55,7 @@ import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -704,7 +705,7 @@ public class PropertiesEditor extends FormPanel {
                         ((DualListField<GWTJahiaValueDisplayBean>) fld).getToList().getStore().getModels();
                 for (GWTJahiaValueDisplayBean valueDisplayBean : selection) {
                     GWTJahiaNodePropertyValue propertyValue =
-                            getPropertyValue(valueDisplayBean, propDef.getRequiredType());
+                            getPropertyValue(valueDisplayBean, propDef.getRequiredType(), field);
                     if (propertyValue != null) {
                         values.add(propertyValue);
                     }
@@ -721,11 +722,11 @@ public class PropertiesEditor extends FormPanel {
             } else if (fld instanceof MultipleTextField || fld instanceof MultipleNumberField || fld instanceof TagField) {
                 List<?> list = (List<?>) fld.getValue();
                 for (Object item : list) {
-                    values.add(getPropertyValue(item, propDef.getRequiredType()));
+                    values.add(getPropertyValue(item, propDef.getRequiredType(), field));
                 }
             } else {
                 if (fld.getValue() != null) {
-                    values.add(getPropertyValue(fld.getValue(), propDef.getRequiredType()));
+                    values.add(getPropertyValue(fld.getValue(), propDef.getRequiredType(), field));
                 }
             }
         }
@@ -739,14 +740,19 @@ public class PropertiesEditor extends FormPanel {
      *
      * @param fieldValue   the form field value
      * @param requiredType the expected field type
+     * @param field
      * @return string representation of the field value, converted based on its
      *         type
      */
-    private static GWTJahiaNodePropertyValue getPropertyValue(Object fieldValue, int requiredType) {
+    private static GWTJahiaNodePropertyValue getPropertyValue(Object fieldValue, int requiredType, Field field) {
         String propValueString = null;
         if (fieldValue != null) {
             if (fieldValue instanceof Date) {
-                propValueString = String.valueOf(((Date) fieldValue).getTime());
+                if (field instanceof PropertyAdapterField) {
+                    field = ((PropertyAdapterField) field).getField();
+                }
+                DateTimeFormat dtf = ((DateTimePropertyEditor)field.getPropertyEditor()).getFormat();
+                propValueString = dtf.format((Date) fieldValue);
             } else if (fieldValue instanceof GWTJahiaValueDisplayBean) {
                 propValueString = ((GWTJahiaValueDisplayBean) fieldValue).getValue();
             } else {

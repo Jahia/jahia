@@ -328,7 +328,7 @@ public class PropertiesHelper {
                         List<Value> values = new ArrayList<Value>();
                         for (GWTJahiaNodePropertyValue val : prop.getValues()) {
                             if (val.getString() != null) {
-                                values.add(contentDefinition.convertValue(val));
+                                values.add(contentDefinition.convertValue(val, objectNode.getPrimaryNodeType().getPropertyDefinitionsAsMap().get(prop.getName())));
                             }
                         }
                         Value[] finalValues = new Value[values.size()];
@@ -428,7 +428,7 @@ public class PropertiesHelper {
                                         objectNode.setProperty(prop.getName(), value);
                                     }
                                 } else if (propValue != null && propValue.getString() != null) {
-                                    Value value = contentDefinition.convertValue(propValue);
+                                    Value value = contentDefinition.convertValue(propValue, epd);
                                     objectNode.setProperty(prop.getName(), value);
                                 } else {
                                     if (objectNode.hasProperty(prop.getName())) {

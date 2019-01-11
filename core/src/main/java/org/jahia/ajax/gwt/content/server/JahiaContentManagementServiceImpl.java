@@ -2887,6 +2887,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                         jahiaNode.set(prop, nl);
                     } else if (val instanceof String) {
                         jahiaNode.set(prop, Messages.get(rb, nt.getPropertyDefinition(prop).getResourceBundleKey() + "." + JCRContentUtils.replaceColon((String) val), (String) val));
+                    } else if (val instanceof Date) {
+                        jahiaNode.set(prop, ContentDefinitionHelper.dateTimeFormat.format((Date)val));
                     }
                 }
                 conditions.add(jahiaNode);

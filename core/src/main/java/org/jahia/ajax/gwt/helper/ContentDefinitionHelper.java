@@ -45,6 +45,8 @@ package org.jahia.ajax.gwt.helper;
 
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.common.collect.Lists;
+import com.google.gwt.i18n.shared.DateTimeFormat;
+import com.google.gwt.i18n.shared.DefaultDateTimeFormatInfo;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
@@ -85,6 +87,15 @@ public class ContentDefinitionHelper {
 
     private NavigationHelper navigation;
     private ChoiceListInitializerService choiceListInitializerService;
+
+    public static final DateTimeFormat dateTimeFormat = new ServerDateTimeFormat("dd.MM.yyyy HH:mm");
+    public static final DateTimeFormat dateFormat = new ServerDateTimeFormat("dd.MM.yyyy");
+
+    static class ServerDateTimeFormat extends DateTimeFormat {
+        ServerDateTimeFormat(String pattern) {
+            super(pattern, new DefaultDateTimeFormatInfo());
+        }
+    }
 
     public void setNavigation(NavigationHelper navigation) {
         this.navigation = navigation;
@@ -572,7 +583,13 @@ public class ContentDefinitionHelper {
                 if (date == null) {
                     theValue = null;
                 } else {
-                    theValue = String.valueOf(date.getTimeInMillis());
+                    DateTimeFormat format;
+                    if (def.getSelectorOptions().get("format") != null) {
+                        format = DateTimeFormat.getFormat(def.getSelectorOptions().get("format"));
+                    } else {
+                        format = def.getSelector() ==  SelectorType.DATEPICKER ? dateFormat : dateTimeFormat;
+                    }
+                    theValue = format.format(date.getTime());
                 }
                 break;
             case PropertyType.DOUBLE:
@@ -630,7 +647,7 @@ public class ContentDefinitionHelper {
         return new GWTJahiaNodePropertyValue(theValue, type);
     }
 
-    public Value convertValue(GWTJahiaNodePropertyValue val) throws RepositoryException {
+    public Value convertValue(GWTJahiaNodePropertyValue val, ExtendedPropertyDefinition def) throws RepositoryException {
         Value value;
         switch (val.getType()) {
             case GWTJahiaNodePropertyType.BINARY:
@@ -640,8 +657,15 @@ public class ContentDefinitionHelper {
                 value = new BooleanValue(val.getBoolean());
                 break;
             case GWTJahiaNodePropertyType.DATE:
+
+                DateTimeFormat format;
+                if (def.getSelectorOptions().get("format") != null) {
+                    format = DateTimeFormat.getFormat((String)def.getSelectorOptions().get("format"));
+                } else {
+                    format = def.getSelector() ==  SelectorType.DATEPICKER ? dateFormat : dateTimeFormat;
+                }
                 Calendar cal = Calendar.getInstance();
-                cal.setTime(val.getDate());
+                cal.setTime(val.getDate(format));
                 value = new DateValue(cal);
                 break;
             case GWTJahiaNodePropertyType.DOUBLE:

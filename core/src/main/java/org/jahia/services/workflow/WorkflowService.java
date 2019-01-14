@@ -80,7 +80,6 @@ import org.springframework.context.ApplicationListener;
 import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.security.Privilege;
-
 import java.util.*;
 
 /**
@@ -394,6 +393,9 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
     }
 
     public List<JahiaPrincipal> getAssignedRole(WorkflowDefinition definition, String activityName, String processId, JCRSessionWrapper session) throws RepositoryException {
+        if (logger.isDebugEnabled()) {
+            logger.debug(String.format("Workflow [%s], Task [%s], Process ID [%s]: Lookup assignable principals", definition.getName(), activityName, processId));
+        }
         List<JahiaPrincipal> principals = Collections.emptyList();
         Map<String, String> perms = workflowRegistrationByDefinition.get(definition.getKey()).getPermissions();
         String permPath = perms != null ? perms.get(activityName) : null;
@@ -499,6 +501,9 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
             logger.error(e.getMessage(), e);
         } catch (BeansException e) {
             logger.error(e.getMessage(), e);
+        }
+        if (logger.isDebugEnabled() && principals.isEmpty()) {
+            logger.debug(String.format("Workflow [%s], Task [%s], Process ID [%s]: No principal found", definition.getName(), activityName, processId));
         }
         return principals;
     }
@@ -807,7 +812,7 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
 
     public void assignTask(String taskId, String provider, JahiaUser user) {
         assertWritable();
-        logger.debug("Assigning user {} to task {}", user, taskId);
+        logger.debug("Assigning user {} to task {}", user.getName(), taskId);
         lookupProvider(provider).assignTask(taskId, user);
     }
 

@@ -57,6 +57,7 @@ import org.jbpm.services.task.impl.model.UserImpl;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.PeopleAssignments;
 import org.kie.api.task.model.Task;
+import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import java.util.ArrayList;
@@ -67,6 +68,8 @@ import java.util.List;
  * JCR content node.
  */
 public class AclPeopleAssignmentValve extends AbstractPeopleAssignmentValve {
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(AclPeopleAssignmentValve.class);
+
     @Override
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
 
@@ -80,6 +83,9 @@ public class AclPeopleAssignmentValve extends AbstractPeopleAssignmentValve {
         try {
             String name = task.getNames().get(0).getText();
 
+            if (logger.isDebugEnabled()) {
+                logger.debug(String.format("Lookup potential owners for task [%s] in workflow [%s]", name, process.getName()));
+            }
             PeopleAssignments peopleAssignments = task.getPeopleAssignments();
             List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
             final List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(def, name, Long.toString(task.getTaskData().getProcessInstanceId()));

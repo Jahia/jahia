@@ -45,9 +45,7 @@ package org.jahia.services.workflow.jbpm.custom;
 
 import org.jahia.pipelines.Pipeline;
 import org.jahia.pipelines.PipelineException;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.WorkflowVariable;
 import org.jbpm.services.task.exception.PermissionDeniedException;
 import org.jbpm.services.task.impl.model.I18NTextImpl;
@@ -123,6 +121,9 @@ public class JahiaLocalHTWorkItemHandler extends LocalHTWorkItemHandler {
             List<I18NText> names = new ArrayList<I18NText>();
             names.add(new I18NTextImpl("en", taskName));
             task.setNames(names);
+        }
+        if (logger.isDebugEnabled()) {
+            logger.debug(String.format("Create workflow task [%s]", taskName));
         }
 //        // this should be replaced by FormName filled by designer
 //        // TaskName shouldn't be trimmed if we are planning to use that for the task lists

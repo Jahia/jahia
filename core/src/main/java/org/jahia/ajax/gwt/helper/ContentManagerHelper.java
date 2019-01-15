@@ -111,7 +111,7 @@ public class ContentManagerHelper {
 
     private static final List<String> NEW_NODE_FIELDS = Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.TAGS, GWTJahiaNode.CHILDREN_INFO, "j:view", "j:width", "j:height", GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO);
 
-    private static Logger logger = LoggerFactory.getLogger(ContentManagerHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(ContentManagerHelper.class);
 
     private JahiaSitesService sitesService;
     private ContentHistoryService contentHistoryService;
@@ -381,7 +381,7 @@ public class ContentManagerHelper {
     }
 
     public List<GWTJahiaNode> copy(final List<String> pathsToCopy, final String destinationPath, final String newName, final boolean moveOnTop,
-                                   final boolean cut, final boolean reference,final List<String> childNodeTypesToSkip, boolean allLanguages,
+                                   final boolean cut, final boolean reference, final List<String> childNodeTypesToSkip, boolean allLanguages,
                                    JCRSessionWrapper currentUserSession, final Locale uiLocale) throws GWTJahiaServiceException {
         final List<String> missedPaths = new ArrayList<String>();
         final List<GWTJahiaNode> res = new ArrayList<GWTJahiaNode>();
@@ -401,10 +401,11 @@ public class ContentManagerHelper {
 
         try {
             JCRCallback<List<String>> callback = new JCRCallback<List<String>>() {
+
+                @Override
                 public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
 
                     List<String> res = new ArrayList<String>();
-
 
                     final JCRNodeWrapper targetParent;
                     JCRNodeWrapper targetNode;
@@ -436,13 +437,11 @@ public class ContentManagerHelper {
                             }
                         } catch (RepositoryException e) {
                             logger.error("Exception", e);
-                            if(cut)
-                            {
+                            if (cut) {
                                 missedPaths.add(Messages.getInternalWithArguments("failure.cut.cannot.cut",
                                         uiLocale,
                                         name, targetParent.getPath() , node.getPath(), session.getUser().getName()));
-                            }
-                            else {
+                            } else {
                                 missedPaths.add("File " + name + " could not be referenced in " + targetParent.getPath());
                             }
                         } catch (JahiaException e) {
@@ -464,13 +463,11 @@ public class ContentManagerHelper {
 
             if (missedPaths.size() > 0) {
                 StringBuilder errors = new StringBuilder();
-                if(cut)
-                {
+                if (cut) {
                     for (String err : missedPaths) {
                         errors.append("\n").append(err);
                     }
-                }
-                else {
+                } else {
                     errors.append("The following files could not have their reference pasted:");
                     for (String err : missedPaths) {
                         errors.append("\n").append(err);
@@ -873,7 +870,7 @@ public class ContentManagerHelper {
                 if (ace.getPrincipalType() == 'g') {
                     JCRGroupNode g = groupManagerService.lookupGroup(node.getResolveSite().getSiteKey(), ace.getPrincipal());
                     if (g == null) {
-                        g = groupManagerService.lookupGroup(null,ace.getPrincipal());
+                        g = groupManagerService.lookupGroup(null, ace.getPrincipal());
                     }
                     if (g != null) {
                         ace.setHidden(g.isHidden());
@@ -942,7 +939,7 @@ public class ContentManagerHelper {
                             JCRGroupNode g = groupManagerService.lookupGroup(node.getResolveSite().getSiteKey(),
                                     ace.getPrincipal());
                             if (g == null) {
-                                g = groupManagerService.lookupGroup(null,ace.getPrincipal());
+                                g = groupManagerService.lookupGroup(null, ace.getPrincipal());
                             }
                             if (g != null) {
                                 ace.setHidden(g.isHidden());
@@ -1039,7 +1036,7 @@ public class ContentManagerHelper {
             }
             node.setAclInheritanceBreak(acl.isBreakAllInheritance());
         } catch (RepositoryException e) {
-            logger.error("Error while saving acl on node "+node.getPath(), e);
+            logger.error("Error while saving acl on node " + node.getPath(), e);
             throw new GWTJahiaServiceException("Could not save acl on node " + node.getPath());
         }
     }
@@ -1228,13 +1225,17 @@ public class ContentManagerHelper {
     }
 
     public List<GWTJahiaContentHistoryEntry> getContentHistory(JCRSessionWrapper session, String nodeIdentifier, int offset, int limit) throws RepositoryException {
+
         JCRNodeWrapper node = session.getNodeByIdentifier(nodeIdentifier);
         List<HistoryEntry> historyEntryList = contentHistoryService.getNodeHistory(node, true);
         List<GWTJahiaContentHistoryEntry> result = new ArrayList<GWTJahiaContentHistoryEntry>();
         for (HistoryEntry historyEntry : historyEntryList) {
             result.add(convertToGWTJahiaContentHistoryEntry(historyEntry));
         }
+
         Collections.sort(result, new Comparator<GWTJahiaContentHistoryEntry>() {
+
+            @Override
             public int compare(GWTJahiaContentHistoryEntry o1, GWTJahiaContentHistoryEntry o2) {
                 return o2.compareTo(o1);
             }
@@ -1378,6 +1379,4 @@ public class ContentManagerHelper {
             throw new GWTJahiaServiceException(e);
         }
     }
-
-
 }

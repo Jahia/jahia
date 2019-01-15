@@ -62,7 +62,7 @@ import org.xml.sax.SAXException;
 public class DocumentViewValidationHandler extends BaseDocumentViewHandler implements
         ModuleDependencyAware {
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(DocumentViewValidationHandler.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(DocumentViewValidationHandler.class);
 
     private List<String> modules = Collections.emptyList();
 
@@ -70,10 +70,11 @@ public class DocumentViewValidationHandler extends BaseDocumentViewHandler imple
 
     private List<ImportValidator> validators = Collections.emptyList();
 
+    @Override
     public void endDocument() throws SAXException {
-        // do nothing
     }
 
+    @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if (validators.isEmpty()) {
             return;
@@ -90,7 +91,7 @@ public class DocumentViewValidationHandler extends BaseDocumentViewHandler imple
         ValidationResults results = new ValidationResults();
         for (ImportValidator validator : validators) {
             ValidationResult result = validator.getResult();
-            if(result != null && !result.isSuccessful()) {
+            if (result != null && !result.isSuccessful()) {
                 logger.warn("Import validation fail: " + result.toString());
             }
             results.addResult(result);
@@ -99,6 +100,7 @@ public class DocumentViewValidationHandler extends BaseDocumentViewHandler imple
         return results;
     }
 
+    @Override
     public void initDependencies(String templateSetName, List<String> modules) {
         this.templateSetName = templateSetName;
         if (modules != null) {
@@ -128,6 +130,7 @@ public class DocumentViewValidationHandler extends BaseDocumentViewHandler imple
         initValidators();
     }
 
+    @Override
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts)
             throws SAXException {
         if (validators.isEmpty()) {

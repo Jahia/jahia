@@ -236,12 +236,13 @@ public interface JahiaContentManagementService extends RemoteService {
      * @param limit      the limit for pagination (the size of the page)
      * @param sortField  the field on which to sort
      * @param sortDir    the direction in which to sort
+     * @param groupState
      * @param groupNames normally this should be passed as a Set, but it seems that GWT has trouble serializing a
      *                   Set, so we use a list instead.
      * @return a Pagination-ready list of job details
      * @throws GWTJahiaServiceException
      */
-    PagingLoadResult<GWTJahiaJobDetail> getJobs(int offset, int limit, String sortField, String sortDir, List<String> groupNames) throws GWTJahiaServiceException;
+    PagingLoadResult<GWTJahiaJobDetail> getJobs(int offset, int limit, String sortField, String sortDir, String groupState, List<String> groupNames) throws GWTJahiaServiceException;
 
     GWTManagerConfiguration getManagerConfiguration(String name, String path) throws GWTJahiaServiceException;
 

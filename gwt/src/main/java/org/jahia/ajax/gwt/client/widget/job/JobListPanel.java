@@ -106,6 +106,7 @@ public class JobListPanel extends LayoutContainer {
     private List<String> activeGroupNames = null;
 
 	private boolean adminMode;
+    private Grid<GWTJahiaJobDetail> grid;
 
     public JobListPanel(boolean adminMode) {
         super(new BorderLayout());
@@ -128,14 +129,14 @@ public class JobListPanel extends LayoutContainer {
             @Override
             protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GWTJahiaJobDetail>> callback) {
                 if (loadConfig == null) {
-                    service.getJobs(0, Integer.MAX_VALUE, null, null, activeGroupNames, callback);
+                    service.getJobs(0, Integer.MAX_VALUE, null, null, null, activeGroupNames, callback);
                 } else if (loadConfig instanceof BasePagingLoadConfig) {
                     BasePagingLoadConfig pagingLoadConfig = (BasePagingLoadConfig) loadConfig;
                     int limit = pagingLoadConfig.getLimit();
                     int offset = pagingLoadConfig.getOffset();
                     Style.SortDir sortDir = pagingLoadConfig.getSortDir();
                     String sortField = pagingLoadConfig.getSortField();
-                    service.getJobs(offset, limit, sortField, sortDir.name(), activeGroupNames, callback);
+                    service.getJobs(offset, limit, sortField, sortDir.name(), ((GroupingLoadConfig) loadConfig).getGroupBy(), activeGroupNames, callback);
                 } else {
                     callback.onSuccess(new BasePagingLoadResult<GWTJahiaJobDetail>(new ArrayList<GWTJahiaJobDetail>()));
                 }
@@ -143,12 +144,19 @@ public class JobListPanel extends LayoutContainer {
         };
 
         // tree loader
-        final PagingLoader<BasePagingLoadResult<ModelData>> loader = new BasePagingLoader<BasePagingLoadResult<ModelData>>(proxy);
+        final BasePagingLoader<BasePagingLoadResult<ModelData>> loader = new BasePagingLoader<BasePagingLoadResult<ModelData>>(proxy);
         loader.setRemoteSort(true);
+        loader.setReuseLoadConfig(true);
 
         // trees store
-        final GroupingStore<GWTJahiaJobDetail> store = new GroupingStore<GWTJahiaJobDetail>(loader);
-        store.groupBy("status");
+        final GroupingStore<GWTJahiaJobDetail> store = new GroupingStore<GWTJahiaJobDetail>(loader) {
+            @Override
+            public void groupBy(String field) {
+                super.groupBy(field);
+                grid.getState().put("groupBy", field);
+                grid.saveState();
+            }
+        };
 
         pagingToolBar = new PagingToolBar(50);
         pagingToolBar.bind(loader);
@@ -158,7 +166,7 @@ public class JobListPanel extends LayoutContainer {
 
         ColumnConfig column = new ColumnConfig("creationTime", Messages.get("label.creationTime", "Start date"), 100);
         column.setDateTimeFormat(Formatter.DEFAULT_DATETIME_FORMAT);
-        column.setSortable(false);
+        column.setSortable(true);
         config.add(column);
 
         column = new ColumnConfig("group", Messages.get("label.type", "Type"), 100);
@@ -172,14 +180,22 @@ public class JobListPanel extends LayoutContainer {
 
         column = new ColumnConfig("description", Messages.get("label.description", "Description"), 100);
         column.setSortable(false);
+        column.setGroupable(false);
         config.add(column);
 
         column = new ColumnConfig("status", Messages.get("label.status", "Status"), 100);
+        column.setRenderer(new GridCellRenderer<GWTJahiaJobDetail>() {
+            @Override
+            public Object render(GWTJahiaJobDetail jobDetail, String property, ColumnData config, int rowIndex, int colIndex, ListStore store, Grid grid) {
+                return Messages.get("label.job.status." + jobDetail.getStatus());
+            }
+        });
         column.setSortable(false);
         config.add(column);
 
-        column = new ColumnConfig("durationInSeconds", Messages.get("label.duration", "Duration"), 140);
-        column.setSortable(false);
+        column = new ColumnConfig("duration", Messages.get("label.duration", "Duration"), 140);
+        column.setSortable(true);
+        column.setGroupable(false);
         column.setRenderer(new GridCellRenderer<GWTJahiaJobDetail>() {
             public Object render(GWTJahiaJobDetail jobDetail, String property, ColumnData config, int rowIndex,
                                  int colIndex, ListStore<GWTJahiaJobDetail> store, Grid<GWTJahiaJobDetail> grid) {
@@ -214,16 +230,19 @@ public class JobListPanel extends LayoutContainer {
 
         column = new ColumnConfig("user", Messages.get("label.user", "User"), 100);
         column.setSortable(false);
+        column.setGroupable(true);
         column.setHidden(true);
         config.add(column);
 
         column = new ColumnConfig("message", Messages.get("label.message", "Message"), 100);
         column.setSortable(false);
+        column.setGroupable(false);
         column.setHidden(true);
         config.add(column);
 
         column = new ColumnConfig("name", Messages.get("label.name", "Name"), 100);
         column.setSortable(false);
+        column.setGroupable(false);
         column.setHidden(true);
         config.add(column);
 
@@ -236,24 +255,34 @@ public class JobListPanel extends LayoutContainer {
             public String render(GroupColumnData data) {
                 String f = cm.getColumnById(data.field).getHeaderHtml();
                 String l = data.models.size() == 1 ? Messages.get("label.item", "Item") : Messages.get("label.items", "Items");
-                return f + ": " + Messages.get("label.job.status." + data.group) + " (" + data.models.size() + " " + l + ")";
+                if (data.field.equals("status")) {
+                    return f + ": " + Messages.get("label.job.status." + data.group) + " (" + data.models.size() + " " + l + ")";
+                } else {
+                    return f + ": " + (data.group) + " (" + data.models.size() + " " + l + ")";
+                }
             }
         });
 
-        final Grid<GWTJahiaJobDetail> grid = new Grid<GWTJahiaJobDetail>(store, cm);
+        grid = new Grid<GWTJahiaJobDetail>(store, cm);
         grid.setBorders(true);
         grid.setView(view);
         grid.setAutoExpandColumn("description");
         grid.setTrackMouseOver(false);
         grid.setStateId("jobPagingGrid");
         grid.setStateful(true);
+
         grid.addListener(Events.Attach, new Listener<GridEvent<GWTJahiaJobDetail>>() {
             public void handleEvent(GridEvent<GWTJahiaJobDetail> be) {
-                PagingLoadConfig config = new BasePagingLoadConfig();
+                LoadConfig config = new LoadConfig();
                 config.setOffset(0);
                 config.setLimit(50);
-
                 Map<String, Object> state = grid.getState();
+
+                String groupBy = (String) (state.get("groupBy") != null ? state.get("groupBy") : "status");
+                config.setGroupBy(groupBy);
+                store.groupBy(groupBy);
+                store.setRemoteGroup(true);
+
                 if (state.containsKey("offset")) {
                     int offset = (Integer) state.get("offset");
                     int limit = (Integer) state.get("limit");
@@ -506,24 +535,6 @@ public class JobListPanel extends LayoutContainer {
         dialog.show();
     }
 
-    public void reloadList(Grid grid) {
-        ListStore listStore = grid.getStore();
-        PagingLoadConfig config = (PagingLoadConfig) listStore.getLoadConfig();
-        Loader loader = listStore.getLoader();
-        Map<String, Object> state = grid.getState();
-        if (state.containsKey("offset")) {
-            int offset = (Integer) state.get("offset");
-            int limit = (Integer) state.get("limit");
-            config.setOffset(offset);
-            config.setLimit(limit);
-        }
-        if (state.containsKey("sortField")) {
-            config.setSortField((String) state.get("sortField"));
-            config.setSortDir(Style.SortDir.valueOf((String) state.get("sortDir")));
-        }
-        loader.load(config);
-    }
-
     public void addDetail(String labelKey, String labelDefaultValue, Object value) {
         if (value != null) {
             TextField textField = new TextField();
@@ -594,4 +605,15 @@ public class JobListPanel extends LayoutContainer {
 
     }
 
+    static class LoadConfig extends BasePagingLoadConfig implements GroupingLoadConfig {
+        public String getGroupBy() {
+            return (String) get("groupBy");
+        }
+
+        public void setGroupBy(String groupBy) {
+            set("groupBy", groupBy);
+        }
+
+    }
 }
+

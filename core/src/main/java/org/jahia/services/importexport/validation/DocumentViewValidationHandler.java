@@ -54,7 +54,7 @@ import org.xml.sax.SAXException;
 
 /**
  * SAX handler that performs validation of the JCR content, provided in a document format.
- * 
+ *
  * @author Benjamin Papez
  * @author Sergiy Shyrkov
  * @since Jahia 6.6
@@ -83,16 +83,17 @@ public class DocumentViewValidationHandler extends BaseDocumentViewHandler imple
 
     /**
      * Returns the overall validation results.
-     * 
+     *
      * @return the overall validation results
      */
     public ValidationResults getResults() {
         ValidationResults results = new ValidationResults();
         for (ImportValidator validator : validators) {
-            if(validator.getResult() != null && !validator.getResult().isSuccessful()) {
-                logger.warn("Import validation fail: " + validator.getResult().toString());
+            ValidationResult result = validator.getResult();
+            if(result != null && !result.isSuccessful()) {
+                logger.warn("Import validation fail: " + result.toString());
             }
-            results.addResult(validator.getResult());
+            results.addResult(result);
         }
 
         return results;

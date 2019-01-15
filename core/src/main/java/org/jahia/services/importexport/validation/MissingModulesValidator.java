@@ -55,7 +55,7 @@ import org.xml.sax.Attributes;
 
 /**
  * Helper class for performing a validation for missing templates in the imported content.
- * 
+ *
  * @author Sergiy Shyrkov
  * @since Jahia 6.6
  */
@@ -69,7 +69,7 @@ public class MissingModulesValidator implements ImportValidator, ModuleDependenc
 
     private String targetTemplateSet;
 
-    private boolean targetTemplateSetPresent;
+    private boolean targetTemplateSetPresent = true;
 
     private JahiaTemplateManagerService templateManagerService;
 

@@ -73,11 +73,13 @@ public class MissingModulesValidator implements ImportValidator, ModuleDependenc
 
     private JahiaTemplateManagerService templateManagerService;
 
+    @Override
     public ValidationResult getResult() {
         return new MissingModulesValidationResult(missingModules, targetTemplateSet,
                 targetTemplateSetPresent);
     }
 
+    @Override
     public void initDependencies(String templateSetName, List<String> modules) {
         this.targetTemplateSet = templateSetName;
         this.modules = modules;
@@ -87,8 +89,10 @@ public class MissingModulesValidator implements ImportValidator, ModuleDependenc
         this.templateManagerService = templateManagerService;
     }
 
+    @Override
     public void validate(String decodedLocalName, String decodedQName, String currentPath,
             Attributes atts) {
+
         if (done) {
             return;
         }
@@ -116,5 +120,4 @@ public class MissingModulesValidator implements ImportValidator, ModuleDependenc
             missingModules.clear();
         }
     }
-
 }

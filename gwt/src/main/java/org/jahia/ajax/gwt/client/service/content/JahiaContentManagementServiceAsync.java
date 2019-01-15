@@ -181,7 +181,7 @@ public interface JahiaContentManagementServiceAsync {
      */
     void getHighlighted(String original, String amendment, AsyncCallback<String> async);
 
-    void getJobs(int offset, int limit, String sortField, String sortDir, List<String> groupNames, AsyncCallback<PagingLoadResult<GWTJahiaJobDetail>> async);
+    void getJobs(int offset, int limit, String sortField, String sortDir, String groupState, List<String> groupNames, AsyncCallback<PagingLoadResult<GWTJahiaJobDetail>> async);
 
     void getManagerConfiguration(String name, String path, AsyncCallback<GWTManagerConfiguration> async);
 

@@ -43,6 +43,7 @@
  */
 package org.jahia.ajax.gwt.helper;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;
@@ -65,7 +66,6 @@ import org.jahia.services.content.textextraction.TextExtractorJob;
 import org.jahia.services.importexport.ImportJob;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
-import org.jahia.services.usermanager.JahiaUser;
 import org.quartz.*;
 import org.quartz.listeners.JobListenerSupport;
 import org.slf4j.Logger;
@@ -82,12 +82,6 @@ import java.util.*;
  */
 public class SchedulerHelper {
     private Logger logger = LoggerFactory.getLogger(SchedulerHelper.class);
-
-    private static final Comparator<GWTJahiaJobDetail> JOB_COMPARATOR = new Comparator<GWTJahiaJobDetail>() {
-        public int compare(GWTJahiaJobDetail o1, GWTJahiaJobDetail o2) {
-            return o2.compareTo(o1);
-        }
-    };
 
     private SchedulerService scheduler;
 
@@ -225,20 +219,25 @@ public class SchedulerHelper {
         }
     }
 
-    public List<GWTJahiaJobDetail> getAllJobs(Locale locale, JahiaUser jahiaUser, Set<String> groupNames) throws GWTJahiaServiceException {
+    public List<GWTJahiaJobDetail> getAllJobs(Set<String> groupNames, String sortField, String sortDir, String groupBy) throws GWTJahiaServiceException {
         try {
-            List<JobDetail> jobDetails = null;
+            List<JobDetail> jobDetails;
             if (groupNames == null) {
                 jobDetails = scheduler.getAllJobs();
             } else {
-                jobDetails = new ArrayList<JobDetail>();
+                jobDetails = new ArrayList<>();
                 for (String groupName : groupNames) {
                     jobDetails.addAll(scheduler.getAllJobs(groupName));
                 }
             }
             List<GWTJahiaJobDetail> gwtJobList = convertToGWTJobs(jobDetails);
-            // do an inverse sort.
-            Collections.sort(gwtJobList, JOB_COMPARATOR);
+            final String fSortField = sortField == null ? "creationTime" : sortField;
+            final int i = "ASC".equals(sortDir) ? 1 : -1;
+            gwtJobList.sort((o1, o2) -> ObjectUtils.compare(o1.get(fSortField),o2.get(fSortField)) * i);
+            if (groupBy != null) {
+                gwtJobList.sort((o1, o2) -> ObjectUtils.compare(o1.get(groupBy),o2.get(groupBy)));
+            }
+
             return gwtJobList;
         } catch (Exception e) {
             throw new GWTJahiaServiceException("Cannot retrieve jobs. Cause: " + e.getLocalizedMessage(), e);

@@ -2468,15 +2468,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     @Override
     public BasePagingLoadResult<GWTJahiaJobDetail> getJobs(int offset, int limit, String sortField, String sortDir,
-                                                           List<String> groupNames) throws GWTJahiaServiceException {
-        // todo Proper pagination support would imply that we only load the job details that were requested. Also sorting is not at all supported for the moment.
-        JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
-        List<GWTJahiaJobDetail> jobList =
-                schedulerHelper.getAllJobs(getLocale(), sessionWrapper.getUser(), new HashSet<String>(groupNames));
+                                                           String groupBy, List<String> groupNames) throws GWTJahiaServiceException {
+        List<GWTJahiaJobDetail> jobList = schedulerHelper.getAllJobs(new HashSet<>(groupNames), sortField, sortDir, groupBy);
         int size = jobList.size();
-        jobList = new ArrayList<GWTJahiaJobDetail>(jobList.subList(offset, Math.min(size, offset + limit)));
-        BasePagingLoadResult<GWTJahiaJobDetail> pagingLoadResult = new BasePagingLoadResult<GWTJahiaJobDetail>(jobList, offset, size);
-        return pagingLoadResult;
+        jobList = new ArrayList<>(jobList.subList(offset, Math.min(size, offset + limit)));
+        return new BasePagingLoadResult<>(jobList, offset, size);
     }
 
     @Override

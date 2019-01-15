@@ -747,7 +747,7 @@ public class ContentManagerHelper {
                             if (result instanceof MissingModulesValidationResult) {
                                 importErrorMessageLineStepper(buffer);
                                 MissingModulesValidationResult missingModule = ((MissingModulesValidationResult) result);
-                                if (missingModule.isTargetTemplateSetPresent()) {
+                                if (!missingModule.isTargetTemplateSetPresent()) {
                                     buffer.append(Messages.getInternalWithArguments("failure.import.missingTemplateSet", uiLocale, missingModule.getTargetTemplateSet()));
                                 }
                                 if (!missingModule.getMissingModules().isEmpty()) {

@@ -1673,7 +1673,11 @@ if (!Element.prototype.matches) {
 
 			app.resized();
             app.edit.sidepanel.clipPageTitle();
+			app.picker.redrawTable();
 
+		},
+		onResizeColumn: function(){
+			app.picker.redrawTable();
 		},
 		onBlur: function(){
 			app.dev.log("::: APP ::: ONBLUR");
@@ -2248,6 +2252,36 @@ if (!Element.prototype.matches) {
 					detailedview: 2
 				},
                 open: false
+			},
+			redrawTable: function(){
+				console.log("A");
+				// Resizing the window messes up the column widths / alignments in the file list.
+				// Clicking on the column header redraws the table, therefor fixing the issue.
+				// However, we need to click twice otherwise the list is reversed.
+
+				if(DexV2.getCached("body").getAttribute("data-indigo-picker") === "open"){
+					var sortableColumn = DexV2("div[class*='sort-']"),
+						numbererColumn = DexV2("#JahiaGxtManagerTobTable .x-grid3-hd-numberer"),
+						nameColumn = DexV2("#JahiaGxtManagerTobTable .x-grid3-hd-name"),
+						displayNameColumn = DexV2("#JahiaGxtManagerTobTable .x-grid3-hd-displayName");
+
+					if(sortableColumn.exists()){
+						console.log("\tB");
+						// User has already sorted table with a column, so click it twice
+						sortableColumn.trigger("click").trigger("click");
+					} else if(numbererColumn.exists()){
+						console.log("\tC");
+						// User has not sorted a column, so use the table index (numberer)
+						numbererColumn.trigger("click").trigger("click");
+					} else if(nameColumn.exists()) {
+						console.log("\tD");
+						nameColumn.trigger("click").trigger("click");
+					} else {
+						console.log("\tE");
+						displayNameColumn.trigger("click").trigger("click");
+					}
+				}
+
 			},
 			repositionSidePanel: function(splitterLeft){
 				app.dev.log("::: APP ::: PICKER ::: REPOSITIONSIDEPANEL");
@@ -6558,6 +6592,7 @@ if (!Element.prototype.matches) {
                 .onOpen(".engine-window, .engine-panel", app.engine.onOpen)
                 // .onOpen("#JahiaGxtEngineWindow", app.picker.thumb.openEdit)
                 .onOpen("#JahiaGxtImagePopup", app.imagePreview.onOpen)
+				.onAttribute(".x-dd-cursor", "class", app.onResizeColumn)
                 .onAttribute(".edit-menu-tasks", "class", app.edit.infoBar.tasks.onChange)
                 .onAttribute(".contribute-menu-tasks", "class", app.edit.infoBar.tasks.onChange)
                 .onAttribute(".toolbar-item-workinprogressadmin, .toolbar-item-workinprogress", "class", app.edit.infoBar.jobs.onChange)

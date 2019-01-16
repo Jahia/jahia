@@ -74,7 +74,7 @@
         <maven>3.0</maven>
     </prerequisites>
     <properties>
-        <year>2018</year>
+        <year>2019</year>
         <!-- general encoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -428,7 +428,6 @@
                         <artifactId>license-maven-plugin</artifactId>
                         <version>2.6</version>
                         <configuration>
-                            <basedir>${basedir}</basedir>
                             <header>${jahia.license.header}</header>
                             <quiet>false</quiet>
                             <failIfMissing>true</failIfMissing>

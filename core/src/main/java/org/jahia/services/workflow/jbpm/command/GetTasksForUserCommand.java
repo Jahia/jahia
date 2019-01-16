@@ -84,4 +84,11 @@ public class GetTasksForUserCommand extends BaseCommand<List<WorkflowTask>> {
         }
         return availableTasks;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                String.format("%n uiLocale: %s", uiLocale) +
+                String.format("%n user: %s", user != null ? user.getName() : null);
+    }
 }

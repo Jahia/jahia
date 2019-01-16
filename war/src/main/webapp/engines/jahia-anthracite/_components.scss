@@ -1342,7 +1342,7 @@ form,
 			position: absolute;
 			left: 0px;
 
-			body[data-indigo-is-manager="true"]:not([data-indigo-sub-picker="open"]) & {
+			body[data-indigo-is-manager="true"][data-indigo-is-contentpicker="false"]:not([data-indigo-sub-picker="open"]) & {
 				left: 19px;
 			}
 

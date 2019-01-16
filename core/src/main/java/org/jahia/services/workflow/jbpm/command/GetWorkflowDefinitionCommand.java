@@ -72,4 +72,11 @@ public class GetWorkflowDefinitionCommand extends BaseCommand<WorkflowDefinition
         }
         return null;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                String.format("%n key: %s", key) +
+                String.format("%n uiLocale: %s", uiLocale);
+    }
 }

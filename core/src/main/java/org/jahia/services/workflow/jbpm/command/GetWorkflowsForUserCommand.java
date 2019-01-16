@@ -81,4 +81,11 @@ public class GetWorkflowsForUserCommand extends BaseCommand<List<Workflow>> {
         }
         return workflows;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                String.format("%n uiLocale: %s", uiLocale) +
+                String.format("%n user: %s", user != null ? user.getName() : null);
+    }
 }

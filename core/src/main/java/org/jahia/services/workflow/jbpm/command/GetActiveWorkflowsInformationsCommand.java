@@ -43,6 +43,7 @@
  */
 package org.jahia.services.workflow.jbpm.command;
 
+import com.google.common.base.Joiner;
 import org.jahia.services.workflow.Workflow;
 import org.jahia.services.workflow.jbpm.BaseCommand;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -80,5 +81,12 @@ public class GetActiveWorkflowsInformationsCommand extends BaseCommand<List<Work
         	}
         }
         return activeWorkflows;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                String.format("%n processIds: %s", Joiner.on(",").join(processIds)) +
+                String.format("%n uiLocale: %s", uiLocale);
     }
 }

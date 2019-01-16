@@ -43,6 +43,7 @@
  */
 package org.jahia.services.workflow.jbpm.command;
 
+import com.google.common.base.Joiner;
 import org.jahia.services.workflow.HistoryWorkflow;
 import org.jahia.services.workflow.jbpm.BaseCommand;
 import org.jbpm.process.audit.ProcessInstanceLog;
@@ -67,6 +68,13 @@ public class GetHistoryWorkflowCommand extends BaseCommand<List<HistoryWorkflow>
     @Override
     public List<HistoryWorkflow> execute() {
         return getHistoryWorkflows(processIds, uiLocale);
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                String.format("%n processIds: %s", Joiner.on(",").join(processIds)) +
+                String.format("%n uiLocale: %s", uiLocale);
     }
 
 }

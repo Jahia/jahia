@@ -79,7 +79,12 @@ public class GetWorkflowsForDefinitionCommand extends BaseCommand<List<Workflow>
             }
         }
         return workflows;
+    }
 
-
+    @Override
+    public String toString() {
+        return super.toString() +
+                String.format("%n definition: %s", definition) +
+                String.format("%n uiLocale: %s", uiLocale);
     }
 }

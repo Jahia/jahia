@@ -67,4 +67,11 @@ public class GetAvailableActionsCommand extends BaseCommand<Set<WorkflowAction>>
         return getAvailableActions(getKieSession(), getTaskService(), processId, uiLocale);
 
     }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                String.format("%n processId: %s", processId) +
+                String.format("%n uiLocale: %s", uiLocale);
+    }
 }

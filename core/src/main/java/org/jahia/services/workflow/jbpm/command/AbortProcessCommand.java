@@ -61,4 +61,10 @@ public class AbortProcessCommand extends BaseCommand<Workflow> {
         getKieSession().abortProcessInstance(Long.parseLong(processId));
         return null;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                String.format("%n processId: %s", processId);
+    }
 }

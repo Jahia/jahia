@@ -43,6 +43,7 @@
  */
 package org.jahia.services.workflow.jbpm.command;
 
+import com.google.common.base.Joiner;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -128,5 +129,14 @@ public class CompleteTaskCommand extends BaseCommand<Object> {
             }
         }
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                String.format("%n taskId: %s", taskId) +
+                String.format("%n outcome: %s", outcome) +
+                String.format("%n jahiaUser: %s", jahiaUser != null ? jahiaUser.getName() : null) +
+                String.format("%n args: %s", Joiner.on(",").withKeyValueSeparator("=").join(args));
     }
 }

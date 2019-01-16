@@ -43,6 +43,7 @@
  */
 package org.jahia.services.workflow.jbpm.command;
 
+import com.google.common.base.Joiner;
 import org.jahia.services.workflow.jbpm.BaseCommand;
 import org.jahia.services.workflow.jbpm.JBPM6WorkflowProvider;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -65,5 +66,12 @@ public class StartProcessCommand extends BaseCommand<String> {
     public String execute() {
         ProcessInstance processInstance = getKieSession().startProcess(JBPM6WorkflowProvider.getEncodedProcessKey(processKey), args);
         return Long.toString(processInstance.getId());
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                String.format("%n processKey: %s", processKey) +
+                String.format("%n args: %s", Joiner.on(",").withKeyValueSeparator("=").join(args));
     }
 }

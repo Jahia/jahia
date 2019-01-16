@@ -66,4 +66,11 @@ public class GetWorkflowCommand extends BaseCommand<Workflow> {
         ProcessInstance processInstance = getKieSession().getProcessInstance(Long.parseLong(processId));
         return processInstance != null ? convertToWorkflow(processInstance, uiLocale, getKieSession(), getTaskService(), getLogService()) : null;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                String.format("%n processId: %s", processId) +
+                String.format("%n uiLocale: %s", uiLocale);
+    }
 }

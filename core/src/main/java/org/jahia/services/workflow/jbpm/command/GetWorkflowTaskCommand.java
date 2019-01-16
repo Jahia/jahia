@@ -66,4 +66,11 @@ public class GetWorkflowTaskCommand extends BaseCommand<WorkflowTask> {
         Task task = getTaskService().getTaskById(Long.parseLong(taskId));
         return convertToWorkflowTask(task, uiLocale, getKieSession(), getTaskService());
     }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                String.format("%n taskId: %s", taskId) +
+                String.format("%n uiLocale: %s", uiLocale);
+    }
 }

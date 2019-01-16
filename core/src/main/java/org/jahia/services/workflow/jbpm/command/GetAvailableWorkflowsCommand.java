@@ -75,4 +75,10 @@ public class GetAvailableWorkflowsCommand extends BaseCommand<List<WorkflowDefin
         }
         return workflowDefinitions;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                String.format("%n uiLocale: %s", uiLocale);
+    }
 }

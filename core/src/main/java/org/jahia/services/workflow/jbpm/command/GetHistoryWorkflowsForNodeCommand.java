@@ -83,4 +83,11 @@ public class GetHistoryWorkflowsForNodeCommand extends BaseCommand<List<HistoryW
 
         return getHistoryWorkflows(l, uiLocale);
     }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                String.format("%n nodeId: %s", nodeId) +
+                String.format("%n uiLocale: %s", uiLocale);
+    }
 }

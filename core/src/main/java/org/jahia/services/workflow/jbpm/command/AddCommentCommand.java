@@ -85,4 +85,12 @@ public class AddCommentCommand extends BaseCommand<Object> {
         workflowProcessInstance.setVariable("comments",comments);
         return null;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                String.format("%n processId: %s", processId) +
+                String.format("%n comment: %s", comment) +
+                String.format("%n user: %s", user);
+    }
 }

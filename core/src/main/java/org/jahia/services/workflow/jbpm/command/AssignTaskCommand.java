@@ -100,4 +100,11 @@ public class AssignTaskCommand extends BaseCommand<List<WorkflowTask>> {
         }
         return null;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                String.format("%n taskId: %s", taskId) +
+                String.format("%n user: %s", user != null ? user.getName() : null);
+    }
 }

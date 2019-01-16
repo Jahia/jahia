@@ -83,4 +83,11 @@ public class GetHistoryWorkflowsForPathCommand extends BaseCommand<List<HistoryW
 
         return getHistoryWorkflows(l, uiLocale);
     }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                String.format("%n path: %s", path) +
+                String.format("%n uiLocale: %s", uiLocale);
+    }
 }

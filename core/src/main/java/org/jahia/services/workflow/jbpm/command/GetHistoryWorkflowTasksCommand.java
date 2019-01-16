@@ -118,4 +118,11 @@ public class GetHistoryWorkflowTasksCommand extends BaseCommand<List<HistoryWork
 
         return workflowTaskHistory;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                String.format("%n processId: %s", processId) +
+                String.format("%n uiLocale: %s", uiLocale);
+    }
 }

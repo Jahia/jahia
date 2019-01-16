@@ -93,11 +93,12 @@ import com.ibm.icu.text.DateFormat;
  */
 public final class Jahia {
 
+    public static final String YEAR = "2019";
     public static final String CODE_NAME = "Gaia";
     public static final String VENDOR_NAME = "Jahia Solutions Group SA";
-    public static final String COPYRIGHT = "&copy; Copyright 2002-2018  <a href=\"http://www.jahia.com\" target=\"newJahia\">"
+    public static final String COPYRIGHT = "&copy; Copyright 2002-" + YEAR + "  <a href=\"http://www.jahia.com\" target=\"newJahia\">"
             + VENDOR_NAME + "</a> -";
-    public static final String COPYRIGHT_TXT = "2017 " + VENDOR_NAME;
+    public static final String COPYRIGHT_TXT = YEAR + " " + VENDOR_NAME;
 
     private static final Version JAHIA_VERSION;
     static {

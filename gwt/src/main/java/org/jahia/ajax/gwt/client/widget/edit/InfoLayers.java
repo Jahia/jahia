@@ -141,6 +141,7 @@ public class InfoLayers {
                 xy = WindowUtil.getXY(headerEl.dom);
                 w = headerEl.getWidth();
                 h = headerEl.getHeight();
+                layoutContainer.addStyleName("header-info-layer");
             }
         }
 

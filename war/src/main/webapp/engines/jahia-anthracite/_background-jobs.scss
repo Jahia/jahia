@@ -36,15 +36,6 @@
 
     }
 
-    &[indigo-results-multiple-pages="false"] {
-
-        // Pager
-        .x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-bbar {
-            display: none;
-        }
-
-    }
-
     &[indigo-auto-refresh="true"] {
         .x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-tbar .x-toolbar-left .x-toolbar-cell {
 			&:nth-child(3) {
@@ -703,7 +694,7 @@
                         			.my-paging-text {
                         				font-family: "Nunito Sans", sans-serif;
                         				font-size: 12px;
-                        				color: _theme-color(secondary); /* TO THEME */
+                        				color: _theme-color(primary); /* TO THEME */
                         				font-weight: 100;
                         			}
 

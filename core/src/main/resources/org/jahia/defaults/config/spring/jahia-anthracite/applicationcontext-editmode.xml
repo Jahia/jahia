@@ -6,209 +6,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
                         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-    <!-- Editorial Content Manager -->
-    <bean id="Toolbar.Item.EditorialContentManager.NewTab" class="org.jahia.services.uicomponents.bean.toolbar.Item"
-          scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
-        </property>
-        <property name="titleKey" value="label.contentmanager"/>
-        <property name="icon" value="content-manager-1616"/>
-        <property name="requiredPermission" value="editorialContentManager"/>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="url"/>
-                    <property name="value"
-                              value="$context/engines/manager.jsp?conf=editorialcontentmanager-anthracite&amp;site=$siteuuid&amp;lang=$lang"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="target"/>
-                    <property name="value" value="_blank"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="no-options"/>
-                    <property name="value" value="true"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <!-- File Manager -->
-    <bean id="Toolbar.Item.FileManager.NewTab" class="org.jahia.services.uicomponents.bean.toolbar.Item"
-          scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
-        </property>
-        <property name="titleKey" value="label.filemanager"/>
-        <property name="icon" value="fileManager"/>
-        <property name="requiredPermission" value="fileManager"/>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="url"/>
-                    <property name="value"
-                              value="$context/engines/manager.jsp?conf=filemanager-anthracite&amp;site=$siteuuid&amp;lang=$lang"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="target"/>
-                    <property name="value" value="_blank"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="no-options"/>
-                    <property name="value" value="true"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <!-- Content Manager -->
-    <bean id="Toolbar.Item.RepositoryExplorer.NewTab" class="org.jahia.services.uicomponents.bean.toolbar.Item"
-          scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
-        </property>
-        <property name="titleKey" value="label.repositoryexplorer"/>
-        <property name="icon" value="repositoryExplorer"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="permission" value="repositoryExplorer"/>
-                <property name="contextNodePath" value="/"/>
-            </bean>
-        </property>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="url"/>
-                    <property name="value"
-                              value="$context/engines/manager.jsp?conf=repositoryexplorer-anthracite&amp;lang=$lang"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="target"/>
-                    <property name="value" value="_blank"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="no-options"/>
-                    <property name="value" value="true"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <!-- Portlet Manager -->
-    <bean id="Toolbar.Item.PortletManager.NewTab" class="org.jahia.services.uicomponents.bean.toolbar.Item"
-          scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
-        </property>
-        <property name="titleKey" value="label.portletmanager"/>
-        <property name="icon" value="portletManager"/>
-        <property name="requiredPermission" value="portletManager"/>
-
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="url"/>
-                    <property name="value"
-                              value="$context/engines/manager.jsp?conf=portletmanager-anthracite&amp;site=$siteuuid&amp;lang=$lang"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="target"/>
-                    <property name="value" value="_blank"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="no-options"/>
-                    <property name="value" value="true"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <!-- Category Manager -->
-    <bean id="Toolbar.Item.CategoryManager.NewTab" class="org.jahia.services.uicomponents.bean.toolbar.Item"
-          scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
-        </property>
-        <property name="titleKey" value="label.categorymanager"/>
-        <property name="icon" value="categoryManager"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="permission" value="categoryManager"/>
-                <property name="contextNodePath" value="/sites/systemsite"/>
-            </bean>
-        </property>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="url"/>
-                    <property name="value"
-                              value="$context/engines/manager.jsp?conf=categorymanager-anthracite&amp;lang=$lang"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="target"/>
-                    <property name="value" value="_blank"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="no-options"/>
-                    <property name="value" value="true"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <!-- Site Manager -->
-    <bean id="Toolbar.Item.SiteManager.NewTab" class="org.jahia.services.uicomponents.bean.toolbar.Item"
-          scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
-        </property>
-        <property name="titleKey" value="label.sitemanager"/>
-        <property name="icon" value="siteManager"/>
-        <property name="requiredPermission" value="siteManager"/>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="url"/>
-                    <property name="value"
-                              value="$context/engines/manager.jsp?conf=sitemanager-anthracite&amp;site=$siteuuid&amp;lang=$lang"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="target"/>
-                    <property name="value" value="_blank"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="no-options"/>
-                    <property name="value" value="true"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="Toolbar.Item.OpenInContentManager.NewTab" class="org.jahia.services.uicomponents.bean.toolbar.Item"
-          scope="prototype"
-          parent="Toolbar.Item.RepositoryExplorer.NewTab">
-        <property name="titleKey" value="label.openInContentManager"/>
-        <property name="icon" value="repositoryExplorer"/>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="url"/>
-                    <property name="value"
-                              value="$context/engines/manager.jsp?conf=repositoryexplorer-anthracite&amp;site=$siteuuid&amp;selectedPaths=$nodepath&amp;lang=$lang"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="target"/>
-                    <property name="value" value="_blank"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="no-options"/>
-                    <property name="value" value="true"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
     <util:list id="bluemenu">
         <ref bean="Toolbar.Item.Logout"/>
         <bean parent="Toolbar.Item.Start" scope="prototype">
@@ -618,4 +415,59 @@
         </property>
     </bean>
 
+
+    <bean id="sidePanelTab.search.Anthracite" parent="sidePanelTab.search">
+        <property name="parent" ref="editmode-jahia-anthracite"/>
+        <property name="tableContextMenu">
+            <bean id="searchTableContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.EditContent"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Undelete"/>
+                        <ref bean="Toolbar.Item.DeletePermanently"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.Item.TranslateMenu"/>
+                        <ref bean="Toolbar.Item.Export"/>
+                        <ref bean="Toolbar.Item.Lock"/>
+                        <ref bean="Toolbar.Item.Unlock"/>
+                        <ref bean="Toolbar.Item.ClearLock"/>
+                        <ref bean="Toolbar.Item.ClearAllLocks"/>
+                        <ref bean="Toolbar.Item.GoToContent"/>
+                        <ref bean="Toolbar.Item.OpenInContentManager.NewTab"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="sidePanelTab.categories.Anthracite" parent="sidePanelTab.categories">
+        <property name="parent" ref="editmode-jahia-anthracite"/>
+        <property name="tableContextMenu">
+            <bean id="categoriesTableContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.EditContent"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Undelete"/>
+                        <ref bean="Toolbar.Item.DeletePermanently"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.Item.TranslateMenu"/>
+                        <ref bean="Toolbar.Item.Export"/>
+                        <ref bean="Toolbar.Item.Lock"/>
+                        <ref bean="Toolbar.Item.Unlock"/>
+                        <ref bean="Toolbar.Item.ClearLock"/>
+                        <ref bean="Toolbar.Item.ClearAllLocks"/>
+                        <ref bean="Toolbar.Item.OpenInContentManager.NewTab"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
 </beans>

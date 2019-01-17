@@ -350,10 +350,9 @@ body[indigo-dragging-panel="true"] {
 		// RIGHT PANEL
 		#JahiaGxtManagerTobTable {
 			left: 0px!important;
-			top: 80px!important;
+			top: 94px!important;
 			width: 100%!important;
-			height: calc(100% - 133px) !important;
-
+			height: calc(100% - 147px) !important;
 		}
 
 
@@ -473,6 +472,20 @@ body[indigo-dragging-panel="true"] {
 
 	}
 
+	// Fix GWT problem
+	.x-grid3-td-name,
+	.x-grid3-td-displayName {
+		pointer-events: none!important;
+		width: 68%!important
+	}
+
+	.x-grid3-td-primaryTypeLabel {
+		pointer-events: none!important;
+		width: 25%!important
+
+	}
+
+
 	// HEADER
 	.x-window-tl {
 		height: 76px;
@@ -538,10 +551,6 @@ body[indigo-dragging-panel="true"] {
 
 
 	// TREE ICONS
-
-	.x-grid3-col-icon {
-		padding: 0 0 0 5px;
-	}
 
 	// STYLE FOR UNHANDLED ICONS
 	.x-grid3-col-icon img, // RIGHT PANEL
@@ -1882,27 +1891,6 @@ body[indigo-dragging-panel="true"] {
 	    height: calc(100% - 95px) !important;
 	    width: calc(100% - #{$PICKER_SIDEPANEL_WIDTH})!important;
 
-		.x-grid3-cell {
-			padding: 0!important;
-		}
-
-		.x-grid3-header {
-			.x-grid3-td-icon {
-				opacity: 0;
-				pointer-events: none;
-			}
-
-			.x-grid3-header-inner {
-				width: auto!important;
-			}
-		}
-
-		.x-grid3-hd-publicationInfo {
-			opacity: 0;
-			pointer-events: none;
-		}
-
-
 		#images-view {
 			background: transparent!important;
 			padding: 60px 20px 0px;
@@ -1918,9 +1906,10 @@ body[indigo-dragging-panel="true"] {
 		// Scroller is a pain ...
 		.x-grid3-scroller {
 			width: 100%!important;
-			height: calc(100% - 22px) !important;
 
 			.x-grid3-body {
+				padding: 0 20px;
+
 				.x-grid-empty {
 					width: 100%!important;
 				}
@@ -1930,6 +1919,15 @@ body[indigo-dragging-panel="true"] {
 
 		// ROW VIEW
 		.x-grid3-row {
+
+			.x-grid3-td-publicationInfo {
+				width: 3px !important;
+			    height: 24px;
+			    overflow: hidden;
+			    position: absolute;
+			    left: -4px;
+			    top: 1px;
+			}
 
 			position: relative;
 
@@ -3305,7 +3303,37 @@ body[indigo-dragging-panel="true"] {
 	.x-viewport .x-component {
 		// Numberer
 		.x-grid3-td-numberer {
-			opacity: 0;
+			display: none!important; // DEV NOTE ::: WHAT IS THIS, CAN I HIDE IT ???
+		}
+
+		// Node Name
+		.x-grid3-td-name,
+		.x-grid3-td-displayName {
+			width: calc(100% - 460px) !important;
+		}
+
+		// Node Type
+		.x-grid3-td-primaryTypeLabel,
+		.x-grid3-td-jcr\:created,
+		.x-grid3-td-jcr\:createdBy,
+		.x-grid3-td-jcr\:lastModified {
+			width: 115px!important;
+		}
+
+		// Publication Info
+		.x-grid3-td-publicationInfo {
+			left: 18px!important;
+		}
+
+		// Fixes for Category Manager labels in List mode
+		&.x-viewport-categorymanager,
+		&.x-viewport-categorymanager-anthracite {
+			// Names & Paths
+			.x-grid3-td-displayName,
+			.x-grid3-td-name,
+			.x-grid3-td-path {
+				width: 25% !important;
+			}
 		}
 
 		// Status Bar
@@ -3345,25 +3373,26 @@ body[indigo-dragging-panel="true"] {
 		// Row
 		.x-grid3-row {
 			// Default Row
+			width: calc(100% + 6px)!important;
+			left: -15px;
 			position: relative;
+			padding-left: 16px;
 
 			.x-grid3-col {
+				display: inline-block;
 				line-height: 20px;
 			}
 
 			// Checkbox holder
 			.x-grid3-td-checker {
-				background: transparent;
-
-				.x-grid3-col-checker {
-					height: 27px!important;
-				}
+				display: inline-block;
+				left: -7px;
+				top: 5px;
+				position: relative;
+				background: none;
 
 				// Checkbox
 				.x-grid3-row-checker {
-					position: relative;
-					left: 2px;
-					top: 6px;
 					background: _property($CHECKBOX--BG, $PICKER);
 					width: 12px;
 					height: 12px;

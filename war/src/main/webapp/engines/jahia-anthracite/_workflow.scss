@@ -448,6 +448,15 @@
 
 	}
 
+	.x-grid3 {
+		.x-grid3-row-table {
+			width: 100% !important;
+		}
+
+	}
+
+
+
 	.x-toolbar-left {
 		bottom: 0 !important;
 	}
@@ -503,10 +512,6 @@
 
 .workflowactiondialog-ctn,
 .publicationstatuswindow-ctn {
-
-	.x-grid3-header {
-		display: none;
-	}
 
 	background: linear-gradient(to right bottom, whitesmoke 50%, #e5e4e4 100%)!important;
 

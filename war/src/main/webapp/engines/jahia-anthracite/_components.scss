@@ -1319,16 +1319,23 @@ form,
 	height: 100%!important;
 	background: transparent;
 
-	.x-grid3-hd-checker {
-		height: 23px;
-	    z-index: 9999999999;
-	    width: 20px;
-	}
-
 	.x-grid3-td-publicationInfo {
+		width: 3px!important;
+		height: 25px;
+		overflow: hidden;
+
+		position: absolute;
+		left: 0;
+		top: 0;
+
+		.x-grid3-col-publicationInfo {
+			padding: 0!important;
+
+		}
+
 		.x-component,
 		table {
-			height: 100%;
+			height: 100%
 		}
 
 		img {
@@ -1338,18 +1345,8 @@ form,
 			position: relative;
 
 			padding-left: 5px;
-
-			position: absolute;
-			left: 0px;
-
-			body[data-indigo-is-manager="true"][data-indigo-is-contentpicker="false"]:not([data-indigo-sub-picker="open"]) & {
-				left: 19px;
-			}
-
-			top: 0;
-			height: 26px!important;
 			width: 5px;
-			border-right: 1px solid #d9d9d9;
+			height: 25px!important;
 
 
 			&[src$="/conflict.png"] {
@@ -1463,6 +1460,11 @@ form,
 
 			}
 		}
+	}
+
+	.x-grid3-header {
+		/* Header bar (contains column names) */
+		display: none;
 	}
 
 	.x-grid3-body {
@@ -1676,11 +1678,7 @@ form,
 		}
 
 
-		&:not(.x-grid3-header) {
-			pointer-events: none;
-
-		}
-
+		pointer-events: none;
 
 		&::after {
 			position: absolute;
@@ -1695,7 +1693,7 @@ form,
 			width: 28px;
 			height: 25px;
 			opacity: 1;
-			right: 40px;
+			right: 0;
 			content: "More";
 			top: 23px;
 			background-color: transparent!important;
@@ -1772,6 +1770,8 @@ form,
 	.x-tree3-node-icon,
 	.gwt-Image {
 		/* List Item Icon */
+
+
 		overflow: hidden;
 		-moz-box-sizing: border-box;
 		box-sizing: border-box;
@@ -1782,11 +1782,13 @@ form,
 	.x-grid3-row-table {
 		// Table containing actual List Item
 		height: 100%;
-		position: relative;
+		display: block;
 
 		> tbody {
+			display: block;
 
 			> tr {
+				display: block;
 				position: relative;
 
 			}
@@ -1795,6 +1797,16 @@ form,
 		.x-grid3-cell {
 			/* Cell Containing the List Item */
 			padding: 0;
+
+			&.x-grid3-td-locked {
+				width: 25px!important;
+				display: block;
+				right: 25px;
+				top: 3px;
+				position: absolute!important;
+				background: transparent;
+
+			}
 
 			.x-grid3-cell-inner {
 				// Yet another container ...
@@ -1834,6 +1846,13 @@ form,
 	}
 }
 
+.x-panel .x-grid3 .x-grid3-row-table .x-grid3-cell.x-grid3-td-displayName {    // make sure selector works everywhere it needs to.
+	width: 100% !important;
+}
+
+.x-panel .x-grid3 .x-grid3-row-table {    // Changed to fix table bug on workflow modal.
+	width: 100% !important;
+}
 
 ///////////// RICH TEXT MENU
 
@@ -3160,10 +3179,6 @@ form,
 
 	.x-form-field.x-form-text {
 		@include _input-search($MODAL-INPUT);
-	}
-
-	DIV.x-grid3-header {
-		display: none;
 	}
 
 }

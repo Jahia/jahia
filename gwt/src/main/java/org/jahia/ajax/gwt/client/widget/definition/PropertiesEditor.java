@@ -751,7 +751,7 @@ public class PropertiesEditor extends FormPanel {
                 if (field instanceof PropertyAdapterField) {
                     field = ((PropertyAdapterField) field).getField();
                 }
-                DateTimeFormat dtf = ((DateTimePropertyEditor)field.getPropertyEditor()).getFormat();
+                DateTimeFormat dtf = ((DateTimePropertyEditor) field.getPropertyEditor()).getFormat();
                 propValueString = dtf.format((Date) fieldValue);
             } else if (fieldValue instanceof GWTJahiaValueDisplayBean) {
                 propValueString = ((GWTJahiaValueDisplayBean) fieldValue).getValue();

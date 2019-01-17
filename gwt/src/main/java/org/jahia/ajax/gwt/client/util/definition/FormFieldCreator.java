@@ -629,7 +629,7 @@ public class FormFieldCreator {
                             // multiple not supported for date field
                             return;
                         }
-                        Date d = values.get(0).getDate(((DateTimePropertyEditor)field.getPropertyEditor()).getFormat());
+                        Date d = values.get(0).getDate(((DateTimePropertyEditor) field.getPropertyEditor()).getFormat());
                         Log.debug("date: " + d);
                         field.setValue(d);
                         break;
@@ -724,9 +724,9 @@ public class FormFieldCreator {
 
             togglebuttonTimer.schedule(100);
         } else if (targetField instanceof CalendarField) {
-            ((CalendarField) targetField).setValue(sourceProperty.getValues().get(0).getDate(((DateTimePropertyEditor)f.getPropertyEditor()).getFormat()));
+            ((CalendarField) targetField).setValue(sourceProperty.getValues().get(0).getDate(((DateTimePropertyEditor) f.getPropertyEditor()).getFormat()));
         } else if (targetField instanceof DateField) {
-            ((DateField) targetField).setValue(sourceProperty.getValues().get(0).getDate(((DateTimePropertyEditor)f.getPropertyEditor()).getFormat()));
+            ((DateField) targetField).setValue(sourceProperty.getValues().get(0).getDate(((DateTimePropertyEditor) f.getPropertyEditor()).getFormat()));
         } else if (targetField instanceof CheckBox) {
             ((CheckBox) targetField).setValue(sourceProperty.getValues().get(0).getBoolean());
         } else if (targetField instanceof ContentPickerField) {

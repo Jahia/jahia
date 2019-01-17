@@ -6509,11 +6509,6 @@ if (!Element.prototype.matches) {
                             case "JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab":
                                 DexV2.id("JahiaGxtContentBrowseTab").removeClass("show-results");
                                 break;
-
-                            case "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab":
-                                DexV2.id("JahiaGxtSearchTab").removeClass("show-results");
-                                break;
-
                       }
 
           						DexV2.getCached("body").removeClass("show-results");
@@ -6547,10 +6542,6 @@ if (!Element.prototype.matches) {
 
                   case "JahiaGxtSidePanelTabs__JahiaGxtSearchTab":
                     DexV2.id("JahiaGxtSearchTab").addClass("show-results");
-                    break;
-
-                  case "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab":
-                    DexV2.id("JahiaGxtCategoryBrowseTab").addClass("show-results");
                     break;
 
                 }

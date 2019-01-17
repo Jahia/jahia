@@ -562,9 +562,7 @@ public class SiteImportJob extends BackgroundJob {
         }
 
         private void notifyUserOfError(Map<Object, Object> siteInfo, String message) throws GWTJahiaServiceException {
-            System.out.println("Attempting to send email *****************");
             ValidationNotificationHandler.notifyAdministratorWhenValidationFailed(siteInfo, message);
-            System.out.println("Email sent **************");
             throw new GWTJahiaServiceException(message);
         }
 

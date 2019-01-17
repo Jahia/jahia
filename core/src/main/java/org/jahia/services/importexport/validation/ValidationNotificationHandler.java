@@ -60,7 +60,7 @@ public class ValidationNotificationHandler {
     private static Logger logger = LoggerFactory.getLogger(ValidationNotificationHandler.class);
 
     /**
-     * Send notification email to system administrator if import validation is failed
+     * Send notification email to system administrator if import validation failed
      *
      * * @param siteInfo
      * @param errors

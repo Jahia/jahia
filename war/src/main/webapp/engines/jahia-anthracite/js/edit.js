@@ -6731,8 +6731,7 @@ if (!Element.prototype.matches) {
 				app.picker.onOpenSubPicker();
 			})
 
-      DexV2.getCached("body").setAttribute("data-indigo-is-manager", "true");
-			DexV2.getCached("body").setAttribute("data-indigo-is-contentpicker", "true");
+			DexV2.getCached("body").setAttribute("data-indigo-is-manager", "true");
 
 		}
 
@@ -6757,7 +6756,6 @@ if (!Element.prototype.matches) {
 			})
 
 			DexV2.getCached("body").setAttribute("data-indigo-is-manager", "true");
-      DexV2.getCached("body").setAttribute("data-indigo-is-contentpicker", "false");
 
 
 		}

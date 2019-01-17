@@ -1794,7 +1794,7 @@ div.engine-window {
 
 
 
-				.x-grid3-td-remove:not(.x-grid3-hd) {
+				.x-grid3-td-remove {
 					width: 55px!important;
 				    position: absolute;
 				    right: 0;
@@ -3037,6 +3037,7 @@ div.engine-window {
 						width: 100%!important;
 
 						> table {
+							width: 100%!important;
 							display: block;
 
 							> tbody {

@@ -1,3 +1,26 @@
+// Format Publication Status overlay
+.header-info-layer {
+  left: 94px !important;
+  width: calc(100% - 123px) !important;
+  height: auto !important;
+  top: 91px !important;
+  transition: none !important;
+  background-color: rgba(255, 0, 0, 0.7) !important;
+  opacity: 1 !important;
+  min-height: 18px;
+
+  > div {
+    background: transparent !important;
+    color: white !important;
+    padding: 2px;
+    top: auto !important;
+    left: auto !important;
+    border: none;
+    width: 100% !important;
+    position: relative!important;
+  }
+}
+
 // Set background colours
 
 // Channels container

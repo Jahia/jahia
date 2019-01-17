@@ -206,6 +206,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private boolean useWebsockets = false;
     private String atmosphereAsyncSupport;
     private boolean areaAutoActivated;
+    private int jahiaSiteImportScannerInterval;
 
     // Timeout (in seconds) waiting for a bean to be available when using SpringContextSingleton.
     // Mostly used during startup when a module needs to access beans from another module starting independently.
@@ -454,6 +455,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             moduleSpringBeansWaitingTimeout = getInt("jahia.moduleSpringBeansWaitingTimeout", 5 * 60);
 
             moduleStartLevel = getInt("jahia.moduleStartLevel", 90);
+
+            jahiaSiteImportScannerInterval = getInt("jahia.site.import.scanner.interval", 1000);
 
             String authorizedRedirectHostsStr = getString("authorizedRedirectHosts", null);
             authorizedRedirectHosts = StringUtils.isBlank(authorizedRedirectHostsStr) ? new String[0] : authorizedRedirectHostsStr.trim().split("\\s*,\\s*");
@@ -1483,4 +1486,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     public void setStartupOptionsMapping(Map<String, Set<String>> startupOptionsMapping) {
         this.startupOptionsMapping = startupOptionsMapping;
     }
+
+    public int getJahiaSiteImportScannerInterval() { return jahiaSiteImportScannerInterval; }
 }

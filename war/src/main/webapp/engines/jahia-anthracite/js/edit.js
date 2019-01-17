@@ -6271,17 +6271,18 @@ if (!Element.prototype.matches) {
                     window.location = studioURL;
 
                 })
-				.onOpen(".content-type-window", function(){
+                .onOpen(".content-type-window .x-form-field-wrap input", function(){
+                  DexV2(".content-type-window .x-form-field-wrap input").setAttribute("placeholder", app.dictionary("filterContent"));
 
-					DexV2(".content-type-window .x-form-field-wrap input").setAttribute("placeholder", app.dictionary("filterContent"));
+                  // Firefox has bug which doesnt always set focus on text input, wait a split second before settings focus
+                  var that = this;
 
-					// Firefox has bug which doesnt always set focus on text input, wait a split second before settings focus
-					setTimeout(function(){
-						DexV2(".content-type-window .x-form-field-wrap input")
-							.nodes[0].focus();
-					}, 50);
+                  setTimeout(function(){
+                    that.focus();
 
-				})
+        					}, 100);
+
+        				})
 				// .onClick(".workflowactiondialog-ctn .x-grid3-row", function(){
 				// 	DexV2.class("workflowactiondialog-card").addClass("indigo-opened");
 				// })

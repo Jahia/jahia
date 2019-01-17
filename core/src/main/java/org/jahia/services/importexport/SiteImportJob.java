@@ -87,7 +87,7 @@ public class SiteImportJob extends BackgroundJob {
     public static final String NODEPATH = "nodepath";
     public static final String FILE_PATH = "filePath";
     public static final String DELETE_FILE = "deleteFile";
-    public static final String NO_VALIDATION_MARKER = ".novalidation.zip";
+    public static final String NO_VALIDATION_MARKER = "-novalidation.zip";
 
     @Override
     public void executeJahiaJob(JobExecutionContext jobExecutionContext) throws Exception {

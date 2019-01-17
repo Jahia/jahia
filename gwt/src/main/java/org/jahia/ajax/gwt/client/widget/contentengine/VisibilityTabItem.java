@@ -391,7 +391,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
         for (Map.Entry<String, Object> entry : condition.getProperties().entrySet()) {
             if (entry.getValue() instanceof String) {
                 try {
-                    Date d = FormFieldCreator.dateTimeFormat.parseStrict((String)entry.getValue());
+                    Date d = FormFieldCreator.dateTimeFormat.parseStrict((String) entry.getValue());
                     condition.set(entry.getKey(), d);
                 } catch (IllegalArgumentException e) {
                     // not a date, ignore

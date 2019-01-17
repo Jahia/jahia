@@ -587,7 +587,7 @@ public class ContentDefinitionHelper {
                     if (def.getSelectorOptions().get("format") != null) {
                         format = DateTimeFormat.getFormat(def.getSelectorOptions().get("format"));
                     } else {
-                        format = def.getSelector() ==  SelectorType.DATEPICKER ? dateFormat : dateTimeFormat;
+                        format = def.getSelector() == SelectorType.DATEPICKER ? dateFormat : dateTimeFormat;
                     }
                     theValue = format.format(date.getTime());
                 }
@@ -657,12 +657,11 @@ public class ContentDefinitionHelper {
                 value = new BooleanValue(val.getBoolean());
                 break;
             case GWTJahiaNodePropertyType.DATE:
-
                 DateTimeFormat format;
                 if (def.getSelectorOptions().get("format") != null) {
-                    format = DateTimeFormat.getFormat((String)def.getSelectorOptions().get("format"));
+                    format = DateTimeFormat.getFormat(def.getSelectorOptions().get("format"));
                 } else {
-                    format = def.getSelector() ==  SelectorType.DATEPICKER ? dateFormat : dateTimeFormat;
+                    format = def.getSelector() == SelectorType.DATEPICKER ? dateFormat : dateTimeFormat;
                 }
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(val.getDate(format));

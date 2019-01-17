@@ -388,54 +388,9 @@
                     <property name="requiredPermission" value="portletsSelector"/>
                 </bean>-->
                 <ref bean="sidePanelTab.search"/>
-                <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
-                    <property name="key" value="categories"/>
-                    <property name="icon" value="tab-categories"/>
-                    <property name="tabItem">
-                        <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.CategoryBrowseTabItem">
-                            <property name="folderTypes" value="jnt:category"/>
-                            <property name="paths" value="$systemsite/categories"/>
-                            <property name="limit" value="500"/>
-                        </bean>
-                    </property>
-                    <property name="treeColumns">
-                        <list>
-                            <value>displayName</value>
-                        </list>
-                    </property>
-                    <property name="tableColumns">
-                        <list>
-                            <value>icon,40</value>
-                            <value>displayName,*,label.title</value>
-                            <value>locked,25</value>
-                            <value>publicationInfo,20</value>
-                        </list>
-                    </property>
-                    <property name="requiredPermission" value="categoriesSelector"/>
-                  <property name="tableContextMenu">
-                    <bean id="categoriesTableContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                      <property name="items">
-                        <list>
-                          <ref bean="Toolbar.Item.EditContent"/>
-                          <ref bean="Toolbar.Item.Delete"/>
-                          <ref bean="Toolbar.Item.Undelete"/>
-                          <ref bean="Toolbar.Item.DeletePermanently"/>
-                          <ref bean="Toolbar.Item.Copy"/>
-                          <ref bean="Toolbar.Item.Cut"/>
-                          <ref bean="Toolbar.Item.Paste"/>
-                          <ref bean="Toolbar.Item.PasteReference"/>
-                          <ref bean="Toolbar.Item.TranslateMenu"/>
-                          <ref bean="Toolbar.Item.Export"/>
-                          <ref bean="Toolbar.Item.Lock"/>
-                          <ref bean="Toolbar.Item.Unlock"/>
-                          <ref bean="Toolbar.Item.ClearLock"/>
-                          <ref bean="Toolbar.Item.ClearAllLocks"/>
-                          <ref bean="Toolbar.Item.OpenInContentManager"/>
-                        </list>
-                      </property>
-                    </bean>
-                  </property>
-                </bean>
+
+                <ref bean="sidePanelTab.categories"/>
+
                 <ref bean="sidePanelTab.siteSettings"/>
                 <!--<bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="lastContent"/>
@@ -768,6 +723,55 @@
                         <ref bean="Toolbar.Item.ClearLock"/>
                         <ref bean="Toolbar.Item.ClearAllLocks"/>
                         <ref bean="Toolbar.Item.GoToContent"/>
+                        <ref bean="Toolbar.Item.OpenInContentManager"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="sidePanelTab.categories" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
+        <property name="key" value="categories"/>
+        <property name="icon" value="tab-categories"/>
+        <property name="tabItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.CategoryBrowseTabItem">
+                <property name="folderTypes" value="jnt:category"/>
+                <property name="paths" value="$systemsite/categories"/>
+                <property name="limit" value="500"/>
+            </bean>
+        </property>
+        <property name="treeColumns">
+            <list>
+                <value>displayName</value>
+            </list>
+        </property>
+        <property name="tableColumns">
+            <list>
+                <value>icon,40</value>
+                <value>displayName,*,label.title</value>
+                <value>locked,25</value>
+                <value>publicationInfo,20</value>
+            </list>
+        </property>
+        <property name="requiredPermission" value="categoriesSelector"/>
+        <property name="tableContextMenu">
+            <bean id="categoriesTableContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.EditContent"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Undelete"/>
+                        <ref bean="Toolbar.Item.DeletePermanently"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.Item.TranslateMenu"/>
+                        <ref bean="Toolbar.Item.Export"/>
+                        <ref bean="Toolbar.Item.Lock"/>
+                        <ref bean="Toolbar.Item.Unlock"/>
+                        <ref bean="Toolbar.Item.ClearLock"/>
+                        <ref bean="Toolbar.Item.ClearAllLocks"/>
                         <ref bean="Toolbar.Item.OpenInContentManager"/>
                     </list>
                 </property>

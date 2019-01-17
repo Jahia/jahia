@@ -637,7 +637,11 @@ if (!Element.prototype.matches) {
             filter: function(selector){
                 /* Filter then current node list - note: only filters on the first node in list */
 
-                this.nodes = this.nodes[0].querySelectorAll(selector);
+                if(this.nodes[0]){
+                  this.nodes = this.nodes[0].querySelectorAll(selector);
+                } else {
+                  this.nodes = [];
+                }
 
                 return this;
 
@@ -735,7 +739,9 @@ if (!Element.prototype.matches) {
                 var n;
 
                 for(n = 0; n < this.nodes.length; n++){
+                  if(this.nodes[n]){
                     this.nodes[n].classList.add(classname);
+                  }
 
                 }
 
@@ -2254,7 +2260,6 @@ if (!Element.prototype.matches) {
                 open: false
 			},
 			redrawTable: function(){
-				console.log("A");
 				// Resizing the window messes up the column widths / alignments in the file list.
 				// Clicking on the column header redraws the table, therefor fixing the issue.
 				// However, we need to click twice otherwise the list is reversed.
@@ -2266,18 +2271,14 @@ if (!Element.prototype.matches) {
 						displayNameColumn = DexV2("#JahiaGxtManagerTobTable .x-grid3-hd-displayName");
 
 					if(sortableColumn.exists()){
-						console.log("\tB");
 						// User has already sorted table with a column, so click it twice
 						sortableColumn.trigger("click").trigger("click");
 					} else if(numbererColumn.exists()){
-						console.log("\tC");
 						// User has not sorted a column, so use the table index (numberer)
 						numbererColumn.trigger("click").trigger("click");
 					} else if(nameColumn.exists()) {
-						console.log("\tD");
 						nameColumn.trigger("click").trigger("click");
 					} else {
-						console.log("\tE");
 						displayNameColumn.trigger("click").trigger("click");
 					}
 				}
@@ -5448,6 +5449,11 @@ if (!Element.prototype.matches) {
 							app.edit.sidepanel.open(false);
 
 			            }
+
+                  if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtSearchTab"){
+                      DexV2.id("JahiaGxtSearchTab").addClass("show-results");
+                      DexV2.getCached("body").addClass("show-results");
+                  }
 					},
 				},
 				row: {
@@ -6471,24 +6477,29 @@ if (!Element.prototype.matches) {
     			})
 				.onOpen(".results-column .x-grid-empty", function(){
 
-						var myPagingDisplay = DexV2.id("JahiaGxtSearchTab").filter(".my-paging-display")
-						var pagingValue = myPagingDisplay.nodes[0].innerHTML
-						var noResults = pagingValue === "No data to display" || pagingValue === "Aucune donnée à afficher" || pagingValue === "Keine Daten vorhanden"
-						var status = null
+						var myPagingDisplay = DexV2("#JahiaGxtSearchTab .my-paging-display");
 
-						if(noResults){
-							status = "no-results"
-						} else if(pagingValue === "") {
-							status = "init"
-						} else {
-							status = "searching"
-						}
+            if(myPagingDisplay.exists()){
+              var pagingValue = myPagingDisplay.nodes[0].innerHTML
+  						var noResults = pagingValue === "No data to display" || pagingValue === "Aucune donnée à afficher" || pagingValue === "Keine Daten vorhanden"
+  						var status = null
 
-						if(app.edit.data.search.status !== status){
-							app.edit.data.search.status = status
+  						if(noResults){
+  							status = "no-results"
+  						} else if(pagingValue === "") {
+  							status = "init"
+  						} else {
+  							status = "searching"
+  						}
 
-							DexV2.id("JahiaGxtSearchTab").filter(".results-column").setAttribute("data-results-status", app.edit.data.search.status)
-						}
+  						if(app.edit.data.search.status !== status){
+  							app.edit.data.search.status = status
+
+  							DexV2.id("JahiaGxtSearchTab").filter(".results-column").setAttribute("data-results-status", app.edit.data.search.status)
+  						}
+            }
+
+
 
 				})
 				.onOpen(".results-column .x-grid3-row", function(){
@@ -6504,61 +6515,67 @@ if (!Element.prototype.matches) {
     			.onOpen("#JahiaGxtCreateContentTab", function(){
     				DexV2.node(this).filter("input.x-form-text").setAttribute("placeholder", app.dictionary("filterContent"))
     			})
-                .onGroupOpen("#JahiaGxtSettingsTab .x-grid3-row", app.edit.settings.onTreeChange) // Once matchType is improved the target selector can be changed to #JahiaGxtSettingsTab .x-grid3-row
-                .onOpen(".x-grid-empty", function(value){
-    				if(app.edit.sidepanel.data.open){
-                        var isTreeEntry = DexV2.node(this).parent().hasClass("results-column");
+            .onGroupOpen("#JahiaGxtSettingsTab .x-grid3-row", app.edit.settings.onTreeChange) // Once matchType is improved the target selector can be changed to #JahiaGxtSettingsTab .x-grid3-row
+            .onOpen(".x-grid-empty", function(value){
+        				if(app.edit.sidepanel.data.open){
+                    var isTreeEntry = DexV2.node(this).parent().hasClass("results-column");
 
-    					if(isTreeEntry){
-    						// if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"){
-    						// 	DexV2.id("JahiaGxtCategoryBrowseTab").removeClass("show-results");
-                            //
-    						// } else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"){
-    						// 	DexV2.id("JahiaGxtContentBrowseTab").removeClass("show-results");
-                            //
-    						// } else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtSearchTab"){
-    						// 	DexV2.id("JahiaGxtSearchTab").removeClass("show-results");
-                            //
-    						// }  else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"){
-    						// 	DexV2.id("JahiaGxtSearchTab").removeClass("show-results");
-                            //
-    						// }
-                            //
-                            //
-    						// DexV2.getCached("body").removeClass("show-results");
-    					}
-    				}
+          					if(isTreeEntry){
+                        switch(app.edit.sidepanel.data.currentTab){
+                            case "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab":
+                                DexV2.id("JahiaGxtCategoryBrowseTab").removeClass("show-results");
+                                break;
+
+                            case "JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab":
+                                DexV2.id("JahiaGxtContentBrowseTab").removeClass("show-results");
+                                break;
+
+                            case "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab":
+                                DexV2.id("JahiaGxtSearchTab").removeClass("show-results");
+                                break;
+
+                      }
+
+          						DexV2.getCached("body").removeClass("show-results");
+          					}
+        				}
 
     			})
+          .onOpen("#JahiaGxtSearchTab", function(){
+            if(app.edit.sidepanel.data.open){
+              DexV2.id("JahiaGxtSearchTab").addClass("show-results");
+              DexV2.getCached("body").addClass("show-results");
+              app.edit.sidepanel.resizeSidePanel();
+            }
+          })
     			.onOpen(".x-grid3-row", function(value){
-    				if(app.edit.sidepanel.data.open){
-                        var isTreeEntry = DexV2.node(this).parent().hasClass("results-column");
+      				if(app.edit.sidepanel.data.open){
+                var isTreeEntry = DexV2.node(this).parent().hasClass("results-column");
 
-						if(DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open" && DexV2.getCached("body").getAttribute("data-INDIGO-SIDEPANEL-PINNED") != "true"){
-							app.edit.sidepanel.resizeSidePanel();
-						}
-
-    					if(isTreeEntry || 1 === 1){
-
-
-    						if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"){
-    							DexV2.id("JahiaGxtCategoryBrowseTab").addClass("show-results");
-
-    						} else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"){
-    							DexV2.id("JahiaGxtContentBrowseTab").addClass("show-results");
-
-    						} else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtSearchTab"){
-    							DexV2.id("JahiaGxtSearchTab").addClass("show-results");
-
-    						}  else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"){
-    							DexV2.id("JahiaGxtSearchTab").addClass("show-results");
-
+    						if(DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open" && DexV2.getCached("body").getAttribute("data-INDIGO-SIDEPANEL-PINNED") != "true"){
+    							app.edit.sidepanel.resizeSidePanel();
     						}
 
+                switch(app.edit.sidepanel.data.currentTab){
+                  case "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab":
+                    DexV2.id("JahiaGxtCategoryBrowseTab").addClass("show-results");
+                    break;
 
-    						DexV2.getCached("body").addClass("show-results");
+                  case "JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab":
+                    DexV2.id("JahiaGxtContentBrowseTab").addClass("show-results");
+                    break;
 
-    					}
+                  case "JahiaGxtSidePanelTabs__JahiaGxtSearchTab":
+                    DexV2.id("JahiaGxtSearchTab").addClass("show-results");
+                    break;
+
+                  case "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab":
+                    DexV2.id("JahiaGxtCategoryBrowseTab").addClass("show-results");
+                    break;
+
+                }
+
+                DexV2.getCached("body").addClass("show-results");
     				}
 
     			})

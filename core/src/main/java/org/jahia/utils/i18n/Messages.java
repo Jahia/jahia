@@ -205,7 +205,7 @@ public final class Messages {
      * Looks up the resource bundle key considering locale and specified bundle name.
      * 
      * @param bundle
-     *            the bundle name to perform the lookup
+     *            the bundle name to perform the lookup, must use "resources" prefix i. e. resources.JahiaServerSettings
      * @param key
      *            the key to perform lookup for
      * @param locale
@@ -222,7 +222,7 @@ public final class Messages {
      * Looks up the resource bundle key considering locale and specified bundle name. If not found the specified default value is returned.
      * 
      * @param bundle
-     *            the bundle name to perform the lookup
+     *            the bundle name to perform the lookup, must use "resources" prefix i. e. resources.JahiaServerSettings
      * @param key
      *            the key to perform lookup for
      * @param locale

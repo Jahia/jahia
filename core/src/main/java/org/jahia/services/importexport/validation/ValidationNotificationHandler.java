@@ -59,27 +59,22 @@ public class ValidationNotificationHandler {
 
     private static Logger logger = LoggerFactory.getLogger(ValidationNotificationHandler.class);
 
-    private Map<Object, Object> validationInfo;
-
-    public ValidationNotificationHandler(Map<Object, Object> validationInfo){
-        this.validationInfo = validationInfo;
-    }
-
     /**
-     * Send notification email to system administrator if import validation is failed
+     * Send notification email to system administrator if import validation failed
      *
+     * * @param siteInfo
      * @param errors
      */
-    public void notifyAdministratorWhenValidationFailed(String errors){
+    public static void notifyAdministratorWhenValidationFailed(Map<Object, Object> siteInfo, String errors){
 
-        String siteKey = (String)validationInfo.get("siteKey");
-        String importFile = (String)validationInfo.get("importFileName");
+        String siteKey = (String) siteInfo.get("siteKey");
+        String importFile = (String) siteInfo.get("importFileName");
 
-        String subject = "Jahia site import is failed";
+        String subject = "Site import failed";
 
         String text = String.format("The import file %s for the site %s has validation errors. " +
-                        "you could try to redo import after the error is fixed. " +
-                        "\n For more details of validation, please check the error logs on Jahia system host server. " +
+                        "you could try to redo import after the errors are fixed. " +
+                        "\n For more details about errors please check the error logs." +
                         "\n\n" +
                         "\n VALIDATION ERRORS:" +
                         "\n =====================================" +

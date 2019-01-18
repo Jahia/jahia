@@ -1,10 +1,13 @@
 package org.jahia.exceptions;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 import java.io.Serializable;
 
-public class JahiaSiteImportException extends Exception implements Serializable, IsSerializable {
+/**
+ * Thrown when there are errors during manual (via imports folder) site import
+ *
+ * @author alexanderkarmanov
+ */
+public class JahiaSiteImportException extends Exception implements Serializable {
 
     public JahiaSiteImportException() {
         super();

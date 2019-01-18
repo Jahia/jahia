@@ -44,6 +44,9 @@
 package org.jahia.test.services.search;
 
 import org.slf4j.Logger;
+
+import com.google.common.collect.ImmutableMap;
+
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -58,7 +61,6 @@ import org.jahia.services.search.SearchCriteria;
 import org.jahia.services.search.SearchService;
 import org.jahia.services.search.SearchCriteria.CommaSeparatedMultipleValue;
 import org.jahia.services.search.SearchCriteria.Term.MatchType;
-import org.jahia.settings.SettingsBean;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 
@@ -291,6 +293,66 @@ public class SimpleSearchTest extends JahiaTestCase {
 
         List<Hit<?>> hits = searchService.search(criteria, context).getResults();
         assertEquals("Unexpected number of search results for: " + criteria.toString(), 19 * 2, hits.size());
+    }
+
+    @Test
+    public void testExcludeFileReferences() throws Exception {
+        // Test cases for QA-9456
+        SearchService searchService = ServicesRegistry.getInstance()
+                .getSearchService();
+       RenderContext context = getContext();
+
+        SearchCriteria criteria = new SearchCriteria();
+
+        CommaSeparatedMultipleValue oneSite = new CommaSeparatedMultipleValue();
+        oneSite.setValue(FIRST_TESTSITE_NAME);
+
+        CommaSeparatedMultipleValue englishLang = new CommaSeparatedMultipleValue();
+        englishLang.setValue("en");
+
+        criteria.setSites(oneSite);
+        criteria.setLanguages(englishLang);
+        criteria.getTerms().get(0).setTerm("Building Bridges");
+        criteria.getTerms().get(0).setMatch(MatchType.ALL_WORDS);
+        criteria.getTerms().get(0).getFields().setSiteContent(true);
+        criteria.getTerms().get(0).getFields().setFiles(true);
+
+        // search in site content and files
+        verifyResults(searchService.search(criteria, context).getResults(), ImmutableMap.of("jnt:file", 1, "jnt:publication", 1));
+
+        // search in files only
+        criteria.getTerms().get(0).getFields().setSiteContent(false);
+        verifyResults(searchService.search(criteria, context).getResults(), ImmutableMap.of("jnt:file", 1));
+
+        // search in site content only (but considering file references)
+        criteria.getTerms().get(0).getFields().setSiteContent(true);
+        criteria.getTerms().get(0).getFields().setFiles(false);
+        verifyResults(searchService.search(criteria, context).getResults(), ImmutableMap.of("jnt:file", 1, "jnt:publication", 1));
+
+        // search in site content only (excluding file references)
+        criteria.getTerms().get(0).getFields().setSiteContent(true);
+        criteria.getTerms().get(0).getFields().setFiles(false);
+        criteria.setExcludeFileReferences(true);
+        verifyResults(searchService.search(criteria, context).getResults(), ImmutableMap.of("jnt:publication", 1));
+
+        // search in site content and file (excluding file references should have no influence here)
+        criteria.getTerms().get(0).getFields().setSiteContent(true);
+        criteria.getTerms().get(0).getFields().setFiles(true);
+        criteria.setExcludeFileReferences(true);
+        verifyResults(searchService.search(criteria, context).getResults(), ImmutableMap.of("jnt:file", 1, "jnt:publication", 1));
+    }
+
+    private static final void verifyResults(List<Hit<?>> hits, Map<String, Integer> expectedCountsByType) {
+        Map<String, Integer> countsByType = new HashMap<>();
+        for (Hit<?> hit : hits) {
+            if (countsByType.containsKey(hit.getType())) {
+                countsByType.put(hit.getType(), countsByType.get(hit.getType()).intValue() + 1);
+            } else {
+                countsByType.put(hit.getType(), 1);
+            }
+        }
+        
+        assertEquals("Expected result counts/types are not matched", expectedCountsByType, countsByType);
     }
 
     @AfterClass

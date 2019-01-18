@@ -282,23 +282,26 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                     && (node.isFile() || node.isNodeType(Constants.NT_FOLDER))) {
                 // if just site-search and no file-search, then skip the node unless it is referred
                 // by a node in the wanted language - unreferenced files are skipped
-                skipNode = !isFileSearch(criteria) ? true : skipNode;
-                for (PropertyIterator it = node.getWeakReferences(); it.hasNext(); ) {
-                    // if site-search and file-search, then skip the node unless it is referred
-                    // by a node in the wanted language - unreferenced files are not skipped
-                    skipNode = isFileSearch(criteria) ? true : skipNode;
-
-                    try {
-                        JCRNodeWrapper refNode = (JCRNodeWrapper) it
-                                .nextProperty().getParent();
-                        if (languages.contains(refNode.getLanguage())) {
-                            skipNode = false;
-                            break;
+                boolean isFileSearch = isFileSearch(criteria);
+                skipNode = !isFileSearch ? true : skipNode;
+                if (!criteria.isExcludeFileReferences()) {
+                    for (PropertyIterator it = node.getWeakReferences(); it.hasNext(); ) {
+                        // if site-search and file-search, then skip the node unless it is referred
+                        // by a node in the wanted language - unreferenced files are not skipped
+                        skipNode = isFileSearch ? true : skipNode;
+    
+                        try {
+                            JCRNodeWrapper refNode = (JCRNodeWrapper) it
+                                    .nextProperty().getParent();
+                            if (languages.contains(refNode.getLanguage())) {
+                                skipNode = false;
+                                break;
+                            }
+                        } catch (Exception e) {
+                            logger.debug(
+                                    "Error while trying to check for node language",
+                                    e);
                         }
-                    } catch (Exception e) {
-                        logger.debug(
-                                "Error while trying to check for node language",
-                                e);
                     }
                 }
             }
@@ -451,7 +454,11 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
             }
 
             if (isSiteSearch(params)) {
-                query.append("/*[@j:isHomePage='true' or fn:name() = 'files' or fn:name() = 'contents']");
+                if (params.isExcludeFileReferences() && !isFileSearch(params)) {
+                    query.append("/*[@j:isHomePage='true' or fn:name() = 'contents']");
+                } else {
+                    query.append("/*[@j:isHomePage='true' or fn:name() = 'files' or fn:name() = 'contents']");
+                }
             }
 
             query.append("//element(*,").append(getNodeType(params))

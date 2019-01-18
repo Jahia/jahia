@@ -1283,6 +1283,8 @@ public class SearchCriteria implements Serializable {
 
     private String createdBy;
 
+    private boolean excludeFileReferences;
+
     private Collection<BaseFacetDefinition> facetDefinitions;
 
     /**
@@ -1700,6 +1702,7 @@ public class SearchCriteria implements Serializable {
         int result = 1;
         result = prime * result + ((created == null) ? 0 : created.hashCode());
         result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
+        result = prime * result + (excludeFileReferences ? 1231 : 1237);
         result = prime * result + ((facetDefinitions == null) ? 0 : facetDefinitions.hashCode());
         result = prime * result + ((facets == null) ? 0 : facets.hashCode());
         result = prime * result + ((filePath == null) ? 0 : filePath.hashCode());
@@ -1741,6 +1744,9 @@ public class SearchCriteria implements Serializable {
                 return false;
         } else if (!createdBy.equals(other.createdBy))
             return false;
+        if (excludeFileReferences != other.excludeFileReferences) {
+            return false;
+        }
         if (facetDefinitions == null) {
             if (other.facetDefinitions != null)
                 return false;
@@ -1828,5 +1834,28 @@ public class SearchCriteria implements Serializable {
         } else if (!terms.equals(other.terms))
             return false;
         return true;
+    }
+
+    /**
+     * Indicates if file references in site content are excluded from search results. Note, please, that the handling of this flag is search
+     * provider specific. The default JCR provider considers this flag (including referenced files by default in search results). Some
+     * providers may completely ignore this setting and exclude file references in any case.
+     * 
+     * @return the excludeFileReferences <code>true</code>, if file references in site content are excluded from search results;
+     *         <code>false</code> otherwise
+     */
+    public boolean isExcludeFileReferences() {
+        return excludeFileReferences;
+    }
+
+    /**
+     * Instruct the search provider how to handle the file references in site content. Note, please, the handling of this flag is optional
+     * for a search provider. Default JCR search provider considers it, others may ignore it completely.
+     * 
+     * @param excludeFileReferences <code>true</code> to exclude file references in the content from search results; <code>false</code> - to
+     *            include them.
+     */
+    public void setExcludeFileReferences(boolean excludeFileReferences) {
+        this.excludeFileReferences = excludeFileReferences;
     }
 }

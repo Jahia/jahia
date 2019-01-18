@@ -67,7 +67,7 @@ public class ValidationNotificationHandler {
      */
     public static void notifyAdministratorWhenValidationFailed(Map<Object, Object> siteInfo, String errors){
 
-        String siteKey = (String) siteInfo.get("siteKey");
+        String siteKey = (String) siteInfo.get("sitekey");
         String importFile = (String) siteInfo.get("importFileName");
 
         String subject = "Site import failed";

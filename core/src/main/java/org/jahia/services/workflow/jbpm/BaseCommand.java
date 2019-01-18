@@ -92,7 +92,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.persistence.EntityManager;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -222,6 +221,9 @@ public abstract class BaseCommand<T> implements GenericCommand<T> {
 
         boolean success = false;
         try {
+            if (logger.isDebugEnabled()) {
+                logger.debug(toString());
+            }
             T r = execute();
             success = true;
             return r;
@@ -609,5 +611,9 @@ public abstract class BaseCommand<T> implements GenericCommand<T> {
         return historyWorkflows;
     }
 
+    @Override
+    public String toString() {
+        return String.format("Execute command of class %s", getClass().getName());
+    }
 
 }

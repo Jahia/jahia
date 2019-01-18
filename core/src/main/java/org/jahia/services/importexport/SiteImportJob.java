@@ -361,7 +361,8 @@ public class SiteImportJob extends BackgroundJob {
             if (message != null)  notifyUserOfError(siteInfo, message);
 
             List<String> neededModules = neededModules(siteInfo);
-            ValidationResults results = validateImport(siteInfo, neededModules);
+
+            ValidationResults results = validateImport(importsInfos, neededModules, Boolean.valueOf((String) siteInfo.get("islegacyimport")));
             StringBuilder builder = new StringBuilder();
             Locale locale = SettingsBean.getInstance().getDefaultLocale();
             List<String> memo = new ArrayList<>(); //Attempt to prevent showing duplicate entries. Are there any issues with it?
@@ -420,48 +421,51 @@ public class SiteImportJob extends BackgroundJob {
             }
         }
 
-        private ValidationResults validateImport(Map<Object, Object> siteInfo, List<String> neededModules) throws IOException {
+        private ValidationResults validateImport(List<Map<Object, Object>> importInfos, List<String> neededModules, Boolean isLegacyImport) throws IOException {
             ValidationResults results = new ValidationResults();
 
             if (noValidation()) return results;
 
-            File i = (File) siteInfo.get("importFile");
-            ZipEntry z;
-            ZipInputStream zis2 = i.isDirectory()
-                    ? new DirectoryZipInputStream(i)
-                    : new NoCloseZipInputStream(new BufferedInputStream(
-                    new FileInputStream(i)));
+            for (Map<Object, Object> infos : importInfos) {
+                File i = (File) infos.get("importFile");
+                ZipEntry z;
+                ZipInputStream zis2 = i.isDirectory()
+                        ? new DirectoryZipInputStream(i)
+                        : new NoCloseZipInputStream(new BufferedInputStream(
+                        new FileInputStream(i)));
 
-            try {
-                while ((z = zis2.getNextEntry()) != null) {
-                    final String name = z.getName().replace('\\', '/');
-                    if (name.contains(REPOSITORY_XML) && !name.contains("/")) {
-                        ValidationResults validationResults =
-                                ImportExportBaseService.getInstance()
-                                        .validateImportFile(
-                                                JCRSessionFactory
-                                                        .getInstance()
-                                                        .getCurrentUserSession(),
-                                                zis2,
-                                                "application/xml",
-                                                neededModules);
+                try {
+                    while ((z = zis2.getNextEntry()) != null) {
+                        final String name = z.getName().replace('\\', '/');
+                        if (!isLegacyImport && name.contains(REPOSITORY_XML) && !name.contains("/")) {
+                            ValidationResults validationResults =
+                                    ImportExportBaseService.getInstance()
+                                            .validateImportFile(
+                                                    JCRSessionFactory
+                                                            .getInstance()
+                                                            .getCurrentUserSession(),
+                                                    zis2,
+                                                    "application/xml",
+                                                    neededModules);
 
-                        for (ValidationResult r : validationResults.getResults()) {
-                            if (!r.isSuccessful()) {
-                                results.addResult(r);
+                            for (ValidationResult r : validationResults.getResults()) {
+                                if (!r.isSuccessful()) {
+                                    results.addResult(r);
+                                }
                             }
                         }
-                    }
 
-                }
-                zis2.closeEntry();
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            } finally {
-                if (zis2 instanceof NoCloseZipInputStream) {
-                    ((NoCloseZipInputStream) zis2).reallyClose();
+                    }
+                    zis2.closeEntry();
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                } finally {
+                    if (zis2 instanceof NoCloseZipInputStream) {
+                        ((NoCloseZipInputStream) zis2).reallyClose();
+                    }
                 }
             }
+
             return results;
         }
 
@@ -485,8 +489,8 @@ public class SiteImportJob extends BackgroundJob {
                     return Messages.get("resources.JahiaServerSettings", "serverSettings.manageWebProjects.siteKeyExists", locale);
                 }
 
-                String legacy = (String) siteInfo.get("islegacyimport");
-                if (legacy != null && legacy.equals("true") && (StringUtils.startsWithIgnoreCase(serverName, "http://")
+                Boolean isLegacy = Boolean.valueOf((String) siteInfo.get("islegacyimport"));
+                if (isLegacy && (StringUtils.startsWithIgnoreCase(serverName, "http://")
                         || StringUtils.startsWithIgnoreCase(serverName, "https://"))) {
                     serverName = StringUtils.substringAfter(serverName, "://");
                 }

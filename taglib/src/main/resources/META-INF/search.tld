@@ -274,6 +274,10 @@
         <path>/META-INF/tags/search/drillDownForm.tag</path>
     </tag-file>
     <tag-file>
+        <name>excludeFileReferences</name>
+        <path>/META-INF/tags/search/excludeFileReferences.tag</path>
+    </tag-file>
+    <tag-file>
         <name>nodeProperty</name>
         <path>/META-INF/tags/search/nodeProperty.tag</path>
     </tag-file>

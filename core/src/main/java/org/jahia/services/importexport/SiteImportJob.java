@@ -45,11 +45,10 @@ package org.jahia.services.importexport;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.exceptions.JahiaSiteImportException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.rules.Service;
@@ -120,14 +119,13 @@ public class SiteImportJob extends BackgroundJob {
             this.session = JCRSessionFactory.getInstance().getCurrentUserSession();
         }
 
-        public void execute() throws RepositoryException, GWTJahiaServiceException {
+        public void execute() throws RepositoryException, JahiaSiteImportException {
             StringTokenizer st = new StringTokenizer(name, "_");
 
             String type = st.nextToken();
             if (type.equals("siteImport")) {
                 try {
                     logger.info("Import site " + uri);
-                    //String sitename = st.nextToken() + "_" + st.nextToken();
 
                     if (!user.isRoot()) {
                         return;
@@ -144,7 +142,7 @@ public class SiteImportJob extends BackgroundJob {
                     processFileImport(prepareFileImports());
                 } catch (IOException | JahiaException | ServletException e) {
                     logger.error(e.getMessage(), e);
-                } catch (GWTJahiaServiceException e) {
+                } catch (JahiaSiteImportException e) {
                     logger.error("Site import failure, see logs for details");
                     throw e;
                 }
@@ -300,7 +298,7 @@ public class SiteImportJob extends BackgroundJob {
         }
 
         private void processFileImport(List<Map<Object, Object>> importsInfos)
-                throws IOException, RepositoryException, ServletException, JahiaException, GWTJahiaServiceException {
+                throws IOException, RepositoryException, ServletException, JahiaException, JahiaSiteImportException {
 
             handleValidation(importsInfos);
 
@@ -353,7 +351,7 @@ public class SiteImportJob extends BackgroundJob {
             }
         }
 
-        private void handleValidation(List<Map<Object, Object>> importsInfos) throws IOException, GWTJahiaServiceException {
+        private void handleValidation(List<Map<Object, Object>> importsInfos) throws IOException, JahiaSiteImportException {
             Map<Object, Object> siteInfo = getSiteInfo(importsInfos);
 
             if (siteInfo.isEmpty()) notifyUserOfError(siteInfo, "No site found in the import file");
@@ -365,7 +363,7 @@ public class SiteImportJob extends BackgroundJob {
             List<String> neededModules = neededModules(siteInfo);
             ValidationResults results = validateImport(siteInfo, neededModules);
             StringBuilder builder = new StringBuilder();
-            Locale locale = Locale.getDefault();
+            Locale locale = SettingsBean.getInstance().getDefaultLocale();
             List<String> memo = new ArrayList<>(); //Attempt to prevent showing duplicate entries. Are there any issues with it?
             for (ValidationResult result : results.getResults()) {
                 String validationType = result.getClass().getName();
@@ -468,7 +466,7 @@ public class SiteImportJob extends BackgroundJob {
         }
 
         private String validateSite(Map<Object, Object> siteInfo) {
-            Locale locale = LocaleUtils.toLocale((String) siteInfo.get("defaultLanguage"));
+            Locale locale = SettingsBean.getInstance().getDefaultLocale();
             String siteTitle = (String) siteInfo.get("sitetitle");
             String siteKey = (String) siteInfo.get("sitekey");
             String serverName = (String) siteInfo.get("siteservername");
@@ -561,9 +559,9 @@ public class SiteImportJob extends BackgroundJob {
             }
         }
 
-        private void notifyUserOfError(Map<Object, Object> siteInfo, String message) throws GWTJahiaServiceException {
+        private void notifyUserOfError(Map<Object, Object> siteInfo, String message) throws JahiaSiteImportException {
             ValidationNotificationHandler.notifyAdministratorWhenValidationFailed(siteInfo, message);
-            throw new GWTJahiaServiceException(message);
+            throw new JahiaSiteImportException(message);
         }
 
         abstract void importSiteZip() throws RepositoryException, JahiaException, IOException;

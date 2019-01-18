@@ -79,7 +79,7 @@ public class ValidationNotificationHandler {
                         "\n VALIDATION ERRORS:" +
                         "\n =====================================" +
                         "\n %s",
-                importFile, siteKey, errors);
+                importFile, siteKey, prettifyErrors(errors));
 
         MailService mailService = ServicesRegistry.getInstance().getMailService();
         if(mailService!=null && mailService.isEnabled()){
@@ -89,6 +89,23 @@ public class ValidationNotificationHandler {
             logger.warn("Mail service is disabled now, notification for validation failure is ignored");
         }
 
+    }
+
+    /**
+     *
+     * @param errors
+     * @return
+     */
+    private static String prettifyErrors(final String errors){
+        String SPACES = "    ";
+        String prettyErrors = errors
+                .replaceAll("\\{", "{\n"+SPACES)
+                .replaceAll("\\[", "[\n"+SPACES+SPACES)
+                .replaceAll("\\]", "\n"+SPACES+"]")
+                .replaceAll("\\}", "\n}\n")
+                .replaceAll(",", ",\n"+SPACES+SPACES);
+
+        return prettyErrors;
     }
 
 }

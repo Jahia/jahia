@@ -62,7 +62,7 @@ public class ValidationNotificationHandler {
     /**
      * Send notification email to system administrator if import validation failed
      *
-     * * @param siteInfo
+     * @param siteInfo
      * @param errors
      */
     public static void notifyAdministratorWhenValidationFailed(Map<Object, Object> siteInfo, String errors){
@@ -92,20 +92,19 @@ public class ValidationNotificationHandler {
     }
 
     /**
+     * Add line breaks and spaces to error message
      *
      * @param errors
-     * @return
+     * @return String
      */
     private static String prettifyErrors(final String errors){
-        String SPACES = "    ";
-        String prettyErrors = errors
-                .replaceAll("\\{", "{\n"+SPACES)
-                .replaceAll("\\[", "[\n"+SPACES+SPACES)
-                .replaceAll("\\]", "\n"+SPACES+"]")
+        String spaces = "    ";
+        return errors
+                .replaceAll("\\{", "{\n"+spaces)
+                .replaceAll("\\[", "[\n"+spaces+spaces)
+                .replaceAll("\\]", "\n"+spaces+"]")
                 .replaceAll("\\}", "\n}\n")
-                .replaceAll(",", ",\n"+SPACES+SPACES);
-
-        return prettyErrors;
+                .replaceAll(",", ",\n"+spaces+spaces);
     }
 
 }

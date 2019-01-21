@@ -76,7 +76,7 @@ public class WorkInProgressButtonItem implements ButtonItem {
     public BoxComponent create(final AbstractContentEngine engine) {
 
         // handle default value
-        if (checkedByDefault) {
+        if (engine instanceof CreateContentEngine && checkedByDefault) {
             if (JahiaGWTParameters.getSiteLanguages().size() == 1) {
                 engine.setWipStatus(GWTJahiaNode.WipStatus.LANGUAGES);
                 Set<String> langs = new HashSet<String>();
@@ -85,6 +85,9 @@ public class WorkInProgressButtonItem implements ButtonItem {
             } else {
                 engine.setWipStatus(GWTJahiaNode.WipStatus.ALL_CONTENT);
             }
+        }
+        if (engine instanceof EditContentEngine) {
+            ((EditContentEngine) engine).setWorkInProgressCheckedByDefault(checkedByDefault);
         }
 
         if (JahiaGWTParameters.getSiteLanguages().size() > 1) {
@@ -105,9 +108,6 @@ public class WorkInProgressButtonItem implements ButtonItem {
         } else {
 
             final CheckBoxWip checkbox = new CheckBoxWip();
-            if (checkedByDefault) {
-                checkbox.setValue(true);
-            }
 
             checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
 

@@ -70,6 +70,7 @@ import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -86,6 +87,7 @@ public class EditContentEngine extends AbstractContentEngine {
     private Map<String, GWTJahiaGetPropertiesResult> langCodeGWTJahiaGetPropertiesResultMap =
             new HashMap<String, GWTJahiaGetPropertiesResult>();
     private boolean hasOrderableChildNodes;
+    private boolean workInProgressCheckedByDefault = false;
 
     /**
      * Initializes an instance of this class.
@@ -269,6 +271,7 @@ public class EditContentEngine extends AbstractContentEngine {
                     container.getPanel().setHeadingHtml(heading);
                 }
 
+                boolean doUpdateWipControls = false;
                 if (node.getWorkInProgressStatus() != null) {
                     WipStatus status = WipStatus.valueOf(node.getWorkInProgressStatus());
                     // set languages
@@ -284,9 +287,25 @@ public class EditContentEngine extends AbstractContentEngine {
                     // if no language set and the state is LANGUAGES, we change it to DISABLED
                     wipStatus = status == WipStatus.LANGUAGES && workInProgressLanguages.isEmpty() ? WipStatus.DISABLED : status;
 
+                    doUpdateWipControls = true;
+                }
+                if (workInProgressCheckedByDefault && WipStatus.DISABLED == wipStatus) {
+                    // in case the WIP is forced by the flag and current WIP status is DISABLED, we set it
+                    if (JahiaGWTParameters.getSiteLanguages().size() == 1) {
+                        setWipStatus(WipStatus.LANGUAGES);
+                        workInProgressLanguages = new HashSet<String>();
+                        workInProgressLanguages.add(JahiaGWTParameters.getSiteLanguages().get(0).getLanguage());
+                    } else {
+                        setWipStatus(WipStatus.ALL_CONTENT);
+                    }
+                    doUpdateWipControls = true;
+                }
+
+                if (doUpdateWipControls) {
                     // update button
                     updateWipControls();
                 }
+
                 setAvailableLanguages(result.getAvailabledLanguages());
 
                 // set selectedNode as processed
@@ -361,5 +380,12 @@ public class EditContentEngine extends AbstractContentEngine {
     @Override
     public String toString() {
         return node.getPath();
+    }
+
+    /**
+     * @param workInProgressCheckedByDefault the workInProgressCheckedByDefault to set
+     */
+    public void setWorkInProgressCheckedByDefault(boolean workInProgressCheckedByDefault) {
+        this.workInProgressCheckedByDefault = workInProgressCheckedByDefault;
     }
 }

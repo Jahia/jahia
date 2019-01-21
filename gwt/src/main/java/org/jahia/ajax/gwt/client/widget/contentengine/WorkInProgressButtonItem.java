@@ -51,8 +51,6 @@ import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.Radio;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -87,6 +85,9 @@ public class WorkInProgressButtonItem implements ButtonItem {
             } else {
                 engine.setWipStatus(GWTJahiaNode.WipStatus.ALL_CONTENT);
             }
+        }
+        if (engine instanceof EditContentEngine) {
+            ((EditContentEngine) engine).setWorkInProgressCheckedByDefault(checkedByDefault);
         }
 
         if (JahiaGWTParameters.getSiteLanguages().size() > 1) {

@@ -352,79 +352,79 @@ public class SiteImportJob extends BackgroundJob {
         }
 
         private void handleValidation(List<Map<Object, Object>> importsInfos) throws IOException, JahiaSiteImportException {
-            Map<Object, Object> siteInfo = getSiteInfo(importsInfos);
+            if (!noValidation()) {
+                Map<Object, Object> siteInfo = getSiteInfo(importsInfos);
 
-            if (siteInfo.isEmpty()) notifyUserOfError(siteInfo, "No site found in the import file");
+                if (siteInfo.isEmpty()) notifyUserOfError(siteInfo, "No site found in the import file");
 
-            String message = validateSite(siteInfo);
+                String message = validateSite(siteInfo);
 
-            if (message != null)  notifyUserOfError(siteInfo, message);
+                if (message != null)  notifyUserOfError(siteInfo, message);
 
-            List<String> neededModules = neededModules(siteInfo);
+                List<String> neededModules = neededModules(siteInfo);
 
-            ValidationResults results = validateImport(importsInfos, neededModules, Boolean.valueOf((String) siteInfo.get("islegacyimport")));
-            StringBuilder builder = new StringBuilder();
-            Locale locale = SettingsBean.getInstance().getDefaultLocale();
-            List<String> memo = new ArrayList<>(); //Attempt to prevent showing duplicate entries. Are there any issues with it?
-            for (ValidationResult result : results.getResults()) {
-                String validationType = result.getClass().getName();
-                if (!result.isSuccessful() && !memo.contains(validationType)) {
-                    memo.add(validationType);
-                    if (result instanceof MissingModulesValidationResult) {
-                        memo.add(MissingModulesValidationResult.class.getName());
-                        importErrorMessageLineStepper(builder);
-                        MissingModulesValidationResult missingModule = ((MissingModulesValidationResult) result);
-                        if (missingModule.isTargetTemplateSetPresent()) {
-                            builder.append(Messages.getInternalWithArguments("failure.import.missingTemplateSet", locale, missingModule.getTargetTemplateSet()));
-                        }
-                        if (!missingModule.getMissingModules().isEmpty()) {
-                            builder.append(Messages.getInternalWithArguments("failure.import.missingModules", locale, missingModule.getMissingModules().size())).append(missingModule.getMissingModules());
-                        }
-                    } else if (result instanceof MissingNodetypesValidationResult) {
-                        importErrorMessageLineStepper(builder);
-                        builder.append(Messages.getInternalWithArguments("failure.import.missingNodetypes", locale, ((MissingNodetypesValidationResult) result).getMissingNodetypes(), ((MissingNodetypesValidationResult) result).getMissingMixins()));
-                    } else if (result instanceof MissingTemplatesValidationResult) {
-                        importErrorMessageLineStepper(builder);
-                        MissingTemplatesValidationResult missingTemplates = ((MissingTemplatesValidationResult) result);
-                        builder.append(Messages.getInternalWithArguments("failure.import.missingTemplates", locale, missingTemplates.getMissingTemplates().size()))
-                                .append(missingTemplates.getMissingTemplates().keySet());
-                    } else if (result instanceof MissingPortletsValidationResult) {
-                        importErrorMessageLineStepper(builder);
-                        MissingPortletsValidationResult missingPortlets = ((MissingPortletsValidationResult) result);
-                        builder.append(Messages.getInternalWithArguments("failure.import.missingPortlets", locale, missingPortlets.getMissingPortlets().size()))
-                                .append(missingPortlets.getMissingPortlets());
-                    } else if (result instanceof ProviderAvailabilityValidatorResult) {
-                        importErrorMessageLineStepper(builder);
-                        ProviderAvailabilityValidatorResult providerAvailabilityValidatorResult = ((ProviderAvailabilityValidatorResult) result);
-                        builder.append(Messages.getInternalWithArguments("failure.import.unavailableProviders", locale, providerAvailabilityValidatorResult.getUnavailableProviders().size()))
-                                .append(providerAvailabilityValidatorResult.getUnavailableProviders());
-                    } else if (result instanceof ConstraintsValidatorResult) {
-                        ConstraintsValidatorResult constraintsValidatorResult = (ConstraintsValidatorResult) result;
-
-                        // missing properties
-                        importErrorMissingPropertiesAppender(builder, constraintsValidatorResult.getMissingMandatoryProperties(), locale);
-                        importErrorMissingPropertiesAppender(builder, constraintsValidatorResult.getMissingMandatoryI18NProperties(), locale);
-
-                        // other constraint validations
-                        if (constraintsValidatorResult.getOtherConstraintViolations().size() > 0) {
+                ValidationResults results = validateImport(importsInfos, neededModules, Boolean.valueOf((String) siteInfo.get("islegacyimport")));
+                StringBuilder builder = new StringBuilder();
+                Locale locale = SettingsBean.getInstance().getDefaultLocale();
+                List<String> memo = new ArrayList<>(); //Attempt to prevent showing duplicate entries. Are there any issues with it?
+                for (ValidationResult result : results.getResults()) {
+                    String validationType = result.getClass().getName();
+                    if (!result.isSuccessful() && !memo.contains(validationType)) {
+                        memo.add(validationType);
+                        if (result instanceof MissingModulesValidationResult) {
+                            memo.add(MissingModulesValidationResult.class.getName());
                             importErrorMessageLineStepper(builder);
-                            builder.append(Messages.getInternalWithArguments("failure.import.constraintViolation", locale, constraintsValidatorResult.getOtherConstraintViolations().size()))
-                                    .append(constraintsValidatorResult.getOtherConstraintViolations().keySet());
+                            MissingModulesValidationResult missingModule = ((MissingModulesValidationResult) result);
+                            if (missingModule.isTargetTemplateSetPresent()) {
+                                builder.append(Messages.getInternalWithArguments("failure.import.missingTemplateSet", locale, missingModule.getTargetTemplateSet()));
+                            }
+                            if (!missingModule.getMissingModules().isEmpty()) {
+                                builder.append(Messages.getInternalWithArguments("failure.import.missingModules", locale, missingModule.getMissingModules().size())).append(missingModule.getMissingModules());
+                            }
+                        } else if (result instanceof MissingNodetypesValidationResult) {
+                            importErrorMessageLineStepper(builder);
+                            builder.append(Messages.getInternalWithArguments("failure.import.missingNodetypes", locale, ((MissingNodetypesValidationResult) result).getMissingNodetypes(), ((MissingNodetypesValidationResult) result).getMissingMixins()));
+                        } else if (result instanceof MissingTemplatesValidationResult) {
+                            importErrorMessageLineStepper(builder);
+                            MissingTemplatesValidationResult missingTemplates = ((MissingTemplatesValidationResult) result);
+                            builder.append(Messages.getInternalWithArguments("failure.import.missingTemplates", locale, missingTemplates.getMissingTemplates().size()))
+                                    .append(missingTemplates.getMissingTemplates().keySet());
+                        } else if (result instanceof MissingPortletsValidationResult) {
+                            importErrorMessageLineStepper(builder);
+                            MissingPortletsValidationResult missingPortlets = ((MissingPortletsValidationResult) result);
+                            builder.append(Messages.getInternalWithArguments("failure.import.missingPortlets", locale, missingPortlets.getMissingPortlets().size()))
+                                    .append(missingPortlets.getMissingPortlets());
+                        } else if (result instanceof ProviderAvailabilityValidatorResult) {
+                            importErrorMessageLineStepper(builder);
+                            ProviderAvailabilityValidatorResult providerAvailabilityValidatorResult = ((ProviderAvailabilityValidatorResult) result);
+                            builder.append(Messages.getInternalWithArguments("failure.import.unavailableProviders", locale, providerAvailabilityValidatorResult.getUnavailableProviders().size()))
+                                    .append(providerAvailabilityValidatorResult.getUnavailableProviders());
+                        } else if (result instanceof ConstraintsValidatorResult) {
+                            ConstraintsValidatorResult constraintsValidatorResult = (ConstraintsValidatorResult) result;
+
+                            // missing properties
+                            importErrorMissingPropertiesAppender(builder, constraintsValidatorResult.getMissingMandatoryProperties(), locale);
+                            importErrorMissingPropertiesAppender(builder, constraintsValidatorResult.getMissingMandatoryI18NProperties(), locale);
+
+                            // other constraint validations
+                            if (constraintsValidatorResult.getOtherConstraintViolations().size() > 0) {
+                                importErrorMessageLineStepper(builder);
+                                builder.append(Messages.getInternalWithArguments("failure.import.constraintViolation", locale, constraintsValidatorResult.getOtherConstraintViolations().size()))
+                                        .append(constraintsValidatorResult.getOtherConstraintViolations().keySet());
+                            }
+                            importErrorMessageLineStepper(builder);
                         }
-                        importErrorMessageLineStepper(builder);
                     }
                 }
-            }
 
-            if (builder.length() != 0) {
-                notifyUserOfError(siteInfo, builder.toString());
-            }
+                if (builder.length() != 0) {
+                    notifyUserOfError(siteInfo, builder.toString());
+                }
+            };
         }
 
         private ValidationResults validateImport(List<Map<Object, Object>> importInfos, List<String> neededModules, Boolean isLegacyImport) throws IOException {
             ValidationResults results = new ValidationResults();
-
-            if (noValidation()) return results;
 
             for (Map<Object, Object> infos : importInfos) {
                 File i = (File) infos.get("importFile");

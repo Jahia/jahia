@@ -28,7 +28,7 @@
         GNU General Public License for more details.
 
         You should have received a copy of the GNU General Public License
-        along with this program. If not, see <http://www.gnu.org/licenses/>.
+        along with this program. If not, see <http://www.gnu.org/licenses />.
 
 
         2/ JSEL - Commercial and Supported Versions of the program
@@ -59,7 +59,7 @@
     <scm>
         <connection>scm:dummy:uri</connection>
         <developerConnection>scm:dummy:uri</developerConnection>
-      <tag>HEAD</tag>
+      <tag>JAHIA_7_3_0_1_RC</tag>
   </scm>
 
     <repositories>
@@ -184,10 +184,10 @@
                                 </copy>
 
                                 <concat destfile="${project.build.directory}/classes/WEB-INF/var/db/sql/schema/derby/01-create-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${project.basedir}/../../war/src/data/resources/db/sql/schema/derby" includes="01-create-*" excludes="01-create-*-index.sql,01-create-*-triggers.sql"/>
+                                    <fileset dir="${project.basedir}/../../war/src/data/resources/db/sql/schema/derby" includes="01-create-*" excludes="01-create-*-index.sql,01-create-*-triggers.sql" />
                                 </concat>
                                 <concat destfile="${project.build.directory}/classes/WEB-INF/var/db/sql/schema/derby/01-create-jahia-core-schema.sql" append="yes" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${project.basedir}/../../war/src/data/resources/db/sql/schema/derby" includes="01-create-*-index.sql,01-create-*-triggers.sql"/>
+                                    <fileset dir="${project.basedir}/../../war/src/data/resources/db/sql/schema/derby" includes="01-create-*-index.sql,01-create-*-triggers.sql" />
                                 </concat>
 
                                 <replace file="${project.build.directory}/classes/WEB-INF/var/db/derby_embedded.script" token="{hibernateDialect.derby}" value="hibernateDialect.derby" />

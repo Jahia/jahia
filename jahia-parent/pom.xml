@@ -82,7 +82,7 @@
         <pluto.version>2.0.2</pluto.version>
         <spring.version>3.2.13.RELEASE</spring.version>
         <springwebflow-version>2.4.1.RELEASE</springwebflow-version>
-        <jackrabbit.version>2.4.5-jahia16</jackrabbit.version>
+        <jackrabbit.version>2.4.5-jahia17-SNAPSHOT</jackrabbit.version>
         <lucene.version>3.0.3</lucene.version>
         <jbpm.version>6.0.0.Final</jbpm.version>
         <jbpm.version.jahia>${jbpm.version}-jahia</jbpm.version.jahia>
@@ -91,7 +91,8 @@
         <hibernate.core.version>4.2.7.SP1-jahia1</hibernate.core.version>
         <hibernate.validator.version>5.0.1.Final</hibernate.validator.version>
         <camel.version>2.12.5</camel.version>
-        <gwt.version>2.5.1</gwt.version>
+        <gwt.version.base>2.5.1</gwt.version.base>
+        <gwt.version>${gwt.version.base}-jahia1</gwt.version>
         <!--Atmosphere javascript is defined as a static resource in Jahia and has to be update manually-->
         <atmosphere.version>2.3.1-jahia2</atmosphere.version>
         <atmosphere.gwt.version>2.3.0</atmosphere.gwt.version>

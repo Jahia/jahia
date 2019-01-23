@@ -148,12 +148,6 @@
 
         <dependency>
             <groupId>org.jahia.configuration</groupId>
-            <artifactId>osgi-tools</artifactId>
-            <version>${jahia.plugin.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jahia.configuration</groupId>
             <artifactId>migrators</artifactId>
             <version>${jahia.plugin.version}</version>
         </dependency>

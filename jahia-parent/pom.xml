@@ -83,6 +83,7 @@
         <spring.version>3.2.13.RELEASE</spring.version>
         <springwebflow-version>2.4.1.RELEASE</springwebflow-version>
         <jackrabbit.version>2.4.5-jahia17-SNAPSHOT</jackrabbit.version>
+        <jackson.osgi.version>2.9.8</jackson.osgi.version>
         <lucene.version>3.0.3</lucene.version>
         <jbpm.version>6.0.0.Final</jbpm.version>
         <jbpm.version.jahia>${jbpm.version}-jahia</jbpm.version.jahia>

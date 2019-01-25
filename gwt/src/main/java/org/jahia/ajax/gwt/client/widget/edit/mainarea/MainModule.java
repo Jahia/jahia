@@ -55,9 +55,7 @@ import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JsArrayString;
-import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.*;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.dom.client.NodeList;
@@ -617,6 +615,20 @@ public class MainModule extends Module {
         window.show();
     }
 
+    public static void deleteContents(JsArray objects, boolean skipRefreshOnDelete, boolean deletePermanently) {
+        EditLinker editLinker = getInstance().getEditLinker();
+        LinkerSelectionContext selectionContext = editLinker.getSelectionContext();
+        List<GWTJahiaNode> nodes = getGwtJahiaNodes(objects);
+        if (nodes.size() > 0) {
+            selectionContext.setMainNode(nodes.get(0));
+            selectionContext.setSelectedNodes(nodes);
+            selectionContext.refresh(LinkerSelectionContext.SELECTED_NODE_ONLY);
+
+            DeleteItemWindow window = new DeleteItemWindow(editLinker, selectionContext, deletePermanently, skipRefreshOnDelete, JahiaGWTParameters.getBaseEditUrl());
+            window.show();
+        }
+    }
+
     public static void undeleteContent(final String uuid, final String path, String displayName, final String nodeName) {
 
         String message = Messages.getWithArgs(
@@ -641,6 +653,41 @@ public class MainModule extends Module {
                         @Override
                         public void onSuccess(Object result) {
                             ContentHelper.sendContentModificationEvent(uuid, path, nodeName, "update", null);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    public static void undeleteContents(JsArray objects) {
+        final List<GWTJahiaNode> nodes = getGwtJahiaNodes(objects);
+
+        String message = Messages.getWithArgs(
+                "message.undelete.multiple.confirm",
+                "Do you really want to undelete the {0} selected resources?",
+                new String[] { String.valueOf(nodes.size()) });
+        final List<String> paths = new ArrayList<String>();
+        for (GWTJahiaNode node : nodes) {
+            paths.add(node.getPath());
+        }
+        MessageBox.confirm(Messages.get("label.information", "Information"), message, new Listener<MessageBoxEvent>() {
+            @Override
+            public void handleEvent(MessageBoxEvent event) {
+                if (event.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.YES)) {
+                    JahiaContentManagementService.App.getInstance().undeletePaths(paths, new BaseAsyncCallback<Object>() {
+
+                        @Override
+                        public void onApplicationFailure(Throwable throwable) {
+                            Log.error(throwable.getMessage(), throwable);
+                            MessageBox.alert(Messages.get("label.error", "Error"), throwable.getMessage(), null);
+                        }
+
+                        @Override
+                        public void onSuccess(Object result) {
+                            for (GWTJahiaNode node : nodes) {
+                                ContentHelper.sendContentModificationEvent(node.getUUID(), node.getPath(), node.getName(), "update", null);
+                            }
                         }
                     });
                 }
@@ -707,6 +754,11 @@ public class MainModule extends Module {
         new WorkflowDashboardEngine(getInstance().getEditLinker()).show();
     }
 
+    private static GWTJahiaNode getGwtJahiaNode(JavaScriptObject object) {
+        JavaScripObjectWrapper obj = new JavaScripObjectWrapper(object);
+        return getGwtJahiaNode(obj.getString("uuid"), obj.getString("path"), obj.getString("displayName"), (JsArrayString) obj.get("nodeTypes"), (JsArrayString) obj.get("inheritedNodeTypes"));
+    }
+
     private static GWTJahiaNode getGwtJahiaNode(String uuid, String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes) {
         if (displayName == null) {
             List<Module> modules = ModuleHelper.getModulesByPath().get(path);
@@ -728,6 +780,14 @@ public class MainModule extends Module {
         node.setInheritedNodeTypes(inheritedTypes);
         node.setFile(types.contains("nt:file") || inheritedTypes.contains("nt:file"));
         return node;
+    }
+
+    private static List<GWTJahiaNode> getGwtJahiaNodes(JsArray objects) {
+        List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
+        for (int i = 0; i < objects.length(); i++) {
+            nodes.add(getGwtJahiaNode(objects.get(i)));
+        }
+        return nodes;
     }
 
     private static List<String> convertArray(JsArrayString jsArrayString) {
@@ -1439,8 +1499,14 @@ public class MainModule extends Module {
         nsAuthoringApi.deleteContent = $wnd.deleteContent = function (uuid, path, displayName, types, inheritedTypes, skipRefreshOnDelete, deletePermanently) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::deleteContent(*)(uuid, path, displayName, types, inheritedTypes, skipRefreshOnDelete, deletePermanently);
         };
+        nsAuthoringApi.deleteContents = $wnd.deleteContents = function (objects, skipRefreshOnDelete, deletePermanently) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::deleteContents(*)(objects, skipRefreshOnDelete, deletePermanently);
+        };
         nsAuthoringApi.undeleteContent = $wnd.undeleteContent = function (uuid, path, displayName, nodeName) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::undeleteContent(*)(uuid, path, displayName, nodeName);
+        };
+        nsAuthoringApi.undeleteContents = $wnd.undeleteContents = function (objects) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::undeleteContents(*)(objects);
         };
         nsAuthoringApi.disableGlobalSelection = $wnd.disableGlobalSelection = function (value) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::globalSelectionDisabled = value;

@@ -55,6 +55,10 @@
     <name>Jahia WAR</name>
     <packaging>war</packaging>
 
+    <properties>
+        <felix.framework.version>5.4.0-jahia1-SNAPSHOT</felix.framework.version>
+    </properties>
+
     <profiles>
         <profile>
             <id>eclipse-integration</id>
@@ -570,7 +574,7 @@
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${project.build.directory}/jahia/WEB-INF</outputDirectory>
                                     <includes>apache-karaf-${karaf.version}/data/**,apache-karaf-${karaf.version}/deploy,apache-karaf-${karaf.version}/etc/**,apache-karaf-${karaf.version}/system/**</includes>
-                                    <excludes>apache-karaf-${karaf.version}/lib/org*,**/demos/**,apache-karaf-${karaf.version}/etc/config.properties,**/README, **/org.eclipse.osgi-*.jar, **/org.apache.karaf.wrapper.core-*.jar, **/org/apache/felix/org.apache.felix.fileinstall/**, **/${karaf.version}/org.apache.karaf.jaas.config-${karaf.version}.jar</excludes>
+                                    <excludes>apache-karaf-${karaf.version}/lib/org*,**/demos/**,apache-karaf-${karaf.version}/etc/config.properties,**/README, **/org.eclipse.osgi-*.jar, **/org.apache.karaf.wrapper.core-*.jar, **/org/apache/felix/org.apache.felix.fileinstall/**, **/org/apache/felix/org.apache.felix.framework/**, **/${karaf.version}/org.apache.karaf.jaas.config-${karaf.version}.jar</excludes>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
@@ -582,6 +586,7 @@
                             <goal>copy</goal>
                         </goals>
                         <configuration>
+                            <useBaseVersion>true</useBaseVersion>
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.jahia.bundles</groupId>
@@ -594,6 +599,12 @@
                                     <artifactId>org.apache.karaf.jaas.config</artifactId>
                                     <version>${karaf.jaas.config.version}</version>
                                     <outputDirectory>${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}/system/org/apache/karaf/jaas/org.apache.karaf.jaas.config/${karaf.jaas.config.version}</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>org.apache.felix.framework</artifactId>
+                                    <version>${felix.framework.version}</version>
+                                    <outputDirectory>${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}/system/org/apache/felix/org.apache.felix.framework/${felix.framework.version}</outputDirectory>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>

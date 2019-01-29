@@ -311,6 +311,13 @@ div.engine-window {
 			background: none;
 			margin-left: 316px;
 
+			> .x-component {
+				width: 100% !important;
+				> .x-border {
+					width: 100% !important;
+				}
+			}
+
 			> .x-panel-mc {
 				// Default tab content window
 

@@ -146,7 +146,7 @@ public class CKEditor extends Component {
         if (isLoaded) {
             return getCKData();
         }
-        Log.error("cKeditor is not yet loaded. getData() returns null value");
+        Log.warn("cKeditor is not yet loaded. getData() returns null value");
         return null;
     }
     

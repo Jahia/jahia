@@ -98,8 +98,8 @@ public class Notifications extends JahiaMultiActionController {
             if (!MailService.isValidEmailAddress(to, true)) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.getWriter().append(
-                        Messages.getInternal(
-                                "org.jahia.admin.JahiaDisplayMessage.enterValidEmailAdmin.label",
+                        Messages.get("resources.JahiaServerSettings",
+                                "serverSettings.mailServerSettings.errors.email.to",
                                 locale, "Please provide a valid administrator e-mail address"));
                 return;
             }
@@ -107,7 +107,7 @@ public class Notifications extends JahiaMultiActionController {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.getWriter().append(
                         Messages.get("resources.JahiaServerSettings",
-                                "org.jahia.admin.JahiaDisplayMessage.enterValidEmailFrom.label",
+                                "serverSettings.mailServerSettings.errors.email.from",
                                 locale, "Please provide a valid sender e-mail address"));
                 return;
             }

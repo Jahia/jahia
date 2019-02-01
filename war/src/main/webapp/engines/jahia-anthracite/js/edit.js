@@ -3650,7 +3650,7 @@ if (!Element.prototype.matches) {
                 app.edit.resizeLanguageInput();
 
                 if (DexV2.id('JahiaGxtSidePanelTabs').exists()) {
-                    DexV2.id('JahiaGxtSidePanelTabs').nodes[0].style.setProperty('width', '60px', 'important');
+                    DexV2.id('JahiaGxtSidePanelTabs').nodes[0].style.setProperty('width', '360px', 'important');
                     DexV2.getCached('body').setAttribute('data-indigo-gwt-side-panel', '');
                 }
             },

@@ -769,7 +769,6 @@ if (!Element.prototype.matches) {
 
         onMutation: function (mutationType, target, callback, parameters) {
             var selector = this.selector;
-            var parentNodes = this.nodes;
             var matchType = function (target) {
                 // This needs updating to cater for complex selectors.
                 var result;
@@ -814,7 +813,7 @@ if (!Element.prototype.matches) {
             if (!mutationObservers[this.selector]) {
                 mutationObservers[this.selector] = {
                     observer: new MutationObserver(function (mutations) {
-                        DOMMutationCallback(mutations, selector, parentNodes);
+                        DOMMutationCallback(mutations, selector);
                     }),
                     callbacks: {}
                 };
@@ -1677,8 +1676,8 @@ if (!Element.prototype.matches) {
                 app.dev.log('::: APP ::: THEME ::: ONTOGGLE');
                 // Toggle the UI Theme by changing the body attribute accordingly.
                 /* The button firing this event is actually a pseudo element atached to a table.
-	            // The tables CSS has been set to ignore all pointer events EXCEPT the pseudo element who accepts pointer events.
-	            // This allows us to capture a click on the pseudo element, but we have to check that it a child of the table want the one that was clicked */
+                // The tables CSS has been set to ignore all pointer events EXCEPT the pseudo element who accepts pointer events.
+                // This allows us to capture a click on the pseudo element, but we have to check that it a child of the table want the one that was clicked */
                 if (DexV2.node(e.target).hasClass('x-toolbar-ct')) {
                     app.dev.log('CLICKED THEME BUTTON');
                     if (app.theme.data.skin == 'dark') {

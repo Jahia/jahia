@@ -46,6 +46,7 @@ package org.jahia.bin;
 import org.jahia.api.Constants;
 import org.jahia.services.mail.MailService;
 import org.jahia.services.mail.MailServiceImpl;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +59,7 @@ import java.util.Locale;
 
 /**
  * Performs various notification-related tasks.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class Notifications extends JahiaMultiActionController {
@@ -85,6 +86,7 @@ public class Notifications extends JahiaMultiActionController {
             String host = getParameter(request, "host");
             String from = getParameter(request, "from");
             String to = getParameter(request, "to");
+            response.setCharacterEncoding(SettingsBean.getInstance().getCharacterEncoding());
 
             Locale locale = (Locale) request.getSession(true).getAttribute(
                     Constants.SESSION_UI_LOCALE);

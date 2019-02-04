@@ -228,18 +228,15 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     }
 
     private JCRUserNode lookupUser(String name, String site, boolean checkSiteAndGlobalUsers, String workspace) throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<JCRUserNode>() {
-            @Override public JCRUserNode doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                JCRUserNode userNode = null;
-                if (checkSiteAndGlobalUsers && site != null) {
-                    userNode = lookupUser(name, null, session);
-                }
-                if (userNode == null) {
-                    userNode = lookupUser(name, site, session);
-                }
-                return userNode;
-            }
-        });
+        JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentSystemSession(workspace, null, null);
+        JCRUserNode userNode = null;
+        if (checkSiteAndGlobalUsers && site != null) {
+            userNode = lookupUser(name, null, s);
+        }
+        if (userNode == null) {
+            userNode = lookupUser(name, site, s);
+        }
+        return userNode;
     }
 
     /**
@@ -321,11 +318,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      */
     public JCRUserNode lookupRootUser() {
         try {
-            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<JCRUserNode>() {
-                @Override public JCRUserNode doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    return lookupRootUser(session);
-                }
-            });
+            return lookupRootUser(JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null));
         } catch (RepositoryException e1) {
             logger.error(e1.getMessage(), e1);
         }

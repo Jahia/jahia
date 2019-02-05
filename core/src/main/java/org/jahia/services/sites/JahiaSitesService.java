@@ -466,7 +466,7 @@ public class JahiaSitesService extends JahiaService {
 
             if (!siteExists(siteKey, session)) {
 
-                final JahiaTemplatesPackage templateSet = templateService.getAnyDeployedTemplatePackage(info.getTemplateSet());
+                final JahiaTemplatesPackage templateSet = resolveTemplatePackage(info.getTemplateSet());
                 final String templatePackage = templateSet.getId();
 
                 JCRNodeWrapper sitesFolder = session.getNode("/sites");
@@ -599,6 +599,18 @@ public class JahiaSitesService extends JahiaService {
         }
 
         return site;
+    }
+
+    private JahiaTemplatesPackage resolveTemplatePackage(String templateSetName) {
+        JahiaTemplateManagerService templateService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+        JahiaTemplatesPackage pack = templateService.getAnyDeployedTemplatePackage(templateSetName);
+        if (pack == null) {
+            List<JahiaTemplatesPackage> pkgs = templateService.getNonSystemTemplateSetPackages();
+            for (JahiaTemplatesPackage pkg : pkgs) {
+                if (pkg.isActiveVersion()) pack = pkg;
+            }
+        }
+        return pack;
     }
     
     private String getTargetString(String siteKey) {

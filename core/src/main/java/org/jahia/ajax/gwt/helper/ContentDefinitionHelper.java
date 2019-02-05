@@ -585,7 +585,7 @@ public class ContentDefinitionHelper {
                 } else {
                     DateTimeFormat format;
                     if (def.getSelectorOptions().get("format") != null) {
-                        format = DateTimeFormat.getFormat(def.getSelectorOptions().get("format"));
+                        format = new ServerDateTimeFormat(def.getSelectorOptions().get("format"));
                     } else {
                         format = def.getSelector() == SelectorType.DATEPICKER ? dateFormat : dateTimeFormat;
                     }
@@ -659,7 +659,7 @@ public class ContentDefinitionHelper {
             case GWTJahiaNodePropertyType.DATE:
                 DateTimeFormat format;
                 if (def.getSelectorOptions().get("format") != null) {
-                    format = DateTimeFormat.getFormat(def.getSelectorOptions().get("format"));
+                    format = new ServerDateTimeFormat(def.getSelectorOptions().get("format"));
                 } else {
                     format = def.getSelector() == SelectorType.DATEPICKER ? dateFormat : dateTimeFormat;
                 }

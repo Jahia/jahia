@@ -78,7 +78,7 @@
                          <artifactId>spring-web</artifactId>
                          <version>${spring.version}</version>
                        <type>jar</type>
-                       <includes>org/springframework/web/util/**/*</includes>
+                       <includes>org/springframework/web/util/**/*,org/springframework/http/converter/**/*,org/springframework/web/client/**/*</includes>
                      </artifactItem>
                        <artifactItem>
                            <groupId>org.springframework</groupId>

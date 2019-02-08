@@ -473,4 +473,6 @@
         <property name="skipOnModes" value="admin,studio"/>
         <property name="skipOnWebflowRequest" value="true"/>
     </bean>
+
+    <bean id="JahiaMappingJackson2HttpMessageConverter" class="org.jahia.utils.spring.http.converter.json.JahiaMappingJackson2HttpMessageConverter"/>
 </beans>

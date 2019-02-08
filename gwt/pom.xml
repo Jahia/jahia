@@ -94,6 +94,11 @@
             <artifactId>gwt-log</artifactId>
             <version>3.2.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.core.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -160,7 +165,8 @@
                         /gwt/manager/images/**,
                         /gwt/edit/css/**,
                         /gwt/edit/images/**,
-                        /gwt/WEB-INF/**
+                        /gwt/WEB-INF/**,
+                        WEB-INF/lib/jackson-annotations-*.jar
                     </packagingExcludes>
                     <webResources>
                         <resource>

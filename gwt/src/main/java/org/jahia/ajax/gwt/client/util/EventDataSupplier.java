@@ -45,6 +45,8 @@ package org.jahia.ajax.gwt.client.util;
 
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Implementors of this interface provide event data passed to external event handlers.
  *
@@ -53,9 +55,12 @@ import java.util.Map;
 public interface EventDataSupplier {
 
     /**
-     * Returns event data which will be passed to external event handlers.
+     * Returns event data which will be passed to external event handlers. Note, please, this method should return data, "calculated" based
+     * on the other fields. Thus it is marked with annotation {@link JsonIgnore} to be excluded from the JSON serialization/deserialization
+     * when the object is sent via Atmosphere channel.
      *
      * @return event data which will be passed to external event handlers
      */
+    @JsonIgnore
     Map<String, Object> getEventData();
 }

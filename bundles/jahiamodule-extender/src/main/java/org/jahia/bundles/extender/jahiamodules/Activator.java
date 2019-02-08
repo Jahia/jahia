@@ -80,6 +80,7 @@ import org.jahia.services.templates.TemplatePackageRegistry;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.spring.http.converter.json.JahiaMappingJackson2HttpMessageConverter;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.ops4j.pax.swissbox.extender.BundleURLScanner;
 import org.osgi.framework.*;
@@ -90,8 +91,10 @@ import org.osgi.service.url.URLStreamHandlerService;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.io.Resource;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
 import javax.jcr.RepositoryException;
 import java.io.*;
@@ -169,6 +172,8 @@ public class Activator implements BundleActivator {
 
         logger.info("== Starting DX Extender ============================================================== ");
         long startTime = System.currentTimeMillis();
+
+        registerJackson2ConverterDelegate(new MappingJackson2HttpMessageConverter());
 
         // obtain service instances
         templatesService = (JahiaTemplateManagerService) SpringContextSingleton.getBean("JahiaTemplateManagerService");
@@ -435,6 +440,11 @@ public class Activator implements BundleActivator {
 
         logger.info("== Stopping DX Extender ============================================================== ");
         long startTime = System.currentTimeMillis();
+
+        if (JahiaContextLoaderListener.isRunning()) {
+            registerJackson2ConverterDelegate(null);
+        }
+
         shutdownExecutorService(10);
 
         if (fileInstallConfigurer != null) {
@@ -1167,5 +1177,13 @@ public class Activator implements BundleActivator {
         }
         
         executorService = null;
+    }
+
+    private void registerJackson2ConverterDelegate(Object delegate) {
+        String beanName = JahiaMappingJackson2HttpMessageConverter.class.getSimpleName();
+        ApplicationContext ctx = SpringContextSingleton.getInstance().getContext();
+        if (ctx.containsBean(beanName)) {
+            ((JahiaMappingJackson2HttpMessageConverter) ctx.getBean(beanName)).setDelegate(delegate);
+        }
     }
 }

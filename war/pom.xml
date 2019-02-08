@@ -790,6 +790,11 @@
                             <goal>build-framework-package-list</goal>
                         </goals>
                         <configuration>
+                            <extraPackageExcludes>
+                                <extraPackageExclude>com.fasterxml.jackson*</extraPackageExclude>
+                                <extraPackageExclude>org.springframework.http.converter*</extraPackageExclude>
+                                <extraPackageExclude>org.springframework.web.client*</extraPackageExclude>
+                            </extraPackageExcludes>
                             <propertiesInputFile>
                                 ${project.build.directory}/filtered-resources/config.properties
                             </propertiesInputFile>

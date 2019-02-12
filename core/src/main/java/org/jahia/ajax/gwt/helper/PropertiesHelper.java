@@ -328,7 +328,7 @@ public class PropertiesHelper {
                         List<Value> values = new ArrayList<Value>();
                         for (GWTJahiaNodePropertyValue val : prop.getValues()) {
                             if (val.getString() != null) {
-                                values.add(contentDefinition.convertValue(val, objectNode.getPrimaryNodeType().getPropertyDefinitionsAsMap().get(prop.getName())));
+                                values.add(contentDefinition.convertValue(val, objectNode.getApplicablePropertyDefinition(prop.getName(), 0, true)));
                             }
                         }
                         Value[] finalValues = new Value[values.size()];
@@ -420,7 +420,7 @@ public class PropertiesHelper {
                                     content.setProperty(Constants.JCR_LASTMODIFIED, new GregorianCalendar());
                                 }
                             } else {
-                                ExtendedPropertyDefinition epd = objectNode.getPrimaryNodeType().getPropertyDefinitionsAsMap().get(prop.getName());
+                                ExtendedPropertyDefinition epd = objectNode.getApplicablePropertyDefinition(prop.getName());
                                 if (epd != null && epd.getSelectorOptions().containsKey("password")) {
                                     if (propValue != null && propValue.getString() != null) {
                                         String enc = encryptPassword(propValue.getString());

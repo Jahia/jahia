@@ -49,6 +49,7 @@ import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -65,6 +66,21 @@ public class JahiaOsgiBundleXmlApplicationContext extends OsgiBundleXmlApplicati
     
     private static final Logger logger = LoggerFactory.getLogger(JahiaOsgiBundleXmlApplicationContext.class);
 
+    /**
+     * Verifies if the bundle context is valid.
+     * 
+     * @param ctx the bundle context to check
+     * @return <code>true</code> if the supplied bundle context is valid; <code>false</code> otherwise
+     */
+    static boolean isBundleContextValid(BundleContext ctx) {
+        try {
+            ctx.getBundle();
+        } catch (IllegalStateException e) {
+            return false;
+        }
+        return true;
+    }
+
     public JahiaOsgiBundleXmlApplicationContext(String[] configLocations) {
         super(configLocations);
     }
@@ -75,9 +91,7 @@ public class JahiaOsgiBundleXmlApplicationContext extends OsgiBundleXmlApplicati
 
     @Override
     public void refresh() throws BeansException, IllegalStateException {
-        try {
-            getBundleContext().getBundle();
-        } catch (IllegalStateException e) {
+        if (!isBundleContextValid(getBundleContext())) {
             logger.info(
                     "The bundle context is no longer valid for bundle {} and application context {}."
                             + " Skipping Spring application context refresh.",

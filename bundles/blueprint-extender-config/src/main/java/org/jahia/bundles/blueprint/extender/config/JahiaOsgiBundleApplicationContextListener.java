@@ -60,6 +60,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.support.AbstractApplicationContext;
 
 /**
@@ -69,11 +70,24 @@ import org.springframework.context.support.AbstractApplicationContext;
  * @author Sergiy Shyrkov
  */
 public class JahiaOsgiBundleApplicationContextListener implements
-        OsgiBundleApplicationContextListener<OsgiBundleApplicationContextEvent> {
+        OsgiBundleApplicationContextListener<OsgiBundleApplicationContextEvent>, InitializingBean {
 
     private static final Logger logger = LoggerFactory.getLogger(JahiaOsgiBundleApplicationContextListener.class);
 
+    private static Boolean getBooleanValue(SettingsBean settings, String key, boolean defaultValue) {
+        String value = settings.getPropertiesFile().getProperty(key);
+        return value != null ? Boolean.valueOf(value.trim()) : defaultValue;
+    }
+
+    private boolean skipStopOnInvalidBundleContext = true;
+
     private boolean stopBundleIfContextFails = true;
+
+    private boolean isBundleContextValid(OsgiBundleContextFailedEvent event) {
+        return event.getBundle() != null
+                ? JahiaOsgiBundleXmlApplicationContext.isBundleContextValid(event.getBundle().getBundleContext())
+                : false;
+    }
 
     protected void logEvent(OsgiBundleApplicationContextEvent event, String bundleDisplayName) {
         if (event instanceof OsgiBundleContextRefreshedEvent) {
@@ -82,9 +96,13 @@ public class JahiaOsgiBundleApplicationContextListener implements
 
         if (event instanceof OsgiBundleContextFailedEvent) {
             OsgiBundleContextFailedEvent failureEvent = (OsgiBundleContextFailedEvent) event;
-            logger.error("Application context refresh failed for bundle " + bundleDisplayName,
-                    failureEvent.getFailureCause());
-
+            if (shouldStopBundle(failureEvent)) {
+                logger.error("Application context refresh failed for bundle " + bundleDisplayName,
+                        failureEvent.getFailureCause());
+            } else {
+                logger.warn("Application context refresh failed for bundle " + bundleDisplayName
+                        + " because the bundle context is no longer valid", failureEvent.getFailureCause());
+            }
         }
 
         if (event instanceof OsgiBundleContextClosedEvent) {
@@ -106,7 +124,8 @@ public class JahiaOsgiBundleApplicationContextListener implements
         logEvent(event, bundleDisplayName);
 
         if (event instanceof OsgiBundleContextFailedEvent) {
-            Throwable cause = getRootCause(((OsgiBundleContextFailedEvent) event).getFailureCause());
+            OsgiBundleContextFailedEvent contextFailedEvent = (OsgiBundleContextFailedEvent) event;
+            Throwable cause = getRootCause(contextFailedEvent.getFailureCause());
             BundleUtils.setContextStartException(bundle.getSymbolicName(),cause);
             JahiaTemplatesPackage module = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().getRegisteredModules().get(bundle.getSymbolicName());
             if (module != null) {
@@ -121,14 +140,17 @@ public class JahiaOsgiBundleApplicationContextListener implements
                 } catch (BundleException e) {
                     logger.error("Unable to stop bundle " + bundleDisplayName + " due to: " + e.getMessage(), e);
                 }
-            } else if (stopBundleIfContextFails) {
-                if (!SettingsBean.getInstance().isDevelopmentMode()) {
-                    logger.info("Stopping bundle {}", bundleDisplayName);
-                    try {
-                        bundle.stop();
-                        logger.info("...bundle {} stopped", bundleDisplayName);
-                    } catch (BundleException e) {
-                        logger.error("Unable to stop bundle " + bundleDisplayName + " due to: " + e.getMessage(), e);
+            } else {
+                // do we need to stop the bundle on context failure?
+                if (stopBundleIfContextFails) {
+                    if (shouldStopBundle(contextFailedEvent)) {
+                        logger.info("Stopping bundle {}", bundleDisplayName);
+                        try {
+                            bundle.stop();
+                            logger.info("...bundle {} stopped", bundleDisplayName);
+                        } catch (BundleException e) {
+                            logger.error("Unable to stop bundle " + bundleDisplayName + " due to: " + e.getMessage(), e);
+                        }
                     }
                 } else {
                     logger.error("Cannot start spring context for bundle {}", bundleDisplayName);
@@ -165,5 +187,28 @@ public class JahiaOsgiBundleApplicationContextListener implements
 
     public void setStopBundleIfContextFails(boolean stopBundleIfContextFails) {
         this.stopBundleIfContextFails = stopBundleIfContextFails;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        SettingsBean settings = SettingsBean.getInstance();
+
+        // if not explicitly set, we stop the bundle by default unless we are in development mode
+        stopBundleIfContextFails = getBooleanValue(settings, "jahia.modules.stopBundleIfContextFails",
+                !settings.isDevelopmentMode());
+
+        // if not explicitly set, we skip stopping bundle with invalid bundle context by default
+        skipStopOnInvalidBundleContext = getBooleanValue(settings, "jahia.modules.skipStopOnInvalidBundleContext",
+                true);
+
+        logger.info(
+                "Initialized listener for OSGi bundle application context life cycle events with settings: "
+                        + "stopBundleIfContextFails={}, skipStopOnInvalidBundleContext={}",
+                stopBundleIfContextFails, skipStopOnInvalidBundleContext);
+    }
+
+    private boolean shouldStopBundle(OsgiBundleContextFailedEvent contextFailedEvent) {
+        // should we skip stop if the bundle context is already invalid?
+        return !skipStopOnInvalidBundleContext || isBundleContextValid(contextFailedEvent);
     }
 }

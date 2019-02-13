@@ -518,7 +518,11 @@ if (!Element.prototype.matches) {
 
         filter: function (selector) {
             /* Filter then current node list - note: only filters on the first node in list */
-            this.nodes = this.nodes[0].querySelectorAll(selector);
+            if (this.nodes[0]) {
+                this.nodes = this.nodes[0].querySelectorAll(selector);
+            } else {
+                this.nodes = [];
+            }
 
             return this;
         },
@@ -588,7 +592,9 @@ if (!Element.prototype.matches) {
         addClass: function (classname) {
             /* Add class to all nodes in nodelist */
             for (var n = 0; n < this.nodes.length; n++) {
-                this.nodes[n].classList.add(classname);
+                if (this.nodes[n]) {
+                    this.nodes[n].classList.add(classname);
+                }
             }
 
             return this;
@@ -769,6 +775,7 @@ if (!Element.prototype.matches) {
 
         onMutation: function (mutationType, target, callback, parameters) {
             var selector = this.selector;
+            var parentNodes = this.nodes;
             var matchType = function (target) {
                 // This needs updating to cater for complex selectors.
                 var result;
@@ -813,7 +820,7 @@ if (!Element.prototype.matches) {
             if (!mutationObservers[this.selector]) {
                 mutationObservers[this.selector] = {
                     observer: new MutationObserver(function (mutations) {
-                        DOMMutationCallback(mutations, selector);
+                        DOMMutationCallback(mutations, selector, parentNodes);
                     }),
                     callbacks: {}
                 };
@@ -1609,8 +1616,8 @@ if (!Element.prototype.matches) {
 
                         backgroundMask.addEventListener('click', function () {
                             DexV2.getCached('body')
-                                .trigger('mousedown')
-                                .trigger('mouseup');
+                                 .trigger('mousedown')
+                                 .trigger('mouseup');
                         });
 
                         footerContainer.appendChild(loggedUserLabel);
@@ -1622,8 +1629,8 @@ if (!Element.prototype.matches) {
 
                         DexV2('.menu-editmode-managers-menu').onClick('.managers-menu-close', function () {
                             DexV2.getCached('body')
-                                .trigger('mousedown')
-                                .trigger('mouseup');
+                                 .trigger('mousedown')
+                                 .trigger('mouseup');
                         }, 'CLOSE-DX-MENU');
 
                         DexV2.class('menu-editmode-managers-menu').addClass('managers-menu-built');
@@ -1712,8 +1719,8 @@ if (!Element.prototype.matches) {
 
                 // Open GWT Filter menu to copy the entries and build our own menu
                 DexV2.class('job-list-window') // Get thomas to add a class on the filtered combo ...
-                    .filter('.x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-tbar .x-toolbar-left .x-toolbar-cell:nth-child(1) > table')
-                    .trigger('click');
+                     .filter('.x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-tbar .x-toolbar-left .x-toolbar-cell:nth-child(1) > table')
+                     .trigger('click');
 
                 // Wait until the filter menu is opened, then copy the contents to create our own filter menu
                 DexV2('body').onceOpen('.x-menu-list-item', function () {
@@ -1752,8 +1759,8 @@ if (!Element.prototype.matches) {
 
                     // Open the GWT filter combo
                     DexV2.class('job-list-window') // Get thomas to add a class on the filtered combo ...
-                        .filter('.x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-tbar .x-toolbar-left .x-toolbar-cell:nth-child(1) > table')
-                        .trigger('click');
+                         .filter('.x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-tbar .x-toolbar-left .x-toolbar-cell:nth-child(1) > table')
+                         .trigger('click');
                     // When it has opened, trigger click the selected filter type
                     DexV2('body').onceOpen('.x-menu', function () {
                         var menu = DexV2('.x-menu-list .x-menu-list-item span').index(filterID);
@@ -1803,8 +1810,8 @@ if (!Element.prototype.matches) {
                         // This listener is sometimes called more than once, so check if the row has already had action menu added before adding ...
                         if (!DexV2.node(this).hasClass('indigo-contains-actions-menu')) {
                             DexV2.node(this)
-                                .addClass('indigo-contains-actions-menu')
-                                .append(clonedActionMenu);
+                                 .addClass('indigo-contains-actions-menu')
+                                 .append(clonedActionMenu);
                         }
                     });
 
@@ -1828,8 +1835,8 @@ if (!Element.prototype.matches) {
                 DexV2('.job-list-window').onClick('.delete-button', function () {
                     // Trigger click on the hidden GWT delete button
                     DexV2.class('job-list-window').filter(
-                        '.x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-tbar .x-toolbar-left .x-toolbar-cell:nth-child(7) > table')
-                        .trigger('click');
+                         '.x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-tbar .x-toolbar-left .x-toolbar-cell:nth-child(7) > table')
+                         .trigger('click');
                 }, 'BACKGROUND-JOBS-DELETE-ENTRY');
 
                 // User has clicked on the info button
@@ -2091,9 +2098,9 @@ if (!Element.prototype.matches) {
 
                 // Set flags for CSS
                 DexV2.getCached('body')
-                    .setAttribute('data-INDIGO-PICKER-SEARCH', '')
-                    .setAttribute('data-INDIGO-PICKER', 'open')
-                    .setAttribute('indigo-PICKER-DISPLAY', 'thumbsview');
+                     .setAttribute('data-INDIGO-PICKER-SEARCH', '')
+                     .setAttribute('data-INDIGO-PICKER', 'open')
+                     .setAttribute('indigo-PICKER-DISPLAY', 'thumbsview');
 
                 if (app.picker.data.standalone) {
                     // Create title
@@ -2233,10 +2240,10 @@ if (!Element.prototype.matches) {
 
                 // Set flags for CSS
                 DexV2.getCached('body')
-                    .setAttribute('data-INDIGO-SUB-PICKER', 'open')
-                    .setAttribute('data-INDIGO-PICKER-SEARCH', '')
-                    .setAttribute('data-INDIGO-PICKER', 'open')
-                    .setAttribute('indigo-PICKER-DISPLAY', 'thumbsview');
+                     .setAttribute('data-INDIGO-SUB-PICKER', 'open')
+                     .setAttribute('data-INDIGO-PICKER-SEARCH', '')
+                     .setAttribute('data-INDIGO-PICKER', 'open')
+                     .setAttribute('indigo-PICKER-DISPLAY', 'thumbsview');
 
                 // Save current view (by default loads on thumbs)
                 app.picker.data.displayType = 'thumbsview';
@@ -2407,19 +2414,19 @@ if (!Element.prototype.matches) {
                 if (DexV2.getCached('body').getAttribute('data-INDIGO-SUB-PICKER') == 'open') {
                     // Closing a sub picker
                     DexV2.getCached('body')
-                        .setAttribute('data-indigo-sub-picker', '')
-                        .setAttribute('data-INDIGO-PICKER-SEARCH', '');
+                         .setAttribute('data-indigo-sub-picker', '')
+                         .setAttribute('data-INDIGO-PICKER-SEARCH', '');
                 } else {
                     DexV2.getCached('body')
-                        .setAttribute('data-INDIGO-PICKER', '');
+                         .setAttribute('data-INDIGO-PICKER', '');
                 }
             },
             onSubClose: function () {
                 app.dev.log('::: APP ::: PICKER ::: ONSUBCLOSE');
 
                 DexV2.getCached('body')
-                    .setAttribute('data-indigo-sub-picker', '')
-                    .setAttribute('data-INDIGO-PICKER', '');
+                     .setAttribute('data-indigo-sub-picker', '')
+                     .setAttribute('data-INDIGO-PICKER', '');
             },
             onClick: function () {
                 app.dev.log('::: APP ::: PICKER ::: ONCLICK');
@@ -2604,25 +2611,25 @@ if (!Element.prototype.matches) {
                     var width = box.width;
 
                     DexV2.node(e.target).filter('.more-info-button')
-                        .css({
-                            top: (top + (offset.top)) + 'px',
-                            left: ((left + width) + offset.left + 5) + 'px'
-                        })
-                        .addClass('indigo-show-button');
+                         .css({
+                             top: (top + (offset.top)) + 'px',
+                             left: ((left + width) + offset.left + 5) + 'px'
+                         })
+                         .addClass('indigo-show-button');
                 }
             },
             previewButton: {
                 onMouseOver: function () {
                     app.dev.log('::: APP ::: PICKER ::: PREVIEWBUTTON ::: ONMOUSEOVER');
                     DexV2.node(app.picker.data.currentItem)
-                        .addClass('x-view-over')
-                        .addClass('x-grid3-row-over');
+                         .addClass('x-view-over')
+                         .addClass('x-grid3-row-over');
                 },
                 onMouseOut: function () {
                     app.dev.log('::: APP ::: PICKER ::: PREVIEWBUTTON ::: ONMOUSEOUT');
                     DexV2.node(app.picker.data.currentItem)
-                        .removeClass('x-view-over')
-                        .removeClass('x-grid3-row-over');
+                         .removeClass('x-view-over')
+                         .removeClass('x-grid3-row-over');
                 },
                 onClick: function (e) {
                     app.dev.log('::: APP ::: PICKER ::: PREVIEWBUTTON ::: ONCLICK');
@@ -2633,8 +2640,8 @@ if (!Element.prototype.matches) {
                     } else {
                         // Need to select the currently hovered thumb first ...
                         DexV2.node(app.picker.data.currentItem)
-                            .trigger('mousedown')
-                            .trigger('mouseup');
+                             .trigger('mousedown')
+                             .trigger('mouseup');
 
                         if (DexV2('#' + app.picker.data.ID + ' .toolbar-item-filepreview').hasClass('x-item-disabled')) {
                             alert('Preview unavailable');
@@ -2956,8 +2963,8 @@ if (!Element.prototype.matches) {
                     var label = app.dictionary('dateType').replace('%n%', dateType);
 
                     DexV2.node(this).closest('.x-form-item')
-                        .removeClass('indigo-show-menu')
-                        .setAttribute('data-indigo-modification-label', label);
+                         .removeClass('indigo-show-menu')
+                         .setAttribute('data-indigo-modification-label', label);
                 },
                 updateMetaLabel: function () {
                     var checkboxes = DexV2.node(this).filter('.x-form-check-wrap:not(.x-hide-display) input[type=\'checkbox\']');
@@ -3480,8 +3487,8 @@ if (!Element.prototype.matches) {
 
                 // Set attributes to be used by CSS
                 DexV2.getCached('body')
-                    .setAttribute('data-INDIGO-COLLAPSABLE-SIDE-PANEL', 'no')
-                    .setAttribute('data-INDIGO-GWT-SIDE-PANEL', 'open');
+                     .setAttribute('data-INDIGO-COLLAPSABLE-SIDE-PANEL', 'no')
+                     .setAttribute('data-INDIGO-GWT-SIDE-PANEL', 'open');
             },
             onClose: function () {}
         },
@@ -3555,21 +3562,21 @@ if (!Element.prototype.matches) {
                     DexV2.class('indigo-search-component').filter('.x-toolbar-cell:nth-child(3)').addClass('indigo-search-button');
 
                     DexV2.class('indigo-search-component')
-                        .onInput('.indigo-search-input', app.pickers.users.onInput, 'INDIGO-SEARCH-COMPONENT')
-                        .onClick('.indigo-clear-button', app.pickers.users.clearSearch, 'INDIGO-SEARCH-COMPONENT')
-                        .onFocus('.indigo-search-input', app.pickers.users.onInputFocus, 'INDIGO-SEARCH-COMPONENT')
-                        .onBlur('.indigo-search-input', app.pickers.users.onInputBlur, 'INDIGO-SEARCH-COMPONENT');
+                         .onInput('.indigo-search-input', app.pickers.users.onInput, 'INDIGO-SEARCH-COMPONENT')
+                         .onClick('.indigo-clear-button', app.pickers.users.clearSearch, 'INDIGO-SEARCH-COMPONENT')
+                         .onFocus('.indigo-search-input', app.pickers.users.onInputFocus, 'INDIGO-SEARCH-COMPONENT')
+                         .onBlur('.indigo-search-input', app.pickers.users.onInputBlur, 'INDIGO-SEARCH-COMPONENT');
 
                     // Remove the clear button on init
                     DexV2.class('indigo-clear-button').addClass('indigo-empty-field');
 
                     DexV2.id('JahiaGxtUserGroupSelect')
-                        .onOpen('.x-grid-empty', function () {
-                            DexV2.id('JahiaGxtUserGroupSelect').addClass('indigo-no-results');
-                        }, 'INDIGO-SEARCH-COMPONENT')
-                        .onClose('.x-grid-empty', function () {
-                            DexV2.id('JahiaGxtUserGroupSelect').removeClass('indigo-no-results');
-                        }, 'INDIGO-SEARCH-COMPONENT');
+                         .onOpen('.x-grid-empty', function () {
+                             DexV2.id('JahiaGxtUserGroupSelect').addClass('indigo-no-results');
+                         }, 'INDIGO-SEARCH-COMPONENT')
+                         .onClose('.x-grid-empty', function () {
+                             DexV2.id('JahiaGxtUserGroupSelect').removeClass('indigo-no-results');
+                         }, 'INDIGO-SEARCH-COMPONENT');
                 }
             }
         },
@@ -3640,9 +3647,9 @@ if (!Element.prototype.matches) {
 
                 // Set attributes to be used by CSS
                 DexV2.getCached('body')
-                    .setAttribute('data-edit-window-style', 'default')
-                    .setAttribute('data-INDIGO-GWT-SIDE-PANEL', '')
-                    .setAttribute('data-INDIGO-COLLAPSABLE-SIDE-PANEL', 'yes');
+                     .setAttribute('data-edit-window-style', 'default')
+                     .setAttribute('data-INDIGO-GWT-SIDE-PANEL', '')
+                     .setAttribute('data-INDIGO-COLLAPSABLE-SIDE-PANEL', 'yes');
 
                 // Setup the alternative channels system
                 app.edit.sidepanel.initChannels();
@@ -3882,8 +3889,8 @@ if (!Element.prototype.matches) {
 
                         // Set multiselect status in body attribute...
                         DexV2.getCached('body')
-                            .setAttribute('data-multiselect', multiselect)
-                            .setAttribute('data-select-type', selectType);
+                             .setAttribute('data-multiselect', multiselect)
+                             .setAttribute('data-select-type', selectType);
 
                         // Page Title in Edit Made
                         if (pageTitle) {
@@ -4423,28 +4430,20 @@ if (!Element.prototype.matches) {
 
                     app.edit.sidepanel.clipPageTitle();
                 },
-                onStartDrag: function () {
-                    app.dev.log('::: APP ::: EDIT ::: SIDEPANEL ::: ONSTARTDRAG');
+                onDrag: function (start) {
+                    app.dev.log('::: APP ::: EDIT ::: SIDEPANEL :::' + start ? 'ONSTARTDRAG' : 'ONSTOPDRAG');
 
-                    DexV2.getCached('body').addClass('indigo-drag-to-drop');
-
+                    var cachedBody = DexV2.getCached('body');
+                    cachedBody.toggleClass('indigo-drag-to-drop');
                     if (app.edit.sidepanel.data.pinned) {
-                        if (DexV2.getCached('body').hasClass('minimise-results') != true) {
-                            if (DexV2.getCached('body').hasClass('show-results')) {
-                                DexV2.getCached('body').toggleClass('minimise-results');
-                            } else {
-                                DexV2.getCached('body').removeClass('minimise-results');
-                            }
-                        }
-
+                        cachedBody.toggleClass('show-results');
+                        cachedBody.toggleClass('minimise-results');
                         app.edit.sidepanel.clipPageTitle();
-                    } else if (DexV2.getCached('body').getAttribute('data-indigo-gwt-panel-tab') != 'JahiaGxtSidePanelTabs__JahiaGxtPagesTab') {
-                        app.edit.sidepanel.close();
+                    } else if (cachedBody.getAttribute('data-indigo-gwt-panel-tab') === 'JahiaGxtSidePanelTabs__JahiaGxtPagesTab') {
+                        // do nothing if pages is open
+                    } else {
+                        start ? app.edit.sidepanel.close() : app.edit.sidepanel.open();
                     }
-                },
-                onStopDrag: function () {
-                    app.dev.log('::: APP ::: EDIT ::: SIDEPANEL ::: ONSTOPDRAG');
-                    DexV2.getCached('body').removeClass('indigo-drag-to-drop');
                 },
                 buildSplitter: function () {
                     // Handle Splitter ( used for changing width of Side Panel )
@@ -4474,55 +4473,52 @@ if (!Element.prototype.matches) {
                         var isMinimised = isWide && DexV2.getCached('body').hasClass('minimise-results');
                         var isPinned = app.edit.sidepanel.data.pinned;
                         var topRightMenuClip = null;
+                        var topRightMenuWidth = parseInt(window.getComputedStyle(DexV2.class('edit-menu-topright').nodes[0])['width']);
 
-                        if (DX.data.previousModeClass !== 'x-viewport-sitesettingsmode x-jahia-root x-component') {
-                            var topRightMenuWidth = parseInt(window.getComputedStyle(DexV2.class('edit-menu-topright').nodes[0])['width']);
+                        if (app.edit.sidepanel.data.firstRun) {
+                            sidepanelWidth += 60;
+                            app.edit.sidepanel.data.firstRun = false;
+                        }
 
-                            if (app.edit.sidepanel.data.firstRun) {
-                                sidepanelWidth += 60;
-                                app.edit.sidepanel.data.firstRun = false;
+                        if (app.edit.sidepanel.data.open) {
+                            if (isPinned && isWide && !isMinimised) {
+                                // PINNED - WIDE PANEL - EXPANDED
+                                pageTitleClip = 343;
+                                topRightMenuClip = pageTitleClip - topRightMenuWidth + 128 + sidepanelWidth;
+                            } else if (!isPinned && isWide && !isMinimised) {
+                                // UNPINNED - WIDE PANEL - EXPANDED
+                                pageTitleClip = sidepanelWidth + 353;
+                                topRightMenuClip = pageTitleClip - topRightMenuWidth + 118;
+                            } else if (isPinned && isWide && isMinimised) {
+                                // PINNED - WIDE PANEL - COLLAPSED
+                                pageTitleClip = 14;
+                                topRightMenuClip = null;
+                            } else if (!isPinned && isWide && isMinimised) {
+                                // UNPINNED - WIDE PANEL - COLLAPSED
+                                pageTitleClip = sidepanelWidth + 24;
+                                topRightMenuClip = pageTitleClip - topRightMenuWidth + 118;
+                            } else if (isPinned && !isWide) {
+                                // PINNED - NORMAL PANEL
+                                pageTitleClip = null;
+                                topRightMenuClip = null;
+                            } else if (!isPinned && !isWide) {
+                                // UNPINNED - NORMAL PANEL
+                                pageTitleClip = sidepanelWidth;
+                                topRightMenuClip = pageTitleClip - topRightMenuWidth + 118;
                             }
+                        }
 
-                            if (app.edit.sidepanel.data.open) {
-                                if (isPinned && isWide && !isMinimised) {
-                                    // PINNED - WIDE PANEL - EXPANDED
-                                    pageTitleClip = 343;
-                                    topRightMenuClip = pageTitleClip - topRightMenuWidth + 128 + sidepanelWidth;
-                                } else if (!isPinned && isWide && !isMinimised) {
-                                    // UNPINNED - WIDE PANEL - EXPANDED
-                                    pageTitleClip = sidepanelWidth + 353;
-                                    topRightMenuClip = pageTitleClip - topRightMenuWidth + 118;
-                                } else if (isPinned && isWide && isMinimised) {
-                                    // PINNED - WIDE PANEL - COLLAPSED
-                                    pageTitleClip = 14;
-                                    topRightMenuClip = null;
-                                } else if (!isPinned && isWide && isMinimised) {
-                                    // UNPINNED - WIDE PANEL - COLLAPSED
-                                    pageTitleClip = sidepanelWidth + 24;
-                                    topRightMenuClip = pageTitleClip - topRightMenuWidth + 118;
-                                } else if (isPinned && !isWide) {
-                                    // PINNED - NORMAL PANEL
-                                    pageTitleClip = null;
-                                    topRightMenuClip = null;
-                                } else if (!isPinned && !isWide) {
-                                    // UNPINNED - NORMAL PANEL
-                                    pageTitleClip = sidepanelWidth;
-                                    topRightMenuClip = pageTitleClip - topRightMenuWidth + 118;
-                                }
-                            }
+                        if (pageTitleClip === null) {
+                            DexV2.class('x-current-page-path').nodes[0].style.removeProperty('clip');
+                            DexV2.class('edit-menu-topright').nodes[0].style.removeProperty('clip');
+                        } else {
+                            DexV2.class('x-current-page-path').nodes[0].style.setProperty('clip', 'rect(0px, 100vw, 30px, ' + pageTitleClip + 'px)', 'important');
+                        }
 
-                            if (pageTitleClip === null) {
-                                DexV2.class('x-current-page-path').nodes[0].style.removeProperty('clip');
-                                DexV2.class('edit-menu-topright').nodes[0].style.removeProperty('clip');
-                            } else {
-                                DexV2.class('x-current-page-path').nodes[0].style.setProperty('clip', 'rect(0px, 100vw, 30px, ' + pageTitleClip + 'px)', 'important');
-                            }
-
-                            if (topRightMenuClip === null) {
-                                DexV2.class('edit-menu-topright').nodes[0].style.removeProperty('clip');
-                            } else {
-                                DexV2.class('edit-menu-topright').nodes[0].style.setProperty('clip', 'rect(0px, 100vw, 30px, ' + topRightMenuClip + 'px)', 'important');
-                            }
+                        if (topRightMenuClip === null) {
+                            DexV2.class('edit-menu-topright').nodes[0].style.removeProperty('clip');
+                        } else {
+                            DexV2.class('edit-menu-topright').nodes[0].style.setProperty('clip', 'rect(0px, 100vw, 30px, ' + topRightMenuClip + 'px)', 'important');
                         }
                     }
                 },
@@ -4620,6 +4616,11 @@ if (!Element.prototype.matches) {
                             // OPEN SIDE PANEL.
                             app.edit.sidepanel.open(false);
                         }
+
+                        if(app.edit.sidepanel.data.currentTab == 'JahiaGxtSidePanelTabs__JahiaGxtSearchTab'){
+                            DexV2.id('JahiaGxtSearchTab').addClass('show-results');
+                            DexV2.getCached('body').addClass('show-results');
+                        }
                     }
                 },
                 row: {
@@ -4701,8 +4702,8 @@ if (!Element.prototype.matches) {
 
                 // Set attributes to be used by CSS
                 DexV2.getCached('body')
-                    .setAttribute('data-INDIGO-COLLAPSABLE-SIDE-PANEL', 'no')
-                    .setAttribute('data-INDIGO-GWT-SIDE-PANEL', 'open');
+                     .setAttribute('data-INDIGO-COLLAPSABLE-SIDE-PANEL', 'no')
+                     .setAttribute('data-INDIGO-GWT-SIDE-PANEL', 'open');
             },
             onChange: function () {
                 if (app.dashboard.data.beta) {
@@ -4731,9 +4732,9 @@ if (!Element.prototype.matches) {
 
                 // Set attributes to be used by CSS
                 DexV2.getCached('body')
-                    .setAttribute('data-INDIGO-GWT-SIDE-PANEL', '')
-                    .setAttribute('data-INDIGO-COLLAPSABLE-SIDE-PANEL', 'yes')
-                    .setAttribute('data-indigo-sidepanel-pinned', 'false');
+                     .setAttribute('data-INDIGO-GWT-SIDE-PANEL', '')
+                     .setAttribute('data-INDIGO-COLLAPSABLE-SIDE-PANEL', 'yes')
+                     .setAttribute('data-indigo-sidepanel-pinned', 'false');
 
                 app.edit.sidepanel.data.pinned = false;
                 app.contribute.topbar.build();
@@ -4978,8 +4979,8 @@ if (!Element.prototype.matches) {
                 .onClick('.window-side-panel > .x-panel-bwrap > div:nth-child(2).x-panel-footer', app.edit.sidepanel.togglePin)
                 .onOpen('.job-list-window', app.backgroundJobs.onOpen)
                 .onMouseDown('.toolbar-item-studio', function () {
-                    var studioNodePath = sessionStorage.getItem('studiomode_nodePath'),
-                        baseURL = jahiaGWTParameters.contextPath + '/cms/studio/default/' + jahiaGWTParameters.uilang;
+                    var studioNodePath = sessionStorage.getItem('studiomode_nodePath');
+                    var baseURL = jahiaGWTParameters.contextPath + '/cms/studio/default/' + jahiaGWTParameters.uilang;
 
                     var studioURL;
                     if (studioNodePath && studioNodePath !== '/settings') {
@@ -4989,13 +4990,13 @@ if (!Element.prototype.matches) {
                     }
                     window.location = studioURL;
                 })
-                .onOpen('.content-type-window', function () {
+                .onOpen('.content-type-window .x-form-field-wrap input', function () {
                     DexV2('.content-type-window .x-form-field-wrap input').setAttribute('placeholder', app.dictionary('filterContent'));
                     // Firefox has bug which doesnt always set focus on text input, wait a split second before settings focus
+                    var that = this;
                     setTimeout(function () {
-                        DexV2('.content-type-window .x-form-field-wrap input')
-                            .nodes[0].focus();
-                    }, 50);
+                        that.focus();
+                    }, 100);
                 })
                 .onClick('.toolbar-item-newfolder', function () {
                     // Add new folder
@@ -5131,22 +5132,24 @@ if (!Element.prototype.matches) {
                         .addClass('search-side-panel-refresh-button'); // Ask thomas to add a classname here
                 })
                 .onOpen('.results-column .x-grid-empty', function () {
-                    var myPagingDisplay = DexV2.id('JahiaGxtSearchTab').filter('.my-paging-display');
-                    var pagingValue = myPagingDisplay.nodes[0].innerHTML;
-                    var noResults = pagingValue === 'No data to display' || pagingValue === 'Aucune donnée à afficher' || pagingValue === 'Keine Daten vorhanden';
-                    var status = null;
+                    var myPagingDisplay = DexV2('#JahiaGxtSearchTab .my-paging-display');
+                    if (myPagingDisplay.exists()) {
+                        var pagingValue = myPagingDisplay.nodes[0].innerHTML;
+                        var noResults = pagingValue === 'No data to display' || pagingValue === 'Aucune donnée à afficher' || pagingValue === 'Keine Daten vorhanden';
+                        var status = null;
 
-                    if (noResults) {
-                        status = 'no-results';
-                    } else if (pagingValue === '') {
-                        status = 'init';
-                    } else {
-                        status = 'searching';
-                    }
+                        if (noResults) {
+                            status = 'no-results';
+                        } else if (pagingValue === '') {
+                            status = 'init';
+                        } else {
+                            status = 'searching';
+                        }
 
-                    if (app.edit.data.search.status !== status) {
-                        app.edit.data.search.status = status;
-                        DexV2.id('JahiaGxtSearchTab').filter('.results-column').setAttribute('data-results-status', app.edit.data.search.status);
+                        if (app.edit.data.search.status !== status) {
+                            app.edit.data.search.status = status;
+                            DexV2.id('JahiaGxtSearchTab').filter('.results-column').setAttribute('data-results-status', app.edit.data.search.status);
+                        }
                     }
                 })
                 .onOpen('.results-column .x-grid3-row', function () {
@@ -5161,38 +5164,56 @@ if (!Element.prototype.matches) {
                     DexV2.node(this).filter('input.x-form-text').setAttribute('placeholder', app.dictionary('filterContent'));
                 })
                 .onGroupOpen('#JahiaGxtSettingsTab .x-grid3-row', app.edit.settings.onTreeChange) // Once matchType is improved the target selector can be changed to #JahiaGxtSettingsTab .x-grid3-row
-                .onOpen('.x-grid-empty', function () {})
-                .onOpen('.x-grid3-row', function () {
+                .onOpen('.x-grid-empty', function () {
                     if (app.edit.sidepanel.data.open) {
                         var isTreeEntry = DexV2.node(this).parent().hasClass('results-column');
+                        if (isTreeEntry) {
+                            switch (app.edit.sidepanel.data.currentTab) {
+                                case 'JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab':
+                                    DexV2.id('JahiaGxtCategoryBrowseTab').removeClass('show-results');
+                                    break;
+                                case 'JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab':
+                                    DexV2.id('JahiaGxtContentBrowseTab').removeClass('show-results');
+                                    break;
+                            }
 
-                        if (DexV2.getCached('body').getAttribute('data-INDIGO-GWT-SIDE-PANEL') == 'open'
-                            && DexV2.getCached('body').getAttribute('data-INDIGO-SIDEPANEL-PINNED') != 'true') {
+                            DexV2.getCached('body').removeClass('show-results');
+                        }
+                    }
+                })
+                .onOpen('#JahiaGxtSearchTab', function () {
+                    if (app.edit.sidepanel.data.open) {
+                        DexV2.id('JahiaGxtSearchTab').addClass('show-results');
+                        DexV2.getCached('body').addClass('show-results');
+                        app.edit.sidepanel.resizeSidePanel();
+                    }
+                })
+                .onOpen('.x-grid3-row', function () {
+                    if (app.edit.sidepanel.data.open) {
+                        if (DexV2.getCached('body').getAttribute('data-INDIGO-GWT-SIDE-PANEL') == 'open' && DexV2.getCached('body').getAttribute('data-INDIGO-SIDEPANEL-PINNED') != 'true') {
                             app.edit.sidepanel.resizeSidePanel();
                         }
 
-                        if (isTreeEntry || 1 === 1) {
-                            if (app.edit.sidepanel.data.currentTab == 'JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab') {
+                        switch(app.edit.sidepanel.data.currentTab){
+                            case 'JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab':
                                 DexV2.id('JahiaGxtCategoryBrowseTab').addClass('show-results');
-                            } else if (app.edit.sidepanel.data.currentTab == 'JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab') {
+                                break;
+                            case 'JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab':
                                 DexV2.id('JahiaGxtContentBrowseTab').addClass('show-results');
-                            } else if (app.edit.sidepanel.data.currentTab == 'JahiaGxtSidePanelTabs__JahiaGxtSearchTab') {
+                                break;
+                            case 'JahiaGxtSidePanelTabs__JahiaGxtSearchTab':
                                 DexV2.id('JahiaGxtSearchTab').addClass('show-results');
-                            } else if (app.edit.sidepanel.data.currentTab == 'JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab') {
-                                DexV2.id('JahiaGxtSearchTab').addClass('show-results');
-                            }
-
-                            DexV2.getCached('body').addClass('show-results');
+                                break;
                         }
-                    }
 
+                        DexV2.getCached('body').addClass('show-results');
+                    }
                 })
                 .onClose('.thumb-wrap', function () {
                     if (app.edit.sidepanel.data.open) {
                         DexV2.id('JahiaGxtFileImagesBrowseTab').removeClass('show-results');
                         DexV2.getCached('body').removeClass('show-results');
                     }
-
                 })
                 .onOpen('.thumb-wrap', function () {
                     if (app.edit.sidepanel.data.open) {
@@ -5203,7 +5224,6 @@ if (!Element.prototype.matches) {
                             DexV2.getCached('body').addClass('show-results');
                         }
                     }
-
                 })
                 .onOpen('.menu-edit-menu-workflow', app.edit.infoBar.tasks.updateMenuLabel)
                 .onOpen('.menu-contribute-menu-workflow', app.edit.infoBar.tasks.updateMenuLabel)
@@ -5219,8 +5239,8 @@ if (!Element.prototype.matches) {
                 .onAttribute('.edit-menu-tasks', 'class', app.edit.infoBar.tasks.onChange)
                 .onAttribute('.contribute-menu-tasks', 'class', app.edit.infoBar.tasks.onChange)
                 .onAttribute('.toolbar-item-workinprogressadmin, .toolbar-item-workinprogress', 'class', app.edit.infoBar.jobs.onChange)
-                .onOpen('.x-dd-drag-proxy', app.edit.sidepanel.onStartDrag)
-                .onClose('.x-dd-drag-proxy', app.edit.sidepanel.onStopDrag)
+                .onOpen('.x-dd-drag-proxy', app.edit.sidepanel.onDrag.bind(this, true))
+                .onClose('.x-dd-drag-proxy', app.edit.sidepanel.onDrag.bind(this, false))
                 .onAttribute('body', 'data-sitesettings', app.edit.settings.onChange)
                 .onAttribute('body', 'data-selection-count', app.iframe.onSelect)
                 .onAttribute('body', 'data-main-node-displayname', app.iframe.onChange)
@@ -5285,7 +5305,7 @@ if (!Element.prototype.matches) {
                 .onMouseOver('#' + app.picker.data.ID + ' #JahiaGxtManagerTobTable .x-grid3-row', app.picker.row.onMouseOver)
                 .onMouseOver('#' + app.picker.data.ID + ' #JahiaGxtManagerTobTable .thumb-wrap', app.picker.thumb.onMouseOver)
                 .onMouseUp('#JahiaGxtSidePanelTabs__JahiaGxtPagesTab, #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab, #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtSearchTab, #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab, #JahiaGxtSidePanelTabs__JahiaGxtSettingsTab', app.edit.sidepanel.tab.onClick, 'OPEN-SIDE-PANEL-TAB')
-                .onMouseDown('#JahiaGxtContentBrowseTab .x-box-item:nth-child(1) .x-grid3-row, #JahiaGxtFileImagesBrowseTab .x-grid3-row, #JahiaGxtCategoryBrowseTab .x-grid3-row', app.edit.sidepanel.row.onMouseDown)
+                .onMouseDown('#JahiaGxtContentBrowseTab .x-box-item:nth-child(1) .x-grid3-row, #JahiaGxtFileImagesBrowseTab .x-grid3-row, #JahiaGxtCategoryBrowseTab .x-xbox-item:nth-child(1) .x-grid3-row', app.edit.sidepanel.row.onMouseDown)
                 .onClick('#images-view, .x-box-inner .x-box-item:nth-child(2), .JahiaGxtSearchTab-results .x-panel-bwrap', app.edit.sidepanel.toggleFloatingPanel);
 
             // WINDOW LISTENERS
@@ -5323,7 +5343,6 @@ if (!Element.prototype.matches) {
             });
 
             DexV2.getCached('body').setAttribute('data-indigo-is-manager', 'true');
-
         }
 
         // This is a manager, not main app.
@@ -5347,8 +5366,6 @@ if (!Element.prototype.matches) {
             });
 
             DexV2.getCached('body').setAttribute('data-indigo-is-manager', 'true');
-
-
         }
 
         // Attach event listeners

@@ -1378,7 +1378,7 @@ if (!Element.prototype.matches) {
                             break;
                         case 'x-viewport-sitesettingsmode':
                             app.V2(true);
-                            app.switch('edit');
+                            app.switch('remote');
                             break;
                         case 'x-viewport-dashboardmode':
                             app.disableV2();
@@ -1525,7 +1525,7 @@ if (!Element.prototype.matches) {
                 }
             }
 
-            if (app.data.currentApp == 'edit') {
+            if (app.data.currentApp == 'remote' || app.data.currentApp == 'edit') {
                 app.edit.topbar.reposition();
             } else if (app.data.currentApp == 'contribute') {
                 app.contribute.topbar.reposition();
@@ -3579,6 +3579,62 @@ if (!Element.prototype.matches) {
                          }, 'INDIGO-SEARCH-COMPONENT');
                 }
             }
+        },
+        remote: {
+            config: {
+                chrome: true
+            },
+            // Data
+            data: {
+                history: {
+                    settingspage: null,
+                    editpage: null
+                },
+                search: {
+                    refreshButtonClasslist: null,
+                    emptyGridStyle: null,
+                    status: null
+                },
+                returnURL: null
+            },
+            // Event Handlers
+            onOpen: function () {
+                app.dev.log('::: APP ::: REMOTE ::: ONOPEN');
+                app.data.currentApp = 'edit';
+                DexV2('.mainmodule > div:nth-child(2)').nodes[0].style.removeProperty('width');
+                DexV2('.mainmodule > div:nth-child(2)').nodes[0].style.removeProperty('left');
+
+                DexV2('.window-side-panel > .x-panel-bwrap > div:nth-child(2).x-panel-footer').addClass('side-panel-pin');
+                DexV2.getCached('body').setAttribute('data-indigo-styled-combos', 'true');
+                DexV2.getCached('body').setAttribute('data-indigo-sidepanel-pinned', 'false');
+                app.edit.sidepanel.data.pinned = false;
+                app.edit.data.returnURL = window.location.pathname;
+
+                // Reset History
+                app.edit.history.reset();
+
+                app.edit.topbar.build();
+
+                // Set attributes to be used by CSS
+                DexV2.getCached('body')
+                    .setAttribute('data-edit-window-style', 'default')
+                    .setAttribute('data-INDIGO-GWT-SIDE-PANEL', '')
+                    .setAttribute('data-INDIGO-COLLAPSABLE-SIDE-PANEL', 'yes');
+
+                // Setup the alternative channels system
+                app.edit.sidepanel.initChannels();
+
+                app.edit.resizeLanguageInput();
+
+                if (DexV2.id('JahiaGxtSidePanelTabs').exists()) {
+                    DexV2.id('JahiaGxtSidePanelTabs').nodes[0].style.setProperty('width', '360px', 'important');
+                    DexV2.getCached('body').setAttribute('data-indigo-gwt-side-panel', '');
+                }
+                DexV2('.mainmodule > div:nth-child(2) > div:not(.x-abs-layout-container)').nodes[0].setAttribute('style', 'height:100vh !important; transform: translateY(-109px) !important;');
+            },
+            onClose: function () {
+
+            },
         },
         edit: {
             config: {

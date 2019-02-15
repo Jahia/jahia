@@ -289,23 +289,30 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                     if (!unpublishableMap.containsKey(status)) {
                         unpublishableMap.put(status, new ArrayList<String>());
                     }
-                    unpublishableMap.get(status).add(info.getTitle() + " (" + info.getPath() + ")");
+                    unpublishableMap.get(status).add("<strong>" + info.getTitle() + "</strong> (" + info.getPath() + ")");
                 }
 
                 for (Map.Entry<Integer, List<String>> entry : unpublishableMap.entrySet()) {
                     Integer status = entry.getKey();
-                    List<String> values = entry.getValue();
+
+                    Set<String> values = new HashSet<String>(entry.getValue());
+                    if (values.size() >= 10) {
+                        values = new LinkedHashSet<String>(new ArrayList<String>(values).subList(0, 10));
+                        values.add("...");
+                    }
+
                     final String labelKey = GWTJahiaPublicationInfo.statusToLabel.get(status);
-                    message.append(Messages.get("label.publication." + labelKey, labelKey)).append(" : ").append(values.get(0));
-                    if (values.size() > 10) {
-                        for (int i = 1; i < 10; i++) {
-                            message.append(", ").append(values.get(i));
+                    message.append(Messages.get("label.publication." + labelKey, labelKey)).append(" : ").append("<br/><br/>");
+
+                    Iterator<String> valuesIterator = values.iterator();
+                    while (valuesIterator.hasNext()) {
+                        String value = valuesIterator.next();
+
+                        message.append(value);
+                        if (valuesIterator.hasNext()) {
+                            message.append(",");
                         }
-                        message.append(", ...");
-                    } else {
-                        for (int i = 1; i < values.size(); i++) {
-                            message.append(", ").append(values.get(i));
-                        }
+                        message.append("<br/>");
                     }
                 }
                 if (!result.isEmpty()) {

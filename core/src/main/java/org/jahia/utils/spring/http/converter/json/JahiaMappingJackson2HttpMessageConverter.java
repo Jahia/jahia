@@ -69,29 +69,29 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * from a bundle, it looks up the corresponding message converter instance in OSGi and delegates the work to it. This implementation
  * overrides only several methods from the parent, which are using the {@link ObjectMapper} instance, to be able to delegate to the
  * corresponding message converter delegate (see {@link #PARAMETER_TYPES} for the methods, we use for delegation).
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class JahiaMappingJackson2HttpMessageConverter extends MappingJackson2HttpMessageConverter {
 
     private static final Map<String, Class<?>[]> PARAMETER_TYPES;
-
     static {
-        PARAMETER_TYPES = new HashMap<>(4);
-        PARAMETER_TYPES.put("canRead", new Class<?>[] { Type.class, Class.class, MediaType.class });
-        PARAMETER_TYPES.put("canWrite", new Class<?>[] { Class.class, MediaType.class });
-        PARAMETER_TYPES.put("read", new Class<?>[] { Type.class, Class.class, HttpInputMessage.class });
-        PARAMETER_TYPES.put("readInternal", new Class<?>[] { Class.class, HttpInputMessage.class });
-        PARAMETER_TYPES.put("writeInternal", new Class<?>[] { Object.class, HttpOutputMessage.class });
+        PARAMETER_TYPES = new HashMap<>(5);
+        PARAMETER_TYPES.put("canRead", new Class<?>[] {Type.class, Class.class, MediaType.class});
+        PARAMETER_TYPES.put("canWrite", new Class<?>[] {Class.class, MediaType.class});
+        PARAMETER_TYPES.put("read", new Class<?>[] {Type.class, Class.class, HttpInputMessage.class});
+        PARAMETER_TYPES.put("readInternal", new Class<?>[] {Class.class, HttpInputMessage.class});
+        PARAMETER_TYPES.put("writeInternal", new Class<?>[] {Object.class, HttpOutputMessage.class});
     }
 
-    // This is an instance of the MappingJackson2HttpMessageConverter, injected from the OSGi. In order to avoid classloading issue
-    // between the DX core and OSGi, where this class is present we use here Object as a type and use reflection to call corresponding
-    // methods on this delegate object
+    // This is an instance of the MappingJackson2HttpMessageConverter, injected from the OSGi. In order to avoid class loading issue
+    // between the DX core and OSGi where this class is present, we use here Object as a type and use reflection to call corresponding
+    // methods on this delegate object.
     private Object delegate;
 
-    // function, that looks up the target method, when not found in the cache
+    // Function, that looks up the target method, when not found in the cache.
     private Function<String, Method> methodProvider = new Function<String, Method>() {
+
         @Override
         public Method apply(String name) {
             try {
@@ -106,7 +106,7 @@ public class JahiaMappingJackson2HttpMessageConverter extends MappingJackson2Htt
         }
     };
 
-    // cache of the methods on the delegate object, we are calling
+    // Cache of the methods on the delegate object, we are calling.
     private Map<String, Method> methods = new ConcurrentHashMap<>();
 
     private Object call(Method method, Object... args) {
@@ -122,9 +122,7 @@ public class JahiaMappingJackson2HttpMessageConverter extends MappingJackson2Htt
         if (shouldDelegate(type)) {
             return (boolean) call(getMethod("canRead"), type, contextClass, mediaType);
         }
-
         return super.canRead(type, contextClass, mediaType);
-
     }
 
     @Override
@@ -132,7 +130,6 @@ public class JahiaMappingJackson2HttpMessageConverter extends MappingJackson2Htt
         if (shouldDelegate(clazz)) {
             return (boolean) call(getMethod("canWrite"), clazz, mediaType);
         }
-
         return super.canWrite(clazz, mediaType);
     }
 
@@ -141,22 +138,18 @@ public class JahiaMappingJackson2HttpMessageConverter extends MappingJackson2Htt
     }
 
     @Override
-    public Object read(Type type, Class<?> contextClass, HttpInputMessage inputMessage)
-            throws IOException, HttpMessageNotReadableException {
+    public Object read(Type type, Class<?> contextClass, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
         if (shouldDelegate(type)) {
             return call(getMethod("read"), type, contextClass, inputMessage);
         }
-
         return super.read(type, contextClass, inputMessage);
     }
 
     @Override
-    protected Object readInternal(Class<?> clazz, HttpInputMessage inputMessage)
-            throws IOException, HttpMessageNotReadableException {
+    protected Object readInternal(Class<?> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
         if (shouldDelegate(clazz)) {
             return call(getMethod("readInternal"), clazz, inputMessage);
         }
-
         return super.readInternal(clazz, inputMessage);
     }
 
@@ -166,22 +159,22 @@ public class JahiaMappingJackson2HttpMessageConverter extends MappingJackson2Htt
     }
 
     protected boolean shouldDelegate(Object obj) {
-        if (delegate != null && obj != null) {
-            // we obtain the class loader for the supplied object (distinguishing, if it is a Class or an Object)
-            ClassLoader cl = (obj instanceof Class) ? ((Class<?>) obj).getClassLoader()
-                    : obj.getClass().getClassLoader();
 
-            // if the class loader is an instance of BundleReference, than it is a an OSGi classloader and we should delegate
-            return cl instanceof BundleReference;
+        if (delegate != null && obj != null) {
+
+            // We obtain the class loader for the supplied object (distinguishing, if it is a Class or an Object).
+            ClassLoader classLoader = (obj instanceof Class) ? ((Class<?>) obj).getClassLoader() : obj.getClass().getClassLoader();
+
+            // If the class loader is an instance of BundleReference, than it is a an OSGi class loader and we should delegate.
+            return (classLoader instanceof BundleReference);
         }
 
-        // if nothing of above is not applicable, then no need to delegate
+        // If nothing of above is not applicable, then no need to delegate.
         return false;
     }
 
     @Override
-    protected void writeInternal(Object object, HttpOutputMessage outputMessage)
-            throws IOException, HttpMessageNotWritableException {
+    protected void writeInternal(Object object, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
         if (shouldDelegate(object)) {
             call(getMethod("writeInternal"), object, outputMessage);
         } else {

@@ -377,7 +377,8 @@ body[indigo-dragging-panel] {
 		border-right: 0 solid #f8f8f8;
 		transition: all 0.2s ease-in 0s;
 
-		body[indigo-dragging-panel="true"] & {
+		body[indigo-dragging-panel="true"] &,
+		body[data-indigo-sidepanel-pinned="true"] & {
 			transition: none!important;
 		}
 

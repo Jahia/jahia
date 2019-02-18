@@ -1271,6 +1271,61 @@ if (!Element.prototype.matches) {
                 };
             }()
         },
+		storage: {
+			data: {
+				available: typeof(Storage) !== 'undefined', // Check browser has Local Storage
+				keyPrefix: 'DA' // Use a prefix to ensure we dont inadvertantly over write items set by GWT
+			},
+			buildKey: function(key){
+				// To be on the safe side a prefix can be defined which should reduce the chances of overwriting Local Storage items set by GWT.
+				// The value of the prefix is set here: app.storage.data.keyPrefix. If no value is set, then we dont bother prefixing, obviously.
+				return (app.storage.data.keyPrefix) ? app.storage.data.keyPrefix + '-' + key : key;
+			},
+			set: function(key, value, dataType){
+				if(!app.storage.data.available){
+					// Browser doesnt support Local Storage, so exit
+					return false
+				}
+
+				// Set item in local storage
+				localStorage.setItem(app.storage.buildKey(key), value);
+
+				return value;
+
+			},
+			get: function(key){
+				if(!app.storage.data.available){
+					// Browser doesnt support Local Storage, so exit
+					return false
+				}
+
+				// Get item from localstorage
+				var storedValue = localStorage.getItem(app.storage.buildKey(key)),
+					getLatestTab = localStorage.getItem(app.storage.buildKey('currentSidePanel')),
+					value = storedValue;
+
+				// Local Storage values are converted to strings, so just checking to reconvert any true/false strings to boolean
+				if(storedValue == 'true'){
+					value = true;
+				} else if(storedValue == 'false'){
+					value = false;
+				}
+
+				return value
+			},
+			remove: function(key){
+				if(!app.storage.data.available){
+					// Browser doesnt support Local Storage, so exit
+					return false
+				}
+
+				// Remove item from Local Storage
+				localStorage.removeItem(app.storage.buildKey(key));
+
+				return null
+			}
+
+		},
         dictionary: function (key, lang) {
             lang = lang || app.data.UILanguage;
             var returnString = 'not_found';
@@ -3716,6 +3771,14 @@ if (!Element.prototype.matches) {
                     DexV2.id('JahiaGxtSidePanelTabs').nodes[0].style.setProperty('width', '60px', 'important');
                     DexV2.getCached('body').setAttribute('data-indigo-gwt-side-panel', '');
                 }
+
+				var pinnedPanel = app.storage.get('pinnedPanel');
+
+				if(pinnedPanel){
+					DexV2.class('side-panel-pin').trigger('click');
+					DexV2('#JahiaGxtSidePanelTabs .x-tab-strip-active').trigger('mousedown').trigger('mouseup');
+
+				}
             },
             onClose: function () {},
 
@@ -4457,7 +4520,7 @@ if (!Element.prototype.matches) {
                     DexV2.getCached('body').setAttribute('data-INDIGO-SIDEPANEL-PINNED', app.edit.sidepanel.data.pinned);
                     DexV2.iframe('.window-iframe').filter('body').nodes[0].style.pointerEvents = 'all';
 
-                    if (app.edit.sidepanel.data.pinned) {
+                    if (app.edit.sidepanel.data.pinned && DexV2.id('indigoSplitter').exists()) {
                         var xPos = parseInt(DexV2.id('indigoSplitter').nodes[0].style.getPropertyValue('left'));
                         DexV2('.mainmodule > div:nth-child(2)').nodes[0].style.setProperty('width', 'calc(100% - ' + (xPos + 5) + 'px)',
                             'important');
@@ -4469,6 +4532,8 @@ if (!Element.prototype.matches) {
 
                     app.edit.topbar.reposition();
                     app.edit.sidepanel.clipPageTitle();
+
+					app.storage.set('pinnedPanel', app.edit.sidepanel.data.pinned);
                 },
                 toggleFloatingPanel: function (e) {
                     app.dev.log('::: APP ::: EDIT ::: SIDEPANEL ::: TOGGLEFLOATINGPANEL');

@@ -1777,10 +1777,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             seo.saveUrlMappings(node, mappings, retrieveCurrentSession());
         } catch (NonUniqueUrlMappingException e) {
             Locale uiLocale = getUILocale();
-            throw new GWTJahiaServiceException(Messages.getInternalWithArguments(
-                    "failure.duplicateVanityUrlMapping", uiLocale,
-                    e.getUrlMapping(), e.getNodePath(), e.getExistingNodePath(),
-                    Messages.getInternal("label." + e.getWorkspace(), uiLocale)));
+            throw new GWTJahiaServiceException(
+                    Messages.getInternalWithArguments("failure.duplicateVanityUrlMapping", uiLocale, e.getUrlMapping(), e.getNodePath(), e.getExistingNodePath(),
+                            Messages.getInternal("label." + e.getWorkspace(), uiLocale)),
+                    Messages.getInternalWithArguments("failure.duplicateVanityUrlMapping_display", uiLocale, e.getUrlMapping(), e.getExistingNodePath()));
         } catch (ConstraintViolationException e) {
             throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.save.urlMappings", getUILocale(), e.getLocalizedMessage()));
         } catch (RepositoryException e) {

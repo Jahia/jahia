@@ -60,6 +60,7 @@ import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.GWTCompositeConstraintViolationException;
 import org.jahia.ajax.gwt.client.service.GWTConstraintViolationException;
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
@@ -247,8 +248,10 @@ public abstract class SaveButtonItem implements ButtonItem {
                     }
             ).getDialog().addStyleName("engine-save-error");
         } else {
-            String message = throwable.getMessage();
-            MessageBox.alert(Messages.get("label.error"), Messages.get("failure.properties.save", "Properties save failed") + "\n\n"
+            String message = (throwable instanceof GWTJahiaServiceException && ((GWTJahiaServiceException) throwable).getDisplayMessage() != null) ?
+                    ((GWTJahiaServiceException) throwable).getDisplayMessage() :
+                    throwable.getMessage();
+            MessageBox.alert(Messages.get("label.error"), Messages.get("failure.properties.save", "Properties save failed") + "</br></br>"
                     + message, null).getDialog().addStyleName("engine-save-error");
             Log.error("failed", throwable);
         }

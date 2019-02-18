@@ -56,8 +56,17 @@ import java.io.Serializable;
  */
 public class GWTJahiaServiceException extends Exception implements Serializable, IsSerializable {
 
+    private static final long serialVersionUID = -1225765224835003507L;
+
+    private String displayMessage;
+
     public GWTJahiaServiceException() {
         super();
+    }
+
+    public GWTJahiaServiceException(String message, String displayMessage) {
+        super(message);
+        this.displayMessage = displayMessage;
     }
 
     public GWTJahiaServiceException(String message) {
@@ -70,5 +79,9 @@ public class GWTJahiaServiceException extends Exception implements Serializable,
 
     public GWTJahiaServiceException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+    public String getDisplayMessage() {
+        return displayMessage;
     }
 }

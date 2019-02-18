@@ -181,6 +181,7 @@ public class CreateButtonItem extends SaveButtonItem {
                     }
                 } else {
                     engine.getTabs().removeAll();
+                    engine.getProperties().clear();
                     engine.initTabs();
                     engine.getChangedI18NProperties().clear();
                     engine.getChangedProperties().clear();

@@ -78,6 +78,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.Url;
+import org.jahia.utils.WebUtils;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -897,7 +898,7 @@ public class UIConfigHelper {
 
     private Object getThemedConfiguration(String name, HttpServletRequest request) {
         Object config = SpringContextSingleton.getBean(name);
-        String theme = (String) request.getSession().getAttribute(org.jahia.api.Constants.UI_THEME);
+        String theme = WebUtils.getUITheme(request);
         if (theme != null) {
             try {
                 config = SpringContextSingleton.getBean(name + "-" + theme);

@@ -49,7 +49,6 @@ import java.util.Map;
 
 import org.jahia.osgi.BundleState;
 import org.jahia.services.modulemanager.spi.BundleService;
-import org.osgi.framework.Bundle;
 import org.springframework.core.io.Resource;
 
 /**

@@ -52,9 +52,6 @@ import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleState;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.modulemanager.BundleBucketInfo;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.Constants;
@@ -74,16 +71,12 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
 import org.jahia.settings.readonlymode.ReadOnlyModeException;
-import org.json.JSONArray;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.startlevel.BundleStartLevel;
 import org.osgi.framework.wiring.FrameworkWiring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-
-import javax.jcr.RepositoryException;
 
 /**
  * The main entry point service for the module management service, providing functionality for module deployment, undeployment, start and
@@ -572,16 +565,7 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
         for (Bundle bundle : bundles) {
             Map<String, Object> module = new HashMap<>();
 
-            Integer persistentState;
-            if (bundle.getState() != Bundle.UNINSTALLED) {
-                if (bundle.adapt(BundleStartLevel.class).isPersistentlyStarted()) {
-                    persistentState = Bundle.ACTIVE;
-                } else {
-                    persistentState = Bundle.INSTALLED;
-                }
-            } else {
-                persistentState = Bundle.UNINSTALLED;
-            }
+            int persistentState = BundleUtils.getPersistentState(bundle);
 
             // Fill the map to return the result
             module.put("id", bundle.getBundleId());

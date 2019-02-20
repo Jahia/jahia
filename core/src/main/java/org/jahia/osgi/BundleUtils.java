@@ -53,6 +53,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.startlevel.BundleStartLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.AbstractApplicationContext;
@@ -514,4 +515,25 @@ public final class BundleUtils {
         return StringUtils.isNotBlank((String) bundle.getHeaders().get(org.osgi.framework.Constants.FRAGMENT_HOST));
     }
 
+    /**
+     * This method deduce and return the persistent state value of a bundle
+     *
+     * @param bundle the bundle to get the persistent state from
+     * @return the integer value of the persistent state
+     */
+    public static int getPersistentState(Bundle bundle) {
+        int persistentState;
+
+        if (bundle.getState() != Bundle.UNINSTALLED) {
+            if (bundle.adapt(BundleStartLevel.class).isPersistentlyStarted()) {
+                persistentState = Bundle.ACTIVE;
+            } else {
+                persistentState = Bundle.INSTALLED;
+            }
+        } else {
+            persistentState = Bundle.UNINSTALLED;
+        }
+
+        return persistentState;
+    }
 }

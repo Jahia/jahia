@@ -47,13 +47,19 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.jahia.settings.SettingsBean;
+import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Responsible for creating tree structure for a bundle in JCR and bundle key to JCR path conversion.
@@ -61,7 +67,7 @@ import org.slf4j.LoggerFactory;
  * @author Ahmed Chaabni
  * @author Sergiy Shyrkov
  */
-final class BundleInfoJcrHelper {
+final public class BundleInfoJcrHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(BundleInfoJcrHelper.class);
 
@@ -71,8 +77,33 @@ final class BundleInfoJcrHelper {
     private static final String NODE_TYPE_FOLDER = "jnt:moduleManagementBundleFolder";
     private static final String NODE_TYPE_ROOT = "jnt:moduleManagement";
 
+    private static final String PROP_BUNDLES_PERSISTENT_STATE = "j:bundlesPersistentState";
+
     static final String PATH_BUNDLES = '/' + NODE_NAME_ROOT + '/' + NODE_NAME_BUNDLES;
     static final String PATH_ROOT = '/' + NODE_NAME_ROOT;
+
+    /**
+     * This method will save the list of bundles as JSON on the node /module-management
+     * using the property j:bundlesPersistentState
+     *
+     * @param bundles The list of bundles to save as JSON in the JCR
+     */
+    public static void saveBundlesPersistentState(List<Map<String, Object>> bundles) {
+        final JSONArray bundleListJson = new JSONArray(bundles);
+        try {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                @Override
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    session.getNode(PATH_ROOT).setProperty(PROP_BUNDLES_PERSISTENT_STATE, bundleListJson.toString());
+                    session.save();
+
+                    return null;
+                }
+            });
+        } catch (RepositoryException e) {
+            logger.error("Could not persist bundles persistent state in the JCR " + bundleListJson.toString(), e);
+        }
+    }
 
     /**
      * Looks up the target bundle node for specified bundle key.

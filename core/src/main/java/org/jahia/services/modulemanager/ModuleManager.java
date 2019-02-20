@@ -44,10 +44,12 @@
 package org.jahia.services.modulemanager;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.jahia.osgi.BundleState;
 import org.jahia.services.modulemanager.spi.BundleService;
+import org.osgi.framework.Bundle;
 import org.springframework.core.io.Resource;
 
 /**
@@ -223,4 +225,11 @@ public interface ModuleManager {
      * @return A map of local bundle info by bundle key; each map value is either a BundleService.ModuleInfo instance in case the bundle is a DX module, or a BundleService.BundleInfo instance otherwise
      */
     Map<String, BundleService.BundleInformation> getAllLocalInfos() throws ModuleManagementException;
+
+    /**
+     * Save the bundles persistent state in the JCR
+     *
+     * @return A List of map, each map contains the information about the bundles which the persistent state have been saved in the JCR
+     */
+    List<Map<String, Object>> savePersistentStateInJcr();
 }

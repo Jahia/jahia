@@ -43,13 +43,7 @@
  */
 package org.jahia.services.modulemanager.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.drools.core.util.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -58,6 +52,9 @@ import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleState;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.modulemanager.BundleBucketInfo;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.Constants;
@@ -70,18 +67,23 @@ import org.jahia.services.modulemanager.OperationResult;
 import org.jahia.services.modulemanager.persistence.BundlePersister;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.jahia.services.modulemanager.persistence.PersistentBundleInfoBuilder;
+import org.jahia.services.modulemanager.persistence.jcr.BundleInfoJcrHelper;
 import org.jahia.services.modulemanager.spi.BundleService;
 import org.jahia.services.modulemanager.spi.BundleService.BundleInformation;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
 import org.jahia.settings.readonlymode.ReadOnlyModeException;
+import org.json.JSONArray;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.startlevel.BundleStartLevel;
 import org.osgi.framework.wiring.FrameworkWiring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+
+import javax.jcr.RepositoryException;
 
 /**
  * The main entry point service for the module management service, providing functionality for module deployment, undeployment, start and
@@ -560,5 +562,41 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
         if (readOnly) {
             throw new ReadOnlyModeException("The Module Manager is in read only mode: no operations that change module state are available");
         }
+    }
+
+    @Override
+    public List<Map<String, Object>> savePersistentStateInJcr() {
+        List<Map<String, Object>> bundleList = new ArrayList<>();
+
+        Bundle[] bundles = FrameworkService.getBundleContext().getBundles();
+        for (Bundle bundle : bundles) {
+            Map<String, Object> module = new HashMap<>();
+
+            Integer persistentState;
+            if (bundle.getState() != Bundle.UNINSTALLED) {
+                if (bundle.adapt(BundleStartLevel.class).isPersistentlyStarted()) {
+                    persistentState = Bundle.ACTIVE;
+                } else {
+                    persistentState = Bundle.INSTALLED;
+                }
+            } else {
+                persistentState = Bundle.UNINSTALLED;
+            }
+
+            // Fill the map to return the result
+            module.put("id", bundle.getBundleId());
+            module.put("location", bundle.getLocation());
+            module.put("state", persistentState);
+            module.put("symbolicName", bundle.getSymbolicName());
+            module.put("version", BundleUtils.getModuleVersion(bundle));
+
+            // And add it to the list
+            bundleList.add(module);
+        }
+
+        // Save list
+        BundleInfoJcrHelper.saveBundlesPersistentState(bundleList);
+
+        return bundleList;
     }
 }

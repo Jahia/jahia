@@ -55,7 +55,6 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.settings.SettingsBean;
 import org.jahia.test.JahiaTestCase;
-import org.jahia.test.services.query.IndexOptionsTest;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

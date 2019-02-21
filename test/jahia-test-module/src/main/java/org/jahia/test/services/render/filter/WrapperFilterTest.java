@@ -43,7 +43,7 @@
  */
 package org.jahia.test.services.render.filter;
 
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
 
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.channels.Channel;

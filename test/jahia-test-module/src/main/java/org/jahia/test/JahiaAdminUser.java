@@ -69,7 +69,7 @@ public class JahiaAdminUser {
         if ( user == null ){
             JCRGroupNode adminGroup = ServicesRegistry.getInstance().getJahiaGroupManagerService()
                     .lookupGroup(siteKey, siteKey == null ? JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME : JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME);
-            Set members = adminGroup.getRecursiveUserMembers();
+            Set<JCRUserNode> members = adminGroup.getRecursiveUserMembers();
             if ( members.iterator().hasNext() ){
                 user = ((JCRUserNode)members.iterator().next()).getJahiaUser();
                 adminUser.put(siteKey, user);

@@ -43,7 +43,6 @@
  */
 package org.jahia.test.services.usermanager;
 
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -52,7 +51,6 @@ import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.junit.*;
-import org.slf4j.Logger;
 
 import java.util.Collection;
 import java.util.List;
@@ -65,13 +63,11 @@ import static org.junit.Assert.*;
  */
 public class JahiaGroupManagerServiceTest {
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaGroupManagerServiceTest.class);
-
     private static JahiaUserManagerService userManager;
     private static JahiaGroupManagerService groupManager;
 
-    private static JCRUserNode user1;
-    private static JCRUserNode user2;
+    private JCRUserNode user1;
+    private JCRUserNode user2;
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {

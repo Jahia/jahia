@@ -43,10 +43,9 @@
  */
 package org.jahia.test.services.render.filter;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import org.jahia.bin.Jahia;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.AbstractFilter;
@@ -54,8 +53,6 @@ import org.jahia.services.render.filter.EmailObfuscatorFilter;
 import org.jahia.services.render.filter.RenderChain;
 import org.jahia.test.JahiaTestCase;
 import org.junit.Test;
-
-import junit.framework.TestCase;
 
 import java.util.regex.Pattern;
 

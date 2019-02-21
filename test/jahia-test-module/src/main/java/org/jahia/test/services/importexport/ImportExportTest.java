@@ -79,7 +79,6 @@ import javax.xml.transform.TransformerException;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.slf4j.Logger;
-import org.springframework.core.io.FileSystemResource;
 import org.xml.sax.SAXException;
 
 import static org.junit.Assert.*;
@@ -96,7 +95,6 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.importexport.NoCloseZipInputStream;
 import org.jahia.services.importexport.validation.MissingNodetypesValidationResult;
@@ -375,7 +373,7 @@ public class ImportExportTest {
 
                         childPage = englishEditSiteHomeNode.getNode("child2");
                         childPage.addMixin("jmix:tagged");
-                        tagService.tag(childPage.getPath(), "impexptag", TESTSITE_NAME, true);
+                        tagService.tag(childPage, "impexptag");
                         session.save();
                         return null;
                     }
@@ -503,7 +501,7 @@ public class ImportExportTest {
 
                         childPage = englishLiveSiteHomeNode.getNode("child2");
                         childPage.addMixin("jmix:tagged");
-                        tagService.tag(childPage.getPath(), "impexptagugc", TESTSITE_NAME, true);
+                        tagService.tag(childPage, "impexptagugc");
                         session.save();
                         return null;
                     }
@@ -566,13 +564,14 @@ public class ImportExportTest {
                 JahiaContextLoaderListener.getServletContext().getRealPath("/WEB-INF/etc/repository/export/cleanup.xsl"));
         ImportExportService importExportService = ServicesRegistry.getInstance().getImportExportService();
         File zipFile = null;
-
+        
         try {
             zipFile = File.createTempFile("simpleimportexporttest", ".zip");
-            OutputStream outputStream = new FileOutputStream(zipFile);
-            List<JCRSiteNode> sites = Lists.newArrayList((JCRSiteNode)ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(siteName));
-            importExportService.exportSites(outputStream, params, sites);
-            outputStream.close();
+            try (OutputStream outputStream = new FileOutputStream(zipFile)) {
+                List<JCRSiteNode> sites = Lists
+                        .newArrayList((JCRSiteNode) ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(siteName));
+                importExportService.exportSites(outputStream, params, sites);
+            }
         } catch (FileNotFoundException e) {
             logger.error("Exception during ImportExportTest", e);
         } catch (IOException e) {
@@ -978,55 +977,6 @@ public class ImportExportTest {
             }
         }
         return propsList.toArray(new String[propsList.size()]);
-    }
-
-    private File exportNode(JCRNodeWrapper node) throws RepositoryException {
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put(ImportExportService.INCLUDE_LIVE_EXPORT, Boolean.TRUE);
-        params.put(ImportExportService.VIEW_CONTENT, Boolean.TRUE);
-        params.put(ImportExportService.VIEW_JAHIALINKS, Boolean.TRUE);
-        params.put(ImportExportService.VIEW_ACL, Boolean.TRUE);
-        params.put(ImportExportService.VIEW_METADATA, Boolean.TRUE);
-        params.put(ImportExportService.VIEW_VERSION, Boolean.FALSE);
-        params.put(ImportExportService.VIEW_WORKFLOW, Boolean.FALSE);
-        params.put(ImportExportService.XSL_PATH,
-                JahiaContextLoaderListener.getServletContext().getRealPath("/WEB-INF/etc/repository/export/cleanup.xsl"));
-        ImportExportService importExportService = ServicesRegistry.getInstance().getImportExportService();
-        File zipFile = null;
-
-        try {
-            zipFile = File.createTempFile("nodeimportexporttest", ".zip");
-            OutputStream outputStream = new FileOutputStream(zipFile);
-            importExportService.exportZip(node, null, outputStream, params);
-            outputStream.close();
-
-        } catch (FileNotFoundException e) {
-            logger.error("Exception during ImportExportTest", e);
-        } catch (IOException e) {
-            logger.error("Exception during ImportExportTest", e);
-        } catch (SAXException e) {
-            logger.error("Exception during ImportExportTest", e);
-        } catch (TransformerException e) {
-            logger.error("Exception during ImportExportTest", e);
-        }
-        return zipFile;
-    }
-
-    private void performNodeImport(final File zipFile, final String parentPath) throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                try {
-                    ImportExportService importExport = ServicesRegistry.getInstance().getImportExportService();
-                    importExport.importZip(parentPath, zipFile != null ? new FileSystemResource(zipFile) : null,
-                            DocumentViewImportHandler.ROOT_BEHAVIOUR_RENAME);
-                    session.save();
-                } catch (Exception ex) {
-                    logger.warn("Exception during node import", ex);
-                    fail("Exception during node import");
-                }
-                return null;
-            }
-        });
     }
     
     @Test

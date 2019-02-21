@@ -43,21 +43,19 @@
  */
 package org.jahia.test.bin;
 
-import junit.framework.TestCase;
-
 import java.util.List;
 
 /**
  * Simple bean that list all test cases
  */
-public class TestBean implements Comparable {
+public class TestBean implements Comparable<TestBean> {
     private boolean coreTests;
     private List<String> ignoredTests;
     private int priority;
     private List<String> testCases;
 
-    public int compareTo(Object o) {
-        return priority != ((TestBean)o).getPriority() ? priority - ((TestBean)o).getPriority() : 1;
+    public int compareTo(TestBean o) {
+        return priority != o.getPriority() ? priority - o.getPriority() : 1;
     }
 
     public List<String> getIgnoredTests() {

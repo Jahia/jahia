@@ -56,7 +56,6 @@ import org.jahia.services.render.scripting.Script;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.test.JahiaAdminUser;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.ModuleTestHelper;
 import org.jahia.test.TestHelper;

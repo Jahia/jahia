@@ -49,7 +49,6 @@ import java.util.Locale;
 import java.util.Properties;
 
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 
 import org.jahia.api.Constants;
 import org.jahia.osgi.BundleUtils;

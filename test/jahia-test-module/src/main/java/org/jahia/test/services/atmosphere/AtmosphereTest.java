@@ -45,11 +45,9 @@ package org.jahia.test.services.atmosphere;
 
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.AsyncCompletionHandler;
-import com.ning.http.client.AsyncHttpClientConfig.Builder;
 import com.ning.http.client.Response;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.atmosphere.cpr.HeaderConfig;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
@@ -79,7 +77,7 @@ import static org.junit.Assert.*;
  */
 public class AtmosphereTest extends JahiaTestCase {
     private transient static Logger logger = LoggerFactory.getLogger(AtmosphereTest.class);
-    private String urlTarget = getBaseServerURL() + Jahia.getContextPath()+"/atmosphere/alert/testChannel";
+//    private String urlTarget = getBaseServerURL() + Jahia.getContextPath()+"/atmosphere/alert/testChannel";
 
 //    @Test
 //    public void testHeaderBroadcasterCache() throws IllegalAccessException, ClassNotFoundException, InstantiationException {

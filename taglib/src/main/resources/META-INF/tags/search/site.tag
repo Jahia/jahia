@@ -1,4 +1,5 @@
 <%@ tag body-content="empty" description="Renders site selection language selection control. By default all sites are used. This can be overridden by providing a list of sites to be disaplyed for selection." %>
+<%@ tag import="org.jahia.services.render.RenderContext" %>
 <%@ tag import="org.jahia.services.sites.JahiaSitesService" %>
 <%@ tag dynamic-attributes="attributes"%>
 <%@ attribute name="display" required="false" type="java.lang.Boolean"
@@ -24,7 +25,7 @@
     <c:set var="selectedValues" value=",${not empty value ? fn:join(value, ',') : renderContext.site.name},"/>
     <c:set var="allowAll" value="${not empty allowAll ? allowAll : true}"/>
     <c:set target="${attributes}" property="name" value="src_sites.values"/>
-    <% jspContext.setAttribute("allSites", JahiaSitesService.getInstance().getSitesNodeList()); %>
+    <% jspContext.setAttribute("allSites", JahiaSitesService.getInstance().getSitesNodeList(((RenderContext) request.getAttribute("renderContext")).getSite().getSession())); %>
     <c:if test="${not empty valueOptions}">
     	<c:set var="valueOptions" value=",${fn:replace(valueOptions, ' ', '')},"/>
     </c:if>
@@ -33,9 +34,10 @@
    			<option value="-all-" ${fn:contains(selectedValues, '-all-') ? 'selected="selected"' : ''}><fmt:message key="searchForm.any"/></option>
    		</c:if>
     	<c:forEach items="${allSites}" var="site">
-    		<c:set var="siteKeyToCheck" value=",${site.siteKey},"/>
-    		<c:if test="${site.siteKey != 'systemsite' && (empty valueOptions || fn:contains(valueOptions, siteKeyToCheck))}">
-            	<option value="${site.siteKey}" ${fn:contains(selectedValues, siteKeyToCheck) ? 'selected="selected"' : ''}>${fn:escapeXml(not empty site.title ? site.title : site.siteKey)}</option>
+            <c:set var="siteKeyValue" value="${site.siteKey}"/>
+    		<c:set var="siteKeyToCheck" value=",${siteKeyValue},"/>
+    		<c:if test="${siteKeyValue != 'systemsite' && (empty valueOptions || fn:contains(valueOptions, siteKeyToCheck))}">
+            	<option value="${siteKeyValue}" ${fn:contains(selectedValues, siteKeyToCheck) ? 'selected="selected"' : ''}>${fn:escapeXml(site.displayableName)}</option>
             </c:if>
     	</c:forEach>
     </select>

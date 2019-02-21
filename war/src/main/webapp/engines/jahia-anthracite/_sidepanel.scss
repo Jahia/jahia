@@ -1043,6 +1043,10 @@ body[indigo-dragging-panel] {
 				background-image: url(./images/icons/tabs-files@X2.png);
 			}
 
+			&[src$="/remoteFolder.png"] {
+				background-image: url(./images/icons/tabs-files-shared-white@X2.png);
+			}
+
 			&[src$="/jnt_virtualsite.png"] {
 				background-image: url(./images/icons/tabs-site-white@X2.png);
 			}
@@ -1099,7 +1103,7 @@ body[indigo-dragging-panel] {
 			}
 
 			&[src$="/remoteFolder.png"] {
-				background-image: url(./images/icons/tabs-files-shared-dark@X2.png);
+				background-image: url(./images/icons/tabs-files-shared-white@X2.png);
 			}
 
 			// IMPORT DROP BOX

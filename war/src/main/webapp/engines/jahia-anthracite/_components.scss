@@ -3416,7 +3416,8 @@ body[data-indigo-gwt-side-panel="open"] {
 		&[src$="/jnt_page.png"],
 		&[src$="/jnt_folder.png"],
 		&[src$="/jnt_groupsFolder.png"],
-		&[src$="/jnt_contentFolder.png"] {
+		&[src$="/jnt_contentFolder.png"],
+		&[src$="/remoteFolder.png"] {
 			padding: 0 0 0 21px!important;
 			border-radius: 0;
 			height: 23px;
@@ -3428,6 +3429,10 @@ body[data-indigo-gwt-side-panel="open"] {
 		&[src$="/jnt_contentFolder.png"],
 		&[src$="/jnt_folder.png"] {
 			background-image: url(./images/icons/tabs-files-dark@X2.png);
+		}
+
+		&[src$="/remoteFolder.png"] {
+			background-image: url(./images/icons/tabs-files-shared-dark@X2.png);
 		}
 
 		&[src$="/jnt_portletFolder.png"] {

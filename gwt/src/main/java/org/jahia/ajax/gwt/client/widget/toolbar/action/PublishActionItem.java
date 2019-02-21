@@ -289,7 +289,8 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                     if (!unpublishableMap.containsKey(status)) {
                         unpublishableMap.put(status, new ArrayList<String>());
                     }
-                    unpublishableMap.get(status).add("<strong>" + info.getTitle() + "</strong> (" + info.getPath() + ")");
+                    unpublishableMap.get(status).add("<span class=\"info-publication-label\"><strong>" + info.getTitle() + "</strong>" +
+                            "</span><span class=\"info-publication-path\">(" + info.getPath() + ")</span>");
                 }
 
                 for (Map.Entry<Integer, List<String>> entry : unpublishableMap.entrySet()) {
@@ -298,25 +299,25 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                     Set<String> values = new HashSet<String>(entry.getValue());
                     if (values.size() >= 10) {
                         values = new LinkedHashSet<String>(new ArrayList<String>(values).subList(0, 10));
-                        values.add("...");
+                        values.add("<span class=\"info-publication-more\">...</span>");
                     }
 
                     final String labelKey = GWTJahiaPublicationInfo.statusToLabel.get(status);
-                    message.append(Messages.get("label.publication." + labelKey, labelKey)).append(" : ").append("<br/><br/>");
+
+                    message.append("<div class=\"info-publication-header\">").
+                            append(Messages.get("label.publication." + labelKey, labelKey)).
+                            append("</div>");
+                    message.append("<ul class=\"info-publication-list\">");
 
                     Iterator<String> valuesIterator = values.iterator();
                     while (valuesIterator.hasNext()) {
                         String value = valuesIterator.next();
-
-                        message.append(value);
-                        if (valuesIterator.hasNext()) {
-                            message.append(",");
-                        }
-                        message.append("<br/>");
+                        message.append("<li>").append(value).append("</li>");
                     }
+                    message.append("</ul>");
                 }
                 if (!result.isEmpty()) {
-                    message.append("<br/>").append(Messages.get("message.continue"));
+                    message.append("<div class=\"info-publication-continue\">").append(Messages.get("message.continue")).append("</div>");
                     MessageBox.confirm(Messages.get("label.publish", "Publication"), message.toString(), new Listener<MessageBoxEvent>() {
 
                         @Override

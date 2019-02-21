@@ -65,7 +65,7 @@ import javax.jcr.query.Query;
 
 import java.util.*;
 
-import static junit.framework.Assert.fail;
+import static org.junit.Assert.fail;
 import static org.junit.Assert.*;
 
 /**

@@ -287,13 +287,12 @@ public class ModuleDeploymentTest {
                             .getResource("dummy1-" + "1.0" + ".jar").getURL(), tmpFile);
                     Map<String, String> env = new HashMap<>();
                     env.put("create", "true");
-                    FileSystem fs = FileSystems.newFileSystem(URI.create("jar:" + tmpFile.toURI().toURL()), env);
-                    File droolsFile = File.createTempFile("rules", ".drl");
-                    FileUtils.writeStringToFile(droolsFile, "dummy text");
-                    Files.copy(droolsFile.toPath(), fs.getPath("/META-INF/rules.drl"),
-                            StandardCopyOption.REPLACE_EXISTING);
-                    FileUtils.deleteQuietly(droolsFile);
-                    fs.close();
+                    try (FileSystem fs = FileSystems.newFileSystem(URI.create("jar:" + tmpFile.toURI().toURL()), env)) {
+                        File droolsFile = File.createTempFile("rules", ".drl");
+                        FileUtils.writeStringToFile(droolsFile, "dummy text");
+                        Files.copy(droolsFile.toPath(), fs.getPath("/META-INF/rules.drl"), StandardCopyOption.REPLACE_EXISTING);
+                        FileUtils.deleteQuietly(droolsFile);
+                    }
 
                     JahiaTemplatesPackage pack = managerService.deployModule(tmpFile, session);
 

@@ -400,19 +400,19 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
         JCRSessionWrapper openedSession = JCRSessionWrapper.getActiveSessionsObjects().get(sessionUUID);
 
         // ensure it's working
-        openedSession.getNode(TEST_FOLDER_PATH).checkin();
-        openedSession.getNode(TEST_FOLDER_PATH).checkout();
+        openedSession.getWorkspace().getVersionManager().checkin(TEST_FOLDER_PATH);
+        openedSession.getWorkspace().getVersionManager().checkout(TEST_FOLDER_PATH);
 
         // checkin a folder
-        openedSession.getNode(TEST_FOLDER_PATH2).checkin();
+        openedSession.getWorkspace().getVersionManager().checkin(TEST_FOLDER_PATH2);
 
         readOnlyModeController.switchReadOnlyMode(true);
 
         // test blocked for a new session
         JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
             try {
-                 testReadOnlyModeViolation(() -> session.getNode(TEST_FOLDER_PATH).checkin(), true);
-                 testReadOnlyModeViolation(() -> session.getNode(TEST_FOLDER_PATH2).checkout(), true);
+                 testReadOnlyModeViolation(() -> session.getWorkspace().getVersionManager().checkin(TEST_FOLDER_PATH), true);
+                 testReadOnlyModeViolation(() -> session.getWorkspace().getVersionManager().checkout(TEST_FOLDER_PATH2), true);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -420,21 +420,21 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
         });
 
         // test blocked for the open session
-        testReadOnlyModeViolation(() -> openedSession.getNode(TEST_FOLDER_PATH).checkin(), true);
-        testReadOnlyModeViolation(() -> openedSession.getNode(TEST_FOLDER_PATH2).checkout(), true);
+        testReadOnlyModeViolation(() -> openedSession.getWorkspace().getVersionManager().checkin(TEST_FOLDER_PATH), true);
+        testReadOnlyModeViolation(() -> openedSession.getWorkspace().getVersionManager().checkout(TEST_FOLDER_PATH2), true);
 
         readOnlyModeController.switchReadOnlyMode(false);
 
         JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
-            session.getNode(TEST_FOLDER_PATH).checkin();
-            session.getNode(TEST_FOLDER_PATH).checkout();
+            session.getWorkspace().getVersionManager().checkin(TEST_FOLDER_PATH);
+            session.getWorkspace().getVersionManager().checkout(TEST_FOLDER_PATH);
             return null;
         });
 
-        openedSession.getNode(TEST_FOLDER_PATH).checkin();
-        openedSession.getNode(TEST_FOLDER_PATH).checkout();
+        openedSession.getWorkspace().getVersionManager().checkin(TEST_FOLDER_PATH);
+        openedSession.getWorkspace().getVersionManager().checkout(TEST_FOLDER_PATH);
 
-        openedSession.getNode(TEST_FOLDER_PATH2).checkout();
+        openedSession.getWorkspace().getVersionManager().checkout(TEST_FOLDER_PATH2);
     }
 
     /**

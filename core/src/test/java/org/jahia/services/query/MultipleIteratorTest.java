@@ -44,7 +44,7 @@
 package org.jahia.services.query;
 
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.apache.jackrabbit.rmi.iterator.ArrayIterator;
 import org.jahia.services.content.MultipleIterator;
 import org.junit.Test;

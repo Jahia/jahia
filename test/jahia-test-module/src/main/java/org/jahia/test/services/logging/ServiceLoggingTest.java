@@ -76,7 +76,7 @@ import static org.junit.Assert.*;
  * @since JAHIA 6.5 Created : 27 nov. 2009
  */
 public class ServiceLoggingTest {
-    private static transient Logger logger = Logger.getLogger(ServiceLoggingTest.class);
+    private static final Logger logger = Logger.getLogger(ServiceLoggingTest.class);
     private static final int TAGS_TO_CREATE = 30;
     private static final float ACCEPTABLE_DEVIATION = 10;
 

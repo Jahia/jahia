@@ -43,10 +43,10 @@
  */
 package org.jahia.test.services.content.interceptor;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -74,7 +74,7 @@ import org.junit.Test;
  * @author Sergiy Shyrkov
  */
 public class HtmlFilteringInterceptorTest extends HtmlFilteringInterceptor {
-	private static JCRNodeWrapper node;
+	private JCRNodeWrapper node;
 	private static JCRSessionWrapper session;
 
 	private static String loadContent(String resource) throws IOException {
@@ -128,7 +128,7 @@ public class HtmlFilteringInterceptorTest extends HtmlFilteringInterceptor {
 	public void testFilteringDisabled() throws Exception {
 		String source = "abc";
 		assertEquals("Filtering should nor be done as the tag set is empty", source,
-		        HtmlFilteringInterceptor.filterTags(source, Collections.EMPTY_SET, false));
+		        HtmlFilteringInterceptor.filterTags(source, Collections.emptySet(), false));
 	}
 
 	@Test

@@ -56,7 +56,6 @@ import org.jahia.services.search.Hit;
 import org.jahia.services.search.SearchCriteria;
 import org.jahia.services.search.SearchCriteria.CommaSeparatedMultipleValue;
 import org.jahia.services.search.SearchService;
-import org.jahia.settings.SettingsBean;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.junit.AfterClass;

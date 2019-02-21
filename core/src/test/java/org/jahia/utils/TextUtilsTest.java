@@ -51,7 +51,7 @@ import org.junit.Test;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 
 /**
  *

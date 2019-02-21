@@ -67,7 +67,6 @@ import org.jahia.test.TestHelper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -84,13 +83,11 @@ import static org.junit.Assert.*;
  * AggregateFilterTest unit test, bring unit tests for testing the new Aggregation implementation introduce in 7.2
  */
 public class AggregateFilterTest extends JahiaTestCase {
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(AggregateFilterTest.class);
-
     private static final String ESI_TAG_START = "<jahia_esi:include src=\"";
     private static final String ESI_TAG_END = "\"></jahia_esi:include>";
     public final static String TESTSITE_NAME = "test";
-    private static List<RenderFilter> renderServiceFilters;
-    private static List<RenderFilter> templatePackageRegistryFilters;
+    private List<RenderFilter> renderServiceFilters;
+    private List<RenderFilter> templatePackageRegistryFilters;
     private JCRSessionWrapper session;
 
     private OutFilter outFilter = new OutFilter();
@@ -181,7 +178,7 @@ public class AggregateFilterTest extends JahiaTestCase {
         assertTrue(!((Boolean) moduleMap.get(AggregateFilter.AGGREGATING)));
         assertEquals(key, moduleMap.get(AggregateFilter.RENDERING_KEY));
         assertEquals(finalKey, moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY));
-        assertTrue(stack != null && stack.size() == 0);
+        assertTrue(stack != null && stack.isEmpty());
 
         // test execute
         result = aggregateFilter.execute("MR render", context, mainResource, null);
@@ -193,7 +190,7 @@ public class AggregateFilterTest extends JahiaTestCase {
         assertTrue(!((Boolean) moduleMap.get(AggregateFilter.AGGREGATING)));
         assertEquals(key, moduleMap.get(AggregateFilter.RENDERING_KEY));
         assertEquals(finalKey, moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY));
-        assertTrue(stack.size() == 0);
+        assertTrue(stack.isEmpty());
 
         // test finalize
         aggregateFilter.finalize(context, mainResource, null);
@@ -235,7 +232,7 @@ public class AggregateFilterTest extends JahiaTestCase {
 
         assertNull(stack);
         assertTrue(result != null && result.equals("Module render"));
-        assertTrue(moduleMap.size() == 0);
+        assertTrue(moduleMap.isEmpty());
 
         // test finalize
         aggregateFilter.finalize(context, mainResource, null);
@@ -243,7 +240,7 @@ public class AggregateFilterTest extends JahiaTestCase {
         stack = (Stack<Resource>) context.getRequest().getAttribute(AggregateFilter.RESOURCES_STACK);
         moduleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
         assertTrue(stack == null);
-        assertTrue(moduleMap.size() == 0);
+        assertTrue(moduleMap.isEmpty());
     }
 
     /**
@@ -288,7 +285,7 @@ public class AggregateFilterTest extends JahiaTestCase {
         assertTrue(!((Boolean) moduleMap.get(AggregateFilter.AGGREGATING)));
         assertEquals(key, moduleMap.get(AggregateFilter.RENDERING_KEY));
         assertEquals(finalKey, moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY));
-        assertTrue(stack != null && stack.size() == 0);
+        assertTrue(stack != null && stack.isEmpty());
 
         // execute test
         result = aggregateFilter.execute(result, context, fragmentResource, null);
@@ -300,7 +297,7 @@ public class AggregateFilterTest extends JahiaTestCase {
         assertTrue(!((Boolean) moduleMap.get(AggregateFilter.AGGREGATING)));
         assertEquals(key, moduleMap.get(AggregateFilter.RENDERING_KEY));
         assertEquals(finalKey, moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY));
-        assertTrue(stack != null && stack.size() == 0);
+        assertTrue(stack != null && stack.isEmpty());
 
         // finalize test
         aggregateFilter.finalize(context, fragmentResource, null);
@@ -311,7 +308,7 @@ public class AggregateFilterTest extends JahiaTestCase {
         assertTrue(!((Boolean) moduleMap.get(AggregateFilter.AGGREGATING)));
         assertEquals(key, moduleMap.get(AggregateFilter.RENDERING_KEY));
         assertEquals(finalKey, moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY));
-        assertTrue(stack != null && stack.size() == 0);
+        assertTrue(stack != null && stack.isEmpty());
     }
 
     /**
@@ -392,7 +389,7 @@ public class AggregateFilterTest extends JahiaTestCase {
         assertEquals(fragmentKey, moduleMap.get(AggregateFilter.RENDERING_KEY));
         assertEquals(fragmentFinalKey, moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY));
         // key stack should be empty
-        assertTrue(stack != null && stack.size() == 0);
+        assertTrue(stack != null && stack.isEmpty());
     }
 
     @Test
@@ -558,7 +555,7 @@ public class AggregateFilterTest extends JahiaTestCase {
     public static class BaseAttributesFilter extends AbstractFilter {
         @Override
         public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-            chain.pushAttribute(renderContext.getRequest(), "moduleMap", new HashMap());
+            chain.pushAttribute(renderContext.getRequest(), "moduleMap", new HashMap<>());
             return null;
         }
 

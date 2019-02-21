@@ -99,11 +99,7 @@ public class JcrSettingsAccessTest extends JahiaTestCase {
 
     private static final String USER_PASSWORD = "password";
 
-    private static JahiaGroupManagerService groupManager;
-
     private static String mountPointPath;
-
-    private static JahiaUserManagerService userManager;
 
     private static void checkExistence(JCRSessionWrapper session, boolean expectExists, String... paths)
             throws RepositoryException {
@@ -130,8 +126,8 @@ public class JcrSettingsAccessTest extends JahiaTestCase {
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
-        groupManager = JahiaGroupManagerService.getInstance();
-        userManager = JahiaUserManagerService.getInstance();
+        JahiaGroupManagerService groupManager = JahiaGroupManagerService.getInstance();
+        JahiaUserManagerService userManager = JahiaUserManagerService.getInstance();
 
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
             @Override
@@ -173,10 +169,11 @@ public class JcrSettingsAccessTest extends JahiaTestCase {
 
     @AfterClass
     public static void oneTimeTearDown() throws Exception {
-
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
             @Override
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                JahiaGroupManagerService groupManager = JahiaGroupManagerService.getInstance();
+                JahiaUserManagerService userManager = JahiaUserManagerService.getInstance();
                 JCRUserNode privilegedUser = userManager.lookupUser(PRIVILEGED_USER_NAME, session);
                 if (privilegedUser != null) {
                     groupManager.lookupGroup(null, PRIVILEGED_GROUPNAME, session).removeMember(privilegedUser);
@@ -199,9 +196,6 @@ public class JcrSettingsAccessTest extends JahiaTestCase {
                 return null;
             }
         });
-
-        groupManager = null;
-        userManager = null;
     }
 
     private void checkNoAccessViaRest() throws IOException {

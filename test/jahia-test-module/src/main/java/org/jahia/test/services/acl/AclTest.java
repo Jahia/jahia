@@ -89,17 +89,11 @@ public class AclTest {
 
     private static JCRGroupNode group1;
     private static JCRGroupNode group2;
-    public static final String HOMEPATH = "/sites/"+TESTSITE_NAME+"/home";
+    public static final String SITEPATH = "/sites/" + TESTSITE_NAME;
+    public static final String HOMEPATH = SITEPATH + "/home";
 
     public static JCRPublicationService jcrService;
 
-    private static JCRNodeWrapper home;
-    private static JCRNodeWrapper content1;
-    private static JCRNodeWrapper content11;
-    private static JCRNodeWrapper content12;
-    private static JCRNodeWrapper content2;
-    private static JCRNodeWrapper content21;
-    private static JCRNodeWrapper content22;
     private static String homeIdentifier;
     private JCRSessionWrapper session;
     static String content1Identifier;
@@ -134,19 +128,19 @@ public class AclTest {
 
         JCRSessionWrapper session = jcrService.getSessionFactory().getCurrentUserSession();
 
-        home = session.getNode(HOMEPATH);
+        JCRNodeWrapper home = session.getNode(HOMEPATH);
         homeIdentifier = home.getIdentifier();
-        content1 = home.addNode("content1", "jnt:contentList");
+        JCRNodeWrapper content1 = home.addNode("content1", "jnt:contentList");
         content1Identifier = content1.getIdentifier();
-        content11 = content1.addNode("content1.1", "jnt:contentList");
+        JCRNodeWrapper content11 = content1.addNode("content1.1", "jnt:contentList");
         content11Identifier = content11.getIdentifier();
-        content12 = content1.addNode("content1.2", "jnt:contentList");
+        JCRNodeWrapper content12 = content1.addNode("content1.2", "jnt:contentList");
         content12Identifier = content12.getIdentifier();
-        content2 = home.addNode("content2", "jnt:contentList");
+        JCRNodeWrapper content2 = home.addNode("content2", "jnt:contentList");
         content2Identifier = content2.getIdentifier();
-        content21 = content2.addNode("content2.1", "jnt:contentList");
+        JCRNodeWrapper content21 = content2.addNode("content2.1", "jnt:contentList");
         content21Identifier = content21.getIdentifier();
-        content22 = content2.addNode("content2.2", "jnt:contentList");
+        JCRNodeWrapper content22 = content2.addNode("content2.2", "jnt:contentList");
         content22Identifier = content22.getIdentifier();
         session.save();
 
@@ -190,69 +184,73 @@ public class AclTest {
     @Before
     public void setUp() throws RepositoryException {
         session = JCRSessionFactory.getInstance().getCurrentUserSession();
-        home = session.getNodeByIdentifier(homeIdentifier);
+        JCRNodeWrapper home = session.getNodeByIdentifier(homeIdentifier);
         home.getAclEntries();
-        content1 = session.getNodeByIdentifier(content1Identifier);
+        JCRNodeWrapper content1 = session.getNodeByIdentifier(content1Identifier);
         content1.getAclEntries();
-        content11 = session.getNodeByIdentifier(content11Identifier);
+        JCRNodeWrapper content11 = session.getNodeByIdentifier(content11Identifier);
         content11.getAclEntries();
-        content12 = session.getNodeByIdentifier(content12Identifier);
+        JCRNodeWrapper content12 = session.getNodeByIdentifier(content12Identifier);
         content12.getAclEntries();
-        content2 = session.getNodeByIdentifier(content2Identifier);
+        JCRNodeWrapper content2 = session.getNodeByIdentifier(content2Identifier);
         content2.getAclEntries();
-        content21 = session.getNodeByIdentifier(content21Identifier);
+        JCRNodeWrapper content21 = session.getNodeByIdentifier(content21Identifier);
         content21.getAclEntries();
-        content22 = session.getNodeByIdentifier(content22Identifier);
+        JCRNodeWrapper content22 = session.getNodeByIdentifier(content22Identifier);
         content22.getAclEntries();
         session.save();
     }
 
     @After
     public void tearDown() throws Exception {
-        home.revokeAllRoles();
-        content1.revokeAllRoles();
-        content11.revokeAllRoles();
-        content12.revokeAllRoles();
-        content2.revokeAllRoles();
-        content21.revokeAllRoles();
-        content21.revokeAllRoles();
+        session.getNodeByIdentifier(homeIdentifier).revokeAllRoles();
+        session.getNodeByIdentifier(content1Identifier).revokeAllRoles();
+        session.getNodeByIdentifier(content11Identifier).revokeAllRoles();
+        session.getNodeByIdentifier(content12Identifier).revokeAllRoles();
+        session.getNodeByIdentifier(content2Identifier).revokeAllRoles();
+        session.getNodeByIdentifier(content21Identifier).revokeAllRoles();
+        session.getNodeByIdentifier(content22Identifier).revokeAllRoles();
         session.save();
         JCRSessionFactory.getInstance().closeAllSessions();
     }
 
     @Test
     public void testDefaultReadRight() throws Exception {
-        assertFalse((JCRTemplate.getInstance().doExecuteWithUserSession("user1", null, new CheckPermission(HOMEPATH, "jcr:read"))));
+        assertFalse((JCRTemplate.getInstance().doExecute(user1.getJahiaUser(), null, null, new CheckPermission(HOMEPATH, "jcr:read"))));
     }
 
     @Test
     public void testGrantUser() throws Exception {
+        JCRNodeWrapper content11 = session.getNodeByIdentifier(content11Identifier);
         content11.grantRoles("u:user1", Collections.singleton("owner"));
 
         assertRole(content11, "u:user1", "GRANT", "owner");
 
         session.save();
 
-        assertTrue((JCRTemplate.getInstance().doExecuteWithUserSession("user1", null, new CheckPermission(content11.getPath(), "jcr:write"))));
-        assertFalse((JCRTemplate.getInstance().doExecuteWithUserSession("user2", null, new CheckPermission(content11.getPath(), "jcr:write"))));
+        assertTrue((JCRTemplate.getInstance().doExecute(user1.getJahiaUser(), null, null, new CheckPermission(content11.getPath(), "jcr:write"))));
+        assertFalse((JCRTemplate.getInstance().doExecute(user2.getJahiaUser(), null, null, new CheckPermission(content11.getPath(), "jcr:write"))));
     }
 
     @Test
     public void testGrantGroup() throws Exception {
+        JCRNodeWrapper content11 = session.getNodeByIdentifier(content11Identifier);
         content11.grantRoles("g:group1", Collections.singleton("owner"));
 
         assertRole(content11, "g:group1", "GRANT", "owner");
 
         session.save();
 
-        assertTrue((JCRTemplate.getInstance().doExecuteWithUserSession("user1", null, new CheckPermission(content11.getPath(), "jcr:write"))));
-        assertTrue((JCRTemplate.getInstance().doExecuteWithUserSession("user2", null, new CheckPermission(content11.getPath(), "jcr:write"))));
-        assertFalse((JCRTemplate.getInstance().doExecuteWithUserSession("user3", null, new CheckPermission(content11.getPath(), "jcr:write"))));
-        assertFalse((JCRTemplate.getInstance().doExecuteWithUserSession("user4", null, new CheckPermission(content11.getPath(), "jcr:write"))));
+        assertTrue((JCRTemplate.getInstance().doExecute(user1.getJahiaUser(), null, null, new CheckPermission(content11.getPath(), "jcr:write"))));
+        assertTrue((JCRTemplate.getInstance().doExecute(user2.getJahiaUser(), null, null, new CheckPermission(content11.getPath(), "jcr:write"))));
+        assertFalse((JCRTemplate.getInstance().doExecute(user3.getJahiaUser(), null, null, new CheckPermission(content11.getPath(), "jcr:write"))));
+        assertFalse((JCRTemplate.getInstance().doExecute(user4.getJahiaUser(), null, null, new CheckPermission(content11.getPath(), "jcr:write"))));
     }
 
     @Test
     public void testDenyUser() throws Exception {
+        JCRNodeWrapper content1 = session.getNodeByIdentifier(content1Identifier);
+        JCRNodeWrapper content11 = session.getNodeByIdentifier(content11Identifier);
         content1.grantRoles("u:user1", Collections.singleton("owner"));
         content11.denyRoles("u:user1", Collections.singleton("owner"));
         assertRole(content1, "u:user1", "GRANT", "owner");
@@ -260,12 +258,15 @@ public class AclTest {
 
         session.save();
 
-        assertTrue((JCRTemplate.getInstance().doExecuteWithUserSession("user1", null, new CheckPermission(content1.getPath(), "jcr:write"))));
-        assertFalse((JCRTemplate.getInstance().doExecuteWithUserSession("user1", null, new CheckPermission(content11.getPath(), "jcr:write"))));
+        assertTrue((JCRTemplate.getInstance().doExecute(user1.getJahiaUser(), null, null, new CheckPermission(content1.getPath(), "jcr:write"))));
+        assertFalse((JCRTemplate.getInstance().doExecute(user1.getJahiaUser(), null, null, new CheckPermission(content11.getPath(), "jcr:write"))));
     }
 
     @Test
     public void testAclBreak() throws Exception {
+        JCRNodeWrapper content1 = session.getNodeByIdentifier(content1Identifier);
+        JCRNodeWrapper content11 = session.getNodeByIdentifier(content11Identifier);
+        JCRNodeWrapper content12 = session.getNodeByIdentifier(content12Identifier);
         assertThat(content1.getAclEntries()).as("ACL entries for node %s should NOT be empty", content1.getPath()).isNotEmpty();
 
         content1.setAclInheritanceBreak(true);
@@ -279,14 +280,15 @@ public class AclTest {
                 "owner", "user1").containsOnlyKeys("u:user1");
 
         session.save();
-        assertFalse((JCRTemplate.getInstance().doExecuteWithUserSession("user1", null, new CheckPermission(home.getPath(), "jcr:read"))));
-        assertFalse((JCRTemplate.getInstance().doExecuteWithUserSession("user1", null, new CheckPermission(content1.getPath(), "jcr:read"))));
-        assertTrue((JCRTemplate.getInstance().doExecuteWithUserSession("user1", null, new CheckPermission(content11.getPath(), "jcr:read"))));
-        assertFalse((JCRTemplate.getInstance().doExecuteWithUserSession("user1", null, new CheckPermission(content12.getPath(), "jcr:read"))));
+        assertFalse((JCRTemplate.getInstance().doExecute(user1.getJahiaUser(), null, null, new CheckPermission(HOMEPATH, "jcr:read"))));
+        assertFalse((JCRTemplate.getInstance().doExecute(user1.getJahiaUser(), null, null, new CheckPermission(content1.getPath(), "jcr:read"))));
+        assertTrue((JCRTemplate.getInstance().doExecute(user1.getJahiaUser(), null, null, new CheckPermission(content11.getPath(), "jcr:read"))));
+        assertFalse((JCRTemplate.getInstance().doExecute(user1.getJahiaUser(), null, null, new CheckPermission(content12.getPath(), "jcr:read"))));
     }
 
     @Test
     public void testRevokeRoles() throws Exception {
+        JCRNodeWrapper content11 = session.getNodeByIdentifier(content11Identifier);
         content11.grantRoles("u:user1", Collections.singleton("owner"));
         content11.grantRoles("u:user2", Collections.singleton("owner"));
         assertRole(content11, "u:user1", "GRANT", "owner");
@@ -315,8 +317,9 @@ public class AclTest {
     @Test
     // Test case for the https://jira.jahia.org/browse/QA-9762
     public void testPrivilegedAccess() throws Exception {
-
         assertAccess(ImmutableMap.of("user1", false, "user3", false));
+        
+        JCRNodeWrapper home = session.getNodeByIdentifier(homeIdentifier);
 
         // grant group1 an editor role on home page
         home.grantRoles("g:group1", Collections.singleton("editor"));
@@ -361,10 +364,10 @@ public class AclTest {
                     .as("%s should %sbe in privileged group", principal, shouldHaveAccess ? "" : "NOT ")
                     .isEqualTo(shouldHaveAccess);
 
-            assertThat(nodeExists(home.getPath(), principal))
+            assertThat(nodeExists(HOMEPATH, principal))
                     .as("%s should %shave access to home page in edit mode", principal, shouldHaveAccess ? "" : "NOT ")
                     .isEqualTo(shouldHaveAccess);
-            assertThat(nodeExists(home.getParent().getPath(), principal))
+            assertThat(nodeExists(SITEPATH, principal))
                     .as("%s should %shave access to site in edit mode", principal, shouldHaveAccess ? "" : "NOT ")
                     .isEqualTo(shouldHaveAccess);
         }

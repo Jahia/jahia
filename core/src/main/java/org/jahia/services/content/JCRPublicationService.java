@@ -1180,7 +1180,8 @@ public class JCRPublicationService extends JahiaService {
 
             if (!node.isMarkedForDeletion() && node.hasProperty(Constants.WORKINPROGRESS_STATUS)) {
                 String wipStatus = node.getProperty(Constants.WORKINPROGRESS_STATUS).getString();
-                if (wipStatus.equals(Constants.WORKINPROGRESS_STATUS_ALLCONTENT)) {
+                if (wipStatus.equals(Constants.WORKINPROGRESS_STATUS_ALLCONTENT) ||
+                        (wipStatus.equals(Constants.WORKINPROGRESS_STATUS_LANG) && node.getResolveSite().getLanguages().size() == 1)) {
                     info.setWorkInProgress(true);
                     wipAllContent = true;
                 } else if (wipStatus.equals(Constants.WORKINPROGRESS_STATUS_LANG)) {

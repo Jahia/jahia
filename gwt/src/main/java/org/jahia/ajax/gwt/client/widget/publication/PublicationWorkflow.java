@@ -493,8 +493,13 @@ public class PublicationWorkflow implements CustomWorkflow {
             return null;
         }
 
-        final Button button =
-                new Button(Messages.get((cards.getComponents().size()==1? (unpublish? "label.workflow.unpublish.start": "label.workflow.start") :"label.workflow.start.all"), (cards.getComponents().size()==1? (unpublish? "Request unpublication": "Request publication"):"Request publication for all")));
+        final Button button;
+        if (unpublish) {
+            button = new Button(Messages.get((cards.getComponents().size() == 1 ? "label.workflow.unpublish.start" : "label.workflow.unpublish.start.all"), (cards.getComponents().size() == 1 ? "Request unpublication" : "Request unpublication for all")));
+        } else {
+            button = new Button(Messages.get((cards.getComponents().size() == 1 ? "label.workflow.start" : "label.workflow.start.all"), (cards.getComponents().size() == 1 ? "Request publication" : "Request publication for all")));
+        }
+
         button.addStyleName("button-start");
 
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -633,7 +638,11 @@ public class PublicationWorkflow implements CustomWorkflow {
                     linker.loaded();
                 }
                 if (result.isEmpty()) {
-                    MessageBox.info(Messages.get("label.publish", "Publication"), Messages.get("label.publication.nothingToPublish", "Nothing to publish"), null);
+                    MessageBox.info(
+                            Messages.get("label.publish", "Publication"),
+                            Messages.get(checkForUnpublication ? "label.publication.nothingToUnpublish" : "label.publication.nothingToPublish", checkForUnpublication ? "Nothing to unpublish" : "Nothing to publish"),
+                            null
+                    );
                 } else {
                     List<GWTJahiaPublicationInfo> unpublishable = new ArrayList<GWTJahiaPublicationInfo>();
                     for (GWTJahiaPublicationInfo info : result) {

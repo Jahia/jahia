@@ -208,7 +208,8 @@
 				right: 0;
 			}
 
-			&.toolbar-item-unpublish {
+			&.toolbar-item-unpublish,
+			&.toolbar-item-unpublishinalllanguages {
 				background-image: url(./images/icons/context-menu/unpublish.png);
 				background-color: _property($MENU-OPENED--BG, $type);
 				background-position-x: 5px;

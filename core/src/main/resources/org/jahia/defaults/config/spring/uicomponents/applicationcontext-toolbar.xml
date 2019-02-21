@@ -662,6 +662,7 @@
                 <ref bean="Toolbar.Item.PublishAll"/>
                 <ref bean="Toolbar.Item.PublishAllInAllLanguages"/>
                 <ref bean="Toolbar.Item.Unpublish"/>
+                <ref bean="Toolbar.Item.UnPublishInAllLanguages"/>
             </list>
         </property>
     </bean>
@@ -727,6 +728,23 @@
         </property>
         <property name="titleKey" value="label.publish.languages"/>
         <property name="icon" value="publish"/>
+    </bean>
+
+    <bean id="Toolbar.Item.UnPublishInAllLanguages" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UnpublishActionItem">
+                <property name="allLanguages" value="true"/>
+                <property name="forbiddenNodeTypes">
+                    <list>
+                        <value>nt:file</value>
+                        <value>jnt:virtualsite</value>
+                        <value>nt:folder</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="titleKey" value="label.unPublish.languages"/>
+        <property name="icon" value="unpublish"/>
     </bean>
 
     <bean id="Toolbar.Item.PublishSite" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">

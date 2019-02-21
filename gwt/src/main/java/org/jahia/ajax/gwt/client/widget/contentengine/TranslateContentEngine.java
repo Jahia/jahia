@@ -177,9 +177,7 @@ public class TranslateContentEngine extends Window {
                 for (final GWTJahiaNodeProperty prop : props) {
                     if (sourcePropertiesEditor.getGWTJahiaItemDefinition(prop).isInternationalized()) {
                         final Field<?> f = fieldsMap.get(prop.getName()).getField();
-                        if (!prop.getValues().isEmpty()) {
-                            FormFieldCreator.copyValue(prop, f);
-                        }
+                        FormFieldCreator.copyValue(prop, f);
                     }
                 }
             }

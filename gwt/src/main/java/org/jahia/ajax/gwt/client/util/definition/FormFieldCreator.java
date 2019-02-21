@@ -705,6 +705,9 @@ public class FormFieldCreator {
     }
 
     public static void copyValue(final GWTJahiaNodeProperty sourceProperty, final Field<?> f) {
+        if (sourceProperty.getValues().isEmpty()) {
+            return;
+        }
         final Field<?> targetField;
         if (f instanceof PropertiesEditor.PropertyAdapterField) {
             targetField = ((PropertiesEditor.PropertyAdapterField)f).getField();

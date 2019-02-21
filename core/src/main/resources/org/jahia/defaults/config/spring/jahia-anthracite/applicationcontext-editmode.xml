@@ -152,6 +152,7 @@
                                         <ref bean="Toolbar.Item.PublishOne"/>
                                         <ref bean="Toolbar.Item.PublishInAllLanguages"/>
                                         <ref bean="Toolbar.Item.Unpublish"/>
+                                        <ref bean="Toolbar.Item.UnPublishInAllLanguages"/>
                                         <ref bean="Toolbar.Item.PublicationManager"/>
                                     </list>
                                 </property>
@@ -273,6 +274,7 @@
                 <ref bean="Toolbar.Item.PublishOne"/>
                 <ref bean="Toolbar.Item.PublishInAllLanguages"/>
                 <ref bean="Toolbar.Item.Unpublish"/>
+                <ref bean="Toolbar.Item.UnPublishInAllLanguages"/>
             </list>
         </property>
     </bean>

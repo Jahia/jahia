@@ -44,16 +44,17 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
 
 import java.util.List;
 
 /**
- * 
  * User: toto
  * Date: Sep 25, 2009
  * Time: 6:58:58 PM
@@ -78,6 +79,22 @@ public class UnpublishActionItem extends PublishActionItem {
             MessageBox.info(Messages.get("label.publish", "Publication"), Messages.get("label.publication.nothingToUnpublish", "Nothing to unpublish"), null);
         } else {
             PublicationWorkflow.create(result, linker, checkForUnpublication);
+        }
+    }
+
+    @Override
+    public void handleNewLinkerSelection() {
+        super.handleNewLinkerSelection();
+
+        if (allLanguages) {
+            LinkerSelectionContext ctx = linker.getSelectionContext();
+
+            if (ctx.getMultipleSelection() == null || ctx.getMultipleSelection().size() <= 1) {
+                GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
+                if (gwtJahiaNode != null) {
+                    updateTitle(Messages.getWithArgs("label.unPublish.languages", "Unpublish {0} in all languages", new String[]{gwtJahiaNode.getDisplayName()}));
+                }
+            }
         }
     }
 }

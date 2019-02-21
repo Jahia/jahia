@@ -64,6 +64,7 @@
                 <ref bean="Toolbar.Item.PublishAll.Pages"/>
                 <ref bean="Toolbar.Item.PublishAllInAllLanguages.Pages"/>
                 <ref bean="Toolbar.Item.Unpublish"/>
+                <ref bean="Toolbar.Item.UnPublishInAllLanguages"/>
             </list>
         </property>
     </bean>
@@ -139,6 +140,7 @@
             <list>
                 <ref bean="Toolbar.Item.PublishNonFiles"/>
                 <ref bean="Toolbar.Item.PublishInAllLanguages"/>
+                <ref bean="Toolbar.Item.UnPublishInAllLanguages"/>
                 <ref bean="Toolbar.Item.PublishAll.ContentAndFiles"/>
                 <ref bean="Toolbar.Item.PublishAllInAllLanguages.ContentAndFiles"/>
                 <ref bean="Toolbar.Item.UnpublishNonFiles"/>

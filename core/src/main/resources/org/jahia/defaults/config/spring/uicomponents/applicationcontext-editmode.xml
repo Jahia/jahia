@@ -160,6 +160,7 @@
                                     <ref bean="Toolbar.Item.PublishSite"/>
                                     <ref bean="Toolbar.Item.PublishSiteInAllLanguages"/>
                                     <ref bean="Toolbar.Item.Unpublish"/>
+                                    <ref bean="Toolbar.Item.UnPublishInAllLanguages"/>
                                     <ref bean="Toolbar.Item.ViewPublishStatus"/>
                                     <ref bean="Toolbar.Item.PublicationManager"/>
                                 </list>
@@ -511,6 +512,7 @@
                 <ref bean="Toolbar.Item.PublishSite.SiteNode"/>
                 <ref bean="Toolbar.Item.PublishSiteInAllLanguages.SiteNode"/>
                 <ref bean="Toolbar.Item.Unpublish"/>
+                <ref bean="Toolbar.Item.UnPublishInAllLanguages"/>
                 <ref bean="Toolbar.Item.Separator"/>
                 <ref bean="Toolbar.Item.EditContentRootNodeEditable"/>
                 <ref bean="Toolbar.Item.Delete"/>
@@ -644,6 +646,7 @@
                 <ref bean="Toolbar.Item.PublishAll"/>
                 <ref bean="Toolbar.Item.PublishAllInAllLanguages"/>
                 <ref bean="Toolbar.Item.Unpublish"/>
+                <ref bean="Toolbar.Item.UnPublishInAllLanguages"/>
                 <ref bean="Toolbar.Item.Delete"/>
                 <ref bean="Toolbar.Item.Undelete"/>
                 <ref bean="Toolbar.Item.DeletePermanently"/>
@@ -666,6 +669,7 @@
                 <ref bean="Toolbar.Item.PublishAll"/>
                 <ref bean="Toolbar.Item.PublishAllInAllLanguages"/>
                 <ref bean="Toolbar.Item.Unpublish"/>
+                <ref bean="Toolbar.Item.UnPublishInAllLanguages"/>
                 <ref bean="Toolbar.Item.Delete"/>
                 <ref bean="Toolbar.Item.Undelete"/>
                 <ref bean="Toolbar.Item.DeletePermanently"/>
@@ -1095,11 +1099,11 @@
 
     <bean id="Engine.Button.Create" class="org.jahia.ajax.gwt.client.widget.contentengine.CreateButtonItem">
         <property name="redirectToCreatedPage" value="${jahia.ui.redirectToCreatedPage:true}"/>
-    </bean>    
+    </bean>
 
     <bean id="Engine.Button.CreateAndNew" class="org.jahia.ajax.gwt.client.widget.contentengine.CreateAndNewButtonItem">
         <property name="redirectToCreatedPage" value="${jahia.ui.redirectToCreatedPage:true}"/>
-    </bean>    
+    </bean>
 
     <bean id="Engine.Button.WorkInProgress" class="org.jahia.ajax.gwt.client.widget.contentengine.WorkInProgressButtonItem">
         <property name="checkedByDefault" value="${wip.checkbox.checked:false}" />

@@ -114,7 +114,7 @@ public class SiteSwitcherActionItem extends BaseActionItem {
     }
 
     public static void reloadAndRefreshAllSitesList(String sitesLocation, final Linker linker) {
-        JahiaContentManagementService.App.getInstance().getRoot(Arrays.asList(sitesLocation), Arrays.asList("jnt:virtualsite"), null, null, GWTJahiaNode.DEFAULT_SITEMAP_FIELDS, null, null, false, false, null, null, true, new BaseAsyncCallback<List<GWTJahiaNode>>() {
+        JahiaContentManagementService.App.getInstance().getRoot(Arrays.asList(sitesLocation), Arrays.asList("jnt:virtualsite"), null, null, GWTJahiaNode.DEFAULT_SITEMAP_FIELDS, null, null, false, false, null, null, false, new BaseAsyncCallback<List<GWTJahiaNode>>() {
             @Override
             public void onSuccess(List<GWTJahiaNode> result) {
                 Map<String, GWTJahiaNode> sitesMap = new HashMap<String, GWTJahiaNode>();

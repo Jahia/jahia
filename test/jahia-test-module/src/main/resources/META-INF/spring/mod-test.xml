@@ -410,7 +410,6 @@
                 <value>testInitialNodePredecessorsJcr2(org.apache.jackrabbit.test.api.version.VersionGraphTest)</value>
                 <!--Test needs to be removed or rewritten-->
                 <value>testPublishUnpublishPageWithContent(org.jahia.test.services.publication.PublicationTest)</value>
-                <value>testCreateMultipleTags(org.jahia.test.services.logging.ServiceLoggingTest)</value>
                 <value>testUniqueValue(org.jahia.test.services.i18n.ResourceBundleTest)</value>
             </list>
         </property>

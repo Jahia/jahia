@@ -236,12 +236,15 @@ public abstract class SaveButtonItem implements ButtonItem {
             }
             final boolean fHasFieldErrors = hasFieldErrors;
             MessageBox.alert(Messages.get("label.error", "Error"),
-                    (hasFieldErrors ? Messages.get("failure.invalid.constraint.label",
+                    "<div class=\"engine-save-error-header\">"
+                            + (hasFieldErrors ? Messages.get("failure.invalid.constraint.label",
                             "There are some validation errors!"
                                     + " Click on the information icon next to the"
                                     + " highlighted fields, correct the input and save again."
                     ) : "")
-                            + nodeLevelMessages.toString(),
+                            + "</div><div class=\"engine-save-error-message\">"
+                            + nodeLevelMessages.toString()
+                            + "</div>",
                     new Listener<MessageBoxEvent>() {
 
                         @Override
@@ -258,8 +261,12 @@ public abstract class SaveButtonItem implements ButtonItem {
             String message = (throwable instanceof GWTJahiaServiceException && ((GWTJahiaServiceException) throwable).getDisplayMessage() != null) ?
                     ((GWTJahiaServiceException) throwable).getDisplayMessage() :
                     throwable.getMessage();
-            MessageBox.alert(Messages.get("label.error"), Messages.get("failure.properties.save", "Properties save failed") + "</br></br>"
-                    + message, null).getDialog().addStyleName("engine-save-error");
+
+            MessageBox.alert(Messages.get("label.error"), "<div class=\"engine-save-error-header\">"
+                            + Messages.get("failure.properties.save", "Properties save failed")
+                            + "</div>"
+                            + "<div class=\"engine-save-error-message\">" + message + "</div>"
+                    , null).getDialog().addStyleName("engine-save-error");
             Log.error("failed", throwable);
         }
         engine.unmask();

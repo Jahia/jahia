@@ -1024,6 +1024,10 @@ body[indigo-dragging-panel] {
 			background-image: url(./images/icons/tabs-files-dark@X2.png);
 		}
 
+		&[src$="/remoteFolder.png"] {
+			background-image: url(./images/icons/tabs-files-shared-dark@X2.png);
+		}
+
 		&[src$="/jnt_virtualsite.png"] {
 			background-image: url(./images/icons/tabs-site-dark@X2.png);
 		}
@@ -1069,7 +1073,8 @@ body[indigo-dragging-panel] {
 		&[src$="/jnt_folder.png"] {
 			background-image: url(./images/icons/tabs-files-dark@X2.png);
 		}
-		&[src$="/jnt_remoteFolder.png"] {
+
+		&[src$="/remoteFolder.png"] {
 			background-image: url(./images/icons/tabs-files-shared-dark@X2.png);
 		}
 
@@ -1091,6 +1096,10 @@ body[indigo-dragging-panel] {
 			&[src$="/jnt_contentFolder.png"],
 			&[src$="/jnt_folder.png"] {
 				background-image: url(./images/icons/tabs-files@X2.png);
+			}
+
+			&[src$="/remoteFolder.png"] {
+				background-image: url(./images/icons/tabs-files-shared-dark@X2.png);
 			}
 
 			// IMPORT DROP BOX

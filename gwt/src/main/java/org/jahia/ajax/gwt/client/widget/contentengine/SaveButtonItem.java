@@ -231,15 +231,11 @@ public abstract class SaveButtonItem implements ButtonItem {
             }
             final boolean fHasFieldErrors = hasFieldErrors;
             MessageBox.alert(Messages.get("label.error", "Error"),
-                    "<div class=\"engine-save-error-header\">"
-                            + (hasFieldErrors ? Messages.get("failure.invalid.constraint.label",
+                    getErrorMessage((hasFieldErrors ? Messages.get("failure.invalid.constraint.label",
                             "There are some validation errors!"
                                     + " Click on the information icon next to the"
                                     + " highlighted fields, correct the input and save again."
-                    ) : "")
-                            + "</div><div class=\"engine-save-error-message\">"
-                            + nodeLevelMessages.toString()
-                            + "</div>",
+                    ) : ""), nodeLevelMessages.toString()),
                     new Listener<MessageBoxEvent>() {
                         public void handleEvent(MessageBoxEvent be) {
                             if (fHasFieldErrors) {
@@ -255,14 +251,17 @@ public abstract class SaveButtonItem implements ButtonItem {
                     ((GWTJahiaServiceException) throwable).getDisplayMessage() :
                     throwable.getMessage();
 
-            MessageBox.alert(Messages.get("label.error"), "<div class=\"engine-save-error-header\">"
-                            + Messages.get("failure.properties.save", "Properties save failed")
-                            + "</div>"
-                            + "<div class=\"engine-save-error-message\">" + message + "</div>"
+            MessageBox.alert(Messages.get("label.error"),
+                    getErrorMessage(Messages.get("failure.properties.save", "Properties save failed"), message)
                     , null).getDialog().addStyleName("engine-save-error");
             Log.error("failed", throwable);
         }
         engine.unmask();
         engine.setButtonsEnabled(true);
+    }
+
+    private String getErrorMessage(String header, String message) {
+        return "<div class=\"engine-save-error-header\">" + header + "</div>"
+                + "<div class=\"engine-save-error-message\">" + message + "</div>";
     }
 }

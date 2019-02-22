@@ -51,6 +51,8 @@ import org.jahia.osgi.BundleState;
 import org.jahia.services.modulemanager.spi.BundleService;
 import org.springframework.core.io.Resource;
 
+import javax.jcr.RepositoryException;
+
 /**
  * Entry point interface for the module management service, providing functionality for module deployment, undeployment, start and stop
  * operations, which are performed in a seamless way on a standalone installation as well as across the platform cluster.
@@ -228,7 +230,7 @@ public interface ModuleManager {
     /**
      * Save the bundles persistent state in the JCR
      *
-     * @return A List of map, each map contains the information about the bundles which the persistent state have been saved in the JCR
+     * @return A list of information about the bundles which the persistent state have been saved in the JCR
      */
-    List<Map<String, Object>> savePersistentStateInJcr();
+    public List<BundlePersistentInfo> storePersistentStates() throws RepositoryException;
 }

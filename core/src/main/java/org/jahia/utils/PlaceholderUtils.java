@@ -85,7 +85,7 @@ public class PlaceholderUtils {
             SystemPropertyUtils.PLACEHOLDER_PREFIX, SystemPropertyUtils.PLACEHOLDER_SUFFIX,
             SystemPropertyUtils.VALUE_SEPARATOR, true);
 
-    private static final PropertyPlaceholderHelper PLACEHOLDER_HELPER_STRICT = new PropertyPlaceholderHelper(
+    public static final PropertyPlaceholderHelper PLACEHOLDER_HELPER_STRICT = new PropertyPlaceholderHelper(
             SystemPropertyUtils.PLACEHOLDER_PREFIX, SystemPropertyUtils.PLACEHOLDER_SUFFIX,
             SystemPropertyUtils.VALUE_SEPARATOR, false);;
 

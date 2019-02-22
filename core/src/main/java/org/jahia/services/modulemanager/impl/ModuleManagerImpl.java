@@ -559,12 +559,13 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
 
     @Override
     public List<Map<String, Object>> savePersistentStateInJcr() {
+
         List<Map<String, Object>> bundleList = new ArrayList<>();
-
         Bundle[] bundles = FrameworkService.getBundleContext().getBundles();
-        for (Bundle bundle : bundles) {
-            Map<String, Object> module = new HashMap<>();
 
+        for (Bundle bundle : bundles) {
+
+            Map<String, Object> module = new HashMap<>();
             int persistentState = BundleUtils.getPersistentState(bundle);
 
             // Fill the map to return the result

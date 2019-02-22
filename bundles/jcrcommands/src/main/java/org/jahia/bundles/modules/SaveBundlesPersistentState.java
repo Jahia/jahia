@@ -54,9 +54,11 @@ import org.jahia.services.modulemanager.ModuleManager;
 import java.util.List;
 import java.util.Map;
 
-@Command(scope = "bundle",
-        name = "save-bundles-persistent-state",
-        description = "Output DX modules with their persistent state and version, and save those information in the JCR")
+@Command(
+    scope = "bundle",
+    name = "save-bundles-persistent-state",
+    description = "Output DX modules with their persistent state and version, and save those information in the JCR"
+)
 @Service
 public class SaveBundlesPersistentState implements Action {
 
@@ -65,22 +67,24 @@ public class SaveBundlesPersistentState implements Action {
 
     @Override
     public Object execute() throws Exception {
+
+        List<Map<String, Object>> modules = moduleManager.savePersistentStateInJcr();
+
+        // Fill the table to output result.
         ShellTable table = new ShellTable();
         table.column(new Col("Id"));
         table.column(new Col("State"));
         table.column(new Col("Symbolic-Name"));
         table.column(new Col("Version"));
         table.column(new Col("Location"));
-
-        List<Map<String, Object>> jahiaModules = moduleManager.savePersistentStateInJcr();
-
-        // Fill the table to output result
-        for (Map<String, Object> module : jahiaModules) {
-            table.addRow().addContent(module.get("id"),
+        for (Map<String, Object> module : modules) {
+            table.addRow().addContent(
+                module.get("id"),
                 module.get("state"),
                 module.get("symbolicName"),
                 module.get("version"),
-                module.get("location"));
+                module.get("location")
+            );
         }
 
         table.print(System.out, true);

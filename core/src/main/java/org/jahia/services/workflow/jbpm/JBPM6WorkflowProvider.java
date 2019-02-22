@@ -219,10 +219,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
     public void stop() {
         workflowService.removeProvider(this);
 
-//        kieSession.dispose();
-
         // @todo implement clean shutdown of all jBPM & Drools environment
-//        runtimeManager.disposeRuntimeEngine(runtimeEngine);
         runtimeManager.close();
     }
 
@@ -415,6 +412,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
             PersistenceContextManager persistenceContextManager = createKieSpringContextManager(transactionManager);
             RuntimeEnvironment runtimeEnvironment = RuntimeEnvironmentBuilder.getDefault()
                     .entityManagerFactory(emf)
+                    .schedulerService(new JahiaQuartzSchedulerService())
                     .addEnvironmentEntry(EnvironmentName.TRANSACTION_MANAGER, transactionManager)
                     .addEnvironmentEntry(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER, persistenceContextManager)
                     .knowledgeBase(kieContainer.getKieBase())

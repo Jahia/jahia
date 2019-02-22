@@ -82,18 +82,15 @@ public class AclTest {
 
     private static final String TESTSITE_NAME = "aclTestSite";
 
-    private static JCRUserNode user1;
-    private static JCRUserNode user2;
-    private static JCRUserNode user3;
-    private static JCRUserNode user4;
-
-    private static JCRGroupNode group1;
-    private static JCRGroupNode group2;
     public static final String SITEPATH = "/sites/" + TESTSITE_NAME;
     public static final String HOMEPATH = SITEPATH + "/home";
-
-    public static JCRPublicationService jcrService;
-
+    public static final String GROUP1 = "group1";
+    public static final String GROUP2 = "group2";
+    public static final String USER1 = "user1";
+    public static final String USER2 = "user2";
+    public static final String USER3 = "user3";
+    public static final String USER4 = "user4";
+    
     private static String homeIdentifier;
     private JCRSessionWrapper session;
     static String content1Identifier;
@@ -103,9 +100,7 @@ public class AclTest {
     private static String content21Identifier;
     private static String content22Identifier;
 
-    private static JahiaGroupManagerService groupService;
-    private static JahiaUserManagerService userService;
-
+    
     private static void assertRole(JCRNodeWrapper node, String principal, String grantType, String role) {
         Map<String, List<String[]>> aclEntries = node.getAclEntries();
         String path = node.getPath();
@@ -122,35 +117,35 @@ public class AclTest {
 
         JahiaSite site = TestHelper.createSite(TESTSITE_NAME, TestHelper.DX_BASE_DEMO_TEMPLATES);
 
-        jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
-        groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-        userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
+        JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
+        JahiaGroupManagerService groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
+        JahiaUserManagerService userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
 
         JCRSessionWrapper session = jcrService.getSessionFactory().getCurrentUserSession();
 
         JCRNodeWrapper home = session.getNode(HOMEPATH);
         homeIdentifier = home.getIdentifier();
-        JCRNodeWrapper content1 = home.addNode("content1", "jnt:contentList");
+        JCRNodeWrapper content1 = home.addNode("content1", Constants.JAHIANT_CONTENTLIST);
         content1Identifier = content1.getIdentifier();
-        JCRNodeWrapper content11 = content1.addNode("content1.1", "jnt:contentList");
+        JCRNodeWrapper content11 = content1.addNode("content1.1", Constants.JAHIANT_CONTENTLIST);
         content11Identifier = content11.getIdentifier();
-        JCRNodeWrapper content12 = content1.addNode("content1.2", "jnt:contentList");
+        JCRNodeWrapper content12 = content1.addNode("content1.2", Constants.JAHIANT_CONTENTLIST);
         content12Identifier = content12.getIdentifier();
-        JCRNodeWrapper content2 = home.addNode("content2", "jnt:contentList");
+        JCRNodeWrapper content2 = home.addNode("content2", Constants.JAHIANT_CONTENTLIST);
         content2Identifier = content2.getIdentifier();
-        JCRNodeWrapper content21 = content2.addNode("content2.1", "jnt:contentList");
+        JCRNodeWrapper content21 = content2.addNode("content2.1", Constants.JAHIANT_CONTENTLIST);
         content21Identifier = content21.getIdentifier();
-        JCRNodeWrapper content22 = content2.addNode("content2.2", "jnt:contentList");
+        JCRNodeWrapper content22 = content2.addNode("content2.2", Constants.JAHIANT_CONTENTLIST);
         content22Identifier = content22.getIdentifier();
         session.save();
 
-        user1 = userService.createUser("user1", "password", new Properties(), session);
-        user2 = userService.createUser("user2", "password", new Properties(), session);
-        user3 = userService.createUser("user3", "password", new Properties(), session);
-        user4 = userService.createUser("user4", "password", new Properties(), session);
+        JCRUserNode user1 = userService.createUser(USER1, "password", new Properties(), session);
+        JCRUserNode user2 = userService.createUser(USER2, "password", new Properties(), session);
+        JCRUserNode user3 = userService.createUser(USER3, "password", new Properties(), session);
+        JCRUserNode user4 = userService.createUser(USER4, "password", new Properties(), session);
 
-        group1 = groupService.createGroup(site.getSiteKey(), "group1", new Properties(), false, session);
-        group2 = groupService.createGroup(site.getSiteKey(), "group2", new Properties(), false, session);
+        JCRGroupNode group1 = groupService.createGroup(site.getSiteKey(), GROUP1, new Properties(), false, session);
+        JCRGroupNode group2 = groupService.createGroup(site.getSiteKey(), GROUP2, new Properties(), false, session);
 
         group1.addMember(user1);
         group1.addMember(user2);
@@ -170,10 +165,10 @@ public class AclTest {
             }
 
             JahiaUserManagerService userManager = ServicesRegistry.getInstance().getJahiaUserManagerService();
-            userManager.deleteUser(user1.getPath(), session);
-            userManager.deleteUser(user2.getPath(), session);
-            userManager.deleteUser(user3.getPath(), session);
-            userManager.deleteUser(user4.getPath(), session);
+            userManager.deleteUser(userManager.getUserPath(USER1), session);
+            userManager.deleteUser(userManager.getUserPath(USER2), session);
+            userManager.deleteUser(userManager.getUserPath(USER3), session);
+            userManager.deleteUser(userManager.getUserPath(USER4), session);
             session.save();
         } catch (Exception ex) {
             logger.warn("Exception during test tearDown", ex);
@@ -216,7 +211,7 @@ public class AclTest {
 
     @Test
     public void testDefaultReadRight() throws Exception {
-        assertFalse((JCRTemplate.getInstance().doExecute(user1.getJahiaUser(), null, null, new CheckPermission(HOMEPATH, "jcr:read"))));
+        assertFalse((JCRTemplate.getInstance().doExecute(USER1, null, null, null, new CheckPermission(HOMEPATH, "jcr:read"))));
     }
 
     @Test
@@ -228,8 +223,8 @@ public class AclTest {
 
         session.save();
 
-        assertTrue((JCRTemplate.getInstance().doExecute(user1.getJahiaUser(), null, null, new CheckPermission(content11.getPath(), "jcr:write"))));
-        assertFalse((JCRTemplate.getInstance().doExecute(user2.getJahiaUser(), null, null, new CheckPermission(content11.getPath(), "jcr:write"))));
+        assertTrue((JCRTemplate.getInstance().doExecute(USER1, null,  null, null, new CheckPermission(content11.getPath(), "jcr:write"))));
+        assertFalse((JCRTemplate.getInstance().doExecute(USER2, null,  null, null, new CheckPermission(content11.getPath(), "jcr:write"))));
     }
 
     @Test
@@ -241,10 +236,10 @@ public class AclTest {
 
         session.save();
 
-        assertTrue((JCRTemplate.getInstance().doExecute(user1.getJahiaUser(), null, null, new CheckPermission(content11.getPath(), "jcr:write"))));
-        assertTrue((JCRTemplate.getInstance().doExecute(user2.getJahiaUser(), null, null, new CheckPermission(content11.getPath(), "jcr:write"))));
-        assertFalse((JCRTemplate.getInstance().doExecute(user3.getJahiaUser(), null, null, new CheckPermission(content11.getPath(), "jcr:write"))));
-        assertFalse((JCRTemplate.getInstance().doExecute(user4.getJahiaUser(), null, null, new CheckPermission(content11.getPath(), "jcr:write"))));
+        assertTrue((JCRTemplate.getInstance().doExecute(USER1, null,  null, null, new CheckPermission(content11.getPath(), "jcr:write"))));
+        assertTrue((JCRTemplate.getInstance().doExecute(USER2, null,  null, null, new CheckPermission(content11.getPath(), "jcr:write"))));
+        assertFalse((JCRTemplate.getInstance().doExecute(USER3, null,  null, null, new CheckPermission(content11.getPath(), "jcr:write"))));
+        assertFalse((JCRTemplate.getInstance().doExecute(USER4, null,  null, null, new CheckPermission(content11.getPath(), "jcr:write"))));
     }
 
     @Test
@@ -258,8 +253,8 @@ public class AclTest {
 
         session.save();
 
-        assertTrue((JCRTemplate.getInstance().doExecute(user1.getJahiaUser(), null, null, new CheckPermission(content1.getPath(), "jcr:write"))));
-        assertFalse((JCRTemplate.getInstance().doExecute(user1.getJahiaUser(), null, null, new CheckPermission(content11.getPath(), "jcr:write"))));
+        assertTrue((JCRTemplate.getInstance().doExecute(USER1, null,  null, null, new CheckPermission(content1.getPath(), "jcr:write"))));
+        assertFalse((JCRTemplate.getInstance().doExecute(USER1, null,  null, null, new CheckPermission(content11.getPath(), "jcr:write"))));
     }
 
     @Test
@@ -280,10 +275,10 @@ public class AclTest {
                 "owner", "user1").containsOnlyKeys("u:user1");
 
         session.save();
-        assertFalse((JCRTemplate.getInstance().doExecute(user1.getJahiaUser(), null, null, new CheckPermission(HOMEPATH, "jcr:read"))));
-        assertFalse((JCRTemplate.getInstance().doExecute(user1.getJahiaUser(), null, null, new CheckPermission(content1.getPath(), "jcr:read"))));
-        assertTrue((JCRTemplate.getInstance().doExecute(user1.getJahiaUser(), null, null, new CheckPermission(content11.getPath(), "jcr:read"))));
-        assertFalse((JCRTemplate.getInstance().doExecute(user1.getJahiaUser(), null, null, new CheckPermission(content12.getPath(), "jcr:read"))));
+        assertFalse((JCRTemplate.getInstance().doExecute(USER1, null,  null, null, new CheckPermission(HOMEPATH, "jcr:read"))));
+        assertFalse((JCRTemplate.getInstance().doExecute(USER1, null,  null, null, new CheckPermission(content1.getPath(), "jcr:read"))));
+        assertTrue((JCRTemplate.getInstance().doExecute(USER1, null,  null, null, new CheckPermission(content11.getPath(), "jcr:read"))));
+        assertFalse((JCRTemplate.getInstance().doExecute(USER1, null,  null, null, new CheckPermission(content12.getPath(), "jcr:read"))));
     }
 
     @Test
@@ -375,8 +370,9 @@ public class AclTest {
 
     private static boolean isUserPrivileged(String user) throws Exception {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
-            return groupService.lookupGroup(TESTSITE_NAME, JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, session)
-                    .isMember(userService.lookupUser(user, session));
+            return ServicesRegistry.getInstance().getJahiaGroupManagerService()
+                    .lookupGroup(TESTSITE_NAME, JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, session)
+                    .isMember(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user, session));
         });
     }
 

@@ -43,23 +43,25 @@
  */
 package org.jahia.services.modulemanager.persistence.jcr;
 
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.modulemanager.BundleInfo;
+import org.jahia.services.modulemanager.BundlePersistentInfo;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.jahia.settings.SettingsBean;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.touk.throwing.ThrowingFunction;
 
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Responsible for creating tree structure for a bundle in JCR and bundle key to JCR path conversion.
@@ -88,23 +90,24 @@ final public class BundleInfoJcrHelper {
      *
      * @param bundles The list of bundles to save as JSON in the JCR
      */
-    public static void saveBundlesPersistentState(List<Map<String, Object>> bundles) {
+    public static void storePersistentStates(List<BundlePersistentInfo> bundles) throws RepositoryException {
+        final JSONArray bundleListJson = new JSONArray(bundles.stream().map(ThrowingFunction.unchecked(bundle -> {
+            JSONObject obj = new JSONObject();
+            obj.put("symbolicName", bundle.getSymbolicName());
+            obj.put("version", bundle.getVersion());
+            obj.put("location", bundle.getLocation());
+            obj.put("state", bundle.getState());
+            return obj;
+        })).collect(Collectors.toList()));
 
-        final JSONArray bundleListJson = new JSONArray(bundles);
-
-        try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Void>() {
-
-                @Override
-                public Void doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    session.getNode(PATH_ROOT).setProperty(PROP_BUNDLES_PERSISTENT_STATE, bundleListJson.toString());
-                    session.save();
-                    return null;
-                }
-            });
-        } catch (RepositoryException e) {
-            logger.error("Could not persist bundles persistent state in the JCR " + bundleListJson.toString(), e);
-        }
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Void>() {
+            @Override
+            public Void doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                session.getNode(PATH_ROOT).setProperty(PROP_BUNDLES_PERSISTENT_STATE, bundleListJson.toString());
+                session.save();
+                return null;
+            }
+        });
     }
 
     /**

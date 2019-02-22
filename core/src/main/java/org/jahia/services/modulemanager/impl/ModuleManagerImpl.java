@@ -44,6 +44,7 @@
 package org.jahia.services.modulemanager.impl;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.drools.core.util.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -52,15 +53,7 @@ import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleState;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
-import org.jahia.services.modulemanager.BundleBucketInfo;
-import org.jahia.services.modulemanager.BundleInfo;
-import org.jahia.services.modulemanager.Constants;
-import org.jahia.services.modulemanager.InvalidModuleException;
-import org.jahia.services.modulemanager.InvalidModuleKeyException;
-import org.jahia.services.modulemanager.ModuleManagementException;
-import org.jahia.services.modulemanager.ModuleManager;
-import org.jahia.services.modulemanager.ModuleNotFoundException;
-import org.jahia.services.modulemanager.OperationResult;
+import org.jahia.services.modulemanager.*;
 import org.jahia.services.modulemanager.persistence.BundlePersister;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.jahia.services.modulemanager.persistence.PersistentBundleInfoBuilder;
@@ -77,6 +70,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+
+import javax.jcr.RepositoryException;
 
 /**
  * The main entry point service for the module management service, providing functionality for module deployment, undeployment, start and
@@ -558,29 +553,15 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
     }
 
     @Override
-    public List<Map<String, Object>> savePersistentStateInJcr() {
-
-        List<Map<String, Object>> bundleList = new ArrayList<>();
-        Bundle[] bundles = FrameworkService.getBundleContext().getBundles();
-
-        for (Bundle bundle : bundles) {
-
-            Map<String, Object> module = new HashMap<>();
-            int persistentState = BundleUtils.getPersistentState(bundle);
-
-            // Fill the map to return the result
-            module.put("id", bundle.getBundleId());
-            module.put("location", bundle.getLocation());
-            module.put("state", persistentState);
-            module.put("symbolicName", bundle.getSymbolicName());
-            module.put("version", BundleUtils.getModuleVersion(bundle));
-
-            // And add it to the list
-            bundleList.add(module);
+    public List<BundlePersistentInfo> storePersistentStates() throws RepositoryException {
+        if (FrameworkService.getBundleContext() == null) {
+            return new ArrayList<>();
         }
 
+        List<BundlePersistentInfo> bundleList = Arrays.stream(FrameworkService.getBundleContext().getBundles()).map(BundlePersistentInfo::new).collect(Collectors.toList());
+
         // Save list
-        BundleInfoJcrHelper.saveBundlesPersistentState(bundleList);
+        BundleInfoJcrHelper.storePersistentStates(bundleList);
 
         return bundleList;
     }

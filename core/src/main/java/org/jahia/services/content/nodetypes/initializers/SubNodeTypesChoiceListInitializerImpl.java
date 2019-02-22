@@ -53,7 +53,6 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.utils.Patterns;
 
 import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.nodetype.NodeTypeIterator;
 import java.util.*;
 
 /**
@@ -93,11 +92,12 @@ public class SubNodeTypesChoiceListInitializerImpl implements ChoiceListInitiali
                     listValues.add(new ChoiceListValue(nodeType.getLabel(locale), nodeType
                             .getName()));
                 }
-                NodeTypeIterator nti = nodeType.getSubtypes();
-                while (nti.hasNext()) {
-                    ExtendedNodeType type = (ExtendedNodeType) nti.next();
+                List<ExtendedNodeType> subTypes = nodeType.getSubtypesAsList();
+                ArrayList<String> duplicates = duplicationHandler(subTypes, locale);
+                for (ExtendedNodeType type : subTypes) {
                     if (!isExcludedType(type, excludedTypes)) {
-                        listValues.add(new ChoiceListValue(type.getLabel(locale), type.getName()));
+                        String label = type.getLabel(locale) + (duplicates.contains(type.getLabel(locale)) ? " (" + type.getAlias() + ")" : "");
+                        listValues.add(new ChoiceListValue(label, type.getName()));
                     }
                 }
             }
@@ -119,6 +119,18 @@ public class SubNodeTypesChoiceListInitializerImpl implements ChoiceListInitiali
             }
         }
         return isExcluded;
+    }
+
+    private ArrayList<String> duplicationHandler(List<ExtendedNodeType> subTypes, Locale locale) {
+        ArrayList<String> nodeTypesToModify = new ArrayList<>();
+        String previousLabel = "";
+        for (ExtendedNodeType actualNode : subTypes) {
+            if (actualNode.getLabel(locale).equals(previousLabel)) {
+                nodeTypesToModify.add(actualNode.getLabel(locale));
+            }
+            previousLabel = actualNode.getLabel(locale);
+        }
+        return nodeTypesToModify;
     }
     
 }

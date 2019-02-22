@@ -89,14 +89,16 @@ final public class BundleInfoJcrHelper {
      * @param bundles The list of bundles to save as JSON in the JCR
      */
     public static void saveBundlesPersistentState(List<Map<String, Object>> bundles) {
+
         final JSONArray bundleListJson = new JSONArray(bundles);
+
         try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Void>() {
+
                 @Override
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                public Void doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     session.getNode(PATH_ROOT).setProperty(PROP_BUNDLES_PERSISTENT_STATE, bundleListJson.toString());
                     session.save();
-
                     return null;
                 }
             });

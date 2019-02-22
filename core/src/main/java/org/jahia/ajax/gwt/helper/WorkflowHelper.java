@@ -68,6 +68,9 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.*;
 import org.jahia.services.workflow.*;
@@ -92,11 +95,11 @@ public class WorkflowHelper {
     private WorkflowService service;
     private JahiaUserManagerService userManagerService;
     private JahiaGroupManagerService groupManagerService;
+    private ContentDefinitionHelper contentDefinitionHelper;
 
     public void start() {
         service.addWorkflowListener(new PollingWorkflowListener());
     }
-
 
     public GWTJahiaWorkflowInfo getWorkflowInfo(String path, boolean includeActiveWorfklows, JCRSessionWrapper session, Locale locale, Locale uiLocale)
             throws GWTJahiaServiceException {
@@ -224,7 +227,7 @@ public class WorkflowHelper {
             throws GWTJahiaServiceException {
         try {
             JCRNodeWrapper node = session.getNode(path);
-            Map<String, Object> map = getVariablesMap(properties);
+            Map<String, Object> map = getVariablesMap(properties, def.getFormResourceName() != null ? NodeTypeRegistry.getInstance().getNodeType(def.getFormResourceName()) : null);
             service.startProcessAsJob(Arrays.asList(node.getIdentifier()), session, def.getId(), def.getProvider(), map, comments);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -237,7 +240,7 @@ public class WorkflowHelper {
             throws GWTJahiaServiceException {
 
         try {
-            Map<String, Object> map = getVariablesMap(properties);
+            Map<String, Object> map = getVariablesMap(properties, def.getFormResourceName() != null ? NodeTypeRegistry.getInstance().getNodeType(def.getFormResourceName()) : null);
             map.putAll(args);
             service.startProcessAsJob(uuids, session, def.getId(), def.getProvider(), map, comments);
         } catch (Exception e) {
@@ -264,7 +267,7 @@ public class WorkflowHelper {
     public void assignAndCompleteTask(GWTJahiaWorkflowTask task, GWTJahiaWorkflowOutcome outcome,
                                       JCRSessionWrapper session, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException {
         try {
-            Map<String, Object> map = getVariablesMap(properties);
+            Map<String, Object> map = getVariablesMap(properties,task.getFormResourceName() != null ? NodeTypeRegistry.getInstance().getNodeType(task.getFormResourceName()) : null);
             service.assignAndCompleteTask(task.getId(), task.getProvider(), outcome.getName(), map, session.getUser());
         } catch (Exception e) {
             logger.error("Exception in task", e);
@@ -298,14 +301,15 @@ public class WorkflowHelper {
         return properties;
     }
 
-    private Map<String, Object> getVariablesMap(List<GWTJahiaNodeProperty> properties) {
+    private Map<String, Object> getVariablesMap(List<GWTJahiaNodeProperty> properties, ExtendedNodeType nodeType) throws RepositoryException {
         Map<String, Object> map = new HashMap<String, Object>();
         for (GWTJahiaNodeProperty property : properties) {
             List<GWTJahiaNodePropertyValue> propertyValues = property.getValues();
+            ExtendedPropertyDefinition epd = nodeType.getPropertyDefinition(property.getName());
             if (property.isMultiple()) {
                 List<WorkflowVariable> values = new ArrayList<WorkflowVariable>();
                 for (GWTJahiaNodePropertyValue value : propertyValues) {
-                    String s = value.getString();
+                    String s = contentDefinitionHelper.convertValue(value, epd).getString();
                     if (StringUtils.isNotBlank(s)) {
                         values.add(new WorkflowVariable(s, value.getType()));
                     }
@@ -313,7 +317,7 @@ public class WorkflowHelper {
                 map.put(property.getName(), values);
             } else if (!propertyValues.isEmpty()) {
                 GWTJahiaNodePropertyValue value = propertyValues.get(0);
-                String s = value.getString();
+                String s = contentDefinitionHelper.convertValue(value, epd).getString();
                 if (StringUtils.isNotBlank(s)) {
                     map.put(property.getName(), new WorkflowVariable(s, value.getType()));
                 }
@@ -740,5 +744,9 @@ public class WorkflowHelper {
 
     public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
         this.groupManagerService = groupManagerService;
+    }
+
+    public void setContentDefinitionHelper(ContentDefinitionHelper contentDefinitionHelper) {
+        this.contentDefinitionHelper = contentDefinitionHelper;
     }
 }

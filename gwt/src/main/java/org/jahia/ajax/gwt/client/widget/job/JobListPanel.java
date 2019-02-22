@@ -76,6 +76,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.widget.grid.JahiaGroupingView;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -248,7 +249,7 @@ public class JobListPanel extends LayoutContainer {
 
         final ColumnModel cm = new ColumnModel(config);
 
-        GroupingView view = new GroupingView();
+        GroupingView view = new JahiaGroupingView();
         view.setShowGroupedColumn(false);
         view.setForceFit(true);
         view.setGroupRenderer(new GridGroupRenderer() {

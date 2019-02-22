@@ -486,6 +486,15 @@
 				background-size: 16px;
 			}
 
+			&.toolbar-item-unzip {
+				background-image: url(./images/icons/context-menu/unzip.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
+
 			&.toolbar-item-previewasguest {
 				background-image: url(./images/icons/context-menu/custom-preview.png);
 				background-color: _property($MENU-OPENED--BG, $type);

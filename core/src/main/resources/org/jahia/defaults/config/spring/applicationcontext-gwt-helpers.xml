@@ -81,6 +81,7 @@
         <property name="service" ref="workflowService"/>
         <property name="userManagerService" ref="JahiaUserManagerService"/>
         <property name="groupManagerService" ref="JahiaGroupManagerService"/>
+        <property name="contentDefinitionHelper" ref="ContentDefinitionHelper"/>
     </bean>
 
     <bean name="SearchHelper" class="org.jahia.ajax.gwt.helper.SearchHelper">

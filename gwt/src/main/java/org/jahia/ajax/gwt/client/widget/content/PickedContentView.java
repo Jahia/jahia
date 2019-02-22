@@ -61,6 +61,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.widget.grid.JahiaGroupingView;
 import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
 
 import java.util.ArrayList;
@@ -205,7 +206,7 @@ public class PickedContentView extends BottomRightComponent {
 
 
         // Grouping view
-        GroupingView view = new GroupingView();
+        GroupingView view = new JahiaGroupingView();
         view.setShowGroupedColumn(false);
         view.setForceFit(true);
 

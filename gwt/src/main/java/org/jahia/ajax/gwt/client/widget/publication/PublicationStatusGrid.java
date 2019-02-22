@@ -62,6 +62,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.compare.CompareEngine;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineContainer;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
+import org.jahia.ajax.gwt.client.widget.grid.JahiaGroupingView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -168,7 +169,7 @@ public class PublicationStatusGrid extends Grid<GWTJahiaPublicationInfo> {
         setStripeRows(true);
         setBorders(true);
 
-        GroupingView view = new GroupingView();
+        GroupingView view = new JahiaGroupingView();
         view.setShowGroupedColumn(false);
         view.setForceFit(true);
         view.setGroupRenderer(new GridGroupRenderer() {

@@ -93,10 +93,13 @@ public class SubNodeTypesChoiceListInitializerImpl implements ChoiceListInitiali
                             .getName()));
                 }
                 List<ExtendedNodeType> subTypes = nodeType.getSubtypesAsList();
-                ArrayList<String> duplicates = duplicationHandler(subTypes, locale);
+                Set<String> duplicates = findDuplicateLabels(subTypes, locale);
                 for (ExtendedNodeType type : subTypes) {
                     if (!isExcludedType(type, excludedTypes)) {
-                        String label = type.getLabel(locale) + (duplicates.contains(type.getLabel(locale)) ? " (" + type.getAlias() + ")" : "");
+                        String label = type.getLabel(locale);
+                        if (duplicates.contains(label)) {
+                            label += (" (" + type.getAlias() + ")");
+                        }
                         listValues.add(new ChoiceListValue(label, type.getName()));
                     }
                 }
@@ -121,16 +124,17 @@ public class SubNodeTypesChoiceListInitializerImpl implements ChoiceListInitiali
         return isExcluded;
     }
 
-    private ArrayList<String> duplicationHandler(List<ExtendedNodeType> subTypes, Locale locale) {
-        ArrayList<String> nodeTypesToModify = new ArrayList<>();
-        String previousLabel = "";
-        for (ExtendedNodeType actualNode : subTypes) {
-            if (actualNode.getLabel(locale).equals(previousLabel)) {
-                nodeTypesToModify.add(actualNode.getLabel(locale));
+    private Set<String> findDuplicateLabels(List<ExtendedNodeType> subTypes, Locale locale) {
+        Set<String> duplicates = new HashSet<>();
+        Set<String> uniques = new HashSet<>();
+
+        for(ExtendedNodeType subType : subTypes) {
+            String label = subType.getLabel(locale);
+            if(!uniques.add(label)) {
+                duplicates.add(label);
             }
-            previousLabel = actualNode.getLabel(locale);
         }
-        return nodeTypesToModify;
+
+        return duplicates;
     }
-    
 }

@@ -49,6 +49,7 @@ import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.karaf.shell.support.table.Col;
 import org.apache.karaf.shell.support.table.ShellTable;
+import org.jahia.services.modulemanager.BundlePersistentInfo;
 import org.jahia.services.modulemanager.ModuleManager;
 
 import java.util.List;
@@ -56,11 +57,11 @@ import java.util.Map;
 
 @Command(
     scope = "bundle",
-    name = "save-bundles-persistent-state",
+    name = "store-all-states",
     description = "Output DX modules with their persistent state and version, and save those information in the JCR"
 )
 @Service
-public class SaveBundlesPersistentState implements Action {
+public class StoreBundlesPersistentState implements Action {
 
     @Reference
     private ModuleManager moduleManager;
@@ -68,22 +69,20 @@ public class SaveBundlesPersistentState implements Action {
     @Override
     public Object execute() throws Exception {
 
-        List<Map<String, Object>> modules = moduleManager.savePersistentStateInJcr();
+        List<BundlePersistentInfo> modules = moduleManager.storePersistentStates();
 
         // Fill the table to output result.
         ShellTable table = new ShellTable();
-        table.column(new Col("Id"));
-        table.column(new Col("State"));
         table.column(new Col("Symbolic-Name"));
+        table.column(new Col("State"));
         table.column(new Col("Version"));
         table.column(new Col("Location"));
-        for (Map<String, Object> module : modules) {
+        for (BundlePersistentInfo module : modules) {
             table.addRow().addContent(
-                module.get("id"),
-                module.get("state"),
-                module.get("symbolicName"),
-                module.get("version"),
-                module.get("location")
+                    module.getSymbolicName(),
+                    module.getState(),
+                    module.getVersion(),
+                    module.getLocation()
             );
         }
 

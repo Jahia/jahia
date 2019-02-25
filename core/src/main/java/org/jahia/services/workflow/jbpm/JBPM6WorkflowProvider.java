@@ -51,6 +51,7 @@ import org.drools.persistence.TransactionManager;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.pipelines.Pipeline;
 import org.jahia.services.JahiaAfterInitializationService;
+import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -121,6 +122,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
     private TransactionManager transactionManager;
     private ThreadLocal<Boolean> loop = new ThreadLocal<Boolean>();
     private volatile boolean isInitialized = false;
+    private SchedulerService schedulerService;
 
     private Map<String, Map<Locale, WorkflowDefinition>> definitionMap = new HashMap<>();
 
@@ -412,7 +414,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
             PersistenceContextManager persistenceContextManager = createKieSpringContextManager(transactionManager);
             RuntimeEnvironment runtimeEnvironment = RuntimeEnvironmentBuilder.getDefault()
                     .entityManagerFactory(emf)
-                    .schedulerService(new JahiaQuartzSchedulerService())
+                    .schedulerService(new JahiaQuartzSchedulerService(schedulerService.getScheduler()))
                     .addEnvironmentEntry(EnvironmentName.TRANSACTION_MANAGER, transactionManager)
                     .addEnvironmentEntry(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER, persistenceContextManager)
                     .knowledgeBase(kieContainer.getKieBase())
@@ -497,5 +499,12 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
     public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
         recompilePackages();
         workflowService.initAfterAllServicesAreStarted();
+    }
+
+    /**
+     * @param schedulerService the schedulerService to set
+     */
+    public void setSchedulerService(SchedulerService schedulerService) {
+        this.schedulerService = schedulerService;
     }
 }

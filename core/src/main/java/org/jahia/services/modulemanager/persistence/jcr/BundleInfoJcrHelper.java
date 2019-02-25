@@ -60,7 +60,8 @@ import pl.touk.throwing.ThrowingFunction;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
-import java.util.List;
+
+import java.util.Collection;
 import java.util.stream.Collectors;
 
 /**
@@ -85,12 +86,12 @@ final public class BundleInfoJcrHelper {
     static final String PATH_ROOT = '/' + NODE_NAME_ROOT;
 
     /**
-     * This method will save the list of bundles as JSON on the node /module-management
-     * using the property j:bundlesPersistentState
+     * This method will save a collection of bundles as JSON on the node /module-management
+     * using the property j:bundlesPersistentState.
      *
-     * @param bundles The list of bundles to save as JSON in the JCR
+     * @param bundles The collection of bundles to save as JSON in the JCR
      */
-    public static void storePersistentStates(List<BundlePersistentInfo> bundles) throws RepositoryException {
+    public static void storePersistentStates(Collection<BundlePersistentInfo> bundles) throws RepositoryException {
 
         final JSONArray bundleListJson = new JSONArray(bundles.stream().map(ThrowingFunction.unchecked(bundle -> {
             JSONObject obj = new JSONObject();

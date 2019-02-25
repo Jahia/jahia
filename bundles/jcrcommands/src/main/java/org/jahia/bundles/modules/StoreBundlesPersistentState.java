@@ -53,7 +53,6 @@ import org.jahia.services.modulemanager.BundlePersistentInfo;
 import org.jahia.services.modulemanager.ModuleManager;
 
 import java.util.List;
-import java.util.Map;
 
 @Command(
     scope = "bundle",
@@ -69,7 +68,7 @@ public class StoreBundlesPersistentState implements Action {
     @Override
     public Object execute() throws Exception {
 
-        List<BundlePersistentInfo> modules = moduleManager.storePersistentStates();
+        List<BundlePersistentInfo> modules = moduleManager.storeAllLocalPersistentStates();
 
         // Fill the table to output result.
         ShellTable table = new ShellTable();
@@ -79,10 +78,10 @@ public class StoreBundlesPersistentState implements Action {
         table.column(new Col("Location"));
         for (BundlePersistentInfo module : modules) {
             table.addRow().addContent(
-                    module.getSymbolicName(),
-                    module.getState(),
-                    module.getVersion(),
-                    module.getLocation()
+                module.getSymbolicName(),
+                module.getState(),
+                module.getVersion(),
+                module.getLocation()
             );
         }
 

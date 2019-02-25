@@ -553,16 +553,12 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
     }
 
     @Override
-    public List<BundlePersistentInfo> storePersistentStates() throws RepositoryException {
+    public List<BundlePersistentInfo> storeAllLocalPersistentStates() throws RepositoryException {
         if (FrameworkService.getBundleContext() == null) {
             return new ArrayList<>();
         }
-
         List<BundlePersistentInfo> bundleList = Arrays.stream(FrameworkService.getBundleContext().getBundles()).map(BundlePersistentInfo::new).collect(Collectors.toList());
-
-        // Save list
         BundleInfoJcrHelper.storePersistentStates(bundleList);
-
         return bundleList;
     }
 }

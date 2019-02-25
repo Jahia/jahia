@@ -52,11 +52,8 @@ import org.osgi.framework.Bundle;
 public class BundlePersistentInfo {
 
     private String location;
-
     private int state;
-
     private String symbolicName;
-
     private String version;
 
     public BundlePersistentInfo(Bundle bundle) {
@@ -81,5 +78,4 @@ public class BundlePersistentInfo {
     public String getVersion() {
         return version;
     }
-
 }

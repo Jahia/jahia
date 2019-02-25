@@ -38,17 +38,17 @@
 
     &[indigo-auto-refresh="true"] {
         .x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-tbar .x-toolbar-left .x-toolbar-cell {
-			&:nth-child(3) {
-				label {
-					display: inline-block!important;
-				}
+            &:nth-child(3) {
+                label {
+                    display: inline-block!important;
+                }
 
-				> div {
-					&:after {
-						display: none;
-					}
-				}
-			}
+                > div {
+                    &:after {
+                        display: none;
+                    }
+                }
+            }
 
             &:nth-child(4),
             &:nth-child(5) {
@@ -152,9 +152,9 @@
 
     // Header
     .x-window-tl {
-		border: none!important;
-		background: transparent!important;
-		padding: 0!important;
+        border: none!important;
+        background: transparent!important;
+        padding: 0!important;
         width: 300px;
         position: fixed!important;
         top: 55px;
@@ -170,24 +170,24 @@
 
 
 
-			// Footer action bar
-			display: block;
-			// width: 292px!important;
-			// height: 120px;
-			position: fixed;
-			// padding: 10px 0 0 75px;
+            // Footer action bar
+            display: block;
+            // width: 292px!important;
+            // height: 120px;
+            position: fixed;
+            // padding: 10px 0 0 75px;
 
-			background: _property($FOOTER--BG, $EDIT-ENGINE);
-		    border-top: 1px solid _theme-color(primary, g);
-		    box-shadow: _property($FOOTER--SHADOW, $EDIT-ENGINE);
-		    box-sizing: border-box;
-		    height: auto;
+            background: _property($FOOTER--BG, $EDIT-ENGINE);
+            border-top: 1px solid _theme-color(primary, g);
+            box-shadow: _property($FOOTER--SHADOW, $EDIT-ENGINE);
+            box-sizing: border-box;
+            height: auto;
 
-			left: -30px;
-			width: calc(100% + 60px)!important;
-			bottom: -30px;
-			padding: 20px 0px 30px 50px;
-			height: 109px;
+            left: -30px;
+            width: calc(100% + 60px)!important;
+            bottom: -30px;
+            padding: 20px 0px 30px 50px;
+            height: 109px;
 
 
             // Button
@@ -195,16 +195,16 @@
                 position: absolute;
                 right: 51px;
                 background: blue;
-				width: auto;
-				height: auto;
-				pointer-events: all;
+                width: auto;
+                height: auto;
+                pointer-events: all;
 
-				&:before {
-					content: $text_done;
-					display: block;
+                &:before {
+                    content: $text_done;
+                    display: block;
 
-					@extend %CSS_BLOCK--BUTTON--ICON\:ACTIONBAR---SUGGESTED;
-				}
+                    @extend %CSS_BLOCK--BUTTON--ICON\:ACTIONBAR---SUGGESTED;
+                }
             }
 
         }
@@ -219,7 +219,7 @@
             //     display: block;
             // }
 
-			display: block;
+            display: block;
 
             @include text(36px, _property($TITLE--COLOR, $BACKGROUND-JOBS), 100);
 
@@ -230,8 +230,8 @@
     // Body
     .x-window-bwrap {
 
-		border: none!important;
-		background: transparent!important;
+        border: none!important;
+        background: transparent!important;
 
 
         width: 100%!important;
@@ -324,26 +324,26 @@
                                     &:nth-child(3) {
                                         display: inline-block;
 
-										label {
-											display: none!important;
-											text-transform: none;
-											font-size: 13px;
-											font-weight: 100;
-										}
+                                        label {
+                                            display: none!important;
+                                            text-transform: none;
+                                            font-size: 13px;
+                                            font-weight: 100;
+                                        }
 
-										> div {
-											&:after {
-												content: attr(indigo-label);
-												display: inline-block;
-												padding: 2px 0;
+                                        > div {
+                                            &:after {
+                                                content: attr(indigo-label);
+                                                display: inline-block;
+                                                padding: 2px 0;
 
-												body.ext-gecko & {
-													padding: 4px 0;
-												}
+                                                body.ext-gecko & {
+                                                    padding: 4px 0;
+                                                }
 
-												@include text(13px, _property($LABEL--COLOR, $BACKGROUND-JOBS), 100);
-											}
-										}
+                                                @include text(13px, _property($LABEL--COLOR, $BACKGROUND-JOBS), 100);
+                                            }
+                                        }
 
 
                                     }
@@ -358,14 +358,14 @@
                                         }
                                     }
 
-									// Auto refresh seconds
+                                    // Auto refresh seconds
                                     &:nth-child(5) {
 
-										label {
-											text-transform: none;
-											font-size: 13px;
-											font-weight: 100;
-										}
+                                        label {
+                                            text-transform: none;
+                                            font-size: 13px;
+                                            font-weight: 100;
+                                        }
 
                                     }
 
@@ -384,34 +384,34 @@
 
 
 
-										> table {
-											width: 25px;
-											height: 25px;
-											background: url(./images/icons/tabs-trash-black@X2.png) no-repeat left -2px top;
-											background-size: 21px;
+                                        > table {
+                                            width: 25px;
+                                            height: 25px;
+                                            background: url(./images/icons/tabs-trash-black@X2.png) no-repeat left -2px top;
+                                            background-size: 21px;
 
-											// Small Firefox fix
-											body.ext-gecko & {
-												background: url(./images/icons/tabs-trash-black@X2.png) no-repeat left -2px top -2px;
-												background-size: 21px;
-											}
+                                            // Small Firefox fix
+                                            body.ext-gecko & {
+                                                background: url(./images/icons/tabs-trash-black@X2.png) no-repeat left -2px top -2px;
+                                                background-size: 21px;
+                                            }
 
-											opacity: 0.8;
+                                            opacity: 0.8;
 
                                             button {
-												padding-left: 15px;
+                                                padding-left: 15px;
                                                 @include text(12px, _theme-color(primary), 400);
                                             }
 
-											&:hover {
-												opacity: 1;
-											}
+                                            &:hover {
+                                                opacity: 1;
+                                            }
 
                                             img {
                                                 display: none;
                                             }
 
-										}
+                                        }
 
                                     }
                                 }
@@ -459,23 +459,23 @@
                                         background: none!important;
                                         border: none;
 
-										&.x-grid3-hd-over,
-										&.x-grid3-hd-menu-open {
+                                        &.x-grid3-hd-over,
+                                        &.x-grid3-hd-menu-open {
 
-											.x-grid3-hd-inner {
-												background: _theme-color(secondary, b)!important;
+                                            .x-grid3-hd-inner {
+                                                background: _theme-color(secondary, b)!important;
 
-												a {
-													background: url(./images/icons/icon-toggle-expanded-small-normal.png) no-repeat center center;
-													margin-right: 5px;
-												}
+                                                a {
+                                                    background: url(./images/icons/icon-toggle-expanded-small-normal.png) no-repeat center center;
+                                                    margin-right: 5px;
+                                                }
 
 
-	                                            span {
-	                                                color: _theme-color(primary);
-	                                            }
-	                                        }
-										}
+                                                span {
+                                                    color: _theme-color(primary);
+                                                }
+                                            }
+                                        }
 
 
                                         .x-grid3-hd-inner {
@@ -496,7 +496,7 @@
 
                             // Grouped List
                             .x-grid-group {
-								background: url(./images/icons/icon-toggle-expanded-small-normal.png) no-repeat left top 10px;
+                                background: url(./images/icons/icon-toggle-expanded-small-normal.png) no-repeat left top 10px;
 
                                 // Collapsed Group
                                 &.x-grid-group-collapsed {
@@ -504,7 +504,7 @@
 
                                 }
 
-								// Group header
+                                // Group header
                                 .x-grid-group-hd {
                                     border: none;
                                     margin-bottom: 5px;
@@ -516,15 +516,15 @@
                                         @include text(10px, _theme-color(quinary), 500);
                                     }
                                 }
-							}
+                            }
 
-							// Grouped / Ungrouped List
-							.x-grid-group,
-							.x-grid3 {
+                            // Grouped / Ungrouped List
+                            .x-grid-group,
+                            .x-grid3 {
 
                                 // Group List Container
                                 .x-grid-group-body,
-								.x-grid3-body {
+                                .x-grid3-body {
 
 
                                     .x-grid3-row {
@@ -539,6 +539,10 @@
 
                                         > table {
                                             pointer-events: none;
+
+                                            tr {
+                                                white-space: nowrap
+                                            }
                                         }
 
                                         position: relative;
@@ -592,7 +596,7 @@
                                             background: _property($ROW--BG, $BACKGROUND-JOBS)!important;
 
                                             .x-grid3-cell-inner,
-											.x-grid3-cell-inner label {
+                                            .x-grid3-cell-inner label {
                                                 color: _property($ROW--COLOR, $BACKGROUND-JOBS)!important;
                                             }
 
@@ -610,16 +614,16 @@
                                             background: _property($ROW--BG---HOVER, $BACKGROUND-JOBS)!important;
 
                                             .x-grid3-cell-inner,
-											.x-grid3-cell-inner label {
+                                            .x-grid3-cell-inner label {
                                                 color: _property($ROW--COLOR---HOVER, $BACKGROUND-JOBS)!important;
                                             }
 
                                         }
 
                                         .x-grid3-cell-inner,
-										.x-grid3-cell-inner label {
+                                        .x-grid3-cell-inner label {
                                             padding: 5px 0 0 10px;
-											text-transform: none!important;
+                                            text-transform: none!important;
                                             @include text(12px, _property($ROW--COLOR, $BACKGROUND-JOBS), $FONT--WEIGHT---EXTRALIGHT);
                                         }
                                     }
@@ -648,69 +652,69 @@
 
 
                             .x-toolbar-layout-ct {
-                        		position: relative;
-                        		z-index: 9999999;
-                        		background: _theme-color(primary, a); /* TO THEME */
-                        		width: 100% !important;
-                        		padding: 2px 11px;
-                        		box-sizing: border-box;
-                        		margin-top: 2px;
+                                position: relative;
+                                z-index: 9999999;
+                                background: _theme-color(primary, a); /* TO THEME */
+                                width: 100% !important;
+                                padding: 2px 11px;
+                                box-sizing: border-box;
+                                margin-top: 2px;
 
-                        		.x-toolbar-left .x-toolbar-cell {
-                        			display: inline-block !important;
-                        			margin: 0 2px;
-                        			opacity: 0.8;
+                                .x-toolbar-left .x-toolbar-cell {
+                                    display: inline-block !important;
+                                    margin: 0 2px;
+                                    opacity: 0.8;
 
-                        			.x-btn-mc img {
-                        				display: none;
-                        			}
+                                    .x-btn-mc img {
+                                        display: none;
+                                    }
 
                                     // Change colours to grey
 
-                        			&:nth-child(1) {
-                        				background: url(./images/icons/icon_arrow_left_double_grey@X2.png) no-repeat center center/14px 14px;
-                        				margin-left: 0px;
-                        			}
+                                    &:nth-child(1) {
+                                        background: url(./images/icons/icon_arrow_left_double_grey@X2.png) no-repeat center center/14px 14px;
+                                        margin-left: 0px;
+                                    }
 
-                        			&:nth-child(2) {
-                        				background: url(./images/icons/icon_arrow_left_single_grey@X2.png) no-repeat center center/14px 14px;
-                        				margin-left: 5px;
-                        			}
+                                    &:nth-child(2) {
+                                        background: url(./images/icons/icon_arrow_left_single_grey@X2.png) no-repeat center center/14px 14px;
+                                        margin-left: 5px;
+                                    }
 
-                        			&:nth-child(8) {
-                        				background: url(./images/icons/icon-next-grey@X2.png) no-repeat center center/14px 14px;
-                        				margin-right: 5px;
-                        			}
+                                    &:nth-child(8) {
+                                        background: url(./images/icons/icon-next-grey@X2.png) no-repeat center center/14px 14px;
+                                        margin-right: 5px;
+                                    }
 
-                        			&:nth-child(9) {
-                        				background: url(./images/icons/icon_arrow_right_double_grey@X2.png) no-repeat center center/14px 14px;
-                        				margin-right: 5px;
-                        			}
+                                    &:nth-child(9) {
+                                        background: url(./images/icons/icon_arrow_right_double_grey@X2.png) no-repeat center center/14px 14px;
+                                        margin-right: 5px;
+                                    }
 
-                        			&:nth-child(11) {
-                        				background: url(./images/icons/icon-publication-launcher-grey.png) no-repeat center center/16px 12px;
-                        			}
+                                    &:nth-child(11) {
+                                        background: url(./images/icons/icon-publication-launcher-grey.png) no-repeat center center/16px 12px;
+                                    }
 
-                        			.my-paging-text {
-                        				font-family: "Nunito Sans", sans-serif;
-                        				font-size: 12px;
-                        				color: _theme-color(primary); /* TO THEME */
-                        				font-weight: 100;
-                        			}
+                                    .my-paging-text {
+                                        font-family: "Nunito Sans", sans-serif;
+                                        font-size: 12px;
+                                        color: _theme-color(primary); /* TO THEME */
+                                        font-weight: 100;
+                                    }
 
-                        			.gwt-TextBox {
-                        				font-family: "Nunito Sans", sans-serif;
-                        				font-size: 12px;
-                        				color: _theme-color(primary, g); /* TO THEME */
-                        				font-weight: 100;
-                        				background: rgba(241, 241, 241, 0.7); /* TO THEME */
-                        				padding: 3px;
-                        				border: none;
-                        			}
+                                    .gwt-TextBox {
+                                        font-family: "Nunito Sans", sans-serif;
+                                        font-size: 12px;
+                                        color: _theme-color(primary, g); /* TO THEME */
+                                        font-weight: 100;
+                                        background: rgba(241, 241, 241, 0.7); /* TO THEME */
+                                        padding: 3px;
+                                        border: none;
+                                    }
 
-                        		}
+                                }
 
-                        	}
+                            }
 
                         }
                     }
@@ -757,7 +761,7 @@
                         width: 25px;
                         height: 25px;
                         opacity: 0.8;
-						display: block;
+                        display: block;
 
                         &:hover {
                             opacity: 1;

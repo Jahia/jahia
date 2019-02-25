@@ -1184,13 +1184,16 @@ public class JCRPublicationService extends JahiaService {
 
             if (!node.isMarkedForDeletion() && node.hasProperty(Constants.WORKINPROGRESS_STATUS)) {
                 String wipStatus = node.getProperty(Constants.WORKINPROGRESS_STATUS).getString();
-                if (wipStatus.equals(Constants.WORKINPROGRESS_STATUS_ALLCONTENT) ||
-                        (wipStatus.equals(Constants.WORKINPROGRESS_STATUS_LANG) && node.getResolveSite().getLanguages().size() == 1)) {
+                if (wipStatus.equals(Constants.WORKINPROGRESS_STATUS_ALLCONTENT)) {
                     info.setWorkInProgress(true);
                     wipAllContent = true;
                 } else if (wipStatus.equals(Constants.WORKINPROGRESS_STATUS_LANG)) {
                     for (JCRValueWrapper value : node.getProperty(Constants.WORKINPROGRESS_LANGUAGES).getValues()) {
-                        wipLanguages.add(value.getString());
+                        String wipLang = value.getString();
+                        wipLanguages.add(wipLang);
+                        if (!info.isWorkInProgress() && languages != null && languages.contains(wipLang)) {
+                            info.setWorkInProgress(true);
+                        }
                     }
                 }
             }

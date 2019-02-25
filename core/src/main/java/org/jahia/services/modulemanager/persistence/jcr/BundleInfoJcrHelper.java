@@ -91,6 +91,7 @@ final public class BundleInfoJcrHelper {
      * @param bundles The list of bundles to save as JSON in the JCR
      */
     public static void storePersistentStates(List<BundlePersistentInfo> bundles) throws RepositoryException {
+
         final JSONArray bundleListJson = new JSONArray(bundles.stream().map(ThrowingFunction.unchecked(bundle -> {
             JSONObject obj = new JSONObject();
             obj.put("symbolicName", bundle.getSymbolicName());
@@ -101,6 +102,7 @@ final public class BundleInfoJcrHelper {
         })).collect(Collectors.toList()));
 
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Void>() {
+
             @Override
             public Void doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 session.getNode(PATH_ROOT).setProperty(PROP_BUNDLES_PERSISTENT_STATE, bundleListJson.toString());

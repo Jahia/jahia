@@ -228,9 +228,9 @@ public interface ModuleManager {
     Map<String, BundleService.BundleInformation> getAllLocalInfos() throws ModuleManagementException;
 
     /**
-     * Save the bundles persistent state in the JCR
+     * Store persistent state of all bundles in the internal storage for the purpose of restore in the future.
      *
-     * @return A list of information about the bundles which the persistent state have been saved in the JCR
+     * @return A list of info objects describing the bundles whose persistent state have been stored
      */
-    public List<BundlePersistentInfo> storePersistentStates() throws RepositoryException;
+    public List<BundlePersistentInfo> storeAllLocalPersistentStates() throws RepositoryException;
 }

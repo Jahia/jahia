@@ -73,6 +73,7 @@
                 <property name="groupService" ref="JahiaGroupManagerService"/>
             </bean>
         </property>
+        <property name="schedulerService" ref="SchedulerService"/>
     </bean>
 
     <!-- Work item handler instances -->

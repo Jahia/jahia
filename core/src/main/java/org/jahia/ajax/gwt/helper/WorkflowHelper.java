@@ -227,7 +227,7 @@ public class WorkflowHelper {
             throws GWTJahiaServiceException {
         try {
             JCRNodeWrapper node = session.getNode(path);
-            Map<String, Object> map = getVariablesMap(properties, def.getFormResourceName() != null ? NodeTypeRegistry.getInstance().getNodeType(def.getFormResourceName()) : null);
+            Map<String, Object> map = getVariablesMap(properties, def.getFormResourceName());
             service.startProcessAsJob(Arrays.asList(node.getIdentifier()), session, def.getId(), def.getProvider(), map, comments);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -240,7 +240,7 @@ public class WorkflowHelper {
             throws GWTJahiaServiceException {
 
         try {
-            Map<String, Object> map = getVariablesMap(properties, def.getFormResourceName() != null ? NodeTypeRegistry.getInstance().getNodeType(def.getFormResourceName()) : null);
+            Map<String, Object> map = getVariablesMap(properties, def.getFormResourceName());
             map.putAll(args);
             service.startProcessAsJob(uuids, session, def.getId(), def.getProvider(), map, comments);
         } catch (Exception e) {
@@ -267,7 +267,7 @@ public class WorkflowHelper {
     public void assignAndCompleteTask(GWTJahiaWorkflowTask task, GWTJahiaWorkflowOutcome outcome,
                                       JCRSessionWrapper session, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException {
         try {
-            Map<String, Object> map = getVariablesMap(properties,task.getFormResourceName() != null ? NodeTypeRegistry.getInstance().getNodeType(task.getFormResourceName()) : null);
+            Map<String, Object> map = getVariablesMap(properties,task.getFormResourceName());
             service.assignAndCompleteTask(task.getId(), task.getProvider(), outcome.getName(), map, session.getUser());
         } catch (Exception e) {
             logger.error("Exception in task", e);
@@ -301,25 +301,28 @@ public class WorkflowHelper {
         return properties;
     }
 
-    private Map<String, Object> getVariablesMap(List<GWTJahiaNodeProperty> properties, ExtendedNodeType nodeType) throws RepositoryException {
+    private Map<String, Object> getVariablesMap(List<GWTJahiaNodeProperty> properties, String nodeTypeName) throws RepositoryException {
         Map<String, Object> map = new HashMap<String, Object>();
-        for (GWTJahiaNodeProperty property : properties) {
-            List<GWTJahiaNodePropertyValue> propertyValues = property.getValues();
-            ExtendedPropertyDefinition epd = nodeType.getPropertyDefinition(property.getName());
-            if (property.isMultiple()) {
-                List<WorkflowVariable> values = new ArrayList<WorkflowVariable>();
-                for (GWTJahiaNodePropertyValue value : propertyValues) {
+        if (properties.size() > 0) {
+            ExtendedNodeType nodeType = nodeTypeName != null ? NodeTypeRegistry.getInstance().getNodeType(nodeTypeName) : null;           
+            for (GWTJahiaNodeProperty property : properties) {
+                List<GWTJahiaNodePropertyValue> propertyValues = property.getValues();
+                ExtendedPropertyDefinition epd = nodeType.getPropertyDefinition(property.getName());
+                if (property.isMultiple()) {
+                    List<WorkflowVariable> values = new ArrayList<WorkflowVariable>();
+                    for (GWTJahiaNodePropertyValue value : propertyValues) {
+                        String s = contentDefinitionHelper.convertValue(value, epd).getString();
+                        if (StringUtils.isNotBlank(s)) {
+                            values.add(new WorkflowVariable(s, value.getType()));
+                        }
+                    }
+                    map.put(property.getName(), values);
+                } else if (!propertyValues.isEmpty()) {
+                    GWTJahiaNodePropertyValue value = propertyValues.get(0);
                     String s = contentDefinitionHelper.convertValue(value, epd).getString();
                     if (StringUtils.isNotBlank(s)) {
-                        values.add(new WorkflowVariable(s, value.getType()));
+                        map.put(property.getName(), new WorkflowVariable(s, value.getType()));
                     }
-                }
-                map.put(property.getName(), values);
-            } else if (!propertyValues.isEmpty()) {
-                GWTJahiaNodePropertyValue value = propertyValues.get(0);
-                String s = contentDefinitionHelper.convertValue(value, epd).getString();
-                if (StringUtils.isNotBlank(s)) {
-                    map.put(property.getName(), new WorkflowVariable(s, value.getType()));
                 }
             }
         }

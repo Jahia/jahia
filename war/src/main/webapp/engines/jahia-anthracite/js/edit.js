@@ -1058,7 +1058,7 @@ if (!Element.prototype.matches) {
             'ignoreMetadata': 'Metadaten ignorieren',
             'metaLabel': 'Meta: %n%',
             'cancel': 'Abbrechen',
-            'create': 'Schaffen',
+            'create': 'Erstellen',
             'save': 'Speichern',
             'backgroundJobs': 'Hintergrund-Tasks',
             'filterContent': 'Content filtern',

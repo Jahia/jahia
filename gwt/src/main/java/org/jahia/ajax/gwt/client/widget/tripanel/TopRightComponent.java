@@ -80,7 +80,7 @@ public abstract class TopRightComponent extends LinkableComponent {
     public void selectNodes(List<GWTJahiaNode> nodes) {
     }
 
-    public abstract void refresh();
+    public abstract void refresh(AbstractView.ContentSource source);
 
 
     public void clearSelection() {

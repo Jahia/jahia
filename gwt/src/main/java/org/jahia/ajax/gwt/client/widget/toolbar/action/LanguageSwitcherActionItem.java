@@ -131,6 +131,8 @@ public class LanguageSwitcherActionItem extends BaseLanguageAwareActionItem {
             mainComponent.getStore().add(JahiaGWTParameters.getSiteLanguages());
             mainComponent.getListView().getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
             if (mainComponent.getSelection().isEmpty() || !JahiaGWTParameters.getLanguage().equals(mainComponent.getSelection().get(0).getLanguage())) {
+                // the call to getSelection() filters the store, so we explicitly clear the filters here
+                mainComponent.getStore().clearFilters();
                 for (GWTJahiaLanguage language : JahiaGWTParameters.getSiteLanguages()) {
                     if (language.getLanguage().equals(JahiaGWTParameters.getLanguage())) {
                         mainComponent.setSelection(Arrays.asList(language));

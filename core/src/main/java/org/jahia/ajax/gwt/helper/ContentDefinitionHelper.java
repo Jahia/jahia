@@ -75,6 +75,7 @@ import javax.jcr.nodetype.NodeTypeIterator;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Helper class for accessing node types and definitions.
@@ -911,8 +912,16 @@ public class ContentDefinitionHelper {
                 GWTJahiaNodeType nt = getGWTJahiaNodeType(entry.getKey() != null ? entry.getKey() : NodeTypeRegistry
                         .getInstance().getNodeType("nt:base"), uiLocale);
                 roots.add(nt);
+
+                List<GWTJahiaNodeType> children = new ArrayList<>(entry.getValue().size());
                 for (ExtendedNodeType type : entry.getValue()) {
-                    nt.add(getGWTJahiaNodeType(type, uiLocale));
+                    children.add(getGWTJahiaNodeType(type, uiLocale));
+                }
+
+                disambiguateLabels(children);
+
+                for (GWTJahiaNodeType type : children) {
+                    nt.add(type);
                 }
             }
 
@@ -1008,6 +1017,24 @@ public class ContentDefinitionHelper {
         }
 
         return true;
+    }
+
+    /*
+     * Appends its name to a {@link GWTJahiaNodeType}'s label for disambiguation if any sibling has the same one.
+     */
+    private static void disambiguateLabels(Collection<GWTJahiaNodeType> nodeTypes) {
+        List<GWTJahiaNodeType> ambiguousNodeTypes = nodeTypes
+                .stream()
+                .collect(Collectors.groupingBy(GWTJahiaNodeType::getLabel))
+                .values()
+                .stream()
+                .filter(l -> l.size() > 1)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+
+        for (GWTJahiaNodeType nodeType : ambiguousNodeTypes) {
+            nodeType.setLabel(nodeType.getLabel() + " (" + nodeType.getName() + ")");
+        }
     }
 
 }

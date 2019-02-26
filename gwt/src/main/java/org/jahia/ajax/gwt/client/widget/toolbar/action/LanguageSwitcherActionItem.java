@@ -61,14 +61,14 @@ import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
 import java.util.Arrays;
 
 /**
- * Language switcher toolbar item for all possible languages. 
+ * Language switcher toolbar item for all possible languages.
  * User: toto
  * Date: Feb 4, 2010
  * Time: 4:19:51 PM
  */
 public class LanguageSwitcherActionItem extends BaseLanguageAwareActionItem {
     private static final long serialVersionUID = 9115660301140902069L;
-	protected transient ComboBox<GWTJahiaLanguage> mainComponent;
+    protected transient ComboBox<GWTJahiaLanguage> mainComponent;
     protected boolean events = true;
 
     @Override
@@ -131,8 +131,10 @@ public class LanguageSwitcherActionItem extends BaseLanguageAwareActionItem {
             mainComponent.getStore().add(JahiaGWTParameters.getSiteLanguages());
             mainComponent.getListView().getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
             if (mainComponent.getSelection().isEmpty() || !JahiaGWTParameters.getLanguage().equals(mainComponent.getSelection().get(0).getLanguage())) {
-                // the call to getSelection() filters the store, so we explicitly clear the filters here
+
+                // The getSelection() call above filters the store, so we explicitly clear the filters after that.
                 mainComponent.getStore().clearFilters();
+
                 for (GWTJahiaLanguage language : JahiaGWTParameters.getSiteLanguages()) {
                     if (language.getLanguage().equals(JahiaGWTParameters.getLanguage())) {
                         mainComponent.setSelection(Arrays.asList(language));

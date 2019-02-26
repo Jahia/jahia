@@ -121,6 +121,8 @@ public class ContentViews extends TopRightComponent {
     }
 
     public void switchToView(AbstractView newView) {
+        AbstractView.ContentSource contentSource = current.contentSource;
+
         if (current != newView) {
             List<GWTJahiaNode> hiddenSelection = current.getHiddenSelection();
             List<GWTJahiaNode> visibleSelection = current.getVisibleSelection();
@@ -129,7 +131,7 @@ public class ContentViews extends TopRightComponent {
             current = newView;
             m_component.add(current.getComponent());
             m_component.layout();
-            refresh();
+            refresh(contentSource);
 
             newView.setHiddenSelection(hiddenSelection);
             newView.setVisibleSelection(visibleSelection);
@@ -197,9 +199,9 @@ public class ContentViews extends TopRightComponent {
         }
     }
 
-    public void refresh() {
+    public void refresh(AbstractView.ContentSource contentSource) {
         if (current != null) {
-            current.refresh();
+            current.refresh(contentSource);
         }
     }
 

@@ -213,7 +213,7 @@ public class ManagerLinker implements Linker {
 
     public void refreshTable() {
         if (m_topRightComponent != null) {
-            m_topRightComponent.refresh();
+            m_topRightComponent.refresh(null);
         }
         if (m_bottomRightComponent != null) {
             m_bottomRightComponent.fillData(m_topRightComponent != null?m_topRightComponent.getHiddenSelection():null);

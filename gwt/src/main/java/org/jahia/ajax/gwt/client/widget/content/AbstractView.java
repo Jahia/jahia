@@ -244,7 +244,7 @@ public abstract class AbstractView extends TopRightComponent {
         store.removeAll();
     }
 
-    public void refresh() {
+    public void refresh(AbstractView.ContentSource contentSource) {
         if (contentSource != null) {
             contentSource.refreshTable();
         } else {

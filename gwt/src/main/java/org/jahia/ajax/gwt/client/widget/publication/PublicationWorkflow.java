@@ -639,7 +639,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                 }
                 if (result.isEmpty()) {
                     MessageBox.info(
-                            Messages.get("label.publish", "Publication"),
+                            Messages.get(checkForUnpublication ? "label.unpublish" : "label.publish", checkForUnpublication ? "Unpublish" : "Publish"),
                             Messages.get(checkForUnpublication ? "label.publication.nothingToUnpublish" : "label.publication.nothingToPublish", checkForUnpublication ? "Nothing to unpublish" : "Nothing to publish"),
                             null
                     );

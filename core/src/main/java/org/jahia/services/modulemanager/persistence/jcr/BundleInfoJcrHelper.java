@@ -74,16 +74,17 @@ final public class BundleInfoJcrHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(BundleInfoJcrHelper.class);
 
-    private static final String NODE_NAME_BUNDLES = "bundles";
-    private static final String NODE_NAME_ROOT = "module-management";
     private static final String NODE_TYPE_BUNDLE = "jnt:moduleManagementBundle";
     private static final String NODE_TYPE_FOLDER = "jnt:moduleManagementBundleFolder";
     private static final String NODE_TYPE_ROOT = "jnt:moduleManagement";
 
-    private static final String PROP_BUNDLES_PERSISTENT_STATE = "j:bundlesPersistentState";
+    private static final String NODE_MODULE_MANAGENENT = "module-management";
+    private static final String NODE_BUNDLES = "bundles";
 
-    static final String PATH_BUNDLES = '/' + NODE_NAME_ROOT + '/' + NODE_NAME_BUNDLES;
-    static final String PATH_ROOT = '/' + NODE_NAME_ROOT;
+    public static final String PATH_MODULE_MANAGEMENT = '/' + NODE_MODULE_MANAGENENT;
+    public static final String PATH_BUNDLES = PATH_MODULE_MANAGEMENT + '/' + NODE_BUNDLES;
+
+    public static final String PROP_BUNDLES_PERSISTENT_STATE = "j:bundlesPersistentState";
 
     /**
      * This method will save a collection of bundles as JSON on the node /module-management
@@ -106,7 +107,7 @@ final public class BundleInfoJcrHelper {
 
             @Override
             public Void doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                session.getNode(PATH_ROOT).setProperty(PROP_BUNDLES_PERSISTENT_STATE, bundleListJson.toString());
+                session.getNode(PATH_MODULE_MANAGEMENT).setProperty(PROP_BUNDLES_PERSISTENT_STATE, bundleListJson.toString());
                 session.save();
                 return null;
             }
@@ -147,7 +148,7 @@ final public class BundleInfoJcrHelper {
         try {
             bundlesNode = session.getNode(PATH_BUNDLES);
         } catch (PathNotFoundException e) {
-            bundlesNode = getRootNode(session).addNode(NODE_NAME_BUNDLES, NODE_TYPE_FOLDER);
+            bundlesNode = getRootNode(session).addNode(NODE_BUNDLES, NODE_TYPE_FOLDER);
         }
         return bundlesNode;
     }
@@ -240,9 +241,9 @@ final public class BundleInfoJcrHelper {
     private static JCRNodeWrapper getRootNode(JCRSessionWrapper session) throws RepositoryException {
         JCRNodeWrapper root = null;
         try {
-            root = session.getNode(PATH_ROOT);
+            root = session.getNode(PATH_MODULE_MANAGEMENT);
         } catch (PathNotFoundException e) {
-            root = session.getRootNode().addNode(NODE_NAME_ROOT, NODE_TYPE_ROOT);
+            root = session.getRootNode().addNode(NODE_MODULE_MANAGENENT, NODE_TYPE_ROOT);
         }
         return root;
     }

@@ -209,7 +209,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                 String workflowGroup = publicationInfos.get(0).getWorkflowGroup();
                 String locale = workflowGroup.substring(0, workflowGroup.indexOf("/"));
 
-                JahiaContentManagementService.App.getInstance().startWorkflow(getAllUuids(), wf, nodeProperties,
+                JahiaContentManagementService.App.getInstance().startWorkflow(getAllUuids(unpublish), wf, nodeProperties,
                         dialog.getComments(), map, locale, new BaseAsyncCallback<Object>() {
 
                             @Override
@@ -274,7 +274,7 @@ public class PublicationWorkflow implements CustomWorkflow {
         final String status = Messages.get("label.publication.task", "Publishing content");
         Info.display(status, status);
         WorkInProgressActionItem.setStatus(status);
-        final List<String> allUuids = getAllUuids();
+        final List<String> allUuids = getAllUuids(false);
         JahiaContentManagementService.App.getInstance().publish(allUuids, nodeProperties, null, new BaseAsyncCallback<Object>() {
 
             @Override
@@ -291,19 +291,19 @@ public class PublicationWorkflow implements CustomWorkflow {
         });
     }
 
-    public List<String> getAllUuids() {
-        return getAllUuids(publicationInfos);
+    public List<String> getAllUuids(boolean unpublish) {
+        return getAllUuids(publicationInfos, unpublish);
     }
 
-    public static List<String> getAllUuids(List<GWTJahiaPublicationInfo> publicationInfos) {
-        return getAllUuids(publicationInfos, false);
+    public static List<String> getAllUuids(List<GWTJahiaPublicationInfo> publicationInfos, boolean unpublish) {
+        return getAllUuids(publicationInfos, false, unpublish);
     }
 
-    public static List<String> getAllUuids(List<GWTJahiaPublicationInfo> publicationInfos, boolean onlyAllowedToPublishWithoutWorkflow) {
+    public static List<String> getAllUuids(List<GWTJahiaPublicationInfo> publicationInfos, boolean onlyAllowedToPublishWithoutWorkflow, boolean unpublish) {
         List<String> l = new ArrayList<String>();
         for (GWTJahiaPublicationInfo info : publicationInfos) {
             if (info.getStatus() != GWTJahiaPublicationInfo.DELETED && (!onlyAllowedToPublishWithoutWorkflow || info.isAllowedToPublishWithoutWorkflow())) {
-                if (info.getUuid() != null) {
+                if (info.getUuid() != null && !unpublish) {
                     l.add(info.getUuid());
                 }
                 if (info.getI18nUuid() != null) {
@@ -377,7 +377,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                 );
             } else {
                 // No Workflow defined
-                new PublicationStatusWindow(linker, getAllUuids(infoList), infoList, cards, unpublish);
+                new PublicationStatusWindow(linker, getAllUuids(infoList, unpublish), infoList, cards, unpublish);
             }
         }
         cards.addGlobalButton(getStartAllWorkflows(cards, linker, unpublish));
@@ -449,11 +449,11 @@ public class PublicationWorkflow implements CustomWorkflow {
                         final List<GWTJahiaPublicationInfo> thisWFInfo = customWorkflow.getPublicationInfos();
                         if (thisWFInfo.get(0).isAllowedToPublishWithoutWorkflow()) {
                             if (customWorkflow instanceof UnpublicationWorkflow) {
-                                JahiaContentManagementService.App.getInstance().unpublish(getAllUuids(thisWFInfo),
+                                JahiaContentManagementService.App.getInstance().unpublish(getAllUuids(thisWFInfo, unpublish),
                                         getCallback(cards, nbWF, Messages.get("message.content.unpublished", "Content unpublished"),
                                                 Messages.get("message.content.unpublished.error", "Cannot unpublish"), status, linker, null));
                             } else {
-                                JahiaContentManagementService.App.getInstance().publish(getAllUuids(thisWFInfo), nodeProperties, null,
+                                JahiaContentManagementService.App.getInstance().publish(getAllUuids(thisWFInfo, unpublish), nodeProperties, null,
                                         getCallback(cards, nbWF, Messages.get("message.content.published", "Content published"),
                                                 Messages.get("message.content.published.error", "Cannot publish"), status, linker, null));
                             }
@@ -533,7 +533,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                         map.put("customWorkflowInfo", customWorkflow);
                         String workflowGroup = thisWFInfo.get(0).getWorkflowGroup();
                         String locale = workflowGroup.substring(0, workflowGroup.indexOf("/"));
-                        JahiaContentManagementService.App.getInstance().startWorkflow(getAllUuids(thisWFInfo), dialog.getWfDefinition(), nodeProperties,
+                        JahiaContentManagementService.App.getInstance().startWorkflow(getAllUuids(thisWFInfo, unpublish), dialog.getWfDefinition(), nodeProperties,
                                 dialog.getComments(), map, locale, getCallback(cards, nbWF, Messages.get("label.workflow.start", "Start Workflow"),
                                         Messages.get("label.workflow.cannotStart", "Cannot start workflow"), status, linker, refreshData)
                         );

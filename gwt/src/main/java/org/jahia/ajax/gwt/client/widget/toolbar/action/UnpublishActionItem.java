@@ -76,7 +76,7 @@ public class UnpublishActionItem extends PublishActionItem {
 
     protected void callback(List<GWTJahiaPublicationInfo> result) {
         if (result.isEmpty()) {
-            MessageBox.info(Messages.get("label.publish", "Publication"), Messages.get("label.publication.nothingToUnpublish", "Nothing to unpublish"), null);
+            MessageBox.info(Messages.get("label.unpublish", "Unpublish"), Messages.get("label.publication.nothingToUnpublish", "Nothing to unpublish"), null);
         } else {
             PublicationWorkflow.create(result, linker, checkForUnpublication);
         }

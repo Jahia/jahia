@@ -58,7 +58,7 @@ public class BundlePersistentInfo {
 
     public BundlePersistentInfo(Bundle bundle) {
         location = bundle.getLocation();
-        state = bundle.getState();
+        state = BundleUtils.getPersistentState(bundle);
         symbolicName = bundle.getSymbolicName();
         version = BundleUtils.getModuleVersion(bundle);
     }

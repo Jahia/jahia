@@ -52,7 +52,7 @@ import org.apache.karaf.shell.support.table.ShellTable;
 import org.jahia.services.modulemanager.BundlePersistentInfo;
 import org.jahia.services.modulemanager.ModuleManager;
 
-import java.util.List;
+import java.util.Collection;
 
 @Command(
     scope = "bundle",
@@ -68,7 +68,7 @@ public class StoreBundlesPersistentState implements Action {
     @Override
     public Object execute() throws Exception {
 
-        List<BundlePersistentInfo> modules = moduleManager.storeAllLocalPersistentStates();
+        Collection<BundlePersistentInfo> modules = moduleManager.storeAllLocalPersistentStates();
 
         // Fill the table to output result.
         ShellTable table = new ShellTable();

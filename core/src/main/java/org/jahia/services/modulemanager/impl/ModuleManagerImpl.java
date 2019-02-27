@@ -62,6 +62,7 @@ import org.jahia.services.modulemanager.spi.BundleService;
 import org.jahia.services.modulemanager.spi.BundleService.BundleInformation;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.ModuleVersion;
+import org.jahia.settings.SettingsBean;
 import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
 import org.jahia.settings.readonlymode.ReadOnlyModeException;
 import org.osgi.framework.Bundle;
@@ -70,8 +71,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-
-import javax.jcr.RepositoryException;
 
 /**
  * The main entry point service for the module management service, providing functionality for module deployment, undeployment, start and
@@ -553,12 +552,20 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
     }
 
     @Override
-    public List<BundlePersistentInfo> storeAllLocalPersistentStates() throws RepositoryException {
-        if (FrameworkService.getBundleContext() == null) {
-            return new ArrayList<>();
+    public Collection<BundlePersistentInfo> storeAllLocalPersistentStates() throws ModuleManagementException {
+        try {
+            if (!SettingsBean.getInstance().isProcessingServer()) {
+                throw new NonProcessingNodeException();
+            }
+            Collection<BundlePersistentInfo> bundleInfos = Arrays.stream(FrameworkService.getBundleContext().getBundles())
+                .map(BundlePersistentInfo::new)
+                .collect(Collectors.toSet());
+            BundleInfoJcrHelper.storePersistentStates(bundleInfos);
+            return bundleInfos;
+        } catch (ModuleManagementException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ModuleManagementException(e);
         }
-        List<BundlePersistentInfo> bundleList = Arrays.stream(FrameworkService.getBundleContext().getBundles()).map(BundlePersistentInfo::new).collect(Collectors.toList());
-        BundleInfoJcrHelper.storePersistentStates(bundleList);
-        return bundleList;
     }
 }

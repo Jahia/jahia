@@ -44,14 +44,11 @@
 package org.jahia.services.modulemanager;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import org.jahia.osgi.BundleState;
 import org.jahia.services.modulemanager.spi.BundleService;
 import org.springframework.core.io.Resource;
-
-import javax.jcr.RepositoryException;
 
 /**
  * Entry point interface for the module management service, providing functionality for module deployment, undeployment, start and stop
@@ -230,7 +227,7 @@ public interface ModuleManager {
     /**
      * Store persistent state of all bundles in the internal storage for the purpose of restore in the future.
      *
-     * @return A list of info objects describing the bundles whose persistent state have been stored
+     * @return A collection of info objects describing the bundles whose persistent state have been stored
      */
-    public List<BundlePersistentInfo> storeAllLocalPersistentStates() throws RepositoryException;
+    Collection<BundlePersistentInfo> storeAllLocalPersistentStates() throws ModuleManagementException;
 }

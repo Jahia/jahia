@@ -114,7 +114,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     private ScriptEngineUtils scriptEngineUtils;
     private String template;
     private String templateExtension;
-    private boolean aggregateAndCompress;
+    private boolean aggregateAssets;
+    private boolean compressDuringAggregation;
     private List<String> excludesFromAggregateAndCompress = new ArrayList<String>();
     private Set<String> ieHeaderRecognitions = new HashSet<String>();
     private boolean forceLiveIEcompatiblity;
@@ -416,7 +417,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
             bindings.put("contextJsParameters", getContextJsParameters(assetsByType, renderContext));
 
-            if (aggregateAndCompress && resource.getWorkspace().equals("live")) {
+            if (aggregateAssets && resource.getWorkspace().equals("live")) {
                 Map<String, Map<String, String>> cssAssets = assetsByType.get("css");
                 if (cssAssets != null) {
                     assetsByType.put("css", aggregate(cssAssets, "css"));
@@ -681,7 +682,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 String minifiedFileName = Patterns.SLASH.matcher(path).replaceAll("_") + ".min." + type;
                 File minifiedFile = new File(getFileSystemPath(minifiedFileName));
                 if (!minifiedFile.exists()) {
-                    minify(path, resource, type, minifiedFile);
+                    minify(path, resource, type, minifiedFile, compressDuringAggregation);
                 }
                 minifiedFileNames.put(path, minifiedFileName);
             }
@@ -717,7 +718,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         return minifiedAggregatedPath;
     }
 
-    private static void minify(String path, Resource resource, String type, File minifiedFile) throws IOException {
+    private static void minify(String path, Resource resource, String type, File minifiedFile, boolean doMinify) throws IOException {
 
         Reader reader = null;
         Writer writer = null;
@@ -728,14 +729,14 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             reader = new InputStreamReader(resource.getInputStream(), ASSET_ENCODING);
             writer = new OutputStreamWriter(new FileOutputStream(tmpMinifiedFile), ASSET_ENCODING);
 
-            if (type.equals("css") && !path.contains(".min")) {
+            if (doMinify && type.equals("css") && !path.contains(".min")) {
                 String s = IOUtils.toString(reader);
                 IOUtils.closeQuietly(reader);
                 s = urlRewriting(s, path);
                 reader = new StringReader(s);
                 CssCompressor compressor = new CssCompressor(reader);
                 compressor.compress(writer, -1);
-            } else if (type.equals("js") && !path.contains(".min")) {
+            } else if (doMinify && type.equals("js") && !path.contains(".min")) {
                 try {
                     JavaScriptCompressor compressor  = new JavaScriptCompressor(reader, new JavaScriptErrorReporter());
                     compressor.compress(writer, -1, true, true, false, false);
@@ -928,8 +929,14 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         }
     }
 
+    /**
+     * Deprecated since 7.3.1.0. Please, use {@link #setAggregateAssets(boolean)} and {@link #setCompressDuringAggregation(boolean)} instead.
+     * @param aggregateAndCompress should the static assets be aggregated and compressed
+     */
+    @Deprecated
     public void setAggregateAndCompress(boolean aggregateAndCompress) {
-        this.aggregateAndCompress = aggregateAndCompress;
+        setAggregateAssets(aggregateAndCompress);
+        setCompressDuringAggregation(aggregateAndCompress);
     }
 
     public void setExcludesFromAggregateAndCompress(List<String> skipAggregation) {
@@ -968,9 +975,24 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        checkAggregateAndCompressSupport();
         jahiaContext = Jahia.getContextPath() + "/";
         generatedResourcesFolder = new File(SettingsBean.getInstance().getJahiaGeneratedResourcesDiskPath());
         performPurgeIfNeeded();
+    }
+
+    private void checkAggregateAndCompressSupport() {
+        if (!aggregateAssets) {
+            // if aggregation is disabled, we also disable compression as it is not possible without aggregation
+            compressDuringAggregation = false;
+        }
+        if (compressDuringAggregation && !StringUtils.startsWith(System.getProperty("java.version"), "1.8")) {
+            compressDuringAggregation = false;
+            logger.info("Compression of static assets is not supported on JDK after 1.8 and will be disabled");
+        }
+
+        logger.info("Static assets: aggregation is {}, compression is {}", aggregateAssets ? "ON" : "OFF",
+                compressDuringAggregation ? "ON" : "OFF");
     }
 
     private void performPurgeIfNeeded() {
@@ -1006,5 +1028,24 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         }
 
         return s;
+    }
+
+    /**
+     * Should the aggregation of supported static assets types we enabled?
+     * 
+     * @param aggregateAssets <code>true</code> to enable aggregation; <code>false</code> to disable it
+     */
+    public void setAggregateAssets(boolean aggregateAssets) {
+        this.aggregateAssets = aggregateAssets;
+    }
+
+    /**
+     * Should the compression of assets during aggregation be enabled? Note, please, this flag is ignored if the aggregation itself is
+     * disabled.
+     * 
+     * @param compressAssets <code>true</code> to enable compression; <code>false</code> to disable it
+     */
+    public void setCompressDuringAggregation(boolean compressAssets) {
+        this.compressDuringAggregation = compressAssets;
     }
 }

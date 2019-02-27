@@ -45,7 +45,7 @@ package org.jahia.services.modulemanager.persistence.jcr;
 
 import static org.jahia.services.modulemanager.persistence.PersistentBundleInfoBuilderTest.getResource;
 import static org.jahia.services.modulemanager.persistence.jcr.BundleInfoJcrHelper.PATH_BUNDLES;
-import static org.jahia.services.modulemanager.persistence.jcr.BundleInfoJcrHelper.PATH_ROOT;
+import static org.jahia.services.modulemanager.persistence.jcr.BundleInfoJcrHelper.PATH_MODULE_MANAGEMENT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -74,7 +74,7 @@ import org.springframework.core.io.ClassPathResource;
 
 /**
  * Integration test class for the {@link BundlePersister}.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class BundlePersisterIT extends AbstractJUnitTest {
@@ -82,8 +82,12 @@ public class BundlePersisterIT extends AbstractJUnitTest {
     private static BundlePersister service;
 
     private static long verify(final PersistentBundle info) throws RepositoryException {
+
         return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Long>() {
+
+            @Override
             public Long doInJCR(JCRSessionWrapper session) throws RepositoryException {
+
                 String path = BundleInfoJcrHelper.getJcrPath(info);
                 assertTrue("Node for bundle not present at " + path, session.nodeExists(path));
 
@@ -108,16 +112,19 @@ public class BundlePersisterIT extends AbstractJUnitTest {
 
     @Override
     public void beforeClassSetup() throws Exception {
+
         super.beforeClassSetup();
         service = (BundlePersister) SpringContextSingleton.getBean(BundlePersister.class.getName());
         assertNotNull(service);
+
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+
+            @Override
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                if (session.nodeExists(PATH_ROOT)) {
-                    session.getNode(PATH_ROOT).remove();
+                if (session.nodeExists(PATH_MODULE_MANAGEMENT)) {
+                    session.getNode(PATH_MODULE_MANAGEMENT).remove();
                     session.save();
                 }
-
                 return null;
             }
         });
@@ -130,6 +137,7 @@ public class BundlePersisterIT extends AbstractJUnitTest {
 
     @Test
     public void testDelete() throws ModuleManagementException, IOException, RepositoryException {
+
         ClassPathResource resource = getResource("dx-module-released");
         final PersistentBundle info = PersistentBundleInfoBuilder.build(resource);
         // store the resource
@@ -147,6 +155,8 @@ public class BundlePersisterIT extends AbstractJUnitTest {
         service.delete(info.getKey());
 
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+
+            @Override
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
 
                 String path = BundleInfoJcrHelper.getJcrPath(info);
@@ -164,11 +174,12 @@ public class BundlePersisterIT extends AbstractJUnitTest {
 
     @Test
     public void testFind() throws ModuleManagementException, IOException, RepositoryException {
+
         ClassPathResource resource = getResource("dx-module-released");
         PersistentBundle info = PersistentBundleInfoBuilder.build(resource);
         // store the resource
         service.store(resource);
-        
+
         // search by fully-qualified key
         PersistentBundle found = service.find(info.getKey());
         assertEquals(info, found);
@@ -180,6 +191,7 @@ public class BundlePersisterIT extends AbstractJUnitTest {
 
     @Test
     public void testStore() throws ModuleManagementException, IOException, RepositoryException {
+
         ClassPathResource resource = getResource("dx-module-released");
         PersistentBundle info = PersistentBundleInfoBuilder.build(resource);
         // store the resource
@@ -199,8 +211,6 @@ public class BundlePersisterIT extends AbstractJUnitTest {
         service.store(updatedResource);
         newLastModified = verify(updatedInfo);
         assertNotEquals("The bundle node should have been updated", lastModified, newLastModified);
-        assertNotEquals("Checksum for the updated bundle should be different", updatedInfo.getChecksum(),
-                info.getChecksum());
+        assertNotEquals("Checksum for the updated bundle should be different", updatedInfo.getChecksum(), info.getChecksum());
     }
-
 }

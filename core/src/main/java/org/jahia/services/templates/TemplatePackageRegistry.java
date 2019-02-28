@@ -205,23 +205,15 @@ public class TemplatePackageRegistry {
         }
     }
 
-    private boolean computeDependencies(JahiaTemplatesPackage pack, JahiaTemplatesPackage currentPack) {
+    private void computeDependencies(JahiaTemplatesPackage pack, JahiaTemplatesPackage currentPack) {
         for (String depends : currentPack.getDepends()) {
-            JahiaTemplatesPackage dependentPack = packagesById.get(depends);
-            if (dependentPack == null) {
-                dependentPack = packagesByName.get(depends);
-            }
-            if (dependentPack == null) {
-                return false;
-            }
-            if (!pack.getDependencies().contains(dependentPack)) {
-                if (!computeDependencies(pack, dependentPack)) {
-                    return false;
-                }
+            JahiaTemplatesPackage dependentPack = packagesById.get(depends) != null ? packagesById.get(depends) : packagesByName.get(depends);
+
+            if (dependentPack != null && !pack.getDependencies().contains(dependentPack)) {
+                computeDependencies(pack, dependentPack);
                 pack.addDependency(dependentPack);
             }
         }
-        return true;
     }
 
     public void afterInitializationForModules() {
@@ -514,7 +506,6 @@ public class TemplatePackageRegistry {
 
         // handle dependencies
         computeDependencies(templatePackage);
-        computeResourceBundleHierarchy(templatePackage);
 
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
@@ -578,20 +569,25 @@ public class TemplatePackageRegistry {
         }
     }
 
+    /**
+     * Compute package dependencies
+     * @param pack package to compute dependencies
+     * @return true
+     */
     public boolean computeDependencies(JahiaTemplatesPackage pack) {
         pack.resetDependencies();
-        if (computeDependencies(pack, pack)) {
-            computeResourceBundleHierarchy(pack);
 
-            for (JahiaTemplatesPackage aPackage : packagesById.values()) {
-                if (aPackage.getDepends().contains(pack.getId()) || aPackage.getDepends().contains(pack.getName())) {
-                    computeDependencies(aPackage);
-                }
+        computeDependencies(pack, pack);
+        computeResourceBundleHierarchy(pack);
+
+        // re compute dependencies for packages that depends on current pack
+        for (JahiaTemplatesPackage aPackage : packagesById.values()) {
+            if (aPackage.getDepends().contains(pack.getId()) || aPackage.getDepends().contains(pack.getName())) {
+                computeDependencies(aPackage);
             }
-
-            return true;
         }
-        return false;
+
+        return true;
     }
 
     public List<JahiaTemplatesPackage> getDependantModules(JahiaTemplatesPackage module) {

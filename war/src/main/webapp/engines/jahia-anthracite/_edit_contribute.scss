@@ -2397,6 +2397,23 @@ div[role="combobox"].toolbar-itemsgroup-languageswitcher {
 .app-container {
     height: 100%;
 
+    body[data-chrome="false"] & {
+        div[role="presentation"].x-panel-tbar {
+            display:none;
+        }
+
+        div[role="presentation"].window-container {
+            height: 100vh !important;
+            width: 100vw !important;
+        }
+
+        div.mainmodule > div:nth-child(2) {
+          height: 100vh !important;
+          width: 100vw !important;
+          left: 0 !important;
+        }
+    }
+
     > .x-panel-bwrap {
         height: 100%;
 
@@ -2583,7 +2600,7 @@ div[role="combobox"].toolbar-itemsgroup-languageswitcher {
         margin-top: 8px !important;
 
 		body[data-chrome="false"] & {
-			position: fixed;
+			position: absolute;
 			top:0;
 			left:0;
 			width: 100%;

@@ -59,22 +59,22 @@
         <dependency>
             <groupId>com.graphql-java</groupId>
             <artifactId>java-dataloader</artifactId>
-            <version>2.0.2</version>
+            <version>2.1.1</version>
         </dependency>
         <dependency>
             <groupId>com.graphql-java</groupId>
             <artifactId>graphql-java</artifactId>
-            <version>6.0</version>
+            <version>11.0</version>
         </dependency>
         <dependency>
             <groupId>io.github.graphql-java</groupId>
             <artifactId>graphql-java-annotations</artifactId>
-            <version>6.0.0-jahia1</version>
+            <version>6.1</version>
         </dependency>
         <dependency>
             <groupId>com.graphql-java</groupId>
             <artifactId>graphql-java-servlet</artifactId>
-            <version>4.7.0-jahia2</version>
+            <version>4.7.0-jahia3-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

@@ -56,7 +56,7 @@ import java.util.Collection;
 
 @Command(
     scope = "bundle",
-    name = "store-all-states",
+    name = "store-all-local-persistent-states",
     description = "Output DX modules with their persistent state and version, and save those information in the JCR"
 )
 @Service

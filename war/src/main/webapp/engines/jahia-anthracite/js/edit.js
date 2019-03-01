@@ -1301,7 +1301,6 @@ if (!Element.prototype.matches) {
 
 				// Get item from localstorage
 				var storedValue = localStorage.getItem(app.storage.buildKey(key)),
-					getLatestTab = localStorage.getItem(app.storage.buildKey('currentSidePanel')),
 					value = storedValue;
 
 				// Local Storage values are converted to strings, so just checking to reconvert any true/false strings to boolean

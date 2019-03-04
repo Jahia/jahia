@@ -832,14 +832,19 @@
     }
 
     // Menu icons
-
     .toolbar-item-grid-view-sort-asc {
+      > img {
         background: url(./images/icons/context-menu/sort-alpha-asc.png) no-repeat left 0 top;
+      }
     }
     .toolbar-item-grid-view-sort-desc {
+      > img {
         background: url(./images/icons/context-menu/sort-alpha-desc.png) no-repeat left 0 top;
+      }
     }
     .toolbar-item-grouping-view-group-by {
+      > img {
         background: url(./images/icons/context-menu/make-group.png) no-repeat left 0 top;
+      }
     }
 }

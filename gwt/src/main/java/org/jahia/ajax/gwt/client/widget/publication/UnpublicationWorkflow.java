@@ -89,7 +89,7 @@ public class UnpublicationWorkflow extends PublicationWorkflow {
         final String status = Messages.get("label.publication.unpublished.task", "Unpublishing content");
         Info.display(status, status);
         WorkInProgressActionItem.setStatus(status);
-        final List<String> allUuids = getAllUuids(true);
+        final List<String> allUuids = getAllUuids();
         BaseAsyncCallback callback = new BaseAsyncCallback() {
             public void onApplicationFailure(Throwable caught) {
                 WorkInProgressActionItem.removeStatus(status);

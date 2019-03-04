@@ -175,24 +175,24 @@ public class PublicationHelper {
                 infos = complexPublicationService.getFullPublicationInfos(uuids, languages, allSubTree, currentUserSession);
             }
 
-            return convert(infos, currentUserSession);
+            return convert(infos, currentUserSession, checkForUnpublication);
         } catch (Exception e) {
             logger.error("Cannot get nodes " + uuids + ". Cause: " + e.getLocalizedMessage(), e);
             throw new GWTJahiaServiceException("Cannot get nodes " + uuids + ". Cause: " + e.getLocalizedMessage(), e);
         }
     }
 
-    private static List<GWTJahiaPublicationInfo> convert(Collection<ComplexPublicationService.FullPublicationInfo> infos, JCRSessionWrapper session) {
+    private static List<GWTJahiaPublicationInfo> convert(Collection<ComplexPublicationService.FullPublicationInfo> infos, JCRSessionWrapper session, boolean checkForUnpublication) {
         LinkedList<GWTJahiaPublicationInfo> gwtInfos = new LinkedList<>();
         for (ComplexPublicationService.FullPublicationInfo info : infos) {
-            GWTJahiaPublicationInfo gwtInfo = convert(info, session);
+            GWTJahiaPublicationInfo gwtInfo = convert(info, session, checkForUnpublication);
             gwtInfos.add(gwtInfo);
         }
         return gwtInfos;
     }
 
-    private static GWTJahiaPublicationInfo convert(ComplexPublicationService.FullPublicationInfo info, JCRSessionWrapper session) {
-        GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(info.getNodeIdentifier(), info.getPublicationStatus());
+    private static GWTJahiaPublicationInfo convert(ComplexPublicationService.FullPublicationInfo info, JCRSessionWrapper session, boolean checkForUnpublication) {
+        GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(checkForUnpublication ? null : info.getNodeIdentifier(), info.getPublicationStatus());
         gwtInfo.setPath(info.getNodePath());
         gwtInfo.setTitle(info.getNodeTitle());
         gwtInfo.setNodetype(info.getNodeType() != null ? info.getNodeType().getLabel(session.getLocale()) : "");

@@ -2006,6 +2006,14 @@ if (!Element.prototype.matches) {
                 open: false
             },
             repositionSidePanel: function (splitterLeft) {
+				var searchIsOpen = DexV2.getCached('body').getAttribute('data-INDIGO-PICKER-SEARCH') == 'open',
+					explorerWidth = (searchIsOpen) ? 1 : (splitterLeft || app.picker.data.explorer.width);
+
+				if(!searchIsOpen && splitterLeft){
+					// Want to save the
+					app.picker.data.explorer.width = splitterLeft;
+				}
+
                 app.dev.log('::: APP ::: PICKER ::: REPOSITIONSIDEPANEL');
 
                 var isNestedPicker = DexV2.getCached('body').getAttribute('data-indigo-sub-picker') == 'open';
@@ -2017,12 +2025,6 @@ if (!Element.prototype.matches) {
                     '#CRTbrowseTabItem > div > .x-panel > .x-panel-bwrap': (isNestedPicker) ? '#JahiaGxtContentPickerWindow #CRTbrowseTabItem > div > .x-panel > .x-panel-bwrap' : '#CRTbrowseTabItem > div > .x-panel > .x-panel-bwrap',
                     '#CRTbrowseTabItem > div > .x-panel > .x-panel-bwrap .x-accordion-hd': (isNestedPicker) ? '#JahiaGxtContentPickerWindow #CRTbrowseTabItem > div > .x-panel > .x-panel-bwrap .x-accordion-hd' : '#CRTbrowseTabItem > div > .x-panel > .x-panel-bwrap .x-accordion-hd'
                 };
-
-
-                // Save width of side panel
-                if (splitterLeft) {
-                    app.picker.data.explorer.width = splitterLeft;
-                }
 
                 // Calculate Scale size for the picker title
                 var pickerTitle = (app.picker.data.standalone) ? DexV2('#pickerTitle')
@@ -2039,7 +2041,7 @@ if (!Element.prototype.matches) {
                 var pickerTitleBoxWidth = pickerTitleBox.width;
                 var pickerTitleBoxPadding = (pickerTitleBoxLeft * 2);
                 var searchButtonWidth = 50;
-                var pickerTitleBoxScale = Math.min(app.picker.data.explorer.width / (pickerTitleBoxPadding + pickerTitleBoxWidth + searchButtonWidth), 1);
+                var pickerTitleBoxScale = Math.min(explorerWidth / (pickerTitleBoxPadding + pickerTitleBoxWidth + searchButtonWidth), 1);
 
                 // Set size of the Title
                 pickerTitle.css({
@@ -2059,7 +2061,7 @@ if (!Element.prototype.matches) {
                 });
 
                 // Set width of the side panel
-                DexV2(DOMPaths['JahiaGxtManagerLeftTree']).nodes[0].style.setProperty('width', app.picker.data.explorer.width + 'px',
+                DexV2(DOMPaths['JahiaGxtManagerLeftTree']).nodes[0].style.setProperty('width', explorerWidth + 'px',
                     'important');
                 DexV2(DOMPaths['JahiaGxtManagerLeftTree']).nodes[0].style.setProperty('left', '0px', 'important');
 
@@ -2076,35 +2078,35 @@ if (!Element.prototype.matches) {
                             'important');
                     }
                 } else {
-                    DexV2(DOMPaths['JahiaGxtManagerTobTable']).nodes[0].style.setProperty('left', app.picker.data.explorer.width + 'px',
+                    DexV2(DOMPaths['JahiaGxtManagerTobTable']).nodes[0].style.setProperty('left', explorerWidth + 'px',
                         'important');
                     DexV2(DOMPaths['JahiaGxtManagerTobTable']).nodes[0].style.setProperty('width',
-                        'calc(100% - ' + app.picker.data.explorer.width + 'px) ',
+                        'calc(100% - ' + explorerWidth + 'px) ',
                         'important');
                     // Move the top toolbar
-                    DexV2(DOMPaths['JahiaGxtManagerToolbar']).nodes[0].style.setProperty('left', app.picker.data.explorer.width + 'px',
+                    DexV2(DOMPaths['JahiaGxtManagerToolbar']).nodes[0].style.setProperty('left', explorerWidth + 'px',
                         'important');
 
                     // Move filter toolbar
                     if (DexV2(DOMPaths['JahiaGxtManagerTobTable']).filter('.x-panel-tbar').exists()) {
                         DexV2(DOMPaths['JahiaGxtManagerTobTable']).filter('.x-panel-tbar').nodes[0].style.setProperty('left',
-                            (app.picker.data.explorer.width + 20) + 'px',
+                            (explorerWidth + 20) + 'px',
                             'important');
                     }
                 }
 
                 // Move toggle button
                 DexV2.id('toggle-picker-files').css({
-                    left: (app.picker.data.explorer.width - 25) + 'px'
+                    left: (explorerWidth - 25) + 'px'
                 });
 
                 // Set the width of the left tree
                 DexV2(DOMPaths['#CRTbrowseTabItem > div > .x-panel > .x-panel-bwrap']).each(function () {
-                    this.style.setProperty('width', app.picker.data.explorer.width + 'px', 'important');
+                    this.style.setProperty('width', explorerWidth + 'px', 'important');
                 });
 
                 DexV2(DOMPaths['#CRTbrowseTabItem > div > .x-panel > .x-panel-bwrap .x-accordion-hd']).each(function () {
-                    this.style.setProperty('width', app.picker.data.explorer.width + 'px', 'important');
+                    this.style.setProperty('width', explorerWidth + 'px', 'important');
                 });
 
                 // Set the position of the refresh button based on VISIBLE combo header
@@ -2488,7 +2490,7 @@ if (!Element.prototype.matches) {
             },
             onListView: function () {
                 app.dev.log('::: APP ::: PICKER ::: ONLISTVIEW');
-                DexV2.getCached('body').setAttribute('indigo-PICKER-DISPLAY', 'listview');
+				DexV2.getCached('body').setAttribute('indigo-PICKER-DISPLAY', 'listview');
                 app.picker.data.displayType = 'listview';
                 app.picker.repositionSidePanel();
             },
@@ -2766,13 +2768,10 @@ if (!Element.prototype.matches) {
                     // Save the current display time see we can switch back when closing the search panel
                     app.picker.data.previousDisplayType = app.picker.data.displayType;
 
-                    // Put the results in LIST mode
-                    if (app.picker.data.displayType == 'listview') {
-                        // Directly remove the listing
-                        DexV2('#JahiaGxtManagerTobTable .x-grid3 .x-grid3-row').remove();
-                    } else {
-                        DexV2('#' + app.picker.data.ID + ' .x-panel-tbar .action-bar-tool-item.toolbar-item-listview').trigger('click');
-                    }
+					if(app.data.HTTP.app == 'manager'){
+						// In a picker so go into list mode
+						DexV2('#' + app.picker.data.ID + ' .x-panel-tbar .action-bar-tool-item.toolbar-item-listview').trigger('click');
+					}
 
                     // Hide the browse panels (GWT does this automatically in Chrome, but not in Firefox - so we have to do it manually)
                     DexV2.id('CRTbrowseTabItem').addClass('x-hide-display');
@@ -2869,24 +2868,12 @@ if (!Element.prototype.matches) {
                     // Set position of display results
                     DexV2.id('JahiaGxtManagerTobTable').nodes[0].style.setProperty('left', '0px', 'important');
                     DexV2.id('JahiaGxtManagerTobTable').nodes[0].style.setProperty('width', '100%', 'important');
+
+					app.picker.repositionSidePanel();
                 },
                 setUpSubScreen: function () {
                     // Save the current display time see we can switch back when closing the search panel
                     app.picker.data.previousDisplayType = app.picker.data.displayType;
-
-                    // Put the results in LIST mode
-                    if (app.picker.data.displayType == 'listview') {
-                        // Directly remove the listing
-                        DexV2('body > #JahiaGxtContentPickerWindow #JahiaGxtManagerTobTable .x-grid3 .x-grid3-row').remove();
-                    } else {
-                        DexV2('body > #JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview').trigger('click');
-
-                        // Switch to list view, then remove ...
-                        DexV2('body > #JahiaGxtContentPickerWindow #JahiaGxtManagerTobTable')
-                            .onceGroupOpen('.x-grid3 .x-grid3-row', function () {
-                                DexV2.collection(this).remove();
-                            });
-                    }
 
                     // Hide the browse panels (GWT does this automatically in Chrome, but not in Firefox - so we have to do it manually)
                     DexV2('body > #JahiaGxtContentPickerWindow #CRTbrowseTabItem').addClass('x-hide-display');
@@ -3062,13 +3049,10 @@ if (!Element.prototype.matches) {
                         .removeClass('x-hide-display');
 
                     // // Put the results in previous mode
-                    DexV2(
-                        'body > #JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-' + app.picker.data.previousDisplayType)
-                        .trigger('click');
-
-                    // CLick on the refresh button to reload the content of the directory
-                    DexV2('body > #JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel:not(.x-panel-collapsed) .x-tool-refresh')
-                        .trigger('click');
+					if(app.data.HTTP.app == 'manager'){
+						// In a picker so go into list mode
+						DexV2('#' + app.picker.data.ID + ' .x-panel-tbar .action-bar-tool-item.toolbar-item-' + app.picker.data.previousDisplayType).trigger('click');
+					}
 
                     // Hide the search panel
                     DexV2.id(app.picker.data.ID).removeClass('search-panel-opened');
@@ -3078,16 +3062,6 @@ if (!Element.prototype.matches) {
                     // Display the BROWSE panels
                     DexV2('#' + app.picker.data.ID + ' #JahiaGxtManagerLeftTree .x-tab-panel-body > div:nth-child(1)')
                         .removeClass('x-hide-display');
-
-                    // // Put the results in previous mode
-                    DexV2('#' + app.picker.data.ID + ' .x-panel-tbar .action-bar-tool-item.toolbar-item-' + app.picker.data.previousDisplayType)
-                        .trigger('click');
-
-                    // CLick on the refresh button to reload the content of the directory
-                    DexV2.id(app.picker.data.ID).filter('#JahiaGxtManagerLeftTree .x-panel:not(.x-panel-collapsed) .x-tool-refresh').trigger('click');
-
-                    // CLick on List view to resolve display issues
-                    DexV2.class('toolbar-item-listview').trigger('click');
 
                     app.picker.repositionSidePanel();
                 },

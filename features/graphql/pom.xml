@@ -64,17 +64,17 @@
         <dependency>
             <groupId>com.graphql-java</groupId>
             <artifactId>graphql-java</artifactId>
-            <version>11.0</version>
+            <version>${graphql-java.version}</version>
         </dependency>
         <dependency>
             <groupId>io.github.graphql-java</groupId>
             <artifactId>graphql-java-annotations</artifactId>
-            <version>6.1</version>
+            <version>${graphql-java-annotations.version}</version>
         </dependency>
         <dependency>
             <groupId>com.graphql-java</groupId>
             <artifactId>graphql-java-servlet</artifactId>
-            <version>4.7.0-jahia3-SNAPSHOT</version>
+            <version>${graphql-java-servlet.version}</version>
         </dependency>
     </dependencies>
 </project>

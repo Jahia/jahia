@@ -327,8 +327,7 @@ body[indigo-dragging-panel="true"] {
 
 		// TOOLBAR
 		#JahiaGxtManagerTobTable .x-panel-tbar {
-			left: 85px;
-			display: none;
+		    top: 85px;
 		}
 
 		#JahiaGxtManagerToolbar {
@@ -353,6 +352,13 @@ body[indigo-dragging-panel="true"] {
 			top: 94px!important;
 			width: 100%!important;
 			height: calc(100% - 147px) !important;
+
+
+			body[indigo-picker-display="thumbsview"] &,
+			body[indigo-picker-display="detailedview"] & {
+				top: 79px!important;
+
+			}
 		}
 
 
@@ -368,11 +374,14 @@ body[indigo-dragging-panel="true"] {
 		}
 
 		#JahiaGxtManagerToolbar {
-			display: none;
-		}
+			body[data-indigo-is-manager="true"] & {
+				display:none;
+			}
 
-		.thumb-size-slider {
-			right: 16px;
+			.action-bar-tool-item {
+				opacity: 0!important;
+				pointer-events: none;
+			}
 		}
 
 		&.indigo-picker-multi-select {
@@ -2953,6 +2962,8 @@ body[indigo-dragging-panel="true"] {
 				width: 25px;
 				height: 25px;
 				background-size: 11px 10px;
+				opacity: 1!important;
+				pointer-events: all!important;
 			}
 
 			// List View

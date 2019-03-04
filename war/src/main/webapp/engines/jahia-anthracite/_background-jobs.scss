@@ -830,4 +830,16 @@
     .x-resizable-handle {
         display: none;
     }
+
+    // Menu icons
+
+    .toolbar-item-grid-view-sort-asc {
+        background: url(./images/icons/context-menu/sort-alpha-asc.png) no-repeat left 0 top;
+    }
+    .toolbar-item-grid-view-sort-desc {
+        background: url(./images/icons/context-menu/sort-alpha-desc.png) no-repeat left 0 top;
+    }
+    .toolbar-item-grouping-view-group-by {
+        background: url(./images/icons/context-menu/make-group.png) no-repeat left 0 top;
+    }
 }

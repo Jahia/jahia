@@ -2828,6 +2828,25 @@ form,
 /* Specific to Dialogues (ie. alert windows ) */
 	.x-window-dlg {
 
+		.info-publication-list {
+
+			> li {
+				margin: 10px 0 10px 5px;
+			    border-left: 3px solid #c4c4c4;
+			    padding: 0 5px 3px;
+			}
+
+		}
+
+		.info-publication-label {
+			display: block;
+			font-size: 13px;
+		}
+
+		.info-publication-path {
+			font-size: 11px;
+		}
+
 		.x-toolbar-cell {
 			// YES BUTTON
 			&:nth-child(1) {

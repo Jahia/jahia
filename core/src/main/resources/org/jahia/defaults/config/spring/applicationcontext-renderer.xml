@@ -40,6 +40,7 @@
         <property name="renderTimeMonitor" ref="RenderTimeMonitor"/>
         <property name="userManagerService" ref="JahiaUserManagerService"/>
         <property name="settingsBean" ref="settingsBean"/>
+        <property name="templatesCacheLockTimeout" value="#{jahiaProperties['templatesCacheLockTimeout'] != null ? jahiaProperties['templatesCacheLockTimeout'] : (jahiaProperties['maxRequestRenderTime'] != null ? jahiaProperties['maxRequestRenderTime'] : '60000')}"/>
     </bean>
 
     <bean id="extensionObserverRegistry" class="org.jahia.osgi.ExtensionObserverRegistry" factory-method="getInstance"/>

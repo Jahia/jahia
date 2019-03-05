@@ -1012,6 +1012,9 @@ public class JCRPublicationService extends JahiaService {
                     if (uuid != null) {
                         JCRNodeWrapper destNode = sourceSession.getNodeByIdentifier(uuid);
                         destNode.setProperty(Constants.PUBLISHED, false);
+                        if (destNode.isNodeType(Constants.JAHIANT_TRANSLATION) && !hasI18nPublished(destNode.getParent())) {
+                            destNode.getParent().setProperty(Constants.PUBLISHED, false);
+                        }
                         boolean doLogging = loggingService.isEnabled();
                         if (doLogging) {
                             Integer operationType = JCRObservationManager.getCurrentOperationType();
@@ -1042,8 +1045,27 @@ public class JCRPublicationService extends JahiaService {
         } finally {
             JCRObservationManager.popEventListenersAvailableDuringPublishOnly();
         }
-        
+
         return checkedUuids;
+    }
+
+
+    /**
+     * Test if the provided node has a least one published i18n child node
+     * @param node to be tested
+     * @return true if the node has at least one published i18n child node
+     * @throws RepositoryException
+     */
+    private static boolean hasI18nPublished(JCRNodeWrapper node) throws RepositoryException {
+        // all but nodes with translations
+        for (NodeIterator ni = node.getI18Ns(); ni.hasNext(); ) {
+            Node n = ni.nextNode();
+            // if one of the language is published and not part of the current unpublication
+            if (n.getProperty(Constants.PUBLISHED).getBoolean()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public List<PublicationInfo> getPublicationInfos(List<String> uuids, Set<String> languages,

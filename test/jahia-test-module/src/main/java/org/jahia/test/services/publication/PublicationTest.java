@@ -96,9 +96,17 @@ public class PublicationTest {
     private final static String TESTSITE_NAME = "jcrPublicationTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
     private final static String INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE = "English text";
+    private final static String INITIAL_FRENCH_TEXT_NODE_PROPERTY_VALUE = "French text";
 
     private JCRSessionWrapper englishEditSession;
     private JCRSessionWrapper englishLiveSession;
+
+    private JCRSessionWrapper frenchEditSession;
+    private JCRSessionWrapper frenchLiveSession;
+
+    private JCRSessionWrapper systemEditSession;
+    private JCRSessionWrapper systemLiveSession;
+
 
     private JCRNodeWrapper testHomeEdit;
 
@@ -190,27 +198,54 @@ public class PublicationTest {
 
     @Test
     public void testNodeUnpublish() throws RepositoryException {
+
+
         TestHelper.createList(testHomeEdit, "contentList1", 4, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
         englishEditSession.save();
+        String editTextNode1Path = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1").getPath();
+        // add french content
+        frenchEditSession.getNode(editTextNode1Path).setProperty("body", INITIAL_FRENCH_TEXT_NODE_PROPERTY_VALUE);
+        frenchEditSession.getNode(editTextNode1Path).setProperty("jcr:title", INITIAL_FRENCH_TEXT_NODE_PROPERTY_VALUE);
+        frenchEditSession.save();
+
 
         jcrService.publishByMainId(testHomeEdit.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, null);
 
-        // Case 3 : not let's unpublish the node and test it's presence in the live workspace.
-        JCRNodeWrapper editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
-        jcrService.unpublish(Lists.newArrayList(editTextNode1.getIdentifier()));
+        // Case 3 : not let's unpublish the ENGLISH node and test it's presence in the live workspace.
+        jcrService.unpublish(Lists.newArrayList(systemLiveSession.getNode(editTextNode1Path).getI18N(Locale.ENGLISH).getIdentifier()));
 
-        String testHomeEditPath = testHomeEdit.getPath();
-        // Need to add this, as otherwise the unpublished node will still be served from cache
-        JCRSessionFactory.getInstance().closeAllSessions();
-        englishEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
-        englishLiveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
-        testHomeEdit = englishEditSession.getNode(testHomeEditPath);
+        getCleanSession();
 
-        testNodeNotInWorkspace(englishLiveSession, testHomeEdit.getPath() + "/contentList1/contentList1_text1", "Text node 1 was unpublished, should not be available in the live workspace anymore !");
+        testNodeNotInWorkspace(englishLiveSession, editTextNode1Path, "Text node 1 was unpublished in English, should not be available in the live workspace anymore !");
+        testNodeInWorkspace(frenchEditSession, editTextNode1Path, "Text node 1 was not unpublished in French, should be available in the live workspace !");
 
-        // Case 4 : now let's publish the parent node once again, and check if it is published properly.
-        jcrService.publishByMainId(editTextNode1.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, null);
-        testNodeInWorkspace(englishLiveSession, testHomeEdit.getPath() + "/contentList1/contentList1_text1", "Text node 1 was re-published, it should have been present in the live workspace");
+        // case 4 :  now let's unpublish the french node, validate that the shared node is set as unpublished.
+        jcrService.unpublish(Lists.newArrayList(systemLiveSession.getNode(editTextNode1Path).getI18N(Locale.FRENCH).getIdentifier()));
+
+        getCleanSession();
+
+        testNodeNotInWorkspace(frenchLiveSession, editTextNode1Path, "Text node 1 was unpublished in French, should not be available in the live workspace anymore !");
+        // validate that the j:publish on the shared node is set to false
+        assertFalse(systemLiveSession.getNode(editTextNode1Path).getProperty(Constants.PUBLISHED).getBoolean());
+        // Case 5 : now let's publish the parent node once again, and check if it is published properly.
+        jcrService.publishByMainId(systemLiveSession.getNode(editTextNode1Path).getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, null);
+        testNodeInWorkspace(englishLiveSession, editTextNode1Path, "Text node 1 was re-published, it should have been present in the live workspace");
+
+        // Case 5 : test non i18n content
+        // publish the node
+
+        getCleanSession();
+
+        Node link = englishEditSession.getNode(testHomeEdit.getPath()).addNode("link1", "jnt:externalLink");
+        englishEditSession.save();
+        String linkPath = link.getPath();
+        jcrService.publishByMainId(link.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, null);
+        getCleanSession();
+
+        jcrService.unpublish(Lists.newArrayList(systemLiveSession.getNode(linkPath).getIdentifier()));
+
+        testNodeNotInWorkspace(englishLiveSession, linkPath, "Link node was unpublished, should not be available in the live workspace anymore !");
+
     }
 
     @Test
@@ -796,5 +831,10 @@ public class PublicationTest {
         sessionFactory.closeAllSessions();
         englishEditSession = sessionFactory.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
         englishLiveSession = sessionFactory.getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
+        frenchEditSession = sessionFactory.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.FRENCH);
+        frenchLiveSession = sessionFactory.getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.FRENCH);
+        systemEditSession = sessionFactory.getCurrentSystemSession(Constants.EDIT_WORKSPACE, null, null);
+        systemLiveSession = sessionFactory.getCurrentSystemSession(Constants.LIVE_WORKSPACE, null, null);
+
     }
 }

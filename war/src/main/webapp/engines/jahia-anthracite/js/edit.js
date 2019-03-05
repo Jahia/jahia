@@ -4149,7 +4149,7 @@ if (!Element.prototype.matches) {
                         // Site Settings, Admin or Dashboard
 
                         if (app.data.V2) {
-                            mainFrameWidth = xPos - 47;
+                            mainFrameWidth = xPos - 48;
                             mainFrameLeft = xPos + 21;
                         } else {
                             mainFrameWidth = xPos - 78;

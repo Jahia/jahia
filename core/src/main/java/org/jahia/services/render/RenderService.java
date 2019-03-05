@@ -48,8 +48,7 @@ import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.services.cache.CacheImplementation;
-import org.jahia.services.cache.CacheProvider;
+import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.channels.Channel;
 import org.jahia.services.channels.ChannelService;
 import org.jahia.services.content.*;
@@ -69,14 +68,18 @@ import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
 import pl.touk.throwing.ThrowingFunction;
 import pl.touk.throwing.ThrowingPredicate;
 
 import javax.jcr.*;
 import javax.servlet.http.HttpSession;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.*;
@@ -88,7 +91,7 @@ import java.util.stream.Stream;
  *
  * @author toto
  */
-public class RenderService {
+public class RenderService implements InitializingBean {
 
     private static class TemplatePriorityComparator implements Comparator<Template>, Serializable {
         private static final long serialVersionUID = 3462731866743025112L;
@@ -126,7 +129,9 @@ public class RenderService {
 
     public static final String RENDER_SERVICE_TEMPLATES_CACHE = "RenderService.TemplatesCache";
 
-    private CacheImplementation<String, List<String>> templatesCache;
+    private Cache templatesCache;
+
+    private long templatesCacheLockTimeout;
 
     private ChannelService channelService;
 
@@ -254,10 +259,10 @@ public class RenderService {
      * If template cannot be resolved, fall back on default template
      *
      * @param resource The resource to display
-     * @param context
+     * @param context rendering context instance
      * @return An executable script
      * @throws RepositoryException in case of JCR-related errors
-     * @throws IOException
+     * @throws TemplateNotFoundException in case the template could not be found for the supplied resource
      */
     public Script resolveScript(Resource resource, RenderContext context) throws RepositoryException, TemplateNotFoundException {
         for (ScriptResolver scriptResolver : scriptResolvers) {
@@ -455,23 +460,42 @@ public class RenderService {
                 .append(templateName != null ? templateName : "*all*").toString();
 
         List<JCRNodeWrapper> nodes = new ArrayList<JCRNodeWrapper>();
-        List<String> nodeIds = templatesCache.get(key);
+        Element nodeIdsElement = templatesCache.get(key);
+        @SuppressWarnings("unchecked")
+        List<String> nodeIds = nodeIdsElement != null ? (List<String>) nodeIdsElement.getObjectValue() : null;
         if (nodeIds != null) {
             for (String nodeId : nodeIds) {
                 JCRNodeWrapper node = session.getNodeByIdentifier(nodeId);
                 nodes.add(node);
             }
         } else {
-            List<JCRNodeWrapper> results = getDescendantNodesOfType(session.getNode(path + "/templates"), type);
-            Stream<JCRNodeWrapper> stream = results.stream();
-            nodes = stream.filter(ThrowingPredicate.unchecked(node -> (StringUtils.isBlank(templateName) || node.getName().equals(templateName))
-                    && (!defaultOnly || (node.hasProperty("j:defaultTemplate") && node.getProperty("j:defaultTemplate").getBoolean()))))
-                    .sorted(TEMPLATE_NODE_PRIORITY_COMPARATOR)
-                    .collect(Collectors.toList());
+            long startTime = System.currentTimeMillis();
 
-            nodeIds = nodes.stream().map(ThrowingFunction.unchecked(Node::getIdentifier)).collect(Collectors.toList());
+            // we get the write lock on the path
+            boolean lockAcquired = acquireWriteLockOnCacheKey(path);
 
-            templatesCache.put(key, null, nodeIds);
+            try {
+                List<JCRNodeWrapper> results = getDescendantNodesOfType(session.getNode(path + "/templates"), type);
+                Stream<JCRNodeWrapper> stream = results.stream();
+                nodes = stream.filter(ThrowingPredicate.unchecked(node -> (StringUtils.isBlank(templateName) || node.getName().equals(templateName))
+                        && (!defaultOnly || (node.hasProperty("j:defaultTemplate") && node.getProperty("j:defaultTemplate").getBoolean()))))
+                        .sorted(TEMPLATE_NODE_PRIORITY_COMPARATOR)
+                        .collect(Collectors.toList());
+    
+                nodeIds = nodes.stream().map(ThrowingFunction.unchecked(Node::getIdentifier)).collect(Collectors.toList());
+    
+                templatesCache.put(new Element(key, nodeIds));
+                
+            } finally {
+                if (lockAcquired) {
+                    templatesCache.releaseWriteLockOnKey(path);
+                }
+            }
+
+            if (logger.isDebugEnabled()) {
+                logger.debug("Generated cache entry for key {} with {} node IDs in {} ms",
+                        new Object[] { key, nodeIds.size(), System.currentTimeMillis() - startTime });
+            }
         }
         return nodes;
     }
@@ -603,17 +627,82 @@ public class RenderService {
     }
 
     public void flushCache(String group) {
-        Collection<String> keys = new HashSet<String>(templatesCache.getKeys());
-        for (String s : keys) {
-            if (s.startsWith(group)) {
-                templatesCache.remove(s);
+        // we get the read lock on the path to "wait", in case the process of cache entries generation for that path is currently ongoing
+        boolean lockAcquired = acquireReadLockOnCacheKey(group);
+
+        try {
+            @SuppressWarnings("unchecked")
+            Collection<String> keys = new HashSet<String>(templatesCache.getKeys());
+            for (String s : keys) {
+                if (s.startsWith(group)) {
+                    templatesCache.remove(s);
+                }
+            }
+        } finally {
+            if (lockAcquired) {
+                templatesCache.releaseReadLockOnKey(group);
             }
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public void setCacheProvider(CacheProvider cacheProvider) {
-        templatesCache = (CacheImplementation<String, List<String>>) cacheProvider.newCacheImplementation(RENDER_SERVICE_TEMPLATES_CACHE);
+    private boolean isCacheLockingEnabled() {
+        return templatesCacheLockTimeout != 0;
+    }
+
+    private boolean acquireReadLockOnCacheKey(String key) {
+        boolean lockAcquired = false;
+
+        if (isCacheLockingEnabled()) {
+            if (templatesCacheLockTimeout > 0) {
+                try {
+                    lockAcquired = templatesCache.tryReadLockOnKey(key, templatesCacheLockTimeout);
+                    if (!lockAcquired) {
+                        logger.warn("Timeout ({} ms) reached waiting for read lock to be acquired on cache key {}",
+                                templatesCacheLockTimeout, key);
+                    }
+                } catch (InterruptedException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            } else {
+                templatesCache.acquireReadLockOnKey(key);
+                lockAcquired = true;
+            }
+        }
+
+        return lockAcquired;
+    }
+
+    private boolean acquireWriteLockOnCacheKey(String key) {
+        boolean lockAcquired = false;
+
+        if (isCacheLockingEnabled()) {
+            if (templatesCacheLockTimeout > 0) {
+                try {
+                    lockAcquired = templatesCache.tryWriteLockOnKey(key, templatesCacheLockTimeout);
+                    if (!lockAcquired) {
+                        logger.warn("Timeout ({} ms) reached waiting for write lock to be acquired on cache key {}",
+                                templatesCacheLockTimeout, key);
+                    }
+                } catch (InterruptedException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            } else {
+                templatesCache.acquireWriteLockOnKey(key);
+                lockAcquired = true;
+            }
+        }
+
+        return lockAcquired;
+    }
+
+
+    public void setCacheProvider(EhCacheProvider cacheProvider) {
+        CacheManager cacheManager = cacheProvider.getCacheManager();
+        templatesCache = cacheManager.getCache(RENDER_SERVICE_TEMPLATES_CACHE);
+        if (templatesCache == null) {
+            cacheManager.addCache(RENDER_SERVICE_TEMPLATES_CACHE);
+            templatesCache = cacheManager.getCache(RENDER_SERVICE_TEMPLATES_CACHE);
+        }
     }
 
     public void setChannelService(ChannelService channelService) {
@@ -648,5 +737,23 @@ public class RenderService {
             }
         }
         return theme;
+    }
+
+    /**
+     * @param templatesCacheLockTimeout the templatesCacheLockTimeout to set
+     */
+    public void setTemplatesCacheLockTimeout(long templatesCacheLockTimeout) {
+        this.templatesCacheLockTimeout = templatesCacheLockTimeout;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        if (isCacheLockingEnabled()) {
+            logger.info("Will be using extra locking on write operations into cache " + RENDER_SERVICE_TEMPLATES_CACHE
+                    + " with a timeout of {} ms", templatesCacheLockTimeout);
+        } else {
+            logger.info(
+                    "No extra locking will be used on write operations into cache " + RENDER_SERVICE_TEMPLATES_CACHE);
+        }
     }
 }

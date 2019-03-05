@@ -1138,7 +1138,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                         Node targetNode = systemSession.getProviderSession(node.getProvider())
                                 .getNodeByIdentifier(node.getIdentifier());
                         boolean debugEnabled = logger.isDebugEnabled();
-                        String effectiveWipStatusToSet = wipStatusToSet; 
+                        String effectiveWipStatusToSet = wipStatusToSet;
                         if (effectiveWipStatusToSet != null) {
                             targetNode.setProperty(Constants.WORKINPROGRESS_STATUS, effectiveWipStatusToSet);
                             if (debugEnabled) {

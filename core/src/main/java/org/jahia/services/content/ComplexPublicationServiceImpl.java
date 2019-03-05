@@ -241,9 +241,9 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
                     info.setWorkflowTitle(lastTitle);
                 }
             }
+            // remove shared node from publication info of nodes with i18n child nodes.
             for (PublicationInfo info : publicationInfos) {
-                Set<String> publishedLanguages = info.getAllPublishedLanguages();
-                if (!languages.containsAll(publishedLanguages)) {
+                if (!info.getAllPublishedLanguages().isEmpty()) {
                     keepOnlyTranslation(result);
                 }
             }

@@ -192,7 +192,7 @@ public class PublicationHelper {
     }
 
     private static GWTJahiaPublicationInfo convert(ComplexPublicationService.FullPublicationInfo info, JCRSessionWrapper session, boolean checkForUnpublication) {
-        GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(checkForUnpublication ? null : info.getNodeIdentifier(), info.getPublicationStatus());
+        GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(info.getNodeIdentifier(), info.getPublicationStatus());
         gwtInfo.setPath(info.getNodePath());
         gwtInfo.setTitle(info.getNodeTitle());
         gwtInfo.setNodetype(info.getNodeType() != null ? info.getNodeType().getLabel(session.getLocale()) : "");

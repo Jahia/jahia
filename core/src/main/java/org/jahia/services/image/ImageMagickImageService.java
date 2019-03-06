@@ -190,6 +190,10 @@ public class ImageMagickImageService extends AbstractImageService {
     }
 
     public boolean rotateImage(Image image, File outputFile, boolean clockwise) throws IOException {
+        return rotateImage(image, outputFile, clockwise ? 90. : -90);
+    }
+
+    public boolean rotateImage(Image image, File outputFile, double angle) throws IOException {
         try {
             // create command
             ConvertCmd cmd = new ConvertCmd();
@@ -197,7 +201,7 @@ public class ImageMagickImageService extends AbstractImageService {
             // create the operation, add images and operators/options
             IMOperation op = new IMOperation();
             op.addImage(((ImageMagickImage)image).getFile().getPath());
-            op.rotate(clockwise ? 90. : -90.);
+            op.rotate(angle);
             op.addImage(outputFile.getPath());
 
             // logger.info("Running ImageMagic command: convert " + op);

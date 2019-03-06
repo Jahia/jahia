@@ -720,7 +720,7 @@ public class VanityUrlManager {
      */
     private static boolean relaxedEquals(VanityUrl u1, VanityUrl u2) {
         if (u1 == u2) return true;
-        if (u1 == null) return false;
+        if ((u1 == null) || (u2 == null)) return false;
         return Objects.equals(u1.getUrl(), u2.getUrl())
                 && Objects.equals(u1.getPath(), u2.getPath())
                 && Objects.equals(u1.getLanguage(), u2.getLanguage())

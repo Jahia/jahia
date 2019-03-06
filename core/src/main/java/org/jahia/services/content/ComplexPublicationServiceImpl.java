@@ -419,11 +419,19 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
             if (info.getTranslationNodeIdentifier() != null) {
                 // if the info has a translation to be unpublish, clear other infos with the same identifier.
                 // Clearing the identifier will make only the translation node to be unpublish.
-                infosByPath.values().forEach(publicationInfo -> {
-                    if (StringUtils.equals(info.getNodeIdentifier(), publicationInfo.getNodeIdentifier())) {
-                        publicationInfo.clearNodeIdentifier();
+                for (String innerPath : paths) {
+                    FullPublicationInfoImpl publicationInfo = infosByPath.get(innerPath);
+                    // if a publication info match an info with a translation
+                    if (publicationInfo != null && StringUtils.equals(info.getNodeIdentifier(), publicationInfo.getNodeIdentifier())) {
+                        if (publicationInfo.getTranslationNodeIdentifier() == null) {
+                            // remove the entry if no translation on it
+                            infosByPath.remove(innerPath);
+                        } else {
+                            // remove the shared node from the publication info
+                            publicationInfo.clearNodeIdentifier();
+                        }
                     }
-                });
+                }
             }
         }
     }

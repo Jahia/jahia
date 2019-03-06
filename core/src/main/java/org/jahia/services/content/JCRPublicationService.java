@@ -1061,7 +1061,7 @@ public class JCRPublicationService extends JahiaService {
         for (NodeIterator ni = node.getI18Ns(); ni.hasNext(); ) {
             Node n = ni.nextNode();
             // if one of the language is published and not part of the current unpublication
-            if (n.getProperty(Constants.PUBLISHED).getBoolean()) {
+            if (n.hasProperty(Constants.PUBLISHED) && n.getProperty(Constants.PUBLISHED).getBoolean()) {
                 return true;
             }
         }

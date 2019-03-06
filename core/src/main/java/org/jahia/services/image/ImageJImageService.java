@@ -151,16 +151,23 @@ public class ImageJImageService extends AbstractImageService {
         return save(imageJImage.getImageType(), ip, outputFile);
     }
 
-    public boolean rotateImage(Image i, File outputFile, boolean clockwise) throws IOException {
+    public boolean rotateImage(Image image, File outputFile, boolean clockwise) throws IOException {
+        return rotateImage(image, outputFile, clockwise ? 90. : -90);
+    }
 
+    public boolean rotateImage(Image i, File outputFile, double angle) throws IOException {
         ImageJImage imageJImage = (ImageJImage) i;
 
         ImagePlus ip = imageJImage.getImagePlus();
         ImageProcessor processor = ip.getProcessor();
-        if (clockwise) {
+        if (angle == 90.) {
             processor = processor.rotateRight();
-        } else {
+        } else if (angle == -90.) {
             processor = processor.rotateLeft();
+        } else if (angle == 180.) {
+            processor = processor.rotateRight().rotateRight();
+        } else {
+            processor.rotate(angle);
         }
         ip.setProcessor(null, processor);
 

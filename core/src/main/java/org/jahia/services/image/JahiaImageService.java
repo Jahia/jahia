@@ -147,6 +147,18 @@ public interface JahiaImageService {
     public boolean rotateImage(Image i, File outputFile, boolean clockwise) throws IOException;
 
     /**
+     * Rotate an image clockwise or counter clockwise
+     * @param i the image to rotate
+     * @param outputFile the file in which to store the rotated image, the original image type
+     * is conserved
+     * @param angle angle in degrees
+     * counter clockwise
+     * @return true if the resize succeeded, false otherwise
+     * @throws IOException
+     */
+    public boolean rotateImage(Image i, File outputFile, double angle) throws IOException;
+
+    /**
      * Resize an image using different types of resize algorithms. Here is a detailed explanation of
      * the different types of resize available :
      * - ResizeType.SCALE_TO_FILL : this is the simplest algorithm. It will simply ignore the original

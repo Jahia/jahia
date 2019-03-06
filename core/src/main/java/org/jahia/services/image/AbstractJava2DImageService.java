@@ -44,6 +44,7 @@
 package org.jahia.services.image;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.slf4j.Logger;
@@ -75,6 +76,7 @@ public abstract class AbstractJava2DImageService extends AbstractImageService {
     }
 
     public Image getImage(JCRNodeWrapper node) throws IOException, RepositoryException {
+        InputStream is = null;
         try {
             String fileExtension = FilenameUtils.getExtension(node.getName());
             if ((fileExtension != null) && (!"".equals(fileExtension))) {
@@ -83,7 +85,7 @@ public abstract class AbstractJava2DImageService extends AbstractImageService {
                 fileExtension = null;
             }
             Node contentNode = node.getNode(Constants.JCR_CONTENT);
-            InputStream is = contentNode.getProperty(Constants.JCR_DATA).getBinary().getStream();
+            is = contentNode.getProperty(Constants.JCR_DATA).getBinary().getStream();
             String mimeType = contentNode.getProperty(Constants.JCR_MIMETYPE).getString();
             BufferedImage originalImage = ImageIO.read(is);
             if (originalImage == null) {
@@ -97,6 +99,8 @@ public abstract class AbstractJava2DImageService extends AbstractImageService {
                 logger.debug("Error opening image for node " + node.getPath(), e);
             }
             return null;
+        } finally {
+            IOUtils.closeQuietly(is);
         }
     }
 
@@ -134,13 +138,17 @@ public abstract class AbstractJava2DImageService extends AbstractImageService {
     }
 
     public boolean rotateImage(Image image, File outputFile, boolean clockwise) throws IOException {
+        return rotateImage(image, outputFile, clockwise ? 90. : -90);
+    }
+
+    public boolean rotateImage(Image image, File outputFile, double degrees) throws IOException {
         BufferedImage originalImage = ((BufferImage) image).getOriginalImage();
 
         BufferedImage dest = getDestImage(originalImage.getHeight(), originalImage.getWidth(), originalImage);
         // Paint source image into the destination, scaling as needed
         Graphics2D graphics2D = getGraphics2D(dest, OperationType.ROTATE);
 
-        double angle = Math.toRadians(clockwise ? 90 : -90);
+        double angle = Math.toRadians(degrees);
         double sin = Math.abs(Math.sin(angle)), cos = Math.abs(Math.cos(angle));
         int w = originalImage.getWidth(), h = originalImage.getHeight();
         int neww = (int) Math.floor(w * cos + h * sin), newh = (int) Math.floor(h * cos + w * sin);

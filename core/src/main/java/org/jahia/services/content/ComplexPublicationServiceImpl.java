@@ -418,7 +418,7 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
             FullPublicationInfoImpl info = infosByPath.get(path);
             if (info.getTranslationNodeIdentifier() != null) {
                 // if the info has a translation to be unpublish, clear other infos with the same identifier.
-                // Clearing the identifier will make only the translation node to be publish.
+                // Clearing the identifier will make only the translation node to be unpublish.
                 infosByPath.values().forEach(publicationInfo -> {
                     if (StringUtils.equals(info.getNodeIdentifier(), publicationInfo.getNodeIdentifier())) {
                         publicationInfo.clearNodeIdentifier();

@@ -242,11 +242,7 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
                 }
             }
             // remove shared node from publication info of nodes with i18n child nodes.
-            for (PublicationInfo info : publicationInfos) {
-                if (!info.getAllPublishedLanguages().isEmpty()) {
-                    keepOnlyTranslation(result);
-                }
-            }
+            keepOnlyTranslation(result);
             return new ArrayList<>(result.values());
         } catch (RepositoryException e) {
             throw new JahiaRuntimeException(e);
@@ -420,10 +416,14 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
         Set<String> paths = new HashSet<>(infosByPath.keySet());
         for (String path : paths) {
             FullPublicationInfoImpl info = infosByPath.get(path);
-            if (info.getTranslationNodeIdentifier() == null) {
-                infosByPath.remove(path);
-            } else {
-                info.clearNodeIdentifier();
+            if (info.getTranslationNodeIdentifier() != null) {
+                // if the info has a translation to be unpublish, clear other infos with the same identifier.
+                // Clearing the identifier will make only the translation node to be publish.
+                infosByPath.values().forEach(publicationInfo -> {
+                    if (StringUtils.equals(info.getNodeIdentifier(), publicationInfo.getNodeIdentifier())) {
+                        publicationInfo.clearNodeIdentifier();
+                    }
+                });
             }
         }
     }

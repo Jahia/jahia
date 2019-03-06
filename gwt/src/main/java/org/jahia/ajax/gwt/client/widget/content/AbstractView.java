@@ -231,6 +231,7 @@ public abstract class AbstractView extends TopRightComponent {
             List<GWTJahiaNode> gwtJahiaNodes = (List<GWTJahiaNode>) content;
             store.add(gwtJahiaNodes);
             updateTypeStore(gwtJahiaNodes);
+            getLinker().onTableItemSelected();
         }
         this.contentSource = source;
     }

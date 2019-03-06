@@ -488,7 +488,7 @@ public class VanityUrlManager {
                     .getLanguage());
             if (mappings != null) {
                 for (Map.Entry<String, VanityUrl> entry : mappings.entrySet()) {
-                    if (entry.getValue().equals(vanityUrl)) {
+                    if (relaxedEquals(entry.getValue(), vanityUrl)) {
                         mappings.remove(entry.getKey());
                         found = true;
                         if (entry.getValue().isActive() != vanityUrl.isActive()
@@ -522,7 +522,7 @@ public class VanityUrlManager {
                         for (Map.Entry<String, VanityUrl> entry : toUpdate
                                 .entrySet()) {
                             VanityUrl vanityUrl = entry.getValue();
-                            if (vanityUrl.equals(oldDefaultVanityUrl)) {
+                            if (relaxedEquals(vanityUrl, oldDefaultVanityUrl)) {
                                 vanityUrl.setDefaultMapping(true);
                                 newDefaultMappings.put(locale, vanityUrl);
                                 defaultWasSet = true;
@@ -557,7 +557,7 @@ public class VanityUrlManager {
                     .getValue().getValue();
             VanityUrl newDefaultVanityUrl = newDefaultMappings
                     .get(oldDefaultMapping.getKey());
-            if (!oldDefaultVanityUrl.equals(newDefaultVanityUrl)) {
+            if (!relaxedEquals(oldDefaultVanityUrl, newDefaultVanityUrl)) {
                 boolean oldDefaultWillBeDeleted = false;
                 for (Map.Entry<String, VanityUrl> entry : toDelete) {
                     if (oldDefaultVanityUrl.equals(entry.getValue())) {
@@ -701,4 +701,30 @@ public class VanityUrlManager {
 
         return itemToBePopulated;
     }
+
+    /*
+     * Checks whether or not two {@link VanityUrl} are equal.
+     *
+     * This a non strict implementation of equality which does only compare
+     * a subset of the properties. This implementation matches the former
+     * implementation of {@link VanityUrl#equals(Object)} (prior to commit
+     * 2e10f7aeb65605cb054e9fd721c9a1037642e9f8).
+     *
+     * This method is only meant to be used within current implementation of
+     * {@link #saveVanityUrlMappings(JCRNodeWrapper, List, Set, JCRSessionWrapper)},
+     * to fix QA-11406, while avoiding to introduce additional regressions.
+     *
+     * @param u1 a VanityUrl
+     * @param u2 a VanityUrl to be compared with {@code u1} for equality
+     * @return {@code true} if the arguments are equal to each other and {@code false} otherwise
+     */
+    private static boolean relaxedEquals(VanityUrl u1, VanityUrl u2) {
+        if (u1 == u2) return true;
+        if (u1 == null) return false;
+        return Objects.equals(u1.getUrl(), u2.getUrl())
+                && Objects.equals(u1.getPath(), u2.getPath())
+                && Objects.equals(u1.getLanguage(), u2.getLanguage())
+                && Objects.equals(u1.getSite(), u2.getSite());
+    }
+
 }

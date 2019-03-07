@@ -241,8 +241,10 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
                     info.setWorkflowTitle(lastTitle);
                 }
             }
-            // remove shared node from publication info of nodes with i18n child nodes.
-            keepOnlyTranslation(result);
+            // remove identifier of contents with a translation
+            Set<String> removedIdentifiers = clearTranslationNodes(result);
+            // filter out shared node that should not be part of the unpublication
+            removeSharedNodes(result, languages, getPublicationInfoLanguages(publicationInfos), removedIdentifiers);
             return new ArrayList<>(result.values());
         } catch (RepositoryException e) {
             throw new JahiaRuntimeException(e);
@@ -412,28 +414,45 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
         return info;
     }
 
-    private static void keepOnlyTranslation(Map<String, FullPublicationInfoImpl> infosByPath) {
+    private static void removeSharedNodes(Map<String, FullPublicationInfoImpl> infosByPath, Collection<String> languages, Set<String> publishedLanguages, Set<String> removedIdentifiers) {
+        Set<String> paths = new HashSet<>(infosByPath.keySet());
+        // Filter out info of content we need to keep.
+        for (String path : paths) {
+            FullPublicationInfoImpl info = infosByPath.get(path);
+            // Condition filters to remove info
+            // keep content that has been processed in another language
+            boolean clearedTranslation = removedIdentifiers.contains(info.getNodeIdentifier());
+            // Do language check only if i18n content needs to be unpublished
+            boolean hasI18NContent = !publishedLanguages.isEmpty();
+            // keep content that is not part of the requested unpublish languages
+            boolean contentNotPublishedInLanguage = hasI18NContent && !publishedLanguages.contains(info.getLanguage());
+            // Keep content that is still publish in another language.
+            boolean contentStillPublishedInOtherLanguage = hasI18NContent && languages.size() == 1 && publishedLanguages.size() > 1 && publishedLanguages.contains(info.getLanguage());
+            if (info.getTranslationNodeIdentifier() == null && (clearedTranslation || contentNotPublishedInLanguage || contentStillPublishedInOtherLanguage)) {
+                infosByPath.remove(path);
+            }
+        }
+    }
+
+    private static Set<String> clearTranslationNodes(Map<String, FullPublicationInfoImpl> infosByPath) {
+        Set<String> removedIdentifiers = new HashSet<>();
         Set<String> paths = new HashSet<>(infosByPath.keySet());
         for (String path : paths) {
             FullPublicationInfoImpl info = infosByPath.get(path);
             if (info.getTranslationNodeIdentifier() != null) {
-                // if the info has a translation to be unpublish, clear other infos with the same identifier.
-                // Clearing the identifier will make only the translation node to be unpublish.
-                for (String innerPath : paths) {
-                    FullPublicationInfoImpl publicationInfo = infosByPath.get(innerPath);
-                    // if a publication info match an info with a translation
-                    if (publicationInfo != null && StringUtils.equals(info.getNodeIdentifier(), publicationInfo.getNodeIdentifier())) {
-                        if (publicationInfo.getTranslationNodeIdentifier() == null) {
-                            // remove the entry if no translation on it
-                            infosByPath.remove(innerPath);
-                        } else {
-                            // remove the shared node from the publication info
-                            publicationInfo.clearNodeIdentifier();
-                        }
-                    }
-                }
+                removedIdentifiers.add(infosByPath.get(path).getNodeIdentifier());
+                infosByPath.get(path).clearNodeIdentifier();
             }
         }
+        return removedIdentifiers;
+    }
+
+    private static Set<String> getPublicationInfoLanguages(List<PublicationInfo> publicationInfos) {
+        Set<String> languages = new HashSet<>();
+        for(PublicationInfo pubInfo : publicationInfos) {
+            languages.addAll(pubInfo.getAllPublishedLanguages());
+        }
+        return languages;
     }
 
     @Override

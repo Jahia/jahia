@@ -549,6 +549,7 @@
                 <value>jnt:contentFolder</value>
                 <value>nt:folder</value>
                 <value>jmix:siteContent</value>
+                <value>jmix:browsableInEditorialPicker</value>
             </list>
         </property>
         <!-- table columns-->

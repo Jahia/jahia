@@ -591,6 +591,8 @@ extends = jnt:page
 
 [jmix:editorialContent] mixin
 
+[jmix:browsableInEditorialPicker] mixin
+
 [jmix:siteContent] mixin
 
 //---------------------------------------------------------

@@ -3489,9 +3489,35 @@ if (!Element.prototype.matches) {
             config: {
                 chrome: true
             },
+			data: {
+				firstLoadSettingsType: null
+			},
             // Event Handlers
             onOpen: function () {
                 app.dev.log('::: APP ::: ADMIN ::: OPENED');
+
+				// Reset incase user is coming in from another app
+				app.admin.data.firstLoadSettingsType = null;
+
+				// Listen to the classes being added to x-grid3-row
+				DexV2('.x-viewport-adminmode').onAttribute('#JahiaGxtSidePanelTabs .x-grid3-row', 'class', function(attrKey, attrValue){
+
+					if(!app.admin.data.firstLoadSettingsType){
+						// Check if this is a selected row
+						var isSelectedRow = DexV2.node(this).hasClass('x-grid3-row-selected');
+
+						if(isSelectedRow){
+							// See if the selected page row is a System Site Settings or Server Settings
+							app.admin.data.firstLoadSettingsType = (DexV2.node(this).closest('.tab_systemSiteSettings').nodes.length == 1) ? 'systemsitesettings' : 'serversettings';
+
+							if(app.admin.data.firstLoadSettingsType === 'systemsitesettings'){
+								DexV2('.tab_systemSiteSettings > .x-panel').trigger('click');
+							}
+						}
+					}
+
+				}, 'CHECK_IF_SYSTEM_SITE_SETTINGS_PAGE_SELECTED_CLASS')
+
 
                 app.edit.sidepanel.buildSplitter();
                 app.edit.sidepanel.resizeSidePanel();
@@ -4991,6 +5017,14 @@ if (!Element.prototype.matches) {
     var eventListeners = {
         attach: function () {
             DexV2('body')
+				.onClick('.tab_systemSiteSettings > .x-panel', function(e){
+					var clickedElement = DexV2.node(e.target),
+						toggleMenu = clickedElement.hasClass('x-panel');
+
+					if(toggleMenu){
+						clickedElement.toggleClass('open-sub-menu')
+					}
+				})
                 .onAttribute('body', 'data-sitekey', function () {
                     var languageInput = DexV2('.edit-menu-sites input');
                     if (languageInput.nodes[0]) {

@@ -2562,3 +2562,38 @@ body[data-edit-window-style="settings"] {
 	}
 
 }
+
+.tab_systemSiteSettings > .x-panel {
+	user-select: none;
+	&:hover {
+		cursor: pointer;
+	}
+	&::before {
+		background: url(./images/icons/expand-side-panel@X2.png) no-repeat left top 6px;
+	    position: relative;
+	    background-size: 5px 7px;
+	    padding-left: 11px;
+	    margin-left: 0!important;
+	}
+
+	> div {
+		opacity: 0;
+		pointer-events: none;
+		top: 0;
+		position: absolute;
+	}
+
+	&.open-sub-menu {
+		&::before {
+			background-image: url(./images/icons/icon-toggle-expanded-small-normal.png);;
+			background-size: 7px 5px;
+			position: relative;
+		}
+
+		> div {
+			opacity: 1;
+			pointer-events: all;
+			position: relative;
+		}
+	}
+}

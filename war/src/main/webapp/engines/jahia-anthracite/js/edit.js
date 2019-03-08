@@ -1987,7 +1987,7 @@ if (!Element.prototype.matches) {
                 currentItem: null,
                 title: null,
                 pickerTitle: null,
-                displayType: null,
+                displayType: 'listview',
                 previousDisplayType: null,
                 ID: 'JahiaGxtContentPickerWindow',
                 standaloneID: 'contentpicker',
@@ -2128,6 +2128,12 @@ if (!Element.prototype.matches) {
             onResize: function () {
                 app.dev.log('::: APP ::: PICKER ::: ONRESIZE');
 
+				var previousDisplayButton = DexV2('.toolbar-item-' + app.picker.data.displayType);
+
+				if(previousDisplayButton.exists()){
+					previousDisplayButton.trigger('click');
+				}
+
                 // User has resized the left panel in a picker
                 if (DexV2.getCached('body').getAttribute('data-indigo-picker') == 'open') {
                     var splitterLeft = parseInt(DexV2.node(this).nodes[0].style.left);
@@ -2175,9 +2181,6 @@ if (!Element.prototype.matches) {
                         DexV2.getCached('body').setAttribute('indigo-PICKER-DISPLAY', 'listview');
                     }
                 }
-
-                // Save current view (by default loads on thumbs)
-                app.picker.data.displayType = 'thumbsview';
 
                 // Set zoom states
                 app.picker.updateZoomLevel();
@@ -2300,9 +2303,6 @@ if (!Element.prototype.matches) {
                      .setAttribute('data-INDIGO-PICKER-SEARCH', '')
                      .setAttribute('data-INDIGO-PICKER', 'open')
                      .setAttribute('indigo-PICKER-DISPLAY', 'thumbsview');
-
-                // Save current view (by default loads on thumbs)
-                app.picker.data.displayType = 'thumbsview';
 
                 // Set zoom states
                 app.picker.updateZoomLevel();
@@ -2974,6 +2974,12 @@ if (!Element.prototype.matches) {
                 },
                 open: function () {
                     app.dev.log('::: APP ::: PICKER ::: SEARCH ::: OPEN');
+
+					var previousDisplayButton = DexV2('.toolbar-item-' + app.picker.data.displayType);
+
+					if(previousDisplayButton.exists()){
+						previousDisplayButton.trigger('click');
+					}
 
                     var searchTabAvailable;
                     if (DexV2.getCached('body').getAttribute('data-INDIGO-SUB-PICKER') == 'open') {

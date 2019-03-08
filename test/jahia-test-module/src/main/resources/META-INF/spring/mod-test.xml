@@ -88,6 +88,7 @@
                 <value>org.jahia.test.services.usermanager.LocalUserTest</value>
                 <value>org.jahia.test.services.usermanager.UserFolderSplittingTest</value>
                 <value>org.jahia.test.services.validation.ValidationTest</value>
+                <value>org.jahia.test.services.vanity.VanityUrlManagerTest</value>
                 <value>org.jahia.test.services.vanity.VanityUrlMapperTest</value>
                 <value>org.jahia.test.services.vanity.VanityUrlServiceTest</value>
                 <value>org.jahia.test.services.versioning.VersioningTest</value>

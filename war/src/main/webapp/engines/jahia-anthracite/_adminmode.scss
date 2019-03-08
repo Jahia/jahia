@@ -41,6 +41,7 @@
 			background-repeat: no-repeat !important;
 			background-color: _theme-color(status, error) !important;
 			background-position: center !important;
+			display: block;
 			height: 34px !important;
 			width: 34px !important;
 			border-radius: 50px;
@@ -246,10 +247,12 @@
 }
 
 .toolbar-warning-messages > div > div > span.x-menu-item {
-	background: _theme-color(quinary);
+	background: _theme-color(status, error)!important;
 	padding: 9px 12px !important;
 	font-weight: 600;
 	border-bottom-right-radius: 50px;
 	border-top-right-radius: 50px;
 	padding-left: 16px !important;
+	min-height: 34px;
+	box-sizing: border-box;
 }

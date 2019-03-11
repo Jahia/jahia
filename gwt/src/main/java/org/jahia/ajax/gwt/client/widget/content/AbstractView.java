@@ -241,6 +241,8 @@ public abstract class AbstractView extends TopRightComponent {
     }
 
     public void clearTable() {
+        // reset content source
+        contentSource = null;
         store.removeAll();
     }
 

@@ -175,23 +175,23 @@ public class PublicationHelper {
                 infos = complexPublicationService.getFullPublicationInfos(uuids, languages, allSubTree, currentUserSession);
             }
 
-            return convert(infos, currentUserSession, checkForUnpublication);
+            return convert(infos, currentUserSession);
         } catch (Exception e) {
             logger.error("Cannot get nodes " + uuids + ". Cause: " + e.getLocalizedMessage(), e);
             throw new GWTJahiaServiceException("Cannot get nodes " + uuids + ". Cause: " + e.getLocalizedMessage(), e);
         }
     }
 
-    private static List<GWTJahiaPublicationInfo> convert(Collection<ComplexPublicationService.FullPublicationInfo> infos, JCRSessionWrapper session, boolean checkForUnpublication) {
+    private static List<GWTJahiaPublicationInfo> convert(Collection<ComplexPublicationService.FullPublicationInfo> infos, JCRSessionWrapper session) {
         LinkedList<GWTJahiaPublicationInfo> gwtInfos = new LinkedList<>();
         for (ComplexPublicationService.FullPublicationInfo info : infos) {
-            GWTJahiaPublicationInfo gwtInfo = convert(info, session, checkForUnpublication);
+            GWTJahiaPublicationInfo gwtInfo = convert(info, session);
             gwtInfos.add(gwtInfo);
         }
         return gwtInfos;
     }
 
-    private static GWTJahiaPublicationInfo convert(ComplexPublicationService.FullPublicationInfo info, JCRSessionWrapper session, boolean checkForUnpublication) {
+    private static GWTJahiaPublicationInfo convert(ComplexPublicationService.FullPublicationInfo info, JCRSessionWrapper session) {
         GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(info.getNodeIdentifier(), info.getPublicationStatus());
         gwtInfo.setPath(info.getNodePath());
         gwtInfo.setTitle(info.getNodeTitle());

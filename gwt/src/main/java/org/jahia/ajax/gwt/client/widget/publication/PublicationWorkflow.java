@@ -308,8 +308,6 @@ public class PublicationWorkflow implements CustomWorkflow {
                 }
                 if (info.getI18nUuid() != null) {
                     l.add(info.getI18nUuid());
-                } else if (info.getMainUUID() != null) {
-                    l.add(info.getMainUUID());
                 }
                 if (info.getDeletedI18nUuid() != null) {
                     for (String s : info.getDeletedI18nUuid().split(" ")) {

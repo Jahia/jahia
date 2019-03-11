@@ -226,11 +226,12 @@ public abstract class AbstractView extends TopRightComponent {
     }
 
     public void setProcessedContent(Object content, ContentSource source) {
+        clearTable();
         if (content != null) {
-            clearTable();
             List<GWTJahiaNode> gwtJahiaNodes = (List<GWTJahiaNode>) content;
             store.add(gwtJahiaNodes);
             updateTypeStore(gwtJahiaNodes);
+            getLinker().onTableItemSelected();
         }
         this.contentSource = source;
     }

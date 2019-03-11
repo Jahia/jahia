@@ -73,13 +73,8 @@ public class ComplexPublicationServiceImplTest extends AbstractJUnitTest {
     private JCRNodeWrapper testHomeEdit;
 
     private JCRSessionWrapper englishEditSession;
-    private JCRSessionWrapper englishLiveSession;
-
     private JCRSessionWrapper frenchEditSession;
-    private JCRSessionWrapper frenchLiveSession;
-
     private JCRSessionWrapper systemEditSession;
-    private JCRSessionWrapper systemLiveSession;
 
 
     @Override
@@ -141,12 +136,12 @@ public class ComplexPublicationServiceImplTest extends AbstractJUnitTest {
 
         // Then the info in english should have one entry with no shared node and translation node set
         ResultInfo result = new ResultInfo(enContent.getI18N(Locale.ENGLISH).getIdentifier(), null);
-        checkPublicationInfos(enContent, Arrays.asList(Locale.ENGLISH.toString()), systemEditSession, Collections.singletonList(result));
+        checkPublicationInfos(Collections.singletonList(enContent.getIdentifier()), Arrays.asList(Locale.ENGLISH.toString()), systemEditSession, Collections.singletonList(result));
 
         // Then the info in all languages should contain 2 results
         ResultInfo result1 = new ResultInfo(enContent.getI18N(Locale.ENGLISH).getIdentifier(), null);
         ResultInfo result2 = new ResultInfo(enContent.getI18N(Locale.FRENCH).getIdentifier(), null);
-        checkPublicationInfos(enContent, Arrays.asList(Locale.ENGLISH.toString(), Locale.FRENCH.toString()), systemEditSession, Arrays.asList(result1, result2));
+        checkPublicationInfos(Collections.singletonList(enContent.getIdentifier()), Arrays.asList(Locale.ENGLISH.toString(), Locale.FRENCH.toString()), systemEditSession, Arrays.asList(result1, result2));
 
 
         // When the node is unpublished in english
@@ -154,18 +149,19 @@ public class ComplexPublicationServiceImplTest extends AbstractJUnitTest {
 
         // Then info in french should have one entry with no shared node and translation node set
         result = new ResultInfo(enContent.getI18N(Locale.FRENCH).getIdentifier(), null);
-        checkPublicationInfos(enContent, Arrays.asList(Locale.FRENCH.toString()), systemEditSession, Collections.singletonList(result));
+        checkPublicationInfos(Collections.singletonList(enContent.getIdentifier()), Arrays.asList(Locale.FRENCH.toString()), systemEditSession, Collections.singletonList(result));
 
         // When querying info in english, Then the result should be empty
-        checkPublicationInfos(enContent, Arrays.asList(Locale.ENGLISH.toString()), systemEditSession, Collections.emptyList());
+        checkPublicationInfos(Collections.singletonList(enContent.getIdentifier()), Arrays.asList(Locale.ENGLISH.toString()), systemEditSession, Collections.emptyList());
 
         // Then the info in all languages should contain 1 result
-        checkPublicationInfos(enContent, Arrays.asList(Locale.ENGLISH.toString(), Locale.FRENCH.toString()), systemEditSession, Arrays.asList(result2));
+        checkPublicationInfos(Collections.singletonList(enContent.getIdentifier()), Arrays.asList(Locale.ENGLISH.toString(), Locale.FRENCH.toString()), systemEditSession, Arrays.asList(result2));
 
     }
 
     @Test
     public void getFullUnpublicationInfosOnNonI18n() throws RepositoryException {
+        getCleanSession();
         // Given a published non i18n content
         JCRNodeWrapper content = englishEditSession.getNode(testHomeEdit.getPath()).addNode("testReference", "jnt:contentReference");
         englishEditSession.save();
@@ -173,11 +169,35 @@ public class ComplexPublicationServiceImplTest extends AbstractJUnitTest {
 
         // When querying the unpublication info in english, Then we should have one entry with no shared node
         ResultInfo resultRef = new ResultInfo(null, content.getIdentifier());
-        checkPublicationInfos(content, Arrays.asList(Locale.ENGLISH.toString()), systemEditSession, Collections.singletonList(resultRef));
+        checkPublicationInfos(Collections.singletonList(content.getIdentifier()), Arrays.asList(Locale.ENGLISH.toString()), systemEditSession, Collections.singletonList(resultRef));
 
         // When querying the unpublication info in all languages, Then we should have two entries with no shared node
-        checkPublicationInfos(content, Arrays.asList(Locale.ENGLISH.toString(), Locale.FRENCH.toString()), systemEditSession, Arrays.asList(resultRef, resultRef));
+        checkPublicationInfos(Collections.singletonList(content.getIdentifier()), Arrays.asList(Locale.ENGLISH.toString(), Locale.FRENCH.toString()), systemEditSession, Arrays.asList(resultRef, resultRef));
+    }
 
+    @Test
+    public void getFullUnpublicationInfosOnBothI18nAndNotI18n() throws RepositoryException {
+        getCleanSession();
+        // Given a published non i18n content
+        JCRNodeWrapper content = englishEditSession.getNode(testHomeEdit.getPath()).addNode("testReference", "jnt:contentReference");
+        englishEditSession.save();
+        publicationService.publishByMainId(content.getIdentifier());
+
+        // given a published node with 2 translations
+        JCRNodeWrapper enContent = englishEditSession.getNode(testHomeEdit.getPath()).addNode("testNode", "jnt:text");
+        enContent.setProperty("text", INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+        englishEditSession.save();
+        frenchEditSession.getNode(enContent.getPath()).setProperty("text", INITIAL_FRENCH_TEXT_NODE_PROPERTY_VALUE);
+        frenchEditSession.save();
+        publicationService.publishByMainId(enContent.getIdentifier());
+
+        // When querying the unpublication info in english for both nodes, Then we should have two entries
+        ResultInfo i18nResult = new ResultInfo(enContent.getI18N(Locale.ENGLISH).getIdentifier(), null);
+        ResultInfo result = new ResultInfo(null, content.getIdentifier());
+        checkPublicationInfos(Arrays.asList(enContent.getIdentifier(), content.getIdentifier()),
+                Collections.singletonList(Locale.ENGLISH.toString()),
+                systemEditSession,
+                Arrays.asList(i18nResult, result));
     }
 
     @Test
@@ -194,7 +214,7 @@ public class ComplexPublicationServiceImplTest extends AbstractJUnitTest {
         publicationService.publishByMainId(list.getIdentifier());
 
         // When querying info in french, Then the result should be empty
-        checkPublicationInfos(list, Arrays.asList(Locale.FRENCH.toString()), systemEditSession, Collections.emptyList());
+        checkPublicationInfos(Collections.singletonList(list.getIdentifier()), Collections.singletonList(Locale.FRENCH.toString()), systemEditSession, Collections.emptyList());
 
         // Then the info in all languages should contain 2 results
         ResultInfo r1 = new ResultInfo(null, list.getIdentifier());
@@ -202,10 +222,10 @@ public class ComplexPublicationServiceImplTest extends AbstractJUnitTest {
         ResultInfo r3 = new ResultInfo(c2.getI18N(Locale.ENGLISH).getIdentifier(), null);
 
         // When querying info in english, Then the result should be empty
-        checkPublicationInfos(list, Arrays.asList(Locale.ENGLISH.toString()), systemEditSession, Arrays.asList(r1, r2, r3));
+        checkPublicationInfos(Collections.singletonList(list.getIdentifier()), Collections.singletonList(Locale.ENGLISH.toString()), systemEditSession, Arrays.asList(r1, r2, r3));
 
         // Then the info in all languages should the same
-        checkPublicationInfos(list, Arrays.asList(Locale.ENGLISH.toString(), Locale.FRENCH.toString()), systemEditSession, Arrays.asList(r1, r2, r3));
+        checkPublicationInfos(Collections.singletonList(list.getIdentifier()), Arrays.asList(Locale.ENGLISH.toString(), Locale.FRENCH.toString()), systemEditSession, Arrays.asList(r1, r2, r3));
 
         // Given I set amd publish a content in french
         frenchEditSession.getNode(c1.getPath()).setProperty("text", INITIAL_FRENCH_TEXT_NODE_PROPERTY_VALUE);
@@ -214,17 +234,17 @@ public class ComplexPublicationServiceImplTest extends AbstractJUnitTest {
 
         // When check in french
         ResultInfo r4 = new ResultInfo(c1.getI18N(Locale.FRENCH).getIdentifier(), null);
-        checkPublicationInfos(list, Arrays.asList(Locale.FRENCH.toString()), systemEditSession, Arrays.asList(r4));
+        checkPublicationInfos(Collections.singletonList(list.getIdentifier()), Collections.singletonList(Locale.FRENCH.toString()), systemEditSession, Collections.singletonList(r4));
         // When check in english
-        checkPublicationInfos(list, Arrays.asList(Locale.ENGLISH.toString()), systemEditSession, Arrays.asList(r2, r3));
+        checkPublicationInfos(Collections.singletonList(list.getIdentifier()), Collections.singletonList(Locale.ENGLISH.toString()), systemEditSession, Arrays.asList(r2, r3));
         // When check in all languages
 
-        checkPublicationInfos(list, Arrays.asList(Locale.ENGLISH.toString(), Locale.FRENCH.toString()), systemEditSession, Arrays.asList(r1, r2, r3, r1, r4));
+        checkPublicationInfos(Collections.singletonList(list.getIdentifier()), Arrays.asList(Locale.ENGLISH.toString(), Locale.FRENCH.toString()), systemEditSession, Arrays.asList(r1, r2, r3, r1, r4));
     }
 
 
-    private void checkPublicationInfos(JCRNodeWrapper enContent, List<String> locales, JCRSessionWrapper session, List<ResultInfo> results) throws RepositoryException {
-        Collection<ComplexPublicationService.FullPublicationInfo> infos = complexPublicationService.getFullUnpublicationInfos(Arrays.asList(enContent.getIdentifier()), locales, true, session);
+    private void checkPublicationInfos(List<String> identifiers, List<String> locales, JCRSessionWrapper session, List<ResultInfo> results) throws RepositoryException {
+        Collection<ComplexPublicationService.FullPublicationInfo> infos = complexPublicationService.getFullUnpublicationInfos(identifiers, locales, true, session);
 
         // Then I receive only one publication info
         assertEquals("we were expecting " + infos.size() + " publication info", results.size(), infos.size());
@@ -244,12 +264,8 @@ public class ComplexPublicationServiceImplTest extends AbstractJUnitTest {
         JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
         sessionFactory.closeAllSessions();
         englishEditSession = sessionFactory.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
-        englishLiveSession = sessionFactory.getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
         frenchEditSession = sessionFactory.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.FRENCH);
-        frenchLiveSession = sessionFactory.getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.FRENCH);
         systemEditSession = sessionFactory.getCurrentSystemSession(Constants.EDIT_WORKSPACE, null, null);
-        systemLiveSession = sessionFactory.getCurrentSystemSession(Constants.LIVE_WORKSPACE, null, null);
-
     }
 
     class ResultInfo {

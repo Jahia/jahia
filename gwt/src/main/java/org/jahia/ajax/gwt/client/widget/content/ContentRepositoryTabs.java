@@ -87,7 +87,6 @@ public class ContentRepositoryTabs extends LeftComponent {
     private LayoutContainer browseComponent;
     private ContentSearchForm contentSearchForm;
     private JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
-    private ManagerLinker linker;
 
     // repositories
     private List<RepositoryTab> repositories = new ArrayList<RepositoryTab>();
@@ -287,7 +286,6 @@ public class ContentRepositoryTabs extends LeftComponent {
     @Override
     public void initWithLinker(ManagerLinker linker) {
         super.initWithLinker(linker);
-        this.linker = linker;
         for (RepositoryTab tab : repositories) {
             tab.init();
         }
@@ -326,9 +324,6 @@ public class ContentRepositoryTabs extends LeftComponent {
         if (savedSearchPanel.isExpanded()) {
             return queryList.getSelectionModel().getSelectedItem();
         } else {
-            linker.getTopRightObject().setProcessedContent(null, null);
-            linker.loaded();
-
             for (RepositoryTab tab : repositories) {
                 if (tab.isExpanded()) {
                     return tab.getSelectedItem();

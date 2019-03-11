@@ -60,6 +60,9 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.RepositoryException;
 import java.util.*;
 
+import static org.jahia.services.content.PublicationInfo.NOT_PUBLISHED;
+import static org.jahia.services.content.PublicationInfo.UNPUBLISHED;
+
 /**
  * Service implementation that:
  * - delegates lower level info retrieval operations to the associated JCRPublicationService
@@ -119,7 +122,7 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
                     PublicationInfo translationInfo = publicationService.getPublicationInfo(translationNode.getIdentifier(), Collections.singleton(language), references, false, false, sourceSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
                     publicationInfo.getRoot().addChild(translationInfo.getRoot());
                 } else if (publicationInfo.getRoot().getStatus() == PublicationInfo.PUBLISHED && node.getNodes("j:translation_*").hasNext()) {
-                    publicationInfo.getRoot().setStatus(PublicationInfo.NOT_PUBLISHED);
+                    publicationInfo.getRoot().setStatus(NOT_PUBLISHED);
                 }
             }
 
@@ -135,7 +138,7 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
                     if (childNode.getStatus() > result.getPublicationStatus()) {
                         result.setPublicationStatus(childNode.getStatus());
                     }
-                    if (result.getPublicationStatus() == PublicationInfo.UNPUBLISHED && childNode.getStatus() != PublicationInfo.UNPUBLISHED) {
+                    if (result.getPublicationStatus() == UNPUBLISHED && childNode.getStatus() != UNPUBLISHED) {
                         result.setPublicationStatus(childNode.getStatus());
                     }
                     if (childNode.isLocked()) {
@@ -242,9 +245,9 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
                 }
             }
             // remove identifier of contents with a translation
-            Set<String> removedIdentifiers = clearTranslationNodes(result);
+            Set<String> clearedIdentifiers = clearNodeIdentifiersOnTranslationNodes(result);
             // filter out shared node that should not be part of the unpublication
-            removeSharedNodes(result, languages, getPublicationInfoLanguages(publicationInfos), removedIdentifiers);
+            removeSharedNodes(result, languages, clearedIdentifiers);
             return new ArrayList<>(result.values());
         } catch (RepositoryException e) {
             throw new JahiaRuntimeException(e);
@@ -336,6 +339,7 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
             info.setNodeTitle(node.getPath());
         }
 
+        info.setAllPublishedLanguagesInSubTree(getAllPublishedLanguagesInSubTree(node));
         info.setLanguage(language);
         info.setWorkInProgress(node.isWorkInProgress());
         info.setPublicationRootNodeIdentifier(root.getUuid());
@@ -367,7 +371,7 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
                     if (childNode.getStatus() > lastInfo.getPublicationStatus()) {
                         lastInfo.setPublicationStatus(childNode.getStatus());
                     }
-                    if (lastInfo.getPublicationStatus() == PublicationInfo.UNPUBLISHED && childNode.getStatus() != PublicationInfo.UNPUBLISHED) {
+                    if (lastInfo.getPublicationStatus() == UNPUBLISHED && childNode.getStatus() != UNPUBLISHED) {
                         lastInfo.setPublicationStatus(childNode.getStatus());
                     }
                     if (childNode.isLocked()) {
@@ -406,7 +410,7 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
         allInfos.put(node.getUuid(), info);
 
         for (PublicationInfoNode sub : node.getChildren()) {
-            if (sub.getPath().indexOf("/j:translation") == -1) {
+            if (!sub.getPath().contains("/j:translation")) {
                 convert(allInfos, root, mainPaths, lastRule, sub, references, language, workflowAction, session);
             }
         }
@@ -414,45 +418,52 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
         return info;
     }
 
-    private static void removeSharedNodes(Map<String, FullPublicationInfoImpl> infosByPath, Collection<String> languages, Set<String> publishedLanguages, Set<String> removedIdentifiers) {
+    private Set<String> getAllPublishedLanguagesInSubTree(PublicationInfoNode node) {
+        final Set<String> result = new HashSet<>();
+        if (node.getStatus() != UNPUBLISHED  && node.getStatus() != NOT_PUBLISHED  && node.getPath().contains("/j:translation_")) {
+            result.add(StringUtils.substringAfterLast(node.getPath(),"/j:translation_"));
+        }
+        for (PublicationInfoNode childNode : node.getChildren()) {
+            result.addAll(getAllPublishedLanguagesInSubTree(childNode));
+        }
+        return result;
+    }
+
+    private static void removeSharedNodes(Map<String, FullPublicationInfoImpl> infosByPath, Collection<String> languages, Set<String> clearedIdentifiers) {
         Set<String> paths = new HashSet<>(infosByPath.keySet());
         // Filter out info of content we need to keep.
         for (String path : paths) {
             FullPublicationInfoImpl info = infosByPath.get(path);
-            // Condition filters to remove info
-            // keep content that has been processed in another language
-            boolean clearedTranslation = removedIdentifiers.contains(info.getNodeIdentifier());
-            // Do language check only if i18n content needs to be unpublished
-            boolean hasI18NContent = !publishedLanguages.isEmpty();
-            // keep content that is not part of the requested unpublish languages
-            boolean contentNotPublishedInLanguage = hasI18NContent && !publishedLanguages.contains(info.getLanguage());
+
+            // Remove info: in case we already have an info for the i18n node
+            boolean clearedForTranslation = clearedIdentifiers.contains(info.getNodeIdentifier());
+
+            // check if subtree contains published translations
+            boolean hasI18NSubContent = !info.getAllPublishedLanguagesInSubTree().isEmpty();
+
+            // Remove info: in case subtree contains published translations and 
+            boolean contentNotPublishedInLanguage = hasI18NSubContent && !info.getAllPublishedLanguagesInSubTree().contains(info.getLanguage());
+
             // Keep content that is still publish in another language.
-            boolean contentStillPublishedInOtherLanguage = hasI18NContent && languages.size() == 1 && publishedLanguages.size() > 1 && publishedLanguages.contains(info.getLanguage());
-            if (info.getTranslationNodeIdentifier() == null && (clearedTranslation || contentNotPublishedInLanguage || contentStillPublishedInOtherLanguage)) {
+            Set<String> remainingPublishedLanguages = new HashSet<>(info.getAllPublishedLanguagesInSubTree());
+            remainingPublishedLanguages.removeAll(languages);
+            boolean contentStillPublishedInOtherLanguage = hasI18NSubContent && !remainingPublishedLanguages.isEmpty();
+
+            if (info.getTranslationNodeIdentifier() == null && (clearedForTranslation || contentNotPublishedInLanguage || contentStillPublishedInOtherLanguage)) {
                 infosByPath.remove(path);
             }
         }
     }
 
-    private static Set<String> clearTranslationNodes(Map<String, FullPublicationInfoImpl> infosByPath) {
-        Set<String> removedIdentifiers = new HashSet<>();
-        Set<String> paths = new HashSet<>(infosByPath.keySet());
-        for (String path : paths) {
-            FullPublicationInfoImpl info = infosByPath.get(path);
+    private static Set<String> clearNodeIdentifiersOnTranslationNodes(Map<String, FullPublicationInfoImpl> infosByPath) {
+        Set<String> clearedIdentifiers = new HashSet<>();
+        for (FullPublicationInfoImpl info : infosByPath.values()) {
             if (info.getTranslationNodeIdentifier() != null) {
-                removedIdentifiers.add(infosByPath.get(path).getNodeIdentifier());
-                infosByPath.get(path).clearNodeIdentifier();
+                clearedIdentifiers.add(info.getNodeIdentifier());
+                info.clearNodeIdentifier();
             }
         }
-        return removedIdentifiers;
-    }
-
-    private static Set<String> getPublicationInfoLanguages(List<PublicationInfo> publicationInfos) {
-        Set<String> languages = new HashSet<>();
-        for(PublicationInfo pubInfo : publicationInfos) {
-            languages.addAll(pubInfo.getAllPublishedLanguages());
-        }
-        return languages;
+        return clearedIdentifiers;
     }
 
     @Override
@@ -577,6 +588,7 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
         private String language;
         private String translationNodeIdentifier;
         private LinkedHashSet<String> deletedTranslationNodeIdentifiers = new LinkedHashSet<>();
+        private Set<String> allPublishedLanguagesInSubTree = new HashSet<>();
 
         public FullPublicationInfoImpl(String nodeIdentifier, int publicationStatus) {
             super(publicationStatus);
@@ -698,6 +710,14 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
 
         public void addDeletedTranslationNodeIdentifier(String deletedTranslationNodeIdentifier) {
             this.deletedTranslationNodeIdentifiers.add(deletedTranslationNodeIdentifier);
+        }
+
+        public Set<String> getAllPublishedLanguagesInSubTree() {
+            return allPublishedLanguagesInSubTree;
+        }
+
+        public void setAllPublishedLanguagesInSubTree(Set<String> allPublishedLanguagesInSubTree) {
+            this.allPublishedLanguagesInSubTree = allPublishedLanguagesInSubTree;
         }
 
         @Override

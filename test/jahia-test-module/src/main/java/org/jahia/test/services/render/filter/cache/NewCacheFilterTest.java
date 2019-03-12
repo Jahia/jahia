@@ -69,6 +69,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.InvocationHandler;
@@ -82,7 +83,7 @@ import static org.junit.Assert.*;
  * New implementation of CacheFilter specific unit tests
  */
 public class NewCacheFilterTest extends CacheFilterTest{
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(CacheFilterTest.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(CacheFilterTest.class);
 
     private ModuleGeneratorQueue moduleGeneratorQueue = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue"));
 
@@ -103,7 +104,7 @@ public class NewCacheFilterTest extends CacheFilterTest{
         CacheFilterRenderResult result = cacheFilterRender();
         final Element element = moduleCacheProvider.getCache().get(result.finalKey);
         assertNotNull("Html Cache does not contains our html rendering", element);
-        assertTrue("Content Cache and rendering are not equals",((String)((CacheEntry<?>)element.getValue()).getObject()).contains(result.fragmentHtml));
+        assertTrue("Content Cache and rendering are not equals",((String)((CacheEntry<?>)element.getObjectValue()).getObject()).contains(result.fragmentHtml));
     }
 
     @Test
@@ -112,7 +113,7 @@ public class NewCacheFilterTest extends CacheFilterTest{
         cacheFilterRender();
         final Element element1 = moduleCacheProvider.getDependenciesCache().get("/sites/"+TESTSITE_NAME+"/home/testContent");
         assertNotNull("Node /shared should have dependencies",element1);
-        assertTrue("Dependencies must not be empty",((Set<String>) element1.getValue()).size()>0);
+        assertFalse("Dependencies must not be empty",((Set<?>) element1.getObjectValue()).isEmpty());
     }
 
     @Test
@@ -126,7 +127,7 @@ public class NewCacheFilterTest extends CacheFilterTest{
         testLatch("/sites/"+TESTSITE_NAME+"/home", true);
     }
 
-    public void testLatch(String path, boolean onError) throws Exception {
+    public void testLatch(String path, boolean onError) throws RepositoryException, InterruptedException {
         JCRSessionWrapper sessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
 
         // r1 will generate the fragment in 3000+ ms
@@ -173,7 +174,7 @@ public class NewCacheFilterTest extends CacheFilterTest{
     }
 
     @Test
-    public void testMaxWait() throws Exception{
+    public void testMaxWait() throws RepositoryException, InterruptedException {
         long previousModuleGenerationWaitTime = moduleGeneratorQueue.getModuleGenerationWaitTime();
 
         try {
@@ -234,16 +235,17 @@ public class NewCacheFilterTest extends CacheFilterTest{
         } catch (Exception e) {
             exception = e;
         }
-        //error should be cache
-        final Element element = moduleCacheProvider.getCache().get(result.finalKey);
 
         assertNull(exception);
-        assertTrue("<!-- Module error : Error filter triggered in render chain-->".equals(result.fragmentHtml));
-        assertNotNull("Html Cache does not contains our error rendering", element);
-        assertTrue("Error Cache and rendering are not equals",((String)((CacheEntry<?>)element.getValue()).getObject()).contains(result.fragmentHtml));
-
+        if (result != null) {
+            //error should be cache
+            final Element element = moduleCacheProvider.getCache().get(result.finalKey);
+            assertTrue("<!-- Module error : Error filter triggered in render chain-->".equals(result.fragmentHtml));
+            assertNotNull("Html Cache does not contains our error rendering", element);
+            assertTrue("Error Cache and rendering are not equals",
+                    ((String) ((CacheEntry<?>) element.getObjectValue()).getObject()).contains(result.fragmentHtml));
+        }
         // test page error
-        exception = null;
         result = null;
         try {
             result = cacheFilterRender(sessionWrapper, "/sites/"+TESTSITE_NAME+"/home/testContent", Resource.CONFIGURATION_PAGE, null, true);
@@ -308,9 +310,9 @@ public class NewCacheFilterTest extends CacheFilterTest{
                     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                         if (method.getName().equals("setAttribute")) {
                             attributes.put((String) args[0], args[1]);
-                        } if (method.getName().equals("getAttribute")) {
+                        } else if (method.getName().equals("getAttribute")) {
                             return attributes.get(args[0]);
-                        } if (method.getName().equals("getParameterMap")) {
+                        } else if (method.getName().equals("getParameterMap")) {
                             return new HashMap<String, String[]>();
                         }
                         return null;
@@ -385,6 +387,8 @@ public class NewCacheFilterTest extends CacheFilterTest{
 
         RenderFilter errorFilter = new AbstractFilter() {
             class ErrorFilterException extends Exception {
+                private static final long serialVersionUID = 1L;
+
                 public ErrorFilterException(String message) {
                     super(message);
                 }

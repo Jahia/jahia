@@ -49,6 +49,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -58,14 +59,14 @@ import java.util.HashSet;
 import java.util.Set;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.tools.ant.util.DOMElementWriter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testng.ISuite;
 import org.testng.ISuiteListener;
 import org.testng.ISuiteResult;
@@ -84,9 +85,6 @@ import org.w3c.dom.Text;
 
 public class SurefireTestNGXMLResultFormatter implements ISuiteListener,
         ITestListener {
-
-    private transient static Logger logger = LoggerFactory
-            .getLogger(SurefireTestNGXMLResultFormatter.class);
 
     private static final double ONE_SECOND = 1000.0;
 
@@ -150,7 +148,9 @@ public class SurefireTestNGXMLResultFormatter implements ISuiteListener,
 
     private static DocumentBuilder getDocumentBuilder() {
         try {
-            return DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            return factory.newDocumentBuilder();
         } catch (Exception exc) {
             throw new ExceptionInInitializerError(exc);
         }
@@ -167,15 +167,15 @@ public class SurefireTestNGXMLResultFormatter implements ISuiteListener,
     /**
      * Element for the current test.
      */
-    private Map<String, Element> testElements = new HashMap<String, Element>();
+    private Map<String, Element> testElements = new HashMap<>();
     /**
      * tests that failed.
      */
-    private Set<String> failedTests = new HashSet<String>();
+    private Set<String> failedTests = new HashSet<>();
     /**
      * Timing helper.
      */
-    private Map<String, Long> testStarts = new HashMap<String, Long>();
+    private Map<String, Long> testStarts = new HashMap<>();
     /**
      * Where to write the log to.
      */
@@ -272,24 +272,13 @@ public class SurefireTestNGXMLResultFormatter implements ISuiteListener,
         rootElement.setAttribute(ATTR_TIME, endDate != null ? ""
                 + ((endDate.getTime() - startDate.getTime()) / ONE_SECOND) : "0");
         if (out != null) {
-            Writer wri = null;
-            try {
-                wri = new BufferedWriter(new OutputStreamWriter(out, "UTF8"));
+            try (OutputStreamWriter outWriter = new OutputStreamWriter(out, StandardCharsets.UTF_8);
+                    Writer wri = new BufferedWriter(outWriter)) {
                 wri.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
                 (new DOMElementWriter()).write(rootElement, wri, 0, "  ");
-            } catch (IOException exc) {
-                logger.error("Unable to write log file", exc);
-            } finally {
-                if (wri != null) {
-                    try {
-                        wri.flush();
-                    } catch (IOException ex) {
-                        // ignore
-                    }
-                }
-                if (out != System.out && out != System.err) {
-                    IOUtils.closeQuietly(wri);
-                }
+                wri.flush();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
         }
     }
@@ -303,7 +292,7 @@ public class SurefireTestNGXMLResultFormatter implements ISuiteListener,
      * @see ITestResult#STARTED
      */
     public void onTestStart(ITestResult result) {
-        testStarts.put(result.getName(), new Long(System.currentTimeMillis()));
+        testStarts.put(result.getName(), System.currentTimeMillis());
     }
 
     /**
@@ -319,8 +308,7 @@ public class SurefireTestNGXMLResultFormatter implements ISuiteListener,
         Element currentTest = null;
         if (!failedTests.contains(result.getName())) {
             currentTest = doc.createElement(TESTCASE);
-            String n = getUserFriendlyTestName(result);
-            currentTest.setAttribute(ATTR_NAME, n == null ? UNKNOWN : n);
+            currentTest.setAttribute(ATTR_NAME, getUserFriendlyTestName(result));
             // a TestSuite can contain Tests from multiple classes,
             // even tests with the same name - disambiguate them.
             currentTest.setAttribute(ATTR_CLASSNAME, result.getTestClass()
@@ -328,11 +316,11 @@ public class SurefireTestNGXMLResultFormatter implements ISuiteListener,
             rootElement.appendChild(currentTest);
             testElements.put(getUserFriendlyTestName(result), currentTest);
         } else {
-            currentTest = (Element) testElements
+            currentTest = testElements
                     .get(getUserFriendlyTestName(result));
         }
 
-        Long l = (Long) testStarts.get(result.getName());
+        Long l = testStarts.get(result.getName());
         if (l != null) {
             currentTest.setAttribute(ATTR_TIME, ""
                 + ((System.currentTimeMillis() - l.longValue()) / ONE_SECOND));
@@ -367,13 +355,7 @@ public class SurefireTestNGXMLResultFormatter implements ISuiteListener,
         }
 
         Element nested = doc.createElement(FAILURE);
-        Element currentTest = null;
-        if (getUserFriendlyTestName(result) != null) {
-            currentTest = (Element) testElements
-                    .get(getUserFriendlyTestName(result));
-        } else {
-            currentTest = rootElement;
-        }
+        Element currentTest = testElements.get(getUserFriendlyTestName(result));
 
         currentTest.appendChild(nested);
 
@@ -383,9 +365,9 @@ public class SurefireTestNGXMLResultFormatter implements ISuiteListener,
                     .getMessage());
         }
         nested.setAttribute(ATTR_TYPE, result.getClass().getName());
-        StringWriter out = new StringWriter();
-        result.getThrowable().printStackTrace(new PrintWriter(out));
-        String strace = out.toString();
+        StringWriter writer = new StringWriter();
+        result.getThrowable().printStackTrace(new PrintWriter(writer));
+        String strace = writer.toString();
         Text trace = doc.createTextNode(strace);
         nested.appendChild(trace);
     }
@@ -404,20 +386,11 @@ public class SurefireTestNGXMLResultFormatter implements ISuiteListener,
         }
 
         Element nested = doc.createElement(SKIPPED);
-        Element currentTest = null;
-        if (getUserFriendlyTestName(result) != null) {
-            currentTest = (Element) testElements
-                    .get(getUserFriendlyTestName(result));
-        } else {
-            currentTest = rootElement;
-        }
-
+        Element currentTest = testElements.get(getUserFriendlyTestName(result));
+        
         currentTest.appendChild(nested);
 
-        String message = "skipped";
-        if (message != null && message.length() > 0) {
-            nested.setAttribute(ATTR_MESSAGE, message);
-        }
+        nested.setAttribute(ATTR_MESSAGE, SKIPPED);
     }
 
     /**
@@ -431,20 +404,6 @@ public class SurefireTestNGXMLResultFormatter implements ISuiteListener,
         testFinished(result);
     }
 
-    /**
-     * Invoked after the test class is instantiated and before any configuration method is called.
-     */
-    public void onStart(ITestContext context) {
-
-    }
-
-    /**
-     * Invoked after all the tests have run and all their Configuration methods have been called.
-     */
-    public void onFinish(ITestContext context) {
-
-    }
-
     private void formatOutput(String type, String output) {
         Element nested = doc.createElement(type);
         rootElement.appendChild(nested);
@@ -454,6 +413,16 @@ public class SurefireTestNGXMLResultFormatter implements ISuiteListener,
     private static String getUserFriendlyTestName(ITestResult result) {
         // This is consistent with the JUnit output
         return result.getName() + "(" + result.getTestClass().getName() + ")";
+    }
+
+    @Override
+    public void onStart(ITestContext context) {
+        // No action yet 
+    }
+
+    @Override
+    public void onFinish(ITestContext context) {
+        // No action yet
     }
 
 }

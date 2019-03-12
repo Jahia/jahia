@@ -44,7 +44,6 @@
 package org.jahia.test;
 
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -56,10 +55,12 @@ import java.util.HashSet;
 import java.util.Set;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.tools.ant.util.DOMElementWriter;
 import org.junit.runner.Description;
 import org.junit.runner.Result;
@@ -135,7 +136,9 @@ public class SurefireJUnitXMLResultFormatter extends RunListener {
 
     private static DocumentBuilder getDocumentBuilder() {
         try {
-            return DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            return factory.newDocumentBuilder();
         } catch (Exception exc) {
             throw new ExceptionInInitializerError(exc);
         }
@@ -152,15 +155,15 @@ public class SurefireJUnitXMLResultFormatter extends RunListener {
     /**
      * Element for the current test.
      */
-    private Map<Description, Element> testElements = new HashMap<Description, Element>();
+    private Map<Description, Element> testElements = new HashMap<>();
     /**
      * tests that failed.
      */
-    private Set<Description> failedTests = new HashSet<Description>();
+    private Set<Description> failedTests = new HashSet<>();
     /**
      * Timing helper.
      */
-    private Map<Description, Long> testStarts = new HashMap<Description, Long>();
+    private Map<Description, Long> testStarts = new HashMap<>();
     /**
      * Where to write the log to.
      */
@@ -194,6 +197,7 @@ public class SurefireJUnitXMLResultFormatter extends RunListener {
      * The whole testsuite started.
      * @param suite the testsuite.
      */
+    @Override
     public void testRunStarted(Description description) throws Exception {
         doc = getDocumentBuilder().newDocument();
         rootElement = doc.createElement(TESTSUITE);
@@ -224,6 +228,7 @@ public class SurefireJUnitXMLResultFormatter extends RunListener {
      * @param suite the testsuite.
      * @throws BuildException on error.
      */
+    @Override
     public void testRunFinished(Result result) throws Exception {
         rootElement.setAttribute(ATTR_TESTS, "" + result.getRunCount());
         rootElement.setAttribute(ATTR_FAILURES, "" + result.getFailureCount());
@@ -231,24 +236,11 @@ public class SurefireJUnitXMLResultFormatter extends RunListener {
         rootElement.setAttribute(
             ATTR_TIME, "" + (result.getRunTime() / ONE_SECOND));
         if (out != null) {
-            Writer wri = null;
-            try {
-                wri = new BufferedWriter(new OutputStreamWriter(out, "UTF8"));
+            try (OutputStreamWriter outWriter = new OutputStreamWriter(out, StandardCharsets.UTF_8);
+                    Writer wri = new BufferedWriter(outWriter)) {
                 wri.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
                 (new DOMElementWriter()).write(rootElement, wri, 0, "  ");
-            } catch (IOException exc) {
-                throw new Exception("Unable to write log file", exc);
-            } finally {
-                if (wri != null) {
-                    try {
-                        wri.flush();
-                    } catch (IOException ex) {
-                        // ignore
-                    }
-                }
-                if (out != System.out && out != System.err) {
-                    IOUtils.closeQuietly(wri);
-                }
+                wri.flush();
             }
         }
     }
@@ -259,8 +251,9 @@ public class SurefireJUnitXMLResultFormatter extends RunListener {
      * <p>A new Test is started.
      * @param t the test.
      */
+    @Override
     public void testStarted(Description test) throws Exception {
-        testStarts.put(test, new Long(System.currentTimeMillis()));
+        testStarts.put(test, System.currentTimeMillis());
     }
 
     /**
@@ -269,6 +262,7 @@ public class SurefireJUnitXMLResultFormatter extends RunListener {
      * <p>A Test is finished.
      * @param test the test.
      */
+    @Override
     public void testFinished(Description test) throws Exception {
         // Fix for bug #5637 - if a junit.extensions.TestSetup is
         // used and throws an exception during setUp then startTest
@@ -289,10 +283,10 @@ public class SurefireJUnitXMLResultFormatter extends RunListener {
             rootElement.appendChild(currentTest);
             testElements.put(test, currentTest);
         } else {
-            currentTest = (Element) testElements.get(test);
+            currentTest = testElements.get(test);
         }
 
-        Long l = (Long) testStarts.get(test);
+        Long l = testStarts.get(test);
         currentTest.setAttribute(ATTR_TIME,
             "" + ((System.currentTimeMillis()
                    - l.longValue()) / ONE_SECOND));
@@ -305,6 +299,7 @@ public class SurefireJUnitXMLResultFormatter extends RunListener {
      * @param test the test.
      * @param t the exception.
      */
+    @Override
     public void testFailure(Failure failure) throws Exception {
         if (failure.getDescription() != null) {
             testFinished(failure.getDescription());
@@ -312,12 +307,7 @@ public class SurefireJUnitXMLResultFormatter extends RunListener {
         }
 
         Element nested = doc.createElement(FAILURE);
-        Element currentTest = null;
-        if (failure.getDescription() != null) {
-            currentTest = (Element) testElements.get(failure.getDescription());
-        } else {
-            currentTest = rootElement;
-        }
+        Element currentTest = failure.getDescription() != null ? testElements.get(failure.getDescription()) : rootElement;
 
         currentTest.appendChild(nested);
 

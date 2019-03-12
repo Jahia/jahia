@@ -44,7 +44,7 @@
 package org.jahia.test.services.content;
 
 import org.slf4j.Logger;
-import org.apache.commons.lang.time.DateUtils;
+import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRAutoSplitUtils;
 import org.jahia.services.content.JCRCallback;
@@ -59,7 +59,10 @@ import static org.junit.Assert.*;
 
 import javax.jcr.RepositoryException;
 
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -70,15 +73,14 @@ import java.util.GregorianCalendar;
  */
 public class AutoSplittingTest {
 
-    private static Logger logger = org.slf4j.LoggerFactory
-            .getLogger(AutoSplittingTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(AutoSplittingTest.class);
 
-    private final static String TESTSITE_NAME = "autoSplittingTestSite";
-    private final static String SITECONTENT_ROOT_NODE = "/sites/"
+    private static final String TESTSITE_NAME = "autoSplittingTestSite";
+    private static final String SITECONTENT_ROOT_NODE = "/sites/"
             + TESTSITE_NAME;
-    private final static int TEST_NODE_COUNT = 100;
+    private static final int TEST_NODE_COUNT = 100;
 
-    private static String DEFAULT_LANGUAGE = "en";
+    private static final String DEFAULT_LANGUAGE = "en";
 
     private static final String AUTO_SPLIT_CONFIG = "constant,testNodes;date,date,yyyy;date,date,MM;date,date,ss";
     private static final String AUTO_SPLIT_NODETYPE = Constants.JAHIANT_CONTENTLIST;
@@ -86,13 +88,13 @@ public class AutoSplittingTest {
     private static final String STRING_SPLIT_CONFIG = "constant,test;substring,location,3-6;firstChars,jcr:title,4;property,eventsType";
     private static final String DATE_SPLIT_CONFIG = "date,startDate,yyyy;date,startDate,MM;date,startDate,dd";
     private static final String NODENAME_SPLIT_CONFIG = "firstChars,j:nodename,1";
+    
+    private static final String FOLDERS_SPLIT_KO_MSG = "Folders not correctly split";
+    private static final String FOLDERS_SPLIT_KO_FOR_NODENAME_MSG = "Folders not correctly split for j:nodename split config";
 
-    private static final SimpleDateFormat yearFormatter = new SimpleDateFormat(
-            "yyyy");
-    private static final SimpleDateFormat monthFormatter = new SimpleDateFormat(
-            "MM");
-    private static final SimpleDateFormat dayFormatter = new SimpleDateFormat(
-            "dd");
+    private static final DateTimeFormatter yearFormatter = DateTimeFormatter.ofPattern("yyyy");
+    private static final DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MM");
+    private static final DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("dd");
 
     private static final String MEETING = "meeting";
     private static final String CONSUMER_SHOW = "consumerShow";
@@ -103,47 +105,39 @@ public class AutoSplittingTest {
 
     private static final String PARIS = "01-PAR-paris";
     private static final String GENEVA = "02-GVA-geneva";
-    private static final Date BASE_DATE = new GregorianCalendar(2000, 0, 1, 12,
-            0).getTime();
+    private static final LocalDateTime BASE_DATE = LocalDateTime.of(2000, 1, 1, 12, 0);
 
     private static final EventBean[] EVENTS = new EventBean[] {
             new EventBean(BASE_DATE, MEETING, PARIS),
             new EventBean(BASE_DATE, MEETING, GENEVA),
-            new EventBean(DateUtils.addDays(BASE_DATE, 5), CONSUMER_SHOW, PARIS),
-            new EventBean(DateUtils.addDays(BASE_DATE, 5), CONSUMER_SHOW, PARIS),
-            new EventBean(DateUtils.addDays(BASE_DATE, 10), CONSUMER_SHOW,
-                    GENEVA),
-            new EventBean(DateUtils.addDays(BASE_DATE, 10), ROAD_SHOW, PARIS),
-            new EventBean(DateUtils.addDays(BASE_DATE, 15), ROAD_SHOW, PARIS),
-            new EventBean(DateUtils.addDays(BASE_DATE, 15), ROAD_SHOW, GENEVA),
-            new EventBean(DateUtils.addDays(BASE_DATE, 20), ROAD_SHOW, GENEVA),
-            new EventBean(DateUtils.addDays(BASE_DATE, 20), CONFERENCE, PARIS),
-            new EventBean(DateUtils.addDays(BASE_DATE, 25), CONFERENCE, PARIS),
-            new EventBean(DateUtils.addDays(BASE_DATE, 25), CONFERENCE, PARIS),
-            new EventBean(DateUtils.addDays(BASE_DATE, 30), CONFERENCE, GENEVA),
-            new EventBean(DateUtils.addDays(BASE_DATE, 30), CONFERENCE, GENEVA),
-            new EventBean(DateUtils.addDays(BASE_DATE, 35), SHOW, PARIS),
-            new EventBean(DateUtils.addDays(BASE_DATE, 35), SHOW, PARIS),
-            new EventBean(DateUtils.addDays(BASE_DATE, 40), SHOW, PARIS),
-            new EventBean(DateUtils.addDays(BASE_DATE, 40), SHOW, GENEVA),
-            new EventBean(DateUtils.addDays(BASE_DATE, 40), SHOW, GENEVA),
-            new EventBean(DateUtils.addDays(BASE_DATE, 40), SHOW, GENEVA),
-            new EventBean(DateUtils.addDays(BASE_DATE, 40), SHOW, GENEVA),
-            new EventBean(DateUtils.addDays(BASE_DATE, 40), PRESS_CONFERENCE,
-                    PARIS),
-            new EventBean(DateUtils.addDays(BASE_DATE, 40), PRESS_CONFERENCE,
-                    PARIS),
-            new EventBean(DateUtils.addDays(BASE_DATE, 40), PRESS_CONFERENCE,
-                    PARIS),
-            new EventBean(DateUtils.addDays(BASE_DATE, 40), PRESS_CONFERENCE,
-                    PARIS),
-            new EventBean(DateUtils.addDays(BASE_DATE, 40), PRESS_CONFERENCE,
-                    GENEVA),
-            new EventBean(DateUtils.addDays(BASE_DATE, 40), PRESS_CONFERENCE,
-                    GENEVA) };
+            new EventBean(BASE_DATE.plusDays(5), CONSUMER_SHOW, PARIS),
+            new EventBean(BASE_DATE.plusDays(5), CONSUMER_SHOW, PARIS),
+            new EventBean(BASE_DATE.plusDays(10), CONSUMER_SHOW, GENEVA),
+            new EventBean(BASE_DATE.plusDays(10), ROAD_SHOW, PARIS),
+            new EventBean(BASE_DATE.plusDays(15), ROAD_SHOW, PARIS),
+            new EventBean(BASE_DATE.plusDays(15), ROAD_SHOW, GENEVA),
+            new EventBean(BASE_DATE.plusDays(20), ROAD_SHOW, GENEVA),
+            new EventBean(BASE_DATE.plusDays(20), CONFERENCE, PARIS),
+            new EventBean(BASE_DATE.plusDays(25), CONFERENCE, PARIS),
+            new EventBean(BASE_DATE.plusDays(25), CONFERENCE, PARIS),
+            new EventBean(BASE_DATE.plusDays(30), CONFERENCE, GENEVA),
+            new EventBean(BASE_DATE.plusDays(30), CONFERENCE, GENEVA),
+            new EventBean(BASE_DATE.plusDays(35), SHOW, PARIS), 
+            new EventBean(BASE_DATE.plusDays(35), SHOW, PARIS),
+            new EventBean(BASE_DATE.plusDays(40), SHOW, PARIS), 
+            new EventBean(BASE_DATE.plusDays(40), SHOW, GENEVA),
+            new EventBean(BASE_DATE.plusDays(40), SHOW, GENEVA),
+            new EventBean(BASE_DATE.plusDays(40), SHOW, GENEVA),
+            new EventBean(BASE_DATE.plusDays(40), SHOW, GENEVA),
+            new EventBean(BASE_DATE.plusDays(40), PRESS_CONFERENCE, PARIS),
+            new EventBean(BASE_DATE.plusDays(40), PRESS_CONFERENCE, PARIS),
+            new EventBean(BASE_DATE.plusDays(40), PRESS_CONFERENCE, PARIS),
+            new EventBean(BASE_DATE.plusDays(40), PRESS_CONFERENCE, PARIS),
+            new EventBean(BASE_DATE.plusDays(40), PRESS_CONFERENCE, GENEVA),
+            new EventBean(BASE_DATE.plusDays(40), PRESS_CONFERENCE, GENEVA) };
 
     @BeforeClass
-    public static void oneTimeSetUp() throws Exception {
+    public static void oneTimeSetUp() {
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(
                     new JCRCallback<Object>() {
@@ -187,26 +181,18 @@ public class AutoSplittingTest {
         }
     }
 
-    @Before
-    public void setUp() throws Exception {
-    }
-
-    @After
-    public void tearDown() throws Exception {
-    }
-
     public static final class EventBean {
-        private Date date;
+        private LocalDateTime date;
         private String location;
         private String eventsType;
 
-        public EventBean(Date date, String eventsType, String location) {
+        public EventBean(LocalDateTime date, String eventsType, String location) {
             this.date = date;
             this.location = location;
             this.eventsType = eventsType;
         }
 
-        public Date getDate() {
+        public LocalDateTime getDate() {
             return date;
         }
 
@@ -283,7 +269,7 @@ public class AutoSplittingTest {
 
         int i = 0;
         for (EventBean eventsBean : EVENTS) {
-            assertTrue("Folders not correctly split", stringSplitNode.hasNode("test/"
+            assertTrue(FOLDERS_SPLIT_KO_MSG, stringSplitNode.hasNode("test/"
                     + eventsBean.getLocation().substring(3, 6) + "/"
                     + eventsBean.getEventsType().substring(0, 4) + "/"
                     + eventsBean.getEventsType() + "/"
@@ -292,26 +278,26 @@ public class AutoSplittingTest {
 
         i = 0;
         for (EventBean eventsBean : EVENTS) {
-            assertTrue("Folders not correctly split", dateSplitNode.hasNode(yearFormatter.format(eventsBean.getDate())
+            assertTrue(FOLDERS_SPLIT_KO_MSG, dateSplitNode.hasNode(yearFormatter.format(eventsBean.getDate())
                     + "/" + monthFormatter.format(eventsBean.getDate()) + "/"
                     + dayFormatter.format(eventsBean.getDate()) + "/"
                     + eventsBean.getEventsType() + i++));
         }
 
         String basePath = SITECONTENT_ROOT_NODE + "/contents/nodenameSplit";
-        assertTrue("Folders not correctly split for j:nodename split config",
+        assertTrue(FOLDERS_SPLIT_KO_FOR_NODENAME_MSG,
                 session.nodeExists(basePath + "/a/andromeda"));
-        assertTrue("Folders not correctly split for j:nodename split config",
+        assertTrue(FOLDERS_SPLIT_KO_FOR_NODENAME_MSG,
                 session.nodeExists(basePath + "/b/barbarella"));
-        assertTrue("Folders not correctly split for j:nodename split config",
+        assertTrue(FOLDERS_SPLIT_KO_FOR_NODENAME_MSG,
                 session.nodeExists(basePath + "/c/crazy-jane"));
-        assertTrue("Folders not correctly split for j:nodename split config",
+        assertTrue(FOLDERS_SPLIT_KO_FOR_NODENAME_MSG,
                 session.nodeExists(basePath + "/d/dumb-bunny"));
-        assertTrue("Folders not correctly split for j:nodename split config",
+        assertTrue(FOLDERS_SPLIT_KO_FOR_NODENAME_MSG,
                 session.nodeExists(basePath + "/e/elektra"));
-        assertTrue("Folders not correctly split for j:nodename split config",
+        assertTrue(FOLDERS_SPLIT_KO_FOR_NODENAME_MSG,
                 session.nodeExists(basePath + "/f/firestar"));
-        assertTrue("Folders not correctly split for j:nodename split config", 
+        assertTrue(FOLDERS_SPLIT_KO_FOR_NODENAME_MSG, 
                 session.nodeExists(basePath + "/g/gaia"));
     }
 
@@ -325,8 +311,7 @@ public class AutoSplittingTest {
         JCRNodeWrapper stringSplitNode = session.getNode(SITECONTENT_ROOT_NODE
                 + "/contents/stringSplit");
         
-        Date newEventDate = new GregorianCalendar(2010, 0, 1, 12,
-                0).getTime();
+        LocalDateTime newEventDate = LocalDateTime.of(2010, 1, 1, 12, 0);
         String newEventLocation = PARIS;
         String newEventType = ROAD_SHOW;
         
@@ -343,18 +328,18 @@ public class AutoSplittingTest {
         
         session.save();
         
-        assertTrue("Folders not correctly split", stringSplitNode.hasNode("test/"
+        assertTrue(FOLDERS_SPLIT_KO_MSG, stringSplitNode.hasNode("test/"
                 + newEventLocation.substring(3, 6) + "/"
                 + newEventType.substring(0, 4) + "/"
                 + newEventType + "/"
                 + newEventType + EVENTS.length));
         
-        assertTrue("Folders not correctly split", dateSplitNode.hasNode(yearFormatter.format(newEventDate)
+        assertTrue(FOLDERS_SPLIT_KO_MSG, dateSplitNode.hasNode(yearFormatter.format(newEventDate)
                 + "/" + monthFormatter.format(newEventDate) + "/"
                 + dayFormatter.format(newEventDate) + "/"
                 + newEventType + EVENTS.length));        
 
-        assertTrue("Folders not correctly split for j:nodename split config",
+        assertTrue(FOLDERS_SPLIT_KO_FOR_NODENAME_MSG,
                 session.nodeExists(SITECONTENT_ROOT_NODE + "/contents/nodenameSplit/i/indigo"));
     }
 
@@ -411,14 +396,14 @@ public class AutoSplittingTest {
     }
 
     private static void createEvent(JCRNodeWrapper node,
-            final String eventType, String location, Date date, int i)
+            final String eventType, String location, LocalDateTime date, int i)
             throws RepositoryException {
         final String name = eventType + i;
         final JCRNodeWrapper event = node.addNode(name, "jnt:event");
         event.setProperty("jcr:title", name);
         event.setProperty("eventsType", eventType);
         event.setProperty("location", location);
-        event.setProperty("startDate", DateUtils.toCalendar(date));
+        event.setProperty("startDate", GregorianCalendar.from(ZonedDateTime.of(date, ZoneId.systemDefault())));
     }
 
     private static void createText(JCRNodeWrapper node, final String name) throws RepositoryException {

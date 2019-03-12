@@ -662,6 +662,7 @@ public class RenderService implements InitializingBean {
                     }
                 } catch (InterruptedException e) {
                     logger.error(e.getMessage(), e);
+                    Thread.currentThread().interrupt();
                 }
             } else {
                 templatesCache.acquireReadLockOnKey(key);
@@ -685,6 +686,7 @@ public class RenderService implements InitializingBean {
                     }
                 } catch (InterruptedException e) {
                     logger.error(e.getMessage(), e);
+                    Thread.currentThread().interrupt();
                 }
             } else {
                 templatesCache.acquireWriteLockOnKey(key);

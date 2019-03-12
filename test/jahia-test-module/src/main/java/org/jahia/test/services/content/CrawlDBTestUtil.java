@@ -131,17 +131,15 @@ public class CrawlDBTestUtil {
      */
     public static void generateSeedList(FileSystem fs, Path urlPath,
             List<String> contents) throws IOException {
-        FSDataOutputStream out;
         Path file = new Path(urlPath, "urls.txt");
         fs.mkdirs(urlPath);
-        out = fs.create(file);
-        Iterator<String> iterator = contents.iterator();
-        while (iterator.hasNext()) {
-            String url = iterator.next();
-            out.writeBytes(url);
-            out.writeBytes("\n");
+        try (FSDataOutputStream out = fs.create(file)) {
+            Iterator<String> iterator = contents.iterator();
+            while (iterator.hasNext()) {
+                String url = iterator.next();
+                out.writeBytes(url);
+                out.writeBytes("\n");
+            }
         }
-        out.flush();
-        out.close();
     }
 }

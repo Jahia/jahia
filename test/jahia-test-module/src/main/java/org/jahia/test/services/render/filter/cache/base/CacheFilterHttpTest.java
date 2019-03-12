@@ -84,6 +84,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.SecureRandom;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -105,8 +106,10 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     private static boolean cacheFilterDisabled;
     private static boolean aggregateFilterDisabled;
     private static boolean aggregateCacheFilterDisabled;
-    private static boolean areaResourceCacheKeyPartGeneratorDisabled;    
-
+    private static boolean areaResourceCacheKeyPartGeneratorDisabled;
+    
+    Random random = new SecureRandom();
+    
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
 
@@ -496,10 +499,9 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     }
 
     public List<String> randomizeFlush(List<String> l, int number) {
-        Random r = new Random();
         List<String> toFlush = new ArrayList<String>();
         for (int i = 0; i < number; i++) {
-            String s = l.get(r.nextInt(l.size()));
+            String s = l.get(random.nextInt(l.size()));
             toFlush.add(s);
             ModuleCacheProvider.getInstance().getCache().remove(s);
         }

@@ -54,6 +54,7 @@ import org.jahia.test.TestHelper;
 import org.junit.*;
 import org.slf4j.Logger;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -318,19 +319,19 @@ public class VanityUrlMapperTest {
                 HttpServletRequest.class.getClassLoader(),
                 new Class[] { HttpServletRequest.class },
                 new InvocationHandler() {
-                    Map<String, Object> attributes = new HashMap<String, Object>();
+                    Map<String, Object> attributes = new HashMap<>();
 
                     @Override
                     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                         if (method.getName().equals("setAttribute")) {
                             attributes.put((String) args[0], args[1]);
-                        } if (method.getName().equals("getAttribute")) {
+                        } else if (method.getName().equals("getAttribute")) {
                             return attributes.get(args[0]);
-                        } if (method.getName().equals("getParameterMap")) {
+                        } else if (method.getName().equals("getParameterMap")) {
                             return new HashMap<String, String[]>();
-                        } if (method.getName().equals("getContextPath")) {
+                        } else if (method.getName().equals("getContextPath")) {
                             return "";
-                        } if (method.getName().equals("getServerName")) {
+                        } else if (method.getName().equals("getServerName")) {
                             return servername;
                         }
                         return null;
@@ -369,7 +370,7 @@ public class VanityUrlMapperTest {
         });
     }
 
-    private static JCRNodeWrapper createPage(JCRSiteNode site, String pageName) throws Exception {
+    private static JCRNodeWrapper createPage(JCRSiteNode site, String pageName) throws RepositoryException {
         JCRNodeWrapper page = site.getNode("home").addNode(pageName, "jnt:page");
         page.setProperty("j:templateName", "simple");
         page.setProperty("jcr:title", pageName);

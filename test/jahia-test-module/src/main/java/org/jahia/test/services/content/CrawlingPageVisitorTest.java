@@ -61,6 +61,7 @@ import org.apache.nutch.fetcher.Fetcher;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.osgi.BundleResource;
 import org.jahia.registries.ServicesRegistry;
@@ -135,7 +136,7 @@ public class CrawlingPageVisitorTest extends JahiaTestCase {
 
     private Log4jEventCollectorWrapper logEventCollector;
 
-    private static void extract(JahiaTemplatesPackage p, org.springframework.core.io.Resource r, File f) throws Exception {
+    private static void extract(JahiaTemplatesPackage p, org.springframework.core.io.Resource r, File f) throws IOException{
         if ((r instanceof BundleResource && r.contentLength() == 0) || (!(r instanceof BundleResource) && r.getFile().isDirectory())) {
             f.mkdirs();
             String path = r.getURI().getPath();
@@ -143,18 +144,14 @@ public class CrawlingPageVisitorTest extends JahiaTestCase {
                 extract(p, resource, new File(f, resource.getFilename()));
             }
         } else {
-            FileOutputStream output = null;
-            try {
-                output = new FileOutputStream(f);
+            try (FileOutputStream output = new FileOutputStream(f)) {
                 IOUtils.copy(r.getInputStream(), output);
-            } finally {
-                IOUtils.closeQuietly(output);
             }
         }
     }
 
     @BeforeClass
-    public static void oneTimeSetUp() throws Exception {
+    public static void oneTimeSetUp() throws RepositoryException, IOException, JahiaException {
 
         // This is added to allow this parallel crawling for different jahia versions (see crawl-tests.xml)
         System.setProperty("crawl.jahia.version", Jahia.VERSION);
@@ -251,7 +248,7 @@ public class CrawlingPageVisitorTest extends JahiaTestCase {
 
     private List<String> getBaseUrls(String workspace, String sitePath) throws RepositoryException {
 
-        List<String> urls = new ArrayList<String>();
+        List<String> urls = new ArrayList<>();
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace,
                 LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE));
 
@@ -268,14 +265,14 @@ public class CrawlingPageVisitorTest extends JahiaTestCase {
                 homeNode = session.getRootNode().getNode(sitePath + "/home");
             }
         }
-
-        Resource resource = new Resource(homeNode, "html", null, Resource.CONFIGURATION_PAGE);
-        renderCtx.setMainResource(resource);
-        renderCtx.setSite(homeNode.getResolveSite());
-        URLGenerator urlgenerator = new URLGenerator(renderCtx, resource);
-        urls.add(urlgenerator.getServer() + urlgenerator.getContext()
-                + (Constants.LIVE_WORKSPACE.equals(workspace) ? urlgenerator.getLive() : urlgenerator.getEdit()));
-
+        if (homeNode != null) {
+            Resource resource = new Resource(homeNode, "html", null, Resource.CONFIGURATION_PAGE);
+            renderCtx.setMainResource(resource);
+            renderCtx.setSite(homeNode.getResolveSite());
+            URLGenerator urlgenerator = new URLGenerator(renderCtx, resource);
+            urls.add(urlgenerator.getServer() + urlgenerator.getContext()
+                    + (Constants.LIVE_WORKSPACE.equals(workspace) ? urlgenerator.getLive() : urlgenerator.getEdit()));
+        }
         return urls;
     }
 

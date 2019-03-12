@@ -104,12 +104,15 @@ public class TestHelper {
     public static final String BOOTSTRAP_ACME_SPACE_TEMPLATES = "bootstrap-acme-space-templates";
     public static final String DX_BASE_DEMO_TEMPLATES = "dx-base-demo-templates";
 
+    private TestHelper() {
+        throw new IllegalStateException("Utility class");
+      }
 
-    public static JahiaSite createSite(SiteCreationInfo info) throws Exception {
+    public static JahiaSite createSite(SiteCreationInfo info) throws JahiaException, IOException {
         return createSite(info, null, null);
     }
 
-    public static JahiaSite createSite(SiteCreationInfo info, String prepackedZIPFile, String siteZIPName) throws Exception {
+    public static JahiaSite createSite(SiteCreationInfo info, String prepackedZIPFile, String siteZIPName) throws JahiaException, IOException {
         populateDefaults(info);
 
         deleteSiteIfPresent(info.getSiteKey());
@@ -196,12 +199,11 @@ public class TestHelper {
 
     private static List<String> readInstalledModules(File siteZipFile) throws IOException {
         List<String> modules = new LinkedList<>();
-        ZipEntry z;
-
         ZipInputStream zis2 = siteZipFile.isDirectory() ? new DirectoryZipInputStream(siteZipFile)
                         : new NoCloseZipInputStream(new BufferedInputStream(
                                         new FileInputStream(siteZipFile)));
         try {
+            ZipEntry z;
             while ((z = zis2.getNextEntry()) != null) {
                 try {
                     if (!ImportExportBaseService.SITE_PROPERTIES.equals(z.getName())) {
@@ -263,15 +265,15 @@ public class TestHelper {
         }
     }
 
-    public static JahiaSite createSite(String name) throws Exception {
+    public static JahiaSite createSite(String name) throws JahiaException, IOException {
         return createSite(SiteCreationInfo.builder().siteKey(name).build());
     }
 
-    public static JahiaSite createSite(String name, String templateSet) throws Exception {
+    public static JahiaSite createSite(String name, String templateSet) throws JahiaException, IOException {
         return createSite(SiteCreationInfo.builder().siteKey(name).templateSet(templateSet).build());
     }
 
-    public static JahiaSite createSite(String name, Set<String> languages, Set<String> mandatoryLanguages, boolean mixLanguagesActive) throws Exception {
+    public static JahiaSite createSite(String name, Set<String> languages, Set<String> mandatoryLanguages, boolean mixLanguagesActive) throws RepositoryException, JahiaException, IOException {
         createSite(name);
         final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
         JCRSiteNode site = (JCRSiteNode) session.getNode("/sites/" + name);
@@ -288,37 +290,37 @@ public class TestHelper {
         return site;
     }
 
-    public static JahiaSite createSite(String name, String serverName, String templateSet, String[] modulesToDeploy) throws Exception {
+    public static JahiaSite createSite(String name, String serverName, String templateSet, String[] modulesToDeploy) throws JahiaException, IOException {
         return createSite(name, serverName, templateSet, null, null,modulesToDeploy);
     }
 
-    public static JahiaSite createSite(String name, String serverName, String templateSet) throws Exception {
+    public static JahiaSite createSite(String name, String serverName, String templateSet) throws JahiaException, IOException {
         return createSite(name, serverName, templateSet, null, null,null);
     }
 
     public static JahiaSite createSite(String name, String serverName, String templateSet, String prepackedZIPFile,
-            String siteZIPName, String[] modulesToDeploy) throws Exception {
+            String siteZIPName, String[] modulesToDeploy) throws JahiaException, IOException {
         return createSite(SiteCreationInfo.builder().siteKey(name).serverName(serverName).templateSet(templateSet)
                 .modulesToDeploy(modulesToDeploy).build(), prepackedZIPFile, siteZIPName);
     }
 
     public static JahiaSite createSite(String name, String serverName, String templateSet,
-                                       String prepackedZIPFile, String siteZIPName) throws Exception {
+                                       String prepackedZIPFile, String siteZIPName) throws JahiaException, IOException {
         return createSite(name, serverName, templateSet, prepackedZIPFile, siteZIPName, null);
     }
 
-    public static void deleteSite(String name) throws Exception {
+    public static void deleteSite(String name) throws JahiaException {
         JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
         JahiaSite site = service.getSiteByKey(name);
         if (site != null)
             service.removeSite(site);
     }
 
-    public static int createSubPages(Node currentNode, int level, int nbChildren) throws RepositoryException, LockException, ConstraintViolationException, NoSuchNodeTypeException, ItemExistsException, VersionException {
+    public static int createSubPages(Node currentNode, int level, int nbChildren) throws RepositoryException {
        return createSubPages(currentNode, level, nbChildren, null);
     }
     
-    public static int createSubPages(Node currentNode, int level, int nbChildren, String titlePrefix) throws RepositoryException, LockException, ConstraintViolationException, NoSuchNodeTypeException, ItemExistsException, VersionException {
+    public static int createSubPages(Node currentNode, int level, int nbChildren, String titlePrefix) throws RepositoryException {
         int pagesCreated = 0;
         if (!currentNode.isCheckedOut()) {
             currentNode.getSession().getWorkspace().getVersionManager().checkout(currentNode.getPath());
@@ -349,7 +351,7 @@ public class TestHelper {
      * @throws ItemExistsException
      * @throws VersionException
      */
-    public static JCRNodeWrapper createList(JCRNodeWrapper parentNode, String listName, int elementCount, String textPrefix) throws RepositoryException, LockException, ConstraintViolationException, NoSuchNodeTypeException, ItemExistsException, VersionException {
+    public static JCRNodeWrapper createList(JCRNodeWrapper parentNode, String listName, int elementCount, String textPrefix) throws RepositoryException {
         JCRNodeWrapper contentList = parentNode.addNode(listName, "jnt:contentList");
 
         for (int i = 0; i < elementCount; i++) {
@@ -409,7 +411,7 @@ public class TestHelper {
                 }
                 count++;
                 if (stepMillis * count > maxWaitMillis) {
-                    logger.warn("Reached timeout of {} ms waitig for job completion. Stop waiting for them.");
+                    logger.warn("Reached timeout of {} ms waitig for job completion. Stop waiting for them.", maxWaitMillis);
                     break;
                 }
                 sleep(stepMillis);
@@ -431,6 +433,7 @@ public class TestHelper {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
+            Thread.currentThread().interrupt();
         }
     }
 }

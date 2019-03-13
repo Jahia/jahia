@@ -50,12 +50,15 @@ import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
+import org.jahia.services.render.RenderContext;
 import org.jahia.services.usermanager.*;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.jbpm.JBPMTaskIdentityService;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.i18n.ResourceBundles;
 import org.kie.api.runtime.process.WorkItem;
@@ -438,6 +441,7 @@ public class JBPMMailProducer {
         if (bindings == null) {
             bindings = getBindings(workItem, session);
         }
+        addStaticClasses(bindings);
         scriptContext.setWriter(new StringWriter());
         scriptContext.setErrorWriter(new StringWriter());
         scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
@@ -448,6 +452,13 @@ public class JBPMMailProducer {
             logger.error("Scripting error : " + error);
         }
         return scriptContext.getWriter().toString().trim();
+    }
+
+    //Add Static Classes whose methods may need to be accessed in the template.
+    protected void addStaticClasses(Bindings bindings) {
+        if (bindings != null) {
+            bindings.put("JCRContentUtils", JCRContentUtils.class);
+        }
     }
 
     protected Bindings getBindings(WorkItem workItem, JCRSessionWrapper session) throws RepositoryException {
@@ -478,8 +489,9 @@ public class JBPMMailProducer {
         bindings.put("submissionDate", Calendar.getInstance());
         bindings.put("locale", locale);
         bindings.put("workspace", vars.get("workspace"));
+        bindings.put("workflow", workflowDefinition);
 
-        List<JCRNodeWrapper> nodes = new LinkedList<JCRNodeWrapper>();
+        List<JCRNodeWrapper> nodes = new LinkedList<>();
         @SuppressWarnings("unchecked") List<String> stringList = (List<String>) vars.get("nodeIds");
         for (String s : stringList) {
             JCRNodeWrapper nodeByUUID = session.getNodeByUUID(s);
@@ -488,6 +500,21 @@ public class JBPMMailProducer {
             }
         }
         bindings.put("nodes", nodes);
+
+        //Setup server and site related bindings
+        if (!nodes.isEmpty()) {
+            JCRSiteNode siteNode = nodes.get(0).getResolveSite();
+            final int siteURLPortOverride = SettingsBean.getInstance().getSiteURLPortOverride();
+            String servername = "http" + (siteURLPortOverride == 443 ? "s" : "") + "://" + siteNode.getServerName() +
+                    ((siteURLPortOverride != 0 && siteURLPortOverride != 80 && siteURLPortOverride != 443) ?
+                            ":" + siteURLPortOverride : "");
+            bindings.put("site", siteNode);
+            bindings.put("servername", servername);
+            bindings.put("previewPrefix",  String.format("%s/cms/render/%s/%s", servername, Constants.EDIT_WORKSPACE, locale));
+            bindings.put("editPrefix", String.format("%s/cms/edit/%s/%s", servername, Constants.EDIT_WORKSPACE, locale));
+            bindings.put("cmmPrefix", String.format("%s/cms/contentmanager/%s/%s", servername, siteNode.getSiteKey(), locale));
+            bindings.put("renderContext", new RenderContext(null, null, JCRSessionFactory.getInstance().getCurrentUser()));
+        }
         return bindings;
     }
 

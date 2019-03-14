@@ -63,38 +63,16 @@ import java.util.*;
  */
 @SuppressWarnings("serial")
 public class PublishActionItem extends NodeTypeAwareBaseActionItem {
-
-    /**
-     * Returns <code>true</code> if the selected item (single-selection case) is locked by the marked for deletion operation on its parent.
-     * In a multi-selection mode, the condition should be fulfilled for all selected items. If at least one of the selected items is not in
-     * marked for deletion state this method returns false.
-     *
-     * @param selection the current selection context
-     * @return <code>true</code> if the selected item (single-selection case) is locked by the marked for deletion operation on its parent.
-     * In a multi-selection mode, the condition should be fulfilled for all selected items. If at least one of the selected items is
-     * not in marked for deletion state this method returns false.
-     */
-    public static boolean isChildOfMarkedForDeletion(LinkerSelectionContext selection) {
-        if (selection.getMultipleSelection().size() == 0) {
-            return false;
-        }
-
-        boolean markedForDeletion = false;
-        for (GWTJahiaNode node : selection.getMultipleSelection()) {
-            markedForDeletion = node.isMarkedForDeletion()
-                    && !node.isMarkedForDeletionRoot();
-            if (!markedForDeletion) {
-                break;
-            }
-        }
-
-        return markedForDeletion;
-    }
-
-    protected transient String workflowType = "publish";
-    protected transient boolean checkForUnpublication = false;
+    private boolean checkForUnpublication = false;
     protected boolean allSubTree = false;
     protected boolean allLanguages = false;
+
+    @Override
+    public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
+        super.init(gwtToolbarItem, linker);
+        this.getGwtToolbarItem().setHideWhenDisabled(true);
+        setEnabled(false);
+    }
 
     @Override
     public void handleNewLinkerSelection() {
@@ -102,84 +80,85 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
         this.getGwtToolbarItem().setHideWhenDisabled(true);
         LinkerSelectionContext ctx = linker.getSelectionContext();
         boolean hasOnlyOneLanguage = JahiaGWTParameters.getSiteLanguages().size() == 1;
+        GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
+
         if (allLanguages) {
             if (hasOnlyOneLanguage) {
                 setEnabled(false);
                 return;
             }
             if (ctx.getMultipleSelection() != null && ctx.getMultipleSelection().size() > 1) {
-                if (!isChildOfMarkedForDeletion(ctx) && hasPermission(ctx.getSelectionPermissions())
+                if (isNotChildOfMarkedForDeletion(ctx)
+                        && hasPermission(ctx.getSelectionPermissions())
                         && supportPublication(ctx.getMultipleSelection())
                         && isNodeTypeAllowed(ctx.getMultipleSelection())) {
                     setEnabled(true);
                     if (allSubTree) {
                         updateTitle(Messages.get("label.publish.all.selected.items.all.languages", "Publish all under selected items in all languages"));
                     } else {
-                        updateTitle(Messages.get("label.publish.selected.items.all.languages", "Publish all selected items in all languages"));
+                        updateTitle(Messages.get(
+                                checkForUnpublication ? "label.unPublish.selected.items.all.languages" : "label.publish.selected.items.all.languages",
+                                checkForUnpublication ? "Unpublish all selected items in all languages" : "Publish all selected items in all languages")
+                        );
                     }
                 }
             } else {
-                GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
                 if (isWorkInProgress(gwtJahiaNode)) {
                     setEnabled(false);
                 } else if (gwtJahiaNode != null) {
                     String title;
                     if (allSubTree) {
-                        title = Messages.getWithArgs("label.publishall.all.languages", "Publish all under {0} in all languages", new String[] {gwtJahiaNode.getDisplayName()});
+                        title = Messages.getWithArgs("label.publishall.all.languages", "Publish all under {0} in all languages", new String[]{gwtJahiaNode.getDisplayName()});
                     } else {
-                        title = Messages.getWithArgs("label.publish.languages", "Publish {0} in all languages", new String[] {gwtJahiaNode.getDisplayName()});
+                        title = Messages.getWithArgs(
+                                checkForUnpublication ? "label.unPublish.languages" : "label.publish.languages",
+                                checkForUnpublication ? "Unpublish {0} in all languages" : "Publish {0} in all languages",
+                                new String[]{gwtJahiaNode.getDisplayName()}
+                        );
                     }
                     updateItem(ctx, gwtJahiaNode, title);
                 }
             }
         } else if (allSubTree) {
-            if (ctx.getMultipleSelection() != null
-                    && ctx.getMultipleSelection().size() > 1) {
-                if (!isChildOfMarkedForDeletion(ctx) && hasPermission(ctx.getSelectionPermissions())
+            if (ctx.getMultipleSelection() != null && ctx.getMultipleSelection().size() > 1) {
+                if (isNotChildOfMarkedForDeletion(ctx)
+                        && hasPermission(ctx.getSelectionPermissions())
                         && supportPublication(ctx.getMultipleSelection())
                         && isNodeTypeAllowed(ctx.getMultipleSelection())) {
                     setEnabled(true);
                     updateTitle(Messages.get("label.publish.all.selected.items"));
                 }
             } else {
-                GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
                 if (isWorkInProgress(gwtJahiaNode)) {
                     setEnabled(false);
                 } else if (gwtJahiaNode != null) {
-                    String title = Messages.get("label.publishall") + " " + gwtJahiaNode.getDisplayName() +
-                            " - " + JahiaGWTParameters.getLanguageDisplayName();
+                    String title = Messages.get("label.publishall") + " " + gwtJahiaNode.getDisplayName() + " - " + JahiaGWTParameters.getLanguageDisplayName();
                     updateItem(ctx, gwtJahiaNode, title);
                 }
             }
         } else {
-            if (ctx.getMultipleSelection() != null
-                    && ctx.getMultipleSelection().size() > 1) {
-                if (!isChildOfMarkedForDeletion(ctx) && hasPermission(ctx.getSelectionPermissions())
+            if (ctx.getMultipleSelection() != null && ctx.getMultipleSelection().size() > 1) {
+                if (isNotChildOfMarkedForDeletion(ctx)
+                        && hasPermission(ctx.getSelectionPermissions())
                         && supportPublication(ctx.getMultipleSelection())
                         && isNodeTypeAllowed(ctx.getMultipleSelection())) {
                     setEnabled(true);
                     updateTitle(getGwtToolbarItem().getTitle());
                 }
             } else {
-                GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
                 if (isWorkInProgress(gwtJahiaNode)) {
                     setEnabled(false);
-                } else if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx)
+                } else if (gwtJahiaNode != null
+                        && isNotChildOfMarkedForDeletion(ctx)
                         && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication"))
                         && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
                     setEnabled(true);
 
-                    if (checkForUnpublication) {
-                        GWTJahiaPublicationInfo publicationInfo = gwtJahiaNode.getAggregatedPublicationInfo() != null ? gwtJahiaNode
-                                .getAggregatedPublicationInfo() : gwtJahiaNode.getQuickPublicationInfo();
-                        if (publicationInfo != null && !publicationInfo.isUnpublishable()) {
-                            setEnabled(false);
-                        }
-                    } else if (gwtJahiaNode.getAggregatedPublicationInfo() != null) {
+                    if (!checkForUnpublication && gwtJahiaNode.getAggregatedPublicationInfo() != null) {
                         GWTJahiaPublicationInfo info = gwtJahiaNode.getAggregatedPublicationInfo();
                         GWTJahiaWorkflowDefinition def = null;
                         if (gwtJahiaNode.getWorkflowInfo() != null) {
-                            def = gwtJahiaNode.getWorkflowInfo().getPossibleWorkflows().get(new GWTJahiaWorkflowType(workflowType));
+                            def = gwtJahiaNode.getWorkflowInfo().getPossibleWorkflows().get(new GWTJahiaWorkflowType("publish"));
                         }
 
                         setEnabled(info.isPublishable() && (def != null || info.isAllowedToPublishWithoutWorkflow()));
@@ -188,30 +167,32 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                     if (gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {
                         updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName());
                     } else {
-                        updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() +
-                                " - " + JahiaGWTParameters.getLanguageDisplayName());
+                        updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() + " - " + JahiaGWTParameters.getLanguageDisplayName());
                     }
                 }
             }
         }
-    }
 
-    protected boolean isWorkInProgress(GWTJahiaNode gwtJahiaNode) {
-        return gwtJahiaNode != null && !gwtJahiaNode.isMarkedForDeletion()
-                && gwtJahiaNode.isInWorkInProgress(JahiaGWTParameters.getLanguage());
-    }
-
-    /**
-     * Init the action item.
-     *
-     * @param gwtToolbarItem
-     * @param linker
-     */
-    @Override
-    public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
-        super.init(gwtToolbarItem, linker);
-        this.getGwtToolbarItem().setHideWhenDisabled(true);
-        setEnabled(false);
+        if (checkForUnpublication) {
+            if (ctx.getMultipleSelection() != null && ctx.getMultipleSelection().size() > 1) {
+                for (GWTJahiaNode node : ctx.getMultipleSelection()) {
+                    GWTJahiaPublicationInfo publicationInfo = node.getAggregatedPublicationInfo() != null
+                            ? node.getAggregatedPublicationInfo()
+                            : node.getQuickPublicationInfo();
+                    if (publicationInfo != null && !publicationInfo.isUnpublishable()) {
+                        setEnabled(false);
+                        break;
+                    }
+                }
+            } else if (gwtJahiaNode != null) {
+                GWTJahiaPublicationInfo publicationInfo = gwtJahiaNode.getAggregatedPublicationInfo() != null
+                        ? gwtJahiaNode.getAggregatedPublicationInfo()
+                        : gwtJahiaNode.getQuickPublicationInfo();
+                if (publicationInfo != null && !publicationInfo.isUnpublishable()) {
+                    setEnabled(false);
+                }
+            }
+        }
     }
 
     @Override
@@ -232,10 +213,14 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
         }
     }
 
-
+    /**
+     * @param checkForUnpublication true if this item is unpublication action
+     */
+    public void setCheckForUnpublication(boolean checkForUnpublication) {
+        this.checkForUnpublication = checkForUnpublication;
+    }
 
     /**
-     *
      * @param allSubTree true if this item should publish all subtree of selected elements
      */
     public void setAllSubTree(boolean allSubTree) {
@@ -243,7 +228,6 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
     }
 
     /**
-     *
      * @param allLanguages true if this item should publish selected items in all languages
      */
     public void setAllLanguages(boolean allLanguages) {
@@ -251,7 +235,7 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
     }
 
     private void updateItem(LinkerSelectionContext ctx, GWTJahiaNode gwtJahiaNode, String title) {
-        if (!isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
+        if (isNotChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
             setEnabled(true);
             updateTitle(title);
         }
@@ -264,5 +248,35 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
             }
         }
         return true;
+    }
+
+    /**
+     * This method used to check if selected item isNotChildOfMarkedForDeletion
+     *
+     * @param selection the current selection context
+     * @return <code>false</code> if the selected item (single-selection case) is locked by the marked for deletion operation on its parent.
+     * In a multi-selection mode, the condition should be fulfilled for all selected items. If at least one of the selected items is
+     * not in marked for deletion state this method returns <code>true</code>.
+     */
+    private boolean isNotChildOfMarkedForDeletion(LinkerSelectionContext selection) {
+        if (selection.getMultipleSelection().size() == 0) {
+            return true;
+        }
+
+        boolean markedForDeletion = false;
+        for (GWTJahiaNode node : selection.getMultipleSelection()) {
+            markedForDeletion = node.isMarkedForDeletion() && !node.isMarkedForDeletionRoot();
+            if (!markedForDeletion) {
+                break;
+            }
+        }
+
+        return !markedForDeletion;
+    }
+
+    private boolean isWorkInProgress(GWTJahiaNode gwtJahiaNode) {
+        return gwtJahiaNode != null
+                && !gwtJahiaNode.isMarkedForDeletion()
+                && gwtJahiaNode.isInWorkInProgress(JahiaGWTParameters.getLanguage());
     }
 }

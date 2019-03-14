@@ -104,7 +104,8 @@
 
     <bean id="Toolbar.Item.UnpublishFileOnly" parent="Toolbar.Item.Unpublish" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UnpublishActionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
+                <property name="checkForUnpublication" value="true"/>
                 <property name="allowedNodeTypes">
                     <list>
                         <value>nt:file</value>
@@ -124,7 +125,8 @@
 
     <bean id="Toolbar.Item.UnpublishNonFiles" parent="Toolbar.Item.UnpublishFileOnly" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UnpublishActionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
+                <property name="checkForUnpublication" value="true"/>
                 <property name="forbiddenNodeTypes">
                     <list>
                         <value>nt:file</value>

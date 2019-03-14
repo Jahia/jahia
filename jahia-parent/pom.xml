@@ -109,6 +109,7 @@
         <launch4j.version>3.4</launch4j.version>
         <log4j.version>1.2.17</log4j.version>
         <jahia.tomcat.version>8.0.47</jahia.tomcat.version>
+        <quartz.version>1.8.6</quartz.version>
 
         <driver.derby.version>10.12.1.1</driver.derby.version>
         <driver.mssql.version>4.2.6420.100</driver.mssql.version>

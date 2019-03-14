@@ -2588,6 +2588,9 @@ div[role="combobox"].toolbar-itemsgroup-languageswitcher {
 				box-shadow: 0 13px 3px 1px rgba(49, 49, 49, 0.3) !important;
 			}
 
+            body[data-sitesettings="true"][data-V2="true"] & {
+              height: calc(100vh - 24px) !important;
+            }
         }
 
 		body[data-sitesettings="true"] .x-viewport-editmode & {

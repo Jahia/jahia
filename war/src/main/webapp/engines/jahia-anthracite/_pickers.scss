@@ -480,7 +480,6 @@ body[indigo-dragging-panel="true"] {
 	.x-grid3-td-name,
 	.x-grid3-td-displayName {
 		pointer-events: none!important;
-		width: 68%!important
 	}
 
 	.x-grid3-td-primaryTypeLabel {
@@ -3627,4 +3626,45 @@ body[indigo-dragging-panel="true"] {
 			}
 		}
 	}
+}
+
+
+/* OVERRIDE CSS THAT WAS HIDING HEADERS IN PICKER TABLES
+ 	HAD TO TREAT MODIFICATIONS IN THIS WAY/PLACE SO AS NOT TO AFFECT OTHER TABLES
+	AND MANAGER PICKERS */
+#JahiaGxtContentPickerWindow,
+#contentpicker,
+#JahiaGxtContentPicker,
+#JahiaGxtCustomContentPicker {
+
+	#JahiaGxtManagerTobTable {
+		.x-grid-panel {
+			> div {
+				&:last-child {
+					pointer-events: none!important;
+				}
+			}
+		}
+		.x-grid3-viewport {
+			> .x-grid3-header {
+				width: 100%;
+				display: block;
+
+				.x-grid3-header-inner {}
+					width: 100%;
+				    padding-left: 15px;
+				    box-sizing: border-box;
+			}
+		}
+	}
+
+	.x-grid3-header {
+		display: table-cell;
+		border-color: transparent;
+	}
+
+	.x-grid3-td-name {
+		pointer-events: all!important;
+	}
+
 }

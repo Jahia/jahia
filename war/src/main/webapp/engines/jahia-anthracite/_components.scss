@@ -556,6 +556,17 @@
 		    color: rgba(_property($MENU-OPENED--COLOR, $APP), .6)!important;
 			background: _property($MENU-OPENED--BG, $APP)!important;
 		}
+
+		// Menu icons
+		.x-menu-list-item .x-menu-item.toolbar-item-grid-view-sort-asc {
+			background-image: url(./images/icons/context-menu/sort-alpha-asc.png);
+		}
+		.x-menu-list-item .x-menu-item.toolbar-item-grid-view-sort-desc {
+			background-image: url(./images/icons/context-menu/sort-alpha-desc.png);
+		}
+		.x-menu-list-item .x-menu-item.toolbar-item-grouping-view-group-by {
+			background-image: url(./images/icons/context-menu/make-group.png);
+		}
 	}
 }
 

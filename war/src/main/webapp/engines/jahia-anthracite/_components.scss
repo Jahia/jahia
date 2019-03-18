@@ -556,6 +556,17 @@
 		    color: rgba(_property($MENU-OPENED--COLOR, $APP), .6)!important;
 			background: _property($MENU-OPENED--BG, $APP)!important;
 		}
+
+		// Menu icons
+		.x-menu-list-item .x-menu-item.toolbar-item-grid-view-sort-asc {
+			background-image: url(./images/icons/context-menu/sort-alpha-asc.png);
+		}
+		.x-menu-list-item .x-menu-item.toolbar-item-grid-view-sort-desc {
+			background-image: url(./images/icons/context-menu/sort-alpha-desc.png);
+		}
+		.x-menu-list-item .x-menu-item.toolbar-item-grouping-view-group-by {
+			background-image: url(./images/icons/context-menu/make-group.png);
+		}
 	}
 }
 
@@ -1846,9 +1857,6 @@ form,
 	}
 }
 
-.x-panel .x-grid3 .x-grid3-row-table .x-grid3-cell.x-grid3-td-displayName {    // make sure selector works everywhere it needs to.
-	width: 100% !important;
-}
 
 .x-panel .x-grid3 .x-grid3-row-table {    // Changed to fix table bug on workflow modal.
 	width: 100% !important;

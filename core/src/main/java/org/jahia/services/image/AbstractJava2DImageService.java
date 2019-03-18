@@ -144,14 +144,15 @@ public abstract class AbstractJava2DImageService extends AbstractImageService {
     public boolean rotateImage(Image image, File outputFile, double degrees) throws IOException {
         BufferedImage originalImage = ((BufferImage) image).getOriginalImage();
 
-        BufferedImage dest = getDestImage(originalImage.getHeight(), originalImage.getWidth(), originalImage);
-        // Paint source image into the destination, scaling as needed
-        Graphics2D graphics2D = getGraphics2D(dest, OperationType.ROTATE);
-
         double angle = Math.toRadians(degrees);
         double sin = Math.abs(Math.sin(angle)), cos = Math.abs(Math.cos(angle));
         int w = originalImage.getWidth(), h = originalImage.getHeight();
         int neww = (int) Math.floor(w * cos + h * sin), newh = (int) Math.floor(h * cos + w * sin);
+
+        BufferedImage dest = getDestImage(neww, newh, originalImage);
+        // Paint source image into the destination, scaling as needed
+        Graphics2D graphics2D = getGraphics2D(dest, OperationType.ROTATE);
+
         graphics2D.translate((neww - w) / 2, (newh - h) / 2);
         graphics2D.rotate(angle, w / (double)2, h / (double)2);
         graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));

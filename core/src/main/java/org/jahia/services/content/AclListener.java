@@ -357,7 +357,8 @@ public class AclListener extends DefaultEventListener {
                         if (p == null) {
                             continue;
                         }
-                        if (priv.isMember(p)) {
+                        Optional<JCRNodeWrapper> matchingObject = priv.getMembers().stream().filter(member -> member.getPath().equals(p.getPath())).findAny();
+                        if (matchingObject.isPresent()) {
                             if (membershipModifiedForGroups.contains(priv.getPath())) {
                                 // In case membership of the privileged group was modified, we must save this change to make it visible
                                 // to the priv.isMember(p) invocation (which uses a different session to access JCR), and check membership

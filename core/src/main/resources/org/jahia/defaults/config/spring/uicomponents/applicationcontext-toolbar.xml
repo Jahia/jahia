@@ -732,7 +732,8 @@
 
     <bean id="Toolbar.Item.UnPublishInAllLanguages" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UnpublishActionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
+                <property name="checkForUnpublication" value="true"/>
                 <property name="allLanguages" value="true"/>
                 <property name="forbiddenNodeTypes">
                     <list>
@@ -793,7 +794,8 @@
     <!-- new edit mode buttons: unpublish -->
     <bean id="Toolbar.Item.Unpublish" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UnpublishActionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
+                <property name="checkForUnpublication" value="true"/>
                 <property name="forbiddenNodeTypes">
                     <list>
                         <value>jnt:virtualsite</value>

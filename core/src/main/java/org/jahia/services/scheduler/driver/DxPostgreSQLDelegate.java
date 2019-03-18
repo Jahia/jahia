@@ -41,60 +41,31 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.client.widget.toolbar.action;
+package org.jahia.services.scheduler.driver;
 
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
-import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
+import org.quartz.impl.jdbcjobstore.PostgreSQLDelegate;
+import org.slf4j.Logger;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
- * User: toto
- * Date: Sep 25, 2009
- * Time: 6:58:58 PM
+ * Quartz StdJDBCDelegate override to order triggers to acquire by START_TIME instead of NEXT_FIRE_TIME
+ * To be able to execute trigger's jobs in the order of creation
  */
-public class UnpublishActionItem extends PublishActionItem {
-    /**
-     * Init the action item.
-     *
-     * @param gwtToolbarItem
-     * @param linker
-     */
-    @Override
-    public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
-        super.init(gwtToolbarItem, linker);
-        allSubTree = false;
-        checkForUnpublication = true;
-        workflowType = "unpublish";
+public class DxPostgreSQLDelegate extends PostgreSQLDelegate {
+    public DxPostgreSQLDelegate(Logger log, String tablePrefix, String instanceId) {
+        super(log, tablePrefix, instanceId);
     }
 
-    protected void callback(List<GWTJahiaPublicationInfo> result) {
-        if (result.isEmpty()) {
-            MessageBox.info(Messages.get("label.unpublish", "Unpublish"), Messages.get("label.publication.nothingToUnpublish", "Nothing to unpublish"), null);
-        } else {
-            PublicationWorkflow.create(result, linker, checkForUnpublication);
-        }
+    public DxPostgreSQLDelegate(Logger log, String tablePrefix, String instanceId, Boolean useProperties) {
+        super(log, tablePrefix, instanceId, useProperties);
     }
 
     @Override
-    public void handleNewLinkerSelection() {
-        super.handleNewLinkerSelection();
-
-        if (allLanguages) {
-            LinkerSelectionContext ctx = linker.getSelectionContext();
-
-            if (ctx.getMultipleSelection() == null || ctx.getMultipleSelection().size() <= 1) {
-                GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
-                if (gwtJahiaNode != null) {
-                    updateTitle(Messages.getWithArgs("label.unPublish.languages", "Unpublish {0} in all languages", new String[]{gwtJahiaNode.getDisplayName()}));
-                }
-            }
-        }
+    public List selectTriggerToAcquire(Connection conn, long noLaterThan, long noEarlierThan)
+            throws SQLException {
+        return StdJDBCDelegateOverride.selectTriggerToAcquire(conn, noLaterThan, noEarlierThan, tablePrefix);
     }
 }

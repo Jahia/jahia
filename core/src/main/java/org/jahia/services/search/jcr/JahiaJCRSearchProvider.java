@@ -275,7 +275,9 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
     private boolean isNodeToSkip(JCRNodeWrapper node, SearchCriteria criteria, Set<String> languages) {
         boolean skipNode = false;
         try {
-            if (typesToHideFromSearchResults.contains(node.getPrimaryNodeTypeName())) {
+            final List<String> nodeTypes = new ArrayList<>(node.getNodeTypes());
+            final boolean toHide = nodeTypes.removeAll(typesToHideFromSearchResults);
+            if (toHide) {
                 return true;
             }
             if (!languages.isEmpty() && isSiteSearch(criteria)

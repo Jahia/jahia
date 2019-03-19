@@ -517,24 +517,37 @@ public class JBPMMailProducer {
             List<JCRNodeWrapper> nodes = new LinkedList<>();
             for (GWTJahiaPublicationInfo publicationInfo : publicationInfoList) {
                 Map<String, Object> node = new HashMap<>();
-                JCRNodeWrapper nodeByUUID = session.getNodeByUUID(publicationInfo.getUuid());
-                //@TODO remove once other templates have been updated.
-                nodes.add(nodeByUUID);
-                //Set site node if it hasn't been set yet.
-                if (siteNode == null) {
-                    siteNode = nodeByUUID.getResolveSite();
+                node.put("status", publicationInfo.getStatus());
+                //For a deleted node populate with information from workflow
+                if (publicationInfo.getStatus() == PublicationInfo.DELETED) {
+                    node.put("path", publicationInfo.getPath());
+                    node.put("type", publicationInfo.getNodetype());
+                    String displayableName = publicationInfo.getTitle();
+                    if (displayableName.length() > 100) {
+                        displayableName = String.format("%s...", displayableName.substring(0, 100));
+                    }
+                    node.put("displayableName", displayableName);
+                    publications.get(getPublicationLabelI18N(publicationInfo.getStatus(), locale)).add(node);
+                } else {
+                    JCRNodeWrapper nodeByUUID = session.getNodeByUUID(publicationInfo.getUuid());
+                    //@TODO remove once other templates have been updated.
+                    nodes.add(nodeByUUID);
+                    //Set site node if it hasn't been set yet.
+                    if (siteNode == null) {
+                        siteNode = nodeByUUID.getResolveSite();
+                    }
+                    node.put("node", nodeByUUID);
+                    node.put("path", publicationInfo.getPath());
+                    node.put("type", publicationInfo.getNodetype());
+                    String displayableName = nodeByUUID.getDisplayableName();
+                    if (displayableName.length() > 100) {
+                        displayableName = String.format("%s...", displayableName.substring(0, 100));
+                    }
+                    node.put("displayableName", displayableName);
+                    node.put("displayablePath", publicationInfo.getMainPath());
+                    //Place node in the related publication status list
+                    publications.get(getPublicationLabelI18N(publicationInfo.getStatus(), locale)).add(node);
                 }
-                node.put("node", nodeByUUID);
-                node.put("path", publicationInfo.getPath());
-                node.put("type", publicationInfo.getNodetype());
-                String displayableName = nodeByUUID.getDisplayableName();
-                if (displayableName.length() > 100) {
-                    displayableName = String.format("%s...", displayableName.substring(0, 100));
-                }
-                node.put("displayableName", displayableName);
-                node.put("displayablePath", publicationInfo.getMainPath());
-                //Place node in the related publication status list
-                publications.get(getPublicationLabelI18N(publicationInfo.getStatus(), locale)).add(node);
             }
             bindings.put("publications", publications);
             //@TODO remove once other templates have been updated.

@@ -79,7 +79,7 @@ public class JCRFileNode extends JCRNodeDecorator {
         } catch (RepositoryException e) {
             logger.debug("could not retrieve jcr:title of " + this.getPath());
         }
-        name = getName();
+        name = getUnescapedName();
         return title != null ? name+" ("+title+")" : name;
     }
 }

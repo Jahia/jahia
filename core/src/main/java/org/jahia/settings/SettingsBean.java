@@ -598,18 +598,25 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
                         "/jahia/batchread.properties");
             }
 
-            if (System.getProperty("jahia.jackrabbit.bundleCacheSize.workspace") == null
-                    && properties.getProperty("jahia.jackrabbit.bundleCacheSize.workspace") != null) {
-                setSystemProperty("jahia.jackrabbit.bundleCacheSize.workspace",
-                        properties.getProperty("jahia.jackrabbit.bundleCacheSize.workspace"));
-            }
-            if (System.getProperty("jahia.jackrabbit.bundleCacheSize.versioning") == null
-                    && properties.getProperty("jahia.jackrabbit.bundleCacheSize.versioning") != null) {
-                setSystemProperty("jahia.jackrabbit.bundleCacheSize.versioning",
-                        properties.getProperty("jahia.jackrabbit.bundleCacheSize.versioning"));
-            }
+            setJackrabbitBundleCacheSize("jahia.jackrabbit.bundleCacheSize.workspace", null);
+
+            // if size for default workspace is not defined explicitly we take the "global" value for workspace, if defined
+            setJackrabbitBundleCacheSize("jahia.jackrabbit.bundleCacheSize.workspace.default",
+                    properties.getProperty("jahia.jackrabbit.bundleCacheSize.workspace"));
+
+            // if size for live workspace is not defined explicitly we take the "global" value for workspace, if defined
+            setJackrabbitBundleCacheSize("jahia.jackrabbit.bundleCacheSize.workspace.live",
+                    properties.getProperty("jahia.jackrabbit.bundleCacheSize.workspace"));
+
+            setJackrabbitBundleCacheSize("jahia.jackrabbit.bundleCacheSize.versioning", null);
         } catch (IOException e) {
             logger.error("Unable to determine JCR repository home", e);
+        }
+    }
+
+    private void setJackrabbitBundleCacheSize(String key, String defaultValue) {
+        if (System.getProperty(key) == null && properties.getProperty(key, defaultValue) != null) {
+            setSystemProperty(key, properties.getProperty(key, defaultValue));
         }
     }
 

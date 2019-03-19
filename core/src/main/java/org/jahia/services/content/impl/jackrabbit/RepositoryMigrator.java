@@ -56,7 +56,6 @@ import org.apache.jackrabbit.core.JahiaRepositoryCopier;
 import org.apache.jackrabbit.core.JahiaRepositoryImpl;
 import org.apache.jackrabbit.core.RepositoryCopier;
 import org.apache.jackrabbit.core.RepositoryImpl;
-import org.apache.jackrabbit.core.config.RepositoryConfig;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.DatabaseUtils;
@@ -275,8 +274,8 @@ public class RepositoryMigrator {
 
     void migrate() {
         try {
-            JahiaRepositoryConfig sourceCfg = performMigrationToDataStoreIfNeeded ? new JahiaRepositoryConfig(
-                    RepositoryConfig.create(configFile.toString(), repoHome.toString())) : null;
+            JahiaRepositoryConfig sourceCfg = performMigrationToDataStoreIfNeeded ? JahiaRepositoryConfig.create(
+                    configFile.toString(), repoHome.toString()) : null;
 
             if (targetConfigFile != null || performMigrationToDataStoreIfNeeded
                     && sourceCfg.getDataStore() == null) {
@@ -309,13 +308,10 @@ public class RepositoryMigrator {
                     File tempConfigFile = createTempConfigFile();
 
                     if (sourceCfg == null) {
-                        sourceCfg = new JahiaRepositoryConfig(RepositoryConfig.create(
-                                configFile.toString(), repoHome.toString()));
+                        sourceCfg = JahiaRepositoryConfig.create(configFile.toString(), repoHome.toString());
                     }
 
-                    JahiaRepositoryConfig targetCfg = new JahiaRepositoryConfig(
-                            RepositoryConfig.create(tempConfigFile.toString(),
-                                    tempRepoHome.toString()));
+                    JahiaRepositoryConfig targetCfg = JahiaRepositoryConfig.create(tempConfigFile.toString(), tempRepoHome.toString());
 
                     performMigration(sourceCfg, targetCfg);
 

@@ -41,7 +41,7 @@
         <property name="repository" ref="jackrabbit"/>
         <property name="mountPoint" value="/"/>
         <property name="webdavPath" value="/repository"/>
-        <property name="groovyPatcher" ref="groovyPatcher" />
+        <property name="patcher" ref="patcher" />
         <!--
         <property name="rmibind" value="jackrabbit"/>
         -->

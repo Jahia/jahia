@@ -60,8 +60,6 @@
 // @author  Alexandre Kraft
 package org.jahia.settings;
 
-import static org.jahia.settings.StartupOptions.*;
-
 import net.htmlparser.jericho.Config;
 import net.htmlparser.jericho.LoggerProvider;
 import org.apache.commons.collections.FastHashMap;
@@ -82,8 +80,7 @@ import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
 import org.jahia.settings.readonlymode.ReadOnlyModeController;
-import org.jahia.tools.patches.GroovyPatcher;
-import org.jahia.tools.patches.SqlPatcher;
+import org.jahia.tools.patches.Patcher;
 import org.jahia.utils.DatabaseUtils;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.PathResolver;
@@ -108,6 +105,7 @@ import java.io.IOException;
 import java.util.*;
 
 import static org.jahia.bin.listeners.JahiaContextLoaderListener.setSystemProperty;
+import static org.jahia.settings.StartupOptions.*;
 
 public class SettingsBean implements ServletContextAware, InitializingBean, ApplicationContextAware, ReadOnlyModeCapable {
 
@@ -501,8 +499,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             initDatabaseIfNeeded();
 
             if (isProcessingServer()) {
-                SqlPatcher.apply(getJahiaVarDiskPath(), applicationContext);
-                GroovyPatcher.executeScripts(servletContext, "contextInitializing");
+                Patcher.getInstance().executeScripts("contextInitializing");
             }
         } catch (NullPointerException | NumberFormatException e) {
             logger.error("Properties file is not valid...!", e);

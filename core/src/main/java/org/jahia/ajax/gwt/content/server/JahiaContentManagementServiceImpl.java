@@ -2789,15 +2789,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * Returns a list of node types with name and label populated that are the
      * sub-types of the specified base type.
      *
-     * @param baseTypes            the node type name to find sub-types
-     * @param displayStudioElement
+     * @param baseTypes the node type name to find sub-types
      * @return a list of node types with name and label populated that are the
      * sub-types of the specified base type
      */
     @Override
-    public Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getContentTypes(List<String> baseTypes, boolean includeSubTypes, boolean displayStudioElement) throws GWTJahiaServiceException {
+    public List<GWTJahiaNodeType> getContentTypes(List<String> baseTypes, boolean includeSubTypes, boolean displayStudioElement) throws GWTJahiaServiceException {
         enableJcrSessionReadOnlyCache();
-        return contentDefinition.getContentTypes(baseTypes, new HashMap<String, Object>(), getUILocale(), includeSubTypes, displayStudioElement);
+        return contentDefinition.getContentTypesAsList(baseTypes, new HashMap<String, Object>(), getUILocale(), includeSubTypes, displayStudioElement);
     }
 
     /**

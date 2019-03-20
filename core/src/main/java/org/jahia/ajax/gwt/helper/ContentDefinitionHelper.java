@@ -428,8 +428,9 @@ public class ContentDefinitionHelper {
      *
      * @param baseTypes            the node type name to find sub-types
      * @param ctx                  current processing context instance
-     * @param uiLocale
-     * @param displayStudioElement
+     * @param uiLocale             Locale of the UI
+     * @param includeSubTypes      if true, include sub types
+     * @param displayStudioElement if true, add the jmix:studio types.
      * @return a list of node types with name and label populated that are the
      * sub-types of the specified base type or that are allowed to be
      * created in the specified parent node (if the baseType parameter
@@ -504,7 +505,30 @@ public class ContentDefinitionHelper {
         return map;
     }
 
-    private void recurseAdd(ExtendedNodeType req, List<String> baseTypes, Map<String, ExtendedNodeType> contentTypes,
+    /**
+     * Returns a list of node types with name and label populated that are the
+     * sub-types of the specified base type or that are allowed to be created in
+     * the specified parent node (if the baseType parameter is null).
+     *
+     * @param baseTypes            the node type name to find sub-types
+     * @param ctx                  current processing context instance
+     * @param uiLocale
+     * @param displayStudioElement
+     * @return a list of node types with name and label populated that are the
+     * sub-types of the specified base type or that are allowed to be
+     * created in the specified parent node (if the baseType parameter
+     * is null)
+     */
+    public List<GWTJahiaNodeType> getContentTypesAsList(List<String> baseTypes, Map<String, Object> ctx,
+                                                              Locale uiLocale, boolean includeSubTypes, boolean displayStudioElement) {
+        Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> typesAsMap = getContentTypes(baseTypes, ctx, uiLocale, includeSubTypes, displayStudioElement);
+        List<GWTJahiaNodeType> contentTypes = typesAsMap.values().stream().flatMap(List::stream).collect(Collectors.toList());
+        disambiguateLabels(contentTypes);
+        return contentTypes;
+    }
+
+
+        private void recurseAdd(ExtendedNodeType req, List<String> baseTypes, Map<String, ExtendedNodeType> contentTypes,
                             Collection<ExtendedNodeType> result, boolean includeSubTypes) {
         boolean excludeNonDroppable = false;
         if (req.getName().equals("jmix:droppableContent") || contentTypes.keySet().contains(req.getName())) {
@@ -1022,7 +1046,7 @@ public class ContentDefinitionHelper {
     /*
      * Appends its name to a {@link GWTJahiaNodeType}'s label for disambiguation if any sibling has the same one.
      */
-    private static void disambiguateLabels(Collection<GWTJahiaNodeType> nodeTypes) {
+    private static Collection<GWTJahiaNodeType> disambiguateLabels(Collection<GWTJahiaNodeType> nodeTypes) {
         List<GWTJahiaNodeType> ambiguousNodeTypes = nodeTypes
                 .stream()
                 .collect(Collectors.groupingBy(GWTJahiaNodeType::getLabel))
@@ -1035,6 +1059,7 @@ public class ContentDefinitionHelper {
         for (GWTJahiaNodeType nodeType : ambiguousNodeTypes) {
             nodeType.setLabel(nodeType.getLabel() + " (" + nodeType.getName() + ")");
         }
+        return nodeTypes;
     }
 
 }

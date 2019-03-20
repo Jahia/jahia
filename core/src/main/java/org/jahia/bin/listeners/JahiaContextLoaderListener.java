@@ -63,7 +63,7 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
-import org.jahia.tools.patches.GroovyPatcher;
+import org.jahia.tools.patches.Patcher;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -157,10 +157,10 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
 
             // execute patches after the complete initialization
             if (SettingsBean.getInstance().isProcessingServer()) {
-                GroovyPatcher.executeScripts(servletContext, "contextInitialized");
+                Patcher.getInstance().executeScripts("contextInitialized");
             } else {
                 // we leave the possibility to provide Groovy scripts for non-processing servers
-                GroovyPatcher.executeScripts(servletContext, "nonProcessingServer");
+                Patcher.getInstance().executeScripts("nonProcessingServer");
             }
             logger.info("Context initialization phase finished");
         } catch (JahiaException e) {
@@ -216,8 +216,8 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         }
 
         detectPID(servletContext);
-
-        GroovyPatcher.executeScripts(servletContext, "beforeContextInitializing");
+        Patcher.getInstance().setServletContext(servletContext);
+        Patcher.getInstance().executeScripts("beforeContextInitializing");
 
         // initialize VFS file system (solves classloader issue: https://issues.apache.org/jira/browse/VFS-228 )
         try {
@@ -251,7 +251,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
 
             // execute patches after root context initialization
             if (isProcessingServer) {
-                GroovyPatcher.executeScripts(servletContext, "rootContextInitialized");
+                Patcher.getInstance().executeScripts("rootContextInitialized");
             }
 
             // start OSGi container

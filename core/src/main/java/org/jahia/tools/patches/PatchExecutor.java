@@ -43,60 +43,13 @@
  */
 package org.jahia.tools.patches;
 
-import org.jahia.utils.ScriptEngineUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.script.*;
-import java.io.StringWriter;
-
-import static org.jahia.tools.patches.Patcher.FAILED;
-import static org.jahia.tools.patches.Patcher.INSTALLED;
-
 /**
- * Simple patch that executes Groovy scripts
- *
- * @author Sergiy Shyrkov
+ * Interface used to execute patches
  */
-public class GroovyPatcher implements PatchExecutor {
+public interface PatchExecutor {
 
-    private static final Logger logger = LoggerFactory.getLogger(GroovyPatcher.class);
+    boolean canExecute(String name, String lifecyclePhase);
 
-    @Override
-    public boolean canExecute(String name, String lifecyclePhase) {
-        return name.endsWith(lifecyclePhase + ".groovy");
-    }
-
-    public String executeScript(String name, String scriptContent) {
-        try {
-            ScriptEngine engine = getEngine();
-            ScriptContext ctx = new SimpleScriptContext();
-            ctx.setWriter(new StringWriter());
-            Bindings bindings = engine.createBindings();
-            bindings.put("log", new LoggerWrapper(logger, logger.getName(), ctx.getWriter()));
-            ctx.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
-
-            engine.eval(scriptContent, ctx);
-            String result = ((StringWriter) ctx.getWriter()).getBuffer().toString();
-            logger.info(result);
-            return INSTALLED;
-        } catch (ScriptException e) {
-            logger.error("Execution of script failed with error: " + e.getMessage(), e);
-            return FAILED;
-        }
-    }
-
-    protected ScriptEngine getEngine() throws ScriptException {
-        try {
-            return ScriptEngineUtils.getInstance().scriptEngine("groovy");
-        } catch (ScriptException e) {
-            if (e.getMessage() != null
-                    && e.getMessage().startsWith("Script engine not found for extension")) {
-                return null;
-            } else {
-                throw e;
-            }
-        }
-    }
+    String executeScript(String name, String scriptContent);
 
 }

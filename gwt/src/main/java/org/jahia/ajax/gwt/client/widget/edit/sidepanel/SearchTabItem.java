@@ -371,13 +371,11 @@ class SearchTabItem extends SidePanelTabItem {
                 return 0;
             }
         }));
-        JahiaContentManagementService.App.getInstance().getContentTypes(Arrays.asList("jmix:editorialContent", "jnt:portlet"), true, false, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
+        JahiaContentManagementService.App.getInstance().getContentTypes(defaultSearchedTypes, true, false, new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
 
             @Override
-            public void onSuccess(Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> result) {
-                for (GWTJahiaNodeType key : result.keySet()) {
-                    combo.getStore().add(result.get(key));
-                }
+            public void onSuccess(List<GWTJahiaNodeType> result) {
+                combo.getStore().add(result);
                 combo.getStore().sort("label", Style.SortDir.ASC);
             }
 

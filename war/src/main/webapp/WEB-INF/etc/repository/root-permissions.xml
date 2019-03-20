@@ -117,12 +117,15 @@
         <managers jcr:primaryType="jnt:permission">
             <categoryManager jcr:primaryType="jnt:permission"/>
             <repositoryExplorer jcr:primaryType="jnt:permission"/>
-            <editorialContentManager jcr:primaryType="jnt:permission"/>
-            <fileManager jcr:primaryType="jnt:permission"/>
             <portletDefinitionManager jcr:primaryType="jnt:permission"/>
             <portletManager jcr:primaryType="jnt:permission"/>
-            <siteManager jcr:primaryType="jnt:permission"/>
         </managers>
+
+        <legacy-managers jcr:primaryType="jnt:permission">
+            <editorialContentManager jcr:primaryType="jnt:permission"/>
+            <fileManager jcr:primaryType="jnt:permission"/>
+            <siteManager jcr:primaryType="jnt:permission"/>
+        </legacy-managers>
 
         <workflow-tasks jcr:primaryType="jnt:permission"/>
 

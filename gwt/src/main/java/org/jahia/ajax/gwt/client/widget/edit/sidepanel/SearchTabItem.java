@@ -108,6 +108,7 @@ class SearchTabItem extends SidePanelTabItem {
     private transient CalendarField endDateField;
     private transient ComboBox<ModelData> timesField;
     private transient RadioGroup dateTypeField;
+    private List<String> defaultSearchedTypes;
     private String gxtTabId = "JahiaGxtSearchTab";
 
     @Override
@@ -453,7 +454,7 @@ class SearchTabItem extends SidePanelTabItem {
         if (defPicker.getValue() != null) {
             list.add(defPicker.getValue().getName());
         } else {
-            list.add("jmix:editorialContent");
+            list.addAll(defaultSearchedTypes);
         }
         gwtJahiaSearchQuery.setNodeTypes(list);
         return gwtJahiaSearchQuery;
@@ -465,6 +466,21 @@ class SearchTabItem extends SidePanelTabItem {
 
     public void setNumberResults(int numberResults) {
         this.numberResults = numberResults;
+    }
+
+    /**
+     * @return the list of the default searched types
+     */
+    public List<String> getDefaultSearchedTypes() {
+        return defaultSearchedTypes;
+    }
+
+    /**
+     * Set the list of the default searched types
+     * @param defaultSearchedTypes
+     */
+    public void setDefaultSearchedTypes(List<String> defaultSearchedTypes) {
+        this.defaultSearchedTypes = defaultSearchedTypes;
     }
 
     /**

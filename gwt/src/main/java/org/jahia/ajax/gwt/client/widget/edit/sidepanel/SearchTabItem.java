@@ -169,7 +169,10 @@ class SearchTabItem extends SidePanelTabItem {
 
         // lang picker
         langPickerField = createLanguageSelectorField();
-        searchForm.add(langPickerField);
+        // Do not display language when only one lang is set
+        if (JahiaGWTParameters.getSiteLanguages().size() > 1) {
+            searchForm.add(langPickerField);
+        }
 
         defPicker = createNodeSelector();
         searchForm.add(defPicker);

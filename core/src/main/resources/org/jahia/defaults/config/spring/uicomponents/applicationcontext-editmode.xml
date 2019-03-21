@@ -701,7 +701,6 @@
 
     <util:list id="searchTabItemDefaultSearchedTypes">
         <value>jmix:searchable</value>
-        <value>jnt:portlet</value>
     </util:list>
 
     <bean id="sidePanelTab.search" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">

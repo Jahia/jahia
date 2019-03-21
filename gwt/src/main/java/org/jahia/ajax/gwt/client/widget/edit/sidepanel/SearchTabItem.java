@@ -374,7 +374,10 @@ class SearchTabItem extends SidePanelTabItem {
                 return 0;
             }
         }));
-        JahiaContentManagementService.App.getInstance().getContentTypes(defaultSearchedTypes, true, false, new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
+        List<String> searchableTypes = new ArrayList<String>(defaultSearchedTypes);
+        
+        searchableTypes.add("jnt:portlet");
+        JahiaContentManagementService.App.getInstance().getContentTypes(searchableTypes, true, false, new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
 
             @Override
             public void onSuccess(List<GWTJahiaNodeType> result) {

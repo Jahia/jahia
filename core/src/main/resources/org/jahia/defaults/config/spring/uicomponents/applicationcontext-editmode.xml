@@ -699,12 +699,17 @@
         <property name="requiredPermission" value="siteSettingsSelector"/>
     </bean>
 
+    <util:list id="searchTabItemDefaultSearchedTypes">
+        <value>jmix:searchable</value>
+    </util:list>
+
     <bean id="sidePanelTab.search" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="search"/>
         <property name="icon" value="tab-search"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.SearchTabItem">
                 <property name="numberResults" value="20"/>
+                <property name="defaultSearchedTypes" ref="searchTabItemDefaultSearchedTypes"/>
             </bean>
         </property>
         <property name="requiredPermission" value="searchSelector"/>

@@ -64,7 +64,7 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
-import org.jahia.tools.patches.GroovyPatcher;
+import org.jahia.tools.patches.Patcher;
 import org.jahia.utils.LuceneUtils;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
@@ -153,7 +153,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     private final Object syncRepoInit = new Object();
 
-    private GroovyPatcher groovyPatcher;
+    private Patcher patcher;
 
     private boolean registerObservers = true;
 
@@ -314,12 +314,12 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         // do nothing
     }
 
-    public GroovyPatcher getGroovyPatcher() {
-        return groovyPatcher;
+    public Patcher getPatcher() {
+        return patcher;
     }
 
-    public void setGroovyPatcher(GroovyPatcher groovyPatcher) {
-        this.groovyPatcher = groovyPatcher;
+    public void setPatcher(Patcher patcher) {
+        this.patcher = patcher;
     }
 
     public void start() throws JahiaInitializationException {
@@ -352,8 +352,8 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                 initContent();
                 initDynamicMountPoints();
 
-                if (groovyPatcher != null && isProcessingServer) {
-                    groovyPatcher.executeScripts("jcrStoreProviderStarted");
+                if (patcher != null && isProcessingServer) {
+                    patcher.executeScripts("jcrStoreProviderStarted");
                 }
             }
 

@@ -43,71 +43,42 @@
  */
 package org.jahia.tools.patches;
 
-import static org.jahia.tools.patches.GroovyPatcher.rename;
-
-import java.io.IOException;
-
-import org.apache.commons.lang.StringUtils;
 import org.jahia.utils.DatabaseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.Resource;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.sql.SQLException;
+
+import static org.jahia.tools.patches.Patcher.FAILED;
+import static org.jahia.tools.patches.Patcher.INSTALLED;
+import static org.jahia.tools.patches.Patcher.SKIPPED;
 
 /**
  * Utility class for applying SQL-based patches on Jahia startup.
  *
  * @author Sergiy Shyrkov
  */
-public final class SqlPatcher {
-
+public final class SqlPatcher implements PatchExecutor {
     private static final Logger logger = LoggerFactory.getLogger(SqlPatcher.class);
 
-    public static void apply(String varDir, ApplicationContext ctx) {
-        try {
-            new SqlPatcher(varDir, ctx).execute();
-        } catch (IOException e) {
-            logger.error("Error executing SQL patches", e);
-        }
+    @Override
+    public boolean canExecute(String name, String lifecyclePhase) {
+        return name.endsWith(".sql") && lifecyclePhase.equals("contextInitializing");
     }
 
-    private ApplicationContext ctx;
-
-    private String varDir;
-
-    private SqlPatcher(String varDir, ApplicationContext ctx) {
-        super();
-        this.varDir = varDir;
-        this.ctx = ctx;
-    }
-
-    private void execute() throws IOException {
-
-        Resource[] patches = DatabaseUtils.getScripts(varDir + "/patches/sql", ctx);
-        if (patches.length == 0) {
-            logger.debug("No SQL patches to execute were found");
-            return;
+    @Override
+    public String executeScript(String name, String scriptContent) {
+        if (name.contains("/" + DatabaseUtils.getDatabaseType() + "/")) {
+            try {
+                DatabaseUtils.executeScript(new StringReader(scriptContent));
+                return INSTALLED;
+            } catch (SQLException | IOException e) {
+                logger.error("Execution of script failed with error: " + e.getMessage(), e);
+                return FAILED;
+            }
         }
-
-        long timer = System.currentTimeMillis();
-        logger.info("Found {} SQL patches to execute:\n{}", patches.length, StringUtils.join(patches));
-
-        for (Resource r : patches) {
-            execute(r);
-        }
-
-        logger.info("Execution of SQL patches took {} ms", System.currentTimeMillis() - timer);
-    }
-
-    private void execute(Resource resource) {
-        try {
-            logger.info("Executing script {}", resource);
-            DatabaseUtils.executeScript(resource);
-            logger.info("Script {} executed successfully", resource);
-            rename(resource, ".installed");
-        } catch (Exception e) {
-            logger.error("Execution of SQL script " + resource + " failed with error: " + e.getMessage(), e);
-            rename(resource, ".failed");
-        }
+        return SKIPPED;
     }
 }

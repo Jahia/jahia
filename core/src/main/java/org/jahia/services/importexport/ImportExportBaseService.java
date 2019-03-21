@@ -389,7 +389,16 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             }
         }
 
-        result += estimateSubnodesNumber(extraPathsToExport, session, nodeTypesToIgnore, null);
+        // Avoid using all paths within a single query to prevent a stack overflow when number of paths is large.
+        // see https://jira.jahia.org/browse/QA-11510
+        final int maxBatchSize = 100;
+        while (!extraPathsToExport.isEmpty()) {
+            int toIndex = Math.min(extraPathsToExport.size(), maxBatchSize);
+            List<String> paths = extraPathsToExport.subList(0, toIndex);
+            result += estimateSubnodesNumber(paths, session, nodeTypesToIgnore, null);
+            paths.clear();
+        }
+
         return result;
     }
 
@@ -436,6 +445,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         if (locale != null) {
             statement.append(" AND [jcr:language] = '").append(locale).append("'");
+        }
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Executing query: {}", statement);
         }
 
         return queryManagerWrapper.createQuery(statement.toString(), Query.JCR_SQL2).execute().getRows().nextRow().getValue("count").getLong();

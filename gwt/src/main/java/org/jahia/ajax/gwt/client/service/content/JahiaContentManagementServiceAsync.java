@@ -159,7 +159,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void getContentHistory(String nodeIdentifier, int offset, int limit, AsyncCallback<PagingLoadResult<GWTJahiaContentHistoryEntry>> async);
 
-    void getContentTypes(List<String> baseTypes, boolean includeSubTypes, boolean displayStudioElement, AsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>> async);
+    void getContentTypes(List<String> baseTypes, boolean includeSubTypes, boolean displayStudioElement, AsyncCallback<List<GWTJahiaNodeType>> async);
 
     void getContentTypesAsTree(List<String> nodeTypes, List<String> excludedNodeTypes,
                                boolean includeSubTypes, AsyncCallback<List<GWTJahiaNodeType>> async);

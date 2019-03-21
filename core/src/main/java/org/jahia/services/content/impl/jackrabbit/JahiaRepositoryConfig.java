@@ -53,15 +53,43 @@ import org.apache.jackrabbit.core.util.db.ConnectionFactory;
 import org.xml.sax.InputSource;
 
 import javax.jcr.RepositoryException;
+
+import static org.apache.jackrabbit.core.config.RepositoryConfigurationParser.REPOSITORY_HOME_VARIABLE;
+
+import java.io.File;
+import java.net.URI;
 import java.util.Collection;
+import java.util.Properties;
 
 /**
- * User: toto
- * Date: 3/30/11
- * Time: 18:01
+ * DX specific Jackrabbit repository configuration handler.
+ *
+ * @author toto
  */
 public class JahiaRepositoryConfig extends RepositoryConfig {
     private RepositoryConfig config;
+
+    /**
+     * Factory method to instantiate and initialize repository configuration. Uses custom instance of {@link RepositoryConfigurationParser}
+     * for parsing the configuration file that can handle nested value placeholders.
+     *
+     * @param file repository configuration file name
+     * @param home repository home directory
+     * @return repository configuration
+     * @throws ConfigurationException on configuration errors
+     */
+    public static JahiaRepositoryConfig create(String file, String home) throws ConfigurationException {
+        URI uri = new File(file).toURI();
+        Properties variables = new Properties(System.getProperties());
+        variables.setProperty(REPOSITORY_HOME_VARIABLE, home);
+
+        JahiaRepositoryConfigurationParser parser = new JahiaRepositoryConfigurationParser(variables);
+
+        RepositoryConfig config = parser.parseRepositoryConfig(new InputSource(uri.toString()));
+        config.init();
+
+        return new JahiaRepositoryConfig(config);
+    }
 
     public JahiaRepositoryConfig(RepositoryConfig config) {
         super(null,null,null,null,null,null,0,null,null,null,null,null,null,null,null,null);

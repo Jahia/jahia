@@ -49,7 +49,6 @@ import org.apache.jackrabbit.core.JahiaRepositoryImpl;
 import org.apache.jackrabbit.core.cluster.ClusterException;
 import org.apache.jackrabbit.core.cluster.ClusterNode;
 import org.apache.jackrabbit.core.cluster.JahiaClusterNode;
-import org.apache.jackrabbit.core.config.RepositoryConfig;
 import org.jahia.settings.SettingsBean;
 import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
 import org.slf4j.Logger;
@@ -149,8 +148,7 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
      */
     protected JackrabbitRepository createRepository()
             throws RepositoryException, IOException {
-        RepositoryConfig config = RepositoryConfig.create(configFile.getFile().toString(), homeDir.getFile().toString());
-        JahiaRepositoryConfig jahiaConfig = new JahiaRepositoryConfig(config);
+        JahiaRepositoryConfig jahiaConfig = JahiaRepositoryConfig.create(configFile.getFile().toString(), homeDir.getFile().toString());
         useDataStore = jahiaConfig.getDataStore() != null;
         try {
             return JahiaRepositoryImpl.create(jahiaConfig);

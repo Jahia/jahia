@@ -108,6 +108,7 @@ class SearchTabItem extends SidePanelTabItem {
     private transient CalendarField endDateField;
     private transient ComboBox<ModelData> timesField;
     private transient RadioGroup dateTypeField;
+    private List<String> defaultSearchedTypes;
     private String gxtTabId = "JahiaGxtSearchTab";
 
     @Override
@@ -168,7 +169,10 @@ class SearchTabItem extends SidePanelTabItem {
 
         // lang picker
         langPickerField = createLanguageSelectorField();
-        searchForm.add(langPickerField);
+        // Do not display language when only one lang is set
+        if (JahiaGWTParameters.getSiteLanguages().size() > 1) {
+            searchForm.add(langPickerField);
+        }
 
         defPicker = createNodeSelector();
         searchForm.add(defPicker);
@@ -370,13 +374,14 @@ class SearchTabItem extends SidePanelTabItem {
                 return 0;
             }
         }));
-        JahiaContentManagementService.App.getInstance().getContentTypes(Arrays.asList("jmix:editorialContent", "jnt:portlet"), true, false, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
+        List<String> searchableTypes = new ArrayList<String>(defaultSearchedTypes);
+        
+        searchableTypes.add("jnt:portlet");
+        JahiaContentManagementService.App.getInstance().getContentTypes(searchableTypes, true, false, new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
 
             @Override
-            public void onSuccess(Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> result) {
-                for (GWTJahiaNodeType key : result.keySet()) {
-                    combo.getStore().add(result.get(key));
-                }
+            public void onSuccess(List<GWTJahiaNodeType> result) {
+                combo.getStore().add(result);
                 combo.getStore().sort("label", Style.SortDir.ASC);
             }
 
@@ -453,7 +458,7 @@ class SearchTabItem extends SidePanelTabItem {
         if (defPicker.getValue() != null) {
             list.add(defPicker.getValue().getName());
         } else {
-            list.add("jmix:editorialContent");
+            list.addAll(defaultSearchedTypes);
         }
         gwtJahiaSearchQuery.setNodeTypes(list);
         return gwtJahiaSearchQuery;
@@ -465,6 +470,21 @@ class SearchTabItem extends SidePanelTabItem {
 
     public void setNumberResults(int numberResults) {
         this.numberResults = numberResults;
+    }
+
+    /**
+     * @return the list of the default searched types
+     */
+    public List<String> getDefaultSearchedTypes() {
+        return defaultSearchedTypes;
+    }
+
+    /**
+     * Set the list of the default searched types
+     * @param defaultSearchedTypes
+     */
+    public void setDefaultSearchedTypes(List<String> defaultSearchedTypes) {
+        this.defaultSearchedTypes = defaultSearchedTypes;
     }
 
     /**

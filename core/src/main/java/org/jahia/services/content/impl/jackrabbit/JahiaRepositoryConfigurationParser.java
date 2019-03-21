@@ -41,32 +41,45 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.scheduler.driver;
 
-import org.quartz.impl.jdbcjobstore.StdJDBCDelegate;
-import org.slf4j.Logger;
+package org.jahia.services.content.impl.jackrabbit;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
+import java.util.Properties;
+
+import org.apache.jackrabbit.core.config.ConfigurationException;
+import org.apache.jackrabbit.core.config.RepositoryConfigurationParser;
+import org.apache.jackrabbit.core.util.db.ConnectionFactory;
+import org.jahia.utils.PlaceholderUtils;
 
 /**
- * Quartz StdJDBCDelegate override to order triggers to acquire by START_TIME instead of NEXT_FIRE_TIME
- * To be able to execute trigger's jobs in the order of creation
+ * DX specific repository configuration parser that supports nested value placeholders.
+ * 
+ * @author Sergiy Shyrkov
  */
-public class DxStdJDBCDelegate extends StdJDBCDelegate {
+public class JahiaRepositoryConfigurationParser extends RepositoryConfigurationParser {
 
-    public DxStdJDBCDelegate(Logger logger, String tablePrefix, String instanceId) {
-        super(logger, tablePrefix, instanceId);
+    public JahiaRepositoryConfigurationParser(Properties variables) {
+        super(variables);
     }
 
-    public DxStdJDBCDelegate(Logger logger, String tablePrefix, String instanceId, Boolean useProperties) {
-        super(logger, tablePrefix, instanceId, useProperties);
+    public JahiaRepositoryConfigurationParser(Properties variables, ConnectionFactory connectionFactory) {
+        super(variables, connectionFactory);
     }
 
     @Override
-    public List selectTriggerToAcquire(Connection conn, long noLaterThan, long noEarlierThan)
-            throws SQLException {
-        return StdJDBCDelegateOverride.selectTriggerToAcquire(conn, noLaterThan, noEarlierThan, tablePrefix);
+    protected RepositoryConfigurationParser createSubParser(Properties variables) {
+        // overlay the properties
+        Properties props = new Properties(getVariables());
+        props.putAll(variables);
+        return new JahiaRepositoryConfigurationParser(props, connectionFactory);
+    }
+
+    @Override
+    protected String replaceVariables(String value) throws ConfigurationException {
+        try {
+            return PlaceholderUtils.PLACEHOLDER_HELPER_STRICT.replacePlaceholders(value, getVariables());
+        } catch (IllegalArgumentException e) {
+            throw new ConfigurationException(e.getMessage(), e);
+        }
     }
 }

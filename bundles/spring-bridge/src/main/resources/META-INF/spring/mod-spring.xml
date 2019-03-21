@@ -247,6 +247,26 @@
         </bean>
     </osgi:service>
 
+    <osgi:service interface="org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService">
+        <osgi:service-properties>
+            <entry key="Service Description" value="DX ChoiceList initializer service"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="choiceListInitializers"/>
+        </bean>
+    </osgi:service>
+
+    <osgi:service interface="org.jahia.services.content.nodetypes.renderer.ChoiceListRendererService">
+        <osgi:service-properties>
+            <entry key="Service Description" value="DX ChoiceList renderer service"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="choiceListRenderers"/>
+        </bean>
+    </osgi:service>
+
     <osgi:list id="RenderFilterList" interface="org.jahia.services.render.filter.RenderFilter" availability="optional">
         <osgi:listener ref="org.jahia.modules.default.ModuleRegistry" bind-method="osgiBind"
                        unbind-method="osgiUnbind"/>

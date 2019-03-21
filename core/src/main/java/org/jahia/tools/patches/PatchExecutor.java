@@ -41,31 +41,15 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.scheduler.driver;
-
-import org.quartz.impl.jdbcjobstore.PostgreSQLDelegate;
-import org.slf4j.Logger;
-
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
+package org.jahia.tools.patches;
 
 /**
- * Quartz StdJDBCDelegate override to order triggers to acquire by START_TIME instead of NEXT_FIRE_TIME
- * To be able to execute trigger's jobs in the order of creation
+ * Interface used to execute patches
  */
-public class DxPostgreSQLDelegate extends PostgreSQLDelegate {
-    public DxPostgreSQLDelegate(Logger log, String tablePrefix, String instanceId) {
-        super(log, tablePrefix, instanceId);
-    }
+public interface PatchExecutor {
 
-    public DxPostgreSQLDelegate(Logger log, String tablePrefix, String instanceId, Boolean useProperties) {
-        super(log, tablePrefix, instanceId, useProperties);
-    }
+    boolean canExecute(String name, String lifecyclePhase);
 
-    @Override
-    public List selectTriggerToAcquire(Connection conn, long noLaterThan, long noEarlierThan)
-            throws SQLException {
-        return StdJDBCDelegateOverride.selectTriggerToAcquire(conn, noLaterThan, noEarlierThan, tablePrefix);
-    }
+    String executeScript(String name, String scriptContent);
+
 }

@@ -353,6 +353,8 @@
 
     <bean id="groovyPatcher" class="org.jahia.tools.patches.GroovyPatcher"/>
 
+    <bean id="patcher" class="org.jahia.tools.patches.Patcher" factory-method="getInstance"/>
+
     <bean id="TranslationService" class="org.jahia.services.translation.TranslationService"/>
 
     <bean abstract="true" id="abstractTranslationProvider" class="org.jahia.services.translation.AbstractTranslationProvider" init-method="init">

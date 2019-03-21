@@ -50,6 +50,7 @@ import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.storage.client.Storage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
@@ -96,7 +97,7 @@ public class SidePanel extends ContentPanel {
      *
      * @param config the edit mode configuration settings
      */
-    public void initTabs(GWTEditConfiguration config) {
+    public void initTabs(final GWTEditConfiguration config) {
         removeAll();
 
         tabs.clear();
@@ -121,18 +122,24 @@ public class SidePanel extends ContentPanel {
                 }
             }
         });
+
         int selectedTab = 0;
         if (storage != null && storage.getItem(config.getName() + "_selectedTab") != null) {
             selectedTab = Integer.parseInt(storage.getItem(config.getName() + "_selectedTab"));
         }
-
+        final int selectedTabFinal = selectedTab;
+        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+            @Override
+            public void execute() {
+                tabPanel.setSelection(tabPanel.getItem(selectedTabFinal));
+            }
+        });
         for (GWTSidePanelTab tabConfig : config.getTabs()) {
             SidePanelTabItem tabItem = tabConfig.getTabItem();
             tabs.add(tabItem);
 
             tabPanel.add(tabItem.create(tabConfig));
         }
-        tabPanel.setSelection(tabPanel.getItem(selectedTab));
         add(tabPanel);
     }
 

@@ -121,9 +121,8 @@
         <property name="ajaxTemplate" value="/WEB-INF/scripts/ajaxResources.groovy"/>
         <property name="template" value="/WEB-INF/scripts/resources.groovy"/>
 
-        <!-- For backward compatibility we check presence of the 'aggregateAndCompressAssets' first -->
-        <property name="aggregateAssets" value="#{jahiaProperties['aggregateAndCompressAssets'] != null ? jahiaProperties['aggregateAndCompressAssets'] : (jahiaProperties['jahia.staticAssets.aggregate'] != null ? jahiaProperties['jahia.staticAssets.aggregate'] : true)}"/>
-        <property name="compressDuringAggregation" value="#{jahiaProperties['aggregateAndCompressAssets'] != null ? jahiaProperties['aggregateAndCompressAssets'] : (jahiaProperties['jahia.staticAssets.compressDuringAggregation'] != null ? jahiaProperties['jahia.staticAssets.compressDuringAggregation'] : false)}"/>
+        <property name="aggregateAssets" value="${aggregateAssets:true}"/>
+        <property name="compressDuringAggregation" value="${compressAssetsDuringAggregation:false}"/>
 
         <property name="excludesFromAggregateAndCompress" ref="excludesFromAggregateAndCompress"/>
         <property name="forceLiveIEcompatiblity" value="${forceLiveIEcompatiblity:false}"/>

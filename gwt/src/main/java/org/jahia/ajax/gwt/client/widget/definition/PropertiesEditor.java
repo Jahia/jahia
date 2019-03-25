@@ -75,7 +75,6 @@ import org.jahia.ajax.gwt.client.widget.contentengine.NodeHolder;
 import org.jahia.ajax.gwt.client.widget.form.tag.TagField;
 
 import java.util.*;
-
 /**
  * This is a property editor that allows to edit properties of a JCR node.
  */
@@ -244,11 +243,12 @@ public class PropertiesEditor extends FormPanel {
 
     private void addItems(final GWTJahiaNodeType nodeType, List<GWTJahiaItemDefinition> items,
                           boolean optional, boolean fieldSetGrouping, Field<?> remoteField) {
-
+        int fieldCount = 0;
         FieldSet fieldSet = null;
         if (remoteField != null) {
             fieldSet = (FieldSet) remoteField.getParent();
         }
+
         for (int itemIndex = 0; itemIndex < items.size(); itemIndex++) {
             final GWTJahiaItemDefinition definition = items.get(itemIndex);
 
@@ -389,7 +389,8 @@ public class PropertiesEditor extends FormPanel {
                         }
                         remoteFieldIndex++;
                     }
-                    fieldSet.insert(adapterField, remoteFieldIndex + itemIndex + 1, fd);
+                    fieldCount++;
+                    fieldSet.insert(adapterField, remoteFieldIndex + fieldCount, fd);
                 } else {
                     fieldSet.add(adapterField, fd);
                 }

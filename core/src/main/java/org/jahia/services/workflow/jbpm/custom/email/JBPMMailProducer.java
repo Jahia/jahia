@@ -49,6 +49,7 @@ import org.apache.velocity.tools.generic.DateTool;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
 import org.jahia.api.Constants;
+import org.jahia.bin.Jahia;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
@@ -569,6 +570,8 @@ public class JBPMMailProducer {
             }
         }
         //Setup server and site related bindings
+        String contextPath = Jahia.getContextPath();
+        bindings.put("contextPath", contextPath);
         if (siteNode != null) {
             final int siteURLPortOverride = SettingsBean.getInstance().getSiteURLPortOverride();
             String servername = "http" + (siteURLPortOverride == 443 ? "s" : "") + "://" + siteNode.getServerName() +
@@ -576,9 +579,9 @@ public class JBPMMailProducer {
                             ":" + siteURLPortOverride : "");
             bindings.put("site", siteNode);
             bindings.put("servername", servername);
-            bindings.put("previewPrefix", String.format("%s/cms/render/%s/%s", servername, Constants.EDIT_WORKSPACE, locale));
-            bindings.put("editPrefix", String.format("%s/cms/edit/%s/%s", servername, Constants.EDIT_WORKSPACE, locale));
-            bindings.put("cmmPrefix", String.format("%s/cms/contentmanager/%s/%s", servername, siteNode.getSiteKey(), locale));
+            bindings.put("previewPrefix", String.format("%s%s/cms/render/%s/%s", servername, contextPath, Constants.EDIT_WORKSPACE, locale));
+            bindings.put("editPrefix", String.format("%s%s/cms/edit/%s/%s", servername, contextPath, Constants.EDIT_WORKSPACE, locale));
+            bindings.put("cmmPrefix", String.format("%s%s/cms/contentmanager/%s/%s", servername, contextPath, siteNode.getSiteKey(), locale));
             bindings.put("renderContext", new RenderContext(null, null, JCRSessionFactory.getInstance().getCurrentUser()));
         }
         return bindings;

@@ -265,7 +265,7 @@ public class DefaultBundleService implements BundleService {
 
     private static void assertNoTarget(String target) {
         if (target != null) {
-            throw new InvalidTargetException(target);
+            logger.warn("Supplied target " + target + " for module operation is not valid");
         }
     }
 

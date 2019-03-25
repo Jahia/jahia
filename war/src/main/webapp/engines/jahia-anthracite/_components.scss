@@ -2122,10 +2122,12 @@ form,
 	margin-top: 8px !important;
 }
 
+// CKE Editor
+
 .cke_combopanel,
 .cke_menu_panel {
 	border-width: 1px !important;
-	border-color: _theme-color(secondary) !important; /* TO THEME */
+	border-color: #d0d0d0 !important; /* TO THEME */
 	margin-top: 4px !important;
 }
 
@@ -5007,7 +5009,7 @@ body[data-indigo-gwt-side-panel="open"] {
 }
 
 .x-window-plain.x-window-dlg span.ext-mb-text > span {
-	color: #ffeb3b !important;	// <=== To theme (create variable).
+	color: _theme-color(quaternary) !important;
 	font-weight: 600;
 	font-size: 13px;
 	top: 2px;

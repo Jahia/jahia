@@ -24,7 +24,7 @@
                      j:roleGroup="edit-role"
                      jcr:primaryType="jnt:role">
             <currentSite-access j:path="currentSite"
-                                j:permissionNames="contributeMode components editorialContentManager fileManager templates viewCategoriesTab viewContentTab viewMetadataTab"
+                                j:permissionNames="contributeMode components templates viewCategoriesTab viewContentTab viewMetadataTab"
                                 jcr:primaryType="jnt:externalPermissions"/>
             <j:translation_en jcr:description="Can edit content using contribute mode"
                               jcr:language="en"

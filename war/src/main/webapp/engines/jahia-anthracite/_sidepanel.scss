@@ -2533,7 +2533,7 @@ body[data-edit-window-style="settings"] {
 	}
 
 	.x-box-inner {
-		height: 100%!important;
+		height: calc(100% - 116px)!important;
 		width: 100%!important;
 
 		.x-box-item {

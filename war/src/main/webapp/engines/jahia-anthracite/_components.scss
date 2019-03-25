@@ -5007,7 +5007,7 @@ body[data-indigo-gwt-side-panel="open"] {
 }
 
 .x-window-plain.x-window-dlg span.ext-mb-text > span {
-	color: #ffeb3b !important;	// <=== To theme (create variable).
+	color: _theme-color(quaternary) !important;
 	font-weight: 600;
 	font-size: 13px;
 	top: 2px;

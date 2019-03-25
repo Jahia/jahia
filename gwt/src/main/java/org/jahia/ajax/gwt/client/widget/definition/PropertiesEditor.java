@@ -243,18 +243,10 @@ public class PropertiesEditor extends FormPanel {
 
     private void addItems(final GWTJahiaNodeType nodeType, List<GWTJahiaItemDefinition> items,
                           boolean optional, boolean fieldSetGrouping, Field<?> remoteField) {
-
+        int fieldCount = 0;
         FieldSet fieldSet = null;
         if (remoteField != null) {
             fieldSet = (FieldSet) remoteField.getParent();
-        }
-
-        if (!displayHiddenProperties) {
-            for (int itemIndex = 0; itemIndex<items.size(); itemIndex++) {
-                if (items.get(itemIndex).isHidden()) {
-                    items.remove(itemIndex);
-                }
-            }
         }
 
         for (int itemIndex = 0; itemIndex < items.size(); itemIndex++) {
@@ -397,7 +389,8 @@ public class PropertiesEditor extends FormPanel {
                         }
                         remoteFieldIndex++;
                     }
-                    fieldSet.insert(adapterField, remoteFieldIndex + itemIndex + 1, fd);
+                    fieldCount++;
+                    fieldSet.insert(adapterField, remoteFieldIndex + fieldCount, fd);
                 } else {
                     fieldSet.add(adapterField, fd);
                 }

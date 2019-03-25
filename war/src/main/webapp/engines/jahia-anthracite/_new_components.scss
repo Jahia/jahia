@@ -266,8 +266,24 @@
 				background-size: 16px;
 			}
 
-			&.toolbar-item-export,
-			&.toolbar-item-import,
+			&.toolbar-item-export {
+				background-image: url(./images/icons/context-menu/export.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
+
+			&.toolbar-item-import {
+				background-image: url(./images/icons/context-menu/import.png);
+				background-color: _property($MENU-OPENED--BG, $type);
+				background-position-x: 5px;
+				background-position-y: 7px;
+				background-repeat: no-repeat;
+				background-size: 16px;
+			}
+
 			&.toolbar-item-update {
 				//background: url(./images/icons/context-menu/import-export.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
 				background-image: url(./images/icons/context-menu/import-export.png);

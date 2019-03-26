@@ -249,3 +249,11 @@ rule "Flush privileges in role cache"
     then
 >       JahiaAccessManager.flushPrivilegesInRoles();
 end
+
+rule "Flush external permissions in role cache"
+    when
+        A property j:permissionNames has been set on a node
+            - the node has the type jnt:externalPermissions
+    then
+>       JahiaAccessManager.flushPrivilegesInRoles();
+end

@@ -47,6 +47,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jahia.osgi.BundleUtils;
+import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.osgi.framework.Bundle;
 import org.quartz.jobs.NoOpJob;
 import org.slf4j.Logger;
@@ -90,9 +91,14 @@ public class ModulesResourceLoaderClassLoadHelper extends ResourceLoaderClassLoa
         try {
             loadModuleClass = BundleUtils.loadModuleClass(className, Bundle.ACTIVE);
         } catch (ClassNotFoundException e) {
-            logger.error("Unable to lookup class " + className + " for the job scheduler.", e);
-            // fallback to NoOpJob
-            loadModuleClass = NoOpJob.class;
+            try {
+                loadModuleClass = BundleUtils.loadModuleClass(className, Bundle.UNINSTALLED);
+            } catch (ClassNotFoundException e2) {
+                logger.error("Unable to lookup class " + className + " for the job scheduler.", e);
+                // fallback to NoOpJob
+                loadModuleClass = NoOpJob.class;
+            }
+            // no error logs, bundle is stopped, no need to lookup its class
         }
         
         return loadModuleClass;

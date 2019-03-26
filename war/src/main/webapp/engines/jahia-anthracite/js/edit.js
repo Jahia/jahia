@@ -3739,7 +3739,7 @@ if (!Element.prototype.matches) {
 
                     }(languageInputValue);
 
-                    DexV2('.toolbar-itemsgroup-languageswitcher').nodes[0].style.setProperty('auto', 'important');
+                    DexV2('.toolbar-itemsgroup-languageswitcher').nodes[0].style.setProperty('width','auto','important');
                 }
             },
             // Event Handlers

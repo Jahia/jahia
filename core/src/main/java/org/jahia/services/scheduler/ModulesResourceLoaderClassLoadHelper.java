@@ -47,7 +47,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jahia.osgi.BundleUtils;
-import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.osgi.framework.Bundle;
 import org.quartz.jobs.NoOpJob;
 import org.slf4j.Logger;

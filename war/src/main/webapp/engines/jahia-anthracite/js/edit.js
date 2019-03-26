@@ -1788,7 +1788,7 @@ if (!Element.prototype.matches) {
                         // Get checked status
                         var img = menuItem.filter('img');
                         var backgroundPosition = window.getComputedStyle(img.nodes[0])['background-position'];
-                        var isChecked = (backgroundPosition == '-18px 0px') ? false : true;
+                        var isChecked = (backgroundPosition !== '-18px 0px');
 
                         // Save to filters array
                         app.backgroundJobs.data.filters.push({

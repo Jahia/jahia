@@ -90,14 +90,9 @@ public class ModulesResourceLoaderClassLoadHelper extends ResourceLoaderClassLoa
         try {
             loadModuleClass = BundleUtils.loadModuleClass(className, Bundle.ACTIVE);
         } catch (ClassNotFoundException e) {
-            try {
-                loadModuleClass = BundleUtils.loadModuleClass(className, Bundle.UNINSTALLED);
-            } catch (ClassNotFoundException e2) {
-                logger.error("Unable to lookup class " + className + " for the job scheduler.", e);
-                // fallback to NoOpJob
-                loadModuleClass = NoOpJob.class;
-            }
-            // no error logs, bundle is stopped, no need to lookup its class
+            logger.info("Unable to lookup class " + className + " for the job scheduler.");
+            // fallback to NoOpJob
+            loadModuleClass = NoOpJob.class;
         }
         
         return loadModuleClass;

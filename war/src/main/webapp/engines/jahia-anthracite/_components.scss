@@ -2366,10 +2366,9 @@ form,
 
 		// SELECT
 		select {
-			appearance: none;
+			display: inline-block;
 			-moz-appearance: none;
 			-webkit-appearance: none;
-
 			@include text(12px, #363636, $FONT--WEIGHT---LIGHT); /* TO THEME */
 			border: none;
 		    line-height: normal;
@@ -2384,7 +2383,9 @@ form,
 		    font-weight: 100;
 		    box-sizing: border-box;
 		    height: 30px;
-			width: calc(100% - 4px)!important;
+			width: auto!important;
+			max-width: 100%!important;
+			word-wrap: break-word;
 		    margin-left: 2px;
 
 

@@ -49,10 +49,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
-* User: toto
-* Date: 1/6/11
-* Time: 13:39
-*/
+ * User: toto
+ * Date: 1/6/11
+ * Time: 13:39
+ */
 public class PrivilegeImpl implements Privilege, Serializable {
     private String prefixedName;
     private String expandedName;
@@ -88,8 +88,13 @@ public class PrivilegeImpl implements Privilege, Serializable {
                 }
             }
         }
-        declaredPrivileges=null;
-        aggregatePrivileges=null;
+        declaredPrivileges = null;
+        aggregatePrivileges = null;
+    }
+
+    void removePrivileges(Set<Privilege> p) {
+        declaredAggregates.removeAll(p);
+        aggregates.removeAll(p);
     }
 
     public String getName() {
@@ -109,14 +114,14 @@ public class PrivilegeImpl implements Privilege, Serializable {
     }
 
     public Privilege[] getDeclaredAggregatePrivileges() {
-        if(declaredPrivileges==null) {
+        if (declaredPrivileges == null) {
             declaredPrivileges = declaredAggregates.toArray(new Privilege[declaredAggregates.size()]);
         }
         return declaredPrivileges;
     }
 
     public Privilege[] getAggregatePrivileges() {
-        if(aggregatePrivileges==null) {
+        if (aggregatePrivileges == null) {
             aggregatePrivileges = aggregates.toArray(new Privilege[aggregates.size()]);
         }
         return aggregatePrivileges;

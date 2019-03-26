@@ -490,32 +490,70 @@ public class JBPMMailProducer {
             bindings.put("userNotificationEmail", UserPreferencesHelper.getPersonalizedEmailAddress(jahiaUser));
         }
 
-        DateTool dateTool = new DateTool();
-        bindings.put("date", dateTool);
+        bindings.put("date", new DateTool());
         bindings.put("submissionDate", Calendar.getInstance());
         bindings.put("locale", locale);
         bindings.put("workspace", vars.get("workspace"));
         bindings.put("workflow", workflowDefinition);
 
-        @SuppressWarnings("unchecked") Map<String, List<Map<String, Object>>> publications = new LinkedHashMap();
-        initPublicationsMap(publications, locale);
         Workflow workflow = WorkflowService.getInstance().getWorkflow(workflowDefinition.getProvider(), String.valueOf(workItem.getProcessInstanceId()), locale);
-        JCRSiteNode siteNode = null;
         if (workflow != null) {
+            processPublicationWorkFlow(session, workflowDefinition, workflow, bindings, locale);
+            processWorkflowComments(workflow, bindings);
+        }
+
+        //Setup server and site related bindings
+        String contextPath = Jahia.getContextPath();
+        bindings.put("contextPath", contextPath);
+
+        JCRSiteNode siteNode = null;
+        List<JCRNodeWrapper> nodes = new LinkedList<>();
+
+        @SuppressWarnings("unchecked") List<String> stringList = (List<String>) vars.get("nodeIds");
+        for (String s : stringList.size() > 10 ? stringList.subList(0, 9) : stringList) {
+            JCRNodeWrapper nodeByUUID = session.getNodeByUUID(s);
+            if (!nodeByUUID.isNodeType("jnt:translation")) {
+                //Set the site node on first iteration.
+                if (siteNode == null) {
+                    siteNode = nodeByUUID.getResolveSite();
+                }
+                nodes.add(nodeByUUID);
+            }
+        }
+        bindings.put("nodes", nodes);
+
+        if (siteNode != null) {
+            final int siteURLPortOverride = SettingsBean.getInstance().getSiteURLPortOverride();
+            String servername = "http" + (siteURLPortOverride == 443 ? "s" : "") + "://" + siteNode.getServerName() +
+                    ((siteURLPortOverride != 0 && siteURLPortOverride != 80 && siteURLPortOverride != 443) ?
+                            ":" + siteURLPortOverride : "");
+            bindings.put("site", siteNode);
+            bindings.put("servername", servername);
+            bindings.put("previewPrefix", String.format("%s%s/cms/render/%s/%s", servername, contextPath, Constants.EDIT_WORKSPACE, locale));
+            bindings.put("editPrefix", String.format("%s%s/cms/edit/%s/%s", servername, contextPath, Constants.EDIT_WORKSPACE, locale));
+            bindings.put("cmmPrefix", String.format("%s%s/cms/contentmanager/%s/%s", servername, contextPath, siteNode.getSiteKey(), locale));
+            bindings.put("renderContext", new RenderContext(null, null, JCRSessionFactory.getInstance().getCurrentUser()));
+        }
+        return bindings;
+    }
+
+    private void processPublicationWorkFlow(JCRSessionWrapper session, WorkflowDefinition workflowDefinition, Workflow workflow, final Bindings bindings, Locale locale) throws RepositoryException{
+        if (workflow.getVariables().containsKey("customWorkflowInfo") && workflow.getVariables().get("customWorkflowInfo") instanceof PublicationWorkflow) {
+            @SuppressWarnings("unchecked") Map<String, List<Map<String, Object>>> publications = new LinkedHashMap();
+            initPublicationsMap(publications, locale);
             @SuppressWarnings("unchecked") PublicationWorkflow publicationWorkflow = (PublicationWorkflow) workflow.getVariables().get("customWorkflowInfo");
             List<GWTJahiaPublicationInfo> publicationInfoList = publicationWorkflow.getPublicationInfos();
             int publicationCount = publicationInfoList.size();
             bindings.put("publicationCount", publicationCount);
             JCRUserNode workflowUser = userManagerService.lookupUserByPath(workflow.getStartUser());
             String workflowUserName = workflowUser != null ? PrincipalViewHelper.getFullName(workflowUser) : "";
+            DateTool dateTool = new DateTool();
             String workflowTitle = String.format("%s - %s started by %s on %s - %d content item(s) involved",
                     locale, workflowDefinition.getDisplayName(), workflowUserName, dateTool.format("short_date", workflow.getStartTime(), locale), publicationCount);
             bindings.put("workflowTitle", workflowTitle);
             if (publicationCount > 10) {
                 publicationInfoList = publicationInfoList.subList(0, 9);
             }
-            //@TODO remove once other templates have been updated.
-            List<JCRNodeWrapper> nodes = new LinkedList<>();
             for (GWTJahiaPublicationInfo publicationInfo : publicationInfoList) {
                 Map<String, Object> node = new HashMap<>();
                 node.put("status", publicationInfo.getStatus());
@@ -531,12 +569,6 @@ public class JBPMMailProducer {
                     publications.get(getPublicationLabelI18N(publicationInfo.getStatus(), locale)).add(node);
                 } else {
                     JCRNodeWrapper nodeByUUID = session.getNodeByUUID(publicationInfo.getUuid());
-                    //@TODO remove once other templates have been updated.
-                    nodes.add(nodeByUUID);
-                    //Set site node if it hasn't been set yet.
-                    if (siteNode == null) {
-                        siteNode = nodeByUUID.getResolveSite();
-                    }
                     node.put("node", nodeByUUID);
                     node.put("path", publicationInfo.getPath());
                     node.put("type", publicationInfo.getNodetype());
@@ -551,40 +583,25 @@ public class JBPMMailProducer {
                 }
             }
             bindings.put("publications", publications);
-            //@TODO remove once other templates have been updated.
-            bindings.put("nodes", nodes);
-            @SuppressWarnings("unchecked") List<WorkflowComment> workflowCommentsList = workflow.getComments();
-            if (workflowCommentsList != null) {
-                List<Map<String, Object>> comments = new LinkedList<>();
-                for (WorkflowComment workflowComment : workflowCommentsList) {
-                    Map<String, Object> commentInfo = new LinkedHashMap<>();
-                    commentInfo.put("comment", workflowComment.getComment());
-                    commentInfo.put("time", workflowComment.getTime());
-                    JCRUserNode user = userManagerService.lookupUserByPath(workflowComment.getUser());
-                    if (user != null) {
-                        commentInfo.put("userName", PrincipalViewHelper.getFullName(user));
-                    }
-                    comments.add(commentInfo);
+        }
+    }
+
+    private void processWorkflowComments(Workflow workflow, final Bindings bindings) {
+        @SuppressWarnings("unchecked") List<WorkflowComment> workflowCommentsList = workflow.getComments();
+        if (workflowCommentsList != null) {
+            List<Map<String, Object>> comments = new LinkedList<>();
+            for (WorkflowComment workflowComment : workflowCommentsList) {
+                Map<String, Object> commentInfo = new LinkedHashMap<>();
+                commentInfo.put("comment", workflowComment.getComment());
+                commentInfo.put("time", workflowComment.getTime());
+                JCRUserNode user = userManagerService.lookupUserByPath(workflowComment.getUser());
+                if (user != null) {
+                    commentInfo.put("userName", PrincipalViewHelper.getFullName(user));
                 }
-                bindings.put("comments", comments);
+                comments.add(commentInfo);
             }
+            bindings.put("comments", comments);
         }
-        //Setup server and site related bindings
-        String contextPath = Jahia.getContextPath();
-        bindings.put("contextPath", contextPath);
-        if (siteNode != null) {
-            final int siteURLPortOverride = SettingsBean.getInstance().getSiteURLPortOverride();
-            String servername = "http" + (siteURLPortOverride == 443 ? "s" : "") + "://" + siteNode.getServerName() +
-                    ((siteURLPortOverride != 0 && siteURLPortOverride != 80 && siteURLPortOverride != 443) ?
-                            ":" + siteURLPortOverride : "");
-            bindings.put("site", siteNode);
-            bindings.put("servername", servername);
-            bindings.put("previewPrefix", String.format("%s%s/cms/render/%s/%s", servername, contextPath, Constants.EDIT_WORKSPACE, locale));
-            bindings.put("editPrefix", String.format("%s%s/cms/edit/%s/%s", servername, contextPath, Constants.EDIT_WORKSPACE, locale));
-            bindings.put("cmmPrefix", String.format("%s%s/cms/contentmanager/%s/%s", servername, contextPath, siteNode.getSiteKey(), locale));
-            bindings.put("renderContext", new RenderContext(null, null, JCRSessionFactory.getInstance().getCurrentUser()));
-        }
-        return bindings;
     }
 
     private void initPublicationsMap(Map<String, List<Map<String, Object>>> publications, Locale locale) {

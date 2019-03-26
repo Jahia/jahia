@@ -139,6 +139,14 @@ public final class JahiaPrivilegeRegistry {
             }
         }
 
+        if (registeredPrivileges != null) {
+            for (Privilege privilege : registeredPrivileges) {
+                if (privilege instanceof PrivilegeImpl) {
+                    ((PrivilegeImpl) privilege).removePrivileges(subPrivileges);
+                }
+            }
+        }
+
         try {
             String expandedName = JCRContentUtils.getExpandedName(node.getName(), node.getSession().getWorkspace().getNamespaceRegistry());
             boolean isAbstract = node.hasProperty("j:isAbstract") && node.getProperty("j:isAbstract").getBoolean();

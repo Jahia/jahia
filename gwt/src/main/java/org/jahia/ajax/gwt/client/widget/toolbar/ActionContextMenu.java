@@ -50,6 +50,7 @@ import com.extjs.gxt.ui.client.widget.menu.Item;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 
 import java.util.ArrayList;
@@ -70,7 +71,7 @@ public class ActionContextMenu extends ActionToolbarMenu {
         // add listener on BedoreShow Event
         addListener(Events.BeforeShow, new Listener<MenuEvent>() {
             public void handleEvent(MenuEvent baseEvent) {
-                baseEvent.setCancelled(!beforeShow());
+                baseEvent.setCancelled(MainModule.isGlobalSelectionDisabled() || !beforeShow());
             }
         });
     }

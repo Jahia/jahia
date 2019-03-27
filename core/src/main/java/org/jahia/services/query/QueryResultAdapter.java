@@ -100,6 +100,14 @@ public class QueryResultAdapter implements QueryResult {
             row = decoratedRow;
         }
 
+        /**
+         * get inner row decorated
+         * @return the original row
+         */
+        Row getRawRow() {
+            return row;
+        }
+
         public JCRNodeWrapper getNode() throws RepositoryException {
             if (node == null) {
                 node = wrap(row.getNode());

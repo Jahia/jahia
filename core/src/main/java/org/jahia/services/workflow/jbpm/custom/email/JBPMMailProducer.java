@@ -46,17 +46,27 @@ package org.jahia.services.workflow.jbpm.custom.email;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.velocity.tools.generic.DateTool;
+import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
 import org.jahia.api.Constants;
+import org.jahia.bin.Jahia;
+import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
+import org.jahia.services.render.RenderContext;
 import org.jahia.services.usermanager.*;
+import org.jahia.services.workflow.Workflow;
+import org.jahia.services.workflow.WorkflowComment;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.jbpm.JBPMTaskIdentityService;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.ScriptEngineUtils;
+import org.jahia.utils.i18n.Messages;
 import org.jahia.utils.i18n.ResourceBundles;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.task.model.User;
@@ -438,6 +448,7 @@ public class JBPMMailProducer {
         if (bindings == null) {
             bindings = getBindings(workItem, session);
         }
+        addStaticClasses(bindings);
         scriptContext.setWriter(new StringWriter());
         scriptContext.setErrorWriter(new StringWriter());
         scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
@@ -448,6 +459,13 @@ public class JBPMMailProducer {
             logger.error("Scripting error : " + error);
         }
         return scriptContext.getWriter().toString().trim();
+    }
+
+    //Add Static Classes whose methods may need to be accessed in the template.
+    protected void addStaticClasses(Bindings bindings) {
+        if (bindings != null) {
+            bindings.put("PrincipalViewHelper", PrincipalViewHelper.class);
+        }
     }
 
     protected Bindings getBindings(WorkItem workItem, JCRSessionWrapper session) throws RepositoryException {
@@ -471,24 +489,139 @@ public class JBPMMailProducer {
         if (jahiaUser != null && !UserPreferencesHelper.areEmailNotificationsDisabled(jahiaUser)) {
             bindings.put("userNotificationEmail", UserPreferencesHelper.getPersonalizedEmailAddress(jahiaUser));
         }
-        if (vars.containsKey("comments")) {
-            bindings.put("comments", vars.get("comments"));
-        }
+
         bindings.put("date", new DateTool());
         bindings.put("submissionDate", Calendar.getInstance());
         bindings.put("locale", locale);
         bindings.put("workspace", vars.get("workspace"));
+        bindings.put("workflow", workflowDefinition);
 
-        List<JCRNodeWrapper> nodes = new LinkedList<JCRNodeWrapper>();
+        Workflow workflow = WorkflowService.getInstance().getWorkflow(workflowDefinition.getProvider(), String.valueOf(workItem.getProcessInstanceId()), locale);
+        if (workflow != null) {
+            processPublicationWorkFlow(session, workflowDefinition, workflow, bindings, locale);
+            processWorkflowComments(workflow, bindings);
+        }
+
+        //Setup server and site related bindings
+        String contextPath = Jahia.getContextPath();
+        bindings.put("contextPath", contextPath);
+
+        JCRSiteNode siteNode = null;
+        List<JCRNodeWrapper> nodes = new LinkedList<>();
+
         @SuppressWarnings("unchecked") List<String> stringList = (List<String>) vars.get("nodeIds");
-        for (String s : stringList) {
+        for (String s : stringList.size() > 10 ? stringList.subList(0, 9) : stringList) {
             JCRNodeWrapper nodeByUUID = session.getNodeByUUID(s);
             if (!nodeByUUID.isNodeType("jnt:translation")) {
+                //Set the site node on first iteration.
+                if (siteNode == null) {
+                    siteNode = nodeByUUID.getResolveSite();
+                }
                 nodes.add(nodeByUUID);
             }
         }
         bindings.put("nodes", nodes);
+
+        if (siteNode != null) {
+            final int siteURLPortOverride = SettingsBean.getInstance().getSiteURLPortOverride();
+            String servername = "http" + (siteURLPortOverride == 443 ? "s" : "") + "://" + siteNode.getServerName() +
+                    ((siteURLPortOverride != 0 && siteURLPortOverride != 80 && siteURLPortOverride != 443) ?
+                            ":" + siteURLPortOverride : "");
+            bindings.put("site", siteNode);
+            bindings.put("servername", servername);
+            bindings.put("previewPrefix", String.format("%s%s/cms/render/%s/%s", servername, contextPath, Constants.EDIT_WORKSPACE, locale));
+            bindings.put("editPrefix", String.format("%s%s/cms/edit/%s/%s", servername, contextPath, Constants.EDIT_WORKSPACE, locale));
+            bindings.put("cmmPrefix", String.format("%s%s/cms/contentmanager/%s/%s", servername, contextPath, siteNode.getSiteKey(), locale));
+            bindings.put("renderContext", new RenderContext(null, null, JCRSessionFactory.getInstance().getCurrentUser()));
+        }
         return bindings;
+    }
+
+    private void processPublicationWorkFlow(JCRSessionWrapper session, WorkflowDefinition workflowDefinition, Workflow workflow, final Bindings bindings, Locale locale) throws RepositoryException{
+        if (workflow.getVariables().containsKey("customWorkflowInfo") && workflow.getVariables().get("customWorkflowInfo") instanceof PublicationWorkflow) {
+            @SuppressWarnings("unchecked") Map<String, List<Map<String, Object>>> publications = new LinkedHashMap();
+            initPublicationsMap(publications, locale);
+            @SuppressWarnings("unchecked") PublicationWorkflow publicationWorkflow = (PublicationWorkflow) workflow.getVariables().get("customWorkflowInfo");
+            List<GWTJahiaPublicationInfo> publicationInfoList = publicationWorkflow.getPublicationInfos();
+            int publicationCount = publicationInfoList.size();
+            bindings.put("publicationCount", publicationCount);
+            JCRUserNode workflowUser = userManagerService.lookupUserByPath(workflow.getStartUser());
+            String workflowUserName = workflowUser != null ? PrincipalViewHelper.getFullName(workflowUser) : "";
+            DateTool dateTool = new DateTool();
+            String workflowTitle = String.format("%s - %s started by %s on %s - %d content item(s) involved",
+                    locale, workflowDefinition.getDisplayName(), workflowUserName, dateTool.format("short_date", workflow.getStartTime(), locale), publicationCount);
+            bindings.put("workflowTitle", workflowTitle);
+            if (publicationCount > 10) {
+                publicationInfoList = publicationInfoList.subList(0, 9);
+            }
+            for (GWTJahiaPublicationInfo publicationInfo : publicationInfoList) {
+                Map<String, Object> node = new HashMap<>();
+                node.put("status", publicationInfo.getStatus());
+                //For a deleted node populate with information from workflow
+                if (publicationInfo.getStatus() == PublicationInfo.DELETED) {
+                    node.put("path", publicationInfo.getPath());
+                    node.put("type", publicationInfo.getNodetype());
+                    String displayableName = publicationInfo.getTitle();
+                    if (displayableName.length() > 100) {
+                        displayableName = String.format("%s...", displayableName.substring(0, 100));
+                    }
+                    node.put("displayableName", displayableName);
+                    publications.get(getPublicationLabelI18N(publicationInfo.getStatus(), locale)).add(node);
+                } else {
+                    JCRNodeWrapper nodeByUUID = session.getNodeByUUID(publicationInfo.getUuid());
+                    node.put("node", nodeByUUID);
+                    node.put("path", publicationInfo.getPath());
+                    node.put("type", publicationInfo.getNodetype());
+                    String displayableName = nodeByUUID.getDisplayableName();
+                    if (displayableName.length() > 100) {
+                        displayableName = String.format("%s...", displayableName.substring(0, 100));
+                    }
+                    node.put("displayableName", displayableName);
+                    node.put("displayablePath", publicationInfo.getMainPath());
+                    //Place node in the related publication status list
+                    publications.get(getPublicationLabelI18N(publicationInfo.getStatus(), locale)).add(node);
+                }
+            }
+            bindings.put("publications", publications);
+        }
+    }
+
+    private void processWorkflowComments(Workflow workflow, final Bindings bindings) {
+        @SuppressWarnings("unchecked") List<WorkflowComment> workflowCommentsList = workflow.getComments();
+        if (workflowCommentsList != null) {
+            List<Map<String, Object>> comments = new LinkedList<>();
+            for (WorkflowComment workflowComment : workflowCommentsList) {
+                Map<String, Object> commentInfo = new LinkedHashMap<>();
+                commentInfo.put("comment", workflowComment.getComment());
+                commentInfo.put("time", workflowComment.getTime());
+                JCRUserNode user = userManagerService.lookupUserByPath(workflowComment.getUser());
+                if (user != null) {
+                    commentInfo.put("userName", PrincipalViewHelper.getFullName(user));
+                }
+                comments.add(commentInfo);
+            }
+            bindings.put("comments", comments);
+        }
+    }
+
+    private void initPublicationsMap(Map<String, List<Map<String, Object>>> publications, Locale locale) {
+        //Initialize list entries for each type of publication
+        publications.put(getPublicationLabelI18N(PublicationInfo.NOT_PUBLISHED, locale), new LinkedList<>());
+        publications.put(getPublicationLabelI18N(PublicationInfo.MODIFIED, locale), new LinkedList<>());
+        publications.put(getPublicationLabelI18N(PublicationInfo.PUBLISHED, locale), new LinkedList<>());
+        publications.put(getPublicationLabelI18N(PublicationInfo.MARKED_FOR_DELETION, locale), new LinkedList<>());
+        publications.put(getPublicationLabelI18N(PublicationInfo.DELETED, locale), new LinkedList<>());
+        publications.put(getPublicationLabelI18N(PublicationInfo.UNPUBLISHED, locale), new LinkedList<>());
+        publications.put(getPublicationLabelI18N(PublicationInfo.MANDATORY_LANGUAGE_VALID, locale), new LinkedList<>());
+        publications.put(getPublicationLabelI18N(PublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE, locale), new LinkedList<>());
+        publications.put(getPublicationLabelI18N(PublicationInfo.LIVE_ONLY, locale), new LinkedList<>());
+        publications.put(getPublicationLabelI18N(PublicationInfo.LIVE_MODIFIED, locale), new LinkedList<>());
+        publications.put(getPublicationLabelI18N(PublicationInfo.CONFLICT, locale), new LinkedList<>());
+    }
+
+    private String getPublicationLabelI18N(int status, Locale locale) {
+        String publicationResourceKey = String.format("label.publication.%s", PublicationInfo.statusToLabel.get(status));
+        return Messages.getInternal(publicationResourceKey, locale);
     }
 
     protected void addAttachments(MailTemplate template, WorkItem workItem, Multipart multipart, JCRSessionWrapper session)

@@ -79,9 +79,6 @@ class TreeGridClickSelectionModel extends TreeGridSelectionModel<GWTJahiaNode> {
             super.handleMouseDown(e);
         } else {
             if (!MainModule.isGlobalSelectionDisabled()) {
-                if (!tree.getTreeView().isSelectableTarget(e.getModel(), e.getTarget())) {
-                    return;
-                }
                 if (selectionMode != Style.SelectionMode.SINGLE && isSelected(listStore.getAt(e.getRowIndex()))) {
                     return;
                 }

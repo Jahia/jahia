@@ -108,10 +108,15 @@ public class JBPMMailProducer {
     protected ScriptEngine scriptEngine;
     protected Bindings bindings;
 
+    protected WorkflowService workflowService;
     protected MailTemplateRegistry mailTemplateRegistry;
     protected TaskIdentityService taskIdentityService;
     protected JahiaUserManagerService userManagerService;
     protected JahiaGroupManagerService groupManagerService;
+
+    public void setWorkflowService(WorkflowService workflowService) {
+        this.workflowService = workflowService;
+    }
 
     public void setMailTemplateRegistry(MailTemplateRegistry mailTemplateRegistry) {
         this.mailTemplateRegistry = mailTemplateRegistry;
@@ -119,6 +124,14 @@ public class JBPMMailProducer {
 
     public void setTaskIdentityService(TaskIdentityService taskIdentityService) {
         this.taskIdentityService = taskIdentityService;
+    }
+
+    public void setUserManagerService(JahiaUserManagerService userManagerService) {
+        this.userManagerService = userManagerService;
+    }
+
+    public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
+        this.groupManagerService = groupManagerService;
     }
 
     public Collection<Message> produce(final WorkItem workItem) {
@@ -268,13 +281,13 @@ public class JBPMMailProducer {
             List<User> users = new ArrayList<User>();
             for (String userId : userIds) {
                 if (userId.startsWith("assignableFor(")) {
-                    String task = StringUtils.substringBetween(userId, "assignableFor(",")");
-                    WorkflowDefinition definition = WorkflowService.getInstance().getWorkflow("jBPM", Long.toString(workItem.getProcessInstanceId()), null).getWorkflowDefinition();
-                    List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(definition, task, Long.toString(workItem.getProcessInstanceId()), session);
+                    String task = StringUtils.substringBetween(userId, "assignableFor(", ")");
+                    WorkflowDefinition definition = workflowService.getWorkflow("jBPM", Long.toString(workItem.getProcessInstanceId()), null).getWorkflowDefinition();
+                    List<JahiaPrincipal> principals = workflowService.getAssignedRole(definition, task, Long.toString(workItem.getProcessInstanceId()), session);
                     for (JahiaPrincipal principal : principals) {
                         if (principal instanceof JahiaUser) {
                             if (!UserPreferencesHelper.areEmailNotificationsDisabled((JahiaUser) principal)) {
-                                users.add(taskIdentityService.getUserById(((JahiaUser)principal).getUserKey()));
+                                users.add(taskIdentityService.getUserById(((JahiaUser) principal).getUserKey()));
                             }
                         } else if (principal instanceof JahiaGroup) {
                             JCRGroupNode groupNode = groupManagerService.lookupGroupByPath(principal.getLocalPath());
@@ -496,7 +509,7 @@ public class JBPMMailProducer {
         bindings.put("workspace", vars.get("workspace"));
         bindings.put("workflow", workflowDefinition);
 
-        Workflow workflow = WorkflowService.getInstance().getWorkflow(workflowDefinition.getProvider(), String.valueOf(workItem.getProcessInstanceId()), locale);
+        Workflow workflow = workflowService.getWorkflow(workflowDefinition.getProvider(), String.valueOf(workItem.getProcessInstanceId()), locale);
         if (workflow != null) {
             processPublicationWorkFlow(session, workflowDefinition, workflow, bindings, locale);
             processWorkflowComments(workflow, bindings);
@@ -537,7 +550,7 @@ public class JBPMMailProducer {
         return bindings;
     }
 
-    private void processPublicationWorkFlow(JCRSessionWrapper session, WorkflowDefinition workflowDefinition, Workflow workflow, final Bindings bindings, Locale locale) throws RepositoryException{
+    private void processPublicationWorkFlow(JCRSessionWrapper session, WorkflowDefinition workflowDefinition, Workflow workflow, final Bindings bindings, Locale locale) throws RepositoryException {
         if (workflow.getVariables().containsKey("customWorkflowInfo") && workflow.getVariables().get("customWorkflowInfo") instanceof PublicationWorkflow) {
             @SuppressWarnings("unchecked") Map<String, List<Map<String, Object>>> publications = new LinkedHashMap();
             initPublicationsMap(publications, locale);
@@ -620,7 +633,7 @@ public class JBPMMailProducer {
     }
 
     private String getPublicationLabelI18N(int status, Locale locale) {
-        String publicationResourceKey = String.format("label.publication.%s", PublicationInfo.statusToLabel.get(status));
+        String publicationResourceKey = String.format("label.publication.%s", PublicationInfo.getLabel(status));
         return Messages.getInternal(publicationResourceKey, locale);
     }
 
@@ -707,13 +720,6 @@ public class JBPMMailProducer {
         return sepIndex != -1 ? path.substring(sepIndex + 1) : null;
     }
 
-    public void setUserManagerService(JahiaUserManagerService userManagerService) {
-        this.userManagerService = userManagerService;
-    }
-
-    public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
-        this.groupManagerService = groupManagerService;
-    }
 
     public class MyBindings extends SimpleBindings {
         protected final WorkItem workItem;

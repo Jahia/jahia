@@ -49,8 +49,8 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * Object to return publication status info for a node and if requested 
- * also contains the infos for the referenced nodes or the subnodes. 
+ * Object to return publication status info for a node and if requested
+ * also contains the infos for the referenced nodes or the subnodes.
  *
  * @author toto
  */
@@ -70,20 +70,24 @@ public class PublicationInfo implements Serializable {
     public static final int DELETED = 11;
     public static final int MARKED_FOR_DELETION = 12;
 
-    public static final Map<Integer,String> statusToLabel = new HashMap<>();
+    private static final Map<Integer, String> statusToLabel = new HashMap<>();
 
     static {
-        statusToLabel.put(PublicationInfo.PUBLISHED,"published");
-        statusToLabel.put(PublicationInfo.MARKED_FOR_DELETION,"markedfordeletion");
-        statusToLabel.put(PublicationInfo.MODIFIED,"modified");
-        statusToLabel.put(PublicationInfo.NOT_PUBLISHED,"notpublished");
-        statusToLabel.put(PublicationInfo.UNPUBLISHED,"unpublished");
-        statusToLabel.put(PublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE,"mandatorylanguageunpublishable");
-        statusToLabel.put(PublicationInfo.LIVE_MODIFIED,"livemodified");
-        statusToLabel.put(PublicationInfo.LIVE_ONLY,"liveonly");
-        statusToLabel.put(PublicationInfo.CONFLICT,"conflict");
-        statusToLabel.put(PublicationInfo.MANDATORY_LANGUAGE_VALID,"mandatorylanguagevalid");
-        statusToLabel.put(PublicationInfo.DELETED,"deleted");
+        statusToLabel.put(PublicationInfo.PUBLISHED, "published");
+        statusToLabel.put(PublicationInfo.MARKED_FOR_DELETION, "markedfordeletion");
+        statusToLabel.put(PublicationInfo.MODIFIED, "modified");
+        statusToLabel.put(PublicationInfo.NOT_PUBLISHED, "notpublished");
+        statusToLabel.put(PublicationInfo.UNPUBLISHED, "unpublished");
+        statusToLabel.put(PublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE, "mandatorylanguageunpublishable");
+        statusToLabel.put(PublicationInfo.LIVE_MODIFIED, "livemodified");
+        statusToLabel.put(PublicationInfo.LIVE_ONLY, "liveonly");
+        statusToLabel.put(PublicationInfo.CONFLICT, "conflict");
+        statusToLabel.put(PublicationInfo.MANDATORY_LANGUAGE_VALID, "mandatorylanguagevalid");
+        statusToLabel.put(PublicationInfo.DELETED, "deleted");
+    }
+
+    public static String getLabel(Integer status) {
+        return statusToLabel.get(status);
     }
 
     private transient Map<String, List<String>> allUuidsCache = new HashMap<String, List<String>>();
@@ -117,7 +121,7 @@ public class PublicationInfo implements Serializable {
         return getAllUuids(true, true, true);
     }
 
-    public List<String> getAllUuids(boolean includeDeleted, boolean includePublished){
+    public List<String> getAllUuids(boolean includeDeleted, boolean includePublished) {
         return getAllUuids(includeDeleted, includePublished, true);
     }
 
@@ -167,7 +171,7 @@ public class PublicationInfo implements Serializable {
         processedNodes.add(root);
 
         PublicationInfoNode node = nodes.poll();
-        while(node != null) {
+        while (node != null) {
             for (PublicationInfoNode infoNode : node.getChildren()) {
                 if (!processedNodes.contains(infoNode)) {
                     nodes.add(infoNode);
@@ -187,7 +191,7 @@ public class PublicationInfo implements Serializable {
     public void clearInternalAndPublishedReferences(List<String> uuids) {
         List<PublicationInfoNode> nodes = new ArrayList<PublicationInfoNode>();
         nodes.add(root);
-        for (int i=0; i<nodes.size(); i++) {
+        for (int i = 0; i < nodes.size(); i++) {
             final PublicationInfoNode node = nodes.get(i);
             List<PublicationInfo> toRemove = new ArrayList<PublicationInfo>();
             for (PublicationInfo info : node.getReferences()) {
@@ -202,8 +206,7 @@ public class PublicationInfo implements Serializable {
     /**
      * Retrieves a set of all various statuses for the tree.
      *
-     * @param language
-     *            the language we are checking
+     * @param language the language we are checking
      * @return a set of all various statuses for the tree
      */
     public Set<Integer> getTreeStatus(String language) {
@@ -217,7 +220,7 @@ public class PublicationInfo implements Serializable {
         while (node != null) {
             for (PublicationInfoNode infoNode : node.getChildren()) {
                 if (!processed.contains(infoNode) &&
-                        (language == null || !infoNode.getPath().contains("/j:translation_") || infoNode.getPath().contains(translationNodePath) )) {
+                        (language == null || !infoNode.getPath().contains("/j:translation_") || infoNode.getPath().contains(translationNodePath))) {
                     nodes.add(infoNode);
                 }
             }
@@ -261,8 +264,8 @@ public class PublicationInfo implements Serializable {
         final Set<String> result = new HashSet<String>();
         new Object() {
             public void getAllPublishedLanguages(PublicationInfoNode node) {
-                if (node.getStatus() != UNPUBLISHED  && node.getStatus() != NOT_PUBLISHED  && node.getPath().contains("/j:translation_")) {
-                    result.add(StringUtils.substringAfterLast(node.getPath(),"/j:translation_"));
+                if (node.getStatus() != UNPUBLISHED && node.getStatus() != NOT_PUBLISHED && node.getPath().contains("/j:translation_")) {
+                    result.add(StringUtils.substringAfterLast(node.getPath(), "/j:translation_"));
                 }
                 for (PublicationInfoNode childNode : node.getChildren()) {
                     getAllPublishedLanguages(childNode);
@@ -281,6 +284,7 @@ public class PublicationInfo implements Serializable {
 
     /**
      * set hasLiveNode (default is true)
+     *
      * @param hasLiveNode
      */
     public void setHasLiveNode(boolean hasLiveNode) {

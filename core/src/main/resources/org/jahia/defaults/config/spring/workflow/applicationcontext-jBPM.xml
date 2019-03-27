@@ -113,6 +113,7 @@
     <bean id="taskIdentityService" class="org.jahia.services.workflow.jbpm.JBPMTaskIdentityService"/>
 
     <bean id="mailProducer" class="org.jahia.services.workflow.jbpm.custom.email.JBPMMailProducer">
+        <property name="workflowService" ref="workflowService"/>
         <property name="mailTemplateRegistry" ref="mailTemplateRegistry"/>
         <property name="taskIdentityService" ref="taskIdentityService"/>
         <property name="userManagerService" ref="JahiaUserManagerService"/>

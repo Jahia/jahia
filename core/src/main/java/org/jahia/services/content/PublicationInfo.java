@@ -55,9 +55,9 @@ import java.util.*;
  * @author toto
  */
 public class PublicationInfo implements Serializable {
-    
+
     private static final long serialVersionUID = -5752968731917175200L;
-    
+
     public static final int PUBLISHED = 1;
     public static final int MODIFIED = 3;
     public static final int NOT_PUBLISHED = 4;
@@ -69,6 +69,22 @@ public class PublicationInfo implements Serializable {
     public static final int MANDATORY_LANGUAGE_VALID = 10;
     public static final int DELETED = 11;
     public static final int MARKED_FOR_DELETION = 12;
+
+    public static final Map<Integer,String> statusToLabel = new HashMap<>();
+
+    static {
+        statusToLabel.put(PublicationInfo.PUBLISHED,"published");
+        statusToLabel.put(PublicationInfo.MARKED_FOR_DELETION,"markedfordeletion");
+        statusToLabel.put(PublicationInfo.MODIFIED,"modified");
+        statusToLabel.put(PublicationInfo.NOT_PUBLISHED,"notpublished");
+        statusToLabel.put(PublicationInfo.UNPUBLISHED,"unpublished");
+        statusToLabel.put(PublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE,"mandatorylanguageunpublishable");
+        statusToLabel.put(PublicationInfo.LIVE_MODIFIED,"livemodified");
+        statusToLabel.put(PublicationInfo.LIVE_ONLY,"liveonly");
+        statusToLabel.put(PublicationInfo.CONFLICT,"conflict");
+        statusToLabel.put(PublicationInfo.MANDATORY_LANGUAGE_VALID,"mandatorylanguagevalid");
+        statusToLabel.put(PublicationInfo.DELETED,"deleted");
+    }
 
     private transient Map<String, List<String>> allUuidsCache = new HashMap<String, List<String>>();
 
@@ -133,7 +149,7 @@ public class PublicationInfo implements Serializable {
         allUuidsCache.put(cacheKey, allUuids);
         return allUuids;
     }
-    
+
     private String getKey(boolean includeDeleted, boolean includePublished) {
         return String.valueOf(includeDeleted) + String.valueOf(includePublished);
     }
@@ -149,7 +165,7 @@ public class PublicationInfo implements Serializable {
     private void getAllReferences(LinkedHashSet<PublicationInfo> uuids, LinkedList<PublicationInfoNode> nodes, Set<PublicationInfoNode> processedNodes) {
         nodes.add(root);
         processedNodes.add(root);
-        
+
         PublicationInfoNode node = nodes.poll();
         while(node != null) {
             for (PublicationInfoNode infoNode : node.getChildren()) {
@@ -185,7 +201,7 @@ public class PublicationInfo implements Serializable {
 
     /**
      * Retrieves a set of all various statuses for the tree.
-     * 
+     *
      * @param language
      *            the language we are checking
      * @return a set of all various statuses for the tree
@@ -206,7 +222,7 @@ public class PublicationInfo implements Serializable {
                 }
             }
             status.add(node.getStatus());
-            
+
             node = nodes.poll();
         }
         return status;
@@ -289,7 +305,7 @@ public class PublicationInfo implements Serializable {
     public int hashCode() {
         return root != null ? (31 * super.hashCode() + root.hashCode()) : super.hashCode();
     }
-    
+
     @Override
     public String toString() {
         return root != null ? root.toString() : super.toString();

@@ -60,6 +60,8 @@ public class CountRow implements Row {
     private long count;
     private boolean approxLimitReached;
 
+    public static final String APPROX_LIMIT_REACHED = "approxLimitReached";
+
     public CountRow(long count, boolean approxLimitReached) {
         this.count = count;
         this.approxLimitReached = approxLimitReached;
@@ -74,7 +76,7 @@ public class CountRow implements Row {
 
     @Override
     public Value getValue(String columnName) throws ItemNotFoundException, RepositoryException {
-        return columnName.equals("approxLimitReached") ? new ValueImpl(approxLimitReached) : new ValueImpl(count);
+        return APPROX_LIMIT_REACHED.equals(columnName) ? new ValueImpl(approxLimitReached) : new ValueImpl(count);
     }
 
     @Override

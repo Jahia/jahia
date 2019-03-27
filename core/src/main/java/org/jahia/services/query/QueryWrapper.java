@@ -381,7 +381,7 @@ public class QueryWrapper implements Query {
             }
             QueryResultAdapter queryResult = new QueryResultAdapter(query.execute(), entry.getKey(), session);
             results.add(queryResult);
-            if (it.hasNext() && (queryLimit >= 0 || queryOffset > 0)) {
+            if (!isCount(queryResult.getColumnNames()) && it.hasNext() && (queryLimit >= 0 || queryOffset > 0)) {
                 // If we have another provider query and either a limit or offset set, we need to recalculate them.
                 long resultCount = getResultCount(queryResult);
                 if (queryLimit >= 0) {
@@ -406,6 +406,15 @@ public class QueryWrapper implements Query {
             }
         }
         return QueryResultWrapperImpl.wrap(results, limit);
+    }
+
+    static boolean isCount(String[] columnNames) {
+        for (String columnName : columnNames) {
+            if (columnName.startsWith("rep:count(")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected long getResultCount(QueryResultAdapter queryResult) throws RepositoryException {

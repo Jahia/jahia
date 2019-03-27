@@ -111,14 +111,20 @@ div.engine-window {
 		}
 	}
 
-
-
 	.x-form-item {
 	    margin-bottom: 12px;
 	}
 
 	.indigo-modal-mask {
 		display: none;
+	}
+	[id="Creation"], [id="Last modification"], [id="Publication"]{
+		width: 30%!important;
+		display: inline-block;
+		background: transparent!important;
+	}
+	[id="Description"]  textarea{
+		max-height: 80px;
 	}
 
 	//z-index: $ZINDEX--SIDE_PANEL--EDIT_ENGINE;

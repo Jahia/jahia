@@ -369,9 +369,14 @@ body[indigo-dragging-panel="true"] {
 		}
 
 		#JahiaGxtManagerToolbar {
-			body[data-indigo-is-manager="true"] & {
-				display:none;
+			.toolbar-item-listview,
+			.toolbar-item-thumbsview,
+			.toolbar-item-detailedview {
+				body[data-indigo-is-manager="true"]:not([data-indigo-sub-picker=open]) & {
+					display:none!important;
+				}
 			}
+
 
 			.action-bar-tool-item {
 				opacity: 0!important;
@@ -3019,7 +3024,7 @@ body[indigo-dragging-panel="true"] {
 	//
 	#images-view {
 		box-shadow: inset 0px 0px 0px #e5e3e3, inset 0px 2px 0px #b4b2b2, inset 0px 3px 5px rgba(38, 38, 38, 0.2)!important;
-		padding-top: 0!important;
+		padding-top: 10px!important;
 	}
 
 	&.search-panel-opened {
@@ -3207,6 +3212,9 @@ body[indigo-dragging-panel="true"] {
 				@include _combo(LIGHT);
 				transition: none;
 
+				body[data-indigo-is-manager="true"][data-indigo-picker-search="open"] & {
+					right:5px!important;
+				}
 			}
 
 			// Style differently when the Edit Engine is opened

@@ -5019,6 +5019,13 @@ if (!Element.prototype.matches) {
     var eventListeners = {
         attach: function () {
             DexV2('body')
+                .onOpen('.x-window-plain.x-window-dlg', function(){
+                  var dialog = this;
+
+                  setTimeout(function(){
+                    dialog.scrollTop = 0
+                  }, 50)
+                })
 				.onClick('.tab_systemSiteSettings > .x-panel', function(e){
 					var clickedElement = DexV2.node(e.target),
 						toggleMenu = clickedElement.hasClass('x-panel');

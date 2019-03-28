@@ -118,12 +118,15 @@ div.engine-window {
 	.indigo-modal-mask {
 		display: none;
 	}
-	[id="Creation"], [id="Last modification"], [id="Publication"]{
+	[id="Creation"], [id="Last modification"], [id="Publication"],
+	[id="Dernière modification"], [id="Créé"], [id="Publication"],
+	[id="Erstellung"], [id="Letzte Änderung"], [id="Veröffentlichung"]
+	{
 		width: 30%!important;
 		display: inline-block;
 		background: transparent!important;
 	}
-	[id="Description"]  textarea{
+	[id="Description"]  textarea, [id="Beschreibung"] textarea{
 		max-height: 80px;
 	}
 

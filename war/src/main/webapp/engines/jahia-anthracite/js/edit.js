@@ -1988,6 +1988,8 @@ if (!Element.prototype.matches) {
                 title: null,
                 pickerTitle: null,
                 displayType: 'listview',
+                subPickerDisplayType: 'listview',
+                currentDisplayType: 'displayType',
                 previousDisplayType: null,
                 ID: 'JahiaGxtContentPickerWindow',
                 standaloneID: 'contentpicker',
@@ -2128,7 +2130,7 @@ if (!Element.prototype.matches) {
             onResize: function () {
                 app.dev.log('::: APP ::: PICKER ::: ONRESIZE');
 
-				var previousDisplayButton = DexV2('.toolbar-item-' + app.picker.data.displayType);
+				var previousDisplayButton = DexV2('.toolbar-item-' + app.picker.data[app.picker.data.currentDisplayType]);
 
 				if(previousDisplayButton.exists()){
 					previousDisplayButton.trigger('click');
@@ -2162,7 +2164,7 @@ if (!Element.prototype.matches) {
                 DexV2.getCached('body')
                      .setAttribute('data-INDIGO-PICKER-SEARCH', '')
                      .setAttribute('data-INDIGO-PICKER', 'open')
-                     .setAttribute('indigo-PICKER-DISPLAY', 'thumbsview');
+                     .setAttribute('indigo-PICKER-DISPLAY', app.picker.data[app.picker.data.currentDisplayType]);
 
                 if (app.picker.data.standalone) {
                     // Create title
@@ -2178,7 +2180,6 @@ if (!Element.prototype.matches) {
                     if (app.data.HTTP.app == 'manager') {
                         // See if GWT has enabled previews for files, if so then set the preview flag to true
                         app.picker.data.enablePreviews = true;
-                        DexV2.getCached('body').setAttribute('indigo-PICKER-DISPLAY', 'listview');
                     }
                 }
 
@@ -2241,7 +2242,7 @@ if (!Element.prototype.matches) {
                     var zoomSize = e.target.value;
 
                     // Save zoom level
-                    app.picker.data.zooms[app.picker.data.displayType] = zoomSize;
+                    app.picker.data.zooms[app.picker.data[app.picker.data.currentDisplayType]] = zoomSize;
 
                     DexV2('#' + app.picker.data.ID + ' #JahiaGxtManagerLeftTree + div #images-view .x-view')
                         .setAttribute('indigo-thumb-zoom', zoomSize);
@@ -2294,15 +2295,22 @@ if (!Element.prototype.matches) {
                     DexV2.id(app.picker.data.ID).prepend(thumbSlider);
                 }
             },
+            onCloseSubPicker: function(){
+              app.dev.log('::: APP ::: PICKER ::: ONCLOSESUBPICKER');
+              app.picker.data.currentDisplayType = 'displayType';
+              DexV2.getCached('body').setAttribute('indigo-PICKER-DISPLAY', app.picker.data.displayType);
+            },
             onOpenSubPicker: function () {
                 app.dev.log('::: APP ::: PICKER ::: ONOPENSUBPICKER');
+
+                app.picker.data.currentDisplayType = 'subPickerDisplayType';
 
                 // Set flags for CSS
                 DexV2.getCached('body')
                      .setAttribute('data-INDIGO-SUB-PICKER', 'open')
                      .setAttribute('data-INDIGO-PICKER-SEARCH', '')
                      .setAttribute('data-INDIGO-PICKER', 'open')
-                     .setAttribute('indigo-PICKER-DISPLAY', 'thumbsview');
+                     .setAttribute('indigo-PICKER-DISPLAY', app.picker.data.subPickerDisplayType);
 
                 // Set zoom states
                 app.picker.updateZoomLevel();
@@ -2362,7 +2370,7 @@ if (!Element.prototype.matches) {
                 DexV2('body > #JahiaGxtContentPickerWindow').onInput('#sub-picker-thumb-size-slider', function (e) {
                     var zoomSize = e.target.value;
                     // Save zoom level
-                    app.picker.data.zooms[app.picker.data.displayType] = zoomSize;
+                    app.picker.data.zooms[app.picker.data[app.picker.data.currentDisplayType]] = zoomSize;
 
                     DexV2('body > #JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div #images-view .x-view')
                         .setAttribute('indigo-thumb-zoom', zoomSize);
@@ -2413,6 +2421,8 @@ if (!Element.prototype.matches) {
                 thumbSlider.max = 6;
 
                 DexV2('body > #JahiaGxtContentPickerWindow').prepend(thumbSlider);
+                var subPickerListViewButton = DexV2('.modal-imagepicker .toolbar-item-' + app.picker.data[app.picker.data.currentDisplayType]);
+                subPickerListViewButton.trigger('click');
             },
             updateMultipleCount: function () {
                 var toggleString;
@@ -2442,11 +2452,11 @@ if (!Element.prototype.matches) {
             },
             updateZoomLevel: function () {
                 if (DexV2.id('thumb-size-slider').nodes[0]) {
-                    DexV2.id('thumb-size-slider').nodes[0].value = app.picker.data.zooms[app.picker.data.displayType];
+                    DexV2.id('thumb-size-slider').nodes[0].value = app.picker.data.zooms[app.picker.data[app.picker.data.currentDisplayType]];
                 }
 
                 DexV2('#' + app.picker.data.ID + ' #JahiaGxtManagerLeftTree + div #images-view .x-view')
-                    .setAttribute('indigo-thumb-zoom', app.picker.data.zooms[app.picker.data.displayType]);
+                    .setAttribute('indigo-thumb-zoom', app.picker.data.zooms[app.picker.data[app.picker.data.currentDisplayType]]);
             },
             setPlaceholders: function () {
                 if (app.data.HTTP.app == 'manager') {
@@ -2490,22 +2500,22 @@ if (!Element.prototype.matches) {
             },
             onListView: function () {
                 app.dev.log('::: APP ::: PICKER ::: ONLISTVIEW');
-				DexV2.getCached('body').setAttribute('indigo-PICKER-DISPLAY', 'listview');
-                app.picker.data.displayType = 'listview';
+                app.picker.data[app.picker.data.currentDisplayType] = 'listview';
+        				DexV2.getCached('body').setAttribute('indigo-PICKER-DISPLAY', 'listview');
                 app.picker.repositionSidePanel();
             },
             onThumbView: function () {
                 app.dev.log('::: APP ::: PICKER ::: ONTHUMBVIEW');
+                app.picker.data[app.picker.data.currentDisplayType] = 'thumbsview';
                 DexV2.getCached('body').setAttribute('indigo-PICKER-DISPLAY', 'thumbsview');
-                app.picker.data.displayType = 'thumbsview';
                 app.picker.setPlaceholders();
                 app.picker.updateZoomLevel();
                 app.picker.repositionSidePanel();
             },
             onDetailView: function () {
                 app.dev.log('::: APP ::: PICKER ::: ONDETAILVIEW');
+                app.picker.data[app.picker.data.currentDisplayType] = 'detailedview';
                 DexV2.getCached('body').setAttribute('indigo-PICKER-DISPLAY', 'detailedview');
-                app.picker.data.displayType = 'detailedview';
                 app.picker.setPlaceholders();
                 app.picker.updateZoomLevel();
                 app.picker.repositionSidePanel();
@@ -2766,7 +2776,7 @@ if (!Element.prototype.matches) {
             search: {
                 setUpScreen: function () {
                     // Save the current display time see we can switch back when closing the search panel
-                    app.picker.data.previousDisplayType = app.picker.data.displayType;
+                    app.picker.data.previousDisplayType = app.picker.data[app.picker.data.currentDisplayType];
 
 					if(app.data.HTTP.app == 'manager'){
 						// In a picker so go into list mode
@@ -2873,7 +2883,7 @@ if (!Element.prototype.matches) {
                 },
                 setUpSubScreen: function () {
                     // Save the current display time see we can switch back when closing the search panel
-                    app.picker.data.previousDisplayType = app.picker.data.displayType;
+                    app.picker.data.previousDisplayType = app.picker.data[app.picker.data.currentDisplayType];
 
                     // Hide the browse panels (GWT does this automatically in Chrome, but not in Firefox - so we have to do it manually)
                     DexV2('body > #JahiaGxtContentPickerWindow #CRTbrowseTabItem').addClass('x-hide-display');
@@ -2975,12 +2985,6 @@ if (!Element.prototype.matches) {
                 open: function () {
                     app.dev.log('::: APP ::: PICKER ::: SEARCH ::: OPEN');
 
-					var previousDisplayButton = DexV2('.toolbar-item-' + app.picker.data.displayType);
-
-					if(previousDisplayButton.exists()){
-						previousDisplayButton.trigger('click');
-					}
-
                     var searchTabAvailable;
                     if (DexV2.getCached('body').getAttribute('data-INDIGO-SUB-PICKER') == 'open') {
                         searchTabAvailable = DexV2('body > #JahiaGxtContentPickerWindow #CRTsearchTabItem').exists();
@@ -2988,7 +2992,7 @@ if (!Element.prototype.matches) {
                         if (searchTabAvailable) {
                             app.picker.search.setUpSubScreen();
                         } else {
-                            DexV2('body > #JahiaGxtContentPickerWindow').onceOpen('#CRTsearchTabItem', app.picker.search.setUpSubScreen);
+                            DexV2('body > #JahiaGxtContentPickerWindow').onOpen('#CRTsearchTabItem', app.picker.search.setUpSubScreen);
                         }
                     } else {
                         // OPEN SEARCH PANEL
@@ -3053,12 +3057,6 @@ if (!Element.prototype.matches) {
                     // Display the BROWSE panels
                     DexV2('body > #JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-body > div:nth-child(1)')
                         .removeClass('x-hide-display');
-
-                    // // Put the results in previous mode
-					if(app.data.HTTP.app == 'manager'){
-						// In a picker so go into list mode
-						DexV2('#' + app.picker.data.ID + ' .x-panel-tbar .action-bar-tool-item.toolbar-item-' + app.picker.data.previousDisplayType).trigger('click');
-					}
 
                     // Hide the search panel
                     DexV2.id(app.picker.data.ID).removeClass('search-panel-opened');
@@ -3184,6 +3182,10 @@ if (!Element.prototype.matches) {
                     var splitVBar = DexV2.class('x-vsplitbar');
                     var splitVBarLeft = parseInt(splitVBar.nodes[0].style.left);
                     app.picker.repositionSidePanel(splitVBarLeft);
+                }
+
+                if(app.data.HTTP.app == 'manager'){
+                  DexV2('.toolbar-item-' + app.picker.data[app.picker.data.currentDisplayType]).trigger('click');
                 }
             },
             onOpenHistory: function () {
@@ -5497,6 +5499,10 @@ if (!Element.prototype.matches) {
 
             DexV2.tag('body').onOpen('#JahiaGxtContentPickerWindow', function () {
                 app.picker.onOpenSubPicker();
+            });
+
+            DexV2.tag('body').onClose('#JahiaGxtContentPickerWindow', function () {
+                app.picker.onCloseSubPicker();
             });
 
             DexV2.getCached('body').setAttribute('data-indigo-is-manager', 'true');

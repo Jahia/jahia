@@ -446,7 +446,9 @@
                                         }
                                     }
                                 }
-
+                                .x-grid3-header-inner {
+                                    width: 100%!important;
+                                }
                                 > .x-grid3-header {
                                     display: block;
                                     background: none!important;

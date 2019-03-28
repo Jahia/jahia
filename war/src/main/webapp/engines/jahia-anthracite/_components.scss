@@ -5010,6 +5010,9 @@ body[data-indigo-gwt-side-panel="open"] {
 
 .x-window-plain.x-window-dlg {
 	z-index: 99999999 !important;
+	max-height: 100vh;
+	overflow: scroll;
+	min-width: 466px!important;
 }
 
 .x-window-plain.x-window-dlg span.ext-mb-text > span {

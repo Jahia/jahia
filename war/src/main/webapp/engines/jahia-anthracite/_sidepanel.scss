@@ -1,7 +1,9 @@
 /////////////////////////////////////////////////
 // SIDE PANEL ///////////////////////////////////
 /////////////////////////////////////////////////
-
+body[data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] .x-grid3 .x-grid3-scroller{
+	height: calc(100% - 109px)!important;
+}
 #JahiaGxtPagesTab .x-grid3-col-locked {
 	background: url(./images/icons_light/lock.svg) #e67d3a no-repeat center;
     width: 12px;

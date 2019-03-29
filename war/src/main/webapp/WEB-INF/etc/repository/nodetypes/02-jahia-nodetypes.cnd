@@ -154,7 +154,7 @@
 [jnt:roles] > nt:base, jmix:observable, jmix:nolive
  + * (jnt:role)
 
-[jnt:externalPermissions]
+[jnt:externalPermissions] > jmix:observable
  - j:path (string) nofulltext
  - j:permissions (weakreference) protected hidden multiple < jnt:permission
  - j:permissionNames (string) protected hidden nofulltext multiple

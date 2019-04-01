@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////
 // SIDE PANEL ///////////////////////////////////
 /////////////////////////////////////////////////
-body[data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] .x-grid3 .x-grid3-scroller{
+#JahiaGxtPagesTab .x-grid3 .x-grid3-scroller{
 	height: calc(100% - 109px)!important;
 }
 #JahiaGxtPagesTab .x-grid3-col-locked {

@@ -169,10 +169,7 @@ class SearchTabItem extends SidePanelTabItem {
 
         // lang picker
         langPickerField = createLanguageSelectorField();
-        // Do not display language when only one lang is set
-        if (JahiaGWTParameters.getSiteLanguages().size() > 1) {
-            searchForm.add(langPickerField);
-        }
+        searchForm.add(langPickerField);
 
         defPicker = createNodeSelector();
         searchForm.add(defPicker);
@@ -312,6 +309,16 @@ class SearchTabItem extends SidePanelTabItem {
         }
     }
 
+    @Override
+    public void refresh(Map<String, Object> data) {
+        // Display language picker only when the site has more than one language
+        if (JahiaGWTParameters.getSiteLanguages().size() > 1) {
+            langPickerField.show();
+        } else {
+            langPickerField.hide();
+        }
+    }
+
     /**
      * Create new page picker field
      *
@@ -375,7 +382,7 @@ class SearchTabItem extends SidePanelTabItem {
             }
         }));
         List<String> searchableTypes = new ArrayList<String>(defaultSearchedTypes);
-        
+
         searchableTypes.add("jnt:portlet");
         JahiaContentManagementService.App.getInstance().getContentTypes(searchableTypes, true, false, new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
 

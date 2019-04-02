@@ -3031,6 +3031,9 @@ body[indigo-dragging-panel="true"] {
 		box-shadow: inset 0px 0px 0px #e5e3e3, inset 0px 2px 0px #b4b2b2, inset 0px 3px 5px rgba(38, 38, 38, 0.2)!important;
 		padding-top: 10px!important;
 	}
+	& #JahiaGxtManagerToolbar div.action-bar-menu-item.toolbar-itemsgroup-languageswitcher {
+		min-width: 90px;
+	}
 
 	&.search-panel-opened {
 		#JahiaGxtManagerTobTable {
@@ -3048,7 +3051,7 @@ body[indigo-dragging-panel="true"] {
 	// Fixes for the site manager
 	&[config="sitemanager-anthracite"] {
 		// There are no Display controls so push the langiage switcher to the right
-		#JahiaGxtManagerToolbar div.action-bar-menu-item.toolbar-itemsgroup-languageswitcher {
+		#JahiaGxtManagerToolbar  div.action-bar-menu-item.toolbar-itemsgroup-languageswitcher {
 			right: 5px!important;
 		}
 

@@ -207,7 +207,7 @@
 
         <graphql-java.version>11.0</graphql-java.version>
         <graphql-java-annotations.version>6.1</graphql-java-annotations.version>
-        <graphql-java-servlet.version>4.7.0-jahia3-SNAPSHOT</graphql-java-servlet.version>
+        <graphql-java-servlet.version>4.7.0-jahia3</graphql-java-servlet.version>
     </properties>
 
     <developers>

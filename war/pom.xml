@@ -56,7 +56,7 @@
     <packaging>war</packaging>
 
     <properties>
-        <felix.framework.version>5.4.0-jahia1-SNAPSHOT</felix.framework.version>
+        <felix.framework.version>5.4.0-jahia1</felix.framework.version>
     </properties>
 
     <profiles>

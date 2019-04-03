@@ -44,7 +44,9 @@
 package org.jahia.services.query;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.commons.iterator.RowIteratorAdapter;
+import org.apache.jackrabbit.core.query.lucene.CountRow;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.RangeFacet;
 import org.jahia.services.content.JCRNodeIteratorWrapper;
@@ -71,6 +73,7 @@ public final class QueryResultWrapperImpl implements QueryResultWrapper {
     
     private List<QueryResultAdapter> queryResults;
     private long limit;
+    private RowIterator aggregatedCountRow = null;
 
     /**
      * Decorates the provided list of query results, if needed.
@@ -110,13 +113,41 @@ public final class QueryResultWrapperImpl implements QueryResultWrapper {
     public RowIterator getRows() throws RepositoryException {
         RowIterator resultRowIterator = RowIteratorAdapter.EMPTY;
         if (!queryResults.isEmpty()) {
-            List<RowIterator> rowIterators = new ArrayList<RowIterator>();
-            for (final QueryResultAdapter queryResult : queryResults) {
-                rowIterators.add(queryResult.getRows());
+            if (QueryWrapper.isCount(getColumnNames())) {
+                resultRowIterator = getAggregatedCount();
+            } else {
+                List<RowIterator> rowIterators = new ArrayList<RowIterator>();
+                for (final QueryResultAdapter queryResult : queryResults) {
+                    rowIterators.add(queryResult.getRows());
+                }
+                resultRowIterator = new MultipleRowIterator(rowIterators, limit);
             }
-            resultRowIterator = new MultipleRowIterator(rowIterators, limit);
         }
         return resultRowIterator;
+    }
+
+    private RowIterator getAggregatedCount() throws RepositoryException {
+        if (aggregatedCountRow == null) {
+            long aggregatedCount = 0;
+            boolean aggregatedApproxLimitReached = false;
+
+            for (final QueryResultAdapter queryResult : queryResults) {
+                RowIterator queryResultRowIterator = queryResult.getRows();
+
+                if (queryResultRowIterator != null && queryResultRowIterator.hasNext()) {
+                    QueryResultAdapter.RowDecorator row = (QueryResultAdapter.RowDecorator) queryResultRowIterator.nextRow();
+
+                    if (row != null && row.getRawRow() instanceof CountRow) {
+                        aggregatedCount += row.getValue(StringUtils.EMPTY).getLong();
+                        aggregatedApproxLimitReached = aggregatedApproxLimitReached || row.getValue(CountRow.APPROX_LIMIT_REACHED).getBoolean();
+                    }
+                }
+            }
+
+            aggregatedCountRow = new RowIteratorAdapter(Collections.singletonList(new CountRow(aggregatedCount, aggregatedApproxLimitReached)));
+        }
+
+        return aggregatedCountRow;
     }
 
     public JCRNodeIteratorWrapper getNodes() throws RepositoryException {

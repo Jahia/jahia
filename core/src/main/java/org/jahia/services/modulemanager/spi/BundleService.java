@@ -140,6 +140,18 @@ public interface BundleService {
             throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException;
 
     /**
+     * Performs the update operation with the provided bundle on the target group of cluster nodes.
+     *
+     * @param bundleInfo The bundle to perform operation for
+     * @param target The group of cluster nodes targeted by the update operation (see JavaDoc of the class)
+     * @throws ModuleManagementException in case of operation failure
+     * @throws ModuleNotFoundException in case the corresponding bundle cannot be found
+     * @throws InvalidTargetException in case target is not a valid target for module operation
+     */
+    void update(BundleInfo bundleInfo, String target)
+            throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException;
+
+    /**
      * Get info about a bundle.
      *
      * @param bundleInfo The bundle to retrieve info about
@@ -152,7 +164,7 @@ public interface BundleService {
     /**
      * Get info about multiple bundles.
      *
-     * @param bundleInfo The bundle to retrieve info about
+     * @param bundleInfos The bundles to retrieve info about
      * @param target The group of cluster nodes to get info from (see JavaDoc of the class)
      * @return A map of bundle info by bundle key by cluster node name; each map value is either a LocalModuleInfo instance in case the bundle is a DX module, or a LocalBundleInfo instance otherwise
      * @throws InvalidTargetException in case the target is not a valid one

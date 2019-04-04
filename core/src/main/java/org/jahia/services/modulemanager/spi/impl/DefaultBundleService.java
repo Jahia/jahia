@@ -197,6 +197,17 @@ public class DefaultBundleService implements BundleService {
     }
 
     @Override
+    public void update(BundleInfo bundleInfo, String target) throws ModuleManagementException {
+        try {
+            Bundle bundle = getBundleEnsureExists(bundleInfo);
+            BundleLifecycleUtils.updateBundle(bundle);
+            BundleLifecycleUtils.startBundlesPendingDependencies();
+        } catch (BundleException e) {
+            throw new ModuleManagementException(e);
+        }
+    }
+
+    @Override
     public Map<String, BundleInformation> getInfo(BundleInfo bundleInfo, String target) throws ModuleManagementException, InvalidTargetException {
 
         assertNoTarget(target);

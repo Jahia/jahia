@@ -64,50 +64,27 @@ public class ModuleManagerImplTest {
 
     @Test
     public void moduleInstallShouldFailInReadOnlyMode() {
-
-        verifyFailureInReadOnlyMode(new Runnable() {
-
-            @Override
-            public void run() {
-                moduleManager.install((Collection<Resource>) null, null, false);
-            }
-        });
+        verifyFailureInReadOnlyMode(() -> moduleManager.install((Collection<Resource>) null, null, false));
     }
 
     @Test
     public void moduleUninstallShouldFailInReadOnlyMode() {
-
-        verifyFailureInReadOnlyMode(new Runnable() {
-
-            @Override
-            public void run() {
-                moduleManager.uninstall("bundleKey", null);
-            }
-        });
+        verifyFailureInReadOnlyMode(() -> moduleManager.uninstall("bundleKey", null));
     }
 
     @Test
     public void moduleStartShouldFailInReadOnlyMode() {
-
-        verifyFailureInReadOnlyMode(new Runnable() {
-
-            @Override
-            public void run() {
-                moduleManager.start("bundleKey", null);
-            }
-        });
+        verifyFailureInReadOnlyMode(() -> moduleManager.start("bundleKey", null));
     }
 
     @Test
     public void moduleStopShouldFailInReadOnlyMode() {
+        verifyFailureInReadOnlyMode(() -> moduleManager.stop("bundleKey", null));
+    }
 
-        verifyFailureInReadOnlyMode(new Runnable() {
-
-            @Override
-            public void run() {
-                moduleManager.stop("bundleKey", null);
-            }
-        });
+    @Test
+    public void moduleUpdateShouldFailInReadOnlyMode() {
+        verifyFailureInReadOnlyMode(() -> moduleManager.update("bundleKey", null));
     }
 
     private void verifyFailureInReadOnlyMode(Runnable action) {

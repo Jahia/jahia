@@ -442,6 +442,24 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
     }
 
     @Override
+    public OperationResult update(String bundleKey, String target) throws ModuleManagementException {
+
+        return performOperation(bundleKey, target, new BundleOperation() {
+
+            @Override
+            public String getName() { return "Update"; }
+
+            @Override
+            public boolean changesModuleState() { return true; }
+
+            @Override
+            public void perform(BundleInfo info, String target) throws ModuleManagementException {
+                bundleService.update(info, target);
+            }
+        });
+    }
+
+    @Override
     public Map<String, BundleService.BundleInformation> getInfo(String bundleKey, String target) throws ModuleManagementException {
         BundleInfo bundleInfo = getBundleInfo(bundleKey);
         return bundleService.getInfo(bundleInfo, target);

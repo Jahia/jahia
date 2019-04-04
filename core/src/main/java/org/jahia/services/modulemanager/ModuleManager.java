@@ -159,6 +159,16 @@ public interface ModuleManager {
     OperationResult refresh(String bundleKey, String target) throws ModuleManagementException;
 
     /**
+     * Update the specified bundle on the target group of cluster nodes.
+     *
+     * @param bundleKey Bundle key to update (see class JavaDoc for the supported key format)
+     * @param target The group of cluster nodes targeted by the update operation (see BundleService class JavaDoc)
+     * @return The result of the update operation
+     * @throws ModuleManagementException in case of problems
+     */
+    OperationResult update(String bundleKey, String target) throws ModuleManagementException;
+
+    /**
      * Get info about a bundle.
      *
      * @param bundleKey Bundle key (see class JavaDoc for the supported key format; note that bundle version is required)

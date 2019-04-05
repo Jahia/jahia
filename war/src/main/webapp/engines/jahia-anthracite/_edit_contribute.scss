@@ -2410,7 +2410,7 @@ div[role="combobox"].toolbar-itemsgroup-languageswitcher {
     height: 100%;
 
     body[data-chrome="false"] & {
-        div[role="presentation"].x-panel-tbar {
+        > div[role="presentation"] > div[role="presentation"].x-panel-tbar {
             display:none;
         }
 

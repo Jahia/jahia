@@ -505,7 +505,6 @@ public class RenderService implements InitializingBean {
         List<JCRNodeWrapper> nodesToAdd = JCRContentUtils.getNodes(node, type);
         List<JCRNodeWrapper> results = new ArrayList<>(nodesToAdd);
 
-        nodesToIterate.addAll(nodesToAdd);
         for (JCRNodeWrapper childNode : nodesToIterate) {
             results.addAll(getDescendantNodesOfType(childNode, type));
         }

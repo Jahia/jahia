@@ -331,13 +331,12 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
                 List<VanityUrl> vanityUrls = vanityUrlService.findExistingVanityUrls(path,
                         targetSiteKey, "live");
                 if (!vanityUrls.isEmpty()) {
-                    vanityUrls.get(0).getLanguage();
                     request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_LANG,
                             vanityUrls.get(0).getLanguage());
                     path = StringUtils.substringBefore(vanityUrls.get(0).getPath(), "/"
-                            + VanityUrlManager.VANITYURLMAPPINGS_NODE + "/")
-                            + ".html";
+                            + VanityUrlManager.VANITYURLMAPPINGS_NODE + "/");
                     request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_PATH, path);
+                    request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_ISFILE, true);
                 }
             } catch (RepositoryException e) {
                 logger.error("Cannot get vanity Url", e);

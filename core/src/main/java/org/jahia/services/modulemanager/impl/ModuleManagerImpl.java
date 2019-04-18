@@ -65,12 +65,17 @@ import org.jahia.services.templates.ModuleVersion;
 import org.jahia.settings.SettingsBean;
 import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
 import org.jahia.settings.readonlymode.ReadOnlyModeException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.wiring.FrameworkWiring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+
+import javax.jcr.RepositoryException;
 
 /**
  * The main entry point service for the module management service, providing functionality for module deployment, undeployment, start and
@@ -586,4 +591,42 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
             throw new ModuleManagementException(e);
         }
     }
+
+    @Override
+    public void applyBundlesPersistentStates() throws ModuleManagementException {
+        try {
+            Collection<BundlePersistentInfo> bundleInfos = Arrays.stream(FrameworkService.getBundleContext().getBundles())
+                    .map(BundlePersistentInfo::new).collect(Collectors.toSet());
+
+            JSONArray persistedStates = BundleInfoJcrHelper.getPersistedStates(bundleInfos);
+            List<JSONObject> missingBundles = new ArrayList<>();
+            boolean doesBundleExists = false;
+            for (int i = 0; i < persistedStates.length(); i++) {
+                doesBundleExists = false;
+                JSONObject bundleTuple = persistedStates.getJSONObject(i);
+                for (BundlePersistentInfo bundleInfo : bundleInfos) {
+                    if (bundleInfo.getSymbolicName().equals(bundleTuple.getString("symbolicName"))) {
+                        doesBundleExists = true;
+                        if (!(bundleInfo.getState() == bundleTuple.getInt("state")) && bundleTuple.getInt("state") == Bundle.ACTIVE) {
+                            start(bundleInfo.getLocation(), "default");
+                        }
+                        if (!(bundleInfo.getState() == bundleTuple.getInt("state")) && bundleTuple.getInt("state") == Bundle.INSTALLED) {
+                            stop(bundleInfo.getLocation(), "default");
+                        }
+                    }
+                }
+                if (!doesBundleExists) {
+                    missingBundles.add(bundleTuple);
+                }
+            }
+
+            for (JSONObject missingBundle : missingBundles) {
+                bundleService.install(missingBundle.getString("location"), "default", missingBundle.getInt("state") == Bundle.ACTIVE);
+            }
+        } catch (RepositoryException | JSONException e) {
+            throw new ModuleManagementException(e);
+        }
+
+    }
+
 }

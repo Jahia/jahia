@@ -240,4 +240,6 @@ public interface ModuleManager {
      * @return A collection of info objects describing the bundles whose persistent state have been stored
      */
     Collection<BundlePersistentInfo> storeAllLocalPersistentStates() throws ModuleManagementException;
+
+    void applyBundlesPersistentStates() throws ModuleManagementException;
 }

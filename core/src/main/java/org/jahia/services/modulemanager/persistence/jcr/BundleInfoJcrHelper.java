@@ -44,15 +44,13 @@
 package org.jahia.services.modulemanager.persistence.jcr;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.BundlePersistentInfo;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.jahia.settings.SettingsBean;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,6 +110,24 @@ final public class BundleInfoJcrHelper {
                 return null;
             }
         });
+    }
+
+    /**
+     *
+     * @param bundles
+     * @throws RepositoryException
+     */
+    public static JSONArray getPersistedStates(Collection<BundlePersistentInfo> bundles) throws RepositoryException {
+        String jcrProperty = JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
+            JCRPropertyWrapper property = session.getNode(PATH_MODULE_MANAGEMENT).getProperty(PROP_BUNDLES_PERSISTENT_STATE);
+            return property.getValue().getString();
+        });
+        try {
+            return new JSONArray(jcrProperty);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**

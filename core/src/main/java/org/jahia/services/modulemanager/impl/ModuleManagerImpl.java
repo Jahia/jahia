@@ -598,9 +598,9 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
             Collection<BundlePersistentInfo> bundleInfos = Arrays.stream(FrameworkService.getBundleContext().getBundles())
                     .map(BundlePersistentInfo::new).collect(Collectors.toSet());
 
-            JSONArray persistedStates = BundleInfoJcrHelper.getPersistedStates(bundleInfos);
+            JSONArray persistedStates = BundleInfoJcrHelper.getPersistedStates();
             List<JSONObject> missingBundles = new ArrayList<>();
-            boolean doesBundleExists = false;
+            boolean doesBundleExists;
             for (int i = 0; i < persistedStates.length(); i++) {
                 doesBundleExists = false;
                 JSONObject bundleTuple = persistedStates.getJSONObject(i);

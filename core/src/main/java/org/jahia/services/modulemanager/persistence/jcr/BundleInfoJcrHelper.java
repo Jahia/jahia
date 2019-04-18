@@ -113,21 +113,17 @@ final public class BundleInfoJcrHelper {
     }
 
     /**
-     *
-     * @param bundles
+     * This method will retrieve j:bundlePersistentStates as a String and returns it as a JSONArray
+     * @return JSONArray with all bundle infos persisted before
      * @throws RepositoryException
+     * @throws JSONException
      */
-    public static JSONArray getPersistedStates(Collection<BundlePersistentInfo> bundles) throws RepositoryException {
+    public static JSONArray getPersistedStates() throws RepositoryException, JSONException {
         String jcrProperty = JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
             JCRPropertyWrapper property = session.getNode(PATH_MODULE_MANAGEMENT).getProperty(PROP_BUNDLES_PERSISTENT_STATE);
             return property.getValue().getString();
         });
-        try {
-            return new JSONArray(jcrProperty);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return new JSONArray(jcrProperty);
     }
 
     /**

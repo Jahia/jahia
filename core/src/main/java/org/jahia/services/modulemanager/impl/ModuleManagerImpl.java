@@ -593,7 +593,7 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
     }
 
     @Override
-    public void applyBundlesPersistentStates() throws ModuleManagementException {
+    public void applyBundlesPersistentStates(String target) throws ModuleManagementException {
         try {
             Collection<BundlePersistentInfo> bundleInfos = Arrays.stream(FrameworkService.getBundleContext().getBundles())
                     .map(BundlePersistentInfo::new).collect(Collectors.toSet());
@@ -615,7 +615,7 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
                 }
             }
             for (JSONObject missingBundle : missingBundles) {
-                bundleService.install(missingBundle.getString("location"), "default", false);
+                bundleService.install(missingBundle.getString("location"), target, false);
             }
             bundleInfos = Arrays.stream(FrameworkService.getBundleContext().getBundles())
                     .map(BundlePersistentInfo::new).collect(Collectors.toSet());
@@ -624,10 +624,10 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
                 for (BundlePersistentInfo bundleInfo : bundleInfos) {
                     if (bundleInfo.getSymbolicName().equals(bundleTuple.getString("symbolicName"))) {
                         if (!(bundleInfo.getState() == bundleTuple.getInt("state")) && bundleInfo.getVersion().equals(bundleTuple.getString("version")) && bundleTuple.getInt("state") == Bundle.ACTIVE) {
-                            start(bundleInfo.getLocation(), "default");
+                            start(bundleInfo.getLocation(), target);
                         }
                         if (!(bundleInfo.getState() == bundleTuple.getInt("state")) && bundleInfo.getVersion().equals(bundleTuple.getString("version")) && bundleTuple.getInt("state") == Bundle.INSTALLED) {
-                            stop(bundleInfo.getLocation(), "default");
+                            stop(bundleInfo.getLocation(), target);
                         }
                     }
                 }

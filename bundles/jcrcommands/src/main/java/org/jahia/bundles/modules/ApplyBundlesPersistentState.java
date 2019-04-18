@@ -24,6 +24,7 @@
 package org.jahia.bundles.modules;
 
 import org.apache.karaf.shell.api.action.Action;
+import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
@@ -41,7 +42,7 @@ import java.util.Collection;
 @Command(
         scope = "bundle",
         name = "apply-bundle-states",
-        description = "Output DX modules with their persistent state and version, and save those information in the JCR"
+        description = "Apply persistent bundle states from JCR"
 )
 @Service
 public class ApplyBundlesPersistentState implements Action {
@@ -49,9 +50,16 @@ public class ApplyBundlesPersistentState implements Action {
     @Reference
     private ModuleManager moduleManager;
 
+    @Argument(description = "target")
+    private String target;
+
     @Override
     public Object execute() throws Exception {
-        moduleManager.applyBundlesPersistentStates();
+
+        if (target == null) {
+            target = "default";
+        }
+        moduleManager.applyBundlesPersistentStates(target);
         return null;
     }
 

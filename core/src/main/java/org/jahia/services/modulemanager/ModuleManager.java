@@ -244,5 +244,5 @@ public interface ModuleManager {
     /**
      * retrieves persistent state of all bundles from the internal storage for the purpose of restore them by karaf command.
      */
-    void applyBundlesPersistentStates() throws ModuleManagementException;
+    void applyBundlesPersistentStates(String target) throws ModuleManagementException;
 }

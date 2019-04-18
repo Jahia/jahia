@@ -601,27 +601,36 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
             JSONArray persistedStates = BundleInfoJcrHelper.getPersistedStates();
             List<JSONObject> missingBundles = new ArrayList<>();
             boolean doesBundleExists;
+            //get missing bundles to install them FIRST
             for (int i = 0; i < persistedStates.length(); i++) {
                 doesBundleExists = false;
                 JSONObject bundleTuple = persistedStates.getJSONObject(i);
                 for (BundlePersistentInfo bundleInfo : bundleInfos) {
                     if (bundleInfo.getSymbolicName().equals(bundleTuple.getString("symbolicName"))) {
                         doesBundleExists = true;
-                        if (!(bundleInfo.getState() == bundleTuple.getInt("state")) && bundleTuple.getInt("state") == Bundle.ACTIVE) {
-                            start(bundleInfo.getLocation(), "default");
-                        }
-                        if (!(bundleInfo.getState() == bundleTuple.getInt("state")) && bundleTuple.getInt("state") == Bundle.INSTALLED) {
-                            stop(bundleInfo.getLocation(), "default");
-                        }
                     }
                 }
                 if (!doesBundleExists) {
                     missingBundles.add(bundleTuple);
                 }
             }
-
             for (JSONObject missingBundle : missingBundles) {
-                bundleService.install(missingBundle.getString("location"), "default", missingBundle.getInt("state") == Bundle.ACTIVE);
+                bundleService.install(missingBundle.getString("location"), "default", false);
+            }
+            bundleInfos = Arrays.stream(FrameworkService.getBundleContext().getBundles())
+                    .map(BundlePersistentInfo::new).collect(Collectors.toSet());
+            for (int i = 0; i < persistedStates.length(); i++) {
+                JSONObject bundleTuple = persistedStates.getJSONObject(i);
+                for (BundlePersistentInfo bundleInfo : bundleInfos) {
+                    if (bundleInfo.getSymbolicName().equals(bundleTuple.getString("symbolicName"))) {
+                        if (!(bundleInfo.getState() == bundleTuple.getInt("state")) && bundleInfo.getVersion().equals(bundleTuple.getString("version")) && bundleTuple.getInt("state") == Bundle.ACTIVE) {
+                            start(bundleInfo.getLocation(), "default");
+                        }
+                        if (!(bundleInfo.getState() == bundleTuple.getInt("state")) && bundleInfo.getVersion().equals(bundleTuple.getString("version")) && bundleTuple.getInt("state") == Bundle.INSTALLED) {
+                            stop(bundleInfo.getLocation(), "default");
+                        }
+                    }
+                }
             }
         } catch (RepositoryException | JSONException e) {
             throw new ModuleManagementException(e);

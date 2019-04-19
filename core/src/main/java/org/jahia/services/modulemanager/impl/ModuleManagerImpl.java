@@ -595,38 +595,35 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
     @Override
     public void applyBundlesPersistentStates(String target) throws ModuleManagementException {
         try {
-            Collection<BundlePersistentInfo> bundleInfos = Arrays.stream(FrameworkService.getBundleContext().getBundles())
-                    .map(BundlePersistentInfo::new).collect(Collectors.toSet());
+            final JSONArray persistedStates = BundleInfoJcrHelper.getPersistedStates();
+            final Set<String> installedBundleSymbolicNames = Arrays.stream(FrameworkService.getBundleContext().getBundles())
+                    .map(Bundle::getSymbolicName)
+                    .collect(Collectors.toSet());
 
-            JSONArray persistedStates = BundleInfoJcrHelper.getPersistedStates();
-            List<JSONObject> missingBundles = new ArrayList<>();
-            boolean doesBundleExists;
-            //get missing bundles to install them FIRST
+            // install missing bundles
             for (int i = 0; i < persistedStates.length(); i++) {
-                doesBundleExists = false;
                 JSONObject bundleTuple = persistedStates.getJSONObject(i);
-                for (BundlePersistentInfo bundleInfo : bundleInfos) {
-                    if (bundleInfo.getSymbolicName().equals(bundleTuple.getString("symbolicName"))) {
-                        doesBundleExists = true;
-                    }
-                }
-                if (!doesBundleExists) {
-                    missingBundles.add(bundleTuple);
+                if (!installedBundleSymbolicNames.contains(bundleTuple.getString("symbolicName"))) {
+                    String location = bundleTuple.getString("location");
+                    bundleService.install(location, target, false);
                 }
             }
-            for (JSONObject missingBundle : missingBundles) {
-                bundleService.install(missingBundle.getString("location"), target, false);
-            }
-            bundleInfos = Arrays.stream(FrameworkService.getBundleContext().getBundles())
-                    .map(BundlePersistentInfo::new).collect(Collectors.toSet());
+
+            Collection<BundlePersistentInfo> bundleInfos = Arrays.stream(FrameworkService.getBundleContext().getBundles())
+                    .map(BundlePersistentInfo::new)
+                    .collect(Collectors.toSet());
+
             for (int i = 0; i < persistedStates.length(); i++) {
                 JSONObject bundleTuple = persistedStates.getJSONObject(i);
                 for (BundlePersistentInfo bundleInfo : bundleInfos) {
                     if (bundleInfo.getSymbolicName().equals(bundleTuple.getString("symbolicName"))) {
-                        if (!(bundleInfo.getState() == bundleTuple.getInt("state")) && bundleInfo.getVersion().equals(bundleTuple.getString("version")) && bundleTuple.getInt("state") == Bundle.ACTIVE) {
+                        int expectedState = bundleTuple.getInt("state");
+                        String expectedVersion = bundleTuple.getString("version");
+
+                        if (!(bundleInfo.getState() == expectedState) && bundleInfo.getVersion().equals(expectedVersion) && expectedState == Bundle.ACTIVE) {
                             start(bundleInfo.getLocation(), target);
                         }
-                        if (!(bundleInfo.getState() == bundleTuple.getInt("state")) && bundleInfo.getVersion().equals(bundleTuple.getString("version")) && bundleTuple.getInt("state") == Bundle.INSTALLED) {
+                        if (!(bundleInfo.getState() == expectedState) && bundleInfo.getVersion().equals(expectedVersion) && expectedState == Bundle.INSTALLED) {
                             stop(bundleInfo.getLocation(), target);
                         }
                     }

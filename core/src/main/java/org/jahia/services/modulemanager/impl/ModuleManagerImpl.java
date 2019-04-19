@@ -595,6 +595,10 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
     @Override
     public void applyBundlesPersistentStates(String target) throws ModuleManagementException {
         try {
+            if (!SettingsBean.getInstance().isProcessingServer()) {
+                throw new NonProcessingNodeException();
+            }
+
             final JSONArray persistedStates = BundleInfoJcrHelper.getPersistedStates();
             final Set<String> installedBundleSymbolicNames = Arrays.stream(FrameworkService.getBundleContext().getBundles())
                     .map(Bundle::getSymbolicName)

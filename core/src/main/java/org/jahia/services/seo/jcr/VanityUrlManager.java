@@ -379,6 +379,7 @@ public class VanityUrlManager {
         } else if (vanityUrlNode.getProperty(PROPERTY_ACTIVE).getBoolean() == vanityUrl.isActive()
                 && vanityUrlNode.getProperty(PROPERTY_URL).getString().equals(vanityUrl.getUrl())
                 && vanityUrlNode.getProperty(PROPERTY_DEFAULT).getBoolean() == vanityUrl.isDefaultMapping()
+                && vanityUrlNode.getProperty(PROPERTY_FILE).getBoolean() == vanityUrl.isFile()
                 && vanityUrlNode.getProperty(JCR_LANGUAGE).getString().equals(vanityUrl.getLanguage())) {
             return false;
         } else {
@@ -389,6 +390,7 @@ public class VanityUrlManager {
         vanityUrlNode.setProperty(JCR_LANGUAGE, vanityUrl.getLanguage());
         vanityUrlNode.setProperty(PROPERTY_ACTIVE, vanityUrl.isActive());
         vanityUrlNode.setProperty(PROPERTY_DEFAULT, vanityUrl.isDefaultMapping());
+        vanityUrlNode.setProperty(PROPERTY_FILE, vanityUrl.isFile());
 
         if (previousDefaultVanityUrlNode != null) {
             previousDefaultVanityUrlNode.setProperty(PROPERTY_DEFAULT, false);

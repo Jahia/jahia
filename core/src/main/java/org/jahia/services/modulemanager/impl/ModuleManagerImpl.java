@@ -43,9 +43,6 @@
  */
 package org.jahia.services.modulemanager.impl;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 import org.drools.core.util.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
@@ -65,17 +62,16 @@ import org.jahia.services.templates.ModuleVersion;
 import org.jahia.settings.SettingsBean;
 import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
 import org.jahia.settings.readonlymode.ReadOnlyModeException;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.Version;
 import org.osgi.framework.wiring.FrameworkWiring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
-import javax.jcr.RepositoryException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * The main entry point service for the module management service, providing functionality for module deployment, undeployment, start and
@@ -624,12 +620,14 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
      * @param target the group of cluster nodes targeted
      */
     private void installMissingBundlesFromPersistentStates(Collection<BundlePersistentInfo> persistentStates, String target) {
-        final Set<String> installedBundles = Arrays.stream(FrameworkService.getBundleContext().getBundles())
-                .map(Bundle::getSymbolicName)
-                .collect(Collectors.toSet());
+        final Map<String, Set<String>> installedBundles = Arrays.stream(FrameworkService.getBundleContext().getBundles())
+                .map(BundlePersistentInfo::new)
+                .collect(Collectors.groupingBy(BundlePersistentInfo::getSymbolicName, Collectors.mapping(BundlePersistentInfo::getVersion, Collectors.toSet())));
 
         for (BundlePersistentInfo persistentState : persistentStates) {
-            if (!installedBundles.contains(persistentState.getSymbolicName())) {
+            Set<String> versions = installedBundles.get(persistentState.getSymbolicName());
+
+            if (versions == null || !versions.contains(persistentState.getVersion())) {
                 bundleService.install(persistentState.getLocation(), target, false);
             }
         }

@@ -595,10 +595,6 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
     @Override
     public void applyBundlesPersistentStates(String target) throws ModuleManagementException {
         try {
-            if (!SettingsBean.getInstance().isProcessingServer()) {
-                throw new NonProcessingNodeException();
-            }
-
             final Collection<BundlePersistentInfo> persistentStates = BundleInfoJcrHelper.getPersistentStates();
             installMissingBundlesFromPersistentStates(persistentStates, target);
 

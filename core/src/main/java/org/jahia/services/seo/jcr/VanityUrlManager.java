@@ -95,7 +95,7 @@ public class VanityUrlManager {
      */
     public static final String PROPERTY_ACTIVE = "j:active";
     /**
-     * Property name specifying if vanity URL is active
+     * Property name specifying if it's vanity URL for a file
      */
     public static final String PROPERTY_FILE = "j:file";
 

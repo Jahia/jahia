@@ -59,7 +59,10 @@ import pl.touk.throwing.ThrowingFunction;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -101,29 +104,42 @@ final public class BundleInfoJcrHelper {
             return obj;
         })).collect(Collectors.toList()));
 
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Void>() {
-
-            @Override
-            public Void doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                session.getNode(PATH_MODULE_MANAGEMENT).setProperty(PROP_BUNDLES_PERSISTENT_STATE, bundleListJson.toString());
-                session.save();
-                return null;
-            }
+        JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
+            session.getNode(PATH_MODULE_MANAGEMENT).setProperty(PROP_BUNDLES_PERSISTENT_STATE, bundleListJson.toString());
+            session.save();
+            return null;
         });
     }
 
     /**
-     * This method will retrieve j:bundlePersistentStates as a String and returns it as a JSONArray
-     * @return JSONArray with all bundle infos persisted before
-     * @throws RepositoryException
-     * @throws JSONException
+     * Returns bundles persistent states.
+     *
+     * @return a collection of bundles persistent state
+     * @throws JSONException if an error occurs while parsing the property value from the JCR
+     * @throws RepositoryException if an error occurs while accessing the JCR
      */
-    public static JSONArray getPersistedStates() throws RepositoryException, JSONException {
-        String jcrProperty = JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
-            JCRPropertyWrapper property = session.getNode(PATH_MODULE_MANAGEMENT).getProperty(PROP_BUNDLES_PERSISTENT_STATE);
-            return property.getValue().getString();
+    public static Collection<BundlePersistentInfo> getPersistentStates() throws JSONException, RepositoryException {
+        String propertyValue = JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
+           JCRPropertyWrapper property = session.getNode(PATH_MODULE_MANAGEMENT).getProperty(PROP_BUNDLES_PERSISTENT_STATE);
+           return property.getValue().getString();
         });
-        return new JSONArray(jcrProperty);
+
+        if (StringUtils.isEmpty(propertyValue)) {
+            return Collections.emptyList();
+        }
+
+        List<BundlePersistentInfo> persistentStates = new ArrayList<>();
+        JSONArray jsonArray = new JSONArray(propertyValue);
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject o = jsonArray.getJSONObject(i);
+            persistentStates.add(new BundlePersistentInfo(
+                    o.getString("location"),
+                    o.getString("symbolicName"),
+                    o.getString("version"),
+                    o.getInt("state"))
+            );
+        }
+        return persistentStates;
     }
 
     /**

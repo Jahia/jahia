@@ -599,44 +599,67 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
                 throw new NonProcessingNodeException();
             }
 
-            final JSONArray persistedStates = BundleInfoJcrHelper.getPersistedStates();
-            final Set<String> installedBundleSymbolicNames = Arrays.stream(FrameworkService.getBundleContext().getBundles())
-                    .map(Bundle::getSymbolicName)
-                    .collect(Collectors.toSet());
+            final Collection<BundlePersistentInfo> persistentStates = BundleInfoJcrHelper.getPersistentStates();
+            installMissingBundlesFromPersistentStates(persistentStates, target);
 
-            // install missing bundles
-            for (int i = 0; i < persistedStates.length(); i++) {
-                JSONObject bundleTuple = persistedStates.getJSONObject(i);
-                if (!installedBundleSymbolicNames.contains(bundleTuple.getString("symbolicName"))) {
-                    String location = bundleTuple.getString("location");
-                    bundleService.install(location, target, false);
-                }
-            }
-
-            Collection<BundlePersistentInfo> bundleInfos = Arrays.stream(FrameworkService.getBundleContext().getBundles())
+            final Collection<BundlePersistentInfo> bundles = Arrays.stream(FrameworkService.getBundleContext().getBundles())
                     .map(BundlePersistentInfo::new)
                     .collect(Collectors.toSet());
 
-            for (int i = 0; i < persistedStates.length(); i++) {
-                JSONObject bundleTuple = persistedStates.getJSONObject(i);
-                for (BundlePersistentInfo bundleInfo : bundleInfos) {
-                    if (bundleInfo.getSymbolicName().equals(bundleTuple.getString("symbolicName"))) {
-                        int expectedState = bundleTuple.getInt("state");
-                        String expectedVersion = bundleTuple.getString("version");
-
-                        if (!(bundleInfo.getState() == expectedState) && bundleInfo.getVersion().equals(expectedVersion) && expectedState == Bundle.ACTIVE) {
-                            start(bundleInfo.getLocation(), target);
-                        }
-                        if (!(bundleInfo.getState() == expectedState) && bundleInfo.getVersion().equals(expectedVersion) && expectedState == Bundle.INSTALLED) {
-                            stop(bundleInfo.getLocation(), target);
-                        }
-                    }
-                }
+            for (BundlePersistentInfo persistentState : persistentStates) {
+                 bundles.stream()
+                        .filter(bundle -> bundle.isSameVersionAs(persistentState))
+                        .findFirst().ifPresent(bundle -> applyPersistentState(
+                                bundle.getLocation(), bundle.getState(), persistentState.getState(), target
+                        ));
             }
-        } catch (RepositoryException | JSONException e) {
+
+        } catch (ModuleManagementException e) {
+            throw e;
+        } catch (Exception e) {
             throw new ModuleManagementException(e);
         }
+    }
 
+    /*
+     * Install missing modules referenced in persistent states.
+     *
+     * @param persistentStates the persistent module states
+     * @param target the group of cluster nodes targeted
+     */
+    private void installMissingBundlesFromPersistentStates(Collection<BundlePersistentInfo> persistentStates, String target) {
+        final Set<String> installedBundles = Arrays.stream(FrameworkService.getBundleContext().getBundles())
+                .map(Bundle::getSymbolicName)
+                .collect(Collectors.toSet());
+
+        for (BundlePersistentInfo persistentState : persistentStates) {
+            if (!installedBundles.contains(persistentState.getSymbolicName())) {
+                bundleService.install(persistentState.getLocation(), target, false);
+            }
+        }
+    }
+
+    /*
+     * Apply a persistent state to a specific bundle
+     *
+     * @param bundleLocation the location of the bundle to apply the persistent state to
+     * @param currentState the current state of the bundle to apply the persistent state to
+     * @param persistentState the state to apply
+     * @param target the group of cluster nodes targeted
+     */
+    private void applyPersistentState(String bundleLocation, int currentState, int persistentState, String target) {
+        if (currentState == persistentState) {
+            return;
+        }
+
+        switch (persistentState) {
+            case Bundle.ACTIVE:
+                start(bundleLocation, target);
+                break;
+            case Bundle.INSTALLED:
+                stop(bundleLocation, target);
+                break;
+        }
     }
 
 }

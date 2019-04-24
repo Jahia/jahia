@@ -28,17 +28,17 @@ import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
-import org.jahia.services.modulemanager.BundlePersistentInfo;
+import org.apache.karaf.shell.support.table.Col;
+import org.apache.karaf.shell.support.table.ShellTable;
+import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.ModuleManager;
-
-import java.util.Collection;
+import org.jahia.services.modulemanager.OperationResult;
 
 /**
  * Short description of the class
  *
  * @author yousria
  */
-
 @Command(
         scope = "bundle",
         name = "apply-bundle-states",
@@ -55,11 +55,25 @@ public class ApplyBundlesPersistentState implements Action {
 
     @Override
     public Object execute() throws Exception {
-
         if (target == null) {
             target = "default";
         }
-        moduleManager.applyBundlesPersistentStates(target);
+
+        OperationResult result = moduleManager.applyBundlesPersistentStates(target);
+        if (result.getBundleInfos().isEmpty()) {
+            System.out.println("All bundles status were up-to-date");
+        } else {
+            // Fill the table to output result.
+            ShellTable table = new ShellTable();
+            table.column(new Col("Symbolic-Name"));
+            table.column(new Col("Version"));
+            table.column(new Col("Location"));
+            for (BundleInfo bundleInfo : result.getBundleInfos()) {
+                table.addRow().addContent(bundleInfo.getSymbolicName(), bundleInfo.getVersion(), bundleInfo.getKey());
+            }
+            table.print(System.out, true);
+        }
+
         return null;
     }
 

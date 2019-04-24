@@ -242,9 +242,10 @@ public interface ModuleManager {
     Collection<BundlePersistentInfo> storeAllLocalPersistentStates() throws ModuleManagementException;
 
     /**
-     * Restores persistent state of all bundles from the internal storage for the purpose of restore them by karaf command.
+     * Restores persistent state of all bundles from the internal storage.
      *
      * @param target The group of cluster nodes targeted by this operation (see BundleService class JavaDoc)
+     * @return The result of this operation which provides a list of bundles whose state has been updated
      */
-    void applyBundlesPersistentStates(String target) throws ModuleManagementException;
+    OperationResult applyBundlesPersistentStates(String target) throws ModuleManagementException;
 }

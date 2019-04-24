@@ -63,7 +63,6 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
 import org.jahia.settings.readonlymode.ReadOnlyModeException;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.Version;
 import org.osgi.framework.wiring.FrameworkWiring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -589,7 +588,7 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
     }
 
     @Override
-    public void applyBundlesPersistentStates(String target) throws ModuleManagementException {
+    public OperationResult applyBundlesPersistentStates(String target) throws ModuleManagementException {
         try {
             final Collection<BundlePersistentInfo> persistentStates = BundleInfoJcrHelper.getPersistentStates();
             installMissingBundlesFromPersistentStates(persistentStates, target);
@@ -598,13 +597,19 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
                     .map(BundlePersistentInfo::new)
                     .collect(Collectors.toSet());
 
+            final List<BundleInfo> updatedBundlesInfo = new ArrayList<>();
             for (BundlePersistentInfo persistentState : persistentStates) {
                  bundles.stream()
                         .filter(bundle -> bundle.isSameVersionAs(persistentState))
-                        .findFirst().ifPresent(bundle -> applyPersistentState(
+                        .findFirst().ifPresent(bundle -> {
+                            OperationResult result = applyPersistentState(
                                 bundle.getLocation(), bundle.getState(), persistentState.getState(), target
-                        ));
+                            );
+                            updatedBundlesInfo.addAll(result.getBundleInfos());
+                        }
+                 );
             }
+            return OperationResult.success(updatedBundlesInfo);
 
         } catch (ModuleManagementException e) {
             throw e;
@@ -640,20 +645,19 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
      * @param currentState the current state of the bundle to apply the persistent state to
      * @param persistentState the state to apply
      * @param target the group of cluster nodes targeted
+     * @return the result of this operation
      */
-    private void applyPersistentState(String bundleLocation, int currentState, int persistentState, String target) {
-        if (currentState == persistentState) {
-            return;
+    private OperationResult applyPersistentState(String bundleLocation, int currentState, int persistentState, String target) {
+        if (currentState != persistentState) {
+            switch (persistentState) {
+                case Bundle.ACTIVE:
+                    return start(bundleLocation, target);
+                case Bundle.INSTALLED:
+                    return stop(bundleLocation, target);
+            }
         }
 
-        switch (persistentState) {
-            case Bundle.ACTIVE:
-                start(bundleLocation, target);
-                break;
-            case Bundle.INSTALLED:
-                stop(bundleLocation, target);
-                break;
-        }
+        return OperationResult.success(Collections.emptyList());
     }
 
 }

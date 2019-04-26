@@ -318,14 +318,20 @@ public class AclListener extends DefaultEventListener {
                         boolean needPrivileged = false;
 
                         StringBuilder sql = new StringBuilder();
-                        sql.append("select ace.[j:roles] AS [rep:facet(facet.mincount=1)] from [jnt:ace] as ace where (not ([j:externalPermissionsName] is not null)) and ace.[j:aceType]='GRANT' and ace.[j:principal] = '");
+                        sql.append("select ace.[j:roles] AS [rep:facet(facet.mincount=1)] from [jnt:ace] as ace");
+                        sql.append(" where (not ([j:externalPermissionsName] is not null)) and ace.[j:aceType]='GRANT'");
+                        sql.append(" and ace.[j:principal] = '");
                         sql.append(principal);
                         sql.append("' and isdescendantnode(ace, ['/sites/");
                         sql.append(site);
                         sql.append("'])");
 
                         if (StringUtils.equals(site, JahiaSitesService.SYSTEM_SITE_KEY)) {
-                            sql.append(" or not isdescendantnode(ace, ['/sites']))");
+                            sql.append(" or isdescendantnode(ace, ['/mounts'])");
+                            sql.append(" or isdescendantnode(ace, ['/j:acl'])");
+                            sql.append(" or isdescendantnode(ace, ['/groups'])");
+                            sql.append(" or isdescendantnode(ace, ['/users'])");
+                            sql.append(" or isdescendantnode(ace, ['/modules'])");
                         }
 
                         rolesName.addAll(getRolesName(systemSession, sql.toString()));

@@ -322,7 +322,7 @@ public class AclListener extends DefaultEventListener {
                         sql.append(" where (not ([j:externalPermissionsName] is not null)) and ace.[j:aceType]='GRANT'");
                         sql.append(" and ace.[j:principal] = '");
                         sql.append(principal);
-                        sql.append("' and isdescendantnode(ace, ['/sites/");
+                        sql.append("' and (isdescendantnode(ace, ['/sites/");
                         sql.append(site);
                         sql.append("'])");
 
@@ -333,6 +333,8 @@ public class AclListener extends DefaultEventListener {
                             sql.append(" or isdescendantnode(ace, ['/users'])");
                             sql.append(" or isdescendantnode(ace, ['/modules'])");
                         }
+
+                        sql.append(')');
 
                         rolesName.addAll(getRolesName(systemSession, sql.toString()));
                         try {

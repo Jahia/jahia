@@ -317,15 +317,18 @@ public class AclListener extends DefaultEventListener {
                         List<String> rolesName = new ArrayList<String>();
                         boolean needPrivileged = false;
 
-                        String sql = StringUtils.equals(site, JahiaSitesService.SYSTEM_SITE_KEY) ? "select ace.[j:roles] AS [rep:facet(facet.mincount=1)] from [jnt:ace] as ace where (not ([j:externalPermissionsName] is not null)) and ace.[j:aceType]='GRANT' and ace.[j:principal] = '"
-                                + principal
-                                + "' and (isdescendantnode(ace, ['/sites/"
-                                + site
-                                + "']) or not isdescendantnode(ace, ['/sites']))"
-                                : "select ace.[j:roles] AS [rep:facet(facet.mincount=1)] from [jnt:ace] as ace where (not ([j:externalPermissionsName] is not null)) and ace.[j:aceType]='GRANT' and ace.[j:principal] = '"
-                                + principal + "' and isdescendantnode(ace, ['/sites/" + site + "'])";
+                        StringBuilder sql = new StringBuilder();
+                        sql.append("select ace.[j:roles] AS [rep:facet(facet.mincount=1)] from [jnt:ace] as ace where (not ([j:externalPermissionsName] is not null)) and ace.[j:aceType]='GRANT' and ace.[j:principal] = '");
+                        sql.append(principal);
+                        sql.append("' and isdescendantnode(ace, ['/sites/");
+                        sql.append(site);
+                        sql.append("'])");
 
-                        rolesName.addAll(getRolesName(systemSession, sql));
+                        if (StringUtils.equals(site, JahiaSitesService.SYSTEM_SITE_KEY)) {
+                            sql.append(" or not isdescendantnode(ace, ['/sites']))");
+                        }
+
+                        rolesName.addAll(getRolesName(systemSession, sql.toString()));
                         try {
                             for (String roleName : rolesName) {
                                 JCRNodeWrapper roleNode = getRole(systemSession, roleName, roleNodes);

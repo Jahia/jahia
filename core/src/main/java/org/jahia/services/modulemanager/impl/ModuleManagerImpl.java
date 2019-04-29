@@ -591,13 +591,12 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
     public OperationResult applyBundlesPersistentStates(String target) throws ModuleManagementException {
         try {
             final Collection<BundlePersistentInfo> persistentStates = BundleInfoJcrHelper.getPersistentStates();
-            installMissingBundlesFromPersistentStates(persistentStates, target);
+            List<BundleInfo> installedAndUpdatedBundles = installMissingBundlesFromPersistentStates(persistentStates, target);
 
             final Collection<BundlePersistentInfo> bundles = Arrays.stream(FrameworkService.getBundleContext().getBundles())
                     .map(BundlePersistentInfo::new)
                     .collect(Collectors.toSet());
 
-            final List<BundleInfo> updatedBundlesInfo = new ArrayList<>();
             for (BundlePersistentInfo persistentState : persistentStates) {
                  bundles.stream()
                         .filter(bundle -> bundle.isSameVersionAs(persistentState))
@@ -605,11 +604,11 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
                             OperationResult result = applyPersistentState(
                                 bundle.getLocation(), bundle.getState(), persistentState.getState(), target
                             );
-                            updatedBundlesInfo.addAll(result.getBundleInfos());
+                            installedAndUpdatedBundles.addAll(result.getBundleInfos());
                         }
                  );
             }
-            return OperationResult.success(updatedBundlesInfo);
+            return OperationResult.success(installedAndUpdatedBundles);
 
         } catch (ModuleManagementException e) {
             throw e;
@@ -624,18 +623,21 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
      * @param persistentStates the persistent module states
      * @param target the group of cluster nodes targeted
      */
-    private void installMissingBundlesFromPersistentStates(Collection<BundlePersistentInfo> persistentStates, String target) {
+    private List<BundleInfo> installMissingBundlesFromPersistentStates(Collection<BundlePersistentInfo> persistentStates, String target) {
         final Map<String, Set<String>> installedBundles = Arrays.stream(FrameworkService.getBundleContext().getBundles())
                 .map(BundlePersistentInfo::new)
                 .collect(Collectors.groupingBy(BundlePersistentInfo::getSymbolicName, Collectors.mapping(BundlePersistentInfo::getVersion, Collectors.toSet())));
 
+        final List<BundleInfo> installedBundlesInfo = new ArrayList<>();
         for (BundlePersistentInfo persistentState : persistentStates) {
             Set<String> versions = installedBundles.get(persistentState.getSymbolicName());
 
             if (versions == null || !versions.contains(persistentState.getVersion())) {
                 bundleService.install(persistentState.getLocation(), target, false);
+                installedBundlesInfo.add(new BundleInfo(persistentState.getLocation(), persistentState.getSymbolicName(), persistentState.getVersion()));
             }
         }
+        return installedBundlesInfo;
     }
 
     /*

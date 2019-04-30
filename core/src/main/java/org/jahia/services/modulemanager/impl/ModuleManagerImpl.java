@@ -43,6 +43,8 @@
  */
 package org.jahia.services.modulemanager.impl;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.drools.core.util.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
@@ -608,7 +610,7 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
                         }
                  );
             }
-            return OperationResult.success(installedAndUpdatedBundles);
+            return OperationResult.success(Lists.newArrayList(Sets.newHashSet(installedAndUpdatedBundles)));
 
         } catch (ModuleManagementException e) {
             throw e;

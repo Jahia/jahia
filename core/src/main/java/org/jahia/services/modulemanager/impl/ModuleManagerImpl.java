@@ -43,9 +43,8 @@
  */
 package org.jahia.services.modulemanager.impl;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.drools.core.util.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
@@ -71,6 +70,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * The main entry point service for the module management service, providing functionality for module deployment, undeployment, start and
@@ -586,4 +588,80 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
             throw new ModuleManagementException(e);
         }
     }
+
+    @Override
+    public OperationResult applyBundlesPersistentStates(String target) throws ModuleManagementException {
+        try {
+            final Collection<BundlePersistentInfo> persistentStates = BundleInfoJcrHelper.getPersistentStates();
+            List<BundleInfo> installedAndUpdatedBundles = installMissingBundlesFromPersistentStates(persistentStates, target);
+
+            final Collection<BundlePersistentInfo> bundles = Arrays.stream(FrameworkService.getBundleContext().getBundles())
+                    .map(BundlePersistentInfo::new)
+                    .collect(Collectors.toSet());
+
+            for (BundlePersistentInfo persistentState : persistentStates) {
+                 bundles.stream()
+                        .filter(bundle -> bundle.isSameVersionAs(persistentState))
+                        .findFirst().ifPresent(bundle -> {
+                            OperationResult result = applyPersistentState(
+                                bundle.getLocation(), bundle.getState(), persistentState.getState(), target
+                            );
+                            installedAndUpdatedBundles.addAll(result.getBundleInfos());
+                        }
+                 );
+            }
+            return OperationResult.success(Lists.newArrayList(Sets.newHashSet(installedAndUpdatedBundles)));
+
+        } catch (ModuleManagementException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ModuleManagementException(e);
+        }
+    }
+
+    /*
+     * Install missing modules referenced in persistent states.
+     *
+     * @param persistentStates the persistent module states
+     * @param target the group of cluster nodes targeted
+     */
+    private List<BundleInfo> installMissingBundlesFromPersistentStates(Collection<BundlePersistentInfo> persistentStates, String target) {
+        final Map<String, Set<String>> installedBundles = Arrays.stream(FrameworkService.getBundleContext().getBundles())
+                .map(BundlePersistentInfo::new)
+                .collect(Collectors.groupingBy(BundlePersistentInfo::getSymbolicName, Collectors.mapping(BundlePersistentInfo::getVersion, Collectors.toSet())));
+
+        final List<BundleInfo> installedBundlesInfo = new ArrayList<>();
+        for (BundlePersistentInfo persistentState : persistentStates) {
+            Set<String> versions = installedBundles.get(persistentState.getSymbolicName());
+
+            if (versions == null || !versions.contains(persistentState.getVersion())) {
+                bundleService.install(persistentState.getLocation(), target, false);
+                installedBundlesInfo.add(new BundleInfo(persistentState.getLocation(), persistentState.getSymbolicName(), persistentState.getVersion()));
+            }
+        }
+        return installedBundlesInfo;
+    }
+
+    /*
+     * Apply a persistent state to a specific bundle
+     *
+     * @param bundleLocation the location of the bundle to apply the persistent state to
+     * @param currentState the current state of the bundle to apply the persistent state to
+     * @param persistentState the state to apply
+     * @param target the group of cluster nodes targeted
+     * @return the result of this operation
+     */
+    private OperationResult applyPersistentState(String bundleLocation, int currentState, int persistentState, String target) {
+        if (currentState != persistentState) {
+            switch (persistentState) {
+                case Bundle.ACTIVE:
+                    return start(bundleLocation, target);
+                case Bundle.INSTALLED:
+                    return stop(bundleLocation, target);
+            }
+        }
+
+        return OperationResult.success(Collections.emptyList());
+    }
+
 }

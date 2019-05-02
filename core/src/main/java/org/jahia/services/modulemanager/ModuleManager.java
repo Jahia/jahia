@@ -240,4 +240,12 @@ public interface ModuleManager {
      * @return A collection of info objects describing the bundles whose persistent state have been stored
      */
     Collection<BundlePersistentInfo> storeAllLocalPersistentStates() throws ModuleManagementException;
+
+    /**
+     * Restores persistent state of all bundles from the internal storage.
+     *
+     * @param target The group of cluster nodes targeted by this operation (see BundleService class JavaDoc)
+     * @return The result of this operation which provides a list of bundles whose state has been updated
+     */
+    OperationResult applyBundlesPersistentStates(String target) throws ModuleManagementException;
 }

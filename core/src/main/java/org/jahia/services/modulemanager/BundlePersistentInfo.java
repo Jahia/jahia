@@ -57,10 +57,19 @@ public class BundlePersistentInfo {
     private String version;
 
     public BundlePersistentInfo(Bundle bundle) {
-        location = bundle.getLocation();
-        state = BundleUtils.getPersistentState(bundle);
-        symbolicName = bundle.getSymbolicName();
-        version = BundleUtils.getModuleVersion(bundle);
+        this(
+                bundle.getLocation(),
+                bundle.getSymbolicName(),
+                BundleUtils.getModuleVersion(bundle),
+                BundleUtils.getPersistentState(bundle)
+        );
+    }
+
+    public BundlePersistentInfo(String location, String symbolicName, String version, int state) {
+        this.location = location;
+        this.symbolicName = symbolicName;
+        this.version = version;
+        this.state = state;
     }
 
     public String getLocation() {
@@ -78,4 +87,18 @@ public class BundlePersistentInfo {
     public String getVersion() {
         return version;
     }
+
+    /**
+     * Returns {@code true} if this instance does refer to the
+     * same bundle version as {@code other}.
+     *
+     * @param other the instance to check against
+     * @return {@code true} if {@symbolicName} and {@version} of
+     *  both instances are the same, {@code false} otherwise
+     */
+    public boolean isSameVersionAs(BundlePersistentInfo other) {
+        return other.getSymbolicName().equals(symbolicName)
+                && other.getVersion().equals(version);
+    }
+
 }

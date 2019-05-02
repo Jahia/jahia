@@ -235,6 +235,14 @@
         </attribute>
         <attribute>
             <description>
+                async/defer attribute to load resource asynchronously
+            </description>
+            <name>load</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
                 The target tag where the link will be inserted
             </description>
             <name>targetTag</name>

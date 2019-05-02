@@ -142,7 +142,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     private static final Pattern URL_PATTERN_3 = Pattern.compile("url\\('(?!(/|http:|https:|data:))");
     private static final Pattern URL_PATTERN_4 = Pattern.compile("url\\((?!(/|'|\"|http:|https:|data:))");
 
-    private static final String[] OPTIONAL_ATTRIBUTES = new String[]{"title", "rel", "media", "condition"};
+    private static final String[] OPTIONAL_ATTRIBUTES = new String[]{"title", "rel", "media", "condition", "async", "defer"};
     private static final String TARGET_TAG = "targetTag";
     private static final String STATIC_ASSETS = "staticAssets";
     private static final String ASSET_ENCODING = "UTF-8";
@@ -267,7 +267,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             String type = esiResourceStartTag.getAttributeValue("type");
             String path = StringUtils.equals(type, "inline")
                     ? StringUtils.substring(out, esiResourceStartTag.getEnd(), esiResourceElement.getEndTag().getBegin())
-                    : URLDecoder.decode(esiResourceStartTag.getAttributeValue("path"), "UTF-8");
+                    : URLDecoder.decode(esiResourceStartTag.getAttributeValue("path"), ASSET_ENCODING);
             Boolean insert = Boolean.parseBoolean(esiResourceStartTag.getAttributeValue("insert"));
             String key = esiResourceStartTag.getAttributeValue("key");
 
@@ -877,7 +877,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         }
         try {
             MessageDigest digester = MessageDigest.getInstance("MD5");
-            byte[] digest = digester.digest(sb.toString().getBytes("UTF-8"));
+            byte[] digest = digester.digest(sb.toString().getBytes(ASSET_ENCODING));
             final StringBuilder hexString = new StringBuilder(digest.length * 2);
             for (byte aDigest : digest) {
                 hexString.append(Integer.toHexString(0xFF & aDigest));

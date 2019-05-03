@@ -53,7 +53,7 @@ renderContext.request.getAttribute("staticAssets").each { resource ->
                 defer = javascript.value != null ? javascript.value.get("defer") : null;
                 if (condition != null) println("<!--[" + condition + "]>");
                 url = renderContext.response.encodeURL(javascript.key);
-                println "<script id=\"staticAssetJavascript${targetTag == 'HEAD' ? '' : targetTag}${i}\" type=\"text/javascript\" src=\"${url}\" ${async != null ? "async=\"true\"" : (defer != null ? "defer=\"true\"" : "")}></script>";
+                println "<script id=\"staticAssetJavascript${targetTag == 'HEAD' ? '' : targetTag}${i}\" type=\"text/javascript\" src=\"${url}\" ${async != null ? "async=\"true\"" : ""} ${defer != null ? "defer=\"true\"" : ""}></script>";
                 if (condition != null) println("<![endif]-->");
             }
             break;

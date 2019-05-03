@@ -235,9 +235,17 @@
         </attribute>
         <attribute>
             <description>
-                async/defer attribute to load resource asynchronously
+                async attribute to load resource asynchronously
             </description>
-            <name>load</name>
+            <name>async</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                defer attribute to load resource asynchronously
+            </description>
+            <name>defer</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

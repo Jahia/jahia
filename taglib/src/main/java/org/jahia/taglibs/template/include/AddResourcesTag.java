@@ -78,7 +78,8 @@ public class AddResourcesTag extends AbstractJahiaTag {
     private static final long serialVersionUID = -552052631291168495L;
     private transient static Logger logger = LoggerFactory.getLogger(AddResourcesTag.class);
     private boolean insert;
-    private String load;
+    private boolean async;
+    private boolean defer;
     private String type;
     private String resources;
     private String title;
@@ -215,9 +216,14 @@ public class AddResourcesTag extends AbstractJahiaTag {
         this.type = type != null ? type.toLowerCase() : null;
     }
 
-    public void setLoad(String load) {
-        this.load = load;
+    public void setAsync(boolean async) {
+        this.async = async;
     }
+
+    public void setDefer(boolean defer) {
+        this.defer = defer;
+    }
+
     public void setResources(String resources) {
         this.resources = resources;
     }
@@ -299,13 +305,8 @@ public class AddResourcesTag extends AbstractJahiaTag {
             builder.append(" condition=\"").append(condition).append("\"");
         }
         builder.append(" resource=\"").append(resource != null ? resource : "").append("\"");
-        if (load != null) {
-            if (load.equals("defer")) {
-                builder.append(" defer=\"").append("true").append("\"");
-            } else if (load.equals("async")) {
-                builder.append(" async=\"").append("true").append("\"");
-            }
-        }
+        builder.append(" async=\"").append(async).append("\"");
+        builder.append(" defer=\"").append(defer).append("\"");
         builder.append(" title=\"").append(title != null ? title : "").append("\"");
         builder.append(" key=\"").append(key != null ? key : "").append("\"");
         if (!isTypeInline) {

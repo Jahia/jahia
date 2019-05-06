@@ -72,6 +72,8 @@ public class VanityUrl implements Serializable {
 
     private boolean active;
 
+    private boolean file;
+
     public VanityUrl() {
         super();
     }
@@ -226,6 +228,22 @@ public class VanityUrl implements Serializable {
      */
     public void setSite(String site) {
         this.site = site;
+    }
+
+    /**
+     * Is the vanity url for file access
+     * @return true if file, false if render
+     */
+    public boolean isFile() {
+        return file;
+    }
+
+    /**
+     * Set if the vanity url is for file access
+     * @param file true if file, false if render
+     */
+    public void setFile(boolean file) {
+        this.file = file;
     }
 
     @Override

@@ -140,6 +140,14 @@
         <to>%{attribute:org.jahia.services.seo.jcr.VanityUrl}</to>
     </outbound-rule>
 
+    <outbound-rule>
+        <name>Vanity url file</name>
+        <note>Check for vanity urls</note>
+        <from>^/files/live(.*)$</from>
+        <run class="org.jahia.services.seo.jcr.VanityUrlMapper" method="checkFileVanityUrl(HttpServletRequest, String)"/>
+        <to>%{attribute:org.jahia.services.seo.jcr.VanityUrl}</to>
+    </outbound-rule>
+
     <!-- Jahia Administration -->
     <rule enabled="true">
         <name>Jahia Administration</name>

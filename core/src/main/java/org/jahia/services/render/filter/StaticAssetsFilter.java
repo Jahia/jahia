@@ -484,8 +484,10 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                     if (optionsMap == null) {
                         optionsMap = new HashMap<>(OPTIONAL_ATTRIBUTES.length);
                     }
-
-                    optionsMap.put(attributeName, attribute);
+                    if (((attributeName.equals("async") || attributeName.equals("defer")) && attribute.equals("true"))
+                            || (!attributeName.equals("async") && !attributeName.equals("defer"))) {
+                        optionsMap.put(attributeName, attribute);
+                    }
                 }
             }
         }
@@ -579,7 +581,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             boolean pathExcluded = excludesFromAggregateAndCompress.contains(key) || resource == null;
             boolean onlyMediaOption = entry.getValue().size() == 1 && entry.getValue().containsKey("media");
             boolean noOption = entry.getValue().isEmpty();
-            boolean canAggregate = (onlyMediaOption || noOption) && !pathExcluded && (currentMedia == null || aggregateSupportedMedias.contains(currentMedia));
+            boolean asyncOrDiffer = !entry.getValue().isEmpty() && ((entry.getValue().get("async") != null && entry.getValue().get("async").equals("true")) || (entry.getValue().get("defer") != null && entry.getValue().get("defer").equals("true")));
+            boolean canAggregate = (onlyMediaOption || noOption || asyncOrDiffer) && !pathExcluded && (currentMedia == null || aggregateSupportedMedias.contains(currentMedia));
 
             if (canAggregate) {
                 // in case: aggregation is possible

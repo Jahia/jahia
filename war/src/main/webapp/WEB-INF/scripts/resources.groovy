@@ -53,7 +53,7 @@ renderContext.request.getAttribute("staticAssets").each { resource ->
                 defer = javascript.value != null ? javascript.value.get("defer") : null;
                 if (condition != null) println("<!--[" + condition + "]>");
                 url = renderContext.response.encodeURL(javascript.key);
-                println "<script id=\"staticAssetJavascript${targetTag == 'HEAD' ? '' : targetTag}${i}\" type=\"text/javascript\" src=\"${url}\" ${async != null && !async.equals("false") ? "async=\"${async}\"" : ""} ${defer != null && !defer.equals ("false") ? "defer=\"${defer}\"" : ""}></script>";
+                println "<script id=\"staticAssetJavascript${targetTag == 'HEAD' ? '' : targetTag}${i}\" type=\"text/javascript\" src=\"${url}\" ${async != null ? "async=\"${async}\"" : ""} ${defer != null ? "defer=\"${defer}\"" : ""}></script>";
                 if (condition != null) println("<![endif]-->");
             }
             break;
@@ -63,9 +63,47 @@ renderContext.request.getAttribute("staticAssets").each { resource ->
               println "var jASAJ=jASAJ || new Array();";
               type.value.eachWithIndex { javascript, i ->
                   condition = javascript.value != null ? javascript.value.get("condition") : null;
+                  async = javascript.value != null ? javascript.value.get("async") : null;
+                  defer = javascript.value != null ? javascript.value.get("defer") : null;
                   if (condition != null) println("<!--["+condition+"]>");
                   url = renderContext.response.encodeURL(javascript.key);
-                  println "jASAJ.push('${url}');";
+                  if (async == null && defer == null) println "jASAJ.push('${url}');";
+                  if (condition != null) println("<![endif]-->");
+              }
+              println "</script>";
+              println "<script id=\"staticAssetAggregatedJavascriptAsyncList${targetTag == 'HEAD'?'':targetTag}0\" type=\"text/javascript\" async=\"true\">";
+              println "var jASAJ=jASAJ || new Array();";
+              type.value.eachWithIndex { javascript, i ->
+                  condition = javascript.value != null ? javascript.value.get("condition") : null;
+                  async = javascript.value != null ? javascript.value.get("async") : null;
+                  defer = javascript.value != null ? javascript.value.get("defer") : null;
+                  if (condition != null) println("<!--["+condition+"]>");
+                  url = renderContext.response.encodeURL(javascript.key);
+                  if (async.equals("true") && defer == null) println "jASAJ.push('${url}');";
+                  if (condition != null) println("<![endif]-->");
+              }
+              println "</script>";
+              println "<script id=\"staticAssetAggregatedJavascriptDeferList${targetTag == 'HEAD'?'':targetTag}0\" type=\"text/javascript\" defer=\"true\">";
+              println "var jASAJ=jASAJ || new Array();";
+              type.value.eachWithIndex { javascript, i ->
+                  condition = javascript.value != null ? javascript.value.get("condition") : null;
+                  async = javascript.value != null ? javascript.value.get("async") : null;
+                  defer = javascript.value != null ? javascript.value.get("defer") : null;
+                  if (condition != null) println("<!--["+condition+"]>");
+                  url = renderContext.response.encodeURL(javascript.key);
+                  if (defer.equals("true") && async == null) println "jASAJ.push('${url}');";
+                  if (condition != null) println("<![endif]-->");
+              }
+              println "</script>";
+              println "<script id=\"staticAssetAggregatedJavascriptAsyncDeferList${targetTag == 'HEAD'?'':targetTag}0\" type=\"text/javascript\" async=\"true\" defer=\"true\">";
+              println "var jASAJ=jASAJ || new Array();";
+              type.value.eachWithIndex { javascript, i ->
+                  condition = javascript.value != null ? javascript.value.get("condition") : null;
+                  async = javascript.value != null ? javascript.value.get("async") : null;
+                  defer = javascript.value != null ? javascript.value.get("defer") : null;
+                  if (condition != null) println("<!--["+condition+"]>");
+                  url = renderContext.response.encodeURL(javascript.key);
+                  if (defer.equals("true") && async.equals("true")) println "jASAJ.push('${url}');";
                   if (condition != null) println("<![endif]-->");
               }
               println "</script>";

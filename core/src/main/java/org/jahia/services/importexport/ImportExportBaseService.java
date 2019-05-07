@@ -660,8 +660,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             }
         });
 
-//        final String xsl = (String) params.get(XSL_PATH);
-        if (params.containsKey(INCLUDE_LIVE_EXPORT)) {
+        if (params.containsKey(INCLUDE_LIVE_EXPORT) &&
+                params.get(INCLUDE_LIVE_EXPORT) != null &&
+                Boolean.TRUE.equals(params.get(INCLUDE_LIVE_EXPORT))) {
             final JCRSessionWrapper liveSession = jcrStoreService.getSessionFactory().getCurrentUserSession("live");
             JCRNodeWrapper liveRootNode = null;
             try {

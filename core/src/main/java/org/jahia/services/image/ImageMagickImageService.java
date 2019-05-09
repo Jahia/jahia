@@ -118,7 +118,10 @@ public class ImageMagickImageService extends AbstractImageService {
             op.addImage(img.getFile().getPath());
 
             // execute ...
-            IdentifyCmd identify = new IdentifyCmd();
+            //because of incompatibility between imagemagick and im4java we can't use the IdentifyCmd class directly
+            ImageCommand identify = new ImageCommand();
+            identify.setCommand("magick", "identify");
+
             ArrayListOutputConsumer output = new ArrayListOutputConsumer();
             identify.setOutputConsumer(output);
             identify.run(op);

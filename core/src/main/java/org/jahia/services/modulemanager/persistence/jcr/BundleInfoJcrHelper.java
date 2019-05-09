@@ -101,6 +101,7 @@ final public class BundleInfoJcrHelper {
             obj.put("version", bundle.getVersion());
             obj.put("location", bundle.getLocation());
             obj.put("state", bundle.getState());
+            obj.put("startLevel", bundle.getStartLevel());
             return obj;
         })).collect(Collectors.toList()));
 
@@ -136,7 +137,11 @@ final public class BundleInfoJcrHelper {
                     o.getString("location"),
                     o.getString("symbolicName"),
                     o.getString("version"),
-                    o.getInt("state"))
+                    o.getInt("state"),
+                    // Provide a default value for compatibility with DX 7.3.1.0
+                    // We use a very low one to ensure those won't be restored
+                    o.optInt("startLevel", 0)
+                    )
             );
         }
         return persistentStates;

@@ -654,8 +654,7 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
 
             if (installedVersions == null || !installedVersions.contains(persistentState.getVersion())) {
                 bundleService.install(persistentState.getLocation(), target, false, persistentState.getStartLevel());
-                installedBundlesInfo.add(new BundleInfo(persistentState.getLocation(), persistentState.getSymbolicName(),
-                        persistentState.getVersion()));
+                installedBundlesInfo.add(BundleInfo.fromKey(persistentState.getLocation()));
             }
         }
         return installedBundlesInfo;

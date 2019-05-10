@@ -51,10 +51,9 @@ renderContext.request.getAttribute("staticAssets").each { resource ->
                     def condition = javascript.value != null ? javascript.value.get("condition") : null
                     def async = javascript.value != null ? javascript.value.get("async") : null
                     def defer = javascript.value != null ? javascript.value.get("defer") : null
-                    def media = javascript.value.get("media")
                     if (condition != null) println("<!--[" + condition + "]>")
                     def url = renderContext.response.encodeURL(javascript.key)
-                    println "<script id=\"staticAssetJavascript${targetTag == 'HEAD' ? '' : targetTag}${i}\" type=\"text/javascript\" src=\"${url}\" ${media != null ? "media=\"${media}\"" : ""} ${async != null ? "async" : ""} ${defer != null ? "defer" : ""}></script>"
+                    println "<script id=\"staticAssetJavascript${targetTag == 'HEAD' ? '' : targetTag}${i}\" type=\"text/javascript\" src=\"${url}\" ${async != null ? "async" : ""} ${defer != null ? "defer" : ""}></script>"
                     if (condition != null) println("<![endif]-->")
                 }
                 break

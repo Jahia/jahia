@@ -8,7 +8,7 @@
         <property name="properties">
             <props value-type="java.lang.String">
                 <prop key="felix.fileinstall.dir">#{settingsBean.jahiaModulesDiskPath}</prop>
-                <prop key="felix.fileinstall.filter">.*\.(jar|cfg)</prop>
+                <prop key="felix.fileinstall.filter">.*\.jar</prop>
                 <prop key="felix.fileinstall.poll">${jahia.modules.fileinstall.poll:2000}</prop>
                 <prop key="felix.fileinstall.start.level">#{settingsBean.moduleStartLevel}</prop>
                 <prop key="felix.fileinstall.active.level">#{settingsBean.moduleStartLevel}</prop>

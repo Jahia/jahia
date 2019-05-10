@@ -96,6 +96,11 @@ public final class BundlePersistentInfo {
         return startLevel;
     }
 
+    public String getLocationProtocol() {
+        int delimiter = (location == null) ? -1 : location.indexOf(':');
+        return (delimiter > -1) ? location.substring(0, delimiter) : null;
+    }
+
     /**
      * Returns {@code true} if this instance does refer to the
      * same bundle version as {@code other}.

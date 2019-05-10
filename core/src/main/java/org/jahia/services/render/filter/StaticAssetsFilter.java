@@ -143,6 +143,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     private static final Pattern URL_PATTERN_4 = Pattern.compile("url\\((?!(/|'|\"|http:|https:|data:))");
 
     private static final String[] OPTIONAL_ATTRIBUTES = new String[]{"title", "rel", "media", "condition", "async", "defer"};
+    private static final List<String> OPTIONS_SUPPORTED_BY_AGGREGATION = Arrays.asList("media", "async", "defer");
     private static final String TARGET_TAG = "targetTag";
     private static final String STATIC_ASSETS = "staticAssets";
     private static final String ASSET_ENCODING = "UTF-8";
@@ -484,6 +485,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                     if (optionsMap == null) {
                         optionsMap = new HashMap<>(OPTIONAL_ATTRIBUTES.length);
                     }
+
+                    // Always add the attribute unless it's async or defer, if it's one of those two then add it only if true
                     if (((attributeName.equals("async") || attributeName.equals("defer")) && attribute.equals("true"))
                             || (!attributeName.equals("async") && !attributeName.equals("defer"))) {
                         optionsMap.put(attributeName, attribute);
@@ -563,43 +566,37 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     }
 
     private Map<String, Map<String, String>> aggregate(Map<String, Map<String, String>> assets, String type) throws IOException {
+        List<Map.Entry<String, Map<String, String>>> entries = new ArrayList<>(assets.entrySet());
+        Map<String, Map<String, String>> newEntries = new LinkedHashMap<>();
 
-        List<Map.Entry<String, Map<String, String>>> entries = new ArrayList<Map.Entry<String, Map<String, String>>>(assets.entrySet());
-        Map<String, Map<String, String>> newEntries = new LinkedHashMap<String, Map<String, String>>();
-
-        long maxLastModified = 0;
-        ResourcesToAggregate resourcesToAggregate = new ResourcesToAggregate(new LinkedHashMap<String, Resource>(), null);
-
-        String previousMedia = null;
+        Map<String, ResourcesToAggregate> resourcesToAggregateByType = new LinkedHashMap<>();
         for (Map.Entry<String, Map<String, String>> entry : entries) {
-
             String key = getKey(entry.getKey());
             Resource resource = getResource(key);
-            String currentMedia = entry.getValue().get("media");
+            String media = entry.getValue().get("media");
 
-            boolean sameMedia = StringUtils.equals(previousMedia, currentMedia);
+            boolean supportedOption = true;
+            if (!entry.getValue().isEmpty()) {
+                for (String option : entry.getValue().keySet()) {
+                    if (!OPTIONS_SUPPORTED_BY_AGGREGATION.contains(option)) {
+                        supportedOption = false;
+                    }
+                }
+            }
+
             boolean pathExcluded = excludesFromAggregateAndCompress.contains(key) || resource == null;
-            boolean onlyMediaOption = entry.getValue().size() == 1 && entry.getValue().containsKey("media");
-            boolean noOption = entry.getValue().isEmpty();
-            boolean asyncOrDiffer = !entry.getValue().isEmpty() && ((entry.getValue().get("async") != null && entry.getValue().get("async").equals("true")) || (entry.getValue().get("defer") != null && entry.getValue().get("defer").equals("true")));
-            boolean canAggregate = (onlyMediaOption || noOption || asyncOrDiffer) && !pathExcluded && (currentMedia == null || aggregateSupportedMedias.contains(currentMedia));
-
+            boolean canAggregate = supportedOption && !pathExcluded && (media == null || aggregateSupportedMedias.contains(media));
             if (canAggregate) {
-                // in case: aggregation is possible
-                if (!sameMedia) {
-                    // media has changed : aggregate previous resources and switch current media
-                    aggregatePathsAndPopulateNewEntries(resourcesToAggregate, newEntries, type, maxLastModified);
+                boolean async = entry.getValue().get("async") != null && entry.getValue().get("async").equals("true");
+                boolean defer = entry.getValue().get("defer") != null && entry.getValue().get("defer").equals("true");
 
-                    // may be a new media, store it as new media
-                    previousMedia = currentMedia;
+                String mapKey = type + (StringUtils.isNotBlank(media) ? "-" + media : "") + (async ? "-async" : "") + (defer ? "-defer" : "");
+                if (!resourcesToAggregateByType.containsKey(mapKey)) {
+                    resourcesToAggregateByType.put(mapKey, new ResourcesToAggregate(new LinkedHashMap<>(), media, async, defer));
                 }
 
-                // continue aggregation
-                maxLastModified = addResourceToAggregation(key, resource, resourcesToAggregate, maxLastModified, currentMedia);
+                addResourceToAggregation(key, resource, resourcesToAggregateByType.get(mapKey));
             } else {
-                // aggregation is not possible. start by aggregate all the paths already gathered
-                aggregatePathsAndPopulateNewEntries(resourcesToAggregate, newEntries, type, maxLastModified);
-
                 // for some reason this resource can't be aggregated
                 if (addLastModifiedDate && (resource = getResource(getKey(entry.getKey()))) != null) {
                     newEntries.put(entry.getKey() + "?lastModified=" + resource.lastModified(), entry.getValue());
@@ -609,26 +606,36 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             }
         }
 
-        // finally aggregate the remaining paths
-        aggregatePathsAndPopulateNewEntries(resourcesToAggregate, newEntries, type, maxLastModified);
+        // finally perform aggregation
+        for (Map.Entry<String, ResourcesToAggregate> entry: resourcesToAggregateByType.entrySet()) {
+            aggregatePathsAndPopulateNewEntries(entry.getValue(), newEntries, type);
+        }
 
         return newEntries;
     }
 
-    private long addResourceToAggregation(String key, Resource resource, ResourcesToAggregate resourcesToAggregate, long maxLastModified, String media) throws IOException {
+    private void addResourceToAggregation(String key, Resource resource, ResourcesToAggregate resourcesToAggregate) throws IOException {
         long lastModified = resource.lastModified();
         resourcesToAggregate.getPathsToAggregate().put(key + "_" + lastModified, resource);
-        resourcesToAggregate.setMedia(media);
-        return  lastModified > maxLastModified ? lastModified : maxLastModified;
+        if (lastModified > resourcesToAggregate.getMaxLastModified()) {
+            resourcesToAggregate.setMaxLastModified(lastModified);
+        }
     }
 
-    private void aggregatePathsAndPopulateNewEntries (ResourcesToAggregate resourcesToAggregate, Map<String, Map<String, String>> newEntries, String type, long maxLastModified) throws IOException {
+    private void aggregatePathsAndPopulateNewEntries (ResourcesToAggregate resourcesToAggregate, Map<String, Map<String,
+                                                        String>> newEntries, String type) throws IOException {
         if (!resourcesToAggregate.getPathsToAggregate().isEmpty()) {
-            String minifiedAggregatedPath = aggregate(resourcesToAggregate.getPathsToAggregate(), type, maxLastModified);
+            String minifiedAggregatedPath = aggregate(resourcesToAggregate.getPathsToAggregate(), type, resourcesToAggregate.getMaxLastModified(), resourcesToAggregate.isAsync(), resourcesToAggregate.isDefer());
 
             HashMap<String, String> options = new HashMap<String, String>();
-            if (StringUtils.isNotEmpty(resourcesToAggregate.getMedia())) {
+            if (StringUtils.isNotBlank(resourcesToAggregate.getMedia())) {
                 options.put("media", resourcesToAggregate.getMedia());
+            }
+            if (resourcesToAggregate.isAsync()) {
+                options.put("async", "true");
+            }
+            if (resourcesToAggregate.isDefer()) {
+                options.put("defer", "true");
             }
 
             newEntries.put(Jahia.getContextPath() + minifiedAggregatedPath, options);
@@ -638,13 +645,20 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     private class ResourcesToAggregate {
 
-        public ResourcesToAggregate(LinkedHashMap<String, Resource> pathsToAggregate, String media) {
+        public ResourcesToAggregate(LinkedHashMap<String, Resource> pathsToAggregate, String media,
+                                    boolean async, boolean defer) {
             this.pathsToAggregate = pathsToAggregate;
             this.media = media;
+            this.async = async;
+            this.defer = defer;
+            this.maxLastModified = 0;
         }
 
         LinkedHashMap<String, Resource> pathsToAggregate;
         String media;
+        long maxLastModified;
+        boolean async;
+        boolean defer;
 
         public LinkedHashMap<String, Resource> getPathsToAggregate() {
             return pathsToAggregate;
@@ -654,15 +668,27 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             return media;
         }
 
-        public void setMedia(String media) {
-            this.media = media;
+        public long getMaxLastModified() {
+            return maxLastModified;
+        }
+
+        public void setMaxLastModified(long maxLastModified) {
+            this.maxLastModified = maxLastModified;
+        }
+
+        public boolean isAsync() {
+            return async;
+        }
+
+        public boolean isDefer() {
+            return defer;
         }
     }
 
-    private String aggregate(Map<String, Resource> pathsToAggregate, String type, long maxLastModified) throws IOException {
+    private String aggregate(Map<String, Resource> pathsToAggregate, String type, long maxLastModified, boolean async, boolean defer) throws IOException {
 
         String aggregatedKey = generateAggregateName(pathsToAggregate.keySet());
-        String minifiedAggregatedFileName = aggregatedKey + ".min." + type;
+        String minifiedAggregatedFileName = aggregatedKey + (async ? "-async" : "") + (defer ? "-defer" : "") + ".min." + type;
         String minifiedAggregatedRealPath = getFileSystemPath(minifiedAggregatedFileName);
         File minifiedAggregatedFile = new File(minifiedAggregatedRealPath);
         String minifiedAggregatedPath = GENERATED_RESOURCES_URL_PATH + minifiedAggregatedFileName;

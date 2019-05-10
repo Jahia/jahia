@@ -569,6 +569,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         List<Map.Entry<String, Map<String, String>>> entries = new ArrayList<>(assets.entrySet());
         Map<String, Map<String, String>> newEntries = new LinkedHashMap<>();
 
+        String previousMedia = null;
         Map<String, ResourcesToAggregate> resourcesToAggregateByType = new LinkedHashMap<>();
         for (Map.Entry<String, Map<String, String>> entry : entries) {
             String key = getKey(entry.getKey());
@@ -584,13 +585,18 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 }
             }
 
+            boolean sameMedia = StringUtils.equals(previousMedia, media);
             boolean pathExcluded = excludesFromAggregateAndCompress.contains(key) || resource == null;
             boolean canAggregate = supportedOption && !pathExcluded && (media == null || aggregateSupportedMedias.contains(media));
             if (canAggregate) {
                 boolean async = entry.getValue().get("async") != null && entry.getValue().get("async").equals("true");
                 boolean defer = entry.getValue().get("defer") != null && entry.getValue().get("defer").equals("true");
 
-                String mapKey = type + (StringUtils.isNotBlank(media) ? "-" + media : "") + (async ? "-async" : "") + (defer ? "-defer" : "");
+                String mapKey = type + (StringUtils.isNotBlank(media) ? "-" + media : "") + (async ? "-async" : "") + (defer ? "-defer" : "") + (type.equals("css") && !sameMedia ? entries.indexOf(entry) : "");
+                if (!sameMedia) {
+                    previousMedia = media;
+                }
+
                 if (!resourcesToAggregateByType.containsKey(mapKey)) {
                     resourcesToAggregateByType.put(mapKey, new ResourcesToAggregate(new LinkedHashMap<>(), media, async, defer));
                 }

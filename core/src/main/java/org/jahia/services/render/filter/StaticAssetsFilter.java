@@ -632,7 +632,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     private void aggregatePathsAndPopulateNewEntries (ResourcesToAggregate resourcesToAggregate, Map<String, Map<String,
                                                         String>> newEntries, String type) throws IOException {
         if (!resourcesToAggregate.getPathsToAggregate().isEmpty()) {
-            String minifiedAggregatedPath = aggregate(resourcesToAggregate.getPathsToAggregate(), type, resourcesToAggregate.getMaxLastModified(), resourcesToAggregate.isAsync(), resourcesToAggregate.isDefer());
+            String minifiedAggregatedPath = performAggregation(resourcesToAggregate.getPathsToAggregate(), type, resourcesToAggregate.getMaxLastModified(), resourcesToAggregate.isAsync(), resourcesToAggregate.isDefer());
 
             HashMap<String, String> options = new HashMap<String, String>();
             if (StringUtils.isNotBlank(resourcesToAggregate.getMedia())) {
@@ -692,7 +692,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         }
     }
 
-    private String aggregate(Map<String, Resource> pathsToAggregate, String type, long maxLastModified, boolean async, boolean defer) throws IOException {
+    private String performAggregation(Map<String, Resource> pathsToAggregate, String type, long maxLastModified, boolean async, boolean defer) throws IOException {
 
         String aggregatedKey = generateAggregateName(pathsToAggregate.keySet());
         String minifiedAggregatedFileName = aggregatedKey + (async ? "-async" : "") + (defer ? "-defer" : "") + ".min." + type;

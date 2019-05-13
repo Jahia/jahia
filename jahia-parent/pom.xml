@@ -182,7 +182,7 @@
         <jahia.commons.version>1.0.8</jahia.commons.version>
         <jahia.plugin.version>5.7-SNAPSHOT</jahia.plugin.version>
         <jahia.archivers.version>${jahia.plugin.version}</jahia.archivers.version>
-        <jahia.configurators.version>${jahia.plugin.version}</jahia.configurators.version>
+        <jahia.configurators.version>5.7-SNAPSHOT</jahia.configurators.version>
         <jahia.deployers.version>${jahia.plugin.version}</jahia.deployers.version>
         <jahia.installers.version>${jahia.plugin.version}</jahia.installers.version>
 

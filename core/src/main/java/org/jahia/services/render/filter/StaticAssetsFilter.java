@@ -80,6 +80,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationListener;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
 import javax.jcr.RepositoryException;
@@ -850,6 +851,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             }
         } else if (key.startsWith("/files/")) {
             r = getResourceFromFile(moduleId, "/" + filePath);
+        } else if (key.contains(GENERATED_RESOURCES_URL_PATH)) {
+            //Use case for Form Factory / Database Connector that are generating resources inside GENERATED_RESOURCES
+            r = new FileSystemResource(getFileSystemPath(StringUtils.substringAfterLast(key,GENERATED_RESOURCES_URL_PATH)));
         }
         return r;
     }

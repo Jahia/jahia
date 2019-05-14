@@ -80,6 +80,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationListener;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
 import javax.jcr.RepositoryException;
@@ -571,7 +572,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
         int mapKeyIndex = 0;
         String previousMedia = null;
-        Map<String, ResourcesToAggregate> resourcesToAggregateByType = new LinkedHashMap<>();
+        List<String> aggregatedKey = new ArrayList<>();
+        // We need the map to keep track of the async/defer files
+        Map<String, ResourcesToAggregate> resourcesToAggregateMap = new LinkedHashMap<>();
         for (Map.Entry<String, Map<String, String>> entry : entries) {
             String key = getKey(entry.getKey());
             Resource resource = getResource(key);
@@ -586,25 +589,47 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 }
             }
 
-            boolean sameMedia = StringUtils.equals(previousMedia, media);
+            // Build mapKey
+            boolean async = entry.getValue().get("async") != null && entry.getValue().get("async").equals("true");
+            boolean defer = entry.getValue().get("defer") != null && entry.getValue().get("defer").equals("true");
+            String mapKey = type + (StringUtils.isNotBlank(previousMedia) ? "-" + previousMedia : "") + (async ? "-async" : "") + (defer ? "-defer" : "") + (async || defer ? "" : mapKeyIndex);
+
             boolean pathExcluded = excludesFromAggregateAndCompress.contains(key) || resource == null;
             boolean canAggregate = supportedOption && !pathExcluded && (media == null || aggregateSupportedMedias.contains(media));
             if (canAggregate) {
-                boolean async = entry.getValue().get("async") != null && entry.getValue().get("async").equals("true");
-                boolean defer = entry.getValue().get("defer") != null && entry.getValue().get("defer").equals("true");
 
+                boolean sameMedia = StringUtils.equals(previousMedia, media);
                 if (!sameMedia) {
+                    // This part is only for CSS file, the media is different so we need to aggregate the previous files
+                    if (resourcesToAggregateMap.containsKey(mapKey) && !aggregatedKey.contains(mapKey)) {
+                        aggregatePathsAndPopulateNewEntries(resourcesToAggregateMap.get(mapKey), newEntries, type);
+                        aggregatedKey.add(mapKey);
+                    }
+
+                    // Then we can update previousMedia, mapKeyIndex and mapKey
                     previousMedia = media;
                     mapKeyIndex = entries.indexOf(entry);
-                }
-                String mapKey = type + (StringUtils.isNotBlank(media) ? "-" + media : "") + (async ? "-async" : "") + (defer ? "-defer" : "") + (type.equals("css") ? mapKeyIndex : "");
-                if (!resourcesToAggregateByType.containsKey(mapKey)) {
-                    resourcesToAggregateByType.put(mapKey, new ResourcesToAggregate(new LinkedHashMap<>(), media, async, defer));
+                    mapKey = type + (StringUtils.isNotBlank(media) ? "-" + media : "") + (async ? "-async" : "") + (defer ? "-defer" : "") + (async || defer ? "" : mapKeyIndex);
                 }
 
-                addResourceToAggregation(key, resource, resourcesToAggregateByType.get(mapKey));
+                if (!resourcesToAggregateMap.containsKey(mapKey)) {
+                    // The map doesn't have this entry so let's create it
+                    resourcesToAggregateMap.put(mapKey, new ResourcesToAggregate(new LinkedHashMap<>(), media, async, defer));
+                }
+
+                // Add the current resource to the current map entry
+                addResourceToAggregation(key, resource, resourcesToAggregateMap.get(mapKey));
             } else {
-                // for some reason this resource can't be aggregated
+                if (resourcesToAggregateMap.containsKey(mapKey) && !aggregatedKey.contains(mapKey)) {
+                    // The current resource can't be aggregated so we need to aggregate the last entry if it hasn't been done yet
+                    aggregatePathsAndPopulateNewEntries(resourcesToAggregateMap.get(mapKey), newEntries, type);
+                    aggregatedKey.add(mapKey);
+
+                    // Then we update the mapKeyIndex
+                    mapKeyIndex = entries.indexOf(entry);
+                }
+
+                // Add the current resource to newEntries
                 if (addLastModifiedDate && (resource = getResource(getKey(entry.getKey()))) != null) {
                     newEntries.put(entry.getKey() + "?lastModified=" + resource.lastModified(), entry.getValue());
                 } else {
@@ -613,9 +638,12 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             }
         }
 
-        // finally perform aggregation
-        for (Map.Entry<String, ResourcesToAggregate> entry: resourcesToAggregateByType.entrySet()) {
-            aggregatePathsAndPopulateNewEntries(entry.getValue(), newEntries, type);
+        // Check if all key have been aggregated
+        for (Map.Entry<String, ResourcesToAggregate> entry: resourcesToAggregateMap.entrySet()) {
+            if (!aggregatedKey.contains(entry.getKey())) {
+                aggregatePathsAndPopulateNewEntries(entry.getValue(), newEntries, type);
+                aggregatedKey.add(entry.getKey());
+            }
         }
 
         return newEntries;
@@ -647,7 +675,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
             newEntries.put(Jahia.getContextPath() + minifiedAggregatedPath, options);
         }
-        resourcesToAggregate.getPathsToAggregate().clear();
     }
 
     private class ResourcesToAggregate {
@@ -824,6 +851,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             }
         } else if (key.startsWith("/files/")) {
             r = getResourceFromFile(moduleId, "/" + filePath);
+        } else if (key.contains(GENERATED_RESOURCES_URL_PATH)) {
+            //Use case for Form Factory / Database Connector that are generating resources inside GENERATED_RESOURCES
+            r = new FileSystemResource(getFileSystemPath(StringUtils.substringAfterLast(key,GENERATED_RESOURCES_URL_PATH)));
         }
         return r;
     }

@@ -621,11 +621,15 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
                  bundles.stream()
                         .filter(bundle -> bundle.isSameVersionAs(persistentState))
                         .findFirst().ifPresent(bundle -> {
-                            OperationResult result = applyPersistentState(
-                                bundle.getLocation(), bundle.getState(), persistentState.getState(), target
-                            );
-                            installedAndUpdatedBundles.addAll(result.getBundleInfos());
-                        }
+                             try {
+                                 OperationResult result = applyPersistentState(
+                                     bundle.getLocation(), bundle.getState(), persistentState.getState(), target
+                                 );
+                                 installedAndUpdatedBundles.addAll(result.getBundleInfos());
+                             } catch (Exception e) {
+                                 logger.debug("Cannot apply state for bundle " + bundle.getSymbolicName(),e);
+                             }
+                         }
                  );
             }
             return OperationResult.success(Lists.newArrayList(Sets.newHashSet(installedAndUpdatedBundles)));

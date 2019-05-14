@@ -253,6 +253,10 @@ public class Activator implements BundleActivator {
             }
         });
 
+        if (System.getProperty("applyBundlesPersistentStates") != null) {
+            ModuleUtils.getModuleManager().applyBundlesPersistentStates(null);
+        }
+
         fileInstallConfigurer = new FileInstallConfigurer();
         fileInstallConfigurer.start(context);
 

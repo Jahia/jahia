@@ -231,6 +231,11 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
                         new Object[] { bundleResources, target, timeTaken, error });
             }
         }
+
+        if (FrameworkService.getInstance().isStarted() && SettingsBean.getInstance().isProcessingServer()) {
+            storeAllLocalPersistentStates();
+        }
+
         return result;
     }
 
@@ -273,6 +278,10 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
                         new Object[] { operation.getName(), bundleKey, target, System.currentTimeMillis() - startTime,
                                 error });
             }
+        }
+
+        if (FrameworkService.getInstance().isStarted() && SettingsBean.getInstance().isProcessingServer() && !operation.getName().equals("Refresh")) {
+            storeAllLocalPersistentStates();
         }
 
         return result;

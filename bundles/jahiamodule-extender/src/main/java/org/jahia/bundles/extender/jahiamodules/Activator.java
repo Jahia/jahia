@@ -253,7 +253,7 @@ public class Activator implements BundleActivator {
             }
         });
 
-        File applyBundlesPersistentStatesMarker = new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "applyBundlesPersistentStates");
+        File applyBundlesPersistentStatesMarker = new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "[persisted-bundles].dorestore");
         if (System.getProperty("applyBundlesPersistentStates") != null || applyBundlesPersistentStatesMarker.exists()) {
             ModuleUtils.getModuleManager().applyBundlesPersistentStates(null);
             if (applyBundlesPersistentStatesMarker.exists()) {

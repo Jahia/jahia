@@ -343,7 +343,7 @@ public final class BundleUtils {
         for (Map<String, JahiaTemplatesPackage> moduleVersions : modules.values()) {
             for (JahiaTemplatesPackage pkg : moduleVersions.values()) {
                 ClassLoader pkgClassLoader = pkg.getClassLoader();
-                if (pkgClassLoader != null) {
+                if (pkg.getBundle().getState() >= requiredModuleStatus && pkgClassLoader != null) {
                     try {
                         clazz = pkgClassLoader.loadClass(className);
                     } catch (IllegalStateException e) {

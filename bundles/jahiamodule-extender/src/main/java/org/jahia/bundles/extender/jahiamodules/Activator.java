@@ -253,8 +253,12 @@ public class Activator implements BundleActivator {
             }
         });
 
-        if (System.getProperty("applyBundlesPersistentStates") != null) {
+        File applyBundlesPersistentStatesMarker = new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "applyBundlesPersistentStates");
+        if (System.getProperty("applyBundlesPersistentStates") != null || applyBundlesPersistentStatesMarker.exists()) {
             ModuleUtils.getModuleManager().applyBundlesPersistentStates(null);
+            if (applyBundlesPersistentStatesMarker.exists()) {
+                applyBundlesPersistentStatesMarker.delete();
+            }
         }
 
         fileInstallConfigurer = new FileInstallConfigurer();

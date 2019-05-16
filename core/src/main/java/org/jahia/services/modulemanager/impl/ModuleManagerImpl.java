@@ -627,7 +627,8 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
                                  );
                                  installedAndUpdatedBundles.addAll(result.getBundleInfos());
                              } catch (Exception e) {
-                                 logger.debug("Cannot apply state for bundle " + bundle.getSymbolicName(),e);
+                                 logger.info("Cannot apply state for bundle {} reason: {}", bundle.getSymbolicName(), e.getMessage());
+                                 logger.debug(e.getMessage(), e);
                              }
                          }
                  );

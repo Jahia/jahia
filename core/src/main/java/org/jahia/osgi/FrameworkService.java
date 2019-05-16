@@ -388,6 +388,7 @@ public class FrameworkService implements FrameworkListener {
             main = new Main(new String[0]);
             main.launch();
             setupStartupListener();
+            bundleStarter.startInitialBundlesIfNeeded();
         } catch (Exception e) {
             main = null;
             logger.error("Error starting OSGi container", e);

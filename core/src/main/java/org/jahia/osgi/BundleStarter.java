@@ -43,6 +43,12 @@
  */
 package org.jahia.osgi;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.karaf.main.ConfigProperties;
+import org.apache.karaf.main.Main;
+import org.apache.karaf.main.util.ArtifactResolver;
+import org.apache.karaf.main.util.SimpleMavenResolver;
+import org.apache.karaf.util.config.PropertiesLoader;
 import org.codehaus.plexus.util.dag.CycleDetectedException;
 import org.codehaus.plexus.util.dag.DAG;
 import org.codehaus.plexus.util.dag.TopologicalSorter;
@@ -55,9 +61,13 @@ import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.startlevel.BundleStartLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 import java.util.*;
 
 /**
@@ -68,6 +78,12 @@ import java.util.*;
 class BundleStarter {
 
     private static final Logger logger = LoggerFactory.getLogger(BundleStarter.class);
+
+    @Deprecated
+    private static final String MARKER_INITIAL_BUNDLES = "[initial-bundles].dostart";
+
+    @Deprecated
+    private static final String MARKER_MIGRATE_BUNDLES = "[migrate-bundles].dostart";
 
     private static Collection<Bundle> getSortedModules(Map<Bundle, JahiaTemplatesPackage> modulesByBundle) {
         long startTime = System.currentTimeMillis();
@@ -212,7 +228,11 @@ class BundleStarter {
             if (!toBeStarted.isEmpty()) {
                 startModules(toBeStarted, false);
             }
+
         }
+
+        // Migrations from versions < 7.3.1.1
+        startMigrateBundlesIfNeeded();
     }
 
     private BundleContext getBundleContext() {
@@ -221,6 +241,118 @@ class BundleStarter {
         }
 
         return bundleContext;
+    }
+
+    private List<File> getBundleRepos() {
+        // currently we consider only karaf/system repo
+        List<File> bundleDirs = new ArrayList<File>();
+        File baseSystemRepo = new File(System.getProperty(ConfigProperties.PROP_KARAF_HOME),
+                System.getProperty("karaf.default.repository", "system"));
+        if (!baseSystemRepo.exists() && baseSystemRepo.isDirectory()) {
+            throw new RuntimeException("system repo folder not found: " + baseSystemRepo.getAbsolutePath());
+        }
+        bundleDirs.add(baseSystemRepo);
+
+        return bundleDirs;
+    }
+
+    /**
+     * Used only for migrations from versions < 7.3.1.1
+     * @deprecated
+     */
+    @Deprecated
+    void startInitialBundlesIfNeeded() {
+        File marker = new File(System.getProperty("org.osgi.framework.storage"), MARKER_INITIAL_BUNDLES);
+        if (!marker.exists()) {
+            return;
+        }
+        logger.info("Installing and starting initial bundles");
+
+        // there is a timing issue somewhere in the Karaf code, sleep for 5 seconds
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        BundleContext ctx = getBundleContext();
+        File startupPropsFile = new File(System.getProperty(ConfigProperties.PROP_KARAF_ETC),
+                Main.STARTUP_PROPERTIES_FILE_NAME);
+        org.apache.felix.utils.properties.Properties startupProps = PropertiesLoader
+                .loadPropertiesOrFail(startupPropsFile);
+
+        List<File> bundleDirs = getBundleRepos();
+        ArtifactResolver resolver = new SimpleMavenResolver(bundleDirs);
+
+        List<Bundle> bundlesToStart = new LinkedList<>();
+        for (String key : startupProps.keySet()) {
+            Integer startLevel = new Integer(startupProps.getProperty(key).trim());
+            try {
+                URI resolvedURI = resolver.resolve(new URI(key));
+                Bundle b = ctx.installBundle(key, resolvedURI.toURL().openStream());
+                b.adapt(BundleStartLevel.class).setStartLevel(startLevel);
+                if (!BundleUtils.isFragment(b)) {
+                    bundlesToStart.add(b);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Error installing bundle listed in " + startupPropsFile + " with url: " + key
+                        + " and startlevel: " + startLevel, e);
+            }
+        }
+        for (Bundle b : bundlesToStart) {
+            try {
+                b.start();
+            } catch (Exception e) {
+                throw new RuntimeException("Error starting bundle " + b.getSymbolicName() + "/" + b.getVersion(), e);
+            }
+        }
+        logger.info("All initial bundles installed and set to start");
+        FileUtils.deleteQuietly(marker);
+    }
+
+    /**
+     * Used only for migrations from versions < 7.3.1.1
+     * @deprecated
+     */
+    @Deprecated
+    private void startMigrateBundlesIfNeeded() {
+        // as the bundles are not started automatically after a migration whe should do it manually
+        File marker = new File(System.getProperty("org.osgi.framework.storage"), MARKER_MIGRATE_BUNDLES);
+        if (!marker.exists()) {
+            return;
+        }
+
+        logger.info("Starting migrated bundles");
+
+        try {
+            List<Bundle> toBeStarted = new LinkedList<>();
+            List<String> lines = FileUtils.readLines(marker);
+            for (String line : lines) {
+                String[] lineParts = line.split(",");
+                String bundleSymbolicName = lineParts[0].trim();
+                String bundleVersion = lineParts[1].trim();
+                logger.info("Found entry for bundle {}/{}", bundleSymbolicName, bundleVersion);
+                Bundle bundle = BundleUtils.getBundleBySymbolicName(bundleSymbolicName, bundleVersion);
+                if (bundle != null) {
+                    if (bundle.getState() != Bundle.ACTIVE && bundle.getState() != Bundle.UNINSTALLED
+                            && !BundleUtils.isFragment(bundle)
+                            && !bundle.adapt(BundleStartLevel.class).isPersistentlyStarted()) {
+                        toBeStarted.add(bundle);
+                    } else {
+                        logger.info("No need to start bundle {}/{}. Skipping it.", bundleSymbolicName, bundleVersion);
+                    }
+                } else {
+                    logger.warn("Cannot find bundle {}/{}. Skip starting it.", bundleSymbolicName, bundleVersion);
+                }
+            }
+            if (!toBeStarted.isEmpty()) {
+                startModules(toBeStarted, false);
+            }
+            logger.info("Finished starting migrated bundles");
+            FileUtils.deleteQuietly(marker);
+        } catch (IOException e) {
+            logger.error("Error reading [migrate-bundles].dostart Cause: " + e.getMessage(), e);
+        }
     }
 
 }

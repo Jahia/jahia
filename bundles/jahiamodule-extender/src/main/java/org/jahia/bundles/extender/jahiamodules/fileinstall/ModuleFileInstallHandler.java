@@ -59,6 +59,7 @@ import org.springframework.core.io.UrlResource;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Handler class for DX modules which processes artifacts from the FileInstall service.
@@ -93,7 +94,7 @@ public class ModuleFileInstallHandler implements CustomHandler {
         }
     }
 
-    private final static String BUNDLE_LOCATION_MAP_FILE = "felix.fileinstall.bundleLocationMapFile";
+    private static final String BUNDLE_LOCATION_MAP_FILE = "felix.fileinstall.bundleLocationMapFile";
 
     private static final Logger logger = LoggerFactory.getLogger(ModuleFileInstallHandler.class);
 
@@ -101,13 +102,15 @@ public class ModuleFileInstallHandler implements CustomHandler {
 
     private static final String TARGET_GROUP = null;
 
-    private final static String UNINSTALL_REMOVE = "felix.fileinstall.bundles.uninstall.remove";
+    private static final String UNINSTALL_REMOVE = "felix.fileinstall.bundles.uninstall.remove";
 
     private boolean autoStartBundles;
 
     private File bundleLocationMapFile;
 
     private Boolean removedDataOnUninstall;
+
+    private List<Long> createdOnStartup = new ArrayList<>();
 
     /**
      * Initializes an instance of this class.
@@ -230,7 +233,9 @@ public class ModuleFileInstallHandler implements CustomHandler {
                 logger.error("Error installing artifact " + artifact.getPath(), e);
             }
         }
-        if (autoStartBundles) {
+        if (!FrameworkService.getInstance().isStarted() && FrameworkService.getInstance().isFirstStartup()) {
+            createdOnStartup.addAll(created.stream().map(Artifact::getBundleId).collect(Collectors.toList()));
+        } else if (autoStartBundles) {
             startBundles(created);
         }
 
@@ -276,7 +281,7 @@ public class ModuleFileInstallHandler implements CustomHandler {
 
         File jaredDirectory = artifact.getJaredDirectory();
         if (jaredDirectory != null && !jaredDirectory.equals(artifact.getPath()) && !jaredDirectory.delete()) {
-            logger.warn("Unable to delete jared artifact: {}" + jaredDirectory.getAbsolutePath());
+            logger.warn("Unable to delete jared artifact: {}", jaredDirectory.getAbsolutePath());
         }
 
         if (artifact.getPath().exists()) {
@@ -308,11 +313,7 @@ public class ModuleFileInstallHandler implements CustomHandler {
         }
 
         if (!toBeStarted.isEmpty()) {
-            // boolean useModuleManagerApi = SettingsBean.getInstance().isClusterActivated();
             BundleLifecycleUtils.startModules(toBeStarted, true);
-            // if (!useModuleManagerApi) {
-            // BundleLifecycleUtils.startBundlesPendingDependencies();
-            // }
         }
     }
 
@@ -362,7 +363,7 @@ public class ModuleFileInstallHandler implements CustomHandler {
     @Override
     public void watcherStarted() {
         // notify the framework that the file install watcher has started and processed found modules
-        FrameworkService.notifyFileInstallStarted();
+        FrameworkService.notifyFileInstallStarted(createdOnStartup);
     }
 
 }

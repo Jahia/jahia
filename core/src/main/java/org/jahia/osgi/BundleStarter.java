@@ -43,29 +43,11 @@
  */
 package org.jahia.osgi;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.karaf.main.ConfigProperties;
-import org.apache.karaf.main.Main;
-import org.apache.karaf.main.util.ArtifactResolver;
-import org.apache.karaf.main.util.SimpleMavenResolver;
-import org.apache.karaf.util.config.PropertiesLoader;
 import org.codehaus.plexus.util.dag.CycleDetectedException;
 import org.codehaus.plexus.util.dag.DAG;
 import org.codehaus.plexus.util.dag.TopologicalSorter;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.ModuleManager;
@@ -73,9 +55,10 @@ import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.startlevel.BundleStartLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 /**
  * Helper class, responsible for starting bundles on demand.
@@ -86,10 +69,6 @@ class BundleStarter {
 
     private static final Logger logger = LoggerFactory.getLogger(BundleStarter.class);
 
-    private static final String MARKER_INITIAL_BUNDLES = "[initial-bundles].dostart";
-
-    private static final String MARKER_MIGRATE_BUNDLES = "[migrate-bundles].dostart";
-    
     private static Collection<Bundle> getSortedModules(Map<Bundle, JahiaTemplatesPackage> modulesByBundle) {
         long startTime = System.currentTimeMillis();
         try {
@@ -111,7 +90,7 @@ class BundleStarter {
                 if (!pkg.getDepends().contains(JahiaTemplatesPackage.ID_DEFAULT)
                         && !pkg.getDepends().contains(JahiaTemplatesPackage.NAME_DEFAULT)
                         && !ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                                .getModulesWithNoDefaultDependency().contains(pkg.getId())) {
+                        .getModulesWithNoDefaultDependency().contains(pkg.getId())) {
                     dag.addEdge(pkgId, JahiaTemplatesPackage.ID_DEFAULT);
                 }
             }
@@ -172,8 +151,8 @@ class BundleStarter {
 
     /**
      * Start the specified module bundles in the order which tries to consider the dependencies between them.
-     * 
-     * @param moduleBundles the bundles to be started
+     *
+     * @param moduleBundles       the bundles to be started
      * @param useModuleManagerApi should we use {@link ModuleManager} or call OSGi API directly?
      */
     static void startModules(List<Bundle> moduleBundles, boolean useModuleManagerApi) {
@@ -193,155 +172,55 @@ class BundleStarter {
 
     private BundleContext bundleContext;
 
-    private File deployedBundlesDir;
-    
-    private boolean firstStartup;
-    
-    BundleStarter() {
-        deployedBundlesDir = new File(System.getProperty("org.osgi.framework.storage"));
-        firstStartup = !new File(deployedBundlesDir, "bundle0").exists();
-    }
-
     /**
      * Notifies the service that the FileInstall watcher has been started and processed the found modules.
      */
-    void afterFileInstallStarted() {
-        if (firstStartup) {
-            // this is a first framework startup
-            firstStartup = false;
-            if (!isFileinstallStartsNewBundles()) {
-                // as the bundles are not started automatically by Fileinstall we need to start them manually
-                startAllModules();
+    void afterFileInstallStarted(List<Long> createdOnStartup) {
+        if (!createdOnStartup.isEmpty()) {
+            List<Bundle> toBeStarted = new LinkedList<>();
+            List<Bundle> toBeUninstaled = new LinkedList<>();
+
+            // as the bundles are not started automatically by Fileinstall we need to start them manually
+            for (Long bundleId : createdOnStartup) {
+                Bundle bundle = getBundleContext().getBundle(bundleId);
+                if (bundle.getState() != Bundle.ACTIVE && bundle.getState() != Bundle.UNINSTALLED && !BundleUtils.isFragment(bundle) && BundleUtils.isJahiaModuleBundle(bundle)) {
+                    toBeStarted.add(bundle);
+                }
+
+                // Check if another version was previously installed. Uninstall previous version and start only if previous was started
+                for (Bundle otherBundle : getBundleContext().getBundles()) {
+                    if (bundleId != otherBundle.getBundleId() && bundle.getSymbolicName().equals(otherBundle.getSymbolicName())) {
+                        if (otherBundle.getState() != Bundle.ACTIVE) {
+                            // Previous bundle was not active, do not start the new one
+                            toBeStarted.remove(bundle);
+                        }
+                        if (bundle.getState() != Bundle.UNINSTALLED) {
+                            // Uninstall older version
+                            toBeUninstaled.add(otherBundle);
+                        }
+                    }
+                }
+            }
+            for (Bundle bundle : toBeUninstaled) {
+                try {
+                    bundle.uninstall();
+                } catch (BundleException e) {
+                    logger.error("Cannot uninstall bundle", e);
+                }
+            }
+
+            if (!toBeStarted.isEmpty()) {
+                startModules(toBeStarted, false);
             }
         }
-        startMigrateBundlesIfNeeded();
     }
 
     private BundleContext getBundleContext() {
         if (bundleContext == null) {
             bundleContext = FrameworkService.getBundleContext();
         }
-        
+
         return bundleContext;
-    }
-
-    private List<File> getBundleRepos() {
-        // currently we consider only karaf/system repo
-        List<File> bundleDirs = new ArrayList<File>();
-        File baseSystemRepo = new File(System.getProperty(ConfigProperties.PROP_KARAF_HOME),
-                System.getProperty("karaf.default.repository", "system"));
-        if (!baseSystemRepo.exists() && baseSystemRepo.isDirectory()) {
-            throw new RuntimeException("system repo folder not found: " + baseSystemRepo.getAbsolutePath());
-        }
-        bundleDirs.add(baseSystemRepo);
-
-        return bundleDirs;
-    }
-
-    private boolean isFileinstallStartsNewBundles() {
-        return Boolean.valueOf(((Properties) SpringContextSingleton.getBean("felixFileInstallConfig"))
-                .getProperty("felix.fileinstall.bundles.new.start", "true"));
-    }
-
-    private void startAllModules() {
-        List<Bundle> toBeStarted = new LinkedList<>();
-        for (Bundle bundle : getBundleContext().getBundles()) {
-            if (bundle.getState() != Bundle.ACTIVE && bundle.getState() != Bundle.UNINSTALLED
-                    && !BundleUtils.isFragment(bundle) && BundleUtils.isJahiaModuleBundle(bundle)) {
-                toBeStarted.add(bundle);
-            }
-        }
-
-        startModules(toBeStarted, false);
-    }
-
-    void startInitialBundlesIfNeeded() {
-        File marker = new File(deployedBundlesDir, MARKER_INITIAL_BUNDLES);
-        if (!marker.exists()) {
-            return;
-        }
-        logger.info("Installing and starting initial bundles");
-        
-        // there is a timing issue somewhere in the Karaf code, sleep for 5 seconds
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            logger.error(e.getMessage(), e);
-        }
-        
-        BundleContext ctx = getBundleContext();
-        File startupPropsFile = new File(System.getProperty(ConfigProperties.PROP_KARAF_ETC),
-                Main.STARTUP_PROPERTIES_FILE_NAME);
-        org.apache.felix.utils.properties.Properties startupProps = PropertiesLoader
-                .loadPropertiesOrFail(startupPropsFile);
-
-        List<File> bundleDirs = getBundleRepos();
-        ArtifactResolver resolver = new SimpleMavenResolver(bundleDirs);
-
-        List<Bundle> bundlesToStart = new LinkedList<>();
-        for (String key : startupProps.keySet()) {
-            Integer startLevel = new Integer(startupProps.getProperty(key).trim());
-            try {
-                URI resolvedURI = resolver.resolve(new URI(key));
-                Bundle b = ctx.installBundle(key, resolvedURI.toURL().openStream());
-                b.adapt(BundleStartLevel.class).setStartLevel(startLevel);
-                if (!BundleUtils.isFragment(b)) {
-                    bundlesToStart.add(b);
-                }
-            } catch (Exception e) {
-                throw new RuntimeException("Error installing bundle listed in " + startupPropsFile + " with url: " + key
-                        + " and startlevel: " + startLevel, e);
-            }
-        }
-        for (Bundle b : bundlesToStart) {
-            try {
-                b.start();
-            } catch (Exception e) {
-                throw new RuntimeException("Error starting bundle " + b.getSymbolicName() + "/" + b.getVersion(), e);
-            }
-        }
-        logger.info("All initial bundles installed and set to start");
-        FileUtils.deleteQuietly(marker);
-    }
-
-    private void startMigrateBundlesIfNeeded() {
-        // as the bundles are not started automatically after a migration whe should do it manually
-        File marker = new File(deployedBundlesDir, MARKER_MIGRATE_BUNDLES);
-        if (!marker.exists()) {
-            return;
-        }
-
-        logger.info("Starting migrated bundles");
-        
-        try {
-            List<Bundle> toBeStarted = new LinkedList<>();
-            List<String> lines = FileUtils.readLines(marker);
-            for (String line : lines) {
-                String[] lineParts = line.split(",");
-                String bundleSymbolicName = lineParts[0].trim();
-                String bundleVersion = lineParts[1].trim();
-                logger.info("Found entry for bundle {}/{}", bundleSymbolicName, bundleVersion);
-                Bundle bundle = BundleUtils.getBundleBySymbolicName(bundleSymbolicName, bundleVersion);
-                if (bundle != null) {
-                    if (bundle.getState() != Bundle.ACTIVE && bundle.getState() != Bundle.UNINSTALLED
-                            && !BundleUtils.isFragment(bundle)
-                            && !bundle.adapt(BundleStartLevel.class).isPersistentlyStarted()) {
-                        toBeStarted.add(bundle);
-                    } else {
-                        logger.info("No need to start bundle {}/{}. Skipping it.", bundleSymbolicName, bundleVersion);
-                    }
-                } else {
-                    logger.warn("Cannot find bundle {}/{}. Skip starting it.", bundleSymbolicName, bundleVersion);
-                }
-            }
-            if (!toBeStarted.isEmpty()) {
-                startModules(toBeStarted, false);
-            }
-            logger.info("Finished starting migrated bundles");
-            FileUtils.deleteQuietly(marker);
-        } catch (IOException e) {
-            logger.error("Error reading [migrate-bundles].dostart Cause: " + e.getMessage(), e);
-        }
     }
 
 }

@@ -49,13 +49,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.TreeMap;
+import java.util.*;
 
 import javax.script.Bindings;
 import javax.script.ScriptContext;
@@ -114,7 +108,7 @@ public class FrameworkService implements FrameworkListener {
                     cancel();
                 } else if (BundleLifecycleUtils.getFrameworkStartLevel() >= frameworkBeginningStartLevel) {
                     frameworkStartLevelReached = true;
-                    logger.info("Framework start level reached " + frameworkBeginningStartLevel);
+                    logger.info("Framework start level reached {}", frameworkBeginningStartLevel);
                     notifyStarted();
                     // we are done here: cancel the task
                     cancel();
@@ -166,10 +160,10 @@ public class FrameworkService implements FrameworkListener {
     /**
      * Notifies the service that the FileInstall watcher has been started and processed the found modules.
      */
-    public static void notifyFileInstallStarted() {
+    public static void notifyFileInstallStarted(List<Long> createdOnStartup) {
         final FrameworkService instance = getInstance();
 
-        instance.bundleStarter.afterFileInstallStarted();
+        instance.bundleStarter.afterFileInstallStarted(createdOnStartup);
 
         synchronized (instance) {
             instance.fileInstallStarted = true;
@@ -181,7 +175,7 @@ public class FrameworkService implements FrameworkListener {
     /**
      * Notify this service that the container has actually started.
      */
-    private void notifyStarted() {
+    private synchronized void notifyStarted() {
         if (frameworkStartLevelReached && fileInstallStarted) {
             // send synchronous event about startup
             sendEvent(EVENT_TOPIC_LIFECYCLE, Collections.singletonMap("type", EVENT_TYPE_OSGI_STARTED), false);
@@ -207,29 +201,32 @@ public class FrameworkService implements FrameworkListener {
      */
     public static void sendEvent(String topic, Map<String, ?> properties, boolean asynchronous) {
         BundleContext context = FrameworkService.getBundleContext();
-        ServiceReference<?> ref = context.getServiceReference(EventAdmin.class.getName());
-        if (ref != null) {
-            Object service = context.getService(ref);
-            try {
-                // have to use the class loader of the EventAdmin service
-                ClassLoader classLoader = service.getClass().getClassLoader();
+        if (context != null) {
+            ServiceReference<?> ref = context.getServiceReference(EventAdmin.class.getName());
+            if (ref != null) {
+                Object service = context.getService(ref);
+                try {
+                    // have to use the class loader of the EventAdmin service
+                    ClassLoader classLoader = service.getClass().getClassLoader();
 
-                Object evt = classLoader.loadClass("org.osgi.service.event.Event")
-                        .getConstructor(String.class, Map.class).newInstance(topic, properties);
+                    Object evt = classLoader.loadClass("org.osgi.service.event.Event")
+                            .getConstructor(String.class, Map.class).newInstance(topic, properties);
 
-                logger.info("Sending {} event with the properties {} to the topic {}...",
-                        new Object[] { asynchronous ? "asynchronous" : "synchronous", properties, topic });
+                    logger.info("Sending {} event with the properties {} to the topic {}...",
+                            new Object[]{asynchronous ? "asynchronous" : "synchronous", properties, topic});
 
-                MethodUtils.invokeExactMethod(service, asynchronous ? "postEvent" : "sendEvent", evt);
+                    MethodUtils.invokeExactMethod(service, asynchronous ? "postEvent" : "sendEvent", evt);
 
-                logger.info("Event sent to the topic {}", topic);
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | ClassNotFoundException
-                    | InstantiationException | IllegalArgumentException | SecurityException e) {
-                throw new IllegalArgumentException(e);
+                    logger.info("Event sent to the topic {}", topic);
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | ClassNotFoundException
+                        | InstantiationException | IllegalArgumentException | SecurityException e) {
+                    throw new IllegalArgumentException(e);
+                }
             }
         }
     }
 
+    private boolean firstStartup;
     private boolean fileInstallStarted;
     private boolean frameworkStartLevelReached;
     private Main main;
@@ -271,7 +268,7 @@ public class FrameworkService implements FrameworkListener {
             synchronized (this) {
                 if (!frameworkStartLevelReached) {
                     frameworkStartLevelReached = true;
-                    logger.info("Framework start level reached " + frameworkBeginningStartLevel);
+                    logger.info("Framework start level reached {}", frameworkBeginningStartLevel);
                     notifyStarted();
                 }
             }
@@ -285,6 +282,15 @@ public class FrameworkService implements FrameworkListener {
      */
     public boolean isStarted() {
         return frameworkStartLevelReached && fileInstallStarted;
+    }
+
+    /**
+     * Returns <code>true</code> if this is the first startup of the OSGi container
+     *
+     * @return <code>true</code> if this is the first startup of the OSGi container
+     */
+    public boolean isFirstStartup() {
+        return firstStartup;
     }
 
     private void restoreSystemProperties(Map<String, String> systemPropertiesToRestore) {
@@ -327,8 +333,7 @@ public class FrameworkService implements FrameworkListener {
             boolean valueHasChanged = oldPropertyValue != null
                     && !StringUtils.equals(oldPropertyValue, newPropertyValue);
             if (valueHasChanged) {
-                logger.warn("Overriding system property " + propertyName + "=" + oldPropertyValue + " with new value="
-                        + newPropertyValue);
+                logger.warn("Overriding system property {}={} with new value={}", new Object[] { propertyName, oldPropertyValue, newPropertyValue });
             }
             if (oldPropertyValue == null || valueHasChanged) {
                 JahiaContextLoaderListener.setSystemProperty(propertyName, newPropertyValue);
@@ -378,11 +383,11 @@ public class FrameworkService implements FrameworkListener {
         Map<String, String> filteredOutSystemProperties = filterOutSystemProperties();
         try {
             setupSystemProperties();
+            firstStartup = !new File(System.getProperty("org.osgi.framework.storage"), "bundle0").exists();
             bundleStarter = new BundleStarter();
             main = new Main(new String[0]);
             main.launch();
             setupStartupListener();
-            bundleStarter.startInitialBundlesIfNeeded();
         } catch (Exception e) {
             main = null;
             logger.error("Error starting OSGi container", e);

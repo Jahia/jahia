@@ -232,7 +232,7 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
             }
         }
 
-        if (FrameworkService.getInstance().isStarted() && SettingsBean.getInstance().isProcessingServer()) {
+        if (FrameworkService.getInstance().isStarted()) {
             storeAllLocalPersistentStates();
         }
 
@@ -280,7 +280,7 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
             }
         }
 
-        if (FrameworkService.getInstance().isStarted() && SettingsBean.getInstance().isProcessingServer() && !operation.getName().equals("Refresh")) {
+        if (FrameworkService.getInstance().isStarted() && !operation.getName().equals("Refresh")) {
             storeAllLocalPersistentStates();
         }
 

@@ -194,7 +194,7 @@ class BundleStarter {
     void afterFileInstallStarted(List<Long> createdOnStartup) {
         if (!createdOnStartup.isEmpty()) {
             List<Bundle> toBeStarted = new LinkedList<>();
-            List<Bundle> toBeUninstaled = new LinkedList<>();
+            List<Bundle> toBeUninstalled = new LinkedList<>();
 
             // as the bundles are not started automatically by Fileinstall we need to start them manually
             for (Long bundleId : createdOnStartup) {
@@ -212,12 +212,12 @@ class BundleStarter {
                         }
                         if (bundle.getState() != Bundle.UNINSTALLED) {
                             // Uninstall older version
-                            toBeUninstaled.add(otherBundle);
+                            toBeUninstalled.add(otherBundle);
                         }
                     }
                 }
             }
-            for (Bundle bundle : toBeUninstaled) {
+            for (Bundle bundle : toBeUninstalled) {
                 try {
                     bundle.uninstall();
                 } catch (BundleException e) {

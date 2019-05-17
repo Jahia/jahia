@@ -48,12 +48,16 @@ import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.services.modulemanager.BundleInfo;
+import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.ModuleManager;
+import org.jahia.services.modulemanager.persistence.PersistentBundle;
+import org.jahia.services.modulemanager.persistence.PersistentBundleInfoBuilder;
 import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
 import java.io.*;
@@ -185,7 +189,16 @@ public class ModuleFileInstallHandler implements CustomHandler {
             // if the listener is an url transformer
             URL transformed = artifact.getTransformedUrl();
             String location = transformed.toString();
-            getModuleManager().install(new UrlResource(transformed), TARGET_GROUP);
+
+            // When the framework is starting for the first time, we avoid calling ModuleManager.install(...)
+            // if the bundle corresponding to the current artifact is already installed to avoid excessive
+            // and non-necessary bundle refreshes.
+            // This would occur when bundles' state is restored on startup. In this case those bundles have
+            // actually been re-installed before FileInstall kicks off.
+            if (FrameworkService.getInstance().isStarted() || !(FrameworkService.getInstance().isFirstStartup() && isAlreadyInstalled(artifact, location))) {
+               getModuleManager().install(new UrlResource(transformed), TARGET_GROUP);
+            }
+
             Bundle b = BundleUtils.getBundle(location);
             if (b != null) {
                 artifact.setBundleId(b.getBundleId());
@@ -233,6 +246,7 @@ public class ModuleFileInstallHandler implements CustomHandler {
                 logger.error("Error installing artifact " + artifact.getPath(), e);
             }
         }
+
         if (!FrameworkService.getInstance().isStarted() && FrameworkService.getInstance().isFirstStartup()) {
             createdOnStartup.addAll(created.stream().map(Artifact::getBundleId).collect(Collectors.toList()));
         } else if (autoStartBundles) {
@@ -364,6 +378,44 @@ public class ModuleFileInstallHandler implements CustomHandler {
     public void watcherStarted() {
         // notify the framework that the file install watcher has started and processed found modules
         FrameworkService.notifyFileInstallStarted(createdOnStartup);
+    }
+
+    /*
+     * Checks whether or not a given artifact is already persisted and installed.
+     *
+     * @param artifact the artifact to check
+     * @param location the bundle location of {@code artifact}
+     * @return {@code true} if a corresponding bundle is installed and has the same checksum
+     *         than {@code artifact}, {@code false} otherwise
+     */
+    private boolean isAlreadyInstalled(Artifact artifact, String location) {
+        Bundle bundle = BundleUtils.getBundle(location);
+        if ((bundle != null) && (bundle.getState() != Bundle.UNINSTALLED)) {
+            String bundleKey = BundleInfo.fromBundle(bundle).getKey();
+            try {
+                PersistentBundle persistentBundle = ModuleUtils.loadPersistentBundle(bundleKey);
+                String artifactChecksum = computeChecksum(artifact);
+                return Objects.equals(persistentBundle.getChecksum(), artifactChecksum);
+            } catch (ModuleManagementException e) {
+                logger.debug("Could not find bundle " + bundleKey + " in persistent storage", e);
+            } catch (IOException e) {
+                logger.error("Failed to compute checksum of " + bundleKey, e);
+            }
+        }
+        return false;
+    }
+
+    /*
+     * Computes the checksum of the given artifact using the same algorithm used to compute the one
+     * stored with persisted bundles.
+     *
+     * @param artifact the artifact to compute the checksum from
+     * @return the computed checksum
+     * @throws IOException if an error occurs while computing the checksum
+     */
+    private String computeChecksum(Artifact artifact) throws IOException {
+        Resource resource = new UrlResource(artifact.getJaredUrl());
+        return PersistentBundleInfoBuilder.build(resource, true, false).getChecksum();
     }
 
 }

@@ -190,15 +190,6 @@ public class ModuleFileInstallHandler implements CustomHandler {
             URL transformed = artifact.getTransformedUrl();
             String location = transformed.toString();
 
-            // When the framework is starting for the first time, we avoid calling ModuleManager.install(...)
-            // if the bundle corresponding to the current artifact is already installed to avoid excessive
-            // and non-necessary bundle refreshes.
-            // This would occur when bundles' state is restored on startup. In this case those bundles have
-            // actually been re-installed before FileInstall kicks off.
-            if (FrameworkService.getInstance().isStarted() || !(FrameworkService.getInstance().isFirstStartup() && isAlreadyInstalled(artifact, location))) {
-               getModuleManager().install(new UrlResource(transformed), TARGET_GROUP);
-            }
-
             Bundle b = BundleUtils.getBundle(location);
             if (b != null) {
                 artifact.setBundleId(b.getBundleId());
@@ -237,6 +228,16 @@ public class ModuleFileInstallHandler implements CustomHandler {
             } catch (Exception e) {
                 logger.error("Error updating artifact " + artifact.getPath(), e);
             }
+        }
+
+        // When the framework is starting for the first time, we avoid calling ModuleManager.install(...)
+        // if the bundle corresponding to the current artifact is already installed to avoid excessive
+        // and non-necessary bundle refreshes.
+        // This would occur when bundles' state is restored on startup. In this case those bundles have
+        // actually been re-installed before FileInstall kicks off.
+        if (!FrameworkService.getInstance().isStarted() && FrameworkService.getInstance().isFirstStartup()) {
+            created = created.stream().filter(artifact -> !isAlreadyInstalled(artifact)).collect(Collectors.toList());
+            logger.info("Processing FileInstall artifacts: {} to be upgraded", new Object[] { created.size() });
         }
 
         for (Artifact artifact : created) {
@@ -384,22 +385,24 @@ public class ModuleFileInstallHandler implements CustomHandler {
      * Checks whether or not a given artifact is already persisted and installed.
      *
      * @param artifact the artifact to check
-     * @param location the bundle location of {@code artifact}
      * @return {@code true} if a corresponding bundle is installed and has the same checksum
      *         than {@code artifact}, {@code false} otherwise
      */
-    private boolean isAlreadyInstalled(Artifact artifact, String location) {
-        Bundle bundle = BundleUtils.getBundle(location);
-        if ((bundle != null) && (bundle.getState() != Bundle.UNINSTALLED)) {
-            String bundleKey = BundleInfo.fromBundle(bundle).getKey();
-            try {
-                PersistentBundle persistentBundle = ModuleUtils.loadPersistentBundle(bundleKey);
-                String artifactChecksum = computeChecksum(artifact);
-                return Objects.equals(persistentBundle.getChecksum(), artifactChecksum);
-            } catch (ModuleManagementException e) {
-                logger.debug("Could not find bundle " + bundleKey + " in persistent storage", e);
-            } catch (IOException e) {
-                logger.error("Failed to compute checksum of " + bundleKey, e);
+    private boolean isAlreadyInstalled(Artifact artifact) {
+        if (artifact.getListener() instanceof ArtifactUrlTransformer) {
+            String location = artifact.getTransformedUrl().toString();
+            Bundle bundle = BundleUtils.getBundle(location);
+            if ((bundle != null) && (bundle.getState() != Bundle.UNINSTALLED)) {
+                String bundleKey = BundleInfo.fromBundle(bundle).getKey();
+                try {
+                    PersistentBundle persistentBundle = ModuleUtils.loadPersistentBundle(bundleKey);
+                    String artifactChecksum = computeChecksum(artifact);
+                    return Objects.equals(persistentBundle.getChecksum(), artifactChecksum);
+                } catch (ModuleManagementException e) {
+                    logger.debug("Could not find bundle " + bundleKey + " in persistent storage", e);
+                } catch (IOException e) {
+                    logger.error("Failed to compute checksum of " + bundleKey, e);
+                }
             }
         }
         return false;

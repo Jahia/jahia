@@ -583,9 +583,6 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
     @Override
     public Collection<BundlePersistentInfo> storeAllLocalPersistentStates() throws ModuleManagementException {
         try {
-            if (!SettingsBean.getInstance().isProcessingServer()) {
-                throw new NonProcessingNodeException();
-            }
             Collection<BundlePersistentInfo> bundleInfos = Arrays.stream(FrameworkService.getBundleContext().getBundles())
                 .map(BundlePersistentInfo::new)
                 .collect(Collectors.toSet());

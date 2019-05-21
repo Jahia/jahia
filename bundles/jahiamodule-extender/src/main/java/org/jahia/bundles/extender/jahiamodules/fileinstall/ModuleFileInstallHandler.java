@@ -189,7 +189,7 @@ public class ModuleFileInstallHandler implements CustomHandler {
             // if the listener is an url transformer
             URL transformed = artifact.getTransformedUrl();
             String location = transformed.toString();
-
+            getModuleManager().install(new UrlResource(transformed), TARGET_GROUP);
             Bundle b = BundleUtils.getBundle(location);
             if (b != null) {
                 artifact.setBundleId(b.getBundleId());
@@ -207,6 +207,21 @@ public class ModuleFileInstallHandler implements CustomHandler {
                 artifact.setBundleId(b.getBundleId());
             }
         }
+    }
+
+    private void reconcile(Artifact artifact) {
+        File path = artifact.getPath();
+        logger.info("Reconciling {}", path);
+
+        URL transformed = artifact.getTransformedUrl();
+        String location = transformed.toString();
+
+        Bundle b = BundleUtils.getBundle(location);
+        if (b != null) {
+            artifact.setBundleId(b.getBundleId());
+        }
+
+        addLocationMapping(location, path);
     }
 
     @Override
@@ -230,17 +245,29 @@ public class ModuleFileInstallHandler implements CustomHandler {
             }
         }
 
-        // When the framework is starting for the first time, we avoid calling ModuleManager.install(...)
-        // if the bundle corresponding to the current artifact is already installed to avoid excessive
-        // and non-necessary bundle refreshes.
-        // This would occur when bundles' state is restored on startup. In this case those bundles have
-        // actually been re-installed before FileInstall kicks off.
+        List<Artifact> added = created;
+        List<Artifact> restored = Collections.emptyList();
         if (!FrameworkService.getInstance().isStarted() && FrameworkService.getInstance().isFirstStartup()) {
-            created = created.stream().filter(artifact -> !isAlreadyInstalled(artifact)).collect(Collectors.toList());
-            logger.info("Processing FileInstall artifacts: {} to be upgraded", new Object[] { created.size() });
+            // When the framework is starting for the first time, we avoid calling install if the bundle corresponding
+            // to a create artifact is already installed to avoid excessive and non-necessary refreshes.
+            // This would occur when bundles' states are restored on startup. In this situation the restored
+            // bundles have actually been re-installed before FileInstall kicks off. Thus we just need to
+            // reconcile the artifact with the restored bundle to preserve FileInstall consistency.
+            Map<Boolean, List<Artifact>> alreadyInstalled = created.stream().collect(Collectors.partitioningBy(a -> isAlreadyInstalled(a)));
+            added = alreadyInstalled.get(false);
+            restored = alreadyInstalled.get(true);
+            logger.info("Processing FileInstall artifacts: {} to be upgraded", added.size());
         }
 
-        for (Artifact artifact : created) {
+        for (Artifact artifact : restored) {
+            try {
+                reconcile(artifact);
+            } catch (Exception e) {
+                logger.error("Error reconciling artifact " + artifact.getPath(), e);
+            }
+        }
+
+        for (Artifact artifact : added) {
             try {
                 install(artifact);
             } catch (Exception e) {
@@ -249,7 +276,7 @@ public class ModuleFileInstallHandler implements CustomHandler {
         }
 
         if (!FrameworkService.getInstance().isStarted() && FrameworkService.getInstance().isFirstStartup()) {
-            createdOnStartup.addAll(created.stream().map(Artifact::getBundleId).collect(Collectors.toList()));
+            createdOnStartup.addAll(added.stream().map(Artifact::getBundleId).collect(Collectors.toList()));
         } else if (autoStartBundles) {
             startBundles(created);
         }

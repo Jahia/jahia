@@ -61,7 +61,6 @@ import org.jahia.services.modulemanager.spi.BundleService;
 import org.jahia.services.modulemanager.spi.BundleService.BundleInformation;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.ModuleVersion;
-import org.jahia.settings.SettingsBean;
 import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
 import org.jahia.settings.readonlymode.ReadOnlyModeException;
 import org.osgi.framework.Bundle;
@@ -90,6 +89,11 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
     private volatile boolean readOnly;
 
     private interface BundleOperation {
+
+        String REFRESH = "Refresh";
+        String STOP = "Stop";
+        String START = "Start";
+        String UNINSTALL = "Uninstall";
 
         String getName();
         boolean changesModuleState();
@@ -280,7 +284,7 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
             }
         }
 
-        if (FrameworkService.getInstance().isStarted() && !operation.getName().equals("Refresh")) {
+        if (FrameworkService.getInstance().isStarted() && !operation.getName().equals(BundleOperation.REFRESH)) {
             storeAllLocalPersistentStates();
         }
 
@@ -312,7 +316,7 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
 
             @Override
             public String getName() {
-                return "Start";
+                return BundleOperation.START;
             }
 
             @Override
@@ -338,7 +342,7 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
 
             @Override
             public String getName() {
-                return "Stop";
+                return BundleOperation.STOP;
             }
 
             @Override
@@ -392,7 +396,7 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
 
             @Override
             public String getName() {
-                return "Uninstall";
+                return BundleOperation.UNINSTALL;
             }
 
             @Override
@@ -414,7 +418,7 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
 
             @Override
             public String getName() {
-                return "Refresh";
+                return BundleOperation.REFRESH;
             }
 
             @Override

@@ -75,6 +75,11 @@ public class BundleServiceDelegate implements BundleService {
     }
 
     @Override
+    public void install(String uri, String target, boolean start, int startLevel) throws ModuleManagementException, InvalidTargetException {
+        lookupService().install(uri, target, start, startLevel);
+    }
+
+    @Override
     public void start(BundleInfo bundleInfo, String target) throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException {
         lookupService().start(bundleInfo, target);
     }

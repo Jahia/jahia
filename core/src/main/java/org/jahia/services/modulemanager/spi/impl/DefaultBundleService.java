@@ -127,12 +127,17 @@ public class DefaultBundleService implements BundleService {
 
     @Override
     public void install(String uri, String target, boolean start) throws ModuleManagementException {
+        install(uri, target, start, SettingsBean.getInstance().getModuleStartLevel());
+    }
+
+    @Override
+    public void install(String uri, String target, boolean start, int startLevel) throws ModuleManagementException {
         try {
             BundleContext bundleContext = FrameworkService.getBundleContext();
             Bundle bundle = bundleContext.getBundle(uri);
             if (bundle == null || bundle.getState() == Bundle.UNINSTALLED) {
                 bundle = bundleContext.installBundle(uri);
-                bundle.adapt(BundleStartLevel.class).setStartLevel(SettingsBean.getInstance().getModuleStartLevel());
+                bundle.adapt(BundleStartLevel.class).setStartLevel(startLevel);
             } else {
                 BundleLifecycleUtils.updateBundle(bundle);
             }

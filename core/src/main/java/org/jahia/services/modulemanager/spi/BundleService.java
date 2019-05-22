@@ -80,6 +80,22 @@ public interface BundleService {
     void install(String uri, String target, boolean start) throws ModuleManagementException, InvalidTargetException;
 
     /**
+     * Install the specified bundle on the target group of cluster nodes, optionally starting it right after if the <code>start</code>
+     * parameter is <code>true</code>.
+     *
+     * In case the same version of the bundle is already installed, update it with the snapshot referenced by the uri.
+     *
+     * @param uri The bundle location
+     * @param target The group of cluster nodes targeted by the install operation (see JavaDoc of the class)
+     * @param start Whether the installed bundle should be started right away
+     * @param startLevel The start level to apply to the installed bundle
+     * @return The result of the install operation
+     * @throws ModuleManagementException in case of operation failure
+     * @throws InvalidTargetException in case target is not a valid target for module operation
+     */
+    void install(String uri, String target, boolean start, int startLevel) throws ModuleManagementException, InvalidTargetException;
+
+    /**
      * Performs the start operation with the provided bundle on the target group of cluster nodes.
      *
      * @param bundleInfo The bundle to perform operation for

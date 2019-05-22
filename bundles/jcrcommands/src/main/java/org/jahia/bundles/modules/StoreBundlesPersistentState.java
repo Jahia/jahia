@@ -76,12 +76,14 @@ public class StoreBundlesPersistentState implements Action {
         table.column(new Col("State"));
         table.column(new Col("Version"));
         table.column(new Col("Location"));
+        table.column(new Col("Start-Level"));
         for (BundlePersistentInfo module : modules) {
             table.addRow().addContent(
                 module.getSymbolicName(),
                 module.getState(),
                 module.getVersion(),
-                module.getLocation()
+                module.getLocation(),
+                module.getStartLevel()
             );
         }
 

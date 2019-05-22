@@ -48,17 +48,22 @@ import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.services.modulemanager.BundleInfo;
+import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.ModuleManager;
+import org.jahia.services.modulemanager.persistence.PersistentBundle;
+import org.jahia.services.modulemanager.persistence.PersistentBundleInfoBuilder;
 import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
 import java.io.*;
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Handler class for DX modules which processes artifacts from the FileInstall service.
@@ -93,7 +98,7 @@ public class ModuleFileInstallHandler implements CustomHandler {
         }
     }
 
-    private final static String BUNDLE_LOCATION_MAP_FILE = "felix.fileinstall.bundleLocationMapFile";
+    private static final String BUNDLE_LOCATION_MAP_FILE = "felix.fileinstall.bundleLocationMapFile";
 
     private static final Logger logger = LoggerFactory.getLogger(ModuleFileInstallHandler.class);
 
@@ -101,13 +106,15 @@ public class ModuleFileInstallHandler implements CustomHandler {
 
     private static final String TARGET_GROUP = null;
 
-    private final static String UNINSTALL_REMOVE = "felix.fileinstall.bundles.uninstall.remove";
+    private static final String UNINSTALL_REMOVE = "felix.fileinstall.bundles.uninstall.remove";
 
     private boolean autoStartBundles;
 
     private File bundleLocationMapFile;
 
     private Boolean removedDataOnUninstall;
+
+    private List<Long> createdOnStartup = new ArrayList<>();
 
     /**
      * Initializes an instance of this class.
@@ -202,6 +209,21 @@ public class ModuleFileInstallHandler implements CustomHandler {
         }
     }
 
+    private void reconcile(Artifact artifact) {
+        File path = artifact.getPath();
+        logger.info("Reconciling {}", path);
+
+        URL transformed = artifact.getTransformedUrl();
+        String location = transformed.toString();
+
+        Bundle b = BundleUtils.getBundle(location);
+        if (b != null) {
+            artifact.setBundleId(b.getBundleId());
+        }
+
+        addLocationMapping(location, path);
+    }
+
     @Override
     public void process(List<Artifact> created, List<Artifact> modified, List<Artifact> deleted) {
         logger.info("Processing FileInstall artifacts: {} created, {} modified, {} deleted",
@@ -223,14 +245,39 @@ public class ModuleFileInstallHandler implements CustomHandler {
             }
         }
 
-        for (Artifact artifact : created) {
+        List<Artifact> added = created;
+        List<Artifact> restored = Collections.emptyList();
+        if (!FrameworkService.getInstance().isStarted() && FrameworkService.getInstance().isFirstStartup()) {
+            // When the framework is starting for the first time, we avoid calling install if the bundle corresponding
+            // to a create artifact is already installed to avoid excessive and non-necessary refreshes.
+            // This would occur when bundles' states are restored on startup. In this situation the restored
+            // bundles have actually been re-installed before FileInstall kicks off. Thus we just need to
+            // reconcile the artifact with the restored bundle to preserve FileInstall consistency.
+            Map<Boolean, List<Artifact>> alreadyInstalled = created.stream().collect(Collectors.partitioningBy(a -> isAlreadyInstalled(a)));
+            added = alreadyInstalled.get(false);
+            restored = alreadyInstalled.get(true);
+            logger.info("Processing FileInstall artifacts: {} to be upgraded", added.size());
+        }
+
+        for (Artifact artifact : restored) {
+            try {
+                reconcile(artifact);
+            } catch (Exception e) {
+                logger.error("Error reconciling artifact " + artifact.getPath(), e);
+            }
+        }
+
+        for (Artifact artifact : added) {
             try {
                 install(artifact);
             } catch (Exception e) {
                 logger.error("Error installing artifact " + artifact.getPath(), e);
             }
         }
-        if (autoStartBundles) {
+
+        if (!FrameworkService.getInstance().isStarted() && FrameworkService.getInstance().isFirstStartup()) {
+            createdOnStartup.addAll(added.stream().map(Artifact::getBundleId).collect(Collectors.toList()));
+        } else if (autoStartBundles) {
             startBundles(created);
         }
 
@@ -276,7 +323,7 @@ public class ModuleFileInstallHandler implements CustomHandler {
 
         File jaredDirectory = artifact.getJaredDirectory();
         if (jaredDirectory != null && !jaredDirectory.equals(artifact.getPath()) && !jaredDirectory.delete()) {
-            logger.warn("Unable to delete jared artifact: {}" + jaredDirectory.getAbsolutePath());
+            logger.warn("Unable to delete jared artifact: {}", jaredDirectory.getAbsolutePath());
         }
 
         if (artifact.getPath().exists()) {
@@ -308,11 +355,7 @@ public class ModuleFileInstallHandler implements CustomHandler {
         }
 
         if (!toBeStarted.isEmpty()) {
-            // boolean useModuleManagerApi = SettingsBean.getInstance().isClusterActivated();
             BundleLifecycleUtils.startModules(toBeStarted, true);
-            // if (!useModuleManagerApi) {
-            // BundleLifecycleUtils.startBundlesPendingDependencies();
-            // }
         }
     }
 
@@ -362,7 +405,47 @@ public class ModuleFileInstallHandler implements CustomHandler {
     @Override
     public void watcherStarted() {
         // notify the framework that the file install watcher has started and processed found modules
-        FrameworkService.notifyFileInstallStarted();
+        FrameworkService.notifyFileInstallStarted(createdOnStartup);
+    }
+
+    /*
+     * Checks whether or not a given artifact is already persisted and installed.
+     *
+     * @param artifact the artifact to check
+     * @return {@code true} if a corresponding bundle is installed and has the same checksum
+     *         than {@code artifact}, {@code false} otherwise
+     */
+    private boolean isAlreadyInstalled(Artifact artifact) {
+        if (artifact.getListener() instanceof ArtifactUrlTransformer) {
+            String location = artifact.getTransformedUrl().toString();
+            Bundle bundle = BundleUtils.getBundle(location);
+            if ((bundle != null) && (bundle.getState() != Bundle.UNINSTALLED)) {
+                String bundleKey = BundleInfo.fromBundle(bundle).getKey();
+                try {
+                    PersistentBundle persistentBundle = ModuleUtils.loadPersistentBundle(bundleKey);
+                    String artifactChecksum = computeChecksum(artifact);
+                    return Objects.equals(persistentBundle.getChecksum(), artifactChecksum);
+                } catch (ModuleManagementException e) {
+                    logger.debug("Could not find bundle " + bundleKey + " in persistent storage", e);
+                } catch (IOException e) {
+                    logger.error("Failed to compute checksum of " + bundleKey, e);
+                }
+            }
+        }
+        return false;
+    }
+
+    /*
+     * Computes the checksum of the given artifact using the same algorithm used to compute the one
+     * stored with persisted bundles.
+     *
+     * @param artifact the artifact to compute the checksum from
+     * @return the computed checksum
+     * @throws IOException if an error occurs while computing the checksum
+     */
+    private String computeChecksum(Artifact artifact) throws IOException {
+        Resource resource = new UrlResource(artifact.getJaredUrl());
+        return PersistentBundleInfoBuilder.build(resource, true, false).getChecksum();
     }
 
 }

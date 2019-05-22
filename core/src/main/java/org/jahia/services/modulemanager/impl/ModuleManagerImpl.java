@@ -71,6 +71,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -601,8 +602,15 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
 
     @Override
     public OperationResult applyBundlesPersistentStates(String target) throws ModuleManagementException {
+        // We only support this for bundles persisted in Jackrabbit and whose start level is higher than 0
+        final Predicate<BundlePersistentInfo> persistentStateFilter = (bundle) ->
+                bundle.getStartLevel() > 0 && Constants.URL_PROTOCOL_DX.equals(bundle.getLocationProtocol());
+
         try {
-            final Collection<BundlePersistentInfo> persistentStates = BundleInfoJcrHelper.getPersistentStates();
+            final Collection<BundlePersistentInfo> persistentStates = BundleInfoJcrHelper.getPersistentStates()
+                    .stream()
+                    .filter(persistentStateFilter)
+                    .collect(Collectors.toList());
             List<BundleInfo> installedAndUpdatedBundles = installMissingBundlesFromPersistentStates(persistentStates, target);
 
             final Collection<BundlePersistentInfo> bundles = Arrays.stream(FrameworkService.getBundleContext().getBundles())
@@ -613,11 +621,16 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
                  bundles.stream()
                         .filter(bundle -> bundle.isSameVersionAs(persistentState))
                         .findFirst().ifPresent(bundle -> {
-                            OperationResult result = applyPersistentState(
-                                bundle.getLocation(), bundle.getState(), persistentState.getState(), target
-                            );
-                            installedAndUpdatedBundles.addAll(result.getBundleInfos());
-                        }
+                             try {
+                                 OperationResult result = applyPersistentState(
+                                     bundle.getLocation(), bundle.getState(), persistentState.getState(), target
+                                 );
+                                 installedAndUpdatedBundles.addAll(result.getBundleInfos());
+                             } catch (Exception e) {
+                                 logger.info("Cannot apply state for bundle {} reason: {}", bundle.getSymbolicName(), e.getMessage());
+                                 logger.debug(e.getMessage(), e);
+                             }
+                         }
                  );
             }
             return OperationResult.success(Lists.newArrayList(Sets.newHashSet(installedAndUpdatedBundles)));
@@ -642,11 +655,11 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
 
         final List<BundleInfo> installedBundlesInfo = new ArrayList<>();
         for (BundlePersistentInfo persistentState : persistentStates) {
-            Set<String> versions = installedBundles.get(persistentState.getSymbolicName());
+            Set<String> installedVersions = installedBundles.get(persistentState.getSymbolicName());
 
-            if (versions == null || !versions.contains(persistentState.getVersion())) {
-                bundleService.install(persistentState.getLocation(), target, false);
-                installedBundlesInfo.add(new BundleInfo(persistentState.getLocation(), persistentState.getSymbolicName(), persistentState.getVersion()));
+            if (installedVersions == null || !installedVersions.contains(persistentState.getVersion())) {
+                bundleService.install(persistentState.getLocation(), target, false, persistentState.getStartLevel());
+                installedBundlesInfo.add(BundleInfo.fromKey(persistentState.getLocation()));
             }
         }
         return installedBundlesInfo;

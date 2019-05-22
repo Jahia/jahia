@@ -45,31 +45,35 @@ package org.jahia.services.modulemanager;
 
 import org.jahia.osgi.BundleUtils;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.startlevel.BundleStartLevel;
 
 /**
  * Represents persistent state of a bundle
  */
-public class BundlePersistentInfo {
+public final class BundlePersistentInfo {
 
-    private String location;
-    private int state;
-    private String symbolicName;
-    private String version;
+    private final String location;
+    private final int state;
+    private final String symbolicName;
+    private final String version;
+    private final int startLevel;
 
     public BundlePersistentInfo(Bundle bundle) {
         this(
                 bundle.getLocation(),
                 bundle.getSymbolicName(),
                 BundleUtils.getModuleVersion(bundle),
-                BundleUtils.getPersistentState(bundle)
+                BundleUtils.getPersistentState(bundle),
+                bundle.adapt(BundleStartLevel.class).getStartLevel()
         );
     }
 
-    public BundlePersistentInfo(String location, String symbolicName, String version, int state) {
+    public BundlePersistentInfo(String location, String symbolicName, String version, int state, int startLevel) {
         this.location = location;
         this.symbolicName = symbolicName;
         this.version = version;
         this.state = state;
+        this.startLevel = startLevel;
     }
 
     public String getLocation() {
@@ -86,6 +90,15 @@ public class BundlePersistentInfo {
 
     public String getVersion() {
         return version;
+    }
+
+    public int getStartLevel() {
+        return startLevel;
+    }
+
+    public String getLocationProtocol() {
+        int delimiter = (location == null) ? -1 : location.indexOf(':');
+        return (delimiter > -1) ? location.substring(0, delimiter) : null;
     }
 
     /**

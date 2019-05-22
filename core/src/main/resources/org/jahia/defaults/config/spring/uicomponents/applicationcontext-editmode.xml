@@ -50,6 +50,12 @@
         </property>
     </bean>
 
+    <bean id="Toolbar.Item.NumberOfTasksWorkflowMenuActionItem"
+          class="org.jahia.ajax.gwt.client.widget.toolbar.action.NumberOfTasksWorkflowMenuActionItem"
+          scope="prototype">
+        <property name="displayWorkflowCounter" value="${jahia.ui.displayWorkflowCounter:true}"/>
+    </bean>
+
     <bean id="editmode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
         <property name="requiredPermission" value="editModeAccess"/>
         <property name="nodeCheckPermission" value="$site"/>
@@ -138,10 +144,9 @@
                             </property>
                         </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype" id="Edit.Menu.Tasks" >
-                            <property name="actionItem">
-                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NumberOfTasksWorkflowMenuActionItem" />
-                            </property>
+                            <property name="actionItem" ref="Toolbar.Item.NumberOfTasksWorkflowMenuActionItem"/>
                             <property name="titleKey" value="label.numberoftasksforuser"/>
+                            <property name="displayTitle" value="${jahia.ui.displayWorkflowCounter:true}"/>
                         </bean>
                         <ref bean="editmode.managers.menu"/>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Edit.Menu.Cache">

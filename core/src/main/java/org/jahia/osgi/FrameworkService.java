@@ -73,14 +73,10 @@ import org.apache.karaf.util.config.PropertiesLoader;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.ScriptEngineUtils;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.Constants;
-import org.osgi.framework.FrameworkEvent;
-import org.osgi.framework.FrameworkListener;
-import org.osgi.framework.ServiceReference;
+import org.osgi.framework.*;
 import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -190,7 +186,10 @@ public class FrameworkService implements FrameworkListener {
             // send synchronous event about startup
             sendEvent(EVENT_TOPIC_LIFECYCLE, Collections.singletonMap("type", EVENT_TYPE_OSGI_STARTED), false);
 
-            // both pre-requisites for stratup are fulfilled
+            if (SettingsBean.getInstance().isProcessingServer()) {
+                ModuleUtils.getModuleManager().storeAllLocalPersistentStates();
+            }
+            // both pre-requisites for startup are fulfilled
             // notify any threads waiting
             notifyAll();
             logger.info("OSGi platform service initialized in {} ms", (System.currentTimeMillis() - startTime));

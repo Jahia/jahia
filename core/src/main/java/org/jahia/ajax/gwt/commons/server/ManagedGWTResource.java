@@ -43,6 +43,8 @@
  */
 package org.jahia.ajax.gwt.commons.server;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * simple GWT handler for atmosphere
  */
@@ -54,7 +56,6 @@ import org.atmosphere.config.service.Post;
 import org.atmosphere.config.service.Ready;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.AtmosphereResourceEvent;
-import org.atmosphere.cpr.AtmosphereResourceEventListener;
 import org.atmosphere.cpr.BroadcasterFactory;
 import org.atmosphere.gwt20.managed.AtmosphereMessageInterceptor;
 import org.atmosphere.gwt20.server.GwtRpcInterceptor;
@@ -115,7 +116,7 @@ public class ManagedGWTResource {
         broadcasterFactory.lookup(GWT_BROADCASTER_ID, true).addAtmosphereResource(r);
         JahiaUser user = (JahiaUser) r.getRequest().getSession(true).getAttribute(Constants.SESSION_USER);
         if (user != null) {
-            broadcasterFactory.lookup(GWT_BROADCASTER_ID + user.getName(),true).addAtmosphereResource(r);
+            broadcasterFactory.lookup(GWT_BROADCASTER_ID + user.getName(), true).addAtmosphereResource(r);
         }
 
         SpringContextSingleton.getInstance().publishEvent(new AtmosphereClientReadyEvent(r));
@@ -123,15 +124,20 @@ public class ManagedGWTResource {
     }
 
     @Disconnect
-    public void disconnected(AtmosphereResourceEvent event){
+    public void disconnected(AtmosphereResourceEvent event) {
         // isCancelled == true. means the client didn't send the close event, so an unexpected network glitch or browser
         // crash occurred.
         if (event.isCancelled()) {
-            logger.info("User:" + event.getResource().uuid() + " unexpectedly disconnected");
-        } else if (event.isClosedByClient()) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("User:" + event.getResource().uuid() + " closed the connection");
-            }
+            HttpSession session = event.getResource().getRequest().getSession();
+            JahiaUser user = (JahiaUser) session.getAttribute(Constants.SESSION_USER);
+            String userName = user != null ? user.getUsername() : null;
+            logger.info("User's AtmosphereResource unexpectedly disconnected! user=[{}] session=[{}]", userName,
+                    session.getId());
+        } else if (event.isClosedByClient() && logger.isDebugEnabled()) {
+            HttpSession session = event.getResource().getRequest().getSession();
+            JahiaUser user = (JahiaUser) session.getAttribute(Constants.SESSION_USER);
+            logger.debug("User closed the connection for AtmosphereResource! user=[{}] session=[{}]",
+                    user != null ? user.getUsername() : null, session.getId());
         }
         SpringContextSingleton.getInstance().publishEvent(new AtmosphereClientDisconnectedEvent(event.getResource()));
     }
@@ -150,6 +156,7 @@ public class ManagedGWTResource {
         public AtmosphereClientReadyEvent(AtmosphereResource resource) {
             super(resource);
         }
+
         public AtmosphereResource getResource() {
             return (AtmosphereResource) super.getSource();
         }
@@ -161,6 +168,7 @@ public class ManagedGWTResource {
         public AtmosphereClientDisconnectedEvent(AtmosphereResource resource) {
             super(resource);
         }
+
         public AtmosphereResource getResource() {
             return (AtmosphereResource) super.getSource();
         }

@@ -45,6 +45,7 @@ package org.jahia.ajax.gwt.helper;
 
 import org.atmosphere.cpr.AtmosphereResource;
 import org.jahia.ajax.gwt.commons.server.ManagedGWTResource;
+import org.jahia.api.Constants;
 import org.jahia.bin.filters.jcr.JcrSessionFilter;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.content.JCRSessionFactory;
@@ -76,12 +77,12 @@ public class LocksHelper implements ApplicationListener<ApplicationEvent> {
     public void onApplicationEvent(ApplicationEvent applicationEvent) {
         if (applicationEvent instanceof JahiaContextLoaderListener.HttpSessionDestroyedEvent) {
             HttpSession httpSession = ((JahiaContextLoaderListener.HttpSessionDestroyedEvent) applicationEvent).getSession();
-            if (httpSession.getAttribute(org.jahia.api.Constants.SESSION_USER) != null) {
+            if (httpSession.getAttribute(Constants.SESSION_USER) != null) {
                 if (JCRSessionFactory.getInstance().getCurrentUser() != null) {
                     closeAllLocks(httpSession);
                 } else {
                     try {
-                        JCRSessionFactory.getInstance().setCurrentUser((JahiaUser) httpSession.getAttribute(org.jahia.api.Constants.SESSION_USER));
+                        JCRSessionFactory.getInstance().setCurrentUser((JahiaUser) httpSession.getAttribute(Constants.SESSION_USER));
                         closeAllLocks(httpSession);
                     } finally {
                         JcrSessionFilter.endRequest();
@@ -91,12 +92,22 @@ public class LocksHelper implements ApplicationListener<ApplicationEvent> {
         } else if (applicationEvent instanceof ManagedGWTResource.AtmosphereClientDisconnectedEvent) {
             AtmosphereResource resource = ((ManagedGWTResource.AtmosphereClientDisconnectedEvent) applicationEvent).getResource();
             HttpSession httpSession = resource.getRequest().getSession();
-            Map<String,List<String>> locks = (Map<String, List<String>>) httpSession.getAttribute("engineLocks");
-            Map<String,String> atmosphereResources = (Map<String,String>) resource.getRequest().getSession().getAttribute("atmosphereResources");
+            Map<String, List<String>> locks = (Map<String, List<String>>) httpSession.getAttribute("engineLocks");
+            Map<String, String> atmosphereResources = (Map<String, String>) resource.getRequest().getSession().getAttribute("atmosphereResources");
             if (atmosphereResources != null && atmosphereResources.containsKey(resource.uuid())) {
                 String key = atmosphereResources.remove(resource.uuid());
                 if (locks != null && locks.containsKey(key)) {
-                    closeAllLocks(locks.remove(key));
+                    if (JCRSessionFactory.getInstance().getCurrentUser() != null) {
+                        closeAllLocks(locks.remove(key));
+                    } else {
+                        try {
+                            JCRSessionFactory.getInstance()
+                                    .setCurrentUser((JahiaUser) httpSession.getAttribute(Constants.SESSION_USER));
+                            closeAllLocks(locks.remove(key));
+                        } finally {
+                            JcrSessionFilter.endRequest();
+                        }
+                    }
                 }
             }
         } else if (applicationEvent instanceof ManagedGWTResource.AtmosphereClientReadyEvent) {

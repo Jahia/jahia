@@ -177,7 +177,7 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
         if (start) {
             // phase #2.1 resolve bundle to process imports
             for (PersistentBundle info : infos) {
-                stop(info.getKey(), target);
+                bundleService.stop(info, target);
             }
             // phase #2.2 stop previous versions
             for (PersistentBundle info : infos) {
@@ -331,6 +331,8 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
 
             @Override
             public void perform(BundleInfo info, String target) throws ModuleManagementException {
+                bundleService.stop(info, target);
+
                 stopPreviousVersions(info, target);
 
                 bundleService.start(info, target);
@@ -538,35 +540,34 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
                 .getTemplatePackageRegistry().getAllModuleVersions().get(thisVersionInfo.getSymbolicName());
 
         if (allModuleVersions != null && allModuleVersions.size() > 1) {
-            FrameworkWiring frameworkWiring = BundleLifecycleUtils.getFrameworkWiring();
-
             for (JahiaTemplatesPackage pkg : allModuleVersions.values()) {
                 Bundle otherVersion = pkg.getBundle();
                 if (otherVersion != null && otherVersion.getState() == Bundle.RESOLVED
-                        && !otherVersion.getVersion().toString().equals(thisVersionInfo.getVersion())) {
-
-                    // Sometimes a bundle depends on another version of the same bundle,
-                    // doing a refresh in this case will cause an infinite loop of start/stop operations
-                    Collection<Bundle> dependencies = frameworkWiring
-                            .getDependencyClosure(Collections.singleton(otherVersion));
-                    boolean doRefresh = true;
-                    for (Bundle dependency : dependencies) {
-                        if (dependency.getSymbolicName().equals(thisVersionInfo.getSymbolicName())
-                                && dependency.getVersion().toString().equals(thisVersionInfo.getVersion())) {
-                            // the active bundle depends on this one -> won't refresh it
-                            doRefresh = false;
-                            break;
-                        }
-                    }
-
-                    if (doRefresh) {
-                        result.add(otherVersion);
-                    }
+                        && !otherVersion.getVersion().toString().equals(thisVersionInfo.getVersion())
+                        && shouldRefresh(otherVersion, thisVersionInfo)) {
+                    result.add(otherVersion);
                 }
             }
         }
 
         return result;
+    }
+
+    private boolean shouldRefresh(Bundle otherVersion, BundleInfo thisVersionInfo) {
+        // Sometimes a bundle depends on another version of the same bundle,
+        // doing a refresh in this case will cause an infinite loop of start/stop operations
+        FrameworkWiring frameworkWiring = BundleLifecycleUtils.getFrameworkWiring();
+
+        Collection<Bundle> dependencies = frameworkWiring
+                .getDependencyClosure(Collections.singleton(otherVersion));
+        for (Bundle dependency : dependencies) {
+            if (dependency.getSymbolicName().equals(thisVersionInfo.getSymbolicName())
+                    && dependency.getVersion().toString().equals(thisVersionInfo.getVersion())) {
+                // the active bundle depends on this one -> won't refresh it
+                return false;
+            }
+        }
+        return true;
     }
 
     public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
@@ -685,6 +686,8 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
                     return start(bundleLocation, target);
                 case Bundle.INSTALLED:
                     return stop(bundleLocation, target);
+                default:
+                    return OperationResult.success(Collections.emptyList());
             }
         }
 

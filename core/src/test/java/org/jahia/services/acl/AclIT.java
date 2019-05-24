@@ -202,6 +202,7 @@ public class AclIT extends AbstractJUnitTest {
         content2.revokeAllRoles();
         content21.revokeAllRoles();
         content21.revokeAllRoles();
+        session.getNode("/modules").revokeAllRoles();
         session.save();
         JCRSessionFactory.getInstance().closeAllSessions();
     }

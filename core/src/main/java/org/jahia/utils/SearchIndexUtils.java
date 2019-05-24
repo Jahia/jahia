@@ -68,18 +68,19 @@ public final class SearchIndexUtils {
      */
     public static boolean checkIndex(File indexDir, StringBuilder out) throws IOException {
         StringOutputStream os = new StringOutputStream();
-        PrintStream infoStream = new PrintStream(os);
-        CheckIndex checkIndex = new CheckIndex(FSDirectory.open(indexDir));
-        checkIndex.setInfoStream(infoStream);
+        try (PrintStream infoStream = new PrintStream(os)) {
+            CheckIndex checkIndex = new CheckIndex(FSDirectory.open(indexDir));
+            checkIndex.setInfoStream(infoStream);
 
-        Status status = checkIndex.checkIndex();
+            Status status = checkIndex.checkIndex();
 
-        if (out != null) {
-            infoStream.flush();
-            out.append(os.toString());
+            if (out != null) {
+                infoStream.flush();
+                out.append(os.toString());
+            }
+
+            return status.clean;
         }
-
-        return status.clean;
     }
 
     /**

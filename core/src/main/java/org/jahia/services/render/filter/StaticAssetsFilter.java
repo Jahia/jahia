@@ -816,13 +816,16 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 }
                 BufferedWriter bw = new BufferedWriter(writer);
                 BufferedReader br = new BufferedReader(reader);
-                String s;
-                while ((s = br.readLine()) != null) {
-                    bw.write(s);
-                    bw.write("\n");
+                try {
+                    String s;
+                    while ((s = br.readLine()) != null) {
+                        bw.write(s);
+                        bw.write("\n");
+                    }
+                } finally {
+                    IOUtils.closeQuietly(bw);
+                    IOUtils.closeQuietly(br);
                 }
-                IOUtils.closeQuietly(bw);
-                IOUtils.closeQuietly(br);
             }
 
         } finally {

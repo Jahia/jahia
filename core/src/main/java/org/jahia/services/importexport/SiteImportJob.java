@@ -547,7 +547,7 @@ public class SiteImportJob extends BackgroundJob {
             for (Map<Object, Object> ii : importsInfos) {
                 if (ii.get("type").equals("site")) return ii;
             }
-            return Collections.EMPTY_MAP;
+            return Collections.emptyMap();
         }
 
         private void importErrorMessageLineStepper(StringBuilder errorMessage) {

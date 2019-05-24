@@ -114,6 +114,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -433,7 +434,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         if (locale == null && nodeTypesToIgnore != null && nodeTypesToIgnore.size() > 0) {
             statement.append("AND NOT (");
-            Iterator nodeTypesToIgnoreIterator = nodeTypesToIgnore.iterator();
+            Iterator<String> nodeTypesToIgnoreIterator = nodeTypesToIgnore.iterator();
             while (nodeTypesToIgnoreIterator.hasNext()) {
                 statement.append("[jcr:primaryType] = '").append(nodeTypesToIgnoreIterator.next()).append("'");
                 if (nodeTypesToIgnoreIterator.hasNext()) {
@@ -458,119 +459,120 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     public void exportSites(OutputStream outputStream, Map<String, Object> params, List<JCRSiteNode> sites)
             throws RepositoryException, IOException, SAXException, TransformerException {
 
-        logger.info("Sites " + sites + " export started");
+        logger.info("Sites {} export started", sites);
         long startSitesExportTime = System.currentTimeMillis();
         String serverDirectory = (String) params.get(SERVER_DIRECTORY);
         ZipOutputStream zout = getZipOutputStream(outputStream, serverDirectory);
         ZipEntry anEntry = new ZipEntry(EXPORT_PROPERTIES);
         zout.putNextEntry(anEntry);
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(zout));
-        bw.write("JahiaRelease = " + Jahia.getReleaseNumber() + "\n");
-        bw.write("Patch = " + Jahia.getPatchNumber() + "\n");
-        bw.write("BuildNumber = " + Jahia.getBuildNumber() + "\n");
-        bw.write("ExportDate = " + new SimpleDateFormat(ImportExportService.DATE_FORMAT).format(new Date()) + "\n");
-        bw.flush();
+        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(zout))) {
+            bw.write("JahiaRelease = " + Jahia.getReleaseNumber() + "\n");
+            bw.write("Patch = " + Jahia.getPatchNumber() + "\n");
+            bw.write("BuildNumber = " + Jahia.getBuildNumber() + "\n");
+            bw.write("ExportDate = " + new SimpleDateFormat(ImportExportService.DATE_FORMAT).format(new Date()) + "\n");
+            bw.flush();
 
-        Set<String> externalReferences = new HashSet<>();
+            Set<String> externalReferences = new HashSet<>();
 
-        for (JCRSiteNode jahiaSite : sites) {
-            long startSiteExportTime = System.currentTimeMillis();
-            logger.info("Exporting site internal nodes " + jahiaSite.getName() +" content started");
-            if (serverDirectory == null) {
-                anEntry = new ZipEntry(jahiaSite.getSiteKey() + ".zip");
-                zout.putNextEntry(anEntry);
+            for (JCRSiteNode jahiaSite : sites) {
+                long startSiteExportTime = System.currentTimeMillis();
+                logger.info("Exporting site internal nodes {} content started", jahiaSite.getName());
+                if (serverDirectory == null) {
+                    anEntry = new ZipEntry(jahiaSite.getSiteKey() + ".zip");
+                    zout.putNextEntry(anEntry);
 
-                exportSite(jahiaSite, zout, externalReferences, params, null);
-            } else {
-                exportSite(jahiaSite, zout, externalReferences, params, serverDirectory + "/" + jahiaSite.getSiteKey());
-            }
-            logger.info("Exporting site internal nodes {} ended in {} seconds", jahiaSite.getName(), getDuration(startSiteExportTime));
-        }
-
-        JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession();
-
-        if (params.containsKey(INCLUDE_USERS)) {
-            // export users
-            ZipOutputStream zzout;
-            if (serverDirectory == null) {
-                zout.putNextEntry(new ZipEntry(USERS_ZIP));
-                zzout = getZipOutputStream(zout, null);
-            } else {
-                zzout = getZipOutputStream(zout, serverDirectory + "/users");
+                    exportSite(jahiaSite, zout, externalReferences, params, null);
+                } else {
+                    exportSite(jahiaSite, zout, externalReferences, params, serverDirectory + "/" + jahiaSite.getSiteKey());
+                }
+                logger.info("Exporting site internal nodes {} ended in {} seconds", jahiaSite.getName(), getDuration(startSiteExportTime));
             }
 
-            try {
-                logger.info("Exporting Users Started");
-                exportNodesWithBinaries(session.getRootNode(), Collections.singleton(session.getNode("/users")), zzout,
-                        defaultExportNodeTypesToIgnore, externalReferences, params, true);
-                logger.info("Exporting Users Ended");
-            } catch (IOException e) {
-                logger.warn("Cannot export due to some IO exception :"+e.getMessage());
-            } catch (Exception e) {
-                logger.error("Cannot export Users", e);
-            }
-            zzout.finish();
-        }
-        if (params.containsKey(INCLUDE_ROLES)) {
-            // export roles
-            ZipOutputStream zzout;
-            if (serverDirectory == null) {
-                zout.putNextEntry(new ZipEntry(ROLES_ZIP));
-                zzout = getZipOutputStream(zout, null);
-            } else {
-                zzout = getZipOutputStream(zout, serverDirectory + "/roles");
-            }
+            JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession();
 
-
-            try {
-                logger.info("Exporting Roles Started");
-                exportNodesWithBinaries(session.getRootNode(), Collections.singleton(session.getNode("/roles")), zzout,
-                        defaultExportNodeTypesToIgnore, externalReferences, params, true);
-                logger.info("Exporting Roles Ended");
-            } catch (Exception e) {
-                logger.error("Cannot export roles", e);
-            }
-            zzout.finish();
-        }
-        if (params.containsKey(INCLUDE_MOUNTS) && session.nodeExists("/mounts")) {
-            JCRNodeWrapper mounts = session.getNode("/mounts");
-            if (mounts.hasNodes()) {
-                // export mounts
-                zout.putNextEntry(new ZipEntry(MOUNTS_ZIP));
-                ZipOutputStream zzout = new ZipOutputStream(zout);
+            if (params.containsKey(INCLUDE_USERS)) {
+                // export users
+                ZipOutputStream zzout;
+                if (serverDirectory == null) {
+                    zout.putNextEntry(new ZipEntry(USERS_ZIP));
+                    zzout = getZipOutputStream(zout, null);
+                } else {
+                    zzout = getZipOutputStream(zout, serverDirectory + "/users");
+                }
 
                 try {
-                    logger.info("Exporting Mount points Started");
-                    exportNodesWithBinaries(session.getRootNode(), Collections.singleton(mounts), zzout, defaultExportNodeTypesToIgnore,
-                            externalReferences, params, true);
-                    logger.info("Exporting Mount points Ended");
+                    logger.info("Exporting Users Started");
+                    exportNodesWithBinaries(session.getRootNode(), Collections.singleton(session.getNode("/users")), zzout,
+                            defaultExportNodeTypesToIgnore, externalReferences, params, true);
+                    logger.info("Exporting Users Ended");
+                } catch (IOException e) {
+                    logger.warn("Cannot export due to some IO exception :{}", e.getMessage());
                 } catch (Exception e) {
-                    logger.error("Cannot export mount points", e);
+                    logger.error("Cannot export Users", e);
                 }
                 zzout.finish();
             }
-        }
+            if (params.containsKey(INCLUDE_ROLES)) {
+                // export roles
+                ZipOutputStream zzout;
+                if (serverDirectory == null) {
+                    zout.putNextEntry(new ZipEntry(ROLES_ZIP));
+                    zzout = getZipOutputStream(zout, null);
+                } else {
+                    zzout = getZipOutputStream(zout, serverDirectory + "/roles");
+                }
 
-        Set<JCRNodeWrapper> refs = new HashSet<JCRNodeWrapper>();
-        for (String reference : externalReferences) {
-            JCRNodeWrapper node = session.getNodeByUUID(reference);
-            if (!defaultExportNodeTypesToIgnore.contains(node.getPrimaryNodeTypeName())) {
-                refs.add(node);
+                try {
+                    logger.info("Exporting Roles Started");
+                    exportNodesWithBinaries(session.getRootNode(), Collections.singleton(session.getNode("/roles")), zzout,
+                            defaultExportNodeTypesToIgnore, externalReferences, params, true);
+                    logger.info("Exporting Roles Ended");
+                } catch (Exception e) {
+                    logger.error("Cannot export roles", e);
+                }
+                zzout.finish();
             }
-        }
-        if (!refs.isEmpty()) {
-            zout.putNextEntry(new ZipEntry(REFERENCES_ZIP));
-            ZipOutputStream zzout = getZipOutputStream(zout, serverDirectory + "/" + REFERENCES_ZIP);
-            try {
-                logger.info("Exporting References Started");
-                exportNodesWithBinaries(session.getRootNode(), refs, zzout, defaultExportNodeTypesToIgnore, externalReferences, params, true);
-                logger.info("Exporting References Ended");
-            } catch (Exception e) {
-                logger.error("Cannot export References", e);
+            if (params.containsKey(INCLUDE_MOUNTS) && session.nodeExists("/mounts")) {
+                JCRNodeWrapper mounts = session.getNode("/mounts");
+                if (mounts.hasNodes()) {
+                    // export mounts
+                    zout.putNextEntry(new ZipEntry(MOUNTS_ZIP));
+                    ZipOutputStream zzout = new ZipOutputStream(zout);
+
+                    try {
+                        logger.info("Exporting Mount points Started");
+                        exportNodesWithBinaries(session.getRootNode(), Collections.singleton(mounts), zzout, defaultExportNodeTypesToIgnore,
+                                externalReferences, params, true);
+                        logger.info("Exporting Mount points Ended");
+                    } catch (Exception e) {
+                        logger.error("Cannot export mount points", e);
+                    }
+                    zzout.finish();
+                }
             }
-            zzout.finish();
+
+            Set<JCRNodeWrapper> refs = new HashSet<>();
+            for (String reference : externalReferences) {
+                JCRNodeWrapper node = session.getNodeByUUID(reference);
+                if (!defaultExportNodeTypesToIgnore.contains(node.getPrimaryNodeTypeName())) {
+                    refs.add(node);
+                }
+            }
+            if (!refs.isEmpty()) {
+                zout.putNextEntry(new ZipEntry(REFERENCES_ZIP));
+                ZipOutputStream zzout = getZipOutputStream(zout, serverDirectory + "/" + REFERENCES_ZIP);
+                try {
+                    logger.info("Exporting References Started");
+                    exportNodesWithBinaries(session.getRootNode(), refs, zzout, defaultExportNodeTypesToIgnore, externalReferences, params,
+                            true);
+                    logger.info("Exporting References Ended");
+                } catch (Exception e) {
+                    logger.error("Cannot export References", e);
+                }
+                zzout.finish();
+            }
+            zout.finish();
         }
-        zout.finish();
 
         logger.info("Total Sites {} export ended in {} seconds", sites, getDuration(startSitesExportTime));
     }
@@ -1071,7 +1073,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         logger.info("Start analyzing import file {}", file);
         long timer = System.currentTimeMillis();
         getFileList(file, sizes, fileList);
-        logger.info("Done analyzing import file {} in {}", file, DateUtils.formatDurationWords(System.currentTimeMillis() - timer));
+        if (logger.isInfoEnabled()) {
+            logger.info("Done analyzing import file {} in {}", file, DateUtils.formatDurationWords(System.currentTimeMillis() - timer));
+        }
 
         Map<String, String> pathMapping = session.getPathMapping();
         for (JahiaTemplatesPackage pkg : templatePackageRegistry.getRegisteredModules().values()) {
@@ -1140,7 +1144,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     String name = zipentry.getName();
                     if (name.equals(REPOSITORY_XML)) {
                         timer = System.currentTimeMillis();
-                        logger.info("Start importing " + REPOSITORY_XML);
+                        logger.info("Start importing {}", REPOSITORY_XML);
 
                         DocumentViewValidationHandler h = new DocumentViewValidationHandler();
                         h.setSession(session);
@@ -1163,8 +1167,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         if (!sizes.containsKey(SITE_PROPERTIES)) {
                             // todo : site properties can be removed and properties get from here
                         }
-                        logger.info("Done importing " + REPOSITORY_XML + " in {}",
-                                DateUtils.formatDurationWords(System.currentTimeMillis() - timer));
+                        if (logger.isInfoEnabled()) {
+                            logger.info("Done importing " + REPOSITORY_XML + " in {}",
+                                    DateUtils.formatDurationWords(System.currentTimeMillis() - timer));
+                        }
                         break;
                     }
                     zis.closeEntry();
@@ -1265,7 +1271,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         if (legacyImport) {
             long timerLegacy = System.currentTimeMillis();
             final String originatingJahiaRelease = (String) infos.get("originatingJahiaRelease");
-            logger.info("Start legacy import, source version is " + originatingJahiaRelease);
+            logger.info("Start legacy import, source version is {}", originatingJahiaRelease);
             if (legacyMappingFilePath != null) {
                 mapping = new DefinitionsMapping();
                 final InputStream fileInputStream = legacyMappingFilePath.getInputStream();
@@ -1299,7 +1305,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                                         file.getURL().getPath(), reg);
                                 r.parse();
                             } else {
-                                logger.error("Couldn't load " + builtInLegacyDefsFile);
+                                logger.error("Couldn't load {}", builtInLegacyDefsFile);
                             }
                         } catch (ParseException e) {
                             logger.error(e.getMessage(), e);
@@ -1318,7 +1324,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 }
                 InputStreamReader streamReader = null;
                 try {
-                    streamReader = new InputStreamReader(legacyDefinitionsFilePath.getInputStream(), "UTF-8");
+                    streamReader = new InputStreamReader(legacyDefinitionsFilePath.getInputStream(), StandardCharsets.UTF_8);
                     JahiaCndReaderLegacy r = new JahiaCndReaderLegacy(streamReader, legacyDefinitionsFilePath.getFilename(),
                             file.getURL().getPath(), reg);
                     r.parse();
@@ -1343,21 +1349,21 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         logger.info("Importing file " + FILESACL_XML);
                         importFilesAcl(site, file, zis, mapping, fileList);
                     } else if (name.startsWith("export")) {
-                        logger.info("Importing file " + name);
+                        logger.info("Importing file {}", name);
                         String languageCode;
-                        if (name.indexOf("_") != -1) {
-                            languageCode = name.substring(7, name.lastIndexOf("."));
+                        if (name.indexOf('_') != -1) {
+                            languageCode = name.substring(7, name.lastIndexOf('.'));
                         } else {
                             languageCode = site.getLanguagesAsLocales().iterator().next().toString();
                         }
                         zipentry.getSize();
 
                         LegacyImportHandler importHandler = new LegacyImportHandler(session, siteFolder, reg, mapping, LanguageCodeConverters.languageCodeToLocale(languageCode), infos != null ? originatingJahiaRelease : null, legacyPidMappingTool, legacyImportHandlerCtnId);
-                        Map<String, List<String>> references = new LinkedHashMap<String, List<String>>();
+                        Map<String, List<String>> references = new LinkedHashMap<>();
                         importHandler.setReferences(references);
 
                         InputStream documentInput = zis;
-                        if (this.xmlContentTransformers != null && this.xmlContentTransformers.size() > 0) {
+                        if (this.xmlContentTransformers != null && !this.xmlContentTransformers.isEmpty()) {
                             documentInput = new ZipInputStream(file.getInputStream());
                             while (!name.equals(((ZipInputStream) documentInput).getNextEntry().getName())) ;
                             byte[] buffer = new byte[2048];
@@ -1365,13 +1371,13 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                                     FastDateFormat.getInstance("yyyy_MM_dd-HH_mm_ss_SSS").format(timerSite) + "_" + site.getSiteKey());
                             tmpDirectoryForSite.mkdirs();
                             File document = new File(tmpDirectoryForSite, "export_" + languageCode + "_00_extracted.xml");
-                            final OutputStream output = new BufferedOutputStream(new FileOutputStream(document), 2048);
-                            int count = 0;
-                            while ((count = documentInput.read(buffer, 0, 2048)) > 0) {
-                                output.write(buffer, 0, count);
+                            try (final OutputStream output = new BufferedOutputStream(new FileOutputStream(document), 2048)) {
+                                int count = 0;
+                                while ((count = documentInput.read(buffer, 0, 2048)) > 0) {
+                                    output.write(buffer, 0, count);
+                                }
+                                output.flush();
                             }
-                            output.flush();
-                            output.close();
                             documentInput.close();
                             for (XMLContentTransformer xct : xmlContentTransformers) {
                                 document = xct.transform(document, tmpDirectoryForSite);
@@ -1391,7 +1397,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             } finally {
                 closeInputStream(zis);
             }
-            logger.info("Done legacy import in {}", DateUtils.formatDurationWords(System.currentTimeMillis() - timerLegacy));
+            if (logger.isInfoEnabled()) {
+                logger.info("Done legacy import in {}", DateUtils.formatDurationWords(System.currentTimeMillis() - timerLegacy));
+            }
         }
 
         categoriesImportHandler.setUuidProps(catProps);

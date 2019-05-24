@@ -316,13 +316,13 @@ public class ModuleBuildHelper implements InitializingBean {
         try {
             if (!StringUtils.isEmpty(releaseInfo.getUsername()) && !StringUtils.isEmpty(releaseInfo.getPassword())) {
                 settings = File.createTempFile("settings", ".xml");
-                BufferedWriter w = new BufferedWriter(new FileWriter(settings));
-                w.write("<settings><servers><server><id>" + releaseInfo.getRepositoryId() + "</id><username>");
-                w.write(releaseInfo.getUsername());
-                w.write("</username><password>");
-                w.write(releaseInfo.getPassword());
-                w.write("</password></server></servers></settings>");
-                w.close();
+                try (BufferedWriter w = new BufferedWriter(new FileWriter(settings))) {
+                    w.write("<settings><servers><server><id>" + releaseInfo.getRepositoryId() + "</id><username>");
+                    w.write(releaseInfo.getUsername());
+                    w.write("</username><password>");
+                    w.write(releaseInfo.getPassword());
+                    w.write("</password></server></servers></settings>");
+                }
             }
             JarFile jar = new JarFile(generatedJar);
             pomFile = PomUtils.extractPomFromJar(jar, groupId, artifactId);

@@ -69,6 +69,7 @@ import java.util.regex.Pattern;
 public abstract class AbstractFilter extends ConditionalExecution implements RenderFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractFilter.class);
+    private static final double THRESHOLD = .0001;
 
     private String description;
     private boolean disabled;
@@ -118,7 +119,7 @@ public abstract class AbstractFilter extends ConditionalExecution implements Ren
      */
     public static class AnyOfCondition implements ExecutionCondition {
 
-        private List<ExecutionCondition> conditions = new LinkedList<ExecutionCondition>();
+        private List<ExecutionCondition> conditions = new LinkedList<>();
 
         public void add(ExecutionCondition condition) {
             conditions.add(condition);
@@ -294,7 +295,7 @@ public abstract class AbstractFilter extends ConditionalExecution implements Ren
                     logger.warn("Unable to evaluate filter execution condition for resource " + resource, e);
                 }
             } else {
-                logger.warn("Unable to evaluate filter execution condition." + "Node is null for resource " + resource);
+                logger.warn("Unable to evaluate filter execution condition. Node is null for resource {}", resource);
             }
 
             return matches;
@@ -336,7 +337,7 @@ public abstract class AbstractFilter extends ConditionalExecution implements Ren
      *
      * @author Sergiy Shyrkov
      */
-    public static abstract class PatternCondition implements ExecutionCondition {
+    public abstract static class PatternCondition implements ExecutionCondition {
 
         private String exactMatch;
         private Pattern pattern;
@@ -392,7 +393,7 @@ public abstract class AbstractFilter extends ConditionalExecution implements Ren
      * @author Sergiy Shyrkov
      * @since Jahia 6.6
      */
-    public static abstract class RequestCondition implements ExecutionCondition {
+    public abstract static class RequestCondition implements ExecutionCondition {
 
         protected String name;
         protected String value;
@@ -578,7 +579,7 @@ public abstract class AbstractFilter extends ConditionalExecution implements Ren
             return false;
         }
         if (this.getClass() == obj.getClass()) {
-            return this.getPriority() == ((AbstractFilter) obj).getPriority();
+            return Math.abs(this.getPriority() - ((AbstractFilter) obj).getPriority()) < THRESHOLD;
         }
         return false;
     }

@@ -63,17 +63,19 @@ import org.jahia.ajax.gwt.client.widget.poller.TaskEvent;
 public class NumberOfTasksWorkflowMenuActionItem extends BaseActionItem implements Poller.PollListener<TaskEvent> {
 
     private Integer numberOfTasks = null;
+    private boolean displayWorkflowCounter;
 
     public void init(final GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
         super.init(gwtToolbarItem, linker);
-        JahiaContentManagementService.App.getInstance().getNumberOfTasksForUser(new BaseAsyncCallback<Integer>() {
-            public void onSuccess(Integer result) {
-                numberOfTasks = result;
-                updateLabel(result);
-            }
-        });
-        Poller.getInstance().registerListener(this, TaskEvent.class);
-
+        if (displayWorkflowCounter) {
+            JahiaContentManagementService.App.getInstance().getNumberOfTasksForUser(new BaseAsyncCallback<Integer>() {
+                public void onSuccess(Integer result) {
+                    numberOfTasks = result;
+                    updateLabel(result);
+                }
+            });
+            Poller.getInstance().registerListener(this, TaskEvent.class);
+        }
     }
 
     public void handlePollingResult(TaskEvent result) {
@@ -110,5 +112,13 @@ public class NumberOfTasksWorkflowMenuActionItem extends BaseActionItem implemen
     @Override
     public void handleNewLinkerSelection() {
         setEnabled(false);
+    }
+
+    public boolean isDisplayWorkflowCounter() {
+        return displayWorkflowCounter;
+    }
+
+    public void setDisplayWorkflowCounter(boolean displayWorkflowCounter) {
+        this.displayWorkflowCounter = displayWorkflowCounter;
     }
 }

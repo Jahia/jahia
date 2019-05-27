@@ -43,31 +43,24 @@
  */
 //
 
-
 package org.jahia.exceptions;
 
-
 /**
- * This exception is 
+ * This exception is
  *
- * @author  Khue Nguyen
+ * @author Khue Nguyen
  * @version 1.0
  */
-public class JahiaArchiveFileException extends JahiaException{
-	
+public class JahiaArchiveFileException extends JahiaException {
 
     private static final long serialVersionUID = 5781352624516421299L;
 
-    //-------------------------------------------------------------------------
-    /** Default constructor
+    // -------------------------------------------------------------------------
+    /**
+     * Default constructor
      *
      */
-    public JahiaArchiveFileException (int errorCode)
-    {
-        super ("Archive File Exception", "Archive File Exception",
-               errorCode, ERROR_SEVERITY);
+    public JahiaArchiveFileException(String errorMessage, int errorCode) {
+        super("Archive File Exception: " + errorMessage, "Archive File Exception: " + errorMessage, errorCode, ERROR_SEVERITY);
     }
-    
-    
-    
 }

@@ -101,6 +101,8 @@ public class StaticFileServlet extends HttpServlet {
     private static final int DEFAULT_BUFFER_SIZE = 10240; // ..bytes = 10KB.
     private static final long DEFAULT_EXPIRE_TIME = 604800000L; // ..ms = 1 week.
     private static final String MULTIPART_BOUNDARY = "MULTIPART_BYTERANGES";
+    private static final String CONTENT_RANGE = "Content-Range";
+    private static final String EXPIRES = "Expires";
 
     // Properties ---------------------------------------------------------------------------------
 
@@ -198,7 +200,7 @@ public class StaticFileServlet extends HttpServlet {
         if (ifNoneMatch != null && matches(ifNoneMatch, eTag)) {
             response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
             response.setHeader("ETag", eTag); // Required in 304.
-            response.setDateHeader("Expires", expires); // Postpone cache with 1 week.
+            response.setDateHeader(EXPIRES, expires); // Postpone cache with 1 week.
             return;
         }
 
@@ -208,7 +210,7 @@ public class StaticFileServlet extends HttpServlet {
         if (ifNoneMatch == null && ifModifiedSince != -1 && ifModifiedSince + 1000 > lastModified) {
             response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
             response.setHeader("ETag", eTag); // Required in 304.
-            response.setDateHeader("Expires", expires); // Postpone cache with 1 week.
+            response.setDateHeader(EXPIRES, expires); // Postpone cache with 1 week.
             return;
         }
 
@@ -234,7 +236,7 @@ public class StaticFileServlet extends HttpServlet {
 
         // Prepare some variables. The full Range represents the complete file.
         Range full = new Range(0, length - 1, length);
-        List<Range> ranges = new ArrayList<Range>();
+        List<Range> ranges = new ArrayList<>();
 
         // Validate and process Range and If-Range headers.
         String range = request.getHeader("Range");
@@ -242,7 +244,7 @@ public class StaticFileServlet extends HttpServlet {
 
             // Range header should match format "bytes=n-n,n-n,n-n...". If not, then return 416.
             if (!PATTERN_RANGE.matcher(range).matches()) {
-                response.setHeader("Content-Range", "bytes */" + length); // Required in 416.
+                response.setHeader(CONTENT_RANGE, "bytes */" + length); // Required in 416.
                 response.sendError(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
                 return;
             }
@@ -266,8 +268,8 @@ public class StaticFileServlet extends HttpServlet {
                 for (String part : Patterns.COMMA.split(range.substring(6))) {
                     // Assuming a file with length of 100, the following examples returns bytes at:
                     // 50-80 (50 to 80), 40- (40 to length=100), -20 (length-20=80 to length=100).
-                    long start = sublong(part, 0, part.indexOf("-"));
-                    long end = sublong(part, part.indexOf("-") + 1, part.length());
+                    long start = sublong(part, 0, part.indexOf('-'));
+                    long end = sublong(part, part.indexOf('-') + 1, part.length());
 
                     if (start == -1) {
                         start = length - end;
@@ -278,7 +280,7 @@ public class StaticFileServlet extends HttpServlet {
 
                     // Check if Range is syntactically valid. If not, then return 416.
                     if (start > end) {
-                        response.setHeader("Content-Range", "bytes */" + length); // Required in 416.
+                        response.setHeader(CONTENT_RANGE, "bytes */" + length); // Required in 416.
                         response.sendError(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
                         return;
                     }
@@ -326,40 +328,40 @@ public class StaticFileServlet extends HttpServlet {
         response.setHeader("Accept-Ranges", "bytes");
         response.setHeader("ETag", eTag);
         response.setDateHeader("Last-Modified", lastModified);
-        response.setDateHeader("Expires", expires);
+        response.setDateHeader(EXPIRES, expires);
 
 
         // Send requested file (part(s)) to client ------------------------------------------------
-
+        boolean done = false;
         // Prepare streams.
-        RandomAccessFile input = null;
-        OutputStream output = null;
-
-        try {
+        try (RandomAccessFile input = new RandomAccessFile(file, "r"); 
+                ServletOutputStream output = response.getOutputStream()) {
             // Open streams.
-            input = new RandomAccessFile(file, "r");
-            output = response.getOutputStream();
-
             if (ranges.isEmpty() || ranges.get(0) == full) {
 
                 // Return full file.
                 Range r = full;
                 response.setContentType(contentType);
-                response.setHeader("Content-Range", "bytes " + r.start + "-" + r.end + "/" + r.total);
-
+                response.setHeader(CONTENT_RANGE, "bytes " + r.start + "-" + r.end + "/" + r.total);
                 if (content) {
                     if (acceptsGzip) {
                         // The browser accepts GZIP, so GZIP the content.
                         response.setHeader("Content-Encoding", "gzip");
-                        output = new GZIPOutputStream(output, DEFAULT_BUFFER_SIZE);
                     } else {
                         // Content length is not directly predictable in case of GZIP.
                         // So only add it if there is no means of GZIP, else browser will hang.
                         response.setHeader("Content-Length", String.valueOf(r.length));
                     }
-
-                    // Copy full range.
-                    copy(input, output, r.start, r.length);
+                    boolean copyDone = false;
+                    try (OutputStream outputStream = acceptsGzip ? new GZIPOutputStream(output, DEFAULT_BUFFER_SIZE) : output) {
+                        // Copy full range.
+                        copy(input, outputStream, r.start, r.length);
+                        copyDone = true;
+                    } catch (IOException e) {
+                        if (!copyDone) {
+                            throw e;
+                        }
+                    }
                 }
 
             } else if (ranges.size() == 1) {
@@ -367,7 +369,7 @@ public class StaticFileServlet extends HttpServlet {
                 // Return single part of file.
                 Range r = ranges.get(0);
                 response.setContentType(contentType);
-                response.setHeader("Content-Range", "bytes " + r.start + "-" + r.end + "/" + r.total);
+                response.setHeader(CONTENT_RANGE, "bytes " + r.start + "-" + r.end + "/" + r.total);
                 response.setHeader("Content-Length", String.valueOf(r.length));
                 response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT); // 206.
 
@@ -383,30 +385,28 @@ public class StaticFileServlet extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT); // 206.
 
                 if (content) {
-                    // Cast back to ServletOutputStream to get the easy println methods.
-                    ServletOutputStream sos = (ServletOutputStream) output;
-
                     // Copy multi part range.
                     for (Range r : ranges) {
                         // Add multipart boundary and header fields for every range.
-                        sos.println();
-                        sos.println("--" + MULTIPART_BOUNDARY);
-                        sos.println("Content-Type: " + contentType);
-                        sos.println("Content-Range: bytes " + r.start + "-" + r.end + "/" + r.total);
+                        output.println();
+                        output.println("--" + MULTIPART_BOUNDARY);
+                        output.println("Content-Type: " + contentType);
+                        output.println("Content-Range: bytes " + r.start + "-" + r.end + "/" + r.total);
 
                         // Copy single part range of multi part range.
                         copy(input, output, r.start, r.length);
                     }
 
                     // End with multipart boundary.
-                    sos.println();
-                    sos.println("--" + MULTIPART_BOUNDARY + "--");
+                    output.println();
+                    output.println("--" + MULTIPART_BOUNDARY + "--");
                 }
             }
-        } finally {
-            // Gently close streams.
-            close(output);
-            close(input);
+            done = true;
+        } catch (IOException e) {
+            if (!done) {
+                throw e;
+            }
         }
     }
 
@@ -486,22 +486,6 @@ public class StaticFileServlet extends HttpServlet {
                     output.write(buffer, 0, (int) toRead + read);
                     break;
                 }
-            }
-        }
-    }
-
-    /**
-     * Close the given resource.
-     *
-     * @param resource The resource to be closed.
-     */
-    private static void close(Closeable resource) {
-        if (resource != null) {
-            try {
-                resource.close();
-            } catch (IOException ignore) {
-                // Ignore IOException. If you want to handle this anyway, it might be useful to know
-                // that this will generally only be thrown when the client aborted the request.
             }
         }
     }

@@ -55,6 +55,7 @@ import javax.jcr.query.qom.QueryObjectModelConstants;
 import javax.jcr.version.OnParentVersionAction;
 import java.io.IOException;
 import java.io.Writer;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -77,6 +78,7 @@ public class JahiaCndWriter {
     private static final String INDENT = " ";
 
     private static final HashSet<String> ALL_OPERATORS = Sets.newHashSet(Lexer.ALL_OPERATORS);
+    private static final BigDecimal ONE = BigDecimal.valueOf(1.0);
 
     /**
      * the underlying writer
@@ -199,9 +201,7 @@ public class JahiaCndWriter {
      * write prop defs
      */
     private void writeItemDefExtensions(ExtendedNodeType ntd) throws IOException {
-        List items = ntd.getDeclaredItems(true);
-        for (Iterator iterator = items.iterator(); iterator.hasNext();) {
-            ExtendedItemDefinition itemDefExtension = (ExtendedItemDefinition) iterator.next();
+        for (ExtendedItemDefinition itemDefExtension : ntd.getDeclaredItems(true)) {
             if (itemDefExtension.isNode()) {
                 writeNodeDefExtension(ntd, (ExtendedNodeDefinition) itemDefExtension);
             } else {
@@ -273,7 +273,8 @@ public class JahiaCndWriter {
         }
 
         final Double scoreboost = pd.getScoreboost();
-        if (!scoreboost.isInfinite() && !scoreboost.isNaN() && !scoreboost.equals(1.0)) {
+        final BigDecimal sbBigDecimal = BigDecimal.valueOf(pd.getScoreboost());
+        if (!scoreboost.isInfinite() && !scoreboost.isNaN() && sbBigDecimal.compareTo(ONE) != 0) {
             out.write(" scoreboost=" + scoreboost);
         }
         if (pd.getAnalyzer() != null) {
@@ -357,7 +358,7 @@ public class JahiaCndWriter {
         }
     }
     public static List<String> getValuesAsString(Value[] values) throws IOException {
-        List<String> valuesAsString = new ArrayList<String>();
+        List<String> valuesAsString = new ArrayList<>();
         for (Value value : values) {
             StringBuilder sb = new StringBuilder();
             try {

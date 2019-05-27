@@ -169,8 +169,9 @@ public class JCRValueFactoryImpl extends AbstractValueFactory {
                             case PropertyType.DATE:
                                 return value.getDate().equals(val.getDate());
                             case PropertyType.DOUBLE:
-                                Double doubleValue = value.getDouble();
-                                return doubleValue.equals(val.getDouble());
+                                BigDecimal doubleValue = BigDecimal.valueOf(value.getDouble());
+                                BigDecimal doubleVal = BigDecimal.valueOf(val.getDouble());
+                                return doubleValue.compareTo(doubleVal) == 0;
                             case PropertyType.LONG:
                                 return value.getLong() == val.getLong();
                             default:

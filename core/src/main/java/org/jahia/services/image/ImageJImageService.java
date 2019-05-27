@@ -111,7 +111,7 @@ public class ImageJImageService extends AbstractImageService {
             int fileType = op.getFileType(tmp.getPath());
             ip = op.openImage(tmp.getPath());
             if (ip == null) {
-                logger.error("Couldn't open file " + tmp.getPath() + " for node " + node.getPath() + " with ImageJ !");
+                logger.error("Couldn't open file {} for node {} with ImageJ !", tmp.getPath(), node.getPath());
                 return null;
             }
             return new ImageJImage(node.getPath(), ip, fileType);
@@ -187,7 +187,7 @@ public class ImageJImageService extends AbstractImageService {
         return ip.getBufferedImage();
     }
 
-    protected void resizeImage(ImagePlus ip, int width, int height, ResizeType resizeType) throws IOException {
+    protected void resizeImage(ImagePlus ip, int width, int height, ResizeType resizeType) {
         ImageProcessor processor = ip.getProcessor();
 
         int originalWidth = ip.getWidth();
@@ -240,19 +240,16 @@ public class ImageJImageService extends AbstractImageService {
                 try {
                     p = (PlugIn) Class.forName("ij.plugin.PNG_Writer").newInstance();
                     p.run(outputFile.getPath());
-                } catch (InstantiationException e) {
-                    logger.error(e.getMessage(), e);
-                } catch (IllegalAccessException e) {
-                    logger.error(e.getMessage(), e);
-                } catch (ClassNotFoundException e) {
+                } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
                     logger.error(e.getMessage(), e);
                 }
                 WindowManager.setTempCurrentImage(tempImage);
                 return true;
             case Opener.PGM:
                 return new FileSaver(ip).saveAsPgm(outputFile.getPath());
+             default:
+               return false;
         }
-        return false;
     }
 
 }

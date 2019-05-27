@@ -62,6 +62,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.math.BigDecimal;
 
 /**
  * ImageJ application operation implementation
@@ -69,6 +70,9 @@ import java.io.*;
 public class ImageJImageService extends AbstractImageService {
 
     private static final Logger logger = LoggerFactory.getLogger(ImageJImageService.class);
+    private static final BigDecimal NINETY = BigDecimal.valueOf(90.);
+    private static final BigDecimal MINUS_NINETY = BigDecimal.valueOf(-90.);
+    private static final BigDecimal HUNDREDEIGHTY = BigDecimal.valueOf(180.);
 
     private ImageJImageService() {
         super();
@@ -111,7 +115,7 @@ public class ImageJImageService extends AbstractImageService {
             int fileType = op.getFileType(tmp.getPath());
             ip = op.openImage(tmp.getPath());
             if (ip == null) {
-                logger.error("Couldn't open file " + tmp.getPath() + " for node " + node.getPath() + " with ImageJ !");
+                logger.error("Couldn't open file {} for node {} with ImageJ !", tmp.getPath(), node.getPath());
                 return null;
             }
             return new ImageJImage(node.getPath(), ip, fileType);
@@ -160,11 +164,12 @@ public class ImageJImageService extends AbstractImageService {
 
         ImagePlus ip = imageJImage.getImagePlus();
         ImageProcessor processor = ip.getProcessor();
-        if (angle == 90.) {
+        BigDecimal comparableAngle = BigDecimal.valueOf(angle);
+        if (comparableAngle.compareTo(NINETY) == 0) {
             processor = processor.rotateRight();
-        } else if (angle == -90.) {
+        } else if (comparableAngle.compareTo(MINUS_NINETY) == 0) {
             processor = processor.rotateLeft();
-        } else if (angle == 180.) {
+        } else if (comparableAngle.compareTo(HUNDREDEIGHTY) == 0) {
             processor = processor.rotateRight().rotateRight();
         } else {
             processor.rotate(angle);
@@ -194,7 +199,7 @@ public class ImageJImageService extends AbstractImageService {
         return ip.getBufferedImage();
     }
 
-    protected void resizeImage(ImagePlus ip, int width, int height, ResizeType resizeType) throws IOException {
+    protected void resizeImage(ImagePlus ip, int width, int height, ResizeType resizeType) {
         ImageProcessor processor = ip.getProcessor();
 
         int originalWidth = ip.getWidth();
@@ -247,19 +252,16 @@ public class ImageJImageService extends AbstractImageService {
                 try {
                     p = (PlugIn) Class.forName("ij.plugin.PNG_Writer").newInstance();
                     p.run(outputFile.getPath());
-                } catch (InstantiationException e) {
-                    logger.error(e.getMessage(), e);
-                } catch (IllegalAccessException e) {
-                    logger.error(e.getMessage(), e);
-                } catch (ClassNotFoundException e) {
+                } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
                     logger.error(e.getMessage(), e);
                 }
                 WindowManager.setTempCurrentImage(tempImage);
                 return true;
             case Opener.PGM:
                 return new FileSaver(ip).saveAsPgm(outputFile.getPath());
+             default:
+               return false;
         }
-        return false;
     }
 
 }

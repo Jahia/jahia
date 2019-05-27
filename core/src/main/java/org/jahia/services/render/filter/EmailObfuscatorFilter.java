@@ -62,32 +62,33 @@ public class EmailObfuscatorFilter extends AbstractFilter {
     private static final String FWS = "((" + WSP + "*" + CRLF + ")?" + WSP + "+)";
     private static final String NOWSCTL = "\\x01-\\x08\\x0B\\x0C\\x0E-\\x1F\\x7F";
 
-    private static final String sp = "\\x21\\x23-\\x27\\x2A\\x2B\\x2D\\x2F\\x3D\\x3F\\x5E-\\x60\\x7B-\\x7E";
-    private static final String atext = "[a-zA-Z0-9" + sp + "]";
-    private static final String atom = FWS + "?" + atext + "+" + FWS + "?";
-    private static final String dotAtom = "\\." + atom;
-    private static final String dotAtomText = FWS + "?" + atom + "(" + dotAtom + ")*" + FWS + "?";
+    private static final String SP = "\\x21\\x23-\\x27\\x2A\\x2B\\x2D\\x2F\\x3D\\x3F\\x5E-\\x60\\x7B-\\x7E";
+    private static final String ATEXT = "[a-zA-Z0-9" + SP + "]";
+    private static final String ATOM = FWS + "?" + ATEXT + "+" + FWS + "?";
+    private static final String DOT_ATOM = "\\." + ATOM;
+    private static final String DOT_ATOM_TEXT = FWS + "?" + ATOM + "(" + DOT_ATOM + ")*" + FWS + "?";
 
     // quoted string stuff
-    private static final String qtext = "[" + NOWSCTL + "\\x21\\x23-\\x5B\\x5D-\\x7E]";
-    private static final String text = "[\\x01-\\x09\\x0B\\x0C\\x0E-\\x7F]";
-    private static final String quotedPair = "\\x5C" + text;
-    private static final String qcontent = "(" + qtext + "|" + quotedPair + ")";
-    private static final String quotedString = FWS + "?" + "\\x22(" + FWS + "?" + qcontent + ")*" + FWS + "?\\x22" + FWS + "?";
-    private static final String localpart = "(" + dotAtomText + "|" + quotedString + ")";
+    private static final String QTEXT = "[" + NOWSCTL + "\\x21\\x23-\\x5B\\x5D-\\x7E]";
+    private static final String TEXT = "[\\x01-\\x09\\x0B\\x0C\\x0E-\\x7F]";
+    private static final String QUOTED_PAIR = "\\x5C" + TEXT;
+    private static final String QCONTENT = "(" + QTEXT + "|" + QUOTED_PAIR + ")";
+    private static final String QUOTED_STRING = FWS + "?" + "\\x22(" + FWS + "?" + QCONTENT + ")*" + FWS + "?\\x22" + FWS + "?";
+    private static final String LOCAL_PART = "(" + DOT_ATOM_TEXT + "|" + QUOTED_STRING + ")";
 
-    // domain stuff
-    private static final String dtext = "[" + NOWSCTL + "\\x21-\\x5A\\x5E-\\x7E]";
-    private static final String dcontent = "(" + dtext + "|" + quotedPair + ")";
-    private static final String domainLiteral = FWS + "?" + "\\x5B(" + FWS + "?" + dcontent + ")*" + FWS + "?\\x5D" + FWS + "?";
-    private static final String domain = "(" + dotAtomText + "|" + domainLiteral + ")";
+    // DOMAIN stuff
+    private static final String DTEXT = "[" + NOWSCTL + "\\x21-\\x5A\\x5E-\\x7E]";
+    private static final String DCONTENT = "(" + DTEXT + "|" + QUOTED_PAIR + ")";
+    private static final String DOMAIN_LITERAL = FWS + "?" + "\\x5B(" + FWS + "?" + DCONTENT + ")*" + FWS + "?\\x5D" + FWS + "?";
+    private static final String DOMAIN = "(" + DOT_ATOM_TEXT + "|" + DOMAIN_LITERAL + ")";
 
     // final actual address (used in the simple version)
-    private static final String addrSpec = "(" + localpart + "@" + domain + ")";
+    private static final String ADDR_SPEC = "(" + LOCAL_PART + "@" + DOMAIN + ")";
 
     // compile version to check email within string
-    public static final Pattern VALID_EMAIL_IN_STRING_SIMPLE = Pattern.compile(".*" + addrSpec + ".*", Pattern.DOTALL);
-
+    public static final Pattern VALID_EMAIL_IN_STRING_SIMPLE = Pattern.compile(".*" + ADDR_SPEC + ".*", Pattern.DOTALL);
+    
+    @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
         StringBuilder wholeHtml = new StringBuilder(previousOut);
@@ -97,19 +98,18 @@ public class EmailObfuscatorFilter extends AbstractFilter {
         while (st.hasMoreTokens()) {
             String current = st.nextToken();
             if (containsAddress(current)) {
-                String[] split = current.split(addrSpec, 2);
+                String[] split = current.split(ADDR_SPEC, 2);
                 // separate the email out
                 String email = current.substring(split[0].length(), current.length() - split[1].length());
 
                 // now go through all occurances of the found email in the document
                 int index = wholeHtml.indexOf(email);
-                int lastIndex = index;
 
                 // as long as we still find one, keep going
                 while (index != -1) {
 
                     // index to search from next time
-                    lastIndex = index + 1;
+                    int lastIndex = index + 1;
 
                     String entityVersion;
 
@@ -135,7 +135,7 @@ public class EmailObfuscatorFilter extends AbstractFilter {
         if (!string.contains("@")) {
             return false;
         }
-        return (string != null) && VALID_EMAIL_IN_STRING_SIMPLE.matcher(string).matches();
+        return VALID_EMAIL_IN_STRING_SIMPLE.matcher(string).matches();
     }
 
     static String convertToHtmlEntity(String email) {

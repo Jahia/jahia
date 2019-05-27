@@ -72,7 +72,8 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
     private JCRNodeWrapper boundComponent;
     private QueryObjectModel existing;
     private Map<String, List<KeyValue>> activeFacets;
-    private static final String currentFacetKey = "currentIndexFacetKey";
+    private static final String CURRENT_FACET_KEY = "currentIndexFacetKey";
+    private static final String LABEL_RENDERER = "labelRenderer";
     private String var;
 
     public void setBoundComponent(JCRNodeWrapper boundComponent) {
@@ -165,14 +166,14 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
 
                 // key used in metadata maps
                 // get current keys from the query
-                Integer facetKey = (Integer) pageContext.getRequest().getAttribute(currentFacetKey);
+                Integer facetKey = (Integer) pageContext.getRequest().getAttribute(CURRENT_FACET_KEY);
                 if (facetKey == null) {
                     facetKey = 1;
                 } else {
                     facetKey ++;
                 }
-                final String facetIdentifier = currentFacetKey + facetKey;
-                pageContext.getRequest().setAttribute(currentFacetKey, facetKey);
+                final String facetIdentifier = CURRENT_FACET_KEY + facetKey;
+                pageContext.getRequest().setAttribute(CURRENT_FACET_KEY, facetKey);
                 final String metadataKey = isQuery ? queryProperty  :
                         facet.isNodeType("jnt:fieldFacet") ? facetIdentifier : facetPropertyName;
 
@@ -181,7 +182,7 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
                 if (StringUtils.isNotEmpty(facetNodeTypeName)) {
                     // first check if we don't already have resolved the nodeType to avoid resolving it again
                     if (facetValueNodeTypes != null) {
-                        nodeType = (ExtendedNodeType) facetValueNodeTypes.get(metadataKey);
+                        nodeType = facetValueNodeTypes.get(metadataKey);
                     }
 
                     // since we haven't already resolved it, try that now
@@ -219,8 +220,8 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
 
                 // label renderer
                 String labelRenderer = null;
-                if (facetValueRenderers != null && facet.hasProperty("labelRenderer")) {
-                    labelRenderer = facet.getPropertyAsString("labelRenderer");
+                if (facetValueRenderers != null && facet.hasProperty(LABEL_RENDERER)) {
+                    labelRenderer = facet.getPropertyAsString(LABEL_RENDERER);
                     facetValueRenderers.put(metadataKey, labelRenderer);
                 }
 
@@ -240,7 +241,7 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
                     // deal with facets with labelRenderers, currently only jnt:dateFacet or jnt:rangeFacet
                     String prefix = facet.isNodeType("jnt:dateFacet") ? "date." : (facet.isNodeType("jnt:rangeFacet") ? "range." : "");
                     if (StringUtils.isNotEmpty(labelRenderer)) {
-                        extraBuilder.append(prefixedNameValuePair(prefix, "labelRenderer", labelRenderer));
+                        extraBuilder.append(prefixedNameValuePair(prefix, LABEL_RENDERER, labelRenderer));
                     }
 
                     for (ExtendedPropertyDefinition propertyDefinition : Functions.getPropertyDefinitions(facet)) {

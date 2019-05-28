@@ -75,7 +75,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
     private static final Logger log = LoggerFactory.getLogger(AuthenticationFilter.class);
 
-    private static final String REQUIRED_PERMISSON = "adminTemplates";
+    private static final String REQUIRED_PERMISSION = "admin";
 
     private static final String REQUIRED_ROLE = "toolManager";
 
@@ -105,7 +105,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
                 JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession();
                 final JahiaUser jahiaUser = currentUserSession.getUser();
                 username = jahiaUser.getUserKey();
-                if (currentUserSession.getRootNode().hasPermission(REQUIRED_PERMISSON)) {
+                if (currentUserSession.getRootNode().hasPermission(REQUIRED_PERMISSION)) {
                     requestContext.setSecurityContext(new SecurityContext() {
 
                         @Override

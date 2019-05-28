@@ -67,6 +67,11 @@
                 <configuration>
                     <instructions>
                         <Karaf-Commands>*</Karaf-Commands>
+                        <JAX-RS-Alias>/api/commands</JAX-RS-Alias>
+                        <JAX-RS-Application>org.jahia.bundles.rest.RestConfig</JAX-RS-Application>
+                        <_dsannotations>
+                            org.jahia.bundles.executor.*
+                        </_dsannotations>
                     </instructions>
                 </configuration>
             </plugin>
@@ -74,7 +79,18 @@
     </build>
 
     <dependencies>
-
+        <dependency>
+            <groupId>org.glassfish.jersey.bundles</groupId>
+            <artifactId>jaxrs-ri</artifactId>
+            <version>2.6</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+            <version>3.0.1</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.karaf.shell</groupId>
             <artifactId>org.apache.karaf.shell.console</artifactId>

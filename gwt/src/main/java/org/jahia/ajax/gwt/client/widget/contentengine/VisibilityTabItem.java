@@ -339,7 +339,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
                 List<GWTJahiaNodeType> nodeTypes = types.getSelection();
                 String nodeTypeName = nodeTypes.get(0).getName();
                 newCondition.setNodeTypes(Arrays.asList(nodeTypeName));
-                String nodeName = nodeTypeName + conditionsStore.getCount();
+                String nodeName = nodeTypeName + new Date().getTime();
                 newCondition.setName(nodeName);
                 newCondition.setPath(node.getPath() + "/j:conditionalVisibility/" + nodeName);
                 newCondition.set("new-node", Boolean.TRUE);

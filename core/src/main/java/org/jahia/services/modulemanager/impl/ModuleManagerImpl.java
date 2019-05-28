@@ -593,6 +593,8 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
     @Override
     public Collection<BundlePersistentInfo> storeAllLocalPersistentStates() throws ModuleManagementException {
         try {
+            assertWritable();
+
             Collection<BundlePersistentInfo> bundleInfos = Arrays.stream(FrameworkService.getBundleContext().getBundles())
                 .map(BundlePersistentInfo::new)
                 .collect(Collectors.toSet());
@@ -612,6 +614,8 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
                 bundle.getStartLevel() > 0 && Constants.URL_PROTOCOL_DX.equals(bundle.getLocationProtocol());
 
         try {
+            assertWritable();
+
             final Collection<BundlePersistentInfo> persistentStates = BundleInfoJcrHelper.getPersistentStates()
                     .stream()
                     .filter(persistentStateFilter)

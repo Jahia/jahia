@@ -43,11 +43,12 @@
  */
 package org.jahia.bundles.rest;
 
+import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.jahia.bundles.rest.filters.AuthenticationFilter;
 
 public class RestConfig extends ResourceConfig {
     public RestConfig() {
-        super(CommandResource.class, AuthenticationFilter.class);
+        super(CommandResource.class, AuthenticationFilter.class, JacksonJaxbJsonProvider.class);
     }
 }

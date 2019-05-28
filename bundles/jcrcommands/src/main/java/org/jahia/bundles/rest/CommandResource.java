@@ -56,14 +56,22 @@ public class CommandResource {
 
     @POST
     @Path("{command}")
-    public Response executeCommand(@PathParam("command") String command, @Context UriInfo uriInfo, @Context SecurityContext securityContext) {
-        String output = null;
+    public Response executeCommandFromPath(@PathParam("command") String command, @Context SecurityContext securityContext) {
+        return executeCommand(command, securityContext);
+    }
+
+    @POST
+    public Response executeCommandFromBody(String content, @Context SecurityContext securityContext) {
+        return executeCommand(content, securityContext);
+    }
+
+    private Response executeCommand(String command, @Context SecurityContext securityContext) {
         try {
-            output = getKarafCommand().executeCommand(command, 1000L, securityContext.getUserPrincipal(), new RolePrincipal("manager"), new RolePrincipal("admin"));
+            String output = getKarafCommand().executeCommand(command, 1000L, securityContext.getUserPrincipal(), new RolePrincipal("manager"), new RolePrincipal("admin"));
+            return Response.ok(output).build();
         } catch (Exception e) {
             return Response.serverError().entity(e.getMessage() + '\n').build();
         }
-        return Response.ok(output).build();
     }
 
     private KarafCommandExecutor getKarafCommand() {

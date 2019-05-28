@@ -266,7 +266,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                         wrappedViewsSet.add(new ViewWrapper(iterator.next()));
                     }
 
-                    if (subViews && !wrappedViews.isEmpty()) {
+                    if (subViews && !wrappedViews.isEmpty() && !NodeTypeRegistry.getInstance().getNodeType(s).getName().equals("jnt:contentReference")) {
                         wrappedViews.retainAll(wrappedViewsSet);
                     } else {
                         wrappedViews.addAll(wrappedViewsSet);

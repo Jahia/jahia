@@ -289,7 +289,7 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
             }
         }
 
-        if (FrameworkService.getInstance().isStarted() && !operation.getName().equals(BundleOperation.REFRESH)) {
+        if (FrameworkService.getInstance().isStarted() && operation.changesModuleState()) {
             storeAllLocalPersistentStates();
         }
 
@@ -489,7 +489,7 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
 
     @Override
     public Map<String, Map<String, BundleService.BundleInformation>> getInfos(Collection<String> bundleKeys, String target) throws ModuleManagementException {
-        LinkedHashSet<BundleInfo> bundleInfos = new LinkedHashSet<BundleInfo>(bundleKeys.size());
+        LinkedHashSet<BundleInfo> bundleInfos = new LinkedHashSet<>(bundleKeys.size());
         for (String bundleKey : bundleKeys) {
             BundleInfo bundleInfo = getBundleInfo(bundleKey);
             bundleInfos.add(bundleInfo);

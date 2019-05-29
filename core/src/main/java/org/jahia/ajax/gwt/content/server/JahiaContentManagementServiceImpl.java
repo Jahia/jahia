@@ -1135,6 +1135,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             // add mixins from the engine
             result.getNodeTypes().addAll(mixin);
 
+            // Save copied node before saving its properties.
+            currentSession.save();
+
             saveNode(result, acl, langCodeProperties, properties, Collections.<String>emptySet());
             return result;
         } catch (RepositoryException e) {

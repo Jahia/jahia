@@ -81,6 +81,8 @@ import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.security.Privilege;
 import java.util.*;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Jahia service for managing content workflow.
@@ -107,7 +109,8 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
     private Cache<String, Map<String, WorkflowRule>> cache;
     private boolean servicesStarted = false;
 
-    private volatile boolean readOnly;
+    private final ReadWriteLock readOnlyModeLock = new ReentrantReadWriteLock();
+    private boolean readOnly;
 
     /**
      * Returns a singleton instance of this service.
@@ -605,44 +608,46 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
      * @param provider  The provider executing the process
      */
     public void abortProcess(String processId, String provider) {
+        readOnlyModeLock.readLock().lock();
+        try {
+            assertWritable();
 
-        assertWritable();
+            WorkflowProvider workflowProvider = lookupProvider(provider);
 
-        WorkflowProvider workflowProvider = lookupProvider(provider);
-
-        Workflow workflow = workflowProvider.getWorkflow(processId, null);
-        final Set<String> actionIds = new HashSet<String>();
-        for (final WorkflowAction action : workflow.getAvailableActions()) {
-            if (action instanceof WorkflowTask) {
-                actionIds.add(((WorkflowTask) action).getId());
+            Workflow workflow = workflowProvider.getWorkflow(processId, null);
+            final Set<String> actionIds = new HashSet<String>();
+            for (final WorkflowAction action : workflow.getAvailableActions()) {
+                if (action instanceof WorkflowTask) {
+                    actionIds.add(((WorkflowTask) action).getId());
+                }
             }
-        }
 
-        if (!actionIds.isEmpty()) {
-
-            try {
-
-                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-
-                    @Override
-                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        for (String actionId : actionIds) {
-                            QueryWrapper q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:workflowTask] where [taskId]='" + actionId + "'", Query.JCR_SQL2);
-                            JCRNodeIteratorWrapper ni = q.execute().getNodes();
-                            for (JCRNodeWrapper wrapper : ni) {
-                                wrapper.remove();
+            if (!actionIds.isEmpty()) {
+                try {
+                    JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                        @Override public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            for (String actionId : actionIds) {
+                                QueryWrapper q = session.getWorkspace().getQueryManager()
+                                        .createQuery("select * from [jnt:workflowTask] where [taskId]='" + actionId + "'", Query.JCR_SQL2);
+                                JCRNodeIteratorWrapper ni = q.execute().getNodes();
+                                for (JCRNodeWrapper wrapper : ni) {
+                                    wrapper.remove();
+                                }
                             }
+                            session.save();
+                            return false;
                         }
-                        session.save();
-                        return false;
-                    }
-                });
-            } catch (RepositoryException e) {
-                logger.error("Cannot remove tasks", e);
+                    });
+                } catch (RepositoryException e) {
+                    logger.error("Cannot remove tasks", e);
+                }
             }
-        }
 
-        workflowProvider.abortProcess(processId);
+            workflowProvider.abortProcess(processId);
+
+        } finally {
+            readOnlyModeLock.readLock().unlock();
+        }
     }
 
     public void startProcessAsJob(List<String> nodeIds, JCRSessionWrapper session, String processKey, String provider,
@@ -663,62 +668,66 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
     public String startProcess(List<String> nodeIds, JCRSessionWrapper session, String processKey, String provider,
                                Map<String, Object> args, List<String> comments) throws RepositoryException {
 
-        assertWritable();
-
-        long startTime = System.currentTimeMillis();
-
-        // retrieve the permission, required to start the workflow
-        String startPermission = getPermissionForStart(workflowRegistrationByDefinition.get(processKey));
-
-        WorkflowProvider providerImpl = lookupProvider(provider);
-        List<String> checkedNodeIds = new ArrayList<String>();
-        for (String nodeId : nodeIds) {
-            try {
-                JCRNodeWrapper n = session.getNodeByIdentifier(nodeId);
-                if (startPermission == null || n.hasPermission(startPermission)) {
-                    checkedNodeIds.add(nodeId);
-                }
-            } catch (ItemNotFoundException e) {
-                // Item does not exist
-            }
-        }
-        if (checkedNodeIds.isEmpty()) {
-            return null;
-        }
-        String mainId = checkedNodeIds.iterator().next();
-        Map<String, Object> newArgs = new HashMap<String, Object>();
-        for (Map.Entry<String, Object> entry : args.entrySet()) {
-            newArgs.put(entry.getKey().replaceAll(":", "_"), entry.getValue());
-        }
-        newArgs.put("nodeId", mainId);
+        readOnlyModeLock.readLock().lock();
         try {
-            newArgs.put("nodePath", session.getNodeByIdentifier(mainId).getPath());
-        } catch (ItemNotFoundException e) {
-            // Node not found
-        }
-        newArgs.put("nodeIds", checkedNodeIds);
-        newArgs.put("workspace", session.getWorkspace().getName());
-        newArgs.put("locale", session.getLocale());
-        newArgs.put("workflow", providerImpl.getWorkflowDefinitionByKey(processKey, session.getLocale()));
-        newArgs.put("user", session.getUser() != null ? session.getUser().getUserKey() : null);
-        if (comments != null && comments.size() > 0) {
-            addCommentsToVariables(newArgs, comments, session.getUser().getUserKey());
-        }
-        final String processId = providerImpl.startProcess(processKey, newArgs);
-        if (logger.isDebugEnabled()) {
-            // if trace is enabled we log also the UUIDs of all nodes
-            logger.debug(
-                    "A workflow {} from {} has been started on {}{} nodes{}"
-                            + " from workspace {} in locale {} with id {}{} in {} ms",
-                    new Object[] { processKey, provider, checkedNodeIds.size(),
-                            nodeIds.size() > checkedNodeIds.size() ? " (originally " + nodeIds.size() + ")" : "",
-                            logger.isTraceEnabled() ? ": " + checkedNodeIds : "", newArgs.get("workspace"),
-                            newArgs.get("locale"), processId,
-                            startPermission != null ? " checking for permission " + startPermission : "",
-                            System.currentTimeMillis() - startTime });
-        }
+            assertWritable();
 
-        return processId;
+            long startTime = System.currentTimeMillis();
+
+            // retrieve the permission, required to start the workflow
+            String startPermission = getPermissionForStart(workflowRegistrationByDefinition.get(processKey));
+
+            WorkflowProvider providerImpl = lookupProvider(provider);
+            List<String> checkedNodeIds = new ArrayList<String>();
+            for (String nodeId : nodeIds) {
+                try {
+                    JCRNodeWrapper n = session.getNodeByIdentifier(nodeId);
+                    if (startPermission == null || n.hasPermission(startPermission)) {
+                        checkedNodeIds.add(nodeId);
+                    }
+                } catch (ItemNotFoundException e) {
+                    // Item does not exist
+                }
+            }
+            if (checkedNodeIds.isEmpty()) {
+                return null;
+            }
+            String mainId = checkedNodeIds.iterator().next();
+            Map<String, Object> newArgs = new HashMap<String, Object>();
+            for (Map.Entry<String, Object> entry : args.entrySet()) {
+                newArgs.put(entry.getKey().replaceAll(":", "_"), entry.getValue());
+            }
+            newArgs.put("nodeId", mainId);
+            try {
+                newArgs.put("nodePath", session.getNodeByIdentifier(mainId).getPath());
+            } catch (ItemNotFoundException e) {
+                // Node not found
+            }
+            newArgs.put("nodeIds", checkedNodeIds);
+            newArgs.put("workspace", session.getWorkspace().getName());
+            newArgs.put("locale", session.getLocale());
+            newArgs.put("workflow", providerImpl.getWorkflowDefinitionByKey(processKey, session.getLocale()));
+            newArgs.put("user", session.getUser() != null ? session.getUser().getUserKey() : null);
+            if (comments != null && comments.size() > 0) {
+                addCommentsToVariables(newArgs, comments, session.getUser().getUserKey());
+            }
+            final String processId = providerImpl.startProcess(processKey, newArgs);
+            if (logger.isDebugEnabled()) {
+                // if trace is enabled we log also the UUIDs of all nodes
+                logger.debug(
+                        "A workflow {} from {} has been started on {}{} nodes{}" + " from workspace {} in locale {} with id {}{} in {} ms",
+                        new Object[] { processKey, provider, checkedNodeIds.size(),
+                                nodeIds.size() > checkedNodeIds.size() ? " (originally " + nodeIds.size() + ")" : "",
+                                logger.isTraceEnabled() ? ": " + checkedNodeIds : "", newArgs.get("workspace"), newArgs.get("locale"),
+                                processId, startPermission != null ? " checking for permission " + startPermission : "",
+                                System.currentTimeMillis() - startTime });
+            }
+
+            return processId;
+
+        } finally {
+            readOnlyModeLock.readLock().unlock();
+        }
     }
 
     private void addCommentsToVariables(Map<String, Object> args, List<String> comments, String userKey) {
@@ -809,16 +818,25 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
         return list;
     }
 
-
     public void assignTask(String taskId, String provider, JahiaUser user) {
-        assertWritable();
-        logger.debug("Assigning user {} to task {}", user.getName(), taskId);
-        lookupProvider(provider).assignTask(taskId, user);
+        readOnlyModeLock.readLock().lock();
+        try {
+            assertWritable();
+            logger.debug("Assigning user {} to task {}", user.getName(), taskId);
+            lookupProvider(provider).assignTask(taskId, user);
+        } finally {
+            readOnlyModeLock.readLock().unlock();
+        }
     }
 
     public void completeTask(String taskId, JahiaUser user, String provider, String outcome, Map<String, Object> args) {
-        assertWritable();
-        lookupProvider(provider).completeTask(taskId, user, outcome, args);
+        readOnlyModeLock.readLock().lock();
+        try {
+            assertWritable();
+            lookupProvider(provider).completeTask(taskId, user, outcome, args);
+        } finally {
+            readOnlyModeLock.readLock().unlock();
+        }
     }
 
     public void assignAndCompleteTaskAsJob(String taskId, String provider, String outcome, Map<String, Object> args, JahiaUser user) throws RepositoryException, SchedulerException {
@@ -864,8 +882,13 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
     }
 
     public void addComment(String processId, String provider, String comment, String user) {
-        assertWritable();
-        lookupProvider(provider).addComment(processId, comment, user);
+        readOnlyModeLock.readLock().lock();
+        try {
+            assertWritable();
+            lookupProvider(provider).addComment(processId, comment, user);
+        } finally {
+            readOnlyModeLock.readLock().unlock();
+        }
     }
 
     public WorkflowTask getWorkflowTask(String taskId, String provider, Locale displayLocale) {
@@ -1151,8 +1174,13 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
     }
 
     public void deleteProcess(String processId, String provider) {
-        assertWritable();
-        lookupProvider(provider).deleteProcess(processId);
+        readOnlyModeLock.readLock().lock();
+        try {
+            assertWritable();
+            lookupProvider(provider).deleteProcess(processId);
+        } finally {
+            readOnlyModeLock.readLock().unlock();
+        }
     }
 
     public void addWorkflowListener(WorkflowListener listener) {
@@ -1216,7 +1244,12 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
 
     @Override
     public void switchReadOnlyMode(boolean enable) {
-        readOnly = enable;
+      readOnlyModeLock.writeLock().lock();
+        try {
+            readOnly = enable;
+        } finally {
+            readOnlyModeLock.writeLock().unlock();
+        }
     }
 
     @Override
@@ -1229,4 +1262,6 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
             throw new ReadOnlyModeException("The Workflow Service is in read only mode: no operations that modify workflow state are available");
         }
     }
+
+
 }

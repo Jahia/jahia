@@ -335,7 +335,9 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
      * @param checkPermission
      * @return A list of available workflows per provider.
      */
-    public Map<String, WorkflowDefinition> getPossibleWorkflows(final JCRNodeWrapper node, boolean checkPermission, Locale uiLocale) {
+    public Map<String, WorkflowDefinition> getPossibleWorkflows(final JCRNodeWrapper node, boolean checkPermission, Locale uiLocale)
+            throws RepositoryException {
+
         List<WorkflowDefinition> l = getPossibleWorkflows(node, checkPermission, null, uiLocale);
         Map<String, WorkflowDefinition> res = new HashMap<>();
         for (WorkflowDefinition workflowDefinition : l) {
@@ -352,7 +354,7 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
      * @return A list of available workflows per provider.
      */
     public WorkflowDefinition getPossibleWorkflowForType(final JCRNodeWrapper node, final boolean checkPermission,
-                                                         final String type, final Locale locale) {
+                                                         final String type, final Locale locale) throws RepositoryException {
         final List<WorkflowDefinition> workflowDefinitionList = getPossibleWorkflows(node, checkPermission, type, locale);
         if (workflowDefinitionList.isEmpty()) {
             return null;
@@ -836,7 +838,7 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
         }
     }
 
-    public void assignAndCompleteTaskAsJob(String taskId, String provider, String outcome, Map<String, Object> args, JahiaUser user) throws SchedulerException {
+    public void assignAndCompleteTaskAsJob(String taskId, String provider, String outcome, Map<String, Object> args, JahiaUser user) throws RepositoryException, SchedulerException {
         JobDetail jobDetail = BackgroundJob.createJahiaJob("AssignAndCompleteTask", AssignAndCompleteTaskJob.class);
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
         jobDataMap.put(BackgroundJob.JOB_USERKEY, user.getUserKey());
@@ -995,7 +997,9 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
         addWorkflowRule(node, definition);
     }
 
-    public WorkflowRule getWorkflowRuleForAction(JCRNodeWrapper objectNode, boolean checkPermission, String action) {
+    public WorkflowRule getWorkflowRuleForAction(JCRNodeWrapper objectNode, boolean checkPermission, String action)
+            throws RepositoryException {
+
         Collection<WorkflowRule> rules = getWorkflowRulesForType(objectNode, checkPermission, action);
         if (rules.isEmpty()) {
             return null;
@@ -1254,6 +1258,5 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
             throw new ReadOnlyModeException("The Workflow Service is in read only mode: no operations that modify workflow state are available");
         }
     }
-
 
 }

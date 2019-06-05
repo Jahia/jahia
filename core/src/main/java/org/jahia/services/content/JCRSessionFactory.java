@@ -65,6 +65,8 @@ import javax.jcr.query.QueryResult;
 import javax.security.auth.Subject;
 import javax.servlet.ServletContext;
 import java.util.*;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * The entry point into the content repositories provided by the <code>JCRStoreProvider</code> list.
@@ -107,6 +109,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
     private ThreadLocal<Boolean> readOnlyCacheEnabled = new ThreadLocal<Boolean>();
     private LocalValidatorFactoryBean validatorFactoryBean;
     private boolean readOnlyModeEnabled;
+    private final ReadWriteLock readOnlyModeLock = new ReentrantReadWriteLock();
 
     private JCRSessionFactory() {
         super();
@@ -305,7 +308,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
                     logger.warn("Cannot find user " + jahiaPrincipal.getName() + "@" + jahiaPrincipal.getRealm());
                 }
             }
-            return new JCRSessionWrapper(user, credentials, jahiaPrincipal.isSystem(), workspace, locale, this, fallbackLocale, readOnlyModeEnabled);
+            return new JCRSessionWrapper(user, credentials, jahiaPrincipal.isSystem(), workspace, locale, this, fallbackLocale);
         }
         throw new LoginException("Can't login");
     }
@@ -632,35 +635,42 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
 
     @Override
     public void switchReadOnlyMode(boolean enable) {
+        readOnlyModeLock.writeLock().lock();
+        try {
+            logger.info("Read only mode switch: JCR session are" + (enable ? " not " : " ") + "allowed to perform saving");
 
-        logger.info("Read only mode switch: JCR session are" + (enable ? " not ": " ") + "allowed to perform saving");
+            this.readOnlyModeEnabled = enable;
 
-        // todo: thread safety between new sessions are readonly and existing sessions are updated, avoid getting one or multiple sessions not updated correctly due to concurrency
-        // switch to read only so that new sessions will be read only session
-        this.readOnlyModeEnabled = enable;
-
-        // set readonly on living sessions
-        for (JCRSessionWrapper sessionWrapper : JCRSessionWrapper.getActiveSessionsObjects().values()) {
-            sessionWrapper.setReadOnly(enable);
-        }
-
-        // we will unlock all the nodes that are locked because of opened engines
-        if (enable) {
-            try {
-                clearEngineLocks();
-            } catch (Exception e) {
-                logger.warn("Unable to clear the engine locks while switching Read only mode to ON", e);
+            // we will unlock all the nodes that are locked because of opened engines
+            if (enable) {
+                try {
+                    clearEngineLocks(true);
+                } catch (Exception e) {
+                    logger.warn("Unable to clear the engine locks while switching Read only mode to ON", e);
+                }
             }
-        }
 
-        logger.info("Read only mode on JCR sessions: " + (this.readOnlyModeEnabled ? "ON" : "OFF"));
+            logger.info("Read only mode on JCR sessions: " + (this.readOnlyModeEnabled ? "ON" : "OFF"));
+
+        } finally {
+            readOnlyModeLock.writeLock().unlock();
+        }
     }
 
-    private void clearEngineLocks() throws RepositoryException {
+    boolean isReadOnlyModeEnabled() {
+        readOnlyModeLock.readLock().lock();
+        try {
+            return readOnlyModeEnabled;
+        } finally {
+            readOnlyModeLock.readLock().unlock();
+        }
+    }
+
+    private void clearEngineLocks(boolean ignoreReadOnlyMode) throws RepositoryException {
         JCRSessionWrapper systemSession = null;
         try {
             systemSession = getSystemSession();
-            systemSession.setReadOnly(false);
+            systemSession.setIgnoreReadOnlyMode(ignoreReadOnlyMode);
 
             QueryWrapper engineLockedQuery = systemSession.getWorkspace().getQueryManager().createQuery(
                     "select * from [jmix:lockable] where isdescendantnode('/sites') and [j:lockTypes] like '%:engine'",

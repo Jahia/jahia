@@ -87,6 +87,16 @@ public class ModuleManagerImplTest {
         verifyFailureInReadOnlyMode(() -> moduleManager.update("bundleKey", null));
     }
 
+    @Test
+    public void storeAllLocalPersistentStatesShouldFailInReadOnlyMode() {
+        verifyFailureInReadOnlyMode(() -> moduleManager.storeAllLocalPersistentStates());
+    }
+
+    @Test
+    public void applyBundlesPersistentStatesShouldFailInReadOnlyMode() {
+        verifyFailureInReadOnlyMode(() -> moduleManager.applyBundlesPersistentStates(null));
+    }
+
     private void verifyFailureInReadOnlyMode(Runnable action) {
         moduleManager.switchReadOnlyMode(true);
         try {

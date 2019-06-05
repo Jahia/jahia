@@ -71,6 +71,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
 import java.util.*;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -84,10 +86,11 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
 
     private static final Logger logger = LoggerFactory.getLogger(ModuleManagerImpl.class);
 
+    private final ReadWriteLock readOnlyModeLock = new ReentrantReadWriteLock();
     private BundleService bundleService;
     private BundlePersister persister;
     private JahiaTemplateManagerService templateManagerService;
-    private volatile boolean readOnly;
+    private boolean readOnly;
 
     private interface BundleOperation {
 
@@ -98,7 +101,7 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
 
         String getName();
         boolean changesModuleState();
-        void perform(BundleInfo info, String target) throws ModuleManagementException;
+        void perform(BundleInfo info, String target);
     }
 
     private static BundleInfo toBundleInfo(PersistentBundle persistentBundle) {
@@ -165,7 +168,7 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
         }
     }
 
-    private OperationResult doInstall(Collection<PersistentBundle> infos, final String target, boolean start) throws ModuleManagementException {
+    private OperationResult doInstall(Collection<PersistentBundle> infos, final String target, boolean start) {
         ArrayList<BundleInfo> bundleInfos = new ArrayList<>(infos.size());
         // phase #1: install bundles but do not start
         for (PersistentBundle info : infos) {
@@ -194,58 +197,64 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
     }
 
     @Override
-    public OperationResult install(Resource bundleResource, String target) throws ModuleManagementException {
+    public OperationResult install(Resource bundleResource, String target) {
         return install(bundleResource, target, false);
     }
 
     @Override
-    public OperationResult install(Resource bundleResource, String target, boolean start) throws ModuleManagementException {
+    public OperationResult install(Resource bundleResource, String target, boolean start) {
         return install(Collections.singleton(bundleResource), target, start);
     }
 
     @Override
-    public OperationResult install(Collection<Resource> bundleResources, String target, boolean start) throws ModuleManagementException {
-        long startTime = System.currentTimeMillis();
-        logger.info("Performing installation of bundles {} on target {}", bundleResources, target);
-        OperationResult result = null;
-        Exception error = null;
+    public OperationResult install(Collection<Resource> bundleResources, String target, boolean start) {
+        readOnlyModeLock.readLock().lock();
         try {
-            assertWritable();
-            ArrayList<PersistentBundle> bundleInfos = new ArrayList<>(bundleResources.size());
-            for (Resource bundleResource : bundleResources) {
-                boolean requiresPersisting = !((bundleResource instanceof UrlResource) && bundleResource.getURL().getProtocol().equals(Constants.URL_PROTOCOL_DX));
-                PersistentBundle bundleInfo = PersistentBundleInfoBuilder.build(bundleResource, requiresPersisting, requiresPersisting);
-                if (bundleInfo == null) {
-                    throw new InvalidModuleException();
+            long startTime = System.currentTimeMillis();
+            logger.info("Performing installation of bundles {} on target {}", bundleResources, target);
+            OperationResult result = null;
+            Exception error = null;
+            try {
+                assertWritable();
+                ArrayList<PersistentBundle> bundleInfos = new ArrayList<>(bundleResources.size());
+                for (Resource bundleResource : bundleResources) {
+                    boolean requiresPersisting = !((bundleResource instanceof UrlResource) && bundleResource.getURL().getProtocol().equals(Constants.URL_PROTOCOL_DX));
+                    PersistentBundle bundleInfo = PersistentBundleInfoBuilder.build(bundleResource, requiresPersisting, requiresPersisting);
+                    if (bundleInfo == null) {
+                        throw new InvalidModuleException();
+                    }
+                    if (requiresPersisting) {
+                        persister.store(bundleInfo);
+                    }
+                    bundleInfos.add(bundleInfo);
                 }
-                if (requiresPersisting) {
-                    persister.store(bundleInfo);
+                result = doInstall(bundleInfos, target, start);
+            } catch (ModuleManagementException e) {
+                error = e;
+                throw e;
+            } catch (Exception e) {
+                error = e;
+                throw new ModuleManagementException(e);
+            } finally {
+                long timeTaken = System.currentTimeMillis() - startTime;
+                if (error == null) {
+                    logger.info("Installation completed for bundles {} on target {} in {} ms. Operation result: {}",
+                            new Object[] { bundleResources, target, timeTaken, result });
+                } else {
+                    logger.info("Installation failed for bundles {} on target {} (took {} ms). Operation error: {}",
+                            new Object[] { bundleResources, target, timeTaken, error });
                 }
-                bundleInfos.add(bundleInfo);
             }
-            result = doInstall(bundleInfos, target, start);
-        } catch (ModuleManagementException e) {
-            error = e;
-            throw e;
-        } catch (Exception e) {
-            error = e;
-            throw new ModuleManagementException(e);
+
+            if (FrameworkService.getInstance().isStarted()) {
+                storeAllLocalPersistentStates();
+            }
+
+            return result;
+
         } finally {
-            long timeTaken = System.currentTimeMillis() - startTime;
-            if (error == null) {
-                logger.info("Installation completed for bundles {} on target {} in {} ms. Operation result: {}",
-                        new Object[] { bundleResources, target, timeTaken, result });
-            } else {
-                logger.info("Installation failed for bundles {} on target {} (took {} ms). Operation error: {}",
-                        new Object[] { bundleResources, target, timeTaken, error });
-            }
+            readOnlyModeLock.readLock().unlock();
         }
-
-        if (FrameworkService.getInstance().isStarted()) {
-            storeAllLocalPersistentStates();
-        }
-
-        return result;
     }
 
     private OperationResult performOperation(String bundleKey, String target, BundleOperation operation) {
@@ -289,7 +298,7 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
             }
         }
 
-        if (FrameworkService.getInstance().isStarted() && !operation.getName().equals(BundleOperation.REFRESH)) {
+        if (FrameworkService.getInstance().isStarted() && operation.changesModuleState()) {
             storeAllLocalPersistentStates();
         }
 
@@ -316,52 +325,56 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
 
     @Override
     public OperationResult start(String bundleKey, String target) {
+        readOnlyModeLock.readLock().lock();
+        try {
+            return performOperation(bundleKey, target, new BundleOperation() {
 
-        return performOperation(bundleKey, target, new BundleOperation() {
+                @Override public String getName() {
+                    return BundleOperation.START;
+                }
 
-            @Override
-            public String getName() {
-                return BundleOperation.START;
-            }
+                @Override public boolean changesModuleState() {
+                    return true;
+                }
 
-            @Override
-            public boolean changesModuleState() {
-                return true;
-            }
+                @Override public void perform(BundleInfo info, String target) {
+                    bundleService.stop(info, target);
 
-            @Override
-            public void perform(BundleInfo info, String target) throws ModuleManagementException {
-                bundleService.stop(info, target);
+                    stopPreviousVersions(info, target);
 
-                stopPreviousVersions(info, target);
+                    bundleService.start(info, target);
 
-                bundleService.start(info, target);
+                    refreshOtherVersions(Collections.singleton(info), target);
+                }
+            });
 
-                refreshOtherVersions(Collections.singleton(info), target);
-            }
-        });
+        } finally {
+            readOnlyModeLock.readLock().unlock();
+        }
     }
 
     @Override
     public OperationResult stop(String bundleKey, String target) {
+        readOnlyModeLock.readLock().lock();
+        try {
+            return performOperation(bundleKey, target, new BundleOperation() {
 
-        return performOperation(bundleKey, target, new BundleOperation() {
+                @Override public String getName() {
+                    return BundleOperation.STOP;
+                }
 
-            @Override
-            public String getName() {
-                return BundleOperation.STOP;
-            }
+                @Override public boolean changesModuleState() {
+                    return true;
+                }
 
-            @Override
-            public boolean changesModuleState() {
-                return true;
-            }
+                @Override public void perform(BundleInfo info, String target) {
+                    bundleService.stop(info, target);
+                }
+            });
 
-            @Override
-            public void perform(BundleInfo info, String target) throws ModuleManagementException {
-                bundleService.stop(info, target);
-            }
-        });
+        } finally {
+            readOnlyModeLock.readLock().unlock();
+        }
     }
 
     private void stopPreviousVersions(BundleInfo info, String target) {
@@ -398,24 +411,26 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
 
     @Override
     public OperationResult uninstall(String bundleKey, String target) {
+        readOnlyModeLock.readLock().lock();
+        try {
+            return performOperation(bundleKey, target, new BundleOperation() {
 
-        return performOperation(bundleKey, target, new BundleOperation() {
+                @Override public String getName() {
+                    return BundleOperation.UNINSTALL;
+                }
 
-            @Override
-            public String getName() {
-                return BundleOperation.UNINSTALL;
-            }
+                @Override public boolean changesModuleState() {
+                    return true;
+                }
 
-            @Override
-            public boolean changesModuleState() {
-                return true;
-            }
+                @Override public void perform(BundleInfo info, String target) {
+                    bundleService.uninstall(info, target);
+                }
+            });
 
-            @Override
-            public void perform(BundleInfo info, String target) throws ModuleManagementException {
-                bundleService.uninstall(info, target);
-            }
-        });
+        } finally {
+            readOnlyModeLock.readLock().unlock();
+        }
     }
 
     @Override
@@ -434,7 +449,7 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
             }
 
             @Override
-            public void perform(BundleInfo info, String target) throws ModuleManagementException {
+            public void perform(BundleInfo info, String target) {
                 bundleService.refresh(info, target);
             }
         });
@@ -464,32 +479,38 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
     }
 
     @Override
-    public OperationResult update(String bundleKey, String target) throws ModuleManagementException {
+    public OperationResult update(String bundleKey, String target) {
+        readOnlyModeLock.readLock().lock();
+        try {
+            return performOperation(bundleKey, target, new BundleOperation() {
 
-        return performOperation(bundleKey, target, new BundleOperation() {
+                @Override public String getName() {
+                    return "Update";
+                }
 
-            @Override
-            public String getName() { return "Update"; }
+                @Override public boolean changesModuleState() {
+                    return true;
+                }
 
-            @Override
-            public boolean changesModuleState() { return true; }
+                @Override public void perform(BundleInfo info, String target) {
+                    bundleService.update(info, target);
+                }
+            });
 
-            @Override
-            public void perform(BundleInfo info, String target) throws ModuleManagementException {
-                bundleService.update(info, target);
-            }
-        });
+        } finally {
+            readOnlyModeLock.readLock().unlock();
+        }
     }
 
     @Override
-    public Map<String, BundleService.BundleInformation> getInfo(String bundleKey, String target) throws ModuleManagementException {
+    public Map<String, BundleService.BundleInformation> getInfo(String bundleKey, String target) {
         BundleInfo bundleInfo = getBundleInfo(bundleKey);
         return bundleService.getInfo(bundleInfo, target);
     }
 
     @Override
-    public Map<String, Map<String, BundleService.BundleInformation>> getInfos(Collection<String> bundleKeys, String target) throws ModuleManagementException {
-        LinkedHashSet<BundleInfo> bundleInfos = new LinkedHashSet<BundleInfo>(bundleKeys.size());
+    public Map<String, Map<String, BundleService.BundleInformation>> getInfos(Collection<String> bundleKeys, String target) {
+        LinkedHashSet<BundleInfo> bundleInfos = new LinkedHashSet<>(bundleKeys.size());
         for (String bundleKey : bundleKeys) {
             BundleInfo bundleInfo = getBundleInfo(bundleKey);
             bundleInfos.add(bundleInfo);
@@ -498,36 +519,36 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
     }
 
     @Override
-    public Map<String, Map<String, BundleInformation>> getBucketInfos(String bundleBucketKey, String target) throws ModuleManagementException {
+    public Map<String, Map<String, BundleInformation>> getBucketInfos(String bundleBucketKey, String target) {
         BundleBucketInfo bundleBucketInfo = getBundleBucketInfo(bundleBucketKey);
         return bundleService.getInfos(bundleBucketInfo, target);
     }
 
     @Override
-    public Map<String, Map<String, BundleService.BundleInformation>> getAllInfos(String target) throws ModuleManagementException {
+    public Map<String, Map<String, BundleService.BundleInformation>> getAllInfos(String target) {
         return bundleService.getAllInfos(target);
     }
 
     @Override
-    public BundleState getLocalState(String bundleKey) throws ModuleManagementException {
+    public BundleState getLocalState(String bundleKey) {
         BundleInfo bundleInfo = getBundleInfo(bundleKey);
         return bundleService.getLocalState(bundleInfo);
     }
 
     @Override
-    public BundleService.BundleInformation getLocalInfo(String bundleKey) throws ModuleManagementException {
+    public BundleService.BundleInformation getLocalInfo(String bundleKey) {
         BundleInfo bundleInfo = getBundleInfo(bundleKey);
         return bundleService.getLocalInfo(bundleInfo);
     }
 
     @Override
-    public Map<String, BundleInformation> getBucketLocalInfos(String bundleBucketKey) throws ModuleManagementException {
+    public Map<String, BundleInformation> getBucketLocalInfos(String bundleBucketKey) {
         BundleBucketInfo bundleBucketInfo = getBundleBucketInfo(bundleBucketKey);
         return bundleService.getLocalInfos(bundleBucketInfo);
     }
 
     @Override
-    public Map<String, BundleInformation> getAllLocalInfos() throws ModuleManagementException {
+    public Map<String, BundleInformation> getAllLocalInfos() {
         return bundleService.getAllLocalInfos();
     }
 
@@ -576,7 +597,12 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
 
     @Override
     public void switchReadOnlyMode(boolean enable) {
-        readOnly = enable;
+        readOnlyModeLock.writeLock().lock();
+        try {
+            readOnly = enable;
+        } finally {
+            readOnlyModeLock.writeLock().unlock();
+        }
     }
 
     @Override
@@ -591,27 +617,36 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
     }
 
     @Override
-    public Collection<BundlePersistentInfo> storeAllLocalPersistentStates() throws ModuleManagementException {
+    public Collection<BundlePersistentInfo> storeAllLocalPersistentStates() {
+        readOnlyModeLock.readLock().lock();
         try {
+            assertWritable();
+
             Collection<BundlePersistentInfo> bundleInfos = Arrays.stream(FrameworkService.getBundleContext().getBundles())
                 .map(BundlePersistentInfo::new)
                 .collect(Collectors.toSet());
             BundleInfoJcrHelper.storePersistentStates(bundleInfos);
             return bundleInfos;
+
         } catch (ModuleManagementException e) {
             throw e;
         } catch (Exception e) {
             throw new ModuleManagementException(e);
+        } finally {
+            readOnlyModeLock.readLock().unlock();
         }
     }
 
     @Override
-    public OperationResult applyBundlesPersistentStates(String target) throws ModuleManagementException {
+    public OperationResult applyBundlesPersistentStates(String target) {
         // We only support this for bundles persisted in Jackrabbit and whose start level is higher than 0
-        final Predicate<BundlePersistentInfo> persistentStateFilter = (bundle) ->
+        final Predicate<BundlePersistentInfo> persistentStateFilter = bundle ->
                 bundle.getStartLevel() > 0 && Constants.URL_PROTOCOL_DX.equals(bundle.getLocationProtocol());
 
+        readOnlyModeLock.readLock().lock();
         try {
+            assertWritable();
+
             final Collection<BundlePersistentInfo> persistentStates = BundleInfoJcrHelper.getPersistentStates()
                     .stream()
                     .filter(persistentStateFilter)
@@ -644,6 +679,8 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
             throw e;
         } catch (Exception e) {
             throw new ModuleManagementException(e);
+        } finally {
+            readOnlyModeLock.readLock().unlock();
         }
     }
 

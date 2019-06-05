@@ -160,16 +160,11 @@ public class JCRSessionWrapper implements Session {
     protected UUID uuid;
     private static Map<UUID, JCRSessionWrapper> activeSessionsObjects = new ConcurrentSkipListMap<UUID, JCRSessionWrapper>();
 
-    private boolean readOnly;
+    private boolean ignoreReadOnlyMode = false;
 
     public JCRSessionWrapper(JahiaUser user, Credentials credentials, boolean isSystem, String workspace, Locale locale,
             JCRSessionFactory sessionFactory, Locale fallbackLocale) {
-        this(user, credentials, isSystem, workspace, locale, sessionFactory, fallbackLocale, false);
-    }
-
-    public JCRSessionWrapper(JahiaUser user, Credentials credentials, boolean isSystem, String workspace, Locale locale,
-                             JCRSessionFactory sessionFactory, Locale fallbackLocale, boolean readOnly) {
-        uuid = UUID.randomUUID();
+        this.uuid = UUID.randomUUID();
         this.user = user;
         this.credentials = credentials;
         this.isSystem = isSystem;
@@ -191,8 +186,8 @@ public class JCRSessionWrapper implements Session {
         } else {
             thisSessionTrace = new Exception((isSystem ? "System ":"") + "Session: " + uuid);
         }
+
         activeSessionsObjects.put(uuid, this);
-        this.readOnly = readOnly;
     }
 
     @Override
@@ -1377,19 +1372,11 @@ public class JCRSessionWrapper implements Session {
     }
 
     /**
-     * Set the read only status of this session.
-     * @param readOnly the read only status to set
-     */
-    void setReadOnly(boolean readOnly) {
-        this.readOnly = readOnly;
-    }
-
-    /**
      * Get the read only status of this session.
      * @return whether this session is read only
      */
     public boolean isReadOnly() {
-        return readOnly;
+        return !ignoreReadOnlyMode && sessionFactory.isReadOnlyModeEnabled();
     }
 
     /**
@@ -1400,5 +1387,17 @@ public class JCRSessionWrapper implements Session {
         if (isReadOnly()) {
             ReadOnlyModeController.readOnlyModeViolated(message);
         }
+    }
+
+    /**
+     * This method allows this session to bypass the read-only mode.
+     *
+     * <p>This is actually used by the {@link JCRSessionFactory} to clear engine locks
+     * when switching to read-only mode. Use this with caution!
+     *
+     * @param ignored {@code true} to bypass read only mode, {@code false} otherwise
+     */
+    void setIgnoreReadOnlyMode(boolean ignored) {
+        this.ignoreReadOnlyMode = ignored;
     }
 }

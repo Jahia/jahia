@@ -69,6 +69,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Helper class, responsible for starting bundles on demand.
@@ -203,9 +204,22 @@ class BundleStarter {
                     toBeStarted.add(bundle);
                 }
 
-                // Check if another version was previously installed. Uninstall previous version and start only if previous was started
-                for (Bundle otherBundle : getBundleContext().getBundles()) {
-                    if (bundleId != otherBundle.getBundleId() && bundle.getSymbolicName().equals(otherBundle.getSymbolicName())) {
+                // list other existing versions of this bundle if any
+                List<Bundle> otherVersions = Arrays.stream(getBundleContext().getBundles())
+                        .filter(b -> bundleId != b.getBundleId() && bundle.getSymbolicName().equals(b.getSymbolicName()))
+                        .collect(Collectors.toList());
+
+                for (Bundle otherBundle : otherVersions) {
+                    if (createdOnStartup.contains(otherBundle.getBundleId())) {
+                        // if there are more recent versions of this bundle pending to be started then
+                        // only the most recent one has to be started
+                        if (otherBundle.getVersion().compareTo(bundle.getVersion()) > 0) {
+                            toBeStarted.remove(bundle);
+                        }
+
+                    } else {
+                        // if another version was previously installed, then the previous one has to be uninstall and
+                        // the new one ony started if previous one was
                         if (otherBundle.getState() != Bundle.ACTIVE) {
                             // Previous bundle was not active, do not start the new one
                             toBeStarted.remove(bundle);
@@ -217,6 +231,7 @@ class BundleStarter {
                     }
                 }
             }
+
             for (Bundle bundle : toBeUninstalled) {
                 try {
                     bundle.uninstall();

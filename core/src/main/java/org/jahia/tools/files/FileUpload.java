@@ -179,7 +179,7 @@ public class FileUpload {
                                 item.getFieldName(), item.getContentType(), item.isFormField(),
                                 item.getName());
                         try {
-                            Streams.copy(item.openStream(), fileItem.getOutputStream(), true);
+                            Streams.copy(stream, fileItem.getOutputStream(), true);
                         } catch (FileUploadIOException e) {
                             throw (FileUploadException) e.getCause();
                         } catch (IOException e) {

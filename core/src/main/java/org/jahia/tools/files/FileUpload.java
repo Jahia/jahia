@@ -143,10 +143,10 @@ public class FileUpload {
     protected void init ()
         throws IOException {
 
-        params = new HashMap<String, List<String>>();
-        paramsContentType = new HashMap<String, String>();
-        files = new HashMap<String, DiskFileItem>();
-        filesByFieldName = new HashMap<String, DiskFileItem>();
+        params = new HashMap<>();
+        paramsContentType = new HashMap<>();
+        files = new HashMap<>();
+        filesByFieldName = new HashMap<>();
 
         parseQueryString();
 
@@ -156,48 +156,10 @@ public class FileUpload {
                 FileItemIterator iter = upload.getItemIterator(req);
                 DiskFileItemFactory factory = null;
                 while (iter.hasNext()) {
-                    FileItemStream item = iter.next();
-                    InputStream stream = item.openStream();
-                    if (item.isFormField()) {
-                        final String name = item.getFieldName();
-                        final List<String> v;
-                        if (params.containsKey(name)) {
-                            v = params.get(name);
-                        } else {
-                            v = new ArrayList<String>();
-                            params.put(name, v);
-                        }
-                        v.add(Streams.asString(stream, encoding));
-                        paramsContentType.put(name, item.getContentType());
-                    } else {
-                        if (factory == null) {
-                            factory = new DiskFileItemFactory();
-                            factory.setSizeThreshold(1);
-                            factory.setRepository(new File(savePath));
-                        }
-                        DiskFileItem fileItem = (DiskFileItem) factory.createItem(
-                                item.getFieldName(), item.getContentType(), item.isFormField(),
-                                item.getName());
-                        try {
-                            Streams.copy(stream, fileItem.getOutputStream(), true);
-                        } catch (FileUploadIOException e) {
-                            throw (FileUploadException) e.getCause();
-                        } catch (IOException e) {
-                            throw new IOFileUploadException("Processing of "
-                                    + FileUploadBase.MULTIPART_FORM_DATA + " request failed. "
-                                    + e.getMessage(), e);
-                        }
-                        final FileItemHeaders fih = item.getHeaders();
-                        fileItem.setHeaders(fih);
-                        if (fileItem.getSize() > 0) {
-                            files.put(fileItem.getStoreLocation().getName(), fileItem);
-                            filesByFieldName.put(fileItem.getFieldName(), fileItem);
-                        }
-                    }
+                    factory = prepareUploadFileItem(iter.next(), factory);
                 }
             } catch (FileUploadException ioe) {
-                logger.error("Error while initializing FileUpload class:", ioe);
-                throw new IOException(ioe.getMessage());
+                throw new IOException(ioe.getMessage(), ioe);
             }
         } else {
             logger.error(
@@ -205,6 +167,46 @@ public class FileUpload {
             throw new IOException(
                     "FileUpload::init storage path does not exists or cannot write");
         }
+    }
+    
+    private DiskFileItemFactory prepareUploadFileItem(FileItemStream item, DiskFileItemFactory factory) throws FileUploadException, IOException {
+        try (InputStream stream = item.openStream()) {
+            if (item.isFormField()) {
+                final String name = item.getFieldName();
+                final List<String> v;
+                if (params.containsKey(name)) {
+                    v = params.get(name);
+                } else {
+                    v = new ArrayList<>();
+                    params.put(name, v);
+                }
+                v.add(Streams.asString(stream, encoding));
+                paramsContentType.put(name, item.getContentType());
+            } else {
+                if (factory == null) {
+                    factory = new DiskFileItemFactory();
+                    factory.setSizeThreshold(1);
+                    factory.setRepository(new File(savePath));
+                }
+                DiskFileItem fileItem = (DiskFileItem) factory.createItem(item.getFieldName(), item.getContentType(),
+                        item.isFormField(), item.getName());
+                try {
+                    Streams.copy(stream, fileItem.getOutputStream(), true);
+                } catch (FileUploadIOException e) {
+                    throw (FileUploadException) e.getCause();
+                } catch (IOException e) {
+                    throw new IOFileUploadException(
+                            "Processing of " + FileUploadBase.MULTIPART_FORM_DATA + " request failed. " + e.getMessage(), e);
+                }
+                final FileItemHeaders fih = item.getHeaders();
+                fileItem.setHeaders(fih);
+                if (fileItem.getSize() > 0) {
+                    files.put(fileItem.getStoreLocation().getName(), fileItem);
+                    filesByFieldName.put(fileItem.getFieldName(), fileItem);
+                }
+            }
+        }
+        return factory;
     }
 
     /**
@@ -231,8 +233,10 @@ public class FileUpload {
      * @return the values of a parameter as a String Array
      */
     public String[] getParameterValues (final String paramName) {
-        final List<String> list = ((List<String>) params.get(paramName));
-        if (list == null) return null;
+        final List<String> list = params.get(paramName);
+        if (list == null) {
+            return null;
+        }
         String[] res = new String[list.size()];
         list.toArray(res);
         return res;
@@ -301,7 +305,7 @@ public class FileUpload {
         if (path != null && (path.length() > 0)) {
 
             if (logger.isDebugEnabled()) {
-                logger.debug("path is " + path);
+                logger.debug("path is {}", path);
             }
             File tmpFile = new File(path);
             if (tmpFile.isDirectory() && tmpFile.canWrite()) {
@@ -316,19 +320,18 @@ public class FileUpload {
     }
     
     public void disposeItems() {
-        if (getFileItems() != null) {
-            for (DiskFileItem item : getFileItems().values()) {
-                if (item != null) {
-                    try {
-                        item.delete();
-                    } catch (Exception e) {
-                        if (logger.isDebugEnabled()) {
-                            logger.warn(
-                                    "Unable to delete the uploaded file item " + item.getName(), e);
-                        } else {
-                            logger.warn("Unable to delete the uploaded file item {}",
-                                    item.getName());
-                        }
+        if (getFileItems() == null) {
+            return;
+        }
+        for (DiskFileItem item : getFileItems().values()) {
+            if (item != null) {
+                try {
+                    item.delete();
+                } catch (Exception e) {
+                    if (logger.isDebugEnabled()) {
+                        logger.warn("Unable to delete the uploaded file item " + item.getName(), e);
+                    } else {
+                        logger.warn("Unable to delete the uploaded file item {}", item.getName());
                     }
                 }
             }
@@ -353,15 +356,15 @@ public class FileUpload {
                 "&");
         while (tokenizer.hasMoreTokens()) {
             final String param = tokenizer.nextToken();
-            int pos = param.indexOf("=");
+            int pos = param.indexOf('=');
             if (pos > 0) {
                 final String name = param.substring(0, pos);
                 final String value = param.substring(pos + 1, param.length());
                 final List<String> v ;
                 if (params.containsKey(name)) {
-                    v = (List<String>) params.get(name);
+                    v = params.get(name);
                 } else {
-                    v = new ArrayList<String>();
+                    v = new ArrayList<>();
                     params.put(name,v);
                 }
                 v.add(value);

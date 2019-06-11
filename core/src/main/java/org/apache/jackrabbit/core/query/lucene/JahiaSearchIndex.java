@@ -817,6 +817,7 @@ public class JahiaSearchIndex extends SearchIndex {
 
         File dest = new File(getPath() + ".old." + System.currentTimeMillis());
         FileUtils.deleteQuietly(new File(newIndex.getPath()));
+
         String workspace = StringUtils.defaultIfEmpty(getContext().getWorkspace(), "system");
         log.info("Start initializing new index for {} workspace", workspace);
 
@@ -830,28 +831,36 @@ public class JahiaSearchIndex extends SearchIndex {
         long startTimeIntern = System.currentTimeMillis();
         try {
             switching = true;
-
             quietClose(newIndex);
+
+            if (!new File(getPath()).canWrite()) {
+                // Verify that the existing index folder can be renamed before closing the related index
+                throw new IOException("Unable to rename the existing index folder " + getPath());
+            }
+
+            // Close the existing index. If anything goes wrong while completing the switch, this index
+            // won't be usable as this anymore!
             quietClose(this);
 
             if (!new File(getPath()).renameTo(dest)) {
                 throw new IOException("Unable to rename the existing index folder " + getPath());
             }
+
             if (!new File(newIndex.getPath()).renameTo(new File(getPath()))) {
                 // rename the index back
                 log.info("Restored original index");
                 dest.renameTo(new File(getPath()));
-
                 throw new IOException("Unable to rename the newly created index folder " + newIndex.getPath());
             }
 
             log.info("New index deployed, reloading {}", getPath());
-
             init(fs, getContext());
-
             newIndex.replayDelayedUpdates(this);
-
             log.info("New index ready");
+
+        } catch (IOException e) {
+            FileUtils.deleteQuietly(new File(newIndex.getPath()));
+            throw e;
         } finally {
             newIndex = null;
             switching = false;

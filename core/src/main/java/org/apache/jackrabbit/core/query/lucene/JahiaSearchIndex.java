@@ -313,12 +313,13 @@ public class JahiaSearchIndex extends SearchIndex {
         return configuration;
     }
 
-    private void waitForIndexSwitch() {
+    private void waitForIndexSwitch() throws IOException {
         while (switching) {
             try {
                 Thread.sleep(defaultWaitTime);
             } catch (InterruptedException e) {
-                log.error("Interrupted", e);
+                Thread.currentThread().interrupt();
+                throw new IOException("Current thread has been interrupted", e);
             }
         }
     }

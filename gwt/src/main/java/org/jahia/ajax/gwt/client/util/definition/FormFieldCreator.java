@@ -500,10 +500,21 @@ public class FormFieldCreator {
                     break;
                 case GWTJahiaNodePropertyType.DATE:
                     if (propDefinition.getMaxValue() != null) {
-                        ((DateField) field).setMaxValue(new Date(Long.parseLong(propDefinition.getMaxValue())));
+                        Date maxValue = new Date(Long.parseLong(propDefinition.getMaxValue()));
+                        if (field instanceof DateField) {
+                            ((DateField) field).setMaxValue(maxValue);
+                        } else if (field instanceof CalendarField) {
+                            ((CalendarField) field).setMaxValue(maxValue);
+                        }
                     }
                     if (propDefinition.getMinValue() != null) {
-                        ((DateField) field).setMinValue(new Date(Long.parseLong(propDefinition.getMinValue())));
+                        Date minValue = new Date(Long.parseLong(propDefinition.getMinValue()));
+                        if (field instanceof DateField) {
+                            ((DateField) field).setMinValue(minValue);
+                        } else if (field instanceof CalendarField) {
+                            ((CalendarField) field).setMinValue(minValue);
+                        }
+
                     }
                     break;
             }

@@ -833,6 +833,7 @@ public class JahiaSearchIndex extends SearchIndex {
         log.info("Reindexing has finished for {} workspace, switching to new index...", workspace);
 
         long startTimeIntern = System.currentTimeMillis();
+        boolean indexClosed = false;
         try {
             switching = true;
             quietClose(newIndex);
@@ -845,6 +846,7 @@ public class JahiaSearchIndex extends SearchIndex {
             // Close the existing index. If anything goes wrong while completing the switch, this index
             // won't be usable as this anymore!
             quietClose(this);
+            indexClosed = true;
 
             if (!new File(getPath()).renameTo(dest)) {
                 throw new IOException("Unable to rename the existing index folder " + getPath());
@@ -864,6 +866,10 @@ public class JahiaSearchIndex extends SearchIndex {
 
         } catch (IOException e) {
             FileUtils.deleteQuietly(new File(newIndex.getPath()));
+            if (indexClosed) {
+                // attempt to reopen
+                init(fs, getContext());
+            }
             throw e;
         } finally {
             newIndex = null;

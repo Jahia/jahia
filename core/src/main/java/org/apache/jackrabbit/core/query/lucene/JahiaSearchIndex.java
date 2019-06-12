@@ -813,21 +813,25 @@ public class JahiaSearchIndex extends SearchIndex {
     }
 
     synchronized void reindexAndSwitch() throws RepositoryException, IOException {
-        long startTime = System.currentTimeMillis();
+        final long startTime = System.currentTimeMillis();
+        final File dest = new File(getPath() + ".old." + System.currentTimeMillis());
+        final String workspace = StringUtils.defaultIfEmpty(getContext().getWorkspace(), "system");
 
-        File dest = new File(getPath() + ".old." + System.currentTimeMillis());
         FileUtils.deleteQuietly(new File(newIndex.getPath()));
 
-        String workspace = StringUtils.defaultIfEmpty(getContext().getWorkspace(), "system");
         log.info("Start initializing new index for {} workspace", workspace);
-
-        newIndex.newIndexInit();
-
-        log.info("New index for workspace {} initialized in {} ms", workspace, System.currentTimeMillis() - startTime);
-
-        newIndex.replayDelayedUpdates(newIndex);
-
+        try {
+            newIndex.newIndexInit();
+            log.info("New index for workspace {} initialized in {} ms", workspace, System.currentTimeMillis() - startTime);
+            newIndex.replayDelayedUpdates(newIndex);
+        } catch (IOException | RepositoryException e) {
+            // cleanup state before aborting if anything goes wrong
+            FileUtils.deleteQuietly(new File(newIndex.getPath()));
+            newIndex = null;
+            throw e;
+        }
         log.info("Reindexing has finished for {} workspace, switching to new index...", workspace);
+
         long startTimeIntern = System.currentTimeMillis();
         try {
             switching = true;
@@ -866,6 +870,7 @@ public class JahiaSearchIndex extends SearchIndex {
             switching = false;
         }
         log.info("Switched to newly created index in {} ms", System.currentTimeMillis() - startTimeIntern);
+
         FileUtils.deleteQuietly(dest);
 
         SpellChecker spellChecker = getSpellChecker();

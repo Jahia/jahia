@@ -49,7 +49,11 @@
     <parent>
         <artifactId>jahia-modules</artifactId>
         <groupId>org.jahia.modules</groupId>
+<<<<<<< HEAD
         <version>7.4.0.0-SNAPSHOT</version>
+=======
+        <version>7.3.1.1-backlog_10186-SNAPSHOT</version>
+>>>>>>> [jgitflow-maven-plugin]updating poms for backlog_10186 version
         <relativePath>../../../modules/pom.xml</relativePath>
     </parent>
     <artifactId>springbean-dummy</artifactId>

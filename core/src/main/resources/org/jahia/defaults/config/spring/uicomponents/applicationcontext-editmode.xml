@@ -196,17 +196,7 @@
                             <property name="displayTitle" value="${jahia.ui.displayWorkflowCounter:true}"/>
                         </bean>
                         <ref bean="editmode.managers.menu"/>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Edit.Menu.Cache">
-                            <property name="titleKey" value="label.cache"/>
-                            <!-- <property name="icon" value="publicationAction"/>  -->
-                            <property name="items">
-                                <list>
-                                    <ref bean="Toolbar.Item.Flush"/>
-                                    <ref bean="Toolbar.Item.FlushSite"/>
-                                    <ref bean="Toolbar.Item.FlushAll"/>
-                                </list>
-                            </property>
-                        </bean>
+                        <ref bean="Edit.Menu.Cache"/>
 
                         <ref bean="Toolbar.Item.ShowTrashboard"/>
                         <ref bean="Toolbar.Item.WorkInProgress"/>

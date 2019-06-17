@@ -58,16 +58,6 @@ import org.slf4j.LoggerFactory;
  */
 public final class ReadOnlyModeController implements Serializable {
 
-    private static final long serialVersionUID = 5240686816879033535L;
-    private static final Logger logger = LoggerFactory.getLogger(ReadOnlyModeController.class);
-
-    private static final Comparator<ReadOnlyModeCapable> SERVICES_COMPARATOR_BY_PRIORITY = new Comparator<ReadOnlyModeCapable>() {
-        @Override
-        public int compare(ReadOnlyModeCapable readonlyModeCapable1, ReadOnlyModeCapable readonlyModeCapable2) {
-            return Integer.compare(readonlyModeCapable1.getReadOnlyModePriority(), readonlyModeCapable2.getReadOnlyModePriority());
-        }
-    };
-
     /**
      * Read only mode status.
      */
@@ -104,8 +94,20 @@ public final class ReadOnlyModeController implements Serializable {
         PARTIAL_OFF
     }
 
-    private final transient Collection<ReadOnlyModeSwitchListener> switchListeners = new ArrayList<>();
-    private transient volatile ReadOnlyModeStatus readOnlyStatus = ReadOnlyModeStatus.OFF;
+    private static final Comparator<ReadOnlyModeCapable> SERVICES_COMPARATOR_BY_PRIORITY = new Comparator<ReadOnlyModeCapable>() {
+        @Override
+        public int compare(ReadOnlyModeCapable readonlyModeCapable1, ReadOnlyModeCapable readonlyModeCapable2) {
+            return Integer.compare(readonlyModeCapable1.getReadOnlyModePriority(), readonlyModeCapable2.getReadOnlyModePriority());
+        }
+    };
+
+    // Initialization on demand holder idiom: thread-safe singleton initialization
+    private static class Holder {
+        static final ReadOnlyModeController INSTANCE = new ReadOnlyModeController();
+    }
+
+    private static final long serialVersionUID = 5240686816879033535L;
+    private static final Logger logger = LoggerFactory.getLogger(ReadOnlyModeController.class);
 
     /**
      * Handles the case, when a service encounters read-only mode violation, i.e. a data or state modification is requested.
@@ -116,6 +118,13 @@ public final class ReadOnlyModeController implements Serializable {
     public static void readOnlyModeViolated(String message) throws ReadOnlyModeException {
         throw new ReadOnlyModeException(message);
     }
+
+    public static ReadOnlyModeController getInstance() {
+        return Holder.INSTANCE;
+    }
+
+    private final transient Collection<ReadOnlyModeSwitchListener> switchListeners = new ArrayList<>();
+    private transient volatile ReadOnlyModeStatus readOnlyStatus = ReadOnlyModeStatus.OFF;
 
     /**
      * Performs the switch of all DX services into read-only mode or back.
@@ -159,25 +168,6 @@ public final class ReadOnlyModeController implements Serializable {
         notifyReadOnlyModeSwitched(enable);
     }
 
-    /**
-     * Checks if the read-only mode status change is allowed in the current state.
-     * 
-     * @param switchModeTo target read-only mode status, we are checking the switch into
-     * @return <code>true</code> if the current state allows the requested change; <code>false</code> - otherwise
-     */
-    private boolean isStatusUpdateAllowed(boolean switchModeTo) {
-        return (switchModeTo ? readOnlyStatus == ReadOnlyModeStatus.OFF : readOnlyStatus == ReadOnlyModeStatus.ON)
-                || readOnlyStatus == ReadOnlyModeStatus.PARTIAL_ON || readOnlyStatus == ReadOnlyModeStatus.PARTIAL_OFF;
-    }
-
-    // Initialization on demand holder idiom: thread-safe singleton initialization
-    private static class Holder {
-        static final ReadOnlyModeController INSTANCE = new ReadOnlyModeController();
-    }
-    public static ReadOnlyModeController getInstance() {
-        return Holder.INSTANCE;
-    }
-
     public ReadOnlyModeStatus getReadOnlyStatus() {
         return readOnlyStatus;
     }
@@ -211,6 +201,17 @@ public final class ReadOnlyModeController implements Serializable {
         for (ReadOnlyModeSwitchListener listener : switchListeners) {
             listener.onReadOnlyModeSwitched(enabled);
         }
+    }
+
+    /*
+     * Checks if the read-only mode status change is allowed in the current state.
+     * 
+     * @param switchModeTo target read-only mode status, we are checking the switch into
+     * @return <code>true</code> if the current state allows the requested change; <code>false</code> - otherwise
+     */
+    private boolean isStatusUpdateAllowed(boolean switchModeTo) {
+        return (switchModeTo ? readOnlyStatus == ReadOnlyModeStatus.OFF : readOnlyStatus == ReadOnlyModeStatus.ON)
+                || readOnlyStatus == ReadOnlyModeStatus.PARTIAL_ON || readOnlyStatus == ReadOnlyModeStatus.PARTIAL_OFF;
     }
 
 }

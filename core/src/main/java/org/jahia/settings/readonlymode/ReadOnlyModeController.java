@@ -94,12 +94,8 @@ public final class ReadOnlyModeController implements Serializable {
         PARTIAL_OFF
     }
 
-    private static final Comparator<ReadOnlyModeCapable> SERVICES_COMPARATOR_BY_PRIORITY = new Comparator<ReadOnlyModeCapable>() {
-        @Override
-        public int compare(ReadOnlyModeCapable readonlyModeCapable1, ReadOnlyModeCapable readonlyModeCapable2) {
-            return Integer.compare(readonlyModeCapable1.getReadOnlyModePriority(), readonlyModeCapable2.getReadOnlyModePriority());
-        }
-    };
+    private static final Comparator<ReadOnlyModeCapable> SERVICES_COMPARATOR_BY_PRIORITY =
+            Comparator.comparingInt(ReadOnlyModeCapable::getReadOnlyModePriority);
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
     private static class Holder {
@@ -130,9 +126,9 @@ public final class ReadOnlyModeController implements Serializable {
      * Performs the switch of all DX services into read-only mode or back.
      *
      * @param enable <code>true</code> if the read-only mode should be enabled; <code>false</code> if it should be disabled
+     * @throws IllegalStateException if switching to the specified mode is not permitted
      */
     public synchronized void switchReadOnlyMode(boolean enable) {
-
         ReadOnlyModeStatus targetStatus = enable ? ReadOnlyModeStatus.ON : ReadOnlyModeStatus.OFF;
         logger.info("Received request to switch read only mode to {}", targetStatus);
 
@@ -144,10 +140,7 @@ public final class ReadOnlyModeController implements Serializable {
         readOnlyStatus = enable ? ReadOnlyModeStatus.PENDING_ON : ReadOnlyModeStatus.PENDING_OFF;
 
         List<ReadOnlyModeCapable> services = new LinkedList<>(SpringContextSingleton.getBeansOfType(ReadOnlyModeCapable.class).values());
-        Collections.sort(services, SERVICES_COMPARATOR_BY_PRIORITY);
-        if (enable) {
-            Collections.reverse(services);
-        }
+        Collections.sort(services, enable ? SERVICES_COMPARATOR_BY_PRIORITY.reversed() : SERVICES_COMPARATOR_BY_PRIORITY);
 
         logger.info("Switching read only status of {} services", services.size());
         for (ReadOnlyModeCapable service : services) {
@@ -163,9 +156,10 @@ public final class ReadOnlyModeController implements Serializable {
         // switch to final state
         readOnlyStatus = targetStatus;
 
-        logger.info("Finished read-only mode switch. Now the read-only mode is {}", readOnlyStatus);
-
+        // notify listeners
         notifyReadOnlyModeSwitched(enable);
+
+        logger.info("Finished read-only mode switch. Now the read-only mode is {}", readOnlyStatus);
     }
 
     public ReadOnlyModeStatus getReadOnlyStatus() {

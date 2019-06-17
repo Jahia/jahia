@@ -43,10 +43,8 @@
  */
 package org.jahia.settings.readonlymode;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.io.Serializable;
+import java.util.*;
 
 import org.jahia.services.SpringContextSingleton;
 import org.slf4j.Logger;
@@ -58,12 +56,12 @@ import org.slf4j.LoggerFactory;
  *
  * @author Sergiy Shyrkov
  */
-public class ReadOnlyModeController {
+public final class ReadOnlyModeController implements Serializable {
 
+    private static final long serialVersionUID = 5240686816879033535L;
     private static final Logger logger = LoggerFactory.getLogger(ReadOnlyModeController.class);
 
     private static final Comparator<ReadOnlyModeCapable> SERVICES_COMPARATOR_BY_PRIORITY = new Comparator<ReadOnlyModeCapable>() {
-
         @Override
         public int compare(ReadOnlyModeCapable readonlyModeCapable1, ReadOnlyModeCapable readonlyModeCapable2) {
             return Integer.compare(readonlyModeCapable1.getReadOnlyModePriority(), readonlyModeCapable2.getReadOnlyModePriority());
@@ -106,7 +104,8 @@ public class ReadOnlyModeController {
         PARTIAL_OFF
     }
 
-    private volatile ReadOnlyModeStatus readOnlyStatus = ReadOnlyModeStatus.OFF;
+    private final transient Collection<ReadOnlyModeSwitchListener> switchListeners = new ArrayList<>();
+    private transient volatile ReadOnlyModeStatus readOnlyStatus = ReadOnlyModeStatus.OFF;
 
     /**
      * Handles the case, when a service encounters read-only mode violation, i.e. a data or state modification is requested.
@@ -116,7 +115,6 @@ public class ReadOnlyModeController {
      */
     public static void readOnlyModeViolated(String message) throws ReadOnlyModeException {
         throw new ReadOnlyModeException(message);
-
     }
 
     /**
@@ -157,6 +155,8 @@ public class ReadOnlyModeController {
         readOnlyStatus = targetStatus;
 
         logger.info("Finished read-only mode switch. Now the read-only mode is {}", readOnlyStatus);
+
+        notifyReadOnlyModeSwitched(enable);
     }
 
     /**
@@ -181,4 +181,36 @@ public class ReadOnlyModeController {
     public ReadOnlyModeStatus getReadOnlyStatus() {
         return readOnlyStatus;
     }
+
+    /**
+     * Registers a {@link ReadOnlyModeSwitchListener} with this instance.
+     *
+     * <p>{@link ReadOnlyModeSwitchListener#onReadOnlyModeSwitched(boolean)} will be
+     * fire once read only mode switch has completed.
+     *
+     * @param listener the listener to register
+     * @since 7.3.1.1
+     */
+    public synchronized void addSwitchListener(ReadOnlyModeSwitchListener listener) {
+        Objects.requireNonNull(listener);
+        switchListeners.add(listener);
+    }
+
+    /**
+     * Unregisters a {@link ReadOnlyModeSwitchListener} from this instance.
+     *
+     * @param listener the listener to unregister
+     * @since 7.3.1.1
+     */
+    public synchronized void removeSwitchListener(ReadOnlyModeSwitchListener listener) {
+        Objects.requireNonNull(listener);
+        switchListeners.remove(listener);
+    }
+
+    private void notifyReadOnlyModeSwitched(boolean enabled) {
+        for (ReadOnlyModeSwitchListener listener : switchListeners) {
+            listener.onReadOnlyModeSwitched(enabled);
+        }
+    }
+
 }

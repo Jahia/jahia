@@ -153,7 +153,7 @@ public final class ReadOnlyModeController implements Serializable {
         for (ReadOnlyModeCapable service : services) {
             try {
                 service.switchReadOnlyMode(enable);
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 readOnlyStatus = enable ? ReadOnlyModeStatus.PARTIAL_ON : ReadOnlyModeStatus.PARTIAL_OFF;
                 logger.error("Error switching read only status of the service " + service, e);
                 throw e;

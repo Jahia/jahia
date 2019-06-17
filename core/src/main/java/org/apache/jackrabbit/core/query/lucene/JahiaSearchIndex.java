@@ -313,12 +313,13 @@ public class JahiaSearchIndex extends SearchIndex {
         return configuration;
     }
 
-    private void waitForIndexSwitch() {
+    private void waitForIndexSwitch() throws IOException {
         while (switching) {
             try {
                 Thread.sleep(defaultWaitTime);
             } catch (InterruptedException e) {
-                log.error("Interrupted", e);
+                Thread.currentThread().interrupt();
+                throw new IOException("Current thread has been interrupted", e);
             }
         }
     }
@@ -812,50 +813,70 @@ public class JahiaSearchIndex extends SearchIndex {
     }
 
     synchronized void reindexAndSwitch() throws RepositoryException, IOException {
-        long startTime = System.currentTimeMillis();
+        final long startTime = System.currentTimeMillis();
+        final File dest = new File(getPath() + ".old." + System.currentTimeMillis());
+        final String workspace = StringUtils.defaultIfEmpty(getContext().getWorkspace(), "system");
 
-        File dest = new File(getPath() + ".old." + System.currentTimeMillis());
         FileUtils.deleteQuietly(new File(newIndex.getPath()));
-        String workspace = StringUtils.defaultIfEmpty(getContext().getWorkspace(), "system");
+
         log.info("Start initializing new index for {} workspace", workspace);
-
-        newIndex.newIndexInit();
-
-        log.info("New index for workspace {} initialized in {} ms", workspace, System.currentTimeMillis() - startTime);
-
-        newIndex.replayDelayedUpdates(newIndex);
-
+        try {
+            newIndex.newIndexInit();
+            log.info("New index for workspace {} initialized in {} ms", workspace, System.currentTimeMillis() - startTime);
+            newIndex.replayDelayedUpdates(newIndex);
+        } catch (IOException | RepositoryException e) {
+            // cleanup state before aborting if anything goes wrong
+            FileUtils.deleteQuietly(new File(newIndex.getPath()));
+            newIndex = null;
+            throw e;
+        }
         log.info("Reindexing has finished for {} workspace, switching to new index...", workspace);
+
         long startTimeIntern = System.currentTimeMillis();
+        boolean indexClosed = false;
         try {
             switching = true;
-
             quietClose(newIndex);
+
+            if (!new File(getPath()).canWrite()) {
+                // Verify that the existing index folder can be renamed before closing the related index
+                throw new IOException("Unable to rename the existing index folder " + getPath());
+            }
+
+            // Close the existing index. If anything goes wrong while completing the switch, this index
+            // won't be usable as this anymore!
             quietClose(this);
+            indexClosed = true;
 
             if (!new File(getPath()).renameTo(dest)) {
                 throw new IOException("Unable to rename the existing index folder " + getPath());
             }
+
             if (!new File(newIndex.getPath()).renameTo(new File(getPath()))) {
                 // rename the index back
                 log.info("Restored original index");
                 dest.renameTo(new File(getPath()));
-
                 throw new IOException("Unable to rename the newly created index folder " + newIndex.getPath());
             }
 
             log.info("New index deployed, reloading {}", getPath());
-
             init(fs, getContext());
-
             newIndex.replayDelayedUpdates(this);
-
             log.info("New index ready");
+
+        } catch (IOException e) {
+            FileUtils.deleteQuietly(new File(newIndex.getPath()));
+            if (indexClosed) {
+                // attempt to reopen
+                init(fs, getContext());
+            }
+            throw e;
         } finally {
             newIndex = null;
             switching = false;
         }
         log.info("Switched to newly created index in {} ms", System.currentTimeMillis() - startTimeIntern);
+
         FileUtils.deleteQuietly(dest);
 
         SpellChecker spellChecker = getSpellChecker();

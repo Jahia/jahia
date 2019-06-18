@@ -45,6 +45,7 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.form.Field;
+import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.TriggerField;
 
 /**
@@ -53,13 +54,23 @@ import com.extjs.gxt.ui.client.widget.form.TriggerField;
  */
 public class MultipleTextField<T> extends AbstractMultipleField<T> {
 
+    private String regex;
+    private String regexText;
+
     public MultipleTextField() {
         super();
     }
 
     @Override
     Field getNewField() {
-        return new ItemField();
+        ItemField itemField = new ItemField();
+        if (regex != null) {
+            itemField.setRegex(regex);
+        }
+        if (regexText != null) {
+            itemField.getMessages().setRegexText(regexText);
+        }
+        return itemField;
     }
 
     /**
@@ -84,6 +95,24 @@ public class MultipleTextField<T> extends AbstractMultipleField<T> {
         public void setReadOnly(boolean readOnly) {
             super.setReadOnly(readOnly);
             setHideTrigger(readOnly);
+        }
+    }
+
+    public void setRegex(String regex) {
+        this.regex = regex;
+        for (Field<?> field : fields) {
+            if (field instanceof TextField<?>) {
+                ((TextField<?>) field).setRegex(regex);
+            }
+        }
+    }
+
+    public void setRegexText(String regexText) {
+        this.regexText = regexText;
+        for (Field<?> field : fields) {
+            if (field instanceof TextField<?>) {
+                ((TextField<?>) field).getMessages().setRegexText(regexText);
+            }
         }
     }
 }

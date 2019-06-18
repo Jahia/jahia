@@ -113,10 +113,10 @@ public class FormFieldCreator {
         if (!definition.isNode()) {
             GWTJahiaPropertyDefinition propDefinition = (GWTJahiaPropertyDefinition) definition;
             String emptyText = "";
-            boolean isMutliple = ((GWTJahiaPropertyDefinition) definition).isMultiple();
+            boolean isMultiple = ((GWTJahiaPropertyDefinition) definition).isMultiple();
             switch (definition.getSelector()) {
                 case GWTJahiaNodeSelectorType.SMALLTEXT:
-                    if (!definition.isProtected() && isMutliple) {
+                    if (!definition.isProtected() && isMultiple) {
                         switch (propDefinition.getRequiredType()) {
                             case GWTJahiaNodePropertyType.LONG:
                                 field = new MultipleNumberField<Long>();
@@ -133,7 +133,7 @@ public class FormFieldCreator {
                     } else {
                         switch (propDefinition.getRequiredType()) {
                             case GWTJahiaNodePropertyType.LONG:
-                                if (definition.isProtected() && isMutliple) {
+                                if (definition.isProtected() && isMultiple) {
                                     // protected field are displayed but not editable,
                                     // we need a textField to display all Long values comma separated
                                     field = new TextFieldWithClass();
@@ -145,7 +145,7 @@ public class FormFieldCreator {
                                 }
                                 break;
                             case GWTJahiaNodePropertyType.DOUBLE:
-                                if (definition.isProtected() && isMutliple) {
+                                if (definition.isProtected() && isMultiple) {
                                     // protected field are displayed but not editable,
                                     // we need a textField to display all Double values comma separated
                                     field = new TextFieldWithClass();
@@ -191,7 +191,7 @@ public class FormFieldCreator {
                     field.setHeight(300);
                     break;
                 case GWTJahiaNodeSelectorType.DATETIMEPICKER:
-                    if (isMutliple) {
+                    if (isMultiple) {
                         // multiple datetimepicker are not supported, do not display the field
                         return null;
                     }
@@ -206,7 +206,7 @@ public class FormFieldCreator {
                     }
                     break;
                 case GWTJahiaNodeSelectorType.DATEPICKER:
-                    if (isMutliple) {
+                    if (isMultiple) {
                         // multiple datepicker are not supported, do not display the field
                         return null;
                     }
@@ -221,7 +221,7 @@ public class FormFieldCreator {
                     ((DateField) field).setHideTrigger(propDefinition.isProtected());
                     break;
                 case GWTJahiaNodeSelectorType.CHECKBOX:
-                    if (isMutliple) {
+                    if (isMultiple) {
                         // multiple checkbox are not supported, do not display the field
                         return null;
                     }
@@ -474,14 +474,25 @@ public class FormFieldCreator {
                             && propDefinition.getValueConstraints() != null
                             && propDefinition.getValueConstraints().size() == 1) {
                         String regex = propDefinition.getValueConstraints().get(0);
-                        ((TextField<?>) field).setRegex(regex);
-                        ((TextField<?>) field).getMessages().setRegexText(
-                                propDefinition.getConstraintErrorMessage() != null
-                                        && propDefinition.getConstraintErrorMessage().length() > 0 ?
-                                        propDefinition.getConstraintErrorMessage():
-                                        Messages.getWithArgs("failure.invalid.regexp.constraint.label",
-                                                "The field does not match the following regular expression: {0}",
-                                                new Object[] { regex }));
+                        if (field instanceof TextField<?>) {
+                            ((TextField<?>) field).setRegex(regex);
+                            ((TextField<?>) field).getMessages().setRegexText(
+                                    propDefinition.getConstraintErrorMessage() != null
+                                            && propDefinition.getConstraintErrorMessage().length() > 0 ?
+                                            propDefinition.getConstraintErrorMessage() :
+                                            Messages.getWithArgs("failure.invalid.regexp.constraint.label",
+                                                    "The field does not match the following regular expression: {0}",
+                                                    new Object[]{regex}));
+                        } else if (field instanceof MultipleTextField<?>) {
+                            ((MultipleTextField<?>) field).setRegex(regex);
+                            ((MultipleTextField<?>) field).setRegexText(
+                                    propDefinition.getConstraintErrorMessage() != null
+                                            && propDefinition.getConstraintErrorMessage().length() > 0 ?
+                                            propDefinition.getConstraintErrorMessage() :
+                                            Messages.getWithArgs("failure.invalid.regexp.constraint.label",
+                                                    "The field does not match the following regular expression: {0}",
+                                                    new Object[]{regex}));
+                        }
 
                     }
                     break;

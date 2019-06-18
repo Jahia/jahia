@@ -114,8 +114,19 @@ public class JahiaSearchIndex extends SearchIndex {
                 List<JahiaSearchIndex> indexes = (List<JahiaSearchIndex>) map.get("indexes");
                 if (indexes != null) {
                     long start = System.currentTimeMillis();
-                    for (JahiaSearchIndex searchIndex : indexes) {
-                        searchIndex.reindexAndSwitch();
+                    for (Iterator<JahiaSearchIndex> it = indexes.iterator(); it.hasNext(); ) {
+                        JahiaSearchIndex searchIndex = it.next();
+                        try {
+                           searchIndex.reindexAndSwitch();
+                       } catch (Exception e) {
+                            // reset newIndex of every indexes that won't be processed,
+                            // otherwise re-indexing of those ones won't be possible
+                            // until restart (see prepareReindexing() and scheduleReindexing())
+                            while (it.hasNext()) {
+                                it.next().newIndex = null;
+                            }
+                            throw e;
+                       }
                     }
                     log.info("Re-indexing of the whole repository content took {}",
                             DateUtils.formatDurationWords(System.currentTimeMillis() - start));

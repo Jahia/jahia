@@ -20,14 +20,6 @@
     </rule>
 
     <rule>
-        <note>Resolve files SEO</note>
-        <condition type="attribute" name="vanityUrlFiles" operator="equal">^true$</condition>
-        <condition type="attribute" name="vanityUrlTargetPath" operator="notequal">^$</condition>
-        <from>^/(.*)$</from>
-        <to>/files/live/%{attribute:vanityUrlTargetPath}</to>
-    </rule>
-
-    <rule>
         <note>Add trailing /</note>
         <condition type="attribute" name="jahiaSkipInboundSeoRules" operator="notequal">^true$</condition>
         <condition type="attribute" name="jahiaSiteKeyForCurrentServerName" operator="notequal">^$</condition>

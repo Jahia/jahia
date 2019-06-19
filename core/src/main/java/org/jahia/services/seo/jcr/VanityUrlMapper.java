@@ -49,7 +49,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.files.FileServlet;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.render.URLResolverFactory;
@@ -170,40 +169,6 @@ public class VanityUrlMapper {
                         hsRequest.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SERVERNAME_FOR_LINK, serverName);
                     }
                 }
-            }
-        }
-    }
-
-    /**
-     * checks if a vanity exists and put the result as an attribute of the request
-     * this is used in urlRewriting rules
-     * @param hsRequest
-     *              the request used during urlRewriting operations
-     * @param outboundUrl
-     *              the url received to be checked
-     */
-    public void checkFileVanityUrl(HttpServletRequest hsRequest, String outboundUrl) {
-        hsRequest.removeAttribute(VANITY_KEY);
-
-        URLResolverFactory urlResolverFactory = (URLResolverFactory) SpringContextSingleton.getBean("urlResolverFactory");
-        VanityUrlService vanityUrlService = (VanityUrlService) SpringContextSingleton.getBean("org.jahia.services.seo.jcr.VanityUrlService");
-
-        RenderContext context = (RenderContext) hsRequest.getAttribute("renderContext");
-
-        String ctx = StringUtils.defaultIfEmpty(hsRequest.getContextPath(), "");
-        String fullUrl = ctx + "/files/live" + outboundUrl;
-        hsRequest.setAttribute(VANITY_KEY, fullUrl);
-
-        if (StringUtils.isNotEmpty(outboundUrl) && !Url.isLocalhost(hsRequest.getServerName()) && context != null) {
-            String siteKey = context.getSite().getSiteKey();
-
-            try {
-                VanityUrl vanityUrl = vanityUrlService.getVanityUrlForWorkspaceAndLocale(outboundUrl, "live", context.getMainResource().getLocale(), siteKey);
-                if (vanityUrl != null && vanityUrl.isActive()) {
-                    hsRequest.setAttribute(VANITY_KEY, ctx + vanityUrl.getUrl());
-                }
-            } catch (RepositoryException e) {
-                logger.debug("Error when trying to obtain vanity url", e);
             }
         }
     }

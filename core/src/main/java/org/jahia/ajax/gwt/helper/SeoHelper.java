@@ -103,9 +103,6 @@ public class SeoHelper {
                     VanityUrl url = new VanityUrl(mapping.getUrl(), site, mapping.getLanguage(), mapping.isDefault(),
                             mapping.isActive());
                     url.setPath(mapping.getPath());
-                    if (gwtNode.isFile()) {
-                        url.setFile(true);
-                    }
                     vanityUrls.add(url);
                 }
             }

@@ -41,7 +41,7 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.utils;
+package org.jahia.ajax.gwt.helper;
 
 import com.google.common.collect.Sets;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -51,22 +51,23 @@ import org.jahia.utils.security.AccessManagerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.AccessDeniedException;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
+import javax.jcr.*;
 import javax.jcr.security.Privilege;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Utility class to manage GWT Content
+ * Helper class related to Working in progress actions
  */
-public class GWTContentUtils {
-    private static final transient Logger logger = LoggerFactory.getLogger(GWTContentUtils.class);
+public class WIPHelper {
+
+    private static final transient Logger logger = LoggerFactory.getLogger(WIPHelper.class);
+
+    private JCRPublicationService publicationService;
+
+    public void setPublicationService(JCRPublicationService publicationService) {
+        this.publicationService = publicationService;
+    }
 
     /**
      * Set the WIP status on the given node according to the given gwt properties.
@@ -74,12 +75,12 @@ public class GWTContentUtils {
      * @param props
      * @throws RepositoryException
      */
-    public static void saveWipPropertiesIfNeeded(JCRNodeWrapper node, List<GWTJahiaNodeProperty> props)
+    public void saveWipPropertiesIfNeeded(JCRNodeWrapper node, List<GWTJahiaNodeProperty> props)
             throws RepositoryException {
         // do we have anything to update at all or we have other properties than WIP to update?
         if (props == null || props.isEmpty()
                 || (props.stream().filter(prop -> (!Constants.WORKINPROGRESS_LANGUAGES.equals(prop.getName()))
-                        && !Constants.WORKINPROGRESS_STATUS.equals(prop.getName())).count() > 0)) {
+                && !Constants.WORKINPROGRESS_STATUS.equals(prop.getName())).count() > 0)) {
             return;
         }
 
@@ -97,7 +98,7 @@ public class GWTContentUtils {
             if ((Constants.WORKINPROGRESS_STATUS_ALLCONTENT.equals(newWipStatus)
                     || Constants.WORKINPROGRESS_STATUS_DISABLED.equals(newWipStatus))
                     && !node.hasPermission(AccessManagerUtils.getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES,
-                            session.getWorkspace().getName()))) {
+                    session.getWorkspace().getName()))) {
                 // we do not allow translators to change WIP status type to all content or disabled
                 newWipStatus = null;
             }
@@ -147,52 +148,84 @@ public class GWTContentUtils {
         props.clear();
     }
 
-    private static void updateWipStatus(JCRNodeWrapper node, final String wipStatusToSet, final Set<String> wipLangugagesToSet)
+    private void updateWipStatus(JCRNodeWrapper node, String wipStatusToSet, final Set<String> wipLangugagesToSet)
             throws RepositoryException {
-        if (wipStatusToSet == null && wipLangugagesToSet == null) {
+
+        if (wipStatusToSet == null) {
             return;
         }
         JCRSessionWrapper session = node.getSession();
-        JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(session.getUser(), session.getWorkspace().getName(),
-                session.getLocale(), new JCRCallback<Void>() {
-                    @Override
-                    public Void doInJCR(JCRSessionWrapper systemSession) throws RepositoryException {
-                        Node targetNode = systemSession.getProviderSession(node.getProvider())
-                                .getNodeByIdentifier(node.getIdentifier());
-                        boolean debugEnabled = logger.isDebugEnabled();
-                        String effectiveWipStatusToSet = wipStatusToSet;
-                        if (effectiveWipStatusToSet != null) {
-                            targetNode.setProperty(Constants.WORKINPROGRESS_STATUS, effectiveWipStatusToSet);
-                            if (debugEnabled) {
-                                logger.debug("Setting WIP status on node {} to {}", targetNode.getPath(),
-                                        effectiveWipStatusToSet);
-                            }
-                        } else if (wipLangugagesToSet != null && wipLangugagesToSet.isEmpty()) {
-                            // languages are empty
-                            if (targetNode.hasProperty(Constants.WORKINPROGRESS_STATUS) && Constants.WORKINPROGRESS_STATUS_LANG.equals(targetNode.getProperty(Constants.WORKINPROGRESS_STATUS).getString())) {
-                                // in this case we are removing WIP completely
-                                effectiveWipStatusToSet = Constants.WORKINPROGRESS_STATUS_DISABLED;
-                            }
-                        }
 
-                        if (effectiveWipStatusToSet != null && (Constants.WORKINPROGRESS_STATUS_DISABLED.equals(effectiveWipStatusToSet)
-                                || wipLangugagesToSet != null && wipLangugagesToSet.isEmpty())) {
-                            targetNode.setProperty(Constants.WORKINPROGRESS_LANGUAGES, (Value[]) null);
-                            targetNode.setProperty(Constants.WORKINPROGRESS_STATUS, (Value) null);
-                            if (debugEnabled) {
-                                logger.debug("Removing WIP status property on node {}", targetNode.getPath());
-                            }
-                        } else if (wipLangugagesToSet != null) {
-                            targetNode.setProperty(Constants.WORKINPROGRESS_LANGUAGES,
-                                    JCRContentUtils.createValues(wipLangugagesToSet, systemSession.getValueFactory()));
-                            if (debugEnabled) {
-                                logger.debug("Setting WIP languages on node {} to {}", targetNode.getPath(),
-                                        wipLangugagesToSet);
-                            }
+        boolean autoPublishNode = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(session.getUser(), session.getWorkspace().getName(),
+                session.getLocale(), systemSession -> {
+                    Node targetNode = systemSession.getProviderSession(node.getProvider())
+                            .getNodeByIdentifier(node.getIdentifier());
+
+                    boolean debugEnabled = logger.isDebugEnabled();
+                    boolean checkForAutoPublish = false;
+
+                    if (wipStatusToSet.equals(Constants.WORKINPROGRESS_STATUS_DISABLED) ||
+                            (wipStatusToSet.equals(Constants.WORKINPROGRESS_STATUS_LANG) && (wipLangugagesToSet == null || wipLangugagesToSet.isEmpty()))) {
+                        targetNode.setProperty(Constants.WORKINPROGRESS_LANGUAGES, (Value[]) null);
+                        targetNode.setProperty(Constants.WORKINPROGRESS_STATUS, (Value) null);
+
+                        if (debugEnabled) {
+                            logger.debug("Removing WIP status property on node {}", targetNode.getPath());
                         }
-                        targetNode.getSession().save();
-                        return null;
+                        checkForAutoPublish = true;
+                    } else {
+                        targetNode.setProperty(Constants.WORKINPROGRESS_STATUS, wipStatusToSet);
+
+                        switch (wipStatusToSet) {
+                            case Constants.WORKINPROGRESS_STATUS_LANG:
+                                targetNode.setProperty(Constants.WORKINPROGRESS_LANGUAGES,
+                                        JCRContentUtils.createValues(wipLangugagesToSet, systemSession.getValueFactory()));
+                                if (debugEnabled) {
+                                    logger.debug("Setting WIP languages on node {} to {}", targetNode.getPath(), wipLangugagesToSet);
+                                }
+                                checkForAutoPublish = true;
+                                break;
+                            case Constants.WORKINPROGRESS_STATUS_ALLCONTENT:
+                                targetNode.setProperty(Constants.WORKINPROGRESS_LANGUAGES, (Value[]) null);
+                                if (debugEnabled) {
+                                    logger.debug("Setting WIP on node {}", targetNode.getPath());
+                                }
+                                break;
+                            default:
+                                throw new IllegalStateException("Unknown work in progress status: " + wipStatusToSet);
+                        }
                     }
+                    targetNode.getSession().save();
+                    return checkForAutoPublish;
                 });
+
+        // flush cache of the node wrapper because we may have done modification on the real node directly, and cache may be corrupted
+        if (node instanceof JCRNodeWrapperImpl) {
+            ((JCRNodeWrapperImpl) node).flushLocalCaches();
+        }
+
+        // check for auto publish
+        if (autoPublishNode) {
+            checkForAutoPublication(node);
+        }
+    }
+
+    private synchronized void checkForAutoPublication(JCRNodeWrapper node) throws RepositoryException {
+        // in case there is modification on the nodes during the time it was WIP,
+        // and it's an auto published node, we need to publish it manually since the LastModifiedListener is not triggered by WIP properties update
+
+        if (node.isNodeType("jmix:autoPublish")) {
+            List<String> uuids = new ArrayList<>();
+            uuids.add(node.getIdentifier());
+
+            NodeIterator translationNodes = node.getI18Ns();
+            while (translationNodes.hasNext()) {
+                uuids.add(translationNodes.nextNode().getIdentifier());
+            }
+
+            // if some languages are WIP or even the node is WIP, it will be blocked automatically by the publication service,
+            // no need for additional check here, just send all the uuids related to this node, and the translation nodes
+            publicationService.publish(uuids, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, false, null);
+        }
     }
 }

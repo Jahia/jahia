@@ -120,6 +120,7 @@ public final class ReadOnlyModeController implements Serializable {
     }
 
     private final transient Collection<ReadOnlyModeSwitchListener> switchListeners = new ArrayList<>();
+    private final transient Collection<ReadOnlyModeStatusSupplier> statusSuppliers = new ArrayList<>();
     private transient volatile ReadOnlyModeStatus readOnlyStatus = ReadOnlyModeStatus.OFF;
 
     /**
@@ -167,6 +168,29 @@ public final class ReadOnlyModeController implements Serializable {
     }
 
     /**
+     * Returns a list of read-only statuses from multiple origins
+     *
+     * <p>The returned list will always contain at least one element
+     * which is the read-only status of the current instance.
+     * Additional statuses can be provided by {@link ReadOnlyModeStatusSupplier}.
+     *
+     * @return a list of {@link ReadOnlyModeStatusInfo}
+     * @see #addStatusSupplier(ReadOnlyModeStatusSupplier)
+     * @see #removeStatusSupplier(ReadOnlyModeStatusSupplier)
+     * @since 7.3.1.1
+     */
+    public List<ReadOnlyModeStatusInfo> getReadOnlyStatuses() {
+        List<ReadOnlyModeStatusInfo> statuses = new ArrayList<>();
+        statuses.add(new ReadOnlyModeStatusInfo("local", getReadOnlyStatus()));
+
+        for (ReadOnlyModeStatusSupplier supplier : statusSuppliers) {
+            statuses.addAll(supplier.getStatuses());
+        }
+
+        return statuses;
+    }
+
+    /**
      * Registers a {@link ReadOnlyModeSwitchListener} with this instance.
      *
      * <p>{@link ReadOnlyModeSwitchListener#onReadOnlyModeSwitched(boolean)} will be
@@ -189,6 +213,28 @@ public final class ReadOnlyModeController implements Serializable {
     public synchronized void removeSwitchListener(ReadOnlyModeSwitchListener listener) {
         Objects.requireNonNull(listener);
         switchListeners.remove(listener);
+    }
+
+    /**
+     * Registers a {@link ReadOnlyModeStatusSupplier} with this instance.
+     *
+     * @param supplier the supplier to register
+     * @since 7.3.1.1
+     */
+    public synchronized void addStatusSupplier(ReadOnlyModeStatusSupplier supplier) {
+        Objects.requireNonNull(supplier);
+        statusSuppliers.add(supplier);
+    }
+
+    /**
+     * Unregisters a {@link ReadOnlyModeStatusSupplier} from this instance.
+     *
+     * @param supplier the supplier to unregister
+     * @since 7.3.1.1
+     */
+    public synchronized void removeStatusSupplier(ReadOnlyModeStatusSupplier supplier) {
+        Objects.requireNonNull(supplier);
+        statusSuppliers.remove(supplier);
     }
 
     private void notifyReadOnlyModeSwitched(boolean enabled) {

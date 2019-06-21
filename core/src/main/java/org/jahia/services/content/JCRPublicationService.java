@@ -57,6 +57,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.touk.throwing.ThrowingFunction;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
@@ -348,6 +349,27 @@ public class JCRPublicationService extends JahiaService {
         }
     }
 
+    private boolean isNodeWorkinInProgress(JCRNodeWrapper node) throws RepositoryException {
+        boolean isTranslation = Constants.JAHIANT_TRANSLATION.equals(node.getPrimaryNodeTypeName());
+        JCRNodeWrapper actualNode = isTranslation ? node.getParent() : node;
+
+        if (actualNode.hasProperty(Constants.WORKINPROGRESS_STATUS)) {
+            String wipStatus = actualNode.getProperty(Constants.WORKINPROGRESS_STATUS).getString();
+
+            if (wipStatus.equals(Constants.WORKINPROGRESS_STATUS_ALLCONTENT)) {
+                return true;
+            } else if (wipStatus.equals(Constants.WORKINPROGRESS_STATUS_LANG)) {
+                if (isTranslation && node.getLanguage() != null) {
+                    return Arrays.stream(actualNode.getProperty(Constants.WORKINPROGRESS_LANGUAGES).getValues())
+                            .map(ThrowingFunction.unchecked(Value::getString))
+                            .anyMatch(value -> node.getLanguage().equals(value));
+                }
+            }
+        }
+
+        return false;
+    }
+
     private void doPublish(final Set<String> uuidsToPublish, JCRSessionWrapper sourceSession,
                            JCRSessionWrapper destinationSession, boolean updateMetadata, final List<String> comments)
             throws RepositoryException {
@@ -359,7 +381,10 @@ public class JCRPublicationService extends JahiaService {
         for (String uuid : uuidsToPublish) {
             try {
                 JCRNodeWrapper node = sourceSession.getNodeByUUID(uuid);
-                if (!node.isNodeType("jmix:nolive") && !toPublish.contains(node) && supportsPublication(sourceSession, node)) {
+                if (!node.isNodeType("jmix:nolive") &&
+                        !toPublish.contains(node) &&
+                        supportsPublication(sourceSession, node) &&
+                        !isNodeWorkinInProgress(node)) {
                     toPublish.add(node);
                 }
             } catch (javax.jcr.ItemNotFoundException e) {

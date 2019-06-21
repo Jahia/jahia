@@ -131,32 +131,34 @@ public final class ReadOnlyModeController implements Serializable {
      * @throws IllegalStateException if switching to the specified mode is not permitted
      */
     public synchronized void switchReadOnlyMode(boolean enable) {
-        ReadOnlyModeStatus targetStatus = enable ? ReadOnlyModeStatus.ON : ReadOnlyModeStatus.OFF;
+        final ReadOnlyModeStatus targetStatus = enable ? ReadOnlyModeStatus.ON : ReadOnlyModeStatus.OFF;
         logger.info("Received request to switch read only mode to {}", targetStatus);
 
-        if (!isStatusUpdateAllowed(enable)) {
-            throw new IllegalStateException("The read-only mode state is " + readOnlyStatus + ", unable to switch to " + targetStatus);
-        }
-
-        // switch to pending
-        readOnlyStatus = enable ? ReadOnlyModeStatus.PENDING_ON : ReadOnlyModeStatus.PENDING_OFF;
-
-        List<ReadOnlyModeCapable> services = new LinkedList<>(SpringContextSingleton.getBeansOfType(ReadOnlyModeCapable.class).values());
-        Collections.sort(services, enable ? SERVICES_COMPARATOR_BY_PRIORITY.reversed() : SERVICES_COMPARATOR_BY_PRIORITY);
-
-        logger.info("Switching read only status of {} services", services.size());
-        for (ReadOnlyModeCapable service : services) {
-            try {
-                service.switchReadOnlyMode(enable);
-            } catch (RuntimeException e) {
-                readOnlyStatus = enable ? ReadOnlyModeStatus.PARTIAL_ON : ReadOnlyModeStatus.PARTIAL_OFF;
-                logger.error("Error switching read only status of the service " + service, e);
-                throw e;
+        if (targetStatus != readOnlyStatus) { // don't do anything on this node if current status is already the target one
+            if (!isStatusUpdateAllowed(enable)) {
+                throw new IllegalStateException("The read-only mode state is " + readOnlyStatus + ", unable to switch to " + targetStatus);
             }
-        }
 
-        // switch to final state
-        readOnlyStatus = targetStatus;
+            // switch to pending
+            readOnlyStatus = enable ? ReadOnlyModeStatus.PENDING_ON : ReadOnlyModeStatus.PENDING_OFF;
+
+            List<ReadOnlyModeCapable> services = new LinkedList<>(SpringContextSingleton.getBeansOfType(ReadOnlyModeCapable.class).values());
+            Collections.sort(services, enable ? SERVICES_COMPARATOR_BY_PRIORITY.reversed() : SERVICES_COMPARATOR_BY_PRIORITY);
+
+            logger.info("Switching read only status of {} services", services.size());
+            for (ReadOnlyModeCapable service : services) {
+                try {
+                    service.switchReadOnlyMode(enable);
+                } catch (RuntimeException e) {
+                    readOnlyStatus = enable ? ReadOnlyModeStatus.PARTIAL_ON : ReadOnlyModeStatus.PARTIAL_OFF;
+                    logger.error("Error switching read only status of the service " + service, e);
+                    throw e;
+                }
+            }
+
+            // switch to final state
+            readOnlyStatus = targetStatus;
+        }
 
         // notify listeners
         notifyReadOnlyModeSwitched(enable);

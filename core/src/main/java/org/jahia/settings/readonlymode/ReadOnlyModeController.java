@@ -45,6 +45,7 @@ package org.jahia.settings.readonlymode;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jahia.services.SpringContextSingleton;
 import org.slf4j.Logger;
@@ -119,8 +120,8 @@ public final class ReadOnlyModeController implements Serializable {
         return Holder.INSTANCE;
     }
 
-    private final transient Collection<ReadOnlyModeSwitchListener> switchListeners = new ArrayList<>();
-    private final transient Collection<ReadOnlyModeStatusSupplier> statusSuppliers = new ArrayList<>();
+    private final transient Collection<ReadOnlyModeSwitchListener> switchListeners = new CopyOnWriteArrayList<>();
+    private final transient Collection<ReadOnlyModeStatusSupplier> statusSuppliers = new CopyOnWriteArrayList<>();
     private transient volatile ReadOnlyModeStatus readOnlyStatus = ReadOnlyModeStatus.OFF;
 
     /**
@@ -199,7 +200,7 @@ public final class ReadOnlyModeController implements Serializable {
      * @param listener the listener to register
      * @since 7.3.1.1
      */
-    public synchronized void addSwitchListener(ReadOnlyModeSwitchListener listener) {
+    public void addSwitchListener(ReadOnlyModeSwitchListener listener) {
         Objects.requireNonNull(listener);
         switchListeners.add(listener);
     }
@@ -210,7 +211,7 @@ public final class ReadOnlyModeController implements Serializable {
      * @param listener the listener to unregister
      * @since 7.3.1.1
      */
-    public synchronized void removeSwitchListener(ReadOnlyModeSwitchListener listener) {
+    public void removeSwitchListener(ReadOnlyModeSwitchListener listener) {
         Objects.requireNonNull(listener);
         switchListeners.remove(listener);
     }
@@ -221,7 +222,7 @@ public final class ReadOnlyModeController implements Serializable {
      * @param supplier the supplier to register
      * @since 7.3.1.1
      */
-    public synchronized void addStatusSupplier(ReadOnlyModeStatusSupplier supplier) {
+    public void addStatusSupplier(ReadOnlyModeStatusSupplier supplier) {
         Objects.requireNonNull(supplier);
         statusSuppliers.add(supplier);
     }
@@ -232,7 +233,7 @@ public final class ReadOnlyModeController implements Serializable {
      * @param supplier the supplier to unregister
      * @since 7.3.1.1
      */
-    public synchronized void removeStatusSupplier(ReadOnlyModeStatusSupplier supplier) {
+    public void removeStatusSupplier(ReadOnlyModeStatusSupplier supplier) {
         Objects.requireNonNull(supplier);
         statusSuppliers.remove(supplier);
     }

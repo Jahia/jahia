@@ -55,7 +55,7 @@ public abstract class AbstractMaintenanceCommand implements Action {
     private String enable;
 
     @Override
-    public Object execute() throws Exception {
+    public final Object execute() throws Exception {
         try {
             if (enable != null) {
                 if (!enable.equalsIgnoreCase("on") && !enable.equalsIgnoreCase("off")) {
@@ -65,9 +65,13 @@ public abstract class AbstractMaintenanceCommand implements Action {
                 }
             }
         } finally {
-            System.out.println("Current status: " + getMaintenanceStatus());
+            printMaintenanceStatus();
         }
         return null;
+    }
+
+    protected void printMaintenanceStatus() {
+        System.out.println("Current status: " + getMaintenanceStatus());
     }
 
     abstract protected String getMaintenanceStatus();

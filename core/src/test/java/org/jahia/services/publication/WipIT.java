@@ -47,7 +47,7 @@ import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
-import org.jahia.ajax.gwt.helper.WIPHelper;
+import org.jahia.ajax.gwt.utils.GWTContentUtils;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -75,14 +75,11 @@ public class WipIT extends AbstractJUnitTest {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(WipIT.class);
 
     private static JCRPublicationService jcrService;
-    private static WIPHelper wipHelper;
 
     @Override
     public void beforeClassSetup() throws Exception {
         super.beforeClassSetup();
         jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
-        wipHelper = new WIPHelper();
-        wipHelper.setPublicationService(jcrService);
     }
 
     @After
@@ -105,126 +102,6 @@ public class WipIT extends AbstractJUnitTest {
         testWipSiteWithMultipleLanguage(siteLanguages, "multipleLanguageSite");
     }
 
-    @Test
-    public void testWIPAutoPublish() throws Exception {
-        Set<String> languages = Stream.of("en", "fr", "de").collect(Collectors.toSet());
-        String siteName = "multipleLanguageSite";
-        String testContentName = "i18nContent";
-        JahiaSite site = TestHelper.createSite(siteName , languages, languages, false);
-        String testContentPath = site.getJCRLocalPath() + "/" + testContentName;
-
-        Map<String, Map<String, JCRSessionWrapper>> sessions = getCleanSessionForLanguages("en", "fr");
-        JCRSessionWrapper enEditSession = sessions.get("en").get(Constants.EDIT_WORKSPACE);
-        JCRSessionWrapper enLiveSession = sessions.get("en").get(Constants.LIVE_WORKSPACE);
-        JCRSessionWrapper frEditSession = sessions.get("fr").get(Constants.EDIT_WORKSPACE);
-        JCRSessionWrapper frLiveSession = sessions.get("fr").get(Constants.LIVE_WORKSPACE);
-
-        // add autopublish mixin
-        JCRNodeWrapper i18nContent = enEditSession
-                .getNode(site.getJCRLocalPath()).addNode(testContentName , "jnt:text");
-        i18nContent.addMixin("jmix:autoPublish");
-        i18nContent.addMixin("jmix:rbTitle"); // used to have at least one non i18n prop: j:titleKey
-        enEditSession.save();
-
-        // test auto publish is working
-        setPropertyAndAssertItsAutoPublished(testContentPath, "j:titleKey", enEditSession, enLiveSession, null, "titleKey", true, true);
-        setPropertyAndAssertItsAutoPublished(testContentPath, "text", enEditSession, enLiveSession, null, "en", true, true);
-        setPropertyAndAssertItsAutoPublished(testContentPath, "text", frEditSession, frLiveSession, null, "fr", true, true);
-
-        // set WIP for all content, alongs with props modification, content should not be published
-        enEditSession.refresh(false);
-        i18nContent = enEditSession.getNode(testContentPath);
-        wipHelper.saveWipPropertiesIfNeeded(i18nContent, buildWipProperties(Constants.WORKINPROGRESS_STATUS_ALLCONTENT, Collections.emptySet()));
-        setPropertyAndAssertItsAutoPublished(testContentPath, "j:titleKey", enEditSession, enLiveSession, "titleKey", "titleKey updated", true, false);
-        setPropertyAndAssertItsAutoPublished(testContentPath, "text", enEditSession, enLiveSession, "en", "en updated", true, false);
-        setPropertyAndAssertItsAutoPublished(testContentPath, "text", frEditSession, frLiveSession, "fr", "fr updated", true, false);
-
-        // set WIP only for EN, check that FR and non 18n props are updated directly
-        enEditSession.refresh(false);
-        i18nContent = enEditSession.getNode(testContentPath);
-        wipHelper.saveWipPropertiesIfNeeded(i18nContent, buildWipProperties(Constants.WORKINPROGRESS_STATUS_LANG, Collections.singleton("en")));
-        setPropertyAndAssertItsAutoPublished(testContentPath, "j:titleKey", enEditSession, enLiveSession, "titleKey", "titleKey updated", false, true);
-        setPropertyAndAssertItsAutoPublished(testContentPath, "text", enEditSession, enLiveSession, "en", "en updated", false, false);
-        setPropertyAndAssertItsAutoPublished(testContentPath, "text", frEditSession, frLiveSession, "fr", "fr updated", false, true);
-
-
-        // test that auto publish is now only working for FR and non i18n props
-        setPropertyAndAssertItsAutoPublished(testContentPath, "j:titleKey", enEditSession, enLiveSession, "titleKey updated", "titleKey updated 2", true, true);
-        setPropertyAndAssertItsAutoPublished(testContentPath, "text", enEditSession, enLiveSession, "en", "en updated 2", true, false);
-        setPropertyAndAssertItsAutoPublished(testContentPath, "text", frEditSession, frLiveSession, "fr updated", "fr updated 2", true, true);
-
-        // now disable WIP completely, en should be published directly
-        enEditSession.refresh(false);
-        i18nContent = enEditSession.getNode(testContentPath);
-        wipHelper.saveWipPropertiesIfNeeded(i18nContent, buildWipProperties(Constants.WORKINPROGRESS_STATUS_DISABLED, Collections.emptySet()));
-        setPropertyAndAssertItsAutoPublished(testContentPath, "j:titleKey", enEditSession, enLiveSession, "titleKey updated", "titleKey updated 2", false, true);
-        setPropertyAndAssertItsAutoPublished(testContentPath, "text", enEditSession, enLiveSession, "en", "en updated 2", false, true);
-        setPropertyAndAssertItsAutoPublished(testContentPath, "text", frEditSession, frLiveSession, "fr updated", "fr updated 2", false, true);
-
-        // test that now auto publish is back for the complete node for all languages and non i18n props
-        setPropertyAndAssertItsAutoPublished(testContentPath, "j:titleKey", enEditSession, enLiveSession, "titleKey updated 2", "titleKey updated 3", true, true);
-        setPropertyAndAssertItsAutoPublished(testContentPath, "text", enEditSession, enLiveSession, "en updated 2", "en updated 3", true, true);
-        setPropertyAndAssertItsAutoPublished(testContentPath, "text", frEditSession, frLiveSession, "fr updated 2", "fr updated 3", true, true);
-
-        // test that adding WIP on languages directly is working
-        enEditSession.refresh(false);
-        i18nContent = enEditSession.getNode(testContentPath);
-        wipHelper.saveWipPropertiesIfNeeded(i18nContent, buildWipProperties(Constants.WORKINPROGRESS_STATUS_LANG, Collections.singleton("fr")));
-        setPropertyAndAssertItsAutoPublished(testContentPath, "j:titleKey", enEditSession, enLiveSession, "titleKey updated 3", "titleKey updated 4", true, true);
-        setPropertyAndAssertItsAutoPublished(testContentPath, "text", enEditSession, enLiveSession, "en updated 3", "en updated 4", true, true);
-        setPropertyAndAssertItsAutoPublished(testContentPath, "text", frEditSession, frLiveSession, "fr updated 3", "fr updated 4", true, false);
-
-        // test to switch WIP to EN only from WIP FR
-        enEditSession.refresh(false);
-        i18nContent = enEditSession.getNode(testContentPath);
-        wipHelper.saveWipPropertiesIfNeeded(i18nContent, buildWipProperties(Constants.WORKINPROGRESS_STATUS_LANG, Collections.singleton("en")));
-        setPropertyAndAssertItsAutoPublished(testContentPath, "j:titleKey", enEditSession, enLiveSession, "titleKey updated 3", "titleKey updated 4", false, true);
-        setPropertyAndAssertItsAutoPublished(testContentPath, "text", enEditSession, enLiveSession, "en updated 3", "en updated 4", false, true);
-        setPropertyAndAssertItsAutoPublished(testContentPath, "text", frEditSession, frLiveSession, "fr updated 3", "fr updated 4", false, true);
-
-        setPropertyAndAssertItsAutoPublished(testContentPath, "j:titleKey", enEditSession, enLiveSession, "titleKey updated 4", "titleKey updated 5", true, true);
-        setPropertyAndAssertItsAutoPublished(testContentPath, "text", enEditSession, enLiveSession, "en updated 4", "en updated 5", true, false);
-        setPropertyAndAssertItsAutoPublished(testContentPath, "text", frEditSession, frLiveSession, "fr updated 4", "fr updated 5", true, true);
-
-        // test swich to WIP to all content
-        enEditSession.refresh(false);
-        i18nContent = enEditSession.getNode(testContentPath);
-        wipHelper.saveWipPropertiesIfNeeded(i18nContent, buildWipProperties(Constants.WORKINPROGRESS_STATUS_ALLCONTENT, Collections.emptySet()));
-        setPropertyAndAssertItsAutoPublished(testContentPath, "j:titleKey", enEditSession, enLiveSession, "titleKey updated 5", "titleKey updated 6", true, false);
-        setPropertyAndAssertItsAutoPublished(testContentPath, "text", enEditSession, enLiveSession, "en updated 4", "en updated 6", true, false);
-        setPropertyAndAssertItsAutoPublished(testContentPath, "text", frEditSession, frLiveSession, "fr updated 5", "fr updated 6", true, false);
-
-        // finally disable WIP and test autopublished
-        enEditSession.refresh(false);
-        i18nContent = enEditSession.getNode(testContentPath);
-        wipHelper.saveWipPropertiesIfNeeded(i18nContent, buildWipProperties(Constants.WORKINPROGRESS_STATUS_DISABLED, Collections.emptySet()));
-        setPropertyAndAssertItsAutoPublished(testContentPath, "j:titleKey", enEditSession, enLiveSession, "titleKey updated 5", "titleKey updated 6", false, true);
-        setPropertyAndAssertItsAutoPublished(testContentPath, "text", enEditSession, enLiveSession, "en updated 4", "en updated 6", false, true);
-        setPropertyAndAssertItsAutoPublished(testContentPath, "text", frEditSession, frLiveSession, "fr updated 5", "fr updated 6", false, true);
-
-        setPropertyAndAssertItsAutoPublished(testContentPath, "j:titleKey", enEditSession, enLiveSession, "titleKey updated 6", "titleKey updated 7", true, true);
-        setPropertyAndAssertItsAutoPublished(testContentPath, "text", enEditSession, enLiveSession, "en updated 6", "en updated 7", true, true);
-        setPropertyAndAssertItsAutoPublished(testContentPath, "text", frEditSession, frLiveSession, "fr updated 6", "fr updated 7", true, true);
-    }
-
-    private void setPropertyAndAssertItsAutoPublished(String nodePath, String propName, JCRSessionWrapper editSesion, JCRSessionWrapper liveSession,
-                                                      String oldValue, String newValue, boolean setNewValue, boolean expectAutoPublish) throws RepositoryException {
-        editSesion.refresh(false);
-        liveSession.refresh(false);
-
-        if (setNewValue) {
-            JCRNodeWrapper node = editSesion.getNode(nodePath);
-            node.setProperty(propName, newValue);
-            editSesion.save();
-        }
-
-        JCRNodeWrapper liveNode = liveSession.getNode(nodePath);
-        String liveValue = liveNode.hasProperty(propName) ? liveNode.getPropertyAsString(propName) : null;
-        Assert.assertEquals(expectAutoPublish ? "Prop should be auto published" : "Prop should not be auto published",
-                expectAutoPublish ? newValue : oldValue,
-                liveValue);
-    }
-
     private void testWipSiteWithMultipleLanguage(Set<String> siteLanguages, String siteName) throws Exception {
         JahiaSite site = TestHelper.createSite(siteName , siteLanguages, siteLanguages, false);
         // Given contents in languages
@@ -237,8 +114,8 @@ public class WipIT extends AbstractJUnitTest {
     }
 
     private List<String> createContentNodes(String basePath, Set<String> languages) throws RepositoryException {
-        Map<String, Map<String, JCRSessionWrapper>> sessions = getCleanSessionForLanguages("en");
-        JCRSessionWrapper englishEditSession = sessions.get("en").get(Constants.EDIT_WORKSPACE);
+        Map<String, JCRSessionWrapper> sessions = getCleanSessionForLanguage("en");
+        JCRSessionWrapper englishEditSession = sessions.get(Constants.EDIT_WORKSPACE);
         // create nodes with non i18n content
         JCRNodeWrapper i18nContent = englishEditSession.getNode(basePath).addNode("i18nContent", "jnt:text");
 
@@ -260,8 +137,8 @@ public class WipIT extends AbstractJUnitTest {
         // set i18n properties
         englishEditSession.save();
         for (String lang : languages) {
-            Map<String, Map<String, JCRSessionWrapper>> i18nSessions = getCleanSessionForLanguages(lang);
-            JCRSessionWrapper localizedSession = i18nSessions.get(lang).get(Constants.EDIT_WORKSPACE);
+            Map<String, JCRSessionWrapper> i18nSessions = getCleanSessionForLanguage(lang);
+            JCRSessionWrapper localizedSession = i18nSessions.get(Constants.EDIT_WORKSPACE);
             localizedSession.getNode(i18nContent.getPath()).setProperty("text", lang + " text");
             localizedSession.getNode(mixContent.getPath()).setProperty("jcr:description", lang + " description");
             localizedSession.getNode(mixContentOnlyI18n.getPath()).setProperty("jcr:description", lang + " description");
@@ -296,13 +173,13 @@ public class WipIT extends AbstractJUnitTest {
         // When I set wip on the node
         for (String status : expectedResultsByStatus.keySet()) {
             for (String language : siteLanguages) {
-                Map<String, Map<String, JCRSessionWrapper>> sessions = getCleanSessionForLanguages(language);
-                JCRSessionWrapper editSession = sessions.get(language).get(Constants.EDIT_WORKSPACE);
+                Map<String, JCRSessionWrapper>  sessions = getCleanSessionForLanguage(language);
+                JCRSessionWrapper editSession = sessions.get(Constants.EDIT_WORKSPACE);
 
                 JCRNodeWrapper node = editSession.getNode(nodePath);
                 String path = node.getPath();
                 // Set WIP in the current language only
-                wipHelper.saveWipPropertiesIfNeeded(node, buildWipProperties(status, Collections.singleton(language)));
+                GWTContentUtils.saveWipPropertiesIfNeeded(node, buildWipProperties(status, Collections.singleton(language)));
                 for (String checkedLanguage : siteLanguages) {
                     // publish the node in each language
                     jcrService.publishByMainId(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, Collections.singleton(checkedLanguage), true, null);
@@ -313,8 +190,8 @@ public class WipIT extends AbstractJUnitTest {
                     }
                     logger.info("wip status [{} / {}] for node [{}] - [{}] session => content is {}", new String[]{status, language, path, checkedLanguage, published ? "be published" : " NOT be published"});
                     // Validate the publication of the node
-                    Map<String, Map<String, JCRSessionWrapper>> checkedSessioms = getCleanSessionForLanguages(checkedLanguage);
-                    JCRSessionWrapper liveSession = checkedSessioms.get(checkedLanguage).get(Constants.LIVE_WORKSPACE);
+                    Map<String, JCRSessionWrapper>  checkedSessioms = getCleanSessionForLanguage(checkedLanguage);
+                    JCRSessionWrapper liveSession = checkedSessioms.get(Constants.LIVE_WORKSPACE);
 
                     Assert.assertEquals(liveSession.nodeExists(path), published);
                     // clean up
@@ -338,17 +215,13 @@ public class WipIT extends AbstractJUnitTest {
     }
 
 
-    private Map<String, Map<String, JCRSessionWrapper>> getCleanSessionForLanguages(String ...languages) throws RepositoryException {
+    private Map<String, JCRSessionWrapper> getCleanSessionForLanguage(String language) throws RepositoryException {
         JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
         sessionFactory.closeAllSessions();
-        Map<String, Map<String, JCRSessionWrapper>> result = new HashMap<>();
-        for (String language : languages) {
-            Map<String, JCRSessionWrapper> sessions = new HashMap<>();
-            sessions.put(Constants.EDIT_WORKSPACE, sessionFactory.getCurrentUserSession(Constants.EDIT_WORKSPACE, LocaleUtils.toLocale(language)));
-            sessions.put(Constants.LIVE_WORKSPACE, sessionFactory.getCurrentUserSession(Constants.LIVE_WORKSPACE, LocaleUtils.toLocale(language)));
-            result.put(language, sessions);
-        }
-        return result;
+        Map<String, JCRSessionWrapper> sessions = new HashMap<>();
+        sessions.put(Constants.EDIT_WORKSPACE, sessionFactory.getCurrentUserSession(Constants.EDIT_WORKSPACE, LocaleUtils.toLocale(language)));
+        sessions.put(Constants.LIVE_WORKSPACE, sessionFactory.getCurrentUserSession(Constants.LIVE_WORKSPACE, LocaleUtils.toLocale(language)));
+        return sessions;
     }
 
 }

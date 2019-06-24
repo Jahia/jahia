@@ -59,7 +59,6 @@
         <property name="moduleHelper" ref="ModuleHelper"/>
         <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
         <property name="toolbarWarningsService" ref="toolbarNotificationService"/>
-        <property name="wipHelper" ref="WipHelper"/>
     </bean>
 
     <bean id="localeResolver" class="org.jahia.services.multilang.UILocaleResolver" />

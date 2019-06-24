@@ -73,6 +73,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.SessionValidationResult;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.helper.*;
+import org.jahia.ajax.gwt.utils.GWTContentUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Export;
 import org.jahia.bin.Jahia;
@@ -157,7 +158,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private ModuleHelper moduleHelper;
     private TaggingService taggingService;
     private ToolbarWarningsService toolbarWarningsService;
-    private WIPHelper wipHelper;
 
     public void setAcl(ACLHelper acl) {
         this.aclHelper = acl;
@@ -270,10 +270,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void setToolbarWarningsService(ToolbarWarningsService toolbarWarningsService) {
         this.toolbarWarningsService = toolbarWarningsService;
-    }
-
-    public void setWipHelper(WIPHelper wipHelper) {
-        this.wipHelper = wipHelper;
     }
 
     // ------------------------ INTERFACE METHODS ------------------------
@@ -777,7 +773,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         try {
             JCRNodeWrapper nodeWrapper = jcrSessionWrapper.getNodeByUUID(node.getUUID());
 
-            wipHelper.saveWipPropertiesIfNeeded(nodeWrapper, sharedProperties);
+            GWTContentUtils.saveWipPropertiesIfNeeded(nodeWrapper, sharedProperties);
 
             if (!nodeWrapper.getName().equals(JCRContentUtils.escapeLocalNodeName(node.getName()))) {
                 String name = contentManager.findAvailableName(nodeWrapper.getParent(), JCRContentUtils.escapeLocalNodeName(node.getName()));

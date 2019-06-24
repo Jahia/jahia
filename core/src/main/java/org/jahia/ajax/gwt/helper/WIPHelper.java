@@ -100,7 +100,7 @@ public class WIPHelper {
                     && !node.hasPermission(AccessManagerUtils.getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES,
                     session.getWorkspace().getName()))) {
                 // we do not allow translators to change WIP status type to all content or disabled
-                newWipStatus = null;
+                return;
             }
         }
 
@@ -121,8 +121,7 @@ public class WIPHelper {
             }
 
             // check for removed or added languages
-            Sets.SetView<String> modifiedLanguages = Sets.union(Sets.difference(existingWipLanguages, newWipLanguages),
-                    Sets.difference(newWipLanguages, existingWipLanguages));
+            Sets.SetView<String> modifiedLanguages = Sets.symmetricDifference(newWipLanguages, existingWipLanguages);
             if (!modifiedLanguages.isEmpty()) {
                 // we do have changes
                 if (!node.hasPermission(AccessManagerUtils.getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES,
@@ -136,9 +135,6 @@ public class WIPHelper {
                         }
                     }
                 }
-            } else {
-                // no changes so far
-                newWipLanguages = null;
             }
         }
 

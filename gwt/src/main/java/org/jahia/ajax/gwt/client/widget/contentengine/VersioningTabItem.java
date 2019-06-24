@@ -103,18 +103,18 @@ public class VersioningTabItem extends EditEngineTabItem {
                             if (version.getLabel() != null && !"".equals(version.getLabel())) {
                                 String[] strings = version.getLabel().split("_at_");
                                 if (strings.length == 2) {
-                                    String s1;
-                                    if (strings[0].contains("published")) {
-                                        s1 = Messages.get("label.version.published", "published at");
-                                    } else if (strings[0].contains("uploaded")) {
-                                        s1 = Messages.get("label.version.uploaded", "uploaded at");
-                                    } else {
-                                        s1 = Messages.get("label.version." + strings[0], strings[0]);
+                                    String date = DateTimeFormat.getMediumDateTimeFormat()
+                                            .format(DateTimeFormat.getFormat("yyyy_MM_dd_HH_mm_ss").parse(
+                                                    strings[1]));
+
+                                    for (String versionKey : new String[]{"published", "uploaded"}) {
+                                        if (strings[0].contains(versionKey)) {
+                                            value = Messages.getWithArgs("label.version." + versionKey,
+                                                    "Compare staging version with the version " + versionKey + " at {0}",
+                                                    new Object[]{date});
+                                            break;
+                                        }
                                     }
-                                    Date date = DateTimeFormat.getFormat("yyyy_MM_dd_HH_mm_ss").parse(
-                                            strings[1]);
-                                    value = value + s1 + " " + DateTimeFormat.getMediumDateTimeFormat()
-                                            .format(date);
                                 } else {
                                     value = version.getLabel();
                                 }

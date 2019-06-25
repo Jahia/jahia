@@ -109,7 +109,7 @@ public final class Jahia {
             v = new Version(Constants.JAHIA_PROJECT_VERSION);
         } catch (NumberFormatException e) {
         }
-        JAHIA_VERSION = v != null ? v : new Version("7.3.0.0");
+        JAHIA_VERSION = v != null ? v : new Version("7.4.0.0");
     }
 
     public static final String VERSION = JAHIA_VERSION.getMajorVersion() + "." +

@@ -299,7 +299,140 @@
         </property>
     </bean>
 
-    <bean id="CompositeFilter" class="org.jahia.bin.filters.CompositeFilter"/>
+    <bean id="CompositeFilter" class="org.jahia.bin.filters.CompositeFilter">
+        <property name="filters">
+            <list>
+                <bean class="org.jahia.bin.filters.ServletFilter">
+                    <property name="filterName" value="CharacterEncodingFilter"/>
+                    <property name="filter">
+                        <bean class="org.springframework.web.filter.CharacterEncodingFilter"/>
+                    </property>
+                    <property name="order" value="-6"/>
+                    <property name="matchAllUrls" value="true"/>
+                    <property name="parameters">
+                        <map>
+                            <entry key="encoding" value="UTF-8"/>
+                        </map>
+                    </property>
+                </bean>
+
+                <bean class="org.jahia.bin.filters.ServletFilter">
+                    <property name="filterName" value="HttpHeadRequestFilter"/>
+                    <property name="filter">
+                        <bean class="org.jahia.bin.filters.HttpHeadRequestFilter"/>
+                    </property>
+                    <property name="order" value="-5"/>
+                    <property name="matchAllUrls" value="true"/>
+                </bean>
+
+                <bean class="org.jahia.bin.filters.ServletFilter">
+                    <property name="filterName" value="MaintenanceFilter"/>
+                    <property name="filter" ref="MaintenanceFilter"/>
+                    <property name="order" value="-4"/>
+                    <property name="matchAllUrls" value="true"/>
+                </bean>
+
+                <bean class="org.jahia.bin.filters.ServletFilter">
+                    <property name="filterName" value="shiroFilter"/>
+                    <property name="filter" ref="shiroFilter"/>
+                    <property name="order" value="-3"/>
+                    <property name="matchAllUrls" value="true"/>
+                    <property name="parameters">
+                        <map>
+                            <entry key="targetFilterLifecycle" value="true"/>
+                        </map>
+                    </property>
+                </bean>
+
+                <bean class="org.jahia.bin.filters.ServletFilter">
+                    <property name="filterName" value="SpnegoHttpFilter"/>
+                    <property name="filter">
+                        <bean class="org.jahia.bin.filters.FallbackDelegatingFilterProxy"/>
+                    </property>
+                    <property name="order" value="-2"/>
+                    <property name="matchAllUrls" value="true"/>
+                </bean>
+
+                <bean class="org.jahia.bin.filters.ServletFilter">
+                    <property name="filterName" value="JcrSessionFilter"/>
+                    <property name="filter" ref="JcrSessionFilter"/>
+                    <property name="dispatcherTypes">
+                        <set>
+                            <value>REQUEST</value>
+                            <value>ERROR</value>
+                        </set>
+                    </property>
+                    <property name="order" value="-1"/>
+                    <property name="matchAllUrls" value="true"/>
+                </bean>
+
+                <bean class="org.jahia.bin.filters.ServletFilter">
+                    <property name="filterName" value="UrlRewriteFilter"/>
+                    <property name="filter" ref="UrlRewriteFilter"/>
+                    <property name="dispatcherTypes">
+                        <set>
+                            <value>REQUEST</value>
+                            <value>FORWARD</value>
+                            <value>ERROR</value>
+                        </set>
+                    </property>
+                    <property name="order" value="1"/>
+                    <property name="matchAllUrls" value="true"/>
+                    <property name="parameters">
+                        <map>
+                            <entry key="renderApplicationContextAttribute" value="org.springframework.web.servlet.FrameworkServlet.CONTEXT.RendererDispatcherServlet"/>
+                            <entry key="targetFilterLifecycle" value="true"/>
+                        </map>
+                    </property>
+                </bean>
+
+                <bean class="org.jahia.bin.filters.ServletFilter">
+                    <property name="filterName" value="ErrorLoggingFilter"/>
+                    <property name="filter">
+                        <bean class="org.jahia.bin.errors.ErrorLoggingFilter"/>
+                    </property>
+                    <property name="dispatcherTypes">
+                        <set>
+                            <value>ERROR</value>
+                        </set>
+                    </property>
+                    <property name="order" value="2"/>
+                    <property name="matchAllUrls" value="true"/>
+                </bean>
+
+                <bean class="org.jahia.bin.filters.ServletFilter">
+                    <property name="filterName" value="ErrorEventFilter"/>
+                    <property name="filter">
+                        <bean class="org.jahia.bin.errors.ErrorEventFilter"/>
+                    </property>
+                    <property name="dispatcherTypes">
+                        <set>
+                            <value>ERROR</value>
+                        </set>
+                    </property>
+                    <property name="order" value="3"/>
+                    <property name="matchAllUrls" value="true"/>
+                    <property name="parameters">
+                        <map>
+                            <entry key="minimalErrorCode" value="500"/>
+                        </map>
+                    </property>
+                </bean>
+
+                <bean class="org.jahia.bin.filters.ServletFilter">
+                    <property name="filterName" value="ContentManagerAccessCheckFilter"/>
+                    <property name="filter" ref="ContentManagerAccessCheckFilter"/>
+                    <property name="order" value="4"/>
+                    <property name="urlPatterns">
+                        <list>
+                            <value>/engines/contentpicker.jsp</value>
+                            <value>/engines/manager.jsp</value>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
 
     <bean id="RequestLoadAverage" class="org.jahia.utils.RequestLoadAverage" init-method="start" destroy-method="stop">
         <constructor-arg index="0" value="request-loadaverage"/>

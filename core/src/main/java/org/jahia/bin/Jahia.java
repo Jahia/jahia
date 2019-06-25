@@ -416,11 +416,15 @@ public final class Jahia {
      */
     public static String getFullProductVersion() {
         StringBuilder version = new StringBuilder();
-        version.append("Digital Experience Manager ").append(Jahia.VERSION).append(" [" + CODE_NAME + "] - ")
-                .append(isEnterpriseEdition() ? "Enterprise" : "Community").append(" Distribution - Build ")
-                .append(Jahia.getBuildNumber());
-        if (isEnterpriseEdition()) {
-            version.append(".").append(Jahia.getEEBuildNumber());
+        if (Jahia.JAHIA_VERSION.toString().endsWith("SNAPSHOT")) {
+            version.append("Jahia ").append(Jahia.VERSION).append(" [" + CODE_NAME + "] - ")
+                    .append(isEnterpriseEdition() ? "Enterprise" : "Community").append(" Distribution - Build ").append(Jahia.getBuildNumber());
+            if (isEnterpriseEdition()) {
+                version.append(".").append(Jahia.getEEBuildNumber());
+            }
+        } else {
+            version.append("Jahia ").append(Jahia.VERSION).append(isEnterpriseEdition() ? " - Enterprise" : "Community").append(
+                    " Distribution");
         }
         return version.toString();
     }

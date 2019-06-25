@@ -181,7 +181,7 @@ public class FileInstallConfigurer {
         }
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put(Constants.SERVICE_PID, "org.jahia.bundles.fileinstall.handler");
-        props.put(Constants.SERVICE_DESCRIPTION, "DX handler for FileInstall artifacts");
+        props.put(Constants.SERVICE_DESCRIPTION, "Jahia handler for FileInstall artifacts");
         props.put(Constants.SERVICE_VENDOR, Jahia.VENDOR_NAME);
         props.put("type", "dx-modules");
         customHandlerRegistration = context.registerService(CustomHandler.class, new ModuleFileInstallHandler(cfg),

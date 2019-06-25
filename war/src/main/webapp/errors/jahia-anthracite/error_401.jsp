@@ -88,7 +88,7 @@
   			</div>
 
   		</div>
-  		<div class="login-footer">Digital Experience Manager - Copyrights © 2002-2019 All Rights Reserved by Jahia Solutions Group SA.</div>
+  		<div class="login-footer">Jahia - Copyrights © 2002-2019 All Rights Reserved by Jahia Solutions Group SA.</div>
   	</div>
   </section>
 

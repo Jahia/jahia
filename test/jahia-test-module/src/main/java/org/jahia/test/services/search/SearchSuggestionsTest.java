@@ -120,7 +120,7 @@ public class SearchSuggestionsTest {
 
         // create one i18n content with 'digital' term
         JCRNodeWrapper text = contentFolder.addNode("text-1", "jnt:text");
-        text.setProperty("text", "Make digital simpler with Digital Experience Manager");
+        text.setProperty("text", "Make digital simpler with Jahia");
 
         // create one non-i18n content with 'velden' term
         JCRNodeWrapper location = contentFolder.addNode("location-1", "jnt:location");

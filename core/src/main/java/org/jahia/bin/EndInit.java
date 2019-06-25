@@ -98,7 +98,7 @@ public class EndInit extends HttpServlet {
     @Override
     public void destroy() {
         super.destroy();
-        logger.info("Digital Experience Manager is shutting down, please wait...");
+        logger.info("Jahia is shutting down, please wait...");
     }
 
     @Override
@@ -111,7 +111,7 @@ public class EndInit extends HttpServlet {
     private void finishInit() {
         try {
             JahiaContextLoaderListener.endContextInitialized();
-            
+
             // start schedulers
             ServicesRegistry.getInstance().getSchedulerService().startSchedulers();
         } catch (JahiaInitializationException e) {
@@ -123,17 +123,17 @@ public class EndInit extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        
+
         logger.info("Got into EndInit");
-        
+
         if (OSGI_STARTUP_WAIT_TIMEOUT > 0) {
             waitForStartup();
         }
-        
+
         finishInit();
-        
+
         printEndMessage();
-        
+
         initialized = true;
     }
 
@@ -144,7 +144,7 @@ public class EndInit extends HttpServlet {
             out.append("\n--------------------------------------------------------------------------------------------------" +
             "\n  D E V E L O P M E N T   M O D E   A C T I V E" +
             "\n" +
-            "\n  In development mode, Digital Experience Manager will allow JSPs to be modified, modules to be" +
+            "\n  In development mode, Jahia will allow JSPs to be modified, modules to be" +
             "\n  re-deployed and other modifications to happen immediately, but these DO have a performance impact." +
             "\n  It is strongly recommended to switch to production mode when running performance tests or going live." +
             "\n  The setting to change modes is called operatingMode in the jahia.properties configuration file.");

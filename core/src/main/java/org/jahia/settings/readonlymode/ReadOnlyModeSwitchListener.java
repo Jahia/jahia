@@ -27,7 +27,7 @@ package org.jahia.settings.readonlymode;
  * A listener to implement in order to be notified when full read-only mode is turned on or off.
  *
  * @author cmoitrier
- * @since 7.3.1.1
+ * @since 7.3.2.1
  * @see ReadOnlyModeController
  */
 public interface ReadOnlyModeSwitchListener {

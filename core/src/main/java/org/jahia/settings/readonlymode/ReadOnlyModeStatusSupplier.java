@@ -29,7 +29,7 @@ import java.util.List;
  * A supplier providing a list of {@link ReadOnlyModeStatusInfo}
  *
  * @author cmoitrier
- * @since 7.3.1.1
+ * @since 7.3.2.1
  */
 public interface ReadOnlyModeStatusSupplier {
 

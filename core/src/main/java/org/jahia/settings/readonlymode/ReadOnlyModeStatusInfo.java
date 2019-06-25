@@ -31,7 +31,7 @@ import static org.jahia.settings.readonlymode.ReadOnlyModeController.*;
  * Holds the read-only mode status of a specific origin
  *
  * @author cmoitrier
- * @since 7.3.1.1
+ * @since 7.3.2.1
  */
 public final class ReadOnlyModeStatusInfo {
 

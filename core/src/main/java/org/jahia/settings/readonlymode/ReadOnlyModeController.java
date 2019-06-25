@@ -180,7 +180,7 @@ public final class ReadOnlyModeController implements Serializable {
      * @return a list of {@link ReadOnlyModeStatusInfo}
      * @see #addStatusSupplier(ReadOnlyModeStatusSupplier)
      * @see #removeStatusSupplier(ReadOnlyModeStatusSupplier)
-     * @since 7.3.1.1
+     * @since 7.3.2.1
      */
     public List<ReadOnlyModeStatusInfo> getReadOnlyStatuses() {
         List<ReadOnlyModeStatusInfo> statuses = new ArrayList<>();
@@ -200,7 +200,7 @@ public final class ReadOnlyModeController implements Serializable {
      * fire once read only mode switch has completed.
      *
      * @param listener the listener to register
-     * @since 7.3.1.1
+     * @since 7.3.2.1
      */
     public void addSwitchListener(ReadOnlyModeSwitchListener listener) {
         Objects.requireNonNull(listener);
@@ -211,7 +211,7 @@ public final class ReadOnlyModeController implements Serializable {
      * Unregisters a {@link ReadOnlyModeSwitchListener} from this instance.
      *
      * @param listener the listener to unregister
-     * @since 7.3.1.1
+     * @since 7.3.2.1
      */
     public void removeSwitchListener(ReadOnlyModeSwitchListener listener) {
         Objects.requireNonNull(listener);
@@ -222,7 +222,7 @@ public final class ReadOnlyModeController implements Serializable {
      * Registers a {@link ReadOnlyModeStatusSupplier} with this instance.
      *
      * @param supplier the supplier to register
-     * @since 7.3.1.1
+     * @since 7.3.2.1
      */
     public void addStatusSupplier(ReadOnlyModeStatusSupplier supplier) {
         Objects.requireNonNull(supplier);
@@ -233,7 +233,7 @@ public final class ReadOnlyModeController implements Serializable {
      * Unregisters a {@link ReadOnlyModeStatusSupplier} from this instance.
      *
      * @param supplier the supplier to unregister
-     * @since 7.3.1.1
+     * @since 7.3.2.1
      */
     public void removeStatusSupplier(ReadOnlyModeStatusSupplier supplier) {
         Objects.requireNonNull(supplier);

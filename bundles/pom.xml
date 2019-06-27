@@ -60,9 +60,6 @@
         <module>blueprint-extender-config</module>
         <module>http-bridge</module>
         <module>jahiamodule-extender</module>
-        <!--
-        <module>jahiamodules</module>
-        -->
         <module>webconsole-config</module>
         <module>jspapiusage-repackaging</module>
         <module>bridging-log4j-appender</module>

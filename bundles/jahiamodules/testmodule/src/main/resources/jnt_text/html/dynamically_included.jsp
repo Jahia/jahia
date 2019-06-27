@@ -1,1 +1,0 @@
-This text was cdcd included from an OSGi-packaged view

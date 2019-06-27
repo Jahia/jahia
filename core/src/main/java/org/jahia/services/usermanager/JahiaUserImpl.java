@@ -47,7 +47,7 @@ import java.io.Serializable;
 import java.util.Properties;
 
 /**
- * Represents a user with properties in the Digital Experience Manager.
+ * Represents a user with properties in Jahia.
  */
 public class JahiaUserImpl implements JahiaUser, Serializable {
 

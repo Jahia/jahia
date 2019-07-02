@@ -116,6 +116,11 @@ public class Dashboard extends Render {
         return false;
     }
 
+    @Override
+    protected boolean isInReadOnlyMode() {
+        return false;
+    }
+
     public EditConfiguration getEditConfiguration() {
         return editConfiguration;
     }

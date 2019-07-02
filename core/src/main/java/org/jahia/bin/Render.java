@@ -731,6 +731,12 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
+
+        if (isInReadOnlyMode()) {
+            resp.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            return null;
+        }
+
         String method = req.getMethod();
         if (req.getParameter(METHOD_TO_CALL) != null) {
             method = req.getParameter(METHOD_TO_CALL).toUpperCase();
@@ -952,6 +958,10 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
 
     protected boolean isDisabled() {
+        return false;
+    }
+
+    protected boolean isInReadOnlyMode() {
         return false;
     }
 

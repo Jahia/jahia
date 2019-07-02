@@ -117,9 +117,14 @@ public class Edit extends Render {
     @Override
     protected boolean isDisabled() {
         final SettingsBean settingsBean = getSettingsBean();
-        return settingsBean.isReadOnlyMode()
-                || (settingsBean.isDistantPublicationServerMode() && !isAvailableInDistantPublicationServerMode())
+        return (settingsBean.isDistantPublicationServerMode() && !isAvailableInDistantPublicationServerMode())
                 || (settingsBean.isProductionMode() && !isAvailableInProductionMode());
+    }
+
+    @Override
+    protected boolean isInReadOnlyMode() {
+        final SettingsBean settingsBean = getSettingsBean();
+        return settingsBean.isReadOnlyMode() || settingsBean.isFullReadOnlyMode();
     }
 
     public EditConfiguration getEditConfiguration() {

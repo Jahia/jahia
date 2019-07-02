@@ -47,7 +47,7 @@ import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.jahia.settings.readonlymode.ReadOnlyModeController;
 
-@Command(scope = "dx", name = "full-read-only")
+@Command(scope = "jahia", name = "full-read-only")
 @Service
 public class FullReadOnlyCommand extends AbstractMaintenanceCommand {
 

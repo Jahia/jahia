@@ -47,7 +47,7 @@ import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.jahia.bin.Jahia;
 
-@Command(scope = "dx", name = "maintenance")
+@Command(scope = "jahia", name = "maintenance")
 @Service
 public class MaintenanceCommand extends AbstractMaintenanceCommand {
 

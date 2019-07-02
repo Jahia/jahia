@@ -47,7 +47,7 @@ import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.jahia.bin.Jahia;
 
-@Command(scope = "dx", name = "read-only")
+@Command(scope = "jahia", name = "read-only")
 @Service
 public class ReadOnlyCommand extends AbstractMaintenanceCommand {
 

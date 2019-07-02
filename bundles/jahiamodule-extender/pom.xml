@@ -164,11 +164,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-taglib</artifactId>
-<<<<<<< HEAD
-            <version>7.4.0.0-SNAPSHOT</version>
-=======
-            <version>7.3.1.1-backlog_10186-SNAPSHOT</version>
->>>>>>> [jgitflow-maven-plugin]updating poms for backlog_10186 version
+            <version>7.4.0.0-backlog_10186-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

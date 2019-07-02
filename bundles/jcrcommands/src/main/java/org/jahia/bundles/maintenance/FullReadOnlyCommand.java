@@ -45,11 +45,26 @@ package org.jahia.bundles.maintenance;
 
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
+import org.apache.karaf.shell.support.table.Col;
+import org.apache.karaf.shell.support.table.ShellTable;
+import org.jahia.settings.SettingsBean;
 import org.jahia.settings.readonlymode.ReadOnlyModeController;
+import org.jahia.settings.readonlymode.ReadOnlyModeStatusInfo;
+
+import java.util.List;
 
 @Command(scope = "dx", name = "full-read-only")
 @Service
 public class FullReadOnlyCommand extends AbstractMaintenanceCommand {
+
+    @Override
+    protected void printMaintenanceStatus() {
+        if (SettingsBean.getInstance().isClusterActivated()) {
+            print(ReadOnlyModeController.getInstance().getReadOnlyStatuses());
+        } else {
+            super.printMaintenanceStatus();
+        }
+    }
 
     @Override
     protected String getMaintenanceStatus() {
@@ -58,6 +73,21 @@ public class FullReadOnlyCommand extends AbstractMaintenanceCommand {
 
     @Override
     protected void setMaintenanceStatus(boolean enable) {
-        ReadOnlyModeController.getInstance().switchReadOnlyMode(enable);
+        try {
+            ReadOnlyModeController.getInstance().switchReadOnlyMode(enable);
+        } catch (IllegalStateException e) {
+            System.err.println(e.getMessage());
+        }
     }
+
+    private void print(List<ReadOnlyModeStatusInfo> statuses) {
+        ShellTable table = new ShellTable();
+        table.column(new Col("Origin"));
+        table.column(new Col("Status"));
+        for (ReadOnlyModeStatusInfo status : statuses) {
+            table.addRow().addContent(status.getOrigin(), status.getValue());
+        }
+        table.print(System.out, true);
+    }
+
 }

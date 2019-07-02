@@ -73,6 +73,7 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.store.AlreadyClosedException;
 import org.apache.tika.parser.Parser;
 import org.jahia.api.Constants;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -92,7 +93,11 @@ import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.qom.QueryObjectModel;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Implements a {@link org.apache.jackrabbit.core.query.QueryHandler} using Lucene and handling Jahia specific definitions.
@@ -117,8 +122,8 @@ public class JahiaSearchIndex extends SearchIndex {
                     for (Iterator<JahiaSearchIndex> it = indexes.iterator(); it.hasNext(); ) {
                         JahiaSearchIndex searchIndex = it.next();
                         try {
-                           searchIndex.reindexAndSwitch();
-                       } catch (Exception e) {
+                            searchIndex.reindexAndSwitch();
+                        } catch (Exception e) {
                             // reset newIndex of every indexes that won't be processed,
                             // otherwise re-indexing of those ones won't be possible
                             // until restart (see prepareReindexing() and scheduleReindexing())
@@ -126,7 +131,7 @@ public class JahiaSearchIndex extends SearchIndex {
                                 it.next().newIndex = null;
                             }
                             throw e;
-                       }
+                        }
                     }
                     log.info("Re-indexing of the whole repository content took {}",
                             DateUtils.formatDurationWords(System.currentTimeMillis() - start));
@@ -152,8 +157,7 @@ public class JahiaSearchIndex extends SearchIndex {
 
     public static final String SKIP_VERSION_INDEX_SYSTEM_PROPERTY = "jahia.jackrabbit.searchIndex.skipVersionIndex";
 
-    public static final boolean SKIP_VERSION_INDEX = Boolean.valueOf(System.getProperty(
-            SKIP_VERSION_INDEX_SYSTEM_PROPERTY, "true"));
+    public static final boolean SKIP_VERSION_INDEX = Boolean.parseBoolean(System.getProperty(SKIP_VERSION_INDEX_SYSTEM_PROPERTY, "true"));
 
     private Boolean versionIndex;
 
@@ -163,7 +167,7 @@ public class JahiaSearchIndex extends SearchIndex {
 
     private boolean addAclUuidInIndex = true;
 
-    private Set<String> typesUsingOptimizedACEIndexation = new HashSet<String>();
+    private Set<String> typesUsingOptimizedACEIndexation = new HashSet<>();
 
     private Set<Name> ignoredTypes;
 
@@ -372,12 +376,12 @@ public class JahiaSearchIndex extends SearchIndex {
                     NodeState state = add.next();
                     if (state != null && !ignoredTypes.contains(state.getNodeTypeName())) {
                         if (l == null) {
-                            l = new LinkedList<NodeState>();
+                            l = new LinkedList<>();
                         }
                         l.add(state);
                     }
                 }
-                add = l != null ? l.iterator() : Collections.<NodeState> emptyIterator();
+                add = l != null ? l.iterator() : Collections.<NodeState>emptyIterator();
             }
             if (newIndex != null) {
                 newIndex.addDelayedUpdated(remove, add);
@@ -389,12 +393,12 @@ public class JahiaSearchIndex extends SearchIndex {
             return;
         }
 
-        final List<NodeState> addList = new ArrayList<NodeState>();
-        final List<NodeId> removeList = new ArrayList<NodeId>();
-        final Set<NodeId> removedIds = new HashSet<NodeId>();
-        final Set<NodeId> addedIds = new HashSet<NodeId>();
-        final List<NodeId> aclChangedList = new ArrayList<NodeId>();
-        final Set<NodeId> topIdsRecursedForAcl = new HashSet<NodeId>();
+        final List<NodeState> addList = new ArrayList<>();
+        final List<NodeId> removeList = new ArrayList<>();
+        final Set<NodeId> removedIds = new HashSet<>();
+        final Set<NodeId> addedIds = new HashSet<>();
+        final List<NodeId> aclChangedList = new ArrayList<>();
+        final Set<NodeId> topIdsRecursedForAcl = new HashSet<>();
 
         boolean hasAclOrAce = false;
         while (add.hasNext()) {
@@ -426,7 +430,7 @@ public class JahiaSearchIndex extends SearchIndex {
                     // into parent's and all affected subnodes' index documents
                     Event event = null;
                     if (add instanceof JahiaSearchManager.NodeStateIterator) {
-                        event = ((JahiaSearchManager.NodeStateIterator)add).getEvent(node.getNodeId());
+                        event = ((JahiaSearchManager.NodeStateIterator) add).getEvent(node.getNodeId());
                         // skip adding subnodes if just a property changed and its not j:inherit
                         if (event != null && event.getType() != Event.NODE_ADDED && event.getType() != Event.NODE_REMOVED) {
                             if (!(JNT_ACL.equals(node.getNodeTypeName()) && event.getPath().endsWith("/j:inherit"))) {
@@ -502,8 +506,8 @@ public class JahiaSearchIndex extends SearchIndex {
                 if (aclSubListStart > 0) {
                     Thread.yield();
                 }
-                List<NodeState> aclAddList = new ArrayList<NodeState>();
-                List<NodeId> aclRemoveList = new ArrayList<NodeId>();
+                List<NodeState> aclAddList = new ArrayList<>();
+                List<NodeId> aclRemoveList = new ArrayList<>();
                 for (final NodeId node : aclChangedList.subList(aclSubListStart, aclSubListEnd)) {
                     try {
                         addIdToBeIndexed(node, addedIds, removedIds,
@@ -552,11 +556,8 @@ public class JahiaSearchIndex extends SearchIndex {
                     }
                     recurseTreeForAclIdSetting(childNode, addedIds, removedIds, aclChangedList, itemStateManager);
                 }
-            } catch (ItemStateException e) {
-                log.warn("ACL_UUID field in document for nodeId '{}' may not be updated, so access rights check in search may not work correctly", childNodeEntry.getId().toString());
-                log.debug("Exception when checking for creating ACL_UUID in index", e);
-            } catch (RepositoryException e) {
-                log.warn("ACL_UUID field in document for nodeId '{}' may not be updated, so access rights check in search may not work correctly", childNodeEntry.getId().toString());
+            } catch (ItemStateException | RepositoryException e) {
+                log.warn("ACL_UUID field in document for nodeId '{}' may not be updated, so access rights check in search may not work correctly", childNodeEntry.getId());
                 log.debug("Exception when checking for creating ACL_UUID in index", e);
             }
         }
@@ -597,7 +598,7 @@ public class JahiaSearchIndex extends SearchIndex {
         mergeAggregatedNodeIndexes(node, doc, indexFormatVersion);
         return doc;
     }
-    
+
     protected boolean isNodeExcluded(final NodeState node) throws RepositoryException {
         try {
             // manage translation nodes
@@ -643,83 +644,6 @@ public class JahiaSearchIndex extends SearchIndex {
         return false;
     }
 
-//    /**
-//     * Executes the query on the search index.
-//     *
-//     * @param session         the session that executes the query.
-//     * @param query           the query.
-//     * @param orderings       the order specs for the sort order.
-//     * @param resultFetchHint a hint on how many results should be fetched.
-//     * @return the query hits.
-//     * @throws IOException if an error occurs while searching the index.
-//     */
-//    public MultiColumnQueryHits executeQuery(SessionImpl session, MultiColumnQuery query,
-//                                             Ordering[] orderings, long resultFetchHint, boolean createFacets) throws IOException {
-//        checkOpen();
-//
-//        final IndexReader reader = getIndexReader();
-//        JackrabbitIndexSearcher searcher = new JackrabbitIndexSearcher(session, reader,
-//                getContext().getItemStateManager());
-//        searcher.setSimilarity(getSimilarity());
-//        MultiColumnQueryHits hits = query.execute(searcher, orderings, resultFetchHint);
-//        JahiaFilterMultiColumnQueryHits filteredHits = new JahiaFilterMultiColumnQueryHits(hits,
-//                query instanceof JahiaQueryImpl ? ((JahiaQueryImpl) query).getConstraint()
-//                        : null, searcher) {
-//            public void close() throws IOException {
-//                try {
-//                    super.close();
-//                } finally {
-//                    PerQueryCache.getInstance().dispose();
-//                    Util.closeOrRelease(reader);
-//                }
-//            }
-//        };
-//        return filteredHits;
-//    }
-//
-//    /**
-//     * Executes the query on the search index.
-//     *
-//     * @param session         the session that executes the query.
-//     * @param queryImpl       the query impl.
-//     * @param query           the lucene query.
-//     * @param orderProps      name of the properties for sort order.
-//     * @param orderSpecs      the order specs for the sort order properties. <code>true</code> indicates ascending order, <code>false</code> indicates
-//     *                        descending.
-//     * @param resultFetchHint a hint on how many results should be fetched.
-//     * @return the query hits.
-//     * @throws IOException if an error occurs while searching the index.
-//     */
-//    @Override
-//    public MultiColumnQueryHits executeQuery(SessionImpl session, AbstractQueryImpl queryImpl,
-//                                             Query query, Path[] orderProps, boolean[] orderSpecs, long resultFetchHint)
-//            throws IOException {
-//        checkOpen();
-//
-//        Sort sort = new Sort(createSortFields(orderProps, orderSpecs));
-//
-//        final IndexReader reader = getIndexReader(queryImpl.needsSystemTree());
-//        JackrabbitIndexSearcher searcher = new JackrabbitIndexSearcher(session, reader,
-//                getContext().getItemStateManager());
-//        searcher.setSimilarity(getSimilarity());
-//        MultiColumnQueryHits hits = searcher.execute(query, sort, resultFetchHint,
-//                QueryImpl.DEFAULT_SELECTOR_NAME);
-//        JahiaFilterMultiColumnQueryHits filteredHits = new JahiaFilterMultiColumnQueryHits(hits,
-//                queryImpl instanceof JahiaQueryImpl ? ((JahiaQueryImpl) queryImpl).getConstraint()
-//                        : null, searcher) {
-//            public void close() throws IOException {
-//                try {
-//                    super.close();
-//                } finally {
-//                    PerQueryCache.getInstance().dispose();
-//                    Util.closeOrRelease(reader);
-//                }
-//            }
-//        };
-//
-//        return filteredHits;
-//    }
-
     @Override
     public QueryObjectModel createQueryObjectModel(
             SessionContext sessionContext,
@@ -742,10 +666,11 @@ public class JahiaSearchIndex extends SearchIndex {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Iterable<NodeId> getWeaklyReferringNodes(NodeId id)
             throws RepositoryException, IOException {
-        final List<Integer> docs = new ArrayList<Integer>();
-        final List<NodeId> ids = new ArrayList<NodeId>();
+        final List<Integer> docs = new ArrayList<>();
+        final List<NodeId> ids = new ArrayList<>();
         final IndexReader reader = getIndexReader(false);
         try {
             IndexSearcher searcher = new IndexSearcher(reader);
@@ -919,11 +844,11 @@ public class JahiaSearchIndex extends SearchIndex {
      * Re-indexes the full JCR sub-tree, starting from the specified node.
      *
      * @param startNodeId the UUID of the node to start re-indexing with
-     * @throws RepositoryException if an error occurs while indexing a node.
+     * @throws RepositoryException      if an error occurs while indexing a node.
      * @throws NoSuchItemStateException in case of JCR errors
      * @throws IllegalArgumentException in case of JCR errors
-     * @throws ItemStateException in case of JCR errors
-     * @throws IOException if an error occurs while updating the index
+     * @throws ItemStateException       in case of JCR errors
+     * @throws IOException              if an error occurs while updating the index
      */
     public void reindexTree(String startNodeId) throws RepositoryException, NoSuchItemStateException,
             IllegalArgumentException, ItemStateException, IOException {
@@ -989,7 +914,7 @@ public class JahiaSearchIndex extends SearchIndex {
      * @param orderSpecs      the order specs for the sort order properties.
      *                        <code>true</code> indicates ascending order,
      *                        <code>false</code> indicates descending.
-     * @param orderFuncs      functions for the properties for sort order. 
+     * @param orderFuncs      functions for the properties for sort order.
      * @param resultFetchHint a hint on how many results should be fetched.  @return the query hits.
      * @throws IOException if an error occurs while searching the index.
      */
@@ -1012,6 +937,7 @@ public class JahiaSearchIndex extends SearchIndex {
         return new JahiaFilterMultiColumnQueryHits(
                 searcher.execute(query, sort, resultFetchHint,
                         QueryImpl.DEFAULT_SELECTOR_NAME), reader) {
+            @Override
             public void close() throws IOException {
                 try {
                     super.close();
@@ -1046,6 +972,7 @@ public class JahiaSearchIndex extends SearchIndex {
         searcher.setSimilarity(getSimilarity());
         return new JahiaFilterMultiColumnQueryHits(
                 query.execute(searcher, orderings, resultFetchHint), reader) {
+            @Override
             public void close() throws IOException {
                 try {
                     super.close();
@@ -1054,5 +981,50 @@ public class JahiaSearchIndex extends SearchIndex {
                 }
             }
         };
+    }
+
+    public void switchReadOnlyMode(boolean enable) {
+        try {
+            IndexMerger merger = getValue(index, "merger");
+            if (enable) {
+                // Enable read-only mode. Set indexMerger to "not started" to start queuing workers without starting them
+                AtomicBoolean isStarted = getValue(merger, "isStarted");
+                isStarted.set(false);
+
+                // Get all queued workers, wait for running workers to be finished
+                List busyMergers = getValue(merger, "busyMergers");
+                Object[] workers = busyMergers.toArray(new Object[0]);
+
+                for (Object worker : workers) {
+                    CountDownLatch start = getValue(worker, "start");
+                    // If worker is already started, wait until it's finished
+                    if (start.getCount() == 0) {
+                        getMethod(worker, "join", long.class).invoke(worker, 500);
+                        if ((Boolean) getMethod(worker,"isAlive").invoke(worker)) {
+                            log.info("Unable to stop IndexMerger.Worker. Daemon is busy.");
+                        } else {
+                            log.debug("Worker stopped");
+                        }
+                    }
+                }
+            } else {
+                // Unblock waiting mergers
+                getMethod(merger, "start").invoke(merger);
+            }
+        } catch (ReflectiveOperationException e) {
+            throw new JahiaRuntimeException("Cannot switch index to read-only", e);
+        }
+    }
+
+    private static <T> T getValue(Object object, String name) throws NoSuchFieldException, IllegalAccessException {
+        Field field = object.getClass().getDeclaredField(name);
+        field.setAccessible(true);
+        return (T) field.get(object);
+    }
+
+    private static Method getMethod(Object object, String name, Class... params) throws NoSuchMethodException {
+        Method method = object.getClass().getDeclaredMethod(name, params);
+        method.setAccessible(true);
+        return method;
     }
 }

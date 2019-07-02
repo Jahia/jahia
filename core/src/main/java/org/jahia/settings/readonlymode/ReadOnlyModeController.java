@@ -43,10 +43,9 @@
  */
 package org.jahia.settings.readonlymode;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.io.Serializable;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jahia.services.SpringContextSingleton;
 import org.slf4j.Logger;
@@ -58,17 +57,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Sergiy Shyrkov
  */
-public class ReadOnlyModeController {
-
-    private static final Logger logger = LoggerFactory.getLogger(ReadOnlyModeController.class);
-
-    private static final Comparator<ReadOnlyModeCapable> SERVICES_COMPARATOR_BY_PRIORITY = new Comparator<ReadOnlyModeCapable>() {
-
-        @Override
-        public int compare(ReadOnlyModeCapable readonlyModeCapable1, ReadOnlyModeCapable readonlyModeCapable2) {
-            return Integer.compare(readonlyModeCapable1.getReadOnlyModePriority(), readonlyModeCapable2.getReadOnlyModePriority());
-        }
-    };
+public final class ReadOnlyModeController implements Serializable {
 
     /**
      * Read only mode status.
@@ -106,7 +95,16 @@ public class ReadOnlyModeController {
         PARTIAL_OFF
     }
 
-    private volatile ReadOnlyModeStatus readOnlyStatus = ReadOnlyModeStatus.OFF;
+    private static final Comparator<ReadOnlyModeCapable> SERVICES_COMPARATOR_BY_PRIORITY =
+            Comparator.comparingInt(ReadOnlyModeCapable::getReadOnlyModePriority);
+
+    // Initialization on demand holder idiom: thread-safe singleton initialization
+    private static class Holder {
+        static final ReadOnlyModeController INSTANCE = new ReadOnlyModeController();
+    }
+
+    private static final long serialVersionUID = 5240686816879033535L;
+    private static final Logger logger = LoggerFactory.getLogger(ReadOnlyModeController.class);
 
     /**
      * Handles the case, when a service encounters read-only mode violation, i.e. a data or state modification is requested.
@@ -116,50 +114,139 @@ public class ReadOnlyModeController {
      */
     public static void readOnlyModeViolated(String message) throws ReadOnlyModeException {
         throw new ReadOnlyModeException(message);
-
     }
+
+    public static ReadOnlyModeController getInstance() {
+        return Holder.INSTANCE;
+    }
+
+    private final transient Collection<ReadOnlyModeSwitchListener> switchListeners = new CopyOnWriteArrayList<>();
+    private final transient Collection<ReadOnlyModeStatusSupplier> statusSuppliers = new CopyOnWriteArrayList<>();
+    private transient volatile ReadOnlyModeStatus readOnlyStatus = ReadOnlyModeStatus.OFF;
 
     /**
      * Performs the switch of all DX services into read-only mode or back.
      *
      * @param enable <code>true</code> if the read-only mode should be enabled; <code>false</code> if it should be disabled
+     * @throws IllegalStateException if switching to the specified mode is not permitted
      */
     public synchronized void switchReadOnlyMode(boolean enable) {
-
-        ReadOnlyModeStatus targetStatus = enable ? ReadOnlyModeStatus.ON : ReadOnlyModeStatus.OFF;
+        final ReadOnlyModeStatus targetStatus = enable ? ReadOnlyModeStatus.ON : ReadOnlyModeStatus.OFF;
         logger.info("Received request to switch read only mode to {}", targetStatus);
 
-        if (!isStatusUpdateAllowed(enable)) {
-            throw new IllegalStateException("The read-only mode state is " + readOnlyStatus + ", unable to switch to " + targetStatus);
-        }
-
-        // switch to pending
-        readOnlyStatus = enable ? ReadOnlyModeStatus.PENDING_ON : ReadOnlyModeStatus.PENDING_OFF;
-
-        List<ReadOnlyModeCapable> services = new LinkedList<>(SpringContextSingleton.getBeansOfType(ReadOnlyModeCapable.class).values());
-        Collections.sort(services, SERVICES_COMPARATOR_BY_PRIORITY);
-        if (enable) {
-            Collections.reverse(services);
-        }
-
-        logger.info("Switching read only status of {} services", services.size());
-        for (ReadOnlyModeCapable service : services) {
-            try {
-                service.switchReadOnlyMode(enable);
-            } catch (Exception e) {
-                readOnlyStatus = enable ? ReadOnlyModeStatus.PARTIAL_ON : ReadOnlyModeStatus.PARTIAL_OFF;
-                logger.error("Error switching read only status of the service " + service, e);
-                throw e;
+        if (targetStatus != readOnlyStatus) { // don't do anything on this node if current status is already the target one
+            if (!isStatusUpdateAllowed(enable)) {
+                throw new IllegalStateException("The read-only mode state is " + readOnlyStatus + ", unable to switch to " + targetStatus);
             }
+
+            // switch to pending
+            readOnlyStatus = enable ? ReadOnlyModeStatus.PENDING_ON : ReadOnlyModeStatus.PENDING_OFF;
+
+            List<ReadOnlyModeCapable> services = new LinkedList<>(SpringContextSingleton.getBeansOfType(ReadOnlyModeCapable.class).values());
+            Collections.sort(services, enable ? SERVICES_COMPARATOR_BY_PRIORITY.reversed() : SERVICES_COMPARATOR_BY_PRIORITY);
+
+            logger.info("Switching read only status of {} services", services.size());
+            for (ReadOnlyModeCapable service : services) {
+                try {
+                    service.switchReadOnlyMode(enable);
+                } catch (RuntimeException e) {
+                    readOnlyStatus = enable ? ReadOnlyModeStatus.PARTIAL_ON : ReadOnlyModeStatus.PARTIAL_OFF;
+                    logger.error("Error switching read only status of the service " + service, e);
+                    throw e;
+                }
+            }
+
+            // switch to final state
+            readOnlyStatus = targetStatus;
         }
 
-        // switch to final state
-        readOnlyStatus = targetStatus;
+        // notify listeners
+        notifyReadOnlyModeSwitched(enable);
 
         logger.info("Finished read-only mode switch. Now the read-only mode is {}", readOnlyStatus);
     }
 
+    public ReadOnlyModeStatus getReadOnlyStatus() {
+        return readOnlyStatus;
+    }
+
     /**
+     * Returns a list of read-only statuses from multiple origins
+     *
+     * <p>The returned list will always contain at least one element
+     * which is the read-only status of the current instance.
+     * Additional statuses can be provided by {@link ReadOnlyModeStatusSupplier}.
+     *
+     * @return a list of {@link ReadOnlyModeStatusInfo}
+     * @see #addStatusSupplier(ReadOnlyModeStatusSupplier)
+     * @see #removeStatusSupplier(ReadOnlyModeStatusSupplier)
+     * @since 7.3.2.1
+     */
+    public List<ReadOnlyModeStatusInfo> getReadOnlyStatuses() {
+        List<ReadOnlyModeStatusInfo> statuses = new ArrayList<>();
+        statuses.add(new ReadOnlyModeStatusInfo("local", getReadOnlyStatus()));
+
+        for (ReadOnlyModeStatusSupplier supplier : statusSuppliers) {
+            statuses.addAll(supplier.getStatuses());
+        }
+
+        return statuses;
+    }
+
+    /**
+     * Registers a {@link ReadOnlyModeSwitchListener} with this instance.
+     *
+     * <p>{@link ReadOnlyModeSwitchListener#onReadOnlyModeSwitched(boolean)} will be
+     * fire once read only mode switch has completed.
+     *
+     * @param listener the listener to register
+     * @since 7.3.2.1
+     */
+    public void addSwitchListener(ReadOnlyModeSwitchListener listener) {
+        Objects.requireNonNull(listener);
+        switchListeners.add(listener);
+    }
+
+    /**
+     * Unregisters a {@link ReadOnlyModeSwitchListener} from this instance.
+     *
+     * @param listener the listener to unregister
+     * @since 7.3.2.1
+     */
+    public void removeSwitchListener(ReadOnlyModeSwitchListener listener) {
+        Objects.requireNonNull(listener);
+        switchListeners.remove(listener);
+    }
+
+    /**
+     * Registers a {@link ReadOnlyModeStatusSupplier} with this instance.
+     *
+     * @param supplier the supplier to register
+     * @since 7.3.2.1
+     */
+    public void addStatusSupplier(ReadOnlyModeStatusSupplier supplier) {
+        Objects.requireNonNull(supplier);
+        statusSuppliers.add(supplier);
+    }
+
+    /**
+     * Unregisters a {@link ReadOnlyModeStatusSupplier} from this instance.
+     *
+     * @param supplier the supplier to unregister
+     * @since 7.3.2.1
+     */
+    public void removeStatusSupplier(ReadOnlyModeStatusSupplier supplier) {
+        Objects.requireNonNull(supplier);
+        statusSuppliers.remove(supplier);
+    }
+
+    private void notifyReadOnlyModeSwitched(boolean enabled) {
+        for (ReadOnlyModeSwitchListener listener : switchListeners) {
+            listener.onReadOnlyModeSwitched(enabled);
+        }
+    }
+
+    /*
      * Checks if the read-only mode status change is allowed in the current state.
      * 
      * @param switchModeTo target read-only mode status, we are checking the switch into
@@ -170,15 +257,4 @@ public class ReadOnlyModeController {
                 || readOnlyStatus == ReadOnlyModeStatus.PARTIAL_ON || readOnlyStatus == ReadOnlyModeStatus.PARTIAL_OFF;
     }
 
-    // Initialization on demand holder idiom: thread-safe singleton initialization
-    private static class Holder {
-        static final ReadOnlyModeController INSTANCE = new ReadOnlyModeController();
-    }
-    public static ReadOnlyModeController getInstance() {
-        return Holder.INSTANCE;
-    }
-
-    public ReadOnlyModeStatus getReadOnlyStatus() {
-        return readOnlyStatus;
-    }
 }

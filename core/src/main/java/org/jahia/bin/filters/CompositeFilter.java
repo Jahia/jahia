@@ -43,14 +43,14 @@
  */
 package org.jahia.bin.filters;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -62,7 +62,7 @@ import java.util.List;
 public class CompositeFilter implements Filter {
     private static Logger logger = LoggerFactory.getLogger(CompositeFilter.class);
     
-    private List<AbstractServletFilter> filters = new ArrayList<AbstractServletFilter>();
+    private List<AbstractServletFilter> filters = new ArrayList<>();
     private FilterConfig filterConfig;
 
     public void destroy() {
@@ -83,10 +83,11 @@ public class CompositeFilter implements Filter {
 
     public void registerFilter(AbstractServletFilter filter) throws ServletException {
         if(filterConfig != null){
-            filter.init(filterConfig);
+            filter.init(filterConfig.getServletContext());
         }
         logger.info("Registering servlet filter {}", filter);
         this.filters.add(filter);
+        Collections.sort(this.filters);
     }
 
     public void unregisterFilter(AbstractServletFilter filter) {
@@ -95,14 +96,24 @@ public class CompositeFilter implements Filter {
             filter.destroy();
         } finally {
             filters.remove(filter);
+            Collections.sort(this.filters);
         }
+    }
+
+    public void setFilters(List<AbstractServletFilter> filters) {
+        this.filters = filters;
+        Collections.sort(this.filters);
     }
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         this.filterConfig = filterConfig;
         for (AbstractServletFilter filter : filters){
-            filter.init(filterConfig);
+            try {
+                filter.init(filterConfig.getServletContext());
+            } catch (Exception e) {
+                logger.error("Error when executing filter",e);
+            }
         }
     }
 
@@ -149,69 +160,64 @@ public class CompositeFilter implements Filter {
             }
             return null;
         }
-    }
 
-    private static boolean isFilterMatchPath(AbstractServletFilter filter, HttpServletRequest request){
-        // Check the specific "*" special URL pattern, which also matches
-        // named dispatches
-        if (filter.isMatchAllUrls())
-            return (true);
-
-        int length = request.getContextPath().length();
-        String requestPath = length > 0 ? request.getRequestURI().substring(length) : request.getRequestURI();
-
-        // Match on context relative request path
-        String[] testPaths = filter.getUrlPatterns();
-
-        for (String testPath : testPaths) {
-            if (matchFiltersURL(testPath, requestPath)) {
-                return (true);
+        private boolean isFilterMatchPath(AbstractServletFilter filter, HttpServletRequest request){
+            if (filter.getDispatcherTypes() != null && !filter.getDispatcherTypes().contains(request.getDispatcherType().name())) {
+                return false;
             }
-        }
 
-        // No match
-        return (false);
+            // Check the specific "*" special URL pattern, which also matches
+            // named dispatches
+            if (filter.isMatchAllUrls())
+                return true;
+
+            int length = request.getContextPath().length();
+            String requestPath = length > 0 ? request.getRequestURI().substring(length) : request.getRequestURI();
+
+            // Match on context relative request path
+            String[] testPaths = filter.getUrlPatterns();
+
+            for (String testPath : testPaths) {
+                if (matchFiltersURL(testPath, requestPath)) {
+                    return true;
+                }
+            }
+
+            // No match
+            return false;
+        }
     }
 
     public static boolean matchFiltersURL(String testPath, String requestPath) {
 
-        if (testPath == null)
-            return (false);
+        if (testPath == null) {
+            return false;
+        }
 
         // Case 1 - Exact Match
-        if (testPath.equals(requestPath))
-            return (true);
+        if (testPath.equals(requestPath)) {
+            return true;
+        }
 
         // Case 2 - Path Match ("/.../*")
-        if (testPath.equals("/*"))
-            return (true);
+        if (testPath.equals("/*")) {
+            return true;
+        }
         if (testPath.endsWith("/*")) {
-            if (testPath.regionMatches(0, requestPath, 0,
-                    testPath.length() - 2)) {
-                if (requestPath.length() == (testPath.length() - 2)) {
-                    return (true);
-                } else if ('/' == requestPath.charAt(testPath.length() - 2)) {
-                    return (true);
-                }
-            }
-            return (false);
+            return testPath.regionMatches(0, requestPath, 0, testPath.length() - 2) && (requestPath.length() == (testPath.length() - 2) || '/' == requestPath.charAt(testPath.length() - 2));
         }
 
         // Case 3 - Extension Match
         if (testPath.startsWith("*.")) {
             int slash = requestPath.lastIndexOf('/');
             int period = requestPath.lastIndexOf('.');
-            if ((slash >= 0) && (period > slash)
-                    && (period != requestPath.length() - 1)
-                    && ((requestPath.length() - period)
-                    == (testPath.length() - 1))) {
-                return (testPath.regionMatches(2, requestPath, period + 1,
-                        testPath.length() - 2));
+            if ((slash >= 0) && (period > slash) && (period != requestPath.length() - 1) && ((requestPath.length() - period) == (testPath.length() - 1))) {
+                return (testPath.regionMatches(2, requestPath, period + 1, testPath.length() - 2));
             }
         }
 
         // Case 4 - "Default" Match
-        return (false); // NOTE - Not relevant for selecting filters
+        return false; // NOTE - Not relevant for selecting filters
 
     }
 }

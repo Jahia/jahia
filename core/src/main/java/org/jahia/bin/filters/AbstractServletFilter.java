@@ -43,30 +43,31 @@
  */
 package org.jahia.bin.filters;
 
-import javax.servlet.*;
-
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import java.io.IOException;
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import java.util.*;
 
 /**
  * Base servlet filter implementation
  *
  * @author kevan
  */
-public abstract class AbstractServletFilter implements javax.servlet.Filter {
+public abstract class AbstractServletFilter implements javax.servlet.Filter, Comparable<AbstractServletFilter> {
 
     private String[] urlPatterns;
     private boolean matchAllUrls = false;
+    private float order = 0.f;
+    private String filterName;
+    private Set<String> dispatcherTypes = Collections.singleton(DispatcherType.REQUEST.name());
+    private Map<String, String> parameters = new HashMap<>();
 
-    @Override
-    public abstract void init(FilterConfig filterConfig) throws ServletException;
-
-    @Override
-    public abstract void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException;
-
-    @Override
-    public abstract void destroy();
+    public void init(ServletContext servletContext) throws ServletException {
+        init(new FilterConfigImpl(servletContext));
+    }
 
     public String[] getUrlPatterns() {
         return urlPatterns;
@@ -83,9 +84,76 @@ public abstract class AbstractServletFilter implements javax.servlet.Filter {
     public void setMatchAllUrls(boolean matchAllUrls) {
         this.matchAllUrls = matchAllUrls;
     }
-    
+
+    public float getOrder() {
+        return order;
+    }
+
+    public void setOrder(float order) {
+        this.order = order;
+    }
+
+    public String getFilterName() {
+        return filterName;
+    }
+
+    public void setFilterName(String filterName) {
+        this.filterName = filterName;
+    }
+
+    public Map<String, String> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(Map<String, String> parameters) {
+        this.parameters = parameters;
+    }
+
+    public Set<String> getDispatcherTypes() {
+        return dispatcherTypes;
+    }
+
+    public void setDispatcherTypes(Set<String> dispatcherTypes) {
+        this.dispatcherTypes = dispatcherTypes;
+    }
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
+
+    @Override
+    public int compareTo(AbstractServletFilter other) {
+        int result = Float.compare(getOrder(), other.getOrder());
+        return result != 0 ? result : getClass().getName().compareTo(other.getClass().getName());
+    }
+
+    private class FilterConfigImpl implements FilterConfig {
+        private ServletContext servletContext;
+
+        public FilterConfigImpl(ServletContext servletContext) {
+            this.servletContext = servletContext;
+        }
+
+        @Override
+        public String getFilterName() {
+            return filterName;
+        }
+
+        @Override
+        public ServletContext getServletContext() {
+            return servletContext;
+        }
+
+        @Override
+        public String getInitParameter(String s) {
+            return parameters.get(s);
+        }
+
+        @Override
+        public Enumeration<String> getInitParameterNames() {
+            return new Vector<>(parameters.keySet()).elements();
+        }
+    }
+
 }

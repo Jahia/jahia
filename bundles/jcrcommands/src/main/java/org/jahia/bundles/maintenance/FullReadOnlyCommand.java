@@ -53,7 +53,7 @@ import org.jahia.settings.readonlymode.ReadOnlyModeStatusInfo;
 
 import java.util.List;
 
-@Command(scope = "dx", name = "full-read-only")
+@Command(scope = "jahia", name = "full-read-only")
 @Service
 public class FullReadOnlyCommand extends AbstractMaintenanceCommand {
 

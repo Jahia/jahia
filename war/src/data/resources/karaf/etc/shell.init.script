@@ -32,3 +32,8 @@ service:get = { $.context getService ($.context getServiceReference $args) };
 
 lb = { bundle:list -t 0 $args } ;
 clb = { cluster:bundle-list $args default };
+
+// aliasing of some Jahia commands for backward compatibility
+dx:full-read-only = { jahia:full-read-only $args };
+dx:maintenance = { jahia:maintenance $args };
+dx:read-only = { jahia:read-only $args };

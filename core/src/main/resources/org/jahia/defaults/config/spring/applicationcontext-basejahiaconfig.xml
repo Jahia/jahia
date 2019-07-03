@@ -299,6 +299,13 @@
         </property>
     </bean>
 
+    <bean id="ContentManagerAccessCheckFilter" class="org.jahia.bin.filters.ContentManagerAccessCheckFilter">
+        <property name="defaultContentManager" value="repositoryexplorer"/>
+        <property name="defaultContentPicker" value="filepicker"/>
+        <property name="requireAuthenticatedUser" value="true"/>
+        <property name="settingsBean" ref="settingsBean"/>
+    </bean>
+
     <bean id="CompositeFilter" class="org.jahia.bin.filters.CompositeFilter">
         <property name="filters">
             <list>

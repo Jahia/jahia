@@ -55,6 +55,7 @@ import org.apache.jackrabbit.core.state.ItemStateException;
 import org.apache.jackrabbit.core.state.NoSuchItemStateException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.scheduler.BackgroundJob;
+import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
@@ -74,7 +75,7 @@ import java.util.List;
  * <p/>
  * Used to return session extension
  */
-public class JahiaRepositoryImpl extends RepositoryImpl {
+public class JahiaRepositoryImpl extends RepositoryImpl implements ReadOnlyModeCapable {
     protected class JahiaWorkspaceInfo extends WorkspaceInfo {
         /**
          * search manager (lazily instantiated)
@@ -245,5 +246,21 @@ public class JahiaRepositoryImpl extends RepositoryImpl {
             NoSuchItemStateException, IllegalArgumentException, ItemStateException, IOException {
         ((JahiaSearchIndex) getWorkspaceInfo(workspaceName).getSearchManager().getQueryHandler())
                 .reindexTree(startNodeId);
+    }
+
+    @Override
+    public void switchReadOnlyMode(boolean enable) {
+        try {
+            ((JahiaSearchIndex) getSystemSearchManager("default").getQueryHandler()).switchReadOnlyMode(enable);
+            ((JahiaSearchIndex) getWorkspaceInfo("default").getSearchManager().getQueryHandler()).switchReadOnlyMode(enable);
+            ((JahiaSearchIndex) getWorkspaceInfo("live").getSearchManager().getQueryHandler()).switchReadOnlyMode(enable);
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public int getReadOnlyModePriority() {
+        return 0;
     }
 }

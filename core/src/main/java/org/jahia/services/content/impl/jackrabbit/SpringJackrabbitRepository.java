@@ -310,6 +310,10 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
             return;
         }
         ((JahiaClusterNode) clusterNode).setReadOnly(enable, timeoutSwitchingToReadOnlyMode);
+
+        if (repository instanceof ReadOnlyModeCapable) {
+            ((ReadOnlyModeCapable) repository).switchReadOnlyMode(enable);
+        }
     }
 
     @Override

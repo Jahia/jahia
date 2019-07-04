@@ -51,6 +51,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
@@ -118,7 +119,8 @@ public class Dashboard extends Render {
 
     @Override
     protected boolean isInReadOnlyMode() {
-        return false;
+        final SettingsBean settingsBean = getSettingsBean();
+        return settingsBean.isReadOnlyMode() || settingsBean.isFullReadOnlyMode();
     }
 
     public EditConfiguration getEditConfiguration() {

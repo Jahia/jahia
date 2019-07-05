@@ -125,10 +125,23 @@ public class KarafCommandExecutorImpl implements KarafCommandExecutor {
         }
     }
 
-    public String executeCommand(final String command, final Long timeout, final Principal... principals) throws InterruptedException, TimeoutException, ExecutionException {
+    public String executeCommand(String command, final Long timeout, final Principal... principals) throws InterruptedException,
+            TimeoutException, ExecutionException {
+
+        if (command != null && command.startsWith("dx:")) {
+            // workaround to alias "jahia" scope with "dx" since aliases are not available from here
+            // see BACKLOG-10563
+            command = command.replace("dx:", "jahia:");
+        }
+
+        return execute(command, timeout, principals);
+    }
+
+    private String execute(final String command, final Long timeout, final Principal... principals) throws InterruptedException,
+                TimeoutException, ExecutionException {
+
         waitForCommandService(command);
 
-        String response;
         final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         final PrintStream printStream = new PrintStream(byteArrayOutputStream);
         final PrintStream errPrintStream = new PrintStream(byteArrayOutputStream);
@@ -156,8 +169,8 @@ public class KarafCommandExecutorImpl implements KarafCommandExecutor {
         }
 
         executor.submit(commandFuture);
-        response = cleanupOutput(commandFuture.get(timeout, TimeUnit.MILLISECONDS));
-        return response;
+
+        return cleanupOutput(commandFuture.get(timeout, TimeUnit.MILLISECONDS));
     }
 
 }

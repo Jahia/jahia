@@ -255,9 +255,11 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
 
     public synchronized void startSchedulers() throws JahiaInitializationException {
         try {
-            ramScheduler.start();
+            if (!ramScheduler.isStarted() || ramScheduler.isInStandbyMode()) {
+                ramScheduler.start();
+            }
 
-            if (settingsBean.isProcessingServer()) {
+            if (settingsBean.isProcessingServer() && (!scheduler.isStarted() || scheduler.isInStandbyMode())) {
                 if (logger.isDebugEnabled()) {
                     SchedulerMetaData schedulerMetadata = scheduler.getMetaData();
                     logger.debug("Starting scheduler...\n"
@@ -273,6 +275,7 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
 
                 scheduler.start();
             }
+
         } catch (SchedulerException e) {
             logger.error(e.getMessage(), e);
             throw new JahiaInitializationException(e.getMessage(), e);
@@ -473,8 +476,10 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
     }
 
     private void standbySchedulers() throws SchedulerException {
-        ramScheduler.standby();
-        if (settingsBean.isProcessingServer()) {
+        if (!ramScheduler.isInStandbyMode()) {
+            ramScheduler.standby();
+        }
+        if (settingsBean.isProcessingServer() && !scheduler.isInStandbyMode()) {
             scheduler.standby();
         }
     }

@@ -95,9 +95,9 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
 
     private long timeoutSwitchingToReadOnlyMode;
 
-    private ThreadLocal<List<JobDetail>> scheduledAtEndOfRequest = new ThreadLocal<List<JobDetail>>();
+    private ThreadLocal<List<JobDetail>> scheduledAtEndOfRequest = new ThreadLocal<>();
 
-    private ThreadLocal<List<JobDetail>> ramScheduledAtEndOfRequest = new ThreadLocal<List<JobDetail>>();
+    private ThreadLocal<List<JobDetail>> ramScheduledAtEndOfRequest = new ThreadLocal<>();
 
     private JahiaJobListener jahiaGlobalJobListener = new JahiaJobListener(false);
     private JahiaJobListener jahiaGlobalRamJobListener = new JahiaJobListener(true);
@@ -176,7 +176,7 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
     }
 
     public List<JobDetail> getAllActiveJobs() throws SchedulerException {
-        List<JobDetail> l = new LinkedList<JobDetail>();
+        List<JobDetail> l = new LinkedList<>();
         for (String group : scheduler.getTriggerGroupNames()) {
             l.addAll(getAllActiveJobs(group));
         }
@@ -192,16 +192,14 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
         if (trigs == null || trigs.length == 0) {
             return Collections.emptyList();
         }
-        List<JobDetail> all = new LinkedList<JobDetail>();
+        List<JobDetail> all = new LinkedList<>();
 
         for (String name : trigs) {
             Trigger t = scheduler.getTrigger(name, group);
             if (t != null && !SYSTEM_JOB_GROUP.equals(t.getJobGroup())) {
                 JobDetail jd = scheduler.getJobDetail(t.getJobName(), t.getJobGroup());
-                if (jd != null) {
-                    if (STATUS_EXECUTING.equals(jd.getJobDataMap().getString(JOB_STATUS))) {
-                        all.add(jd);
-                    }
+                if ((jd != null) && STATUS_EXECUTING.equals(jd.getJobDataMap().getString(JOB_STATUS))) {
+                    all.add(jd);
                 }
             }
         }
@@ -210,7 +208,7 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
     }
 
     public List<JobDetail> getAllJobs() throws SchedulerException {
-        List<JobDetail> l = new LinkedList<JobDetail>();
+        List<JobDetail> l = new LinkedList<>();
         for (String group : scheduler.getJobGroupNames()) {
             l.addAll(getAllJobs(group));
         }
@@ -218,7 +216,7 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
     }
 
     public List<JobDetail> getAllRAMJobs() throws SchedulerException {
-        List<JobDetail> l = new LinkedList<JobDetail>();
+        List<JobDetail> l = new LinkedList<>();
         for (String group : getRAMScheduler().getJobGroupNames()) {
             l.addAll(getAllJobs(group, true));
         }
@@ -234,7 +232,7 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
 
         String group = StringUtils.isNotEmpty(groupname) ? groupname : Scheduler.DEFAULT_GROUP;
 
-        List<JobDetail> all = new LinkedList<JobDetail>();
+        List<JobDetail> all = new LinkedList<>();
         for (String process : getScheduler(useRamScheduler).getJobNames(group)) {
             all.add(getScheduler(useRamScheduler).getJobDetail(process, group));
         }
@@ -277,7 +275,6 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
             }
 
         } catch (SchedulerException e) {
-            logger.error(e.getMessage(), e);
             throw new JahiaInitializationException(e.getMessage(), e);
         }
     }
@@ -290,9 +287,9 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
         JobDataMap data = jobDetail.getJobDataMap();
         SimpleTrigger trigger = new SimpleTrigger(jobDetail.getName() + "_Trigger",
                 INSTANT_TRIGGER_GROUP);
-        trigger.setVolatility(jobDetail.isVolatile());// volatility of trigger
-                                                      // depending of the
-                                                      // jobdetail's volatility
+
+        // volatility of trigger depending of the jobdetail's volatility
+        trigger.setVolatility(jobDetail.isVolatile());
 
         data.put(JOB_STATUS, STATUS_ADDED);
         logger.debug("schedule job {} volatile({}) @ {}", new Object[] {jobDetail.getName(), jobDetail.isVolatile(), new Date(System.currentTimeMillis())});
@@ -311,7 +308,7 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
         List<JobDetail> jobList = useRamScheduler?ramScheduledAtEndOfRequest.get():scheduledAtEndOfRequest.get();
 
         if (jobList == null) {
-            jobList = new ArrayList<JobDetail>();
+            jobList = new ArrayList<>();
             if (useRamScheduler) {
                 ramScheduledAtEndOfRequest.set(jobList);
             } else {
@@ -399,8 +396,6 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
             ramScheduler.addGlobalJobListener(jahiaGlobalRamJobListener);
             scheduler.addGlobalJobListener(jahiaGlobalJobListener);
 
-            // new LoggingJobHistoryPlugin().initialize("LoggingJobListener", scheduler);
-            // new LoggingJobHistoryPlugin().initialize("RAMLoggingJobListener", ramScheduler);
         } catch (SchedulerException se) {
             if (se.getUnderlyingException() != null) {
                 throw new JahiaInitializationException(

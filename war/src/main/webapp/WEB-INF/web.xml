@@ -68,6 +68,11 @@
     <filter-mapping>
         <filter-name>CompositeFilter</filter-name>
         <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+        <dispatcher>ASYNC</dispatcher>
     </filter-mapping>
 
     <listener>
@@ -311,7 +316,7 @@
         </init-param>
         <load-on-startup>99</load-on-startup>
     </servlet>
-    
+
     <servlet>
         <servlet-name>gwt-log-remote-logger-servlet</servlet-name>
         <servlet-class>com.allen_sauer.gwt.log.server.RemoteLoggerServlet</servlet-class>
@@ -370,7 +375,7 @@
         <servlet-name>GWTDispatcherServlet</servlet-name>
         <url-pattern>*.gwt</url-pattern>
     </servlet-mapping>
-    
+
     <servlet-mapping>
         <servlet-name>gwt-log-remote-logger-servlet</servlet-name>
         <url-pattern>/gwt/edit/gwt-log</url-pattern>

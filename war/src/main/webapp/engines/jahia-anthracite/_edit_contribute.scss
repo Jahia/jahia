@@ -2270,13 +2270,20 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
 		}
 	}
 
-	// Highlght the selected app button
+	// Highlight the selected app button
     &[data-indigo-current-app="contentmanager"] .toolbar-item-contentmanager,
     &[data-indigo-current-app="dashboard"] .toolbar-item-start,
     &[data-indigo-current-app="edit"] .toolbar-item-edit,
     &[data-indigo-current-app="admin"] .toolbar-item-admin,
     &[data-indigo-current-app="contribute"] .toolbar-item-contribute {
         background-color: #f26d4f!important;
+    }
+
+    // Customize icon based on current app
+    &[data-indigo-current-app="contentmanager"] .managers-menu-close,
+    &[data-indigo-current-app="contribute"] .managers-menu-close,
+    &[data-indigo-current-app="edit"] .managers-menu-close {
+        background-image: url(./images/full-logo-white-jcontent.png);
     }
 }
 

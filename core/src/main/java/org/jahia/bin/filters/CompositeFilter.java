@@ -162,25 +162,30 @@ public class CompositeFilter implements Filter {
         }
 
         private boolean isFilterMatchPath(AbstractServletFilter filter, HttpServletRequest request){
-            if (filter.getDispatcherTypes() != null && !filter.getDispatcherTypes().contains(request.getDispatcherType().name())) {
-                return false;
-            }
-
-            // Check the specific "*" special URL pattern, which also matches
-            // named dispatches
-            if (filter.isMatchAllUrls())
-                return true;
-
-            int length = request.getContextPath().length();
-            String requestPath = length > 0 ? request.getRequestURI().substring(length) : request.getRequestURI();
-
-            // Match on context relative request path
-            String[] testPaths = filter.getUrlPatterns();
-
-            for (String testPath : testPaths) {
-                if (matchFiltersURL(testPath, requestPath)) {
-                    return true;
+            try {
+                if (filter.getDispatcherTypes() != null && !filter.getDispatcherTypes().contains(request.getDispatcherType().name())) {
+                    return false;
                 }
+
+                // Check the specific "*" special URL pattern, which also matches
+                // named dispatches
+                if (filter.isMatchAllUrls())
+                    return true;
+
+                int length = request.getContextPath().length();
+                String requestPath = length > 0 ? request.getRequestURI().substring(length) : request.getRequestURI();
+
+                // Match on context relative request path
+                String[] testPaths = filter.getUrlPatterns();
+                if (testPaths != null) {
+                    for (String testPath : testPaths) {
+                        if (matchFiltersURL(testPath, requestPath)) {
+                            return true;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                logger.error("Cannot check condition for filter {}",filter.getFilterName(), e);
             }
 
             // No match

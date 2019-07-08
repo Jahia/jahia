@@ -44,6 +44,7 @@
 package org.jahia.bin.filters;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.springframework.beans.factory.BeanNameAware;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterConfig;
@@ -56,11 +57,12 @@ import java.util.*;
  *
  * @author kevan
  */
-public abstract class AbstractServletFilter implements javax.servlet.Filter, Comparable<AbstractServletFilter> {
+public abstract class AbstractServletFilter implements javax.servlet.Filter, Comparable<AbstractServletFilter>, BeanNameAware {
 
     private String[] urlPatterns;
     private boolean matchAllUrls = false;
     private float order = 0.f;
+    private String beanName;
     private String filterName;
     private Set<String> dispatcherTypes = Collections.singleton(DispatcherType.REQUEST.name());
     private Map<String, String> parameters = new HashMap<>();
@@ -94,11 +96,20 @@ public abstract class AbstractServletFilter implements javax.servlet.Filter, Com
     }
 
     public String getFilterName() {
-        return filterName;
+        return filterName != null ? filterName : beanName;
     }
 
     public void setFilterName(String filterName) {
         this.filterName = filterName;
+    }
+
+    public String getBeanName() {
+        return beanName;
+    }
+
+    @Override
+    public void setBeanName(String beanName) {
+        this.beanName = beanName;
     }
 
     public Map<String, String> getParameters() {
@@ -137,7 +148,7 @@ public abstract class AbstractServletFilter implements javax.servlet.Filter, Com
 
         @Override
         public String getFilterName() {
-            return filterName;
+            return AbstractServletFilter.this.getFilterName();
         }
 
         @Override

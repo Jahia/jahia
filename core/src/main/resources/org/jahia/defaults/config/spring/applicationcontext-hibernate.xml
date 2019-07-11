@@ -7,7 +7,7 @@
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
         http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd">
 
-    <bean id="dataSource" class="org.jahia.settings.readonlymode.ReadOnlyModeAwareDataSource">
+    <bean id="dataSource" class="org.jahia.jdbc.ReadOnlyModeAwareDataSource">
         <constructor-arg>
             <jee:jndi-lookup jndi-name="jdbc/jahia" expected-type="javax.sql.DataSource"/>
         </constructor-arg>

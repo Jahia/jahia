@@ -21,9 +21,9 @@
  *
  * ==========================================================================================
  */
-package org.jahia.settings.readonlymode;
+package org.jahia.jdbc;
 
-import org.jahia.jdbc.DelegatingConnection;
+import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.DelegatingDataSource;
@@ -80,7 +80,7 @@ public final class ReadOnlyModeAwareDataSource extends DelegatingDataSource impl
         boolean isReadOnlyEnabled();
     }
 
-    private static final class ReadOnlyAwareConnection extends DelegatingConnection {
+    static final class ReadOnlyAwareConnection extends DelegatingConnection {
         private final ReadOnlyModeStatus status;
 
         private ReadOnlyAwareConnection(Connection connection, ReadOnlyModeStatus status) {
@@ -168,7 +168,7 @@ public final class ReadOnlyModeAwareDataSource extends DelegatingDataSource impl
 
     }
 
-    private static final class ReadOnlyAwareStatementHandler<T extends Statement> implements InvocationHandler {
+    static final class ReadOnlyAwareStatementHandler<T extends Statement> implements InvocationHandler {
         private static final Logger logger = LoggerFactory.getLogger(ReadOnlyModeAwareDataSource.class);
         private static final String GUARDED_OPERATION_PREFIX = "execute";
         private static final String ADD_BATCH_OPERATION = "addBatch";

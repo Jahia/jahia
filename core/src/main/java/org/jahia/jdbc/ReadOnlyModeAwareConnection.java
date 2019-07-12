@@ -210,8 +210,7 @@ final class ReadOnlyModeAwareConnection extends DelegatingConnection {
                     }
                 } else if (args[0] instanceof String) {
                     // any other execution - the query is the first argument
-                    String sql = (String) args[0];
-                    return !isQueryAllowed(sql);
+                    return !isQueryAllowed((String) args[0]);
                 }
             }
             return false;

@@ -43,18 +43,26 @@
  */
 package org.jahia.services.content;
 
-import java.util.Locale;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
+import javax.jcr.*;
+import javax.xml.transform.TransformerException;
 
 import org.jahia.api.Constants;
+import org.jahia.services.importexport.DocumentViewImportHandler;
+import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.test.framework.AbstractJUnitTest;
 import org.jahia.test.utils.TestHelper;
+import org.jahia.utils.StringOutputStream;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 public class JCRNodeWrapperImplIT extends AbstractJUnitTest {
 
@@ -130,6 +138,143 @@ public class JCRNodeWrapperImplIT extends AbstractJUnitTest {
         addMixinAndProperties("test:i18nMixinAmbiguousProperty", Constants.JCR_LANGUAGE);
         siteNode.removeMixin("test:i18nMixinAmbiguousProperty");
         Assert.assertTrue(getTranslationNode().hasProperty(Constants.JCR_LANGUAGE));
+    }
+
+    @Test
+    public void testMultipleValuedPropsOrderingUsingAPI() throws RepositoryException, TransformerException, SAXException, IOException {
+        JCRNodeWrapper testNode = siteNode.addNode("testMultipleValuedAPI", "test:canSetProperty");
+
+        ValueFactory valueFactory = testNode.getSession().getValueFactory();
+        Calendar calendar1 = Calendar.getInstance();
+        calendar1.setTimeInMillis(1000000000000L);
+        Calendar calendar2 = Calendar.getInstance();
+        calendar2.setTimeInMillis(2000000000000L);
+        Calendar calendar3 = Calendar.getInstance();
+        calendar3.setTimeInMillis(3000000000000L);
+
+        Value[] strings = new Value[]{valueFactory.createValue("test1"), valueFactory.createValue("test2"), valueFactory.createValue("test3")};
+        Value[] dates = new Value[]{valueFactory.createValue(calendar1), valueFactory.createValue(calendar2), valueFactory.createValue(calendar3)};
+        Value[] doubles = new Value[]{valueFactory.createValue(1.1), valueFactory.createValue(2.2), valueFactory.createValue(3.3)};
+        Value[] longs = new Value[]{valueFactory.createValue(1000000000000L), valueFactory.createValue(2000000000000L), valueFactory.createValue(3000000000000L)};
+        Value[] booleans = new Value[]{valueFactory.createValue(true), valueFactory.createValue(false), valueFactory.createValue(true)};
+        Value[] weakRefs = new Value[]{valueFactory.createValue(siteNode), valueFactory.createValue(siteNode.getSession().getNode("/users")), valueFactory.createValue(siteNode.getNode("files"))};
+        Value[] refs = new Value[]{valueFactory.createValue(siteNode), valueFactory.createValue(siteNode.getSession().getNode("/users")), valueFactory.createValue(siteNode.getNode("files"))};
+
+        testMultipleValuesOrdering(strings, testNode, "StringMultiple");
+        testMultipleValuesOrdering(dates, testNode, "DateMultiple");
+        testMultipleValuesOrdering(doubles, testNode, "DoubleMultiple");
+        testMultipleValuesOrdering(longs, testNode, "LongMultiple");
+        testMultipleValuesOrdering(booleans, testNode, "BooleanMultiple");
+        testMultipleValuesOrdering(weakRefs, testNode, "WeakReferenceMultiple");
+        testMultipleValuesOrdering(refs, testNode, "ReferenceMultiple");
+
+        // export the node
+        final OutputStream exportOutputStream = new StringOutputStream();
+        ImportExportBaseService.getInstance().exportNode(testNode, testNode.getSession().getNode("/"), exportOutputStream, new HashMap<>());
+    }
+
+    @Test
+    public void testMultipleValuedPropsOrderingUsingImportExport() throws Exception {
+        JCRNodeWrapper testNode = siteNode.addNode("testMultipleValuedImportExport", "test:canSetProperty");
+
+        ValueFactory valueFactory = testNode.getSession().getValueFactory();
+        Calendar calendar1 = Calendar.getInstance();
+        calendar1.setTimeInMillis(1000000000000L);
+        Calendar calendar2 = Calendar.getInstance();
+        calendar2.setTimeInMillis(2000000000000L);
+        Calendar calendar3 = Calendar.getInstance();
+        calendar3.setTimeInMillis(3000000000000L);
+
+        Value[] strings = new Value[]{valueFactory.createValue("test1"), valueFactory.createValue("test2"), valueFactory.createValue("test3")};
+        Value[] dates = new Value[]{valueFactory.createValue(calendar1), valueFactory.createValue(calendar2), valueFactory.createValue(calendar3)};
+        Value[] doubles = new Value[]{valueFactory.createValue(1.1), valueFactory.createValue(2.2), valueFactory.createValue(3.3)};
+        Value[] longs = new Value[]{valueFactory.createValue(1000000000000L), valueFactory.createValue(2000000000000L), valueFactory.createValue(3000000000000L)};
+        Value[] booleans = new Value[]{valueFactory.createValue(true), valueFactory.createValue(false), valueFactory.createValue(true)};
+        Value[] weakRefs = new Value[]{valueFactory.createValue(siteNode), valueFactory.createValue(siteNode.getSession().getNode("/users")), valueFactory.createValue(siteNode.getNode("files"))};
+        Value[] refs = new Value[]{valueFactory.createValue(siteNode), valueFactory.createValue(siteNode.getSession().getNode("/users")), valueFactory.createValue(siteNode.getNode("files"))};
+
+        testNode.setProperty("StringMultiple", strings);
+        testNode.setProperty("DateMultiple", dates);
+        testNode.setProperty("DoubleMultiple", doubles);
+        testNode.setProperty("LongMultiple", longs);
+        testNode.setProperty("BooleanMultiple", booleans);
+        testNode.setProperty("WeakReferenceMultiple", weakRefs);
+        testNode.setProperty("ReferenceMultiple", refs);
+
+        testNode.getSession().save();
+
+        // export the node
+        final OutputStream exportOutputStream = new StringOutputStream();
+        ImportExportBaseService.getInstance().exportNode(siteNode, siteNode.getSession().getNode("/"), exportOutputStream, new HashMap<>());
+
+        TestHelper.deleteSite(SITE_NAME);
+
+        // import the node
+        ImportExportBaseService.getInstance().importXML("/", new ByteArrayInputStream(exportOutputStream.toString().getBytes(StandardCharsets.UTF_8)),
+                DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE);
+
+        JCRSessionWrapper sessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, LOCALE);
+        sessionWrapper.flushCaches();
+        siteNode = sessionWrapper.getNode("/sites/" + siteKey);
+        testNode = siteNode.getNode("testMultipleValuedImportExport");
+
+        testValuesArrayEquals(strings, testNode.getProperty("StringMultiple").getValues());
+        testValuesArrayEquals(dates, testNode.getProperty("DateMultiple").getValues());
+        testValuesArrayEquals(doubles, testNode.getProperty("DoubleMultiple").getValues());
+        testValuesArrayEquals(longs, testNode.getProperty("LongMultiple").getValues());
+        // TODO following cases are KO: https://jira.jahia.org/browse/QA-12037
+        //testValuesArrayEquals(booleans, testNode.getProperty("BooleanMultiple").getValues());
+        //testRefsArrayEquals(new String[] {"/sites/" + siteKey, "/users", "/sites/" + siteKey + "/files"}, testNode.getProperty("WeakReferenceMultiple").getValues());
+        //testRefsArrayEquals(new String[] {"/sites/" + siteKey, "/users", "/sites/" + siteKey + "/files"}, testNode.getProperty("ReferenceMultiple").getValues());
+    }
+
+    private void testMultipleValuesOrdering(Value[] values, JCRNodeWrapper testNode, String propName) throws RepositoryException {
+        for (Value value : values) {
+            for (Value value1 : values) {
+                for (Value value2 : values) {
+                    Value[] finalValues = new Value[]{value, value1, value2};
+                    testNode.setProperty(propName, finalValues);
+                    testNode.getSession().save();
+
+                    JCRValueWrapper[] savedValues = testNode.getProperty(propName).getValues();
+                    testValuesArrayEquals(finalValues, savedValues);
+                }
+            }
+        }
+    }
+
+    private void testRefsArrayEquals(String[] expectedNodePathValues, JCRValueWrapper[] actualValues) throws RepositoryException {
+        for (int i = 0; i < actualValues.length; i++) {
+            JCRValueWrapper savedValue = actualValues[i];
+
+            Assert.assertEquals(expectedNodePathValues[i], savedValue.getNode().getPath());
+        }
+    }
+
+    private void testValuesArrayEquals(Value[] expectedValues, Value[] actualValues) throws RepositoryException {
+        for (int i = 0; i < actualValues.length; i++) {
+            Value savedValue = actualValues[i];
+
+            switch (savedValue.getType()){
+                case PropertyType.REFERENCE:
+                case PropertyType.WEAKREFERENCE:
+                case PropertyType.STRING:
+                    Assert.assertEquals(expectedValues[i].getString(), savedValue.getString());
+                    break;
+                case PropertyType.DATE:
+                    Assert.assertEquals(expectedValues[i].getDate().getTimeInMillis(), savedValue.getDate().getTimeInMillis());
+                    break;
+                case PropertyType.DOUBLE:
+                    Assert.assertEquals(expectedValues[i].getDouble(), savedValue.getDouble(), 0);
+                    break;
+                case PropertyType.LONG:
+                    Assert.assertEquals(expectedValues[i].getLong(), savedValue.getLong());
+                    break;
+                case PropertyType.BOOLEAN:
+                    Assert.assertEquals(expectedValues[i].getBoolean(), savedValue.getBoolean());
+                    break;
+            }
+        }
     }
 
     private void addMixinAndProperties(String mixinName, String... propertyNames) throws RepositoryException {

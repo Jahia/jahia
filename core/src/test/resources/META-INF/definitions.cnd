@@ -99,6 +99,8 @@
 - PathMultipleConstraints (path) copy < '/abc'
 - ReferenceConstraints (reference) copy < test:canSetProperty
 - ReferenceMultipleConstraints (reference) copy < test:canSetProperty
+- ReferenceMultiple (reference) multiple
+- WeakReferenceMultiple (weakreference) multiple
 
 [test:canAddChildNode] > nt:base
 + testChildWithDefaultType (nt:base) = nt:base copy

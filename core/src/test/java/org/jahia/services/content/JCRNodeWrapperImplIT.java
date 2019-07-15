@@ -72,6 +72,13 @@ public class JCRNodeWrapperImplIT extends AbstractJUnitTest {
     private static String siteKey;
 
     private JCRNodeWrapper siteNode;
+    private Value[] strings;
+    private Value[] dates;
+    private Value[] doubles;
+    private Value[] longs;
+    private Value[] booleans;
+    private Value[] weakRefs;
+    private Value[] refs;
 
     @Override
     public void beforeClassSetup() throws Exception {
@@ -89,6 +96,22 @@ public class JCRNodeWrapperImplIT extends AbstractJUnitTest {
     public void setUp() throws RepositoryException {
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, LOCALE);
         siteNode = session.getNode("/sites/" + siteKey);
+
+        ValueFactory valueFactory = siteNode.getSession().getValueFactory();
+        Calendar calendar1 = Calendar.getInstance();
+        calendar1.setTimeInMillis(1000000000000L);
+        Calendar calendar2 = Calendar.getInstance();
+        calendar2.setTimeInMillis(2000000000000L);
+        Calendar calendar3 = Calendar.getInstance();
+        calendar3.setTimeInMillis(3000000000000L);
+
+        strings = new Value[]{valueFactory.createValue("test1"), valueFactory.createValue("test2"), valueFactory.createValue("test3")};
+        dates = new Value[]{valueFactory.createValue(calendar1), valueFactory.createValue(calendar2), valueFactory.createValue(calendar3)};
+        doubles = new Value[]{valueFactory.createValue(1.1), valueFactory.createValue(2.2), valueFactory.createValue(3.3)};
+        longs = new Value[]{valueFactory.createValue(1000000000000L), valueFactory.createValue(2000000000000L), valueFactory.createValue(3000000000000L)};
+        booleans = new Value[]{valueFactory.createValue(true), valueFactory.createValue(false), valueFactory.createValue(true)};
+        weakRefs = new Value[]{valueFactory.createValue(siteNode), valueFactory.createValue(siteNode.getSession().getNode("/users")), valueFactory.createValue(siteNode.getNode("files"))};
+        refs = new Value[]{valueFactory.createValue(siteNode), valueFactory.createValue(siteNode.getSession().getNode("/users")), valueFactory.createValue(siteNode.getNode("files"))};
     }
 
     @After
@@ -144,22 +167,6 @@ public class JCRNodeWrapperImplIT extends AbstractJUnitTest {
     public void testMultipleValuedPropsOrderingUsingAPI() throws RepositoryException, TransformerException, SAXException, IOException {
         JCRNodeWrapper testNode = siteNode.addNode("testMultipleValuedAPI", "test:canSetProperty");
 
-        ValueFactory valueFactory = testNode.getSession().getValueFactory();
-        Calendar calendar1 = Calendar.getInstance();
-        calendar1.setTimeInMillis(1000000000000L);
-        Calendar calendar2 = Calendar.getInstance();
-        calendar2.setTimeInMillis(2000000000000L);
-        Calendar calendar3 = Calendar.getInstance();
-        calendar3.setTimeInMillis(3000000000000L);
-
-        Value[] strings = new Value[]{valueFactory.createValue("test1"), valueFactory.createValue("test2"), valueFactory.createValue("test3")};
-        Value[] dates = new Value[]{valueFactory.createValue(calendar1), valueFactory.createValue(calendar2), valueFactory.createValue(calendar3)};
-        Value[] doubles = new Value[]{valueFactory.createValue(1.1), valueFactory.createValue(2.2), valueFactory.createValue(3.3)};
-        Value[] longs = new Value[]{valueFactory.createValue(1000000000000L), valueFactory.createValue(2000000000000L), valueFactory.createValue(3000000000000L)};
-        Value[] booleans = new Value[]{valueFactory.createValue(true), valueFactory.createValue(false), valueFactory.createValue(true)};
-        Value[] weakRefs = new Value[]{valueFactory.createValue(siteNode), valueFactory.createValue(siteNode.getSession().getNode("/users")), valueFactory.createValue(siteNode.getNode("files"))};
-        Value[] refs = new Value[]{valueFactory.createValue(siteNode), valueFactory.createValue(siteNode.getSession().getNode("/users")), valueFactory.createValue(siteNode.getNode("files"))};
-
         testMultipleValuesOrdering(strings, testNode, "StringMultiple");
         testMultipleValuesOrdering(dates, testNode, "DateMultiple");
         testMultipleValuesOrdering(doubles, testNode, "DoubleMultiple");
@@ -167,31 +174,11 @@ public class JCRNodeWrapperImplIT extends AbstractJUnitTest {
         testMultipleValuesOrdering(booleans, testNode, "BooleanMultiple");
         testMultipleValuesOrdering(weakRefs, testNode, "WeakReferenceMultiple");
         testMultipleValuesOrdering(refs, testNode, "ReferenceMultiple");
-
-        // export the node
-        final OutputStream exportOutputStream = new StringOutputStream();
-        ImportExportBaseService.getInstance().exportNode(testNode, testNode.getSession().getNode("/"), exportOutputStream, new HashMap<>());
     }
 
     @Test
     public void testMultipleValuedPropsOrderingUsingImportExport() throws Exception {
         JCRNodeWrapper testNode = siteNode.addNode("testMultipleValuedImportExport", "test:canSetProperty");
-
-        ValueFactory valueFactory = testNode.getSession().getValueFactory();
-        Calendar calendar1 = Calendar.getInstance();
-        calendar1.setTimeInMillis(1000000000000L);
-        Calendar calendar2 = Calendar.getInstance();
-        calendar2.setTimeInMillis(2000000000000L);
-        Calendar calendar3 = Calendar.getInstance();
-        calendar3.setTimeInMillis(3000000000000L);
-
-        Value[] strings = new Value[]{valueFactory.createValue("test1"), valueFactory.createValue("test2"), valueFactory.createValue("test3")};
-        Value[] dates = new Value[]{valueFactory.createValue(calendar1), valueFactory.createValue(calendar2), valueFactory.createValue(calendar3)};
-        Value[] doubles = new Value[]{valueFactory.createValue(1.1), valueFactory.createValue(2.2), valueFactory.createValue(3.3)};
-        Value[] longs = new Value[]{valueFactory.createValue(1000000000000L), valueFactory.createValue(2000000000000L), valueFactory.createValue(3000000000000L)};
-        Value[] booleans = new Value[]{valueFactory.createValue(true), valueFactory.createValue(false), valueFactory.createValue(true)};
-        Value[] weakRefs = new Value[]{valueFactory.createValue(siteNode), valueFactory.createValue(siteNode.getSession().getNode("/users")), valueFactory.createValue(siteNode.getNode("files"))};
-        Value[] refs = new Value[]{valueFactory.createValue(siteNode), valueFactory.createValue(siteNode.getSession().getNode("/users")), valueFactory.createValue(siteNode.getNode("files"))};
 
         testNode.setProperty("StringMultiple", strings);
         testNode.setProperty("DateMultiple", dates);

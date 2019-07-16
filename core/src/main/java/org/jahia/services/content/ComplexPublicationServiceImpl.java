@@ -60,6 +60,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.RepositoryException;
 import java.util.*;
 
+import static org.jahia.services.content.PublicationInfo.MODIFIED;
 import static org.jahia.services.content.PublicationInfo.NOT_PUBLISHED;
 import static org.jahia.services.content.PublicationInfo.UNPUBLISHED;
 
@@ -121,8 +122,6 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
                     JCRNodeWrapper translationNode = node.getNode(translationNodeName);
                     PublicationInfo translationInfo = publicationService.getPublicationInfo(translationNode.getIdentifier(), Collections.singleton(language), references, false, false, sourceSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
                     publicationInfo.getRoot().addChild(translationInfo.getRoot());
-                } else if (publicationInfo.getRoot().getStatus() == PublicationInfo.PUBLISHED && node.getNodes("j:translation_*").hasNext()) {
-                    publicationInfo.getRoot().setStatus(NOT_PUBLISHED);
                 }
             }
 
@@ -135,9 +134,6 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
             String translationNodeRelPath = (publicationInfo.getRoot().getChildren().size() > 0 ? ("/j:translation_" + language) : null);
             for (PublicationInfoNode childNode : publicationInfo.getRoot().getChildren()) {
                 if (childNode.getPath().contains(translationNodeRelPath)) {
-                    if (childNode.getStatus() > result.getPublicationStatus()) {
-                        result.setPublicationStatus(childNode.getStatus());
-                    }
                     if (result.getPublicationStatus() == UNPUBLISHED && childNode.getStatus() != UNPUBLISHED) {
                         result.setPublicationStatus(childNode.getStatus());
                     }

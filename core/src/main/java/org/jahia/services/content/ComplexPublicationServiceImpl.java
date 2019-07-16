@@ -43,6 +43,7 @@
  */
 package org.jahia.services.content;
 
+import com.sun.tools.internal.jxc.ap.Const;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaRuntimeException;
@@ -51,12 +52,14 @@ import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.workflow.WorkflowRule;
 import org.jahia.services.workflow.WorkflowService;
+import org.jahia.utils.LanguageCodeConverters;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import java.util.*;
 
@@ -121,6 +124,12 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
                     JCRNodeWrapper translationNode = node.getNode(translationNodeName);
                     PublicationInfo translationInfo = publicationService.getPublicationInfo(translationNode.getIdentifier(), Collections.singleton(language), references, false, false, sourceSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
                     publicationInfo.getRoot().addChild(translationInfo.getRoot());
+                } else if (publicationInfo.getRoot().getStatus() == PublicationInfo.PUBLISHED && node.getNodes("j:translation_*").hasNext()) {
+                    try{
+                        JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, LanguageCodeConverters.languageCodeToLocale(language)).getNodeByIdentifier(nodeIdentifier);
+                    } catch (ItemNotFoundException e) {
+                        publicationInfo.getRoot().setStatus(NOT_PUBLISHED);
+                    }
                 }
             }
 
@@ -133,6 +142,15 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
             String translationNodeRelPath = (publicationInfo.getRoot().getChildren().size() > 0 ? ("/j:translation_" + language) : null);
             for (PublicationInfoNode childNode : publicationInfo.getRoot().getChildren()) {
                 if (childNode.getPath().contains(translationNodeRelPath)) {
+                    if(childNode.getStatus() == NOT_PUBLISHED) {
+                        try{
+                            JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, LanguageCodeConverters.languageCodeToLocale(language)).getNodeByIdentifier(nodeIdentifier);
+                        } catch (ItemNotFoundException e) {
+                            result.setPublicationStatus(NOT_PUBLISHED);
+                        }
+                    } else if (childNode.getStatus() > result.getPublicationStatus()) {
+                        result.setPublicationStatus(childNode.getStatus());
+                    }
                     if (result.getPublicationStatus() == UNPUBLISHED && childNode.getStatus() != UNPUBLISHED) {
                         result.setPublicationStatus(childNode.getStatus());
                     }

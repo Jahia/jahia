@@ -51,14 +51,20 @@ import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.workflow.WorkflowRule;
 import org.jahia.services.workflow.WorkflowService;
+import org.jahia.utils.LanguageCodeConverters;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import java.util.*;
+
+import static org.jahia.services.content.PublicationInfo.MANDATORY_LANGUAGE_VALID;
+import static org.jahia.services.content.PublicationInfo.NOT_PUBLISHED;
+import static org.jahia.services.content.PublicationInfo.UNPUBLISHED;
 
 /**
  * Service implementation that:
@@ -118,8 +124,8 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
                     JCRNodeWrapper translationNode = node.getNode(translationNodeName);
                     PublicationInfo translationInfo = publicationService.getPublicationInfo(translationNode.getIdentifier(), Collections.singleton(language), references, false, false, sourceSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
                     publicationInfo.getRoot().addChild(translationInfo.getRoot());
-                } else if (publicationInfo.getRoot().getStatus() == PublicationInfo.PUBLISHED && node.getNodes("j:translation_*").hasNext()) {
-                    publicationInfo.getRoot().setStatus(PublicationInfo.NOT_PUBLISHED);
+                } else if (publicationInfo.getRoot().getStatus() == PublicationInfo.PUBLISHED && node.getNodes("j:translation_*").hasNext() && !isPublished(nodeIdentifier, language)) {
+                    publicationInfo.getRoot().setStatus(NOT_PUBLISHED);
                 }
             }
 
@@ -132,7 +138,9 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
             String translationNodeRelPath = (publicationInfo.getRoot().getChildren().size() > 0 ? ("/j:translation_" + language) : null);
             for (PublicationInfoNode childNode : publicationInfo.getRoot().getChildren()) {
                 if (childNode.getPath().contains(translationNodeRelPath)) {
-                    if (childNode.getStatus() > result.getPublicationStatus()) {
+                    if(childNode.getStatus() == NOT_PUBLISHED && !isPublished(nodeIdentifier, language) && result.getPublicationStatus() != MANDATORY_LANGUAGE_VALID) {
+                        result.setPublicationStatus(NOT_PUBLISHED);
+                    } else if (childNode.getStatus() > result.getPublicationStatus()) {
                         result.setPublicationStatus(childNode.getStatus());
                     }
                     if (result.getPublicationStatus() == PublicationInfo.UNPUBLISHED && childNode.getStatus() != PublicationInfo.UNPUBLISHED) {
@@ -171,6 +179,15 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
             return result;
         } catch (RepositoryException e) {
             throw new JahiaRuntimeException(e);
+        }
+    }
+
+    private boolean isPublished(String nodeId, String language) throws RepositoryException {
+        try {
+            JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, LanguageCodeConverters.languageCodeToLocale(language)).getNodeByIdentifier(nodeId);
+            return true;
+        } catch (ItemNotFoundException e) {
+            return false;
         }
     }
 

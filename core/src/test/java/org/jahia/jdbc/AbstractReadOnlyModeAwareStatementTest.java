@@ -39,6 +39,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
@@ -179,9 +182,7 @@ public abstract class AbstractReadOnlyModeAwareStatementTest<S extends Statement
             handler.execute(statement, query);
             fail(String.format("Query execution should have been prevented: %s", description));
         } catch (SQLException e) {
-            if (!isQueryForbiddenInReadOnlyMode(e)) {
-                throw new RuntimeException(e);
-            }
+            assertThat(e, instanceOf(ReadOnlySQLException.class));
         }
     }
 
@@ -190,16 +191,9 @@ public abstract class AbstractReadOnlyModeAwareStatementTest<S extends Statement
         try {
             handler.execute(statement, query);
         } catch (SQLException e) {
-            if (isQueryForbiddenInReadOnlyMode(e)) {
-                fail(String.format("Query should be allowed: %s", description));
-            } else {
-                throw new RuntimeException(e);
-            }
+            assertThat(e, not(instanceOf(ReadOnlySQLException.class)));
+            throw e;
         }
-    }
-
-    private static final boolean isQueryForbiddenInReadOnlyMode(SQLException e) {
-        return "DataSource is in read-only mode".equals(e.getMessage());
     }
 
     @FunctionalInterface

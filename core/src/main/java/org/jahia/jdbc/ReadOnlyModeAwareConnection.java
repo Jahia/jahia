@@ -42,10 +42,13 @@ import java.util.stream.Collectors;
  */
 final class ReadOnlyModeAwareConnection extends DelegatingConnection {
 
+    @FunctionalInterface
     interface ReadOnlyModeStatus {
-
+        /**
+         * Checks whether or not read-only mode is enabled
+         * @return {@code true} if read-only mode is enabled, {@code false otherwise}
+         */
         boolean isReadOnlyEnabled();
-
     }
 
     final ReadOnlyModeStatus status;
@@ -171,7 +174,7 @@ final class ReadOnlyModeAwareConnection extends DelegatingConnection {
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             if (status.isReadOnlyEnabled() && isGuardedOperation(method, args)) {
                 logDismissedOperation(args);
-                throw new SQLException("DataSource is in read-only mode");
+                throw new ReadOnlySQLException();
             }
 
             Object result = method.invoke(target, args);

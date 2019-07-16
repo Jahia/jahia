@@ -60,7 +60,6 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.RepositoryException;
 import java.util.*;
 
-import static org.jahia.services.content.PublicationInfo.MODIFIED;
 import static org.jahia.services.content.PublicationInfo.NOT_PUBLISHED;
 import static org.jahia.services.content.PublicationInfo.UNPUBLISHED;
 

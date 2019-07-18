@@ -267,7 +267,7 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
             properties = changedProperties;
         }
 
-        JahiaContentManagementService.App.getInstance().createNode(modulePath, viewName, "jnt:viewFile", null, engine.getAcl(), properties, engine.changedI18NProperties, null, parentNodesType, false, new AsyncCallback<GWTJahiaNode>() {
+        JahiaContentManagementService.App.getInstance().createNode(modulePath, viewName, engine.getNodeTypes().get(0).getName(), null, engine.getAcl(), properties, engine.changedI18NProperties, null, parentNodesType, false, new AsyncCallback<GWTJahiaNode>() {
 
             @Override
             public void onFailure(Throwable throwable) {
@@ -292,8 +292,6 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                 }
             }
         });
-
-
     }
 
     @Override

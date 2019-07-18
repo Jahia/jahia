@@ -508,6 +508,7 @@ public class PropertiesEditor extends FormPanel {
                 }
 
                 externalMixin.put(mix.getName(), inheritedMixins);
+                removedTypes.remove(mix.getName());
                 addItems(mix, mix.getItems(), false, false, c);
                 for (GWTJahiaNodeType inheritedMixin : inheritedMixins) {
                     addItems(inheritedMixin, inheritedMixin.getItems(), false, false, c);
@@ -541,13 +542,13 @@ public class PropertiesEditor extends FormPanel {
         return null;
     }
 
-    private void removeExternalMixin(List<GWTJahiaValueDisplayBean> oldSelection, PropertyAdapterField c) {
+    private void removeExternalMixin(List<GWTJahiaValueDisplayBean> oldSelection, PropertyAdapterField adapterField) {
         if (oldSelection != null && oldSelection.size() > 0 && oldSelection.get(0).getValue() != null) {
             String removeMixin = oldSelection.get(0).get("addMixin");
             if (externalMixin.containsKey(removeMixin)) {
                 removedTypes.add(removeMixin);
                 Set<GWTJahiaNodeType> inheritedMixins = externalMixin.remove(removeMixin);
-                FieldSet fs = (FieldSet) c.getParent();
+                FieldSet fs = (FieldSet) adapterField.getParent();
                 Set<Component> compToRemove = new HashSet<Component>();
 
                 for (Component co : fs.getItems()) {
@@ -565,6 +566,12 @@ public class PropertiesEditor extends FormPanel {
                 }
                 for (Component co : compToRemove) {
                     fields.remove(((PropertyAdapterField) co).getName());
+                    Field<?> field = ((PropertyAdapterField) co).getField();
+                    // look if the removed component is a combo box to remove external mixin if any.
+                    if (field instanceof ComboBox) {
+                        @SuppressWarnings("unchecked") List<GWTJahiaValueDisplayBean> selection = ((ComboBox<GWTJahiaValueDisplayBean>) field).getSelection();
+                        removeExternalMixin(selection, adapterField);
+                    }
                     co.removeFromParent();
                 }
             }

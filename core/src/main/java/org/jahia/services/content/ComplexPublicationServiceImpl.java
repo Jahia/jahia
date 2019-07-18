@@ -43,7 +43,6 @@
  */
 package org.jahia.services.content;
 
-import com.sun.tools.internal.jxc.ap.Const;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaRuntimeException;
@@ -124,12 +123,8 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
                     JCRNodeWrapper translationNode = node.getNode(translationNodeName);
                     PublicationInfo translationInfo = publicationService.getPublicationInfo(translationNode.getIdentifier(), Collections.singleton(language), references, false, false, sourceSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
                     publicationInfo.getRoot().addChild(translationInfo.getRoot());
-                } else if (publicationInfo.getRoot().getStatus() == PublicationInfo.PUBLISHED && node.getNodes("j:translation_*").hasNext()) {
-                    try{
-                        JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, LanguageCodeConverters.languageCodeToLocale(language)).getNodeByIdentifier(nodeIdentifier);
-                    } catch (ItemNotFoundException e) {
-                        publicationInfo.getRoot().setStatus(NOT_PUBLISHED);
-                    }
+                } else if (publicationInfo.getRoot().getStatus() == PublicationInfo.PUBLISHED && node.getNodes("j:translation_*").hasNext() && !isPublished(nodeIdentifier, language)) {
+                    publicationInfo.getRoot().setStatus(NOT_PUBLISHED);
                 }
             }
 
@@ -142,12 +137,8 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
             String translationNodeRelPath = (publicationInfo.getRoot().getChildren().size() > 0 ? ("/j:translation_" + language) : null);
             for (PublicationInfoNode childNode : publicationInfo.getRoot().getChildren()) {
                 if (childNode.getPath().contains(translationNodeRelPath)) {
-                    if(childNode.getStatus() == NOT_PUBLISHED) {
-                        try{
-                            JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, LanguageCodeConverters.languageCodeToLocale(language)).getNodeByIdentifier(nodeIdentifier);
-                        } catch (ItemNotFoundException e) {
-                            result.setPublicationStatus(NOT_PUBLISHED);
-                        }
+                    if(childNode.getStatus() == NOT_PUBLISHED && !isPublished(nodeIdentifier, language)) {
+                        result.setPublicationStatus(NOT_PUBLISHED);
                     } else if (childNode.getStatus() > result.getPublicationStatus()) {
                         result.setPublicationStatus(childNode.getStatus());
                     }
@@ -187,6 +178,15 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
             return result;
         } catch (RepositoryException e) {
             throw new JahiaRuntimeException(e);
+        }
+    }
+
+    private boolean isPublished(String nodeId, String language) throws RepositoryException {
+        try {
+            JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, LanguageCodeConverters.languageCodeToLocale(language)).getNodeByIdentifier(nodeId);
+            return true;
+        } catch (ItemNotFoundException e) {
+            return false;
         }
     }
 

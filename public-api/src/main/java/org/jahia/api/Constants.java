@@ -217,6 +217,7 @@ public class Constants {
     public static final String JAHIANT_JAVASCRIPTFOLDER = "jnt:javascriptFolder";
     public static final String JAHIANT_JAVASCRIPTFILE = "jnt:javascriptFile";
     public static final String JAHIANT_VIEWFILE = "jnt:viewFile";
+    public static final String JAHIANT_TEMPLATEFILE = "jnt:templateFile";
     public static final String JAHIAMIX_VIEWPROPERTIES = "jmix:viewProperties";
     public static final String JAHIANT_DEFINITIONFILE = "jnt:definitionFile";
     public static final String JAHIANT_RESOURCEBUNDLE_FILE = "jnt:resourceBundleFile";

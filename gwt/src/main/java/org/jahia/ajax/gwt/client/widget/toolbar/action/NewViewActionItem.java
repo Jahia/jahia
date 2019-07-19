@@ -63,10 +63,7 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeTree;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class NewViewActionItem extends BaseActionItem  {
 
@@ -75,8 +72,11 @@ public class NewViewActionItem extends BaseActionItem  {
     private static int TEMPLATE_TYPE_FOLDER_TOKEN = 2;
     private static int VIEW_FILE_FOLDER_TOKEN = 3;
 
+    private static final String TEMPLATE = "jnt:template";
+    private static final String TEMPLATE_FILE = "jnt:templateFile";
+    private static final String VIEW_FILE = "jnt:viewFile";
 
-    private transient GWTJahiaNodeType fileNodeType;
+    private transient Map<String, GWTJahiaNodeType> fileNodeTypes;
 
     @Override
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
@@ -86,13 +86,16 @@ public class NewViewActionItem extends BaseActionItem  {
 
     @Override
     public void onComponentSelection() {
-        if (fileNodeType == null) {
+        if (fileNodeTypes == null) {
             linker.loading(Messages.get("label.loading", "Loading"));
-            JahiaContentManagementService.App.getInstance().getNodeType("jnt:viewFile", new BaseAsyncCallback<GWTJahiaNodeType>() {
+            JahiaContentManagementService.App.getInstance().getNodeTypes(Arrays.asList(TEMPLATE_FILE, VIEW_FILE), new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
 
                 @Override
-                public void onSuccess(GWTJahiaNodeType result) {
-                    fileNodeType = result;
+                public void onSuccess(List<GWTJahiaNodeType> gwtJahiaNodeTypes) {
+                    fileNodeTypes = new HashMap<String, GWTJahiaNodeType>();
+                    for (GWTJahiaNodeType gwtJahiaNodeType : gwtJahiaNodeTypes) {
+                        fileNodeTypes.put(gwtJahiaNodeType.getName(), gwtJahiaNodeType);
+                    }
                     newView(linker, true);
                 }
             });
@@ -143,7 +146,9 @@ public class NewViewActionItem extends BaseActionItem  {
                                 public void handleEvent(TreeGridEvent<GWTJahiaNodeType> baseEvent) {
                                     GWTJahiaNodeType gwtJahiaNodeType = baseEvent.getModel();
                                     if (gwtJahiaNodeType != null && linker != null) {
-                                        createEngine(fileNodeType, selectedNode, gwtJahiaNodeType.getName());
+                                        GWTJahiaNodeType engineNodeType = TEMPLATE.equals(gwtJahiaNodeType.getName()) ?
+                                                fileNodeTypes.get(TEMPLATE_FILE) : fileNodeTypes.get(VIEW_FILE);
+                                        createEngine(engineNodeType, selectedNode, gwtJahiaNodeType.getName());
                                         popup.hide();
                                     }
                                 }
@@ -166,6 +171,8 @@ public class NewViewActionItem extends BaseActionItem  {
             if (isLoading) {
                 linker.loaded();
             }
+            GWTJahiaNodeType fileNodeType = TEMPLATE.equals(findNodeType(selectedNode)) ?
+                    fileNodeTypes.get(TEMPLATE_FILE) : fileNodeTypes.get(VIEW_FILE);
             createEngine(fileNodeType, selectedNode, findNodeType(selectedNode));
         }
     }
@@ -211,7 +218,7 @@ public class NewViewActionItem extends BaseActionItem  {
             return n.getName().replace("_", ":");
         } else if (splittedPath.length > TEMPLATE_TYPE_FOLDER_TOKEN && n.isNodeType("jnt:templateTypeFolder")) {
             return  splittedPath[splittedPath.length - TEMPLATE_TYPE_FOLDER_TOKEN].replace("_", ":");
-        }else if (splittedPath.length > VIEW_FILE_FOLDER_TOKEN  && n.isNodeType("jnt:viewFile")) {
+        }else if (splittedPath.length > VIEW_FILE_FOLDER_TOKEN  && (n.isNodeType(VIEW_FILE) || n.isNodeType(TEMPLATE_FILE))) {
             return splittedPath[splittedPath.length - VIEW_FILE_FOLDER_TOKEN].replace("_", ":");
         } else if (n.isNodeType("jnt:nodeType")) {
             return n.getName();

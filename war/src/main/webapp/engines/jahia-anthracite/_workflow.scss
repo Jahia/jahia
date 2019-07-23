@@ -68,6 +68,17 @@
 
 	.x-grid3 {
 
+		.x-grid3-body {
+			.x-grid-empty {
+				padding: 3px;
+
+				&::before {
+					content: $text_empty;
+					@include text(13px, _theme-color(primary), $FONT--WEIGHT---LIGHT);
+				}
+			}
+		}
+
 		.x-grid3-header {
 			display: table-cell;
 			background: transparent;

@@ -835,7 +835,7 @@ $MENU-TITLE--COLOR:(
 );
 
 $MENU-TITLE--BG:(
-	LIGHT: _theme-color(primary),
+	LIGHT: _theme-color(quinary, b),
 	DARK: _theme-color(quinary, b),
 );
 
@@ -1012,7 +1012,7 @@ $MENU-OPENED--COLOR:(
 );
 
 $MENU-OPENED--BG:(
-	LIGHT: _theme-color(primary, g),
+	LIGHT: #007cb0,
 	DARK: #007cb0,
 );
 
@@ -1023,7 +1023,7 @@ $MENU-OPENED--COLOR---HOVER:(
 );
 
 $MENU-OPENED--BG---HOVER:(
-	LIGHT: _theme-color(primary, f),
+	LIGHT: lighten(#007cb0, 2%),
 	DARK: lighten(#007cb0, 2%),
 );
 
@@ -1033,7 +1033,7 @@ $MENU-OPENED--COLOR---DISABLED:(
 );
 
 $MENU-OPENED--BG---DISABLED:(
-	LIGHT: _theme-color(quinary, a),
+	LIGHT: #007cb0,
 	DARK: #007cb0,
 );
 

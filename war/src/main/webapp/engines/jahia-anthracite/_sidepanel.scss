@@ -2454,6 +2454,10 @@ body[data-edit-window-style="settings"] {
 					// text-transform: uppercase;
 					@include text(13px, _theme-color(primary), $FONT--WEIGHT---LIGHT);
 				}
+
+				.x-grid3-scroller {
+					overflow:hidden;
+				}
 			}
 
 		}

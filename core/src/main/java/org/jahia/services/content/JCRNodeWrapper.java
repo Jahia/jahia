@@ -106,6 +106,16 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     /**
      * Gets the real <code>Node</code> wrapped by this <code>JCRNodeWrapper</code>
      *
+     * This gives a direct access to the underlying implementation node, all operations done here will bypass the
+     * JCRSessionWrapper / JCRNodeWrapper layer. Among other things:
+     *
+     * <ul>
+     * <li>PropertyInterceptor won't be called</li>
+     * <li>I18N properties will not be handled</li>
+     * <li>Save on underlying session will not call listeners</li>
+     * <li>Read-only mode will not be checked.</li>
+     * </ul>
+     *
      * @return the real JCR <code>Node</code>
      */
     Node getRealNode();

@@ -62,6 +62,7 @@ import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import java.util.*;
 
+import static org.jahia.services.content.PublicationInfo.MANDATORY_LANGUAGE_VALID;
 import static org.jahia.services.content.PublicationInfo.NOT_PUBLISHED;
 import static org.jahia.services.content.PublicationInfo.UNPUBLISHED;
 
@@ -137,7 +138,7 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
             String translationNodeRelPath = (publicationInfo.getRoot().getChildren().size() > 0 ? ("/j:translation_" + language) : null);
             for (PublicationInfoNode childNode : publicationInfo.getRoot().getChildren()) {
                 if (childNode.getPath().contains(translationNodeRelPath)) {
-                    if(childNode.getStatus() == NOT_PUBLISHED && !isPublished(nodeIdentifier, language)) {
+                    if(childNode.getStatus() == NOT_PUBLISHED && !isPublished(nodeIdentifier, language) && result.getPublicationStatus() != MANDATORY_LANGUAGE_VALID) {
                         result.setPublicationStatus(NOT_PUBLISHED);
                     } else if (childNode.getStatus() > result.getPublicationStatus()) {
                         result.setPublicationStatus(childNode.getStatus());

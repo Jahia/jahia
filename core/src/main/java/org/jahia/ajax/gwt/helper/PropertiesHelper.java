@@ -118,6 +118,7 @@ public class PropertiesHelper {
             while (it.hasNext()) {
                 Property prop = it.nextProperty();
                 PropertyDefinition def = prop.getDefinition();
+                Property translationProp = null;
                 // definition can be null if the file is versionned
                 if (def != null && !ignoredProperties.contains(def.getName()) && ((ExtendedPropertyDefinition) def).getSelectorOptions().get("password") == null) {
                     propName = def.getName();
@@ -131,6 +132,8 @@ public class PropertiesHelper {
                         if (!i18N.hasProperty(propName)) {
                             // if the translation node doesn't have the property and it's part of the set of copied properties, then we shouldn't return it
                             continue;
+                        } else {
+                            translationProp = i18N.getProperty(propName);
                         }
                     }
 
@@ -141,10 +144,10 @@ public class PropertiesHelper {
                     nodeProp.setMultiple(def.isMultiple());
                     Value[] values;
                     if (!def.isMultiple()) {
-                        Value oneValue = prop.getValue();
+                        Value oneValue = translationProp == null ? prop.getValue() : translationProp.getValue();
                         values = new Value[]{oneValue};
                     } else {
-                        values = prop.getValues();
+                        values = translationProp == null ? prop.getValues() : translationProp.getValues();
                     }
                     List<GWTJahiaNodePropertyValue> gwtValues = new ArrayList<GWTJahiaNodePropertyValue>(values.length);
 

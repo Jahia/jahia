@@ -885,16 +885,48 @@ public class JCRSessionWrapper implements Session {
     /**
      * Get sessions from all providers used in this wrapper.
      *
+     * This gives a direct access to the underlying implementation sessions, all operations done here will bypass the
+     * JCRSessionWrapper layer. Among other things:
+     *
+     * <ul>
+     * <li>Save on underlying session will not call listeners</li>
+     * <li>Read-only mode will not be checked.</li>
+     * </ul>
+     *
      * @return a <code>Collection</code> of <code>JCRSessionWrapper</code> objects
      */
     public Collection<Session> getAllSessions() {
         return sessions.values();
     }
 
+    /**
+     * Return the underlying session for a specific provider
+     *
+     * This gives a direct access to the underlying implementation session, all operations done here will bypass the
+     * JCRSessionWrapper layer. Among other things:
+     *
+     * <ul>
+     * <li>Save on underlying session will not call listeners</li>
+     * <li>Read-only mode will not be checked.</li>
+     * </ul>
+     */
     public Session getProviderSession(JCRStoreProvider provider) throws RepositoryException {
         return getProviderSession(provider, true);
     }
 
+    /**
+     * Return the underlying session for a specific provider
+     *
+     * This gives a direct access to the underlying implementation session, all operations done here will bypass the
+     * JCRSessionWrapper layer. Among other things:
+     *
+     * <ul>
+     * <li>Save on underlying session will not call listeners</li>
+     * <li>Read-only mode will not be checked.</li>
+     * </ul>
+     *
+     * @param create Will create a new session on the provider if it has not been opened yet
+     */
     public Session getProviderSession(JCRStoreProvider provider, boolean create) throws RepositoryException {
         if (sessions.get(provider) != null && !sessions.get(provider).isLive()) {
             sessions.remove(provider);

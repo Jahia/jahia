@@ -2371,18 +2371,6 @@ body[data-edit-window-style="settings"] {
 
 }
 
-#JahiaGxtContentBrowseTab {
-	.x-grid-empty {
-		&:before {
-			@include text(14px, _theme-color(primary), $FONT--WEIGHT---SEMILIGHT);
-			content: $text_empty;
-			display: block;
-			padding: 16px;
-			position: absolute;
-			top: 0;
-		}
-	}
-}
 
 // body[data-indigo-gwt-side-panel="open"] .x-viewport-editmode #JahiaGxtSettingsTab {
 //

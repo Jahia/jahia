@@ -142,14 +142,6 @@ body {
 	}
 	// DELETE END
 
-	&[data-main-node-displayname="settings"] {
-		&::before {
-			/* Set Page Title Content for Settings */
-			content: attr(data-main-node-displayname);
-			content: "Server Settings"
-
-		}
-	}
 
 	&[data-main-node-displayname="System Site"] {
 		&::before {

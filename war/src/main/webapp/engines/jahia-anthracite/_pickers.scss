@@ -3646,11 +3646,17 @@ body[indigo-dragging-panel="true"] {
 			> .x-grid3-header {
 				width: 100%;
 				display: block;
+				pointer-events: all!important;
 
-				.x-grid3-header-inner {}
-					width: 100%;
+				.x-grid3-header-inner {
+					width: 100%!important;
 				    padding-left: 15px;
 				    box-sizing: border-box;
+					}
+			}
+
+			.x-grid3-header {
+				pointer-events: all!important;
 			}
 		}
 	}

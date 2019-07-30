@@ -457,6 +457,10 @@ public class FormFieldCreator {
             tField.setAllowBlank(!definition.isMandatory());
         }
 
+        if (field instanceof AbstractMultipleField) {
+            ((AbstractMultipleField) field).setAllowBlank(!definition.isMandatory());
+        }
+
         if (field instanceof CheckBox) {
             field.setHideLabel(true);
             ((CheckBox) field).setBoxLabel(field.getFieldLabel());

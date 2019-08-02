@@ -48,6 +48,7 @@ import java.util.Map;
 
 import org.jahia.osgi.BundleState;
 import org.jahia.services.modulemanager.spi.BundleService;
+import org.jahia.services.modulemanager.spi.ConfigService;
 import org.springframework.core.io.Resource;
 
 /**
@@ -90,7 +91,7 @@ public interface ModuleManager {
      * Install the specified bundle on the target group of cluster nodes.
      *
      * @param bundleResource The resource representing a bundle to install
-     * @param target The group of cluster nodes targeted by the install operation (see class JavaDoc for the supported values)
+     * @param target         The group of cluster nodes targeted by the install operation (see class JavaDoc for the supported values)
      * @return The result of the install operation
      * @throws ModuleManagementException Is case of problems
      */
@@ -100,8 +101,8 @@ public interface ModuleManager {
      * Install the specified bundle on the target group of cluster nodes, optionally starting it right after.
      *
      * @param bundleResource The resource, representing a bundle to install
-     * @param target The group of cluster nodes targeted by the install operation (see BundleService class JavaDoc)
-     * @param start Whether the installed bundle should be started right away
+     * @param target         The group of cluster nodes targeted by the install operation (see BundleService class JavaDoc)
+     * @param start          Whether the installed bundle should be started right away
      * @return The result of the install operation
      * @throws ModuleManagementException In case of problems
      */
@@ -111,8 +112,8 @@ public interface ModuleManager {
      * Install specified bundles on the target group of cluster nodes, optionally starting them right after.
      *
      * @param bundleResources A collection of resources, representing bundles to install
-     * @param target The group of cluster nodes targeted by the install operation (see BundleService class JavaDoc)
-     * @param start Whether installed bundles should be started right away
+     * @param target          The group of cluster nodes targeted by the install operation (see BundleService class JavaDoc)
+     * @param start           Whether installed bundles should be started right away
      * @return The result of the install operation
      * @throws ModuleManagementException In case of problems
      */
@@ -122,7 +123,7 @@ public interface ModuleManager {
      * Start the specified bundle on the target group of cluster nodes.
      *
      * @param bundleKey Bundle key to start (see class JavaDoc for the supported key format)
-     * @param target The group of cluster nodes targeted by the start operation (see BundleService class JavaDoc)
+     * @param target    The group of cluster nodes targeted by the start operation (see BundleService class JavaDoc)
      * @return The result of the start operation
      * @throws ModuleManagementException In case of problems
      */
@@ -132,7 +133,7 @@ public interface ModuleManager {
      * Stop the specified bundle on the target group of cluster nodes.
      *
      * @param bundleKey Bundle key to stop (see class JavaDoc for the supported key format)
-     * @param target The group of cluster nodes targeted by the stop operation (see BundleService class JavaDoc)
+     * @param target    The group of cluster nodes targeted by the stop operation (see BundleService class JavaDoc)
      * @return The result of the stop operation
      * @throws ModuleManagementException In case of problems
      */
@@ -142,7 +143,7 @@ public interface ModuleManager {
      * Uninstall the specified bundle on the target group of cluster nodes.
      *
      * @param bundleKey Bundle key to uninstall (see class JavaDoc for the supported key format)
-     * @param target The group of cluster nodes targeted by the uninstall operation (see BundleService class JavaDoc)
+     * @param target    The group of cluster nodes targeted by the uninstall operation (see BundleService class JavaDoc)
      * @return The result of the uninstall operation
      * @throws ModuleManagementException In case of problems
      */
@@ -152,7 +153,7 @@ public interface ModuleManager {
      * Refresh the specified bundle on the target group of cluster nodes.
      *
      * @param bundleKey Bundle key to refresh (see class JavaDoc for the supported key format)
-     * @param target The group of cluster nodes targeted by the refresh operation (see BundleService class JavaDoc)
+     * @param target    The group of cluster nodes targeted by the refresh operation (see BundleService class JavaDoc)
      * @return The result of the refresh operation
      * @throws ModuleManagementException In case of problems
      */
@@ -162,7 +163,7 @@ public interface ModuleManager {
      * Update the specified bundle on the target group of cluster nodes.
      *
      * @param bundleKey Bundle key to update (see class JavaDoc for the supported key format)
-     * @param target The group of cluster nodes targeted by the update operation (see BundleService class JavaDoc)
+     * @param target    The group of cluster nodes targeted by the update operation (see BundleService class JavaDoc)
      * @return The result of the update operation
      * @throws ModuleManagementException in case of problems
      */
@@ -172,7 +173,7 @@ public interface ModuleManager {
      * Get info about a bundle.
      *
      * @param bundleKey Bundle key (see class JavaDoc for the supported key format; note that bundle version is required)
-     * @param target The group of cluster nodes to get info from (see BundleService class JavaDoc)
+     * @param target    The group of cluster nodes to get info from (see BundleService class JavaDoc)
      * @return A map of bundle info by cluster node name; each map value is either a BundleService.ModuleInfo instance in case the bundle is a DX module, or a BundleService.BundleInfo instance otherwise
      */
     Map<String, BundleService.BundleInformation> getInfo(String bundleKey, String target) throws ModuleManagementException;
@@ -181,7 +182,7 @@ public interface ModuleManager {
      * Get info about multiple bundles.
      *
      * @param bundleKeys Bundle keys (see class JavaDoc for the supported key format; note that bundle version is required)
-     * @param target The group of cluster nodes to get info from (see BundleService class JavaDoc)
+     * @param target     The group of cluster nodes to get info from (see BundleService class JavaDoc)
      * @return A map of bundle info by bundle key by cluster node name; each map value is either a BundleService.ModuleInfo instance in case the bundle is a DX module, or a BundleService.BundleInfo instance otherwise
      */
     Map<String, Map<String, BundleService.BundleInformation>> getInfos(Collection<String> bundleKeys, String target) throws ModuleManagementException;
@@ -190,7 +191,7 @@ public interface ModuleManager {
      * Get info about multiple bundles belonging to a single bundle bucket.
      *
      * @param bundleBucketKey Bundle bucket key
-     * @param target The group of cluster nodes to get info from (see BundleService class JavaDoc)
+     * @param target          The group of cluster nodes to get info from (see BundleService class JavaDoc)
      * @return A map of bundle info by bundle key by cluster node name; each map value is either a BundleService.ModuleInfo instance in case the bundle is a DX module, or a BundleService.BundleInfo instance otherwise
      */
     Map<String, Map<String, BundleService.BundleInformation>> getBucketInfos(String bundleBucketKey, String target) throws ModuleManagementException;
@@ -248,4 +249,5 @@ public interface ModuleManager {
      * @return The result of this operation which provides a list of bundles whose state has been updated
      */
     OperationResult applyBundlesPersistentStates(String target) throws ModuleManagementException;
+
 }

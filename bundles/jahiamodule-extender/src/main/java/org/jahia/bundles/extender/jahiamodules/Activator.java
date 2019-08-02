@@ -43,6 +43,7 @@
  */
 package org.jahia.bundles.extender.jahiamodules;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.fileinstall.ArtifactListener;
 import org.apache.felix.fileinstall.ArtifactUrlTransformer;
@@ -663,20 +664,18 @@ public class Activator implements BundleActivator {
         List<URL> foundURLs = CFG_SCANNER.scan(bundle);
         if (!foundURLs.isEmpty()) {
             for (URL url : foundURLs) {
-                try (InputStream inputStream = url.openStream()) {
+                try {
                     Path path = Paths.get( SettingsBean.getInstance().getJahiaVarDiskPath(), "karaf", "etc", StringUtils.substringAfterLast(url.getFile(), "/"));
-                    if (!Files.exists(path)) {
-                        Files.copy(inputStream, path, StandardCopyOption.REPLACE_EXISTING);
-                        logger.info("Copied configuration file of module {} into {}", getDisplayName(bundle), path);
-                    } else {
-                        try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()))) {
-                            String header = reader.readLine();
-
-                            if (!header.startsWith("# default configuration")) {
-                                Files.copy(inputStream, path, StandardCopyOption.REPLACE_EXISTING);
-                                logger.info("Copied (overwrite) configuration file of module {} into {}", getDisplayName(bundle), path);
-                            }
+                    List<String> lines = IOUtils.readLines(url.openStream());
+                    boolean isEditable = lines.stream().map(String::toLowerCase).anyMatch(p -> p.startsWith("# default configuration"));
+                    if (!path.toFile().exists() || !isEditable) {
+                        if (!isEditable) {
+                            lines.add(0, "# Do not edit - Configuration file provided by module, any change will be lost");
                         }
+                        try (Writer w = new FileWriter(path.toFile())) {
+                            IOUtils.writeLines(lines, null, w);
+                        }
+                        logger.info("Copied configuration file of module {} into {}", getDisplayName(bundle), path);
                     }
                 } catch (IOException e) {
                     logger.error("unable to copy configuration", e);

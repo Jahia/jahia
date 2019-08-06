@@ -2793,7 +2793,6 @@ body[indigo-dragging-panel="true"] {
 
 			// Add New Content Folder
 			&.toolbar-item-newcontentfolder { // editorial content manager
-				display: block!important;
 				background-image: url(./images/buttons_dark/new-content-folder.svg);
 				background-size: 19px;
 
@@ -2804,7 +2803,6 @@ body[indigo-dragging-panel="true"] {
 
 			// Add New Portlet Folder
 			&.toolbar-item-newportletfolder { // portlet manager
-				display: block!important;
 				background-image: url(./images/buttons_dark/new-content-folder.svg);
 				background-size: 19px;
 
@@ -2815,7 +2813,6 @@ body[indigo-dragging-panel="true"] {
 
 			// New Category
 			&.toolbar-item-newcategory {
-				display: block!important;
 				background-image: url(./images/buttons_dark/new-content.svg);
 				background-size: 17px;
 
@@ -2826,7 +2823,6 @@ body[indigo-dragging-panel="true"] {
 
 			// Upload File
 			&.toolbar-item-upload {
-				display: block!important;
 				background-image: url(./images/icons/add-media-dark@X2.png);
 				background-size: 23px;
 				background-position: top 5px center;
@@ -2838,7 +2834,6 @@ body[indigo-dragging-panel="true"] {
 
 			// New Content
 			&.toolbar-item-newcontent {
-				display: block!important;
 				background-image: url(./images/buttons_dark/new-content.svg);
 				background-size: 17px;
 
@@ -2849,7 +2844,6 @@ body[indigo-dragging-panel="true"] {
 
 			// New Portlet
 			&.toolbar-item-newportlet {
-				display: block!important;
 				background-image: url(./images/buttons_dark/new-portlet.svg);
 				background-position: top 7px center;
 
@@ -2860,7 +2854,6 @@ body[indigo-dragging-panel="true"] {
 
 			// New Page
 			&.toolbar-item-newpage {
-				display: block!important;
 				background-image: url(./images/buttons_dark/new-page.svg);
 				background-size: 14px;
 
@@ -2948,7 +2941,6 @@ body[indigo-dragging-panel="true"] {
 
 			// Repo Filter menu
 			&.repositoryexplorer-menu-view {
-				display: block!important;
 				background-image: url(./images/icons/icon_preview_small_white.png);
 
 				&::before {
@@ -3055,10 +3047,6 @@ body[indigo-dragging-panel="true"] {
 			right: 5px!important;
 		}
 
-		// Always keep the upload / ne folder buttons active, even when the focus is on the tree
-		#JahiaGxtManagerToolbar .action-bar-tool-item.x-item-disabled {
-			display: block!important;
-		}
 	}
 
 	// Fixes for the Category
@@ -3106,21 +3094,6 @@ body[indigo-dragging-panel="true"] {
 		}
 	}
 
-	// Fixes for the File manager ( Documents )
-	&[config="filemanager-anthracite"] {
-		// Always keep the upload / ne folder buttons active, even when the focus is on the tree
-		#JahiaGxtManagerToolbar .action-bar-tool-item.x-item-disabled {
-			display: block!important;
-		}
-	}
-
-	// Fixes for the Content ( Editorial Content )
-	&[config="editorialcontentmanager-anthracite"] {
-		// Always keep the upload / ne folder buttons active, even when the focus is on the tree
-		#JahiaGxtManagerToolbar .action-bar-tool-item.x-item-disabled {
-			display: block!important;
-		}
-	}
 
 	// Remove the floats on the save cancel buttons
 	.x-panel-bbar .x-toolbar-cell {

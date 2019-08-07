@@ -633,7 +633,9 @@ public class FormFieldCreator {
                                 for (GWTJahiaNodePropertyValue value : values) {
                                     v.add(value.getDouble());
                                 }
-                                field.setValue(v);
+                                if (!v.isEmpty()) {
+                                    field.setValue(v);
+                                }
                             } else {
                                 if (values.size() > 0) {
                                     field.setValue(join(values));
@@ -675,7 +677,9 @@ public class FormFieldCreator {
                             for (GWTJahiaNodePropertyValue value : values) {
                                 v.add(value.getString());
                             }
-                            field.setValue(v);
+                            if (!v.isEmpty()) {
+                                field.setValue(v);
+                            }
                         } else {
                             if (values.size() > 0) {
                                 field.setValue(join(values));

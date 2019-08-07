@@ -152,12 +152,18 @@ public abstract class AbstractMultipleField<T> extends MultiField<List<T>> {
 
     @Override
     protected boolean validateValue(String value) {
-        if (allowBlank || !fields.isEmpty()) {
-            return true;
-        } else {
-            markInvalid(GXT.MESSAGES.textField_blankText());
-            return false;
+        if (allowBlank) {
+            return super.validateValue(value);
+        } else if (!fields.isEmpty()) {
+            // check that at least one field is not empty
+            for (Field field : fields) {
+                if (!"".equals(field.getRawValue())) {
+                    return super.validateValue(value);
+                }
+            }
         }
+        markInvalid(GXT.MESSAGES.textField_blankText());
+        return false;
     }
 
     @Override

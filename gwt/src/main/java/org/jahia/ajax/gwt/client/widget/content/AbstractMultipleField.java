@@ -43,6 +43,7 @@
  */
 package org.jahia.ajax.gwt.client.widget.content;
 
+import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.ComponentHelper;
@@ -62,8 +63,9 @@ import java.util.List;
  *
  * Created by kevan
  */
-abstract class AbstractMultipleField<T> extends MultiField<List<T>> {
+public abstract class AbstractMultipleField<T> extends MultiField<List<T>> {
     private Button addFieldButton;
+    private boolean allowBlank;
 
     AbstractMultipleField() {
         super();
@@ -97,9 +99,24 @@ abstract class AbstractMultipleField<T> extends MultiField<List<T>> {
             }
         });
         originalValue = value;
+
+        if (GXT.isAriaEnabled()) {
+            if (!allowBlank) {
+                setAriaState("aria-required", "true");
+            }
+        }
+    }
+
+    @Override
+    public void markInvalid(String msg) {
+        super.markInvalid(msg);
+        if (errorIcon != null) {
+            errorIcon.addStyleName("invalid-icon");
+        }
     }
 
     private void addField(T value) {
+        clearInvalid();
         Field field = getNewField();
 
         field.setWidth(getWidth());
@@ -132,6 +149,22 @@ abstract class AbstractMultipleField<T> extends MultiField<List<T>> {
     }
 
     abstract Field getNewField();
+
+    @Override
+    protected boolean validateValue(String value) {
+        if (allowBlank) {
+            return super.validateValue(value);
+        } else if (!fields.isEmpty()) {
+            // check that at least one field is not empty
+            for (Field field : fields) {
+                if (!"".equals(field.getRawValue())) {
+                    return super.validateValue(value);
+                }
+            }
+        }
+        markInvalid(GXT.MESSAGES.textField_blankText());
+        return false;
+    }
 
     @Override
     public List<T> getValue() {
@@ -180,5 +213,9 @@ abstract class AbstractMultipleField<T> extends MultiField<List<T>> {
         if (reRender) {
             lc.layout();
         }
+    }
+
+    public void setAllowBlank(boolean allowBlank) {
+        this.allowBlank = allowBlank;
     }
 }

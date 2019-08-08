@@ -457,6 +457,10 @@ public class FormFieldCreator {
             tField.setAllowBlank(!definition.isMandatory());
         }
 
+        if (field instanceof AbstractMultipleField) {
+            ((AbstractMultipleField) field).setAllowBlank(!definition.isMandatory());
+        }
+
         if (field instanceof CheckBox) {
             field.setHideLabel(true);
             ((CheckBox) field).setBoxLabel(field.getFieldLabel());
@@ -629,7 +633,9 @@ public class FormFieldCreator {
                                 for (GWTJahiaNodePropertyValue value : values) {
                                     v.add(value.getDouble());
                                 }
-                                field.setValue(v);
+                                if (!v.isEmpty()) {
+                                    field.setValue(v);
+                                }
                             } else {
                                 if (values.size() > 0) {
                                     field.setValue(join(values));
@@ -671,7 +677,9 @@ public class FormFieldCreator {
                             for (GWTJahiaNodePropertyValue value : values) {
                                 v.add(value.getString());
                             }
-                            field.setValue(v);
+                            if (!v.isEmpty()) {
+                                field.setValue(v);
+                            }
                         } else {
                             if (values.size() > 0) {
                                 field.setValue(join(values));

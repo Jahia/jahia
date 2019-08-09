@@ -104,6 +104,7 @@ import java.security.AccessControlException;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 /**
  * Jahia specific wrapper around <code>javax.jcr.Session</code> to be able to inject
@@ -127,22 +128,22 @@ public class JCRSessionWrapper implements Session {
     private JCRWorkspaceWrapper workspace;
     private boolean isLive = true;
     private Locale locale;
-    private List<String> tokens = new ArrayList<String>();
+    private Set<String> tokens = new HashSet<>();
 
-    private Map<JCRStoreProvider, Session> sessions = new HashMap<JCRStoreProvider, Session>();
+    private Map<JCRStoreProvider, Session> sessions = new HashMap<>();
 
-    private Map<String, JCRNodeWrapper> sessionCacheByPath = new HashMap<String, JCRNodeWrapper>();
-    private Map<String, JCRNodeWrapper> sessionCacheByIdentifier = new HashMap<String, JCRNodeWrapper>();
-    private Map<String, JCRNodeWrapper> newNodes = new HashMap<String, JCRNodeWrapper>();
-    private Map<String, JCRNodeWrapper> changedNodes = new HashMap<String, JCRNodeWrapper>();
+    private Map<String, JCRNodeWrapper> sessionCacheByPath = new HashMap<>();
+    private Map<String, JCRNodeWrapper> sessionCacheByIdentifier = new HashMap<>();
+    private Map<String, JCRNodeWrapper> newNodes = new HashMap<>();
+    private Map<String, JCRNodeWrapper> changedNodes = new HashMap<>();
 
-    private Map<String, String> nsToPrefix = new HashMap<String, String>();
-    private Map<String, String> prefixToNs = new HashMap<String, String>();
+    private Map<String, String> nsToPrefix = new HashMap<>();
+    private Map<String, String> prefixToNs = new HashMap<>();
 
-    private Map<String, String> uuidMapping = new HashMap<String, String>();
-    private Map<String, String> pathMapping = new LinkedHashMap<String, String>();
+    private Map<String, String> uuidMapping = new HashMap<>();
+    private Map<String, String> pathMapping = new LinkedHashMap<>();
 
-    private Map<String, Object> resolvedReferences = new HashMap<String, Object>();
+    private Map<String, Object> resolvedReferences = new HashMap<>();
 
     private boolean isSystem;
     private boolean skipValidation;
@@ -158,7 +159,7 @@ public class JCRSessionWrapper implements Session {
 
     private Exception thisSessionTrace;
     protected UUID uuid;
-    private static Map<UUID, JCRSessionWrapper> activeSessionsObjects = new ConcurrentSkipListMap<UUID, JCRSessionWrapper>();
+    private static Map<UUID, JCRSessionWrapper> activeSessionsObjects = new ConcurrentSkipListMap<>();
 
     private boolean ignoreReadOnlyMode = false;
 
@@ -350,7 +351,7 @@ public class JCRSessionWrapper implements Session {
                 if (localPath.equals("")) {
                     localPath = "/";
                 }
-//                Item item = getProviderSession(provider).getItem(localPath);
+
                 Session session = getProviderSession(provider);
                 boolean isAliased = sessionFactory.checkAliasedStatusAndToggleSessionIfNeeded(session, getUser());
                 Item item = session.getItem(provider.getRelativeRoot() + localPath);
@@ -584,14 +585,14 @@ public class JCRSessionWrapper implements Session {
             }
 
             Map<String, Constructor<?>> validators = sessionFactory.getDefaultProvider().getValidators();
-            Set<ConstraintViolation<JCRNodeValidator>> constraintViolations = new LinkedHashSet<ConstraintViolation<JCRNodeValidator>>();
+            Set<ConstraintViolation<JCRNodeValidator>> constraintViolations = new LinkedHashSet<>();
             for (Map.Entry<String, Constructor<?>> validatorEntry : validators.entrySet()) {
                 if (node.isNodeType(validatorEntry.getKey())) {
                     try {
                         JCRNodeValidator validatorDecoratedNode = (JCRNodeValidator) validatorEntry.getValue().newInstance(node);
                         LocalValidatorFactoryBean validatorFactoryBean = sessionFactory.getValidatorFactoryBean();
 
-                        // if we are in non-import operation we enforce Default and DefaultSkipOnImportGroup;
+                        // if we are in non-import operation we enforce Default and DefaultSkipOnImportGroup
                         // if we are in an import operation we do not enforce the DefaultSkipOnImportGroup, but rather only the Default one
                         Set<ConstraintViolation<JCRNodeValidator>> validate = !isImportOperation ? validatorFactoryBean
                                 .validate(validatorDecoratedNode, Default.class, DefaultSkipOnImportGroup.class)
@@ -600,7 +601,7 @@ public class JCRSessionWrapper implements Session {
                         if (validate.isEmpty()) {
                             // we enforce advanced validations only in case the default group succeeds
 
-                            // if we are in non-import operation we enforce both AdvancedGroup and AdvancedSkipOnImportGroup;
+                            // if we are in non-import operation we enforce both AdvancedGroup and AdvancedSkipOnImportGroup
                             // if we are in an import operation we do not enforce the AdvancedSkipOnImportGroup, but rather only the
                             // AdvancedGroup one
                             validate = !isImportOperation ? validatorFactoryBean.validate(validatorDecoratedNode,
@@ -716,7 +717,7 @@ public class JCRSessionWrapper implements Session {
 
     public void importXML(String path, InputStream inputStream, int uuidBehavior, int rootBehavior)
             throws IOException, InvalidSerializedDataException, RepositoryException {
-        Map<String, List<String>> references = new HashMap<String, List<String>>();
+        Map<String, List<String>> references = new HashMap<>();
         importXML(path, inputStream, uuidBehavior, rootBehavior, null, references);
         ReferencesHelper.resolveCrossReferences(this, references);
     }
@@ -779,8 +780,7 @@ public class JCRSessionWrapper implements Session {
 
     @Override
     public String[] getNamespacePrefixes() throws RepositoryException {
-        Set<String> wsPrefixes =
-                new HashSet<String>(Arrays.asList(getWorkspace().getNamespaceRegistry().getPrefixes()));
+        Set<String> wsPrefixes = new HashSet<>(Arrays.asList(getWorkspace().getNamespaceRegistry().getPrefixes()));
         wsPrefixes.addAll(prefixToNs.keySet());
         return wsPrefixes.toArray(new String[wsPrefixes.size()]);
     }
@@ -829,8 +829,8 @@ public class JCRSessionWrapper implements Session {
         if (!isSystem) {
             long actives = activeSessions.decrementAndGet();
             if (logger.isDebugEnabled() && actives < activeSessionsObjects.size()) {
-                Map<UUID, JCRSessionWrapper> copyActives = new HashMap<UUID, JCRSessionWrapper>(activeSessionsObjects);
-                logger.debug("There is " + actives + " sessions but " + copyActives.size() + " is retained");
+                Map<UUID, JCRSessionWrapper> copyActives = new HashMap<>(activeSessionsObjects);
+                logger.debug("There is {} sessions but {} is retained", actives, copyActives.size());
                 for (Map.Entry<UUID, JCRSessionWrapper> entry : copyActives.entrySet()) {
                     logger.debug("Active Session " + entry.getKey() + " is" + (entry.getValue().isLive() ? "" : " not") + " live", entry.getValue().getSessionTrace());
                 }
@@ -862,15 +862,9 @@ public class JCRSessionWrapper implements Session {
 
     @Override
     public String[] getLockTokens() {
-        List<String> allTokens = new ArrayList<String>(tokens);
-        for (Session session : sessions.values()) {
-            String[] tokens = session.getLockTokens();
-            for (String token : tokens) {
-                if (!allTokens.contains(token)) {
-                    allTokens.add(token);
-                }
-            }
-        }
+        Set<String> allTokens = new HashSet<>();
+        allTokens.addAll(tokens);
+        allTokens.addAll(sessions.values().stream().map(Session::getLockTokens).flatMap(Arrays::stream).collect(Collectors.toSet()));
         return allTokens.toArray(new String[allTokens.size()]);
     }
 
@@ -952,8 +946,12 @@ public class JCRSessionWrapper implements Session {
                     s = provider.getSession(credentials, workspace.getName());
                 }
                 JahiaLoginModule.removeToken(simpleCredentials.getUserID(), new String(simpleCredentials.getPassword()));
-                credentials =
-                        JahiaLoginModule.getCredentials(simpleCredentials.getUserID(), (String) simpleCredentials.getAttribute(JahiaLoginModule.REALM_ATTRIBUTE), t != null ? t.deniedPath : null);
+                credentials = JahiaLoginModule.getCredentials(
+                        simpleCredentials.getUserID(),
+                        (String) simpleCredentials.getAttribute(JahiaLoginModule.REALM_ATTRIBUTE),
+                        t != null ? t.deniedPath : null
+                );
+
             } else {
                 s = provider.getSession(credentials, workspace.getName());
             }
@@ -963,8 +961,8 @@ public class JCRSessionWrapper implements Session {
                 s.addLockToken(token);
             }
 
-            for (String prefix : prefixToNs.keySet()) {
-                s.setNamespacePrefix(prefix, prefixToNs.get(prefix));
+            for (Map.Entry<String, String> entry : prefixToNs.entrySet()) {
+                s.setNamespacePrefix(entry.getKey(), entry.getValue());
             }
         }
         return sessions.get(provider);
@@ -1370,7 +1368,7 @@ public class JCRSessionWrapper implements Session {
      * @throws RepositoryException in case of JCR-related errors
      */
     public PropertyIterator getWeakReferences(JCRNodeWrapper node, String propertyName) throws RepositoryException {
-        List<PropertyIterator> propertyIterators = new ArrayList<PropertyIterator>();
+        List<PropertyIterator> propertyIterators = new ArrayList<>();
         for (JCRStoreProvider provider : sessionFactory.getProviderList()) {
             Session providerSession = getProviderSession(provider);
             PropertyIterator pi = provider.getWeakReferences(node, propertyName, providerSession);

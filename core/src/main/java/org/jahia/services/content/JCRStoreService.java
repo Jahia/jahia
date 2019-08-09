@@ -75,6 +75,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -96,15 +97,15 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         return Holder.INSTANCE;
     }
 
-    private Map<String, Class<? extends JCRNodeDecorator>> decorators = new ConcurrentHashMap<String, Class<? extends JCRNodeDecorator>>();
-    private Map<String, Constructor<?>> decoratorCreators = new ConcurrentHashMap<String, Constructor<?>>();
+    private Map<String, Class<? extends JCRNodeDecorator>> decorators = new ConcurrentHashMap<>();
+    private Map<String, Constructor<?>> decoratorCreators = new ConcurrentHashMap<>();
     private InterceptorChain interceptorChain;
-    private Map<String, ProviderFactory> providerFactories = new ConcurrentHashMap<String, ProviderFactory>();
-    private List<PropertyInterceptor> interceptors = new LinkedList<PropertyInterceptor>();
-    private Set<String> noValidityCheckTypes = new HashSet<String>();
-    private Set<String> noLanguageValidityCheckTypes = new HashSet<String>();
-    private Map<String, Class<? extends JCRNodeValidator>> validators = new ConcurrentHashMap<String, Class<? extends JCRNodeValidator>>();
-    private Map<String, Constructor<?>> validatorCreators = new ConcurrentHashMap<String, Constructor<?>>();
+    private Map<String, ProviderFactory> providerFactories = new ConcurrentHashMap<>();
+    private List<PropertyInterceptor> interceptors = new LinkedList<>();
+    private Set<String> noValidityCheckTypes = new HashSet<>();
+    private Set<String> noLanguageValidityCheckTypes = new HashSet<>();
+    private Map<String, Class<? extends JCRNodeValidator>> validators = new ConcurrentHashMap<>();
+    private Map<String, Constructor<?>> validatorCreators = new ConcurrentHashMap<>();
     private JCRStoreProviderChecker providerChecker;
 
     private Map<String, List<DefaultEventListener>> listeners;
@@ -118,7 +119,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         }
     };
 
-    private final List<String> initializedSystemIds = new ArrayList<>();
+    private final Set<String> initializedSystemIds = new LinkedHashSet<>();
 
     private JCRSessionFactory sessionFactory;
 
@@ -245,9 +246,10 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         try {
             Constructor<?> creator = decoratorCreators.get(w.getPrimaryNodeTypeName());
             if (creator == null) {
-                for (String type : decoratorCreators.keySet()) {
+                for (Map.Entry<String, Constructor<?>> entry : decoratorCreators.entrySet()) {
+                    String type = entry.getKey();
                     if (w.isNodeType(type)) {
-                        creator = decoratorCreators.get(type);
+                        creator = entry.getValue();
                         break;
                     }
                 }
@@ -330,7 +332,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
     }
 
     public List<JCRNodeWrapper> getImportDropBoxes(String site, JahiaUser user) {
-        List<JCRNodeWrapper> r = new ArrayList<JCRNodeWrapper>();
+        List<JCRNodeWrapper> r = new ArrayList<>();
         for (JCRStoreProvider storeProvider : sessionFactory.getMountPoints().values()) {
             try {
                 r.addAll(storeProvider.getImportDropBoxes(site, user));
@@ -369,8 +371,9 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
     private void initObservers(Map<String, List<DefaultEventListener>> listeners)
             throws RepositoryException {
         if (listeners != null) {
-            for (String ws : listeners.keySet()) {
-                List<DefaultEventListener> l = listeners.get(ws);
+            for (Map.Entry<String, List<DefaultEventListener>> entry : listeners.entrySet()) {
+                String ws = entry.getKey();
+                List<DefaultEventListener> l = entry.getValue();
 
                 // This session must not be released
                 final Session session = getSessionFactory().getSystemSession(null, null, ws, null);
@@ -429,7 +432,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         try {
             if (!NodeTypeRegistry.getInstance().getNodeType(nodeType).isMixin()) {
                 if (decorators == null) {
-                    decorators = new ConcurrentHashMap<String, Class<? extends JCRNodeDecorator>>();
+                    decorators = new ConcurrentHashMap<>();
                 }
                 decorators.put(nodeType, decoratorClass);
                 try {
@@ -438,7 +441,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                     logger.error("Unable to instantiate decorator: " + decoratorClass, e);
                 }
             } else {
-                logger.error("It is impossible to decorate a mixin (" + nodeType + "), only primary node type can be decorated");
+                logger.error("It is impossible to decorate a mixin ({}), only primary node type can be decorated", nodeType);
             }
         } catch (NoSuchNodeTypeException e) {
             logger.error(e.getMessage(), e);
@@ -533,12 +536,12 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                         final String systemId = StringUtils.substringBeforeLast(file, ".cnd");
                         if (!initializedSystemIds.contains(systemId)) {
                             logger.debug("Loading CND : {}" , file);
-                            instance.addDefinitionsFile(new ByteArrayResource(cndFile.getBytes("UTF-8"), file), systemId);
+                            instance.addDefinitionsFile(new ByteArrayResource(cndFile.getBytes(StandardCharsets.UTF_8), file), systemId);
                         }
                         reloadedSystemIds.add(systemId);
                     }
                 } catch (ParseException | NoSuchNodeTypeException e) {
-                    logger.debug(file + " cannot be parsed, reorder later");
+                    logger.debug("{} cannot be parsed, reorder later", file);
                     remfiles.add(file);
                 } catch (IOException e) {
                     logger.error("Cannot parse CND file from DB : "+file,e);
@@ -552,7 +555,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
             NodeTypeRegistry.getInstance().unregisterNodeTypes(systemId);
         }
         if (!remfiles.isEmpty()) {
-            logger.error("Cannot read CND from : "+remfiles);
+            logger.error("Cannot read CND from : {}", remfiles);
         }
 
         registerNamespaces();
@@ -600,7 +603,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
     }
 
     public List<String> getInitializedSystemIds() {
-        return initializedSystemIds;
+        return new LinkedList<>(initializedSystemIds);
     }
 
     public Set<String> getNoValidityCheckTypes() {
@@ -622,7 +625,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
 
     public void addValidator(String nodeType, Class<? extends JCRNodeValidator> validatorClass) {
         if (validators == null) {
-            validators = new ConcurrentHashMap<String, Class<? extends JCRNodeValidator>>();
+            validators = new ConcurrentHashMap<>();
         }
         validators.put(nodeType, validatorClass);
         try {
@@ -634,7 +637,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
 
     public void removeValidator(String nodeType) {
         if (validators == null) {
-            validators = new ConcurrentHashMap<String, Class<? extends JCRNodeValidator>>();
+            validators = new ConcurrentHashMap<>();
         }
         validators.remove(nodeType);
         validatorCreators.remove(nodeType);

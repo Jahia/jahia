@@ -54,14 +54,12 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  * 
  * @author Sergiy Shyrkov
  */
-public class JahiaPasswordPolicyRuleParam implements Serializable, Cloneable {
+public class JahiaPasswordPolicyRuleParam implements Serializable {
 
     private static final long serialVersionUID = -7015454747220376620L;
 
 	private String id;
-
     private String name;
-
     private String value;
 
     /**
@@ -79,38 +77,18 @@ public class JahiaPasswordPolicyRuleParam implements Serializable, Cloneable {
      * @param value
      */
     public JahiaPasswordPolicyRuleParam(String id, String name, String value) {
-
-        this();
         this.id = id;
         this.name = name;
         this.value = value;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#clone()
+    /**
+     * Copy constructor
+     *
+     * @param param the parameter to create a copy from
      */
-    public Object clone() {
-        JahiaPasswordPolicyRuleParam param = null;
-        try {
-            param = (JahiaPasswordPolicyRuleParam) super.clone();
-        } catch (CloneNotSupportedException ex) {
-            throw new RuntimeException(ex);
-        }
-        return param;
-    }
-
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-
-        if (obj != null && this.getClass() == obj.getClass()) {
-            JahiaPasswordPolicyRuleParam castOther = (JahiaPasswordPolicyRuleParam) obj;
-            return new EqualsBuilder().append(this.getId(), castOther.getId())
-                    .isEquals();
-        }
-        return false;
+    public JahiaPasswordPolicyRuleParam(JahiaPasswordPolicyRuleParam param) {
+        this(param.id, param.name, param.value);
     }
 
     /**
@@ -138,10 +116,6 @@ public class JahiaPasswordPolicyRuleParam implements Serializable, Cloneable {
      */
     public String getValue() {
         return value;
-    }
-
-    public int hashCode() {
-        return new HashCodeBuilder().append(getId()).toHashCode();
     }
 
     /**
@@ -174,11 +148,26 @@ public class JahiaPasswordPolicyRuleParam implements Serializable, Cloneable {
         this.value = value;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#toString()
-     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj != null && this.getClass() == obj.getClass()) {
+            JahiaPasswordPolicyRuleParam castOther = (JahiaPasswordPolicyRuleParam) obj;
+            return new EqualsBuilder().append(this.getId(), castOther.getId())
+                    .isEquals();
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(getId()).toHashCode();
+    }
+
+    @Override
     public String toString() {
         return new ToStringBuilder(this).append("id", id).append("name", name)
                 .append("value", value).toString();

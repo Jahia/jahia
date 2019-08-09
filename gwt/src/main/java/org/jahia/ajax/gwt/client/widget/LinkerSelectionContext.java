@@ -153,7 +153,7 @@ public class LinkerSelectionContext {
             if (permissions == null) {
                 permissions = node.getPermissions();
             } else {
-                permissions = (GWTBitSet) permissions.clone();
+                permissions = new GWTBitSet(permissions);
                 permissions.and(node.getPermissions());
             }
             if (node.getParent() != null) {

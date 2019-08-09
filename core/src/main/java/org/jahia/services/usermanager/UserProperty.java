@@ -48,6 +48,7 @@ import java.io.Serializable;
 /**
  * @deprecated
  */
+@Deprecated
 public class UserProperty implements Serializable {
 
     private static final long serialVersionUID = -4066934002153945776L;
@@ -62,10 +63,7 @@ public class UserProperty implements Serializable {
     private String display;
 
     public UserProperty(String name, String value, boolean readOnly) {
-        this.name = name;
-        this.value = value;
-        this.readOnly = readOnly;
-        this.display = TEXT_FIELD;
+        this(name, value, readOnly, TEXT_FIELD);
     }
 
     public UserProperty(String name, String value, boolean readOnly, String display) {
@@ -75,15 +73,13 @@ public class UserProperty implements Serializable {
         this.display = display;
     }
 
-    protected UserProperty(UserProperty copy) {
-        this.name = copy.name;
-        this.value = copy.value;
-        this.readOnly = copy.readOnly;
-        this.display = copy.display;
-    }
-
-    public Object clone() {
-        return new UserProperty(this);
+    /**
+     * Copy constructor
+     *
+     * @param copy the property to create the copy from
+     */
+    public UserProperty(UserProperty copy) {
+        this(copy.name, copy.value, copy.readOnly, copy.display);
     }
 
     public void setValue(String value) {
@@ -109,4 +105,5 @@ public class UserProperty implements Serializable {
     public void setDisplay(String display) {
         this.display = display;
     }
+
 }

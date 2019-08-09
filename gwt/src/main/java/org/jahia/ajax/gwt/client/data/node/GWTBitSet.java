@@ -50,16 +50,23 @@ import java.io.Serializable;
  * Date: 1/4/11
  * Time: 17:44
  */
-public class GWTBitSet implements Cloneable, Serializable {
+public class GWTBitSet implements Serializable {
     private final static int ADDRESS_BITS_PER_WORD = 6;
     private long[] words;
     private int referenceHashCode;
 
     public GWTBitSet() {
+        words = new long[0];
     }
 
     public GWTBitSet(int nbits) {
         words = new long[wordIndex(nbits-1) + 1];
+    }
+
+    public GWTBitSet(GWTBitSet bitSet) {
+        referenceHashCode = bitSet.referenceHashCode;
+        words = new long[bitSet.words.length];
+        System.arraycopy(bitSet.words, 0, words, 0, bitSet.words.length);
     }
 
     public void set(int bitIndex) {
@@ -69,7 +76,6 @@ public class GWTBitSet implements Cloneable, Serializable {
         int wordIndex = wordIndex(bitIndex);
         words[wordIndex] |= (1L << bitIndex);
     }
-
 
     public boolean get(int bitIndex) {
         if (bitIndex < 0)
@@ -90,13 +96,6 @@ public class GWTBitSet implements Cloneable, Serializable {
         // Perform logical AND on words in common
         for (int i = 0; i < words.length; i++)
             words[i] &= set.words[i];
-    }
-
-    public Object clone() {
-        GWTBitSet result = new GWTBitSet();
-        result.words = new long[words.length];
-        System.arraycopy(words, 0, result.words, 0, words.length);
-        return result;
     }
 
     /**

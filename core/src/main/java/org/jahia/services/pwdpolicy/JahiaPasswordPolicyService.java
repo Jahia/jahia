@@ -164,7 +164,7 @@ public class JahiaPasswordPolicyService extends JahiaService {
         }
         if (defPolicy == null) {
             // no def policy found --> creating one
-            JahiaPasswordPolicy copy = (JahiaPasswordPolicy) defaultPasswordPolicy.clone();
+            JahiaPasswordPolicy copy = new JahiaPasswordPolicy(defaultPasswordPolicy);
             try {
                 policyMgr.update(copy);
             } catch (RepositoryException e) {

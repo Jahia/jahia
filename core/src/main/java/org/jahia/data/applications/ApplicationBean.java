@@ -59,7 +59,7 @@ import org.jahia.registries.ServicesRegistry;
  * @author Serge Huber
  * @version 1.0
  */
-public class ApplicationBean implements Serializable, Comparator<ApplicationBean>, Cloneable {
+public class ApplicationBean implements Serializable, Comparator<ApplicationBean> {
 
     private static final long serialVersionUID = -5886294839254670413L;
 
@@ -240,20 +240,6 @@ public class ApplicationBean implements Serializable, Comparator<ApplicationBean
      */
     public void setEntryPointInstances(List<EntryPointInstance> entryPointInstances) {
         this.entryPointInstances = entryPointInstances;
-    }
-
-    /**
-     * Clone current object
-     *
-     * @return
-     */
-    public Object clone() {
-        try {
-            return super.clone();
-        } catch (CloneNotSupportedException cnse) {
-            // should never happen as we do support Cloneable in the interface
-            return null;
-        }
     }
 
     /**

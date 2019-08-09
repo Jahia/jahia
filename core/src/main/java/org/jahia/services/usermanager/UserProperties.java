@@ -42,14 +42,10 @@
  *     please contact the sales department at sales@jahia.com.
  */
 package org.jahia.services.usermanager;
+
 import java.io.Serializable;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This class stores user properties, which are different from regular
@@ -59,11 +55,12 @@ import java.util.Set;
  * @author Serge Huber
  * @deprecated
  */
+@Deprecated
 public class UserProperties implements Serializable {
 
     private static final long serialVersionUID = -5885566091509965795L;
 
-    public static final Set<String> DEFAULT_PROPERTIES_NAME = new HashSet<String>();
+    public static final Set<String> DEFAULT_PROPERTIES_NAME = new HashSet<>();
 
     static {
         DEFAULT_PROPERTIES_NAME.add("email");
@@ -74,7 +71,7 @@ public class UserProperties implements Serializable {
         DEFAULT_PROPERTIES_NAME.add("preferredLanguage");
     }
 
-    private Map<String, UserProperty> properties = new HashMap<String, UserProperty>();
+    private Map<String, UserProperty> properties = new HashMap<>();
 
     public UserProperties() {
         super();
@@ -98,15 +95,14 @@ public class UserProperties implements Serializable {
         }
     }
 
-    protected UserProperties(UserProperties copy) {
-        for (Map.Entry<String, UserProperty> stringUserPropertyEntry : copy.properties.entrySet()) {
-            UserProperty curUserProperty = (UserProperty) ((Map.Entry<String, UserProperty>) stringUserPropertyEntry).getValue();
-            properties.put(curUserProperty.getName(), (UserProperty) curUserProperty.clone());
-        }
-    }
-
-    public Object clone() {
-        return new UserProperties(this);
+    /**
+     * Copy constructor
+     *
+     * @param copy the properties to create the copy from
+     */
+    public UserProperties(UserProperties copy) {
+        this.properties = copy.properties.entrySet().stream()
+                .collect(Collectors.toMap(e -> e.getKey(), e -> new UserProperty(e.getValue())));
     }
 
     public void putAll(UserProperties ups) {
@@ -198,11 +194,13 @@ public class UserProperties implements Serializable {
         return null;
     }
 
+    public int size() {
+        return properties.keySet().size();
+    }
+
+    @Override
     public String toString() {
         return getProperties().toString();
     }
 
-    public int size() {
-        return properties.keySet().size();
-    }
 }

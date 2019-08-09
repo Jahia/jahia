@@ -45,10 +45,10 @@ package org.jahia.services.pwdpolicy;
 
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -59,7 +59,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  * 
  * @author Sergiy Shyrkov
  */
-public class JahiaPasswordPolicyRule implements Serializable, Cloneable {
+public class JahiaPasswordPolicyRule implements Serializable {
 
 	private static final long serialVersionUID = -3688773450875340830L;
 
@@ -81,25 +81,16 @@ public class JahiaPasswordPolicyRule implements Serializable, Cloneable {
 	/** The rule condition represents a Java-based implementation to be called. */
 	public static final char EVALUATOR_JAVA = 'J';
 
-	private char action = ACTION_WARN;
-
-	private List<JahiaPasswordPolicyRuleParam> actionParameters = new LinkedList<JahiaPasswordPolicyRuleParam>();
-
-	private boolean active = true;
-
-	private String condition;
-
-	private List<JahiaPasswordPolicyRuleParam> conditionParameters = new LinkedList<JahiaPasswordPolicyRuleParam>();
-
-	private char evaluator = EVALUATOR_JAVA;
-
 	private String id;
-
-	private boolean lastRule;
-
 	private String name;
-
+	private boolean lastRule;
+	private char action = ACTION_WARN;
+	private char evaluator = EVALUATOR_JAVA;
+	private boolean active = true;
 	private boolean periodical;
+	private String condition;
+	private List<JahiaPasswordPolicyRuleParam> conditionParameters = new LinkedList<>();
+	private List<JahiaPasswordPolicyRuleParam> actionParameters = new LinkedList<>();
 
 	/**
 	 * Initializes an instance of this class.
@@ -123,7 +114,6 @@ public class JahiaPasswordPolicyRule implements Serializable, Cloneable {
 	public JahiaPasswordPolicyRule(String id, String name, boolean active,
 	        boolean periodical, boolean lastRule, char evaluator,
 	        String condition, char action) {
-		this();
 		this.id = id;
 		this.name = name;
 		this.active = active;
@@ -134,41 +124,19 @@ public class JahiaPasswordPolicyRule implements Serializable, Cloneable {
 		this.action = action;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#clone()
+	/**
+	 * Copy constructor
+	 *
+	 * @param rule the rule to create a copy from
 	 */
-	public Object clone() {
-		JahiaPasswordPolicyRule rule = null;
-		try {
-			rule = (JahiaPasswordPolicyRule) super.clone();
-		} catch (CloneNotSupportedException ex) {
-			throw new RuntimeException(ex);
-		}
-
-		rule.setConditionParameters(new LinkedList<JahiaPasswordPolicyRuleParam>());
-		rule.setActionParameters(new LinkedList<JahiaPasswordPolicyRuleParam>());
-
-		for (JahiaPasswordPolicyRuleParam param : actionParameters) {
-			rule.getActionParameters().add((JahiaPasswordPolicyRuleParam) param.clone());
-		}
-		for (JahiaPasswordPolicyRuleParam param : conditionParameters) {
-			rule.getConditionParameters().add((JahiaPasswordPolicyRuleParam) param.clone());
-		}
-		return rule;
-	}
-
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-
-		if (obj != null && this.getClass() == obj.getClass()) {
-			JahiaPasswordPolicyRule castOther = (JahiaPasswordPolicyRule) obj;
-			return new EqualsBuilder().append(this.getId(), castOther.getId())
-			        .isEquals();
-		}
-		return false;
+	public JahiaPasswordPolicyRule(JahiaPasswordPolicyRule rule) {
+		this(rule.id, rule.name, rule.active, rule.periodical, rule.lastRule, rule.evaluator, rule.condition, rule.action);
+		this.actionParameters = (rule.actionParameters == null) ? null : rule.actionParameters.stream()
+				.map(p -> new JahiaPasswordPolicyRuleParam(p))
+				.collect(Collectors.toCollection(LinkedList::new));
+		this.conditionParameters = (rule.conditionParameters == null) ? null : rule.conditionParameters.stream()
+				.map(p -> new JahiaPasswordPolicyRuleParam(p))
+				.collect(Collectors.toCollection(LinkedList::new));
 	}
 
 	/**
@@ -196,15 +164,12 @@ public class JahiaPasswordPolicyRule implements Serializable, Cloneable {
 	 * @return the map with all action parameters, keyed by their names
 	 */
 	public Map<String, String> getActionParametersValues() {
-		if (actionParameters.size() == 0)
+		if (actionParameters.size() == 0) {
 			return Collections.emptyMap();
-
-		Map<String, String> params = new HashMap<String, String>(actionParameters.size());
-		for (JahiaPasswordPolicyRuleParam theParam : actionParameters) {
-			params.put(theParam.getName(), theParam.getValue());
 		}
 
-		return params;
+		return actionParameters.stream()
+				.collect(Collectors.toMap(JahiaPasswordPolicyRuleParam::getName, JahiaPasswordPolicyRuleParam::getValue));
 	}
 
 	/**
@@ -232,15 +197,13 @@ public class JahiaPasswordPolicyRule implements Serializable, Cloneable {
 	 * @return the map with all condition parameters, keyed by their names
 	 */
 	public Map<String, String> getConditionParametersValues() {
-		if (conditionParameters.size() == 0)
+		if (conditionParameters.size() == 0) {
 			return Collections.emptyMap();
-
-		Map<String, String> params = new HashMap<String, String>(conditionParameters.size());
-		for (JahiaPasswordPolicyRuleParam theParam : conditionParameters) {
-			params.put(theParam.getName(), theParam.getValue());
 		}
 
-		return params;
+		return conditionParameters.stream()
+				.collect(Collectors.toMap(JahiaPasswordPolicyRuleParam::getName, JahiaPasswordPolicyRuleParam::getValue));
+
 	}
 
 	/**
@@ -268,10 +231,6 @@ public class JahiaPasswordPolicyRule implements Serializable, Cloneable {
 	 */
 	public String getName() {
 		return name;
-	}
-
-	public int hashCode() {
-		return new HashCodeBuilder().append(getId()).toHashCode();
 	}
 
 	/**
@@ -421,6 +380,26 @@ public class JahiaPasswordPolicyRule implements Serializable, Cloneable {
 		this.periodical = periodical;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (obj != null && this.getClass() == obj.getClass()) {
+			JahiaPasswordPolicyRule castOther = (JahiaPasswordPolicyRule) obj;
+			return new EqualsBuilder().append(this.getId(), castOther.getId())
+					.isEquals();
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder().append(getId()).toHashCode();
+	}
+
+	@Override
 	public String toString() {
 		return new ToStringBuilder(this).append("id", id).append("name", name)
 		        .append("active", active).append("periodical", periodical)

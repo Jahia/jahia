@@ -54,9 +54,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
+import java.util.*;
 
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
@@ -69,7 +67,7 @@ public class JahiaOsgiKieModule extends AbstractKieModule {
     private final Bundle bundle;
     private final int bundleUrlPrefixLength;
 
-    private Collection<String> fileNames;
+    private Set<String> fileNames;
 
     public JahiaOsgiKieModule(ReleaseId releaseId, KieModuleModel kModuleModel, Bundle bundle, int bundleUrlPrefixLength) {
         super(releaseId, kModuleModel);
@@ -98,7 +96,8 @@ public class JahiaOsgiKieModule extends AbstractKieModule {
         if (fileNames != null) {
             return fileNames;
         }
-        fileNames = new ArrayList<String>();
+
+        fileNames = new HashSet<>();
         Enumeration<URL> e = bundle.findEntries("", "*", true);
         while (e.hasMoreElements()) {
             URL url = e.nextElement();

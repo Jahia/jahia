@@ -256,7 +256,7 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
     public static final TreeGridCellRenderer<GWTJahiaNode> NAME_TREEGRID_RENDERER = new TreeGridCellRenderer<GWTJahiaNode>() {
         @Override
         protected String getText(TreeGrid<GWTJahiaNode> gwtJahiaNodeTreeGrid, GWTJahiaNode node, String property, int rowIndex, int colIndex) {
-            String v = super.getText(gwtJahiaNodeTreeGrid, node, property, rowIndex, colIndex);
+            String v = node.get(property);
             if (v != null) {
                 v = SafeHtmlUtils.htmlEscape(v);
             }

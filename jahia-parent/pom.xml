@@ -95,11 +95,11 @@
         <hibernate.core.version>4.2.7.SP1-jahia1</hibernate.core.version>
         <hibernate.validator.version>5.0.1.Final</hibernate.validator.version>
         <camel.version>2.12.5</camel.version>
-        <gwt.version.base>2.5.1</gwt.version.base>
-        <gwt.version>${gwt.version.base}-jahia1</gwt.version>
+        <gwt.version.base>2.8.2</gwt.version.base>
+        <gwt.version>${gwt.version.base}</gwt.version>
         <!--Atmosphere javascript is defined as a static resource in Jahia and has to be update manually-->
-        <atmosphere.version>2.3.1-jahia2</atmosphere.version>
-        <atmosphere.gwt.version>2.3.0</atmosphere.gwt.version>
+        <atmosphere.version>2.5.4</atmosphere.version>
+        <atmosphere.gwt.version>2.5.0</atmosphere.gwt.version>
         <ant.version>1.8.2</ant.version>
         <junit.version>4.12</junit.version>
         <junit.addons.version>1.4</junit.addons.version>

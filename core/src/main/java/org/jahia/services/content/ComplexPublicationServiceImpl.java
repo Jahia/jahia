@@ -138,14 +138,12 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
             String translationNodeRelPath = (publicationInfo.getRoot().getChildren().size() > 0 ? ("/j:translation_" + language) : null);
             for (PublicationInfoNode childNode : publicationInfo.getRoot().getChildren()) {
                 if (childNode.getPath().contains(translationNodeRelPath)) {
-                    if(childNode.getStatus() == NOT_PUBLISHED) {
-                        if (!isPublished(nodeIdentifier, language) && result.getPublicationStatus() != MANDATORY_LANGUAGE_VALID) {
-                            result.setPublicationStatus(NOT_PUBLISHED);
-                        }
+                    if(childNode.getStatus() == NOT_PUBLISHED && !isPublished(nodeIdentifier, language) && result.getPublicationStatus() != MANDATORY_LANGUAGE_VALID && result.getPublicationStatus() != UNPUBLISHED) {
+                        result.setPublicationStatus(NOT_PUBLISHED);
                     } else if (childNode.getStatus() > result.getPublicationStatus()) {
                         result.setPublicationStatus(childNode.getStatus());
                     }
-                    if (result.getPublicationStatus() == UNPUBLISHED && childNode.getStatus() != UNPUBLISHED) {
+                    if (result.getPublicationStatus() == UNPUBLISHED && childNode.getStatus() != UNPUBLISHED && childNode.getStatus() != NOT_PUBLISHED) {
                         result.setPublicationStatus(childNode.getStatus());
                     }
                     if (childNode.isLocked()) {

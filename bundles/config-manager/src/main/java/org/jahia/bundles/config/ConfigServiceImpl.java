@@ -56,6 +56,7 @@ import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ConfigurationEvent;
 import org.osgi.service.cm.ConfigurationListener;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
@@ -87,6 +88,17 @@ public class ConfigServiceImpl implements ConfigService, ConfigurationListener {
     @Reference
     public void setConfigAdmin(ConfigurationAdmin configAdmin) {
         this.configAdmin = configAdmin;
+    }
+
+    @Activate
+    public void start() {
+        File restoreConfigurations = new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "[persisted-configurations].dorestore");
+        if (System.getProperty("restoreConfigurations") != null || restoreConfigurations.exists()) {
+            restoreConfigurations(Arrays.asList(ConfigService.ConfigType.MODULE_DEFAULT, ConfigService.ConfigType.USER));
+            if (restoreConfigurations.exists()) {
+                restoreConfigurations.delete();
+            }
+        }
     }
 
     public Map<String, ConfigType> getAllConfigurations() {

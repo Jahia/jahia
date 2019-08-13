@@ -138,14 +138,12 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
             String translationNodeRelPath = (publicationInfo.getRoot().getChildren().size() > 0 ? ("/j:translation_" + language) : null);
             for (PublicationInfoNode childNode : publicationInfo.getRoot().getChildren()) {
                 if (childNode.getPath().contains(translationNodeRelPath)) {
-                    if(childNode.getStatus() == NOT_PUBLISHED) {
-                        if (!isPublished(nodeIdentifier, language) && result.getPublicationStatus() != MANDATORY_LANGUAGE_VALID) {
-                            result.setPublicationStatus(NOT_PUBLISHED);
-                        }
+                    if(childNode.getStatus() == NOT_PUBLISHED && !isPublished(nodeIdentifier, language) && result.getPublicationStatus() != MANDATORY_LANGUAGE_VALID && result.getPublicationStatus() != UNPUBLISHED) {
+                        result.setPublicationStatus(NOT_PUBLISHED);
                     } else if (childNode.getStatus() > result.getPublicationStatus()) {
                         result.setPublicationStatus(childNode.getStatus());
                     }
-                    if (result.getPublicationStatus() == PublicationInfo.UNPUBLISHED && childNode.getStatus() != PublicationInfo.UNPUBLISHED) {
+                    if (result.getPublicationStatus() == UNPUBLISHED && childNode.getStatus() != UNPUBLISHED && childNode.getStatus() != NOT_PUBLISHED) {
                         result.setPublicationStatus(childNode.getStatus());
                     }
                     if (childNode.isLocked()) {
@@ -260,12 +258,10 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
                     info.setWorkflowTitle(lastTitle);
                 }
             }
-            for (PublicationInfo info : publicationInfos) {
-                Set<String> publishedLanguages = info.getAllPublishedLanguages();
-                if (!languages.containsAll(publishedLanguages)) {
-                    keepOnlyTranslation(result);
-                }
-            }
+            // remove identifier of contents with a translation
+            Set<String> clearedIdentifiers = clearNodeIdentifiersOnTranslationNodes(result);
+            // filter out shared node that should not be part of the unpublication
+            removeSharedNodes(result, languages, clearedIdentifiers);
             return new ArrayList<>(result.values());
         } catch (RepositoryException e) {
             throw new JahiaRuntimeException(e);
@@ -357,6 +353,7 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
             info.setNodeTitle(node.getPath());
         }
 
+        info.setAllPublishedLanguagesInSubTree(getAllPublishedLanguagesInSubTree(node));
         info.setLanguage(language);
         info.setWorkInProgress(node.isWorkInProgress());
         info.setPublicationRootNodeIdentifier(root.getUuid());
@@ -388,7 +385,7 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
                     if (childNode.getStatus() > lastInfo.getPublicationStatus()) {
                         lastInfo.setPublicationStatus(childNode.getStatus());
                     }
-                    if (lastInfo.getPublicationStatus() == PublicationInfo.UNPUBLISHED && childNode.getStatus() != PublicationInfo.UNPUBLISHED) {
+                    if (lastInfo.getPublicationStatus() == UNPUBLISHED && childNode.getStatus() != UNPUBLISHED) {
                         lastInfo.setPublicationStatus(childNode.getStatus());
                     }
                     if (childNode.isLocked()) {
@@ -427,7 +424,7 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
         allInfos.put(node.getUuid(), info);
 
         for (PublicationInfoNode sub : node.getChildren()) {
-            if (sub.getPath().indexOf("/j:translation") == -1) {
+            if (!sub.getPath().contains("/j:translation")) {
                 convert(allInfos, root, mainPaths, lastRule, sub, references, language, workflowAction, session);
             }
         }
@@ -435,16 +432,52 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
         return info;
     }
 
-    private static void keepOnlyTranslation(Map<String, FullPublicationInfoImpl> infosByPath) {
+    private Set<String> getAllPublishedLanguagesInSubTree(PublicationInfoNode node) {
+        final Set<String> result = new HashSet<>();
+        if (node.getStatus() != UNPUBLISHED  && node.getStatus() != NOT_PUBLISHED  && node.getPath().contains("/j:translation_")) {
+            result.add(StringUtils.substringAfterLast(node.getPath(),"/j:translation_"));
+        }
+        for (PublicationInfoNode childNode : node.getChildren()) {
+            result.addAll(getAllPublishedLanguagesInSubTree(childNode));
+        }
+        return result;
+    }
+
+    private static void removeSharedNodes(Map<String, FullPublicationInfoImpl> infosByPath, Collection<String> languages, Set<String> clearedIdentifiers) {
         Set<String> paths = new HashSet<>(infosByPath.keySet());
+        // Filter out info of content we need to keep.
         for (String path : paths) {
             FullPublicationInfoImpl info = infosByPath.get(path);
-            if (info.getTranslationNodeIdentifier() == null) {
+
+            // Remove info: in case we already have an info for the i18n node
+            boolean clearedForTranslation = clearedIdentifiers.contains(info.getNodeIdentifier());
+
+            // check if subtree contains published translations
+            boolean hasI18NSubContent = !info.getAllPublishedLanguagesInSubTree().isEmpty();
+
+            // Remove info: in case subtree contains published translations and 
+            boolean contentNotPublishedInLanguage = hasI18NSubContent && !info.getAllPublishedLanguagesInSubTree().contains(info.getLanguage());
+
+            // Keep content that is still publish in another language.
+            Set<String> remainingPublishedLanguages = new HashSet<>(info.getAllPublishedLanguagesInSubTree());
+            remainingPublishedLanguages.removeAll(languages);
+            boolean contentStillPublishedInOtherLanguage = hasI18NSubContent && !remainingPublishedLanguages.isEmpty();
+
+            if (info.getTranslationNodeIdentifier() == null && (clearedForTranslation || contentNotPublishedInLanguage || contentStillPublishedInOtherLanguage)) {
                 infosByPath.remove(path);
-            } else {
+            }
+        }
+    }
+
+    private static Set<String> clearNodeIdentifiersOnTranslationNodes(Map<String, FullPublicationInfoImpl> infosByPath) {
+        Set<String> clearedIdentifiers = new HashSet<>();
+        for (FullPublicationInfoImpl info : infosByPath.values()) {
+            if (info.getTranslationNodeIdentifier() != null) {
+                clearedIdentifiers.add(info.getNodeIdentifier());
                 info.clearNodeIdentifier();
             }
         }
+        return clearedIdentifiers;
     }
 
     @Override
@@ -569,6 +602,7 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
         private String language;
         private String translationNodeIdentifier;
         private LinkedHashSet<String> deletedTranslationNodeIdentifiers = new LinkedHashSet<>();
+        private Set<String> allPublishedLanguagesInSubTree = new HashSet<>();
 
         public FullPublicationInfoImpl(String nodeIdentifier, int publicationStatus) {
             super(publicationStatus);
@@ -690,6 +724,14 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
 
         public void addDeletedTranslationNodeIdentifier(String deletedTranslationNodeIdentifier) {
             this.deletedTranslationNodeIdentifiers.add(deletedTranslationNodeIdentifier);
+        }
+
+        public Set<String> getAllPublishedLanguagesInSubTree() {
+            return allPublishedLanguagesInSubTree;
+        }
+
+        public void setAllPublishedLanguagesInSubTree(Set<String> allPublishedLanguagesInSubTree) {
+            this.allPublishedLanguagesInSubTree = allPublishedLanguagesInSubTree;
         }
 
         @Override

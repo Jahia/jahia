@@ -3715,34 +3715,47 @@ if (!Element.prototype.matches) {
                 },
                 returnURL: null
             },
-            resizeLanguageInput: function () {
-                var languageInput = DexV2('.toolbar-itemsgroup-languageswitcher input');
+            methods: {
+              resizeInput: function (selector) {
+                var inputHolder = DexV2(selector),
+                    input = DexV2(selector).filter('input');
 
-                if (languageInput.nodes[0]) {
-                    var languageInputValue = DexV2('.toolbar-itemsgroup-languageswitcher input').nodes[0].value;
+                if (input.nodes[0]) {
+                    var inputValue = input.nodes[0].value;
 
                     var wideChars = 'ABCDEFGHJKLMNOPQRSTUVWXYZ';
                     var mediumChars = 'abcdefghkmnopqrstuvwxyzI';
-                    var slimChars = 'ijl';
+                    var slimChars = '()ijl ';
 
-                    var textWidth = function (languageInputValue) {
+                    var textWidth = function (inputValue) {
                         var returnWidth = 0;
 
-                        for (var charIndex in languageInputValue) {
-                            var isWide = (wideChars.indexOf(languageInputValue[charIndex]) > -1) ? 10 : 0;
-                            var isMedium = (mediumChars.indexOf(languageInputValue[charIndex]) > -1) ? 7 : 0;
-                            var isSlim = (slimChars.indexOf(languageInputValue[charIndex]) > -1) ? 5 : 0;
+                        for (var charIndex in inputValue) {
+                            var isWide = (wideChars.indexOf(inputValue[charIndex]) > -1) ? 10 : 0;
+                            var isMedium = (mediumChars.indexOf(inputValue[charIndex]) > -1) ? 7 : 0;
+                            var isSlim = (slimChars.indexOf(inputValue[charIndex]) > -1) ? 5 : 0;
                             var addWidth = (isWide + isMedium + isSlim);
+
 
                             returnWidth = returnWidth + (addWidth || 10);
                         }
 
                         return returnWidth;
 
-                    }(languageInputValue);
+                    }(inputValue);
 
-                    DexV2('.toolbar-itemsgroup-languageswitcher').nodes[0].style.setProperty('width', ((textWidth + 15) + 'px'), 'important');
+                    inputHolder.nodes[0].style.setProperty('width', ((textWidth + 15) + 'px'), 'important');
                 }
+
+              }
+            },
+            resizeLanguageInput: function(){
+              app.edit.methods.resizeInput('.toolbar-itemsgroup-languageswitcher');
+
+              DexV2.getCached('body').onAttribute('body', 'data-main-node-displayname', function(){
+                app.edit.methods.resizeInput('.toolbar-itemsgroup-languageswitcher');
+              }, 'RESIZE_LANGUAGE_INPUT');
+
             },
             // Event Handlers
             onOpen: function () {
@@ -5070,7 +5083,8 @@ if (!Element.prototype.matches) {
                     }, "RESELECT_SIDE_PANEL_PAGES")
 
                 })
-                .onAttribute('body', 'data-langdisplayname', app.edit.resizeLanguageInput)
+                .onAttribute('body', 'data-lang', app.edit.resizeLanguageInput)
+                .onAttribute('body', 'data-sitekey', app.edit.resizeLanguageInput)
                 .onAttribute('#JahiaGxtContentPickerWindow .x-vsplitbar, #contentpicker .x-vsplitbar, #contentmanager .x-vsplitbar, #JahiaGxtContentPicker .x-vsplitbar', 'style', app.picker.onResize)
                 .onOpen('.x-window', function () {
                     // Get close button

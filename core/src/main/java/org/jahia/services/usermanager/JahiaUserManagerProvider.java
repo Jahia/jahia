@@ -44,6 +44,7 @@
 package org.jahia.services.usermanager;
 
 import org.jahia.services.JahiaService;
+import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -62,9 +63,11 @@ import java.util.regex.Pattern;
 @Deprecated
 public abstract class JahiaUserManagerProvider extends JahiaService implements InitializingBean, DisposableBean {
 
-    private static Logger logger = LoggerFactory.getLogger(JahiaUserManagerProvider.class);
+    private static class PatternHolder {
+        static final Pattern pattern = Pattern.compile(SettingsBean.getInstance().lookupString("userManagementUserNamePattern"));
+    }
 
-    private static Pattern userNamePattern;
+    private static final Logger logger = LoggerFactory.getLogger(JahiaUserManagerProvider.class);
 
     private boolean defaultProvider = false;
     private boolean readOnly = false;
@@ -74,15 +77,7 @@ public abstract class JahiaUserManagerProvider extends JahiaService implements I
     protected JahiaUserManagerService userManagerService;
 
     private static Pattern getUserNamePattern() {
-        if (userNamePattern == null) {
-            synchronized (JahiaUserManagerProvider.class) {
-                if (userNamePattern == null) {
-                    userNamePattern = Pattern.compile(org.jahia.settings.SettingsBean.getInstance()
-                            .lookupString("userManagementUserNamePattern"));
-                }
-            }
-        }
-        return userNamePattern;
+        return PatternHolder.pattern;
     }
 
     public String getKey() {
@@ -175,7 +170,6 @@ public abstract class JahiaUserManagerProvider extends JahiaService implements I
      * @return Return a List of strings holding the user identification names.
      */
     public abstract List<String> getUsernameList();
-
 
     /**
      * Performs a login of the specified user.

@@ -45,6 +45,7 @@ package org.jahia.services.usermanager;
 
 import org.jahia.services.JahiaService;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -63,9 +64,11 @@ import java.util.regex.Pattern;
 @Deprecated
 public abstract class JahiaGroupManagerProvider extends JahiaService implements InitializingBean, DisposableBean {
 
-    private static Logger logger = LoggerFactory.getLogger(JahiaGroupManagerProvider.class);
+    private static class PatternHolder {
+        static final Pattern pattern = Pattern.compile(SettingsBean.getInstance().lookupString("userManagementGroupNamePattern"));
+    }
 
-    private static Pattern groupNamePattern;
+    private static Logger logger = LoggerFactory.getLogger(JahiaGroupManagerProvider.class);
 
     private boolean defaultProvider = false;
     private boolean readOnly = false;
@@ -74,15 +77,7 @@ public abstract class JahiaGroupManagerProvider extends JahiaService implements 
     protected JahiaGroupManagerService groupManagerService;
 
     protected static Pattern getGroupNamePattern() {
-        if (groupNamePattern == null) {
-            synchronized (JahiaUserManagerProvider.class) {
-                if (groupNamePattern == null) {
-                    groupNamePattern = Pattern.compile(org.jahia.settings.SettingsBean.getInstance().lookupString(
-                            "userManagementGroupNamePattern"));
-                }
-            }
-        }
-        return groupNamePattern;
+        return PatternHolder.pattern;
     }
 
     /**
@@ -319,5 +314,5 @@ public abstract class JahiaGroupManagerProvider extends JahiaService implements 
 
     public void flushCache() {
         // do nothing
-    };
+    }
 }

@@ -109,8 +109,8 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
 
     private JahiaUserSplittingRule userSplittingRule;
     private ServletContext servletContext;
-    private String rootUserName;
-    private Map<String, JahiaUserManagerProvider> legacyUserProviders = new HashMap<String, JahiaUserManagerProvider>();
+    private volatile String rootUserName;
+    private Map<String, JahiaUserManagerProvider> legacyUserProviders = new HashMap<>();
     private UserCacheHelper cacheHelper;
     private PasswordService passwordService;
 
@@ -299,16 +299,18 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @return the system root user name (cached)
      */
     public String getRootUserName() {
-        // First do non-synchronized check to avoid locking any threads that invoke the method simultaneously.
-        if (rootUserName == null) {
-            // Then check-again-and-initialize-if-needed within the synchronized block to ensure check-and-initialization consistency.
+        // Thread-safe lazy loading, using double-checked locking pattern
+        // see https://en.wikipedia.org/wiki/Double-checked_locking#Usage_in_Java
+        String userName = rootUserName;
+        if (userName == null) {
             synchronized (this) {
-                if (rootUserName == null) {
-                    rootUserName = lookupRootUser().getName();
+                userName = rootUserName;
+                if (userName == null) {
+                    rootUserName = userName = lookupRootUser().getName();
                 }
             }
         }
-        return rootUserName;
+        return userName;
     }
 
     /**
@@ -351,7 +353,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     public List<String> getUserList(String siteKey) {
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(Constants.LIVE_WORKSPACE, null, null);
-            List<String> users = new ArrayList<String>();
+            List<String> users = new ArrayList<>();
             if (session.getWorkspace().getQueryManager() != null) {
                 String query = siteKey == null
                         ? "SELECT [j:nodename] FROM [" + Constants.JAHIANT_USER
@@ -396,7 +398,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     public List<String> getUsernameList(String siteKey) {
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(Constants.LIVE_WORKSPACE, null, null);
-            Set<String> users = new TreeSet<String>();
+            Set<String> users = new TreeSet<>();
             if (session.getWorkspace().getQueryManager() != null) {
                 String usersPath = (siteKey == null) ? "/users/" : "/sites/" + siteKey + "/users/";
                 String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_USER + "] where isdescendantnode('" + usersPath + "')";
@@ -409,10 +411,10 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
                     users.add(userName);
                 }
             }
-            return new ArrayList<String>(users);
+            return new ArrayList<>(users);
         } catch (RepositoryException e) {
             logger.error("Error while retrieving user name list", e);
-            return new ArrayList<String>();
+            return new ArrayList<>();
         }
     }
 
@@ -431,7 +433,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
             return searchUsers(searchCriterias, JCRSessionFactory.getInstance().getCurrentSystemSession(Constants.LIVE_WORKSPACE, null, null));
         } catch (RepositoryException e) {
             logger.error("Error while searching for users", e);
-            return new HashSet<JCRUserNode>();
+            return new HashSet<>();
         }
     }
 
@@ -450,7 +452,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
             return searchUsers(searchCriterias, providers, JCRSessionFactory.getInstance().getCurrentSystemSession(Constants.LIVE_WORKSPACE, null, null));
         } catch (RepositoryException e) {
             logger.error("Error while searching for users", e);
-            return new HashSet<JCRUserNode>();
+            return new HashSet<>();
         }
     }
 
@@ -479,7 +481,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     public Set<JCRUserNode> searchUsers(Properties searchCriterias, String siteKey, final String[] providerKeys, boolean excludeProtected, JCRSessionWrapper session) {
 
         if (providerKeys != null) {
-            Set<JCRUserNode> users = new HashSet<JCRUserNode>();
+            Set<JCRUserNode> users = new HashSet<>();
 
             int limit = -1;
             if (searchCriterias.containsKey(COUNT_LIMIT)) {
@@ -505,11 +507,9 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     }
 
     public Set<JCRUserNode> searchUsers(final Properties searchCriterias, String siteKey, final String providerKey, boolean excludeProtected, JCRSessionWrapper session) {
-
         try {
-
             int limit = 0;
-            Set<JCRUserNode> users = new HashSet<JCRUserNode>();
+            Set<JCRUserNode> users = new HashSet<>();
 
             if (session.getWorkspace().getQueryManager() != null) {
 
@@ -544,7 +544,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
                     }
                     if (filters.containsKey(COUNT_LIMIT)) {
                         limit = Integer.parseInt((String) filters.get(COUNT_LIMIT));
-                        logger.debug("Limit of results has be set to " + limit);
+                        logger.debug("Limit of results has be set to {}", limit);
                         filters.remove(COUNT_LIMIT);
                     }
                     // Avoid wildcard attribute
@@ -615,7 +615,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
             return users;
         } catch (RepositoryException e) {
             logger.error("Error while searching for users", e);
-            return new HashSet<JCRUserNode>();
+            return new HashSet<>();
         }
     }
 
@@ -630,7 +630,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     }
 
     public List<JCRStoreProvider> getProviderList(String siteKey, JCRSessionWrapper session) {
-        List<JCRStoreProvider> providers = new LinkedList<JCRStoreProvider>();
+        List<JCRStoreProvider> providers = new LinkedList<>();
         try {
             providers.add(JCRSessionFactory.getInstance().getDefaultProvider());
             String providersParentPath = (siteKey == null ? "" : "/sites/" + siteKey) + "/users/providers";
@@ -663,7 +663,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
         if (ArrayUtils.isEmpty(providerKeys)) {
             return Collections.emptyList();
         }
-        List<JCRStoreProvider> providers = new LinkedList<JCRStoreProvider>();
+        List<JCRStoreProvider> providers = new LinkedList<>();
         for (JCRStoreProvider provider : getProviderList(siteKey, session)) {
             if (ArrayUtils.contains(providerKeys, provider.getKey())) {
                 providers.add(provider);
@@ -882,7 +882,6 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     }
 
     private void checkRootUserPwd() {
-
         try {
 
             final String pwd = getNewRootUserPwd();
@@ -944,7 +943,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      */
     @Deprecated
     public List<? extends JahiaUserManagerProvider> getProviderList() {
-        return new ArrayList<JahiaUserManagerProvider>(legacyUserProviders.values());
+        return new ArrayList<>(legacyUserProviders.values());
     }
 
     /**
@@ -992,7 +991,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * Remove all cache entries for non existing groups
      */
     public void clearNonExistingUsersCache() {
-        cacheHelper.clearNonExistingUsersCache();;
+        cacheHelper.clearNonExistingUsersCache();
     }
 
     /**

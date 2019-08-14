@@ -72,11 +72,13 @@ import org.jahia.services.sites.JahiaSitesService;
  */
 public class UserCacheHelper {
 
-    private EhCacheProvider ehCacheProvider;
-    private SelfPopulatingCache userPathByUserNameCache;
-    private int timeToLiveForNonExistingUsers = 600;
+    private static final int DEFAULT_TTL_FOR_NON_EXISTING_USERS = 600;
 
-    private class UserPathByUserNameCacheEntryFactory implements CacheEntryFactory {
+    private EhCacheProvider ehCacheProvider;
+    private volatile SelfPopulatingCache userPathByUserNameCache;
+    private int timeToLiveForNonExistingUsers = DEFAULT_TTL_FOR_NON_EXISTING_USERS;
+
+    private final class UserPathByUserNameCacheEntryFactory implements CacheEntryFactory {
 
         @Override
         public Object createEntry(final Object key) throws Exception {
@@ -88,9 +90,46 @@ public class UserCacheHelper {
                 return new Element(key, StringUtils.EMPTY, 0, timeToLiveForNonExistingUsers);
             }
         }
+
+        private String internalGetUserPath(String name, String siteName) throws RepositoryException {
+            StringBuilder statement = new StringBuilder();
+            statement.append("SELECT [j:nodename] from [jnt:user] where localname()='");
+            statement.append(JCRContentUtils.sqlEncode(name));
+            statement.append("' and isdescendantnode('");
+            if (siteName != null) {
+                statement.append(JahiaSitesService.SITES_JCR_PATH);
+                statement.append('/');
+                statement.append(JCRContentUtils.sqlEncode(siteName));
+            }
+            statement.append("/users/')");
+
+            String path = queryUserPathInWorkspace(statement, Constants.LIVE_WORKSPACE);
+            if (path == null) {
+                path = queryUserPathInWorkspace(statement, null);
+            }
+            return path;
+        }
+
+        private String queryUserPathInWorkspace(StringBuilder q, String workspace) throws RepositoryException {
+            final QueryWrapper query = JCRSessionFactory
+                    .getInstance()
+                    .getCurrentSystemSession(workspace, null, null)
+                    .getWorkspace()
+                    .getQueryManager()
+                    .createQuery(q.toString(), Query.JCR_SQL2);
+            query.setLimit(1);
+
+            RowIterator it = query.execute().getRows();
+            if (it.hasNext()) {
+                return it.nextRow().getPath();
+            }
+
+            return null;
+        }
+
     }
 
-    private static class UserPathCacheKey implements Serializable {
+    private static final class UserPathCacheKey implements Serializable {
 
         private static final long serialVersionUID = -727853070149556455L;
 
@@ -124,7 +163,6 @@ public class UserCacheHelper {
             int iTotal = 17;
             iTotal = 37 * iTotal + (user != null ? user.hashCode() : 0);
             iTotal = 37 * iTotal + (site != null ? site.hashCode() : 0);
-
             return iTotal;
         }
 
@@ -145,46 +183,21 @@ public class UserCacheHelper {
     }
 
     private SelfPopulatingCache getUserPathByUserNameCache() {
-        // First do non-synchronized check to avoid locking any threads that invoke the method simultaneously.
-        if (userPathByUserNameCache == null) {
-            // Then check-again-and-initialize-if-needed within the synchronized block to ensure check-and-initialization consistency.
+        // Thread-safe lazy loading, using double-checked locking pattern
+        // see https://en.wikipedia.org/wiki/Double-checked_locking#Usage_in_Java
+        SelfPopulatingCache cache = userPathByUserNameCache;
+        if (cache == null) {
             synchronized (this) {
-                if (userPathByUserNameCache == null) {
-                    userPathByUserNameCache = ehCacheProvider.registerSelfPopulatingCache("org.jahia.services.usermanager.JahiaUserManagerService.userPathByUserNameCache", new Searchable(), new UserPathByUserNameCacheEntryFactory());
+                cache = userPathByUserNameCache;
+                if (cache == null) {
+                    userPathByUserNameCache = cache = ehCacheProvider.registerSelfPopulatingCache(
+                            "org.jahia.services.usermanager.JahiaUserManagerService.userPathByUserNameCache",
+                            new Searchable(), new UserPathByUserNameCacheEntryFactory()
+                    );
                 }
             }
         }
-        return userPathByUserNameCache;
-    }
-
-    private String internalGetUserPath(String name, String siteName) throws RepositoryException {
-        StringBuilder q = new StringBuilder();
-        q.append("SELECT [j:nodename] from [jnt:user] where localname()='").append(JCRContentUtils.sqlEncode(name))
-                .append("' and isdescendantnode('");
-        if (siteName != null) {
-            q.append(JahiaSitesService.SITES_JCR_PATH + "/").append(JCRContentUtils.sqlEncode(siteName));
-        }
-        q.append("/users/')");
-        String p = queryUserPathInWorkspace(q, Constants.LIVE_WORKSPACE);
-        if (p == null) {
-            p = queryUserPathInWorkspace(q, null);
-        }
-        return p;
-    }
-
-    private String queryUserPathInWorkspace(StringBuilder q, String workspace) throws RepositoryException {
-        final QueryWrapper query = JCRSessionFactory
-                .getInstance()
-                .getCurrentSystemSession(workspace, null, null)
-                .getWorkspace()
-                .getQueryManager()
-                .createQuery(q.toString(), Query.JCR_SQL2);
-        query.setLimit(1);
-        RowIterator it = query.execute().getRows();
-        if (!it.hasNext()) {
-            return null;
-        }
-        return it.nextRow().getPath();
+        return cache;
     }
 
     public void setEhCacheProvider(EhCacheProvider ehCacheProvider) {

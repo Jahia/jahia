@@ -91,7 +91,7 @@ public class CutActionItem extends NodeTypeAwareBaseActionItem  {
                     }
 
                     public void onSuccess(Object o) {
-                        CopyPasteEngine.getInstance().setCutPaths(actualSelection);
+                        CopyPasteEngine.getInstance().setCutNodes(actualSelection);
                         linker.select(null);
                         ClipboardActionItem.setCopied(actualSelection);
                     }

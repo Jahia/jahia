@@ -45,7 +45,14 @@ package org.jahia.ajax.gwt.client.util.content;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.core.client.JsArrayUtils;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.storage.client.Storage;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -57,41 +64,98 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.PlaceholderModule;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ClipboardActionItem;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * 
- *
  * @author rfelden
  * @version 8 juil. 2008 - 17:13:07
  */
 public class CopyPasteEngine {
 
-    private static CopyPasteEngine m_instance = null ;
+    private static CopyPasteEngine instance = null;
     private List<PlaceholderModule> placeholders = new ArrayList<PlaceholderModule>();
-    
+
     // Copy-paste
     private final List<GWTJahiaNode> copiedNodes = new ArrayList<GWTJahiaNode>();
-    private boolean cut ;
+    private final Storage storage;
+    private String previousStoredValue;
+
+    private boolean cut;
 
     public static CopyPasteEngine getInstance() {
-        if (m_instance == null) {
-            m_instance = new CopyPasteEngine() ;
+        if (instance == null) {
+            instance = new CopyPasteEngine();
         }
-        return m_instance ;
+        return instance;
     }
 
     protected CopyPasteEngine() {
         exportStaticMethod();
+
+        storage = Storage.getLocalStorageIfSupported();
+
+        if (storage != null) {
+            Timer t = new Timer() {
+                @Override
+                public void run() {
+                    String clipboardString = storage.getItem("jahia-clipboard");
+                    if (clipboardString != null && !clipboardString.equals(previousStoredValue)) {
+                        List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
+                        JSONObject clipboard = JSONParser.parseStrict(clipboardString).isObject();
+                        JSONArray nodesArray = clipboard.get("nodes").isArray();
+                        int size = nodesArray.size();
+                        for (int i = 0; i < size; i++) {
+                            nodes.add(getGwtJahiaNode(nodesArray.get(i).isObject()));
+                        }
+                        String type = clipboard.get("type").isString().stringValue();
+
+                        if (!nodes.equals(copiedNodes) || cut != "cut".equals(type)) {
+                            setClipboard(nodes, type);
+                        }
+                        previousStoredValue = clipboardString;
+                    }
+                }
+            };
+
+            t.schedule(100);
+            t.scheduleRepeating(1000);
+        }
+    }
+
+    private GWTJahiaNode getGwtJahiaNode(JSONObject object) {
+        GWTJahiaNode node = new GWTJahiaNode();
+        node.setUUID(object.get("uuid").isString().stringValue());
+        node.setName(object.get("name").isString().stringValue());
+        node.setPath(object.get("path").isString().stringValue());
+        node.setDisplayName(object.get("displayName").isString().stringValue());
+        node.setNodeTypes(getStringList(object.get("nodeTypes")));
+        node.setInheritedNodeTypes(getStringList(object.get("inheritedNodeTypes")));
+
+        JSONValue referenceNode = object.get("referenceNode");
+        if (referenceNode != null && referenceNode.isObject() != null) {
+            node.setReference(true);
+            node.setReferencedNode(getGwtJahiaNode(referenceNode.isObject()));
+        }
+        return node;
+    }
+
+    private List<String> getStringList(JSONValue nodetypes) {
+        List<String> l = new ArrayList<String>();
+        JSONArray array = nodetypes.isArray();
+        if (array != null) {
+            for (int i = 0; i < array.size(); i++) {
+                l.add(array.get(i).isString().stringValue());
+            }
+        }
+        return l;
     }
 
     public void paste(final GWTJahiaNode m, final Linker linker, List<String> childNodeTypesToSkip, String newName) {
         if (!getCopiedNodes().isEmpty()) {
             JahiaContentManagementService
                     .App.getInstance().paste(JCRClientUtils.getPathesList(getCopiedNodes()), m.getPath(), newName, isCut(), childNodeTypesToSkip, new BaseAsyncCallback() {
+
+                @Override
                 public void onApplicationFailure(Throwable throwable) {
                     final String message = isCut() ? throwable
                             .getLocalizedMessage() : Messages.get("failure.paste.label") + "\n" + throwable
@@ -112,9 +176,12 @@ public class CopyPasteEngine {
             });
         }
     }
+
     public void pasteReference(final GWTJahiaNode m, final Linker linker) {
         JahiaContentManagementService
                 .App.getInstance().pasteReferences(JCRClientUtils.getPathesList(getCopiedNodes()), m.getPath(), null, new BaseAsyncCallback() {
+
+            @Override
             public void onApplicationFailure(Throwable throwable) {
                 final String message = isCut() ? throwable
                         .getLocalizedMessage() : Messages.get("failure.paste.label") + "\n" + throwable
@@ -141,7 +208,7 @@ public class CopyPasteEngine {
         Map<String, Object> data = new HashMap<String, Object>();
         List<String> newPaths = new ArrayList<String>();
         for (GWTJahiaNode node : getCopiedNodes()) {
-            newPaths.add(target.getPath() + "/" +  node.getName());
+            newPaths.add(target.getPath() + "/" + node.getName());
         }
         data.put("node", getCopiedNodes().get(0));
         data.put("nodes", newPaths);
@@ -149,10 +216,10 @@ public class CopyPasteEngine {
             ManagerLinker managerLinker = (ManagerLinker) linker;
             managerLinker.getLeftComponent().unmask();
             managerLinker.getTopRightComponent().unmask();
-            data.put(Linker.REFRESH_ALL,true);
+            data.put(Linker.REFRESH_ALL, true);
             linker.refresh(data);
         } else if (isCut() && MainModule.getInstance().getPath().contains(getCopiedNodes().get(0).getPath())) {
-            MainModule.staticGoTo(newPaths.get(0),MainModule.getInstance().getTemplate());
+            MainModule.staticGoTo(newPaths.get(0), MainModule.getInstance().getTemplate());
         } else {
             data.put(Linker.REFRESH_MAIN, true);
             linker.refresh(data);
@@ -167,10 +234,10 @@ public class CopyPasteEngine {
     public native void exportStaticMethod() /*-{
         var that = this;
         $wnd.getJahiaClipboard = function () {
-            return  that.@org.jahia.ajax.gwt.client.util.content.CopyPasteEngine::getCopiedNodesAsJs()();
+            return that.@org.jahia.ajax.gwt.client.util.content.CopyPasteEngine::getCopiedNodesAsJs()();
         }
         $wnd.getJahiaClipboardIsCut = function () {
-            return  that.@org.jahia.ajax.gwt.client.util.content.CopyPasteEngine::isCut()();
+            return that.@org.jahia.ajax.gwt.client.util.content.CopyPasteEngine::isCut()();
         }
         $wnd.getJahiaClipboardClear = function () {
             that.@org.jahia.ajax.gwt.client.util.content.CopyPasteEngine::onPastedPath()();
@@ -180,75 +247,93 @@ public class CopyPasteEngine {
     private JsArray<JavaScriptObject> getCopiedNodesAsJs() {
         List<JavaScriptObject> l = new ArrayList<JavaScriptObject>();
         for (GWTJahiaNode gwtJahiaNode : copiedNodes) {
-            l.add(convertGwtNode(gwtJahiaNode.getName(), gwtJahiaNode.getPath(), gwtJahiaNode.getUUID(),
-                    (gwtJahiaNode.getNodeTypes() != null && gwtJahiaNode.getNodeTypes().size() > 0) ? gwtJahiaNode.getNodeTypes().get(0) : null));
+            l.add(convertGwtNode(gwtJahiaNode));
         }
         return JsArrayUtils.readOnlyJsArray(l.toArray(new JavaScriptObject[l.size()]));
     }
 
-    private native JavaScriptObject convertGwtNode(String name, String path, String uuid, String nodeType) /*-{
-        return { 'name': name, 'path': path, 'uuid': uuid, 'nodetype': nodeType};
+    public static JsArrayString toJsArray(List<String> input) {
+        JsArrayString jsArrayString = JsArrayString.createArray().cast();
+        for (String s : input) {
+            jsArrayString.push(s);
+        }
+        return jsArrayString;
+    }
+
+    private JavaScriptObject convertGwtNode(GWTJahiaNode gwtJahiaNode) {
+        GWTJahiaNode ref = gwtJahiaNode.getReferencedNode();
+        return convertGwtNode(gwtJahiaNode.getName(), gwtJahiaNode.getPath(), gwtJahiaNode.getUUID(),
+                (gwtJahiaNode.getNodeTypes() != null && !gwtJahiaNode.getNodeTypes().isEmpty() ? gwtJahiaNode.getNodeTypes().get(0) : null), gwtJahiaNode.getDisplayName(),
+                toJsArray(gwtJahiaNode.getNodeTypes()), toJsArray(gwtJahiaNode.getInheritedNodeTypes()), ref != null ? convertGwtNode(ref) : null);
+    }
+
+    private native JavaScriptObject convertGwtNode(String name, String path, String uuid, String nodeType, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, JavaScriptObject referenceNode) /*-{
+        return {
+            'name': name,
+            'path': path,
+            'uuid': uuid,
+            'nodetype': nodeType,
+            'displayName': displayName,
+            'nodeTypes': nodeTypes,
+            'inheritedNodeTypes': inheritedNodeTypes,
+            'referenceNode': referenceNode
+        };
     }-*/;
 
-    private native void sendCopyEvent(JsArray<JavaScriptObject> copiedPaths, String type)  /*-{
-        $wnd.dispatchEvent(new CustomEvent('jahia-copy', { 'detail': { 'nodes' : copiedPaths , 'type': type }}));
+    private native String stringify(JsArray<JavaScriptObject> nodes, String type) /*-{
+        return JSON.stringify({'nodes': nodes, 'type': type});
+    }-*/;
+
+    private native void sendCopyEvent(JsArray<JavaScriptObject> nodes, String type)  /*-{
+        $wnd.dispatchEvent(new CustomEvent('jahia-copy', {'detail': {'nodes': nodes, 'type': type}}));
     }-*/;
 
     public void setCopiedNodes(List<GWTJahiaNode> copiedPaths) {
-        cut = false ;
+        setClipboard(copiedPaths, "copy");
+    }
+
+    public void setCutNodes(List<GWTJahiaNode> cutPaths) {
+        setClipboard(cutPaths, "cut");
+    }
+
+    public void onPastedPath() {
+        setClipboard(Collections.<GWTJahiaNode>emptyList(), "copy");
+    }
+
+    private void setClipboard(List<GWTJahiaNode> copiedPaths, String type) {
+        cut = "cut".equals(type);
         this.copiedNodes.clear();
         this.copiedNodes.addAll(copiedPaths);
         ClipboardActionItem.setCopied(copiedPaths);
         updatePlaceholders();
-        sendCopyEvent(getCopiedNodesAsJs(), "copy");
-    }
 
-    public void setCutPaths(List<GWTJahiaNode> cutPaths) {
-        this.copiedNodes.clear();
-        this.copiedNodes.addAll(cutPaths);
-        cut = true ;
-        ClipboardActionItem.setCopied(cutPaths);
-        updatePlaceholders();
-        sendCopyEvent(getCopiedNodesAsJs(), "cut");
-    }
-
-    public void onPastedPath() {
-        ClipboardActionItem.removeCopied(copiedNodes);
-        copiedNodes.clear();
-        cut = false ;
-        updatePlaceholders();
-        sendCopyEvent(getCopiedNodesAsJs(), "copy");
+        JsArray<JavaScriptObject> copiedNodesAsJs = getCopiedNodesAsJs();
+        if (storage != null) {
+            storage.setItem("jahia-clipboard", stringify(copiedNodesAsJs, type));
+        }
+        sendCopyEvent(copiedNodesAsJs, type);
     }
 
     public boolean isCut() {
-        return cut ;
+        return cut;
     }
 
     public boolean canCopyTo(GWTJahiaNode dest) {
         if (dest == null) {
-            return false ;
-        }
-        if (copiedNodes == null) {
             return false;
         }
-
-        for (GWTJahiaNode copiedPath : copiedNodes) {
-            if ((dest.getPath()+"/").startsWith(copiedPath.getPath()+"/")) {
-                return false;
-            }
-            if (isCut() && copiedPath.getPath().substring(0,copiedPath.getPath().lastIndexOf('/')).equals(dest.getPath())) {
-                return false;
-            }
-
+        if (!copiedNodes.isEmpty()) {
             // check only first node ..
-            return true;    
+            GWTJahiaNode copiedPath = copiedNodes.get(0);
+            return !(dest.getPath() + "/").startsWith(copiedPath.getPath() + "/") && (!isCut() || !copiedPath.getPath().substring(0, copiedPath.getPath().lastIndexOf('/')).equals(dest.getPath()));
         }
         return true;
     }
 
     /**
      * check if the provides node types match the type of the content in the clipboard.
-     * @param nodetypes node types to check
+     *
+     * @param nodetypes       node types to check
      * @param checkReferences if true, checks also references.
      * @return true if the content in the clipboard match a type of the provided node types.
      */
@@ -260,24 +345,23 @@ public class CopyPasteEngine {
             if (!sources.isEmpty()) {
                 String[] allowedTypes = nodetypes.split(" |,");
                 for (GWTJahiaNode source : sources) {
-                    boolean nodeAllowed = false;
-                    for (String type : allowedTypes) {
-                        if (source.isNodeType(type)
-                                || (source.isReference() && source.getReferencedNode() != null && source.getReferencedNode().isNodeType(type))) {
-                            nodeAllowed = true;
-                            break;
-                        } else if (checkReferences && type.equals("jnt:contentReference") && source.isNodeType("jmix:droppableContent")) {
-                            nodeAllowed = true;
-                            break;
-                        }
-                    }
-                    allowed &= nodeAllowed;
+                    allowed &= isNodeAllowed(checkReferences, allowedTypes, source);
                 }
             }
         } else {
             allowed = false;
         }
         return allowed;
+    }
+
+    private boolean isNodeAllowed(boolean checkReferences, String[] allowedTypes, GWTJahiaNode source) {
+        for (String type : allowedTypes) {
+            if ((source.isNodeType(type) || (source.isReference() && source.getReferencedNode() != null && source.getReferencedNode().isNodeType(type))) ||
+                    (checkReferences && type.equals("jnt:contentReference") && source.isNodeType("jmix:droppableContent"))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean canPasteAsReference() {
@@ -300,7 +384,7 @@ public class CopyPasteEngine {
             module.updatePasteButton();
         }
     }
-    
+
     public void addPlaceholder(PlaceholderModule module) {
         placeholders.add(module);
     }

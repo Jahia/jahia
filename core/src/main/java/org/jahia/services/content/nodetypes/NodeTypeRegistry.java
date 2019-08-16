@@ -92,9 +92,9 @@ public class NodeTypeRegistry implements NodeTypeManager {
     private final Map<ExtendedNodeType, Set<ExtendedNodeType>> mixinExtensions = new HashMap<>();
     private final Map<String, Set<ExtendedItemDefinition>> typedItems = new HashMap<>();
 
-    private ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-    private Lock readLock = readWriteLock.readLock();
-    private Lock writeLock = readWriteLock.writeLock();
+    private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+    private final Lock readLock = readWriteLock.readLock();
+    private final Lock writeLock = readWriteLock.writeLock();
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
     private static class Holder {
@@ -315,7 +315,7 @@ public class NodeTypeRegistry implements NodeTypeManager {
     public JahiaNodeTypeIterator getAllNodeTypes() {
         readLock.lock();
         try {
-            final Collection<ExtendedNodeType> values = nodetypes.values();
+            final Collection<ExtendedNodeType> values = new ArrayList<>(nodetypes.values());
             return new JahiaNodeTypeIterator(values.iterator(), values.size());
         } finally {
             readLock.unlock();
@@ -350,14 +350,15 @@ public class NodeTypeRegistry implements NodeTypeManager {
     public Map<String, String> getNamespaces() {
         return namespaces;
     }
+
     public NodeTypeIterator getPrimaryNodeTypes() throws RepositoryException {
         return getPrimaryNodeTypes(null);
     }
 
     public NodeTypeIterator getPrimaryNodeTypes(List<String> systemIds) throws RepositoryException {
         final boolean addAll = systemIds == null || systemIds.isEmpty();
+        final List<ExtendedNodeType> res = new ArrayList<>();
 
-        List<ExtendedNodeType> res = new ArrayList<>();
         readLock.lock();
         try {
             for (ExtendedNodeType nt : nodetypes.values()) {
@@ -377,8 +378,8 @@ public class NodeTypeRegistry implements NodeTypeManager {
 
     public NodeTypeIterator getMixinNodeTypes(List<String> systemIds) throws RepositoryException {
         final boolean addAll = systemIds == null || systemIds.isEmpty();
+        final List<ExtendedNodeType> res = new ArrayList<>();
 
-        List<ExtendedNodeType> res = new ArrayList<>();
         readLock.lock();
         try {
             for (ExtendedNodeType nt : nodetypes.values()) {
@@ -393,126 +394,102 @@ public class NodeTypeRegistry implements NodeTypeManager {
     }
 
     public void addNodeType(Name name, ExtendedNodeType nodeType) throws NodeTypeExistsException {
-        readLock.lock();
-        try {
-            if (nodetypes.containsKey(name)) {
-                final String systemId = nodetypes.get(name).getSystemId();
-                if (!systemId.equals(nodeType.getSystemId())) {
-                    throw new NodeTypeExistsException("Node type '" + name + "' already defined with a different systemId (existing: '"
-                            + systemId + "', provided: '" + nodeType.getSystemId() + "' with name: '" + nodeType.getName() + "')");
-                }
-            }
-        } finally {
-            readLock.unlock();
-        }
         writeLock.lock();
         try {
+            ExtendedNodeType previousNodeType = nodetypes.get(name);
+            if ((previousNodeType != null) && !Objects.equals(previousNodeType.getSystemId(), nodeType.getSystemId())) {
+                String errorMessage = String.format(
+                        "Node type '%s' already defined with a different systemId (existing: '%s', provided: '%s' with name: '%s')",
+                        name, previousNodeType.getSystemId(), nodeType.getSystemId(), nodeType.getName()
+                );
+                throw new NodeTypeExistsException(errorMessage);
+            }
+
             nodetypes.put(name, nodeType);
+
         } finally {
             writeLock.unlock();
         }
     }
 
     public void addMixinExtension(ExtendedNodeType mixin, ExtendedNodeType baseType) {
-        readLock.lock();
-        try {
-            if (!mixinExtensions.containsKey(baseType)) {
-                readLock.unlock();
-                writeLock.lock();
-                mixinExtensions.put(baseType, new HashSet<ExtendedNodeType>());
-                writeLock.unlock();
-                readLock.lock();
-            }
-        } finally {
-            readLock.unlock();
-        }
-
         writeLock.lock();
         try {
-            mixinExtensions.get(baseType).remove(mixin);
-            mixinExtensions.get(baseType).add(mixin);
+            Set<ExtendedNodeType> mixins = mixinExtensions.computeIfAbsent(baseType, k -> new HashSet<>());
+            mixins.remove(mixin);
+            mixins.add(mixin);
         } finally {
             writeLock.unlock();
         }
     }
 
     /**
-     * add extends mixin (mixin that extends one or multiple types) on given extended names (nodetypes to be extends)
+     * Add extends mixin (mixin that extends one or multiple types) on given extended names (nodetypes to be extends)
      * @param mixin the mixin
      * @param mixinExtendNames the types that need to be extended
      * @return The list of extended node types
      * @throws NoSuchNodeTypeException
      */
     public List<ExtendedNodeType> addMixinExtensions(ExtendedNodeType mixin, List<String> mixinExtendNames) throws NoSuchNodeTypeException {
-        List<ExtendedNodeType> newMixinExtend = new ArrayList<>();
-        for (String s : mixinExtendNames) {
-            final ExtendedNodeType type = getNodeType(s);
-            addMixinExtension(mixin, type);
-            newMixinExtend.add(type);
-        }
-
-        readLock.lock();
-        try {
-            if (extensionsMixin.containsKey(mixin)) {
-               // mixin was already extending some node types, check if we have to remove this extension on node types
-                Set<ExtendedNodeType> extendedNodeTypes  = new HashSet<>(extensionsMixin.get(mixin));
-                extendedNodeTypes.removeAll(newMixinExtend);
-
-                if(extendedNodeTypes.size() > 0) {
-                    // some node types should not be extended by this mixin anymore
-                    readLock.unlock();
-                    for (ExtendedNodeType extendedNodeType : extendedNodeTypes) {
-                        writeLock.lock();
-                        mixinExtensions.get(extendedNodeType).remove(mixin);
-                        writeLock.unlock();
-                    }
-                    readLock.lock();
-                }
-            }
-        } finally {
-            readLock.unlock();
-        }
-
         writeLock.lock();
         try {
+            final List<ExtendedNodeType> newMixinExtend = new ArrayList<>();
+            for (String name : mixinExtendNames) {
+                ExtendedNodeType type = getNodeType(name);
+                addMixinExtension(mixin, type);
+                newMixinExtend.add(type);
+            }
+
+            if (extensionsMixin.containsKey(mixin)) {
+                // mixin was already extending some node types, check if we have to remove this extension on node types
+                Set<ExtendedNodeType> extendedNodeTypes = new HashSet<>(extensionsMixin.get(mixin));
+                extendedNodeTypes.removeAll(newMixinExtend);
+
+                if (!extendedNodeTypes.isEmpty()) {
+                    // some node types should not be extended by this mixin anymore
+                    for (ExtendedNodeType extendedNodeType : extendedNodeTypes) {
+                        mixinExtensions.get(extendedNodeType).remove(mixin);
+                    }
+                }
+            }
+
             // store the extends nodetypes index by mixin
             extensionsMixin.put(mixin, newMixinExtend);
+
+            return newMixinExtend;
+
         } finally {
             writeLock.unlock();
         }
-
-        return newMixinExtend;
     }
 
     public Map<ExtendedNodeType, Set<ExtendedNodeType>> getMixinExtensions() {
-        return mixinExtensions;
+        readLock.lock();
+        try {
+            return new HashMap<>(mixinExtensions);
+        } finally {
+            readLock.unlock();
+        }
     }
 
     public void addTypedItem(ExtendedItemDefinition itemDef) {
         final String type = itemDef.getItemType();
-        readLock.lock();
-        try {
-            if (!typedItems.containsKey(type)) {
-                readLock.unlock();
-                writeLock.lock();
-                typedItems.put(type, new HashSet<ExtendedItemDefinition>());
-                writeLock.unlock();
-                readLock.lock();
-            }
-        } finally {
-            readLock.unlock();
-        }
-
         writeLock.lock();
         try {
-            typedItems.get(type).add(itemDef);
+            Set<ExtendedItemDefinition> definitions = typedItems.computeIfAbsent(type, k -> new HashSet<>());
+            definitions.add(itemDef);
         } finally {
             writeLock.unlock();
         }
     }
 
     public Map<String, Set<ExtendedItemDefinition>> getTypedItems() {
-        return typedItems;
+        readLock.lock();
+        try {
+            return new HashMap<>(typedItems);
+        } finally {
+            readLock.unlock();
+        }
     }
 
     public void unregisterNodeType(Name name) {
@@ -542,23 +519,22 @@ public class NodeTypeRegistry implements NodeTypeManager {
     }
 
     public void unregisterNodeTypes(String systemId) {
-        readLock.lock();
+        writeLock.lock();
         try {
             for (Name n : new HashSet<>(nodetypes.keySet())) {
                 ExtendedNodeType nt = nodetypes.get(n);
                 if (systemId.equals(nt.getSystemId())) {
-                    readLock.unlock();
                     unregisterNodeType(n);
-                    readLock.lock();
                 }
             }
         } finally {
-            readLock.unlock();
+            writeLock.unlock();
         }
+
         files.remove(systemId);
     }
 
-    public class JahiaNodeTypeIterator implements NodeTypeIterator, Iterable<ExtendedNodeType> {
+    public static class JahiaNodeTypeIterator implements NodeTypeIterator, Iterable<ExtendedNodeType> {
         private long size;
         private long pos = 0;
         private final Iterator<ExtendedNodeType> iterator;
@@ -597,10 +573,10 @@ public class NodeTypeRegistry implements NodeTypeManager {
         }
 
         public Object next() {
-            pos += 1;
-            return iterator.next();
+            return nextNodeType();
         }
 
+        @Override
         public void remove() {
             iterator.remove();
             size -= 1;
@@ -618,7 +594,12 @@ public class NodeTypeRegistry implements NodeTypeManager {
     }
 
     public boolean hasNodeType(String name) {
-        return nodetypes.get(new Name(name, namespaces)) != null;
+        readLock.lock();
+        try {
+            return nodetypes.get(new Name(name, namespaces)) != null;
+        } finally {
+            readLock.unlock();
+        }
     }
 
     public NodeTypeTemplate createNodeTypeTemplate() throws UnsupportedRepositoryOperationException, RepositoryException {
@@ -646,40 +627,38 @@ public class NodeTypeRegistry implements NodeTypeManager {
     }
 
     public void unregisterNodeType(String name) throws ConstraintViolationException {
-        Name n = new Name(name, namespaces);
-        readLock.lock();
-        if (nodetypes.containsKey(n)) {
-            try {
+        final Name n = new Name(name, namespaces);
+
+        writeLock.lock();
+        try {
+            if (nodetypes.containsKey(n)) {
                 for (ExtendedNodeType type : nodetypes.values()) {
                     if (!type.getName().equals(name)) {
                         for (ExtendedNodeType nt : type.getSupertypes()) {
                             if (nt.getName().equals(name)) {
-                                throw new ConstraintViolationException("Cannot unregister node type " + name + " because " + type.getName() + " extends it.");
+                                throw new ConstraintViolationException(
+                                        "Cannot unregister node type " + name + " because " + type.getName() + " extends it.");
                             }
                         }
                         for (ExtendedNodeDefinition ntd : type.getChildNodeDefinitions()) {
                             if (Sets.newHashSet(ntd.getRequiredPrimaryTypeNames()).contains(name)) {
-                                throw new ConstraintViolationException("Cannot unregister node type " + name + " because a child node definition of " + type.getName() + " requires it.");
+                                throw new ConstraintViolationException(
+                                        "Cannot unregister node type " + name + " because a child node definition of " + type.getName() + " requires it.");
                             }
                         }
                         for (ExtendedNodeDefinition ntd : type.getUnstructuredChildNodeDefinitions().values()) {
                             if (Sets.newHashSet(ntd.getRequiredPrimaryTypeNames()).contains(name)) {
-                                throw new ConstraintViolationException("Cannot unregister node type " + name + " because a child node definition of " + type.getName() + " requires it.");
+                                throw new ConstraintViolationException(
+                                        "Cannot unregister node type " + name + " because a child node definition of " + type.getName() + " requires it.");
                             }
                         }
                     }
                 }
-            } finally {
-                readLock.unlock();
-            }
-            writeLock.lock();
-            try {
+
                 removeNodeType(n);
-            } finally {
-                writeLock.unlock();
             }
-        } else {
-            readLock.unlock();
+        } finally {
+            writeLock.unlock();
         }
     }
 

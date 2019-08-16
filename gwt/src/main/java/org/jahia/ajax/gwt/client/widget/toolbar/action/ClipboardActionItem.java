@@ -64,7 +64,7 @@ public class ClipboardActionItem extends BaseActionItem {
 
     private static ClipboardActionItem instance;
 
-    private transient List<List<GWTJahiaNode>> copiedStuff = new ArrayList<List<GWTJahiaNode>>();
+    private transient List<GWTJahiaNode> copiedStuff = new ArrayList<GWTJahiaNode>();
 
     protected ClipboardActionItem() {
     }
@@ -72,12 +72,11 @@ public class ClipboardActionItem extends BaseActionItem {
     @Override
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
         super.init(gwtToolbarItem, linker);
-        instance = this;
+        setInstance(this);
     }
 
-    public static void removeCopied(List<GWTJahiaNode> copiedNodes) {
-        instance.copiedStuff.remove(copiedNodes);
-        refreshView();
+    private static void setInstance(ClipboardActionItem i) {
+        instance = i;
     }
 
     public static void setCopied(List<GWTJahiaNode> copiedNodes) {
@@ -85,13 +84,8 @@ public class ClipboardActionItem extends BaseActionItem {
             instance = new ClipboardActionItem();
         }
 
-        // todo handle history, keeps old items
-        instance.copiedStuff.clear();
+        instance.copiedStuff = copiedNodes;
 
-        instance.copiedStuff.add(0, copiedNodes);
-        if (instance.copiedStuff.size() == 10) {
-            instance.copiedStuff.remove(9);
-        }
         refreshView();
     }
 
@@ -105,21 +99,21 @@ public class ClipboardActionItem extends BaseActionItem {
                 b.setEnabled(false);
                 b.setMenu(null);
             } else {
-                final List<GWTJahiaNode> copiedNodes = instance.copiedStuff.get(0);
+                final List<GWTJahiaNode> copiedNodes = instance.copiedStuff;
                 final Menu menu = new Menu();
                 menu.addStyleName("clipboard-info-menu");
                 b.setMenu(menu);
-                for (List<GWTJahiaNode> c : instance.copiedStuff) {
-                    MenuItem m = new MenuItem();
-                    m.addStyleName("clipboard-info-menu-item");
-                    if (copiedNodes.size() > 1) {
-                        m.setText(copiedNodes.size() + " " + Messages.get("label.items", " Items"));
-                    } else {
-                        m.setText(copiedNodes.get(0).getDisplayName());
-                    }
-                    m.setEnabled(false);
-                    menu.add(m);
+
+                MenuItem m = new MenuItem();
+                m.addStyleName("clipboard-info-menu-item");
+                if (copiedNodes.size() > 1) {
+                    m.setText(copiedNodes.size() + " " + Messages.get("label.items", " Items"));
+                } else {
+                    m.setText(copiedNodes.get(0).getDisplayName());
                 }
+                m.setEnabled(false);
+                menu.add(m);
+
                 b.setEnabled(true);
             }
         }

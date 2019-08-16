@@ -5063,12 +5063,6 @@ if (!Element.prototype.matches) {
                     if (DexV2.getCached('body').getAttribute('data-sitesettings') == 'true') {
                         DexV2.id('JahiaGxtSidePanelTabs__JahiaGxtSettingsTab').trigger('mousedown').trigger('mouseup');
                     }
-
-                    DexV2.tag("body").onceAttribute('.window-iframe', 'src', function(){
-                      // When the iframe has been loaded with the new page we can triger a click on the pages tab to update JS/HTML application states
-                      DexV2.id("JahiaGxtSidePanelTabs__JahiaGxtPagesTab").trigger("mousedown").trigger("mouseup").trigger("click");
-                    }, "RESELECT_SIDE_PANEL_PAGES")
-
                 })
                 .onAttribute('body', 'data-langdisplayname', app.edit.resizeLanguageInput)
                 .onAttribute('#JahiaGxtContentPickerWindow .x-vsplitbar, #contentpicker .x-vsplitbar, #contentmanager .x-vsplitbar, #JahiaGxtContentPicker .x-vsplitbar', 'style', app.picker.onResize)

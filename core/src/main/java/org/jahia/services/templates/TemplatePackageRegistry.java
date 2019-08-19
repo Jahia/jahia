@@ -106,6 +106,8 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.observation.EventListenerIterator;
 import javax.jcr.observation.ObservationManager;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Template packages registry service.
@@ -114,39 +116,33 @@ import java.util.*;
  */
 public class TemplatePackageRegistry {
 
-    private static final Logger logger = LoggerFactory.getLogger(TemplatePackageRegistry.class);
-
-    private static boolean hasEncounteredIssuesWithDefinitions = false;
-
     static final String TEMPLATES_SET = "templatesSet";
-    public static final Comparator<JahiaTemplatesPackage> TEMPLATE_PACKAGE_COMPARATOR = new Comparator<JahiaTemplatesPackage>() {
-
-        @Override
-        public int compare(JahiaTemplatesPackage o1, JahiaTemplatesPackage o2) {
-            if (o2.getModulePriority() != o1.getModulePriority()) {
-                return o2.getModulePriority() - o1.getModulePriority();
-            }
-            if (!o1.getModuleType().equals(o2.getModuleType())) {
-                if (o1.getModuleType().equals(TEMPLATES_SET)) return -99;
-                if (o2.getModuleType().equals(TEMPLATES_SET)) return 99;
-            }
-
-            return o1.getName().compareTo(o2.getName());
+    public static final Comparator<JahiaTemplatesPackage> TEMPLATE_PACKAGE_COMPARATOR = (JahiaTemplatesPackage o1, JahiaTemplatesPackage o2) -> {
+        if (o2.getModulePriority() != o1.getModulePriority()) {
+            return o2.getModulePriority() - o1.getModulePriority();
         }
+        if (!o1.getModuleType().equals(o2.getModuleType())) {
+            if (o1.getModuleType().equals(TEMPLATES_SET)) return -99;
+            if (o2.getModuleType().equals(TEMPLATES_SET)) return 99;
+        }
+
+        return o1.getName().compareTo(o2.getName());
     };
 
-    private Map<String, JahiaTemplatesPackage> packagesByName = new TreeMap<String, JahiaTemplatesPackage>();
-    private Map<String, JahiaTemplatesPackage> packagesById = new TreeMap<String, JahiaTemplatesPackage>();
+    private static final Logger logger = LoggerFactory.getLogger(TemplatePackageRegistry.class);
+    private static boolean hasEncounteredIssuesWithDefinitions = false;
+    private Map<String, JahiaTemplatesPackage> packagesByName = new ConcurrentHashMap<>();
+    private Map<String, JahiaTemplatesPackage> packagesById = new ConcurrentHashMap<>();
     private List<JahiaTemplatesPackage> templatePackages;
-    private Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> packagesWithVersionByName = new TreeMap<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>>();
-    private Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> packagesWithVersionById = new TreeMap<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>>();
-    private Map<String, Set<JahiaTemplatesPackage>> modulesWithViewsPerComponents = new HashMap<String, Set<JahiaTemplatesPackage>>();
-    private List<RenderFilter> filters = new LinkedList<RenderFilter>();
-    private List<ErrorHandler> errorHandlers = new LinkedList<ErrorHandler>();
+    private Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> packagesWithVersionByName = new ConcurrentHashMap<>();
+    private Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> packagesWithVersionById = new ConcurrentHashMap<>();
+    private Map<String, Set<JahiaTemplatesPackage>> modulesWithViewsPerComponents = new ConcurrentHashMap<>();
+    private List<RenderFilter> filters = new CopyOnWriteArrayList<>();
+    private List<ErrorHandler> errorHandlers = new CopyOnWriteArrayList<>();
     private Map<String, Action> actions;
     private Map<String, BackgroundAction> backgroundActions;
-    private List<HandlerMapping> springHandlerMappings = new ArrayList<HandlerMapping>();
-    private Map<String, JahiaTemplatesPackage> packagesForResourceBundles = new HashMap<String, JahiaTemplatesPackage>();
+    private List<HandlerMapping> springHandlerMappings = new CopyOnWriteArrayList<>();
+    private Map<String, JahiaTemplatesPackage> packagesForResourceBundles = new ConcurrentHashMap<>();
     private boolean afterInitializeDone = false;
 
     /**
@@ -155,8 +151,8 @@ public class TemplatePackageRegistry {
     @SuppressWarnings("unchecked")
     public TemplatePackageRegistry() {
         super();
-        actions = new CaseInsensitiveMap();
-        backgroundActions = new CaseInsensitiveMap();
+        actions = Collections.synchronizedMap(new CaseInsensitiveMap());
+        backgroundActions = Collections.synchronizedMap(new CaseInsensitiveMap());
     }
 
     public Map<String, Action> getActions() {
@@ -217,7 +213,8 @@ public class TemplatePackageRegistry {
     }
 
     public void afterInitializationForModules() {
-        for (JahiaTemplatesPackage pack : packagesByName.values()) {
+        Map<String, JahiaTemplatesPackage> sortedMap = new TreeMap<>(packagesByName);
+        for (JahiaTemplatesPackage pack : sortedMap.values()) {
             afterInitializationForModule(pack);
         }
         afterInitializeDone = true;
@@ -281,9 +278,8 @@ public class TemplatePackageRegistry {
      */
     public List<JahiaTemplatesPackage> getAvailablePackages() {
         if (null == templatePackages) {
-            templatePackages = Collections
-                    .unmodifiableList(new LinkedList<JahiaTemplatesPackage>(
-                            packagesByName.values()));
+            Map<String, JahiaTemplatesPackage> sortedMap = new TreeMap<>(packagesByName);
+            templatePackages = Collections.unmodifiableList(new LinkedList<>(sortedMap.values()));
         }
         return templatePackages;
     }
@@ -304,7 +300,7 @@ public class TemplatePackageRegistry {
             if (moduleVersions instanceof SortedSet) {
                 return Collections.unmodifiableSortedSet((SortedSet<ModuleVersion>) moduleVersions);
             } else {
-                return Collections.unmodifiableSortedSet(new TreeSet<ModuleVersion>(moduleVersions));
+                return Collections.unmodifiableSortedSet(new TreeSet<>(moduleVersions));
             }
         }
         if (packagesWithVersionByName.containsKey(moduleNameOrId)) {
@@ -313,7 +309,7 @@ public class TemplatePackageRegistry {
             if (moduleVersions instanceof SortedSet) {
                 return Collections.unmodifiableSortedSet((SortedSet<ModuleVersion>) moduleVersions);
             } else {
-                return Collections.unmodifiableSortedSet(new TreeSet<ModuleVersion>(moduleVersions));
+                return Collections.unmodifiableSortedSet(new TreeSet<>(moduleVersions));
             }
         }
         return Collections.emptySet();
@@ -344,11 +340,11 @@ public class TemplatePackageRegistry {
     }
 
     public Set<String> getModuleIds() {
-        return packagesById.keySet();
+        return Collections.unmodifiableSet(new TreeSet<>(packagesById.keySet()));
     }
 
     public Set<String> getModuleNames() {
-        return packagesByName.keySet();
+        return Collections.unmodifiableSet(new TreeSet<>(packagesByName.keySet()));
     }
 
     public Map<String, JahiaTemplatesPackage> getRegisteredModules() {
@@ -420,6 +416,7 @@ public class TemplatePackageRegistry {
      * repository
      * @deprecated use {@link #lookupById(String)} instead
      */
+    @Deprecated
     public JahiaTemplatesPackage lookupByFileName(String fileName) {
         return lookupById(fileName);
     }
@@ -452,6 +449,7 @@ public class TemplatePackageRegistry {
     /**
      * @deprecated use {@link #lookupByIdAndVersion(String, ModuleVersion)} instead
      */
+    @Deprecated
     public JahiaTemplatesPackage lookupByFileNameAndVersion(String fileName, ModuleVersion moduleVersion) {
         return lookupByIdAndVersion(fileName, moduleVersion);
     }
@@ -468,7 +466,7 @@ public class TemplatePackageRegistry {
 
     public void registerPackageVersion(JahiaTemplatesPackage pack) {
         if (!packagesWithVersionById.containsKey(pack.getId())) {
-            packagesWithVersionById.put(pack.getId(), new TreeMap<ModuleVersion, JahiaTemplatesPackage>());
+            packagesWithVersionById.put(pack.getId(), Collections.synchronizedSortedMap(new TreeMap<ModuleVersion, JahiaTemplatesPackage>()));
         }
         SortedMap<ModuleVersion, JahiaTemplatesPackage> map = packagesWithVersionById.get(pack.getId());
         if (!packagesWithVersionByName.containsKey(pack.getName())) {
@@ -571,6 +569,7 @@ public class TemplatePackageRegistry {
 
     /**
      * Compute package dependencies
+     *
      * @param pack package to compute dependencies
      * @return true
      */
@@ -581,7 +580,8 @@ public class TemplatePackageRegistry {
         computeResourceBundleHierarchy(pack);
 
         // re compute dependencies for packages that depends on current pack
-        for (JahiaTemplatesPackage aPackage : packagesById.values()) {
+        Map<String, JahiaTemplatesPackage> sortedMap = new TreeMap<>(packagesById);
+        for (JahiaTemplatesPackage aPackage : sortedMap.values()) {
             if (aPackage.getDepends().contains(pack.getId()) || aPackage.getDepends().contains(pack.getName())) {
                 computeDependencies(aPackage);
             }
@@ -595,19 +595,19 @@ public class TemplatePackageRegistry {
     }
 
     public List<JahiaTemplatesPackage> getDependantModules(JahiaTemplatesPackage module, boolean includeNonStarted) {
-        List<JahiaTemplatesPackage> modules = new ArrayList<JahiaTemplatesPackage>();
+        List<JahiaTemplatesPackage> modules = new ArrayList<>();
         final Collection<JahiaTemplatesPackage> modulesToExamine;
         if (includeNonStarted) {
-            modulesToExamine = new HashSet<JahiaTemplatesPackage>(packagesById.values());
+            modulesToExamine = new HashSet<>(packagesById.values());
 
             // get non-started modules
-            Set<String> nonStartedKeys = new HashSet<String>(packagesWithVersionById.keySet());
+            Set<String> nonStartedKeys = new HashSet<>(packagesWithVersionById.keySet());
             nonStartedKeys.removeAll(packagesById.keySet());
             for (String nonStartedKey : nonStartedKeys) {
                 modulesToExamine.addAll(packagesWithVersionById.get(nonStartedKey).values());
             }
         } else {
-            modulesToExamine = packagesById.values();
+            modulesToExamine = new TreeMap<>(packagesById).values();
         }
         for (JahiaTemplatesPackage aPackage : modulesToExamine) {
             if (aPackage.getDepends().contains(module.getId()) || aPackage.getDepends().contains(module.getName())) {
@@ -618,7 +618,8 @@ public class TemplatePackageRegistry {
     }
 
     public void reset() {
-        for (JahiaTemplatesPackage pkg : new HashSet<JahiaTemplatesPackage>(packagesByName.values())) {
+        Map<String, JahiaTemplatesPackage> sortedMap = new TreeMap<>(packagesByName);
+        for (JahiaTemplatesPackage pkg : new HashSet<JahiaTemplatesPackage>(sortedMap.values())) {
             unregister(pkg);
         }
         templatePackages = null;
@@ -731,27 +732,27 @@ public class TemplatePackageRegistry {
 
             if (bean instanceof RenderFilter) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Unregistering RenderFilter '" + beanName + "'");
+                    logger.debug("Unregistering RenderFilter '{}'", beanName);
                 }
                 templatePackageRegistry.filters.remove((RenderFilter) bean);
             }
             if (bean instanceof ErrorHandler) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Unregistering ErrorHandler '" + beanName + "'");
+                    logger.debug("Unregistering ErrorHandler '{}'", beanName);
                 }
                 templatePackageRegistry.errorHandlers.remove((ErrorHandler) bean);
             }
             if (bean instanceof Action) {
                 Action action = (Action) bean;
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Unregistering Action '" + action.getName() + "' (" + beanName + ")");
+                    logger.debug("Unregistering Action '{}' ({})", action.getName(), beanName);
                 }
                 templatePackageRegistry.actions.remove(action.getName());
             }
             if (bean instanceof ModuleChoiceListInitializer) {
                 ModuleChoiceListInitializer moduleChoiceListInitializer = (ModuleChoiceListInitializer) bean;
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Unregistering ModuleChoiceListInitializer '" + moduleChoiceListInitializer.getKey() + "' (" + beanName + ")");
+                    logger.debug("Unregistering ModuleChoiceListInitializer '{}' ({})", moduleChoiceListInitializer.getKey(), beanName);
                 }
                 choiceListInitializers.getInitializers().remove(moduleChoiceListInitializer.getKey());
             }
@@ -759,14 +760,14 @@ public class TemplatePackageRegistry {
             if (bean instanceof ModuleChoiceListRenderer) {
                 ModuleChoiceListRenderer choiceListRenderer = (ModuleChoiceListRenderer) bean;
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Unregistering ChoiceListRenderer '" + choiceListRenderer.getKey() + "' (" + beanName + ")");
+                    logger.debug("Unregistering ChoiceListRenderer '{}' ({})", choiceListRenderer.getKey(), beanName);
                 }
                 choiceListRendererService.getRenderers().remove(choiceListRenderer.getKey());
             }
             if (bean instanceof ModuleGlobalObject) {
                 ModuleGlobalObject moduleGlobalObject = (ModuleGlobalObject) bean;
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Unregistering ModuleGlobalObject '" + beanName + "'");
+                    logger.debug("Unregistering ModuleGlobalObject '{}'", beanName);
                 }
                 if (moduleGlobalObject.getGlobalRulesObject() != null) {
                     for (RulesListener listener : RulesListener.getInstances()) {
@@ -780,7 +781,7 @@ public class TemplatePackageRegistry {
                 StaticAssetMapping mappings = (StaticAssetMapping) bean;
                 staticAssetMapping.keySet().removeAll(mappings.getMapping().keySet());
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Unregistering static asset mappings '" + mappings.getMapping() + "'");
+                    logger.debug("Unregistering static asset mappings '{}'", mappings.getMapping());
                 }
             }
             if (bean instanceof DefaultEventListener) {
@@ -789,8 +790,7 @@ public class TemplatePackageRegistry {
             if (bean instanceof BackgroundAction) {
                 BackgroundAction backgroundAction = (BackgroundAction) bean;
                 if (logger.isDebugEnabled()) {
-                    logger.debug(
-                            "Unregistering Background Action '" + backgroundAction.getName() + "' (" + beanName + ")");
+                    logger.debug("Unregistering Background Action '{}' ({})", backgroundAction.getName(), beanName);
                 }
                 templatePackageRegistry.backgroundActions.remove(backgroundAction.getName());
             }
@@ -806,8 +806,7 @@ public class TemplatePackageRegistry {
             if (bean instanceof VisibilityConditionRule) {
                 VisibilityConditionRule conditionRule = (VisibilityConditionRule) bean;
                 if (logger.isDebugEnabled()) {
-                    logger.debug(
-                            "Unregistering Visibility Condition Rule '" + conditionRule.getClass().getName() + "' (" + beanName + ")");
+                    logger.debug("Unregistering Visibility Condition Rule '{}' ({})", conditionRule.getClass().getName(), beanName);
                 }
                 visibilityService.removeCondition(conditionRule.getAssociatedNodeType());
             }
@@ -904,7 +903,7 @@ public class TemplatePackageRegistry {
             }
             if (bean instanceof RenderFilter) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Registering RenderFilter '" + beanName + "'");
+                    logger.debug("Registering RenderFilter '{}'", beanName);
                 }
                 if (templatePackageRegistry.filters.contains((RenderFilter) bean)) {
                     templatePackageRegistry.filters.remove((RenderFilter) bean);
@@ -913,7 +912,7 @@ public class TemplatePackageRegistry {
             }
             if (bean instanceof ErrorHandler) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Registering ErrorHandler '" + beanName + "'");
+                    logger.debug("Registering ErrorHandler '{}'", beanName);
                 }
                 if (templatePackageRegistry.errorHandlers.contains((ErrorHandler) bean)) {
                     templatePackageRegistry.errorHandlers.remove((ErrorHandler) bean);
@@ -923,14 +922,14 @@ public class TemplatePackageRegistry {
             if (bean instanceof Action) {
                 Action action = (Action) bean;
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Registering Action '" + action.getName() + "' (" + beanName + ")");
+                    logger.debug("Registering Action '{}' ({})", action.getName(), beanName);
                 }
                 templatePackageRegistry.actions.put(action.getName(), action);
             }
             if (bean instanceof ModuleChoiceListInitializer) {
                 ModuleChoiceListInitializer moduleChoiceListInitializer = (ModuleChoiceListInitializer) bean;
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Registering ModuleChoiceListInitializer '" + moduleChoiceListInitializer.getKey() + "' (" + beanName + ")");
+                    logger.debug("Registering ModuleChoiceListInitializer '{}' ({})", moduleChoiceListInitializer.getKey(), beanName);
                 }
                 choiceListInitializers.getInitializers().put(moduleChoiceListInitializer.getKey(), moduleChoiceListInitializer);
             }
@@ -938,14 +937,14 @@ public class TemplatePackageRegistry {
             if (bean instanceof ModuleChoiceListRenderer) {
                 ModuleChoiceListRenderer choiceListRenderer = (ModuleChoiceListRenderer) bean;
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Registering ChoiceListRenderer '" + choiceListRenderer.getKey() + "' (" + beanName + ")");
+                    logger.debug("Registering ChoiceListRenderer '{}' ({})", choiceListRenderer.getKey(), beanName);
                 }
                 choiceListRendererService.getRenderers().put(choiceListRenderer.getKey(), choiceListRenderer);
             }
             if (bean instanceof ModuleGlobalObject) {
                 ModuleGlobalObject moduleGlobalObject = (ModuleGlobalObject) bean;
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Registering ModuleGlobalObject '" + beanName + "'");
+                    logger.debug("Registering ModuleGlobalObject '{}'", beanName);
                 }
                 if (moduleGlobalObject.getGlobalRulesObject() != null) {
                     for (RulesListener listener : RulesListener.getInstances()) {
@@ -959,7 +958,7 @@ public class TemplatePackageRegistry {
                 StaticAssetMapping mappings = (StaticAssetMapping) bean;
                 staticAssetMapping.putAll(mappings.getMapping());
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Registering static asset mappings '" + mappings.getMapping() + "'");
+                    logger.debug("Registering static asset mappings '{}'", mappings.getMapping());
                 }
             }
             if (bean instanceof DefaultEventListener) {
@@ -968,8 +967,7 @@ public class TemplatePackageRegistry {
             if (bean instanceof BackgroundAction) {
                 BackgroundAction backgroundAction = (BackgroundAction) bean;
                 if (logger.isDebugEnabled()) {
-                    logger.debug(
-                            "Registering Background Action '" + backgroundAction.getName() + "' (" + beanName + ")");
+                    logger.debug("Registering Background Action '{}' ({})", backgroundAction.getName(), beanName);
                 }
                 templatePackageRegistry.backgroundActions.put(backgroundAction.getName(), backgroundAction);
             }
@@ -982,8 +980,7 @@ public class TemplatePackageRegistry {
             if (bean instanceof VisibilityConditionRule) {
                 VisibilityConditionRule conditionRule = (VisibilityConditionRule) bean;
                 if (logger.isDebugEnabled()) {
-                    logger.debug(
-                            "Registering Visibility Condition Rule '" + conditionRule.getClass().getName() + "' (" + beanName + ")");
+                    logger.debug("Registering Visibility Condition Rule '{}' ({})", conditionRule.getClass().getName(), beanName);
                 }
                 visibilityService.addCondition(conditionRule.getAssociatedNodeType(), conditionRule);
             }
@@ -1041,7 +1038,7 @@ public class TemplatePackageRegistry {
                 try {
                     logger.info("Map {}", ((SimpleUrlHandlerMapping) bean).getUrlMap());
                 } catch (Exception e) {
-
+                    // Ignore
                 }
             }
 

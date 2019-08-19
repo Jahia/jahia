@@ -46,6 +46,7 @@ package org.jahia.services.content;
 import com.google.common.collect.ImmutableSet;
 import com.ibm.icu.text.Normalizer;
 import org.apache.commons.collections.map.UnmodifiableMap;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.CharUtils;
 import org.apache.commons.lang.StringUtils;
@@ -774,7 +775,16 @@ public final class JCRContentUtils implements ServletContextAware {
         }
 
         if (f.isFile()) {
-            return (useContext ? PREFIX : "") + folder + "jnt_file_" + FileUtils.getFileIcon(f.getName());
+            String icon;
+            String nodeName = f.getName();
+
+            if (FilenameUtils.indexOfExtension(nodeName) != -1) {
+                icon = FileUtils.getFileIcon(nodeName);
+            } else {
+                icon = FileUtils.getFileIconFromMimetype(f.getFileContent().getContentType());
+            }
+
+            return (useContext ? PREFIX : "") + folder + "jnt_file_" + icon;
         } else if (f.isPortlet()) {
             return (useContext ? PREFIX : "") + folder + "jnt_portlet";
         } else if (f instanceof JCRComponentNode) {

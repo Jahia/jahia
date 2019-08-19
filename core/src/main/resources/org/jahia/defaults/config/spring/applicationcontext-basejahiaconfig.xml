@@ -285,6 +285,57 @@
         </property>
     </bean>
 
+    <bean id="fileMimeTypeIcons" class="org.springframework.beans.factory.config.MapFactoryBean">
+        <property name="sourceMap">
+            <map>
+                <entry key="unknown" value="file"/>
+
+                <entry key="image/*" value="img"/>
+                <entry key="audio/*" value="sound"/>
+                <entry key="video/*" value="video"/>
+                <entry key="text/*" value="txt"/>
+
+                <entry key="application/msword" value="doc"/>
+                <entry key="application/vnd.ms-word*" value="doc"/>
+                <entry key="application/vnd.openxmlformats-officedocument.wordprocessingml*" value="doc"/>
+
+                <entry key="application/mspowerpoint" value="ppt"/>
+                <entry key="application/vnd.ms-powerpoint*" value="ppt"/>
+                <entry key="application/vnd.openxmlformats-officedocument.presentationml*" value="ppt"/>
+
+                <entry key="application/vnd.ms-excel*" value="xls"/>
+                <entry key="application/vnd.openxmlformats-officedocument.spreadsheetml*" value="xls"/>
+
+                <entry key="application/x-rar-compressed" value="rar"/>
+                <entry key="application/zip" value="zip"/>
+                <entry key="application/x-gzip" value="zip"/>
+                <entry key="application/java-archive" value="zip"/>
+                <entry key="application/tgz" value="zip"/>
+
+                <entry key="text/html" value="html"/>
+                <entry key="application/xhtml+xml" value="html"/>
+
+                <entry key="application/vnd.google-earth.kml+xml" value="gearth"/>
+                <entry key="application/vnd.google-earth.kmz" value="gearth"/>
+
+                <entry key="application/x-director" value="dir"/>
+                <entry key="application/vnd.ms-asf" value="video"/>
+                <entry key="application/octet-stream" value="exe"/>
+                <entry key="application/pdf" value="pdf"/>
+                <entry key="image/svg+xml" value="svg"/>
+                <entry key="application/x-shockwave-flash" value="swf"/>
+                <entry key="application/vnd.oasis.opendocument.graphics" value="odg"/>
+                <entry key="application/vnd.oasis.opendocument.presentation" value="odp"/>
+                <entry key="application/vnd.oasis.opendocument.spreadsheet" value="ods"/>
+                <entry key="application/vnd.oasis.opendocument.text" value="odt"/>
+                <entry key="application/vnd.sun.xml.calc" value="sxc"/>
+                <entry key="application/vnd.sun.xml.impress" value="sxi"/>
+                <entry key="application/vnd.sun.xml.writer" value="sxw"/>
+                <entry key="text/tab-separated-values" value="tsv"/>
+            </map>
+        </property>
+    </bean>
+
     <bean id="org.jahia.bin.errors.handler" class="org.jahia.bin.errors.DefaultErrorHandler"/>
 
     <bean id="MaintenanceFilter" class="org.jahia.bin.filters.MaintenanceFilter">

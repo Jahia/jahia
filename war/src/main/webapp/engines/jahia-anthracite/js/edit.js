@@ -1062,6 +1062,7 @@ if (!Element.prototype.matches) {
             'save': 'Speichern',
             'backgroundJobs': 'Hintergrund-Tasks',
             'filterContent': 'Content filtern',
+            'burgerMenuTooltip': 'Hauptmenü öffnen',
 
             'previewPage': 'Vorschau',
             'previewSingleSelection': 'Vorschau',
@@ -1112,6 +1113,7 @@ if (!Element.prototype.matches) {
             'save': 'Save',
             'filterContent': 'Filter Content',
             'backgroundJobs': 'Background Jobs',
+            'burgerMenuTooltip': 'Open main menu',
 
             'previewPage': 'Preview',
             'previewSingleSelection': 'Preview',
@@ -1162,6 +1164,7 @@ if (!Element.prototype.matches) {
             'save': 'Sauvegarder',
             'filterContent': 'Filtrer le contenu',
             'backgroundJobs': 'Tâches de fond',
+            'burgerMenuTooltip': 'Ouvrir le menu principal',
 
             'previewPage': 'Aperçu',
             'previewSingleSelection': 'Aperçu',
@@ -5131,6 +5134,31 @@ if (!Element.prototype.matches) {
                 .onMouseOut('.toolbar-item-publishone', function () {
                     var editMenuCentertop = document.querySelectorAll('.edit-menu-centertop')[0];
                     editMenuCentertop.classList.remove('hover-publish');
+                })
+                .onMouseOver('.editmode-managers-menu', function (e) {
+                    var title = app.dictionary('burgerMenuTooltip');
+                    var tooltip = document.createElement('div');
+                    tooltip.style.setProperty('display', 'none');
+                    tooltip.style.setProperty('position', 'absolute');
+                    tooltip.style.setProperty('border', '1px solid #8eaace');
+                    tooltip.style.setProperty('background-color', '#e9f2ff');
+                    tooltip.style.setProperty('border-radius', '3px');
+                    tooltip.style.setProperty('padding', '2px 6px');
+                    tooltip.style.setProperty('color', '#444');
+                    tooltip.style.setProperty('font-family', '\'Nunito Sans\', tahoma, arial, helvetica, sans-serif');
+                    tooltip.style.setProperty('font-size', '11px');
+                    tooltip.style.setProperty('top', e.clientX + 20 + 'px');
+                    tooltip.style.setProperty('left', e.clientY + 20 + 'px');
+                    tooltip.style.setProperty('z-index', '1800');
+                    tooltip.innerHTML = title;
+                    tooltip.id = 'burgerMenuTooltip';
+                    DexV2.getCached('body').append(tooltip);
+                    setTimeout(function () {
+                        tooltip.style.setProperty('display', 'block');
+                    }, 100);
+                })
+                .onMouseOut('.editmode-managers-menu', function () {
+                    DexV2.id('burgerMenuTooltip').remove();
                 })
                 .onceOpen('.editmode-managers-menu', function () {})
                 .onClick('.window-side-panel > .x-panel-bwrap > div:nth-child(2).x-panel-footer', app.edit.sidepanel.togglePin)

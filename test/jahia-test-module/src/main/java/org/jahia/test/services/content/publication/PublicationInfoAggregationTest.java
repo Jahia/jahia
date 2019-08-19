@@ -221,7 +221,7 @@ public class PublicationInfoAggregationTest extends JahiaTestCase {
 
     @Test
     public void unpublishedNode_WithNotPublishedTranslationSubNode_SeenNotPublished() throws Exception {
-        testPublicationStatus(subNodeUuid2, "en", PublicationInfo.NOT_PUBLISHED);
+        testPublicationStatus(subNodeUuid2, "en", PublicationInfo.UNPUBLISHED);
     }
 
     @Test

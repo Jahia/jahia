@@ -774,12 +774,12 @@
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-core</artifactId>
-            <version>1.20-jahia1</version>
+            <version>1.22-jahia2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-parsers</artifactId>
-            <version>1.20</version>
+            <version>1.22</version>
             <exclusions>
                 <exclusion>
                     <!--
@@ -882,6 +882,10 @@
                     <groupId>edu.ucar</groupId>
                 </exclusion>
                 <exclusion>
+                    <artifactId>c3p0</artifactId>
+                    <groupId>com.mchange</groupId>
+                </exclusion>
+                <exclusion>
                     <!-- Unidata's  httpservices -->
                     <artifactId>httpservices</artifactId>
                     <groupId>edu.ucar</groupId>
@@ -944,7 +948,7 @@
                 </exclusion>
                 <exclusion>
                     <groupId>com.sun.activation</groupId>
-                    <artifactId>javax.activation</artifactId>
+                    <artifactId>jakarta.activation</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>org.apache.httpcomponents</groupId>
@@ -1018,7 +1022,7 @@
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
-            <version>1.4.4</version>
+            <version>1.4.11</version>
         </dependency>
 
         <!-- JSON dependencies -->

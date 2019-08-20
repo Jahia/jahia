@@ -49,70 +49,85 @@
 //
 package org.jahia.data.webapps;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.jahia.exceptions.JahiaException;
 import org.jahia.utils.xml.XMLParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Holds Informations about the Web Component deployment descriptors file web.xml
- * 
+ *
  * @author Khue ng
  * @version 1.0
  */
 public class Web_App_Xml {
 
-    /** The Servlet Type WebApp **/
+    /**
+     * The Servlet Type WebApp
+     **/
     private static final int SERVLET_TYPE = 1;
 
-    /** The JSP Type WebApp **/
+    /**
+     * The JSP Type WebApp
+     **/
     private static final int JSP_TYPE = 2;
 
-    /** The Display Name **/
-    private String m_DisplayName;
+    /**
+     * The Display Name
+     **/
+    private String displayName;
 
-    /** The desc **/
-    private String m_desc;
+    /**
+     * The desc
+     **/
+    private String desc;
 
     /**
      * The list of Servlet
-     * 
+     *
      * @associates Servlet_Element
      */
-    private List<Servlet_Element> m_Servlets = new ArrayList<Servlet_Element>();
+    private List<Servlet_Element> servlets = new ArrayList<>();
 
-    /** The hashMap of servlet mapping, keyed with the pattern used to map a servlet **/
-    private Map<String, String> m_ServletMappings = new HashMap<String, String>();
+    /**
+     * The hashMap of servlet mapping, keyed with the pattern used to map a servlet
+     **/
+    private Map<String, String> servletMappings = new HashMap<>();
 
-    /** The list of security-role **/
-    private List<Security_Role> m_Roles = new ArrayList<Security_Role>();
+    /**
+     * The list of security-role
+     **/
+    private List<Security_Role> roles = new ArrayList<>();
 
-    /** The list of Welcome files **/
-    private List<String> m_WelcomeFiles = new ArrayList<String>();
+    /**
+     * The list of Welcome files
+     **/
+    private List<String> welcomeFiles = new ArrayList<>();
 
-    private Document m_XMLDocument;
-    
+    private Document xmlDocument;
+
     /**
      * Constructor
      */
     private Web_App_Xml(Document xmlDocument) {
         super();
-        m_XMLDocument = xmlDocument;
+        this.xmlDocument = xmlDocument;
     }
-    
+
     public static Web_App_Xml parse(InputStream stream) throws JahiaException {
-    	Web_App_Xml xml = null;
+        Web_App_Xml xml;
         try {
             DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+            dfactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 
             Document xmlDocument = dfactory.newDocumentBuilder().parse(stream);
             xmlDocument.normalize(); // clean up DOM tree a little
@@ -120,29 +135,29 @@ public class Web_App_Xml {
             xml.extractDocumentData();
         } catch (Exception t) {
             throw new JahiaException("JahiaXmlDocument",
-                                     "Exception while parsing web.xml stream",
-                                     JahiaException.ERROR_SEVERITY,
-                                     JahiaException.SERVICE_ERROR, t);
+                    "Exception while parsing web.xml stream",
+                    JahiaException.ERROR_SEVERITY,
+                    JahiaException.SERVICE_ERROR, t);
         }
-        
+
         return xml;
     }
 
     // --------------------------------------------------------------------------
+
     /**
      * Extracts data from the web.xml file.
-     * 
      */
     private void extractDocumentData() throws JahiaException {
 
-        if (m_XMLDocument == null) {
+        if (xmlDocument == null) {
 
             throw new JahiaException("Web_App_Xml",
                     "Parsed web.xml document is null",
                     JahiaException.ERROR_SEVERITY, JahiaException.CONFIG_ERROR);
         }
 
-        if (!m_XMLDocument.hasChildNodes()) {
+        if (!xmlDocument.hasChildNodes()) {
 
             throw new JahiaException("Web_App_Xml",
                     "Main document node has no children",
@@ -151,7 +166,7 @@ public class Web_App_Xml {
 
         // get web-app node
         Element webAppNode;
-        webAppNode = (Element) m_XMLDocument.getDocumentElement();
+        webAppNode = xmlDocument.getDocumentElement();
 
         if (!webAppNode.getNodeName().equalsIgnoreCase("web-app")) {
 
@@ -161,108 +176,101 @@ public class Web_App_Xml {
         }
 
         // get the webapp display name
-        Node displayNameNode = XMLParser.nextChildOfTag(webAppNode,
-                "display-name");
-        if (displayNameNode != null) {
-            m_DisplayName = displayNameNode.getFirstChild().getNodeValue()
-                    .trim();
-        }
+        Node displayNameNode = XMLParser.nextChildOfTag(webAppNode, "display-name");
+        displayName = getValue(displayName, displayNameNode);
 
         // get the webapp description
-        Node descriptionNode = XMLParser.nextChildOfTag(webAppNode,
-                "description");
-        if (descriptionNode != null) {
-            m_desc = descriptionNode.getFirstChild().getNodeValue().trim();
-        }
+        Node descriptionNode = XMLParser.nextChildOfTag(webAppNode, "description");
+        desc = getValue(desc, descriptionNode);
 
-        m_Servlets = getServlets(webAppNode);
-        m_ServletMappings = getServletMappings(webAppNode);
-        m_Roles = getRoles(webAppNode);
-        m_WelcomeFiles = getWelcomeFiles(webAppNode);
+        servlets = getServlets(webAppNode);
+        servletMappings = getServletMappings(webAppNode);
+        roles = getRoles(webAppNode);
+        welcomeFiles = getWelcomeFiles(webAppNode);
     }
 
     /**
      * Return the Display Name
-     * 
+     *
      * @return (String) the display name of the Application
      */
     public String getDisplayName() {
-        return m_DisplayName;
+        return displayName;
     }
 
     /**
      * Set the DisplayName
-     * 
-     * @param (String) the display name of the webApp
+     *
+     * @param name the display name of the webApp
      */
     protected void setDisplayName(String name) {
-        m_DisplayName = name;
+        displayName = name;
     }
 
     /**
      * Return the servlets list
-     * 
+     *
      * @return (List) the list of servlets
      */
     public List<Servlet_Element> getServlets() {
-        return m_Servlets;
+        return servlets;
     }
 
     /**
      * Return the map of servlet mapping
-     * 
+     *
      * @return (Map) the map of servlets mapping
      */
     public Map<String, String> getServletMappings() {
-        return m_ServletMappings;
+        return servletMappings;
     }
 
     /**
      * Return the welcome files list
-     * 
+     *
      * @return (List) the list of welcome files
      */
     public List<String> getWelcomeFiles() {
-        return m_WelcomeFiles;
+        return welcomeFiles;
     }
 
     /**
      * return the List of roles
-     * 
+     *
      * @return (List) the roles
      */
     public List<Security_Role> getRoles() {
-        return m_Roles;
+        return roles;
     }
 
     /**
      * Return the Web App desc
-     * 
+     *
      * @return (String) the desc
      */
     public String getdesc() {
-        return m_desc;
+        return desc;
     }
 
     /**
      * Set the desc
-     * 
-     * @param (String) the desc
+     *
+     * @param descr the desc
      */
     protected void setdesc(String descr) {
-        m_desc = descr;
+        desc = descr;
     }
 
     // --------------------------------------------------------------------------
+
     /**
      * extract the list of roles
-     * 
      */
     private List<Security_Role> getRoles(Node parentNode) throws JahiaException {
 
         List<Node> nodesList = XMLParser.getChildNodes(parentNode,
                 "security-role");
-        List<Security_Role> roles = new ArrayList<Security_Role>();
+        List<Security_Role> result = new ArrayList<>();
 
         int size = nodesList.size();
         if (size > 0) {
@@ -282,68 +290,60 @@ public class Web_App_Xml {
                 nodeItem = nodesList.get(i);
 
                 childNode = XMLParser.nextChildOfTag(nodeItem, "role-name");
-                if (childNode != null) {
-                    name = childNode.getFirstChild().getNodeValue().trim();
-                }
+                name = getValue(name, childNode);
 
                 childNode = XMLParser.nextChildOfTag(nodeItem, "desc");
-                if (childNode != null) {
-                    descr = childNode.getFirstChild().getNodeValue().trim();
-                }
+                descr = getValue(descr, childNode);
 
                 if (name.length() > 0) {
                     role = new Security_Role(name, descr);
-                    roles.add(role);
+                    result.add(role);
                 }
             }
         }
-        return roles;
+        return result;
     }
 
     // --------------------------------------------------------------------------
+
     /**
      * Extract the list of servlets
      */
     private List<Servlet_Element> getServlets(Node parentNode)
             throws JahiaException {
 
-        List<Servlet_Element> servlets = new ArrayList<Servlet_Element>();
+        List<Servlet_Element> result = new ArrayList<>();
 
         // build the servlets list
         List<Node> nodesList = XMLParser.getChildNodes(parentNode, "servlet");
         int size = nodesList.size();
         if (size > 0) {
 
-            Node nodeItem = null;
-            String displayName = "";
+            Node nodeItem;
+            String servletDisplayName;
             String servletName = "";
             String descr = "";
-            String servletsrc = "";
-            int servletType = 1;
+            String servletsrc ;
+            int servletType;
 
-            Node childNode = null;
+            Node childNode;
 
             for (int i = 0; i < size; i++) {
-                nodeItem = (Node) nodesList.get(i);
+                nodeItem = nodesList.get(i);
 
                 childNode = XMLParser.nextChildOfTag(nodeItem, "servlet-name");
-                if (childNode != null) {
-                    servletName = childNode.getFirstChild().getNodeValue()
-                            .trim();
-                }
+                servletName = getValue(servletName, childNode);
 
                 childNode = XMLParser.nextChildOfTag(nodeItem, "display-name");
                 if (childNode != null) {
-                    displayName = childNode.getFirstChild().getNodeValue()
+                    servletDisplayName = childNode.getFirstChild().getNodeValue()
                             .trim();
                 } else {
-                    displayName = servletName;
+                    servletDisplayName = servletName;
                 }
 
                 childNode = XMLParser.nextChildOfTag(nodeItem, "desc");
-                if (childNode != null) {
-                    descr = childNode.getFirstChild().getNodeValue().trim();
-                }
+                descr = getValue(descr, childNode);
 
                 if (XMLParser.nextChildOfTag(nodeItem, "servlet-class") != null) {
                     servletsrc = XMLParser.nextChildOfTag(nodeItem,
@@ -356,44 +356,43 @@ public class Web_App_Xml {
                     servletType = JSP_TYPE;
                 }
 
-                if ((displayName != null) && (displayName.length() > 0)
+                if ((servletDisplayName != null) && (servletDisplayName.length() > 0)
                         && (servletName != null) && (servletName.length() > 0)
                         && (servletsrc != null) && (servletsrc.length() > 0)) {
 
                     Servlet_Element servlet = new Servlet_Element(servletName,
-                            displayName, descr, servletsrc, servletType, i + 1);
+                            servletDisplayName, descr, servletsrc, servletType, i + 1);
 
-                    // JahiaConsole.println(">>"," servlet    name           :" + servlet.getName());
-                    // JahiaConsole.println(">>","            display name   :" + servlet.getDisplayName());
-                    // JahiaConsole.println(">>","            descr          :" + servlet.getdesc());
-                    // JahiaConsole.println(">>","            servlet source :" + servlet.getSource());
-                    // JahiaConsole.println(">>","            servletType    :" + servlet.getType());
-                    // JahiaConsole.println(">>","            servletNumber  :" + servlet.getNumber());
-
-                    servlets.add(servlet);
+                    result.add(servlet);
                 }
             }
         }
-        return servlets;
+        return result;
+    }
+
+    private String getValue(String servletName, Node childNode) {
+        if (childNode != null) {
+            servletName = childNode.getFirstChild().getNodeValue().trim();
+        }
+        return servletName;
     }
 
     // --------------------------------------------------------------------------
+
     /**
      * Extract the list of welcome files
      */
     private List<String> getWelcomeFiles(Node parentNode) throws JahiaException {
 
-        List<String> results = new ArrayList<String>();
+        List<String> results = new ArrayList<>();
 
         // get the welcome-file-list element
-        Node welcomeFileListNode = XMLParser.nextChildOfTag(parentNode,
-                "welcome-file-list");
+        Node welcomeFileListNode = XMLParser.nextChildOfTag(parentNode, "welcome-file-list");
         if (welcomeFileListNode == null) {
             return results;
         }
 
-        List<Node> nodesList = XMLParser.getChildNodes(welcomeFileListNode,
-                "welcome-file");
+        List<Node> nodesList = XMLParser.getChildNodes(welcomeFileListNode, "welcome-file");
 
         int size = nodesList.size();
         if (size > 0) {
@@ -403,10 +402,10 @@ public class Web_App_Xml {
 
             for (int i = 0; i < size; i++) {
 
-                nodeItem = (Node) nodesList.get(i);
+                nodeItem = nodesList.get(i);
                 filename = nodeItem.getFirstChild().getNodeValue().trim();
 
-                if (filename != null && (filename.length() > 0)) {
+                if (filename.length() > 0) {
                     results.add(filename);
                 }
             }
@@ -415,13 +414,14 @@ public class Web_App_Xml {
     }
 
     // --------------------------------------------------------------------------
+
     /**
      * Extract a map of servlet mapping.
      */
     private Map<String, String> getServletMappings(Node parentNode)
             throws JahiaException {
 
-        HashMap<String, String> hash = new HashMap<String, String>();
+        Map<String, String> result = new HashMap<>();
 
         List<Node> nodesList = XMLParser.getChildNodes(parentNode,
                 "servlet-mapping");
@@ -429,39 +429,32 @@ public class Web_App_Xml {
         int size = nodesList.size();
         if (size > 0) {
 
-            Node nodeItem = null;
-            String servletName = "";
-            String urlPattern = "";
+            Node nodeItem;
+            String servletName;
+            String urlPattern;
 
-            Node childNode = null;
+            Node childNode;
 
             for (int i = 0; i < size; i++) {
 
                 servletName = "";
                 urlPattern = "";
 
-                nodeItem = (Node) nodesList.get(i);
+                nodeItem = nodesList.get(i);
 
                 childNode = XMLParser.nextChildOfTag(nodeItem, "servlet-name");
-                if (childNode != null) {
-                    servletName = childNode.getFirstChild().getNodeValue()
-                            .trim();
-                }
+                servletName = getValue(servletName, childNode);
 
                 childNode = XMLParser.nextChildOfTag(nodeItem, "url-pattern");
-                if (childNode != null) {
-                    urlPattern = childNode.getFirstChild().getNodeValue()
-                            .trim();
-                }
+                urlPattern = getValue(urlPattern, childNode);
 
-                if (servletName != null && (servletName.length() > 0)
-                        && urlPattern != null && (urlPattern.length() > 0)) {
-                    hash.put(urlPattern, servletName);
+                if (servletName != null && (servletName.length() > 0) && urlPattern != null && (urlPattern.length() > 0)) {
+                    result.put(urlPattern, servletName);
                 }
             }
         }
 
-        return hash;
+        return result;
     }
 
 } // end Web_App_Xml

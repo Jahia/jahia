@@ -136,21 +136,27 @@ public class TemplatePackageDeployer {
                     if (targetPath.equals("/")) {
                         List<String> fileList = new ArrayList<String>();
                         Map<String, Long> sizes = new HashMap<String, Long>();
-                        importExportService.getFileList(importFile, sizes, fileList);
-                        if (sizes.containsKey("permissions.xml")) {
-                            Set<String> s = new HashSet<String>(sizes.keySet());
-                            s.remove("permissions.xml");
-                            if (!session.itemExists("/modules/" + aPackage.getIdWithVersion() + "/permissions")) {
-                                session.getNode("/modules/" + aPackage.getIdWithVersion()).addNode("permissions", "jnt:permission");
+                        File expandedFolder = importExportService.getFileList(importFile, sizes, fileList);
+                        try {
+                            if (sizes.containsKey("permissions.xml")) {
+                                Set<String> s = new HashSet<String>(sizes.keySet());
+                                s.remove("permissions.xml");
+                                if (!session.itemExists("/modules/" + aPackage.getIdWithVersion() + "/permissions")) {
+                                    session.getNode("/modules/" + aPackage.getIdWithVersion()).addNode("permissions", "jnt:permission");
+                                }
+                                importExportService.importZip("/modules/" + aPackage.getIdWithVersion(), importFile,
+                                        DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session, s, false);
                             }
-                            importExportService.importZip("/modules/" + aPackage.getIdWithVersion(), importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session, s, false);
-                        }
-                        if (sizes.containsKey("roles.xml")) {
-                            Set<String> s = new HashSet<String>(sizes.keySet());
-                            s.remove("roles.xml");
-                            session.getPathMapping().put("/permissions", "/modules/" + aPackage.getIdWithVersion() + "/permissions");
-                            importExportService.importZip("/", importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session, s, false);
-                            session.getPathMapping().remove("/permissions");
+                            if (sizes.containsKey("roles.xml")) {
+                                Set<String> s = new HashSet<String>(sizes.keySet());
+                                s.remove("roles.xml");
+                                session.getPathMapping().put("/permissions", "/modules/" + aPackage.getIdWithVersion() + "/permissions");
+                                importExportService.importZip("/", importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session, s,
+                                        false);
+                                session.getPathMapping().remove("/permissions");
+                            }
+                        } finally {
+                            importExportService.cleanFilesList(expandedFolder, fileList);
                         }
                     }
                 }

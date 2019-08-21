@@ -218,6 +218,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         // Replace the placeholders to have the final key that is used in the cache.
         String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
 
+        moduleParams.put("finalKey", finalKey);
+
         // Keeps a list of keys being generated to avoid infinite loops.
         LinkedList<String> userKeysLinkedList = userKeys.get();
         if (userKeysLinkedList == null) {
@@ -419,19 +421,25 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 
         // Get the key generated in prepare
         String key = (String) resource.getModuleParams().remove("cacheKey");
-
+        String storedFinalKey = (String) resource.getModuleParams().remove("finalKey");
 
         // Generates the cache key - check
         String generatedKey = cacheProvider.getKeyGenerator().generate(resource, renderContext, properties);
         if (!generatedKey.equals(key)) {
-            logger.warn("Key generation does not give the same result after execution , was" + key + " , now is " + generatedKey);
+            logger.warn("Key generation does not give the same result after execution  , was {} , now is {}", key, generatedKey);
+            return previousOut;
         }
 
         String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
 
-        // If this content has been served from cache, no need to cache it again
+        if (!finalKey.equals(storedFinalKey)) {
+            logger.warn("Key generation after replacement does not give the same result after execution , was {} , now is {}", storedFinalKey, finalKey);
+            return previousOut;
+        }
+
         @SuppressWarnings("unchecked")
         Set<String> servedFromCache = (Set<String>) renderContext.getRequest().getAttribute("servedFromCache");
+        // If this content has been served from cache, no need to cache it again
         if (servedFromCache != null && servedFromCache.contains(finalKey)) {
             return previousOut;
         }

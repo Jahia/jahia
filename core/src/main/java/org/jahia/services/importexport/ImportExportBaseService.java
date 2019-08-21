@@ -50,6 +50,7 @@ import org.apache.commons.collections.set.ListOrderedSet;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileCleaningTracker;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.DeferredFileOutputStream;
 import org.apache.commons.lang.StringUtils;
@@ -1070,8 +1071,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         logger.info("Start analyzing import file {}", file);
         long timer = System.currentTimeMillis();
-        getFileList(file, sizes, fileList);
-        logger.info("Done analyzing import file {} in {}", file, DateUtils.formatDurationWords(System.currentTimeMillis() - timer));
+        File expandedFolder = getFileList(file, sizes, fileList);
+        if (logger.isInfoEnabled()) {
+            logger.info("Done analyzing import file {} in {}", file, DateUtils.formatDurationWords(System.currentTimeMillis() - timer));
+        }
 
         Map<String, String> pathMapping = session.getPathMapping();
         for (JahiaTemplatesPackage pkg : templatePackageRegistry.getRegisteredModules().values()) {
@@ -1399,7 +1402,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         // session.save();
         session.save(JCRObservationManager.IMPORT);
-        cleanFilesList(fileList);
+        cleanFilesList(expandedFolder, fileList);
 
         if (legacyImport && this.postImportPatcher != null) {
             final long timerPIP = System.currentTimeMillis();
@@ -1411,28 +1414,27 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         logger.info("Done importing site {} in {}", site != null ? site.getSiteKey() : "", DateUtils.formatDurationWords(System.currentTimeMillis() - timerSite));
     }
 
-    private void cleanFilesList(List<String> fileList) {
-        if (expandImportedFilesOnDisk) {
-            long timer = System.currentTimeMillis();
-            logger.info("Start cleaning {} files", fileList.size());
-            for (String fileName : fileList) {
-                try {
-                    File toBeDeleted = new File(expandImportedFilesOnDiskPath + fileName);
-                    if (toBeDeleted.exists()) {
-                        if (toBeDeleted.isDirectory()) {
-                            FileUtils.deleteDirectory(toBeDeleted);
-                        } else {
-                            toBeDeleted.delete();
-                        }
-                    }
-                } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
-                }
-            }
+    /**
+     * Remove the list of files temporarily expanded to the given folder.
+     * 
+     * @param expandedFolder path to the expanded folder on disk - if null, do nothing
+     * @param fileList list of files expanded to disk
+     */
+    public void cleanFilesList(File expandedFolder, List<String> fileList) {
+        if (expandedFolder == null) {
+            return;
+        }
+        long timer = System.currentTimeMillis();
+        logger.info("Start cleaning {} files expanded to {}", fileList.size(), expandedFolder);
+        try {
+            FileUtils.deleteDirectory(expandedFolder);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        if (logger.isInfoEnabled()) {
             logger.info("Done file cleanup in {}", DateUtils.formatDurationWords(System.currentTimeMillis() - timer));
         }
     }
-
 
     public JCRNodeWrapper ensureDir(JCRSessionWrapper session, String path, JahiaSite site) throws RepositoryException {
         JCRNodeWrapper dir;
@@ -1943,7 +1945,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         Map<String, List<String>> references = new HashMap<String, List<String>>();
 
-        getFileList(file, sizes, fileList);
+        File expandedFolder = getFileList(file, sizes, fileList);
         ZipInputStream zis;
 
         Map<String, String> pathMapping = session.getPathMapping();
@@ -2150,20 +2152,39 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 closeInputStream(zis);
             }
         }
-        cleanFilesList(fileList);
+        cleanFilesList(expandedFolder, fileList);
 
         logger.info("Done importing file {} in {}", file, DateUtils.formatDurationWords(System.currentTimeMillis() - timer));
     }
-
-    public void getFileList(Resource file, Map<String, Long> sizes, List<String> fileList) throws IOException {
+    /**
+     * Gets the list of files from the given ZIP file. 
+     * 
+     * If expandImportedFilesOnDiskPath is set to true (in jahia.properties), then
+     * also expand the files to a temporary directory if it is not already expanded. 
+     * 
+     * @param file ZIP file with content to be imported
+     * @param sizes collection holding sizes of uncompressed file elements
+     * @param fileList collection into which the files from ZIP file will be added
+     * @return null if files were not expanded to disk (it is just optional), otherwise path to temporary local folder 
+     * @throws IOException
+     */
+    public File getFileList(Resource file, Map<String, Long> sizes, List<String> fileList) throws IOException {
+        File expandedFolder = null;
+        if (expandImportedFilesOnDisk) {
+            final File expandFolder = new File(expandImportedFilesOnDiskPath + File.separator + FilenameUtils.getBaseName(file.getFilename()));
+            if (!expandFolder.exists()) {
+                expandFolder.mkdirs();
+                expandedFolder = expandFolder; 
+            }
+        }  
         ZipInputStream zis = getZipInputStream(file);
         try {
             while (true) {
                 ZipEntry zipentry = zis.getNextEntry();
                 if (zipentry == null) break;
                 String name = zipentry.getName().replace('\\', '/');
-                if (expandImportedFilesOnDisk) {
-                    final File file1 = new File(expandImportedFilesOnDiskPath + File.separator + name);
+                if (expandedFolder != null) {
+                    final File file1 = new File(expandedFolder + File.separator + name);
                     if (zipentry.isDirectory()) {
                         file1.mkdirs();
                     } else {
@@ -2206,6 +2227,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         } finally {
             closeInputStream(zis);
         }
+        return expandedFolder;
     }
 
     private void closeInputStream(ZipInputStream zis) throws IOException {

@@ -45,6 +45,7 @@ package org.jahia.services.importexport;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO8601;
 import org.apache.jackrabbit.util.ISO9075;
@@ -180,6 +181,9 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
         if (archive != null && !archive.isReadable() && archive instanceof FileSystemResource) {
             expandImportedFilesOnDiskPath = archive.getFile().getPath();
             expandImportedFilesOnDisk = true;
+        } else if (expandImportedFilesOnDisk && archive != null) {
+            expandImportedFilesOnDiskPath = SettingsBean.getInstance().getExpandImportedFilesOnDiskPath() + File.separator
+                    + FilenameUtils.getBaseName(archive.getFilename());
         }
 
         this.fileList = fileList;

@@ -1763,8 +1763,7 @@ body[indigo-dragging-panel="true"] {
 						position: relative;
 						z-index: 999;
 						padding: 0 0 0 30px;
-
-						width: 100%;
+						width: calc(100% - 50px);
 						height: 30px;
 
 						// Icon - dont need

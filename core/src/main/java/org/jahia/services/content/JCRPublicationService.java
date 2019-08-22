@@ -54,6 +54,7 @@ import org.jahia.services.JahiaService;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,10 +94,13 @@ public class JCRPublicationService extends JahiaService {
 
     private boolean skipAllReferenceProperties;
 
+    private List<String> versionedTypes;
+
     private Set<PublicationEventListener> listeners = Collections.newSetFromMap(new ConcurrentHashMap<PublicationEventListener, Boolean>());
 
     private JCRPublicationService() {
         super();
+        versionedTypes = Arrays.asList(StringUtils.split(SettingsBean.getInstance().getPropertiesFile().getProperty("versionedTypes", "jmix:editorialContent,nt:file"), ","));
     }
 
     /**
@@ -325,7 +329,7 @@ public class JCRPublicationService extends JahiaService {
             int batchTotalCount = (int) Math.ceil((double) totalCount / (double) batchSize);
             while (uuidsToPublish.size() > batchSize) {
                 int batchCount = 0;
-                for (Iterator<String> iterator = uuidsToPublish.iterator(); iterator.hasNext();) {
+                for (Iterator<String> iterator = uuidsToPublish.iterator(); iterator.hasNext(); ) {
                     batch.add(iterator.next());
                     iterator.remove();
                     batchCount++;
@@ -411,8 +415,8 @@ public class JCRPublicationService extends JahiaService {
                 if (hasLastPublishedMixin) {
                     Map<String, Value> previousPropertyByName = new LinkedHashMap<>();
                     previousPropertyByName.put(Constants.PUBLISHED, node.hasProperty(Constants.PUBLISHED) ? node.getProperty(Constants.PUBLISHED).getValue() : null);
-                    previousPropertyByName.put(Constants.LASTPUBLISHED,  node.hasProperty(Constants.LASTPUBLISHED) ? node.getProperty(Constants.LASTPUBLISHED).getValue() : null);
-                    previousPropertyByName.put(Constants.LASTPUBLISHEDBY,  node.hasProperty(Constants.LASTPUBLISHEDBY) ? node.getProperty(Constants.LASTPUBLISHEDBY).getValue() : null);
+                    previousPropertyByName.put(Constants.LASTPUBLISHED, node.hasProperty(Constants.LASTPUBLISHED) ? node.getProperty(Constants.LASTPUBLISHED).getValue() : null);
+                    previousPropertyByName.put(Constants.LASTPUBLISHEDBY, node.hasProperty(Constants.LASTPUBLISHEDBY) ? node.getProperty(Constants.LASTPUBLISHEDBY).getValue() : null);
                     previousPropertyByNodeUuidByName.put(node.getIdentifier(), previousPropertyByName);
                     node.setProperty(Constants.PUBLISHED, Boolean.TRUE);
                     node.setProperty(Constants.LASTPUBLISHED, calendar);
@@ -469,7 +473,7 @@ public class JCRPublicationService extends JahiaService {
                     logger.warn("Already deleted : " + nodeWrapper.getPath());
                 }
             }
-            JCRNodeWrapper trash = toDelete.isEmpty() ? null : destinationSession.getNode("/").addNode("trash-"+UUID.randomUUID().toString(), Constants.NT_UNSTRUCTURED);
+            JCRNodeWrapper trash = toDelete.isEmpty() ? null : destinationSession.getNode("/").addNode("trash-" + UUID.randomUUID().toString(), Constants.NT_UNSTRUCTURED);
             for (String nodeUuid : toDelete) {
                 try {
                     JCRNodeWrapper node = destinationSession.getNodeByIdentifier(nodeUuid);
@@ -718,7 +722,7 @@ public class JCRPublicationService extends JahiaService {
         final VersionManager sourceVersionManager = sourceSession.getWorkspace().getVersionManager();
         final VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
 
-        boolean versionable = node.isNodeType(Constants.MIX_VERSIONABLE);
+        boolean versionable = needVersion(node);
 
         final String path = node.getPath();
         String destinationPath;
@@ -768,6 +772,15 @@ public class JCRPublicationService extends JahiaService {
                     sourceSession.getNode(path).getBaseVersion().getName() + " , dest node v=" +
                     destinationSession.getNode(destinationPath).getBaseVersion().getName());
         }
+    }
+
+    private boolean needVersion(JCRNodeWrapper node) throws RepositoryException {
+        for (String versionedType : versionedTypes) {
+            if (node.isNodeType(versionedType)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private String handleMoveOrRenamedNode(JCRNodeWrapper node, JCRSessionWrapper destinationSession, String destinationPath, JCRNodeWrapper destinationNode, Set<JCRNodeWrapper> toCheckpoint) throws RepositoryException {
@@ -889,7 +902,7 @@ public class JCRPublicationService extends JahiaService {
                 // Always checkpoint before first clone
                 for (String s : included) {
                     JCRNodeWrapper n = sourceSession.getNodeByIdentifier(s);
-                    if (n.isNodeType(Constants.MIX_VERSIONABLE)) {
+                    if (needVersion(n)) {
                         checkpoint(sourceSession, n, sourceSession.getWorkspace().getVersionManager());
                     }
                 }
@@ -900,13 +913,13 @@ public class JCRPublicationService extends JahiaService {
                 destinationSession.getWorkspace().clone(sourceSession.getWorkspace().getName(), sourceNodePath, destinationPath, false);
                 for (String s : included) {
                     JCRNodeWrapper n = destinationSession.getNodeByIdentifier(s);
-                    if (n.isNodeType(Constants.MIX_VERSIONABLE)) {
+                    if (needVersion(n)) {
                         toCheckpoint.add(n);
                     }
                 }
                 JCRNodeWrapper n = destinationSession.getNode(sourceNode.getCorrespondingNodePath(destinationWorkspaceName));
                 try {
-                    if (n.getParent().isNodeType(Constants.MIX_VERSIONABLE)) {
+                    if (needVersion(n.getParent())) {
                         toCheckpoint.add(n.getParent());
                     }
                 } catch (ItemNotFoundException e1) {
@@ -1004,7 +1017,7 @@ public class JCRPublicationService extends JahiaService {
      * Unpublish a node from live workspace.
      * Referenced Node will not be unpublished.
      *
-     * @param uuids uuids of the node to unpublish
+     * @param uuids            uuids of the node to unpublish
      * @param checkPermissions do we need to check publish permissions on the provided nodes?
      * @return the list of node UUIDs that the unpublish action was executed for
      * @throws javax.jcr.RepositoryException in case of an error during this operation
@@ -1077,6 +1090,7 @@ public class JCRPublicationService extends JahiaService {
 
     /**
      * Test if the provided node has a least one published i18n child node
+     *
      * @param node to be tested
      * @return true if the node has at least one published i18n child node
      * @throws RepositoryException
@@ -1164,13 +1178,13 @@ public class JCRPublicationService extends JahiaService {
      * and if requested you will be able to get the infos also for the subnodes and the referenced nodes.
      * As language dependent data is always stored in subnodes you need to set includesSubnodes to true, if you also specify a list of languages.
      *
-     * @param languages          Languages list to use for publication info, or null for all languages (only appplied if includesSubnodes is true)
-     * @param includesReferences If true include info for referenced nodes
-     * @param includesSubnodes   If true include info for subnodes
-     * @param sourceSession      source session (default workspace)
-     * @param destinationSession destination session (live workspace)
-     * @param infosMap           a Set of uuids, which don't need to be checked or have already been checked
-     * @param infos              contains all publication infos
+     * @param languages              Languages list to use for publication info, or null for all languages (only appplied if includesSubnodes is true)
+     * @param includesReferences     If true include info for referenced nodes
+     * @param includesSubnodes       If true include info for subnodes
+     * @param sourceSession          source session (default workspace)
+     * @param destinationSession     destination session (live workspace)
+     * @param infosMap               a Set of uuids, which don't need to be checked or have already been checked
+     * @param infos                  contains all publication infos
      * @param currentPublicationInfo processed publicationInfo
      * @return the <code>PublicationInfo</code> for the requested node(s)
      * @throws RepositoryException in case of JCR-related errors
@@ -1541,8 +1555,9 @@ public class JCRPublicationService extends JahiaService {
     }
 
     protected void addRemovedLabel(JCRNodeWrapper node, final String label) throws RepositoryException {
-        if (node.isVersioned()) {
-            node.getVersionHistory().addVersionLabel(node.getBaseVersion().getName(), label, false);
+        if (needVersion(node)) {
+            VersionManager versionManager = node.getSession().getWorkspace().getVersionManager();
+            versionManager.getVersionHistory(node.getPath()).addVersionLabel(versionManager.getBaseVersion(node.getPath()).getName(), label, false);
         }
         NodeIterator ni = node.getNodes();
         while (ni.hasNext()) {

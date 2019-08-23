@@ -288,7 +288,7 @@
                                 </configuration>
                             </execution>
                         </executions>
-                    </plugin>                
+                    </plugin>
                 </plugins>
             </build>
         </profile>
@@ -381,7 +381,7 @@
             <artifactId>apache-log4j-extras</artifactId>
             <version>${log4j.version}</version>
             <scope>runtime</scope>
-        </dependency>        
+        </dependency>
 
         <!-- Pluto 2.0 shared lib-->
         <dependency>
@@ -877,8 +877,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <sassSourceDirectory>src/main/webapp/engines/jahia-anthracite</sassSourceDirectory>
-                    <destination>src/main/webapp/engines/jahia-anthracite</destination>
+                    <sassSourceDirectory>src/main/webapp/engines/jahia-anthracite/css</sassSourceDirectory>
+                    <destination>src/main/webapp/engines/jahia-anthracite/css</destination>
                 </configuration>
                 <dependencies>
                     <dependency>
@@ -887,6 +887,44 @@
                         <version>9.1.12.0</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.6</version>
+                <configuration>
+                    <workingDirectory>src/main/webapp/engines/jahia-anthracite</workingDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>npm install node and yarn</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>install-node-and-yarn</goal>
+                        </goals>
+                        <configuration>
+                            <nodeVersion>v8.11.3</nodeVersion>
+                            <yarnVersion>v1.12.3</yarnVersion>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>yarn install</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>yarn post-install</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>build</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
 

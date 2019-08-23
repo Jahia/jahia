@@ -36,9 +36,9 @@
     </c:if>
 
 	<c:if test="${not empty theme}">
-		<link rel="stylesheet" type="text/css" href="<c:url value='/engines/${theme}/edit${themeLocale}.css'/>"/>
+		<link rel="stylesheet" type="text/css" href="<c:url value='/engines/${theme}/css/edit${themeLocale}.css'/>"/>
 		<%-- Javascript for theme --%>
-		<script type="text/javascript" src="<c:url value='/engines/${theme}/js/edit.js'/>"></script>
+		<script type="text/javascript" src="<c:url value='/engines/${theme}/js/dist/build/anthracite-min.js'/>"></script>
 	</c:if>
 
 </head>

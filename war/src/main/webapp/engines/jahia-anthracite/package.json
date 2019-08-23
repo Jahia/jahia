@@ -1,0 +1,28 @@
+{
+  "name": "jahia-anthracite",
+  "version": "1.0.0",
+  "description": "Default Anthracite dev env",
+  "main": "gulpfile.js",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-dest": "^0.2.3",
+    "gulp-concat": "^2.6.1",
+    "gulp-eslint": "^5.0.0",
+    "gulp-copy": "^4.0.1",
+    "gulp-minify": "^3.1.0",
+    "gulp-javascript-obfuscator": "^1.1.6",
+    "gulp-sass": "^4.0.2",
+    "gulp-uglify": "^3.0.2",
+    "gulp-rename": "^1.4.0",
+    "gulp-util": "^3.0.8",
+    "node-sass": "^4.11.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "gulp generate"
+  },
+  "author": "",
+  "license": "ISC"
+}

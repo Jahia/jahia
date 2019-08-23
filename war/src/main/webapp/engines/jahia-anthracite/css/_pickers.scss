@@ -18,7 +18,7 @@ body[indigo-dragging-panel="true"] {
     left: 0;
     top: 0;
     z-index: 1000;
-    background: url(./images/icons/splitter@X2.png) no-repeat center right 6px transparent;
+    background: url(../images/icons/splitter@X2.png) no-repeat center right 6px transparent;
     background-size: 5px 10px;
     border-left: 1px solid transparent;
     display: block;
@@ -159,7 +159,7 @@ body[indigo-dragging-panel="true"] {
 	}
 
 	#JahiaGxtManagerToolbar .action-bar-tool-item.repositoryexplorer-menu-view {
-		background-image: url(./images/icons/icon_preview_dark.png) !important;
+		background-image: url(../images/icons/icon_preview_dark.png) !important;
 	}
 
 }
@@ -475,7 +475,7 @@ body[indigo-dragging-panel="true"] {
 		// TOGGLE BUTTON
 		.toggle-picker-files {
 			left: 0 !important;
-			background-image: url(./images/icons/toggle-WE@X2.png);
+			background-image: url(../images/icons/toggle-WE@X2.png);
 		}
 
 		#JahiaGxtManagerLeftTree + div #images-view .x-toolbar {
@@ -592,7 +592,7 @@ body[indigo-dragging-panel="true"] {
 
 	// BOOTSTRAP COLUMNS
 	img[src$="/jnt_page_large.png"] {
-		background-image: url(./images/tabs-pages-dark@X2.png);
+		background-image: url(../images/tabs-pages-dark@X2.png);
 	}
 
 	// COMMON ICON REPLACEMENTS IN TREE
@@ -627,50 +627,50 @@ body[indigo-dragging-panel="true"] {
 
 	// Category Icon
 	img[src$="/jnt_category.png"] {
-		background-image: url(./images/icons_dark/category.svg);
+		background-image: url(../images/icons_dark/category.svg);
 		background-size: 20px;
 		opacity: 0.5;
 	}
 
 	// Portlet Icon
 	img[src$="/jnt_portletFolder.png"] {
-		background-image: url(./images/icons_dark/portlets.svg);
+		background-image: url(../images/icons_dark/portlets.svg);
 		background-size: 20px;
 		opacity: 0.5;
 	}
 
 	// BOOTSTRAP COLUMNS
 	img[src$="/bootstrap3nt_columns.png"] {
-		background-image: url(./images/icons/icon_display_thumbs_grey@X2.png);
+		background-image: url(../images/icons/icon_display_thumbs_grey@X2.png);
 		background-size: 18px;
 	}
 
 	// CONTENT LIST
 	img[src$="/jnt_contentList.png"] {
-		background-image: url(./images/icons/tabs-placeholder-black@X2.png);
+		background-image: url(../images/icons/tabs-placeholder-black@X2.png);
 		background-size: 18px;
 	}
 
 
 	// IMAGE ICON
 	img[src$="/jnt_file_img.png"] {
-		background-image: url(./images/icons/icon-image@X2.png);
+		background-image: url(../images/icons/icon-image@X2.png);
 	}
 
 	// PAGE ICON
 	img[src$="/jnt_page.png"] {
-		background-image: url(./images/tabs-pages-dark@X2.png);
+		background-image: url(../images/tabs-pages-dark@X2.png);
 	}
 
 	.x-grid3-row-selected {
 		// IMAGE ICON
 		img[src$="/jnt_file_img.png"] {
-			background-image: url(./images/icons/icon-image-white@X2.png);
+			background-image: url(../images/icons/icon-image-white@X2.png);
 		}
 
 		// PAGE ICON
 		img[src$="/jnt_page.png"] {
-			background-image: url(./images/tabs-pages-white@X2.png);
+			background-image: url(../images/tabs-pages-white@X2.png);
 		}
 
 	}
@@ -841,33 +841,33 @@ body[indigo-dragging-panel="true"] {
 	#JahiaGxtManagerTobTable {
 		// PAGE ICON
 		img[src$="/jnt_page.png"] {
-			background-image: url(./images/tabs-pages-white@X2.png);
+			background-image: url(../images/tabs-pages-white@X2.png);
 			opacity: 0.8;
 		}
 
 		// FOLDER ICON
 		img[src$="/jnt_contentFolder.png"],
 		img[src$="/jnt_folder.png"] {
-			background-image: url(./images/icons/tabs-files-dark@X2.png);
+			background-image: url(../images/icons/tabs-files-dark@X2.png);
 			opacity: 0.8;
 		}
 
 		// EDP item icon
 		img[src$="/remoteFolder.png"] {
-			background-image: url(./images/icons/tabs-files-shared-dark@X2.png);
+			background-image: url(../images/icons/tabs-files-shared-dark@X2.png);
 			opacity: 0.8;
 		}
 
 		// BOOTSTRAP COLUMNS
 		img[src$="/jnt_category.png"] {
-			background-image: url(./images/icons_light/category.svg);
+			background-image: url(../images/icons_light/category.svg);
 			background-size: 20px;
 			opacity: 0.5;
 		}
 
 		// Portlet Icon
 		img[src$="/jnt_portletFolder.png"] {
-			background-image: url(./images/icons_light/portlets.svg);
+			background-image: url(../images/icons_light/portlets.svg);
 			background-size: 20px;
 			opacity: 0.5;
 		}
@@ -876,22 +876,22 @@ body[indigo-dragging-panel="true"] {
 	// FOLDER ICON
 	img[src$="/jnt_contentFolder.png"],
 	img[src$="/jnt_folder.png"] {
-		background-image: url(./images/icons/tabs-files-dark@X2.png);
+		background-image: url(../images/icons/tabs-files-dark@X2.png);
 	}
 
 	// EDP item icon
 	img[src$="/remoteFolder.png"] {
-		background-image: url(./images/icons/tabs-files-shared-dark@X2.png);
+		background-image: url(../images/icons/tabs-files-shared-dark@X2.png);
 	}
 
 	// SITE ICON
 	img[src$="/jnt_virtualsite.png"] {
-		background-image: url(./images/icons/tabs-site-dark@X2.png);
+		background-image: url(../images/icons/tabs-site-dark@X2.png);
 	}
 
 	// MOUNTS ICON
 	img[src$="/jnt_mounts.png"] {
-		background-image: url(./images/icons/tabs-placeholder-black@X2.png);
+		background-image: url(../images/icons/tabs-placeholder-black@X2.png);
 	}
 
 	// SELECTED ICONS
@@ -899,43 +899,43 @@ body[indigo-dragging-panel="true"] {
 		// FOLDER ICON
 		img[src$="/jnt_contentFolder.png"],
 		img[src$="/jnt_folder.png"] {
-			background-image: url(./images/icons/tabs-files@X2.png)!important;
+			background-image: url(../images/icons/tabs-files@X2.png)!important;
 			opacity: 1!important;
 		}
 
 		// EDP item icon
 		img[src$="/remoteFolder.png"] {
-			background-image: url(./images/icons/tabs-files-shared-white@X2.png)!important;
+			background-image: url(../images/icons/tabs-files-shared-white@X2.png)!important;
 			opacity: 1!important;
 		}
 
 		// BOOTSTRAP COLUMNS
 		img[src$="/jnt_category.png"] {
-			background-image: url(./images/icons_light/category.svg);
+			background-image: url(../images/icons_light/category.svg);
 			background-size: 20px;
 			opacity: 0.9;
 		}
 
 		// Portlet Icon
 		img[src$="/jnt_portletFolder.png"] {
-			background-image: url(./images/icons_light/portlets.svg);
+			background-image: url(../images/icons_light/portlets.svg);
 			background-size: 20px;
 			opacity: 0.9;
 		}
 
 		// SITE ICON
 		img[src$="/jnt_virtualsite.png"] {
-			background-image: url(./images/icons/tabs-site-white@X2.png);
+			background-image: url(../images/icons/tabs-site-white@X2.png);
 		}
 
 		// MOUNTS ICON
 		img[src$="/jnt_mounts.png"] {
-			background-image: url(./images/icons/tabs-placeholder-white@X2.png);
+			background-image: url(../images/icons/tabs-placeholder-white@X2.png);
 		}
 
 		// PAGE ICON
 		img[src$="/jnt_page.png"] {
-			background-image: url(./images/tabs-pages-white@X2.png);
+			background-image: url(../images/tabs-pages-white@X2.png);
 		}
 	}
 
@@ -964,7 +964,7 @@ body[indigo-dragging-panel="true"] {
 			box-shadow: none;
 
 			.toggle-multiple-selection {
-				background-image: url(./images/icons/toggle-SN-white@X2.png);
+				background-image: url(../images/icons/toggle-SN-white@X2.png);
 				pointer-events: all;
 				margin-bottom: 30px;
 			}
@@ -984,7 +984,7 @@ body[indigo-dragging-panel="true"] {
 		    display: inline-block;
 		    margin-bottom: 10px;
 			padding: 0 0 0 19px;
-			background: url(./images/icons/toggle-NS-white@X2.png) no-repeat left center;
+			background: url(../images/icons/toggle-NS-white@X2.png) no-repeat left center;
 			background-size: 15px;
 			opacity: 0.9;
 			border: none;
@@ -1129,7 +1129,7 @@ body[indigo-dragging-panel="true"] {
 
 								width: 20px;
 								height: 20px;
-								background: url(./images/icons/icon-close-grey@X2.png) no-repeat center center #e9e9e9;
+								background: url(../images/icons/icon-close-grey@X2.png) no-repeat center center #e9e9e9;
 								background-size: 10px;
 								border: 2px solid rgb(0, 160, 227)!important;
 								pointer-events: all;
@@ -1249,7 +1249,7 @@ body[indigo-dragging-panel="true"] {
 
 		// SEARCH BUTTON
 		#JahiaGxtManagerLeftTree__CRTsearchTabItem {
-			background: url(./images/icons/tabs-search-black@X2.png) no-repeat center center transparent;
+			background: url(../images/icons/tabs-search-black@X2.png) no-repeat center center transparent;
 		    width: 25px;
 		    height: 25px;
 		    position: fixed;
@@ -1470,7 +1470,7 @@ body[indigo-dragging-panel="true"] {
 										background: #F5F5F5!important;
 										box-shadow: none!important;
 
-										// background-image: url("./images/icons/combo-arrow.png");
+										// background-image: url("../images/icons/combo-arrow.png");
 										// background-position: right 5px center;
 										// background-repeat: no-repeat;
 										//
@@ -1773,7 +1773,7 @@ body[indigo-dragging-panel="true"] {
 
 						// Refresh tool used to refresh the contents of current source
 						.x-tool-refresh {
-							background: url(./images/icons/icon-publication-launcher-grey.png) no-repeat center center transparent;
+							background: url(../images/icons/icon-publication-launcher-grey.png) no-repeat center center transparent;
 							height: 30px;
 							width: 30px;
 							position: fixed;
@@ -2162,7 +2162,7 @@ body[indigo-dragging-panel="true"] {
 
 				&[data-nodetypes="jnt:folder"]:after {
 					content: '';
-					background-image: url(./images/icons/folder.svg) !important;
+					background-image: url(../images/icons/folder.svg) !important;
 					background-repeat: no-repeat;
 					background-position: center center;
 					overflow: hidden;
@@ -2377,7 +2377,7 @@ body[indigo-dragging-panel="true"] {
 				&:hover {
 					cursor: pointer;
 				}
-				background: url(./images/icons/icon_preview_small_grey.png) no-repeat center center;
+				background: url(../images/icons/icon_preview_small_grey.png) no-repeat center center;
 
 				body[indigo-picker-display="detailedview"] & {
 					background-color: #007cb0;
@@ -2413,7 +2413,7 @@ body[indigo-dragging-panel="true"] {
 					cursor: pointer;
 				}
 
-				background: url("./images/icons/tabs-edit.png") no-repeat center center;
+				background: url("../images/icons/tabs-edit.png") no-repeat center center;
 
 				body[indigo-picker-display="detailedview"] & {
 					background-color: #007cb0;
@@ -2445,7 +2445,7 @@ body[indigo-dragging-panel="true"] {
 
 				.preview-button {
 					background-color: #007cb0 !important;
-					background: url(./images/icons/icon_preview_small_white.png) no-repeat center center;
+					background: url(../images/icons/icon_preview_small_white.png) no-repeat center center;
 				}
 
 				.edit-button {
@@ -2627,7 +2627,7 @@ body[indigo-dragging-panel="true"] {
 		border: none;
 		opacity: 0.8;
 
-		background: url(./images/icons/toggle-EW@X2.png) no-repeat center center;
+		background: url(../images/icons/toggle-EW@X2.png) no-repeat center center;
 		background-size: 15px;
 
 		&:hover {
@@ -2686,7 +2686,7 @@ body[indigo-dragging-panel="true"] {
 			background-color: transparent;
 			background-position: center;
 			background-repeat: no-repeat;
-			background-image: url(./images/icons/tabs-placeholder-white@X2.png);
+			background-image: url(../images/icons/tabs-placeholder-white@X2.png);
 			background-size: 21px;
 
 			z-index: 999999;
@@ -2782,7 +2782,7 @@ body[indigo-dragging-panel="true"] {
 			// Add New Folder
 			&.toolbar-item-newfolder {
 				display: block!important;
-			    background-image: url(./images/buttons_dark/new-folder.svg);
+			    background-image: url(../images/buttons_dark/new-folder.svg);
 
 				&::before {
 					content: $text_tooltip_new_folder;
@@ -2792,7 +2792,7 @@ body[indigo-dragging-panel="true"] {
 
 			// Add New Content Folder
 			&.toolbar-item-newcontentfolder { // editorial content manager
-				background-image: url(./images/buttons_dark/new-content-folder.svg);
+				background-image: url(../images/buttons_dark/new-content-folder.svg);
 				background-size: 19px;
 
 				&::before {
@@ -2802,7 +2802,7 @@ body[indigo-dragging-panel="true"] {
 
 			// Add New Portlet Folder
 			&.toolbar-item-newportletfolder { // portlet manager
-				background-image: url(./images/buttons_dark/new-content-folder.svg);
+				background-image: url(../images/buttons_dark/new-content-folder.svg);
 				background-size: 19px;
 
 				&::before {
@@ -2812,7 +2812,7 @@ body[indigo-dragging-panel="true"] {
 
 			// New Category
 			&.toolbar-item-newcategory {
-				background-image: url(./images/buttons_dark/new-content.svg);
+				background-image: url(../images/buttons_dark/new-content.svg);
 				background-size: 17px;
 
 				&::before {
@@ -2822,7 +2822,7 @@ body[indigo-dragging-panel="true"] {
 
 			// Upload File
 			&.toolbar-item-upload {
-				background-image: url(./images/icons/add-media-dark@X2.png);
+				background-image: url(../images/icons/add-media-dark@X2.png);
 				background-size: 23px;
 				background-position: top 5px center;
 
@@ -2833,7 +2833,7 @@ body[indigo-dragging-panel="true"] {
 
 			// New Content
 			&.toolbar-item-newcontent {
-				background-image: url(./images/buttons_dark/new-content.svg);
+				background-image: url(../images/buttons_dark/new-content.svg);
 				background-size: 17px;
 
 				&::before {
@@ -2843,7 +2843,7 @@ body[indigo-dragging-panel="true"] {
 
 			// New Portlet
 			&.toolbar-item-newportlet {
-				background-image: url(./images/buttons_dark/new-portlet.svg);
+				background-image: url(../images/buttons_dark/new-portlet.svg);
 				background-position: top 7px center;
 
 				&::before {
@@ -2853,7 +2853,7 @@ body[indigo-dragging-panel="true"] {
 
 			// New Page
 			&.toolbar-item-newpage {
-				background-image: url(./images/buttons_dark/new-page.svg);
+				background-image: url(../images/buttons_dark/new-page.svg);
 				background-size: 14px;
 
 				&::before {
@@ -2864,83 +2864,83 @@ body[indigo-dragging-panel="true"] {
 			// Download
 			&.toolbar-item-download {
 				display: none!important;
-				background-image: url(./images/icons/placeholder-9@X2.png);
+				background-image: url(../images/icons/placeholder-9@X2.png);
 			}
 
 			// File preview
 			&.toolbar-item-filepreview {
 				display: none!important;
-				background-image: url(./images/icons/placeholder-10@X2.png);
+				background-image: url(../images/icons/placeholder-10@X2.png);
 			}
 
 			// Rename
 			&.toolbar-item-rename {
 				display: none!important;
-				background-image: url(./images/icons/placeholder-11@X2.png);
+				background-image: url(../images/icons/placeholder-11@X2.png);
 			}
 
 			// Delete
 			&.toolbar-item-delete {
 				display: none!important;
-				background-image: url(./images/icons/placeholder-12@X2.png);
+				background-image: url(../images/icons/placeholder-12@X2.png);
 			}
 
 			// Un delete
 			&.toolbar-item-undelete {
 				display: none!important;
-				background-image: url(./images/icons/placeholder-13@X2.png);
+				background-image: url(../images/icons/placeholder-13@X2.png);
 			}
 
 			// Delete permanently
 			&.toolbar-item-deletepermanently {
 				display: none!important;
-				background-image: url(./images/icons/placeholder-14@X2.png);
+				background-image: url(../images/icons/placeholder-14@X2.png);
 			}
 
 			&.toolbar-item-copy {
 				display: none!important;
-				background-image: url(./images/icons/placeholder-16@X2.png);
+				background-image: url(../images/icons/placeholder-16@X2.png);
 			}
 
 			// Cut
 			&.toolbar-item-cut {
 				display: none!important;
-				background-image: url(./images/icons/placeholder-17@X2.png);
+				background-image: url(../images/icons/placeholder-17@X2.png);
 			}
 
 			// Paste
 			&.toolbar-item-paste {
 				display: none!important;
-				background-image: url(./images/icons/placeholder-18@X2.png);
+				background-image: url(../images/icons/placeholder-18@X2.png);
 			}
 
 			// Paste Reference
 			&.toolbar-item-pastereference {
 				display: none!important;
-				background-image: url(./images/icons/placeholder-19@X2.png);
+				background-image: url(../images/icons/placeholder-19@X2.png);
 			}
 
 			// Crop
 			&.toolbar-item-crop {
 				display: none!important;
-				background-image: url(./images/icons/placeholder-20@X2.png);
+				background-image: url(../images/icons/placeholder-20@X2.png);
 			}
 
 			// Resize
 			&.toolbar-item-resize {
 				display: none!important;
-				background-image: url(./images/icons/placeholder-21@X2.png);
+				background-image: url(../images/icons/placeholder-21@X2.png);
 			}
 
 			// Rotate
 			&.toolbar-item-rotate {
 				display: none!important;
-				background-image: url(./images/icons/placeholder-22@X2.png);
+				background-image: url(../images/icons/placeholder-22@X2.png);
 			}
 
 			// Repo Filter menu
 			&.repositoryexplorer-menu-view {
-				background-image: url(./images/icons/icon_preview_small_white.png);
+				background-image: url(../images/icons/icon_preview_small_white.png);
 
 				&::before {
 					content: $text_tooltip_toggle_hidden_elements;

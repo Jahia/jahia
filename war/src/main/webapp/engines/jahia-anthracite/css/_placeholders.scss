@@ -222,7 +222,7 @@
 
 	// PREVIOUS MONTH BUTTON
 	%CSS_BLOCK--DATE_PICKER--PREVIOUS_MONTH_BUTTON---UP {
-		background-image:url("./images/icons/icon_arrow_left_single_white@X2.png")!important;
+		background-image:url("../images/icons/icon_arrow_left_single_white@X2.png")!important;
 		background-size: 16px 16px;
 
 		opacity: 0.8;
@@ -234,7 +234,7 @@
 
 	// NEXT MONTH BUTTON
 	%CSS_BLOCK--DATE_PICKER--NEXT_MONTH_BUTTON---UP {
-		background-image:url("./images/icons/icon_arrow_right_single_white@X2.png")!important;
+		background-image:url("../images/icons/icon_arrow_right_single_white@X2.png")!important;
 		background-size: 16px 16px;
 
 		opacity: 0.8;
@@ -374,7 +374,7 @@
 
 
 	%CSS_BLOCK--DATE_PICKER--MODAL--PREVIOUS_YEAR---UP {
-		background: url("./images/icons/icon_arrow_left_single_white@X2.png") no-repeat center center _property($DATE-PICKER--YEAR--BG, $DATE-PICKER);
+		background: url("../images/icons/icon_arrow_left_single_white@X2.png") no-repeat center center _property($DATE-PICKER--YEAR--BG, $DATE-PICKER);
 		background-size: 14px 14px;
 		opacity: 0.8;
 	}
@@ -384,7 +384,7 @@
 	}
 
 	%CSS_BLOCK--DATE_PICKER--MODAL--NEXT_YEAR---UP {
-		background: url("./images/icons/icon_arrow_right_single_white@X2.png") no-repeat center center _property($DATE-PICKER--YEAR--BG, $DATE-PICKER);
+		background: url("../images/icons/icon_arrow_right_single_white@X2.png") no-repeat center center _property($DATE-PICKER--YEAR--BG, $DATE-PICKER);
 		background-size: 14px 14px;
 		opacity: 0.8;
 	}

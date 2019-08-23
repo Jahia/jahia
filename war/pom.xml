@@ -87,6 +87,207 @@
             </build>
         </profile>
 
+        <profile>
+            <id>generate-ddl</id>
+            <activation>
+                <property>
+                    <name>jahia.generate.ddl</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.jahia.server</groupId>
+                                            <artifactId>jahia-impl</artifactId>
+                                            <version>${project.version}</version>
+                                            <type>jar</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/hibernate-entities</outputDirectory>
+                                            <includes>org/jahia/hibernate/model/JahiaDbTest.class,org/jahia/services/history/HistoryEntry.class,org/jahia/services/content/nodetypes/NodeTypesDBProvider.class</includes>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>de.juplo</groupId>
+                        <artifactId>hibernate4-maven-plugin</artifactId>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/hibernate-entities</outputDirectory>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>ddl-derby-drop</id>
+                                <goals>
+                                    <goal>export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.derby}</hibernateDialect>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/derby/00-drop-jahia-schema.sql</outputFile>
+                                    <type>DROP</type>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>ddl-derby-create</id>
+                                <goals>
+                                    <goal>export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.derby}</hibernateDialect>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/derby/01-create-jahia-schema.sql</outputFile>
+                                    <type>CREATE</type>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>ddl-mysql-drop</id>
+                                <goals>
+                                    <goal>export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.mysql}</hibernateDialect>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/mysql/00-drop-jahia-schema.sql</outputFile>
+                                    <type>DROP</type>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>ddl-mysql-create</id>
+                                <goals>
+                                    <goal>export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.mysql}</hibernateDialect>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/mysql/01-create-jahia-schema.sql</outputFile>
+                                    <type>CREATE</type>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>ddl-postgresql-drop</id>
+                                <goals>
+                                    <goal>export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.postgresql}</hibernateDialect>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/postgresql/00-drop-jahia-schema.sql</outputFile>
+                                    <type>DROP</type>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>ddl-postgresql-create</id>
+                                <goals>
+                                    <goal>export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.postgresql}</hibernateDialect>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/postgresql/01-create-jahia-schema.sql</outputFile>
+                                    <type>CREATE</type>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>generate-jbpm-ddl</id>
+            <activation>
+                <property>
+                    <name>jahia.generate.jbpm.ddl</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jahia.server</groupId>
+                        <artifactId>jahia-hibernate-maven-plugin</artifactId>
+                        <configuration>
+                            <persistenceFileName>jahia-persistence.xml</persistenceFileName>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>ddl-derby-drop</id>
+                                <goals>
+                                    <goal>jpa-schema-export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.derby}</hibernateDialect>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/derby/00-drop-jbpm-schema.sql</outputFile>
+                                    <statementType>DROP</statementType>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>ddl-derby-create</id>
+                                <goals>
+                                    <goal>jpa-schema-export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.derby}</hibernateDialect>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/derby/01-create-jbpm-schema.sql</outputFile>
+                                    <statementType>CREATE</statementType>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>ddl-mysql-drop</id>
+                                <goals>
+                                    <goal>jpa-schema-export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.mysql}</hibernateDialect>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/mysql/00-drop-jbpm-schema.sql</outputFile>
+                                    <statementType>DROP</statementType>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>ddl-mysql-create</id>
+                                <goals>
+                                    <goal>jpa-schema-export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.mysql}</hibernateDialect>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/mysql/01-create-jbpm-schema.sql</outputFile>
+                                    <statementType>CREATE</statementType>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>ddl-postgresql-drop</id>
+                                <goals>
+                                    <goal>jpa-schema-export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.postgresql}</hibernateDialect>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/postgresql/00-drop-jbpm-schema.sql</outputFile>
+                                    <statementType>DROP</statementType>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>ddl-postgresql-create</id>
+                                <goals>
+                                    <goal>jpa-schema-export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.postgresql}</hibernateDialect>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/postgresql/01-create-jbpm-schema.sql</outputFile>
+                                    <statementType>CREATE</statementType>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <dependencies>
@@ -176,7 +377,7 @@
             <artifactId>apache-log4j-extras</artifactId>
             <version>${log4j.version}</version>
             <scope>runtime</scope>
-        </dependency>        
+        </dependency>
 
         <!-- Pluto 2.0 shared lib-->
         <dependency>
@@ -619,8 +820,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <sassSourceDirectory>src/main/webapp/engines/jahia-anthracite</sassSourceDirectory>
-                    <destination>src/main/webapp/engines/jahia-anthracite</destination>
+                    <sassSourceDirectory>src/main/webapp/engines/jahia-anthracite/css</sassSourceDirectory>
+                    <destination>src/main/webapp/engines/jahia-anthracite/css</destination>
                 </configuration>
                 <dependencies>
                     <dependency>
@@ -629,6 +830,44 @@
                         <version>9.1.12.0</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.6</version>
+                <configuration>
+                    <workingDirectory>src/main/webapp/engines/jahia-anthracite</workingDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>npm install node and yarn</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>install-node-and-yarn</goal>
+                        </goals>
+                        <configuration>
+                            <nodeVersion>v8.11.3</nodeVersion>
+                            <yarnVersion>v1.12.3</yarnVersion>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>yarn install</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>yarn post-install</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>build</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
 

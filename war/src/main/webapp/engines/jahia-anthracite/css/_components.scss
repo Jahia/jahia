@@ -560,13 +560,13 @@
 
 		// Menu icons
 		.x-menu-list-item .x-menu-item.toolbar-item-grid-view-sort-asc {
-			background-image: url(./images/icons/context-menu/sort-alpha-asc.png);
+			background-image: url(../images/icons/context-menu/sort-alpha-asc.png);
 		}
 		.x-menu-list-item .x-menu-item.toolbar-item-grid-view-sort-desc {
-			background-image: url(./images/icons/context-menu/sort-alpha-desc.png);
+			background-image: url(../images/icons/context-menu/sort-alpha-desc.png);
 		}
 		.x-menu-list-item .x-menu-item.toolbar-item-grouping-view-group-by {
-			background-image: url(./images/icons/context-menu/make-group.png);
+			background-image: url(../images/icons/context-menu/make-group.png);
 		}
 	}
 }
@@ -608,11 +608,11 @@
 }
 
 .x-menu-scroller-top {
-    background-image: url(./images/menu-scroll-up.png);
+    background-image: url(../images/menu-scroll-up.png);
 }
 
 .x-menu-scroller-bottom {
-    background-image: url(./images/menu-scroll-down.png);
+    background-image: url(../images/menu-scroll-down.png);
 }
 
 
@@ -1946,7 +1946,7 @@ form,
 			}
 
 			a {
-				background: url("./images/icons/combo-arrow-grey.png") no-repeat center center !important;
+				background: url("../images/icons/combo-arrow-grey.png") no-repeat center center !important;
 				width: 23px;
 			    background-size: 13px !important;
 			    opacity: 0.7;
@@ -2375,7 +2375,7 @@ form,
 		    line-height: normal;
 		    border-radius: 0;
 		    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
-		    background: url(./images/icons/combo-arrow-grey.png) no-repeat right 5px center;
+		    background: url(../images/icons/combo-arrow-grey.png) no-repeat right 5px center;
 		    background-color: white;
 		    padding: 7px 16px 6px 10px !important;
 		    font-family: "Nunito Sans", sans-serif;
@@ -2778,7 +2778,7 @@ form,
 		top: 0;
 		width: 100%;
 		height: 100%;
-		background: url(./images/loader.svg) no-repeat center center transparent;
+		background: url(../images/loader.svg) no-repeat center center transparent;
 		font-size: 0px;
     }
 
@@ -2788,7 +2788,7 @@ form,
 	body[data-indigo-app="dashboard"] & {
 
 		&::before {
-			background: url(./images/loader_dark.svg) no-repeat center center transparent;
+			background: url(../images/loader_dark.svg) no-repeat center center transparent;
 
 		}
 
@@ -2798,7 +2798,7 @@ form,
 
 // Change loader when loading a tree.
 .x-treegrid.x-masked:before {
-		background: url(./images/loader_dark.svg) no-repeat center center;
+		background: url(../images/loader_dark.svg) no-repeat center center;
     background-color: transparent !important;
     position: initial !important;
 }
@@ -2994,7 +2994,7 @@ form,
 				display: block;
 
 				.x-tool-close {
-					background: url(./images/icons/icon-close-grey@X2.png) no-repeat left top 2px;
+					background: url(../images/icons/icon-close-grey@X2.png) no-repeat left top 2px;
 				    background-size: 14px;
 				    width: auto;
 				    height: 25px;
@@ -3132,19 +3132,19 @@ form,
 }
 
 .arrow-double-right {
-	background-image:url(./images/icons/icon_arrow_right_double_grey@X2.png)!important;
+	background-image:url(../images/icons/icon_arrow_right_double_grey@X2.png)!important;
 }
 
 .arrow-right {
-	background-image:url(./images/icons/icon_arrow_right_single_grey@X2.png)!important;
+	background-image:url(../images/icons/icon_arrow_right_single_grey@X2.png)!important;
 }
 
 .arrow-double-left {
-	background-image:url(./images/icons/icon_arrow_left_double_grey@X2.png)!important;
+	background-image:url(../images/icons/icon_arrow_left_double_grey@X2.png)!important;
 }
 
 .arrow-left {
-	background-image:url(./images/icons/icon_arrow_left_single_grey@X2.png)!important;
+	background-image:url(../images/icons/icon_arrow_left_single_grey@X2.png)!important;
 }
 
 
@@ -3459,41 +3459,41 @@ body[data-indigo-gwt-side-panel="open"] {
 		&[src$="/jnt_groupsFolder.png"],
 		&[src$="/jnt_contentFolder.png"],
 		&[src$="/jnt_folder.png"] {
-			background-image: url(./images/icons/tabs-files-dark@X2.png);
+			background-image: url(../images/icons/tabs-files-dark@X2.png);
 		}
 
 		&[src$="/remoteFolder.png"] {
-			background-image: url(./images/icons/tabs-files-shared-dark@X2.png);
+			background-image: url(../images/icons/tabs-files-shared-dark@X2.png);
 		}
 
 		&[src$="/jnt_portletFolder.png"] {
-			background-image: url(./images/icons_dark/portlets.svg);
+			background-image: url(../images/icons_dark/portlets.svg);
 			opacity: 0.5;
 		    background-size: 21px;
 		    background-position: center center;
 		}
 
 		&[src$="/jnt_page.png"] {
-			background-image: url(./images/tabs-pages-dark@X2.png);
+			background-image: url(../images/tabs-pages-dark@X2.png);
 		}
 
 		&[src$="/jnt_virtualsite.png"] {
-			background-image: url(./images/icons/tabs-site-dark@X2.png);
+			background-image: url(../images/icons/tabs-site-dark@X2.png);
 		}
 
 		// Internal link
 		&[src$="jnt_nodeLink.png"] {
-			background-image: url(./images/icons/tabs-placeholder-black@X2.png);
+			background-image: url(../images/icons/tabs-placeholder-black@X2.png);
 		}
 
 		// External link
 		&[src$="jnt_externalLink.png"] {
-			background-image: url(./images/icons/tabs-placeholder-black@X2.png);
+			background-image: url(../images/icons/tabs-placeholder-black@X2.png);
 		}
 
 		// Menu link
 		&[src$="jnt_navMenuText.png"] {
-			background-image: url(./images/icons/tabs-placeholder-black@X2.png);
+			background-image: url(../images/icons/tabs-placeholder-black@X2.png);
 		}
 	}
 
@@ -4082,7 +4082,7 @@ body[data-indigo-gwt-side-panel="open"] {
 			}
 
 			.x-grid3-col-pagePath {
-				background: url(./images/tabs-pages-dark@X2.png) no-repeat left center;
+				background: url(../images/tabs-pages-dark@X2.png) no-repeat left center;
 				background-size: 23px;
 				padding-left: 25px;
 
@@ -4182,7 +4182,7 @@ body[data-indigo-gwt-side-panel="open"] {
 		// 	margin-top: 3px;
 		//
 		// 	img.x-btn-image {
-		// 		background: url(./images/icons/remove_circle.png) !important;
+		// 		background: url(../images/icons/remove_circle.png) !important;
 		// 		background-size: 16px 16px !important;
 		// 		background-repeat: no-repeat !important;
 		// 		left: 0 !important;
@@ -4313,7 +4313,7 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 
 	div[role="combobox"] img {
-		background: url(./images/icons/combo-arrow-grey.png) no-repeat center center transparent !important;
+		background: url(../images/icons/combo-arrow-grey.png) no-repeat center center transparent !important;
 	}
 
 }
@@ -4331,7 +4331,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
 
 	.x-window-header > .x-component:first-child table tbody tr td .x-tool-close {
-		background: url(./images/icons/icon-close-grey@X2.png) no-repeat center bottom;
+		background: url(../images/icons/icon-close-grey@X2.png) no-repeat center bottom;
 		background-size: 20px;
 		width: 25px;
 		height: 25px;
@@ -4438,7 +4438,7 @@ body[data-indigo-gwt-side-panel="open"] {
 			div {
 
 				.x-grid3-hd-btn {
-					background: url(./images/icons/combo-arrow-grey.png) no-repeat center center !important;
+					background: url(../images/icons/combo-arrow-grey.png) no-repeat center center !important;
 					width: 23px;
 					background-size: 13px !important;
 					opacity: 0.7;
@@ -4570,27 +4570,27 @@ body[data-indigo-gwt-side-panel="open"] {
 			}
 
 			&:nth-child(1) {
-				background: url(./images/icons/icon_arrow_left_double_grey@X2.png) no-repeat center center/14px 14px;
+				background: url(../images/icons/icon_arrow_left_double_grey@X2.png) no-repeat center center/14px 14px;
 				margin-left: 0px;
 			}
 
 			&:nth-child(2) {
-				background: url(./images/icons/icon_arrow_left_single_grey@X2.png) no-repeat center center/14px 14px;
+				background: url(../images/icons/icon_arrow_left_single_grey@X2.png) no-repeat center center/14px 14px;
 				margin-left: 5px;
 			}
 
 			&:nth-child(8) {
-				background: url(./images/icons/icon-next-grey@X2.png) no-repeat center center/14px 14px;
+				background: url(../images/icons/icon-next-grey@X2.png) no-repeat center center/14px 14px;
 				margin-right: 5px;
 			}
 
 			&:nth-child(9) {
-				background: url(./images/icons/icon_arrow_right_double_grey@X2.png) no-repeat center center/14px 14px;
+				background: url(../images/icons/icon_arrow_right_double_grey@X2.png) no-repeat center center/14px 14px;
 				margin-right: 5px;
 			}
 
 			&:nth-child(11) {
-				background: url(./images/icons/icon-publication-launcher-grey.png) no-repeat center center/16px 12px;
+				background: url(../images/icons/icon-publication-launcher-grey.png) no-repeat center center/16px 12px;
     		opacity: .52;
 			}
 
@@ -4646,7 +4646,7 @@ body[data-indigo-gwt-side-panel="open"] {
 		}
 
 		&:nth-child(2) input {
-			background-image: url(./images/tabs-search-dark@X2.png) !important;
+			background-image: url(../images/tabs-search-dark@X2.png) !important;
 			background-repeat: no-repeat !important;
 			background-position: left center !important;
 			background-size: 23px !important;
@@ -4683,7 +4683,7 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 
 	div[role="combobox"] img {
-		background: url(./images/icons/combo-arrow-grey.png) no-repeat center center transparent !important;
+		background: url(../images/icons/combo-arrow-grey.png) no-repeat center center transparent !important;
 	}
 
 }
@@ -4756,7 +4756,7 @@ body[data-indigo-gwt-side-panel="open"] {
 		pointer-events: all;
 
 		table tbody tr td .x-tool-close {
-			background: url(./images/icons/icon-close-grey@X2.png) no-repeat center top;
+			background: url(../images/icons/icon-close-grey@X2.png) no-repeat center top;
 			background-size: 20px;
 			width: 25px;
 			height: 25px;
@@ -4787,7 +4787,7 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 
 	.x-grid3-header-inner .x-grid3-hh > table > tbody td div .x-grid3-hd-btn {
-		background: url(./images/icons/combo-arrow-grey.png) no-repeat center center !important;
+		background: url(../images/icons/combo-arrow-grey.png) no-repeat center center !important;
 		width: 23px;
 		background-size: 13px !important;
 		opacity: 0.7;
@@ -4913,7 +4913,7 @@ body[data-indigo-gwt-side-panel="open"] {
 		text-indent: -99999px;
 
 		img.x-btn-image {
-			background: url(./images/icons/ic_info_outline-DARK@2x.png) !important;
+			background: url(../images/icons/ic_info_outline-DARK@2x.png) !important;
 			width: 100% !important;
 			background-repeat: no-repeat !important;
 			background-size: 18px !important;
@@ -4926,7 +4926,7 @@ body[data-indigo-gwt-side-panel="open"] {
 		text-indent: -99999px;
 
 		img.x-btn-image {
-			background: url(./images/icons/ic_delete_black.png) !important;
+			background: url(../images/icons/ic_delete_black.png) !important;
 			width: 100% !important;
 			background-repeat: no-repeat !important;
 			background-size: 18px !important;
@@ -4940,7 +4940,7 @@ body[data-indigo-gwt-side-panel="open"] {
 		text-indent: -99999px;
 
 		img.x-btn-image {
-			background: url(./images/icons/ic_undo_black.png) !important;
+			background: url(../images/icons/ic_undo_black.png) !important;
 			width: 100% !important;
 			background-repeat: no-repeat !important;
 			background-size: 18px !important;
@@ -5082,7 +5082,7 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 
 	div[role="combobox"] img {
-		background: url(./images/icons/combo-arrow-grey.png) no-repeat center center transparent !important;
+		background: url(../images/icons/combo-arrow-grey.png) no-repeat center center transparent !important;
 	}
 
 }
@@ -5178,7 +5178,7 @@ body[data-indigo-gwt-side-panel="open"] {
 			table tbody tr td .x-tool-close {
 				height: 22px;
 				width: 22px;
-				background-image: url(./images/icon-close-large.png);
+				background-image: url(../images/icon-close-large.png);
 				background-position: initial !important;
 				margin-top: 8px;
 				pointer-events: all;
@@ -5216,7 +5216,7 @@ body[data-indigo-gwt-side-panel="open"] {
 			table tbody tr td .x-tool-close {
 				height: 22px;
 				width: 22px;
-				background-image: url(./images/icon-close-large.png);
+				background-image: url(../images/icon-close-large.png);
 				background-position: initial !important;
 			}
 
@@ -5257,7 +5257,7 @@ body[data-indigo-gwt-side-panel="open"] {
 			margin-bottom: 1px;
 
 			img {
-				background: url(./images/icons/ic_refresh.png) !important;
+				background: url(../images/icons/ic_refresh.png) !important;
 				background-size: 18px 18px !important;
 				background-repeat: no-repeat !important;
 				left: 0 !important;
@@ -5268,7 +5268,7 @@ body[data-indigo-gwt-side-panel="open"] {
 		}
 
 		.x-toolbar-right button img {
-			background: url(./images/icons/ic_more_vert_white_.png) !important;
+			background: url(../images/icons/ic_more_vert_white_.png) !important;
 			background-size: 19px 19px !important;
 			background-repeat: no-repeat !important;
 			left: -6px !important;
@@ -5376,7 +5376,7 @@ body[data-indigo-gwt-side-panel="open"] {
 			pointer-events: all;
 
 			table tbody tr td .x-tool-close {
-				background: url(./images/icons/icon-close-grey@X2.png) no-repeat center bottom;
+				background: url(../images/icons/icon-close-grey@X2.png) no-repeat center bottom;
 				background-size: 20px;
 				width: 25px;
 				height: 25px;
@@ -5650,7 +5650,7 @@ body[data-indigo-gwt-side-panel="open"] {
 			pointer-events: all;
 
 			table tbody tr td .x-tool-close {
-				background: url(./images/icons/icon-close-grey@X2.png) no-repeat center top;
+				background: url(../images/icons/icon-close-grey@X2.png) no-repeat center top;
 				background-size: 20px;
 				width: 25px;
 				height: 25px;

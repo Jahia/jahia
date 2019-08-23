@@ -5,7 +5,7 @@
 	height: calc(100% - 109px)!important;
 }
 #JahiaGxtPagesTab .x-grid3-col-locked {
-	background: url(./images/icons_light/lock.svg) #e67d3a no-repeat center;
+	background: url(../images/icons_light/lock.svg) #e67d3a no-repeat center;
     width: 12px;
     height: 12px !important;
     border-radius: 2px;
@@ -100,7 +100,7 @@ body[indigo-dragging-panel] {
 
 				img {
 					width: 15px !important;
-				    background: url(./images/expanded-black.png) no-repeat left center transparent !important;
+				    background: url(../images/expanded-black.png) no-repeat left center transparent !important;
 				    background-size: 14px !important;
 
 
@@ -154,7 +154,7 @@ body[indigo-dragging-panel] {
 
 			img {
 				width: 15px !important;
-			    background: url(./images/expanded-white.png) no-repeat left center transparent !important;
+			    background: url(../images/expanded-white.png) no-repeat left center transparent !important;
 			    background-size: 14px !important;
 			}
 		}
@@ -176,7 +176,7 @@ body[indigo-dragging-panel] {
 	#JahiaGxtRefreshSidePanelButton {
 		/* Refresh side panel button */
 		pointer-events: all;
-		background: url(./images/icons_grey/refresh.svg) no-repeat center;
+		background: url(../images/icons_grey/refresh.svg) no-repeat center;
 		background-size: 23px;
 		left: 275px;
 		position: fixed;
@@ -218,7 +218,7 @@ body[indigo-dragging-panel] {
 		}
 
 		&.x-tool-refresh-red {
-			background: url(./images/icons/tabs-publish-modified@X2.png) no-repeat center center _theme-color(secondary);
+			background: url(../images/icons/tabs-publish-modified@X2.png) no-repeat center center _theme-color(secondary);
 			background-size: 32px;
 		    opacity: .9;
 		}
@@ -342,7 +342,7 @@ body[indigo-dragging-panel] {
 					height: 20px !important;
 					z-index: 999;
 					position: fixed;
-					background: url(./images/icons_dark/pin.svg);
+					background: url(../images/icons_dark/pin.svg);
 					display: block;
 					background-size: 20px;
 					background-repeat: no-repeat;
@@ -350,7 +350,7 @@ body[indigo-dragging-panel] {
 				}
 
 				body[data-edit-window-style="default"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-app="edit"][data-indigo-sidepanel-pinned="true"] & {
-					background-image: url(./images/icons_blue/pin.svg);
+					background-image: url(../images/icons_blue/pin.svg);
 				    opacity: 1;
 				}
 
@@ -627,7 +627,7 @@ body[indigo-dragging-panel] {
 					/* Close settings Button */
 					left: 48px;
 				    bottom: 30px;
-				    // background: url(./images/icons/icon-close-large.png) no-repeat center center !important;
+				    // background: url(../images/icons/icon-close-large.png) no-repeat center center !important;
 				    width: 50px;
 				    height: 50px;
 				    // position: absolute;
@@ -865,7 +865,7 @@ body[indigo-dragging-panel] {
 		background-position: center top 3px;
 
 		// Default
-		//background-image: url(./images/tabs-pages-dark@X2.png);
+		//background-image: url(../images/tabs-pages-dark@X2.png);
 		&:not([src$="/jnt_page.png"]):not([src$="/jnt_virtualsite.png"]):not([src$="/jnt_nodeLink.png"]):not([src$="/jnt_externalLink.png"]):not([src$="/jnt_navMenuText.png"]) {
 			width: 16px !important;
 			height: 16px !important;
@@ -876,59 +876,59 @@ body[indigo-dragging-panel] {
 
 
 		&[src$="/jnt_page.png"] {
-			background-image: url(./images/tabs-pages-dark@X2.png);
+			background-image: url(../images/tabs-pages-dark@X2.png);
 			opacity: 0.8;
 		}
 
 		&[src$="/jnt_virtualsite.png"] {
-			background-image: url(./images/icons/tabs-site-dark@X2.png);
+			background-image: url(../images/icons/tabs-site-dark@X2.png);
 		}
 
 		// Internal link
 		&[src$="jnt_nodeLink.png"] {
-			background-image: url(./images/icons/tabs-placeholder-black@X2.png);
+			background-image: url(../images/icons/tabs-placeholder-black@X2.png);
 		}
 
 		// External link
 		&[src$="jnt_externalLink.png"] {
-			background-image: url(./images/icons/tabs-placeholder-black@X2.png);
+			background-image: url(../images/icons/tabs-placeholder-black@X2.png);
 		}
 
 		// Menu link
 		&[src$="jnt_navMenuText.png"] {
-			background-image: url(./images/icons/tabs-placeholder-black@X2.png);
+			background-image: url(../images/icons/tabs-placeholder-black@X2.png);
 		}
 	}
 
 	.x-grid3-row-selected {
 		.x-tree3-node-icon {
 			&[src$="/jnt_page.png"] {
-				background-image: url(./images/tabs-pages-white@X2.png);
+				background-image: url(../images/tabs-pages-white@X2.png);
 				opacity: 1;
 			}
 
 			&[src$="/jnt_virtualsite.png"] {
-				background-image: url(./images/icons/tabs-site-white@X2.png);
+				background-image: url(../images/icons/tabs-site-white@X2.png);
 				opacity: 1;
 			}
 
 			&[src$="jnt_nodeLink.png"] {
-				background-image: url(./images/icons/tabs-placeholder-white@X2.png);
+				background-image: url(../images/icons/tabs-placeholder-white@X2.png);
 				opacity: 1;
 			}
 
 			&[src$="jnt_externalLink.png"] {
-				background-image: url(./images/icons/tabs-placeholder-white@X2.png);
+				background-image: url(../images/icons/tabs-placeholder-white@X2.png);
 				opacity: 1;
 			}
 
 			&[src$="jnt_navMenuText.png"] {
-				background-image: url(./images/icons/tabs-placeholder-white@X2.png);
+				background-image: url(../images/icons/tabs-placeholder-white@X2.png);
 				opacity: 1;
 			}
 
 			// Default
-			//background-image: url(./images/tabs-pages-white@X2.png);
+			//background-image: url(../images/tabs-pages-white@X2.png);
 		}
 	}
 
@@ -963,7 +963,7 @@ body[indigo-dragging-panel] {
 
 		// CATEGORY ICON
 		// &[src$="/jnt_category.png"] {
-			background-image: url(./images/icons/tabs-files-dark@X2.png);
+			background-image: url(../images/icons/tabs-files-dark@X2.png);
 		// }
 
 
@@ -973,7 +973,7 @@ body[indigo-dragging-panel] {
 		.gwt-Image {
 			// CATEGORY ICON
 			// &[src$="/jnt_category.png"] {
-				background-image: url(./images/icons/tabs-files@X2.png);
+				background-image: url(../images/icons/tabs-files@X2.png);
 			// }
 
 
@@ -1023,15 +1023,15 @@ body[indigo-dragging-panel] {
 		// FOLDER ICON
 		&[src$="/jnt_contentFolder.png"],
 		&[src$="/jnt_folder.png"] {
-			background-image: url(./images/icons/tabs-files-dark@X2.png);
+			background-image: url(../images/icons/tabs-files-dark@X2.png);
 		}
 
 		&[src$="/remoteFolder.png"] {
-			background-image: url(./images/icons/tabs-files-shared-dark@X2.png);
+			background-image: url(../images/icons/tabs-files-shared-dark@X2.png);
 		}
 
 		&[src$="/jnt_virtualsite.png"] {
-			background-image: url(./images/icons/tabs-site-dark@X2.png);
+			background-image: url(../images/icons/tabs-site-dark@X2.png);
 		}
 
 
@@ -1042,15 +1042,15 @@ body[indigo-dragging-panel] {
 			// FOLDER ICON
 			&[src$="/jnt_contentFolder.png"],
 			&[src$="/jnt_folder.png"] {
-				background-image: url(./images/icons/tabs-files@X2.png);
+				background-image: url(../images/icons/tabs-files@X2.png);
 			}
 
 			&[src$="/remoteFolder.png"] {
-				background-image: url(./images/icons/tabs-files-shared-white@X2.png);
+				background-image: url(../images/icons/tabs-files-shared-white@X2.png);
 			}
 
 			&[src$="/jnt_virtualsite.png"] {
-				background-image: url(./images/icons/tabs-site-white@X2.png);
+				background-image: url(../images/icons/tabs-site-white@X2.png);
 			}
 		}
 	}
@@ -1077,20 +1077,20 @@ body[indigo-dragging-panel] {
 		// FOLDER ICON
 		&[src$="/jnt_contentFolder.png"],
 		&[src$="/jnt_folder.png"] {
-			background-image: url(./images/icons/tabs-files-dark@X2.png);
+			background-image: url(../images/icons/tabs-files-dark@X2.png);
 		}
 
 		&[src$="/remoteFolder.png"] {
-			background-image: url(./images/icons/tabs-files-shared-dark@X2.png);
+			background-image: url(../images/icons/tabs-files-shared-dark@X2.png);
 		}
 
 		// IMPORT DROP BOX
 		&[src$="/jnt_importDropBox.png"] {
-			background-image: url(./images/icons/tabs-placeholder-white@X2.png);
+			background-image: url(../images/icons/tabs-placeholder-white@X2.png);
 		}
 
 		&[src$="/jnt_virtualsite.png"] {
-			background-image: url(./images/icons/tabs-site-dark@X2.png);
+			background-image: url(../images/icons/tabs-site-dark@X2.png);
 		}
 
 
@@ -1101,20 +1101,20 @@ body[indigo-dragging-panel] {
 			// FOLDER ICON
 			&[src$="/jnt_contentFolder.png"],
 			&[src$="/jnt_folder.png"] {
-				background-image: url(./images/icons/tabs-files@X2.png);
+				background-image: url(../images/icons/tabs-files@X2.png);
 			}
 
 			&[src$="/remoteFolder.png"] {
-				background-image: url(./images/icons/tabs-files-shared-white@X2.png);
+				background-image: url(../images/icons/tabs-files-shared-white@X2.png);
 			}
 
 			// IMPORT DROP BOX
 			&[src$="/jnt_importDropBox.png"] {
-				background-image: url(./images/icons/tabs-placeholder-black@X2.png);
+				background-image: url(../images/icons/tabs-placeholder-black@X2.png);
 			}
 
 			&[src$="/jnt_virtualsite.png"] {
-				background-image: url(./images/icons/tabs-site-white@X2.png);
+				background-image: url(../images/icons/tabs-site-white@X2.png);
 			}
 
 
@@ -1444,7 +1444,7 @@ body[indigo-dragging-panel] {
 
 		// CATEGORY ICON
 		&[src$="/jnt_category.png"] {
-			background-image: url(./images/icons_dark/category.svg);
+			background-image: url(../images/icons_dark/category.svg);
 		}
 
 
@@ -1454,7 +1454,7 @@ body[indigo-dragging-panel] {
 		.x-tree3-node-icon {
 			// CATEGORY ICON
 			&[src$="/jnt_category.png"] {
-				background-image: url(./images/icons_light/category.svg);
+				background-image: url(../images/icons_light/category.svg);
 				opacity: 0.9;
 			}
 
@@ -1541,7 +1541,7 @@ body[indigo-dragging-panel] {
 			position: absolute;
 			text-indent: -50000px;
 			right: -6px;
-			background: url(./images/icons/toggle-EW@X2.png) no-repeat center center;
+			background: url(../images/icons/toggle-EW@X2.png) no-repeat center center;
 			background-size: 15px;
 			top: calc(50% - 12px);
 			width: 25px;
@@ -1561,7 +1561,7 @@ body[indigo-dragging-panel] {
 		body.minimise-results & {
 
 			&:before {
-				background: url(./images/icons/toggle-WE-white@X2.png) no-repeat center center;
+				background: url(../images/icons/toggle-WE-white@X2.png) no-repeat center center;
 				background-size: 15px;
 			}
 
@@ -1658,7 +1658,7 @@ body[indigo-dragging-panel] {
 					position: absolute;
 					text-indent: -50000px;
 					right: 0;
-					background: url(./images/icons/toggle-EW@X2.png) no-repeat center center;
+					background: url(../images/icons/toggle-EW@X2.png) no-repeat center center;
 					background-size: 15px;
 					top: calc(50% - 12px);
 					width: 25px;
@@ -1681,7 +1681,7 @@ body[indigo-dragging-panel] {
 
 				body.minimise-results & {
 					&:after {
-					    background: url(./images/icons/toggle-WE-white@X2.png) no-repeat center center;
+					    background: url(../images/icons/toggle-WE-white@X2.png) no-repeat center center;
 						background-size: 15px;
 					}
 
@@ -1740,7 +1740,7 @@ body[indigo-dragging-panel] {
 			font-size: 26px;
 		    top: 35%;
 		    left: 50%;
-		    background: url(./images/loader_dark.svg) no-repeat center center;
+		    background: url(../images/loader_dark.svg) no-repeat center center;
 		    width: 40px;
 		    height: 40px;
 		    text-indent: -50000px;
@@ -2220,21 +2220,21 @@ $side_panel__tab_buttons: (
 			&.x-tab-strip-active {
 				body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
 					img {
-			            background-image: url(./images/tabs-settings-blue@X2.png);
+			            background-image: url(../images/tabs-settings-blue@X2.png);
 			        }
 				}
 
 			}
 
 			img {
-				background-image: url(./images/tabs-settings-white@X2.png);
+				background-image: url(../images/tabs-settings-white@X2.png);
 
 		        // body[data-multiselect="on"] & {
-				// 	background-image: url(./images/tabs-settings-black@X2.png);
+				// 	background-image: url(../images/tabs-settings-black@X2.png);
 		        // }
 
 				body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
-					background-image: url(./images/tabs-settings-dark@X2.png);
+					background-image: url(../images/tabs-settings-dark@X2.png);
 				}
 
 		    }
@@ -2324,7 +2324,7 @@ body[data-edit-window-style="settings"] {
 			&.unselectable-row {
 				pointer-events: none;
 				padding-left: 10px!important;
-				background: url(./images/collapsed-black.png) no-repeat left 6px top 6px!important;
+				background: url(../images/collapsed-black.png) no-repeat left 6px top 6px!important;
 				background-size: 14px!important;
 
 				.x-tree3-node-joint {
@@ -2355,7 +2355,7 @@ body[data-edit-window-style="settings"] {
 
 			// FOLDER [OPENED]
 			&.unselectable-row.indigo-opened {
-				background: url(./images/expanded-black.png) no-repeat left 5px top 6px!important;
+				background: url(../images/expanded-black.png) no-repeat left 5px top 6px!important;
 				background-size: 14px!important;
 
 				.x-tree3-node-text {
@@ -2563,7 +2563,7 @@ body[data-edit-window-style="settings"] {
 		cursor: pointer;
 	}
 	&::before {
-		background: url(./images/icons/expand-side-panel@X2.png) no-repeat left top 6px;
+		background: url(../images/icons/expand-side-panel@X2.png) no-repeat left top 6px;
 	    position: relative;
 	    background-size: 5px 7px;
 	    padding-left: 11px;
@@ -2579,7 +2579,7 @@ body[data-edit-window-style="settings"] {
 
 	&.open-sub-menu {
 		&::before {
-			background-image: url(./images/icons/icon-toggle-expanded-small-normal.png);;
+			background-image: url(../images/icons/icon-toggle-expanded-small-normal.png);;
 			background-size: 7px 5px;
 			position: relative;
 		}

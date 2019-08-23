@@ -387,12 +387,12 @@
                                         > table {
                                             width: 25px;
                                             height: 25px;
-                                            background: url(./images/icons/tabs-trash-black@X2.png) no-repeat left -2px top;
+                                            background: url(../images/icons/tabs-trash-black@X2.png) no-repeat left -2px top;
                                             background-size: 21px;
 
                                             // Small Firefox fix
                                             body.ext-gecko & {
-                                                background: url(./images/icons/tabs-trash-black@X2.png) no-repeat left -2px top -2px;
+                                                background: url(../images/icons/tabs-trash-black@X2.png) no-repeat left -2px top -2px;
                                                 background-size: 21px;
                                             }
 
@@ -468,7 +468,7 @@
                                                 background: _theme-color(secondary, b)!important;
 
                                                 a {
-                                                    background: url(./images/icons/icon-toggle-expanded-small-normal.png) no-repeat center center;
+                                                    background: url(../images/icons/icon-toggle-expanded-small-normal.png) no-repeat center center;
                                                     margin-right: 5px;
                                                 }
 
@@ -498,11 +498,11 @@
 
                             // Grouped List
                             .x-grid-group {
-                                background: url(./images/icons/icon-toggle-expanded-small-normal.png) no-repeat left top 10px;
+                                background: url(../images/icons/icon-toggle-expanded-small-normal.png) no-repeat left top 10px;
 
                                 // Collapsed Group
                                 &.x-grid-group-collapsed {
-                                    background: url(./images/icons/expand-side-panel@X2.png) no-repeat left 1px top 9px;
+                                    background: url(../images/icons/expand-side-panel@X2.png) no-repeat left 1px top 9px;
 
                                 }
 
@@ -571,12 +571,12 @@
                                             }
 
                                             .delete-button {
-                                                background: url(./images/icons/icon-close-grey@X2.png) center center no-repeat;
+                                                background: url(../images/icons/icon-close-grey@X2.png) center center no-repeat;
                                                 background-size: 10px;
                                             }
 
                                             .info-button {
-                                                background: url(./images/icons/ic_info_outline-DARK@2x.png) right center no-repeat;
+                                                background: url(../images/icons/ic_info_outline-DARK@2x.png) right center no-repeat;
                                                 background-size: 18px;
                                             }
                                         }
@@ -587,11 +587,11 @@
                                                 background: _property($ROW--BG, $BACKGROUND-JOBS);
 
                                                 .delete-button {
-                                                    background-image: url(./images/icons/icon-close-grey@X2.png);
+                                                    background-image: url(../images/icons/icon-close-grey@X2.png);
                                                 }
 
                                                 .info-button {
-                                                    background-image: url(./images/icons/ic_info_outline-DARK@2x.png);
+                                                    background-image: url(../images/icons/ic_info_outline-DARK@2x.png);
                                                 }
                                             }
 
@@ -674,27 +674,27 @@
                                     // Change colours to grey
 
                                     &:nth-child(1) {
-                                        background: url(./images/icons/icon_arrow_left_double_grey@X2.png) no-repeat center center/14px 14px;
+                                        background: url(../images/icons/icon_arrow_left_double_grey@X2.png) no-repeat center center/14px 14px;
                                         margin-left: 0px;
                                     }
 
                                     &:nth-child(2) {
-                                        background: url(./images/icons/icon_arrow_left_single_grey@X2.png) no-repeat center center/14px 14px;
+                                        background: url(../images/icons/icon_arrow_left_single_grey@X2.png) no-repeat center center/14px 14px;
                                         margin-left: 5px;
                                     }
 
                                     &:nth-child(8) {
-                                        background: url(./images/icons/icon-next-grey@X2.png) no-repeat center center/14px 14px;
+                                        background: url(../images/icons/icon-next-grey@X2.png) no-repeat center center/14px 14px;
                                         margin-right: 5px;
                                     }
 
                                     &:nth-child(9) {
-                                        background: url(./images/icons/icon_arrow_right_double_grey@X2.png) no-repeat center center/14px 14px;
+                                        background: url(../images/icons/icon_arrow_right_double_grey@X2.png) no-repeat center center/14px 14px;
                                         margin-right: 5px;
                                     }
 
                                     &:nth-child(11) {
-                                        background: url(./images/icons/icon-publication-launcher-grey.png) no-repeat center center/16px 12px;
+                                        background: url(../images/icons/icon-publication-launcher-grey.png) no-repeat center center/16px 12px;
                                     }
 
                                     .my-paging-text {
@@ -758,7 +758,7 @@
 
                     // Contains minimise button
                     .x-panel-toolbar {
-                        background: url(./images/icons/icon-close-grey@X2.png) no-repeat center bottom;
+                        background: url(../images/icons/icon-close-grey@X2.png) no-repeat center bottom;
                         background-size: 20px;
                         width: 25px;
                         height: 25px;

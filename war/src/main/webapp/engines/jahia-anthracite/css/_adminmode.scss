@@ -36,7 +36,7 @@
 		position: fixed;
 
 		.toolbar-item-displaytoolbarwarningsactionitem .x-btn-mc button {
-			background: url(./images/icons/ic_warning@2x.png) !important;
+			background: url(../images/icons/ic_warning@2x.png) !important;
 			background-size: 20px 20px !important;
 			background-repeat: no-repeat !important;
 			background-color: _theme-color(status, error) !important;
@@ -120,14 +120,14 @@
 				left: 60px;
 				z-index: $ZINDEX--HAMBURGER_MENU---BUTTON;
 				display: block;
-				background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
+				background: url(../images/dx_logo_solid.png) no-repeat top 3px left 10px;
 				margin-top: 0;
 				background-size: 32px 32px;
 				opacity: 0.9;
 				width: 50px;
 				height: 50px;
  	           body[data-selection-count="0"] & {
-							background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
+							background: url(../images/dx_logo_solid.png) no-repeat top 3px left 10px;
 							background-size: 32px 32px;
  	           }
  	           &:hover {
@@ -155,7 +155,7 @@
 
 	           position: fixed;
 	           top: 10px;
-	           background: url(./images/tabs-usermenu-black@X2.png) no-repeat left 14px top 6px;
+	           background: url(../images/tabs-usermenu-black@X2.png) no-repeat left 14px top 6px;
 	           height: 40px;
 	           margin-top: 0;
 	           background-size: 23px 23px;
@@ -164,7 +164,7 @@
 	               opacity: 1;
 	           }
 	           body[data-selection-count="0"] & {
-	               background: url(./images/tabs-usermenu-white@X2.png) no-repeat left 14px top 6px;
+	               background: url(../images/tabs-usermenu-white@X2.png) no-repeat left 14px top 6px;
 	               background-size: 23px 23px;
 	           }
 	           body[data-sitesettings="true"] & {
@@ -191,7 +191,7 @@
 								font-weight: $FONT--WEIGHT---SEMILIGHT;
 								margin-top: 0px;
 								padding-left: 35px;
-								background: url(./images/dx_logo_solid-black.png) no-repeat left 12px center / 20px 20px;
+								background: url(../images/dx_logo_solid-black.png) no-repeat left 12px center / 20px 20px;
 								padding-right: 2px;
 								text-align: left;
 								position: relative;
@@ -203,7 +203,7 @@
 								padding-top: 5px;
 								color: _theme-color(secondary);
 								body[data-selection-count="0"] & {
-								   background: url(./images/dx_logo_solid.png) no-repeat left 12px center / 20px 20px, url(./images/combo-arrow.png) no-repeat right center;
+								   background: url(../images/dx_logo_solid.png) no-repeat left 12px center / 20px 20px, url(../images/combo-arrow.png) no-repeat right center;
 								}
 	           }
 	           body[data-sitesettings="true"] & {

@@ -5,7 +5,7 @@
 /* SPRITE SWAP TEST START */
 
 // .engine-panel:not(.trashboardengine-ctn) #JahiaGxtEditEnginePanel-liveroles .x-grid3-td-type .gwt-Image {
-// 	background-image: url(./images/icons/sprite-override.png)!important;
+// 	background-image: url(../images/icons/sprite-override.png)!important;
 // }
 
 /* SPRITE SWAP TEST END */
@@ -20,7 +20,7 @@
 // 	width: 25px;
 //     height: 25px;
 //     text-indent: -5000000px;
-//     background: url(./images/icons/duplicate@X2.png) no-repeat center center red;
+//     background: url(../images/icons/duplicate@X2.png) no-repeat center center red;
 // 	background-size: 20px;
 //     display: block;
 //     position: absolute;
@@ -82,7 +82,7 @@ body[data-indigo-edit-engine="open"] {
 	&.x-masked {
 		&::before {
 			position: absolute;
-			background: url(./images/loader_dark.svg) no-repeat center center #d6d6d6;
+			background: url(../images/loader_dark.svg) no-repeat center center #d6d6d6;
 			z-index: 99;
 		}
 	}
@@ -749,7 +749,7 @@ div.engine-window {
 											background: _theme-color(secondary, b)!important;
 
 											a {
-												background: url(./images/icons/icon-toggle-expanded-small-normal.png) no-repeat center center;
+												background: url(../images/icons/icon-toggle-expanded-small-normal.png) no-repeat center center;
 												margin-right: 5px;
 											}
 
@@ -822,7 +822,7 @@ div.engine-window {
 								}
 
 								.info-button {
-									background: url(./images/icons/ic_info_outline-DARK@2x.png) right center no-repeat;
+									background: url(../images/icons/ic_info_outline-DARK@2x.png) right center no-repeat;
 									background-size: 18px;
 								}
 							}
@@ -834,7 +834,7 @@ div.engine-window {
 									background: _property($ROW--BG---SELECTED, $BACKGROUND-JOBS);
 
 									.info-button {
-										background-image: url(./images/icons/ic_info_outline@2x.png);
+										background-image: url(../images/icons/ic_info_outline@2x.png);
 									}
 								}
 
@@ -903,13 +903,13 @@ div.engine-window {
 
 							&:nth-child(1) {
 								display: inline-block !important;
-								background: url(./images/icons/icon_arrow_left_double_grey@X2.png) no-repeat center center/14px 14px;
+								background: url(../images/icons/icon_arrow_left_double_grey@X2.png) no-repeat center center/14px 14px;
 								margin-left: 0px;
 							}
 
 							&:nth-child(2) {
 								display: inline-block !important;
-								background: url(./images/icons/icon_arrow_left_single_grey@X2.png) no-repeat center center/14px 14px;
+								background: url(../images/icons/icon_arrow_left_single_grey@X2.png) no-repeat center center/14px 14px;
 								margin-left: 5px;
 							}
 
@@ -922,19 +922,19 @@ div.engine-window {
 
 							&:nth-child(8) {
 								display: inline-block !important;
-								background: url(./images/icons/icon-next-grey@X2.png) no-repeat center center/14px 14px;
+								background: url(../images/icons/icon-next-grey@X2.png) no-repeat center center/14px 14px;
 								margin-right: 5px;
 							}
 
 							&:nth-child(9) {
 								display: inline-block !important;
-								background: url(./images/icons/icon_arrow_right_double_grey@X2.png) no-repeat center center/14px 14px;
+								background: url(../images/icons/icon_arrow_right_double_grey@X2.png) no-repeat center center/14px 14px;
 								margin-right: 5px;
 							}
 
 							&:nth-child(11) {
 								display: inline-block !important;
-								background: url(./images/icons/icon-publication-launcher-grey.png) no-repeat center center/16px 12px;
+								background: url(../images/icons/icon-publication-launcher-grey.png) no-repeat center center/16px 12px;
 							}
 
 							.my-paging-display {
@@ -986,7 +986,7 @@ div.engine-window {
 
 	                    // Contains minimise button
 	                    .x-panel-toolbar {
-	                        background: url(./images/icons/icon-close-grey@X2.png) no-repeat center bottom;
+	                        background: url(../images/icons/icon-close-grey@X2.png) no-repeat center bottom;
 	                        background-size: 20px;
 	                        width: 25px;
 	                        height: 25px;
@@ -1113,7 +1113,7 @@ div.engine-window {
 
 						.x-grid3-row-selected {
 							background-color: _property($LIST-BOX--ROW--BG---SELECTED, $EDIT-ENGINE) !important;
-							background-image: url(./images/icons/icon-next-white@X2.png)!important;
+							background-image: url(../images/icons/icon-next-white@X2.png)!important;
 							background-position: right 5px center!important;
 							background-repeat: no-repeat!important;
 							background-size: 13px!important;
@@ -1586,27 +1586,27 @@ div.engine-window {
 			}
 
 			&[src$="/visibilityStatusRed.png"] {
-				background: url(./images/icons_dark/visibilityoff.svg) no-repeat center center;
+				background: url(../images/icons_dark/visibilityoff.svg) no-repeat center center;
 			}
 
 			&[src$="/visibilityStatusUnknown.png"] {
-				background: url(./images/icons_dark/unknown.svg) no-repeat center center;
+				background: url(../images/icons_dark/unknown.svg) no-repeat center center;
 			}
 
 			&[src$="/visibilityStatusGreen.png"] {
-				background: url(./images/icons_dark/visibility.svg) no-repeat center center;
+				background: url(../images/icons_dark/visibility.svg) no-repeat center center;
 			}
 
 			// &[src$="/publication/notpublished.png"] {
-			// 	background: url(./images/icons_dark/unpublished.svg) no-repeat center center;
+			// 	background: url(../images/icons_dark/unpublished.svg) no-repeat center center;
 			// }
 
 			// &[src$="/publication/modified.png"] {
-			// 	background: url(./images/icons_dark/modified.svg) no-repeat center center;
+			// 	background: url(../images/icons_dark/modified.svg) no-repeat center center;
 			// }
 
 			&[src$="/publication/published.png"] {
-				background: url(./images/icons_dark/published.svg) no-repeat center center;
+				background: url(../images/icons_dark/published.svg) no-repeat center center;
 			}
 
 
@@ -1816,7 +1816,7 @@ div.engine-window {
 				    right: 0;
 				    top: 0;
 					pointer-events: all;
-					background: url(./images/icons_dark/edit.svg) right 5px center no-repeat !important;
+					background: url(../images/icons_dark/edit.svg) right 5px center no-repeat !important;
 					background-size: 16px 16px!important;
 					opacity: 0.8;
 
@@ -1830,7 +1830,7 @@ div.engine-window {
 					width: 20px;
 					height: 20px !important;
 					background: transparent;
-					background: url("./images/icons_dark/deleted.svg") no-repeat center center;
+					background: url("../images/icons_dark/deleted.svg") no-repeat center center;
 					background-size: 21px;
 
 					> table {
@@ -2402,7 +2402,7 @@ div.engine-window {
 		.x-btn {
 			width: 46px!important;
 			height: 23px;
-			background: url(./images/icons/compare_black.svg) no-repeat center center;
+			background: url(../images/icons/compare_black.svg) no-repeat center center;
 			background-size: 46px 23px;
 			opacity: 0.8;
 
@@ -2663,7 +2663,7 @@ div.engine-window {
 			// Add Locked icon if the node has been locked
 			&[data-content-locked="true"] {
 				&::before {
-					background: url(./images/icons/icon-lock@X2.png) no-repeat left center;
+					background: url(../images/icons/icon-lock@X2.png) no-repeat left center;
 					background-size: 20px;
 					padding-left: 22px;
 				}
@@ -3492,7 +3492,7 @@ body[data-indigo-add-visibility-condition="new"] {
 	}
 
 	.x-grid3-viewport > .x-grid3-header .x-grid3-header-inner .x-grid3-hh > table > tbody td div .x-grid3-hd-btn {
-		background: url(./images/icons/combo-arrow-grey.png) no-repeat center center !important;
+		background: url(../images/icons/combo-arrow-grey.png) no-repeat center center !important;
 		width: 23px;
 		background-size: 13px !important;
 		opacity: 0.7;
@@ -3595,7 +3595,7 @@ body[data-indigo-add-visibility-condition="new"] {
 
 		&:before {
 			content: "";
-			background: url(./images/icons/ic_warning@2x.png);
+			background: url(../images/icons/ic_warning@2x.png);
 			position: absolute;
 			left: 0;
 			top: 0;
@@ -3618,7 +3618,7 @@ body[data-indigo-add-visibility-condition="new"] {
 		background-color: transparent !important;
 
 		img {
-			background: url(./images/icons_dark/deleted.svg) no-repeat center center !important;
+			background: url(../images/icons_dark/deleted.svg) no-repeat center center !important;
 			background-size: 22px !important;
 			opacity: .64;
 
@@ -3827,7 +3827,7 @@ body[data-indigo-add-visibility-condition="new"] {
 	.x-panel-tbar-noheader {
 
 		td.x-toolbar-cell:nth-child(1) > table button img {
-			background: url(./images/icons/move_up.png) !important;
+			background: url(../images/icons/move_up.png) !important;
 			background-size: 18px !important;
 			background-position-y: -1px !important;
 			background-position-x: -1px !important;
@@ -3835,7 +3835,7 @@ body[data-indigo-add-visibility-condition="new"] {
 		}
 
 		td.x-toolbar-cell:nth-child(2) > table button img {
-			background: url(./images/icons/move_first.png) !important;
+			background: url(../images/icons/move_first.png) !important;
 			background-size: 18px !important;
 			background-position-y: -1px !important;
 			background-position-x: -1px !important;
@@ -3843,7 +3843,7 @@ body[data-indigo-add-visibility-condition="new"] {
 		}
 
 		td.x-toolbar-cell:nth-child(3) > table button img {
-			background: url(./images/icons/move_down.png) !important;
+			background: url(../images/icons/move_down.png) !important;
 			background-size: 18px !important;
 			background-position-y: -1px !important;
 			background-position-x: -1px !important;
@@ -3851,7 +3851,7 @@ body[data-indigo-add-visibility-condition="new"] {
 		}
 
 		td.x-toolbar-cell:nth-child(4) > table button img {
-			background: url(./images/icons/move_last.png) !important;
+			background: url(../images/icons/move_last.png) !important;
 			background-size: 18px !important;
 			background-position-y: -1px !important;
 			background-position-x: -1px !important;
@@ -3859,7 +3859,7 @@ body[data-indigo-add-visibility-condition="new"] {
 		}
 
 		td.x-toolbar-cell:nth-child(5) > table button img {
-			background: url(./images/icons/remove_circle.png) !important;
+			background: url(../images/icons/remove_circle.png) !important;
 			background-size: 18px !important;
 			background-position-y: -1px !important;
 			background-position-x: -1px !important;
@@ -3964,7 +3964,7 @@ img.invalid-icon {
 		    color: $color-white;
 		    font-family: $FONT--FAMILY---NUNITO;
 		    font-weight: $FONT--WEIGHT---NORMAL;
-				background: url(./images/icons/ic_info_outline@2x.png) no-repeat left center !important;
+				background: url(../images/icons/ic_info_outline@2x.png) no-repeat left center !important;
 		    background-size: 20px !important;
 		}
 
@@ -3980,7 +3980,7 @@ img.invalid-icon {
 	}
 
 	.x-btn.x-btn-noicon button.x-btn-text {
-		background: url(./images/icons_dark/color.svg) no-repeat center center !important;
+		background: url(../images/icons_dark/color.svg) no-repeat center center !important;
 		background-size: 18px !important;
 		margin-top: -2px;
 		opacity: .67;

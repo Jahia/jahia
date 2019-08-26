@@ -102,7 +102,7 @@ public class GWTImportTag extends AbstractJahiaTag {
             if (theme != null && !theme.equals("default")) {
                 request.getSession().setAttribute(UI_THEME, theme);
                 Locale uiLocale = getUILocale();
-                String base = "/engines/" + theme + "/";
+                String base = "/engines/" + theme + "/css/";
                 if (pageContext.getServletContext().getResource(base + module + "_" + uiLocale.getLanguage() + ".css") != null) {
                     pageContext.setAttribute("themeLocale", "_" + uiLocale.getLanguage());
                 } else if (pageContext.getServletContext().getResource(base + module + "_en.css") != null) {

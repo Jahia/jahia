@@ -45,6 +45,7 @@ package org.jahia.services.content;
 
 import com.google.common.collect.HashMultimap;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.JahiaVersionManagerImpl;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.api.Constants;
@@ -94,13 +95,12 @@ public class JCRPublicationService extends JahiaService {
 
     private boolean skipAllReferenceProperties;
 
-    private List<String> versionedTypes;
+    private Set<String> versionedTypes;
 
     private Set<PublicationEventListener> listeners = Collections.newSetFromMap(new ConcurrentHashMap<PublicationEventListener, Boolean>());
 
     private JCRPublicationService() {
         super();
-        versionedTypes = Arrays.asList(StringUtils.split(SettingsBean.getInstance().getPropertiesFile().getProperty("versionedTypes", "jmix:editorialContent,nt:file"), ","));
     }
 
     /**
@@ -776,7 +776,7 @@ public class JCRPublicationService extends JahiaService {
 
     private boolean needVersion(JCRNodeWrapper node) throws RepositoryException {
         for (String versionedType : versionedTypes) {
-            if (node.isNodeType(versionedType)) {
+            if (node.isNodeType(versionedType) || ((node.isNodeType(Constants.MIX_VERSIONABLE) || node.isNodeType(Constants.MIX_SIMPLEVERSIONABLE)) && node.getParent().isNodeType(versionedType))) {
                 return true;
             }
         }
@@ -1611,6 +1611,10 @@ public class JCRPublicationService extends JahiaService {
 
     public void setReferencedNodeTypesToSkip(String referencedNodeTypesToSkip) {
         this.referencedNodeTypesToSkip = tokenize(referencedNodeTypesToSkip);
+    }
+
+    public void setVersionedTypes(String versionedTypes) {
+        this.versionedTypes = tokenize(versionedTypes);
     }
 
     public void addReferencedNodeTypesToSkip(String referencedNodeTypesToSkip) {

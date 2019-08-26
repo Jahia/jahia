@@ -253,7 +253,7 @@
             <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
         </osgi:service-properties>
         <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
-            <property name="target" ref="urlRewriteService"/>
+            <property name="target" ref="UrlRewriteService"/>
         </bean>
     </osgi:service>
 

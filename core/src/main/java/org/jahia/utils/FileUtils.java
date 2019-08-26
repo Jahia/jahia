@@ -81,6 +81,7 @@ public final class FileUtils {
     @SuppressWarnings("unchecked")
     private static class Holder {
         static final Map<String, String> fileExtensionIcons;
+        static final Map<String, String> fileMimeTypeIcons;
         static final String[] fileExtensionIconsMapping;
         static {
             Map<String, String> icons = (Map<String, String>) SpringContextSingleton.getBean("fileExtensionIcons");
@@ -93,6 +94,7 @@ public final class FileUtils {
                     .append(StringUtils.join(mappings.values().iterator(), "\", \"")).append("\"").toString();
             fileExtensionIconsMapping = jsMappings;
             fileExtensionIcons = mappings;
+            fileMimeTypeIcons = new FastHashMap((Map<String, String>) SpringContextSingleton.getBean("fileMimeTypeIcons"));
         }
     }
 
@@ -201,10 +203,19 @@ public final class FileUtils {
         return Holder.fileExtensionIcons;
     }
 
+    private static Map<String, String> getFileMimeTypeIcons() {
+        return Holder.fileMimeTypeIcons;
+    }
+
     public static String[] getFileExtensionIconsMapping() {
         return Arrays.copyOf(Holder.fileExtensionIconsMapping, Holder.fileExtensionIconsMapping.length);
     }
 
+    /**
+     * Return file icon for the given file name, based on the extension
+     * @param fileName the name of the file
+     * @return the icon name
+     */
     public static String getFileIcon(String fileName) {
         String ext = "unknown";
         if (StringUtils.isNotEmpty(fileName)) {
@@ -226,19 +237,31 @@ public final class FileUtils {
         return icon != null ? icon : mappings.get("unknown");
     }
 
+    /**
+     * Return file icon for the given mime type
+     * @param mimeType the mime type of the file
+     * @return the icon name
+     */
     public static String getFileIconFromMimetype(String mimeType) {
-        DocumentFormat df = formatRegistry.getFormatByMediaType(mimeType);
-        if (df == null) {
-            return null;
-        }
-        Map<String, String> mappings = getFileExtensionIcons();
-        if (mappings == null) {
-            return "file";
+        if (StringUtils.isNotEmpty(mimeType)) {
+            String mappedMimeTypeIcon = getFileMimeTypeIcons().get(mimeType);
+
+            // look if exact mimetype is defined
+            if (mappedMimeTypeIcon != null) {
+                return mappedMimeTypeIcon;
+            }
+
+            // look in generic mimetype with wildcard
+            for (Map.Entry<String, String> mappedMimeTypeEntry : getFileMimeTypeIcons().entrySet()) {
+                if (mappedMimeTypeEntry.getKey().endsWith("*") &&
+                        mimeType.startsWith(StringUtils.substringBeforeLast(mappedMimeTypeEntry.getKey(), "*"))) {
+                    return mappedMimeTypeEntry.getValue();
+                }
+            }
         }
 
-        String icon = mappings.get(df.getExtension());
-
-        return icon != null ? icon : mappings.get("unknown");
+        // not found
+        return getFileMimeTypeIcons().get("unknown");
     }
 
     /**

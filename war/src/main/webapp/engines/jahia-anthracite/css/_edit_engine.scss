@@ -4138,5 +4138,231 @@ img.invalid-icon {
 
 // Fix z-index for New portlet Modal
 div#JahiaGXTPortletWizardWindow {
-	z-index: 9999 !important;
+	z-index: 11111111111!important;
+
+	.x-form-text {
+		@include text-input($EDIT-ENGINE);
+		@include _input(LIGHT);
+	}
+
+	form fieldset,
+	form > div {
+		border-bottom: none!important;
+		margin: 0!important;
+		padding: 43px 32px 20px 32px !important;
+	}
+
+	form > div {
+		padding: 24px 32px 20px 32px !important;
+	}
+
+	.x-window-tl {
+		padding-bottom: 0!important;
+		padding-left: 32px !important;
+		width: 600px!important;
+	}
+
+	.x-grid3-viewport {
+
+		> .x-grid3-header {
+			display: block!important;
+			background: transparent;
+
+			.x-grid3-hd-over,
+			.x-grid3-hd-menu-open {
+				background: transparent;
+
+				.x-grid3-hd-btn {
+					background: url(../images/expanded-black.png) no-repeat center right !important;
+					background-size: 16px!important;
+				}
+
+				.x-grid3-hd-inner {
+					background: transparent;
+				}
+			}
+
+			.x-grid3-header-inner {
+				width: 100%!important;
+
+				.x-grid3-hh {
+					width: 100%!important;
+
+					> table {
+						width: auto!important;
+					}
+				}
+			}
+
+			.x-grid3-header {
+				display: table-cell!important;
+				width: auto!important;
+				border: none!important;
+				background: none!important;
+
+				> div {
+					width: auto!important;
+				}
+			}
+		}
+
+	}
+
+
+
+	.x-window-bwrap {
+		width: 600px!important;
+	}
+
+
+
+	.x-window-header-text {
+		display: block;
+	}
+
+
+
+	.x-border-panel {
+		height: auto!important;
+		width: 100%!important;
+		padding: 0!important;
+
+
+		> div {
+			width: 100%!important;
+
+			> div {
+				width: 100%!important;
+
+				> div {
+					width: 100%!important;
+
+					> div {
+						width: 100%!important;
+
+						> div {
+							width: 100%!important;
+
+
+						}
+					}
+				}
+			}
+		}
+	}
+
+	.x-grid3-col-displayName {
+		padding: 7px;
+	}
+
+	.x-grid3-col-description {
+		padding: 7px;
+		font-size: 13px;
+		font-weight: 300;
+		color: #797979;
+	}
+
+	.x-grid3-row-selected {
+		.x-grid3-col-description {
+			color: whitesmoke;
+		}
+	}
+
+	.x-grid3-td-displayName {
+		pointer-events: all!important;
+
+		&::after {
+			content: none;
+		}
+	}
+
+	.ext-ux-wiz-Header {
+		background: transparent;
+
+		td {
+			padding: 0!important;
+		}
+
+		> table {
+			tr:nth-child(2) {
+				> td {
+					> div {
+						width: 100%!important;
+					}
+				}
+			}
+		}
+	}
+
+	.ext-ux-wiz-Header-title {
+		font-size: 14px;
+		font-weight: 400!important;
+		background: transparent;
+		color: red;
+		padding-top: 0!important;
+		display: none;
+	}
+
+
+
+	.x-window-body {
+		.x-progress-inner {
+			height: 27px;
+		}
+
+		.x-progress-bar {
+			background: #089a76;
+			border: none;
+			height: 100%;
+		}
+
+		.x-progress-text {
+			padding: 5px;
+			font-size: 14px;
+		}
+
+		.x-progress-text-back {
+			top: 2px;
+			left: 1px;
+		}
+	}
+
+	.x-window-bbar {
+		width: 100%!important;
+		border:none;
+		background: transparent;
+
+		> div {
+			width: 100%!important;
+			border: none;
+			background: transparent;
+
+			.x-toolbar-left {
+				> table {
+					float: right;
+
+					.button-cancel {
+						position: absolute;
+						left: 0;
+						top: 0;
+					}
+
+					@include _button(".button-next", "ACTIONBAR---SUGGESTED", "remove-icons");
+					@include _button(".button-previous", "ACTIONBAR---SECONDARY", "remove-icons");
+
+					.button-previous {
+						&.x-item-disabled {
+							display: none;
+						}
+					}
+
+				}
+			}
+		}
+	}
+
+	.x-grid3-body {
+		padding-top: 10px;
+		height: calc(100% - 30px)!important;
+	}
 }

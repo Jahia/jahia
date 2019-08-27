@@ -1575,7 +1575,31 @@
     }
 
 
+// ACTION BAR ::: SECONDARY
+%CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR---SECONDARY {
+	padding: 8px 15px!important;
+	text-transform: none!important;
+	background: _property($ACTION-SECONDARY--BG, $APP) !important;
+	box-shadow: inset 1px 1px 0 0 #007cb0, inset -1px -1px 0 0 #007cb0;
+	@include text(14px, _property($ACTION-SECONDARY--COLOR, $APP) !important, $FONT--WEIGHT---EXTRALIGHT);
+}
 
+%CSS_BLOCK--BUTTON--TEXT---HOVER\:ACTIONBAR---SECONDARY {
+	background: _property($ACTION-SECONDARY--BG---HOVER, $APP) !important;
+	@include text(14px, _property($ACTION-SECONDARY--COLOR---HOVER, $APP) !important, $FONT--WEIGHT---EXTRALIGHT);
+}
+
+%CSS_BLOCK--BUTTON--ICON\:ACTIONBAR---SECONDARY {
+	text-transform: none!important;
+	padding: 8px 15px!important;
+	background: _property($ACTION-SECONDARY--BG, $APP) !important;
+	@include text(14px, _property($ACTION-SECONDARY--COLOR, $APP) !important, $FONT--WEIGHT---EXTRALIGHT);
+}
+
+%CSS_BLOCK--BUTTON--ICON---HOVER\:ACTIONBAR---SECONDARY {
+	background: _property($ACTION-SECONDARY--BG---HOVER, $APP) !important;
+	@include text(14px, _property($ACTION-SECONDARY--COLOR---HOVER, $APP) !important, $FONT--WEIGHT---EXTRALIGHT);
+}
 
     // ACTION BAR ::: WORK IN PROGRESS ON
     %CSS_BLOCK--BUTTON--TEXT\:WIP---SUGGESTED {

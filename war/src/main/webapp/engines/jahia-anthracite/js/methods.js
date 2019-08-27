@@ -2658,51 +2658,10 @@ var DX_app = {
             // Reset incase user is coming in from another app
             DX_app.admin.data.firstLoadSettingsType = null;
 
-            // Listen to the classes being added to x-grid3-row
-            DexV2('.x-viewport-adminmode').onAttribute('#JahiaGxtSidePanelTabs .x-grid3-row', 'class', function(attrKey, attrValue){
-
-                if(!DX_app.admin.data.firstLoadSettingsType){
-                    // Check if this is a selected row
-                    var isSelectedRow = DexV2.node(this).hasClass('x-grid3-row-selected');
-
-                    if(isSelectedRow){
-                        // See if the selected page row is a System Site Settings or Server Settings
-                        DX_app.admin.data.firstLoadSettingsType = (DexV2.node(this).closest('.tab_systemSiteSettings').nodes.length == 1) ? 'systemsitesettings' : 'serversettings';
-
-                        if(DX_app.admin.data.firstLoadSettingsType === 'systemsitesettings'){
-                            DexV2('.tab_systemSiteSettings > .x-panel').trigger('click');
-                        }
-                    }
-                }
-
-            }, 'CHECK_IF_SYSTEM_SITE_SETTINGS_PAGE_SELECTED_CLASS')
-
-
             DX_app.edit.sidepanel.buildSplitter();
             DX_app.edit.sidepanel.resizeSidePanel();
 
             DexV2.getCached('body').setAttribute('data-indigo-styled-combos', 'true');
-
-            var systemSettingsTabs = document.querySelectorAll('.tab_systemSiteSettings')[0];
-            var serverSettingsTabs = document.querySelectorAll('.tab_serverSettings')[0];
-
-            if (systemSettingsTabs) {
-                if (window.getComputedStyle(systemSettingsTabs).display == 'none') {
-                    // System Settings Tabs have not been loaded, so trigger click to open them
-                    mouse.trigger(document.querySelectorAll('#JahiaGxtSidePanelTabs li')[1], 'click');
-                }
-            } else {
-                mouse.trigger(document.querySelectorAll('#JahiaGxtSidePanelTabs li')[1], 'click');
-            }
-
-            if (serverSettingsTabs) {
-                if (window.getComputedStyle(serverSettingsTabs).display == 'none') {
-                    // Server Settings Tabs have not been loaded, so trigger click to open them
-                    mouse.trigger(document.querySelectorAll('#JahiaGxtSidePanelTabs li')[0], 'click');
-                }
-            } else {
-                mouse.trigger(document.querySelectorAll('#JahiaGxtSidePanelTabs li')[0], 'click');
-            }
 
             // Set attributes to be used by CSS
             DexV2.getCached('body')

@@ -28,7 +28,8 @@ var DX_eventListeners = {
              * Attribute: data-langdisplayname
              * Callback: => app.edit.resizeLanguageInput
              */
-            .onAttribute('body', 'data-langdisplayname', app.edit.resizeLanguageInput)
+            .onAttribute('body', 'data-lang', app.edit.resizeLanguageInput)
+            .onAttribute('body', 'data-sitekey', app.edit.resizeLanguageInput)
             /**
              * Target: Splitter bar in pickers
              * Attribute: style

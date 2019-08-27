@@ -76,53 +76,6 @@
 			// background: red!important;
 		}
 
-		#JahiaGxtSidePanelTabs .tab_systemSiteSettings {
-
-
-			.x-viewport-dashboardmode &,
-			.x-viewport-adminmode & {
-				left: 150px;
-				display: block!important;
-				margin-top: 40px;
-
-				.x-tree3-el {
-					height: 25px!important;
-				}
-
-				.x-grid3-row[menu-item-level="0"] {
-					position: fixed;
-					left: 60px;
-					width: 180px !important;
-					padding: 8px 10px 0px 6px;
-					background: _theme-color(quinary) !important;
-					height: 25px!important;
-
-					.x-tree3-el {
-						opacity: 1!important;
-					}
-
-					.x-tree3-node-text {
-						color: _theme-color(secondary);
-					}
-
-					img.x-tree3-node-icon {
-						background: url(../images/placeholder-icon-white@X2.png) no-repeat !important;
-						background-size: 13px 13px!important;
-						width: 16px!important;
-						height: 16px!important;
-						display:inline!important;
-					}
-
-					&:hover {
-						background: _theme-color(tertiary, a)!important;
-					}
-
-				}
-			}
-
-
-		}
-
 		/* Do all this with JS instead of generating CSS, as it creates thousands of lines ... */
 		#JahiaGxtSidePanelTabsXXXX {
 			.x-viewport-adminmode & {

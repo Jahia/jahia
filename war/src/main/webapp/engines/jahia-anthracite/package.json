@@ -4,24 +4,27 @@
   "description": "Default Anthracite dev env",
   "main": "gulpfile.js",
   "dependencies": {
+    "gulp-watch": "^5.0.1",
+    "yarn": "^1.17.3"
   },
   "devDependencies": {
     "gulp": "^4.0.2",
-    "gulp-dest": "^0.2.3",
     "gulp-concat": "^2.6.1",
-    "gulp-eslint": "^5.0.0",
     "gulp-copy": "^4.0.1",
-    "gulp-minify": "^3.1.0",
+    "gulp-dest": "^0.2.3",
+    "gulp-eslint": "^5.0.0",
     "gulp-javascript-obfuscator": "^1.1.6",
+    "gulp-minify": "^3.1.0",
+    "gulp-rename": "^1.4.0",
     "gulp-sass": "^4.0.2",
     "gulp-uglify": "^3.0.2",
-    "gulp-rename": "^1.4.0",
     "gulp-util": "^3.0.8",
     "node-sass": "^4.11.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "gulp generate"
+    "build": "gulp generate",
+    "watch": "gulp watch"
   },
   "author": "",
   "license": "ISC"

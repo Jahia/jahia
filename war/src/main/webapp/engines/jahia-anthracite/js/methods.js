@@ -2155,35 +2155,49 @@ var DX_app = {
          * Callback executed when the language has been changed in Edit Mode
          *  - This function resizes the width of the language input field to the size of the text so that the arrow is displayed just after the text
          */
-        resizeLanguageInput: function () {
-            var languageInput = DexV2('.toolbar-itemsgroup-languageswitcher input');
+        methods: {
+            resizeInput: function (selector) {
+                var inputHolder = DexV2(selector),
+                    input = DexV2(selector).filter('input');
 
-            if (languageInput.nodes[0]) {
-                var languageInputValue = DexV2('.toolbar-itemsgroup-languageswitcher input').nodes[0].value;
+                if (input.nodes[0]) {
+                    var inputValue = input.nodes[0].value;
 
-                var wideChars = 'ABCDEFGHJKLMNOPQRSTUVWXYZ';
-                var mediumChars = 'abcdefghkmnopqrstuvwxyzI';
-                var slimChars = 'ijl';
+                    var wideChars = 'ABCDEFGHJKLMNOPQRSTUVWXYZ';
+                    var mediumChars = 'abcdefghkmnopqrstuvwxyzI';
+                    var slimChars = '()ijl ';
 
-                var textWidth = function (languageInputValue) {
-                    var returnWidth = 0;
+                    var textWidth = function (inputValue) {
+                        var returnWidth = 0;
 
-                    for (var charIndex in languageInputValue) {
-                        var isWide = (wideChars.indexOf(languageInputValue[charIndex]) > -1) ? 10 : 0;
-                        var isMedium = (mediumChars.indexOf(languageInputValue[charIndex]) > -1) ? 7 : 0;
-                        var isSlim = (slimChars.indexOf(languageInputValue[charIndex]) > -1) ? 5 : 0;
-                        var addWidth = (isWide + isMedium + isSlim);
+                        for (var charIndex in inputValue) {
+                            var isWide = (wideChars.indexOf(inputValue[charIndex]) > -1) ? 10 : 0;
+                            var isMedium = (mediumChars.indexOf(inputValue[charIndex]) > -1) ? 7 : 0;
+                            var isSlim = (slimChars.indexOf(inputValue[charIndex]) > -1) ? 5 : 0;
+                            var addWidth = (isWide + isMedium + isSlim);
 
-                        returnWidth = returnWidth + (addWidth || 10);
-                    }
 
-                    return returnWidth;
-                }(languageInputValue);
+                            returnWidth = returnWidth + (addWidth || 10);
+                        }
 
-                DexV2('.toolbar-itemsgroup-languageswitcher').nodes[0].style.setProperty('width', ((textWidth + 15) + 'px'), 'important');
+                        return returnWidth;
+
+                    }(inputValue);
+
+                    inputHolder.nodes[0].style.setProperty('width', ((textWidth + 15) + 'px'), 'important');
+                }
+
             }
         },
-        /**
+        resizeLanguageInput: function() {
+            app.edit.methods.resizeInput('.toolbar-itemsgroup-languageswitcher');
+
+            DexV2.getCached('body').onAttribute('body', 'data-main-node-displayname', function () {
+                app.edit.methods.resizeInput('.toolbar-itemsgroup-languageswitcher');
+            }, 'RESIZE_LANGUAGE_INPUT');
+
+        },
+            /**
          * Callback executed when the Edit Engine is opened
          */
         onOpen: function () {
@@ -2644,51 +2658,10 @@ var DX_app = {
             // Reset incase user is coming in from another app
             DX_app.admin.data.firstLoadSettingsType = null;
 
-            // Listen to the classes being added to x-grid3-row
-            DexV2('.x-viewport-adminmode').onAttribute('#JahiaGxtSidePanelTabs .x-grid3-row', 'class', function(attrKey, attrValue){
-
-                if(!DX_app.admin.data.firstLoadSettingsType){
-                    // Check if this is a selected row
-                    var isSelectedRow = DexV2.node(this).hasClass('x-grid3-row-selected');
-
-                    if(isSelectedRow){
-                        // See if the selected page row is a System Site Settings or Server Settings
-                        DX_app.admin.data.firstLoadSettingsType = (DexV2.node(this).closest('.tab_systemSiteSettings').nodes.length == 1) ? 'systemsitesettings' : 'serversettings';
-
-                        if(DX_app.admin.data.firstLoadSettingsType === 'systemsitesettings'){
-                            DexV2('.tab_systemSiteSettings > .x-panel').trigger('click');
-                        }
-                    }
-                }
-
-            }, 'CHECK_IF_SYSTEM_SITE_SETTINGS_PAGE_SELECTED_CLASS')
-
-
             DX_app.edit.sidepanel.buildSplitter();
             DX_app.edit.sidepanel.resizeSidePanel();
 
             DexV2.getCached('body').setAttribute('data-indigo-styled-combos', 'true');
-
-            var systemSettingsTabs = document.querySelectorAll('.tab_systemSiteSettings')[0];
-            var serverSettingsTabs = document.querySelectorAll('.tab_serverSettings')[0];
-
-            if (systemSettingsTabs) {
-                if (window.getComputedStyle(systemSettingsTabs).display == 'none') {
-                    // System Settings Tabs have not been loaded, so trigger click to open them
-                    mouse.trigger(document.querySelectorAll('#JahiaGxtSidePanelTabs li')[1], 'click');
-                }
-            } else {
-                mouse.trigger(document.querySelectorAll('#JahiaGxtSidePanelTabs li')[1], 'click');
-            }
-
-            if (serverSettingsTabs) {
-                if (window.getComputedStyle(serverSettingsTabs).display == 'none') {
-                    // Server Settings Tabs have not been loaded, so trigger click to open them
-                    mouse.trigger(document.querySelectorAll('#JahiaGxtSidePanelTabs li')[0], 'click');
-                }
-            } else {
-                mouse.trigger(document.querySelectorAll('#JahiaGxtSidePanelTabs li')[0], 'click');
-            }
 
             // Set attributes to be used by CSS
             DexV2.getCached('body')
@@ -2741,6 +2714,7 @@ var DX_app = {
             if (DexV2.getCached('body').getAttribute('data-sitesettings') == 'true') {
                 DexV2.id('JahiaGxtSidePanelTabs__JahiaGxtSettingsTab').trigger('mousedown').trigger('mouseup');
             }
+
         }
     },
     /**

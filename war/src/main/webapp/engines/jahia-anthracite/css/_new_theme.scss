@@ -1444,6 +1444,22 @@ $ACTION-SUGGESTED--SHADOW:(
 	DARK: 0px 1px 2px _theme-color(black, a),
 );
 
+// SECONDARY UP
+$ACTION-SECONDARY--COLOR:(
+				LIGHT: #007cb0,
+				DARK: #007cb0,
+);
+
+$ACTION-SECONDARY--BG:(
+				LIGHT: transparent,
+				DARK: transparent,
+);
+
+$ACTION-SECONDARY--SHADOW:(
+				LIGHT: 0px 1px 2px _theme-color(black, a),
+				DARK: 0px 1px 2px _theme-color(black, a),
+);
+
 // WORK IN PROGRESS
 $ACTION-WIP--COLOR:(
 	LIGHT: _theme-color(black),
@@ -1492,7 +1508,21 @@ $ACTION-SUGGESTED--SHADOW---HOVER:(
 	DARK: 0px 1px 2px _theme-color(black, b),
 );
 
+// SECONDARY HOVER
+$ACTION-SECONDARY--COLOR---HOVER:(
+				LIGHT: _theme-color(tertiary, a),
+				DARK: _theme-color(tertiary, a),
+);
 
+$ACTION-SECONDARY--BG---HOVER:(
+				LIGHT: transparent,
+				DARK: transparent,
+);
+
+$ACTION-SECONDARY--SHADOW---HOVER:(
+				LIGHT: 0px 1px 2px _theme-color(black, b),
+				DARK: 0px 1px 2px _theme-color(black, b),
+);
 
 
 

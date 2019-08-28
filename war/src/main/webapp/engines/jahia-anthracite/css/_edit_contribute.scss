@@ -2585,7 +2585,7 @@ div[role="combobox"].toolbar-itemsgroup-languageswitcher {
         > div:not(.x-abs-layout-container) {
             // iframe inner container
             width: 100% !important;
-            height: 100vh!important;
+            height: calc(100% + 5px)!important;
             transform: none!important;
             transform-origin: unset!important;
             overflow: visible!important;

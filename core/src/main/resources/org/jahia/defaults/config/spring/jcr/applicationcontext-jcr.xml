@@ -393,7 +393,7 @@
         <property name="loggingService" ref="loggingService"/>
         <property name="propertiesToSkipForReferences" value="${jahia.publicationStatus.propertiesToSkipForReferencesInternal:*,j:defaultCategory,j:sourceTemplate,j:tags,j:templateNode},${jahia.publicationStatus.propertiesToSkipForReferences:}"/>
         <property name="referencedNodeTypesToSkip" value="${jahia.publicationStatus.referencedNodeTypesToSkipInternal:jnt:page,jmix:autoPublish},${jahia.publicationStatus.referencedNodeTypesToSkip:}"/>
-        <property name="versionedTypes" value="${jahia.publication.versionedTypes:jmix:editorialContent,jnt:file}"/>
+        <property name="versionedTypes" value="${jahia.publication.versionedTypes:}"/>
         <property name="batchSize" value="${jahia.publication.batchSize:100}"/>
     </bean>
 

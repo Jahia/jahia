@@ -60,6 +60,14 @@
         <editModuleName>org.jahia.ajax.gwt.module.edit.Edit</editModuleName>
         <contentManagerModuleName>org.jahia.ajax.gwt.module.contentmanager.ContentManager</contentManagerModuleName>
         <gwtJavascriptStyle>OBF</gwtJavascriptStyle>
+        <packagingExcludes>
+            /gwt/manager/css/**,
+            /gwt/manager/images/**,
+            /gwt/edit/css/**,
+            /gwt/edit/images/**,
+            /gwt/WEB-INF/**,
+            WEB-INF/lib/jackson-annotations-*.jar
+        </packagingExcludes>
     </properties>
 
     <dependencies>
@@ -161,12 +169,7 @@
                     <archiveClasses>true</archiveClasses>
                     <attachClasses>false</attachClasses>
                     <packagingExcludes>
-                        /gwt/manager/css/**,
-                        /gwt/manager/images/**,
-                        /gwt/edit/css/**,
-                        /gwt/edit/images/**,
-                        /gwt/WEB-INF/**,
-                        WEB-INF/lib/jackson-annotations-*.jar
+                        ${packagingExcludes}
                     </packagingExcludes>
                     <webResources>
                         <resource>
@@ -305,6 +308,16 @@
                             <!--
                             <enableClosureCompiler>true</enableClosureCompiler>
                             -->
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <configuration>
+                            <packagingExcludes>
+                                ${packagingExcludes}
+                                /gwt/manager/hosted.html,
+                                /gwt/edit/hosted.html
+                            </packagingExcludes>
                         </configuration>
                     </plugin>
                 </plugins>

@@ -2092,20 +2092,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     logger.info("Start importing {}", name);
                     String thisPath = (parentNodePath != null ? (parentNodePath + (parentNodePath.endsWith("/") ? "" : "/")) : "") + StringUtils.substringBefore(name, ".xml");
                     importXML(thisPath, zis, rootBehaviour, references, session);
+                    logger.debug("Saving JCR session for " + name);
+                    session.save(JCRObservationManager.IMPORT);
                     logger.info("Done importing {} in {}", name, DateUtils.formatDurationWords(System.currentTimeMillis() - timerOther));
                 }
                 zis.closeEntry();
-
-                // during import/export, never try to resolve the references between templates and site.
-                RenderContext r;
-                r = TemplateModuleInterceptor.renderContextThreadLocal.get();
-                TemplateModuleInterceptor.renderContextThreadLocal.remove();
-
-                ReferencesHelper.resolveCrossReferences(session, references, useReferenceKeeper);
-
-                TemplateModuleInterceptor.renderContextThreadLocal.set(r);
-
-                session.save(JCRObservationManager.IMPORT);
             }
         } catch (RepositoryException e) {
             throw e;
@@ -2114,6 +2105,14 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         } finally {
             closeInputStream(zis);
         }
+
+        // during import/export, never try to resolve the references between templates and site.
+        RenderContext r;
+        r = TemplateModuleInterceptor.renderContextThreadLocal.get();
+        TemplateModuleInterceptor.renderContextThreadLocal.remove();
+        ReferencesHelper.resolveCrossReferences(session, references, useReferenceKeeper);
+        TemplateModuleInterceptor.renderContextThreadLocal.set(r);
+        session.save(JCRObservationManager.IMPORT);
 
         if (importLive) {
             // Import user generated content

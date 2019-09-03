@@ -45,7 +45,6 @@ package org.jahia.services.content;
 
 import com.google.common.collect.HashMultimap;
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.core.JahiaVersionManagerImpl;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.api.Constants;
@@ -55,7 +54,6 @@ import org.jahia.services.JahiaService;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -525,7 +523,9 @@ public class JCRPublicationService extends JahiaService {
             }
 
             for (JCRNodeWrapper nodeWrapper : toCheckpoint) {
-                checkpoint(destinationSession, nodeWrapper, destinationVersionManager);
+                if (JCRContentUtils.needVersion(nodeWrapper, versionedTypes)) {
+                    checkpoint(destinationSession, nodeWrapper, destinationVersionManager);
+                }
             }
         } catch (RepositoryException e) {
             for (Map.Entry<String, Map<String, Value>> nodeEntry : previousPropertyByNodeUuidByName.entrySet()) {
@@ -722,7 +722,7 @@ public class JCRPublicationService extends JahiaService {
         final VersionManager sourceVersionManager = sourceSession.getWorkspace().getVersionManager();
         final VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
 
-        boolean versionable = needVersion(node);
+        boolean versionable = JCRContentUtils.needVersion(node, versionedTypes);
 
         final String path = node.getPath();
         String destinationPath;
@@ -774,14 +774,6 @@ public class JCRPublicationService extends JahiaService {
         }
     }
 
-    private boolean needVersion(JCRNodeWrapper node) throws RepositoryException {
-        for (String versionedType : versionedTypes) {
-            if (node.isNodeType(versionedType) || ((node.isNodeType(Constants.MIX_VERSIONABLE) || node.isNodeType(Constants.MIX_SIMPLEVERSIONABLE)) && node.getParent().isNodeType(versionedType))) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     private String handleMoveOrRenamedNode(JCRNodeWrapper node, JCRSessionWrapper destinationSession, String destinationPath, JCRNodeWrapper destinationNode, Set<JCRNodeWrapper> toCheckpoint) throws RepositoryException {
         String expectedDestinationPath = null;
@@ -902,7 +894,7 @@ public class JCRPublicationService extends JahiaService {
                 // Always checkpoint before first clone
                 for (String s : included) {
                     JCRNodeWrapper n = sourceSession.getNodeByIdentifier(s);
-                    if (needVersion(n)) {
+                    if (JCRContentUtils.needVersion(n, versionedTypes)) {
                         checkpoint(sourceSession, n, sourceSession.getWorkspace().getVersionManager());
                     }
                 }
@@ -913,13 +905,13 @@ public class JCRPublicationService extends JahiaService {
                 destinationSession.getWorkspace().clone(sourceSession.getWorkspace().getName(), sourceNodePath, destinationPath, false);
                 for (String s : included) {
                     JCRNodeWrapper n = destinationSession.getNodeByIdentifier(s);
-                    if (needVersion(n)) {
+                    if (JCRContentUtils.needVersion(n, versionedTypes)) {
                         toCheckpoint.add(n);
                     }
                 }
                 JCRNodeWrapper n = destinationSession.getNode(sourceNode.getCorrespondingNodePath(destinationWorkspaceName));
                 try {
-                    if (needVersion(n.getParent())) {
+                    if (JCRContentUtils.needVersion(n.getParent(), versionedTypes)) {
                         toCheckpoint.add(n.getParent());
                     }
                 } catch (ItemNotFoundException e1) {
@@ -1555,7 +1547,7 @@ public class JCRPublicationService extends JahiaService {
     }
 
     protected void addRemovedLabel(JCRNodeWrapper node, final String label) throws RepositoryException {
-        if (needVersion(node)) {
+        if (JCRContentUtils.needVersion(node, versionedTypes)) {
             VersionManager versionManager = node.getSession().getWorkspace().getVersionManager();
             versionManager.getVersionHistory(node.getPath()).addVersionLabel(versionManager.getBaseVersion(node.getPath()).getName(), label, false);
         }
@@ -1605,37 +1597,24 @@ public class JCRPublicationService extends JahiaService {
     }
 
     public void setPropertiesToSkipForReferences(String propertiesToSkipForReferences) {
-        this.propertiesToSkipForReferences = tokenize(propertiesToSkipForReferences);
+        this.propertiesToSkipForReferences = JCRContentUtils.splitAndUnify(propertiesToSkipForReferences, " ,");
         this.skipAllReferenceProperties = propertiesToSkipForReferences.contains(".*");
     }
 
     public void setReferencedNodeTypesToSkip(String referencedNodeTypesToSkip) {
-        this.referencedNodeTypesToSkip = tokenize(referencedNodeTypesToSkip);
+        this.referencedNodeTypesToSkip = JCRContentUtils.splitAndUnify(referencedNodeTypesToSkip, " ,");
     }
 
     public void setVersionedTypes(String versionedTypes) {
-        this.versionedTypes = tokenize(versionedTypes);
+        this.versionedTypes = JCRContentUtils.splitAndUnify(versionedTypes, " ,");
     }
 
     public void addReferencedNodeTypesToSkip(String referencedNodeTypesToSkip) {
-        this.referencedNodeTypesToSkip.addAll(tokenize(referencedNodeTypesToSkip));
+        this.referencedNodeTypesToSkip.addAll(JCRContentUtils.splitAndUnify(referencedNodeTypesToSkip, " ,"));
     }
 
     public void addPropertiesToSkipForReferences(String propertiesToSkipForReferences) {
-        this.propertiesToSkipForReferences.addAll(tokenize(propertiesToSkipForReferences));
-    }
-
-    private static Set<String> tokenize(String input) {
-        Set<String> result;
-        String[] tokens = StringUtils.split(input, " ,");
-        if (tokens == null || tokens.length == 0) {
-            result = Collections.emptySet();
-        } else {
-            result = new LinkedHashSet<String>();
-            result.addAll(Arrays.asList(tokens));
-        }
-
-        return result;
+        this.propertiesToSkipForReferences.addAll(JCRContentUtils.splitAndUnify(propertiesToSkipForReferences, " ,"));
     }
 
     public void setBatchSize(int batchSize) {

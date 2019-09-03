@@ -385,6 +385,7 @@
     </bean>
 
     <bean id="jcrVersionService" class="org.jahia.services.content.JCRVersionService" factory-method="getInstance">
+        <property name="versionedTypes" value="${jahia.publication.versionedTypes:}"/>
     </bean>
 
     <bean id="jcrPublicationService" class="org.jahia.services.content.JCRPublicationService"

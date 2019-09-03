@@ -32,7 +32,7 @@ var DX_eventListeners = {
              * Attribute: data-sitekey
              * Callback: => app.common.resizeSiteSelector
              */
-            .onAttribute('body', 'data-sitekey', app.common.resizeSiteSelector)
+            .onAttribute('body', 'data-sitekey', app.edit.onNewSite)
             /**
              * Target: body
              * Attribute: data-langdisplayname

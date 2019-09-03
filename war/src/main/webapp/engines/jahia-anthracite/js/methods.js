@@ -2717,21 +2717,17 @@ var DX_app = {
 
                     for (var charIndex in languageInputValue) {
                         var isWide = (wideChars.indexOf(languageInputValue[charIndex]) > -1) ? 10 : 0;
-                        var isMedium = (mediumChars.indexOf(languageInputValue[charIndex]) > -1) ? 7 : 0;
-                        var isSlim = (slimChars.indexOf(languageInputValue[charIndex]) > -1) ? 5 : 0;
+                        var isMedium = (mediumChars.indexOf(languageInputValue[charIndex]) > -1) ? 9 : 0;
+                        var isSlim = (slimChars.indexOf(languageInputValue[charIndex]) > -1) ? 3 : 0;
                         var addWidth = (isWide + isMedium + isSlim);
-
                         returnWidth = returnWidth + (addWidth || 10);
+
                     }
 
                     return returnWidth;
                 }(languageInputValue);
 
                 DexV2('.edit-menu-sites').nodes[0].style.setProperty('width', ((textWidth + 15) + 'px'), 'important');
-            }
-
-            if (DexV2.getCached('body').getAttribute('data-sitesettings') == 'true') {
-                DexV2.id('JahiaGxtSidePanelTabs__JahiaGxtSettingsTab').trigger('mousedown').trigger('mouseup');
             }
 
         }
@@ -2978,6 +2974,13 @@ var DX_app = {
             returnURL: null
         },
         /**
+         * Callback executed when the site is changed in the Edit Mode
+         */
+        onNewSite: function(){
+            DX_app.dev.log("app ::: edit ::: onNewSite (disabled the dodgy code )");
+            DX_app.common.resizeSiteSelector();
+        },
+        /**
          * Add a placeholder the input filter and focus it
          */
         addPlaceholderToContentFilter: function () {
@@ -3012,8 +3015,8 @@ var DX_app = {
 
                     for (var charIndex in languageInputValue) {
                         var isWide = (wideChars.indexOf(languageInputValue[charIndex]) > -1) ? 10 : 0;
-                        var isMedium = (mediumChars.indexOf(languageInputValue[charIndex]) > -1) ? 7 : 0;
-                        var isSlim = (slimChars.indexOf(languageInputValue[charIndex]) > -1) ? 5 : 0;
+                        var isMedium = (mediumChars.indexOf(languageInputValue[charIndex]) > -1) ? 9 : 0;
+                        var isSlim = (slimChars.indexOf(languageInputValue[charIndex]) > -1) ? 3 : 0;
                         var addWidth = (isWide + isMedium + isSlim);
 
                         returnWidth = returnWidth + (addWidth || 10);

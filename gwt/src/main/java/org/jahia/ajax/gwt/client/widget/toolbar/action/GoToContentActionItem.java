@@ -78,7 +78,7 @@ public class GoToContentActionItem extends BaseActionItem {
     }
 
     private boolean isOutOfContextContent(GWTJahiaNode selectedNode) {
-        return selectedNode.getPath().startsWith(JahiaGWTParameters.getSiteNode().getPath() + "/contents/");
+        return selectedNode.getPath().startsWith(JahiaGWTParameters.getSiteNode().getPath() + "/contents/") || selectedNode.isFile();
     }
 
     @Override

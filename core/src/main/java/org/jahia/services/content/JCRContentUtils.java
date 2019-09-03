@@ -1912,4 +1912,37 @@ public final class JCRContentUtils implements ServletContextAware {
                 (isRoot && JahiaGroupManagerService.POWERFUL_GROUPS.contains(groupName)) ||
                 JahiaGroupManagerService.getInstance().isMember(userName, userRealm, groupName, siteKey);
     }
+
+    /**
+     * this method checks if the node type is versionable from a jahia property
+     * @param node the node we want to version
+     * @param versionedTypes the jahia property with types to version
+     * @return true if the node can be versioned, false if it can't
+     * @throws RepositoryException
+     */
+    public static boolean needVersion(JCRNodeWrapper node, Set<String> versionedTypes) throws RepositoryException {
+        for (String versionedType : versionedTypes) {
+            if (node.isNodeType(versionedType) || ((node.isNodeType(Constants.MIX_VERSIONABLE) || node.isNodeType(Constants.MIX_SIMPLEVERSIONABLE)) && node.getParent().isNodeType(versionedType))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * this method splits a String with a separator and put all its elements in a Set
+     * @param input String containing different inputs with a separator
+     * @param separator string specifying the separator to split with
+     * @return a Set with the inputs
+     */
+    public static Set<String> splitAndUnify(String input, String separator) {
+        String[] tokens = StringUtils.split(input, separator);
+        if (tokens == null || tokens.length == 0) {
+            return Collections.emptySet();
+        } else {
+            Set<String> result = new LinkedHashSet<String>();
+            result.addAll(Arrays.asList(tokens));
+            return result;
+        }
+    }
 }

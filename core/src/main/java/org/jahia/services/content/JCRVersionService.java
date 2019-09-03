@@ -76,6 +76,8 @@ public class JCRVersionService extends JahiaService {
 
     private static JCRVersionService instance;
 
+    private Set<String> versionedTypes;
+
     private static transient Logger logger = org.slf4j.LoggerFactory.getLogger(JCRVersionService.class);
 
     /**
@@ -102,6 +104,10 @@ public class JCRVersionService extends JahiaService {
 
     @Override
     public void stop() throws JahiaException {
+    }
+
+    public void setVersionedTypes(String versionedTypes) {
+        this.versionedTypes = JCRContentUtils.splitAndUnify(versionedTypes, " ,");
     }
 
     /**
@@ -485,7 +491,7 @@ public class JCRVersionService extends JahiaService {
                                 logger.debug("Add version label " + labelWithWs + " on " + nodeWrapper.getPath() + " for version " +
                                         version.getName());
                             }
-                            if (nodeWrapper.isVersioned()) {
+                            if (nodeWrapper.isVersioned() && JCRContentUtils.needVersion(nodeWrapper, versionedTypes)) {
                                 versionHistory.addVersionLabel(version.getName(), labelWithWs, true);
                             }
                         }

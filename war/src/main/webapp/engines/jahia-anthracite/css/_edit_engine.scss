@@ -1648,6 +1648,14 @@ div.engine-window {
 								top: 55px;
 								left: 638px;
 								z-index: 98;
+
+								body[data-uilang="fr"] & {
+									left: 698px;
+								}
+
+								body[data-uilang="de"] & {
+									left: 714px;
+								}
 							}
 
 							// Publication icon
@@ -1656,6 +1664,14 @@ div.engine-window {
 								top: 54px;
 								left: 745px;
 								z-index: 98;
+
+								body[data-uilang="fr"] & {
+									left: 820px;
+								}
+
+								body[data-uilang="de"] & {
+									left: 825px;
+								}
 							}
 
 							// Publish conditions on save ( also used to create a fake fieldset )

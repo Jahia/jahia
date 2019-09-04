@@ -815,7 +815,7 @@ body[data-indigo-app="contribute"] {
 		background-size: 15px;
 		width: 15px;
 		height: 22px;
-		/* opacity: 0 !important; */
+		opacity: 0 !important;
 		transition: all 0.1s ease-in 0s;
 		// background-color: #45484c;
 		border-radius: 0;
@@ -836,7 +836,7 @@ body[data-indigo-app="contribute"] {
 		opacity: 1 !important;
 	    left: -19px !important;
 	    border-radius: 0 2px 2px 0;
-	    background-color: #696d72;
+	    background-color: rgba(245, 245, 245, 0.0784);
 	}
 
 
@@ -1336,7 +1336,7 @@ div.x-jahia-root {
 		background-size: 15px;
 		width: 15px;
 		height: 22px;
-		/* opacity: 0 !important; */
+		opacity: 0 !important;
 		transition: all 0.1s ease-in 0s;
 		// background-color: #45484c;
 		border-radius: 0;
@@ -1362,7 +1362,7 @@ div.x-jahia-root {
 		opacity: 1 !important;
 	    left: -19px !important;
 	    border-radius: 0 2px 2px 0;
-	    background-color: #696d72;
+	    background-color: rgba(245, 245, 245, 0.0784);
 	}
 
 	body[data-V2="true"][data-INDIGO-SIDEPANEL-PINNED="true"] & {

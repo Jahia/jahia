@@ -703,6 +703,7 @@ body[data-indigo-app="contribute"] {
 	    background-image: url(../images/more-options.svg);
 	    background-size: 20px;
 	    border-radius: 2px;
+        background-color: rgba(245, 245, 245, 0.0784);
 
 		&:hover {
 			background-color: #007cb0;
@@ -926,7 +927,7 @@ body[data-indigo-app="contribute"] {
 	    left: auto !important;
 	    top: auto !important;
 	    position: relative;
-	    margin-right: 3px !important;
+	    margin-right: 11px !important;
 	    padding-right: 19px;
 	    border-radius: 2px;
 	    // background-color: #45484c;

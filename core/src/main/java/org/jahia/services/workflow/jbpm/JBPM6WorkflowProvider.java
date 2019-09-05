@@ -247,7 +247,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
             definition = executeCommand(new GetWorkflowDefinitionCommand(key, uiLocale));
             defsByKey.put(uiLocale, definition);
         }
-        
+
         return definition;
     }
 
@@ -301,12 +301,15 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
 
     @Override
     public void assignTask(final String taskId, final JahiaUser user) {
+        logger.debug("[ASSIGN] Assigning task {} to user {}", taskId, user);
         if (loop.get() != null) {
+            logger.debug("[ASSIGN] Skip assigning task {} to user {}", taskId, user);
             return;
         }
         try {
             loop.set(Boolean.TRUE);
             executeCommand(new AssignTaskCommand(taskId, user));
+            logger.debug("[ASSIGN] Task {} is assigned user {}", taskId, user);
         } finally {
             loop.set(null);
         }
@@ -314,12 +317,19 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
 
     @Override
     public void completeTask(final String taskId, final JahiaUser jahiaUser, final String outcome, final Map<String, Object> args) {
+        logger.debug("[COMPLETE] Completing task {} to user {}", taskId, jahiaUser.getUsername());
         if (loop.get() != null) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("[COMPLETE] Skip Completing task {} to user {}", taskId, jahiaUser.getUsername());
+            }
             return;
         }
         try {
             loop.set(Boolean.TRUE);
             executeCommand(new CompleteTaskCommand(taskId, outcome, args, jahiaUser, observationManager));
+            if (logger.isDebugEnabled()) {
+                logger.debug("[COMPLETE] Task {} to user {} completed", taskId, jahiaUser.getUsername());
+            }
         } finally {
             loop.set(null);
         }

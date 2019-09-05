@@ -43,7 +43,7 @@
  */
 package org.jahia.services.workflow.jbpm;
 
-import org.codehaus.plexus.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.drools.core.command.impl.FixedKnowledgeCommandContext;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
@@ -104,7 +104,7 @@ public abstract class BaseCommand<T> implements GenericCommand<T> {
         public int compare(Constraint o1, Constraint o2) {
             return Integer.compare(o2.getPriority(), o1.getPriority());
         }
-        
+
     };
 
     private static final long serialVersionUID = -2742789169791810141L;
@@ -548,8 +548,8 @@ public abstract class BaseCommand<T> implements GenericCommand<T> {
                 String s = outcome;
                 String icon = null;
                 if (resourceBundle != null) {
-                    String key = (StringUtils.replace(workflowAction.getName(), ' ', '.').trim() + "." + StringUtils
-                            .replace(outcome, ' ', '.').trim()).toLowerCase();
+                    String key = (StringUtils.replace(workflowAction.getName(), " ", ".").trim() + "." + StringUtils
+                            .replace(outcome, " ", ".").trim()).toLowerCase();
                     try {
                         s = resourceBundle.getString(key);
                     } catch (Exception e) {
@@ -571,7 +571,7 @@ public abstract class BaseCommand<T> implements GenericCommand<T> {
 
     protected String i18nName(String actionName, ResourceBundle resourceBundle) {
         if (resourceBundle != null) {
-            String key = StringUtils.replace(actionName, ' ', '.').trim().toLowerCase();
+            String key = StringUtils.replace(actionName, " ", ".").trim().toLowerCase();
             try {
                 actionName = resourceBundle.getString(key);
             } catch (MissingResourceException e) {
@@ -613,7 +613,7 @@ public abstract class BaseCommand<T> implements GenericCommand<T> {
 
     @Override
     public String toString() {
-        return String.format("Execute command of class %s", getClass().getName());
+        return String.format("Execute command of class %s", StringUtils.substringAfterLast(getClass().getName(),"."));
     }
 
 }

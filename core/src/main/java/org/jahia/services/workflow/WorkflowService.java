@@ -612,7 +612,7 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
             assertWritable();
 
             WorkflowProvider workflowProvider = lookupProvider(provider);
-
+            logger.debug("Abort process {}", processId);
             Workflow workflow = workflowProvider.getWorkflow(processId, null);
             final Set<String> actionIds = new HashSet<>();
             for (final WorkflowAction action : workflow.getAvailableActions()) {
@@ -1132,6 +1132,10 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
     }
 
     public Workflow getWorkflow(String provider, String id, Locale displayLocale) {
+        if (logger.isDebugEnabled()) {
+            StackTraceElement el = Thread.currentThread().getStackTrace()[2];
+            logger.debug("Trigger getWorkflow command from {}.{}", org.apache.commons.lang3.StringUtils.substringAfterLast(el.getClassName(), "."), el.getMethodName());
+        }
         return lookupProvider(provider).getWorkflow(id, displayLocale);
     }
 

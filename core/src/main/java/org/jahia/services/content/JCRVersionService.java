@@ -110,6 +110,10 @@ public class JCRVersionService extends JahiaService {
         this.versionedTypes = JCRContentUtils.splitAndUnify(versionedTypes, " ,");
     }
 
+    public Set<String> getVersionedTypes() {
+        return versionedTypes;
+    }
+
     /**
      * Retrieves the list of versions, ignoring internal version created in the publication process.
      *

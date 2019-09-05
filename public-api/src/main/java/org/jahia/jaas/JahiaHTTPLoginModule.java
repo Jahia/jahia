@@ -70,7 +70,7 @@ public class JahiaHTTPLoginModule  implements LoginModule {
 
     /**
      * Initialize this LoginModule.
-     * <p/>
+     * 
      * <p> This method is called by the <code>LoginContext</code>
      * after this <code>LoginModule</code> has been instantiated.
      * The purpose of this method is to initialize this
@@ -78,8 +78,7 @@ public class JahiaHTTPLoginModule  implements LoginModule {
      * If this <code>LoginModule</code> does not understand
      * any of the data stored in <code>sharedState</code> or
      * <code>options</code> parameters, they can be ignored.
-     * <p/>
-     * <p/>
+     * </p>
      *
      * @param subject         the <code>Subject</code> to be authenticated. <p>
      * @param callbackHandler a <code>CallbackHandler</code> for communicating
@@ -99,15 +98,14 @@ public class JahiaHTTPLoginModule  implements LoginModule {
 
     /**
      * Method to authenticate a <code>Subject</code> (phase 1).
-     * <p/>
+     * 
      * <p> The implementation of this method authenticates
      * a <code>Subject</code>.  For example, it may prompt for
      * <code>Subject</code> information such
      * as a username and password and then attempt to verify the password.
      * This method saves the result of the authentication attempt
      * as private state within the LoginModule.
-     * <p/>
-     * <p/>
+     * </p>
      *
      * @return true if the authentication succeeded, or false if this
      *         <code>LoginModule</code> should be ignored.
@@ -147,12 +145,12 @@ public class JahiaHTTPLoginModule  implements LoginModule {
 
     /**
      * Method to commit the authentication process (phase 2).
-     * <p/>
+     * 
      * <p> This method is called if the LoginContext's
      * overall authentication succeeded
      * (the relevant REQUIRED, REQUISITE, SUFFICIENT and OPTIONAL LoginModules
      * succeeded).
-     * <p/>
+     * </p>
      * <p> If this LoginModule's own authentication attempt
      * succeeded (checked by retrieving the private state saved by the
      * <code>login</code> method), then this method associates relevant
@@ -160,8 +158,7 @@ public class JahiaHTTPLoginModule  implements LoginModule {
      * <code>LoginModule</code>.  If this LoginModule's own
      * authentication attempted failed, then this method removes/destroys
      * any state that was originally saved.
-     * <p/>
-     * <p/>
+     * </p>
      *
      * @return true if this method succeeded, or false if this
      *         <code>LoginModule</code> should be ignored.
@@ -180,18 +177,17 @@ public class JahiaHTTPLoginModule  implements LoginModule {
 
     /**
      * Method to abort the authentication process (phase 2).
-     * <p/>
+     * 
      * <p> This method is called if the LoginContext's
      * overall authentication failed.
      * (the relevant REQUIRED, REQUISITE, SUFFICIENT and OPTIONAL LoginModules
      * did not succeed).
-     * <p/>
+     * </p>
      * <p> If this LoginModule's own authentication attempt
      * succeeded (checked by retrieving the private state saved by the
      * <code>login</code> method), then this method cleans up any state
      * that was originally saved.
-     * <p/>
-     * <p/>
+     * </p>
      *
      * @return true if this method succeeded, or false if this
      *         <code>LoginModule</code> should be ignored.
@@ -209,11 +205,10 @@ public class JahiaHTTPLoginModule  implements LoginModule {
 
     /**
      * Method which logs out a <code>Subject</code>.
-     * <p/>
+     * 
      * <p>An implementation of this method might remove/destroy a Subject's
      * Principals and Credentials.
-     * <p/>
-     * <p/>
+     * </p>
      *
      * @return true if this method succeeded, or false if this
      *         <code>LoginModule</code> should be ignored.

@@ -98,7 +98,7 @@ public class VersioningTest extends JahiaTestCase {
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
     private static final String MAIN_CONTENT_TITLE = "Main content title update ";
     private static final String MAIN_CONTENT_BODY = "Main content body update ";
-    private static int NUMBER_OF_VERSIONS = 5;
+    private static int NUMBER_OF_VERSIONS = 2;
     JCRSessionWrapper editSession;
     JCRSessionWrapper liveSession;
     private SimpleDateFormat yyyy_mm_dd_hh_mm_ss;
@@ -137,17 +137,17 @@ public class VersioningTest extends JahiaTestCase {
 
             reopenSession();
 
-            final JCRNodeWrapper stagedSubPage = createNodes(jcrService);
+            final JCRNodeWrapper richText = createNodes(jcrService);
 
             // let's do some validation checks, first for the live workspace...
 
             // check number of versions
 
             reopenSession();
-            final JCRNodeWrapper subPagePublishedNode = liveSession.getNode(stagedSubPage.getPath());
+            final JCRNodeWrapper richTextLiveNode = liveSession.getNode(richText.getPath());
 
             List<VersionInfo> liveVersionInfos = ServicesRegistry.getInstance().getJCRVersionService().getVersionInfos(
-                    liveSession, subPagePublishedNode);
+                    liveSession, richTextLiveNode);
             final int[] index = {0};
             for (final VersionInfo curVersionInfo : liveVersionInfos) {
                 final String versionName = curVersionInfo.getVersion().getName();
@@ -165,7 +165,7 @@ public class VersioningTest extends JahiaTestCase {
                                     } catch (ParseException e) {
                                         throw new RepositoryException(e);
                                     }
-                                    versionNode = session.getNodeByUUID(subPagePublishedNode.getIdentifier());
+                                    versionNode = session.getNodeByUUID(richTextLiveNode.getIdentifier());
                                     validateVersionedNode(index[0], curVersionInfo, versionName, versionNode);
                                     index[0]++;
                                     return null;
@@ -192,6 +192,7 @@ public class VersioningTest extends JahiaTestCase {
     private JCRNodeWrapper createNodes(JCRPublicationService jcrService)
             throws RepositoryException, InterruptedException {
         JCRVersionService jcrVersionService = ServicesRegistry.getInstance().getJCRVersionService();
+        JCRPublicationService jcrPublicationService = ServicesRegistry.getInstance().getJCRPublicationService();
         JCRNodeWrapper stageRootNode = editSession.getNode(SITECONTENT_ROOT_NODE);
         Node versioningTestActivity = editSession.getWorkspace().getVersionManager().createActivity("versioningTest");
         Node previousActivity = editSession.getWorkspace().getVersionManager().setActivity(versioningTestActivity);
@@ -218,64 +219,25 @@ public class VersioningTest extends JahiaTestCase {
         mainContent.setProperty("jcr:title", MAIN_CONTENT_TITLE + "0");
         mainContent.setProperty("body", MAIN_CONTENT_BODY + "0");
 
+        JCRNodeWrapper richText1 = stagedCol1.addNode("richText1", "jnt:bigText");
+        richText1.setProperty("text", "richText0");
+
         JCRNodeWrapper stagedSubSubPage = stagedSubPage.addNode("home_subsubpage1", "jnt:page");
         stagedSubSubPage.setProperty("jcr:title", "subtitle0");
         stagedSubSubPage.setProperty("j:templateName", "simple");
         editSession.save();
 
         // publish it
-        List<PublicationInfo> publicationInfo = jcrService.getPublicationInfo(stageNode.getIdentifier(),
-                languagesStringSet, true, true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
-        jcrService.publishByInfoList(publicationInfo, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
-                Collections.<String>emptyList());
+        publishAndLabelizedVersion(jcrPublicationService, jcrVersionService, stageNode.getIdentifier());
 
-        List<String> uuids = getUuids(publicationInfo);
-        jcrVersionService.addVersionLabel(uuids, getPublicationLabel(), Constants.LIVE_WORKSPACE);
-        for (int i = 1; i < NUMBER_OF_VERSIONS; i++) {
-
-            for (int j = 0; j < 2; j++) {
-                editSession.checkout(mainContent);
-                int updateNumber = (i - 1) * 2 + j + 1;
-                mainContent.setProperty("jcr:title", MAIN_CONTENT_TITLE + updateNumber);
-                mainContent.setProperty("body", MAIN_CONTENT_BODY + updateNumber);
-                editSession.save();
-                jcrService.publishByMainId(mainContent.getIdentifier(), Constants.EDIT_WORKSPACE,
-                        Constants.LIVE_WORKSPACE, languagesStringSet, true, Collections.<String>emptyList());
-                Thread.sleep(5000);
-            }
-
-            editSession.checkout(stagedSubPage);
-            stagedSubPage.setProperty("jcr:title", "title" + i);
-            editSession.save();
-
-            // each time the node i published, a new version should be created
-            publicationInfo = jcrService.getPublicationInfo(stagedSubPage.getIdentifier(), languagesStringSet, true,
-                    true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
-            jcrService.publishByInfoList(publicationInfo, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
-                    Collections.<String>emptyList());
-
-            uuids = getUuids(publicationInfo);
-            jcrVersionService.addVersionLabel(uuids, getPublicationLabel(), Constants.LIVE_WORKSPACE);
-            editSession.checkout(stagedSubSubPage);
-            stagedSubSubPage.setProperty("jcr:title", "subtitle" + i);
-            editSession.save();
-            publicationInfo = jcrService.getPublicationInfo(stagedSubSubPage.getIdentifier(), languagesStringSet, true,
-                    true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
-            jcrService.publishByInfoList(publicationInfo, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
-                    Collections.<String>emptyList());
-
-            uuids = new LinkedList<String>();
-            for (PublicationInfo info : publicationInfo) {
-                uuids.addAll(info.getAllUuids());
-            }
-            jcrVersionService.addVersionLabel(uuids, getPublicationLabel(), Constants.LIVE_WORKSPACE);
-            Thread.sleep(5000);
-        }
+        richText1.setProperty("text", "richText1");
+        editSession.save();
+        publishAndLabelizedVersion(jcrPublicationService, jcrVersionService, stageNode.getIdentifier());
 
         // now let's do a little system versioning ourselves...
 
         editSession.getWorkspace().getVersionManager().checkpoint(stagedSubPage.getPath());
-        return stagedSubPage;
+        return richText1;
     }
 
     private List<String> getUuids(List<PublicationInfo> publicationInfo) {
@@ -289,48 +251,33 @@ public class VersioningTest extends JahiaTestCase {
     private void validateVersionedNode(int index, VersionInfo curVersionInfo, String versionName,
                                        JCRNodeWrapper versionNode) throws RepositoryException {
         assertNotNull("Version node is null !!", versionNode);
-        JCRPropertyWrapper property = versionNode.getProperty("jcr:title");
+        JCRPropertyWrapper property = versionNode.getProperty("text");
         assertNotNull("Title property should not be null on versioned node", property);
         String versionTitle = property.getString();
-        String title = "title" + index;
+        String title = "richText" + index;
 
         if (logger.isDebugEnabled() && curVersionInfo != null && versionName != null) {
-            logger.debug("version number:" + versionName + ", jcr:title: " + versionTitle + " created=" +
+            logger.debug("version number:" + versionName + ", text: " + versionTitle + " created=" +
                          curVersionInfo.getVersion().getCreated().getTime());
         }
 
         assertEquals("Title does not match !", title, versionTitle);
         // let's check the version node's path
-        assertEquals("Versioned node path is invalid !", SITECONTENT_ROOT_NODE + "/home/home_subpage1",
+        assertEquals("Versioned node path is invalid !", SITECONTENT_ROOT_NODE + "/home/home_subpage1/pagecontent/row1/col1/richText1",
                 versionNode.getPath());
         // let's check the node type
-        assertEquals("Versioned node should be viewed as a node type jnt:page", "jnt:page",
+        assertEquals("Versioned node should be viewed as a node type jnt:bigText", "jnt:bigText",
                 versionNode.getPrimaryNodeTypeName());
         // let's check the mixin types
-        assertTrue("Versioned node should be viewed as a mixin node type jmix:basemetadata", versionNode.isNodeType(
-                "jmix:basemetadata"));
-        assertTrue("Versioned node should be viewed as a mixin node type jmix:nodenameInfo", versionNode.isNodeType(
-                "jmix:nodenameInfo"));
-
-        // getNode check
-        assertEquals("Versioned node getNode() returns invalid node name", "home_subsubpage1", versionNode.getNode(
-                "home_subsubpage1").getName());
-        assertEquals("Versioned node getNode() returns invalid nodetype", "jnt:page", versionNode.getNode(
-                "home_subsubpage1").getPrimaryNodeType().getName());
-
+        assertTrue("Versioned node should be viewed as a mixin node type jmix:editorialContent", versionNode.isNodeType(
+                "jmix:editorialContent"));
         // now let's check the parent
         JCRNodeWrapper parentVersionNode = versionNode.getParent();
-        assertEquals("Parent node name is not correct", "home", parentVersionNode.getName());
-        assertEquals("Parent node type is not of type jnt:page", "jnt:page",
+        assertEquals("Parent node name is not correct", "col1", parentVersionNode.getName());
+        assertEquals("Parent node type is not of type jnt:page", "jnt:contentList",
                 parentVersionNode.getPrimaryNodeTypeName());
-        assertEquals("Parent node path invalid", SITECONTENT_ROOT_NODE + "/home", parentVersionNode.getPath());
-
-        // now let's check the child objects.
-        JCRNodeWrapper mainContentNode = versionNode.getNode("pagecontent/row1/col1/mainContent");
-        assertEquals("Child node has incorrect value", MAIN_CONTENT_TITLE + (index * 2), mainContentNode.getProperty(
-                "jcr:title").getString());
-        assertEquals("Child node has incorrect value", MAIN_CONTENT_BODY + (index * 2), mainContentNode.getProperty(
-                "body").getString());
+        assertEquals("Parent node path invalid", SITECONTENT_ROOT_NODE + "/home/home_subpage1/pagecontent/row1/col1",
+                parentVersionNode.getPath());
 
     }
 
@@ -354,176 +301,56 @@ public class VersioningTest extends JahiaTestCase {
             reopenSession();
             JCRNodeWrapper stageRootNode = editSession.getNode(SITECONTENT_ROOT_NODE);
             // get home page
-            JCRNodeWrapper stageNode = stageRootNode.getNode("home");
-            String homeIdentifier = stageNode.getIdentifier();
+            JCRNodeWrapper stageNode = stageRootNode.getNode("home/listA");
+            String listIdentifier = stageNode.getIdentifier();
             editSession.checkout(stageNode);
 
-            JCRNodeWrapper subPageEditNode = stageNode.addNode("simple", "jnt:page");
-            String subPageEditNodeIdentifier = subPageEditNode.getIdentifier();
-            subPageEditNode.setProperty("jcr:title", "title0");
-            subPageEditNode.setProperty("j:templateName", "simple");
+            JCRNodeWrapper richText = stageNode.addNode("richText", "jnt:bigText");
+            String richTextIdentifier = richText.getIdentifier();
+            richText.setProperty("text", "text0");
             editSession.save();
-
-            // Do this to create nodes associated to templates
-            String responseBody = getAsText("/cms/render/default/en" + subPageEditNode.getPath() + ".html");
-            logger.debug("Response body=[" + responseBody + "]");
-            assertFalse("Couldn't find expected value (title0) in response body", responseBody.indexOf("title0") < 0);
             
             // First publication
-            String labelForFirstPublication = publishAndLabelizedVersion(jcrPublicationService, jcrVersionService, homeIdentifier);
-            JCRNodeWrapper subPageLiveNode = liveSession.getNodeByUUID(subPageEditNode.getIdentifier());
-            assertEquals("subPageLiveNode title should be title0", "title0", subPageLiveNode.getProperty(
-                    "jcr:title").getString());
-            logger.info("Versions after first publication (home and simple subpage)");
+            String labelForFirstPublication = publishAndLabelizedVersion(jcrPublicationService, jcrVersionService, listIdentifier);
+            JCRNodeWrapper richTextLiveNode = liveSession.getNodeByUUID(richText.getIdentifier());
+            assertEquals("rich text should be texgt0", "text0", richTextLiveNode.getProperty("text").getString());
+            logger.info("Versions after first publication (listA & rich text)");
             displayVersions(editSession, stageNode, liveSession);
 
             reopenSession();
 
-            // Remove Node
-            stageNode = editSession.getNodeByUUID(homeIdentifier);
-            subPageEditNode = editSession.getNodeByUUID(subPageEditNodeIdentifier);
-            editSession.checkout(subPageEditNode);
+            // Change a property of rich text
+            stageNode = editSession.getNodeByUUID(listIdentifier);
+            richText = editSession.getNodeByUUID(richTextIdentifier);
+            editSession.checkout(richText);
             editSession.checkout(stageNode);
-            subPageEditNode.markForDeletion("Page deleted in unit test");
+            richText.setProperty("text", "text1");
             editSession.save();
 
             //Second publication
-            logger.info("Versions before second publication (simple subpage removed)");
+            logger.info("Versions before second publication (listA & rich text)");
             displayVersions(editSession, stageNode, liveSession);
             reopenSession();
-            String labelForSecondPublication = publishAndLabelizedVersion(jcrPublicationService, jcrVersionService, homeIdentifier);
-            reopenSession();
-            try {
-                liveSession.getNodeByUUID(subPageEditNodeIdentifier);
-                fail("should not have found subPage node");
-            } catch (RepositoryException e) {
-                assertTrue(e instanceof ItemNotFoundException);
-            }
-            logger.info("Versions of deleted page after second publication (simple subpage removed)");
-            displayVersions(editSession, subPageEditNode, liveSession);
-            logger.info("Versions after second publication (simple subpage removed)");
-            displayVersions(editSession, stageNode, liveSession);
-
+            publishAndLabelizedVersion(jcrPublicationService, jcrVersionService, listIdentifier);
             reopenSession();
 
-            // Make sure that node does not exist in edit
-            try {
-                editSession.getNodeByUUID(subPageEditNodeIdentifier);
-                fail("should not have found subPage node");
-            } catch (RepositoryException e) {
-                assertTrue(e instanceof ItemNotFoundException);
-            }
             // Restore node
-            logger.info("Versions before restore of simple subpage");
-            displayVersions(editSession, stageNode, liveSession);
+            jcrVersionService.restoreVersionLabel(editSession.getNodeByUUID(richTextIdentifier), yyyy_mm_dd_hh_mm_ss.parse(labelForFirstPublication.split("_at_")[1]), labelForFirstPublication, true);
+            richText = editSession.getNodeByUUID(richTextIdentifier);
+            assertEquals("text0", richText.getProperty("text").getString());
 
-            reopenSession();
-
-            jcrVersionService.restoreVersionLabel(editSession.getNodeByUUID(homeIdentifier), yyyy_mm_dd_hh_mm_ss.parse(labelForFirstPublication.split(
-                                                "_at_")[1]),
-                    labelForFirstPublication, false);
-            subPageEditNode = editSession.getNodeByUUID(subPageEditNodeIdentifier);
-            assertEquals("title0", subPageEditNode.getProperty("jcr:title").getString());
             // Third publication
-            logger.info("Versions before publication of restore of simple subpage");
+            logger.info("Versions before publication of restore of listA");
             displayVersions(editSession, stageNode, liveSession);
-            publishAndLabelizedVersion(jcrPublicationService, jcrVersionService, homeIdentifier);
-            subPageLiveNode = liveSession.getNodeByUUID(subPageEditNode.getIdentifier());
-            assertEquals("subPageLiveNode title should be title0", "title0", subPageLiveNode.getProperty(
-                    "jcr:title").getString());
-            // Now add some content in page
+            publishAndLabelizedVersion(jcrPublicationService, jcrVersionService, listIdentifier);
+            richTextLiveNode = liveSession.getNodeByUUID(richText.getIdentifier());
+            assertEquals("richTextLiveNode title should be text0", "text0", richTextLiveNode.getProperty("text").getString());
+
             // Close sessions
-            logger.info("Versions after third publication (simple subpage restored)");
+            logger.info("Versions after third publication (listA & rich text)");
             displayVersions(editSession, stageNode, liveSession);
 
             reopenSession();
-
-            subPageEditNode = editSession.getNodeByUUID(subPageEditNodeIdentifier);
-            editSession.checkout(subPageEditNode);
-            JCRNodeWrapper listAEditNode = subPageEditNode.addNode("listA","jnt:contentList");
-            JCRNodeWrapper mainContentEditNode = listAEditNode.addNode("maincontent", "jnt:mainContent");
-            String mainContentEditNodeIdentifier = mainContentEditNode.getIdentifier();
-            mainContentEditNode.setProperty("jcr:title", "maincontent");
-            mainContentEditNode.setProperty("body", "maincontent");
-            editSession.save();
-            String labelForFourthPublication = publishAndLabelizedVersion(jcrPublicationService, jcrVersionService, homeIdentifier);
-            JCRNodeWrapper mainContentLiveNode = liveSession.getNodeByIdentifier(mainContentEditNodeIdentifier);
-            assertEquals("Maincontent body", "maincontent", mainContentLiveNode.getProperty("body").getString());
-            assertEquals("Maincontent title", "maincontent", mainContentLiveNode.getProperty("jcr:title").getString());
-            // Close sessions
-            logger.info("Versions after fourth publication (simple subpage main content added)");
-            displayVersions(editSession, stageNode, liveSession);
-
-            reopenSession();
-
-            //Restore second publication
-            jcrVersionService.restoreVersionLabel(editSession.getNodeByUUID(homeIdentifier),  yyyy_mm_dd_hh_mm_ss.parse(labelForSecondPublication.split(
-                                                "_at_")[1]),
-                    labelForSecondPublication, true);
-            try {
-                editSession.getNodeByUUID(mainContentEditNodeIdentifier);
-                fail("should not have found mainContent node");
-            } catch (RepositoryException e) {
-                assertTrue(e instanceof ItemNotFoundException);
-            }
-            publishAndLabelizedVersion(jcrPublicationService, jcrVersionService, homeIdentifier);
-            logger.info("Versions after fifth publication (restore version from simple subpage removed)");
-            displayVersions(editSession, stageNode, liveSession);
-            try {
-                liveSession.getNodeByUUID(mainContentEditNodeIdentifier);
-                fail("should not have found mainContent node");
-            } catch (RepositoryException e) {
-                assertTrue(e instanceof ItemNotFoundException);
-            }
-
-            reopenSession();
-
-            stageNode = editSession.getNodeByUUID(homeIdentifier);
-            editSession.checkout(stageNode);
-            JCRNodeWrapper newSubPageEditNode = stageNode.addNode("double", "jnt:page");
-            String newSubPageEditNodeIdentifier = newSubPageEditNode.getIdentifier();
-            newSubPageEditNode.setProperty("jcr:title", "my double page");
-            newSubPageEditNode.setProperty("j:templateName", "double");
-            editSession.save();
-            // Do this to create nodes associated to templates
-            responseBody = getAsText("/cms/render/default/en" + newSubPageEditNode.getPath() + ".html");
-            logger.debug("Response body=[" + responseBody + "]");
-            assertFalse("Couldn't find expected value (my double page) in response body",
-                    responseBody.indexOf("my double page") < 0);
-
-            // Add a new double sub page in the home
-            publishAndLabelizedVersion(jcrPublicationService, jcrVersionService, homeIdentifier);
-            JCRNodeWrapper newSubPageLiveNode = liveSession.getNodeByUUID(newSubPageEditNodeIdentifier);
-            assertEquals("subPageLiveNode title should be my double page", "my double page",
-                    newSubPageLiveNode.getProperty("jcr:title").getString());
-            logger.info("Versions after sixth publication (home and double subpage)");
-            displayVersions(editSession, stageNode, liveSession);
-
-            reopenSession();
-
-            stageNode = editSession.getNodeByUUID(homeIdentifier);
-            jcrVersionService.restoreVersionLabel(stageNode, yyyy_mm_dd_hh_mm_ss.parse(labelForFourthPublication.split(
-                                                "_at_")[1]),
-                    labelForFourthPublication, true);
-            reopenSession();
-            mainContentEditNode = editSession.getNodeByUUID(mainContentEditNodeIdentifier);
-            editSession.checkout(mainContentEditNode);
-            mainContentEditNode.setProperty("jcr:title", "my updated maincontent");
-            mainContentEditNode.setProperty("body", "my updated maincontent");
-            editSession.save();
-
-            publishAndLabelizedVersion(jcrPublicationService, jcrVersionService, homeIdentifier);
-            mainContentLiveNode = liveSession.getNodeByIdentifier(mainContentEditNodeIdentifier);
-            assertEquals("Maincontent body", "my updated maincontent", mainContentLiveNode.getProperty(
-                    "body").getString());
-            assertEquals("Maincontent title", "my updated maincontent", mainContentLiveNode.getProperty(
-                    "jcr:title").getString());
-            try {
-                liveSession.getNodeByUUID(newSubPageEditNodeIdentifier);
-                fail("should not have found mainContent node");
-            } catch (RepositoryException e) {
-                assertTrue(e instanceof ItemNotFoundException);
-            }
         } catch (Exception e) {
             logger.error(e.getLocalizedMessage(), e);
             throw e;

@@ -98,7 +98,7 @@ public class RenderTest extends JahiaTestCase {
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
     private static final String MAIN_CONTENT_TITLE = "Main content title update ";
     private static final String MAIN_CONTENT_BODY = "Main content body update ";
-    private static int NUMBER_OF_VERSIONS = 5;
+    private static int NUMBER_OF_VERSIONS = 0;
 
     private SimpleDateFormat yyyy_mm_dd_hh_mm_ss = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
 

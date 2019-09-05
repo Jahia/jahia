@@ -120,6 +120,7 @@ public class PublishWorkItemHandler extends AbstractWorkItemHandler implements W
         } catch (SchedulerException e) {
             throw new RuntimeException(e);
         }
+        logger.debug("publish job schedule and send complete work item {}", workItem);
         manager.completeWorkItem(workItem.getId(), null);
     }
 

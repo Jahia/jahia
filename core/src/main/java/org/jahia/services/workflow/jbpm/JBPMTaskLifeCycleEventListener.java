@@ -43,6 +43,7 @@
  */
 package org.jahia.services.workflow.jbpm;
 
+import com.google.common.base.Joiner;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRUserNode;
@@ -66,6 +67,8 @@ import org.kie.api.task.model.Task;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
@@ -83,6 +86,9 @@ import java.util.*;
  *        Created : 4 févr. 2010
  */
 public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventListener {
+
+
+    private static final Logger logger = LoggerFactory.getLogger(JBPMTaskLifeCycleEventListener.class);
 
     @Override
     public void afterTaskReleasedEvent(Task ti) {
@@ -182,6 +188,13 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
                               final Map<String, Object> taskInputParameters,
                               final Map<String, Object> taskOutputParameters,
                               final List<JahiaPrincipal> candidates) throws RepositoryException {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Create JCR node for task id {} :", task.getId());
+            logger.debug("taskInputParameters: {}", Joiner.on(",").withKeyValueSeparator("=").join(taskInputParameters));
+            logger.debug("taskOutputParameters: {}", Joiner.on(",").withKeyValueSeparator("=").join(taskOutputParameters));
+            logger.debug("principals: {}", Joiner.on(",").join(candidates));
+
+        }
         final Workflow workflow = workflowProvider.getWorkflow(Long.toString(task.getTaskData().getProcessInstanceId()), null);
 
         String userPath = (String) taskInputParameters.get("user");

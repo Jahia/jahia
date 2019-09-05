@@ -3547,23 +3547,8 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 
 	.x-tool-close {
-		background: #ededed !important;
-		@include text(14px, #FAFAFA, 100);
-		padding: 8px 15px !important;
-		color: #5c6164!important;
-
-		width: auto!important;
-	    height: auto!important;
-	    position: fixed!important;
-	    bottom: 20px!important;
-	    right: 110px!important;
-
-		&:before {
-			content: $text_cancel;
-		}
+		display: none;
 	}
-
-
 
 	> .x-window-tl,
 	> .x-window-bwrap {
@@ -4743,17 +4728,10 @@ body[data-indigo-gwt-side-panel="open"] {
 
 }
 
-
-// Publication manager
-
-.x-window.publication-manager-engine,
 .x-window.trashboard-engine,
 .x-window.preview-window {
 
 	.x-window-header .x-panel-toolbar {
-		display: block;
-		margin-top: 8px;
-		pointer-events: all;
 
 		table tbody tr td .x-tool-close {
 			background: url(../images/icons/icon-close-grey@X2.png) no-repeat center top;
@@ -4768,11 +4746,23 @@ body[data-indigo-gwt-side-panel="open"] {
 
 			}
 		}
+	}
+}
+
+// Publication manager
+
+.x-window.publication-manager-engine,
+.x-window.trashboard-engine,
+.x-window.preview-window {
+
+	.x-window-header .x-panel-toolbar {
+		display: block;
+		margin-top: 8px;
+		pointer-events: all;
 
 		table tbody tr td .x-tool-maximize {
 			display: none;
 		}
-
 	}
 
 	.x-grid3-hd-inner {

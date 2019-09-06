@@ -2742,6 +2742,10 @@ div.engine-window {
 
 		}
 
+		> .x-panel-body {
+			overflow: hidden;
+		}
+
 		.x-window-bbar,
 		> .x-panel-bbar {
 			// Footer action bar

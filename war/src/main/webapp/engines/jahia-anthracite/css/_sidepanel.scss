@@ -375,6 +375,74 @@ body[indigo-dragging-panel] {
 
 	}
 
+	.x-viewport-adminmode & {
+		width: 100%;
+
+		#JahiaGxtSidePanelTabs {
+			padding-top: 100px;
+
+			.x-tab-panel-header {
+				width: 100% !important;
+				left: 0;
+				top: 0;
+				position: relative;
+				display: block;
+				padding-left: 34px;
+				box-sizing: border-box;
+
+				ul.x-tab-strip-top {
+					left: 0;
+					top: 0;
+					z-index: 999999999999;
+					position: relative;
+					width: auto;
+					margin: 0;
+					padding: 0;
+
+					li {
+						display: none;
+						&::after {
+							font-size: 12px;
+							font-weight: 400;
+							text-transform: none;
+						}
+
+						&#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab {
+							position: relative;
+							left: auto;
+							right: auto;
+							top: auto;
+							bottom: auto;
+							display: inline-block;
+							height: auto;
+							width: auto;
+							margin-right: 5px;
+							padding: 6px 4px;
+
+							> img {
+								display: none;
+							}
+
+							&.x-tab-strip-active {
+								box-shadow: inset 0 -3px 0 0 #007cb0;
+
+								&::after {
+									color: #007cb0;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			.x-tab-panel-body {
+				margin: 0;
+				width: 100%!important;
+				padding: 0 25px 0 30px;
+			}
+		}
+	}
+
 	#JahiaGxtSidePanelTabs {
 		border-right: 0 solid #f8f8f8;
 
@@ -602,16 +670,6 @@ body[indigo-dragging-panel] {
 					margin: 0 0 0 10px;
 				}
 
-				body[data-edit-window-style="settings"] &,
-				.x-viewport-adminmode &,
-				.x-viewport-dashboardmode & {
-					/* Hide when settings menu open - need to keep the elements there for GWT so just slide them out ofview */
-					position: absolute;
-					left: -90px;
-
-				}
-
-
 			}
 
 			body[data-edit-window-style="settings"] & {
@@ -683,7 +741,7 @@ body[indigo-dragging-panel] {
 				padding-left: 10px;
 			}
 
-			body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSettingsTab"] & {
+			body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSettingsTab"]:not([data-indigo-app="admin"]) & {
 				padding-left: 10px;
 			}
 
@@ -2123,7 +2181,7 @@ $side_panel__tab_buttons: (
             ("#JahiaGxtSidePanelTabs__JahiaGxtSearchTab",               $text_search,       $SIDE_PANEL--ICON--SEARCH---CLOSED,       $SIDE_PANEL--ICON--SEARCH---OPEN,       $SIDE_PANEL--ICON--SEARCH---SELECTED,       $SIDE_PANEL--ICON--SEARCH---OFF),
             ("#JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab",       $text_taxonomy,     $SIDE_PANEL--ICON--TAXONOMY---CLOSED,     $SIDE_PANEL--ICON--TAXONOMY---OPEN,     $SIDE_PANEL--ICON--TAXONOMY---SELECTED,     $SIDE_PANEL--ICON--TAXONOMY---OFF),
             ("#JahiaGxtSidePanelTabs__JahiaGxtChannelsTab",             $text_devices,      $SIDE_PANEL--ICON--DEVICES---CLOSED,      $SIDE_PANEL--ICON--DEVICES---OPEN,      $SIDE_PANEL--ICON--DEVICES---SELECTED,      $SIDE_PANEL--ICON--DEVICES---OFF),
-            ("#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab",             $text_server_settings,     $SIDE_PANEL--ICON--SETTINGS---CLOSED,     $SIDE_PANEL--ICON--SETTINGS---OPEN,     $SIDE_PANEL--ICON--SETTINGS---SELECTED,     $SIDE_PANEL--ICON--SETTINGS---OFF)
+            ("#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab",             $text_settings,     $SIDE_PANEL--ICON--SETTINGS---CLOSED,     $SIDE_PANEL--ICON--SETTINGS---OPEN,     $SIDE_PANEL--ICON--SETTINGS---SELECTED,     $SIDE_PANEL--ICON--SETTINGS---OFF)
         );
 
 
@@ -2193,12 +2251,6 @@ $side_panel__tab_buttons: (
 
                 &::after {
                     content:$_text;
-
-					@if ($_tab_ID == '#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab') {
-						body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
-							//color: _theme-color(secondary)!important;
-						}
-					}
                 }
             }
         }
@@ -2232,6 +2284,14 @@ $side_panel__tab_buttons: (
 			&::after {
 		        content: $text_system_settings;
 		    }
+		}
+
+		#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab:nth-child(1) {
+			&::after {
+				body[data-indigo-app="admin"] & {
+					content: $text_server_settings;
+				}
+			}
 		}
 
 

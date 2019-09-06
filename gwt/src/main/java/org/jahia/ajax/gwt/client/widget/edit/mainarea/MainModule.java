@@ -118,7 +118,7 @@ public class MainModule extends Module {
     private InfoLayers infoLayers = new InfoLayers();
     private Map<String, Boolean> activeLayers = new HashMap<String, Boolean>();
     private boolean ctrlActive = false;
-    private Map<Module, Selection> selections = new HashMap<Module, Selection>();
+    private static Map<Module, Selection> selections = new HashMap<Module, Selection>();
 
     private boolean needParseAfterLayout = false;
     private Map<Element, Module> moduleMap;
@@ -695,6 +695,13 @@ public class MainModule extends Module {
         });
     }
 
+    public static void redrawSelection() {
+        for (Selection selection : selections.values()) {
+            selection.hide();
+            selection.show();
+        }
+    }
+
     public static void translateContent(String path, final String sourceLang, final String destLang, final String saveCallback) {
         Map<String, List<Module>> modulesByPath = ModuleHelper.getModulesByPath();
         final List<Module> modules = (modulesByPath != null) ? modulesByPath.get(path):null;
@@ -1044,10 +1051,7 @@ public class MainModule extends Module {
         }
 
         if (editLinker.getSelectedModule() != null) {
-            for (Selection s : selections.values()) {
-                s.hide();
-                s.show();
-            }
+            redrawSelection();
         }
     }
 
@@ -1534,6 +1538,9 @@ public class MainModule extends Module {
         }
         nsAuthoringApi.translateContent = function (nodePath, sourceLang, destLang, saveCallback) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::translateContent(*)(nodePath, sourceLang, destLang, saveCallback);
+        };
+        nsAuthoringApi.redrawSelection = function () {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::redrawSelection(*)();
         };
     }-*/;
 

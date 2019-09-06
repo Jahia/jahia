@@ -233,6 +233,10 @@ public class EditContentEngine extends AbstractContentEngine {
                     if (headerElement.getChild(i) instanceof Element) {
                         Element el = (Element) headerElement.getChild(i);
                         if (el.getClassName().contains("-header-text")) {
+                            String className = el.getClassName()
+                                    + (node.isMarkedForDeletion() ? " marked-for-deletion" : "")
+                                    + (node.isMarkedForDeletionRoot() ? " marked-for-deletion-root" : "");
+                            el.setClassName(className);
                             el.setAttribute("data-friendly-name", node.getDisplayName());
                             Boolean isLocked = node.isLocked() || node.getLockInfos() != null && !node.getLockInfos().isEmpty();
                             el.setAttribute("data-content-locked", isLocked.toString());

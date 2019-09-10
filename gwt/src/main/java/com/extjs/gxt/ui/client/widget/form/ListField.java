@@ -312,13 +312,12 @@ public class ListField<D extends ModelData> extends Field<D> implements Selectio
 
     protected void onSelectionChange(List<D> sel) {
         String prop = valueField != null ? valueField : listView.getDisplayProperty();
-        StringBuffer sb = new StringBuffer();
+        String s = "";
         for (D m : sel) {
-            sb.append(m.get(prop));
-            sb.append(",");
+            s += m.get(prop);
+            s += ",";
         }
-        String s = sb.toString();
-        if (sb.length() > 1) {
+        if (s.length() > 1) {
             s = s.substring(0, s.length() - 1);
         }
         input.setValue(s);

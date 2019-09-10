@@ -884,16 +884,20 @@ public class MainModule extends Module {
             // no query string available
             return;
         }
-
-        url.append(url.indexOf("?") == -1 ? '?' : '&');
-        boolean first = true;
+        String separator = url.indexOf("?") == -1 ? "?" : "&";
+        boolean addSeparator = true;
         for (String[] p : paramsToPreserve) {
-            if (!first) {
-                url.append('&');
-            } else {
-                first = false;
+            if (addSeparator) {
+                url.append(separator);
+                separator = "&";
             }
-            url.append(p[0]).append('=').append(URL.encodeQueryString(p[1]));
+            // do not append same parameter twice
+            if (!url.toString().contains("?" + p[0] + "=") && !url.toString().contains("&" + p[0] + "=")) {
+                url.append(p[0]).append('=').append(URL.encodeQueryString(p[1]));
+                addSeparator = true;
+            } else {
+                addSeparator = false;
+            }
         }
     }
 

@@ -3658,8 +3658,8 @@ var DX_app = {
                 } else if (DX_app.edit.sidepanel.data.pinned) {
                     // Edit Mode pinned
                     if (DX_app.data.V2) {
-                        mainFrameWidth = xPos - 15;
-                        mainFrameLeft = xPos + 25;
+                        mainFrameWidth = xPos + 6;
+                        mainFrameLeft = xPos + 45;
                     } else {
                         mainFrameWidth = xPos + 5;
                         mainFrameLeft = xPos + 10;

@@ -48,7 +48,6 @@ import org.jahia.bin.Login;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
@@ -58,7 +57,6 @@ import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 
-import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
@@ -124,92 +122,80 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
         final AuthValveContext authContext = (AuthValveContext) context;
         final HttpServletRequest httpServletRequest = authContext.getRequest();
 
-        boolean invokeNext = false;
-        try {
-            invokeNext = JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
-                JCRUserNode theUser = null;
-                boolean ok = false;
+        JCRUserNode theUser = null;
+        boolean ok = false;
 
-                if (isLoginRequested(httpServletRequest)) {
+        if (isLoginRequested(httpServletRequest)) {
 
-                    final String username = httpServletRequest.getParameter("username");
-                    final String password = httpServletRequest.getParameter("password");
-                    final String site = httpServletRequest.getParameter("site");
+            final String username = httpServletRequest.getParameter("username");
+            final String password = httpServletRequest.getParameter("password");
+            final String site = httpServletRequest.getParameter("site");
 
-                    if ((username != null) && (password != null)) {
-                        // Check if the user has site access ( even though it is not a user of this site )
-                        theUser = userManagerService.lookupUser(username, site, session);
-                        if (theUser != null) {
-                            if (theUser.verifyPassword(password)) {
-                                if (!theUser.isAccountLocked()) {
-                                    ok = true;
-                                } else {
-                                    logger.warn("Login failed: account for user {} is locked.", theUser.getName());
-                                    httpServletRequest.setAttribute(VALVE_RESULT, ACCOUNT_LOCKED);
-                                }
-                            } else {
-                                logger.warn("Login failed: password verification failed for user {}", theUser.getName());
-                                httpServletRequest.setAttribute(VALVE_RESULT, BAD_PASSWORD);
-                            }
+            if ((username != null) && (password != null)) {
+                // Check if the user has site access ( even though it is not a user of this site )
+                theUser = userManagerService.lookupUser(username, site);
+                if (theUser != null) {
+                    if (theUser.verifyPassword(password)) {
+                        if (!theUser.isAccountLocked()) {
+                            ok = true;
                         } else {
-                            logger.debug("Login failed. Unknown username {}", username);
-                            httpServletRequest.setAttribute(VALVE_RESULT, UNKNOWN_USER);
+                            logger.warn("Login failed: account for user {} is locked.", theUser.getName());
+                            httpServletRequest.setAttribute(VALVE_RESULT, ACCOUNT_LOCKED);
                         }
-                    }
-                }
-
-                if (ok) {
-
-                    logger.debug("User {} logged in.", theUser);
-
-                    // if there are any attributes to conserve between session, let's copy them into a map first
-                    Map<String, Object> savedSessionAttributes = preserveSessionAttributes(httpServletRequest);
-
-                    JahiaUser jahiaUser = theUser.getJahiaUser();
-
-                    if (httpServletRequest.getSession(false) != null) {
-                        httpServletRequest.getSession().invalidate();
-                    }
-
-                    // if there were saved session attributes, we restore them here.
-                    restoreSessionAttributes(httpServletRequest, savedSessionAttributes);
-
-                    httpServletRequest.setAttribute(VALVE_RESULT, OK);
-                    authContext.getSessionFactory().setCurrentUser(jahiaUser);
-
-                    // do a switch to the user's preferred language
-                    if (SettingsBean.getInstance().isConsiderPreferredLanguageAfterLogin()) {
-                        Locale preferredUserLocale = UserPreferencesHelper.getPreferredLocale(theUser, LanguageCodeConverters.resolveLocaleForGuest(httpServletRequest));
-                        httpServletRequest.getSession().setAttribute(Constants.SESSION_LOCALE, preferredUserLocale);
-                    }
-
-                    String useCookie = httpServletRequest.getParameter(USE_COOKIE);
-                    if (!SettingsBean.getInstance().isFullReadOnlyMode() && (useCookie != null) && ("on".equals(useCookie))) {
-                        // the user has indicated he wants to use cookie authentication
-                        CookieAuthValveImpl.createAndSendCookie(authContext, theUser, cookieAuthConfig);
-                    }
-
-                    enforcePasswordPolicy(theUser);
-
-                    // The following was deactivated for performance reasons. We should instead look at doing this with Camel
-                    // or some other asynchronous way.
-                    //theUser.setProperty(Constants.JCR_LASTLOGINDATE,
-                    //        String.valueOf(System.currentTimeMillis()));
-
-                    if (fireLoginEvent) {
-                        SpringContextSingleton.getInstance().publishEvent(new LoginEvent(this, jahiaUser, authContext));
+                    } else {
+                        logger.warn("Login failed: password verification failed for user {}", theUser.getName());
+                        httpServletRequest.setAttribute(VALVE_RESULT, BAD_PASSWORD);
                     }
                 } else {
-                    return true;
+                    logger.debug("Login failed. Unknown username {}", username);
+                    httpServletRequest.setAttribute(VALVE_RESULT, UNKNOWN_USER);
                 }
-
-                return false;
-            });
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
+            }
         }
 
-        if (invokeNext) {
+        if (ok) {
+
+            logger.debug("User {} logged in.", theUser);
+
+            // if there are any attributes to conserve between session, let's copy them into a map first
+            Map<String, Object> savedSessionAttributes = preserveSessionAttributes(httpServletRequest);
+
+            JahiaUser jahiaUser = theUser.getJahiaUser();
+
+            if (httpServletRequest.getSession(false) != null) {
+                httpServletRequest.getSession().invalidate();
+            }
+
+            // if there were saved session attributes, we restore them here.
+            restoreSessionAttributes(httpServletRequest, savedSessionAttributes);
+
+            httpServletRequest.setAttribute(VALVE_RESULT, OK);
+            authContext.getSessionFactory().setCurrentUser(jahiaUser);
+
+            // do a switch to the user's preferred language
+            if (SettingsBean.getInstance().isConsiderPreferredLanguageAfterLogin()) {
+                Locale preferredUserLocale = UserPreferencesHelper.getPreferredLocale(theUser, LanguageCodeConverters.resolveLocaleForGuest(httpServletRequest));
+                httpServletRequest.getSession().setAttribute(Constants.SESSION_LOCALE, preferredUserLocale);
+            }
+
+            String useCookie = httpServletRequest.getParameter(USE_COOKIE);
+            if (!SettingsBean.getInstance().isFullReadOnlyMode() && (useCookie != null) && ("on".equals(useCookie))) {
+                // the user has indicated he wants to use cookie authentication
+                CookieAuthValveImpl.createAndSendCookie(authContext, theUser, cookieAuthConfig);
+            }
+
+            enforcePasswordPolicy(theUser);
+
+            // The following was deactivated for performance reasons. We should instead look at doing this with Camel
+            // or some other asynchronous way.
+            //theUser.setProperty(Constants.JCR_LASTLOGINDATE,
+            //        String.valueOf(System.currentTimeMillis()));
+
+            if (fireLoginEvent) {
+                SpringContextSingleton.getInstance().publishEvent(new LoginEvent(this, jahiaUser, authContext));
+            }
+
+        } else {
             valveContext.invokeNext(context);
         }
     }

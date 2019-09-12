@@ -3509,6 +3509,10 @@ body[data-indigo-gwt-side-panel="open"] {
 			.x-tree3-node-text {
 				color: _theme-color(primary)!important;
 			}
+
+			.markedForDeletion {
+				color:_theme-color(primary)!important;
+			}
 		}
 
 		&.x-grid3-row-selected.x-grid3-row-over {

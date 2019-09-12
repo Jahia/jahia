@@ -1758,6 +1758,7 @@ body[indigo-dragging-panel="true"] {
 						padding: 0 0 0 30px;
 						width: calc(100% - 50px);
 						height: 30px;
+						pointer-events: none;
 
 						// Icon - dont need
 						img {
@@ -1775,6 +1776,7 @@ body[indigo-dragging-panel="true"] {
 							background-size: 16px 13px;
 							z-index: 999999!important;
 							opacity: 0.8;
+							pointer-events: auto;
 
 							&:hover {
 								opacity: 1;

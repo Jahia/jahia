@@ -101,12 +101,13 @@
 
             &::before {
                 content: attr(data-indigo-switch-label);
-                position: absolute;
                 font-family: Nunito Sans;
                 font-size: 15px;
                 font-weight: 300;
                 top: -1px;
                 color: #6b7074;
+                width: calc(100% - 56px);
+                display: block;
             }
 
             .indigo-switch--shuttle {
@@ -115,9 +116,10 @@
                 background: #F1F1F1;
                 border-radius: 20px;
                 margin-left: -1px;
-                position: relative;
+                position: absolute;
                 z-index: 99;
                 left: 230px;
+                top: 0px;
 
                 box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4);
 

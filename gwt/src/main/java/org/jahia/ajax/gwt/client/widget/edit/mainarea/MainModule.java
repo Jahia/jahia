@@ -274,6 +274,10 @@ public class MainModule extends Module {
         }
         if (location == null) {
             location = Window.Location.getPath();
+            String queryString = Window.Location.getQueryString();
+            if (queryString != null && !queryString.equals("")) {
+                location += queryString;
+            }
         }
         if (location.contains("://")) {
             location = location.substring(location.indexOf("://") + 3);
@@ -288,14 +292,9 @@ public class MainModule extends Module {
             location = location.replaceFirst(start + "frame/", config.getDefaultUrlMapping() + "frame/");
         }
 
-        StringBuilder url = new StringBuilder(64);
-        url.append(URL.decode(location));
-        appendQueryString(url);
-        location = url.toString();
-
         resetFramePosition();
 
-        goToUrl(location, true, true, true);
+        goToUrl(URL.decode(location), true, true, true);
 
 //        scrollContainer.sinkEvents();
 
@@ -943,7 +942,7 @@ public class MainModule extends Module {
         if (supportPushState()) {
             if (!path.endsWith("##")) {
                 String pathWithoutFrame = path.replaceFirst("frame/", "/");
-                if (Window.Location.getQueryString().contains("gwt.codesvr")) {
+                if (Window.Location.getQueryString().contains("gwt.codesvr") && !pathWithoutFrame.contains("gwt.codesvr")) {
                     Map<String, String> m = getParamsFromUrl(Window.Location.getQueryString());
                     pathWithoutFrame += (pathWithoutFrame.contains("?") ? '&' : '?') + "gwt.codesvr=" + m.get("gwt.codesvr");
                 }

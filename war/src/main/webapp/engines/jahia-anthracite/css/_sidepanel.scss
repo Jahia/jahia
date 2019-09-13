@@ -96,6 +96,21 @@ body[indigo-dragging-panel] {
 					color: #363636;
 					padding: 0 17px 0 0 !important;
 					font-size: 14px;
+
+					&:hover {
+						background-color: white;
+					}
+
+					&.x-form-focus {
+						background-color: white;
+						box-shadow: inset 0.5px 0.5px 0px #7c7c7c, inset -0.5px -0.5px 0px #7c7c7c, inset 1px 1px 1px rgba(0, 0, 0, 0.2);
+						padding-left: 3px!important;
+						color: black;
+
+						& + img {
+							background-image: url(../images/expanded-black.png)!important;
+						}
+					}
 				}
 
 				img {
@@ -150,11 +165,28 @@ body[indigo-dragging-panel] {
 			    font-size: 14px;
 			    padding: 0 17px 0 0 !important;
 			    box-shadow: none;
+
+				&:hover {
+					background-color: rgba(255, 255, 255, 0.04);
+				}
+
+				&.x-form-focus {
+					background-color: white;
+					box-shadow: inset 0.5px 0.5px 0px black, inset -0.5px -0.5px 0px black, inset 1px 1px 1px rgba(0, 0, 0, 0.5);
+					padding-left: 3px!important;
+					color: black;
+
+					& + img {
+						background-image: url(../images/expanded-black.png)!important;
+					}
+				}
+
+
 			}
 
 			img {
 				width: 15px !important;
-			    background: url(../images/expanded-white.png) no-repeat left center transparent !important;
+				background: url(../images/expanded-white.png) no-repeat left center transparent !important;
 			    background-size: 14px !important;
 			}
 		}

@@ -673,7 +673,7 @@
 
 	/* List item when normal Combo */
 	.x-combo-list-item {
-		border:none;
+		border:none!important;
 		display: block;
 		text-align: left!important;
         background: _property($MENU-OPENED--BG, $type);

@@ -3500,11 +3500,6 @@ var DX_app = {
                     opened: false
                 }
             },
-            /**
-             * Callback executed when the side panel is resized
-             * @param xPos
-             * @returns {boolean}
-             */
             browseTree: {
                 onEmpty: function () {
                     // Hide Edit Mode > Side Panel > [Category | Content] > Drawer if nothing to display
@@ -3596,6 +3591,79 @@ var DX_app = {
 
                 }
             },
+			siteSelector: {
+				/**
+	             * Removes focus from the site selector
+	             */
+				blur: function(){
+				   setTimeout(function(){
+					   DexV2(".edit-menu-sites").trigger("mousedown").trigger("mouseup");
+				   }, 50);
+			   },
+			   /**
+				* Callback executed when the user clicks on the Site Selector text input field
+				*/
+				onClick: function(){
+					// This opens the drop down menu when the user clicks on the text input
+					var arrowButton = this.nextElementSibling;
+
+					DexV2.node(arrowButton).trigger('click');
+				},
+				/**
+	             * Callback executed after the user presses a key (onKeyUp)
+				 * - Detects up and down arrow keys (navigates through the menu items)
+				 * - Detects Enter key (will trigger click the menu item that matches text in the input field)
+	             */
+				onKeyUp: function(e){
+				   var textInput = this,
+					   skip = function(direction){
+						   var currentEntry = DexV2('.menu-edit-menu-sites .x-combo-list-item.x-view-highlightrow').nodes[0],
+							   skipTo = (direction === 'up') ? currentEntry.previousElementSibling : currentEntry.nextElementSibling,
+							   skipToValue = (skipTo) ? skipTo.innerHTML : null;
+
+						   if(skipToValue){
+							   DexV2.node(currentEntry).removeClass('x-view-highlightrow');
+							   DexV2.node(skipTo).addClass('x-view-highlightrow');
+							   textInput.value = skipToValue;
+							   DX_app.common.resizeSiteSelector();
+						   }
+					   };
+
+				   switch(e.keyCode){
+					   // UP Arrow
+					   case 38:
+						   skip('up');
+						   break;
+
+					   // DOWN Arrow
+					   case 40:
+						   skip('down');
+						   break;
+
+					   // ENTER Key
+					   case 13:
+						   var dropDownEntries = DexV2('.menu-edit-menu-sites .x-combo-list-item'),
+						   siteName = e.target.value;
+
+						   // Loop through entries to find the predicted site name and click it
+						   dropDownEntries.each(function(){
+						   if(this.innerHTML === siteName){
+							   // GWT fires on the MouseDown / MouseUp events and not Click event
+							   DexV2.node(this)
+								   .trigger('mousedown')
+								   .trigger('mouseup');
+							   }
+						   });
+						   break;
+				   }
+
+				}
+			},
+			/**
+             * Callback executed when the side panel is resized
+             * @param xPos
+             * @returns {boolean}
+             */
             resizeSidePanel: function (xPos) {
                 DX_app.dev.log('APP ::: SIDEPANEL ::: RESIZESIDEPANEL (' + xPos + ')');
 

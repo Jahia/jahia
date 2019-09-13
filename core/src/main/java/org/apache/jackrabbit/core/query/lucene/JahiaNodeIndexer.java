@@ -45,6 +45,7 @@ package org.apache.jackrabbit.core.query.lucene;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.jackrabbit.core.HierarchyManager;
 import org.apache.jackrabbit.core.id.ItemId;
 import org.apache.jackrabbit.core.id.NodeId;
@@ -657,10 +658,8 @@ public class JahiaNodeIndexer extends NodeIndexer {
 
     @Override
     public Document createDoc() throws RepositoryException {
-        // Clean up nodestate before starting indexing, as ISM cache may contain removed entries
-        cleanupNodeProperties();
-
-        Document doc = super.createDoc();
+        Document doc = createDocIgnoringMissingLockProperties();
+        
         if (isAddAclUuidInIndex() && isIndexed(J_ACL)) {
             addAclUuid(doc);
         }
@@ -715,6 +714,21 @@ public class JahiaNodeIndexer extends NodeIndexer {
         }
     }
 
+    private Document createDocIgnoringMissingLockProperties() throws RepositoryException {
+        try {
+            return super.createDoc();
+        } catch (RepositoryException e) {
+            Throwable rootCause = ExceptionUtils.getRootCause(e);
+            if (rootCause instanceof NoSuchItemStateException && rootCause.getMessage().contains("lock")) {
+                // Clean up nodestate before starting indexing, as ISM cache may contain removed entries
+                cleanupNodeProperties();
+                return super.createDoc();
+            } else {
+                throw e;
+            }
+        }
+    }
+    
     private void cleanupNodeProperties() {
         Set<Name> props = node.getPropertyNames();
         Set<Name> toRemove = null;

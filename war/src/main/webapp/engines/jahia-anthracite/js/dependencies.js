@@ -1118,10 +1118,22 @@ if (!Element.prototype.matches) {
          * @param event_id
          * @returns {Dex.fn.init}
          */
-        onClick: function (target, callback, event_id) {
-            createEventListener(this, 'click', this.selector, target, callback, true, event_id);
-            return this;
-        },
+		 onClick: function (target, callback, event_id) {
+             createEventListener(this, 'click', this.selector, target, callback, true, event_id);
+             return this;
+         },
+		 onKeyDown: function (target, callback, event_id) {
+             createEventListener(this, 'keydown', this.selector, target, callback, true, event_id);
+             return this;
+         },
+		 onKeyUp: function (target, callback, event_id) {
+             createEventListener(this, 'keyup', this.selector, target, callback, true, event_id);
+             return this;
+         },
+		 onKeyPress: function (target, callback, event_id) {
+             createEventListener(this, 'keypress', this.selector, target, callback, true, event_id);
+             return this;
+         },
         /**
          * Callback executed when the target is clicked
          *  - The callback is removed after it is executed (non-persitant)

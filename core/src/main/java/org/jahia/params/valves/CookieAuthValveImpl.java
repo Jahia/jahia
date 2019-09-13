@@ -49,6 +49,7 @@ import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
@@ -166,8 +167,12 @@ public class CookieAuthValveImpl extends BaseAuthValve {
         String cookieUserKey = CookieAuthValveImpl.getAvailableCookieKey(cookieAuthConfig);
         // let's save the identifier for the user in the database
         try {
-            theUser.setProperty(cookieAuthConfig.getUserPropertyName(), cookieUserKey);
-            theUser.getSession().save();
+            JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
+                JCRUserNode innerUserNode = (JCRUserNode) session.getNode(theUser.getPath());
+                innerUserNode.setProperty(cookieAuthConfig.getUserPropertyName(), cookieUserKey);
+                session.save();
+                return null;
+            });
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

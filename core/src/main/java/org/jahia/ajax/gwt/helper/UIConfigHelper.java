@@ -53,7 +53,6 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageAware;
-import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -76,7 +75,6 @@ import org.jahia.services.uicomponents.bean.toolbar.Property;
 import org.jahia.services.uicomponents.bean.toolbar.Toolbar;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.Url;
 import org.jahia.utils.WebUtils;
 import org.jahia.utils.i18n.Messages;
@@ -85,10 +83,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 
 import javax.jcr.RepositoryException;
-import javax.script.*;
 import javax.servlet.http.HttpServletRequest;
-import java.io.StringWriter;
 import java.util.*;
+
+import static org.jahia.utils.i18n.ResourceBundles.getResources;
 
 /**
  * Utility class for populating GWT UI configuration data.
@@ -103,8 +101,6 @@ public class UIConfigHelper {
     private LanguageHelper languages;
     private NavigationHelper navigation;
     private ChannelHelper channelHelper;
-
-    private ScriptEngineUtils scriptEngineUtils;
 
     public void setNavigation(NavigationHelper navigation) {
         this.navigation = navigation;
@@ -853,55 +849,6 @@ public class UIConfigHelper {
         return gwtTab;
     }
 
-    /**
-     * Get resources
-     *
-     * @param key
-     * @param locale
-     * @param site
-     * @param jahiaUser
-     * @return
-     */
-    private String getResources(String key, Locale locale, JCRSiteNode site, JahiaUser jahiaUser) {
-        if (key == null || key.length() == 0) {
-            return key;
-        }
-        logger.debug("Resources key: {}", key);
-        String baseName = null;
-        String value = null;
-        if (key.contains("@")) {
-            baseName = StringUtils.substringAfter(key, "@");
-            key = StringUtils.substringBefore(key, "@");
-        }
-
-        value = Messages.get(baseName, site != null ? site.getTemplatePackage() : null, key, locale, null);
-        if (value == null || value.length() == 0) {
-            value = Messages.getInternal(key, locale);
-        }
-        logger.debug("Resources value: {}", value);
-        if (value.contains("${")) {
-            try {
-                ScriptEngine scriptEngine = scriptEngineUtils.getEngineByName("velocity");
-                ScriptContext scriptContext = new SimpleScriptContext();
-                final Bindings bindings = new SimpleBindings();
-                bindings.put("currentSite", site);
-                bindings.put("currentUser", jahiaUser);
-                bindings.put("currentLocale", locale);
-                bindings.put("PrincipalViewHelper", PrincipalViewHelper.class);
-                scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
-                scriptContext.setBindings(scriptEngine.getContext().getBindings(ScriptContext.GLOBAL_SCOPE), ScriptContext.GLOBAL_SCOPE);
-                scriptContext.setWriter(new StringWriter());
-                scriptContext.setErrorWriter(new StringWriter());
-                scriptEngine.eval(value, scriptContext);
-                //String error = scriptContext.getErrorWriter().toString();
-                return scriptContext.getWriter().toString().trim();
-            } catch (ScriptException e) {
-                logger.error("Error while executing script [" + value + "]", e);
-            }
-        }
-        return value;
-    }
-
     private Object getThemedConfiguration(String name, HttpServletRequest request) {
         Object config = SpringContextSingleton.getBean(name);
         String theme = WebUtils.getUITheme(request);
@@ -917,10 +864,5 @@ public class UIConfigHelper {
 
     private boolean checkVisibility(JCRNodeWrapper contextNode, JahiaUser jahiaUser, Locale locale, HttpServletRequest request, Visibility visibility) {
         return visibility == null || visibility.getRealValue(contextNode, jahiaUser, locale, request);
-    }
-
-
-    public void setScriptEngineUtils(ScriptEngineUtils scriptEngineUtils) {
-        this.scriptEngineUtils = scriptEngineUtils;
     }
 }

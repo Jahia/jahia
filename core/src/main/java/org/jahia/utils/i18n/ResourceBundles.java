@@ -43,13 +43,20 @@
  */
 package org.jahia.utils.i18n;
 
-import java.lang.reflect.Field;
-import java.util.*;
-
+import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.utils.ScriptEngineUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.script.*;
+import java.io.StringWriter;
+import java.lang.reflect.Field;
+import java.util.*;
 
 /**
  * Jahia resource bundle utility class.
@@ -161,6 +168,55 @@ public final class ResourceBundles {
      */
     public static ResourceBundle getInternal(Locale locale) {
         return get(JAHIA_INTERNAL_RESOURCES, locale);
+    }
+
+    /**
+     * Find resource bundle value regarding the key, locale and site for a given Jahia user.
+     *
+     * @param key to lookup
+     * @param locale to use
+     * @param site to look at
+     * @param jahiaUser to use
+     * @return resolved resource bundle value.
+     */
+    public static String getResources(String key, Locale locale, JCRSiteNode site, JahiaUser jahiaUser) {
+        if (key == null || key.length() == 0) {
+            return key;
+        }
+        logger.debug("Resources key: {}", key);
+        String baseName = null;
+        String value = null;
+        if (key.contains("@")) {
+            baseName = StringUtils.substringAfter(key, "@");
+            key = StringUtils.substringBefore(key, "@");
+        }
+
+        value = Messages.get(baseName, site != null ? site.getTemplatePackage() : null, key, locale, null);
+        if (value == null || value.length() == 0) {
+            value = Messages.getInternal(key, locale);
+        }
+        logger.debug("Resources value: {}", value);
+        if (value.contains("${")) {
+            try {
+                ScriptEngine scriptEngine = ScriptEngineUtils.getInstance().getEngineByName("velocity");
+                ScriptContext scriptContext = new SimpleScriptContext();
+                final Bindings bindings = new SimpleBindings();
+                bindings.put("currentSite", site);
+                bindings.put("currentUser", jahiaUser);
+                bindings.put("currentLocale", locale);
+                bindings.put("PrincipalViewHelper", PrincipalViewHelper.class);
+                scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
+                scriptContext.setBindings(scriptEngine.getContext().getBindings(ScriptContext.GLOBAL_SCOPE), ScriptContext.GLOBAL_SCOPE);
+                scriptContext.setWriter(new StringWriter());
+                scriptContext.setErrorWriter(new StringWriter());
+                scriptEngine.eval(value, scriptContext);
+                //String error = scriptContext.getErrorWriter().toString();
+                return scriptContext.getWriter().toString().trim();
+            } catch (ScriptException e) {
+                logger.error("Error while executing script [" + value + "]", e);
+            }
+        }
+        return value;
     }
 
     private ResourceBundles() {

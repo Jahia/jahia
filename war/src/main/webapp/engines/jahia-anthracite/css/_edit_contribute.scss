@@ -460,7 +460,7 @@ body[data-indigo-app="contribute"] {
 		}
 
 		body[data-V2="true"][data-indigo-sidepanel-pinned="true"] & {
-		    background: transparent!important;
+		    background: linear-gradient(to right, rgba(78, 81, 86, 0) 50%, #4e5156 100%) !important;
 		}
 
     body[data-sitesettings="true"][data-V2="true"] & {
@@ -491,9 +491,6 @@ body[data-indigo-app="contribute"] {
 			}
 		}
 
-		body[data-V2="true"][data-INDIGO-SIDEPANEL-PINNED="true"] & {
-			top: 19px;
-		}
 	}
 
     // Need more CSS specificity to over ride GWT
@@ -613,10 +610,6 @@ body[data-indigo-app="contribute"] {
                     margin-bottom: 0;
                 }
                 @extend %CSS_BLOCK--TOOL_BUTTON;
-
-                body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"] & {
-                    color: #363636;
-                }
             }
         }
 
@@ -667,16 +660,6 @@ body[data-indigo-app="contribute"] {
     height: 20px;
     background: url(../images/icon-more-options-white@X2.png) no-repeat center center;
     background-size: 10px 2px;
-
-	body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"] & {
-        background-image: url(../images/icon-more-options-dark@X2.png);
-    }
-
-	body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-V2="true"] & {
-        background-image: url(../images/more-options-dark.svg);
-    }
-
-
 
     body[data-multiselect="on"] & {
         top: 29px!important;
@@ -767,9 +750,7 @@ body[data-indigo-app="contribute"] {
 
 
 	body[data-V2="true"][data-INDIGO-SIDEPANEL-PINNED="true"] & {
-		top: 31px;
-        background: url(../images/icons_light/refresh.svg) no-repeat center #5c6164;
-        background-size: 19px;
+		top: 42px;
 	}
 
 	body[data-multiselect="on"] & {
@@ -792,10 +773,6 @@ body[data-indigo-app="contribute"] {
     display: block;
     opacity: 1;
     margin-bottom: 0!important;
-
-    body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"] & {
-        background-image: url(../images/icons_grey/visibility.svg);
-    }
 
     body[data-multiselect="on"] & {
         top: 29px !important;
@@ -839,12 +816,6 @@ body[data-indigo-app="contribute"] {
 	    background-color: #696d72;
 	}
 
-
-	body[data-V2="true"][data-INDIGO-SIDEPANEL-PINNED="true"] & {
-		background-image: url(../images/expanded-black.png);
-	}
-
-
 }
 
 .toolbar-item-preview.action-bar-tool-item {
@@ -880,15 +851,6 @@ body[data-indigo-app="contribute"] {
 
 	}
 
-	body[data-V2="true"][data-INDIGO-SIDEPANEL-PINNED="true"] & {
-		background-image: url(../images/icons_grey/visibility.svg);
-
-		&::before {
-			color: #363636;
-		}
-
-	}
-
 	body[data-V2="true"] .hover-preview-advanced & {
 		background-color: rgba(245, 245, 245, 0.0784);
 	}
@@ -908,10 +870,6 @@ body[data-indigo-app="contribute"] {
     background: url(../images/icons_light/status.svg) no-repeat top 3px center;
     background-size: 23px 23px;
     margin-top: 50px;
-
-    body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"] & {
-        background-image: url(../images/icons_grey/status.svg)
-    }
 
     &::after {
         content: $text_status;
@@ -952,16 +910,6 @@ body[data-indigo-app="contribute"] {
 			top: 3px;
 			position: relative;
 		}
-	}
-
-	// body[data-V2="true"][data-INDIGO-SIDEPANEL-PINNED="true"] & {
-	// 	background-image: url(../images/icons_grey/cache.svg);
-	// 		&::after {
-	// 			display: none;
-	// 		}
-	// }
-	body[data-V2="true"][data-INDIGO-SIDEPANEL-PINNED="true"] & {
-		background-image: url(../images/icons_grey/cache.svg), url(../images/expanded-black.png);
 	}
 }
 
@@ -1016,7 +964,7 @@ body[data-indigo-app="contribute"] {
     box-shadow: none;
 
     body[data-indigo-sidepanel-pinned="true"] & {
-        top: 33px;
+        top: 43px;
     }
 
     &[data-publication-status="conflict"] {
@@ -1364,10 +1312,6 @@ div.x-jahia-root {
 	    border-radius: 0 2px 2px 0;
 	    background-color: #696d72;
 	}
-
-	body[data-V2="true"][data-INDIGO-SIDEPANEL-PINNED="true"] & {
-		background-image: url(../images/expanded-black.png);
-	}
 }
 
 .toolbar-item-publishone.action-bar-tool-item {
@@ -1416,15 +1360,6 @@ div.x-jahia-root {
 		&::after {
 			content: $text_context_menu_publication_selection;
 		}
-	}
-
-	body[data-V2="true"][data-INDIGO-SIDEPANEL-PINNED="true"] & {
-		background-image: url(../images/tabs-publish-dark-2@X2.png);
-
-		&::after {
-			color: #363636;
-		}
-
 	}
 }
 
@@ -1805,8 +1740,8 @@ div.x-jahia-root {
     body[data-multiselect="on"][data-V2="true"][data-indigo-sidepanel-pinned="true"] & {
 
         position: absolute;
-        top: 8px !important;
-        right: -30px;
+        top: 30px !important;
+        right: -23px;
         left: auto !important;
         background-color: transparent !important;
         background-position: left 3px top 2px;
@@ -1904,6 +1839,7 @@ div.x-jahia-root {
 	body[data-V2="true"][data-INDIGO-SIDEPANEL-PINNED="true"] & {
 	    left: 10px!important;
         clip: unset;
+        top: 10px!important;
 	}
 
     body[data-multiselect="on"][data-V2="true"] & {
@@ -1913,9 +1849,7 @@ div.x-jahia-root {
 	}
 
     body[data-multiselect="on"][data-V2="true"][data-INDIGO-SIDEPANEL-PINNED="true"] & {
-		background-image: url(../images/icons/multiple_selection-grey@2x.png);
-        top: -25px!important;
-        left: 3px!important;
+        top: 3px!important;
 	}
 
     body[data-V2="true"] & {
@@ -1933,10 +1867,6 @@ div.x-jahia-root {
         max-width: 32vw;
         overflow: hidden;
         text-overflow: ellipsis;
-
-        body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"] & {
-            color: #363636;
-        }
 
 		body[data-V2="true"] & {
 			font-size: 25.2px;
@@ -2511,11 +2441,6 @@ div[role="combobox"].toolbar-itemsgroup-languageswitcher {
 
 .x-jahia-root:not(.x-viewport-contributemode) .mainmodule > div:nth-child(2) {
 
-    body[data-INDIGO-SIDEPANEL-PINNED="true"] & {
-        left: 370px !important;
-        width: calc(100% - 365px) !important;
-    }
-
     body[data-sitesettings="true"] & {
         left: 360px !important;
         width: calc(100% - 292px) !important;
@@ -2557,11 +2482,6 @@ div[role="combobox"].toolbar-itemsgroup-languageswitcher {
 		body[data-V2="true"] & {
 			left: 94px!important;
 			width: calc(100% - 55px) !important;
-		}
-
-		body[data-V2="true"][data-indigo-sidepanel-pinned="true"] & {
-			top:-45px !important;
-			height: calc(100% + 33px) !important;
 		}
 
         body[indigo-dragging-panel="true"] &,

@@ -452,8 +452,27 @@ var DX_app = {
 
             if (!DexV2.class('publication-status').exists()) {
                 // Create div for publication status of page / slected element because currently it is a pseudo element and we cant reposition when in pinned mode
-                var publicationStatus = document.createElement('div');
-                var status = (DX_app.iframe.data.publication && DX_app.iframe.data.publication.status) ? DX_app.iframe.data.publication.status : 'unknown';
+                var publicationStatus = document.createElement('div'),
+                    publicationStatusTooltip = document.createElement('div'),
+                    publicationStatusLabel = document.createElement('label'),
+                    publicationStatusPath = document.createElement('p'),
+
+                    status = (DX_app.iframe.data.publication && DX_app.iframe.data.publication.status) ? jahia_gwt_messages["label_publication_" + DX_app.iframe.data.publication.status] : 'unknown',
+                    path = jahiaGWTParameters[jahiaGWTParameters.lang];
+
+                publicationStatusLabel.setAttribute("data-label", jahia_gwt_messages.label_publication_status + ": ");
+                publicationStatusLabel.innerHTML = status;
+                publicationStatusLabel.classList.add('publication-status-label');
+
+                publicationStatusPath.setAttribute("data-label", jahia_gwt_messages.label_path + ": ");
+                publicationStatusPath.innerHTML = path;
+                publicationStatusPath.classList.add('publication-status-path');
+
+                publicationStatusTooltip.classList.add('publication-status-tooltip');
+                publicationStatusTooltip.appendChild(publicationStatusLabel);
+                publicationStatusTooltip.appendChild(publicationStatusPath);
+
+                publicationStatus.appendChild(publicationStatusTooltip);
                 publicationStatus.classList.add('publication-status');
                 publicationStatus.setAttribute('data-publication-status', status);
                 DexV2.getCached('body').prepend(publicationStatus);
@@ -2973,6 +2992,12 @@ var DX_app = {
             }, 100);
         },
         /**
+        * Toggle the tooltip for page info when the user hovers the page title
+        */
+        togglePageInfoToolTip: function(){
+          DexV2.class("publication-status-tooltip").toggleClass("indigo-show");
+        },
+        /**
          * Resize the width of the language selector when site is changed
          */
         resizeLanguageInput: function () {
@@ -3480,6 +3505,8 @@ var DX_app = {
                         elements.publishButton.setAttribute('data-publication-status', DX_app.iframe.data.publication.status);
 
                         if (DexV2.class('publication-status').exists()) {
+                            DexV2.class("publication-status-path").setHTML(DexV2.getCached('body').getAttribute('data-main-node-path'));
+                            DexV2.class("publication-status-label").setHTML(jahia_gwt_messages["label_publication_" + DX_app.iframe.data.publication.status]);
                             DexV2.class('publication-status').setAttribute('data-publication-status', DX_app.iframe.data.publication.status);
                         }
                     } else {
@@ -4713,6 +4740,8 @@ var DX_app = {
                     elements.publishButton.setAttribute('data-publication-status', DX_app.iframe.data.publication.status);
 
                     if (DexV2.class('publication-status').exists()) {
+                        DexV2.class("publication-status-path").setHTML(DexV2.getCached('body').getAttribute('data-main-node-path'));
+                        DexV2.class("publication-status-label").setHTML(jahia_gwt_messages["label_publication_" + DX_app.iframe.data.publication.status]);
                         DexV2.class('publication-status').setAttribute('data-publication-status', DX_app.iframe.data.publication.status);
                     }
                 }

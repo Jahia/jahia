@@ -7,27 +7,21 @@ var DX_eventListeners = {
     attach: function () {
         var app = DX_app;
         DexV2('body')
-
-			/**
-			 * Target: Edit Mode > Site Selector > Drop Down > Menu Item
-			 * Callback: => app.edit.sidepanel.siteSelector.blur
-			 */
-			 .onMouseDown('.menu-edit-menu-sites .x-combo-list-item', app.edit.sidepanel.siteSelector.blur)
-			 /**
- 			 * Target: Edit Mode > Site Selector > Text Input
- 			 * Callback: => app.edit.sidepanel.siteSelector.onKeyUp
- 			 */
-			 .onKeyUp('.edit-menu-sites input.x-form-field', app.edit.sidepanel.siteSelector.onKeyUp)
-			 /**
- 			 * Target: Edit Mode > Site Selector > Text Input
- 			 * Callback: => app.edit.sidepanel.siteSelector.onClick
- 			 */
-			 .onClick('.edit-menu-sites input.x-form-field', app.edit.sidepanel.siteSelector.onClick)
-			 /**
- 	         * Target: Dialog
- 	         * Callback: => app.dialog.onOpen
- 	         */
-			 .onOpen('.x-window-plain.x-window-dlg', app.dialog.onOpen)
+        /**
+         * Target: Edit Mode > Page Name
+         * Callback: => app.edit.togglePageInfoToolTip
+         */
+        .onMouseOver(".x-current-page-path", app.edit.togglePageInfoToolTip)
+        /**
+         * Target: Edit Mode > Page Name
+         * Callback: => app.edit.togglePageInfoToolTip
+         */
+        .onMouseOut(".x-current-page-path", app.edit.togglePageInfoToolTip)
+        /**
+         * Target: Dialog
+         * Callback: => app.dialog.onOpen
+         */
+            .onOpen('.x-window-plain.x-window-dlg', app.dialog.onOpen)
             /**
              * Target: Admin > Side Panel > System Site Settings Label
              * Callback: => app.admin.sidepanel.toggleSiteSettingsMenu

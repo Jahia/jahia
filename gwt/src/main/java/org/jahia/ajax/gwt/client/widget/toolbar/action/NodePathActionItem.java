@@ -90,7 +90,6 @@ public class NodePathActionItem extends BaseActionItem {
             container.getElement().setAttribute("data-nodedisplayname", node.getDisplayName());
             container.getElement().setAttribute("data-nodepath", node.getPath());
         }
-        container.setToolTip(path);
         if (linker instanceof EditLinker) {
             MainModule mainModule = ((EditLinker) linker).getMainModule();
             HTML overlayLabel = mainModule.getOverlayLabel();

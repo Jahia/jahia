@@ -118,7 +118,7 @@ public class JahiaClusterNode extends ClusterNode {
             if (revisionFile != null) {
                 InstanceRevision currentFileRevision = null;
                 try {
-                    currentFileRevision = new FileRevision(new File(revisionFile));
+                    currentFileRevision = new FileRevision(new File(revisionFile), true);
                     long rev = getRevision();
                     currentFileRevision.set(rev);
                     log.info("Written local revision {} into revision file", rev);

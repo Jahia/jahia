@@ -51,7 +51,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.CharUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.SessionImpl;
-import org.apache.jackrabbit.core.data.GarbageCollector;
+import org.apache.jackrabbit.core.gc.GarbageCollector;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.jackrabbit.util.Text;
 import org.jahia.api.Constants;

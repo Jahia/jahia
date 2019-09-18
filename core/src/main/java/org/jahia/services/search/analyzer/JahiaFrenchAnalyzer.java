@@ -41,7 +41,7 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package  org.jahia.services.search.analyzer;
+package org.jahia.services.search.analyzer;
 
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -72,6 +72,7 @@ import org.apache.lucene.analysis.fr.FrenchStemFilter;
 import org.apache.lucene.analysis.standard.StandardFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;  // for javadoc
+import org.apache.lucene.util.IOUtils;
 import org.apache.lucene.util.Version;
 
 import java.io.File;
@@ -134,7 +135,7 @@ public final class JahiaFrenchAnalyzer extends Analyzer {
     }
 
     /**
-     * Builds an analyzer with the default stop words ({@link #FRENCH_STOP_WORDS}).
+     * Builds an analyzer with the default stop words ({@link org.apache.lucene.analysis.fr.FrenchAnalyzer#FRENCH_STOP_WORDS}).
      */
     public JahiaFrenchAnalyzer(Version matchVersion) {
         this(matchVersion, DefaultSetHolder.DEFAULT_STOP_SET);
@@ -185,7 +186,7 @@ public final class JahiaFrenchAnalyzer extends Analyzer {
      * @deprecated use {@link #JahiaFrenchAnalyzer(Version, Set)} instead
      */
     public JahiaFrenchAnalyzer(Version matchVersion, File stopwords) throws IOException {
-        this(matchVersion, WordlistLoader.getWordSet(stopwords));
+        this(matchVersion, WordlistLoader.getWordSet(IOUtils.getDecodingReader(stopwords, IOUtils.CHARSET_UTF_8), matchVersion));
     }
 
     /**
@@ -212,7 +213,9 @@ public final class JahiaFrenchAnalyzer extends Analyzer {
      * @deprecated use {@link #JahiaFrenchAnalyzer(Version, Set, Set)} instead
      */
     public void setStemExclusionTable(File exclusionlist) throws IOException {
-        excltable = new HashSet(WordlistLoader.getWordSet(exclusionlist));
+        excltable = new HashSet(WordlistLoader.getWordSet(
+                IOUtils.getDecodingReader(exclusionlist, IOUtils.CHARSET_UTF_8), matchVersion)
+        );
         setPreviousTokenStream(null); // force a new stemmer to be created
     }
 

@@ -54,12 +54,15 @@ import org.apache.lucene.search.*;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.store.AlreadyClosedException;
 import org.apache.lucene.store.Directory;
+import org.apache.lucene.util.BytesRef;
+import org.apache.lucene.util.BytesRefIterator;
 import org.jahia.utils.LuceneUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.*;
+
 /**
  * <p>
  *   Jahia Spell Checker class  (Main class) <br/>
@@ -484,9 +487,10 @@ public class JahiaExtendedSpellChecker implements java.io.Closeable {
             writer.setMergeFactor(mergeFactor);
             writer.setRAMBufferSizeMB(ramMB);
 
-            Iterator<?> iter = dict.getWordsIterator();
-            while (iter.hasNext()) {
-                String word = (String) iter.next();
+            BytesRefIterator iter = dict.getWordsIterator();
+            BytesRef spare;
+            while ((spare = iter.next()) != null) {
+                String word = spare.utf8ToString();
 
                 int len = word.length();
                 if (len < 3) {

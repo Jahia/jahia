@@ -167,9 +167,13 @@ public class PublicationManagerEngine extends Window {
         add(m_tree);
         ButtonBar buttonBar = new ButtonBar();
         buttonBar.setAlignment(Style.HorizontalAlignment.CENTER);
+
         Button button = new Button(Messages.get("label.publish", "Publish"));
         button.addStyleName("button-publish");
         buttonBar.add(button);
+        Button cancelButton = new Button(Messages.get("label.cancel", "Cancel"));
+        cancelButton.addStyleName("button-cancel");
+        buttonBar.add(cancelButton);
         setBottomComponent(buttonBar);
 
         m_tree.mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
@@ -181,6 +185,11 @@ public class PublicationManagerEngine extends Window {
         });
         loader.load();
 
+        cancelButton.addListener(Events.Select, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent ce) {
+                hide();
+            }
+        });
         button.addSelectionListener(new StartWorkflowButtonSelectionListener(this));
     }
 
@@ -325,7 +334,7 @@ public class PublicationManagerEngine extends Window {
         @Override
         protected void onMouseDown(GridEvent<ModelData> ge) {
             String cls = ge.getTarget().getClassName();
-            if (cls != null && 
+            if (cls != null &&
             		cls.indexOf("x-grid3-cc-" + getId() + "-" + getDataIndex() + " ") != -1 &&
             		cls.indexOf("disabled") == -1) {
                 ge.stopEvent();

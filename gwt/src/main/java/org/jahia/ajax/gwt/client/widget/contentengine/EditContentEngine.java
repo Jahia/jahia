@@ -49,7 +49,6 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.Info;
-import com.extjs.gxt.ui.client.widget.TabItem;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -59,7 +58,6 @@ import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode.WipStatus;
@@ -71,7 +69,6 @@ import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -236,6 +233,10 @@ public class EditContentEngine extends AbstractContentEngine {
                     if (headerElement.getChild(i) instanceof Element) {
                         Element el = (Element) headerElement.getChild(i);
                         if (el.getClassName().contains("-header-text")) {
+                            String className = el.getClassName()
+                                    + (node.isMarkedForDeletion() ? " marked-for-deletion" : "")
+                                    + (node.isMarkedForDeletionRoot() ? " marked-for-deletion-root" : "");
+                            el.setClassName(className);
                             el.setAttribute("data-friendly-name", node.getDisplayName());
                             Boolean isLocked = node.isLocked() || node.getLockInfos() != null && !node.getLockInfos().isEmpty();
                             el.setAttribute("data-content-locked", isLocked.toString());

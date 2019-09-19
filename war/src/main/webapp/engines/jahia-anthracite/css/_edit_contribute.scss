@@ -999,7 +999,7 @@ body[data-indigo-app="contribute"] {
     height: 24px;
     background-image: none!important;
     box-shadow: none;
-    z-index: 99;
+    z-index: 50;
 
     &:hover > div {
       transition: opacity 0.2s ease-in 0.5s;

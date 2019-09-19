@@ -92,29 +92,25 @@ body {
 		transition: all 0.3s ease-in 0s;
 	}
 
-	&[data-V2="true"][data-sitesettings="true"] {
+	&[data-sitesettings="true"] {
 		.background-mask {
 			opacity: 1;
 		}
     }
 
-	&[data-V2="true"][data-multiselect="on"] {
+	&[data-multiselect="on"] {
 		.background-mask {
 			opacity: 0.15;
 		}
 	}
 
-	background: _property($BODY--BG, $APP);
-    background: #585757;
+	background: linear-gradient(to bottom right, #3b3d40 1%, #333537 100%);
 	transition: all 0.2s ease-in 0s;
 
     &[data-channel] {
         box-shadow: inset 0px -120px 260px #343638;
     }
 
-	&[data-V2="true"] {
-		background: linear-gradient(to bottom right, #3b3d40 1%, #333537 100%);
-	}
 
 
 	// DELETE START ::: Check if this can be deleted ...
@@ -148,9 +144,7 @@ body {
 		}
 	}
 
-    &[data-sitesettings="true"]:not([data-V2="true"]) {
-        background: #fcfdfd;
-    }
+
 
 
 }

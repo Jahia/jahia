@@ -54,29 +54,19 @@ body[indigo-dragging-panel] {
 
 		// Edit Mode
 		position: fixed;
-		left: 60px;
-		top: 20px !important;
+		left: 95px!important;
+		top: 25px!important;
 		background: transparent;
 		pointer-events: none;
 		z-index: $ZINDEX--MAINMODULE--LANGUAGE_SWITCHER;
+		transition: left 0.2s ease-in 0s;
 
 		> table {
 			pointer-events: all;
 		}
 
-		body[data-V2="true"] & {
-			left: 95px!important;
-			top: 25px!important;
-			transition: left 0.2s ease-in 0s;
-		}
-
-		body[data-V2="true"][data-multiselect="on"]:not([data-indigo-gwt-side-panel="open"]) & {
+		body[data-multiselect="on"]:not([data-indigo-gwt-side-panel="open"]) & {
 			display: none;
-		}
-
-		body[data-V2="true"][data-indigo-gwt-side-panel="open"] & {
-			left: 115px!important;
-			top: 25px!important;
 		}
 
 		body[data-sitesettings="true"] & {
@@ -86,8 +76,8 @@ body[indigo-dragging-panel] {
 
 		// Side Panel
 		body[data-indigo-gwt-side-panel="open"] & {
-			top: 36px !important;
-			left: 89px!important;
+			top: 25px!important;
+			left: 115px!important;
 
 			div[role="combobox"] {
 				input.x-form-text {
@@ -131,23 +121,10 @@ body[indigo-dragging-panel] {
 		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"] &,
 		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] &,
 		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"] & {
-			left: 99px!important;
-		}
-
-		body[data-V2="true"][data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] &,
-		body[data-V2="true"][data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab"] &,
-		body[data-V2="true"][data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"] &,
-		body[data-V2="true"][data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"] &,
-		body[data-V2="true"][data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] &,
-		body[data-V2="true"][data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"] & {
 			left: 124px!important;
 		}
 
 		body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSettingsTab"] & {
-			left: 99px!important;
-		}
-
-		body[data-V2="true"][data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSettingsTab"] & {
 			left: 124px!important;
 		}
 
@@ -209,23 +186,16 @@ body[indigo-dragging-panel] {
 		/* Refresh side panel button */
 		pointer-events: all;
 		background: url(../images/icons_grey/refresh.svg) no-repeat center;
-		background-size: 23px;
+		background-size: 20px;
 		left: 275px;
 		position: fixed;
-		top: 29px;
+		top: 21px;
 		border-radius: 100%;
-		height: 30px;
-	    width: 30px;
+		height: 26px;
+	    width: 23px;
 		opacity: 1;
 		display: none;
 		transition: all 0.2s ease-in 0s;
-
-		body[data-V2="true"] & {
-			background-size: 20px;
-			height: 26px;
-			width: 23px;
-			top: 21px;
-		}
 
 		body[indigo-dragging-panel="true"] & {
 			transition: none;
@@ -240,13 +210,9 @@ body[indigo-dragging-panel] {
 			margin-left: 47px;
 		}
 
-		body[data-V2="true"][data-INDIGO-SIDEPANEL-PINNED="true"] &,
-		body[data-V2="true"][data-indigo-gwt-side-panel="open"] & {
+		body[data-INDIGO-SIDEPANEL-PINNED="true"] &,
+		body[data-indigo-gwt-side-panel="open"] & {
 			margin-left: 30px;
-		}
-
-		body[data-V2="true"][data-sitesettings="true"] & {
-			margin-left: 60px!important;
 		}
 
 		&.x-tool-refresh-red {
@@ -256,7 +222,7 @@ body[indigo-dragging-panel] {
 		}
 
 		body[data-sitesettings="true"] & {
-			margin-left: 37px;
+			margin-left: 60px!important;
 		}
 
 		body[data-edit-window-style="settings"] &,
@@ -280,52 +246,10 @@ body[indigo-dragging-panel] {
 			display: none!important;
 		}
 
-		// body[data-indigo-gwt-side-panel="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"]:not(.minimise-results) &,
-		// body[data-indigo-gwt-side-panel="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"]:not(.minimise-results) & {
-		// 	margin-left: 354px;
-		// }
 	}
 
 	.x-panel-header-text {
 		display: none;
-	}
-
-	.x-panel-header {
-		/* Contains Site Selector and Side Panel Refresh Button */
-		// position: absolute !important;
-	    // top: 35px!important;
-		// left: 71px !important;
-	    // z-index: $ZINDEX--SIDE_PANEL--HEADER;
-	    // opacity: 1;
-	    // width: auto !important;
-	    // pointer-events: none;
-	    // background: transparent !important;
-		// display: none;
-		//
-		// body[data-INDIGO-GWT-FULLSCREEN="on"][data-INDIGO-GWT-SIDE-PANEL="open"] & {
-		// 	display: block;
-		// }
-		//
-		// .x-tool-left {
-		// 	/* Expand Collaspe Side Bar */
-		// 	display: none;
-		// }
-		//
-		// .x-panel-toolbar {
-		// 	float:none!important;
-		// }
-		//
-		// body[data-INDIGO-GWT-SIDE-PANEL="open"][data-edit-window-style="default"] & {
-		// 	display: block;
-		// }
-		//
-		// // body[data-edit-window-style="settings"] & {
-		// // 	> div:nth-child(2) {
-		// // 		display: none;
-		// // 	}
-		// // }
-
-
 	}
 
 	.x-panel-body {
@@ -386,8 +310,8 @@ body[indigo-dragging-panel] {
 				    opacity: 1;
 				}
 
-				body[data-V2="true"][data-INDIGO-SIDEPANEL-PINNED="true"] &,
-				body[data-V2="true"][data-indigo-gwt-side-panel="open"] & {
+				body[data-INDIGO-SIDEPANEL-PINNED="true"] &,
+				body[data-indigo-gwt-side-panel="open"] & {
 					margin-left: 20px;
 					top: 24px !important;
 				}
@@ -477,15 +401,12 @@ body[indigo-dragging-panel] {
 
 	#JahiaGxtSidePanelTabs {
 		border-right: 0 solid #f8f8f8;
+		padding-left: 21px;
+		padding-top: 49px;
 
 		body[indigo-dragging-panel="true"] &,
 		body[data-indigo-sidepanel-pinned="true"] & {
 			transition: none!important;
-		}
-
-		body[data-V2="true"] & {
-			padding-left: 21px;
-			padding-top: 49px;
 		}
 
 		@extend %CSS_BLOCK--SIDE_PANEL--CONTAINER;
@@ -581,7 +502,6 @@ body[indigo-dragging-panel] {
 	    width: 60px !important;
 	    top: 0;
 	    height: 100%;
-	    padding-top: 60px;
 		overflow: visible;
 
 		body[data-indigo-app="admin"] & {
@@ -591,19 +511,14 @@ body[indigo-dragging-panel] {
 		li {
 			/* Side Panel Buttons */
 			float: none;
-			width: 50px;
+			width: 62px;
 			height: 40px;
 			margin-bottom: 10px;
 			margin-left: 0;
-			opacity: 0.8;
+			opacity: 1;
 			display: block;
 			pointer-events: all;
 			outline: none;
-
-			body[data-V2="true"] & {
-				opacity: 1;
-				width: 62px;
-			}
 
 			&.x-item-disabled {
 				display: none;
@@ -619,12 +534,8 @@ body[indigo-dragging-panel] {
 	            -moz-box-sizing: border-box;
 	            box-sizing: border-box;
 	            display: block;
-	            left: 14px;
+	            left: 20px;
 	            position: relative;
-
-				body[data-V2="true"] & {
-					left: 20px;
-				}
 			}
 
 			a {
@@ -675,7 +586,8 @@ body[indigo-dragging-panel] {
 
 		.x-tab-panel-header {
 			// Contains the Side Panel Tab Buttons
-			width: 60px!important;
+			width: 72px !important;
+			top: 57px;
 			border:none;
 			padding: 0;
 			background-color: transparent!important;
@@ -684,11 +596,6 @@ body[indigo-dragging-panel] {
 			position: relative;
 			z-index: $ZINDEX--SIDE_PANEL--CONTAINER_SUB;
 			overflow: visible;
-
-			body[data-V2="true"] & {
-				top: 57px;
-			    width: 72px !important;
-			}
 
 			ul.x-tab-strip-top {
 				// List for Tab Buttons
@@ -749,11 +656,7 @@ body[indigo-dragging-panel] {
 			display: inline-block;
 			box-sizing: border-box;
 
-			width: calc(100% - 71px) !important;
-
-			body[data-V2="true"] & {
-				width: calc(100% - 81px) !important
-			}
+			width: calc(100% - 81px) !important;
 
 			height: 100%!important;
 			vertical-align: top;
@@ -2273,13 +2176,8 @@ $side_panel__tab_buttons: (
             #{$_tab_ID} {
 				@if ($_tab_ID == "#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab") {
 					position: fixed;
-					left: 4px;
-				    bottom: 50px;
-
-					body[data-V2="true"] & {
-						left: 27px;
-					    bottom: 74px;
-					}
+					left: 27px;
+				    bottom: 74px;
 
 					body[data-uilang="de"] & {
 						bottom: 80px;
@@ -2290,7 +2188,7 @@ $side_panel__tab_buttons: (
 						}
 					}
 
-					body[data-V2="true"][data-sitesettings="true"] & {
+					body[data-sitesettings="true"] & {
 						bottom: 28px;
 					}
 
@@ -2542,23 +2440,21 @@ body[data-edit-window-style="settings"] {
 		content: $text_site_settings;
 		@extend %CSS_BLOCK--SIDE_PANEL--TITLE;
 		display: block;
-		margin: 24px 0 30px -3px;
-
-		body[data-V2="true"] & {
-			margin: 22px 0 30px -15px;
-			transition: all 0.2s ease-in 0s;
-			line-height: 40px;
-		}
+		margin: 22px 0 30px -15px;
+		transition: all 0.2s ease-in 0s;
+		line-height: 40px;
 
 		font-size: 30px;
 		line-height: 47px;
 		letter-spacing: -0.5px;
 
-		body[data-indigo-gwt-side-panel="open"][data-V2="true"] & {
-			margin: 26px 0 30px 1px;
+		body[data-indigo-gwt-side-panel="open"] & {
+				margin: 26px 0 30px 1px;
 		}
 
-
+		body[data-indigo-gwt-side-panel="open"][data-indigo-app="edit"] & {
+				line-height: 40px;
+		}
 
 		body[data-edit-window-style="settings"] &,
 		.x-viewport-adminmode &,

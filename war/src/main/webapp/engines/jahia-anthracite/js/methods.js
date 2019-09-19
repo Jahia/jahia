@@ -27,9 +27,7 @@ var DX_app = {
             console.log('You can stop the side panel from automatically closing with the following toggle:');
             console.log('DX.config.toggleAutoHide()\n\n');
             console.log('You can toggle the Log with the following:');
-            console.log('DX.config.toggleLog()\n\n');
-            console.log('You can toggle the V2 edit mode with:');
-            console.log('DX.config.toggleV2()\n\n');
+            console.log('DX.config.toggleLog()');
             console.log('======================');
         },
         /**
@@ -43,18 +41,9 @@ var DX_app = {
          */
         toggleAutoHide: function () {
             DX_app.nav.data.autoHideSidePanel = !DX_app.nav.data.autoHideSidePanel;
-        },
-        /**
-         * Toggle between V1 and V2 of Anthracite
-         */
-        toggleV2: function () {
-            var toggleState = !DX_app.data.V2;
-            DX_app.V2(toggleState);
         }
     },
     data: {
-        V2: true,
-        V2Disabled: false,
         openedXWindows: [],
         currentApp: null,
         currentSite: null,
@@ -325,26 +314,23 @@ var DX_app = {
             if (cl.indexOf('x-viewport') == 0) {
                 switch (cl) {
                     case 'x-viewport-editmode':
-                        DX_app.V2(true);
+                        DX_app.updateGWTMenus();
                         DX_app.switch('edit');
                         break;
                     case 'x-viewport-adminmode':
-                        DX_app.disableV2();
                         DX_app.switch('admin');
                         break;
                     case 'x-viewport-sitesettingsmode':
-                        DX_app.V2(true);
+                        DX_app.updateGWTMenus();
                         DX_app.switch('remote');
                         break;
                     case 'x-viewport-dashboardmode':
-                        DX_app.disableV2();
                         DX_app.switch('dashboard');
                         break;
                     case 'x-viewport-studiomode':
                         DX_app.switch('studio');
                         break;
                     case 'x-viewport-contributemode':
-                        DX_app.disableV2();
                         DX_app.switch('contribute');
                         break;
                 }
@@ -416,118 +402,26 @@ var DX_app = {
         }
     },
     /**
-     * Used to disable certain Anthracite V2 classes
-     *  - This is used when in Contribute Mode, Dashboard Mode and Admin Mode
-     */
-    disableV2: function () {
-        DX_app.data.V2Disabled = DX_app.data.V2;
-
-        DexV2.getCached('body').setAttribute('data-V2-disabled', DX_app.data.V2Disabled);
-
-        DX_app.V2(false);
-    },
-    /**
-     * Used to toggle between Anthracite V1 and V2
+     * Used to update the GWT menus in Anthracite
      *  - In addition to class modifications, the DOM tree is also modified when switching
-     * @param state - boolean where true sets to V2
-     * @constructor
      */
-    V2: function (state) {
-        DX_app.data.V2 = state;
+    updateGWTMenus: function () {
+        DX_app.dev.log('::: APP ::: UPDATEGWTMENUS', true);
 
-        DexV2.getCached('body').setAttribute('data-V2', DX_app.data.V2);
+        var targetMenu = document.querySelectorAll('.edit-menu-centertop .x-toolbar-left-row')[0],
+            statusMenuButton = document.querySelectorAll('.edit-menu-status')[0],
+            publishMenuButton = document.querySelectorAll('.edit-menu-publication')[0],
+            advancedPublishMenuButton = document.querySelectorAll('.toolbar-item-publishone')[0],
+            editMenuButton = (document.querySelectorAll('.edit-menu-edit')[0]) ? document.querySelectorAll('.edit-menu-edit')[0].parentNode : null;
 
-        var targetMenu;
-        var statusMenuButton;
-        var publishMenuButton;
-        var advancedPublishMenuButton;
-        if (state === true) {
-            targetMenu = document.querySelectorAll('.edit-menu-centertop .x-toolbar-left-row')[0];
-            statusMenuButton = document.querySelectorAll('.edit-menu-status')[0];
-            publishMenuButton = document.querySelectorAll('.edit-menu-publication')[0];
-            advancedPublishMenuButton = document.querySelectorAll('.toolbar-item-publishone')[0];
-
-            var editMenuButton = (document.querySelectorAll('.edit-menu-edit')[0])
-                ? document.querySelectorAll('.edit-menu-edit')[0].parentNode : null;
-
-            if (!DexV2.class('publication-status').exists()) {
-                // Create div for publication status of page / slected element because currently it is a pseudo element and we cant reposition when in pinned mode
-                var publicationStatus = document.createElement('div'),
-                    publicationStatusTooltip = document.createElement('div'),
-                    publicationStatusLabel = document.createElement('label'),
-                    publicationStatusPath = document.createElement('p'),
-
-                    status = (DX_app.iframe.data.publication && DX_app.iframe.data.publication.status) ? jahia_gwt_messages["label_publication_" + DX_app.iframe.data.publication.status] : 'unknown',
-                    path = jahiaGWTParameters[jahiaGWTParameters.lang];
-
-                publicationStatusLabel.setAttribute("data-label", jahia_gwt_messages.label_publication_status + ": ");
-                publicationStatusLabel.innerHTML = status;
-                publicationStatusLabel.classList.add('publication-status-label');
-
-                publicationStatusPath.setAttribute("data-label", jahia_gwt_messages.label_path + ": ");
-                publicationStatusPath.innerHTML = path;
-                publicationStatusPath.classList.add('publication-status-path');
-
-                publicationStatusTooltip.classList.add('publication-status-tooltip');
-                publicationStatusTooltip.appendChild(publicationStatusLabel);
-                publicationStatusTooltip.appendChild(publicationStatusPath);
-
-                publicationStatus.appendChild(publicationStatusTooltip);
-                publicationStatus.classList.add('publication-status');
-                publicationStatus.setAttribute('data-publication-status', status);
-                DexV2.getCached('body').prepend(publicationStatus);
-
-            }
-
-            if (targetMenu) {
-                if (advancedPublishMenuButton) {
-                    advancedPublishMenuButton.parentNode.classList.remove('x-hide-display');
-                    advancedPublishMenuButton.parentNode.classList.add('force-display-inline-block');
-                    targetMenu.insertBefore(advancedPublishMenuButton.parentNode, editMenuButton);
-                }
-
-                if (publishMenuButton) {
-                    targetMenu.insertBefore(publishMenuButton.parentNode, editMenuButton);
-                }
-
-                if (statusMenuButton) {
-                    targetMenu.insertBefore(statusMenuButton.parentNode, editMenuButton);
-                }
-            }
-
-            var backGroundMaskExists = document.querySelectorAll('.background-mask')[0];
-            var backGroundMask = (!backGroundMaskExists) ? document.createElement('div') : null;
-
-            if (backGroundMask) {
-                backGroundMask.classList.add('background-mask');
-                DexV2.getCached('body').append(backGroundMask);
-            }
-        } else {
-            targetMenu = document.querySelectorAll('.edit-menu-topright .x-toolbar-left-row')[0];
-            statusMenuButton = document.querySelectorAll('.edit-menu-status')[0];
-            publishMenuButton = document.querySelectorAll('.edit-menu-publication')[0];
-            advancedPublishMenuButton = document.querySelectorAll('.toolbar-item-publishone')[0];
-            if (targetMenu) {
-                if (advancedPublishMenuButton) {
-                    advancedPublishMenuButton.parentNode.classList.remove('x-hide-display');
-                    targetMenu.prepend(advancedPublishMenuButton.parentNode);
-                }
-
-                if (publishMenuButton) {
-                    targetMenu.prepend(publishMenuButton.parentNode);
-                }
-
-                if (statusMenuButton) {
-                    targetMenu.prepend(statusMenuButton.parentNode);
-                }
-            }
+        if (targetMenu && advancedPublishMenuButton && publishMenuButton && statusMenuButton) {
+            advancedPublishMenuButton.parentNode.classList.remove('x-hide-display');
+            advancedPublishMenuButton.parentNode.classList.add('force-display-inline-block');
+            targetMenu.insertBefore(advancedPublishMenuButton.parentNode, editMenuButton);
+            targetMenu.insertBefore(publishMenuButton.parentNode, editMenuButton);
+            targetMenu.insertBefore(statusMenuButton.parentNode, editMenuButton);
         }
 
-        if (DX_app.data.currentApp == 'remote' || DX_app.data.currentApp == 'edit') {
-            DX_app.edit.topbar.reposition();
-        } else if (DX_app.data.currentApp == 'contribute') {
-            DX_app.contribute.topbar.reposition();
-        }
     },
     /**
      * Callback executed when the app changes
@@ -2914,6 +2808,29 @@ var DX_app = {
          */
         onOpen: function () {
             DX_app.dev.log('::: APP ::: REMOTE ::: ONOPEN');
+
+            // Add Background mask used for modals
+            if(!DexV2.class('background-mask').exists()){
+              var backGroundMask = document.createElement('div');
+
+              backGroundMask.classList.add('background-mask');
+              DexV2.getCached('body').append(backGroundMask);
+
+            }
+
+            // Add Publication Status Bar
+            if (!DexV2.class('publication-status').exists()) {
+                // Create div for publication status of page / slected element because currently it is a pseudo element and we cant reposition when in pinned mode
+                var publicationStatus = document.createElement('div'),
+                    status = (DX_app.iframe.data.publication && DX_app.iframe.data.publication.status) ? DX_app.iframe.data.publication.status : 'unknown';
+
+                publicationStatus.classList.add('publication-status');
+                publicationStatus.setAttribute('data-publication-status', status);
+
+                DexV2.getCached('body').prepend(publicationStatus);
+            }
+
+
             DX_app.data.currentApp = 'edit';
             DexV2('.mainmodule > div:nth-child(2)').nodes[0].style.removeProperty('width');
             DexV2('.mainmodule > div:nth-child(2)').nodes[0].style.removeProperty('left');
@@ -3033,7 +2950,45 @@ var DX_app = {
          * Callback executed when witching to the Edit Mode
          */
         onOpen: function () {
-            DX_app.dev.log('::: APP ::: EDIT ::: ONOPEN');
+            DX_app.dev.log('::: APP ::: EDIT ::: ONOPEN', true);
+
+            // Add Background mask used for modals
+            if(!DexV2.class('background-mask').exists()){
+              var backGroundMask = document.createElement('div');
+
+              backGroundMask.classList.add('background-mask');
+              DexV2.getCached('body').append(backGroundMask);
+
+            }
+
+            // Add Publication Status Bar
+            if (!DexV2.class('publication-status').exists()) {
+                // Create div for publication status of page / selected element because currently it is a pseudo element and we cant reposition when in pinned mode
+                var publicationStatus = document.createElement('div'),
+                    publicationStatusTooltip = document.createElement('div'),
+                    publicationStatusLabel = document.createElement('label'),
+                    publicationStatusPath = document.createElement('p'),
+
+                    status = (DX_app.iframe.data.publication && DX_app.iframe.data.publication.status) ? jahia_gwt_messages["label_publication_" + DX_app.iframe.data.publication.status] : 'unknown',
+                    path = jahiaGWTParameters[jahiaGWTParameters.lang];
+
+                publicationStatusLabel.setAttribute("data-label", jahia_gwt_messages.label_publication_status + ": ");
+                publicationStatusLabel.innerHTML = status;
+                publicationStatusLabel.classList.add('publication-status-label');
+
+                publicationStatusPath.setAttribute("data-label", jahia_gwt_messages.label_path + ": ");
+                publicationStatusPath.innerHTML = path;
+                publicationStatusPath.classList.add('publication-status-path');
+
+                publicationStatusTooltip.classList.add('publication-status-tooltip');
+                publicationStatusTooltip.appendChild(publicationStatusLabel);
+                publicationStatusTooltip.appendChild(publicationStatusPath);
+
+                publicationStatus.appendChild(publicationStatusTooltip);
+                publicationStatus.classList.add('publication-status');
+                publicationStatus.setAttribute('data-publication-status', status);
+                DexV2.getCached('body').prepend(publicationStatus);
+            }
 
             DexV2('.mainmodule > div:nth-child(2)').nodes[0].style.removeProperty('width');
             DexV2('.mainmodule > div:nth-child(2)').nodes[0].style.removeProperty('left');
@@ -3487,10 +3442,8 @@ var DX_app = {
                             DexV2('.edit-menu-publication .x-btn-mc').setAttribute('data-publication-label', DX_app.iframe.data.pageTitle);
                         } else {
                             // No Select
-                            if (DX_app.data.V2 && elements.refreshButton) {
+                            if (elements.refreshButton) {
                                 elements.refreshButton.style.left = (boxes.title.left + boxes.title.width) + 'px';
-                            } else if (elements.refreshButton) {
-                                elements.refreshButton.style.left = (boxes.title.left + boxes.title.width + 9) + 'px';
                             }
 
                             elements.previewButton.style.left = (boxes.title.left + boxes.title.width + 39) + 'px';
@@ -3741,13 +3694,8 @@ var DX_app = {
                 if (siteSettings || DX_app.data.currentApp === 'admin' || DX_app.data.currentApp === 'dashboard') {
                     // Site Settings, Admin or Dashboard
 
-                    if (DX_app.data.V2) {
-                        mainFrameWidth = xPos - 48;
-                        mainFrameLeft = xPos + 21;
-                    } else {
-                        mainFrameWidth = xPos - 78;
-                        mainFrameLeft = xPos;
-                    }
+                    mainFrameWidth = xPos - 48;
+                    mainFrameLeft = xPos + 21;
 
                     DexV2('.mainmodule > div:nth-child(2)').nodes[0].style.setProperty('width', 'calc(100% - ' + mainFrameWidth + 'px)',
                         'important');
@@ -3755,13 +3703,8 @@ var DX_app = {
 
                 } else if (DX_app.edit.sidepanel.data.pinned) {
                     // Edit Mode pinned
-                    if (DX_app.data.V2) {
-                        mainFrameWidth = xPos + 6;
-                        mainFrameLeft = xPos + 45;
-                    } else {
-                        mainFrameWidth = xPos + 5;
-                        mainFrameLeft = xPos + 10;
-                    }
+                    mainFrameWidth = xPos + 6;
+                    mainFrameLeft = xPos + 45;
 
                     if (DexV2.class('publication-status').exists()) {
                         DexV2.class('publication-status').nodes[0].style.setProperty('left', mainFrameLeft + 'px', 'important');
@@ -3779,14 +3722,11 @@ var DX_app = {
                         DexV2.class('node-path-text').nodes[0].style.setProperty('max-width', 'calc(100vw - ' + (mainFrameLeft + 60 + 380) + 'px)', 'important');
                     }
 
-                    if (DX_app.data.V2) {
-                        // Refresh button
-                        pageTitle = document.getElementsByClassName('x-current-page-path')[0];
-                        pageTitleBox = (pageTitle) ? pageTitle.getBoundingClientRect() : null;
+                    pageTitle = document.getElementsByClassName('x-current-page-path')[0];
+                    pageTitleBox = (pageTitle) ? pageTitle.getBoundingClientRect() : null;
 
-                        if (DexV2.class('window-actions-refresh').exists() && pageTitleBox) {
-                            DexV2.class('window-actions-refresh').nodes[0].style.setProperty('left', (pageTitleBox.left + pageTitleBox.width) + 'px', 'important');
-                        }
+                    if (DexV2.class('window-actions-refresh').exists() && pageTitleBox) {
+                        DexV2.class('window-actions-refresh').nodes[0].style.setProperty('left', (pageTitleBox.left + pageTitleBox.width) + 'px', 'important');
                     }
 
 
@@ -3805,14 +3745,11 @@ var DX_app = {
                         DexV2.class('node-path-text').nodes[0].style.removeProperty('max-width');
                     }
 
-                    if (DX_app.data.V2) {
-                        // Refresh button
-                        pageTitle = document.getElementsByClassName('x-current-page-path')[0];
-                        pageTitleBox = (pageTitle) ? pageTitle.getBoundingClientRect() : null;
+                    pageTitle = document.getElementsByClassName('x-current-page-path')[0];
+                    pageTitleBox = (pageTitle) ? pageTitle.getBoundingClientRect() : null;
 
-                        if (DexV2.class('window-actions-refresh').exists() && pageTitleBox) {
-                            DexV2.class('window-actions-refresh').nodes[0].style.setProperty('left', (pageTitleBox.left + pageTitleBox.width) + 'px', 'important');
-                        }
+                    if (DexV2.class('window-actions-refresh').exists() && pageTitleBox) {
+                        DexV2.class('window-actions-refresh').nodes[0].style.setProperty('left', (pageTitleBox.left + pageTitleBox.width) + 'px', 'important');
                     }
                 }
 
@@ -3841,22 +3778,22 @@ var DX_app = {
                 var searchResultPane = DexV2('#JahiaGxtSearchTab.tab_search .JahiaGxtSearchTab-results .x-panel-bwrap');
                 var imagesResultPane = DexV2('#JahiaGxtFileImagesBrowseTab.tab_filesimages #images-view');
                 var contentResultsPane = DexV2('#JahiaGxtContentBrowseTab.tab_content .x-box-inner .x-box-item:nth-child(2)');
-                var V2Offset = (DX_app.data.V2) ? 20 : 0;
+                var xPosOffset = 20;
 
                 if (searchResultPane.exists()) {
-                    searchResultPane.nodes[0].style.setProperty('left', (xPos + V2Offset) + 'px', 'important');
+                    searchResultPane.nodes[0].style.setProperty('left', (xPos + xPosOffset) + 'px', 'important');
                 }
 
                 if (categoriesResultsPane.exists()) {
-                    categoriesResultsPane.nodes[0].style.setProperty('left', (xPos + V2Offset) + 'px', 'important');
+                    categoriesResultsPane.nodes[0].style.setProperty('left', (xPos + xPosOffset) + 'px', 'important');
                 }
 
                 if (imagesResultPane.exists()) {
-                    imagesResultPane.nodes[0].style.setProperty('left', (xPos + V2Offset) + 'px', 'important');
+                    imagesResultPane.nodes[0].style.setProperty('left', (xPos + xPosOffset) + 'px', 'important');
                 }
 
                 if (contentResultsPane.exists()) {
-                    contentResultsPane.nodes[0].style.setProperty('left', (xPos + V2Offset) + 'px', 'important');
+                    contentResultsPane.nodes[0].style.setProperty('left', (xPos + xPosOffset) + 'px', 'important');
                 }
 
                 // Set width of the Side Panel

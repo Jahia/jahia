@@ -686,6 +686,7 @@ body[data-indigo-app="contribute"] {
 	    background-image: url(../images/more-options.svg);
 	    background-size: 20px;
 	    border-radius: 2px;
+        background-color: rgba(245, 245, 245, 0.0784);
 
 		&:hover {
 			background-color: #007cb0;
@@ -792,7 +793,7 @@ body[data-indigo-app="contribute"] {
 		background-size: 15px;
 		width: 15px;
 		height: 22px;
-		/* opacity: 0 !important; */
+		opacity: 0 !important;
 		transition: all 0.1s ease-in 0s;
 		// background-color: #45484c;
 		border-radius: 0;
@@ -813,7 +814,7 @@ body[data-indigo-app="contribute"] {
 		opacity: 1 !important;
 	    left: -19px !important;
 	    border-radius: 0 2px 2px 0;
-	    background-color: #696d72;
+	    background-color: rgba(245, 245, 245, 0.0784);
 	}
 
 }
@@ -884,7 +885,7 @@ body[data-indigo-app="contribute"] {
 	    left: auto !important;
 	    top: auto !important;
 	    position: relative;
-	    margin-right: 3px !important;
+	    margin-right: 11px !important;
 	    padding-right: 19px;
 	    border-radius: 2px;
 	    // background-color: #45484c;
@@ -1326,7 +1327,7 @@ div.x-jahia-root {
 		background-size: 15px;
 		width: 15px;
 		height: 22px;
-		/* opacity: 0 !important; */
+		opacity: 0 !important;
 		transition: all 0.1s ease-in 0s;
 		// background-color: #45484c;
 		border-radius: 0;
@@ -1352,7 +1353,7 @@ div.x-jahia-root {
 		opacity: 1 !important;
 	    left: -19px !important;
 	    border-radius: 0 2px 2px 0;
-	    background-color: #696d72;
+	    background-color: rgba(245, 245, 245, 0.0784);
 	}
 }
 

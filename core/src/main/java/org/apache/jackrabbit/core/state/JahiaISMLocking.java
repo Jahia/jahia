@@ -52,6 +52,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * Default item state locking strategy. The default strategy is simply to use
  * a single coarse-grained read-write lock over the entire workspace.
  */
+@Deprecated
 public class JahiaISMLocking implements ISMLocking {
 
     private final ReentrantReadWriteLock lock;

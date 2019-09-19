@@ -46,20 +46,19 @@ package org.apache.jackrabbit.core.state;
 import org.apache.jackrabbit.core.id.ItemId;
 
 /**
- * User: toto
- * Date: 3/16/11
- * Time: 17:21
+ * A NoOp implementation of {@link ISMLocking}.
  */
-public class NoISMLocking implements ISMLocking {
-    private final ReadLock readLock = new ReadLock() {
+public final class NoISMLocking implements ISMLocking {
 
+    private final ReadLock readLock = new ReadLock() {
         public void release() {
+            // Nothing to release
         }
     };
 
-   private final WriteLock writeLock = new WriteLock() {
-
+    private final WriteLock writeLock = new WriteLock() {
         public void release() {
+            // Nothing to release
         }
 
         public ReadLock downgrade() {
@@ -67,11 +66,14 @@ public class NoISMLocking implements ISMLocking {
         }
     };
 
+    @Override
     public ReadLock acquireReadLock(ItemId id) throws InterruptedException {
         return readLock;
     }
 
+    @Override
     public WriteLock acquireWriteLock(ChangeLog changeLog) throws InterruptedException {
         return writeLock;
     }
+
 }

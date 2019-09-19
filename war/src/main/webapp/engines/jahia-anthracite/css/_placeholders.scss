@@ -1876,13 +1876,9 @@
         text-align: center;
         text-transform: uppercase;
 
-        @include text(8px, _property($TOOL-BUTTON--COLOR, $APP), $FONT--WEIGHT---BOLD);
-
-		body[data-V2="true"] & {
-			@include text(9px, whitesmoke, $FONT--WEIGHT---NORMAL);
-			margin-bottom: 0;
-            opacity: 0.9;
-		}
+        @include text(9px, whitesmoke, $FONT--WEIGHT---NORMAL);
+        margin-bottom: 0;
+        opacity: 0.9;
     }
 
 
@@ -1939,11 +1935,7 @@
 
 	position: relative;
 
-	padding-left: 30px;
-
-	body[data-V2="true"] & {
-		padding-left: 19px;
-	}
+	padding-left: 19px;
 
 	body[data-indigo-gwt-side-panel="open"] & {
 		display: block;

@@ -297,31 +297,15 @@ public class JahiaSearchIndex extends SearchIndex {
 
         // make sure the AnalyzerRegistry configured in the configuration gets the proper Analyzer
         if (configuration instanceof JahiaIndexingConfigurationImpl) {
-            JahiaIndexingConfigurationImpl jahiaConfiguration = (JahiaIndexingConfigurationImpl) configuration;
-            final LanguageCustomizingAnalyzerRegistry registry = jahiaConfiguration.getAnalyzerRegistry();
-
-            // retrieve the default analyzer from the Jackrabbit configuration.
-            // Should be a JackrabbitAnalyzer instance set with the default Analyzer configured using the 'analyzer'
-            // param of the 'SearchIndex' section in repository.xml
-            final Analyzer analyzer = super.getTextAnalyzer();
-            registry.setDefaultAnalyzer(analyzer);
+            final LanguageCustomizingAnalyzerRegistry registry = ((JahiaIndexingConfigurationImpl) configuration).getAnalyzerRegistry();
+            registry.setDefaultAnalyzer(super.getTextAnalyzer());
 
             // attempt to get a default language specific Analyzer
-            final SettingsBean settings = SettingsBean.getInstance();
-            final Locale defaultLocale = settings.getDefaultLocale();
-            Analyzer specific = registry.getAnalyzer(defaultLocale.toString());
-            if (specific == null) {
-                specific = registry.getAnalyzer(defaultLocale.getLanguage());
-            }
-
-            if (specific != null) {
-                // if we've found one, use it
-                if (analyzer instanceof JackrabbitAnalyzer) {
-                    JackrabbitAnalyzer jrAnalyzer = (JackrabbitAnalyzer) analyzer;
-                    jrAnalyzer.setDefaultAnalyzer(specific);
-                } else {
-                    throw new IllegalArgumentException("Analyzer wasn't a JackrabbitAnalyzer. Couldn't set default language Analyzer as a consequence.");
-                }
+            Locale defaultLocale = SettingsBean.getInstance().getDefaultLocale();
+            Analyzer analyzer = getLanguageSpecificAnalyzer(registry, defaultLocale);
+            if (analyzer != null) {
+                // Override default analyzer
+                setAnalyzer(analyzer);
             }
         }
 
@@ -1016,6 +1000,44 @@ public class JahiaSearchIndex extends SearchIndex {
         }
     }
 
+    /**
+     * Sets the default analyzer in use for indexing.
+     *
+     * @param analyzer the new default analyzer
+     */
+    private void setAnalyzer(Analyzer analyzer) {
+        JackrabbitAnalyzer jackrabbitAnalyzer = getJackrabbitAnalyzer();
+        jackrabbitAnalyzer.setDefaultAnalyzer(analyzer);
+    }
+
+    private JackrabbitAnalyzer getJackrabbitAnalyzer() {
+        // The following piece of code is attempting to access the private instance of JackrabbitAnalyzer
+        // from SearchIndex using the reflection API. This is thus relying on implementation specific of
+        // a given version of Jackrabbit (2.18.4) and my be incompatible with later revisions.
+        try {
+            Field field = SearchIndex.class.getDeclaredField("analyzer");
+            field.setAccessible(true);
+            return (JackrabbitAnalyzer) field.get(this);
+        } catch (ReflectiveOperationException | ClassCastException e) {
+            throw new IllegalStateException(String.format("Could not access JackrabbitAnalyzer from %s", SearchIndex.class), e);
+        }
+    }
+
+    /**
+     * Attempts to get a language specific analyzer from a registry.
+     *
+     * @param registry the registry
+     * @param locale the targeted locale
+     * @return a language specific analyzer if any is found, {@code null} otherwise
+     */
+    private static Analyzer getLanguageSpecificAnalyzer(AnalyzerRegistry registry, Locale locale) {
+        Analyzer analyzer = registry.getAnalyzer(locale.toString());
+        if (analyzer == null) {
+            analyzer = registry.getAnalyzer(locale.getLanguage());
+        }
+        return analyzer;
+    }
+
     private static <T> T getValue(Object object, String name) throws NoSuchFieldException, IllegalAccessException {
         Field field = object.getClass().getDeclaredField(name);
         field.setAccessible(true);
@@ -1027,4 +1049,5 @@ public class JahiaSearchIndex extends SearchIndex {
         method.setAccessible(true);
         return method;
     }
+
 }

@@ -115,7 +115,6 @@
         <property name="navigation" ref="NavigationHelper"/>
         <property name="channelHelper" ref="ChannelHelper"/>
         <property name="languages" ref="LanguagesHelper"/>
-        <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
     </bean>
 
     <bean name="CacheHelper" class="org.jahia.ajax.gwt.helper.CacheHelper"/>

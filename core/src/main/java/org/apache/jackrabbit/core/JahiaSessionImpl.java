@@ -61,8 +61,8 @@ import java.util.Map;
  * Jackrabbit XASession extension for jahia
  */
 public class JahiaSessionImpl extends XASessionImpl {
+    private final Map<String, Object> jahiaAttributes = new HashMap<>();
     private NodeTypeInstanceHandler myNtInstanceHandler;
-    private Map<String, Object> jahiaAttributes;
 
     public JahiaSessionImpl(RepositoryContext repositoryContext, AuthContext loginContext, WorkspaceConfig wspConfig) throws AccessDeniedException, RepositoryException {
         super(repositoryContext, loginContext, wspConfig);
@@ -75,13 +75,11 @@ public class JahiaSessionImpl extends XASessionImpl {
     }
 
     private void init() {
-        jahiaAttributes = new HashMap<String, Object>();
-        WorkspaceImpl ws = (WorkspaceImpl) getWorkspace();
+        WorkspaceImpl ws = this.context.getWorkspace();
         ws.versionMgr = new JahiaVersionManagerImpl(this.context, ws.stateMgr, ws.hierMgr);
     }
 
-    // @Override
-
+    @Override
     public JahiaNodeTypeInstanceHandler getNodeTypeInstanceHandler() throws RepositoryException {
         if (myNtInstanceHandler == null) {
             myNtInstanceHandler = super.getNodeTypeInstanceHandler();
@@ -90,6 +88,7 @@ public class JahiaSessionImpl extends XASessionImpl {
         return (JahiaNodeTypeInstanceHandler) myNtInstanceHandler;
     }
 
+    @Override
     public String getPrefix(String uri) throws NamespaceException {
         try {
             return getNamespacePrefix(uri);
@@ -100,6 +99,7 @@ public class JahiaSessionImpl extends XASessionImpl {
         }
     }
 
+    @Override
     public String getURI(String prefix) throws NamespaceException {
         try {
             return getNamespaceURI(prefix);
@@ -141,6 +141,5 @@ public class JahiaSessionImpl extends XASessionImpl {
     public SessionContext getContext() {
         return this.context;
     }
-
 
 }

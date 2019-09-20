@@ -1,5 +1,5 @@
 body {
-    background: _theme-color(primary)!important;
+    background: _theme-color(primary) !important;
 }
 
 #userSites_table_wrapper {
@@ -20,10 +20,8 @@ body {
         display: block;
     }
 
-    thead{
+    thead {
         display: none;
-
-
     }
 
     td {
@@ -39,9 +37,6 @@ body {
             font-weight: 100;
             padding: 11px 15px;
 
-
-
-
             input {
                 display: none;
             }
@@ -54,28 +49,23 @@ body {
             td {
                 &:nth-child(3) {
                     background: url(/engines/jahia-anthracite/images/icons/tabs-create-white@X2.png) no-repeat center center;
-
                     background-size: 19px;
                     background-color: _theme-color(quaternary);
                     opacity: 1;
-
                 }
 
                 &:nth-child(5) {
                     background: url(/engines/jahia-anthracite/images/icons/icon_preview_small_white.png) no-repeat center center;
-                    background-color: _theme-color(quaternary);
-
                     background-size: 19px;
                     background-color: _theme-color(quaternary);
                     opacity: 1;
-
                 }
             }
         }
+
         td {
             background: _theme-color(secondary, b);
             color: _theme-color(primary);
-
         }
     }
 
@@ -90,9 +80,7 @@ body {
                     position: absolute;
                     right: 0;
                     top: 0;
-
                     background: url(/engines/jahia-anthracite/images/icons/tabs-create-white@X2.png) no-repeat center center;
-
                     background-size: 19px;
                     background-color: transparent;
                     height: 22px;
@@ -113,10 +101,7 @@ body {
                     position: absolute;
                     right: 35px;
                     top: 0;
-
                     background: url(/engines/jahia-anthracite/images/icons/icon_preview_small_white.png) no-repeat center center;
-                    background-color: _theme-color(quaternary);
-
                     background-size: 19px;
                     background-color: transparent;
                     height: 22px;
@@ -153,14 +138,14 @@ body {
 
 .well {
     background: none;
-    border:none;
+    border: none;
 }
 
 table,
 tbody,
 tr,
 td {
-    border: none!important;
+    border: none !important;
 }
 
 a[href="/cms/admin/default/en/settings.webProjectSettings.html"] {

@@ -1,264 +1,168 @@
-
 /***********************************************/
 /* WORKFLOW DASHBOARD **************************/
 /***********************************************/
 
-
 .workflow-dashboard-engine {
 
+    .x-tree3-node-text.x-tree3-node-text-widget,
+    .x-grid3-row-selected .x-tree3-node-text.x-tree3-node-text-widget {
+        color: #01a7ed !important;
+    }
+
+    .indigo-modal-mask {
+        display: none;
+    }
+
+    background: lighten($EDIT_ENGINE--BASE--COLOUR, 2%) !important;
+
+    .x-window-bwrap {
+        background: _theme-color(secondary, a);
+    }
+
+    .x-panel-toolbar .x-tool-restore {
+        display: none;
+    }
+
+    .x-window-header {
+        height: 64px !important;
+        line-height: 64px;
+        margin-top: 5px;
+
+        .x-panel-toolbar > table {
+            pointer-events: all;
+        }
+
+        .x-window-header-text {
+            text-shadow: none;
+            border: none;
+            padding: 0;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+            margin-bottom: 10px;
+            pointer-events: none !important;
+        }
+
+        > .x-component:first-child {
+            margin-top: 22px;
+            margin-right: 16px;
+        }
+
+    }
+
+    .x-grid3 {
+
+        .x-grid3-body {
+            .x-grid-empty {
+                padding: 3px;
+
+                &::before {
+                    content: $text_empty;
+                    @include text(13px, _theme-color(primary), $FONT--WEIGHT---LIGHT);
+                }
+            }
+        }
+
+        .x-grid3-header {
+            display: table-cell;
+            background: transparent;
 
 
-	.x-tree3-node-text.x-tree3-node-text-widget,
-	.x-grid3-row-selected .x-tree3-node-text.x-tree3-node-text-widget {
-		color: #01a7ed!important;
-	}
+            .x-grid3-hh {
+                // border-bottom: 1px solid _theme-color(secondary, d);
+                text-transform: uppercase;
+                color: _theme-color(black, c);
+                margin: 2px 0 12px;
 
-	.indigo-modal-mask {
-		display: none;
-	}
+                > table {
+                    padding: 4px 0;
 
-	background:  lighten($EDIT_ENGINE--BASE--COLOUR, 2%) !important;
+                    .x-grid3-hd.x-grid3-cell {
+                        border-color: transparent !important;
 
-	.x-window-bwrap {
-		background: _theme-color(secondary, a);
-	}
+                        span,
+                        span div {
+                            font-weight: 800;
+                        }
+                    }
+                }
+            }
+        }
 
-	.x-panel-toolbar .x-tool-restore {
-		display: none;
-	}
+        td.x-grid3-hd-over .x-grid3-hd-inner,
+        td.x-grid3-hd-menu-open .x-grid3-hd-inner {
+            background: _theme-color(primary, d) !important;
+        }
 
-	.x-window-header {
-		height: 64px !important;
-		line-height: 64px;
-		margin-top: 5px;
+        .x-grid3-header-inner .x-grid3-hh > table > tbody td div .x-grid3-hd-btn {
+            background: url(../images/icons/combo-arrow-grey.png) no-repeat center center !important;
+            width: 23px;
+            background-size: 13px !important;
+            opacity: 0.7;
+        }
 
-		.x-panel-toolbar > table {
-			pointer-events: all;
-		}
+        .x-grid3-scroller.x-grid3-scroller {
+            width: 100% !important;
+        }
 
-		.x-window-header-text {
-			text-shadow: none;
-			border: none;
-			padding: 0;
-			border-radius: 0;
-			background: transparent;
-			box-shadow: none;
-			margin-bottom: 10px;
-			pointer-events: none !important;
-			// font-family: $FONT--FAMILY---RALEWAY;
-			// font-size: 36px;
-			// color: _theme-color(secondary);
-			// font-weight: $FONT--WEIGHT---EXTRALIGHT;
-		}
+        .x-grid3-row.x-grid3-row-selected {
+            background: inherit !important;
+            color: inherit !important;
 
-		> .x-component:first-child {
-			margin-top: 22px;
-			margin-right: 16px;
+            .x-grid3-td-displayName {
+                padding-right: 0 !important;
+            }
 
-			table tbody tr td .x-tool-close {
-				// height: 22px;
-				// width: 22px;
-				// background-image: url(../images/icon-close-large.png);
-				// background-position: initial !important;
-			}
+        }
 
-		}
+        .x-grid3-row {
+            color: _theme-color(primary, a) !important;
+            box-sizing: border-box;
+            height: auto !important;
+            margin-bottom: 1px;
 
-	}
+            .x-grid3-cell-last.x-grid3-td-operation {
+                padding-left: 8px;
+            }
+        }
 
-	.x-grid3 {
+        .x-grid3-row-table {
 
-		.x-grid3-body {
-			.x-grid-empty {
-				padding: 3px;
+            .x-grid3-cell .x-grid3-cell-inner label {
+                line-height: inherit;
+                color: inherit;
+            }
 
-				&::before {
-					content: $text_empty;
-					@include text(13px, _theme-color(primary), $FONT--WEIGHT---LIGHT);
-				}
-			}
-		}
+            .x-grid3-cell {
+                overflow: hidden;
+                display: inline-block;
+                pointer-events: all;
 
-		.x-grid3-header {
-			display: table-cell;
-			background: transparent;
+                table,
+                tbody,
+                tr {
+                    display: block;
+                }
 
+                td {
+                    display: inline-block;
+                    padding: 0 !important;
+                }
+            }
 
-			.x-grid3-hh {
-				// border-bottom: 1px solid _theme-color(secondary, d);
-				text-transform: uppercase;
-				color: _theme-color(black, c);
-				margin: 2px 0 12px;
+        }
 
-				> table {
-					padding: 4px 0;
+    }
 
-					.x-grid3-hd.x-grid3-cell {
-						border-color: transparent !important;
+    .x-grid3-hd-row {
 
-						span,
-						span div {
-							font-weight: 800;
-						}
+        .x-grid3-hd {
+            border-left-color: _theme-color(primary, c);
+            border-right-color: _theme-color(primary, e);
+        }
 
-					}
-
-				}
-
-			}
-
-		}
-
-		td.x-grid3-hd-over .x-grid3-hd-inner,
-		td.x-grid3-hd-menu-open .x-grid3-hd-inner {
-			background: _theme-color(primary, d) !important;
-		}
-
-		.x-grid3-header-inner .x-grid3-hh > table > tbody td div .x-grid3-hd-btn {
-			background: url(../images/icons/combo-arrow-grey.png) no-repeat center center !important;
-			width: 23px;
-			background-size: 13px !important;
-			opacity: 0.7;
-		}
-
-		.x-grid3-scroller.x-grid3-scroller {
-			// background: _theme-color(secondary, a);
-			width: 100% !important;
-		}
-
-		.x-grid3-row.x-grid3-row-selected {
-			background: inherit !important;
-			color: inherit !important;
-
-			.x-grid3-td-displayName {
-				padding-right: 0 !important;
-			}
-
-		}
-
-		.x-grid3-row-table .x-grid3-cell .x-grid3-cell-inner {
-			// line-height: 33px;
-		}
-
-		.x-grid3-row {
-			// background: _theme-color(secondary, c) !important;
-			color: _theme-color(primary, a) !important;
-			// height: 38px !important;
-			box-sizing: border-box;
-			// padding-left: 12px;
-			height: auto!important;
-		    margin-bottom: 1px;
-
-			.x-grid3-td-displayName table.x-btn-noicon {
-				// Preview of content button
-
-				// position: absolute;
-				// top: 3px;
-				// height: 28px;
-				// padding: 2px 6px;
-				// padding-top: 4px;
-				// pointer-events: all;
-				// background: _theme-color(secondary, d);
-				//
-				// button {
-				// 	font-family: $FONT--FAMILY---NUNITO;
-				// 	font-size: 13px;
-				// 	color: _theme-color(primary) !important;
-				// 	font-weight: $FONT--WEIGHT---EXTRALIGHT;
-				// 	margin-top: -1px;
-				// }
-
-			}
-
-			.x-grid3-cell-last.x-grid3-td-operation {
-				padding-left: 8px;
-			}
-
-		}
-
-		.x-grid3-row-table {
-
-			.x-grid3-cell .x-grid3-cell-inner label {
-				line-height: inherit;
-				color: inherit;
-			}
-
-			// @include button("FORM_SMALL", "remove-icons");
-
-			.x-btn-text-icon .x-btn-icon-small-left {
-				// background: _theme-color(status, error);
-				// margin-top: 4px;
-				// height: 24px;
-				// padding: 0 4px;
-				// color: _theme-color(secondary);
-				//
-				// img {
-				// 	display: none !important;
-				// }
-
-
-
-			}
-
-			.x-grid3-cell {
-				overflow: hidden;
-				display: inline-block;
-				pointer-events: all;
-
-				table,
-				tbody,
-				tr {
-					display: block;
-				}
-
-				td {
-					display: inline-block;
-					padding: 0!important;
-				}
-			}
-
-		}
-
-	}
-
-	.x-grid3-hd-row {
-
-		.x-grid3-hd {
-			border-left-color: _theme-color(primary, c);
-			border-right-color: _theme-color(primary, e);
-		}
-
-	}
-
-	.x-grid3-col-displayName table {
-		// height: 36px;
-	}
-
-	.x-grid3-td-locale img {
-		// margin-top: 8px;
-	}
-
-	.x-grid3-td-nodeWrapper table.x-btn-noicon {
-		// Incontext button
-		// height: 28px;
-		// padding: 2px 6px;
-		// padding-top: 4px;
-		// pointer-events: all;
-		// background: _theme-color(secondary, d);
-		//
-		// button {
-		// 	background: transparent !important;
-		// 	padding: 0 8px !important;
-		// }
-
-	}
-
-	.x-panel-fbar .x-btn.x-btn-over.x-btn-noicon button {
-		// background: transparent !important;
-	}
-
+    }
 }
-
 
 
 /***********************************************/
@@ -276,35 +180,32 @@
     left: 0 !important;
     box-sizing: border-box;
 
-	.x-window-header {
-		height: 33px;
+    .x-window-header {
+        height: 33px;
 
-		.x-panel-toolbar {
-			pointer-events: all;
+        .x-panel-toolbar {
+            pointer-events: all;
 
-			.x-tool-close {
-				height: 22px;
-				width: 22px;
-				background-image: url(../images/icon-close-large.png);
-				background-position: initial;
-				margin-top: 4px;
-				margin-right: 4px;
-			}
+            .x-tool-close {
+                height: 22px;
+                width: 22px;
+                background-image: url(../images/icon-close-large.png);
+                background-position: initial;
+                margin-top: 4px;
+                margin-right: 4px;
+            }
 
-			.x-tool-maximize {
-				display: none;
-			}
+            .x-tool-maximize {
+                display: none;
+            }
+        }
+    }
 
-		}
-
-	}
-
-	.x-window-body {
-		position: fixed;
-		width: calc(100% - 16px ) !important;
-		height: calc(100% - 54px ) !important;
-	}
-
+    .x-window-body {
+        position: fixed;
+        width: calc(100% - 16px) !important;
+        height: calc(100% - 54px) !important;
+    }
 }
 
 
@@ -314,10 +215,10 @@
 
 // Override buttons in footer bar for publication status window
 .window-container .engine-panel.publicationstatuswindow-card {
-	&.engine-panel.publicationstatuswindow-card > .x-panel-bwrap > .x-panel-bbar .x-panel-fbar {
-		@include _button(".button-cancel", "ACTIONBAR", "remove-icons");
-		@include _button(".button-bypassworkflow", "ACTIONBAR---SUGGESTED", "remove-icons");
-	}
+    &.engine-panel.publicationstatuswindow-card > .x-panel-bwrap > .x-panel-bbar .x-panel-fbar {
+        @include _button(".button-cancel", "ACTIONBAR", "remove-icons");
+        @include _button(".button-bypassworkflow", "ACTIONBAR---SUGGESTED", "remove-icons");
+    }
 }
 
 
@@ -328,104 +229,78 @@
 
     background: linear-gradient(to right bottom, #F5F5F5 50%, #e5e4e4 100%);
 
-	> div.x-panel-header {
-		pointer-events: none;
-	}
+    > div.x-panel-header {
+        pointer-events: none;
+    }
 
-	.x-toolbar-left {
-		bottom: 10px!important;
-	}
+    .x-toolbar-left {
+        bottom: 10px !important;
+    }
 
-	.x-tab-strip {
-		margin-top: 0!important;
-	}
+    .x-tab-strip {
+        margin-top: 0 !important;
+    }
 
-	.workflow-action-dialog, .publication-status-window {
-		box-shadow: inset 0 1px 2px 1px _theme-color(black, a);
+    .workflow-action-dialog, .publication-status-window {
+        box-shadow: inset 0 1px 2px 1px _theme-color(black, a);
+        width: 100% !important;
+        padding: 0;
+        margin-top: 8px;
+        height: calc(100% - 317px) !important;
+        background: linear-gradient(to bottom, #DBDBDB 1%, #d5d5d5 100%);
+    }
 
-		width: 100% !important;
-		padding: 0;
-		margin-top: 8px;
-		height: calc(100% - 317px) !important;
-	    background: linear-gradient(to bottom, #DBDBDB 1%, #d5d5d5 100%);
-	}
+    > div.x-panel-header .x-panel-header-text {
+        color: #007cb0;
+        display: inline-block;
+        position: fixed;
+        width: 100%;
+        left: 6px;
+        top: 44px;
+        max-width: calc(100% - 100px);
+        font-weight: 300;
+        font-size: 18px;
 
-	> div.x-panel-header .x-panel-header-text {
-	    color: #007cb0;
-	    display: inline-block;
-	    position: fixed;
-	    width: 100%;
-		left: 6px;
-		top: 44px;
-		font-weight: 100;
-		max-width: calc(100% - 100px);
-		font-weight: 300;
-		font-size: 18px;
+        &:before {
+            display: none;
+        }
+    }
 
+    > .x-panel-bwrap {
+        margin-top: 116px;
 
-			&:before {
-			    display: none;
-			}
-	}
+        .x-panel-body.x-panel-body-noborder {
+            overflow: hidden !important;
+        }
+    }
 
-	> .x-panel-bwrap {
-	    margin-top: 116px;
+    &:before {
+        content: "Publication dashboard" !important;
+        width: 380px !important;
+    }
 
-			.x-panel-body.x-panel-body-noborder {
-			    overflow: hidden !important;
-			}
+    .x-tab-panel .x-tab-panel-body {
+        overflow: auto;
+        overflow-x: hidden;
+        border: none !important;
 
-	}
+        &:nth-child(2) {
+            overflow-y: hidden;
+            height: calc(100% - 18px) !important;
+        }
+    }
 
-	&:before {
-		content: "Publication dashboard" !important;
-		width: 380px !important;
-	}
+    /* Footer buttons bar */
+    > .x-panel-bwrap > .x-panel-bbar {
+        padding-bottom: 20px;
 
-	.x-tab-panel .x-tab-panel-body {
-		overflow: auto;
-		overflow-x: hidden;
-		border:none!important;
-
-		&:nth-child(2) {
-			overflow-y: hidden;
-			height: calc(100% - 18px) !important;
-		}
-
-	}
-
-
-	/* Footer buttons bar */
-
-	> .x-panel-bwrap > .x-panel-bbar {
-		padding-bottom: 20px;
-
-			.x-panel-fbar .x-toolbar-cell {
-
-				padding-bottom: 0!important;
-			    float: right;
-			    margin-left: 5px !important;
-
-				// button {
-				// 	padding: 10px 20px !important;
-				// 	background: _theme-color(secondary, a) !important;
-				// 	font-family: $FONT--FAMILY---NUNITO;
-				// 	font-size: 14px;
-				// 	color: _theme-color(primary) !important;
-				// 	font-weight: $FONT--WEIGHT---EXTRALIGHT;
-				// }
-				//
-				// &:first-child button {
-				// 	background: _theme-color(tertiary) !important;
-				// 	color: _theme-color(secondary) !important;
-				// }
-
-			}
-
-	}
-
+        .x-panel-fbar .x-toolbar-cell {
+            padding-bottom: 0 !important;
+            float: right;
+            margin-left: 5px !important;
+        }
+    }
 }
-
 
 
 // Fix for window-panel (managers)
@@ -433,814 +308,573 @@
 .workflowactiondialog-card.engine-window,
 .publicationstatuswindow-card.engine-window {
 
-	div.x-window-header {
-		pointer-events: none;
-	}
+    div.x-window-header {
+        pointer-events: none;
+    }
 
-	div.x-window-header .x-window-header-text {
-		display: inline-block !important;
-	    position: fixed !important;
-	    width: 100% !important;
-	    max-width: calc(100% - 100px) !important;
-	    font-size: 18px!important;
-	    font-weight: 300!important;
-	}
+    div.x-window-header .x-window-header-text {
+        display: inline-block !important;
+        position: fixed !important;
+        width: 100% !important;
+        max-width: calc(100% - 100px) !important;
+        font-size: 18px !important;
+        font-weight: 300 !important;
+    }
 
-	> .x-window-bwrap {
-		margin-top: 126px;
+    > .x-window-bwrap {
+        margin-top: 126px;
 
-		.x-window-body.x-window-body-noborder {
-			overflow: hidden;
-		}
+        .x-window-body.x-window-body-noborder {
+            overflow: hidden;
+        }
 
-		.x-window-bbar .x-panel-fbar .x-toolbar-cell {
-			margin-left: 5px !important;
-		}
+        .x-window-bbar .x-panel-fbar .x-toolbar-cell {
+            margin-left: 5px !important;
+        }
+    }
 
-	}
+    .x-grid3 {
+        .x-grid3-row-table {
+            width: 100% !important;
+        }
+    }
 
-	.x-grid3 {
-		.x-grid3-row-table {
-			width: 100% !important;
-		}
+    .x-toolbar-left {
+        bottom: 0 !important;
+    }
 
-	}
+    .workflowactiondialog-ctn .x-border-layout-ct:nth-child(2) > .x-border-panel .x-form-element .x-form-field-wrap.x-component {
+        overflow: hidden !important;
+    }
 
+    .workflowactiondialog-ctn .x-border-layout-ct:nth-child(2) {
+        > div.x-component:nth-child(1) {
+            height: calc(100% - 193px) !important;
+        }
+    }
 
+    .workflowactiondialog-ctn .x-border-layout-ct:nth-child(3) {
+        width: 100% !important;
 
-	.x-toolbar-left {
-		bottom: 0 !important;
-	}
+        > div {
+            width: 100% !important;
+        }
+    }
 
-	.workflowactiondialog-ctn .x-border-layout-ct:nth-child(2) > .x-border-panel .x-form-element .x-form-field-wrap.x-component {
-		overflow: hidden !important;
-	}
+    .workflow-action-dialog .x-tab-panel-body-top > div {
+        height: 100% !important;
+        width: 100% !important;
 
+        > div {
+            width: 100% !important;
+        }
+    }
 
+    .publicationstatuswindow-ctn .x-border-layout-ct:nth-child(2) > .x-border-panel .x-form-element .x-form-field-wrap.x-component {
+        overflow: hidden !important;
+    }
 
-	.workflowactiondialog-ctn .x-border-layout-ct:nth-child(2) {
-		> div.x-component:nth-child(1) {
-			height: calc(100% - 193px) !important;
-		}
-	}
+    .publication-status-window .x-tab-panel-body-top .x-border-layout-ct {
+        height: 100% !important;
+        width: calc(100% + 162px) !important;
+    }
 
-	.workflowactiondialog-ctn .x-border-layout-ct:nth-child(3) {
-		width: 100%!important;
+    .x-border-layout-ct:nth-child(2) > .x-border-panel:nth-child(2) .x-panel-bwrap {
+        // width: calc(100% - 162px) !important;
+    }
 
-		> div {
-			width: 100%!important;
-		}
-	}
-
-	.workflow-action-dialog .x-tab-panel-body-top > div {
-		height: 100% !important;
-		width: 100% !important;
-
-		> div {
-			width: 100% !important;
-		}
-	}
-
-	.publicationstatuswindow-ctn .x-border-layout-ct:nth-child(2) > .x-border-panel .x-form-element .x-form-field-wrap.x-component {
-		overflow: hidden !important;
-	}
-
-	.publication-status-window .x-tab-panel-body-top .x-border-layout-ct {
-		height: 100% !important;
-		width: calc(100% + 162px) !important;
-	}
-
-	.x-border-layout-ct:nth-child(2) > .x-border-panel:nth-child(2) .x-panel-bwrap {
-		// width: calc(100% - 162px) !important;
-	}
-
-	.x-tab-panel-body-top .x-component.x-border {
-		height: calc(100% + 162px) !important;
-	}
-
+    .x-tab-panel-body-top .x-component.x-border {
+        height: calc(100% + 162px) !important;
+    }
 }
-
 
 .workflowactiondialog-ctn,
 .publicationstatuswindow-ctn {
 
-	background: linear-gradient(to right bottom, whitesmoke 50%, #e5e4e4 100%)!important;
-
-		fieldset.x-fieldset:nth-child(odd) {
-			background: none!important;
-		}
-
-
-		> .x-border-panel:first-child {
-			height: 150px !important;
-			width: 100% !important;
-			z-index: 9999999;
-		}
-
-		.x-border-panel:nth-child(2) .x-panel-body.x-panel-body-noheader.x-panel-body-noborder {
-			height: 214px !important;
-		}
-
-		.x-border-panel > .x-panel-bwrap {
-			width: calc(100% - 16px) !important;
-			height: 100% !important;
-
-			&:only-child {
-				height: calc(100% - 15px) !important;
-			}
-
-			.x-panel-ml,
-			.x-panel-mr,
-			.x-panel-mc {
-				height: 100%;
-			}
-		}
-
-		.x-grid3-body {
-			padding: 0 47px;
-		}
-
-		.workflow-action-dialog {
-
-			.x-tab-panel-header {
-				top: 284px !important;
-			    height: calc(100% - 338px) !important;
-			    padding-top: 30px!important;
-			    background: whitesmoke!important;
-			    box-shadow: inset 1px 1px 2px 0px rgba(0, 0, 0, 0.2), 0px 2px 3px rgba(0, 0, 0, 0.2)!important;
-			}
-
-			.x-grid3 .x-grid3-row-table .x-grid3-cell {
-				width: 25%!important;
-				width: calc((100% - 204px)/ 3)!important;
-				display: inline-block;
-
-				&:nth-child(4) {
-					width: 204px!important;
-				}
-
-				&:nth-child(5) {
-					display: none;
-				}
-			}
-
-			.x-grid3-row {
-				background: transparent!important;
-
-				&.x-grid3-row-selected.x-grid3-row-over {
-					background: transparent!important;
-
-				}
-			}
-
-			> div {
-				width: 100%!important;
-			}
-
-			.x-border-panel img.gwt-Image {
-				// background: _theme-color(quaternary);
-				// position: relative;
-				// overflow: hidden;
-				// width: 11px;
-				// height: 11px;
-				// padding: 11px 11px 0 0;
-				// box-sizing: border-box;
-				// border-radius: 50%;
-				// margin-left: 4px;
-				// margin-right: 4px;
-				// margin-top: 1px;
-			}
-
-		}
-
-		.x-grid3-row {
-			padding: 3px;
-
-			.x-grid3-cell-inner {
-				color: _property($ROW--COLOR, $EDIT-ENGINE);
-			}
-
-			&.x-grid3-row-over {
-				.x-grid3-cell-inner {
-					color: _property($ROW--COLOR---HOVER, $EDIT-ENGINE);
-				}
-			}
-
-			// &.x-grid3-row-selected {
-			// 	.x-grid3-cell-inner {
-			// 		color: _property($ROW--COLOR---SELECTED, $EDIT-ENGINE);
-			// 	}
-      //
-			// 	&.x-grid3-row-over {
-			// 		.x-grid3-cell-inner {
-			// 			color: _property($ROW--COLOR---SELECTED, $EDIT-ENGINE);
-			// 		}
-			// 	}
-      //
-			// }
-		}
-
-		.x-grid3 .x-grid3-row-table .x-grid3-cell {
-
-			.x-grid3-cell-inner {
-					// line-height: 24px;
-					font-family: "Nunito Sans", sans-serif;
-
-					&.x-grid3-col-action {
-						padding: 0;
-
-					}
-
-					img {
-						padding-top: 4px;
-					}
-
-			}
-
-			&:last-child {
-			    width: 400px !important;
-			}
-
-		}
-
-		> .x-grid-panel.x-component.x-border-panel .x-panel-fbar {
-
-			@include _button(".button-cancel", "FORM_SMALL", "remove-icons");
-			@include _button(".button-noworkflow", "FORM_SMALL", "remove-icons");
-			@include _button(".button-start", "FORM_SMALL", "remove-icons");
-			@include _button(".button-bypassworkflow", "FORM_SMALL", "remove-icons");
-
-
-		}
-
-		> .x-grid-panel.x-component.x-border-panel .x-grid3 .x-grid3-row {
-			// height: 30px !important;
-
-			&.x-grid3-row-selected {
-				background-color: #e1e1e1 !important;
-			}
-
-		}
-
-		.x-panel-fbar {
-
-			.x-toolbar-ct {
-					float: right;
-			}
-
-			.x-btn.x-btn-noicon button {
-				// background: transparent !important;
-				// padding: 0!important;
-				// font-size: 14px;
-				// margin-right: 16px;
-				// font-weight: 400;
-			}
-
-		}
-
-		.x-border-layout-ct:nth-child(1) > .x-border-panel {
-			//height: 24px !important;
-			// margin-top: 14px;
-			color: _property($SUBTITLE--COLOR, $EDIT-ENGINE);
-			padding-top: 20px;
-			height: calc(100% - 3px)!important;
-			margin: 0!important;
-			width: calc(100% - 30px)!important;
-
-			> table.x-component {
-				margin: 0 0 0 25px;
-			}
-
-			.x-component {
-				font-size: 14px;
-				color: #363636;
-				font-weight: 300;
-			}
-		}
-
-		.x-tab-panel-body {
-			border-color: _theme-color(primary);
-
-			.x-grid3-body {
-			    padding-right: 160px;
-			    padding-left: 0;
-			}
-
-			.x-grid3-scroller .x-grid3-body {
-				overflow-x: hidden;
-				overflow-y: scroll;
-				width: calc(100% - 14px);
-				padding-right: 10px;
-
-				> .x-grid-group {
-					padding-left: 20px;
-
-					&:nth-child(even) {
-						background: linear-gradient(to right, #e3e2e2 50%, rgba(227, 226, 226, 0) 100%);
-					}
-				}
-			}
-
-			.x-panel-fbar .x-btn.x-btn-noicon button {
-				background: _property($BUTTON--BG, $EDIT-ENGINE) !important;
-				color: _property($BUTTON--COLOR, $EDIT-ENGINE) !important;
-				height: 24px !important;
-				font-size: 12px;
-			}
-
-			.x-grid-group-hd {
-		    // border-bottom-color: _theme-color(primary, d);
-		    // border-width: 1px;
-		    // border-bottom-style: dashed;
-			border:none;
-		    padding: 4px 0;
-		    padding-top: 8px;
-
-				.x-grid-group-div {
-					color: _property($FIELDSET--TITLE-COLOR, $EDIT-ENGINE);
-					font-weight: 300;
-					font-size: 18px;
-					font-family: "Nunito Sans", sans-serif;
-					padding-left: 11px;
-					background-image: url(../images/icons/icon-toggle-expanded-small-normal.png);
-					background-size: 7px 5px;
-					background-position: left;
-				}
-
-			}
-
-			.x-grid-group-collapsed .x-grid-group-hd .x-grid-group-div {
-				background-image: url(../images/icons/expand-side-panel@X2.png);
-				background-size: 5px 7px;
-				background-position: left;
-			}
-
-			.x-grid3 .x-grid3-row-table .x-grid3-cell .x-grid3-cell-inner {
-				font-size: 14px;
-				color: #363636;
-				font-weight: 300;
-			}
-
-		}
-
-		.x-border-layout-ct:nth-child(2) {
-			width: 100%!important;
-			// display: block!important;
-
-			height: 100% !important;
-			> .x-border-panel {
-				position: initial !important;
-
-
-
-				&:first-child {
-					width: calc(100% - 162px) !important;
-				    width: 100% !important;
-				    margin-bottom: 30px;
-				    margin-top: 190px;
-				    height: auto !important;
-				    position: relative !important;
-				    z-index: 999;
-
-					&:empty {
-						margin-bottom: 0;
-					}
-
-					> .x-component {
-						color: _theme-color(secondary, a);
-						position: relative;
-						margin-bottom: 1px;
-						border: none!important;
-						background: url(../images/icons/speech-DARK@X2.png) no-repeat center left 10px !important;
-						background-size: 29px!important;
-						padding: 7px 10px 7px 50px;
-					  box-sizing: border-box;
-					  margin-left: 2px;
-
-					  &:nth-child(even) {
-						  background: url(../images/icons/speech-DARK@X2.png) no-repeat center left 10px, linear-gradient(to right, #e3e2e2 50%, rgba(227, 226, 226, 0) 100%) !important;
-						background-size: 29px, 100% !important;
-					  }
-
-						> table {
-							width: 100%;
-
-							> tbody > tr > td {
-
-								display: block;
-
-								&:nth-child(1) {
-									// Message
-									margin-top: 21px;
-
-									div {
-										@include text(14px, _property($COMMENTS--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---LIGHT);
-									}
-								}
-
-								&:nth-child(2) {
-									// Author / date
-									position: absolute;
-									top: 5px;
-									width: 100%;
-
-									> div {
-										width: 100%!important;
-									}
-
-									tr {
-										display: inline-block;
-
-										&:nth-child(1) {
-											// Date
-											div {
-												@include text(14px, _property($COMMENTS--COLOR--DATE, $EDIT-ENGINE), $FONT--WEIGHT---LIGHT);
-											}
-										}
-
-										&:nth-child(2) {
-											// Author
-											div {
-												@include text(14px, _property($COMMENTS--COLOR--AUTHOR, $EDIT-ENGINE), $FONT--WEIGHT---LIGHT);
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-
-					&:empty:before {
-						content: "No comments";
-						text-align: center;
-						width: calc(100% - 162px);
-						position: absolute;
-						margin-top: 54px;
-						color: _theme-color(primary, e);
-						font-size: 12px;
-						height: 16px;
-						font-family: "Raleway", sans-serif;
-					}
-
-				}
-
-				&:nth-child(2) {
-					// background: pink;
-				    position: absolute !important;
-				    top: -189px !important;
-				    height: 184px !important;
-
-					.x-panel-bwrap {
-						width: 100%!important
-					}
-
-					.x-form-item {
-						margin: 0!important;
-						padding-bottom: 50px!important;
-						@extend %CSS_BLOCK--FIELDSET;
-
-					}
-
-
-					label {
-						@extend %CSS_BLOCK--FORM--LEGEND;
-					}
-
-
-					textarea {
-						@include _input($EDIT-ENGINE);
-						height: 100%!important;
-						width: calc(100% - 32px) !important;
-					}
-				}
-
-			}
-
-		}
-
-		.x-border-layout-ct:nth-child(2) {
-
-
-
-
-			form button.x-btn-text {
-				position: relative;
-				top: -42px;
-				left: 41px;
-				color: _theme-color(secondary, g) !important;
-			}
-
-			> .x-border-panel form.x-form-label-left {
-				// height: 152px !important;
-			}
-
-			> .x-border-panel .x-form-element .x-form-field-wrap.x-component {
-				overflow-y: scroll;
-				overflow-x: hidden;
-				height: 87px !important;
-				padding: 2px;
-				width: 100%!important;
-			}
-
-		}
-
-
-		&.engine-cards {
-			width: calc(100% - 144px) !important;
-
-
-			.x-border-layout-ct:nth-child(2) {
-				height: calc(100% - 190px)!important;
-			}
-
-
-			.x-border-layout-ct:nth-child(2) > .x-border-panel:first-child {
-				height: 100%!important;
-
-
-
-
-
-			}
-		}
-
-
-		/* Content review from workflow dashboard. */
-
-		&.x-panel.engine-panel.enginecards-ctn {
-			> .x-panel-bwrap {
-			    margin-top: 16px;
-				height: 100%!important;
-
-			}
-		}
-
-		&.x-panel.engine-panel {
-
-			> .x-panel-bwrap {
-
-				div.x-tab-panel-body {
-					height: calc(100% - 163px) !important;
-
-					> div:not(.x-border-layout-ct) {
-						height: auto!important;
-
-						> div {
-							height: auto!important
-						}
-					}
-				}
-
-				.x-tab-strip.x-tab-strip-top {
-					margin-top: 20px!important;
-				}
-
-				margin-top: 274px;
-				background: linear-gradient(to bottom, #dbdbdb 1%, #d5d5d5 100%);
-				box-shadow: inset 0 1px 2px 1px rgba(0, 0, 0, 0.2);
-			}
-
-			.x-toolbar-left {
-				bottom: 10px!important;
-			}
-
-			.x-tab-strip {
-				margin-top: 90px !important;
-			}
-
-			&:before {
-				content: "Workflow" !important;
-			}
-
-			> div.x-panel-header .x-panel-header-text {
-				color: #007cb0;
-		    display: inline-block;
-		    position: fixed;
-		    width: 100%;
-			left: 6px;
-		    top: 44px;
-		    font-weight: 100;
-		    max-width: calc(100% - 100px);
-		    font-size: 18px;
-
-				&:before {
-					content: "" !important;
-				}
-
-			}
-
-			> .x-panel-bwrap {
-
-				> .x-panel-bbar {
-					padding-bottom: 20px;
-
-					.x-toolbar-ct {
-						float: none;
-					}
-
-					.x-panel-fbar .x-toolbar-cell {
-
-						padding-bottom: 0!important;
-					    float: unset;
-					    margin-left: 5px !important;
-
-						> table:not(.button-cancel) {
-							button {
-								padding: 8px 15px !important;
-								background: #007cb0 !important;
-								font-family: $FONT--FAMILY---NUNITO;
-								font-size: 14px;
-								color: #F5F5F5 !important;
-								font-weight: $FONT--WEIGHT---EXTRALIGHT;
-								height: auto;
-							    width: auto!important;
-
-								img {
-									display: none;
-								}
-							}
-						}
-
-
-
-					}
-
-				}
-
-			}
-
-			.x-tab-panel .x-tab-panel-body {
-				overflow-y: auto;
-				border:none!important;
-				height: calc(100% - 102px) !important;
-
-				.x-form-label-left > .x-form-item:nth-child(2) {
-					margin-top: 24px;
-				}
-
-				.x-form-label-left > .x-form-item .cke {
-					width: 100% !important;
-				}
-
-				> div:nth-child(1) {
-					overflow: scroll;
-					height: calc(100% - 169px)!important;
-					width: 100%!important;
-				}
-
-			}
-
-		}
-
+    background: linear-gradient(to right bottom, whitesmoke 50%, #e5e4e4 100%) !important;
+
+    fieldset.x-fieldset:nth-child(odd) {
+        background: none !important;
+    }
+
+    > .x-border-panel:first-child {
+        height: 150px !important;
+        width: 100% !important;
+        z-index: 9999999;
+    }
+
+    .x-border-panel:nth-child(2) .x-panel-body.x-panel-body-noheader.x-panel-body-noborder {
+        height: 214px !important;
+    }
+
+    .x-border-panel > .x-panel-bwrap {
+        width: calc(100% - 16px) !important;
+        height: 100% !important;
+
+        &:only-child {
+            height: calc(100% - 15px) !important;
+        }
+
+        .x-panel-ml,
+        .x-panel-mr,
+        .x-panel-mc {
+            height: 100%;
+        }
+    }
+
+    .x-grid3-body {
+        padding: 0 47px;
+    }
+
+    .workflow-action-dialog {
+        .x-tab-panel-header {
+            top: 284px !important;
+            height: calc(100% - 338px) !important;
+            padding-top: 30px !important;
+            background: whitesmoke !important;
+            box-shadow: inset 1px 1px 2px 0px rgba(0, 0, 0, 0.2), 0px 2px 3px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        .x-grid3 .x-grid3-row-table .x-grid3-cell {
+            width: calc((100% - 204px) / 3) !important;
+            display: inline-block;
+
+            &:nth-child(4) {
+                width: 204px !important;
+            }
+
+            &:nth-child(5) {
+                display: none;
+            }
+        }
+
+        .x-grid3-row {
+            background: transparent !important;
+
+            &.x-grid3-row-selected.x-grid3-row-over {
+                background: transparent !important;
+            }
+        }
+
+        > div {
+            width: 100% !important;
+        }
+    }
+
+    .x-grid3-row {
+        padding: 3px;
+
+        .x-grid3-cell-inner {
+            color: _property($ROW--COLOR, $EDIT-ENGINE);
+        }
+
+        &.x-grid3-row-over {
+            .x-grid3-cell-inner {
+                color: _property($ROW--COLOR---HOVER, $EDIT-ENGINE);
+            }
+        }
+    }
+
+    .x-grid3 .x-grid3-row-table .x-grid3-cell {
+
+        .x-grid3-cell-inner {
+            font-family: "Nunito Sans", sans-serif;
+
+            &.x-grid3-col-action {
+                padding: 0;
+            }
+
+            img {
+                padding-top: 4px;
+            }
+
+        }
+
+        &:last-child {
+            width: 400px !important;
+        }
+    }
+
+    > .x-grid-panel.x-component.x-border-panel .x-panel-fbar {
+        @include _button(".button-cancel", "FORM_SMALL", "remove-icons");
+        @include _button(".button-noworkflow", "FORM_SMALL", "remove-icons");
+        @include _button(".button-start", "FORM_SMALL", "remove-icons");
+        @include _button(".button-bypassworkflow", "FORM_SMALL", "remove-icons");
+    }
+
+    > .x-grid-panel.x-component.x-border-panel .x-grid3 .x-grid3-row {
+        &.x-grid3-row-selected {
+            background-color: #e1e1e1 !important;
+        }
+    }
+
+    .x-panel-fbar {
+
+        .x-toolbar-ct {
+            float: right;
+        }
+    }
+
+    .x-border-layout-ct:nth-child(1) > .x-border-panel {
+        color: _property($SUBTITLE--COLOR, $EDIT-ENGINE);
+        padding-top: 20px;
+        height: calc(100% - 3px) !important;
+        margin: 0 !important;
+        width: calc(100% - 30px) !important;
+
+        > table.x-component {
+            margin: 0 0 0 25px;
+        }
+
+        .x-component {
+            font-size: 14px;
+            color: #363636;
+            font-weight: 300;
+        }
+    }
+
+    .x-tab-panel-body {
+        border-color: _theme-color(primary);
+
+        .x-grid3-body {
+            padding-right: 160px;
+            padding-left: 0;
+        }
+
+        .x-grid3-scroller .x-grid3-body {
+            overflow-x: hidden;
+            overflow-y: scroll;
+            width: calc(100% - 14px);
+            padding-right: 10px;
+
+            > .x-grid-group {
+                padding-left: 20px;
+
+                &:nth-child(even) {
+                    background: linear-gradient(to right, #e3e2e2 50%, rgba(227, 226, 226, 0) 100%);
+                }
+            }
+        }
+
+        .x-panel-fbar .x-btn.x-btn-noicon button {
+            background: _property($BUTTON--BG, $EDIT-ENGINE) !important;
+            color: _property($BUTTON--COLOR, $EDIT-ENGINE) !important;
+            height: 24px !important;
+            font-size: 12px;
+        }
+
+        .x-grid-group-hd {
+            border: none;
+            padding: 4px 0;
+            padding-top: 8px;
+
+            .x-grid-group-div {
+                color: _property($FIELDSET--TITLE-COLOR, $EDIT-ENGINE);
+                font-weight: 300;
+                font-size: 18px;
+                font-family: "Nunito Sans", sans-serif;
+                padding-left: 11px;
+                background-image: url(../images/icons/icon-toggle-expanded-small-normal.png);
+                background-size: 7px 5px;
+                background-position: left;
+            }
+        }
+
+        .x-grid-group-collapsed .x-grid-group-hd .x-grid-group-div {
+            background-image: url(../images/icons/expand-side-panel@X2.png);
+            background-size: 5px 7px;
+            background-position: left;
+        }
+
+        .x-grid3 .x-grid3-row-table .x-grid3-cell .x-grid3-cell-inner {
+            font-size: 14px;
+            color: #363636;
+            font-weight: 300;
+        }
+    }
+
+    .x-border-layout-ct:nth-child(2) {
+        width: 100% !important;
+        height: 100% !important;
+
+        > .x-border-panel {
+            position: initial !important;
+
+            &:first-child {
+                width: 100% !important;
+                margin-bottom: 30px;
+                margin-top: 190px;
+                height: auto !important;
+                position: relative !important;
+                z-index: 999;
+
+                &:empty {
+                    margin-bottom: 0;
+                }
+
+                > .x-component {
+                    color: _theme-color(secondary, a);
+                    position: relative;
+                    margin-bottom: 1px;
+                    border: none !important;
+                    background: url(../images/icons/speech-DARK@X2.png) no-repeat center left 10px !important;
+                    background-size: 29px !important;
+                    padding: 7px 10px 7px 50px;
+                    box-sizing: border-box;
+                    margin-left: 2px;
+
+                    &:nth-child(even) {
+                        background: url(../images/icons/speech-DARK@X2.png) no-repeat center left 10px, linear-gradient(to right, #e3e2e2 50%, rgba(227, 226, 226, 0) 100%) !important;
+                        background-size: 29px, 100% !important;
+                    }
+
+                    > table {
+                        width: 100%;
+
+                        > tbody > tr > td {
+
+                            display: block;
+
+                            &:nth-child(1) {
+                                // Message
+                                margin-top: 21px;
+
+                                div {
+                                    @include text(14px, _property($COMMENTS--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---LIGHT);
+                                }
+                            }
+
+                            &:nth-child(2) {
+                                // Author / date
+                                position: absolute;
+                                top: 5px;
+                                width: 100%;
+
+                                > div {
+                                    width: 100% !important;
+                                }
+
+                                tr {
+                                    display: inline-block;
+
+                                    &:nth-child(1) {
+                                        // Date
+                                        div {
+                                            @include text(14px, _property($COMMENTS--COLOR--DATE, $EDIT-ENGINE), $FONT--WEIGHT---LIGHT);
+                                        }
+                                    }
+
+                                    &:nth-child(2) {
+                                        // Author
+                                        div {
+                                            @include text(14px, _property($COMMENTS--COLOR--AUTHOR, $EDIT-ENGINE), $FONT--WEIGHT---LIGHT);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                &:empty:before {
+                    content: "No comments";
+                    text-align: center;
+                    width: calc(100% - 162px);
+                    position: absolute;
+                    margin-top: 54px;
+                    color: _theme-color(primary, e);
+                    font-size: 12px;
+                    height: 16px;
+                    font-family: "Raleway", sans-serif;
+                }
+
+            }
+
+            &:nth-child(2) {
+                position: absolute !important;
+                top: -189px !important;
+                height: 184px !important;
+
+                .x-panel-bwrap {
+                    width: 100% !important
+                }
+
+                .x-form-item {
+                    margin: 0 !important;
+                    padding-bottom: 50px !important;
+                    @extend %CSS_BLOCK--FIELDSET;
+                }
+
+
+                label {
+                    @extend %CSS_BLOCK--FORM--LEGEND;
+                }
+
+
+                textarea {
+                    @include _input($EDIT-ENGINE);
+                    height: 100% !important;
+                    width: calc(100% - 32px) !important;
+                }
+            }
+        }
+    }
+
+    .x-border-layout-ct:nth-child(2) {
+        form button.x-btn-text {
+            position: relative;
+            top: -42px;
+            left: 41px;
+            color: _theme-color(secondary, g) !important;
+        }
+
+        > .x-border-panel .x-form-element .x-form-field-wrap.x-component {
+            overflow-y: scroll;
+            overflow-x: hidden;
+            height: 87px !important;
+            padding: 2px;
+            width: 100% !important;
+        }
+    }
+
+
+    &.engine-cards {
+        width: calc(100% - 144px) !important;
+
+        .x-border-layout-ct:nth-child(2) {
+            height: calc(100% - 190px) !important;
+        }
+
+        .x-border-layout-ct:nth-child(2) > .x-border-panel:first-child {
+            height: 100% !important;
+        }
+    }
+
+
+    /* Content review from workflow dashboard. */
+
+    &.x-panel.engine-panel.enginecards-ctn {
+        > .x-panel-bwrap {
+            margin-top: 16px;
+            height: 100% !important;
+        }
+    }
+
+    &.x-panel.engine-panel {
+
+        > .x-panel-bwrap {
+
+            div.x-tab-panel-body {
+                height: calc(100% - 163px) !important;
+
+                > div:not(.x-border-layout-ct) {
+                    height: auto !important;
+
+                    > div {
+                        height: auto !important
+                    }
+                }
+            }
+
+            .x-tab-strip.x-tab-strip-top {
+                margin-top: 20px !important;
+            }
+
+            margin-top: 274px;
+            background: linear-gradient(to bottom, #dbdbdb 1%, #d5d5d5 100%);
+            box-shadow: inset 0 1px 2px 1px rgba(0, 0, 0, 0.2);
+        }
+
+        .x-toolbar-left {
+            bottom: 10px !important;
+        }
+
+        .x-tab-strip {
+            margin-top: 90px !important;
+        }
+
+        &:before {
+            content: "Workflow" !important;
+        }
+
+        > div.x-panel-header .x-panel-header-text {
+            color: #007cb0;
+            display: inline-block;
+            position: fixed;
+            width: 100%;
+            left: 6px;
+            top: 44px;
+            font-weight: 100;
+            max-width: calc(100% - 100px);
+            font-size: 18px;
+
+            &:before {
+                content: "" !important;
+            }
+        }
+
+        > .x-panel-bwrap {
+
+            > .x-panel-bbar {
+                padding-bottom: 20px;
+
+                .x-toolbar-ct {
+                    float: none;
+                }
+
+                .x-panel-fbar .x-toolbar-cell {
+
+                    padding-bottom: 0 !important;
+                    float: unset;
+                    margin-left: 5px !important;
+
+                    > table:not(.button-cancel) {
+                        button {
+                            padding: 8px 15px !important;
+                            background: #007cb0 !important;
+                            font-family: $FONT--FAMILY---NUNITO;
+                            font-size: 14px;
+                            color: #F5F5F5 !important;
+                            font-weight: $FONT--WEIGHT---EXTRALIGHT;
+                            height: auto;
+                            width: auto !important;
+
+                            img {
+                                display: none;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .x-tab-panel .x-tab-panel-body {
+            overflow-y: auto;
+            border: none !important;
+            height: calc(100% - 102px) !important;
+
+            .x-form-label-left > .x-form-item:nth-child(2) {
+                margin-top: 24px;
+            }
+
+            .x-form-label-left > .x-form-item .cke {
+                width: 100% !important;
+            }
+
+            > div:nth-child(1) {
+                overflow: scroll;
+                height: calc(100% - 169px) !important;
+                width: 100% !important;
+            }
+        }
+    }
 }
 
 .workflowactiondialog-ctn .x-small-editor .x-toolbar-left td.x-toolbar-cell:first-child {
-	float: right;
+    float: right;
 }
+
 .workflowactiondialog-ctn .x-small-editor .x-toolbar-left td.x-toolbar-cell:last-child {
-	float: left;
-	margin-right:4px;
+    float: left;
+    margin-right: 4px;
 }
-
-// ?
-// .workflowactiondialog-card.engine-panel-TEST {
-//
-//
-//
-// 	.x-grid3-row {
-// 		background: url(../images/icons/ic_info_outline-DARK-OPAQUE@2x.png) no-repeat right 5px center _theme-color(secondary, a)!important;
-// 		background-size: 18px!important;
-// 		padding-right: 20px;
-// 		margin-bottom: 1px;
-//
-// 		.x-grid3-cell-inner {
-// 			color: _theme-color(primary) !important;
-// 		}
-//
-// 		&.x-grid3-row-over,
-// 		&.x-grid3-row-selected.x-grid3-row-over {
-// 			background: url(../images/icons/ic_info_outline-DARK@2x.png) no-repeat right 5px center _theme-color(secondary, a)!important;
-// 			background-size: 18px!important;
-// 		}
-// 	}
-//
-// 	&.indigo-opened {
-// 		.workflowactiondialog-ctn {
-// 			> .x-border-panel:nth-child(2) {
-// 				display: block;
-// 			}
-// 		}
-// 	}
-//
-// 	.workflowactiondialog-ctn {
-//
-// 		.x-grid-panel.x-component.x-border-panel .x-panel-fbar .x-toolbar-cell {
-// 			&:first-child{
-// 				.x-btn.x-btn-noicon button {
-// 					@include text(12px, _property($ACTION-SUGGESTED--COLOR, $EDIT-ENGINE)!important, $FONT--WEIGHT---EXTRALIGHT);
-// 					background: _theme-color(quaternary) !important;
-// 					padding: 4px 5px!important;
-// 				}
-// 			}
-//
-// 			.x-btn.x-btn-noicon button {
-// 				@include text(12px, _property($ACTION-DEFAULT--COLOR, $EDIT-ENGINE)!important, $FONT--WEIGHT---EXTRALIGHT);
-// 				background: _theme-color(quaternary) !important;
-// 				padding: 4px 5px!important;
-// 			}
-// 		}
-//
-//
-// 		> .x-border-panel:nth-child(2) {
-// 			position: fixed!important;
-// 			background: _property($MODAL-SOLID--BG---LEGACY, $EDIT-ENGINE);
-// 			width: 100%!important;
-// 			left: 0!important;
-// 			height: 100%!important;
-// 			top: 0!important;
-// 			z-index: 99;
-//
-// 			display: none;
-// 		}
-//
-// 		.workflow-action-dialog {
-// 			width: calc(100% - 120px)!important;
-// 			background: _property($BODY--BG, $EDIT-ENGINE);
-// 			left: 60px;
-// 			position: relative;
-// 			top: 150px;
-// 			box-shadow: _property($BODY--BG--SHADOW, $EDIT-ENGINE);
-// 			height: auto!important;
-// 			padding-bottom: 30px;
-// 			border-top: none!important;
-//
-// 			&:before {
-// 				content: "Publication Options";
-// 				font-size: 26px;
-// 				color: _property($TITLE--COLOR, $EDIT-ENGINE);;
-// 				font-weight: 100;
-// 				font-family: Nunito Sans;
-// 				margin-left: 40px;
-// 				display: block;
-// 				margin-top: 10px;
-// 				margin-bottom: 20px;
-// 			}
-//
-// 			.x-tab-panel {
-// 				height: 300px!important;
-// 			}
-//
-// 			.x-tab-panel-header {
-// 				padding: 0 0 0 41px!important;
-//
-// 				.x-tab-strip-spacer {
-// 					&:after {
-// 						content: "Done";
-// 						display: inline-block;
-// 						font-size: 16px;
-// 						background: _property($ACTION-SUGGESTED--BG, $EDIT-ENGINE);
-// 						color: _property($ACTION-SUGGESTED--COLOR, $EDIT-ENGINE);
-// 						position: absolute;
-// 						bottom: 30px;
-// 						left: 36px;
-// 						padding: 7px 10px;
-// 					}
-//
-// 					&:hover{
-// 						&:after {
-// 							background: _property($ACTION-SUGGESTED--BG---HOVER, $EDIT-ENGINE);
-// 							color: _property($ACTION-SUGGESTED--COLOR---HOVER, $EDIT-ENGINE);
-// 							cursor: pointer;
-// 						}
-// 					}
-// 				}
-// 			}
-//
-// 			.x-tab-panel-body {
-// 				height: 100%!important;
-// 				border: none!important;
-//
-// 				> div {
-// 					width: 100%!important;
-// 					height: 100%!important;
-// 					> div{
-// 						height: auto!important;
-// 						&:nth-child(3)  {
-// 							width: 100%!important;
-// 							height: 100%!important;
-// 							.x-grid3-body {
-// 								width: 100%!important;
-// 							}
-// 						}
-// 					}
-// 				}
-// 			}
-//
-// 		}
-// 	}
-//
-// }
-
-// .workflowactiondialog-card > .x-panel-bwrap .x-panel-body.x-panel-body-noborder {
-// 	// overflow: hidden;
-// }

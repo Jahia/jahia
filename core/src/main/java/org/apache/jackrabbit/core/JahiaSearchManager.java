@@ -124,16 +124,17 @@ public class JahiaSearchManager extends SearchManager {
 
     //---------------< EventListener interface >--------------------------------
 
+    @Override
     public void onEvent(EventIterator events) {
         log.debug("onEvent: indexing started");
         long time = System.currentTimeMillis();
 
         // nodes that need to be removed from the index.
-        final Set<NodeId> removedNodes = new HashSet<NodeId>();
+        final Set<NodeId> removedNodes = new HashSet<>();
         // nodes that need to be added to the index.
-        final Map<NodeId, EventImpl> addedNodes = new HashMap<NodeId, EventImpl>();
+        final Map<NodeId, EventImpl> addedNodes = new HashMap<>();
         // property events
-        List<EventImpl> propEvents = new ArrayList<EventImpl>();
+        List<EventImpl> propEvents = new ArrayList<>();
 
         while (events.hasNext()) {
             EventImpl e = (EventImpl) events.nextEvent();
@@ -160,7 +161,7 @@ public class JahiaSearchManager extends SearchManager {
         }
 
         // Jahia: node-event based nodes that need to be removed from the index.
-        final Set<NodeId> nodeEventRemovedNodes = new HashSet<NodeId>(removedNodes);
+        final Set<NodeId> nodeEventRemovedNodes = new HashSet<>(removedNodes);
         
         // sort out property events
         for (EventImpl e : propEvents) {
@@ -185,7 +186,7 @@ public class JahiaSearchManager extends SearchManager {
                             addedNodes.put(nodeId, e);
                         }
                     } catch (RepositoryException ex) {
-                        log.warn("Exception retrieving path: " + ex);
+                        log.warn("Exception retrieving path", ex);
                     }
                 }
                     
@@ -202,15 +203,13 @@ public class JahiaSearchManager extends SearchManager {
             addJahiaDependencies(removedNodes, addedNodes, propEvents, nodeEventRemovedNodes);
         
             boolean addedNodesPresent = addedNodes.size() > 0;
-            if (addedNodesPresent || removedNodes.size() > 0) {
+            if (addedNodesPresent || !removedNodes.isEmpty()) {
                 Iterator<NodeState> addedStates = addedNodesPresent ? new NodeStateIterator(addedNodes) : Collections.<NodeState>emptyIterator();
                 Iterator<NodeId> removedIds = removedNodes.iterator();            
             
                 getQueryHandler().updateNodes(removedIds, addedStates);
             }
-        } catch (RepositoryException e) {
-            log.error("Error indexing node.", e);
-        } catch (IOException e) {
+        } catch (RepositoryException | IOException e) {
             log.error("Error indexing node.", e);
         }
 
@@ -232,7 +231,7 @@ public class JahiaSearchManager extends SearchManager {
             final Searcher searcher = new IndexSearcher(reader);
             try {
                 int removeSubListStart = 0;
-                List<NodeId> removeList = new ArrayList<NodeId>(hierarchyNodeIds);
+                List<NodeId> removeList = new ArrayList<>(hierarchyNodeIds);
                 int removeSubListEnd = Math.min(removeList.size(), BooleanQuery.getMaxClauseCount());
                 while (removeSubListStart < removeList.size()) {
                     long timer = System.currentTimeMillis();
@@ -314,7 +313,7 @@ public class JahiaSearchManager extends SearchManager {
         if (nodeEventRemovedIds.isEmpty()) {
             return Collections.emptySet();
         }
-        Set<NodeId> hierarchicalNodes = new HashSet<NodeId>();
+        Set<NodeId> hierarchicalNodes = new HashSet<>();
         Set<Name> hierarchicalNodeTypes = ((JahiaIndexingConfigurationImpl) ((SearchIndex)getQueryHandler()).getIndexingConfig()).getHierarchicalNodetypes();
         for (final NodeId nodeId : nodeEventRemovedIds) {
             try { 
@@ -338,6 +337,7 @@ public class JahiaSearchManager extends SearchManager {
             iter = addedNodes.keySet().iterator();
         }
 
+        @Override
         public void remove() {
             throw new UnsupportedOperationException();
         }
@@ -352,7 +352,7 @@ public class JahiaSearchManager extends SearchManager {
 
         public NodeState next() {
             NodeState item = null;
-            NodeId id = (NodeId) iter.next();
+            NodeId id = iter.next();
             try {
                 item = (NodeState) itemMgr.getItemState(id);
             } catch (ItemStateException ise) {
@@ -360,7 +360,7 @@ public class JahiaSearchManager extends SearchManager {
                 // an external event
                 EventImpl e = addedNodes.get(id);
                 if (e == null || !e.isExternal()) {
-                    log.error("Unable to index node " + id + ": does not exist");
+                    log.error("Unable to index node {}: does not exist", id);
                 } else {
                     log.info("Node no longer available {}, skipped.", id);
                 }

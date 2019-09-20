@@ -78,7 +78,6 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.TermQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -228,7 +227,7 @@ public class JahiaSearchManager extends SearchManager {
             // if a node which is referenced with a hierarchical faceting property is moved/renamed, we need to re-index the nodes
             // referring to it
             final IndexReader reader = ((SearchIndex)getQueryHandler()).getIndexReader();
-            final Searcher searcher = new IndexSearcher(reader);
+            final IndexSearcher searcher = new IndexSearcher(reader);
             try {
                 int removeSubListStart = 0;
                 List<NodeId> removeList = new ArrayList<>(hierarchyNodeIds);

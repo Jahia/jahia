@@ -72,7 +72,7 @@ import java.util.List;
 
 /**
  * Jackrabbit repository extension
- * <p/>
+ * <p>
  * Used to return session extension
  */
 public class JahiaRepositoryImpl extends RepositoryImpl implements ReadOnlyModeCapable {
@@ -127,7 +127,7 @@ public class JahiaRepositoryImpl extends RepositoryImpl implements ReadOnlyModeC
 
     /**
      * Creates a new <code>RepositoryImpl</code> instance.
-     * <p/>
+     * <p>
      *
      * @param config the configuration of the repository
      * @return a new <code>RepositoryImpl</code> instance
@@ -255,7 +255,7 @@ public class JahiaRepositoryImpl extends RepositoryImpl implements ReadOnlyModeC
             ((JahiaSearchIndex) getWorkspaceInfo("default").getSearchManager().getQueryHandler()).switchReadOnlyMode(enable);
             ((JahiaSearchIndex) getWorkspaceInfo("live").getSearchManager().getQueryHandler()).switchReadOnlyMode(enable);
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            log.error("Failed to switch read-only mode to " + enable, e);
         }
     }
 

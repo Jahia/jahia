@@ -200,6 +200,13 @@ class BundleStarter {
             // as the bundles are not started automatically by Fileinstall we need to start them manually
             for (Long bundleId : createdOnStartup) {
                 Bundle bundle = getBundleContext().getBundle(bundleId);
+
+                // This was added to address potential NPE, see QA-12181 for details
+                if (bundle == null) {
+                    logger.error("Could not find bundle with id {}, will skip to next bundle.", bundleId);
+                    continue;
+                }
+
                 if (bundle.getState() != Bundle.ACTIVE && bundle.getState() != Bundle.UNINSTALLED && !BundleUtils.isFragment(bundle) && BundleUtils.isJahiaModuleBundle(bundle)) {
                     toBeStarted.add(bundle);
                 }
@@ -273,6 +280,7 @@ class BundleStarter {
 
     /**
      * Used only for migrations from versions < 7.3.1.1
+     *
      * @deprecated
      */
     @Deprecated
@@ -327,6 +335,7 @@ class BundleStarter {
 
     /**
      * Used only for migrations from versions < 7.3.1.1
+     *
      * @deprecated
      */
     @Deprecated

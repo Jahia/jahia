@@ -1,69 +1,68 @@
 /////////////////////////////////////////////////
 // BASE COLOURS /////////////////////////////////
 /////////////////////////////////////////////////
-    $EDIT_ENGINE--BASE--COLOUR:                                     _theme-color(primary);
-    $MODAL--BG--COLOUR:                                             rgba(_theme-color(primary), .98);
-
+$EDIT_ENGINE--BASE--COLOUR: _theme-color(primary);
+$MODAL--BG--COLOUR: rgba(_theme-color(primary), .98);
 
 
 /////////////////////////////////////////////////
 // DEFAULTS /////////////////////////////////////
 /////////////////////////////////////////////////
-    $DEFAULT--FONT--FAMILY:                                         $FONT--FAMILY---NUNITO;
-    $DEFAULT--FONT--SIZE:                                           14px;
-    $DEFAULT--FONT--WEIGHT:                                         $FONT--WEIGHT---NORMAL;
-    $DEFAULT--FONT--COLOUR:                                         _theme-color(secondary);
+$DEFAULT--FONT--FAMILY: $FONT--FAMILY---NUNITO;
+$DEFAULT--FONT--SIZE: 14px;
+$DEFAULT--FONT--WEIGHT: $FONT--WEIGHT---NORMAL;
+$DEFAULT--FONT--COLOUR: _theme-color(secondary);
 
-    $DEFAULT--TITLE_FONT--FAMILY:                                   $FONT--FAMILY---RALEWAY;
+$DEFAULT--TITLE_FONT--FAMILY: $FONT--FAMILY---RALEWAY;
 
-	$DEFAULT--TRANSITION: 											$TRANSITION--QUICK---ALL;
+$DEFAULT--TRANSITION: $TRANSITION--QUICK---ALL;
 
 
 /////////////////////////////////////////////////
 // ICONS ///////////////////////////////////
 /////////////////////////////////////////////////
 
-    // TAB ICONS ::: CLOSED
-    $SIDE_PANEL--ICON--SPLIITER:                                    $ICON--SPLIITER---GREY;
+// TAB ICONS ::: CLOSED
+$SIDE_PANEL--ICON--SPLIITER: $ICON--SPLIITER---GREY;
 
-    $SIDE_PANEL--ICON--PAGES---CLOSED:                             	$ICON--PAGES---WHITE;
-    $SIDE_PANEL--ICON--CREATE---CLOSED:                            	$ICON--CREATE---WHITE;
-    $SIDE_PANEL--ICON--CONTENT---CLOSED:                           	$ICON--CONTENT---WHITE;
-    $SIDE_PANEL--ICON--FILES---CLOSED:                             	$ICON--FILES---WHITE;
-    $SIDE_PANEL--ICON--SEARCH---CLOSED:                            	$ICON--SEARCH---WHITE;
-    $SIDE_PANEL--ICON--TAXONOMY---CLOSED:                          	$ICON--TAXONOMY---WHITE;
-    $SIDE_PANEL--ICON--DEVICES---CLOSED:                           	$ICON--DEVICES---WHITE;
-    $SIDE_PANEL--ICON--SETTINGS---CLOSED:                          	$ICON--SETTINGS---WHITE;
+$SIDE_PANEL--ICON--PAGES---CLOSED: $ICON--PAGES---WHITE;
+$SIDE_PANEL--ICON--CREATE---CLOSED: $ICON--CREATE---WHITE;
+$SIDE_PANEL--ICON--CONTENT---CLOSED: $ICON--CONTENT---WHITE;
+$SIDE_PANEL--ICON--FILES---CLOSED: $ICON--FILES---WHITE;
+$SIDE_PANEL--ICON--SEARCH---CLOSED: $ICON--SEARCH---WHITE;
+$SIDE_PANEL--ICON--TAXONOMY---CLOSED: $ICON--TAXONOMY---WHITE;
+$SIDE_PANEL--ICON--DEVICES---CLOSED: $ICON--DEVICES---WHITE;
+$SIDE_PANEL--ICON--SETTINGS---CLOSED: $ICON--SETTINGS---WHITE;
 
-    // TAB ICONS ::: OPEN
-    $SIDE_PANEL--ICON--PAGES---OPEN:                            	$ICON--PAGES---GREY;
-    $SIDE_PANEL--ICON--CREATE---OPEN:                              	$ICON--CREATE---GREY;
-    $SIDE_PANEL--ICON--CONTENT---OPEN:                             	$ICON--CONTENT---GREY;
-    $SIDE_PANEL--ICON--FILES---OPEN:                               	$ICON--FILES---GREY;
-    $SIDE_PANEL--ICON--SEARCH---OPEN:                              	$ICON--SEARCH---GREY;
-    $SIDE_PANEL--ICON--TAXONOMY---OPEN:                            	$ICON--TAXONOMY---GREY;
-    $SIDE_PANEL--ICON--DEVICES---OPEN:                             	$ICON--DEVICES---GREY;
-    $SIDE_PANEL--ICON--SETTINGS---OPEN:                            	$ICON--SETTINGS---GREY;
+// TAB ICONS ::: OPEN
+$SIDE_PANEL--ICON--PAGES---OPEN: $ICON--PAGES---GREY;
+$SIDE_PANEL--ICON--CREATE---OPEN: $ICON--CREATE---GREY;
+$SIDE_PANEL--ICON--CONTENT---OPEN: $ICON--CONTENT---GREY;
+$SIDE_PANEL--ICON--FILES---OPEN: $ICON--FILES---GREY;
+$SIDE_PANEL--ICON--SEARCH---OPEN: $ICON--SEARCH---GREY;
+$SIDE_PANEL--ICON--TAXONOMY---OPEN: $ICON--TAXONOMY---GREY;
+$SIDE_PANEL--ICON--DEVICES---OPEN: $ICON--DEVICES---GREY;
+$SIDE_PANEL--ICON--SETTINGS---OPEN: $ICON--SETTINGS---GREY;
 
-    // TAB ICONS ::: SELECTED
-    $SIDE_PANEL--ICON--PAGES---SELECTED:                           	$ICON--PAGES---BLUE;
-    $SIDE_PANEL--ICON--CREATE---SELECTED:                          	$ICON--CREATE---BLUE;
-    $SIDE_PANEL--ICON--CONTENT---SELECTED:                         	$ICON--CONTENT---BLUE;
-    $SIDE_PANEL--ICON--FILES---SELECTED:                           	$ICON--FILES---BLUE;
-    $SIDE_PANEL--ICON--SEARCH---SELECTED:                          	$ICON--SEARCH---BLUE;
-    $SIDE_PANEL--ICON--TAXONOMY---SELECTED:                        	$ICON--TAXONOMY---BLUE;
-    $SIDE_PANEL--ICON--DEVICES---SELECTED:                         	$ICON--DEVICES---BLUE;
-    $SIDE_PANEL--ICON--SETTINGS---SELECTED:                        	$ICON--SETTINGS---BLUE;
+// TAB ICONS ::: SELECTED
+$SIDE_PANEL--ICON--PAGES---SELECTED: $ICON--PAGES---BLUE;
+$SIDE_PANEL--ICON--CREATE---SELECTED: $ICON--CREATE---BLUE;
+$SIDE_PANEL--ICON--CONTENT---SELECTED: $ICON--CONTENT---BLUE;
+$SIDE_PANEL--ICON--FILES---SELECTED: $ICON--FILES---BLUE;
+$SIDE_PANEL--ICON--SEARCH---SELECTED: $ICON--SEARCH---BLUE;
+$SIDE_PANEL--ICON--TAXONOMY---SELECTED: $ICON--TAXONOMY---BLUE;
+$SIDE_PANEL--ICON--DEVICES---SELECTED: $ICON--DEVICES---BLUE;
+$SIDE_PANEL--ICON--SETTINGS---SELECTED: $ICON--SETTINGS---BLUE;
 
-    // TAB ICONS ::: OFF
-    $SIDE_PANEL--ICON--PAGES---OFF:                                	$ICON--PAGES---BLACK;
-    $SIDE_PANEL--ICON--CREATE---OFF:                               	$ICON--CREATE---BLACK;
-    $SIDE_PANEL--ICON--CONTENT---OFF:                              	$ICON--CONTENT---BLACK;
-    $SIDE_PANEL--ICON--FILES---OFF:                                	$ICON--FILES---BLACK;
-    $SIDE_PANEL--ICON--SEARCH---OFF:                               	$ICON--SEARCH---BLACK;
-    $SIDE_PANEL--ICON--TAXONOMY---OFF:                             	$ICON--TAXONOMY---BLACK;
-    $SIDE_PANEL--ICON--DEVICES---OFF:                              	$ICON--DEVICES---BLACK;
-    $SIDE_PANEL--ICON--SETTINGS---OFF:                             	$ICON--SETTINGS---BLACK;
+// TAB ICONS ::: OFF
+$SIDE_PANEL--ICON--PAGES---OFF: $ICON--PAGES---BLACK;
+$SIDE_PANEL--ICON--CREATE---OFF: $ICON--CREATE---BLACK;
+$SIDE_PANEL--ICON--CONTENT---OFF: $ICON--CONTENT---BLACK;
+$SIDE_PANEL--ICON--FILES---OFF: $ICON--FILES---BLACK;
+$SIDE_PANEL--ICON--SEARCH---OFF: $ICON--SEARCH---BLACK;
+$SIDE_PANEL--ICON--TAXONOMY---OFF: $ICON--TAXONOMY---BLACK;
+$SIDE_PANEL--ICON--DEVICES---OFF: $ICON--DEVICES---BLACK;
+$SIDE_PANEL--ICON--SETTINGS---OFF: $ICON--SETTINGS---BLACK;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -78,115 +77,115 @@
 // FORMS ////////////////////////////////////////
 /////////////////////////////////////////////////
 
-    $FORM--CONTEXT_MENU--BG--COLOUR---UP:                           _theme-color(tertiary);
-    $FORM--CONTEXT_MENU--BG--COLOUR---HOVER:                        lighten($FORM--CONTEXT_MENU--BG--COLOUR---UP, 5%);
-    $FORM--CONTEXT_MENU--BG--COLOUR---DISABLED:                     _theme-color(tertiary);
-    $FORM--CONTEXT_MENU--FONT--COLOUR---UP:                         _theme-color(secondary);
-    $FORM--CONTEXT_MENU--FONT--COLOUR---HOVER:                      _theme-color(secondary);
-    $FORM--CONTEXT_MENU--FONT--COLOUR---DISABLED:                   rgba($FORM--CONTEXT_MENU--FONT--COLOUR---UP, .7) !important;
+$FORM--CONTEXT_MENU--BG--COLOUR---UP: _theme-color(tertiary);
+$FORM--CONTEXT_MENU--BG--COLOUR---HOVER: lighten($FORM--CONTEXT_MENU--BG--COLOUR---UP, 5%);
+$FORM--CONTEXT_MENU--BG--COLOUR---DISABLED: _theme-color(tertiary);
+$FORM--CONTEXT_MENU--FONT--COLOUR---UP: _theme-color(secondary);
+$FORM--CONTEXT_MENU--FONT--COLOUR---HOVER: _theme-color(secondary);
+$FORM--CONTEXT_MENU--FONT--COLOUR---DISABLED: rgba($FORM--CONTEXT_MENU--FONT--COLOUR---UP, .7) !important;
 
 /////////////////////////////////////////////////
 // TREES ////////////////////////////////////////
 /////////////////////////////////////////////////
 
-    // ROW UP
-    $TREE--ROW--FONT--COLOUR---UP: 					                _theme-color(primary, c);
-    $TREE--ROW--ICON---UP: 						                    $ICON--PAGES---GREY;
-	$TREE--ROW--BG--COLOUR---UP: 			                        transparent;
+// ROW UP
+$TREE--ROW--FONT--COLOUR---UP: _theme-color(primary, c);
+$TREE--ROW--ICON---UP: $ICON--PAGES---GREY;
+$TREE--ROW--BG--COLOUR---UP: transparent;
 
-    // ROW HOVER
-    $TREE--ROW--BG--COLOUR---HOVER: 			                    rgba( _theme-color(primary, c), .1 );
-    $TREE--ROW--FONT--COLOUR---HOVER: 				                _theme-color(primary, i);
-    $TREE--ROW--ICON---HOVER: 				                        $ICON--PAGES---GREY;
+// ROW HOVER
+$TREE--ROW--BG--COLOUR---HOVER: rgba(_theme-color(primary, c), .1);
+$TREE--ROW--FONT--COLOUR---HOVER: _theme-color(primary, i);
+$TREE--ROW--ICON---HOVER: $ICON--PAGES---GREY;
 
-    // ROW SELECTED
-    $TREE--ROW--BG--COLOUR---SELECTED: 		                       	rgba( _theme-color(primary, c), .7 );
-    $TREE--ROW--FONT--COLOUR---SELECTED: 			               	_theme-color(secondary);
-    $TREE--ROW--ICON---SELECTED: 			                       	$ICON--PAGES---WHITE;
+// ROW SELECTED
+$TREE--ROW--BG--COLOUR---SELECTED: rgba(_theme-color(primary, c), .7);
+$TREE--ROW--FONT--COLOUR---SELECTED: _theme-color(secondary);
+$TREE--ROW--ICON---SELECTED: $ICON--PAGES---WHITE;
 
-    // ROW HOVER SELECTED
-    $TREE--ROW--BG--COLOUR---SELECTED_HOVER: 	                   	_theme-color(primary, c);
-    $TREE--ROW--FONT--COLOUR---SELECTED_HOVER: 		               	_theme-color(secondary);
-    $TREE--ROW--ICON---SELECTED_HOVER: 		                       	$ICON--PAGES---WHITE;
+// ROW HOVER SELECTED
+$TREE--ROW--BG--COLOUR---SELECTED_HOVER: _theme-color(primary, c);
+$TREE--ROW--FONT--COLOUR---SELECTED_HOVER: _theme-color(secondary);
+$TREE--ROW--ICON---SELECTED_HOVER: $ICON--PAGES---WHITE;
 
-    // MORE OPTIONS BUTTON
-	$TREE--MORE_OPTIONS--ICON---UP: 				               	$ICON--MORE_OPTIONS---GREY;
-	$TREE--MORE_OPTIONS--ICON---HOVER: 			                   	$ICON--MORE_OPTIONS---GREY;
-	$TREE--MORE_OPTIONS--ICON---SELECTED: 		                   	$ICON--MORE_OPTIONS---WHITE;
-    $TREE--MORE_OPTIONS--ICON---SELECTED_HOVER: 	               	$ICON--MORE_OPTIONS---WHITE;
+// MORE OPTIONS BUTTON
+$TREE--MORE_OPTIONS--ICON---UP: $ICON--MORE_OPTIONS---GREY;
+$TREE--MORE_OPTIONS--ICON---HOVER: $ICON--MORE_OPTIONS---GREY;
+$TREE--MORE_OPTIONS--ICON---SELECTED: $ICON--MORE_OPTIONS---WHITE;
+$TREE--MORE_OPTIONS--ICON---SELECTED_HOVER: $ICON--MORE_OPTIONS---WHITE;
 
 /////////////////////////////////////////////////
 // TREES FOR SEARCH RESULT //////////////////////
 /////////////////////////////////////////////////
 
-    // ROW UP
-    $TREE--ROW--FONT--COLOUR---UP\:SEARCH_RESULT: 					                darken(_theme-color(secondary), 3%);
-    $TREE--ROW--ICON---UP\:SEARCH_RESULT: 						                    $ICON--PAGES---GREY;
-	$TREE--ROW--BG--COLOUR---UP\:SEARCH_RESULT: 			                        transparent;
+// ROW UP
+$TREE--ROW--FONT--COLOUR---UP\:SEARCH_RESULT: darken(_theme-color(secondary), 3%);
+$TREE--ROW--ICON---UP\:SEARCH_RESULT: $ICON--PAGES---GREY;
+$TREE--ROW--BG--COLOUR---UP\:SEARCH_RESULT: transparent;
 
-    // ROW HOVER
-    $TREE--ROW--BG--COLOUR---HOVER\:SEARCH_RESULT: 			                    rgba( _theme-color(primary, c), .1 );
-    $TREE--ROW--FONT--COLOUR---HOVER\:SEARCH_RESULT: 				                lighten(_theme-color(secondary), 10%);
-    $TREE--ROW--ICON---HOVER\:SEARCH_RESULT: 				                        $ICON--PAGES---GREY;
+// ROW HOVER
+$TREE--ROW--BG--COLOUR---HOVER\:SEARCH_RESULT: rgba(_theme-color(primary, c), .1);
+$TREE--ROW--FONT--COLOUR---HOVER\:SEARCH_RESULT: lighten(_theme-color(secondary), 10%);
+$TREE--ROW--ICON---HOVER\:SEARCH_RESULT: $ICON--PAGES---GREY;
 
-    // ROW SELECTED
-    $TREE--ROW--BG--COLOUR---SELECTED\:SEARCH_RESULT: 		                       	rgba( _theme-color(primary, c), .7 );
-    $TREE--ROW--FONT--COLOUR---SELECTED\:SEARCH_RESULT: 			               	_theme-color(secondary);
-    $TREE--ROW--ICON---SELECTED\:SEARCH_RESULT: 			                       	$ICON--PAGES---WHITE;
+// ROW SELECTED
+$TREE--ROW--BG--COLOUR---SELECTED\:SEARCH_RESULT: rgba(_theme-color(primary, c), .7);
+$TREE--ROW--FONT--COLOUR---SELECTED\:SEARCH_RESULT: _theme-color(secondary);
+$TREE--ROW--ICON---SELECTED\:SEARCH_RESULT: $ICON--PAGES---WHITE;
 
-    // ROW HOVER SELECTED
-    $TREE--ROW--BG--COLOUR---SELECTED_HOVER\:SEARCH_RESULT: 	                   	_theme-color(primary, c);
-    $TREE--ROW--FONT--COLOUR---SELECTED_HOVER\:SEARCH_RESULT: 		               	_theme-color(secondary);
-    $TREE--ROW--ICON---SELECTED_HOVER\:SEARCH_RESULT: 		                       	$ICON--PAGES---WHITE;
+// ROW HOVER SELECTED
+$TREE--ROW--BG--COLOUR---SELECTED_HOVER\:SEARCH_RESULT: _theme-color(primary, c);
+$TREE--ROW--FONT--COLOUR---SELECTED_HOVER\:SEARCH_RESULT: _theme-color(secondary);
+$TREE--ROW--ICON---SELECTED_HOVER\:SEARCH_RESULT: $ICON--PAGES---WHITE;
 
-    // MORE OPTIONS BUTTON
-	$TREE--MORE_OPTIONS--ICON---UP\:SEARCH_RESULT: 				               	$ICON--MORE_OPTIONS---GREY;
-	$TREE--MORE_OPTIONS--ICON---HOVER\:SEARCH_RESULT: 			                   	$ICON--MORE_OPTIONS---GREY;
-	$TREE--MORE_OPTIONS--ICON---SELECTED\:SEARCH_RESULT: 		                   	$ICON--MORE_OPTIONS---WHITE;
-    $TREE--MORE_OPTIONS--ICON---SELECTED_HOVER\:SEARCH_RESULT: 	               	$ICON--MORE_OPTIONS---WHITE;
+// MORE OPTIONS BUTTON
+$TREE--MORE_OPTIONS--ICON---UP\:SEARCH_RESULT: $ICON--MORE_OPTIONS---GREY;
+$TREE--MORE_OPTIONS--ICON---HOVER\:SEARCH_RESULT: $ICON--MORE_OPTIONS---GREY;
+$TREE--MORE_OPTIONS--ICON---SELECTED\:SEARCH_RESULT: $ICON--MORE_OPTIONS---WHITE;
+$TREE--MORE_OPTIONS--ICON---SELECTED_HOVER\:SEARCH_RESULT: $ICON--MORE_OPTIONS---WHITE;
 
 /////////////////////////////////////////////////
 // RICH TEXT EDITOR /////////////////////////////
 /////////////////////////////////////////////////
 
-    // ICONS
-    $RICH_TEXT_EDITOR--ICON_SET:                                    $ICON--RICH_TEXT--TOOLBUTTONS;
-    $RICH_TEXT_EDITOR--ICON_SET---LEGACY:                           $ICON--RICH_TEXT--TOOLBUTTONS---LEGACY;
+// ICONS
+$RICH_TEXT_EDITOR--ICON_SET: $ICON--RICH_TEXT--TOOLBUTTONS;
+$RICH_TEXT_EDITOR--ICON_SET---LEGACY: $ICON--RICH_TEXT--TOOLBUTTONS---LEGACY;
 
-    // TOOL GROUP
-    $RICH_TEXT_EDITOR--TOOLGROUP--BG--COLOUR--UP:                   lighten($EDIT_ENGINE--BASE--COLOUR, 6%);
-    $RICH_TEXT_EDITOR--TOOLGROUP--BG--COLOUR--HOVER:                lighten($EDIT_ENGINE--BASE--COLOUR, 8%);
+// TOOL GROUP
+$RICH_TEXT_EDITOR--TOOLGROUP--BG--COLOUR--UP: lighten($EDIT_ENGINE--BASE--COLOUR, 6%);
+$RICH_TEXT_EDITOR--TOOLGROUP--BG--COLOUR--HOVER: lighten($EDIT_ENGINE--BASE--COLOUR, 8%);
 
-    // TOOL
-    $RICH_TEXT_EDITOR--TOOL--BG--COLOUR--UP:                        transparent;
-    $RICH_TEXT_EDITOR--TOOL--BG--COLOUR--HOVER:                     lighten($EDIT_ENGINE--BASE--COLOUR, 12%);
-    $RICH_TEXT_EDITOR--TOOL--BG--COLOUR--SELECTED:                  lighten($EDIT_ENGINE--BASE--COLOUR, 16%);
+// TOOL
+$RICH_TEXT_EDITOR--TOOL--BG--COLOUR--UP: transparent;
+$RICH_TEXT_EDITOR--TOOL--BG--COLOUR--HOVER: lighten($EDIT_ENGINE--BASE--COLOUR, 12%);
+$RICH_TEXT_EDITOR--TOOL--BG--COLOUR--SELECTED: lighten($EDIT_ENGINE--BASE--COLOUR, 16%);
 
-    // COMBO
-    $RICH_TEXT_EDITOR--COMBO--BG--COLOUR:                           lighten($EDIT_ENGINE--BASE--COLOUR, 75%);
+// COMBO
+$RICH_TEXT_EDITOR--COMBO--BG--COLOUR: lighten($EDIT_ENGINE--BASE--COLOUR, 75%);
 
-    // LABEL
-    $RICH_TEXT_EDITOR--LABEL--FONT--COLOUR:                         lighten($EDIT_ENGINE--BASE--COLOUR, 75%);
+// LABEL
+$RICH_TEXT_EDITOR--LABEL--FONT--COLOUR: lighten($EDIT_ENGINE--BASE--COLOUR, 75%);
 
-    // PATH
-    $RICH_TEXT_EDITOR--PATH--BG--COLOUR:                            lighten($EDIT_ENGINE--BASE--COLOUR, 75%);
-    $RICH_TEXT_EDITOR--PATH--FONT--COLOUR:                          darken($EDIT_ENGINE--BASE--COLOUR, 50%);
+// PATH
+$RICH_TEXT_EDITOR--PATH--BG--COLOUR: lighten($EDIT_ENGINE--BASE--COLOUR, 75%);
+$RICH_TEXT_EDITOR--PATH--FONT--COLOUR: darken($EDIT_ENGINE--BASE--COLOUR, 50%);
 
-    // DIALOGUE
-    $RICH_TEXT_EDITOR--DIALOGUE--TITLE--FONT--COLOUR:               _theme-color(primary);
-    $RICH_TEXT_EDITOR--DIALOGUE--BG--COLOUR:                       	_theme-color(secondary);
-    $RICH_TEXT_EDITOR--DIALOGUE--PREVIEW--BG--COLOUR:                         _theme-color(secondary);
-    $RICH_TEXT_EDITOR--DIALOGUE--BUTTON_ICON--BG--COLOUR:                     _theme-color(secondary, d);
-    $RICH_TEXT_EDITOR--DIALOGUE--PREVIEW_CHARACTERS--FONT--COLOUR:            _theme-color(primary, g);
-    $RICH_TEXT_EDITOR--DIALOGUE--PARAGRAPH--FONT--COLOUR:            _theme-color(primary);
-    $RICH_TEXT_EDITOR--DIALOGUE--LINK--FONT--COLOUR:            _theme-color(quaternary);
+// DIALOGUE
+$RICH_TEXT_EDITOR--DIALOGUE--TITLE--FONT--COLOUR: _theme-color(primary);
+$RICH_TEXT_EDITOR--DIALOGUE--BG--COLOUR: _theme-color(secondary);
+$RICH_TEXT_EDITOR--DIALOGUE--PREVIEW--BG--COLOUR: _theme-color(secondary);
+$RICH_TEXT_EDITOR--DIALOGUE--BUTTON_ICON--BG--COLOUR: _theme-color(secondary, d);
+$RICH_TEXT_EDITOR--DIALOGUE--PREVIEW_CHARACTERS--FONT--COLOUR: _theme-color(primary, g);
+$RICH_TEXT_EDITOR--DIALOGUE--PARAGRAPH--FONT--COLOUR: _theme-color(primary);
+$RICH_TEXT_EDITOR--DIALOGUE--LINK--FONT--COLOUR: _theme-color(quaternary);
 
-    $RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR:                 _theme-color(primary, b);
-    $RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR---SELECTED:            _theme-color(quinary);
-    $RICH_TEXT_EDITOR--DIALOGUE--TAB--UNDERLINE--COLOUR---SELECTED:            _theme-color(quaternary);
-    $RICH_TEXT_EDITOR--DIALOGUE--TAB--UNDERLINE--COLOUR---HOVER:            _theme-color(primary, c);
-    $RICH_TEXT_EDITOR--DIALOGUE--LIST--BG--COLOUR:            rgba( _theme-color(secondary), .9 );
+$RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR: _theme-color(primary, b);
+$RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR---SELECTED: _theme-color(quinary);
+$RICH_TEXT_EDITOR--DIALOGUE--TAB--UNDERLINE--COLOUR---SELECTED: _theme-color(quaternary);
+$RICH_TEXT_EDITOR--DIALOGUE--TAB--UNDERLINE--COLOUR---HOVER: _theme-color(primary, c);
+$RICH_TEXT_EDITOR--DIALOGUE--LIST--BG--COLOUR: rgba(_theme-color(secondary), .9);
 
-    $RICH_TEXT_EDITOR--DIALOGUE--LIST--BG--COLOUR---SELECTED:           _theme-color(secondary);
-    $RICH_TEXT_EDITOR--DIALOGUE--LIST--ICON--BG--COLOUR---SELECTED:           _theme-color(quaternary);
-    $RICH_TEXT_EDITOR--DIALOGUE--LIST--ICON---SELECTED:           $ICON--NEXT--WHITE;
+$RICH_TEXT_EDITOR--DIALOGUE--LIST--BG--COLOUR---SELECTED: _theme-color(secondary);
+$RICH_TEXT_EDITOR--DIALOGUE--LIST--ICON--BG--COLOUR---SELECTED: _theme-color(quaternary);
+$RICH_TEXT_EDITOR--DIALOGUE--LIST--ICON---SELECTED: $ICON--NEXT--WHITE;

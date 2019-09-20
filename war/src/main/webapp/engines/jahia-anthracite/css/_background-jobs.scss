@@ -8,7 +8,6 @@
         // Details panel
         .x-window-bwrap .x-panel:nth-child(2) {
             display: block;
-
         }
 
         // Window Header
@@ -33,14 +32,13 @@
             display: none;
         }
 
-
     }
 
     &[indigo-auto-refresh="true"] {
         .x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-tbar .x-toolbar-left .x-toolbar-cell {
             &:nth-child(3) {
                 label {
-                    display: inline-block!important;
+                    display: inline-block !important;
                 }
 
                 > div {
@@ -55,8 +53,6 @@
                 display: inline-block;
             }
         }
-
-
     }
 
     .x-hsplitbar {
@@ -65,15 +61,14 @@
 
     .indigo-background-jobs-filters {
 
-        position: fixed!important;
+        position: fixed !important;
         top: 150px;
         left: 72px;
-        z-index: 999!important;
+        z-index: 999 !important;
         width: 280px;
 
         .indigo-background-jobs-filters-title {
             font-size: 16px;
-
         }
 
         .indigo-switch {
@@ -90,8 +85,6 @@
                 .indigo-switch--rail {
                     background: rgba(0, 160, 227, 0.5);
                 }
-
-
 
                 &::before {
                     color: #00A0E3;
@@ -120,9 +113,7 @@
                 z-index: 99;
                 left: 230px;
                 top: 0px;
-
                 box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4);
-
                 transition: margin-left 0.3s ease, background 0.3s ease, box-shadow 0.1s ease;
 
                 &:hover {
@@ -140,28 +131,27 @@
                 left: 230px;
             }
 
-
         }
 
     }
 
-    position: fixed!important;
-    width: 100%!important;
-    height: 100%!important;
-    left: 0!important;
-    top: 0!important;
+    position: fixed !important;
+    width: 100% !important;
+    height: 100% !important;
+    left: 0 !important;
+    top: 0 !important;
     background: _property($BODY--BG, $BACKGROUND-JOBS);
 
     // Header
     .x-window-tl {
-        border: none!important;
-        background: transparent!important;
-        padding: 0!important;
+        border: none !important;
+        background: transparent !important;
+        padding: 0 !important;
         width: 300px;
-        position: fixed!important;
+        position: fixed !important;
         top: 55px;
         left: 72px;
-        z-index: 999!important;
+        z-index: 999 !important;
 
         .x-window-header {
             pointer-events: none;
@@ -170,23 +160,15 @@
         // Close holder - mimick bottom action bar
         .x-panel-toolbar {
 
-
-
             // Footer action bar
             display: block;
-            // width: 292px!important;
-            // height: 120px;
             position: fixed;
-            // padding: 10px 0 0 75px;
-
             background: _property($FOOTER--BG, $EDIT-ENGINE);
             border-top: 1px solid _theme-color(primary, g);
             box-shadow: _property($FOOTER--SHADOW, $EDIT-ENGINE);
             box-sizing: border-box;
-            height: auto;
-
             left: -30px;
-            width: calc(100% + 60px)!important;
+            width: calc(100% + 60px) !important;
             bottom: -30px;
             padding: 20px 0px 30px 50px;
             height: 109px;
@@ -211,16 +193,8 @@
 
         }
 
-
         // Window title
         .x-window-header-text {
-
-            // &:after {
-            //     content: "Filter by ...";
-            //     @include text(18px, #00a0e3, 100);
-            //     display: block;
-            // }
-
             display: block;
 
             @include text(36px, _property($TITLE--COLOR, $BACKGROUND-JOBS), 100);
@@ -232,11 +206,10 @@
     // Body
     .x-window-bwrap {
 
-        border: none!important;
-        background: transparent!important;
+        border: none !important;
+        background: transparent !important;
 
-
-        width: 100%!important;
+        width: 100% !important;
         height: 100%;
 
         .x-window-ml,
@@ -246,12 +219,12 @@
         }
 
         .x-window-body {
-            width: 100%!important;
-            height: 100%!important;
+            width: 100% !important;
+            height: 100% !important;
 
             > .x-component {
-                width: 100%!important;
-                height: 100%!important;
+                width: 100% !important;
+                height: 100% !important;
             }
         }
 
@@ -285,7 +258,7 @@
                         box-shadow: inset 0 67px 0 0 #f6f6f6, inset 0 68px 0 0 #e8e8e8;
                         // Controls
                         .x-panel-tbar {
-                            width: 100%!important;
+                            width: 100% !important;
 
                             &:before {
                                 content: attr(indigo-label);
@@ -306,7 +279,7 @@
                                 position: fixed;
                                 top: 102px;
                                 left: 73px;
-                                width: auto!important;
+                                width: auto !important;
                             }
 
                             .x-toolbar-left {
@@ -327,7 +300,7 @@
                                         display: inline-block;
 
                                         label {
-                                            display: none!important;
+                                            display: none !important;
                                             text-transform: none;
                                             font-size: 13px;
                                             font-weight: 100;
@@ -353,8 +326,8 @@
                                     // Auto refresh input
                                     &:nth-child(4) {
                                         input {
-                                            padding: 2px 4px!important;
-                                            margin: 0 6px!important;
+                                            padding: 2px 4px !important;
+                                            margin: 0 6px !important;
 
                                             @include text(11px, #a1a1a1, 400);
                                         }
@@ -383,7 +356,6 @@
                                         position: fixed;
                                         top: 62px;
                                         right: 69px;
-
 
 
                                         > table {
@@ -424,21 +396,21 @@
 
                         // List Holder
                         .x-panel-body {
-                            width: 100%!important;
-                            height: auto!important;
+                            width: 100% !important;
+                            height: auto !important;
 
                             > div,
                             .x-grid-group {
-                                width: 100%!important;
-                                height: 100%!important;
+                                width: 100% !important;
+                                height: 100% !important;
                             }
 
                             .x-grid3-viewport {
 
                                 .x-grid3-scroller {
-                                  width: 100%!important;
-                                  overflow-y: scroll !important;
-                                  max-height: 500px !important;
+                                    width: 100% !important;
+                                    overflow-y: scroll !important;
+                                    max-height: 500px !important;
 
                                     .x-grid-empty {
                                         &:before {
@@ -448,32 +420,32 @@
                                         }
                                     }
                                 }
+
                                 .x-grid3-header-inner {
-                                    width: 100%!important;
+                                    width: 100% !important;
                                 }
+
                                 > .x-grid3-header {
                                     display: block;
-                                    background: none!important;
+                                    background: none !important;
                                     margin-bottom: 20px;
-
 
 
                                     .x-grid3-header {
                                         display: table-cell;
-                                        background: none!important;
+                                        background: none !important;
                                         border: none;
 
                                         &.x-grid3-hd-over,
                                         &.x-grid3-hd-menu-open {
 
                                             .x-grid3-hd-inner {
-                                                background: _theme-color(secondary, b)!important;
+                                                background: _theme-color(secondary, b) !important;
 
                                                 a {
                                                     background: url(../images/icons/icon-toggle-expanded-small-normal.png) no-repeat center center;
                                                     margin-right: 5px;
                                                 }
-
 
                                                 span {
                                                     color: _theme-color(primary);
@@ -490,12 +462,9 @@
                                                 @include text(10px, _property($LABEL--COLOR, $BACKGROUND-JOBS), 500);
                                             }
                                         }
-
-
                                     }
                                 }
                             }
-
 
 
                             // Grouped List
@@ -505,7 +474,6 @@
                                 // Collapsed Group
                                 &.x-grid-group-collapsed {
                                     background: url(../images/icons/expand-side-panel@X2.png) no-repeat left 1px top 9px;
-
                                 }
 
                                 // Group header
@@ -514,7 +482,7 @@
                                     margin-bottom: 5px;
 
                                     .x-grid-group-div {
-                                        background: none!important;
+                                        background: none !important;
                                         padding: 0 0 0 11px;
                                         text-transform: uppercase;
                                         @include text(10px, _theme-color(quinary), 500);
@@ -530,13 +498,12 @@
                                 .x-grid-group-body,
                                 .x-grid3-body {
 
-
                                     .x-grid3-row {
 
                                         &.indigo-cant-delete {
                                             .action-menu {
                                                 .delete-button {
-                                                    display: none!important;
+                                                    display: none !important;
                                                 }
                                             }
                                         }
@@ -597,11 +564,11 @@
                                                 }
                                             }
 
-                                            background: _property($ROW--BG, $BACKGROUND-JOBS)!important;
+                                            background: _property($ROW--BG, $BACKGROUND-JOBS) !important;
 
                                             .x-grid3-cell-inner,
                                             .x-grid3-cell-inner label {
-                                                color: _property($ROW--COLOR, $BACKGROUND-JOBS)!important;
+                                                color: _property($ROW--COLOR, $BACKGROUND-JOBS) !important;
                                             }
 
                                         }
@@ -611,15 +578,14 @@
                                         &.x-grid3-row-selected:hover {
                                             .action-menu {
                                                 display: block;
-
                                                 background: _property($ROW--BG---HOVER, $BACKGROUND-JOBS);
                                             }
 
-                                            background: _property($ROW--BG---HOVER, $BACKGROUND-JOBS)!important;
+                                            background: _property($ROW--BG---HOVER, $BACKGROUND-JOBS) !important;
 
                                             .x-grid3-cell-inner,
                                             .x-grid3-cell-inner label {
-                                                color: _property($ROW--COLOR---HOVER, $BACKGROUND-JOBS)!important;
+                                                color: _property($ROW--COLOR---HOVER, $BACKGROUND-JOBS) !important;
                                             }
 
                                         }
@@ -627,18 +593,12 @@
                                         .x-grid3-cell-inner,
                                         .x-grid3-cell-inner label {
                                             padding: 5px 0 0 10px;
-                                            text-transform: none!important;
+                                            text-transform: none !important;
                                             @include text(12px, _property($ROW--COLOR, $BACKGROUND-JOBS), $FONT--WEIGHT---EXTRALIGHT);
                                         }
                                     }
-
-
-
                                 }
                             }
-
-
-
 
 
                             .x-grid3-row-table {
@@ -647,13 +607,11 @@
                                     display: inline-block;
                                 }
                             }
-
                         }
 
                         // Pager Holder
                         .x-panel-bbar {
-                            width: 100%!important;
-
+                            width: 100% !important;
 
                             .x-toolbar-layout-ct {
                                 position: relative;
@@ -674,7 +632,6 @@
                                     }
 
                                     // Change colours to grey
-
                                     &:nth-child(1) {
                                         background: url(../images/icons/icon_arrow_left_double_grey@X2.png) no-repeat center center/14px 14px;
                                         margin-left: 0px;
@@ -715,40 +672,31 @@
                                         padding: 3px;
                                         border: none;
                                     }
-
                                 }
-
                             }
-
                         }
                     }
-
-
-
                 }
 
                 .x-panel-bl {
                     display: none;
                 }
-
             }
 
             // Details Container
             &:nth-child(2) {
-
                 display: none;
-                width: 100%!important;
-                position: fixed!important;
-                height: 100%!important;
-                top: 0!important;
-                left: 0!important;
+                width: 100% !important;
+                position: fixed !important;
+                height: 100% !important;
+                top: 0 !important;
+                left: 0 !important;
                 background: rgba(_theme-color(secondary), .9);
                 padding: 0;
                 box-sizing: border-box;
 
                 // Header
                 .x-panel-header {
-                    padding: 0;
                     background: none;
                     background: _property($FIELDSET--BG---HOVER, $BACKGROUND-JOBS);
                     padding: 19px 30px 10px;
@@ -756,7 +704,6 @@
                     width: 500px;
                     border: 1px solid _property($FIELDSET--BORDER, $BACKGROUND-JOBS);
                     border-bottom: 0;
-
 
                     // Contains minimise button
                     .x-panel-toolbar {
@@ -793,13 +740,13 @@
                     border-top: 0;
 
                     form {
-                        height: auto!important;
+                        height: auto !important;
                     }
 
                     .x-form-item {
                         > label {
-                            display: inline-block!important;
-                            width: 150px!important;
+                            display: inline-block !important;
+                            width: 150px !important;
                         }
 
                         > .x-form-element {
@@ -807,7 +754,7 @@
                             width: calc(100% - 150px);
 
                             .x-form-field-wrap {
-                                width: 100%!important;
+                                width: 100% !important;
 
                                 .x-form-text {
                                     background: transparent;
@@ -818,21 +765,17 @@
                         }
                     }
                 }
-
             }
-
         }
 
         // Footer
         .x-window-bl {
             display: none;
         }
-
     }
 
     // Resizable handles
     .x-resizable-handle {
         display: none;
     }
-
 }

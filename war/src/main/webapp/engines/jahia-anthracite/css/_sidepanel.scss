@@ -1,11 +1,12 @@
 /////////////////////////////////////////////////
 // SIDE PANEL ///////////////////////////////////
 /////////////////////////////////////////////////
-#JahiaGxtPagesTab .x-grid3 .x-grid3-scroller{
-	height: calc(100% - 109px)!important;
+#JahiaGxtPagesTab .x-grid3 .x-grid3-scroller {
+    height: calc(100% - 109px) !important;
 }
+
 #JahiaGxtPagesTab .x-grid3-col-locked {
-	background: url(../images/icons_light/lock.svg) #e67d3a no-repeat center;
+    background: url(../images/icons_light/lock.svg) #e67d3a no-repeat center;
     width: 12px;
     height: 12px !important;
     border-radius: 2px;
@@ -14,1499 +15,1225 @@
     top: 1px;
     background-size: 16px;
 
-	> img {
-		display: none;
-	}
+    > img {
+        display: none;
+    }
 
-	&:empty {
-		background: none;
-	}
+    &:empty {
+        background: none;
+    }
 }
 
 // Stop elements being selected when dragging indigo split bar
 body[indigo-dragging-panel] {
-	-webkit-touch-callout: none;
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .window-side-panel {
-	z-index: $ZINDEX--SIDE_PANEL;
-	height: 100%;
-	pointer-events: none;
+    z-index: $ZINDEX--SIDE_PANEL;
+    height: 100%;
+    pointer-events: none;
 
-	.x-panel-header {
-		border:none;
-		background: transparent;
-	}
+    .x-panel-header {
+        border: none;
+        background: transparent;
+    }
 
-	// MOCHE
-	.x-nodrag.x-tool-left.x-tool.x-component {
-		// Collapse side bar button
-		display: none;
-	}
+    // MOCHE
+    .x-nodrag.x-tool-left.x-tool.x-component {
+        // Collapse side bar button
+        display: none;
+    }
 
-	.edit-menu-sites {
-		/* Site Selector */
+    .edit-menu-sites {
+        /* Site Selector */
 
-		// Edit Mode
-		position: fixed;
-		left: 95px!important;
-		top: 25px!important;
-		background: transparent;
-		pointer-events: none;
-		z-index: $ZINDEX--MAINMODULE--LANGUAGE_SWITCHER;
-		transition: left 0.2s ease-in 0s;
+        // Edit Mode
+        position: fixed;
+        left: 95px !important;
+        top: 25px !important;
+        background: transparent;
+        pointer-events: none;
+        z-index: $ZINDEX--MAINMODULE--LANGUAGE_SWITCHER;
+        transition: left 0.2s ease-in 0s;
 
-		> table {
-			pointer-events: all;
-		}
+        > table {
+            pointer-events: all;
+        }
 
-		body[data-multiselect="on"]:not([data-indigo-gwt-side-panel="open"]) & {
-			display: none;
-		}
+        body[data-multiselect="on"]:not([data-indigo-gwt-side-panel="open"]) & {
+            display: none;
+        }
 
-		body[data-sitesettings="true"] & {
-			transition: left 0.2s ease-in 0s;
-		}
-
-
-		// Side Panel
-		body[data-indigo-gwt-side-panel="open"] & {
-			top: 25px!important;
-			left: 115px!important;
-
-			div[role="combobox"] {
-				input.x-form-text {
-					background: transparent;
-					box-shadow: none;
-					color: #363636;
-					padding: 0 17px 0 0 !important;
-					font-size: 14px;
-
-					&:hover {
-						background-color: white;
-					}
-
-					&.x-form-focus {
-						background-color: white;
-						box-shadow: inset 0.5px 0.5px 0px #7c7c7c, inset -0.5px -0.5px 0px #7c7c7c, inset 1px 1px 1px rgba(0, 0, 0, 0.2);
-						padding-left: 3px!important;
-						color: black;
-
-						& + img {
-							background-image: url(../images/expanded-black.png)!important;
-						}
-					}
-				}
-
-				img {
-					width: 15px !important;
-				    background: url(../images/expanded-black.png) no-repeat left center transparent !important;
-				    background-size: 14px !important;
+        body[data-sitesettings="true"] & {
+            transition: left 0.2s ease-in 0s;
+        }
 
 
-				}
-			}
-		}
+        // Side Panel
+        body[data-indigo-gwt-side-panel="open"] & {
+            top: 25px !important;
+            left: 115px !important;
 
+            div[role="combobox"] {
+                input.x-form-text {
+                    background: transparent;
+                    box-shadow: none;
+                    color: #363636;
+                    padding: 0 17px 0 0 !important;
+                    font-size: 14px;
 
+                    &:hover {
+                        background-color: white;
+                    }
 
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] &,
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab"] &,
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"] &,
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"] &,
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] &,
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"] & {
-			left: 124px!important;
-		}
+                    &.x-form-focus {
+                        background-color: white;
+                        box-shadow: inset 0.5px 0.5px 0px #7c7c7c, inset -0.5px -0.5px 0px #7c7c7c, inset 1px 1px 1px rgba(0, 0, 0, 0.2);
+                        padding-left: 3px !important;
+                        color: black;
 
-		body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSettingsTab"] & {
-			left: 124px!important;
-		}
+                        & + img {
+                            background-image: url(../images/expanded-black.png) !important;
+                        }
+                    }
+                }
 
-		html.ext-strict body.ext-gecko[data-indigo-gwt-side-panel="open"] & {
-			div[role="combobox"] {
-				img {
-					height: 21px!important;
-				}
-			}
-		}
-
-		div[role="combobox"] {
-			input.x-form-text {
-				background: transparent;
-			    font-size: 14px;
-			    padding: 0 17px 0 0 !important;
-			    box-shadow: none;
-
-				&:hover {
-					background-color: rgba(255, 255, 255, 0.04);
-				}
-
-				&.x-form-focus {
-					background-color: white;
-					box-shadow: inset 0.5px 0.5px 0px black, inset -0.5px -0.5px 0px black, inset 1px 1px 1px rgba(0, 0, 0, 0.5);
-					padding-left: 3px!important;
-					color: black;
-
-					& + img {
-						background-image: url(../images/expanded-black.png)!important;
-					}
-				}
-
-
-			}
-
-			img {
-				width: 15px !important;
-				background: url(../images/expanded-white.png) no-repeat left center transparent !important;
-			    background-size: 14px !important;
-			}
-		}
-
-        img {
-			// Sticky override ...
-			html.ext-strict body.ext-gecko & {
-
-				&.x-form-trigger {
-					height: 24px!important;
-
-				}
-
+                img {
+                    width: 15px !important;
+                    background: url(../images/expanded-black.png) no-repeat left center transparent !important;
+                    background-size: 14px !important;
+                }
             }
         }
 
-	}
-
-	#JahiaGxtRefreshSidePanelButton {
-		/* Refresh side panel button */
-		pointer-events: all;
-		background: url(../images/icons_grey/refresh.svg) no-repeat center;
-		background-size: 20px;
-		left: 275px;
-		position: fixed;
-		top: 21px;
-		border-radius: 100%;
-		height: 26px;
-	    width: 23px;
-		opacity: 1;
-		display: none;
-		transition: all 0.2s ease-in 0s;
-
-		body[indigo-dragging-panel="true"] & {
-			transition: none;
-		}
-
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] &,
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab"] &,
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"] &,
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"] &,
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] &,
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"] & {
-			margin-left: 47px;
-		}
-
-		body[data-INDIGO-SIDEPANEL-PINNED="true"] &,
-		body[data-indigo-gwt-side-panel="open"] & {
-			margin-left: 30px;
-		}
-
-		&.x-tool-refresh-red {
-			background: url(../images/icons/tabs-publish-modified@X2.png) no-repeat center center _theme-color(secondary);
-			background-size: 32px;
-		    opacity: .9;
-		}
-
-		body[data-sitesettings="true"] & {
-			margin-left: 60px!important;
-		}
-
-		body[data-edit-window-style="settings"] &,
-		.x-viewport-adminmode &,
-		.x-viewport-dashboardmode & {
-			top: 55px;
-			left:275px!important;
-			opacity: 1;
-			background-size: 13px;
-		}
-
-		body[data-indigo-gwt-side-panel="open"] .x-viewport-editmode & {
-			display: block;
-		}
-
-		&:hover {
-			opacity: 1;
-		}
-
-		body[data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] & {
-			display: none!important;
-		}
-
-	}
-
-	.x-panel-header-text {
-		display: none;
-	}
-
-	.x-panel-body {
-		// width: 100% !important;
-		overflow: visible;
-		z-index: $ZINDEX--SIDE_PANEL--BODY;
-		position: relative;
-		height: calc(100% + 4px) !important;
-
-		width: 60px!important;
-
-		body[data-indigo-GWT-SIDE-PANEL="open"] & {
-			width: calc(100% - 10px)!important;
-		}
-
-	}
-
-	.show-results .JahiaGxtSearchTab-form .x-panel-body {
-
-		body[data-indigo-GWT-SIDE-PANEL="open"] & {
-			width: calc(100% - 26px) !important;
-		}
-
-	}
-
-
-	> .x-panel-bwrap {
-		/* Left Panel Tab Button Container */
-		margin-top: 0px;
-		width: 60px;
-		overflow: visible;
-		height: 100% !important;
-		z-index: $ZINDEX--SIDE_PANEL--CONTAINER;
-		position: relative;
-		pointer-events: all;
-
-		> div:nth-child(2) {
-			&.x-panel-footer {
-
-				display: none;
-
-				body[data-edit-window-style="default"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-app="edit"][data-sitesettings="false"] & {
-					top: 34px;
-					left: 315px;
-					width: 20px !important;
-					height: 20px !important;
-					z-index: 999;
-					position: fixed;
-					background: url(../images/icons_dark/pin.svg);
-					display: block;
-					background-size: 20px;
-					background-repeat: no-repeat;
-					opacity: .52;
-				}
-
-				body[data-edit-window-style="default"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-app="edit"][data-indigo-sidepanel-pinned="true"] & {
-					background-image: url(../images/icons_blue/pin.svg);
-				    opacity: 1;
-				}
-
-				body[data-INDIGO-SIDEPANEL-PINNED="true"] &,
-				body[data-indigo-gwt-side-panel="open"] & {
-					margin-left: 20px;
-					top: 24px !important;
-				}
-
-				// body[data-indigo-gwt-side-panel="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"]:not(.minimise-results) &,
-				// body[data-indigo-gwt-side-panel="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"]:not(.minimise-results) & {
-				// 	margin-left: 354px;
-				// }
-
-				&:hover {
-					cursor: pointer;
-				}
-
-			}
-		}
-
-
-	}
-
-	.x-viewport-adminmode & {
-		width: 100%;
-
-		#JahiaGxtSidePanelTabs {
-			padding-top: 100px;
-
-			.x-tab-panel-header {
-				width: 100% !important;
-				left: 0;
-				top: 0;
-				position: relative;
-				display: block;
-				padding-left: 34px;
-				box-sizing: border-box;
-
-				ul.x-tab-strip-top {
-					left: 0;
-					top: 0;
-					z-index: 999999999999;
-					position: relative;
-					width: auto;
-					margin: 0;
-					padding: 0;
-
-					li {
-						display: none;
-						&::after {
-							font-size: 12px;
-							font-weight: 400;
-							text-transform: none;
-						}
-
-						&#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab {
-							position: relative;
-							left: auto;
-							right: auto;
-							top: auto;
-							bottom: auto;
-							display: inline-block;
-							height: auto;
-							width: auto;
-							margin-right: 5px;
-							padding: 6px 4px;
-
-							> img {
-								display: none;
-							}
-
-							&.x-tab-strip-active {
-								box-shadow: inset 0 -3px 0 0 #007cb0;
-
-								&::after {
-									color: #007cb0;
-								}
-							}
-						}
-					}
-				}
-			}
-
-			.x-tab-panel-body {
-				margin: 0;
-				width: 100%!important;
-				padding: 0 25px 0 30px;
-			}
-		}
-	}
-
-	#JahiaGxtSidePanelTabs {
-		border-right: 0 solid #f8f8f8;
-		padding-left: 21px;
-		padding-top: 49px;
-
-		body[indigo-dragging-panel="true"] &,
-		body[data-indigo-sidepanel-pinned="true"] & {
-			transition: none!important;
-		}
-
-		@extend %CSS_BLOCK--SIDE_PANEL--CONTAINER;
-
-		&::before {
-			content: " ";
-			background: linear-gradient(to right, #fcfdfd 0%, rgba(252, 253, 253, 0.92) 100%) !important;
-			position: absolute;
-			width: 100%;
-			height: 100%;
-			top: 0;
-			left: 0;
-			opacity: 0;
-			transition: all 0.2s ease-in 0s;
-		}
-
-		body[data-indigo-sidepanel-pinned="true"] & {
-			&::before {
-				opacity: 1;
-			}
-
-		}
-
-		.x-viewport-dashboardmode & {
-			transition: none;
-			&::before {
-				// transition: none;
-				// opacity: 1;
-			}
-
-		}
-
-		body[data-indigo-app="edit"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-sidepanel-pinned="false"] & {
-			 width: 360px !important;
-			 overflow: visible;
-
-			 &::before {
- 	            opacity: 1;
-				box-shadow: _property($BODY--BG--SHADOW, $SIDE-PANEL);
-
- 	        }
-
-		}
-
-		body[data-indigo-app="edit"][data-INDIGO-GWT-SIDE-PANEL="open"][data-sitesettings="true"] & {
-			 width: 360px !important;
-			 overflow: visible;
-
-			 &::before {
- 	            opacity: 1;
-				box-shadow: none;
- 	        }
-
-		}
-
-
-		body[data-indigo-app="edit"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"]:not(.minimise-results) &,
-		body[data-indigo-app="edit"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"]:not(.minimise-results) &,
-		body[data-indigo-app="edit"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"]:not(.minimise-results) &,
-		body[data-indigo-app="edit"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"]:not(.minimise-results) & {
-			&::before {
-			   width: calc(100% + 353px);
-			   box-shadow: _property($BODY--BG--SHADOW, $SIDE-PANEL);
-		   }
-		}
-
-		// Fix the padding issue on icons
-		body[data-sitesettings="false"][data-indigo-app="edit"] & {
-			.x-tree3-node-text {
-				padding-left: 8px;
-			}
-		}
-
-
-
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] &,
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab"] &,
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"] &,
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"] &,
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] &,
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"] & {
-			border-right: 10px solid #f8f8f8;
-			box-shadow: 0px 4px 29px 5px rgba(38, 38, 38, 0.4);
-		}
-
-		body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSettingsTab"] & {
-			border-right: 10px solid #f8f8f8;
-			box-shadow: 0 5px 14px 14px rgba(0, 0, 0, 0.4);
-			box-shadow: 0px 4px 29px 5px rgba(38, 38, 38, 0.4);
-		}
-
-		position: fixed;
-	    width: 60px !important;
-	    top: 0;
-	    height: 100%;
-		overflow: visible;
-
-		body[data-indigo-app="admin"] & {
-			min-width: 360px !important;
-		}
-
-		li {
-			/* Side Panel Buttons */
-			float: none;
-			width: 62px;
-			height: 40px;
-			margin-bottom: 10px;
-			margin-left: 0;
-			opacity: 1;
-			display: block;
-			pointer-events: all;
-			outline: none;
-
-			&.x-item-disabled {
-				display: none;
-			}
-
-			img {
-				background-size: 23px 23px;
-	            background-repeat: no-repeat;
-	            padding-left: 23px;
-	            width: 23px;
-	            height: 23px;
-	            overflow: hidden;
-	            -moz-box-sizing: border-box;
-	            box-sizing: border-box;
-	            display: block;
-	            left: 20px;
-	            position: relative;
-			}
-
-			a {
-				display: none;
-			}
-
-			&::after {
-	            display: block;
-	            margin-top: 5px;
-
-				@extend %CSS_BLOCK--TOOL_BUTTON;
-
-				body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
-					@extend %CSS_BLOCK--TOOL_BUTTON---SIDE_PANEL_OPEN;
-				}
-
-			}
-
-			&.x-tab-strip-active::after {
-				body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
-					@extend %CSS_BLOCK--TOOL_BUTTON---SIDE_PANEL_OPEN_SELECTED;
-
-				}
-			}
-
-			&:hover {
-				cursor: pointer;
-				opacity: 1;
-			}
-
-		}
-
-		.x-grid-panel {
-			height:100%!important;
-			display: none;
-			width: 100%!important;
-			top: 0!important;
-
-		}
-
-
-
-		[data-INDIGO-GWT-SIDE-PANEL="open"] & {
-			.x-grid-panel {
-				display: block;
-			}
-		}
-
-		.x-tab-panel-header {
-			// Contains the Side Panel Tab Buttons
-			width: 72px !important;
-			top: 57px;
-			border:none;
-			padding: 0;
-			background-color: transparent!important;
-			display: inline-block;
-			vertical-align: top;
-			position: relative;
-			z-index: $ZINDEX--SIDE_PANEL--CONTAINER_SUB;
-			overflow: visible;
-
-			ul.x-tab-strip-top {
-				// List for Tab Buttons
-				background-color: transparent!important;
-				border:none;
-				padding: 0;
-				margin: 0 0 0 5px;
-				transition: all 0.2s ease-in 0s;
-
-				body[data-indigo-gwt-side-panel="open"] & {
-					margin: 0 0 0 10px;
-				}
-
-			}
-
-			body[data-edit-window-style="settings"] & {
-				// DEVNOTE Still need this ?
-
-				.x-tab-strip-spacer {
-					/* Close settings Button */
-					left: 48px;
-				    bottom: 30px;
-				    // background: url(../images/icons/icon-close-large.png) no-repeat center center !important;
-				    width: 50px;
-				    height: 50px;
-				    // position: absolute;
-				    position: fixed;
-
-					.x-viewport-adminmode &,
-					.x-viewport-dashboardmode & {
-						display: none!important;
-					}
-
-					&::before {
-						content: $text_done;
-						@include text(14px, #FCFCFC, $FONT--WEIGHT---LIGHT);
-
-						// font-family: Raleway;
-						// font-size: 16px;
-						/* text-transform: uppercase; */
-						font-weight: 100;
-						background: #2a8cb9;
-						padding: 6px 9px;
-						// color: white;
-
-
-					}
-
-					&:hover {
-						cursor: pointer;
-					}
-				}
-			}
-		}
-
-		.x-tab-panel-body {
-			// Contains the Side Panel Tabs Content
-			display: inline-block;
-			box-sizing: border-box;
-
-			width: calc(100% - 81px) !important;
-
-			height: 100%!important;
-			vertical-align: top;
-			background: transparent;
-			// margin-left: 11px;
-			margin-top: -37px;
-
-			transition: all 0.2s ease-in 0s;
-
-
-			body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] &,
-			body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab"] &,
-			body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"] &,
-			body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"] &,
-			body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] &,
-			body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"] & {
-				padding-left: 10px;
-			}
-
-			body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSettingsTab"]:not([data-indigo-app="admin"]) & {
-				padding-left: 10px;
-			}
-
-
-		}
-
-	}
-
-	// Corrections
-	// #JahiaGxtSearchTab {
-	// 	> .x-panel-mc {
-	// 		/* Search Tab doesnt use the typical x-box-inner, so write special rule for its equivalent */
-	// 		/* Equivalent of .box-inner */
-	// 		width: 100%!important;
-	// 		height: calc(100% - 6px)!important;
-	// 		background: transparent;
-	//
-	// 		> .x-panel {
-	// 			width: 50%!important;
-	// 			display: inline-block;
-	// 			height: 100%;
-	// 			vertical-align: top;
-	// 		}
-	// 	}
-	//
-	// 	.x-panel-bwrap {
-	// 		/* Results Container */
-	// 		height: 100%;
-	// 		position: relative;
-	//
-	// 		.x-panel-body {}
-	//
-	// 		.x-grid-panel {
-	// 			height: 100%!important;
-	// 		}
-	//
-	// 		.x-panel-bbar,
-	// 		.x-panel-footer {
-	// 			/* Footer Action Bars (Search & Paginator) */
-	// 			position: absolute;
-	// 			bottom: 20px;
-	// 			z-index: $ZINDEX--SIDE_PANEL--SEARCH_TAB---ACTIONS;
-	// 		}
-	//
-	//
-	// 	}
-	// }
-
-	// #JahiaGxtChannelsTab {
-	//
-	// 	.gwt-Image {
-	// 		overflow: hidden;
-	// 		-moz-box-sizing: border-box;
-	// 		box-sizing: border-box;
-	// 		position: relative;
-	//
-	// 		background-size: 150px 150px;
-	// 		background-repeat: no-repeat;
-	// 		padding-left: 150px;
-	// 		width: 150px;
-	// 		height: 150px;
-	//
-	// 		&[src='/engines/images/devices/generic-small.png'] {
-	// 			background-image: url($ICON--DEVICE---GENERIC);
-	// 		}
-	//
-	// 		&[src='/modules/channels/images/devices/iphone-small.png'] {
-	// 			background-image: url($ICON--DEVICE---IPHONE);
-	// 		}
-	//
-	// 		&[src='/modules/channels/images/devices/samsunggalaxys4-small.png'] {
-	// 			background-image: url($ICON--DEVICE---GALAXY_S4);
-	// 		}
-	//
-	// 		&[src='/modules/channels/images/devices/samsunggalaxytab7-small.png'] {
-	// 			background-image: url($ICON--DEVICE---GALAXY_TAB7);
-	// 		}
-	//
-	// 		&[src='/modules/channels/images/devices/android-small.png'] {
-	// 			background-image: url($ICON--DEVICE---ANDROID);
-	// 		}
-	//
-	// 		&[src='/modules/channels/images/devices/bbstorm-small.png'] {
-	// 			background-image: url($ICON--DEVICE---BLACKBERRY);
-	// 		}
-	//
-	// 		&[src='/modules/channels/images/devices/samsunggalaxynote3-small.png'] {
-	// 			background-image: url($ICON--DEVICE---GALAXY_NOTE);
-	// 		}
-	//
-	// 		&[src='/modules/channels/images/devices/kindlefire-small.png'] {
-	// 			background-image: url($ICON--DEVICE---KINDLE);
-	// 		}
-	//
-	// 		&[src='/modules/channels/images/devices/ipad-small.png'] {
-	// 			background-image: url($ICON--DEVICE---IPAD);
-	// 		}
-	//
-	// 		&[src='/modules/channels/images/devices/samsunggalaxytab10.1-small.png'] {
-	// 			background-image: url($ICON--DEVICE---GALAXY_TAB_SMALL);
-	// 		}
-	// 	}
-	//
-	// 	&.tab_channel.x-component { // Excessive Selector is to over rule hard to crush !important already on the element
-	// 		.x-box-inner {
-	// 			.x-box-item {
-	// 				/* Need to correct the layout of Left/Right to UP/Down on boxes */
-	// 				width: 100%!important;
-	// 				height: calc(100% - 287px) !important;
-	// 				padding-right:0!important;
-	//
-	// 				&:nth-child(1) {
-	// 					height: 287px!important;
-	// 				}
-	//
-	// 				&:nth-child(2) {
-	// 					&::before {
-	// 						content: "Device Details";
-	// 						display: block;
-	// 						margin-bottom: 5px;
-	// 						margin-top: 20px;
-	//
-	// 						@include text(17px, $FORM--TABLE--TITLE--COLOUR, $FONT--WEIGHT---EXTRALIGHT);
-	// 					}
-	// 				}
-	//
-	// 				.x-grid3-col-displayName {
-	// 					@include text(11px, $FORM--TABLE--LABEL--COLOUR, $FONT--WEIGHT---EXTRALIGHT);
-	// 				}
-	//
-	// 				.x-grid3-col-value {
-	// 					@include text(11px, $FORM--TABLE--VALUE--COLOUR, $FONT--WEIGHT---LIGHT);
-	// 				}
-	//
-	// 			}
-	// 		}
-	//
-	//
-	//
-	// 	}
-	// }
-
-
-	// Highlight item when menu is open (PAGES tab)
-
-	.x-grid3 .x-grid3-row.context-menu-open {
-		background: #007cb0 !important;
-	}
-
-	.x-grid3 .x-grid3-row.x-grid3-row-selected.context-menu-open {
-		background: #007cb0 !important;
-	}
 
-
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] &,
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab"] &,
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"] &,
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"] &,
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] &,
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"] & {
+            left: 124px !important;
+        }
+
+        body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSettingsTab"] & {
+            left: 124px !important;
+        }
+
+        html.ext-strict body.ext-gecko[data-indigo-gwt-side-panel="open"] & {
+            div[role="combobox"] {
+                img {
+                    height: 21px !important;
+                }
+            }
+        }
+
+        div[role="combobox"] {
+            input.x-form-text {
+                background: transparent;
+                font-size: 14px;
+                padding: 0 17px 0 0 !important;
+                box-shadow: none;
+
+                &:hover {
+                    background-color: rgba(255, 255, 255, 0.04);
+                }
+
+                &.x-form-focus {
+                    background-color: white;
+                    box-shadow: inset 0.5px 0.5px 0px black, inset -0.5px -0.5px 0px black, inset 1px 1px 1px rgba(0, 0, 0, 0.5);
+                    padding-left: 3px !important;
+                    color: black;
+
+                    & + img {
+                        background-image: url(../images/expanded-black.png) !important;
+                    }
+                }
+            }
+
+            img {
+                width: 15px !important;
+                background: url(../images/expanded-white.png) no-repeat left center transparent !important;
+                background-size: 14px !important;
+            }
+        }
+
+        img {
+            // Sticky override ...
+            html.ext-strict body.ext-gecko & {
+
+                &.x-form-trigger {
+                    height: 24px !important;
+                }
+            }
+        }
+    }
+
+    #JahiaGxtRefreshSidePanelButton {
+        /* Refresh side panel button */
+        pointer-events: all;
+        background: url(../images/icons_grey/refresh.svg) no-repeat center;
+        background-size: 20px;
+        left: 275px;
+        position: fixed;
+        top: 21px;
+        border-radius: 100%;
+        height: 26px;
+        width: 23px;
+        opacity: 1;
+        display: none;
+        transition: all 0.2s ease-in 0s;
+
+        body[indigo-dragging-panel="true"] & {
+            transition: none;
+        }
+
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] &,
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab"] &,
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"] &,
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"] &,
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] &,
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"] & {
+            margin-left: 47px;
+        }
+
+        body[data-INDIGO-SIDEPANEL-PINNED="true"] &,
+        body[data-indigo-gwt-side-panel="open"] & {
+            margin-left: 30px;
+        }
+
+        &.x-tool-refresh-red {
+            background: url(../images/icons/tabs-publish-modified@X2.png) no-repeat center center _theme-color(secondary);
+            background-size: 32px;
+            opacity: .9;
+        }
+
+        body[data-sitesettings="true"] & {
+            margin-left: 60px !important;
+        }
+
+        body[data-edit-window-style="settings"] &,
+        .x-viewport-adminmode &,
+        .x-viewport-dashboardmode & {
+            top: 55px;
+            left: 275px !important;
+            opacity: 1;
+            background-size: 13px;
+        }
+
+        body[data-indigo-gwt-side-panel="open"] .x-viewport-editmode & {
+            display: block;
+        }
+
+        &:hover {
+            opacity: 1;
+        }
+
+        body[data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] & {
+            display: none !important;
+        }
+    }
+
+    .x-panel-header-text {
+        display: none;
+    }
+
+    .x-panel-body {
+        overflow: visible;
+        z-index: $ZINDEX--SIDE_PANEL--BODY;
+        position: relative;
+        height: calc(100% + 4px) !important;
+
+        width: 60px !important;
+
+        body[data-indigo-GWT-SIDE-PANEL="open"] & {
+            width: calc(100% - 10px) !important;
+        }
+    }
+
+    .show-results .JahiaGxtSearchTab-form .x-panel-body {
+
+        body[data-indigo-GWT-SIDE-PANEL="open"] & {
+            width: calc(100% - 26px) !important;
+        }
+    }
+
+
+    > .x-panel-bwrap {
+        /* Left Panel Tab Button Container */
+        margin-top: 0px;
+        width: 60px;
+        overflow: visible;
+        height: 100% !important;
+        z-index: $ZINDEX--SIDE_PANEL--CONTAINER;
+        position: relative;
+        pointer-events: all;
+
+        > div:nth-child(2) {
+            &.x-panel-footer {
+                display: none;
+
+                body[data-edit-window-style="default"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-app="edit"][data-sitesettings="false"] & {
+                    top: 34px;
+                    left: 315px;
+                    width: 20px !important;
+                    height: 20px !important;
+                    z-index: 999;
+                    position: fixed;
+                    background: url(../images/icons_dark/pin.svg);
+                    display: block;
+                    background-size: 20px;
+                    background-repeat: no-repeat;
+                    opacity: .52;
+                }
+
+                body[data-edit-window-style="default"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-app="edit"][data-indigo-sidepanel-pinned="true"] & {
+                    background-image: url(../images/icons_blue/pin.svg);
+                    opacity: 1;
+                }
+
+                body[data-INDIGO-SIDEPANEL-PINNED="true"] &,
+                body[data-indigo-gwt-side-panel="open"] & {
+                    margin-left: 20px;
+                    top: 24px !important;
+                }
+
+                &:hover {
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+
+    .x-viewport-adminmode & {
+        width: 100%;
+
+        #JahiaGxtSidePanelTabs {
+            padding-top: 100px;
+
+            .x-tab-panel-header {
+                width: 100% !important;
+                left: 0;
+                top: 0;
+                position: relative;
+                display: block;
+                padding-left: 34px;
+                box-sizing: border-box;
+
+                ul.x-tab-strip-top {
+                    left: 0;
+                    top: 0;
+                    z-index: 999999999999;
+                    position: relative;
+                    width: auto;
+                    margin: 0;
+                    padding: 0;
+
+                    li {
+                        display: none;
+
+                        &::after {
+                            font-size: 12px;
+                            font-weight: 400;
+                            text-transform: none;
+                        }
+
+                        &#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab {
+                            position: relative;
+                            left: auto;
+                            right: auto;
+                            top: auto;
+                            bottom: auto;
+                            display: inline-block;
+                            height: auto;
+                            width: auto;
+                            margin-right: 5px;
+                            padding: 6px 4px;
+
+                            > img {
+                                display: none;
+                            }
+
+                            &.x-tab-strip-active {
+                                box-shadow: inset 0 -3px 0 0 #007cb0;
+
+                                &::after {
+                                    color: #007cb0;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            .x-tab-panel-body {
+                margin: 0;
+                width: 100% !important;
+                padding: 0 25px 0 30px;
+            }
+        }
+    }
+
+    #JahiaGxtSidePanelTabs {
+        border-right: 0 solid #f8f8f8;
+        padding-left: 21px;
+        padding-top: 49px;
+
+        body[indigo-dragging-panel="true"] &,
+        body[data-indigo-sidepanel-pinned="true"] & {
+            transition: none !important;
+        }
+
+        @extend %CSS_BLOCK--SIDE_PANEL--CONTAINER;
+
+        &::before {
+            content: " ";
+            background: linear-gradient(to right, #fcfdfd 0%, rgba(252, 253, 253, 0.92) 100%) !important;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: all 0.2s ease-in 0s;
+        }
+
+        body[data-indigo-sidepanel-pinned="true"] & {
+            &::before {
+                opacity: 1;
+            }
+        }
+
+        .x-viewport-dashboardmode & {
+            transition: none;
+        }
+
+        body[data-indigo-app="edit"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-sidepanel-pinned="false"] & {
+            width: 360px !important;
+            overflow: visible;
+
+            &::before {
+                opacity: 1;
+                box-shadow: _property($BODY--BG--SHADOW, $SIDE-PANEL);
+            }
+        }
+
+        body[data-indigo-app="edit"][data-INDIGO-GWT-SIDE-PANEL="open"][data-sitesettings="true"] & {
+            width: 360px !important;
+            overflow: visible;
+
+            &::before {
+                opacity: 1;
+                box-shadow: none;
+            }
+        }
+
+        body[data-indigo-app="edit"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"]:not(.minimise-results) &,
+        body[data-indigo-app="edit"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"]:not(.minimise-results) &,
+        body[data-indigo-app="edit"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"]:not(.minimise-results) &,
+        body[data-indigo-app="edit"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"]:not(.minimise-results) & {
+            &::before {
+                width: calc(100% + 353px);
+                box-shadow: _property($BODY--BG--SHADOW, $SIDE-PANEL);
+            }
+        }
+
+        // Fix the padding issue on icons
+        body[data-sitesettings="false"][data-indigo-app="edit"] & {
+            .x-tree3-node-text {
+                padding-left: 8px;
+            }
+        }
+
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] &,
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab"] &,
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"] &,
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"] &,
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] &,
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"] & {
+            border-right: 10px solid #f8f8f8;
+            box-shadow: 0px 4px 29px 5px rgba(38, 38, 38, 0.4);
+        }
+
+        body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSettingsTab"] & {
+            border-right: 10px solid #f8f8f8;
+            box-shadow: 0px 4px 29px 5px rgba(38, 38, 38, 0.4);
+        }
+
+        position: fixed;
+        width: 60px !important;
+        top: 0;
+        height: 100%;
+        overflow: visible;
+
+        body[data-indigo-app="admin"] & {
+            min-width: 360px !important;
+        }
+
+        li {
+            /* Side Panel Buttons */
+            float: none;
+            width: 62px;
+            height: 40px;
+            margin-bottom: 10px;
+            margin-left: 0;
+            opacity: 1;
+            display: block;
+            pointer-events: all;
+            outline: none;
+
+            &.x-item-disabled {
+                display: none;
+            }
+
+            img {
+                background-size: 23px 23px;
+                background-repeat: no-repeat;
+                padding-left: 23px;
+                width: 23px;
+                height: 23px;
+                overflow: hidden;
+                -moz-box-sizing: border-box;
+                box-sizing: border-box;
+                display: block;
+                left: 20px;
+                position: relative;
+            }
+
+            a {
+                display: none;
+            }
+
+            &::after {
+                display: block;
+                margin-top: 5px;
+                @extend %CSS_BLOCK--TOOL_BUTTON;
+
+                body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+                    @extend %CSS_BLOCK--TOOL_BUTTON---SIDE_PANEL_OPEN;
+                }
+
+            }
+
+            &.x-tab-strip-active::after {
+                body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+                    @extend %CSS_BLOCK--TOOL_BUTTON---SIDE_PANEL_OPEN_SELECTED;
+                }
+            }
+
+            &:hover {
+                cursor: pointer;
+                opacity: 1;
+            }
+        }
+
+        .x-grid-panel {
+            height: 100% !important;
+            display: none;
+            width: 100% !important;
+            top: 0 !important;
+        }
+
+        [data-INDIGO-GWT-SIDE-PANEL="open"] & {
+            .x-grid-panel {
+                display: block;
+            }
+        }
+
+        .x-tab-panel-header {
+            // Contains the Side Panel Tab Buttons
+            width: 72px !important;
+            top: 57px;
+            border: none;
+            padding: 0;
+            background-color: transparent !important;
+            display: inline-block;
+            vertical-align: top;
+            position: relative;
+            z-index: $ZINDEX--SIDE_PANEL--CONTAINER_SUB;
+            overflow: visible;
+
+            ul.x-tab-strip-top {
+                // List for Tab Buttons
+                background-color: transparent !important;
+                border: none;
+                padding: 0;
+                margin: 0 0 0 5px;
+                transition: all 0.2s ease-in 0s;
+
+                body[data-indigo-gwt-side-panel="open"] & {
+                    margin: 0 0 0 10px;
+                }
+            }
+
+            body[data-edit-window-style="settings"] & {
+                // DEVNOTE Still need this ?
+
+                .x-tab-strip-spacer {
+                    /* Close settings Button */
+                    left: 48px;
+                    bottom: 30px;
+                    width: 50px;
+                    height: 50px;
+                    position: fixed;
+
+                    .x-viewport-adminmode &,
+                    .x-viewport-dashboardmode & {
+                        display: none !important;
+                    }
+
+                    &::before {
+                        content: $text_done;
+                        @include text(14px, #FCFCFC, $FONT--WEIGHT---LIGHT);
+                        font-weight: 100;
+                        background: #2a8cb9;
+                        padding: 6px 9px;
+                    }
+
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+
+        .x-tab-panel-body {
+            // Contains the Side Panel Tabs Content
+            display: inline-block;
+            box-sizing: border-box;
+            width: calc(100% - 81px) !important;
+            height: 100% !important;
+            vertical-align: top;
+            background: transparent;
+            margin-top: -37px;
+            transition: all 0.2s ease-in 0s;
+
+            body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] &,
+            body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab"] &,
+            body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"] &,
+            body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"] &,
+            body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] &,
+            body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"] & {
+                padding-left: 10px;
+            }
+
+            body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSettingsTab"]:not([data-indigo-app="admin"]) & {
+                padding-left: 10px;
+            }
+        }
+    }
+
+    // Highlight item when menu is open (PAGES tab)
+
+    .x-grid3 .x-grid3-row.context-menu-open {
+        background: #007cb0 !important;
+    }
+
+    .x-grid3 .x-grid3-row.x-grid3-row-selected.context-menu-open {
+        background: #007cb0 !important;
+    }
 }
 
 #JahiaGxtPagesTab {
-	// width: #{$_tab_width}px!important;
 
-	.notPublished {
-		font-style: italic;
-	}
+    .notPublished {
+        font-style: italic;
+    }
 
-	// Deal with icons here ...
-	.x-tree3-node-icon {
+    // Deal with icons here ...
+    .x-tree3-node-icon {
 
-		background-size: 23px 23px;
-	    background-repeat: no-repeat;
-	    padding-left: 18px;
-	    width: 18px;
-	    height: 27px;
-		opacity: 0.8;
-		background-position: center top 3px;
+        background-size: 23px 23px;
+        background-repeat: no-repeat;
+        padding-left: 18px;
+        width: 18px;
+        height: 27px;
+        opacity: 0.8;
+        background-position: center top 3px;
 
-		// Default
-		//background-image: url(../images/tabs-pages-dark@X2.png);
-		&:not([src$="/jnt_page.png"]):not([src$="/jnt_virtualsite.png"]):not([src$="/jnt_nodeLink.png"]):not([src$="/jnt_externalLink.png"]):not([src$="/jnt_navMenuText.png"]) {
-			width: 16px !important;
-			height: 16px !important;
-			padding-left: 0;
-			opacity: 1;
-			padding-top: 0;
-		}
+        // Default
+        &:not([src$="/jnt_page.png"]):not([src$="/jnt_virtualsite.png"]):not([src$="/jnt_nodeLink.png"]):not([src$="/jnt_externalLink.png"]):not([src$="/jnt_navMenuText.png"]) {
+            width: 16px !important;
+            height: 16px !important;
+            padding-left: 0;
+            opacity: 1;
+            padding-top: 0;
+        }
 
+        &[src$="/jnt_page.png"] {
+            background-image: url(../images/tabs-pages-dark@X2.png);
+            opacity: 0.8;
+        }
 
-		&[src$="/jnt_page.png"] {
-			background-image: url(../images/tabs-pages-dark@X2.png);
-			opacity: 0.8;
-		}
+        &[src$="/jnt_virtualsite.png"] {
+            background-image: url(../images/icons/tabs-site-dark@X2.png);
+        }
 
-		&[src$="/jnt_virtualsite.png"] {
-			background-image: url(../images/icons/tabs-site-dark@X2.png);
-		}
+        // Internal link
+        &[src$="jnt_nodeLink.png"] {
+            background-image: url(../images/icons/tabs-placeholder-black@X2.png);
+        }
 
-		// Internal link
-		&[src$="jnt_nodeLink.png"] {
-			background-image: url(../images/icons/tabs-placeholder-black@X2.png);
-		}
+        // External link
+        &[src$="jnt_externalLink.png"] {
+            background-image: url(../images/icons/tabs-placeholder-black@X2.png);
+        }
 
-		// External link
-		&[src$="jnt_externalLink.png"] {
-			background-image: url(../images/icons/tabs-placeholder-black@X2.png);
-		}
+        // Menu link
+        &[src$="jnt_navMenuText.png"] {
+            background-image: url(../images/icons/tabs-placeholder-black@X2.png);
+        }
+    }
 
-		// Menu link
-		&[src$="jnt_navMenuText.png"] {
-			background-image: url(../images/icons/tabs-placeholder-black@X2.png);
-		}
-	}
+    .x-grid3-row-selected {
+        .x-tree3-node-icon {
+            &[src$="/jnt_page.png"] {
+                background-image: url(../images/tabs-pages-white@X2.png);
+                opacity: 1;
+            }
 
-	.x-grid3-row-selected {
-		.x-tree3-node-icon {
-			&[src$="/jnt_page.png"] {
-				background-image: url(../images/tabs-pages-white@X2.png);
-				opacity: 1;
-			}
+            &[src$="/jnt_virtualsite.png"] {
+                background-image: url(../images/icons/tabs-site-white@X2.png);
+                opacity: 1;
+            }
 
-			&[src$="/jnt_virtualsite.png"] {
-				background-image: url(../images/icons/tabs-site-white@X2.png);
-				opacity: 1;
-			}
+            &[src$="jnt_nodeLink.png"] {
+                background-image: url(../images/icons/tabs-placeholder-white@X2.png);
+                opacity: 1;
+            }
 
-			&[src$="jnt_nodeLink.png"] {
-				background-image: url(../images/icons/tabs-placeholder-white@X2.png);
-				opacity: 1;
-			}
+            &[src$="jnt_externalLink.png"] {
+                background-image: url(../images/icons/tabs-placeholder-white@X2.png);
+                opacity: 1;
+            }
 
-			&[src$="jnt_externalLink.png"] {
-				background-image: url(../images/icons/tabs-placeholder-white@X2.png);
-				opacity: 1;
-			}
-
-			&[src$="jnt_navMenuText.png"] {
-				background-image: url(../images/icons/tabs-placeholder-white@X2.png);
-				opacity: 1;
-			}
-
-			// Default
-			//background-image: url(../images/tabs-pages-white@X2.png);
-		}
-	}
+            &[src$="jnt_navMenuText.png"] {
+                background-image: url(../images/icons/tabs-placeholder-white@X2.png);
+                opacity: 1;
+            }
+        }
+    }
 
 
-	&::before {
-		/* Tab Content Header Label */
-		content: $text_pages!important;
-	}
-
-	// Tree Options
-	.x-grid3-td-displayName {
-		&::after {
-			/* MORE Options button for TREE */
-			// display: none;
-		}
-
-	}
-
+    &::before {
+        /* Tab Content Header Label */
+        content: $text_pages !important;
+    }
 }
 
 #JahiaGxtCreateContentTab {
-	// width: #{$_tab_width}px!important;
+    // Deal with icons here ...
+    .gwt-Image-TEST {
+        background-size: 23px 23px;
+        background-repeat: no-repeat;
+        padding-left: 18px;
+        width: 18px;
+        height: 23px;
+        opacity: 0.8;
 
-	// Deal with icons here ...
-	.gwt-Image-TEST {
-		background-size: 23px 23px;
-	    background-repeat: no-repeat;
-	    padding-left: 18px;
-	    width: 18px;
-	    height: 23px;
-		opacity: 0.8;
+        // CATEGORY ICON
+        background-image: url(../images/icons/tabs-files-dark@X2.png);
+    }
 
-		// CATEGORY ICON
-		// &[src$="/jnt_category.png"] {
-			background-image: url(../images/icons/tabs-files-dark@X2.png);
-		// }
+    .x-grid3-row-selected {
+        .gwt-Image {
+            // CATEGORY ICON
+            background-image: url(../images/icons/tabs-files@X2.png);
+        }
+    }
 
+    &::before {
+        /* Tab Content Header Label */
+        content: $text_create !important;
+    }
 
-	}
+    // Tree Options
+    .gwt-content-label {
+        &::after {
+            /* MORE Options button for TREE */
+            display: none;
+        }
+    }
 
-	.x-grid3-row-selected {
-		.gwt-Image {
-			// CATEGORY ICON
-			// &[src$="/jnt_category.png"] {
-				background-image: url(../images/icons/tabs-files@X2.png);
-			// }
-
-
-		}
-	}
-
-	&::before {
-		/* Tab Content Header Label */
-		content: $text_create!important;
-	}
-
-	// Tree Options
-	.gwt-content-label {
-		&::after {
-			/* MORE Options button for TREE */
-			display: none;
-		}
-
-	}
-
-	.x-grid-panel {
-		margin-top: 50px;
-	}
-
+    .x-grid-panel {
+        margin-top: 50px;
+    }
 }
+
 #JahiaGxtContentBrowseTab.tab_content,
 #JahiaGxtSearchTab.tab_search,
-#JahiaGxtCategoryBrowseTab.tab_categories{
-	.results-column {
-		.x-grid3-td-displayName,
-		.gwt-content-label {
-			&::after {
-				height: 100%;
-			}
-		}
+#JahiaGxtCategoryBrowseTab.tab_categories {
+    .results-column {
+        .x-grid3-td-displayName,
+        .gwt-content-label {
+            &::after {
+                height: 100%;
+            }
+        }
 
-		.x-grid3-td-icon .x-grid3-cell-inner {
-			position: absolute;
-			padding: 0px 7px;
+        .x-grid3-td-icon .x-grid3-cell-inner {
+            position: absolute;
+            padding: 0px 7px;
 
-			img {
-				position: relative;
-				top: calc(50% - 8px);
-				left: 5px;
-			}
-		}
+            img {
+                position: relative;
+                top: calc(50% - 8px);
+                left: 5px;
+            }
+        }
 
-		.x-grid3-cell-inner.x-grid3-col-displayName {
-			overflow: visible!important;
-			white-space: pre-wrap;
-			width: 257px;
-			display: block;
-			padding: 7px 0;
-		}
+        .x-grid3-cell-inner.x-grid3-col-displayName {
+            overflow: visible !important;
+            white-space: pre-wrap;
+            width: 257px;
+            display: block;
+            padding: 7px 0;
+        }
 
-		.x-grid3-row {
-			height: auto!important;
-			min-height: 27px;
-			margin-bottom: 1px;
-		}
+        .x-grid3-row {
+            height: auto !important;
+            min-height: 27px;
+            margin-bottom: 1px;
+        }
 
-		.x-grid3-td-publicationInfo {
-			height: 100%;
+        .x-grid3-td-publicationInfo {
+            height: 100%;
 
-			img {
-				height: 100%!important;
-			}
-		}
-	}
+            img {
+                height: 100% !important;
+            }
+        }
+    }
 }
+
 //
 #JahiaGxtContentBrowseTab.tab_content {
-	width: 100%!important;
+    width: 100% !important;
 
-	&::before {
-		/* Tab Content Header Label */
-		content: $text_content!important;
-	}
+    &::before {
+        /* Tab Content Header Label */
+        content: $text_content !important;
+    }
 
-	// Deal with icons here ...
-	.x-tree3-node-icon {
+    // Deal with icons here ...
+    .x-tree3-node-icon {
 
-		background-size: 23px 23px;
-	    background-repeat: no-repeat;
-	    padding-left: 18px;
-	    width: 18px;
-	    height: 23px;
-		opacity: 0.8;
-		background-position: center top 1px;
+        background-size: 23px 23px;
+        background-repeat: no-repeat;
+        padding-left: 18px;
+        width: 18px;
+        height: 23px;
+        opacity: 0.8;
+        background-position: center top 1px;
 
-		// FOLDER ICON
-		&[src$="/jnt_contentFolder.png"],
-		&[src$="/jnt_folder.png"] {
-			background-image: url(../images/icons/tabs-files-dark@X2.png);
-		}
+        // FOLDER ICON
+        &[src$="/jnt_contentFolder.png"],
+        &[src$="/jnt_folder.png"] {
+            background-image: url(../images/icons/tabs-files-dark@X2.png);
+        }
 
-		&[src$="/remoteFolder.png"] {
-			background-image: url(../images/icons/tabs-files-shared-dark@X2.png);
-		}
+        &[src$="/remoteFolder.png"] {
+            background-image: url(../images/icons/tabs-files-shared-dark@X2.png);
+        }
 
-		&[src$="/jnt_virtualsite.png"] {
-			background-image: url(../images/icons/tabs-site-dark@X2.png);
-		}
+        &[src$="/jnt_virtualsite.png"] {
+            background-image: url(../images/icons/tabs-site-dark@X2.png);
+        }
 
 
-	}
+    }
 
-	.x-grid3-row-selected {
-		.x-tree3-node-icon {
-			// FOLDER ICON
-			&[src$="/jnt_contentFolder.png"],
-			&[src$="/jnt_folder.png"] {
-				background-image: url(../images/icons/tabs-files@X2.png);
-			}
+    .x-grid3-row-selected {
+        .x-tree3-node-icon {
+            // FOLDER ICON
+            &[src$="/jnt_contentFolder.png"],
+            &[src$="/jnt_folder.png"] {
+                background-image: url(../images/icons/tabs-files@X2.png);
+            }
 
-			&[src$="/remoteFolder.png"] {
-				background-image: url(../images/icons/tabs-files-shared-white@X2.png);
-			}
+            &[src$="/remoteFolder.png"] {
+                background-image: url(../images/icons/tabs-files-shared-white@X2.png);
+            }
 
-			&[src$="/jnt_virtualsite.png"] {
-				background-image: url(../images/icons/tabs-site-white@X2.png);
-			}
-		}
-	}
+            &[src$="/jnt_virtualsite.png"] {
+                background-image: url(../images/icons/tabs-site-white@X2.png);
+            }
+        }
+    }
 
-	.x-tree3-el > span {
-		top: -1px!important;
-	}
+    .x-tree3-el > span {
+        top: -1px !important;
+    }
 
 }
 
 #JahiaGxtFileImagesBrowseTab.tab_filesimages {
-	width: 100%!important;
+    width: 100% !important;
 
-	// Deal with icons here ...
-	.x-tree3-node-icon {
+    // Deal with icons here ...
+    .x-tree3-node-icon {
+        background-size: 23px 23px;
+        background-repeat: no-repeat;
+        padding-left: 18px;
+        width: 18px;
+        height: 23px;
+        opacity: 0.8;
 
-		background-size: 23px 23px;
-	    background-repeat: no-repeat;
-	    padding-left: 18px;
-	    width: 18px;
-	    height: 23px;
-		opacity: 0.8;
+        // FOLDER ICON
+        &[src$="/jnt_contentFolder.png"],
+        &[src$="/jnt_folder.png"] {
+            background-image: url(../images/icons/tabs-files-dark@X2.png);
+        }
 
-		// FOLDER ICON
-		&[src$="/jnt_contentFolder.png"],
-		&[src$="/jnt_folder.png"] {
-			background-image: url(../images/icons/tabs-files-dark@X2.png);
-		}
+        &[src$="/remoteFolder.png"] {
+            background-image: url(../images/icons/tabs-files-shared-dark@X2.png);
+        }
 
-		&[src$="/remoteFolder.png"] {
-			background-image: url(../images/icons/tabs-files-shared-dark@X2.png);
-		}
+        // IMPORT DROP BOX
+        &[src$="/jnt_importDropBox.png"] {
+            background-image: url(../images/icons/tabs-placeholder-white@X2.png);
+        }
 
-		// IMPORT DROP BOX
-		&[src$="/jnt_importDropBox.png"] {
-			background-image: url(../images/icons/tabs-placeholder-white@X2.png);
-		}
+        &[src$="/jnt_virtualsite.png"] {
+            background-image: url(../images/icons/tabs-site-dark@X2.png);
+        }
+    }
 
-		&[src$="/jnt_virtualsite.png"] {
-			background-image: url(../images/icons/tabs-site-dark@X2.png);
-		}
+    .x-grid3-row-selected {
+        .x-tree3-node-icon {
+            // FOLDER ICON
+            &[src$="/jnt_contentFolder.png"],
+            &[src$="/jnt_folder.png"] {
+                background-image: url(../images/icons/tabs-files@X2.png);
+            }
 
+            &[src$="/remoteFolder.png"] {
+                background-image: url(../images/icons/tabs-files-shared-white@X2.png);
+            }
 
-	}
+            // IMPORT DROP BOX
+            &[src$="/jnt_importDropBox.png"] {
+                background-image: url(../images/icons/tabs-placeholder-black@X2.png);
+            }
 
-	.x-grid3-row-selected {
-		.x-tree3-node-icon {
-			// FOLDER ICON
-			&[src$="/jnt_contentFolder.png"],
-			&[src$="/jnt_folder.png"] {
-				background-image: url(../images/icons/tabs-files@X2.png);
-			}
+            &[src$="/jnt_virtualsite.png"] {
+                background-image: url(../images/icons/tabs-site-white@X2.png);
+            }
+        }
+    }
 
-			&[src$="/remoteFolder.png"] {
-				background-image: url(../images/icons/tabs-files-shared-white@X2.png);
-			}
+    &::before {
+        /* Tab Content Header Label */
+        content: $text_files !important;
+    }
 
-			// IMPORT DROP BOX
-			&[src$="/jnt_importDropBox.png"] {
-				background-image: url(../images/icons/tabs-placeholder-black@X2.png);
-			}
+    #images-view {
 
-			&[src$="/jnt_virtualsite.png"] {
-				background-image: url(../images/icons/tabs-site-white@X2.png);
-			}
+        .thumb-wrap {
+            width: 47% !important;
 
+            &.x-view-over {
+                background: _property($THUMB--BG---HOVER, $SIDE-PANEL) !important;
+            }
 
-		}
-	}
+            &.x-view-over.x-view-item-sel {
+                background: #007cb0 !important;
+            }
+        }
 
-	&::before {
-		/* Tab Content Header Label */
-		content: $text_files!important;
-	}
+        .thumbDetails {
+            position: relative;;
+            left: 0;
+            width: 100%;
+            top: auto !important;
+            padding: 6px;
+            box-sizing: border-box;
+            float: left;
+        }
+    }
 
-	#images-view {
-
-		.thumb-wrap {
-			width: 47%!important;
-
-			&.x-view-over {
-				background: _property($THUMB--BG---HOVER, $SIDE-PANEL)!important;
-			}
-
-			&.x-view-over.x-view-item-sel {
-				background: #007cb0 !important;
-			}
-		}
-
-		.thumbDetails {
-			position: relative;;
-			left: 0;
-			width: 100%;
-		    top: auto!important;
-		    padding: 6px;
-		    box-sizing: border-box;
-			float: left;
-		}
-	}
-
-	.results-column {
-		display: flex;
-	    position: relative;
-	    flex-direction: row;
-	    flex-wrap: wrap;
-	    justify-content: space-between;
-		align-content: flex-start;
-	}
-
+    .results-column {
+        display: flex;
+        position: relative;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-content: flex-start;
+    }
 }
 
 #JahiaGxtSearchTab.tab_search {
-	width: 100%!important;
+    width: 100% !important;
 
-	&::before {
-		/* Tab Content Header Label */
-		content: $text_search!important;
-	}
+    &::before {
+        /* Tab Content Header Label */
+        content: $text_search !important;
+    }
 
-	 .x-panel-btns {
-		 margin-top: 20px;
-		left: 1px;
-		position: relative;
+    .x-panel-btns {
+        margin-top: 20px;
+        left: 1px;
+        position: relative;
 
-	 }
+    }
 
-	//  form {
-	// 	 .x-form-item {
-	// 		 padding: 2px;
-	// 	 }
-	//  }
+    > div {
+        height: 100% !important;
+        overflow: scroll !important;
+        width: 100% !important;
+    }
 
-	 > div {
- 		overflow: visible!important;
-		height: 100% !important;
-		overflow: scroll !important;
-		width: 100%!important;
+    .JahiaGxtSearchTab-form {
+        width: 100% !important;
 
- 	}
+        .x-toolbar-right {
+            @include button("ACTIONBAR---SUGGESTED", "remove-icons");
+        }
+    }
 
-	.JahiaGxtSearchTab-form {
-		width: 100%!important;
+    .JahiaGxtSearchTab-results {
+        right: 0;
+        position: absolute;
+        top: 0;
+        height: 100%;
+        width: 300px;
+        display: none;
+        pointer-events: none;
 
-		.x-toolbar-right {
-			@include button("ACTIONBAR---SUGGESTED", "remove-icons");
-		}
-	}
+        .x-panel-bwrap {
+            position: fixed;
+            top: -20px;
+            left: 360px;
+            width: 318px;
+            background: transparent !important;
+            padding-left: 10px;
+            box-shadow: inset 3px 0px 7px #babbbc, inset -24px 0px 0 0 transparent;
+            height: calc(100% + 40px) !important;
 
- 	.JahiaGxtSearchTab-results {
- 		right: 0;
- 		position: absolute;
- 		top: 0;
- 		height: 100%;
- 		width: 300px;
- 		display: none;
-		pointer-events: none;
+            &::before {
+                content: $text_results;
+                display: block;
+                position: absolute;
+                top: 30px;
+                left: 19px;
 
-		.x-panel-bwrap {
-			position: fixed;
-			top: -20px;
-			left: 360px;
-			width: 318px;
-			background: transparent !important;
-			padding-left: 10px;
-			box-shadow: inset 3px 0px 7px #babbbc, inset -24px 0px 0 0 transparent;
-			height: calc(100% + 40px) !important;
+                @include text(16px, #7b7f81, $FONT--WEIGHT---LIGHT)
+            }
 
-			&::before {
-				content: $text_results;
-				display: block;
-				position: absolute;
-				top: 30px;
-				left: 19px;
+            body.minimise-results & {
+                &::before {
+                    display: none;
+                }
+            }
+        }
 
-				@include text(16px, #7b7f81, $FONT--WEIGHT---LIGHT)
-			}
+        // Results list container
+        .x-panel-body {
+            height: calc(100% - 79px) !important;
+            padding-top: 60px;
+        }
 
-			body.minimise-results & {
-				&::before {
-					display: none;
-				}
-			}
-		}
+        // Pagination
+        .x-panel-bbar {
+            position: relative;
+            bottom: 52px;
+            z-index: 9999999;
+            background: linear-gradient(to right, rgba(44, 46, 48, 1) 0%, rgba(80, 84, 87, 1) 6%);;
+            left: -10px;
+            width: calc(100% + 35px) !important;
+            height: 51px;
 
-		// Results list container
-		.x-panel-body {
-			height: calc(100% - 79px) !important;
-			padding-top: 60px;
-		}
+            body.minimise-results & {
+                opacity: 0;
+                pointer-events: none;
+            }
 
-		// Pagination
-		.x-panel-bbar {
-			position: relative;
-		    bottom: 52px;
-		    z-index: 9999999;
-		    background: linear-gradient(to right, rgba(44,46,48,1) 0%,rgba(80,84,87,1) 6%);;
-		    left: -10px;
-			width: calc(100% + 35px)!important;
-			height: 51px;
+            > div {
+                padding: 0 10px;
+                height: 100%;
+            }
 
-			body.minimise-results & {
-				opacity: 0;
-				pointer-events: none;
-			}
+            .x-toolbar-left,
+            .x-toolbar-right {
+                display: block;
 
-			> div {
-				padding: 0 10px;
-				height: 100%;
-			}
+                table,
+                tbody,
+                tr,
+                td {
+                    display: block;
 
-			.x-toolbar-left,
-			.x-toolbar-right {
-				display: block;
+                }
+            }
 
-				table,
-				tbody,
-				tr,
-				td {
-					display: block;
+            .x-toolbar-right {
+                position: relative;
+                top: 5px;
+            }
 
-				}
-			}
+            .x-toolbar-left {
 
-			.x-toolbar-right {
-				position: relative;
-				top: 5px;
-			}
+                position: absolute;
+                top: 23px;
 
-			.x-toolbar-left {
+                .x-toolbar-cell {
+                    display: inline-block !important;
+                    opacity: 0.8;
 
-				position: absolute;
-    			top: 23px;
+                    .x-btn-mc img {
+                        display: none;
+                    }
 
+                    // First page
+                    &:nth-child(1) {
+                        background: url($ICON--FIRST--WHITE) no-repeat center center / 16px 16px;
+                        margin-left: 50px;
 
-				.x-toolbar-cell {
-					display: inline-block!important;
+                        &:hover {
+                            opacity: 1;
+                            cursor: pointer;
+                        }
+                    }
 
-					opacity: 0.8;
+                    // Previous page
+                    &:nth-child(2) {
+                        background: url($ICON--BACK--WHITE) no-repeat center center / 16px 16px;
+                        margin-left: 5px;
 
+                        &:hover {
+                            opacity: 1;
+                            cursor: pointer;
+                        }
+                    }
 
+                    // Skip to page input
+                    &:nth-child(5) {
+                        &:hover {
+                            opacity: 1;
+                        }
+                    }
 
-					tbody {
-						// display: none;
+                    // Next Page
+                    &:nth-child(8) {
+                        background: url($ICON--NEXT--WHITE) no-repeat center center / 16px 16px;
+                        margin-right: 5px;
 
-					}
+                        &:hover {
+                            opacity: 1;
+                            cursor: pointer;
+                        }
+                    }
 
-					.x-btn-mc img {
-						display: none;
-						// width: 25px;
-						// height: 25px;
-					}
+                    // Last page
+                    &:nth-child(9) {
+                        background: url($ICON--LAST--WHITE) no-repeat center center / 16px 16px;
+                        margin-right: 5px;
 
-					// First page
-					&:nth-child(1) {
-						background: url($ICON--FIRST--WHITE) no-repeat center center / 16px 16px;
-						margin-left: 50px;
+                        &:hover {
+                            opacity: 1;
+                            cursor: pointer;
+                        }
 
-						&:hover {
-							opacity: 1;
-							cursor: pointer;
-						}
+                    }
 
-					}
+                    // Refresh results
+                    &:nth-child(11) {
+                        background: url($ICON--REFRESH--SMALL_WHITE) no-repeat center center / 18px 14px;
 
-					// Previous page
-					&:nth-child(2) {
-						background: url($ICON--BACK--WHITE) no-repeat center center / 16px 16px;
-						margin-left: 5px;
+                        &:hover {
+                            opacity: 1;
+                            cursor: pointer;
+                        }
+                    }
+                }
+            }
+        }
 
-						&:hover {
-							opacity: 1;
-							cursor: pointer;
-						}
-					}
+        .x-grid3-row {
+            tbody,
+            tr {
+                width: 100% !important;
+                display: block;
+            }
+        }
 
-					// Label: "Page"
-					&:nth-child(4) {
+        .x-grid-cell-first {
+            display: inline-block;
+            width: 35px !important;
+        }
 
-					}
+        .x-grid3-cell-last {
+            display: inline-block;
+            width: calc(100% - 55px) !important;
+            padding-right: 20px;
+        }
 
-					// Skip to page input
-					&:nth-child(5) {
-						&:hover {
-							opacity: 1;
-						}
-					}
+        .my-paging-display {
+            z-index: 9999999;
+            text-align: center;
+            font-style: normal;
+            text-transform: uppercase;
+            cursor: default;
+            @include text(9px, rgba(_theme-color(secondary), 0.6), $FONT--WEIGHT---BOLD);
+            color: #fff !important;
+        }
 
-					// Label: "Of #"
-					&:nth-child(6) {
-
-					}
-
-					// Next Page
-					&:nth-child(8) {
-						background: url($ICON--NEXT--WHITE) no-repeat center center / 16px 16px;
-						margin-right: 5px;
-
-						&:hover {
-							opacity: 1;
-							cursor: pointer;
-						}
-					}
-
-					// Last page
-					&:nth-child(9) {
-						background: url($ICON--LAST--WHITE) no-repeat center center / 16px 16px;
-						margin-right: 5px;
-
-						&:hover {
-							opacity: 1;
-							cursor: pointer;
-						}
-
-					}
-
-					// Refresh results
-					&:nth-child(11) {
-						background: url($ICON--REFRESH--SMALL_WHITE) no-repeat center center / 18px 14px;
-
-						&:hover {
-							opacity: 1;
-							cursor: pointer;
-						}
-					}
-
-				}
-
-			}
-
-
-		}
-
-		.x-grid3-row {
-			tbody,
-			tr {
-				width: 100%!important;
-				display: block;
-			}
-		}
-
-		.x-grid-cell-first {
-			display: inline-block;
-			width: 35px!important;
-		}
-
-		.x-grid3-cell-last {
-			display: inline-block;
-			width: calc(100% - 55px) !important;
-			padding-right: 20px;
-		}
-
-		.my-paging-display {
-			// position: fixed;
-			// bottom: 2px;
-			z-index: 9999999;
-			// left: 539px;
-			text-align: center;
-
-			font-style: normal;
-			text-transform: uppercase;
-			cursor: default;
-			@include text(9px, rgba(_theme-color(secondary), 0.6), $FONT--WEIGHT---BOLD);
-			color: #fff!important;
-		}
-
-		.my-paging-text {
-			@include text(10px, _theme-color(secondary), $FONT--WEIGHT---NORMAL);
-			padding:0 5px;
-			color: #fff!important;
-
-		}
- 	}
-
+        .my-paging-text {
+            @include text(10px, _theme-color(secondary), $FONT--WEIGHT---NORMAL);
+            padding: 0 5px;
+            color: #fff !important;
+        }
+    }
 }
 
 
 #JahiaGxtCategoryBrowseTab.tab_categories {
-	width: 100%!important;
+    width: 100% !important;
 
-	// Deal with icons here ...
-	.x-tree3-node-icon {
+    // Deal with icons here ...
+    .x-tree3-node-icon {
+        background-size: 20px 20px;
+        background-repeat: no-repeat;
+        padding-left: 18px;
+        width: 18px;
+        height: 23px;
+        background-position: top 2px left 1px;
+        opacity: 0.5;
 
-		background-size: 20px 20px;
-	    background-repeat: no-repeat;
-	    padding-left: 18px;
-	    width: 18px;
-	    height: 23px;
-		opacity: 0.8;
-		background-position: top 2px left 1px;
-		opacity: 0.5;
+        // CATEGORY ICON
+        &[src$="/jnt_category.png"] {
+            background-image: url(../images/icons_dark/category.svg);
+        }
+    }
 
-		// CATEGORY ICON
-		&[src$="/jnt_category.png"] {
-			background-image: url(../images/icons_dark/category.svg);
-		}
+    .x-grid3-row-selected {
+        .x-tree3-node-icon {
+            // CATEGORY ICON
+            &[src$="/jnt_category.png"] {
+                background-image: url(../images/icons_light/category.svg);
+                opacity: 0.9;
+            }
+        }
+    }
 
+    &::before {
+        /* Tab Content Header Label */
+        content: $text_taxonomy !important;
+    }
 
-	}
-
-	.x-grid3-row-selected {
-		.x-tree3-node-icon {
-			// CATEGORY ICON
-			&[src$="/jnt_category.png"] {
-				background-image: url(../images/icons_light/category.svg);
-				opacity: 0.9;
-			}
-
-
-		}
-	}
-
-	&::before {
-		/* Tab Content Header Label */
-		content: $text_taxonomy!important;
-	}
-
-	// Tree Options
-	.x-box-item:nth-child(1) .x-grid3-td-displayName {
-		&::after {
-			/* MORE Options button for TREE */
-			display: none!important;
-		}
-
-	}
-
+    // Tree Options
+    .x-box-item:nth-child(1) .x-grid3-td-displayName {
+        &::after {
+            /* MORE Options button for TREE */
+            display: none !important;
+        }
+    }
 }
 
 
@@ -1514,512 +1241,249 @@ body[indigo-dragging-panel] {
 #JahiaGxtFileImagesBrowseTab.tab_filesimages,
 #JahiaGxtCategoryBrowseTab.tab_categories,
 #JahiaGxtSearchTab.tab_search {
-	width: 100%!important;
+    width: 100% !important;
 
-	.x-box-inner .x-box-item:nth-child(2) {
-		display: inline-block;
-		position: fixed !important;
-		top: -20px !important;
-		left: 360px !important;
-		padding-left: 0px;
-		height: calc(100% + 14px) !important;
-		overflow: scroll !important;
-		transition: width 0.2s ease-in 0s;
-		padding-top: 20px;
-		padding-bottom: 20px;
-		top: -7px !important;
-		box-sizing: border-box;
-		width: 354px !important;
-		box-shadow: inset 3px 0px 7px #babbbc, inset -24px 0px 0 0 transparent;
+    .x-box-inner .x-box-item:nth-child(2) {
+        display: inline-block;
+        position: fixed !important;
+        left: 360px !important;
+        padding-left: 0px;
+        height: calc(100% + 14px) !important;
+        overflow: scroll !important;
+        transition: width 0.2s ease-in 0s;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        top: -7px !important;
+        box-sizing: border-box;
+        width: 354px !important;
+        box-shadow: inset 3px 0px 7px #babbbc, inset -24px 0px 0 0 transparent;
 
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"]:not([data-indigo-app="admin"].minimise-results) &,
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab"]:not([data-indigo-app="admin"].minimise-results) &,
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"]:not([data-indigo-app="admin"].minimise-results) &,
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"]:not([data-indigo-app="admin"].minimise-results) &,
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"]:not([data-indigo-app="admin"].minimise-results) &,
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"]:not([data-indigo-app="admin"].minimise-results) & {
-			margin-left: 15px!important;
-			width: 339px !important;
-		}
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"]:not([data-indigo-app="admin"].minimise-results) &,
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab"]:not([data-indigo-app="admin"].minimise-results) &,
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"]:not([data-indigo-app="admin"].minimise-results) &,
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"]:not([data-indigo-app="admin"].minimise-results) &,
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"]:not([data-indigo-app="admin"].minimise-results) &,
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"]:not([data-indigo-app="admin"].minimise-results) & {
+            margin-left: 15px !important;
+            width: 339px !important;
+        }
 
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"].minimise-results:not([data-indigo-app="admin"]) &,
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab"].minimise-results:not([data-indigo-app="admin"]) &,
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"].minimise-results:not([data-indigo-app="admin"]) &,
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"].minimise-results:not([data-indigo-app="admin"]) &,
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"].minimise-results:not([data-indigo-app="admin"]) &,
-		body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"].minimise-results:not([data-indigo-app="admin"]) & {
-			margin-left: 15px!important;
-			width: 0 !important;
-		}
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"].minimise-results:not([data-indigo-app="admin"]) &,
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab"].minimise-results:not([data-indigo-app="admin"]) &,
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"].minimise-results:not([data-indigo-app="admin"]) &,
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"].minimise-results:not([data-indigo-app="admin"]) &,
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"].minimise-results:not([data-indigo-app="admin"]) &,
+        body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"].minimise-results:not([data-indigo-app="admin"]) & {
+            margin-left: 15px !important;
+            width: 0 !important;
+        }
 
-		> div {
-			height: 100% !important;
-		}
+        > div {
+            height: 100% !important;
+        }
 
-		&:after {
-			@include text(14px, _theme-color(primary), $FONT--WEIGHT---SEMILIGHT);
-			content: $text_empty;
-			display: block;
-			padding: 16px;
-			position: absolute;
-			top: 0;
-		}
+        &:after {
+            @include text(14px, _theme-color(primary), $FONT--WEIGHT---SEMILIGHT);
+            content: $text_empty;
+            display: block;
+            padding: 16px;
+            position: absolute;
+            top: 0;
+        }
 
-		&:before {
-			content: " ";
-			color: red;
-			z-index: 99999;
-			position: absolute;
-			text-indent: -50000px;
-			right: -6px;
-			background: url(../images/icons/toggle-EW@X2.png) no-repeat center center;
-			background-size: 15px;
-			top: calc(50% - 12px);
-			width: 25px;
-			height: 25px;
-			pointer-events: all;
-			transition: all 0.1s ease-in 0s;
-			padding: 0;
-		}
+        &:before {
+            content: " ";
+            color: red;
+            z-index: 99999;
+            position: absolute;
+            text-indent: -50000px;
+            right: -6px;
+            background: url(../images/icons/toggle-EW@X2.png) no-repeat center center;
+            background-size: 15px;
+            top: calc(50% - 12px);
+            width: 25px;
+            height: 25px;
+            pointer-events: all;
+            transition: all 0.1s ease-in 0s;
+            padding: 0;
+        }
 
-		body.ext-gecko & {
-			&:before {
-				right: 6px;
+        body.ext-gecko & {
+            &:before {
+                right: 6px;
+            }
+        }
 
-			}
-		}
+        body.minimise-results & {
 
-		body.minimise-results & {
+            &:before {
+                background: url(../images/icons/toggle-WE-white@X2.png) no-repeat center center;
+                background-size: 15px;
+            }
 
-			&:before {
-				background: url(../images/icons/toggle-WE-white@X2.png) no-repeat center center;
-				background-size: 15px;
-			}
+            width: 0px !important;
+            padding: 80px 0 0 24px;
+            pointer-events: all;
+            box-shadow: inset 3px 0px 7px rgba(0, 0, 0, 0.4), inset -24px 0px 0 0 #06a1e3, 3px 0px 3px 0 rgba(0, 0, 0, 0.4) !important;
 
-			pointer-events: none;
-			width: 0px!important;
-			padding: 80px 0 0 24px;
-			pointer-events: all;
-			box-shadow: inset 3px 0px 7px rgba(0,0,0,0.4), inset -24px 0px 0 0 #06a1e3, 3px 0px 3px 0 rgba(0, 0, 0, 0.4) !important;
+            &:hover {
+                box-shadow: inset 1px 0px 7px rgba(0, 0, 0, 0.4), inset -24px 0px 0 0 #06a1e3, 7px 0px 10px 0 rgba(0, 0, 0, 0.4) !important;
 
-			&:hover {
-				box-shadow: inset 1px 0px 7px rgba(0, 0, 0, 0.4), inset -24px 0px 0 0 #06a1e3, 7px 0px 10px 0 rgba(0, 0, 0, 0.4) !important;
+                &:before {
+                    right: -8px;
+                }
+            }
 
-				&:before {
-					right: -8px;
+            > div {
+                overflow: hidden;
+            }
+        }
 
-				}
-			}
+        body.minimise-results.ext-gecko & {
+            &:before {
+                right: -1px;
+            }
+        }
+    }
 
-			> div {
-				overflow: hidden;
-			}
-		}
+    &.show-results {
+        // width: 600px!important;
 
-		body.minimise-results.ext-gecko & {
-			&:before {
-				right: -1px;
+        .x-box-inner .x-box-item:nth-child(2) {
+            left: 360px !important;
+            padding-left: 10px;
+            background: none !important;
+            transition: all 0.2s ease-in 0s;
+            pointer-events: none;
+            padding-right: 25px;
 
-			}
-		}
-	}
+            body[indigo-dragging-panel="true"] & {
+                transition: none !important
+            }
 
-	&.show-results {
-		// width: 600px!important;
+            &:hover {
+                cursor: pointer;
+            }
 
-		.x-box-inner .x-box-item:nth-child(2) {
-			left: 360px !important;
-			padding-left: 10px;
-			background: none !important;
-			transition: all 0.2s ease-in 0s;
-			transition: all 0.2s ease-in 0s;
-			pointer-events: none;
-			padding-right: 25px;
+            &:after {
+                display: none;
+            }
 
+            > div {
+                pointer-events: all;
+            }
 
+            // Dragging has started
+            body.indigo-drag-to-drop & {
+                opacity: 0;
+                width: 0px !important;
+            }
+        }
 
-			body[indigo-dragging-panel="true"] & {
-				transition: none!important
-			}
+        .JahiaGxtSearchTab-results {
+            display: block;
 
-			&:hover {
-				cursor: pointer;
-			}
+            .x-panel-bwrap {
 
+                padding-right: 25px;
+                pointer-events: none;
 
+                &:hover {
+                    cursor: pointer;
+                }
 
-			&:after {
-				display: none;
-			}
+                &:after {
+                    content: " ";
+                    color: red;
+                    z-index: 99999;
+                    position: absolute;
+                    text-indent: -50000px;
+                    right: 0;
+                    background: url(../images/icons/toggle-EW@X2.png) no-repeat center center;
+                    background-size: 15px;
+                    top: calc(50% - 12px);
+                    width: 25px;
+                    height: 25px;
+                    pointer-events: all;
+                    transition: all 0.1s ease-in 0s;
+                }
 
+                > div {
+                    pointer-events: all;
+                }
 
+                // Dragging has started
+                body.indigo-drag-to-drop & {
+                    opacity: 0;
+                    width: 0px !important;
+                }
 
-			> div {
-				pointer-events: all;
-			}
+                body.minimise-results & {
+                    &:after {
+                        background: url(../images/icons/toggle-WE-white@X2.png) no-repeat center center;
+                        background-size: 15px;
+                    }
 
+                    width: 0px !important;
+                    padding: 0 0 0 24px;
+                    pointer-events: all;
+                    box-shadow: inset 3px 0px 7px rgba(0, 0, 0, 0.4), inset -24px 0px 0 0 #06a1e3, 3px 0px 3px 0 rgba(0, 0, 0, 0.4) !important;
 
+                    &:hover {
+                        box-shadow: inset 1px 0px 7px rgba(0, 0, 0, 0.4), inset -24px 0px 0 0 #06a1e3, 7px 0px 10px 0 rgba(0, 0, 0, 0.4) !important;
 
-			// Dragging has started
-			body.indigo-drag-to-drop & {
-				opacity: 0;
-				// pointer-events: none;
-				width: 0px!important;
-			}
+                        &:after {
+                            right: -3px;
+                        }
+                    }
 
-
-		}
-
-		.JahiaGxtSearchTab-results {
-			display: block;
-
-			.x-panel-bwrap {
-
-				padding-right: 25px;
-				pointer-events: none;
-
-				&:hover {
-					cursor: pointer;
-				}
-
-				&:after {
-					content: " ";
-					color: red;
-					z-index: 99999;
-					position: absolute;
-					text-indent: -50000px;
-					right: 0;
-					background: url(../images/icons/toggle-EW@X2.png) no-repeat center center;
-					background-size: 15px;
-					top: calc(50% - 12px);
-					width: 25px;
-					height: 25px;
-					pointer-events: all;
-					transition: all 0.1s ease-in 0s;
-				}
-
-				> div {
-					pointer-events: all;
-				}
-
-
-
-				// Dragging has started
-				body.indigo-drag-to-drop & {
-					opacity: 0;
-					width: 0px!important;
-				}
-
-				body.minimise-results & {
-					&:after {
-					    background: url(../images/icons/toggle-WE-white@X2.png) no-repeat center center;
-						background-size: 15px;
-					}
-
-					pointer-events: none;
-				    width: 0px!important;
-					padding: 0 0 0 24px;
-					pointer-events: all;
-					box-shadow: inset 3px 0px 7px rgba(0,0,0,0.4), inset -24px 0px 0 0 #06a1e3, 3px 0px 3px 0 rgba(0, 0, 0, 0.4) !important;
-
-					&:hover {
-						box-shadow: inset 1px 0px 7px rgba(0, 0, 0, 0.4), inset -24px 0px 0 0 #06a1e3, 7px 0px 10px 0 rgba(0, 0, 0, 0.4) !important;
-
-						&:after {
-							right: -3px;
-						}
-					}
-
-					> div {
-						overflow: hidden;
-					}
-				}
-			}
-		}
-
-	}
-
+                    > div {
+                        overflow: hidden;
+                    }
+                }
+            }
+        }
+    }
 }
 
 .results-column {
-	height: 100%!important;
+    height: 100% !important;
 }
 
 #JahiaGxtSearchTab {
-	.results-column {
-		&:before {
-			font-size: 14px;
-		    color: red;
-		    display: block;
-		    position: absolute;
-		    top: 0px;
-		    left: 9px;
-		    z-index: 99999;
-		    color: #363636;
-		    font-style: italic;
+    .results-column {
+        &:before {
+            font-size: 14px;
+            color: red;
+            display: block;
+            position: absolute;
+            top: 0px;
+            left: 9px;
+            z-index: 99999;
+            color: #363636;
+            font-style: italic;
+        }
 
-		}
+        &[data-results-status="no-results"]:before {
+            content: $text_no_results
+        }
 
-		&[data-results-status="no-results"]:before {
-			content: $text_no_results
-		}
+        &[data-results-status="results"]:before {
+        }
 
-		&[data-results-status="results"]:before {}
-
-		&[data-results-status="searching"]:before {
-			content: "Searching ...";
-			font-size: 26px;
-		    top: 35%;
-		    left: 50%;
-		    background: url(../images/loader_dark.svg) no-repeat center center;
-		    width: 40px;
-		    height: 40px;
-		    text-indent: -50000px;
-			pointer-events: none;
-		}
-
-		&[data-results-status="init"]:before {}
-	}
+        &[data-results-status="searching"]:before {
+            content: "Searching ...";
+            font-size: 26px;
+            top: 35%;
+            left: 50%;
+            background: url(../images/loader_dark.svg) no-repeat center center;
+            width: 40px;
+            height: 40px;
+            text-indent: -50000px;
+            pointer-events: none;
+        }
+    }
 }
-//
-//
-// #XXX {
-// 	width: #{$_tab_width}px!important;
-//
-// 	body[data-indigo-gwt-side-panel=""] & {
-// 		display: none!important;
-// 	}
-//
-// 	&::before {
-// 		/* Tab Content Header Label */
-// 		content: "#{$_text}"!important;
-// 	}
-//
-// 	// Tree Options
-// 	.x-grid3-td-displayName {
-// 		&::after {
-// 			/* MORE Options button for TREE */
-// 			left: #{$_line_options_button_tree}px!important;
-// 			content: "More";
-// 		}
-//
-// 	}
-//
-// 	// Content Options
-// 	.x-box-item:nth-child(2) .x-grid3-td-displayName {
-// 		&::after {
-// 			/* MORE Options button for CONTENT */
-// 			left: #{$_line_options_button_content}px!important;
-// 			content: "More";
-// 		}
-//
-// 	}
-// }
-//
-//
-// #XXX {
-// 	width: #{$_tab_width}px!important;
-//
-// 	body[data-indigo-gwt-side-panel=""] & {
-// 		display: none!important;
-// 	}
-//
-// 	&::before {
-// 		/* Tab Content Header Label */
-// 		content: "#{$_text}"!important;
-// 	}
-//
-// 	// Tree Options
-// 	.x-grid3-td-displayName {
-// 		&::after {
-// 			/* MORE Options button for TREE */
-// 			left: #{$_line_options_button_tree}px!important;
-// 			content: "More";
-// 		}
-//
-// 	}
-//
-// 	// Content Options
-// 	.x-box-item:nth-child(2) .x-grid3-td-displayName {
-// 		&::after {
-// 			/* MORE Options button for CONTENT */
-// 			left: #{$_line_options_button_content}px!important;
-// 			content: "More";
-// 		}
-//
-// 	}
-// }
-//
-//
-// #XXX {
-// 	width: #{$_tab_width}px!important;
-//
-// 	body[data-indigo-gwt-side-panel=""] & {
-// 		display: none!important;
-// 	}
-//
-// 	&::before {
-// 		/* Tab Content Header Label */
-// 		content: "#{$_text}"!important;
-// 	}
-//
-// 	// Tree Options
-// 	.x-grid3-td-displayName {
-// 		&::after {
-// 			/* MORE Options button for TREE */
-// 			left: #{$_line_options_button_tree}px!important;
-// 			content: "More";
-// 		}
-//
-// 	}
-//
-// 	// Content Options
-// 	.x-box-item:nth-child(2) .x-grid3-td-displayName {
-// 		&::after {
-// 			/* MORE Options button for CONTENT */
-// 			left: #{$_line_options_button_content}px!important;
-// 			content: "More";
-// 		}
-//
-// 	}
-// }
-//
-//
-// #XXX {
-// 	width: #{$_tab_width}px!important;
-//
-// 	body[data-indigo-gwt-side-panel=""] & {
-// 		display: none!important;
-// 	}
-//
-// 	&::before {
-// 		/* Tab Content Header Label */
-// 		content: "#{$_text}"!important;
-// 	}
-//
-// 	// Tree Options
-// 	.x-grid3-td-displayName {
-// 		&::after {
-// 			/* MORE Options button for TREE */
-// 			left: #{$_line_options_button_tree}px!important;
-// 			content: "More";
-// 		}
-//
-// 	}
-//
-// 	// Content Options
-// 	.x-box-item:nth-child(2) .x-grid3-td-displayName {
-// 		&::after {
-// 			/* MORE Options button for CONTENT */
-// 			left: #{$_line_options_button_content}px!important;
-// 			content: "More";
-// 		}
-//
-// 	}
-// }
-//
-//
-// #XXX {
-// 	width: #{$_tab_width}px!important;
-//
-// 	body[data-indigo-gwt-side-panel=""] & {
-// 		display: none!important;
-// 	}
-//
-// 	&::before {
-// 		/* Tab Content Header Label */
-// 		content: "#{$_text}"!important;
-// 	}
-//
-// 	// Tree Options
-// 	.x-grid3-td-displayName {
-// 		&::after {
-// 			/* MORE Options button for TREE */
-// 			left: #{$_line_options_button_tree}px!important;
-// 			content: "More";
-// 		}
-//
-// 	}
-//
-// 	// Content Options
-// 	.x-box-item:nth-child(2) .x-grid3-td-displayName {
-// 		&::after {
-// 			/* MORE Options button for CONTENT */
-// 			left: #{$_line_options_button_content}px!important;
-// 			content: "More";
-// 		}
-//
-// 	}
-// }
-//
-//
-// #XXX {
-// 	width: #{$_tab_width}px!important;
-//
-// 	body[data-indigo-gwt-side-panel=""] & {
-// 		display: none!important;
-// 	}
-//
-// 	&::before {
-// 		/* Tab Content Header Label */
-// 		content: "#{$_text}"!important;
-// 	}
-//
-// 	// Tree Options
-// 	.x-grid3-td-displayName {
-// 		&::after {
-// 			/* MORE Options button for TREE */
-// 			left: #{$_line_options_button_tree}px!important;
-// 			content: "More";
-// 		}
-//
-// 	}
-//
-// 	// Content Options
-// 	.x-box-item:nth-child(2) .x-grid3-td-displayName {
-// 		&::after {
-// 			/* MORE Options button for CONTENT */
-// 			left: #{$_line_options_button_content}px!important;
-// 			content: "More";
-// 		}
-//
-// 	}
-// }
-//
-//
-// #XXX {
-// 	width: #{$_tab_width}px!important;
-//
-// 	body[data-indigo-gwt-side-panel=""] & {
-// 		display: none!important;
-// 	}
-//
-// 	&::before {
-// 		/* Tab Content Header Label */
-// 		content: "#{$_text}"!important;
-// 	}
-//
-// 	// Tree Options
-// 	.x-grid3-td-displayName {
-// 		&::after {
-// 			/* MORE Options button for TREE */
-// 			left: #{$_line_options_button_tree}px!important;
-// 			content: "More";
-// 		}
-//
-// 	}
-//
-// 	// Content Options
-// 	.x-box-item:nth-child(2) .x-grid3-td-displayName {
-// 		&::after {
-// 			/* MORE Options button for CONTENT */
-// 			left: #{$_line_options_button_content}px!important;
-// 			content: "More";
-// 		}
-//
-// 	}
-// }
-
 
 
 /////////////////////////////////////////////////
@@ -2027,386 +1491,275 @@ body[indigo-dragging-panel] {
 /////////////////////////////////////////////////
 
 $side_panel__tab_buttons: (
-	// Tab ID							// Tab Label		// Tab Width	// Tree Options		// Content Options
-	("#JahiaGxtPagesTab",      			$text_pages,    	270,			292,				"none"),
-	("#JahiaGxtCreateContentTab",   	$text_create,    	270,			"none",				"none"),
-	("#JahiaGxtContentBrowseTab",   	$text_content,    	550,			287,				572),
-	("#JahiaGxtFileImagesBrowseTab",   	$text_files,    	550,			287,				"none"),
-	("#JahiaGxtSearchTab",   			$text_search,    	550,			"none",				572),
-	("#JahiaGxtCategoryBrowseTab",   	$text_taxonomy,    	550,			"none",				572),
-	("#JahiaGxtChannelsTab",   			$text_devices,    	270,			"none",				"none"),
-	("#JahiaGxtSettingsTab",   			$text_site_settings,    	260,			"none",				"none")
+                ("#JahiaGxtPagesTab", $text_pages, 270, 292, "none"),
+                ("#JahiaGxtCreateContentTab", $text_create, 270, "none", "none"),
+                ("#JahiaGxtContentBrowseTab", $text_content, 550, 287, 572),
+                ("#JahiaGxtFileImagesBrowseTab", $text_files, 550, 287, "none"),
+                ("#JahiaGxtSearchTab", $text_search, 550, "none", 572),
+                ("#JahiaGxtCategoryBrowseTab", $text_taxonomy, 550, "none", 572),
+                ("#JahiaGxtChannelsTab", $text_devices, 270, "none", "none"),
+                ("#JahiaGxtSettingsTab", $text_site_settings, 260, "none", "none")
 );
 
-// @each $tab_button in $side_panel__tab_buttons {
-// 	$_tab_ID: #{nth($tab_button,1)};
-// 	$_text: "#{nth($tab_button,2)}";
-// 	$_tab_width: #{nth($tab_button,3)};
-// 	$_line_options_button_tree: #{nth($tab_button,4)};
-// 	$_line_options_button_content: #{nth($tab_button,5)};
-//
-// 	#{$_tab_ID} {
-//
-// 		width: #{$_tab_width}px!important;
-//
-// 		body[data-indigo-gwt-side-panel=""] & {
-// 			display: none!important;
-// 		}
-//
-//
-//
-// 		&::before {
-// 			/* Tab Content Header Label */
-// 			content: "#{$_text}"!important;
-// 		}
-//
-// 		@if ($_line_options_button_tree != "none") {
-// 			.x-grid3-td-displayName {
-// 				&::after {
-// 					/* MORE Options button for TREE */
-// 					left: #{$_line_options_button_tree}px!important;
-// 					content: "More";
-// 				}
-//
-// 			}
-// 		}
-//
-// 		@if ($_line_options_button_content != "none") {
-// 			.x-box-item:nth-child(2) .x-grid3-td-displayName {
-// 				&::after {
-// 					/* MORE Options button for CONTENT */
-// 					left: #{$_line_options_button_content}px!important;
-// 					content: "More";
-// 				}
-//
-// 			}
-//
-// 			@if ($_tab_ID == "#JahiaGxtSearchTab") {
-// 				.x-grid3-td-displayName {
-// 					&::after {
-// 						/* Exception for Search results */
-// 						left: #{$_line_options_button_content}px!important;
-// 						content: "More";
-// 					}
-// 				}
-// 			}
-// 		}
-//
-//
-// 	}
-// }
-
-
-
 #JahiaGxtSettingsTab {
-	.x-viewport-adminmode &,
-	.x-viewport-dashboardmode & {
-		height: 100%!important;
-		width: calc(100% + 22px) !important;
-		left:5px;
-	}
+    .x-viewport-adminmode &,
+    .x-viewport-dashboardmode & {
+        height: 100% !important;
+        width: calc(100% + 22px) !important;
+        left: 5px;
+    }
 
-	.x-viewport-editmode & {
-	    height: calc(100% - 38px) !important;
-	}
+    .x-viewport-editmode & {
+        height: calc(100% - 38px) !important;
+    }
 
+    > .x-component {
+        width: 100% !important;
+        height: calc(100% - 85px);
+        overflow: hidden;
 
+        .x-panel-bwrap {
+            height: 100%;
+        }
 
-
-	> .x-component {
-		width: 100%!important;
-		height: calc(100% - 85px);
-		overflow: hidden;
-
-		.x-panel-bwrap {
-			height: 100%;
-		}
-
-		.x-panel-body {
-			> .x-component {
-				height: 100%!important;
-				width: 100%!important;
-			}
-		}
-	}
+        .x-panel-body {
+            > .x-component {
+                height: 100% !important;
+                width: 100% !important;
+            }
+        }
+    }
 }
 
 #JahiaGxtSettingsTab {
-	padding-right: 0!important;
+    padding-right: 0 !important;
 }
 
 #JahiaGxtChannelsTab {
-	label {
-		width: 100%!important
-	}
+    label {
+        width: 100% !important
+    }
 }
-
-
-
-
-
 
 
 /////////////////////////////////////////////////
 // BUTTONS //////////////////////////////////////
 /////////////////////////////////////////////////
 
-    // MENUS
-        $side_panel__tabs: (
-            ("#JahiaGxtSidePanelTabs__JahiaGxtPagesTab",                $text_pages,        $SIDE_PANEL--ICON--PAGES---CLOSED,        $SIDE_PANEL--ICON--PAGES---OPEN,        $SIDE_PANEL--ICON--PAGES---SELECTED,        $SIDE_PANEL--ICON--PAGES---OFF),
-            ("#JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab",        $text_create,       $SIDE_PANEL--ICON--CREATE---CLOSED,       $SIDE_PANEL--ICON--CREATE---OPEN,       $SIDE_PANEL--ICON--CREATE---SELECTED,       $SIDE_PANEL--ICON--CREATE---OFF),
-            ("#JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab",        $text_content,      $SIDE_PANEL--ICON--CONTENT---CLOSED,      $SIDE_PANEL--ICON--CONTENT---OPEN,      $SIDE_PANEL--ICON--CONTENT---SELECTED,      $SIDE_PANEL--ICON--CONTENT---OFF),
-            ("#JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab",     $text_files,        $SIDE_PANEL--ICON--FILES---CLOSED,        $SIDE_PANEL--ICON--FILES---OPEN,        $SIDE_PANEL--ICON--FILES---SELECTED,        $SIDE_PANEL--ICON--FILES---OFF),
-            ("#JahiaGxtSidePanelTabs__JahiaGxtSearchTab",               $text_search,       $SIDE_PANEL--ICON--SEARCH---CLOSED,       $SIDE_PANEL--ICON--SEARCH---OPEN,       $SIDE_PANEL--ICON--SEARCH---SELECTED,       $SIDE_PANEL--ICON--SEARCH---OFF),
-            ("#JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab",       $text_taxonomy,     $SIDE_PANEL--ICON--TAXONOMY---CLOSED,     $SIDE_PANEL--ICON--TAXONOMY---OPEN,     $SIDE_PANEL--ICON--TAXONOMY---SELECTED,     $SIDE_PANEL--ICON--TAXONOMY---OFF),
-            ("#JahiaGxtSidePanelTabs__JahiaGxtChannelsTab",             $text_devices,      $SIDE_PANEL--ICON--DEVICES---CLOSED,      $SIDE_PANEL--ICON--DEVICES---OPEN,      $SIDE_PANEL--ICON--DEVICES---SELECTED,      $SIDE_PANEL--ICON--DEVICES---OFF),
-            ("#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab",             $text_settings,     $SIDE_PANEL--ICON--SETTINGS---CLOSED,     $SIDE_PANEL--ICON--SETTINGS---OPEN,     $SIDE_PANEL--ICON--SETTINGS---SELECTED,     $SIDE_PANEL--ICON--SETTINGS---OFF)
-        );
+// MENUS
+$side_panel__tabs: (
+                ("#JahiaGxtSidePanelTabs__JahiaGxtPagesTab", $text_pages, $SIDE_PANEL--ICON--PAGES---CLOSED, $SIDE_PANEL--ICON--PAGES---OPEN, $SIDE_PANEL--ICON--PAGES---SELECTED, $SIDE_PANEL--ICON--PAGES---OFF),
+                ("#JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab", $text_create, $SIDE_PANEL--ICON--CREATE---CLOSED, $SIDE_PANEL--ICON--CREATE---OPEN, $SIDE_PANEL--ICON--CREATE---SELECTED, $SIDE_PANEL--ICON--CREATE---OFF),
+                ("#JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab", $text_content, $SIDE_PANEL--ICON--CONTENT---CLOSED, $SIDE_PANEL--ICON--CONTENT---OPEN, $SIDE_PANEL--ICON--CONTENT---SELECTED, $SIDE_PANEL--ICON--CONTENT---OFF),
+                ("#JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab", $text_files, $SIDE_PANEL--ICON--FILES---CLOSED, $SIDE_PANEL--ICON--FILES---OPEN, $SIDE_PANEL--ICON--FILES---SELECTED, $SIDE_PANEL--ICON--FILES---OFF),
+                ("#JahiaGxtSidePanelTabs__JahiaGxtSearchTab", $text_search, $SIDE_PANEL--ICON--SEARCH---CLOSED, $SIDE_PANEL--ICON--SEARCH---OPEN, $SIDE_PANEL--ICON--SEARCH---SELECTED, $SIDE_PANEL--ICON--SEARCH---OFF),
+                ("#JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab", $text_taxonomy, $SIDE_PANEL--ICON--TAXONOMY---CLOSED, $SIDE_PANEL--ICON--TAXONOMY---OPEN, $SIDE_PANEL--ICON--TAXONOMY---SELECTED, $SIDE_PANEL--ICON--TAXONOMY---OFF),
+                ("#JahiaGxtSidePanelTabs__JahiaGxtChannelsTab", $text_devices, $SIDE_PANEL--ICON--DEVICES---CLOSED, $SIDE_PANEL--ICON--DEVICES---OPEN, $SIDE_PANEL--ICON--DEVICES---SELECTED, $SIDE_PANEL--ICON--DEVICES---OFF),
+                ("#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", $text_settings, $SIDE_PANEL--ICON--SETTINGS---CLOSED, $SIDE_PANEL--ICON--SETTINGS---OPEN, $SIDE_PANEL--ICON--SETTINGS---SELECTED, $SIDE_PANEL--ICON--SETTINGS---OFF)
+);
 
 
-        /* Specificities for: PAGES, CREATE, CONTENT, FILES, SEARCH, TAXONOMY, DEVICES, SETTINGS */
-        @each $tab in $side_panel__tabs {
-			$_tab_ID: #{nth($tab,1)};
-			$_text: "#{nth($tab,2)}";
-			$_icon_closed: #{nth($tab,3)};
-			$_icon_open: #{nth($tab,4)};
-			$_icon_selected: #{nth($tab,5)};
-			$_icon_off: #{nth($tab,6)};
+/* Specificities for: PAGES, CREATE, CONTENT, FILES, SEARCH, TAXONOMY, DEVICES, SETTINGS */
+@each $tab in $side_panel__tabs {
+    $_tab_ID: #{nth($tab,1)};
+    $_text: "#{nth($tab,2)}";
+    $_icon_closed: #{nth($tab,3)};
+    $_icon_open: #{nth($tab,4)};
+    $_icon_selected: #{nth($tab,5)};
+    $_icon_off: #{nth($tab,6)};
 
-            #{$_tab_ID} {
-				@if ($_tab_ID == "#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab") {
-					position: fixed;
-					left: 27px;
-				    bottom: 74px;
+    #{$_tab_ID} {
+        @if ($_tab_ID == "#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab") {
+            position: fixed;
+            left: 27px;
+            bottom: 74px;
 
-					body[data-uilang="de"] & {
-						bottom: 80px;
-						left: 20px;
-
-						img {
-							left: 26px!important;
-						}
-					}
-
-					body[data-sitesettings="true"] & {
-						bottom: 28px;
-					}
-
-					.x-viewport-dashboardmode & {
-						display: none!important;
-					}
-
-
-				}
+            body[data-uilang="de"] & {
+                bottom: 80px;
+                left: 20px;
 
                 img {
-					background-image: url($_icon_closed);
-
-                    // body[data-multiselect="on"] & {
-					// 	background-image: url($_icon_off);
-                    // }
-
-                    body[data-INDIGO-GWT-SIDE-PANEL="open"] &,
-					.x-viewport-adminmode &,
-					.x-viewport-dashboardmode & {
-						background-image: url($_icon_open);
-
-                    }
-
-
+                    left: 26px !important;
                 }
+            }
 
-                &.x-tab-strip-active img {
-					body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
-                        background-image: url($_icon_selected);
-                    }
+            body[data-sitesettings="true"] & {
+                bottom: 28px;
+            }
 
-                }
+            .x-viewport-dashboardmode & {
+                display: none !important;
+            }
 
-                &::after {
-                    content:$_text;
-                }
+
+        }
+
+        img {
+            background-image: url($_icon_closed);
+
+            body[data-INDIGO-GWT-SIDE-PANEL="open"] &,
+            .x-viewport-adminmode &,
+            .x-viewport-dashboardmode & {
+                background-image: url($_icon_open);
             }
         }
 
+        &.x-tab-strip-active img {
+            body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+                background-image: url($_icon_selected);
+            }
+        }
 
-		#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab:nth-child(2) {
-			bottom: 0;
-
-			&.x-tab-strip-active {
-				body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
-					img {
-			            background-image: url(../images/tabs-settings-blue@X2.png);
-			        }
-				}
-
-			}
-
-			img {
-				background-image: url(../images/tabs-settings-white@X2.png);
-
-		        // body[data-multiselect="on"] & {
-				// 	background-image: url(../images/tabs-settings-black@X2.png);
-		        // }
-
-				body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
-					background-image: url(../images/tabs-settings-dark@X2.png);
-				}
-
-		    }
-
-			&::after {
-		        content: $text_system_settings;
-		    }
-		}
-
-		#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab:nth-child(1) {
-			&::after {
-				body[data-indigo-app="admin"] & {
-					content: $text_server_settings;
-				}
-			}
-		}
+        &::after {
+            content: $_text;
+        }
+    }
+}
 
 
+#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab:nth-child(2) {
+    bottom: 0;
+
+    &.x-tab-strip-active {
+        body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+            img {
+                background-image: url(../images/tabs-settings-blue@X2.png);
+            }
+        }
+
+    }
+
+    img {
+        background-image: url(../images/tabs-settings-white@X2.png);
+
+        body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+            background-image: url(../images/tabs-settings-dark@X2.png);
+        }
+
+    }
+
+    &::after {
+        content: $text_system_settings;
+    }
+}
+
+#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab:nth-child(1) {
+    &::after {
+        body[data-indigo-app="admin"] & {
+            content: $text_server_settings;
+        }
+    }
+}
 
 
 .x-viewport-adminmode,
 .x-viewport-dashboardmode,
 body[data-edit-window-style="settings"] {
 
-	#JahiaGxtSidePanelTabs .x-tab-panel-body {
-		// height: calc(100% - 230px)!important;
-		overflow-y: scroll;
-		margin-top: 53px;
-		height: calc(100% - 113px)!important;
-	}
+    #JahiaGxtSidePanelTabs .x-tab-panel-body {
+        overflow-y: scroll;
+        margin-top: 53px;
+        height: calc(100% - 113px) !important;
+    }
 
-	.x-grid3 {
-		.x-tree3-node-joint {
-			margin-left: 2px;
-		}
+    .x-grid3 {
+        .x-tree3-node-joint {
+            margin-left: 2px;
+        }
 
-		.x-grid3-body {
-			// padding-left: 4px;
-		}
+        .x-grid3-row {
+            padding-left: 0 !important;
+            height: 25px !important;
+            position: relative;
 
-		.x-grid3-row {
-			padding-left: 0!important;
-			height: 25px!important;
-			position: relative;
+            table,
+            tbody,
+            tr,
+            td {
+                display: block !important;
+                height: 100% !important;
+            }
 
-			table,
-			tbody,
-			tr,
-			td {
-				display: block!important;
-				height: 100%!important;
-			}
+            &:hover {
+                cursor: pointer;
+            }
 
-			&:hover {
-				cursor: pointer;
-			}
+            .x-tree3-node-icon,
+            .x-tree3-node-joint {
+                //display: none!important;
+            }
 
-			.x-tree3-node-icon,
-			.x-tree3-node-joint {
-				//display: none!important;
-			}
+            // PAGE
+            .x-tree3-node-text {
+                margin-left: -17px;
+                line-height: 25px;
 
-			// PAGE
-			.x-tree3-node-text {
-				margin-left: -17px;
-				line-height: 25px;
+                &::before {
+                    content: ">";
+                    width: 21px;
+                    height: 19px;
+                    background: #fdfdfd;
+                    text-indent: -50000px;
+                    display: inline-block;
+                    top: 3px;
+                    left: -2px;
+                    position: relative;
+                    z-index: -1;
+                    border-radius: 2px;
+                }
+            }
 
-				&::before {
-					content: ">";
-				    width: 21px;
-				    height: 19px;
-				    background: #fdfdfd;
-				    text-indent: -50000px;
-				    display: inline-block;
-				    top: 3px;
-				    left: -2px;
-				    position: relative;
-				    z-index: -1;
-				    border-radius: 2px;
-				}
-			}
+            // PAGE [SELECTED]
+            &.x-grid3-row-selected .x-tree3-node-text {
+                color: #FCFCFC !important;
 
-			// PAGE [SELECTED]
-			&.x-grid3-row-selected .x-tree3-node-text {
-				// color: _theme-color(tertiary)!important;
-				color: #FCFCFC!important;
+                &::before {
+                    background: _theme-color(tertiary);
+                }
+            }
 
-				&::before {
-					background: _theme-color(tertiary);
-				}
+            // FOLDER
+            &.unselectable-row {
+                pointer-events: none;
+                padding-left: 10px !important;
+                background: url(../images/collapsed-black.png) no-repeat left 6px top 6px !important;
+                background-size: 14px !important;
 
-			}
+                .x-tree3-node-joint {
+                    width: 100% !important;
+                    display: inline-block !important;
+                    opacity: 0;
+                    position: absolute !important;
+                    left: -10px;
+                    height: 23px !important;
 
-			// FOLDER
-			&.unselectable-row {
-				pointer-events: none;
-				padding-left: 10px!important;
-				background: url(../images/collapsed-black.png) no-repeat left 6px top 6px!important;
-				background-size: 14px!important;
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
 
-				.x-tree3-node-joint {
-					width: 100%!important;
-					display: inline-block!important;
-					opacity: 0;
-					position: absolute!important;
-					left: -10px;
-				    height: 23px!important;
+                // Fix icon position
+                img {
+                    margin-left: 4px;
+                }
 
-					&:hover {
-						cursor: pointer;
-					}
-				}
+                // FOLDER LABEL
+                span.x-tree3-node-text {
+                    color: _theme-color(primary) !important;
+                    margin-left: -15px;
+                }
+            }
 
-				// Fix icon position
-				img {
-					margin-left: 4px;
-				}
-
-				// FOLDER LABEL
-				span.x-tree3-node-text {
-					color: _theme-color(primary) !important;
-					margin-left: -15px;
-					//padding-left: 4px !important;
-				}
-			}
-
-			// FOLDER [OPENED]
-			&.unselectable-row.indigo-opened {
-				background: url(../images/expanded-black.png) no-repeat left 5px top 6px!important;
-				background-size: 14px!important;
-
-				.x-tree3-node-text {
-					// font-style: italic;
-
-					&::before {
-					    //margin-left: 7px;
-					}
-				}
-			}
-		}
-	}
+            // FOLDER [OPENED]
+            &.unselectable-row.indigo-opened {
+                background: url(../images/expanded-black.png) no-repeat left 5px top 6px !important;
+                background-size: 14px !important;
+            }
+        }
+    }
 
 }
 
-
-// body[data-indigo-gwt-side-panel="open"] .x-viewport-editmode #JahiaGxtSettingsTab {
-//
-// 	&::before {
-// 		position: relative;
-// 	    line-height: 40px;
-// 	    margin-bottom: 45px;
-// 		top: 0;
-// 		left: 0;
-// 	}
-//
-// }
 
 #JahiaGxtPagesTab,
 #JahiaGxtCreateContentTab,
@@ -2416,147 +1769,130 @@ body[data-edit-window-style="settings"] {
 #JahiaGxtCategoryBrowseTab,
 #JahiaGxtChannelsTab,
 #JahiaGxtSettingsTab {
-	// Common for ALL Side Panel Contents
+    // Common for ALL Side Panel Contents
 
-	form {
-		.x-form-item {
-			padding: 2px;
-		}
-	}
+    form {
+        .x-form-item {
+            padding: 2px;
+        }
+    }
 
-	.x-viewport-editmode & {
-		@extend %CSS_BLOCK--SIDE_PANEL--TAB--CONTENTS;
+    .x-viewport-editmode & {
+        @extend %CSS_BLOCK--SIDE_PANEL--TAB--CONTENTS;
 
-	}
+    }
 
-	&.x-masked {
-		&::before {
-			position: relative;
-		}
-	}
+    &.x-masked {
+        &::before {
+            position: relative;
+        }
+    }
 
 
-	&::before {
-		content: $text_site_settings;
-		@extend %CSS_BLOCK--SIDE_PANEL--TITLE;
-		display: block;
-		margin: 22px 0 30px -15px;
-		transition: all 0.2s ease-in 0s;
-		line-height: 40px;
+    &::before {
+        content: $text_site_settings;
+        @extend %CSS_BLOCK--SIDE_PANEL--TITLE;
+        display: block;
+        margin: 22px 0 30px -15px;
+        transition: all 0.2s ease-in 0s;
+        font-size: 30px;
+        line-height: 47px;
+        letter-spacing: -0.5px;
 
-		font-size: 30px;
-		line-height: 47px;
-		letter-spacing: -0.5px;
+        body[data-indigo-gwt-side-panel="open"] & {
+            margin: 26px 0 30px 1px;
+        }
 
-		body[data-indigo-gwt-side-panel="open"] & {
-				margin: 26px 0 30px 1px;
-		}
+        body[data-indigo-gwt-side-panel="open"][data-indigo-app="edit"] & {
+            line-height: 40px;
+        }
 
-		body[data-indigo-gwt-side-panel="open"][data-indigo-app="edit"] & {
-				line-height: 40px;
-		}
+        body[data-edit-window-style="settings"] &,
+        .x-viewport-adminmode &,
+        .x-viewport-dashboardmode & {
+            font-size: 36px;
+            font-weight: 100;
 
-		body[data-edit-window-style="settings"] &,
-		.x-viewport-adminmode &,
-		.x-viewport-dashboardmode & {
-			font-size: 36px;
-			font-weight: 100;
+            padding-left: 0px;
+            position: fixed;
+            top: 15px !important;
+            left: 84px !important;
+        }
 
-			padding-left: 0px;
-		    position: fixed;
-		    top: 15px!important;
-		    left: 84px!important;
-		}
+        .x-viewport-adminmode & {
+            content: $text_administration !important;
+        }
 
-		.x-viewport-adminmode & {
-			content: $text_administration !important;
-		    // padding-left: 0px;
-		    // position: fixed;
-		    // top: 15px!important;
-		    // left: 84px!important;
+        .x-viewport-dashboardmode & {
+            content: $text_home !important;
+            top: 40px;
+            left: 75px;
+        }
 
-		}
+        /* END TEMP */
+    }
 
-		.x-viewport-dashboardmode & {
-			content: $text_home !important;
-			top: 40px;
-		    left: 75px;
-		}
+    > .x-border-layout-ct {
+        /* Intermediary Container in CREATE tabs */
+        height: 100% !important;
+        width: 100% !important;
+    }
 
-		/* END TEMP */
-	}
+    .x-box-inner {
+        height: calc(100% - 116px) !important;
+        width: 100% !important;
 
-	> .x-border-layout-ct {
-		/* Intermediary Container in CREATE tabs */
-		height: 100%!important;
-		width: 100%!important;
+        .x-box-item {
+            /* Used in COntent Tabs, 2 x-box-items side by side contain list and results window */
+            height: 100% !important;
+            display: inline-block;
+            position: relative !important;
+            width: 100% !important;
+            top: 0 !important;
+            background: transparent !important;
+            vertical-align: top;
 
-		> .x-form-field-wrap {
-			/* Contains CREATE Search input */
-			// position: fixed!important;
-			// bottom: 10px;
-			// top:auto!important;
-			// height: auto!important;
-			// width: auto!important;
-		}
+            &:nth-child(1) {
+                padding-right: 20px;
+                box-sizing: border-box;
+            }
 
-	}
-
-	.x-box-inner {
-		height: calc(100% - 116px)!important;
-		width: 100%!important;
-
-		.x-box-item {
-			/* Used in COntent Tabs, 2 x-box-items side by side contain list and results window */
-			height: 100%!important;
-			display: inline-block;
-			position: relative!important;
-			width: 100% !important;
-			top: 0!important;
-			background: transparent!important;
-			vertical-align: top;
-
-			&:nth-child(1) {
-				padding-right: 20px;
-				box-sizing: border-box;
-
-			}
-
-			> .x-component {
-				/* Container for List View */
-				width: 100%!important;
-				background: transparent!important;
-				// height: calc(100% - 81px)!important;
-			}
-		}
-	}
+            > .x-component {
+                /* Container for List View */
+                width: 100% !important;
+                background: transparent !important;
+            }
+        }
+    }
 
 }
 
 .tab_systemSiteSettings > .x-panel {
-	user-select: none;
-	&:hover {
-		cursor: pointer;
-	}
-	&::before {
-		background: url(../images/icons/expand-side-panel@X2.png) no-repeat left top 6px;
-	    position: relative;
-	    background-size: 5px 7px;
-	    padding-left: 11px;
-	    margin-left: 0!important;
-	}
+    user-select: none;
 
-	&.open-sub-menu {
-		&::before {
-			background-image: url(../images/icons/icon-toggle-expanded-small-normal.png);;
-			background-size: 7px 5px;
-			position: relative;
-		}
+    &:hover {
+        cursor: pointer;
+    }
 
-		> div {
-			opacity: 1;
-			pointer-events: all;
-			position: relative;
-		}
-	}
+    &::before {
+        background: url(../images/icons/expand-side-panel@X2.png) no-repeat left top 6px;
+        position: relative;
+        background-size: 5px 7px;
+        padding-left: 11px;
+        margin-left: 0 !important;
+    }
+
+    &.open-sub-menu {
+        &::before {
+            background-image: url(../images/icons/icon-toggle-expanded-small-normal.png);;
+            background-size: 7px 5px;
+            position: relative;
+        }
+
+        > div {
+            opacity: 1;
+            pointer-events: all;
+            position: relative;
+        }
+    }
 }

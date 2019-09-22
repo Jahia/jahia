@@ -145,6 +145,15 @@ div.engine-window {
         }
     }
 
+    .hide-headers {
+      .x-tab-panel-header {
+        display: none!important;
+      }
+      .x-tab-panel-body {
+        margin-left: 0px!important;
+      }
+    }
+
     .x-tab-panel {
         // Edit Engine COntent Container
         width: 100% !important;
@@ -324,7 +333,8 @@ div.engine-window {
         }
     }
 
-    &:before {
+    &:not(.hide-headers) {
+      &:before {
         content: $text_edit_engine;
         font-size: 36px;
         display: inline-block;
@@ -341,8 +351,9 @@ div.engine-window {
 
         body[data-indigo-editing-condition="new"] &,
         body[data-indigo-editing-condition="true"] & {
-            display: none;
+          display: none;
         }
+      }
     }
 
     &.createcontentengine-ctn {

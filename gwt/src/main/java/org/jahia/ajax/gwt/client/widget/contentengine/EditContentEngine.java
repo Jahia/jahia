@@ -67,6 +67,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
+import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.HashMap;
@@ -88,6 +89,7 @@ public class EditContentEngine extends AbstractContentEngine {
             new HashMap<String, GWTJahiaGetPropertiesResult>();
     private boolean hasOrderableChildNodes;
     private boolean workInProgressCheckedByDefault = false;
+    private EditEngineJSConfig jsConfig;
 
     /**
      * Initializes an instance of this class.
@@ -95,11 +97,13 @@ public class EditContentEngine extends AbstractContentEngine {
      * @param node   the content object to be edited
      * @param linker the edit linker for refresh purpose
      */
-    public EditContentEngine(GWTEngineConfiguration configuration, GWTJahiaNode node, Linker linker, EngineContainer engineContainer, boolean skipRefreshOnSave) {
+    public EditContentEngine(GWTEngineConfiguration configuration, GWTJahiaNode node, Linker linker,
+                             EngineContainer engineContainer, boolean skipRefreshOnSave, EditEngineJSConfig jsConfig) {
         super(configuration, linker, node.getPath().substring(0, node.getPath().lastIndexOf('/')), skipRefreshOnSave);
         contentPath = node.getPath();
         nodeName = node.getName();
         this.node = node;
+        this.jsConfig = jsConfig;
         init(engineContainer);
         loadEngine();
 
@@ -144,10 +148,15 @@ public class EditContentEngine extends AbstractContentEngine {
         tabs.setId("JahiaGxtEditEngineTabs");
         for (GWTEngineTab tabConfig : config.getEngineTabs()) {
             EditEngineTabItem tabItem = tabConfig.getTabItem();
-            if (tabConfig.showInEngine() && (tabConfig.getRequiredPermission() == null || PermissionsUtils.isPermitted(tabConfig.getRequiredPermission(), JahiaGWTParameters.getSiteNode()))) {
+            boolean displayTab = jsConfig.getTabs().isEmpty() || jsConfig.getTabs().contains(tabConfig.getId());
+            if (displayTab && tabConfig.showInEngine() && (tabConfig.getRequiredPermission() == null || PermissionsUtils.isPermitted(tabConfig.getRequiredPermission(), JahiaGWTParameters.getSiteNode()))) {
                 if ((tabItem.getHideForTypes().isEmpty() || !node.isNodeType(tabItem.getHideForTypes())) &&
                         ((hasOrderableChildNodes && tabItem.isOrderableTab()) || (!tabItem.isOrderableTab() && (tabItem.getShowForTypes().isEmpty() || node.isNodeType(tabItem.getShowForTypes()))))) {
-                    tabs.add(tabItem.create(tabConfig, this));
+                    AsyncTabItem tab = tabItem.create(tabConfig, this);
+                    if (jsConfig.hideHeaders()) {
+                        tab.getHeader().hide();
+                    }
+                    tabs.add(tab);
                 }
             }
         }
@@ -162,8 +171,10 @@ public class EditContentEngine extends AbstractContentEngine {
     protected void initFooter() {
         for (ButtonItem buttonItem : config.getEditionButtons()) {
             BoxComponent button = buttonItem.create(this);
-            buttons.add(button);
-            buttonBar.add(button);
+            if (!(buttonItem instanceof WorkInProgressButtonItem) || !(jsConfig != null && jsConfig.hideWip())) {
+                buttons.add(button);
+                buttonBar.add(button);
+            }
         }
         for (ButtonItem buttonItem : config.getCommonButtons()) {
             buttonBar.add(buttonItem.create(this));
@@ -214,6 +225,13 @@ public class EditContentEngine extends AbstractContentEngine {
                 if (closed) {
                     return;
                 }
+                if (jsConfig.hideHeaders()) {
+                    container.getPanel().getHeader().hide();
+                    tabs.setBorders(false);
+                    container.getPanel().addStyleName("hide-headers");
+                    addStyleName("hide-headers");
+                }
+
                 node = result.getNode();
                 nodeTypes = result.getNodeTypes();
                 properties = result.getProperties();

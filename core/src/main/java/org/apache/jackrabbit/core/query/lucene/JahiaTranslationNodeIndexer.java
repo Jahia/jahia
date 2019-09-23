@@ -80,15 +80,13 @@ public class JahiaTranslationNodeIndexer extends JahiaNodeIndexer {
     private NodeState parentNode;
     private ExtendedNodeType parentNodeType;
 
-    protected JahiaTranslationNodeIndexer(NodeState node, ItemStateManager stateProvider, NamespaceMappings mappings,
-                                          Executor executor, Parser parser, QueryHandlerContext context,
-                                          NodeTypeRegistry typeRegistry, NamespaceRegistry nameRegistry) {
-        super(node, stateProvider, mappings, executor, parser, context, typeRegistry, nameRegistry);
+    protected JahiaTranslationNodeIndexer(NodeState node, ItemStateManager stateProvider, NamespaceMappings mappings, Executor executor,
+            Parser parser, QueryHandlerContext context, NodeTypeRegistry typeRegistry, NamespaceRegistry nameRegistry) {
 
+        super(node, stateProvider, mappings, executor, parser, context, typeRegistry, nameRegistry);
         try {
             for (Name propName : node.getPropertyNames()) {
-                if ("language".equals(propName.getLocalName())
-                        && Name.NS_JCR_URI.equals(propName.getNamespaceURI())) {
+                if ("language".equals(propName.getLocalName()) && Name.NS_JCR_URI.equals(propName.getNamespaceURI())) {
                     PropertyId id = new PropertyId(node.getNodeId(), propName);
                     PropertyState propState = (PropertyState) stateProvider.getItemState(id);
                     language = propState.getValues()[0].getString();
@@ -111,8 +109,7 @@ public class JahiaTranslationNodeIndexer extends JahiaNodeIndexer {
         }
 
         // try to get the property definition on the parent first since we're dealing with a translation node
-        final ExtendedNodeType parentNodeType = getParentNodeType();
-        ExtendedPropertyDefinition propDef = getPropertyDefinitionFor(fieldName, parentNodeType, parentNode);
+        ExtendedPropertyDefinition propDef = getPropertyDefinitionFor(fieldName, getParentNodeType(), parentNode);
 
         // if we haven't found the property on the parent, it might be on this node so try this
         return propDef != null ? propDef : getPropertyDefinitionFor(fieldName, getNodeType(), node);
@@ -121,8 +118,7 @@ public class JahiaTranslationNodeIndexer extends JahiaNodeIndexer {
     private ExtendedNodeType getParentNodeType() throws RepositoryException, ItemStateException {
         if (parentNodeType == null) {
             final Name parenteNodeTypeName = getParentNodeState().getNodeTypeName();
-            parentNodeType = nodeTypeRegistry.getNodeType(getTypeNameAsString(parenteNodeTypeName,
-                    namespaceRegistry));
+            parentNodeType = nodeTypeRegistry.getNodeType(getTypeNameAsString(parenteNodeTypeName, namespaceRegistry));
         }
 
         return parentNodeType;
@@ -148,11 +144,12 @@ public class JahiaTranslationNodeIndexer extends JahiaNodeIndexer {
         doNotUseInExcerpt.clear();
 
         try {
-            NodeState parentNode = getParentNodeState();
+            final NodeState parentNodeState = getParentNodeState();
+            final NodeId parentId = parentNodeState.getParentId();
 
-            NodeId parentId = parentNode.getParentId();
             if (parentId == null) {
-                logger.warn("The node " + parentNode.getId().toString() + " is in 'free floating' state. You should run a consistency check/fix on the repository.");
+                logger.warn("The node {} is in 'free floating' state. You should run a consistency check/fix on the repository.",
+                        parentNodeState.getId());
             } else {
                 doc.add(new Field(
                         TRANSLATED_NODE_PARENT, false, parentId.toString(),
@@ -160,14 +157,15 @@ public class JahiaTranslationNodeIndexer extends JahiaNodeIndexer {
             }
 
             if (language == null) {
-                logger.warn("The node " + node.getId().toString() + " is of type " + Constants.JAHIANT_TRANSLATION + " but doesn't contain a valid value for the jcr:language property!");
+                logger.warn("The node {} is of type {} but doesn't contain a valid value for the jcr:language property!",
+                        node.getId(), Constants.JAHIANT_TRANSLATION);
             } else {
                 doc.add(new Field(TRANSLATION_LANGUAGE, language, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
             }
 
             // copy properties from parent into translation node, including node types
-            Set<Name> parentNodePropertyNames = new HashSet<Name>(parentNode.getPropertyNames());
-            final Set<Name> localNames = new HashSet<Name>(node.getPropertyNames());
+            final Set<Name> parentNodePropertyNames = new HashSet<>(parentNodeState.getPropertyNames());
+            final Set<Name> localNames = new HashSet<>(node.getPropertyNames());
             localNames.remove(PRIMARY_TYPE);
             localNames.remove(MIXIN_TYPES);
             parentNodePropertyNames.removeAll(localNames);
@@ -175,7 +173,7 @@ public class JahiaTranslationNodeIndexer extends JahiaNodeIndexer {
 
             for (Name propName : parentNodePropertyNames) {
                 try {
-                    PropertyId id = new PropertyId(parentNode.getNodeId(), propName);
+                    PropertyId id = new PropertyId(parentNodeState.getNodeId(), propName);
                     PropertyState propState = (PropertyState) stateProvider.getItemState(id);
 
                     // add each property to the _PROPERTIES_SET for searching
@@ -192,14 +190,13 @@ public class JahiaTranslationNodeIndexer extends JahiaNodeIndexer {
                         // real multi-valued
                         addMVPName(doc, propState.getName());
                     }
-                } catch (NoSuchItemStateException e) {
-                    throwRepositoryException(e);
+
                 } catch (ItemStateException e) {
                     throwRepositoryException(e);
                 }
             }
 
-            if (isIndexed(J_VISIBILITY) && parentNode.hasChildNodeEntry(J_VISIBILITY)) {
+            if (isIndexed(J_VISIBILITY) && parentNodeState.hasChildNodeEntry(J_VISIBILITY)) {
                 doc.add(new Field(CHECK_VISIBILITY, false, "1",
                         Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS,
                         Field.TermVector.NO));
@@ -215,4 +212,5 @@ public class JahiaTranslationNodeIndexer extends JahiaNodeIndexer {
 
         return doc;
     }
+
 }

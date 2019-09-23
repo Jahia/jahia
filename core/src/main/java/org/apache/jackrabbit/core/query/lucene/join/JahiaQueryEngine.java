@@ -86,12 +86,9 @@ public class JahiaQueryEngine extends QueryEngine {
 
     protected SharedFieldComparatorSource scs;
 
-    public static boolean nativeSort = Boolean.valueOf(System
-            .getProperty(NATIVE_SORT_SYSTEM_PROPERTY, "false"));
+    public static boolean nativeSort = Boolean.valueOf(System.getProperty(NATIVE_SORT_SYSTEM_PROPERTY, "false"));
 
-
-    public JahiaQueryEngine(Session session, LuceneQueryFactory lqf, Map<String, Value> variables)
-            throws RepositoryException {
+    public JahiaQueryEngine(Session session, LuceneQueryFactory lqf, Map<String, Value> variables) throws RepositoryException {
         super(session, lqf, variables);
 
         Locale locale = null;
@@ -116,18 +113,14 @@ public class JahiaQueryEngine extends QueryEngine {
      * Override QueryEngine.execute()
      */
     @Override
-    protected QueryResult execute(
-            Column[] columns, Selector selector, Constraint constraint,
-            Ordering[] orderings, long offset, long limit, int printIndentation)
-            throws RepositoryException {
-        Map<String, NodeType> selectorMap = getSelectorNames(selector);
-        String[] selectorNames = selectorMap.keySet().toArray(
-                new String[selectorMap.size()]);
+    protected QueryResult execute(Column[] columns, Selector selector, Constraint constraint, Ordering[] orderings, long offset, long limit,
+            int printIndentation) throws RepositoryException {
 
-        Map<String, PropertyValue> columnMap = getColumnMap(columns,
-                selectorMap);
-        String[] columnNames = columnMap.keySet().toArray(
-                new String[columnMap.size()]);
+        Map<String, NodeType> selectorMap = getSelectorNames(selector);
+        String[] selectorNames = selectorMap.keySet().toArray(new String[selectorMap.size()]);
+
+        Map<String, PropertyValue> columnMap = getColumnMap(columns, selectorMap);
+        String[] columnNames = columnMap.keySet().toArray(new String[columnMap.size()]);
 
         Sort sort = new Sort();
         if (nativeSort) {
@@ -147,7 +140,7 @@ public class JahiaQueryEngine extends QueryEngine {
         }
         // Added by jahia
         QueryResult result;
-        if (rowsList.size() > 0 && rowsList.get(0) instanceof FacetRow) {
+        if (!rowsList.isEmpty() && rowsList.get(0) instanceof FacetRow) {
             FacetRow facets = (FacetRow) rowsList.remove(0);
             RowIterator rows = new RowIteratorAdapter(rowsList);
             return new FacetedQueryResult(columnNames, selectorNames, rows, facets);
@@ -160,8 +153,7 @@ public class JahiaQueryEngine extends QueryEngine {
             long timeSort = System.currentTimeMillis();
             QueryResult r = sort(result, orderings, evaluator, offset, limit);
             if (log.isDebugEnabled()) {
-                log.debug("{}SQL2 SORT took {} ms.", genString(printIndentation),
-                        System.currentTimeMillis() - timeSort);
+                log.debug("{}SQL2 SORT took {} ms.", genString(printIndentation), System.currentTimeMillis() - timeSort);
             }
             if (r != result) {
                 return new JahiaSimpleQueryResult(columnNames, selectorNames, r.getRows(), limit > 0 ? result.getRows().getSize() : 0);
@@ -171,14 +163,12 @@ public class JahiaQueryEngine extends QueryEngine {
     }
 
     @Override
-    public SortField[] createSortFields(Ordering[] orderings, Session session)
-            throws RepositoryException {
-
+    public SortField[] createSortFields(Ordering[] orderings, Session session) throws RepositoryException {
         if (orderings == null || orderings.length == 0) {
-            return new SortField[]{SortField.FIELD_SCORE};
+            return new SortField[] { SortField.FIELD_SCORE };
         }
         // orderings[] -> (property, ordering)
-        Map<String, Ordering> orderByProperties = new HashMap<String, Ordering>();
+        Map<String, Ordering> orderByProperties = new HashMap<>();
         for (Ordering o : orderings) {
             final String p = o.toString();
             if (!orderByProperties.containsKey(p)) {
@@ -188,7 +178,7 @@ public class JahiaQueryEngine extends QueryEngine {
         final DynamicOperandFieldComparatorSource dofcs = new DynamicOperandFieldComparatorSource(
                 session, evaluator, orderByProperties);
 
-        List<SortField> sortFields = new ArrayList<SortField>();
+        List<SortField> sortFields = new ArrayList<>();
 
         // as it turn out, orderByProperties.keySet() doesn't keep the original
         // insertion order
@@ -198,8 +188,7 @@ public class JahiaQueryEngine extends QueryEngine {
             // implemented in lucene. score ascending in lucene means that
             // higher scores are first. JCR specs that lower score values
             // are first.
-            boolean isAsc = QueryObjectModelConstants.JCR_ORDER_ASCENDING
-                    .equals(o.getOrder());
+            boolean isAsc = QueryObjectModelConstants.JCR_ORDER_ASCENDING.equals(o.getOrder());
             if (o.getOperand() instanceof FullTextSearchScore || JcrConstants.JCR_SCORE.equals(p)) {
                 sortFields.add(new SortField(null, SortField.SCORE, isAsc));
             } else if (nativeSort && o.getOperand() instanceof PropertyValueImpl && getSharedFieldComparatorSource() != null) {
@@ -222,18 +211,18 @@ public class JahiaQueryEngine extends QueryEngine {
 
 
     @Override
-    protected QueryResult execute(Column[] columns, Join join, Constraint constraint, Ordering[] orderings, long offset, long limit, int printIndentation) throws RepositoryException {
-        QueryResult result = isEquiJoinWithUuid(join, constraint) ? executeEquiJoin(
+    protected QueryResult execute(Column[] columns, Join join, Constraint constraint, Ordering[] orderings, long offset, long limit,
+            int printIndentation) throws RepositoryException {
+        QueryResult result = isEquiJoinWithUuid(join) ? executeEquiJoin(
                 columns, join, constraint, orderings, offset, limit) : super
                 .execute(columns, join, constraint, orderings, offset, limit, printIndentation);
         if (!(result instanceof JahiaSimpleQueryResult)) {
-            result = new JahiaSimpleQueryResult(result.getColumnNames(), result.getSelectorNames(),
-                    result.getRows());
+            result = new JahiaSimpleQueryResult(result.getColumnNames(), result.getSelectorNames(), result.getRows());
         }
         return result;
     }
 
-    protected boolean isEquiJoinWithUuid(Join join, Constraint constraint) {
+    protected boolean isEquiJoinWithUuid(Join join) {
         boolean result = false;
         if (join.getJoinCondition() instanceof EquiJoinCondition) {
             EquiJoinCondition condition = (EquiJoinCondition) join.getJoinCondition();
@@ -279,9 +268,7 @@ public class JahiaQueryEngine extends QueryEngine {
         return languageConstraint;
     }
 
-    protected QueryResult executeEquiJoin(
-            Column[] columns, Join join, Constraint constraint,
-            Ordering[] orderings, long offset, long limit)
+    protected QueryResult executeEquiJoin(Column[] columns, Join join, Constraint constraint, Ordering[] orderings, long offset, long limit)
             throws RepositoryException {
         JahiaEquiJoinMerger merger = new JahiaEquiJoinMerger(
                 join, getColumnMap(columns, getSelectorNames(join)), evaluator, qomFactory,
@@ -292,9 +279,8 @@ public class JahiaQueryEngine extends QueryEngine {
 
         Source left = join.getLeft();
         Constraint leftConstraint = splitter.getConstraintSplitInfo().getLeftConstraint();
-        QueryResult leftResult =
-                execute(null, left, leftConstraint, null, 0, -1);
-        List<Row> leftRows = new ArrayList<Row>();
+        QueryResult leftResult = execute(null, left, leftConstraint, null, 0, -1);
+        List<Row> leftRows = new ArrayList<>();
         for (Row row : JcrUtils.getRows(leftResult)) {
             leftRows.add(row);
         }
@@ -305,28 +291,24 @@ public class JahiaQueryEngine extends QueryEngine {
 
         RowIterator rightRows;
         Source right = join.getRight();
-        List<Constraint> rightConstraints =
-                merger.getRightJoinConstraints(leftRows);
-        Comparator<Row> rightCo = new RowPathComparator(
-                merger.getRightSelectors());
+        List<Constraint> rightConstraints = merger.getRightJoinConstraints(leftRows);
+        Comparator<Row> rightCo = new RowPathComparator(merger.getRightSelectors());
 
         if (rightConstraints.size() < 500) {
             Constraint rightConstraint = Constraints.and(
                     qomFactory,
                     Constraints.or(qomFactory, rightConstraints),
                     splitter.getConstraintSplitInfo().getRightConstraint());
-            rightRows =
-                    execute(null, right, rightConstraint, null, 0, -1).getRows();
+            rightRows = execute(null, right, rightConstraint, null, 0, -1).getRows();
         } else {
-            List<Row> list = new ArrayList<Row>();
+            List<Row> list = new ArrayList<>();
             for (int i = 0; i < rightConstraints.size(); i += 500) {
                 Constraint rightConstraint = Constraints.and(
                         qomFactory,
                         Constraints.or(qomFactory, rightConstraints.subList(
                                 i, Math.min(i + 500, rightConstraints.size()))),
                         splitter.getConstraintSplitInfo().getRightConstraint());
-                QueryResult rigthResult =
-                        execute(null, right, rightConstraint, null, 0, -1);
+                QueryResult rigthResult = execute(null, right, rightConstraint, null, 0, -1);
                 for (Row row : JcrUtils.getRows(rigthResult)) {
                     list.add(row);
                 }
@@ -334,17 +316,16 @@ public class JahiaQueryEngine extends QueryEngine {
             rightRows = new RowIteratorAdapter(list);
         }
 
-        QueryResult result =
-                merger.merge(new RowIteratorAdapter(leftRows), rightRows, null, rightCo);
+        QueryResult result = merger.merge(new RowIteratorAdapter(leftRows), rightRows, null, rightCo);
         return sort(result, orderings, evaluator, offset, limit);
     }
 
     @Override
-    public QueryResult execute(Column[] columns, Source source, Constraint constraint, Ordering[] orderings, long offset, long limit) throws RepositoryException {
+    public QueryResult execute(Column[] columns, Source source, Constraint constraint, Ordering[] orderings, long offset, long limit)
+            throws RepositoryException {
         QueryResult result = super.execute(columns, source, constraint, orderings, offset, limit);
         if (!(result instanceof JahiaSimpleQueryResult)) {
-            result = new JahiaSimpleQueryResult(result.getColumnNames(), result.getSelectorNames(),
-                    result.getRows());
+            result = new JahiaSimpleQueryResult(result.getColumnNames(), result.getSelectorNames(), result.getRows());
         }
         return result;
     }
@@ -356,10 +337,8 @@ public class JahiaQueryEngine extends QueryEngine {
     }
 
     @Override
-    protected Map<String, PropertyValue> getColumnMap(Column[] columns,
-                                                      Map<String, NodeType> selectors) throws RepositoryException {
-        Map<String, PropertyValue> map =
-                new LinkedHashMap<String, PropertyValue>();
+    protected Map<String, PropertyValue> getColumnMap(Column[] columns, Map<String, NodeType> selectors) throws RepositoryException {
+        Map<String, PropertyValue> map = new LinkedHashMap<>();
         if (columns != null && columns.length > 0) {
             for (int i = 0; i < columns.length; i++) {
                 String name = columns[i].getColumnName();
@@ -378,12 +357,10 @@ public class JahiaQueryEngine extends QueryEngine {
             }
         } else {
             for (Map.Entry<String, NodeType> selector : selectors.entrySet()) {
-                map.putAll(getColumnMap(
-                        selector.getKey(), selector.getValue()));
+                map.putAll(getColumnMap(selector.getKey(), selector.getValue()));
             }
         }
         return map;
     }
-
 
 }

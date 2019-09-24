@@ -74,7 +74,7 @@
 
     <properties>
         <embed-dependency>*;scope=compile;type=!pom;inline=false;artifactId=!spring-core</embed-dependency>
-        <export-package>!org.jahia.services.*,org.jahia.test.*,bsh.*,junit.*,org.hamcrest.*,org.junit.*,org.testng.*,com.beust.*,org.yaml.snakeyaml.*</export-package>
+        <export-package>!org.jahia.services.*,org.jahia.test.*,bsh.*,junit.*,org.hamcrest.*,org.junit.*,org.junit.internal,org.testng.*,com.beust.*,org.yaml.snakeyaml.*</export-package>
         <jahia-depends>default</jahia-depends>
         <jahia-deploy-on-site>all</jahia-deploy-on-site>
         <jahia-module-type>system</jahia-module-type>

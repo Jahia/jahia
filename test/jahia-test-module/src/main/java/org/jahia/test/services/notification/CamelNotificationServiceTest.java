@@ -70,7 +70,8 @@ public class CamelNotificationServiceTest  extends TestCase {
      * This method is called before a test is executed.
      */
     @Before
-    protected void setUp() throws Exception {
+    @Override
+    public void setUp() throws Exception {
         super.setUp();
         camelNotificationService = (CamelNotificationService) SpringContextSingleton.getBean("camelNotificationService");
         mailService = (MailService) SpringContextSingleton.getBean("MailService");
@@ -81,12 +82,13 @@ public class CamelNotificationServiceTest  extends TestCase {
      * This method is called after a test is executed.
      */
     @After
-    protected void tearDown() throws Exception {
+    @Override
+    public void tearDown() throws Exception {
         super.tearDown();
     }
 
-    public void testSimpleSendingOfMail() throws Exception {
-        Map<String, Object> map = new HashMap<String, Object>();
+    public void testSimpleSendingOfMail() {
+        Map<String, Object> map = new HashMap<>();
         map.put("To", mailService.getSettings().getTo());
         map.put("From", mailService.getSettings().getFrom());
         map.put("Subject", "Camel rocks");
@@ -96,7 +98,7 @@ public class CamelNotificationServiceTest  extends TestCase {
         camelNotificationService.sendMessagesWithBodyAndHeaders("seda:mailUsers?multipleConsumers=true", body,map);
     }
 
-    public void testComplexSendingOfMail() throws Exception {
+    public void testComplexSendingOfMail() {
         mailService.sendMessage(mailService.getSettings().getFrom(), mailService.getSettings().getTo(), null, null, "Camel Rocks", "Camel Complex Mail Test",
                         "<html><body><h1>Camel Rocks</h1><p>Camel Complex Mail Test</p></body></html>");
     }

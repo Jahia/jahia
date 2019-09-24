@@ -46,53 +46,83 @@ package org.jahia.services.search.analyzer;
 import org.apache.lucene.analysis.*;
 import org.apache.lucene.analysis.fr.ElisionFilter;
 import org.apache.lucene.analysis.fr.FrenchAnalyzer;
-import org.apache.lucene.analysis.snowball.SnowballAnalyzer;
+import org.apache.lucene.analysis.fr.FrenchLightStemFilter;
 import org.apache.lucene.analysis.snowball.SnowballFilter;
 import org.apache.lucene.analysis.standard.StandardFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.util.Version;
 
-import java.io.IOException;
 import java.io.Reader;
-import java.util.Arrays;
+import java.util.Set;
 
 /**
- * Filters {@link StandardTokenizer} with {@link StandardFilter}, {@link
- * LowerCaseFilter}, {@link StopFilter}, {@link SnowballFilter} for French and {@link org.apache.lucene.analysis.ASCIIFoldingFilter}.
+ * Filters {@link StandardTokenizer} with {@link StandardFilter}, {@link LowerCaseFilter}, {@link StopFilter}, {@link SnowballFilter} for
+ * French and {@link org.apache.lucene.analysis.ASCIIFoldingFilter}.
  */
-public class FrenchSnowballAnalyzer extends ASCIIFoldingAnalyzer {
+public class FrenchSnowballAnalyzer extends StopwordAnalyzerBase {
 
-    /** Default set of articles for ElisionFilter */
-    public static final CharArraySet DEFAULT_ARTICLES = CharArraySet.unmodifiableSet(
-            new CharArraySet(Arrays.asList(
-                    "l", "m", "t", "qu", "n", "s", "j", "d", "c", "jusqu", "quoiqu", "lorsqu", "puisqu"), true));
-
-
-    public FrenchSnowballAnalyzer() {
-        super(new SnowballAnalyzer(Version.LUCENE_30, "French", FrenchAnalyzer.getDefaultStopSet()));
-    }
+    /**
+     * Contains words that should be indexed but not stemmed.
+     */
+    private Set<?> excltable = CharArraySet.EMPTY_SET;
 
     /**
      * Builds an analyzer with the given stop words
      *
      * @param stopwords
-     *          a stopword set
+     *            a stopword set
      */
-    public FrenchSnowballAnalyzer(CharArraySet stopwords){
-        super(new SnowballAnalyzer(Version.LUCENE_30, "French", stopwords));
+    public FrenchSnowballAnalyzer(Version matchVersion) {
+        this(matchVersion, FrenchAnalyzer.getDefaultStopSet());
     }
 
-    @Override
-    public TokenStream tokenStream(String fieldName, Reader reader) {
-        TokenStream result = super.tokenStream(fieldName, reader);
-        result = new ElisionFilter(result, DEFAULT_ARTICLES);
-        return result;
+    /**
+     * Builds an analyzer with the given stop words
+     * 
+     * @param matchVersion
+     *            lucene compatibility version
+     * @param stopwords
+     *            a stopword set
+     */
+    public FrenchSnowballAnalyzer(Version matchVersion, Set<?> stopwords) {
+        this(matchVersion, stopwords, CharArraySet.EMPTY_SET);
     }
 
+    /**
+     * Builds an analyzer with the given stop words
+     * 
+     * @param matchVersion
+     *            lucene compatibility version
+     * @param stopwords
+     *            a stopword set
+     * @param stemExclutionSet
+     *            a stemming exclusion set
+     */
+    public FrenchSnowballAnalyzer(Version matchVersion, Set<?> stopwords, Set<?> stemExclutionSet) {
+        super(matchVersion, stopwords);
+        this.excltable = CharArraySet.unmodifiableSet(CharArraySet.copy(matchVersion, stemExclutionSet));
+    }
+
+    /**
+     * Creates {@link org.apache.lucene.analysis.ReusableAnalyzerBase.TokenStreamComponents} used to tokenize all the text in the provided
+     * {@link Reader}.
+     * 
+     * @return {@link org.apache.lucene.analysis.ReusableAnalyzerBase.TokenStreamComponents} built from a {@link StandardTokenizer} filtered
+     *         with {@link StandardFilter}, {@link ElisionFilter}, {@link LowerCaseFilter}, {@link StopFilter}, {@link KeywordMarkerFilter}
+     *         if a stem exclusion set is provided, and {@link FrenchLightStemFilter}
+     */
     @Override
-    public TokenStream reusableTokenStream(String fieldName, Reader reader) throws IOException {
-        TokenStream result = super.reusableTokenStream(fieldName, reader);
-        result = new ElisionFilter(result, DEFAULT_ARTICLES);
-        return result;
+    protected TokenStreamComponents createComponents(String fieldName, Reader reader) {
+        final Tokenizer source = new StandardTokenizer(matchVersion, reader);
+        TokenStream result = new StandardFilter(matchVersion, source);
+        result = new ElisionFilter(matchVersion, result);
+        result = new LowerCaseFilter(matchVersion, result);
+        result = new StopFilter(matchVersion, result, stopwords);
+        if (!excltable.isEmpty()) {
+            result = new KeywordMarkerFilter(result, excltable);
+        }
+        result = new SnowballFilter(result, new org.tartarus.snowball.ext.FrenchStemmer());
+        result = new ASCIIFoldingFilter(result);
+        return new TokenStreamComponents(source, result);
     }
 }

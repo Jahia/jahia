@@ -45,6 +45,8 @@ package org.jahia.test.core;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 
 import javax.jcr.Node;
@@ -66,7 +68,7 @@ public class JahiaTestContentLoader extends TestContentLoader {
     /**
      * The encoding of the test resources.
      */
-    private static final String ENCODING = "UTF-8";    
+    private static final Charset ENCODING = StandardCharsets.UTF_8;    
     
     public JahiaTestContentLoader() {
         super();
@@ -142,7 +144,7 @@ public class JahiaTestContentLoader extends TestContentLoader {
         Node resource = node.addNode("myResource", "nt:resource");
         // nt:resource not longer referenceable since JCR 2.0
         resource.addMixin("mix:referenceable");
-        resource.setProperty("jcr:encoding", ENCODING);
+        resource.setProperty("jcr:encoding", ENCODING.name());
         resource.setProperty("jcr:mimeType", "text/plain");
         resource.setProperty("jcr:data",
                 factory.createBinary(new ByteArrayInputStream("Hello w\u00F6rld.".getBytes(ENCODING))));
@@ -160,7 +162,7 @@ public class JahiaTestContentLoader extends TestContentLoader {
         // NodeDefTest requires a test node with a mandatory child node
         JcrUtils.putFile(
                 node, "testFile", "text/plain",
-                new ByteArrayInputStream("Hello, World!".getBytes("UTF-8")));        
+                new ByteArrayInputStream("Hello, World!".getBytes(StandardCharsets.UTF_8)));        
     }
 
     /**
@@ -217,7 +219,7 @@ public class JahiaTestContentLoader extends TestContentLoader {
         getOrAddNode(node, prefix + "MultiNoBin").setProperty(name, texts);
 
         Node resource = getOrAddNode(node, prefix + "MultiBin");
-        resource.setProperty("jcr:encoding", ENCODING);
+        resource.setProperty("jcr:encoding", ENCODING.name());
         resource.setProperty("jcr:mimeType", "text/plain");
         String[] values = new String[] { "SGVsbG8gd8O2cmxkLg==", "SGVsbG8gd8O2cmxkLg==" };
         resource.setProperty(name, values, PropertyType.BINARY);
@@ -226,7 +228,7 @@ public class JahiaTestContentLoader extends TestContentLoader {
         getOrAddNode(node, prefix + "NoBin").setProperty(name, "text 1");
 
         resource = getOrAddNode(node, "invalidBin");
-        resource.setProperty("jcr:encoding", ENCODING);
+        resource.setProperty("jcr:encoding", ENCODING.name());
         resource.setProperty("jcr:mimeType", "text/plain");
         byte[] bytes = "Hello w\u00F6rld.".getBytes(ENCODING);
         resource.setProperty(name, node.getSession().getValueFactory().createBinary(new ByteArrayInputStream(bytes)));

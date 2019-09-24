@@ -631,16 +631,10 @@ body[data-indigo-app="contribute"] {
         display: none;
     }
 
-    body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"] & {
-        background-image: url(../images/icons_grey/refresh.svg);
-    }
-
     @include tooltip($text_tooltip_refresh_page, "BOTTOM");
 
     body[data-INDIGO-SIDEPANEL-PINNED="true"] & {
-        top: 31px;
-        background: url(../images/icons_light/refresh.svg) no-repeat center #5c6164;
-        background-size: 19px;
+        top: 43px;
     }
 
     body[data-multiselect="on"] & {

@@ -43,12 +43,9 @@
  */
 package org.apache.jackrabbit.j2ee;
 
-import org.apache.jackrabbit.server.SessionProvider;
-import org.apache.jackrabbit.server.SessionProviderImpl;
-import org.apache.jackrabbit.server.jcr.JCRWebdavServer;
+import org.apache.jackrabbit.server.CredentialsProvider;
 import org.apache.jackrabbit.webdav.*;
 
-import javax.jcr.Repository;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -64,44 +61,20 @@ public class JahiaJCRWebdavServerServlet extends JCRWebdavServerServlet {
 
     private static final long serialVersionUID = -2235958694965528476L;
 
-    /**
-     * the repository session provider
-     */
-    private transient SessionProvider sessionProvider;
-
-    private transient JCRWebdavServer server;
-
-    /**
-     * Returns the <code>DavSessionProvider</code>
-     *
-     * @return server
-     * @see org.apache.jackrabbit.webdav.server.AbstractWebdavServlet#getDavSessionProvider()
-     */
-    public DavSessionProvider getDavSessionProvider() {
-        if (server == null) {
-            Repository repository = RepositoryAccessServlet.getRepository(getServletContext());
-            server = new JCRWebdavServer(repository, getSessionProvider());
-        }
-        return server;
+    @Override
+    protected CredentialsProvider getCredentialsProvider() {
+        return new JahiaSessionCredentials("");
     }
 
-    public synchronized SessionProvider getSessionProvider() {
-        if (sessionProvider == null) {
-            sessionProvider = new SessionProviderImpl(new JahiaSessionCredentials(""));
-        }
-        return sessionProvider;
-    }
-
-    protected boolean execute(WebdavRequest request, WebdavResponse response,
-                              int method, DavResource resource)
+    @Override
+    protected boolean execute(WebdavRequest request, WebdavResponse response, int method, DavResource resource)
             throws ServletException, IOException, DavException {
+
         if (method != DavMethods.DAV_GET && Boolean.TRUE.equals(request.getAttribute("isGuest"))) {
             throw new DavException(HttpServletResponse.SC_UNAUTHORIZED);
         }
 
         return super.execute(request, response, method, resource);
     }
-
-
 
 }

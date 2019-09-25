@@ -67,6 +67,7 @@ import java.util.Set;
  *
  * @author loom
  */
+@SuppressWarnings("squid:RedundantThrowsDeclarationCheck")
 public class JahiaSystemSession extends SessionImpl {
     
     private static final AccessControlPolicy[] ACCESS_CONTROL_POLICIES = new AccessControlPolicy[0];
@@ -81,9 +82,7 @@ public class JahiaSystemSession extends SessionImpl {
      * @param repositoryContext
      * @param wspConfig
      */
-    public JahiaSystemSession(RepositoryContext repositoryContext, Subject subject,
-                       WorkspaceConfig wspConfig)
-            throws RepositoryException {
+    public JahiaSystemSession(RepositoryContext repositoryContext, Subject subject, WorkspaceConfig wspConfig) throws RepositoryException {
         super(repositoryContext, subject, wspConfig);
     }
 
@@ -92,6 +91,7 @@ public class JahiaSystemSession extends SessionImpl {
      *
      * @return the name of <code>SystemPrincipal</code>.
      */
+    @Override
     protected final String retrieveUserId(Subject subject, String workspaceName) throws RepositoryException {
         return SYSTEM_PRINCIPAL_NAME;
     }
@@ -102,10 +102,10 @@ public class JahiaSystemSession extends SessionImpl {
      * Overridden in order to create custom access manager
      *
      * @return access manager for system session
-     * @throws javax.jcr.AccessDeniedException
-     *                                       is never thrown
+     * @throws javax.jcr.AccessDeniedException is never thrown
      * @throws javax.jcr.RepositoryException is never thrown
      */
+    @Override
     protected AccessManager createAccessManager(Subject subject)
             throws AccessDeniedException, RepositoryException {
         /**
@@ -118,7 +118,6 @@ public class JahiaSystemSession extends SessionImpl {
         }
         return systemAccessManager;
     }
-
 
     /**
      * Returns <code>true</code> if an item exists at <code>absPath</code> and
@@ -275,6 +274,7 @@ public class JahiaSystemSession extends SessionImpl {
         /**
          * @see org.apache.jackrabbit.core.security.AbstractAccessControlManager#checkInitialized()
          */
+        @Override
         protected void checkInitialized() throws IllegalStateException {
             // nop
         }
@@ -282,6 +282,7 @@ public class JahiaSystemSession extends SessionImpl {
         /**
          * @see org.apache.jackrabbit.core.security.AbstractAccessControlManager#checkPermission(String,int)
          */
+        @Override
         protected void checkPermission(String absPath, int permission) throws
                 AccessDeniedException, PathNotFoundException, RepositoryException {
             // allow everything
@@ -295,6 +296,7 @@ public class JahiaSystemSession extends SessionImpl {
         /**
          * @see javax.jcr.security.AccessControlManager#hasPrivileges(String, javax.jcr.security.Privilege[])
          */
+        @Override
         public boolean hasPrivileges(String absPath, Privilege[] privileges)
                 throws PathNotFoundException, RepositoryException {
             checkValidNodePath(absPath);
@@ -305,8 +307,8 @@ public class JahiaSystemSession extends SessionImpl {
         /**
          * @see javax.jcr.security.AccessControlManager#getPrivileges(String)
          */
-        public Privilege[] getPrivileges(String absPath)
-                throws PathNotFoundException, RepositoryException {
+        @Override
+        public Privilege[] getPrivileges(String absPath) throws PathNotFoundException, RepositoryException {
             checkValidNodePath(absPath);
             return new Privilege[] { privilegeFromName(Privilege.JCR_ALL) };
         }
@@ -314,12 +316,13 @@ public class JahiaSystemSession extends SessionImpl {
         /**
          * @see javax.jcr.security.AccessControlManager#getEffectivePolicies(String)
          */
-        public AccessControlPolicy[] getEffectivePolicies(String absPath) throws
-                PathNotFoundException, AccessDeniedException, RepositoryException {
+        @Override
+        public AccessControlPolicy[] getEffectivePolicies(String absPath) throws PathNotFoundException, AccessDeniedException, RepositoryException {
             // cannot determine the effective policies for the system session.
             return ACCESS_CONTROL_POLICIES;
         }
 
+        @Override
         public AccessControlPolicy[] getEffectivePolicies(Set<Principal> principals) throws AccessDeniedException, AccessControlException, UnsupportedRepositoryOperationException, RepositoryException {
             return ACCESS_CONTROL_POLICIES;
         }
@@ -327,6 +330,7 @@ public class JahiaSystemSession extends SessionImpl {
         /**
          * @see org.apache.jackrabbit.api.security.JackrabbitAccessControlManager#hasPrivileges(String, java.util.Set, javax.jcr.security.Privilege[])
          */
+        @Override
         public boolean hasPrivileges(String absPath, Set<Principal> principals, Privilege[] privileges) throws PathNotFoundException, RepositoryException {
             throw new UnsupportedOperationException("not implemented");
         }
@@ -334,8 +338,10 @@ public class JahiaSystemSession extends SessionImpl {
         /**
          * @see org.apache.jackrabbit.api.security.JackrabbitAccessControlManager#getPrivileges(String, java.util.Set)
          */
+        @Override
         public Privilege[] getPrivileges(String absPath, Set<Principal> principals) throws PathNotFoundException, RepositoryException {
             throw new UnsupportedOperationException("not implemented");
         }
     }
+
 }

@@ -4063,6 +4063,11 @@ var DX_app = {
                 DX_app.edit.sidepanel.clipPageTitle();
 
                 DX_app.storage.set('pinnedPanel', DX_app.edit.sidepanel.data.pinned);
+
+                if(DX_app.iframe.data.selectionCount > 0){
+                    // At least one node in the page has been selected, so we should redraw
+                    authoringApi.redrawSelection();
+                }
             },
             /**
              * DO LATER

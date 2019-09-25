@@ -941,7 +941,7 @@ body[data-indigo-app="contribute"] {
         background-color: _theme-color(status, workinprogress);
     }
 
-    body[data-indigo-app="edit"]:not([data-multiselect="on"]) & {
+    body[data-indigo-app="edit"]:not([data-multiselect="on"]):not([data-sitesettings="true"]) & {
         display: block;
     }
 }

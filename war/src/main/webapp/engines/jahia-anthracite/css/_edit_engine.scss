@@ -2619,8 +2619,16 @@ div.engine-window {
 
 			}
 
-			// Node has been locked, so modify styles ...
-			&[data-content-locked="true"] {
+            &[data-content-locked="true"].marked-for-deletion {
+                &::before {
+                    background-image: url(../images/icons_red/markefordelete.svg);
+                    text-decoration: line-through;
+                    color: _theme-color(status, error);
+                }
+            }
+
+            // Node has been locked, so modify styles ...
+            &[data-content-locked="true"] {
 
 				&.hover-info,
 				&:hover {

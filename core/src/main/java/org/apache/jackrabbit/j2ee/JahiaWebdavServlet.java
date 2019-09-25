@@ -43,8 +43,7 @@
  */
 package org.apache.jackrabbit.j2ee;
 
-import org.apache.jackrabbit.server.SessionProvider;
-import org.apache.jackrabbit.server.SessionProviderImpl;
+import org.apache.jackrabbit.server.CredentialsProvider;
 import org.apache.jackrabbit.webdav.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,138 +63,23 @@ public class JahiaWebdavServlet extends SimpleWebdavServlet {
 
     private static final long serialVersionUID = 43821067248762234L;
     private static transient Logger logger = LoggerFactory.getLogger(JahiaWebdavServlet.class);
-    /**
-     * the repository session provider
-     */
-    private transient SessionProvider sessionProvider;
 
-    private transient DavLocatorFactory locatorFactory;
+    @SuppressWarnings("squid:S1075")
+    private static final String RESOURCE_PATH_PREFIX = "/repository";
 
-    private static final String resourcePathPrefix = "/repository";
-
-    public DavLocatorFactory getLocatorFactory() {
-        if (locatorFactory == null) {
-            locatorFactory = new DavLocatorFactoryImpl(resourcePathPrefix);
-        }
-        return locatorFactory;
+    @Override
+    protected CredentialsProvider getCredentialsProvider() {
+        return new JahiaSessionCredentials("");
     }
 
-    public synchronized SessionProvider getSessionProvider() {
-        if (sessionProvider == null) {
-            sessionProvider = new SessionProviderImpl(new JahiaSessionCredentials(""));
-        }
-        return sessionProvider;
-    }
-
-    protected boolean execute(WebdavRequest request, WebdavResponse response,
-                              int method, DavResource resource)
+    @Override
+    protected boolean execute(WebdavRequest request, WebdavResponse response, int method, DavResource resource)
             throws ServletException, IOException, DavException {
+
         if (logger.isDebugEnabled()) {
-            switch (method) {
-                case DavMethods.DAV_GET:
-                    logger.debug("Calling GET method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_HEAD:
-                    logger.debug("Calling HEAD method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_PROPFIND:
-                    logger.debug("Calling PROPFIND method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_PROPPATCH:
-                    logger.debug("Calling PROPPATCH method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_POST:
-                    logger.debug("Calling POST method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_PUT:
-                    logger.debug("Calling PUT method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_DELETE:
-                    logger.debug("Calling DELETE method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_COPY:
-                    logger.debug("Calling COPY method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_MOVE:
-                    logger.debug("Calling MOVE method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_MKCOL:
-                    logger.debug("Calling MKCOL method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_OPTIONS:
-                    logger.debug("Calling OPTIONS method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_LOCK:
-                    logger.debug("Calling LOCK method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_UNLOCK:
-                    logger.debug("Calling UNLOCK method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_ORDERPATCH:
-                    logger.debug("Calling ORDERPATCH method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_SUBSCRIBE:
-                    logger.debug("Calling SUBSCRIBE method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_UNSUBSCRIBE:
-                    logger.debug("Calling UNSUBSCRIBE method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_POLL:
-                    logger.debug("Calling POLL method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_SEARCH:
-                    logger.debug("Calling SEARCH method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_VERSION_CONTROL:
-                    logger.debug("Calling VERSION method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_LABEL:
-                    logger.debug("Calling LABEL method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_REPORT:
-                    logger.debug("Calling REPORT method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_CHECKIN:
-                    logger.debug("Calling CHECKIN method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_CHECKOUT:
-                    logger.debug("Calling CHECKOUT method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_UNCHECKOUT:
-                    logger.debug("Calling UNCHECKOUT method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_MERGE:
-                    logger.debug("Calling MERGE method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_UPDATE:
-                    logger.debug("Calling UPDATE method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_MKWORKSPACE:
-                    logger.debug("Calling MKWORKSPACE method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_MKACTIVITY:
-                    logger.debug("Calling MKACTIVITY method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_BASELINE_CONTROL:
-                    logger.debug("Calling BASELINE method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_ACL:
-                    logger.debug("Calling ACL method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_REBIND:
-                    logger.debug("Calling REBIND method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_UNBIND:
-                    logger.debug("Calling UNBIND method " + request.getPathTranslated());
-                    break;
-                case DavMethods.DAV_BIND:
-                    logger.debug("Calling BIND method " + request.getPathTranslated());
-                    break;
-                default:
-                    // any other method
-                    logger.debug("Call to unknown method");
-            }
+            logger.debug("Calling {} method {}", getDavMethod(method), request.getPathTranslated());
         }
+
         if (method != DavMethods.DAV_GET && Boolean.TRUE.equals(request.getAttribute("isGuest"))) {
             throw new DavException(HttpServletResponse.SC_UNAUTHORIZED);
         }
@@ -203,8 +87,85 @@ public class JahiaWebdavServlet extends SimpleWebdavServlet {
         return super.execute(request, response, method, resource);
     }
 
-    @Override public void init() throws ServletException {
+    @Override
+    public void init() throws ServletException {
         super.init();
+        setLocatorFactory(new DavLocatorFactoryImpl(RESOURCE_PATH_PREFIX));
         setResourceFactory(new JahiaResourceFactoryImpl(getLockManager(), getResourceConfig()));
     }
+
+    @SuppressWarnings("squid:S1479")
+    private static String getDavMethod(int code) {
+        switch (code) {
+            case DavMethods.DAV_GET:
+                return DavMethods.METHOD_GET;
+            case DavMethods.DAV_HEAD:
+                return DavMethods.METHOD_HEAD;
+            case DavMethods.DAV_PROPFIND:
+                return DavMethods.METHOD_PROPFIND;
+            case DavMethods.DAV_PROPPATCH:
+                return DavMethods.METHOD_PROPPATCH;
+            case DavMethods.DAV_POST:
+                return DavMethods.METHOD_POST;
+            case DavMethods.DAV_PUT:
+                return DavMethods.METHOD_PUT;
+            case DavMethods.DAV_DELETE:
+                return DavMethods.METHOD_DELETE;
+            case DavMethods.DAV_COPY:
+                return DavMethods.METHOD_COPY;
+            case DavMethods.DAV_MOVE:
+                return DavMethods.METHOD_MOVE;
+            case DavMethods.DAV_MKCOL:
+                return DavMethods.METHOD_MKCOL;
+            case DavMethods.DAV_OPTIONS:
+                return DavMethods.METHOD_OPTIONS;
+            case DavMethods.DAV_LOCK:
+                return DavMethods.METHOD_LOCK;
+            case DavMethods.DAV_UNLOCK:
+                return DavMethods.METHOD_UNLOCK;
+            case DavMethods.DAV_ORDERPATCH:
+                return DavMethods.METHOD_ORDERPATCH;
+            case DavMethods.DAV_SUBSCRIBE:
+                return DavMethods.METHOD_SUBSCRIBE;
+            case DavMethods.DAV_UNSUBSCRIBE:
+                return DavMethods.METHOD_UNSUBSCRIBE;
+            case DavMethods.DAV_POLL:
+                return DavMethods.METHOD_POLL;
+            case DavMethods.DAV_SEARCH:
+                return DavMethods.METHOD_SEARCH;
+            case DavMethods.DAV_VERSION_CONTROL:
+                return DavMethods.METHOD_VERSION_CONTROL;
+            case DavMethods.DAV_LABEL:
+                return DavMethods.METHOD_LABEL;
+            case DavMethods.DAV_REPORT:
+                return DavMethods.METHOD_REPORT;
+            case DavMethods.DAV_CHECKIN:
+                return DavMethods.METHOD_CHECKIN;
+            case DavMethods.DAV_CHECKOUT:
+                return DavMethods.METHOD_CHECKOUT;
+            case DavMethods.DAV_UNCHECKOUT:
+                return DavMethods.METHOD_UNCHECKOUT;
+            case DavMethods.DAV_MERGE:
+                return DavMethods.METHOD_MERGE;
+            case DavMethods.DAV_UPDATE:
+                return DavMethods.METHOD_UPDATE;
+            case DavMethods.DAV_MKWORKSPACE:
+                return DavMethods.METHOD_MKWORKSPACE;
+            case DavMethods.DAV_MKACTIVITY:
+                return DavMethods.METHOD_MKACTIVITY;
+            case DavMethods.DAV_BASELINE_CONTROL:
+                return DavMethods.METHOD_BASELINE_CONTROL;
+            case DavMethods.DAV_ACL:
+                return DavMethods.METHOD_ACL;
+            case DavMethods.DAV_REBIND:
+                return DavMethods.METHOD_REBIND;
+            case DavMethods.DAV_UNBIND:
+                return DavMethods.METHOD_UNBIND;
+            case DavMethods.DAV_BIND:
+                return DavMethods.METHOD_BIND;
+            default:
+                return "unknown";
+        }
+    }
+
 }

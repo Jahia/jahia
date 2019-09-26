@@ -406,7 +406,7 @@ var DX_app = {
      *  - In addition to class modifications, the DOM tree is also modified when switching
      */
     updateGWTMenus: function () {
-        DX_app.dev.log('::: APP ::: UPDATEGWTMENUS', true);
+        DX_app.dev.log('::: APP ::: UPDATEGWTMENUS');
 
         var targetMenu = document.querySelectorAll('.edit-menu-centertop .x-toolbar-left-row')[0],
             statusMenuButton = document.querySelectorAll('.edit-menu-status')[0],
@@ -1424,7 +1424,6 @@ var DX_app = {
              * TO DO
              */
             onClick: function () {
-                console.log("im here now -keep watching");
                 DX_app.dev.log('::: APP ::: PICKER ::: ROW ::: ONCLICK');
                 DexV2.class('toolbar-item-filepreview').setAttribute('indigo-preview-button-state', 'selected');
             },
@@ -2449,6 +2448,10 @@ var DX_app = {
          * @returns {boolean}
          */
         onChange: function (attrKey, attrValue) {
+            if(DX_app.data.currentApp == 'edit'){
+                DexV2.getCached('body').setAttribute("data-edit-mode-status", "initialised");
+            }
+
             if (DX_app.iframe.data.displayName == attrValue || DX_app.data.currentApp == 'studio') {
                 return false;
             }
@@ -2950,7 +2953,9 @@ var DX_app = {
          * Callback executed when witching to the Edit Mode
          */
         onOpen: function () {
-            DX_app.dev.log('::: APP ::: EDIT ::: ONOPEN', true);
+            DX_app.dev.log('::: APP ::: EDIT ::: ONOPEN');
+
+            DexV2.getCached('body').setAttribute("data-edit-mode-status", "loading");
 
             // Add Background mask used for modals
             if(!DexV2.class('background-mask').exists()){
@@ -3032,7 +3037,9 @@ var DX_app = {
         /**
          * Callback executes when leaving the Edit Mode
          */
-        onClose: function () {},
+        onClose: function () {
+            DexV2.getCached('body').setAttribute("data-edit-mode-status", null);
+        },
         /**
          * Callback executed when the User changes page in Edit Mode
          */
@@ -4263,6 +4270,11 @@ var DX_app = {
                 all: {
                     onClick: function () {
                         DX_app.dev.log('APP ::: EDIT ::: SIDEPANEL ::: TAB ::: ONCLICK');
+
+                        if(DexV2.node(this).getAttribute('id') == 'JahiaGxtSidePanelTabs__JahiaGxtSettingsTab' && DexV2.getCached('body').getAttribute('data-edit-mode-status') !== 'initialised'){
+                            // Edit Mode has not yet finsihed loading the page, so just ignore clicks on settings button until it is ready
+                            return false;
+                        }
 
                         // User has clicked on one of the side panel tabs (except for Settings Tab which calls eventHandlers.clickSidePanelSettingsTab)
                         var clickedTabID = DexV2.node(this).getAttribute('id');

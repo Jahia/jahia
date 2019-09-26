@@ -69,6 +69,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeType;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -85,71 +86,84 @@ public class JahiaResourceFactoryImpl extends ResourceFactoryImpl {
 
     public JahiaResourceFactoryImpl(LockManager lockMgr, ResourceConfig resourceConfig) {
         super(lockMgr, resourceConfig);
-        this.lockMgr=lockMgr;
+        this.lockMgr = lockMgr;
+
         // initialize allowed node types
         getAllowedNodeTypes();
     }
 
-    public DavResource createResource(DavResourceLocator locator, DavServletRequest request,
-                                                DavServletResponse response) throws DavException {
+    @Override
+    public DavResource createResource(DavResourceLocator locator, DavServletRequest request, DavServletResponse response) throws DavException {
         try {
             if (locator.isRootLocation()) {
-                JahiaRootCollection jahiaRootCollection = new JahiaRootCollection(locator, (JcrDavSession) request.getDavSession(),
-                        this);
+                JcrDavSession davSession = (JcrDavSession) request.getDavSession();
+                JahiaRootCollection jahiaRootCollection = new JahiaRootCollection(locator, davSession, this);
                 jahiaRootCollection.addLockManager(lockMgr);
                 return jahiaRootCollection;
+
             } else if ("default".equals(locator.getWorkspaceName()) && "/repository".equals(locator.getRepositoryPath())) {
-                JahiaServerRootCollection jahiaServerRootCollection = new JahiaServerRootCollection(locator, (JcrDavSession) request
-                        .getDavSession(), this);
+                JcrDavSession davSession = (JcrDavSession) request.getDavSession();
+                JahiaServerRootCollection jahiaServerRootCollection = new JahiaServerRootCollection(locator, davSession, this);
                 jahiaServerRootCollection.addLockManager(lockMgr);
                 return jahiaServerRootCollection;
             }
-            return createResource(super.createResource(locator, request, response), getNode(request.getDavSession(),
-                    locator.getRepositoryPath()));
+
+            Node node = getNode(request.getDavSession(), locator);
+            return createResource(super.createResource(locator, request, response), node);
+
         } catch (AccessDeniedException e) {
-            throw new DavException(DavServletResponse.SC_NOT_FOUND);
+            throw new DavException(HttpServletResponse.SC_NOT_FOUND);
         } catch (RepositoryException e) {
-            throw new DavException(DavServletResponse.SC_INTERNAL_SERVER_ERROR, e);
+            throw new DavException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
         }
     }
 
+    @Override
     public DavResource createResource(DavResourceLocator locator, DavSession session) throws DavException {
         try {
             if (locator.isRootLocation()) {
-                JahiaRootCollection jahiaRootCollection = new JahiaRootCollection(locator, (JcrDavSession)session,this);
+                JahiaRootCollection jahiaRootCollection = new JahiaRootCollection(locator, (JcrDavSession) session,this);
                 jahiaRootCollection.addLockManager(lockMgr);
                 return jahiaRootCollection;
+
             } else if ("default".equals(locator.getWorkspaceName()) && "/repository".equals(locator.getRepositoryPath())) {
-                JahiaServerRootCollection jahiaServerRootCollection = new JahiaServerRootCollection(locator, (JcrDavSession)session, this);
+                JahiaServerRootCollection jahiaServerRootCollection = new JahiaServerRootCollection(locator, (JcrDavSession) session, this);
                 jahiaServerRootCollection.addLockManager(lockMgr);
                 return jahiaServerRootCollection;
             }
-            return createResource(super.createResource(locator, session), getNode(session, locator.getRepositoryPath()));
+
+            Node node = getNode(session, locator);
+            return createResource(super.createResource(locator, session), node);
+
         } catch (AccessDeniedException e) {
-            throw new DavException(DavServletResponse.SC_NOT_FOUND);
+            throw new DavException(HttpServletResponse.SC_NOT_FOUND);
         } catch (RepositoryException e) {
-            throw new DavException(DavServletResponse.SC_INTERNAL_SERVER_ERROR, e);
+            throw new DavException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
         }
     }
 
-
-    public DavResource createResource(DavResource r, Node n) throws DavException {
-        if (r instanceof VersionHistoryResource) {
-            return new VersionHistoryResourceImpl((VersionHistoryResource) r,n);
-        } else if (r instanceof VersionResource) {
-            return new VersionResourceImpl((VersionResource) r,n);
-        } else if (r instanceof VersionControlledResource) {
-            return new VersionControlledResourceImpl((VersionControlledResource) r,n);
-        } else if (r instanceof DeltaVResource) {
-            return new DeltaVResourceImpl((DeltaVResource) r,n);
+    private DavResource createResource(DavResource resource, Node node) {
+        if (resource instanceof VersionHistoryResource) {
+            return new VersionHistoryResourceImpl((VersionHistoryResource) resource, node);
+        } else if (resource instanceof VersionResource) {
+            return new VersionResourceImpl((VersionResource) resource, node);
+        } else if (resource instanceof VersionControlledResource) {
+            return new VersionControlledResourceImpl((VersionControlledResource) resource, node);
+        } else if (resource instanceof DeltaVResource) {
+            return new DeltaVResourceImpl((DeltaVResource) resource, node);
         } else {
-            return new DavResourceImpl(r,n);
+            return new DavResourceImpl(resource, node);
         }
     }
 
+    @SuppressWarnings("squid:S2177")
+    private Node getNode(DavSession sessionImpl, DavResourceLocator locator) throws RepositoryException {
+        return getNode(sessionImpl, locator.getRepositoryPath());
+    }
 
-    private Node getNode(DavSession sessionImpl, final String repoPath)
-            throws RepositoryException {
+    // Mostly a copy of ResourceFactoryImpl#getNode(DavSession, DavResourceLocator)
+    // with few tweaks from QA-10727
+    private Node getNode(DavSession sessionImpl, final String repoPath) throws RepositoryException {
         Node node = null;
         try {
             if (repoPath != null) {
@@ -157,7 +171,7 @@ public class JahiaResourceFactoryImpl extends ResourceFactoryImpl {
                 final Item item = session.getItem(repoPath);
                 if (item instanceof Node) {
                     node = (Node) item;
-                    if (!isAllowed(((Node) item).getPrimaryNodeType())) {
+                    if (!isAllowed(node.getPrimaryNodeType())) {
                         throw new AccessDeniedException("Access denied.");
                     }
                 } // else: item is a property -> return null
@@ -174,7 +188,7 @@ public class JahiaResourceFactoryImpl extends ResourceFactoryImpl {
      * @return true if the nodeType is allowed, false in other cases
      */
     public static boolean isAllowed(NodeType nodetype) {
-        return getAllowedNodeTypes().stream().anyMatch(t -> nodetype.isNodeType(t));
+        return getAllowedNodeTypes().stream().anyMatch(nodetype::isNodeType);
     }
 
     private static Set<String> getAllowedNodeTypes() {
@@ -195,95 +209,116 @@ public class JahiaResourceFactoryImpl extends ResourceFactoryImpl {
         return allowedNodeTypes;
     }
 
-    class DavResourceImpl implements DavResource {
-        DavResource resource;
-        Node node;
+    class DavResourceImpl<R extends DavResource> implements DavResource {
+        protected final R resource;
+        protected final Node node;
 
-        DavResourceImpl(DavResource resource, Node node) {
+        DavResourceImpl(R resource, Node node) {
             this.resource = resource;
             this.node = node;
         }
 
+        @Override
         public String getComplianceClass() {
             return resource.getComplianceClass();
         }
 
+        @Override
         public String getSupportedMethods() {
             return resource.getSupportedMethods();
         }
 
+        @Override
         public boolean exists() {
             return resource.exists();
         }
 
+        @Override
         public boolean isCollection() {
             return resource.isCollection();
         }
 
+        @Override
         public String getDisplayName() {
             return resource.getDisplayName();
         }
 
+        @Override
         public DavResourceLocator getLocator() {
             return resource.getLocator();
         }
 
+        @Override
         public String getResourcePath() {
             return resource.getResourcePath();
         }
 
+        @Override
         public String getHref() {
             return resource.getHref();
         }
 
+        @Override
         public long getModificationTime() {
             return resource.getModificationTime();
         }
 
+        @Override
         public void spool(OutputContext outputContext) throws IOException {
             resource.spool(outputContext);
         }
 
+        @Override
         public DavPropertyName[] getPropertyNames() {
             return resource.getPropertyNames();
         }
 
+        @Override
         public DavProperty<?> getProperty(DavPropertyName name) {
             return resource.getProperty(name);
         }
 
+        @Override
         public DavPropertySet getProperties() {
             return resource.getProperties();
         }
 
+        @Override
         public void setProperty(DavProperty<?> property) throws DavException {
             resource.setProperty(property);
         }
 
+        @Override
         public void removeProperty(DavPropertyName propertyName) throws DavException {
             resource.removeProperty(propertyName);
         }
 
+        @Override
         public MultiStatusResponse alterProperties(List<? extends PropEntry> changeList) throws DavException {
             return resource.alterProperties(changeList);
         }
 
+        @Override
         public DavResource getCollection() {
             return resource.getCollection();
         }
 
+        @Override
         public void addMember(DavResource resource, InputContext inputContext) throws DavException {
             this.resource.addMember(resource, inputContext);
         }
 
+        @Override
         public DavResourceIterator getMembers() {
             return resource.getMembers();
         }
 
+        @Override
         public void removeMember(DavResource member) throws DavException {
             resource.removeMember(member);
         }
 
+        @Override
         public void move(DavResource destination) throws DavException {
             try {
                 if (node != null) {
@@ -302,152 +337,174 @@ public class JahiaResourceFactoryImpl extends ResourceFactoryImpl {
             resource.move(destination);
         }
 
+        @Override
         public void copy(DavResource destination, boolean shallow) throws DavException {
             resource.copy(destination, shallow);
         }
 
+        @Override
         public boolean isLockable(Type type, Scope scope) {
             return resource.isLockable(type, scope);
         }
 
+        @Override
         public boolean hasLock(Type type, Scope scope) {
             return resource.hasLock(type, scope);
         }
 
+        @Override
         public ActiveLock getLock(Type type, Scope scope) {
             return resource.getLock(type, scope);
         }
 
+        @Override
         public ActiveLock[] getLocks() {
             return resource.getLocks();
         }
 
+        @Override
         public ActiveLock lock(LockInfo reqLockInfo) throws DavException {
             return resource.lock(reqLockInfo);
         }
 
+        @Override
         public ActiveLock refreshLock(LockInfo reqLockInfo, String lockToken) throws DavException {
             return resource.refreshLock(reqLockInfo, lockToken);
         }
 
+        @Override
         public void unlock(String lockToken) throws DavException {
             try {
                 resource.unlock(lockToken);
             } catch (DavException e) {
-                if (e.getErrorCode() != DavServletResponse.SC_PRECONDITION_FAILED) {
+                if (e.getErrorCode() != HttpServletResponse.SC_PRECONDITION_FAILED) {
                     throw e;
                 }
             }
         }
 
+        @Override
         public void addLockManager(LockManager lockmgr) {
             resource.addLockManager(lockmgr);
         }
 
+        @Override
         public DavResourceFactory getFactory() {
             return resource.getFactory();
         }
 
+        @Override
         public DavSession getSession() {
             return resource.getSession();
         }
+
     }
 
-    class DeltaVResourceImpl extends JahiaResourceFactoryImpl.DavResourceImpl implements DeltaVResource {
-        DeltaVResource resource;
+    class DeltaVResourceImpl<R extends DeltaVResource> extends JahiaResourceFactoryImpl.DavResourceImpl<R> implements DeltaVResource {
 
-        DeltaVResourceImpl(DeltaVResource resource, Node node) {
+        DeltaVResourceImpl(R resource, Node node) {
             super(resource, node);
-            this.resource = resource;
         }
 
+        @Override
         public OptionsResponse getOptionResponse(OptionsInfo optionsInfo) {
             return resource.getOptionResponse(optionsInfo);
         }
 
+        @Override
         public Report getReport(ReportInfo reportInfo) throws DavException {
             return resource.getReport(reportInfo);
         }
 
+        @Override
         public void addWorkspace(DavResource workspace) throws DavException {
             resource.addWorkspace(workspace);
         }
 
+        @Override
         public DavResource[] getReferenceResources(DavPropertyName hrefPropertyName) throws DavException {
             return resource.getReferenceResources(hrefPropertyName);
         }
+
     }
 
-    class VersionResourceImpl extends JahiaResourceFactoryImpl.DeltaVResourceImpl implements VersionResource {
-        VersionResource resource;
+    class VersionResourceImpl<R extends VersionResource> extends JahiaResourceFactoryImpl.DeltaVResourceImpl<R> implements VersionResource {
 
-        VersionResourceImpl(VersionResource resource, Node node) {
+        VersionResourceImpl(R resource, Node node) {
             super(resource, node);
-            this.resource = resource;
         }
 
+        @Override
         public void label(LabelInfo labelInfo) throws DavException {
             resource.label(labelInfo);
         }
 
+        @Override
         public VersionHistoryResource getVersionHistory() throws DavException {
             return resource.getVersionHistory();
         }
+
     }
 
-    class VersionHistoryResourceImpl extends JahiaResourceFactoryImpl.DeltaVResourceImpl implements VersionHistoryResource {
-        VersionHistoryResource resource;
+    class VersionHistoryResourceImpl<R extends VersionHistoryResource> extends JahiaResourceFactoryImpl.DeltaVResourceImpl<R> implements VersionHistoryResource {
 
-        VersionHistoryResourceImpl(VersionHistoryResource resource, Node node) {
+        VersionHistoryResourceImpl(R resource, Node node) {
             super(resource, node);
-            this.resource = resource;
         }
 
+        @Override
         public VersionResource[] getVersions() throws DavException {
             return resource.getVersions();
         }
+
     }
 
-    class VersionControlledResourceImpl extends JahiaResourceFactoryImpl.DeltaVResourceImpl implements VersionControlledResource {
-        VersionControlledResource resource;
+    class VersionControlledResourceImpl<R extends VersionControlledResource> extends JahiaResourceFactoryImpl.DeltaVResourceImpl<R> implements VersionControlledResource {
 
-        VersionControlledResourceImpl(VersionControlledResource resource, Node node) {
+        VersionControlledResourceImpl(R resource, Node node) {
             super(resource, node);
-            this.resource = resource;
         }
 
-
+        @Override
         public String checkin() throws DavException {
             return resource.checkin();
         }
 
+        @Override
         public void checkout() throws DavException {
             resource.checkout();
         }
 
+        @Override
         public void uncheckout() throws DavException {
             resource.uncheckout();
         }
 
+        @Override
         public MultiStatus update(UpdateInfo updateInfo) throws DavException {
             return resource.update(updateInfo);
         }
 
+        @Override
         public MultiStatus merge(MergeInfo mergeInfo) throws DavException {
             return resource.merge(mergeInfo);
         }
 
+        @Override
         public void label(LabelInfo labelInfo) throws DavException {
             resource.label(labelInfo);
         }
 
+        @Override
         public VersionHistoryResource getVersionHistory() throws DavException {
             return resource.getVersionHistory();
         }
 
+        @Override
         public void addVersionControl() throws DavException {
             resource.addVersionControl();
         }
+
     }
 
 }

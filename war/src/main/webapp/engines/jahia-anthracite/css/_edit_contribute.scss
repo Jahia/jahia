@@ -772,8 +772,8 @@ body[data-indigo-app="contribute"] {
 
     body[data-contribute-mode="content"] &,
     body[data-contribute-mode="files"] & {
-        background: url($ICON--FOLDER--SMALL---WHITE) no-repeat top 5px center / 16px;
-        background-position: top 3px left !important;
+        background: url(../images/icons/context-menu/publish.png) no-repeat center left 4px;
+        background-size: 21px;
     }
 
     body[data-contribute-mode="content"][data-contribute-displaying-node="true"] & {
@@ -951,16 +951,17 @@ body[data-indigo-app="contribute"] {
     background-size: 23px;
 
     .x-viewport-contributemode & {
-        background: url(../images/tabs-pages-white@X2.png) no-repeat top center/23px 23px;
+        background: url(../images/icons/context-menu/publish.png) no-repeat center left 4px;
+        background-size: 21px;
 
         &::before {
             display: block;
         }
 
         &::after {
-            font-weight: 700 !important;
-            text-transform: uppercase !important;
+            font-weight: 300 !important;
             opacity: 0.9 !important;
+            font-size: 13px!important;
         }
     }
 
@@ -1170,9 +1171,9 @@ div.x-jahia-root {
 
 .toolbar-item-publishone.action-bar-tool-item {
     width: auto;
-    background: url(../images/tabs-publish-white@X2.png) no-repeat left center;
-    background-size: 23px;
-    padding-left: 23px;
+    background: url(../images/icons/context-menu/publish.png) no-repeat center left 4px;
+    background-size: 20px;
+    padding-left: 28px;
     height: 22px;
     left: auto !important;
     top: auto !important;
@@ -1251,9 +1252,9 @@ div.x-jahia-root {
         margin-right: 0px !important;
 
         &::after {
-            font-weight: 700 !important;
-            text-transform: uppercase !important;
+            font-weight: 300 !important;
             opacity: 0.9 !important;
+            font-size: 13px!important;
         }
     }
 
@@ -2214,8 +2215,8 @@ div[role="combobox"].toolbar-itemsgroup-languageswitcher {
 %CSS_BLOCK--CONTRIBUTE--UPLOAD--BUTTON {
     width: 20px;
     height: 20px;
-    background: url(../images/icons/add-media@X2.png) no-repeat center center;
-    background-size: 23px 23px;
+    background: url(../images/icons_light/add.svg) no-repeat center center;
+    background-size: 18px;
     top: 21px;
     position: fixed;
 
@@ -2227,12 +2228,11 @@ div[role="combobox"].toolbar-itemsgroup-languageswitcher {
 
 // New Page
 %CSS_BLOCK--CONTRIBUTE--NEWPAGE--BUTTON {
-    background: url($ICON--ADD--WHITE) no-repeat top 3px left;
-    background-size: 21px;
-    padding-left: 24px;
+    background: url(../images/icons_light/add.svg) no-repeat left top 4px;
+    background-size: 19px;
+    padding-left: 21px;
     margin-left: 10px;
     margin-top: 4px;
-    opacity: 0.8;
 
     > tbody {
         display: none;
@@ -2241,10 +2241,9 @@ div[role="combobox"].toolbar-itemsgroup-languageswitcher {
     &::after {
         content: $text_create_page;
         line-height: 29px;
-        font-size: 11px;
+        font-size: 13px;
         opacity: 1;
-        text-transform: uppercase;
-        font-weight: 700;
+        font-weight: 400;
     }
 }
 
@@ -2252,10 +2251,9 @@ div[role="combobox"].toolbar-itemsgroup-languageswitcher {
 %CSS_BLOCK--CONTRIBUTE--EDITPAGE--BUTTON {
     background: url($ICON--INFO--WHITE) no-repeat top 3px left;
     background-size: 21px;
-    padding-left: 24px;
+    padding-left: 22px;
     margin-left: 10px;
     margin-top: 4px;
-    opacity: 0.8;
 
     > tbody {
         display: none;
@@ -2264,10 +2262,9 @@ div[role="combobox"].toolbar-itemsgroup-languageswitcher {
     &::after {
         content: "Edit";
         line-height: 29px;
-        font-size: 11px;
+        font-size: 13px;
         opacity: 1;
-        text-transform: uppercase;
-        font-weight: 700;
+        font-weight: 400;
     }
 }
 
@@ -2360,21 +2357,23 @@ div[role="combobox"].toolbar-itemsgroup-languageswitcher {
 
     &::before {
         content: attr(data-PAGE-NAME);
-        background: url(../images/icons/tabs-pages-white@X2.png) no-repeat left center;
+        background: url($ICON--PAGES---WHITE) no-repeat top 1px left;
 
         body[data-contribute-mode="files"] & {
             background: url($ICON--FOLDER--SMALL---WHITE) no-repeat left center;
+            background-size: 23px;
         }
 
         body[data-contribute-mode="content"] & {
             background: url($ICON--FOLDER--SMALL---WHITE) no-repeat left center;
+            background-size: 23px;
         }
 
         body[data-contribute-mode="content"][data-contribute-displaying-node="true"] & {
             background: url($ICON--DISPLAY--THUMBS--WHITE) no-repeat left center;
         }
 
-        background-size: 23px;
+        background-size: 21px;
         padding-left: 25px;
         @extend %document_title !optional;
 

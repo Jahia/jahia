@@ -43,15 +43,12 @@
  */
 package org.apache.jackrabbit.server.io;
 
-import org.slf4j.Logger;
 import org.jahia.api.Constants;
 
 /**
  * <code>JahiaIOManager</code>...
  */
 public class JahiaIOManagerNoDirectory extends IOManagerImpl {
-
-    private static Logger log = org.slf4j.LoggerFactory.getLogger(JahiaIOManagerNoDirectory.class);
 
     /**
      * Creates a new <code>DefaultIOManager</code> and populates the internal

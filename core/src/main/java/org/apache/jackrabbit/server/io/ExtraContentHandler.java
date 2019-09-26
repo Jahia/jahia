@@ -63,14 +63,17 @@ public class ExtraContentHandler extends DefaultHandler implements IOHandler {
         super(ioManager);
     }
 
+    @Override
     public boolean canImport(ImportContext context, boolean isCollection) {
         return false;
     }
 
+    @Override
     public boolean canImport(ImportContext context, DavResource resource) {
         return false;
     }
 
+    @Override
     public boolean canExport(ExportContext context, boolean isCollection) {
         if (context == null || context.isCompleted()) {
             return false;
@@ -79,8 +82,8 @@ public class ExtraContentHandler extends DefaultHandler implements IOHandler {
         boolean success = exportRoot != null && exportRoot.isNode();
         if (success && !isCollection) {
             try {
-                Node th = ((Node)exportRoot);
-                success = th.isNodeType(JcrConstants.NT_RESOURCE) && th.hasProperty(JcrConstants.JCR_DATA);
+                Node n = ((Node)exportRoot);
+                success = n.isNodeType(JcrConstants.NT_RESOURCE) && n.hasProperty(JcrConstants.JCR_DATA);
             } catch (RepositoryException e) {
                 // should never occur.
                 success = false;
@@ -89,8 +92,9 @@ public class ExtraContentHandler extends DefaultHandler implements IOHandler {
         return success;
     }
 
+    @Override
     protected Node getContentNode(ExportContext context, boolean isCollection) throws RepositoryException {
-        return (Node)context.getExportRoot();
+        return (Node) context.getExportRoot();
     }
 
 }

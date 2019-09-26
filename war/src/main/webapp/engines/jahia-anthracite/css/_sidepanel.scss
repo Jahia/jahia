@@ -447,7 +447,7 @@ body[indigo-dragging-panel] {
         // Fix the padding issue on icons
         body[data-sitesettings="false"][data-indigo-app="edit"] & {
             .x-tree3-node-text {
-                padding-left: 8px;
+                padding-left: 4px;
             }
         }
 
@@ -667,8 +667,8 @@ body[indigo-dragging-panel] {
         }
 
         &[src$="/jnt_page.png"] {
-            background-image: url(../images/tabs-pages-dark@X2.png);
-            opacity: 0.8;
+            background-image: url($ICON--PAGES---GREY);
+            background-size: 20px;
         }
 
         &[src$="/jnt_virtualsite.png"] {
@@ -694,8 +694,9 @@ body[indigo-dragging-panel] {
     .x-grid3-row-selected {
         .x-tree3-node-icon {
             &[src$="/jnt_page.png"] {
-                background-image: url(../images/tabs-pages-white@X2.png);
+                background-image: url($ICON--PAGES---WHITE);
                 opacity: 1;
+                background-position: center;
             }
 
             &[src$="/jnt_virtualsite.png"] {
@@ -835,7 +836,9 @@ body[indigo-dragging-panel] {
         // FOLDER ICON
         &[src$="/jnt_contentFolder.png"],
         &[src$="/jnt_folder.png"] {
-            background-image: url(../images/icons/tabs-files-dark@X2.png);
+            background-image: url($ICON--FILES---GREY);
+            background-size: 21px;
+            background-position: top 3px center;
         }
 
         &[src$="/remoteFolder.png"] {
@@ -854,7 +857,8 @@ body[indigo-dragging-panel] {
             // FOLDER ICON
             &[src$="/jnt_contentFolder.png"],
             &[src$="/jnt_folder.png"] {
-                background-image: url(../images/icons/tabs-files@X2.png);
+                background-image: url($ICON--FILES---WHITE);
+                opacity: 1;
             }
 
             &[src$="/remoteFolder.png"] {
@@ -883,12 +887,14 @@ body[indigo-dragging-panel] {
         padding-left: 18px;
         width: 18px;
         height: 23px;
-        opacity: 0.8;
+        opacity: 0.85;
 
         // FOLDER ICON
         &[src$="/jnt_contentFolder.png"],
         &[src$="/jnt_folder.png"] {
-            background-image: url(../images/icons/tabs-files-dark@X2.png);
+            background-image: url($ICON--FILES---GREY);
+            background-size: 21px;
+            background-position: top 2px center;
         }
 
         &[src$="/remoteFolder.png"] {
@@ -910,7 +916,8 @@ body[indigo-dragging-panel] {
             // FOLDER ICON
             &[src$="/jnt_contentFolder.png"],
             &[src$="/jnt_folder.png"] {
-                background-image: url(../images/icons/tabs-files@X2.png);
+                background-image: url($ICON--FILES---WHITE);
+                opacity: 1;
             }
 
             &[src$="/remoteFolder.png"] {
@@ -1596,6 +1603,11 @@ $side_panel__tabs: (
 
         img {
             background-image: url($_icon_closed);
+
+            @if ($_tab_ID == "#JahiaGxtSidePanelTabs__JahiaGxtPagesTab") {
+                background-size: 20px!important;
+                background-position: center;
+            }
 
             body[data-INDIGO-GWT-SIDE-PANEL="open"] &,
             .x-viewport-adminmode &,

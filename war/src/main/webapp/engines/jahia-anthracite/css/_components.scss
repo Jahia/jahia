@@ -1935,6 +1935,10 @@ form,
         padding: 2px;
     }
 
+    div.cke_dialog_ui_input_text {
+        width: 400px;
+    }
+
     .cke_dialog_ui_text {
         width: 100% !important;
 
@@ -2069,7 +2073,7 @@ form,
     }
 
     .cke_dialog_ui_hbox:not(.cke_dialog_footer_buttons) .cke_dialog_ui_hbox {
-        > td:not([style="width:50%"]):not([style="width:320px"]):not([style="width:90px"]) {
+        > td:not([style="width:320px"]):not([style="width:90px"]) {
             display: block !important;
             width: 100% !important;
         }

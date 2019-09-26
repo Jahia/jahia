@@ -575,12 +575,11 @@ body[data-indigo-app="contribute"] {
 .edit-menu-edit {
     /* More Info Button */
     display: block;
-    top: 1px !important;
-    left: auto !important;
+    left: -10px !important;
     position: relative;
-    width: 24px;
-    height: 24px;
-    background: url(../images/more-options.svg) no-repeat center center;
+    width: 22px;
+    height: 22px;
+    background: url(../images/more-options.svg) no-repeat center center #61666b;
     background-size: 20px;
     border-radius: 2px;
 
@@ -658,18 +657,17 @@ body[data-indigo-app="contribute"] {
     background-size: 23px 23px;
 
     .x-viewport-editmode & {
-        height: 22px;
-        width: 15px;
-        left: -24px !important;
-        top: -11px !important;
-        background: url(../images/expanded-white.png) no-repeat center center transparent;
+        height: 14px;
+        width: 14px;
+        left: -30px !important;
+        top: -6px !important;
+        background: url(../images/expanded-white.png) no-repeat center center hsla(210, 5%, 40%, 1);
         background-size: 15px;
+        border-radius: 2px;
 
         &:hover {
             background-color: #007cb0 !important;
-            opacity: 1 !important;
-            left: -19px !important;
-            border-radius: 0 1px 1px 0;
+            left: -28px !important;
         }
     }
 
@@ -680,10 +678,10 @@ body[data-indigo-app="contribute"] {
     }
 
     .hover-preview & {
-        opacity: 1 !important;
-        left: -19px !important;
-        border-radius: 0 2px 2px 0;
-        background-color: #696d72;
+    //     opacity: 1 !important;
+        left: -28px !important;
+    //     border-radius: 0 2px 2px 0;
+    //     background-color: #696d72;
     }
 }
 
@@ -696,9 +694,9 @@ body[data-indigo-app="contribute"] {
     left: auto !important;
     top: auto !important;
     position: relative;
-    margin-right: 20px !important;
+    margin-right: 30px !important;
     padding-right: 6px;
-    border-radius: 2px 0 0 2px;
+    border-radius: 2px;
     transition: all 0.1s ease-in 0s;
 
     &:hover {
@@ -737,7 +735,7 @@ body[data-indigo-app="contribute"] {
     left: auto !important;
     top: auto !important;
     position: relative;
-    margin-right: 3px !important;
+    margin-right: 19px !important;
     padding-right: 19px;
     border-radius: 2px;
     transition: all 0.1s ease-in 0s;
@@ -1140,21 +1138,18 @@ div.x-jahia-root {
 
 .action-bar-tool-item.edit-menu-publication {
     position: absolute;
-    top: -11px !important;
-    left: -24px !important;
-    background: url(../images/expanded-white.png) no-repeat center center transparent;
+    left: -30px !important;
+    top: -6px !important;
+    background: url(../images/expanded-white.png) no-repeat center center hsla(210, 5%, 40%, 1);
     background-size: 15px;
-    width: 15px;
-    height: 22px;
-    opacity: 0 !important;
+    height: 14px;
+    width: 14px;
     transition: all 0.1s ease-in 0s;
-    border-radius: 0;
+    border-radius: 2px;
 
     &:hover {
         background-color: #007cb0 !important;
-        opacity: 1 !important;
-        left: -19px !important;
-        border-radius: 0 1px 1px 0;
+        left: -28px !important;
     }
 
     .x-btn-mc {
@@ -1166,10 +1161,10 @@ div.x-jahia-root {
     }
 
     .hover-publish & {
-        opacity: 1 !important;
-        left: -19px !important;
-        border-radius: 0 2px 2px 0;
-        background-color: rgba(245, 245, 245, 0.0784);
+        // opacity: 1 !important;
+        left: -28px !important;
+        // border-radius: 0 2px 2px 0;
+        // background-color: rgba(245, 245, 245, 0.0784);
     }
 }
 
@@ -1182,9 +1177,9 @@ div.x-jahia-root {
     left: auto !important;
     top: auto !important;
     position: relative;
-    margin-right: 20px !important;
+    margin-right: 30px !important;
     padding-right: 6px;
-    border-radius: 2px 0 0 2px;
+    border-radius: 2px;
     transition: all 0.1s ease-in 0s;
 
     &:hover {

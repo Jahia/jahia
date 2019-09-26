@@ -2438,6 +2438,7 @@ var DX_app = {
                     elements.moreInfo.style) {
                     elements.moreInfo.style.opacity = 0;
                 }
+
             }
         },
         /**
@@ -2898,6 +2899,12 @@ var DX_app = {
          */
         onNewSite: function(){
             DX_app.dev.log("app ::: edit ::: onNewSite (disabled the dodgy code )");
+
+            // Flag that a new site has been loaded
+            DX_app.edit.sidepanel.data.newSite = true;
+
+            DexV2.getCached('body').setAttribute("data-edit-mode-status", "loading");
+
             DX_app.common.resizeSiteSelector();
         },
         /**
@@ -4282,18 +4289,23 @@ var DX_app = {
                         DX_app.edit.sidepanel.data.previousTab = DX_app.edit.sidepanel.data.currentTab;
                         DX_app.edit.sidepanel.data.currentTab = clickedTabID;
 
-                        if (DX_app.edit.sidepanel.data.previousTab === DX_app.edit.sidepanel.data.currentTab) {
-                            if (DexV2.getCached('body').getAttribute('data-sitesettings') == 'true'
-                                && clickedTabID !== 'JahiaGxtSidePanelTabs__JahiaGxtSettingsTab') {
-                                setTimeout(function () {
-                                    DexV2.id('JahiaGxtSidePanelTabs__JahiaGxtSettingsTab').trigger('mousedown').trigger('mouseup').trigger('click');
-                                }, 0);
-                            } else if (DexV2.getCached('body').getAttribute('data-sitesettings') !== 'true'
-                                && DexV2.getCached('body').getAttribute('data-indigo-sidepanel-pinned') == 'true'
-                                && clickedTabID === 'JahiaGxtSidePanelTabs__JahiaGxtSettingsTab') {
-                                setTimeout(function () {
-                                    DexV2.id('JahiaGxtSidePanelTabs__JahiaGxtPagesTab').trigger('mousedown').trigger('mouseup').trigger('click');
-                                }, 0);
+                        if(DX_app.edit.sidepanel.data.newSite){
+                            DX_app.edit.sidepanel.data.newSite = false;
+
+                        } else {
+                            if (DX_app.edit.sidepanel.data.previousTab === DX_app.edit.sidepanel.data.currentTab) {
+                                if (DexV2.getCached('body').getAttribute('data-sitesettings') == 'true'
+                                    && clickedTabID !== 'JahiaGxtSidePanelTabs__JahiaGxtSettingsTab') {
+                                    setTimeout(function () {
+                                        DexV2.id('JahiaGxtSidePanelTabs__JahiaGxtSettingsTab').trigger('mousedown').trigger('mouseup').trigger('click');
+                                    }, 0);
+                                } else if (DexV2.getCached('body').getAttribute('data-sitesettings') !== 'true'
+                                    && DexV2.getCached('body').getAttribute('data-indigo-sidepanel-pinned') == 'true'
+                                    && clickedTabID === 'JahiaGxtSidePanelTabs__JahiaGxtSettingsTab') {
+                                    setTimeout(function () {
+                                        DexV2.id('JahiaGxtSidePanelTabs__JahiaGxtPagesTab').trigger('mousedown').trigger('mouseup').trigger('click');
+                                    }, 0);
+                                }
                             }
                         }
 

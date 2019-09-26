@@ -597,7 +597,8 @@ body[indigo-dragging-panel="true"] {
 
     // PAGE ICON
     img[src$="/jnt_page.png"] {
-        background-image: url(../images/tabs-pages-dark@X2.png);
+        background-image: url($ICON--PAGES---GREY);
+        background-size: 18px;
     }
 
     .x-grid3-row-selected {
@@ -608,7 +609,7 @@ body[indigo-dragging-panel="true"] {
 
         // PAGE ICON
         img[src$="/jnt_page.png"] {
-            background-image: url(../images/tabs-pages-white@X2.png);
+            background-image: url($ICON--PAGES---WHITE);
         }
     }
 
@@ -771,8 +772,10 @@ body[indigo-dragging-panel="true"] {
         // FOLDER ICON
         img[src$="/jnt_contentFolder.png"],
         img[src$="/jnt_folder.png"] {
-            background-image: url(../images/icons/tabs-files-dark@X2.png);
-            opacity: 0.8;
+            background-image: url($ICON--FILES---BLACK);
+            opacity: 0.6;
+            background-size: 20px;
+            background-position: top;
         }
 
         // EDP item icon
@@ -799,8 +802,8 @@ body[indigo-dragging-panel="true"] {
     // FOLDER ICON
     img[src$="/jnt_contentFolder.png"],
     img[src$="/jnt_folder.png"] {
-        background-image: url(../images/icons/tabs-files-dark@X2.png);
-    }
+        background-image: url($ICON--FILES---GREY);
+   }
 
     // EDP item icon
     img[src$="/remoteFolder.png"] {
@@ -822,7 +825,7 @@ body[indigo-dragging-panel="true"] {
         // FOLDER ICON
         img[src$="/jnt_contentFolder.png"],
         img[src$="/jnt_folder.png"] {
-            background-image: url(../images/icons/tabs-files@X2.png) !important;
+            background-image: url($ICON--FILES---WHITE) !important;
             opacity: 1 !important;
         }
 
@@ -858,7 +861,8 @@ body[indigo-dragging-panel="true"] {
 
         // PAGE ICON
         img[src$="/jnt_page.png"] {
-            background-image: url(../images/tabs-pages-white@X2.png);
+            background-image: url($ICON--PAGES---WHITE);
+            opacity: 1;
         }
     }
 
@@ -2488,7 +2492,7 @@ body[indigo-dragging-panel="true"] {
 
             // Add New Folder
             &.toolbar-item-newfolder {
-                background-image: url(../images/buttons_dark/new-folder.svg);
+                background-image: url(../images/icons_dark/add_folder.svg);
 
                 &::before {
                     content: $text_tooltip_new_folder;
@@ -2497,8 +2501,8 @@ body[indigo-dragging-panel="true"] {
 
             // Add New Content Folder
             &.toolbar-item-newcontentfolder { // editorial content manager
-                background-image: url(../images/buttons_dark/new-content-folder.svg);
-                background-size: 19px;
+                background-image: url(../images/icons_dark/add_folder.svg);
+
 
                 &::before {
                     content: $text_tooltip_new_content_folder;
@@ -2507,8 +2511,7 @@ body[indigo-dragging-panel="true"] {
 
             // Add New Portlet Folder
             &.toolbar-item-newportletfolder { // portlet manager
-                background-image: url(../images/buttons_dark/new-content-folder.svg);
-                background-size: 19px;
+                background-image: url(../images/icons_dark/add_folder.svg);
 
                 &::before {
                     content: $text_tooltip_new_portlet_folder;
@@ -2517,8 +2520,7 @@ body[indigo-dragging-panel="true"] {
 
             // New Category
             &.toolbar-item-newcategory {
-                background-image: url(../images/buttons_dark/new-content.svg);
-                background-size: 17px;
+                background-image: url(../images/icons_dark/add_circle.svg);
 
                 &::before {
                     content: $text_tooltip_new_category;
@@ -2527,9 +2529,8 @@ body[indigo-dragging-panel="true"] {
 
             // Upload File
             &.toolbar-item-upload {
-                background-image: url(../images/icons/add-media-dark@X2.png);
-                background-size: 23px;
-                background-position: top 5px center;
+                background-image: url(../images/icons_dark/upload_file.svg);
+                background-size: 19px;
 
                 &::before {
                     content: $text_tooltip_upload;
@@ -2538,8 +2539,8 @@ body[indigo-dragging-panel="true"] {
 
             // New Content
             &.toolbar-item-newcontent {
-                background-image: url(../images/buttons_dark/new-content.svg);
-                background-size: 17px;
+                background-image: url(../images/icons_dark/add.svg);
+                background-size: 19px;
 
                 &::before {
                     content: $text_tooltip_new_content;
@@ -2548,8 +2549,7 @@ body[indigo-dragging-panel="true"] {
 
             // New Portlet
             &.toolbar-item-newportlet {
-                background-image: url(../images/buttons_dark/new-portlet.svg);
-                background-position: top 7px center;
+                background-image: url(../images/icons_dark/add_circle.svg);
 
                 &::before {
                     content: $text_tooltip_new_portlet;
@@ -2558,8 +2558,8 @@ body[indigo-dragging-panel="true"] {
 
             // New Page
             &.toolbar-item-newpage {
-                background-image: url(../images/buttons_dark/new-page.svg);
-                background-size: 14px;
+                background-image: url(../images/icons_dark/add.svg);
+                background-size: 19px;
 
                 &::before {
                     content: "Create new page";

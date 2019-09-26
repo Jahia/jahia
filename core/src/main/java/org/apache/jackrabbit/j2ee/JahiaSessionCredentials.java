@@ -61,10 +61,20 @@ import javax.servlet.http.HttpServletRequest;
  * 
  */
 public class JahiaSessionCredentials extends BasicCredentialsProvider {
-    public JahiaSessionCredentials(String s) {
-        super(s);
+
+    /**
+     * Constructs a new JahiaSessionCredentials with {@link BasicCredentialsProvider#EMPTY_DEFAULT_HEADER_VALUE}
+     * as the default header value.
+     */
+    public JahiaSessionCredentials() {
+        this(EMPTY_DEFAULT_HEADER_VALUE);
     }
 
+    public JahiaSessionCredentials(String defaultHeaderValue) {
+        super(defaultHeaderValue);
+    }
+
+    @Override
     public Credentials getCredentials(HttpServletRequest request) throws LoginException, ServletException {
         JahiaUser jahiaUser = (JahiaUser) request.getSession(true).getAttribute("org.jahia.usermanager.jahiauser");
         if (jahiaUser != null) {
@@ -72,7 +82,6 @@ public class JahiaSessionCredentials extends BasicCredentialsProvider {
             return JahiaLoginModule.getCredentials(jahiaUser.getName(), jahiaUser.getRealm());
         } else {
             SimpleCredentials c = (SimpleCredentials) super.getCredentials(request);
-
             if (c != null) {
                 return c;
             }            

@@ -63,7 +63,7 @@ public class JahiaJCRWebdavServerServlet extends JCRWebdavServerServlet {
 
     @Override
     protected CredentialsProvider getCredentialsProvider() {
-        return new JahiaSessionCredentials("");
+        return new JahiaSessionCredentials();
     }
 
     @Override

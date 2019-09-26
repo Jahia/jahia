@@ -69,7 +69,7 @@ public class JahiaWebdavServlet extends SimpleWebdavServlet {
 
     @Override
     protected CredentialsProvider getCredentialsProvider() {
-        return new JahiaSessionCredentials("");
+        return new JahiaSessionCredentials();
     }
 
     @Override

@@ -46,15 +46,14 @@ package org.apache.jackrabbit.webdav.jcr;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.jackrabbit.webdav.*;
-import org.apache.jackrabbit.webdav.io.InputContext;
 import org.apache.jackrabbit.webdav.io.OutputContext;
 import org.apache.jackrabbit.webdav.search.SearchResource;
 import org.apache.jackrabbit.webdav.version.DeltaVResource;
@@ -78,8 +77,7 @@ public class JahiaRootCollection extends JahiaServerRootCollection {
      * @param session
      * @param factory
      */
-    public JahiaRootCollection(DavResourceLocator locator, JcrDavSession session,
-                                  DavResourceFactory factory) {
+    public JahiaRootCollection(DavResourceLocator locator, JcrDavSession session, DavResourceFactory factory) {
         super(locator, session, factory);
 
         // initialize the supported locks and reports
@@ -95,33 +93,12 @@ public class JahiaRootCollection extends JahiaServerRootCollection {
      * @return string listing the METHODS allowed
      * @see org.apache.jackrabbit.webdav.DavResource#getSupportedMethods()
      */
+    @Override
     public String getSupportedMethods() {
         StringBuilder sb = new StringBuilder(DavResource.METHODS);
         sb.append(", ");
-//        sb.append(DeltaVResource.METHODS_INCL_MKWORKSPACE);
-//        sb.append(", ");
         sb.append(SearchResource.METHODS);
         return sb.toString();
-    }
-
-    /**
-     * Returns true
-     *
-     * @return true
-     * @see org.apache.jackrabbit.webdav.DavResource#exists()
-     */
-    public boolean exists() {
-        return true;
-    }
-
-    /**
-     * Returns true
-     *
-     * @return true
-     * @see org.apache.jackrabbit.webdav.DavResource#isCollection()
-     */
-    public boolean isCollection() {
-        return true;
     }
 
     /**
@@ -130,18 +107,9 @@ public class JahiaRootCollection extends JahiaServerRootCollection {
      * @return empty string
      * @see org.apache.jackrabbit.webdav.DavResource#getDisplayName()
      */
+    @Override
     public String getDisplayName() {
         return JahiaServerRootCollection.MAP_POINT;
-    }
-
-    /**
-     * Always returns 'now'
-     *
-     * @return
-     * @see org.apache.jackrabbit.webdav.DavResource#getModificationTime()
-     */
-    public long getModificationTime() {
-        return new Date().getTime();
     }
 
     /**
@@ -151,6 +119,7 @@ public class JahiaRootCollection extends JahiaServerRootCollection {
      * @throws java.io.IOException
      * @see DavResource#spool(org.apache.jackrabbit.webdav.io.OutputContext)
      */
+    @Override
     public void spool(OutputContext outputContext) throws IOException {
         if (outputContext.hasStream()) {
             Session session = getRepositorySession();
@@ -198,6 +167,7 @@ public class JahiaRootCollection extends JahiaServerRootCollection {
      * @return resource this resource is an internal member of.
      * @see org.apache.jackrabbit.webdav.DavResource#getCollection()
      */
+    @Override
     public DavResource getCollection() {
         try {
             return  getFactory().createResource(
@@ -211,20 +181,13 @@ public class JahiaRootCollection extends JahiaServerRootCollection {
     }
 
     /**
-     * Modification workspace list not supported. This method always throw exception with 403: Forbidden code
-     * @see DavResource#addMember(DavResource, org.apache.jackrabbit.webdav.io.InputContext)
-     */
-    public void addMember(DavResource resource, InputContext inputContext) throws DavException {
-        throw new DavException(DavServletResponse.SC_FORBIDDEN);
-    }
-
-    /**
      * Returns an iterator over the member resources, which are all
      * workspace resources available.
      *
      * @return members of this collection
      * @see org.apache.jackrabbit.webdav.DavResource#getMembers()
      */
+    @Override
     public DavResourceIterator getMembers() {
         List<DavResource> memberList = new ArrayList();
         try {
@@ -234,10 +197,7 @@ public class JahiaRootCollection extends JahiaServerRootCollection {
                 DavResourceLocator childLoc = getLocator().getFactory().createResourceLocator(getLocator().getPrefix(), wspPath, wspPath);
                 memberList.add(createResourceFromLocator(childLoc));
             }
-        } catch (RepositoryException e) {
-            log.error(e.getMessage());
-        } catch (DavException e) {
-            // should never occur
+        } catch (RepositoryException | DavException e) {
             log.error(e.getMessage());
         }
         return new DavResourceIteratorImpl(memberList);
@@ -249,9 +209,10 @@ public class JahiaRootCollection extends JahiaServerRootCollection {
      *
      * @see DavResource#removeMember(org.apache.jackrabbit.webdav.DavResource)
      */
+    @Override
     public void removeMember(DavResource member) throws DavException {
         log.error("Cannot add a remove the root node.");
-        throw new DavException(DavServletResponse.SC_FORBIDDEN);
+        throw new DavException(HttpServletResponse.SC_FORBIDDEN);
     }
 
     //-----------------------------------------------------< DeltaVResource >---
@@ -261,32 +222,12 @@ public class JahiaRootCollection extends JahiaServerRootCollection {
     @Override
     public void addWorkspace(DavResource workspace) throws DavException {
         log.error("Cannot add a remove the root node.");
-        throw new DavException(DavServletResponse.SC_FORBIDDEN);
+        throw new DavException(HttpServletResponse.SC_FORBIDDEN);
     }
 
-    //--------------------------------------------------------------------------
-    /**
-     * @see AbstractResource#initLockSupport()
-     */
     @Override
-    protected void initLockSupport() {
-        // no locking supported
-    }
-
-    /**
-     * Since the root resource does not represent a repository item and therefore
-     * is not member of a workspace resource, this method always returns
-     * <code>null</code>.
-     *
-     * @return <code>null</code>
-     * @see AbstractResource#getWorkspaceHref()
-     */
-    @Override
-    protected String getWorkspaceHref() {
-        return null;
-    }
-
     public String getHref() {
         return getLocator().getHref(isCollection());
     }
+
 }

@@ -54,6 +54,7 @@ import org.jahia.ajax.gwt.client.widget.content.compare.CompareEngine;
  * User: ktlili
  * Date: Mar 2, 2010
  * Time: 10:12:21 AM
+ * TODO REMOVE: https://jira.jahia.org/browse/BACKLOG-11186
  * 
  */
 public class ShowVersionEngine extends BaseActionItem {

@@ -116,6 +116,7 @@
     </bean>
 
     <!-- show version mode-->
+    <!-- TODO REMOVE: https://jira.jahia.org/browse/BACKLOG-11186 -->
     <bean id="Toolbar.Item.ShowVersionEngine" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="titleKey" value="label.version"/>
         <property name="icon" value="showCompareEngine"/>
@@ -125,6 +126,7 @@
     </bean>
 
     <!-- show version mode-->
+    <!-- TODO REMOVE: https://jira.jahia.org/browse/BACKLOG-11186 -->
     <bean id="Toolbar.Item.ShowConsultPreviousVersionEngine" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="titleKey" value="label.version.previous"/>
         <property name="icon" value="showCompareEngine"/>

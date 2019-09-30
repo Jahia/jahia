@@ -450,48 +450,59 @@ button.button-disable:hover, div.button-disable:hover {
 
 
 .hover-top-list {
+    pointer-events: none;
     border-top: 3px solid #39f;
 }
 .hover-bottom-list {
+    pointer-events: none;
     border-bottom: 3px solid #39f;
     margin-top: -3px;
 }
 .hover-left-list {
+    pointer-events: none;
     border-left: 3px solid #39f;
 }
 .hover-right-list {
+    pointer-events: none;
     border-left: 3px solid #39f;
     margin-left: -3px;
 }
 
 .hover-top-simple {
+    pointer-events: none;
     border-top: 3px solid #39f;
 }
 .hover-bottom-simple {
+    pointer-events: none;
     border-bottom: 3px solid #39f;
     margin-top: -3px;
 }
 .hover-left-simple {
+    pointer-events: none;
     border-left: 3px solid #39f;
 }
 .hover-right-simple {
+    pointer-events: none;
     border-left: 3px solid #39f;
     margin-left: -3px;
 }
 
-
 .hover-top-area {
+    pointer-events: none;
     border-top: 3px solid #39f;
 }
 .hover-bottom-area {
+    pointer-events: none;
     border-bottom: 3px solid #39f;
     margin-top: -3px;
 }
 .hover-left-area {
+    pointer-events: none;
     border-left: 3px solid #39f;
     margin-right: -3px;
 }
 .hover-right-area {
+    pointer-events: none;
     border-left: 3px solid #39f;
     margin-left: -3px;
 }

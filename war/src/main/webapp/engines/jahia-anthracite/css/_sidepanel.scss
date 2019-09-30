@@ -5,22 +5,30 @@
     height: calc(100% - 109px) !important;
 }
 
-#JahiaGxtPagesTab .x-grid3-col-locked {
-    background: url(../images/icons_light/lock.svg) #e67d3a no-repeat center;
-    width: 12px;
-    height: 12px !important;
-    border-radius: 2px;
-    position: relative;
-    right: -8px;
-    top: 1px;
-    background-size: 16px;
-
-    > img {
-        display: none;
+#JahiaGxtPagesTab {
+    .marked-for-deletion {
+        .x-grid3-col-locked {
+            background-color: _theme-color(status, error);
+        }
     }
 
-    &:empty {
-        background: none;
+    .x-grid3-col-locked {
+        background: url(../images/icons_light/lock.svg) #e67d3a no-repeat center;
+        width: 12px;
+        height: 12px !important;
+        border-radius: 2px;
+        position: relative;
+        right: -8px;
+        top: 1px;
+        background-size: 16px;
+
+        > img {
+            display: none;
+        }
+
+        &:empty {
+            background: none;
+        }
     }
 }
 

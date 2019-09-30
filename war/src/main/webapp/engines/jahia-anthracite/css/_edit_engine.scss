@@ -4,73 +4,73 @@
 
 // Comparaison panel open from edit engine
 body[data-indigo-edit-engine="open"] {
-    div.compare-engine.x-window-maximized {
-        z-index: 1032 !important;
-    }
+	div.compare-engine.x-window-maximized {
+		z-index: 1032 !important;
+	}
 }
 
 #JahiaGxtCreateContentEngine,
 #JahiaGxtContentEngine,
 #JahiaGxtEditEngineTabs {
-    &.x-masked {
-        &::before {
-            position: absolute;
-            background: url(../images/loader_dark.svg) no-repeat center center #d6d6d6;
-            z-index: 99;
-        }
-    }
+	&.x-masked {
+		&::before {
+			position: absolute;
+			background: url(../images/loader_dark.svg) no-repeat center center #d6d6d6;
+			z-index: 99;
+		}
+	}
 }
 
 .engine-panel:not(.trashboardengine-ctn),
 div.engine-window {
 
-    .x-form-item {
-        position: relative;
-    }
+	.x-form-item {
+		position: relative;
+	}
 
-    .mypanel {
-        width: auto !important;
-    }
+	.mypanel {
+		width: auto !important;
+	}
 
-    .button-label-group {
-        bottom: 20px !important;
+	.button-label-group {
+		bottom: 20px !important;
 
-        .button-label {
-            color: #fdfdfd;
-            font-size: 14px;
-            font-weight: 300;
-            margin-right: 10px;
-        }
-    }
+		.button-label {
+			color: #fdfdfd;
+			font-size: 14px;
+			font-weight: 300;
+			margin-right: 10px;
+		}
+	}
 
-    .x-form-item {
-        margin-bottom: 12px;
-    }
+	.x-form-item {
+		margin-bottom: 12px;
+	}
 
-    .indigo-modal-mask {
-        display: none;
-    }
+	.indigo-modal-mask {
+		display: none;
+	}
 
-    [id="Creation"], [id="Last modification"], [id="Publication"],
-    [id="Dernière modification"], [id="Créé"], [id="Publication"],
-    [id="Erstellung"], [id="Letzte Änderung"], [id="Veröffentlichung"] {
-        width: 30% !important;
-        display: inline-block;
-        background: transparent !important;
-    }
+	[id="Creation"], [id="Last modification"], [id="Publication"],
+	[id="Dernière modification"], [id="Créé"], [id="Publication"],
+	[id="Erstellung"], [id="Letzte Änderung"], [id="Veröffentlichung"] {
+		width: 30% !important;
+		display: inline-block;
+		background: transparent !important;
+	}
 
-    [id="Description"] textarea, [id="Beschreibung"] textarea {
-        max-height: 80px;
-    }
+	[id="Description"] textarea, [id="Beschreibung"] textarea {
+		max-height: 80px;
+	}
 
-    z-index: 1031 !important;
+	z-index: 1031 !important;
 
-    background: linear-gradient(to bottom, #DBDBDB 1%, #d5d5d5 100%);
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100%;
+	background: linear-gradient(to bottom, #DBDBDB 1%, #d5d5d5 100%);
+	position: fixed !important;
+	top: 0 !important;
+	left: 0 !important;
+	width: 100% !important;
+	height: 100%;
 
 	.indigo-switch + input {
 		display: none;
@@ -87,7 +87,7 @@ div.engine-window {
 			.indigo-switch--shuttle {
 				left: -1px;
 				background: #F1F1F1;
-				border-color:#F1F1F1;
+				border-color: #F1F1F1;
 			}
 
 		}
@@ -104,19 +104,19 @@ div.engine-window {
 
 		position: absolute;
 		left: 32px;
-	    top: 17px;
+		top: 17px;
 
 		.indigo-switch--shuttle {
 			width: 20px;
-		    height: 20px;
-		    background: #4ed205;
-		    border-radius: 20px;
-		    position: relative;
-		    z-index: 98;
-		    left: 11px;
-		    box-shadow: 1px 2px 1px 0px rgba(0, 0, 0, 0.4);
-		    transition: left 0.3s ease, background 0.3s ease, box-shadow 0.1s ease;
-		    border: 1px solid #5ddf15;
+			height: 20px;
+			background: #4ed205;
+			border-radius: 20px;
+			position: relative;
+			z-index: 98;
+			left: 11px;
+			box-shadow: 1px 2px 1px 0px rgba(0, 0, 0, 0.4);
+			transition: left 0.3s ease, background 0.3s ease, box-shadow 0.1s ease;
+			border: 1px solid #5ddf15;
 
 			&:hover {
 				cursor: pointer;
@@ -131,8 +131,6 @@ div.engine-window {
 			top: 3px;
 			background: rgba(80, 80, 80, 0.7);
 		}
-
-
 	}
 
 	.indigo-edit-engine-menu {
@@ -140,7 +138,6 @@ div.engine-window {
 		top: 0;
 		left: 0;
 		z-index: 999999999;
-		display: inline-block;
 		display: none;
 
 		button {
@@ -150,9 +147,9 @@ div.engine-window {
 
 	.x-tab-panel {
 		// Edit Engine COntent Container
-		width: 100%!important;
-		height: 100%!important;
-		border: none!important;
+		width: 100% !important;
+		height: 100% !important;
+		border: none !important;
 
 		.x-tab-panel-header {
 			// Tab list menu
@@ -165,9 +162,9 @@ div.engine-window {
 			background: none;
 			padding: 50px 20px 0 43px;
 			background: grey;
-		    top: 0;
+			top: 0;
 			left: 0;
-		    position: fixed;
+			position: fixed;
 			box-shadow: 0px 2px 12px 0px rgba(58, 58, 58, 0.4);
 			background: linear-gradient(to right bottom, #F5F5F5 50%, #e5e4e4 100%);
 			z-index: 99;
@@ -182,7 +179,7 @@ div.engine-window {
 					// At last, the final container
 					width: 100%;
 					height: auto;
-					border:none;
+					border: none;
 					// border-left: 1px solid _property($TAB--BAR, $EDIT-ENGINE);
 					background: none;
 					padding: 0 0 0 5px;
@@ -195,21 +192,8 @@ div.engine-window {
 						display: block;
 
 						&.x-tab-strip-active {
-							// border-left: 3px solid _property($TAB--BAR---SELECTED, $EDIT-ENGINE);
-							// left: -7px;
-							// padding-left: 4px;
 							background: #007cb0;
-
-							&.x-tab-strip-over {
-								// border-left-color: _property($TAB--BAR---SELECTED, $EDIT-ENGINE);
-							}
 						}
-
-						&.x-tab-strip-over {
-							// border-left-color: _property($TAB--BAR---HOVER, $EDIT-ENGINE);
-						}
-
-
 
 						.x-tab-right {
 							// Button container
@@ -225,20 +209,12 @@ div.engine-window {
 								.x-tab-strip-inner {
 									// Yet another button container
 									background: none;
-
-
 								}
 							}
 						}
 					}
 				}
 			}
-
-			.x-tab-strip-spacer {
-				// Dont kjnow what this does yet
-
-			}
-
 		}
 
 		.x-tab-panel-body {
@@ -248,7 +224,7 @@ div.engine-window {
 			width: calc(100% - 310px) !important;
 			box-sizing: border-box;
 			vertical-align: top;
-			height: calc(100% - 58px)!important;
+			height: calc(100% - 58px) !important;
 			background: none;
 			margin-left: 316px;
 
@@ -264,7 +240,7 @@ div.engine-window {
 				// Default tab content window
 
 				// Work in progress stuff
-				&.WIP-all-content{
+				&.WIP-all-content {
 					.x-form-item.x-form-item.prop-i18n-field,
 					.x-form-item.x-form-item.prop-field {
 						@extend %CSS_BLOCK--HIGHLIGHT--WIP-FIELDS;
@@ -277,64 +253,51 @@ div.engine-window {
 					}
 				}
 
-				height: 100%!important;
-				width: 100%!important;
+				height: 100% !important;
+				width: 100% !important;
 				background: transparent;
-				border:none!important;
-				padding:0;
+				border: none !important;
+				padding: 0;
 
 				> .x-grid-panel {
-					top: 0!important;
-					width: 100%!important;
-					height: 100%!important;
+					top: 0 !important;
+					width: 100% !important;
+					height: 100% !important;
 				}
 
 				> .x-panel {
 					// Tab content container
-					border:none!important;
+					border: none !important;
 					height: 100%;
-					width: 100%!important;
+					width: 100% !important;
 
 					.x-panel-header {
 						// Seems to be unused
 						display: none;
-
 					}
 
 					.x-panel-bwrap {
 						// Tab COntent Container
-						height:100%;
-
-						.x-panel-body {
-							// Form container
-
-
-						}
+						height: 100%;
 
 						.x-panel-footer {
 							// Unused
 							display: none;
 						}
 					}
-
 				}
 			}
-
-
 		}
 	}
 
-
 	.x-form-text {
-		// @include text_input("EDIT_ENGINE");
 		@include text-input($EDIT-ENGINE);
 		@include _input(LIGHT);
 	}
 
-
 	// Modal Mask
 	.ext-el-mask {
-		display: none!important;
+		display: none !important;
 	}
 
 	// Override mask all when Modal Mask is on
@@ -350,35 +313,29 @@ div.engine-window {
 
 	// Remove Loading Animation when Panel is open
 	.ext-el-mask-msg.x-mask-loading {
-		display: none!important;
+		display: none !important;
 	}
-
-
 
 	div.x-form-element {
 		> div {
 			> div:only-child {
-				width: 100%!important;
+				width: 100% !important;
 			}
 		}
-
-		.x-form-group.list-store-field {
-		}
-
 	}
 
 	&:before {
 		content: $text_edit_engine;
-	    font-size: 36px;
-	    display: inline-block;
-	    color: _property($TITLE--COLOR, $EDIT-ENGINE);
-	    margin-left: -2px;
-	    margin-right: 15px;
-	    margin-top: 15px;
-	    position: fixed;
-	    width: 290px;
+		font-size: 36px;
+		display: inline-block;
+		color: _property($TITLE--COLOR, $EDIT-ENGINE);
+		margin-left: -2px;
+		margin-right: 15px;
+		margin-top: 15px;
+		position: fixed;
+		width: 290px;
 		left: 48px;
-	    top: 20px;
+		top: 20px;
 		font-weight: 100;
 		z-index: 99999;
 
@@ -386,7 +343,6 @@ div.engine-window {
 		body[data-indigo-editing-condition="true"] & {
 			display: none;
 		}
-
 	}
 
 	&.createcontentengine-ctn {
@@ -395,87 +351,72 @@ div.engine-window {
 		}
 
 		.x-panel-header-text {
-
-			display: block!important;
-			position: fixed!important;
+			display: block !important;
+			position: fixed !important;
 			top: 79px !important;
-		    left: 47px !important;
-			width: 250px!important;
-			overflow: hidden!important;
-			text-overflow: ellipsis!important;
-			white-space: nowrap!important;
-			padding: 0!important;
+			left: 47px !important;
+			width: 250px !important;
+			overflow: hidden !important;
+			text-overflow: ellipsis !important;
+			white-space: nowrap !important;
+			padding: 0 !important;
 			@include text(18px !important, _theme-color(quinary) !important, $FONT--WEIGHT---EXTRALIGHT !important);
 
 			&:before {
-				display: none!important;
+				display: none !important;
 			}
 		}
 	}
 
 	fieldset {
-		width: 100%!important;
+		width: 100% !important;
 		min-width: 0;
 
 		&:nth-child(odd) {
-			background: linear-gradient(to right, #e3e2e2 50%, rgba(227, 226, 226, 0) 100%)!important;
+			background: linear-gradient(to right, #e3e2e2 50%, rgba(227, 226, 226, 0) 100%) !important;
 		}
 
-		border: none!important;
+		border: none !important;
 
 		&.x-panel-collapsed {
 			.x-form-label-left {
-				display: none!important;
+				display: none !important;
 			}
 		}
 
 		.x-form-item-label {
-			// float:left!important;
-			margin-top: 0!important;
-			width: 100%!important;
+			margin-top: 0 !important;
+			width: 100% !important;
 		}
 
 		.x-form-text:only-child {
 			display: inline-block;
 		}
 
-		.button-copyall {
-			// margin: 0 0 20px auto;
-		}
-
 		.x-form-field-wrap {
 			float: left;
 			width: calc(100% - 155px) !important;
-			height: auto!important;
-			margin-right: 5px!important;
+			height: auto !important;
+			margin-right: 5px !important;
 
 			/* DEV NOTE ::: QUICK N DIRTY */
 			body[data-uilang="fr"] & {
 				width: calc(100% - 203px) !important;
-
 			}
 
 			body[data-uilang="de"] & {
 				width: calc(100% - 170px) !important;
-
 			}
 		}
 
 		@include button("FIELDSET");
-
-
-
-		// .x-btn-text  {
-		// 	color: _theme-color(primary, h);
-		// }
-
 
 		// Fix information block in content tab
 		> .x-form-label-left {
 			// Seems to be a holder for the information sections, need to double check !!
 			> table {
 				// Information table
-				width: 100%!important;
+				width: 100% !important;
 				display: block;
 
 				tbody, tr, td {
@@ -486,10 +427,6 @@ div.engine-window {
 					&:nth-child(1) {
 						// Seems to be blank all the time, so getting rid of it. Double Check !!
 						display: none;
-					}
-
-					&:nth-child(2) {
-
 					}
 				}
 
@@ -511,119 +448,90 @@ div.engine-window {
 
 
 	form {
-		height: auto!important;
+		height: auto !important;
 	}
 
 	.x-form-readonly {
-		 .x-form-text {
+		.x-form-text {
 			@extend %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:EDIT_ENGINE !optional;
 
-			box-shadow: none!important;
-			background: transparent!important;
-			padding-left: 1px!important;
+			box-shadow: none !important;
+			background: transparent !important;
+			padding-left: 1px !important;
 
 		}
 	}
 
 	.x-box-layout-ct,
 	.x-box-inner {
-		width: 100%!important;
+		width: 100% !important;
 	}
-
-
-
 
 
 	////////// TABS
 	.x-tab-strip .x-tab-strip-text {
 		// At last the button label !!
 		@extend %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON;
-
 	}
 
 	////////// TAB OVER
 	.x-tab-strip-over .x-tab-strip-text {
 		// At last the button label !!
 		@extend %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON---HOVER;
-
 	}
 
 	////////// TAB SELECTED
 	.x-tab-strip-active .x-tab-strip-text {
 		// At last the button label !!
 		@extend %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON---SELECTED;
-
 	}
 
 	////////// TAB SELECTED & HOVER
 	.x-tab-strip-active.x-tab-strip-over .x-tab-strip-text {
 		// At last the button label !!
 		@extend %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON---HOVER_SELECTED;
-
 	}
 
 
-
-
 	////////// PERSONALISED TABS
-	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-content {}
-	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-layout {}
-	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-metadata {}
-	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-seo {}
-	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-categories {}
-	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-options {}
-	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-liveroles {}
-	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-editroles {}
-	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-usages {}
-	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-history {}
-	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-visibility {}
-	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-workflow {}
-	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-channels {}
-
 	#JahiaGxtEditEnginePanel-history {
 
 		// User has clicked on the details button, so set flag to display the panel
 		&[data-indigo-details="open"] {
-	        // Details panel
-	        > .x-component .x-panel:nth-child(2) {
-	            display: block;
-
-	        }
+			// Details panel
+			> .x-component .x-panel:nth-child(2) {
+				display: block;
+			}
 
 			// Make Pager look like it is behind the mask
-	        .x-panel-bbar {
+			.x-panel-bbar {
 				opacity: 0.7;
 				pointer-events: none;
-	        }
-
-
-
-	    }
+			}
+		}
 
 		// Only one page of results, so hide the pager
 		&[indigo-results-multiple-pages="false"] {
 
-	        // Pager
-	        .x-panel-bbar {
-	            display: none;
-	        }
+			// Pager
+			.x-panel-bbar {
+				display: none;
+			}
 
-	    }
+		}
 
 		// No results to display so hide the pager
 		&[indigo-results="false"] {
 
 			// Pager
-	        .x-panel-bbar {
-	            display: none;
-	        }
-
-	    }
-
+			.x-panel-bbar {
+				display: none;
+			}
+		}
 
 		> .x-component {
-			width: 100%!important;
-			height: 100%!important;
+			width: 100% !important;
+			height: 100% !important;
 
 			.x-panel {
 
@@ -631,19 +539,18 @@ div.engine-window {
 				&:nth-child(1) {
 
 					.x-panel-bwrap {
+						width: 100%;
+						height: 100%;
 
-				        width: 100%;
-				        height: 100%;
-
-				        .x-panel-ml,
-				        .x-panel-mr {
-				            height: 100%;
-				        }
+						.x-panel-ml,
+						.x-panel-mr {
+							height: 100%;
+						}
 
 						.x-grid3-viewport {
 
 							.x-grid3-scroller {
-								width: 100%!important;
+								width: 100% !important;
 
 								.x-grid3-body {
 									background: white !important;
@@ -667,19 +574,19 @@ div.engine-window {
 
 							> .x-grid3-header {
 								display: block;
-								background: none!important;
+								background: none !important;
 								margin-bottom: 20px;
 
 								.x-grid3-header {
 									display: table-cell;
-									background: none!important;
+									background: none !important;
 									border: none;
 
 									&.x-grid3-hd-over,
 									&.x-grid3-hd-menu-open {
 
 										.x-grid3-hd-inner {
-											background: _theme-color(secondary, b)!important;
+											background: _theme-color(secondary, b) !important;
 
 											a {
 												background: url(../images/icons/icon-toggle-expanded-small-normal.png) no-repeat center center;
@@ -700,23 +607,22 @@ div.engine-window {
 											@include text(10px, _property($LABEL--COLOR, $BACKGROUND-JOBS), 500);
 										}
 									}
-
 								}
 							}
 						}
 
 						.x-panel-mc {
-						    padding: 43px 19px 20px 19px;
-						    box-sizing: border-box;
-						    background: _property($FIELDSET--BG---HOVER, $BACKGROUND-JOBS);
-						    border: 1px solid _property($FIELDSET--BORDER, $BACKGROUND-JOBS) !important;
-						    box-shadow: inset 0 67px 0 0 #f6f6f6, inset 0 68px 0 0 _theme-color(secondary, b);
+							padding: 43px 19px 20px 19px;
+							box-sizing: border-box;
+							background: _property($FIELDSET--BG---HOVER, $BACKGROUND-JOBS);
+							border: 1px solid _property($FIELDSET--BORDER, $BACKGROUND-JOBS) !important;
+							box-shadow: inset 0 67px 0 0 #f6f6f6, inset 0 68px 0 0 _theme-color(secondary, b);
 
-							position: relative!important;
-							left: auto!important;
-							width: 100%!important;
-							top: auto!important;
-							height: auto!important;
+							position: relative !important;
+							left: auto !important;
+							width: 100% !important;
+							top: auto !important;
+							height: auto !important;
 
 							&:before {
 								content: $text_history;
@@ -728,9 +634,7 @@ div.engine-window {
 							}
 						}
 
-
 						.x-grid3-row {
-
 							position: relative;
 
 							// Delete more info buttons
@@ -740,7 +644,6 @@ div.engine-window {
 								top: 0;
 								margin: 0;
 								padding: 0 0 0 10px;
-
 								display: none;
 
 								button {
@@ -771,11 +674,11 @@ div.engine-window {
 									}
 								}
 
-								background: _property($ROW--BG---SELECTED, $BACKGROUND-JOBS)!important;
+								background: _property($ROW--BG---SELECTED, $BACKGROUND-JOBS) !important;
 
 								.x-grid3-cell-inner,
 								.x-grid3-cell-inner label {
-									color: _property($ROW--COLOR---SELECTED, $BACKGROUND-JOBS)!important;
+									color: _property($ROW--COLOR---SELECTED, $BACKGROUND-JOBS) !important;
 								}
 
 							}
@@ -788,11 +691,11 @@ div.engine-window {
 									background: _property($ROW--BG---HOVER, $BACKGROUND-JOBS);
 								}
 
-								background: _property($ROW--BG---HOVER, $BACKGROUND-JOBS)!important;
+								background: _property($ROW--BG---HOVER, $BACKGROUND-JOBS) !important;
 
 								.x-grid3-cell-inner,
 								.x-grid3-cell-inner label {
-									color: _property($ROW--COLOR---HOVER, $BACKGROUND-JOBS)!important;
+									color: _property($ROW--COLOR---HOVER, $BACKGROUND-JOBS) !important;
 								}
 
 							}
@@ -800,7 +703,7 @@ div.engine-window {
 							.x-grid3-cell-inner,
 							.x-grid3-cell-inner label {
 								padding: 5px 0 0 10px;
-								text-transform: none!important;
+								text-transform: none !important;
 								@include text(12px, _property($ROW--COLOR, $BACKGROUND-JOBS), $FONT--WEIGHT---EXTRALIGHT);
 							}
 						}
@@ -809,7 +712,7 @@ div.engine-window {
 
 				// Pager Holder
 				.x-panel-bbar {
-					width: 100%!important;
+					width: 100% !important;
 
 					.x-toolbar-layout-ct {
 						position: relative;
@@ -827,7 +730,7 @@ div.engine-window {
 							display: none !important;
 
 							> table {
-								width: 100%!important;
+								width: 100% !important;
 							}
 
 							.x-btn-mc img {
@@ -886,96 +789,92 @@ div.engine-window {
 								padding: 3px;
 								border: none;
 							}
-
 						}
-
 					}
-
 				}
 
 				// Selected Items Details Container
 				&:nth-child(2) {
 					display: none;
-					width: 100%!important;
-	                position: fixed!important;
-	                height: 100%!important;
-	                top: 0!important;
-	                left: 0!important;
+					width: 100% !important;
+					position: fixed !important;
+					height: 100% !important;
+					top: 0 !important;
+					left: 0 !important;
 					background: rgba(_theme-color(secondary), .9);
-	                padding: 0;
-	                box-sizing: border-box;
+					padding: 0;
+					box-sizing: border-box;
 					z-index: 9;
 
 					// Header
-	                .x-panel-header {
-	                    padding: 0;
-	                    background: none;
-	                    background: _property($FIELDSET--BG---HOVER, $BACKGROUND-JOBS);
-	                    padding: 19px 30px 10px;
-	                    margin: 17vh auto 0;
-	                    width: 500px;
-	                    border: 1px solid _property($FIELDSET--BORDER, $BACKGROUND-JOBS);
-	                    border-bottom: 0;
+					.x-panel-header {
+						background: none;
+						background: _property($FIELDSET--BG---HOVER, $BACKGROUND-JOBS);
+						padding: 19px 30px 10px;
+						margin: 17vh auto 0;
+						width: 500px;
+						border: 1px solid _property($FIELDSET--BORDER, $BACKGROUND-JOBS);
+						border-bottom: 0;
 
-	                    // Contains minimise button
-	                    .x-panel-toolbar {
-	                        background: url(../images/icons/icon-close-grey@X2.png) no-repeat center bottom;
-	                        background-size: 20px;
-	                        width: 25px;
-	                        height: 25px;
-	                        opacity: 0.8;
+						// Contains minimise button
+						.x-panel-toolbar {
+							background: url(../images/icons/icon-close-grey@X2.png) no-repeat center bottom;
+							background-size: 20px;
+							width: 25px;
+							height: 25px;
+							opacity: 0.8;
 
-	                        &:hover {
-	                            opacity: 1;
-	                            cursor: pointer;
-	                        }
+							&:hover {
+								opacity: 1;
+								cursor: pointer;
+							}
 
-	                        > table {
-	                            display: none;
-	                        }
-	                    }
+							> table {
+								display: none;
+							}
+						}
 
-	                    // Text
-	                    .x-panel-header-text {
-	                        @include text(26px, _property($TITLE--COLOR, $BACKGROUND-JOBS), 100);
-	                    }
-	                }
+						// Text
+						.x-panel-header-text {
+							@include text(26px, _property($TITLE--COLOR, $BACKGROUND-JOBS), 100);
+						}
+					}
 
 					// Body
-	                .x-panel-bwrap {
-	                    background: _property($FIELDSET--BG---HOVER, $BACKGROUND-JOBS);
-	                    padding: 0 30px 23px;
-	                    margin: 0 auto;
-	                    width: 500px;
-	                    border: 1px solid _property($FIELDSET--BORDER, $BACKGROUND-JOBS);
-	                    border-top: 0;
+					.x-panel-bwrap {
+						background: _property($FIELDSET--BG---HOVER, $BACKGROUND-JOBS);
+						padding: 0 30px 23px;
+						margin: 0 auto;
+						width: 500px;
+						border: 1px solid _property($FIELDSET--BORDER, $BACKGROUND-JOBS);
+						border-top: 0;
 
-	                    form {
-	                        height: auto!important;
-	                    }
+						form {
+							height: auto !important;
+						}
 
-	                    .x-form-item {
-	                        > label {
-	                            display: inline-block!important;
-	                            width: 150px!important;
-	                        }
+						.x-form-item {
+							> label {
+								display: inline-block !important;
+								width: 150px !important;
+							}
 
-	                        > .x-form-element {
-	                            display: inline-block;
-	                            width: calc(100% - 150px);
+							> .x-form-element {
+								display: inline-block;
+								width: calc(100% - 150px);
 
-	                            .x-form-field-wrap {
-	                                width: 100%!important;
+								.x-form-field-wrap {
+									width: 100% !important;
 
-	                                .x-form-text {
-	                                    background: transparent;
-	                                    box-shadow: none;
-	                                    color: _property($PARAGRAPH--COLOR, $BACKGROUND-JOBS);;
-	                                }
-	                            }
-	                        }
-	                    }
-	                }
+									.x-form-text {
+										background: transparent;
+										box-shadow: none;
+										color: _property($PARAGRAPH--COLOR, $BACKGROUND-JOBS);;
+									}
+								}
+							}
+						}
+					}
 				}
 			}
 		}
@@ -985,31 +884,29 @@ div.engine-window {
 
 		// Main container
 		> div {
-			width: 100%!important;
-			height: 100%!important;
+			width: 100% !important;
+			height: 100% !important;
 
 			> div {
 				// Workflow settings block
 				&:nth-child(1) {
-					height: 250px!important;
-					position: relative!important;
-					top: auto!important;
-
-				    padding: 46px 10px 20px 29px !important;
-				    margin: 0 23px 10px 0 !important;
-				    position: relative;
-				    background: _property($FIELDSET--BG, $EDIT-ENGINE);
+					height: 250px !important;
+					top: auto !important;
+					padding: 46px 10px 20px 29px !important;
+					margin: 0 23px 10px 0 !important;
+					position: relative;
+					background: _property($FIELDSET--BG, $EDIT-ENGINE);
 					border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE) !important;
-				    box-sizing: border-box;
+					box-sizing: border-box;
 
 					// List of Workflow types
 					> .x-grid-panel {
 						// background: purple;
-						position: relative!important;
-						top: auto!important;
-						left: auto!important;
+						position: relative !important;
+						top: auto !important;
+						left: auto !important;
 						display: inline-block;
-						width: 250px!important;
+						width: 250px !important;
 
 						// List
 						> .x-grid3 {
@@ -1030,36 +927,28 @@ div.engine-window {
 
 							&.x-grid3-row-selected {
 								background-color: _property($LIST-BOX--ROW--BG---SELECTED, $EDIT-ENGINE) !important;
-								.x-grid3-td-displayName {
-									color: _property($LIST-BOX--ROW--COLOR---SELECTED, $EDIT-ENGINE)!important;
 
+								.x-grid3-td-displayName {
+									color: _property($LIST-BOX--ROW--COLOR---SELECTED, $EDIT-ENGINE) !important;
 								}
 							}
 
 							.x-grid3-td-displayName {
-								color: _property($LIST-BOX--ROW--COLOR---HOVER, $EDIT-ENGINE)!important;
-
+								color: _property($LIST-BOX--ROW--COLOR---HOVER, $EDIT-ENGINE) !important;
 							}
 						}
 
-
-
 						.x-grid3-row-selected {
 							background-color: _property($LIST-BOX--ROW--BG---SELECTED, $EDIT-ENGINE) !important;
-							background-image: url(../images/icons/icon-next-white@X2.png)!important;
-							background-position: right 5px center!important;
-							background-repeat: no-repeat!important;
-							background-size: 13px!important;
-
-							color: _property($LIST-BOX--ROW--COLOR---SELECTED, $EDIT-ENGINE)!important;
-
-
-
-
+							background-image: url(../images/icons/icon-next-white@X2.png) !important;
+							background-position: right 5px center !important;
+							background-repeat: no-repeat !important;
+							background-size: 13px !important;
+							color: _property($LIST-BOX--ROW--COLOR---SELECTED, $EDIT-ENGINE) !important;
 						}
 
 						.x-grid3-scroller {
-							width: 100%!important;
+							width: 100% !important;
 						}
 
 						// More info buttons - not needed
@@ -1067,45 +956,39 @@ div.engine-window {
 							color: _property($LIST-BOX--ROW--COLOR, $EDIT-ENGINE);
 
 							&:hover {
-								color: _property($LIST-BOX--ROW--COLOR---HOVER, $EDIT-ENGINE)!important;
+								color: _property($LIST-BOX--ROW--COLOR---HOVER, $EDIT-ENGINE) !important;
 							}
 
 							&:after {
 								display: none;
 							}
 						}
-
 					}
 
 					// Settings for selected workflow type
 					> .x-panel {
-						// background: yellow;
-						position: relative!important;
-						top: auto!important;
-						left: auto!important;
+						position: relative !important;
+						top: auto !important;
+						left: auto !important;
 						display: inline-block;
-						width: calc(100% - 250px)!important;
+						width: calc(100% - 250px) !important;
 						vertical-align: top;
 
-
-
 						form {
-							> div.x-form-item  {
+							> div.x-form-item {
 								// Same as parent
 								&:nth-child(1) {
 									label {
-										width: auto!important;
-										margin-left: 20px!important;
-										float: left!important;
-										margin-right: 10px!important;
-
+										width: auto !important;
+										margin-left: 20px !important;
+										float: left !important;
+										margin-right: 10px !important;
 										text-transform: none;
-
 										@include text(12px, _property($LABEL--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMILIGHT);
 									}
 
 									.x-form-check-wrap {
-										width: auto!important;
+										width: auto !important;
 										margin-top: 9px;
 									}
 
@@ -1115,7 +998,6 @@ div.engine-window {
 										margin-bottom: 5px;
 										margin-left: 19px;
 										display: block;
-
 										@include text(10px, _property($FIELDSET--TITLE-COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMIBOLD);
 									}
 								}
@@ -1123,7 +1005,7 @@ div.engine-window {
 								// Workflow selector
 								&:nth-child(2) {
 									label {
-										display: none!important;
+										display: none !important;
 									}
 								}
 
@@ -1139,7 +1021,6 @@ div.engine-window {
 								margin-top: 20px;
 								margin-right: 12px;
 								display: block;
-
 								@include text(10px, _property($FIELDSET--TITLE-COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMIBOLD);
 							}
 
@@ -1148,24 +1029,16 @@ div.engine-window {
 							}
 
 							margin: 0 20px;
-
-							&.x-item-disabled {
-								//display: none;
-
-								&:before {
-									//display: none;
-								}
-							}
 						}
 					}
 				}
 
 				// Workflow history
 				&:nth-child(2) {
-					height: auto!important;
-					max-height: calc(100% - 250px)!important;
-					top: auto!important;
-					position: relative!important;
+					height: auto !important;
+					max-height: calc(100% - 250px) !important;
+					top: 251px !important;
+					position: relative !important;
 
 					padding: 46px 10px 20px 29px !important;
 					margin: 0 23px 10px 0 !important;
@@ -1193,32 +1066,28 @@ div.engine-window {
 						}
 					}
 
-
-
-
 					.x-grid-panel {
-						width: auto!important;
-						height: auto!important;
+						width: auto !important;
+						height: auto !important;
 
 						.x-grid3-row {
 
-							&.x-grid3-row-selected{
-								background: transparent!important;
+							&.x-grid3-row-selected {
+								background: transparent !important;
 							}
-
 						}
 
 						.x-grid3 {
-							width: auto!important;
-							height: auto!important;
+							width: auto !important;
+							height: auto !important;
 
 							.x-grid3-viewport {
-								width: auto!important;
-								height: auto!important;
+								width: auto !important;
+								height: auto !important;
 
 								> .x-grid3-header {
 									display: block;
-									width: calc(100% - 10px)!important;
+									width: calc(100% - 10px) !important;
 									background: transparent;
 
 									.x-grid3-header {
@@ -1226,11 +1095,11 @@ div.engine-window {
 									}
 
 									.x-grid3-header-inner {
-										width: 100%!important;
+										width: 100% !important;
 
 										.x-grid3-header-offset {
 											padding-left: 0;
-											width: 100%!important;
+											width: 100% !important;
 										}
 									}
 
@@ -1240,9 +1109,7 @@ div.engine-window {
 										&.x-grid3-hd-menu-open {
 
 											div {
-												background: _property($MENU-CLOSED--BG---HOVER, $APP)!important;
-												// box-shadow: _property($MENU-CLOSED--SHADOW---HOVER, $EDIT-ENGINE);
-
+												background: _property($MENU-CLOSED--BG---HOVER, $APP) !important;
 											}
 
 											a {
@@ -1279,21 +1146,20 @@ div.engine-window {
 									}
 
 
-
 									.x-grid3-hh {
-										width: auto!important;
+										width: auto !important;
 
 										> table {
 											display: block;
-											width: 100%!important;
+											width: 100% !important;
 
 											> tbody {
-												width: 100%!important;
+												width: 100% !important;
 												display: block;
 
 												> tr {
 													display: block;
-													width: 100%!important;
+													width: 100% !important;
 												}
 											}
 										}
@@ -1304,52 +1170,46 @@ div.engine-window {
 					}
 
 					.x-grid3-cell {
-						width: calc(10% - 10px)!important;
+						width: calc(10% - 10px) !important;
 						margin-right: 10px;
 						display: inline-block;
 						border: none;
 						background: transparent;
 
 						> div {
-							width: 100%!important;
+							width: 100% !important;
 						}
 
 						&.x-grid3-td-displayName {
-							width: calc(32% - 10px)!important;
-							pointer-events: all!important;
+							width: calc(32% - 10px) !important;
+							pointer-events: all !important;
 
 							&:after {
 								display: none;
 							}
-
 						}
 
 						&.x-grid3-td-locale {
-							width: calc(5% - 10px)!important;
-
+							width: calc(5% - 10px) !important;
 						}
 
 						&.x-grid3-td-user {
-							width: calc(6% - 10px)!important;
-
+							width: calc(6% - 10px) !important;
 						}
 
 						&.x-grid3-td-duration {
-							width: calc(13% - 10px)!important;
+							width: calc(13% - 10px) !important;
 						}
 
 						&.x-grid3-td-startDate,
 						&.x-grid3-td-endDate {
-							width: calc(12% - 10px)!important;
-
+							width: calc(12% - 10px) !important;
 						}
 
 						.x-grid3-cell-inner,
 						.x-grid3-cell-inner label {
 							text-transform: none;
 							@include text(12px, _property($ROW--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMILIGHT);
-
-
 						}
 					}
 				}
@@ -1359,9 +1219,7 @@ div.engine-window {
 
 	// Personalised COntent Window
 	#JahiaGxtEditEnginePanel-categories {
-		height: auto!important;
-		// background: _property($FIELDSET--BG, $EDIT-ENGINE);
-		// border:1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE)!important;
+		height: auto !important;
 		box-sizing: border-box;
 		padding-bottom: 1px;
 		overflow-y: scroll;
@@ -1375,28 +1233,25 @@ div.engine-window {
 
 		.x-panel-header {
 			display: block;
-			background: transparent!important;
-			border:none!important;
-			padding: 14px 0 0 25px!important;
+			background: transparent !important;
+			border: none !important;
+			padding: 14px 0 0 25px !important;
 
 			.x-panel-header-text {
-				// text-transform: uppercase;
-
 				@include text(18px, #363636, $FONT--WEIGHT---LIGHT);
 			}
 
 		}
+
 		.x-form-check-wrap {
 			pointer-events: all;
 		}
 
 		> div {
-
-
 			&:nth-child(1) {
 				// Selected categories
-				position: relative!important;
-    			height: auto!important;
+				position: relative !important;
+				height: auto !important;
 
 				.x-column {
 					margin: 0 5px 5px 0;
@@ -1408,10 +1263,10 @@ div.engine-window {
 
 						&:before {
 							content: $text_select_category_from_list;
-						    display: block;
-						    position: relative;
-						    padding-top: 5px;
-						    font-style: italic;
+							display: block;
+							position: relative;
+							padding-top: 5px;
+							font-style: italic;
 
 							@include text(12px, _property($TITLE--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---NORMAL);
 						}
@@ -1423,24 +1278,19 @@ div.engine-window {
 				}
 
 
-
 				button {
 					font-size: 12px;
-					// @include text(12px, _theme-color(primary, g), $FONT--WEIGHT---NORMAL);
-					//
 					padding: 5px 25px 5px 10px;
-					// background: _theme-color(secondary);
 
 					img {
-						right: 0!important;
-						left: auto!important;
-					    top: 2px!important;
-
-						background: url($ICON--CLOSE_LARGE---WHITE) no-repeat center center!important;
-						background-size: 10px!important;
+						right: 0 !important;
+						left: auto !important;
+						top: 2px !important;
+						background: url($ICON--CLOSE_LARGE---WHITE) no-repeat center center !important;
+						background-size: 10px !important;
 						box-sizing: border-box;
-						width: 23px!important;
-						height: 23px!important;
+						width: 23px !important;
+						height: 23px !important;
 					}
 
 				}
@@ -1452,21 +1302,20 @@ div.engine-window {
 				&::before {
 					content: $text_available_categories;
 					display: block;
-
 					@include text(12px, _property($FIELDSET--TITLE-COLOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
 				}
 
 				position: relative !important;
-			    top: auto !important;
-			    background: whitesmoke !important;
-			    width: calc(100% - 20px)!important;
-			    margin: 0 25px!important;
-			    padding: 15px 20px 20px 20px;
-			    box-sizing: border-box;
+				top: auto !important;
+				background: whitesmoke !important;
+				width: calc(100% - 20px) !important;
+				margin: 0 25px !important;
+				padding: 15px 20px 20px 20px;
+				box-sizing: border-box;
 
 				.x-grid3-scroller {
-					width: auto!important;
-				    overflow: hidden;
+					width: auto !important;
+					overflow: hidden;
 				}
 
 				.x-grid3-td-displayName {
@@ -1481,9 +1330,8 @@ div.engine-window {
 
 				.x-grid3-row-selected,
 				.x-grid3-row-over {
-					background-color: inherit!important;
+					background-color: inherit !important;
 				}
-
 			}
 		}
 	}
@@ -1494,16 +1342,14 @@ div.engine-window {
 		img {
 			// For non styled image status ...
 			width: 12px;
-		    height: 12px;
-		    margin-top: 3px;
+			height: 12px;
+			margin-top: 3px;
 
 			// Styled image status ...
 			&[src$="/visibilityStatusRed.png"],
 			&[src$="/visibilityStatusUnknown.png"],
 			&[src$="/visibilityStatusGreen.png"],
-			// &[src$="/notpublished.png"],
-			// &[src$="/modified.png"]
-			&[src$="/published.png"]{
+			&[src$="/published.png"] {
 				width: 20px;
 				height: 20px;
 				padding-left: 20px;
@@ -1515,7 +1361,7 @@ div.engine-window {
 			}
 
 			&.x-form-trigger {
-				padding-left: 0!important;
+				padding-left: 0 !important;
 			}
 
 			&[src$="/visibilityStatusRed.png"] {
@@ -1530,18 +1376,9 @@ div.engine-window {
 				background: url(../images/icons_dark/visibility.svg) no-repeat center center;
 			}
 
-			// &[src$="/publication/notpublished.png"] {
-			// 	background: url(../images/icons_dark/unpublished.svg) no-repeat center center;
-			// }
-
-			// &[src$="/publication/modified.png"] {
-			// 	background: url(../images/icons_dark/modified.svg) no-repeat center center;
-			// }
-
 			&[src$="/publication/published.png"] {
 				background: url(../images/icons_dark/published.svg) no-repeat center center;
 			}
-
 
 		}
 
@@ -1557,11 +1394,11 @@ div.engine-window {
 				border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE) !important;
 				padding: 43px 10px 20px 29px;
 				box-sizing: border-box;
-				height: auto!important;
+				height: auto !important;
 				position: relative;
-				width: 100%!important;
+				width: 100% !important;
 				margin: 0px 0 10px 0 !important;
-			    overflow: visible!important;
+				overflow: visible !important;
 
 				.gwt-HTML {
 					@include text(12px, _property($LABEL--COLOR, $EDIT-ENGINE) !important, $FONT--WEIGHT---EXTRALIGHT)
@@ -1617,13 +1454,13 @@ div.engine-window {
 								top: -95px;
 								padding: 43px 10px 20px 29px;
 								box-sizing: border-box;
-								height: 85px!important;
+								height: 85px !important;
 
 								// Actual label
 								> div {
 									position: absolute;
 									top: 15px;
-								    right: 40px;
+									right: 40px;
 								}
 
 								&:before {
@@ -1635,20 +1472,21 @@ div.engine-window {
 							// Save on publication checkbox
 							&:nth-child(8) {
 								position: absolute;
-							    right: 10px;
-							    top: -79px;
+								right: 10px;
+								top: -79px;
 							}
 						}
 					}
+
 					&:nth-child(2) {
 
 						> table > tbody > tr > td {
 							// All conditions should match label
 							&:nth-child(1) {
 								position: fixed;
-							    top: 120px;
-							    right: 48px;
-							    z-index: 98;
+								top: 120px;
+								right: 48px;
+								z-index: 98;
 
 								div {
 									@include text(12px, _property($FIELDSET--TITLE-COLOR, $EDIT-ENGINE) !important, $FONT--WEIGHT---EXTRALIGHT)
@@ -1659,9 +1497,9 @@ div.engine-window {
 							// All conditions should match checkbox
 							&:nth-child(2) {
 								position: fixed;
-							    right: 17px;
-							    top: 120px;
-							    z-index: 98;
+								right: 17px;
+								top: 120px;
+								z-index: 98;
 							}
 
 							// Add New Condition Label
@@ -1679,17 +1517,17 @@ div.engine-window {
 
 								img.x-form-trigger {
 									background: url($ICON--ADD--WHITE) no-repeat center center !important;
-									width: 15px!important;
+									width: 15px !important;
 									height: 15px !important;
 									position: fixed !important;
 									top: 30px;
 									right: 30px;
 									z-index: 98;
-									background-size: 14px!important;
-									background-color: _property($BUTTON--BG, $EDIT-ENGINE)!important;
+									background-size: 14px !important;
+									background-color: _property($BUTTON--BG, $EDIT-ENGINE) !important;
 									opacity: 1;
 									padding-left: 15px;
-									border:none;
+									border: none;
 
 								}
 							}
@@ -1699,7 +1537,6 @@ div.engine-window {
 								display: none;
 							}
 						}
-
 					}
 				}
 			}
@@ -1708,6 +1545,7 @@ div.engine-window {
 			&:nth-child(2) {
 				.x-grid-empty {
 					padding: 0;
+
 					&:before {
 						content: $text_visibility_no_conditions;
 						display: block;
@@ -1719,7 +1557,7 @@ div.engine-window {
 				border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE) !important;
 				padding: 43px 10px 20px 29px;
 				box-sizing: border-box;
-				height: auto!important;
+				height: auto !important;
 
 				&:before {
 					content: $text_visibility_conditions;
@@ -1727,7 +1565,7 @@ div.engine-window {
 				}
 
 				.x-grid3 {
-					height:auto!important;
+					height: auto !important;
 				}
 
 				.x-grid3-scroller {
@@ -1735,16 +1573,14 @@ div.engine-window {
 				}
 
 				.x-grid3-row {
-					background: none!important;
+					background: none !important;
 					pointer-events: none;
-
 				}
 
 				.x-grid3-col-status {
 					position: absolute;
-				    left: -3px;
-				    top: -2px;
-
+					left: -3px;
+					top: -2px;
 				}
 
 				.x-grid-cell {
@@ -1752,21 +1588,19 @@ div.engine-window {
 				}
 
 				.x-grid3-col-name {
-					color: _property($LIST-BOX--ROW--COLOR, $EDIT-ENGINE)!important;
+					color: _property($LIST-BOX--ROW--COLOR, $EDIT-ENGINE) !important;
 					padding: 5px 10px 5px 23px;
 				}
 
 
-
-
 				.x-grid3-td-remove {
-					width: 55px!important;
-				    position: absolute;
-				    right: 0;
-				    top: 0;
+					width: 55px !important;
+					position: absolute;
+					right: 0;
+					top: 0;
 					pointer-events: all;
 					background: url(../images/icons_dark/edit.svg) right 5px center no-repeat !important;
-					background-size: 16px 16px!important;
+					background-size: 16px 16px !important;
 					opacity: 0.8;
 
 					&:hover {
@@ -1791,20 +1625,18 @@ div.engine-window {
 							display: none;
 						}
 					}
-
 				}
 			}
 
 			// Condition settings
 			&:nth-child(3) {
 				height: 100% !important;
-			    position: fixed;
-			    top: 0;
-			    left: 0;
-			    width: 100%!important;
-			    // background: radial-gradient(ellipse at bottom right, _theme-color(primary, f) 0%, _theme-color(primary) 70%);
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100% !important;
 				background: _property($MODAL-SOLID--BG, $EDIT-ENGINE);
-			    z-index: 999;
+				z-index: 999;
 				display: none;
 
 				&.indigo-show {
@@ -1817,7 +1649,7 @@ div.engine-window {
 						padding: 0 6px 0 0;
 
 						button {
-							border:none;
+							border: none;
 							display: inline-block;
 							padding: 5px 10px;
 
@@ -1866,25 +1698,27 @@ div.engine-window {
 					.x-panel-bwrap {
 						&:before {
 							content: $text_visibility_edit_condition;
+
 							body[data-indigo-editing-condition="new"] & {
 								content: $text_visibility_new_condition;
 							}
-						    display: block;
-						    margin-bottom: 10px;
+
+							display: block;
+							margin-bottom: 10px;
 							@include text(36px, _property($TITLE--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
 						}
 
 						.x-form-field-wrap {
-							width: 100%!important;
+							width: 100% !important;
 						}
 					}
 
-					width: 460px!important;
+					width: 460px !important;
 					margin: 0 auto;
 
 					> .x-panel-bwrap {
 						background: #f4f4f4;
-					    padding: 19px;
+						padding: 19px;
 						box-shadow: 1px 1px 2px 0px rgba(38, 38, 38, 0.4);
 					}
 
@@ -1896,48 +1730,45 @@ div.engine-window {
 
 					fieldset {
 						padding: 43px 10px 20px 19px !important;
-						background: transparent!important;
+						background: transparent !important;
 
-						legend  {
+						legend {
 							.x-fieldset-header-text {
 								left: 19px;
 							}
 						}
 					}
-
 				}
-
 			}
 		}
 	}
 
 	.multiple-text-field.x-form-group,
 	.multiple-number-field.x-form-group {
-		width: 100%!important;
+		width: 100% !important;
 
 		> table {
 			width: 100%;
 
 			.x-form-field-wrap {
-				width: auto!important;
+				width: auto !important;
 				float: none;
 				margin-bottom: 5px;
 
 				input {
-					width: 100%!important;
+					width: 100% !important;
 				}
 
 				button {
-					margin-top:20px;
+					margin-top: 20px;
 				}
 
 				img.x-form-clear-trigger {
-					background-image: url($ICON--CLOSE_LARGE---GREY)!important;
-					background-size: 8px 8px!important;
-					background-position: center top 8px!important;
+					background-image: url($ICON--CLOSE_LARGE---GREY) !important;
+					background-size: 8px 8px !important;
+					background-position: center top 8px !important;
 					opacity: 1;
 					width: 25px;
-
 				}
 			}
 		}
@@ -1946,94 +1777,90 @@ div.engine-window {
 	.tag-field {
 
 
+		width: 100% !important;
 
-			width: 100%!important;
+		> table {
+			display: block;
 
-			> table {
+			> tbody {
+
 				display: block;
 
-				> tbody {
+				> tr {
 
 					display: block;
 
-					> tr {
+					// Tag List
+					&:nth-child(1) {
 
-						display: block;
+						> td {
+							display: block;
+						}
 
-						// Tag List
-						&:nth-child(1) {
+						.x-column {
+							// Tag Element
+							background: _property($BUTTON--BG, $EDIT-ENGINE) !important;
 
-							> td {
-								display: block;
+							.x-component {
+								@include text(12px, _property($BUTTON--COLOR, $EDIT-ENGINE) !important, $FONT--WEIGHT---SEMILIGHT);
+
 							}
 
-							.x-column {
-								// Tag Element
-								background: _property($BUTTON--BG, $EDIT-ENGINE) !important;
+							button {
+								background: url($ICON--CLOSE_LARGE---WHITE) no-repeat center top 8px;
+								background-size: 8px 8px;
+								padding-left: 23px;
+								box-sizing: border-box;
+								width: 23px !important;
+								height: 23px !important;
+							}
 
-								.x-component {
-									@include text(12px, _property($BUTTON--COLOR, $EDIT-ENGINE) !important, $FONT--WEIGHT---SEMILIGHT);
+							img {
+								// Delete button
+								display: none;
+							}
+						}
+					}
 
-								}
+					// Add Tag
+					&:nth-child(2) {
+						.x-component {
+							width: 100% !important;
 
-								button {
-									background: url($ICON--CLOSE_LARGE---WHITE) no-repeat center top 8px;
-									background-size: 8px 8px;
-									padding-left: 23px;
-									box-sizing: border-box;
-									width: 23px!important;
-									height: 23px!important;
-								}
+							> table {
+								width: 100%;
+								display: block;
 
-								img {
-									// Delete button
-									display: none;
+								> tbody {
+									width: 100%;
+									display: block;
+
+									> tr {
+										width: 100%;
+										display: block;
+
+										> td {
+											display: inline-block;
+										}
+									}
 								}
 							}
 						}
 
 						// Add Tag
-						&:nth-child(2) {
-							.x-component {
-								width: 100%!important;
+						.x-form-field-wrap {
+							width: 250px !important;
 
-								> table {
-									width: 100%;
-									display: block;
-
-									> tbody {
-										width: 100%;
-										display: block;
-
-										> tr {
-											width: 100%;
-											display: block;
-
-											> td {
-												display: inline-block;
-
-											}
-
-										}
-									}
-								}
+							input {
+								padding-right: 5px !important;
 							}
-
-
-							// Add Tag
-							.x-form-field-wrap {
-								width: 250px!important;
-
-								input {
-									padding-right: 5px!important;
-								}
-							}
-
-							@include button("FORM_SMALL", "remove-icons");
 						}
+
+						@include button("FORM_SMALL", "remove-icons");
 					}
 				}
 			}
+		}
 	}
 
 	#JahiaGxtEditEnginePanel-contributeMode {
@@ -2043,12 +1870,12 @@ div.engine-window {
 			&:nth-child(1) {
 				// Get rid of first label as it is duplicated
 				> label {
-					display: none!important;
+					display: none !important;
 				}
 
 				// Fix position of checkbox
 				input[type="checkbox"] {
-					left: 0!important;
+					left: 0 !important;
 				}
 			}
 
@@ -2060,14 +1887,10 @@ div.engine-window {
 
 				// Fix width of label
 				> label {
-					width: 100%!important;
+					width: 100% !important;
 				}
-
 			}
-
 		}
-
-
 	}
 
 	#JahiaGxtEditEnginePanel-liveroles,
@@ -2081,9 +1904,9 @@ div.engine-window {
 
 		.x-panel-tbar {
 			.x-toolbar-cell {
-				margin-top: 0!important;
-
+				margin-top: 0 !important;
 			}
+
 			.x-btn {
 				margin-bottom: 20px;
 				margin-top: 0;
@@ -2101,14 +1924,12 @@ div.engine-window {
 
 			.x-grid3-td-displayName,
 			.x-grid3-td-inheritedFrom {
-				color: _property($ROW--COLOR, $EDIT-ENGINE)!important;
+				color: _property($ROW--COLOR, $EDIT-ENGINE) !important;
 				opacity: 1;
 			}
 
 			&.x-grid3-row-over {
 				background-color: _property($ROW--BG, $EDIT-ENGINE) !important;
-
-
 			}
 		}
 
@@ -2117,14 +1938,14 @@ div.engine-window {
 
 			.x-grid3-td-displayName,
 			.x-grid3-td-inheritedFrom {
-				color: _property($ROW--COLOR, $EDIT-ENGINE)!important;
+				color: _property($ROW--COLOR, $EDIT-ENGINE) !important;
 				opacity: 1;
 			}
 		}
 
 		// Main buttons (break inheritance, revert, add user / add groups)
 		.x-toolbar-cell {
-			margin-right: 1px!important;
+			margin-right: 1px !important;
 			margin-top: 10px;
 			display: inline-block;
 
@@ -2132,15 +1953,15 @@ div.engine-window {
 
 		// Icon for user / group (width 28px)
 		.x-grid3-td-type {
-			width: 28px!important;
+			width: 28px !important;
 			display: inline-block;
 		}
 
 		// Main label (50% of remainder )
 		.x-grid3-td-displayName {
-			width: calc(50% - 28px - 28px)!important;
+			width: calc(50% - 28px - 28px) !important;
 			display: inline-block;
-			color: _property($ROW--COLOR, $EDIT-ENGINE)!important;
+			color: _property($ROW--COLOR, $EDIT-ENGINE) !important;
 
 		}
 
@@ -2148,13 +1969,13 @@ div.engine-window {
 		.x-grid3-td-removed {
 			display: inline-block;
 
-			width: 28px!important;
-			height: 25px!important;
+			width: 28px !important;
+			height: 25px !important;
 
 			&:hover {
 				opacity: 1;
-
 			}
+
 			opacity: 0.8;
 
 			// Button container
@@ -2163,52 +1984,36 @@ div.engine-window {
 			}
 
 			.x-btn {
-				width: 100%!important;
-				height: 25px!important;
-				// background: url($ICON--CLOSE_SMALL---WHITE) no-repeat top 5px center;
-				// background-size: 11px 11px;
+				width: 100% !important;
+				height: 25px !important;
 
 				button {
-					height: 25px!important;
+					height: 25px !important;
 				}
 			}
 
 			.x-btn-image {
-				top: 4px!important
+				top: 4px !important
 			}
 		}
 
 		// Inheritance label (50% of remainder )
 		.x-grid3-td-inheritedFrom {
-			width: calc(50% - 28px - 28px)!important;
+			width: calc(50% - 28px - 28px) !important;
 			display: inline-block;
 
 			@include text(12px, _property($ROW--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
-
-
-		}
-
-		// Break inheritance holder
-		.x-toolbar-left-row {
-			.x-toolbar-cell {
-				// margin: 0!important;
-			}
 		}
 
 		// Header
 		.x-panel-tbar {
-
 			pointer-events: all;
-			height: auto!important;
-
-
-
+			height: auto !important;
 		}
 
 		.x-panel-bwrap .x-panel-body {
 			height: calc(100% - 40px) !important;
 		}
-
 	}
 
 
@@ -2226,7 +2031,7 @@ div.engine-window {
 			}
 
 			div {
-	    	color: _theme-color(primary, d) !important;
+				color: _theme-color(primary, d) !important;
 			}
 
 		}
@@ -2244,17 +2049,12 @@ div.engine-window {
 			}
 
 			.x-btn-small.x-btn-icon-small-left {
-				//background: _theme-color(primary, c); /* TO THEME */
-
 				button {
 					color: _theme-color(secondary); /* TO THEME */
 					padding: 8px 8px;
 				}
-
 			}
-
 		}
-
 	}
 
 	#JahiaGxtEditEnginePanel-info {
@@ -2263,8 +2063,8 @@ div.engine-window {
 			background: _property($FIELDSET--BG, $EDIT-ENGINE);
 			border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE) !important;
 			box-sizing: border-box;
-			height: auto!important;
-			width: 100%!important;
+			height: auto !important;
+			width: 100% !important;
 
 			&:before {
 				content: "Preview";
@@ -2296,7 +2096,7 @@ div.engine-window {
 		}
 	}
 
-	#JahiaGxtEditEnginePanel-content{
+	#JahiaGxtEditEnginePanel-content {
 		// Fix problem with non floating form element.
 		#Title,
 		#Titre,
@@ -2305,37 +2105,31 @@ div.engine-window {
 			.x-form-item:nth-child(1) {
 				// System Name
 				.x-form-element {
-					width: 100%!important;
+					width: 100% !important;
 					float: none;
 				}
 
 				.x-box-inner {
-					width: 100%!important;
-					height: auto!important;
-					position: initial!important;
+					width: 100% !important;
+					height: auto !important;
+					position: initial !important;
 				}
 
 				.x-form-field-wrap {
 					width: 100% !important;
-
-					position: relative!important;
+					position: relative !important;
 				}
 
 				.x-form-check-wrap {
 					position: absolute;
-				    left: 0!important;
-				    top: 31px!important;
-				}
-
-				label {
-					// left: calc(100% - 310px)!important;
-					// top: 4px!important;
+					left: 0 !important;
+					top: 31px !important;
 				}
 
 				label.x-box-item {
-					position: relative!important;
-				    left: 16px!important;
-				    top: 0!important;
+					position: relative !important;
+					left: 16px !important;
+					top: 0 !important;
 				}
 			}
 		}
@@ -2349,7 +2143,7 @@ div.engine-window {
 
 		// Compare button
 		.x-btn {
-			width: 46px!important;
+			width: 46px !important;
 			height: 23px;
 			background: url(../images/icons/compare_black.svg) no-repeat center center;
 			background-size: 46px 23px;
@@ -2365,19 +2159,19 @@ div.engine-window {
 		}
 
 		.x-grid3-cell {
-			display: inline-block!important;
+			display: inline-block !important;
 
 			&:nth-child(1) {
-				width: calc(100% - 46px)!important;
+				width: calc(100% - 46px) !important;
 			}
 
 			&:nth-child(2) {
-				width: 46px!important;
+				width: 46px !important;
 			}
 		}
 
 		.x-grid3-cell-inner {
-			padding: 0!important;
+			padding: 0 !important;
 
 		}
 
@@ -2387,11 +2181,11 @@ div.engine-window {
 		}
 
 		.x-grid3-row.x-grid3-row-selected {
-			background-color: transparent!important;
+			background-color: transparent !important;
 		}
 
 		.x-grid3-row-over {
-			background-color: transparent!important;
+			background-color: transparent !important;
 		}
 
 		.x-grid3-row {
@@ -2420,11 +2214,8 @@ div.engine-window {
 			> .x-grid3-row.x-grid3-row:first-child {
 				margin-top: 20px;
 			}
-
 		}
-
 	}
-
 
 
 	#JahiaGxtEditEnginePanel-channels {
@@ -2437,16 +2228,16 @@ div.engine-window {
 				// EXCLUDE / INCLUDE COMBO
 				label {
 					// The label is already in the combo - waste of time having both
-					display: none!important;
+					display: none !important;
 				}
 
 				// MAKE THE COMBO TAKE FULL WIDTH OF FIELDSET
 				> div {
 					> div {
-						width: 100%!important;
+						width: 100% !important;
 
 						> div {
-							width: 100%!important;
+							width: 100% !important;
 						}
 					}
 				}
@@ -2456,68 +2247,49 @@ div.engine-window {
 	}
 
 	#JahiaGxtEditEnginePanel-layout {
-		/* Preview window */
-		fieldset.x-panel {
-			// border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE)!important;
-		}
 		> .x-component {
 
-			&:nth-child(1){
+			&:nth-child(1) {
 				/* Form */
-				height: auto!important;
-				width: 100%!important;
+				height: auto !important;
+				width: 100% !important;
 
 				> div {
-					width: 100%!important;
-
+					width: 100% !important;
 				}
 
 				.x-panel-bwrap {
-					width: 100%!important;
-
+					width: 100% !important;
 				}
 			}
 
-			&:nth-child(2){
+			&:nth-child(2) {
 				/* Preview sections */
-				height: auto!important;
-				width: 100%!important;
-
-
+				height: auto !important;
+				width: 100% !important;
 
 				> div {
 					/* Preview Holders */
-					height: 100%!important;
-					width: 100%!important;
-					background: transparent!important;
+					height: 100% !important;
+					width: 100% !important;
+					background: transparent !important;
 
 					> div {
 						/* Another preview container */
-						height: 100%!important;
-						width: 100%!important;
-						background: transparent!important;
+						height: 100% !important;
+						width: 100% !important;
+						background: transparent !important;
 
 						.gwt-HTML {
 							/* Preview container */
-							height: 100%!important;
-							width: 100%!important;
-							background: white!important;
+							height: 100% !important;
+							width: 100% !important;
+							background: white !important;
 						}
-
 					}
-
-
-
-
 				}
-
-
 			}
-
-
 		}
-
-
 	}
 
 
@@ -2528,13 +2300,13 @@ div.engine-window {
 	> div.x-panel-header {
 
 		left: 0 !important;
-	    top: 0px !important;
-	    position: fixed !important;
-	    height: 157px !important;
-	    width: 315px;
-	    box-sizing: border-box;
-	    background: transparent;
-	    border: none;
+		top: 0px !important;
+		position: fixed !important;
+		height: 157px !important;
+		width: 315px;
+		box-sizing: border-box;
+		background: transparent;
+		border: none;
 		z-index: 9999;
 		overflow: visible;
 
@@ -2551,23 +2323,17 @@ div.engine-window {
 		> div {
 			// Language Selector
 			margin-right: 24px;
-		    position: absolute;
-		    left: 49px;
-		    top: 109px;
+			position: absolute;
+			left: 49px;
+			top: 109px;
 			display: block;
 
 			input {
-				padding: 0!important;
+				padding: 0 !important;
 				background: transparent;
 				box-shadow: none;
 				font-size: 14px;
 			}
-
-			img {
-				// Put image here
-			}
-
-
 		}
 
 		.x-window-header-text,
@@ -2589,24 +2355,19 @@ div.engine-window {
 			// Styles the Lock message
 			@include text(14px, _theme-color(status, locked), $FONT--WEIGHT---EXTRABOLD);
 
-
-
 			// Node Friendly Name
 			&::before {
 				content: attr(data-friendly-name);
-			    display: block;
-			    position: fixed;
-			    top: 78px;
-			    left: 48px;
+				display: block;
+				position: fixed;
+				top: 78px;
+				left: 48px;
 				width: 250px;
 				overflow: hidden;
 				text-overflow: ellipsis;
 				white-space: nowrap;
 
 				@include text(18px !important, #007cb0, $FONT--WEIGHT---EXTRALIGHT);
-
-
-
 			}
 
 			// Add Locked icon if the node has been locked
@@ -2616,34 +2377,30 @@ div.engine-window {
 					background-size: 20px;
 					padding-left: 22px;
 				}
-
 			}
 
-            &[data-content-locked="true"].marked-for-deletion {
-                &::before {
-                    background-image: url(../images/icons_red/markefordelete.svg);
-                    text-decoration: line-through;
-                    color: _theme-color(status, error);
-                }
-            }
+			&[data-content-locked="true"].marked-for-deletion {
+				&::before {
+					background-image: url(../images/icons_red/markefordelete.svg);
+					text-decoration: line-through;
+					color: _theme-color(status, error);
+				}
+			}
 
-            // Node has been locked, so modify styles ...
-            &[data-content-locked="true"] {
+			// Node has been locked, so modify styles ...
+			&[data-content-locked="true"] {
 
 				&.hover-info,
 				&:hover {
 					white-space: pre-wrap;
-				    background-color: #fafafa;
-				    padding: 16px 20px 16px 22px;
-				    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4);
-				    height: auto !important;
-				    left: 49px;
-				    top: 100px;
+					background-color: #fafafa;
+					padding: 16px 20px 16px 22px;
+					box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4);
+					height: auto !important;
+					left: 49px;
+					top: 100px;
 				}
 			}
-
-
-
 		}
 	}
 
@@ -2652,61 +2409,52 @@ div.engine-window {
 	> .x-panel-bwrap {
 
 		height: calc(100%);
-	    position: fixed !important;
-	    width: 100% !important;
-	    top: 10px;
-	    padding: 0px !important;
-
+		position: fixed !important;
+		width: 100% !important;
+		top: 10px;
+		padding: 0px !important;
 
 		.x-panel-tbar {
 			// Top action bar
 			display: block;
-			width: 100%!important;
+			width: 100% !important;
 			height: 50px;
 
 			.x-toolbar {
-				width: 100%!important;
+				width: 100% !important;
 			}
-
 		}
 
 		.x-window-ml,
 		.x-window-mr,
 		.x-window-mc {
-			height: 100%!important;
+			height: 100% !important;
 		}
 
 		.x-window-body,
 		.x-panel-body {
 			// Container for body
-			width: 100%!important;
-			height: 100%!important;
+			width: 100% !important;
+			height: 100% !important;
 			overflow: auto;
 
 			> div {
-				width: 100%!important;
-				height: 100%!important;
+				width: 100% !important;
+				height: 100% !important;
 			}
-
 		}
 
 		.x-window-bbar,
 		> .x-panel-bbar {
 			// Footer action bar
 			display: block;
-			// width: 292px!important;
-			// height: 120px;
 			position: fixed;
-			// padding: 10px 0 0 75px;
-
 			background: _property($FOOTER--BG, $EDIT-ENGINE);
-		    border-top: 1px solid _theme-color(primary, g);
-		    box-shadow: _property($FOOTER--SHADOW, $EDIT-ENGINE);
-		    box-sizing: border-box;
-		    height: auto;
-
+			border-top: 1px solid _theme-color(primary, g);
+			box-shadow: _property($FOOTER--SHADOW, $EDIT-ENGINE);
+			box-sizing: border-box;
 			left: -30px;
-			width: calc(100% + 60px)!important;
+			width: calc(100% + 60px) !important;
 			bottom: -55px;
 			padding: 20px 0px 30px 50px;
 			height: 109px;
@@ -2718,13 +2466,13 @@ div.engine-window {
 			}
 
 			.x-panel-fbar {
-				width: 100%!important;
+				width: 100% !important;
 				height: 100%;
 
 				.x-toolbar-left {
 					position: fixed;
-				    right: 4px;
-				    bottom: 0;
+					right: 4px;
+					bottom: 0;
 				}
 
 				.x-toolbar-cell {
@@ -2738,15 +2486,14 @@ div.engine-window {
 
 						// Not a button, but its a checkbox for the edit engine
 						> div {
-							position: fixed!important;
+							position: fixed !important;
 							left: 0;
-					    bottom: 10px!important;
+							bottom: 10px !important;
 
 							&.x-form-check-wrap {
 								left: 16px;
 								bottom: 16px !important;
 							}
-
 						}
 					}
 
@@ -2756,511 +2503,505 @@ div.engine-window {
 					}
 
 					// // VERY DIRTY !!! INSTALL LATEST VERSION OF SASS COMPILER TO USE selector-append()
-					@at-root .engine-panel.createcontentengine-ctn > .x-panel-bwrap > .x-panel-bbar .x-panel-fbar .x-toolbar-cell:nth-child(3){
+					@at-root .engine-panel.createcontentengine-ctn > .x-panel-bwrap > .x-panel-bbar .x-panel-fbar .x-toolbar-cell:nth-child(3) {
 						@include button("ACTIONBAR---SUGGESTED");
-
 					}
 
 					&:last-child {
 						// Cancel Button
 						float: left;
 						margin-right: 5px;
-
 					}
 				}
 			}
-
-
-
 		}
 
 		> .x-panel-footer {
 			// BLANK DIV
 			display: none;
 		}
-
 	}
 }
 
 // Group Selector
 #JahiaGxtUserGroupSelect {
-    top: calc((100% - 485px) / 2) !important;
-    left: calc((100% - 750px) / 2) !important;
-    width: 750px !important;
-    height: 100% !important;
-    z-index: 9999 !important;
-
-    // Top modal bar ( used for dragging and contains close button )
-    .x-window-tl,
-    .x-window-bwrap {
-        width: 100% !important;
-    }
-
-
-    // Resize handles
-    .x-resizable-handle-north,
-    .x-resizable-handle-south,
-    .x-resizable-handle-east,
-    .x-resizable-handle-west,
-    .x-resizable-handle-northeast,
-    .x-resizable-handle-northwest,
-    .x-resizable-handle-southeast,
-    .x-resizable-handle-southwest {
-        display: none;
-    }
-
-    &.indigo-no-results {
-        .x-panel-bbar {
-            display: none;
-        }
-    }
-
-    // PAGINATION
-    .x-panel-bbar {
-        position: relative;
-        z-index: 9999999;
-        width: 100% !important;
-        padding: 2px 11px;
-        box-sizing: border-box;
-        margin-top: 2px;
-
-        > div {
-            padding: 0 10px;
-            height: 100%;
-        }
-
-        .x-toolbar-left,
-        .x-toolbar-right {
-            display: block;
-
-            table,
-            tbody,
-            tr,
-            td {
-                display: block;
-
-            }
-        }
-
-        .x-toolbar-right {
-            position: relative;
-            top: 6px;
-
-            display: none;
-        }
-
-        .x-toolbar-left {
-
-            .x-toolbar-cell {
-                display: inline-block !important;
-                margin: 0 2px;
-                opacity: 0.8;
-
-                .my-paging-text {
-                    @include text(12px, inherit, $FONT--WEIGHT---EXTRALIGHT);
-                }
-
-                .gwt-TextBox {
-                    @include text(12px, _theme-color(primary, g), $FONT--WEIGHT---EXTRALIGHT);
-                    background: rgba(_theme-color(secondary), .7); /* TO THEME */
-                    padding: 3px;
-                    border: none;
-                }
-
-                .x-btn-mc img {
-                    display: none;
-                }
-
-                // First page
-                &:nth-child(1) {
-                    background: url($ICON--FIRST--GREY) no-repeat center center / 14px 14px;
-                    margin-left: 0px;
-
-                    &:hover {
-                        opacity: 1;
-                        cursor: pointer;
-                    }
-                }
-
-
-                // Previous page
-                &:nth-child(2) {
-                    background: url($ICON--BACK--GREY) no-repeat center center / 14px 14px;
-                    margin-left: 5px;
-
-                    &:hover {
-                        opacity: 1;
-                        cursor: pointer;
-                    }
-                }
-
-                // Skip to page input
-                &:nth-child(5) {
-                    &:hover {
-                        opacity: 1;
-                    }
-                }
-
-                // Next Page
-                &:nth-child(8) {
-                    background: url($ICON--NEXT--GREY) no-repeat center center / 14px 14px;
-                    margin-right: 5px;
-
-                    &:hover {
-                        opacity: 1;
-                        cursor: pointer;
-                    }
-                }
-
-                // Last page
-                &:nth-child(9) {
-                    background: url($ICON--LAST--GREY) no-repeat center center / 14px 14px;
-                    margin-right: 5px;
-
-                    &:hover {
-                        opacity: 1;
-                        cursor: pointer;
-                    }
-                }
-
-                // Refresh results
-                &:nth-child(11) {
-                    background: url($ICON--REFRESH--SMALL_GREY) no-repeat center center / 16px 12px;
-
-                    &:hover {
-                        opacity: 1;
-                        cursor: pointer;
-                    }
-                }
-            }
-        }
-    }
-
-    .x-panel-tbar {
-        width: 100% !important;
-
-        > .x-component {
-            width: 100% !important;
-
-            // Filter field
-            > table {
-                position: absolute;
-                top: 9px;
-                right: 34px;
-
-                .xtb-text {
-                    display: none;
-                }
-
-                .x-toolbar-left {
-                    > table {
-                        width: 100%
-                    }
-                }
-
-                .x-toolbar {
-                    border: none;
-                    padding: 0;
-                    background: none;
-                }
-            }
-        }
-    }
-
-    .x-panel-body {
-        width: 100% !important;
-        height: calc(100% - 30px) !important;
-    }
-
-    .x-grid-panel {
-        width: 100% !important;
-        height: 100% !important;
-        padding-bottom: 20px;
-
-        .x-grid3-viewport {
-            > .x-grid3-header {
-                display: block;
-                background: none;
-                width: calc(100% - 10px); // compensates for scroll padding added to list
-                box-sizing: border-box;
-
-                .x-grid3-header-inner {
-                    width: 100% !important;
-
-                    .x-grid3-header-offset {
-                        width: 100% !important;
-                    }
-
-                    .x-grid3-hh {
-                        width: 100% !important;
-
-                        > table {
-                            width: 100% !important;
-                            display: block;
-
-                            > tbody {
-                                width: 100% !important;
-                                display: block;
-
-                                > tr {
-                                    display: block;
-                                }
-
-                                td {
-                                    width: calc(25% - 10px) !important;
-                                    pointer-events: all;
-                                    border: none;
-                                    background: none;
-                                    margin-right: 10px;
-
-                                    &.x-grid3-hd-over {
-                                        background: _theme-color(secondary, b); /* TO THEME */
-
-                                        span {
-                                            color: _theme-color(primary, b) !important; /* TO THEME */
-                                        }
-
-                                        img {
-                                            opacity: 1;
-                                        }
-
-                                    }
-
-                                    div {
-                                        width: 100% !important;
-                                        box-sizing: border-box;
-                                        height: auto !important;
-                                        background: none !important;
-                                        padding-left: 4px;
-
-                                        img {
-                                            position: relative;
-                                            top: -1px;
-                                            opacity: 0.6;
-                                        }
-
-                                        .x-grid3-hd-btn {
-                                            background: url($ICON--ARROW_DOWN---GREY) no-repeat center center !important;
-                                            width: 23px;
-                                            background-size: 13px !important;
-                                            opacity: 0.7;
-
-                                            &:hover {
-                                                background-color: _theme-color(secondary, d) !important; /* TO THEME */
-                                                background-size: 13px !important;
-                                                opacity: 1;
-                                            }
-                                        }
-
-                                        span {
-                                            text-transform: uppercase;
-                                            font-weight: 800;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        .x-grid-empty {
-            &::before {
-                content: $text_no_results;
-                @include text(12px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT);
-            }
-        }
-
-        .x-grid3-scroller {
-            box-sizing: border-box;
-        }
-
-        .x-grid3-row {
-            padding-top: 4px;
-
-            &.x-grid3-row-selected {
-                pointer-events: none; // Basically disables the double click
-                background: _theme-color(primary, b) !important; /* TO THEME */
-
-                .x-grid3-cell {
-                    > div {
-                        color: _theme-color(secondary) !important; /* TO THEME */
-                    }
-                }
-
-            }
-        }
-
-        .x-grid3-cell {
-            width: 25% !important;
-            display: inline-block;
-
-            &::after {
-                display: none;
-            }
-        }
-    }
-
-
-    // Contains main window
-    .x-window-bwrap {
-        // Footer
-        .x-window-bl {
-            padding-left: 44px !important;
-            margin-top: 20px;
-
-            .x-toolbar-cell {
-                // Save button
-                &:nth-child(1) {
-                    @include button("ACTIONBAR---SUGGESTED")
-                }
-            }
-        }
-
-        // Main Window Container
-        .x-window-ml {
-            height: calc(100% - 80px) !important;
-
-            .x-window-mr,
-            .x-window-mc,
-            .x-window-body {
-                width: 100% !important;
-                height: 100% !important;
-            }
-
-            .x-window-body {
-                > .x-panel {
-                    width: 100% !important;
-                    height: 100% !important;
-
-                    .x-panel-header {
-                        background: none;
-                        width: 100% !important;
-                        height: 70px !important;
-                        padding: 0;
-                        border: none;
-
-                        .x-panel-header-text {
-                            display: block;
-
-                            @include text(36px, _theme-color(primary), $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
-                        }
-                    }
-
-                    .x-panel-bwrap { // JUST ONE
-                        width: 100%;
-                        height: calc(100% - 70px) !important;
-                        box-sizing: border-box;
-                    }
-                }
-            }
-        }
-    }
+	top: calc((100% - 485px) / 2) !important;
+	left: calc((100% - 750px) / 2) !important;
+	width: 750px !important;
+	height: 100% !important;
+	z-index: 9999 !important;
+
+	// Top modal bar ( used for dragging and contains close button )
+	.x-window-tl,
+	.x-window-bwrap {
+		width: 100% !important;
+	}
+
+
+	// Resize handles
+	.x-resizable-handle-north,
+	.x-resizable-handle-south,
+	.x-resizable-handle-east,
+	.x-resizable-handle-west,
+	.x-resizable-handle-northeast,
+	.x-resizable-handle-northwest,
+	.x-resizable-handle-southeast,
+	.x-resizable-handle-southwest {
+		display: none;
+	}
+
+	&.indigo-no-results {
+		.x-panel-bbar {
+			display: none;
+		}
+	}
+
+	// PAGINATION
+	.x-panel-bbar {
+		position: relative;
+		z-index: 9999999;
+		width: 100% !important;
+		padding: 2px 11px;
+		box-sizing: border-box;
+		margin-top: 2px;
+
+		> div {
+			padding: 0 10px;
+			height: 100%;
+		}
+
+		.x-toolbar-left,
+		.x-toolbar-right {
+			display: block;
+
+			table,
+			tbody,
+			tr,
+			td {
+				display: block;
+
+			}
+		}
+
+		.x-toolbar-right {
+			position: relative;
+			top: 6px;
+
+			display: none;
+		}
+
+		.x-toolbar-left {
+
+			.x-toolbar-cell {
+				display: inline-block !important;
+				margin: 0 2px;
+				opacity: 0.8;
+
+				.my-paging-text {
+					@include text(12px, inherit, $FONT--WEIGHT---EXTRALIGHT);
+				}
+
+				.gwt-TextBox {
+					@include text(12px, _theme-color(primary, g), $FONT--WEIGHT---EXTRALIGHT);
+					background: rgba(_theme-color(secondary), .7); /* TO THEME */
+					padding: 3px;
+					border: none;
+				}
+
+				.x-btn-mc img {
+					display: none;
+				}
+
+				// First page
+				&:nth-child(1) {
+					background: url($ICON--FIRST--GREY) no-repeat center center / 14px 14px;
+					margin-left: 0px;
+
+					&:hover {
+						opacity: 1;
+						cursor: pointer;
+					}
+				}
+
+
+				// Previous page
+				&:nth-child(2) {
+					background: url($ICON--BACK--GREY) no-repeat center center / 14px 14px;
+					margin-left: 5px;
+
+					&:hover {
+						opacity: 1;
+						cursor: pointer;
+					}
+				}
+
+				// Skip to page input
+				&:nth-child(5) {
+					&:hover {
+						opacity: 1;
+					}
+				}
+
+				// Next Page
+				&:nth-child(8) {
+					background: url($ICON--NEXT--GREY) no-repeat center center / 14px 14px;
+					margin-right: 5px;
+
+					&:hover {
+						opacity: 1;
+						cursor: pointer;
+					}
+				}
+
+				// Last page
+				&:nth-child(9) {
+					background: url($ICON--LAST--GREY) no-repeat center center / 14px 14px;
+					margin-right: 5px;
+
+					&:hover {
+						opacity: 1;
+						cursor: pointer;
+					}
+				}
+
+				// Refresh results
+				&:nth-child(11) {
+					background: url($ICON--REFRESH--SMALL_GREY) no-repeat center center / 16px 12px;
+
+					&:hover {
+						opacity: 1;
+						cursor: pointer;
+					}
+				}
+			}
+		}
+	}
+
+	.x-panel-tbar {
+		width: 100% !important;
+
+		> .x-component {
+			width: 100% !important;
+
+			// Filter field
+			> table {
+				position: absolute;
+				top: 9px;
+				right: 34px;
+
+				.xtb-text {
+					display: none;
+				}
+
+				.x-toolbar-left {
+					> table {
+						width: 100%
+					}
+				}
+
+				.x-toolbar {
+					border: none;
+					padding: 0;
+					background: none;
+				}
+			}
+		}
+	}
+
+	.x-panel-body {
+		width: 100% !important;
+		height: calc(100% - 30px) !important;
+	}
+
+	.x-grid-panel {
+		width: 100% !important;
+		height: 100% !important;
+		padding-bottom: 20px;
+
+		.x-grid3-viewport {
+			> .x-grid3-header {
+				display: block;
+				background: none;
+				width: calc(100% - 10px); // compensates for scroll padding added to list
+				box-sizing: border-box;
+
+				.x-grid3-header-inner {
+					width: 100% !important;
+
+					.x-grid3-header-offset {
+						width: 100% !important;
+					}
+
+					.x-grid3-hh {
+						width: 100% !important;
+
+						> table {
+							width: 100% !important;
+							display: block;
+
+							> tbody {
+								width: 100% !important;
+								display: block;
+
+								> tr {
+									display: block;
+								}
+
+								td {
+									width: calc(25% - 10px) !important;
+									pointer-events: all;
+									border: none;
+									background: none;
+									margin-right: 10px;
+
+									&.x-grid3-hd-over {
+										background: _theme-color(secondary, b); /* TO THEME */
+
+										span {
+											color: _theme-color(primary, b) !important; /* TO THEME */
+										}
+
+										img {
+											opacity: 1;
+										}
+
+									}
+
+									div {
+										width: 100% !important;
+										box-sizing: border-box;
+										height: auto !important;
+										background: none !important;
+										padding-left: 4px;
+
+										img {
+											position: relative;
+											top: -1px;
+											opacity: 0.6;
+										}
+
+										.x-grid3-hd-btn {
+											background: url($ICON--ARROW_DOWN---GREY) no-repeat center center !important;
+											width: 23px;
+											background-size: 13px !important;
+											opacity: 0.7;
+
+											&:hover {
+												background-color: _theme-color(secondary, d) !important; /* TO THEME */
+												background-size: 13px !important;
+												opacity: 1;
+											}
+										}
+
+										span {
+											text-transform: uppercase;
+											font-weight: 800;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		.x-grid-empty {
+			&::before {
+				content: $text_no_results;
+				@include text(12px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT);
+			}
+		}
+
+		.x-grid3-scroller {
+			box-sizing: border-box;
+		}
+
+		.x-grid3-row {
+			padding-top: 4px;
+
+			&.x-grid3-row-selected {
+				pointer-events: none; // Basically disables the double click
+				background: _theme-color(primary, b) !important; /* TO THEME */
+
+				.x-grid3-cell {
+					> div {
+						color: _theme-color(secondary) !important; /* TO THEME */
+					}
+				}
+
+			}
+		}
+
+		.x-grid3-cell {
+			width: 25% !important;
+			display: inline-block;
+
+			&::after {
+				display: none;
+			}
+		}
+	}
+
+
+	// Contains main window
+	.x-window-bwrap {
+		// Footer
+		.x-window-bl {
+			padding-left: 44px !important;
+			margin-top: 20px;
+
+			.x-toolbar-cell {
+				// Save button
+				&:nth-child(1) {
+					@include button("ACTIONBAR---SUGGESTED")
+				}
+			}
+		}
+
+		// Main Window Container
+		.x-window-ml {
+			height: calc(100% - 80px) !important;
+
+			.x-window-mr,
+			.x-window-mc,
+			.x-window-body {
+				width: 100% !important;
+				height: 100% !important;
+			}
+
+			.x-window-body {
+				> .x-panel {
+					width: 100% !important;
+					height: 100% !important;
+
+					.x-panel-header {
+						background: none;
+						width: 100% !important;
+						height: 70px !important;
+						padding: 0;
+						border: none;
+
+						.x-panel-header-text {
+							display: block;
+
+							@include text(36px, _theme-color(primary), $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
+						}
+					}
+
+					.x-panel-bwrap { // JUST ONE
+						width: 100%;
+						height: calc(100% - 70px) !important;
+						box-sizing: border-box;
+					}
+				}
+			}
+		}
+	}
 }
 
 // Fix size of User select Modal
 .user-group-select .x-window-body .x-panel-body .x-grid3-body {
-    max-height: 280px;
+	max-height: 280px;
 }
 
 
 .indigo-search-component {
 
-    .x-form-field-wrap {
-        width: 100% !important;
-    }
+	.x-form-field-wrap {
+		width: 100% !important;
+	}
 
-    .x-toolbar-cell {
-        // Used as a cancel button
-        &.indigo-clear-button {
-            display: block;
-            background: url($ICON--CLOSE_LARGE---GREY) no-repeat center center;
-            background-size: 12px 12px;
-            width: 20px;
-            height: 20px;
-            text-indent: -50000px;
-            position: absolute;
-            right: 54px;
-            top: 4px;
-            z-index: 9999;
+	.x-toolbar-cell {
+		// Used as a cancel button
+		&.indigo-clear-button {
+			display: block;
+			background: url($ICON--CLOSE_LARGE---GREY) no-repeat center center;
+			background-size: 12px 12px;
+			width: 20px;
+			height: 20px;
+			text-indent: -50000px;
+			position: absolute;
+			right: 54px;
+			top: 4px;
+			z-index: 9999;
 
-            &:hover {
-                cursor: pointer;
-            }
+			&:hover {
+				cursor: pointer;
+			}
 
-            &.indigo-empty-field {
-                display: none;
-            }
+			&.indigo-empty-field {
+				display: none;
+			}
 
-        }
+		}
 
-        // Text input
-        &:nth-child(2) {
+		// Text input
+		&:nth-child(2) {
 
-            .x-form-field-wrap {
-                padding: 1px 0 3px 2px;
-            }
+			.x-form-field-wrap {
+				padding: 1px 0 3px 2px;
+			}
 
-            input {
-                background-image: url($ICON--SEARCH---GREY);
-                background-color: _theme-color(secondary); /* TO THEME */
-                background-repeat: no-repeat;
-                background-position: left center;
-                background-size: 23px;
-                width: 100% !important;
-                padding: 4px 5px 5px 27px !important;
-                font-size: 12px;
-                font-family: $FONT--FAMILY---NUNITO;
-                color: _theme-color(primary, c); /* TO THEME */
-                background-size: 23px;
+			input {
+				background-image: url($ICON--SEARCH---GREY);
+				background-color: _theme-color(secondary); /* TO THEME */
+				background-repeat: no-repeat;
+				background-position: left center;
+				background-size: 23px;
+				width: 100% !important;
+				padding: 4px 5px 5px 27px !important;
+				font-size: 12px;
+				font-family: $FONT--FAMILY---NUNITO;
+				color: _theme-color(primary, c); /* TO THEME */
+				background-size: 23px;
 
-                &:hover {
-                    opacity: 1;
-                }
-            }
-        }
+				&:hover {
+					opacity: 1;
+				}
+			}
+		}
 
-        // Search button
-        &:nth-child(3) {
-            display: block;
+		// Search button
+		&:nth-child(3) {
+			display: block;
 
-            .x-btn-icon {
-                display: block;
-                height: 27px;
-                padding: 0 4px;
-                background: _theme-color(tertiary); /* TO THEME */
+			.x-btn-icon {
+				display: block;
+				height: 27px;
+				padding: 0 4px;
+				background: _theme-color(tertiary); /* TO THEME */
 
-                &:before {
-                    content: $text_search;
-                    display: block;
-                    top: 6px;
-                    position: relative;
-                    text-align: center;
+				&:before {
+					content: $text_search;
+					display: block;
+					top: 6px;
+					position: relative;
+					text-align: center;
 
-                    @include text(11px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT);
-                }
+					@include text(11px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT);
+				}
 
-                img {
-                    display: none;
-                }
-            }
-        }
-    }
+				img {
+					display: none;
+				}
+			}
+		}
+	}
 
 }
 
 body[data-indigo-add-visibility-condition="new"] {
-    > .x-combo-list {
-        background: transparent !important;
-        width: auto !important;
+	> .x-combo-list {
+		background: transparent !important;
+		width: auto !important;
 
-        > div {
-            position: fixed;
-            top: 30px;
-            right: 30px;
-        }
-    }
+		> div {
+			position: fixed;
+			top: 30px;
+			right: 30px;
+		}
+	}
 }
 
 
@@ -3268,972 +3009,972 @@ body[data-indigo-add-visibility-condition="new"] {
 
 
 #JahiaGxtEditEnginePanel-seo > .x-component {
-    width: 100% !important;
-    box-sizing: border-box;
-    padding: 8px 0 0 29px;
-    height: auto !important;
+	width: 100% !important;
+	box-sizing: border-box;
+	padding: 8px 0 0 29px;
+	height: auto !important;
 
-    .seo-title-path {
-        font-family: $FONT--FAMILY---NUNITO;
-        font-size: 14px;
-        color: #363636;
-        font-weight: $FONT--WEIGHT---LIGHT;
-    }
+	.seo-title-path {
+		font-family: $FONT--FAMILY---NUNITO;
+		font-size: 14px;
+		color: #363636;
+		font-weight: $FONT--WEIGHT---LIGHT;
+	}
 
-    .seo-title {
-        padding: 0 !important;
-        margin-top: 2px;
-        margin-bottom: 6px;
-        text-transform: uppercase;
-        font-family: $FONT--FAMILY---NUNITO;
-        font-size: 18px;
-        color: #363636;
-        font-weight: $FONT--WEIGHT---LIGHT;
-    }
+	.seo-title {
+		padding: 0 !important;
+		margin-top: 2px;
+		margin-bottom: 6px;
+		text-transform: uppercase;
+		font-family: $FONT--FAMILY---NUNITO;
+		font-size: 18px;
+		color: #363636;
+		font-weight: $FONT--WEIGHT---LIGHT;
+	}
 
-    .x-panel-header {
-        font-family: $FONT--FAMILY---NUNITO;
-        background: transparent !important;
-        border: none;
-    }
+	.x-panel-header {
+		font-family: $FONT--FAMILY---NUNITO;
+		background: transparent !important;
+		border: none;
+	}
 
-    > .x-panel.x-component {
-        max-width: 100%;
-    }
+	> .x-panel.x-component {
+		max-width: 100%;
+	}
 
-    .x-panel-tbar {
-        pointer-events: all;
-        height: initial;
-        position: relative;
+	.x-panel-tbar {
+		pointer-events: all;
+		height: initial;
+		position: relative;
 
-        .x-small-editor.x-toolbar {
-            background: transparent !important;
-            border-color: transparent !important;
-            margin: 8px 0;
-            border-bottom: 1px dashed _theme-color(secondary, c) !important;
-            padding-bottom: 44px;
-            margin-bottom: 16px;
-        }
+		.x-small-editor.x-toolbar {
+			background: transparent !important;
+			border-color: transparent !important;
+			margin: 8px 0;
+			border-bottom: 1px dashed _theme-color(secondary, c) !important;
+			padding-bottom: 44px;
+			margin-bottom: 16px;
+		}
 
-    }
+	}
 
-    .x-grid3-header {
-        display: table-cell;
-        background: transparent !important;
+	.x-grid3-header {
+		display: table-cell;
+		background: transparent !important;
 
-        .x-grid3-hh {
-            margin: 2px 2px 8px;
-            width: 100% !important;
-            border-bottom: 1px solid _theme-color(secondary, a);
-            text-transform: uppercase;
-            color: _theme-color(black, b);
+		.x-grid3-hh {
+			margin: 2px 2px 8px;
+			width: 100% !important;
+			border-bottom: 1px solid _theme-color(secondary, a);
+			text-transform: uppercase;
+			color: _theme-color(black, b);
 
-            span {
-                font-weight: $FONT--WEIGHT---EXTRABOLD;
-                font-family: $FONT--FAMILY---NUNITO;
-            }
+			span {
+				font-weight: $FONT--WEIGHT---EXTRABOLD;
+				font-family: $FONT--FAMILY---NUNITO;
+			}
 
-            > table {
-                padding: 4px 0;
+			> table {
+				padding: 4px 0;
 
-                .x-grid3-hd.x-grid3-cell {
-                    border-left-color: _theme-color(secondary);
-                    border-right-color: _theme-color(secondary, a);
+				.x-grid3-hd.x-grid3-cell {
+					border-left-color: _theme-color(secondary);
+					border-right-color: _theme-color(secondary, a);
 
-                    &:last-child {
-                        border-right-color: transparent !important;
-                    }
-                }
-            }
-        }
+					&:last-child {
+						border-right-color: transparent !important;
+					}
+				}
+			}
+		}
 
-        td.x-grid3-hd-over .x-grid3-hd-inner {
-            background: transparent !important;
-        }
-    }
+		td.x-grid3-hd-over .x-grid3-hd-inner {
+			background: transparent !important;
+		}
+	}
 
-    .x-grid3-scroller {
-        width: 100% !important;
-        display: table-row-group;
+	.x-grid3-scroller {
+		width: 100% !important;
+		display: table-row-group;
 
-        > .x-grid3-body {
-            padding-bottom: 30px;
-            width: 100% !important;
-        }
-    }
+		> .x-grid3-body {
+			padding-bottom: 30px;
+			width: 100% !important;
+		}
+	}
 
-    .x-grid3-cell-inner.x-grid3-col-url {
-        max-width: 100%;
-        overflow: hidden;
-        width: inherit;
-    }
+	.x-grid3-cell-inner.x-grid3-col-url {
+		max-width: 100%;
+		overflow: hidden;
+		width: inherit;
+	}
 
-    .x-row-editor-header {
-        display: none;
-    }
+	.x-row-editor-header {
+		display: none;
+	}
 
-    .x-panel-body {
-        padding-bottom: 16px;
+	.x-panel-body {
+		padding-bottom: 16px;
 
-        .x-grid3 .x-grid3-row {
-            height: 38px !important;
-            background: transparent !important;
-            width: 100% !important;
+		.x-grid3 .x-grid3-row {
+			height: 38px !important;
+			background: transparent !important;
+			width: 100% !important;
 
-            &.x-grid3-row-over {
-                background: #f5f6f7 !important;
-            }
-        }
-    }
+			&.x-grid3-row-over {
+				background: #f5f6f7 !important;
+			}
+		}
+	}
 
-    td.x-grid3-header.x-grid3-hd.x-grid3-cell.x-grid3-td-url {
-        border-left-color: transparent !important;
-    }
+	td.x-grid3-header.x-grid3-hd.x-grid3-cell.x-grid3-td-url {
+		border-left-color: transparent !important;
+	}
 
-    td.x-grid3-header.x-grid3-hd.x-grid3-cell {
-        border-color: transparent !important;
-    }
+	td.x-grid3-header.x-grid3-hd.x-grid3-cell {
+		border-color: transparent !important;
+	}
 
-    td.x-grid3-hd-menu-open .x-grid3-hd-inner {
-        background: _theme-color(secondary, a) !important;
-    }
+	td.x-grid3-hd-menu-open .x-grid3-hd-inner {
+		background: _theme-color(secondary, a) !important;
+	}
 
-    .x-grid3-viewport > .x-grid3-header .x-grid3-header-inner .x-grid3-hh > table > tbody td div .x-grid3-hd-btn {
-        background: url(../images/icons/combo-arrow-grey.png) no-repeat center center !important;
-        width: 23px;
-        background-size: 13px !important;
-        opacity: 0.7;
-    }
+	.x-grid3-viewport > .x-grid3-header .x-grid3-header-inner .x-grid3-hh > table > tbody td div .x-grid3-hd-btn {
+		background: url(../images/icons/combo-arrow-grey.png) no-repeat center center !important;
+		width: 23px;
+		background-size: 13px !important;
+		opacity: 0.7;
+	}
 
-    .x-box-inner .x-row-editor-field.x-component.x-box-item.x-form-check-wrap:nth-child(2) input {
-        margin-right: -2px;
-    }
+	.x-box-inner .x-row-editor-field.x-component.x-box-item.x-form-check-wrap:nth-child(2) input {
+		margin-right: -2px;
+	}
 
-    .x-box-inner .x-row-editor-field.x-component.x-box-item.x-form-check-wrap:nth-child(3) input {
-        margin-right: 4px;
-    }
+	.x-box-inner .x-row-editor-field.x-component.x-box-item.x-form-check-wrap:nth-child(3) input {
+		margin-right: 4px;
+	}
 
-    .x-box-inner .x-row-editor-field.x-component.x-box-item:not(.x-form-check-wrap) {
-        padding-left: 8px;
-        padding-top: 2px;
-    }
+	.x-box-inner .x-row-editor-field.x-component.x-box-item:not(.x-form-check-wrap) {
+		padding-left: 8px;
+		padding-top: 2px;
+	}
 
-    .x-box-inner .x-row-editor-field.x-component.x-box-item.x-form-check-wrap {
-        top: 9px !important;
-        padding-left: 41px;
+	.x-box-inner .x-row-editor-field.x-component.x-box-item.x-form-check-wrap {
+		top: 9px !important;
+		padding-left: 41px;
 
-        &:nth-child(3) {
-            padding-left: 33px;
-        }
-    }
+		&:nth-child(3) {
+			padding-left: 33px;
+		}
+	}
 
-    .x-row-editor button.x-btn-text {
-        padding: 5px 16px !important;
-        background: #ededed !important;
-        color: _theme-color(black, d) !important;
+	.x-row-editor button.x-btn-text {
+		padding: 5px 16px !important;
+		background: #ededed !important;
+		color: _theme-color(black, d) !important;
 
-        &[aria-disabled="true"] {
-            opacity: .6;
-            color: _theme-color(black, c) !important;
-        }
-    }
+		&[aria-disabled="true"] {
+			opacity: .6;
+			color: _theme-color(black, c) !important;
+		}
+	}
 
-    .x-row-editor-body.x-box-layout-ct {
-        background: $color-primary;
-        height: 36px !important;
-        box-sizing: border-box;
-    }
+	.x-row-editor-body.x-box-layout-ct {
+		background: $color-primary;
+		height: 36px !important;
+		box-sizing: border-box;
+	}
 
-    .x-row-editor-footer {
-        background: $color-primary;
-        height: 1px;
-    }
+	.x-row-editor-footer {
+		background: $color-primary;
+		height: 1px;
+	}
 
-    .x-row-editor .x-btns {
-        background: transparent;
-        position: absolute;
-        top: 4px !important;
-        left: 648px !important;
+	.x-row-editor .x-btns {
+		background: transparent;
+		position: absolute;
+		top: 4px !important;
+		left: 648px !important;
 
-        .x-plain-bwrap {
-            background: transparent;
-        }
-    }
+		.x-plain-bwrap {
+			background: transparent;
+		}
+	}
 
-    .x-row-editor .x-plain-body.x-plain-body-noheader {
-        background: transparent;
-        margin-top: -2px;
-        padding-bottom: 2px;
-    }
+	.x-row-editor .x-plain-body.x-plain-body-noheader {
+		background: transparent;
+		margin-top: -2px;
+		padding-bottom: 2px;
+	}
 
-    .x-toolbar-ct td.x-btn-mc button img {
-        display: none;
-    }
+	.x-toolbar-ct td.x-btn-mc button img {
+		display: none;
+	}
 
-    .x-toolbar-ct .x-btn.x-btn-text-icon button {
-        text-transform: uppercase;
-        padding: 5px 10px !important;
-        margin-top: 2px;
-        font-size: 10px;
-        font-weight: $FONT--WEIGHT---NORMAL;
-    }
+	.x-toolbar-ct .x-btn.x-btn-text-icon button {
+		text-transform: uppercase;
+		padding: 5px 10px !important;
+		margin-top: 2px;
+		font-size: 10px;
+		font-weight: $FONT--WEIGHT---NORMAL;
+	}
 
-    .x-toolbar-right-row > .x-toolbar-cell > div.x-form-label {
-        color: $color-white !important;
-        font-weight: 600;
-        font-family: $FONT--FAMILY---NUNITO;
-        background: _theme-color(status, error);
-        padding: 4px 12px;
-        border-radius: 20px;
-        margin-right: 8px !important;
-        position: absolute;
-        top: 44px;
-        left: 0;
-        width: calc(100% - 8px);
-        padding-left: 34px;
-        box-sizing: border-box;
+	.x-toolbar-right-row > .x-toolbar-cell > div.x-form-label {
+		color: $color-white !important;
+		font-weight: 600;
+		font-family: $FONT--FAMILY---NUNITO;
+		background: _theme-color(status, error);
+		padding: 4px 12px;
+		border-radius: 20px;
+		margin-right: 8px !important;
+		position: absolute;
+		top: 44px;
+		left: 0;
+		width: calc(100% - 8px);
+		padding-left: 34px;
+		box-sizing: border-box;
 
-        &:before {
-            content: "";
-            background: url(../images/icons/ic_warning@2x.png);
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 26px;
-            height: 100%;
-            background-size: 18px;
-            background-repeat: no-repeat;
-            background-position-x: 8px;
-            background-position-y: 2px;
-        }
-    }
+		&:before {
+			content: "";
+			background: url(../images/icons/ic_warning@2x.png);
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 26px;
+			height: 100%;
+			background-size: 18px;
+			background-repeat: no-repeat;
+			background-position-x: 8px;
+			background-position-y: 2px;
+		}
+	}
 
-    .x-grid3-col-actions .x-btn.x-btn-text-icon button {
-        font-size: 0 !important;
-        height: 32px !important;
-        width: 32px !important;
-        margin: 0 39px !important;
-        padding: 0 !important;
-        text-align: center;
-        background-color: transparent !important;
+	.x-grid3-col-actions .x-btn.x-btn-text-icon button {
+		font-size: 0 !important;
+		height: 32px !important;
+		width: 32px !important;
+		margin: 0 39px !important;
+		padding: 0 !important;
+		text-align: center;
+		background-color: transparent !important;
 
-        img {
-            background: url(../images/icons_dark/deleted.svg) no-repeat center center !important;
-            background-size: 22px !important;
-            opacity: .64;
+		img {
+			background: url(../images/icons_dark/deleted.svg) no-repeat center center !important;
+			background-size: 22px !important;
+			opacity: .64;
 
-            &:hover {
-                opacity: 1;
-            }
-        }
-    }
+			&:hover {
+				opacity: 1;
+			}
+		}
+	}
 
-    .x-grid-cell-first .x-grid3-cell-inner.x-grid3-col-url {
-        line-height: 32px;
-        padding-left: 8px;
-    }
+	.x-grid-cell-first .x-grid3-cell-inner.x-grid3-col-url {
+		line-height: 32px;
+		padding-left: 8px;
+	}
 
-    .x-grid3-check-col {
-        padding-top: 17px;
-    }
+	.x-grid3-check-col {
+		padding-top: 17px;
+	}
 }
 
 .engine-save-error {
-    z-index: 999999 !important;
+	z-index: 999999 !important;
 }
 
 
 // List ordering Panel
 #JahiaGxtEditEnginePanel-listOrdering {
 
-    .x-panel-tbar .x-hide-display {
-        display: inline-table !important;
-    }
+	.x-panel-tbar .x-hide-display {
+		display: inline-table !important;
+	}
 
-    .x-toolbar-layout-ct {
-        overflow-x: scroll;
-        pointer-events: all;
-    }
+	.x-toolbar-layout-ct {
+		overflow-x: scroll;
+		pointer-events: all;
+	}
 
-    .x-panel-bwrap {
-        height: initial !important;
-        padding-bottom: 16px;
-    }
+	.x-panel-bwrap {
+		height: initial !important;
+		padding-bottom: 16px;
+	}
 
-    .x-panel.x-component:nth-child(2) .x-panel-bwrap .x-grid3-viewport {
-        overflow: scroll;
-    }
+	.x-panel.x-component:nth-child(2) .x-panel-bwrap .x-grid3-viewport {
+		overflow: scroll;
+	}
 
-    .x-grid3-header-offset {
-        display: table-row-group;
-    }
+	.x-grid3-header-offset {
+		display: table-row-group;
+	}
 
-    > fieldset {
-        padding-bottom: 0 !important;
-        width: calc(100% - 6px) !important;
+	> fieldset {
+		padding-bottom: 0 !important;
+		width: calc(100% - 6px) !important;
 
-        .x-form-check-wrap {
-            text-align: right;
-            margin-top: -33px;
-        }
-    }
+		.x-form-check-wrap {
+			text-align: right;
+			margin-top: -33px;
+		}
+	}
 
-    > .x-panel {
-        height: initial !important;
-    }
+	> .x-panel {
+		height: initial !important;
+	}
 
-    .x-grid3 .x-grid3-scroller {
-        padding-left: 4px;
-        display: table-footer-group;
+	.x-grid3 .x-grid3-scroller {
+		padding-left: 4px;
+		display: table-footer-group;
 
-        tr {
-            height: 36px;
-        }
-    }
+		tr {
+			height: 36px;
+		}
+	}
 
-    .x-grid3-header-inner {
-        width: 100% !important;
-    }
+	.x-grid3-header-inner {
+		width: 100% !important;
+	}
 
-    .x-grid3-body {
+	.x-grid3-body {
 
-        .x-grid3-td-numberer {
-            padding-top: 8px !important;
-            background-image: none;
-        }
+		.x-grid3-td-numberer {
+			padding-top: 8px !important;
+			background-image: none;
+		}
 
-        .x-grid3-td-displayName {
-            padding-top: 8px !important;
+		.x-grid3-td-displayName {
+			padding-top: 8px !important;
 
-            > div {
-                padding-top: 3px;
-            }
-        }
+			> div {
+				padding-top: 3px;
+			}
+		}
 
-        .x-grid3-cell-inner.x-grid3-col-name {
-            margin-top: 8px;
-            max-width: 94px;
-        }
+		.x-grid3-cell-inner.x-grid3-col-name {
+			margin-top: 8px;
+			max-width: 94px;
+		}
 
-        td[class*="created "] div {
-            margin-top: 5px;
-        }
+		td[class*="created "] div {
+			margin-top: 5px;
+		}
 
-        td[class*="createdBy "] div {
-            margin-top: 4px;
-        }
+		td[class*="createdBy "] div {
+			margin-top: 4px;
+		}
 
-        td[class*="lastModified "] div {
-            margin-top: 5px;
-        }
+		td[class*="lastModified "] div {
+			margin-top: 5px;
+		}
 
-        td[class*="lastModifiedBy"] div {
-            margin-top: 8px;
-            padding-left: 8px;
-            color: $color-primary !important;
-            font-weight: $FONT--WEIGHT---LIGHT;
-        }
+		td[class*="lastModifiedBy"] div {
+			margin-top: 8px;
+			padding-left: 8px;
+			color: $color-primary !important;
+			font-weight: $FONT--WEIGHT---LIGHT;
+		}
 
-        .x-grid3-row-selected .x-grid3-td-numberer {
-            background: none !important;
-        }
+		.x-grid3-row-selected .x-grid3-td-numberer {
+			background: none !important;
+		}
 
-        tbody tr .x-grid3-td-checker {
-            padding: 8px 5px !important;
-            padding-left: 3px !important;
-        }
+		tbody tr .x-grid3-td-checker {
+			padding: 8px 5px !important;
+			padding-left: 3px !important;
+		}
 
-        .x-grid3-td-checker {
-            background: none !important;
-        }
-    }
+		.x-grid3-td-checker {
+			background: none !important;
+		}
+	}
 
-    .x-grid3 {
+	.x-grid3 {
 
-        .x-grid3-row {
-            height: initial !important;
-        }
+		.x-grid3-row {
+			height: initial !important;
+		}
 
-        .x-grid3-td-displayName::after {
-            display: none;
-        }
+		.x-grid3-td-displayName::after {
+			display: none;
+		}
 
-        .x-grid3-row.x-grid3-row-selected {
-            background-color: _theme-color(secondary, a) !important;
+		.x-grid3-row.x-grid3-row-selected {
+			background-color: _theme-color(secondary, a) !important;
 
-            div {
-                color: $color-primary;
-            }
+			div {
+				color: $color-primary;
+			}
 
-            .x-grid3-col-name {
-                color: $color-primary !important;
-            }
+			.x-grid3-col-name {
+				color: $color-primary !important;
+			}
 
-            &.x-grid3-row-over {
-                background-color: _theme-color(secondary, a) !important;
+			&.x-grid3-row-over {
+				background-color: _theme-color(secondary, a) !important;
 
-                .x-grid3-col-name {
-                    color: $color-primary !important;
-                }
-            }
-        }
-    }
+				.x-grid3-col-name {
+					color: $color-primary !important;
+				}
+			}
+		}
+	}
 
-    .x-grid3-header {
-        display: table-cell;
-        background: none !important;
-    }
+	.x-grid3-header {
+		display: table-cell;
+		background: none !important;
+	}
 
-    .x-fieldset legend .x-tool-toggle {
-        display: none;
-    }
+	.x-fieldset legend .x-tool-toggle {
+		display: none;
+	}
 
-    .x-panel-tbar.x-panel-tbar-noheader {
-        margin-top: 16px;
-    }
+	.x-panel-tbar.x-panel-tbar-noheader {
+		margin-top: 16px;
+	}
 
-    .x-component .x-grid3-header .x-grid3-hh {
-        margin: 2px 2px 8px;
-        border-bottom: 1px solid _theme-color(secondary, a);
-        text-transform: uppercase;
-        color: _theme-color(black, b);
-        pointer-events: none;
+	.x-component .x-grid3-header .x-grid3-hh {
+		margin: 2px 2px 8px;
+		border-bottom: 1px solid _theme-color(secondary, a);
+		text-transform: uppercase;
+		color: _theme-color(black, b);
+		pointer-events: none;
 
-        span {
-            font-weight: $FONT--WEIGHT---EXTRABOLD;
-            font-family: $FONT--FAMILY---NUNITO;
-        }
+		span {
+			font-weight: $FONT--WEIGHT---EXTRABOLD;
+			font-family: $FONT--FAMILY---NUNITO;
+		}
 
-        table {
-            padding: 4px 0;
-        }
-    }
+		table {
+			padding: 4px 0;
+		}
+	}
 
-    .x-panel-tbar-noheader {
+	.x-panel-tbar-noheader {
 
-        td.x-toolbar-cell:nth-child(1) > table button img {
-            background: url(../images/icons/move_up.png) !important;
-            background-size: 18px !important;
-            background-position-y: -1px !important;
-            background-position-x: -1px !important;
-            opacity: .64;
-        }
+		td.x-toolbar-cell:nth-child(1) > table button img {
+			background: url(../images/icons/move_up.png) !important;
+			background-size: 18px !important;
+			background-position-y: -1px !important;
+			background-position-x: -1px !important;
+			opacity: .64;
+		}
 
-        td.x-toolbar-cell:nth-child(2) > table button img {
-            background: url(../images/icons/move_first.png) !important;
-            background-size: 18px !important;
-            background-position-y: -1px !important;
-            background-position-x: -1px !important;
-            opacity: .64;
-        }
+		td.x-toolbar-cell:nth-child(2) > table button img {
+			background: url(../images/icons/move_first.png) !important;
+			background-size: 18px !important;
+			background-position-y: -1px !important;
+			background-position-x: -1px !important;
+			opacity: .64;
+		}
 
-        td.x-toolbar-cell:nth-child(3) > table button img {
-            background: url(../images/icons/move_down.png) !important;
-            background-size: 18px !important;
-            background-position-y: -1px !important;
-            background-position-x: -1px !important;
-            opacity: .64;
-        }
+		td.x-toolbar-cell:nth-child(3) > table button img {
+			background: url(../images/icons/move_down.png) !important;
+			background-size: 18px !important;
+			background-position-y: -1px !important;
+			background-position-x: -1px !important;
+			opacity: .64;
+		}
 
-        td.x-toolbar-cell:nth-child(4) > table button img {
-            background: url(../images/icons/move_last.png) !important;
-            background-size: 18px !important;
-            background-position-y: -1px !important;
-            background-position-x: -1px !important;
-            opacity: .64;
-        }
+		td.x-toolbar-cell:nth-child(4) > table button img {
+			background: url(../images/icons/move_last.png) !important;
+			background-size: 18px !important;
+			background-position-y: -1px !important;
+			background-position-x: -1px !important;
+			opacity: .64;
+		}
 
-        td.x-toolbar-cell:nth-child(5) > table button img {
-            background: url(../images/icons/remove_circle.png) !important;
-            background-size: 18px !important;
-            background-position-y: -1px !important;
-            background-position-x: -1px !important;
-            opacity: .64;
-        }
+		td.x-toolbar-cell:nth-child(5) > table button img {
+			background: url(../images/icons/remove_circle.png) !important;
+			background-size: 18px !important;
+			background-position-y: -1px !important;
+			background-position-x: -1px !important;
+			opacity: .64;
+		}
 
-        td.x-toolbar-cell {
-            padding-left: 12px;
+		td.x-toolbar-cell {
+			padding-left: 12px;
 
-            > table button {
-                background: none !important;
-                color: $color-primary;
-                pointer-events: all;
-            }
-        }
-    }
+			> table button {
+				background: none !important;
+				color: $color-primary;
+				pointer-events: all;
+			}
+		}
+	}
 
-    .x-masked-relative {
-        pointer-events: none;
-        visibility: hidden;
-    }
+	.x-masked-relative {
+		pointer-events: none;
+		visibility: hidden;
+	}
 
-    .x-toolbar-layout-ct {
-        background: none !important;
-        border: none !important;
-    }
+	.x-toolbar-layout-ct {
+		background: none !important;
+		border: none !important;
+	}
 
-    .x-grid3-cell-inner.x-grid3-col-icon {
-        visibility: hidden;
-    }
+	.x-grid3-cell-inner.x-grid3-col-icon {
+		visibility: hidden;
+	}
 
-    .x-panel .x-grid3 .x-grid3-row-table .x-grid3-cell.x-grid3-td-displayName {
-        width: 350px !important;
-    }
+	.x-panel .x-grid3 .x-grid3-row-table .x-grid3-cell.x-grid3-td-displayName {
+		width: 350px !important;
+	}
 
-    td.x-grid3-header.x-grid3-hd.x-grid3-cell {
+	td.x-grid3-header.x-grid3-hd.x-grid3-cell {
 
-        border-color: transparent !important;
+		border-color: transparent !important;
 
-        &.x-grid3-td-displayName {
-            width: 350px !important;
-            max-width: 350px !important;
-        }
+		&.x-grid3-td-displayName {
+			width: 350px !important;
+			max-width: 350px !important;
+		}
 
-        &.x-grid3-td-numberer {
-            border-color: transparent !important;
-        }
+		&.x-grid3-td-numberer {
+			border-color: transparent !important;
+		}
 
-        &.x-grid3-td-checker {
-            border-color: transparent !important;
-            pointer-events: all;
-        }
+		&.x-grid3-td-checker {
+			border-color: transparent !important;
+			pointer-events: all;
+		}
 
-        &.x-grid3-td-icon {
-            border-left: none !important;
-        }
-    }
+		&.x-grid3-td-icon {
+			border-left: none !important;
+		}
+	}
 
-    .x-grid3-cell-inner.x-grid3-col-displayName {
-        max-width: 320px;
-    }
+	.x-grid3-cell-inner.x-grid3-col-displayName {
+		max-width: 320px;
+	}
 }
 
 .engine-window {
-    z-index: 999999 !important;
+	z-index: 999999 !important;
 }
 
 // Input Error icon
 img.invalid-icon {
-    background: #f44336 !important;
-    height: 31px !important;
-    width: 4px !important;
-    left: 0 !important;
-    top: 0 !important;
+	background: #f44336 !important;
+	height: 31px !important;
+	width: 4px !important;
+	left: 0 !important;
+	top: 0 !important;
 }
 
 // Input Error Tooltip
 .x-form-invalid-tip {
-    background: _theme-color(status, error);
-    border-radius: 2px !important;
-    box-shadow: 0 2px 5px 0 rgba($color-black, .26);
+	background: _theme-color(status, error);
+	border-radius: 2px !important;
+	box-shadow: 0 2px 5px 0 rgba($color-black, .26);
 
-    .x-tip-tl,
-    .x-tip-tl .x-tip-tr,
-    .x-tip-tl .x-tip-tr .x-tip-tc,
-    .x-tip-bwrap .x-tip-ml,
-    .x-tip-bwrap .x-tip-ml .x-tip-mr,
-    .x-tip-bl.x-tip-nofooter,
-    .x-tip-bl.x-tip-nofooter .x-tip-br,
-    .x-tip-bl.x-tip-nofooter .x-tip-br .x-tip-bc {
-        background: transparent !important;
-    }
+	.x-tip-tl,
+	.x-tip-tl .x-tip-tr,
+	.x-tip-tl .x-tip-tr .x-tip-tc,
+	.x-tip-bwrap .x-tip-ml,
+	.x-tip-bwrap .x-tip-ml .x-tip-mr,
+	.x-tip-bl.x-tip-nofooter,
+	.x-tip-bl.x-tip-nofooter .x-tip-br,
+	.x-tip-bl.x-tip-nofooter .x-tip-br .x-tip-bc {
+		background: transparent !important;
+	}
 
-    .x-tip-bwrap .x-tip-ml .x-tip-mr .x-tip-body {
-        color: $color-white;
-        font-family: $FONT--FAMILY---NUNITO;
-        font-weight: $FONT--WEIGHT---NORMAL;
-        background: url(../images/icons/ic_info_outline@2x.png) no-repeat left center !important;
-        background-size: 20px !important;
-    }
+	.x-tip-bwrap .x-tip-ml .x-tip-mr .x-tip-body {
+		color: $color-white;
+		font-family: $FONT--FAMILY---NUNITO;
+		font-weight: $FONT--WEIGHT---NORMAL;
+		background: url(../images/icons/ic_info_outline@2x.png) no-repeat left center !important;
+		background-size: 20px !important;
+	}
 
 }
 
 // Color picker
 .color-picker-field {
 
-    .x-btn.x-btn-noicon em.x-btn-arrow {
-        background: transparent !important;
-    }
+	.x-btn.x-btn-noicon em.x-btn-arrow {
+		background: transparent !important;
+	}
 
-    .x-btn.x-btn-noicon button.x-btn-text {
-        background: url(../images/icons_dark/color.svg) no-repeat center center !important;
-        background-size: 18px !important;
-        margin-top: -2px;
-        opacity: .67;
-    }
+	.x-btn.x-btn-noicon button.x-btn-text {
+		background: url(../images/icons_dark/color.svg) no-repeat center center !important;
+		background-size: 18px !important;
+		margin-top: -2px;
+		opacity: .67;
+	}
 }
 
 
 // Work in progress Panel
 .wip-window {
-    z-index: 99999999 !important;
+	z-index: 99999999 !important;
 
-    table {
-        border-collapse: collapse;
-        width: 100%;
-    }
+	table {
+		border-collapse: collapse;
+		width: 100%;
+	}
 
-    label {
-        text-transform: none;
-        font-size: 14px;
-        font-weight: 100;
-        color: #5c6164 !important;
-        padding-left: 6px !important;
-    }
+	label {
+		text-transform: none;
+		font-size: 14px;
+		font-weight: 100;
+		color: #5c6164 !important;
+		padding-left: 6px !important;
+	}
 
-    .help-message {
-        padding: 5px 10px;
-        background: orange;
-        font-size: 14px;
-        color: white;
-        font-weight: 100;
-        margin-top: 20px;
+	.help-message {
+		padding: 5px 10px;
+		background: orange;
+		font-size: 14px;
+		color: white;
+		font-weight: 100;
+		margin-top: 20px;
 
-        a {
-            color: white;
-        }
-    }
+		a {
+			color: white;
+		}
+	}
 
-    .error-languages {
-        background: rgba(255, 0, 0, 0.11);
-        display: block;
-        position: relative;
-        margin-left: -15px;
-        z-index: 999999999999;
-        padding: 5px 15px !important;
+	.error-languages {
+		background: rgba(255, 0, 0, 0.11);
+		display: block;
+		position: relative;
+		margin-left: -15px;
+		z-index: 999999999999;
+		padding: 5px 15px !important;
 
-        .error-message {
-            color: red;
-            font-size: 14px;
-            font-weight: 400;
-            margin-top: 13px;
-            margin-bottom: 6px;
-        }
+		.error-message {
+			color: red;
+			font-size: 14px;
+			font-weight: 400;
+			margin-top: 13px;
+			margin-bottom: 6px;
+		}
 
-        // Error Icon
-        img.gwt-Image {
-            display: none !important;
-        }
-    }
+		// Error Icon
+		img.gwt-Image {
+			display: none !important;
+		}
+	}
 
-    .x-item-disabled {
-        opacity: 0.7;
-    }
+	.x-item-disabled {
+		opacity: 0.7;
+	}
 
 
-    .x-window-bwrap {
-        overflow: hidden;
-    }
+	.x-window-bwrap {
+		overflow: hidden;
+	}
 
-    // Header
-    > .x-window-tl {
-        padding-bottom: 0 !important;
+	// Header
+	> .x-window-tl {
+		padding-bottom: 0 !important;
 
-        .x-window-header {
-            .x-window-header-text {
-                display: block;
-            }
-        }
-    }
+		.x-window-header {
+			.x-window-header-text {
+				display: block;
+			}
+		}
+	}
 
-    .x-window-body {
-        height: auto !important;
-        overflow: visible;
+	.x-window-body {
+		height: auto !important;
+		overflow: visible;
 
-        > div {
-            > table { // Ask for class
-                > tbody {
-                    > tr {
-                        > td {
-                            margin-left: 10px;
-                            margin-bottom: 5px;
-                            display: block;
-                        }
+		> div {
+			> table { // Ask for class
+				> tbody {
+					> tr {
+						> td {
+							margin-left: 10px;
+							margin-bottom: 5px;
+							display: block;
+						}
 
-                        &:nth-child(1) { // Ask for a class
-                            > td {
-                                margin-bottom: 30px;
-                                margin-left: 0;
+						&:nth-child(1) { // Ask for a class
+							> td {
+								margin-bottom: 30px;
+								margin-left: 0;
 
-                                div {
-                                    color: #5c6164;
-                                    font-size: 16px;
-                                    font-weight: 300;
-                                }
-                            }
-                        }
+								div {
+									color: #5c6164;
+									font-size: 16px;
+									font-weight: 300;
+								}
+							}
+						}
 
-                        &:nth-child(3) > td > div > table > tbody > tr:nth-child(2) > td { // Ask for a class
-                            padding-left: 18px;
-                            padding-top: 5px;
-                        }
+						&:nth-child(3) > td > div > table > tbody > tr:nth-child(2) > td { // Ask for a class
+							padding-left: 18px;
+							padding-top: 5px;
+						}
 
-                        &:nth-child(3) > td > div { // Ask for a class
-                            padding: 5px 0;
-                        }
-                    }
-                }
-            }
-        }
+						&:nth-child(3) > td > div { // Ask for a class
+							padding: 5px 0;
+						}
+					}
+				}
+			}
+		}
 
-        .x-form-check-wrap {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 392px !important;
-            padding-left: 1px;
-        }
-    }
+		.x-form-check-wrap {
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			max-width: 392px !important;
+			padding-left: 1px;
+		}
+	}
 
-    .x-window-bl {
-        margin-top: 20px;
+	.x-window-bl {
+		margin-top: 20px;
 
-        .x-panel-fbar {
-            .x-toolbar-cell {
-                // Stop the buttons being inversed
-                float: none
-            }
-        }
-    }
+		.x-panel-fbar {
+			.x-toolbar-cell {
+				// Stop the buttons being inversed
+				float: none
+			}
+		}
+	}
 
-    // Error message labels
-    .error-message {
-        color: red;
-    }
+	// Error message labels
+	.error-message {
+		color: red;
+	}
 }
 
 // Hidde disabled buttons if content is locked
 .JahiaEditEngineButtonBar button[aria-disabled="true"] {
-    opacity: .5;
+	opacity: .5;
 }
 
 .JahiaEditEngineButtonBar {
-    label {
-        @include text(14px, #F5F5F5 !important, $FONT--WEIGHT---LIGHT);
-    }
+	label {
+		@include text(14px, #F5F5F5 !important, $FONT--WEIGHT---LIGHT);
+	}
 }
 
 
 // Fix z-index for New portlet Modal
 div#JahiaGXTPortletWizardWindow {
-    z-index: 11111111111 !important;
+	z-index: 11111111111 !important;
 
-    .x-form-text {
-        @include text-input($EDIT-ENGINE);
-        @include _input(LIGHT);
-    }
+	.x-form-text {
+		@include text-input($EDIT-ENGINE);
+		@include _input(LIGHT);
+	}
 
-    form fieldset,
-    form > div {
-        border-bottom: none !important;
-        margin: 0 !important;
-        padding: 43px 32px 20px 32px !important;
-    }
+	form fieldset,
+	form > div {
+		border-bottom: none !important;
+		margin: 0 !important;
+		padding: 43px 32px 20px 32px !important;
+	}
 
-    form > div {
-        padding: 24px 32px 20px 32px !important;
-    }
+	form > div {
+		padding: 24px 32px 20px 32px !important;
+	}
 
-    .x-window-tl {
-        padding-bottom: 0 !important;
-        padding-left: 32px !important;
-        width: 600px !important;
-    }
+	.x-window-tl {
+		padding-bottom: 0 !important;
+		padding-left: 32px !important;
+		width: 600px !important;
+	}
 
-    .x-grid3-viewport {
+	.x-grid3-viewport {
 
-        > .x-grid3-header {
-            display: block !important;
-            background: transparent;
+		> .x-grid3-header {
+			display: block !important;
+			background: transparent;
 
-            .x-grid3-hd-over,
-            .x-grid3-hd-menu-open {
-                background: transparent;
+			.x-grid3-hd-over,
+			.x-grid3-hd-menu-open {
+				background: transparent;
 
-                .x-grid3-hd-btn {
-                    background: url(../images/expanded-black.png) no-repeat center right !important;
-                    background-size: 16px !important;
-                }
+				.x-grid3-hd-btn {
+					background: url(../images/expanded-black.png) no-repeat center right !important;
+					background-size: 16px !important;
+				}
 
-                .x-grid3-hd-inner {
-                    background: transparent;
-                }
-            }
+				.x-grid3-hd-inner {
+					background: transparent;
+				}
+			}
 
-            .x-grid3-header-inner {
-                width: 100% !important;
+			.x-grid3-header-inner {
+				width: 100% !important;
 
-                .x-grid3-hh {
-                    width: 100% !important;
+				.x-grid3-hh {
+					width: 100% !important;
 
-                    > table {
-                        width: auto !important;
-                    }
-                }
-            }
+					> table {
+						width: auto !important;
+					}
+				}
+			}
 
-            .x-grid3-header {
-                display: table-cell !important;
-                width: auto !important;
-                border: none !important;
-                background: none !important;
+			.x-grid3-header {
+				display: table-cell !important;
+				width: auto !important;
+				border: none !important;
+				background: none !important;
 
-                > div {
-                    width: auto !important;
-                }
-            }
-        }
+				> div {
+					width: auto !important;
+				}
+			}
+		}
 
-    }
-
-
-    .x-window-bwrap {
-        width: 600px !important;
-    }
+	}
 
 
-    .x-window-header-text {
-        display: block;
-    }
+	.x-window-bwrap {
+		width: 600px !important;
+	}
 
 
-    .x-border-panel {
-        height: auto !important;
-        width: 100% !important;
-        padding: 0 !important;
+	.x-window-header-text {
+		display: block;
+	}
 
 
-        > div {
-            width: 100% !important;
-
-            > div {
-                width: 100% !important;
-
-                > div {
-                    width: 100% !important;
-
-                    > div {
-                        width: 100% !important;
-
-                        > div {
-                            width: 100% !important;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    .x-grid3-col-displayName {
-        padding: 7px;
-    }
-
-    .x-grid3-col-description {
-        padding: 7px;
-        font-size: 13px;
-        font-weight: 300;
-        color: #797979;
-    }
-
-    .x-grid3-row-selected {
-        .x-grid3-col-description {
-            color: whitesmoke;
-        }
-    }
-
-    .x-grid3-td-displayName {
-        pointer-events: all !important;
-
-        &::after {
-            content: none;
-        }
-    }
-
-    .ext-ux-wiz-Header {
-        background: transparent;
-
-        td {
-            padding: 0 !important;
-        }
-
-        > table {
-            tr:nth-child(2) {
-                > td {
-                    > div {
-                        width: 100% !important;
-                    }
-                }
-            }
-        }
-    }
-
-    .ext-ux-wiz-Header-title {
-        font-size: 14px;
-        font-weight: 400 !important;
-        background: transparent;
-        color: red;
-        padding-top: 0 !important;
-        display: none;
-    }
+	.x-border-panel {
+		height: auto !important;
+		width: 100% !important;
+		padding: 0 !important;
 
 
-    .x-window-body {
-        .x-progress-inner {
-            height: 27px;
-        }
+		> div {
+			width: 100% !important;
 
-        .x-progress-bar {
-            background: #089a76;
-            border: none;
-            height: 100%;
-        }
+			> div {
+				width: 100% !important;
 
-        .x-progress-text {
-            padding: 5px;
-            font-size: 14px;
-        }
+				> div {
+					width: 100% !important;
 
-        .x-progress-text-back {
-            top: 2px;
-            left: 1px;
-        }
-    }
+					> div {
+						width: 100% !important;
 
-    .x-window-bbar {
-        width: 100% !important;
-        border: none;
-        background: transparent;
+						> div {
+							width: 100% !important;
+						}
+					}
+				}
+			}
+		}
+	}
 
-        > div {
-            width: 100% !important;
-            border: none;
-            background: transparent;
+	.x-grid3-col-displayName {
+		padding: 7px;
+	}
 
-            .x-toolbar-left {
-                > table {
-                    float: right;
+	.x-grid3-col-description {
+		padding: 7px;
+		font-size: 13px;
+		font-weight: 300;
+		color: #797979;
+	}
 
-                    .button-cancel {
-                        position: absolute;
-                        left: 0;
-                        top: 0;
-                    }
+	.x-grid3-row-selected {
+		.x-grid3-col-description {
+			color: whitesmoke;
+		}
+	}
 
-                    @include _button(".button-next", "ACTIONBAR---SUGGESTED", "remove-icons");
-                    @include _button(".button-previous", "ACTIONBAR---SECONDARY", "remove-icons");
+	.x-grid3-td-displayName {
+		pointer-events: all !important;
 
-                    .button-previous {
-                        &.x-item-disabled {
-                            display: none;
-                        }
-                    }
-                }
-            }
-        }
-    }
+		&::after {
+			content: none;
+		}
+	}
 
-    .x-grid3-body {
-        padding-top: 10px;
-        height: calc(100% - 30px) !important;
-    }
+	.ext-ux-wiz-Header {
+		background: transparent;
+
+		td {
+			padding: 0 !important;
+		}
+
+		> table {
+			tr:nth-child(2) {
+				> td {
+					> div {
+						width: 100% !important;
+					}
+				}
+			}
+		}
+	}
+
+	.ext-ux-wiz-Header-title {
+		font-size: 14px;
+		font-weight: 400 !important;
+		background: transparent;
+		color: red;
+		padding-top: 0 !important;
+		display: none;
+	}
+
+
+	.x-window-body {
+		.x-progress-inner {
+			height: 27px;
+		}
+
+		.x-progress-bar {
+			background: #089a76;
+			border: none;
+			height: 100%;
+		}
+
+		.x-progress-text {
+			padding: 5px;
+			font-size: 14px;
+		}
+
+		.x-progress-text-back {
+			top: 2px;
+			left: 1px;
+		}
+	}
+
+	.x-window-bbar {
+		width: 100% !important;
+		border: none;
+		background: transparent;
+
+		> div {
+			width: 100% !important;
+			border: none;
+			background: transparent;
+
+			.x-toolbar-left {
+				> table {
+					float: right;
+
+					.button-cancel {
+						position: absolute;
+						left: 0;
+						top: 0;
+					}
+
+					@include _button(".button-next", "ACTIONBAR---SUGGESTED", "remove-icons");
+					@include _button(".button-previous", "ACTIONBAR---SECONDARY", "remove-icons");
+
+					.button-previous {
+						&.x-item-disabled {
+							display: none;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	.x-grid3-body {
+		padding-top: 10px;
+		height: calc(100% - 30px) !important;
+	}
 }

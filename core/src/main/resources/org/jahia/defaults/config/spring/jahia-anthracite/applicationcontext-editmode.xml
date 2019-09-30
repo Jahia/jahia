@@ -103,8 +103,6 @@
                                         <ref bean="Toolbar.Item.Preview"/>
                                         <ref bean="Toolbar.Item.PreviewAsGuest"/>
                                         <ref bean="Toolbar.Item.ShowCompareEngine"/>
-                                        <ref bean="Toolbar.Item.ShowVersionEngine"/>
-                                        <ref bean="Toolbar.Item.ShowConsultPreviousVersionEngine"/>
                                     </list>
                                 </property>
                             </bean>

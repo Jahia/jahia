@@ -47,8 +47,6 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
-import java.util.List;
-
 /**
  * Edit engine custom configuration
  * Used when calling edit engine from JNSI exposed functions
@@ -57,14 +55,29 @@ public class EditEngineJSConfig extends JavaScriptObject {
 
     protected EditEngineJSConfig() {}
 
-    public final native boolean hideWip() /*-{ return this.hideWip; }-*/;
+    public static native EditEngineJSConfig getDefaultJSConfig() /*-{ return {}; }-*/;
 
-    public final native boolean  hideHeaders() /*-{ return this.hideHeaders; }-*/;
+    /**
+     * hide the WIP buttons
+     * Default value "false"
+     */
+    public final native boolean hideWip() /*-{ return !!this.hideWip; }-*/;
 
-    public final native JsArrayString getDisplayedTabs() /*-{ return this.displayedTabs; }-*/;
+    /**
+     * hide the tabs header
+     * Default value "false"
+     */
+    public final native boolean hideHeaders() /*-{ return !!this.hideHeaders; }-*/;
 
-    public final List<String> getTabs() {
-        return MainModule.convertArray(getDisplayedTabs());
+    /**
+     * Check if the given tab should be displayed or not
+     * @param tabId the given tab
+     * @return true if the tab should be displayed
+     */
+    public final boolean isTabDisplayed(String tabId) {
+        JsArrayString tabs = getDisplayedTabs();
+        return tabs == null || MainModule.convertArray(tabs).contains(tabId);
     }
 
+    private native JsArrayString getDisplayedTabs() /*-{ return this.displayedTabs; }-*/;
 }

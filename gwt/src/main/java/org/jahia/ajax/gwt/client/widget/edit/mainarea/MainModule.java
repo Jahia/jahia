@@ -590,7 +590,6 @@ public class MainModule extends Module {
     }
 
     public static void editContent(String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, String uuid, boolean skipRefreshOnSave, EditEngineJSConfig jsConfig) {
-
         GWTJahiaNode node = getGwtJahiaNode(uuid, path, displayName, nodeTypes, inheritedNodeTypes);
         if (node.getDisplayName() != null) {
             EditLinker.setSelectionOnBodyAttributes(node);
@@ -642,7 +641,7 @@ public class MainModule extends Module {
 
             @Override
             public void handleEvent(MessageBoxEvent event) {
-                if (event.getButtonClicked().getItemId().equalsIgnoreCase   (Dialog.YES)) {
+                if (event.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.YES)) {
                     JahiaContentManagementService.App.getInstance().undeletePaths(Collections.singletonList(path), new BaseAsyncCallback<Object>() {
 
                         @Override
@@ -800,10 +799,8 @@ public class MainModule extends Module {
 
     public static List<String> convertArray(JsArrayString jsArrayString) {
         ArrayList<String> l = new ArrayList<String>();
-        if (jsArrayString != null) {
-            for (int i = 0; i < jsArrayString.length(); i++) {
-                l.add((String) jsArrayString.get(i));
-            }
+        for (int i = 0; i < jsArrayString.length(); i++) {
+            l.add((String) jsArrayString.get(i));
         }
         return l;
     }
@@ -1550,10 +1547,6 @@ public class MainModule extends Module {
     public InfoLayers getInfoLayers() {
         return infoLayers;
     }
-
-    private static native EditEngineJSConfig getEditEngineJSConfig(String jsonConfig) /*-{
-        return jsonConfig;
-    }-*/;
 
     private native boolean supportPushState() /*-{
         if ($wnd.history && $wnd.history.pushState) {

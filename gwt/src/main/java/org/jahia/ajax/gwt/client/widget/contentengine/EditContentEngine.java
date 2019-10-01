@@ -103,7 +103,10 @@ public class EditContentEngine extends AbstractContentEngine {
         contentPath = node.getPath();
         nodeName = node.getName();
         this.node = node;
-        this.jsConfig = jsConfig;
+
+        // initialize JS config
+        this.jsConfig = jsConfig == null ? EditEngineJSConfig.getDefaultJSConfig() : jsConfig;
+
         init(engineContainer);
         loadEngine();
 
@@ -148,8 +151,7 @@ public class EditContentEngine extends AbstractContentEngine {
         tabs.setId("JahiaGxtEditEngineTabs");
         for (GWTEngineTab tabConfig : config.getEngineTabs()) {
             EditEngineTabItem tabItem = tabConfig.getTabItem();
-            boolean displayTab = jsConfig.getTabs().isEmpty() || jsConfig.getTabs().contains(tabConfig.getId());
-            if (displayTab && tabConfig.showInEngine() && (tabConfig.getRequiredPermission() == null || PermissionsUtils.isPermitted(tabConfig.getRequiredPermission(), JahiaGWTParameters.getSiteNode()))) {
+            if (jsConfig.isTabDisplayed(tabConfig.getId()) && tabConfig.showInEngine() && (tabConfig.getRequiredPermission() == null || PermissionsUtils.isPermitted(tabConfig.getRequiredPermission(), JahiaGWTParameters.getSiteNode()))) {
                 if ((tabItem.getHideForTypes().isEmpty() || !node.isNodeType(tabItem.getHideForTypes())) &&
                         ((hasOrderableChildNodes && tabItem.isOrderableTab()) || (!tabItem.isOrderableTab() && (tabItem.getShowForTypes().isEmpty() || node.isNodeType(tabItem.getShowForTypes()))))) {
                     AsyncTabItem tab = tabItem.create(tabConfig, this);
@@ -170,8 +172,8 @@ public class EditContentEngine extends AbstractContentEngine {
     @Override
     protected void initFooter() {
         for (ButtonItem buttonItem : config.getEditionButtons()) {
-            BoxComponent button = buttonItem.create(this);
-            if (!(buttonItem instanceof WorkInProgressButtonItem) || !(jsConfig != null && jsConfig.hideWip())) {
+            if (!(buttonItem instanceof WorkInProgressButtonItem) || !jsConfig.hideWip()) {
+                BoxComponent button = buttonItem.create(this);
                 buttons.add(button);
                 buttonBar.add(button);
             }
@@ -225,6 +227,7 @@ public class EditContentEngine extends AbstractContentEngine {
                 if (closed) {
                     return;
                 }
+
                 if (jsConfig.hideHeaders()) {
                     container.getPanel().getHeader().hide();
                     tabs.setBorders(false);

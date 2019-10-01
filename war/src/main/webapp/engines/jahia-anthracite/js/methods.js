@@ -406,7 +406,7 @@ var DX_app = {
      *  - In addition to class modifications, the DOM tree is also modified when switching
      */
     updateGWTMenus: function () {
-        DX_app.dev.log('::: APP ::: UPDATEGWTMENUS', true);
+        DX_app.dev.log('::: APP ::: UPDATEGWTMENUS');
 
         var targetMenu = document.querySelectorAll('.edit-menu-centertop .x-toolbar-left-row')[0],
             statusMenuButton = document.querySelectorAll('.edit-menu-status')[0],
@@ -1424,7 +1424,6 @@ var DX_app = {
              * TO DO
              */
             onClick: function () {
-                console.log("im here now -keep watching");
                 DX_app.dev.log('::: APP ::: PICKER ::: ROW ::: ONCLICK');
                 DexV2.class('toolbar-item-filepreview').setAttribute('indigo-preview-button-state', 'selected');
             },
@@ -2439,6 +2438,7 @@ var DX_app = {
                     elements.moreInfo.style) {
                     elements.moreInfo.style.opacity = 0;
                 }
+
             }
         },
         /**
@@ -2449,6 +2449,10 @@ var DX_app = {
          * @returns {boolean}
          */
         onChange: function (attrKey, attrValue) {
+            if(DX_app.data.currentApp == 'edit'){
+                DexV2.getCached('body').setAttribute("data-edit-mode-status", "initialised");
+            }
+
             if (DX_app.iframe.data.displayName == attrValue || DX_app.data.currentApp == 'studio') {
                 return false;
             }
@@ -2895,6 +2899,12 @@ var DX_app = {
          */
         onNewSite: function(){
             DX_app.dev.log("app ::: edit ::: onNewSite (disabled the dodgy code )");
+
+            // Flag that a new site has been loaded
+            DX_app.edit.sidepanel.data.newSite = true;
+
+            DexV2.getCached('body').setAttribute("data-edit-mode-status", "loading");
+
             DX_app.common.resizeSiteSelector();
         },
         /**
@@ -2950,7 +2960,9 @@ var DX_app = {
          * Callback executed when witching to the Edit Mode
          */
         onOpen: function () {
-            DX_app.dev.log('::: APP ::: EDIT ::: ONOPEN', true);
+            DX_app.dev.log('::: APP ::: EDIT ::: ONOPEN');
+
+            DexV2.getCached('body').setAttribute("data-edit-mode-status", "loading");
 
             // Add Background mask used for modals
             if(!DexV2.class('background-mask').exists()){
@@ -3032,7 +3044,9 @@ var DX_app = {
         /**
          * Callback executes when leaving the Edit Mode
          */
-        onClose: function () {},
+        onClose: function () {
+            DexV2.getCached('body').setAttribute("data-edit-mode-status", null);
+        },
         /**
          * Callback executed when the User changes page in Edit Mode
          */
@@ -4264,24 +4278,34 @@ var DX_app = {
                     onClick: function () {
                         DX_app.dev.log('APP ::: EDIT ::: SIDEPANEL ::: TAB ::: ONCLICK');
 
+                        if(DexV2.node(this).getAttribute('id') == 'JahiaGxtSidePanelTabs__JahiaGxtSettingsTab' && DexV2.getCached('body').getAttribute('data-edit-mode-status') !== 'initialised'){
+                            // Edit Mode has not yet finsihed loading the page, so just ignore clicks on settings button until it is ready
+                            return false;
+                        }
+
                         // User has clicked on one of the side panel tabs (except for Settings Tab which calls eventHandlers.clickSidePanelSettingsTab)
                         var clickedTabID = DexV2.node(this).getAttribute('id');
 
                         DX_app.edit.sidepanel.data.previousTab = DX_app.edit.sidepanel.data.currentTab;
                         DX_app.edit.sidepanel.data.currentTab = clickedTabID;
 
-                        if (DX_app.edit.sidepanel.data.previousTab === DX_app.edit.sidepanel.data.currentTab) {
-                            if (DexV2.getCached('body').getAttribute('data-sitesettings') == 'true'
-                                && clickedTabID !== 'JahiaGxtSidePanelTabs__JahiaGxtSettingsTab') {
-                                setTimeout(function () {
-                                    DexV2.id('JahiaGxtSidePanelTabs__JahiaGxtSettingsTab').trigger('mousedown').trigger('mouseup').trigger('click');
-                                }, 0);
-                            } else if (DexV2.getCached('body').getAttribute('data-sitesettings') !== 'true'
-                                && DexV2.getCached('body').getAttribute('data-indigo-sidepanel-pinned') == 'true'
-                                && clickedTabID === 'JahiaGxtSidePanelTabs__JahiaGxtSettingsTab') {
-                                setTimeout(function () {
-                                    DexV2.id('JahiaGxtSidePanelTabs__JahiaGxtPagesTab').trigger('mousedown').trigger('mouseup').trigger('click');
-                                }, 0);
+                        if(DX_app.edit.sidepanel.data.newSite){
+                            DX_app.edit.sidepanel.data.newSite = false;
+
+                        } else {
+                            if (DX_app.edit.sidepanel.data.previousTab === DX_app.edit.sidepanel.data.currentTab) {
+                                if (DexV2.getCached('body').getAttribute('data-sitesettings') == 'true'
+                                    && clickedTabID !== 'JahiaGxtSidePanelTabs__JahiaGxtSettingsTab') {
+                                    setTimeout(function () {
+                                        DexV2.id('JahiaGxtSidePanelTabs__JahiaGxtSettingsTab').trigger('mousedown').trigger('mouseup').trigger('click');
+                                    }, 0);
+                                } else if (DexV2.getCached('body').getAttribute('data-sitesettings') !== 'true'
+                                    && DexV2.getCached('body').getAttribute('data-indigo-sidepanel-pinned') == 'true'
+                                    && clickedTabID === 'JahiaGxtSidePanelTabs__JahiaGxtSettingsTab') {
+                                    setTimeout(function () {
+                                        DexV2.id('JahiaGxtSidePanelTabs__JahiaGxtPagesTab').trigger('mousedown').trigger('mouseup').trigger('click');
+                                    }, 0);
+                                }
                             }
                         }
 

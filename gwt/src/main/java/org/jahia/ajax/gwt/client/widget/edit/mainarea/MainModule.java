@@ -88,6 +88,7 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.content.DeleteItemWindow;
 import org.jahia.ajax.gwt.client.widget.content.util.ContentHelper;
 import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEnginePopupListener;
+import org.jahia.ajax.gwt.client.widget.contentengine.EditEngineJSConfig;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.contentengine.TranslateContentEngine;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
@@ -588,12 +589,12 @@ public class MainModule extends Module {
                 includeSubTypes, skipRefreshOnSave);
     }
 
-    public static void editContent(String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, String uuid, boolean skipRefreshOnSave) {
+    public static void editContent(String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, String uuid, boolean skipRefreshOnSave, EditEngineJSConfig jsConfig) {
         GWTJahiaNode node = getGwtJahiaNode(uuid, path, displayName, nodeTypes, inheritedNodeTypes);
         if (node.getDisplayName() != null) {
             EditLinker.setSelectionOnBodyAttributes(node);
         }
-        EngineLoader.showEditEngine(getInstance().getEditLinker(), node, null, skipRefreshOnSave);
+        EngineLoader.showEditEngine(getInstance().getEditLinker(), node, null, skipRefreshOnSave, jsConfig);
     }
 
     public static void deleteContent(String uuid, String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, boolean skipRefreshOnDelete, boolean deletePermanently) {
@@ -796,7 +797,7 @@ public class MainModule extends Module {
         return nodes;
     }
 
-    private static List<String> convertArray(JsArrayString jsArrayString) {
+    public static List<String> convertArray(JsArrayString jsArrayString) {
         ArrayList<String> l = new ArrayList<String>();
         for (int i = 0; i < jsArrayString.length(); i++) {
             l.add((String) jsArrayString.get(i));
@@ -1496,8 +1497,8 @@ public class MainModule extends Module {
                 @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::createContent(*)(path, types, true, skipRefreshOnSave);
             }
         };
-        nsAuthoringApi.editContent = $wnd.editContent = function (path, displayName, types, inheritedTypes, uuid, skipRefreshOnSave) {
-            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::editContent(*)(path, displayName, types, inheritedTypes, uuid, skipRefreshOnSave);
+        nsAuthoringApi.editContent = $wnd.editContent = function (path, displayName, types, inheritedTypes, uuid, skipRefreshOnSave, jsConfig) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::editContent(*)(path, displayName, types, inheritedTypes, uuid, skipRefreshOnSave, jsConfig);
         };
         nsAuthoringApi.deleteContent = $wnd.deleteContent = function (uuid, path, displayName, types, inheritedTypes, skipRefreshOnDelete, deletePermanently) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::deleteContent(*)(uuid, path, displayName, types, inheritedTypes, skipRefreshOnDelete, deletePermanently);

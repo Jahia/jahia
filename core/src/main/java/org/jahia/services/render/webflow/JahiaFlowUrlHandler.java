@@ -105,6 +105,8 @@ public class JahiaFlowUrlHandler extends DefaultFlowUrlHandler {
                 if (forcedLocale != null) {
                     params.put(WebflowAction.WEBFLOW_LOCALE_PARAMETER, forcedLocale.toString());
                 }
+                String token = (String) request.getAttribute(WebflowTokenListener.WEBFLOW_TOKEN);
+                params.put(WebflowTokenListener.WEBFLOW_TOKEN, token);
                 appendQueryParameters(path, params, getEncodingScheme(request));
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);

@@ -117,7 +117,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>${project.version}</version>
+            <version>7.2.3.7-SNAPSHOT</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -157,7 +157,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-gwt</artifactId>
-            <version>${project.version}</version>
+            <version>7.2.3.7-SNAPSHOT</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -341,7 +341,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-taglib</artifactId>
-            <version>${project.version}</version>
+            <version>7.2.3.7-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

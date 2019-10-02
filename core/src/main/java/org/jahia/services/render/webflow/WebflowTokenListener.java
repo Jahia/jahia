@@ -45,7 +45,10 @@ package org.jahia.services.render.webflow;
 
 import org.apache.commons.id.uuid.UUID;
 import org.springframework.webflow.core.collection.MutableAttributeMap;
-import org.springframework.webflow.execution.*;
+import org.springframework.webflow.execution.Event;
+import org.springframework.webflow.execution.FlowExecutionListenerAdapter;
+import org.springframework.webflow.execution.FlowSession;
+import org.springframework.webflow.execution.RequestContext;
 
 import javax.servlet.ServletRequest;
 
@@ -65,7 +68,7 @@ public class WebflowTokenListener extends FlowExecutionListenerAdapter {
     }
 
     @Override
-    public void requestProcessed(RequestContext context) {
+    public void requestSubmitted(RequestContext context) {
         if (context.inViewState()) {
             String token = (String) context.getFlowScope().get(WEBFLOW_TOKEN);
             ((ServletRequest) context.getExternalContext().getNativeRequest()).setAttribute(WEBFLOW_TOKEN, token);

@@ -11,5 +11,9 @@ war/src/main/webapp/engines/jahia-anthracite/*.css*
 .externalToolBuilders
 war/src/main/webapp/engines/jahia-anthracite/package-lock.json
 war/src/main/webapp/engines/jahia-anthracite/node_modules/
-war/src/main/webapp/engines/jahia-anthracite/gulpfile.js
+war/src/main/webapp/engines/jahia-anthracite/js/dist
+war/src/main/webapp/engines/jahia-anthracite/css/*.css
+war/src/main/webapp/engines/jahia-anthracite/css/*.map
+war/node
+war/node_modules
 .DS_Store

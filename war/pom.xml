@@ -835,9 +835,6 @@
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
                 <version>1.6</version>
-                <configuration>
-                    <workingDirectory>src/main/webapp/engines/jahia-anthracite</workingDirectory>
-                </configuration>
                 <executions>
                     <execution>
                         <id>npm install node and yarn</id>

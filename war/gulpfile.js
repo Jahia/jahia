@@ -8,28 +8,35 @@ const concat = require('gulp-concat');
 const watch = require('gulp-watch');
 const gutil = require('gulp-util');
 
-const jsFiles = ['js/dependencies.js', 'js/methods.js', 'js/eventListeners.js', 'js/localisedString.js', 'js/edit.js'];
-const jsDest = 'js/dist';
+const anthraciteRootDir = 'src/main/webapp/engines/jahia-anthracite';
+const anthraciteJsDir = anthraciteRootDir + '/js';
+const jsFiles = [
+    anthraciteJsDir + '/dependencies.js',
+    anthraciteJsDir + '/methods.js',
+    anthraciteJsDir + '/eventListeners.js',
+    anthraciteJsDir + '/localisedString.js',
+    anthraciteJsDir + '/edit.js'];
+const anthraciteJsDistDir = anthraciteJsDir + '/dist';
 
 gulp.task('concat', () => {
     return gulp.src(jsFiles)
         .pipe(concat('anthracite.js'))
-        .pipe(gulp.dest(jsDest));
+        .pipe(gulp.dest(anthraciteJsDistDir));
 });
 
 gulp.task('build', done => {
-    gulp.src(['js/dist/anthracite.js'])
+    gulp.src([anthraciteJsDistDir + '/anthracite.js'])
         .pipe(minify())
         .pipe(uglify())
         .pipe(javascriptObfuscator({
             compact: true
         }))
-        .pipe(gulp.dest('./js/dist/build/'));
+        .pipe(gulp.dest('./' + anthraciteJsDistDir + '/build/'));
     done();
 });
 
 gulp.task('watch', () => {
-    return watch('js/*.js', function () {
+    return watch(anthraciteJsDir + '/*.js', function () {
         const h = new Date().getHours();
         const m = new Date().getMinutes();
         const s = new Date().getSeconds();
@@ -41,8 +48,8 @@ gulp.task('watch', () => {
         } else {
             gulp.src(jsFiles)
                 .pipe(concat('anthracite.js'))
-                .pipe(gulp.dest(jsDest));
-            gulp.src(['js/dist/anthracite.js'])
+                .pipe(gulp.dest(anthraciteJsDistDir));
+            gulp.src([anthraciteJsDistDir + '/anthracite.js'])
                 .pipe(minify())
                 .pipe(uglify())
                 .pipe(javascriptObfuscator({

@@ -59,35 +59,35 @@
         <dependency>
             <groupId>org.jahia.features</groupId>
             <artifactId>dx-gemini-blueprint</artifactId>
-            <version>7.3.3.0-SNAPSHOT</version>
+            <version>${project.version}</version>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
         <dependency>
             <groupId>org.jahia.features</groupId>
             <artifactId>dx-jax-rs</artifactId>
-            <version>7.3.3.0-SNAPSHOT</version>
+            <version>${project.version}</version>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
         <dependency>
             <groupId>org.jahia.features</groupId>
             <artifactId>dx-jackson</artifactId>
-            <version>7.3.3.0-SNAPSHOT</version>
+            <version>${project.version}</version>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
         <dependency>
             <groupId>org.jahia.features</groupId>
             <artifactId>dx-graphql</artifactId>
-            <version>7.3.3.0-SNAPSHOT</version>
+            <version>${project.version}</version>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
         <dependency>
             <groupId>org.jahia.features</groupId>
             <artifactId>dx-core</artifactId>
-            <version>7.3.3.0-SNAPSHOT</version>
+            <version>${project.version}</version>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>

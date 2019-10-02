@@ -201,10 +201,18 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
     }
 
     private String removeWebflowParameter(String path) {
+        String[] paramsToremove = {"webflowexecution", "webflowToken", "webflowLocale"};
+        for (String param : paramsToremove) {
+            path = removePathParameter(path, param);
+        }
+        return path;
+    }
+
+    private String removePathParameter(String path, String parameter) {
         if (path == null) {
             return null;
         }
-        int index = path.indexOf("webflowexecution");
+        int index = path.indexOf(parameter);
         String newPath = path;
         if (index > -1) {
             newPath = path.substring(0, index);

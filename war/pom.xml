@@ -294,25 +294,25 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>7.2.3.7-SNAPSHOT</version>
+            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-api</artifactId>
-            <version>7.2.3.7-SNAPSHOT</version>
+            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-taglib</artifactId>
-            <version>7.2.3.7-SNAPSHOT</version>
+            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-gwt</artifactId>
-            <version>7.2.3.7-SNAPSHOT</version>
+            <version>${project.version}</version>
             <type>war</type>
             <scope>compile</scope>
         </dependency>

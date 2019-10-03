@@ -422,7 +422,7 @@
 
 [jmix:canBeUseAsTemplateModel] mixin
 extends = jnt:page
-itemtype = content
+itemtype = options
  - j:pageTemplateTitle (string) i18n mandatory
  - j:copySubPages (boolean)
 

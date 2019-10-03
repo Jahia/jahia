@@ -2856,6 +2856,7 @@ body[indigo-dragging-panel="true"] {
                 right: 95px !important;
                 @include _combo(LIGHT);
                 transition: none;
+                left: auto!important;
 
                 body[data-indigo-is-manager="true"][data-indigo-picker-search="open"] & {
                     right: 5px !important;

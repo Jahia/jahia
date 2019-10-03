@@ -1963,6 +1963,7 @@ form,
 
         tr {
             margin-bottom: 1px;
+            display: table-row;
         }
     }
 
@@ -2075,7 +2076,8 @@ form,
     .cke_dialog_ui_hbox:not(.cke_dialog_footer_buttons) .cke_dialog_ui_hbox {
         > td:not([style="width:320px"]):not([style="width:90px"]) {
             display: block !important;
-            width: 100% !important;
+            width: auto!important;
+            position: relative;
         }
     }
 

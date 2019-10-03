@@ -1256,6 +1256,10 @@ form,
                     opacity: 1;
                     background-color: #007cb0 !important;
                 }
+
+                &.readOnly {
+                    color: #454545!important;
+                }
             }
 
             .x-grid3-col-size,

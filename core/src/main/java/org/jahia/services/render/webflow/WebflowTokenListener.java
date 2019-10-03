@@ -63,17 +63,19 @@ public class WebflowTokenListener extends FlowExecutionListenerAdapter {
     public void sessionStarting(RequestContext context, FlowSession session, MutableAttributeMap<?> input) {
         String token = UUID.randomUUID().toString();
         context.getFlowScope().put(WEBFLOW_TOKEN, token);
-
+        storeToken(context, token);
         super.sessionStarting(context, session, input);
     }
 
     @Override
-    public void requestSubmitted(RequestContext context) {
-        if (context.inViewState()) {
-            String token = (String) context.getFlowScope().get(WEBFLOW_TOKEN);
-            ((ServletRequest) context.getExternalContext().getNativeRequest()).setAttribute(WEBFLOW_TOKEN, token);
-        }
-        super.requestProcessed(context);
+    public void resuming(RequestContext context) {
+        String token = (String) context.getFlowScope().get(WEBFLOW_TOKEN);
+        storeToken(context, token);
+        super.resuming(context);
+    }
+
+    private void storeToken(RequestContext context, String token) {
+        ((ServletRequest) context.getExternalContext().getNativeRequest()).setAttribute(WEBFLOW_TOKEN, token);
     }
 
     @Override

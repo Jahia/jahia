@@ -2600,34 +2600,51 @@ var DX_app = {
             }
         },
         /**
+         * Calculate width of text on screen
+        */
+        calculateTextWidth: function(params){
+            var canvas = document.createElement("canvas"),
+                ctx = canvas.getContext("2d");
+
+            ctx.font = params.fontSize + "px " + params.fontFace;
+
+            return ctx.measureText(params.text).width + params.padding;
+        },
+        /**
+         * Resize the width of the language selector when site is changed
+         */
+        resizeLanguageInput: function () {
+            DX_app.dev.log("app ::: common ::: resizeLanguageInput");
+
+            if(DexV2('.toolbar-itemsgroup-languageswitcher input').exists() && DX_app.data.currentApp == "edit"){
+                var languageInputValue = DexV2('.toolbar-itemsgroup-languageswitcher input').nodes[0].value,
+                    width = DX_app.common.calculateTextWidth({
+                        text: languageInputValue,
+                        fontSize: 14,
+                        fontFace: "Raleway",
+                        padding: 15
+                    });
+
+                DexV2('.toolbar-itemsgroup-languageswitcher').nodes[0].style.setProperty('width', (width + 'px'), 'important');
+            }
+        },
+        /**
          * Resize the width of the site selector when site is changed
          */
         resizeSiteSelector: function () {
-            var languageInput = DexV2('.edit-menu-sites input');
-            if (languageInput.nodes[0]) {
-                var languageInputValue = DexV2('.edit-menu-sites input').nodes[0].value;
-                var wideChars = 'ABCDEFGHJKLMNOPQRSTUVWXYZ ';
-                var mediumChars = 'abcdefghkmnopqrstuvwxyzI';
-                var slimChars = 'ijl';
+            DX_app.dev.log("app ::: common ::: resizeSiteSelector");
 
-                var textWidth = function (languageInputValue) {
-                    var returnWidth = 0;
+            if(DexV2('.edit-menu-sites input').exists() && DX_app.data.currentApp == "edit"){
+                var siteInputValue = DexV2('.edit-menu-sites input').nodes[0].value,
+                    width = DX_app.common.calculateTextWidth({
+                        text: siteInputValue,
+                        fontSize: 14,
+                        fontFace: "Raleway",
+                        padding: 15
+                    });
 
-                    for (var charIndex in languageInputValue) {
-                        var isWide = (wideChars.indexOf(languageInputValue[charIndex]) > -1) ? 10 : 0;
-                        var isMedium = (mediumChars.indexOf(languageInputValue[charIndex]) > -1) ? 9 : 0;
-                        var isSlim = (slimChars.indexOf(languageInputValue[charIndex]) > -1) ? 3 : 0;
-                        var addWidth = (isWide + isMedium + isSlim);
-                        returnWidth = returnWidth + (addWidth || 10);
-
-                    }
-
-                    return returnWidth;
-                }(languageInputValue);
-
-                DexV2('.edit-menu-sites').nodes[0].style.setProperty('width', ((textWidth + 15) + 'px'), 'important');
+                DexV2('.edit-menu-sites').nodes[0].style.setProperty('width', (width + 'px'), 'important');
             }
-
         }
     },
     /**
@@ -2859,7 +2876,7 @@ var DX_app = {
             // Setup the alternative channels system
             DX_app.edit.sidepanel.initChannels();
 
-            DX_app.edit.resizeLanguageInput();
+            DX_app.common.resizeLanguageInput();
 
             if (DexV2.id('JahiaGxtSidePanelTabs').exists()) {
                 DexV2.id('JahiaGxtSidePanelTabs').nodes[0].style.setProperty('width', '360px', 'important');
@@ -2894,6 +2911,11 @@ var DX_app = {
             },
             returnURL: null
         },
+        onNewPage: function(){
+            DX_app.dev.log("app ::: edit ::: onNewPage");
+            DX_app.common.resizeLanguageInput();
+            DX_app.common.resizeSiteSelector();
+        },
         /**
          * Callback executed when the site is changed in the Edit Mode
          */
@@ -2925,43 +2947,10 @@ var DX_app = {
           DexV2.class("publication-status-tooltip").toggleClass("indigo-show");
         },
         /**
-         * Resize the width of the language selector when site is changed
-         */
-        resizeLanguageInput: function () {
-            var languageInput = DexV2('.toolbar-itemsgroup-languageswitcher input');
-
-            if (languageInput.nodes[0]) {
-                var languageInputValue = DexV2('.toolbar-itemsgroup-languageswitcher input').nodes[0].value;
-
-                var wideChars = 'ABCDEFGHJKLMNOPQRSTUVWXYZ';
-                var mediumChars = 'abcdefghkmnopqrstuvwxyzI';
-                var slimChars = 'ijl';
-
-                var textWidth = function (languageInputValue) {
-                    var returnWidth = 0;
-
-                    for (var charIndex in languageInputValue) {
-                        var isWide = (wideChars.indexOf(languageInputValue[charIndex]) > -1) ? 10 : 0;
-                        var isMedium = (mediumChars.indexOf(languageInputValue[charIndex]) > -1) ? 9 : 0;
-                        var isSlim = (slimChars.indexOf(languageInputValue[charIndex]) > -1) ? 3 : 0;
-                        var addWidth = (isWide + isMedium + isSlim);
-
-                        returnWidth = returnWidth + (addWidth || 10);
-                    }
-
-                    return returnWidth;
-
-                }(languageInputValue);
-
-                DexV2('.toolbar-itemsgroup-languageswitcher').nodes[0].style.setProperty('width', ((textWidth + 15) + 'px'), 'important');
-            }
-        },
-        /**
          * Callback executed when witching to the Edit Mode
          */
         onOpen: function () {
             DX_app.dev.log('::: APP ::: EDIT ::: ONOPEN');
-
             DexV2.getCached('body').setAttribute("data-edit-mode-status", "loading");
 
             // Add Background mask used for modals
@@ -3026,7 +3015,7 @@ var DX_app = {
             // Setup the alternative channels system
             DX_app.edit.sidepanel.initChannels();
 
-            DX_app.edit.resizeLanguageInput();
+            DX_app.common.resizeLanguageInput();
 
             if (DexV2.id('JahiaGxtSidePanelTabs').exists()) {
                 DexV2.id('JahiaGxtSidePanelTabs').nodes[0].style.setProperty('width', '60px', 'important');

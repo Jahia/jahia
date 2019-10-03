@@ -36,10 +36,10 @@ var DX_eventListeners = {
             /**
              * Target: body
              * Attribute: data-langdisplayname
-             * Callback: => app.edit.resizeLanguageInput
+             * Callback: => app.common.resizeLanguageInput
              */
-            .onAttribute('body', 'data-lang', app.edit.resizeLanguageInput)
-            .onAttribute('body', 'data-sitekey', app.edit.resizeLanguageInput)
+            .onAttribute('body', 'data-lang', app.common.resizeLanguageInput)
+            .onAttribute('body', 'data-sitekey', app.common.resizeLanguageInput)
             /**
              * Target: Splitter bar in pickers
              * Attribute: style
@@ -439,6 +439,12 @@ var DX_eventListeners = {
              * Callback: app.contribute.onChangeMode
              */
             .onAttribute('body', 'data-main-node-path', app.contribute.onChangeMode)
+            /**
+             * Target: Body
+             * Attribute data-main-node-path
+             * Callback: app.contribute.onChangeMode
+             */
+            .onAttribute('body', 'data-main-node-path', app.edit.onNewPage)
             /**
              * Target: .window-iframe
              * Attribute: src

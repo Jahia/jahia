@@ -639,6 +639,10 @@ body[data-indigo-app="contribute"] {
     body[data-multiselect="on"] & {
         display: none;
     }
+
+    body[data-sitesettings="true"] & {
+        display: none;
+    }
 }
 
 

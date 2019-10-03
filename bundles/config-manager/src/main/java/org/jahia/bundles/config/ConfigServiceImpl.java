@@ -49,6 +49,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.*;
 import org.jahia.services.modulemanager.ModuleManagementException;
+import org.jahia.services.modulemanager.persistence.jcr.BundleInfoJcrHelper;
 import org.jahia.services.modulemanager.spi.ConfigService;
 import org.jahia.settings.SettingsBean;
 import org.osgi.framework.InvalidSyntaxException;
@@ -116,7 +117,7 @@ public class ConfigServiceImpl implements ConfigService, ConfigurationListener {
             return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Collection<String>>() {
                 @Override
                 public Collection<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    JCRNodeWrapper moduleManagement = session.getNode("/module-management");
+                    JCRNodeWrapper moduleManagement = BundleInfoJcrHelper.getRootNode(session);
                     if (!moduleManagement.hasNode(CONFIGS_NODE_NAME)) {
                         moduleManagement.addNode(CONFIGS_NODE_NAME, "jnt:configurationsFolder");
                     }

@@ -44,7 +44,10 @@
 package org.jahia.services.modulemanager.persistence.jcr;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.services.content.*;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.BundlePersistentInfo;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
@@ -58,7 +61,6 @@ import pl.touk.throwing.ThrowingFunction;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -271,7 +273,7 @@ final public class BundleInfoJcrHelper {
      * @return the module manager JCR root node, creating it if does not exist yet
      * @throws RepositoryException in case of JCR errors
      */
-    private static JCRNodeWrapper getRootNode(JCRSessionWrapper session) throws RepositoryException {
+    public static JCRNodeWrapper getRootNode(JCRSessionWrapper session) throws RepositoryException {
         JCRNodeWrapper root = null;
         try {
             root = session.getNode(PATH_MODULE_MANAGEMENT);

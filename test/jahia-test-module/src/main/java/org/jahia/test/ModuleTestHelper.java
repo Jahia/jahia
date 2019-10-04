@@ -111,6 +111,11 @@ public class ModuleTestHelper {
         jahia.setSnapshots(snapshots);
         jahiaProfile.addRepository(jahia);
 
+        jahia = new Repository();
+        jahia.setId("jahia-internal");
+        jahia.setUrl("https://devtools.jahia.com/nexus/content/groups/internal");
+        jahiaProfile.addRepository(jahia);
+
         settings.addProfile(jahiaProfile);
         settings.addActiveProfile("jahia");
 
@@ -231,7 +236,7 @@ public class ModuleTestHelper {
         }
         return prepackagedSiteFile.getAbsolutePath();
     }
-    
+
     private static String getPrepackagedSiteInBundle(String prepackedZIPFile) {
         for (final JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService()
                 .getAvailableTemplatePackages()) {

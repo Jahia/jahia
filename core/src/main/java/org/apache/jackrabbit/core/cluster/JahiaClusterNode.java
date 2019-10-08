@@ -45,9 +45,7 @@ package org.apache.jackrabbit.core.cluster;
 
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.journal.*;
-import org.apache.jackrabbit.core.state.ChangeLog;
 import org.apache.jackrabbit.core.state.ItemState;
-import org.apache.jackrabbit.core.state.NodeReferences;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -277,11 +275,6 @@ public class JahiaClusterNode extends ClusterNode {
     }
 
     @Override
-    public void process(ChangeLogRecord record) {
-        super.process(new ChangeLogRecord(new ExternalChangeLog(record.getChanges()), record.getEvents(), null, record.getWorkspace(), record.getTimestamp(), record.getUserData()));
-    }
-
-    @Override
     public void process(NamespaceRecord record) {
         NodeTypeRegistry.getInstance().getNamespaces().put(record.getNewPrefix(), record.getUri());
         super.process(record);
@@ -390,28 +383,5 @@ public class JahiaClusterNode extends ClusterNode {
         }
 
         log.info("Read only mode is {} now.", (readOnly ? "ON" : "OFF"));
-    }
-
-    public static class ExternalChangeLog extends ChangeLog {
-
-        public ExternalChangeLog(ChangeLog changes) {
-
-            // It is essential to keep this order of deleted/modified/added items processing, since
-            // "deleted"/"modified"/"added" method invocations modify each other's internal lists of
-            // deleted/modified/added items.
-            for (ItemState state : changes.deletedStates()) {
-                deleted(state);
-            }
-            for (ItemState state : changes.modifiedStates()) {
-                modified(state);
-            }
-            for (ItemState state : changes.addedStates()) {
-                added(state);
-            }
-
-            for (NodeReferences ref : changes.modifiedRefs()) {
-                modified(ref);
-            }
-        }
     }
 }

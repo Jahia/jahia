@@ -149,10 +149,10 @@ public class JahiaMixedISMLocking implements ISMLocking {
      */
     public WriteLock acquireWriteLock(ChangeLog changeLog)
             throws InterruptedException {
-        if (changeLog.getClass() != JahiaClusterNode.ExternalChangeLog.class) {
-            // Use global write lock if not external
-            changeLog = null;
-        }
+//        if (changeLog.getClass() != JahiaClusterNode.ExternalChangeLog.class) {
+//            // Use global write lock if not external
+//            changeLog = null;
+//        }
         for (;;) {
             Sync signal;
             // we want to become the current writer

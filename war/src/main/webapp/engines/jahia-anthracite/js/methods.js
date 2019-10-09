@@ -2452,7 +2452,15 @@ var DX_app = {
             if(DX_app.data.currentApp == 'edit'){
                 DexV2.getCached('body').setAttribute("data-edit-mode-status", "initialised");
 
-                DexV2.id("JahiaGxtSidePanelTabs__JahiaGxtPagesTab").trigger("click");
+                if(DX.edit.sidepanel.data.pinned){
+                    if( DX.edit.sidepanel.data.previousTab === "JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab" ||
+                        DX.edit.sidepanel.data.previousTab === "JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab" ||
+                        DX.edit.sidepanel.data.previousTab === "JahiaGxtSidePanelTabs__JahiaGxtSearchTab" ||
+                        DX.edit.sidepanel.data.previousTab === "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"){
+                            DexV2.id(DX.edit.sidepanel.data.previousTab).trigger("mousedown").trigger("mouseup");
+                    }
+                }
+
             }
 
             if (DX_app.iframe.data.displayName == attrValue || DX_app.data.currentApp == 'studio') {

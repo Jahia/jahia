@@ -969,16 +969,8 @@ body[data-indigo-app="contribute"] {
         }
     }
 
-    body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"] & {
-        background-image: url(../images/tabs-pages-dark@X2.png)
-    }
-
     body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-multiselect="on"] & {
         background-image: url(../images/icons/multiple_selection-grey@2x.png)
-    }
-
-    body[data-INDIGO-SIDEPANEL-PINNED="true"] & {
-        background-image: url(../images/tabs-publish-dark-2@X2.png);
     }
 
     &::after {
@@ -1397,7 +1389,6 @@ div.x-jahia-root {
 
     body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"] & {
         background-image: url(../images/tabs-trash-black@X2.png);
-        opacity: 0.59;
     }
 
     &::after {

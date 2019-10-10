@@ -60,6 +60,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.jcr.RepositoryException;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -202,7 +203,10 @@ public class ExternalUsersImportUpdater extends ImportFileUpdater {
             }
         }
 
-        Transformer xformer = TransformerFactory.newInstance().newTransformer();
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+        Transformer xformer = transformerFactory.newTransformer();
         xformer.transform(new DOMSource(doc), new StreamResult(outputStream));
 
         return nodes.getLength() > 0;
@@ -281,7 +285,10 @@ public class ExternalUsersImportUpdater extends ImportFileUpdater {
             pathMapping.put(mappingSrc.toString(), mappingDst.toString());
         }
 
-        Transformer xformer = TransformerFactory.newInstance().newTransformer();
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+        Transformer xformer = transformerFactory.newTransformer();
         xformer.transform(new DOMSource(doc), new StreamResult(outputStream));
 
         return nodes.getLength() > 0;

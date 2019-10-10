@@ -58,6 +58,8 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
+
+import javax.xml.XMLConstants;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
@@ -75,16 +77,18 @@ import java.util.regex.Pattern;
  */
 public class DiffHelper {
     private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(DiffHelper.class);
-    
-    private static final Pattern LIVE_WS_PATTERN = Pattern.compile("/"+ Constants.LIVE_WORKSPACE+"/"); 
+
+    private static final Pattern LIVE_WS_PATTERN = Pattern.compile("/"+ Constants.LIVE_WORKSPACE+"/");
 
     public String getHighlighted(String original, String amendment) {
         final StringWriter sw = new StringWriter();
 
         try {
 
-            final SAXTransformerFactory tf = (SAXTransformerFactory) TransformerFactory.newInstance();
-            final TransformerHandler result = tf.newTransformerHandler();
+            final SAXTransformerFactory transformerFactory = (SAXTransformerFactory) TransformerFactory.newInstance();
+            transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+            final TransformerHandler result = transformerFactory.newTransformerHandler();
             result.setResult(new StreamResult(sw));
 
             final XslFilter filter = new XslFilter();

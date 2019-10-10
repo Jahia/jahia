@@ -86,6 +86,7 @@ import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionManager;
 import javax.validation.ConstraintViolation;
 import javax.validation.groups.Default;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.SAXParser;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -1100,8 +1101,10 @@ public class JCRSessionWrapper implements Session {
      */
     private ContentHandler getExportContentHandler(OutputStream stream) throws RepositoryException {
         try {
-            SAXTransformerFactory stf = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
-            TransformerHandler handler = stf.newTransformerHandler();
+            SAXTransformerFactory transformerFactory = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
+            transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+            TransformerHandler handler = transformerFactory.newTransformerHandler();
 
             Transformer transformer = handler.getTransformer();
             transformer.setOutputProperty(OutputKeys.METHOD, "xml");

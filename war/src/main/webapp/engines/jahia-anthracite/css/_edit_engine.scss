@@ -505,6 +505,10 @@ div.engine-window {
 
 
     ////////// PERSONALISED TABS
+    .hide-headers #JahiaGxtEditEnginePanel-history > .x-component .x-panel:nth-child(1) .x-panel-bwrap .x-grid3-viewport .x-grid3-scroller .x-grid3-body {
+        left: 0;
+    }
+
     #JahiaGxtEditEnginePanel-history {
 
         // User has clicked on the details button, so set flag to display the panel

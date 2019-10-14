@@ -6,14 +6,14 @@
 <%@ attribute name="value" required="false" type="java.lang.String" description="The initial value." %>
 <%@ attribute name="match" required="false" type="java.lang.String" description="The match type for search terms. [as_is]" %>
 <%@ attribute name="searchIn" required="false" type="java.lang.String"
-              description="Comma separated list of fields to search in. [content]" %>
+              description="Comma separated list of fields to search in. Possibible options: siteContent, description, fileContent, filename, keywords, title, files (a shortcut for selecting file fields at once: description, fileContent, filename, keywords, title, tags) [siteContent]" %>
 <%@ attribute name="searchInAllowSelection" required="false" type="java.lang.Boolean"
               description="Do we need to display search fields options to allow user selection? [false]" %>
 <%@ attribute name="searchInSelectionOptions" required="false" type="java.lang.String"
               description="Comma separated list of fields to search in that are available for user selection.
               This option has effect only in case the searchInAllowSelection attribute is set to true. [siteContent,files]" %>
 <%@ attribute name="applyFilterOnWildcardTerm" required="false" type="java.lang.Boolean"
-              description="As Lucene omits running analysers on terms with wildcards, control whether Jahia should run the ISOLatin1AccentFilter on wildcard terms instead. [true]" %>              
+              description="As Lucene omits running analysers on terms with wildcards, control whether Jahia should run the ISOLatin1AccentFilter on wildcard terms instead. [true]" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -28,7 +28,7 @@
 <c:set target="${attributes}" property="name" value="${key}"/>
 <c:if test="${display}">
     <c:set var="value" value="${functions:default(param[key], value)}"/>
-</c:if>   
+</c:if>
 <c:if test="${searchInAllowSelection}">
     <c:set var="key" value="src_terms[${termIndex}].fields"/>
     <c:set var="searchIn" value="${functions:default(param[key], searchIn)}"/>

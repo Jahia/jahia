@@ -95,9 +95,9 @@ public class ModuleTestHelper {
     static {
         managerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
         moduleManager = ModuleUtils.getModuleManager();
-        Settings settings = new Settings();
+
         Profile jahiaProfile = new Profile();
-        jahiaProfile.setId("jahia");
+        jahiaProfile.setId("jahia-module-test");
         Repository jahia = new Repository();
         jahia.setId("jahia-public");
         jahia.setUrl("https://devtools.jahia.com/nexus/content/groups/public");
@@ -116,12 +116,10 @@ public class ModuleTestHelper {
         jahia.setUrl("https://devtools.jahia.com/nexus/content/groups/internal");
         jahiaProfile.addRepository(jahia);
 
-        settings.addProfile(jahiaProfile);
-        settings.addActiveProfile("jahia");
-
         final MavenConfigurationImpl configuration = new MavenConfigurationImpl(new PropertiesPropertyResolver(new Properties()), ServiceConstants.PID);
-        settings.setLocalRepository(configuration.getSettings().getLocalRepository());
-        configuration.setSettings(settings);
+        Settings settings = configuration.getSettings();
+        settings.addProfile(jahiaProfile);
+        settings.addActiveProfile("jahia-module-test");
         resolver = new AetherBasedResolver(configuration);
     }
 

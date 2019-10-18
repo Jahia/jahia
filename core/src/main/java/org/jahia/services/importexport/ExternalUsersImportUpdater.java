@@ -49,6 +49,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.commons.Version;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.utils.xml.JahiaDocumentBuilderFactory;
+import org.jahia.utils.xml.JahiaTransformerFactory;
 import org.jahia.utils.zip.DirectoryZipInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +61,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.jcr.RepositoryException;
-import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -203,9 +203,7 @@ public class ExternalUsersImportUpdater extends ImportFileUpdater {
             }
         }
 
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+        TransformerFactory transformerFactory = JahiaTransformerFactory.newInstance();
         Transformer xformer = transformerFactory.newTransformer();
         xformer.transform(new DOMSource(doc), new StreamResult(outputStream));
 
@@ -285,9 +283,7 @@ public class ExternalUsersImportUpdater extends ImportFileUpdater {
             pathMapping.put(mappingSrc.toString(), mappingDst.toString());
         }
 
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+        TransformerFactory transformerFactory = JahiaTransformerFactory.newInstance();
         Transformer xformer = transformerFactory.newTransformer();
         xformer.transform(new DOMSource(doc), new StreamResult(outputStream));
 

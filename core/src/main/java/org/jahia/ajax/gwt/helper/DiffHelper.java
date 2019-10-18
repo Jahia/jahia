@@ -48,6 +48,7 @@ import net.htmlparser.jericho.SourceFormatter;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
+import org.jahia.utils.xml.JahiaTransformerFactory;
 import org.outerj.daisy.diff.HtmlCleaner;
 import org.outerj.daisy.diff.XslFilter;
 import org.outerj.daisy.diff.html.HTMLDiffer;
@@ -59,8 +60,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-import javax.xml.XMLConstants;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
@@ -85,9 +84,7 @@ public class DiffHelper {
 
         try {
 
-            final SAXTransformerFactory transformerFactory = (SAXTransformerFactory) TransformerFactory.newInstance();
-            transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-            transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+            final SAXTransformerFactory transformerFactory = (SAXTransformerFactory) JahiaTransformerFactory.newInstance();
             final TransformerHandler result = transformerFactory.newTransformerHandler();
             result.setResult(new StreamResult(sw));
 

@@ -66,23 +66,16 @@ public class JCRValueFactoryImpl extends AbstractValueFactory {
     protected JCRValueFactoryImpl() {
     }
 
-    /**
-     *
-     */
     public static ValueFactory getInstance() {
         return valueFactory;
     }
 
-    /**
-     * @see AbstractValueFactory#checkPathFormat(String)
-     */
+    @Override
     protected void checkPathFormat(String pathValue) throws ValueFormatException {
         // ignore
     }
 
-    /**
-     * @see AbstractValueFactory#checkNameFormat(String)
-     */
+    @Override
     protected void checkNameFormat(String nameValue) throws ValueFormatException {
         // ignore
     }
@@ -108,7 +101,7 @@ public class JCRValueFactoryImpl extends AbstractValueFactory {
         }
 
         @Override
-        public String getString() throws ValueFormatException, IllegalStateException, RepositoryException {
+        public String getString() throws RepositoryException {
             return value.getString();
         }
 
@@ -123,27 +116,27 @@ public class JCRValueFactoryImpl extends AbstractValueFactory {
         }
 
         @Override
-        public long getLong() throws ValueFormatException, RepositoryException {
+        public long getLong() throws RepositoryException {
             return value.getLong();
         }
 
         @Override
-        public double getDouble() throws ValueFormatException, RepositoryException {
+        public double getDouble() throws RepositoryException {
             return value.getDouble();
         }
 
         @Override
-        public BigDecimal getDecimal() throws ValueFormatException, RepositoryException {
+        public BigDecimal getDecimal() throws RepositoryException {
             return value.getDecimal();
         }
 
         @Override
-        public Calendar getDate() throws ValueFormatException, RepositoryException {
+        public Calendar getDate() throws RepositoryException {
             return value.getDate();
         }
 
         @Override
-        public boolean getBoolean() throws ValueFormatException, RepositoryException {
+        public boolean getBoolean() throws RepositoryException {
             return value.getBoolean();
         }
 

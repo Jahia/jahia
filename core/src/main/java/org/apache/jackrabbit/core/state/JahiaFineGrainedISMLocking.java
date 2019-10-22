@@ -54,12 +54,15 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import static org.apache.jackrabbit.core.TransactionContext.getCurrentThreadId;
-import static org.apache.jackrabbit.core.TransactionContext.isSameThreadId;
+import static org.apache.jackrabbit.data.core.TransactionContext.getCurrentThreadId;
+import static org.apache.jackrabbit.data.core.TransactionContext.isSameThreadId;
 
 /**
  * <code>FineGrainedISMLocking</code>...
+ *
+ * @deprecated Use {@link org.apache.jackrabbit.core.state.FineGrainedISMLocking} instead
  */
+@Deprecated
 public class JahiaFineGrainedISMLocking implements ISMLocking {
 
     /**
@@ -310,7 +313,7 @@ public class JahiaFineGrainedISMLocking implements ISMLocking {
 
         /**
          * This method must be called while holding the reader sync of the
-         * {@link FineGrainedISMLocking#writerStateRWLock}!
+         * {@link #writerStateRWLock}!
          *
          * @param id the item id.
          */
@@ -337,7 +340,7 @@ public class JahiaFineGrainedISMLocking implements ISMLocking {
 
         /**
          * This method must be called while holding the reader sync of the
-         * {@link FineGrainedISMLocking#writerStateRWLock}!
+         * {@link #writerStateRWLock}!
          *
          * @param id the item id.
          */
@@ -368,8 +371,8 @@ public class JahiaFineGrainedISMLocking implements ISMLocking {
 
         /**
          * This method must be called while holding the write sync of {@link
-         * FineGrainedISMLocking#writerStateRWLock} to make sure no additional
-         * read locks are added to or removed from the map!
+         * #writerStateRWLock} to make sure no additional read locks are added
+         * to or removed from the map!
          *
          * @param changes the change log.
          * @return if the change log has a dependency to the locks currently

@@ -41,7 +41,7 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package  org.jahia.services.search.analyzer;
+package org.jahia.services.search.analyzer;
 
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -62,27 +62,22 @@ package  org.jahia.services.search.analyzer;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.CharArraySet;
+import org.apache.lucene.analysis.KeywordMarkerFilter;
 import org.apache.lucene.analysis.LowerCaseFilter;
 import org.apache.lucene.analysis.StopFilter;
+import org.apache.lucene.analysis.StopwordAnalyzerBase;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
-import org.apache.lucene.analysis.WordlistLoader;
 import org.apache.lucene.analysis.fr.ElisionFilter;
-import org.apache.lucene.analysis.fr.FrenchStemFilter;
+import org.apache.lucene.analysis.fr.FrenchAnalyzer;
+import org.apache.lucene.analysis.fr.FrenchLightStemFilter;
 import org.apache.lucene.analysis.standard.StandardFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;  // for javadoc
 import org.apache.lucene.util.Version;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.Reader;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-
-import static org.apache.lucene.analysis.fr.FrenchAnalyzer.FRENCH_STOP_WORDS;
 
 /**
  * {@link Analyzer} for French language.
@@ -105,168 +100,71 @@ import static org.apache.lucene.analysis.fr.FrenchAnalyzer.FRENCH_STOP_WORDS;
  * <p><b>NOTE</b>: This class uses the same {@link Version}
  * dependent settings as {@link StandardAnalyzer}.</p>
  */
-public final class JahiaFrenchAnalyzer extends Analyzer {
+public final class JahiaFrenchAnalyzer extends StopwordAnalyzerBase {
 
-    /**
-     * Contains the stopwords used with the {@link StopFilter}.
-     */
-    private final Set<?> stoptable;
+
     /**
      * Contains words that should be indexed but not stemmed.
      */
-    //TODO make this final in 3.0
-    private Set<?> excltable = new HashSet();
-
-    private final Version matchVersion;
-
-    /**
-     * Returns an unmodifiable instance of the default stop-words set.
-     * @return an unmodifiable instance of the default stop-words set.
-     */
-    public static Set<?> getDefaultStopSet(){
-        return DefaultSetHolder.DEFAULT_STOP_SET;
-    }
-
-    private static class DefaultSetHolder {
-        static final Set<?> DEFAULT_STOP_SET = CharArraySet
-                .unmodifiableSet(new CharArraySet(Arrays.asList(FRENCH_STOP_WORDS),
-                        false));
-    }
-
-    /**
-     * Builds an analyzer with the default stop words ({@link #FRENCH_STOP_WORDS}).
-     */
-    public JahiaFrenchAnalyzer(Version matchVersion) {
-        this(matchVersion, DefaultSetHolder.DEFAULT_STOP_SET);
-    }
+    private final Set<?> excltable;
 
     /**
      * Builds an analyzer with the given stop words
      *
-     * @param matchVersion
-     *          lucene compatibility version
      * @param stopwords
-     *          a stopword set
+     *            a stopword set
      */
-    public JahiaFrenchAnalyzer(Version matchVersion, Set<?> stopwords){
+    public JahiaFrenchAnalyzer(Version matchVersion) {
+        this(matchVersion, FrenchAnalyzer.getDefaultStopSet());
+    }
+
+    /**
+     * Builds an analyzer with the given stop words
+     * 
+     * @param matchVersion
+     *            lucene compatibility version
+     * @param stopwords
+     *            a stopword set
+     */
+    public JahiaFrenchAnalyzer(Version matchVersion, Set<?> stopwords) {
         this(matchVersion, stopwords, CharArraySet.EMPTY_SET);
     }
 
     /**
      * Builds an analyzer with the given stop words
-     *
+     * 
      * @param matchVersion
-     *          lucene compatibility version
+     *            lucene compatibility version
      * @param stopwords
-     *          a stopword set
+     *            a stopword set
      * @param stemExclutionSet
-     *          a stemming exclusion set
+     *            a stemming exclusion set
      */
-    public JahiaFrenchAnalyzer(Version matchVersion, Set<?> stopwords,
-                          Set<?> stemExclutionSet) {
-        this.matchVersion = matchVersion;
-        this.stoptable = CharArraySet.unmodifiableSet(CharArraySet.copy(stopwords));
-        this.excltable = CharArraySet.unmodifiableSet(CharArraySet
-                .copy(stemExclutionSet));
-    }
-
-
-    /**
-     * Builds an analyzer with the given stop words.
-     * @deprecated use {@link #JahiaFrenchAnalyzer(Version, Set)} instead
-     */
-    public JahiaFrenchAnalyzer(Version matchVersion, String... stopwords) {
-        this(matchVersion, StopFilter.makeStopSet(stopwords));
+    public JahiaFrenchAnalyzer(Version matchVersion, Set<?> stopwords, Set<?> stemExclutionSet) {
+        super(matchVersion, stopwords);
+        this.excltable = CharArraySet.unmodifiableSet(CharArraySet.copy(matchVersion, stemExclutionSet));
     }
 
     /**
-     * Builds an analyzer with the given stop words.
-     * @throws IOException
-     * @deprecated use {@link #JahiaFrenchAnalyzer(Version, Set)} instead
-     */
-    public JahiaFrenchAnalyzer(Version matchVersion, File stopwords) throws IOException {
-        this(matchVersion, WordlistLoader.getWordSet(stopwords));
-    }
-
-    /**
-     * Builds an exclusionlist from an array of Strings.
-     * @deprecated use {@link #JahiaFrenchAnalyzer(Version, Set, Set)} instead
-     */
-    public void setStemExclusionTable(String... exclusionlist) {
-        excltable = StopFilter.makeStopSet(exclusionlist);
-        setPreviousTokenStream(null); // force a new stemmer to be created
-    }
-
-    /**
-     * Builds an exclusionlist from a Map.
-     * @deprecated use {@link #JahiaFrenchAnalyzer(Version, Set, Set)} instead
-     */
-    public void setStemExclusionTable(Map exclusionlist) {
-        excltable = new HashSet(exclusionlist.keySet());
-        setPreviousTokenStream(null); // force a new stemmer to be created
-    }
-
-    /**
-     * Builds an exclusionlist from the words contained in the given file.
-     * @throws IOException
-     * @deprecated use {@link #JahiaFrenchAnalyzer(Version, Set, Set)} instead
-     */
-    public void setStemExclusionTable(File exclusionlist) throws IOException {
-        excltable = new HashSet(WordlistLoader.getWordSet(exclusionlist));
-        setPreviousTokenStream(null); // force a new stemmer to be created
-    }
-
-    /**
-     * Creates a {@link TokenStream} which tokenizes all the text in the provided
+     * Creates {@link org.apache.lucene.analysis.ReusableAnalyzerBase.TokenStreamComponents} used to tokenize all the text in the provided
      * {@link Reader}.
-     *
-     * @return A {@link TokenStream} built from a {@link StandardTokenizer}
-     *         filtered with {@link StandardFilter}, {@link StopFilter},
-     *         {@link FrenchStemFilter} and {@link LowerCaseFilter}
+     * 
+     * @return {@link org.apache.lucene.analysis.ReusableAnalyzerBase.TokenStreamComponents} built from a {@link StandardTokenizer} filtered
+     *         with {@link StandardFilter}, {@link ElisionFilter}, {@link LowerCaseFilter}, {@link StopFilter}, {@link KeywordMarkerFilter}
+     *         if a stem exclusion set is provided, and {@link FrenchLightStemFilter}
      */
     @Override
-    public final TokenStream tokenStream(String fieldName, Reader reader) {
-        TokenStream result = new StandardTokenizer(matchVersion, reader);
-        result = new StandardFilter(result);
-        result = new ElisionFilter(result, FrenchSnowballAnalyzer.DEFAULT_ARTICLES);
-        result = new LowerCaseFilter(result);
-        result = new StopFilter(StopFilter.getEnablePositionIncrementsVersionDefault(matchVersion),
-                result, stoptable);
-        result = new FrenchStemFilter(result, excltable);
-        return result;
-    }
-
-    private class SavedStreams {
-        Tokenizer source;
-        TokenStream result;
-    };
-
-    /**
-     * Returns a (possibly reused) {@link TokenStream} which tokenizes all the
-     * text in the provided {@link Reader}.
-     *
-     * @return A {@link TokenStream} built from a {@link StandardTokenizer}
-     *         filtered with {@link StandardFilter}, {@link StopFilter},
-     *         {@link FrenchStemFilter} and {@link LowerCaseFilter}
-     */
-    @Override
-    public TokenStream reusableTokenStream(String fieldName, Reader reader)
-            throws IOException {
-        SavedStreams streams = (SavedStreams) getPreviousTokenStream();
-        if (streams == null) {
-            streams = new SavedStreams();
-            streams.source = new StandardTokenizer(matchVersion, reader);
-            streams.result = new StandardFilter(streams.source);
-            streams.result = new ElisionFilter(streams.result, FrenchSnowballAnalyzer.DEFAULT_ARTICLES);
-            streams.result = new LowerCaseFilter(streams.result);
-            streams.result = new StopFilter(StopFilter.getEnablePositionIncrementsVersionDefault(matchVersion),
-                    streams.result, stoptable);
-            streams.result = new FrenchStemFilter(streams.result, excltable);
-            setPreviousTokenStream(streams);
-        } else {
-            streams.source.reset(reader);
+    protected TokenStreamComponents createComponents(String fieldName, Reader reader) {
+        final Tokenizer source = new StandardTokenizer(matchVersion, reader);
+        TokenStream result = new StandardFilter(matchVersion, source);
+        result = new ElisionFilter(matchVersion, result);
+        result = new LowerCaseFilter(matchVersion, result);
+        result = new StopFilter(matchVersion, result, stopwords);
+        if (!excltable.isEmpty()) {
+            result = new KeywordMarkerFilter(result, excltable);
         }
-        return streams.result;
+        result = new FrenchLightStemFilter(result);
+        return new TokenStreamComponents(source, result);
     }
 }
 

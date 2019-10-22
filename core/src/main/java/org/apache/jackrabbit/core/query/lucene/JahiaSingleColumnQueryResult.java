@@ -53,9 +53,9 @@ import javax.jcr.RepositoryException;
 import org.apache.jackrabbit.core.session.SessionContext;
 import org.apache.jackrabbit.spi.Path;
 import org.apache.jackrabbit.spi.commons.query.qom.ColumnImpl;
-import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldSelector;
 import org.apache.lucene.document.FieldSelectorResult;
+import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.Query;
 import org.slf4j.Logger;
@@ -88,8 +88,7 @@ public class JahiaSingleColumnQueryResult extends SingleColumnQueryResult {
     }
 
     private boolean canRead(ScoreNode node, IndexReader indexReader) throws RepositoryException, IOException {
-        Field aclUuidField = indexReader.document(node.getDoc(indexReader), ACL_FIELD_SELECTOR)
-                .getField(JahiaNodeIndexer.ACL_UUID);
+        Fieldable aclUuidField = indexReader.document(node.getDoc(indexReader), ACL_FIELD_SELECTOR).getFieldable(JahiaNodeIndexer.ACL_UUID);
         String aclUuid = aclUuidField != null ? aclUuidField.stringValue() : null;
         if (aclUuid != null && aclUuid.length() == 0) {
             logger.warn("Empty ACL UUIDs in index for node: {}", node.getNodeId());
@@ -117,11 +116,12 @@ public class JahiaSingleColumnQueryResult extends SingleColumnQueryResult {
     protected boolean isAccessGranted(ScoreNode[] nodes, MultiColumnQueryHits hits) throws RepositoryException {
         if (hits instanceof IndexReaderAware) {
             if (checkedAcls == null) {
-                checkedAcls = new HashMap<String, Boolean>();
+                checkedAcls = new HashMap<>();
             }
             return checkGranted(nodes, ((IndexReaderAware) hits).getReader());
         } else {
             return super.isAccessGranted(nodes, hits);
         }
     }
+
 }

@@ -89,11 +89,13 @@ import java.util.*;
  *
  * @author toto
  */
+@SuppressWarnings("squid:RedundantThrowsDeclarationCheck")
 public class JahiaAccessManager extends AbstractAccessControlManager implements AccessManager, AccessControlManager {
     private static final Logger logger = LoggerFactory.getLogger(JahiaAccessManager.class);
 
-    private static final Subject SYSTEM_SUBJECT = new Subject(true, new HashSet<SystemPrincipal>(
-            Arrays.asList(new SystemPrincipal())), Collections.EMPTY_SET, Collections.EMPTY_SET);
+    private static final Subject SYSTEM_SUBJECT = new Subject(true, new HashSet<>(
+            Arrays.asList(new SystemPrincipal())), Collections.emptySet(), Collections.emptySet()
+    );
 
     /**
      * Subject whose access rights this AccessManager should reflect
@@ -139,12 +141,14 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         AccessManagerUtils.initCaches();
     }
 
+    @Override
     public void init(AMContext amContext) throws AccessDeniedException, Exception {
-        init(amContext, null, null, null, null);
+        init(amContext, (RepositoryContext) null, (WorkspaceConfig) null);
     }
 
+    @Override
     public void init(AMContext amContext, AccessControlProvider acProvider, WorkspaceAccessManager wspAccessManager) throws AccessDeniedException, Exception {
-        init(amContext, null, null, null, null);
+        init(amContext);
     }
 
     public JahiaSystemSession getSecuritySession() throws RepositoryException {
@@ -162,9 +166,15 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
     /**
-     * {@inheritDoc}
+     * @deprecated Use {@link #init(AMContext, RepositoryContext, WorkspaceConfig)} instead
      */
+    @Deprecated
     public void init(AMContext context, AccessControlProvider acProvider, WorkspaceAccessManager wspAccessManager, RepositoryContext repositoryContext, WorkspaceConfig workspaceConfig) throws AccessDeniedException, Exception {
+        init(context, repositoryContext, workspaceConfig);
+    }
+
+    @SuppressWarnings("squid:S00112")
+    public void init(AMContext context, RepositoryContext repositoryContext, WorkspaceConfig workspaceConfig) throws AccessDeniedException, Exception {
         if (initialized) {
             throw new IllegalStateException("already initialized");
         }
@@ -189,34 +199,35 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         initialized = true;
     }
 
+    @Override
     public void close() throws Exception {
         if (securitySession != null) {
             securitySession.logout();
         }
     }
 
-    /**
-     * @deprecated
-     */
+    @Override
     public void checkPermission(ItemId id, int actions) throws AccessDeniedException, ItemNotFoundException, RepositoryException {
         if (!isGranted(id, actions)) {
             throw new AccessDeniedException("Not sufficient privileges for permissions : " + actions + " on " + id);
         }
     }
 
+    @Override
     public void checkPermission(Path path, int permissions) throws AccessDeniedException, RepositoryException {
         if (!isGranted(path, permissions)) {
             throw new AccessDeniedException("Not sufficient privileges for permissions : " + permissions + " on " + path + " [" + AccessManagerUtils.deniedPathes.get() + "]");
         }
     }
 
+    @Override
     protected void checkPermission(String absPath, int permission)
             throws AccessDeniedException, PathNotFoundException, RepositoryException {
         checkValidNodePath(absPath);
         checkPermission(resolver.getQPath(absPath), permission);
     }
 
-
+    @Override
     public boolean hasPrivileges(String absPath, Set<Principal> principals, Privilege[] privileges)
             throws PathNotFoundException, AccessDeniedException, RepositoryException {
         checkInitialized();
@@ -243,7 +254,6 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         }
     }
 
-
     @Override
     protected PrivilegeManager getPrivilegeManager() throws RepositoryException {
         return new PrivilegeManager() {
@@ -261,6 +271,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         };
     }
 
+    @Override
     public void checkRepositoryPermission(int permissions) throws AccessDeniedException, RepositoryException {
         if (!isGranted(PathFactoryImpl.getInstance().getRootPath(), permissions)) {
             throw new AccessDeniedException("Access denied");
@@ -284,25 +295,25 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         }
     }
 
+    @Override
     public AccessControlPolicy[] getEffectivePolicies(Set<Principal> principals)
             throws AccessDeniedException, AccessControlException, UnsupportedRepositoryOperationException,
             RepositoryException {
         return new AccessControlPolicy[0];
     }
 
+    @Override
     public Privilege[] getPrivileges(String absPath, Set<Principal> principals)
             throws PathNotFoundException, AccessDeniedException, RepositoryException {
         return new Privilege[0];
     }
 
-    /*
-    * @deprecated
-    */
+    @Override
     public boolean isGranted(ItemId id, int actions) throws ItemNotFoundException, RepositoryException {
         if (isSystemPrincipal() && AccessManagerUtils.deniedPathes.get() == null) {
             return true;
         }
-        Set<String> perm = new HashSet<String>();
+        Set<String> perm = new HashSet<>();
         if ((actions & READ) == READ) {
             perm.add(getPrivilegeName(Privilege.JCR_READ, workspaceName));
         }
@@ -320,12 +331,13 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         return isGranted(path, perm);
     }
 
+    @Override
     public boolean isGranted(Path absPath, int permissions) throws RepositoryException {
         if (isSystemPrincipal() && AccessManagerUtils.deniedPathes.get() == null) {
             return true;
         }
 
-        Set<String> privs = new HashSet<String>();
+        Set<String> privs = new HashSet<>();
 
         if (permissions == Permission.ADD_NODE || permissions == Permission.SET_PROPERTY || permissions == Permission.REMOVE_PROPERTY) {
             String fullPath=pr.getJCRPath(absPath);
@@ -349,23 +361,23 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 workspaceName, isAliased, pathPermissionCache, compiledAcls, privilegeRegistry);
     }
 
+    @Override
     public boolean isGranted(Path parentPath, Name childName, int permissions) throws RepositoryException {
         Path p = PathFactoryImpl.getInstance().create(parentPath, childName, true);
         return isGranted(p, permissions);
     }
 
+    @Override
     public boolean canRead(Path path, ItemId itemId) throws RepositoryException {
         if (path != null) {
             return isGranted(path, Permission.READ);
         } else if (itemId != null) {
-            return isGranted(itemId, JahiaAccessManager.READ);
+            return isGranted(itemId, READ);
         }
         return false;
     }
 
-    /**
-     * @see AccessManager#canAccess(String)
-     */
+    @Override
     public boolean canAccess(String workspaceName) throws RepositoryException {
         return true;
     }
@@ -378,6 +390,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         return AccessManagerUtils.matchPermission(permissions, role, isAliased, privilegeRegistry, workspaceName);
     }
 
+    @Override
     public boolean hasPrivileges(String absPath, Privilege[] privileges) throws PathNotFoundException, RepositoryException {
         return hasPrivileges(resolver.getQPath(absPath), privileges);
     }
@@ -392,7 +405,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             }
             return true;
         } else {
-            Set<String> privs = new HashSet<String>();
+            Set<String> privs = new HashSet<>();
 
             for (Privilege privilege : privileges) {
                 privs.add(privilege.getName());
@@ -402,6 +415,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         }
     }
 
+    @Override
     public Privilege[] getPrivileges(String absPath) throws PathNotFoundException, RepositoryException {
         if (isAdmin(null)) {
             return getSupportedPrivileges(absPath);
@@ -410,6 +424,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         return AccessManagerUtils.getPrivileges(absPath, workspaceName, jahiaPrincipal, privilegeRegistry);
     }
 
+    @Override
     public AccessControlPolicy[] getEffectivePolicies(String absPath) throws PathNotFoundException, AccessDeniedException, RepositoryException {
         return new AccessControlPolicy[0];
     }
@@ -425,6 +440,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     public Set<String> getRoles(String absPath)  throws PathNotFoundException, RepositoryException {
         return AccessManagerUtils.getRoles(absPath, workspaceName, jahiaPrincipal);
     }
+
     /**
      * Flush the cache of privileges set by role
      */
@@ -435,4 +451,5 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     public static void flushMatchingPermissions() {
         AccessManagerUtils.flushMatchingPermissions();
     }
+
 }

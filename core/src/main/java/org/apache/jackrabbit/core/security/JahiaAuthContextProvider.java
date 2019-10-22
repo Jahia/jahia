@@ -64,7 +64,10 @@ import org.apache.jackrabbit.core.security.principal.PrincipalProviderRegistry;
  * After upgrade to 1.6 this class should be dropped.
  * 
  * @author Sergiy Shyrkov
+ *
+ * @deprecated Use {@link org.apache.jackrabbit.core.security.authentication.AuthContextProvider} instead
  */
+@Deprecated
 public class JahiaAuthContextProvider extends AuthContextProvider {
     
     public static class JahiaJAASAuthContext extends JAASAuthContext {

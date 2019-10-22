@@ -43,15 +43,18 @@
  */
 package org.apache.jackrabbit.core.state;
 
-import static org.apache.jackrabbit.core.TransactionContext.getCurrentThreadId;
-import static org.apache.jackrabbit.core.TransactionContext.isSameThreadId;
+import static org.apache.jackrabbit.data.core.TransactionContext.getCurrentThreadId;
+import static org.apache.jackrabbit.data.core.TransactionContext.isSameThreadId;
 
 import org.apache.jackrabbit.core.id.ItemId;
 
 /**
- * DX Default item state locking strategy, which additionally to {@link DefaultISMLocking} includes a fix [QA-9444].
+ * Jahia default item state locking strategy, which additionally to {@link DefaultISMLocking} includes a fix [QA-9444].
  * The default strategy is simply to use a single coarse-grained read-write lock over the entire workspace.
+ *
+ * @deprecated Use {@link org.apache.jackrabbit.core.state.DefaultISMLocking} instead
  */
+@Deprecated
 public class JahiaDefaultISMLocking implements ISMLocking {
 
     /**

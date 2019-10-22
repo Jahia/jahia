@@ -63,14 +63,17 @@ public class SymLinkHandler extends DefaultHandler implements IOHandler {
         super(ioManager);
     }
 
+    @Override
     public boolean canImport(ImportContext importContext, DavResource davResource) {
         return false;
     }
 
+    @Override
     public boolean canImport(ImportContext importContext, boolean b) {
         return false;
     }
 
+    @Override
     public boolean canExport(ExportContext context, boolean isCollection) {
         if (context == null || context.isCompleted()) {
             return false;
@@ -79,8 +82,8 @@ public class SymLinkHandler extends DefaultHandler implements IOHandler {
         boolean success = exportRoot != null && exportRoot.isNode();
         if (success && !isCollection) {
             try {
-                Node th = ((Node)exportRoot);
-                success = th.getPrimaryNodeType().getName().equals("jnt:symLink") && th.hasProperty("j:link");
+                Node n = ((Node)exportRoot);
+                success = n.getPrimaryNodeType().getName().equals("jnt:symLink") && n.hasProperty("j:link");
             } catch (RepositoryException e) {
                 // should never occur.
                 success = false;
@@ -89,10 +92,10 @@ public class SymLinkHandler extends DefaultHandler implements IOHandler {
         return success;
     }
 
+    @Override
     protected Node getContentNode(ExportContext context, boolean isCollection) throws RepositoryException {
-        Node n = (Node)context.getExportRoot();
+        Node n = (Node) context.getExportRoot();
         return n.getProperty("j:link").getNode().getNode(JcrConstants.JCR_CONTENT);
     }
-
 
 }

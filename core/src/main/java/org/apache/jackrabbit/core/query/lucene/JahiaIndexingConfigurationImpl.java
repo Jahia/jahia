@@ -132,10 +132,6 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
 
     private final Analyzer keywordAnalyzer = new KeywordAnalyzer();
 
-    public JahiaIndexingConfigurationImpl() {
-        super();
-    }
-
     public Set<Name> getExcludesFromI18NCopy() {
         return excludesFromI18NCopy;
     }
@@ -179,10 +175,17 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
      *                  prefixed with <code>FieldNames.FULLTEXT_PREFIX</code>))
      * @return the <code>analyzer</code> to use for indexing this property
      */
+    @Override
     public Analyzer getPropertyAnalyzer(String fieldName) {
-        Analyzer analyzer = StringUtils.contains(fieldName, FACET_EXPRESSION) ? keywordAnalyzer
-                : super.getPropertyAnalyzer(StringUtils.startsWith(fieldName, SPELLCHECK_EXPRESSION) ? "0:FULL:SPELLCHECK" : fieldName);
-        return analyzer;
+        if (StringUtils.contains(fieldName, FACET_EXPRESSION)) {
+            return keywordAnalyzer;
+        }
+
+        if (StringUtils.startsWith(fieldName, SPELLCHECK_EXPRESSION)) {
+            return super.getPropertyAnalyzer(FULL_SPELLCHECK_FIELD_NAME);
+        }
+
+        return super.getPropertyAnalyzer(fieldName);
     }
 
     @Override
@@ -190,7 +193,9 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
         ism = context.getItemStateManager();
         Properties customNamespaces = getNamespaces(config);
         registerCustomNamespaces(context.getNamespaceRegistry(), customNamespaces);
+
         super.init(config, context, nsMappings);
+
         NamespaceResolver nsResolver = new AdditionalNamespaceResolver(customNamespaces);
         NameResolver resolver = new ParsingNameResolver(NameFactoryImpl.getInstance(), nsResolver);
 
@@ -274,7 +279,7 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
                                             // now that we have our customizer, initialize it
                                             final NodeList keys = customizerNode.getChildNodes();
                                             final int keyNb = keys.getLength();
-                                            final Map<String, List<String>> props = new HashMap<String, List<String>>(keyNb);
+                                            final Map<String, List<String>> props = new HashMap<>(keyNb);
                                             for (int keyIndex = 0; keyIndex < keyNb; keyIndex++) {
                                                 final Node item = keys.item(keyIndex);
 
@@ -285,7 +290,7 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
 
                                                     List<String> values = props.get(key);
                                                     if (values == null) {
-                                                        values = new ArrayList<String>();
+                                                        values = new ArrayList<>();
                                                         props.put(key, values);
                                                     }
 
@@ -352,7 +357,6 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
             excludesTypesByPath.add(new ExcludedType(nodeTypeName, path, isRegexp));
         }
     }
-
 
     private Set initPropertyCollectionFrom(Node configNode, String childNameToAdd, NameResolver resolver) {
         final NodeList childNodes = configNode.getChildNodes();
@@ -428,6 +432,7 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
             try {
                 state = (NodeState) ism.getItemState(state.getParentId());
             } catch (ItemStateException e) {
+                // ignored
             }
         }
         return state;
@@ -464,11 +469,9 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
             if (primary.equals(typeName)) {
                 return true;
             }
+
             Set<Name> mixins = nodeState.getMixinTypeNames();
-            if (mixins.contains(typeName)) {
-                return true;
-            }
-            return false;
+            return mixins.contains(typeName);
         }
 
         boolean matchPath(String pathToCheck) {

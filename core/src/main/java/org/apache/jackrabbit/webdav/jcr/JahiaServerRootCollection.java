@@ -67,6 +67,7 @@ package org.apache.jackrabbit.webdav.jcr;
 
 import javax.jcr.Repository;
 import javax.jcr.Session;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -81,8 +82,6 @@ import org.apache.jackrabbit.webdav.lock.ActiveLock;
 import org.apache.jackrabbit.webdav.lock.LockInfo;
 import org.apache.jackrabbit.webdav.lock.Scope;
 import org.apache.jackrabbit.webdav.lock.Type;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * <code>JahiaServerRootCollection</code> represent the WebDAV root resource that does not
@@ -91,9 +90,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JahiaServerRootCollection extends AbstractResource {
 
-    public static final String MAP_POINT="repository";
-
-    private static Logger log = LoggerFactory.getLogger(JahiaServerRootCollection.class);
+    public static final String MAP_POINT = "repository";
 
     /**
      * Create a new <code>JahiaServerRootCollection</code>.
@@ -119,12 +116,10 @@ public class JahiaServerRootCollection extends AbstractResource {
      * @return string listing the METHODS allowed
      * @see org.apache.jackrabbit.webdav.DavResource#getSupportedMethods()
      */
+    @Override
     public String getSupportedMethods() {
         StringBuilder sb = new StringBuilder(DavResource.METHODS);
         sb.append(", ");
-//        sb.append(DeltaVResource.METHODS_INCL_MKWORKSPACE);
-//        sb.append(", ");
-//        sb.append(SearchResource.METHODS);
         return sb.toString();
     }
 
@@ -134,6 +129,7 @@ public class JahiaServerRootCollection extends AbstractResource {
      * @return true
      * @see org.apache.jackrabbit.webdav.DavResource#exists()
      */
+    @Override
     public boolean exists() {
         return true;
     }
@@ -144,6 +140,7 @@ public class JahiaServerRootCollection extends AbstractResource {
      * @return true
      * @see org.apache.jackrabbit.webdav.DavResource#isCollection()
      */
+    @Override
     public boolean isCollection() {
         return true;
     }
@@ -154,6 +151,7 @@ public class JahiaServerRootCollection extends AbstractResource {
      * @return empty string
      * @see org.apache.jackrabbit.webdav.DavResource#getDisplayName()
      */
+    @Override
     public String getDisplayName() {
         return "";
     }
@@ -164,6 +162,7 @@ public class JahiaServerRootCollection extends AbstractResource {
      * @return
      * @see org.apache.jackrabbit.webdav.DavResource#getModificationTime()
      */
+    @Override
     public long getModificationTime() {
         return new Date().getTime();
     }
@@ -175,6 +174,7 @@ public class JahiaServerRootCollection extends AbstractResource {
      * @throws java.io.IOException
      * @see org.apache.jackrabbit.webdav.DavResource#spool(org.apache.jackrabbit.webdav.io.OutputContext)
      */
+    @Override
     public void spool(OutputContext outputContext) throws IOException {
         if (outputContext.hasStream()) {
             Session session = getRepositorySession();
@@ -223,6 +223,7 @@ public class JahiaServerRootCollection extends AbstractResource {
      * of any resource.
      * @see org.apache.jackrabbit.webdav.DavResource#getCollection()
      */
+    @Override
     public DavResource getCollection() {
         return null;
     }
@@ -231,8 +232,9 @@ public class JahiaServerRootCollection extends AbstractResource {
      * Throws exception: 403 Forbidden.
      * @see org.apache.jackrabbit.webdav.DavResource#addMember(org.apache.jackrabbit.webdav.DavResource, org.apache.jackrabbit.webdav.io.InputContext)
      */
+    @Override
     public void addMember(DavResource resource, InputContext inputContext) throws DavException {
-        throw new DavException(DavServletResponse.SC_FORBIDDEN);
+        throw new DavException(HttpServletResponse.SC_FORBIDDEN);
     }
 
     /**
@@ -242,11 +244,14 @@ public class JahiaServerRootCollection extends AbstractResource {
      * @return members of this collection
      * @see org.apache.jackrabbit.webdav.DavResource#getMembers()
      */
+    @Override
     public DavResourceIterator getMembers() {
-        List<DavResource> list = Collections.singletonList((DavResource)
+        List<DavResource> list = Collections.singletonList(
                 new JahiaRootCollection(
                         getLocator().getFactory().createResourceLocator(getLocator().getPrefix(), null, null, true),
-                        (JcrDavSession)getSession(),getFactory()));
+                        (JcrDavSession) getSession(),
+                        getFactory()
+                ));
         return new DavResourceIteratorImpl(list);
     }
 
@@ -255,21 +260,11 @@ public class JahiaServerRootCollection extends AbstractResource {
      *
      * @see org.apache.jackrabbit.webdav.DavResource#removeMember(org.apache.jackrabbit.webdav.DavResource)
      */
-    public void removeMember(DavResource member) throws DavException {
-        throw new DavException(DavServletResponse.SC_FORBIDDEN);
-    }
-
-    //-----------------------------------------------------< DeltaVResource >---
-    /**
-     * Throws exception: 403 Forbidden.
-     * @see org.apache.jackrabbit.webdav.version.DeltaVResource#addWorkspace(org.apache.jackrabbit.webdav.DavResource)
-     */
     @Override
-    public void addWorkspace(DavResource workspace) throws DavException {
-        throw new DavException(DavServletResponse.SC_FORBIDDEN);
+    public void removeMember(DavResource member) throws DavException {
+        throw new DavException(HttpServletResponse.SC_FORBIDDEN);
     }
 
-    //--------------------------------------------------------------------------
     /**
      * @see org.apache.jackrabbit.webdav.jcr.AbstractResource#initLockSupport()
      */
@@ -291,48 +286,56 @@ public class JahiaServerRootCollection extends AbstractResource {
         return null;
     }
 
+    @Override
     public String getHref() {
-/*
-        String href = super.getHref();
-        return href.substring(0,href.lastIndexOf("/"));
-*/
         return "/";
     }
 
-
+    @Override
     public void move(DavResource destination) throws DavException {
-        throw new DavException(DavServletResponse.SC_FORBIDDEN);
+        throw new DavException(HttpServletResponse.SC_FORBIDDEN);
     }
 
+    @Override
     public void copy(DavResource destination, boolean shallow) throws DavException {
-        throw new DavException(DavServletResponse.SC_FORBIDDEN);
+        throw new DavException(HttpServletResponse.SC_FORBIDDEN);
     }
 
+    @Override
     public boolean isLockable(Type type, Scope scope) {
         return false;
     }
 
+    @Override
     public boolean hasLock(Type type, Scope scope) {
         return false;
     }
 
+    @Override
     public ActiveLock getLock(Type type, Scope scope) {
         return null;
     }
 
     private static final ActiveLock[] activeLocks = new ActiveLock[0];
+
+    @Override
     public ActiveLock[] getLocks() {
         return activeLocks;
     }
 
+    @Override
     public ActiveLock lock(LockInfo reqLockInfo) throws DavException {
-        throw new DavException(DavServletResponse.SC_FORBIDDEN);
+        throw new DavException(HttpServletResponse.SC_FORBIDDEN);
     }
 
+    @Override
     public ActiveLock refreshLock(LockInfo reqLockInfo, String lockToken) throws DavException {
-        throw new DavException(DavServletResponse.SC_FORBIDDEN);
+        throw new DavException(HttpServletResponse.SC_FORBIDDEN);
     }
 
+    @Override
     public void unlock(String lockToken) throws DavException {
+        throw new DavException(HttpServletResponse.SC_FORBIDDEN);
     }
+
 }

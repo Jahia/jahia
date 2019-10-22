@@ -106,11 +106,11 @@ public class JahiaSecurityManager implements JackrabbitSecurityManager {
         LoginModuleConfig loginModConf = config.getLoginModuleConfig();
 
         // build AuthContextProvider based on appName + optional LoginModuleConfig
-        authContextProvider = new JahiaAuthContextProvider(config.getAppName(), loginModConf);
+        authContextProvider = new AuthContextProvider(config.getAppName(), loginModConf);
         if (authContextProvider.isLocal()) {
-            log.info("init: use Repository Login-Configuration for " + config.getAppName());
+            log.info("init: use Repository Login-Configuration for {}", config.getAppName());
         } else if (authContextProvider.isJAAS()) {
-            log.info("init: use JAAS login-configuration for " + config.getAppName());
+            log.info("init: use JAAS login-configuration for {}", config.getAppName());
         } else {
             String msg = "Neither JAAS nor RepositoryConfig contained a valid Configuriation for " + config.getAppName();
             log.error(msg);
@@ -121,15 +121,8 @@ public class JahiaSecurityManager implements JackrabbitSecurityManager {
     }
 
     public String getUserID(Subject subject, String workspace) throws RepositoryException {
-        /*if (!subject.getPrincipals(SystemPrincipal.class).isEmpty()) {
-            return " system ";
-        }*/
-
         Set<JahiaPrincipal> s = subject.getPrincipals(JahiaPrincipal.class);
-        for (JahiaPrincipal jahiaPrincipal : s) {
-            return jahiaPrincipal.getName();
-        }
-        return null;
+        return s.isEmpty() ? null : s.iterator().next().getName();
     }
 
     public UserManager getUserManager(Session session) throws RepositoryException {
@@ -147,7 +140,7 @@ public class JahiaSecurityManager implements JackrabbitSecurityManager {
                 return ((JahiaSystemSession) session).createAccessManager(((JahiaSystemSession) session).getSubject());
             }
             JahiaAccessManager accessMgr = new JahiaAccessManager();
-            accessMgr.init(amContext, null, null, repository.getContext(), repository.getConfig().getWorkspaceConfig(session.getWorkspace().getName()));
+            accessMgr.init(amContext, repository.getContext(), repository.getConfig().getWorkspaceConfig(session.getWorkspace().getName()));
             return accessMgr;
         } catch (AccessDeniedException ade) {
             // re-throw

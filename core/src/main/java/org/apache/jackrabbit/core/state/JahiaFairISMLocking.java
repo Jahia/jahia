@@ -46,7 +46,10 @@ package org.apache.jackrabbit.core.state;
 /**
  * Default item state locking strategy. The default strategy is simply to use a single coarse-grained read-write lock over the entire
  * workspace. This implementation uses a fair locking strategy.
+ *
+ * @deprecated Use {@link org.apache.jackrabbit.core.state.DefaultISMLocking} instead
  */
+@Deprecated
 public class JahiaFairISMLocking extends JahiaISMLocking {
 
     public JahiaFairISMLocking() {

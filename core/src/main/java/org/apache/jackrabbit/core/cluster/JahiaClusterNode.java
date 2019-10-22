@@ -45,9 +45,7 @@ package org.apache.jackrabbit.core.cluster;
 
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.journal.*;
-import org.apache.jackrabbit.core.state.ChangeLog;
 import org.apache.jackrabbit.core.state.ItemState;
-import org.apache.jackrabbit.core.state.NodeReferences;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -113,12 +111,12 @@ public class JahiaClusterNode extends ClusterNode {
         status = STOPPED;
         super.stop();
         Journal j = getJournal();
-        if (j != null && (j instanceof AbstractJournal)) {
+        if (j instanceof AbstractJournal) {
             String revisionFile = ((AbstractJournal) j).getRevision();
             if (revisionFile != null) {
                 InstanceRevision currentFileRevision = null;
                 try {
-                    currentFileRevision = new FileRevision(new File(revisionFile));
+                    currentFileRevision = new FileRevision(new File(revisionFile), true);
                     long rev = getRevision();
                     currentFileRevision.set(rev);
                     log.info("Written local revision {} into revision file", rev);
@@ -225,71 +223,67 @@ public class JahiaClusterNode extends ClusterNode {
                 }
             }
         }
-    }
 
-    @SuppressWarnings("unchecked")
-    private void unlockNodes(Update update) throws JournalException {
-        Journal journal = getJournal();
-        if (journal instanceof NodeLevelLockableJournal) {
-            Set<NodeId> ids = (Set<NodeId>) update.getAttribute("allIds");
-            ((NodeLevelLockableJournal) journal).unlockNodes(ids);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private void lockNodes(Update update) throws JournalException {
-        Journal journal = getJournal();
-        if (journal instanceof NodeLevelLockableJournal) {
-            Set<NodeId> ids = (Set<NodeId>) update.getAttribute("allIds");
-            ((NodeLevelLockableJournal) journal).lockNodes(ids);
-        }
-    }
-
-    private void storeNodeIds(Update update) {
-        if (getJournal() instanceof NodeLevelLockableJournal) {
-            Set<NodeId> nodeIdList = new HashSet<NodeId>();
-            for (ItemState state : update.getChanges().addedStates()) {
-                // For added states we always lock the parent, whatever the type. The node itself does not exist yet,
-                // oes not need to be locked - only the parent will be modified
-                nodeIdList.add(state.getParentId());
+        @SuppressWarnings("unchecked")
+        private void unlockNodes(Update update) throws JournalException {
+            Journal journal = getJournal();
+            if (journal instanceof NodeLevelLockableJournal) {
+                Set<NodeId> ids = (Set<NodeId>) update.getAttribute("allIds");
+                ((NodeLevelLockableJournal) journal).unlockNodes(ids);
             }
-            for (ItemState state : update.getChanges().modifiedStates()) {
-                // Lock the modified node - take the parent node if state is a property
-                if (state.isNode()) {
-                    nodeIdList.add((NodeId) state.getId());
-                } else {
+        }
+
+        @SuppressWarnings("unchecked")
+        private void lockNodes(Update update) throws JournalException {
+            Journal journal = getJournal();
+            if (journal instanceof NodeLevelLockableJournal) {
+                Set<NodeId> ids = (Set<NodeId>) update.getAttribute("allIds");
+                ((NodeLevelLockableJournal) journal).lockNodes(ids);
+            }
+        }
+
+        private void storeNodeIds(Update update) {
+            if (getJournal() instanceof NodeLevelLockableJournal) {
+                Set<NodeId> nodeIdList = new HashSet<>();
+                for (ItemState state : update.getChanges().addedStates()) {
+                    // For added states we always lock the parent, whatever the type. The node itself does not exist yet,
+                    // oes not need to be locked - only the parent will be modified
                     nodeIdList.add(state.getParentId());
                 }
-            }
-            for (ItemState state : update.getChanges().deletedStates()) {
-                // Lock the deleted node - take the parent node if state is a property, otherwise lock node and its
-                // parent
-                if (state.isNode()) {
-                    nodeIdList.add(state.getParentId());
-                    nodeIdList.add((NodeId) state.getId());
-                } else {
-                    nodeIdList.add(state.getParentId());
+                for (ItemState state : update.getChanges().modifiedStates()) {
+                    // Lock the modified node - take the parent node if state is a property
+                    if (state.isNode()) {
+                        nodeIdList.add((NodeId) state.getId());
+                    } else {
+                        nodeIdList.add(state.getParentId());
+                    }
                 }
+                for (ItemState state : update.getChanges().deletedStates()) {
+                    // Lock the deleted node - take the parent node if state is a property, otherwise lock node and its
+                    // parent
+                    if (state.isNode()) {
+                        nodeIdList.add(state.getParentId());
+                        nodeIdList.add((NodeId) state.getId());
+                    } else {
+                        nodeIdList.add(state.getParentId());
+                    }
+                }
+                update.setAttribute("allIds", nodeIdList);
             }
-            update.setAttribute("allIds", nodeIdList);
         }
-    }
 
-    @Override
-    public void process(ChangeLogRecord record) {
-        super.process(new ChangeLogRecord(new ExternalChangeLog(record.getChanges()), record.getEvents(), null, record.getWorkspace(), record.getTimestamp(), record.getUserData()));
     }
 
     @Override
     public void process(NamespaceRecord record) {
-        NodeTypeRegistry.getInstance().getNamespaces().put( record.getNewPrefix() , record.getUri());
+        NodeTypeRegistry.getInstance().getNamespaces().put(record.getNewPrefix(), record.getUri());
         super.process(record);
     }
 
     @Override
     public void process(NodeTypeRecord record) {
         try {
-            // In case of any change in the registered nodetypes, reread the provider nodetype registry
+            // In case of any change in the registered node types, re-read the provider node type registry
             JCRStoreService.getInstance().reloadNodeTypeRegistry();
         } catch (RepositoryException e) {
             String msg = "Unable to register nodetypes : " + e.getMessage();
@@ -319,7 +313,6 @@ public class JahiaClusterNode extends ClusterNode {
      */
     @Override
     protected void internalSync(boolean startup) throws ClusterException {
-
         int count = syncCount.get();
 
         try {
@@ -330,7 +323,6 @@ public class JahiaClusterNode extends ClusterNode {
         }
 
         try {
-
             // This check must be performed while owning the syncLock to avoid concurrent modifications of the readOnly property via a setReadOnly invocation.
             if (readOnly) {
                 log.debug("Read only mode is ON, will not sync");
@@ -357,7 +349,6 @@ public class JahiaClusterNode extends ClusterNode {
      * @param timeout Timeout waiting for ongoing sync operations to finish before switching read only mode, ms.
      */
     public void setReadOnly(boolean enable, long timeout) {
-
         log.info("Switching read only mode {}...", (enable ? "ON" : "OFF"));
 
         try {
@@ -392,28 +383,5 @@ public class JahiaClusterNode extends ClusterNode {
         }
 
         log.info("Read only mode is {} now.", (readOnly ? "ON" : "OFF"));
-    }
-
-    public static class ExternalChangeLog extends ChangeLog {
-
-        public ExternalChangeLog(ChangeLog changes) {
-
-            // It is essential to keep this order of deleted/modified/added items processing, since
-            // "deleted"/"modified"/"added" method invocations modify each other's internal lists of
-            // deleted/modified/added items.
-            for (ItemState state : changes.deletedStates()) {
-                deleted(state);
-            }
-            for (ItemState state : changes.modifiedStates()) {
-                modified(state);
-            }
-            for (ItemState state : changes.addedStates()) {
-                added(state);
-            }
-
-            for (NodeReferences ref : changes.modifiedRefs()) {
-                modified(ref);
-            }
-        }
     }
 }

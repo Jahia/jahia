@@ -106,17 +106,23 @@ public class JahiaRepositoryConfig extends RepositoryConfig {
         return config.getFileSystem();
     }
 
+    @Deprecated
     @Override
+    @SuppressWarnings("squid:MissingDeprecatedCheck")
     public String getAppName() {
         return config.getAppName();
     }
 
+    @Deprecated
     @Override
+    @SuppressWarnings("squid:MissingDeprecatedCheck")
     public AccessManagerConfig getAccessManagerConfig() {
         return config.getAccessManagerConfig();
     }
 
+    @Deprecated
     @Override
+    @SuppressWarnings("squid:MissingDeprecatedCheck")
     public LoginModuleConfig getLoginModuleConfig() {
         return config.getLoginModuleConfig();
     }
@@ -199,4 +205,5 @@ public class JahiaRepositoryConfig extends RepositoryConfig {
     public WorkspaceConfig createWorkspaceConfig(String name, InputSource template) throws ConfigurationException {
         return config.createWorkspaceConfig(name, template);
     }
+
 }

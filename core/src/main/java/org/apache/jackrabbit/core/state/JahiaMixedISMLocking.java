@@ -55,14 +55,15 @@ import org.apache.jackrabbit.core.id.PropertyId;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.apache.jackrabbit.core.TransactionContext.getCurrentThreadId;
-import static org.apache.jackrabbit.core.TransactionContext.isSameThreadId;
+import static org.apache.jackrabbit.data.core.TransactionContext.getCurrentThreadId;
+import static org.apache.jackrabbit.data.core.TransactionContext.isSameThreadId;
 
 /**
  * <code>JahiaMixedISMLocking</code> is a mix of the FineGrainedISMLocking (for synchronizing 
  * changes from other nodes) and the coarse grained global lock like DefaultISMLocking (for writes 
  * to repository initiated on the current VM).
  */
+@Deprecated
 public class JahiaMixedISMLocking implements ISMLocking {
 
     /**
@@ -148,10 +149,10 @@ public class JahiaMixedISMLocking implements ISMLocking {
      */
     public WriteLock acquireWriteLock(ChangeLog changeLog)
             throws InterruptedException {
-        if (changeLog.getClass() != JahiaClusterNode.ExternalChangeLog.class) {
-            // Use global write lock if not external
-            changeLog = null;
-        }
+//        if (changeLog.getClass() != JahiaClusterNode.ExternalChangeLog.class) {
+//            // Use global write lock if not external
+//            changeLog = null;
+//        }
         for (;;) {
             Sync signal;
             // we want to become the current writer
@@ -355,7 +356,7 @@ public class JahiaMixedISMLocking implements ISMLocking {
 
         /**
          * This method must be called while holding the reader sync of the
-         * {@link FineGrainedISMLocking#writerStateRWLock}!
+         * {@link #writerStateRWLock}!
          *
          * @param id the item id.
          */
@@ -383,7 +384,7 @@ public class JahiaMixedISMLocking implements ISMLocking {
 
         /**
          * This method must be called while holding the reader sync of the
-         * {@link FineGrainedISMLocking#writerStateRWLock}!
+         * {@link #writerStateRWLock}!
          *
          * @param id the item id.
          */
@@ -415,7 +416,7 @@ public class JahiaMixedISMLocking implements ISMLocking {
 
         /**
          * This method must be called while holding the write sync of {@link
-         * FineGrainedISMLocking#writerStateRWLock} to make sure no additional
+         * #writerStateRWLock} to make sure no additional
          * read locks are added to or removed from the map!
          *
          * @param changes the change log.

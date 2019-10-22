@@ -629,7 +629,11 @@ public class PublicationWorkflow implements CustomWorkflow {
                 if (linker != null) {
                     linker.loaded();
                 }
-                com.google.gwt.user.client.Window.alert("Cannot get status: " + caught.getMessage());
+                MessageBox.alert(
+                        Messages.get(checkForUnpublication ? "label.unpublish" : "label.publish", checkForUnpublication ? "Unpublish" : "Publish"),
+                        Messages.get(checkForUnpublication ? "message.content.unpublished.error" : "message.content.published.error", checkForUnpublication ? "Cannot be unpublished" : "Cannot be published"),
+                        null
+                );
             }
 
             @Override
@@ -710,6 +714,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                 }
             }
         };
+        // todo
         if (!allLanguages) {
             JahiaContentManagementService.App.getInstance().getPublicationInfo(uuids, allSubTree, checkForUnpublication, asyncCallback);
         } else {

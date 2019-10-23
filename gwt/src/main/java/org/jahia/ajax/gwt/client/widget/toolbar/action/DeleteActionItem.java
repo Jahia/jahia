@@ -135,7 +135,7 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
                 if (selection.get(0).getInheritedNodeTypes().contains("jmix:nodeReference")) {
                     updateTitle(Messages.get(referenceTitleKey, referenceTitleKey));
                 } else {
-                    updateTitle(getGwtToolbarItem().getTitle());
+                    updateTitle(getGwtToolbarItem().getTitle() + " : " + selection.get(0).getDisplayName());
                 }
             } else {
                 updateTitle(getGwtToolbarItem().getTitle() + " " + selection.size() + " " + Messages.get("label.items"));

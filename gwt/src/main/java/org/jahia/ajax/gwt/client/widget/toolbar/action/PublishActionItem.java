@@ -113,7 +113,7 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                         title = Messages.getWithArgs(
                                 checkForUnpublication ? "label.unPublish.languages" : "label.publish.languages",
                                 checkForUnpublication ? "Unpublish {0} in all languages" : "Publish {0} in all languages",
-                                new String[]{gwtJahiaNode.isNodeType("jnt:page") ? gwtJahiaNode.getDisplayName() : ""}
+                                new String[]{gwtJahiaNode.getDisplayName()}
                         );
                     }
                     updateItem(ctx, gwtJahiaNode, title);
@@ -166,10 +166,8 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
 
                     if (gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {
                         updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName());
-                    } else if (gwtJahiaNode.isNodeType("jnt:page")) {
-                        updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() + " - " + JahiaGWTParameters.getLanguageDisplayName());
                     } else {
-                        updateTitle(getGwtToolbarItem().getTitle() + " - " + JahiaGWTParameters.getLanguageDisplayName());
+                        updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() + " - " + JahiaGWTParameters.getLanguageDisplayName());
                     }
                 }
             }

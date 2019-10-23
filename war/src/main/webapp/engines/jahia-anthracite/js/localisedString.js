@@ -37,8 +37,8 @@ var DX_localisedStrings = {
         'previewMultipleSelection': 'Vorschau',
 
         'publishPage': 'Veröffentlichen',
-        'publishSingleSelection': 'Veröffentlichen - {{node}}',
-        'publishMultipleSelection': '{{count}} ausgewählte Inhalte',
+        'publishSingleSelection': 'Veröffentlichen',
+        'publishMultipleSelection': 'Veröffentlichen',
 
         'optionsPage': 'Seiten-Optionen',
         'optionsSingleSelection': '{{node}} Optionen',
@@ -87,8 +87,8 @@ var DX_localisedStrings = {
         'previewMultipleSelection': 'Preview',
 
         'publishPage': 'Publish',
-        'publishSingleSelection': 'Publish - {{node}}',
-        'publishMultipleSelection': '{{count}} Selected Items',
+        'publishSingleSelection': 'Publish',
+        'publishMultipleSelection': 'Publish',
 
         'optionsPage': 'Page Options',
         'optionsSingleSelection': '{{node}} Options',
@@ -137,8 +137,8 @@ var DX_localisedStrings = {
         'previewMultipleSelection': 'Aperçu',
 
         'publishPage': 'Publier',
-        'publishSingleSelection': 'Publier - {{node}}',
-        'publishMultipleSelection': '{{count}} éléments sélectionnés',
+        'publishSingleSelection': 'Publier',
+        'publishMultipleSelection': 'Publier',
 
         'optionsPage': 'Options de la page',
         'optionsSingleSelection': 'Options de {{node}}',

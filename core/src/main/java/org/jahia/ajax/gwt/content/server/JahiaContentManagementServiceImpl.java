@@ -97,6 +97,7 @@ import org.jahia.services.visibility.VisibilityConditionRule;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.NodeTypesUtils;
 import org.jahia.utils.Url;
 import org.jahia.utils.i18n.Messages;
 import org.jahia.utils.i18n.ResourceBundles;
@@ -2649,7 +2650,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             if (site.getPath().startsWith("/sites")) {
                 for (GWTJahiaNodeType type : types) {
                     try {
-                        boolean perm = contentDefinition.checkPermissionForType(type.getName(), site);
+                        boolean perm = NodeTypesUtils.checkPermissionForType(type.getName(), site);
                         type.set("canUseComponentForCreate", perm);
                         type.set("canUseComponentForEdit", perm);
                     } catch (RepositoryException e) {

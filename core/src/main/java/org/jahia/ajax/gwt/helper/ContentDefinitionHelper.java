@@ -43,7 +43,6 @@
  */
 package org.jahia.ajax.gwt.helper;
 
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.common.collect.Lists;
 import com.google.gwt.i18n.shared.DateTimeFormat;
 import com.google.gwt.i18n.shared.DefaultDateTimeFormatInfo;
@@ -55,14 +54,14 @@ import org.jahia.ajax.gwt.client.data.GWTChoiceListInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
+import org.jahia.utils.NodeTypeTreeEntry;
+import org.jahia.utils.NodeTypesUtils;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 
@@ -875,172 +874,23 @@ public class ContentDefinitionHelper {
      * @throws GWTJahiaServiceException
      */
     public List<GWTJahiaNodeType> getContentTypesAsTree(final List<String> nodeTypes, final List<String> excludedNodeTypes, final boolean includeSubTypes, final JCRSiteNode site,
-                                                        final Locale uiLocale, final JCRSessionWrapper session)
-            throws GWTJahiaServiceException {
+                                                        final Locale uiLocale, final JCRSessionWrapper session) throws GWTJahiaServiceException {
         try {
-            List<JahiaTemplatesPackage> packages = new ArrayList<JahiaTemplatesPackage>();
-
-            if (site.isNodeType("jnt:module")) {
-                packages.add(site.getTemplatePackage());
-            } else {
-                for (String s : site.getInstalledModules()) {
-                    JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(s);
-                    packages.add(aPackage);
-                }
-            }
-
-            for (int i = 0; i < packages.size(); i++) {
-                JahiaTemplatesPackage aPackage = packages.get(i);
-                if (aPackage != null) {
-                    for (JahiaTemplatesPackage dep : aPackage.getDependencies()) {
-                        if (!packages.contains(dep)) {
-                            packages.add(dep);
-                        }
-                    }
-                }
-            }
-
-            List<ExtendedNodeType> types = new ArrayList<ExtendedNodeType>();
-            for (JahiaTemplatesPackage pkg : packages) {
-                if (pkg != null) {
-                    for (NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(pkg.getId()); nti.hasNext(); ) {
-                        ExtendedNodeType extendedNodeType = (ExtendedNodeType) nti.nextNodeType();
-                        if (isValidNodeType(extendedNodeType, nodeTypes, excludedNodeTypes, includeSubTypes, site)) {
-                            types.add(extendedNodeType);
-                        }
-                    }
-                    if (pkg.isDefault()) {
-                        for (NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes("system-jahia"); nti.hasNext(); ) {
-                            ExtendedNodeType extendedNodeType = (ExtendedNodeType) nti.nextNodeType();
-                            if (isValidNodeType(extendedNodeType, nodeTypes, excludedNodeTypes, includeSubTypes, site)) {
-                                types.add(extendedNodeType);
-                            }
-                        }
-                    }
-                }
-            }
-
-            Map<ExtendedNodeType, List<ExtendedNodeType>> r = new HashMap<ExtendedNodeType, List<ExtendedNodeType>>();
-            for (ExtendedNodeType nt : types) {
-                if (!nt.isMixin() && !nt.isAbstract()) {
-                    ExtendedNodeType parent = findFolder(nt);
-                    if (!r.containsKey(parent)) {
-                        r.put(parent, new ArrayList<ExtendedNodeType>());
-                    }
-                    r.get(parent).add(nt);
-                }
-            }
-
-            List<GWTJahiaNodeType> roots = new ArrayList<GWTJahiaNodeType>();
-            for (Map.Entry<ExtendedNodeType, List<ExtendedNodeType>> entry : r.entrySet()) {
-                GWTJahiaNodeType nt = getGWTJahiaNodeType(entry.getKey() != null ? entry.getKey() : NodeTypeRegistry
-                        .getInstance().getNodeType("nt:base"), uiLocale);
-                roots.add(nt);
-
-                List<GWTJahiaNodeType> children = new ArrayList<>(entry.getValue().size());
-                for (ExtendedNodeType type : entry.getValue()) {
-                    children.add(getGWTJahiaNodeType(type, uiLocale));
-                }
-
-                disambiguateLabels(children);
-
-                for (GWTJahiaNodeType type : children) {
-                    nt.add(type);
-                }
-            }
-
-            if (roots.size() == 1 && (roots.get(0).isMixin() || roots.get(0).getName().equals("nt:base"))) {
-                List<ModelData> l = roots.get(0).getChildren();
-                roots.clear();
-                for (ModelData o : l) {
-                    roots.add((GWTJahiaNodeType) o);
-                }
-            }
-
-            return roots;
+            List<NodeTypeTreeEntry> nodetypeEntries = NodeTypesUtils.getContentTypesAsTree(nodeTypes, excludedNodeTypes, includeSubTypes, site.getPath(), session, uiLocale);
+            return nodetypeEntries.stream().map(nodeTypeTreeEntry -> transformNodeTypeToGWT(nodeTypeTreeEntry, uiLocale, true)).collect(Collectors.toList());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.translate", uiLocale, e.getLocalizedMessage()));
         }
     }
 
-
-    private ExtendedNodeType findFolder(ExtendedNodeType nt) throws RepositoryException {
-        if (!"jmix:droppableContent".equals(nt.getName()) && nt.isNodeType("jmix:droppableContent")) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Detected component type {}", nt.getName());
-            }
-
-            ExtendedNodeType[] supertypes = nt.getSupertypes();
-            for (int i = supertypes.length - 1; i >= 0; i--) {
-                ExtendedNodeType st = supertypes[i];
-                if (st.isMixin() && !st.getName().equals("jmix:droppableContent")
-                        && st.isNodeType("jmix:droppableContent")) {
-                    return st;
-                }
-            }
+    private GWTJahiaNodeType transformNodeTypeToGWT(NodeTypeTreeEntry nodeTypeTreeEntry, final Locale uiLocale, boolean recurseOnChildren){
+        GWTJahiaNodeType rootType = getGWTJahiaNodeType(nodeTypeTreeEntry.getNodeType(), uiLocale);
+        rootType.setLabel(nodeTypeTreeEntry.getLabel());
+        if (recurseOnChildren && nodeTypeTreeEntry.getChildren() != null) {
+            rootType.setChildren(nodeTypeTreeEntry.getChildren().stream().map(child -> transformNodeTypeToGWT(child, uiLocale, false)).collect(Collectors.toList()));
         }
-        return null;
-    }
-
-    private boolean isValidNodeType(ExtendedNodeType ent, List<String> nodeTypes, List<String> excludedNodeTypes, boolean includeSubTypes, JCRNodeWrapper node) throws RepositoryException {
-        if (ent == null) {
-            return false;
-        }
-
-        if (includeSubTypes) {
-            if (isNodeType(nodeTypes, ent) && checkPermissionForType(ent, node)) {
-                return excludedNodeTypes == null || !isNodeType(excludedNodeTypes, ent);
-            }
-        } else {
-            for (String nodeType : nodeTypes) {
-                if (ent.getName().equals(nodeType) && checkPermissionForType(ent, node)) {
-                    return excludedNodeTypes == null || !isNodeType(excludedNodeTypes, ent);
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean checkPermissionForType(String typename, JCRNodeWrapper node) throws RepositoryException {
-        ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(typename);
-        return checkPermissionForType(type, node);
-    }
-
-    private boolean checkPermissionForType(ExtendedNodeType type, JCRNodeWrapper node) throws NoSuchNodeTypeException {
-        ExtendedNodeType[] supertypesArray = type.getSupertypes();
-        if (supertypesArray.length == 0) {
-            // nothing to check
-            return true;
-        }
-        Set<ExtendedNodeType> superTypes = new HashSet<>(supertypesArray.length);
-        for (ExtendedNodeType superType : supertypesArray) {
-            superTypes.add(superType);
-        }
-        NodeTypeIterator it = NodeTypeRegistry.getInstance().getNodeType("jmix:accessControllableContent").getDeclaredSubtypes();
-
-        boolean allowed = true;
-        while (it.hasNext()) {
-            ExtendedNodeType next = (ExtendedNodeType) it.next();
-            if (superTypes.contains(next)) {
-                allowed = node.hasPermission("component-" + next.getName().replace(":", "_"));
-                // Keep only last (nearest) accessControllableContent mixin if type inherits from multiple ones, so continue looping
-            }
-        }
-        return allowed;
-    }
-
-    private boolean isNodeType(List<String> nodeTypes, ExtendedNodeType type) {
-        if (nodeTypes != null) {
-            for (String nodeType : nodeTypes) {
-                if (type.isNodeType(nodeType)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        return true;
+        return rootType;
     }
 
     /*

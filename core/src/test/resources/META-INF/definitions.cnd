@@ -226,3 +226,18 @@
 [test:nodeTypeOverride] > jnt:content, test:mixinToOverride
  - overrideProperty (string) mandatory
  - mandatoryOverrideProperty (string)
+
+[jmix:cat1] > jmix:droppableContent mixin
+[jmix:cat2] > jmix:droppableContent mixin
+[jmix:cat3] > jmix:droppableContent mixin
+
+[jnt:singleParentType] > jnt:content
+[jnt:cat1Subtype2] > jnt:singleParentType, jmix:cat1
+
+[jnt:parentType] > jnt:content
+[jnt:cat1Subtype1] > jnt:parentType, jmix:cat1
+[jnt:cat2Subtype1] > jnt:parentType, jmix:cat2
+
+[jnt:cat1ype1] > jnt:content, jmix:cat1
+
+[jnt:cat2ype1] > jnt:content, jmix:cat2

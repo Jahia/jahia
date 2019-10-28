@@ -64,6 +64,7 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.settings.readonlymode.ReadOnlyModeController;
 import org.jahia.utils.i18n.Messages;
 import org.jahia.utils.xml.JahiaSAXParserFactory;
+import org.jahia.utils.xml.JahiaTransformerFactory;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,7 +87,6 @@ import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionManager;
 import javax.validation.ConstraintViolation;
 import javax.validation.groups.Default;
-import javax.xml.XMLConstants;
 import javax.xml.parsers.SAXParser;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -1101,9 +1101,7 @@ public class JCRSessionWrapper implements Session {
      */
     private ContentHandler getExportContentHandler(OutputStream stream) throws RepositoryException {
         try {
-            SAXTransformerFactory transformerFactory = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
-            transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-            transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+            SAXTransformerFactory transformerFactory = (SAXTransformerFactory) JahiaTransformerFactory.newInstance();
             TransformerHandler handler = transformerFactory.newTransformerHandler();
 
             Transformer transformer = handler.getTransformer();

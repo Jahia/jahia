@@ -5,7 +5,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
                         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-    <bean id="Toolbar.Item.PublishAll.Pages" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+    <bean id="Toolbar.Item.PublishAll.Pages" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
+          parent="Toolbar.Item.ProtectedPublish">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
                 <property name="allSubTree" value="true"/>
@@ -21,7 +22,8 @@
         <property name="icon" value="publishAll"/>
     </bean>
 
-    <bean id="Toolbar.Item.PublishAllInAllLanguages.Pages" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+    <bean id="Toolbar.Item.PublishAllInAllLanguages.Pages" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
+          parent="Toolbar.Item.ProtectedPublish">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
                 <property name="allLanguages" value="true"/>
@@ -39,7 +41,8 @@
         <property name="icon" value="publishAll"/>
     </bean>
 
-    <bean id="Toolbar.Item.PublishInAllLanguages.Pages" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+    <bean id="Toolbar.Item.PublishInAllLanguages.Pages" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
+          parent="Toolbar.Item.ProtectedPublish">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
                 <property name="allLanguages" value="true"/>

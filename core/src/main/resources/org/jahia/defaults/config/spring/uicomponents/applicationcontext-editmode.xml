@@ -100,7 +100,8 @@
                             </property>
                         </bean>
                         <ref bean="Toolbar.Item.Separator"/>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Edit.Menu.Publication">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Edit.Menu.Publication"
+                              parent="Toolbar.Menu.ProtectedPublish">
                             <property name="titleKey" value="label.publication"/>
                             <!-- <property name="icon" value="publicationAction"/> -->
                             <property name="items">

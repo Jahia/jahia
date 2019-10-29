@@ -43,6 +43,7 @@
  */
 package org.jahia.utils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
 import java.util.HashSet;
@@ -52,7 +53,7 @@ import java.util.Set;
 /**
  * representation of a nodeType tree entry
  */
-public class NodeTypeTreeEntry {
+public class NodeTypeTreeEntry  implements Comparable<NodeTypeTreeEntry> {
     private String label;
     private String name;
     private ExtendedNodeType nodeType;
@@ -93,5 +94,10 @@ public class NodeTypeTreeEntry {
 
     public ExtendedNodeType getNodeType() {
         return nodeType;
+    }
+
+    @Override
+    public int compareTo(NodeTypeTreeEntry otherNodeTypeTreeEntry) {
+        return StringUtils.compareIgnoreCase(getLabel(), otherNodeTypeTreeEntry.getLabel());
     }
 }

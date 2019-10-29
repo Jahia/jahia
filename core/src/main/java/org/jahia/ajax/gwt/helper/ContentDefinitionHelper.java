@@ -876,7 +876,7 @@ public class ContentDefinitionHelper {
     public List<GWTJahiaNodeType> getContentTypesAsTree(final List<String> nodeTypes, final List<String> excludedNodeTypes, final boolean includeSubTypes, final JCRSiteNode site,
                                                         final Locale uiLocale, final JCRSessionWrapper session) throws GWTJahiaServiceException {
         try {
-            List<NodeTypeTreeEntry> nodetypeEntries = NodeTypesUtils.getContentTypesAsTree(nodeTypes, excludedNodeTypes, includeSubTypes, site.getPath(), session, uiLocale);
+            Set<NodeTypeTreeEntry> nodetypeEntries = NodeTypesUtils.getContentTypesAsTree(nodeTypes, excludedNodeTypes, includeSubTypes, site.getPath(), session, uiLocale);
             return nodetypeEntries.stream().map(nodeTypeTreeEntry -> transformNodeTypeToGWT(nodeTypeTreeEntry, uiLocale, true)).collect(Collectors.toList());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

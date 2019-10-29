@@ -241,3 +241,4 @@
 [jnt:cat1ype1] > jnt:content, jmix:cat1
 
 [jnt:cat2ype1] > jnt:content, jmix:cat2
+[test:cat2ype1] > jnt:content, jmix:cat2

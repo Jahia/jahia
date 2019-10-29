@@ -80,7 +80,8 @@
                         <ref bean="Toolbar.Item.Separator"/>
 
                         <ref bean="Toolbar.Item.PublicationStatus"/>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Contribute.Menu.Publication">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Contribute.Menu.Publication"
+                              parent="Toolbar.Menu.ProtectedPublish">
                             <property name="titleKey" value="label.publication"/>
                             <!-- <property name="icon" value="publicationAction"/> -->
                             <property name="items">

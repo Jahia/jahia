@@ -259,7 +259,7 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
 
                                 // adjust value for hierarchical facets
                                 if (facet.isNodeType("jnt:fieldHierarchicalFacet") && name.equals("prefix")) {
-                                    final List<KeyValue> active = activeFacets != null ? this.activeFacets.get(facetPropertyName) : Collections.<KeyValue>emptyList();
+                                    final List<KeyValue> active = activeFacets != null ? this.activeFacets.get(facetIdentifier) : Collections.<KeyValue>emptyList();
                                     if (active == null || active.isEmpty()) {
                                         value = Functions.getIndexPrefixedPath(value, getRenderContext().getWorkspace());
                                     } else {
@@ -323,7 +323,7 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
         final String nodeType = facetNodeTypeName != null ? "nodetype=" + facetNodeTypeName + "&" : "";
         return "rep:facet(" + nodeType + "key=" + key + "&mincount=" + minCount + (extra != null ? extra : "") + ")";
     }
-    
+
     @Override
     protected void resetState() {
         activeFacets = null;

@@ -107,14 +107,21 @@ public class NodeTypesUtilsTest extends AbstractJUnitTest {
         ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().register(currentModule);
 
         // init site
-        testSite = TestHelper.createSite("GqlEditorFormsUtilsTestSite");
+        try {
+            testSite = TestHelper.createSite("NodeTypesUtilsTest");
+        } catch (Exception e) {
+            logger.error("Error while creating NodeTypesUtilsTest", e);
+            logger.info("Check that we are able to use TestHelper: TestHelper.WEB_TEMPLATES=" + TestHelper.WEB_TEMPLATES);
+        }
     }
 
     @After
     public void afterEach() throws Exception {
         ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().unregister(defaultModule);
         ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().unregister(currentModule);
-        TestHelper.deleteSite(testSite.getSiteKey());
+        if (testSite != null) {
+            TestHelper.deleteSite(testSite.getSiteKey());
+        }
         JCRSessionFactory.getInstance().closeAllSessions();
     }
 

@@ -2148,6 +2148,10 @@ div[role="combobox"].toolbar-itemsgroup-languageswitcher {
             body[data-sitesettings="true"] & {
                 height: calc(100vh - 24px) !important;
             }
+
+            .x-viewport-contentmanagermode & {
+                height: 100vh!important;
+            }
         }
 
         body[data-sitesettings="true"] .x-viewport-editmode & {

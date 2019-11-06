@@ -242,25 +242,6 @@ public class FrameworkService implements FrameworkListener {
         this.servletContext = servletContext;
     }
 
-    private Map<String, String> filterOutSystemProperties() {
-
-        if (!"was".equals(SettingsBean.getInstance().getServer())) {
-            // we skip filtering out system properties on any server except WebSphere, which sets OSGi-related properties for its internal
-            // container
-            return null;
-        }
-
-        Map<String, String> filteredOutSystemProperties = new HashMap<>();
-        Properties sysProps = System.getProperties();
-        for (String prop : sysProps.stringPropertyNames()) {
-            if (prop.startsWith("org.osgi.framework.")) {
-                logger.info("Filtering out system property {}", prop);
-                filteredOutSystemProperties.put(prop, sysProps.getProperty(prop));
-                sysProps.remove(prop);
-            }
-        }
-        return filteredOutSystemProperties;
-    }
 
     @Override
     public void frameworkEvent(FrameworkEvent event) {
@@ -380,7 +361,6 @@ public class FrameworkService implements FrameworkListener {
     }
 
     private void startKaraf() {
-        Map<String, String> filteredOutSystemProperties = filterOutSystemProperties();
         try {
             setupSystemProperties();
             firstStartup = !new File(System.getProperty("org.osgi.framework.storage"), "bundle0").exists();
@@ -393,8 +373,6 @@ public class FrameworkService implements FrameworkListener {
             main = null;
             logger.error("Error starting OSGi container", e);
             throw new JahiaRuntimeException("Error starting OSGi container", e);
-        } finally {
-            restoreSystemProperties(filteredOutSystemProperties);
         }
     }
 

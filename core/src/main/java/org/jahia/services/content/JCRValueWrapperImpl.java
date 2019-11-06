@@ -43,6 +43,7 @@
  */
 package org.jahia.services.content;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.data.beans.CategoryBean;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.categories.Category;
@@ -149,22 +150,21 @@ public class JCRValueWrapperImpl implements JCRValueWrapper {
 
     @Override
     public JCRNodeWrapper getNode() throws ValueFormatException, IllegalStateException, RepositoryException {
+        String stringValue = value.getString();
         if (definition.getRequiredType() == PropertyType.REFERENCE || definition.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
             try {
-                return session.getNodeByUUID(value.getString());
+                return session.getNodeByUUID(stringValue);
             } catch (ItemNotFoundException e) {
                 return null;
             }
         } else if (definition.getRequiredType() == PropertyType.STRING) {
             try {
-                return session.getNodeByUUID(value.getString());
-            } catch (ItemNotFoundException e) {
-                String path = value.getString();
-                try {
-                    return session.getNode(path);
-                } catch (PathNotFoundException e1) {
-                    return null;
+                if (StringUtils.startsWith(stringValue, "/")) {
+                    return  session.getNode(stringValue);
                 }
+                return session.getNodeByUUID(stringValue);
+            } catch (ItemNotFoundException | PathNotFoundException e) {
+                return null;
             }
         } else {
             // TODO: The specification suggests using value conversion

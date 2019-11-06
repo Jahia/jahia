@@ -57,6 +57,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.sites.SiteCreationInfo;
 import org.jahia.services.sites.SitesSettings;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -199,15 +200,17 @@ public class TestHelper {
                     logger.warn("shared.zip could not be imported", e);
                 }
             }
+            String defaultLanguageCode = SettingsBean.getInstance().getDefaultLanguageCode() != null
+                    ? SettingsBean.getInstance().getDefaultLanguageCode()
+                    : Locale.ENGLISH.toString();
             if (templateSet != null) {
-                site = service.addSite(admin, name, serverName, name, name,
-                        SettingsBean.getInstance().getDefaultLocale(),
-                        templateSet, modulesToDeploy,
-                        siteZIPFile == null ? "noImport" : "fileImport",
-                        siteZIPFile != null ? new FileSystemResource(
-                                siteZIPFile) : null, null, false, false, null);
+                site = service.addSite(
+                        SiteCreationInfo.builder().siteAdmin(admin).title(name).serverName(serverName).siteKey(name).description(name)
+                                .locale(defaultLanguageCode).templateSet(templateSet).modulesToDeploy(modulesToDeploy)
+                                .firstImport(siteZIPFile == null ? "noImport" : "fileImport")
+                                .fileImport(siteZIPFile != null ? new FileSystemResource(siteZIPFile) : null).build());
             } else {
-                site = addSiteWithoutTemplates(admin, name, serverName, SettingsBean.getInstance().getDefaultLocale());
+                site = addSiteWithoutTemplates(admin, name, serverName, defaultLanguageCode);
             }
             site = service.getSiteByKey(name);
         } finally {
@@ -237,7 +240,7 @@ public class TestHelper {
     
     private static JahiaSite addSiteWithoutTemplates(
             final JahiaUser currentUser, final String name,
-            final String serverName, final Locale selectedLocale)
+            final String serverName, final String selectedLanguage)
             throws Exception {
         JahiaSite site = null;
         try {
@@ -315,14 +318,13 @@ public class TestHelper {
                                                     "j:serverName", serverName);
                                             siteNode.setProperty(
                                                     SitesSettings.DEFAULT_LANGUAGE,
-                                                    selectedLocale.toString());
+                                                    selectedLanguage);
                                             siteNode.setProperty(
                                                     SitesSettings.MIX_LANGUAGES_ACTIVE,
                                                     false);
                                             siteNode.setProperty(
                                                     SitesSettings.LANGUAGES,
-                                                    new String[] { selectedLocale
-                                                            .toString() });
+                                                    new String[] { selectedLanguage });
                                             siteNode.setProperty(
                                                     SitesSettings.INACTIVE_LIVE_LANGUAGES,
                                                     new String[] {});

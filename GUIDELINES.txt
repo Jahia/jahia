@@ -58,38 +58,16 @@ Transactions
 - Although transactions are not (yet) active in Jahia, make sure all the new code you write is transaction-friendly.
 This means that you should avoid locks, and make copies instead of holding on to shared resources, such as cache entries
 for example. Some cache implementations will even do this for you.
-- DonÕt use shared caches (or maps) directly, as they are not ACID-compliant
+- Donï¿½t use shared caches (or maps) directly, as they are not ACID-compliant
 - Introduce session caches (if needed), or re-use a framework that implements sessions caches
 - Think about rollback, how does it work ? Better : write a test unit that fails an operation
 - How do you guarantee ACID properties? Make sure your code is ACID-compliant
 - If the power goes off, is your data corrupted or not ? Design to allow for the worst possible failure !
-- If you have long background tasks, donÕt put them in a single ÒtransactionÓ, split them
-- Avoid creating thread yourself, use SpringÕs support for scheduling instead.
+- If you have long background tasks, donï¿½t put them in a single ï¿½transactionï¿½, split them
+- Avoid creating thread yourself, use Springï¿½s support for scheduling instead.
 - Avoid calling JCR session.save() too often, ideally we should do it only once in a transaction.
-- DonÕt use synchronized methods, as they cause problems with multi-threading transactions
+- Donï¿½t use synchronized methods, as they cause problems with multi-threading transactions
 
-Websphere
----------
-- Be careful when you write JSP files, especially including tags that embed double-quotes within double-quotes. In
-general WAS (WebSphere Application Server) prefers that you surround double-quotes with single-quotes, and NOT the
-opposite
-- Avoid tag files if you can, on some version of WAS, they are very buggy
-- Be careful that hashmaps will not be processed in the same order than on the Sun JVM. So any startup that works
-"magically" because of the default ordering on the Sun JVM might not work on WAS. For example Spring dependencies must
-be explicitely configured with depends-on or real dependency injection when possible.
-- You can find more details at : http://jira.jahia.org/browse/DOCU-60
-- Don't create your own threads. Websphere will not like this at all. If you have no other choice, use Quartz to perform
-background tasks.
-- Don't access or bind JNDI resources outside of a container managed thread. Websphere doesn't allow it.
-- If you bind something in JNDI, you must unbind for proper undeployment.
-
-Weblogic
---------
-TBC
-
-JBoss
------
-TBC
 
 Tomcat
 ------

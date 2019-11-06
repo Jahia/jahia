@@ -659,20 +659,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
         if (server.length() == 0 && servletContext != null) {
             logger.info("Auto-detecting server type...");
-            String info = StringUtils.defaultString(
-                    servletContext.getServerInfo(), "tomcat").toLowerCase();
-            if (info.contains("tomcat")) {
-                server = "tomcat";
-            } else if (info.contains("jboss")) {
-                server = "jboss";
-            } else if (info.contains("websphere")) {
-                server = "was";
-            } else {
-                server = "tomcat";
-                logger.warn(
-                        "Unable to auto-detect server type, based on the server info '{}'. Assuming Apache Tomcat.",
-                        servletContext.getServerInfo());
+            if (!servletContext.getServerInfo().toLowerCase().contains("tomcat")) {
+                logger.warn("Unable to auto-detect server type, based on the server info '{}'. Assuming Apache Tomcat.", servletContext.getServerInfo());
             }
+            server = "tomcat";
             logger.info("...detected server type is '{}'", server);
         }
 
@@ -692,37 +682,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
                                 && new File(tomcat, "lib/catalina.jar")
                                         .isFile()) {
                             serverHome = tomcat.getAbsolutePath();
-                        }
-                    }
-                }
-            } else if ("jboss".equals(server)) {
-                File war = new File(JahiaContextLoaderListener.getWebAppRoot());
-                File ear = war.getParentFile();
-                if (ear != null) {
-                    File deploymentsFolder = ear.getParentFile();
-                    if (deploymentsFolder != null) {
-                        if ("deployments".equals(deploymentsFolder.getName())) {
-                            // exploded EAR deployment on JBoss
-                            File standaloneFolder = deploymentsFolder.getParentFile();
-                            if (standaloneFolder != null) {
-                                File jboss = standaloneFolder.getParentFile();
-                                if (jboss != null && jboss.isDirectory()) {
-                                    serverHome = jboss.getAbsolutePath();
-                                }
-                            }
-                        } else if ("deployment".equals(deploymentsFolder.getName())) {
-                            // packaged EAR deployment on JBoss
-                            File vfsFolder = deploymentsFolder.getParentFile();
-                            if (vfsFolder != null && "vfs".equals(vfsFolder.getName())) {
-                                File standaloneFolder = vfsFolder.getParentFile() != null ? vfsFolder.getParentFile()
-                                        .getParentFile() : null;
-                                if (standaloneFolder != null) {
-                                    File jboss = standaloneFolder.getParentFile();
-                                    if (jboss != null && jboss.isDirectory()) {
-                                        serverHome = jboss.getAbsolutePath();
-                                    }
-                                }
-                            }
                         }
                     }
                 }

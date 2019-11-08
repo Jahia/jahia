@@ -1,0 +1,503 @@
+#JahiaGxtContentPickerWindow,
+#JahiaGxtCustomContentPickerWindow,
+#JahiaGxtCustomContentPicker,
+#JahiaGxtCustomContentPicker > .x-component,
+#contentpicker,
+#contentmanager {
+
+    // ACTION BAR (Save, cancel)
+    .x-window-bbar,
+    .x-panel-bbar { // for stand alone picker
+        position: fixed;
+        bottom: -8px;
+        box-sizing: border-box;
+        right: -30px;
+        background: _property($DARK-FOOTER--BG, $PICKER);
+        z-index: 99;
+        box-shadow: _property($DARK-FOOTER--SHADOW, $PICKER);
+        height: 61px;
+        width: calc(100% + 60px) !important;
+        padding-right: 30px;
+
+        // Full page picker correction
+        > div {
+            width: 100% !important
+        }
+
+        // Push buttons to right of screen
+        .x-panel-fbar {
+            width: 100% !important;
+            padding: 9px 3px;
+            box-sizing: border-box;
+
+            .x-toolbar-ct {
+                float: right;
+            }
+
+            body[data-indigo-picker-search="open"] & {
+                display: none;
+            }
+        }
+
+
+        .x-toolbar-cell {
+            margin-left: 5px;
+            vertical-align: top;
+
+            // SAVE
+            &:nth-child(1) {
+                float: right; // Content PICKER only, not manager
+
+                @include button("ACTIONBAR---SUGGESTED");
+            }
+
+            // CANCEL
+            &:nth-child(2) {
+                float: left; // Content PICKER only, not manager
+            }
+        }
+    }
+
+    // BUTTONS CREATED FOR RIGHT PANEL
+    // Thumb slider used to control the amount of columns in thumb view
+    .thumb-size-slider {
+        position: fixed;
+        top: 1px;
+        right: 90px;
+        z-index: 999;
+        width: 50px;
+
+        // Hide when in list view
+        body[indigo-picker-display="listview"] & {
+            display: none;
+        }
+
+        // Styling
+        -webkit-appearance: none;
+        margin: 18px 0;
+
+        body.ext-gecko & {
+            margin: 11px 0;
+        }
+
+        &:focus {
+            outline: none;
+        }
+
+        &::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 2px;
+            cursor: pointer;
+            background: _theme-color(primary, d);
+        }
+
+        &::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 12px;
+            width: 12px;
+            border-radius: 100%;
+            background: #363636;
+            cursor: pointer;
+            margin-top: -5px;
+        }
+
+        &:focus::-webkit-slider-runnable-track {
+            background: _theme-color(primary, d);
+        }
+
+        &::-moz-range-track {
+            width: 100%;
+            height: 2px;
+            cursor: pointer;
+            background: _theme-color(primary, d);
+        }
+
+        &::-moz-range-thumb {
+            height: 12px;
+            width: 12px;
+            border-radius: 100%;
+            background: #363636;
+            cursor: pointer;
+        }
+    }
+
+    // Used to toggle the side panel
+    .toggle-picker-files {
+        position: fixed;
+        top: calc(50% - 49px);
+        left: 0 !important;
+        background: red;
+        color: white;
+        z-index: 99999;
+
+        text-indent: -50000px;
+        width: 20px;
+        height: 20px;
+
+        border: none;
+        opacity: 0.8;
+
+        background: url(../images/icons/toggle-EW@X2.png) no-repeat center center;
+        background-size: 15px;
+
+        &:hover {
+            opacity: 1;
+            cursor: pointer;
+        }
+    }
+
+    // TOOLBAR
+    #JahiaGxtManagerToolbar {
+        position: fixed;
+        top: 0;
+        // left: 0!important;
+        width: 100% !important;
+
+        // Remove some GWT styles ...
+        .action-toolbar {
+            border: none;
+            padding: 0;
+            background: none;
+            height: auto !important;
+            position: relative;
+            left: auto;
+            top: auto;
+            right: auto;
+            width: auto;
+            padding-left: 6px;
+
+            .x-toolbar-cell {
+                display: inline-block;
+                margin-top: 0;
+            }
+        }
+
+        .action-bar-menu-item {
+            // Node type filtering ( used in the COntent Picker )
+            &.toolbar-itemsgroup-nodetypefiltering {
+                width: 150px !important;
+                right: 7px;
+                position: fixed;
+                top: 5px !important;
+                left: auto !important;
+
+                @include _combo(DARK);
+
+                .x-form-trigger {
+                    height: 25px !important;
+                }
+            }
+        }
+
+        // BUTTON
+        .action-bar-tool-item {
+            opacity: 0.8;
+
+            background-color: transparent;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-image: url(../images/icons/tabs-placeholder-white@X2.png);
+            background-size: 21px;
+
+            z-index: 999999;
+
+            width: 35px;
+            height: 38px;
+
+            button {
+                width: 25px !important;
+            }
+
+            tbody {
+                display: none;
+            }
+
+            &:hover {
+                opacity: 1 !important;
+                cursor: pointer;
+            }
+
+            // Stop GWT from disabling the buttons.
+            &.x-item-disabled {
+                display: none;
+            }
+
+            // Refresh icon ( do not need, let user use the one above source selection )
+            &.toolbar-item-refresh {
+                display: none;
+            }
+
+            /* TOOLTIPS */
+            &.toolbar-item-newfolder,
+            &.toolbar-item-newcontentfolder,
+            &.toolbar-item-newcategory,
+            &.toolbar-item-upload,
+            &.toolbar-item-newcontent,
+            &.toolbar-item-newportletfolder,
+            &.toolbar-item-newportlet,
+            &.toolbar-item-newpage,
+            &.repositoryexplorer-menu-view {
+                &:hover {
+                    &::before,
+                    &::after {
+                        opacity: 1;
+                        transition: all 0.3s ease-in 0.5s;
+                    }
+                }
+
+                &::before,
+                &::after {
+                    opacity: 0;
+                    position: absolute;
+                    background: _theme-color(secondary);
+                    transition: all 0.3s ease-in 0s;
+                    margin: 0 !important;
+                    pointer-events: none;
+
+                }
+
+                &::before {
+                    white-space: nowrap;
+                    text-align: center;
+                    z-index: 9;
+                    box-shadow: 1px 2px 4px 0 rgba(40, 43, 45, 0.7);
+                    text-transform: uppercase;
+                    @include text(10px, _theme-color(primary, g), $FONT--WEIGHT---EXTRABOLD);
+                    position: absolute;
+                    display: block;
+                    width: auto;
+                    padding: 6px;
+                    top: 35px;
+                    border-radius: 3px;
+                }
+
+                &::after {
+                    width: 0;
+                    height: 0;
+                    content: "Arrow";
+                    text-indent: -50000px;
+                    z-index: 10;
+                    border-style: solid;
+                    border-width: 0 8px 8px 8px;
+                    border-color: transparent transparent _theme-color(secondary) transparent;
+                    background: transparent;
+                    top: 30px;
+                }
+            }
+
+            /* END TOOTIPS */
+
+            // Add New Folder
+            &.toolbar-item-newfolder {
+                background-image: url(../images/icons_dark/add_folder.svg);
+
+                &::before {
+                    content: $text_tooltip_new_folder;
+                }
+            }
+
+            // Add New Content Folder
+            &.toolbar-item-newcontentfolder { // editorial content manager
+                background-image: url(../images/icons_dark/add_folder.svg);
+
+
+                &::before {
+                    content: $text_tooltip_new_content_folder;
+                }
+            }
+
+            // Add New Portlet Folder
+            &.toolbar-item-newportletfolder { // portlet manager
+                background-image: url(../images/icons_dark/add_folder.svg);
+
+                &::before {
+                    content: $text_tooltip_new_portlet_folder;
+                }
+            }
+
+            // New Category
+            &.toolbar-item-newcategory {
+                background-image: url(../images/icons_dark/add_circle.svg);
+
+                &::before {
+                    content: $text_tooltip_new_category;
+                }
+            }
+
+            // Upload File
+            &.toolbar-item-upload {
+                background-image: url(../images/icons_dark/upload_file.svg);
+                background-size: 19px;
+
+                &::before {
+                    content: $text_tooltip_upload;
+                }
+            }
+
+            // New Content
+            &.toolbar-item-newcontent {
+                background-image: url(../images/icons_dark/add.svg);
+                background-size: 19px;
+
+                &::before {
+                    content: $text_tooltip_new_content;
+                }
+            }
+
+            // New Portlet
+            &.toolbar-item-newportlet {
+                background-image: url(../images/icons_dark/add_circle.svg);
+
+                &::before {
+                    content: $text_tooltip_new_portlet;
+                }
+            }
+
+            // New Page
+            &.toolbar-item-newpage {
+                background-image: url(../images/icons_dark/add.svg);
+                background-size: 19px;
+
+                &::before {
+                    content: "Create new page";
+                }
+            }
+
+            // Download
+            &.toolbar-item-download {
+                display: none !important;
+                background-image: url(../images/icons/placeholder-9@X2.png);
+            }
+
+            // File preview
+            &.toolbar-item-filepreview {
+                display: none !important;
+                background-image: url(../images/icons/placeholder-10@X2.png);
+            }
+
+            // Rename
+            &.toolbar-item-rename {
+                display: none !important;
+                background-image: url(../images/icons/placeholder-11@X2.png);
+            }
+
+            // Delete
+            &.toolbar-item-delete {
+                display: none !important;
+                background-image: url(../images/icons/placeholder-12@X2.png);
+            }
+
+            // Un delete
+            &.toolbar-item-undelete {
+                display: none !important;
+                background-image: url(../images/icons/placeholder-13@X2.png);
+            }
+
+            // Delete permanently
+            &.toolbar-item-deletepermanently {
+                display: none !important;
+                background-image: url(../images/icons/placeholder-14@X2.png);
+            }
+
+            &.toolbar-item-copy {
+                display: none !important;
+                background-image: url(../images/icons/placeholder-16@X2.png);
+            }
+
+            // Cut
+            &.toolbar-item-cut {
+                display: none !important;
+                background-image: url(../images/icons/placeholder-17@X2.png);
+            }
+
+            // Paste
+            &.toolbar-item-paste {
+                display: none !important;
+                background-image: url(../images/icons/placeholder-18@X2.png);
+            }
+
+            // Paste Reference
+            &.toolbar-item-pastereference {
+                display: none !important;
+                background-image: url(../images/icons/placeholder-19@X2.png);
+            }
+
+            // Crop
+            &.toolbar-item-crop {
+                display: none !important;
+                background-image: url(../images/icons/placeholder-20@X2.png);
+            }
+
+            // Resize
+            &.toolbar-item-resize {
+                display: none !important;
+                background-image: url(../images/icons/placeholder-21@X2.png);
+            }
+
+            // Rotate
+            &.toolbar-item-rotate {
+                display: none !important;
+                background-image: url(../images/icons/placeholder-22@X2.png);
+            }
+
+            // Repo Filter menu
+            &.repositoryexplorer-menu-view {
+                background-image: url(../images/icons/icon_preview_small_white.png);
+
+                &::before {
+                    content: $text_tooltip_toggle_hidden_elements;
+                }
+            }
+
+            // View Buttons
+            &.toolbar-item-listview,
+            &.toolbar-item-thumbsview,
+            &.toolbar-item-detailedview {
+                position: fixed;
+                top: 6px;
+                display: block !important;
+                width: 25px;
+                height: 25px;
+                background-size: 11px 10px;
+                opacity: 1 !important;
+                pointer-events: all !important;
+            }
+
+            // List View
+            &.toolbar-item-listview {
+                background-image: url($ICON--DISPLAY--LIST--GREY);
+                right: 8px;
+                opacity: 1;
+
+                body[indigo-PICKER-DISPLAY="listview"] & {
+                    background-image: url($ICON--DISPLAY--LIST--WHITE);
+                    background-color: #363636;
+                }
+            }
+
+            // Thumbs View
+            &.toolbar-item-thumbsview {
+                background-image: url($ICON--DISPLAY--THUMBS--GREY);
+                right: 32px;
+                opacity: 1;
+
+                body[indigo-PICKER-DISPLAY="thumbsview"] & {
+                    background-image: url($ICON--DISPLAY--THUMBS--WHITE);
+                    background-color: #363636;
+                }
+            }
+
+            // Display View
+            &.toolbar-item-detailedview {
+                background-image: url($ICON--DISPLAY--DETAILS--GREY);
+                right: 56px;
+
+                body[indigo-PICKER-DISPLAY="detailedview"] & {
+                    background-image: url($ICON--DISPLAY--DETAILS--WHITE);
+                    background-color: #363636;
+                }
+            }
+        }
+    }
+
+}

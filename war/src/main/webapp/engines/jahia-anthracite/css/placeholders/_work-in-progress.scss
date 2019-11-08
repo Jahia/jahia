@@ -1,0 +1,30 @@
+/////////////////////////////////////////////////
+// WORK IN PROGRESS /////////////////////////////
+/////////////////////////////////////////////////
+%HIGHLIGHT--WIP-FIELDS {
+    background: rgba(255, 255, 0, 0.42);
+    padding: 10px 20px 20px 20px !important;
+    left: -10px;
+    position: relative;
+    border: 1px solid #f7f700;
+    box-shadow: 2px 2px 2px rgba(38, 38, 38, 0.2);
+
+    .x-form-item-label.x-form-item-label {
+        display: inline-block !important;
+        width: auto !important;
+        position: relative;
+        color: _theme-color(septenary, b);
+
+        img {
+            position: absolute;
+            right: -16px;
+            top: 6px;
+        }
+
+        &::after {
+            content: $text_work_in_progress;
+            margin-left: 5px;
+            font-weight: 800;
+        }
+    }
+}

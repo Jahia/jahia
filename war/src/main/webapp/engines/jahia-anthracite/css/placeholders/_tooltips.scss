@@ -1,0 +1,76 @@
+/////////////////////////////////////////////////
+// TOOLTIPS /////////////////////////////////////
+/////////////////////////////////////////////////
+%TOOLTIP {
+    &:hover {
+        &::before,
+        &::after {
+            opacity: 1;
+            transition: all 0.3s ease-in 0.5s;
+        }
+    }
+
+    &::before,
+    &::after {
+        opacity: 0;
+        position: absolute;
+        background: _theme-color(secondary);
+        transition: all 0.3s ease-in 0s;
+        margin: 0 !important;
+        pointer-events: none;
+
+    }
+
+    &::before {
+        content: "Loading ...";
+        padding: 7px 10px;
+        white-space: nowrap;
+        text-align: center;
+        z-index: 9;
+        border-radius: 2px;
+        box-shadow: 1px 2px 4px 0 rgba(40, 43, 45, 0.7);
+        text-transform: uppercase;
+        text-indent: 0;
+
+        @include text(10px, _theme-color(primary, g), $FONT--WEIGHT---EXTRABOLD);
+    }
+
+    &::after {
+        width: 0;
+        height: 0;
+        content: "Arrow";
+        text-indent: -50000px;
+        z-index: 10;
+        border-style: solid;
+        border-width: 0 8px 8px 8px;
+        border-color: transparent transparent _theme-color(secondary) transparent;
+        background: transparent;
+        top: 25px;
+    }
+}
+
+%TOOLTIP---BOTTOM {
+    &::before {
+        bottom: -36px;
+        left: -10px;
+    }
+
+    &::after {
+        bottom: -18px;
+        left: 5px;
+    }
+}
+
+
+%TOOLTIP---LEFT {
+    &::before {
+        top: 3px;
+        right: 53px;
+    }
+
+    &::after {
+        top: 12px;
+        left: -9px;
+        transform: rotate(90deg);
+    }
+}

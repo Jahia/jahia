@@ -1,0 +1,45 @@
+.engine-panel:not(.trashboardengine-ctn),
+div.engine-window {
+
+        #JahiaGxtEditEnginePanel-content {
+            // Fix problem with non floating form element.
+            #Title,
+            #Titre,
+            #Titel {
+                // Contains sytems name / title
+                .x-form-item:nth-child(1) {
+                    // System Name
+                    .x-form-element {
+                        width: 100% !important;
+                        float: none;
+                    }
+
+                    .x-box-inner {
+                        width: 100% !important;
+                        height: auto !important;
+                        position: initial !important;
+                    }
+
+                    .x-form-field-wrap {
+                        width: 100% !important;
+                        position: relative !important;
+                    }
+
+                    .x-form-check-wrap {
+                        position: absolute;
+                        left: 0 !important;
+                        top: 31px !important;
+                    }
+
+                    label.x-box-item {
+                        position: relative !important;
+                        left: 16px !important;
+                        top: 0 !important;
+                    }
+                }
+            }
+
+
+        }
+
+}

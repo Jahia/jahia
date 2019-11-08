@@ -1,0 +1,70 @@
+@mixin _button($_class, $_button_id, $_extra: "none") {
+    #{$_class} {
+        width: auto !important;
+
+        button {
+            width: 100% !important;
+            height: auto !important;
+        }
+
+        &.x-btn-noicon {
+            // Button has icon
+            button {
+                @extend %BUTTON--TEXT\:#{$_button_id} !optional;
+            }
+        }
+
+        &.x-btn-text-icon {
+            // Button has icon
+
+            button {
+                @extend %BUTTON--ICON\:#{$_button_id} !optional;
+
+                @if ($_extra == "remove-icons") {
+                    padding-left: 10px;
+
+                    img {
+                        display: none;
+
+                    }
+                }
+
+            }
+        }
+
+        &.x-btn-over {
+            // Over states
+
+            &.x-btn-noicon {
+                // Button has icon
+                button {
+                    @extend %BUTTON--TEXT---HOVER\:#{$_button_id} !optional;
+
+                }
+            }
+
+            &.x-btn-text-icon {
+                // Button has icon
+                button {
+                    @extend %BUTTON--ICON---HOVER\:#{$_button_id} !optional;
+
+                    @if ($_extra == "remove-icons") {
+                        padding-left: 10px;
+
+                        img {
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@mixin button($_button_id, $_extra: "none") {
+
+    // Button classes are more specific now ( ie. .button-yes )
+    // However, we can no longer use the button mixin as the structure doesnt work with the classes.
+    // button_
+    @include _button(".x-btn", $_button_id, $_extra);
+}

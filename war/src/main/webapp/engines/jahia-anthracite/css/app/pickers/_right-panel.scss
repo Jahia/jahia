@@ -1,0 +1,528 @@
+#JahiaGxtContentPickerWindow,
+#JahiaGxtCustomContentPickerWindow,
+#JahiaGxtCustomContentPicker,
+#JahiaGxtCustomContentPicker > .x-component,
+#contentpicker,
+#contentmanager {
+
+    // RIGHT PANEL
+    #JahiaGxtManagerTobTable {
+        position: fixed !important;
+        left: $PICKER_SIDEPANEL_WIDTH !important;
+        top: 42px !important;
+        height: calc(100% - 95px) !important;
+        width: calc(100% - #{$PICKER_SIDEPANEL_WIDTH}) !important;
+
+        #images-view {
+            background: transparent !important;
+            padding: 60px 20px 0px;
+            box-sizing: border-box;
+            box-shadow: inset 0px 41px 0px #e5e3e3, inset 0px 42px 0px #b4b2b2, inset 0px 43px 5px rgba(38, 38, 38, 0.2);
+
+            .x-panel-body {
+                background: transparent !important;
+            }
+        }
+
+        // Scroller is a pain ...
+        .x-grid3-scroller {
+            width: 100% !important;
+
+            .x-grid3-body {
+                padding: 0 20px;
+
+                .x-grid-empty {
+                    width: 100% !important;
+                }
+            }
+        }
+
+        // ROW VIEW
+        .x-grid3-row {
+            .x-grid3-td-publicationInfo {
+                width: 3px !important;
+                height: 24px;
+                overflow: hidden;
+                position: absolute;
+                left: -4px;
+                top: 1px;
+            }
+
+            position: relative;
+
+            .x-grid3-td-size {
+                pointer-events: none; // Stop the event listener attached for displaying more info ...
+            }
+
+            .x-grid3-col-size,
+            .x-grid3-col-primaryTypeLabel,
+            .x-grid3-col-jcr\:lastModified,
+            .x-grid3-col-jcr\:created,
+            .x-grid3-col-jcr\:createdBy {
+                color: #6a6a6a !important;
+            }
+
+            // SELECTED ROW
+            &.x-grid3-row-selected {
+                background: #007cb0 !important;
+
+                .x-grid3-col-size,
+                .x-grid3-col-primaryTypeLabel,
+                .x-grid3-col-jcr\:lastModified,
+                .x-grid3-col-jcr\:created,
+                .x-grid3-col-jcr\:createdBy {
+                    color: #F5F5F5 !important;
+                }
+            }
+
+            // OVER
+            &.x-grid3-row-over {
+                background: #cecccc !important;
+            }
+
+            // SELECTED OVER
+            &.x-grid3-row-selected.x-grid3-row-over {
+                background: #007cb0 !important;
+            }
+        }
+
+        // THUMBS / DETAILS VIEWS
+        .x-view {
+            background: transparent !important;
+            height: 100% !important;
+            padding: 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-content: flex-start;
+
+            &[indigo-thumb-zoom="1"] {
+                .thumb-wrap {
+                    width: 20% !important;
+                }
+            }
+
+            &[indigo-thumb-zoom="2"] {
+                .thumb-wrap {
+                    width: 30% !important;
+                }
+            }
+
+            &[indigo-thumb-zoom="3"] {
+                .thumb-wrap {
+                    width: 35% !important;
+                }
+            }
+
+            &[indigo-thumb-zoom="4"] {
+                .thumb-wrap {
+                    width: 50% !important;
+                }
+            }
+
+            &[indigo-thumb-zoom="5"] {
+                .thumb-wrap {
+                    width: 75% !important;
+                }
+            }
+
+            &[indigo-thumb-zoom="6"] {
+                .thumb-wrap {
+                    width: 100% !important;
+                }
+            }
+
+            // FILES
+            .thumb-wrap {
+                opacity: 1;
+                margin: 0 0 5px 0 !important;
+                width: 150px !important;
+
+                img {
+                    width: 100% !important;
+
+                    &[src$="/jnt_folder_large.png"] {
+                        visibility: hidden;
+                    }
+                }
+
+                // Make sure that which ever thumb is being hovered is pulled to the top
+                &:hover {
+                    z-index: 999999999999999;
+                }
+
+                span {
+                    // THUMB VIE DETAILS
+                    width: 100%;
+                    @include text(12px, _property($THUMB--COLOR, $PICKER), $FONT--WEIGHT---LIGHT);
+                    z-index: 999;
+
+                    // Filesize
+                    &:nth-child(3) {
+                        @include text(10px, _property($THUMB--COLOR--DIMMED, $PICKER), $FONT--WEIGHT---LIGHT);
+                        margin-top: 0;
+                        z-index: 9;
+                    }
+                }
+
+                // Hover / force hover (used when the context menu is opened)
+                &.x-view-over {
+                    background: _property($THUMB--BG---HOVER, $PICKER);
+
+                    span {
+                        display: block;
+                        color: _property($THUMB--COLOR, $PICKER) !important;
+                    }
+
+                    .thumbDetails {
+                        div {
+                            color: #363636 !important;
+
+                            b {
+                                color: #363636 !important;
+                            }
+                        }
+                    }
+                }
+
+                &.indigo-force-open {
+                    background: _property($THUMB--BG---SELECTED, $PICKER);
+
+                    span {
+                        display: block;
+                        color: _property($THUMB--COLOR---SELECTED, $PICKER) !important;
+                    }
+                }
+
+                // Selected row
+                &.x-view-item-sel {
+                    background: _property($THUMB--BG---SELECTED, $PICKER);
+
+                    span {
+                        background: _property($THUMB--BG---SELECTED, $PICKER) !important;
+                        color: _property($THUMB--COLOR---SELECTED, $PICKER) !important;
+                    }
+
+                    .thumb {
+                        background: _property($THUMB--BG---SELECTED, $PICKER) !important;
+                    }
+
+                    &.x-view-highlightrow {
+                        background: _property($THUMB--BG---SELECTED, $PICKER);
+                    }
+
+                    .thumbDetails {
+                        div {
+                            color: #F5F5F5 !important;
+
+                            b {
+                                color: #F5F5F5 !important;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .thumb {
+                padding: 10px 10px 2px !important;
+                width: 100% !important;
+                float: none !important;
+                overflow: visible;
+
+                &[data-nodetypes="jnt:folder"]:after {
+                    content: '';
+                    background-image: url(../images/icons/folder.svg) !important;
+                    background-repeat: no-repeat;
+                    background-position: center center;
+                    overflow: hidden;
+                    box-sizing: border-box;
+                    width: 100%;
+                    height: 100%;
+                    background-size: 50%;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    opacity: .8;
+                }
+            }
+
+            .thumbDetails {
+                position: relative !important;
+                display: block !important;
+                top: 0;
+                left: 0;
+                padding: 5px 10px 0px 10px;
+                width: 100%;
+                box-sizing: border-box;
+
+                div {
+                    @include text(12px, #363636, $FONT--WEIGHT---EXTRALIGHT);
+
+                    display: block !important;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    margin-bottom: 5px;
+
+                    b {
+                        @include text(8px, #6a6a6a, $FONT--WEIGHT---EXTRALIGHT);
+                        display: block;
+                        margin-right: 5px;
+                        text-transform: uppercase;
+                    }
+                }
+            }
+        }
+
+        > .x-panel-header {
+            display: none;
+        }
+
+        // Toolbar (filter, sort, etc, ...)
+        .x-panel-tbar {
+            position: fixed;
+            top: 48px;
+            left: calc(#{$PICKER_SIDEPANEL_WIDTH} + 90px);
+            width: auto !important;
+            z-index: 99999;
+            margin-left: -13px;
+
+            > .x-toolbar {
+                background: transparent;
+                width: auto !important;
+                padding: 0;
+            }
+
+            .x-toolbar-left {
+                td {
+                    // Filter Label
+                    &:nth-child(1) {
+                        display: none;
+                    }
+
+                    // Filter Input
+                    &:nth-child(2) {
+                        .x-form-field-wrap {
+                            margin-right: 5px !important;
+
+                            .x-form-text {
+                                @include _input-search($PICKER-HEADER-INPUT);
+
+                                width: auto !important;
+                            }
+                        }
+                    }
+
+                    // Unknown
+                    &:nth-child(3) {
+                        display: none;
+                    }
+
+                    // Sort Label
+                    &:nth-child(4) {
+                        display: none;
+                    }
+
+                    // ASC / DESC
+                    &:nth-child(6) {
+                        @include button("TOGGLE_ASC");
+
+                        .x-btn.x-btn-noicon button {
+                            width: 25px !important;
+                            height: 25px !important;
+                        }
+
+                        > table {
+                            > tbody {
+                                display: inline-block;
+                                vertical-align: middle;
+                                margin-left: 5px;
+                            }
+                        }
+
+                        .x-btn-pressed {
+                            &.x-btn.x-btn-noicon button {
+                                background-image: url($ICON--DESC--DARK) !important;
+
+                                &:hover {
+                                    background-color: #ebe6e6 !important;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // GWT Zoom - not used
+            .x-toolbar-right {
+                display: none;
+            }
+        }
+
+        // More info / Preview buttons
+        .thumb-wrap,
+        .x-grid3-row {
+            // More info button UP
+            .more-info-button {
+                position: absolute;
+                top: 0;
+                right: 0;
+                text-indent: -50000px;
+                width: 25px;
+                height: 25px;
+                z-index: 99999;
+                display: none;
+                border: none;
+
+                &.indigo-show-button {
+                    display: block;
+                }
+
+                &:hover {
+                    cursor: pointer;
+                }
+
+                background: url($ICON--MORE_OPTIONS---GREY) no-repeat center center;
+                background-size: 10px 2px;
+
+
+                body[indigo-picker-display="detailedview"] & {
+                    background-color: #cecccc;
+                }
+
+                body[indigo-picker-display="thumbsview"] & {
+                    background-color: #cecccc;
+                }
+
+                body[indigo-picker-display="listview"] & {
+                    background: url($ICON--MORE_OPTIONS---GREY) no-repeat center center;
+                    background-size: 10px 2px;
+                    background-color: #cecccc;
+                }
+            }
+
+            .preview-button {
+                position: absolute;
+                top: 0;
+                right: 50px;
+                text-indent: -50000px;
+                width: 25px;
+                height: 25px;
+                z-index: 99999;
+                display: none;
+                border: none;
+
+                &.indigo-show-button {
+                    display: block;
+                }
+
+                &:hover {
+                    cursor: pointer;
+                }
+
+                background: url(../images/icons/icon_preview_small_grey.png) no-repeat center center;
+
+                body[indigo-picker-display="detailedview"] & {
+                    background-color: #cecccc;
+                }
+
+                body[indigo-picker-display="thumbsview"] & {
+                    background-color: #cecccc;
+                }
+
+                body[indigo-picker-display="listview"] & {
+                    background-color: transparent;
+                }
+            }
+
+            .edit-button {
+                position: absolute;
+                top: 0;
+                right: 25px;
+                text-indent: -50000px;
+                width: 25px;
+                height: 25px;
+                z-index: 99999;
+                display: none;
+                border: none;
+
+                &.indigo-show-button {
+                    display: block;
+                }
+
+                &:hover {
+                    cursor: pointer;
+                }
+
+                background: url("../images/icons/tabs-edit.png") no-repeat center center;
+
+                body[indigo-picker-display="detailedview"] & {
+                    background-color: #cecccc;
+                }
+
+                body[indigo-picker-display="thumbsview"] & {
+                    background-color: #cecccc;
+                }
+
+                body[indigo-picker-display="listview"] & {
+                    background-color: transparent;
+                }
+            }
+
+
+            &.x-view-item-sel,
+            &.x-grid3-row-selected {
+                // More info button SELECTED
+                .more-info-button {
+                    background-color: #007cb0 !important;
+                    background: url($ICON--MORE_OPTIONS---WHITE) no-repeat center center;
+                    background-size: 10px 2px;
+                }
+
+                .preview-button {
+                    background-color: #007cb0 !important;
+                    background: url(../images/icons/icon_preview_small_white.png) no-repeat center center;
+                }
+
+                .edit-button {
+                    background-color: #007cb0 !important;
+                }
+
+                body[indigo-picker-display="listview"] & {
+
+                    .more-info-button {
+                        background-color: transparent;
+                        background: url($ICON--MORE_OPTIONS---WHITE) no-repeat center center;
+                        background-size: 10px 2px;
+                    }
+
+                    .preview-button {
+                        background-color: transparent;
+                    }
+
+                    .edit-button {
+                        background-color: transparent;
+                    }
+                }
+            }
+
+            &:hover {
+                // Just display button when row / thumb is hovered ...
+                .more-info-button {
+                    display: block;
+                }
+
+                .preview-button {
+                    display: block;
+                }
+
+                .edit-button {
+                    display: block;
+                }
+            }
+        }
+    }
+
+}

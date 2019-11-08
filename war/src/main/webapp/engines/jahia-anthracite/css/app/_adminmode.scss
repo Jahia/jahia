@@ -1,0 +1,400 @@
+/***********************************************/
+/* ADMIN MODE **********************************/
+/***********************************************/
+
+.x-viewport-adminmode {
+
+    #JahiaGxtSidePanelTabs {
+        border-right-width: 0 !important;
+        box-shadow: none !important;
+
+        &:before {
+            opacity: 0 !important;
+        }
+    }
+
+    .action-toolbar {
+        background-size: 32px 32px;
+        background: none !important;
+        border: none !important;
+        position: fixed;
+        display: block;
+        top: 0;
+        height: 40px !important;
+        right: 2px;
+        left: auto;
+        pointer-events: all;
+        padding: 5px;
+        width: 49px;
+        z-index: $ZINDEX--TOOLBAR--CONTAINER;
+        overflow: visible !important;
+        position: fixed;
+
+        .toolbar-item-displaytoolbarwarningsactionitem .x-btn-mc button {
+            background: url(../images/icons/ic_warning@2x.png) !important;
+            background-size: 20px 20px !important;
+            background-repeat: no-repeat !important;
+            background-color: _theme-color(status, error) !important;
+            background-position: center !important;
+            display: block;
+            height: 34px !important;
+            width: 34px !important;
+            border-radius: 50px;
+            background-position-y: 5px !important;
+            bottom: 12px !important;
+            left: 12px !important;
+            position: fixed !important;
+        }
+
+        .toolbar-item-displaytoolbarwarningsactionitem.x-btn-menu-active .x-btn-mc button {
+            background-color: _theme-color(status, error) !important;
+            width: 100px !important;
+            background-position-x: 7px !important;
+        }
+
+        .x-toolbar-cell:hover > .toolbar-item-displaytoolbarwarningsactionitem.x-btn-menu-active {
+            opacity: 0.8 !important;
+        }
+
+        .x-btn-arrow {
+            display: none;
+        }
+
+        > table {
+            opacity: 1;
+            z-index: $ZINDEX--TOOLBAR--CONTAINER;
+            pointer-events: all;
+        }
+
+        .x-toolbar-cell {
+            display: block;
+            margin-top: 10px;
+            opacity: 1;
+
+            &.x-hide-display {
+                display: block !important;
+            }
+
+            button {
+                width: 50px !important;
+                height: 35px !important;
+                padding: 0 !important;
+                background: transparent !important;
+                text-indent: -50000px;
+            }
+
+            td.x-btn-mc {
+                display: block;
+                width: 50px;
+                height: 23px;
+                margin-bottom: 2px;
+                background: transparent !important;
+            }
+
+            &:nth-child(1) > table:nth-child(1) td.x-btn-mc {
+                width: 50px;
+                margin-bottom: 2px;
+                background: transparent !important;
+                display: none;
+            }
+
+            &:nth-child(3) {
+                display: none;
+            }
+
+            .editmode-managers-menu {
+                &.x-hide-display {
+                    display: block !important;
+                }
+
+                position: fixed;
+                top: 54px;
+                left: 60px;
+                z-index: $ZINDEX--HAMBURGER_MENU---BUTTON;
+                display: block;
+                background: url(../images/dx_logo_solid.png) no-repeat top 3px left 10px;
+                margin-top: 0;
+                background-size: 32px 32px;
+                opacity: 0.9;
+                width: 50px;
+                height: 50px;
+
+                body[data-selection-count="0"] & {
+                    background: url(../images/dx_logo_solid.png) no-repeat top 3px left 10px;
+                    background-size: 32px 32px;
+                }
+
+                &:hover {
+                    opacity: 1;
+                }
+
+                &::after {
+                    content: "";
+                }
+
+                body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+                    top: 40px;
+                    left: 20px;
+                    background-size: 42px;
+                    width: 54px !important;
+                }
+
+                .x-btn-mc {
+                    height: 40px !important;
+                }
+            }
+
+            .admin-menu-user {
+                &.x-hide-display {
+                    display: block !important;
+                }
+
+                position: fixed;
+                top: 10px;
+                background: url(../images/tabs-usermenu-black@X2.png) no-repeat left 14px top 6px;
+                height: 40px;
+                margin-top: 0;
+                background-size: 23px 23px;
+                opacity: 0.8;
+
+                &:hover {
+                    opacity: 1;
+                }
+
+                body[data-selection-count="0"] & {
+                    background: url(../images/tabs-usermenu-white@X2.png) no-repeat left 14px top 6px;
+                    background-size: 23px 23px;
+                }
+
+                body[data-sitesettings="true"] & {
+                    display: none;
+                }
+            }
+
+            .admin-menu-mode {
+                &.x-hide-display {
+                    display: block !important;
+                }
+
+                position: fixed;
+                right: 73px;
+                top: 6px;
+                margin-top: 7px;
+                z-index: $ZINDEX--CONTEXT_MENU--MODE_MENU;
+                width: 151px;
+                height: 24px;
+                opacity: 0.9;
+
+                &::after {
+                    content: $text_administration;
+                    font-size: 14px;
+                    text-transform: uppercase;
+                    font-weight: $FONT--WEIGHT---SEMILIGHT;
+                    margin-top: 0px;
+                    padding-left: 35px;
+                    background: url(../images/dx_logo_solid-black.png) no-repeat left 12px center / 20px 20px;
+                    padding-right: 2px;
+                    text-align: left;
+                    position: relative;
+                    z-index: $ZINDEX--CONTEXT_MENU--MODE_MENU---LABEL;
+                    font-family: $DEFAULT--FONT--FAMILY;
+                    width: calc(100% - 20px);
+                    display: block;
+                    height: 20px;
+                    padding-top: 5px;
+                    color: _theme-color(secondary);
+
+                    body[data-selection-count="0"] & {
+                        background: url(../images/dx_logo_solid.png) no-repeat left 12px center / 20px 20px, url(../images/combo-arrow.png) no-repeat right center;
+                    }
+                }
+
+                body[data-sitesettings="true"] & {
+                    display: none;
+                }
+            }
+
+        }
+    }
+
+    > div:nth-child(1) {
+        height: 100%;
+        background: _theme-color(secondary);
+
+        > div:nth-child(2) {
+            height: 100%;
+        }
+    }
+
+    > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) {
+        height: 43px;
+        pointer-events: none;
+    }
+
+    > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) {
+        z-index: $ZINDEX--ACTION_BAR--CONTAINER;
+        height: 60px;
+        display: block;
+        position: absolute !important;
+    }
+
+}
+
+
+// License error message.
+
+.toolbar-warning-messages {
+    bottom: 12px !important;
+    left: 44px !important;
+    top: unset !important;
+}
+
+.toolbar-warning-messages > div > div > span.x-menu-item {
+    background: _theme-color(status, error) !important;
+    padding: 9px 12px !important;
+    font-weight: 600;
+    border-bottom-right-radius: 50px;
+    border-top-right-radius: 50px;
+    padding-left: 16px !important;
+    min-height: 34px;
+    box-sizing: border-box;
+}
+
+.tab_systemSiteSettings > .x-panel {
+    user-select: none;
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    &::before {
+        background: url(../images/icons/expand-side-panel@X2.png) no-repeat left top 6px;
+        position: relative;
+        background-size: 5px 7px;
+        padding-left: 11px;
+        margin-left: 0 !important;
+    }
+
+    &.open-sub-menu {
+        &::before {
+            background-image: url(../images/icons/icon-toggle-expanded-small-normal.png);;
+            background-size: 7px 5px;
+            position: relative;
+        }
+
+        > div {
+            opacity: 1;
+            pointer-events: all;
+            position: relative;
+        }
+    }
+}
+
+
+.x-viewport-adminmode,
+.x-viewport-dashboardmode,
+body[data-edit-window-style="settings"] {
+
+    #JahiaGxtSidePanelTabs .x-tab-panel-body {
+        overflow-y: scroll;
+        margin-top: 53px;
+        height: calc(100% - 113px) !important;
+    }
+
+    .x-grid3 {
+        .x-tree3-node-joint {
+            margin-left: 2px;
+        }
+
+        .x-grid3-row {
+            padding-left: 0 !important;
+            height: 25px !important;
+            position: relative;
+
+            table,
+            tbody,
+            tr,
+            td {
+                display: block !important;
+                height: 100% !important;
+            }
+
+            &:hover {
+                cursor: pointer;
+            }
+
+            .x-tree3-node-icon,
+            .x-tree3-node-joint {
+                //display: none!important;
+            }
+
+            // PAGE
+            .x-tree3-node-text {
+                margin-left: -17px;
+                line-height: 25px;
+
+                &::before {
+                    content: ">";
+                    width: 21px;
+                    height: 19px;
+                    background: #fdfdfd;
+                    text-indent: -50000px;
+                    display: inline-block;
+                    top: 3px;
+                    left: -2px;
+                    position: relative;
+                    z-index: -1;
+                    border-radius: 2px;
+                }
+            }
+
+            // PAGE [SELECTED]
+            &.x-grid3-row-selected .x-tree3-node-text {
+                color: #FCFCFC !important;
+
+                &::before {
+                    background: _theme-color(tertiary);
+                }
+            }
+
+            // FOLDER
+            &.unselectable-row {
+                pointer-events: none;
+                padding-left: 10px !important;
+                background: url(../images/collapsed-black.png) no-repeat left 6px top 6px !important;
+                background-size: 14px !important;
+
+                .x-tree3-node-joint {
+                    width: 100% !important;
+                    display: inline-block !important;
+                    opacity: 0;
+                    position: absolute !important;
+                    left: -10px;
+                    height: 23px !important;
+
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
+
+                // Fix icon position
+                img {
+                    margin-left: 4px;
+                }
+
+                // FOLDER LABEL
+                span.x-tree3-node-text {
+                    color: _theme-color(primary) !important;
+                    margin-left: -15px;
+                }
+            }
+
+            // FOLDER [OPENED]
+            &.unselectable-row.indigo-opened {
+                background: url(../images/expanded-black.png) no-repeat left 5px top 6px !important;
+                background-size: 14px !important;
+            }
+        }
+    }
+
+}

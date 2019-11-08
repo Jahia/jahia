@@ -1,0 +1,99 @@
+
+// FILES
+#JahiaGxtFileImagesBrowseTab.tab_filesimages {
+    width: 100% !important;
+
+    // Deal with icons here ...
+    .x-tree3-node-icon {
+        background-size: 23px 23px;
+        background-repeat: no-repeat;
+        padding-left: 18px;
+        width: 18px;
+        height: 23px;
+        opacity: 0.85;
+
+        // FOLDER ICON
+        &[src$="/jnt_contentFolder.png"],
+        &[src$="/jnt_folder.png"] {
+            background-image: url($ICON--FILES---GREY);
+            background-size: 21px;
+            background-position: top 2px center;
+        }
+
+        &[src$="/remoteFolder.png"] {
+            background-image: url(../images/icons/tabs-files-shared-dark@X2.png);
+        }
+
+        // IMPORT DROP BOX
+        &[src$="/jnt_importDropBox.png"] {
+            background-image: url(../images/icons/tabs-placeholder-white@X2.png);
+        }
+
+        &[src$="/jnt_virtualsite.png"] {
+            background-image: url(../images/icons/tabs-site-dark@X2.png);
+        }
+    }
+
+    .x-grid3-row-selected {
+        .x-tree3-node-icon {
+            // FOLDER ICON
+            &[src$="/jnt_contentFolder.png"],
+            &[src$="/jnt_folder.png"] {
+                background-image: url($ICON--FILES---WHITE);
+                opacity: 1;
+            }
+
+            &[src$="/remoteFolder.png"] {
+                background-image: url(../images/icons/tabs-files-shared-white@X2.png);
+            }
+
+            // IMPORT DROP BOX
+            &[src$="/jnt_importDropBox.png"] {
+                background-image: url(../images/icons/tabs-placeholder-black@X2.png);
+            }
+
+            &[src$="/jnt_virtualsite.png"] {
+                background-image: url(../images/icons/tabs-site-white@X2.png);
+            }
+        }
+    }
+
+    &::before {
+        /* Tab Content Header Label */
+        content: $text_files !important;
+    }
+
+    #images-view {
+
+        .thumb-wrap {
+            width: 47% !important;
+
+            &.x-view-over {
+                background: _property($THUMB--BG---HOVER, $SIDE-PANEL) !important;
+            }
+
+            &.x-view-over.x-view-item-sel {
+                background: #007cb0 !important;
+            }
+        }
+
+        .thumbDetails {
+            position: relative;;
+            left: 0;
+            width: 100%;
+            top: auto !important;
+            padding: 6px;
+            box-sizing: border-box;
+            float: left;
+        }
+    }
+
+    .results-column {
+        display: flex;
+        position: relative;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-content: flex-start;
+    }
+}

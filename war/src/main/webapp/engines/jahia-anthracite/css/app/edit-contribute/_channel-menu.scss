@@ -1,0 +1,309 @@
+
+// Dynamically created Channel Bar
+#channel-menu {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 55px;
+    z-index: 99;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    pointer-events: none;
+    display: none;
+
+    opacity: 0.4;
+
+    body[data-indigo-app="edit"]:not([data-sitesettings="true"]) & {
+        display: block;
+    }
+
+    body[data-indigo-app="edit"][data-sitesettings="false"] & {
+        pointer-events: all;
+        opacity: 1;
+    }
+
+    // When a channel has been selected set the background and width to a solid bar
+    body[data-channel] & {
+        box-shadow: inset -1px 1px 8px 0 rgba(0, 0, 0, 0.4);
+        background: #262829;
+        left: -10px;
+        bottom: -10px;
+        width: calc(100% + 20px);
+        padding-bottom: 10px;
+    }
+
+    // Make the title look like the toolbar entries when a channel has NOT been selected
+    #channel-title {
+        @include text(9px, whitesmoke, 300);
+        text-transform: uppercase;
+        position: absolute;
+        left: 28px;
+        bottom: 28px;
+        background: url(../images/icons/mobile_light.svg) no-repeat top 6px center;
+
+        body[data-indigo-gwt-side-panel="open"] & {
+            background-image: url(../images/icons/tabs-devices-black@X2.png);
+            color: #747b7f;
+        }
+
+        body[data-indigo-gwt-side-panel="open"] & {
+            color: #505050;
+        }
+
+        background-size: 22px;
+        padding-top: 33px;
+        opacity: 0.8;
+        width: 60px;
+        text-align: center;
+        transition: opacity 0.1s ease-in 0s;
+
+        &:hover {
+            opacity: 1;
+            cursor: pointer;
+        }
+
+        // Restyle the title to look like a combo
+        body[data-channel] & {
+            @include text(18px, #f1f1f1, 500);
+            text-transform: none;
+            background: url(../images/icons/toggle-NS-white@X2.png) no-repeat right top 21px;
+            background-size: 14px;
+            padding-right: 20px;
+            padding-top: 16px;
+            width: auto;
+            text-align: left;
+            left: 50px;
+            bottom: 25px;
+        }
+
+        &:before {
+            // Used when NO channel has been selected
+            content: $text_channels_button;
+
+            // Channel has been selected so use the title added by JS
+            body[data-channel] & {
+                content: attr(data-indigo-label);
+            }
+        }
+    }
+
+    // The Orientation button is a toggle button that switches back and forth between landscape and portrait
+    #channel-orientation {
+        width: 25px;
+        height: 25px;
+        background: url(../images/icons/rotate_screen.svg) no-repeat center center;
+        background-size: 22px;
+        position: absolute;
+        right: 26px;
+        top: 16px;
+        display: none;
+        opacity: 0.8;
+
+        // Display when a channel has been selected
+        body[data-channel] & {
+            display: block;
+        }
+
+        &:hover {
+            cursor: pointer;
+            opacity: 1;
+        }
+    }
+
+    // Hold the Auto fit button and input range used for zooming the channel preview
+    #channel-zoom-holder {
+        width: 100%;
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    // Used to set the size of the channel preview to the height of the screen.
+    // Dev note: Need to work out a solution for landscape mode
+    #channel-auto-fit-button {
+        display: none;
+        @include text(14px, #4c5052, 700);
+        @include text(14px, #6c7275, 700);
+        background: #1e1e21;
+        box-shadow: inset 1px 2px 10px rgba(0, 0, 0, 0.5);
+        padding: 8px 10px;
+
+        &:hover {
+            color: #64696b;
+            cursor: pointer;
+        }
+
+        // isplay when a channel has been selected
+        body[data-channel] & {
+            display: inline-block;
+        }
+
+        &.selected {
+            pointer-events: none;
+            color: #FAFAFA;
+            background: #00a0e3;
+            box-shadow: none;
+        }
+    }
+
+    #channel-zoom-button {
+        display: none;
+        @include text(14px, #4c5052, 700);
+        @include text(14px, #6c7275, 700);
+        background: #1e1e21;
+        box-shadow: inset 1px 2px 10px rgba(0, 0, 0, 0.5);
+        padding: 8px 10px;
+
+        &:hover {
+            cursor: pointer;
+        }
+
+        // isplay when a channel has been selected
+        body[data-channel] & {
+            display: inline-block;
+        }
+
+        &.selected {
+            pointer-events: none;
+            color: #FAFAFA;
+            background: #00a0e3;
+            box-shadow: none;
+        }
+    }
+
+    // Close button
+    #channel-close-button {
+        width: 15px;
+        height: 15px;
+        background: url(../images/icons/icon-close-white@X2.png) no-repeat center center;
+        background-size: 15px;
+        display: none;
+        border: none;
+        transition: all 0.3s ease-in 0s;
+        position: absolute;
+        left: 25px;
+        top: 20px;
+        opacity: 0.8;
+
+        &:hover {
+            opacity: 1;
+            cursor: pointer;
+        }
+
+        // Show when a channel has been selected
+        body[data-channel] & {
+            display: inline-block;
+        }
+    }
+
+    // Holds slider
+    #channel-size-slider-holder {
+        background: #00a0e3;
+        position: absolute;
+        display: none;
+        height: 35px;
+        top: 10px;
+        padding: 0 10px 0 0;
+
+        // Firefox fix
+        body.ext-gecko & {
+            height: 36px;
+        }
+
+        &.disabled {
+            display: none !important;
+        }
+    }
+
+    // Range input used to resize the channel preview
+    #channel-size-slider {
+        z-index: 999;
+        width: 150px;
+        display: none;
+        margin-top: 16px;
+        margin-left: 10px;
+
+        // Show when a channel has been selected
+        body[data-channel] & {
+            display: inline-block;
+        }
+
+        // Firefox fix
+        body.ext-gecko & {
+            margin-top: 11px;
+            vertical-align: top;
+        }
+
+        &:focus {
+            outline: none;
+        }
+
+        -webkit-appearance: none;
+
+        &::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 2px;
+            cursor: pointer;
+            background: _theme-color(primary);
+        }
+
+        &::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 12px;
+            width: 12px;
+            border-radius: 100%;
+            background: #007cb0;
+            cursor: pointer;
+            margin-top: -5px;
+            border: none;
+        }
+
+        &:focus::-webkit-slider-runnable-track {
+            background: _theme-color(primary);
+        }
+
+        &::-moz-range-track {
+            width: 100%;
+            height: 2px;
+            cursor: pointer;
+            background: _theme-color(primary);
+        }
+
+        &::-moz-range-thumb {
+            height: 12px;
+            width: 12px;
+            border-radius: 100%;
+            background: #007cb0;
+            cursor: pointer;
+            border: none;
+        }
+    }
+}
+
+
+// Reposition the Channel Combo to be inline with the new bottom bar
+.channel-device-combo-box {
+    width: 210px !important;
+    bottom: 6px !important;
+    top: auto !important;
+    left: 60px !important;
+    height: auto !important;
+
+    .x-combo-list-inner {
+        height: auto !important;
+    }
+
+    .thumb-wrap {
+        padding-bottom: 0 !important;
+
+        &:nth-child(1) {
+            display: none;
+        }
+    }
+}
+
+// Hide the Chanel Tab in the side panel
+#JahiaGxtSidePanelTabs__JahiaGxtChannelsTab {
+    display: none !important;
+}

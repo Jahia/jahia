@@ -1,0 +1,25 @@
+// FIELDSET
+%FIELDSET {
+    border: none !important;
+    padding: 43px 10px 20px 39px !important;
+    margin: 0 23px 0px 0 !important;
+    position: relative;
+    box-sizing: border-box;
+    border-bottom: 1px solid #c4c0c0 !important;
+
+    &.x-panel-collapsed {
+        background: transparent;
+        border-bottom: 1px solid #c4c0c0 !important;
+        padding-bottom: 10px !important;
+
+    }
+}
+
+// FIELDSET
+%FIELDSET\:PICKER_SEARCH {
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    position: relative;
+    background: _property($FIELDSET--BG, $PICKER) !important;
+}

@@ -1,0 +1,199 @@
+
+/********************************/
+/*** TEXT INPUT               ***/
+/********************************/
+@mixin text_input($_input_id, $_extra: "none") {
+}
+
+@mixin _input($type: $APP) {
+
+    // Deal with overriding the .x-form-invalid class that is killing the background on normal text
+    &.x-form-invalid {
+        background: _property($INPUT--BG, $type) !important;
+        border: _property($INPUT--BORDER, $type) !important;
+    }
+
+    background: _property($INPUT--BG, $type);
+    padding: 7px 10px 6px 10px !important;
+    border: _property($INPUT--BORDER, $type);
+    transition: all 0.15s ease-in 0s;
+    display: block;
+    height: auto !important;
+    width: 100% !important;
+    box-sizing: border-box;
+    box-shadow: _property($INPUT--SHADOW, $type);
+
+    @include text(13px, _property($INPUT--COLOR, $type), $FONT--WEIGHT---SEMILIGHT);
+
+    &:hover {
+        background: _property($INPUT--BG---HOVER, $type);
+        color: _property($INPUT--COLOR---HOVER, $type);
+        box-shadow: _property($INPUT--SHADOW---HOVER, $type);
+    }
+
+    &:focus {
+        background: _property($INPUT--BG---FOCUS, $type);
+        color: _property($INPUT--COLOR---FOCUS, $type);
+        box-shadow: _property($INPUT--SHADOW---FOCUS, $type);
+    }
+
+    &[disabled] {
+        background: _property($INPUT--BG---DISABLED, $type);
+        box-shadow: none !important;
+        transition: $DEFAULT--TRANSITION;
+        color: _property($INPUT--COLOR---DISABLED, $type) !important;
+    }
+
+    // Single trigger
+    + img {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 27px !important;
+        height: 100% !important;
+        border: none !important;
+
+        &.x-form-date-trigger {
+            background: url(_property($MENU-CLOSED--DATE, $type)) no-repeat center center;
+            background-size: 16px;
+
+            &:hover {
+                background-image: _property($MENU-CLOSED--DATE---HOVER, $type);
+                background-color: _property($MENU-CLOSED--DATE-BG, $type);
+            }
+        }
+
+        &.x-form-clear-trigger {
+            background: url(_property($MENU-CLOSED--CLEAR, $type)) no-repeat center center;
+            background-size: 10px !important;
+
+            &:hover {
+                background-image: _property($MENU-CLOSED--CLEAR---HOVER, $type);
+                background-color: _property($MENU-CLOSED--CLEAR-BG, $type);
+            }
+        }
+
+        &.x-form-trigger-arrow {
+            background: url(_property($MENU-CLOSED--ARROW, $type)) no-repeat center center;
+
+            &:hover {
+                background-image: url(_property($MENU-CLOSED--ARROW---HOVER, $type));
+                background-color: _property($MENU-CLOSED--ARROW-BG, $type);
+            }
+        }
+    }
+
+    // Multiple triggers
+    + .x-form-twin-triggers {
+        position: absolute;
+        right: 5px;
+        top: 0;
+        height: 100%;
+
+        img {
+            width: 27px;
+            height: 100%;
+
+            &.x-form-date-trigger {
+                background: url(_property($MENU-CLOSED--DATE, $type)) no-repeat center center;
+                background-size: 16px;
+
+                &:hover {
+                    background-image: url(_property($MENU-CLOSED--DATE---HOVER, $type));
+                    background-color: _property($MENU-CLOSED--DATE-BG---HOVER, $type);
+                }
+            }
+
+            &.x-form-clear-trigger {
+                background: url(_property($MENU-CLOSED--CLEAR, $type)) no-repeat center center;
+                background-size: 10px !important;
+
+                &:hover {
+                    background-image: url(_property($MENU-CLOSED--CLEAR---HOVER, $type));
+                    background-color: _property($MENU-CLOSED--CLEAR-BG---HOVER, $type);
+                }
+            }
+
+            &.x-form-trigger-arrow {
+                float: right;
+                background: url(_property($MENU-CLOSED--ARROW, $type)) no-repeat center center;
+
+                &:hover {
+                    background-image: url(_property($MENU-CLOSED--ARROW---HOVER, $type));
+                    background-color: _property($MENU-CLOSED--ARROW-BG---HOVER, $type);
+                }
+            }
+        }
+
+
+    }
+
+}
+
+@mixin _input-search($type: $APP) {
+    background: _property($INPUT--BG, $type);
+    background-image: url($ICON--SEARCH--SMALL_GREY);
+    background-repeat: no-repeat;
+    background-position: left 9px top 10px;
+    background-size: 10px 10px;
+    padding: 7px 10px 6px 25px !important;
+    display: block;
+
+    border: _property($INPUT--BORDER, $type);
+    transition: all 0.15s ease-in 0s;
+
+    @include text(12px, _property($INPUT--COLOR, $type), $FONT--WEIGHT---SEMILIGHT);
+
+    &:hover {
+        background-color: _property($INPUT--BG---HOVER, $type);
+        color: _property($INPUT--COLOR---HOVER, $type);
+    }
+
+    &:focus {
+        background-color: _property($INPUT--BG---FOCUS, $type);
+        color: _property($INPUT--COLOR---FOCUS, $type);
+    }
+
+    &[disabled] {
+        background-color: _property($INPUT--BG---DISABLED, $type);
+        border: 1px solid _property($INPUT--BORDER---DISABLED, $type);
+        transition: $DEFAULT--TRANSITION;
+        color: _property($INPUT--COLOR---DISABLED, $type);
+    }
+
+    + img {
+        width: 27px !important;
+        height: 27px !important;
+        right: 5px;
+
+        &.x-form-date-trigger {
+            background: url(_property($MENU-CLOSED--DATE, $type)) no-repeat center center;
+            background-size: 16px;
+
+            &:hover {
+                background-image: url(_property($MENU-CLOSED--DATE---HOVER, $type));
+                background-color: _property($MENU-CLOSED--DATE-BG---HOVER, $type);
+            }
+        }
+
+        &.x-form-clear-trigger {
+            background: url(_property($MENU-CLOSED--CLEAR, $type)) no-repeat center center;
+            background-size: 10px !important;
+
+            &:hover {
+                background-image: url(_property($MENU-CLOSED--CLEAR---HOVER, $type));
+                background-color: _property($MENU-CLOSED--CLEAR-BG---HOVER, $type);
+            }
+        }
+
+        &.x-form-trigger-arrow {
+            float: right;
+            background: url(_property($MENU-CLOSED--ARROW, $type)) no-repeat center center;
+
+            &:hover {
+                background-image: url(_property($MENU-CLOSED--ARROW---HOVER, $type));
+                background-color: _property($MENU-CLOSED--ARROW-BG---HOVER, $type);
+            }
+        }
+    }
+}

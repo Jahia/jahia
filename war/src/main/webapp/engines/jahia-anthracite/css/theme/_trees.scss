@@ -1,0 +1,52 @@
+/****************************/
+/* TREE / ROWS */
+/****************************/
+
+// UP
+$ROW--COLOR: (
+        LIGHT: #454545,
+        DARK: #454545,
+);
+
+$ROW--COLOR--DIMMED: (
+        LIGHT: _theme-color(primary, c),
+        DARK: _theme-color(secondary, c),
+);
+
+$ROW--BG: (
+        LIGHT: transparent,
+        DARK: transparent,
+);
+
+// HOVER
+$ROW--COLOR---HOVER: (
+        LIGHT: _theme-color(primary),
+        DARK: _theme-color(primary),
+);
+
+$ROW--BG---HOVER: (
+        LIGHT: _theme-color(secondary, a),
+        DARK: _theme-color(primary, c),
+);
+
+// SELECTED
+$ROW--COLOR---SELECTED: (
+        LIGHT: #FCFCFC,
+        DARK: #FCFCFC,
+);
+
+$ROW--BG---SELECTED: (
+        LIGHT: _theme-color(primary, b),
+        DARK: _theme-color(quinary),
+);
+
+// SELECTED HOVER
+$ROW--COLOR---SELECTED-HOVER: (
+        LIGHT: _theme-color(secondary),
+        DARK: _theme-color(secondary),
+);
+
+$ROW--BG---SELECTED-HOVER: (
+        LIGHT: _theme-color(primary, b),
+        DARK: _theme-color(primary, e),
+);

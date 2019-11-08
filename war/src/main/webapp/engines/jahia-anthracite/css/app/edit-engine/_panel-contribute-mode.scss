@@ -1,0 +1,34 @@
+.engine-panel:not(.trashboardengine-ctn),
+div.engine-window {
+
+        #JahiaGxtEditEnginePanel-contributeMode {
+            .x-form-item {
+
+                // Editable in content mode checkbox
+                &:nth-child(1) {
+                    // Get rid of first label as it is duplicated
+                    > label {
+                        display: none !important;
+                    }
+
+                    // Fix position of checkbox
+                    input[type="checkbox"] {
+                        left: 0 !important;
+                    }
+                }
+
+                // Select dual list
+                &:nth-child(2) {
+
+                    // Add a bit of space with previous block
+                    margin-top: 20px;
+
+                    // Fix width of label
+                    > label {
+                        width: 100% !important;
+                    }
+                }
+            }
+        }
+
+}

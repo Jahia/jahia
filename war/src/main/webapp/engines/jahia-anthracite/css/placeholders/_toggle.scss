@@ -1,0 +1,26 @@
+// TOGGLE
+%FORM--TOGGLE--BG {
+    content: $text_off;
+    background: _property($TOGGLE--RAIL, $EDIT-ENGINE);
+    box-shadow: _property($TOGGLE--SHADOW, $EDIT-ENGINE);
+    text-transform: uppercase;
+
+    @include text(10px, _property($TOGGLE--LABEL---OFF, $EDIT-ENGINE), $FONT--WEIGHT---EXTRABOLD);
+}
+
+%FORM--TOGGLE--SHUTTLE---OFF {
+    content: " ";
+    background: _property($TOGGLE--SHUTTLE---OFF, $EDIT-ENGINE);
+}
+
+%FORM--TOGGLE--BG---ON {
+    content: " ";
+}
+
+%FORM--TOGGLE--SHUTTLE---ON {
+    content: $text_on;
+    background: _property($TOGGLE--SHUTTLE---ON, $EDIT-ENGINE);
+    text-transform: uppercase;
+
+    @include text(10px, _property($TOGGLE--LABEL---ON, $EDIT-ENGINE), $FONT--WEIGHT---EXTRABOLD);
+}

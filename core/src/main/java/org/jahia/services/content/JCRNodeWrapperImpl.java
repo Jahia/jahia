@@ -3291,7 +3291,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName, int requiredPropertyType, boolean isMultiple)
             throws RepositoryException {
         ExtendedPropertyDefinition result = null;
-        if (applicablePropertyDefinition.containsKey(propertyName) && (applicablePropertyDefinition.get(propertyName).isMultiple() == isMultiple)) {
+        if (applicablePropertyDefinition.containsKey(propertyName) && (applicablePropertyDefinition.get(propertyName) == null || applicablePropertyDefinition.get(propertyName).isMultiple() == isMultiple)) {
             result = applicablePropertyDefinition.get(propertyName);
             return result;
         }

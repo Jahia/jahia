@@ -1,0 +1,238 @@
+// TEXT INPUT
+%FORM--TEXT_INPUT {
+}
+
+%FORM--TEXT_INPUT---HOVER {
+}
+
+%FORM--TEXT_INPUT---FOCUS {
+}
+
+%FORM--TEXT_INPUT---DISABLED {
+}
+
+// EDIT ENGINES EXCEPTION
+%FORM--TEXT_INPUT\:EDIT_ENGINE {
+    background: _property($INPUT--BG, $EDIT-ENGINE);
+
+    @include text(13px, _property($INPUT--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMILIGHT);
+}
+
+%FORM--TEXT_INPUT---HOVER\:EDIT_ENGINE {
+    background: _property($INPUT--BG---HOVER, $EDIT-ENGINE);
+    color: _property($INPUT--COLOR---HOVER, $EDIT-ENGINE) !important;
+}
+
+%FORM--TEXT_INPUT---FOCUS\:EDIT_ENGINE {
+    background: _property($INPUT--BG---FOCUS, $EDIT-ENGINE);
+    color: _property($INPUT--COLOR---FOCUS, $EDIT-ENGINE) !important;
+}
+
+%FORM--TEXT_INPUT---DISABLED\:EDIT_ENGINE {
+    background: _property($INPUT--BG---DISABLED, $EDIT-ENGINE);
+    @include text(13px, _property($INPUT--COLOR---DISABLED, $EDIT-ENGINE) !important, $FONT--WEIGHT---SEMILIGHT);
+}
+
+// SEARCH PANEL EXCEPTION
+%FORM--TEXT_INPUT\:SEARCH_PANEL {
+    background: _property($INPUT--BG, $SIDE-PANEL);
+
+    @include text(12px, _property($INPUT--COLOR, $SIDE-PANEL), $FONT--WEIGHT---SEMILIGHT);
+}
+
+%FORM--TEXT_INPUT---HOVER\:SEARCH_PANEL {
+    background: _property($INPUT--BG---HOVER, $SIDE-PANEL);
+    color: _property($INPUT--COLOR---HOVER, $SIDE-PANEL) !important;
+}
+
+%FORM--TEXT_INPUT---FOCUS\:SEARCH_PANEL {
+    background: _property($INPUT--BG---FOCUS, $SIDE-PANEL);
+    color: _property($INPUT--COLOR---FOCUS, $SIDE-PANEL) !important;
+}
+
+%FORM--TEXT_INPUT---DISABLED\:SEARCH_PANEL {
+    background: _property($INPUT--BG---DISABLED, $SIDE-PANEL);
+    @include text(12px, _property($INPUT--COLOR---DISABLED, $SIDE-PANEL) !important, $FONT--WEIGHT---SEMILIGHT);
+}
+
+// TEXT AREA
+%FORM--TEXT_AREA {
+    background: _property($INPUT--BG, $APP) !important;
+    padding: 3px 40px 3px 5px !important;
+    border: 1px solid transparent !important;
+    transition: none !important;
+
+    @include text(13px, _property($INPUT--COLOR, $APP), $FONT--WEIGHT---SEMILIGHT);
+}
+
+%FORM--TEXT_AREA---HOVER {
+    background: _property($INPUT--BG---HOVER, $APP);
+    color: _property($INPUT--COLOR---HOVER, $APP);
+}
+
+%FORM--TEXT_AREA---FOCUS {
+    background: _property($INPUT--BG---FOCUS, $APP);
+    color: _property($INPUT--COLOR---FOCUS, $APP);
+}
+
+%FORM--TEXT_AREA---DISABLED {
+    background: _property($INPUT--BG---DISABLED, $APP);
+    padding: 3px 40px 3px 5px;
+    padding-left: 0;
+    transition: $DEFAULT--TRANSITION;
+
+    @include text(13px, _property($INPUT--COLOR---DISABLED, $APP), $FONT--WEIGHT---SEMILIGHT);
+}
+
+// EDIT ENGINES EXCEPTION
+%FORM--TEXT_AREA\:EDIT_ENGINE {
+    background: _property($INPUT--BG, $EDIT-ENGINE) !important;
+
+    @include text(13px, _property($INPUT--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMILIGHT);
+}
+
+%FORM--TEXT_AREA---HOVER\:EDIT_ENGINE {
+    background: _property($INPUT--BG---HOVER, $EDIT-ENGINE) !important;
+    color: _property($INPUT--COLOR---HOVER, $EDIT-ENGINE) !important;
+}
+
+%FORM--TEXT_AREA---FOCUS\:EDIT_ENGINE {
+    background: _property($INPUT--BG---FOCUS, $EDIT-ENGINE) !important;
+    color: _property($INPUT--COLOR---FOCUS, $EDIT-ENGINE) !important;
+}
+
+%FORM--TEXT_AREA---DISABLED\:EDIT_ENGINE {
+    background: _property($INPUT--BG---DISABLED, $EDIT-ENGINE) !important;
+    @include text(13px, _property($INPUT--COLOR---DISABLED, $EDIT-ENGINE) !important, $FONT--WEIGHT---SEMILIGHT);
+}
+
+
+// DUAL LIST
+%FORM--TEXT_INPUT\:DUAL_LIST {
+    background: _property($INPUT--BG, $EDIT-ENGINE) !important;
+
+    @include text(13px, _property($INPUT--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMILIGHT);
+}
+
+%FORM--TEXT_INPUT---HOVER\:DUAL_LIST {
+    background: _property($INPUT--BG---HOVER, $EDIT-ENGINE) !important;
+    color: _property($INPUT--COLOR---HOVER, $EDIT-ENGINE) !important;
+}
+
+%FORM--TEXT_INPUT---FOCUS\:DUAL_LIST {
+    background: _property($INPUT--BG---FOCUS, $EDIT-ENGINE) !important;
+    color: _property($INPUT--COLOR---FOCUS, $EDIT-ENGINE) !important;
+}
+
+%FORM--TEXT_INPUT---DISABLED\:DUAL_LIST {
+    background: _property($INPUT--BG---DISABLED, $EDIT-ENGINE) !important;
+    @include text(13px, _property($INPUT--COLOR---DISABLED, $EDIT-ENGINE) !important, $FONT--WEIGHT---SEMILIGHT);
+}
+
+// PICKER SEARCH
+%FORM--TEXT_INPUT\:PICKER_FILTER {
+    background-color: _property($INPUT--BG, $PICKER-HEADER-INPUT);
+    background-image: url($ICON--SEARCH--SMALL_GREY);
+    background-repeat: no-repeat;
+    background-position: left 5px top 6px;
+    background-size: 10px 10px;
+    padding: 1px 15px 2px 19px !important;
+
+    &::-webkit-input-placeholder {
+        color: _property($INPUT--PLACEHOLDER, $PICKER-HEADER-INPUT);
+    }
+
+    &:-moz-placeholder {
+        color: _property($INPUT--PLACEHOLDER, $PICKER-HEADER-INPUT);
+    }
+
+    &::-moz-placeholder {
+        color: _property($INPUT--PLACEHOLDER, $PICKER-HEADER-INPUT);
+    }
+
+    &:-ms-input-placeholder {
+        color: _property($INPUT--PLACEHOLDER, $PICKER-HEADER-INPUT);
+    }
+
+    @include text(12px, _property($INPUT--COLOR, $PICKER-HEADER-INPUT), $FONT--WEIGHT---SEMILIGHT);
+}
+
+%FORM--TEXT_INPUT---HOVER\:PICKER_FILTER {
+    background-image: url($ICON--SEARCH--SMALL_GREY);
+    background-repeat: no-repeat;
+    background-position: left 5px top 6px;
+    background-size: 10px 10px;
+    background-color: _property($INPUT--BG---HOVER, $PICKER-HEADER-INPUT);
+    color: _property($INPUT--COLOR---HOVER, $PICKER-HEADER-INPUT) !important;
+}
+
+%FORM--TEXT_INPUT---FOCUS\:PICKER_FILTER {
+    background-image: url($ICON--SEARCH--SMALL_GREY);
+    background-repeat: no-repeat;
+    background-position: left 5px top 6px;
+    background-size: 10px 10px;
+    background-color: _property($INPUT--COLOR---FOCUS, $PICKER-HEADER-INPUT);
+
+    &::-webkit-input-placeholder {
+        color: _property($INPUT--PLACEHOLDER---FOCUS, $PICKER-HEADER-INPUT);
+    }
+
+    &:-moz-placeholder {
+        color: _property($INPUT--PLACEHOLDER---FOCUS, $PICKER-HEADER-INPUT);
+    }
+
+    &::-moz-placeholder {
+        color: _property($INPUT--PLACEHOLDER---FOCUS, $PICKER-HEADER-INPUT);
+    }
+
+    &:-ms-input-placeholder {
+        color: _property($INPUT--PLACEHOLDER---FOCUS, $PICKER-HEADER-INPUT);
+    }
+
+    color: _property($INPUT--COLOR---FOCUS, $PICKER-HEADER-INPUT) !important;
+}
+
+%FORM--TEXT_INPUT---DISABLED\:PICKER_FILTER {
+    background-color: _property($INPUT--BG---DISABLED, $PICKER-HEADER-INPUT) !important;
+    @include text(12px, _property($INPUT--COLOR---DISABLED, $PICKER-HEADER-INPUT) !important, $FONT--WEIGHT---SEMILIGHT);
+}
+
+// PICKER SORT
+%FORM--TEXT_INPUT\:PICKER_SORT {
+    width: 80px !important;
+    background-color: _property($INPUT--BG, $PICKER-HEADER-INPUT);
+    padding: 1px 15px 2px 5px !important;
+
+    &::-webkit-input-placeholder {
+        color: _property($INPUT--PLACEHOLDER, $PICKER-HEADER-INPUT);
+    }
+
+    &:-moz-placeholder {
+        color: _property($INPUT--PLACEHOLDER, $PICKER-HEADER-INPUT);
+    }
+
+    &::-moz-placeholder {
+        color: _property($INPUT--PLACEHOLDER, $PICKER-HEADER-INPUT);
+    }
+
+    &:-ms-input-placeholder {
+        color: _property($INPUT--PLACEHOLDER, $PICKER-HEADER-INPUT);
+    }
+
+    @include text(12px, _property($INPUT--COLOR, $PICKER-HEADER-INPUT), $FONT--WEIGHT---SEMILIGHT);
+}
+
+%FORM--TEXT_INPUT---HOVER\:PICKER_SORT {
+    background-color: _property($INPUT--BG, $PICKER-HEADER-INPUT);
+    color: _property($INPUT--COLOR, $PICKER-HEADER-INPUT) !important;
+}
+
+%FORM--TEXT_INPUT---FOCUS\:PICKER_SORT {
+    background-color: _property($INPUT--BG---FOCUS, $PICKER-HEADER-INPUT) !important;
+    color: _property($INPUT--COLOR---FOCUS, $PICKER-HEADER-INPUT) !important;
+}
+
+%FORM--TEXT_INPUT---DISABLED\:PICKER_SORT {
+    background-color: _property($INPUT--BG---DISABLED, $PICKER-HEADER-INPUT) !important;
+    @include text(12px, _property($INPUT--COLOR---DISABLED, $PICKER-HEADER-INPUT) !important, $FONT--WEIGHT---SEMILIGHT);
+}

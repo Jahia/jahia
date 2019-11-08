@@ -1,0 +1,44 @@
+
+// CATEGORIES
+#JahiaGxtCategoryBrowseTab.tab_categories {
+    width: 100% !important;
+
+    // Deal with icons here ...
+    .x-tree3-node-icon {
+        background-size: 20px 20px;
+        background-repeat: no-repeat;
+        padding-left: 18px;
+        width: 18px;
+        height: 23px;
+        background-position: top 2px left 1px;
+        opacity: 0.5;
+
+        // CATEGORY ICON
+        &[src$="/jnt_category.png"] {
+            background-image: url(../images/icons_dark/category.svg);
+        }
+    }
+
+    .x-grid3-row-selected {
+        .x-tree3-node-icon {
+            // CATEGORY ICON
+            &[src$="/jnt_category.png"] {
+                background-image: url(../images/icons_light/category.svg);
+                opacity: 0.9;
+            }
+        }
+    }
+
+    &::before {
+        /* Tab Content Header Label */
+        content: $text_taxonomy !important;
+    }
+
+    // Tree Options
+    .x-box-item:nth-child(1) .x-grid3-td-displayName {
+        &::after {
+            /* MORE Options button for TREE */
+            display: none !important;
+        }
+    }
+}

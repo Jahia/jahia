@@ -1,0 +1,24 @@
+/////////////////////////////////////////////////
+// THUMB WRAPS //////////////////////////////////
+/////////////////////////////////////////////////
+
+%THUMB--LABEL {
+    background: _property($THUMB--BG, $THUMBS);
+    text-align: center;
+    padding: 3px 10px;
+
+    @extend %ellipsis_overflow;
+    @include text(12px, _property($THUMB--COLOR, $THUMBS), $FONT--WEIGHT---LIGHT);
+}
+
+%THUMB--BG---UP {
+    background: _property($THUMB--BG, $THUMBS);
+}
+
+%THUMB--BG---HOVER {
+    // background: red;
+}
+
+%THUMB--BG---SELECTED {
+    background: _property($THUMB--BG---SELECTED, $THUMBS);
+}

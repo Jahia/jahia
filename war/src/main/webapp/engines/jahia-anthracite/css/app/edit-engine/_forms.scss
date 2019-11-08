@@ -1,0 +1,51 @@
+
+// Input Error icon
+img.invalid-icon {
+    background: #f44336 !important;
+    height: 31px !important;
+    width: 4px !important;
+    left: 0 !important;
+    top: 0 !important;
+}
+
+// Input Error Tooltip
+.x-form-invalid-tip {
+    background: _theme-color(status, error);
+    border-radius: 2px !important;
+    box-shadow: 0 2px 5px 0 rgba($color-black, .26);
+
+    .x-tip-tl,
+    .x-tip-tl .x-tip-tr,
+    .x-tip-tl .x-tip-tr .x-tip-tc,
+    .x-tip-bwrap .x-tip-ml,
+    .x-tip-bwrap .x-tip-ml .x-tip-mr,
+    .x-tip-bl.x-tip-nofooter,
+    .x-tip-bl.x-tip-nofooter .x-tip-br,
+    .x-tip-bl.x-tip-nofooter .x-tip-br .x-tip-bc {
+        background: transparent !important;
+    }
+
+    .x-tip-bwrap .x-tip-ml .x-tip-mr .x-tip-body {
+        color: $color-white;
+        font-family: $FONT--FAMILY---NUNITO;
+        font-weight: $FONT--WEIGHT---NORMAL;
+        background: url(../images/icons/ic_info_outline@2x.png) no-repeat left center !important;
+        background-size: 20px !important;
+    }
+
+}
+
+// Color picker
+.color-picker-field {
+
+    .x-btn.x-btn-noicon em.x-btn-arrow {
+        background: transparent !important;
+    }
+
+    .x-btn.x-btn-noicon button.x-btn-text {
+        background: url(../images/icons_dark/color.svg) no-repeat center center !important;
+        background-size: 18px !important;
+        margin-top: -2px;
+        opacity: .67;
+    }
+}

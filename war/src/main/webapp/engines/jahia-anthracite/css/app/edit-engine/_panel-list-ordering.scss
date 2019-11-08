@@ -1,0 +1,263 @@
+#JahiaGxtEditEnginePanel-listOrdering {
+
+    .x-panel-tbar .x-hide-display {
+        display: inline-table !important;
+    }
+
+    .x-toolbar-layout-ct {
+        overflow-x: scroll;
+        pointer-events: all;
+    }
+
+    .x-panel-bwrap {
+        height: initial !important;
+        padding-bottom: 16px;
+    }
+
+    .x-panel.x-component:nth-child(2) .x-panel-bwrap .x-grid3-viewport {
+        overflow: scroll;
+    }
+
+    .x-grid3-header-offset {
+        display: table-row-group;
+    }
+
+    > fieldset {
+        padding-bottom: 0 !important;
+        width: calc(100% - 6px) !important;
+
+        .x-form-check-wrap {
+            text-align: right;
+            margin-top: -33px;
+        }
+    }
+
+    > .x-panel {
+        height: initial !important;
+    }
+
+    .x-grid3 .x-grid3-scroller {
+        padding-left: 4px;
+        display: table-footer-group;
+
+        tr {
+            height: 36px;
+        }
+    }
+
+    .x-grid3-header-inner {
+        width: 100% !important;
+    }
+
+    .x-grid3-body {
+
+        .x-grid3-td-numberer {
+            padding-top: 8px !important;
+            background-image: none;
+        }
+
+        .x-grid3-td-displayName {
+            padding-top: 8px !important;
+
+            > div {
+                padding-top: 3px;
+            }
+        }
+
+        .x-grid3-cell-inner.x-grid3-col-name {
+            margin-top: 8px;
+            max-width: 94px;
+        }
+
+        td[class*="created "] div {
+            margin-top: 5px;
+        }
+
+        td[class*="createdBy "] div {
+            margin-top: 4px;
+        }
+
+        td[class*="lastModified "] div {
+            margin-top: 5px;
+        }
+
+        td[class*="lastModifiedBy"] div {
+            margin-top: 8px;
+            padding-left: 8px;
+            color: $color-primary !important;
+            font-weight: $FONT--WEIGHT---LIGHT;
+        }
+
+        .x-grid3-row-selected .x-grid3-td-numberer {
+            background: none !important;
+        }
+
+        tbody tr .x-grid3-td-checker {
+            padding: 8px 5px !important;
+            padding-left: 3px !important;
+        }
+
+        .x-grid3-td-checker {
+            background: none !important;
+        }
+    }
+
+    .x-grid3 {
+
+        .x-grid3-row {
+            height: initial !important;
+        }
+
+        .x-grid3-td-displayName::after {
+            display: none;
+        }
+
+        .x-grid3-row.x-grid3-row-selected {
+            background-color: _theme-color(secondary, a) !important;
+
+            div {
+                color: $color-primary;
+            }
+
+            .x-grid3-col-name {
+                color: $color-primary !important;
+            }
+
+            &.x-grid3-row-over {
+                background-color: _theme-color(secondary, a) !important;
+
+                .x-grid3-col-name {
+                    color: $color-primary !important;
+                }
+            }
+        }
+    }
+
+    .x-grid3-header {
+        display: table-cell;
+        background: none !important;
+    }
+
+    .x-fieldset legend .x-tool-toggle {
+        display: none;
+    }
+
+    .x-panel-tbar.x-panel-tbar-noheader {
+        margin-top: 16px;
+    }
+
+    .x-component .x-grid3-header .x-grid3-hh {
+        margin: 2px 2px 8px;
+        border-bottom: 1px solid _theme-color(secondary, a);
+        text-transform: uppercase;
+        color: _theme-color(black, b);
+        pointer-events: none;
+
+        span {
+            font-weight: $FONT--WEIGHT---EXTRABOLD;
+            font-family: $FONT--FAMILY---NUNITO;
+        }
+
+        table {
+            padding: 4px 0;
+        }
+    }
+
+    .x-panel-tbar-noheader {
+
+        td.x-toolbar-cell:nth-child(1) > table button img {
+            background: url(../images/icons/move_up.png) !important;
+            background-size: 18px !important;
+            background-position-y: -1px !important;
+            background-position-x: -1px !important;
+            opacity: .64;
+        }
+
+        td.x-toolbar-cell:nth-child(2) > table button img {
+            background: url(../images/icons/move_first.png) !important;
+            background-size: 18px !important;
+            background-position-y: -1px !important;
+            background-position-x: -1px !important;
+            opacity: .64;
+        }
+
+        td.x-toolbar-cell:nth-child(3) > table button img {
+            background: url(../images/icons/move_down.png) !important;
+            background-size: 18px !important;
+            background-position-y: -1px !important;
+            background-position-x: -1px !important;
+            opacity: .64;
+        }
+
+        td.x-toolbar-cell:nth-child(4) > table button img {
+            background: url(../images/icons/move_last.png) !important;
+            background-size: 18px !important;
+            background-position-y: -1px !important;
+            background-position-x: -1px !important;
+            opacity: .64;
+        }
+
+        td.x-toolbar-cell:nth-child(5) > table button img {
+            background: url(../images/icons/remove_circle.png) !important;
+            background-size: 18px !important;
+            background-position-y: -1px !important;
+            background-position-x: -1px !important;
+            opacity: .64;
+        }
+
+        td.x-toolbar-cell {
+            padding-left: 12px;
+
+            > table button {
+                background: none !important;
+                color: $color-primary;
+                pointer-events: all;
+            }
+        }
+    }
+
+    .x-masked-relative {
+        pointer-events: none;
+        visibility: hidden;
+    }
+
+    .x-toolbar-layout-ct {
+        background: none !important;
+        border: none !important;
+    }
+
+    .x-grid3-cell-inner.x-grid3-col-icon {
+        visibility: hidden;
+    }
+
+    .x-panel .x-grid3 .x-grid3-row-table .x-grid3-cell.x-grid3-td-displayName {
+        width: 350px !important;
+    }
+
+    td.x-grid3-header.x-grid3-hd.x-grid3-cell {
+
+        border-color: transparent !important;
+
+        &.x-grid3-td-displayName {
+            width: 350px !important;
+            max-width: 350px !important;
+        }
+
+        &.x-grid3-td-numberer {
+            border-color: transparent !important;
+        }
+
+        &.x-grid3-td-checker {
+            border-color: transparent !important;
+            pointer-events: all;
+        }
+
+        &.x-grid3-td-icon {
+            border-left: none !important;
+        }
+    }
+
+    .x-grid3-cell-inner.x-grid3-col-displayName {
+        max-width: 320px;
+    }
+}

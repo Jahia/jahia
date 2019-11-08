@@ -1,0 +1,256 @@
+// HEADER STUFF
+.mainmodule-head-container {
+    position: absolute !important;
+    top: -46px;
+    left: 0;
+    width: 100% !important;
+
+    body[data-chrome="false"] & {
+        display: none;
+    }
+}
+
+.node-path-title {
+    width: 20px;
+    height: 20px;
+    background: url(../images/icons/tabs-pages-white@X2.png) no-repeat center center;
+    background-size: 23px;
+    text-indent: -50000px;
+    position: fixed;
+    left: 425px;
+    top: 21px;
+    display: none;
+
+    body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"] & {
+        background-image: url(../images/tabs-pages-dark@X2.png)
+    }
+
+    body[data-multiselect="on"] & { /* MULTI SELECT NOT WORKING IN CONTRIBUTE MODE !!! */
+        display: block;
+        left: 100px !important;
+        top: 61px !important;
+        background: url(../images/icons/icon-close-white@X2.png) no-repeat center center;
+        background-size: 14px !important;
+        background-color: transparent;
+        border-radius: 100%;
+
+        &[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"] {
+            background-image: url(../images/icons/icon-close-grey@X2.png)
+        }
+
+        &::before {
+            content: $text_clear_selection !important;
+            opacity: 1;
+            background: transparent;
+            color: whitesmoke;
+            text-transform: none;
+            font-weight: 100;
+            font-size: 14px;
+            bottom: 0;
+            left: 13px;
+            top: -6px;
+            pointer-events: all;
+            box-shadow: none;
+        }
+
+        &::after {
+            display: none;
+        }
+
+        &:hover {
+            cursor: pointer;
+            background-color: rgba(_theme-color(secondary, a), 0.3);
+        }
+    }
+
+    body[data-multiselect="on"][data-indigo-sidepanel-pinned="true"] & {
+        position: absolute;
+        top: 30px !important;
+        right: -23px;
+        left: auto !important;
+        background-color: transparent !important;
+        background-position: left 3px top 2px;
+        width: 22px;
+        background-size: 11px !important;
+
+        &::before {
+            color: #fdfdfd;
+            background: #5c6164;
+            border-radius: 21px;
+            padding: 3px 10px 3px 24px !important;
+            left: -5px;
+            top: -4px;
+            height: 16px;
+            font-weight: 300;
+            z-index: -1;
+            font-size: 12px;
+        }
+    }
+
+    body[data-multiselect="on"][data-sitesettings="false"][data-indigo-sidepanel-pinned="true"] & { /* MULTI SELECT NOT WORKING IN CONTRIBUTE MODE !!! */
+        background-image: url(../images/icons/icon-close-white@X2.png);
+        background-color: #a1a4a6;
+    }
+
+    body[data-multiselect="on"][data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"] &,
+    body[data-multiselect="on"][data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"] &,
+    body[data-multiselect="on"][data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] &,
+    body[data-multiselect="on"][data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"] & {
+        display: none;
+    }
+
+    @include tooltip(attr(data-indigo-file-path), "BOTTOM");
+}
+
+.node-path-container {
+    position: fixed;
+    z-index: $ZINDEX--MAINMODULE--PATH_CONTAINER;
+    display: block;
+    max-width: 100% !important;
+    left: 99px;
+    top: 44px;
+
+    body[data-multiselect="on"] & {
+        top: 35px;
+    }
+
+    body[data-INDIGO-SIDEPANEL-PINNED="true"] & {
+        left: 394px;
+        top: 32px;
+    }
+}
+
+.x-current-page-path {
+    display: block;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    line-height: 22px !important;
+    transition: clip 0.2s ease-in 0s;
+    clip: rect(0px, 100vw, 30px, 0px);
+    max-width: calc(100vw - 530px);
+
+    body[data-INDIGO-SIDEPANEL-PINNED="true"] & {
+        left: 10px !important;
+        clip: unset;
+        top: 10px !important;
+    }
+
+    body[data-multiselect="on"] & {
+        left: 0px !important;
+        background: url(../images/icons/multiple_selection@2x.png) no-repeat left center/23px 23px;
+        padding-left: 24px;
+    }
+
+    body[data-multiselect="on"][data-INDIGO-SIDEPANEL-PINNED="true"] & {
+        top: 3px !important;
+    }
+
+    &::before {
+        content: attr(data-PAGE-NAME);
+        @extend %document_title !optional;
+        display: block;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 25.2px;
+        font-weight: 100;
+        color: whitesmoke;
+        line-height: 27px;
+    }
+}
+
+.node-path-text-inner {
+    display: none;
+    position: fixed;
+    text-align: center;
+    font-style: italic !important;
+    background: url(../images/icons/icon-page-white@X2.png) no-repeat left center;
+    background-size: 11px;
+    padding-left: 13px;
+    height: 16px;
+    left: 0;
+    top: 9px;
+    pointer-events: none;
+    @include text(12px !important, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT !important, $DEFAULT--FONT--FAMILY !important);
+
+    body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"] & {
+        color: #363636;
+        background-image: url(../images/tabs-pages-dark@X2.png);
+    }
+}
+
+div[role="combobox"].toolbar-itemsgroup-languageswitcher {
+    position: fixed;
+    right: auto;
+    left: 95px !important;
+    top: 69px !important;
+
+    body[data-indigo-gwt-side-panel="open"] .x-viewport-editmode & {
+        right: auto;
+        left: 115px !important;
+        top: 69px !important;
+    }
+
+    body[data-multiselect="on"]:not([data-indigo-gwt-side-panel="open"]) & {
+        display: none;
+    }
+
+    pointer-events: all;
+    z-index: $ZINDEX--MAINMODULE--LANGUAGE_SWITCHER;
+    transition: left 0.2s ease-in 0s;
+
+    body[data-indigo-app="contribute"] & {
+        margin-right: 0 !important;
+        right: 13px;
+        left: auto !important;
+        top: 20px !important;
+    }
+
+    input {
+        background: transparent;
+        font-size: 14px;
+        padding: 0 17px 0 0 !important;
+        box-shadow: none;
+
+        &:hover {
+            background: inherit;
+            box-shadow: none;
+            color: white;
+        }
+    }
+
+    img {
+        width: 15px !important;
+        background: url(../images/expanded-white.png) no-repeat left center transparent !important;
+        background-size: 14px !important;
+    }
+
+    body[data-indigo-gwt-side-panel="open"] .x-viewport-editmode & {
+        right: auto !important;
+        left: 115px !important;
+        top: 69px !important;
+
+        input {
+            color: #363636;
+        }
+
+        img {
+            background-image: url(../images/expanded-black.png) !important;
+        }
+    }
+
+
+    body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] &,
+    body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab"] &,
+    body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"] &,
+    body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"] &,
+    body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] &,
+    body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"] & {
+        left: 124px !important;
+    }
+
+    body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSettingsTab"] & {
+        left: 124px !important;
+    }
+}

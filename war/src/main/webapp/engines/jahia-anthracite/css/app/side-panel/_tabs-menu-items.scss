@@ -1,0 +1,111 @@
+
+// Side Panel Setups
+$side_panel__tabs: (
+                ("#JahiaGxtSidePanelTabs__JahiaGxtPagesTab", $text_pages, $SIDE_PANEL--ICON--PAGES---CLOSED, $SIDE_PANEL--ICON--PAGES---OPEN, $SIDE_PANEL--ICON--PAGES---SELECTED, $SIDE_PANEL--ICON--PAGES---OFF),
+                ("#JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab", $text_create, $SIDE_PANEL--ICON--CREATE---CLOSED, $SIDE_PANEL--ICON--CREATE---OPEN, $SIDE_PANEL--ICON--CREATE---SELECTED, $SIDE_PANEL--ICON--CREATE---OFF),
+                ("#JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab", $text_content, $SIDE_PANEL--ICON--CONTENT---CLOSED, $SIDE_PANEL--ICON--CONTENT---OPEN, $SIDE_PANEL--ICON--CONTENT---SELECTED, $SIDE_PANEL--ICON--CONTENT---OFF),
+                ("#JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab", $text_files, $SIDE_PANEL--ICON--FILES---CLOSED, $SIDE_PANEL--ICON--FILES---OPEN, $SIDE_PANEL--ICON--FILES---SELECTED, $SIDE_PANEL--ICON--FILES---OFF),
+                ("#JahiaGxtSidePanelTabs__JahiaGxtSearchTab", $text_search, $SIDE_PANEL--ICON--SEARCH---CLOSED, $SIDE_PANEL--ICON--SEARCH---OPEN, $SIDE_PANEL--ICON--SEARCH---SELECTED, $SIDE_PANEL--ICON--SEARCH---OFF),
+                ("#JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab", $text_taxonomy, $SIDE_PANEL--ICON--TAXONOMY---CLOSED, $SIDE_PANEL--ICON--TAXONOMY---OPEN, $SIDE_PANEL--ICON--TAXONOMY---SELECTED, $SIDE_PANEL--ICON--TAXONOMY---OFF),
+                ("#JahiaGxtSidePanelTabs__JahiaGxtChannelsTab", $text_devices, $SIDE_PANEL--ICON--DEVICES---CLOSED, $SIDE_PANEL--ICON--DEVICES---OPEN, $SIDE_PANEL--ICON--DEVICES---SELECTED, $SIDE_PANEL--ICON--DEVICES---OFF),
+                ("#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", $text_settings, $SIDE_PANEL--ICON--SETTINGS---CLOSED, $SIDE_PANEL--ICON--SETTINGS---OPEN, $SIDE_PANEL--ICON--SETTINGS---SELECTED, $SIDE_PANEL--ICON--SETTINGS---OFF)
+);
+
+/* Specificities for: PAGES, CREATE, CONTENT, FILES, SEARCH, TAXONOMY, DEVICES, SETTINGS */
+@each $tab in $side_panel__tabs {
+    $_tab_ID: #{nth($tab,1)};
+    $_text: "#{nth($tab,2)}";
+    $_icon_closed: #{nth($tab,3)};
+    $_icon_open: #{nth($tab,4)};
+    $_icon_selected: #{nth($tab,5)};
+    $_icon_off: #{nth($tab,6)};
+
+    #{$_tab_ID} {
+        @if ($_tab_ID == "#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab") {
+            position: fixed;
+            left: 27px;
+            bottom: 74px;
+
+            body[data-uilang="de"] & {
+                bottom: 80px;
+                left: 20px;
+
+                img {
+                    left: 26px !important;
+                }
+            }
+
+            body[data-sitesettings="true"] & {
+                bottom: 28px;
+            }
+
+            .x-viewport-dashboardmode & {
+                display: none !important;
+            }
+
+
+        }
+
+        img {
+            background-image: url($_icon_closed);
+
+            @if ($_tab_ID == "#JahiaGxtSidePanelTabs__JahiaGxtPagesTab") {
+                background-size: 20px!important;
+                background-position: center;
+            }
+
+            body[data-INDIGO-GWT-SIDE-PANEL="open"] &,
+            .x-viewport-adminmode &,
+            .x-viewport-dashboardmode & {
+                background-image: url($_icon_open);
+            }
+        }
+
+        &.x-tab-strip-active img {
+            body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+                background-image: url($_icon_selected);
+            }
+        }
+
+        &::after {
+            content: $_text;
+        }
+    }
+}
+
+
+// Tab Menu System Site Settings
+#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab:nth-child(2) {
+    bottom: 0;
+
+    &.x-tab-strip-active {
+        body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+            img {
+                background-image: url(../images/tabs-settings-blue@X2.png);
+            }
+        }
+
+    }
+
+    img {
+        background-image: url(../images/tabs-settings-white@X2.png);
+
+        body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+            background-image: url(../images/tabs-settings-dark@X2.png);
+        }
+
+    }
+
+    &::after {
+        content: $text_system_settings;
+    }
+}
+
+// Tab Menu Item Server Settings
+#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab:nth-child(1) {
+    &::after {
+        body[data-indigo-app="admin"] & {
+            content: $text_server_settings;
+        }
+    }
+}

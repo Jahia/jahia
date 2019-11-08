@@ -1,0 +1,47 @@
+/****************************/
+/* TABS */
+/****************************/
+
+// UP
+$TAB--BAR: (
+        LIGHT: _theme-color(secondary, a),
+        DARK: _theme-color(primary, g),
+);
+
+$TAB--COLOR: (
+        LIGHT: _theme-color(primary, b),
+        DARK: _theme-color(primary, e),
+);
+
+// HOVER
+$TAB--BAR---HOVER: (
+        LIGHT: _theme-color(quinary),
+        DARK: _theme-color(secondary),
+);
+
+$TAB--COLOR---HOVER: (
+        LIGHT: #007cb0,
+        DARK: #007cb0,
+);
+
+// SELECTED
+$TAB--BAR---SELECTED: (
+        LIGHT: _theme-color(quinary),
+        DARK: _theme-color(secondary),
+);
+
+$TAB--COLOR---SELECTED: (
+        LIGHT: #FCFCFC,
+        DARK: #FCFCFC,
+);
+
+// SELECTED HOVER
+$TAB--BAR---SELECTED-HOVER: (
+        LIGHT: _theme-color(quinary),
+        DARK: _theme-color(secondary),
+);
+
+$TAB--COLOR---SELECTED-HOVER: (
+        LIGHT: #FCFCFC,
+        DARK: #FCFCFC,
+);

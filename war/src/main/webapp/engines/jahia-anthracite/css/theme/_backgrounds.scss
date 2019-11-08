@@ -1,0 +1,109 @@
+/****************************/
+/* BACKGROUNDS */
+/****************************/
+
+$BODY--BG: (
+        LIGHT: radial-gradient(ellipse at bottom right, darken(_theme-color(secondary), 4%) 0%, _theme-color(secondary) 50%),
+        DARK: linear-gradient(to bottom, #585757 1%, #4c4b4b 100%),
+);
+
+$BODY--BG--SHADOW: (
+        LIGHT: 0 5px 10px 1px _theme-color(black, b),
+        DARK: 0 5px 10px 1px _theme-color(black, b),
+);
+
+$BODY--HAMBURGER-ICON: (
+        LIGHT: $ICON--DX---BLUE,
+        DARK: $ICON--DX---BLUE
+);
+
+$CONTRIBUTE--BG: (
+        LIGHT: _theme-color(tertiary),
+        DARK: _theme-color(tertiary),
+);
+
+$CONTRIBUTE--BG--SHADOW: (
+        LIGHT: 0px 0px 10px 0px _theme-color(quinary, c) !important,
+        DARK: 0px 0px 10px 0px _theme-color(quinary, c) !important,
+);
+
+$CONTRIBUTE--HAMBURGER-ICON: (
+        LIGHT: $ICON--DX---WHITE,
+        DARK: $ICON--DX---WHITE
+);
+
+$SIDE-PANEL--BG: (
+        LIGHT: radial-gradient(ellipse at bottom right, darken(_theme-color(primary), 10%) 0%, _theme-color(primary) 70%),
+        DARK: radial-gradient(ellipse at bottom right, darken(_theme-color(secondary), 4%) 0%, _theme-color(secondary) 50%),
+);
+
+$SIDE-PANEL--SHADOW: (
+        LIGHT: 0 5px 10px 1px _theme-color(black, b),
+        DARK: 0 5px 10px 1px _theme-color(black, b),
+);
+
+$MODAL--HEADER: (
+        LIGHT: _theme-color(primary),
+        DARK: _theme-color(secondary),
+);
+
+$MODAL--PARAGRAPH: (
+        LIGHT: _theme-color(primary, c),
+        DARK: _theme-color(secondary, b),
+);
+
+$MODAL--BG: (
+        LIGHT: _theme-color(secondary),
+        DARK: _theme-color(primary),
+);
+
+
+$MODAL-SOLID--BG: (
+        LIGHT: radial-gradient(ellipse at bottom right, darken(_theme-color(secondary), 4%) 0%, _theme-color(secondary) 50%),
+        DARK: radial-gradient(ellipse at bottom right, darken(_theme-color(primary), 10%) 0%, _theme-color(primary) 70%),
+);
+
+$MODAL-SOLID--BG---LEGACY: (
+        LIGHT: rgba(_theme-color(primary), .98),
+        DARK: rgba(_theme-color(primary), .98),
+);
+
+/****************************/
+/* FOOTERS */
+/****************************/
+
+$FOOTER--BG: (
+        LIGHT: _theme-color(primary),
+        DARK: _theme-color(primary, g),
+);
+
+$FOOTER--SHADOW: (
+        LIGHT: inset 3px 0px 16px _theme-color(black, b),
+        DARK: inset 3px 0px 16px _theme-color(black, b),
+);
+
+
+$DARK-FOOTER--BG: (
+        LIGHT: #363636,
+        DARK: #363636,
+);
+
+$DARK-FOOTER--SHADOW: (
+        LIGHT: inset 3px 0px 16px _theme-color(black, c),
+        DARK: inset 3px 0px 16px _theme-color(black, c),
+);
+
+
+/****************************/
+/* HEADER - USED IN PICKERS */
+/****************************/
+
+$HEADER--BG: (
+        LIGHT: transparent,
+        DARK: transparent,
+);
+
+$HEADER--SHADOW: (
+        LIGHT: transparent,
+        DARK: transparent,
+);

@@ -1,0 +1,480 @@
+// Group Selector
+#JahiaGxtUserGroupSelect {
+    top: calc((100% - 485px) / 2) !important;
+    left: calc((100% - 750px) / 2) !important;
+    width: 750px !important;
+    height: 100% !important;
+    z-index: 9999 !important;
+
+    // Top modal bar ( used for dragging and contains close button )
+    .x-window-tl,
+    .x-window-bwrap {
+        width: 100% !important;
+    }
+
+
+    // Resize handles
+    .x-resizable-handle-north,
+    .x-resizable-handle-south,
+    .x-resizable-handle-east,
+    .x-resizable-handle-west,
+    .x-resizable-handle-northeast,
+    .x-resizable-handle-northwest,
+    .x-resizable-handle-southeast,
+    .x-resizable-handle-southwest {
+        display: none;
+    }
+
+    &.indigo-no-results {
+        .x-panel-bbar {
+            display: none;
+        }
+    }
+
+    // PAGINATION
+    .x-panel-bbar {
+        position: relative;
+        z-index: 9999999;
+        width: 100% !important;
+        padding: 2px 11px;
+        box-sizing: border-box;
+        margin-top: 2px;
+
+        > div {
+            padding: 0 10px;
+            height: 100%;
+        }
+
+        .x-toolbar-left,
+        .x-toolbar-right {
+            display: block;
+
+            table,
+            tbody,
+            tr,
+            td {
+                display: block;
+
+            }
+        }
+
+        .x-toolbar-right {
+            position: relative;
+            top: 6px;
+
+            display: none;
+        }
+
+        .x-toolbar-left {
+
+            .x-toolbar-cell {
+                display: inline-block !important;
+                margin: 0 2px;
+                opacity: 0.8;
+
+                .my-paging-text {
+                    @include text(12px, inherit, $FONT--WEIGHT---EXTRALIGHT);
+                }
+
+                .gwt-TextBox {
+                    @include text(12px, _theme-color(primary, g), $FONT--WEIGHT---EXTRALIGHT);
+                    background: rgba(_theme-color(secondary), .7); /* TO THEME */
+                    padding: 3px;
+                    border: none;
+                }
+
+                .x-btn-mc img {
+                    display: none;
+                }
+
+                // First page
+                &:nth-child(1) {
+                    background: url($ICON--FIRST--GREY) no-repeat center center / 14px 14px;
+                    margin-left: 0px;
+
+                    &:hover {
+                        opacity: 1;
+                        cursor: pointer;
+                    }
+                }
+
+
+                // Previous page
+                &:nth-child(2) {
+                    background: url($ICON--BACK--GREY) no-repeat center center / 14px 14px;
+                    margin-left: 5px;
+
+                    &:hover {
+                        opacity: 1;
+                        cursor: pointer;
+                    }
+                }
+
+                // Skip to page input
+                &:nth-child(5) {
+                    &:hover {
+                        opacity: 1;
+                    }
+                }
+
+                // Next Page
+                &:nth-child(8) {
+                    background: url($ICON--NEXT--GREY) no-repeat center center / 14px 14px;
+                    margin-right: 5px;
+
+                    &:hover {
+                        opacity: 1;
+                        cursor: pointer;
+                    }
+                }
+
+                // Last page
+                &:nth-child(9) {
+                    background: url($ICON--LAST--GREY) no-repeat center center / 14px 14px;
+                    margin-right: 5px;
+
+                    &:hover {
+                        opacity: 1;
+                        cursor: pointer;
+                    }
+                }
+
+                // Refresh results
+                &:nth-child(11) {
+                    background: url($ICON--REFRESH--SMALL_GREY) no-repeat center center / 16px 12px;
+
+                    &:hover {
+                        opacity: 1;
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+    }
+
+    .x-panel-tbar {
+        width: 100% !important;
+
+        > .x-component {
+            width: 100% !important;
+
+            // Filter field
+            > table {
+                position: absolute;
+                top: 9px;
+                right: 34px;
+
+                .xtb-text {
+                    display: none;
+                }
+
+                .x-toolbar-left {
+                    > table {
+                        width: 100%
+                    }
+                }
+
+                .x-toolbar {
+                    border: none;
+                    padding: 0;
+                    background: none;
+                }
+            }
+        }
+    }
+
+    .x-panel-body {
+        width: 100% !important;
+        height: calc(100% - 30px) !important;
+    }
+
+    .x-grid-panel {
+        width: 100% !important;
+        height: 100% !important;
+        padding-bottom: 20px;
+
+        .x-grid3-viewport {
+            > .x-grid3-header {
+                display: block;
+                background: none;
+                width: calc(100% - 10px); // compensates for scroll padding added to list
+                box-sizing: border-box;
+
+                .x-grid3-header-inner {
+                    width: 100% !important;
+
+                    .x-grid3-header-offset {
+                        width: 100% !important;
+                    }
+
+                    .x-grid3-hh {
+                        width: 100% !important;
+
+                        > table {
+                            width: 100% !important;
+                            display: block;
+
+                            > tbody {
+                                width: 100% !important;
+                                display: block;
+
+                                > tr {
+                                    display: block;
+                                }
+
+                                td {
+                                    width: calc(25% - 10px) !important;
+                                    pointer-events: all;
+                                    border: none;
+                                    background: none;
+                                    margin-right: 10px;
+
+                                    &.x-grid3-hd-over {
+                                        background: _theme-color(secondary, b); /* TO THEME */
+
+                                        span {
+                                            color: _theme-color(primary, b) !important; /* TO THEME */
+                                        }
+
+                                        img {
+                                            opacity: 1;
+                                        }
+
+                                    }
+
+                                    div {
+                                        width: 100% !important;
+                                        box-sizing: border-box;
+                                        height: auto !important;
+                                        background: none !important;
+                                        padding-left: 4px;
+
+                                        img {
+                                            position: relative;
+                                            top: -1px;
+                                            opacity: 0.6;
+                                        }
+
+                                        .x-grid3-hd-btn {
+                                            background: url($ICON--ARROW_DOWN---GREY) no-repeat center center !important;
+                                            width: 23px;
+                                            background-size: 13px !important;
+                                            opacity: 0.7;
+
+                                            &:hover {
+                                                background-color: _theme-color(secondary, d) !important; /* TO THEME */
+                                                background-size: 13px !important;
+                                                opacity: 1;
+                                            }
+                                        }
+
+                                        span {
+                                            text-transform: uppercase;
+                                            font-weight: 800;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .x-grid-empty {
+            &::before {
+                content: $text_no_results;
+                @include text(12px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT);
+            }
+        }
+
+        .x-grid3-scroller {
+            box-sizing: border-box;
+        }
+
+        .x-grid3-row {
+            padding-top: 4px;
+
+            &.x-grid3-row-selected {
+                pointer-events: none; // Basically disables the double click
+                background: _theme-color(primary, b) !important; /* TO THEME */
+
+                .x-grid3-cell {
+                    > div {
+                        color: _theme-color(secondary) !important; /* TO THEME */
+                    }
+                }
+
+            }
+        }
+
+        .x-grid3-cell {
+            width: 25% !important;
+            display: inline-block;
+
+            &::after {
+                display: none;
+            }
+        }
+    }
+
+
+    // Contains main window
+    .x-window-bwrap {
+        // Footer
+        .x-window-bl {
+            padding-left: 44px !important;
+            margin-top: 20px;
+
+            .x-toolbar-cell {
+                // Save button
+                &:nth-child(1) {
+                    @include button("ACTIONBAR---SUGGESTED")
+                }
+            }
+        }
+
+        // Main Window Container
+        .x-window-ml {
+            height: calc(100% - 80px) !important;
+
+            .x-window-mr,
+            .x-window-mc,
+            .x-window-body {
+                width: 100% !important;
+                height: 100% !important;
+            }
+
+            .x-window-body {
+                > .x-panel {
+                    width: 100% !important;
+                    height: 100% !important;
+
+                    .x-panel-header {
+                        background: none;
+                        width: 100% !important;
+                        height: 70px !important;
+                        padding: 0;
+                        border: none;
+
+                        .x-panel-header-text {
+                            display: block;
+
+                            @include text(36px, _theme-color(primary), $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
+                        }
+                    }
+
+                    .x-panel-bwrap { // JUST ONE
+                        width: 100%;
+                        height: calc(100% - 70px) !important;
+                        box-sizing: border-box;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Fix size of User select Modal
+.user-group-select .x-window-body .x-panel-body .x-grid3-body {
+    max-height: 280px;
+}
+
+
+.indigo-search-component {
+
+    .x-form-field-wrap {
+        width: 100% !important;
+    }
+
+    .x-toolbar-cell {
+        // Used as a cancel button
+        &.indigo-clear-button {
+            display: block;
+            background: url($ICON--CLOSE_LARGE---GREY) no-repeat center center;
+            background-size: 12px 12px;
+            width: 20px;
+            height: 20px;
+            text-indent: -50000px;
+            position: absolute;
+            right: 54px;
+            top: 4px;
+            z-index: 9999;
+
+            &:hover {
+                cursor: pointer;
+            }
+
+            &.indigo-empty-field {
+                display: none;
+            }
+
+        }
+
+        // Text input
+        &:nth-child(2) {
+
+            .x-form-field-wrap {
+                padding: 1px 0 3px 2px;
+            }
+
+            input {
+                background-image: url($ICON--SEARCH---GREY);
+                background-color: _theme-color(secondary); /* TO THEME */
+                background-repeat: no-repeat;
+                background-position: left center;
+                background-size: 23px;
+                width: 100% !important;
+                padding: 4px 5px 5px 27px !important;
+                font-size: 12px;
+                font-family: $FONT--FAMILY---NUNITO;
+                color: _theme-color(primary, c); /* TO THEME */
+                background-size: 23px;
+
+                &:hover {
+                    opacity: 1;
+                }
+            }
+        }
+
+        // Search button
+        &:nth-child(3) {
+            display: block;
+
+            .x-btn-icon {
+                display: block;
+                height: 27px;
+                padding: 0 4px;
+                background: _theme-color(tertiary); /* TO THEME */
+
+                &:before {
+                    content: $text_search;
+                    display: block;
+                    top: 6px;
+                    position: relative;
+                    text-align: center;
+
+                    @include text(11px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT);
+                }
+
+                img {
+                    display: none;
+                }
+            }
+        }
+    }
+
+}
+
+body[data-indigo-add-visibility-condition="new"] {
+    > .x-combo-list {
+        background: transparent !important;
+        width: auto !important;
+
+        > div {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+        }
+    }
+}

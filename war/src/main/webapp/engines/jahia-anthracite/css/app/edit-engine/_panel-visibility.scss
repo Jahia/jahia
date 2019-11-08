@@ -1,0 +1,411 @@
+.engine-panel:not(.trashboardengine-ctn),
+div.engine-window {
+
+    #JahiaGxtEditEnginePanel-visibility {
+        // Deals with status of visibility and publication
+
+        img {
+            // For non styled image status ...
+            width: 12px;
+            height: 12px;
+            margin-top: 3px;
+
+            // Styled image status ...
+            &[src$="/visibilityStatusRed.png"],
+            &[src$="/visibilityStatusUnknown.png"],
+            &[src$="/visibilityStatusGreen.png"],
+            &[src$="/published.png"] {
+                width: 20px;
+                height: 20px;
+                padding-left: 20px;
+                overflow: hidden;
+                box-sizing: border-box;
+                background-size: 22px;
+                opacity: .67;
+                margin-top: 0;
+            }
+
+            &.x-form-trigger {
+                padding-left: 0 !important;
+            }
+
+            &[src$="/visibilityStatusRed.png"] {
+                background: url(../images/icons_dark/visibilityoff.svg) no-repeat center center;
+            }
+
+            &[src$="/visibilityStatusUnknown.png"] {
+                background: url(../images/icons_dark/unknown.svg) no-repeat center center;
+            }
+
+            &[src$="/visibilityStatusGreen.png"] {
+                background: url(../images/icons_dark/visibility.svg) no-repeat center center;
+            }
+
+            &[src$="/publication/published.png"] {
+                background: url(../images/icons_dark/published.svg) no-repeat center center;
+            }
+
+        }
+
+        > .x-component {
+
+            .x-panel-footer {
+                text-align: right;
+            }
+
+            // Header Zone
+            &:nth-child(1) {
+                background: _property($FIELDSET--BG, $EDIT-ENGINE);
+                border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE) !important;
+                padding: 43px 10px 20px 29px;
+                box-sizing: border-box;
+                height: auto !important;
+                position: relative;
+                width: 100% !important;
+                margin: 0px 0 10px 0 !important;
+                overflow: visible !important;
+
+                .gwt-HTML {
+                    @include text(12px, _property($LABEL--COLOR, $EDIT-ENGINE) !important, $FONT--WEIGHT---EXTRALIGHT)
+                }
+
+                &:before {
+                    content: $text_visibility_visibility;
+                    @extend %FORM--LEGEND;
+                }
+
+                > .x-component {
+                    &:nth-child(1) {
+                        > table > tbody > tr > td {
+                            // Publication status label
+                            &:nth-child(5) {
+                                position: fixed;
+                                top: 55px;
+                                left: 638px;
+                                z-index: 98;
+
+                                body[data-uilang="fr"] & {
+                                    left: 698px;
+                                }
+
+                                body[data-uilang="de"] & {
+                                    left: 714px;
+                                }
+                            }
+
+                            // Publication icon
+                            &:nth-child(6) {
+                                position: fixed;
+                                top: 54px;
+                                left: 745px;
+                                z-index: 98;
+
+                                body[data-uilang="fr"] & {
+                                    left: 820px;
+                                }
+
+                                body[data-uilang="de"] & {
+                                    left: 825px;
+                                }
+                            }
+
+                            // Publish conditions on save ( also used to create a fake fieldset )
+                            &:nth-child(7) {
+                                position: absolute;
+                                background: _property($FIELDSET--BG, $EDIT-ENGINE);
+                                border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE) !important;
+                                width: 100%;
+                                left: 0;
+                                top: -95px;
+                                padding: 43px 10px 20px 29px;
+                                box-sizing: border-box;
+                                height: 85px !important;
+
+                                // Actual label
+                                > div {
+                                    position: absolute;
+                                    top: 15px;
+                                    right: 40px;
+                                }
+
+                                &:before {
+                                    content: $text_visibility_publication;
+                                    @extend %FORM--LEGEND;
+                                }
+                            }
+
+                            // Save on publication checkbox
+                            &:nth-child(8) {
+                                position: absolute;
+                                right: 10px;
+                                top: -79px;
+                            }
+                        }
+                    }
+
+                    &:nth-child(2) {
+
+                        > table > tbody > tr > td {
+                            // All conditions should match label
+                            &:nth-child(1) {
+                                position: fixed;
+                                top: 120px;
+                                right: 48px;
+                                z-index: 98;
+
+                                div {
+                                    @include text(12px, _property($FIELDSET--TITLE-COLOR, $EDIT-ENGINE) !important, $FONT--WEIGHT---EXTRALIGHT)
+                                }
+
+                            }
+
+                            // All conditions should match checkbox
+                            &:nth-child(2) {
+                                position: fixed;
+                                right: 17px;
+                                top: 120px;
+                                z-index: 98;
+                            }
+
+                            // Add New Condition Label
+                            &:nth-child(3) {
+                                display: none;
+                            }
+
+                            // Selector
+                            &:nth-child(4) {
+                                // Arrow
+
+                                input {
+                                    display: none;
+                                }
+
+                                img.x-form-trigger {
+                                    background: url($ICON--ADD--WHITE) no-repeat center center !important;
+                                    width: 15px !important;
+                                    height: 15px !important;
+                                    position: fixed !important;
+                                    top: 30px;
+                                    right: 30px;
+                                    z-index: 98;
+                                    background-size: 14px !important;
+                                    background-color: _property($BUTTON--BG, $EDIT-ENGINE) !important;
+                                    opacity: 1;
+                                    padding-left: 15px;
+                                    border: none;
+
+                                }
+                            }
+
+                            // Add button
+                            &:nth-child(5) {
+                                display: none;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Conditions List
+            &:nth-child(2) {
+                .x-grid-empty {
+                    padding: 0;
+
+                    &:before {
+                        content: $text_visibility_no_conditions;
+                        display: block;
+                        @include text(12px, _property($LABEL--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
+                    }
+                }
+
+                background: _property($FIELDSET--BG, $EDIT-ENGINE);
+                border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE) !important;
+                padding: 43px 10px 20px 29px;
+                box-sizing: border-box;
+                height: auto !important;
+
+                &:before {
+                    content: $text_visibility_conditions;
+                    @extend %FORM--LEGEND;
+                }
+
+                .x-grid3 {
+                    height: auto !important;
+                }
+
+                .x-grid3-scroller {
+                    overflow: hidden;
+                }
+
+                .x-grid3-row {
+                    background: none !important;
+                    pointer-events: none;
+                }
+
+                .x-grid3-col-status {
+                    position: absolute;
+                    left: -3px;
+                    top: -2px;
+                }
+
+                .x-grid-cell {
+                    line-height: normal;
+                }
+
+                .x-grid3-col-name {
+                    color: _property($LIST-BOX--ROW--COLOR, $EDIT-ENGINE) !important;
+                    padding: 5px 10px 5px 23px;
+                }
+
+
+                .x-grid3-td-remove {
+                    width: 55px !important;
+                    position: absolute;
+                    right: 0;
+                    top: 0;
+                    pointer-events: all;
+                    background: url(../images/icons_dark/edit.svg) right 5px center no-repeat !important;
+                    background-size: 16px 16px !important;
+                    opacity: 0.8;
+
+                    &:hover {
+                        opacity: 1;
+                        cursor: pointer;
+                    }
+                }
+
+                .x-grid3-col-remove {
+                    width: 20px;
+                    height: 20px !important;
+                    background: transparent;
+                    background: url("../images/icons_dark/deleted.svg") no-repeat center center;
+                    background-size: 21px;
+
+                    > table {
+                        width: 100%;
+                        height: 100%;
+                        display: block;
+
+                        > tbody {
+                            display: none;
+                        }
+                    }
+                }
+            }
+
+            // Condition settings
+            &:nth-child(3) {
+                height: 100% !important;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100% !important;
+                background: _property($MODAL-SOLID--BG, $EDIT-ENGINE);
+                z-index: 999;
+                display: none;
+
+                &.indigo-show {
+                    display: block;
+                    background: radial-gradient(ellipse at bottom right, rgba(38, 38, 38, 0.5) 0%, rgba(38, 38, 38, 0.71) 50%);
+                }
+
+                .x-panel-footer {
+                    menu {
+                        padding: 0 6px 0 0;
+
+                        button {
+                            border: none;
+                            display: inline-block;
+                            padding: 5px 10px;
+
+                            &:hover {
+                                cursor: pointer;
+                            }
+
+                            &.save-new-condition,
+                            &.done-with-condition {
+                                background: _property($ACTION-SUGGESTED--BG, $EDIT-ENGINE);
+                                box-shadow: _property($ACTION-SUGGESTED--SHADOW, $EDIT-ENGINE);
+                                margin-left: 3px;
+                                @include text(16px, _property($ACTION-SUGGESTED--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
+
+                                &:hover {
+                                    background: _property($ACTION-SUGGESTED--BG---HOVER, $EDIT-ENGINE);
+                                    box-shadow: _property($ACTION-SUGGESTED--SHADOW---HOVER, $EDIT-ENGINE);
+                                    color: _property($ACTION-SUGGESTED--COLOR---HOVER, $EDIT-ENGINE);
+                                }
+                            }
+
+                            &.cancel-new-condition {
+                                background: _property($ACTION-DEFAULT--BG, $EDIT-ENGINE);
+                                box-shadow: _property($ACTION-DEFAULT--SHADOW, $EDIT-ENGINE);
+                                @include text(16px, _property($ACTION-DEFAULT--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
+
+                                &:hover {
+                                    background: _property($ACTION-DEFAULT--BG---HOVER, $EDIT-ENGINE);
+                                    box-shadow: _property($ACTION-DEFAULT--SHADOW---HOVER, $EDIT-ENGINE);
+                                    color: _property($ACTION-DEFAULT--COLOR---HOVER, $EDIT-ENGINE);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                > .x-panel {
+                    // Use to vertically align
+                    &:before {
+                        display: block;
+                        height: calc(50vh - 200px);
+                        min-height: 0;
+                        content: " ";
+                    }
+
+                    .x-panel-bwrap {
+                        &:before {
+                            content: $text_visibility_edit_condition;
+
+                            body[data-indigo-editing-condition="new"] & {
+                                content: $text_visibility_new_condition;
+                            }
+
+                            display: block;
+                            margin-bottom: 10px;
+                            @include text(36px, _property($TITLE--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
+                        }
+
+                        .x-form-field-wrap {
+                            width: 100% !important;
+                        }
+                    }
+
+                    width: 460px !important;
+                    margin: 0 auto;
+
+                    > .x-panel-bwrap {
+                        background: #f4f4f4;
+                        padding: 19px;
+                        box-shadow: 1px 1px 2px 0px rgba(38, 38, 38, 0.4);
+                    }
+
+                    // Hide occasional duplication of the window
+                    &:nth-child(2),
+                    &:nth-child(3) {
+                        display: none;
+                    }
+
+                    fieldset {
+                        padding: 43px 10px 20px 19px !important;
+                        background: transparent !important;
+
+                        legend {
+                            .x-fieldset-header-text {
+                                left: 19px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}

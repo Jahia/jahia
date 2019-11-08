@@ -1,0 +1,9 @@
+@mixin tooltip($_tooltip_text, $_position: "BOTTOM") {
+    @extend %TOOLTIP !optional;
+    @extend %TOOLTIP---#{$_position} !optional;
+
+    &::before {
+        content: $_tooltip_text;
+    }
+
+}

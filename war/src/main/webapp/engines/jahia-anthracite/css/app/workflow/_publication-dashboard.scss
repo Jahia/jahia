@@ -1,0 +1,92 @@
+/***********************************************/
+/* PUBLICATION DASHBOARD ***********************/
+/***********************************************/
+
+// Override buttons in footer bar for publication status window
+.window-container .engine-panel.publicationstatuswindow-card {
+    &.engine-panel.publicationstatuswindow-card > .x-panel-bwrap > .x-panel-bbar .x-panel-fbar {
+        @include _button(".button-cancel", "ACTIONBAR", "remove-icons");
+        @include _button(".button-bypassworkflow", "ACTIONBAR---SUGGESTED", "remove-icons");
+    }
+}
+
+
+.workflowactiondialog-card.engine-panel,
+.workflowactiondialog-card.engine-window,
+.publicationstatuswindow-card.engine-panel,
+.publicationstatuswindow-card.engine-window {
+
+    background: linear-gradient(to right bottom, #F5F5F5 50%, #e5e4e4 100%);
+
+    > div.x-panel-header {
+        pointer-events: none;
+    }
+
+    .x-toolbar-left {
+        bottom: 10px !important;
+    }
+
+    .x-tab-strip {
+        margin-top: 0 !important;
+    }
+
+    .workflow-action-dialog, .publication-status-window {
+        box-shadow: inset 0 1px 2px 1px _theme-color(black, a);
+        width: 100% !important;
+        padding: 0;
+        margin-top: 8px;
+        height: calc(100% - 317px) !important;
+        background: linear-gradient(to bottom, #DBDBDB 1%, #d5d5d5 100%);
+    }
+
+    > div.x-panel-header .x-panel-header-text {
+        color: #007cb0;
+        display: inline-block;
+        position: fixed;
+        width: 100%;
+        left: 6px;
+        top: 44px;
+        max-width: calc(100% - 100px);
+        font-weight: 300;
+        font-size: 18px;
+
+        &:before {
+            display: none;
+        }
+    }
+
+    > .x-panel-bwrap {
+        margin-top: 116px;
+
+        .x-panel-body.x-panel-body-noborder {
+            overflow: hidden !important;
+        }
+    }
+
+    &:before {
+        content: "Publication dashboard" !important;
+        width: 380px !important;
+    }
+
+    .x-tab-panel .x-tab-panel-body {
+        overflow: auto;
+        overflow-x: hidden;
+        border: none !important;
+
+        &:nth-child(2) {
+            overflow-y: hidden;
+            height: calc(100% - 18px) !important;
+        }
+    }
+
+    /* Footer buttons bar */
+    > .x-panel-bwrap > .x-panel-bbar {
+        padding-bottom: 20px;
+
+        .x-panel-fbar .x-toolbar-cell {
+            padding-bottom: 0 !important;
+            float: right;
+            margin-left: 5px !important;
+        }
+    }
+}

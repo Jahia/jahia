@@ -1,0 +1,13 @@
+// CHECKBOX
+%CHECKBOX---UNCHECKED {
+    border: _property($CHECKBOX--BORDER, $APP);
+    background: _property($CHECKBOX--BG, $APP);
+    box-shadow: _property($CHECKBOX--SHADOW, $APP);
+}
+
+%CHECKBOX---CHECKED {
+    background: no-repeat center center;
+    background-image: url($ICON--TICK---WHITE);
+    background-size: 15px 15px;
+    background-color: _property($CHECKBOX--BG---CHECKED, $APP);
+}

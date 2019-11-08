@@ -1,0 +1,33 @@
+
+// SETTINGS
+#JahiaGxtSettingsTab {
+    .x-viewport-adminmode &,
+    .x-viewport-dashboardmode & {
+        height: 100% !important;
+        width: calc(100% + 22px) !important;
+        left: 5px;
+    }
+
+    .x-viewport-editmode & {
+        height: calc(100% - 38px) !important;
+    }
+
+    > .x-component {
+        width: 100% !important;
+        height: calc(100% - 85px);
+        overflow: hidden;
+
+        .x-panel-bwrap {
+            height: 100%;
+        }
+
+        .x-panel-body {
+            > .x-component {
+                height: 100% !important;
+                width: 100% !important;
+            }
+        }
+    }
+    padding-right: 0 !important;
+
+}

@@ -1,0 +1,33 @@
+//
+// TOGGLE - USED IN EDIT ENGINE
+//
+
+$TOGGLE--RAIL: (
+        LIGHT: _theme-color(primary),
+        DARK: _theme-color(primary, g),
+);
+
+$TOGGLE--SHADOW: (
+        LIGHT: inset 1px 1px 2px 1px _theme-color(black, a),
+        DARK: inset 1px 1px 2px 1px _theme-color(black, a),
+);
+
+$TOGGLE--LABEL---ON: (
+        LIGHT: _theme-color(secondary),
+        DARK: _theme-color(secondary),
+);
+
+$TOGGLE--SHUTTLE---ON: (
+        LIGHT: _theme-color(green),
+        DARK: _theme-color(green),
+);
+
+$TOGGLE--LABEL---OFF: (
+        LIGHT: _theme-color(primary, d),
+        DARK: _theme-color(primary, d),
+);
+
+$TOGGLE--SHUTTLE---OFF: (
+        LIGHT: _theme-color(primary, d),
+        DARK: _theme-color(primary, d),
+);

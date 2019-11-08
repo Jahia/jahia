@@ -1,0 +1,11 @@
+// LEGENDS
+%FORM--LEGEND---COLLAPSED {
+}
+
+%FORM--LEGEND {
+    padding: 0 !important;
+    position: absolute;
+    top: 14px;
+    left: 30px;
+    @include text(18px, _property($FIELDSET--TITLE-COLOR, $EDIT-ENGINE), $FONT--WEIGHT---LIGHT);
+}

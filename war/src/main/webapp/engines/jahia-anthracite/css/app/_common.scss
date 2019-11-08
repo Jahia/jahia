@@ -1,0 +1,211 @@
+/////////////////////////////////////////////////
+// SCROLL BARS //////////////////////////////////
+/////////////////////////////////////////////////
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: none;
+}
+
+::-webkit-scrollbar-thumb {
+    background: _property($SCROLL--SHUTTLE, $APP);
+    border: 0;
+}
+
+::-webkit-scrollbar-corner {
+    background: none;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: _property($SCROLL--SHUTTLE---HOVER, $APP);
+}
+
+/////////////////////////////////////////////////
+// PAGE TITLE CONTROLS //////////////////////////
+/////////////////////////////////////////////////
+
+html {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+
+    .background-mask {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background: #fcfdfd;
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.3s ease-in 0s;
+    }
+
+    &[data-sitesettings="true"] {
+        .background-mask {
+            opacity: 1;
+        }
+    }
+
+    &[data-multiselect="on"] {
+        .background-mask {
+            opacity: 0.15;
+        }
+    }
+
+    background: linear-gradient(to bottom right, #3b3d40 1%, #333537 100%);
+    transition: all 0.2s ease-in 0s;
+
+    &[data-channel] {
+        box-shadow: inset 0px -120px 260px #343638;
+    }
+
+    // DELETE START ::: Check if this can be deleted ...
+    &[data-main-node-displayname] {
+        &::before {
+            // Set Page Title Style
+            display: block;
+            position: fixed;
+            top: 2px;
+            left: 13px;
+            height: 50px;
+            background-size: 35px 35px;
+            padding-left: 45px;
+            @include text(21px, _property($TITLE--COLOR, $APP), $FONT--WEIGHT---EXTRALIGHT);
+            padding-top: 10px;
+        }
+    }
+
+    // DELETE END
+
+
+    &[data-main-node-displayname="System Site"] {
+        &::before {
+            /* Set Page Title Content for System Settings */
+            content: attr(data-sitekey);
+        }
+    }
+}
+
+
+// Separations
+.xtb-sep {
+    display: none !important;
+}
+
+.x-hide-display.force-display-block {
+    display: block !important
+}
+
+.x-hide-display.force-display-inline-block {
+    display: inline-block !important
+}
+
+
+/////////////////////////////////////////////////
+// BUTTONS //////////////////////////////////////
+/////////////////////////////////////////////////
+
+.x-btn-mc {
+    background: transparent;
+}
+
+.x-btn-ml,
+.x-btn-mr,
+.x-btn-tl,
+.x-btn-tc,
+.x-btn-tr,
+.x-btn-bl,
+.x-btn-bc,
+.x-btn-br {
+    visibility: hidden;
+    display: none !important;
+}
+
+.x-btn-mc {
+    .action-bar-container & {
+        // For Main Site Buttons (Pages, Workflow, Cache, Search etc , ...)
+        img {
+            display: none;
+        }
+    }
+
+    display: block;
+}
+
+button {
+    border-radius: 0;
+}
+
+
+.x-current-page-path,
+.edit-menu-publication,
+.window-actions-refresh,
+.edit-menu-view,
+.edit-menu-edit {
+    transition: opacity 0.3s ease-in 0s;
+}
+
+.window-iframe {
+    // transition: opacity 0.1s ease-in 0s;
+}
+
+.x-masked object, .x-masked embed {
+    visibility: visible !important
+}
+
+.x-masked {
+    overflow: visible !important
+}
+
+.x-masked-relative {
+    position: absolute !important
+}
+
+.x-masked select, .x-masked object, .x-masked embed {
+    visibility: visible !important
+}
+
+
+.jahia-template-gxt {
+    margin-bottom: 0 !important;
+}
+
+
+/////////////////////////////////////////////////
+// RESET GWT FONT ///////////////////////////////
+/////////////////////////////////////////////////
+
+
+.x-component.x-component,
+.x-grid3-hd-row .x-grid3-hd,
+.x-grid3-row .x-grid3-cell,
+.x-grid3-summary-row .x-grid3-cell,
+.x-grid3-td-numberer div {
+    font-family: $FONT--FAMILY---NUNITO !important;
+}
+
+
+/////////////////////////////////////////////////
+// TRASH ??? ///////////////////////////////////
+/////////////////////////////////////////////////
+
+.x-border {
+    border: none;
+}
+
+// Stop elements being selected when dragging indigo split bar
+body[indigo-dragging-panel] {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}

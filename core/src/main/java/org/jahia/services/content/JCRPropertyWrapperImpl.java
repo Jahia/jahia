@@ -94,7 +94,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
             this.localPath = property.getPath();
             this.localPathInProvider = localPath;
             this.name = property.getName();
-            this.def = def;
+            setPropertyDefinition(def);
         }
     }
 
@@ -109,7 +109,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
      * @param name name of this property
      */
     public JCRPropertyWrapperImpl(JCRNodeWrapper objectNode, Property property, JCRSessionWrapper session, JCRStoreProvider provider,
-            ExtendedPropertyDefinition def, String name) {
+            ExtendedPropertyDefinition def, String name) throws RepositoryException {
         super(session, provider);
         this.node = objectNode;
         this.property = property;
@@ -117,7 +117,15 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         this.name = name;
         this.localPath = node.getPath() + "/" + name; // todo : node.getPath() returns the global path, not local path - should use node.getRealNode()
         this.localPathInProvider = localPath;
-        this.def = def;
+        setPropertyDefinition(def);
+    }
+
+    private void setPropertyDefinition(ExtendedPropertyDefinition definition) throws RepositoryException {
+        if (property != null && definition != null && isMultiple() && !definition.isMultiple()) {
+            this.def = node.getApplicablePropertyDefinition(name, definition.getRequiredType(), true);
+        } else {
+            this.def = definition;
+        }
     }
 
     public void setValue(Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {

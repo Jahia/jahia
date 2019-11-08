@@ -124,21 +124,17 @@ public class ChangedPropertyFact implements Updateable, ModifiedPropertyFact {
                 logger.debug("Node is still locked, delay property update to later");
                 delayedUpdates.add(this);
             } else {
-                if (!node.isCheckedOut()) {
-                    node.checkout();
-                }
-
                 setProperty(node, name, value, true);
             }
         } catch (PathNotFoundException e) {
-            logger.warn("Node does not exist " + nodePath);
+            logger.warn("Node does not exist {}", nodePath);
         }
     }
 
     private ExtendedPropertyDefinition getPropertyDefinition(Node node, String name)
             throws RepositoryException {
 
-        Map<String, ExtendedPropertyDefinition> defs = new HashMap<String, ExtendedPropertyDefinition>();
+        Map<String, ExtendedPropertyDefinition> defs = new HashMap<>();
         NodeTypeRegistry reg = NodeTypeRegistry.getInstance();
         ExtendedPropertyDefinition propDef = null;
         try {
@@ -163,25 +159,13 @@ public class ChangedPropertyFact implements Updateable, ModifiedPropertyFact {
             throws RepositoryException {
 
         try {
-            if (!overrideIfExisting) {
-                try {
-                    node.getProperty(name);
-                    return;
-                } catch (RepositoryException e) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Create new property " + name + " on node " + node.getPath());
-                    }
-                }
+            if (!overrideIfExisting && propertyExists(node, name)) {
+                return;
             }
-            // deal with versioning. this method is called at restore(...)
-//            if (node.isNodeType(Constants.MIX_VERSIONABLE)) {
-//                node.checkout();
-//            }
 
             ExtendedPropertyDefinition propDef = getPropertyDefinition(node, name);
             if (propDef == null) {
-                logger.error("Property " + name + " does not exist in "
-                        + node.getPath() + " !");
+                logger.error("Property {} does not exist in {} !", node, node.getPath());
                 return;
             }
             ValueFactory factory = node.getSession().getValueFactory();
@@ -199,28 +183,7 @@ public class ChangedPropertyFact implements Updateable, ModifiedPropertyFact {
             }
 
             if (values.length > 0) {
-                if (!node.isCheckedOut()) {
-                    node.checkout();
-                }
-                if (!propDef.isMultiple()) {
-                    property = node.setProperty(name, values[0]);
-                } else {
-                    if (node.hasProperty(name)) {
-                        property = node.getProperty(name);
-                        Value[] oldValues = property.getValues();
-                        Value[] newValues = new Value[oldValues.length + values.length];
-                        System.arraycopy(oldValues, 0, newValues, 0, oldValues.length);
-                        System.arraycopy(values, 0, newValues, oldValues.length, values.length);
-                        property.setValue(newValues);
-                    } else {
-                        property = node.setProperty(name, values);
-                    }
-                }
-
-                logger.debug("Property set " + nodePath + " / " + name);
-                if (property != null) {
-                    path = property.getPath();
-                }
+                setProperty(node, name, propDef, values);
             }
         } catch (NoSuchNodeTypeException e) {
             logger.debug("Nodetype not supported", e);
@@ -231,12 +194,46 @@ public class ChangedPropertyFact implements Updateable, ModifiedPropertyFact {
         }
     }
 
+    private void setProperty(JCRNodeWrapper node, String name, ExtendedPropertyDefinition propDef, Value[] values) throws RepositoryException {
+        if (!propDef.isMultiple()) {
+            property = node.setProperty(name, values[0]);
+        } else {
+            if (node.hasProperty(name)) {
+                property = node.getProperty(name);
+                Value[] oldValues = property.getValues();
+                Value[] newValues = new Value[oldValues.length + values.length];
+                System.arraycopy(oldValues, 0, newValues, 0, oldValues.length);
+                System.arraycopy(values, 0, newValues, oldValues.length, values.length);
+                property.setValue(newValues);
+            } else {
+                property = node.setProperty(name, values);
+            }
+        }
+
+        logger.debug("Property set {} / {}", nodePath, name);
+        if (property != null) {
+            path = property.getPath();
+        }
+    }
+
+    private boolean propertyExists(JCRNodeWrapper node, String name) {
+        try {
+            node.getProperty(name);
+            return true;
+        } catch (RepositoryException e) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Create new property {} on node ", node.getPath());
+            }
+        }
+        return false;
+    }
+
     private Value createValue(Object objectValue, ExtendedPropertyDefinition propDef, ValueFactory factory) {
         if (objectValue instanceof String && propDef.getSelector() == SelectorType.CATEGORY) {
             try {
                 return factory.createValue(Category.getCategoryPath((String) objectValue));
             } catch (Exception e) {
-                logger.warn("Can't get category " + objectValue + ", cause " + e.getMessage());
+                logger.warn("Can't get category {}, cause {}", objectValue, e.getMessage());
                 return null;
             }
         } else {
@@ -254,12 +251,12 @@ public class ChangedPropertyFact implements Updateable, ModifiedPropertyFact {
 
     public String getStringValue() throws RepositoryException {
         if (property != null) {
-            if (property.getDefinition().isMultiple()) {
+            if (property.isMultiple()) {
                 return getStringValues().toString();
             }
-            JCRValueWrapper v = (JCRValueWrapper) property.getValue();
+            JCRValueWrapper v = property.getValue();
             if (v.getType() == PropertyType.WEAKREFERENCE || v.getType() == PropertyType.REFERENCE) {
-                JCRNodeWrapper node = ((JCRValueWrapper) v).getNode();
+                JCRNodeWrapper node = v.getNode();
                 if (node != null) {
                     return node.getPath();
                 }
@@ -271,8 +268,8 @@ public class ChangedPropertyFact implements Updateable, ModifiedPropertyFact {
     }
 
     public List<String> getStringValues() throws RepositoryException {
-        List<String> r = new ArrayList<String>();
-        if (property != null && property.getDefinition().isMultiple()) {
+        List<String> r = new ArrayList<>();
+        if (property != null && property.isMultiple()) {
             Value[] vs = property.getValues();
             for (Value v : vs) {
                 if (v.getType() == PropertyType.WEAKREFERENCE || v.getType() == PropertyType.REFERENCE) {
@@ -292,12 +289,12 @@ public class ChangedPropertyFact implements Updateable, ModifiedPropertyFact {
 
     public AddedNodeFact getNodeValue() throws RepositoryException {
         if (property != null) {
-            if (property.getDefinition().isMultiple()) {
+            if (property.isMultiple()) {
                 return null;
             }
-            JCRValueWrapper v = (JCRValueWrapper) property.getValue();
+            JCRValueWrapper v = property.getValue();
             if (v.getType() == PropertyType.WEAKREFERENCE || v.getType() == PropertyType.REFERENCE) {
-                JCRNodeWrapper node = ((JCRValueWrapper) v).getNode();
+                JCRNodeWrapper node = v.getNode();
                 if (node != null) {
                     return new AddedNodeFact(node);
                 }

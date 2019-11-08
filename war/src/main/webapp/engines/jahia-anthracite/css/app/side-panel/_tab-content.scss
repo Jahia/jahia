@@ -1,0 +1,64 @@
+
+// CONTENT
+#JahiaGxtContentBrowseTab.tab_content {
+    width: 100% !important;
+
+    &::before {
+        /* Tab Content Header Label */
+        content: $text_content !important;
+    }
+
+    // Deal with icons here ...
+    .x-tree3-node-icon {
+
+        background-size: 23px 23px;
+        background-repeat: no-repeat;
+        padding-left: 18px;
+        width: 18px;
+        height: 23px;
+        opacity: 0.8;
+        background-position: center top 1px;
+
+        // FOLDER ICON
+        &[src$="/jnt_contentFolder.png"],
+        &[src$="/jnt_folder.png"] {
+            background-image: url($ICON--FILES---GREY);
+            background-size: 21px;
+            background-position: top 3px center;
+        }
+
+        &[src$="/remoteFolder.png"] {
+            background-image: url(../images/icons/tabs-files-shared-dark@X2.png);
+        }
+
+        &[src$="/jnt_virtualsite.png"] {
+            background-image: url(../images/icons/tabs-site-dark@X2.png);
+        }
+
+
+    }
+
+    .x-grid3-row-selected {
+        .x-tree3-node-icon {
+            // FOLDER ICON
+            &[src$="/jnt_contentFolder.png"],
+            &[src$="/jnt_folder.png"] {
+                background-image: url($ICON--FILES---WHITE);
+                opacity: 1;
+            }
+
+            &[src$="/remoteFolder.png"] {
+                background-image: url(../images/icons/tabs-files-shared-white@X2.png);
+            }
+
+            &[src$="/jnt_virtualsite.png"] {
+                background-image: url(../images/icons/tabs-site-white@X2.png);
+            }
+        }
+    }
+
+    .x-tree3-el > span {
+        top: -1px !important;
+    }
+
+}

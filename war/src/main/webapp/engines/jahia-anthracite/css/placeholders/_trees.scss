@@ -1,0 +1,162 @@
+/////////////////////////////////////////////////
+// TREES ////////////////////////////////////////
+/////////////////////////////////////////////////
+
+// LABELS
+%TREE--ROW--TEXT---UP {
+    @include text(13px, _property($ROW--COLOR, $SIDE-PANEL), $FONT--WEIGHT---LIGHT);
+}
+
+%TREE--ROW--TEXT---HOVER {
+    color: _property($ROW--COLOR---HOVER, $SIDE-PANEL) !important;
+
+    // Padding not dealt with in best manner ...
+    .x-viewport-adminmode &,
+    .x-viewport-dashboardmode & {
+        padding-right: 0 !important; // Make space for More options button
+    }
+}
+
+%TREE--ROW--TEXT---SELECTED {
+    color: _property($ROW--COLOR---SELECTED, $SIDE-PANEL) !important;
+
+    .x-viewport-adminmode &,
+    .x-viewport-dashboardmode & {
+        padding-right: 0 !important; // Make space for More options button
+    }
+
+}
+
+%TREE--ROW--TEXT---SELECTED_HOVER {
+    color: _property($ROW--COLOR---SELECTED-HOVER, $SIDE-PANEL) !important;
+}
+
+// SMALL LABEL
+%TREE--ROW--TEXT---UP\:SMALL_LABEL {
+    line-height: 20px;
+    @include text(12px !important, _property($ROW--COLOR, $SIDE-PANEL) !important, $FONT--WEIGHT---EXTRALIGHT !important);
+}
+
+%TREE--ROW--TEXT---HOVER\:SMALL_LABEL {
+    color: _property($ROW--COLOR---HOVER, $SIDE-PANEL) !important;
+}
+
+%TREE--ROW--TEXT---SELECTED\:SMALL_LABEL {
+    color: _property($ROW--COLOR---SELECTED, $SIDE-PANEL) !important;
+}
+
+%TREE--ROW--TEXT---SELECTED_HOVER\:SMALL_LABEL {
+    color: _property($ROW--COLOR---SELECTED-HOVER, $SIDE-PANEL) !important;
+}
+
+// BACKGROUNDS
+%TREE--ROW--BG---UP {
+    background: _property($ROW--BG, $SIDE-PANEL) !important;
+}
+
+%TREE--ROW--BG---HOVER {
+    background: _property($ROW--BG---HOVER, $SIDE-PANEL) !important;
+}
+
+%TREE--ROW--BG---SELECTED {
+    background-color: #007cb0 !important;
+}
+
+%TREE--ROW--BG---SELECTED_HOVER {
+    background: #007cb0 !important;
+}
+
+
+%TREE--ROW--BG---UP\:SETTINGS {
+    background: transparent !important;
+}
+
+%TREE--ROW--BG---HOVER\:SETTINGS {
+    background: $TREE--ROW--BG--COLOUR---HOVER !important;
+}
+
+%TREE--ROW--BG---SELECTED\:SETTINGS {
+    background-color: transparent !important;
+    background: linear-gradient(to left, rgba(0, 124, 176, 0.86) 1%, #007cb0 100%) left center !important;
+}
+
+%TREE--ROW--BG---SELECTED_HOVER\:SETTINGS {
+}
+
+// Personalised Tree Icons
+// You can use these placeholders to personalise each trees icons.
+// If left blank then they will assume GWT original icons.
+
+// Pages Tree Icons
+%TREE--ICON---UP\:PAGES {
+    background-image: url($TREE--ROW--ICON---UP);
+    background-size: 23px 23px;
+    background-repeat: no-repeat;
+    padding-left: 18px;
+    width: 18px;
+    height: 23px;
+}
+
+%TREE--ICON---HOVER\:PAGES {
+    background-image: url($TREE--ROW--ICON---HOVER) !important;
+}
+
+%TREE--ICON---SELECTED\:PAGES {
+    background-image: url($TREE--ROW--ICON---SELECTED) !important;
+}
+
+%TREE--ICON---SELECTED_HOVER\:PAGES {
+    background-image: url($TREE--ROW--ICON---SELECTED) !important;
+}
+
+// Create Tree Icons
+%TREE--ICON---UP\:CREATE {
+}
+
+%TREE--ICON---HOVER\:CREATE {
+}
+
+%TREE--ICON---SELECTED\:CREATE {
+}
+
+%TREE--ICON---SELECTED_HOVER\:CREATE {
+}
+
+// Content Tree Icons
+%TREE--ICON---UP\:CONTENT {
+}
+
+%TREE--ICON---HOVER\:CONTENT {
+}
+
+%TREE--ICON---SELECTED\:CONTENT {
+}
+
+%TREE--ICON---SELECTED_HOVER\:CONTENT {
+}
+
+// Files Tree Icons
+%TREE--ICON---UP\:FILES {
+}
+
+%TREE--ICON---HOVER\:FILES {
+}
+
+%TREE--ICON---SELECTED\:FILES {
+}
+
+%TREE--ICON---SELECTED_HOVER\:FILES {
+}
+
+// Taxonomy Tree Icons
+%TREE--ICON---UP\:TAXONOMY {
+}
+
+%TREE--ICON---HOVER\:TAXONOMY {
+}
+
+%TREE--ICON---SELECTED\:TAXONOMY {
+}
+
+%TREE--ICON---SELECTED_HOVER\:TAXONOMY {
+}

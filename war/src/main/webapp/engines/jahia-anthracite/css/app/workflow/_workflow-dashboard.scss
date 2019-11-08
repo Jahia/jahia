@@ -1,0 +1,165 @@
+/***********************************************/
+/* WORKFLOW DASHBOARD **************************/
+/***********************************************/
+
+.workflow-dashboard-engine {
+
+    .x-tree3-node-text.x-tree3-node-text-widget,
+    .x-grid3-row-selected .x-tree3-node-text.x-tree3-node-text-widget {
+        color: #3b3b3b !important;
+    }
+
+    .indigo-modal-mask {
+        display: none;
+    }
+
+    background: lighten($EDIT_ENGINE--BASE--COLOUR, 2%) !important;
+
+    .x-window-bwrap {
+        background: _theme-color(secondary, a);
+    }
+
+    .x-panel-toolbar .x-tool-restore {
+        display: none;
+    }
+
+    .x-window-header {
+        height: 64px !important;
+        line-height: 64px;
+        margin-top: 5px;
+
+        .x-panel-toolbar > table {
+            pointer-events: all;
+        }
+
+        .x-window-header-text {
+            text-shadow: none;
+            border: none;
+            padding: 0;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+            margin-bottom: 10px;
+            pointer-events: none !important;
+        }
+
+        > .x-component:first-child {
+            margin-top: 22px;
+            margin-right: 16px;
+        }
+
+    }
+
+    .x-grid3 {
+
+        .x-grid3-body {
+            .x-grid-empty {
+                padding: 3px;
+
+                &::before {
+                    content: $text_empty;
+                    @include text(13px, _theme-color(primary), $FONT--WEIGHT---LIGHT);
+                }
+            }
+        }
+
+        .x-grid3-header {
+            display: table-cell;
+            background: transparent;
+
+
+            .x-grid3-hh {
+                // border-bottom: 1px solid _theme-color(secondary, d);
+                text-transform: uppercase;
+                color: _theme-color(black, c);
+                margin: 2px 0 12px;
+
+                > table {
+                    padding: 4px 0;
+
+                    .x-grid3-hd.x-grid3-cell {
+                        border-color: transparent !important;
+
+                        span,
+                        span div {
+                            font-weight: 800;
+                        }
+                    }
+                }
+            }
+        }
+
+        td.x-grid3-hd-over .x-grid3-hd-inner,
+        td.x-grid3-hd-menu-open .x-grid3-hd-inner {
+            background: _theme-color(primary, d) !important;
+        }
+
+        .x-grid3-header-inner .x-grid3-hh > table > tbody td div .x-grid3-hd-btn {
+            background: url(../images/icons/combo-arrow-grey.png) no-repeat center center !important;
+            width: 23px;
+            background-size: 13px !important;
+            opacity: 0.7;
+        }
+
+        .x-grid3-scroller.x-grid3-scroller {
+            width: 100% !important;
+        }
+
+        .x-grid3-row.x-grid3-row-selected {
+            background: inherit !important;
+            color: inherit !important;
+
+            .x-grid3-td-displayName {
+                padding-right: 0 !important;
+            }
+
+        }
+
+        .x-grid3-row {
+            color: _theme-color(primary, a) !important;
+            box-sizing: border-box;
+            height: auto !important;
+            margin-bottom: 1px;
+
+            .x-grid3-cell-last.x-grid3-td-operation {
+                padding-left: 8px;
+            }
+        }
+
+        .x-grid3-row-table {
+
+            .x-grid3-cell .x-grid3-cell-inner label {
+                line-height: inherit;
+                color: inherit;
+            }
+
+            .x-grid3-cell {
+                overflow: hidden;
+                display: inline-block;
+                pointer-events: all;
+
+                table,
+                tbody,
+                tr {
+                    display: block;
+                }
+
+                td {
+                    display: inline-block;
+                    padding: 0 !important;
+                }
+            }
+
+        }
+
+    }
+
+    .x-grid3-hd-row {
+
+        .x-grid3-hd {
+            border-left-color: _theme-color(primary, c);
+            border-right-color: _theme-color(primary, e);
+        }
+
+    }
+}

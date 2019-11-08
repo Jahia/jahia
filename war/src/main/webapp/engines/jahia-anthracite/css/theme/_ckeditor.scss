@@ -1,0 +1,100 @@
+/****************************/
+/* CKE */
+/****************************/
+
+$CKE--ICON-SET--DEFAULT: (
+        LIGHT: false,
+        DARK: $ICON--RICH_TEXT--TOOLBUTTONS,
+);
+
+$CKE--ICON-SET--LEGACY: (
+        LIGHT: false,
+        DARK: $ICON--RICH_TEXT--TOOLBUTTONS---LEGACY,
+);
+
+$CKE--PATH--COLOR: (
+        LIGHT: blue,
+        DARK: blue,
+);
+
+$CKE--PATH--BG: (
+        LIGHT: transparent,
+        DARK: transparent,
+);
+
+
+$CKE--TOOLBAR--BG: (
+        LIGHT: transparent,
+        DARK: transparent,
+);
+
+$CKE--TOOLBAR--BORDER: (
+        LIGHT: transparent,
+        DARK: transparent,
+);
+
+$CKE--TOOLGROUP--BG: (
+        LIGHT: _theme-color(secondary, a),
+        DARK: _theme-color(primary, a),
+);
+
+$CKE--TOOLGROUP--BG---HOVER: (
+        LIGHT: _theme-color(secondary, a),
+        DARK: _theme-color(primary, b),
+);
+
+$CKE--TOOL--BG: (
+        LIGHT: transparent,
+        DARK: transparent,
+);
+
+$CKE--TOOL--BG---HOVER: (
+        LIGHT: _theme-color(secondary),
+        DARK: _theme-color(primary, c),
+);
+
+$CKE--CONTENTS--SHADOW: (
+        LIGHT: 2px 5px 10px _theme-color(black, a) !important,
+        DARK: 2px 5px 10px _theme-color(black, a) !important,
+);
+
+$CKE--CONTENTS--BORDER: (
+        LIGHT: _theme-color(secondary, c),
+        DARK: _theme-color(secondary, c),
+);
+
+
+$CKE--BUTTON-LABEL--COLOR: (
+        LIGHT: _theme-color(primary),
+        DARK: _theme-color(secondary),
+);
+
+$CKE--BUTTON-LABEL--COLOR---HOVER: (
+        LIGHT: _theme-color(primary),
+        DARK: _theme-color(secondary),
+);
+
+$CKE--COMBO--BG: (
+        LIGHT: _theme-color(secondary),
+        DARK: _theme-color(primary, a),
+);
+
+$CKE--COMBO--SHADOW: (
+        LIGHT: 0px 1px 2px _theme-color(black, a),
+        DARK: 0px 1px 2px _theme-color(black, a),
+);
+
+$CKE--COMBO--BG---HOVER: (
+        LIGHT: _theme-color(secondary),
+        DARK: _theme-color(primary, b),
+);
+
+$CKE--COMBO--SHADOW---HOVER: (
+        LIGHT: 0px 1px 2px _theme-color(black, b),
+        DARK: 0px 1px 2px _theme-color(black, b),
+);
+
+$CKE--TOOL--BG---SELECTED: (
+        LIGHT: _theme-color(quaternary),
+        DARK: _theme-color(quaternary),
+);

@@ -1,0 +1,832 @@
+/********************************/
+/*** COMBO BOX                ***/
+/********************************/
+
+@mixin _context-list($type: $APP) {
+    width: auto !important;
+    background: transparent;
+    overflow: visible;
+    z-index: 999999999999999 !important;
+    border: none;
+
+    .x-menu-list {
+        height: auto !important;
+
+        &::before {
+            background: _property($MENU-TITLE--BG, $type);
+            width: 100%;
+            display: block;
+            padding: 3px 8px;
+            font-family: "Nunito Sans";
+            font-size: 9px;
+            color: _property($MENU-TITLE--COLOR, $type);
+            text-transform: uppercase;
+            font-weight: 600;
+            z-index: $ZINDEX--CONTEXT_MENU---TITLE;
+        }
+    }
+
+
+    .x-menu-list-item {
+
+        .x-menu-item {
+            border: none;
+            display: block;
+            text-align: left !important;
+            background: _property($MENU-OPENED--BG, $type);
+            padding: 8px 9px 8px 24px !important;
+            border: none;
+            background-image: url(../images/icons/context-menu/placeholder.png);
+            background-position-x: 5px;
+            background-position-y: 7px;
+            background-repeat: no-repeat;
+            background-size: 16px;
+
+            &.x-menu-check-item {
+                padding-left: 25px !important;
+            }
+
+            &.x-menu-item-arrow {
+                background-image: url(../images/icons/toggle-WE-white@X2.png);
+                background-position: right 6px center;
+                background-repeat: no-repeat;
+                background-size: 13px;
+            }
+
+            @include text(13px, _property($MENU-OPENED--COLOR, $type), $FONT--WEIGHT---LIGHT);
+
+            &.toolbar-item-editcontent,
+            &.toolbar-item-editsourcecontent,
+            &.toolbar-item-editcontentrootnodeeditable {
+                background-image: url(../images/icons/context-menu/edit.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-delete,
+            &.toolbar-item-deletepermanently,
+            &.toolbar-item-deletepermanentlynomarkfordeletion {
+                background-image: url(../images/icons/context-menu/delete.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-copy,
+            &.toolbar-item-webdavurlcopy {
+                background-image: url(../images/icons/context-menu/copy.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-cut {
+                background-image: url(../images/icons/context-menu/cut.svg);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-crop {
+                background-image: url(../images/icons/context-menu/crop.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-rename {
+                background-image: url(../images/icons/context-menu/rename.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-resize {
+                background-image: url(../images/icons/context-menu/resize.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-rotate {
+                background-image: url(../images/icons/context-menu/rotate-right.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-flush,
+            &.toolbar-item-flushsite,
+            &.toolbar-item-flushall {
+                background-image: url(../images/icons/context-menu/delete-outline.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-paste,
+            &.toolbar-item-pastecurrentpage,
+            &.toolbar-item-pastereference {
+                background-image: url(../images/icons/context-menu/paste.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-publishinalllanguages,
+            &.toolbar-item-publishinalllanguages-pages,
+            &.toolbar-item-publishall,
+            &.toolbar-item-publishall-contentandfiles,
+            &.toolbar-item-publishallinalllanguages-contentandfiles,
+            &.toolbar-item-publishallinalllanguages,
+            &.toolbar-item-publishallinalllanguages-pages,
+            &.toolbar-item-publish,
+            &.toolbar-item-publish-contentandfiles,
+            &.toolbar-item-contextual-publish,
+            &.toolbar-item-pagestab-publicationmenu,
+            &.toolbar-item-publishall-pages,
+            &.toolbar-item-publishone,
+            &.toolbar-item-publishsite,
+            &.toolbar-item-publishsite-sitenode,
+            &.toolbar-item-publishsiteinalllanguages-sitenode,
+            &.toolbar-item-publishsiteinalllanguages {
+                background-image: url(../images/icons/context-menu/publish.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-contextual-publish:after,
+            &.toolbar-item-publish-contentandfiles:after,
+            &.toolbar-item-publish:after,
+            &.toolbar-item-pagestab-publicationmenu:after {
+                background-image: url(../images/icons/toggle-WE-white@X2.png);
+                background-position: 5px 1px;
+                background-repeat: no-repeat;
+                background-size: 13px;
+                content: '';
+                height: 24px;
+                width: 24px;
+                position: absolute;
+                right: 0;
+            }
+
+            &.toolbar-item-unpublish,
+            &.toolbar-item-unpublishinalllanguages {
+                background-image: url(../images/icons_light/unpublish.svg);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-lock {
+                background-image: url(../images/icons/context-menu/lock.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-unlock {
+                background-image: url(../images/icons/context-menu/unlock.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-publicationmanager {
+                background-image: url(../images/icons/context-menu/publication-manager.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-workflowdashboard {
+                background-image: url(../images/icons/context-menu/workflow.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-filepreview,
+            &.toolbar-item-openincontentmanager,
+            &.toolbar-item-openincontentmanager-newtab {
+                background-image: url(../images/icons/context-menu/preview.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-export {
+                background-image: url(../images/icons/context-menu/export.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-import {
+                background-image: url(../images/icons/context-menu/import.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-update {
+                background-image: url(../images/icons/context-menu/import-export.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-translatemenu,
+            &.toolbar-item-translatemenu-item {
+                background-image: url(../images/icons/context-menu/translate.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-translatemenu:after {
+                background-image: url(../images/icons/toggle-WE-white@X2.png);
+                background-position: 5px 1px;
+                background-repeat: no-repeat;
+                background-size: 13px;
+                content: '';
+                height: 24px;
+                width: 24px;
+                position: absolute;
+                right: 0;
+            }
+
+            &.toolbar-item-pagestab-addmenu {
+                background-image: url(../images/icons/context-menu/add.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-pagestab-addmenu:after {
+                background-image: url(../images/icons/toggle-WE-white@X2.png);
+                background-position: 5px 1px;
+                background-repeat: no-repeat;
+                background-size: 13px;
+                content: '';
+                height: 24px;
+                width: 24px;
+                position: absolute;
+                right: 0;
+            }
+
+            &.toolbar-item-live {
+                background-image: url(../images/icons/context-menu/live.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-live:after {
+                background-image: url(../images/icons/toggle-WE-white@X2.png);
+                background-position: 5px 1px;
+                background-repeat: no-repeat;
+                background-size: 13px;
+                content: '';
+                height: 24px;
+                width: 24px;
+                position: absolute;
+                right: 0;
+            }
+
+            &.toolbar-item-preview {
+                background-image: url(../images/icons/context-menu/preview.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-preview:after {
+                background-image: url(../images/icons/toggle-WE-white@X2.png);
+                background-position: 5px 1px;
+                background-repeat: no-repeat;
+                background-size: 13px;
+                content: '';
+                height: 24px;
+                width: 24px;
+                position: absolute;
+                right: 0;
+            }
+
+            &.toolbar-item-gotoviewdefinition {
+                background-image: url(../images/icons/context-menu/view-source.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-gotocontent {
+                background-image: url(../images/icons/context-menu/arrow-right.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-newpage,
+            &.toolbar-item-newcategory {
+                background-image: url(../images/icons/context-menu/new-page.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-newinternallink {
+                background-image: url(../images/icons/context-menu/link.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-newexternallink {
+                background-image: url(../images/icons/context-menu/link.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-navmenutext {
+                background-image: url(../images/icons/context-menu/menu-label.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-undelete {
+                background-image: url(../images/icons/context-menu/undo.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-clearlock,
+            &.toolbar-item-clearalllocks {
+                background-image: url(../images/icons/context-menu/unlock.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-newfolder,
+            &.toolbar-item-newcontentfolder {
+                background-image: url(../images/icons/context-menu/new-folder.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-newcontent {
+                background-image: url(../images/icons/context-menu/new-content.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-download {
+                background-image: url(../images/icons/context-menu/download.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-upload {
+                background-image: url(../images/icons/context-menu/upload.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-zip {
+                background-image: url(../images/icons/context-menu/zip.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-unzip {
+                background-image: url(../images/icons/context-menu/unzip.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-previewasguest {
+                background-image: url(../images/icons/context-menu/custom-preview.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-showcompareengine,
+            &.toolbar-item-showversionengine {
+                background-image: url(../images/icons/context-menu/compare.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-showconsultpreviousversionengine {
+                background-image: url(../images/icons/context-menu/published-versions.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-live-openWindow,
+            &.toolbar-item-preview-openWindow {
+                background-image: url(../images/icons/context-menu/open-new.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-newportletfolder {
+                background-image: url(../images/buttons_light/new-content-folder.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-newportlet {
+                background-image: url(../images/buttons_light/new-portlet.png);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+
+            &.toolbar-item-refresh {
+                background-image: url(../images/icons_light/refresh.svg);
+                background-color: _property($MENU-OPENED--BG, $type);
+                background-position-x: 5px;
+                background-position-y: 7px;
+                background-repeat: no-repeat;
+                background-size: 16px;
+            }
+        }
+
+        &.x-item-disabled {
+            .x-menu-item {
+                color: _property($MENU-OPENED--COLOR---DISABLED, $type) !important;
+                font-style: italic;
+                opacity: 1;
+                background-color: _property($MENU-OPENED--BG---DISABLED, $type);
+                display: none;
+
+                &.x-menu-check-item {
+                    display: block;
+                }
+            }
+
+        }
+
+        &.x-menu-item-active {
+            .x-menu-item {
+                color: _property($MENU-OPENED--COLOR---HOVER, $type);
+                background-color: _property($MENU-OPENED--BG---HOVER, $type);
+            }
+        }
+    }
+}
+
+@mixin _combo-list($type: $APP) {
+    /* Combo Outer Container */
+    background: transparent;
+    overflow: visible;
+    z-index: 9999999 !important;
+    min-width: 150px;
+
+    /* Combo Inner Container */
+    .x-combo-list-inner {
+        width: auto !important;
+        background: transparent;
+
+        /* Combo List Items that have Thumbs, ie. Channel Combo */
+        .thumb-wrap {
+            img {
+                /* Actual thumb */
+                display: none !important;
+            }
+
+            .x-editable {
+                /* List item when normal Thumbed Combo
+                   Actual Label of Combo Item */
+                text-align: left !important;
+                background: _property($MENU-OPENED--BG, $type);
+                padding: 8px 9px !important;
+                border: none;
+
+                @include text(13px, _property($MENU-OPENED--COLOR, $type), $FONT--WEIGHT---LIGHT);
+            }
+
+            &.x-combo-selected {
+                /* Selected / Hovered */
+                border: none !important;
+
+                .x-editable {
+                    /* List item when normal Thumbed Combo */
+                    color: _property($MENU-OPENED--COLOR---HOVER, $type);
+                    background: _property($MENU-OPENED--BG---HOVER, $type);
+                }
+            }
+        }
+    }
+
+    /* List item when normal Combo */
+    .x-combo-list-item {
+        display: block;
+        text-align: left !important;
+        background: _property($MENU-OPENED--BG, $type);
+        padding: 8px 9px !important;
+        border: none;
+
+        @include text(13px, _property($MENU-OPENED--COLOR, $type), $FONT--WEIGHT---LIGHT);
+
+        &:empty {
+            display: none;
+        }
+
+        &.x-view-highlightrow,
+        &:hover {
+            /* Selected / Hovered */
+            border: none !important;
+            cursor: pointer;
+            color: _property($MENU-OPENED--COLOR---HOVER, $type);
+            background: _property($MENU-OPENED--BG---HOVER, $type);
+        }
+    }
+}
+
+@mixin _combo($type: $APP) {
+    width: auto !important;
+
+    input.x-form-text {
+        width: 100% !important;
+        height: auto !important;
+        box-sizing: border-box;
+        display: block;
+        padding: 7px 37px 6px 10px !important;
+
+        background: _property($MENU-CLOSED--BG, $type);
+        box-shadow: _property($MENU-CLOSED--SHADOW, $type);
+
+        @include text(12px, _property($MENU-CLOSED--COLOR, $type), $FONT--WEIGHT---EXTRALIGHT);
+
+        &:hover {
+            color: _property($MENU-CLOSED--COLOR---HOVER, $type);
+            background: _property($MENU-CLOSED--BG---HOVER, $type);
+            box-shadow: _property($MENU-CLOSED--SHADOW---HOVER, $type);
+        }
+
+        &::-webkit-input-placeholder {
+            color: _property($MENU-CLOSED--COLOR, $type);
+        }
+
+        &:-moz-placeholder {
+            color: _property($MENU-CLOSED--COLOR, $type);
+        }
+
+        &::-moz-placeholder {
+            color: _property($MENU-CLOSED--COLOR, $type);
+        }
+
+        &:-ms-input-placeholder {
+            color: _property($MENU-CLOSED--COLOR, $type);
+        }
+    }
+
+    // Trigger
+    img {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 30px !important;
+        height: 100% !important;
+        border: none !important;
+
+        background: url(_property($MENU-CLOSED--ARROW, $type)) no-repeat center center _property($MENU-CLOSED--ARROW-BG, $type) !important;
+
+        &:hover {
+            background-image: _property($MENU-CLOSED--ARROW---HOVER, $type) !important;
+            background-color: _property($MENU-CLOSED--ARROW-BG---HOVER, $type) !important;
+        }
+    }
+}
+
+
+
+
+@mixin _combo-muted($type: $APP) {
+
+    width: auto !important;
+
+    input.x-form-text {
+        width: 100% !important;
+        height: auto !important;
+        box-sizing: border-box;
+        display: block;
+        padding: 7px 37px 6px 10px !important;
+
+        background: red;
+        box-shadow: _property($MENU-MUTED-CLOSED--SHADOW, $type);
+
+        @include text(12px, _property($MENU-MUTED-CLOSED--COLOR, $type), $FONT--WEIGHT---EXTRALIGHT);
+
+        &:hover {
+            color: _property($MENU-MUTED-CLOSED--COLOR---HOVER, $type);
+            background: _property($MENU-MUTED-CLOSED--BG---HOVER, $type);
+            box-shadow: _property($MENU-MUTED-CLOSED--SHADOW---HOVER, $type);
+        }
+    }
+
+    // Trigger
+    img {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 30px !important;
+        height: 100% !important;
+        border: none !important;
+
+        background: url(_property($MENU-MUTED-CLOSED--ARROW, $type)) no-repeat center center _property($MENU-MUTED-CLOSED--ARROW-BG, $type) !important;
+
+        &:hover {
+            background-image: _property($MENU-MUTED-CLOSED--ARROW---HOVER, $type) !important;
+            background-color: _property($MENU-MUTED-CLOSED--ARROW-BG---HOVER, $type) !important;
+        }
+    }
+}
+
+
+@mixin _combo-picker($type: $APP) {
+
+    width: auto !important;
+
+    input.x-form-text {
+        width: 100% !important;
+        height: auto !important;
+        box-sizing: border-box;
+        display: block;
+        padding: 7px 20px 6px 10px !important;
+
+        background: _property($MENU-CLOSED--BG, $type);
+        box-shadow: _property($MENU-CLOSED--SHADOW, $type);
+
+        @include text(12px, _property($MENU-CLOSED--COLOR, $type), $FONT--WEIGHT---EXTRALIGHT);
+
+        &:hover {
+            color: _property($MENU-CLOSED--COLOR---HOVER, $type);
+            background: _property($MENU-CLOSED--BG---HOVER, $type);
+            box-shadow: _property($MENU-CLOSED--SHADOW---HOVER, $type);
+        }
+    }
+
+    .x-form-twin-triggers {
+        display: block;
+        position: absolute;
+        right: 5px;
+        top: 0;
+        width: 57px;
+        height: 100%;
+
+        img {
+            display: inline-block;
+            position: relative;
+            width: 27px;
+            height: 100%;
+            border: none !important;
+
+            &.x-form-trigger-arrow {
+                background: url(_property($MENU-CLOSED--OPTIONS, $type)) no-repeat center center _property($MENU-CLOSED--OPTIONS-BG, $type) !important;
+                background-size: 10px !important;
+                float: right;
+
+                &:hover {
+                    background-color: _property($MENU-CLOSED--OPTIONS-BG---HOVER, $type) !important;
+                }
+            }
+
+            &.x-form-clear-trigger {
+                background: url(_property($MENU-CLOSED--CLEAR, $type)) no-repeat center center _property($MENU-CLOSED--CLEAR-BG, $type) !important;
+                right: -3px;
+                position: relative;
+                background-size: 10px !important;
+
+                &:hover {
+                    background-color: _property($MENU-CLOSED--CLEAR-BG---HOVER, $type) !important;
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
+
+// OVERRIDES
+.x-viewport-contributemode div[role="combobox"].toolbar-itemsgroup-languageswitcher input.x-form-text {
+    padding: 0 17px 0 0 !important;
+    background: none !important;
+    font-size: 14px;
+    box-shadow: none !important;
+    color: _theme-color(secondary);
+}
+
+.x-viewport-contributemode div[role="combobox"].toolbar-itemsgroup-languageswitcher input.x-form-text:hover {
+    color: white;
+}

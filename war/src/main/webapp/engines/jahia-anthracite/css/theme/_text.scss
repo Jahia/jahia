@@ -1,0 +1,43 @@
+/****************************/
+/* TITLE */
+/****************************/
+
+$TITLE--COLOR: (
+        LIGHT: _theme-color(primary),
+        DARK: _theme-color(secondary),
+);
+
+$SIDE-PANEL-TITLE--COLOR: (
+        LIGHT: _theme-color(secondary),
+        DARK: _theme-color(primary),
+);
+
+
+/****************************/
+/* SUBTITLE */
+/****************************/
+
+$SUBTITLE--COLOR: (
+        LIGHT: _theme-color(primary, c),
+        DARK: _theme-color(secondary, d),
+);
+
+
+/****************************/
+/* PARAGRAPH */
+/****************************/
+
+$PARAGRAPH--COLOR: (
+        LIGHT: _theme-color(primary),
+        DARK: _theme-color(secondary),
+);
+
+
+/****************************/
+/* LABEL */
+/****************************/
+
+$LABEL--COLOR: (
+        LIGHT: #5C5C5C,
+        DARK: #5C5C5C,
+);

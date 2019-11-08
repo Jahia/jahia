@@ -1,0 +1,871 @@
+/////////////////////////////////////////////////
+// EDIT ENGINE //////////////////////////////////
+/////////////////////////////////////////////////
+
+// Comparaison panel open from edit engine
+body[data-indigo-edit-engine="open"] {
+    div.compare-engine.x-window-maximized {
+        z-index: 1032 !important;
+    }
+}
+
+#JahiaGxtCreateContentEngine,
+#JahiaGxtContentEngine,
+#JahiaGxtEditEngineTabs {
+    &.x-masked {
+        &::before {
+            position: absolute;
+            background: url(../images/loader_dark.svg) no-repeat center center #d6d6d6;
+            z-index: 99;
+        }
+    }
+}
+
+.engine-panel:not(.trashboardengine-ctn),
+div.engine-window {
+
+    .x-form-item {
+        position: relative;
+    }
+
+    .mypanel {
+        width: auto !important;
+    }
+
+    .button-label-group {
+        bottom: 20px !important;
+
+        .button-label {
+            color: #fdfdfd;
+            font-size: 14px;
+            font-weight: 300;
+            margin-right: 10px;
+        }
+    }
+
+    .x-form-item {
+        margin-bottom: 12px;
+    }
+
+    .indigo-modal-mask {
+        display: none;
+    }
+
+    [id="Creation"], [id="Last modification"], [id="Publication"],
+    [id="Dernière modification"], [id="Créé"], [id="Publication"],
+    [id="Erstellung"], [id="Letzte Änderung"], [id="Veröffentlichung"] {
+        width: 30% !important;
+        display: inline-block;
+        background: transparent !important;
+    }
+
+    [id="Description"] textarea, [id="Beschreibung"] textarea {
+        max-height: 80px;
+    }
+
+    z-index: 1031 !important;
+
+    background: linear-gradient(to bottom, #DBDBDB 1%, #d5d5d5 100%);
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100%;
+
+    .indigo-switch + input {
+        display: none;
+    }
+
+    .fieldset-contains-indigo-switch {
+        .x-form-label-left {
+            margin-top: 10px;
+        }
+    }
+
+    .x-panel-collapsed {
+        .indigo-switch {
+            .indigo-switch--shuttle {
+                left: -1px;
+                background: #F1F1F1;
+                border-color: #F1F1F1;
+            }
+
+        }
+    }
+
+    .contains-indigo-switch {
+
+        .x-fieldset-header-text {
+            left: 70px;
+        }
+    }
+
+    .indigo-switch {
+
+        position: absolute;
+        left: 32px;
+        top: 17px;
+
+        .indigo-switch--shuttle {
+            width: 20px;
+            height: 20px;
+            background: #4ed205;
+            border-radius: 20px;
+            position: relative;
+            z-index: 98;
+            left: 11px;
+            box-shadow: 1px 2px 1px 0px rgba(0, 0, 0, 0.4);
+            transition: left 0.3s ease, background 0.3s ease, box-shadow 0.1s ease;
+            border: 1px solid #5ddf15;
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+
+        .indigo-switch--rail {
+            width: 30px;
+            height: 15px;
+            border-radius: 15px;
+            position: absolute;
+            top: 3px;
+            background: rgba(80, 80, 80, 0.7);
+        }
+    }
+
+    .indigo-edit-engine-menu {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 999999999;
+        display: none;
+
+        button {
+            background: red;
+        }
+    }
+
+    .hide-headers {
+      .x-tab-panel-header {
+        display: none!important;
+      }
+      .x-tab-panel-body {
+        margin-left: 0px!important;
+      }
+    }
+
+    .x-tab-panel {
+        // Edit Engine COntent Container
+        width: 100% !important;
+        height: 100% !important;
+        border: none !important;
+
+        .x-tab-panel-header {
+            // Tab list menu
+            width: 317px !important;
+            display: inline-block;
+            box-sizing: border-box;
+            vertical-align: top;
+            border: none;
+            height: 100%;
+            background: none;
+            padding: 50px 20px 0 43px;
+            background: grey;
+            top: 0;
+            left: 0;
+            position: fixed;
+            box-shadow: 0px 2px 12px 0px rgba(58, 58, 58, 0.4);
+            background: linear-gradient(to right bottom, #F5F5F5 50%, #e5e4e4 100%);
+            z-index: 99;
+
+            .x-tab-strip-wrap {
+                // Menu Container
+                width: 100%;
+                height: 100%;
+                padding-left: -1px;
+
+                .x-tab-strip {
+                    // At last, the final container
+                    width: 100%;
+                    height: auto;
+                    border: none;
+                    // border-left: 1px solid _property($TAB--BAR, $EDIT-ENGINE);
+                    background: none;
+                    padding: 0 0 0 5px;
+                    margin: 110px 0 0 0;
+
+                    li {
+                        // Tab entry
+                        float: none;
+                        margin-left: 0;
+                        display: block;
+
+                        &.x-tab-strip-active {
+                            background: #007cb0;
+                        }
+
+                        .x-tab-right {
+                            // Button container
+                            background: none;
+                            padding: 0;
+                            margin: 0;
+
+                            .x-tab-left {
+                                // ANother button container
+                                background: none;
+                                padding: 0;
+
+                                .x-tab-strip-inner {
+                                    // Yet another button container
+                                    background: none;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .x-tab-panel-body {
+            // Tab content container
+
+            display: inline-block;
+            width: calc(100% - 310px) !important;
+            box-sizing: border-box;
+            vertical-align: top;
+            height: calc(100% - 58px) !important;
+            background: none;
+            margin-left: 316px;
+
+            > .x-component {
+                width: 100% !important;
+
+                > .x-border {
+                    width: 100% !important;
+                }
+            }
+
+            > .x-panel-mc {
+                // Default tab content window
+
+                // Work in progress stuff
+                &.WIP-all-content {
+                    .x-form-item.x-form-item.prop-i18n-field,
+                    .x-form-item.x-form-item.prop-field {
+                        @extend %HIGHLIGHT--WIP-FIELDS;
+                    }
+                }
+
+                &.WIP-i18n {
+                    .x-form-item.x-form-item.prop-i18n-field {
+                        @extend %HIGHLIGHT--WIP-FIELDS;
+                    }
+                }
+
+                height: 100% !important;
+                width: 100% !important;
+                background: transparent;
+                border: none !important;
+                padding: 0;
+
+                > .x-grid-panel {
+                    top: 0 !important;
+                    width: 100% !important;
+                    height: 100% !important;
+                }
+
+                > .x-panel {
+                    // Tab content container
+                    border: none !important;
+                    height: 100%;
+                    width: 100% !important;
+
+                    .x-panel-header {
+                        // Seems to be unused
+                        display: none;
+                    }
+
+                    .x-panel-bwrap {
+                        // Tab COntent Container
+                        height: 100%;
+
+                        .x-panel-footer {
+                            // Unused
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .x-form-text {
+        @include text-input($EDIT-ENGINE);
+        @include _input(LIGHT);
+    }
+
+    // Modal Mask
+    .ext-el-mask {
+        display: none !important;
+    }
+
+    // Override mask all when Modal Mask is on
+    .x-masked {
+        &:before {
+            content: "";
+        }
+
+        > div {
+            opacity: 1;
+        }
+    }
+
+    // Remove Loading Animation when Panel is open
+    .ext-el-mask-msg.x-mask-loading {
+        display: none !important;
+    }
+
+    div.x-form-element {
+        > div {
+            > div:only-child {
+                width: 100% !important;
+            }
+        }
+    }
+
+    &:not(.hide-headers) {
+      &:before {
+        content: $text_edit_engine;
+        font-size: 36px;
+        display: inline-block;
+        color: _property($TITLE--COLOR, $EDIT-ENGINE);
+        margin-left: -2px;
+        margin-right: 15px;
+        margin-top: 15px;
+        position: fixed;
+        width: 290px;
+        left: 48px;
+        top: 20px;
+        font-weight: 100;
+        z-index: 99999;
+
+        body[data-indigo-editing-condition="new"] &,
+        body[data-indigo-editing-condition="true"] & {
+          display: none;
+        }
+      }
+    }
+
+    &.createcontentengine-ctn {
+        &:before {
+            content: $text_edit_engine_create;
+        }
+
+        .x-panel-header-text {
+            display: block !important;
+            position: fixed !important;
+            top: 79px !important;
+            left: 47px !important;
+            width: 250px !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            white-space: nowrap !important;
+            padding: 0 !important;
+            @include text(18px !important, _theme-color(quinary) !important, $FONT--WEIGHT---EXTRALIGHT !important);
+
+            &:before {
+                display: none !important;
+            }
+        }
+    }
+
+    fieldset {
+        width: 100% !important;
+        min-width: 0;
+
+        &:nth-child(odd) {
+            background: linear-gradient(to right, #e3e2e2 50%, rgba(227, 226, 226, 0) 100%) !important;
+        }
+
+        border: none !important;
+
+        &.x-panel-collapsed {
+            .x-form-label-left {
+                display: none !important;
+            }
+        }
+
+        .x-form-item-label {
+            margin-top: 0 !important;
+            width: 100% !important;
+        }
+
+        .x-form-text:only-child {
+            display: inline-block;
+        }
+
+        .x-form-field-wrap {
+            float: left;
+            width: calc(100% - 155px) !important;
+            height: auto !important;
+            margin-right: 5px !important;
+
+            /* DEV NOTE ::: QUICK N DIRTY */
+            body[data-uilang="fr"] & {
+                width: calc(100% - 203px) !important;
+            }
+
+            body[data-uilang="de"] & {
+                width: calc(100% - 170px) !important;
+            }
+        }
+
+        @include button("FIELDSET");
+
+        // Fix information block in content tab
+        > .x-form-label-left {
+            // Seems to be a holder for the information sections, need to double check !!
+            > table {
+                // Information table
+                width: 100% !important;
+                display: block;
+
+                tbody, tr, td {
+                    display: block;
+                }
+
+                td {
+                    &:nth-child(1) {
+                        // Seems to be blank all the time, so getting rid of it. Double Check !!
+                        display: none;
+                    }
+                }
+
+                .gwt-HTML {
+                    @include text(12px, _property($PARAGRAPH--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMILIGHT);
+
+                    b {
+                        width: 150px;
+                        display: inline-block;
+
+                        @extend %FORM--LABEL !optional;
+                    }
+                }
+            }
+        }
+
+
+    }
+
+
+    form {
+        height: auto !important;
+    }
+
+    .x-form-readonly {
+        .x-form-text {
+            @extend %FORM--TEXT_INPUT---DISABLED\:EDIT_ENGINE !optional;
+
+            box-shadow: none !important;
+            background: transparent !important;
+            padding-left: 1px !important;
+
+        }
+    }
+
+    .x-box-layout-ct,
+    .x-box-inner {
+        width: 100% !important;
+    }
+
+
+    ////////// TABS
+    .x-tab-strip .x-tab-strip-text {
+        // At last the button label !!
+        @extend %EDIT_ENGINE--TAB_BUTTON;
+    }
+
+    ////////// TAB OVER
+    .x-tab-strip-over .x-tab-strip-text {
+        // At last the button label !!
+        @extend %EDIT_ENGINE--TAB_BUTTON---HOVER;
+    }
+
+    ////////// TAB SELECTED
+    .x-tab-strip-active .x-tab-strip-text {
+        // At last the button label !!
+        @extend %EDIT_ENGINE--TAB_BUTTON---SELECTED;
+    }
+
+    ////////// TAB SELECTED & HOVER
+    .x-tab-strip-active.x-tab-strip-over .x-tab-strip-text {
+        // At last the button label !!
+        @extend %EDIT_ENGINE--TAB_BUTTON---HOVER_SELECTED;
+    }
+
+    ////////// PERSONALISED TABS
+    .multiple-text-field.x-form-group,
+    .multiple-number-field.x-form-group {
+        width: 100% !important;
+
+        > table {
+            width: 100%;
+
+            .x-form-field-wrap {
+                width: auto !important;
+                float: none;
+                margin-bottom: 5px;
+
+                input {
+                    width: 100% !important;
+                }
+
+                button {
+                    margin-top: 20px;
+                }
+
+                img.x-form-clear-trigger {
+                    background-image: url($ICON--CLOSE_LARGE---GREY) !important;
+                    background-size: 8px 8px !important;
+                    background-position: center top 8px !important;
+                    opacity: 1;
+                    width: 25px;
+                }
+            }
+        }
+    }
+
+    .tag-field {
+
+
+        width: 100% !important;
+
+        > table {
+            display: block;
+
+            > tbody {
+
+                display: block;
+
+                > tr {
+
+                    display: block;
+
+                    // Tag List
+                    &:nth-child(1) {
+
+                        > td {
+                            display: block;
+                        }
+
+                        .x-column {
+                            // Tag Element
+                            background: _property($BUTTON--BG, $EDIT-ENGINE) !important;
+
+                            .x-component {
+                                @include text(12px, _property($BUTTON--COLOR, $EDIT-ENGINE) !important, $FONT--WEIGHT---SEMILIGHT);
+
+                            }
+
+                            button {
+                                background: url($ICON--CLOSE_LARGE---WHITE) no-repeat center top 8px;
+                                background-size: 8px 8px;
+                                padding-left: 23px;
+                                box-sizing: border-box;
+                                width: 23px !important;
+                                height: 23px !important;
+                            }
+
+                            img {
+                                // Delete button
+                                display: none;
+                            }
+                        }
+                    }
+
+                    // Add Tag
+                    &:nth-child(2) {
+                        .x-component {
+                            width: 100% !important;
+
+                            > table {
+                                width: 100%;
+                                display: block;
+
+                                > tbody {
+                                    width: 100%;
+                                    display: block;
+
+                                    > tr {
+                                        width: 100%;
+                                        display: block;
+
+                                        > td {
+                                            display: inline-block;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // Add Tag
+                        .x-form-field-wrap {
+                            width: 250px !important;
+
+                            input {
+                                padding-right: 5px !important;
+                            }
+                        }
+
+                        @include button("FORM_SMALL", "remove-icons");
+                    }
+                }
+            }
+        }
+    }
+
+
+    // EDIT ENGINE - STRUCTURE
+    // HEADER
+    > div.x-window-tl .x-window-header,
+    > div.x-panel-header {
+
+        left: 0 !important;
+        top: 0px !important;
+        position: fixed !important;
+        height: 157px !important;
+        width: 315px;
+        box-sizing: border-box;
+        background: transparent;
+        border: none;
+        z-index: 9999;
+        overflow: visible;
+
+        body[data-indigo-editing-condition="true"] &,
+        body[data-indigo-editing-condition="new"] & {
+            display: none;
+        }
+
+        body[data-indigo-history-display="true"] & {
+            opacity: 0.2;
+            pointer-events: none;
+        }
+
+        > div {
+            // Language Selector
+            margin-right: 24px;
+            position: absolute;
+            left: 49px;
+            top: 109px;
+            display: block;
+
+            input {
+                padding: 0 !important;
+                background: transparent;
+                box-shadow: none;
+                font-size: 14px;
+            }
+        }
+
+        .x-window-header-text,
+        .x-panel-header-text {
+            // Element Title
+            position: fixed;
+            top: 91px;
+            width: 240px;
+            max-width: calc(100% - 680px);
+            overflow: visible;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            height: 21px !important;
+            left: -50000px;
+            display: block;
+            background-color: transparent;
+            padding: 37px 0 0 42px;
+
+            // Styles the Lock message
+            @include text(14px, _theme-color(status, locked), $FONT--WEIGHT---EXTRABOLD);
+
+            // Node Friendly Name
+            &::before {
+                content: attr(data-friendly-name);
+                display: block;
+                position: fixed;
+                top: 78px;
+                left: 48px;
+                width: 250px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+
+                @include text(18px !important, #007cb0, $FONT--WEIGHT---EXTRALIGHT);
+            }
+
+            // Add Locked icon if the node has been locked
+            &[data-content-locked="true"] {
+                &::before {
+                    background: url(../images/icons/icon-lock@X2.png) no-repeat left center;
+                    background-size: 20px;
+                    padding-left: 22px;
+                }
+            }
+
+            &[data-content-locked="true"].marked-for-deletion {
+                &::before {
+                    background-image: url(../images/icons_red/markefordelete.svg);
+                    text-decoration: line-through;
+                    color: _theme-color(status, error);
+                }
+            }
+
+            // Node has been locked, so modify styles ...
+            &[data-content-locked="true"] {
+
+                &.hover-info,
+                &:hover {
+                    white-space: pre-wrap;
+                    background-color: #fafafa;
+                    padding: 16px 20px 16px 22px;
+                    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4);
+                    height: auto !important;
+                    left: 49px;
+                    top: 100px;
+                }
+            }
+        }
+    }
+
+    // BODY
+    > .x-window-bwrap,
+    > .x-panel-bwrap {
+
+        height: calc(100%);
+        position: fixed !important;
+        width: 100% !important;
+        top: 10px;
+        padding: 0px !important;
+
+        .x-panel-tbar {
+            // Top action bar
+            display: block;
+            width: 100% !important;
+            height: 50px;
+
+            .x-toolbar {
+                width: 100% !important;
+            }
+        }
+
+        .x-window-ml,
+        .x-window-mr,
+        .x-window-mc {
+            height: 100% !important;
+        }
+
+        .x-window-body,
+        .x-panel-body {
+            // Container for body
+            width: 100% !important;
+            height: 100% !important;
+            overflow: auto;
+
+            > div {
+                width: 100% !important;
+                height: 100% !important;
+            }
+        }
+
+        .x-window-bbar,
+        > .x-panel-bbar {
+            // Footer action bar
+            display: block;
+            position: fixed;
+            background: _property($FOOTER--BG, $EDIT-ENGINE);
+            border-top: 1px solid _theme-color(primary, g);
+            box-shadow: _property($FOOTER--SHADOW, $EDIT-ENGINE);
+            box-sizing: border-box;
+            left: -30px;
+            width: calc(100% + 60px) !important;
+            bottom: -55px;
+            padding: 20px 0px 30px 50px;
+            height: 109px;
+            z-index: 999;
+
+            body[data-indigo-editing-condition="new"] &,
+            body[data-indigo-editing-condition="true"] & {
+                display: none;
+            }
+
+            .x-panel-fbar {
+                width: 100% !important;
+                height: 100%;
+
+                .x-toolbar-left {
+                    position: fixed;
+                    right: 4px;
+                    bottom: 0;
+                }
+
+                .x-toolbar-cell {
+
+                    float: right;
+                    margin-left: 5px;
+                    padding-bottom: 10px;
+
+                    &:nth-child(1) {
+                        margin-left: 0;
+
+                        // Not a button, but its a checkbox for the edit engine
+                        > div {
+                            position: fixed !important;
+                            left: 0;
+                            bottom: 10px !important;
+
+                            &.x-form-check-wrap {
+                                left: 16px;
+                                bottom: 16px !important;
+                            }
+                        }
+                    }
+
+                    &:nth-child(2) {
+                        /* Save */
+                        @include button("ACTIONBAR---SUGGESTED");
+                    }
+
+                    // // VERY DIRTY !!! INSTALL LATEST VERSION OF SASS COMPILER TO USE selector-append()
+                    @at-root .engine-panel.createcontentengine-ctn > .x-panel-bwrap > .x-panel-bbar .x-panel-fbar .x-toolbar-cell:nth-child(3) {
+                        @include button("ACTIONBAR---SUGGESTED");
+                    }
+
+                    &:last-child {
+                        // Cancel Button
+                        float: left;
+                        margin-right: 5px;
+                    }
+                }
+            }
+        }
+
+        > .x-panel-footer {
+            // BLANK DIV
+            display: none;
+        }
+    }
+}
+
+
+.engine-window {
+    z-index: 999999 !important;
+}
+
+// Hidde disabled buttons if content is locked
+.JahiaEditEngineButtonBar button[aria-disabled="true"] {
+    opacity: .5;
+}
+
+.JahiaEditEngineButtonBar {
+    label {
+        @include text(14px, #F5F5F5 !important, $FONT--WEIGHT---LIGHT);
+    }
+}

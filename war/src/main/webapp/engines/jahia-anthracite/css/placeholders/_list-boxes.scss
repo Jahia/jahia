@@ -1,0 +1,36 @@
+/////////////////////////////////////////////////
+// LIST BOX /////////////////////////////////////
+/////////////////////////////////////////////////
+
+%FORM--LIST_BOX--HOLDER {
+    border: none;
+    box-shadow: none;
+}
+
+%FORM--LIST_BOX--ITEM {
+    text-align: left !important;
+    background: _property($LIST-BOX--ROW--BG, $EDIT-ENGINE);
+    padding: 8px 9px !important;
+    border: none;
+    width: 100%;
+
+    @include text(11px, _property($LIST-BOX--ROW--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMILIGHT);
+}
+
+%FORM--LIST_BOX--ITEM---HOVER {
+    color: _property($LIST-BOX--ROW--COLOR---HOVER, $EDIT-ENGINE);
+    background: _property($LIST-BOX--ROW--BG---HOVER, $EDIT-ENGINE);
+}
+
+%FORM--LIST_BOX--ITEM---SELECTED {
+    color: _property($LIST-BOX--ROW--COLOR---SELECTED, $EDIT-ENGINE);
+    background: _property($LIST-BOX--ROW--BG---SELECTED, $EDIT-ENGINE);
+}
+
+%FORM--LIST_BOX--ITEM---DISABLED {
+    color: _property($LIST-BOX--ROW--COLOR---DISABLED, $EDIT-ENGINE);
+    font-style: italic;
+    opacity: 1;
+    background: _property($LIST-BOX--ROW--BG---DISABLED, $EDIT-ENGINE);
+    display: none;
+}

@@ -1,0 +1,32 @@
+.engine-panel:not(.trashboardengine-ctn),
+div.engine-window {
+
+        #JahiaGxtEditEnginePanel-channels {
+            /* Fix for the channel double list selecor */
+
+            .x-form-item {
+                &:nth-child(2) {
+                    margin-top: 20px;
+
+                    // EXCLUDE / INCLUDE COMBO
+                    label {
+                        // The label is already in the combo - waste of time having both
+                        display: none !important;
+                    }
+
+                    // MAKE THE COMBO TAKE FULL WIDTH OF FIELDSET
+                    > div {
+                        > div {
+                            width: 100% !important;
+
+                            > div {
+                                width: 100% !important;
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
+}

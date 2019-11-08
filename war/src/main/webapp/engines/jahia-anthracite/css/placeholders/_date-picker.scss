@@ -1,0 +1,199 @@
+/////////////////////////////////////////////////
+// DATE PICKER //////////////////////////////////
+/////////////////////////////////////////////////
+
+// PREVIOUS MONTH BUTTON
+%DATE_PICKER--PREVIOUS_MONTH_BUTTON---UP {
+    background-image: url("../images/icons/icon_arrow_left_single_white@X2.png") !important;
+    background-size: 16px 16px;
+    opacity: 0.8;
+}
+
+%DATE_PICKER--PREVIOUS_MONTH_BUTTON---HOVER {
+    opacity: 1;
+}
+
+// NEXT MONTH BUTTON
+%DATE_PICKER--NEXT_MONTH_BUTTON---UP {
+    background-image: url("../images/icons/icon_arrow_right_single_white@X2.png") !important;
+    background-size: 16px 16px;
+
+    opacity: 0.8;
+}
+
+%DATE_PICKER--NEXT_MONTH_BUTTON---HOVER {
+    opacity: 1;
+}
+
+// "COMBO" FOR MONTH SELECTOR
+%DATE_PICKER--COMBO---UP {
+    background: url($ICON--ARROW_DOWN---WHITE) no-repeat right center;
+    padding-right: 15px;
+    text-transform: uppercase;
+    @include text(11px, _property($DATE-PICKER--MONTH-TITLE, $DATE-PICKER), $FONT--WEIGHT---NORMAL)
+}
+
+%DATE_PICKER--COMBO---HOVER {
+    color: _property($DATE-PICKER--MONTH-TITLE---HOVER, $DATE-PICKER);
+}
+
+%DATE_PICKER--TODAY_BUTTON---UP {
+    height: auto;
+    padding: 4px;
+    background: _property($DATE-PICKER--ACTION-BUTTON--BG, $DATE-PICKER);
+    @include text(11px, _property($DATE-PICKER--ACTION-BUTTON--COLOR, $DATE-PICKER), $FONT--WEIGHT---LIGHT);
+}
+
+%DATE_PICKER--TODAY_BUTTON---HOVER {
+    background: _property($DATE-PICKER--ACTION-BUTTON--BG---HOVER, $DATE-PICKER);
+    color: _property($DATE-PICKER--ACTION-BUTTON--COLOR---HOVER, $DATE-PICKER);
+}
+
+%DATE_PICKER--DAY_OF_WEEK {
+    border: none;
+    @include text(10px, _property($DATE-PICKER--DAY--COLOR, $DATE-PICKER), $FONT--WEIGHT---BOLD);
+}
+
+%DATE_PICKER--PREVIOUS_MONTH---UP {
+    background: _property($DATE-PICKER--DAY-MUTED--BG, $DATE-PICKER);
+    @include text(10px, _property($DATE-PICKER--DAY-MUTED--COLOR, $DATE-PICKER), $FONT--WEIGHT---NORMAL);
+}
+
+%DATE_PICKER--PREVIOUS_MONTH---HOVER {
+    font-weight: $FONT--WEIGHT---EXTRALIGHT;
+    background: _property($DATE-PICKER--DAY-MUTED--BG---HOVER, $DATE-PICKER) !important;
+    color: _property($DATE-PICKER--DAY-MUTED--COLOR---HOVER, $DATE-PICKER)
+}
+
+%DATE_PICKER--CURRENT_MONTH---UP {
+    background: _property($DATE-PICKER--DAY--BG, $DATE-PICKER);
+    @include text(10px, _property($DATE-PICKER--DAY--COLOR, $DATE-PICKER), $FONT--WEIGHT---NORMAL);
+}
+
+%DATE_PICKER--CURRENT_MONTH---HOVER {
+    font-weight: $FONT--WEIGHT---EXTRALIGHT;
+    background: _property($DATE-PICKER--DAY--BG---HOVER, $DATE-PICKER) !important;
+    color: _property($DATE-PICKER--DAY--COLOR---HOVER, $DATE-PICKER);
+}
+
+%DATE_PICKER--NEXT_MONTH---UP {
+    background: _property($DATE-PICKER--DAY-MUTED--BG, $DATE-PICKER);
+    @include text(10px, _property($DATE-PICKER--DAY-MUTED--COLOR, $DATE-PICKER), $FONT--WEIGHT---NORMAL);
+}
+
+%DATE_PICKER--NEXT_MONTH---HOVER {
+    font-weight: $FONT--WEIGHT---EXTRALIGHT;
+    background: _property($DATE-PICKER--DAY-MUTED--BG---HOVER, $DATE-PICKER) !important;
+    color: _property($DATE-PICKER--DAY-MUTED--COLOR---HOVER, $DATE-PICKER)
+}
+
+%DATE_PICKER--SELECTED_MONTH---UP {
+    background: _property($DATE-PICKER--DAY--BG---SELECTED, $DATE-PICKER);
+    @include text(10px, _property($DATE-PICKER--DAY--COLOR---SELECTED, $DATE-PICKER), $FONT--WEIGHT---NORMAL);
+}
+
+%DATE_PICKER--SELECTED_MONTH---HOVER {
+    font-weight: $FONT--WEIGHT---EXTRALIGHT;
+    background: _property($DATE-PICKER--DAY--BG---SELECTED, $DATE-PICKER) !important;
+    color: _property($DATE-PICKER--DAY--COLOR---SELECTED, $DATE-PICKER);
+}
+
+
+%DATE_PICKER--MODAL--LABEL {
+    content: $text_year_picker;
+    line-height: 27px;
+
+    @include text(12px, _property($DATE-PICKER--MODAL-TITLE--COLOR, $DATE-PICKER), $FONT--WEIGHT---NORMAL);
+}
+
+%DATE_PICKER--MODAL--MONTH_BUTTON---UP {
+    @include text(11px, _property($DATE-PICKER--MONTH--COLOR, $DATE-PICKER), $FONT--WEIGHT---NORMAL);
+    background: _property($DATE-PICKER--MONTH--BG, $DATE-PICKER);
+}
+
+%DATE_PICKER--MODAL--MONTH_BUTTON---HOVER {
+    color: _property($DATE-PICKER--MONTH--COLOR---HOVER, $DATE-PICKER);
+    background: _property($DATE-PICKER--MONTH--BG---HOVER, $DATE-PICKER);
+}
+
+%DATE_PICKER--MODAL--MONTH_BUTTON---SELECTED {
+    color: _property($DATE-PICKER--MONTH--COLOR---SELECTED, $DATE-PICKER);
+    background: _property($DATE-PICKER--MONTH--BG---SELECTED, $DATE-PICKER);
+}
+
+%DATE_PICKER--MODAL--MONTH_BUTTON---SELECTED_HOVER {
+    color: _property($DATE-PICKER--MONTH--COLOR---SELECTED, $DATE-PICKER);
+    background: _property($DATE-PICKER--MONTH--BG---SELECTED, $DATE-PICKER);
+}
+
+
+%DATE_PICKER--MODAL--YEAR_BUTTON---UP {
+    @include text(11px, _property($DATE-PICKER--YEAR--COLOR, $DATE-PICKER), $FONT--WEIGHT---NORMAL);
+    background: _property($DATE-PICKER--YEAR--BG, $DATE-PICKER);
+}
+
+%DATE_PICKER--MODAL--YEAR_BUTTON---HOVER {
+    color: _property($DATE-PICKER--YEAR--COLOR---HOVER, $DATE-PICKER);
+    background: _property($DATE-PICKER--YEAR--BG---HOVER, $DATE-PICKER);
+}
+
+%DATE_PICKER--MODAL--YEAR_BUTTON---SELECTED {
+    color: _property($DATE-PICKER--YEAR--COLOR---SELECTED, $DATE-PICKER);
+    background: _property($DATE-PICKER--YEAR--BG---SELECTED, $DATE-PICKER);
+}
+
+%DATE_PICKER--MODAL--YEAR_BUTTON---SELECTED_HOVER {
+    color: _property($DATE-PICKER--YEAR--COLOR---SELECTED, $DATE-PICKER);
+    background: _property($DATE-PICKER--YEAR--BG---SELECTED, $DATE-PICKER);
+}
+
+
+%DATE_PICKER--MODAL--PREVIOUS_YEAR---UP {
+    background: url("../images/icons/icon_arrow_left_single_white@X2.png") no-repeat center center _property($DATE-PICKER--YEAR--BG, $DATE-PICKER);
+    background-size: 14px 14px;
+    opacity: 0.8;
+}
+
+%DATE_PICKER--MODAL--PREVIOUS_YEAR---HOVER {
+    opacity: 1;
+}
+
+%DATE_PICKER--MODAL--NEXT_YEAR---UP {
+    background: url("../images/icons/icon_arrow_right_single_white@X2.png") no-repeat center center _property($DATE-PICKER--YEAR--BG, $DATE-PICKER);
+    background-size: 14px 14px;
+    opacity: 0.8;
+}
+
+%DATE_PICKER--MODAL--NEXT_YEAR---HOVER {
+    opacity: 1;
+}
+
+%DATE_PICKER--OK_BUTTON---UP {
+    height: 100%;
+    background-color: _property($DATE-PICKER--ACTION-BUTTON--BG, $DATE-PICKER);
+    opacity: 1;
+    width: 35px;
+    text-indent: 0;
+    float: right;
+    margin: 0;
+}
+
+%DATE_PICKER--OK_BUTTON---HOVER {
+    opacity: 1;
+}
+
+%DATE_PICKER--CANCEL_BUTTON---UP {
+    background: url($ICON--CLOSE_SMALL---WHITE) no-repeat center center;
+    background-size: 10px 10px;
+    text-indent: -50000px;
+    width: 25px;
+    opacity: 0.8;
+    background-color: transparent;
+    position: absolute;
+    left: 5px;
+    height: 26px;
+}
+
+%DATE_PICKER--CANCEL_BUTTON---HOVER {
+    opacity: 1;
+}

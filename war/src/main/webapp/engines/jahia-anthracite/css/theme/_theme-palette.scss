@@ -1,0 +1,109 @@
+/****************************/
+/* BASE COLORS  */
+/****************************/
+
+// DEFAULT ANTRACITE GREY
+$color-primary: #363636; // #363636 (NEW GREY)
+$color-secondary: rgb(250, 250, 250); // #FAFAFA (WHITE)
+$color-tertiary: #007cb0; // #00a0e3 (JAHIA BLUE) - action colors
+$color-quaternary: #E67D3A; // #E67D3A (ORANGE) - secondary buttons  #E67D3A
+$color-quinary: rgb(0, 160, 227); // #00a0e3 (JAHIA BLUE) - highlight color, menu color, hamburger
+$color-senary: rgb(250, 250, 250); // #FAFAFA (WHITE)
+$color-septenary: rgb(217, 217, 62); // Yellow
+$color-black: rgb(0, 0, 0); // #000000 (BLACK)
+$color-white: rgb(255, 255, 255); // _theme-color(white) (WHITE)
+$color-green: rgb(4, 189, 4);
+
+
+/****************************/
+/* COLOR VARIATIONS  */
+/****************************/
+
+$basic-colors: (
+        primary: (
+                normal: $color-primary,
+                a: lighten($color-primary, 2%),
+                b: lighten($color-primary, 6%),
+                c: lighten($color-primary, 10%),
+                d: lighten($color-primary, 25%),
+                e: lighten($color-primary, 35%),
+                f: darken($color-primary, 5%),
+                g: darken($color-primary, 10%),
+                h: rgba(darken($color-primary, 10%), .2),
+                i: darken($color-primary, 35%),
+        ),
+        secondary: (
+                normal: $color-secondary,
+                a: darken($color-secondary, 5%),
+                b: darken($color-secondary, 7%),
+                c: darken($color-secondary, 10%),
+                d: darken($color-secondary, 20%),
+                e: darken($color-secondary, 35%),
+                f: rgba($color-secondary, .2),
+                g: lighten($color-secondary, 10%),
+        ),
+        tertiary: (
+                normal: $color-tertiary,
+                a: lighten($color-tertiary, 2%)
+        ),
+        quaternary: (
+                normal: $color-quaternary,
+                a: lighten($color-quaternary, 4%)
+        ),
+        quinary: (
+                normal: $color-quinary,
+                a: lighten($color-quinary, 4%),
+                b: darken($color-quinary, 5%),
+                c: darken($color-quinary, 25%),
+                d: darken($color-quinary, 10%),
+        ),
+        senary: (
+                normal: $color-senary,
+                a: lighten($color-senary, 4%),
+        ),
+        septenary: (
+                normal: $color-septenary,
+                a: lighten($color-septenary, 5%),
+                b: darken($color-septenary, 20%),
+        ),
+        black: (
+                normal: $color-black,
+                a: rgba($color-black, .2),
+                b: rgba($color-black, .4),
+                c: rgba($color-black, .6),
+                d: rgba($color-black, .84),
+        ),
+        white: (
+                normal: $color-white,
+                a: rgba($color-white, .4),
+                b: rgba($color-white, .8)
+        ),
+        green: (
+                normal: $color-green,
+                a: rgba($color-white, .4)
+        ),
+        status: (
+                conflict: #f6d62f,
+                deleted: black,
+                livemodified: #f6d62f,
+                liveonly: #f6d62f,
+                locked: #c48F00,
+                mandatorylanguageunpublishable: #f6d62f,
+                mandatorylanguagevalid: #f6d62f,
+                markedfordeletion: red,
+                modified: orange,
+                multipleWF: orange,
+                notpublished: grey,
+                oneWF: orange,
+                published: green,
+                unpublished: grey,
+                waiting: white,
+                workinprogress: orange,
+                error: #f44336,
+                unknown: black,
+                visible: green,
+                hidden: red,
+                attention: red,
+                warning: #ffeb3b
+        )
+);

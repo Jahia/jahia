@@ -1,0 +1,15 @@
+/****************************/
+/* FUNCTIONS  */
+/****************************/
+
+
+@function _property($variable, $context) {
+    @return map-get($variable, $context);
+}
+
+@function _theme-color($color-name, $color-variant: normal) {
+    $color_map: map-get($basic-colors, $color-name);
+    $color: map-get($color_map, $color-variant);
+
+    @return $color;
+}

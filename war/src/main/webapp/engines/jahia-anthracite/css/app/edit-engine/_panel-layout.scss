@@ -1,0 +1,50 @@
+.engine-panel:not(.trashboardengine-ctn),
+div.engine-window {
+
+        #JahiaGxtEditEnginePanel-layout {
+            > .x-component {
+
+                &:nth-child(1) {
+                    /* Form */
+                    height: auto !important;
+                    width: 100% !important;
+
+                    > div {
+                        width: 100% !important;
+                    }
+
+                    .x-panel-bwrap {
+                        width: 100% !important;
+                    }
+                }
+
+                &:nth-child(2) {
+                    /* Preview sections */
+                    height: auto !important;
+                    width: 100% !important;
+
+                    > div {
+                        /* Preview Holders */
+                        height: 100% !important;
+                        width: 100% !important;
+                        background: transparent !important;
+
+                        > div {
+                            /* Another preview container */
+                            height: 100% !important;
+                            width: 100% !important;
+                            background: transparent !important;
+
+                            .gwt-HTML {
+                                /* Preview container */
+                                height: 100% !important;
+                                width: 100% !important;
+                                background: white !important;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+}

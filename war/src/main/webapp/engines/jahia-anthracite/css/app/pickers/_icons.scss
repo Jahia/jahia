@@ -1,0 +1,224 @@
+#JahiaGxtContentPickerWindow,
+#JahiaGxtCustomContentPickerWindow,
+#JahiaGxtCustomContentPicker,
+#JahiaGxtCustomContentPicker > .x-component,
+#contentpicker,
+#contentmanager {
+    // TREE ICONS
+
+    // STYLE FOR UNHANDLED ICONS
+    .x-grid3-col-icon img, // RIGHT PANEL
+    .x-tree3-node-icon { // LEFT PANEL
+        background-color: rgba(_theme-color(secondary, a), 0.17);
+        padding: 2px;
+        border-radius: 15%;
+    }
+
+    // COMMON LARGE IMAGES
+    img[src$="/jnt_page_large.png"] {
+        padding-left: 46px;
+        overflow: hidden;
+        display: inline-block;
+        box-sizing: border-box;
+        width: 46px !important;
+        height: 46px;
+        margin-right: 4px;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 46px;
+        opacity: 0.5;
+        background-color: transparent;
+
+    }
+
+    // BOOTSTRAP COLUMNS
+    img[src$="/jnt_page_large.png"] {
+        background-image: url(../images/tabs-pages-dark@X2.png);
+    }
+
+    // COMMON ICON REPLACEMENTS IN TREE
+    img[src$="/jnt_page.png"],
+    img[src$="/jnt_folder.png"],
+    img[src$="/jnt_contentList.png"],
+    img[src$="/bootstrap3nt_columns.png"],
+    img[src$="/jnt_contentFolder.png"],
+    img[src$="/jnt_virtualsite.png"],
+    img[src$="/jnt_category.png"],
+    img[src$="/jnt_portletFolder.png"],
+    img[src$="/jnt_mounts.png"],
+    img[src$="/jnt_file_img.png"],
+    img[src$="/remoteFolder.png"] {
+        padding-left: 20px;
+        overflow: hidden;
+        display: inline-block;
+        box-sizing: border-box;
+        width: 20px;
+        height: 26px;
+        margin-right: 4px;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 23px;
+        opacity: 1;
+
+        // Remove unhandled styles
+        background-color: transparent;
+        padding: 0 0 0 20px;
+        border-radius: 0;
+    }
+
+    // Category Icon
+    img[src$="/jnt_category.png"] {
+        background-image: url(../images/icons_dark/category.svg);
+        background-size: 20px;
+        opacity: 0.5;
+    }
+
+    // Portlet Icon
+    img[src$="/jnt_portletFolder.png"] {
+        background-image: url(../images/icons_dark/portlets.svg);
+        background-size: 20px;
+        opacity: 0.5;
+    }
+
+    // BOOTSTRAP COLUMNS
+    img[src$="/bootstrap3nt_columns.png"] {
+        background-image: url(../images/icons/icon_display_thumbs_grey@X2.png);
+        background-size: 18px;
+    }
+
+    // CONTENT LIST
+    img[src$="/jnt_contentList.png"] {
+        background-image: url(../images/icons/tabs-placeholder-black@X2.png);
+        background-size: 18px;
+    }
+
+
+    // IMAGE ICON
+    img[src$="/jnt_file_img.png"] {
+        background-image: url(../images/icons/icon-image@X2.png);
+    }
+
+    // PAGE ICON
+    img[src$="/jnt_page.png"] {
+        background-image: url($ICON--PAGES---GREY);
+        background-size: 18px;
+    }
+
+    .x-grid3-row-selected {
+        // IMAGE ICON
+        img[src$="/jnt_file_img.png"] {
+            background-image: url(../images/icons/icon-image-white@X2.png);
+        }
+
+        // PAGE ICON
+        img[src$="/jnt_page.png"] {
+            background-image: url($ICON--PAGES---WHITE);
+        }
+    }
+
+    // RIGHT TABLE ICONS ( basically light version )
+    #JahiaGxtManagerTobTable {
+        // PAGE ICON
+        img[src$="/jnt_page.png"] {
+            background-image: url(../images/tabs-pages-white@X2.png);
+            opacity: 0.8;
+        }
+
+        // FOLDER ICON
+        img[src$="/jnt_contentFolder.png"],
+        img[src$="/jnt_folder.png"] {
+            background-image: url($ICON--FILES---BLACK);
+            opacity: 0.6;
+            background-size: 20px;
+            background-position: top;
+        }
+
+        // EDP item icon
+        img[src$="/remoteFolder.png"] {
+            background-image: url(../images/icons/tabs-files-shared-dark@X2.png);
+            opacity: 0.8;
+        }
+
+        // BOOTSTRAP COLUMNS
+        img[src$="/jnt_category.png"] {
+            background-image: url(../images/icons_light/category.svg);
+            background-size: 20px;
+            opacity: 0.5;
+        }
+
+        // Portlet Icon
+        img[src$="/jnt_portletFolder.png"] {
+            background-image: url(../images/icons_light/portlets.svg);
+            background-size: 20px;
+            opacity: 0.5;
+        }
+    }
+
+    // FOLDER ICON
+    img[src$="/jnt_contentFolder.png"],
+    img[src$="/jnt_folder.png"] {
+        background-image: url($ICON--FILES---GREY);
+   }
+
+    // EDP item icon
+    img[src$="/remoteFolder.png"] {
+        background-image: url(../images/icons/tabs-files-shared-dark@X2.png);
+    }
+
+    // SITE ICON
+    img[src$="/jnt_virtualsite.png"] {
+        background-image: url(../images/icons/tabs-site-dark@X2.png);
+    }
+
+    // MOUNTS ICON
+    img[src$="/jnt_mounts.png"] {
+        background-image: url(../images/icons/tabs-placeholder-black@X2.png);
+    }
+
+    // SELECTED ICONS
+    .x-grid3-row-selected {
+        // FOLDER ICON
+        img[src$="/jnt_contentFolder.png"],
+        img[src$="/jnt_folder.png"] {
+            background-image: url($ICON--FILES---WHITE) !important;
+            opacity: 1 !important;
+        }
+
+        // EDP item icon
+        img[src$="/remoteFolder.png"] {
+            background-image: url(../images/icons/tabs-files-shared-white@X2.png) !important;
+            opacity: 1 !important;
+        }
+
+        // BOOTSTRAP COLUMNS
+        img[src$="/jnt_category.png"] {
+            background-image: url(../images/icons_light/category.svg);
+            background-size: 20px;
+            opacity: 0.9;
+        }
+
+        // Portlet Icon
+        img[src$="/jnt_portletFolder.png"] {
+            background-image: url(../images/icons_light/portlets.svg);
+            background-size: 20px;
+            opacity: 0.9;
+        }
+
+        // SITE ICON
+        img[src$="/jnt_virtualsite.png"] {
+            background-image: url(../images/icons/tabs-site-white@X2.png);
+        }
+
+        // MOUNTS ICON
+        img[src$="/jnt_mounts.png"] {
+            background-image: url(../images/icons/tabs-placeholder-white@X2.png);
+        }
+
+        // PAGE ICON
+        img[src$="/jnt_page.png"] {
+            background-image: url($ICON--PAGES---WHITE);
+            opacity: 1;
+        }
+    }
+
+}

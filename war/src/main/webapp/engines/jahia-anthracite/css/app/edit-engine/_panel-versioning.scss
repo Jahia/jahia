@@ -1,0 +1,84 @@
+.engine-panel:not(.trashboardengine-ctn),
+div.engine-window {
+
+        #JahiaGxtEditEnginePanel-versioning {
+            @include button("FIELDSET");
+            padding-top: 50px;
+
+            // Compare button
+            .x-btn {
+                width: 46px !important;
+                height: 23px;
+                background: url(../images/icons/compare_black.svg) no-repeat center center;
+                background-size: 46px 23px;
+                opacity: 0.8;
+
+                &:hover {
+                    opacity: 1;
+                }
+
+                .x-btn-mc {
+                    display: none;
+                }
+            }
+
+            .x-grid3-cell {
+                display: inline-block !important;
+
+                &:nth-child(1) {
+                    width: calc(100% - 46px) !important;
+                }
+
+                &:nth-child(2) {
+                    width: 46px !important;
+                }
+            }
+
+            .x-grid3-cell-inner {
+                padding: 0 !important;
+
+            }
+
+            .x-grid3-col-label {
+                padding: 5px 10px 5px 0 !important;
+                @include text(12px, _theme-color(primary), $FONT--WEIGHT---EXTRALIGHT);
+            }
+
+            .x-grid3-row.x-grid3-row-selected {
+                background-color: transparent !important;
+            }
+
+            .x-grid3-row-over {
+                background-color: transparent !important;
+            }
+
+            .x-grid3-row {
+                margin-bottom: 12px;
+                border-bottom: 1px dashed _theme-color(secondary, b);
+            }
+
+            .x-grid3-scroller > .x-grid3-body {
+                background: _property($FIELDSET--BG, $EDIT-ENGINE) !important;
+                border: 1px solid _theme-color(secondary, b) !important;
+                padding: 22px 22px 30px 30px;
+                box-sizing: border-box;
+                margin-top: -40px;
+                position: fixed;
+                width: calc(100% - 462px);
+                height: auto !important;
+                max-height: calc(100% - 180px);
+                overflow: scroll;
+
+                &:before {
+                    content: "Compare versions";
+                    text-transform: uppercase;
+                    color: _theme-color(primary);
+                }
+
+                > .x-grid3-row.x-grid3-row:first-child {
+                    margin-top: 20px;
+                }
+            }
+        }
+
+}

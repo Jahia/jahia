@@ -1,0 +1,218 @@
+/****************************/
+/* COMBO / CONTEXT / CONTEXTUAL MENUS */
+/****************************/
+
+
+$MENU-SCROLL--BG: (
+        LIGHT: _theme-color(secondary),
+        DARK: _theme-color(secondary),
+);
+
+// TITLE
+$MENU-TITLE--COLOR: (
+        LIGHT: _theme-color(secondary, c),
+        DARK: #F5F5F5,
+);
+
+$MENU-TITLE--BG: (
+        LIGHT: _theme-color(quinary, b),
+        DARK: _theme-color(quinary, b),
+);
+
+// CLOSED UP
+$MENU-CLOSED--COLOR: (
+        LIGHT: _theme-color(primary),
+        DARK: _theme-color(secondary),
+);
+
+$MENU-CLOSED--BG: (
+        LIGHT: radial-gradient(ellipse at bottom right, _theme-color(secondary) 0%, _theme-color(white) 70%),
+        DARK: radial-gradient(ellipse at bottom right, _theme-color(primary, b) 0%, _theme-color(primary, a) 70%),
+);
+
+$MENU-CLOSED--SHADOW: (
+        LIGHT: 0px 1px 2px _theme-color(black, a),
+        DARK: transparent,
+);
+
+$MENU-CLOSED--ARROW: (
+        LIGHT: "../images/icons/combo-arrow-grey.png",
+        DARK: "../images/icons/combo-arrow.png",
+);
+
+$MENU-CLOSED--ARROW-BG: (
+        LIGHT: transparent,
+        DARK: transparent,
+);
+
+$MENU-CLOSED--DATE: (
+        LIGHT: "../images/icons/ic_date2x.png",
+        DARK: "../images/icons/ic_date2x.png",
+);
+
+$MENU-CLOSED--DATE-BG: (
+        LIGHT: transparent,
+        DARK: transparent,
+);
+
+$MENU-CLOSED--CLEAR: (
+        LIGHT: "../images/icons/icon-close-grey@X2.png",
+        DARK: "../images/icons/icon-close-white@X2.png",
+);
+
+$MENU-CLOSED--CLEAR-BG: (
+        LIGHT: transparent,
+        DARK: transparent,
+);
+
+$MENU-CLOSED--OPTIONS: (
+        LIGHT: "../images/icon-more-options-dark-50@X2.png",
+        DARK: "../images/icon-more-options-light.png",
+);
+
+$MENU-CLOSED--OPTIONS-BG: (
+        LIGHT: transparent,
+        DARK: transparent,
+);
+
+// MUTED COMBO ( basically the combo looks like a text field )
+// CLOSED UP
+$MENU-MUTED-CLOSED--COLOR: (
+        LIGHT: _theme-color(primary),
+        DARK: _theme-color(secondary, c),
+);
+
+$MENU-MUTED-CLOSED--BG: (
+        LIGHT: radial-gradient(ellipse at bottom right, _theme-color(secondary) 0%, _theme-color(white) 70%),
+        DARK: radial-gradient(ellipse at bottom right, #5e5f63 0%, #494a4f 70%),
+);
+
+$MENU-MUTED-CLOSED--SHADOW: (
+        LIGHT: 0px 1px 2px _theme-color(black, a),
+        DARK: none,
+);
+
+$MENU-MUTED-CLOSED--ARROW: (
+        LIGHT: "../images/icons/combo-arrow-grey.png",
+        DARK: "../images/icons/combo-arrow.png",
+);
+
+$MENU-MUTED-CLOSED--ARROW-BG: (
+        LIGHT: transparent,
+        DARK: transparent,
+);
+
+$MENU-MUTED-CLOSED--COLOR---HOVER: (
+        LIGHT: _theme-color(primary),
+        DARK: _theme-color(secondary),
+);
+
+$MENU-MUTED-CLOSED--BG---HOVER: (
+        LIGHT: _theme-color(white),
+        DARK: _theme-color(primary, b),
+);
+
+$MENU-MUTED-CLOSED--SHADOW---HOVER: (
+        LIGHT: 0px 1px 2px _theme-color(black, b),
+        DARK: 0px 1px 2px _theme-color(black, a),
+);
+
+$MENU-MUTED-CLOSED--ARROW---HOVER: (
+        LIGHT: "../images/icons/combo-arrow-grey.png",
+        DARK: "../images/icons/combo-arrow.png",
+);
+
+$MENU-MUTED-CLOSED--ARROW-BG---HOVER: (
+        LIGHT: transparent,
+        DARK: transparent,
+);
+// END
+
+
+// CLOSED HOVER
+$MENU-CLOSED--COLOR---HOVER: (
+        LIGHT: _theme-color(primary),
+        DARK: _theme-color(secondary),
+);
+
+$MENU-CLOSED--BG---HOVER: (
+        LIGHT: _theme-color(white),
+        DARK: _theme-color(primary, b),
+);
+
+$MENU-CLOSED--SHADOW---HOVER: (
+        LIGHT: 0px 1px 2px _theme-color(black, b),
+        DARK: 0px 1px 2px _theme-color(black, a),
+);
+
+$MENU-CLOSED--ARROW---HOVER: (
+        LIGHT: "../images/icons/combo-arrow-grey.png",
+        DARK: "../images/icons/combo-arrow.png",
+);
+
+$MENU-CLOSED--ARROW-BG---HOVER: (
+        LIGHT: transparent,
+        DARK: transparent,
+);
+
+$MENU-CLOSED--DATE---HOVER: (
+        LIGHT: "../images/icons/ic_date2x.png",
+        DARK: "../images/icons/ic_date2x.png",
+);
+
+$MENU-CLOSED--DATE-BG---HOVER: (
+        LIGHT: transparent,
+        DARK: transparent,
+);
+
+$MENU-CLOSED--CLEAR---HOVER: (
+        LIGHT: "../images/icons/icon-close-grey@X2.png",
+        DARK: "../images/icons/icon-close-white@X2.png",
+);
+
+$MENU-CLOSED--CLEAR-BG---HOVER: (
+        LIGHT: transparent,
+        DARK: transparent,
+);
+
+$MENU-CLOSED--OPTIONS---HOVER: (
+        LIGHT: "../images/icon-more-options-dark-50@X2.png",
+        DARK: "../images/icon-more-options-light.png",
+);
+
+$MENU-CLOSED--OPTIONS-BG---HOVER: (
+        LIGHT: transparent,
+        DARK: transparent,
+);
+
+// OPENED UP
+$MENU-OPENED--COLOR: (
+        LIGHT: _theme-color(secondary, a),
+        DARK: white
+);
+
+$MENU-OPENED--BG: (
+        LIGHT: #007cb0,
+        DARK: #007cb0,
+);
+
+// OPENED HOVER
+$MENU-OPENED--COLOR---HOVER: (
+        LIGHT: _theme-color(senary),
+        DARK: white,
+);
+
+$MENU-OPENED--BG---HOVER: (
+        LIGHT: lighten(#007cb0, 2%),
+        DARK: lighten(#007cb0, 2%),
+);
+
+$MENU-OPENED--COLOR---DISABLED: (
+        LIGHT: _theme-color(white, b),
+        DARK: rgba(255, 255, 255, 0.8),
+);
+
+$MENU-OPENED--BG---DISABLED: (
+        LIGHT: #007cb0,
+        DARK: #007cb0,
+);

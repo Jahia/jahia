@@ -1,0 +1,8 @@
+// LABELS
+%FORM--LABEL {
+    padding: 0 !important;
+    margin: 0 !important;
+    line-height: 24px;
+
+    @include text(13px, _property($LABEL--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---LIGHT);
+}

@@ -1,0 +1,122 @@
+.engine-panel:not(.trashboardengine-ctn),
+div.engine-window {
+    // Personalised COntent Window
+    #JahiaGxtEditEnginePanel-categories {
+        height: auto !important;
+        box-sizing: border-box;
+        padding-bottom: 1px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        max-height: 100%;
+        max-width: calc(100% - 7px);
+
+        .x-grid3-header {
+            display: none;
+        }
+
+        .x-panel-header {
+            display: block;
+            background: transparent !important;
+            border: none !important;
+            padding: 14px 0 0 25px !important;
+
+            .x-panel-header-text {
+                @include text(18px, #363636, $FONT--WEIGHT---LIGHT);
+            }
+
+        }
+
+        .x-form-check-wrap {
+            pointer-events: all;
+        }
+
+        > div {
+            &:nth-child(1) {
+                // Selected categories
+                position: relative !important;
+                height: auto !important;
+
+                .x-column {
+                    margin: 0 5px 5px 0;
+                }
+
+                .x-column-inner {
+                    > :only-child {
+                        height: 30px;
+
+                        &:before {
+                            content: $text_select_category_from_list;
+                            display: block;
+                            position: relative;
+                            padding-top: 5px;
+                            font-style: italic;
+
+                            @include text(12px, _property($TITLE--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---NORMAL);
+                        }
+                    }
+                }
+
+                .x-panel-bwrap {
+                    padding: 20px 30px 20px 26px !important;
+                }
+
+
+                button {
+                    font-size: 12px;
+                    padding: 5px 25px 5px 10px;
+
+                    img {
+                        right: 0 !important;
+                        left: auto !important;
+                        top: 2px !important;
+                        background: url($ICON--CLOSE_LARGE---WHITE) no-repeat center center !important;
+                        background-size: 10px !important;
+                        box-sizing: border-box;
+                        width: 23px !important;
+                        height: 23px !important;
+                    }
+
+                }
+
+            }
+
+            &:nth-child(2) {
+                // All Categories
+                &::before {
+                    content: $text_available_categories;
+                    display: block;
+                    @include text(12px, _property($FIELDSET--TITLE-COLOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
+                }
+
+                position: relative !important;
+                top: auto !important;
+                background: whitesmoke !important;
+                width: calc(100% - 20px) !important;
+                margin: 0 25px !important;
+                padding: 15px 20px 20px 20px;
+                box-sizing: border-box;
+
+                .x-grid3-scroller {
+                    width: auto !important;
+                    overflow: hidden;
+                }
+
+                .x-grid3-td-displayName {
+                    &::after {
+                        display: none;
+                    }
+
+                    label {
+                        color: _property($LIST-BOX--ROW--COLOR, $EDIT-ENGINE);
+                    }
+                }
+
+                .x-grid3-row-selected,
+                .x-grid3-row-over {
+                    background-color: inherit !important;
+                }
+            }
+        }
+    }
+
+}

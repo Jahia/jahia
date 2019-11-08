@@ -1,0 +1,117 @@
+
+// PAGES
+#JahiaGxtPagesTab {
+    .x-grid3 .x-grid3-scroller {
+        height: calc(100% - 109px) !important;
+    }
+
+    .marked-for-deletion {
+        .x-grid3-col-locked {
+            background-color: _theme-color(status, error);
+        }
+    }
+
+    .x-grid3-col-locked {
+        background: url(../images/icons_light/lock.svg) #e67d3a no-repeat center;
+        width: 12px;
+        height: 12px !important;
+        border-radius: 2px;
+        position: relative;
+        right: -8px;
+        top: 1px;
+        background-size: 16px;
+
+        > img {
+            display: none;
+        }
+
+        &:empty {
+            background: none;
+        }
+    }
+
+    .notPublished {
+        font-style: italic;
+    }
+
+    // Deal with icons here ...
+    .x-tree3-node-icon {
+
+        background-size: 23px 23px;
+        background-repeat: no-repeat;
+        padding-left: 18px;
+        width: 18px;
+        height: 27px;
+        opacity: 0.8;
+        background-position: center top 3px;
+
+        // Default
+        &:not([src$="/jnt_page.png"]):not([src$="/jnt_virtualsite.png"]):not([src$="/jnt_nodeLink.png"]):not([src$="/jnt_externalLink.png"]):not([src$="/jnt_navMenuText.png"]) {
+            width: 16px !important;
+            height: 16px !important;
+            padding-left: 0;
+            opacity: 1;
+            padding-top: 0;
+        }
+
+        &[src$="/jnt_page.png"] {
+            background-image: url($ICON--PAGES---GREY);
+            background-size: 20px;
+        }
+
+        &[src$="/jnt_virtualsite.png"] {
+            background-image: url(../images/icons/tabs-site-dark@X2.png);
+        }
+
+        // Internal link
+        &[src$="jnt_nodeLink.png"] {
+            background-image: url(../images/icons/tabs-placeholder-black@X2.png);
+        }
+
+        // External link
+        &[src$="jnt_externalLink.png"] {
+            background-image: url(../images/icons/tabs-placeholder-black@X2.png);
+        }
+
+        // Menu link
+        &[src$="jnt_navMenuText.png"] {
+            background-image: url(../images/icons/tabs-placeholder-black@X2.png);
+        }
+    }
+
+    .x-grid3-row-selected {
+        .x-tree3-node-icon {
+            &[src$="/jnt_page.png"] {
+                background-image: url($ICON--PAGES---WHITE);
+                opacity: 1;
+                background-position: center;
+            }
+
+            &[src$="/jnt_virtualsite.png"] {
+                background-image: url(../images/icons/tabs-site-white@X2.png);
+                opacity: 1;
+            }
+
+            &[src$="jnt_nodeLink.png"] {
+                background-image: url(../images/icons/tabs-placeholder-white@X2.png);
+                opacity: 1;
+            }
+
+            &[src$="jnt_externalLink.png"] {
+                background-image: url(../images/icons/tabs-placeholder-white@X2.png);
+                opacity: 1;
+            }
+
+            &[src$="jnt_navMenuText.png"] {
+                background-image: url(../images/icons/tabs-placeholder-white@X2.png);
+                opacity: 1;
+            }
+        }
+    }
+
+
+    &::before {
+        /* Tab Content Header Label */
+        content: $text_pages !important;
+    }
+}

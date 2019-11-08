@@ -1,0 +1,40 @@
+
+// CREATE
+#JahiaGxtCreateContentTab {
+    // Deal with icons here ...
+    .gwt-Image-TEST {
+        background-size: 23px 23px;
+        background-repeat: no-repeat;
+        padding-left: 18px;
+        width: 18px;
+        height: 23px;
+        opacity: 0.8;
+
+        // CATEGORY ICON
+        background-image: url(../images/icons/tabs-files-dark@X2.png);
+    }
+
+    .x-grid3-row-selected {
+        .gwt-Image {
+            // CATEGORY ICON
+            background-image: url(../images/icons/tabs-files@X2.png);
+        }
+    }
+
+    &::before {
+        /* Tab Content Header Label */
+        content: $text_create !important;
+    }
+
+    // Tree Options
+    .gwt-content-label {
+        &::after {
+            /* MORE Options button for TREE */
+            display: none;
+        }
+    }
+
+    .x-grid-panel {
+        margin-top: 50px;
+    }
+}

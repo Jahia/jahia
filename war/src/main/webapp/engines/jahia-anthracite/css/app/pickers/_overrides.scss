@@ -1,0 +1,634 @@
+/* Fix for the tooltips in Manager / Picker Toolbars */
+.x-viewport-repositoryexplorer-anthracite,
+.x-viewport-filemanager-anthracite,
+.x-viewport-editorialcontentmanager-anthracite,
+.x-viewport-sitemanager-anthracite,
+.x-viewport-categorymanager-anthracite,
+.x-viewport-portletmanager-anthracite,
+#JahiaGxtContentPicker {
+    > .x-panel-bwrap {
+        overflow: visible;
+
+        > .x-panel-tbar {
+            overflow: visible;
+        }
+    }
+
+    #JahiaGxtManagerToolbar {
+        overflow: visible !important;
+    }
+}
+
+/* Show buttons when searching on multiple selection picker */
+#JahiaGxtContentPickerWindow {
+    .x-window-bbar {
+        .x-panel-fbar {
+            body[data-indigo-picker-search="open"] & {
+                display: block !important;
+            }
+        }
+    }
+}
+
+
+.x-shadow.x-ignore + #JahiaGxtContentPickerWindow {
+    z-index: 99999 !important;
+}
+
+
+// Corrections for Managers ( extends normal picker )
+#contentmanager {
+    body[data-indigo-edit-engine="open"] & {
+        display: none;
+    }
+
+    #JahiaGxtManagerToolbar .action-bar-tool-item.repositoryexplorer-menu-view {
+        background-image: url(../images/icons/icon_preview_dark.png) !important;
+    }
+
+    #images-view {
+        box-shadow: inset 0px 0px 0px #e5e3e3, inset 0px 2px 0px #b4b2b2, inset 0px 3px 5px rgba(38, 38, 38, 0.2) !important;
+        padding-top: 10px !important;
+    }
+
+    & #JahiaGxtManagerToolbar div.action-bar-menu-item.toolbar-itemsgroup-languageswitcher {
+        min-width: 90px;
+    }
+
+    &.search-panel-opened {
+        #JahiaGxtManagerTobTable {
+            height: calc(100% - 134px) !important;
+        }
+    }
+
+    // Fixes for the site manager
+    &[config="sitemanager-anthracite"] {
+        // There are no Display controls so push the langiage switcher to the right
+        #JahiaGxtManagerToolbar div.action-bar-menu-item.toolbar-itemsgroup-languageswitcher {
+            right: 5px !important;
+        }
+    }
+
+    // Fixes for the Category
+    &[config="categorymanager-anthracite"] {
+        // Hide Display controls so push the langiage switcher to the right
+        #JahiaGxtManagerToolbar {
+            div.action-bar-menu-item.toolbar-itemsgroup-languageswitcher {
+                right: 5px !important;
+            }
+
+            table.action-bar-tool-item {
+                &.toolbar-item-listview,
+                &.toolbar-item-thumbsview,
+                &.toolbar-item-detailedview {
+                    display: none !important;
+                }
+            }
+        }
+    }
+
+    // Fixes for the Portlets
+    &[config="portletmanager-anthracite"] {
+        // Hide Display controls so push the langiage switcher to the right
+        #JahiaGxtManagerToolbar {
+            div.action-bar-menu-item.toolbar-itemsgroup-languageswitcher {
+                right: 5px !important;
+            }
+
+            table.action-bar-tool-item {
+                &.toolbar-item-listview,
+                &.toolbar-item-thumbsview,
+                &.toolbar-item-detailedview {
+                    display: none !important;
+                }
+            }
+        }
+    }
+
+
+    // Remove the floats on the save cancel buttons
+    .x-panel-bbar .x-toolbar-cell {
+        float: none !important;
+    }
+
+    // Modify the header when in thumb view and detailed view
+    body[indigo-picker-display="thumbsview"] &,
+    body[indigo-picker-display="detailedview"] & {
+        // Header backgrounds: have to make the header in these views higher until we can get rid of the File menu
+        // box-shadow: inset 0px 87px 0px _theme-color(primary, g), inset 0px 88px 7px #222222;
+
+        // Shift the Slider down too
+        .thumb-size-slider {
+            top: 42px !important;
+            right: 10px !important;
+        }
+    }
+
+    // Hide when thumb slider when the Edit Engine is opened
+    body[data-indigo-edit-engine="open"] & {
+        .thumb-size-slider,
+        .toggle-picker-files {
+            display: none;
+        }
+    }
+
+    .x-panel-bbar {
+        // The Actions Bar is not displayed in the Manager ( because there are no close / save buttons ) so "hide" it.
+        background: transparent !important;
+        box-shadow: none !important;
+
+        // When the Edit Engine is opened we have Save / Cancel buttons, so make it visible again
+        body[data-indigo-edit-engine="open"] & {
+            background: _property($DARK-FOOTER--BG, $PICKER) !important;
+            box-shadow: _property($DARK-FOOTER--SHADOW, $PICKER) !important;
+        }
+
+        // Because there is no Cancel button we have to insert our own ( via JS ).
+        // To make sure that it gets positioned in-line with the Save button we need make sure the table is inline too
+        .x-toolbar-cell:nth-child(1) > table { // Save button
+            display: inline-block;
+        }
+    }
+
+    // Cancel Button that is inserted via JS
+    .cancel-edit {
+        display: inline-block;
+        margin-right: 5px;
+        border: none;
+        vertical-align: top;
+        padding: 10px 20px !important;
+        background: _property($ACTION-DEFAULT--BG, $EDIT-ENGINE) !important;
+        box-shadow: _property($ACTION-DEFAULT--SHADOW, $EDIT-ENGINE);
+        @include text(14px, _property($ACTION-DEFAULT--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
+
+        &:hover {
+            box-shadow: _property($ACTION-DEFAULT--SHADOW---HOVER, $EDIT-ENGINE);
+            background: _property($ACTION-DEFAULT--BG---HOVER, $EDIT-ENGINE) !important;
+            @include text(14px, _property($ACTION-DEFAULT--COLOR---HOVER, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
+            cursor: pointer;
+        }
+    }
+
+    // Hide the Side Panel when the Edit Engine is opened
+    body[data-indigo-edit-engine="open"] & {
+        #JahiaGxtManagerLeftTree {
+            display: none;
+        }
+    }
+
+    // Header tool bar
+    #JahiaGxtManagerToolbar {
+        position: relative;
+        box-sizing: border-box;
+        padding: 0 10px;
+        z-index: 9;
+
+        // Language Switcher and Node Type Filter Combos
+        div.action-bar-menu-item {
+            // Language Switcher
+            &.toolbar-itemsgroup-languageswitcher {
+                top: 5px !important;
+                right: 95px !important;
+                @include _combo(LIGHT);
+                transition: none;
+                left: auto!important;
+
+                body[data-indigo-is-manager="true"][data-indigo-picker-search="open"] & {
+                    right: 5px !important;
+                }
+            }
+
+            // Style differently when the Edit Engine is opened
+            body[data-indigo-edit-engine="open"] & {
+                z-index: 99999 !important;
+                left: 73px !important;
+                right: auto !important;
+                top: 132px !important;
+                @include _combo(LIGHT);
+            }
+
+            // Have to shift the Node Type filter to the left of the Language Switcher ( which doesnt exist in normal Picker )
+            &.toolbar-itemsgroup-nodetypefiltering {
+                right: 272px !important;
+
+                body.ext-gecko & {
+                    right: 292px !important;
+                }
+            }
+        }
+    }
+
+    // Toolbar - contains File Menu, Language Switcher and Node Type Combo
+    // Also contains the tool bar for Thimbs, Details view
+    .x-panel-tbar {
+        z-index: 99;
+        position: relative;
+    }
+
+
+    // Inline Edit Engine
+    div#JahiaGxtManagerBottomTabs {
+        display: none;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        z-index: 99 !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: _property($BODY--BG, $EDIT-ENGINE) !important;
+        box-shadow: none !important;
+
+        // Display Edit Engine when toggled to "opened"
+        body[data-indigo-edit-engine="open"] & {
+            display: block;
+        }
+
+        // Style title of the selected node
+        &::after {
+            content: attr(data-edit-engine-title);
+            display: block;
+            position: fixed;
+            top: 95px;
+            left: 72px;
+            width: 270px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            @include text(18px !important, _theme-color(quinary), $FONT--WEIGHT---EXTRALIGHT)
+        }
+
+        // Action Bar
+        .x-panel-fbar {
+            padding: 0 25px !important;
+        }
+
+        // Hide the multiple selection toggler
+        .toggle-multiple-selection {
+            display: none;
+        }
+    }
+
+
+    // List view labels
+    .x-viewport .x-component {
+        // Numberer
+        .x-grid3-td-numberer {
+            display: none !important; // DEV NOTE ::: WHAT IS THIS, CAN I HIDE IT ???
+        }
+
+        // Node Name
+        .x-grid3-td-name,
+        .x-grid3-td-displayName {
+            width: calc(100% - 460px) !important;
+        }
+
+        // Node Type
+        .x-grid3-td-primaryTypeLabel,
+        .x-grid3-td-jcr\:created,
+        .x-grid3-td-jcr\:createdBy,
+        .x-grid3-td-jcr\:lastModified {
+            width: 115px !important;
+        }
+
+        // Publication Info
+        .x-grid3-td-publicationInfo {
+            left: 18px !important;
+        }
+
+        // Fixes for Category Manager labels in List mode
+        &.x-viewport-categorymanager,
+        &.x-viewport-categorymanager-anthracite {
+            // Names & Paths
+            .x-grid3-td-displayName,
+            .x-grid3-td-name,
+            .x-grid3-td-path {
+                width: 25% !important;
+            }
+        }
+
+        // Status Bar
+        > div:nth-child(2) > .x-panel-bbar {
+            z-index: 9999 !important;
+            height: 30px !important;
+            bottom: 0 !important;
+            width: $PICKER_SIDEPANEL_WIDTH !important;
+            left: 0 !important;
+            right: auto !important;
+            padding: 0px 35px;
+            box-shadow: none !important;
+            background: transparent !important;
+        }
+    }
+
+    // Contains List, Thumbs, Details View
+    #JahiaGxtManagerTobTable {
+        // Shift down when in Thumbs, Details view as the header is taller
+        body[indigo-picker-display="thumbsview"] &,
+        body[indigo-picker-display="detailedview"] & {
+            top: 78px !important;
+            height: calc(100% - 79px) !important;
+        }
+
+        // Toolbar for Thumbs / Details view ( Filter & Sort By )
+        .x-panel-tbar {
+            left: calc(#{$PICKER_SIDEPANEL_WIDTH} + 15px) !important;
+            top: 45px !important;
+
+            // Slide left when the Side Panel is collapsed
+            body[indigo-picker-panel="collapsed"] & {
+                left: 10px !important;
+            }
+        }
+
+        // Row
+        .x-grid3-row {
+            // Default Row
+            width: calc(100% + 6px) !important;
+            left: -15px;
+            position: relative;
+            padding-left: 16px;
+
+            .x-grid3-col {
+                display: inline-block;
+                line-height: 20px;
+            }
+
+            // Checkbox holder
+            .x-grid3-td-checker {
+                display: inline-block;
+                left: -7px;
+                top: 5px;
+                position: relative;
+                background: none;
+
+                // Checkbox
+                .x-grid3-row-checker {
+                    background: _property($CHECKBOX--BG, $PICKER);
+                    width: 12px;
+                    height: 12px;
+                    box-shadow: _property($CHECKBOX--SHADOW, $PICKER);
+                    border: _property($CHECKBOX--BORDER, $PICKER);
+                    border-radius: 2px;
+                }
+            }
+
+            // Selected Row
+            &.x-grid3-row-selected {
+
+                // Selected Checkbox
+                .x-grid3-row-checker {
+                    background: url($ICON--TICK---WHITE) no-repeat center center _property($CHECKBOX--BG---CHECKED, $PICKER);
+                    background-size: 12px;
+                    box-shadow: none;
+                    border: _property($CHECKBOX--BORDER, $PICKER);
+                }
+            }
+        }
+
+    }
+
+
+}
+
+
+// Overrides ...
+#JahiaGxtContentPicker {
+    #JahiaGxtManagerToolbar {
+        z-index: 999;
+        pointer-events: none;
+    }
+
+    #JahiaGxtManagerTobTable {
+        .thumb-wrap {
+            .preview-button {
+                right: 25px;
+            }
+        }
+    }
+}
+
+#JahiaGxtContentPickerWindow {
+
+    #JahiaGxtManagerTobTable {
+        .thumb-wrap {
+            .preview-button {
+                right: 25px;
+            }
+        }
+    }
+
+    &.modal-editoriallinkpicker,
+    &.modal-categorypicker {
+        #JahiaGxtManagerTobTable .x-grid3-row .more-info-button {
+            body[indigo-picker-display="thumbsview"] & {
+                background-color: transparent;
+            }
+        }
+    }
+
+    // Category Picker
+    // Force the Category Picker to display in List view instead of details view
+    &.modal-categorypicker {
+
+        .thumb-size-slider {
+            display: none;
+        }
+
+        #JahiaGxtManagerTobTable {
+            // Filters
+            .x-panel-tbar {
+                right: 8px;
+                left: auto;
+            }
+
+            // THUMBS / DETAILS VIEWS
+            .x-view {
+                background: transparent !important;
+                min-height: calc(100% + 26px) !important;
+                height: calc(100% + 26px) !important;
+                padding: 40px 20px 0px;
+
+                -webkit-column-count: unset !important;
+                -moz-column-count: unset !important;
+                column-count: unset !important;
+
+                box-sizing: border-box;
+
+                // FILES
+                .thumb-wrap {
+                    display: block !important;
+                    opacity: 1;
+
+                    height: initial !important;
+                    max-height: initial !important;
+                    margin: 0 !important;
+                    width: 100% !important;
+                    padding: 4px 0 0px 5px !important;
+
+                    img {
+                        width: 16px !important;
+                        background-color: rgba(237, 237, 237, 0.17);
+                        padding: 2px;
+                        border-radius: 15%;
+                    }
+
+                    .more-info-button {
+                        position: fixed;
+                        top: unset;
+                        right: 19px;
+                    }
+
+
+                    // Make sure that which ever thumb is being hovered is pulled to the top
+                    &:hover {
+                        z-index: 999999999999999;
+                    }
+
+                    span {
+                        // THUMB VIE DETAILS
+                        display: none;
+
+                        position: absolute;
+                        width: 100%;
+                        @include text(10px, _property($THUMB--COLOR, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
+                        z-index: 999;
+                        margin-top: -2px;
+
+                        // Filesize
+                        &:nth-child(3) {
+                            @include text(8px, _property($THUMB--COLOR--DIMMED, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
+                            margin-top: 0;
+                            z-index: 9;
+                            padding-bottom: 10px;
+                            padding-top: 14px;
+                        }
+                    }
+
+                    // Hover / force hover (used when the context menu is opened)
+                    &.x-view-over,
+                    &.indigo-force-open {
+                        background: _property($THUMB--BG---HOVER, $PICKER);
+
+                        span {
+                            background: _property($THUMB--BG---HOVER, $PICKER);
+                            display: block;
+                        }
+
+                    }
+
+                    // Selected row
+                    &.x-view-item-sel {
+                        background: _property($THUMB--BG---SELECTED, $PICKER);
+
+                        span {
+                            background: _property($THUMB--BG---SELECTED, $PICKER) !important;
+                        }
+
+                        .thumb {
+                            background: _property($THUMB--BG---SELECTED, $PICKER) !important;
+                        }
+
+                        &.x-view-highlightrow {
+                            background: _property($THUMB--BG---SELECTED, $PICKER);
+                        }
+
+
+                    }
+                }
+
+                .thumb {
+                    padding: 0 !important;
+                    width: 20px !important;
+                    float: none !important;
+                    display: inline-block;
+                    vertical-align: top;
+
+                    overflow: visible;
+                }
+
+                .thumbDetails {
+                    position: relative !important;
+                    display: inline-block !important;
+                    top: 0;
+                    left: 0;
+                    padding: 0;
+                    width: calc(100% - 20px) !important;
+                    box-sizing: border-box;
+
+
+                    div {
+                        @include text(12px, _property($THUMB--COLOR, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
+                        width: 30%;
+                        padding: 2px 10px;
+
+                        display: inline-block !important;
+
+                        b {
+                            @include text(12px, _property($THUMB--COLOR--DIMMED, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
+                            text-transform: none;
+                            display: none !important;
+                        }
+                    }
+                }
+
+
+            }
+        }
+    }
+}
+
+#JahiaGxtCustomContentPickerWindow {
+    box-shadow: none !important;
+    background: white !important;
+}
+
+.x-shadow.x-ignore + #JahiaGxtCustomContentPickerWindow {
+    z-index: 99999 !important;
+}
+
+/* OVERRIDE CSS THAT WAS HIDING HEADERS IN PICKER TABLES
+ 	HAD TO TREAT MODIFICATIONS IN THIS WAY/PLACE SO AS NOT TO AFFECT OTHER TABLES
+	AND MANAGER PICKERS */
+#JahiaGxtContentPickerWindow,
+#contentpicker,
+#JahiaGxtContentPicker,
+#JahiaGxtCustomContentPicker {
+
+    #JahiaGxtManagerTobTable {
+        .x-grid-panel {
+            > div {
+                &:last-child {
+                    pointer-events: none !important;
+                }
+            }
+        }
+
+        .x-grid3-viewport {
+            > .x-grid3-header {
+                width: 100%;
+                display: block;
+                pointer-events: all !important;
+
+                .x-grid3-header-inner {
+                    width: 100% !important;
+                    padding-left: 15px;
+                    box-sizing: border-box;
+                }
+            }
+
+            .x-grid3-header {
+                pointer-events: all !important;
+            }
+        }
+    }
+
+    .x-grid3-header {
+        display: table-cell;
+        border-color: transparent;
+    }
+
+    .x-grid3-td-name {
+        pointer-events: all !important;
+    }
+
+}

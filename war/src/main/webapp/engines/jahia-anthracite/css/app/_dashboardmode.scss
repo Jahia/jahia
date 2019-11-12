@@ -120,14 +120,14 @@
                 background: transparent !important;
             }
 
-            &:nth-child(1) > table:nth-child(1) td.x-btn-mc {
+            &:nth-child(1) > table:nth-child(1) td.x-btn-mc { /* OPTIMISE SELECTOR ::: css/app/dashboardmode.scss ::: 1 */
                 width: 50px;
                 margin-bottom: 2px;
                 background: transparent !important;
                 display: none;
             }
 
-            &:nth-child(2) {
+            &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/dashboardmode.scss ::: 2 */
                 display: none;
             }
 
@@ -180,21 +180,21 @@
         }
     }
 
-    > div:nth-child(1) {
+    > div:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/dashboardmode.scss ::: 3 */
         height: 100%;
         background: #FAFAFA;
 
-        > div:nth-child(2) {
+        > div:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/dashboardmode.scss ::: 4 */
             height: 100%;
         }
     }
 
-    > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) {
+    > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/dashboardmode.scss ::: 5 */
         height: 43px;
         pointer-events: none;
     }
 
-    > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) {
+    > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/dashboardmode.scss ::: 6 */
         z-index: $ZINDEX--ACTION_BAR--CONTAINER;
         height: 60px;
         display: block;
@@ -232,7 +232,7 @@ body {
     td {
         display: none;
 
-        &:nth-child(1) {
+        &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/dashboardmode.scss ::: 7 */
             display: block;
             background: transparent;
             margin-bottom: 1px;
@@ -252,14 +252,14 @@ body {
 
         &:hover {
             td {
-                &:nth-child(3) {
+                &:nth-child(3) { /* OPTIMISE SELECTOR ::: css/app/dashboardmode.scss ::: 8 */
                     background: url(/engines/jahia-anthracite/images/icons/tabs-create-white@X2.png) no-repeat center center;
                     background-size: 19px;
                     background-color: _theme-color(quaternary);
                     opacity: 1;
                 }
 
-                &:nth-child(5) {
+                &:nth-child(5) { /* OPTIMISE SELECTOR ::: css/app/dashboardmode.scss ::: 9 */
                     background: url(/engines/jahia-anthracite/images/icons/icon_preview_small_white.png) no-repeat center center;
                     background-size: 19px;
                     background-color: _theme-color(quaternary);
@@ -280,7 +280,7 @@ body {
 
         &:hover {
             td {
-                &:nth-child(3) {
+                &:nth-child(3) { /* OPTIMISE SELECTOR ::: css/app/dashboardmode.scss ::: 10 */
                     display: block;
                     position: absolute;
                     right: 0;
@@ -301,7 +301,7 @@ body {
                     }
                 }
 
-                &:nth-child(5) {
+                &:nth-child(5) { /* OPTIMISE SELECTOR ::: css/app/dashboardmode.scss ::: 11 */
                     display: block;
                     position: absolute;
                     right: 35px;

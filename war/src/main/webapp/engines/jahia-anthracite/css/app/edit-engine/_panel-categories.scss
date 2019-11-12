@@ -31,7 +31,7 @@ div.engine-window {
         }
 
         > div {
-            &:nth-child(1) {
+            &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-categories.scss ::: 1 */
                 // Selected categories
                 position: relative !important;
                 height: auto !important;
@@ -80,7 +80,7 @@ div.engine-window {
 
             }
 
-            &:nth-child(2) {
+            &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-categories.scss ::: 2 */
                 // All Categories
                 &::before {
                     content: $text_available_categories;

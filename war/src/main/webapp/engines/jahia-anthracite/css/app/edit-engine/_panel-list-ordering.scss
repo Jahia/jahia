@@ -14,7 +14,7 @@
         padding-bottom: 16px;
     }
 
-    .x-panel.x-component:nth-child(2) .x-panel-bwrap .x-grid3-viewport {
+    .x-panel.x-component:nth-child(2) .x-panel-bwrap .x-grid3-viewport { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-list-ordering.scss ::: 1 */
         overflow: scroll;
     }
 
@@ -165,7 +165,7 @@
 
     .x-panel-tbar-noheader {
 
-        td.x-toolbar-cell:nth-child(1) > table button img {
+        td.x-toolbar-cell:nth-child(1) > table button img { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-list-ordering.scss ::: 2 */
             background: url(../images/icons/move_up.png) !important;
             background-size: 18px !important;
             background-position-y: -1px !important;
@@ -173,7 +173,7 @@
             opacity: .64;
         }
 
-        td.x-toolbar-cell:nth-child(2) > table button img {
+        td.x-toolbar-cell:nth-child(2) > table button img { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-list-ordering.scss ::: 3 */
             background: url(../images/icons/move_first.png) !important;
             background-size: 18px !important;
             background-position-y: -1px !important;
@@ -181,7 +181,7 @@
             opacity: .64;
         }
 
-        td.x-toolbar-cell:nth-child(3) > table button img {
+        td.x-toolbar-cell:nth-child(3) > table button img { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-list-ordering.scss ::: 4 */
             background: url(../images/icons/move_down.png) !important;
             background-size: 18px !important;
             background-position-y: -1px !important;
@@ -189,7 +189,7 @@
             opacity: .64;
         }
 
-        td.x-toolbar-cell:nth-child(4) > table button img {
+        td.x-toolbar-cell:nth-child(4) > table button img { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-list-ordering.scss ::: 5 */
             background: url(../images/icons/move_last.png) !important;
             background-size: 18px !important;
             background-position-y: -1px !important;
@@ -197,7 +197,7 @@
             opacity: .64;
         }
 
-        td.x-toolbar-cell:nth-child(5) > table button img {
+        td.x-toolbar-cell:nth-child(5) > table button img { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-list-ordering.scss ::: 6 */
             background: url(../images/icons/remove_circle.png) !important;
             background-size: 18px !important;
             background-position-y: -1px !important;

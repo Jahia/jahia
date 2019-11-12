@@ -45,14 +45,14 @@
             vertical-align: top;
 
             // SAVE
-            &:nth-child(1) {
+            &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/pickers/_toolbars.scss ::: 1 */
                 float: right; // Content PICKER only, not manager
 
                 @include button("ACTIONBAR---SUGGESTED");
             }
 
             // CANCEL
-            &:nth-child(2) {
+            &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/pickers/_toolbars.scss ::: 2 */
                 float: left; // Content PICKER only, not manager
             }
         }

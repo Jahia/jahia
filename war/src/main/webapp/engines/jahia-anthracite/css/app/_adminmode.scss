@@ -91,14 +91,14 @@
                 background: transparent !important;
             }
 
-            &:nth-child(1) > table:nth-child(1) td.x-btn-mc {
+            &:nth-child(1) > table:nth-child(1) td.x-btn-mc { /* OPTIMISE SELECTOR ::: css/app/_adminmode.scss ::: 1 */
                 width: 50px;
                 margin-bottom: 2px;
                 background: transparent !important;
                 display: none;
             }
 
-            &:nth-child(3) {
+            &:nth-child(3) { /* OPTIMISE SELECTOR ::: css/app/_adminmode.scss ::: 2 */
                 display: none;
             }
 
@@ -217,7 +217,7 @@
         }
     }
 
-    > div:nth-child(1) {
+    > div:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/_adminmode.scss ::: 3 */
         height: 100%;
         background: _theme-color(secondary);
 
@@ -226,12 +226,12 @@
         }
     }
 
-    > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) {
+    > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/_adminmode.scss ::: 4 */
         height: 43px;
         pointer-events: none;
     }
 
-    > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) {
+    > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/_adminmode.scss ::: 5 */
         z-index: $ZINDEX--ACTION_BAR--CONTAINER;
         height: 60px;
         display: block;

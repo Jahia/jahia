@@ -129,18 +129,18 @@
         background: _theme-color(secondary, a) !important;
     }
 
-    .x-grid3-viewport > .x-grid3-header .x-grid3-header-inner .x-grid3-hh > table > tbody td div .x-grid3-hd-btn {
+    .x-grid3-viewport > .x-grid3-header .x-grid3-header-inner .x-grid3-hh > table > tbody td div .x-grid3-hd-btn { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-seo.scss ::: 1 */
         background: url(../images/icons/combo-arrow-grey.png) no-repeat center center !important;
         width: 23px;
         background-size: 13px !important;
         opacity: 0.7;
     }
 
-    .x-box-inner .x-row-editor-field.x-component.x-box-item.x-form-check-wrap:nth-child(2) input {
+    .x-box-inner .x-row-editor-field.x-component.x-box-item.x-form-check-wrap:nth-child(2) input { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-seo.scss ::: 2 */
         margin-right: -2px;
     }
 
-    .x-box-inner .x-row-editor-field.x-component.x-box-item.x-form-check-wrap:nth-child(3) input {
+    .x-box-inner .x-row-editor-field.x-component.x-box-item.x-form-check-wrap:nth-child(3) input { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-seo.scss ::: 3 */
         margin-right: 4px;
     }
 
@@ -153,7 +153,7 @@
         top: 9px !important;
         padding-left: 41px;
 
-        &:nth-child(3) {
+        &:nth-child(3) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-seo.scss ::: 4 */
             padding-left: 33px;
         }
     }

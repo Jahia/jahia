@@ -142,7 +142,7 @@ div#JahiaGXTPortletWizardWindow {
         }
 
         > table {
-            tr:nth-child(2) {
+            tr:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_portlet-wizard.scss ::: 1 */
                 > td {
                     > div {
                         width: 100% !important;

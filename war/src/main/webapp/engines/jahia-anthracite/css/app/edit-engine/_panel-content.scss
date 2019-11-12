@@ -7,7 +7,7 @@ div.engine-window {
             #Titre,
             #Titel {
                 // Contains sytems name / title
-                .x-form-item:nth-child(1) {
+                .x-form-item:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-content.scss ::: 1 */
                     // System Name
                     .x-form-element {
                         width: 100% !important;

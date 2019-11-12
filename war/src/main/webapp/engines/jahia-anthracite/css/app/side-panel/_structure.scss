@@ -245,7 +245,7 @@
         position: relative;
         pointer-events: all;
 
-        > div:nth-child(2) {
+        > div:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/sidepanel/_structure.scss ::: 1 */
             &.x-panel-footer {
                 display: none;
 

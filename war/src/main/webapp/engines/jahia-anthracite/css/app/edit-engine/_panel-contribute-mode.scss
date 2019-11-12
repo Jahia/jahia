@@ -5,7 +5,7 @@ div.engine-window {
             .x-form-item {
 
                 // Editable in content mode checkbox
-                &:nth-child(1) {
+                &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-contribute-mode.scss ::: 1 */
                     // Get rid of first label as it is duplicated
                     > label {
                         display: none !important;
@@ -18,7 +18,7 @@ div.engine-window {
                 }
 
                 // Select dual list
-                &:nth-child(2) {
+                &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-contribute-mode.scss ::: 2 */
 
                     // Add a bit of space with previous block
                     margin-top: 20px;

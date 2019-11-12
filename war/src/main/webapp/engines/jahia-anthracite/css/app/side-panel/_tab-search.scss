@@ -123,7 +123,7 @@
                     }
 
                     // First page
-                    &:nth-child(1) {
+                    &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-search.scss ::: 1 */
                         background: url($ICON--FIRST--WHITE) no-repeat center center / 16px 16px;
                         margin-left: 50px;
 
@@ -134,7 +134,7 @@
                     }
 
                     // Previous page
-                    &:nth-child(2) {
+                    &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-search.scss ::: 2 */
                         background: url($ICON--BACK--WHITE) no-repeat center center / 16px 16px;
                         margin-left: 5px;
 
@@ -145,14 +145,14 @@
                     }
 
                     // Skip to page input
-                    &:nth-child(5) {
+                    &:nth-child(5) { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-search.scss ::: 3 */
                         &:hover {
                             opacity: 1;
                         }
                     }
 
                     // Next Page
-                    &:nth-child(8) {
+                    &:nth-child(8) { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-search.scss ::: 4 */
                         background: url($ICON--NEXT--WHITE) no-repeat center center / 16px 16px;
                         margin-right: 5px;
 
@@ -163,7 +163,7 @@
                     }
 
                     // Last page
-                    &:nth-child(9) {
+                    &:nth-child(9) { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-search.scss ::: 5 */
                         background: url($ICON--LAST--WHITE) no-repeat center center / 16px 16px;
                         margin-right: 5px;
 
@@ -175,7 +175,7 @@
                     }
 
                     // Refresh results
-                    &:nth-child(11) {
+                    &:nth-child(11) { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-search.scss ::: 6 */
                         background: url($ICON--REFRESH--SMALL_WHITE) no-repeat center center / 18px 14px;
 
                         &:hover {

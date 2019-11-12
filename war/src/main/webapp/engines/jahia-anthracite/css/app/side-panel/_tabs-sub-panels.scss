@@ -5,7 +5,7 @@
 #JahiaGxtSearchTab.tab_search {
     width: 100% !important;
 
-    .x-box-inner .x-box-item:nth-child(2) {
+    .x-box-inner .x-box-item:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tabs-sub-panels.scss ::: 1 */
         display: inline-block;
         position: fixed !important;
         left: 360px !important;
@@ -154,7 +154,7 @@
     &.show-results {
         // width: 600px!important;
 
-        .x-box-inner .x-box-item:nth-child(2) {
+        .x-box-inner .x-box-item:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tabs-sub-panels.scss ::: 2 */
             left: 360px !important;
             padding-left: 10px;
             background: none !important;

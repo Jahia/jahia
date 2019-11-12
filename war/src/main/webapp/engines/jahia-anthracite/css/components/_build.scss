@@ -119,7 +119,7 @@ div[role="combobox"] {
                 > table {
 
                     // Month navigator container
-                    &:nth-child(1) {
+                    &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 1 */
 
                         td {
                             background: transparent;
@@ -178,7 +178,7 @@ div[role="combobox"] {
                     }
 
                     // Today Link button
-                    &:nth-child(3) {
+                    &:nth-child(3) { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 2 */
                         background: transparent;
                         // Today link container
                         .x-date-bottom {
@@ -638,7 +638,7 @@ div[role="combobox"] {
         /* Some Thumbs have extra divs containing more Meta Data, so hide them */
         display: none;
 
-        &:first-child {
+        &:first-child { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 3 */
             /* Just show the first Div which contains the file name */
             display: block;
         }
@@ -1102,82 +1102,82 @@ $personalised_trees: (
             width: 5px;
             height: 25px !important;
 
-            &[src$="/conflict.png"] {
+            &[src$="/conflict.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 4 */
                 /* Conflict */
                 background: _theme-color(status, conflict) !important;
             }
 
-            &[src$="/deleted.png"] {
+            &[src$="/deleted.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 5 */
                 /* Deleted */
                 background: _theme-color(status, deleted) !important;
             }
 
-            &[src$="/livemodified.png"] {
+            &[src$="/livemodified.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 6 */
                 /* Live Modified */
                 background: _theme-color(status, livemodified) !important;
             }
 
-            &[src$="/liveonly.png"] {
+            &[src$="/liveonly.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 7 */
                 /* Live Only */
                 background: _theme-color(status, liveonly) !important;
             }
 
-            &[src$="/locked.png"] {
+            &[src$="/locked.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 8 */
                 /* Locked */
                 background: _theme-color(status, locked) !important;
             }
 
-            &[src$="/mandatorylanguageunpublishable.png"] {
+            &[src$="/mandatorylanguageunpublishable.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 9 */
                 /* Mandatory Language Unpublishable */
                 background: _theme-color(status, mandatorylanguageunpublishable) !important;
             }
 
-            &[src$="/mandatorylanguagevalid.png"] {
+            &[src$="/mandatorylanguagevalid.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 10 */
                 /* Mandatory Language Valid */
                 background: _theme-color(status, mandatorylanguagevalid) !important;
             }
 
-            &[src$="/markedfordeletion.png"] {
+            &[src$="/markedfordeletion.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 11 */
                 /* Marked FOr Deletion */
                 background: _theme-color(status, markedfordeletion) !important;
             }
 
-            &[src$="/modified.png"] {
+            &[src$="/modified.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 12 */
                 /* Modified */
                 background: _theme-color(status, modified) !important;
             }
 
-            &[src$="/multipleWF.png"] {
+            &[src$="/multipleWF.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 13 */
                 /* Multiple WF */
                 background: _theme-color(status, multipleWF) !important;
             }
 
-            &[src$="/notpublished.png"] {
+            &[src$="/notpublished.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 14 */
                 /* Not Published */
                 background: _theme-color(status, notpublished) !important;
             }
 
-            &[src$="/oneWF.png"] {
+            &[src$="/oneWF.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 15 */
                 /* One WF */
                 background: _theme-color(status, oneWF) !important;
             }
 
-            &[src$="/published.png"] {
+            &[src$="/published.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 16 */
                 /* Published */
                 background: _theme-color(status, published) !important;
             }
 
-            &[src$="/unpublished.png"] {
+            &[src$="/unpublished.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 17 */
                 /* Unpublished */
                 background: _theme-color(status, unpublished) !important;
             }
 
-            &[src$="/waiting.gif"] {
+            &[src$="/waiting.gif"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 18 */
                 /* Waiting */
                 background: _theme-color(status, waiting) !important;
             }
 
-            &[src$="/workinprogress.png"] {
+            &[src$="/workinprogress.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 19 */
                 /* Work In Progress */
                 background: _theme-color(status, workinprogress) !important;
             }
@@ -2426,12 +2426,12 @@ $personalised_trees: (
 
     .x-toolbar-cell {
         // YES BUTTON
-        &:nth-child(1) {
+        &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 20 */
             @include _button(".x-btn", "ACTIONBAR---SUGGESTED", "remove-icons");
         }
 
         // NO BUTTON
-        &:nth-child(2) {
+        &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 21 */
             @include _button(".x-btn", "ACTIONBAR", "remove-icons");
         }
     }
@@ -2747,7 +2747,7 @@ $personalised_trees: (
             float: right;
 
             // Add padding to separate buttons
-            &:nth-child(1) {
+            &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 22 */
                 margin-left: 5px;
             }
         }
@@ -2881,7 +2881,7 @@ body[data-indigo-gwt-side-panel="open"] {
     .x-toolbar-cell {
 
         // // Yes
-        &:nth-child(1) {
+        &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 23 */
             @include button("ACTIONBAR---SUGGESTED");
         }
     }
@@ -2907,22 +2907,22 @@ body[data-indigo-gwt-side-panel="open"] {
     }
 
     .x-grid3-col-publicationInfos img {
-        &[src$="/conflict.png"],
-        &[src$="/deleted.png"],
-        &[src$="/livemodified.png"],
-        &[src$="/liveonly.png"],
-        &[src$="/locked.png"],
-        &[src$="/mandatorylanguageunpublishable.png"],
-        &[src$="/mandatorylanguagevalid.png"],
-        &[src$="/markedfordeletion.png"],
-        &[src$="/modified.png"],
-        &[src$="/multipleWF.png"],
-        &[src$="/notpublished.png"],
-        &[src$="/oneWF.png"],
-        &[src$="/published.png"],
-        &[src$="/unpublished.png"],
-        &[src$="/waiting.gif"],
-        &[src$="/workinprogress.png"] {
+        &[src$="/conflict.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 24 */
+        &[src$="/deleted.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 25 */
+        &[src$="/livemodified.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 26 */
+        &[src$="/liveonly.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 27 */
+        &[src$="/locked.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 28 */
+        &[src$="/mandatorylanguageunpublishable.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 29 */
+        &[src$="/mandatorylanguagevalid.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 30 */
+        &[src$="/markedfordeletion.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 31 */
+        &[src$="/modified.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 32 */
+        &[src$="/multipleWF.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 33 */
+        &[src$="/notpublished.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 34 */
+        &[src$="/oneWF.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 35 */
+        &[src$="/published.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 36 */
+        &[src$="/unpublished.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 37 */
+        &[src$="/waiting.gif"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 38 */
+        &[src$="/workinprogress.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 39 */
             background-size: 13px;
             background-repeat: no-repeat;
             opacity: 0.8;
@@ -2934,67 +2934,67 @@ body[data-indigo-gwt-side-panel="open"] {
             background-image: url($ICON--WARNING--WHITE);
         }
 
-        &[src$="/conflict.png"] {
+        &[src$="/conflict.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 40 */
             /* Conflict */
              background-color: _theme-color(status, conflict);
         }
 
-        &[src$="/deleted.png"] {
+        &[src$="/deleted.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 41 */
             /* Deleted */
              background-color: _theme-color(status, deleted);
         }
 
-        &[src$="/livemodified.png"] {
+        &[src$="/livemodified.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 42 */
             /* Live Modified */
              background-color: _theme-color(status, livemodified);
         }
 
-        &[src$="/liveonly.png"] {
+        &[src$="/liveonly.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 43 */
             /* Live Only */
              background-color: _theme-color(status, liveonly);
         }
 
-        &[src$="/locked.png"] {
+        &[src$="/locked.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 44 */
             /* Locked */
              background-color: _theme-color(status, locked);
         }
 
-        &[src$="/mandatorylanguageunpublishable.png"] {
+        &[src$="/mandatorylanguageunpublishable.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 45 */
             /* Mandatory Language Unpublishable */
              background-color: _theme-color(status, mandatorylanguageunpublishable);
         }
 
-        &[src$="/mandatorylanguagevalid.png"] {
+        &[src$="/mandatorylanguagevalid.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 46 */
             /* Mandatory Language Valid */
              background-color: _theme-color(status, mandatorylanguagevalid);
         }
 
-        &[src$="/markedfordeletion.png"] {
+        &[src$="/markedfordeletion.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 47 */
             /* Marked FOr Deletion */
              background-color: _theme-color(status, markedfordeletion);
         }
 
-        &[src$="/modified.png"] {
+        &[src$="/modified.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 48 */
             /* Modified */
              background-color: _theme-color(status, modified);
         }
 
-        &[src$="/multipleWF.png"] {
+        &[src$="/multipleWF.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 49 */
             /* Multiple WF */
              background-color: _theme-color(status, multipleWF);
         }
 
-        &[src$="/notpublished.png"] {
+        &[src$="/notpublished.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 50 */
             /* Not Published */
              background-color: _theme-color(status, notpublished);
         }
 
-        &[src$="/oneWF.png"] {
+        &[src$="/oneWF.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 51 */
             /* One WF */
              background-color: _theme-color(status, oneWF);
         }
 
-        &[src$="/published.png"] {
+        &[src$="/published.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 52 */
             /* Published */
             background-image: url("../images/icons/icon-check-white@X2.png");
             background-color: _theme-color(status, published);
@@ -3002,17 +3002,17 @@ body[data-indigo-gwt-side-panel="open"] {
             background-size: 18px;
         }
 
-        &[src$="/unpublished.png"] {
+        &[src$="/unpublished.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 53 */
             /* Unpublished */
              background-color: _theme-color(status, unpublished);
         }
 
-        &[src$="/waiting.gif"] {
+        &[src$="/waiting.gif"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 54 */
             /* Waiting */
              background-color: _theme-color(status, waiting);
         }
 
-        &[src$="/workinprogress.png"] {
+        &[src$="/workinprogress.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 55 */
             /* Work In Progress */
              background-color: _theme-color(status, workinprogress);
         }
@@ -3028,59 +3028,59 @@ body[data-indigo-gwt-side-panel="open"] {
         height: 21px;
         width: 21px;
 
-        &[src$="/jnt_portletFolder.png"],
-        &[src$="/jnt_navMenuText.png"],
-        &[src$="/jnt_externalLink.png"],
-        &[src$="/jnt_nodeLink.png"],
-        &[src$="/jnt_virtualsite.png"],
-        &[src$="/jnt_page.png"],
-        &[src$="/jnt_folder.png"],
-        &[src$="/jnt_groupsFolder.png"],
-        &[src$="/jnt_contentFolder.png"],
-        &[src$="/remoteFolder.png"] {
+        &[src$="/jnt_portletFolder.png"],/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 56 */
+        &[src$="/jnt_navMenuText.png"],/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 57 */
+        &[src$="/jnt_externalLink.png"],/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 58 */
+        &[src$="/jnt_nodeLink.png"],/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 59 */
+        &[src$="/jnt_virtualsite.png"],/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 60 */
+        &[src$="/jnt_page.png"],/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 61 */
+        &[src$="/jnt_folder.png"],/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 62 */
+        &[src$="/jnt_groupsFolder.png"],/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 63 */
+        &[src$="/jnt_contentFolder.png"],/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 64 */
+        &[src$="/remoteFolder.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 65 */
             padding: 0 0 0 21px !important;
             border-radius: 0;
             height: 23px;
             background-color: transparent !important;
         }
 
-        &[src$="/jnt_groupsFolder.png"],
-        &[src$="/jnt_contentFolder.png"],
-        &[src$="/jnt_folder.png"] {
+        &[src$="/jnt_groupsFolder.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 66 */
+        &[src$="/jnt_contentFolder.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 67 */
+        &[src$="/jnt_folder.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 68 */
             background-image: url(../images/icons/tabs-files-dark@X2.png);
         }
 
-        &[src$="/remoteFolder.png"] {
+        &[src$="/remoteFolder.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 69 */
             background-image: url(../images/icons/tabs-files-shared-dark@X2.png);
         }
 
-        &[src$="/jnt_portletFolder.png"] {
+        &[src$="/jnt_portletFolder.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 70 */
             background-image: url(../images/icons_dark/portlets.svg);
             opacity: 0.5;
             background-size: 21px;
             background-position: center center;
         }
 
-        &[src$="/jnt_page.png"] {
+        &[src$="/jnt_page.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 71 */
             background-image: url(../images/tabs-pages-dark@X2.png);
         }
 
-        &[src$="/jnt_virtualsite.png"] {
+        &[src$="/jnt_virtualsite.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 72 */
             background-image: url(../images/icons/tabs-site-dark@X2.png);
         }
 
         // Internal link
-        &[src$="jnt_nodeLink.png"] {
+        &[src$="jnt_nodeLink.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 73 */
             background-image: url(../images/icons/tabs-placeholder-black@X2.png);
         }
 
         // External link
-        &[src$="jnt_externalLink.png"] {
+        &[src$="jnt_externalLink.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 74 */
             background-image: url(../images/icons/tabs-placeholder-black@X2.png);
         }
 
         // Menu link
-        &[src$="jnt_navMenuText.png"] {
+        &[src$="jnt_navMenuText.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 75 */
             background-image: url(../images/icons/tabs-placeholder-black@X2.png);
         }
     }
@@ -3809,7 +3809,7 @@ body[data-indigo-gwt-side-panel="open"] {
                             }
                         }
 
-                        &:nth-child(2) {
+                        &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 76 */
                             width: calc(100% - 20px);
                             display: block;
                         }
@@ -3936,7 +3936,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
     .x-grid-panel {
 
-        .x-grid3-viewport > .x-grid3-header .x-grid3-header-inner .x-grid3-hh > table > tbody td {
+        .x-grid3-viewport > .x-grid3-header .x-grid3-header-inner .x-grid3-hh > table > tbody td { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 77 */
 
             div {
                 .x-grid3-hd-btn {
@@ -4064,27 +4064,27 @@ body[data-indigo-gwt-side-panel="open"] {
                 display: none;
             }
 
-            &:nth-child(1) {
+            &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 78 */
                 background: url(../images/icons/icon_arrow_left_double_grey@X2.png) no-repeat center center/14px 14px;
                 margin-left: 0px;
             }
 
-            &:nth-child(2) {
+            &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 79 */
                 background: url(../images/icons/icon_arrow_left_single_grey@X2.png) no-repeat center center/14px 14px;
                 margin-left: 5px;
             }
 
-            &:nth-child(8) {
+            &:nth-child(8) { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 80 */
                 background: url(../images/icons/icon-next-grey@X2.png) no-repeat center center/14px 14px;
                 margin-right: 5px;
             }
 
-            &:nth-child(9) {
+            &:nth-child(9) { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 81 */
                 background: url(../images/icons/icon_arrow_right_double_grey@X2.png) no-repeat center center/14px 14px;
                 margin-right: 5px;
             }
 
-            &:nth-child(11) {
+            &:nth-child(11) { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 82 */
                 background: url(../images/icons/icon-publication-launcher-grey.png) no-repeat center center/16px 12px;
                 opacity: .52;
             }
@@ -4114,7 +4114,7 @@ body[data-indigo-gwt-side-panel="open"] {
         background: transparent !important;
     }
 
-    .x-window-tbar .x-component table tbody tr td .x-small-editor.x-toolbar.x-component.x-toolbar-layout-ct .x-toolbar-cell {
+    .x-window-tbar .x-component table tbody tr td .x-small-editor.x-toolbar.x-component.x-toolbar-layout-ct .x-toolbar-cell { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 83 */
         background: none !important;
     }
 
@@ -4135,11 +4135,11 @@ body[data-indigo-gwt-side-panel="open"] {
 
     .search-container .x-toolbar-cell {
 
-        &:nth-child(1) > div {
+        &:nth-child(1) > div { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 84 */
             display: none;
         }
 
-        &:nth-child(2) input {
+        &:nth-child(2) input { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 85 */
             background-image: url(../images/tabs-search-dark@X2.png) !important;
             background-repeat: no-repeat !important;
             background-position: left center !important;
@@ -4152,7 +4152,7 @@ body[data-indigo-gwt-side-panel="open"] {
             margin-top: 0;
         }
 
-        &:nth-child(3) .x-btn-icon {
+        &:nth-child(3) .x-btn-icon { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 86 */
             height: 27px;
             padding: 0 8px;
             background: _theme-color(quinary);
@@ -4285,7 +4285,7 @@ body[data-indigo-gwt-side-panel="open"] {
         width: 100% !important
     }
 
-    .x-grid3-header-inner .x-grid3-hh > table > tbody td div .x-grid3-hd-btn {
+    .x-grid3-header-inner .x-grid3-hh > table > tbody td div .x-grid3-hd-btn { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 87 */
         background: url(../images/icons/combo-arrow-grey.png) no-repeat center center !important;
         width: 23px;
         background-size: 13px !important;
@@ -4682,7 +4682,7 @@ body[data-indigo-gwt-side-panel="open"] {
         padding-left: 16px !important;
         margin-top: 5px;
 
-        > .x-component:first-child {
+        > .x-component:first-child { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 88 */
             margin-top: 22px;
             margin-right: 16px;
             pointer-events: all;
@@ -4759,7 +4759,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
     }
 
-    .x-panel:last-child {
+    .x-panel:last-child { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 89 */
         border-left: 1px solid _theme-color(primary, d); /* TO THEME */
     }
 
@@ -4838,7 +4838,7 @@ body[data-indigo-gwt-side-panel="open"] {
             display: block;
         }
 
-        > .x-component:first-child {
+        > .x-component:first-child { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 90 */
             margin-top: 22px;
             margin-right: 16px;
             pointer-events: all;
@@ -4898,7 +4898,7 @@ body[data-indigo-gwt-side-panel="open"] {
                 margin-left: 5px;
                 padding-bottom: 10px;
 
-                &:nth-child(1) {
+                &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 91 */
                     margin-left: 0;
 
                     > div {
@@ -4915,11 +4915,11 @@ body[data-indigo-gwt-side-panel="open"] {
                     }
                 }
 
-                &:nth-child(2) {
+                &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 92 */
                     @include button("ACTIONBAR---SUGGESTED");
                 }
 
-                @at-root .engine-panel.createcontentengine-ctn > .x-panel-bwrap > .x-panel-bbar .x-panel-fbar .x-toolbar-cell:nth-child(3) {
+                @at-root .engine-panel.createcontentengine-ctn > .x-panel-bwrap > .x-panel-bbar .x-panel-fbar .x-toolbar-cell:nth-child(3) { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 93 */
                     @include button("ACTIONBAR---SUGGESTED");
                 }
 
@@ -4934,13 +4934,13 @@ body[data-indigo-gwt-side-panel="open"] {
     // Panels
     .x-component.x-border-panel.x-border-layout-ct {
 
-        > .x-component.x-border-panel > .x-component > table tbody td:first-child {
+        > .x-component.x-border-panel > .x-component > table tbody td:first-child { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 94 */
             position: absolute;
             left: 26px;
             top: 8px !important;
         }
 
-        > .x-component.x-border-panel > .x-component > table tbody td.x-btn-mc:nth-child(2) {
+        > .x-component.x-border-panel > .x-component > table tbody td.x-btn-mc:nth-child(2) { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 95 */
             background: _theme-color(quaternary);
             position: absolute;
             left: 224px;
@@ -4958,7 +4958,7 @@ body[data-indigo-gwt-side-panel="open"] {
             }
         }
 
-        .x-component.x-border-panel:nth-child(2) {
+        .x-component.x-border-panel:nth-child(2) { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 96 */
             margin-top: 28px;
             background: linear-gradient(to bottom, #dbdbdb 1%, #d5d5d5 100%);
             box-shadow: inset 0 1px 2px 1px rgba(0, 0, 0, 0.2);

@@ -13,7 +13,7 @@
 .node-path-title {
     width: 20px;
     height: 20px;
-    background: url(../images/icons/tabs-pages-white@X2.png) no-repeat center center;
+    background: url(../images/icons/tabs-pages-white@X2.png) no-repeat center center; /* OPTIMISE URL ::: css/app/edit-contribute/_header.scss ::: 1 */
     background-size: 23px;
     text-indent: -50000px;
     position: fixed;
@@ -22,20 +22,20 @@
     display: none;
 
     body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"] & {
-        background-image: url(../images/tabs-pages-dark@X2.png)
+        background-image: url(../images/tabs-pages-dark@X2.png) /* OPTIMISE URL ::: css/app/edit-contribute/_header.scss ::: 2 */
     }
 
     body[data-multiselect="on"] & { /* MULTI SELECT NOT WORKING IN CONTRIBUTE MODE !!! */
         display: block;
         left: 100px !important;
         top: 61px !important;
-        background: url(../images/icons/icon-close-white@X2.png) no-repeat center center;
+        background: url(../images/icons/icon-close-white@X2.png) no-repeat center center; /* OPTIMISE URL ::: css/app/edit-contribute/_header.scss ::: 3 */
         background-size: 14px !important;
         background-color: transparent;
         border-radius: 100%;
 
         &[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"] {
-            background-image: url(../images/icons/icon-close-grey@X2.png)
+            background-image: url(../images/icons/icon-close-grey@X2.png) /* OPTIMISE URL ::: css/app/edit-contribute/_header.scss ::: 4 */
         }
 
         &::before {
@@ -88,7 +88,7 @@
     }
 
     body[data-multiselect="on"][data-sitesettings="false"][data-indigo-sidepanel-pinned="true"] & { /* MULTI SELECT NOT WORKING IN CONTRIBUTE MODE !!! */
-        background-image: url(../images/icons/icon-close-white@X2.png);
+        background-image: url(../images/icons/icon-close-white@X2.png); /* OPTIMISE URL ::: css/app/edit-contribute/_header.scss ::: 5 */
         background-color: #a1a4a6;
     }
 
@@ -138,7 +138,7 @@
 
     body[data-multiselect="on"] & {
         left: 0px !important;
-        background: url(../images/icons/multiple_selection@2x.png) no-repeat left center/23px 23px;
+        background: url(../images/icons/multiple_selection@2x.png) no-repeat left center/23px 23px; /* OPTIMISE URL ::: css/app/edit-contribute/_header.scss ::: 6 */
         padding-left: 24px;
     }
 
@@ -165,7 +165,7 @@
     position: fixed;
     text-align: center;
     font-style: italic !important;
-    background: url(../images/icons/icon-page-white@X2.png) no-repeat left center;
+    background: url(../images/icons/icon-page-white@X2.png) no-repeat left center; /* OPTIMISE URL ::: css/app/edit-contribute/_header.scss ::: 7 */
     background-size: 11px;
     padding-left: 13px;
     height: 16px;
@@ -176,7 +176,7 @@
 
     body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"] & {
         color: #363636;
-        background-image: url(../images/tabs-pages-dark@X2.png);
+        background-image: url(../images/tabs-pages-dark@X2.png); /* OPTIMISE URL ::: css/app/edit-contribute/_header.scss ::: 8 */
     }
 }
 
@@ -222,7 +222,7 @@ div[role="combobox"].toolbar-itemsgroup-languageswitcher {
 
     img {
         width: 15px !important;
-        background: url(../images/expanded-white.png) no-repeat left center transparent !important;
+        background: url(../images/expanded-white.png) no-repeat left center transparent !important; /* OPTIMISE URL ::: css/app/edit-contribute/_header.scss ::: 9 */
         background-size: 14px !important;
     }
 
@@ -236,7 +236,7 @@ div[role="combobox"].toolbar-itemsgroup-languageswitcher {
         }
 
         img {
-            background-image: url(../images/expanded-black.png) !important;
+            background-image: url(../images/expanded-black.png) !important; /* OPTIMISE URL ::: css/app/edit-contribute/_header.scss ::: 10 */
         }
     }
 

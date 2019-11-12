@@ -54,17 +54,17 @@
         #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset {
             .x-form-item {
                 // MODIFICATION / CREATION / PUBLICATION
-                &:nth-child(4) {
+                &:nth-child(4) { /* OPTIMISE SELECTOR ::: css/app/pickers/_all.scss ::: 1 */
                     display: inline-block !important;
                 }
 
                 // START DATE
-                &:nth-child(5) {
+                &:nth-child(5) { /* OPTIMISE SELECTOR ::: css/app/pickers/_all.scss ::: 2 */
                     display: inline-block;
                 }
 
                 // END DATE
-                &:nth-child(6) {
+                &:nth-child(6) { /* OPTIMISE SELECTOR ::: css/app/pickers/_all.scss ::: 3 */
                     display: inline-block;
                 }
             }
@@ -73,11 +73,11 @@
 
     &[data-indigo-search-date="simple"] {
 
-        #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset {
+        #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset { /* OPTIMISE SELECTOR ::: css/app/pickers/_all.scss ::: 4 */
             .x-form-item {
 
                 // MODIFICATION / CREATION / PUBLICATION
-                &:nth-child(4) {
+                &:nth-child(4) { /* OPTIMISE SELECTOR ::: css/app/pickers/_all.scss ::: 5 */
                     left: 410px;
                     display: inline-block !important;
                 }
@@ -92,7 +92,7 @@
             height: calc(100% - 277px) !important;
         }
 
-        #JahiaGxtManagerBottomTabs.indigo-collapsed + div#JahiaGxtManagerTobTable {
+        #JahiaGxtManagerBottomTabs.indigo-collapsed + div#JahiaGxtManagerTobTable { /* OPTIMISE SELECTOR ::: css/app/pickers/_all.scss ::: 6 */
             height: calc(100% - 119px) !important;
         }
     }
@@ -420,7 +420,7 @@
                         }
 
                         // First page
-                        &:nth-child(1) {
+                        &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/pickers/_all.scss ::: 7 */
                             float: left; // over ride the Actions Save float
                             width: 16px;
 
@@ -436,7 +436,7 @@
                         }
 
                         // Previous page
-                        &:nth-child(2) > table {
+                        &:nth-child(2) > table { /* OPTIMISE SELECTOR ::: css/app/pickers/_all.scss ::: 8 */
                             background: url($ICON--BACK--WHITE) no-repeat center center / 14px 14px;
                             margin-left: 5px;
 
@@ -447,14 +447,14 @@
                         }
 
                         // Skip to page input
-                        &:nth-child(5) > table {
+                        &:nth-child(5) > table { /* OPTIMISE SELECTOR ::: css/app/pickers/_all.scss ::: 9 */
                             &:hover {
                                 opacity: 1;
                             }
                         }
 
                         // Next Page
-                        &:nth-child(8) > table {
+                        &:nth-child(8) > table { /* OPTIMISE SELECTOR ::: css/app/pickers/_all.scss ::: 10 */
                             background: url($ICON--NEXT--WHITE) no-repeat center center / 14px 14px;
                             margin-right: 5px;
 
@@ -465,7 +465,7 @@
                         }
 
                         // Last page
-                        &:nth-child(9) > table {
+                        &:nth-child(9) > table { /* OPTIMISE SELECTOR ::: css/app/pickers/_all.scss ::: 11 */
                             background: url($ICON--LAST--WHITE) no-repeat center center / 14px 14px;
                             margin-right: 5px;
 
@@ -476,7 +476,7 @@
                         }
 
                         // Refresh results
-                        &:nth-child(11) > table {
+                        &:nth-child(11) > table { /* OPTIMISE SELECTOR ::: css/app/pickers/_all.scss ::: 12 */
                             background: url($ICON--REFRESH--SMALL_WHITE) no-repeat center center / 16px 12px;
 
                             &:hover {

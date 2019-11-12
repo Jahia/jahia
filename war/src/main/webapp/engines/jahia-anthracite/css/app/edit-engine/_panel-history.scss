@@ -1,7 +1,7 @@
 .engine-panel:not(.trashboardengine-ctn),
 div.engine-window {
 
-    .hide-headers #JahiaGxtEditEnginePanel-history > .x-component .x-panel:nth-child(1) .x-panel-bwrap .x-grid3-viewport .x-grid3-scroller .x-grid3-body {
+    .hide-headers #JahiaGxtEditEnginePanel-history > .x-component .x-panel:nth-child(1) .x-panel-bwrap .x-grid3-viewport .x-grid3-scroller .x-grid3-body { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-history.scss ::: 1 */
         left: 0;
     }
 
@@ -10,7 +10,7 @@ div.engine-window {
         // User has clicked on the details button, so set flag to display the panel
         &[data-indigo-details="open"] {
             // Details panel
-            > .x-component .x-panel:nth-child(2) {
+            > .x-component .x-panel:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-history.scss ::: 2 */
                 display: block;
             }
 
@@ -47,7 +47,7 @@ div.engine-window {
             .x-panel {
 
                 // History List Container
-                &:nth-child(1) {
+                &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-history.scss ::: 3 */
 
                     .x-panel-bwrap {
                         width: 100%;
@@ -248,38 +248,38 @@ div.engine-window {
                                 display: none;
                             }
 
-                            &:nth-child(1) {
+                            &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-history.scss ::: 4 */
                                 display: inline-block !important;
                                 background: url(../images/icons/icon_arrow_left_double_grey@X2.png) no-repeat center center/14px 14px;
                                 margin-left: 0px;
                             }
 
-                            &:nth-child(2) {
+                            &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-history.scss ::: 5 */
                                 display: inline-block !important;
                                 background: url(../images/icons/icon_arrow_left_single_grey@X2.png) no-repeat center center/14px 14px;
                                 margin-left: 5px;
                             }
 
                             // Text input and label
-                            &:nth-child(4),
-                            &:nth-child(5),
-                            &:nth-child(6) {
+                            &:nth-child(4), /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-history.scss ::: 6 */
+                            &:nth-child(5), /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-history.scss ::: 7 */
+                            &:nth-child(6) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-history.scss ::: 8 */
                                 display: inline-block !important;
                             }
 
-                            &:nth-child(8) {
+                            &:nth-child(8) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-history.scss ::: 9 */
                                 display: inline-block !important;
                                 background: url(../images/icons/icon-next-grey@X2.png) no-repeat center center/14px 14px;
                                 margin-right: 5px;
                             }
 
-                            &:nth-child(9) {
+                            &:nth-child(9) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-history.scss ::: 10 */
                                 display: inline-block !important;
                                 background: url(../images/icons/icon_arrow_right_double_grey@X2.png) no-repeat center center/14px 14px;
                                 margin-right: 5px;
                             }
 
-                            &:nth-child(11) {
+                            &:nth-child(11) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-history.scss ::: 11 */
                                 display: inline-block !important;
                                 background: url(../images/icons/icon-publication-launcher-grey.png) no-repeat center center/16px 12px;
                             }
@@ -305,7 +305,7 @@ div.engine-window {
                 }
 
                 // Selected Items Details Container
-                &:nth-child(2) {
+                &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-history.scss ::: 12 */
                     display: none;
                     width: 100% !important;
                     position: fixed !important;

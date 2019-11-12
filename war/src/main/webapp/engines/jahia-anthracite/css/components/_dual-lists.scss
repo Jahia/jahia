@@ -41,7 +41,7 @@
                         display: block;
 
                         // SOURCE LIST
-                        &:nth-child(1) {
+                        &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/components/_dual-lists.scss ::: 1 */
 
                             width: calc(50% - 15px);
                             display: inline-block;
@@ -67,7 +67,7 @@
                         }
 
                         // BUTTONS
-                        &:nth-child(2) {
+                        &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/components/_dual-lists.scss ::: 2 */
                             width: 30px;
                             display: inline-block;
                             position: relative !important;
@@ -78,7 +78,7 @@
                         }
 
                         // SELECTION LIST
-                        &:nth-child(3) {
+                        &:nth-child(3) { /* OPTIMISE SELECTOR ::: css/components/_dual-lists.scss ::: 3 */
                             width: calc(50% - 15px);
                             display: inline-block;
                             position: relative !important;

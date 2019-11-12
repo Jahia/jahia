@@ -10,7 +10,7 @@ body[data-indigo-app="contribute"] {
     }
 
     // Show Live Entry even if disabled
-    div.x-menu div.x-menu-list-item.x-item-disabled span.x-menu-item.toolbar-item-live {
+    div.x-menu div.x-menu-list-item.x-item-disabled span.x-menu-item.toolbar-item-live { /* OPTIMISE SELECTOR ::: css/app/edit-contribute/_menu-items.scss ::: 1 */
         display: block !important;
         color: rgba(_property($MENU-OPENED--COLOR, $CONTRIBUTE-MENUS), .6) !important;
         background: _property($MENU-OPENED--BG, $CONTRIBUTE-MENUS) !important;
@@ -219,8 +219,8 @@ body[data-indigo-app="contribute"] {
 }
 
 // Fix for x-hide-display when windows is resized.
-.edit-menu-topright > table > tbody > tr > td > table > tbody > tr:first-child > td.x-toolbar-cell.x-hide-display,
-.edit-menu-topright > table > tbody > tr > td > table > tbody > tr:first-child > td.x-toolbar-cell.x-hide-display > table.x-hide-display:not(.x-item-disabled) {
+.edit-menu-topright > table > tbody > tr > td > table > tbody > tr:first-child > td.x-toolbar-cell.x-hide-display, /* OPTIMISE SELECTOR ::: css/app/edit-contribute/_menu-items.scss ::: 2 */
+.edit-menu-topright > table > tbody > tr > td > table > tbody > tr:first-child > td.x-toolbar-cell.x-hide-display > table.x-hide-display:not(.x-item-disabled) { /* OPTIMISE SELECTOR ::: css/app/edit-contribute/_menu-items.scss ::: 3 */
     display: block !important;
     float: left;
 }
@@ -778,7 +778,7 @@ body[data-indigo-app="contribute"] {
     }
 }
 
-div.x-jahia-root > div.app-container div.action-toolbar.edit-menu-topright table tbody tr td table tr td.x-toolbar-cell,
+div.x-jahia-root > div.app-container div.action-toolbar.edit-menu-topright table tbody tr td table tr td.x-toolbar-cell, /* OPTIMISE SELECTOR ::: css/app/edit-contribute/_menu-items.scss ::: 4 */
 div.x-jahia-root {
     table.toolbar-item-publishone.action-bar-tool-item,
     table.toolbar-item-preview.action-bar-tool-item {
@@ -1115,7 +1115,7 @@ div.x-jahia-root {
 
 
 
-div.x-menu.action-bar-menu.menu-editmode-managers-menu {
+div.x-menu.action-bar-menu.menu-editmode-managers-menu { /* OPTIMISE SELECTOR ::: css/app/edit-contribute/_menu-items.scss ::: 5 */
 
     position: absolute !important;
     height: 100%;
@@ -1277,7 +1277,7 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
 }
 
 @media only screen and (max-height: 600px) {
-    div.x-menu.action-bar-menu.menu-editmode-managers-menu {
+    div.x-menu.action-bar-menu.menu-editmode-managers-menu { /* OPTIMISE SELECTOR ::: css/app/edit-contribute/_menu-items.scss ::: 6 */
         width: 490px !important;
 
         .managers-menu-mask {
@@ -1287,7 +1287,7 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
 }
 
 @media only screen and (max-height: 480px) {
-    div.x-menu.action-bar-menu.menu-editmode-managers-menu {
+    div.x-menu.action-bar-menu.menu-editmode-managers-menu { /* OPTIMISE SELECTOR ::: css/app/edit-contribute/_menu-items.scss ::: 7 */
         width: 600px !important;
         padding: 30px 10px 0 33px;
 

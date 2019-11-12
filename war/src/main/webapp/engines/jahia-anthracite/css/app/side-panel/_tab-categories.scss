@@ -14,7 +14,7 @@
         opacity: 0.5;
 
         // CATEGORY ICON
-        &[src$="/jnt_category.png"] {
+        &[src$="/jnt_category.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-categories.scss ::: 1 */
             background-image: url(../images/icons_dark/category.svg);
         }
     }
@@ -22,7 +22,7 @@
     .x-grid3-row-selected {
         .x-tree3-node-icon {
             // CATEGORY ICON
-            &[src$="/jnt_category.png"] {
+            &[src$="/jnt_category.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-categories.scss ::: 2 */
                 background-image: url(../images/icons_light/category.svg);
                 opacity: 0.9;
             }
@@ -35,7 +35,7 @@
     }
 
     // Tree Options
-    .x-box-item:nth-child(1) .x-grid3-td-displayName {
+    .x-box-item:nth-child(1) .x-grid3-td-displayName { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-categories.scss ::: 3 */
         &::after {
             /* MORE Options button for TREE */
             display: none !important;

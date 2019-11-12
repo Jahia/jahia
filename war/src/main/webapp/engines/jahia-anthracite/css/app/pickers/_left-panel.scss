@@ -177,14 +177,14 @@
 
                 > .x-panel-body {
                     > .x-component {
-                        &:nth-child(1) {
+                        &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/pickers/_left-panel.scss ::: 1 */
                             background: red !important;
                             width: 0;
                             height: 0;
 
                             td {
                                 // Search input string
-                                &:nth-child(1) {
+                                &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/pickers/_left-panel.scss ::: 2 */
                                     label {
                                         display: none !important;
                                     }
@@ -210,7 +210,7 @@
                                 }
 
                                 // Search button
-                                &:nth-child(2) {
+                                &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/pickers/_left-panel.scss ::: 3 */
                                     > table {
                                         position: fixed;
                                         top: 6px;
@@ -237,7 +237,7 @@
                                 }
 
                                 // Save Search
-                                &:nth-child(3) {
+                                &:nth-child(3) { /* OPTIMISE SELECTOR ::: css/app/pickers/_left-panel.scss ::: 4 */
                                     > table {
                                         position: fixed;
                                         top: 44px;
@@ -259,7 +259,7 @@
                         }
 
                         // Search Criterium
-                        &:nth-child(2) {
+                        &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/pickers/_left-panel.scss ::: 5 */
                             background: blue !important;
                             position: fixed;
                             left: 0;
@@ -299,7 +299,7 @@
                                     width: 150px;
 
                                     // PAGE PICKER
-                                    &:nth-child(1) {
+                                    &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/pickers/_left-panel.scss ::: 6 */
                                         label {
                                             display: none !important;
                                         }
@@ -310,7 +310,7 @@
                                     }
 
                                     // LANGUAGE
-                                    &:nth-child(2) {
+                                    &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/pickers/_left-panel.scss ::: 7 */
 
                                         > label {
                                             display: none !important;
@@ -318,7 +318,7 @@
                                     }
 
                                     // META DATA
-                                    &:nth-child(3) {
+                                    &:nth-child(3) { /* OPTIMISE SELECTOR ::: css/app/pickers/_left-panel.scss ::: 8 */
                                         // border-right: 1px solid _theme-color(primary);
 
                                         &::before {
@@ -371,7 +371,7 @@
                                     }
 
                                     // CREATION / MODIFICATION / PUBLICATION
-                                    &:nth-child(4) {
+                                    &:nth-child(4) { /* OPTIMISE SELECTOR ::: css/app/pickers/_left-panel.scss ::: 9 */
                                         width: 150px !important;
                                         position: fixed;
                                         left: 606px;
@@ -428,7 +428,7 @@
                                     }
 
                                     // START DATE
-                                    &:nth-child(5) {
+                                    &:nth-child(5) { /* OPTIMISE SELECTOR ::: css/app/pickers/_left-panel.scss ::: 10 */
                                         position: fixed;
                                         left: 410px;
                                         width: 93px !important;
@@ -444,7 +444,7 @@
                                     }
 
                                     // END DATE
-                                    &:nth-child(6) {
+                                    &:nth-child(6) { /* OPTIMISE SELECTOR ::: css/app/pickers/_left-panel.scss ::: 11 */
                                         position: fixed;
                                         left: 508px;
                                         width: 93px !important;
@@ -460,14 +460,14 @@
                                     }
 
                                     // DATE RANGE
-                                    &:nth-child(7) {
+                                    &:nth-child(7) { /* OPTIMISE SELECTOR ::: css/app/pickers/_left-panel.scss ::: 12 */
                                         > label {
                                             display: none !important;
                                         }
                                     }
 
                                     // ITEMS PER PAGE
-                                    &:nth-child(8) {
+                                    &:nth-child(8) { /* OPTIMISE SELECTOR ::: css/app/pickers/_left-panel.scss ::: 13 */
                                         display: none !important;
                                     }
                                 }

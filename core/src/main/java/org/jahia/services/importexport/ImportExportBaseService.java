@@ -428,7 +428,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             if (i > 0) {
                 statement.append(" OR ");
             }
-            statement.append("isdescendantnode(['").append(path).append("'])");
+            statement.append("isdescendantnode(['").append(JCRContentUtils.sqlEncode(path)).append("'])");
         }
         statement.append(")");
 
@@ -436,7 +436,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             statement.append("AND NOT (");
             Iterator nodeTypesToIgnoreIterator = nodeTypesToIgnore.iterator();
             while (nodeTypesToIgnoreIterator.hasNext()) {
-                statement.append("[jcr:primaryType] = '").append(nodeTypesToIgnoreIterator.next()).append("'");
+                statement.append("[jcr:primaryType] = '").append(JCRContentUtils.sqlEncode(nodeTypesToIgnoreIterator.next())).append("'");
                 if (nodeTypesToIgnoreIterator.hasNext()) {
                     statement.append(" OR ");
                 }
@@ -445,7 +445,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
 
         if (locale != null) {
-            statement.append(" AND [jcr:language] = '").append(locale).append("'");
+            statement.append(" AND [jcr:language] = '").append(JCRContentUtils.sqlEncode(locale)).append("'");
         }
 
         if (logger.isDebugEnabled()) {

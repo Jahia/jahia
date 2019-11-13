@@ -278,9 +278,41 @@ final public class BundleInfoJcrHelper {
         try {
             root = session.getNode(PATH_MODULE_MANAGEMENT);
         } catch (PathNotFoundException e) {
-            root = session.getRootNode().addNode(NODE_MODULE_MANAGENENT, NODE_TYPE_ROOT);
+            root = threadSafeGetRootNode(session);
         }
         return root;
+    }
+
+    /**
+     * Synchronized because same name sibling is enable on JCR repository root node,
+     * so concurrent creation of the /module-management node will result in creation of multiple nodes with index in the node name.
+     * like: /module-management[2]
+     *
+     * This function provide a synchronized safe check to avoid that. and insure only one /module-management is created and returned
+     *
+     * @param session the current JCR session
+     * @return the module manager JCR root node
+     * @throws RepositoryException in case of JCR errors
+     */
+    private synchronized static JCRNodeWrapper threadSafeGetRootNode(JCRSessionWrapper session) throws RepositoryException {
+        // safe check if a previous thread already create the node, I know it's look strange since we already did the check in getRootNode
+        // and we get a PathNotFoundException, but it's necessary in case 2 or more threads also have the PathNotFoundException
+        // they will also execute the synchronized createRootNode.
+        session.refresh(true);
+        if (session.getRootNode().hasNode(NODE_MODULE_MANAGENENT)) {
+            return session.getRootNode().getNode(NODE_MODULE_MANAGENENT);
+        }
+
+        // use separate session to avoid impacting current session changes
+        JCRTemplate.getInstance().doExecuteWithSystemSession(systemSession -> {
+            systemSession.getRootNode().addNode(NODE_MODULE_MANAGENENT, NODE_TYPE_ROOT);
+            systemSession.save();
+            return null;
+        });
+
+        // refresh to get previously created node
+        session.refresh(true);
+        return session.getRootNode().getNode(NODE_MODULE_MANAGENENT);
     }
 
     /**

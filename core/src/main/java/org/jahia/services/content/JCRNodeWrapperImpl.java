@@ -1789,10 +1789,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         JCRLockUtils.checkLock(this, locale != null && epd.isInternationalized(), false);
         value = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(this, name, epd, value);
 
-        if (locale != null) {
-            if (epd.isInternationalized()) {
-                return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(name, value), session, provider, epd, name);
+        if (locale != null && epd.isInternationalized()) {
+            if (value == null) {
+                getOrCreateI18N(locale).setProperty(name, (Value) null);
+                return new JCRPropertyWrapperImpl(this, null, session, provider, epd, name);
             }
+            return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(name, value), session, provider, epd, name);
         }
 
         if (value == null) {

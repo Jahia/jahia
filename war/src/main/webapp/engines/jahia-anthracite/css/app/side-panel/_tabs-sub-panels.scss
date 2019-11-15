@@ -60,7 +60,7 @@
             position: absolute;
             text-indent: -50000px;
             right: -6px;
-            background: url(../images/icons/toggle-EW@X2.png) no-repeat center center;
+            background: url(../images/icons/toggle-EW@X2.png) no-repeat center center; /* OPTIMISE URL ::: css/app/side-panel/_tabs-sub-panels.scss ::: 1 */
             background-size: 15px;
             top: calc(50% - 12px);
             width: 25px;
@@ -79,7 +79,7 @@
         body.minimise-results & {
 
             &:before {
-                background: url(../images/icons/toggle-WE-white@X2.png) no-repeat center center;
+                background: url(../images/icons/toggle-WE-white@X2.png) no-repeat center center; /* OPTIMISE URL ::: css/app/side-panel/_tabs-sub-panels.scss ::: 2 */
                 background-size: 15px;
             }
 
@@ -204,7 +204,7 @@
                     position: absolute;
                     text-indent: -50000px;
                     right: 0;
-                    background: url(../images/icons/toggle-EW@X2.png) no-repeat center center;
+                    background: url(../images/icons/toggle-EW@X2.png) no-repeat center center; /* OPTIMISE URL ::: css/app/side-panel/_tabs-sub-panels.scss ::: 3 */
                     background-size: 15px;
                     top: calc(50% - 12px);
                     width: 25px;
@@ -225,7 +225,7 @@
 
                 body.minimise-results & {
                     &:after {
-                        background: url(../images/icons/toggle-WE-white@X2.png) no-repeat center center;
+                        background: url(../images/icons/toggle-WE-white@X2.png) no-repeat center center; /* OPTIMISE URL ::: css/app/side-panel/_tabs-sub-panels.scss ::: 4 */
                         background-size: 15px;
                     }
 

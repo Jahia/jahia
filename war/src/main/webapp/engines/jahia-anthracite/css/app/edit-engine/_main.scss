@@ -15,7 +15,7 @@ body[data-indigo-edit-engine="open"] {
     &.x-masked {
         &::before {
             position: absolute;
-            background: url(../images/loader_dark.svg) no-repeat center center #d6d6d6;
+            background: url(../images/loader_dark.svg) no-repeat center center #d6d6d6; /* OPTIMISE URL ::: css/app/edit-engine/_main.scss ::: 3 */
             z-index: 99;
         }
     }
@@ -711,7 +711,7 @@ div.engine-window {
             // Add Locked icon if the node has been locked
             &[data-content-locked="true"] {
                 &::before {
-                    background: url(../images/icons/icon-lock@X2.png) no-repeat left center;
+                    background: url(../images/icons/icon-lock@X2.png) no-repeat left center; /* OPTIMISE URL ::: css/app/edit-engine/_main.scss ::: 1 */
                     background-size: 20px;
                     padding-left: 22px;
                 }
@@ -719,7 +719,7 @@ div.engine-window {
 
             &[data-content-locked="true"].marked-for-deletion {
                 &::before {
-                    background-image: url(../images/icons_red/markefordelete.svg);
+                    background-image: url(../images/icons_red/markefordelete.svg); /* OPTIMISE URL ::: css/app/edit-engine/_main.scss ::: 2 */
                     text-decoration: line-through;
                     color: _theme-color(status, error);
                 }

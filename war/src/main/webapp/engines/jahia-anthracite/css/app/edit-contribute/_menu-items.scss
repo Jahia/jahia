@@ -319,7 +319,7 @@ body[data-indigo-app="contribute"] {
         width: 14px;
         left: -30px !important;
         top: -6px !important;
-        background: url(../images/expanded-white.png) no-repeat center center hsla(210, 5%, 40%, 1);
+        background: url(../images/expanded-white.png) no-repeat center center hsla(210, 5%, 40%, 1); /* OPTIMISE URL ::: css/app/edit-contribute/_menu-items.scss ::: 1 */
         background-size: 15px;
         border-radius: 2px;
 
@@ -386,7 +386,7 @@ body[data-indigo-app="contribute"] {
 
 // Status Button
 .edit-menu-status {
-    background: url(../images/icons_light/cache.svg) left center no-repeat, url(../images/expanded-white.png) no-repeat right 2px center transparent;
+    background: url(../images/icons_light/cache.svg) left center no-repeat, url(../images/expanded-white.png) no-repeat right 2px center transparent; /* OPTIMISE URL ::: css/app/edit-contribute/_menu-items.scss ::: 2 */ /* OPTIMISE URL ::: css/app/edit-contribute/_menu-items.scss ::: 2b */
     background-size: 22px, 15px;
     padding-left: 25px;
     height: 22px;
@@ -430,7 +430,7 @@ body[data-indigo-app="contribute"] {
 
     body[data-contribute-mode="content"] &,
     body[data-contribute-mode="files"] & {
-        background: url(../images/icons/context-menu/publish.png) no-repeat center left 4px;
+        background: url(../images/icons/context-menu/publish.png) no-repeat center left 4px; /* OPTIMISE URL ::: css/app/edit-contribute/_menu-items.scss ::: 3 */
         background-size: 21px;
     }
 
@@ -605,11 +605,11 @@ body[data-indigo-app="contribute"] {
 .edit-menu-publication,
 .contribute-menu-publication {
     position: relative;
-    background: url(../images/tabs-publish-white@X2.png) no-repeat left center;
+    background: url(../images/tabs-publish-white@X2.png) no-repeat left center; /* OPTIMISE URL ::: css/app/edit-contribute/_menu-items.scss ::: 4 */
     background-size: 23px;
 
     .x-viewport-contributemode & {
-        background: url(../images/icons/context-menu/publish.png) no-repeat center left 4px;
+        background: url(../images/icons/context-menu/publish.png) no-repeat center left 4px; /* OPTIMISE URL ::: css/app/edit-contribute/_menu-items.scss ::: 5 */
         background-size: 21px;
 
         &::before {
@@ -624,7 +624,7 @@ body[data-indigo-app="contribute"] {
     }
 
     body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-multiselect="on"] & {
-        background-image: url(../images/icons/multiple_selection-grey@2x.png)
+        background-image: url(../images/icons/multiple_selection-grey@2x.png); /* OPTIMISE URL ::: css/app/edit-contribute/_menu-items.scss ::: 6 */
     }
 
     &::after {
@@ -752,7 +752,7 @@ body[data-indigo-app="contribute"] {
     &[data-publication-status="published"] {
         /* Published */
         &::before {
-            background: url("../images/icons/icon-check-white@X2.png") no-repeat _theme-color(status, published) top left / 18px;
+            background: url("../images/icons/icon-check-white@X2.png") no-repeat _theme-color(status, published) top left / 18px; /* OPTIMISE URL ::: css/app/edit-contribute/_menu-items.scss ::: 7 */
         }
     }
 
@@ -791,7 +791,7 @@ div.x-jahia-root {
     position: absolute;
     left: -30px !important;
     top: -6px !important;
-    background: url(../images/expanded-white.png) no-repeat center center hsla(210, 5%, 40%, 1);
+    background: url(../images/expanded-white.png) no-repeat center center hsla(210, 5%, 40%, 1); /* OPTIMISE URL ::: css/app/edit-contribute/_menu-items.scss ::: 8 */
     background-size: 15px;
     height: 14px;
     width: 14px;
@@ -821,7 +821,7 @@ div.x-jahia-root {
 
 .toolbar-item-publishone.action-bar-tool-item {
     width: auto;
-    background: url(../images/icons/context-menu/publish.png) no-repeat center left 4px;
+    background: url(../images/icons/context-menu/publish.png) no-repeat center left 4px; /* OPTIMISE URL ::: css/app/edit-contribute/_menu-items.scss ::: 9 */
     background-size: 20px;
     padding-left: 28px;
     height: 22px;
@@ -955,14 +955,14 @@ div.x-jahia-root {
     left: 29px;
     z-index: $ZINDEX--HAMBURGER_MENU---BUTTON;
     display: block;
-    background: url(../images/logos/dx_logo_solid-white.png) no-repeat center;
+    background: url(../images/logos/dx_logo_solid-white.png) no-repeat center; /* OPTIMISE URL ::: css/app/edit-contribute/_menu-items.scss ::: 10 */
     background-size: 56px;
     margin-top: 0;
     opacity: 0.99 !important;
     transition: all 0.2s ease-in 0s;
 
     body[data-indigo-gwt-side-panel="open"] & {
-        background: url(../images/logo.png) center;
+        background: url(../images/logo.png) center; /* OPTIMISE URL ::: css/app/edit-contribute/_menu-items.scss ::: 11 */
         background-size: 56px;
         margin-left: 5px;
     }
@@ -972,7 +972,7 @@ div.x-jahia-root {
     }
 
     .x-viewport-adminmode & {
-        background: url(../images/logo.png) no-repeat center !important;
+        background: url(../images/logo.png) no-repeat center !important; /* OPTIMISE URL ::: css/app/edit-contribute/_menu-items.scss ::: 12 */
         background-size: 50px !important;
     }
 
@@ -981,7 +981,7 @@ div.x-jahia-root {
         left: 5px;
         height: 42px;
 
-        background-image: url('../images/dx_logo_inverted.png') !important;
+        background-image: url('../images/dx_logo_inverted.png') !important; /* OPTIMISE URL ::: css/app/edit-contribute/_menu-items.scss ::: 13 */
         background-size: 32px 32px !important;
     }
 
@@ -1005,7 +1005,7 @@ div.x-jahia-root {
     }
 
     body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
-        background: url(../images/logo.png) center;
+        background: url(../images/logo.png) center; /* OPTIMISE URL ::: css/app/edit-contribute/_menu-items.scss ::: 14 */
         background-size: 56px;
     }
 
@@ -1038,11 +1038,11 @@ div.x-jahia-root {
 
 // Trash Button
 .toolbar-item-showtrashboard {
-    background: url(../images/tabs-trash-white@X2.png) no-repeat top center;
+    background: url(../images/tabs-trash-white@X2.png) no-repeat top center; /* OPTIMISE URL ::: css/app/edit-contribute/_menu-items.scss ::: 15 */
     background-size: 23px 23px;
 
     body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"] & {
-        background-image: url(../images/tabs-trash-black@X2.png);
+        background-image: url(../images/tabs-trash-black@X2.png); /* OPTIMISE URL ::: css/app/edit-contribute/_menu-items.scss ::: 16 */
     }
 
     &::after {
@@ -1084,13 +1084,13 @@ div.x-jahia-root {
 
 // Clipboard Button
 .toolbar-item-clipboard {
-    background: url(../images/icons/clipboard.png) no-repeat top center;
+    background: url(../images/icons/clipboard.png) no-repeat top center; /* OPTIMISE URL ::: css/app/edit-contribute/_menu-items.scss ::: 17 */
     background-size: 20px 20px;
     margin-right: 10px !important;
     margin-left: 0 !important;
 
     body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"] & {
-        background-image: url(../images/icons/clipboard-grey.png);
+        background-image: url(../images/icons/clipboard-grey.png); /* OPTIMISE URL ::: css/app/edit-contribute/_menu-items.scss ::: 18 */
     }
 
     &::after {
@@ -1142,7 +1142,7 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu { /* OPTIMISE SELECTOR ::
         height: 57px;
         top: 39px;
         border: none;
-        background: url(../images/full-logo-white.png) no-repeat center center;
+        background: url(../images/full-logo-white.png) no-repeat center center; /* OPTIMISE URL ::: css/app/edit-contribute/_menu-items.scss ::: 19 */
         background-size: 321px;
         margin-bottom: 30px;
         text-indent: -50000px;
@@ -1272,7 +1272,7 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu { /* OPTIMISE SELECTOR ::
     &[data-indigo-current-app="contentmanager"] .managers-menu-close,
     &[data-indigo-current-app="contribute"] .managers-menu-close,
     &[data-indigo-current-app="edit"] .managers-menu-close {
-        background-image: url(../images/full-logo-white-jcontent.png);
+        background-image: url(../images/full-logo-white-jcontent.png); /* OPTIMISE URL ::: css/app/edit-contribute/_menu-items.scss ::: 20 */
     }
 }
 

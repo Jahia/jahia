@@ -29,7 +29,7 @@ img.invalid-icon {
         color: $color-white;
         font-family: $FONT--FAMILY---NUNITO;
         font-weight: $FONT--WEIGHT---NORMAL;
-        background: url(../images/icons/ic_info_outline@2x.png) no-repeat left center !important;
+        background: url(../images/icons/ic_info_outline@2x.png) no-repeat left center !important; /* OPTIMISE URL ::: css/app/edit-engine/_forms.scss ::: 1 */
         background-size: 20px !important;
     }
 
@@ -43,7 +43,7 @@ img.invalid-icon {
     }
 
     .x-btn.x-btn-noicon button.x-btn-text {
-        background: url(../images/icons_dark/color.svg) no-repeat center center !important;
+        background: url(../images/icons_dark/color.svg) no-repeat center center !important; /* OPTIMISE URL ::: css/app/edit-engine/_forms.scss ::: 2 */
         background-size: 18px !important;
         margin-top: -2px;
         opacity: .67;

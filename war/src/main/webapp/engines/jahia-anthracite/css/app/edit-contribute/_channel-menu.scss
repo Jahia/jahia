@@ -44,7 +44,7 @@
         background: url(../images/icons/mobile_light.svg) no-repeat top 6px center;
 
         body[data-indigo-gwt-side-panel="open"] & {
-            background-image: url(../images/icons/tabs-devices-black@X2.png);
+            background-image: url(../images/icons/tabs-devices-black@X2.png); /* OPTIMISE URL ::: css/app/edit-contribute/_channel-menu.scss ::: 1 */
             color: #747b7f;
         }
 
@@ -68,7 +68,7 @@
         body[data-channel] & {
             @include text(18px, #f1f1f1, 500);
             text-transform: none;
-            background: url(../images/icons/toggle-NS-white@X2.png) no-repeat right top 21px;
+            background: url(../images/icons/toggle-NS-white@X2.png) no-repeat right top 21px; /* OPTIMISE URL ::: css/app/edit-contribute/_channel-menu.scss ::: 2 */
             background-size: 14px;
             padding-right: 20px;
             padding-top: 16px;
@@ -176,7 +176,7 @@
     #channel-close-button {
         width: 15px;
         height: 15px;
-        background: url(../images/icons/icon-close-white@X2.png) no-repeat center center;
+        background: url(../images/icons/icon-close-white@X2.png) no-repeat center center; /* OPTIMISE URL ::: css/app/edit-contribute/_channel-menu.scss ::: 3 */
         background-size: 15px;
         display: none;
         border: none;

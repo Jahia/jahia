@@ -33,7 +33,7 @@
 
     // BOOTSTRAP COLUMNS
     img[src$="/jnt_page_large.png"] {
-        background-image: url(../images/tabs-pages-dark@X2.png);
+        background-image: url(../images/tabs-pages-dark@X2.png); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 1 */
     }
 
     // COMMON ICON REPLACEMENTS IN TREE
@@ -68,34 +68,34 @@
 
     // Category Icon
     img[src$="/jnt_category.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 14 */
-        background-image: url(../images/icons_dark/category.svg);
+        background-image: url(../images/icons_dark/category.svg); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 2 */
         background-size: 20px;
         opacity: 0.5;
     }
 
     // Portlet Icon
     img[src$="/jnt_portletFolder.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 15 */
-        background-image: url(../images/icons_dark/portlets.svg);
+        background-image: url(../images/icons_dark/portlets.svg); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 3 */
         background-size: 20px;
         opacity: 0.5;
     }
 
     // BOOTSTRAP COLUMNS
     img[src$="/bootstrap3nt_columns.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 16 */
-        background-image: url(../images/icons/icon_display_thumbs_grey@X2.png);
+        background-image: url(../images/icons/icon_display_thumbs_grey@X2.png); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 4 */
         background-size: 18px;
     }
 
     // CONTENT LIST
     img[src$="/jnt_contentList.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss 17 */
-        background-image: url(../images/icons/tabs-placeholder-black@X2.png);
+        background-image: url(../images/icons/tabs-placeholder-black@X2.png); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 5 */
         background-size: 18px;
     }
 
 
     // IMAGE ICON
     img[src$="/jnt_file_img.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 18 */
-        background-image: url(../images/icons/icon-image@X2.png);
+        background-image: url(../images/icons/icon-image@X2.png); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 6 */
     }
 
     // PAGE ICON
@@ -107,7 +107,7 @@
     .x-grid3-row-selected {
         // IMAGE ICON
         img[src$="/jnt_file_img.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 20 */
-            background-image: url(../images/icons/icon-image-white@X2.png);
+            background-image: url(../images/icons/icon-image-white@X2.png); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 7 */
         }
 
         // PAGE ICON
@@ -120,7 +120,7 @@
     #JahiaGxtManagerTobTable {
         // PAGE ICON
         img[src$="/jnt_page.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 22 */
-            background-image: url(../images/tabs-pages-white@X2.png);
+            background-image: url(../images/tabs-pages-white@X2.png); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 8 */
             opacity: 0.8;
         }
 
@@ -135,20 +135,20 @@
 
         // EDP item icon
         img[src$="/remoteFolder.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 25 */
-            background-image: url(../images/icons/tabs-files-shared-dark@X2.png);
+            background-image: url(../images/icons/tabs-files-shared-dark@X2.png); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 9 */
             opacity: 0.8;
         }
 
         // BOOTSTRAP COLUMNS
         img[src$="/jnt_category.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 26 */
-            background-image: url(../images/icons_light/category.svg);
+            background-image: url(../images/icons_light/category.svg); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 10 */
             background-size: 20px;
             opacity: 0.5;
         }
 
         // Portlet Icon
         img[src$="/jnt_portletFolder.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 27 */
-            background-image: url(../images/icons_light/portlets.svg);
+            background-image: url(../images/icons_light/portlets.svg); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 11 */
             background-size: 20px;
             opacity: 0.5;
         }
@@ -162,17 +162,17 @@
 
     // EDP item icon
     img[src$="/remoteFolder.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 30 */
-        background-image: url(../images/icons/tabs-files-shared-dark@X2.png);
+        background-image: url(../images/icons/tabs-files-shared-dark@X2.png); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 12 */
     }
 
     // SITE ICON
     img[src$="/jnt_virtualsite.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 31 */
-        background-image: url(../images/icons/tabs-site-dark@X2.png);
+        background-image: url(../images/icons/tabs-site-dark@X2.png); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 13 */
     }
 
     // MOUNTS ICON
     img[src$="/jnt_mounts.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 32 */
-        background-image: url(../images/icons/tabs-placeholder-black@X2.png);
+        background-image: url(../images/icons/tabs-placeholder-black@X2.png); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 14 */
     }
 
     // SELECTED ICONS
@@ -186,32 +186,32 @@
 
         // EDP item icon
         img[src$="/remoteFolder.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 35 */
-            background-image: url(../images/icons/tabs-files-shared-white@X2.png) !important;
+            background-image: url(../images/icons/tabs-files-shared-white@X2.png) !important; /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 15 */
             opacity: 1 !important;
         }
 
         // BOOTSTRAP COLUMNS
         img[src$="/jnt_category.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 36 */
-            background-image: url(../images/icons_light/category.svg);
+            background-image: url(../images/icons_light/category.svg); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 16 */
             background-size: 20px;
             opacity: 0.9;
         }
 
         // Portlet Icon
         img[src$="/jnt_portletFolder.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 37 */
-            background-image: url(../images/icons_light/portlets.svg);
+            background-image: url(../images/icons_light/portlets.svg); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 17 */
             background-size: 20px;
             opacity: 0.9;
         }
 
         // SITE ICON
         img[src$="/jnt_virtualsite.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 38 */
-            background-image: url(../images/icons/tabs-site-white@X2.png);
+            background-image: url(../images/icons/tabs-site-white@X2.png); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 18 */
         }
 
         // MOUNTS ICON
         img[src$="/jnt_mounts.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 39 */
-            background-image: url(../images/icons/tabs-placeholder-white@X2.png);
+            background-image: url(../images/icons/tabs-placeholder-white@X2.png); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 19 */
         }
 
         // PAGE ICON

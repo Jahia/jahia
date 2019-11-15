@@ -100,7 +100,7 @@ div.engine-window {
                                             background: _theme-color(secondary, b) !important;
 
                                             a {
-                                                background: url(../images/icons/icon-toggle-expanded-small-normal.png) no-repeat center center;
+                                                background: url(../images/icons/icon-toggle-expanded-small-normal.png) no-repeat center center; /* OPTIMISE URL ::: css/app/edit-engine/_panel-history.scss ::: 1 */
                                                 margin-right: 5px;
                                             }
 
@@ -169,7 +169,7 @@ div.engine-window {
                                 }
 
                                 .info-button {
-                                    background: url(../images/icons/ic_info_outline-DARK@2x.png) right center no-repeat;
+                                    background: url(../images/icons/ic_info_outline-DARK@2x.png) right center no-repeat; /* OPTIMISE URL ::: css/app/edit-engine/_panel-history.scss ::: 2 */
                                     background-size: 18px;
                                 }
                             }
@@ -181,7 +181,7 @@ div.engine-window {
                                     background: _property($ROW--BG---SELECTED, $BACKGROUND-JOBS);
 
                                     .info-button {
-                                        background-image: url(../images/icons/ic_info_outline@2x.png);
+                                        background-image: url(../images/icons/ic_info_outline@2x.png); /* OPTIMISE URL ::: css/app/edit-engine/_panel-history.scss ::: 3 */
                                     }
                                 }
 
@@ -250,13 +250,13 @@ div.engine-window {
 
                             &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-history.scss ::: 4 */
                                 display: inline-block !important;
-                                background: url(../images/icons/icon_arrow_left_double_grey@X2.png) no-repeat center center/14px 14px;
+                                background: url(../images/icons/icon_arrow_left_double_grey@X2.png) no-repeat center center/14px 14px; /* OPTIMISE URL ::: css/app/edit-engine/_panel-history.scss ::: 4 */
                                 margin-left: 0px;
                             }
 
                             &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-history.scss ::: 5 */
                                 display: inline-block !important;
-                                background: url(../images/icons/icon_arrow_left_single_grey@X2.png) no-repeat center center/14px 14px;
+                                background: url(../images/icons/icon_arrow_left_single_grey@X2.png) no-repeat center center/14px 14px; /* OPTIMISE URL ::: css/app/edit-engine/_panel-history.scss ::: 5 */
                                 margin-left: 5px;
                             }
 
@@ -269,19 +269,19 @@ div.engine-window {
 
                             &:nth-child(8) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-history.scss ::: 9 */
                                 display: inline-block !important;
-                                background: url(../images/icons/icon-next-grey@X2.png) no-repeat center center/14px 14px;
+                                background: url(../images/icons/icon-next-grey@X2.png) no-repeat center center/14px 14px; /* OPTIMISE URL ::: css/app/edit-engine/_panel-history.scss ::: 6 */
                                 margin-right: 5px;
                             }
 
                             &:nth-child(9) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-history.scss ::: 10 */
                                 display: inline-block !important;
-                                background: url(../images/icons/icon_arrow_right_double_grey@X2.png) no-repeat center center/14px 14px;
+                                background: url(../images/icons/icon_arrow_right_double_grey@X2.png) no-repeat center center/14px 14px; /* OPTIMISE URL ::: css/app/edit-engine/_panel-history.scss ::: 7 */
                                 margin-right: 5px;
                             }
 
                             &:nth-child(11) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-history.scss ::: 11 */
                                 display: inline-block !important;
-                                background: url(../images/icons/icon-publication-launcher-grey.png) no-repeat center center/16px 12px;
+                                background: url(../images/icons/icon-publication-launcher-grey.png) no-repeat center center/16px 12px; /* OPTIMISE URL ::: css/app/edit-engine/_panel-history.scss ::: 8 */
                             }
 
                             .my-paging-display {
@@ -329,7 +329,7 @@ div.engine-window {
 
                         // Contains minimise button
                         .x-panel-toolbar {
-                            background: url(../images/icons/icon-close-grey@X2.png) no-repeat center bottom;
+                            background: url(../images/icons/icon-close-grey@X2.png) no-repeat center bottom; /* OPTIMISE URL ::: css/app/edit-engine/_panel-history.scss ::: 9 */
                             background-size: 20px;
                             width: 25px;
                             height: 25px;

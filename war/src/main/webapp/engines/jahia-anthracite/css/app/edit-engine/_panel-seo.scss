@@ -130,7 +130,7 @@
     }
 
     .x-grid3-viewport > .x-grid3-header .x-grid3-header-inner .x-grid3-hh > table > tbody td div .x-grid3-hd-btn { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-seo.scss ::: 1 */
-        background: url(../images/icons/combo-arrow-grey.png) no-repeat center center !important;
+        background: url(../images/icons/combo-arrow-grey.png) no-repeat center center !important; /* OPTIMISE URL ::: css/app/edit-engine/_panel-seo.scss ::: 1 */
         width: 23px;
         background-size: 13px !important;
         opacity: 0.7;
@@ -226,7 +226,7 @@
 
         &:before {
             content: "";
-            background: url(../images/icons/ic_warning@2x.png);
+            background: url(../images/icons/ic_warning@2x.png); /* OPTIMISE URL ::: css/app/edit-engine/_panel-seo.scss ::: 2 */
             position: absolute;
             left: 0;
             top: 0;
@@ -249,7 +249,7 @@
         background-color: transparent !important;
 
         img {
-            background: url(../images/icons_dark/deleted.svg) no-repeat center center !important;
+            background: url(../images/icons_dark/deleted.svg) no-repeat center center !important; /* OPTIMISE URL ::: css/app/edit-engine/_panel-seo.scss ::: 3 */
             background-size: 22px !important;
             opacity: .64;
 

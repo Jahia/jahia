@@ -98,7 +98,7 @@
 
         // SEARCH BUTTON
         #JahiaGxtManagerLeftTree__CRTsearchTabItem {
-            background: url(../images/icons/tabs-search-black@X2.png) no-repeat center center transparent;
+            background: url(../images/icons/tabs-search-black@X2.png) no-repeat center center transparent; /* OPTIMISE URL ::: css/app/pickers/_left-panel.scss ::: 1 */
             width: 25px;
             height: 25px;
             position: fixed;
@@ -521,7 +521,7 @@
 
                         // Refresh tool used to refresh the contents of current source
                         .x-tool-refresh {
-                            background: url(../images/icons/icon-publication-launcher-grey.png) no-repeat center center transparent;
+                            background: url(../images/icons/icon-publication-launcher-grey.png) no-repeat center center transparent; /* OPTIMISE URL ::: css/app/pickers/_left-panel.scss ::: 2 */
                             height: 30px;
                             width: 30px;
                             position: fixed;

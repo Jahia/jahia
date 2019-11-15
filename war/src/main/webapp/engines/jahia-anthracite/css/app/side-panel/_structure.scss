@@ -69,14 +69,14 @@
                         color: black;
 
                         & + img {
-                            background-image: url(../images/expanded-black.png) !important;
+                            background-image: url(../images/expanded-black.png) !important; /* OPTIMISE URL ::: css/app/side-panel/_structure.scss ::: 1 */
                         }
                     }
                 }
 
                 img {
                     width: 15px !important;
-                    background: url(../images/expanded-black.png) no-repeat left center transparent !important;
+                    background: url(../images/expanded-black.png) no-repeat left center transparent !important; /* OPTIMISE URL ::: css/app/side-panel/_structure.scss ::: 2 */
                     background-size: 14px !important;
                 }
             }
@@ -122,14 +122,14 @@
                     color: black;
 
                     & + img {
-                        background-image: url(../images/expanded-black.png) !important;
+                        background-image: url(../images/expanded-black.png) !important; /* OPTIMISE URL ::: css/app/side-panel/_structure.scss ::: 3 */
                     }
                 }
             }
 
             img {
                 width: 15px !important;
-                background: url(../images/expanded-white.png) no-repeat left center transparent !important;
+                background: url(../images/expanded-white.png) no-repeat left center transparent !important; /* OPTIMISE URL ::: css/app/side-panel/_structure.scss ::: 4 */
                 background-size: 14px !important;
             }
         }
@@ -148,7 +148,7 @@
     #JahiaGxtRefreshSidePanelButton {
         /* Refresh side panel button */
         pointer-events: all;
-        background: url(../images/icons_grey/refresh.svg) no-repeat center;
+        background: url(../images/icons_grey/refresh.svg) no-repeat center; /* OPTIMISE URL ::: css/app/side-panel/_structure.scss ::: 5 */
         background-size: 20px;
         left: 275px;
         position: fixed;
@@ -179,7 +179,7 @@
         }
 
         &.x-tool-refresh-red {
-            background: url(../images/icons/tabs-publish-modified@X2.png) no-repeat center center _theme-color(secondary);
+            background: url(../images/icons/tabs-publish-modified@X2.png) no-repeat center center _theme-color(secondary); /* OPTIMISE URL ::: css/app/side-panel/_structure.scss ::: 6 */
             background-size: 32px;
             opacity: .9;
         }
@@ -256,7 +256,7 @@
                     height: 20px !important;
                     z-index: 999;
                     position: fixed;
-                    background: url(../images/icons_dark/pin.svg);
+                    background: url(../images/icons_dark/pin.svg); /* OPTIMISE URL ::: css/app/side-panel/_structure.scss ::: 7 */
                     display: block;
                     background-size: 20px;
                     background-repeat: no-repeat;
@@ -264,7 +264,7 @@
                 }
 
                 body[data-edit-window-style="default"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-app="edit"][data-indigo-sidepanel-pinned="true"] & {
-                    background-image: url(../images/icons_blue/pin.svg);
+                    background-image: url(../images/icons_blue/pin.svg); /* OPTIMISE URL ::: css/app/side-panel/_structure.scss ::: 8 */
                     opacity: 1;
                 }
 

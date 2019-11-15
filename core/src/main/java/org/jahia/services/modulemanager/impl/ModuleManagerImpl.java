@@ -188,12 +188,14 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
             for (PersistentBundle info : infos) {
                 stopPreviousVersions(info, target);
             }
-            // phase #2.3 start new versions
+
+            // phase #2.3 refresh stopped versions
+            refreshOtherVersions(bundleInfos, target);
+
+            // phase #2.4 start new versions
             for (PersistentBundle info : infos) {
                 bundleService.start(info, target);
             }
-            // phase #2.4 refresh stopped versions
-            refreshOtherVersions(bundleInfos, target);
         }
         return OperationResult.success(bundleInfos);
     }

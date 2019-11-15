@@ -28,11 +28,11 @@
         }
 
         &[src$="/remoteFolder.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-content.scss ::: 3 */
-            background-image: url(../images/icons/tabs-files-shared-dark@X2.png);
+            background-image: url(../images/icons/tabs-files-shared-dark@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-content.scss ::: 1 */
         }
 
         &[src$="/jnt_virtualsite.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-content.scss ::: 4 */
-            background-image: url(../images/icons/tabs-site-dark@X2.png);
+            background-image: url(../images/icons/tabs-site-dark@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-content.scss ::: 2 */
         }
 
 
@@ -48,11 +48,11 @@
             }
 
             &[src$="/remoteFolder.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-content.scss ::: 7 */
-                background-image: url(../images/icons/tabs-files-shared-white@X2.png);
+                background-image: url(../images/icons/tabs-files-shared-white@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-content.scss ::: 3 */
             }
 
             &[src$="/jnt_virtualsite.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-content.scss ::: 8 */
-                background-image: url(../images/icons/tabs-site-white@X2.png);
+                background-image: url(../images/icons/tabs-site-white@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-content.scss ::: 4 */
             }
         }
     }

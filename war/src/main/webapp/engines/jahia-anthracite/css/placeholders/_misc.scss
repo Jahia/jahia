@@ -55,7 +55,7 @@
     .x-menu-item-icon {
         display: block !important;
         height: 100%;
-        background: url(../images/icons_light/repository.svg) no-repeat center center/40%;
+        background: url(../images/icons_light/repository.svg) no-repeat center center/40%; /* OPTIMISE URL ::: css/placeholders/_misc.scss ::: 1 */
         width: 100%;
         opacity: 1;
         z-index: 99999999999999999;
@@ -151,7 +151,7 @@
 %CONTRIBUTE--UPLOAD--BUTTON {
     width: 20px;
     height: 20px;
-    background: url(../images/icons_light/add.svg) no-repeat center center;
+    background: url(../images/icons_light/add.svg) no-repeat center center; /* OPTIMISE URL ::: css/placeholders/_misc.scss ::: 2 */
     background-size: 18px;
     top: 21px;
     position: fixed;
@@ -164,7 +164,7 @@
 
 // New Page
 %CONTRIBUTE--NEWPAGE--BUTTON {
-    background: url(../images/icons_light/add.svg) no-repeat left top 4px;
+    background: url(../images/icons_light/add.svg) no-repeat left top 4px; /* OPTIMISE URL ::: css/placeholders/_misc.scss ::: 3 */
     background-size: 19px;
     padding-left: 21px;
     margin-left: 10px;

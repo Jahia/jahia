@@ -12,7 +12,7 @@
     }
 
     .x-grid3-col-locked {
-        background: url(../images/icons_light/lock.svg) #e67d3a no-repeat center;
+        background: url(../images/icons_light/lock.svg) #e67d3a no-repeat center; /* OPTIMISE URL ::: css/app/side-panel/_tab-pages.scss ::: 9 */
         width: 12px;
         height: 12px !important;
         border-radius: 2px;
@@ -60,22 +60,22 @@
         }
 
         &[src$="/jnt_virtualsite.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-pages.scss ::: 3 */
-            background-image: url(../images/icons/tabs-site-dark@X2.png);
+            background-image: url(../images/icons/tabs-site-dark@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-pages.scss ::: 1 */
         }
 
         // Internal link
         &[src$="jnt_nodeLink.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-pages.scss ::: 4 */
-            background-image: url(../images/icons/tabs-placeholder-black@X2.png);
+            background-image: url(../images/icons/tabs-placeholder-black@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-pages.scss ::: 2 */
         }
 
         // External link
         &[src$="jnt_externalLink.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-pages.scss ::: 5 */
-            background-image: url(../images/icons/tabs-placeholder-black@X2.png);
+            background-image: url(../images/icons/tabs-placeholder-black@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-pages.scss ::: 3 */
         }
 
         // Menu link
         &[src$="jnt_navMenuText.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-pages.scss ::: 6 */
-            background-image: url(../images/icons/tabs-placeholder-black@X2.png);
+            background-image: url(../images/icons/tabs-placeholder-black@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-pages.scss ::: 4 */
         }
     }
 
@@ -88,22 +88,22 @@
             }
 
             &[src$="/jnt_virtualsite.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-pages.scss ::: 8 */
-                background-image: url(../images/icons/tabs-site-white@X2.png);
+                background-image: url(../images/icons/tabs-site-white@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-pages.scss ::: 5 */
                 opacity: 1;
             }
 
             &[src$="jnt_nodeLink.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-pages.scss ::: 9 */
-                background-image: url(../images/icons/tabs-placeholder-white@X2.png);
+                background-image: url(../images/icons/tabs-placeholder-white@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-pages.scss ::: 6 */
                 opacity: 1;
             }
 
             &[src$="jnt_externalLink.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-pages.scss ::: 10 */
-                background-image: url(../images/icons/tabs-placeholder-white@X2.png);
+                background-image: url(../images/icons/tabs-placeholder-white@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-pages.scss ::: 7 */
                 opacity: 1;
             }
 
             &[src$="jnt_navMenuText.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-pages.scss ::: 11 */
-                background-image: url(../images/icons/tabs-placeholder-white@X2.png);
+                background-image: url(../images/icons/tabs-placeholder-white@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-pages.scss ::: 8 */
                 opacity: 1;
             }
         }

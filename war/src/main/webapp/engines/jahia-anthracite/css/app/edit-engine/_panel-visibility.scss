@@ -30,19 +30,19 @@ div.engine-window {
             }
 
             &[src$="/visibilityStatusRed.png"] { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 5 */
-                background: url(../images/icons_dark/visibilityoff.svg) no-repeat center center;
+                background: url(../images/icons_dark/visibilityoff.svg) no-repeat center center; /* OPTIMISE URL ::: css/app/edit-engine/_panel-visibility.scss ::: 1 */
             }
 
             &[src$="/visibilityStatusUnknown.png"] { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 6 */
-                background: url(../images/icons_dark/unknown.svg) no-repeat center center;
+                background: url(../images/icons_dark/unknown.svg) no-repeat center center; /* OPTIMISE URL ::: css/app/edit-engine/_panel-visibility.scss ::: 2 */
             }
 
             &[src$="/visibilityStatusGreen.png"] { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 7 */
-                background: url(../images/icons_dark/visibility.svg) no-repeat center center;
+                background: url(../images/icons_dark/visibility.svg) no-repeat center center; /* OPTIMISE URL ::: css/app/edit-engine/_panel-visibility.scss ::: 3 */
             }
 
             &[src$="/publication/published.png"] { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 8 */
-                background: url(../images/icons_dark/published.svg) no-repeat center center;
+                background: url(../images/icons_dark/published.svg) no-repeat center center; /* OPTIMISE URL ::: css/app/edit-engine/_panel-visibility.scss ::: 4 */
             }
 
         }
@@ -264,7 +264,7 @@ div.engine-window {
                     right: 0;
                     top: 0;
                     pointer-events: all;
-                    background: url(../images/icons_dark/edit.svg) right 5px center no-repeat !important;
+                    background: url(../images/icons_dark/edit.svg) right 5px center no-repeat !important; /* OPTIMISE URL ::: css/app/edit-engine/_panel-visibility.scss ::: 5 */
                     background-size: 16px 16px !important;
                     opacity: 0.8;
 

@@ -15,7 +15,7 @@
 
         // CATEGORY ICON
         &[src$="/jnt_category.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-categories.scss ::: 1 */
-            background-image: url(../images/icons_dark/category.svg);
+            background-image: url(../images/icons_dark/category.svg); /* OPTIMISE URL ::: css/app/side-panel/_tab-categories.scss ::: 1 */
         }
     }
 
@@ -23,7 +23,7 @@
         .x-tree3-node-icon {
             // CATEGORY ICON
             &[src$="/jnt_category.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-categories.scss ::: 2 */
-                background-image: url(../images/icons_light/category.svg);
+                background-image: url(../images/icons_light/category.svg); /* OPTIMISE URL ::: css/app/side-panel/_tab-categories.scss ::: 2 */
                 opacity: 0.9;
             }
         }

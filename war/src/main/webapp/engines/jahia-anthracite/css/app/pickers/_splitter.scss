@@ -17,7 +17,7 @@ body[indigo-dragging-panel="true"] {
     left: 0;
     top: 0;
     z-index: 1000;
-    background: url(../images/icons/splitter@X2.png) no-repeat center right 6px transparent;
+    background: url(../images/icons/splitter@X2.png) no-repeat center right 6px transparent; /* OPTIMISE URL ::: css/app/pickers/_splitter.scss ::: 1 */
     background-size: 5px 10px;
     border-left: 1px solid transparent;
     display: block;

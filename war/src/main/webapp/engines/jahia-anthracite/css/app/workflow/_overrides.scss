@@ -272,14 +272,14 @@
                 font-size: 18px;
                 font-family: "Nunito Sans", sans-serif;
                 padding-left: 11px;
-                background-image: url(../images/icons/icon-toggle-expanded-small-normal.png);
+                background-image: url(../images/icons/icon-toggle-expanded-small-normal.png); /* OPTIMISE URL ::: css/app/workflow/_overrides.scss ::: 1 */
                 background-size: 7px 5px;
                 background-position: left;
             }
         }
 
         .x-grid-group-collapsed .x-grid-group-hd .x-grid-group-div {
-            background-image: url(../images/icons/expand-side-panel@X2.png);
+            background-image: url(../images/icons/expand-side-panel@X2.png); /* OPTIMISE URL ::: css/app/workflow/_overrides.scss ::: 2 */
             background-size: 5px 7px;
             background-position: left;
         }
@@ -315,14 +315,14 @@
                     position: relative;
                     margin-bottom: 1px;
                     border: none !important;
-                    background: url(../images/icons/speech-DARK@X2.png) no-repeat center left 10px !important;
+                    background: url(../images/icons/speech-DARK@X2.png) no-repeat center left 10px !important; /* OPTIMISE URL ::: css/app/workflow/_overrides.scss ::: 3 */
                     background-size: 29px !important;
                     padding: 7px 10px 7px 50px;
                     box-sizing: border-box;
                     margin-left: 2px;
 
                     &:nth-child(even) {
-                        background: url(../images/icons/speech-DARK@X2.png) no-repeat center left 10px, linear-gradient(to right, #e3e2e2 50%, rgba(227, 226, 226, 0) 100%) !important;
+                        background: url(../images/icons/speech-DARK@X2.png) no-repeat center left 10px, linear-gradient(to right, #e3e2e2 50%, rgba(227, 226, 226, 0) 100%) !important; /* OPTIMISE URL ::: css/app/workflow/_overrides.scss ::: 4 */
                         background-size: 29px, 100% !important;
                     }
 

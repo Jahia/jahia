@@ -233,7 +233,7 @@
 
                 &[data-nodetypes="jnt:folder"]:after {
                     content: '';
-                    background-image: url(../images/icons/folder.svg) !important;
+                    background-image: url(../images/icons/folder.svg) !important; /* OPTIMISE URL ::: css/app/pickers/_right-panel.scss ::: 1 */
                     background-repeat: no-repeat;
                     background-position: center center;
                     overflow: hidden;
@@ -422,7 +422,7 @@
                     cursor: pointer;
                 }
 
-                background: url(../images/icons/icon_preview_small_grey.png) no-repeat center center;
+                background: url(../images/icons/icon_preview_small_grey.png) no-repeat center center; /* OPTIMISE URL ::: css/app/pickers/_right-panel.scss ::: 2 */
 
                 body[indigo-picker-display="detailedview"] & {
                     background-color: #cecccc;
@@ -483,7 +483,7 @@
 
                 .preview-button {
                     background-color: #007cb0 !important;
-                    background: url(../images/icons/icon_preview_small_white.png) no-repeat center center;
+                    background: url(../images/icons/icon_preview_small_white.png) no-repeat center center; /* OPTIMISE URL ::: css/app/pickers/_right-panel.scss ::: 3 */
                 }
 
                 .edit-button {

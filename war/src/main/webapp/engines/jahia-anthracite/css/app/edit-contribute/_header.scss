@@ -22,7 +22,7 @@
     display: none;
 
     body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"] & {
-        background-image: url(../images/tabs-pages-dark@X2.png) /* OPTIMISE URL ::: css/app/edit-contribute/_header.scss ::: 2 */
+        background-image: url(../images/tabs-pages-dark@X2.png); /* OPTIMISE URL ::: css/app/edit-contribute/_header.scss ::: 2 */
     }
 
     body[data-multiselect="on"] & { /* MULTI SELECT NOT WORKING IN CONTRIBUTE MODE !!! */
@@ -35,7 +35,7 @@
         border-radius: 100%;
 
         &[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"] {
-            background-image: url(../images/icons/icon-close-grey@X2.png) /* OPTIMISE URL ::: css/app/edit-contribute/_header.scss ::: 4 */
+            background-image: url(../images/icons/icon-close-grey@X2.png); /* OPTIMISE URL ::: css/app/edit-contribute/_header.scss ::: 4 */
         }
 
         &::before {

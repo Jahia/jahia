@@ -61,7 +61,7 @@ div.engine-window {
 
                     .x-grid3-row-selected {
                         background-color: _property($LIST-BOX--ROW--BG---SELECTED, $EDIT-ENGINE) !important;
-                        background-image: url(../images/icons/icon-next-white@X2.png) !important;
+                        background-image: url(../images/icons/icon-next-white@X2.png) !important; /* OPTIMISE URL ::: css/app/edit-engine/_panel-workflow.scss ::: 1 */
                         background-position: right 5px center !important;
                         background-repeat: no-repeat !important;
                         background-size: 13px !important;

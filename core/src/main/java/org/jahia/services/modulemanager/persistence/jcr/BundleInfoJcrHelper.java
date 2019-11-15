@@ -78,11 +78,11 @@ final public class BundleInfoJcrHelper {
     private static final Logger logger = LoggerFactory.getLogger(BundleInfoJcrHelper.class);
 
     private static final String NODE_TYPE_BUNDLE = "jnt:moduleManagementBundle";
-    private static final String NODE_TYPE_FOLDER = "jnt:moduleManagementBundleFolder";
-    private static final String NODE_TYPE_ROOT = "jnt:moduleManagement";
+    public static final String NODE_TYPE_FOLDER = "jnt:moduleManagementBundleFolder";
+    public static final String NODE_TYPE_ROOT = "jnt:moduleManagement";
 
-    private static final String NODE_MODULE_MANAGENENT = "module-management";
-    private static final String NODE_BUNDLES = "bundles";
+    public static final String NODE_MODULE_MANAGENENT = "module-management";
+    public static final String NODE_BUNDLES = "bundles";
 
     public static final String PATH_MODULE_MANAGEMENT = '/' + NODE_MODULE_MANAGENENT;
     public static final String PATH_BUNDLES = PATH_MODULE_MANAGEMENT + '/' + NODE_BUNDLES;
@@ -178,16 +178,6 @@ final public class BundleInfoJcrHelper {
         return target;
     }
 
-    private static JCRNodeWrapper getBundlesNode(JCRSessionWrapper session) throws RepositoryException {
-        JCRNodeWrapper bundlesNode = null;
-        try {
-            bundlesNode = session.getNode(PATH_BUNDLES);
-        } catch (PathNotFoundException e) {
-            bundlesNode = getRootNode(session).addNode(NODE_BUNDLES, NODE_TYPE_FOLDER);
-        }
-        return bundlesNode;
-    }
-
     /**
      * Gets the JCR node path, which corresponds to the specified bundle info.
      *
@@ -244,7 +234,7 @@ final public class BundleInfoJcrHelper {
      */
     static JCRNodeWrapper getOrCreateTargetNode(PersistentBundle bundleInfo, JCRSessionWrapper session) throws RepositoryException {
 
-        JCRNodeWrapper target = getBundlesNode(session);
+        JCRNodeWrapper target = session.getNode(PATH_BUNDLES);
         if (bundleInfo.getGroupId() != null) {
             // create sub-folder structure for group ID
             target = mkdirs(target, StringUtils.split(bundleInfo.getGroupId(), '.'), session);
@@ -267,52 +257,14 @@ final public class BundleInfoJcrHelper {
     }
 
     /**
-     * Returns the module manager JCR root node, creating it if does not exist yet.
-     *
-     * @param session the current JCR session
-     * @return the module manager JCR root node, creating it if does not exist yet
-     * @throws RepositoryException in case of JCR errors
-     */
-    public static JCRNodeWrapper getRootNode(JCRSessionWrapper session) throws RepositoryException {
-        JCRNodeWrapper root = null;
-        try {
-            root = session.getNode(PATH_MODULE_MANAGEMENT);
-        } catch (PathNotFoundException e) {
-            root = threadSafeGetRootNode(session);
-        }
-        return root;
-    }
-
-    /**
-     * Synchronized because same name sibling is enable on JCR repository root node,
-     * so concurrent creation of the /module-management node will result in creation of multiple nodes with index in the node name.
-     * like: /module-management[2]
-     *
-     * This function provide a synchronized safe check to avoid that. and insure only one /module-management is created and returned
+     * Returns the module manager JCR root node
      *
      * @param session the current JCR session
      * @return the module manager JCR root node
      * @throws RepositoryException in case of JCR errors
      */
-    private synchronized static JCRNodeWrapper threadSafeGetRootNode(JCRSessionWrapper session) throws RepositoryException {
-        // safe check if a previous thread already create the node, I know it's look strange since we already did the check in getRootNode
-        // and we get a PathNotFoundException, but it's necessary in case 2 or more threads also have the PathNotFoundException
-        // they will also execute the synchronized createRootNode.
-        session.refresh(true);
-        if (session.getRootNode().hasNode(NODE_MODULE_MANAGENENT)) {
-            return session.getRootNode().getNode(NODE_MODULE_MANAGENENT);
-        }
-
-        // use separate session to avoid impacting current session changes
-        JCRTemplate.getInstance().doExecuteWithSystemSession(systemSession -> {
-            systemSession.getRootNode().addNode(NODE_MODULE_MANAGENENT, NODE_TYPE_ROOT);
-            systemSession.save();
-            return null;
-        });
-
-        // refresh to get previously created node
-        session.refresh(true);
-        return session.getRootNode().getNode(NODE_MODULE_MANAGENENT);
+    public static JCRNodeWrapper getRootNode(JCRSessionWrapper session) throws RepositoryException {
+        return session.getNode(PATH_MODULE_MANAGEMENT);
     }
 
     /**

@@ -59,6 +59,7 @@ import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.modulemanager.persistence.jcr.BundleInfoJcrHelper;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -539,6 +540,13 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                     session.save();
                 } else {
                     JahiaPrivilegeRegistry.init(session);
+                }
+
+                // init module management root nodes
+                if (!rootNode.hasNode(BundleInfoJcrHelper.NODE_MODULE_MANAGENENT)) {
+                    JCRNodeWrapper moduleManagementRoot = rootNode.addNode(BundleInfoJcrHelper.NODE_MODULE_MANAGENENT, BundleInfoJcrHelper.NODE_TYPE_ROOT);
+                    moduleManagementRoot.addNode(BundleInfoJcrHelper.NODE_BUNDLES, BundleInfoJcrHelper.NODE_TYPE_FOLDER);
+                    session.save();
                 }
             } finally {
                 session.logout();

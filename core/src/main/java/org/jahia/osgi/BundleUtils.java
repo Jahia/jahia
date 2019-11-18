@@ -48,11 +48,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.SpringContextSingleton;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleEvent;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
+import org.osgi.framework.*;
 import org.osgi.framework.startlevel.BundleStartLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -437,35 +433,23 @@ public final class BundleUtils {
      * one, based on the service ranking. If no matching service has been found, returns <code>null</code>.
      *
      * @param serviceClass the class of the service to be looked up
+     * @return an OSGi service instance matching the specified criteria or <code>null</code> if no match was found
+     */
+    public static <S> S getOsgiService(String serviceClass) {
+        return (S) getOsgiService(serviceClass, null);
+    }
+
+    /**
+     * Looks up an OSGi service for the specified class and filter. If multiple services are found matching the criteria, returns the best
+     * one, based on the service ranking. If no matching service has been found, returns <code>null</code>.
+     *
+     * @param serviceClass the class of the service to be looked up
      * @param filter the filter expression or <code>null</code> for all services of the specified type
      * @return an OSGi service instance matching the specified criteria or <code>null</code> if no match was found
      * @throws IllegalArgumentException in case the filter expression is syntactically invalid
      */
     public static <S> S getOsgiService(Class<S> serviceClass, String filter) {
-        S serviceInstance = null;
-        BundleContext bundleContext = FrameworkService.getBundleContext();
-        Collection<ServiceReference<S>> serviceReferences;
-        try {
-            serviceReferences = bundleContext.getServiceReferences(serviceClass, filter);
-        } catch (InvalidSyntaxException e) {
-            throw new JahiaRuntimeException(e);
-        }
-        if (serviceReferences != null && !serviceReferences.isEmpty()) {
-            ServiceReference<S> bestServiceReferefnce;
-            if (serviceReferences.size() > 1) {
-                List<ServiceReference<S>> matchingServices = new ArrayList<>(serviceReferences);
-                // sort references by ranking (ascending)
-                Collections.sort(matchingServices);
-                // get the service with the highest ranking
-                bestServiceReferefnce = matchingServices.get(matchingServices.size() - 1);
-            } else {
-                bestServiceReferefnce = serviceReferences.iterator().next();
-            }
-            // obtain the service
-            serviceInstance = bundleContext.getService(bestServiceReferefnce);
-        }
-
-        return serviceInstance;
+        return (S) getOsgiService(serviceClass.getName(), filter);
     }
 
     /**
@@ -482,7 +466,7 @@ public final class BundleUtils {
         BundleContext bundleContext = FrameworkService.getBundleContext();
         Collection<ServiceReference<?>> serviceReferences;
         try {
-            ServiceReference<?>[] refs = bundleContext.getServiceReferences(serviceClassName, filter);
+            ServiceReference<?>[] refs = bundleContext.getAllServiceReferences(serviceClassName, filter);
             serviceReferences = refs != null && refs.length > 0 ? Arrays.asList(refs) : null;
         } catch (InvalidSyntaxException e) {
             throw new JahiaRuntimeException(e);

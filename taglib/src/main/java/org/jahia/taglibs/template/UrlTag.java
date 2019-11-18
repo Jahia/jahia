@@ -43,16 +43,11 @@
  */
 package org.jahia.taglibs.template;
 
-import org.apache.taglibs.standard.tag.common.core.Util;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
-
 import javax.servlet.jsp.JspException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * JSP tag for creating URLs. Inheriting from the JSTL c:url tag, but adds the possibility
@@ -109,7 +104,11 @@ public class UrlTag extends org.apache.taglibs.standard.tag.el.core.UrlTag {
                                 .matcher(requestParameter.getKey()).matches())) {
                     for (String value : requestParameter.getValue()) {
                         String enc = pageContext.getResponse().getCharacterEncoding();
-                        super.addParameter(Util.URLEncode(requestParameter.getKey(), enc), Util.URLEncode(value, enc));
+                        try {
+                            super.addParameter(URLEncoder.encode(requestParameter.getKey(), enc), URLEncoder.encode(value, enc));
+                        } catch (UnsupportedEncodingException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
             }

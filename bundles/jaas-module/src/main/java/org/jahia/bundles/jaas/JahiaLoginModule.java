@@ -103,22 +103,11 @@ public class JahiaLoginModule extends AbstractKarafLoginModule {
                 principals.add(new RolePrincipal("admin"));
                 principals.add(new RolePrincipal("manager"));
                 principals.add(new RolePrincipal("viewer"));
+                principals.add(new RolePrincipal("ssh"));
                 principals.add(new RolePrincipal("systembundles"));
             }
         }
-        return true;
-    }
-
-    @Override
-    public boolean abort() throws LoginException {
-        this.clear();
-        return true;
-    }
-
-    @Override
-    public boolean logout() throws LoginException {
-        this.subject.getPrincipals().removeAll(this.principals);
-        this.principals.clear();
+        this.succeeded = true;
         return true;
     }
 }

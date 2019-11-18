@@ -43,25 +43,22 @@
  */
 package org.apache.felix.http.base.internal.context;
 
+import org.apache.felix.http.base.internal.logger.SystemLogger;
+import org.apache.felix.http.base.internal.util.MimeTypes;
+import org.osgi.framework.Bundle;
+import org.osgi.service.http.HttpContext;
+
+import javax.servlet.*;
+import javax.servlet.descriptor.JspConfigDescriptor;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.servlet.*;
-import javax.servlet.descriptor.JspConfigDescriptor;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.felix.http.base.internal.logger.SystemLogger;
-import org.apache.felix.http.base.internal.util.MimeTypes;
-import org.osgi.framework.Bundle;
-import org.osgi.service.http.HttpContext;
-
-public final class ServletContextImpl
-    implements ExtServletContext
-{
+public final class ServletContextImpl implements ExtServletContext {
     private final Bundle bundle;
     private final ServletContext context;
     private final HttpContext httpContext;
@@ -69,8 +66,7 @@ public final class ServletContextImpl
     private final ServletContextAttributeListener attributeListener;
 
     public ServletContextImpl(Bundle bundle, ServletContext context, HttpContext httpContext,
-        ServletContextAttributeListener attributeListener, boolean sharedAttributes)
-    {
+                              ServletContextAttributeListener attributeListener, boolean sharedAttributes) {
         this.bundle = bundle;
         this.context = context;
         this.httpContext = httpContext;
@@ -78,38 +74,33 @@ public final class ServletContextImpl
         this.attributes = sharedAttributes ? null : new ConcurrentHashMap<String, Object>();
     }
 
-    public String getContextPath()
-    {
+    public String getContextPath() {
         return this.context.getContextPath();
     }
 
-    public ServletContext getContext(String uri)
-    {
+    public ServletContext getContext(String uri) {
         return this.context.getContext(uri);
     }
 
-    public int getMajorVersion()
-    {
+    public int getMajorVersion() {
         return this.context.getMajorVersion();
     }
 
-    public int getMinorVersion()
-    {
+    public int getMinorVersion() {
         return this.context.getMinorVersion();
     }
 
     @Override
     public int getEffectiveMajorVersion() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return this.context.getEffectiveMajorVersion();
     }
 
     @Override
     public int getEffectiveMinorVersion() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return this.context.getEffectiveMinorVersion();
     }
 
-    public Set getResourcePaths(String path)
-    {
+    public Set getResourcePaths(String path) {
         Enumeration paths = this.bundle.getEntryPaths(normalizePath(path));
         if ((paths == null) || !paths.hasMoreElements()) {
             return null;
@@ -123,8 +114,11 @@ public final class ServletContextImpl
         return set;
     }
 
-    public URL getResource(String path)
-    {
+    public URL getResource(String path) {
+        // TODO correctly fix path for static resources and servlets
+        if (path.startsWith("/modules/" + bundle.getSymbolicName())) {
+            path = path.substring(("/modules/" + bundle.getSymbolicName()).length());
+        }
         return this.httpContext.getResource(normalizePath(path));
     }
 
@@ -132,8 +126,7 @@ public final class ServletContextImpl
         return bundle;
     }
 
-    public InputStream getResourceAsStream(String path)
-    {
+    public InputStream getResourceAsStream(String path) {
         URL res = getResource(path);
         if (res != null) {
             try {
@@ -146,8 +139,7 @@ public final class ServletContextImpl
         return null;
     }
 
-    private String normalizePath(String path)
-    {
+    private String normalizePath(String path) {
         if (path == null) {
             return null;
         }
@@ -160,23 +152,19 @@ public final class ServletContextImpl
         return normalizedPath;
     }
 
-    public RequestDispatcher getRequestDispatcher(String uri)
-    {
+    public RequestDispatcher getRequestDispatcher(String uri) {
         return null;
     }
 
-    public RequestDispatcher getNamedDispatcher(String name)
-    {
+    public RequestDispatcher getNamedDispatcher(String name) {
         return null;
     }
 
-    public String getInitParameter(String name)
-    {
+    public String getInitParameter(String name) {
         return context.getInitParameter(name);
     }
 
-    public Enumeration getInitParameterNames()
-    {
+    public Enumeration getInitParameterNames() {
         return context.getInitParameterNames();
     }
 
@@ -185,102 +173,80 @@ public final class ServletContextImpl
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public Object getAttribute(String name)
-    {
+    public Object getAttribute(String name) {
+        name += "-pax";
         return (this.attributes != null) ? this.attributes.get(name) : this.context.getAttribute(name);
     }
 
-    public Enumeration getAttributeNames()
-    {
+    public Enumeration getAttributeNames() {
         return (this.attributes != null) ? Collections.enumeration(this.attributes.keySet()) : this.context
-            .getAttributeNames();
+                .getAttributeNames();
     }
 
-    public void setAttribute(String name, Object value)
-    {
-        if (value == null)
-        {
+    public void setAttribute(String name, Object value) {
+        name += "-pax";
+        if (value == null) {
             this.removeAttribute(name);
-        }
-        else if (name != null)
-        {
+        } else if (name != null) {
             Object oldValue;
-            if (this.attributes != null)
-            {
+            if (this.attributes != null) {
                 oldValue = this.attributes.put(name, value);
-            }
-            else
-            {
+            } else {
                 oldValue = this.context.getAttribute(name);
                 this.context.setAttribute(name, value);
             }
 
-            if (oldValue == null)
-            {
+            if (oldValue == null) {
                 attributeListener.attributeAdded(new ServletContextAttributeEvent(this, name, value));
-            }
-            else
-            {
+            } else {
                 attributeListener.attributeReplaced(new ServletContextAttributeEvent(this, name, oldValue));
             }
         }
     }
 
-    public void removeAttribute(String name)
-    {
+    public void removeAttribute(String name) {
         Object oldValue;
-        if (this.attributes != null)
-        {
+        if (this.attributes != null) {
             oldValue = this.attributes.remove(name);
-        }
-        else
-        {
+        } else {
             oldValue = this.context.getAttribute(name);
             this.context.removeAttribute(name);
         }
 
-        if (oldValue != null)
-        {
+        if (oldValue != null) {
             attributeListener.attributeRemoved(new ServletContextAttributeEvent(this, name, oldValue));
         }
     }
 
     @SuppressWarnings("deprecation")
     public Servlet getServlet(String name)
-        throws ServletException
-    {
+            throws ServletException {
         return null;
     }
 
     @SuppressWarnings("deprecation")
-    public Enumeration getServlets()
-    {
+    public Enumeration getServlets() {
         return Collections.enumeration(Collections.emptyList());
     }
 
     @SuppressWarnings("deprecation")
-    public Enumeration getServletNames()
-    {
+    public Enumeration getServletNames() {
         return Collections.enumeration(Collections.emptyList());
     }
 
-    public void log(String message)
-    {
+    public void log(String message) {
         SystemLogger.info(message);
     }
 
-    public void log(Exception cause, String message)
-    {
+    public void log(Exception cause, String message) {
         SystemLogger.error(message, cause);
     }
 
-    public void log(String message, Throwable cause)
-    {
+    public void log(String message, Throwable cause) {
         SystemLogger.error(message, cause);
     }
 
-    public String getServletContextName()
-    {
+    public String getServletContextName() {
         return this.context.getServletContextName();
     }
 
@@ -399,18 +365,15 @@ public final class ServletContextImpl
         this.context.declareRoles(strings);
     }
 
-    public String getRealPath(String name)
-    {
+    public String getRealPath(String name) {
         return null;
     }
 
-    public String getServerInfo()
-    {
+    public String getServerInfo() {
         return this.context.getServerInfo();
     }
 
-    public String getMimeType(String file)
-    {
+    public String getMimeType(String file) {
         String type = this.httpContext.getMimeType(file);
         if (type != null) {
             return type;
@@ -420,8 +383,7 @@ public final class ServletContextImpl
     }
 
     public boolean handleSecurity(HttpServletRequest req, HttpServletResponse res)
-        throws IOException
-    {
+            throws IOException {
         return this.httpContext.handleSecurity(req, res);
     }
 }

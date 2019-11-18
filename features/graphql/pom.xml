@@ -53,7 +53,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>dx-graphql</artifactId>
     <name>Jahia DX graphql-java Karaf OSGi Feature</name>
-    <packaging>feature</packaging>
+    <packaging>kar</packaging>
     
     <dependencies>
         <dependency>

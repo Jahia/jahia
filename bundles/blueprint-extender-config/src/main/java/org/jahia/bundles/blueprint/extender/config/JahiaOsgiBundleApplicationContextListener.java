@@ -84,9 +84,7 @@ public class JahiaOsgiBundleApplicationContextListener implements
     private boolean stopBundleIfContextFails = true;
 
     private boolean isBundleContextValid(OsgiBundleContextFailedEvent event) {
-        return event.getBundle() != null
-                ? JahiaOsgiBundleXmlApplicationContext.isBundleContextValid(event.getBundle().getBundleContext())
-                : false;
+        return event.getSource() instanceof JahiaOsgiBundleXmlApplicationContext && JahiaOsgiBundleXmlApplicationContext.isBundleContextValid(((JahiaOsgiBundleXmlApplicationContext) event.getSource()).getBundleContext());
     }
 
     protected void logEvent(OsgiBundleApplicationContextEvent event, String bundleDisplayName) {
@@ -97,11 +95,9 @@ public class JahiaOsgiBundleApplicationContextListener implements
         if (event instanceof OsgiBundleContextFailedEvent) {
             OsgiBundleContextFailedEvent failureEvent = (OsgiBundleContextFailedEvent) event;
             if (shouldStopBundle(failureEvent)) {
-                logger.error("Application context refresh failed for bundle " + bundleDisplayName,
-                        failureEvent.getFailureCause());
+                logger.error("Application context refresh failed for bundle {}", bundleDisplayName, failureEvent.getFailureCause());
             } else {
-                logger.warn("Application context refresh failed for bundle " + bundleDisplayName
-                        + " because the bundle context is no longer valid", failureEvent.getFailureCause());
+                logger.warn("Application context refresh failed for bundle {} because the bundle context is no longer valid", bundleDisplayName);
             }
         }
 
@@ -112,7 +108,7 @@ public class JahiaOsgiBundleApplicationContextListener implements
             if (error == null) {
                 logger.info("Application context succesfully closed for bundle {}", bundleDisplayName);
             } else {
-                logger.error("Application context close failed for bundle " + bundleDisplayName, error);
+                logger.error("Application context close failed for bundle {}", bundleDisplayName, error);
             }
         }
     }
@@ -165,15 +161,15 @@ public class JahiaOsgiBundleApplicationContextListener implements
             module.setContext((AbstractApplicationContext) event.getApplicationContext());
             BundleUtils.setContextStartException(bundle.getSymbolicName(), null);
 
-            TemplatePackageRegistry moduleRegistry = null;
+            TemplatePackageRegistry moduleRegistry;
             // if module's Jahia late-initialization services were not initialized yet and the global initialization was already done
             // (isAfterInitializeDone() == true) -> initialize services
-            if (module != null
-                    && !module.isServiceInitialized()
-                    && (moduleRegistry = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                    .getTemplatePackageRegistry()).isAfterInitializeDone()) {
-                // initializing services for module
-                moduleRegistry.afterInitializationForModule(module);
+            if (!module.isServiceInitialized()) {
+                moduleRegistry = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry();
+                if (moduleRegistry.isAfterInitializeDone()) {
+                    // initializing services for module
+                    moduleRegistry.afterInitializationForModule(module);
+                }
             }
         }
     }

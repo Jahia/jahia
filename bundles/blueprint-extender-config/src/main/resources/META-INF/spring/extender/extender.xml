@@ -9,8 +9,4 @@
 
     <bean id="jahiaOsgiBeanFactoryPostProcessor" class="org.jahia.bundles.blueprint.extender.config.JahiaOsgiBeanFactoryPostProcessor"/>
 
-    <!--<bean id="taskExecutor" class="org.jahia.bundles.blueprint.extender.config.SynchronousExecutor"/>-->
-
-    <!--<bean id="shutdownTaskExecutor" class="org.jahia.bundles.blueprint.extender.config.SynchronousExecutor"/>-->
-
 </blueprint>

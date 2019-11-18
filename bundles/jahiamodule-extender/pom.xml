@@ -83,6 +83,8 @@
                             org.apache.taglibs.standard.tei,
                             org.apache.taglibs.standard.tlv,
                             org.jahia.bin.listeners,
+                            org.apache.tomcat;resolution:=optional,
+                            org.apache.tomcat.util.scan;resolution:=optional,
                             *
                         </Import-Package>
                         <Embed-Dependency>*; scope=compile; type=!pom; inline=true</Embed-Dependency>
@@ -110,19 +112,19 @@
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
+            <artifactId>osgi.core</artifactId>
             <version>${osgi.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.annotation</artifactId>
+            <artifactId>osgi.annotation</artifactId>
             <version>${osgi.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.compendium</artifactId>
+            <artifactId>osgi.cmpn</artifactId>
             <version>${osgi.compendium.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -150,12 +152,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.gogo.runtime</artifactId>
-            <version>${gogo.runtime.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
             <version>7.5.0.0-SNAPSHOT</version>
@@ -172,6 +168,12 @@
           <artifactId>pax-web-jsp</artifactId>
           <version>${pax.web.jsp.version}</version>
           <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.web</groupId>
+            <artifactId>pax-web-spi</artifactId>
+            <version>${pax.web.api.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.swissbox</groupId>

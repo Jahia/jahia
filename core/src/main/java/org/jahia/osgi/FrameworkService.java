@@ -43,22 +43,7 @@
  */
 package org.jahia.osgi;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-
-import javax.script.Bindings;
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
-import javax.script.SimpleBindings;
-import javax.script.SimpleScriptContext;
-import javax.servlet.ServletContext;
-
+import com.google.common.base.Charsets;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.reflect.MethodUtils;
@@ -76,7 +61,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.PropertyPlaceholderHelper;
 
-import com.google.common.base.Charsets;
+import javax.script.*;
+import javax.servlet.ServletContext;
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 /**
  * OSGi framework service. This class is responsible for setting up and starting the embedded Karaf OSGi runtime.
@@ -202,9 +191,8 @@ public class FrameworkService implements FrameworkListener {
     public static void sendEvent(String topic, Map<String, ?> properties, boolean asynchronous) {
         BundleContext context = FrameworkService.getBundleContext();
         if (context != null) {
-            ServiceReference<?> ref = context.getServiceReference(EventAdmin.class.getName());
-            if (ref != null) {
-                Object service = context.getService(ref);
+            Object service = BundleUtils.getOsgiService(EventAdmin.class.getName(), null);
+            if (service != null) {
                 try {
                     // have to use the class loader of the EventAdmin service
                     ClassLoader classLoader = service.getClass().getClassLoader();

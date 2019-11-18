@@ -46,6 +46,7 @@
                 <prop key="org.osgi.framework.storage">#{settingsBean.jahiaVarDiskPath}/bundles-deployed</prop>
 
                 <prop key="log4j.ignoreTCL">true</prop>
+                <prop key="pax.log4j.rootLogger">OFF</prop>
 
                 <prop key="felix.webconsole.manager.root">/console</prop>
 

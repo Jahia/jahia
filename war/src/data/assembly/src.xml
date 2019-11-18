@@ -12,7 +12,7 @@
                 <exclude>db/*.script</exclude>
                 <exclude>db/sql/schema/**</exclude>
                 <exclude>karaf/etc/branding-ssh.properties</exclude>
-                <exclude>karaf/etc/config.properties</exclude>
+                <exclude>karaf/etc/custom.properties</exclude>
                 <exclude>karaf/etc/org.apache.karaf.features.cfg</exclude>
                 <exclude>karaf/etc/startup.properties</exclude>
             </excludes>
@@ -29,19 +29,22 @@
             </includes>
         </fileSet>
         <fileSet>
-            <directory>${basedir}/target/karaf</directory>
+            <directory>${project.build.directory}/karaf</directory>
             <outputDirectory>/karaf</outputDirectory>
             <filtered>false</filtered>
         </fileSet>
         <fileSet>
-            <directory>${basedir}/target/karaf/etc</directory>
+            <directory>${project.build.directory}/karaf/etc</directory>
             <outputDirectory>karaf/etc</outputDirectory>
             <filtered>false</filtered>
         </fileSet>
         <fileSet>
-            <directory>${basedir}/target/generated-resources</directory>
+            <directory>${project.build.directory}/generated-resources</directory>
             <outputDirectory>karaf/etc</outputDirectory>
             <filtered>false</filtered>
+            <includes>
+                <include>custom.properties</include>
+            </includes>
         </fileSet>
         <fileSet>
             <directory>${project.build.directory}/ddl</directory>

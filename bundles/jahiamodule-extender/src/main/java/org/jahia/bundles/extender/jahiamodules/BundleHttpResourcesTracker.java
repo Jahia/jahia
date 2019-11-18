@@ -47,14 +47,12 @@ import org.apache.commons.collections.EnumerationUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.utils.collections.MapToDictionary;
-import org.apache.jasper.JasperException;
 import org.apache.jasper.JspCompilationContext;
-import org.apache.jasper.servlet.JspServlet;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.bundles.extender.jahiamodules.jsp.JahiaJspServletWrapper;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.settings.SettingsBean;
-import org.ops4j.pax.web.jsp.JasperClassLoader;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpContext;
@@ -65,7 +63,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
-
 import java.io.File;
 import java.net.URL;
 import java.util.*;
@@ -73,12 +70,22 @@ import java.util.*;
 /**
  * Service tracker instance to listen for {@link HttpService} service add/remove events in order to register/unregister servlets for module
  * JSPs and static resources.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class BundleHttpResourcesTracker extends ServiceTracker<HttpService, HttpService> {
 
     private static Logger logger = LoggerFactory.getLogger(BundleHttpResourcesTracker.class);
+    private final Bundle bundle;
+    private String bundleName;
+    private String jspServletAlias;
+    private Map<String, String> staticResources = Collections.emptyMap();
+
+    BundleHttpResourcesTracker(Bundle bundle) {
+        super(bundle.getBundleContext(), HttpService.class.getName(), null);
+        this.bundle = bundle;
+        this.bundleName = BundleUtils.getDisplayName(bundle);
+    }
 
     @SuppressWarnings("unchecked")
     static List<URL> getJsps(Bundle bundle) {
@@ -105,21 +112,59 @@ public class BundleHttpResourcesTracker extends ServiceTracker<HttpService, Http
                 }
             }
         }
-        return resources == null || resources.isEmpty() ? Collections.<String, String> emptyMap() : resources;
+        return resources == null || resources.isEmpty() ? Collections.<String, String>emptyMap() : resources;
     }
 
-    private final Bundle bundle;
+    /**
+     * Utility method to register a JSP servlet
+     *
+     * @param httpService
+     * @param httpContext
+     * @param bundle
+     * @param bundleName
+     * @param jspServletAlias
+     * @param jspFile
+     * @param jspFilePrefix
+     */
+    public static void registerJspServlet(HttpService httpService, HttpContext httpContext, Bundle bundle, String bundleName,
+                                          String jspServletAlias, String jspFile, String jspFilePrefix) {
+        @SuppressWarnings("unchecked")
+        Map<String, String> jspConfig = (Map<String, String>) SpringContextSingleton.getBean("jspConfig");
+        Map<String, String> cfg = new HashMap<String, String>(jspConfig.size() + 2);
+        cfg.putAll(jspConfig);
+        if (StringUtils.equals(cfg.get("development"), "auto")) {
+            cfg.put("development", SettingsBean.getInstance().isDevelopmentMode() ? "true" : "false");
+        }
+        File scratchDirFile = new File(new File(System.getProperty("java.io.tmpdir"), "jahia-jsps"),
+                bundle.getSymbolicName() + "-" + bundle.getBundleId());
+        if (!scratchDirFile.exists()) {
+            scratchDirFile.mkdirs();
+        }
+        cfg.put("scratchdir", scratchDirFile.getPath());
+        cfg.put("alias", jspServletAlias);
 
-    private String bundleName;
+        JahiaJspServletWrapper jspServletWrapper = new JahiaJspServletWrapper(bundle);
 
-    private String jspServletAlias;
+        try {
+            httpService.registerServlet(jspServletAlias, jspServletWrapper, new MapToDictionary(cfg), httpContext);
+        } catch (ServletException e) {
+            logger.error("Error registering JSPs for bundle " + bundleName, e);
+        } catch (NamespaceException e) {
+            logger.error("Error registering JSPs for bundle " + bundleName, e);
+        }
+    }
 
-    private Map<String, String> staticResources = Collections.emptyMap();
-
-    BundleHttpResourcesTracker(Bundle bundle) {
-        super(bundle.getBundleContext(), HttpService.class.getName(), null);
-        this.bundle = bundle;
-        this.bundleName = BundleUtils.getDisplayName(bundle);
+    // TODO: BACKLOG-10862 this method has been changed please check the changes
+    public static void flushJspCache(Bundle bundle, String jspFile) {
+        File scratchDirFile = new File(new File(System.getProperty("java.io.tmpdir"), "jahia-jsps"),
+                bundle.getSymbolicName() + "-" + bundle.getBundleId());
+        if (jspFile != null && jspFile.length() > 0) {
+            JspCompilationContext jspCompilationContext = new JspCompilationContext(jspFile, null, JahiaContextLoaderListener.getServletContext(), null, null);
+            String javaPath = jspCompilationContext.getJavaPath();
+            String classPath = StringUtils.substringBeforeLast(javaPath, ".java") + ".class";
+            FileUtils.deleteQuietly(new File(scratchDirFile, javaPath));
+            FileUtils.deleteQuietly(new File(scratchDirFile, classPath));
+        }
     }
 
     @Override
@@ -137,13 +182,13 @@ public class BundleHttpResourcesTracker extends ServiceTracker<HttpService, Http
             int jspCount = registerJsps(httpService, httpContext);
 
             if (resourceCount > 0 || jspCount > 0) {
-                logger.info("Bundle {} registered {} JSPs and {} static resources in {} ms", new Object[] { bundleName,
-                        jspCount, resourceCount, System.currentTimeMillis() - timer });
+                logger.info("Bundle {} registered {} JSPs and {} static resources in {} ms", new Object[]{bundleName,
+                        jspCount, resourceCount, System.currentTimeMillis() - timer});
             }
 
             return httpService;
         } catch (Exception e) {
-            logger.error("Error when adding service",e);
+            logger.error("Error when adding service", e);
             return super.addingService(reference);
         }
     }
@@ -164,61 +209,6 @@ public class BundleHttpResourcesTracker extends ServiceTracker<HttpService, Http
         return jsps.size();
     }
 
-
-    /**
-     * Utility method to register a JSP servlet
-     * @param httpService
-     * @param httpContext
-     * @param bundle
-     * @param bundleName
-     * @param jspServletAlias
-     * @param jspFile
-     * @param jspFilePrefix
-     */
-    public static void registerJspServlet(HttpService httpService, HttpContext httpContext, Bundle bundle, String bundleName,
-                                      String jspServletAlias, String jspFile, String jspFilePrefix) {
-        @SuppressWarnings("unchecked")
-        Map<String, String> jspConfig = (Map<String, String>) SpringContextSingleton.getBean("jspConfig");
-        Map<String, String> cfg = new HashMap<String, String>(jspConfig.size() + 2);
-        cfg.putAll(jspConfig);
-        if (StringUtils.equals(cfg.get("development"), "auto")) {
-            cfg.put("development", SettingsBean.getInstance().isDevelopmentMode() ? "true" : "false");
-        }
-        File scratchDirFile = new File(new File(System.getProperty("java.io.tmpdir"), "jahia-jsps"),
-                bundle.getSymbolicName()+"-"+bundle.getBundleId());
-        if (!scratchDirFile.exists()) {
-            scratchDirFile.mkdirs();
-        }
-        cfg.put("scratchdir", scratchDirFile.getPath());
-        cfg.put("alias", jspServletAlias);
-
-        JspServletWrapper jspServletWrapper = new JspServletWrapper(new JspServlet(), new JasperClassLoader(bundle,
-                JasperClassLoader.class.getClassLoader()), jspFile, jspFilePrefix, true);
-        try {
-            httpService.registerServlet(jspServletAlias, jspServletWrapper, new MapToDictionary(cfg), httpContext);
-        } catch (ServletException e) {
-            logger.error("Error registering JSPs for bundle " + bundleName, e);
-        } catch (NamespaceException e) {
-            logger.error("Error registering JSPs for bundle " + bundleName, e);
-        }
-    }
-
-    public static void flushJspCache(Bundle bundle, String jspFile) {
-        try {
-            File scratchDirFile = new File(new File(System.getProperty("java.io.tmpdir"), "jahia-jsps"),
-                    bundle.getSymbolicName()+"-"+bundle.getBundleId());
-            if (jspFile != null && jspFile.length() > 0) {
-                JspCompilationContext jspCompilationContext = new JspCompilationContext(jspFile, false, null, JahiaContextLoaderListener.getServletContext(), null, null);
-                String javaPath = jspCompilationContext.getJavaPath();
-                String classPath = StringUtils.substringBeforeLast(javaPath,".java") + ".class";
-                FileUtils.deleteQuietly(new File(scratchDirFile, javaPath));
-                FileUtils.deleteQuietly(new File(scratchDirFile, classPath));
-            }
-        } catch (JasperException e) {
-            logger.error(e.getMessage(),e);
-        }
-    }
-
     private int registerStaticResources(HttpService httpService, HttpContext httpContext) {
         int count = 0;
         // Looking for static resources
@@ -226,8 +216,8 @@ public class BundleHttpResourcesTracker extends ServiceTracker<HttpService, Http
         List<URL> jsps = getJsps(bundle);
         List<String> excludes = new ArrayList<String>();
         for (URL jsp : jsps) {
-            if (jsp.getFile().indexOf("/",1) > 0) {
-                excludes.add(jsp.getFile().substring(0, jsp.getFile().indexOf("/",1)));
+            if (jsp.getFile().indexOf("/", 1) > 0) {
+                excludes.add(jsp.getFile().substring(0, jsp.getFile().indexOf("/", 1)));
             }
         }
 

@@ -159,26 +159,26 @@
         <dependency.plugin.version>2.8</dependency.plugin.version>
 
         <!-- OSGi versions -->
+        <felix.configadmin.version>1.9.16</felix.configadmin.version>
+        <felix.coordinator.version>1.0.2</felix.coordinator.version>
+        <felix.fileinstall.version>3.6.4-jahia1-SNAPSHOT</felix.fileinstall.version>
         <felix.http.version>2.2.1</felix.http.version>
-        <felix.webconsole.version>4.2.16-jahia2</felix.webconsole.version>
-        <felix.configadmin.version>1.8.8</felix.configadmin.version>
-        <felix.fileinstall.version>3.5.6-jahia2</felix.fileinstall.version>
-        <felix.utils.version>1.8.0</felix.utils.version>
+        <felix.metatype.version>1.2.2</felix.metatype.version>
+        <felix.utils.version>1.11.2</felix.utils.version>
+        <felix.webconsole.version>4.3.16-jahia1-SNAPSHOT</felix.webconsole.version>
         <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
         <gemini.blueprint.core.version>1.0.2.RELEASE-jahia1</gemini.blueprint.core.version>
-        <gogo.runtime.version>0.16.2</gogo.runtime.version>
-        <gogo.shell.version>0.10.0</gogo.shell.version>
-        <gogo.command.version>0.14.0</gogo.command.version>
-        <equinox.ver>3.2.2</equinox.ver>
-        <slf4j.version>1.6.6</slf4j.version>
+        <jansi.version>1.18</jansi.version>
+        <slf4j.version>1.7.12</slf4j.version>
         <osgi.version>6.0.0</osgi.version>
-        <osgi.compendium.version>5.0.0</osgi.compendium.version>
-        <pax.logging.version>1.8.5</pax.logging.version>
-        <pax.swissbox.version>1.5.0</pax.swissbox.version>
-        <pax.web.api.version>3.0.7-jahia1</pax.web.api.version>
-        <pax.web.jsp.version>3.0.7-jahia5</pax.web.jsp.version>
-        <karaf.version>4.0.7</karaf.version>
-        <karaf.jaas.config.version>${karaf.version}-jahia1</karaf.jaas.config.version>
+        <osgi.compendium.version>6.0.0</osgi.compendium.version>
+        <pax.logging.version>1.11.2</pax.logging.version>
+        <pax.swissbox.version>1.8.3</pax.swissbox.version>
+        <pax.url.version>2.6.1</pax.url.version>
+        <pax.web.api.version>7.2.11</pax.web.api.version>
+        <pax.web.jsp.version>7.2.11</pax.web.jsp.version>
+        <karaf.version>4.2.7</karaf.version>
+        <karaf.jaas.config.version>${karaf.version}</karaf.jaas.config.version>
         <!-- End of OSGi versions -->
 
         <jahia.commons.version>1.0.8</jahia.commons.version>

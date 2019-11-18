@@ -1500,12 +1500,12 @@
         <!-- OSGi dependencies -->
         <dependency>
             <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.compendium</artifactId>
+            <artifactId>osgi.cmpn</artifactId>
             <version>${osgi.compendium.version}</version>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
+            <artifactId>osgi.core</artifactId>
             <version>${osgi.version}</version>
         </dependency>
         <dependency>

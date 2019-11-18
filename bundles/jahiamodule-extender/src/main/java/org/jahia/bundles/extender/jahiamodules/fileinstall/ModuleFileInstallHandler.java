@@ -67,7 +67,7 @@ import java.util.stream.Collectors;
 
 /**
  * Handler class for DX modules which processes artifacts from the FileInstall service.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class ModuleFileInstallHandler implements CustomHandler {
@@ -118,7 +118,7 @@ public class ModuleFileInstallHandler implements CustomHandler {
 
     /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param cfg file install configuration
      */
     public ModuleFileInstallHandler(Properties cfg) {

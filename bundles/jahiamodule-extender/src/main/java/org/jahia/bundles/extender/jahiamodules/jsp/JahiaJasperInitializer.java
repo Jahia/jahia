@@ -41,40 +41,54 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.usermanager;
+package org.jahia.bundles.extender.jahiamodules.jsp;
 
-import org.jahia.osgi.BundleUtils;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventAdmin;
+import org.apache.jasper.compiler.TldCache;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.ops4j.pax.web.jsp.JasperInitializer;
+import org.ops4j.pax.web.jsp.TldScanner;
+import org.osgi.framework.Bundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import java.io.IOException;
 
-/**
- * Send event in the OSGI context when an old users or groups provider need to do an operation (register, unregister)
- * Modules can listen on this events
- *
- * @author kevan
- */
-public class BridgeEvents {
-    public static final String USERS_GROUPS_BRIDGE_EVENT_KEY = "org/jahia/usersgroups/";
-    public static final String USER_PROVIDER_REGISTER_BRIDGE_EVENT_KEY = USERS_GROUPS_BRIDGE_EVENT_KEY + "userProvider/REGISTER";
-    public static final String USER_PROVIDER_UNREGISTER_BRIDGE_EVENT_KEY = USERS_GROUPS_BRIDGE_EVENT_KEY + "userProvider/UNREGISTER";
-    public static final String GROUP_PROVIDER_REGISTER_BRIDGE_EVENT_KEY = USERS_GROUPS_BRIDGE_EVENT_KEY + "groupProvider/REGISTER";
-    public static final String GROUP_PROVIDER_UNREGISTER_BRIDGE_EVENT_KEY = USERS_GROUPS_BRIDGE_EVENT_KEY + "groupProvider/UNREGISTER";
-    public static final String PROVIDER_KEY = "provider";
+public class JahiaJasperInitializer extends JasperInitializer {
+    private static final Logger logger = LoggerFactory.getLogger(JahiaJasperInitializer.class);
 
-    private BridgeEvents() {
+    private ServletContext context;
+    private BundleTldScanner scanner;
+    private TldCache tldCache;
+
+    public JahiaJasperInitializer() throws ServletException {
+        System.setProperty("org.apache.el.parser.SKIP_IDENTIFIER_CHECK", "true");
+        this.context = new ServletContextWrapper(JahiaContextLoaderListener.getServletContext());
+
+        this.onStartup(null, context);
+        tldCache = (TldCache) this.context.getAttribute(TldCache.SERVLET_CONTEXT_ATTRIBUTE_NAME);
     }
 
-    protected static void sendEvent(String providerKey, String eventKey) {
-        EventAdmin eventAdmin = BundleUtils.getOsgiService(EventAdmin.class.getName());
-        if (eventAdmin != null) {
-            Dictionary properties = new Hashtable();
-            properties.put(PROVIDER_KEY, providerKey);
+    @Override
+    protected TldScanner newTldScanner(ServletContext context, boolean namespaceAware, boolean validate, boolean blockExternal) {
+        scanner = new BundleTldScanner(context, validate, blockExternal);
+        return scanner;
+    }
 
-            Event reportGeneratedEvent = new Event(eventKey, properties);
-            eventAdmin.postEvent(reportGeneratedEvent);
+    public void addBundle(Bundle bundle) {
+        try {
+            scanner.scanBundle(bundle);
+
+            tldCache = new TldCache(context, scanner.getUriTldResourcePathMap(), scanner.getTldResourcePathTaglibXmlMap());
+            context.setAttribute(TldCache.SERVLET_CONTEXT_ATTRIBUTE_NAME, tldCache);
+        } catch (IOException e) {
+            logger.error("Cannot parse TLDs", e);
         }
     }
+
+    public void removeBundle(Bundle bundle) {
+        // Todo
+    }
+
 }

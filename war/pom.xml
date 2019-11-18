@@ -56,7 +56,7 @@
     <packaging>war</packaging>
 
     <properties>
-        <felix.framework.version>5.4.0-jahia1</felix.framework.version>
+        <felix.framework.version>5.6.12</felix.framework.version>
     </properties>
 
     <profiles>
@@ -568,7 +568,7 @@
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${project.build.directory}/jahia/WEB-INF</outputDirectory>
                                     <includes>apache-karaf-${karaf.version}/data/**,apache-karaf-${karaf.version}/deploy,apache-karaf-${karaf.version}/etc/**,apache-karaf-${karaf.version}/system/**</includes>
-                                    <excludes>apache-karaf-${karaf.version}/lib/org*,**/demos/**,apache-karaf-${karaf.version}/etc/config.properties,**/README, **/org.eclipse.osgi-*.jar, **/org.apache.karaf.wrapper.core-*.jar, **/org/apache/felix/org.apache.felix.fileinstall/**, **/org/apache/felix/org.apache.felix.framework/**, **/${karaf.version}/org.apache.karaf.jaas.config-${karaf.version}.jar</excludes>
+                                    <excludes>apache-karaf-${karaf.version}/lib/org*,**/demos/**,apache-karaf-${karaf.version}/etc/custom.properties,**/README, **/org.eclipse.osgi-*.jar, **/org.apache.karaf.wrapper.core-*.jar, **/org/apache/felix/org.apache.felix.fileinstall/**, **/org/apache/felix/org.apache.felix.framework/**, **/${karaf.version}/org.apache.karaf.jaas.config-${karaf.version}.jar</excludes>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
@@ -599,6 +599,18 @@
                                     <artifactId>org.apache.felix.framework</artifactId>
                                     <version>${felix.framework.version}</version>
                                     <outputDirectory>${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}/system/org/apache/felix/org.apache.felix.framework/${felix.framework.version}</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>org.apache.felix.fileinstall</artifactId>
+                                    <version>${felix.fileinstall.version}</version>
+                                    <outputDirectory>${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}/system/org/apache/felix/org.apache.felix.fileinstall/${felix.fileinstall.version}</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.ops4j.pax.logging</groupId>
+                                    <artifactId>pax-logging-service</artifactId>
+                                    <version>${pax.logging.version}</version>
+                                    <outputDirectory>${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}/system/org/ops4j/pax/logging/pax-logging-service/${pax.logging.version}</outputDirectory>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
@@ -751,7 +763,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
-                    <warSourceExcludes>*Resources*.properties,**/config.properties</warSourceExcludes>
+                    <warSourceExcludes>*Resources*.properties,**/custom.properties</warSourceExcludes>
                     <webResources>
                         <resource>
                             <directory>${project.build.directory}/native2ascii</directory>
@@ -790,11 +802,12 @@
                                 <extraPackageExclude>org.springframework.web.client*</extraPackageExclude>
                             </extraPackageExcludes>
                             <propertiesInputFile>
-                                ${project.build.directory}/filtered-resources/config.properties
+                                ${project.build.directory}/filtered-resources/custom.properties
                             </propertiesInputFile>
                             <propertiesOutputFile>
-                                ${project.build.directory}/generated-resources/config.properties
+                                ${project.build.directory}/generated-resources/custom.properties
                             </propertiesOutputFile>
+                            <propertyFilePropertyName>org.osgi.framework.system.packages.generated</propertyFilePropertyName>
                         </configuration>
                     </execution>
                     <execution>
@@ -802,6 +815,14 @@
                         <goals>
                             <goal>dependencies</goal>
                         </goals>
+                        <configuration>
+                            <propertiesInputFile>
+                                ${project.build.directory}/generated-resources/custom.properties
+                            </propertiesInputFile>
+                            <propertiesOutputFile>
+                                ${project.build.directory}/generated-resources/custom.properties
+                            </propertiesOutputFile>
+                        </configuration>
                     </execution>
                     <execution>
                         <id>native2ascii</id>
@@ -926,7 +947,7 @@
             <resource>
                 <directory>src/data/resources/karaf/etc</directory>
                 <includes>
-                    <include>config.properties</include>
+                    <include>custom.properties</include>
                 </includes>
                 <filtering>true</filtering>
                 <targetPath>${project.build.directory}/filtered-resources</targetPath>

@@ -50,6 +50,7 @@ import org.apache.felix.fileinstall.ArtifactUrlTransformer;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.bundles.extender.jahiamodules.fileinstall.FileInstallConfigurer;
+import org.jahia.bundles.extender.jahiamodules.jsp.JahiaJasperInitializer;
 import org.jahia.bundles.extender.jahiamodules.logging.PaxLoggingConfigurer;
 import org.jahia.bundles.extender.jahiamodules.transform.DxModuleURLStreamHandler;
 import org.jahia.bundles.extender.jahiamodules.transform.ModuleDependencyURLStreamHandler;
@@ -98,20 +99,17 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
 import javax.jcr.RepositoryException;
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 import static org.jahia.services.modulemanager.Constants.URL_PROTOCOL_DX;
 import static org.jahia.services.modulemanager.Constants.URL_PROTOCOL_MODULE_DEPENDENCIES;
@@ -130,23 +128,17 @@ public class Activator implements BundleActivator {
     private static final BundleURLScanner URLREWRITE_SCANNER = new BundleURLScanner("META-INF", "*urlrewrite*.xml", false);
     private static final BundleURLScanner FLOW_SCANNER = new BundleURLScanner("/", "flow.xml", true);
 
-    private static final Comparator<Resource> IMPORT_FILE_COMPARATOR = new Comparator<Resource>() {
-
-        @Override
-        public int compare(Resource o1, Resource o2) {
-            return StringUtils.substringBeforeLast(o1.getFilename(), ".").compareTo(StringUtils.substringBeforeLast(o2.getFilename(), "."));
-        }
-    };
+    private static final Comparator<Resource> IMPORT_FILE_COMPARATOR = Comparator.comparing(o -> StringUtils.substringBeforeLast(o.getFilename(), "."));
 
     private static Activator instance;
 
     private CndBundleObserver cndBundleObserver;
-    private List<ServiceRegistration<?>> serviceRegistrations = new ArrayList<ServiceRegistration<?>>();
-    private BundleListener bundleListener;
+    private List<ServiceRegistration<?>> serviceRegistrations = new ArrayList<>();
+    private SynchronousBundleListener bundleListener;
     private Set<Bundle> installedBundles;
     private Set<Bundle> initializedBundles;
     private Map<Bundle, JahiaTemplatesPackage> registeredBundles;
-    private Map<Bundle, ServiceTracker<HttpService, HttpService>> bundleHttpServiceTrackers = new HashMap<Bundle, ServiceTracker<HttpService, HttpService>>();
+    private Map<Bundle, ServiceTracker<HttpService, HttpService>> bundleHttpServiceTrackers = new HashMap<>();
     private JahiaTemplateManagerService templatesService;
     private TemplatePackageRegistry templatePackageRegistry;
     private TemplatePackageDeployer templatePackageDeployer;
@@ -159,6 +151,7 @@ public class Activator implements BundleActivator {
 
     private Boolean stopBundleWithErrorInRules;
     private ExecutorService executorService;
+    private JahiaJasperInitializer jasperInitializer;
 
     public Activator() {
         instance = this;
@@ -166,6 +159,42 @@ public class Activator implements BundleActivator {
 
     public static Activator getInstance() {
         return instance;
+    }
+
+    /**
+     * Persists the bundle content in DX and returns the new location URL which handles the transformed bundle content.
+     *
+     * @param bundle the source bundle
+     * @return the location of the transformed bundle
+     */
+    private static String transform(Bundle bundle) throws ModuleManagementException {
+        try {
+            PersistentBundle persistentBundle = ModuleUtils.persist(bundle);
+            String newLocation = persistentBundle.getLocation();
+            logger.info("Transformed bundle {} with location {} to be handled by the DX protocol handler under new location {}", getDisplayName(bundle), bundle.getLocation(), newLocation);
+            return newLocation;
+        } catch (ModuleManagementException e) {
+            throw e;
+        } catch (Exception e) {
+            String msg = "Unable to transform bundle " + bundle + ". Cause: " + e.getMessage();
+            logger.error(msg, e);
+            throw new ModuleManagementException(msg, e);
+        }
+    }
+
+    private static String getDisplayName(Bundle bundle) {
+        return BundleUtils.getDisplayName(bundle);
+    }
+
+    private static boolean isInvalid(ModuleState.State moduleState) {
+        return moduleState == ModuleState.State.ERROR_WITH_DEFINITIONS || moduleState == ModuleState.State.INCOMPATIBLE_VERSION;
+    }
+
+    private static boolean needsDefaultModuleDependency(final JahiaTemplatesPackage pkg) {
+        return !pkg.getDepends().contains(JahiaTemplatesPackage.ID_DEFAULT)
+                && !pkg.getDepends().contains(JahiaTemplatesPackage.NAME_DEFAULT)
+                && !ServicesRegistry.getInstance().getJahiaTemplateManagerService().getModulesWithNoDefaultDependency()
+                .contains(pkg.getId());
     }
 
     @Override
@@ -241,19 +270,31 @@ public class Activator implements BundleActivator {
         // Add transformers and URL handlers for jcr persistence and jahia-depends capabilities
         registerUrlTransformers(context);
 
+        jasperInitializer = new JahiaJasperInitializer();
+
         checkExistingModules(context);
 
         JCRModuleListener l = (JCRModuleListener) SpringContextSingleton.getBean("org.jahia.services.templates.JCRModuleListener");
-        l.setListener(new JCRModuleListener.Listener() {
-
-            @Override
-            public void onModuleImported(JahiaTemplatesPackage pack) {
-                if (pack.getState().getState() == ModuleState.State.WAITING_TO_BE_IMPORTED) {
-                    start(pack.getBundle());
-                }
+        l.setListener(pack -> {
+            if (pack.getState().getState() == State.WAITING_TO_BE_IMPORTED) {
+                start(pack.getBundle());
             }
         });
 
+        checkPersistentStateMarker();
+
+        fileInstallConfigurer = new FileInstallConfigurer();
+        fileInstallConfigurer.start(context);
+
+        log4jConfigurer = new PaxLoggingConfigurer();
+        log4jConfigurer.start(context);
+
+        stopBundleWithErrorInRules = Boolean.valueOf(SettingsBean.getInstance().getString("jahia.modules.stopBundleWithErrorInRules", "true"));
+
+        logger.info("== DX Extender started in {}ms ============================================================== ", System.currentTimeMillis() - startTime);
+    }
+
+    private void checkPersistentStateMarker() {
         File applyBundlesPersistentStatesMarker = new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "[persisted-bundles].dorestore");
         if (System.getProperty("applyBundlesPersistentStates") != null || applyBundlesPersistentStatesMarker.exists()) {
             ModuleUtils.getModuleManager().applyBundlesPersistentStates(null);
@@ -261,89 +302,15 @@ public class Activator implements BundleActivator {
                 applyBundlesPersistentStatesMarker.delete();
             }
         }
-
-        fileInstallConfigurer = new FileInstallConfigurer();
-        fileInstallConfigurer.start(context);
-
-        log4jConfigurer = new PaxLoggingConfigurer();
-        log4jConfigurer.start(context);
-        
-        stopBundleWithErrorInRules = Boolean.valueOf(SettingsBean.getInstance().getString("jahia.modules.stopBundleWithErrorInRules", "true"));
-
-        logger.info("== DX Extender started in {}ms ============================================================== ", System.currentTimeMillis() - startTime);
     }
 
     private void checkExistingModules(BundleContext context) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, BundleException, IOException {
-
         List<Bundle> toStart = new ArrayList<>();
 
         // parse existing bundles
         for (Bundle bundle : context.getBundles()) {
-
             if (BundleUtils.isJahiaModuleBundle(bundle)) {
-
-                int state = bundle.getState();
-                boolean isRegistered = registeredBundles.containsKey(bundle);
-
-                if (isRegistered && state == Bundle.ACTIVE) {
-                    // registering resources for already active bundles
-                    registerHttpResources(bundle);
-                }
-
-                if (!isRegistered) {
-                    if (state >= Bundle.INSTALLED) {
-                        // Parse bundle if activator has not seen them before
-                        try {
-                            String bundleLocation = bundle.getLocation();
-                            String bundleDisplayName = BundleUtils.getDisplayName(bundle);
-                            logger.info(
-                                    "Found bundle {} which needs to be processed by a module extender. Location {}. State: {}",
-                                    new Object[] { bundleDisplayName, bundleLocation, bundle.getState() });
-                            if (state == Bundle.ACTIVE) {
-                                bundle.stop(Bundle.STOP_TRANSIENT);
-                                toStart.add(bundle);
-                            } else if (state == Bundle.INSTALLED) {
-                                final JahiaTemplatesPackage pkg = BundleUtils.getModule(bundle);
-
-                                if (pkg != null) {
-                                    // we register the bundle state
-                                    setModuleState(bundle, ModuleState.State.INSTALLED, null);
-                                    pkg.setState(getModuleState(bundle));
-                                    registeredBundles.put(bundle, pkg);
-                                }
-                            }
-                            try {
-                                boolean needUpdate = state > Bundle.INSTALLED;
-                                if (!bundleLocation.startsWith(URL_PROTOCOL_DX)) {
-                                    // transform the module
-                                    String newLocation = transform(bundle);
-                                    // overwrite bundle location
-                                    ModuleUtils.updateBundleLocation(bundle, newLocation);
-                                    // perform bundle update from the new location
-                                    needUpdate = true;
-
-                                    // we check the start level for a module and adjust it
-                                    BundleStartLevel bundleStartLevel = bundle.adapt(BundleStartLevel.class);
-                                    int moduleStartLevel = SettingsBean.getInstance().getModuleStartLevel();
-                                    if (bundleStartLevel.getStartLevel() != moduleStartLevel) {
-                                        // update start level
-                                        logger.info("Setting start level for bundle {} to {}", bundleDisplayName,
-                                                moduleStartLevel);
-                                        bundleStartLevel.setStartLevel(moduleStartLevel);
-                                    }
-                                }
-
-                                if (needUpdate) {
-                                    bundle.update();
-                                }
-                            } catch (BundleException | ModuleManagementException e) {
-                                logger.warn("Cannot update bundle : " + e.getMessage(), e);
-                            }
-                        } catch (Exception e) {
-                            logger.error("Unable to process the bundle " + bundle, e);
-                        }
-                    }
-                }
+                checkExistingModule(toStart, bundle);
             }
         }
         for (Bundle bundle : toStart) {
@@ -355,93 +322,128 @@ public class Activator implements BundleActivator {
         }
     }
 
-    /**
-     * Persists the bundle content in DX and returns the new location URL which handles the transformed bundle content.
-     *
-     * @param bundle the source bundle
-     * @return the location of the transformed bundle
-     */
-    private static String transform(Bundle bundle) throws ModuleManagementException {
-        try {
-            PersistentBundle persistentBundle = ModuleUtils.persist(bundle);
-            String newLocation = persistentBundle.getLocation();
-            logger.info(
-                    "Transformed bundle {} with location {} to be handled by the DX protocol handler under new location {}",
-                    new String[] { getDisplayName(bundle), bundle.getLocation(), newLocation });
-            return newLocation;
-        } catch (Exception e) {
-            if (e instanceof ModuleManagementException) {
-                // re-throw
-                throw (ModuleManagementException) e;
+    private void checkExistingModule(List<Bundle> toStart, Bundle bundle) {
+        int state = bundle.getState();
+        boolean isRegistered = registeredBundles.containsKey(bundle);
+
+        if (isRegistered && state == Bundle.ACTIVE) {
+            // registering resources for already active bundles
+            registerHttpResources(bundle);
+        }
+
+        if (!isRegistered && state >= Bundle.INSTALLED) {
+            // Parse bundle if activator has not seen them before
+            try {
+                String bundleLocation = bundle.getLocation();
+                String bundleDisplayName = BundleUtils.getDisplayName(bundle);
+                logger.info("Found bundle {} which needs to be processed by a module extender. Location {}. State: {}", bundleDisplayName, bundleLocation, bundle.getState());
+                if (state == Bundle.ACTIVE) {
+                    bundle.stop(Bundle.STOP_TRANSIENT);
+                    toStart.add(bundle);
+                } else if (state == Bundle.INSTALLED) {
+                    final JahiaTemplatesPackage pkg = BundleUtils.getModule(bundle);
+
+                    if (pkg != null) {
+                        // we register the bundle state
+                        setModuleState(bundle, State.INSTALLED, null);
+                        pkg.setState(getModuleState(bundle));
+                        registeredBundles.put(bundle, pkg);
+                    }
+                }
+                handleBundleMigration(bundle, bundleLocation, bundleDisplayName);
+            } catch (Exception e) {
+                logger.error("Unable to process the bundle " + bundle, e);
             }
-            String msg = "Unable to transform bundle " + bundle + ". Cause: " + e.getMessage();
-            logger.error(msg, e);
-            throw new ModuleManagementException(msg, e);
+        }
+
+        if (state >= Bundle.RESOLVED) {
+            resolve(bundle);
+        }
+    }
+
+    private void handleBundleMigration(Bundle bundle, String bundleLocation, String bundleDisplayName) {
+        try {
+            if (!bundleLocation.startsWith(URL_PROTOCOL_DX)) {
+                // transform the module
+                String newLocation = transform(bundle);
+                // overwrite bundle location
+                ModuleUtils.updateBundleLocation(bundle, newLocation);
+
+                // we check the start level for a module and adjust it
+                BundleStartLevel bundleStartLevel = bundle.adapt(BundleStartLevel.class);
+                int moduleStartLevel = SettingsBean.getInstance().getModuleStartLevel();
+                if (bundleStartLevel.getStartLevel() != moduleStartLevel) {
+                    // update start level
+                    logger.info("Setting start level for bundle {} to {}", bundleDisplayName,
+                            moduleStartLevel);
+                    bundleStartLevel.setStartLevel(moduleStartLevel);
+                }
+                bundle.update();
+            }
+        } catch (BundleException | ModuleManagementException e) {
+            logger.warn("Cannot update bundle : " + e.getMessage(), e);
         }
     }
 
     private synchronized void setupBundleListener(BundleContext context) {
+        bundleListener = bundleEvent -> {
+            Bundle bundle = bundleEvent.getBundle();
 
-        context.addBundleListener(bundleListener = new SynchronousBundleListener() {
-
-            @Override
-            public void bundleChanged(final BundleEvent bundleEvent) {
-
-                Bundle bundle = bundleEvent.getBundle();
-
-                int bundleEventType = bundleEvent.getType();
-                if (bundle == null) {
-                    return;
-                }
-
-                // refresh host bundle in case of fragment operation
-                if (BundleUtils.isFragment(bundle) && (bundleEventType == BundleEvent.INSTALLED || bundleEventType == BundleEvent.UNINSTALLED)) {
-                    BundleLifecycleUtils.refreshBundles(BundleLifecycleUtils.getHostsFragment(bundle), false, false);
-                    return;
-                }
-
-                if (!BundleUtils.isJahiaModuleBundle(bundle)) {
-                    return;
-                }
-
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Received event {} for bundle {}", BundleUtils.bundleEventToString(bundleEventType), getDisplayName(bundleEvent.getBundle()));
-                }
-                try {
-                    switch (bundleEventType) {
-                        case BundleEvent.INSTALLED:
-                            install(bundle);
-                            break;
-                        case BundleEvent.UPDATED:
-                            update(bundle);
-                            break;
-                        case BundleEvent.RESOLVED:
-                            resolve(bundle);
-                            break;
-                        case BundleEvent.STARTING:
-                            starting(bundle);
-                            break;
-                        case BundleEvent.STARTED:
-                            start(bundle);
-                            break;
-                        case BundleEvent.STOPPING:
-                            stopping(bundle);
-                            break;
-                        case BundleEvent.STOPPED:
-                            stopped(bundle);
-                            break;
-                        case BundleEvent.UNRESOLVED:
-                            unresolve(bundle);
-                            break;
-                        case BundleEvent.UNINSTALLED:
-                            uninstall(bundle);
-                            break;
-                    }
-                } catch (Exception e) {
-                    logger.error("Error when handling event", e);
-                }
+            int bundleEventType = bundleEvent.getType();
+            if (bundle == null) {
+                return;
             }
-        });
+
+            // refresh host bundle in case of fragment operation
+            if (BundleUtils.isFragment(bundle) && (bundleEventType == BundleEvent.INSTALLED || bundleEventType == BundleEvent.UNINSTALLED)) {
+                BundleLifecycleUtils.refreshBundles(BundleLifecycleUtils.getHostsFragment(bundle), false, false);
+                return;
+            }
+
+            if (!BundleUtils.isJahiaModuleBundle(bundle)) {
+                return;
+            }
+
+            if (logger.isDebugEnabled()) {
+                logger.debug("Received event {} for bundle {}", BundleUtils.bundleEventToString(bundleEventType), getDisplayName(bundleEvent.getBundle()));
+            }
+            try {
+                switch (bundleEventType) {
+                    case BundleEvent.INSTALLED:
+                        install(bundle);
+                        break;
+                    case BundleEvent.UPDATED:
+                        update(bundle);
+                        break;
+                    case BundleEvent.RESOLVED:
+                        resolve(bundle);
+                        break;
+                    case BundleEvent.STARTING:
+                        starting(bundle);
+                        break;
+                    case BundleEvent.STARTED:
+                        start(bundle);
+                        break;
+                    case BundleEvent.STOPPING:
+                        stopping(bundle);
+                        break;
+                    case BundleEvent.STOPPED:
+                        stopped(bundle);
+                        break;
+                    case BundleEvent.UNRESOLVED:
+                        unresolve(bundle);
+                        break;
+                    case BundleEvent.UNINSTALLED:
+                        uninstall(bundle);
+                        break;
+                    default:
+                        logger.debug("Unknown event : {}", bundleEventType);
+                }
+            } catch (Exception e) {
+                logger.error("Error when handling event", e);
+            }
+        };
+        context.addBundleListener(bundleListener);
     }
 
     @Override
@@ -543,20 +545,15 @@ public class Activator implements BundleActivator {
                 SettingsBean settingsBean = SettingsBean.getInstance();
                 boolean isProcessingServer = settingsBean.isProcessingServer();
                 if (isProcessingServer) {
-                    try {
-                        templatePackageDeployer.clearModuleNodesAsync(jahiaTemplatesPackage);
-                    } catch (Exception e) {
-                        // We still want to perform the rest of operations in case module nodes cleanup fails for some reason.
-                        logger.error(e.getMessage(), e);
-                    }
+                    clearModuleNodes(jahiaTemplatesPackage);
                 }
-                if (templatePackageRegistry.getAvailableVersionsForModule(jahiaTemplatesPackage.getId()).equals(Collections.singleton(jahiaTemplatesPackage.getVersion()))) {
-                    if (settingsBean.isDevelopmentMode() && isProcessingServer
-                            && !templatesService.checkExistingContent(bundle.getSymbolicName())) {
-                        JCRStoreService jcrStoreService = (JCRStoreService) SpringContextSingleton.getBean("JCRStoreService");
-                        jcrStoreService.undeployDefinitions(bundle.getSymbolicName());
-                        NodeTypeRegistry.getInstance().unregisterNodeTypes(bundle.getSymbolicName());
-                    }
+                if (templatePackageRegistry.getAvailableVersionsForModule(jahiaTemplatesPackage.getId()).equals(Collections.singleton(jahiaTemplatesPackage.getVersion()))
+                        && settingsBean.isDevelopmentMode()
+                        && isProcessingServer
+                        && !templatesService.checkExistingContent(bundle.getSymbolicName())) {
+                    JCRStoreService jcrStoreService = (JCRStoreService) SpringContextSingleton.getBean("JCRStoreService");
+                    jcrStoreService.undeployDefinitions(bundle.getSymbolicName());
+                    NodeTypeRegistry.getInstance().unregisterNodeTypes(bundle.getSymbolicName());
                 }
             } catch (IOException | RepositoryException e) {
                 logger.error("Error while uninstalling module content for module " + jahiaTemplatesPackage, e);
@@ -569,6 +566,15 @@ public class Activator implements BundleActivator {
 
         long totalTime = System.currentTimeMillis() - startTime;
         logger.info("--- Finished uninstalling DX OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
+    }
+
+    private void clearModuleNodes(JahiaTemplatesPackage jahiaTemplatesPackage) {
+        try {
+            templatePackageDeployer.clearModuleNodesAsync(jahiaTemplatesPackage);
+        } catch (Exception e) {
+            // We still want to perform the rest of operations in case module nodes cleanup fails for some reason.
+            logger.error(e.getMessage(), e);
+        }
     }
 
     private synchronized void resolve(final Bundle bundle) {
@@ -588,6 +594,8 @@ public class Activator implements BundleActivator {
         if (!checkRequiredVersion(bundle)) {
             return;
         }
+
+        jasperInitializer.addBundle(bundle);
 
         List<String> dependsList = pkg.getDepends();
         if (needsDefaultModuleDependency(pkg)) {
@@ -625,29 +633,7 @@ public class Activator implements BundleActivator {
 
         logger.info("--- Done resolving DX OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
 
-        if (installedBundles.remove(bundle) || !checkImported(pkg)) {
-            scanForImportFiles(bundle, pkg);
-
-            if (SettingsBean.getInstance().isProcessingServer()) {
-                try {
-                    logger.info("--- Deploying content for DX OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
-                    JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser() != null ? JCRSessionFactory.getInstance().getCurrentUser() : JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser();
-
-                    JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, null, null, new JCRCallback<Boolean>() {
-
-                        @Override
-                        public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                            templatePackageDeployer.initializeModuleContent(pkg, session);
-                            return null;
-                        }
-                    });
-                    logger.info("--- Done deploying content for DX OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
-                } catch (RepositoryException e) {
-                    logger.error("Error while initializing module content for module " + pkg, e);
-                }
-                initializedBundles.add(bundle);
-            }
-        }
+        checkInitialImport(bundle, pkg);
 
         resolveDependantBundles(pkg.getId());
 
@@ -660,12 +646,34 @@ public class Activator implements BundleActivator {
         }
     }
 
+    private void checkInitialImport(Bundle bundle, JahiaTemplatesPackage pkg) {
+        if (installedBundles.remove(bundle) || !checkImported(pkg)) {
+            scanForImportFiles(bundle, pkg);
+
+            if (SettingsBean.getInstance().isProcessingServer()) {
+                try {
+                    logger.info("--- Deploying content for DX OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
+                    JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser() != null ? JCRSessionFactory.getInstance().getCurrentUser() : JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser();
+
+                    JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, null, null, session -> {
+                        templatePackageDeployer.initializeModuleContent(pkg, session);
+                        return null;
+                    });
+                    logger.info("--- Done deploying content for DX OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
+                } catch (RepositoryException e) {
+                    logger.error("Error while initializing module content for module " + pkg, e);
+                }
+                initializedBundles.add(bundle);
+            }
+        }
+    }
+
     private void checkConfigurations(Bundle bundle) {
         List<URL> foundURLs = CFG_SCANNER.scan(bundle);
         if (!foundURLs.isEmpty()) {
             for (URL url : foundURLs) {
                 try {
-                    Path path = Paths.get( SettingsBean.getInstance().getJahiaVarDiskPath(), "karaf", "etc", StringUtils.substringAfterLast(url.getFile(), "/"));
+                    Path path = Paths.get(SettingsBean.getInstance().getJahiaVarDiskPath(), "karaf", "etc", StringUtils.substringAfterLast(url.getFile(), "/"));
                     List<String> lines = IOUtils.readLines(url.openStream());
                     boolean isEditable = lines.stream().map(String::toLowerCase).anyMatch(p -> p.startsWith("# default configuration"));
                     if (!path.toFile().exists() || !isEditable) {
@@ -687,7 +695,7 @@ public class Activator implements BundleActivator {
     private boolean checkRequiredVersion(Bundle bundle) {
         String jahiaRequiredVersion = bundle.getHeaders().get("Jahia-Required-Version");
         if (!StringUtils.isEmpty(jahiaRequiredVersion) && new org.jahia.commons.Version(jahiaRequiredVersion).compareTo(new org.jahia.commons.Version(Jahia.VERSION)) > 0) {
-            logger.error("Error while reading module, required version (" + jahiaRequiredVersion + ") is higher than your Jahia version (" + Jahia.VERSION + ")");
+            logger.error("Error while reading module, required version ({}) is higher than your Jahia version ({})", jahiaRequiredVersion, Jahia.VERSION);
             setModuleState(bundle, ModuleState.State.INCOMPATIBLE_VERSION, jahiaRequiredVersion);
             return false;
         }
@@ -695,11 +703,7 @@ public class Activator implements BundleActivator {
     }
 
     private void addToBeResolved(Bundle bundle, String missingDependency) {
-        List<Bundle> bundlesWaitingForDepend = toBeResolved.get(missingDependency);
-        if (bundlesWaitingForDepend == null) {
-            bundlesWaitingForDepend = new CopyOnWriteArrayList<Bundle>();
-            toBeResolved.put(missingDependency, bundlesWaitingForDepend);
-        }
+        List<Bundle> bundlesWaitingForDepend = toBeResolved.computeIfAbsent(missingDependency, k -> new CopyOnWriteArrayList<>());
         bundlesWaitingForDepend.add(bundle);
     }
 
@@ -708,7 +712,7 @@ public class Activator implements BundleActivator {
         if (toBeResolvedForKey != null) {
             for (Bundle bundle : toBeResolvedForKey) {
                 if (bundle.getState() != Bundle.UNINSTALLED) {
-                    logger.debug("Parsing module " + bundle.getSymbolicName() + " since it is dependent on just resolved module " + key);
+                    logger.debug("Parsing module {} since it is dependent on just resolved module {}", bundle.getSymbolicName(), key);
                     resolve(bundle);
                 }
             }
@@ -784,26 +788,7 @@ public class Activator implements BundleActivator {
 
         // scan for resource and call observers
         boolean hasSpringFile = hasSpringFile(bundle);
-        for (final Map.Entry<BundleURLScanner, BundleObserver<URL>> scannerAndObserver : extensionObservers.entrySet()) {
-            final List<URL> foundURLs = scannerAndObserver.getKey().scan(bundle);
-            if (!foundURLs.isEmpty()) {
-                // rules may use Global objects from his own spring beans, so we delay the rules registration until the spring context is initialized
-                // to insure that potential global objects are available before rules executions
-                if (DRL_SCANNER.equals(scannerAndObserver.getKey()) && hasSpringFile) {
-                    logger.info("--- Rules registration for bundle {} has been delayed until its Spring context is initialized --", getDisplayName(bundle));
-                    jahiaTemplatesPackage.doExecuteAfterContextInitialized(new JahiaTemplatesPackage.ContextInitializedCallback() {
-                        @Override
-                        public void execute(AbstractApplicationContext context) {
-                            registerRules(bundle, jahiaTemplatesPackage, scannerAndObserver, foundURLs);
-                            return;
-                        }
-                    });
-                } else {
-                    registerRules(bundle, jahiaTemplatesPackage, scannerAndObserver, foundURLs);
-                }
-            }
-        }
-
+        registerRules(bundle, jahiaTemplatesPackage, hasSpringFile);
         registerHttpResources(bundle);
 
         long totalTime = System.currentTimeMillis() - startTime;
@@ -813,14 +798,10 @@ public class Activator implements BundleActivator {
             //auto deploy bundle according to bundle configuration
             try {
 
-                JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, null, null, new JCRCallback<Boolean>() {
-
-                    @Override
-                    public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        templatesService.autoInstallModulesToSites(jahiaTemplatesPackage, session);
-                        session.save();
-                        return null;
-                    }
+                JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, null, null, session -> {
+                    templatesService.autoInstallModulesToSites(jahiaTemplatesPackage, session);
+                    session.save();
+                    return null;
                 });
             } catch (RepositoryException e) {
                 logger.error("Error while initializing module content for module " + jahiaTemplatesPackage, e);
@@ -841,8 +822,7 @@ public class Activator implements BundleActivator {
         if (hasSpringFile) {
             setModuleState(bundle, ModuleState.State.SPRING_STARTING, errorMessage);
             try {
-                @SuppressWarnings("resource")
-                final AbstractApplicationContext contextToStartForModule = BundleUtils
+                @SuppressWarnings("resource") final AbstractApplicationContext contextToStartForModule = BundleUtils
                         .getContextToStartForModule(bundle);
                 if (contextToStartForModule != null) {
                     contextToStartForModule.refresh();
@@ -859,12 +839,28 @@ public class Activator implements BundleActivator {
         flushOutputCachesForModule(jahiaTemplatesPackage);
     }
 
+    private void registerRules(Bundle bundle, JahiaTemplatesPackage jahiaTemplatesPackage, boolean hasSpringFile) {
+        for (final Map.Entry<BundleURLScanner, BundleObserver<URL>> scannerAndObserver : extensionObservers.entrySet()) {
+            final List<URL> foundURLs = scannerAndObserver.getKey().scan(bundle);
+            if (!foundURLs.isEmpty()) {
+                // rules may use Global objects from his own spring beans, so we delay the rules registration until the spring context is initialized
+                // to insure that potential global objects are available before rules executions
+                if (DRL_SCANNER.equals(scannerAndObserver.getKey()) && hasSpringFile) {
+                    logger.info("--- Rules registration for bundle {} has been delayed until its Spring context is initialized --", getDisplayName(bundle));
+                    jahiaTemplatesPackage.doExecuteAfterContextInitialized(context -> registerRules(bundle, jahiaTemplatesPackage, scannerAndObserver, foundURLs));
+                } else {
+                    registerRules(bundle, jahiaTemplatesPackage, scannerAndObserver, foundURLs);
+                }
+            }
+        }
+    }
+
     private void registerRules(final Bundle bundle, final JahiaTemplatesPackage jahiaTemplatesPackage,
-            final Map.Entry<BundleURLScanner, BundleObserver<URL>> scannerAndObserver,
-            final List<URL> foundURLs) {
+                               final Map.Entry<BundleURLScanner, BundleObserver<URL>> scannerAndObserver,
+                               final List<URL> foundURLs) {
         try {
             scannerAndObserver.getValue().addingEntries(bundle, foundURLs);
-        }  catch (Exception e) {
+        } catch (Exception e) {
             String bundleDisplayName = jahiaTemplatesPackage.getId() + " v" + jahiaTemplatesPackage.getVersion();
             logger.error("--- Error parsing rules for DX OSGi bundle " + bundleDisplayName, e);
             setModuleState(bundle, ModuleState.State.ERROR_WITH_RULES, e);
@@ -920,10 +916,6 @@ public class Activator implements BundleActivator {
             }
         }
         return false;
-    }
-
-    private static String getDisplayName(Bundle bundle) {
-        return BundleUtils.getDisplayName(bundle);
     }
 
     private synchronized void stopping(Bundle bundle) {
@@ -983,10 +975,6 @@ public class Activator implements BundleActivator {
     private boolean keepPreviousStateOnStop(Bundle bundle) {
         ModuleState moduleState = getModuleState(bundle);
         return moduleState != null && (moduleState.getState() == State.SPRING_NOT_STARTED || moduleState.getState() == State.ERROR_WITH_RULES);
-    }
-
-    private static boolean isInvalid(ModuleState.State moduleState) {
-        return moduleState == ModuleState.State.ERROR_WITH_DEFINITIONS || moduleState == ModuleState.State.INCOMPATIBLE_VERSION;
     }
 
     private void flushOutputCachesForModule(final JahiaTemplatesPackage pkg) {
@@ -1077,7 +1065,7 @@ public class Activator implements BundleActivator {
     }
 
     private void scanForImportFiles(Bundle bundle, JahiaTemplatesPackage jahiaTemplatesPackage) {
-        List<Resource> importFiles = new ArrayList<Resource>();
+        List<Resource> importFiles = new ArrayList<>();
         Enumeration<URL> importXMLEntryEnum = bundle.findEntries("META-INF", "import*.xml", false);
         if (importXMLEntryEnum != null) {
             while (importXMLEntryEnum.hasMoreElements()) {
@@ -1101,14 +1089,14 @@ public class Activator implements BundleActivator {
     }
 
     public Map<ModuleState.State, Set<Bundle>> getModulesByState() {
-        Map<ModuleState.State, Set<Bundle>> modulesByState = new TreeMap<ModuleState.State, Set<Bundle>>();
-        for (Bundle bundle : moduleStates.keySet()) {
-            ModuleState.State moduleState = moduleStates.get(bundle).getState();
+        Map<ModuleState.State, Set<Bundle>> modulesByState = new TreeMap<>();
+        for (Map.Entry<Bundle, ModuleState> entry : moduleStates.entrySet()) {
+            ModuleState.State moduleState = entry.getValue().getState();
             Set<Bundle> bundlesInState = modulesByState.get(moduleState);
             if (bundlesInState == null) {
-                bundlesInState = new TreeSet<Bundle>();
+                bundlesInState = new TreeSet<>();
             }
-            bundlesInState.add(bundle);
+            bundlesInState.add(entry.getKey());
             modulesByState.put(moduleState, bundlesInState);
         }
         return modulesByState;
@@ -1135,31 +1123,24 @@ public class Activator implements BundleActivator {
     private void registerUrlTransformers(BundleContext context) throws IOException {
 
         // register protocol handlers
-        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        Dictionary<String, Object> props = new Hashtable<>();
         props.put(URLConstants.URL_HANDLER_PROTOCOL, URL_PROTOCOL_DX);
         props.put(Constants.SERVICE_DESCRIPTION, "URL stream protocol handler for DX modules that handles bundle storage and dependencies between modules");
         props.put(Constants.SERVICE_VENDOR, Jahia.VENDOR_NAME);
         serviceRegistrations.add(context.registerService(URLStreamHandlerService.class, new DxModuleURLStreamHandler(), props));
-        props = new Hashtable<String, Object>();
+        props = new Hashtable<>();
         props.put(URLConstants.URL_HANDLER_PROTOCOL, URL_PROTOCOL_MODULE_DEPENDENCIES);
         props.put(Constants.SERVICE_DESCRIPTION, "URL stream protocol handler for DX modules that handles dependencies between them using OSGi capabilities");
         props.put(Constants.SERVICE_VENDOR, Jahia.VENDOR_NAME);
         serviceRegistrations.add(context.registerService(URLStreamHandlerService.class, new ModuleDependencyURLStreamHandler(), props));
 
         // register artifact listener and URL transformer
-        props = new Hashtable<String, Object>();
+        props = new Hashtable<>();
         props.put(Constants.SERVICE_DESCRIPTION, "Artifact listener to perist the underlying bundle and transform its URL");
         props.put(Constants.SERVICE_VENDOR, Jahia.VENDOR_NAME);
         serviceRegistrations.add(context.registerService(
-                new String[] { ArtifactUrlTransformer.class.getName(), ArtifactListener.class.getName() },
+                new String[]{ArtifactUrlTransformer.class.getName(), ArtifactListener.class.getName()},
                 new ModuleUrlTransformer(), null));
-    }
-
-    private static boolean needsDefaultModuleDependency(final JahiaTemplatesPackage pkg) {
-        return !pkg.getDepends().contains(JahiaTemplatesPackage.ID_DEFAULT)
-                && !pkg.getDepends().contains(JahiaTemplatesPackage.NAME_DEFAULT)
-                && !ServicesRegistry.getInstance().getJahiaTemplateManagerService().getModulesWithNoDefaultDependency()
-                .contains(pkg.getId());
     }
 
     private ExecutorService getExecutorService() {
@@ -1182,7 +1163,7 @@ public class Activator implements BundleActivator {
         } catch (InterruptedException e) {
             // Ignore
         }
-        
+
         executorService = null;
     }
 
@@ -1193,4 +1174,5 @@ public class Activator implements BundleActivator {
             ((JahiaMappingJackson2HttpMessageConverter) ctx.getBean(beanName)).setDelegate(delegate);
         }
     }
+
 }

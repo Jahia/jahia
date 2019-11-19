@@ -49,11 +49,7 @@ import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleState;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
-import org.jahia.services.modulemanager.BundleBucketInfo;
-import org.jahia.services.modulemanager.BundleInfo;
-import org.jahia.services.modulemanager.InvalidTargetException;
-import org.jahia.services.modulemanager.ModuleManagementException;
-import org.jahia.services.modulemanager.ModuleNotFoundException;
+import org.jahia.services.modulemanager.*;
 import org.jahia.services.modulemanager.spi.BundleService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.settings.SettingsBean;
@@ -64,13 +60,7 @@ import org.osgi.framework.startlevel.BundleStartLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * The default implementation of the {@link BundleService} which is using direct bundle operations (BundleContext.installBundle(),
@@ -88,7 +78,7 @@ public class DefaultBundleService implements BundleService {
     private JahiaTemplateManagerService templateManagerService;
     private static final Logger logger = LoggerFactory.getLogger(DefaultBundleService.class);
 
-    private static Bundle getBundleEnsureExists(BundleInfo bundleInfo) throws ModuleNotFoundException {
+    protected static Bundle getBundleEnsureExists(BundleInfo bundleInfo) throws ModuleNotFoundException {
         Bundle bundle = BundleUtils.getBundleBySymbolicName(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
         if (bundle == null) {
             throw new ModuleNotFoundException(bundleInfo.getKey());
@@ -154,6 +144,11 @@ public class DefaultBundleService implements BundleService {
         if (Bundle.UNINSTALLED == bundle.getState()) {
              BundleLifecycleUtils.refreshBundle(bundle);
         }
+    }
+
+    @Override
+    public void resolve(BundleInfo bundleInfo, String target) throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException {
+        BundleLifecycleUtils.resolveBundle(getBundleEnsureExists(bundleInfo));
     }
 
     @Override

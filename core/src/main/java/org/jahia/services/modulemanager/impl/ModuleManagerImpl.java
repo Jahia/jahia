@@ -182,7 +182,7 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
         if (start) {
             // phase #2.1 resolve bundle to process imports
             for (PersistentBundle info : infos) {
-                bundleService.stop(info, target);
+                bundleService.resolve(info, target);
             }
             // phase #2.2 stop previous versions
             for (PersistentBundle info : infos) {

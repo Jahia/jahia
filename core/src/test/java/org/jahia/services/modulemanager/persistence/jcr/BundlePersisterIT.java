@@ -45,7 +45,6 @@ package org.jahia.services.modulemanager.persistence.jcr;
 
 import static org.jahia.services.modulemanager.persistence.PersistentBundleInfoBuilderTest.getResource;
 import static org.jahia.services.modulemanager.persistence.jcr.BundleInfoJcrHelper.PATH_BUNDLES;
-import static org.jahia.services.modulemanager.persistence.jcr.BundleInfoJcrHelper.PATH_MODULE_MANAGEMENT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -58,11 +57,7 @@ import java.io.IOException;
 import javax.jcr.RepositoryException;
 
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.persistence.BundlePersister;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
@@ -121,10 +116,12 @@ public class BundlePersisterIT extends AbstractJUnitTest {
 
             @Override
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                if (session.nodeExists(PATH_MODULE_MANAGEMENT)) {
-                    session.getNode(PATH_MODULE_MANAGEMENT).remove();
-                    session.save();
+                JCRNodeWrapper bundles = session.getNode(PATH_BUNDLES);
+                JCRNodeIteratorWrapper bundleNodes = bundles.getNodes();
+                while (bundleNodes.hasNext()) {
+                    bundleNodes.nextNode().remove();
                 }
+                session.save();
                 return null;
             }
         });

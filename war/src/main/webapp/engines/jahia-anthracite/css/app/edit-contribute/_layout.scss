@@ -38,7 +38,7 @@
     height: 100%;
 
     body[data-chrome="false"] & {
-        > div[role="presentation"] > div[role="presentation"].x-panel-tbar {
+        > div[role="presentation"] > div[role="presentation"].x-panel-tbar { /* OPTIMISE SELECTOR ::: css/app/layout.scss ::: 1 */
             display: none;
         }
 
@@ -47,7 +47,7 @@
             width: 100vw !important;
         }
 
-        div.mainmodule > div:nth-child(2) {
+        div.mainmodule > div:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/layout.scss ::: 2 */
             height: 100vh !important;
             width: 100vw !important;
             left: 0 !important;
@@ -116,7 +116,7 @@
     }
 }
 
-.x-jahia-root:not(.x-viewport-contributemode) .mainmodule > div:nth-child(2) {
+.x-jahia-root:not(.x-viewport-contributemode) .mainmodule > div:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/layout.scss ::: 3 */
     body[data-sitesettings="true"] & {
         left: 360px !important;
         width: calc(100% - 292px) !important;
@@ -139,7 +139,7 @@
     }
 
     // Iframe containers
-    > div:nth-child(2) {
+    > div:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/layout.scss ::: 4 */
         // iframe outer container
         top: 0px !important;
         height: calc(100% - 9px) !important;
@@ -166,7 +166,7 @@
             height: calc(100% - 50px) !important;
         }
 
-        > div:not(.x-abs-layout-container) {
+        > div:not(.x-abs-layout-container) { /* OPTIMISE SELECTOR ::: css/app/layout.scss :::5 */
             // iframe inner container
             width: 100% !important;
             height: calc(100vh - 109px) !important;

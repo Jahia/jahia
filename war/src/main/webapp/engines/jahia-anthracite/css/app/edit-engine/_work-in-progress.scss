@@ -75,16 +75,16 @@
         overflow: visible;
 
         > div {
-            > table { // Ask for class
+            > table {
                 > tbody {
                     > tr {
-                        > td {
+                        > td { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_work-in-progress.scss ::: 1 */
                             margin-left: 10px;
                             margin-bottom: 5px;
                             display: block;
                         }
 
-                        &:nth-child(1) { // Ask for a class
+                        &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_work-in-progress.scss ::: 2 */
                             > td {
                                 margin-bottom: 30px;
                                 margin-left: 0;
@@ -97,12 +97,12 @@
                             }
                         }
 
-                        &:nth-child(3) > td > div > table > tbody > tr:nth-child(2) > td { // Ask for a class
+                        &:nth-child(3) > td > div > table > tbody > tr:nth-child(2) > td { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_work-in-progress.scss ::: 3 */
                             padding-left: 18px;
                             padding-top: 5px;
                         }
 
-                        &:nth-child(3) > td > div { // Ask for a class
+                        &:nth-child(3) > td > div { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_work-in-progress.scss ::: 4 */
                             padding: 5px 0;
                         }
                     }

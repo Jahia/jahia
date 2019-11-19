@@ -73,7 +73,7 @@
         overflow-x: hidden;
         border: none !important;
 
-        &:nth-child(2) {
+        &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/workflow/_publication-dashboard.scss ::: 1 */
             overflow-y: hidden;
             height: calc(100% - 18px) !important;
         }

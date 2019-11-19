@@ -43,7 +43,7 @@
     }
 
     #JahiaGxtManagerToolbar .action-bar-tool-item.repositoryexplorer-menu-view {
-        background-image: url(../images/icons/icon_preview_dark.png) !important;
+        background-image: url(../images/icons/icon_preview_dark.png) !important; /* OPTIMISE URL ::: css/app/pickers/_overrides.scss ::: 1 */
     }
 
     #images-view {
@@ -307,7 +307,7 @@
         }
 
         // Status Bar
-        > div:nth-child(2) > .x-panel-bbar {
+        > div:nth-child(2) > .x-panel-bbar { /* OPTIMISE SELECTOR ::: css/app/pickers/_overrides.scss ::: 1 */
             z-index: 9999 !important;
             height: 30px !important;
             bottom: 0 !important;
@@ -495,7 +495,7 @@
                         margin-top: -2px;
 
                         // Filesize
-                        &:nth-child(3) {
+                        &:nth-child(3) { /* OPTIMISE SELECTOR ::: css/app/pickers/_overrides.scss ::: 2 */
                             @include text(8px, _property($THUMB--COLOR--DIMMED, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
                             margin-top: 0;
                             z-index: 9;

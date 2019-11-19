@@ -90,7 +90,7 @@
             background: transparent !important;
             vertical-align: top;
 
-            &:nth-child(1) {
+            &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tabs-common.scss ::: 1 */
                 padding-right: 20px;
                 box-sizing: border-box;
             }

@@ -88,7 +88,7 @@
                 }
 
                 // First page
-                &:nth-child(1) {
+                &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_group-selector.scss ::: 1 */
                     background: url($ICON--FIRST--GREY) no-repeat center center / 14px 14px;
                     margin-left: 0px;
 
@@ -100,7 +100,7 @@
 
 
                 // Previous page
-                &:nth-child(2) {
+                &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_group-selector.scss ::: 2 */
                     background: url($ICON--BACK--GREY) no-repeat center center / 14px 14px;
                     margin-left: 5px;
 
@@ -111,14 +111,14 @@
                 }
 
                 // Skip to page input
-                &:nth-child(5) {
+                &:nth-child(5) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_group-selector.scss ::: 3 */
                     &:hover {
                         opacity: 1;
                     }
                 }
 
                 // Next Page
-                &:nth-child(8) {
+                &:nth-child(8) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_group-selector.scss ::: 4 */
                     background: url($ICON--NEXT--GREY) no-repeat center center / 14px 14px;
                     margin-right: 5px;
 
@@ -129,7 +129,7 @@
                 }
 
                 // Last page
-                &:nth-child(9) {
+                &:nth-child(9) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_group-selector.scss ::: 5 */
                     background: url($ICON--LAST--GREY) no-repeat center center / 14px 14px;
                     margin-right: 5px;
 
@@ -140,7 +140,7 @@
                 }
 
                 // Refresh results
-                &:nth-child(11) {
+                &:nth-child(11) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_group-selector.scss ::: 6 */
                     background: url($ICON--REFRESH--SMALL_GREY) no-repeat center center / 16px 12px;
 
                     &:hover {
@@ -328,7 +328,7 @@
 
             .x-toolbar-cell {
                 // Save button
-                &:nth-child(1) {
+                &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_group-selector.scss ::: 7 */
                     @include button("ACTIONBAR---SUGGESTED")
                 }
             }
@@ -412,7 +412,7 @@
         }
 
         // Text input
-        &:nth-child(2) {
+        &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_group-selector.scss ::: 8 */
 
             .x-form-field-wrap {
                 padding: 1px 0 3px 2px;
@@ -438,7 +438,7 @@
         }
 
         // Search button
-        &:nth-child(3) {
+        &:nth-child(3) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_group-selector.scss ::: 9 */
             display: block;
 
             .x-btn-icon {

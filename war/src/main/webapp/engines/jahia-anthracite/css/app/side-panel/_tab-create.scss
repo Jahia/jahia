@@ -11,13 +11,13 @@
         opacity: 0.8;
 
         // CATEGORY ICON
-        background-image: url(../images/icons/tabs-files-dark@X2.png);
+        background-image: url(../images/icons/tabs-files-dark@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-create.scss ::: 1 */
     }
 
     .x-grid3-row-selected {
         .gwt-Image {
             // CATEGORY ICON
-            background-image: url(../images/icons/tabs-files@X2.png);
+            background-image: url(../images/icons/tabs-files@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-create.scss ::: 2 */
         }
     }
 

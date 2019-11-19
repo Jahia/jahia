@@ -6,28 +6,28 @@ body[data-edit-window-style="settings"] {
     background: _theme-color(secondary);
 }
 
-body[data-edit-window-style="settings"] .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2),
-.x-viewport-adminmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2),
-.x-viewport-dashboardmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) {
+body[data-edit-window-style="settings"] .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2), /* OPTIMISE SELECTOR ::: css/app/misc.scss ::: 1 */
+.x-viewport-adminmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2), /* OPTIMISE SELECTOR ::: css/app/misc.scss ::: 2 */
+.x-viewport-dashboardmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/misc.scss ::: 3 */
     width: calc(100% - 308px) !important;
     left: 356px !important;
     overflow: visible !important;
 }
 
-body[data-edit-window-style="settings"][data-selection-count] .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > iframe:nth-child(1),
-body[data-edit-window-style="settings"][data-selection-count] .x-viewport-adminmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > iframe:nth-child(1),
-body[data-edit-window-style="settings"][data-selection-count] .x-viewport-dashboardmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > iframe:nth-child(1) {
+body[data-edit-window-style="settings"][data-selection-count] .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > iframe:nth-child(1), /* OPTIMISE SELECTOR ::: css/app/misc.scss ::: 4 */
+body[data-edit-window-style="settings"][data-selection-count] .x-viewport-adminmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > iframe:nth-child(1), /* OPTIMISE SELECTOR ::: css/app/misc.scss ::: 5 */
+body[data-edit-window-style="settings"][data-selection-count] .x-viewport-dashboardmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > iframe:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/misc.scss ::: 6 */
     box-shadow: none !important;
 }
 
-body[data-edit-window-style="settings"] .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div {
+body[data-edit-window-style="settings"] .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div { /* OPTIMISE SELECTOR ::: css/app/misc.scss ::: 7 */
     top: -53px !important;
     height: calc(100% + 63px) !important;
     width: calc(100% + 21px) !important;
 }
 
-.x-viewport-adminmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div,
-.x-viewport-dashboardmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div {
+.x-viewport-adminmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div, /* OPTIMISE SELECTOR ::: css/app/misc.scss ::: 8 */
+.x-viewport-dashboardmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div { /* OPTIMISE SELECTOR ::: css/app/misc.scss ::: 9 */
     top: -43px !important;
     height: calc(100% + 65px) !important;
     width: calc(100% - 9px) !important;

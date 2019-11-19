@@ -96,6 +96,18 @@ public interface BundleService {
     void install(String uri, String target, boolean start, int startLevel) throws ModuleManagementException, InvalidTargetException;
 
     /**
+     * Performs the resolve operation with the provided bundle on the target group of cluster nodes.
+     *
+     * @param bundleInfo The bundle to perform operation for
+     * @param target The group of cluster nodes targeted by the resolve operation (see JavaDoc of the class)
+     * @throws ModuleManagementException in case of operation failure
+     * @throws ModuleNotFoundException in case the corresponding bundle cannot be found
+     * @throws InvalidTargetException in case target is not a valid target for module operation
+     */
+    void resolve(BundleInfo bundleInfo, String target)
+            throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException;
+
+    /**
      * Performs the start operation with the provided bundle on the target group of cluster nodes.
      *
      * @param bundleInfo The bundle to perform operation for

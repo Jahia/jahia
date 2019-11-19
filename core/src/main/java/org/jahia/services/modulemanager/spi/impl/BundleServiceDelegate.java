@@ -80,6 +80,11 @@ public class BundleServiceDelegate implements BundleService {
     }
 
     @Override
+    public void resolve(BundleInfo bundleInfo, String target) throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException {
+        lookupService().resolve(bundleInfo, target);
+    }
+
+    @Override
     public void start(BundleInfo bundleInfo, String target) throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException {
         lookupService().start(bundleInfo, target);
     }

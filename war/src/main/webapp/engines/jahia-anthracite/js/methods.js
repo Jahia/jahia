@@ -3415,7 +3415,6 @@ var DX_app = {
                 if (document.getElementsByClassName('x-current-page-path').length > 0) {
                     if (DexV2.class('x-current-page-path').getAttribute('data-page-name') != null) {
 
-                        document.getElementsByClassName('edit-menu-publication')[0].style.display = 'block';
                         var elements = {
                             body: document.getElementsByTagName('body')[0],
                             title: document.getElementsByClassName('x-current-page-path')[0],
@@ -3432,10 +3431,16 @@ var DX_app = {
                             title: elements.title.getBoundingClientRect()
                         };
 
-                        // Center Page Title
-                        elements.title.style.left = (((boxes.body.width / 2) - (boxes.title.width / 2)) + offset - 30) + 'px';
+                        if(elements.publishButton){
+                            document.getElementsByClassName('edit-menu-publication')[0].style.display = 'block';
+                        }
 
-                        if (elements.innerTitle) {
+                        // Center Page Title
+                        if(elements.title && boxes.body && boxes.title){
+                            elements.title.style.left = (((boxes.body.width / 2) - (boxes.title.width / 2)) + offset - 30) + 'px';
+                        }
+
+                        if (elements.innerTitle && boxes.body) {
                             // Get Inner title bunding box
                             boxes.innerTitle = elements.innerTitle.getBoundingClientRect();
 
@@ -3444,31 +3449,54 @@ var DX_app = {
                         }
 
                         // Refresh bounding box for title as it has moved
-                        boxes.title = elements.title.getBoundingClientRect();
+                        if(elements.title){
+                            boxes.title = elements.title.getBoundingClientRect();
+                        }
 
-                        if (DX_app.iframe.data.selectionCount > 0) {
+                        if (DX_app.iframe.data.selectionCount > 0 && boxes.title) {
                             // Multiselect, so display differently
-                            elements.previewButton.style.left = (boxes.title.left + boxes.title.width + 10) + 'px';
-                            elements.moreInfo.style.left = (boxes.title.left + boxes.title.width + 30) + 'px';
-                            elements.nodePathTitle.style.left = (boxes.title.left - 20) + 'px';
+                            if(elements.previewButton){
+                                elements.previewButton.style.left = (boxes.title.left + boxes.title.width + 10) + 'px';
+                            }
+
+                            if(elements.moreInfo){
+                                elements.moreInfo.style.left = (boxes.title.left + boxes.title.width + 30) + 'px';
+                            }
+
+                            if(elements.nodePathTitle){
+                                elements.nodePathTitle.style.left = (boxes.title.left - 20) + 'px';
+                            }
 
                             DexV2('.edit-menu-publication .x-btn-mc').setAttribute('data-publication-label', DX_app.iframe.data.pageTitle);
                         } else {
                             // No Select
-                            if (elements.refreshButton) {
-                                elements.refreshButton.style.left = (boxes.title.left + boxes.title.width) + 'px';
+
+                            if(boxes.title){
+                                if (elements.refreshButton) {
+                                    elements.refreshButton.style.left = (boxes.title.left + boxes.title.width) + 'px';
+                                }
+
+                                if(elements.previewButton){
+                                    elements.previewButton.style.left = (boxes.title.left + boxes.title.width + 39) + 'px';
+                                }
+
+                                if(elements.moreInfo){
+                                    elements.moreInfo.style.left = (boxes.title.left + boxes.title.width + 63) + 'px';
+                                }
+
+                                if(elements.nodePathTitle){
+                                    elements.nodePathTitle.style.left = (boxes.title.left - 20) + 'px';
+                                    elements.nodePathTitle.setAttribute('data-indigo-file-path', DexV2.getCached('body').getAttribute('data-main-node-path'));
+                                }
                             }
 
-                            elements.previewButton.style.left = (boxes.title.left + boxes.title.width + 39) + 'px';
-                            elements.moreInfo.style.left = (boxes.title.left + boxes.title.width + 63) + 'px';
-                            elements.nodePathTitle.style.left = (boxes.title.left - 20) + 'px';
-
-                            elements.nodePathTitle.setAttribute('data-indigo-file-path', DexV2.getCached('body').getAttribute('data-main-node-path'));
                             DexV2('.edit-menu-publication .x-btn-mc').setAttribute('data-publication-label', DX_app.iframe.data.publication.label);
                         }
 
                         // Make sure correct class is added to publication button
-                        elements.publishButton.setAttribute('data-publication-status', DX_app.iframe.data.publication.status);
+                        if(elements.publishButton){
+                            elements.publishButton.setAttribute('data-publication-status', DX_app.iframe.data.publication.status);
+                        }
 
                         if (DexV2.class('publication-status').exists()) {
                             DexV2.class("publication-status-path").setHTML(DexV2.getCached('body').getAttribute('data-main-node-path'));
@@ -3476,7 +3504,10 @@ var DX_app = {
                             DexV2.class('publication-status').setAttribute('data-publication-status', DX_app.iframe.data.publication.status);
                         }
                     } else {
-                        document.getElementsByClassName('edit-menu-publication')[0].style.display = 'none';
+                        if(document.getElementsByClassName('edit-menu-publication')[0]){
+                            document.getElementsByClassName('edit-menu-publication')[0].style.display = 'none';
+                            
+                        }
                     }
                 }
             }

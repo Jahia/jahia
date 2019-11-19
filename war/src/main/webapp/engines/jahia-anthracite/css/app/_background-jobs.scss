@@ -6,7 +6,7 @@
 
     &[data-indigo-details="open"] {
         // Details panel
-        .x-window-bwrap .x-panel:nth-child(2) {
+        .x-window-bwrap .x-panel:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/_background-jobs.scss ::: 1 */
             display: block;
         }
 
@@ -23,19 +23,19 @@
     &[indigo-results="false"] {
 
         // Pager
-        .x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-bbar {
+        .x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-bbar { /* OPTIMISE SELECTOR ::: css/app/_background-jobs.scss ::: 2 */
             display: none;
         }
 
         // Tool bar
-        .x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-tbar .x-toolbar-left .x-toolbar-cell:nth-child(8) {
+        .x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-tbar .x-toolbar-left .x-toolbar-cell:nth-child(8) { /* OPTIMISE SELECTOR ::: css/app/_background-jobs.scss ::: 3 */
             display: none;
         }
 
     }
 
     &[indigo-auto-refresh="true"] {
-        .x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-tbar .x-toolbar-left .x-toolbar-cell {
+        .x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-tbar .x-toolbar-left .x-toolbar-cell { /* OPTIMISE SELECTOR ::: css/app/_background-jobs.scss ::: 4 */
             &:nth-child(3) {
                 label {
                     display: inline-block !important;
@@ -48,8 +48,8 @@
                 }
             }
 
-            &:nth-child(4),
-            &:nth-child(5) {
+            &:nth-child(4), /* OPTIMISE SELECTOR ::: css/app/_background-jobs.scss ::: 5 */
+            &:nth-child(5) { /* OPTIMISE SELECTOR ::: css/app/_background-jobs.scss ::: 6 */
                 display: inline-block;
             }
         }
@@ -231,7 +231,7 @@
         .x-panel {
 
             // Job List Container
-            &:nth-child(1) {
+            &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/_background-jobs.scss ::: 7 */
 
                 .x-panel-tl {
                     display: none;
@@ -296,7 +296,7 @@
                                     }
 
                                     // Auto refresh checkbox
-                                    &:nth-child(3) {
+                                    &:nth-child(3) { /* OPTIMISE SELECTOR ::: css/app/_background-jobs.scss ::: 8 */
                                         display: inline-block;
 
                                         label {
@@ -324,7 +324,7 @@
                                     }
 
                                     // Auto refresh input
-                                    &:nth-child(4) {
+                                    &:nth-child(4) { /* OPTIMISE SELECTOR ::: css/app/_background-jobs.scss ::: 9 */
                                         input {
                                             padding: 2px 4px !important;
                                             margin: 0 6px !important;
@@ -334,7 +334,7 @@
                                     }
 
                                     // Auto refresh seconds
-                                    &:nth-child(5) {
+                                    &:nth-child(5) { /* OPTIMISE SELECTOR ::: css/app/_background-jobs.scss ::: 10 */
 
                                         label {
                                             text-transform: none;
@@ -346,12 +346,12 @@
 
                                     // Delete selected
                                     // Keep hidden and trigger click when user clicks the button-delete added to each row
-                                    &:nth-child(7) {
+                                    &:nth-child(7) { /* OPTIMISE SELECTOR ::: css/app/_background-jobs.scss ::: 11 */
                                         display: none;
                                     }
 
                                     // Delete all
-                                    &:nth-child(8) {
+                                    &:nth-child(8) { /* OPTIMISE SELECTOR ::: css/app/_background-jobs.scss ::: 12 */
                                         display: block;
                                         position: fixed;
                                         top: 62px;
@@ -361,12 +361,12 @@
                                         > table {
                                             width: 25px;
                                             height: 25px;
-                                            background: url(../images/icons/tabs-trash-black@X2.png) no-repeat left -2px top;
+                                            background: url(../images/icons/tabs-trash-black@X2.png) no-repeat left -2px top; /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 1 */
                                             background-size: 21px;
 
                                             // Small Firefox fix
                                             body.ext-gecko & {
-                                                background: url(../images/icons/tabs-trash-black@X2.png) no-repeat left -2px top -2px;
+                                                background: url(../images/icons/tabs-trash-black@X2.png) no-repeat left -2px top -2px; /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 2 */
                                                 background-size: 21px;
                                             }
 
@@ -443,7 +443,7 @@
                                                 background: _theme-color(secondary, b) !important;
 
                                                 a {
-                                                    background: url(../images/icons/icon-toggle-expanded-small-normal.png) no-repeat center center;
+                                                    background: url(../images/icons/icon-toggle-expanded-small-normal.png) no-repeat center center; /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 3 */
                                                     margin-right: 5px;
                                                 }
 
@@ -469,11 +469,11 @@
 
                             // Grouped List
                             .x-grid-group {
-                                background: url(../images/icons/icon-toggle-expanded-small-normal.png) no-repeat left top 10px;
+                                background: url(../images/icons/icon-toggle-expanded-small-normal.png) no-repeat left top 10px; /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 4 */
 
                                 // Collapsed Group
                                 &.x-grid-group-collapsed {
-                                    background: url(../images/icons/expand-side-panel@X2.png) no-repeat left 1px top 9px;
+                                    background: url(../images/icons/expand-side-panel@X2.png) no-repeat left 1px top 9px; /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 5 */
                                 }
 
                                 // Group header
@@ -540,12 +540,12 @@
                                             }
 
                                             .delete-button {
-                                                background: url(../images/icons/icon-close-grey@X2.png) center center no-repeat;
+                                                background: url(../images/icons/icon-close-grey@X2.png) center center no-repeat; /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 6 */
                                                 background-size: 10px;
                                             }
 
                                             .info-button {
-                                                background: url(../images/icons/ic_info_outline-DARK@2x.png) right center no-repeat;
+                                                background: url(../images/icons/ic_info_outline-DARK@2x.png) right center no-repeat; /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 7 */
                                                 background-size: 18px;
                                             }
                                         }
@@ -556,11 +556,11 @@
                                                 background: _property($ROW--BG, $BACKGROUND-JOBS);
 
                                                 .delete-button {
-                                                    background-image: url(../images/icons/icon-close-grey@X2.png);
+                                                    background-image: url(../images/icons/icon-close-grey@X2.png); /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 8 */
                                                 }
 
                                                 .info-button {
-                                                    background-image: url(../images/icons/ic_info_outline-DARK@2x.png);
+                                                    background-image: url(../images/icons/ic_info_outline-DARK@2x.png); /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 9 */
                                                 }
                                             }
 
@@ -632,28 +632,28 @@
                                     }
 
                                     // Change colours to grey
-                                    &:nth-child(1) {
-                                        background: url(../images/icons/icon_arrow_left_double_grey@X2.png) no-repeat center center/14px 14px;
+                                    &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/_background-jobs.scss ::: 13 */
+                                        background: url(../images/icons/icon_arrow_left_double_grey@X2.png) no-repeat center center/14px 14px; /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 10 */
                                         margin-left: 0px;
                                     }
 
-                                    &:nth-child(2) {
-                                        background: url(../images/icons/icon_arrow_left_single_grey@X2.png) no-repeat center center/14px 14px;
+                                    &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/_background-jobs.scss ::: 14 */
+                                        background: url(../images/icons/icon_arrow_left_single_grey@X2.png) no-repeat center center/14px 14px; /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 11 */
                                         margin-left: 5px;
                                     }
 
-                                    &:nth-child(8) {
-                                        background: url(../images/icons/icon-next-grey@X2.png) no-repeat center center/14px 14px;
+                                    &:nth-child(8) { /* OPTIMISE SELECTOR ::: css/app/_background-jobs.scss ::: 15 */
+                                        background: url(../images/icons/icon-next-grey@X2.png) no-repeat center center/14px 14px; /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 12 */
                                         margin-right: 5px;
                                     }
 
-                                    &:nth-child(9) {
-                                        background: url(../images/icons/icon_arrow_right_double_grey@X2.png) no-repeat center center/14px 14px;
+                                    &:nth-child(9) { /* OPTIMISE SELECTOR ::: css/app/_background-jobs.scss ::: 16 */
+                                        background: url(../images/icons/icon_arrow_right_double_grey@X2.png) no-repeat center center/14px 14px; /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 13 */
                                         margin-right: 5px;
                                     }
 
-                                    &:nth-child(11) {
-                                        background: url(../images/icons/icon-publication-launcher-grey.png) no-repeat center center/16px 12px;
+                                    &:nth-child(11) { /* OPTIMISE SELECTOR ::: css/app/_background-jobs.scss ::: 17 */
+                                        background: url(../images/icons/icon-publication-launcher-grey.png) no-repeat center center/16px 12px; /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 14 */
                                     }
 
                                     .my-paging-text {
@@ -684,7 +684,7 @@
             }
 
             // Details Container
-            &:nth-child(2) {
+            &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/_background-jobs.scss ::: 18 */
                 display: none;
                 width: 100% !important;
                 position: fixed !important;
@@ -707,7 +707,7 @@
 
                     // Contains minimise button
                     .x-panel-toolbar {
-                        background: url(../images/icons/icon-close-grey@X2.png) no-repeat center bottom;
+                        background: url(../images/icons/icon-close-grey@X2.png) no-repeat center bottom; /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 15 */
                         background-size: 20px;
                         width: 25px;
                         height: 25px;

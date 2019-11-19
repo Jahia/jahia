@@ -10,7 +10,7 @@ div.engine-window {
 
         > div {
             // Workflow settings block
-            &:nth-child(1) {
+            &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-workflow.scss ::: 1 */
                 height: 250px !important;
                 top: auto !important;
                 padding: 46px 10px 20px 29px !important;
@@ -61,7 +61,7 @@ div.engine-window {
 
                     .x-grid3-row-selected {
                         background-color: _property($LIST-BOX--ROW--BG---SELECTED, $EDIT-ENGINE) !important;
-                        background-image: url(../images/icons/icon-next-white@X2.png) !important;
+                        background-image: url(../images/icons/icon-next-white@X2.png) !important; /* OPTIMISE URL ::: css/app/edit-engine/_panel-workflow.scss ::: 1 */
                         background-position: right 5px center !important;
                         background-repeat: no-repeat !important;
                         background-size: 13px !important;
@@ -98,7 +98,7 @@ div.engine-window {
                     form {
                         > div.x-form-item {
                             // Same as parent
-                            &:nth-child(1) {
+                            &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-workflow.scss ::: 2 */
                                 label {
                                     width: auto !important;
                                     margin-left: 20px !important;
@@ -124,7 +124,7 @@ div.engine-window {
                             }
 
                             // Workflow selector
-                            &:nth-child(2) {
+                            &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-workflow.scss ::: 3 */
                                 label {
                                     display: none !important;
                                 }
@@ -155,7 +155,7 @@ div.engine-window {
             }
 
             // Workflow history
-            &:nth-child(2) {
+            &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-workflow.scss ::: 4 */
                 height: auto !important;
                 max-height: calc(100% - 250px) !important;
                 top: 251px !important;

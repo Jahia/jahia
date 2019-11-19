@@ -41,17 +41,17 @@
         bottom: 0 !important;
     }
 
-    .workflowactiondialog-ctn .x-border-layout-ct:nth-child(2) > .x-border-panel .x-form-element .x-form-field-wrap.x-component {
+    .workflowactiondialog-ctn .x-border-layout-ct:nth-child(2) > .x-border-panel .x-form-element .x-form-field-wrap.x-component { /* OPTIMISE SELECTOR ::: css/app/workflow/_overrides.scss ::: 1 */
         overflow: hidden !important;
     }
 
-    .workflowactiondialog-ctn .x-border-layout-ct:nth-child(2) {
+    .workflowactiondialog-ctn .x-border-layout-ct:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/workflow/_overrides.scss ::: 2 */
         > div.x-component:nth-child(1) {
             height: calc(100% - 193px) !important;
         }
     }
 
-    .workflowactiondialog-ctn .x-border-layout-ct:nth-child(3) {
+    .workflowactiondialog-ctn .x-border-layout-ct:nth-child(3) { /* OPTIMISE SELECTOR ::: css/app/workflow/_overrides.scss ::: 3 */
         width: 100% !important;
 
         > div {
@@ -68,7 +68,7 @@
         }
     }
 
-    .publicationstatuswindow-ctn .x-border-layout-ct:nth-child(2) > .x-border-panel .x-form-element .x-form-field-wrap.x-component {
+    .publicationstatuswindow-ctn .x-border-layout-ct:nth-child(2) > .x-border-panel .x-form-element .x-form-field-wrap.x-component { /* OPTIMISE SELECTOR ::: css/app/workflow/_overrides.scss ::: 4 */
         overflow: hidden !important;
     }
 
@@ -77,7 +77,7 @@
         width: calc(100% + 162px) !important;
     }
 
-    .x-border-layout-ct:nth-child(2) > .x-border-panel:nth-child(2) .x-panel-bwrap {
+    .x-border-layout-ct:nth-child(2) > .x-border-panel:nth-child(2) .x-panel-bwrap { /* OPTIMISE SELECTOR ::: css/app/workflow/_overrides.scss ::: 5 */
         // width: calc(100% - 162px) !important;
     }
 
@@ -101,7 +101,7 @@
         z-index: 9999999;
     }
 
-    .x-border-panel:nth-child(2) .x-panel-body.x-panel-body-noheader.x-panel-body-noborder {
+    .x-border-panel:nth-child(2) .x-panel-body.x-panel-body-noheader.x-panel-body-noborder { /* OPTIMISE SELECTOR ::: css/app/workflow/_overrides.scss ::: 6 */
         height: 214px !important;
     }
 
@@ -213,7 +213,7 @@
         }
     }
 
-    .x-border-layout-ct:nth-child(1) > .x-border-panel {
+    .x-border-layout-ct:nth-child(1) > .x-border-panel { /* OPTIMISE SELECTOR ::: css/app/workflow/_overrides.scss ::: 7 */
         color: _property($SUBTITLE--COLOR, $EDIT-ENGINE);
         padding-top: 20px;
         height: calc(100% - 3px) !important;
@@ -272,14 +272,14 @@
                 font-size: 18px;
                 font-family: "Nunito Sans", sans-serif;
                 padding-left: 11px;
-                background-image: url(../images/icons/icon-toggle-expanded-small-normal.png);
+                background-image: url(../images/icons/icon-toggle-expanded-small-normal.png); /* OPTIMISE URL ::: css/app/workflow/_overrides.scss ::: 1 */
                 background-size: 7px 5px;
                 background-position: left;
             }
         }
 
         .x-grid-group-collapsed .x-grid-group-hd .x-grid-group-div {
-            background-image: url(../images/icons/expand-side-panel@X2.png);
+            background-image: url(../images/icons/expand-side-panel@X2.png); /* OPTIMISE URL ::: css/app/workflow/_overrides.scss ::: 2 */
             background-size: 5px 7px;
             background-position: left;
         }
@@ -291,14 +291,14 @@
         }
     }
 
-    .x-border-layout-ct:nth-child(2) {
+    .x-border-layout-ct:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/workflow/_overrides.scss ::: 8 */
         width: 100% !important;
         height: 100% !important;
 
         > .x-border-panel {
             position: initial !important;
 
-            &:first-child {
+            &:first-child { /* OPTIMISE SELECTOR ::: css/app/workflow/_overrides.scss ::: 9 */
                 width: 100% !important;
                 margin-bottom: 30px;
                 margin-top: 190px;
@@ -315,14 +315,14 @@
                     position: relative;
                     margin-bottom: 1px;
                     border: none !important;
-                    background: url(../images/icons/speech-DARK@X2.png) no-repeat center left 10px !important;
+                    background: url(../images/icons/speech-DARK@X2.png) no-repeat center left 10px !important; /* OPTIMISE URL ::: css/app/workflow/_overrides.scss ::: 3 */
                     background-size: 29px !important;
                     padding: 7px 10px 7px 50px;
                     box-sizing: border-box;
                     margin-left: 2px;
 
                     &:nth-child(even) {
-                        background: url(../images/icons/speech-DARK@X2.png) no-repeat center left 10px, linear-gradient(to right, #e3e2e2 50%, rgba(227, 226, 226, 0) 100%) !important;
+                        background: url(../images/icons/speech-DARK@X2.png) no-repeat center left 10px, linear-gradient(to right, #e3e2e2 50%, rgba(227, 226, 226, 0) 100%) !important; /* OPTIMISE URL ::: css/app/workflow/_overrides.scss ::: 4 */
                         background-size: 29px, 100% !important;
                     }
 
@@ -333,7 +333,7 @@
 
                             display: block;
 
-                            &:nth-child(1) {
+                            &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/workflow/_overrides.scss ::: 10 */
                                 // Message
                                 margin-top: 21px;
 
@@ -342,7 +342,7 @@
                                 }
                             }
 
-                            &:nth-child(2) {
+                            &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/workflow/_overrides.scss ::: 11 */
                                 // Author / date
                                 position: absolute;
                                 top: 5px;
@@ -355,14 +355,14 @@
                                 tr {
                                     display: inline-block;
 
-                                    &:nth-child(1) {
+                                    &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/workflow/_overrides.scss ::: 12 */
                                         // Date
                                         div {
                                             @include text(14px, _property($COMMENTS--COLOR--DATE, $EDIT-ENGINE), $FONT--WEIGHT---LIGHT);
                                         }
                                     }
 
-                                    &:nth-child(2) {
+                                    &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/workflow/_overrides.scss ::: 13 */
                                         // Author
                                         div {
                                             @include text(14px, _property($COMMENTS--COLOR--AUTHOR, $EDIT-ENGINE), $FONT--WEIGHT---LIGHT);
@@ -388,7 +388,7 @@
 
             }
 
-            &:nth-child(2) {
+            &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/workflow/_overrides.scss ::: 14 */
                 position: absolute !important;
                 top: -189px !important;
                 height: 184px !important;
@@ -418,7 +418,7 @@
         }
     }
 
-    .x-border-layout-ct:nth-child(2) {
+    .x-border-layout-ct:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/workflow/_overrides.scss ::: 15 */
         form button.x-btn-text {
             position: relative;
             top: -42px;
@@ -439,11 +439,11 @@
     &.engine-cards {
         width: calc(100% - 144px) !important;
 
-        .x-border-layout-ct:nth-child(2) {
+        .x-border-layout-ct:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/workflow/_overrides.scss ::: 16 */
             height: calc(100% - 190px) !important;
         }
 
-        .x-border-layout-ct:nth-child(2) > .x-border-panel:first-child {
+        .x-border-layout-ct:nth-child(2) > .x-border-panel:first-child { /* OPTIMISE SELECTOR ::: css/app/workflow/_overrides.scss ::: 17 */
             height: 100% !important;
         }
     }
@@ -551,7 +551,7 @@
             border: none !important;
             height: calc(100% - 102px) !important;
 
-            .x-form-label-left > .x-form-item:nth-child(2) {
+            .x-form-label-left > .x-form-item:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/workflow/_overrides.scss ::: 18 */
                 margin-top: 24px;
             }
 
@@ -559,7 +559,7 @@
                 width: 100% !important;
             }
 
-            > div:nth-child(1) {
+            > div:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/workflow/_overrides.scss ::: 19 */
                 overflow: scroll;
                 height: calc(100% - 169px) !important;
                 width: 100% !important;
@@ -568,11 +568,11 @@
     }
 }
 
-.workflowactiondialog-ctn .x-small-editor .x-toolbar-left td.x-toolbar-cell:first-child {
+.workflowactiondialog-ctn .x-small-editor .x-toolbar-left td.x-toolbar-cell:first-child { /* OPTIMISE SELECTOR ::: css/app/workflow/_overrides.scss ::: 20 */
     float: right;
 }
 
-.workflowactiondialog-ctn .x-small-editor .x-toolbar-left td.x-toolbar-cell:last-child {
+.workflowactiondialog-ctn .x-small-editor .x-toolbar-left td.x-toolbar-cell:last-child { /* OPTIMISE SELECTOR ::: css/app/workflow/_overrides.scss ::: 21 */
     float: left;
     margin-right: 4px;
 }

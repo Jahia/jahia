@@ -15,7 +15,7 @@ body[data-indigo-edit-engine="open"] {
     &.x-masked {
         &::before {
             position: absolute;
-            background: url(../images/loader_dark.svg) no-repeat center center #d6d6d6;
+            background: url(../images/loader_dark.svg) no-repeat center center #d6d6d6; /* OPTIMISE URL ::: css/app/edit-engine/_main.scss ::: 3 */
             z-index: 99;
         }
     }
@@ -51,15 +51,22 @@ div.engine-window {
         display: none;
     }
 
-    [id="Creation"], [id="Last modification"], [id="Publication"],
-    [id="Dernière modification"], [id="Créé"], [id="Publication"],
-    [id="Erstellung"], [id="Letzte Änderung"], [id="Veröffentlichung"] {
+    [id="Creation"], /* OPTIMISE SELECTOR ::: css/app/edit-engine/main.scss ::: 1 */
+    [id="Last modification"], /* OPTIMISE SELECTOR ::: css/app/edit-engine/main.scss ::: 2 */
+    [id="Publication"], /* OPTIMISE SELECTOR ::: css/app/edit-engine/main.scss ::: 3 */
+    [id="Dernière modification"], /* OPTIMISE SELECTOR ::: css/app/edit-engine/main.scss ::: 4 */
+    [id="Créé"], /* OPTIMISE SELECTOR ::: css/app/edit-engine/main.scss ::: 5 */
+    [id="Publication"], /* OPTIMISE SELECTOR ::: css/app/edit-engine/main.scss ::: 6 */
+    [id="Erstellung"], /* OPTIMISE SELECTOR ::: css/app/edit-engine/main.scss ::: 7 */
+    [id="Letzte Änderung"], /* OPTIMISE SELECTOR ::: css/app/edit-engine/main.scss ::: 8 */
+    [id="Veröffentlichung"] { /* OPTIMISE SELECTOR ::: css/app/edit-engine/main.scss ::: 9 */
         width: 30% !important;
         display: inline-block;
         background: transparent !important;
     }
 
-    [id="Description"] textarea, [id="Beschreibung"] textarea {
+    [id="Description"] textarea, /* OPTIMISE SELECTOR ::: css/app/edit-engine/main.scss ::: 10 */
+    [id="Beschreibung"] textarea { /* OPTIMISE SELECTOR ::: css/app/edit-engine/main.scss ::: 11 */
         max-height: 80px;
     }
 
@@ -552,7 +559,7 @@ div.engine-window {
                     display: block;
 
                     // Tag List
-                    &:nth-child(1) {
+                    &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/main.scss ::: 12 */
 
                         > td {
                             display: block;
@@ -584,7 +591,7 @@ div.engine-window {
                     }
 
                     // Add Tag
-                    &:nth-child(2) {
+                    &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/main.scss ::: 13 */
                         .x-component {
                             width: 100% !important;
 
@@ -704,7 +711,7 @@ div.engine-window {
             // Add Locked icon if the node has been locked
             &[data-content-locked="true"] {
                 &::before {
-                    background: url(../images/icons/icon-lock@X2.png) no-repeat left center;
+                    background: url(../images/icons/icon-lock@X2.png) no-repeat left center; /* OPTIMISE URL ::: css/app/edit-engine/_main.scss ::: 1 */
                     background-size: 20px;
                     padding-left: 22px;
                 }
@@ -712,7 +719,7 @@ div.engine-window {
 
             &[data-content-locked="true"].marked-for-deletion {
                 &::before {
-                    background-image: url(../images/icons_red/markefordelete.svg);
+                    background-image: url(../images/icons_red/markefordelete.svg); /* OPTIMISE URL ::: css/app/edit-engine/_main.scss ::: 2 */
                     text-decoration: line-through;
                     color: _theme-color(status, error);
                 }
@@ -812,7 +819,7 @@ div.engine-window {
                     margin-left: 5px;
                     padding-bottom: 10px;
 
-                    &:nth-child(1) {
+                    &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/main.scss ::: 14 */
                         margin-left: 0;
 
                         // Not a button, but its a checkbox for the edit engine
@@ -829,12 +836,12 @@ div.engine-window {
                     }
 
                     &:nth-child(2) {
-                        /* Save */
+                        // Save
                         @include button("ACTIONBAR---SUGGESTED");
                     }
 
                     // // VERY DIRTY !!! INSTALL LATEST VERSION OF SASS COMPILER TO USE selector-append()
-                    @at-root .engine-panel.createcontentengine-ctn > .x-panel-bwrap > .x-panel-bbar .x-panel-fbar .x-toolbar-cell:nth-child(3) {
+                    @at-root .engine-panel.createcontentengine-ctn > .x-panel-bwrap > .x-panel-bbar .x-panel-fbar .x-toolbar-cell:nth-child(3) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/main.scss ::: 15 */
                         @include button("ACTIONBAR---SUGGESTED");
                     }
 

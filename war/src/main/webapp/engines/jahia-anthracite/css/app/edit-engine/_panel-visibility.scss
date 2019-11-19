@@ -11,10 +11,10 @@ div.engine-window {
             margin-top: 3px;
 
             // Styled image status ...
-            &[src$="/visibilityStatusRed.png"],
-            &[src$="/visibilityStatusUnknown.png"],
-            &[src$="/visibilityStatusGreen.png"],
-            &[src$="/published.png"] {
+            &[src$="/visibilityStatusRed.png"], /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 1 */
+            &[src$="/visibilityStatusUnknown.png"], /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 2 */
+            &[src$="/visibilityStatusGreen.png"], /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 3 */
+            &[src$="/published.png"] { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 4 */
                 width: 20px;
                 height: 20px;
                 padding-left: 20px;
@@ -29,20 +29,20 @@ div.engine-window {
                 padding-left: 0 !important;
             }
 
-            &[src$="/visibilityStatusRed.png"] {
-                background: url(../images/icons_dark/visibilityoff.svg) no-repeat center center;
+            &[src$="/visibilityStatusRed.png"] { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 5 */
+                background: url(../images/icons_dark/visibilityoff.svg) no-repeat center center; /* OPTIMISE URL ::: css/app/edit-engine/_panel-visibility.scss ::: 1 */
             }
 
-            &[src$="/visibilityStatusUnknown.png"] {
-                background: url(../images/icons_dark/unknown.svg) no-repeat center center;
+            &[src$="/visibilityStatusUnknown.png"] { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 6 */
+                background: url(../images/icons_dark/unknown.svg) no-repeat center center; /* OPTIMISE URL ::: css/app/edit-engine/_panel-visibility.scss ::: 2 */
             }
 
-            &[src$="/visibilityStatusGreen.png"] {
-                background: url(../images/icons_dark/visibility.svg) no-repeat center center;
+            &[src$="/visibilityStatusGreen.png"] { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 7 */
+                background: url(../images/icons_dark/visibility.svg) no-repeat center center; /* OPTIMISE URL ::: css/app/edit-engine/_panel-visibility.scss ::: 3 */
             }
 
-            &[src$="/publication/published.png"] {
-                background: url(../images/icons_dark/published.svg) no-repeat center center;
+            &[src$="/publication/published.png"] { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 8 */
+                background: url(../images/icons_dark/published.svg) no-repeat center center; /* OPTIMISE URL ::: css/app/edit-engine/_panel-visibility.scss ::: 4 */
             }
 
         }
@@ -54,7 +54,7 @@ div.engine-window {
             }
 
             // Header Zone
-            &:nth-child(1) {
+            &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 9 */
                 background: _property($FIELDSET--BG, $EDIT-ENGINE);
                 border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE) !important;
                 padding: 43px 10px 20px 29px;
@@ -75,7 +75,7 @@ div.engine-window {
                 }
 
                 > .x-component {
-                    &:nth-child(1) {
+                    &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 10 */
                         > table > tbody > tr > td {
                             // Publication status label
                             &:nth-child(5) {
@@ -94,7 +94,7 @@ div.engine-window {
                             }
 
                             // Publication icon
-                            &:nth-child(6) {
+                            &:nth-child(6) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 11 */
                                 position: fixed;
                                 top: 54px;
                                 left: 745px;
@@ -110,7 +110,7 @@ div.engine-window {
                             }
 
                             // Publish conditions on save ( also used to create a fake fieldset )
-                            &:nth-child(7) {
+                            &:nth-child(7) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 12 */
                                 position: absolute;
                                 background: _property($FIELDSET--BG, $EDIT-ENGINE);
                                 border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE) !important;
@@ -135,7 +135,7 @@ div.engine-window {
                             }
 
                             // Save on publication checkbox
-                            &:nth-child(8) {
+                            &:nth-child(8) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 13 */
                                 position: absolute;
                                 right: 10px;
                                 top: -79px;
@@ -143,11 +143,11 @@ div.engine-window {
                         }
                     }
 
-                    &:nth-child(2) {
+                    &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 14 */
 
                         > table > tbody > tr > td {
                             // All conditions should match label
-                            &:nth-child(1) {
+                            &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 16 */
                                 position: fixed;
                                 top: 120px;
                                 right: 48px;
@@ -160,7 +160,7 @@ div.engine-window {
                             }
 
                             // All conditions should match checkbox
-                            &:nth-child(2) {
+                            &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 17 */
                                 position: fixed;
                                 right: 17px;
                                 top: 120px;
@@ -168,12 +168,12 @@ div.engine-window {
                             }
 
                             // Add New Condition Label
-                            &:nth-child(3) {
+                            &:nth-child(3) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 18 */
                                 display: none;
                             }
 
                             // Selector
-                            &:nth-child(4) {
+                            &:nth-child(4) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 19 */
                                 // Arrow
 
                                 input {
@@ -198,7 +198,7 @@ div.engine-window {
                             }
 
                             // Add button
-                            &:nth-child(5) {
+                            &:nth-child(5) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 20 */
                                 display: none;
                             }
                         }
@@ -207,7 +207,7 @@ div.engine-window {
             }
 
             // Conditions List
-            &:nth-child(2) {
+            &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 21 */
                 .x-grid-empty {
                     padding: 0;
 
@@ -264,7 +264,7 @@ div.engine-window {
                     right: 0;
                     top: 0;
                     pointer-events: all;
-                    background: url(../images/icons_dark/edit.svg) right 5px center no-repeat !important;
+                    background: url(../images/icons_dark/edit.svg) right 5px center no-repeat !important; /* OPTIMISE URL ::: css/app/edit-engine/_panel-visibility.scss ::: 5 */
                     background-size: 16px 16px !important;
                     opacity: 0.8;
 
@@ -294,7 +294,7 @@ div.engine-window {
             }
 
             // Condition settings
-            &:nth-child(3) {
+            &:nth-child(3) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 22 */
                 height: 100% !important;
                 position: fixed;
                 top: 0;
@@ -388,8 +388,8 @@ div.engine-window {
                     }
 
                     // Hide occasional duplication of the window
-                    &:nth-child(2),
-                    &:nth-child(3) {
+                    &:nth-child(2), /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 23 */
+                    &:nth-child(3) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 24 */
                         display: none;
                     }
 

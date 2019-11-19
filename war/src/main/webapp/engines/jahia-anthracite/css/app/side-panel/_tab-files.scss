@@ -13,47 +13,47 @@
         opacity: 0.85;
 
         // FOLDER ICON
-        &[src$="/jnt_contentFolder.png"],
-        &[src$="/jnt_folder.png"] {
+        &[src$="/jnt_contentFolder.png"], /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-files.scss ::: 1 */
+        &[src$="/jnt_folder.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-files.scss ::: 2 */
             background-image: url($ICON--FILES---GREY);
             background-size: 21px;
             background-position: top 2px center;
         }
 
-        &[src$="/remoteFolder.png"] {
-            background-image: url(../images/icons/tabs-files-shared-dark@X2.png);
+        &[src$="/remoteFolder.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-files.scss ::: 3 */
+            background-image: url(../images/icons/tabs-files-shared-dark@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-files.scss ::: 1 */
         }
 
         // IMPORT DROP BOX
-        &[src$="/jnt_importDropBox.png"] {
-            background-image: url(../images/icons/tabs-placeholder-white@X2.png);
+        &[src$="/jnt_importDropBox.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-files.scss ::: 4 */
+            background-image: url(../images/icons/tabs-placeholder-white@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-files.scss ::: 2 */
         }
 
-        &[src$="/jnt_virtualsite.png"] {
-            background-image: url(../images/icons/tabs-site-dark@X2.png);
+        &[src$="/jnt_virtualsite.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-files.scss ::: 5 */
+            background-image: url(../images/icons/tabs-site-dark@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-files.scss ::: 3 */
         }
     }
 
     .x-grid3-row-selected {
         .x-tree3-node-icon {
             // FOLDER ICON
-            &[src$="/jnt_contentFolder.png"],
-            &[src$="/jnt_folder.png"] {
+            &[src$="/jnt_contentFolder.png"], /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-files.scss ::: 6 */
+            &[src$="/jnt_folder.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-files.scss ::: 7 */
                 background-image: url($ICON--FILES---WHITE);
                 opacity: 1;
             }
 
-            &[src$="/remoteFolder.png"] {
-                background-image: url(../images/icons/tabs-files-shared-white@X2.png);
+            &[src$="/remoteFolder.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-files.scss ::: 8 */
+                background-image: url(../images/icons/tabs-files-shared-white@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-files.scss ::: 4 */
             }
 
             // IMPORT DROP BOX
-            &[src$="/jnt_importDropBox.png"] {
-                background-image: url(../images/icons/tabs-placeholder-black@X2.png);
+            &[src$="/jnt_importDropBox.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-files.scss ::: 9 */
+                background-image: url(../images/icons/tabs-placeholder-black@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-files.scss ::: 5 */
             }
 
-            &[src$="/jnt_virtualsite.png"] {
-                background-image: url(../images/icons/tabs-site-white@X2.png);
+            &[src$="/jnt_virtualsite.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-files.scss ::: 10 */
+                background-image: url(../images/icons/tabs-site-white@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-files.scss ::: 6 */
             }
         }
     }

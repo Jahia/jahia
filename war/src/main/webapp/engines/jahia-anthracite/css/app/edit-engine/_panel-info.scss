@@ -21,7 +21,7 @@ div.engine-window {
                 td {
                     display: block;
 
-                    &:nth-child(2) {
+                    &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-info.scss ::: 1 */
                         margin-top: 20px;
                     }
                 }

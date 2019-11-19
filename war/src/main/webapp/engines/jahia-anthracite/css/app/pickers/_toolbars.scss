@@ -45,14 +45,14 @@
             vertical-align: top;
 
             // SAVE
-            &:nth-child(1) {
+            &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/pickers/_toolbars.scss ::: 1 */
                 float: right; // Content PICKER only, not manager
 
                 @include button("ACTIONBAR---SUGGESTED");
             }
 
             // CANCEL
-            &:nth-child(2) {
+            &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/pickers/_toolbars.scss ::: 2 */
                 float: left; // Content PICKER only, not manager
             }
         }
@@ -137,7 +137,7 @@
         border: none;
         opacity: 0.8;
 
-        background: url(../images/icons/toggle-EW@X2.png) no-repeat center center;
+        background: url(../images/icons/toggle-EW@X2.png) no-repeat center center; /* OPTIMISE URL ::: css/app/pickers/_toolbars.scss ::: 1 */
         background-size: 15px;
 
         &:hover {
@@ -196,7 +196,7 @@
             background-color: transparent;
             background-position: center;
             background-repeat: no-repeat;
-            background-image: url(../images/icons/tabs-placeholder-white@X2.png);
+            background-image: url(../images/icons/tabs-placeholder-white@X2.png); /* OPTIMISE URL ::: css/app/pickers/_toolbars.scss ::: 2 */
             background-size: 21px;
 
             z-index: 999999;
@@ -289,7 +289,7 @@
 
             // Add New Folder
             &.toolbar-item-newfolder {
-                background-image: url(../images/icons_dark/add_folder.svg);
+                background-image: url(../images/icons_dark/add_folder.svg); /* OPTIMISE URL ::: css/app/pickers/_toolbars.scss ::: 3 */
 
                 &::before {
                     content: $text_tooltip_new_folder;
@@ -298,7 +298,7 @@
 
             // Add New Content Folder
             &.toolbar-item-newcontentfolder { // editorial content manager
-                background-image: url(../images/icons_dark/add_folder.svg);
+                background-image: url(../images/icons_dark/add_folder.svg); /* OPTIMISE URL ::: css/app/pickers/_toolbars.scss ::: 4 */
 
 
                 &::before {
@@ -308,7 +308,7 @@
 
             // Add New Portlet Folder
             &.toolbar-item-newportletfolder { // portlet manager
-                background-image: url(../images/icons_dark/add_folder.svg);
+                background-image: url(../images/icons_dark/add_folder.svg); /* OPTIMISE URL ::: css/app/pickers/_toolbars.scss ::: 5 */
 
                 &::before {
                     content: $text_tooltip_new_portlet_folder;
@@ -317,7 +317,7 @@
 
             // New Category
             &.toolbar-item-newcategory {
-                background-image: url(../images/icons_dark/add_circle.svg);
+                background-image: url(../images/icons_dark/add_circle.svg); /* OPTIMISE URL ::: css/app/pickers/_toolbars.scss ::: 6 */
 
                 &::before {
                     content: $text_tooltip_new_category;
@@ -326,7 +326,7 @@
 
             // Upload File
             &.toolbar-item-upload {
-                background-image: url(../images/icons_dark/upload_file.svg);
+                background-image: url(../images/icons_dark/upload_file.svg); /* OPTIMISE URL ::: css/app/pickers/_toolbars.scss ::: 7 */
                 background-size: 19px;
 
                 &::before {
@@ -336,7 +336,7 @@
 
             // New Content
             &.toolbar-item-newcontent {
-                background-image: url(../images/icons_dark/add.svg);
+                background-image: url(../images/icons_dark/add.svg); /* OPTIMISE URL ::: css/app/pickers/_toolbars.scss ::: 8 */
                 background-size: 19px;
 
                 &::before {
@@ -346,7 +346,7 @@
 
             // New Portlet
             &.toolbar-item-newportlet {
-                background-image: url(../images/icons_dark/add_circle.svg);
+                background-image: url(../images/icons_dark/add_circle.svg); /* OPTIMISE URL ::: css/app/pickers/_toolbars.scss ::: 9 */
 
                 &::before {
                     content: $text_tooltip_new_portlet;
@@ -355,7 +355,7 @@
 
             // New Page
             &.toolbar-item-newpage {
-                background-image: url(../images/icons_dark/add.svg);
+                background-image: url(../images/icons_dark/add.svg); /* OPTIMISE URL ::: css/app/pickers/_toolbars.scss ::: 10 */
                 background-size: 19px;
 
                 &::before {
@@ -366,83 +366,83 @@
             // Download
             &.toolbar-item-download {
                 display: none !important;
-                background-image: url(../images/icons/placeholder-9@X2.png);
+                background-image: url(../images/icons/placeholder-9@X2.png); /* OPTIMISE URL ::: css/app/pickers/_toolbars.scss ::: 11 */
             }
 
             // File preview
             &.toolbar-item-filepreview {
                 display: none !important;
-                background-image: url(../images/icons/placeholder-10@X2.png);
+                background-image: url(../images/icons/placeholder-10@X2.png); /* OPTIMISE URL ::: css/app/pickers/_toolbars.scss ::: 12 */
             }
 
             // Rename
             &.toolbar-item-rename {
                 display: none !important;
-                background-image: url(../images/icons/placeholder-11@X2.png);
+                background-image: url(../images/icons/placeholder-11@X2.png); /* OPTIMISE URL ::: css/app/pickers/_toolbars.scss ::: 13 */
             }
 
             // Delete
             &.toolbar-item-delete {
                 display: none !important;
-                background-image: url(../images/icons/placeholder-12@X2.png);
+                background-image: url(../images/icons/placeholder-12@X2.png); /* OPTIMISE URL ::: css/app/pickers/_toolbars.scss ::: 14 */
             }
 
             // Un delete
             &.toolbar-item-undelete {
                 display: none !important;
-                background-image: url(../images/icons/placeholder-13@X2.png);
+                background-image: url(../images/icons/placeholder-13@X2.png); /* OPTIMISE URL ::: css/app/pickers/_toolbars.scss ::: 15 */
             }
 
             // Delete permanently
             &.toolbar-item-deletepermanently {
                 display: none !important;
-                background-image: url(../images/icons/placeholder-14@X2.png);
+                background-image: url(../images/icons/placeholder-14@X2.png); /* OPTIMISE URL ::: css/app/pickers/_toolbars.scss ::: 16 */
             }
 
             &.toolbar-item-copy {
                 display: none !important;
-                background-image: url(../images/icons/placeholder-16@X2.png);
+                background-image: url(../images/icons/placeholder-16@X2.png); /* OPTIMISE URL ::: css/app/pickers/_toolbars.scss ::: 17 */
             }
 
             // Cut
             &.toolbar-item-cut {
                 display: none !important;
-                background-image: url(../images/icons/placeholder-17@X2.png);
+                background-image: url(../images/icons/placeholder-17@X2.png); /* OPTIMISE URL ::: css/app/pickers/_toolbars.scss ::: 18 */
             }
 
             // Paste
             &.toolbar-item-paste {
                 display: none !important;
-                background-image: url(../images/icons/placeholder-18@X2.png);
+                background-image: url(../images/icons/placeholder-18@X2.png); /* OPTIMISE URL ::: css/app/pickers/_toolbars.scss ::: 19 */
             }
 
             // Paste Reference
             &.toolbar-item-pastereference {
                 display: none !important;
-                background-image: url(../images/icons/placeholder-19@X2.png);
+                background-image: url(../images/icons/placeholder-19@X2.png); /* OPTIMISE URL ::: css/app/pickers/_toolbars.scss ::: 20 */
             }
 
             // Crop
             &.toolbar-item-crop {
                 display: none !important;
-                background-image: url(../images/icons/placeholder-20@X2.png);
+                background-image: url(../images/icons/placeholder-20@X2.png); /* OPTIMISE URL ::: css/app/pickers/_toolbars.scss ::: 21 */
             }
 
             // Resize
             &.toolbar-item-resize {
                 display: none !important;
-                background-image: url(../images/icons/placeholder-21@X2.png);
+                background-image: url(../images/icons/placeholder-21@X2.png); /* OPTIMISE URL ::: css/app/pickers/_toolbars.scss ::: 22 */
             }
 
             // Rotate
             &.toolbar-item-rotate {
                 display: none !important;
-                background-image: url(../images/icons/placeholder-22@X2.png);
+                background-image: url(../images/icons/placeholder-22@X2.png); /* OPTIMISE URL ::: css/app/pickers/_toolbars.scss ::: 23 */
             }
 
             // Repo Filter menu
             &.repositoryexplorer-menu-view {
-                background-image: url(../images/icons/icon_preview_small_white.png);
+                background-image: url(../images/icons/icon_preview_small_white.png); /* OPTIMISE URL ::: css/app/pickers/_toolbars.scss ::: 24 */
 
                 &::before {
                     content: $text_tooltip_toggle_hidden_elements;

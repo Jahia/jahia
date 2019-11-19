@@ -4,7 +4,7 @@ div.engine-window {
         #JahiaGxtEditEnginePanel-layout {
             > .x-component {
 
-                &:nth-child(1) {
+                &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-layout.scss ::: 1 */
                     /* Form */
                     height: auto !important;
                     width: 100% !important;
@@ -18,7 +18,7 @@ div.engine-window {
                     }
                 }
 
-                &:nth-child(2) {
+                &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-layout.scss ::: 2 */
                     /* Preview sections */
                     height: auto !important;
                     width: 100% !important;

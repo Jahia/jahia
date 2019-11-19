@@ -81,17 +81,17 @@ $side_panel__tabs: (
     &.x-tab-strip-active {
         body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
             img {
-                background-image: url(../images/tabs-settings-blue@X2.png);
+                background-image: url(../images/tabs-settings-blue@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tabs-menu-items.scss ::: 1 */
             }
         }
 
     }
 
     img {
-        background-image: url(../images/tabs-settings-white@X2.png);
+        background-image: url(../images/tabs-settings-white@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tabs-menu-items.scss ::: 2 */
 
         body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
-            background-image: url(../images/tabs-settings-dark@X2.png);
+            background-image: url(../images/tabs-settings-dark@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tabs-menu-items.scss ::: 3 */
         }
 
     }

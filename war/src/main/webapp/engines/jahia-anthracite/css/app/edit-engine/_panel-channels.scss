@@ -5,7 +5,7 @@ div.engine-window {
             /* Fix for the channel double list selecor */
 
             .x-form-item {
-                &:nth-child(2) {
+                &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-channels.scss ::: 1 */
                     margin-top: 20px;
 
                     // EXCLUDE / INCLUDE COMBO

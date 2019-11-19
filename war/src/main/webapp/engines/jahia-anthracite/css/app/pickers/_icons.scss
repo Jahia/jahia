@@ -15,7 +15,7 @@
     }
 
     // COMMON LARGE IMAGES
-    img[src$="/jnt_page_large.png"] {
+    img[src$="/jnt_page_large.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 1 */
         padding-left: 46px;
         overflow: hidden;
         display: inline-block;
@@ -33,21 +33,21 @@
 
     // BOOTSTRAP COLUMNS
     img[src$="/jnt_page_large.png"] {
-        background-image: url(../images/tabs-pages-dark@X2.png);
+        background-image: url(../images/tabs-pages-dark@X2.png); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 1 */
     }
 
     // COMMON ICON REPLACEMENTS IN TREE
-    img[src$="/jnt_page.png"],
-    img[src$="/jnt_folder.png"],
-    img[src$="/jnt_contentList.png"],
-    img[src$="/bootstrap3nt_columns.png"],
-    img[src$="/jnt_contentFolder.png"],
-    img[src$="/jnt_virtualsite.png"],
-    img[src$="/jnt_category.png"],
-    img[src$="/jnt_portletFolder.png"],
-    img[src$="/jnt_mounts.png"],
-    img[src$="/jnt_file_img.png"],
-    img[src$="/remoteFolder.png"] {
+    img[src$="/jnt_page.png"], /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 3 */
+    img[src$="/jnt_folder.png"], /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 4 */
+    img[src$="/jnt_contentList.png"], /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 5 */
+    img[src$="/bootstrap3nt_columns.png"], /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 6 */
+    img[src$="/jnt_contentFolder.png"], /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 7 */
+    img[src$="/jnt_virtualsite.png"], /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 8 */
+    img[src$="/jnt_category.png"], /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 9 */
+    img[src$="/jnt_portletFolder.png"], /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 10 */
+    img[src$="/jnt_mounts.png"], /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 11 */
+    img[src$="/jnt_file_img.png"], /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 12 */
+    img[src$="/remoteFolder.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 13 */
         padding-left: 20px;
         overflow: hidden;
         display: inline-block;
@@ -67,51 +67,51 @@
     }
 
     // Category Icon
-    img[src$="/jnt_category.png"] {
-        background-image: url(../images/icons_dark/category.svg);
+    img[src$="/jnt_category.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 14 */
+        background-image: url(../images/icons_dark/category.svg); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 2 */
         background-size: 20px;
         opacity: 0.5;
     }
 
     // Portlet Icon
-    img[src$="/jnt_portletFolder.png"] {
-        background-image: url(../images/icons_dark/portlets.svg);
+    img[src$="/jnt_portletFolder.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 15 */
+        background-image: url(../images/icons_dark/portlets.svg); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 3 */
         background-size: 20px;
         opacity: 0.5;
     }
 
     // BOOTSTRAP COLUMNS
-    img[src$="/bootstrap3nt_columns.png"] {
-        background-image: url(../images/icons/icon_display_thumbs_grey@X2.png);
+    img[src$="/bootstrap3nt_columns.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 16 */
+        background-image: url(../images/icons/icon_display_thumbs_grey@X2.png); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 4 */
         background-size: 18px;
     }
 
     // CONTENT LIST
-    img[src$="/jnt_contentList.png"] {
-        background-image: url(../images/icons/tabs-placeholder-black@X2.png);
+    img[src$="/jnt_contentList.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss 17 */
+        background-image: url(../images/icons/tabs-placeholder-black@X2.png); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 5 */
         background-size: 18px;
     }
 
 
     // IMAGE ICON
-    img[src$="/jnt_file_img.png"] {
-        background-image: url(../images/icons/icon-image@X2.png);
+    img[src$="/jnt_file_img.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 18 */
+        background-image: url(../images/icons/icon-image@X2.png); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 6 */
     }
 
     // PAGE ICON
-    img[src$="/jnt_page.png"] {
+    img[src$="/jnt_page.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 19 */
         background-image: url($ICON--PAGES---GREY);
         background-size: 18px;
     }
 
     .x-grid3-row-selected {
         // IMAGE ICON
-        img[src$="/jnt_file_img.png"] {
-            background-image: url(../images/icons/icon-image-white@X2.png);
+        img[src$="/jnt_file_img.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 20 */
+            background-image: url(../images/icons/icon-image-white@X2.png); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 7 */
         }
 
         // PAGE ICON
-        img[src$="/jnt_page.png"] {
+        img[src$="/jnt_page.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 21 */
             background-image: url($ICON--PAGES---WHITE);
         }
     }
@@ -119,14 +119,14 @@
     // RIGHT TABLE ICONS ( basically light version )
     #JahiaGxtManagerTobTable {
         // PAGE ICON
-        img[src$="/jnt_page.png"] {
-            background-image: url(../images/tabs-pages-white@X2.png);
+        img[src$="/jnt_page.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 22 */
+            background-image: url(../images/tabs-pages-white@X2.png); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 8 */
             opacity: 0.8;
         }
 
         // FOLDER ICON
-        img[src$="/jnt_contentFolder.png"],
-        img[src$="/jnt_folder.png"] {
+        img[src$="/jnt_contentFolder.png"], /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 23 */
+        img[src$="/jnt_folder.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 24 */
             background-image: url($ICON--FILES---BLACK);
             opacity: 0.6;
             background-size: 20px;
@@ -134,88 +134,88 @@
         }
 
         // EDP item icon
-        img[src$="/remoteFolder.png"] {
-            background-image: url(../images/icons/tabs-files-shared-dark@X2.png);
+        img[src$="/remoteFolder.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 25 */
+            background-image: url(../images/icons/tabs-files-shared-dark@X2.png); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 9 */
             opacity: 0.8;
         }
 
         // BOOTSTRAP COLUMNS
-        img[src$="/jnt_category.png"] {
-            background-image: url(../images/icons_light/category.svg);
+        img[src$="/jnt_category.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 26 */
+            background-image: url(../images/icons_light/category.svg); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 10 */
             background-size: 20px;
             opacity: 0.5;
         }
 
         // Portlet Icon
-        img[src$="/jnt_portletFolder.png"] {
-            background-image: url(../images/icons_light/portlets.svg);
+        img[src$="/jnt_portletFolder.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 27 */
+            background-image: url(../images/icons_light/portlets.svg); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 11 */
             background-size: 20px;
             opacity: 0.5;
         }
     }
 
     // FOLDER ICON
-    img[src$="/jnt_contentFolder.png"],
-    img[src$="/jnt_folder.png"] {
+    img[src$="/jnt_contentFolder.png"], /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 28 */
+    img[src$="/jnt_folder.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 29 */
         background-image: url($ICON--FILES---GREY);
    }
 
     // EDP item icon
-    img[src$="/remoteFolder.png"] {
-        background-image: url(../images/icons/tabs-files-shared-dark@X2.png);
+    img[src$="/remoteFolder.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 30 */
+        background-image: url(../images/icons/tabs-files-shared-dark@X2.png); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 12 */
     }
 
     // SITE ICON
-    img[src$="/jnt_virtualsite.png"] {
-        background-image: url(../images/icons/tabs-site-dark@X2.png);
+    img[src$="/jnt_virtualsite.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 31 */
+        background-image: url(../images/icons/tabs-site-dark@X2.png); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 13 */
     }
 
     // MOUNTS ICON
-    img[src$="/jnt_mounts.png"] {
-        background-image: url(../images/icons/tabs-placeholder-black@X2.png);
+    img[src$="/jnt_mounts.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 32 */
+        background-image: url(../images/icons/tabs-placeholder-black@X2.png); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 14 */
     }
 
     // SELECTED ICONS
     .x-grid3-row-selected {
         // FOLDER ICON
-        img[src$="/jnt_contentFolder.png"],
-        img[src$="/jnt_folder.png"] {
+        img[src$="/jnt_contentFolder.png"], /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 33 */
+        img[src$="/jnt_folder.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 34 */
             background-image: url($ICON--FILES---WHITE) !important;
             opacity: 1 !important;
         }
 
         // EDP item icon
-        img[src$="/remoteFolder.png"] {
-            background-image: url(../images/icons/tabs-files-shared-white@X2.png) !important;
+        img[src$="/remoteFolder.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 35 */
+            background-image: url(../images/icons/tabs-files-shared-white@X2.png) !important; /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 15 */
             opacity: 1 !important;
         }
 
         // BOOTSTRAP COLUMNS
-        img[src$="/jnt_category.png"] {
-            background-image: url(../images/icons_light/category.svg);
+        img[src$="/jnt_category.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 36 */
+            background-image: url(../images/icons_light/category.svg); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 16 */
             background-size: 20px;
             opacity: 0.9;
         }
 
         // Portlet Icon
-        img[src$="/jnt_portletFolder.png"] {
-            background-image: url(../images/icons_light/portlets.svg);
+        img[src$="/jnt_portletFolder.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 37 */
+            background-image: url(../images/icons_light/portlets.svg); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 17 */
             background-size: 20px;
             opacity: 0.9;
         }
 
         // SITE ICON
-        img[src$="/jnt_virtualsite.png"] {
-            background-image: url(../images/icons/tabs-site-white@X2.png);
+        img[src$="/jnt_virtualsite.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 38 */
+            background-image: url(../images/icons/tabs-site-white@X2.png); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 18 */
         }
 
         // MOUNTS ICON
-        img[src$="/jnt_mounts.png"] {
-            background-image: url(../images/icons/tabs-placeholder-white@X2.png);
+        img[src$="/jnt_mounts.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 39 */
+            background-image: url(../images/icons/tabs-placeholder-white@X2.png); /* OPTIMISE URL ::: css/app/pickers/_icons.scss ::: 19 */
         }
 
         // PAGE ICON
-        img[src$="/jnt_page.png"] {
+        img[src$="/jnt_page.png"] { /* OPTIMISE SELECTOR ::: css/app/pickers/_icons.scss ::: 40 */
             background-image: url($ICON--PAGES---WHITE);
             opacity: 1;
         }

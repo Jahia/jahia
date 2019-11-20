@@ -72,6 +72,7 @@ import org.springframework.core.io.Resource;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
 import java.io.IOException;
 import java.util.*;
 
@@ -89,6 +90,10 @@ public class JahiaSitesService extends JahiaService {
 
     public static final String SYSTEM_SITE_KEY = "systemsite";
     public static final String SITES_JCR_PATH = "/sites";
+    private static final String SITE_COUNT_QUERY = "select [jcr:uuid] from [jnt:virtualsite]"
+            + " as node where ISCHILDNODE(node, '" + SITES_JCR_PATH + "')";
+    private static final String SITE_COUNT_QUERY_WITHOUT_SYSTEM_SITE = SITE_COUNT_QUERY
+            + " and node.[j:nodename] <> '" + SYSTEM_SITE_KEY + "'";
 
     protected JahiaGroupManagerService groupService;
     protected JCRSessionFactory sessionFactory;
@@ -820,10 +825,29 @@ public class JahiaSitesService extends JahiaService {
         }
     }
 
+    /**
+     * @deprecated since Jahia 8.0.0.0 use {@link #getSiteCount(boolean)} instead
+     */
+    @Deprecated
     public int getNbSites() throws JahiaException {
+        return Math.toIntExact(getSiteCount(true));
+    }
+
+    /**
+     * This method count the sites with or without the systemsite
+     *
+     * @param includeSystemSite <code>true</code> if you want to include the systemsite in the result
+     * @return The number of sites
+     */
+    public long getSiteCount(final boolean includeSystemSite) {
         try {
-            return getSitesNodeList().size();
+            return JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
+                QueryManager queryManager = session.getWorkspace().getQueryManager();
+                Query query = queryManager.createQuery(includeSystemSite ? SITE_COUNT_QUERY : SITE_COUNT_QUERY_WITHOUT_SYSTEM_SITE, Query.JCR_SQL2);
+                return query.execute().getRows().getSize();
+            });
         } catch (RepositoryException e) {
+            logger.error("Failed to count the number of sites", e);
             return 0;
         }
     }

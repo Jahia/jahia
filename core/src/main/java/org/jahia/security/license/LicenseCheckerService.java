@@ -47,6 +47,8 @@ import org.jahia.bin.Jahia;
 import org.jahia.services.SpringContextSingleton;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 
+import java.util.Optional;
+
 /**
  * License checker interface.
  *
@@ -65,6 +67,25 @@ public interface LicenseCheckerService {
         public static boolean isAllowed(String featureId) {
             LicenseCheckerService service = getInstance();
             return service != null && service.checkFeature(featureId);
+        }
+
+        /**
+         * @see LicenseCheckerService#isLimitExceeded(String, String)
+         */
+        public static boolean isLimitExceeded(String componentName, String limitName) {
+            LicenseCheckerService service = getInstance();
+            return service != null && service.isLimitExceeded(componentName, limitName);
+        }
+
+        /**
+         * @see LicenseCheckerService#getSiteLimit()
+         */
+        public static Optional<Long> getSiteLimit() {
+            LicenseCheckerService service = getInstance();
+            if (service != null) {
+                return service.getSiteLimit();
+            }
+            return Optional.empty();
         }
 
         private static LicenseCheckerService getInstance() {
@@ -95,4 +116,20 @@ public interface LicenseCheckerService {
      * @return <code>true</code> if the specified product feature is allowed by the license; <code>false</code> otherwise.
      */
     boolean checkFeature(String featureId);
+
+    /**
+     * This method check if the desired limit has been exceeded.
+     *
+     * @param featureId     ID of the feature where to find the limit (e.g: org.jahia.core)
+     * @param limitName     Name of the limit to check (e.g: sites)
+     * @return <code>true</code> if the desired limit has been exceeded, <code>false</code> if there is no limit or if not exceeded
+     */
+    boolean isLimitExceeded(String featureId, String limitName);
+
+    /**
+     * This method get the site limit value.
+     *
+     * @return <code>Optional</code> with the site limit value if not null
+     */
+    Optional<Long> getSiteLimit();
 }

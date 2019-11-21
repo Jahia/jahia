@@ -47,6 +47,7 @@ import org.jahia.api.Constants;
 import org.jahia.bin.Login;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
+import org.jahia.security.license.LicenseCheckerService;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
@@ -70,6 +71,8 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
 
     public static final String ACCOUNT_LOCKED = "account_locked";
     public static final String BAD_PASSWORD = "bad_password";
+    public static final String LOGGED_IN_USERS_LIMIT_REACHED = "logged_in_users_limit_reached";
+
     public static final String LOGIN_TAG_PARAMETER = "doLogin";
     public static final String OK = "ok";
     public static final String UNKNOWN_USER = "unknown_user";
@@ -131,7 +134,11 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
             final String password = httpServletRequest.getParameter("password");
             final String site = httpServletRequest.getParameter("site");
 
-            if ((username != null) && (password != null)) {
+            if (LicenseCheckerService.Stub.isLoggedInUsersLimitReached()) {
+                logger.warn("The number of logged in users has reached the authorized limit.");
+                httpServletRequest.setAttribute(VALVE_RESULT, LOGGED_IN_USERS_LIMIT_REACHED);
+
+            } else if ((username != null) && (password != null)) {
                 // Check if the user has site access ( even though it is not a user of this site )
                 theUser = userManagerService.lookupUser(username, site);
                 if (theUser != null) {
@@ -244,4 +251,5 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
     public void setUserManagerService(JahiaUserManagerService userManagerService) {
         this.userManagerService = userManagerService;
     }
+
 }

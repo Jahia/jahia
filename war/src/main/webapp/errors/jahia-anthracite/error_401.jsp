@@ -44,7 +44,17 @@
 
             <ui:isLoginError var="loginResult">
               <div class="login-error">
-                <fmt:message key="${loginResult == 'account_locked' ? 'message.accountLocked' : 'message.invalidUsernamePassword'}"/>
+				  <c:choose>
+					  <c:when test="${loginResult == 'account_locked'}">
+						  <fmt:message key="message.accountLocked"/>
+					  </c:when>
+					  <c:when test="${loginResult == 'logged_in_users_limit_reached'}">
+						  <fmt:message key="message.loggedInUsersLimitReached"/>
+					  </c:when>
+					  <c:otherwise>
+						  <fmt:message key="message.invalidUsernamePassword"/>
+					  </c:otherwise>
+				  </c:choose>
               </div>
     					<div class="group">
     						<input type="text" name="username" maxlength="250" value="${fn:escapeXml(param['username'])}" required />

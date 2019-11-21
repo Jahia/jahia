@@ -78,6 +78,14 @@ public interface LicenseCheckerService {
         }
 
         /**
+         * @see LicenseCheckerService#isLoggedInUsersLimitReached()
+         */
+        public static boolean isLoggedInUsersLimitReached() {
+            LicenseCheckerService service = getInstance();
+            return (service != null) && service.isLoggedInUsersLimitReached();
+        }
+
+        /**
          * @see LicenseCheckerService#getSiteLimit()
          */
         public static Optional<Long> getSiteLimit() {
@@ -125,6 +133,13 @@ public interface LicenseCheckerService {
      * @return <code>true</code> if the desired limit has been exceeded, <code>false</code> if there is no limit or if not exceeded
      */
     boolean isLimitExceeded(String featureId, String limitName);
+
+    /**
+     * Checks whether or not the limit (if any) of logged in users has been reached.
+     *
+     * @return {@code true} if the limit has been reached, {@code false} otherwise
+     */
+    boolean isLoggedInUsersLimitReached();
 
     /**
      * This method get the site limit value.

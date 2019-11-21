@@ -36,8 +36,19 @@
     <div class="sep-top"></div>
     <ui:loginArea>
         <ui:isLoginError var="loginResult">
-            <div class="login-error"><fmt:message
-                    key="${loginResult == 'account_locked' ? 'message.accountLocked' : 'message.invalidUsernamePassword'}"/></div>
+            <div class="login-error">
+                <c:choose>
+                    <c:when test="${loginResult == 'account_locked'}">
+                        <fmt:message key="message.accountLocked"/>
+                    </c:when>
+                    <c:when test="${loginResult == 'logged_in_users_limit_reached'}">
+                        <fmt:message key="message.loggedInUsersLimitReached"/>
+                    </c:when>
+                    <c:otherwise>
+                        <fmt:message key="message.invalidUsernamePassword"/>
+                    </c:otherwise>
+                </c:choose>
+            </div>
             <div class="group">
                 <input class="used" type="text" maxlength="250" name="username" value="${fn:escapeXml(param['username'])}" required><span class="bar"></span>
                 <label><fmt:message key="label.username"/></label>

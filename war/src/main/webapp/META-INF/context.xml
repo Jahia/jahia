@@ -14,7 +14,9 @@
     <Loader delegate="true"/>
     
     <JarScanner>
-        <JarScanFilter defaultPluggabilityScan="false"/>
+        <JarScanFilter defaultPluggabilityScan="false"
+                pluggabilityScan="${tomcat.util.scan.StandardJarScanFilter.jarsToScan},jahia-ee-impl-*.jar"
+                />
     </JarScanner>
 
 </Context>

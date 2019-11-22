@@ -174,8 +174,23 @@ public final class ServletContextImpl implements ExtServletContext {
     }
 
     public Object getAttribute(String name) {
-        name += "-pax";
-        return (this.attributes != null) ? this.attributes.get(name) : this.context.getAttribute(name);
+        String paxName = name + "-pax";
+        if (this.attributes != null) {
+            // When setting an attribute with suffix it with -pax,
+            // so we try to get it with the suffix
+            if (this.attributes.get(paxName) != null) {
+                return this.attributes.get(paxName);
+            }
+
+            // but if we get null with the suffix then we fallback on the original name
+            return this.attributes.get(name);
+        }
+
+        if (this.context.getAttribute(paxName) != null) {
+            return this.context.getAttribute(paxName);
+        }
+
+        return this.context.getAttribute(name);
     }
 
     public Enumeration getAttributeNames() {
@@ -184,10 +199,12 @@ public final class ServletContextImpl implements ExtServletContext {
     }
 
     public void setAttribute(String name, Object value) {
-        name += "-pax";
         if (value == null) {
             this.removeAttribute(name);
         } else if (name != null) {
+            // We suffix the attributes with -pax
+            name += "-pax";
+
             Object oldValue;
             if (this.attributes != null) {
                 oldValue = this.attributes.put(name, value);
@@ -205,16 +222,21 @@ public final class ServletContextImpl implements ExtServletContext {
     }
 
     public void removeAttribute(String name) {
-        Object oldValue;
-        if (this.attributes != null) {
-            oldValue = this.attributes.remove(name);
-        } else {
-            oldValue = this.context.getAttribute(name);
-            this.context.removeAttribute(name);
-        }
+        if (name != null) {
+            // As we suffix the attribute with -pax we need to look for the suffix version
+            name += "-pax";
 
-        if (oldValue != null) {
-            attributeListener.attributeRemoved(new ServletContextAttributeEvent(this, name, oldValue));
+            Object oldValue;
+            if (this.attributes != null) {
+                oldValue = this.attributes.remove(name);
+            } else {
+                oldValue = this.context.getAttribute(name);
+                this.context.removeAttribute(name);
+            }
+
+            if (oldValue != null) {
+                attributeListener.attributeRemoved(new ServletContextAttributeEvent(this, name, oldValue));
+            }
         }
     }
 

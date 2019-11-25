@@ -59,6 +59,9 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class ServletContextImpl implements ExtServletContext {
+
+    private static final String PAX_NAME_SUFFIX = "-pax";
+
     private final Bundle bundle;
     private final ServletContext context;
     private final HttpContext httpContext;
@@ -71,7 +74,7 @@ public final class ServletContextImpl implements ExtServletContext {
         this.context = context;
         this.httpContext = httpContext;
         this.attributeListener = attributeListener;
-        this.attributes = sharedAttributes ? null : new ConcurrentHashMap<String, Object>();
+        this.attributes = sharedAttributes ? null : new ConcurrentHashMap<>();
     }
 
     public String getContextPath() {
@@ -106,7 +109,7 @@ public final class ServletContextImpl implements ExtServletContext {
             return null;
         }
 
-        Set<String> set = new HashSet<String>();
+        Set<String> set = new HashSet<>();
         while (paths.hasMoreElements()) {
             set.add((String) paths.nextElement());
         }
@@ -173,37 +176,25 @@ public final class ServletContextImpl implements ExtServletContext {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    @Override
     public Object getAttribute(String name) {
-        String paxName = name + "-pax";
-        if (this.attributes != null) {
-            // When setting an attribute with suffix it with -pax,
-            // so we try to get it with the suffix
-            if (this.attributes.get(paxName) != null) {
-                return this.attributes.get(paxName);
-            }
-
-            // but if we get null with the suffix then we fallback on the original name
-            return this.attributes.get(name);
-        }
-
-        if (this.context.getAttribute(paxName) != null) {
-            return this.context.getAttribute(paxName);
-        }
-
-        return this.context.getAttribute(name);
+        return getAttribute(name + PAX_NAME_SUFFIX, name);
     }
 
+    @Override
     public Enumeration getAttributeNames() {
         return (this.attributes != null) ? Collections.enumeration(this.attributes.keySet()) : this.context
                 .getAttributeNames();
     }
 
+    @Override
     public void setAttribute(String name, Object value) {
         if (value == null) {
             this.removeAttribute(name);
+
         } else if (name != null) {
             // We suffix the attributes with -pax
-            name += "-pax";
+            name += PAX_NAME_SUFFIX;
 
             Object oldValue;
             if (this.attributes != null) {
@@ -221,23 +212,13 @@ public final class ServletContextImpl implements ExtServletContext {
         }
     }
 
+    @Override
     public void removeAttribute(String name) {
-        if (name != null) {
-            // As we suffix the attribute with -pax we need to look for the suffix version
-            name += "-pax";
-
-            Object oldValue;
-            if (this.attributes != null) {
-                oldValue = this.attributes.remove(name);
-            } else {
-                oldValue = this.context.getAttribute(name);
-                this.context.removeAttribute(name);
-            }
-
-            if (oldValue != null) {
-                attributeListener.attributeRemoved(new ServletContextAttributeEvent(this, name, oldValue));
-            }
+        if (name == null) {
+            return;
         }
+
+        removeAttribute(name + PAX_NAME_SUFFIX, name);
     }
 
     @SuppressWarnings("deprecation")
@@ -408,4 +389,33 @@ public final class ServletContextImpl implements ExtServletContext {
             throws IOException {
         return this.httpContext.handleSecurity(req, res);
     }
+
+    private Object getAttribute(String name, String fallbackName) {
+        if (this.attributes != null) {
+            return this.attributes.containsKey(name) ? this.attributes.get(name) : this.attributes.get(fallbackName);
+        } else {
+            Object value = this.context.getAttribute(name);
+            return (value != null) ? value : this.context.getAttribute(fallbackName);
+        }
+    }
+
+    private void removeAttribute(String name, String fallbackName) {
+        String attributeName;
+        Object previousValue;
+
+        if (this.attributes != null) {
+            attributeName = this.attributes.containsKey(name) ? name : fallbackName;
+            previousValue = this.attributes.remove(attributeName);
+
+        } else {
+            attributeName = (this.context.getAttribute(name) != null) ? name : fallbackName;
+            previousValue = this.context.getAttribute(attributeName);
+            this.context.removeAttribute(attributeName);
+        }
+
+        if (previousValue != null) {
+            attributeListener.attributeRemoved(new ServletContextAttributeEvent(this, attributeName, previousValue));
+        }
+    }
+
 }

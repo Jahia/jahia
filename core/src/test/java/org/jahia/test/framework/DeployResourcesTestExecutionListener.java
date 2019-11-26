@@ -85,11 +85,11 @@ public class DeployResourcesTestExecutionListener extends
             JCRStoreService.getInstance().deployDefinitions(TEST_SYSTEM_ID, null, -1);
         }
 
-        addRuleFiles(MAIN_META_INF);
         addRuleFiles(TEST_META_INF);
+        addRuleFiles(MAIN_META_INF);
 
-        importXmlFiles(MAIN_META_INF);
         importXmlFiles(TEST_META_INF);
+        importXmlFiles(MAIN_META_INF);
         
         startSchedulers();
     }

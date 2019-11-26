@@ -57,6 +57,8 @@ import java.util.Set;
  * Simple wrapper that adds -pax at the end of attribute names, to avoid mixing up with main tomcat context attributes
  */
 public class ServletContextWrapper implements ServletContext {
+    private static final String PAX_NAME_SUFFIX = "-pax";
+
     private ServletContext servletContext;
 
     public ServletContextWrapper(ServletContext servletContext) {
@@ -180,7 +182,7 @@ public class ServletContextWrapper implements ServletContext {
 
     @Override
     public Object getAttribute(String s) {
-        s += "-pax";
+        s += PAX_NAME_SUFFIX;
         return servletContext.getAttribute(s);
     }
 
@@ -191,13 +193,13 @@ public class ServletContextWrapper implements ServletContext {
 
     @Override
     public void setAttribute(String s, Object o) {
-        s += "-pax";
+        s += PAX_NAME_SUFFIX;
         servletContext.setAttribute(s, o);
     }
 
     @Override
     public void removeAttribute(String s) {
-        s += "-pax";
+        s += PAX_NAME_SUFFIX;
         servletContext.removeAttribute(s);
     }
 

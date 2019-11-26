@@ -178,7 +178,8 @@ public final class ServletContextImpl implements ExtServletContext {
 
     @Override
     public Object getAttribute(String name) {
-        return getAttribute(name + PAX_NAME_SUFFIX, name);
+        name += PAX_NAME_SUFFIX;
+        return (this.attributes != null) ? this.attributes.get(name) : this.context.getAttribute(name);
     }
 
     @Override
@@ -214,11 +215,18 @@ public final class ServletContextImpl implements ExtServletContext {
 
     @Override
     public void removeAttribute(String name) {
-        if (name == null) {
-            return;
+        name += PAX_NAME_SUFFIX;
+        Object oldValue;
+        if (this.attributes != null) {
+            oldValue = this.attributes.remove(name);
+        } else {
+            oldValue = this.context.getAttribute(name);
+            this.context.removeAttribute(name);
         }
 
-        removeAttribute(name + PAX_NAME_SUFFIX, name);
+        if (oldValue != null) {
+            attributeListener.attributeRemoved(new ServletContextAttributeEvent(this, name, oldValue));
+        }
     }
 
     @SuppressWarnings("deprecation")
@@ -388,34 +396,6 @@ public final class ServletContextImpl implements ExtServletContext {
     public boolean handleSecurity(HttpServletRequest req, HttpServletResponse res)
             throws IOException {
         return this.httpContext.handleSecurity(req, res);
-    }
-
-    private Object getAttribute(String name, String fallbackName) {
-        if (this.attributes != null) {
-            return this.attributes.containsKey(name) ? this.attributes.get(name) : this.attributes.get(fallbackName);
-        } else {
-            Object value = this.context.getAttribute(name);
-            return (value != null) ? value : this.context.getAttribute(fallbackName);
-        }
-    }
-
-    private void removeAttribute(String name, String fallbackName) {
-        String attributeName;
-        Object previousValue;
-
-        if (this.attributes != null) {
-            attributeName = this.attributes.containsKey(name) ? name : fallbackName;
-            previousValue = this.attributes.remove(attributeName);
-
-        } else {
-            attributeName = (this.context.getAttribute(name) != null) ? name : fallbackName;
-            previousValue = this.context.getAttribute(attributeName);
-            this.context.removeAttribute(attributeName);
-        }
-
-        if (previousValue != null) {
-            attributeListener.attributeRemoved(new ServletContextAttributeEvent(this, attributeName, previousValue));
-        }
     }
 
 }

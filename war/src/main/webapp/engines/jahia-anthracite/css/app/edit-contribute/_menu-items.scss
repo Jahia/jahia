@@ -63,7 +63,7 @@ body[data-indigo-app="contribute"] {
 
                 .action-bar-tool-item {
                     &::after {
-                        color: #363636;
+                        color: _theme-color("primary", normal);
                         font-weight: 500 !important;
                     }
                 }
@@ -238,7 +238,7 @@ body[data-indigo-app="contribute"] {
     border-radius: 2px;
 
     &:hover {
-        background-color: #007cb0;
+        background-color: _theme-color("tertiary", normal);
     }
 
     .x-btn-mc {
@@ -324,7 +324,7 @@ body[data-indigo-app="contribute"] {
         border-radius: 2px;
 
         &:hover {
-            background-color: #007cb0 !important;
+            background-color: _theme-color("tertiary", normal) !important;
             left: -28px !important;
         }
     }
@@ -358,7 +358,7 @@ body[data-indigo-app="contribute"] {
     transition: all 0.1s ease-in 0s;
 
     &:hover {
-        background-color: #007cb0;
+        background-color: _theme-color("tertiary", normal);
     }
 
     &::before {
@@ -414,7 +414,7 @@ body[data-indigo-app="contribute"] {
     }
 
     &:hover {
-        background-color: #007cb0;
+        background-color: _theme-color("tertiary", normal);
     }
 
     .x-btn-mc {
@@ -460,7 +460,7 @@ body[data-indigo-app="contribute"] {
 }
 
 .publication-status-tooltip {
-    @include text(13px, _theme-color(secondary), $FONT--WEIGHT---NORMAL);
+    @include text(13px, _theme-color("secondary"), $FONT--WEIGHT---NORMAL);
     background: hsla(210, 4%, 34%, 0.82);
     position: absolute;
     top: 31px;
@@ -519,82 +519,82 @@ body[data-indigo-app="contribute"] {
 
     &[data-publication-status="conflict"] {
         /* Conflict */
-        background-color: _theme-color(status, conflict);
+        background-color: _theme-color("status", conflict);
     }
 
     &[data-publication-status="deleted"] {
         /* Deleted */
-        background-color: _theme-color(status, deleted);
+        background-color: _theme-color("status", deleted);
     }
 
     &[data-publication-status="livemodified"] {
         /* Live Modified */
-        background-color: _theme-color(status, livemodified);
+        background-color: _theme-color("status", livemodified);
     }
 
     &[data-publication-status="liveonly"] {
         /* Live Only */
-        background-color: _theme-color(status, liveonly);
+        background-color: _theme-color("status", liveonly);
     }
 
     &[data-publication-status="locked"] {
         /* Locked */
-        background-color: _theme-color(status, locked);
+        background-color: _theme-color("status", locked);
     }
 
     &[data-publication-status="mandatorylanguageunpublishable"] {
         /* Mandatory Language Unpublishable */
-        background-color: _theme-color(status, mandatorylanguageunpublishable);
+        background-color: _theme-color("status", mandatorylanguageunpublishable);
     }
 
     &[data-publication-status="mandatorylanguagevalid"] {
         /* Mandatory Language Valid */
-        background-color: _theme-color(status, mandatorylanguagevalid);
+        background-color: _theme-color("status", mandatorylanguagevalid);
     }
 
     &[data-publication-status="markedfordeletion"] {
         /* Marked FOr Deletion */
-        background-color: _theme-color(status, markedfordeletion);
+        background-color: _theme-color("status", markedfordeletion);
     }
 
     &[data-publication-status="modified"] {
         /* Modified */
-        background-color: _theme-color(status, modified);
+        background-color: _theme-color("status", modified);
     }
 
     &[data-publication-status="multipleWF"] {
         /* Multiple WF */
-        background-color: _theme-color(status, multipleWF);
+        background-color: _theme-color("status", multipleWF);
     }
 
     &[data-publication-status="notpublished"] {
         /* Not Published */
-        background-color: _theme-color(status, notpublished);
+        background-color: _theme-color("status", notpublished);
     }
 
     &[data-publication-status="oneWF"] {
         /* One WF */
-        background-color: _theme-color(status, oneWF);
+        background-color: _theme-color("status", oneWF);
     }
 
     &[data-publication-status="published"] {
         /* Published */
-        background-color: _theme-color(status, published);
+        background-color: _theme-color("status", published);
     }
 
     &[data-publication-status="unpublished"] {
         /* Unpublished */
-        background-color: _theme-color(status, unpublished);
+        background-color: _theme-color("status", unpublished);
     }
 
     &[data-publication-status="waiting"] {
         /* Waiting */
-        background-color: _theme-color(status, waiting);
+        background-color: _theme-color("status", waiting);
     }
 
     &[data-publication-status="workinprogress"] {
         /* Work In Progress */
-        background-color: _theme-color(status, workinprogress);
+        background-color: _theme-color("status", workinprogress);
     }
 
     body[data-indigo-app="edit"]:not([data-multiselect="on"]):not([data-sitesettings="true"]) & {
@@ -663,7 +663,7 @@ body[data-indigo-app="contribute"] {
     &[data-publication-status="conflict"] {
         /* Conflict */
         &::before {
-            background: url($ICON--WARNING--WHITE) no-repeat _theme-color(status, conflict) top 1px center / 13px;
+            background: url($ICON--WARNING--WHITE) no-repeat _theme-color("status", conflict) top 1px center / 13px;
         }
 
     }
@@ -671,7 +671,7 @@ body[data-indigo-app="contribute"] {
     &[data-publication-status="deleted"] {
         /* Deleted */
         &::before {
-            background: url($ICON--WARNING--WHITE) no-repeat _theme-color(status, deleted) top 1px center / 13px;
+            background: url($ICON--WARNING--WHITE) no-repeat _theme-color("status", deleted) top 1px center / 13px;
         }
 
     }
@@ -679,7 +679,7 @@ body[data-indigo-app="contribute"] {
     &[data-publication-status="livemodified"] {
         /* Live Modified */
         &::before {
-            background: url($ICON--WARNING--WHITE) no-repeat _theme-color(status, livemodified) top 1px center / 13px;
+            background: url($ICON--WARNING--WHITE) no-repeat _theme-color("status", livemodified) top 1px center / 13px;
         }
 
     }
@@ -687,7 +687,7 @@ body[data-indigo-app="contribute"] {
     &[data-publication-status="liveonly"] {
         /* Live Only */
         &::before {
-            background: url($ICON--WARNING--WHITE) no-repeat _theme-color(status, liveonly) top 1px center / 13px;
+            background: url($ICON--WARNING--WHITE) no-repeat _theme-color("status", liveonly) top 1px center / 13px;
         }
 
     }
@@ -695,7 +695,7 @@ body[data-indigo-app="contribute"] {
     &[data-publication-status="locked"] {
         /* Locked */
         &::before {
-            background: url($ICON--WARNING--WHITE) no-repeat _theme-color(status, locked) top 1px center / 13px;
+            background: url($ICON--WARNING--WHITE) no-repeat _theme-color("status", locked) top 1px center / 13px;
         }
 
     }
@@ -703,77 +703,77 @@ body[data-indigo-app="contribute"] {
     &[data-publication-status="mandatorylanguageunpublishable"] {
         /* Mandatory Language Unpublishable */
         &::before {
-            background: url($ICON--WARNING--WHITE) no-repeat _theme-color(status, mandatorylanguageunpublishable) top 1px center / 13px;
+            background: url($ICON--WARNING--WHITE) no-repeat _theme-color("status", mandatorylanguageunpublishable) top 1px center / 13px;
         }
     }
 
     &[data-publication-status="mandatorylanguagevalid"] {
         /* Mandatory Language Valid */
         &::before {
-            background: url($ICON--WARNING--WHITE) no-repeat _theme-color(status, mandatorylanguagevalid) top 1px center / 13px;
+            background: url($ICON--WARNING--WHITE) no-repeat _theme-color("status", mandatorylanguagevalid) top 1px center / 13px;
         }
     }
 
     &[data-publication-status="markedfordeletion"] {
         /* Marked FOr Deletion */
         &::before {
-            background: url($ICON--WARNING--WHITE) no-repeat _theme-color(status, markedfordeletion) top 1px center / 13px;
+            background: url($ICON--WARNING--WHITE) no-repeat _theme-color("status", markedfordeletion) top 1px center / 13px;
         }
     }
 
     &[data-publication-status="modified"] {
         /* Modified */
         &::before {
-            background: url($ICON--WARNING--WHITE) no-repeat _theme-color(status, modified) top 1px center / 13px;
+            background: url($ICON--WARNING--WHITE) no-repeat _theme-color("status", modified) top 1px center / 13px;
         }
     }
 
     &[data-publication-status="multipleWF"] {
         /* Multiple WF */
         &::before {
-            background: url($ICON--WARNING--WHITE) no-repeat _theme-color(status, multipleWF) top 1px center / 13px;
+            background: url($ICON--WARNING--WHITE) no-repeat _theme-color("status", multipleWF) top 1px center / 13px;
         }
     }
 
     &[data-publication-status="notpublished"] {
         /* Not Published */
         &::before {
-            background: url($ICON--WARNING--WHITE) no-repeat _theme-color(status, notpublished) top 1px center / 13px;
+            background: url($ICON--WARNING--WHITE) no-repeat _theme-color("status", notpublished) top 1px center / 13px;
         }
     }
 
     &[data-publication-status="oneWF"] {
         /* One WF */
         &::before {
-            background: url($ICON--WARNING--WHITE) no-repeat _theme-color(status, oneWF) top 1px center / 13px;
+            background: url($ICON--WARNING--WHITE) no-repeat _theme-color("status", oneWF) top 1px center / 13px;
         }
     }
 
     &[data-publication-status="published"] {
         /* Published */
         &::before {
-            background: url("../images/icons/icon-check-white@X2.png") no-repeat _theme-color(status, published) top left / 18px; /* OPTIMISE URL ::: css/app/edit-contribute/_menu-items.scss ::: 7 */
+            background: url("../images/icons/icon-check-white@X2.png") no-repeat _theme-color("status", published) top left / 18px; /* OPTIMISE URL ::: css/app/edit-contribute/_menu-items.scss ::: 7 */
         }
     }
 
     &[data-publication-status="unpublished"] {
         /* Unpublished */
         &::before {
-            background: url($ICON--WARNING--WHITE) no-repeat _theme-color(status, unpublished) top 1px center / 13px;
+            background: url($ICON--WARNING--WHITE) no-repeat _theme-color("status", unpublished) top 1px center / 13px;
         }
     }
 
     &[data-publication-status="waiting"] {
         /* Waiting */
         &::before {
-            background: url($ICON--WARNING--WHITE) no-repeat _theme-color(status, waiting) top 1px center / 13px;
+            background: url($ICON--WARNING--WHITE) no-repeat _theme-color("status", waiting) top 1px center / 13px;
         }
     }
 
     &[data-publication-status="workinprogress"] {
         /* Work In Progress */
         &::before {
-            background: url($ICON--WARNING--WHITE) no-repeat _theme-color(status, workinprogress) top 1px center / 13px;
+            background: url($ICON--WARNING--WHITE) no-repeat _theme-color("status", workinprogress) top 1px center / 13px;
         }
     }
 }
@@ -799,7 +799,7 @@ div.x-jahia-root {
     border-radius: 2px;
 
     &:hover {
-        background-color: #007cb0 !important;
+        background-color: _theme-color("tertiary", normal) !important;
         left: -28px !important;
     }
 
@@ -834,7 +834,7 @@ div.x-jahia-root {
     transition: all 0.1s ease-in 0s;
 
     &:hover {
-        background-color: #007cb0;
+        background-color: _theme-color("tertiary", normal);
     }
 
     &::after {
@@ -930,10 +930,10 @@ div.x-jahia-root {
         font-size: 11px;
         line-height: 15px;
         box-shadow: 1px 1px 1px 0px rgba(38, 38, 38, 0.3);
-        @include text(11px, _theme-color(secondary), $FONT--WEIGHT---NORMAL);
+        @include text(11px, _theme-color("secondary"), $FONT--WEIGHT---NORMAL);
         text-align: center;
         content: attr(data-info-count);
-        background: _theme-color(status, attention);
+        background: _theme-color("status", attention);
     }
 
     &::after {
@@ -1078,7 +1078,7 @@ div.x-jahia-root {
     }
 
     &[job-in-progress="true"] {
-        background-color: #E67D3A;
+        background-color: _theme-color("quaternary", normal);
     }
 }
 
@@ -1122,7 +1122,7 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu { /* OPTIMISE SELECTOR ::
     top: 0 !important;
     width: 400px !important;
     padding: 40px 10px 0 43px;
-    background: #007cb0 !important;
+    background: _theme-color("tertiary", normal) !important;
     opacity: 1;
     left: 0px !important;
     pointer-events: all;

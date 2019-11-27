@@ -4,37 +4,37 @@ $SWITCH--RAIL: (
 );
 
 $SWITCH--COLOR--ON: (
-        LIGHT: _theme-color(secondary),
-        DARK: _theme-color(quinary),
+        LIGHT: _theme-color("secondary"),
+        DARK: _theme-color("quinary"),
 );
 
 $SWITCH--BG--ON: (
-        LIGHT: _theme-color(quinary),
-        DARK: _theme-color(secondary),
+        LIGHT: _theme-color("quinary"),
+        DARK: _theme-color("secondary"),
 );
 
 $SWITCH--SHADOW--ON: (
-        LIGHT: 1px 1px 3px 0px _theme-color(black, c),
-        DARK: 1px 1px 3px 0px _theme-color(black, c),
+        LIGHT: 1px 1px 3px 0px _theme-color("black", c),
+        DARK: 1px 1px 3px 0px _theme-color("black", c),
 );
 
 $SWITCH--COLOR--ON---HOVER: (
-        LIGHT: _theme-color(secondary, g),
-        DARK: _theme-color(secondary, g),
+        LIGHT: _theme-color("secondary", g),
+        DARK: _theme-color("secondary", g),
 );
 
 $SWITCH--BG--ON---HOVER: (
-        LIGHT: _theme-color(quinary, a),
-        DARK: _theme-color(quinary, a),
+        LIGHT: _theme-color("quinary", a),
+        DARK: _theme-color("quinary", a),
 );
 
 
 $SWITCH--COLOR--OFF: (
-        LIGHT: _theme-color(secondary, e),
-        DARK: _theme-color(white, a),
+        LIGHT: _theme-color("secondary", e),
+        DARK: _theme-color("white", a),
 );
 
 $SWITCH--COLOR--OFF---HOVER: (
-        LIGHT: _theme-color(secondary, a),
-        DARK: _theme-color(secondary, a),
+        LIGHT: _theme-color("secondary", a),
+        DARK: _theme-color("secondary", a),
 );

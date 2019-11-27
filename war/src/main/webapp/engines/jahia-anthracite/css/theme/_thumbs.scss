@@ -2,13 +2,13 @@
 /* THUMBS */
 /****************************/
 $THUMB--COLOR: (
-        LIGHT: #363636,
-        DARK: #363636,
+        LIGHT: _theme-color("primary", normal),
+        DARK: _theme-color("primary", normal),
 );
 
 $THUMB--COLOR---HOVER: (
-        LIGHT: #363636,
-        DARK: #363636,
+        LIGHT: _theme-color("primary", normal),
+        DARK: _theme-color("primary", normal),
 );
 
 $THUMB--COLOR---SELECTED: (
@@ -38,6 +38,6 @@ $THUMB--BG---HOVER: (
 );
 
 $THUMB--BG---SELECTED: (
-        LIGHT: #007cb0,
-        DARK: #007cb0,
+        LIGHT: _theme-color("tertiary", normal),
+        DARK: _theme-color("tertiary", normal),
 );

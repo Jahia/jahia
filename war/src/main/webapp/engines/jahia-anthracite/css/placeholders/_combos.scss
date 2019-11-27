@@ -97,7 +97,7 @@
 
 %FORM--MODE_COMBO--LABEL {
     text-transform: uppercase;
-    @include text(14px, _theme-color(secondary), $FONT--WEIGHT---SEMILIGHT);
+    @include text(14px, _theme-color("secondary"), $FONT--WEIGHT---SEMILIGHT);
 }
 
 %FORM--MODE_COMBO--LABEL---MULTI_SELECT {

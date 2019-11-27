@@ -115,7 +115,7 @@
     body[indigo-picker-display="thumbsview"] &,
     body[indigo-picker-display="detailedview"] & {
         // Header backgrounds: have to make the header in these views higher until we can get rid of the File menu
-        // box-shadow: inset 0px 87px 0px _theme-color(primary, g), inset 0px 88px 7px #222222;
+        // box-shadow: inset 0px 87px 0px _theme-color("primary", g), inset 0px 88px 7px #222222;
 
         // Shift the Slider down too
         .thumb-size-slider {
@@ -254,7 +254,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            @include text(18px !important, _theme-color(quinary), $FONT--WEIGHT---EXTRALIGHT)
+            @include text(18px !important, _theme-color("quinary"), $FONT--WEIGHT---EXTRALIGHT)
         }
 
         // Action Bar
@@ -579,7 +579,7 @@
 
 #JahiaGxtCustomContentPickerWindow {
     box-shadow: none !important;
-    background: white !important;
+    background: _theme-color("white", normal) !important;
 }
 
 .x-shadow.x-ignore + #JahiaGxtCustomContentPickerWindow {

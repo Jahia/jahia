@@ -34,7 +34,7 @@
         z-index: 999;
         font-family: "Raleway", sans-serif;
         font-size: 36px;
-        color: _theme-color(primary, d);
+        color: _theme-color("primary", d);
         font-weight: 100;
 
         body[data-indigo-edit-engine="open"] & {
@@ -405,12 +405,12 @@
 
                         .my-paging-text {
                             line-height: 21px;
-                            @include text(12px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT);
+                            @include text(12px, _theme-color("secondary"), $FONT--WEIGHT---EXTRALIGHT);
                         }
 
                         .gwt-TextBox {
-                            @include text(12px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT);
-                            background: _theme-color(primary, a); /* TO THEME */
+                            @include text(12px, _theme-color("secondary"), $FONT--WEIGHT---EXTRALIGHT);
+                            background: _theme-color("primary", a); /* TO THEME */
                             padding: 3px;
                             border: none;
                         }

@@ -10,7 +10,7 @@ img.invalid-icon {
 
 // Input Error Tooltip
 .x-form-invalid-tip {
-    background: _theme-color(status, error);
+    background: _theme-color("status", error);
     border-radius: 2px !important;
     box-shadow: 0 2px 5px 0 rgba($color-black, .26);
 

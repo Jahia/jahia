@@ -11,7 +11,7 @@
 
     > div {
         background: transparent !important;
-        color: white !important;
+        color: _theme-color("white", normal) !important;
         padding: 2px;
         top: auto !important;
         left: auto !important;

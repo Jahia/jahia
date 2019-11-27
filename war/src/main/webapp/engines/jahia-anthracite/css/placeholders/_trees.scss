@@ -59,11 +59,11 @@
 }
 
 %TREE--ROW--BG---SELECTED {
-    background-color: #007cb0 !important;
+    background-color: _theme-color("tertiary", normal) !important;
 }
 
 %TREE--ROW--BG---SELECTED_HOVER {
-    background: #007cb0 !important;
+    background: _theme-color("tertiary", normal) !important;
 }
 
 
@@ -77,7 +77,7 @@
 
 %TREE--ROW--BG---SELECTED\:SETTINGS {
     background-color: transparent !important;
-    background: linear-gradient(to left, rgba(0, 124, 176, 0.86) 1%, #007cb0 100%) left center !important;
+    background: linear-gradient(to left, rgba(0, 124, 176, 0.86) 1%, _theme-color("tertiary", normal) 100%) left center !important;
 }
 
 %TREE--ROW--BG---SELECTED_HOVER\:SETTINGS {

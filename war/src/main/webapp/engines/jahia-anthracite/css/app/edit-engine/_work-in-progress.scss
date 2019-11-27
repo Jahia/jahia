@@ -19,12 +19,12 @@
         padding: 5px 10px;
         background: orange;
         font-size: 14px;
-        color: white;
+        color: _theme-color("white", normal);
         font-weight: 100;
         margin-top: 20px;
 
         a {
-            color: white;
+            color: _theme-color("white", normal);
         }
     }
 

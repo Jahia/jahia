@@ -113,7 +113,7 @@
         }
 
         .x-grid3-row.x-grid3-row-selected {
-            background-color: _theme-color(secondary, a) !important;
+            background-color: _theme-color("secondary", a) !important;
 
             div {
                 color: $color-primary;
@@ -124,7 +124,7 @@
             }
 
             &.x-grid3-row-over {
-                background-color: _theme-color(secondary, a) !important;
+                background-color: _theme-color("secondary", a) !important;
 
                 .x-grid3-col-name {
                     color: $color-primary !important;
@@ -148,9 +148,9 @@
 
     .x-component .x-grid3-header .x-grid3-hh {
         margin: 2px 2px 8px;
-        border-bottom: 1px solid _theme-color(secondary, a);
+        border-bottom: 1px solid _theme-color("secondary", a);
         text-transform: uppercase;
-        color: _theme-color(black, b);
+        color: _theme-color("black", b);
         pointer-events: none;
 
         span {

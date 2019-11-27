@@ -1,9 +1,9 @@
 %document_title {
-    @include text(18px, _theme-color(secondary), $FONT--WEIGHT---SEMILIGHT);
+    @include text(18px, _theme-color("secondary"), $FONT--WEIGHT---SEMILIGHT);
 }
 
 %multiselect_title {
-    color: _theme-color(secondary);
+    color: _theme-color("secondary");
 }
 
 %EDIT_ENGINE--TITLE {
@@ -43,7 +43,7 @@
 
 // Hamburger
 %CSS--BLOCK---HAMBURGER-BUTTON {
-    box-shadow: inset -1px 1px _theme-color(secondary);
+    box-shadow: inset -1px 1px _theme-color("secondary");
     transition: none;
     z-index: 99;
     pointer-events: all;
@@ -105,7 +105,7 @@
         text-align: center;
         text-indent: 0;
         left: 0;
-        @include text(21px, _theme-color(secondary) !important, $FONT--WEIGHT---EXTRALIGHT !important);
+        @include text(21px, _theme-color("secondary") !important, $FONT--WEIGHT---EXTRALIGHT !important);
     }
 }
 
@@ -128,7 +128,7 @@
         white-space: initial;
         padding: 0 2%;
         line-height: 14px;
-        @include text(11px, _theme-color(secondary) !important, $FONT--WEIGHT---LIGHT !important);
+        @include text(11px, _theme-color("secondary") !important, $FONT--WEIGHT---LIGHT !important);
     }
 }
 

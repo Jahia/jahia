@@ -273,7 +273,7 @@
     padding: 8px 15px !important;
     text-transform: none !important;
     background: _property($ACTION-SECONDARY--BG, $APP) !important;
-    box-shadow: inset 1px 1px 0 0 #007cb0, inset -1px -1px 0 0 #007cb0;
+    box-shadow: inset 1px 1px 0 0 _theme-color("tertiary", normal), inset -1px -1px 0 0 _theme-color("tertiary", normal);
     @include text(14px, _property($ACTION-SECONDARY--COLOR, $APP) !important, $FONT--WEIGHT---EXTRALIGHT);
 }
 

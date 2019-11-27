@@ -434,7 +434,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         if (locale == null && nodeTypesToIgnore != null && nodeTypesToIgnore.size() > 0) {
             statement.append("AND NOT (");
-            Iterator nodeTypesToIgnoreIterator = nodeTypesToIgnore.iterator();
+            Iterator<String> nodeTypesToIgnoreIterator = nodeTypesToIgnore.iterator();
             while (nodeTypesToIgnoreIterator.hasNext()) {
                 statement.append("[jcr:primaryType] = '").append(JCRContentUtils.sqlEncode(nodeTypesToIgnoreIterator.next())).append("'");
                 if (nodeTypesToIgnoreIterator.hasNext()) {

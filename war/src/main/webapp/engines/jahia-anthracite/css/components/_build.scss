@@ -78,7 +78,7 @@ div[role="combobox"] {
 
         &:before {
             content: $text_timepicker;
-            @include text(11px, _theme-color(secondary), $FONT--WEIGHT---NORMAL);
+            @include text(11px, _theme-color("secondary"), $FONT--WEIGHT---NORMAL);
             text-transform: uppercase;
             bottom: 40px;
             position: absolute;
@@ -676,7 +676,7 @@ div[role="combobox"] {
 
             font-family: "Nunito Sans", sans-serif;
             font-size: 12px;
-            color: #363636;
+            color: _theme-color("primary", normal);
             font-weight: 300;
             display: block !important;
             overflow: hidden;
@@ -712,7 +712,7 @@ div[role="combobox"] {
     &.x-view-item-sel,
     &.x-view-item-sel.x-view-over {
         z-index: 99999999;
-        background: #007cb0 !important;
+        background: _theme-color("tertiary", normal) !important;
 
         .thumbDetails {
             /* Selected State */
@@ -918,7 +918,7 @@ div.engine-window {
     // Exceptions ...
     .engine-panel & {
         @extend %FORM--TEXT_AREA\:EDIT_ENGINE !optional;
-        box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+        box-shadow: 0px 1px 2px _theme-color("black", a);
     }
 
     &:hover {
@@ -926,7 +926,7 @@ div.engine-window {
         // Exceptions ...
         .engine-panel & {
             @extend %FORM--TEXT_AREA---HOVER\:EDIT_ENGINE !optional;
-            box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.4) !important;
+            box-shadow: 0px 1px 2px _theme-color("black", b) !important;
         }
     }
 
@@ -936,7 +936,7 @@ div.engine-window {
         // Exceptions ...
         .engine-panel & {
             @extend %FORM--TEXT_AREA---FOCUS\:EDIT_ENGINE !optional;
-            box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.4) !important;
+            box-shadow: 0px 1px 2px _theme-color("black", b) !important;
         }
     }
 
@@ -1104,82 +1104,82 @@ $personalised_trees: (
 
             &[src$="/conflict.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 4 */
                 /* Conflict */
-                background: _theme-color(status, conflict) !important;
+                background: _theme-color("status", conflict) !important;
             }
 
             &[src$="/deleted.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 5 */
                 /* Deleted */
-                background: _theme-color(status, deleted) !important;
+                background: _theme-color("status", deleted) !important;
             }
 
             &[src$="/livemodified.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 6 */
                 /* Live Modified */
-                background: _theme-color(status, livemodified) !important;
+                background: _theme-color("status", livemodified) !important;
             }
 
             &[src$="/liveonly.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 7 */
                 /* Live Only */
-                background: _theme-color(status, liveonly) !important;
+                background: _theme-color("status", liveonly) !important;
             }
 
             &[src$="/locked.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 8 */
                 /* Locked */
-                background: _theme-color(status, locked) !important;
+                background: _theme-color("status", locked) !important;
             }
 
             &[src$="/mandatorylanguageunpublishable.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 9 */
                 /* Mandatory Language Unpublishable */
-                background: _theme-color(status, mandatorylanguageunpublishable) !important;
+                background: _theme-color("status", mandatorylanguageunpublishable) !important;
             }
 
             &[src$="/mandatorylanguagevalid.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 10 */
                 /* Mandatory Language Valid */
-                background: _theme-color(status, mandatorylanguagevalid) !important;
+                background: _theme-color("status", mandatorylanguagevalid) !important;
             }
 
             &[src$="/markedfordeletion.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 11 */
                 /* Marked FOr Deletion */
-                background: _theme-color(status, markedfordeletion) !important;
+                background: _theme-color("status", markedfordeletion) !important;
             }
 
             &[src$="/modified.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 12 */
                 /* Modified */
-                background: _theme-color(status, modified) !important;
+                background: _theme-color("status", modified) !important;
             }
 
             &[src$="/multipleWF.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 13 */
                 /* Multiple WF */
-                background: _theme-color(status, multipleWF) !important;
+                background: _theme-color("status", multipleWF) !important;
             }
 
             &[src$="/notpublished.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 14 */
                 /* Not Published */
-                background: _theme-color(status, notpublished) !important;
+                background: _theme-color("status", notpublished) !important;
             }
 
             &[src$="/oneWF.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 15 */
                 /* One WF */
-                background: _theme-color(status, oneWF) !important;
+                background: _theme-color("status", oneWF) !important;
             }
 
             &[src$="/published.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 16 */
                 /* Published */
-                background: _theme-color(status, published) !important;
+                background: _theme-color("status", published) !important;
             }
 
             &[src$="/unpublished.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 17 */
                 /* Unpublished */
-                background: _theme-color(status, unpublished) !important;
+                background: _theme-color("status", unpublished) !important;
             }
 
             &[src$="/waiting.gif"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 18 */
                 /* Waiting */
-                background: _theme-color(status, waiting) !important;
+                background: _theme-color("status", waiting) !important;
             }
 
             &[src$="/workinprogress.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 19 */
                 /* Work In Progress */
-                background: _theme-color(status, workinprogress) !important;
+                background: _theme-color("status", workinprogress) !important;
             }
         }
     }
@@ -1272,7 +1272,7 @@ $personalised_trees: (
                 body[data-edit-window-style="settings"] &,
                 .x-viewport-adminmode &,
                 .x-viewport-dashboardmode & {
-                    color: _theme-color(primary) !important;
+                    color: _theme-color("primary") !important;
                 }
 
                 &::after {
@@ -1327,11 +1327,11 @@ $personalised_trees: (
                 &::after {
                     background-image: url($TREE--MORE_OPTIONS--ICON---SELECTED);
                     opacity: 1;
-                    background-color: #007cb0 !important;
+                    background-color: _theme-color("tertiary", normal) !important;
                 }
 
                 &.readOnly {
-                    color: #454545!important;
+                    color: _theme-color("primary", b)!important;
                 }
             }
 
@@ -1363,7 +1363,7 @@ $personalised_trees: (
 
                     &::after {
                         background-image: url($TREE--MORE_OPTIONS--ICON---SELECTED_HOVER);
-                        background-color: #007cb0 !important;
+                        background-color: _theme-color("tertiary", normal) !important;
                     }
                 }
             }
@@ -1551,17 +1551,17 @@ $personalised_trees: (
 .wcag-panel {
 
     border-width: 1px;
-    border: 1px solid _theme-color(status, error);
-    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.4);
+    border: 1px solid _theme-color("status", error);
+    box-shadow: 0px 1px 5px _theme-color("black", b);
     z-index: 9999;
     position: relative;
-    background: _theme-color(status, error);
+    background: _theme-color("status", error);
     margin-bottom: 15px;
 
     .x-panel-header {
         box-sizing: border-box;
         display: block !important;
-        background: _theme-color(status, error) !important;
+        background: _theme-color("status", error) !important;
         border: none !important;
         padding: 3px;
 
@@ -1573,7 +1573,7 @@ $personalised_trees: (
 
         .x-panel-header-text {
             line-height: 21px;
-            @include text(11px, _theme-color(secondary), 500);
+            @include text(11px, _theme-color("secondary"), 500);
         }
 
     }
@@ -1581,12 +1581,12 @@ $personalised_trees: (
     .x-panel-toolbar {
         // Ignore button
         .x-menu-check-item {
-            background: _theme-color(secondary);
+            background: _theme-color("secondary");
             padding: 3px 8px;
             text-decoration: none;
             text-transform: uppercase;;
             opacity: 0.9;
-            @include text(9px, _theme-color(status, error) !important, 800);
+            @include text(9px, _theme-color("status", error) !important, 800);
 
             &:hover {
                 opacity: 1;
@@ -1605,7 +1605,7 @@ $personalised_trees: (
 
             span {
                 text-transform: uppercase;
-                @include text(9px, _theme-color(secondary, c) !important, 800);
+                @include text(9px, _theme-color("secondary", c) !important, 800);
             }
         }
     }
@@ -1635,18 +1635,18 @@ $personalised_trees: (
             }
 
             span {
-                color: _theme-color(primary) !important;
+                color: _theme-color("primary") !important;
             }
         }
 
         div {
             text-align: left;;
-            @include text(10px, _theme-color(secondary) !important, 400);
+            @include text(10px, _theme-color("secondary") !important, 400);
         }
 
         a {
-            color: _theme-color(status, error) !important;
-            background: _theme-color(secondary);
+            color: _theme-color("status", error) !important;
+            background: _theme-color("secondary");
             padding: 3px 5px;
             text-decoration: none;
             opacity: 0.9;
@@ -1762,8 +1762,8 @@ $personalised_trees: (
 }
 
 .cke_panel {
-    background: _theme-color(white) !important; /* TO THEME */
-    border: 6px solid _theme-color(primary, c) !important; /* TO THEME */
+    background: _theme-color("white") !important; /* TO THEME */
+    border: 6px solid _theme-color("primary", c) !important; /* TO THEME */
     border-radius: 0 !important;
     margin-top: 8px !important;
 }
@@ -1840,7 +1840,7 @@ $personalised_trees: (
 
 .cke_dialog_ui_checkbox {
     label {
-        @include text(12px, _theme-color(primary), $FONT--WEIGHT---EXTRALIGHT);
+        @include text(12px, _theme-color("primary"), $FONT--WEIGHT---EXTRALIGHT);
     }
 }
 
@@ -1981,17 +1981,17 @@ $personalised_trees: (
             display: inline-block;
             -moz-appearance: none;
             -webkit-appearance: none;
-            @include text(12px, #363636, $FONT--WEIGHT---LIGHT); /* TO THEME */
+            @include text(12px, _theme-color("primary", normal), $FONT--WEIGHT---LIGHT); /* TO THEME */
             border: none;
             line-height: normal;
             border-radius: 0;
-            box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+            box-shadow: 0px 1px 2px _theme-color("black", a);
             background: url(../images/icons/combo-arrow-grey.png) no-repeat right 5px center; /* OPTIMISE URL ::: css/components/_build.scss ::: 6 */
-            background-color: white;
+            background-color: _theme-color("white", normal);
             padding: 7px 16px 6px 10px !important;
             font-family: "Nunito Sans", sans-serif;
             font-size: 12px;
-            color: #363636;
+            color: _theme-color("primary", normal);
             font-weight: 100;
             box-sizing: border-box;
             height: 30px;
@@ -2112,15 +2112,15 @@ $personalised_trees: (
 
             // Normal Button
             span {
-                background: _theme-color(tertiary) !important; /* TO THEME */
-                @include text(12px !important, _theme-color(secondary) !important, $FONT--WEIGHT---EXTRALIGHT !important); /* TO THEME */
+                background: _theme-color("tertiary") !important; /* TO THEME */
+                @include text(12px !important, _theme-color("secondary") !important, $FONT--WEIGHT---EXTRALIGHT !important); /* TO THEME */
                 text-shadow: none;
                 padding: 4px;
                 text-align: center;
 
                 &:hover {
-                    background: lighten(_theme-color(tertiary), 3%) !important; /* TO THEME */
-                    color: lighten(_theme-color(secondary), 3%) !important; /* TO THEME */
+                    background: lighten(_theme-color("tertiary"), 3%) !important; /* TO THEME */
+                    color: lighten(_theme-color("secondary"), 3%) !important; /* TO THEME */
                 }
             }
         }
@@ -2198,13 +2198,13 @@ $personalised_trees: (
             // Normal Button
             span {
                 padding: 10px 20px !important;
-                background: _theme-color(tertiary) !important; /* TO THEME */
-                @include text(14px !important, _theme-color(secondary) !important, $FONT--WEIGHT---EXTRALIGHT !important); /* TO THEME */
+                background: _theme-color("tertiary") !important; /* TO THEME */
+                @include text(14px !important, _theme-color("secondary") !important, $FONT--WEIGHT---EXTRALIGHT !important); /* TO THEME */
                 text-shadow: none;
 
                 &:hover {
-                    background: lighten(_theme-color(tertiary), 3%) !important; /* TO THEME */
-                    color: lighten(_theme-color(secondary), 3%) !important; /* TO THEME */
+                    background: lighten(_theme-color("tertiary"), 3%) !important; /* TO THEME */
+                    color: lighten(_theme-color("secondary"), 3%) !important; /* TO THEME */
                 }
             }
 
@@ -2294,7 +2294,7 @@ $personalised_trees: (
             }
 
             span {
-                @include text(14px, _theme-color(primary, g), $FONT--WEIGHT---NORMAL); /* TO THEME */
+                @include text(14px, _theme-color("primary", g), $FONT--WEIGHT---NORMAL); /* TO THEME */
             }
 
             .cke_tpl_title {
@@ -2322,7 +2322,7 @@ $personalised_trees: (
 
 /* Modal Mask */
 .x-modal {
-    // background: radial-gradient(ellipse at bottom right, _theme-color(primary, f) 0%, _theme-color(primary) 70%);  // check on other modals.
+    // background: radial-gradient(ellipse at bottom right, _theme-color("primary", f) 0%, _theme-color("primary") 70%);  // check on other modals.
     background: _property($MODAL-SOLID--BG---LEGACY, $APP);
     opacity: 1;
     z-index: 999 !important;
@@ -2440,7 +2440,7 @@ $personalised_trees: (
     margin-top: -32px; // Trying to offset the increase in height of dialogue due to extra large title.
 
     .x-window-header-text {
-        @include text(32px, _theme-color(primary), $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY); /* TO THEME */
+        @include text(32px, _theme-color("primary"), $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY); /* TO THEME */
         display: block !important;
     }
 
@@ -2453,7 +2453,7 @@ $personalised_trees: (
 
     // CONTENT
     .ext-mb-text {
-        @include text(14px, _theme-color(primary, b), $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
+        @include text(14px, _theme-color("primary", b), $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
     }
 
     // ACTION BAR
@@ -2541,7 +2541,7 @@ $personalised_trees: (
                     display: block;
                     width: 100%;
                     font-size: 14px;
-                    color: #007cb0;
+                    color: _theme-color("tertiary", normal);
                 }
             }
         }
@@ -2565,14 +2565,14 @@ $personalised_trees: (
 }
 
 .x-slider-horz .x-slider-thumb {
-    background: _theme-color(secondary, e); /* TO THEME */
+    background: _theme-color("secondary", e); /* TO THEME */
     border-radius: 100%;
     width: 12px;
     height: 12px;
     top: 5px;
 
     &:hover {
-        background: _theme-color(primary, c); /* TO THEME */
+        background: _theme-color("primary", c); /* TO THEME */
     }
 }
 
@@ -2581,7 +2581,7 @@ $personalised_trees: (
     text-indent: -50000px;
     display: block;
     height: 3px;
-    background: _theme-color(secondary, d); /* TO THEME */
+    background: _theme-color("secondary", d); /* TO THEME */
     position: absolute;
     top: 10px;
     width: 100%;
@@ -2899,7 +2899,7 @@ body[data-indigo-gwt-side-panel="open"] {
     top: 0 !important;
     width: 100% !important;
     height: 100% !important;
-    background: #fafafa !important;
+    background: _theme-color("secondary", normal) !important;
 
     // Deal with icons here ...
     .x-tree3-node-text {
@@ -2936,85 +2936,85 @@ body[data-indigo-gwt-side-panel="open"] {
 
         &[src$="/conflict.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 40 */
             /* Conflict */
-             background-color: _theme-color(status, conflict);
+             background-color: _theme-color("status", conflict);
         }
 
         &[src$="/deleted.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 41 */
             /* Deleted */
-             background-color: _theme-color(status, deleted);
+             background-color: _theme-color("status", deleted);
         }
 
         &[src$="/livemodified.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 42 */
             /* Live Modified */
-             background-color: _theme-color(status, livemodified);
+             background-color: _theme-color("status", livemodified);
         }
 
         &[src$="/liveonly.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 43 */
             /* Live Only */
-             background-color: _theme-color(status, liveonly);
+             background-color: _theme-color("status", liveonly);
         }
 
         &[src$="/locked.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 44 */
             /* Locked */
-             background-color: _theme-color(status, locked);
+             background-color: _theme-color("status", locked);
         }
 
         &[src$="/mandatorylanguageunpublishable.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 45 */
             /* Mandatory Language Unpublishable */
-             background-color: _theme-color(status, mandatorylanguageunpublishable);
+             background-color: _theme-color("status", mandatorylanguageunpublishable);
         }
 
         &[src$="/mandatorylanguagevalid.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 46 */
             /* Mandatory Language Valid */
-             background-color: _theme-color(status, mandatorylanguagevalid);
+             background-color: _theme-color("status", mandatorylanguagevalid);
         }
 
         &[src$="/markedfordeletion.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 47 */
             /* Marked FOr Deletion */
-             background-color: _theme-color(status, markedfordeletion);
+             background-color: _theme-color("status", markedfordeletion);
         }
 
         &[src$="/modified.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 48 */
             /* Modified */
-             background-color: _theme-color(status, modified);
+             background-color: _theme-color("status", modified);
         }
 
         &[src$="/multipleWF.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 49 */
             /* Multiple WF */
-             background-color: _theme-color(status, multipleWF);
+             background-color: _theme-color("status", multipleWF);
         }
 
         &[src$="/notpublished.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 50 */
             /* Not Published */
-             background-color: _theme-color(status, notpublished);
+             background-color: _theme-color("status", notpublished);
         }
 
         &[src$="/oneWF.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 51 */
             /* One WF */
-             background-color: _theme-color(status, oneWF);
+             background-color: _theme-color("status", oneWF);
         }
 
         &[src$="/published.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 52 */
             /* Published */
             background-image: url("../images/icons/icon-check-white@X2.png");
-            background-color: _theme-color(status, published);
+            background-color: _theme-color("status", published);
             background-position: top left;
             background-size: 18px;
         }
 
         &[src$="/unpublished.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 53 */
             /* Unpublished */
-             background-color: _theme-color(status, unpublished);
+             background-color: _theme-color("status", unpublished);
         }
 
         &[src$="/waiting.gif"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 54 */
             /* Waiting */
-             background-color: _theme-color(status, waiting);
+             background-color: _theme-color("status", waiting);
         }
 
         &[src$="/workinprogress.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 55 */
             /* Work In Progress */
-             background-color: _theme-color(status, workinprogress);
+             background-color: _theme-color("status", workinprogress);
         }
     }
 
@@ -3022,7 +3022,7 @@ body[data-indigo-gwt-side-panel="open"] {
         background-size: 23px 23px;
         background-repeat: no-repeat;
         opacity: 0.8;
-        background-color: _theme-color(secondary, c);
+        background-color: _theme-color("secondary", c);
         padding: 2px 2px !important;
         border-radius: 4px;
         height: 21px;
@@ -3095,16 +3095,16 @@ body[data-indigo-gwt-side-panel="open"] {
             background: transparent !important;
 
             .x-tree3-node-text {
-                color: _theme-color(primary) !important;
+                color: _theme-color("primary") !important;
             }
 
             .markedForDeletion {
-                color: _theme-color(primary) !important;
+                color: _theme-color("primary") !important;
             }
         }
 
         &.x-grid3-row-selected.x-grid3-row-over {
-            background: #ededed !important;
+            background: _theme-color("secondary", a) !important;
         }
     }
 
@@ -3128,7 +3128,7 @@ body[data-indigo-gwt-side-panel="open"] {
         position: fixed;
         background: #5c6164;
         border-top: 1px solid #444749;
-        box-shadow: inset 3px 0px 16px rgba(0, 0, 0, 0.4);
+        box-shadow: inset 3px 0px 16px _theme-color("black", b);
         box-sizing: border-box;
         left: -30px;
         width: calc(100% + 60px) !important;
@@ -3194,7 +3194,7 @@ body[data-indigo-gwt-side-panel="open"] {
             position: fixed;
             background: #5c6164;
             border-top: 1px solid #444749;
-            box-shadow: inset 3px 0px 16px rgba(0, 0, 0, 0.4);
+            box-shadow: inset 3px 0px 16px _theme-color("black", b);
             box-sizing: border-box;
             left: -30px;
             width: calc(100% + 60px) !important;
@@ -3206,7 +3206,7 @@ body[data-indigo-gwt-side-panel="open"] {
             display: block;
             color: #5c6164;
 
-            @include text(36px, _theme-color(primary), 100, $FONT--FAMILY---RALEWAY);
+            @include text(36px, _theme-color("primary"), 100, $FONT--FAMILY---RALEWAY);
         }
     }
 
@@ -3214,12 +3214,12 @@ body[data-indigo-gwt-side-panel="open"] {
         width: auto !important;
         height: auto !important;
         background: #00a7ed !important;
-        @include text(14px, #FAFAFA, 100);
+        @include text(14px, _theme-color("secondary", normal), 100);
         padding: 8px 15px !important;
         position: absolute;
         right: 52px;
         top: 20px;
-        color: #FAFAFA !important;
+        color: _theme-color("secondary", normal) !important;
 
         &:before {
             content: $text_done;
@@ -3305,7 +3305,7 @@ body[data-indigo-gwt-side-panel="open"] {
     }
 
     .indigo-modal-mask {
-        background: #fafafa !important;
+        background: _theme-color("secondary", normal) !important;
     }
 }
 
@@ -3361,7 +3361,7 @@ body[data-indigo-gwt-side-panel="open"] {
 .x-window.trashboard-engine {
 
     .indigo-modal-mask {
-        background: #fafafa !important;
+        background: _theme-color("secondary", normal) !important;
     }
 
     .x-window-header {
@@ -3404,7 +3404,7 @@ body[data-indigo-gwt-side-panel="open"] {
             top: 37px;
             z-index: 99999;
 
-            @include text(36px, #363636, $FONT--WEIGHT---EXTRALIGHT)
+            @include text(36px, _theme-color("primary", normal), $FONT--WEIGHT---EXTRALIGHT)
         }
     }
 
@@ -3471,7 +3471,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
     .x-component {
         // Move this to the delete modals ...
-        color: _theme-color(primary, b);
+        color: _theme-color("primary", b);
     }
 
     .x-grid3-header {
@@ -3488,7 +3488,7 @@ body[data-indigo-gwt-side-panel="open"] {
         width: 460px !important;
         margin: 0 auto;
         box-sizing: border-box;
-        border: 1px solid #e8e8e8 !important;
+        border: 1px solid _theme-color("secondary", b) !important;
     }
 
     > .x-window-tl {
@@ -3510,14 +3510,14 @@ body[data-indigo-gwt-side-panel="open"] {
         box-sizing: border-box;
         background: #FFF;
         border: none !important;
-        background: radial-gradient(ellipse at bottom right, #fafafa 0%, white 70%) !important;
+        background: radial-gradient(ellipse at bottom right, _theme-color("secondary", normal) 0%, _theme-color("white", normal) 70%) !important;
         margin: 1px;
         width: calc(100% - 2px) !important;
-        box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
-        color: _theme-color(primary);
+        box-shadow: 0px 1px 2px _theme-color("black", a);
+        color: _theme-color("primary");
 
         &:hover {
-            color: _theme-color(primary);
+            color: _theme-color("primary");
         }
     }
 
@@ -3638,7 +3638,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
             &.x-grid3-row-selected {
                 .x-grid3-cell-inner {
-                    color: #363636 !important;
+                    color: _theme-color("primary", normal) !important;
                 }
             }
 
@@ -3648,12 +3648,12 @@ body[data-indigo-gwt-side-panel="open"] {
                 padding-left: 25px;
 
                 a {
-                    @include text(12px, #363636, $FONT--WEIGHT---LIGHT); /* TO THEME */
+                    @include text(12px, _theme-color("primary", normal), $FONT--WEIGHT---LIGHT); /* TO THEME */
                 }
             }
 
             .x-grid3-td-path {
-                @include text(11px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
+                @include text(11px, _theme-color("secondary"), $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
             }
         }
     }
@@ -3683,15 +3683,15 @@ body[data-indigo-gwt-side-panel="open"] {
 
     .x-window-bwrap {
         padding: 12px 8px 8px 8px;
-        color: _theme-color(black, d); /* TO THEME */
-        background: _theme-color(secondary, a);
+        color: _theme-color("black", d); /* TO THEME */
+        background: _theme-color("secondary", a);
     }
 
     .x-window-header {
         padding: 8px 0 !important;
         font-family: $FONT--FAMILY---RALEWAY !important;
         font-size: 32px;
-        color: _theme-color(secondary); /* TO THEME */
+        color: _theme-color("secondary"); /* TO THEME */
         font-weight: $FONT--WEIGHT---EXTRALIGHT;
 
         .x-panel-toolbar {
@@ -3702,7 +3702,7 @@ body[data-indigo-gwt-side-panel="open"] {
     .x-panel-body.x-panel-body-noheader.x-panel-body-noborder .x-form-item {
         height: 22px;
         margin-bottom: 16px;
-        border-bottom: 1px dashed _theme-color(secondary, c); /* TO THEME */
+        border-bottom: 1px dashed _theme-color("secondary", c); /* TO THEME */
         padding-bottom: 10px;
 
         label {
@@ -3721,7 +3721,7 @@ body[data-indigo-gwt-side-panel="open"] {
         > td div.x-form-field {
             font-size: 11px;
             font-weight: 600;
-            color: _theme-color(black, b); /* TO THEME */
+            color: _theme-color("black", b); /* TO THEME */
             padding-right: 8px;
         }
 
@@ -3823,8 +3823,8 @@ body[data-indigo-gwt-side-panel="open"] {
         margin-right: 8px;
 
         .x-form-text {
-            background: _theme-color(secondary, g) !important;
-            color: _theme-color(primary) !important;
+            background: _theme-color("secondary", g) !important;
+            color: _theme-color("primary") !important;
         }
     }
 
@@ -3863,7 +3863,7 @@ body[data-indigo-gwt-side-panel="open"] {
     }
 
     .x-window-bwrap {
-        background: _theme-color(secondary);
+        background: _theme-color("secondary");
         padding: 12px 0 8px 0;
 
         .x-window-body.x-window-body-noborder {
@@ -3881,7 +3881,7 @@ body[data-indigo-gwt-side-panel="open"] {
     }
 
     .x-toolbar {
-        background: _theme-color(secondary, a); /* TO THEME */
+        background: _theme-color("secondary", a); /* TO THEME */
 
         .my-paging-display {
             text-transform: uppercase;
@@ -3910,7 +3910,7 @@ body[data-indigo-gwt-side-panel="open"] {
             margin-right: 10px;
 
             &.x-grid3-hd-over {
-                background: _theme-color(secondary, a); /* TO THEME */
+                background: _theme-color("secondary", a); /* TO THEME */
             }
 
             div {
@@ -3929,7 +3929,7 @@ body[data-indigo-gwt-side-panel="open"] {
         > div {
             font-family: $FONT--FAMILY---NUNITO;
             font-size: 12px;
-            color: _theme-color(primary, a);
+            color: _theme-color("primary", a);
             font-weight: 100;
         }
     }
@@ -3954,7 +3954,7 @@ body[data-indigo-gwt-side-panel="open"] {
                 }
 
                 .x-grid3-hd-btn:hover {
-                    background-color: _theme-color(secondary, b) !important; /* TO THEME */
+                    background-color: _theme-color("secondary", b) !important; /* TO THEME */
                     background-size: 13px !important;
                     opacity: 1;
                 }
@@ -3987,7 +3987,7 @@ body[data-indigo-gwt-side-panel="open"] {
                 background: rgba(241, 241, 241, 0.8) !important; /* TO THEME */
 
                 .x-grid3-cell > div {
-                    color: _theme-color(primary, c) !important; /* TO THEME */
+                    color: _theme-color("primary", c) !important; /* TO THEME */
                     font-weight: 700 !important;
                 }
 
@@ -4036,7 +4036,7 @@ body[data-indigo-gwt-side-panel="open"] {
             width: calc(100% + 10px) !important;
             padding: 8px 16px;
             margin: 6px 0;
-            border-bottom: 1px dashed _theme-color(secondary, d) !important;
+            border-bottom: 1px dashed _theme-color("secondary", d) !important;
             margin-top: 4px;
             padding-top: 4px;
         }
@@ -4049,7 +4049,7 @@ body[data-indigo-gwt-side-panel="open"] {
     .x-small-editor.x-toolbar.x-component.x-toolbar-layout-ct {
         position: relative;
         z-index: 9999999;
-        background: _theme-color(secondary);
+        background: _theme-color("secondary");
         width: 100% !important;
         padding: 2px 0;
         box-sizing: border-box;
@@ -4098,7 +4098,7 @@ body[data-indigo-gwt-side-panel="open"] {
             .gwt-TextBox {
                 font-family: "Nunito Sans", sans-serif;
                 font-size: 12px;
-                color: _theme-color(primary, g); /* TO THEME */
+                color: _theme-color("primary", g); /* TO THEME */
                 font-weight: 100;
                 background: rgba(241, 241, 241, 0.7); /* TO THEME */
                 padding: 3px;
@@ -4119,12 +4119,12 @@ body[data-indigo-gwt-side-panel="open"] {
     }
 
     .x-form-field-wrap .x-form-text {
-        background: _theme-color(white);
-        color: _theme-color(primary);
+        background: _theme-color("white");
+        color: _theme-color("primary");
         margin-top: 5px;
 
         &.x-form-focus {
-            box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.4); /* TO THEME */
+            box-shadow: 0px 1px 2px _theme-color("black", b); /* TO THEME */
         }
 
     }
@@ -4148,14 +4148,14 @@ body[data-indigo-gwt-side-panel="open"] {
             padding: 4px 5px 5px 24px !important;
             font-size: 12px;
             font-family: "Nunito Sans", sans-serif;
-            color: _theme-color(primary);
+            color: _theme-color("primary");
             margin-top: 0;
         }
 
         &:nth-child(3) .x-btn-icon { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 86 */
             height: 27px;
             padding: 0 8px;
-            background: _theme-color(quinary);
+            background: _theme-color("quinary");
             margin-left: -4px;
 
             &:before {
@@ -4165,7 +4165,7 @@ body[data-indigo-gwt-side-panel="open"] {
                 position: relative;
                 text-align: center;
                 font-size: 11px;
-                color: _theme-color(secondary, g);
+                color: _theme-color("secondary", g);
             }
 
             > tbody {
@@ -4189,8 +4189,8 @@ body[data-indigo-gwt-side-panel="open"] {
 
     .x-btn-noicon .x-btn-small .x-btn-text {
         padding: 6px 8px;
-        background: _theme-color(status, error); /* TO THEME */
-        color: _theme-color(secondary); /* TO THEME */
+        background: _theme-color("status", error); /* TO THEME */
+        color: _theme-color("secondary"); /* TO THEME */
     }
 
 }
@@ -4278,7 +4278,7 @@ body[data-indigo-gwt-side-panel="open"] {
     }
 
     td.x-grid3-hd-menu-open .x-grid3-hd-inner {
-        background: _theme-color(secondary, a) !important;
+        background: _theme-color("secondary", a) !important;
     }
 
     .x-grid3-header-inner {
@@ -4316,7 +4316,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
         .x-grid3-hh {
             text-transform: uppercase;
-            color: _theme-color(black, c);
+            color: _theme-color("black", c);
             margin: 2px 0;
 
             > table {
@@ -4442,7 +4442,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
     > .x-window-tl,
     > .x-window-bwrap {
-        background: white !important;
+        background: _theme-color("white", normal) !important;
         width: 562px !important;
     }
 
@@ -4464,7 +4464,7 @@ body[data-indigo-gwt-side-panel="open"] {
     }
 
     textarea {
-        background: _theme-color(secondary, d);
+        background: _theme-color("secondary", d);
         border: none !important;
         margin: 4px 0;
         box-sizing: border-box;
@@ -4481,8 +4481,8 @@ body[data-indigo-gwt-side-panel="open"] {
 
     .x-panel-fbar .x-btn.x-btn-noicon button {
         margin-top: 8px;
-        background: _theme-color(tertiary) !important;
-        color: _theme-color(secondary, a) !important;
+        background: _theme-color("tertiary") !important;
+        color: _theme-color("secondary", a) !important;
     }
 
     .x-window-footer table.x-toolbar-ct {
@@ -4499,7 +4499,7 @@ body[data-indigo-gwt-side-panel="open"] {
 }
 
 .x-window-plain.x-window-dlg span.ext-mb-text > span {
-    color: _theme-color(quaternary) !important;
+    color: _theme-color("quaternary") !important;
     font-weight: 600;
     font-size: 13px;
     top: 2px;
@@ -4635,8 +4635,8 @@ body[data-indigo-gwt-side-panel="open"] {
                 text-decoration: none;
                 font-size: 12px;
                 font-weight: 600;
-                color: _theme-color(tertiary);
-                border-bottom: 1px dashed _theme-color(tertiary);
+                color: _theme-color("tertiary");
+                border-bottom: 1px dashed _theme-color("tertiary");
             }
 
         }
@@ -4670,7 +4670,7 @@ body[data-indigo-gwt-side-panel="open"] {
 /////////////////////////////////////////////////
 
 .x-window.compare-engine {
-    background: _theme-color(primary, a) !important;
+    background: _theme-color("primary", a) !important;
 
     label {
         color: #F5F5F5 !important;
@@ -4716,9 +4716,9 @@ body[data-indigo-gwt-side-panel="open"] {
 
     .x-panel-header,
     .x-toolbar {
-        background: _theme-color(primary, d); /* TO THEME */
-        border: 1px solid _theme-color(primary, d); /* TO THEME */
-        color: _theme-color(secondary); /* TO THEME */
+        background: _theme-color("primary", d); /* TO THEME */
+        border: 1px solid _theme-color("primary", d); /* TO THEME */
+        color: _theme-color("secondary"); /* TO THEME */
     }
 
     .x-panel-bwrap {
@@ -4754,17 +4754,17 @@ body[data-indigo-gwt-side-panel="open"] {
         }
 
         table.x-btn-pressed .x-btn-mc button.x-btn-text {
-            color: _theme-color(status, warning); /* TO THEME */
+            color: _theme-color("status", warning); /* TO THEME */
         }
 
     }
 
     .x-panel:last-child { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 89 */
-        border-left: 1px solid _theme-color(primary, d); /* TO THEME */
+        border-left: 1px solid _theme-color("primary", d); /* TO THEME */
     }
 
     .x-form-field-wrap.x-component {
-        background: _theme-color(secondary, a); /* TO THEME */
+        background: _theme-color("secondary", a); /* TO THEME */
         margin-left: 12px;
     }
 
@@ -4873,7 +4873,7 @@ body[data-indigo-gwt-side-panel="open"] {
         display: block;
         position: fixed;
         background: _property($FOOTER--BG, $EDIT-ENGINE);
-        border-top: 1px solid _theme-color(primary, g);
+        border-top: 1px solid _theme-color("primary", g);
         box-shadow: _property($FOOTER--SHADOW, $EDIT-ENGINE);
         box-sizing: border-box;
         left: -30px;
@@ -4941,14 +4941,14 @@ body[data-indigo-gwt-side-panel="open"] {
         }
 
         > .x-component.x-border-panel > .x-component > table tbody td.x-btn-mc:nth-child(2) { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 95 */
-            background: _theme-color(quaternary);
+            background: _theme-color("quaternary");
             position: absolute;
             left: 224px;
             height: 29px;
             top: 8px;
 
             button {
-                color: _theme-color(secondary, g);
+                color: _theme-color("secondary", g);
                 padding: 0 8px;
                 width: auto !important;
                 height: 29px;
@@ -4961,7 +4961,7 @@ body[data-indigo-gwt-side-panel="open"] {
         .x-component.x-border-panel:nth-child(2) { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 96 */
             margin-top: 28px;
             background: linear-gradient(to bottom, #dbdbdb 1%, #d5d5d5 100%);
-            box-shadow: inset 0 1px 2px 1px rgba(0, 0, 0, 0.2);
+            box-shadow: inset 0 1px 2px 1px _theme-color("black", a);
         }
 
         .x-form-label-left {
@@ -4980,7 +4980,7 @@ body[data-indigo-gwt-side-panel="open"] {
         textarea.x-form-field,
         div[role="combobox"] input.x-form-text {
             background: #f7f700;
-            color: _theme-color(primary);
+            color: _theme-color("primary");
         }
 
         .x-form-readonly input {
@@ -5004,16 +5004,16 @@ body[data-indigo-gwt-side-panel="open"] {
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
 
     .x-info-tl {
-        background: _theme-color(primary, c) !important;
+        background: _theme-color("primary", c) !important;
 
         .x-info-tr {
-            background: _theme-color(primary, c);
+            background: _theme-color("primary", c);
 
             .x-info-tc {
-                background: _theme-color(primary, c);
+                background: _theme-color("primary", c);
 
                 span {
-                    color: _theme-color(status, warning);
+                    color: _theme-color("status", warning);
                     padding-left: 6px;
                 }
 
@@ -5024,13 +5024,13 @@ body[data-indigo-gwt-side-panel="open"] {
     }
 
     .x-info-ml {
-        background: _theme-color(primary, c) !important;
+        background: _theme-color("primary", c) !important;
 
         .x-info-mr {
-            background: _theme-color(primary, c);
+            background: _theme-color("primary", c);
 
             .x-info-mc {
-                background: _theme-color(primary, c);
+                background: _theme-color("primary", c);
 
                 .x-info-body {
                     color: $color-white;
@@ -5053,13 +5053,13 @@ body[data-indigo-gwt-side-panel="open"] {
     }
 
     .x-info-bl.x-info-nofooter {
-        background: _theme-color(primary, c);
+        background: _theme-color("primary", c);
 
         .x-info-br {
-            background: _theme-color(primary, c);
+            background: _theme-color("primary", c);
 
             .x-info-bc {
-                background: _theme-color(primary, c);
+                background: _theme-color("primary", c);
             }
 
         }
@@ -5088,7 +5088,7 @@ body[data-indigo-gwt-side-panel="open"] {
             position: absolute;;
             top: 12px;
             left: 31px;
-            @include text(36px, _theme-color(primary), $FONT--WEIGHT---LIGHT, $FONT--FAMILY---RALEWAY);
+            @include text(36px, _theme-color("primary"), $FONT--WEIGHT---LIGHT, $FONT--FAMILY---RALEWAY);
             z-index: 999;
         }
 

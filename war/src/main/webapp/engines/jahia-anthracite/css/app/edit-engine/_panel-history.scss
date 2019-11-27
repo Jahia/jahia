@@ -64,7 +64,7 @@ div.engine-window {
                                 width: 100% !important;
 
                                 .x-grid3-body {
-                                    background: white !important;
+                                    background: _theme-color("white", normal) !important;
                                     height: calc(100% - 150px) !important;
                                     position: fixed;
                                     width: calc(100% - 368px);
@@ -97,7 +97,7 @@ div.engine-window {
                                     &.x-grid3-hd-menu-open {
 
                                         .x-grid3-hd-inner {
-                                            background: _theme-color(secondary, b) !important;
+                                            background: _theme-color("secondary", b) !important;
 
                                             a {
                                                 background: url(../images/icons/icon-toggle-expanded-small-normal.png) no-repeat center center; /* OPTIMISE URL ::: css/app/edit-engine/_panel-history.scss ::: 1 */
@@ -105,7 +105,7 @@ div.engine-window {
                                             }
 
                                             span {
-                                                color: _theme-color(primary);
+                                                color: _theme-color("primary");
                                             }
                                         }
                                     }
@@ -127,7 +127,7 @@ div.engine-window {
                             box-sizing: border-box;
                             background: _property($FIELDSET--BG---HOVER, $BACKGROUND-JOBS);
                             border: 1px solid _property($FIELDSET--BORDER, $BACKGROUND-JOBS) !important;
-                            box-shadow: inset 0 67px 0 0 #f6f6f6, inset 0 68px 0 0 _theme-color(secondary, b);
+                            box-shadow: inset 0 67px 0 0 #f6f6f6, inset 0 68px 0 0 _theme-color("secondary", b);
 
                             position: relative !important;
                             left: auto !important;
@@ -228,7 +228,7 @@ div.engine-window {
                     .x-toolbar-layout-ct {
                         position: relative;
                         z-index: 9999999;
-                        background: _theme-color(primary, a);
+                        background: _theme-color("primary", a);
                         width: 100% !important;
                         padding: 2px 11px;
                         box-sizing: border-box;
@@ -287,14 +287,14 @@ div.engine-window {
                             .my-paging-display {
                                 font-family: "Nunito Sans", sans-serif;
                                 font-size: 12px;
-                                color: _theme-color(secondary); /* TO THEME */
+                                color: _theme-color("secondary"); /* TO THEME */
                                 font-weight: 100;
                             }
 
                             .gwt-TextBox {
                                 font-family: "Nunito Sans", sans-serif;
                                 font-size: 12px;
-                                color: _theme-color(primary, g); /* TO THEME */
+                                color: _theme-color("primary", g); /* TO THEME */
                                 font-weight: 100;
                                 background: rgba(241, 241, 241, 0.7); /* TO THEME */
                                 padding: 3px;
@@ -312,7 +312,7 @@ div.engine-window {
                     height: 100% !important;
                     top: 0 !important;
                     left: 0 !important;
-                    background: rgba(_theme-color(secondary), .9);
+                    background: rgba(_theme-color("secondary"), .9);
                     padding: 0;
                     box-sizing: border-box;
                     z-index: 9;

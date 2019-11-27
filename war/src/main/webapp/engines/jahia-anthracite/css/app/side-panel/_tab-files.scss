@@ -73,7 +73,7 @@
             }
 
             &.x-view-over.x-view-item-sel {
-                background: #007cb0 !important;
+                background: _theme-color("tertiary", normal) !important;
             }
         }
 

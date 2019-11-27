@@ -79,7 +79,7 @@
             &[data-indigo-switch-checked="true"] {
                 .indigo-switch--shuttle {
                     margin-left: 11px;
-                    background: #00A0E3;
+                    background: _theme-color("quinary", normal);
                 }
 
                 .indigo-switch--rail {
@@ -87,7 +87,7 @@
                 }
 
                 &::before {
-                    color: #00A0E3;
+                    color: _theme-color("quinary", normal);
                 }
 
             }
@@ -113,7 +113,7 @@
                 z-index: 99;
                 left: 230px;
                 top: 0px;
-                box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4);
+                box-shadow: 0 1px 3px 1px _theme-color("black", b);
                 transition: margin-left 0.3s ease, background 0.3s ease, box-shadow 0.1s ease;
 
                 &:hover {
@@ -164,7 +164,7 @@
             display: block;
             position: fixed;
             background: _property($FOOTER--BG, $EDIT-ENGINE);
-            border-top: 1px solid _theme-color(primary, g);
+            border-top: 1px solid _theme-color("primary", g);
             box-shadow: _property($FOOTER--SHADOW, $EDIT-ENGINE);
             box-sizing: border-box;
             left: -30px;
@@ -255,7 +255,7 @@
                         box-sizing: border-box;
                         background: _property($FIELDSET--BG, $BACKGROUND-JOBS);
                         border: 1px solid _property($FIELDSET--BORDER, $BACKGROUND-JOBS) !important;
-                        box-shadow: inset 0 67px 0 0 #f6f6f6, inset 0 68px 0 0 #e8e8e8;
+                        box-shadow: inset 0 67px 0 0 #f6f6f6, inset 0 68px 0 0 _theme-color("secondary", b);
                         // Controls
                         .x-panel-tbar {
                             width: 100% !important;
@@ -329,7 +329,7 @@
                                             padding: 2px 4px !important;
                                             margin: 0 6px !important;
 
-                                            @include text(11px, #a1a1a1, 400);
+                                            @include text(11px, _theme-color("secondary", e), 400);
                                         }
                                     }
 
@@ -374,7 +374,7 @@
 
                                             button {
                                                 padding-left: 15px;
-                                                @include text(12px, _theme-color(primary), 400);
+                                                @include text(12px, _theme-color("primary"), 400);
                                             }
 
                                             &:hover {
@@ -440,7 +440,7 @@
                                         &.x-grid3-hd-menu-open {
 
                                             .x-grid3-hd-inner {
-                                                background: _theme-color(secondary, b) !important;
+                                                background: _theme-color("secondary", b) !important;
 
                                                 a {
                                                     background: url(../images/icons/icon-toggle-expanded-small-normal.png) no-repeat center center; /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 3 */
@@ -448,7 +448,7 @@
                                                 }
 
                                                 span {
-                                                    color: _theme-color(primary);
+                                                    color: _theme-color("primary");
                                                 }
                                             }
                                         }
@@ -485,7 +485,7 @@
                                         background: none !important;
                                         padding: 0 0 0 11px;
                                         text-transform: uppercase;
-                                        @include text(10px, _theme-color(quinary), 500);
+                                        @include text(10px, _theme-color("quinary"), 500);
                                     }
                                 }
                             }
@@ -616,7 +616,7 @@
                             .x-toolbar-layout-ct {
                                 position: relative;
                                 z-index: 9999999;
-                                background: _theme-color(primary, a); /* TO THEME */
+                                background: _theme-color("primary", a); /* TO THEME */
                                 width: 100% !important;
                                 padding: 2px 11px;
                                 box-sizing: border-box;
@@ -659,14 +659,14 @@
                                     .my-paging-text {
                                         font-family: "Nunito Sans", sans-serif;
                                         font-size: 12px;
-                                        color: _theme-color(primary); /* TO THEME */
+                                        color: _theme-color("primary"); /* TO THEME */
                                         font-weight: 100;
                                     }
 
                                     .gwt-TextBox {
                                         font-family: "Nunito Sans", sans-serif;
                                         font-size: 12px;
-                                        color: _theme-color(primary, g); /* TO THEME */
+                                        color: _theme-color("primary", g); /* TO THEME */
                                         font-weight: 100;
                                         background: rgba(241, 241, 241, 0.7); /* TO THEME */
                                         padding: 3px;
@@ -691,7 +691,7 @@
                 height: 100% !important;
                 top: 0 !important;
                 left: 0 !important;
-                background: rgba(_theme-color(secondary), .9);
+                background: rgba(_theme-color("secondary"), .9);
                 padding: 0;
                 box-sizing: border-box;
 

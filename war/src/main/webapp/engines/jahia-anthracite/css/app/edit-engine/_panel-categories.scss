@@ -21,7 +21,7 @@ div.engine-window {
             padding: 14px 0 0 25px !important;
 
             .x-panel-header-text {
-                @include text(18px, #363636, $FONT--WEIGHT---LIGHT);
+                @include text(18px, _theme-color("primary", normal), $FONT--WEIGHT---LIGHT);
             }
 
         }

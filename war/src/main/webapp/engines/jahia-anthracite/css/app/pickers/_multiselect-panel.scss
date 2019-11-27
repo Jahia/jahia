@@ -34,7 +34,7 @@
             }
 
             &.selected-files {
-                background: #00a0e3 !important;
+                background: _theme-color("quinary", normal) !important;
 
             }
         }
@@ -42,7 +42,7 @@
         .toggle-multiple-selection {
             content: attr(data-indigo-multiselection-title);
             font-size: 18px;
-            color: _theme-color(secondary, a);
+            color: _theme-color("secondary", a);
             font-weight: 100;
             font-family: Nunito Sans;
             display: inline-block;
@@ -65,7 +65,7 @@
         }
 
         .x-grid-empty {
-            @include text(12px, _theme-color(primary, d), $FONT--WEIGHT---EXTRALIGHT);
+            @include text(12px, _theme-color("primary", d), $FONT--WEIGHT---EXTRALIGHT);
             padding: 0;
         }
 
@@ -139,7 +139,7 @@
                         width: auto !important;
 
                         .x-grid3-col-displayName {
-                            color: _theme-color(secondary);
+                            color: _theme-color("secondary");
                             font-size: 13px;
                             text-align: center;
                         }

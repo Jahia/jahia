@@ -45,7 +45,7 @@
         }
 
         &:after {
-            @include text(14px, _theme-color(primary), $FONT--WEIGHT---SEMILIGHT);
+            @include text(14px, _theme-color("primary"), $FONT--WEIGHT---SEMILIGHT);
             content: $text_empty;
             display: block;
             padding: 16px;
@@ -86,10 +86,10 @@
             width: 0px !important;
             padding: 80px 0 0 24px;
             pointer-events: all;
-            box-shadow: inset 3px 0px 7px rgba(0, 0, 0, 0.4), inset -24px 0px 0 0 #06a1e3, 3px 0px 3px 0 rgba(0, 0, 0, 0.4) !important;
+            box-shadow: inset 3px 0px 7px _theme-color("black", b), inset -24px 0px 0 0 #06a1e3, 3px 0px 3px 0 _theme-color("black", b) !important;
 
             &:hover {
-                box-shadow: inset 1px 0px 7px rgba(0, 0, 0, 0.4), inset -24px 0px 0 0 #06a1e3, 7px 0px 10px 0 rgba(0, 0, 0, 0.4) !important;
+                box-shadow: inset 1px 0px 7px _theme-color("black", b), inset -24px 0px 0 0 #06a1e3, 7px 0px 10px 0 _theme-color("black", b) !important;
 
                 &:before {
                     right: -8px;
@@ -232,10 +232,10 @@
                     width: 0px !important;
                     padding: 0 0 0 24px;
                     pointer-events: all;
-                    box-shadow: inset 3px 0px 7px rgba(0, 0, 0, 0.4), inset -24px 0px 0 0 #06a1e3, 3px 0px 3px 0 rgba(0, 0, 0, 0.4) !important;
+                    box-shadow: inset 3px 0px 7px _theme-color("black", b), inset -24px 0px 0 0 #06a1e3, 3px 0px 3px 0 _theme-color("black", b) !important;
 
                     &:hover {
-                        box-shadow: inset 1px 0px 7px rgba(0, 0, 0, 0.4), inset -24px 0px 0 0 #06a1e3, 7px 0px 10px 0 rgba(0, 0, 0, 0.4) !important;
+                        box-shadow: inset 1px 0px 7px _theme-color("black", b), inset -24px 0px 0 0 #06a1e3, 7px 0px 10px 0 _theme-color("black", b) !important;
 
                         &:after {
                             right: -3px;

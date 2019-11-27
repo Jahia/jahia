@@ -26,7 +26,7 @@
 
     // When a channel has been selected set the background and width to a solid bar
     body[data-channel] & {
-        box-shadow: inset -1px 1px 8px 0 rgba(0, 0, 0, 0.4);
+        box-shadow: inset -1px 1px 8px 0 _theme-color("black", b);
         background: #262829;
         left: -10px;
         bottom: -10px;
@@ -49,7 +49,7 @@
         }
 
         body[data-indigo-gwt-side-panel="open"] & {
-            color: #505050;
+            color: _theme-color("primary", c);
         }
 
         background-size: 22px;
@@ -141,8 +141,8 @@
 
         &.selected {
             pointer-events: none;
-            color: #FAFAFA;
-            background: #00a0e3;
+            color: _theme-color("secondary", normal);
+            background: _theme-color("quinary", normal);
             box-shadow: none;
         }
     }
@@ -166,8 +166,8 @@
 
         &.selected {
             pointer-events: none;
-            color: #FAFAFA;
-            background: #00a0e3;
+            color: _theme-color("secondary", normal);
+            background: _theme-color("quinary", normal);
             box-shadow: none;
         }
     }
@@ -199,7 +199,7 @@
 
     // Holds slider
     #channel-size-slider-holder {
-        background: #00a0e3;
+        background: _theme-color("quinary", normal);
         position: absolute;
         display: none;
         height: 35px;
@@ -245,7 +245,7 @@
             width: 100%;
             height: 2px;
             cursor: pointer;
-            background: _theme-color(primary);
+            background: _theme-color("primary");
         }
 
         &::-webkit-slider-thumb {
@@ -253,28 +253,28 @@
             height: 12px;
             width: 12px;
             border-radius: 100%;
-            background: #007cb0;
+            background: _theme-color("tertiary", normal);
             cursor: pointer;
             margin-top: -5px;
             border: none;
         }
 
         &:focus::-webkit-slider-runnable-track {
-            background: _theme-color(primary);
+            background: _theme-color("primary");
         }
 
         &::-moz-range-track {
             width: 100%;
             height: 2px;
             cursor: pointer;
-            background: _theme-color(primary);
+            background: _theme-color("primary");
         }
 
         &::-moz-range-thumb {
             height: 12px;
             width: 12px;
             border-radius: 100%;
-            background: #007cb0;
+            background: _theme-color("tertiary", normal);
             cursor: pointer;
             border: none;
         }

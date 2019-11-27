@@ -1973,16 +1973,20 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         enableJcrSessionReadOnlyCache();
         try {
             JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
+            if (!sessionWrapper.nodeExists(nodepath)) {
+                // the node doesn't exist anymore
+                logger.warn("Cannot initialize edit engine because the node [" + nodepath + "] doesnt exist");
+                return null;
+            }
+
             JCRNodeWrapper nodeWrapper = sessionWrapper.getNode(nodepath);
             final GWTJahiaNode node = navigation.getGWTJahiaNode(nodeWrapper);
             addEngineLock(tryToLockNode && !node.isLocked(), nodeWrapper);
             // get node type
-            final List<GWTJahiaNodeType> nodeTypes =
-                    contentDefinition.getNodeTypes(nodeWrapper.getNodeTypes(), getUILocale());
+            final List<GWTJahiaNodeType> nodeTypes = contentDefinition.getNodeTypes(nodeWrapper.getNodeTypes(), getUILocale());
 
             // get properties
-            final Map<String, GWTJahiaNodeProperty> props =
-                    properties.getProperties(nodepath, retrieveCurrentSession(), getUILocale());
+            final Map<String, GWTJahiaNodeProperty> props = properties.getProperties(nodepath, retrieveCurrentSession(), getUILocale());
 
             final GWTJahiaEditEngineInitBean result = new GWTJahiaEditEngineInitBean(nodeTypes, props);
             result.setNode(node);
@@ -1997,9 +2001,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
             result.setDefaultLanguageCode(defaultLanguage);
 
-
-            final List<ExtendedNodeType> availableMixins =
-                    contentDefinition.getAvailableMixin(nodeWrapper.getPrimaryNodeTypeName(), nodeWrapper.getResolveSite());
+            final List<ExtendedNodeType> availableMixins = contentDefinition
+                    .getAvailableMixin(nodeWrapper.getPrimaryNodeTypeName(), nodeWrapper.getResolveSite());
 
             List<GWTJahiaNodeType> gwtMixin = contentDefinition.getGWTNodeTypes(availableMixins, getUILocale());
 
@@ -2018,10 +2021,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             } catch (ItemNotFoundException ignored) {
 
             }
-            result.setInitializersValues(
-                    contentDefinition.getAllChoiceListInitializersValues(allTypes, nodeWrapper.getPrimaryNodeType(), nodeWrapper,
-                            parent, getUILocale())
-            );
+            result.setInitializersValues(contentDefinition
+                    .getAllChoiceListInitializersValues(allTypes, nodeWrapper.getPrimaryNodeType(), nodeWrapper, parent, getUILocale()));
             result.setDefaultValues(contentDefinition.getAllDefaultValues(allTypes, sessionWrapper.getRootNode().getResolveSite().getLanguagesAsLocales()));
             final GWTJahiaNodeACL gwtJahiaNodeACL = contentManager.getACL(nodepath, false, sessionWrapper, getUILocale());
             result.setAcl(gwtJahiaNodeACL);
@@ -2036,8 +2037,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 }
                 List<GWTJahiaNode> refs = new ArrayList<GWTJahiaNode>();
                 for (GWTJahiaNodePropertyValue value : (property.getValues())) {
-                    if ((value.getType() == GWTJahiaNodePropertyType.REFERENCE ||
-                            value.getType() == GWTJahiaNodePropertyType.WEAKREFERENCE) && value.getNode() != null) {
+                    if ((value.getType() == GWTJahiaNodePropertyType.REFERENCE || value.getType() == GWTJahiaNodePropertyType.WEAKREFERENCE) && value.getNode() != null) {
                         refs.add(value.getNode());
                     }
                 }
@@ -2051,9 +2051,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             result.setReferencesWarnings(referencesWarnings);
             result.setTranslationEnabled(translationHelper.isTranslationEnabled(nodeWrapper.getResolveSite()));
             return result;
-        } catch (PathNotFoundException e) {
-            // the node no longer exists
-            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.get.node", getUILocale(), getLocalizedMessage(e)));
         } catch (RepositoryException e) {
             logger.error("Cannot get node", e);
             throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.get.node", getUILocale(), getLocalizedMessage(e)));
@@ -2153,13 +2150,18 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
             JCRNodeWrapper nodeWrapper = null;
             for (String path : paths) {
+                if(!sessionWrapper.nodeExists(path)) {
+                    // the node doesn't exist anymore
+                    logger.warn("Cannot initialize edit engine because the node [" + path + "] doesnt exist");
+                    return null;
+                }
+
                 nodeWrapper = sessionWrapper.getNode(path);
                 addEngineLock(tryToLockNode && !JCRContentUtils.isLockedAndCannotBeEdited(nodeWrapper), nodeWrapper);
 
                 // get node type
                 if (nodeTypes == null) {
-                    final List<GWTJahiaNodeType> theseTypes =
-                            contentDefinition.getNodeTypes(nodeWrapper.getNodeTypes(), getUILocale());
+                    final List<GWTJahiaNodeType> theseTypes = contentDefinition.getNodeTypes(nodeWrapper.getNodeTypes(), getUILocale());
                     nodeTypes = theseTypes;
                 } else {
                     List<GWTJahiaNodeType> previousTypes = new ArrayList<GWTJahiaNodeType>(nodeTypes);
@@ -2179,8 +2181,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     }
                 }
 
-                final List<ExtendedNodeType> availableMixins =
-                        contentDefinition.getAvailableMixin(nodeWrapper.getPrimaryNodeTypeName(), nodeWrapper.getResolveSite());
+                final List<ExtendedNodeType> availableMixins = contentDefinition
+                        .getAvailableMixin(nodeWrapper.getPrimaryNodeTypeName(), nodeWrapper.getResolveSite());
 
                 List<GWTJahiaNodeType> theseMixin = contentDefinition.getGWTNodeTypes(availableMixins, getUILocale());
                 if (gwtMixin == null) {
@@ -2206,9 +2208,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     getUILocale()));
             result.setDefaultValues(new HashMap<String, Map<String, List<GWTJahiaNodePropertyValue>>>());
             return result;
-        } catch (PathNotFoundException e) {
-            // the node no longer exists
-            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.get.node", getUILocale(), getLocalizedMessage(e)));
         } catch (RepositoryException e) {
             logger.error("Cannot get node", e);
             throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.get.node", getUILocale(), getLocalizedMessage(e)));

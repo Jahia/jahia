@@ -224,7 +224,7 @@ public class EditContentEngine extends AbstractContentEngine {
 
             @Override
             public void onSuccess(GWTJahiaEditEngineInitBean result) {
-                if (closed) {
+                if (result == null || closed) {
                     return;
                 }
 

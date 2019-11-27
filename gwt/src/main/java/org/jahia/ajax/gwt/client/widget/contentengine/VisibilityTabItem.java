@@ -317,6 +317,10 @@ public class VisibilityTabItem extends EditEngineTabItem {
                         } else {
                             JahiaContentManagementService.App.getInstance().initializeEditEngine(conditionNode.getPath(), false, new BaseAsyncCallback<GWTJahiaEditEngineInitBean>() {
                                 public void onSuccess(GWTJahiaEditEngineInitBean result) {
+                                    if (result == null) {
+                                        return;
+                                    }
+
                                     PropertiesEditor pe = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), Arrays.asList("content"));
                                     pe.setChoiceListInitializersValues(result.getInitializersValues());
                                     pe.renderNewFormPanel();

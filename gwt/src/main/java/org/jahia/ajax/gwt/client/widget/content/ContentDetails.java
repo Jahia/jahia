@@ -227,7 +227,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
 
                             @Override
                             public void onSuccess(GWTJahiaEditEngineInitBean result) {
-                                if (selectedNodes == null || !selectedNodes.contains(result.getNode())) {
+                                if (result== null || selectedNodes == null || !selectedNodes.contains(result.getNode())) {
                                     return;
                                 }
                                 types = result.getNodeTypes();
@@ -266,6 +266,9 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
 
                     @Override
                     public void onSuccess(GWTJahiaEditEngineInitBean result) {
+                        if (result == null) {
+                            return;
+                        }
                         types = result.getNodeTypes();
                         properties = result.getProperties();
                         language = result.getCurrentLocale();

@@ -62,6 +62,10 @@ public final class ServletContextImpl implements ExtServletContext {
 
     private static final String PAX_NAME_SUFFIX = "-pax";
 
+    // This is a list of ServletContext Attributes that should not be suffixed with -pax
+    // driverConfig and portletContainer are attributes used by pluto for the portlet
+    private static final List<String> NOT_SUFFIXED_ATTRIBUTES = Arrays.asList("driverConfig", "portletContainer");
+
     private final Bundle bundle;
     private final ServletContext context;
     private final HttpContext httpContext;
@@ -103,15 +107,15 @@ public final class ServletContextImpl implements ExtServletContext {
         return this.context.getEffectiveMinorVersion();
     }
 
-    public Set getResourcePaths(String path) {
-        Enumeration paths = this.bundle.getEntryPaths(normalizePath(path));
+    public Set<String> getResourcePaths(String path) {
+        Enumeration<String> paths = this.bundle.getEntryPaths(normalizePath(path));
         if ((paths == null) || !paths.hasMoreElements()) {
             return null;
         }
 
         Set<String> set = new HashSet<>();
         while (paths.hasMoreElements()) {
-            set.add((String) paths.nextElement());
+            set.add(paths.nextElement());
         }
 
         return set;
@@ -135,7 +139,7 @@ public final class ServletContextImpl implements ExtServletContext {
             try {
                 return res.openStream();
             } catch (IOException e) {
-                // Do nothing
+                log("Could not open stream", e);
             }
         }
 
@@ -173,12 +177,16 @@ public final class ServletContextImpl implements ExtServletContext {
 
     @Override
     public boolean setInitParameter(String s, String s2) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        // To change body of implemented methods use File | Settings | File Templates.
+        return false;
     }
 
     @Override
     public Object getAttribute(String name) {
-        name += PAX_NAME_SUFFIX;
+        if (!NOT_SUFFIXED_ATTRIBUTES.contains(name)) {
+            // We suffix the attributes with -pax
+            name += PAX_NAME_SUFFIX;
+        }
         return (this.attributes != null) ? this.attributes.get(name) : this.context.getAttribute(name);
     }
 
@@ -194,8 +202,10 @@ public final class ServletContextImpl implements ExtServletContext {
             this.removeAttribute(name);
 
         } else if (name != null) {
-            // We suffix the attributes with -pax
-            name += PAX_NAME_SUFFIX;
+            if (!NOT_SUFFIXED_ATTRIBUTES.contains(name)) {
+                // We suffix the attributes with -pax
+                name += PAX_NAME_SUFFIX;
+            }
 
             Object oldValue;
             if (this.attributes != null) {
@@ -215,7 +225,11 @@ public final class ServletContextImpl implements ExtServletContext {
 
     @Override
     public void removeAttribute(String name) {
-        name += PAX_NAME_SUFFIX;
+        if (!NOT_SUFFIXED_ATTRIBUTES.contains(name)) {
+            // We suffix the attributes with -pax
+            name += PAX_NAME_SUFFIX;
+        }
+
         Object oldValue;
         if (this.attributes != null) {
             oldValue = this.attributes.remove(name);

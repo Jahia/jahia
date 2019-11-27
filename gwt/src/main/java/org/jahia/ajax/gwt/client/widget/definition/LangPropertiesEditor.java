@@ -384,6 +384,10 @@ public class LangPropertiesEditor extends LayoutContainer {
     private void loadEngine(final GWTJahiaLanguage displayedLanguage) {
         contentService.initializeEditEngine(node.getPath(),false, new BaseAsyncCallback<GWTJahiaEditEngineInitBean>() {
             public void onSuccess(GWTJahiaEditEngineInitBean result) {
+                if (result == null) {
+                    return;
+                }
+
                 node = result.getNode();
                 nodeTypes = result.getNodeTypes();
                 properties = result.getProperties();

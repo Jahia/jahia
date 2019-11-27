@@ -9,7 +9,7 @@
     // STYLE FOR UNHANDLED ICONS
     .x-grid3-col-icon img, // RIGHT PANEL
     .x-tree3-node-icon { // LEFT PANEL
-        background-color: rgba(_theme-color(secondary, a), 0.17);
+        background-color: rgba(_theme-color("secondary", a), 0.17);
         padding: 2px;
         border-radius: 15%;
     }

@@ -106,7 +106,7 @@
             left: 245px;
             display: block;
             background-size: 20px;
-            background-color: _theme-color(secondary, b);
+            background-color: _theme-color("secondary", b);
             border-radius: 100%;
 
             /* DEV NOTE ::: QUICK N DIRTY */
@@ -121,7 +121,7 @@
 
             &:hover {
                 cursor: pointer;
-                background-color: _theme-color(secondary, b);
+                background-color: _theme-color("secondary", b);
             }
         }
 
@@ -148,7 +148,7 @@
                 display: block;
                 font-size: 12px;
                 font-family: Nunito Sans;
-                color: #007cb0;
+                color: _theme-color("tertiary", normal);
             }
 
             &:hover {
@@ -217,14 +217,14 @@
                                         right: calc(50% - 226px);
                                         width: 25px;
                                         height: 24px;
-                                        background: #007cb0;
+                                        background: _theme-color("tertiary", normal);
                                         padding: 7px 10px;
 
                                         body.ext-gecko & {
                                             padding: 8px 10px;
                                         }
 
-                                        @include text(11px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT);
+                                        @include text(11px, _theme-color("secondary"), $FONT--WEIGHT---EXTRALIGHT);
 
                                         > tbody {
                                             display: none;
@@ -242,7 +242,7 @@
                                         position: fixed;
                                         top: 44px;
                                         right: 7px;
-                                        background: #007cb0;
+                                        background: _theme-color("tertiary", normal);
                                         padding: 6px 10px;
 
                                         > tbody {
@@ -319,7 +319,7 @@
 
                                     // META DATA
                                     &:nth-child(3) { /* OPTIMISE SELECTOR ::: css/app/pickers/_left-panel.scss ::: 8 */
-                                        // border-right: 1px solid _theme-color(primary);
+                                        // border-right: 1px solid _theme-color("primary");
 
                                         &::before {
                                             content: attr(data-indigo-meta-label);
@@ -354,7 +354,7 @@
                                             .x-component {
                                                 position: fixed;
                                                 width: 130px !important;
-                                                background: #007cb0;
+                                                background: _theme-color("tertiary", normal);
 
                                                 .x-component {
                                                     width: 100% !important;
@@ -363,7 +363,7 @@
 
                                                     label {
                                                         text-transform: none;
-                                                        @include text(12px, _theme-color(secondary), 300);
+                                                        @include text(12px, _theme-color("secondary"), 300);
                                                     }
                                                 }
                                             }
@@ -575,7 +575,7 @@
                             // Row UP
                             .x-view-item {
                                 border: none !important;
-                                @include text(12px, _theme-color(primary, d) !important, $FONT--WEIGHT---EXTRALIGHT);
+                                @include text(12px, _theme-color("primary", d) !important, $FONT--WEIGHT---EXTRALIGHT);
                             }
 
                             // Row OVER
@@ -586,12 +586,12 @@
                             // Row SELECTED
                             .x-view-item-sel {
                                 background: rgb(155, 157, 159) !important;
-                                color: _theme-color(secondary, a) !important;
+                                color: _theme-color("secondary", a) !important;
 
                                 // Row SELECTED OVER
                                 &.x-view-item-over {
                                     background: rgb(155, 157, 159) !important;
-                                    color: _theme-color(secondary, a) !important;
+                                    color: _theme-color("secondary", a) !important;
                                 }
                             }
                         }

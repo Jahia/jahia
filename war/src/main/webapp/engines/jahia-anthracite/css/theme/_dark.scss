@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////
 // BASE COLOURS /////////////////////////////////
 /////////////////////////////////////////////////
-$EDIT_ENGINE--BASE--COLOUR: _theme-color(primary);
-$MODAL--BG--COLOUR: rgba(_theme-color(primary), .98);
+$EDIT_ENGINE--BASE--COLOUR: _theme-color("primary");
+$MODAL--BG--COLOUR: rgba(_theme-color("primary"), .98);
 
 
 /////////////////////////////////////////////////
@@ -11,7 +11,7 @@ $MODAL--BG--COLOUR: rgba(_theme-color(primary), .98);
 $DEFAULT--FONT--FAMILY: $FONT--FAMILY---NUNITO;
 $DEFAULT--FONT--SIZE: 14px;
 $DEFAULT--FONT--WEIGHT: $FONT--WEIGHT---NORMAL;
-$DEFAULT--FONT--COLOUR: _theme-color(secondary);
+$DEFAULT--FONT--COLOUR: _theme-color("secondary");
 
 $DEFAULT--TITLE_FONT--FAMILY: $FONT--FAMILY---RALEWAY;
 
@@ -77,11 +77,11 @@ $SIDE_PANEL--ICON--SETTINGS---OFF: $ICON--SETTINGS---BLACK;
 // FORMS ////////////////////////////////////////
 /////////////////////////////////////////////////
 
-$FORM--CONTEXT_MENU--BG--COLOUR---UP: _theme-color(tertiary);
+$FORM--CONTEXT_MENU--BG--COLOUR---UP: _theme-color("tertiary");
 $FORM--CONTEXT_MENU--BG--COLOUR---HOVER: lighten($FORM--CONTEXT_MENU--BG--COLOUR---UP, 5%);
-$FORM--CONTEXT_MENU--BG--COLOUR---DISABLED: _theme-color(tertiary);
-$FORM--CONTEXT_MENU--FONT--COLOUR---UP: _theme-color(secondary);
-$FORM--CONTEXT_MENU--FONT--COLOUR---HOVER: _theme-color(secondary);
+$FORM--CONTEXT_MENU--BG--COLOUR---DISABLED: _theme-color("tertiary");
+$FORM--CONTEXT_MENU--FONT--COLOUR---UP: _theme-color("secondary");
+$FORM--CONTEXT_MENU--FONT--COLOUR---HOVER: _theme-color("secondary");
 $FORM--CONTEXT_MENU--FONT--COLOUR---DISABLED: rgba($FORM--CONTEXT_MENU--FONT--COLOUR---UP, .7) !important;
 
 /////////////////////////////////////////////////
@@ -89,23 +89,23 @@ $FORM--CONTEXT_MENU--FONT--COLOUR---DISABLED: rgba($FORM--CONTEXT_MENU--FONT--CO
 /////////////////////////////////////////////////
 
 // ROW UP
-$TREE--ROW--FONT--COLOUR---UP: _theme-color(primary, c);
+$TREE--ROW--FONT--COLOUR---UP: _theme-color("primary", c);
 $TREE--ROW--ICON---UP: $ICON--PAGES---GREY;
 $TREE--ROW--BG--COLOUR---UP: transparent;
 
 // ROW HOVER
-$TREE--ROW--BG--COLOUR---HOVER: rgba(_theme-color(primary, c), .1);
-$TREE--ROW--FONT--COLOUR---HOVER: _theme-color(primary, i);
+$TREE--ROW--BG--COLOUR---HOVER: rgba(_theme-color("primary", c), .1);
+$TREE--ROW--FONT--COLOUR---HOVER: _theme-color("primary", i);
 $TREE--ROW--ICON---HOVER: $ICON--PAGES---GREY;
 
 // ROW SELECTED
-$TREE--ROW--BG--COLOUR---SELECTED: rgba(_theme-color(primary, c), .7);
-$TREE--ROW--FONT--COLOUR---SELECTED: _theme-color(secondary);
+$TREE--ROW--BG--COLOUR---SELECTED: rgba(_theme-color("primary", c), .7);
+$TREE--ROW--FONT--COLOUR---SELECTED: _theme-color("secondary");
 $TREE--ROW--ICON---SELECTED: $ICON--PAGES---WHITE;
 
 // ROW HOVER SELECTED
-$TREE--ROW--BG--COLOUR---SELECTED_HOVER: _theme-color(primary, c);
-$TREE--ROW--FONT--COLOUR---SELECTED_HOVER: _theme-color(secondary);
+$TREE--ROW--BG--COLOUR---SELECTED_HOVER: _theme-color("primary", c);
+$TREE--ROW--FONT--COLOUR---SELECTED_HOVER: _theme-color("secondary");
 $TREE--ROW--ICON---SELECTED_HOVER: $ICON--PAGES---WHITE;
 
 // MORE OPTIONS BUTTON
@@ -119,23 +119,23 @@ $TREE--MORE_OPTIONS--ICON---SELECTED_HOVER: $ICON--MORE_OPTIONS---WHITE;
 /////////////////////////////////////////////////
 
 // ROW UP
-$TREE--ROW--FONT--COLOUR---UP\:SEARCH_RESULT: darken(_theme-color(secondary), 3%);
+$TREE--ROW--FONT--COLOUR---UP\:SEARCH_RESULT: darken(_theme-color("secondary"), 3%);
 $TREE--ROW--ICON---UP\:SEARCH_RESULT: $ICON--PAGES---GREY;
 $TREE--ROW--BG--COLOUR---UP\:SEARCH_RESULT: transparent;
 
 // ROW HOVER
-$TREE--ROW--BG--COLOUR---HOVER\:SEARCH_RESULT: rgba(_theme-color(primary, c), .1);
-$TREE--ROW--FONT--COLOUR---HOVER\:SEARCH_RESULT: lighten(_theme-color(secondary), 10%);
+$TREE--ROW--BG--COLOUR---HOVER\:SEARCH_RESULT: rgba(_theme-color("primary", c), .1);
+$TREE--ROW--FONT--COLOUR---HOVER\:SEARCH_RESULT: lighten(_theme-color("secondary"), 10%);
 $TREE--ROW--ICON---HOVER\:SEARCH_RESULT: $ICON--PAGES---GREY;
 
 // ROW SELECTED
-$TREE--ROW--BG--COLOUR---SELECTED\:SEARCH_RESULT: rgba(_theme-color(primary, c), .7);
-$TREE--ROW--FONT--COLOUR---SELECTED\:SEARCH_RESULT: _theme-color(secondary);
+$TREE--ROW--BG--COLOUR---SELECTED\:SEARCH_RESULT: rgba(_theme-color("primary", c), .7);
+$TREE--ROW--FONT--COLOUR---SELECTED\:SEARCH_RESULT: _theme-color("secondary");
 $TREE--ROW--ICON---SELECTED\:SEARCH_RESULT: $ICON--PAGES---WHITE;
 
 // ROW HOVER SELECTED
-$TREE--ROW--BG--COLOUR---SELECTED_HOVER\:SEARCH_RESULT: _theme-color(primary, c);
-$TREE--ROW--FONT--COLOUR---SELECTED_HOVER\:SEARCH_RESULT: _theme-color(secondary);
+$TREE--ROW--BG--COLOUR---SELECTED_HOVER\:SEARCH_RESULT: _theme-color("primary", c);
+$TREE--ROW--FONT--COLOUR---SELECTED_HOVER\:SEARCH_RESULT: _theme-color("secondary");
 $TREE--ROW--ICON---SELECTED_HOVER\:SEARCH_RESULT: $ICON--PAGES---WHITE;
 
 // MORE OPTIONS BUTTON
@@ -172,20 +172,20 @@ $RICH_TEXT_EDITOR--PATH--BG--COLOUR: lighten($EDIT_ENGINE--BASE--COLOUR, 75%);
 $RICH_TEXT_EDITOR--PATH--FONT--COLOUR: darken($EDIT_ENGINE--BASE--COLOUR, 50%);
 
 // DIALOGUE
-$RICH_TEXT_EDITOR--DIALOGUE--TITLE--FONT--COLOUR: _theme-color(primary);
-$RICH_TEXT_EDITOR--DIALOGUE--BG--COLOUR: _theme-color(secondary);
-$RICH_TEXT_EDITOR--DIALOGUE--PREVIEW--BG--COLOUR: _theme-color(secondary);
-$RICH_TEXT_EDITOR--DIALOGUE--BUTTON_ICON--BG--COLOUR: _theme-color(secondary, d);
-$RICH_TEXT_EDITOR--DIALOGUE--PREVIEW_CHARACTERS--FONT--COLOUR: _theme-color(primary, g);
-$RICH_TEXT_EDITOR--DIALOGUE--PARAGRAPH--FONT--COLOUR: _theme-color(primary);
-$RICH_TEXT_EDITOR--DIALOGUE--LINK--FONT--COLOUR: _theme-color(quaternary);
+$RICH_TEXT_EDITOR--DIALOGUE--TITLE--FONT--COLOUR: _theme-color("primary");
+$RICH_TEXT_EDITOR--DIALOGUE--BG--COLOUR: _theme-color("secondary");
+$RICH_TEXT_EDITOR--DIALOGUE--PREVIEW--BG--COLOUR: _theme-color("secondary");
+$RICH_TEXT_EDITOR--DIALOGUE--BUTTON_ICON--BG--COLOUR: _theme-color("secondary", d);
+$RICH_TEXT_EDITOR--DIALOGUE--PREVIEW_CHARACTERS--FONT--COLOUR: _theme-color("primary", g);
+$RICH_TEXT_EDITOR--DIALOGUE--PARAGRAPH--FONT--COLOUR: _theme-color("primary");
+$RICH_TEXT_EDITOR--DIALOGUE--LINK--FONT--COLOUR: _theme-color("quaternary");
 
-$RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR: _theme-color(primary, b);
-$RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR---SELECTED: _theme-color(quinary);
-$RICH_TEXT_EDITOR--DIALOGUE--TAB--UNDERLINE--COLOUR---SELECTED: _theme-color(quaternary);
-$RICH_TEXT_EDITOR--DIALOGUE--TAB--UNDERLINE--COLOUR---HOVER: _theme-color(primary, c);
-$RICH_TEXT_EDITOR--DIALOGUE--LIST--BG--COLOUR: rgba(_theme-color(secondary), .9);
+$RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR: _theme-color("primary", b);
+$RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR---SELECTED: _theme-color("quinary");
+$RICH_TEXT_EDITOR--DIALOGUE--TAB--UNDERLINE--COLOUR---SELECTED: _theme-color("quaternary");
+$RICH_TEXT_EDITOR--DIALOGUE--TAB--UNDERLINE--COLOUR---HOVER: _theme-color("primary", c);
+$RICH_TEXT_EDITOR--DIALOGUE--LIST--BG--COLOUR: rgba(_theme-color("secondary"), .9);
 
-$RICH_TEXT_EDITOR--DIALOGUE--LIST--BG--COLOUR---SELECTED: _theme-color(secondary);
-$RICH_TEXT_EDITOR--DIALOGUE--LIST--ICON--BG--COLOUR---SELECTED: _theme-color(quaternary);
+$RICH_TEXT_EDITOR--DIALOGUE--LIST--BG--COLOUR---SELECTED: _theme-color("secondary");
+$RICH_TEXT_EDITOR--DIALOGUE--LIST--ICON--BG--COLOUR---SELECTED: _theme-color("quaternary");
 $RICH_TEXT_EDITOR--DIALOGUE--LIST--ICON---SELECTED: $ICON--NEXT--WHITE;

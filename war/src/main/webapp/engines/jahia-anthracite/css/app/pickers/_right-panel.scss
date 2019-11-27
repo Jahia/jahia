@@ -64,7 +64,7 @@
 
             // SELECTED ROW
             &.x-grid3-row-selected {
-                background: #007cb0 !important;
+                background: _theme-color("tertiary", normal) !important;
 
                 .x-grid3-col-size,
                 .x-grid3-col-primaryTypeLabel,
@@ -82,7 +82,7 @@
 
             // SELECTED OVER
             &.x-grid3-row-selected.x-grid3-row-over {
-                background: #007cb0 !important;
+                background: _theme-color("tertiary", normal) !important;
             }
         }
 
@@ -178,10 +178,10 @@
 
                     .thumbDetails {
                         div {
-                            color: #363636 !important;
+                            color: _theme-color("primary", normal) !important;
 
                             b {
-                                color: #363636 !important;
+                                color: _theme-color("primary", normal) !important;
                             }
                         }
                     }
@@ -258,7 +258,7 @@
                 box-sizing: border-box;
 
                 div {
-                    @include text(12px, #363636, $FONT--WEIGHT---EXTRALIGHT);
+                    @include text(12px, _theme-color("primary", normal), $FONT--WEIGHT---EXTRALIGHT);
 
                     display: block !important;
                     overflow: hidden;
@@ -476,18 +476,18 @@
             &.x-grid3-row-selected {
                 // More info button SELECTED
                 .more-info-button {
-                    background-color: #007cb0 !important;
+                    background-color: _theme-color("tertiary", normal) !important;
                     background: url($ICON--MORE_OPTIONS---WHITE) no-repeat center center;
                     background-size: 10px 2px;
                 }
 
                 .preview-button {
-                    background-color: #007cb0 !important;
+                    background-color: _theme-color("tertiary", normal) !important;
                     background: url(../images/icons/icon_preview_small_white.png) no-repeat center center; /* OPTIMISE URL ::: css/app/pickers/_right-panel.scss ::: 3 */
                 }
 
                 .edit-button {
-                    background-color: #007cb0 !important;
+                    background-color: _theme-color("tertiary", normal) !important;
                 }
 
                 body[indigo-picker-display="listview"] & {

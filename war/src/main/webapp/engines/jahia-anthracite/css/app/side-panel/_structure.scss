@@ -54,19 +54,19 @@
                 input.x-form-text {
                     background: transparent;
                     box-shadow: none;
-                    color: #363636;
+                    color: _theme-color("primary", normal);
                     padding: 0 17px 0 0 !important;
                     font-size: 14px;
 
                     &:hover {
-                        background-color: white;
+                        background-color: _theme-color("white", normal);
                     }
 
                     &.x-form-focus {
-                        background-color: white;
-                        box-shadow: inset 0.5px 0.5px 0px #7c7c7c, inset -0.5px -0.5px 0px #7c7c7c, inset 1px 1px 1px rgba(0, 0, 0, 0.2);
+                        background-color: _theme-color("white", normal);
+                        box-shadow: inset 0.5px 0.5px 0px #7c7c7c, inset -0.5px -0.5px 0px #7c7c7c, inset 1px 1px 1px _theme-color("black", a);
                         padding-left: 3px !important;
-                        color: black;
+                        color: _theme-color("black", normal);
 
                         & + img {
                             background-image: url(../images/expanded-black.png) !important; /* OPTIMISE URL ::: css/app/side-panel/_structure.scss ::: 1 */
@@ -116,10 +116,10 @@
                 }
 
                 &.x-form-focus {
-                    background-color: white;
+                    background-color: _theme-color("white", normal);
                     box-shadow: inset 0.5px 0.5px 0px black, inset -0.5px -0.5px 0px black, inset 1px 1px 1px rgba(0, 0, 0, 0.5);
                     padding-left: 3px !important;
-                    color: black;
+                    color: _theme-color("black", normal);
 
                     & + img {
                         background-image: url(../images/expanded-black.png) !important; /* OPTIMISE URL ::: css/app/side-panel/_structure.scss ::: 3 */
@@ -179,7 +179,7 @@
         }
 
         &.x-tool-refresh-red {
-            background: url(../images/icons/tabs-publish-modified@X2.png) no-repeat center center _theme-color(secondary); /* OPTIMISE URL ::: css/app/side-panel/_structure.scss ::: 6 */
+            background: url(../images/icons/tabs-publish-modified@X2.png) no-repeat center center _theme-color("secondary"); /* OPTIMISE URL ::: css/app/side-panel/_structure.scss ::: 6 */
             background-size: 32px;
             opacity: .9;
         }
@@ -331,10 +331,10 @@
                             }
 
                             &.x-tab-strip-active {
-                                box-shadow: inset 0 -3px 0 0 #007cb0;
+                                box-shadow: inset 0 -3px 0 0 _theme-color("tertiary", normal);
 
                                 &::after {
-                                    color: #007cb0;
+                                    color: _theme-color("tertiary", normal);
                                 }
                             }
                         }
@@ -602,10 +602,10 @@
     // Highlight item when menu is open (PAGES tab)
 
     .x-grid3 .x-grid3-row.context-menu-open {
-        background: #007cb0 !important;
+        background: _theme-color("tertiary", normal) !important;
     }
 
     .x-grid3 .x-grid3-row.x-grid3-row-selected.context-menu-open {
-        background: #007cb0 !important;
+        background: _theme-color("tertiary", normal) !important;
     }
 }

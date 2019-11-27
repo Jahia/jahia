@@ -121,7 +121,7 @@ div.engine-window {
             position: relative;
             z-index: 98;
             left: 11px;
-            box-shadow: 1px 2px 1px 0px rgba(0, 0, 0, 0.4);
+            box-shadow: 1px 2px 1px 0px _theme-color("black", b);
             transition: left 0.3s ease, background 0.3s ease, box-shadow 0.1s ease;
             border: 1px solid #5ddf15;
 
@@ -208,7 +208,7 @@ div.engine-window {
                         display: block;
 
                         &.x-tab-strip-active {
-                            background: #007cb0;
+                            background: _theme-color("tertiary", normal);
                         }
 
                         .x-tab-right {
@@ -378,7 +378,7 @@ div.engine-window {
             text-overflow: ellipsis !important;
             white-space: nowrap !important;
             padding: 0 !important;
-            @include text(18px !important, _theme-color(quinary) !important, $FONT--WEIGHT---EXTRALIGHT !important);
+            @include text(18px !important, _theme-color("quinary") !important, $FONT--WEIGHT---EXTRALIGHT !important);
 
             &:before {
                 display: none !important;
@@ -691,7 +691,7 @@ div.engine-window {
             padding: 37px 0 0 42px;
 
             // Styles the Lock message
-            @include text(14px, _theme-color(status, locked), $FONT--WEIGHT---EXTRABOLD);
+            @include text(14px, _theme-color("status", locked), $FONT--WEIGHT---EXTRABOLD);
 
             // Node Friendly Name
             &::before {
@@ -705,7 +705,7 @@ div.engine-window {
                 text-overflow: ellipsis;
                 white-space: nowrap;
 
-                @include text(18px !important, #007cb0, $FONT--WEIGHT---EXTRALIGHT);
+                @include text(18px !important, _theme-color("tertiary", normal), $FONT--WEIGHT---EXTRALIGHT);
             }
 
             // Add Locked icon if the node has been locked
@@ -721,7 +721,7 @@ div.engine-window {
                 &::before {
                     background-image: url(../images/icons_red/markefordelete.svg); /* OPTIMISE URL ::: css/app/edit-engine/_main.scss ::: 2 */
                     text-decoration: line-through;
-                    color: _theme-color(status, error);
+                    color: _theme-color("status", error);
                 }
             }
 
@@ -731,9 +731,9 @@ div.engine-window {
                 &.hover-info,
                 &:hover {
                     white-space: pre-wrap;
-                    background-color: #fafafa;
+                    background-color: _theme-color("secondary", normal);
                     padding: 16px 20px 16px 22px;
-                    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4);
+                    box-shadow: 3px 3px 10px _theme-color("black", b);
                     height: auto !important;
                     left: 49px;
                     top: 100px;
@@ -788,7 +788,7 @@ div.engine-window {
             display: block;
             position: fixed;
             background: _property($FOOTER--BG, $EDIT-ENGINE);
-            border-top: 1px solid _theme-color(primary, g);
+            border-top: 1px solid _theme-color("primary", g);
             box-shadow: _property($FOOTER--SHADOW, $EDIT-ENGINE);
             box-sizing: border-box;
             left: -30px;

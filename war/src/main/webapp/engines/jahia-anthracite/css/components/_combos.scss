@@ -839,9 +839,9 @@
     background: none !important;
     font-size: 14px;
     box-shadow: none !important;
-    color: _theme-color(secondary);
+    color: _theme-color("secondary");
 }
 
 .x-viewport-contributemode div[role="combobox"].toolbar-itemsgroup-languageswitcher input.x-form-text:hover {
-    color: white;
+    color: _theme-color("white", normal);
 }

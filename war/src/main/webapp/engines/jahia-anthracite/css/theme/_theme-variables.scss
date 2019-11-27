@@ -4,112 +4,313 @@
 $PICKER_SIDEPANEL_WIDTH: 340px;
 
 
+$icons: (
+    warning: (
+        white: "../images/icons/ic_warning@2x.png", // $ICON--WARNING--WHITE
+    ),
+    difference: (
+        white: "../images/icons/diff-icon.png", //$ICON--DIFF--WHITE
+    ),
+    edit: (
+        white: "../images/icons/tabs-edit.png", // $ICON--INFO--WHITE
+    ),
+    add: (
+        white: "../images/icons/add-icon.png", // $ICON--ADD--WHITE
+        grey: "../images/icons/add-icon-grey.png", // $ICON--ADD--GREY
+    ),
+    lock: (
+        yellow: "../images/icons/icon-locked@X2.png", //$ICON--LOCK--YELLOW
+    ),
+    hamburger: (
+        white: "../images/icons/small-hamburger.png", // $ICON--HAMBURGER--SMALL---WHITE
+        grey: "../images/icons/small-hamburger-grey.png", // $ICON--HAMBURGER--SMALL---WHITE
+    ),
+    usermenu: (
+        white: "../images/icons/tabs-usermenu-white@X2.png", // $ICON--USERMENU--WHITE
+    ),
+    splitter: (
+        grey: "../images/icons/splitter@X2.png", // $ICON--SPLIITER---GREY
+    ),
+    displayThumbs: (
+        white "../images/icons/icon_display_thumb_white_small@X2.png", // $ICON--DISPLAY--THUMBS--WHITE
+        grey "../images/icons/icon_thumbs_grey_small.png", // $ICON--DISPLAY--THUMBS--GREY
+    ),
+    displayDetails: (
+        white "../images/icons/icon_display_details_white_small@X2.png", // $ICON--DISPLAY--DETAILS--WHITE
+        grey "../images/icons/icon_display_details_grey_small@X2.png", // $ICON--DISPLAY--DETAILS--GREY
+    ),
+    displayList: (
+        white "../images/icons/icon_list_white_small@X2.png", // $ICON--DISPLAY--LIST--WHITE
+        grey "../images/icons/icon_list_grey_small.png", // $ICON--DISPLAY--LIST--GREY
+    ),
+    refresh: (
+        white: "../images/icons/icon-publication-launcher.png", // $ICON--REFRESH--SMALL_WHITE
+        grey: "../images/icons/icon-publication-launcher-grey.png", // $ICON--REFRESH--SMALL_GREY
+    ),
+    preview: (
+        white: "../images/icons/icon_preview_small_white.png", // $ICON--PREVIEW--SMALL_WHITE
+        grey: "../images/icons/icon_preview_small_grey.png", // $ICON--PREVIEW--SMALL_GREY
+    ),
+    ckeditor: (
+        white: "../images/icons/icons-cke.png", // $ICON--RICH_TEXT--TOOLBUTTONS
+    ),
+    ckeditorLegacy: (
+        white: "../images/icons/icons-cke-legacy.png", // $ICON--RICH_TEXT--TOOLBUTTONS---LEGACY
+    ),
+    tick: (
+        white: "../images/icons/icon-check-white@X2.png", // $ICON--TICK---WHITE
+    ),
+    magnifyingGlass: (
+        white: "../images/icons/icon-magnifying-glass--small-white.png", // $ICON--SEARCH--SMALL_WHITE
+        grey: "../images/icons/icon-magnifying-glass--small-hover.png", // $ICON--SEARCH--SMALL_GREY
+    ),
+    sortAsc: (
+        white: "../images/icons/sort-ASC@X2.png", // $ICON--ASC--WHITE
+        dark: "../images/icons/sort-dark-ASC@X2.png", // $ICON--ASC--DARK
+    ),
+    sortDesc: (
+        white: "../images/icons/sort-DESC@X2.png", // $ICON--DESC--WHITE
+        dark: "../images/icons/sort-dark-DESC@X2.png", // $ICON--DESC--DARK
+    ),
+    moreOptions: (
+        white: "../images/icon-more-options-light.png", // $ICON--MORE_OPTIONS---WHITE
+        grey: "../images/icon-more-options-dark-50@X2.png", // $ICON--MORE_OPTIONS---GREY
+    ),
+    arrowDown: (
+        white: "../images/icons/combo-arrow.png", // $ICON--ARROW_DOWN---WHITE
+        grey: "../images/icons/combo-arrow-grey.png", // $ICON--ARROW_DOWN---GREY
+    ),
+    arrowExpand: (
+        grey: "../images/icons/icon-expand-side-bar.png", // $ICON--ARROW_EXPAND---GREY
+    ),
+    arrowCollapse: (
+        grey: "../images/icons/icon-combo-expand-white.png", // $ICON--ARROW_COLLAPSE---GREY
+    ),
+    arrowSortAsc: (
+        white: "../images/icons/icon-asc-white.png", // $ICON--SORT--ASC---WHITE
+    ),
+    arrowSortDesc: (
+        white: "../images/icons/icon-desc-white.png", // $ICON--SORT--DESC---WHITE
+    ),
+    closeSmall: (
+        white: "../images/icons/icon-close-white@X2.png", // $ICON--CLOSE_SMALL---WHITE
+        grey: "../images/icons/icon-close-small-light.png", // $ICON--CLOSE_SMALL---GREY
+    ),
+    closeLarge: (
+        white: "../images/icons/icon-close-white@X2.png", // $ICON--CLOSE_LARGE---WHITE
+        grey: "../images/icons/icon-close-grey@X2.png", // $ICON--CLOSE_LARGE---GREY
+    ),
+    navFirst: (
+        white: "../images/icons/icon_arrow_left_double_white@X2.png", // $ICON--FIRST--WHITE
+        grey: "../images/icons/icon_arrow_left_double_grey@X2.png", // $ICON--FIRST--GREY
+    ),
+    navPrevious: (
+        white: "../images/icons/icon_arrow_left_single_white@X2.png", // $ICON--BACK--WHITE
+        grey: "../images/icons/icon-back-grey@X2.png", // $ICON--BACK--GREY
+    ),
+    navNext: (
+        white: "../images/icons/icon-next-white@X2.png", // $ICON--NEXT--WHITE
+        grey: "../images/icons/icon-next-grey@X2.png", // $ICON--NEXT--GREY
+    ),
+    navLast: (
+        white: "../images/icons/icon_arrow_right_double_white@X2.png", // $ICON--LAST--WHITE
+        grey: "../images/icons/icon_arrow_right_double_grey@X2.png", // $ICON--LAST--GREY
+    ),
+    folderOpen: (
+        grey: "../images/icons/small-folder-open@x2.png", // $ICON--FOLDER_OPEN--SMALL---GREY
+    ),
+    folderClosed: (
+        grey: "../images/icons/small-folder@x2.png", // $ICON--FOLDER--SMALL---GREY
+    ),
+    folder: (
+        white: "../images/icons_light/folder_closed.png", // $ICON--FOLDER--SMALL---WHITE
+    ),
+    device: (
+        generic: "../images/devices/devices-generic-large.png", // $ICON--DEVICE---GENERIC
+        iphone: "../images/devices/devices-iphone-small.png", // $ICON--DEVICE---IPHONE
+        galaxyS4: "../images/devices/devices-galaxy-s4-small.png", // $ICON--DEVICE---GALAXY_S4
+        galaxyTab7: "../images/devices/devices-galaxy-tab-3-small.png", // $ICON--DEVICE---GALAXY_TAB7
+        android: "../images/devices/devices-android-small.png", // $ICON--DEVICE---ANDROID
+        blackberry: "../images/devices/devices-blackberry-storm-small.png", // $ICON--DEVICE---BLACKBERRY
+        galaxyNote: "../images/devices/devices-galaxy-note-3-small.png", // $ICON--DEVICE---GALAXY_NOTE
+        kindle: "../images/devices/devices-kindle-fire-small.png", // $ICON--DEVICE---KINDLE
+        ipad: "../images/devices/devices-apple-ipad-small.png", // $ICON--DEVICE---IPAD
+        galaxyTab: "../images/devices/devices-galaxy-tab-3-small.png", // $ICON--DEVICE---GALAXY_TAB_SMALL
+    ),
+    pages: (
+        white: "../images/icons_light/page_icon.png", // $ICON--PAGES---WHITE
+        grey: "../images/icons_grey/page_icon.png", // $ICON--PAGES---GREY
+        blue: "../images/icons_blue/page_icon.png", // $ICON--PAGES---BLUE
+        black: "../images/icons_dark/page_icon.png", // $ICON--PAGES---BLACK
+    ),
+    create: (
+        white: "../images/tabs-create-white@X2.png", // $ICON--CREATE---WHITE
+        grey: "../images/tabs-create-dark@X2.png", // $ICON--CREATE---GREY
+        blue: "../images/tabs-create-blue@X2.png", // $ICON--CREATE---BLUE
+        black: "../images/tabs-create-black@X2.png", // $ICON--CREATE---BLACK
+    ),
+    content: (
+        white: "../images/icons_light/dashboard.svg", // $ICON--CONTENT---WHITE
+        grey: "../images/icons/dashboard.svg", // $ICON--CONTENT---GREY
+        blue: "../images/icons_blue/dashboard.svg", // $ICON--CONTENT---BLUE
+        black: "../images/icons_dark/dashboard.svg", // $ICON--CONTENT---BLACK
+    ),
+    files: (
+        white: "../images/icons_light/folder_closed.png", // $ICON--FILES---WHITE
+        grey: "../images/icons_grey/folder_closed.png", // $ICON--FILES---GREY
+        blue: "../images/icons_blue/folder_closed.png", // $ICON--FILES---BLUE
+        black: "../images/icons_dark/folder_closed.png", // $ICON--FILES---BLACK
+    ),
+    search: (
+        white: "../images/tabs-search-white@X2.png", // $ICON--SEARCH---WHITE
+        grey: "../images/tabs-search-dark@X2.png", // $ICON--SEARCH---GREY
+        blue: "../images/tabs-search-blue@X2.png", // $ICON--SEARCH---BLUE
+        black: "../images/tabs-search-black@X2.png", // $ICON--SEARCH---BLACK
+    ),
+    taxonomy: (
+        white: "../images/icons_light/category.svg", // $ICON--TAXONOMY---WHITE
+        grey: "../images/icons/category.svg", // $ICON--TAXONOMY---GREY
+        blue: "../images/icons_blue/category.svg", // $ICON--TAXONOMY---BLUE
+        black: "../images/icons_dark/category.svg", // $ICON--TAXONOMY---BLACK
+    ),
+    devices: (
+        white: "../images/icons/mobile_light.svg", // $ICON--DEVICES---WHITE
+        grey: "../images/icons/mobile_grey.svg", // $ICON--DEVICES---GREY
+        blue: "../images/icons_blue/category.svg", // $ICON--DEVICES---BLUE
+        black: "../images/icons/mobile_black.svg", // $ICON--DEVICES---BLACK
+    ),
+    settings: (
+        white: "../images/tabs-settings-white@X2.png", // $ICON--SETTINGS---WHITE
+        grey: "../images/tabs-settings-dark@X2.png", // $ICON--SETTINGS---GREY
+        blue: "../images/tabs-settings-blue@X2.png", // $ICON--SETTINGS---BLUE
+        black: "../images/tabs-settings-black@X2.png", // $ICON--SETTINGS---BLACK
+    ),
+    app: (
+        contentManager: "../images/dx_logo_inverted.png", // $ICON--CONTENT_MANAGER---WHITE
+        fileManager: "../images/dx_logo_inverted.png", // $ICON--FILE_MANAGER---WHITE
+        portletManager: "../images/dx_logo_inverted.png", // $ICON--PORTLET_MANAGER---WHITE
+        repoExplorer: "../images/dx_logo_inverted.png", // $ICON--REPO_EXPLORER---WHITE
+        categoryMager: "../images/dx_logo_inverted.png", // $ICON--CATEGORY_MANAGER---WHITE
+        siteManager: "../images/dx_logo_inverted.png", // $ICON--SITE_MANAGER---WHITE
+    ),
+    dxLogo: (
+        white: "../images/dx_logo_inverted.png", // $ICON--DX---WHITE
+        black: "../images/dx_logo_solid-black.png", // $ICON--DX---BLACK
+        blue: "../images/dx_logo_solid.png", // $ICON--DX---BLUE
+    )
+
+);
+
+
 // INFORMATION
-$ICON--INFO--WHITE: "../images/icons/ic_info_outline@2x.png";
-$ICON--WARNING--WHITE: "../images/icons/ic_warning@2x.png";
+// $ICON--INFO--WHITE: "../images/icons/ic_info_outline@2x.png";
+    $ICON--WARNING--WHITE: "../images/icons/ic_warning@2x.png";
 
 // DIFF ICON
-$ICON--DIFF--WHITE: "../images/icons/diff-icon.png";
+    $ICON--DIFF--WHITE: "../images/icons/diff-icon.png";
 
 // EDIT
-$ICON--INFO--WHITE: "../images/icons/tabs-edit.png";
-$ICON--ADD--WHITE: "../images/icons/add-icon.png";
-$ICON--ADD--GREY: "../images/icons/add-icon-grey.png";
+    $ICON--INFO--WHITE: "../images/icons/tabs-edit.png";
+    $ICON--ADD--WHITE: "../images/icons/add-icon.png";
+    $ICON--ADD--GREY: "../images/icons/add-icon-grey.png";
 
 // LOCKED
-$ICON--LOCK--YELLOW: "../images/icons/icon-locked@X2.png";
+    $ICON--LOCK--YELLOW: "../images/icons/icon-locked@X2.png";
 
 // HAMBURGER
-$ICON--HAMBURGER--SMALL---WHITE: "../images/icons/small-hamburger.png";
-$ICON--HAMBURGER--SMALL---GREY: "../images/icons/small-hamburger-grey.png";
-$ICON--USERMENU--WHITE: "../images/icons/tabs-usermenu-white@X2.png";
+    $ICON--HAMBURGER--SMALL---WHITE: "../images/icons/small-hamburger.png";
+    $ICON--HAMBURGER--SMALL---GREY: "../images/icons/small-hamburger-grey.png";
 
-$ICON--SPLIITER---GREY: "../images/icons/splitter@X2.png";
+// USER MENU
+    $ICON--USERMENU--WHITE: "../images/icons/tabs-usermenu-white@X2.png";
+
+// SPLITTER
+    $ICON--SPLIITER---GREY: "../images/icons/splitter@X2.png";
 
 // DISPLAY
-$ICON--DISPLAY--THUMBS--GREY: "../images/icons/icon_thumbs_grey_small.png";
-$ICON--DISPLAY--DETAILS--GREY: "../images/icons/icon_display_details_grey_small@X2.png";
-$ICON--DISPLAY--LIST--GREY: "../images/icons/icon_list_grey_small.png";
+    $ICON--DISPLAY--THUMBS--GREY: "../images/icons/icon_thumbs_grey_small.png";
+    $ICON--DISPLAY--DETAILS--GREY: "../images/icons/icon_display_details_grey_small@X2.png";
+    $ICON--DISPLAY--LIST--GREY: "../images/icons/icon_list_grey_small.png";
 
-$ICON--DISPLAY--THUMBS--WHITE: "../images/icons/icon_display_thumb_white_small@X2.png";
-$ICON--DISPLAY--DETAILS--WHITE: "../images/icons/icon_display_details_white_small@X2.png";
-$ICON--DISPLAY--LIST--WHITE: "../images/icons/icon_list_white_small@X2.png";
+    $ICON--DISPLAY--THUMBS--WHITE: "../images/icons/icon_display_thumb_white_small@X2.png";
+    $ICON--DISPLAY--DETAILS--WHITE: "../images/icons/icon_display_details_white_small@X2.png";
+    $ICON--DISPLAY--LIST--WHITE: "../images/icons/icon_list_white_small@X2.png";
 
 // REFRESH
-$ICON--REFRESH--SMALL_WHITE: "../images/icons/icon-publication-launcher.png";
-$ICON--REFRESH--SMALL_GREY: "../images/icons/icon-publication-launcher-grey.png";
+    $ICON--REFRESH--SMALL_WHITE: "../images/icons/icon-publication-launcher.png";
+    $ICON--REFRESH--SMALL_GREY: "../images/icons/icon-publication-launcher-grey.png";
 
 // PREVIEW
-$ICON--PREVIEW--SMALL_WHITE: "../images/icons/icon_preview_small_white.png";
-$ICON--PREVIEW--SMALL_GREY: "../images/icons/icon_preview_small_grey.png";
+    $ICON--PREVIEW--SMALL_WHITE: "../images/icons/icon_preview_small_white.png";
+    $ICON--PREVIEW--SMALL_GREY: "../images/icons/icon_preview_small_grey.png";
 
 // RICH TEXT EDITOR ICON SET
-$ICON--RICH_TEXT--TOOLBUTTONS: "../images/icons/icons-cke.png";
-$ICON--RICH_TEXT--TOOLBUTTONS---LEGACY: "../images/icons/icons-cke-legacy.png";
+    $ICON--RICH_TEXT--TOOLBUTTONS: "../images/icons/icons-cke.png";
+    $ICON--RICH_TEXT--TOOLBUTTONS---LEGACY: "../images/icons/icons-cke-legacy.png";
 
 // MORE OPTIONS
-$ICON--TICK---WHITE: "../images/icons/icon-check-white@X2.png";
+    $ICON--TICK---WHITE: "../images/icons/icon-check-white@X2.png";
 
 // SEARCH ICONS
 $ICON--SEARCH--SMALL_GREY: "../images/icons/icon-magnifying-glass--small-hover.png";
 $ICON--SEARCH--SMALL_WHITE: "../images/icons/icon-magnifying-glass--small-white.png";
 
 // SORT ICONS
-$ICON--ASC--WHITE: "../images/icons/sort-ASC@X2.png";
-$ICON--DESC--WHITE: "../images/icons/sort-DESC@X2.png";
+    $ICON--ASC--WHITE: "../images/icons/sort-ASC@X2.png";
+    $ICON--DESC--WHITE: "../images/icons/sort-DESC@X2.png";
 
-$ICON--ASC--DARK: "../images/icons/sort-dark-ASC@X2.png";
-$ICON--DESC--DARK: "../images/icons/sort-dark-DESC@X2.png";
+    $ICON--ASC--DARK: "../images/icons/sort-dark-ASC@X2.png";
+    $ICON--DESC--DARK: "../images/icons/sort-dark-DESC@X2.png";
 
 // MORE OPTIONS
-$ICON--MORE_OPTIONS---WHITE: "../images/icon-more-options-light.png";
-$ICON--MORE_OPTIONS---GREY: "../images/icon-more-options-dark-50@X2.png";
+    $ICON--MORE_OPTIONS---WHITE: "../images/icon-more-options-light.png";
+    $ICON--MORE_OPTIONS---GREY: "../images/icon-more-options-dark-50@X2.png";
 
 // COMBOS
-$ICON--ARROW_DOWN---WHITE: "../images/icons/combo-arrow.png";
-$ICON--ARROW_DOWN---GREY: "../images/icons/combo-arrow-grey.png";
+    $ICON--ARROW_DOWN---WHITE: "../images/icons/combo-arrow.png";
+    $ICON--ARROW_DOWN---GREY: "../images/icons/combo-arrow-grey.png";
 
-$ICON--ARROW_EXPAND---GREY: "../images/icons/icon-expand-side-bar.png";
-$ICON--ARROW_COLLAPSE---GREY: "../images/icons/icon-combo-expand-white.png";
+    $ICON--ARROW_EXPAND---GREY: "../images/icons/icon-expand-side-bar.png";
+    $ICON--ARROW_COLLAPSE---GREY: "../images/icons/icon-combo-expand-white.png";
 
 // SORT
-$ICON--SORT--ASC---WHITE: "../images/icons/icon-asc-white.png";
-$ICON--SORT--DESC---WHITE: "../images/icons/icon-desc-white.png";
+    $ICON--SORT--ASC---WHITE: "../images/icons/icon-asc-white.png";
+    $ICON--SORT--DESC---WHITE: "../images/icons/icon-desc-white.png";
 
 
 // CLOSE ICONS
-$ICON--CLOSE_SMALL---GREY: "../images/icons/icon-close-small-light.png";
-$ICON--CLOSE_SMALL---WHITE: "../images/icons/icon-close-white@X2.png";
-$ICON--CLOSE_LARGE---WHITE: "../images/icons/icon-close-white@X2.png";
-$ICON--CLOSE_LARGE---GREY: "../images/icons/icon-close-grey@X2.png";
+    $ICON--CLOSE_SMALL---GREY: "../images/icons/icon-close-small-light.png";
+    $ICON--CLOSE_SMALL---WHITE: "../images/icons/icon-close-white@X2.png";
+    $ICON--CLOSE_LARGE---WHITE: "../images/icons/icon-close-white@X2.png";
+    $ICON--CLOSE_LARGE---GREY: "../images/icons/icon-close-grey@X2.png";
 
 // NAV ICONS
-$ICON--FIRST--GREY: "../images/icons/icon_arrow_left_double_grey@X2.png";
-$ICON--FIRST--WHITE: "../images/icons/icon_arrow_left_double_white@X2.png";
-$ICON--BACK--WHITE: "../images/icons/icon_arrow_left_single_white@X2.png";
-$ICON--BACK--GREY: "../images/icons/icon-back-grey@X2.png";
-$ICON--NEXT--WHITE: "../images/icons/icon-next-white@X2.png";
-$ICON--NEXT--GREY: "../images/icons/icon-next-grey@X2.png";
-$ICON--LAST--WHITE: "../images/icons/icon_arrow_right_double_white@X2.png";
-$ICON--LAST--GREY: "../images/icons/icon_arrow_right_double_grey@X2.png";
+    $ICON--FIRST--GREY: "../images/icons/icon_arrow_left_double_grey@X2.png";
+    $ICON--FIRST--WHITE: "../images/icons/icon_arrow_left_double_white@X2.png";
+    $ICON--BACK--WHITE: "../images/icons/icon_arrow_left_single_white@X2.png";
+    $ICON--BACK--GREY: "../images/icons/icon-back-grey@X2.png";
+    $ICON--NEXT--WHITE: "../images/icons/icon-next-white@X2.png";
+    $ICON--NEXT--GREY: "../images/icons/icon-next-grey@X2.png";
+    $ICON--LAST--WHITE: "../images/icons/icon_arrow_right_double_white@X2.png";
+    $ICON--LAST--GREY: "../images/icons/icon_arrow_right_double_grey@X2.png";
 
 // FOLDER ICONS
-$ICON--FOLDER--SMALL---GREY: "../images/icons/small-folder@x2.png";
-$ICON--FOLDER_OPEN--SMALL---GREY: "../images/icons/small-folder-open@x2.png";
-$ICON--FOLDER--SMALL---WHITE: "../images/icons_light/folder_closed.png";
+    $ICON--FOLDER--SMALL---GREY: "../images/icons/small-folder@x2.png";
+    $ICON--FOLDER_OPEN--SMALL---GREY: "../images/icons/small-folder-open@x2.png";
+    $ICON--FOLDER--SMALL---WHITE: "../images/icons_light/folder_closed.png";
 
 
 // DEVICES
-$ICON--DEVICE---GENERIC: "../images/devices/devices-generic-large.png";
-$ICON--DEVICE---IPHONE: "../images/devices/devices-iphone-small.png";
-$ICON--DEVICE---GALAXY_S4: "../images/devices/devices-galaxy-s4-small.png";
-$ICON--DEVICE---GALAXY_TAB7: "../images/devices/devices-galaxy-tab-3-small.png";
-$ICON--DEVICE---ANDROID: "../images/devices/devices-android-small.png";
-$ICON--DEVICE---BLACKBERRY: "../images/devices/devices-blackberry-storm-small.png";
-$ICON--DEVICE---GALAXY_NOTE: "../images/devices/devices-galaxy-note-3-small.png";
-$ICON--DEVICE---KINDLE: "../images/devices/devices-kindle-fire-small.png";
-$ICON--DEVICE---IPAD: "../images/devices/devices-apple-ipad-small.png";
-$ICON--DEVICE---GALAXY_TAB_SMALL: "../images/devices/devices-galaxy-tab-3-small.png";
+    $ICON--DEVICE---GENERIC: "../images/devices/devices-generic-large.png";
+    $ICON--DEVICE---IPHONE: "../images/devices/devices-iphone-small.png";
+    $ICON--DEVICE---GALAXY_S4: "../images/devices/devices-galaxy-s4-small.png";
+    $ICON--DEVICE---GALAXY_TAB7: "../images/devices/devices-galaxy-tab-3-small.png";
+    $ICON--DEVICE---ANDROID: "../images/devices/devices-android-small.png";
+    $ICON--DEVICE---BLACKBERRY: "../images/devices/devices-blackberry-storm-small.png";
+    $ICON--DEVICE---GALAXY_NOTE: "../images/devices/devices-galaxy-note-3-small.png";
+    $ICON--DEVICE---KINDLE: "../images/devices/devices-kindle-fire-small.png";
+    $ICON--DEVICE---IPAD: "../images/devices/devices-apple-ipad-small.png";
+    $ICON--DEVICE---GALAXY_TAB_SMALL: "../images/devices/devices-galaxy-tab-3-small.png";
 // PAGES
 $ICON--PAGES---WHITE: "../images/icons_light/page_icon.png";
 $ICON--PAGES---GREY: "../images/icons_grey/page_icon.png";

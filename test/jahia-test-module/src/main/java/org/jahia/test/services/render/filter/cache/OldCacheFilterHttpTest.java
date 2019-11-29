@@ -43,6 +43,7 @@
  */
 package org.jahia.test.services.render.filter.cache;
 
+import org.hamcrest.core.IsEqual;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.cache.AreaResourceCacheKeyPartGenerator;
@@ -54,7 +55,7 @@ import org.junit.Test;
 
 import java.net.URL;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 /**
  * Old implementation of AggregateCacheFilter specific unit tests
@@ -82,14 +83,14 @@ public class OldCacheFilterHttpTest extends CacheFilterHttpTest {
     @Test
     public void testModuleError() throws Exception {
         String s = getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", "error1");
-        assertTrue(s.contains("<!-- Module error :"));
+        assertThat(s).contains("<!-- Module error :");
         getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", "error2");
         // All served from cache
-        assertEquals(1, getCheckFilter("CacheHttpTestRenderFilter1").getData("error2").getCount());
+        assertThat(getCheckFilter("CacheHttpTestRenderFilter1").getData("error2").getCount()).isEqualTo(1);
         Thread.sleep(5000);
         // Error should be flushed
         getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", "error3");
-        assertEquals(2, getCheckFilter("CacheHttpTestRenderFilter1").getData("error3").getCount());
+        assertThat(getCheckFilter("CacheHttpTestRenderFilter1").getData("error3").getCount()).isEqualTo(2);
     }
 
     @Test
@@ -116,23 +117,25 @@ public class OldCacheFilterHttpTest extends CacheFilterHttpTest {
             String content1 = getContent(url, "root", "root1234", "testModuleWait4");
 
             // Long module is left blank
-            assertFalse(t2.getResult().contains(LONG_CREATED_ELEMENT_TEXT));
-            assertTrue("Page title " + LONG_PAGE_TITLE + " not found in result: " + t2.getResult(), t2.getResult().contains(LONG_PAGE_TITLE));
-            assertTrue("Second thread did not spend correct time", getCheckFilter("CacheHttpTestRenderFilter1").getData("testModuleWait2").getTime() >= 1000);
+            assertThat(t2.getResult()).doesNotContain(LONG_CREATED_ELEMENT_TEXT);
+            assertThat(t2.getResult()).contains(LONG_PAGE_TITLE);
+            assertThat(getCheckFilter("CacheHttpTestRenderFilter1").getData("testModuleWait2").getTime())
+                    .withFailMessage("Second thread did not spend correct time").isGreaterThanOrEqualTo(1000);
 
             // Entry is cached without the long module
-            assertFalse(content.contains(LONG_CREATED_ELEMENT_TEXT));
-            assertTrue("Page title " + LONG_PAGE_TITLE + " not found in result: " + content, content.contains(LONG_PAGE_TITLE));
-            assertEquals(1, getCheckFilter("CacheHttpTestRenderFilter1").getData("testModuleWait3").getCount());
+            assertThat(content).doesNotContain(LONG_CREATED_ELEMENT_TEXT);
+            assertThat(content).contains(LONG_PAGE_TITLE);
+            assertThat(getCheckFilter("CacheHttpTestRenderFilter1").getData("testModuleWait3").getCount()).isEqualTo(1);
 
-            assertTrue(t1.getResult().contains(LONG_CREATED_ELEMENT_TEXT));
-            assertTrue("Page title " + LONG_PAGE_TITLE + " not found in result: " + t1.getResult(), t1.getResult().contains(LONG_PAGE_TITLE));
-            assertTrue("First thread did not spend correct time", getCheckFilter("CacheHttpTestRenderFilter1").getData("testModuleWait1").getTime() >= 15000);
+            assertThat(t1.getResult()).contains(LONG_CREATED_ELEMENT_TEXT);
+            assertThat(t1.getResult()).contains(LONG_PAGE_TITLE);
+            assertThat(getCheckFilter("CacheHttpTestRenderFilter1").getData("testModuleWait1").getTime())
+                    .withFailMessage("First thread did not spend correct time").isGreaterThanOrEqualTo(15000);
 
             // Entry is now cached with the long module
-            assertTrue(content1.contains(LONG_CREATED_ELEMENT_TEXT));
-            assertTrue("Page title " + LONG_PAGE_TITLE + " not found in result: " + content1, content1.contains(LONG_PAGE_TITLE));
-            assertEquals(1, getCheckFilter("CacheHttpTestRenderFilter1").getData("testModuleWait4").getCount());
+            assertThat(content1).contains(LONG_CREATED_ELEMENT_TEXT);
+            assertThat(content1).contains(LONG_PAGE_TITLE);
+            assertThat(getCheckFilter("CacheHttpTestRenderFilter1").getData("testModuleWait4").getCount()).isEqualTo(1);
         } finally {
             ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
         }

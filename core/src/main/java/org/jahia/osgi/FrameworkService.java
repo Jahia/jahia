@@ -59,6 +59,7 @@ import org.osgi.framework.*;
 import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.util.PropertyPlaceholderHelper;
 
 import javax.script.*;
@@ -277,6 +278,14 @@ public class FrameworkService implements FrameworkListener {
 
     private void setupStartupListener() {
         frameworkBeginningStartLevel = Integer.parseInt(System.getProperty(Constants.FRAMEWORK_BEGINNING_STARTLEVEL));
+        try {
+            Map<String, BundleListener> m = SpringContextSingleton.getBeansOfType(BundleListener.class);
+            for (BundleListener value : m.values()) {
+                main.getFramework().getBundleContext().addBundleListener(value);
+            }
+        } catch (BeansException e) {
+            logger.warn("Error when getting framework listeners",e);
+        }
         main.getFramework().getBundleContext().addFrameworkListener(this);
 
         startLevelTimer.schedule(new StartLevelChecker(), 1000L, 1000L);

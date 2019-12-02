@@ -3,13 +3,13 @@
 /****************************/
 
 $TITLE--COLOR: (
-        LIGHT: _theme-color("primary"),
-        DARK: _theme-color("secondary"),
+        LIGHT: _color("primary"),
+        DARK: _color("secondary"),
 );
 
 $SIDE-PANEL-TITLE--COLOR: (
-        LIGHT: _theme-color("secondary"),
-        DARK: _theme-color("primary"),
+        LIGHT: _color("secondary"),
+        DARK: _color("primary"),
 );
 
 
@@ -18,8 +18,8 @@ $SIDE-PANEL-TITLE--COLOR: (
 /****************************/
 
 $SUBTITLE--COLOR: (
-        LIGHT: _theme-color("primary", c),
-        DARK: _theme-color("secondary", d),
+        LIGHT: _color("primary", c),
+        DARK: _color("secondary", d),
 );
 
 
@@ -28,8 +28,8 @@ $SUBTITLE--COLOR: (
 /****************************/
 
 $PARAGRAPH--COLOR: (
-        LIGHT: _theme-color("primary"),
-        DARK: _theme-color("secondary"),
+        LIGHT: _color("primary"),
+        DARK: _color("secondary"),
 );
 
 

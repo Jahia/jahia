@@ -4,8 +4,8 @@ div.engine-window {
         #JahiaGxtEditEnginePanel-info {
             > .infoPane {
                 padding: 46px 10px 20px 29px !important;
-                background: _property($FIELDSET--BG, $EDIT-ENGINE);
-                border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE) !important;
+                background: _theme($FIELDSET--BG, $EDIT-ENGINE);
+                border: 1px solid _theme($FIELDSET--BORDER, $EDIT-ENGINE) !important;
                 box-sizing: border-box;
                 height: auto !important;
                 width: 100% !important;
@@ -15,7 +15,7 @@ div.engine-window {
                     text-transform: uppercase;
                     position: absolute;
                     top: 17px;
-                    @include text(11px, _property($FIELDSET--TITLE-COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMIBOLD);
+                    @include text(11px, _theme($FIELDSET--TITLE-COLOR, $EDIT-ENGINE), _weight("semibold"));
                 }
 
                 td {
@@ -29,13 +29,13 @@ div.engine-window {
             }
 
             .gwt-HTML {
-                @include text(12px, _property($PARAGRAPH--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMILIGHT);
+                @include text(_size("small"), _theme($PARAGRAPH--COLOR, $EDIT-ENGINE), _weight("semilight"));
 
                 b {
                     width: 150px;
                     display: inline-block;
 
-                    @extend %FORM--LABEL !optional;
+                    @include _label("normal");
                 }
             }
         }

@@ -2,23 +2,23 @@
 /* CHECKBOX */
 /****************************/
 $CHECKBOX--BG: (
-        LIGHT: _theme-color("secondary"),
-        DARK: _theme-color("secondary"),
+        LIGHT: _color("secondary"),
+        DARK: _color("secondary"),
 );
 
 $CHECKBOX--BORDER: (
-        LIGHT: 1px solid _theme-color("primary", g),
-        DARK: 1px solid _theme-color("primary", g),
+        LIGHT: 1px solid _color("primary", g),
+        DARK: 1px solid _color("primary", g),
 );
 
 $CHECKBOX--SHADOW: (
-        LIGHT: inset 1px 1px 3px _theme-color("black", a),
-        DARK: inset 1px 1px 3px _theme-color("black", a),
+        LIGHT: inset 1px 1px 3px _color("black", a),
+        DARK: inset 1px 1px 3px _color("black", a),
 );
 
 $CHECKBOX--BG---CHECKED: (
-        LIGHT: _theme-color("green"),
-        DARK: _theme-color("green"),
+        LIGHT: _color("green"),
+        DARK: _color("green"),
 );
 
 
@@ -28,18 +28,18 @@ $CHECKBOX--BG---CHECKED: (
 
 // UP
 $INPUT--COLOR: (
-        LIGHT: _theme-color("primary"),
-        DARK: _theme-color("secondary"),
+        LIGHT: _color("primary"),
+        DARK: _color("secondary"),
 );
 
 $INPUT--PLACEHOLDER: (
-        LIGHT: _theme-color("secondary", d),
-        DARK: _theme-color("secondary", d),
+        LIGHT: _color("secondary", d),
+        DARK: _color("secondary", d),
 );
 
 $INPUT--BG: (
-        LIGHT: _theme-color("white"),
-        DARK: radial-gradient(ellipse at bottom right, _theme-color("primary", b) 0%, _theme-color("primary", a) 70%),
+        LIGHT: _color("white"),
+        DARK: radial-gradient(ellipse at bottom right, _color("primary", b) 0%, _color("primary", a) 70%),
 );
 
 $INPUT--BORDER: (
@@ -48,19 +48,19 @@ $INPUT--BORDER: (
 );
 
 $INPUT--SHADOW: (
-        LIGHT: 0px 1px 2px _theme-color("black", a),
-        DARK: 0px 1px 2px _theme-color("black", a),
+        LIGHT: 0px 1px 2px _color("black", a),
+        DARK: 0px 1px 2px _color("black", a),
 );
 
 // HOVER
 $INPUT--COLOR---HOVER: (
-        LIGHT: _theme-color("primary"),
-        DARK: _theme-color("secondary"),
+        LIGHT: _color("primary"),
+        DARK: _color("secondary"),
 );
 
 $INPUT--BG---HOVER: (
-        LIGHT: _theme-color("white"),
-        DARK: _theme-color("primary", b),
+        LIGHT: _color("white"),
+        DARK: _color("primary", b),
 );
 
 $INPUT--BORDER---HOVER: (
@@ -69,24 +69,24 @@ $INPUT--BORDER---HOVER: (
 );
 
 $INPUT--SHADOW---HOVER: (
-        LIGHT: 0px 1px 2px _theme-color("black", b),
-        DARK: 0px 1px 2px _theme-color("black", a),
+        LIGHT: 0px 1px 2px _color("black", b),
+        DARK: 0px 1px 2px _color("black", a),
 );
 
 // FOCUS
 $INPUT--COLOR---FOCUS: (
-        LIGHT: _theme-color("primary"),
-        DARK: _theme-color("primary"),
+        LIGHT: _color("primary"),
+        DARK: _color("primary"),
 );
 
 $INPUT--PLACEHOLDER---FOCUS: (
-        LIGHT: _theme-color("secondary", e),
-        DARK: _theme-color("secondary", e),
+        LIGHT: _color("secondary", e),
+        DARK: _color("secondary", e),
 );
 
 $INPUT--BG---FOCUS: (
-        LIGHT: _theme-color("white"),
-        DARK: _theme-color("white"),
+        LIGHT: _color("white"),
+        DARK: _color("white"),
 );
 
 $INPUT--BORDER---FOCUS: (
@@ -95,14 +95,14 @@ $INPUT--BORDER---FOCUS: (
 );
 
 $INPUT--SHADOW---FOCUS: (
-        LIGHT: 0px 1px 2px _theme-color("black", b),
-        DARK: 0px 1px 2px _theme-color("black", b),
+        LIGHT: 0px 1px 2px _color("black", b),
+        DARK: 0px 1px 2px _color("black", b),
 );
 
 // DISABLED
 $INPUT--COLOR---DISABLED: (
-        LIGHT: _theme-color("primary"),
-        DARK: _theme-color("primary")
+        LIGHT: _color("primary"),
+        DARK: _color("primary")
 );
 
 $INPUT--BG---DISABLED: (
@@ -116,8 +116,8 @@ $INPUT--BORDER---DISABLED: (
 );
 
 $INPUT--SHADOW---DISABLED: (
-        LIGHT: 0px 1px 2px _theme-color("black", b),
-        DARK: 0px 1px 2px _theme-color("black", b),
+        LIGHT: 0px 1px 2px _color("black", b),
+        DARK: 0px 1px 2px _color("black", b),
 );
 
 /****************************/
@@ -125,46 +125,46 @@ $INPUT--SHADOW---DISABLED: (
 /****************************/
 
 $LIST-BOX--BG: (
-        LIGHT: _theme-color("secondary", a),
-        DARK: _theme-color("secondary", a),
+        LIGHT: _color("secondary", a),
+        DARK: _color("secondary", a),
 );
 
 // Row
 $LIST-BOX--ROW--COLOR: (
-        LIGHT: _theme-color("primary"),
-        DARK: _theme-color("primary"),
+        LIGHT: _color("primary"),
+        DARK: _color("primary"),
 );
 
 $LIST-BOX--ROW--BG: (
-        LIGHT: _theme-color("secondary", a),
-        DARK: _theme-color("secondary", a),
+        LIGHT: _color("secondary", a),
+        DARK: _color("secondary", a),
 );
 
 // Row hover
 $LIST-BOX--ROW--COLOR---HOVER: (
-        LIGHT: _theme-color("secondary"),
-        DARK: _theme-color("secondary"),
+        LIGHT: _color("secondary"),
+        DARK: _color("secondary"),
 );
 
 $LIST-BOX--ROW--BG---HOVER: (
-        LIGHT: _theme-color("primary", e),
-        DARK: _theme-color("primary", e),
+        LIGHT: _color("primary", e),
+        DARK: _color("primary", e),
 );
 
 // Row selected
 $LIST-BOX--ROW--COLOR---SELECTED: (
-        LIGHT: _theme-color("secondary"),
-        DARK: _theme-color("secondary"),
+        LIGHT: _color("secondary"),
+        DARK: _color("secondary"),
 );
 
 $LIST-BOX--ROW--BG---SELECTED: (
-        LIGHT: _theme-color("primary", c),
-        DARK: _theme-color("primary", c),
+        LIGHT: _color("primary", c),
+        DARK: _color("primary", c),
 );
 
 // Row disabled
 $LIST-BOX--ROW--COLOR---DISABLED: (
-        LIGHT: _theme-color("white", normal),
+        LIGHT: _color("white", normal),
         DARK: red,
 );
 
@@ -180,24 +180,24 @@ $LIST-BOX--ROW--BG---DISABLED: (
 
 // TITLE COLOR
 $FIELDSET--TITLE-COLOR: (
-        LIGHT: _theme-color("primary"),
-        DARK: _theme-color("secondary"),
+        LIGHT: _color("primary"),
+        DARK: _color("secondary"),
 );
 
 // BACKGROUND COLOR
 $FIELDSET--BG: (
-        LIGHT: _theme-color("white", a),
-        DARK: _theme-color("primary", h),
+        LIGHT: _color("white", a),
+        DARK: _color("primary", h),
 );
 
 // BORDER COLOR
 $FIELDSET--BORDER: (
-        LIGHT: _theme-color("secondary", b),
+        LIGHT: _color("secondary", b),
         DARK: transparent,
 );
 
 // BACKGROUND HOVER COLOR
 $FIELDSET--BG---HOVER: (
-        LIGHT: _theme-color("white"),
-        DARK: _theme-color("primary", h),
+        LIGHT: _color("white"),
+        DARK: _color("primary", h),
 );

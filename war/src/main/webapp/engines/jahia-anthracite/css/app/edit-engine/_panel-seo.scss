@@ -5,10 +5,10 @@
     height: auto !important;
 
     .seo-title-path {
-        font-family: $FONT--FAMILY---NUNITO;
+        font-family: _font("nunito");
         font-size: 14px;
-        color: _theme-color("primary", normal);
-        font-weight: $FONT--WEIGHT---LIGHT;
+        color: _color("primary", normal);
+        font-weight: _weight("light");
     }
 
     .seo-title {
@@ -16,14 +16,14 @@
         margin-top: 2px;
         margin-bottom: 6px;
         text-transform: uppercase;
-        font-family: $FONT--FAMILY---NUNITO;
+        font-family: _font("nunito");
         font-size: 18px;
-        color: _theme-color("primary", normal);
-        font-weight: $FONT--WEIGHT---LIGHT;
+        color: _color("primary", normal);
+        font-weight: _weight("light");
     }
 
     .x-panel-header {
-        font-family: $FONT--FAMILY---NUNITO;
+        font-family: _font("nunito");
         background: transparent !important;
         border: none;
     }
@@ -41,7 +41,7 @@
             background: transparent !important;
             border-color: transparent !important;
             margin: 8px 0;
-            border-bottom: 1px dashed _theme-color("secondary", c) !important;
+            border-bottom: 1px dashed _color("secondary", c) !important;
             padding-bottom: 44px;
             margin-bottom: 16px;
         }
@@ -55,21 +55,21 @@
         .x-grid3-hh {
             margin: 2px 2px 8px;
             width: 100% !important;
-            border-bottom: 1px solid _theme-color("secondary", a);
+            border-bottom: 1px solid _color("secondary", a);
             text-transform: uppercase;
-            color: _theme-color("black", b);
+            color: _color("black", b);
 
             span {
-                font-weight: $FONT--WEIGHT---EXTRABOLD;
-                font-family: $FONT--FAMILY---NUNITO;
+                font-weight: _weight("extrabold");
+                font-family: _font("nunito");
             }
 
             > table {
                 padding: 4px 0;
 
                 .x-grid3-hd.x-grid3-cell {
-                    border-left-color: _theme-color("secondary");
-                    border-right-color: _theme-color("secondary", a);
+                    border-left-color: _color("secondary");
+                    border-right-color: _color("secondary", a);
 
                     &:last-child {
                         border-right-color: transparent !important;
@@ -126,11 +126,11 @@
     }
 
     td.x-grid3-hd-menu-open .x-grid3-hd-inner {
-        background: _theme-color("secondary", a) !important;
+        background: _color("secondary", a) !important;
     }
 
     .x-grid3-viewport > .x-grid3-header .x-grid3-header-inner .x-grid3-hh > table > tbody td div .x-grid3-hd-btn { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-seo.scss ::: 1 */
-        background: url(../images/icons/combo-arrow-grey.png) no-repeat center center !important; /* OPTIMISE URL ::: css/app/edit-engine/_panel-seo.scss ::: 1 */
+        background: url( _icon("arrowDown", "grey")) no-repeat center center !important; /* OPTIMISE URL ::: css/app/edit-engine/_panel-seo.scss ::: 1 */
         width: 23px;
         background-size: 13px !important;
         opacity: 0.7;
@@ -160,12 +160,12 @@
 
     .x-row-editor button.x-btn-text {
         padding: 5px 16px !important;
-        background: _theme-color("secondary", a) !important;
-        color: _theme-color("black", d) !important;
+        background: _color("secondary", a) !important;
+        color: _color("black", d) !important;
 
         &[aria-disabled="true"] {
             opacity: .6;
-            color: _theme-color("black", c) !important;
+            color: _color("black", c) !important;
         }
     }
 
@@ -206,14 +206,14 @@
         padding: 5px 10px !important;
         margin-top: 2px;
         font-size: 10px;
-        font-weight: $FONT--WEIGHT---NORMAL;
+        font-weight: _weight("normal");
     }
 
     .x-toolbar-right-row > .x-toolbar-cell > div.x-form-label {
         color: $color-white !important;
         font-weight: 600;
-        font-family: $FONT--FAMILY---NUNITO;
-        background: _theme-color("status", error);
+        font-family: _font("nunito");
+        background: _color("status", error);
         padding: 4px 12px;
         border-radius: 20px;
         margin-right: 8px !important;
@@ -226,7 +226,7 @@
 
         &:before {
             content: "";
-            background: url(../images/icons/ic_warning@2x.png); /* OPTIMISE URL ::: css/app/edit-engine/_panel-seo.scss ::: 2 */
+            background: url( _icon("warning", "white")); /* OPTIMISE URL ::: css/app/edit-engine/_panel-seo.scss ::: 2 */
             position: absolute;
             left: 0;
             top: 0;

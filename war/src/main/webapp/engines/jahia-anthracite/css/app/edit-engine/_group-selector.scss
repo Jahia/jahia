@@ -73,12 +73,12 @@
                 opacity: 0.8;
 
                 .my-paging-text {
-                    @include text(12px, inherit, $FONT--WEIGHT---EXTRALIGHT);
+                    @include text(_size("small"), inherit, _weight("extralight"));
                 }
 
                 .gwt-TextBox {
-                    @include text(12px, _theme-color("primary", g), $FONT--WEIGHT---EXTRALIGHT);
-                    background: rgba(_theme-color("secondary"), .7); /* TO THEME */
+                    @include text(_size("small"), _color("primary", g), _weight("extralight"));
+                    background: rgba(_color("secondary"), .7); /* TO THEME */
                     padding: 3px;
                     border: none;
                 }
@@ -89,7 +89,7 @@
 
                 // First page
                 &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_group-selector.scss ::: 1 */
-                    background: url($ICON--FIRST--GREY) no-repeat center center / 14px 14px;
+                    background: url(_icon("navFirst", "grey")) no-repeat center center / 14px 14px;
                     margin-left: 0px;
 
                     &:hover {
@@ -101,7 +101,7 @@
 
                 // Previous page
                 &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_group-selector.scss ::: 2 */
-                    background: url($ICON--BACK--GREY) no-repeat center center / 14px 14px;
+                    background: url(_icon("navPrevious", "grey")) no-repeat center center / 14px 14px;
                     margin-left: 5px;
 
                     &:hover {
@@ -119,7 +119,7 @@
 
                 // Next Page
                 &:nth-child(8) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_group-selector.scss ::: 4 */
-                    background: url($ICON--NEXT--GREY) no-repeat center center / 14px 14px;
+                    background: url(_icon("navNext", "grey")) no-repeat center center / 14px 14px;
                     margin-right: 5px;
 
                     &:hover {
@@ -130,7 +130,7 @@
 
                 // Last page
                 &:nth-child(9) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_group-selector.scss ::: 5 */
-                    background: url($ICON--LAST--GREY) no-repeat center center / 14px 14px;
+                    background: url(_icon("navLast", "grey")) no-repeat center center / 14px 14px;
                     margin-right: 5px;
 
                     &:hover {
@@ -141,7 +141,7 @@
 
                 // Refresh results
                 &:nth-child(11) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_group-selector.scss ::: 6 */
-                    background: url($ICON--REFRESH--SMALL_GREY) no-repeat center center / 16px 12px;
+                    background: url(_icon("refresh", "grey")) no-repeat center center / 16px 12px;
 
                     &:hover {
                         opacity: 1;
@@ -230,10 +230,10 @@
                                     margin-right: 10px;
 
                                     &.x-grid3-hd-over {
-                                        background: _theme-color("secondary", b); /* TO THEME */
+                                        background: _color("secondary", b); /* TO THEME */
 
                                         span {
-                                            color: _theme-color("primary", b) !important; /* TO THEME */
+                                            color: _color("primary", b) !important; /* TO THEME */
                                         }
 
                                         img {
@@ -256,13 +256,13 @@
                                         }
 
                                         .x-grid3-hd-btn {
-                                            background: url($ICON--ARROW_DOWN---GREY) no-repeat center center !important;
+                                            background: url(_icon("arrowDown", "grey")) no-repeat center center !important;
                                             width: 23px;
                                             background-size: 13px !important;
                                             opacity: 0.7;
 
                                             &:hover {
-                                                background-color: _theme-color("secondary", d) !important; /* TO THEME */
+                                                background-color: _color("secondary", d) !important; /* TO THEME */
                                                 background-size: 13px !important;
                                                 opacity: 1;
                                             }
@@ -283,8 +283,8 @@
 
         .x-grid-empty {
             &::before {
-                content: $text_no_results;
-                @include text(12px, _theme-color("secondary"), $FONT--WEIGHT---EXTRALIGHT);
+                content: _dictionary("no_results");
+                @include text(_size("small"), _color("secondary"), _weight("extralight"));
             }
         }
 
@@ -297,11 +297,11 @@
 
             &.x-grid3-row-selected {
                 pointer-events: none; // Basically disables the double click
-                background: _theme-color("primary", b) !important; /* TO THEME */
+                background: _color("primary", b) !important; /* TO THEME */
 
                 .x-grid3-cell {
                     > div {
-                        color: _theme-color("secondary") !important; /* TO THEME */
+                        color: _color("secondary") !important; /* TO THEME */
                     }
                 }
 
@@ -360,7 +360,7 @@
                         .x-panel-header-text {
                             display: block;
 
-                            @include text(36px, _theme-color("primary"), $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
+                            @include text(_size("big"), _color("primary"), _weight("extralight"), _font("raleway"));
                         }
                     }
 
@@ -391,7 +391,7 @@
         // Used as a cancel button
         &.indigo-clear-button {
             display: block;
-            background: url($ICON--CLOSE_LARGE---GREY) no-repeat center center;
+            background: url(_icon("closeLarge", "grey")) no-repeat center center;
             background-size: 12px 12px;
             width: 20px;
             height: 20px;
@@ -419,16 +419,16 @@
             }
 
             input {
-                background-image: url($ICON--SEARCH---GREY);
-                background-color: _theme-color("secondary"); /* TO THEME */
+                background-image: url(_icon("search", "grey"));
+                background-color: _color("secondary"); /* TO THEME */
                 background-repeat: no-repeat;
                 background-position: left center;
                 background-size: 23px;
                 width: 100% !important;
                 padding: 4px 5px 5px 27px !important;
                 font-size: 12px;
-                font-family: $FONT--FAMILY---NUNITO;
-                color: _theme-color("primary", c); /* TO THEME */
+                font-family: _font("nunito");
+                color: _color("primary", c); /* TO THEME */
                 background-size: 23px;
 
                 &:hover {
@@ -445,16 +445,16 @@
                 display: block;
                 height: 27px;
                 padding: 0 4px;
-                background: _theme-color("tertiary"); /* TO THEME */
+                background: _color("tertiary"); /* TO THEME */
 
                 &:before {
-                    content: $text_search;
+                    content: _dictionary("search");
                     display: block;
                     top: 6px;
                     position: relative;
                     text-align: center;
 
-                    @include text(11px, _theme-color("secondary"), $FONT--WEIGHT---EXTRALIGHT);
+                    @include text(11px, _color("secondary"), _weight("extralight"));
                 }
 
                 img {

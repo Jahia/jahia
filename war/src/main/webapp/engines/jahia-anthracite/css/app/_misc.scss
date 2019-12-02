@@ -3,7 +3,7 @@
 /////////////////////////////////////////////////
 
 body[data-edit-window-style="settings"] {
-    background: _theme-color("secondary");
+    background: _color("secondary");
 }
 
 body[data-edit-window-style="settings"] .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2), /* OPTIMISE SELECTOR ::: css/app/misc.scss ::: 1 */

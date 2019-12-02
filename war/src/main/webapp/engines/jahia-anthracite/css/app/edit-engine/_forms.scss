@@ -10,7 +10,7 @@ img.invalid-icon {
 
 // Input Error Tooltip
 .x-form-invalid-tip {
-    background: _theme-color("status", error);
+    background: _color("status", error);
     border-radius: 2px !important;
     box-shadow: 0 2px 5px 0 rgba($color-black, .26);
 
@@ -27,8 +27,8 @@ img.invalid-icon {
 
     .x-tip-bwrap .x-tip-ml .x-tip-mr .x-tip-body {
         color: $color-white;
-        font-family: $FONT--FAMILY---NUNITO;
-        font-weight: $FONT--WEIGHT---NORMAL;
+        font-family: _font("nunito");
+        font-weight: _weight("normal");
         background: url(../images/icons/ic_info_outline@2x.png) no-repeat left center !important; /* OPTIMISE URL ::: css/app/edit-engine/_forms.scss ::: 1 */
         background-size: 20px !important;
     }

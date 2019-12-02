@@ -5,7 +5,7 @@
 
     &::before {
         /* Tab Content Header Label */
-        content: $text_content !important;
+        content: _dictionary("content") !important;
     }
 
     // Deal with icons here ...
@@ -22,7 +22,7 @@
         // FOLDER ICON
         &[src$="/jnt_contentFolder.png"], /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-content.scss ::: 1 */
         &[src$="/jnt_folder.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-content.scss ::: 2 */
-            background-image: url($ICON--FILES---GREY);
+            background-image: url(_icon("files", "grey"));
             background-size: 21px;
             background-position: top 3px center;
         }
@@ -43,7 +43,7 @@
             // FOLDER ICON
             &[src$="/jnt_contentFolder.png"], /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-content.scss ::: 5 */
             &[src$="/jnt_folder.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-content.scss ::: 6 */
-                background-image: url($ICON--FILES---WHITE);
+                background-image: url(_icon("files", "white"));
                 opacity: 1;
             }
 

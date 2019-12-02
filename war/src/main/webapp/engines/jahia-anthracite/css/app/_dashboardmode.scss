@@ -31,7 +31,7 @@
         left: 60px;
         z-index: $ZINDEX--HAMBURGER_MENU---BUTTON;
         display: block;
-        background: url(../images/dx_logo_solid.png) no-repeat top 3px left 10px; /* OPTIMISE URL ::: css/app/_dashboardmode.scss ::: 1 */
+        background: url( _icon("dxLogo", "blue")) no-repeat top 3px left 10px; /* OPTIMISE URL ::: css/app/_dashboardmode.scss ::: 1 */
         margin-top: 0;
         background-size: 32px 32px;
         opacity: 0.9;
@@ -39,7 +39,7 @@
         height: 50px;
 
         body[data-selection-count="0"] & {
-            background: url(../images/dx_logo_solid.png) no-repeat top 3px left 10px; /* OPTIMISE URL ::: css/app/_dashboardmode.scss ::: 2 */
+            background: url( _icon("dxLogo", "blue")) no-repeat top 3px left 10px; /* OPTIMISE URL ::: css/app/_dashboardmode.scss ::: 2 */
             background-size: 32px 32px;
         }
 
@@ -52,7 +52,7 @@
         }
 
         body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
-            background: url(../images/dx_logo_solid.png) no-repeat top 3px left 10px; /* OPTIMISE URL ::: css/app/_dashboardmode.scss ::: 3 */
+            background: url( _icon("dxLogo", "blue")) no-repeat top 3px left 10px; /* OPTIMISE URL ::: css/app/_dashboardmode.scss ::: 3 */
             top: 40px;
             left: 20px;
             background-size: 42px;
@@ -150,13 +150,13 @@
                 opacity: 0.9;
 
                 &::after {
-                    content: $text_dashboard;
+                    content: _dictionary("dashboard");
                     font-size: 14px;
                     text-transform: uppercase;
-                    font-weight: $FONT--WEIGHT---SEMILIGHT;
+                    font-weight: _weight("semilight");
                     margin-top: 0px;
                     padding-left: 35px;
-                    background: url(../images/dx_logo_solid-black.png) no-repeat left 12px center / 20px 20px; /* OPTIMISE URL ::: css/app/_dashboardmode.scss ::: 4 */
+                    background: url( _icon("dxLogo", "black")) no-repeat left 12px center / 20px 20px; /* OPTIMISE URL ::: css/app/_dashboardmode.scss ::: 4 */
                     padding-right: 2px;
                     text-align: left;
                     position: relative;
@@ -166,10 +166,10 @@
                     display: block;
                     height: 20px;
                     padding-top: 5px;
-                    color: _theme-color("secondary");
+                    color: _color("secondary");
 
                     body[data-selection-count="0"] & {
-                        background: url(../images/dx_logo_solid.png) no-repeat left 12px center / 20px 20px, url(../images/combo-arrow.png) no-repeat right center; /* OPTIMISE URL ::: css/app/_dashboardmode.scss ::: 5 */ /* OPTIMISE URL ::: css/app/_dashboardmode.scss ::: 6 */
+                        background: url( _icon("dxLogo", "blue")) no-repeat left 12px center / 20px 20px, url(../images/combo-arrow.png) no-repeat right center; /* OPTIMISE URL ::: css/app/_dashboardmode.scss ::: 5 */ /* OPTIMISE URL ::: css/app/_dashboardmode.scss ::: 6 */
                     }
                 }
 
@@ -182,7 +182,7 @@
 
     > div:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/dashboardmode.scss ::: 3 */
         height: 100%;
-        background: _theme-color("secondary", normal);
+        background: _color("secondary", normal);
 
         > div:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/dashboardmode.scss ::: 4 */
             height: 100%;
@@ -204,7 +204,7 @@
 }
 
 body {
-    background: _theme-color("primary") !important;
+    background: _color("primary") !important;
 }
 
 #userSites_table_wrapper {
@@ -216,7 +216,7 @@ body {
 #userSites_table {
 
     &:before {
-        color: _theme-color("secondary", a);
+        color: _color("secondary", a);
         font-size: 16px;
         font-family: Nunito Sans;
         font-weight: 100;
@@ -236,7 +236,7 @@ body {
             display: block;
             background: transparent;
             margin-bottom: 1px;
-            color: _theme-color("secondary", c);
+            color: _color("secondary", c);
             font-size: 16px;
             font-family: Nunito Sans;
             font-weight: 100;
@@ -255,22 +255,22 @@ body {
                 &:nth-child(3) { /* OPTIMISE SELECTOR ::: css/app/dashboardmode.scss ::: 8 */
                     background: url(/engines/jahia-anthracite/images/icons/tabs-create-white@X2.png) no-repeat center center; /* OPTIMISE URL ::: css/app/_dashboardmode.scss ::: 7 */
                     background-size: 19px;
-                    background-color: _theme-color("quaternary");
+                    background-color: _color("quaternary");
                     opacity: 1;
                 }
 
                 &:nth-child(5) { /* OPTIMISE SELECTOR ::: css/app/dashboardmode.scss ::: 9 */
                     background: url(/engines/jahia-anthracite/images/icons/icon_preview_small_white.png) no-repeat center center; /* OPTIMISE URL ::: css/app/_dashboardmode.scss ::: 8 */
                     background-size: 19px;
-                    background-color: _theme-color("quaternary");
+                    background-color: _color("quaternary");
                     opacity: 1;
                 }
             }
         }
 
         td {
-            background: _theme-color("secondary", b);
-            color: _theme-color("primary");
+            background: _color("secondary", b);
+            color: _color("primary");
         }
     }
 

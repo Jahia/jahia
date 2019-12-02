@@ -1,0 +1,18 @@
+@mixin _label($type, $theme: LIGHT){
+    padding: 0 !important;
+    font-weight: _weight("light");
+
+    @if ($type == "normal") {
+        margin: 0 !important;
+        line-height: 24px;
+        font-size: 13px;
+        color: _theme($LABEL--COLOR, $theme);
+
+    } @else if ($type == "legend"){
+        position: absolute;
+        top: 14px;
+        left: 30px;
+        font-size: _size("medium");
+        color: _theme($FIELDSET--TITLE-COLOR, $EDIT-ENGINE);
+    }
+}

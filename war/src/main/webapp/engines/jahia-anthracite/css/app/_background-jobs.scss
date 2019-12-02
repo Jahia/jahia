@@ -79,7 +79,7 @@
             &[data-indigo-switch-checked="true"] {
                 .indigo-switch--shuttle {
                     margin-left: 11px;
-                    background: _theme-color("quinary", normal);
+                    background: _color("quinary", normal);
                 }
 
                 .indigo-switch--rail {
@@ -87,7 +87,7 @@
                 }
 
                 &::before {
-                    color: _theme-color("quinary", normal);
+                    color: _color("quinary", normal);
                 }
 
             }
@@ -113,7 +113,7 @@
                 z-index: 99;
                 left: 230px;
                 top: 0px;
-                box-shadow: 0 1px 3px 1px _theme-color("black", b);
+                box-shadow: 0 1px 3px 1px _color("black", b);
                 transition: margin-left 0.3s ease, background 0.3s ease, box-shadow 0.1s ease;
 
                 &:hover {
@@ -140,7 +140,7 @@
     height: 100% !important;
     left: 0 !important;
     top: 0 !important;
-    background: _property($BODY--BG, $BACKGROUND-JOBS);
+    background: _theme($BODY--BG, $BACKGROUND-JOBS);
 
     // Header
     .x-window-tl {
@@ -163,9 +163,9 @@
             // Footer action bar
             display: block;
             position: fixed;
-            background: _property($FOOTER--BG, $EDIT-ENGINE);
-            border-top: 1px solid _theme-color("primary", g);
-            box-shadow: _property($FOOTER--SHADOW, $EDIT-ENGINE);
+            background: _theme($FOOTER--BG, $EDIT-ENGINE);
+            border-top: 1px solid _color("primary", g);
+            box-shadow: _theme($FOOTER--SHADOW, $EDIT-ENGINE);
             box-sizing: border-box;
             left: -30px;
             width: calc(100% + 60px) !important;
@@ -184,10 +184,10 @@
                 pointer-events: all;
 
                 &:before {
-                    content: $text_done;
+                    content: _dictionary("done");
                     display: block;
 
-                    @extend %BUTTON--ICON\:ACTIONBAR---SUGGESTED;
+                    @extend %BUTTON--ICON---ACTIONBAR---SUGGESTED;
                 }
             }
 
@@ -197,7 +197,7 @@
         .x-window-header-text {
             display: block;
 
-            @include text(36px, _property($TITLE--COLOR, $BACKGROUND-JOBS), 100);
+            @include text(_size("big"), _theme($TITLE--COLOR, $BACKGROUND-JOBS), _weight("extralight"));
 
         }
 
@@ -253,9 +253,9 @@
                         width: calc(100% - 470px);
                         padding: 43px 19px 20px 19px;
                         box-sizing: border-box;
-                        background: _property($FIELDSET--BG, $BACKGROUND-JOBS);
-                        border: 1px solid _property($FIELDSET--BORDER, $BACKGROUND-JOBS) !important;
-                        box-shadow: inset 0 67px 0 0 #f6f6f6, inset 0 68px 0 0 _theme-color("secondary", b);
+                        background: _theme($FIELDSET--BG, $BACKGROUND-JOBS);
+                        border: 1px solid _theme($FIELDSET--BORDER, $BACKGROUND-JOBS) !important;
+                        box-shadow: inset 0 67px 0 0 #f6f6f6, inset 0 68px 0 0 _color("secondary", b);
                         // Controls
                         .x-panel-tbar {
                             width: 100% !important;
@@ -268,7 +268,7 @@
                                 z-index: 99;
                                 text-transform: uppercase;
 
-                                @include text(11px, _property($FIELDSET--TITLE-COLOR, $BACKGROUND-JOBS), 500);
+                                @include text(11px, _theme($FIELDSET--TITLE-COLOR, $BACKGROUND-JOBS), _weight("semibold"));
                             }
 
                             > .x-toolbar {
@@ -316,7 +316,7 @@
                                                     padding: 4px 0;
                                                 }
 
-                                                @include text(13px, _property($LABEL--COLOR, $BACKGROUND-JOBS), 100);
+                                                @include text(13px, _theme($LABEL--COLOR, $BACKGROUND-JOBS), _weight("extralight"));
                                             }
                                         }
 
@@ -329,7 +329,7 @@
                                             padding: 2px 4px !important;
                                             margin: 0 6px !important;
 
-                                            @include text(11px, _theme-color("secondary", e), 400);
+                                            @include text(11px, _color("secondary", e), _weight("normal"));
                                         }
                                     }
 
@@ -374,7 +374,7 @@
 
                                             button {
                                                 padding-left: 15px;
-                                                @include text(12px, _theme-color("primary"), 400);
+                                                @include text(_size("small"), _color("primary"), _weight("normal"));
                                             }
 
                                             &:hover {
@@ -414,8 +414,8 @@
 
                                     .x-grid-empty {
                                         &:before {
-                                            content: $text_no_results;
-                                            @include text(12px, _property($PARAGRAPH--COLOR, $BACKGROUND-JOBS), 500);
+                                            content: _dictionary("no_results");
+                                            @include text(_size("small"), _theme($PARAGRAPH--COLOR, $BACKGROUND-JOBS), _weight("semibold"));
                                             display: block;
                                         }
                                     }
@@ -440,7 +440,7 @@
                                         &.x-grid3-hd-menu-open {
 
                                             .x-grid3-hd-inner {
-                                                background: _theme-color("secondary", b) !important;
+                                                background: _color("secondary", b) !important;
 
                                                 a {
                                                     background: url(../images/icons/icon-toggle-expanded-small-normal.png) no-repeat center center; /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 3 */
@@ -448,7 +448,7 @@
                                                 }
 
                                                 span {
-                                                    color: _theme-color("primary");
+                                                    color: _color("primary");
                                                 }
                                             }
                                         }
@@ -459,7 +459,7 @@
 
                                             span {
                                                 text-transform: uppercase;
-                                                @include text(10px, _property($LABEL--COLOR, $BACKGROUND-JOBS), 500);
+                                                @include text(10px, _theme($LABEL--COLOR, $BACKGROUND-JOBS), _weight("semibold"));
                                             }
                                         }
                                     }
@@ -485,7 +485,7 @@
                                         background: none !important;
                                         padding: 0 0 0 11px;
                                         text-transform: uppercase;
-                                        @include text(10px, _theme-color("quinary"), 500);
+                                        @include text(10px, _color("quinary"), _weight("semibold"));
                                     }
                                 }
                             }
@@ -540,7 +540,7 @@
                                             }
 
                                             .delete-button {
-                                                background: url(../images/icons/icon-close-grey@X2.png) center center no-repeat; /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 6 */
+                                                background: url( _icon("closeLarge", "grey")) center center no-repeat; /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 6 */
                                                 background-size: 10px;
                                             }
 
@@ -553,10 +553,10 @@
                                         // Selected, Selected & hover should be same as unselected
                                         &.x-grid3-row-selected {
                                             .action-menu {
-                                                background: _property($ROW--BG, $BACKGROUND-JOBS);
+                                                background: _theme($ROW--BG, $BACKGROUND-JOBS);
 
                                                 .delete-button {
-                                                    background-image: url(../images/icons/icon-close-grey@X2.png); /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 8 */
+                                                    background-image: url( _icon("closeLarge", "grey")); /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 8 */
                                                 }
 
                                                 .info-button {
@@ -564,11 +564,11 @@
                                                 }
                                             }
 
-                                            background: _property($ROW--BG, $BACKGROUND-JOBS) !important;
+                                            background: _theme($ROW--BG, $BACKGROUND-JOBS) !important;
 
                                             .x-grid3-cell-inner,
                                             .x-grid3-cell-inner label {
-                                                color: _property($ROW--COLOR, $BACKGROUND-JOBS) !important;
+                                                color: _theme($ROW--COLOR, $BACKGROUND-JOBS) !important;
                                             }
 
                                         }
@@ -578,14 +578,14 @@
                                         &.x-grid3-row-selected:hover {
                                             .action-menu {
                                                 display: block;
-                                                background: _property($ROW--BG---HOVER, $BACKGROUND-JOBS);
+                                                background: _theme($ROW--BG---HOVER, $BACKGROUND-JOBS);
                                             }
 
-                                            background: _property($ROW--BG---HOVER, $BACKGROUND-JOBS) !important;
+                                            background: _theme($ROW--BG---HOVER, $BACKGROUND-JOBS) !important;
 
                                             .x-grid3-cell-inner,
                                             .x-grid3-cell-inner label {
-                                                color: _property($ROW--COLOR---HOVER, $BACKGROUND-JOBS) !important;
+                                                color: _theme($ROW--COLOR---HOVER, $BACKGROUND-JOBS) !important;
                                             }
 
                                         }
@@ -594,7 +594,7 @@
                                         .x-grid3-cell-inner label {
                                             padding: 5px 0 0 10px;
                                             text-transform: none !important;
-                                            @include text(12px, _property($ROW--COLOR, $BACKGROUND-JOBS), $FONT--WEIGHT---EXTRALIGHT);
+                                            @include text(_size("small"), _theme($ROW--COLOR, $BACKGROUND-JOBS), _weight("extralight"));
                                         }
                                     }
                                 }
@@ -616,7 +616,7 @@
                             .x-toolbar-layout-ct {
                                 position: relative;
                                 z-index: 9999999;
-                                background: _theme-color("primary", a); /* TO THEME */
+                                background: _color("primary", a); /* TO THEME */
                                 width: 100% !important;
                                 padding: 2px 11px;
                                 box-sizing: border-box;
@@ -633,7 +633,7 @@
 
                                     // Change colours to grey
                                     &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/_background-jobs.scss ::: 13 */
-                                        background: url(../images/icons/icon_arrow_left_double_grey@X2.png) no-repeat center center/14px 14px; /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 10 */
+                                        background: url( _icon("navFirst", "grey")) no-repeat center center/14px 14px; /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 10 */
                                         margin-left: 0px;
                                     }
 
@@ -643,30 +643,30 @@
                                     }
 
                                     &:nth-child(8) { /* OPTIMISE SELECTOR ::: css/app/_background-jobs.scss ::: 15 */
-                                        background: url(../images/icons/icon-next-grey@X2.png) no-repeat center center/14px 14px; /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 12 */
+                                        background: url( _icon("navNext", "grey")) no-repeat center center/14px 14px; /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 12 */
                                         margin-right: 5px;
                                     }
 
                                     &:nth-child(9) { /* OPTIMISE SELECTOR ::: css/app/_background-jobs.scss ::: 16 */
-                                        background: url(../images/icons/icon_arrow_right_double_grey@X2.png) no-repeat center center/14px 14px; /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 13 */
+                                        background: url( _icon("navLast", "grey")) no-repeat center center/14px 14px; /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 13 */
                                         margin-right: 5px;
                                     }
 
                                     &:nth-child(11) { /* OPTIMISE SELECTOR ::: css/app/_background-jobs.scss ::: 17 */
-                                        background: url(../images/icons/icon-publication-launcher-grey.png) no-repeat center center/16px 12px; /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 14 */
+                                        background: url( _icon("refresh", "grey")) no-repeat center center/16px 12px; /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 14 */
                                     }
 
                                     .my-paging-text {
                                         font-family: "Nunito Sans", sans-serif;
                                         font-size: 12px;
-                                        color: _theme-color("primary"); /* TO THEME */
+                                        color: _color("primary"); /* TO THEME */
                                         font-weight: 100;
                                     }
 
                                     .gwt-TextBox {
                                         font-family: "Nunito Sans", sans-serif;
                                         font-size: 12px;
-                                        color: _theme-color("primary", g); /* TO THEME */
+                                        color: _color("primary", g); /* TO THEME */
                                         font-weight: 100;
                                         background: rgba(241, 241, 241, 0.7); /* TO THEME */
                                         padding: 3px;
@@ -691,23 +691,23 @@
                 height: 100% !important;
                 top: 0 !important;
                 left: 0 !important;
-                background: rgba(_theme-color("secondary"), .9);
+                background: rgba(_color("secondary"), .9);
                 padding: 0;
                 box-sizing: border-box;
 
                 // Header
                 .x-panel-header {
                     background: none;
-                    background: _property($FIELDSET--BG---HOVER, $BACKGROUND-JOBS);
+                    background: _theme($FIELDSET--BG---HOVER, $BACKGROUND-JOBS);
                     padding: 19px 30px 10px;
                     margin: 17vh auto 0;
                     width: 500px;
-                    border: 1px solid _property($FIELDSET--BORDER, $BACKGROUND-JOBS);
+                    border: 1px solid _theme($FIELDSET--BORDER, $BACKGROUND-JOBS);
                     border-bottom: 0;
 
                     // Contains minimise button
                     .x-panel-toolbar {
-                        background: url(../images/icons/icon-close-grey@X2.png) no-repeat center bottom; /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 15 */
+                        background: url( _icon("closeLarge", "grey")) no-repeat center bottom; /* OPTIMISE URL ::: css/app/_background-jobs.scss ::: 15 */
                         background-size: 20px;
                         width: 25px;
                         height: 25px;
@@ -726,17 +726,17 @@
 
                     // Text
                     .x-panel-header-text {
-                        @include text(26px, _property($TITLE--COLOR, $BACKGROUND-JOBS), 100);
+                        @include text(26px, _theme($TITLE--COLOR, $BACKGROUND-JOBS), _weight("extralight"));
                     }
                 }
 
                 // Body
                 .x-panel-bwrap {
-                    background: _property($FIELDSET--BG---HOVER, $BACKGROUND-JOBS);
+                    background: _theme($FIELDSET--BG---HOVER, $BACKGROUND-JOBS);
                     padding: 0 30px 23px;
                     margin: 0 auto;
                     width: 500px;
-                    border: 1px solid _property($FIELDSET--BORDER, $BACKGROUND-JOBS);
+                    border: 1px solid _theme($FIELDSET--BORDER, $BACKGROUND-JOBS);
                     border-top: 0;
 
                     form {
@@ -759,7 +759,7 @@
                                 .x-form-text {
                                     background: transparent;
                                     box-shadow: none;
-                                    color: _property($PARAGRAPH--COLOR, $BACKGROUND-JOBS);;
+                                    color: _theme($PARAGRAPH--COLOR, $BACKGROUND-JOBS);;
                                 }
                             }
                         }

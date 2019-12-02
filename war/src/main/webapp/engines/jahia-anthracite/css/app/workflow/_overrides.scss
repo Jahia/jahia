@@ -130,7 +130,7 @@
             height: calc(100% - 338px) !important;
             padding-top: 30px !important;
             background: whitesmoke !important;
-            box-shadow: inset 1px 1px 2px 0px _theme-color("black", a), 0px 2px 3px _theme-color("black", a) !important;
+            box-shadow: inset 1px 1px 2px 0px _color("black", a), 0px 2px 3px _color("black", a) !important;
         }
 
         .x-grid3 .x-grid3-row-table .x-grid3-cell {
@@ -163,12 +163,12 @@
         padding: 3px;
 
         .x-grid3-cell-inner {
-            color: _property($ROW--COLOR, $EDIT-ENGINE);
+            color: _theme($ROW--COLOR, $EDIT-ENGINE);
         }
 
         &.x-grid3-row-over {
             .x-grid3-cell-inner {
-                color: _property($ROW--COLOR---HOVER, $EDIT-ENGINE);
+                color: _theme($ROW--COLOR---HOVER, $EDIT-ENGINE);
             }
         }
     }
@@ -202,7 +202,7 @@
 
     > .x-grid-panel.x-component.x-border-panel .x-grid3 .x-grid3-row {
         &.x-grid3-row-selected {
-            background-color: _theme-color("secondary", c) !important;
+            background-color: _color("secondary", c) !important;
         }
     }
 
@@ -214,7 +214,7 @@
     }
 
     .x-border-layout-ct:nth-child(1) > .x-border-panel { /* OPTIMISE SELECTOR ::: css/app/workflow/_overrides.scss ::: 7 */
-        color: _property($SUBTITLE--COLOR, $EDIT-ENGINE);
+        color: _theme($SUBTITLE--COLOR, $EDIT-ENGINE);
         padding-top: 20px;
         height: calc(100% - 3px) !important;
         margin: 0 !important;
@@ -226,13 +226,13 @@
 
         .x-component {
             font-size: 14px;
-            color: _theme-color("primary", normal);
+            color: _color("primary", normal);
             font-weight: 300;
         }
     }
 
     .x-tab-panel-body {
-        border-color: _theme-color("primary");
+        border-color: _color("primary");
 
         .x-grid3-body {
             padding-right: 160px;
@@ -255,8 +255,8 @@
         }
 
         .x-panel-fbar .x-btn.x-btn-noicon button {
-            background: _property($BUTTON--BG, $EDIT-ENGINE) !important;
-            color: _property($BUTTON--COLOR, $EDIT-ENGINE) !important;
+            background: _theme($BUTTON--BG, $EDIT-ENGINE) !important;
+            color: _theme($BUTTON--COLOR, $EDIT-ENGINE) !important;
             height: 24px !important;
             font-size: 12px;
         }
@@ -267,7 +267,7 @@
             padding-top: 8px;
 
             .x-grid-group-div {
-                color: _property($FIELDSET--TITLE-COLOR, $EDIT-ENGINE);
+                color: _theme($FIELDSET--TITLE-COLOR, $EDIT-ENGINE);
                 font-weight: 300;
                 font-size: 18px;
                 font-family: "Nunito Sans", sans-serif;
@@ -286,7 +286,7 @@
 
         .x-grid3 .x-grid3-row-table .x-grid3-cell .x-grid3-cell-inner {
             font-size: 14px;
-            color: _theme-color("primary", normal);
+            color: _color("primary", normal);
             font-weight: 300;
         }
     }
@@ -311,7 +311,7 @@
                 }
 
                 > .x-component {
-                    color: _theme-color("secondary", a);
+                    color: _color("secondary", a);
                     position: relative;
                     margin-bottom: 1px;
                     border: none !important;
@@ -338,7 +338,7 @@
                                 margin-top: 21px;
 
                                 div {
-                                    @include text(14px, _property($COMMENTS--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---LIGHT);
+                                    @include text(_size("normal"), _theme($COMMENTS--COLOR, $EDIT-ENGINE), _weight("light"));
                                 }
                             }
 
@@ -358,14 +358,14 @@
                                     &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/workflow/_overrides.scss ::: 12 */
                                         // Date
                                         div {
-                                            @include text(14px, _property($COMMENTS--COLOR--DATE, $EDIT-ENGINE), $FONT--WEIGHT---LIGHT);
+                                            @include text(_size("normal"), _theme($COMMENTS--COLOR--DATE, $EDIT-ENGINE), _weight("light"));
                                         }
                                     }
 
                                     &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/workflow/_overrides.scss ::: 13 */
                                         // Author
                                         div {
-                                            @include text(14px, _property($COMMENTS--COLOR--AUTHOR, $EDIT-ENGINE), $FONT--WEIGHT---LIGHT);
+                                            @include text(_size("normal"), _theme($COMMENTS--COLOR--AUTHOR, $EDIT-ENGINE), _weight("light"));
                                         }
                                     }
                                 }
@@ -380,7 +380,7 @@
                     width: calc(100% - 162px);
                     position: absolute;
                     margin-top: 54px;
-                    color: _theme-color("primary", e);
+                    color: _color("primary", e);
                     font-size: 12px;
                     height: 16px;
                     font-family: "Raleway", sans-serif;
@@ -400,12 +400,24 @@
                 .x-form-item {
                     margin: 0 !important;
                     padding-bottom: 50px !important;
-                    @extend %FIELDSET;
+                    border: none !important;
+                    padding: 43px 10px 20px 39px !important;
+                    margin: 0 23px 0px 0 !important;
+                    position: relative;
+                    box-sizing: border-box;
+                    border-bottom: 1px solid #c4c0c0 !important;
+
+                    &.x-panel-collapsed {
+                        background: transparent;
+                        border-bottom: 1px solid #c4c0c0 !important;
+                        padding-bottom: 10px !important;
+
+                    }
                 }
 
 
                 label {
-                    @extend %FORM--LEGEND;
+                    @include _label("legend");
                 }
 
 
@@ -423,7 +435,7 @@
             position: relative;
             top: -42px;
             left: 41px;
-            color: _theme-color("secondary", g) !important;
+            color: _color("secondary", g) !important;
         }
 
         > .x-border-panel .x-form-element .x-form-field-wrap.x-component {
@@ -480,7 +492,7 @@
 
             margin-top: 274px;
             background: linear-gradient(to bottom, #dbdbdb 1%, #d5d5d5 100%);
-            box-shadow: inset 0 1px 2px 1px _theme-color("black", a);
+            box-shadow: inset 0 1px 2px 1px _color("black", a);
         }
 
         .x-toolbar-left {
@@ -496,7 +508,7 @@
         }
 
         > div.x-panel-header .x-panel-header-text {
-            color: _theme-color("tertiary", normal);
+            color: _color("tertiary", normal);
             display: inline-block;
             position: fixed;
             width: 100%;
@@ -529,11 +541,11 @@
                     > table:not(.button-cancel) {
                         button {
                             padding: 8px 15px !important;
-                            background: _theme-color("tertiary", normal) !important;
-                            font-family: $FONT--FAMILY---NUNITO;
+                            background: _color("tertiary", normal) !important;
+                            font-family: _font("nunito");
                             font-size: 14px;
                             color: #F5F5F5 !important;
-                            font-weight: $FONT--WEIGHT---EXTRALIGHT;
+                            font-weight: _weight("extralight");
                             height: auto;
                             width: auto !important;
 

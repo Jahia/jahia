@@ -4,26 +4,26 @@
 
 // UP
 $TOOL-BUTTON--COLOR: (
-        LIGHT: _theme-color("primary", c),
-        DARK: _theme-color("white"),
+        LIGHT: _color("primary", c),
+        DARK: _color("white"),
 );
 
 // HOVER
 $TOOL-BUTTON--COLOR---HOVER: (
-        LIGHT: _theme-color("primary"),
-        DARK: _theme-color("white"),
+        LIGHT: _color("primary"),
+        DARK: _color("white"),
 );
 
 // SELECTED
 $TOOL-BUTTON--COLOR---SELECTED: (
-        LIGHT: _theme-color("tertiary"),
-        DARK: _theme-color("tertiary"),
+        LIGHT: _color("tertiary"),
+        DARK: _color("tertiary"),
 );
 
 // SELECTED HOVER
 $TOOL-BUTTON--COLOR---SELECTED-HOVER: (
-        LIGHT: _theme-color("tertiary"),
-        DARK: _theme-color("tertiary"),
+        LIGHT: _color("tertiary"),
+        DARK: _color("tertiary"),
 );
 
 
@@ -33,24 +33,24 @@ $TOOL-BUTTON--COLOR---SELECTED-HOVER: (
 
 // UP
 $BUTTON--COLOR: (
-        LIGHT: _theme-color("white"),
-        DARK: _theme-color("white"),
+        LIGHT: _color("white"),
+        DARK: _color("white"),
 );
 
 $BUTTON--BG: (
-        LIGHT: _theme-color("quaternary"),
-        DARK: _theme-color("quaternary"),
+        LIGHT: _color("quaternary"),
+        DARK: _color("quaternary"),
 );
 
 // HOVER
 $BUTTON--COLOR---HOVER: (
-        LIGHT: _theme-color("white"),
-        DARK: _theme-color("white"),
+        LIGHT: _color("white"),
+        DARK: _color("white"),
 );
 
 $BUTTON--BG---HOVER: (
-        LIGHT: _theme-color("quaternary", a),
-        DARK: _theme-color("quaternary", a),
+        LIGHT: _color("quaternary", a),
+        DARK: _color("quaternary", a),
 );
 
 
@@ -60,24 +60,24 @@ $BUTTON--BG---HOVER: (
 
 // UP
 $BUTTON-WARNING--COLOR: (
-        LIGHT: _theme-color("white"),
-        DARK: _theme-color("white"),
+        LIGHT: _color("white"),
+        DARK: _color("white"),
 );
 
 $BUTTON-WARNING--BG: (
-        LIGHT: _theme-color("status", error),
-        DARK: _theme-color("status", error),
+        LIGHT: _color("status", error),
+        DARK: _color("status", error),
 );
 
 // HOVER
 $BUTTON-WARNING--COLOR---HOVER: (
-        LIGHT: _theme-color("white"),
-        DARK: _theme-color("white"),
+        LIGHT: _color("white"),
+        DARK: _color("white"),
 );
 
 $BUTTON-WARNING--BG---HOVER: (
-        LIGHT: _theme-color("status", error),
-        DARK: _theme-color("status", error),
+        LIGHT: _color("status", error),
+        DARK: _color("status", error),
 );
 
 
@@ -87,24 +87,24 @@ $BUTTON-WARNING--BG---HOVER: (
 
 // UP
 $BUTTON-DISCREET--COLOR: (
-        LIGHT: _theme-color("primary", b),
-        DARK: _theme-color("primary", b),
+        LIGHT: _color("primary", b),
+        DARK: _color("primary", b),
 );
 
 $BUTTON-DISCREET--BG: (
-        LIGHT: _theme-color("secondary", b),
-        DARK: _theme-color("secondary", b),
+        LIGHT: _color("secondary", b),
+        DARK: _color("secondary", b),
 );
 
 // HOVER
 $BUTTON-DISCREET--COLOR---HOVER: (
-        LIGHT: _theme-color("primary", a),
-        DARK: _theme-color("primary", a),
+        LIGHT: _color("primary", a),
+        DARK: _color("primary", a),
 );
 
 $BUTTON-DISCREET--BG---HOVER: (
-        LIGHT: _theme-color("secondary", c),
-        DARK: _theme-color("secondary", c),
+        LIGHT: _color("secondary", c),
+        DARK: _color("secondary", c),
 );
 
 
@@ -114,34 +114,34 @@ $BUTTON-DISCREET--BG---HOVER: (
 
 // DEFAULT UP
 $ACTION-DEFAULT--COLOR: (
-        LIGHT: _theme-color("secondary"),
-        DARK: _theme-color("primary"),
+        LIGHT: _color("secondary"),
+        DARK: _color("primary"),
 );
 
 $ACTION-DEFAULT--BG: (
-        LIGHT: _theme-color("primary"),
-        DARK: _theme-color("secondary", a),
+        LIGHT: _color("primary"),
+        DARK: _color("secondary", a),
 );
 
 $ACTION-DEFAULT--SHADOW: (
-        LIGHT: 0px 1px 2px _theme-color("black", a),
-        DARK: 0px 1px 2px _theme-color("black", a),
+        LIGHT: 0px 1px 2px _color("black", a),
+        DARK: 0px 1px 2px _color("black", a),
 );
 
 // DEFAULT HOVER
 $ACTION-DEFAULT--COLOR---HOVER: (
-        LIGHT: _theme-color("secondary"),
-        DARK: _theme-color("primary"),
+        LIGHT: _color("secondary"),
+        DARK: _color("primary"),
 );
 
 $ACTION-DEFAULT--BG---HOVER: (
-        LIGHT: _theme-color("primary", a),
-        DARK: _theme-color("secondary"),
+        LIGHT: _color("primary", a),
+        DARK: _color("secondary"),
 );
 
 $ACTION-DEFAULT--SHADOW---HOVER: (
-        LIGHT: 0px 1px 2px _theme-color("black", b),
-        DARK: 0px 1px 2px _theme-color("black", b),
+        LIGHT: 0px 1px 2px _color("black", b),
+        DARK: 0px 1px 2px _color("black", b),
 );
 
 // SUGGESTED UP
@@ -151,19 +151,19 @@ $ACTION-SUGGESTED--COLOR: (
 );
 
 $ACTION-SUGGESTED--BG: (
-        LIGHT: _theme-color("tertiary", normal),
-        DARK: _theme-color("tertiary", normal),
+        LIGHT: _color("tertiary", normal),
+        DARK: _color("tertiary", normal),
 );
 
 $ACTION-SUGGESTED--SHADOW: (
-        LIGHT: 0px 1px 2px _theme-color("black", a),
-        DARK: 0px 1px 2px _theme-color("black", a),
+        LIGHT: 0px 1px 2px _color("black", a),
+        DARK: 0px 1px 2px _color("black", a),
 );
 
 // SECONDARY UP
 $ACTION-SECONDARY--COLOR: (
-        LIGHT: _theme-color("tertiary", normal),
-        DARK: _theme-color("tertiary", normal),
+        LIGHT: _color("tertiary", normal),
+        DARK: _color("tertiary", normal),
 );
 
 $ACTION-SECONDARY--BG: (
@@ -172,62 +172,62 @@ $ACTION-SECONDARY--BG: (
 );
 
 $ACTION-SECONDARY--SHADOW: (
-        LIGHT: 0px 1px 2px _theme-color("black", a),
-        DARK: 0px 1px 2px _theme-color("black", a),
+        LIGHT: 0px 1px 2px _color("black", a),
+        DARK: 0px 1px 2px _color("black", a),
 );
 
 // WORK IN PROGRESS
 $ACTION-WIP--COLOR: (
-        LIGHT: _theme-color("black"),
-        DARK: _theme-color("black"),
+        LIGHT: _color("black"),
+        DARK: _color("black"),
 );
 
 $ACTION-WIP--BG: (
-        LIGHT: _theme-color("septenary"),
-        DARK: _theme-color("septenary"),
+        LIGHT: _color("septenary"),
+        DARK: _color("septenary"),
 );
 
 $ACTION-WIP--SHADOW: (
-        LIGHT: 0px 1px 2px _theme-color("black", a),
-        DARK: 0px 1px 2px _theme-color("black", a),
+        LIGHT: 0px 1px 2px _color("black", a),
+        DARK: 0px 1px 2px _color("black", a),
 );
 
 // WORK IN PROGRESS HOVER
 $ACTION-WIP--COLOR---HOVER: (
-        LIGHT: _theme-color("black"),
-        DARK: _theme-color("black"),
+        LIGHT: _color("black"),
+        DARK: _color("black"),
 );
 
 $ACTION-WIP--BG---HOVER: (
-        LIGHT: _theme-color("septenary", a),
-        DARK: _theme-color("septenary", a),
+        LIGHT: _color("septenary", a),
+        DARK: _color("septenary", a),
 );
 
 $ACTION-WIP--SHADOW---HOVER: (
-        LIGHT: 0px 1px 2px _theme-color("black", a),
-        DARK: 0px 1px 2px _theme-color("black", a),
+        LIGHT: 0px 1px 2px _color("black", a),
+        DARK: 0px 1px 2px _color("black", a),
 );
 
 // SUGGESTED HOVER
 $ACTION-SUGGESTED--COLOR---HOVER: (
-        LIGHT: _theme-color("secondary"),
-        DARK: _theme-color("secondary"),
+        LIGHT: _color("secondary"),
+        DARK: _color("secondary"),
 );
 
 $ACTION-SUGGESTED--BG---HOVER: (
-        LIGHT: _theme-color("tertiary", a),
-        DARK: _theme-color("tertiary", a),
+        LIGHT: _color("tertiary", a),
+        DARK: _color("tertiary", a),
 );
 
 $ACTION-SUGGESTED--SHADOW---HOVER: (
-        LIGHT: 0px 1px 2px _theme-color("black", b),
-        DARK: 0px 1px 2px _theme-color("black", b),
+        LIGHT: 0px 1px 2px _color("black", b),
+        DARK: 0px 1px 2px _color("black", b),
 );
 
 // SECONDARY HOVER
 $ACTION-SECONDARY--COLOR---HOVER: (
-        LIGHT: _theme-color("tertiary", a),
-        DARK: _theme-color("tertiary", a),
+        LIGHT: _color("tertiary", a),
+        DARK: _color("tertiary", a),
 );
 
 $ACTION-SECONDARY--BG---HOVER: (
@@ -236,6 +236,6 @@ $ACTION-SECONDARY--BG---HOVER: (
 );
 
 $ACTION-SECONDARY--SHADOW---HOVER: (
-        LIGHT: 0px 1px 2px _theme-color("black", b),
-        DARK: 0px 1px 2px _theme-color("black", b),
+        LIGHT: 0px 1px 2px _color("black", b),
+        DARK: 0px 1px 2px _color("black", b),
 );

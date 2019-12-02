@@ -6,7 +6,7 @@
 
     .x-tree3-node-text.x-tree3-node-text-widget,
     .x-grid3-row-selected .x-tree3-node-text.x-tree3-node-text-widget {
-        color: _theme-color("primary", a) !important;
+        color: _color("primary", a) !important;
     }
 
     .indigo-modal-mask {
@@ -16,7 +16,7 @@
     background: lighten($EDIT_ENGINE--BASE--COLOUR, 2%) !important;
 
     .x-window-bwrap {
-        background: _theme-color("secondary", a);
+        background: _color("secondary", a);
     }
 
     .x-panel-toolbar .x-tool-restore {
@@ -57,8 +57,8 @@
                 padding: 3px;
 
                 &::before {
-                    content: $text_empty;
-                    @include text(13px, _theme-color("primary"), $FONT--WEIGHT---LIGHT);
+                    content: _dictionary("empty");
+                    @include text(13px, _color("primary"), _weight("light"));
                 }
             }
         }
@@ -69,9 +69,9 @@
 
 
             .x-grid3-hh {
-                // border-bottom: 1px solid _theme-color("secondary", d);
+                // border-bottom: 1px solid _color("secondary", d);
                 text-transform: uppercase;
-                color: _theme-color("black", c);
+                color: _color("black", c);
                 margin: 2px 0 12px;
 
                 > table {
@@ -91,11 +91,11 @@
 
         td.x-grid3-hd-over .x-grid3-hd-inner,
         td.x-grid3-hd-menu-open .x-grid3-hd-inner {
-            background: _theme-color("primary", d) !important;
+            background: _color("primary", d) !important;
         }
 
         .x-grid3-header-inner .x-grid3-hh > table > tbody td div .x-grid3-hd-btn {
-            background: url(../images/icons/combo-arrow-grey.png) no-repeat center center !important; /* OPTIMISE URL ::: css/app/workflow/_workflow-dashboard.scss ::: 1 */
+            background: url( _icon("arrowDown", "grey")) no-repeat center center !important; /* OPTIMISE URL ::: css/app/workflow/_workflow-dashboard.scss ::: 1 */
             width: 23px;
             background-size: 13px !important;
             opacity: 0.7;
@@ -116,7 +116,7 @@
         }
 
         .x-grid3-row {
-            color: _theme-color("primary", a) !important;
+            color: _color("primary", a) !important;
             box-sizing: border-box;
             height: auto !important;
             margin-bottom: 1px;
@@ -157,8 +157,8 @@
     .x-grid3-hd-row {
 
         .x-grid3-hd {
-            border-left-color: _theme-color("primary", c);
-            border-right-color: _theme-color("primary", e);
+            border-left-color: _color("primary", c);
+            border-right-color: _color("primary", e);
         }
 
     }

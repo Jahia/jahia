@@ -7,12 +7,12 @@
 
     .marked-for-deletion {
         .x-grid3-col-locked {
-            background-color: _theme-color("status", error);
+            background-color: _color("status", error);
         }
     }
 
     .x-grid3-col-locked {
-        background: url(../images/icons_light/lock.svg) _theme-color("quaternary", normal) no-repeat center; /* OPTIMISE URL ::: css/app/side-panel/_tab-pages.scss ::: 9 */
+        background: url(../images/icons_light/lock.svg) _color("quaternary", normal) no-repeat center; /* OPTIMISE URL ::: css/app/side-panel/_tab-pages.scss ::: 9 */
         width: 12px;
         height: 12px !important;
         border-radius: 2px;
@@ -55,7 +55,7 @@
         }
 
         &[src$="/jnt_page.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-pages.scss ::: 2 */
-            background-image: url($ICON--PAGES---GREY);
+            background-image: url(_icon("pages", "grey"));
             background-size: 20px;
         }
 
@@ -82,7 +82,7 @@
     .x-grid3-row-selected {
         .x-tree3-node-icon {
             &[src$="/jnt_page.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-pages.scss ::: 7 */
-                background-image: url($ICON--PAGES---WHITE);
+                background-image: url(_icon("pages", "white"));
                 opacity: 1;
                 background-position: center;
             }
@@ -112,6 +112,6 @@
 
     &::before {
         /* Tab Content Header Label */
-        content: $text_pages !important;
+        content: _dictionary("pages") !important;
     }
 }

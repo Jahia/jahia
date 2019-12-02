@@ -54,19 +54,19 @@
                 input.x-form-text {
                     background: transparent;
                     box-shadow: none;
-                    color: _theme-color("primary", normal);
+                    color: _color("primary", normal);
                     padding: 0 17px 0 0 !important;
                     font-size: 14px;
 
                     &:hover {
-                        background-color: _theme-color("white", normal);
+                        background-color: _color("white", normal);
                     }
 
                     &.x-form-focus {
-                        background-color: _theme-color("white", normal);
-                        box-shadow: inset 0.5px 0.5px 0px #7c7c7c, inset -0.5px -0.5px 0px #7c7c7c, inset 1px 1px 1px _theme-color("black", a);
+                        background-color: _color("white", normal);
+                        box-shadow: inset 0.5px 0.5px 0px #7c7c7c, inset -0.5px -0.5px 0px #7c7c7c, inset 1px 1px 1px _color("black", a);
                         padding-left: 3px !important;
-                        color: _theme-color("black", normal);
+                        color: _color("black", normal);
 
                         & + img {
                             background-image: url(../images/expanded-black.png) !important; /* OPTIMISE URL ::: css/app/side-panel/_structure.scss ::: 1 */
@@ -116,10 +116,10 @@
                 }
 
                 &.x-form-focus {
-                    background-color: _theme-color("white", normal);
+                    background-color: _color("white", normal);
                     box-shadow: inset 0.5px 0.5px 0px black, inset -0.5px -0.5px 0px black, inset 1px 1px 1px rgba(0, 0, 0, 0.5);
                     padding-left: 3px !important;
-                    color: _theme-color("black", normal);
+                    color: _color("black", normal);
 
                     & + img {
                         background-image: url(../images/expanded-black.png) !important; /* OPTIMISE URL ::: css/app/side-panel/_structure.scss ::: 3 */
@@ -158,7 +158,7 @@
         width: 23px;
         opacity: 1;
         display: none;
-        transition: all 0.2s ease-in 0s;
+        transition: _transition("all", "quick");
 
         body[indigo-dragging-panel="true"] & {
             transition: none;
@@ -179,7 +179,7 @@
         }
 
         &.x-tool-refresh-red {
-            background: url(../images/icons/tabs-publish-modified@X2.png) no-repeat center center _theme-color("secondary"); /* OPTIMISE URL ::: css/app/side-panel/_structure.scss ::: 6 */
+            background: url(../images/icons/tabs-publish-modified@X2.png) no-repeat center center _color("secondary"); /* OPTIMISE URL ::: css/app/side-panel/_structure.scss ::: 6 */
             background-size: 32px;
             opacity: .9;
         }
@@ -331,10 +331,10 @@
                             }
 
                             &.x-tab-strip-active {
-                                box-shadow: inset 0 -3px 0 0 _theme-color("tertiary", normal);
+                                box-shadow: inset 0 -3px 0 0 _color("tertiary", normal);
 
                                 &::after {
-                                    color: _theme-color("tertiary", normal);
+                                    color: _color("tertiary", normal);
                                 }
                             }
                         }
@@ -360,18 +360,18 @@
             transition: none !important;
         }
 
-        @extend %SIDE_PANEL--CONTAINER;
+        background: transparent !important;
 
         &::before {
             content: " ";
-            background: linear-gradient(to right, #fcfdfd 0%, rgba(252, 253, 253, 0.92) 100%) !important;
+            background: _theme($SIDE-PANEL--BG, $SIDE-PANEL) !important;
             position: absolute;
             width: 100%;
             height: 100%;
             top: 0;
             left: 0;
             opacity: 0;
-            transition: all 0.2s ease-in 0s;
+            transition: _transition("all", "quick");
         }
 
         body[data-indigo-sidepanel-pinned="true"] & {
@@ -390,7 +390,7 @@
 
             &::before {
                 opacity: 1;
-                box-shadow: _property($BODY--BG--SHADOW, $SIDE-PANEL);
+                box-shadow: _theme($BODY--BG--SHADOW, $SIDE-PANEL);
             }
         }
 
@@ -410,7 +410,7 @@
         body[data-indigo-app="edit"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab"]:not(.minimise-results) & {
             &::before {
                 width: calc(100% + 353px);
-                box-shadow: _property($BODY--BG--SHADOW, $SIDE-PANEL);
+                box-shadow: _theme($BODY--BG--SHADOW, $SIDE-PANEL);
             }
         }
 
@@ -535,7 +535,7 @@
                 border: none;
                 padding: 0;
                 margin: 0 0 0 5px;
-                transition: all 0.2s ease-in 0s;
+                transition: _transition("all", "quick");
 
                 body[data-indigo-gwt-side-panel="open"] & {
                     margin: 0 0 0 10px;
@@ -559,8 +559,8 @@
                     }
 
                     &::before {
-                        content: $text_done;
-                        @include text(14px, #FCFCFC, $FONT--WEIGHT---LIGHT);
+                        content: _dictionary("done");
+                        @include text(_size("normal"), #FCFCFC, _weight("light"));
                         font-weight: 100;
                         background: #2a8cb9;
                         padding: 6px 9px;
@@ -582,7 +582,7 @@
             vertical-align: top;
             background: transparent;
             margin-top: -37px;
-            transition: all 0.2s ease-in 0s;
+            transition: _transition("all", "quick");
 
             body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] &,
             body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab"] &,
@@ -602,10 +602,10 @@
     // Highlight item when menu is open (PAGES tab)
 
     .x-grid3 .x-grid3-row.context-menu-open {
-        background: _theme-color("tertiary", normal) !important;
+        background: _color("tertiary", normal) !important;
     }
 
     .x-grid3 .x-grid3-row.x-grid3-row-selected.context-menu-open {
-        background: _theme-color("tertiary", normal) !important;
+        background: _color("tertiary", normal) !important;
     }
 }

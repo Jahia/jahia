@@ -45,8 +45,8 @@
         }
 
         &:after {
-            @include text(14px, _theme-color("primary"), $FONT--WEIGHT---SEMILIGHT);
-            content: $text_empty;
+            @include text(_size("normal"), _color("primary"), _weight("semilight"));
+            content: _dictionary("empty");
             display: block;
             padding: 16px;
             position: absolute;
@@ -66,7 +66,7 @@
             width: 25px;
             height: 25px;
             pointer-events: all;
-            transition: all 0.1s ease-in 0s;
+            transition: _transition("all", "quickest");
             padding: 0;
         }
 
@@ -86,10 +86,10 @@
             width: 0px !important;
             padding: 80px 0 0 24px;
             pointer-events: all;
-            box-shadow: inset 3px 0px 7px _theme-color("black", b), inset -24px 0px 0 0 #06a1e3, 3px 0px 3px 0 _theme-color("black", b) !important;
+            box-shadow: inset 3px 0px 7px _color("black", b), inset -24px 0px 0 0 #06a1e3, 3px 0px 3px 0 _color("black", b) !important;
 
             &:hover {
-                box-shadow: inset 1px 0px 7px _theme-color("black", b), inset -24px 0px 0 0 #06a1e3, 7px 0px 10px 0 _theme-color("black", b) !important;
+                box-shadow: inset 1px 0px 7px _color("black", b), inset -24px 0px 0 0 #06a1e3, 7px 0px 10px 0 _color("black", b) !important;
 
                 &:before {
                     right: -8px;
@@ -158,7 +158,7 @@
             left: 360px !important;
             padding-left: 10px;
             background: none !important;
-            transition: all 0.2s ease-in 0s;
+            transition: _transition("all", "quick");
             pointer-events: none;
             padding-right: 25px;
 
@@ -210,7 +210,7 @@
                     width: 25px;
                     height: 25px;
                     pointer-events: all;
-                    transition: all 0.1s ease-in 0s;
+                    transition: _transition("all", "quickest");
                 }
 
                 > div {
@@ -232,10 +232,10 @@
                     width: 0px !important;
                     padding: 0 0 0 24px;
                     pointer-events: all;
-                    box-shadow: inset 3px 0px 7px _theme-color("black", b), inset -24px 0px 0 0 #06a1e3, 3px 0px 3px 0 _theme-color("black", b) !important;
+                    box-shadow: inset 3px 0px 7px _color("black", b), inset -24px 0px 0 0 #06a1e3, 3px 0px 3px 0 _color("black", b) !important;
 
                     &:hover {
-                        box-shadow: inset 1px 0px 7px _theme-color("black", b), inset -24px 0px 0 0 #06a1e3, 7px 0px 10px 0 _theme-color("black", b) !important;
+                        box-shadow: inset 1px 0px 7px _color("black", b), inset -24px 0px 0 0 #06a1e3, 7px 0px 10px 0 _color("black", b) !important;
 
                         &:after {
                             right: -3px;

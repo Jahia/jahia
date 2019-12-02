@@ -11,7 +11,7 @@
 
     > div {
         background: transparent !important;
-        color: _theme-color("white", normal) !important;
+        color: _color("white", normal) !important;
         padding: 2px;
         top: auto !important;
         left: auto !important;
@@ -22,12 +22,12 @@
 }
 
 .x-abs-layout-container {
-    transition: all 0.3s ease-in 0s;
+    transition: _transition("all", "normal");
     margin-bottom: 50px;
 }
 
 .x-viewport-contributemode {
-    background: _property($CONTRIBUTE--BG, $CONTRIBUTE);
+    background: _theme($CONTRIBUTE--BG, $CONTRIBUTE);
 
     div[role="combobox"] {
         @include _combo($CONTRIBUTE);
@@ -222,7 +222,7 @@
         }
 
         .x-viewport-contributemode & {
-            box-shadow: _property($CONTRIBUTE--BG--SHADOW, $CONTRIBUTE);
+            box-shadow: _theme($CONTRIBUTE--BG--SHADOW, $CONTRIBUTE);
         }
     }
 }

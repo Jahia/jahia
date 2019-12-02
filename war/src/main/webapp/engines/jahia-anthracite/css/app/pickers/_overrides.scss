@@ -115,7 +115,7 @@
     body[indigo-picker-display="thumbsview"] &,
     body[indigo-picker-display="detailedview"] & {
         // Header backgrounds: have to make the header in these views higher until we can get rid of the File menu
-        // box-shadow: inset 0px 87px 0px _theme-color("primary", g), inset 0px 88px 7px #222222;
+        // box-shadow: inset 0px 87px 0px _color("primary", g), inset 0px 88px 7px #222222;
 
         // Shift the Slider down too
         .thumb-size-slider {
@@ -139,8 +139,8 @@
 
         // When the Edit Engine is opened we have Save / Cancel buttons, so make it visible again
         body[data-indigo-edit-engine="open"] & {
-            background: _property($DARK-FOOTER--BG, $PICKER) !important;
-            box-shadow: _property($DARK-FOOTER--SHADOW, $PICKER) !important;
+            background: _theme($DARK-FOOTER--BG, $PICKER) !important;
+            box-shadow: _theme($DARK-FOOTER--SHADOW, $PICKER) !important;
         }
 
         // Because there is no Cancel button we have to insert our own ( via JS ).
@@ -157,14 +157,14 @@
         border: none;
         vertical-align: top;
         padding: 10px 20px !important;
-        background: _property($ACTION-DEFAULT--BG, $EDIT-ENGINE) !important;
-        box-shadow: _property($ACTION-DEFAULT--SHADOW, $EDIT-ENGINE);
-        @include text(14px, _property($ACTION-DEFAULT--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
+        background: _theme($ACTION-DEFAULT--BG, $EDIT-ENGINE) !important;
+        box-shadow: _theme($ACTION-DEFAULT--SHADOW, $EDIT-ENGINE);
+        @include text(_size("normal"), _theme($ACTION-DEFAULT--COLOR, $EDIT-ENGINE), _weight("extralight"));
 
         &:hover {
-            box-shadow: _property($ACTION-DEFAULT--SHADOW---HOVER, $EDIT-ENGINE);
-            background: _property($ACTION-DEFAULT--BG---HOVER, $EDIT-ENGINE) !important;
-            @include text(14px, _property($ACTION-DEFAULT--COLOR---HOVER, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
+            box-shadow: _theme($ACTION-DEFAULT--SHADOW---HOVER, $EDIT-ENGINE);
+            background: _theme($ACTION-DEFAULT--BG---HOVER, $EDIT-ENGINE) !important;
+            @include text(_size("normal"), _theme($ACTION-DEFAULT--COLOR---HOVER, $EDIT-ENGINE), _weight("extralight"));
             cursor: pointer;
         }
     }
@@ -235,7 +235,7 @@
         z-index: 99 !important;
         width: 100% !important;
         height: 100% !important;
-        background: _property($BODY--BG, $EDIT-ENGINE) !important;
+        background: _theme($BODY--BG, $EDIT-ENGINE) !important;
         box-shadow: none !important;
 
         // Display Edit Engine when toggled to "opened"
@@ -254,7 +254,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            @include text(18px !important, _theme-color("quinary"), $FONT--WEIGHT---EXTRALIGHT)
+            @include text(_size("medium") !important, _color("quinary"), _weight("extralight"))
         }
 
         // Action Bar
@@ -363,11 +363,11 @@
 
                 // Checkbox
                 .x-grid3-row-checker {
-                    background: _property($CHECKBOX--BG, $PICKER);
+                    background: _theme($CHECKBOX--BG, $PICKER);
                     width: 12px;
                     height: 12px;
-                    box-shadow: _property($CHECKBOX--SHADOW, $PICKER);
-                    border: _property($CHECKBOX--BORDER, $PICKER);
+                    box-shadow: _theme($CHECKBOX--SHADOW, $PICKER);
+                    border: _theme($CHECKBOX--BORDER, $PICKER);
                     border-radius: 2px;
                 }
             }
@@ -377,10 +377,10 @@
 
                 // Selected Checkbox
                 .x-grid3-row-checker {
-                    background: url($ICON--TICK---WHITE) no-repeat center center _property($CHECKBOX--BG---CHECKED, $PICKER);
+                    background: url(_icon("tick", "white")) no-repeat center center _theme($CHECKBOX--BG---CHECKED, $PICKER);
                     background-size: 12px;
                     box-shadow: none;
-                    border: _property($CHECKBOX--BORDER, $PICKER);
+                    border: _theme($CHECKBOX--BORDER, $PICKER);
                 }
             }
         }
@@ -490,13 +490,13 @@
 
                         position: absolute;
                         width: 100%;
-                        @include text(10px, _property($THUMB--COLOR, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
+                        @include text(10px, _theme($THUMB--COLOR, $PICKER), _weight("extralight"));
                         z-index: 999;
                         margin-top: -2px;
 
                         // Filesize
                         &:nth-child(3) { /* OPTIMISE SELECTOR ::: css/app/pickers/_overrides.scss ::: 2 */
-                            @include text(8px, _property($THUMB--COLOR--DIMMED, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
+                            @include text(8px, _theme($THUMB--COLOR--DIMMED, $PICKER), _weight("extralight"));
                             margin-top: 0;
                             z-index: 9;
                             padding-bottom: 10px;
@@ -507,10 +507,10 @@
                     // Hover / force hover (used when the context menu is opened)
                     &.x-view-over,
                     &.indigo-force-open {
-                        background: _property($THUMB--BG---HOVER, $PICKER);
+                        background: _theme($THUMB--BG---HOVER, $PICKER);
 
                         span {
-                            background: _property($THUMB--BG---HOVER, $PICKER);
+                            background: _theme($THUMB--BG---HOVER, $PICKER);
                             display: block;
                         }
 
@@ -518,18 +518,18 @@
 
                     // Selected row
                     &.x-view-item-sel {
-                        background: _property($THUMB--BG---SELECTED, $PICKER);
+                        background: _theme($THUMB--BG---SELECTED, $PICKER);
 
                         span {
-                            background: _property($THUMB--BG---SELECTED, $PICKER) !important;
+                            background: _theme($THUMB--BG---SELECTED, $PICKER) !important;
                         }
 
                         .thumb {
-                            background: _property($THUMB--BG---SELECTED, $PICKER) !important;
+                            background: _theme($THUMB--BG---SELECTED, $PICKER) !important;
                         }
 
                         &.x-view-highlightrow {
-                            background: _property($THUMB--BG---SELECTED, $PICKER);
+                            background: _theme($THUMB--BG---SELECTED, $PICKER);
                         }
 
 
@@ -557,14 +557,14 @@
 
 
                     div {
-                        @include text(12px, _property($THUMB--COLOR, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
+                        @include text(_size("small"), _theme($THUMB--COLOR, $PICKER), _weight("extralight"));
                         width: 30%;
                         padding: 2px 10px;
 
                         display: inline-block !important;
 
                         b {
-                            @include text(12px, _property($THUMB--COLOR--DIMMED, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
+                            @include text(_size("small"), _theme($THUMB--COLOR--DIMMED, $PICKER), _weight("extralight"));
                             text-transform: none;
                             display: none !important;
                         }
@@ -579,7 +579,7 @@
 
 #JahiaGxtCustomContentPickerWindow {
     box-shadow: none !important;
-    background: _theme-color("white", normal) !important;
+    background: _color("white", normal) !important;
 }
 
 .x-shadow.x-ignore + #JahiaGxtCustomContentPickerWindow {

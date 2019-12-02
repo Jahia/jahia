@@ -34,7 +34,7 @@
         z-index: 999;
         font-family: "Raleway", sans-serif;
         font-size: 36px;
-        color: _theme-color("primary", d);
+        color: _color("primary", d);
         font-weight: 100;
 
         body[data-indigo-edit-engine="open"] & {
@@ -306,7 +306,7 @@
             top: 30px;
             left: 30px;
             z-index: 99999;
-            @include text(36px, _property($SIDE-PANEL-TITLE--COLOR, $PICKER), $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
+            @include text(_size("big"), _theme($SIDE-PANEL-TITLE--COLOR, $PICKER), _weight("extralight"), _font("raleway"));
             max-width: 252px;
             white-space: nowrap;
             overflow: hidden;
@@ -405,12 +405,12 @@
 
                         .my-paging-text {
                             line-height: 21px;
-                            @include text(12px, _theme-color("secondary"), $FONT--WEIGHT---EXTRALIGHT);
+                            @include text(_size("small"), _color("secondary"), _weight("extralight"));
                         }
 
                         .gwt-TextBox {
-                            @include text(12px, _theme-color("secondary"), $FONT--WEIGHT---EXTRALIGHT);
-                            background: _theme-color("primary", a); /* TO THEME */
+                            @include text(_size("small"), _color("secondary"), _weight("extralight"));
+                            background: _color("primary", a); /* TO THEME */
                             padding: 3px;
                             border: none;
                         }
@@ -425,7 +425,7 @@
                             width: 16px;
 
                             > table {
-                                background: url($ICON--FIRST--WHITE) no-repeat center center / 14px 14px;
+                                background: url(_icon("navFirst", "white")) no-repeat center center / 14px 14px;
                                 margin-left: 0px;
 
                                 &:hover {
@@ -437,7 +437,7 @@
 
                         // Previous page
                         &:nth-child(2) > table { /* OPTIMISE SELECTOR ::: css/app/pickers/_all.scss ::: 8 */
-                            background: url($ICON--BACK--WHITE) no-repeat center center / 14px 14px;
+                            background: url(_icon("navPrevious", "white")) no-repeat center center / 14px 14px;
                             margin-left: 5px;
 
                             &:hover {
@@ -455,7 +455,7 @@
 
                         // Next Page
                         &:nth-child(8) > table { /* OPTIMISE SELECTOR ::: css/app/pickers/_all.scss ::: 10 */
-                            background: url($ICON--NEXT--WHITE) no-repeat center center / 14px 14px;
+                            background: url(_icon("navNext", "white")) no-repeat center center / 14px 14px;
                             margin-right: 5px;
 
                             &:hover {
@@ -466,7 +466,7 @@
 
                         // Last page
                         &:nth-child(9) > table { /* OPTIMISE SELECTOR ::: css/app/pickers/_all.scss ::: 11 */
-                            background: url($ICON--LAST--WHITE) no-repeat center center / 14px 14px;
+                            background: url(_icon("navLast", "white")) no-repeat center center / 14px 14px;
                             margin-right: 5px;
 
                             &:hover {
@@ -477,7 +477,7 @@
 
                         // Refresh results
                         &:nth-child(11) > table { /* OPTIMISE SELECTOR ::: css/app/pickers/_all.scss ::: 12 */
-                            background: url($ICON--REFRESH--SMALL_WHITE) no-repeat center center / 16px 12px;
+                            background: url(_icon("refresh", "white")) no-repeat center center / 16px 12px;
 
                             &:hover {
                                 opacity: 1;

@@ -77,8 +77,8 @@ div[role="combobox"] {
         margin-top: 22px;
 
         &:before {
-            content: $text_timepicker;
-            @include text(11px, _theme-color("secondary"), $FONT--WEIGHT---NORMAL);
+            content: _dictionary("timepicker");
+            @include text(11px, _color("secondary"), _weight("normal"));
             text-transform: uppercase;
             bottom: 40px;
             position: absolute;
@@ -95,13 +95,13 @@ div[role="combobox"] {
     }
 
     td {
-        transition: all 0.15s ease-in 0s;
+        transition: _transition("all", "quicker");
     }
 
     // Another container
     .x-menu-list {
         padding: 5px 10px 10px;
-        background: _property($DATE-PICKER--BG, $DATE-PICKER);
+        background: _theme($DATE-PICKER--BG, $DATE-PICKER);
         box-shadow: 2px 2px 10px rgba(38, 38, 38, 0.5);
 
         body[data-indigo-gwt-side-panel="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] & {
@@ -131,10 +131,12 @@ div[role="combobox"] {
 
                                 // button (can not use the button() mixin here)
                                 .x-date-left-icon {
-                                    @extend %DATE_PICKER--PREVIOUS_MONTH_BUTTON---UP !optional;
+                                    background-image: url( _icon("navPrevious", "white")) !important;
+                                    background-size: 16px 16px;
+                                    opacity: 0.8;
 
                                     &:hover {
-                                        @extend %DATE_PICKER--PREVIOUS_MONTH_BUTTON---HOVER !optional;
+                                        opacity: 1;
                                     }
 
                                 }
@@ -151,10 +153,13 @@ div[role="combobox"] {
 
                                     // Actual button, contains label
                                     button {
-                                        @extend %DATE_PICKER--COMBO---UP;
+                                        background: url(_icon("arrowDown", "white")) no-repeat right center;
+                                        padding-right: 15px;
+                                        text-transform: uppercase;
+                                        @include text(11px, _theme($DATE-PICKER--MONTH-TITLE, $DATE-PICKER), _weight("normal"));
 
                                         &:hover {
-                                            @extend %DATE_PICKER--COMBO---HOVER;
+                                            color: _theme($DATE-PICKER--MONTH-TITLE---HOVER, $DATE-PICKER);
                                         }
                                     }
                                 }
@@ -166,10 +171,13 @@ div[role="combobox"] {
 
                                 // button (can not use the button() mixin here)
                                 .x-date-right-icon {
-                                    @extend %DATE_PICKER--NEXT_MONTH_BUTTON---UP !optional;
+                                    background-image: url("../images/icons/icon_arrow_right_single_white@X2.png") !important;
+                                    background-size: 16px 16px;
+
+                                    opacity: 0.8;
 
                                     &:hover {
-                                        @extend %DATE_PICKER--NEXT_MONTH_BUTTON---HOVER !optional;
+                                        opacity: 1;
                                     }
                                 }
                             }
@@ -188,10 +196,14 @@ div[role="combobox"] {
                             padding: 9px 0 0 0;
 
                             .x-btn-text {
-                                @extend %DATE_PICKER--TODAY_BUTTON---UP;
+                                height: auto;
+                                padding: 4px;
+                                background: _theme($DATE-PICKER--ACTION-BUTTON--BG, $DATE-PICKER);
+                                @include text(11px, _theme($DATE-PICKER--ACTION-BUTTON--COLOR, $DATE-PICKER), _weight("light"));
 
                                 &:hover {
-                                    @extend %DATE_PICKER--TODAY_BUTTON---HOVER;
+                                    background: _theme($DATE-PICKER--ACTION-BUTTON--BG---HOVER, $DATE-PICKER);
+                                    color: _theme($DATE-PICKER--ACTION-BUTTON--COLOR---HOVER, $DATE-PICKER);
                                 }
                             }
 
@@ -211,8 +223,8 @@ div[role="combobox"] {
                         td {
                             width: 25px;
 
-                            @extend %DATE_PICKER--DAY_OF_WEEK;
-
+                            border: none;
+                            @include text(10px, _theme($DATE-PICKER--DAY--COLOR, $DATE-PICKER), _weight("bold"));
                         }
                     }
 
@@ -247,11 +259,14 @@ div[role="combobox"] {
 
                             // Selected date
                             &.x-date-selected {
-                                @extend %DATE_PICKER--SELECTED_MONTH---UP;
+                                background: _theme($DATE-PICKER--DAY--BG---SELECTED, $DATE-PICKER);
+                                @include text(10px, _theme($DATE-PICKER--DAY--COLOR---SELECTED, $DATE-PICKER), _weight("normal"));
 
                                 // Hover date
                                 &.x-date-active-hover {
-                                    @extend %DATE_PICKER--SELECTED_MONTH---HOVER;
+                                    font-weight: _weight("extralight");
+                                    background: _theme($DATE-PICKER--DAY--BG---SELECTED, $DATE-PICKER) !important;
+                                    color: _theme($DATE-PICKER--DAY--COLOR---SELECTED, $DATE-PICKER);
                                 }
 
 
@@ -259,23 +274,28 @@ div[role="combobox"] {
 
                             // Day belonging to previous month
                             &.x-date-prevday {
-                                @extend %DATE_PICKER--PREVIOUS_MONTH---UP;
+                                background: _theme($DATE-PICKER--DAY-MUTED--BG, $DATE-PICKER);
+                                @include text(10px, _theme($DATE-PICKER--DAY-MUTED--COLOR, $DATE-PICKER), _weight("normal"));
                             }
 
                             // Day belonging to current month
                             &.x-date-active {
-                                @extend %DATE_PICKER--CURRENT_MONTH---UP;
+                                background: _theme($DATE-PICKER--DAY--BG, $DATE-PICKER);
+                                @include text(10px, _theme($DATE-PICKER--DAY--COLOR, $DATE-PICKER), _weight("normal"));
 
                             }
 
                             // Day belonging to following month
                             &.x-date-nextday {
-                                @extend %DATE_PICKER--NEXT_MONTH---UP;
+                                background: _theme($DATE-PICKER--DAY-MUTED--BG, $DATE-PICKER);
+                                @include text(10px, _theme($DATE-PICKER--DAY-MUTED--COLOR, $DATE-PICKER), _weight("normal"));
                             }
 
                             // Hover date
                             &.x-date-active-hover {
-                                @extend %DATE_PICKER--CURRENT_MONTH---HOVER;
+                                font-weight: _weight("extralight");
+                                background: _theme($DATE-PICKER--DAY--BG---HOVER, $DATE-PICKER) !important;
+                                color: _theme($DATE-PICKER--DAY--COLOR---HOVER, $DATE-PICKER);
 
                             }
                         }
@@ -291,7 +311,7 @@ div[role="combobox"] {
                 top: -5px !important;
                 left: -10px !important;
                 height: calc(100% + 15px) !important;
-                background: _property($DATE-PICKER--MODAL--BG, $DATE-PICKER);
+                background: _theme($DATE-PICKER--MODAL--BG, $DATE-PICKER);
                 padding-top: 33px;
                 box-sizing: border-box;
 
@@ -345,36 +365,43 @@ div[role="combobox"] {
 
                         // Month button
                         &.x-date-mp-month {
-                            @extend %DATE_PICKER--MODAL--MONTH_BUTTON---UP;
+                            @include text(11px, _theme($DATE-PICKER--MONTH--COLOR, $DATE-PICKER), _weight("normal"));
+                            background: _theme($DATE-PICKER--MONTH--BG, $DATE-PICKER);
 
                             &:hover {
-                                @extend %DATE_PICKER--MODAL--MONTH_BUTTON---HOVER;
+                                color: _theme($DATE-PICKER--MONTH--COLOR---HOVER, $DATE-PICKER);
+                                background: _theme($DATE-PICKER--MONTH--BG---HOVER, $DATE-PICKER);
                             }
 
                             // Selected button
                             &.x-date-mp-sel {
-                                @extend %DATE_PICKER--MODAL--MONTH_BUTTON---SELECTED;
-
+                                color: _theme($DATE-PICKER--MONTH--COLOR---SELECTED, $DATE-PICKER);
+                                background: _theme($DATE-PICKER--MONTH--BG---SELECTED, $DATE-PICKER);
                                 &:hover {
-                                    @extend %DATE_PICKER--MODAL--MONTH_BUTTON---SELECTED_HOVER;
+                                    color: _theme($DATE-PICKER--MONTH--COLOR---SELECTED, $DATE-PICKER);
+                                    background: _theme($DATE-PICKER--MONTH--BG---SELECTED, $DATE-PICKER);
                                 }
                             }
                         }
 
                         // Year button
                         &.x-date-mp-year {
-                            @extend %DATE_PICKER--MODAL--YEAR_BUTTON---UP;
+                            @include text(11px, _theme($DATE-PICKER--YEAR--COLOR, $DATE-PICKER), _weight("normal"));
+                            background: _theme($DATE-PICKER--YEAR--BG, $DATE-PICKER);
 
                             &:hover {
-                                @extend %DATE_PICKER--MODAL--YEAR_BUTTON---HOVER;
+                                color: _theme($DATE-PICKER--YEAR--COLOR---HOVER, $DATE-PICKER);
+                                background: _theme($DATE-PICKER--YEAR--BG---HOVER, $DATE-PICKER);
                             }
 
                             // Selected button
                             &.x-date-mp-sel {
-                                @extend %DATE_PICKER--MODAL--YEAR_BUTTON---SELECTED;
+                                color: _theme($DATE-PICKER--YEAR--COLOR---SELECTED, $DATE-PICKER);
+                                background: _theme($DATE-PICKER--YEAR--BG---SELECTED, $DATE-PICKER);
 
                                 &:hover {
-                                    @extend %DATE_PICKER--MODAL--YEAR_BUTTON---SELECTED_HOVER;
+                                    color: _theme($DATE-PICKER--YEAR--COLOR---SELECTED, $DATE-PICKER);
+                                    background: _theme($DATE-PICKER--YEAR--BG---SELECTED, $DATE-PICKER);
                                 }
                             }
                         }
@@ -391,19 +418,23 @@ div[role="combobox"] {
 
                             // Previous year block button
                             .x-date-mp-prev {
-                                @extend %DATE_PICKER--MODAL--PREVIOUS_YEAR---UP;
+                                background: url( _icon("navPrevious", "white")) no-repeat center center _theme($DATE-PICKER--YEAR--BG, $DATE-PICKER);
+                                background-size: 14px 14px;
+                                opacity: 0.8;
 
                                 &:hover {
-                                    @extend %DATE_PICKER--MODAL--PREVIOUS_YEAR---HOVER;
+                                    opacity: 1;
                                 }
                             }
 
                             // Following year block button
                             .x-date-mp-next {
-                                @extend %DATE_PICKER--MODAL--NEXT_YEAR---UP;
+                                background: url("../images/icons/icon_arrow_right_single_white@X2.png") no-repeat center center _theme($DATE-PICKER--YEAR--BG, $DATE-PICKER);
+                                background-size: 14px 14px;
+                                opacity: 0.8;
 
                                 &:hover {
-                                    @extend %DATE_PICKER--MODAL--NEXT_YEAR---HOVER;
+                                    opacity: 1;
                                 }
                             }
                         }
@@ -430,26 +461,43 @@ div[role="combobox"] {
                         border: none;
 
                         &:before {
-                            @extend %DATE_PICKER--MODAL--LABEL;
+                            content: _dictionary("year_picker");
+                            line-height: 27px;
+
+                            @include text(_size("small"), _theme($DATE-PICKER--MODAL-TITLE--COLOR, $DATE-PICKER), _weight("normal"));
                         }
                     }
 
                     // OK button
                     .x-date-mp-ok {
-                        @extend %DATE_PICKER--OK_BUTTON---UP;
+                        height: 100%;
+                        background-color: _theme($DATE-PICKER--ACTION-BUTTON--BG, $DATE-PICKER);
+                        opacity: 1;
+                        width: 35px;
+                        text-indent: 0;
+                        float: right;
+                        margin: 0;
 
                         &:hover {
-                            @extend %DATE_PICKER--OK_BUTTON---HOVER;
+                            opacity: 1;
                         }
 
                     }
 
                     // Cancel button
                     .x-date-mp-cancel {
-                        @extend %DATE_PICKER--CANCEL_BUTTON---UP;
+                        background: url(_icon("closeSmall", "white")) no-repeat center center;
+                        background-size: 10px 10px;
+                        text-indent: -50000px;
+                        width: 25px;
+                        opacity: 0.8;
+                        background-color: transparent;
+                        position: absolute;
+                        left: 5px;
+                        height: 26px;
 
                         &:hover {
-                            @extend %DATE_PICKER--CANCEL_BUTTON---HOVER;
+                            opacity: 1;
                         }
                     }
                 }
@@ -474,7 +522,7 @@ div[role="combobox"] {
 
 .x-form-list {
     border: none;
-    background: _property($LIST-BOX--BG, $EDIT-ENGINE);
+    background: _theme($LIST-BOX--BG, $EDIT-ENGINE);
     height: 200px !important;
 
 
@@ -487,26 +535,33 @@ div[role="combobox"] {
         z-index: $ZINDEX--COMBO_LIST;
         position: relative;
 
-        @extend %FORM--LIST_BOX--HOLDER !optional;
-
+        border: none;
+        box-shadow: none;
     }
 
     .x-combo-list-item {
         border: none;
         box-sizing: border-box;
-        @extend %FORM--LIST_BOX--ITEM !optional;
+        text-align: left !important;
+        background: _theme($LIST-BOX--ROW--BG, $EDIT-ENGINE);
+        padding: 8px 9px !important;
+        border: none;
+        width: 100%;
+
+        @include text(11px, _theme($LIST-BOX--ROW--COLOR, $EDIT-ENGINE), _weight("semilight"));
 
         &.x-combo-over {
             /* Selected / Hovered */
             border: none !important;
-            @extend %FORM--LIST_BOX--ITEM---HOVER !optional;
-
+            color: _theme($LIST-BOX--ROW--COLOR---HOVER, $EDIT-ENGINE);
+            background: _theme($LIST-BOX--ROW--BG---HOVER, $EDIT-ENGINE);
         }
 
         &.x-view-highlightrow {
             /* Selected / Hovered */
             border: none !important;
-            @extend %FORM--LIST_BOX--ITEM---SELECTED !optional;
+            color: _theme($LIST-BOX--ROW--COLOR---SELECTED, $EDIT-ENGINE);
+            background: _theme($LIST-BOX--ROW--BG---SELECTED, $EDIT-ENGINE);
         }
     }
 }
@@ -538,8 +593,8 @@ div[role="combobox"] {
         // Show Live Entry even if disabled
         .x-menu-list-item.x-item-disabled .x-menu-item.toolbar-item-live {
             display: block !important;
-            color: rgba(_property($MENU-OPENED--COLOR, $APP), .6) !important;
-            background: _property($MENU-OPENED--BG, $APP) !important;
+            color: rgba(_theme($MENU-OPENED--COLOR, $APP), .6) !important;
+            background: _theme($MENU-OPENED--BG, $APP) !important;
         }
 
         // Menu icons
@@ -588,7 +643,7 @@ div[role="combobox"] {
 
 /* Used for scrolling Context menus when they dont fit on screen */
 .x-menu-scroller {
-    background: _property($MENU-SCROLL--BG, $CONTEXT-MENU)
+    background: _theme($MENU-SCROLL--BG, $CONTEXT-MENU)
 }
 
 .x-menu-scroller-top {
@@ -652,7 +707,7 @@ div[role="combobox"] {
         z-index: 9999;
         position: relative;
 
-        @extend %THUMB--BG---UP !optional;
+        background: _theme($THUMB--BG, $THUMBS);
 
         #JahiaGxtFileImagesBrowseTab & {
             width: 100% !important;
@@ -676,7 +731,7 @@ div[role="combobox"] {
 
             font-family: "Nunito Sans", sans-serif;
             font-size: 12px;
-            color: _theme-color("primary", normal);
+            color: _color("primary", normal);
             font-weight: 300;
             display: block !important;
             overflow: hidden;
@@ -712,7 +767,7 @@ div[role="combobox"] {
     &.x-view-item-sel,
     &.x-view-item-sel.x-view-over {
         z-index: 99999999;
-        background: _theme-color("tertiary", normal) !important;
+        background: _color("tertiary", normal) !important;
 
         .thumbDetails {
             /* Selected State */
@@ -747,11 +802,7 @@ legend {
 
     .x-fieldset-header-text {
         // Wahoo, the label text !!
-        @extend %FORM--LEGEND;
-
-        .x-panel-collapsed & {
-            @extend %FORM--LEGEND---COLLAPSED !optional;
-        }
+        @include _label("legend");
     }
 }
 
@@ -787,7 +838,9 @@ input[type="checkbox"] {
         height: 100%;
         box-sizing: border-box;
 
-        @extend %CHECKBOX---UNCHECKED;
+        border: _theme($CHECKBOX--BORDER, $APP);
+        background: _theme($CHECKBOX--BG, $APP);
+        box-shadow: _theme($CHECKBOX--SHADOW, $APP);
 
         // AS SWITCHER
         legend & {
@@ -799,7 +852,12 @@ input[type="checkbox"] {
             padding-right: 4px;
             line-height: 17px;
 
-            @extend %FORM--TOGGLE--BG;
+            content: _dictionary("off");
+            background: _theme($TOGGLE--RAIL, $EDIT-ENGINE);
+            box-shadow: _theme($TOGGLE--SHADOW, $EDIT-ENGINE);
+            text-transform: uppercase;
+
+            @include text(10px, _theme($TOGGLE--LABEL---OFF, $EDIT-ENGINE), _weight("extrabold"));
         }
     }
 
@@ -819,7 +877,8 @@ input[type="checkbox"] {
             width: 15px;
             height: 13px;
 
-            @extend %FORM--TOGGLE--SHUTTLE---OFF;
+            content: " ";
+            background: _theme($TOGGLE--SHUTTLE---OFF, $EDIT-ENGINE);
         }
     }
 
@@ -828,12 +887,15 @@ input[type="checkbox"] {
 
         // AS SWITCHER
         legend & {
-            @extend %FORM--TOGGLE--BG---ON;
+            content: " ";
         }
     }
 
     &:checked:after {
-        @extend %CHECKBOX---CHECKED;
+        background: no-repeat center center;
+        background-image: url(_icon("tick", "white"));
+        background-size: 15px 15px;
+        background-color: _theme($CHECKBOX--BG---CHECKED, $APP);
 
         // AS SWITCHER
         legend & {
@@ -842,7 +904,11 @@ input[type="checkbox"] {
             text-align: center;
             padding: 0 5px;
 
-            @extend %FORM--TOGGLE--SHUTTLE---ON;
+            content: _dictionary("on");
+            background: _theme($TOGGLE--SHUTTLE---ON, $EDIT-ENGINE);
+            text-transform: uppercase;
+
+            @include text(10px, _theme($TOGGLE--LABEL---ON, $EDIT-ENGINE), _weight("extrabold"));
         }
     }
 
@@ -855,12 +921,24 @@ input[type="checkbox"] {
 
 
 fieldset {
-    @extend %FIELDSET;
+    border: none !important;
+    padding: 43px 10px 20px 39px !important;
+    margin: 0 23px 0px 0 !important;
+    position: relative;
+    box-sizing: border-box;
+    border-bottom: 1px solid #c4c0c0 !important;
+
+    &.x-panel-collapsed {
+        background: transparent;
+        border-bottom: 1px solid #c4c0c0 !important;
+        padding-bottom: 10px !important;
+
+    }
 }
 
 label {
     // See .x-form-item-label
-    @extend %FORM--LABEL !optional;
+    @include _label("normal")
 }
 
 /* Form item Outer Container ... */
@@ -890,7 +968,7 @@ label {
     clear: both !important;
     display: inline-block !important;
 
-    @extend %FORM--LABEL !optional;
+    @include _label("normal")
 }
 
 /* Text Area */
@@ -913,35 +991,50 @@ div.engine-window {
 .x-form-textarea {
     border: none;
     height: 180px !important;
-    @extend %FORM--TEXT_AREA !optional;
+    background: _theme($INPUT--BG, $APP) !important;
+    padding: 3px 40px 3px 5px !important;
+    border: 1px solid transparent !important;
+    transition: none !important;
 
+    @include text(13px, _theme($INPUT--COLOR, $APP), _weight("semilight"));
     // Exceptions ...
     .engine-panel & {
-        @extend %FORM--TEXT_AREA\:EDIT_ENGINE !optional;
-        box-shadow: 0px 1px 2px _theme-color("black", a);
+        background: _theme($INPUT--BG, $EDIT-ENGINE) !important;
+
+        @include text(13px, _theme($INPUT--COLOR, $EDIT-ENGINE), _weight("semilight"));
+        box-shadow: 0px 1px 2px _color("black", a);
     }
 
     &:hover {
-        @extend %FORM--TEXT_AREA---HOVER !optional;
+        background: _theme($INPUT--BG---HOVER, $APP);
+        color: _theme($INPUT--COLOR---HOVER, $APP);
         // Exceptions ...
         .engine-panel & {
-            @extend %FORM--TEXT_AREA---HOVER\:EDIT_ENGINE !optional;
-            box-shadow: 0px 1px 2px _theme-color("black", b) !important;
+            background: _theme($INPUT--BG---HOVER, $EDIT-ENGINE) !important;
+            color: _theme($INPUT--COLOR---HOVER, $EDIT-ENGINE) !important;
+            box-shadow: 0px 1px 2px _color("black", b) !important;
         }
     }
 
     &:focus {
-        @extend %FORM--TEXT_AREA---FOCUS !optional;
+        background: _theme($INPUT--BG---FOCUS, $EDIT-ENGINE) !important;
+        color: _theme($INPUT--COLOR---FOCUS, $EDIT-ENGINE) !important;
 
         // Exceptions ...
         .engine-panel & {
-            @extend %FORM--TEXT_AREA---FOCUS\:EDIT_ENGINE !optional;
-            box-shadow: 0px 1px 2px _theme-color("black", b) !important;
+            background: _theme($INPUT--BG---FOCUS, $EDIT-ENGINE) !important;
+            color: _theme($INPUT--COLOR---FOCUS, $EDIT-ENGINE) !important;
+            box-shadow: 0px 1px 2px _color("black", b) !important;
         }
     }
 
     &[disabled] {
-        @extend %FORM--TEXT_AREA---DISABLED !optional;
+        background: _theme($INPUT--BG---DISABLED, $APP);
+        padding: 3px 40px 3px 5px;
+        padding-left: 0;
+        transition: $DEFAULT--TRANSITION;
+
+        @include text(13px, _theme($INPUT--COLOR---DISABLED, $APP), _weight("semilight"));
     }
 }
 
@@ -967,7 +1060,7 @@ div.engine-window {
     left: auto !important;
     top: auto !important;
 
-    @extend %FORM--LABEL !optional;
+    @include _label("normal");
 }
 
 // Form Buttons
@@ -1021,54 +1114,6 @@ form,
 }
 
 
-/////////////////////////////////////////////////
-// TREES ////////////////////////////////////////
-/////////////////////////////////////////////////
-
-$personalised_trees: (
-                ("#JahiaGxtCreateContentTab", CREATE),
-                ("#JahiaGxtContentBrowseTab", CONTENT),
-                ("#JahiaGxtFileImagesBrowseTab", FILES),
-                ("#JahiaGxtCategoryBrowseTab", TAXONOMY)
-);
-
-@each $tree in $personalised_trees {
-    $_tree_id: #{nth($tree,1)};
-    $_placeholder: #{nth($tree,2)};
-
-    #{$_tree_id} {
-        .x-tree3-node-icon,
-        .gwt-Image {
-            // List Item Icon
-            @extend %TREE--ICON---UP\:#{$_placeholder} !optional;
-        }
-
-        .x-grid3-row-over {
-            .x-tree3-node-icon,
-            .gwt-Image {
-                // Personalised Icon
-                @extend %TREE--ICON---HOVER\:#{$_placeholder} !optional;
-            }
-        }
-
-        .x-grid3-row-selected {
-            .x-tree3-node-icon,
-            .gwt-Image {
-                // Personalised Icon: Selected
-                @extend %TREE--ICON---SELECTED\:#{$_placeholder} !optional;
-            }
-
-            &.x-grid3-row-over {
-                .x-tree3-node-icon,
-                .gwt-Image {
-                    // Personalised Icon: Selected > Hover
-                    @extend %TREE--ICON---SELECTED_HOVER\:#{$_placeholder} !optional;
-                }
-            }
-        }
-    }
-}
-
 .x-grid3 {
     /* Container */
     width: 100% !important;
@@ -1104,82 +1149,82 @@ $personalised_trees: (
 
             &[src$="/conflict.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 4 */
                 /* Conflict */
-                background: _theme-color("status", conflict) !important;
+                background: _color("status", conflict) !important;
             }
 
             &[src$="/deleted.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 5 */
                 /* Deleted */
-                background: _theme-color("status", deleted) !important;
+                background: _color("status", deleted) !important;
             }
 
             &[src$="/livemodified.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 6 */
                 /* Live Modified */
-                background: _theme-color("status", livemodified) !important;
+                background: _color("status", livemodified) !important;
             }
 
             &[src$="/liveonly.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 7 */
                 /* Live Only */
-                background: _theme-color("status", liveonly) !important;
+                background: _color("status", liveonly) !important;
             }
 
             &[src$="/locked.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 8 */
                 /* Locked */
-                background: _theme-color("status", locked) !important;
+                background: _color("status", locked) !important;
             }
 
             &[src$="/mandatorylanguageunpublishable.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 9 */
                 /* Mandatory Language Unpublishable */
-                background: _theme-color("status", mandatorylanguageunpublishable) !important;
+                background: _color("status", mandatorylanguageunpublishable) !important;
             }
 
             &[src$="/mandatorylanguagevalid.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 10 */
                 /* Mandatory Language Valid */
-                background: _theme-color("status", mandatorylanguagevalid) !important;
+                background: _color("status", mandatorylanguagevalid) !important;
             }
 
             &[src$="/markedfordeletion.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 11 */
                 /* Marked FOr Deletion */
-                background: _theme-color("status", markedfordeletion) !important;
+                background: _color("status", markedfordeletion) !important;
             }
 
             &[src$="/modified.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 12 */
                 /* Modified */
-                background: _theme-color("status", modified) !important;
+                background: _color("status", modified) !important;
             }
 
             &[src$="/multipleWF.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 13 */
                 /* Multiple WF */
-                background: _theme-color("status", multipleWF) !important;
+                background: _color("status", multipleWF) !important;
             }
 
             &[src$="/notpublished.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 14 */
                 /* Not Published */
-                background: _theme-color("status", notpublished) !important;
+                background: _color("status", notpublished) !important;
             }
 
             &[src$="/oneWF.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 15 */
                 /* One WF */
-                background: _theme-color("status", oneWF) !important;
+                background: _color("status", oneWF) !important;
             }
 
             &[src$="/published.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 16 */
                 /* Published */
-                background: _theme-color("status", published) !important;
+                background: _color("status", published) !important;
             }
 
             &[src$="/unpublished.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 17 */
                 /* Unpublished */
-                background: _theme-color("status", unpublished) !important;
+                background: _color("status", unpublished) !important;
             }
 
             &[src$="/waiting.gif"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 18 */
                 /* Waiting */
-                background: _theme-color("status", waiting) !important;
+                background: _color("status", waiting) !important;
             }
 
             &[src$="/workinprogress.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 19 */
                 /* Work In Progress */
-                background: _theme-color("status", workinprogress) !important;
+                background: _color("status", workinprogress) !important;
             }
         }
     }
@@ -1236,22 +1281,22 @@ $personalised_trees: (
         width: 100% !important;
         border: none;
 
-        @extend %TREE--ROW--BG---UP !optional;
+        background: _theme($ROW--BG, $SIDE-PANEL) !important;
 
         body[data-edit-window-style="settings"] &,
         .x-viewport-adminmode &,
         .x-viewport-dashboardmode & {
-            @extend %TREE--ROW--BG---UP\:SETTINGS !optional;
+            background: transparent !important;
         }
 
         body[data-INDIGO-PICKER-SEARCH="open"] & {
-            background-color: _property($ROW--BG, $PICKER-SEARCH) !important;
+            background-color: _theme($ROW--BG, $PICKER-SEARCH) !important;
         }
 
 
         &.x-grid3-row-over {
             /* Line Over */
-            @extend %TREE--ROW--BG---HOVER !optional;
+            background: _theme($ROW--BG---HOVER, $SIDE-PANEL) !important;
 
             .x-tree3-node-icon {
                 @extend %tree_line_icon_hover !optional;
@@ -1267,36 +1312,43 @@ $personalised_trees: (
             .x-tree3-node-text,
             .x-tree3-node-text > span,
             .x-grid3-col-path {
-                @extend %TREE--ROW--TEXT---HOVER !optional;
+                color: _theme($ROW--COLOR---HOVER, $SIDE-PANEL) !important;
+
+                // Padding not dealt with in best manner ...
+                .x-viewport-adminmode &,
+                .x-viewport-dashboardmode & {
+                    padding-right: 0 !important; // Make space for More options button
+                }
 
                 body[data-edit-window-style="settings"] &,
                 .x-viewport-adminmode &,
                 .x-viewport-dashboardmode & {
-                    color: _theme-color("primary") !important;
+                    color: _color("primary") !important;
                 }
 
                 &::after {
                     background-image: url($TREE--MORE_OPTIONS--ICON---HOVER);
                     opacity: 1;
-                    background-color: _property($ROW--BG---HOVER, $SIDE-PANEL) !important;
+                    background-color: _theme($ROW--BG---HOVER, $SIDE-PANEL) !important;
                 }
             }
 
             .x-grid3-col-size,
             .x-grid3-col-primaryTypeLabel {
-                @extend %TREE--ROW--TEXT---HOVER\:SMALL_LABEL !optional;
+                color: _theme($ROW--COLOR---HOVER, $SIDE-PANEL) !important;
             }
         }
 
 
         &.x-grid3-row-selected {
             /* Line Selected */
-            @extend %TREE--ROW--BG---SELECTED !optional;
+            background-color: _color("tertiary", normal) !important;
 
             body[data-edit-window-style="settings"] &,
             .x-viewport-adminmode &,
             .x-viewport-dashboardmode & {
-                @extend %TREE--ROW--BG---SELECTED\:SETTINGS !optional;
+                background-color: transparent !important;
+                background: linear-gradient(to left, rgba(0, 124, 176, 0.86) 1%, _color("tertiary", normal) 100%) left center !important;
             }
 
             .x-tree3-node-icon {
@@ -1313,36 +1365,41 @@ $personalised_trees: (
             .x-grid3-col-path,
             .x-tree3-node-text,
             .x-tree3-node-text > span {
-                @extend %TREE--ROW--TEXT---SELECTED !optional;
+                color: _theme($ROW--COLOR---SELECTED, $SIDE-PANEL) !important;
+
+                .x-viewport-adminmode &,
+                .x-viewport-dashboardmode & {
+                    padding-right: 0 !important; // Make space for More options button
+                }
 
                 body[data-INDIGO-PICKER-SEARCH="open"] & {
-                    color: _property($ROW--COLOR---SELECTED, $SIDE-PANEL) !important;
+                    color: _theme($ROW--COLOR---SELECTED, $SIDE-PANEL) !important;
                 }
 
                 body[data-edit-window-style="settings"] &,
                 .x-viewport-adminmode & {
-                    @include text(12px, _property($ROW--COLOR---SELECTED, $SIDE-PANEL) !important, $FONT--WEIGHT---NORMAL !important);
+                    @include text(_size("small"), _theme($ROW--COLOR---SELECTED, $SIDE-PANEL) !important, _weight("normal") !important);
                 }
 
                 &::after {
                     background-image: url($TREE--MORE_OPTIONS--ICON---SELECTED);
                     opacity: 1;
-                    background-color: _theme-color("tertiary", normal) !important;
+                    background-color: _color("tertiary", normal) !important;
                 }
 
                 &.readOnly {
-                    color: _theme-color("primary", b)!important;
+                    color: _color("primary", b)!important;
                 }
             }
 
             .x-grid3-col-size,
             .x-grid3-col-primaryTypeLabel {
-                @extend %TREE--ROW--TEXT---SELECTED\:SMALL_LABEL !optional;
+                color: _theme($ROW--COLOR---SELECTED, $SIDE-PANEL) !important;
             }
 
             &.x-grid3-row-over {
                 /* Line Hover on Selected */
-                @extend %TREE--ROW--BG---SELECTED_HOVER !optional;
+                background: _color("tertiary", normal) !important;
 
                 .x-tree3-node-icon {
                     @extend %tree_line_icon_selected_hover !optional;
@@ -1350,7 +1407,8 @@ $personalised_trees: (
 
                 .x-grid3-col-size,
                 .x-grid3-col-primaryTypeLabel {
-                    @extend %TREE--ROW--TEXT---UP\:SMALL_LABEL !optional;
+                    line-height: 20px;
+                    @include text(_size("small") !important, _theme($ROW--COLOR, $SIDE-PANEL) !important, _weight("extralight") !important);
                 }
 
                 .x-grid3-td-displayName,
@@ -1359,11 +1417,11 @@ $personalised_trees: (
                 .x-grid3-col-path,
                 .x-tree3-node-text,
                 .x-tree3-node-text > span {
-                    @extend %TREE--ROW--TEXT---SELECTED_HOVER !optional;
+                    color: _theme($ROW--COLOR---SELECTED-HOVER, $SIDE-PANEL) !important;
 
                     &::after {
                         background-image: url($TREE--MORE_OPTIONS--ICON---SELECTED_HOVER);
-                        background-color: _theme-color("tertiary", normal) !important;
+                        background-color: _color("tertiary", normal) !important;
                     }
                 }
             }
@@ -1373,10 +1431,10 @@ $personalised_trees: (
     .x-grid3-td-displayName,
     .gwt-content-label {
         /* List Item Text Label */
-        @extend %TREE--ROW--TEXT---UP !optional;
+        @include text(13px, _theme($ROW--COLOR, $SIDE-PANEL), _weight("light"));
 
         body[data-INDIGO-PICKER-SEARCH="open"] & {
-            color: _property($ROW--COLOR, $SIDE-PANEL) !important;
+            color: _theme($ROW--COLOR, $SIDE-PANEL) !important;
         }
 
         pointer-events: none;
@@ -1431,16 +1489,16 @@ $personalised_trees: (
     .x-grid3-col-path,
     .x-grid3-col-providerKey {
         /* List Item Text Label */
-        @include text(13px !important, _property($ROW--COLOR, $SIDE-PANEL) !important, $FONT--WEIGHT---LIGHT !important);
+        @include text(13px !important, _theme($ROW--COLOR, $SIDE-PANEL) !important, _weight("light") !important);
 
         body[data-INDIGO-PICKER-SEARCH="open"] & {
-            @include text(12px !important, _property($ROW--COLOR, $SIDE-PANEL) !important, $FONT--WEIGHT---EXTRALIGHT !important);
+            @include text(_size("small") !important, _theme($ROW--COLOR, $SIDE-PANEL) !important, _weight("extralight") !important);
         }
 
         body[data-edit-window-style="settings"] &,
         .x-viewport-adminmode &,
         .x-viewport-dashboardmode & {
-            @include text(13px !important, _property($ROW--COLOR, $SIDE-PANEL) !important, $FONT--WEIGHT---LIGHT !important);
+            @include text(13px !important, _theme($ROW--COLOR, $SIDE-PANEL) !important, _weight("light") !important);
         }
     }
 
@@ -1449,10 +1507,11 @@ $personalised_trees: (
     .x-grid3-col-jcr\:created,
     .x-grid3-col-jcr\:createdBy,
     .x-grid3-col-jcr\:lastModified {
-        @extend %TREE--ROW--TEXT---UP\:SMALL_LABEL !optional;
+        line-height: 20px;
+        @include text(_size("small") !important, _theme($ROW--COLOR, $SIDE-PANEL) !important, _weight("extralight") !important);
 
         body[data-INDIGO-PICKER-SEARCH="open"] & {
-            color: _property($ROW--COLOR--DIMMED, $SIDE-PANEL) !important;
+            color: _theme($ROW--COLOR--DIMMED, $SIDE-PANEL) !important;
         }
     }
 
@@ -1551,17 +1610,17 @@ $personalised_trees: (
 .wcag-panel {
 
     border-width: 1px;
-    border: 1px solid _theme-color("status", error);
-    box-shadow: 0px 1px 5px _theme-color("black", b);
+    border: 1px solid _color("status", error);
+    box-shadow: 0px 1px 5px _color("black", b);
     z-index: 9999;
     position: relative;
-    background: _theme-color("status", error);
+    background: _color("status", error);
     margin-bottom: 15px;
 
     .x-panel-header {
         box-sizing: border-box;
         display: block !important;
-        background: _theme-color("status", error) !important;
+        background: _color("status", error) !important;
         border: none !important;
         padding: 3px;
 
@@ -1573,7 +1632,7 @@ $personalised_trees: (
 
         .x-panel-header-text {
             line-height: 21px;
-            @include text(11px, _theme-color("secondary"), 500);
+            @include text(11px, _color("secondary"), _weight("semibold"));
         }
 
     }
@@ -1581,12 +1640,12 @@ $personalised_trees: (
     .x-panel-toolbar {
         // Ignore button
         .x-menu-check-item {
-            background: _theme-color("secondary");
+            background: _color("secondary");
             padding: 3px 8px;
             text-decoration: none;
             text-transform: uppercase;;
             opacity: 0.9;
-            @include text(9px, _theme-color("status", error) !important, 800);
+            @include text(_size("tiny"), _color("status", error) !important, _weight("extrabold"));
 
             &:hover {
                 opacity: 1;
@@ -1605,7 +1664,7 @@ $personalised_trees: (
 
             span {
                 text-transform: uppercase;
-                @include text(9px, _theme-color("secondary", c) !important, 800);
+                @include text(_size("tiny"), _color("secondary", c) !important, _weight("extrabold"));
             }
         }
     }
@@ -1622,7 +1681,7 @@ $personalised_trees: (
             }
 
             a {
-                background: url("../images/icons/combo-arrow-grey.png") no-repeat center center !important;
+                background: url( _icon("arrowDown", "grey")) no-repeat center center !important;
                 width: 23px;
                 background-size: 13px !important;
                 opacity: 0.7;
@@ -1635,18 +1694,18 @@ $personalised_trees: (
             }
 
             span {
-                color: _theme-color("primary") !important;
+                color: _color("primary") !important;
             }
         }
 
         div {
             text-align: left;;
-            @include text(10px, _theme-color("secondary") !important, 400);
+            @include text(10px, _color("secondary") !important, _weight("normal"));
         }
 
         a {
-            color: _theme-color("status", error) !important;
-            background: _theme-color("secondary");
+            color: _color("status", error) !important;
+            background: _color("secondary");
             padding: 3px 5px;
             text-decoration: none;
             opacity: 0.9;
@@ -1682,24 +1741,24 @@ $personalised_trees: (
     span.cke_toolgroup a {
         .cke_button_icon {
 
-            @if (_property($CKE--ICON-SET--LEGACY, $EDIT-ENGINE)) {
-                background-image: url(_property($CKE--ICON-SET--LEGACY, $EDIT-ENGINE)) !important;
+            @if (_theme($CKE--ICON-SET--LEGACY, $EDIT-ENGINE)) {
+                background-image: url(_theme($CKE--ICON-SET--LEGACY, $EDIT-ENGINE)) !important;
 
                 body[data-CKEDITOR-VERSION="4.7.1-jahia1"] & {
-                    background-image: url(_property($CKE--ICON-SET--DEFAULT, $EDIT-ENGINE)) !important;
+                    background-image: url(_theme($CKE--ICON-SET--DEFAULT, $EDIT-ENGINE)) !important;
                 }
             }
         }
 
         &.cke_button_on {
-            background: _property($CKE--TOOL--BG---SELECTED, $EDIT-ENGINE) !important;
+            background: _theme($CKE--TOOL--BG---SELECTED, $EDIT-ENGINE) !important;
             border-radius: 0;
             box-shadow: none;
 
             &:hover,
             &:focus,
             &:active {
-                background: _property($CKE--TOOL--BG---SELECTED, $EDIT-ENGINE) !important;
+                background: _theme($CKE--TOOL--BG---SELECTED, $EDIT-ENGINE) !important;
                 border-radius: 0;
                 box-shadow: none;
             }
@@ -1708,14 +1767,14 @@ $personalised_trees: (
         &.cke_button_off,
         &.cke_button_disabled {
             &:hover {
-                background: _property($CKE--TOOL--BG---HOVER, $EDIT-ENGINE) !important;
+                background: _theme($CKE--TOOL--BG---HOVER, $EDIT-ENGINE) !important;
                 border-radius: 0;
                 box-shadow: none;
             }
 
             &:focus,
             &:active {
-                background: _property($CKE--TOOL--BG---HOVER, $EDIT-ENGINE) !important;
+                background: _theme($CKE--TOOL--BG---HOVER, $EDIT-ENGINE) !important;
                 border-radius: 0;
                 box-shadow: none;
             }
@@ -1739,9 +1798,9 @@ $personalised_trees: (
     // CKE Toolbar Container
     width: 100% !important;
     box-sizing: border-box !important;
-    background: _property($CKE--TOOLBAR--BG, $EDIT-ENGINE) !important;
+    background: _theme($CKE--TOOLBAR--BG, $EDIT-ENGINE) !important;
     border: none !important;
-    border-bottom: 1px solid _property($CKE--TOOLBAR--BORDER, $EDIT-ENGINE) !important;
+    border-bottom: 1px solid _theme($CKE--TOOLBAR--BORDER, $EDIT-ENGINE) !important;
     box-shadow: none !important;
     padding: 0 0 0 2px !important;
 }
@@ -1749,21 +1808,21 @@ $personalised_trees: (
 .cke_toolgroup {
     // CKE Tool Group
     border: none !important;
-    background: _property($CKE--TOOLGROUP--BG, $EDIT-ENGINE) !important;
+    background: _theme($CKE--TOOLGROUP--BG, $EDIT-ENGINE) !important;
     box-shadow: none !important;
     border-radius: 0 !important;
     padding: 4px 10px !important;
 
-    transition: all 0.2s ease-in 0s !important;
+    transition: _transition("all", "quick") !important;
 
     &:hover {
-        background: _property($CKE--TOOLGROUP--BG---HOVER, $EDIT-ENGINE) !important;
+        background: _theme($CKE--TOOLGROUP--BG---HOVER, $EDIT-ENGINE) !important;
     }
 }
 
 .cke_panel {
-    background: _theme-color("white") !important; /* TO THEME */
-    border: 6px solid _theme-color("primary", c) !important; /* TO THEME */
+    background: _color("white") !important; /* TO THEME */
+    border: 6px solid _color("primary", c) !important; /* TO THEME */
     border-radius: 0 !important;
     margin-top: 8px !important;
 }
@@ -1784,14 +1843,14 @@ $personalised_trees: (
 .cke_combo_button {
     // CKE Combo Button
     border: none !important;
-    background: _property($CKE--COMBO--BG, $EDIT-ENGINE) !important;
-    box-shadow: _property($CKE--COMBO--SHADOW, $EDIT-ENGINE) !important;
+    background: _theme($CKE--COMBO--BG, $EDIT-ENGINE) !important;
+    box-shadow: _theme($CKE--COMBO--SHADOW, $EDIT-ENGINE) !important;
     border-radius: 0 !important;
     padding: 4px !important;
 
     &:hover {
-        background: _property($CKE--COMBO--BG---HOVER, $EDIT-ENGINE) !important;
-        box-shadow: _property($CKE--COMBO--SHADOW---HOVER, $EDIT-ENGINE) !important;
+        background: _theme($CKE--COMBO--BG---HOVER, $EDIT-ENGINE) !important;
+        box-shadow: _theme($CKE--COMBO--SHADOW---HOVER, $EDIT-ENGINE) !important;
     }
 }
 
@@ -1803,24 +1862,24 @@ $personalised_trees: (
 
 .cke_button_label,
 .cke_combo_text {
-    color: _property($CKE--BUTTON-LABEL--COLOR, $EDIT-ENGINE) !important;
+    color: _theme($CKE--BUTTON-LABEL--COLOR, $EDIT-ENGINE) !important;
 
     &:hover {
-        color: _property($CKE--BUTTON-LABEL--COLOR---HOVER, $EDIT-ENGINE) !important;
+        color: _theme($CKE--BUTTON-LABEL--COLOR---HOVER, $EDIT-ENGINE) !important;
     }
 }
 
 
 .cke_contents {
     // CKE Content Container
-    box-shadow: _property($CKE--CONTENTS--SHADOW, $EDIT-ENGINE);
-    border: 1px solid _property($CKE--CONTENTS--BORDER, $EDIT-ENGINE) !important;
+    box-shadow: _theme($CKE--CONTENTS--SHADOW, $EDIT-ENGINE);
+    border: 1px solid _theme($CKE--CONTENTS--BORDER, $EDIT-ENGINE) !important;
 }
 
 .cke_bottom {
     // CKE Footer Container
     border: none !important;
-    background: _property($CKE--PATH--BG, $EDIT-ENGINE) !important;
+    background: _theme($CKE--PATH--BG, $EDIT-ENGINE) !important;
 }
 
 .cke_resizer {
@@ -1834,13 +1893,13 @@ $personalised_trees: (
     a.cke-path-item {
         // CKE Path Item
         text-shadow: none;
-        @include text(12px, _property($CKE--PATH--COLOR, $EDIT-ENGINE) !important, $FONT--WEIGHT---EXTRALIGHT);
+        @include text(_size("small"), _theme($CKE--PATH--COLOR, $EDIT-ENGINE) !important, _weight("extralight"));
     }
 }
 
 .cke_dialog_ui_checkbox {
     label {
-        @include text(12px, _theme-color("primary"), $FONT--WEIGHT---EXTRALIGHT);
+        @include text(_size("small"), _color("primary"), _weight("extralight"));
     }
 }
 
@@ -1884,7 +1943,7 @@ $personalised_trees: (
     }
 
     .cke_dark_background {
-        @include text(28px, $RICH_TEXT_EDITOR--DIALOGUE--PREVIEW_CHARACTERS--FONT--COLOUR !important, $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
+        @include text(28px, $RICH_TEXT_EDITOR--DIALOGUE--PREVIEW_CHARACTERS--FONT--COLOUR !important, _weight("extralight")); /* TO THEME */
         border: none !important;
     }
 
@@ -1917,7 +1976,7 @@ $personalised_trees: (
         margin-bottom: 10px;
         pointer-events: none !important; // disables the drag feature of popup
 
-        @include text(36px, $RICH_TEXT_EDITOR--DIALOGUE--TITLE--FONT--COLOUR, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY); /* TO THEME */
+        @include text(_size("big"), $RICH_TEXT_EDITOR--DIALOGUE--TITLE--FONT--COLOUR, _weight("extralight"), _font("raleway")); /* TO THEME */
     }
 
     // Tabs
@@ -1942,7 +2001,7 @@ $personalised_trees: (
             margin-right: 10px;
             text-transform: uppercase;
 
-            @include text(11px, $RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR, 300); /* TO THEME */
+            @include text(11px, $RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR, _weight("light")); /* TO THEME */
 
             &.cke_dialog_tab_selected {
                 color: $RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR---SELECTED; /* TO THEME */
@@ -1963,7 +2022,7 @@ $personalised_trees: (
         white-space: pre-wrap;
         line-height: 14px;
         vertical-align: middle;
-        @extend %FORM--LABEL; /* TO THEME */
+        @include _label("normal");
     }
 
     .cke_dialog_ui_labeled_content {
@@ -1981,17 +2040,17 @@ $personalised_trees: (
             display: inline-block;
             -moz-appearance: none;
             -webkit-appearance: none;
-            @include text(12px, _theme-color("primary", normal), $FONT--WEIGHT---LIGHT); /* TO THEME */
+            @include text(_size("small"), _color("primary", normal), _weight("light")); /* TO THEME */
             border: none;
             line-height: normal;
             border-radius: 0;
-            box-shadow: 0px 1px 2px _theme-color("black", a);
-            background: url(../images/icons/combo-arrow-grey.png) no-repeat right 5px center; /* OPTIMISE URL ::: css/components/_build.scss ::: 6 */
-            background-color: _theme-color("white", normal);
+            box-shadow: 0px 1px 2px _color("black", a);
+            background: url( _icon("arrowDown", "grey")) no-repeat right 5px center; /* OPTIMISE URL ::: css/components/_build.scss ::: 6 */
+            background-color: _color("white", normal);
             padding: 7px 16px 6px 10px !important;
             font-family: "Nunito Sans", sans-serif;
             font-size: 12px;
-            color: _theme-color("primary", normal);
+            color: _color("primary", normal);
             font-weight: 100;
             box-sizing: border-box;
             height: 30px;
@@ -2077,7 +2136,7 @@ $personalised_trees: (
             margin-top: 10px !important;
 
             legend {
-                @extend %FORM--LABEL; /* TO THEME */
+                @include _label("normal");
             }
         }
 
@@ -2085,10 +2144,10 @@ $personalised_trees: (
         .cke_dialog_ui_html {
             margin: 0 0 10px 0;
 
-            @include text(14px, $RICH_TEXT_EDITOR--DIALOGUE--PARAGRAPH--FONT--COLOUR, $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
+            @include text(_size("normal"), $RICH_TEXT_EDITOR--DIALOGUE--PARAGRAPH--FONT--COLOUR, _weight("extralight")); /* TO THEME */
 
             strong {
-                font-weight: $FONT--WEIGHT---BOLD;
+                font-weight: _weight("bold");
                 color: lighten($RICH_TEXT_EDITOR--DIALOGUE--PARAGRAPH--FONT--COLOUR, 5%); /* TO THEME */
                 font-size: inherit;
                 font-family: inherit;
@@ -2097,7 +2156,7 @@ $personalised_trees: (
 
         a {
             padding: 0;
-            @include text(14px, $RICH_TEXT_EDITOR--DIALOGUE--LINK--FONT--COLOUR !important, $FONT--WEIGHT---NORMAL); /* TO THEME */
+            @include text(_size("normal"), $RICH_TEXT_EDITOR--DIALOGUE--LINK--FONT--COLOUR !important, _weight("normal")); /* TO THEME */
 
         }
 
@@ -2112,15 +2171,15 @@ $personalised_trees: (
 
             // Normal Button
             span {
-                background: _theme-color("tertiary") !important; /* TO THEME */
-                @include text(12px !important, _theme-color("secondary") !important, $FONT--WEIGHT---EXTRALIGHT !important); /* TO THEME */
+                background: _color("tertiary") !important; /* TO THEME */
+                @include text(_size("small") !important, _color("secondary") !important, _weight("extralight") !important); /* TO THEME */
                 text-shadow: none;
                 padding: 4px;
                 text-align: center;
 
                 &:hover {
-                    background: lighten(_theme-color("tertiary"), 3%) !important; /* TO THEME */
-                    color: lighten(_theme-color("secondary"), 3%) !important; /* TO THEME */
+                    background: lighten(_color("tertiary"), 3%) !important; /* TO THEME */
+                    color: lighten(_color("secondary"), 3%) !important; /* TO THEME */
                 }
             }
         }
@@ -2198,13 +2257,13 @@ $personalised_trees: (
             // Normal Button
             span {
                 padding: 10px 20px !important;
-                background: _theme-color("tertiary") !important; /* TO THEME */
-                @include text(14px !important, _theme-color("secondary") !important, $FONT--WEIGHT---EXTRALIGHT !important); /* TO THEME */
+                background: _color("tertiary") !important; /* TO THEME */
+                @include text(_size("normal") !important, _color("secondary") !important, _weight("extralight") !important); /* TO THEME */
                 text-shadow: none;
 
                 &:hover {
-                    background: lighten(_theme-color("tertiary"), 3%) !important; /* TO THEME */
-                    color: lighten(_theme-color("secondary"), 3%) !important; /* TO THEME */
+                    background: lighten(_color("tertiary"), 3%) !important; /* TO THEME */
+                    color: lighten(_color("secondary"), 3%) !important; /* TO THEME */
                 }
             }
 
@@ -2212,10 +2271,10 @@ $personalised_trees: (
             &.cke_dialog_ui_button_cancel {
                 span {
                     padding: 10px 20px !important;
-                    @extend %BUTTON--TEXT\:ACTIONBAR; /* TO THEME */
+                    @extend %BUTTON--TEXT---ACTIONBAR; /* TO THEME */
 
                     &:hover {
-                        @extend %BUTTON--TEXT---HOVER\:ACTIONBAR; /* TO THEME */
+                        @extend %BUTTON--TEXT---HOVER---ACTIONBAR; /* TO THEME */
                     }
                 }
             }
@@ -2294,7 +2353,7 @@ $personalised_trees: (
             }
 
             span {
-                @include text(14px, _theme-color("primary", g), $FONT--WEIGHT---NORMAL); /* TO THEME */
+                @include text(_size("normal"), _color("primary", g), _weight("normal")); /* TO THEME */
             }
 
             .cke_tpl_title {
@@ -2322,8 +2381,8 @@ $personalised_trees: (
 
 /* Modal Mask */
 .x-modal {
-    // background: radial-gradient(ellipse at bottom right, _theme-color("primary", f) 0%, _theme-color("primary") 70%);  // check on other modals.
-    background: _property($MODAL-SOLID--BG---LEGACY, $APP);
+    // background: radial-gradient(ellipse at bottom right, _color("primary", f) 0%, _color("primary") 70%);  // check on other modals.
+    background: _theme($MODAL-SOLID--BG---LEGACY, $APP);
     opacity: 1;
     z-index: 999 !important;
     position: fixed !important;
@@ -2343,7 +2402,7 @@ $personalised_trees: (
     }
 
     &::before {
-        content: $text_loading;
+        content: _dictionary("loading");
         display: block;
         position: fixed;
         left: 0;
@@ -2440,7 +2499,7 @@ $personalised_trees: (
     margin-top: -32px; // Trying to offset the increase in height of dialogue due to extra large title.
 
     .x-window-header-text {
-        @include text(32px, _theme-color("primary"), $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY); /* TO THEME */
+        @include text(32px, _color("primary"), _weight("extralight"), _font("raleway")); /* TO THEME */
         display: block !important;
     }
 
@@ -2453,7 +2512,7 @@ $personalised_trees: (
 
     // CONTENT
     .ext-mb-text {
-        @include text(14px, _theme-color("primary", b), $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
+        @include text(_size("normal"), _color("primary", b), _weight("extralight")); /* TO THEME */
     }
 
     // ACTION BAR
@@ -2525,7 +2584,7 @@ $personalised_trees: (
             display: block;
 
             .x-tool-close {
-                background: url(../images/icons/icon-close-grey@X2.png) no-repeat left top 2px; /* OPTIMISE URL ::: css/components/_build.scss ::: 10 */
+                background: url( _icon("closeLarge", "grey")) no-repeat left top 2px; /* OPTIMISE URL ::: css/components/_build.scss ::: 10 */
                 background-size: 14px;
                 width: auto;
                 height: 25px;
@@ -2541,7 +2600,7 @@ $personalised_trees: (
                     display: block;
                     width: 100%;
                     font-size: 14px;
-                    color: _theme-color("tertiary", normal);
+                    color: _color("tertiary", normal);
                 }
             }
         }
@@ -2565,14 +2624,14 @@ $personalised_trees: (
 }
 
 .x-slider-horz .x-slider-thumb {
-    background: _theme-color("secondary", e); /* TO THEME */
+    background: _color("secondary", e); /* TO THEME */
     border-radius: 100%;
     width: 12px;
     height: 12px;
     top: 5px;
 
     &:hover {
-        background: _theme-color("primary", c); /* TO THEME */
+        background: _color("primary", c); /* TO THEME */
     }
 }
 
@@ -2581,7 +2640,7 @@ $personalised_trees: (
     text-indent: -50000px;
     display: block;
     height: 3px;
-    background: _theme-color("secondary", d); /* TO THEME */
+    background: _color("secondary", d); /* TO THEME */
     position: absolute;
     top: 10px;
     width: 100%;
@@ -2639,7 +2698,7 @@ $personalised_trees: (
 }
 
 .arrow-double-right {
-    background-image: url(../images/icons/icon_arrow_right_double_grey@X2.png) !important; /* OPTIMISE URL ::: css/components/_build.scss ::: 11 */
+    background-image: url( _icon("navLast", "grey")) !important; /* OPTIMISE URL ::: css/components/_build.scss ::: 11 */
 }
 
 .arrow-right {
@@ -2647,7 +2706,7 @@ $personalised_trees: (
 }
 
 .arrow-double-left {
-    background-image: url(../images/icons/icon_arrow_left_double_grey@X2.png) !important; /* OPTIMISE URL ::: css/components/_build.scss ::: 21 */
+    background-image: url( _icon("navFirst", "grey")) !important; /* OPTIMISE URL ::: css/components/_build.scss ::: 21 */
 }
 
 .arrow-left {
@@ -2755,8 +2814,8 @@ $personalised_trees: (
 
 
     > .x-window-bwrap {
-        background: _property($BODY--BG, $MODAL-INPUT);
-        box-shadow: _property($BODY--BG--SHADOW, $MODAL-INPUT);
+        background: _theme($BODY--BG, $MODAL-INPUT);
+        box-shadow: _theme($BODY--BG--SHADOW, $MODAL-INPUT);
         padding: 30px;
         box-sizing: border-box;
         height: 100%;
@@ -2864,7 +2923,7 @@ body[data-indigo-gwt-side-panel="open"] {
 .x-window.modal-deletealljob-confirm {
     .x-window-header {
         &:before {
-            content: $text_confirm_delete_completed !important;
+            content: _dictionary("confirm_delete_completed") !important;
         }
     }
 }
@@ -2899,7 +2958,7 @@ body[data-indigo-gwt-side-panel="open"] {
     top: 0 !important;
     width: 100% !important;
     height: 100% !important;
-    background: _theme-color("secondary", normal) !important;
+    background: _color("secondary", normal) !important;
 
     // Deal with icons here ...
     .x-tree3-node-text {
@@ -2931,90 +2990,90 @@ body[data-indigo-gwt-side-panel="open"] {
             border-radius: 100%;
             height: 18px;
             background-position: top 1px center;
-            background-image: url($ICON--WARNING--WHITE);
+            background-image: url( _icon("warning", "white"));
         }
 
         &[src$="/conflict.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 40 */
             /* Conflict */
-             background-color: _theme-color("status", conflict);
+             background-color: _color("status", conflict);
         }
 
         &[src$="/deleted.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 41 */
             /* Deleted */
-             background-color: _theme-color("status", deleted);
+             background-color: _color("status", deleted);
         }
 
         &[src$="/livemodified.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 42 */
             /* Live Modified */
-             background-color: _theme-color("status", livemodified);
+             background-color: _color("status", livemodified);
         }
 
         &[src$="/liveonly.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 43 */
             /* Live Only */
-             background-color: _theme-color("status", liveonly);
+             background-color: _color("status", liveonly);
         }
 
         &[src$="/locked.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 44 */
             /* Locked */
-             background-color: _theme-color("status", locked);
+             background-color: _color("status", locked);
         }
 
         &[src$="/mandatorylanguageunpublishable.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 45 */
             /* Mandatory Language Unpublishable */
-             background-color: _theme-color("status", mandatorylanguageunpublishable);
+             background-color: _color("status", mandatorylanguageunpublishable);
         }
 
         &[src$="/mandatorylanguagevalid.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 46 */
             /* Mandatory Language Valid */
-             background-color: _theme-color("status", mandatorylanguagevalid);
+             background-color: _color("status", mandatorylanguagevalid);
         }
 
         &[src$="/markedfordeletion.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 47 */
             /* Marked FOr Deletion */
-             background-color: _theme-color("status", markedfordeletion);
+             background-color: _color("status", markedfordeletion);
         }
 
         &[src$="/modified.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 48 */
             /* Modified */
-             background-color: _theme-color("status", modified);
+             background-color: _color("status", modified);
         }
 
         &[src$="/multipleWF.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 49 */
             /* Multiple WF */
-             background-color: _theme-color("status", multipleWF);
+             background-color: _color("status", multipleWF);
         }
 
         &[src$="/notpublished.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 50 */
             /* Not Published */
-             background-color: _theme-color("status", notpublished);
+             background-color: _color("status", notpublished);
         }
 
         &[src$="/oneWF.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 51 */
             /* One WF */
-             background-color: _theme-color("status", oneWF);
+             background-color: _color("status", oneWF);
         }
 
         &[src$="/published.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 52 */
             /* Published */
-            background-image: url("../images/icons/icon-check-white@X2.png");
-            background-color: _theme-color("status", published);
+            background-image: url( _icon("tick", "white"));
+            background-color: _color("status", published);
             background-position: top left;
             background-size: 18px;
         }
 
         &[src$="/unpublished.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 53 */
             /* Unpublished */
-             background-color: _theme-color("status", unpublished);
+             background-color: _color("status", unpublished);
         }
 
         &[src$="/waiting.gif"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 54 */
             /* Waiting */
-             background-color: _theme-color("status", waiting);
+             background-color: _color("status", waiting);
         }
 
         &[src$="/workinprogress.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 55 */
             /* Work In Progress */
-             background-color: _theme-color("status", workinprogress);
+             background-color: _color("status", workinprogress);
         }
     }
 
@@ -3022,7 +3081,7 @@ body[data-indigo-gwt-side-panel="open"] {
         background-size: 23px 23px;
         background-repeat: no-repeat;
         opacity: 0.8;
-        background-color: _theme-color("secondary", c);
+        background-color: _color("secondary", c);
         padding: 2px 2px !important;
         border-radius: 4px;
         height: 21px;
@@ -3095,16 +3154,16 @@ body[data-indigo-gwt-side-panel="open"] {
             background: transparent !important;
 
             .x-tree3-node-text {
-                color: _theme-color("primary") !important;
+                color: _color("primary") !important;
             }
 
             .markedForDeletion {
-                color: _theme-color("primary") !important;
+                color: _color("primary") !important;
             }
         }
 
         &.x-grid3-row-selected.x-grid3-row-over {
-            background: _theme-color("secondary", a) !important;
+            background: _color("secondary", a) !important;
         }
     }
 
@@ -3128,7 +3187,7 @@ body[data-indigo-gwt-side-panel="open"] {
         position: fixed;
         background: #5c6164;
         border-top: 1px solid #444749;
-        box-shadow: inset 3px 0px 16px _theme-color("black", b);
+        box-shadow: inset 3px 0px 16px _color("black", b);
         box-sizing: border-box;
         left: -30px;
         width: calc(100% + 60px) !important;
@@ -3194,7 +3253,7 @@ body[data-indigo-gwt-side-panel="open"] {
             position: fixed;
             background: #5c6164;
             border-top: 1px solid #444749;
-            box-shadow: inset 3px 0px 16px _theme-color("black", b);
+            box-shadow: inset 3px 0px 16px _color("black", b);
             box-sizing: border-box;
             left: -30px;
             width: calc(100% + 60px) !important;
@@ -3206,7 +3265,7 @@ body[data-indigo-gwt-side-panel="open"] {
             display: block;
             color: #5c6164;
 
-            @include text(36px, _theme-color("primary"), 100, $FONT--FAMILY---RALEWAY);
+            @include text(_size("big"), _color("primary"), 100, _font("raleway"));
         }
     }
 
@@ -3214,15 +3273,15 @@ body[data-indigo-gwt-side-panel="open"] {
         width: auto !important;
         height: auto !important;
         background: #00a7ed !important;
-        @include text(14px, _theme-color("secondary", normal), 100);
+        @include text(_size("normal"), _color("secondary", normal), _weight("extralight"));
         padding: 8px 15px !important;
         position: absolute;
         right: 52px;
         top: 20px;
-        color: _theme-color("secondary", normal) !important;
+        color: _color("secondary", normal) !important;
 
         &:before {
-            content: $text_done;
+            content: _dictionary("done");
         }
     }
 
@@ -3305,7 +3364,7 @@ body[data-indigo-gwt-side-panel="open"] {
     }
 
     .indigo-modal-mask {
-        background: _theme-color("secondary", normal) !important;
+        background: _color("secondary", normal) !important;
     }
 }
 
@@ -3361,7 +3420,7 @@ body[data-indigo-gwt-side-panel="open"] {
 .x-window.trashboard-engine {
 
     .indigo-modal-mask {
-        background: _theme-color("secondary", normal) !important;
+        background: _color("secondary", normal) !important;
     }
 
     .x-window-header {
@@ -3404,19 +3463,19 @@ body[data-indigo-gwt-side-panel="open"] {
             top: 37px;
             z-index: 99999;
 
-            @include text(36px, _theme-color("primary", normal), $FONT--WEIGHT---EXTRALIGHT)
+            @include text(_size("big"), _color("primary", normal), _weight("extralight"))
         }
     }
 
     #JahiaGxtContentEngine {
         &::before {
-            content: $text_edit_engine;
+            content: _dictionary("edit_engine");
         }
     }
 
     #JahiaGxtCreateContentEngine {
         &::before {
-            content: $text_edit_engine_create;
+            content: _dictionary("edit_engine_create");
         }
     }
 
@@ -3471,7 +3530,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
     .x-component {
         // Move this to the delete modals ...
-        color: _theme-color("primary", b);
+        color: _color("primary", b);
     }
 
     .x-grid3-header {
@@ -3484,11 +3543,11 @@ body[data-indigo-gwt-side-panel="open"] {
     > .x-window-bwrap {
         position: relative !important;
         z-index: 99;
-        background: _property($MODAL--BG, LIGHT) !important;
+        background: _theme($MODAL--BG, LIGHT) !important;
         width: 460px !important;
         margin: 0 auto;
         box-sizing: border-box;
-        border: 1px solid _theme-color("secondary", b) !important;
+        border: 1px solid _color("secondary", b) !important;
     }
 
     > .x-window-tl {
@@ -3510,14 +3569,14 @@ body[data-indigo-gwt-side-panel="open"] {
         box-sizing: border-box;
         background: #FFF;
         border: none !important;
-        background: radial-gradient(ellipse at bottom right, _theme-color("secondary", normal) 0%, _theme-color("white", normal) 70%) !important;
+        background: radial-gradient(ellipse at bottom right, _color("secondary", normal) 0%, _color("white", normal) 70%) !important;
         margin: 1px;
         width: calc(100% - 2px) !important;
-        box-shadow: 0px 1px 2px _theme-color("black", a);
-        color: _theme-color("primary");
+        box-shadow: 0px 1px 2px _color("black", a);
+        color: _color("primary");
 
         &:hover {
-            color: _theme-color("primary");
+            color: _color("primary");
         }
     }
 
@@ -3552,7 +3611,7 @@ body[data-indigo-gwt-side-panel="open"] {
         padding: 0 !important;
         margin-bottom: 0;
 
-        @include text(36px, _property($MODAL--HEADER, LIGHT) !important, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
+        @include text(_size("big"), _theme($MODAL--HEADER, LIGHT) !important, _weight("extralight"), _font("raleway"));
 
         img {
             display: none;
@@ -3600,7 +3659,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
     .x-window-header {
         &:before {
-            content: $text_confirm_delete;
+            content: _dictionary("confirm_delete");
         }
     }
 
@@ -3638,7 +3697,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
             &.x-grid3-row-selected {
                 .x-grid3-cell-inner {
-                    color: _theme-color("primary", normal) !important;
+                    color: _color("primary", normal) !important;
                 }
             }
 
@@ -3648,12 +3707,12 @@ body[data-indigo-gwt-side-panel="open"] {
                 padding-left: 25px;
 
                 a {
-                    @include text(12px, _theme-color("primary", normal), $FONT--WEIGHT---LIGHT); /* TO THEME */
+                    @include text(_size("small"), _color("primary", normal), _weight("light")); /* TO THEME */
                 }
             }
 
             .x-grid3-td-path {
-                @include text(11px, _theme-color("secondary"), $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
+                @include text(11px, _color("secondary"), _weight("extralight")); /* TO THEME */
             }
         }
     }
@@ -3683,16 +3742,16 @@ body[data-indigo-gwt-side-panel="open"] {
 
     .x-window-bwrap {
         padding: 12px 8px 8px 8px;
-        color: _theme-color("black", d); /* TO THEME */
-        background: _theme-color("secondary", a);
+        color: _color("black", d); /* TO THEME */
+        background: _color("secondary", a);
     }
 
     .x-window-header {
         padding: 8px 0 !important;
-        font-family: $FONT--FAMILY---RALEWAY !important;
+        font-family: _font("raleway") !important;
         font-size: 32px;
-        color: _theme-color("secondary"); /* TO THEME */
-        font-weight: $FONT--WEIGHT---EXTRALIGHT;
+        color: _color("secondary"); /* TO THEME */
+        font-weight: _weight("extralight");
 
         .x-panel-toolbar {
             display: none;
@@ -3702,7 +3761,7 @@ body[data-indigo-gwt-side-panel="open"] {
     .x-panel-body.x-panel-body-noheader.x-panel-body-noborder .x-form-item {
         height: 22px;
         margin-bottom: 16px;
-        border-bottom: 1px dashed _theme-color("secondary", c); /* TO THEME */
+        border-bottom: 1px dashed _color("secondary", c); /* TO THEME */
         padding-bottom: 10px;
 
         label {
@@ -3721,7 +3780,7 @@ body[data-indigo-gwt-side-panel="open"] {
         > td div.x-form-field {
             font-size: 11px;
             font-weight: 600;
-            color: _theme-color("black", b); /* TO THEME */
+            color: _color("black", b); /* TO THEME */
             padding-right: 8px;
         }
 
@@ -3823,8 +3882,8 @@ body[data-indigo-gwt-side-panel="open"] {
         margin-right: 8px;
 
         .x-form-text {
-            background: _theme-color("secondary", g) !important;
-            color: _theme-color("primary") !important;
+            background: _color("secondary", g) !important;
+            color: _color("primary") !important;
         }
     }
 
@@ -3833,7 +3892,7 @@ body[data-indigo-gwt-side-panel="open"] {
     }
 
     div[role="combobox"] img {
-        background: url(../images/icons/combo-arrow-grey.png) no-repeat center center transparent !important; /* OPTIMISE URL ::: css/components/_build.scss ::: 33 */
+        background: url( _icon("arrowDown", "grey")) no-repeat center center transparent !important; /* OPTIMISE URL ::: css/components/_build.scss ::: 33 */
     }
 }
 
@@ -3849,7 +3908,7 @@ body[data-indigo-gwt-side-panel="open"] {
     }
 
     .x-window-header > .x-component:first-child table tbody tr td .x-tool-close {
-        background: url(../images/icons/icon-close-grey@X2.png) no-repeat center bottom; /* OPTIMISE URL ::: css/components/_build.scss ::: 34 */
+        background: url( _icon("closeLarge", "grey")) no-repeat center bottom; /* OPTIMISE URL ::: css/components/_build.scss ::: 34 */
         background-size: 20px;
         width: 25px;
         height: 25px;
@@ -3863,7 +3922,7 @@ body[data-indigo-gwt-side-panel="open"] {
     }
 
     .x-window-bwrap {
-        background: _theme-color("secondary");
+        background: _color("secondary");
         padding: 12px 0 8px 0;
 
         .x-window-body.x-window-body-noborder {
@@ -3881,7 +3940,7 @@ body[data-indigo-gwt-side-panel="open"] {
     }
 
     .x-toolbar {
-        background: _theme-color("secondary", a); /* TO THEME */
+        background: _color("secondary", a); /* TO THEME */
 
         .my-paging-display {
             text-transform: uppercase;
@@ -3910,7 +3969,7 @@ body[data-indigo-gwt-side-panel="open"] {
             margin-right: 10px;
 
             &.x-grid3-hd-over {
-                background: _theme-color("secondary", a); /* TO THEME */
+                background: _color("secondary", a); /* TO THEME */
             }
 
             div {
@@ -3927,9 +3986,9 @@ body[data-indigo-gwt-side-panel="open"] {
         display: inline-block;
 
         > div {
-            font-family: $FONT--FAMILY---NUNITO;
+            font-family: _font("nunito");
             font-size: 12px;
-            color: _theme-color("primary", a);
+            color: _color("primary", a);
             font-weight: 100;
         }
     }
@@ -3940,7 +3999,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
             div {
                 .x-grid3-hd-btn {
-                    background: url(../images/icons/combo-arrow-grey.png) no-repeat center center !important; /* OPTIMISE URL ::: css/components/_build.scss ::: 35 */
+                    background: url( _icon("arrowDown", "grey")) no-repeat center center !important; /* OPTIMISE URL ::: css/components/_build.scss ::: 35 */
                     width: 23px;
                     background-size: 13px !important;
                     opacity: 0.7;
@@ -3954,7 +4013,7 @@ body[data-indigo-gwt-side-panel="open"] {
                 }
 
                 .x-grid3-hd-btn:hover {
-                    background-color: _theme-color("secondary", b) !important; /* TO THEME */
+                    background-color: _color("secondary", b) !important; /* TO THEME */
                     background-size: 13px !important;
                     opacity: 1;
                 }
@@ -3987,7 +4046,7 @@ body[data-indigo-gwt-side-panel="open"] {
                 background: rgba(241, 241, 241, 0.8) !important; /* TO THEME */
 
                 .x-grid3-cell > div {
-                    color: _theme-color("primary", c) !important; /* TO THEME */
+                    color: _color("primary", c) !important; /* TO THEME */
                     font-weight: 700 !important;
                 }
 
@@ -4036,7 +4095,7 @@ body[data-indigo-gwt-side-panel="open"] {
             width: calc(100% + 10px) !important;
             padding: 8px 16px;
             margin: 6px 0;
-            border-bottom: 1px dashed _theme-color("secondary", d) !important;
+            border-bottom: 1px dashed _color("secondary", d) !important;
             margin-top: 4px;
             padding-top: 4px;
         }
@@ -4049,7 +4108,7 @@ body[data-indigo-gwt-side-panel="open"] {
     .x-small-editor.x-toolbar.x-component.x-toolbar-layout-ct {
         position: relative;
         z-index: 9999999;
-        background: _theme-color("secondary");
+        background: _color("secondary");
         width: 100% !important;
         padding: 2px 0;
         box-sizing: border-box;
@@ -4065,7 +4124,7 @@ body[data-indigo-gwt-side-panel="open"] {
             }
 
             &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 78 */
-                background: url(../images/icons/icon_arrow_left_double_grey@X2.png) no-repeat center center/14px 14px; /* OPTIMISE URL ::: css/components/_build.scss ::: 35 */
+                background: url( _icon("navFirst", "grey")) no-repeat center center/14px 14px; /* OPTIMISE URL ::: css/components/_build.scss ::: 35 */
                 margin-left: 0px;
             }
 
@@ -4075,17 +4134,17 @@ body[data-indigo-gwt-side-panel="open"] {
             }
 
             &:nth-child(8) { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 80 */
-                background: url(../images/icons/icon-next-grey@X2.png) no-repeat center center/14px 14px; /* OPTIMISE URL ::: css/components/_build.scss ::: 37 */
+                background: url( _icon("navNext", "grey")) no-repeat center center/14px 14px; /* OPTIMISE URL ::: css/components/_build.scss ::: 37 */
                 margin-right: 5px;
             }
 
             &:nth-child(9) { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 81 */
-                background: url(../images/icons/icon_arrow_right_double_grey@X2.png) no-repeat center center/14px 14px; /* OPTIMISE URL ::: css/components/_build.scss ::: 38 */
+                background: url( _icon("navLast", "grey")) no-repeat center center/14px 14px; /* OPTIMISE URL ::: css/components/_build.scss ::: 38 */
                 margin-right: 5px;
             }
 
             &:nth-child(11) { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 82 */
-                background: url(../images/icons/icon-publication-launcher-grey.png) no-repeat center center/16px 12px; /* OPTIMISE URL ::: css/components/_build.scss ::: 39 */
+                background: url( _icon("refresh", "grey")) no-repeat center center/16px 12px; /* OPTIMISE URL ::: css/components/_build.scss ::: 39 */
                 opacity: .52;
             }
 
@@ -4098,7 +4157,7 @@ body[data-indigo-gwt-side-panel="open"] {
             .gwt-TextBox {
                 font-family: "Nunito Sans", sans-serif;
                 font-size: 12px;
-                color: _theme-color("primary", g); /* TO THEME */
+                color: _color("primary", g); /* TO THEME */
                 font-weight: 100;
                 background: rgba(241, 241, 241, 0.7); /* TO THEME */
                 padding: 3px;
@@ -4119,12 +4178,12 @@ body[data-indigo-gwt-side-panel="open"] {
     }
 
     .x-form-field-wrap .x-form-text {
-        background: _theme-color("white");
-        color: _theme-color("primary");
+        background: _color("white");
+        color: _color("primary");
         margin-top: 5px;
 
         &.x-form-focus {
-            box-shadow: 0px 1px 2px _theme-color("black", b); /* TO THEME */
+            box-shadow: 0px 1px 2px _color("black", b); /* TO THEME */
         }
 
     }
@@ -4140,7 +4199,7 @@ body[data-indigo-gwt-side-panel="open"] {
         }
 
         &:nth-child(2) input { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 85 */
-            background-image: url(../images/tabs-search-dark@X2.png) !important; /* OPTIMISE URL ::: css/components/_build.scss ::: 40 */
+            background-image: url( _icon("search", "grey")) !important; /* OPTIMISE URL ::: css/components/_build.scss ::: 40 */
             background-repeat: no-repeat !important;
             background-position: left center !important;
             background-size: 23px !important;
@@ -4148,14 +4207,14 @@ body[data-indigo-gwt-side-panel="open"] {
             padding: 4px 5px 5px 24px !important;
             font-size: 12px;
             font-family: "Nunito Sans", sans-serif;
-            color: _theme-color("primary");
+            color: _color("primary");
             margin-top: 0;
         }
 
         &:nth-child(3) .x-btn-icon { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 86 */
             height: 27px;
             padding: 0 8px;
-            background: _theme-color("quinary");
+            background: _color("quinary");
             margin-left: -4px;
 
             &:before {
@@ -4165,7 +4224,7 @@ body[data-indigo-gwt-side-panel="open"] {
                 position: relative;
                 text-align: center;
                 font-size: 11px;
-                color: _theme-color("secondary", g);
+                color: _color("secondary", g);
             }
 
             > tbody {
@@ -4177,7 +4236,7 @@ body[data-indigo-gwt-side-panel="open"] {
     }
 
     div[role="combobox"] img {
-        background: url(../images/icons/combo-arrow-grey.png) no-repeat center center transparent !important; /* OPTIMISE URL ::: css/components/_build.scss ::: 41 */
+        background: url( _icon("arrowDown", "grey")) no-repeat center center transparent !important; /* OPTIMISE URL ::: css/components/_build.scss ::: 41 */
     }
 
 }
@@ -4189,8 +4248,8 @@ body[data-indigo-gwt-side-panel="open"] {
 
     .x-btn-noicon .x-btn-small .x-btn-text {
         padding: 6px 8px;
-        background: _theme-color("status", error); /* TO THEME */
-        color: _theme-color("secondary"); /* TO THEME */
+        background: _color("status", error); /* TO THEME */
+        color: _color("secondary"); /* TO THEME */
     }
 
 }
@@ -4243,7 +4302,7 @@ body[data-indigo-gwt-side-panel="open"] {
     .x-window-header .x-panel-toolbar {
 
         table tbody tr td .x-tool-close {
-            background: url(../images/icons/icon-close-grey@X2.png) no-repeat center top; /* OPTIMISE URL ::: css/components/_build.scss ::: 42 */
+            background: url( _icon("closeLarge", "grey")) no-repeat center top; /* OPTIMISE URL ::: css/components/_build.scss ::: 42 */
             background-size: 20px;
             width: 25px;
             height: 25px;
@@ -4278,7 +4337,7 @@ body[data-indigo-gwt-side-panel="open"] {
     }
 
     td.x-grid3-hd-menu-open .x-grid3-hd-inner {
-        background: _theme-color("secondary", a) !important;
+        background: _color("secondary", a) !important;
     }
 
     .x-grid3-header-inner {
@@ -4286,7 +4345,7 @@ body[data-indigo-gwt-side-panel="open"] {
     }
 
     .x-grid3-header-inner .x-grid3-hh > table > tbody td div .x-grid3-hd-btn { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 87 */
-        background: url(../images/icons/combo-arrow-grey.png) no-repeat center center !important; /* OPTIMISE URL ::: css/components/_build.scss ::: 43 */
+        background: url( _icon("arrowDown", "grey")) no-repeat center center !important; /* OPTIMISE URL ::: css/components/_build.scss ::: 43 */
         width: 23px;
         background-size: 13px !important;
         opacity: 0.7;
@@ -4316,7 +4375,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
         .x-grid3-hh {
             text-transform: uppercase;
-            color: _theme-color("black", c);
+            color: _color("black", c);
             margin: 2px 0;
 
             > table {
@@ -4442,7 +4501,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
     > .x-window-tl,
     > .x-window-bwrap {
-        background: _theme-color("white", normal) !important;
+        background: _color("white", normal) !important;
         width: 562px !important;
     }
 
@@ -4464,7 +4523,7 @@ body[data-indigo-gwt-side-panel="open"] {
     }
 
     textarea {
-        background: _theme-color("secondary", d);
+        background: _color("secondary", d);
         border: none !important;
         margin: 4px 0;
         box-sizing: border-box;
@@ -4481,8 +4540,8 @@ body[data-indigo-gwt-side-panel="open"] {
 
     .x-panel-fbar .x-btn.x-btn-noicon button {
         margin-top: 8px;
-        background: _theme-color("tertiary") !important;
-        color: _theme-color("secondary", a) !important;
+        background: _color("tertiary") !important;
+        color: _color("secondary", a) !important;
     }
 
     .x-window-footer table.x-toolbar-ct {
@@ -4499,7 +4558,7 @@ body[data-indigo-gwt-side-panel="open"] {
 }
 
 .x-window-plain.x-window-dlg span.ext-mb-text > span {
-    color: _theme-color("quaternary") !important;
+    color: _color("quaternary") !important;
     font-weight: 600;
     font-size: 13px;
     top: 2px;
@@ -4553,7 +4612,6 @@ body[data-indigo-gwt-side-panel="open"] {
     }
 
     .x-form-text {
-        @include text-input($EDIT-ENGINE);
         @include _input(LIGHT);
     }
 
@@ -4562,7 +4620,7 @@ body[data-indigo-gwt-side-panel="open"] {
     }
 
     div[role="combobox"] img {
-        background: url(../images/icons/combo-arrow-grey.png) no-repeat center center transparent !important; /* OPTIMISE URL ::: css/components/_build.scss ::: 47 */
+        background: url( _icon("arrowDown", "grey")) no-repeat center center transparent !important; /* OPTIMISE URL ::: css/components/_build.scss ::: 47 */
     }
 
 }
@@ -4635,8 +4693,8 @@ body[data-indigo-gwt-side-panel="open"] {
                 text-decoration: none;
                 font-size: 12px;
                 font-weight: 600;
-                color: _theme-color("tertiary");
-                border-bottom: 1px dashed _theme-color("tertiary");
+                color: _color("tertiary");
+                border-bottom: 1px dashed _color("tertiary");
             }
 
         }
@@ -4670,7 +4728,7 @@ body[data-indigo-gwt-side-panel="open"] {
 /////////////////////////////////////////////////
 
 .x-window.compare-engine {
-    background: _theme-color("primary", a) !important;
+    background: _color("primary", a) !important;
 
     label {
         color: #F5F5F5 !important;
@@ -4716,9 +4774,9 @@ body[data-indigo-gwt-side-panel="open"] {
 
     .x-panel-header,
     .x-toolbar {
-        background: _theme-color("primary", d); /* TO THEME */
-        border: 1px solid _theme-color("primary", d); /* TO THEME */
-        color: _theme-color("secondary"); /* TO THEME */
+        background: _color("primary", d); /* TO THEME */
+        border: 1px solid _color("primary", d); /* TO THEME */
+        color: _color("secondary"); /* TO THEME */
     }
 
     .x-panel-bwrap {
@@ -4754,17 +4812,17 @@ body[data-indigo-gwt-side-panel="open"] {
         }
 
         table.x-btn-pressed .x-btn-mc button.x-btn-text {
-            color: _theme-color("status", warning); /* TO THEME */
+            color: _color("status", warning); /* TO THEME */
         }
 
     }
 
     .x-panel:last-child { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 89 */
-        border-left: 1px solid _theme-color("primary", d); /* TO THEME */
+        border-left: 1px solid _color("primary", d); /* TO THEME */
     }
 
     .x-form-field-wrap.x-component {
-        background: _theme-color("secondary", a); /* TO THEME */
+        background: _color("secondary", a); /* TO THEME */
         margin-left: 12px;
     }
 
@@ -4832,9 +4890,9 @@ body[data-indigo-gwt-side-panel="open"] {
             position: fixed;
             left: 26px;
             top: 0px;
-            color: _property($TITLE--COLOR, $EDIT-ENGINE);
-            font-family: $FONT--FAMILY---RALEWAY;
-            font-weight: $FONT--WEIGHT---EXTRALIGHT;
+            color: _theme($TITLE--COLOR, $EDIT-ENGINE);
+            font-family: _font("raleway");
+            font-weight: _weight("extralight");
             display: block;
         }
 
@@ -4844,7 +4902,7 @@ body[data-indigo-gwt-side-panel="open"] {
             pointer-events: all;
 
             table tbody tr td .x-tool-close {
-                background: url(../images/icons/icon-close-grey@X2.png) no-repeat center bottom; /* OPTIMISE URL ::: css/components/_build.scss ::: 52 */
+                background: url( _icon("closeLarge", "grey")) no-repeat center bottom; /* OPTIMISE URL ::: css/components/_build.scss ::: 52 */
                 background-size: 20px;
                 width: 25px;
                 height: 25px;
@@ -4872,9 +4930,9 @@ body[data-indigo-gwt-side-panel="open"] {
     > .x-panel-bbar {
         display: block;
         position: fixed;
-        background: _property($FOOTER--BG, $EDIT-ENGINE);
-        border-top: 1px solid _theme-color("primary", g);
-        box-shadow: _property($FOOTER--SHADOW, $EDIT-ENGINE);
+        background: _theme($FOOTER--BG, $EDIT-ENGINE);
+        border-top: 1px solid _color("primary", g);
+        box-shadow: _theme($FOOTER--SHADOW, $EDIT-ENGINE);
         box-sizing: border-box;
         left: -30px;
         width: calc(100% + 60px) !important;
@@ -4941,14 +4999,14 @@ body[data-indigo-gwt-side-panel="open"] {
         }
 
         > .x-component.x-border-panel > .x-component > table tbody td.x-btn-mc:nth-child(2) { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 95 */
-            background: _theme-color("quaternary");
+            background: _color("quaternary");
             position: absolute;
             left: 224px;
             height: 29px;
             top: 8px;
 
             button {
-                color: _theme-color("secondary", g);
+                color: _color("secondary", g);
                 padding: 0 8px;
                 width: auto !important;
                 height: 29px;
@@ -4961,7 +5019,7 @@ body[data-indigo-gwt-side-panel="open"] {
         .x-component.x-border-panel:nth-child(2) { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 96 */
             margin-top: 28px;
             background: linear-gradient(to bottom, #dbdbdb 1%, #d5d5d5 100%);
-            box-shadow: inset 0 1px 2px 1px _theme-color("black", a);
+            box-shadow: inset 0 1px 2px 1px _color("black", a);
         }
 
         .x-form-label-left {
@@ -4980,7 +5038,7 @@ body[data-indigo-gwt-side-panel="open"] {
         textarea.x-form-field,
         div[role="combobox"] input.x-form-text {
             background: #f7f700;
-            color: _theme-color("primary");
+            color: _color("primary");
         }
 
         .x-form-readonly input {
@@ -5004,16 +5062,16 @@ body[data-indigo-gwt-side-panel="open"] {
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
 
     .x-info-tl {
-        background: _theme-color("primary", c) !important;
+        background: _color("primary", c) !important;
 
         .x-info-tr {
-            background: _theme-color("primary", c);
+            background: _color("primary", c);
 
             .x-info-tc {
-                background: _theme-color("primary", c);
+                background: _color("primary", c);
 
                 span {
-                    color: _theme-color("status", warning);
+                    color: _color("status", warning);
                     padding-left: 6px;
                 }
 
@@ -5024,13 +5082,13 @@ body[data-indigo-gwt-side-panel="open"] {
     }
 
     .x-info-ml {
-        background: _theme-color("primary", c) !important;
+        background: _color("primary", c) !important;
 
         .x-info-mr {
-            background: _theme-color("primary", c);
+            background: _color("primary", c);
 
             .x-info-mc {
-                background: _theme-color("primary", c);
+                background: _color("primary", c);
 
                 .x-info-body {
                     color: $color-white;
@@ -5039,9 +5097,9 @@ body[data-indigo-gwt-side-panel="open"] {
                     box-sizing: border-box;
 
                     .x-component {
-                        font-family: $FONT--FAMILY---NUNITO;
+                        font-family: _font("nunito");
                         font-size: 12px;
-                        font-weight: $FONT--WEIGHT---SEMIBOLD;
+                        font-weight: _weight("semibold");
                     }
 
                 }
@@ -5053,13 +5111,13 @@ body[data-indigo-gwt-side-panel="open"] {
     }
 
     .x-info-bl.x-info-nofooter {
-        background: _theme-color("primary", c);
+        background: _color("primary", c);
 
         .x-info-br {
-            background: _theme-color("primary", c);
+            background: _color("primary", c);
 
             .x-info-bc {
-                background: _theme-color("primary", c);
+                background: _color("primary", c);
             }
 
         }
@@ -5088,7 +5146,7 @@ body[data-indigo-gwt-side-panel="open"] {
             position: absolute;;
             top: 12px;
             left: 31px;
-            @include text(36px, _theme-color("primary"), $FONT--WEIGHT---LIGHT, $FONT--FAMILY---RALEWAY);
+            @include text(_size("big"), _color("primary"), _weight("light"), _font("raleway"));
             z-index: 999;
         }
 
@@ -5100,7 +5158,7 @@ body[data-indigo-gwt-side-panel="open"] {
         pointer-events: all;
 
         table tbody tr td .x-tool-close {
-            background: url(../images/icons/icon-close-grey@X2.png) no-repeat center top; /* OPTIMISE URL ::: css/components/_build.scss ::: 53 */
+            background: url( _icon("closeLarge", "grey")) no-repeat center top; /* OPTIMISE URL ::: css/components/_build.scss ::: 53 */
             background-size: 20px;
             width: 25px;
             height: 25px;

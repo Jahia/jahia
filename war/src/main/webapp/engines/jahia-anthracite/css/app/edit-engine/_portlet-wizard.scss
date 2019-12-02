@@ -4,7 +4,6 @@ div#JahiaGXTPortletWizardWindow {
     z-index: 11111111111 !important;
 
     .x-form-text {
-        @include text-input($EDIT-ENGINE);
         @include _input(LIGHT);
     }
 

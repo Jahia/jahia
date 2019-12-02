@@ -4,30 +4,30 @@
 
 // UP
 $TAB--BAR: (
-        LIGHT: _theme-color("secondary", a),
-        DARK: _theme-color("primary", g),
+        LIGHT: _color("secondary", a),
+        DARK: _color("primary", g),
 );
 
 $TAB--COLOR: (
-        LIGHT: _theme-color("primary", b),
-        DARK: _theme-color("primary", e),
+        LIGHT: _color("primary", b),
+        DARK: _color("primary", e),
 );
 
 // HOVER
 $TAB--BAR---HOVER: (
-        LIGHT: _theme-color("quinary"),
-        DARK: _theme-color("secondary"),
+        LIGHT: _color("quinary"),
+        DARK: _color("secondary"),
 );
 
 $TAB--COLOR---HOVER: (
-        LIGHT: _theme-color("tertiary", normal),
-        DARK: _theme-color("tertiary", normal),
+        LIGHT: _color("tertiary", normal),
+        DARK: _color("tertiary", normal),
 );
 
 // SELECTED
 $TAB--BAR---SELECTED: (
-        LIGHT: _theme-color("quinary"),
-        DARK: _theme-color("secondary"),
+        LIGHT: _color("quinary"),
+        DARK: _color("secondary"),
 );
 
 $TAB--COLOR---SELECTED: (
@@ -37,8 +37,8 @@ $TAB--COLOR---SELECTED: (
 
 // SELECTED HOVER
 $TAB--BAR---SELECTED-HOVER: (
-        LIGHT: _theme-color("quinary"),
-        DARK: _theme-color("secondary"),
+        LIGHT: _color("quinary"),
+        DARK: _color("secondary"),
 );
 
 $TAB--COLOR---SELECTED-HOVER: (

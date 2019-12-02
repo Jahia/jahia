@@ -121,7 +121,7 @@ div.engine-window {
             position: relative;
             z-index: 98;
             left: 11px;
-            box-shadow: 1px 2px 1px 0px _theme-color("black", b);
+            box-shadow: 1px 2px 1px 0px _color("black", b);
             transition: left 0.3s ease, background 0.3s ease, box-shadow 0.1s ease;
             border: 1px solid #5ddf15;
 
@@ -196,7 +196,7 @@ div.engine-window {
                     width: 100%;
                     height: auto;
                     border: none;
-                    // border-left: 1px solid _property($TAB--BAR, $EDIT-ENGINE);
+                    // border-left: 1px solid _theme($TAB--BAR, $EDIT-ENGINE);
                     background: none;
                     padding: 0 0 0 5px;
                     margin: 110px 0 0 0;
@@ -208,7 +208,7 @@ div.engine-window {
                         display: block;
 
                         &.x-tab-strip-active {
-                            background: _theme-color("tertiary", normal);
+                            background: _color("tertiary", normal);
                         }
 
                         .x-tab-right {
@@ -259,13 +259,61 @@ div.engine-window {
                 &.WIP-all-content {
                     .x-form-item.x-form-item.prop-i18n-field,
                     .x-form-item.x-form-item.prop-field {
-                        @extend %HIGHLIGHT--WIP-FIELDS;
+                        background: rgba(255, 255, 0, 0.42);
+                        padding: 10px 20px 20px 20px !important;
+                        left: -10px;
+                        position: relative;
+                        border: 1px solid #f7f700;
+                        box-shadow: 2px 2px 2px rgba(38, 38, 38, 0.2);
+
+                        .x-form-item-label.x-form-item-label {
+                            display: inline-block !important;
+                            width: auto !important;
+                            position: relative;
+                            color: _color("septenary", b);
+
+                            img {
+                                position: absolute;
+                                right: -16px;
+                                top: 6px;
+                            }
+
+                            &::after {
+                                content: _dictionary("work_in_progress");
+                                margin-left: 5px;
+                                font-weight: 800;
+                            }
+                        }
                     }
                 }
 
                 &.WIP-i18n {
                     .x-form-item.x-form-item.prop-i18n-field {
-                        @extend %HIGHLIGHT--WIP-FIELDS;
+                        background: rgba(255, 255, 0, 0.42);
+                        padding: 10px 20px 20px 20px !important;
+                        left: -10px;
+                        position: relative;
+                        border: 1px solid #f7f700;
+                        box-shadow: 2px 2px 2px rgba(38, 38, 38, 0.2);
+
+                        .x-form-item-label.x-form-item-label {
+                            display: inline-block !important;
+                            width: auto !important;
+                            position: relative;
+                            color: _color("septenary", b);
+
+                            img {
+                                position: absolute;
+                                right: -16px;
+                                top: 6px;
+                            }
+
+                            &::after {
+                                content: _dictionary("work_in_progress");
+                                margin-left: 5px;
+                                font-weight: 800;
+                            }
+                        }
                     }
                 }
 
@@ -307,7 +355,6 @@ div.engine-window {
     }
 
     .x-form-text {
-        @include text-input($EDIT-ENGINE);
         @include _input(LIGHT);
     }
 
@@ -342,10 +389,10 @@ div.engine-window {
 
     &:not(.hide-headers) {
       &:before {
-        content: $text_edit_engine;
+        content: _dictionary("edit_engine");
         font-size: 36px;
         display: inline-block;
-        color: _property($TITLE--COLOR, $EDIT-ENGINE);
+        color: _theme($TITLE--COLOR, $EDIT-ENGINE);
         margin-left: -2px;
         margin-right: 15px;
         margin-top: 15px;
@@ -365,7 +412,7 @@ div.engine-window {
 
     &.createcontentengine-ctn {
         &:before {
-            content: $text_edit_engine_create;
+            content: _dictionary("edit_engine_create");
         }
 
         .x-panel-header-text {
@@ -378,7 +425,7 @@ div.engine-window {
             text-overflow: ellipsis !important;
             white-space: nowrap !important;
             padding: 0 !important;
-            @include text(18px !important, _theme-color("quinary") !important, $FONT--WEIGHT---EXTRALIGHT !important);
+            @include text(_size("medium") !important, _color("quinary") !important, _weight("extralight") !important);
 
             &:before {
                 display: none !important;
@@ -449,13 +496,13 @@ div.engine-window {
                 }
 
                 .gwt-HTML {
-                    @include text(12px, _property($PARAGRAPH--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMILIGHT);
+                    @include text(_size("small"), _theme($PARAGRAPH--COLOR, $EDIT-ENGINE), _weight("semilight"));
 
                     b {
                         width: 150px;
                         display: inline-block;
 
-                        @extend %FORM--LABEL !optional;
+                        @include _label("normal");
                     }
                 }
             }
@@ -471,7 +518,8 @@ div.engine-window {
 
     .x-form-readonly {
         .x-form-text {
-            @extend %FORM--TEXT_INPUT---DISABLED\:EDIT_ENGINE !optional;
+            background: _theme($INPUT--BG---DISABLED, $EDIT-ENGINE);
+            @include text(13px, _theme($INPUT--COLOR---DISABLED, $EDIT-ENGINE) !important, _weight("semilight"));
 
             box-shadow: none !important;
             background: transparent !important;
@@ -489,25 +537,27 @@ div.engine-window {
     ////////// TABS
     .x-tab-strip .x-tab-strip-text {
         // At last the button label !!
-        @extend %EDIT_ENGINE--TAB_BUTTON;
+        padding: 5px 0 5px 8px;
+
+        @include text(_size("normal"), _theme($TAB--COLOR, $EDIT-ENGINE), _weight("light"));
     }
 
     ////////// TAB OVER
     .x-tab-strip-over .x-tab-strip-text {
         // At last the button label !!
-        @extend %EDIT_ENGINE--TAB_BUTTON---HOVER;
+        @include text(_size("normal"), _theme($TAB--COLOR---HOVER, $EDIT-ENGINE) !important, _weight("light"));
     }
 
     ////////// TAB SELECTED
     .x-tab-strip-active .x-tab-strip-text {
         // At last the button label !!
-        @extend %EDIT_ENGINE--TAB_BUTTON---SELECTED;
+        @include text(_size("normal"), _theme($TAB--COLOR---SELECTED, $EDIT-ENGINE) !important, _weight("light"));
     }
 
     ////////// TAB SELECTED & HOVER
     .x-tab-strip-active.x-tab-strip-over .x-tab-strip-text {
         // At last the button label !!
-        @extend %EDIT_ENGINE--TAB_BUTTON---HOVER_SELECTED;
+        @include text(_size("normal"), _theme($TAB--COLOR---SELECTED-HOVER, $EDIT-ENGINE) !important, _weight("light"));
     }
 
     ////////// PERSONALISED TABS
@@ -532,7 +582,7 @@ div.engine-window {
                 }
 
                 img.x-form-clear-trigger {
-                    background-image: url($ICON--CLOSE_LARGE---GREY) !important;
+                    background-image: url(_icon("closeLarge", "grey")) !important;
                     background-size: 8px 8px !important;
                     background-position: center top 8px !important;
                     opacity: 1;
@@ -567,15 +617,15 @@ div.engine-window {
 
                         .x-column {
                             // Tag Element
-                            background: _property($BUTTON--BG, $EDIT-ENGINE) !important;
+                            background: _theme($BUTTON--BG, $EDIT-ENGINE) !important;
 
                             .x-component {
-                                @include text(12px, _property($BUTTON--COLOR, $EDIT-ENGINE) !important, $FONT--WEIGHT---SEMILIGHT);
+                                @include text(_size("small"), _theme($BUTTON--COLOR, $EDIT-ENGINE) !important, _weight("semilight"));
 
                             }
 
                             button {
-                                background: url($ICON--CLOSE_LARGE---WHITE) no-repeat center top 8px;
+                                background: url(_icon("closeLarge", "white")) no-repeat center top 8px;
                                 background-size: 8px 8px;
                                 padding-left: 23px;
                                 box-sizing: border-box;
@@ -691,7 +741,7 @@ div.engine-window {
             padding: 37px 0 0 42px;
 
             // Styles the Lock message
-            @include text(14px, _theme-color("status", locked), $FONT--WEIGHT---EXTRABOLD);
+            @include text(_size("normal"), _color("status", locked), _weight("extrabold"));
 
             // Node Friendly Name
             &::before {
@@ -705,7 +755,7 @@ div.engine-window {
                 text-overflow: ellipsis;
                 white-space: nowrap;
 
-                @include text(18px !important, _theme-color("tertiary", normal), $FONT--WEIGHT---EXTRALIGHT);
+                @include text(_size("medium") !important, _color("tertiary", normal), _weight("extralight"));
             }
 
             // Add Locked icon if the node has been locked
@@ -721,7 +771,7 @@ div.engine-window {
                 &::before {
                     background-image: url(../images/icons_red/markefordelete.svg); /* OPTIMISE URL ::: css/app/edit-engine/_main.scss ::: 2 */
                     text-decoration: line-through;
-                    color: _theme-color("status", error);
+                    color: _color("status", error);
                 }
             }
 
@@ -731,9 +781,9 @@ div.engine-window {
                 &.hover-info,
                 &:hover {
                     white-space: pre-wrap;
-                    background-color: _theme-color("secondary", normal);
+                    background-color: _color("secondary", normal);
                     padding: 16px 20px 16px 22px;
-                    box-shadow: 3px 3px 10px _theme-color("black", b);
+                    box-shadow: 3px 3px 10px _color("black", b);
                     height: auto !important;
                     left: 49px;
                     top: 100px;
@@ -787,9 +837,9 @@ div.engine-window {
             // Footer action bar
             display: block;
             position: fixed;
-            background: _property($FOOTER--BG, $EDIT-ENGINE);
-            border-top: 1px solid _theme-color("primary", g);
-            box-shadow: _property($FOOTER--SHADOW, $EDIT-ENGINE);
+            background: _theme($FOOTER--BG, $EDIT-ENGINE);
+            border-top: 1px solid _color("primary", g);
+            box-shadow: _theme($FOOTER--SHADOW, $EDIT-ENGINE);
             box-sizing: border-box;
             left: -30px;
             width: calc(100% + 60px) !important;
@@ -873,6 +923,6 @@ div.engine-window {
 
 .JahiaEditEngineButtonBar {
     label {
-        @include text(14px, #F5F5F5 !important, $FONT--WEIGHT---LIGHT);
+        @include text(_size("normal"), #F5F5F5 !important, _weight("light"));
     }
 }

@@ -21,7 +21,7 @@ div.engine-window {
             padding: 14px 0 0 25px !important;
 
             .x-panel-header-text {
-                @include text(18px, _theme-color("primary", normal), $FONT--WEIGHT---LIGHT);
+                @include text(_size("medium"), _color("primary", normal), _weight("light"));
             }
 
         }
@@ -45,13 +45,13 @@ div.engine-window {
                         height: 30px;
 
                         &:before {
-                            content: $text_select_category_from_list;
+                            content: _dictionary("select_category_from_list");
                             display: block;
                             position: relative;
                             padding-top: 5px;
                             font-style: italic;
 
-                            @include text(12px, _property($TITLE--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---NORMAL);
+                            @include text(_size("small"), _theme($TITLE--COLOR, $EDIT-ENGINE), _weight("normal"));
                         }
                     }
                 }
@@ -69,7 +69,7 @@ div.engine-window {
                         right: 0 !important;
                         left: auto !important;
                         top: 2px !important;
-                        background: url($ICON--CLOSE_LARGE---WHITE) no-repeat center center !important;
+                        background: url(_icon("closeLarge", "white")) no-repeat center center !important;
                         background-size: 10px !important;
                         box-sizing: border-box;
                         width: 23px !important;
@@ -83,9 +83,9 @@ div.engine-window {
             &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-categories.scss ::: 2 */
                 // All Categories
                 &::before {
-                    content: $text_available_categories;
+                    content: _dictionary("available_categories");
                     display: block;
-                    @include text(12px, _property($FIELDSET--TITLE-COLOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
+                    @include text(_size("small"), _theme($FIELDSET--TITLE-COLOR, $EDIT-ENGINE), _weight("extralight"));
                 }
 
                 position: relative !important;
@@ -107,7 +107,7 @@ div.engine-window {
                     }
 
                     label {
-                        color: _property($LIST-BOX--ROW--COLOR, $EDIT-ENGINE);
+                        color: _theme($LIST-BOX--ROW--COLOR, $EDIT-ENGINE);
                     }
                 }
 

@@ -8,14 +8,14 @@
     box-sizing: border-box;
     display: block;
     padding: 7px 20px 6px 10px !important;
-    background: url(_property($MENU-CLOSED--ARROW, $type)) no-repeat right 5px center, _property($MENU-CLOSED--BG, $type);
+    background: url(_theme($MENU-CLOSED--ARROW, $type)) no-repeat right 5px center, _theme($MENU-CLOSED--BG, $type);
 
     &:hover {
-        box-shadow: _property($MENU-CLOSED--SHADOW---HOVER, $type);
+        box-shadow: _theme($MENU-CLOSED--SHADOW---HOVER, $type);
 
     }
 
-    @include text(12px, _property($MENU-CLOSED--COLOR, $type), $FONT--WEIGHT---EXTRALIGHT);
+    @include text(_size("small"), _theme($MENU-CLOSED--COLOR, $type), _weight("extralight"));
 }
 
 @mixin _drop-down($type: $APP) {
@@ -29,25 +29,25 @@
 
         pointer-events: none; // Force Drop Down style when neccessary
 
-        background: _property($MENU-CLOSED--BG, $type);
-        box-shadow: _property($MENU-CLOSED--SHADOW, $type);
+        background: _theme($MENU-CLOSED--BG, $type);
+        box-shadow: _theme($MENU-CLOSED--SHADOW, $type);
 
-        @include text(12px, _property($MENU-CLOSED--COLOR, $type), $FONT--WEIGHT---EXTRALIGHT);
+        @include text(_size("small"), _theme($MENU-CLOSED--COLOR, $type), _weight("extralight"));
 
         &::-webkit-input-placeholder {
-            color: _property($MENU-CLOSED--COLOR, $type);
+            color: _theme($MENU-CLOSED--COLOR, $type);
         }
 
         &:-moz-placeholder {
-            color: _property($MENU-CLOSED--COLOR, $type);
+            color: _theme($MENU-CLOSED--COLOR, $type);
         }
 
         &::-moz-placeholder {
-            color: _property($MENU-CLOSED--COLOR, $type);
+            color: _theme($MENU-CLOSED--COLOR, $type);
         }
 
         &:-ms-input-placeholder {
-            color: _property($MENU-CLOSED--COLOR, $type);
+            color: _theme($MENU-CLOSED--COLOR, $type);
         }
 
     }
@@ -61,19 +61,19 @@
         height: 100% !important;
         border: none !important;
 
-        background: url(_property($MENU-CLOSED--ARROW, $type)) no-repeat right 5px center !important;
+        background: url(_theme($MENU-CLOSED--ARROW, $type)) no-repeat right 5px center !important;
 
     }
 
     &:hover {
         input.x-form-text {
-            color: _property($MENU-CLOSED--COLOR---HOVER, $type);
-            background: _property($MENU-CLOSED--BG---HOVER, $type);
-            box-shadow: _property($MENU-CLOSED--SHADOW---HOVER, $type);
+            color: _theme($MENU-CLOSED--COLOR---HOVER, $type);
+            background: _theme($MENU-CLOSED--BG---HOVER, $type);
+            box-shadow: _theme($MENU-CLOSED--SHADOW---HOVER, $type);
         }
 
         img {
-            background-image: _property($MENU-CLOSED--ARROW---HOVER, $type);
+            background-image: _theme($MENU-CLOSED--ARROW---HOVER, $type);
             background-color: transparent !important;
         }
     }
@@ -94,25 +94,25 @@
 
         pointer-events: none; // Force Drop Down style when neccessary
 
-        background: _property($MENU-MUTED-CLOSED--BG, $type);
-        box-shadow: _property($MENU-MUTED-CLOSED--SHADOW, $type);
+        background: _theme($MENU-MUTED-CLOSED--BG, $type);
+        box-shadow: _theme($MENU-MUTED-CLOSED--SHADOW, $type);
 
-        @include text(12px, _property($MENU-MUTED-CLOSED--COLOR, $type), $FONT--WEIGHT---EXTRALIGHT);
+        @include text(_size("small"), _theme($MENU-MUTED-CLOSED--COLOR, $type), _weight("extralight"));
 
         &::-webkit-input-placeholder {
-            color: _property($MENU-MUTED-CLOSED--COLOR, $type);
+            color: _theme($MENU-MUTED-CLOSED--COLOR, $type);
         }
 
         &:-moz-placeholder {
-            color: _property($MENU-MUTED-CLOSED--COLOR, $type);
+            color: _theme($MENU-MUTED-CLOSED--COLOR, $type);
         }
 
         &::-moz-placeholder {
-            color: _property($MENU-MUTED-CLOSED--COLOR, $type);
+            color: _theme($MENU-MUTED-CLOSED--COLOR, $type);
         }
 
         &:-ms-input-placeholder {
-            color: _property($MENU-MUTED-CLOSED--COLOR, $type);
+            color: _theme($MENU-MUTED-CLOSED--COLOR, $type);
         }
 
     }
@@ -126,19 +126,19 @@
         height: 100% !important;
         border: none !important;
 
-        background: url(_property($MENU-MUTED-CLOSED--ARROW, $type)) no-repeat right 5px center !important;
+        background: url(_theme($MENU-MUTED-CLOSED--ARROW, $type)) no-repeat right 5px center !important;
 
     }
 
     &:hover {
         input.x-form-text {
-            color: _property($MENU-MUTED-CLOSED--COLOR---HOVER, $type);
-            background: _property($MENU-MUTED-CLOSED--BG---HOVER, $type);
-            box-shadow: _property($MENU-MUTED-CLOSED--SHADOW---HOVER, $type);
+            color: _theme($MENU-MUTED-CLOSED--COLOR---HOVER, $type);
+            background: _theme($MENU-MUTED-CLOSED--BG---HOVER, $type);
+            box-shadow: _theme($MENU-MUTED-CLOSED--SHADOW---HOVER, $type);
         }
 
         img {
-            background-image: _property($MENU-MUTED-CLOSED--ARROW---HOVER, $type);
+            background-image: _theme($MENU-MUTED-CLOSED--ARROW---HOVER, $type);
             background-color: transparent !important;
         }
     }

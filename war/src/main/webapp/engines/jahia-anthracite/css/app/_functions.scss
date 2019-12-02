@@ -1,0 +1,52 @@
+/****************************/
+/* FUNCTIONS  */
+/****************************/
+
+@function _transition($property, $speed, $delaySpeed: "immediate"){
+    $speed-in: map-get($speeds, $speed);
+    $speed-delay: map-get($speeds, $delaySpeed);
+
+    @return unquote($property) $speed-in ease-in $speed-delay;
+};
+
+@function _theme($variable, $context) {
+    @return map-get($variable, $context);
+}
+
+@function _color($color-name, $color-variant: normal) {
+    $color_map: map-get($colors, $color-name);
+    $color: map-get($color_map, $color-variant);
+
+    @return $color;
+}
+
+@function _icon($icon-name, $icon-variant){
+    $icon_map: map-get($icons, $icon-name);
+    $icon: map-get($icon_map, $icon-variant);
+
+    @return $icon;
+}
+
+@function _size($variant){
+    $size: map-get($sizes, $variant);
+
+    @return $size;
+}
+
+@function _font($variant){
+    $font: map-get($fonts, $variant);
+
+    @return unquote($font);
+}
+
+@function _weight($variant){
+    $weight: map-get($weights, $variant);
+
+    @return $weight;
+}
+
+@function _dictionary($word){
+    $string: map-get($dictionary, $word);
+
+    @return $string;
+}

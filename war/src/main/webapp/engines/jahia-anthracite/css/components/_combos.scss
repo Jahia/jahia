@@ -13,13 +13,13 @@
         height: auto !important;
 
         &::before {
-            background: _property($MENU-TITLE--BG, $type);
+            background: _theme($MENU-TITLE--BG, $type);
             width: 100%;
             display: block;
             padding: 3px 8px;
             font-family: "Nunito Sans";
             font-size: 9px;
-            color: _property($MENU-TITLE--COLOR, $type);
+            color: _theme($MENU-TITLE--COLOR, $type);
             text-transform: uppercase;
             font-weight: 600;
             z-index: $ZINDEX--CONTEXT_MENU---TITLE;
@@ -33,7 +33,7 @@
             border: none;
             display: block;
             text-align: left !important;
-            background: _property($MENU-OPENED--BG, $type);
+            background: _theme($MENU-OPENED--BG, $type);
             padding: 8px 9px 8px 24px !important;
             border: none;
             background-image: url(../images/icons/context-menu/placeholder.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 1 */
@@ -53,14 +53,14 @@
                 background-size: 13px;
             }
 
-            @include text(13px, _property($MENU-OPENED--COLOR, $type), $FONT--WEIGHT---LIGHT);
+            @include text(13px, _theme($MENU-OPENED--COLOR, $type), _weight("light"));
 
             &.toolbar-item-editcontent, /* OPTIMISE SELECTOR ::: css/components/_combos.scss ::: 1 */
             &.toolbar-item-editsourcecontent, /* OPTIMISE SELECTOR ::: css/components/_combos.scss ::: 2 */
             &.toolbar-item-editcontentrootnodeeditable { /* OPTIMISE SELECTOR ::: css/components/_combos.scss ::: 3 */
                 /* OPTIMISE NOTE ::: replace #1/#2/#3 classes with one classname */
                 background-image: url(../images/icons/context-menu/edit.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 3 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -72,7 +72,7 @@
             &.toolbar-item-deletepermanentlynomarkfordeletion { /* OPTIMISE SELECTOR ::: css/components/_combos.scss ::: 6 */
                 /* OPTIMISE NOTE ::: replace #4/#5/#6 classes with one classname */
                 background-image: url(../images/icons/context-menu/delete.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 4 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -83,7 +83,7 @@
             &.toolbar-item-webdavurlcopy { /* OPTIMISE SELECTOR ::: css/components/_combos.scss ::: 8 */
                 /* OPTIMISE NOTE ::: replace #7/#8 classes with one classname */
                 background-image: url(../images/icons/context-menu/copy.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 5 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -92,7 +92,7 @@
 
             &.toolbar-item-cut {
                 background-image: url(../images/icons/context-menu/cut.svg); /* OPTIMISE URL ::: css/components/_combos.scss ::: 6 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -101,7 +101,7 @@
 
             &.toolbar-item-crop {
                 background-image: url(../images/icons/context-menu/crop.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 7 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -110,7 +110,7 @@
 
             &.toolbar-item-rename {
                 background-image: url(../images/icons/context-menu/rename.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 8 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -119,7 +119,7 @@
 
             &.toolbar-item-resize {
                 background-image: url(../images/icons/context-menu/resize.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 9 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -128,7 +128,7 @@
 
             &.toolbar-item-rotate {
                 background-image: url(../images/icons/context-menu/rotate-right.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 101 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -140,7 +140,7 @@
             &.toolbar-item-flushall { /* OPTIMISE SELECTOR ::: css/components/_combos.scss ::: 11 */
                 /* OPTIMISE NOTE ::: replace #9/#10/#11 classes with one classname */
                 background-image: url(../images/icons/context-menu/delete-outline.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 11 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -152,7 +152,7 @@
             &.toolbar-item-pastereference { /* OPTIMISE SELECTOR ::: css/components/_combos.scss ::: 14 */
                 /* OPTIMISE NOTE ::: replace #12/#13/#14 classes with one classname */
                 background-image: url(../images/icons/context-menu/paste.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 12 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -178,7 +178,7 @@
             &.toolbar-item-publishsiteinalllanguages { /* OPTIMISE SELECTOR ::: css/components/_combos.scss ::: 31 */
                 /* OPTIMISE NOTE ::: replace #15 > #31 classes with one classname */
                 background-image: url(../images/icons/context-menu/publish.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 13 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -205,7 +205,7 @@
             &.toolbar-item-unpublishinalllanguages { /* OPTIMISE SELECTOR ::: css/components/_combos.scss ::: 37 */
                 /* OPTIMISE NOTE ::: replace #36/37 classes with one classname */
                 background-image: url(../images/icons_light/unpublish.svg); /* OPTIMISE URL ::: css/components/_combos.scss ::: 15 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -214,7 +214,7 @@
 
             &.toolbar-item-lock {
                 background-image: url(../images/icons/context-menu/lock.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 16 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -223,7 +223,7 @@
 
             &.toolbar-item-unlock {
                 background-image: url(../images/icons/context-menu/unlock.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 17 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -232,7 +232,7 @@
 
             &.toolbar-item-publicationmanager {
                 background-image: url(../images/icons/context-menu/publication-manager.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 18 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -241,7 +241,7 @@
 
             &.toolbar-item-workflowdashboard {
                 background-image: url(../images/icons/context-menu/workflow.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 19 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -253,7 +253,7 @@
             &.toolbar-item-openincontentmanager-newtab { /* OPTIMISE SELECTOR ::: css/components/_combos.scss ::: 40 */
                 /* OPTIMISE NOTE ::: replace #38/#39/#40 classes with one classname */
                 background-image: url(../images/icons/context-menu/preview.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 20 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -262,7 +262,7 @@
 
             &.toolbar-item-export {
                 background-image: url(../images/icons/context-menu/export.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 21 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -271,7 +271,7 @@
 
             &.toolbar-item-import {
                 background-image: url(../images/icons/context-menu/import.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 22 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -280,7 +280,7 @@
 
             &.toolbar-item-update {
                 background-image: url(../images/icons/context-menu/import-export.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 23 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -291,7 +291,7 @@
             &.toolbar-item-translatemenu-item { /* OPTIMISE SELECTOR ::: css/components/_combos.scss ::: 42 */
                 /* OPTIMISE NOTE ::: replace #41/#42 classes with one classname */
                 background-image: url(../images/icons/context-menu/translate.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 24 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -312,7 +312,7 @@
 
             &.toolbar-item-pagestab-addmenu {
                 background-image: url(../images/icons/context-menu/add.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 26 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -333,7 +333,7 @@
 
             &.toolbar-item-live {
                 background-image: url(../images/icons/context-menu/live.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 28 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -354,7 +354,7 @@
 
             &.toolbar-item-preview {
                 background-image: url(../images/icons/context-menu/preview.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 30 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -375,7 +375,7 @@
 
             &.toolbar-item-gotoviewdefinition {
                 background-image: url(../images/icons/context-menu/view-source.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 32 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -384,7 +384,7 @@
 
             &.toolbar-item-gotocontent {
                 background-image: url(../images/icons/context-menu/arrow-right.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 33 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -395,7 +395,7 @@
             &.toolbar-item-newcategory { /* OPTIMISE SELECTOR ::: css/components/_combos.scss ::: 44 */
                 /* OPTIMISE NOTE ::: replace #43/#44 classes with one classname */
                 background-image: url(../images/icons/context-menu/new-page.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 34 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -404,7 +404,7 @@
 
             &.toolbar-item-newinternallink {
                 background-image: url(../images/icons/context-menu/link.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 35 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -413,7 +413,7 @@
 
             &.toolbar-item-newexternallink {
                 background-image: url(../images/icons/context-menu/link.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 36 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -422,7 +422,7 @@
 
             &.toolbar-item-navmenutext {
                 background-image: url(../images/icons/context-menu/menu-label.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 37 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -431,7 +431,7 @@
 
             &.toolbar-item-undelete {
                 background-image: url(../images/icons/context-menu/undo.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 38 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -442,7 +442,7 @@
             &.toolbar-item-clearalllocks { /* OPTIMISE SELECTOR ::: css/components/_combos.scss ::: 46 */
                 /* OPTIMISE NOTE ::: replace #45/#46 classes with one classname */
                 background-image: url(../images/icons/context-menu/unlock.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 39 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -453,7 +453,7 @@
             &.toolbar-item-newcontentfolder { /* OPTIMISE SELECTOR ::: css/components/_combos.scss ::: 48 */
                 /* OPTIMISE NOTE ::: replace #47/#48 classes with one classname */
                 background-image: url(../images/icons/context-menu/new-folder.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 40 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -462,7 +462,7 @@
 
             &.toolbar-item-newcontent {
                 background-image: url(../images/icons/context-menu/new-content.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 41 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -471,7 +471,7 @@
 
             &.toolbar-item-download {
                 background-image: url(../images/icons/context-menu/download.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 42 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -480,7 +480,7 @@
 
             &.toolbar-item-upload {
                 background-image: url(../images/icons/context-menu/upload.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 43 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -489,7 +489,7 @@
 
             &.toolbar-item-zip {
                 background-image: url(../images/icons/context-menu/zip.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 44 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -498,7 +498,7 @@
 
             &.toolbar-item-unzip {
                 background-image: url(../images/icons/context-menu/unzip.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 45 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -507,7 +507,7 @@
 
             &.toolbar-item-previewasguest {
                 background-image: url(../images/icons/context-menu/custom-preview.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 46 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -518,7 +518,7 @@
             &.toolbar-item-showversionengine { /* OPTIMISE SELECTOR ::: css/components/_combos.scss ::: 50 */
                 /* OPTIMISE NOTE ::: replace #49/#50 classes with one classname */
                 background-image: url(../images/icons/context-menu/compare.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 47 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -527,7 +527,7 @@
 
             &.toolbar-item-showconsultpreviousversionengine {
                 background-image: url(../images/icons/context-menu/published-versions.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 48 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -538,7 +538,7 @@
             &.toolbar-item-preview-openWindow { /* OPTIMISE SELECTOR ::: css/components/_combos.scss ::: 52 */
                 /* OPTIMISE NOTE ::: replace #51/#52 classes with one classname */
                 background-image: url(../images/icons/context-menu/open-new.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 49 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -547,7 +547,7 @@
 
             &.toolbar-item-newportletfolder {
                 background-image: url(../images/buttons_light/new-content-folder.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 50 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -556,7 +556,7 @@
 
             &.toolbar-item-newportlet {
                 background-image: url(../images/buttons_light/new-portlet.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 52 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -565,7 +565,7 @@
 
             &.toolbar-item-refresh {
                 background-image: url(../images/icons_light/refresh.svg); /* OPTIMISE URL ::: css/components/_combos.scss ::: 53 */
-                background-color: _property($MENU-OPENED--BG, $type);
+                background-color: _theme($MENU-OPENED--BG, $type);
                 background-position-x: 5px;
                 background-position-y: 7px;
                 background-repeat: no-repeat;
@@ -575,10 +575,10 @@
 
         &.x-item-disabled {
             .x-menu-item {
-                color: _property($MENU-OPENED--COLOR---DISABLED, $type) !important;
+                color: _theme($MENU-OPENED--COLOR---DISABLED, $type) !important;
                 font-style: italic;
                 opacity: 1;
-                background-color: _property($MENU-OPENED--BG---DISABLED, $type);
+                background-color: _theme($MENU-OPENED--BG---DISABLED, $type);
                 display: none;
 
                 &.x-menu-check-item {
@@ -590,8 +590,8 @@
 
         &.x-menu-item-active {
             .x-menu-item {
-                color: _property($MENU-OPENED--COLOR---HOVER, $type);
-                background-color: _property($MENU-OPENED--BG---HOVER, $type);
+                color: _theme($MENU-OPENED--COLOR---HOVER, $type);
+                background-color: _theme($MENU-OPENED--BG---HOVER, $type);
             }
         }
     }
@@ -620,11 +620,11 @@
                 /* List item when normal Thumbed Combo
                    Actual Label of Combo Item */
                 text-align: left !important;
-                background: _property($MENU-OPENED--BG, $type);
+                background: _theme($MENU-OPENED--BG, $type);
                 padding: 8px 9px !important;
                 border: none;
 
-                @include text(13px, _property($MENU-OPENED--COLOR, $type), $FONT--WEIGHT---LIGHT);
+                @include text(13px, _theme($MENU-OPENED--COLOR, $type), _weight("light"));
             }
 
             &.x-combo-selected {
@@ -633,8 +633,8 @@
 
                 .x-editable {
                     /* List item when normal Thumbed Combo */
-                    color: _property($MENU-OPENED--COLOR---HOVER, $type);
-                    background: _property($MENU-OPENED--BG---HOVER, $type);
+                    color: _theme($MENU-OPENED--COLOR---HOVER, $type);
+                    background: _theme($MENU-OPENED--BG---HOVER, $type);
                 }
             }
         }
@@ -644,11 +644,11 @@
     .x-combo-list-item {
         display: block;
         text-align: left !important;
-        background: _property($MENU-OPENED--BG, $type);
+        background: _theme($MENU-OPENED--BG, $type);
         padding: 8px 9px !important;
         border: none;
 
-        @include text(13px, _property($MENU-OPENED--COLOR, $type), $FONT--WEIGHT---LIGHT);
+        @include text(13px, _theme($MENU-OPENED--COLOR, $type), _weight("light"));
 
         &:empty {
             display: none;
@@ -659,8 +659,8 @@
             /* Selected / Hovered */
             border: none !important;
             cursor: pointer;
-            color: _property($MENU-OPENED--COLOR---HOVER, $type);
-            background: _property($MENU-OPENED--BG---HOVER, $type);
+            color: _theme($MENU-OPENED--COLOR---HOVER, $type);
+            background: _theme($MENU-OPENED--BG---HOVER, $type);
         }
     }
 }
@@ -675,31 +675,31 @@
         display: block;
         padding: 7px 37px 6px 10px !important;
 
-        background: _property($MENU-CLOSED--BG, $type);
-        box-shadow: _property($MENU-CLOSED--SHADOW, $type);
+        background: _theme($MENU-CLOSED--BG, $type);
+        box-shadow: _theme($MENU-CLOSED--SHADOW, $type);
 
-        @include text(12px, _property($MENU-CLOSED--COLOR, $type), $FONT--WEIGHT---EXTRALIGHT);
+        @include text(_size("small"), _theme($MENU-CLOSED--COLOR, $type), _weight("extralight"));
 
         &:hover {
-            color: _property($MENU-CLOSED--COLOR---HOVER, $type);
-            background: _property($MENU-CLOSED--BG---HOVER, $type);
-            box-shadow: _property($MENU-CLOSED--SHADOW---HOVER, $type);
+            color: _theme($MENU-CLOSED--COLOR---HOVER, $type);
+            background: _theme($MENU-CLOSED--BG---HOVER, $type);
+            box-shadow: _theme($MENU-CLOSED--SHADOW---HOVER, $type);
         }
 
         &::-webkit-input-placeholder {
-            color: _property($MENU-CLOSED--COLOR, $type);
+            color: _theme($MENU-CLOSED--COLOR, $type);
         }
 
         &:-moz-placeholder {
-            color: _property($MENU-CLOSED--COLOR, $type);
+            color: _theme($MENU-CLOSED--COLOR, $type);
         }
 
         &::-moz-placeholder {
-            color: _property($MENU-CLOSED--COLOR, $type);
+            color: _theme($MENU-CLOSED--COLOR, $type);
         }
 
         &:-ms-input-placeholder {
-            color: _property($MENU-CLOSED--COLOR, $type);
+            color: _theme($MENU-CLOSED--COLOR, $type);
         }
     }
 
@@ -712,11 +712,11 @@
         height: 100% !important;
         border: none !important;
 
-        background: url(_property($MENU-CLOSED--ARROW, $type)) no-repeat center center _property($MENU-CLOSED--ARROW-BG, $type) !important;
+        background: url(_theme($MENU-CLOSED--ARROW, $type)) no-repeat center center _theme($MENU-CLOSED--ARROW-BG, $type) !important;
 
         &:hover {
-            background-image: _property($MENU-CLOSED--ARROW---HOVER, $type) !important;
-            background-color: _property($MENU-CLOSED--ARROW-BG---HOVER, $type) !important;
+            background-image: _theme($MENU-CLOSED--ARROW---HOVER, $type) !important;
+            background-color: _theme($MENU-CLOSED--ARROW-BG---HOVER, $type) !important;
         }
     }
 }
@@ -736,14 +736,14 @@
         padding: 7px 37px 6px 10px !important;
 
         background: red;
-        box-shadow: _property($MENU-MUTED-CLOSED--SHADOW, $type);
+        box-shadow: _theme($MENU-MUTED-CLOSED--SHADOW, $type);
 
-        @include text(12px, _property($MENU-MUTED-CLOSED--COLOR, $type), $FONT--WEIGHT---EXTRALIGHT);
+        @include text(_size("small"), _theme($MENU-MUTED-CLOSED--COLOR, $type), _weight("extralight"));
 
         &:hover {
-            color: _property($MENU-MUTED-CLOSED--COLOR---HOVER, $type);
-            background: _property($MENU-MUTED-CLOSED--BG---HOVER, $type);
-            box-shadow: _property($MENU-MUTED-CLOSED--SHADOW---HOVER, $type);
+            color: _theme($MENU-MUTED-CLOSED--COLOR---HOVER, $type);
+            background: _theme($MENU-MUTED-CLOSED--BG---HOVER, $type);
+            box-shadow: _theme($MENU-MUTED-CLOSED--SHADOW---HOVER, $type);
         }
     }
 
@@ -756,11 +756,11 @@
         height: 100% !important;
         border: none !important;
 
-        background: url(_property($MENU-MUTED-CLOSED--ARROW, $type)) no-repeat center center _property($MENU-MUTED-CLOSED--ARROW-BG, $type) !important;
+        background: url(_theme($MENU-MUTED-CLOSED--ARROW, $type)) no-repeat center center _theme($MENU-MUTED-CLOSED--ARROW-BG, $type) !important;
 
         &:hover {
-            background-image: _property($MENU-MUTED-CLOSED--ARROW---HOVER, $type) !important;
-            background-color: _property($MENU-MUTED-CLOSED--ARROW-BG---HOVER, $type) !important;
+            background-image: _theme($MENU-MUTED-CLOSED--ARROW---HOVER, $type) !important;
+            background-color: _theme($MENU-MUTED-CLOSED--ARROW-BG---HOVER, $type) !important;
         }
     }
 }
@@ -777,15 +777,15 @@
         display: block;
         padding: 7px 20px 6px 10px !important;
 
-        background: _property($MENU-CLOSED--BG, $type);
-        box-shadow: _property($MENU-CLOSED--SHADOW, $type);
+        background: _theme($MENU-CLOSED--BG, $type);
+        box-shadow: _theme($MENU-CLOSED--SHADOW, $type);
 
-        @include text(12px, _property($MENU-CLOSED--COLOR, $type), $FONT--WEIGHT---EXTRALIGHT);
+        @include text(_size("small"), _theme($MENU-CLOSED--COLOR, $type), _weight("extralight"));
 
         &:hover {
-            color: _property($MENU-CLOSED--COLOR---HOVER, $type);
-            background: _property($MENU-CLOSED--BG---HOVER, $type);
-            box-shadow: _property($MENU-CLOSED--SHADOW---HOVER, $type);
+            color: _theme($MENU-CLOSED--COLOR---HOVER, $type);
+            background: _theme($MENU-CLOSED--BG---HOVER, $type);
+            box-shadow: _theme($MENU-CLOSED--SHADOW---HOVER, $type);
         }
     }
 
@@ -805,23 +805,23 @@
             border: none !important;
 
             &.x-form-trigger-arrow {
-                background: url(_property($MENU-CLOSED--OPTIONS, $type)) no-repeat center center _property($MENU-CLOSED--OPTIONS-BG, $type) !important;
+                background: url(_theme($MENU-CLOSED--OPTIONS, $type)) no-repeat center center _theme($MENU-CLOSED--OPTIONS-BG, $type) !important;
                 background-size: 10px !important;
                 float: right;
 
                 &:hover {
-                    background-color: _property($MENU-CLOSED--OPTIONS-BG---HOVER, $type) !important;
+                    background-color: _theme($MENU-CLOSED--OPTIONS-BG---HOVER, $type) !important;
                 }
             }
 
             &.x-form-clear-trigger {
-                background: url(_property($MENU-CLOSED--CLEAR, $type)) no-repeat center center _property($MENU-CLOSED--CLEAR-BG, $type) !important;
+                background: url(_theme($MENU-CLOSED--CLEAR, $type)) no-repeat center center _theme($MENU-CLOSED--CLEAR-BG, $type) !important;
                 right: -3px;
                 position: relative;
                 background-size: 10px !important;
 
                 &:hover {
-                    background-color: _property($MENU-CLOSED--CLEAR-BG---HOVER, $type) !important;
+                    background-color: _theme($MENU-CLOSED--CLEAR-BG---HOVER, $type) !important;
                 }
             }
         }
@@ -839,9 +839,9 @@
     background: none !important;
     font-size: 14px;
     box-shadow: none !important;
-    color: _theme-color("secondary");
+    color: _color("secondary");
 }
 
 .x-viewport-contributemode div[role="combobox"].toolbar-itemsgroup-languageswitcher input.x-form-text:hover {
-    color: _theme-color("white", normal);
+    color: _color("white", normal);
 }

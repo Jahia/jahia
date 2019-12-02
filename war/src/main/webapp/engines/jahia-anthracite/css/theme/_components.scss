@@ -3,18 +3,18 @@
 /****************************/
 
 $HAMBURGER--TITLE--COLOR: (
-        LIGHT: _theme-color("quinary"),
-        DARK: _theme-color("quinary"),
+        LIGHT: _color("quinary"),
+        DARK: _color("quinary"),
 );
 
 $HAMBURGER--BUTTON--COLOR: (
-        LIGHT: _theme-color("secondary"),
-        DARK: _theme-color("secondary"),
+        LIGHT: _color("secondary"),
+        DARK: _color("secondary"),
 );
 
 $HAMBURGER--BUTTON--SHADOW: (
-        LIGHT: unquote("inset -2px 2px " + _theme-color("secondary")),
-        DARK: unquote("inset -2px 2px " + _theme-color("secondary")),
+        LIGHT: unquote("inset -2px 2px " + _color("secondary")),
+        DARK: unquote("inset -2px 2px " + _color("secondary")),
 );
 
 $HAMBURGER--BUTTON--SHADOW---HOVER: (
@@ -23,21 +23,21 @@ $HAMBURGER--BUTTON--SHADOW---HOVER: (
 );
 
 $HAMBURGER--BUTTON--COLOR---HOVER: (
-        LIGHT: _theme-color("secondary"),
-        DARK: _theme-color("secondary"),
+        LIGHT: _color("secondary"),
+        DARK: _color("secondary"),
 );
 
 $HAMBURGER--BUTTON--BG: (
-        LIGHT: radial-gradient(ellipse at bottom right, _theme-color("quinary") 0%, _theme-color("quinary") 70%),
-        DARK: radial-gradient(ellipse at bottom right, _theme-color("quinary") 0%, _theme-color("quinary") 70%),
+        LIGHT: radial-gradient(ellipse at bottom right, _color("quinary") 0%, _color("quinary") 70%),
+        DARK: radial-gradient(ellipse at bottom right, _color("quinary") 0%, _color("quinary") 70%),
 );
 
 $HAMBURGER--BUTTON--BG---HOVER: (
-        LIGHT: radial-gradient(ellipse at bottom right, _theme-color("quinary", a) 0%, _theme-color("quinary") 70%),
-        DARK: radial-gradient(ellipse at bottom right, _theme-color("quinary", a) 0%, _theme-color("quinary") 70%),
+        LIGHT: radial-gradient(ellipse at bottom right, _color("quinary", a) 0%, _color("quinary") 70%),
+        DARK: radial-gradient(ellipse at bottom right, _color("quinary", a) 0%, _color("quinary") 70%),
 );
 
 $HAMBURGER--BUTTON--BG---SELECTED: (
-        LIGHT: radial-gradient(ellipse at bottom right, _theme-color("quaternary", a) 0%, _theme-color("quaternary") 70%),
-        DARK: radial-gradient(ellipse at bottom right, _theme-color("quaternary", a) 0%, _theme-color("quaternary") 70%),
+        LIGHT: radial-gradient(ellipse at bottom right, _color("quaternary", a) 0%, _color("quaternary") 70%),
+        DARK: radial-gradient(ellipse at bottom right, _color("quaternary", a) 0%, _color("quaternary") 70%),
 );

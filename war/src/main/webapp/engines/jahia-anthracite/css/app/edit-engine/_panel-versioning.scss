@@ -41,7 +41,7 @@ div.engine-window {
 
             .x-grid3-col-label {
                 padding: 5px 10px 5px 0 !important;
-                @include text(12px, _theme-color("primary"), $FONT--WEIGHT---EXTRALIGHT);
+                @include text(_size("small"), _color("primary"), _weight("extralight"));
             }
 
             .x-grid3-row.x-grid3-row-selected {
@@ -54,12 +54,12 @@ div.engine-window {
 
             .x-grid3-row {
                 margin-bottom: 12px;
-                border-bottom: 1px dashed _theme-color("secondary", b);
+                border-bottom: 1px dashed _color("secondary", b);
             }
 
             .x-grid3-scroller > .x-grid3-body {
-                background: _property($FIELDSET--BG, $EDIT-ENGINE) !important;
-                border: 1px solid _theme-color("secondary", b) !important;
+                background: _theme($FIELDSET--BG, $EDIT-ENGINE) !important;
+                border: 1px solid _color("secondary", b) !important;
                 padding: 22px 22px 30px 30px;
                 box-sizing: border-box;
                 margin-top: -40px;
@@ -72,7 +72,7 @@ div.engine-window {
                 &:before {
                     content: "Compare versions";
                     text-transform: uppercase;
-                    color: _theme-color("primary");
+                    color: _color("primary");
                 }
 
                 > .x-grid3-row.x-grid3-row:first-child {

@@ -64,7 +64,7 @@
 
             // SELECTED ROW
             &.x-grid3-row-selected {
-                background: _theme-color("tertiary", normal) !important;
+                background: _color("tertiary", normal) !important;
 
                 .x-grid3-col-size,
                 .x-grid3-col-primaryTypeLabel,
@@ -82,7 +82,7 @@
 
             // SELECTED OVER
             &.x-grid3-row-selected.x-grid3-row-over {
-                background: _theme-color("tertiary", normal) !important;
+                background: _color("tertiary", normal) !important;
             }
         }
 
@@ -156,12 +156,12 @@
                 span {
                     // THUMB VIE DETAILS
                     width: 100%;
-                    @include text(12px, _property($THUMB--COLOR, $PICKER), $FONT--WEIGHT---LIGHT);
+                    @include text(_size("small"), _theme($THUMB--COLOR, $PICKER), _weight("light"));
                     z-index: 999;
 
                     // Filesize
                     &:nth-child(3) { /* OPTIMISE SELECTOR ::: css/app/pickers/_right-panel.scss ::: 2 */
-                        @include text(10px, _property($THUMB--COLOR--DIMMED, $PICKER), $FONT--WEIGHT---LIGHT);
+                        @include text(10px, _theme($THUMB--COLOR--DIMMED, $PICKER), _weight("light"));
                         margin-top: 0;
                         z-index: 9;
                     }
@@ -169,48 +169,48 @@
 
                 // Hover / force hover (used when the context menu is opened)
                 &.x-view-over {
-                    background: _property($THUMB--BG---HOVER, $PICKER);
+                    background: _theme($THUMB--BG---HOVER, $PICKER);
 
                     span {
                         display: block;
-                        color: _property($THUMB--COLOR, $PICKER) !important;
+                        color: _theme($THUMB--COLOR, $PICKER) !important;
                     }
 
                     .thumbDetails {
                         div {
-                            color: _theme-color("primary", normal) !important;
+                            color: _color("primary", normal) !important;
 
                             b {
-                                color: _theme-color("primary", normal) !important;
+                                color: _color("primary", normal) !important;
                             }
                         }
                     }
                 }
 
                 &.indigo-force-open {
-                    background: _property($THUMB--BG---SELECTED, $PICKER);
+                    background: _theme($THUMB--BG---SELECTED, $PICKER);
 
                     span {
                         display: block;
-                        color: _property($THUMB--COLOR---SELECTED, $PICKER) !important;
+                        color: _theme($THUMB--COLOR---SELECTED, $PICKER) !important;
                     }
                 }
 
                 // Selected row
                 &.x-view-item-sel {
-                    background: _property($THUMB--BG---SELECTED, $PICKER);
+                    background: _theme($THUMB--BG---SELECTED, $PICKER);
 
                     span {
-                        background: _property($THUMB--BG---SELECTED, $PICKER) !important;
-                        color: _property($THUMB--COLOR---SELECTED, $PICKER) !important;
+                        background: _theme($THUMB--BG---SELECTED, $PICKER) !important;
+                        color: _theme($THUMB--COLOR---SELECTED, $PICKER) !important;
                     }
 
                     .thumb {
-                        background: _property($THUMB--BG---SELECTED, $PICKER) !important;
+                        background: _theme($THUMB--BG---SELECTED, $PICKER) !important;
                     }
 
                     &.x-view-highlightrow {
-                        background: _property($THUMB--BG---SELECTED, $PICKER);
+                        background: _theme($THUMB--BG---SELECTED, $PICKER);
                     }
 
                     .thumbDetails {
@@ -258,7 +258,7 @@
                 box-sizing: border-box;
 
                 div {
-                    @include text(12px, _theme-color("primary", normal), $FONT--WEIGHT---EXTRALIGHT);
+                    @include text(_size("small"), _color("primary", normal), _weight("extralight"));
 
                     display: block !important;
                     overflow: hidden;
@@ -267,7 +267,7 @@
                     margin-bottom: 5px;
 
                     b {
-                        @include text(8px, #6a6a6a, $FONT--WEIGHT---EXTRALIGHT);
+                        @include text(8px, #6a6a6a, _weight("extralight"));
                         display: block;
                         margin-right: 5px;
                         text-transform: uppercase;
@@ -344,7 +344,7 @@
 
                         .x-btn-pressed {
                             &.x-btn.x-btn-noicon button {
-                                background-image: url($ICON--DESC--DARK) !important;
+                                background-image: url(_icon("sortDesc", "dark")) !important;
 
                                 &:hover {
                                     background-color: #ebe6e6 !important;
@@ -384,7 +384,7 @@
                     cursor: pointer;
                 }
 
-                background: url($ICON--MORE_OPTIONS---GREY) no-repeat center center;
+                background: url(_icon("moreOptions", "grey")) no-repeat center center;
                 background-size: 10px 2px;
 
 
@@ -397,7 +397,7 @@
                 }
 
                 body[indigo-picker-display="listview"] & {
-                    background: url($ICON--MORE_OPTIONS---GREY) no-repeat center center;
+                    background: url(_icon("moreOptions", "grey")) no-repeat center center;
                     background-size: 10px 2px;
                     background-color: #cecccc;
                 }
@@ -422,7 +422,7 @@
                     cursor: pointer;
                 }
 
-                background: url(../images/icons/icon_preview_small_grey.png) no-repeat center center; /* OPTIMISE URL ::: css/app/pickers/_right-panel.scss ::: 2 */
+                background: url( _icon("preview", "grey")) no-repeat center center; /* OPTIMISE URL ::: css/app/pickers/_right-panel.scss ::: 2 */
 
                 body[indigo-picker-display="detailedview"] & {
                     background-color: #cecccc;
@@ -456,7 +456,7 @@
                     cursor: pointer;
                 }
 
-                background: url("../images/icons/tabs-edit.png") no-repeat center center;
+                background: url(_icon("edit", "white")) no-repeat center center;
 
                 body[indigo-picker-display="detailedview"] & {
                     background-color: #cecccc;
@@ -476,25 +476,25 @@
             &.x-grid3-row-selected {
                 // More info button SELECTED
                 .more-info-button {
-                    background-color: _theme-color("tertiary", normal) !important;
-                    background: url($ICON--MORE_OPTIONS---WHITE) no-repeat center center;
+                    background-color: _color("tertiary", normal) !important;
+                    background: url(_icon("moreOptions", "white")) no-repeat center center;
                     background-size: 10px 2px;
                 }
 
                 .preview-button {
-                    background-color: _theme-color("tertiary", normal) !important;
-                    background: url(../images/icons/icon_preview_small_white.png) no-repeat center center; /* OPTIMISE URL ::: css/app/pickers/_right-panel.scss ::: 3 */
+                    background-color: _color("tertiary", normal) !important;
+                    background: url( _icon("preview", "white")) no-repeat center center; /* OPTIMISE URL ::: css/app/pickers/_right-panel.scss ::: 3 */
                 }
 
                 .edit-button {
-                    background-color: _theme-color("tertiary", normal) !important;
+                    background-color: _color("tertiary", normal) !important;
                 }
 
                 body[indigo-picker-display="listview"] & {
 
                     .more-info-button {
                         background-color: transparent;
-                        background: url($ICON--MORE_OPTIONS---WHITE) no-repeat center center;
+                        background: url(_icon("moreOptions", "white")) no-repeat center center;
                         background-size: 10px 2px;
                     }
 

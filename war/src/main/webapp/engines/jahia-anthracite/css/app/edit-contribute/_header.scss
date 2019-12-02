@@ -29,17 +29,17 @@
         display: block;
         left: 100px !important;
         top: 61px !important;
-        background: url(../images/icons/icon-close-white@X2.png) no-repeat center center; /* OPTIMISE URL ::: css/app/edit-contribute/_header.scss ::: 3 */
+        background: url( _icon("closeSmall", "white")) no-repeat center center; /* OPTIMISE URL ::: css/app/edit-contribute/_header.scss ::: 3 */
         background-size: 14px !important;
         background-color: transparent;
         border-radius: 100%;
 
         &[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"] {
-            background-image: url(../images/icons/icon-close-grey@X2.png); /* OPTIMISE URL ::: css/app/edit-contribute/_header.scss ::: 4 */
+            background-image: url( _icon("closeLarge", "grey")); /* OPTIMISE URL ::: css/app/edit-contribute/_header.scss ::: 4 */
         }
 
         &::before {
-            content: $text_clear_selection !important;
+            content: _dictionary("clear_selection") !important;
             opacity: 1;
             background: transparent;
             color: whitesmoke;
@@ -59,7 +59,7 @@
 
         &:hover {
             cursor: pointer;
-            background-color: rgba(_theme-color("secondary", a), 0.3);
+            background-color: rgba(_color("secondary", a), 0.3);
         }
     }
 
@@ -88,7 +88,7 @@
     }
 
     body[data-multiselect="on"][data-sitesettings="false"][data-indigo-sidepanel-pinned="true"] & { /* MULTI SELECT NOT WORKING IN CONTRIBUTE MODE !!! */
-        background-image: url(../images/icons/icon-close-white@X2.png); /* OPTIMISE URL ::: css/app/edit-contribute/_header.scss ::: 5 */
+        background-image: url( _icon("closeSmall", "white")); /* OPTIMISE URL ::: css/app/edit-contribute/_header.scss ::: 5 */
         background-color: #a1a4a6;
     }
 
@@ -148,7 +148,7 @@
 
     &::before {
         content: attr(data-PAGE-NAME);
-        @extend %document_title !optional;
+        @include text(_size("medium"), _color("secondary"), _weight("semilight"));
         display: block;
         max-width: 100%;
         overflow: hidden;
@@ -172,10 +172,10 @@
     left: 0;
     top: 9px;
     pointer-events: none;
-    @include text(12px !important, _theme-color("secondary"), $FONT--WEIGHT---EXTRALIGHT !important, $DEFAULT--FONT--FAMILY !important);
+    @include text(_size("small") !important, _color("secondary"), _weight("extralight") !important, $DEFAULT--FONT--FAMILY !important);
 
     body[data-sitesettings="false"][data-indigo-sidepanel-pinned="true"] & {
-        color: _theme-color("primary", normal);
+        color: _color("primary", normal);
         background-image: url(../images/tabs-pages-dark@X2.png); /* OPTIMISE URL ::: css/app/edit-contribute/_header.scss ::: 8 */
     }
 }
@@ -216,7 +216,7 @@ div[role="combobox"].toolbar-itemsgroup-languageswitcher {
         &:hover {
             background: inherit;
             box-shadow: none;
-            color: _theme-color("white", normal);
+            color: _color("white", normal);
         }
     }
 
@@ -232,7 +232,7 @@ div[role="combobox"].toolbar-itemsgroup-languageswitcher {
         top: 69px !important;
 
         input {
-            color: _theme-color("primary", normal);
+            color: _color("primary", normal);
         }
 
         img {

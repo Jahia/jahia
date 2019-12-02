@@ -17,12 +17,12 @@ body[indigo-dragging-panel="true"] {
     left: 0;
     top: 0;
     z-index: 1000;
-    background: url(../images/icons/splitter@X2.png) no-repeat center right 6px transparent; /* OPTIMISE URL ::: css/app/pickers/_splitter.scss ::: 1 */
+    background: url( _icon("splitter", "grey")) no-repeat center right 6px transparent; /* OPTIMISE URL ::: css/app/pickers/_splitter.scss ::: 1 */
     background-size: 5px 10px;
     border-left: 1px solid transparent;
     display: block;
     margin-left: 2px !important;
-    transition: all 0.2s ease-in 0s;
+    transition: _transition("all", "quick");
     opacity: 0;
 
     body[indigo-dragging-panel="true"] & {

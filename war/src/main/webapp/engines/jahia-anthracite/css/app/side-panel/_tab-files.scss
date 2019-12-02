@@ -15,7 +15,7 @@
         // FOLDER ICON
         &[src$="/jnt_contentFolder.png"], /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-files.scss ::: 1 */
         &[src$="/jnt_folder.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-files.scss ::: 2 */
-            background-image: url($ICON--FILES---GREY);
+            background-image: url(_icon("files", "grey"));
             background-size: 21px;
             background-position: top 2px center;
         }
@@ -39,7 +39,7 @@
             // FOLDER ICON
             &[src$="/jnt_contentFolder.png"], /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-files.scss ::: 6 */
             &[src$="/jnt_folder.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-files.scss ::: 7 */
-                background-image: url($ICON--FILES---WHITE);
+                background-image: url(_icon("files", "white"));
                 opacity: 1;
             }
 
@@ -60,7 +60,7 @@
 
     &::before {
         /* Tab Content Header Label */
-        content: $text_files !important;
+        content: _dictionary("files") !important;
     }
 
     #images-view {
@@ -69,11 +69,11 @@
             width: 47% !important;
 
             &.x-view-over {
-                background: _property($THUMB--BG---HOVER, $SIDE-PANEL) !important;
+                background: _theme($THUMB--BG---HOVER, $SIDE-PANEL) !important;
             }
 
             &.x-view-over.x-view-item-sel {
-                background: _theme-color("tertiary", normal) !important;
+                background: _color("tertiary", normal) !important;
             }
         }
 

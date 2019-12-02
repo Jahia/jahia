@@ -2,14 +2,14 @@
 .toolbar-item-sitehome,
 .toolbar-item-sitecontent,
 .toolbar-item-sitefiels {
-    background: _property($SWITCH--RAIL, $APP);
+    background: _theme($SWITCH--RAIL, $APP);
     padding: 2px 0px;
     margin-top: 3px;
     opacity: 1 !important;
 
     &:hover {
         &::after {
-            color: _property($SWITCH--COLOR--OFF---HOVER, $APP) !important;
+            color: _theme($SWITCH--COLOR--OFF---HOVER, $APP) !important;
         }
     }
 
@@ -18,7 +18,7 @@
         box-sizing: border-box;
         font-size: 11px !important;
         opacity: 1 !important;
-        color: _property($SWITCH--COLOR--OFF, $APP) !important;
+        color: _theme($SWITCH--COLOR--OFF, $APP) !important;
     }
 
     > tbody {
@@ -32,11 +32,16 @@
     border-radius: 3px 0 0 3px;
 
     &::after {
-        content: $text_site;
+        content: _dictionary("site");
         padding-left: 10px;
 
         body[data-contribute-mode="site"] & {
-            @extend %CONTRIBUTE--MODE_SWITCH---SELECTED;
+            background: _theme($SWITCH--BG--ON, $APP);
+            color: _theme($SWITCH--COLOR--ON, $APP) !important;
+            border-radius: 3px;
+            box-shadow: _theme($SWITCH--SHADOW--ON, $APP);
+            padding: 5px 10px;
+            font-weight: 600;
         }
     }
 
@@ -47,10 +52,15 @@
 .toolbar-item-sitecontent {
 
     &::after {
-        content: $text_content;
+        content: _dictionary("content");
 
         body[data-contribute-mode="content"] & {
-            @extend %CONTRIBUTE--MODE_SWITCH---SELECTED;
+            background: _theme($SWITCH--BG--ON, $APP);
+            color: _theme($SWITCH--COLOR--ON, $APP) !important;
+            border-radius: 3px;
+            box-shadow: _theme($SWITCH--SHADOW--ON, $APP);
+            padding: 5px 10px;
+            font-weight: 600;
         }
     }
 }
@@ -60,11 +70,16 @@
     border-radius: 0 3px 3px 0;
 
     &::after {
-        content: $text_files;
+        content: _dictionary("files");
         padding-right: 10px;
 
         body[data-contribute-mode="files"] & {
-            @extend %CONTRIBUTE--MODE_SWITCH---SELECTED;
+            background: _theme($SWITCH--BG--ON, $APP);
+            color: _theme($SWITCH--COLOR--ON, $APP) !important;
+            border-radius: 3px;
+            box-shadow: _theme($SWITCH--SHADOW--ON, $APP);
+            padding: 5px 10px;
+            font-weight: 600;
         }
     }
 
@@ -79,25 +94,25 @@
 
     &::before {
         content: attr(data-PAGE-NAME);
-        background: url($ICON--PAGES---WHITE) no-repeat top 1px left;
+        background: url(_icon("pages", "white")) no-repeat top 1px left;
 
         body[data-contribute-mode="files"] & {
-            background: url($ICON--FOLDER--SMALL---WHITE) no-repeat left center;
+            background: url(_icon("folder", "white")) no-repeat left center;
             background-size: 23px;
         }
 
         body[data-contribute-mode="content"] & {
-            background: url($ICON--FOLDER--SMALL---WHITE) no-repeat left center;
+            background: url(_icon("folder", "white")) no-repeat left center;
             background-size: 23px;
         }
 
         body[data-contribute-mode="content"][data-contribute-displaying-node="true"] & {
-            background: url($ICON--DISPLAY--THUMBS--WHITE) no-repeat left center;
+            background: url( _icon("displayThumbs", "white")) no-repeat left center;
         }
 
         background-size: 21px;
         padding-left: 25px;
-        @extend %document_title !optional;
+        @include text(_size("medium"), _color("secondary"), _weight("semilight"));
 
         display: block;
         max-width: 19vw;
@@ -129,7 +144,7 @@
 
     .x-item-disabled {
         display: block !important;
-        color: _property($TOOL-BUTTON--COLOR, $APP) !important;
+        color: _theme($TOOL-BUTTON--COLOR, $APP) !important;
         font-style: normal;
     }
 }

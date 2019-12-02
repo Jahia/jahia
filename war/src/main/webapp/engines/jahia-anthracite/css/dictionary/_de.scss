@@ -1,134 +1,136 @@
 @charset "UTF-8";
-$text_select_category_from_list: "Bitte wählen Sie eine Kategorie aus der unten angeführten Liste ...";
-$text_available_categories: "Verfügbare Kategorien";
-$text_create_page: "Seite erstellen";
-$text_edit_mode: "Editiermodus";
-$text_preview: "Vorschau";
-$text_publish: "Veröffentlichen";
-$text_clear_selection: "Auswahl aufheben";
-$text_workflow: "Workflow";
-$text_status: "Status";
-$text_tasks: "Aufgaben";
-$text_cache: "Cache";
-$text_trash: "Papierkorb";
-$text_jobs: "Jobs";
-$text_clipboard: "Clipboard";
-$text_loggedin: "Eingeloggt";
-$text_results: "Ergebnisse";
-$text_no_results: "Keine Ergebnisse ..";
-$text_not_found: "Leider konnten wir keine Ergebnisse finden :(";
-$text_empty: "Nichts zum Anzeigen";
-$text_pages: "Seiten";
-$text_create: "Erstellen";
-$text_content: "Inhalt";
-$text_files: "Dateien";
-$text_search: "Suche";
-$text_save_search_results: "Suchergebnisse speichern";
-$text_return_to_picker: "Zurück";
-$text_taxonomy: "Kategorien";
-$text_devices: "Geräte";
-$text_settings: "Einstellungen";
-$text_create_content: "Inhalt erstellen";
-$text_my_content: "Mein Inhalt";
-$text_device_preview: "Geräte-Vorschau";
-$text_site_settings: "Site Einstellungen";
-$text_loading: "Laden";
-$text_work_in_progress: "In Bearbeitung";
-$text_file_manager: "Datei Manager";
-$text_contribute_mode: "Beitragsmodus";
-$text_upload: "Upload";
-$text_site: "Site";
-$text_edit: "Editieren";
-$text_dxm: "Jahia";
-$text_dxm_settings: "Jahia";
-$text_close: "Schließen";
-$text_more: "Mehr";
-$text_selected: "Ausgewählt";
-$text_server_settings: "Server";
-$text_system_settings: "System Site";
-$text_my_dashboard: "Mein Dashboard";
-$text_dashboard: "Dashboard";
-$text_sites: "Sites";
-$text_administration: "Administration";
-$text_dark_ui: "Dunkles UI";
-$text_light_ui: "Helles UI";
-$text_context_menu_hamburger: "Hamburger Menu...";
-$text_context_menu_publication_page: "Seite veröffentlichen";
-$text_context_menu_publication_selection: "Auswahl veröffentlichen";
-$text_context_menu_preview_page: "Vorschau für Seite";
-$text_context_menu_preview_selection: "Vorschau für Auswahl";
-$text_context_menu_edit_page: "Edit Page";
-$text_context_menu_edit_selection: "Edit Selection";
-$text_context_menu_more_info: "Mehr Optionen";
-$text_context_menu_more_info_page: "Seiten-Optionen";
-$text_context_menu_more_info_selection: "Auswahl-Optionen";
-$text_context_menu_mode_view: "Modus wechseln...";
-$text_context_menu_user_menu: "Benutzermenü...";
-$text_context_menu_workflow: "Workflow-Menü...";
-$text_context_menu_cache: " Menü...";
-$text_context_menu_page_edit: "Bearbeitungs-Menü...";
-$text_context_menu_side_panel_pages: "Seiten-Menü...";
-$text_context_menu_side_panel_content_tree: "Content-Menü...";
-$text_context_menu_side_panel_content_item: "Content-Menü...";
-$text_context_menu_side_panel_file_tree: "Datei-Menü...";
-$text_context_menu_side_panel_file_item: "Datei-Menü...";
-$text_context_menu_side_panel_search: "Such-Menü...";
-$text_context_menu_side_panel_taxonomy: "Taxonomie Menü...";
-$text_context_menu_admin_user_name: $text_context_menu_user_menu;
-$text_context_menu_dashboard_user_name: $text_context_menu_user_menu;
-$text_context_menu_admin_mode_view: $text_context_menu_mode_view;
-$text_context_menu_dashboard_mode_view: $text_context_menu_mode_view;
-$text_off: "Aus";
-$text_on: "Ein";
-$text_done: "Schließen";
-$text_cancel: "Abbrechen";
-$text_year_picker: "Monat / Jahr Auswahl";
-$text_ascending: "Aufsteigend:";
-$text_descending: "Absteigend:";
-$text_home: "Home";
-$text_tooltip_more_options: "Mehr Optionen";
-$text_tooltip_refresh_page: "Seite neu laden";
-$text_tooltip_preview: "Vorschau";
-$text_tooltip_publish: "Optionen zur Veröffentlichung";
-$text_infobar_view_workflow_dashboard: "Ansicht";
-$text_infobar_view_background_jobs: "Ansicht";
-$text_infobar_no_background_jobs: "Keine laufenden Hintergrundjobs";
-$text_infobar_toggle_on: "Ausblenden";
-$text_infobar_toggle_off: "Anzeigen";
-$text_visibility_publication: "Veröffentlichung";
-$text_visibility_visibility: "Sichtbarkeit";
-$text_visibility_no_conditions: "Keine Bedingungen angegeben.";
-$text_visibility_conditions: "Bedingungen";
-$text_visibility_edit_condition: "Bearbeitungs-Bedingung";
-$text_visibility_new_condition: "Neue Bedingung";
-$text_confirm_delete: "Auswahl löschen?";
-$text_confirm_delete_completed: "Alle beendeten löschen?";
-$text_history: "Historie";
-$text_deactivated: "Deaktiviert";
-$text_activated: "Aktiviert";
-$text_edit_engine: "Content editieren";
-$text_edit_engine_create: "Neuer Content";
-$text_channels_button: "Mobile Ansicht";
-$text_tooltip_new_category: "neue Kategorie";
-$text_tooltip_new_folder: "Neuer Ordner";
-$text_tooltip_new_content_folder: "Neuer Inhalt Ordner";
-$text_tooltip_new_portlet_folder: "Neuer Portlet Ordner";
-$text_tooltip_upload: "Hochladen";
-$text_tooltip_new_content: "Neuen Inhalt erstellen";
-$text_tooltip_new_portlet: "Neues Portlet erstellen";
-$text_tooltip_new_page: "Neue Seite erstellen";
-$text_tooltip_toggle_hidden_elements: "Versteckte Elemente einblenden";
-$text_app_documentation: "Dokumentation";
-$text_app_portlet_manager: "Portlets";
-$text_app_categories: "Kategorien";
-$text_app_repository: "Repository-Explorer";
-$text_app_site_manager: "Sites";
-$text_app_content_manager: "Contents";
-$text_app_file_manager: "Dokumente";
-$text_app_admininstration: "Administration";
-$text_app_studio: "Studio";
-$text_app_contribute: "Beitragen";
-$text_app_edit_mode: "Bearbeitungsmodus";
-$text_app_dashboard: "Mein Dashboard";
-$text_timepicker: "Zeit:";
-$text_searchLoading: "Laden..."
+$dictionary: (
+    "select_category_from_list": "Bitte wählen Sie eine Kategorie aus der unten angeführten Liste ...",
+    "available_categories": "Verfügbare Kategorien",
+    "create_page": "Seite erstellen",
+    "edit_mode": "Editiermodus",
+    "preview": "Vorschau",
+    "publish": "Veröffentlichen",
+    "clear_selection": "Auswahl aufheben",
+    "workflow": "Workflow",
+    "status": "Status",
+    "tasks": "Aufgaben",
+    "cache": "Cache",
+    "trash": "Papierkorb",
+    "jobs": "Jobs",
+    "clipboard": "Clipboard",
+    "loggedin": "Eingeloggt",
+    "results": "Ergebnisse",
+    "no_results": "Keine Ergebnisse ..",
+    "not_found": "Leider konnten wir keine Ergebnisse finden :(",
+    "empty": "Nichts zum Anzeigen",
+    "pages": "Seiten",
+    "create": "Erstellen",
+    "content": "Inhalt",
+    "files": "Dateien",
+    "search": "Suche",
+    "save_search_results": "Suchergebnisse speichern",
+    "return_to_picker": "Zurück",
+    "taxonomy": "Kategorien",
+    "devices": "Geräte",
+    "settings": "Einstellungen",
+    "create_content": "Inhalt erstellen",
+    "my_content": "Mein Inhalt",
+    "device_preview": "Geräte-Vorschau",
+    "site_settings": "Site Einstellungen",
+    "loading": "Laden",
+    "work_in_progress": "In Bearbeitung",
+    "file_manager": "Datei Manager",
+    "contribute_mode": "Beitragsmodus",
+    "upload": "Upload",
+    "site": "Site",
+    "edit": "Editieren",
+    "dxm": "Jahia",
+    "dxm_settings": "Jahia",
+    "close": "Schließen",
+    "more": "Mehr",
+    "selected": "Ausgewählt",
+    "server_settings": "Server",
+    "system_settings": "System Site",
+    "my_dashboard": "Mein Dashboard",
+    "dashboard": "Dashboard",
+    "sites": "Sites",
+    "administration": "Administration",
+    "dark_ui": "Dunkles UI",
+    "light_ui": "Helles UI",
+    "context_menu_hamburger": "Hamburger Menu...",
+    "context_menu_publication_page": "Seite veröffentlichen",
+    "context_menu_publication_selection": "Auswahl veröffentlichen",
+    "context_menu_preview_page": "Vorschau für Seite",
+    "context_menu_preview_selection": "Vorschau für Auswahl",
+    "context_menu_edit_page": "Edit Page",
+    "context_menu_edit_selection": "Edit Selection",
+    "context_menu_more_info": "Mehr Optionen",
+    "context_menu_more_info_page": "Seiten-Optionen",
+    "context_menu_more_info_selection": "Auswahl-Optionen",
+    "context_menu_mode_view": "Modus wechseln...",
+    "context_menu_user_menu": "Benutzermenü...",
+    "context_menu_workflow": "Workflow-Menü...",
+    "context_menu_cache": " Menü...",
+    "context_menu_page_edit": "Bearbeitungs-Menü...",
+    "context_menu_side_panel_pages": "Seiten-Menü...",
+    "context_menu_side_panel_content_tree": "Content-Menü...",
+    "context_menu_side_panel_content_item": "Content-Menü...",
+    "context_menu_side_panel_file_tree": "Datei-Menü...",
+    "context_menu_side_panel_file_item": "Datei-Menü...",
+    "context_menu_side_panel_search": "Such-Menü...",
+    "context_menu_side_panel_taxonomy": "Taxonomie Menü...",
+    "context_menu_admin_user_name": "context_menu_user_menu",
+    "context_menu_dashboard_user_name": "context_menu_user_menu",
+    "context_menu_admin_mode_view": "context_menu_mode_view",
+    "context_menu_dashboard_mode_view": "context_menu_mode_view",
+    "off": "Aus",
+    "on": "Ein",
+    "done": "Schließen",
+    "cancel": "Abbrechen",
+    "year_picker": "Monat / Jahr Auswahl",
+    "ascending": "Aufsteigend:",
+    "descending": "Absteigend:",
+    "home": "Home",
+    "tooltip_more_options": "Mehr Optionen",
+    "tooltip_refresh_page": "Seite neu laden",
+    "tooltip_preview": "Vorschau",
+    "tooltip_publish": "Optionen zur Veröffentlichung",
+    "infobar_view_workflow_dashboard": "Ansicht",
+    "infobar_view_background_jobs": "Ansicht",
+    "infobar_no_background_jobs": "Keine laufenden Hintergrundjobs",
+    "infobar_toggle_on": "Ausblenden",
+    "infobar_toggle_off": "Anzeigen",
+    "visibility_publication": "Veröffentlichung",
+    "visibility_visibility": "Sichtbarkeit",
+    "visibility_no_conditions": "Keine Bedingungen angegeben.",
+    "visibility_conditions": "Bedingungen",
+    "visibility_edit_condition": "Bearbeitungs-Bedingung",
+    "visibility_new_condition": "Neue Bedingung",
+    "confirm_delete": "Auswahl löschen?",
+    "confirm_delete_completed": "Alle beendeten löschen?",
+    "history": "Historie",
+    "deactivated": "Deaktiviert",
+    "activated": "Aktiviert",
+    "edit_engine": "Content editieren",
+    "edit_engine_create": "Neuer Content",
+    "channels_button": "Mobile Ansicht",
+    "tooltip_new_category": "neue Kategorie",
+    "tooltip_new_folder": "Neuer Ordner",
+    "tooltip_new_content_folder": "Neuer Inhalt Ordner",
+    "tooltip_new_portlet_folder": "Neuer Portlet Ordner",
+    "tooltip_upload": "Hochladen",
+    "tooltip_new_content": "Neuen Inhalt erstellen",
+    "tooltip_new_portlet": "Neues Portlet erstellen",
+    "tooltip_new_page": "Neue Seite erstellen",
+    "tooltip_toggle_hidden_elements": "Versteckte Elemente einblenden",
+    "app_documentation": "Dokumentation",
+    "app_portlet_manager": "Portlets",
+    "app_categories": "Kategorien",
+    "app_repository": "Repository-Explorer",
+    "app_site_manager": "Sites",
+    "app_content_manager": "Contents",
+    "app_file_manager": "Dokumente",
+    "app_admininstration": "Administration",
+    "app_studio": "Studio",
+    "app_contribute": "Beitragen",
+    "app_edit_mode": "Bearbeitungsmodus",
+    "app_dashboard": "Mein Dashboard",
+    "timepicker": "Zeit:",
+    "searchLoading": "Laden..."
+);

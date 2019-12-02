@@ -72,7 +72,7 @@
                 pointer-events: all;
                 content: " ";
                 text-indent: -50000px;
-                background: url($ICON--MORE_OPTIONS---GREY) no-repeat center center;
+                background: url(_icon("moreOptions", "grey")) no-repeat center center;
                 background-size: 10px 2px;
                 width: 28px;
                 height: 25px;
@@ -92,7 +92,7 @@
 
         // Set more options icon to selected
         .x-grid3-row-selected .x-tree3-el::after {
-            background: url($ICON--MORE_OPTIONS---WHITE) no-repeat center center;
+            background: url(_icon("moreOptions", "white")) no-repeat center center;
             background-size: 10px 2px;
         }
 
@@ -106,7 +106,7 @@
             left: 245px;
             display: block;
             background-size: 20px;
-            background-color: _theme-color("secondary", b);
+            background-color: _color("secondary", b);
             border-radius: 100%;
 
             /* DEV NOTE ::: QUICK N DIRTY */
@@ -121,13 +121,13 @@
 
             &:hover {
                 cursor: pointer;
-                background-color: _theme-color("secondary", b);
+                background-color: _color("secondary", b);
             }
         }
 
         // BROWSE BUTTON (Displayed as an exit button when search is opened)
         #JahiaGxtManagerLeftTree__CRTbrowseTabItem {
-            background: url($ICON--BACK--GREY) no-repeat left center;
+            background: url(_icon("navPrevious", "grey")) no-repeat left center;
             height: 25px;
             position: fixed;
             top: 6px;
@@ -143,12 +143,12 @@
             }
 
             &::before {
-                content: $text_return_to_picker;
+                content: _dictionary("return_to_picker");
                 padding: 6px;
                 display: block;
                 font-size: 12px;
                 font-family: Nunito Sans;
-                color: _theme-color("tertiary", normal);
+                color: _color("tertiary", normal);
             }
 
             &:hover {
@@ -217,21 +217,21 @@
                                         right: calc(50% - 226px);
                                         width: 25px;
                                         height: 24px;
-                                        background: _theme-color("tertiary", normal);
+                                        background: _color("tertiary", normal);
                                         padding: 7px 10px;
 
                                         body.ext-gecko & {
                                             padding: 8px 10px;
                                         }
 
-                                        @include text(11px, _theme-color("secondary"), $FONT--WEIGHT---EXTRALIGHT);
+                                        @include text(11px, _color("secondary"), _weight("extralight"));
 
                                         > tbody {
                                             display: none;
                                         }
 
                                         &::before {
-                                            content: $text_search;
+                                            content: _dictionary("search");
                                         }
                                     }
                                 }
@@ -242,7 +242,7 @@
                                         position: fixed;
                                         top: 44px;
                                         right: 7px;
-                                        background: _theme-color("tertiary", normal);
+                                        background: _color("tertiary", normal);
                                         padding: 6px 10px;
 
                                         > tbody {
@@ -250,8 +250,8 @@
                                         }
 
                                         &::before {
-                                            content: $text_save_search_results;
-                                            @include text(12px, #F5F5F5, $FONT--WEIGHT---EXTRALIGHT);
+                                            content: _dictionary("save_search_results");
+                                            @include text(_size("small"), #F5F5F5, _weight("extralight"));
                                         }
                                     }
                                 }
@@ -319,7 +319,7 @@
 
                                     // META DATA
                                     &:nth-child(3) { /* OPTIMISE SELECTOR ::: css/app/pickers/_left-panel.scss ::: 8 */
-                                        // border-right: 1px solid _theme-color("primary");
+                                        // border-right: 1px solid _color("primary");
 
                                         &::before {
                                             content: attr(data-indigo-meta-label);
@@ -354,7 +354,7 @@
                                             .x-component {
                                                 position: fixed;
                                                 width: 130px !important;
-                                                background: _theme-color("tertiary", normal);
+                                                background: _color("tertiary", normal);
 
                                                 .x-component {
                                                     width: 100% !important;
@@ -363,7 +363,7 @@
 
                                                     label {
                                                         text-transform: none;
-                                                        @include text(12px, _theme-color("secondary"), 300);
+                                                        @include text(_size("small"), _color("secondary"), _weight("light"));
                                                     }
                                                 }
                                             }
@@ -422,7 +422,7 @@
                                                 height: 100%;
                                                 display: block;
                                                 text-transform: none;
-                                                @include text(13px, $FORM--CONTEXT_MENU--FONT--COLOUR---UP, $FONT--WEIGHT---LIGHT);
+                                                @include text(13px, $FORM--CONTEXT_MENU--FONT--COLOUR---UP, _weight("light"));
                                             }
                                         }
                                     }
@@ -521,7 +521,7 @@
 
                         // Refresh tool used to refresh the contents of current source
                         .x-tool-refresh {
-                            background: url(../images/icons/icon-publication-launcher-grey.png) no-repeat center center transparent; /* OPTIMISE URL ::: css/app/pickers/_left-panel.scss ::: 2 */
+                            background: url( _icon("refresh", "grey")) no-repeat center center transparent; /* OPTIMISE URL ::: css/app/pickers/_left-panel.scss ::: 2 */
                             height: 30px;
                             width: 30px;
                             position: fixed;
@@ -575,7 +575,7 @@
                             // Row UP
                             .x-view-item {
                                 border: none !important;
-                                @include text(12px, _theme-color("primary", d) !important, $FONT--WEIGHT---EXTRALIGHT);
+                                @include text(_size("small"), _color("primary", d) !important, _weight("extralight"));
                             }
 
                             // Row OVER
@@ -586,12 +586,12 @@
                             // Row SELECTED
                             .x-view-item-sel {
                                 background: rgb(155, 157, 159) !important;
-                                color: _theme-color("secondary", a) !important;
+                                color: _color("secondary", a) !important;
 
                                 // Row SELECTED OVER
                                 &.x-view-item-over {
                                     background: rgb(155, 157, 159) !important;
-                                    color: _theme-color("secondary", a) !important;
+                                    color: _color("secondary", a) !important;
                                 }
                             }
                         }
@@ -619,14 +619,14 @@
                                 .x-panel-header-text {
                                     pointer-events: all;
                                     text-align: left !important;
-                                    background: _property($MENU-OPENED--BG, $CONTEXT-MENU);
+                                    background: _theme($MENU-OPENED--BG, $CONTEXT-MENU);
                                     padding: 8px 9px !important;
                                     border: none;
-                                    @include text(13px, _property($MENU-OPENED--COLOR, $CONTEXT-MENU), $FONT--WEIGHT---LIGHT);
+                                    @include text(13px, _theme($MENU-OPENED--COLOR, $CONTEXT-MENU), _weight("light"));
 
                                     &:hover {
-                                        color: _property($MENU-OPENED--COLOR---HOVER, $CONTEXT-MENU);
-                                        background: _property($MENU-OPENED--BG---HOVER, $CONTEXT-MENU);
+                                        color: _theme($MENU-OPENED--COLOR---HOVER, $CONTEXT-MENU);
+                                        background: _theme($MENU-OPENED--BG---HOVER, $CONTEXT-MENU);
                                     }
                                 }
                             }

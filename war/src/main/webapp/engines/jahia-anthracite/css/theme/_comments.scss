@@ -4,21 +4,21 @@
 
 // UP
 $COMMENTS--COLOR: (
-        LIGHT: _theme-color("primary", normal),
-        DARK: _theme-color("primary", normal),
+        LIGHT: _color("primary", normal),
+        DARK: _color("primary", normal),
 );
 
 $COMMENTS--COLOR--AUTHOR: (
-        LIGHT: _theme-color("primary", normal),
-        DARK: _theme-color("primary", normal),
+        LIGHT: _color("primary", normal),
+        DARK: _color("primary", normal),
 );
 
 $COMMENTS--COLOR--DATE: (
-        LIGHT: _theme-color("primary", normal),
-        DARK: _theme-color("primary", normal),
+        LIGHT: _color("primary", normal),
+        DARK: _color("primary", normal),
 );
 
 $COMMENTS--BG: (
-        LIGHT: _theme-color("secondary", c),
-        DARK: _theme-color("secondary", c),
+        LIGHT: _color("secondary", c),
+        DARK: _color("secondary", c),
 );

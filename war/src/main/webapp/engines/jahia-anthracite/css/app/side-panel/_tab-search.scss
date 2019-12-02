@@ -5,7 +5,7 @@
 
     &::before {
         /* Tab Content Header Label */
-        content: $text_search !important;
+        content: _dictionary("search") !important;
     }
 
     .x-panel-btns {
@@ -49,13 +49,13 @@
             height: calc(100% + 40px) !important;
 
             &::before {
-                content: $text_results;
+                content: _dictionary("results");
                 display: block;
                 position: absolute;
                 top: 30px;
                 left: 19px;
 
-                @include text(16px, #7b7f81, $FONT--WEIGHT---LIGHT)
+                @include text(16px, #7b7f81, _weight("light"))
             }
 
             body.minimise-results & {
@@ -124,7 +124,7 @@
 
                     // First page
                     &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-search.scss ::: 1 */
-                        background: url($ICON--FIRST--WHITE) no-repeat center center / 16px 16px;
+                        background: url(_icon("navFirst", "white")) no-repeat center center / 16px 16px;
                         margin-left: 50px;
 
                         &:hover {
@@ -135,7 +135,7 @@
 
                     // Previous page
                     &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-search.scss ::: 2 */
-                        background: url($ICON--BACK--WHITE) no-repeat center center / 16px 16px;
+                        background: url(_icon("navPrevious", "white")) no-repeat center center / 16px 16px;
                         margin-left: 5px;
 
                         &:hover {
@@ -153,7 +153,7 @@
 
                     // Next Page
                     &:nth-child(8) { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-search.scss ::: 4 */
-                        background: url($ICON--NEXT--WHITE) no-repeat center center / 16px 16px;
+                        background: url(_icon("navNext", "white")) no-repeat center center / 16px 16px;
                         margin-right: 5px;
 
                         &:hover {
@@ -164,7 +164,7 @@
 
                     // Last page
                     &:nth-child(9) { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-search.scss ::: 5 */
-                        background: url($ICON--LAST--WHITE) no-repeat center center / 16px 16px;
+                        background: url(_icon("navLast", "white")) no-repeat center center / 16px 16px;
                         margin-right: 5px;
 
                         &:hover {
@@ -176,7 +176,7 @@
 
                     // Refresh results
                     &:nth-child(11) { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-search.scss ::: 6 */
-                        background: url($ICON--REFRESH--SMALL_WHITE) no-repeat center center / 18px 14px;
+                        background: url(_icon("refresh", "white")) no-repeat center center / 18px 14px;
 
                         &:hover {
                             opacity: 1;
@@ -212,12 +212,12 @@
             font-style: normal;
             text-transform: uppercase;
             cursor: default;
-            @include text(9px, rgba(_theme-color("secondary"), 0.6), $FONT--WEIGHT---BOLD);
+            @include text(_size("tiny"), rgba(_color("secondary"), 0.6), _weight("bold"));
             color: #fff !important;
         }
 
         .my-paging-text {
-            @include text(10px, _theme-color("secondary"), $FONT--WEIGHT---NORMAL);
+            @include text(10px, _color("secondary"), _weight("normal"));
             padding: 0 5px;
             color: #fff !important;
         }
@@ -232,12 +232,12 @@
             top: 0px;
             left: 9px;
             z-index: 99999;
-            color: _theme-color("primary", normal);
+            color: _color("primary", normal);
             font-style: italic;
         }
 
         &[data-results-status="no-results"]:before {
-            content: $text_no_results
+            content: _dictionary("no_results")
         }
 
         &[data-results-status="results"]:before {

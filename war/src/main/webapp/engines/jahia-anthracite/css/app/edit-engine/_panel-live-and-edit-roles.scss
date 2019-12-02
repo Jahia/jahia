@@ -31,21 +31,21 @@ div.engine-window {
 
             .x-grid3-td-displayName,
             .x-grid3-td-inheritedFrom {
-                color: _property($ROW--COLOR, $EDIT-ENGINE) !important;
+                color: _theme($ROW--COLOR, $EDIT-ENGINE) !important;
                 opacity: 1;
             }
 
             &.x-grid3-row-over {
-                background-color: _property($ROW--BG, $EDIT-ENGINE) !important;
+                background-color: _theme($ROW--BG, $EDIT-ENGINE) !important;
             }
         }
 
         .x-grid3-row-over {
-            background-color: _property($ROW--BG, $EDIT-ENGINE) !important;
+            background-color: _theme($ROW--BG, $EDIT-ENGINE) !important;
 
             .x-grid3-td-displayName,
             .x-grid3-td-inheritedFrom {
-                color: _property($ROW--COLOR, $EDIT-ENGINE) !important;
+                color: _theme($ROW--COLOR, $EDIT-ENGINE) !important;
                 opacity: 1;
             }
         }
@@ -68,7 +68,7 @@ div.engine-window {
         .x-grid3-td-displayName {
             width: calc(50% - 28px - 28px) !important;
             display: inline-block;
-            color: _property($ROW--COLOR, $EDIT-ENGINE) !important;
+            color: _theme($ROW--COLOR, $EDIT-ENGINE) !important;
 
         }
 
@@ -109,7 +109,7 @@ div.engine-window {
             width: calc(50% - 28px - 28px) !important;
             display: inline-block;
 
-            @include text(12px, _property($ROW--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
+            @include text(_size("small"), _theme($ROW--COLOR, $EDIT-ENGINE), _weight("extralight"));
         }
 
         // Header

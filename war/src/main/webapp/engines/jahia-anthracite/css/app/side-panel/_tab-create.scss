@@ -23,7 +23,7 @@
 
     &::before {
         /* Tab Content Header Label */
-        content: $text_create !important;
+        content: _dictionary("create") !important;
     }
 
     // Tree Options

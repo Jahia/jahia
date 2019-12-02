@@ -1,3 +1,304 @@
+/////////////////////////////////////////////////
+// BUTTONS //////////////////////////////////////
+/////////////////////////////////////////////////
+
+// FORM BUTTON
+%BUTTON--TEXT---FORM {
+    background: _theme($BUTTON--BG, $EDIT-ENGINE) !important;
+    text-transform: uppercase;
+    padding: 5px 10px !important;
+    margin-top: 2px;
+    @include text(10px, _theme($BUTTON--COLOR, $EDIT-ENGINE), _weight("normal"));
+}
+
+%BUTTON--TEXT---HOVER---FORM {
+    background: _theme($BUTTON--BG---HOVER, $EDIT-ENGINE) !important;
+    @include text(10px, _theme($BUTTON--COLOR---HOVER, $EDIT-ENGINE), _weight("normal"));
+}
+
+%BUTTON--ICON---FORM {
+    background: _theme($BUTTON--BG, $EDIT-ENGINE) !important;
+    padding: 5px 10px 5px 29px;
+    @include text(16px, _theme($BUTTON--COLOR, $EDIT-ENGINE), _weight("extralight"));
+
+    img {
+        left: 5px !important;
+        top: 7px !important;
+    }
+}
+
+%BUTTON--ICON---HOVER---FORM {
+    background: _theme($BUTTON--BG---HOVER, $EDIT-ENGINE) !important;
+    padding: 5px 10px 5px 29px;
+    @include text(16px, _theme($BUTTON--COLOR---HOVER, $EDIT-ENGINE), _weight("extralight"));
+
+    img {
+        left: 5px !important;
+    }
+}
+
+// SMALL FORM BUTTON
+%BUTTON--TEXT---FORM_SMALL {
+    background: _theme($BUTTON--BG, $EDIT-ENGINE) !important;
+    text-transform: uppercase !important;
+    padding: 5px 10px !important;
+    @include text(10px, _theme($BUTTON--COLOR, $EDIT-ENGINE) !important, _weight("semibold"));
+}
+
+
+%BUTTON--ICON---FORM_SMALL {
+    background: _theme($BUTTON--BG, $EDIT-ENGINE) !important;
+    padding: 5px 10px 5px 29px;
+    @include text(10px, _theme($BUTTON--COLOR, $EDIT-ENGINE) !important, _weight("semibold"));
+    text-transform: uppercase;
+
+    img {
+        left: 5px !important;
+        top: 7px !important;
+    }
+}
+
+%BUTTON--ICON---HOVER---FORM_SMALL {
+    background: _theme($BUTTON--BG---HOVER, $EDIT-ENGINE) !important;
+    color: _theme($BUTTON--COLOR---HOVER, $EDIT-ENGINE) !important;
+}
+
+
+// WARNING BUTTON
+%BUTTON--TEXT---WARNING {
+    background: _theme($BUTTON-WARNING--BG, $EDIT-ENGINE);
+    text-transform: uppercase;
+    padding: 5px 10px;
+    text-transform: uppercase;
+    opacity: 0.95;
+    @include text(10px, _theme($BUTTON-WARNING--COLOR, $EDIT-ENGINE), _weight("semibold"));
+}
+
+
+%BUTTON--TEXT---HOVER---WARNING {
+    background: _theme($BUTTON-WARNING--BG---HOVER, $EDIT-ENGINE);
+    color: _theme($BUTTON-WARNING--COLOR---HOVER, $EDIT-ENGINE);
+    opacity: 1;
+}
+
+%BUTTON--ICON---WARNING {
+    background: _theme($BUTTON-WARNING--BG, $EDIT-ENGINE);
+    padding: 5px 10px 5px 29px;
+    @include text(10px, _theme($BUTTON-WARNING--COLOR, $EDIT-ENGINE), _weight("semibold"));
+    text-transform: uppercase;
+    opacity: 0.95;
+
+    img {
+        left: 5px !important;
+        top: 7px !important;
+    }
+}
+
+%BUTTON--ICON---HOVER---WARNING {
+    background: _theme($BUTTON-WARNING--BG---HOVER, $EDIT-ENGINE);
+    color: _theme($BUTTON-WARNING--COLOR---HOVER, $EDIT-ENGINE);
+    opacity: 1;
+}
+
+// SIMPLE TEXT BUTTON
+%BUTTON--TEXT---BUTTON_DISCREET {
+    background: _theme($BUTTON_DISCREET--BG, $EDIT-ENGINE);
+    text-transform: uppercase;
+    padding: 5px 10px;
+    text-transform: uppercase;
+    @include text(10px, _theme($BUTTON_DISCREET--COLOR, $EDIT-ENGINE), _weight("semibold"));
+}
+
+%BUTTON--TEXT---HOVER---BUTTON_DISCREET {
+    background: _theme($BUTTON-DISCREET--BG---HOVER, $EDIT-ENGINE);
+    color: _theme($BUTTON-DISCREET--COLOR---HOVER, $EDIT-ENGINE);
+}
+
+%BUTTON--ICON---BUTTON_DISCREET {
+    background: _theme($BUTTON_DISCREET--BG, $EDIT-ENGINE);
+    padding: 5px 10px 5px 29px;
+    @include text(10px, _theme($BUTTON_DISCREET--COLOR, $EDIT-ENGINE), _weight("semibold"));
+    text-transform: uppercase;
+
+    img {
+        left: 7px !important;
+        top: 4px !important;
+    }
+}
+
+%BUTTON--ICON---HOVER---BUTTON_DISCREET {
+    background: _theme($BUTTON-DISCREET--BG---HOVER, $EDIT-ENGINE);
+    color: _theme($BUTTON-DISCREET--COLOR---HOVER, $EDIT-ENGINE);
+}
+
+// ACTION BAR BUTTON
+%BUTTON--TEXT---ACTIONBAR {
+    text-transform: none;
+    padding: 8px 15px !important;
+    background: _theme($ACTION-DEFAULT--BG, $APP) !important;
+    @include text(_size("normal"), _theme($ACTION-DEFAULT--COLOR, $APP) !important, _weight("extralight"));
+}
+
+%BUTTON--TEXT---HOVER---ACTIONBAR {
+    background: _theme($ACTION-DEFAULT--BG---HOVER, $APP) !important;
+    padding: 5px 10px;
+    @include text(_size("normal"), _theme($ACTION-DEFAULT--COLOR---HOVER, $APP) !important, _weight("extralight"));
+}
+
+%BUTTON--ICON---ACTIONBAR {
+    padding: 8px 15px !important;
+    background: _theme($ACTION-DEFAULT--BG, $APP) !important;
+    @include text(_size("normal"), _theme($ACTION-DEFAULT--COLOR, $APP) !important, _weight("extralight"));
+
+    img {
+        left: 5px !important;
+    }
+}
+
+%BUTTON--ICON---HOVER---ACTIONBAR {
+    background: _theme($ACTION-DEFAULT--BG---HOVER, $APP) !important;
+    @include text(_size("normal"), _theme($ACTION-DEFAULT--COLOR---HOVER, $APP) !important, _weight("extralight"));
+}
+
+// INVERTED BUTTON
+%BUTTON--TEXT---TOGGLE_ASC {
+    background-color: transparent !important;
+    background-image: url(_icon("sortAsc", "dark")) !important;
+    text-indent: -50000px;
+    width: 22px !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    background-size: 15px !important;
+    height: 21px !important;
+    opacity: 0.8;
+}
+
+%BUTTON--TEXT---HOVER---TOGGLE_ASC {
+    opacity: 1;
+    background-color: #ebe6e6 !important;
+}
+
+
+// SUGGESTED ACTION BAR BUTTON
+%BUTTON--TEXT---ACTIONBAR---SUGGESTED {
+    padding: 8px 15px !important;
+    text-transform: none !important;
+    background: _theme($ACTION-SUGGESTED--BG, $APP) !important;
+    @include text(_size("normal"), _theme($ACTION-SUGGESTED--COLOR, $APP) !important, _weight("extralight"));
+}
+
+%BUTTON--TEXT---HOVER---ACTIONBAR---SUGGESTED {
+    background: _theme($ACTION-SUGGESTED--BG---HOVER, $APP) !important;
+    @include text(_size("normal"), _theme($ACTION-SUGGESTED--COLOR---HOVER, $APP) !important, _weight("extralight"));
+}
+
+%BUTTON--ICON---ACTIONBAR---SUGGESTED {
+    text-transform: none !important;
+    padding: 8px 15px !important;
+    background: _theme($ACTION-SUGGESTED--BG, $APP) !important;
+    @include text(_size("normal"), _theme($ACTION-SUGGESTED--COLOR, $APP) !important, _weight("extralight"));
+}
+
+%BUTTON--ICON---HOVER---ACTIONBAR---SUGGESTED {
+    background: _theme($ACTION-SUGGESTED--BG---HOVER, $APP) !important;
+    @include text(_size("normal"), _theme($ACTION-SUGGESTED--COLOR---HOVER, $APP) !important, _weight("extralight"));
+}
+
+
+// SECONDARY ACTION BAR BUTTON
+%BUTTON--TEXT---ACTIONBAR---SECONDARY {
+    padding: 8px 15px !important;
+    text-transform: none !important;
+    background: _theme($ACTION-SECONDARY--BG, $APP) !important;
+    box-shadow: inset 1px 1px 0 0 _color("tertiary", normal), inset -1px -1px 0 0 _color("tertiary", normal);
+    @include text(_size("normal"), _theme($ACTION-SECONDARY--COLOR, $APP) !important, _weight("extralight"));
+}
+
+%BUTTON--TEXT---HOVER---ACTIONBAR---SECONDARY {
+    background: _theme($ACTION-SECONDARY--BG---HOVER, $APP) !important;
+    @include text(_size("normal"), _theme($ACTION-SECONDARY--COLOR---HOVER, $APP) !important, _weight("extralight"));
+}
+
+%BUTTON--ICON---ACTIONBAR---SECONDARY {
+    text-transform: none !important;
+    padding: 8px 15px !important;
+    background: _theme($ACTION-SECONDARY--BG, $APP) !important;
+    @include text(_size("normal"), _theme($ACTION-SECONDARY--COLOR, $APP) !important, _weight("extralight"));
+}
+
+%BUTTON--ICON---HOVER---ACTIONBAR---SECONDARY {
+    background: _theme($ACTION-SECONDARY--BG---HOVER, $APP) !important;
+    @include text(_size("normal"), _theme($ACTION-SECONDARY--COLOR---HOVER, $APP) !important, _weight("extralight"));
+}
+
+// WORK IN PROGRESS ON ACTION BAR
+%BUTTON--TEXT---WIP---SUGGESTED {
+    padding: 10px 39px 10px 17px !important;
+    text-transform: none !important;
+    background: url(_icon("create", "grey")) no-repeat right 11px center _theme($ACTION-WIP--BG, $APP) !important;
+    background-size: 23px !important;
+    border-radius: 50px;
+    @include text(_size("normal"), _theme($ACTION-WIP--COLOR, $APP) !important, _weight("normal"));
+
+    span {
+        font-style: italic;
+        opacity: 0.8;
+
+        @include text(inherit, inherit, inherit, inherit)
+    }
+
+}
+
+%BUTTON--TEXT---HOVER---WIP---SUGGESTED {
+    background-color: _theme($ACTION-WIP--BG---HOVER, $APP) !important;
+    @include text(_size("normal"), _theme($ACTION-WIP--COLOR---HOVER, $APP) !important, _weight("normal"));
+}
+
+%BUTTON--ICON---WIP---SUGGESTED {
+    text-transform: none !important;
+    padding: 10px 39px 10px 17px !important;
+    background: url(_icon("create", "grey")) no-repeat right 11px center _theme($ACTION-WIP--BG, $APP) !important;
+    background-size: 23px !important;
+    border-radius: 50px;
+    @include text(_size("normal"), _theme($ACTION-WIP--COLOR, $APP) !important, _weight("normal"));
+
+    span {
+        font-style: italic;
+        opacity: 0.8;
+
+        @include text(inherit, inherit, inherit, inherit)
+    }
+}
+
+%BUTTON--ICON---HOVER---WIP---SUGGESTED {
+    background-color: _theme($ACTION-WIP--BG---HOVER, $APP) !important;
+    @include text(_size("normal"), _theme($ACTION-WIP--COLOR---HOVER, $APP) !important, _weight("normal"));
+}
+
+/////////////////////////////////////////////////
+// TOOL BUTTONS /////////////////////////////////
+/////////////////////////////////////////////////
+
+%TOOL_BUTTON {
+    text-align: center;
+    text-transform: uppercase;
+
+    @include text(_size("tiny"), whitesmoke, _weight("normal"));
+    margin-bottom: 0;
+    opacity: 0.9;
+}
+
+
+%TOOL_BUTTON---SIDE_PANEL_OPEN {
+    color: _theme($TOOL-BUTTON--COLOR, $SIDE-PANEL);
+}
+
+
+%TOOL_BUTTON---SIDE_PANEL_OPEN_SELECTED {
+    color: _theme($TOOL-BUTTON--COLOR---SELECTED, $SIDE-PANEL);
+}
+
+
 @mixin _button($_class, $_button_id, $_extra: "none") {
     #{$_class} {
         width: auto !important;
@@ -10,7 +311,7 @@
         &.x-btn-noicon {
             // Button has icon
             button {
-                @extend %BUTTON--TEXT\:#{$_button_id} !optional;
+                @extend %BUTTON--TEXT---#{$_button_id} !optional;
             }
         }
 
@@ -18,7 +319,7 @@
             // Button has icon
 
             button {
-                @extend %BUTTON--ICON\:#{$_button_id} !optional;
+                @extend %BUTTON--ICON---#{$_button_id} !optional;
 
                 @if ($_extra == "remove-icons") {
                     padding-left: 10px;
@@ -38,7 +339,7 @@
             &.x-btn-noicon {
                 // Button has icon
                 button {
-                    @extend %BUTTON--TEXT---HOVER\:#{$_button_id} !optional;
+                    @extend %BUTTON--TEXT---HOVER---#{$_button_id} !optional;
 
                 }
             }
@@ -46,7 +347,7 @@
             &.x-btn-text-icon {
                 // Button has icon
                 button {
-                    @extend %BUTTON--ICON---HOVER\:#{$_button_id} !optional;
+                    @extend %BUTTON--ICON---HOVER---#{$_button_id} !optional;
 
                     @if ($_extra == "remove-icons") {
                         padding-left: 10px;

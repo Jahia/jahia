@@ -43,20 +43,10 @@
  */
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.widget.Text;
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
-import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record.RecordUpdate;
 import com.extjs.gxt.ui.client.store.Store;
@@ -68,22 +58,22 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.grid.CellEditor;
-import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnData;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
-import com.extjs.gxt.ui.client.widget.grid.RowEditor;
+import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
-
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * URL mapping for the node.
@@ -138,9 +128,7 @@ public class UrlMappingEditor extends LayoutContainer {
         column.setHeaderHtml(Messages.get("label_url", "URL"));
         TextField<String> text = new TextField<String>();
         text.setAllowBlank(false);
-        text.setRegex("^/?(?!.*/{2,})[a-zA-Z_0-9\\-\\./]+$");
         text.setMaxLength(250);
-        text.getMessages().setRegexText(Messages.get("failure.invalid.urlmapping.label", "The vanity URL can only contain letters, digits, dots (.), dashes (-) and no consecutive slashes (/)"));
         CellEditor ce = new CellEditor(text);
         ce.addListener(Events.BeforeComplete, new Listener<EditorEvent>() {
             public void handleEvent(EditorEvent be) {

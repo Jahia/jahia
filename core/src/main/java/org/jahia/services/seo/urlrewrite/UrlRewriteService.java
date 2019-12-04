@@ -63,6 +63,7 @@ import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
+import org.springframework.web.util.UriUtils;
 import org.tuckey.web.filters.urlrewrite.RewrittenUrl;
 import org.tuckey.web.filters.urlrewrite.utils.Log;
 
@@ -72,6 +73,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -328,7 +330,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_PATH, StringUtils.EMPTY);
         if (StringUtils.isNotEmpty(targetSiteKey) && !path.startsWith("/sites")) {
             try {
-                List<VanityUrl> vanityUrls = vanityUrlService.findExistingVanityUrls(path, targetSiteKey, "live");
+                List<VanityUrl> vanityUrls = vanityUrlService.findExistingVanityUrls(UriUtils.decode(path, "UTF-8"), targetSiteKey, "live");
                 if (!vanityUrls.isEmpty()) {
                     VanityUrl vanityUrl = vanityUrls.get(0);
                     request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_LANG, vanityUrl.getLanguage());
@@ -336,7 +338,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
                     request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_PATH, path);
                     request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_ISFILE, vanityUrl.isFile());
                 }
-            } catch (RepositoryException e) {
+            } catch (RepositoryException | UnsupportedEncodingException e) {
                 logger.error("Cannot get vanity Url", e);
             }
         } else if (path.startsWith("/sites/")) {

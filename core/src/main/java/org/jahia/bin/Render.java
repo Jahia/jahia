@@ -76,6 +76,7 @@ import org.slf4j.Logger;
 import org.springframework.web.context.ServletConfigAware;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
+import org.springframework.web.util.UriUtils;
 
 import javax.jcr.*;
 import javax.servlet.ServletConfig;
@@ -714,9 +715,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 }
             }
             if (StringUtils.isEmpty(stayOnPage)) {
-                resp.setHeader("Location", redirect);
+                resp.setHeader("Location", UriUtils.encodePath(redirect, "UTF-8"));
             } else if (responseCode == HttpServletResponse.SC_SEE_OTHER) {
-                resp.setHeader("Location", redirect);
+                resp.setHeader("Location", UriUtils.encodePath(redirect, "UTF-8"));
             }
             if (responseCode == HttpServletResponse.SC_FOUND) {
                 resp.sendRedirect(redirect);

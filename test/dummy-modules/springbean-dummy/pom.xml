@@ -63,6 +63,10 @@
       <tag>HEAD</tag>
   </scm>
 
+    <properties>
+        <jahia-module-signature>MCwCFElR9SReE/KCgcj8X+Ci/uSp5KDtAhRWfo1rH8daDIQD5QA9tjOhgNLyxQ==</jahia-module-signature>
+    </properties>
+
     <repositories>
         <repository>
             <id>jahia-public</id>

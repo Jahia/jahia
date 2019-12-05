@@ -240,6 +240,7 @@
                         <Jahia-Private-App-Store>${jahia-private-app-store}</Jahia-Private-App-Store>
                         <Jahia-Deploy-On-Site>${jahia-deploy-on-site}</Jahia-Deploy-On-Site>
                         <Jahia-Block-Edit-Mode>${jahia-block-edit-mode}</Jahia-Block-Edit-Mode>
+                        <Jahia-Signature>${jahia-module-signature}</Jahia-Signature>
                         <Export-Package>${export-package}</Export-Package>
                         <Import-Package>${jahia.plugin.projectPackageImport},*</Import-Package>
                         <Provide-Capability>${jahia.plugin.providedNodeTypes}${jahia.plugin.providedModulesCapabilities}</Provide-Capability>

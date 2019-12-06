@@ -641,8 +641,12 @@
         <property name="titleKey" value="label.publication.status"/>
     </bean>
 
-    <bean id="Toolbar.Item.Publish" class="org.jahia.services.uicomponents.bean.toolbar.Menu" scope="prototype"
-          parent="Toolbar.Menu.ProtectedPublish">
+    <bean id="Toolbar.Item.Publish" class="org.jahia.services.uicomponents.bean.toolbar.Menu" scope="prototype">
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                <property name="needAuthentication" value="true"/>
+            </bean>
+        </property>
         <property name="titleKey" value="label.publish"/>
         <property name="icon" value="publish"/>
         <property name="items">
@@ -656,26 +660,7 @@
         </property>
     </bean>
 
-    <bean id="Toolbar.Visibility.ProtectedPublish" class="org.jahia.services.uicomponents.bean.Visibility" scope="prototype">
-        <property name="needAuthentication" value="true"/>
-        <property name="oneMatchPermission">
-            <list>
-                <value>publication-start</value>
-                <value>publish</value>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="Toolbar.Menu.ProtectedPublish" class="org.jahia.services.uicomponents.bean.toolbar.Menu" scope="prototype">
-        <property name="visibility" ref="Toolbar.Visibility.ProtectedPublish"/>
-    </bean>
-
-    <bean id="Toolbar.Item.ProtectedPublish" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="visibility" ref="Toolbar.Visibility.ProtectedPublish"/>
-    </bean>
-
-    <bean id="Toolbar.Item.PublishOne" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
-          parent="Toolbar.Item.ProtectedPublish">
+    <bean id="Toolbar.Item.PublishOne" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
                 <property name="forbiddenNodeTypes">
@@ -690,8 +675,7 @@
         <!--<property name="workflowAction" value="publish"/>-->
     </bean>
 
-    <bean id="Toolbar.Item.PublishAll" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
-          parent="Toolbar.Item.ProtectedPublish">
+    <bean id="Toolbar.Item.PublishAll" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
                 <property name="allSubTree" value="true"/>
@@ -706,8 +690,7 @@
         <property name="icon" value="publishAll"/>
     </bean>
 
-    <bean id="Toolbar.Item.PublishAllInAllLanguages" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
-          parent="Toolbar.Item.ProtectedPublish">
+    <bean id="Toolbar.Item.PublishAllInAllLanguages" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
                 <property name="allLanguages" value="true"/>
@@ -724,8 +707,7 @@
         <property name="icon" value="publishAll"/>
     </bean>
 
-    <bean id="Toolbar.Item.PublishInAllLanguages" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
-          parent="Toolbar.Item.ProtectedPublish">
+    <bean id="Toolbar.Item.PublishInAllLanguages" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
                 <property name="allLanguages" value="true"/>
@@ -741,8 +723,7 @@
         <property name="icon" value="publish"/>
     </bean>
 
-    <bean id="Toolbar.Item.PublishSite" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
-          parent="Toolbar.Item.ProtectedPublish">
+    <bean id="Toolbar.Item.PublishSite" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishSiteActionItem"/>
         </property>
@@ -750,8 +731,7 @@
         <property name="icon" value="publishSite"/>
     </bean>
 
-    <bean id="Toolbar.Item.PublishSiteInAllLanguages" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
-          parent="Toolbar.Item.ProtectedPublish">
+    <bean id="Toolbar.Item.PublishSiteInAllLanguages" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishSiteActionItem">
                 <property name="allLanguages" value="true"/>
@@ -787,8 +767,7 @@
     </bean>
 
     <!-- new edit mode buttons: unpublish -->
-    <bean id="Toolbar.Item.Unpublish" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
-          parent="Toolbar.Item.ProtectedPublish">
+    <bean id="Toolbar.Item.Unpublish" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UnpublishActionItem">
                 <property name="forbiddenNodeTypes">

@@ -43,7 +43,6 @@
  */
 package org.jahia.services.uicomponents.bean;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.usermanager.JahiaUser;
@@ -55,7 +54,6 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
@@ -70,8 +68,6 @@ public class Visibility {
 
     //visibility parameter
     private String permission;
-    private List<String> allRequiredPermissions;
-    private List<String> oneMatchPermission;
     private String needAuthentication;
     private String userAgent;
     private String value;
@@ -80,29 +76,12 @@ public class Visibility {
     private String operatingMode;
     private boolean needsMavenExecutable;
 
-
     public String getPermission() {
         return permission;
     }
 
     public void setPermission(String permission) {
         this.permission = permission;
-    }
-
-    public List<String> getAllRequiredPermissions() {
-        return allRequiredPermissions;
-    }
-
-    public void setAllRequiredPermissions(List<String> allRequiredPermissions) {
-        this.allRequiredPermissions = allRequiredPermissions;
-    }
-
-    public List<String> getOneMatchPermission() {
-        return oneMatchPermission;
-    }
-
-    public void setOneMatchPermission(List<String> oneMatchPermission) {
-        this.oneMatchPermission = oneMatchPermission;
     }
 
     public String getNeedAuthentication() {
@@ -228,79 +207,31 @@ public class Visibility {
      * @return
      */
     private boolean isAllowed(JCRNodeWrapper node) {
-        if (node.getUser().isRoot()) {
-            return true;
-        }
-
-        List<JCRNodeWrapper> resolvedNodes;
         try {
-            if ("$currentsite".equals(contextNodePath)) {
-                resolvedNodes = Collections.singletonList(node.getResolveSite());
-            } else if ("$anysite".equals(contextNodePath)) {
-                // Read sites list for edit mode access permission instead of modules list
-                JCRNodeWrapper sitesPath = node.getSession().getNode("/sites");
-                resolvedNodes = JCRContentUtils.getChildrenOfType(sitesPath, "jnt:virtualsite");
-            } else if (contextNodePath != null && !contextNodePath.startsWith("/")) {
-                resolvedNodes = Collections.singletonList(node.getNode(contextNodePath));
-            } else if (contextNodePath != null) {
-                resolvedNodes = Collections.singletonList(node.getSession().getNode(contextNodePath));
-            } else {
-                resolvedNodes = Collections.singletonList(node);
+            if (permission != null && !node.getUser().isRoot()) {
+                if ("$currentsite".equals(contextNodePath)) {
+                    node = node.getResolveSite();
+                } else if ("$anysite".equals(contextNodePath)) {
+                    // Read sites list for edit mode access permission instead of modules list
+                    JCRNodeWrapper sitesPath = node.getSession().getNode("/sites");
+                    List<JCRNodeWrapper> l = JCRContentUtils.getChildrenOfType(sitesPath, "jnt:virtualsite");
+                    for (JCRNodeWrapper nodeWrapper : l) {
+                        if (nodeWrapper.hasPermission(permission)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                } else if (contextNodePath != null && !contextNodePath.startsWith("/")) {
+                    node = node.getNode(contextNodePath);
+                } else if (contextNodePath != null) {
+                    node = node.getSession().getNode(contextNodePath);
+                }
+                return node.hasPermission(permission);
             }
         } catch (PathNotFoundException e) {
             return false;
         } catch (RepositoryException e) {
-            logger.error("Cannot resolve node to check permissions: " + contextNodePath, e);
-            return false;
-        }
-
-        return (permission == null || checkOnePermission(resolvedNodes, Collections.singletonList(permission))) &&
-                checkOnePermission(resolvedNodes, oneMatchPermission) &&
-                checkAllPermissions(resolvedNodes, allRequiredPermissions);
-    }
-
-    /**
-     * At least one node should have at least one permission
-     * @param nodes the nodes to test
-     * @param permissions the permissions to test
-     * @return true if at least one of the nodes have at least one permission
-     */
-    private boolean checkOnePermission(List<JCRNodeWrapper> nodes, List<String> permissions) {
-        if (CollectionUtils.isNotEmpty(permissions)) {
-            for (JCRNodeWrapper node : nodes) {
-                for (String permission : permissions) {
-                    if (node.hasPermission(permission)) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * At least one node should have all permissions
-     * @param nodes the nodes to test
-     * @param permissions the permissions to test
-     * @return true if at least one of the nodes have all the permissions
-     */
-    private boolean checkAllPermissions(List<JCRNodeWrapper> nodes, List<String> permissions) {
-        if (CollectionUtils.isNotEmpty(permissions)) {
-            for (JCRNodeWrapper node : nodes) {
-                boolean hasPermission = true;
-
-                for (String permission : permissions) {
-                    if (node.hasPermission(permission)) {
-                        hasPermission = false;
-                        break;
-                    }
-                }
-
-                if (hasPermission) {
-                    return true;
-                }
-            }
+            logger.error("Cannot check permission " + permission, e);
             return false;
         }
         return true;

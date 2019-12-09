@@ -51,6 +51,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.assertj.core.api.SoftAssertions;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
@@ -61,11 +62,7 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.render.filter.AggregateFilter;
-import org.jahia.services.render.filter.cache.AggregateCacheFilter;
-import org.jahia.services.render.filter.cache.AreaResourceCacheKeyPartGenerator;
-import org.jahia.services.render.filter.cache.CacheFilter;
-import org.jahia.services.render.filter.cache.ModuleCacheProvider;
-import org.jahia.services.render.filter.cache.ModuleGeneratorQueue;
+import org.jahia.services.render.filter.cache.*;
 import org.jahia.services.render.monitoring.DefaultRenderTimeMonitor;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -107,9 +104,10 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     private static boolean aggregateFilterDisabled;
     private static boolean aggregateCacheFilterDisabled;
     private static boolean areaResourceCacheKeyPartGeneratorDisabled;
-    
+
     Random random = new SecureRandom();
-    
+    private String[] texts = {"visible for root", "visible for users only", "visible for userAB", "visible for userBC", "visible for userAC", "visible for groupA", "visible for groupB", "visible for groupC"};
+
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
 
@@ -155,7 +153,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             aggregateFilterDisabled = ((AggregateFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.AggregateFilter")).isDisabled();
             aggregateCacheFilterDisabled = ((AggregateCacheFilter) SpringContextSingleton.getBean("cacheFilter")).isDisabled();
             areaResourceCacheKeyPartGeneratorDisabled = ((AreaResourceCacheKeyPartGenerator) SpringContextSingleton.getBean("areaResourceCacheKeyPartGenerator")).isDisabled();
-            
+
             //enable test filters
             getCheckFilter("CacheHttpTestRenderFilter1").setDisabled(false);
             getCheckFilter("CacheHttpTestRenderFilter2").setDisabled(false);
@@ -164,7 +162,6 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             fail();
         }
     }
-
 
     @AfterClass
     public static void oneTimeTearDown() throws Exception {
@@ -195,6 +192,21 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             logger.warn("Exception during test tearDown", e);
         }
         JCRSessionFactory.getInstance().closeAllSessions();
+    }
+
+    static void permute(List<String> arr, int k, List<List<String>> res) {
+        for (int i = k; i < arr.size(); i++) {
+            Collections.swap(arr, i, k);
+            permute(arr, k + 1, res);
+            Collections.swap(arr, k, i);
+        }
+        if (k == arr.size() - 1) {
+            res.add(new ArrayList<String>(arr));
+        }
+    }
+
+    public static CacheFilterCheckFilter getCheckFilter(String id) {
+        return (CacheFilterCheckFilter) SpringContextSingleton.getBean(id);
     }
 
     @Before
@@ -286,16 +298,16 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             }
         }
 
+        SoftAssertions softly = new SoftAssertions();
+
         for (int j = 0; j < 10; j++) {
             System.out.println("flush " + j);
             List<String> toFlush = randomizeFlush(keysBefore, 10);
             for (String user : users) {
                 for (String path : paths) {
                     System.out.println(user + " - " + path);
-                    assertEquals("Different content for " + user + " , " + path + " when flushing : " + toFlush, m.get(user + path),
-                            getContent(getUrl(path), user, "password", null));
-                   
-                    checkCacheContent(cache, cacheCopy, toFlush);
+                    softly.assertThat(getContent(getUrl(path), user, "password", null)).as("Different content for " + user + " , " + path + " when flushing : " + toFlush).isEqualTo(m.get(user + path));
+                    checkCacheContent(cache, cacheCopy, toFlush, softly);
                 }
             }
             List<String> keysAfter = cache.getKeys();
@@ -305,11 +317,12 @@ public class CacheFilterHttpTest extends JahiaTestCase {
                 List<String> onlyInBefore = new ArrayList<String>(keysBefore);
                 onlyInBefore.removeAll(keysAfter);
                 List<String> onlyInAfter = new ArrayList<String>(keysAfter);
-                onlyInAfter.removeAll(keysBefore);
-                fail("Key sets are not the same before and after flushing : " + toFlush + "\n Before flushs :" + onlyInBefore + " ,\n After flush : " + onlyInAfter);
+                softly.fail("Key sets are not the same before and after flushing : " + toFlush + "\n Before flushs :" + onlyInBefore + " ,\n After flush : " + onlyInAfter);
             }
-            checkCacheContent(cache, cacheCopy, toFlush);
+            checkCacheContent(cache, cacheCopy, toFlush, softly);
         }
+
+        softly.assertAll();
     }
 
     @Test
@@ -333,7 +346,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         assertFalse("user3 sees content, she should not see", contentForUser3.contains("content for user2"));
     }
 
-    public void testMaxConcurrent(int generationTime) throws Exception{
+    public void testMaxConcurrent(int generationTime) throws Exception {
         long previousModuleGenerationWaitTime = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getModuleGenerationWaitTime();
         int previousMaxModulesToGenerateInParallel = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getMaxModulesToGenerateInParallel();
 
@@ -360,7 +373,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setMaxModulesToGenerateInParallel(previousMaxModulesToGenerateInParallel);
         }
     }
-    
+
     @Test
     public void testMaxRequestRenderTime() throws Exception {
         DefaultRenderTimeMonitor renderTimeMonitor = (DefaultRenderTimeMonitor) SpringContextSingleton.getBean("RenderTimeMonitor");
@@ -374,7 +387,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
 
             // flush caches
             CacheHelper.flushOutputCaches();
-            
+
             // set max render time to 3 seconds
             renderTimeMonitor.setMaxRequestRenderTime(3000);
             HttpThread t1 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home/long5"), "root", ROOT_PASSWORD, "testMaxConcurrent1");
@@ -392,17 +405,6 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             assertTrue(getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/long5"), "root", ROOT_PASSWORD, "testMaxConcurrent3").contains("Very long to appear"));
         } finally {
             renderTimeMonitor.setMaxRequestRenderTime(previousMaxRequestRenderTime);
-        }
-    }
-
-    static void permute(List<String> arr, int k, List<List<String>> res) {
-        for (int i = k; i < arr.size(); i++) {
-            Collections.swap(arr, i, k);
-            permute(arr, k + 1, res);
-            Collections.swap(arr, k, i);
-        }
-        if (k == arr.size() - 1) {
-            res.add(new ArrayList<String>(arr));
         }
     }
 
@@ -470,8 +472,6 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         return user == null ? null : (user.equals("root") ? ROOT_PASSWORD : "password");
     }
 
-    private String[] texts = {"visible for root", "visible for users only", "visible for userAB", "visible for userBC", "visible for userAC", "visible for groupA", "visible for groupB", "visible for groupC"};
-
     private void checkAcl(String message, String content, boolean[] b) {
         for (int i = 0; i < texts.length; i++) {
 
@@ -479,21 +479,16 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         }
     }
 
-    public static CacheFilterCheckFilter getCheckFilter(String id) {
-        return (CacheFilterCheckFilter) SpringContextSingleton.getBean(id);
-    }
-
-
     @SuppressWarnings("unchecked")
-    public void checkCacheContent(Cache cache, Map<String, Object> cacheCopy, List<String> toFlush) {
+    public void checkCacheContent(Cache cache, Map<String, Object> cacheCopy, List<String> toFlush, SoftAssertions softly) {
         List<String> keysNow = cache.getKeys();
         for (String s : keysNow) {
             CacheEntry<?> c1 = ((CacheEntry<?>) cacheCopy.get(s));
             final Element element = cache.get(s);
             if (element != null && c1 != null) {
                 CacheEntry<?> c2 = ((CacheEntry<?>) element.getObjectValue());
-                assertEquals("Cache fragment different for : " + s + " after flushing : " + toFlush, c1.getObject(), c2.getObject());
-                assertEquals("Cache properties different for : " + s + " after flushing : " + toFlush, c1.getExtendedProperties(), c2.getExtendedProperties());
+                softly.assertThat(c2.getObject()).as("Cache fragment different for : " + s + " after flushing : " + toFlush).isEqualTo(c1.getObject());
+                softly.assertThat(c2.getExtendedProperties()).as("Cache properties different for : " + s + " after flushing : " + toFlush).isEqualTo(c1.getExtendedProperties());
             }
         }
     }
@@ -545,6 +540,11 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     public URL getUrl(String path) throws MalformedURLException {
         String baseurl = getBaseServerURL() + Jahia.getContextPath() + "/cms";
         return new URL(baseurl + "/render/live/en" + path + ".html");
+    }
+
+    public URL getUrl(String path, String id) throws MalformedURLException {
+        String baseurl = getBaseServerURL() + Jahia.getContextPath() + "/cms";
+        return new URL(baseurl + "/render/live/en" + path + ".html?requestId=" + id);
     }
 
     public class HttpThread extends Thread {

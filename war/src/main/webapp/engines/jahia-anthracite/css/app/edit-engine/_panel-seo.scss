@@ -2,7 +2,10 @@
     width: 100% !important;
     box-sizing: border-box;
     padding: 8px 0 0 29px;
-    height: auto !important;
+    height: 100% !important;
+    max-height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
 
     .seo-title-path {
         font-family: _font("nunito");

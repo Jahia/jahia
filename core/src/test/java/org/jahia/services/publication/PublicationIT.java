@@ -564,6 +564,58 @@ public class PublicationIT extends AbstractJUnitTest {
         assertEquals("Invalid status for content", PublicationInfo.MODIFIED, getStatusFor(infos, editTextNode1.getIdentifier()));
     }
 
+
+    /**
+     * Test is here to reproduce case discovered in QA-12340.
+     * Iterating on the weakreferences of a node should not throw or return an NPE because of the references is null
+     */
+    @Test
+    public void testNodeUnpublishReferences() throws RepositoryException {
+        TestHelper.createList(testHomeEdit, "contentList1", 4, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+        // Add content referencing the contentList1_text1
+        JCRNodeWrapper editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
+        JCRNodeWrapper contentList1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1");
+        JCRNodeWrapper contentReference1 = contentList1.addNode("contentReference1", "jnt:contentReference");
+        contentReference1.setProperty("j:node", editTextNode1);
+        JCRNodeWrapper contentReference2 = contentList1.addNode("contentReference2", "jnt:contentReference");
+        contentReference2.setProperty("j:node", editTextNode1);
+        JCRNodeWrapper contentReference3 = contentList1.addNode("contentReference3", "jnt:contentReference");
+        contentReference3.setProperty("j:node", editTextNode1);
+        englishEditSession.save();
+        jcrService.publishByMainId(testHomeEdit.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, null);
+        // Test that we have 3 weak references before unpublishing content reference 2
+        JCRNodeWrapper liveTextNode1 = englishLiveSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
+        PropertyIterator liveTextNode1WeakReferencesIt = liveTextNode1.getWeakReferences();
+
+        int referencesCounter = 0;
+        while (liveTextNode1WeakReferencesIt.hasNext()) {
+                Property referenceProperty = liveTextNode1WeakReferencesIt.nextProperty();
+                referenceProperty.getParent();
+                referencesCounter++;
+        }
+        assertEquals(referencesCounter, 3);
+        jcrService.unpublish(Lists.newArrayList(contentReference2.getIdentifier()));
+
+        String testHomeEditPath = testHomeEdit.getPath();
+        // Need to add this, as otherwise the unpublished node will still be served from cache
+        JCRSessionFactory.getInstance().closeAllSessions();
+        englishEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
+        englishLiveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
+        testHomeEdit = englishEditSession.getNode(testHomeEditPath);
+
+        testNodeNotInWorkspace(englishLiveSession, testHomeEdit.getPath() + "/contentList1/contentReference2", "Text node 1 was unpublished, should not be available in the live workspace anymore !");
+        liveTextNode1 = englishLiveSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
+        liveTextNode1WeakReferencesIt = liveTextNode1.getWeakReferences();
+
+        referencesCounter = 0;
+        while (liveTextNode1WeakReferencesIt.hasNext()) {
+            Property referenceProperty = liveTextNode1WeakReferencesIt.nextProperty();
+            referenceProperty.getParent();
+            referencesCounter++;
+        }
+        assertEquals(referencesCounter, 2);
+    }
+
     private int getStatusFor(List<PublicationInfo> infos, String uuid) {
         for (PublicationInfo info : infos) {
             int i = getStatusFor(info.getRoot(), uuid);

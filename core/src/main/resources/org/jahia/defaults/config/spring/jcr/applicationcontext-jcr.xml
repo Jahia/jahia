@@ -96,7 +96,7 @@
                 <entry key="notificationService"
                     value-ref="org.jahia.services.content.rules.RulesNotificationService" />
                 <entry key="sitePubSubService"
-                    value-ref="org.jahia.services.atmosphere.rules.SitePublisherSubscriberRuleService" />
+                    value-ref="sitePublisherSubscriber" />
             </map>
         </property>
         <property name="disabledRules" value="${jahia.rules.disabledConfig:}" />

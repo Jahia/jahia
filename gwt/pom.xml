@@ -56,7 +56,7 @@
     <packaging>war</packaging>
 
     <properties>
-        <singleModuleName>org.jahia.ajax.gwt.module.edit.Edit</singleModuleName>    
+        <singleModuleName>org.jahia.ajax.gwt.module.edit.Edit</singleModuleName>
         <editModuleName>org.jahia.ajax.gwt.module.edit.Edit</editModuleName>
         <contentManagerModuleName>org.jahia.ajax.gwt.module.contentmanager.ContentManager</contentManagerModuleName>
         <gwtJavascriptStyle>OBF</gwtJavascriptStyle>
@@ -158,8 +158,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${compiler.plugin.version}</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>8</source>
+                    <target>8</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -295,7 +295,7 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>    
+        </profile>
         <profile>
             <id>gwt-production</id>
             <build>

@@ -127,4 +127,23 @@ public class NodeTypesIT extends AbstractJUnitTest {
             Assert.fail("Mandatory properties are correctly set, save should work");
         }
     }
+
+    @Test
+    public void mandatoryOverridePropertyShouldBeMandatoryAndAutocreated() throws Exception {
+        // given
+        JCRNodeWrapper rootNode = session.getNode("/");
+        JCRNodeWrapper testNode = rootNode.addNode("nodeTypeOverrideWithAutocreated", "test:nodeTypeOverrideWithAutocreated");
+
+        // when
+        session.save();
+        Assert.assertTrue("Missing mandatory localProperty should have been autocreated",testNode.hasProperty("localProperty"));
+        Assert.assertTrue("Missing mandatory mandatoryOverrideProperty should have been autocreated",testNode.hasProperty("mandatoryOverrideProperty"));
+
+        // Mandatory property can not be removed
+        // Todo: implement try/catch fail
+//        testNode.getProperty("localProperty").remove();
+//        session.save();
+//        testNode.getProperty("mandatoryOverrideProperty").remove();
+//        session.save();
+    }
 }

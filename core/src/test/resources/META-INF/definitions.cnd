@@ -242,3 +242,10 @@
 
 [jnt:cat2ype1] > jnt:content, jmix:cat2
 [test:cat2ype1] > jnt:content, jmix:cat2
+
+[test:mixinToOverrideWithAutocreated] mixin
+- mandatoryOverrideProperty (string) mandatory
+
+[test:nodeTypeOverrideWithAutocreated] > jnt:content, test:mixinToOverrideWithAutocreated
+- localProperty (string) = 'autocreated' mandatory autocreated
+- mandatoryOverrideProperty (string) = 'autocreated' autocreated

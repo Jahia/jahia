@@ -77,6 +77,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -87,10 +88,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.content.DeleteItemWindow;
 import org.jahia.ajax.gwt.client.widget.content.util.ContentHelper;
-import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEnginePopupListener;
-import org.jahia.ajax.gwt.client.widget.contentengine.EditEngineJSConfig;
-import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
-import org.jahia.ajax.gwt.client.widget.contentengine.TranslateContentEngine;
+import org.jahia.ajax.gwt.client.widget.contentengine.*;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.InfoLayers;
 import org.jahia.ajax.gwt.client.widget.edit.ToolbarHeader;
@@ -595,6 +593,17 @@ public class MainModule extends Module {
             EditLinker.setSelectionOnBodyAttributes(node);
         }
         EngineLoader.showEditEngine(getInstance().getEditLinker(), node, null, skipRefreshOnSave, jsConfig);
+    }
+
+    public static List<String> getEditTabs(String path, String uuid, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, boolean hasOrderableChildNodes) {
+        GWTJahiaNode node = getGwtJahiaNode(uuid, path, displayName, nodeTypes, inheritedNodeTypes);
+
+        List<String> editTabIds = new ArrayList<String>();
+        for (GWTEngineTab tab : EditContentEngine.resolveTabs(hasOrderableChildNodes, getInstance().getEditLinker().getConfig().getEngineConfiguration(node), node)) {
+            editTabIds.add(tab.getId());
+        }
+
+        return editTabIds;
     }
 
     public static void deleteContent(String uuid, String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, boolean skipRefreshOnDelete, boolean deletePermanently) {
@@ -1541,6 +1550,10 @@ public class MainModule extends Module {
         };
         nsAuthoringApi.redrawSelection = function () {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::redrawSelection(*)();
+        };
+
+        nsAuthoringApi.getEditTabs = function (path, uuid, displayName, types, inheritedTypes, hasOrderableChildNodes) {
+            return @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::getEditTabs(*)(path, uuid, displayName, types, inheritedTypes, hasOrderableChildNodes);
         };
     }-*/;
 

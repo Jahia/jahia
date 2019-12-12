@@ -49,6 +49,8 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -70,10 +72,7 @@ import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Content editing widget.
@@ -149,20 +148,31 @@ public class EditContentEngine extends AbstractContentEngine {
     protected void initTabs() {
         // container ID, concatenated to each tab's ID
         tabs.setId("JahiaGxtEditEngineTabs");
-        for (GWTEngineTab tabConfig : config.getEngineTabs()) {
-            EditEngineTabItem tabItem = tabConfig.getTabItem();
-            if (jsConfig.isTabDisplayed(tabConfig.getId()) && tabConfig.showInEngine() && (tabConfig.getRequiredPermission() == null || PermissionsUtils.isPermitted(tabConfig.getRequiredPermission(), JahiaGWTParameters.getSiteNode()))) {
-                if ((tabItem.getHideForTypes().isEmpty() || !node.isNodeType(tabItem.getHideForTypes())) &&
-                        ((hasOrderableChildNodes && tabItem.isOrderableTab()) || (!tabItem.isOrderableTab() && (tabItem.getShowForTypes().isEmpty() || node.isNodeType(tabItem.getShowForTypes()))))) {
-                    AsyncTabItem tab = tabItem.create(tabConfig, this);
-                    if (jsConfig.hideHeaders()) {
-                        tab.getHeader().hide();
-                    }
-                    tabs.add(tab);
+        for (GWTEngineTab resolvedTab : resolveTabs(hasOrderableChildNodes, config, node)) {
+            if (jsConfig.isTabDisplayed(resolvedTab.getId())) {
+                AsyncTabItem tab = resolvedTab.getTabItem().create(resolvedTab, this);
+
+                if (jsConfig.hideHeaders()) {
+                    tab.getHeader().hide();
                 }
+                tabs.add(tab);
             }
         }
         tabs.setSelection(tabs.getItem(0));
+    }
+
+    public static List<GWTEngineTab> resolveTabs(boolean hasOrderableChildNodes, GWTEngineConfiguration config, GWTJahiaNode node) {
+        List<GWTEngineTab> gwtEngineTabs = new ArrayList<GWTEngineTab>();
+        for (GWTEngineTab tabConfig : config.getEngineTabs()) {
+            EditEngineTabItem tabItem = tabConfig.getTabItem();
+            if (tabConfig.showInEngine() && (tabConfig.getRequiredPermission() == null || PermissionsUtils.isPermitted(tabConfig.getRequiredPermission(), JahiaGWTParameters.getSiteNode()))) {
+                if ((tabItem.getHideForTypes().isEmpty() || !node.isNodeType(tabItem.getHideForTypes())) &&
+                        ((hasOrderableChildNodes && tabItem.isOrderableTab()) || (!tabItem.isOrderableTab() && (tabItem.getShowForTypes().isEmpty() || node.isNodeType(tabItem.getShowForTypes()))))) {
+                    gwtEngineTabs.add(tabConfig);
+                }
+            }
+        }
+        return gwtEngineTabs;
     }
 
 

@@ -595,7 +595,7 @@ public class MainModule extends Module {
         EngineLoader.showEditEngine(getInstance().getEditLinker(), node, null, skipRefreshOnSave, jsConfig);
     }
 
-    public static List<String> getEditTabs(String path, String uuid, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, boolean hasOrderableChildNodes) {
+    public static String[] getEditTabs(String path, String uuid, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, boolean hasOrderableChildNodes) {
         GWTJahiaNode node = getGwtJahiaNode(uuid, path, displayName, nodeTypes, inheritedNodeTypes);
 
         List<String> editTabIds = new ArrayList<String>();
@@ -603,7 +603,7 @@ public class MainModule extends Module {
             editTabIds.add(tab.getId());
         }
 
-        return editTabIds;
+        return editTabIds.toArray(new String[0]);
     }
 
     public static void deleteContent(String uuid, String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, boolean skipRefreshOnDelete, boolean deletePermanently) {

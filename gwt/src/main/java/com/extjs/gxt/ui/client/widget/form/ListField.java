@@ -312,6 +312,17 @@ public class ListField<D extends ModelData> extends Field<D> implements Selectio
 
     protected void onSelectionChange(List<D> sel) {
         String prop = valueField != null ? valueField : listView.getDisplayProperty();
+        // Original code:
+        // StringBuffer sb = new StringBuffer();
+        //    for (D m : sel) {
+        //      sb.append(m.get(prop));
+        //      sb.append(",");
+        //    }
+        //    String s = sb.toString();
+        //    if (sb.length() > 1) {
+        //      s = s.substring(0, s.length() - 1);
+        //    }
+        // Jahia GWT 2.8 fix:
         String s = "";
         for (D m : sel) {
             s += m.get(prop);

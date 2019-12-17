@@ -716,8 +716,12 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
             Set<String> installedVersions = installedBundles.get(persistentState.getSymbolicName());
 
             if (installedVersions == null || !installedVersions.contains(persistentState.getVersion())) {
-                bundleService.install(persistentState.getLocation(), target, false, persistentState.getStartLevel());
-                installedBundlesInfo.add(BundleInfo.fromKey(persistentState.getLocation()));
+                try {
+                    bundleService.install(persistentState.getLocation(), target, false, persistentState.getStartLevel());
+                    installedBundlesInfo.add(BundleInfo.fromKey(persistentState.getLocation()));
+                } catch (Exception e) {
+                    logger.error("Cannot install {}", persistentState.getLocation(), e);
+                }
             }
         }
         return installedBundlesInfo;

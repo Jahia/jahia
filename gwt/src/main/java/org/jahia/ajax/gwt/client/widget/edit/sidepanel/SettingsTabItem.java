@@ -120,7 +120,7 @@ public class SettingsTabItem extends SidePanelTabItem {
         columns.get(0).setRenderer(new TreeGridCellRenderer<GWTJahiaNode>() {
             @Override
             protected String getText(TreeGrid<GWTJahiaNode> gwtJahiaNodeTreeGrid, GWTJahiaNode node, String property, int rowIndex, int colIndex) {
-                String v = super.getText(gwtJahiaNodeTreeGrid, node, property, rowIndex, colIndex);
+                String v = node.get(property);
                 if (v != null) {
                     v = SafeHtmlUtils.htmlEscape(v);
                 }

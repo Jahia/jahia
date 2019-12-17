@@ -48,8 +48,8 @@ import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.InfoConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
-
-import org.atmosphere.gwt20.client.*;
+import org.atmosphere.gwt20.client.Atmosphere;
+import org.atmosphere.gwt20.client.AtmosphereRequestConfig;
 import org.atmosphere.gwt20.client.AtmosphereRequestConfig.Transport;
 import org.atmosphere.gwt20.client.managed.RPCEvent;
 import org.atmosphere.gwt20.client.managed.RPCSerializer;
@@ -115,62 +115,34 @@ public class Poller {
                 requestConfig.setMaxReconnectOnClose(Integer.MAX_VALUE);
                 requestConfig.setReconnectInterval(RECONNECT_INTERVAL_MS);
 
-                requestConfig.setErrorHandler(new AtmosphereErrorHandler() {
-
-                    @Override
-                    public void onError(AtmosphereResponse response) {
-                        // This only happens on unexpected communication failures, not on conventional connection close.
-                        GWT.log("RPC error");
-                        reconnectingAfterError = true;
-                    }
+                requestConfig.setErrorHandler(response -> {
+                    // This only happens on unexpected communication failures, not on conventional connection close.
+                    GWT.log("RPC error");
+                    reconnectingAfterError = true;
                 });
 
-                requestConfig.setReconnectHandler(new AtmosphereReconnectHandler() {
+                requestConfig.setReconnectHandler((request, response) -> GWT.log("RPC reconnection"));
 
-                    @Override
-                    public void onReconnect(RequestConfig request, AtmosphereResponse response) {
-                        GWT.log("RPC reconnection");
-                    }
+                requestConfig.setOpenHandler(response -> {
+                    GWT.log("RPC Connection opened");
+                    onConnectionOpen();
                 });
 
-                requestConfig.setOpenHandler(new AtmosphereOpenHandler() {
-
-                    @Override
-                    public void onOpen(AtmosphereResponse response) {
-                        GWT.log("RPC Connection opened");
-                        onConnectionOpen();
-                    }
+                requestConfig.setReopenHandler(response -> {
+                    GWT.log("RPC Connection reopened");
+                    PermissionsUtils.triggerPermissionsReload();
+                    onConnectionOpen();
                 });
 
-                requestConfig.setReopenHandler(new AtmosphereReopenHandler() {
+                requestConfig.setCloseHandler(response -> GWT.log("RPC Connection closed"));
 
-                    @Override
-                    public void onReopen(AtmosphereResponse response) {
-                        GWT.log("RPC Connection reopened");
-                        PermissionsUtils.triggerPermissionsReload();
-                        onConnectionOpen();
-                    }
-                });
-
-                requestConfig.setCloseHandler(new AtmosphereCloseHandler() {
-
-                    @Override
-                    public void onClose(AtmosphereResponse response) {
-                        GWT.log("RPC Connection closed");
-                    }
-                });
-
-                requestConfig.setMessageHandler(new AtmosphereMessageHandler() {
-
-                    @Override
-                    public void onMessage(AtmosphereResponse response) {
-                        List<RPCEvent> messages = response.getMessages();
-                        for (RPCEvent event : messages) {
-                            for (Map.Entry<Class, ArrayList<PollListener>> entry : listeners.entrySet()) {
-                                if (entry.getKey() == event.getClass()) {
-                                    for (PollListener pollListener : entry.getValue()) {
-                                        pollListener.handlePollingResult(event);
-                                    }
+                requestConfig.setMessageHandler(response -> {
+                    List<RPCEvent> messages = response.getMessages();
+                    for (RPCEvent event : messages) {
+                        for (Map.Entry<Class, ArrayList<PollListener>> entry : listeners.entrySet()) {
+                            if (entry.getKey() == event.getClass()) {
+                                for (PollListener pollListener : entry.getValue()) {
+                                    pollListener.handlePollingResult(event);
                                 }
                             }
                         }
@@ -197,7 +169,7 @@ public class Poller {
         infoConfig.display = CONNECTION_RESTORED_NOTIFICATION_DELAY_MS;
         Info.display(infoConfig);
     }
-    
+
     public void registerListener(PollListener listener, Class eventType) {
         if (!listeners.containsKey(eventType)) {
             listeners.put(eventType, new ArrayList<PollListener>());

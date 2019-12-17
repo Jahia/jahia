@@ -162,11 +162,11 @@ public abstract class BaseActionItem implements ActionItem {
         if (toolbarItem.getIcon() != null) {
             menuItem.setIcon(ToolbarIconProvider.getInstance().getIcon(toolbarItem.getIcon()));
         }
-
-        // selection
-        menuItem.setText(toolbarItem.getTitle());
-        if (!toolbarItem.getTitle().equals(toolbarItem.getDescription())) {
-            menuItem.setToolTip(toolbarItem.getDescription());
+        if (toolbarItem.getTitle() != null) {
+            menuItem.setText(toolbarItem.getTitle());
+            if (!toolbarItem.getTitle().equals(toolbarItem.getDescription())) {
+                menuItem.setToolTip(toolbarItem.getDescription());
+            }
         }
         SelectionListener<MenuEvent> listener = getSelectListener();
         menuItem.addSelectionListener(listener);

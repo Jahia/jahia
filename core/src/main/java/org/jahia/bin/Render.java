@@ -482,61 +482,63 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 if (!tmp.exists()) {
                     tmp.mkdirs();
                 }
+                FileUpload fileUpload = null;
                 try {
-                    final FileUpload fileUpload = new FileUpload(req, savePath, Integer.MAX_VALUE);
+                    fileUpload = new FileUpload(req, savePath, Integer.MAX_VALUE, false);
                     req.setAttribute(FileUpload.FILEUPLOAD_ATTRIBUTE, fileUpload);
-                    if (fileUpload.getFileItems() != null && fileUpload.getFileItems().size() > 0) {
-                        boolean isTargetDirectoryDefined = fileUpload.getParameterNames().contains(TARGETDIRECTORY);
-                        boolean isAction = urlResolver.getPath().endsWith(".do");
-                        boolean isContributePost = fileUpload.getParameterNames().contains(CONTRIBUTE_POST);
-                        final String requestWith = req.getHeader("x-requested-with");
-                        boolean isAjaxRequest =
-                                req.getHeader("accept") != null && req.getHeader("accept").contains("application/json") && requestWith != null &&
-                                        requestWith.equals("XMLHttpRequest") || fileUpload.getParameterMap().isEmpty();
-                        List<String> uuids = new LinkedList<String>();
-                        List<String> files = new ArrayList<String>();
-                        List<String> urls = new LinkedList<String>();
-                        // If target directory is defined or if it is an ajax request then save the file now
-                        // otherwise we delay the save of the file to the node creation
-                        if (!isAction && (isContributePost || isTargetDirectoryDefined || isAjaxRequest)) {
-                            JCRSessionWrapper session =
-                                    jcrSessionFactory.getCurrentUserSession(workspace, locale);
-                            String target;
-                            if (isTargetDirectoryDefined) {
-                                target = (fileUpload.getParameterValues(TARGETDIRECTORY))[0];
-                            } else if (isContributePost) {
-                                String path = urlResolver.getPath();
-                                path = (path.endsWith("*") ? StringUtils.substringBeforeLast(path, "/") : path);
-                                JCRNodeWrapper sessionNode = session.getNode(path);
-                                JCRSiteNode siteNode = sessionNode.getResolveSite();
-                                if (siteNode != null) {
-                                    String s = sessionNode.getResolveSite().getPath() + "/files/contributed/";
-                                    String name = JCRContentUtils.replaceColon(sessionNode.getPrimaryNodeTypeName()) + "_" + sessionNode.getName();
-                                    target = s + name;
-                                    try {
-                                        session.getNode(target);
-                                    } catch (RepositoryException e) {
-                                        JCRNodeWrapper node = session.getNode(s);
-                                        session.checkout(node);
-                                        node.addNode(name, "jnt:folder");
-                                        session.save();
-                                    }
-                                } else {
-                                    target = sessionNode.getPath() + "/files";
-                                    if (!sessionNode.hasNode("files")) {
-                                        session.checkout(sessionNode);
-                                        sessionNode.addNode("files", "jnt:folder");
-                                        session.save();
-                                    }
+                    boolean isTargetDirectoryDefined = fileUpload.getParameterNames().contains(TARGETDIRECTORY);
+                    boolean isAction = urlResolver.getPath().endsWith(".do");
+                    boolean isContributePost = fileUpload.getParameterNames().contains(CONTRIBUTE_POST);
+                    final String requestWith = req.getHeader("x-requested-with");
+                    boolean isAjaxRequest
+                            = req.getHeader("accept") != null && req.getHeader("accept").contains("application/json") && requestWith != null
+                            && requestWith.equals("XMLHttpRequest") || fileUpload.getParameterMap().isEmpty();
+                    List<String> uuids = new LinkedList<>();
+                    List<String> files = new ArrayList<>();
+                    List<String> urls = new LinkedList<>();
+                    // If target directory is defined or if it is an ajax request then save the file now
+                    // otherwise we delay the save of the file to the node creation
+                    if (!isAction && (isContributePost || isTargetDirectoryDefined || isAjaxRequest)) {
+                        JCRSessionWrapper session
+                                = jcrSessionFactory.getCurrentUserSession(workspace, locale);
+                        String target;
+                        if (isTargetDirectoryDefined) {
+                            target = (fileUpload.getParameterValues(TARGETDIRECTORY))[0];
+                        } else if (isContributePost) {
+                            String path = urlResolver.getPath();
+                            path = (path.endsWith("*") ? StringUtils.substringBeforeLast(path, "/") : path);
+                            JCRNodeWrapper sessionNode = session.getNode(path);
+                            JCRSiteNode siteNode = sessionNode.getResolveSite();
+                            if (siteNode != null) {
+                                String s = sessionNode.getResolveSite().getPath() + "/files/contributed/";
+                                String name = JCRContentUtils.replaceColon(sessionNode.getPrimaryNodeTypeName()) + "_" + sessionNode.getName();
+                                target = s + name;
+                                try {
+                                    session.getNode(target);
+                                } catch (RepositoryException e) {
+                                    JCRNodeWrapper node = session.getNode(s);
+                                    session.checkout(node);
+                                    node.addNode(name, "jnt:folder");
+                                    session.save();
                                 }
                             } else {
-                                String path = urlResolver.getPath();
-                                target = (path.endsWith("*") ? StringUtils.substringBeforeLast(path, "/") : path);
+                                target = sessionNode.getPath() + "/files";
+                                if (!sessionNode.hasNode("files")) {
+                                    session.checkout(sessionNode);
+                                    sessionNode.addNode("files", "jnt:folder");
+                                    session.save();
+                                }
                             }
-                            final JCRNodeWrapper targetDirectory = session.getNode(target);
+                        } else {
+                            String path = urlResolver.getPath();
+                            target = (path.endsWith("*") ? StringUtils.substringBeforeLast(path, "/") : path);
+                        }
+                        final JCRNodeWrapper targetDirectory = session.getNode(target);
+                        fileUpload.processItems();
+                        if (fileUpload.getFileItems() != null && fileUpload.getFileItems().size() > 0) {
 
-                            boolean isVersionActivated = fileUpload.getParameterNames().contains(VERSION) ?
-                                    (fileUpload.getParameterValues(VERSION))[0].equals("true") : false;
+                            boolean isVersionActivated = fileUpload.getParameterNames().contains(VERSION)
+                                    ? (fileUpload.getParameterValues(VERSION))[0].equals("true") : false;
 
                             final Map<String, DiskFileItem> stringDiskFileItemMap = fileUpload.getFileItems();
                             for (Map.Entry<String, DiskFileItem> itemEntry : stringDiskFileItemMap.entrySet()) {
@@ -584,32 +586,41 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                             session.save();
                         }
 
-                        if (isAction || (!isAjaxRequest && !isContributePost)) {
-                            parameters.putAll(fileUpload.getParameterMap());
-                            if (isTargetDirectoryDefined) {
-                                parameters.put(NODE_NAME, files);
-                            }
+                    }
+
+                    if (isAction || (!isAjaxRequest && !isContributePost)) {
+                        if (!fileUpload.isFilesProcessed()) {
+                            fileUpload.processItems();
+                        }
+                        parameters.putAll(fileUpload.getParameterMap());
+                        if (isTargetDirectoryDefined) {
+                            parameters.put(NODE_NAME, files);
+                        }
+                        return true;
+                    } else {
+                        try {
+                            resp.setStatus(HttpServletResponse.SC_CREATED);
+                            Map<String, Object> map = new LinkedHashMap<String, Object>();
+                            map.put("uuids", uuids);
+                            map.put("urls", urls);
+                            JSONObject nodeJSON = new JSONObject(map);
+                            nodeJSON.write(resp.getWriter());
                             return true;
-                        } else {
-                            try {
-                                resp.setStatus(HttpServletResponse.SC_CREATED);
-                                Map<String, Object> map = new LinkedHashMap<String, Object>();
-                                map.put("uuids", uuids);
-                                map.put("urls", urls);
-                                JSONObject nodeJSON = new JSONObject(map);
-                                nodeJSON.write(resp.getWriter());
-                                return true;
-                            } catch (JSONException e) {
-                                logger.error(e.getMessage(), e);
-                            }
+                        } catch (JSONException e) {
+                            logger.error(e.getMessage(), e);
                         }
                     }
+                    
                     if (fileUpload.getParameterMap() != null && !fileUpload.getParameterMap().isEmpty()) {
                         parameters.putAll(fileUpload.getParameterMap());
                     }
                 } catch (IOException e) {
                     logger.error("Cannot parse multipart data !", e);
-                }
+                    if (fileUpload != null) {
+                        fileUpload.disposeItems();
+                        fileUpload.markFilesAsConsumed();
+                    }
+                } 
             } else {
                 logger.debug("Mulipart request is not processed. It's the task of the portlet");
             }

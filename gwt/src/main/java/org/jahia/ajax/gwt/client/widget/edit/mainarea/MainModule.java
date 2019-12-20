@@ -60,10 +60,13 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
 import com.google.gwt.storage.client.Storage;
-import com.google.gwt.user.client.*;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Frame;
@@ -595,15 +598,19 @@ public class MainModule extends Module {
         EngineLoader.showEditEngine(getInstance().getEditLinker(), node, null, skipRefreshOnSave, jsConfig);
     }
 
-    public static String[] getEditTabs(String path, String uuid, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, boolean hasOrderableChildNodes) {
+    public static JavaScriptObject getEditTabs(String path, String uuid, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, boolean hasOrderableChildNodes) {
         GWTJahiaNode node = getGwtJahiaNode(uuid, path, displayName, nodeTypes, inheritedNodeTypes);
 
-        List<String> editTabIds = new ArrayList<String>();
-        for (GWTEngineTab tab : EditContentEngine.resolveTabs(hasOrderableChildNodes, getInstance().getEditLinker().getConfig().getEngineConfiguration(node), node)) {
-            editTabIds.add(tab.getId());
+        JSONArray editTabs = new JSONArray();
+        List<GWTEngineTab> gwtEngineTabs = EditContentEngine.resolveTabs(hasOrderableChildNodes, getInstance().getEditLinker().getConfig().getEngineConfiguration(node), node);
+        for (int idx = 0; idx < gwtEngineTabs.size(); idx++) {
+            JSONObject jsonTab = new JSONObject();
+            GWTEngineTab gwtEngineTab = gwtEngineTabs.get(idx);
+            jsonTab.put("id", new JSONString(gwtEngineTab.getId()));
+            jsonTab.put("title", new JSONString(gwtEngineTab.getTitle()));
+            editTabs.set(idx, jsonTab);
         }
-
-        return editTabIds.toArray(new String[0]);
+        return editTabs.getJavaScriptObject();
     }
 
     public static void deleteContent(String uuid, String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, boolean skipRefreshOnDelete, boolean deletePermanently) {

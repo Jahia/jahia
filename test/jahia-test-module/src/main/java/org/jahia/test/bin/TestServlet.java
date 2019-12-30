@@ -46,10 +46,8 @@ package org.jahia.test.bin;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.history.NodeVersionHistoryListener;
 import org.jahia.test.SurefireJUnitXMLResultFormatter;
-import org.jahia.test.SurefireTestNGXMLResultFormatter;
-import org.jahia.utils.ClassLoaderUtils;
-import org.jahia.utils.ClassLoaderUtils.Callback;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.exceptions.JahiaNotFoundException;
 import org.junit.internal.requests.FilterRequest;
 import org.junit.internal.runners.ErrorReportingRunner;
 import org.junit.runner.Description;
@@ -58,16 +56,9 @@ import org.junit.runner.Request;
 import org.junit.runner.Result;
 import org.junit.runner.Runner;
 import org.junit.runner.manipulation.Filter;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.ISuiteListener;
-import org.testng.ITestListener;
-import org.testng.TestNG;
-import org.testng.xml.Parser;
-import org.testng.xml.XmlSuite;
-import org.testng.xml.XmlTest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -75,9 +66,9 @@ import javax.servlet.ServletException;
 
 import java.io.*;
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -90,111 +81,42 @@ import junit.framework.TestSuite;
  */
 public class TestServlet extends BaseTestController {
     
-    private transient static Logger logger = LoggerFactory.getLogger(TestServlet.class);
+    private static final Logger logger = LoggerFactory.getLogger(TestServlet.class);
+    private static final String TEST_ERROR_MSG = "Error executing test";
 
     static {
         // if this class is deployed, we disable the listener for deleting node version histories of nodes after a site is deleted
         NodeVersionHistoryListener.setDisabled(true);
     }
 
-    protected void handleGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
+    protected void handleGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
+            throws ServletException, IOException {
 
-            String pathInfo = StringUtils.substringAfter(httpServletRequest.getPathInfo(), "/test");
-            boolean isHtmlOutput = ".html".equals(pathInfo);
-            String xmlTest = httpServletRequest.getParameter("xmlTest");
-            if (pathInfo.contains("selenium") || !StringUtils.isEmpty(xmlTest)) {
-                JahiaTemplatesPackage seleniumModule = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById("selenium");
-                if (seleniumModule == null) {
-                    throw new ServletException("Selenium module not found (or not started)");
-                }
-                TestNG myTestNG = new TestNG();
-                SurefireTestNGXMLResultFormatter xmlResultFormatter = new SurefireTestNGXMLResultFormatter(
-                        httpServletResponse.getOutputStream());
-                myTestNG.addListener((ISuiteListener) xmlResultFormatter);                
-                myTestNG.addListener((ITestListener) xmlResultFormatter);
-               
-                final Enumeration<URL> resources = seleniumModule.getBundle().findEntries("testng", StringUtils.defaultIfBlank(xmlTest, "*.xml"), false);
-                if (resources != null && resources.hasMoreElements()) {
-                    final List<XmlSuite> allSuites = new ArrayList<XmlSuite>();
-                    ClassLoaderUtils.executeWith(seleniumModule.getClassLoader(), new Callback<Boolean>() {
-                        @Override
-                        public Boolean execute() {
-                            while (resources.hasMoreElements()) {
-                                InputStream is = null;
-                                try {
-                                    is = resources.nextElement().openStream();
-                                    Parser parser = new Parser(is);
-                                    List<XmlSuite> suites = parser.parseToList();
-
-                                    for (XmlSuite suite : suites) {
-                                        suite.setPreserveOrder("true");
-                                        suite.setConfigFailurePolicy("continue");
-                                        for (XmlTest test : suite.getTests()) {
-                                            test.setPreserveOrder("true");
-                                        }
-                                    }
-
-                                    allSuites.addAll(suites);
-                                } catch (Exception e) {
-                                    logger.error("Error executing test", e);
-                                } finally {
-                                    IOUtils.closeQuietly(is);
-                                }
-                            }
-                            return Boolean.TRUE;
-                        }
-                    });
-                    myTestNG.setXmlSuites(allSuites);
-                } else {
-                    String className = pathInfo.substring(pathInfo
-                            .lastIndexOf('/') + 1);
-                    try {
-                        Class<?> testClass = Class.forName(className);
-                        List<Class<?>> classes = getTestClasses(testClass,
-                                new ArrayList<Class<?>>());
-                        if (!classes.isEmpty()) {
-                            myTestNG.setTestClasses(classes
-                                    .toArray(new Class[classes.size()]));
-                        }
-                    } catch (Exception e) {
-                        logger.error("Error executing test", e);
-                    }
-                }
-
-                String testOutputDirectory = httpServletRequest.getParameter("testOutputDirectory");
-                if (!StringUtils.isEmpty(testOutputDirectory)) {
-                    myTestNG.setOutputDirectory(testOutputDirectory);
-                    logger.info("Output directory set to " + testOutputDirectory);
-                }
-                myTestNG.setConfigFailurePolicy("continue");
-                myTestNG.setPreserveOrder(true);
-                myTestNG.run();
-            } else if (StringUtils.isNotEmpty(pathInfo) && !pathInfo.contains("*") && !pathInfo.trim().equals("/") && !isHtmlOutput) {
-                runTest(httpServletRequest, httpServletResponse, pathInfo);
+        String pathInfo = StringUtils.substringAfter(httpServletRequest.getPathInfo(), "/test");
+        boolean isHtmlOutput = ".html".equals(pathInfo);
+        if (StringUtils.isNotEmpty(pathInfo) && !pathInfo.contains("*") && !pathInfo.trim().equals("/") && !isHtmlOutput) {
+            runIntegrationTests(httpServletRequest, httpServletResponse, pathInfo.substring(pathInfo.lastIndexOf('/') + 1));
+        } else {
+            Set<String> testCases = getAllTestCases(Boolean.valueOf(httpServletRequest.getParameter("skipCoreTests")));
+            List<String> selectedTests = new LinkedList<>(); 
+            if (!isHtmlOutput && StringUtils.isNotEmpty(pathInfo) && !pathInfo.trim().equals("/")) {
+                Pattern testNamePattern = Pattern
+                        .compile(pathInfo.length() > 1 && pathInfo.startsWith("/") ? pathInfo.substring(1) : pathInfo);
+                selectedTests = testCases.stream().filter(testCase -> testNamePattern.matcher(testCase).matches())
+                        .collect(Collectors.toList());
             } else {
-                Pattern testNamePattern = !isHtmlOutput && StringUtils.isNotEmpty(pathInfo) && !pathInfo.trim().equals("/") ? Pattern
-                        .compile(pathInfo.length() > 1 && pathInfo.startsWith("/") ? pathInfo
-                                .substring(1) : pathInfo) : null;
-                Set<String> testCases = getAllTestCases(Boolean.valueOf(httpServletRequest.getParameter("skipCoreTests")));
-
-
-                PrintWriter pw = httpServletResponse.getWriter();
-                // Return the lists of available tests
-                List<String> tests = new LinkedList<String>();
-                    for (String o : testCases) {
-                        if (testNamePattern == null || testNamePattern.matcher(o).matches()) {
-                            tests.add(o);
-                        }
-                    }
-
-                if (isHtmlOutput) {
-                    outputHtml(tests, httpServletRequest, httpServletResponse);
-                } else {
-                    for (String c : tests) {
-                        pw.println(c);
-                    }
-                }
+                selectedTests.addAll(testCases);
             }
+
+            if (Boolean.parseBoolean(httpServletRequest.getParameter("run"))) {
+                runIntegrationTests(httpServletRequest, httpServletResponse, selectedTests.stream().toArray(String[]::new));
+            } else if (isHtmlOutput) {
+                outputHtml(selectedTests, httpServletRequest, httpServletResponse);
+            } else {
+                PrintWriter pw = httpServletResponse.getWriter();
+                selectedTests.forEach(pw::println);
+            }
+        }
     }
 
     private void outputHtml(List<String> tests, HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -229,75 +151,85 @@ public class TestServlet extends BaseTestController {
         pw.println("</body>");
     }
 
-    private void runTest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, String pathInfo) {
+    private void runIntegrationTests(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, String... classNames)
+            throws IOException {
         // Execute one test
-        String className = pathInfo.substring(pathInfo.lastIndexOf('/')+1);
-        String methodName = httpServletRequest.getParameter("test");
-        try {
-            JUnitCore junitcore = new JUnitCore();
-            SurefireJUnitXMLResultFormatter xmlResultFormatter = new SurefireJUnitXMLResultFormatter(httpServletResponse.getOutputStream());
-            junitcore.addListener(xmlResultFormatter);
-            JahiaTemplatesPackage testPackage = findPackageForTestCase(className);
-            Class<?> testClass = testPackage != null ? testPackage.getClassLoader().loadClass(className) : Class.forName(className);
-            if (testClass == null) {
-                throw new Exception("Couldn't find origin module for test " + className);
-            }
-            logger.info("Will use test class {}", testClass.getName());
-            List<Class<?>> classes = getTestClasses(testClass, new ArrayList<Class<?>>());;
-            if (classes.isEmpty()) {
-                Description description = Description.createSuiteDescription(testClass);
-                xmlResultFormatter.testRunStarted(description);
-                xmlResultFormatter.testRunFinished(new Result());
-            } else {
-                if (methodName != null) {
-                    logger.info("Executing test method {}.{}()", testClass.getName(), methodName);
-                    long start = System.currentTimeMillis();
-                    junitcore.run(Request.method(testClass, methodName));
-                    logger.info("Done executing test method {}.{}() in {} ms", new Object[] { testClass.getName(),
-                            methodName, System.currentTimeMillis() - start });
+        JUnitCore junitcore = new JUnitCore();
+        Map<Class<?>, List<Class<?>>> testClassesPerSuites = getTestClassesPerSuites(classNames);
+        SurefireJUnitXMLResultFormatter xmlResultFormatter = new SurefireJUnitXMLResultFormatter(httpServletResponse.getOutputStream());
+        junitcore.addListener(xmlResultFormatter);
+        List<Class<?>> testClassesToRun = new ArrayList<>();
+        for (Map.Entry<Class<?>, List<Class<?>>> testClassesPerSuite : testClassesPerSuites.entrySet()) {
+            try {
+                Class<?> suiteOrTestClass = testClassesPerSuite.getKey();
+                List<Class<?>> testClasses = testClassesPerSuite.getValue();
+                if (testClasses.isEmpty()) {
+                    Description description = Description.createSuiteDescription(suiteOrTestClass);
+                    xmlResultFormatter.testRunStarted(description);
+                    xmlResultFormatter.testRunFinished(new Result());
                 } else {
-                    logger.info("Executing test classes {}", classes.toArray());
-                    long start = System.currentTimeMillis();
-                    final Set<String> ignoreTests = getIgnoreTests();
-                    Runner runner = new FilterRequest(Request.classes(classes
-                            .toArray(new Class[classes.size()])), new Filter() {
-    
-                        @Override
-                        public boolean shouldRun(Description description) {
-                            return !ignoreTests.contains(description.getDisplayName());
-                        }
-    
-                        @Override
-                        public String describe() {
-                            return "Filter out Jahia configured methods";
-                        }
-                    }).getRunner();
-                    
-                    if (runner instanceof ErrorReportingRunner) {
-                        logger.warn("No tests remain after applying ignoreTests filter {} in {}", ignoreTests,
-                                classes.toArray());
-                    } else {
-                        junitcore.run(runner);
-                        logger.info("Done executing test classes {} in {} ms", classes.toArray(),
-                                System.currentTimeMillis() - start);                        
-                    }
+                    testClassesToRun.addAll(testClasses);
                 }
+            } catch (Exception e) {
+                logger.error(TEST_ERROR_MSG, e);
             }
-        } catch (Exception e) {
-            logger.error("Error executing test", e);
         }
+        if (!testClassesToRun.isEmpty()) {
+            String methodName = httpServletRequest.getParameter("test");
+            logger.info("Executing test classes {}", testClassesToRun.toArray());
+            long start = System.currentTimeMillis();
+            final Set<String> ignoreTests = getIgnoreTests();
+            Runner runner = new FilterRequest(Request.classes(testClassesToRun.toArray(new Class[testClassesToRun.size()])), new Filter() {
+
+                @Override
+                public boolean shouldRun(Description description) {
+                    return !ignoreTests.contains(description.getDisplayName())
+                            && (methodName == null || methodName.equalsIgnoreCase(description.getMethodName()));
+                }
+
+                @Override
+                public String describe() {
+                    return "Filter out Jahia configured methods";
+                }
+            }).getRunner();
+
+            if (runner instanceof ErrorReportingRunner) {
+                logger.warn("No tests remain after applying ignoreTests filter {} in {}", ignoreTests, testClassesToRun.toArray());
+            } else {
+                junitcore.run(runner);
+                logger.info("Done executing test classes {} in {} ms", testClassesToRun.toArray(), System.currentTimeMillis() - start);
+            }
+        }
+
+    }
+    
+    private Map<Class<?>, List<Class<?>>> getTestClassesPerSuites(String... classNames) {
+        Map<Class<?>, List<Class<?>>> testClassesPerSuites = new HashMap<>();
+        for (String className : classNames) {
+            try {
+                JahiaTemplatesPackage testPackage = findPackageForTestCase(className);
+                Class<?> testClass = testPackage != null ? testPackage.getClassLoader().loadClass(className) : Class.forName(className);
+                if (testClass == null) {
+                    throw new JahiaNotFoundException("Couldn't find origin module for test " + className);
+                }
+                logger.info("Will use test class {}", testClass.getName());
+                testClassesPerSuites.put(testClass, getTestClasses(testClass, new ArrayList<Class<?>>()));
+            } catch (Exception e) {
+                logger.error("Error getting tests", e);
+            }
+        }
+        return testClassesPerSuites;
     }
 
     private Set<String> getAllTestCases(boolean skipCore) {
-        Set<String> testCases = new TreeSet<String>();
-        for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages()) {
+        Set<String> testCases = new TreeSet<>();
+        for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService()
+                .getAvailableTemplatePackages()) {
             if (aPackage.getContext() != null) {
-                Map<String,TestBean> packageTestBeans = aPackage.getContext().getBeansOfType(TestBean.class);
-                if (packageTestBeans.size() > 0) {
-                    for (TestBean testBean : packageTestBeans.values()) {
-                        if (!skipCore || !testBean.isCoreTests()) {
-                            testCases.addAll(testBean.getTestCases());
-                        }
+                Map<String, TestBean> packageTestBeans = aPackage.getContext().getBeansOfType(TestBean.class);
+                for (TestBean testBean : packageTestBeans.values()) {
+                    if (!skipCore || !testBean.isCoreTests()) {
+                        testCases.addAll(testBean.getTestCases());
                     }
                 }
             }
@@ -306,15 +238,14 @@ public class TestServlet extends BaseTestController {
     }
 
     private JahiaTemplatesPackage findPackageForTestCase(String testCase) {
-        for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages()) {
+        for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService()
+                .getAvailableTemplatePackages()) {
             if (aPackage.getContext() != null) {
-                Map<String,TestBean> packageTestBeans = aPackage.getContext().getBeansOfType(TestBean.class);
-                if (packageTestBeans.size() > 0) {
-                    for (TestBean testBean : packageTestBeans.values()) {
-                        for (String beanTestCase : testBean.getTestCases()) {
-                            if (beanTestCase.equals(testCase)) {
-                                return aPackage;
-                            }
+                Map<String, TestBean> packageTestBeans = aPackage.getContext().getBeansOfType(TestBean.class);
+                for (TestBean testBean : packageTestBeans.values()) {
+                    for (String beanTestCase : testBean.getTestCases()) {
+                        if (beanTestCase.equals(testCase)) {
+                            return aPackage;
                         }
                     }
                 }
@@ -327,7 +258,7 @@ public class TestServlet extends BaseTestController {
         Method suiteMethod = null;
         try {
             // check if there is a suite method
-            suiteMethod = testClass.getMethod("suite", new Class[0]);
+            suiteMethod = testClass.getMethod("suite", (Class[])null);
         } catch (NoSuchMethodException e) {
             // no appropriate suite method found. We don't report any
             // error here since it might be perfectly normal.
@@ -338,7 +269,7 @@ public class TestServlet extends BaseTestController {
             // to extract the suite from it. If there is an error
             // here it will be caught below and reported.
             try {
-                classes = getTestClasses((Test)suiteMethod.invoke(null, new Class[0]), classes);
+                classes = getTestClasses((Test)suiteMethod.invoke(null,  (Object[])null), classes);
                 
             } catch (Exception e) {
                 logger.error("Error getting classes of suite", e);
@@ -354,7 +285,7 @@ public class TestServlet extends BaseTestController {
             // if there is a suite method available, then try
             // to extract the suite from it. If there is an error
             // here it will be caught below and reported.
-            Set<Class<?>> tempClasses = new HashSet<Class<?>>();
+            Set<Class<?>> tempClasses = new HashSet<>();
             for (Enumeration<Test> tests = ((TestSuite)test).tests(); tests.hasMoreElements(); ) {
                 Test currentTest = tests.nextElement();
                 if (currentTest instanceof TestSuite || !tempClasses.contains(currentTest.getClass())) {
@@ -370,7 +301,7 @@ public class TestServlet extends BaseTestController {
     
     private Set<String> getIgnoreTests() {
         // Return the lists of available tests
-        Set<String> ignoreTests = new HashSet<String>();
+        Set<String> ignoreTests = new HashSet<>();
 
         for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages()) {
             if (aPackage.getContext() != null) {

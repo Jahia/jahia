@@ -127,4 +127,46 @@ public class NodeTypesIT extends AbstractJUnitTest {
             Assert.fail("Mandatory properties are correctly set, save should work");
         }
     }
+
+    @Test
+    public void mandatoryOverridePropertyShouldBeMandatoryAndAutocreated() throws Exception {
+        // given
+        JCRNodeWrapper rootNode = session.getNode("/");
+        JCRNodeWrapper testNode = rootNode.addNode("nodeTypeOverrideNodeTypeWithAutocreated", "test:nodeTypeOverrideNodeTypeWithAutocreated");
+        JCRNodeWrapper testNodeWithMixin = rootNode.addNode("nodeTypeOverrideWithAutocreated", "test:nodeTypeOverrideWithAutocreated");
+
+        // when
+        session.save();
+
+        // then
+        Assert.assertTrue("Missing mandatory localProperty should have been autocreated", testNode.hasProperty("localProperty"));
+        Assert.assertTrue("Missing mandatory mandatoryOverridePropertyNodeType should have been autocreated", testNode.hasProperty("mandatoryOverridePropertyNodeType"));
+        Assert.assertTrue("Missing mandatory mandatoryOverrideProperty should have been autocreated", testNodeWithMixin.hasProperty("mandatoryOverrideProperty"));
+
+        // Mandatory auto created property can not be removed
+        testNode.getProperty("localProperty").remove();
+        try {
+            session.save();
+            Assert.fail("localProperty property cannot be removed, property is mandatory");
+        } catch (CompositeConstraintViolationException e) {
+            session.refresh(false);
+            Assert.assertTrue("Missing mandatory localProperty should have not be removed", session.getNode(testNode.getPath()).hasProperty("localProperty"));
+        }
+        testNode.getProperty("mandatoryOverridePropertyNodeType").remove();
+        try {
+            session.save();
+            Assert.fail("mandatoryOverridePropertyNodeType property cannot be removed, property is mandatory");
+        } catch (CompositeConstraintViolationException e) {
+            session.refresh(false);
+            Assert.assertTrue("Missing mandatory mandatoryOverridePropertyNodeType should have not be removed", session.getNode(testNode.getPath()).hasProperty("mandatoryOverridePropertyNodeType"));
+        }
+        testNodeWithMixin.getProperty("mandatoryOverrideProperty").remove();
+        try {
+            session.save();
+            Assert.fail("mandatoryOverrideProperty property cannot be removed, property is mandatory");
+        } catch (CompositeConstraintViolationException e) {
+            session.refresh(false);
+            Assert.assertTrue("Missing mandatory mandatoryOverrideProperty should have not be removed", session.getNode(testNodeWithMixin.getPath()).hasProperty("mandatoryOverrideProperty"));
+        }
+    }
 }

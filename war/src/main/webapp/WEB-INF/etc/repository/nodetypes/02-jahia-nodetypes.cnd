@@ -818,6 +818,10 @@ extends = jnt:content
 // an item will be displayed in the Pages tab of the selector
 [jmix:visibleInPagesTree] mixin
 
+// apply this mixin to display content as a leaf in content trees
+// @since Jahia 7.3.5.0
+[jmix:visibleInContentTree] mixin
+
 //---------------------------------------------------------
 // Template studio
 //---------------------------------------------------------

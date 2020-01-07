@@ -562,7 +562,8 @@ public class JCRSessionWrapper implements Session {
                         if (propertyDefinition.isMandatory() &&
                                 propertyDefinition.getRequiredType() != PropertyType.WEAKREFERENCE &&
                                 propertyDefinition.getRequiredType() != PropertyType.REFERENCE &&
-                                !propertyDefinition.isProtected() && !(propertyDefinition.isAutoCreated() && node.isNew()) &&
+                                !propertyDefinition.isProtected() &&
+                                !(propertyDefinition.isAutoCreated() && node.isNew()) &&
                                 (!propertyDefinition.isInternationalized() || getLocale() != null) &&
                                 (
                                         !node.hasProperty(propertyName) ||

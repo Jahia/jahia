@@ -43,40 +43,23 @@
  */
 package org.jahia.services.content;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-
-import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Value;
-import javax.jcr.ValueFormatException;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.nodetype.NodeType;
-import javax.jcr.observation.Event;
-import javax.jcr.observation.EventIterator;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
-import org.jahia.services.content.nodetypes.DynamicValueImpl;
-import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.content.nodetypes.initializers.I15dValueInitializer;
 import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.*;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.nodetype.NodeType;
+import javax.jcr.observation.Event;
+import javax.jcr.observation.EventIterator;
+import java.util.*;
+
 /**
- * JCR listener that automatically populates node properties with default values (in case of dynamic values or i18n properties) and creates
+ * JCR listener that automatically populates node properties with default values (in case of dynamic values or i18n properties or override properties) and creates
  * mandatory sub-nodes.
  *
  * @author Thomas Draier
@@ -164,10 +147,9 @@ public class DefaultValueListener extends DefaultEventListener {
             NodeType nodeType = iterator.next();
             ExtendedNodeType extendedNodeType = NodeTypeRegistry.getInstance().getNodeType(nodeType.getName());
             if (extendedNodeType != null) {
-                ExtendedPropertyDefinition[] propertyDefinitions = extendedNodeType.getPropertyDefinitions();
+                Collection<ExtendedPropertyDefinition> propertyDefinitions = extendedNodeType.getPropertyDefinitionsAsMap().values();
 
-                for (int i = 0; i < propertyDefinitions.length; i++) {
-                    ExtendedPropertyDefinition propertyDefinition = propertyDefinitions[i];
+                for (ExtendedPropertyDefinition propertyDefinition : propertyDefinitions) {
                     Value[] defValues = propertyDefinition.getDefaultValuesAsUnexpandedValue();
                     if (defValues.length > 0) {
                         boolean handled = handlePropertyDefaultValues(node, propertyDefinition, defValues, sessionLocale);
@@ -175,7 +157,7 @@ public class DefaultValueListener extends DefaultEventListener {
                     }
                 }
 
-                ExtendedNodeDefinition[] childNodeDefinitions = extendedNodeType.getChildNodeDefinitions();
+                Collection<ExtendedNodeDefinition> childNodeDefinitions = extendedNodeType.getChildNodeDefinitionsAsMap().values();
                 for (ExtendedNodeDefinition definition : childNodeDefinitions) {
                     if (definition.isAutoCreated() && !node.hasNode(definition.getName())) {
                         JCRNodeWrapper autoCreated = node.addNode(definition.getName(), definition.getDefaultPrimaryTypeName());
@@ -195,7 +177,10 @@ public class DefaultValueListener extends DefaultEventListener {
     protected boolean handlePropertyDefaultValues(JCRNodeWrapper n, ExtendedPropertyDefinition pd, Value[] values,
             Locale sessionLocale) throws RepositoryException {
         boolean doCreateI18n = sessionLocale != null && pd.isInternationalized();
-        if (!pd.isAutoCreated() || (!doCreateI18n && !pd.hasDynamicDefaultValues())) {
+        // Condition is:
+        // - Auto created
+        // - i18n or dynamic values or override
+        if (!pd.isAutoCreated() || (!doCreateI18n && !pd.hasDynamicDefaultValues() && !pd.isOverride())) {
             // no handling needed
             return false;
         }

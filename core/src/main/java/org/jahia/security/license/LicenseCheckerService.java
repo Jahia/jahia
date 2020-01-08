@@ -72,9 +72,9 @@ public interface LicenseCheckerService {
         /**
          * @see LicenseCheckerService#isLimitExceeded(String, String)
          */
-        public static boolean isLimitExceeded(String componentName, String limitName) {
+        public static boolean isLimitReached(String componentName, String limitName) {
             LicenseCheckerService service = getInstance();
-            return service != null && service.isLimitExceeded(componentName, limitName);
+            return service != null && service.isLimitReached(componentName, limitName);
         }
 
         /**
@@ -132,7 +132,7 @@ public interface LicenseCheckerService {
      * @param limitName     Name of the limit to check (e.g: sites)
      * @return <code>true</code> if the desired limit has been exceeded, <code>false</code> if there is no limit or if not exceeded
      */
-    boolean isLimitExceeded(String featureId, String limitName);
+    boolean isLimitReached(String featureId, String limitName);
 
     /**
      * Checks whether or not the limit (if any) of logged in users has been reached.

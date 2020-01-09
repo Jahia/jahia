@@ -97,12 +97,15 @@ public final class Jahia {
 
     public static final String YEAR = "2019";
     public static final String CODE_NAME = "Hit-Girl";
+    public static final String PRODUCT_NAME = "Jahia";
     public static final String VENDOR_NAME = "Jahia Solutions Group SA";
-    public static final String COPYRIGHT = "&copy; Copyright 2002-" + YEAR + "  <a href=\"http://www.jahia.com\" target=\"newJahia\">"
+    public static final String COPYRIGHT = "&copy; Copyright 2002-" + YEAR + "  <a href=\"https://www.jahia.com\" target=\"newJahia\">"
             + VENDOR_NAME + "</a> -";
     public static final String COPYRIGHT_TXT = YEAR + " " + VENDOR_NAME;
 
     private static final Version JAHIA_VERSION;
+    public static final String LOGGER_INVALID_SUPPORTED_JDK_VERSIONS = "Invalid supported_jdk_versions initialization parameter in web.xml, it MUST be in the ";
+
     static {
         Version v = null;
         try {
@@ -173,6 +176,12 @@ public final class Jahia {
         return eeBuildNumber;
     }
 
+    /**
+     * This method return the build number
+     *
+     * @param markerFilePathName path to the marker file that will be used to calculate the build number
+     * @return an integer representing the build number
+     */
     public static int getBuildNumber(String markerFilePathName) {
         int buildNumber = 0;
         try {
@@ -220,35 +229,34 @@ public final class Jahia {
         return JAHIA_VERSION.getServicePackVersion();
     }
 
+    /**
+     * This method check if the Java version used to run the application is supported
+     *
+     * @param supportedJDKVersions list as a string of the supported JDK versions
+     * @throws JahiaInitializationException if the version used is not supported
+     */
     public static void verifyJavaVersion(String supportedJDKVersions) throws JahiaInitializationException {
         if (supportedJDKVersions != null) {
                 Version currentJDKVersion;
                 try {
                     currentJDKVersion = new Version(System.getProperty("java.version"));
                     if (Arrays.stream(StringUtils.split(supportedJDKVersions,',')).noneMatch(v -> isSupportedJDKVersion(currentJDKVersion, v.trim()))) {
-                        StringBuilder jemsg = new StringBuilder(256);
-                        jemsg.append("WARNING\n\n");
-                        jemsg.append(
-                            "You are using an unsupported JDK version\n");
-                        jemsg.append("or have an invalid ").append(
-                                     INIT_PARAM_SUPPORTED_JDK_VERSIONS).append(
-                                     " parameter string in \n");
-                        jemsg.append(
-                            "the deployment descriptor file web.xml.\n");
-                        jemsg.append(
-                            "\n\nHere is the range specified in the web.xml file : ").
-                                append(supportedJDKVersions).append(".\n");
-                        jemsg.append(
-                                "\nIf you want to disable this warning, remove the ");
-                        jemsg.append(INIT_PARAM_SUPPORTED_JDK_VERSIONS);
-                        jemsg.append("\n");
-                        jemsg.append(
-                            "\ninitialization parameter in the WEB-INF/web.xml\n\n");
-                        jemsg.append("\n\nPlease note that if you deactivate this check or use unsupported versions\n\n");
-                        jemsg.append("\nYou might run into serious problems and we cannot offer support for these.\n\n");
-                        jemsg.append("\nYou may download a supported JDK from Oracle site: http://www.oracle.com/technetwork/java/javase/downloads/index.html");
-                        jemsg.append("\n\n&nbsp;\n");
-                        JahiaInitializationException e = new JahiaInitializationException(jemsg.toString());
+                        String jemsg = "WARNING\n\n" +
+                                "You are using an unsupported JDK version\n" +
+                                "or have an invalid " +
+                                INIT_PARAM_SUPPORTED_JDK_VERSIONS +
+                                " parameter string in \n" +
+                                "the deployment descriptor file web.xml.\n" +
+                                "\n\nHere is the range specified in the web.xml file : " +
+                                supportedJDKVersions + ".\n" +
+                                "\nIf you want to disable this warning, remove the " +
+                                INIT_PARAM_SUPPORTED_JDK_VERSIONS + "\n" +
+                                "\ninitialization parameter in the WEB-INF/web.xml\n\n" +
+                                "\n\nPlease note that if you deactivate this check or use unsupported versions\n\n" +
+                                "\nYou might run into serious problems and we cannot offer support for these.\n\n" +
+                                "\nYou may download a supported JDK from Oracle site: http://www.oracle.com/technetwork/java/javase/downloads/index.html" +
+                                "\n\n&nbsp;\n";
+                        JahiaInitializationException e = new JahiaInitializationException(jemsg);
                         logger.error("Invalid JDK version", e);
                         throw e;
                     }
@@ -312,14 +320,11 @@ public final class Jahia {
         }
 
         final String workString = supportedJDKString.toLowerCase();
-        int xPos = workString.indexOf("x");
+        int xPos = workString.indexOf('x');
 
         if (xPos == -1) {
-            logger.debug("Invalid supported_jdk_versions initialization " +
-                         " parameter in web.xml, it MUST be in the " +
-                         " following format : 1.2 < x <= 1.3 (the 'x' " +
-                         "character is mandatory and was missing in " +
-                         "this case : [" + supportedJDKString + "] )");
+            logger.debug("{} following format : 1.2 < x <= 1.3 (the 'x' character is mandatory and was missing in this case : [{}] )",
+                    LOGGER_INVALID_SUPPORTED_JDK_VERSIONS, supportedJDKString);
             return false;
         }
         final String leftArg = workString.substring(0, xPos).trim();
@@ -352,10 +357,7 @@ public final class Jahia {
                 return false;
             }
         } else {
-            logger.error("Invalid supported_jdk_versions initialization " +
-                         " parameter in web.xml, it MUST be in the " +
-                " following format : 1.2 < x <= 1.3. Current string : [" +
-                supportedJDKString + "] )");
+            logger.error("{} following format : 1.2 < x <= 1.3. Current string : [{}] )", LOGGER_INVALID_SUPPORTED_JDK_VERSIONS, supportedJDKString);
             return false;
         }
 
@@ -384,10 +386,7 @@ public final class Jahia {
                 return false;
             }
         } else {
-            logger.error("Invalid supported_jdk_versions initialization " +
-                         " parameter in web.xml, it MUST be in the " +
-                " following format : 1.2 < x <= 1.3. Current string : [" +
-                supportedJDKString + "] )");
+            logger.error("{} following format : 1.2 < x <= 1.3. Current string : [{}] )", LOGGER_INVALID_SUPPORTED_JDK_VERSIONS, supportedJDKString);
             return false;
         }
 
@@ -416,14 +415,15 @@ public final class Jahia {
      */
     public static String getFullProductVersion() {
         StringBuilder version = new StringBuilder();
+
         if (Jahia.JAHIA_VERSION.toString().endsWith("SNAPSHOT")) {
-            version.append("Jahia ").append(Jahia.VERSION).append(" [" + CODE_NAME + "] - ")
+            version.append(Jahia.PRODUCT_NAME).append(" ").append(Jahia.VERSION).append(" [" + CODE_NAME + "] - ")
                     .append(isEnterpriseEdition() ? "Enterprise" : "Community").append(" Distribution - Build ").append(Jahia.getBuildNumber());
             if (isEnterpriseEdition()) {
                 version.append(".").append(Jahia.getEEBuildNumber());
             }
         } else {
-            version.append("Jahia ").append(Jahia.VERSION).append(isEnterpriseEdition() ? " - Enterprise" : "Community").append(
+            version.append(Jahia.PRODUCT_NAME).append(" ").append(Jahia.VERSION).append(isEnterpriseEdition() ? " - Enterprise" : "Community").append(
                     " Distribution");
         }
         return version.toString();

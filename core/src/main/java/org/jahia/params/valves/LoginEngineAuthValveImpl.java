@@ -90,28 +90,8 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
         this.fireLoginEvent = fireLoginEvent;
     }
 
-    public class LoginEvent extends BaseLoginEvent {
-        private static final long serialVersionUID = -7356560804745397662L;
-
-        public LoginEvent(Object source, JahiaUser jahiaUser, AuthValveContext authValveContext) {
-            super(source, jahiaUser, authValveContext);
-        }
-    }
-
     public void setPreserveSessionAttributes(String preserveSessionAttributes) {
         this.preserveSessionAttributes = preserveSessionAttributes;
-    }
-
-    private void enforcePasswordPolicy(JCRUserNode theUser) {
-//        PolicyEnforcementResult evalResult = ServicesRegistry.getInstance().getJahiaPasswordPolicyService().
-//                enforcePolicyOnLogin(theUser);
-//        if (!evalResult.isSuccess()) {
-//            EngineMessages policyMsgs = evalResult.getEngineMessages();
-//            EngineMessages resultMessages = new EngineMessages();
-//            for (Object o : policyMsgs.getMessages()) {
-//                resultMessages.add((EngineMessage) o);
-//            }
-//        }
     }
 
     @Override
@@ -125,42 +105,9 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
         final AuthValveContext authContext = (AuthValveContext) context;
         final HttpServletRequest httpServletRequest = authContext.getRequest();
 
-        JCRUserNode theUser = null;
-        boolean ok = false;
+        JCRUserNode theUser = getJcrUserNode(httpServletRequest);
 
-        if (isLoginRequested(httpServletRequest)) {
-
-            final String username = httpServletRequest.getParameter("username");
-            final String password = httpServletRequest.getParameter("password");
-            final String site = httpServletRequest.getParameter("site");
-
-            if (LicenseCheckerService.Stub.isLoggedInUsersLimitReached()) {
-                logger.warn("The number of logged in users has reached the authorized limit.");
-                httpServletRequest.setAttribute(VALVE_RESULT, LOGGED_IN_USERS_LIMIT_REACHED);
-
-            } else if ((username != null) && (password != null)) {
-                // Check if the user has site access ( even though it is not a user of this site )
-                theUser = userManagerService.lookupUser(username, site);
-                if (theUser != null) {
-                    if (theUser.verifyPassword(password)) {
-                        if (!theUser.isAccountLocked()) {
-                            ok = true;
-                        } else {
-                            logger.warn("Login failed: account for user {} is locked.", theUser.getName());
-                            httpServletRequest.setAttribute(VALVE_RESULT, ACCOUNT_LOCKED);
-                        }
-                    } else {
-                        logger.warn("Login failed: password verification failed for user {}", theUser.getName());
-                        httpServletRequest.setAttribute(VALVE_RESULT, BAD_PASSWORD);
-                    }
-                } else {
-                    logger.debug("Login failed. Unknown username {}", username);
-                    httpServletRequest.setAttribute(VALVE_RESULT, UNKNOWN_USER);
-                }
-            }
-        }
-
-        if (ok) {
+        if (theUser != null) {
 
             logger.debug("User {} logged in.", theUser);
 
@@ -186,17 +133,10 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
             }
 
             String useCookie = httpServletRequest.getParameter(USE_COOKIE);
-            if (!SettingsBean.getInstance().isFullReadOnlyMode() && (useCookie != null) && ("on".equals(useCookie))) {
+            if (!SettingsBean.getInstance().isFullReadOnlyMode() && "on".equals(useCookie)) {
                 // the user has indicated he wants to use cookie authentication
                 CookieAuthValveImpl.createAndSendCookie(authContext, theUser, cookieAuthConfig);
             }
-
-            enforcePasswordPolicy(theUser);
-
-            // The following was deactivated for performance reasons. We should instead look at doing this with Camel
-            // or some other asynchronous way.
-            //theUser.setProperty(Constants.JCR_LASTLOGINDATE,
-            //        String.valueOf(System.currentTimeMillis()));
 
             if (fireLoginEvent) {
                 SpringContextSingleton.getInstance().publishEvent(new LoginEvent(this, jahiaUser, authContext));
@@ -207,11 +147,49 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
         }
     }
 
+    private JCRUserNode getJcrUserNode(HttpServletRequest httpServletRequest) {
+        if (isLoginRequested(httpServletRequest)) {
+            final String username = httpServletRequest.getParameter("username");
+            final String password = httpServletRequest.getParameter("password");
+            final String site = httpServletRequest.getParameter("site");
+
+            if ((username != null) && (password != null)) {
+                // Check if the user has site access ( even though it is not a user of this site )
+                return getJcrUserNode(httpServletRequest, username, password, site);
+            }
+        }
+        return null;
+    }
+
+    private JCRUserNode getJcrUserNode(HttpServletRequest httpServletRequest, String username, String password, String site) {
+        JCRUserNode theUser = userManagerService.lookupUser(username, site);
+        if (theUser != null) {
+            if (theUser.verifyPassword(password)) {
+                if (!theUser.isAccountLocked()) {
+                    if (!theUser.isRoot() && LicenseCheckerService.Stub.isLoggedInUsersLimitReached()) {
+                        logger.warn("The number of logged in users has reached the authorized limit.");
+                        httpServletRequest.setAttribute(VALVE_RESULT, LOGGED_IN_USERS_LIMIT_REACHED);
+                    } else {
+                        return theUser;
+                    }
+                } else {
+                    logger.warn("Login failed: account for user {} is locked.", theUser.getName());
+                    httpServletRequest.setAttribute(VALVE_RESULT, ACCOUNT_LOCKED);
+                }
+            } else {
+                logger.warn("Login failed: password verification failed for user {}", theUser.getName());
+                httpServletRequest.setAttribute(VALVE_RESULT, BAD_PASSWORD);
+            }
+        } else {
+            logger.debug("Login failed. Unknown username {}", username);
+            httpServletRequest.setAttribute(VALVE_RESULT, UNKNOWN_USER);
+        }
+        return null;
+    }
+
     private Map<String, Object> preserveSessionAttributes(HttpServletRequest httpServletRequest) {
         Map<String, Object> savedSessionAttributes = new HashMap<String, Object>();
-        if ((preserveSessionAttributes != null) &&
-            (httpServletRequest.getSession(false) != null) &&
-                (preserveSessionAttributes.length() > 0)) {
+        if ((preserveSessionAttributes != null) && (httpServletRequest.getSession(false) != null) && (preserveSessionAttributes.length() > 0)) {
             String[] sessionAttributeNames = Patterns.TRIPLE_HASH.split(preserveSessionAttributes);
             HttpSession session = httpServletRequest.getSession(false);
             for (String sessionAttributeName : sessionAttributeNames) {
@@ -250,6 +228,14 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
 
     public void setUserManagerService(JahiaUserManagerService userManagerService) {
         this.userManagerService = userManagerService;
+    }
+
+    public class LoginEvent extends BaseLoginEvent {
+        private static final long serialVersionUID = -7356560804745397662L;
+
+        public LoginEvent(Object source, JahiaUser jahiaUser, AuthValveContext authValveContext) {
+            super(source, jahiaUser, authValveContext);
+        }
     }
 
 }

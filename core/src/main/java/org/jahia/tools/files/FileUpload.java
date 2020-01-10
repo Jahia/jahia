@@ -92,7 +92,6 @@ public class FileUpload {
 
     private String savePath = "";
     private String encoding;
-    private boolean filesProcessed = false;
 
     /**
      * Constructor
@@ -102,30 +101,16 @@ public class FileUpload {
      * @param fileMaxSize the max size of file to upload
      */
     public FileUpload(final HttpServletRequest req,
-            final String savePath,
-            final int fileMaxSize)
-            throws IOException {
+                      final String savePath,
+                      final int fileMaxSize)
+        throws IOException {
 
-        this(req, savePath, fileMaxSize, UTF_8, true);
+        this.req = req;
+        this.savePath = savePath;
+        this.encoding = UTF_8;
+        init();
     }
 
-    /**
-     * Constructor
-     *
-     * @param req
-     * @param savePath the path where files should be saved
-     * @param fileMaxSize the max size of file to upload
-     * @param processItems if the uploaded items need to be stored automatically in the temporary directory or not
-     */
-    public FileUpload(final HttpServletRequest req,
-            final String savePath,
-            final int fileMaxSize,
-            final boolean processItems)
-            throws IOException {
-
-        this(req, savePath, fileMaxSize, UTF_8, processItems);
-    }
-    
     /**
      * Constructor
      *
@@ -135,28 +120,9 @@ public class FileUpload {
      * @param charset The charset to use to decode the values (default = UTF-8)
      */
     public FileUpload(final HttpServletRequest req,
-            final String savePath,
-            final int fileMaxSize,
-            final String charset)
-            throws IOException {
-        
-        this(req, savePath, fileMaxSize, charset, true);
-    }
-    
-    /**
-     * Constructor
-     *
-     * @param req
-     * @param savePath    the path where files should be saved
-     * @param fileMaxSize the max size of file to upload
-     * @param charset The charset to use to decode the values (default = UTF-8)
-     * @param processItems if the uploaded items need to be stored automatically in the temporary directory or not
-     */
-    public FileUpload(final HttpServletRequest req,
-            final String savePath,
-            final int fileMaxSize,
-            final String charset,
-            final boolean processItems)
+                      final String savePath,
+                      final int fileMaxSize,
+                      final String charset)
             throws IOException {
 
         this.req = req;
@@ -166,7 +132,7 @@ public class FileUpload {
         } else {
             this.encoding = charset;
         }
-        init(processItems);
+        init();
     }
 
     /**
@@ -174,7 +140,7 @@ public class FileUpload {
      *
      * @exception IOException
      */
-    protected void init (boolean processItems)
+    protected void init ()
         throws IOException {
 
         params = new HashMap<>();
@@ -183,8 +149,23 @@ public class FileUpload {
         filesByFieldName = new HashMap<>();
 
         parseQueryString();
-        if (processItems) {
-            processItems();
+
+        if (checkSavePath(savePath)) {
+            try {
+                final ServletFileUpload upload = new ServletFileUpload();
+                FileItemIterator iter = upload.getItemIterator(req);
+                DiskFileItemFactory factory = null;
+                while (iter.hasNext()) {
+                    factory = prepareUploadFileItem(iter.next(), factory);
+                }
+            } catch (FileUploadException ioe) {
+                throw new IOException(ioe.getMessage(), ioe);
+            }
+        } else {
+            logger.error(
+                    "FileUpload::init storage path does not exists or can write");
+            throw new IOException(
+                    "FileUpload::init storage path does not exists or cannot write");
         }
     }
     
@@ -337,27 +318,6 @@ public class FileUpload {
             return false;
         }
     }
-
-    public void processItems() throws IOException {
-        filesProcessed = true;
-        if (checkSavePath(savePath)) {
-            try {
-                final ServletFileUpload upload = new ServletFileUpload();
-                FileItemIterator iter = upload.getItemIterator(req);
-                DiskFileItemFactory factory = null;
-                while (iter.hasNext()) {
-                    factory = prepareUploadFileItem(iter.next(), factory);
-                }
-            } catch (FileUploadException ioe) {
-                throw new IOException(ioe.getMessage(), ioe);
-            }
-        } else {
-            logger.error(
-                    "FileUpload::init storage path does not exists or can write");
-            throw new IOException(
-                    "FileUpload::init storage path does not exists or cannot write");
-        }
-    }
     
     public void disposeItems() {
         if (getFileItems() == null) {
@@ -376,10 +336,6 @@ public class FileUpload {
                 }
             }
         }
-    }
-
-    public boolean isFilesProcessed() {
-        return filesProcessed;
     }
 
     /**

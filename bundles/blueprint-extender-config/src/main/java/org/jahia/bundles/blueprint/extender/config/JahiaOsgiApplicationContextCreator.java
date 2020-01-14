@@ -59,6 +59,9 @@ import org.jahia.osgi.BundleUtils;
 import org.jahia.services.SpringContextSingleton;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.wiring.BundleWire;
+import org.osgi.framework.wiring.BundleWiring;
+import org.osgi.namespace.extender.ExtenderNamespace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -73,6 +76,8 @@ import org.springframework.context.ApplicationContext;
  */
 public class JahiaOsgiApplicationContextCreator implements OsgiApplicationContextCreator {
 
+    private static final String EXTENDER_CAPABILITY_NAME = "org.jahia.bundles.blueprint.extender.config";
+
     private static final Logger logger = LoggerFactory.getLogger(JahiaOsgiApplicationContextCreator.class);
 
     private ConfigurationScanner configurationScanner = new DefaultConfigurationScanner() {
@@ -82,7 +87,7 @@ public class JahiaOsgiApplicationContextCreator implements OsgiApplicationContex
             if (cfgArray.length == 0) {
                 return cfgArray;
             }
-            List<String> cfgs = new LinkedList<String>(Arrays.asList(cfgArray));
+            List<String> cfgs = new LinkedList<>(Arrays.asList(cfgArray));
             cfgs.add(0, "classpath:org/jahia/defaults/config/spring/modules-applicationcontext-registry.xml");
             return cfgs.toArray(new String[] {});
         }
@@ -91,12 +96,13 @@ public class JahiaOsgiApplicationContextCreator implements OsgiApplicationContex
 
     private ConfigurationScanner defaultConfigurationScanner = new DefaultConfigurationScanner();
 
-    public DelegatedExecutionOsgiBundleApplicationContext createApplicationContext(BundleContext bundleContext)
-            throws Exception {
+    @Override
+    public DelegatedExecutionOsgiBundleApplicationContext createApplicationContext(BundleContext bundleContext) throws Exception {
         if (bundleContext == null) {
             // Something goes wrong, bundle is probably stopping at the same time
             return null;
         }
+
         Bundle bundle = bundleContext.getBundle();
 
         boolean isJahiaModuleBundle = BundleUtils.isJahiaModuleBundle(bundle);
@@ -105,12 +111,12 @@ public class JahiaOsgiApplicationContextCreator implements OsgiApplicationContex
         ApplicationContextConfiguration config = new ApplicationContextConfiguration(bundle,
                 isJahiaBundle ? configurationScanner : defaultConfigurationScanner);
 
-        if (logger.isDebugEnabled())
-            logger.debug("Created configuration {} for bundle {}", config,
-                    OsgiStringUtils.nullSafeNameAndSymName(bundle));
+        if (logger.isDebugEnabled()) {
+            logger.debug("Created configuration {} for bundle {}", config, OsgiStringUtils.nullSafeNameAndSymName(bundle));
+        }
 
-        // it's not a spring bundle, ignore it
-        if (!config.isSpringPoweredBundle()) {
+        // it's not allowed or not a Spring bundle, ignore it
+        if (!isAllowedForBundle(bundle) || !config.isSpringPoweredBundle()) {
             return null;
         }
 
@@ -118,7 +124,7 @@ public class JahiaOsgiApplicationContextCreator implements OsgiApplicationContex
         ApplicationContext parentContext = SpringContextSingleton.getInstance().getContext();
         ctx.setBundleContext(bundleContext);
         ctx.setPublishContextAsService(config.isPublishContextAsService());
-        if (isJahiaBundle || isJahiaModuleBundle) {
+        if (isJahiaBundle) {
             ctx.setParent(parentContext);
             if (isJahiaModuleBundle) {
                 JahiaTemplatesPackage module = BundleUtils.getModule(bundle);
@@ -132,4 +138,44 @@ public class JahiaOsgiApplicationContextCreator implements OsgiApplicationContex
 
         return ctx;
     }
+
+    /**
+     * Checks whether or not an ApplicationContext can be created for a given bundle.
+     *
+     * <p>As part of BACKLOG-11758, usage of this {@code blueprint-extender-config} bundle is deprecated bundle
+     * implementors are expected to access core services through OSGI services, and to use alternatives to using
+     * the Spring framework from core for bundles internal wiring (see BACKLOG-11784).
+     *
+     * <p>However to preserve backward compatibility, bundles can still benefit from {@code blueprint-extender-config}
+     * by adding the following entry to their MANIFEST:
+     * <code>
+     *      <Require-Capability>
+     *          osgi.extender;filter:="(osgi.extender=org.jahia.bundles.blueprint.extender.config)"
+     *      </Require-Capability>
+     * </code>
+     */
+    private boolean isAllowedForBundle(Bundle bundle) {
+        // As part of BACKLOG-11758, restriction is not enabled by default but by explicitly adding
+        // a system property. This system property will be removed prior to releasing Jahia 8. From
+        // there bundles won't benefit from {@code blueprint-extender-config} anymore unless their
+        // MANIFEST contains the required capability.
+        // TODO BACKLOG-12094: remove this flag before releasing Jahia 8
+        boolean usageRestricted = Boolean.parseBoolean(System.getProperty("jahia.blueprint.extender.restricted"));
+        if (!usageRestricted) {
+            return true;
+        }
+
+        BundleWiring wiring = bundle.adapt(BundleWiring.class);
+        if (wiring != null) {
+            for (BundleWire wire : wiring.getRequiredWires(ExtenderNamespace.EXTENDER_NAMESPACE)) {
+                Object object = wire.getCapability().getAttributes().get(ExtenderNamespace.EXTENDER_NAMESPACE);
+                if (EXTENDER_CAPABILITY_NAME.equals(object)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
 }

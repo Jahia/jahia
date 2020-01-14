@@ -69,6 +69,9 @@
                         <Import-Package>org.springframework.beans,*</Import-Package>
                         <Embed-Dependency>*; scope=compile; type=!pom; inline=true</Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
+                        <Provide-Capability>
+                            osgi.extender;osgi.extender="${project.artifactId}";version:Version="${project.version}"
+                        </Provide-Capability>
                     </instructions>
                 </configuration>
             </plugin>

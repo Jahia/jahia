@@ -17,20 +17,22 @@ if (renderContext.mainResource.contextConfiguration == 'page' && targetTag == 'H
     }
 
     def slangmap = [en: 'en_US', da: 'da_DK', nl: 'nl_NL', fi: 'fi_FI', fr: 'fr_FR', de: 'de_DE', el: 'el_GR', it: 'it_IT', nb: 'nb_NO', pt: 'pt_PT', es: 'es_ES', sv: 'sv_SE']
-    println "<script type=\"text/javascript\">"
+    print "<script type=\"application/json\" id=\"jahia-data-ctx\">"
     if (contextJsParameters == null) {
-        contextJsParameters = "{contextPath:\"${contextPath}\",lang:\"${renderContext.mainResourceLocale}\",uilang:\"${renderContext.UILocale}\",siteUuid:\"${renderContext.site.identifier}\",wcag:${renderContext.siteInfo.WCAGComplianceCheckEnabled}}"
+        contextJsParameters = "{\"contextPath\":\"${contextPath}\",\"lang\":\"${renderContext.mainResourceLocale}\",\"uilang\":\"${renderContext.UILocale}\",\"siteUuid\":\"${renderContext.site.identifier}\",\"wcag\":${renderContext.siteInfo.WCAGComplianceCheckEnabled}}"
     }
-    print "var contextJsParameters="
     print contextJsParameters
-    print "; "
-    print "var CKEDITOR_BASEPATH=\"${contextPath}/modules/ckeditor/javascript/\"; "
-    print "var scayt_custom_params=new Array(); "
-    if (slangmap[renderContext.mainResource.locale.language] != null) {
-        print "scayt_custom_params['sLang']='" + slangmap[renderContext.mainResource.locale.language] + "';"
-    }
-    println ""
     println "</script>"
+
+    print "<script type=\"application/json\" id=\"jahia-data-ck\">"
+    if (slangmap[renderContext.mainResource.locale.language] != null) {
+        print "{\"path\":\"${contextPath}/modules/ckeditor/javascript/\",\"lng\":\"${slangmap[renderContext.mainResource.locale.language]}\"}";
+    } else {
+        print "{\"path\":\"${contextPath}/modules/ckeditor/javascript/\"}";
+    }
+    println "</script>"
+
+    println "<script type=\"text/javascript\" src=\"${contextPath}/javascript/initJahiaContext.js\"></script>";
 }
 renderContext.request.getAttribute("staticAssets").each { resource ->
     resource.each { type ->

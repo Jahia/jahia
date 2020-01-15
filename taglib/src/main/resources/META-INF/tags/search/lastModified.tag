@@ -25,21 +25,7 @@
     <c:if test="${empty requestScope['org.apache.jsp.tag.web.search.dateTag.included']}">
         <c:set var="org.apache.jsp.tag.web.search.dateTag.included"
             value="true" scope="request" />
-        <template:addResources>
-            <script type="text/javascript">
-            function searchDateTypeToggle(dateType, range) {
-                if (dateType.value == 'range' && range.style.display != 'none' || dateType.value != 'range' && range.style.display == 'none') {
-                    return;
-                }
-                range.style.display = dateType.value == 'range' ? '' : 'none';
-                for (var i = 0; i < range.childNodes.length; i++) {
-                    if (range.childNodes[i].nodeName.toLowerCase() == 'input') {
-                        range.childNodes[i].disabled = dateType.value != 'range';
-                    }
-                }
-            }
-            </script>
-        </template:addResources>
+        <template:addResources type="javascript" resources="${pageContext.request.contextPath}/javascript/search.js"/>
     </c:if>
 
     <c:set target="${attributes}" property="name" value="src_lastModified.type"/>

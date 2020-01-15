@@ -42,7 +42,7 @@
 	</c:if>
 
 </head>
-<body onload="window.focus()">
+<body>
 <internal:contentManager conf="${fn:escapeXml(cfgbase)}" selectedPaths="${fn:escapeXml(param.selectedPaths)}" rootPath="${fn:escapeXml(param.rootPath)}"/>
 </body>
 </html>

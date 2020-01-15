@@ -43,6 +43,7 @@
  */
 package org.jahia.bundles.extender.jahiamodules;
 
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.render.scripting.bundle.BundleSourceResourceResolver;
 import org.osgi.framework.Bundle;
 import org.osgi.service.http.HttpContext;
@@ -111,6 +112,10 @@ public class FileHttpContext implements HttpContext {
 
     @Override
     public String getMimeType(String name) {
-        return parentHttpContext.getMimeType(name);
+        String mimeType = parentHttpContext.getMimeType(name);
+        if (mimeType == null) {
+            mimeType = JahiaContextLoaderListener.getServletContext().getMimeType(name);
+        }
+        return mimeType;
     }
 }

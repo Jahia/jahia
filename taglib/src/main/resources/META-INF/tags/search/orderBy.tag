@@ -15,6 +15,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
 <%@ taglib prefix="search" uri="http://www.jahia.org/tags/search"%>
+<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
 <c:set var="display" value="${functions:default(display, true)}"/>
 <c:set var="order" value="${functions:default(order, 'descending')}"/>
@@ -47,18 +48,8 @@
     <c:if test="${empty requestScope['org.apache.jsp.tag.web.search.orderByTag.included']}">
         <c:set var="org.apache.jsp.tag.web.search.orderByTag.included"
             value="true" scope="request" />
-        <template:addResources>
-            <script type="text/javascript">
-            function searchOrderByToggle(orderBy, operandElement) {
-                if (orderBy.value == 'score') {
-                	operandElement.value = 'score'
-                } else {
-                	operandElement.value = 'property'
-                }
-            }
-            </script>
-        </template:addResources>
-    </c:if>  
+        <template:addResources type="javascript" resources="${pageContext.request.contextPath}/javascript/search.js"/>
+    </c:if>
     <select ${functions:attributes(attributes)} name="${propertyNameKey}" onchange="searchOrderByToggle(this, document.getElementsByName('${operandKey}')[0]);">
         <option value="score" ${propertyName == 'score' ? 'selected="selected"' : ''}><fmt:message key="searchForm.orderBy.score"/></option>
         <option value="jcr:lastModified" ${propertyName == 'jcr:lastModified' ? 'selected="selected"' : ''}><fmt:message key="searchForm.orderBy.date"/></option>            

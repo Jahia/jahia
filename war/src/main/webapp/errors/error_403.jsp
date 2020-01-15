@@ -11,9 +11,10 @@
     <meta charset="utf-8">
     <meta name="robots" content="noindex, nofollow"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/errors.css" type="text/css"/>
+    <script src="${pageContext.request.contextPath}/javascript/errors.js" ></script>
     <title><fmt:message key="label.error.403.title"/></title>
 </head>
-<body class="error-page" onLoad="if (history.length > 1) { document.getElementById('backLink').style.display=''; }">
+<body class="error-page">
     <div class="row-fluid login-wrapper">
         <div class="span4 box error-box">
             <div class="content-wrap">

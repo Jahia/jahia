@@ -1,7 +1,7 @@
 <%@page language="java" contentType="text/html; charset=UTF-8"%>
 <!DOCTYPE html>
-<%@page import="java.io.PrintWriter,java.util.Date,org.jahia.bin.errors.ErrorFileDumper"%>
-<%@ page import="org.jahia.settings.SettingsBean" %>
+<%@page import="org.jahia.bin.errors.ErrorFileDumper,org.jahia.settings.SettingsBean,java.io.PrintWriter"%>
+<%@ page import="java.util.Date" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal"%>
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
@@ -14,9 +14,10 @@
     <meta charset="utf-8">
     <meta name="robots" content="noindex, nofollow"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/errors.css" type="text/css"/>
+    <script src="${pageContext.request.contextPath}/javascript/errors.js" ></script>
     <title><fmt:message key="label.error"/></title>
 </head>
-<body class="error-page" onLoad="if (history.length > 1) { document.getElementById('backLink').style.display=''; }">
+<body class="error-page">
 <div class="row-fluid login-wrapper">
     <div class="span4 box error-box">
         <div class="content-wrap">

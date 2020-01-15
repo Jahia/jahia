@@ -519,24 +519,24 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     private Object getContextJsParameters(Map<String, Map<String, Map<String, String>>> assets, RenderContext ctx) {
         StringBuilder params = new StringBuilder(1024);
-        params.append("{contextPath:\"").append(ctx.getRequest().getContextPath()).append("\",lang:\"")
-                .append(ctx.getMainResourceLocale()).append("\",uilang:\"").append(ctx.getUILocale());
+        params.append("{\"contextPath\":\"").append(ctx.getRequest().getContextPath()).append("\",\"lang\":\"")
+                .append(ctx.getMainResourceLocale()).append("\",\"uilang\":\"").append(ctx.getUILocale());
         try {
-            params.append("\",siteUuid:\"").append(ctx.getSite() != null ? ctx.getSite().getIdentifier() : "''");
+            params.append("\",\"siteUuid\":\"").append(ctx.getSite() != null ? ctx.getSite().getIdentifier() : "''");
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
-        params.append("\",wcag:").append(
+        params.append("\",\"wcag\":").append(
                 ctx.getSiteInfo() != null ? ctx.getSiteInfo().isWCAGComplianceCheckEnabled() : "false");
 
         Map<String, Map<String, String>> js = assets.get("javascript");
         if (js != null && js.containsKey(ckeditorJavaScript)) {
             String customCkeditorConfig = GWTInitializer.getCustomCKEditorConfig(ctx);
             if (customCkeditorConfig != null) {
-                params.append(",ckeCfg:\"").append(customCkeditorConfig).append("\"");
+                params.append(",\"ckeCfg\":\"").append(customCkeditorConfig).append("\"");
             }
         }
-        params.append(",ckeCfg:\"\"}");
+        params.append(",\"ckeCfg\":\"\"}");
         return params.toString();
     }
 

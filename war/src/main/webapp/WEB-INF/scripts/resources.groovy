@@ -31,8 +31,6 @@ if (renderContext.mainResource.contextConfiguration == 'page' && targetTag == 'H
         print "{\"path\":\"${contextPath}/modules/ckeditor/javascript/\"}";
     }
     println "</script>"
-
-    println "<script type=\"text/javascript\" src=\"${contextPath}/javascript/initJahiaContext.js\"></script>";
 }
 renderContext.request.getAttribute("staticAssets").each { resource ->
     resource.each { type ->
@@ -61,13 +59,7 @@ renderContext.request.getAttribute("staticAssets").each { resource ->
                 break
             case "aggregatedjavascript":
                 if (type.getValue().size() > 0) {
-                    println "<script id=\"staticAssetAggregatedJavascriptList${targetTag == 'HEAD' ? '' : targetTag}0\" type=\"text/javascript\">"
-                    println "var jASAJ=jASAJ || new Array();"
-                    type.value.eachWithIndex { javascript, i ->
-                        def url = renderContext.response.encodeURL(javascript.key)
-                        println "jASAJ.push('${url}');"
-                    }
-                    println "</script>"
+                    println "<script type=\"application/json\" id=\"jahia-data-aggregatedjs\">{\"scripts\":[" + type.value.collect { javascript -> '"' + javascript.key + '"' }.join(',') + "]}</script>"
                 }
 
                 break
@@ -91,3 +83,4 @@ renderContext.request.getAttribute("staticAssets").each { resource ->
         }
     }
 }
+println "<script type=\"text/javascript\" src=\"${contextPath}/javascript/initJahiaContext.js\"></script>";

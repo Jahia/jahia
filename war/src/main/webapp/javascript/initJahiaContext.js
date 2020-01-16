@@ -1,6 +1,8 @@
 var contextJsParameters;
 var CKEDITOR_BASEPATH;
 var scayt_custom_params;
+var jASAJ=jASAJ || new Array();
+
 (function() {
     var ctx = window.document.getElementById('jahia-data-ctx');
     if (ctx) {
@@ -14,5 +16,11 @@ var scayt_custom_params;
         if (ckVal.lng) {
             scayt_custom_params['sLang']=ckVal.lng;
         }
+    }
+
+    var aggregated = window.document.getElementById('jahia-data-aggregatedjs');
+    if (aggregated) {
+        var aggregatedVal = JSON.parse(aggregated.textContent);
+        aggregatedVal.scripts.forEach(function(js) { jASAJ.push(js) })
     }
 })();

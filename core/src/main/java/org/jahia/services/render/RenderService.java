@@ -250,13 +250,13 @@ public class RenderService implements InitializingBean {
         if (renderTimeMonitor != null) {
             renderTimeMonitor.track(context.getRequest());
         }
-        
+
         String output = getRenderChainInstance().doFilter(context, resource);
 
         if (renderTimeMonitor != null) {
             renderTimeMonitor.monitor(resource, context);
         }
-        
+
         return output;
     }
 
@@ -634,7 +634,7 @@ public class RenderService implements InitializingBean {
                 Collection<String> keys = new HashSet<String>(templatesCache.getKeys());
                 for (String key : keys) {
                     if (key.startsWith(modulePath)) {
-                        templatesCache.remove(modulePath);
+                        templatesCache.remove(key);
                     }
                 }
                 return null;

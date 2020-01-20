@@ -17,10 +17,11 @@ var jASAJ=jASAJ || new Array();
             scayt_custom_params['sLang']=ckVal.lng;
         }
     }
-
-    var aggregated = window.document.getElementById('jahia-data-aggregatedjs');
-    if (aggregated) {
-        var aggregatedVal = JSON.parse(aggregated.textContent);
-        aggregatedVal.scripts.forEach(function(js) { jASAJ.push(js) })
-    }
+    window.addEventListener('DOMContentLoaded', () => {
+        var aggregated = window.document.getElementById('jahia-data-aggregatedjs');
+        if (aggregated) {
+            var aggregatedVal = JSON.parse(aggregated.textContent);
+            aggregatedVal.scripts.forEach(function(js) { jASAJ.push(js) })
+        }
+    });
 })();

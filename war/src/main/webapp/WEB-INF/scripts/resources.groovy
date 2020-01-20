@@ -32,6 +32,8 @@ if (renderContext.mainResource.contextConfiguration == 'page' && targetTag == 'H
     }
     println "</script>"
 }
+println "<script type=\"text/javascript\" src=\"${contextPath}/javascript/initJahiaContext.js\"></script>";
+
 renderContext.request.getAttribute("staticAssets").each { resource ->
     resource.each { type ->
         switch (type.key) {
@@ -83,4 +85,3 @@ renderContext.request.getAttribute("staticAssets").each { resource ->
         }
     }
 }
-println "<script type=\"text/javascript\" src=\"${contextPath}/javascript/initJahiaContext.js\"></script>";

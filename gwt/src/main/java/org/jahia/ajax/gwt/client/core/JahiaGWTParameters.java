@@ -59,7 +59,6 @@ import java.util.MissingResourceException;
  * User: ktlili
  * Date: 31 oct. 2007
  * Time: 11:01:16
- *
  */
 public class JahiaGWTParameters {
 
@@ -92,6 +91,7 @@ public class JahiaGWTParameters {
     public static final String USE_WEBSOCKETS = "useWebsockets";
     public static final String AREA_AUTO_ACTIVATED = "areaAutoActivated";
     public static final String DX_VERSION = "dxVersion";
+    public static final String STUDIO_MAX_DISPLAYABLE_FILE_SIZE = "studioMaxDisplayableFileSize";
 
     public static final String SYSTEM_USER = " system "; // org.jahia.jaas.JahiaLoginModule.SYSTEM
 
@@ -214,19 +214,19 @@ public class JahiaGWTParameters {
     }
 
     private static native void setNativeLanguage(String newLanguage) /*-{
-        $wnd.jahiaGWTParameters.lang  = newLanguage;
+        $wnd.jahiaGWTParameters.lang = newLanguage;
         if ($wnd.contextJsParameters) {
             $wnd.contextJsParameters.lang = newLanguage;
         }
     }-*/;
 
-    public static native void setEngineLanguage (String engineLanguage) /*-{
+    public static native void setEngineLanguage(String engineLanguage) /*-{
         if ($wnd.contextJsParameters) {
             $wnd.contextJsParameters.engineLang = engineLanguage;
         }
     }-*/;
 
-    public static native void removeEngineLanguage () /*-{
+    public static native void removeEngineLanguage() /*-{
         if ($wnd.contextJsParameters) {
             delete $wnd.contextJsParameters.engineLang;
         }
@@ -253,7 +253,7 @@ public class JahiaGWTParameters {
     }
 
     private static native void setNativeSiteUUID(String newSiteUUID) /*-{
-        $wnd.jahiaGWTParameters.siteUuid  = newSiteUUID;
+        $wnd.jahiaGWTParameters.siteUuid = newSiteUUID;
         if ($wnd.contextJsParameters) {
             $wnd.contextJsParameters.siteUuid = newSiteUUID;
         }
@@ -277,7 +277,7 @@ public class JahiaGWTParameters {
     }
 
     private static native void setNativeSiteKey(String newSiteKey) /*-{
-        $wnd.jahiaGWTParameters.siteKey  = newSiteKey;
+        $wnd.jahiaGWTParameters.siteKey = newSiteKey;
     }-*/;
 
     public static GWTJahiaNode getSiteNode() {
@@ -293,6 +293,7 @@ public class JahiaGWTParameters {
 
     /**
      * Getter for the list of GWTJahiaLanguage available on this site
+     *
      * @return List of GWTJahiaLanguage available on the current site.
      */
     @SuppressWarnings("unchecked")
@@ -302,6 +303,7 @@ public class JahiaGWTParameters {
 
     /**
      * Get/Check if a particular language exist on the current site.
+     *
      * @param language the language as a string that we want to get as a GWTJahiaLanguage
      * @return the GWTJahiaLanguage associated to this language if available on the current site or null otherwise
      */
@@ -317,9 +319,9 @@ public class JahiaGWTParameters {
     }
 
 
-
     /**
      * Return a list of mandatory languages defined on current site.
+     *
      * @return a list of mandatory languages defined on current site.
      */
     @SuppressWarnings("unchecked")
@@ -358,7 +360,7 @@ public class JahiaGWTParameters {
     }
 
     private static native void setNativeWorkspace(String newWorkspace) /*-{
-        $wnd.jahiaGWTParameters.workspace  = newWorkspace;
+        $wnd.jahiaGWTParameters.workspace = newWorkspace;
     }-*/;
 
     public static String getContextPath() {
@@ -390,7 +392,7 @@ public class JahiaGWTParameters {
     /**
      * @param name the parameter to get
      * @return return null if the param is not present in the dictionary instead of throwing
-     *         a missing resource exception
+     * a missing resource exception
      */
     public static String getParam(String name) {
         if (!jahiaParamDictionary.keySet().contains(name)) {
@@ -399,7 +401,7 @@ public class JahiaGWTParameters {
         return jahiaParamDictionary.get(name);
     }
 
-    public static void addUpdater(UrlUpdater updater ) {
+    public static void addUpdater(UrlUpdater updater) {
         updaters.add(updater);
     }
 
@@ -415,5 +417,9 @@ public class JahiaGWTParameters {
 
     public static interface UrlUpdater {
         void updateEntryPointUrl();
+    }
+
+    public static Long getStudioMaxDisplayableFileSize() {
+        return Long.parseLong(jahiaParamDictionary.get(STUDIO_MAX_DISPLAYABLE_FILE_SIZE));
     }
 }

@@ -58,7 +58,10 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -88,6 +91,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
     private String stubType;
     private String codeMirrorMode = "jsp";
     private Map<String, String> availableCodeMirrorModes;
+    private GWTJahiaNode gwtJahiaNode;
 
     private transient CodeMirrorField codeField;
     private transient GWTJahiaNodeProperty codeProperty;
@@ -102,6 +106,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
 
     @Override
     public void init(final NodeHolder engine, final AsyncTabItem tab, String locale) {
+        gwtJahiaNode = engine.getNode();
         tab.setLayout(new BorderLayout());
         tab.setScrollMode(Style.Scroll.AUTO);
         final HorizontalPanel horizontalPanel = new HorizontalPanel();
@@ -342,7 +347,9 @@ public class CodeEditorTabItem extends EditEngineTabItem {
 
                 initEditor(tab);
             }
-            actions.add(indentButton);
+            if (isEditable(gwtJahiaNode)) {
+                actions.add(indentButton);
+            }
             actions.show();
             tab.setProcessed(true);
             readOnly = engine.getNode() != null && engine.getNode().isLocked();
@@ -383,18 +390,26 @@ public class CodeEditorTabItem extends EditEngineTabItem {
     }
 
     private void initEditor(final AsyncTabItem tab) {
-        codeField = new CodeMirrorField();
-        codeField.setWidth("95%");
-        codeField.setHeight("90%");
-        codeField.setMode(codeMirrorMode);
-        List<GWTJahiaNodePropertyValue> values = codeProperty.getValues();
-        if (!values.isEmpty()) {
-            codeField.setValue(values.get(0).getString());
+        if (isEditable(gwtJahiaNode)) {
+            codeField = new CodeMirrorField();
+            codeField.setWidth("95%");
+            codeField.setHeight("90%");
+            codeField.setMode(codeMirrorMode);
+            List<GWTJahiaNodePropertyValue> values = codeProperty.getValues();
+            if (!values.isEmpty()) {
+                codeField.setValue(values.get(0).getString());
+            }
+            tab.add(codeField, new BorderLayoutData(Style.LayoutRegion.CENTER));
+            tab.layout();
+            tab.show();
+            codeField.setReadOnly(readOnly);
+        } else {
+            String url = gwtJahiaNode.getUrl();
+            HTML link = new HTML(Messages.get("sizeLimit.message") + "<br /><br /><a href=\"" + url + "\" target=\"_blank\">" + SafeHtmlUtils.htmlEscape(gwtJahiaNode.getName()) + "</a>");
+            tab.add(link, new BorderLayoutData(Style.LayoutRegion.CENTER));
+            tab.layout();
+            tab.show();
         }
-        tab.add(codeField, new BorderLayoutData(Style.LayoutRegion.CENTER));
-        tab.layout();
-        tab.show();
-        codeField.setReadOnly(readOnly);
     }
 
     @Override
@@ -417,6 +432,10 @@ public class CodeEditorTabItem extends EditEngineTabItem {
             codeProperty.setValue(new GWTJahiaNodePropertyValue(codeField.getValue()));
             changedProperties.add(codeProperty);
         }
+    }
+
+    public boolean isEditable(GWTJahiaNode node) {
+        return node.isNodeType("jnt:file") && node.getSize() <= JahiaGWTParameters.getStudioMaxDisplayableFileSize();
     }
 
     public void setCodePropertyName(String codePropertyName) {

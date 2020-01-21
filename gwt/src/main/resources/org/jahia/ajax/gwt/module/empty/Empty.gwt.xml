@@ -1,0 +1,5 @@
+<module rename-to="empty">
+    <inherits name="org.jahia.ajax.gwt.JahiaGWT"/>
+    <entry-point class='org.jahia.ajax.gwt.module.empty.client.EmptyEntryPoint'/>
+    <collapse-all-properties />
+</module>

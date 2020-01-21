@@ -782,7 +782,7 @@ public class MainModule extends Module {
         return getGwtJahiaNode(obj.getString("uuid"), obj.getString("path"), obj.getString("displayName"), (JsArrayString) obj.get("nodeTypes"), (JsArrayString) obj.get("inheritedNodeTypes"));
     }
 
-    private static GWTJahiaNode getGwtJahiaNode(String uuid, String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes) {
+    public static GWTJahiaNode getGwtJahiaNode(String uuid, String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes) {
         if (displayName == null) {
             List<Module> modules = ModuleHelper.getModulesByPath().get(path);
             return modules.get(0).getNode();
@@ -791,7 +791,7 @@ public class MainModule extends Module {
         }
     }
 
-    private static GWTJahiaNode getGwtJahiaNode(String uuid, String path, String name, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes) {
+    public static GWTJahiaNode getGwtJahiaNode(String uuid, String path, String name, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes) {
         List<String> types = convertArray(nodeTypes);
         List<String> inheritedTypes = convertArray(inheritedNodeTypes);
         GWTJahiaNode node = new GWTJahiaNode();
@@ -805,7 +805,7 @@ public class MainModule extends Module {
         return node;
     }
 
-    private static List<GWTJahiaNode> getGwtJahiaNodes(JsArray objects) {
+    public static List<GWTJahiaNode> getGwtJahiaNodes(JsArray objects) {
         List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
         for (int i = 0; i < objects.length(); i++) {
             nodes.add(getGwtJahiaNode(objects.get(i)));

@@ -59,6 +59,7 @@ import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import org.jahia.ajax.gwt.client.EmptyLinker;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -354,7 +355,7 @@ public class PublicationWorkflow implements CustomWorkflow {
 
     private static void create(SortedMap<String, List<GWTJahiaPublicationInfo>> infosListByWorflowGroup, Map<String, GWTJahiaWorkflowDefinition> definitions, final Linker linker, boolean unpublish) {
         EngineContainer container;
-        if (linker instanceof ManagerLinker) {
+        if (linker instanceof ManagerLinker || linker instanceof EmptyLinker) {
             container = new EngineWindow();
         } else {
             container = new EnginePanel();

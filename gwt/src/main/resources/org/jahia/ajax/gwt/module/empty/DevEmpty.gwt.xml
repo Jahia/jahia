@@ -1,0 +1,5 @@
+<module rename-to="empty">
+    <inherits name="org.jahia.ajax.gwt.module.empty.Empty"/>
+    <inherits name="org.jahia.ajax.gwt.RemoteLogging"/>
+    <collapse-all-properties />
+</module>

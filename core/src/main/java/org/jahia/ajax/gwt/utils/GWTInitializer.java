@@ -220,7 +220,7 @@ public class GWTInitializer {
             params.put(JahiaGWTParameters.STUDIO_VISUAL_URL, url.getContext() + url.getStudioVisual());
             addLanguageSwitcherLinks(renderContext, params, url);
         } else {
-            params.put(JahiaGWTParameters.BASE_URL, contextPath + Render.getRenderServletPath() + "/" + params.get("workspace")  + "/" + locale.toString());
+            params.put(JahiaGWTParameters.BASE_URL, contextPath + Render.getRenderServletPath() + "/" + params.get("workspace") + "/" + locale.toString());
         }
 
         if (SettingsBean.getInstance().isUseWebsockets()) {
@@ -231,6 +231,8 @@ public class GWTInitializer {
         if (customCkeditorConfig != null) {
             params.put("ckeCfg", customCkeditorConfig);
         }
+
+        params.put(JahiaGWTParameters.STUDIO_MAX_DISPLAYABLE_FILE_SIZE, String.valueOf(SettingsBean.getInstance().getStudioMaxDisplayableFileSize()));
 
         // add jahia parameter dictionary
         buf.append("<script type=\"text/javascript\">\n");

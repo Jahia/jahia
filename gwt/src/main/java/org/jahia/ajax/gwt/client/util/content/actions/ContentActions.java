@@ -66,8 +66,6 @@ import org.jahia.ajax.gwt.client.widget.edit.ContentTypeWindow;
 import java.util.*;
 
 /**
- *
- *
  * @author rfelden
  * @version 7 juil. 2008 - 14:45:03
  */
@@ -233,7 +231,7 @@ public class ContentActions {
     /**
      * Create a node.
      *
-     * @param nodeName the name of the node to be created
+     * @param nodeName       the name of the node to be created
      * @param linker
      * @param windowHeader
      * @param nodeType

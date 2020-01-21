@@ -44,11 +44,14 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.URL;
+import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
@@ -57,15 +60,14 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 
-* User: toto
-* Date: Sep 25, 2009
-* Time: 6:59:03 PM
-*/
+ * User: toto
+ * Date: Sep 25, 2009
+ * Time: 6:59:03 PM
+ */
 public class EditContentActionItem extends NodeTypeAwareBaseActionItem {
-    
+
     private static final long serialVersionUID = 1899385924986263120L;
-    
+
     private boolean allowRootNodeEditing;
     private boolean useMainNode = false;
     private String path = null;
@@ -83,9 +85,10 @@ public class EditContentActionItem extends NodeTypeAwareBaseActionItem {
             return;
         } else if (useMainNode) {
             singleSelection = linker.getSelectionContext().getMainNode();
-        }   else {
+        } else {
             singleSelection = linker.getSelectionContext().getSingleSelection();
         }
+
         EngineLoader.showEditEngine(linker, singleSelection, linker.getConfig().getEngineConfiguration(configurationName));
     }
 

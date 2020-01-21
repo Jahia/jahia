@@ -59,6 +59,7 @@
         <singleModuleName>org.jahia.ajax.gwt.module.edit.Edit</singleModuleName>
         <editModuleName>org.jahia.ajax.gwt.module.edit.Edit</editModuleName>
         <contentManagerModuleName>org.jahia.ajax.gwt.module.contentmanager.ContentManager</contentManagerModuleName>
+        <emptyModuleName>org.jahia.ajax.gwt.module.empty.Empty</emptyModuleName>
         <gwtJavascriptStyle>OBF</gwtJavascriptStyle>
         <packagingExcludes>
             /gwt/manager/css/**,
@@ -146,6 +147,7 @@
                         <modules>
                             <module>${contentManagerModuleName}</module>
                             <module>${editModuleName}</module>
+                            <module>${emptyModuleName}</module>
                         </modules>
                         <!-- <style>DETAILED</style> -->
                     </configuration>
@@ -283,6 +285,7 @@
             <properties>
                 <editModuleName>org.jahia.ajax.gwt.module.edit.DevEdit</editModuleName>
                 <contentManagerModuleName>org.jahia.ajax.gwt.module.contentmanager.DevContentManager</contentManagerModuleName>
+                <emptyModuleName>org.jahia.ajax.gwt.module.empty.DevEmpty</emptyModuleName>
                 <gwtJavascriptStyle>DETAILED</gwtJavascriptStyle>
             </properties>
             <build>

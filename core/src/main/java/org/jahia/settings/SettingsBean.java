@@ -228,6 +228,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     private StartupOptions startupOptions;
     private Map<String, Set<String>> startupOptionsMapping;
+    private long studioMaxDisplayableFileSize;
 
     /**
      * @param   pathResolver a path resolver used to locate files on the disk.
@@ -368,6 +369,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             // files...
             jahiaFileUploadMaxSize = getLong("jahiaFileUploadMaxSize", 104857600);
+
+            studioMaxDisplayableFileSize = getLong("studioMaxDisplayableFileSize", 1048576);
 
             characterEncoding = getString("characterEncoding", "UTF-8");
 
@@ -1492,4 +1495,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     }
 
     public int getJahiaSiteImportScannerInterval() { return jahiaSiteImportScannerInterval; }
+
+    public long getStudioMaxDisplayableFileSize() {
+        return studioMaxDisplayableFileSize;
+    }
 }

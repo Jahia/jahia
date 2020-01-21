@@ -127,6 +127,8 @@ public class Web_App_Xml {
         Web_App_Xml xml;
         try {
             DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+
+            dfactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
             dfactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 
             Document xmlDocument = dfactory.newDocumentBuilder().parse(stream);

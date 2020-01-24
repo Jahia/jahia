@@ -46,6 +46,7 @@ package org.jahia.taglibs.template;
 import net.htmlparser.jericho.OutputDocument;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.StartTag;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.noggit.JSONUtil;
 import org.jahia.services.render.RenderContext;
@@ -58,10 +59,7 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * User: toto
@@ -122,7 +120,7 @@ public class TokenizedFormTag extends BodyTagSupport {
                 }
                 action = StringUtils.substringBeforeLast(requestURI, "/")+ "/" +action;
             }
-            hiddenInputs.put("form-action",Arrays.asList(StringUtils.substringBeforeLast(action,";")));
+            hiddenInputs.put("form-action", Collections.singletonList(StringEscapeUtils.escapeXml(StringUtils.substringBeforeLast(action, ";"))));
             hiddenInputs.put("form-method", Arrays.asList(StringUtils.capitalize(formTag.getAttributeValue("method"))));
 
             List<StartTag> inputTags = source.getAllStartTags("input");

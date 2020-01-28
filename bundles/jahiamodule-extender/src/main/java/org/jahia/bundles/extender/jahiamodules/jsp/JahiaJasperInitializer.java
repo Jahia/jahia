@@ -45,6 +45,7 @@ package org.jahia.bundles.extender.jahiamodules.jsp;
 
 import org.apache.jasper.compiler.TldCache;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.osgi.BundleUtils;
 import org.ops4j.pax.web.jsp.JasperInitializer;
 import org.ops4j.pax.web.jsp.TldScanner;
 import org.osgi.framework.Bundle;
@@ -58,37 +59,47 @@ import java.io.IOException;
 public class JahiaJasperInitializer extends JasperInitializer {
     private static final Logger logger = LoggerFactory.getLogger(JahiaJasperInitializer.class);
 
-    private ServletContext context;
-    private BundleTldScanner scanner;
-    private TldCache tldCache;
+    private final ServletContext context;
+    private final BundleAwareTldCache tldCache;
+
+    private final boolean validateTld;
+    private final boolean blockExternalTld;
 
     public JahiaJasperInitializer() throws ServletException {
         System.setProperty("org.apache.el.parser.SKIP_IDENTIFIER_CHECK", "true");
         this.context = new ServletContextWrapper(JahiaContextLoaderListener.getServletContext());
 
+        this.validateTld = Boolean.parseBoolean(context.getInitParameter("org.apache.jasper.XML_VALIDATE_TLD"));
+        String blockExternalString = context.getInitParameter("org.apache.jasper.XML_BLOCK_EXTERNAL");
+        this.blockExternalTld = (blockExternalString == null) || Boolean.parseBoolean(blockExternalString);
+
         this.onStartup(null, context);
-        tldCache = (TldCache) this.context.getAttribute(TldCache.SERVLET_CONTEXT_ATTRIBUTE_NAME);
+
+        this.tldCache = new BundleAwareTldCache(context, TldCache.getInstance(context));
+        this.context.setAttribute(TldCache.SERVLET_CONTEXT_ATTRIBUTE_NAME, tldCache);
+    }
+
+    public void onBundleAdded(Bundle bundle) {
+        try {
+            BundleTldScanner scanner = newBundleTldScanner(context, validateTld, blockExternalTld);
+            scanner.scanBundle(bundle);
+            tldCache.add(bundle, scanner.getUriTldResourcePathMap(), scanner.getTldResourcePathTaglibXmlMap());
+        } catch (IOException e) {
+            logger.error("Could not scan TLDs from bundle " +  BundleUtils.getDisplayName(bundle), e);
+        }
+    }
+
+    public void onBundleRemoved(Bundle bundle) {
+        tldCache.remove(bundle);
     }
 
     @Override
     protected TldScanner newTldScanner(ServletContext context, boolean namespaceAware, boolean validate, boolean blockExternal) {
-        scanner = new BundleTldScanner(context, validate, blockExternal);
-        return scanner;
+        return newBundleTldScanner(context, validate, blockExternal);
     }
 
-    public void addBundle(Bundle bundle) {
-        try {
-            scanner.scanBundle(bundle);
-
-            tldCache = new TldCache(context, scanner.getUriTldResourcePathMap(), scanner.getTldResourcePathTaglibXmlMap());
-            context.setAttribute(TldCache.SERVLET_CONTEXT_ATTRIBUTE_NAME, tldCache);
-        } catch (IOException e) {
-            logger.error("Cannot parse TLDs", e);
-        }
-    }
-
-    public void removeBundle(Bundle bundle) {
-        // Todo
+    private BundleTldScanner newBundleTldScanner(ServletContext context, boolean validate, boolean blockExternal) {
+        return new BundleTldScanner(context, validate, blockExternal);
     }
 
 }

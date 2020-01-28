@@ -599,8 +599,6 @@ public class Activator implements BundleActivator {
             return;
         }
 
-        jasperInitializer.addBundle(bundle);
-
         List<String> dependsList = pkg.getDepends();
         if (needsDefaultModuleDependency(pkg)) {
             dependsList.add(JahiaTemplatesPackage.ID_DEFAULT);
@@ -785,6 +783,8 @@ public class Activator implements BundleActivator {
 
         logger.info("--- Start DX OSGi bundle {} --", getDisplayName(bundle));
         long startTime = System.currentTimeMillis();
+
+        jasperInitializer.onBundleAdded(bundle);
 
         templatePackageRegistry.register(jahiaTemplatesPackage);
         jahiaTemplatesPackage.setActiveVersion(true);
@@ -1034,6 +1034,7 @@ public class Activator implements BundleActivator {
     }
 
     private synchronized void stopped(Bundle bundle) {
+        jasperInitializer.onBundleRemoved(bundle);
 
         // Ensure context is reset
         BundleUtils.setContextToStartForModule(bundle, null);

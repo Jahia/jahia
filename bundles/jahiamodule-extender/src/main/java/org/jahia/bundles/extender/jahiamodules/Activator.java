@@ -87,6 +87,9 @@ import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.ops4j.pax.swissbox.extender.BundleURLScanner;
 import org.osgi.framework.*;
 import org.osgi.framework.startlevel.BundleStartLevel;
+import org.osgi.framework.wiring.BundleWire;
+import org.osgi.framework.wiring.BundleWiring;
+import org.osgi.namespace.extender.ExtenderNamespace;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.url.URLConstants;
 import org.osgi.service.url.URLStreamHandlerService;
@@ -129,6 +132,7 @@ public class Activator implements BundleActivator {
     private static final BundleURLScanner FLOW_SCANNER = new BundleURLScanner("/", "flow.xml", true);
 
     private static final Comparator<Resource> IMPORT_FILE_COMPARATOR = Comparator.comparing(o -> StringUtils.substringBeforeLast(o.getFilename(), "."));
+    private static final String EXTENDER_CAPABILITY_NAME = "org.jahia.bundles.blueprint.extender.config";
 
     private static Activator instance;
 
@@ -819,7 +823,7 @@ public class Activator implements BundleActivator {
 
         logger.info("--- Finished starting DX OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
 
-        if (hasSpringFile) {
+        if (isBundleProcessedByBlueprintExtender(bundle)) {
             setModuleState(bundle, ModuleState.State.SPRING_STARTING, errorMessage);
             try {
                 @SuppressWarnings("resource") final AbstractApplicationContext contextToStartForModule = BundleUtils
@@ -1175,4 +1179,26 @@ public class Activator implements BundleActivator {
         }
     }
 
+
+    private boolean isBundleProcessedByBlueprintExtender(Bundle bundle) {
+        boolean hasSpringFile = hasSpringFile(bundle);
+        // TODO BACKLOG-12094: remove this flag before releasing Jahia 8
+        boolean blueprintExtenderRestricted = Boolean.parseBoolean(System.getProperty("jahia.blueprint.extender.restricted"));
+        if (!hasSpringFile) {
+            return false;
+        }
+        if (!blueprintExtenderRestricted) {
+            return true;
+        }
+        BundleWiring wiring = bundle.adapt(BundleWiring.class);
+        if (wiring != null) {
+            for (BundleWire wire : wiring.getRequiredWires(ExtenderNamespace.EXTENDER_NAMESPACE)) {
+                Object object = wire.getCapability().getAttributes().get(ExtenderNamespace.EXTENDER_NAMESPACE);
+                if (EXTENDER_CAPABILITY_NAME.equals(object)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

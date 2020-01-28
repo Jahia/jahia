@@ -116,7 +116,7 @@ public class NewModuleActionItem extends BaseActionItem {
         final TextField<String> groupId = new TextField<String>();
         groupId.setName("groupId");
         groupId.setFieldLabel(Messages.get("label.groupId", "groupId"));
-        groupId.setEmptyText(Messages.get("label.groupId.empty", "org.jahia.modules"));
+        groupId.setEmptyText(Messages.get("label.groupId.empty", "org.foo.modules"));
         form.add(groupId);
 
         final TextField<String> sources = new TextField<String>();

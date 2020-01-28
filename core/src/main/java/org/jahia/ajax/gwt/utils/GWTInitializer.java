@@ -167,7 +167,7 @@ public class GWTInitializer {
         params.put(JahiaGWTParameters.AREA_AUTO_ACTIVATED, areaAutoActivated ? "true" : "false");
 
         if (devMode) {
-            params.put(JahiaGWTParameters.MODULES_SOURCES_DISK_PATH, StringEscapeUtils.escapeJavaScript(SettingsBean.getInstance().getModulesSourcesDiskPath()));
+            params.put(JahiaGWTParameters.MODULES_SOURCES_DISK_PATH, SettingsBean.getInstance().getModulesSourcesDiskPath());
         }
         if (user != null) {
             String name = user.getUsername();

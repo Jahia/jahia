@@ -4,6 +4,7 @@
           xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.3.0 http://karaf.apache.org/xmlns/features/v1.3.0">
 
     <repository>mvn:org.apache.karaf.features/standard/${karaf.version}/xml/features</repository>
+    <repository>mvn:org.apache.karaf.features/spring/${karaf.version}/xml/features</repository>
     <repository>mvn:org.jahia.features/dx-gemini-blueprint/${project.version}/xml/features</repository>
     <repository>mvn:org.jahia.features/dx-jax-rs/${project.version}/xml/features</repository>
     
@@ -14,6 +15,7 @@
         <feature>dx-jax-rs</feature>
         <feature>shell</feature>
         <feature>scr</feature>
+        <feature>spring</feature>
     </feature>
 
 </features>

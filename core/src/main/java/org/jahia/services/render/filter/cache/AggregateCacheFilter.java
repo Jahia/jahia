@@ -267,7 +267,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             // return the content from the cache. Otherwise, return null to continue the render chain.
             // Note that the fragment MIGHT be in cache, but the key may not be correct - some parameters impacting the
             // key like dependencies can only be calculated when the fragment has been generated.
-            CountDownLatch countDownLatch = avoidParallelProcessingOfSameModule(finalKey, renderContext.getRequest(), resource, properties);
+            CountDownLatch countDownLatch = avoidParallelProcessingOfSameModule(finalKey, renderContext, resource, properties);
             if (countDownLatch == null) {
                 element = cache.get(finalKey);
                 if (element != null && element.getObjectValue() != null) {
@@ -1169,8 +1169,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
-    protected CountDownLatch avoidParallelProcessingOfSameModule(String key, HttpServletRequest request,
-                                                                 Resource resource, Properties properties) throws RepositoryException {
+    protected CountDownLatch avoidParallelProcessingOfSameModule(String key, RenderContext renderContext,
+                                                                 Resource resource, Properties properties) throws RepositoryException {   
+        final HttpServletRequest request = renderContext.getRequest();
         CountDownLatch latch = null;
         boolean mustWait = true;
         Map<String, CountDownLatch> generatingModules = generatorQueue.getGeneratingModules();
@@ -1198,6 +1199,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     errorMsgBuilder.append("Module generation takes too long due to module not generated fast enough (>")
                             .append(generatorQueue.getModuleGenerationWaitTime()).append(" ms)- ").append(key).append(" - ")
                             .append(request.getRequestURI());
+                    renderContext.getRenderedPaths().remove(resource.getNode().getPath());
                     throw new JahiaServiceUnavailableException(errorMsgBuilder.toString());
                 }
                 latch = null;

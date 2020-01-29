@@ -5,8 +5,12 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.EmptyLinker;
@@ -15,6 +19,7 @@ import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
@@ -23,6 +28,8 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.content.DeleteItemWindow;
 import org.jahia.ajax.gwt.client.widget.content.util.ContentHelper;
+import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEngine;
+import org.jahia.ajax.gwt.client.widget.contentengine.EditEngineJSConfig;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.contentengine.WorkflowHistoryPanel;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
@@ -102,8 +109,8 @@ public class EmptyEntryPoint extends CommonEntryPoint {
             }
         };
 
-        nsAuthoringApi.editContent = $wnd.editContent = function (path, displayName, types, inheritedTypes, uuid, skipRefreshOnSave) {
-            @org.jahia.ajax.gwt.module.empty.client.EmptyEntryPoint::editContent(*)(path, displayName, types, inheritedTypes, uuid, skipRefreshOnSave);
+        nsAuthoringApi.editContent = $wnd.editContent = function (path, displayName, types, inheritedTypes, uuid, skipRefreshOnSave, jsConfig) {
+            @org.jahia.ajax.gwt.module.empty.client.EmptyEntryPoint::editContent(*)(path, displayName, types, inheritedTypes, uuid, skipRefreshOnSave, jsConfig);
         };
 
         nsAuthoringApi.openWorkflow = $wnd.openWorkflow = function (target) {
@@ -142,6 +149,10 @@ public class EmptyEntryPoint extends CommonEntryPoint {
             @org.jahia.ajax.gwt.module.empty.client.EmptyEntryPoint::openPublicationWorkflow(*)(uuids, allSubTree, allLanguages, checkForUnpublication)
         };
 
+        nsAuthoringApi.getEditTabs = function (path, uuid, displayName, types, inheritedTypes, hasOrderableChildNodes) {
+            return @org.jahia.ajax.gwt.module.empty.client.EmptyEntryPoint::getEditTabs(*)(path, uuid, displayName, types, inheritedTypes, hasOrderableChildNodes);
+        };
+
         if (!$wnd.jahia) {
             $wnd.jahia = new Object();
         }
@@ -160,9 +171,22 @@ public class EmptyEntryPoint extends CommonEntryPoint {
         MessageBox.alert(title != null ? title : "Info", message, null);
     }
 
-    public static void editContent(String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, String uuid, boolean skipRefreshOnSave) {
+    public static JavaScriptObject getEditTabs(String path, String uuid, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, boolean hasOrderableChildNodes) {
         GWTJahiaNode node = MainModule.getGwtJahiaNode(uuid, path, displayName, nodeTypes, inheritedNodeTypes);
-        EngineLoader.showEditEngine(getInstance().getLinker(), node, false, null);
+        JSONArray editTabs = new JSONArray();
+        List<GWTEngineTab> gwtEngineTabs = EditContentEngine.resolveTabs(hasOrderableChildNodes, getInstance().getLinker().getConfig().getEngineConfiguration(node), node);
+        for (int idx = 0; idx < gwtEngineTabs.size(); idx++) {
+            JSONObject jsonTab = new JSONObject();
+            GWTEngineTab gwtEngineTab = gwtEngineTabs.get(idx);
+            jsonTab.put("id", new JSONString(gwtEngineTab.getId()));
+            jsonTab.put("title", new JSONString(gwtEngineTab.getTitle()));
+            editTabs.set(idx, jsonTab);
+        }
+        return editTabs.getJavaScriptObject();
+    }
+    public static void editContent(String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, String uuid, boolean skipRefreshOnSave, EditEngineJSConfig jsConfig) {
+        GWTJahiaNode node = MainModule.getGwtJahiaNode(uuid, path, displayName, nodeTypes, inheritedNodeTypes);
+        EngineLoader.showEditEngine(getInstance().getLinker(), node, null, skipRefreshOnSave, jsConfig);
     }
 
     public static void openWorkflow(String target) {

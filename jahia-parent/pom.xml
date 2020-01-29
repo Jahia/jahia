@@ -119,7 +119,7 @@
         <driver.mssql.version>6.4.0.jre8</driver.mssql.version>
         <driver.mysql.version>5.1.48</driver.mysql.version>
         <driver.oracle.version>12.2.0.1</driver.oracle.version>
-        <driver.postgresql.version>42.2.5</driver.postgresql.version>
+        <driver.postgresql.version>42.2.9</driver.postgresql.version>
         <driver.mariadb.version>2.4.1</driver.mariadb.version>
 
         <hibernateDialect.derby>org.hibernate.dialect.DerbyTenSevenDialect</hibernateDialect.derby>

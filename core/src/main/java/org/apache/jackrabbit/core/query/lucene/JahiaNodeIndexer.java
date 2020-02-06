@@ -647,7 +647,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
 
     @Override
     public Document createDoc() throws RepositoryException {
-        Document doc = createDocIgnoringMissingLockProperties();
+        Document doc = createDocIgnoringMissingProperties();
         
         if (isAddAclUuidInIndex() && isIndexed(J_ACL)) {
             addAclUuid(doc);
@@ -705,12 +705,12 @@ public class JahiaNodeIndexer extends NodeIndexer {
         }
     }
 
-    private Document createDocIgnoringMissingLockProperties() throws RepositoryException {
+    private Document createDocIgnoringMissingProperties() throws RepositoryException {
         try {
             return super.createDoc();
         } catch (RepositoryException e) {
             Throwable rootCause = ExceptionUtils.getRootCause(e);
-            if (rootCause instanceof NoSuchItemStateException && rootCause.getMessage().contains("lock")) {
+            if (rootCause instanceof NoSuchItemStateException) {
                 // Clean up nodestate before starting indexing, as ISM cache may contain removed entries
                 cleanupNodeProperties();
                 return super.createDoc();

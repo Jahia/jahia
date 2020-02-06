@@ -1,6 +1,6 @@
 # Jahia MySQL Database configuration file
 
-jahia.database.name     =  MySQL 5.x
+jahia.database.name     =  MySQL
 jahia.database.driver   =  com.mysql.jdbc.Driver
 jahia.database.url      =  jdbc:mysql://localhost/jahia?useUnicode=true&characterEncoding=UTF-8&useServerPrepStmts=false
 jahia.database.user     =  jahia

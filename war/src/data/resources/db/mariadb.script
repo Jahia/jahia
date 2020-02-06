@@ -1,6 +1,6 @@
 # Jahia Derby Database configuration file
 
-jahia.database.name     =  MariaDB 10.x
+jahia.database.name     =  MariaDB
 jahia.database.driver   =  org.mariadb.jdbc.Driver
 jahia.database.url      =  jdbc:mariadb://localhost/jahia?useUnicode=true&characterEncoding=UTF-8&useServerPrepStmts=false
 jahia.database.user     =  jahia

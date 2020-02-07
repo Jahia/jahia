@@ -145,6 +145,7 @@ public class JahiaTranslationNodeIndexer extends JahiaNodeIndexer {
 
         try {
             final NodeState parentNodeState = getParentNodeState();
+            cleanupNodeProperties(parentNodeState);
             final NodeId parentId = parentNodeState.getParentId();
 
             if (parentId == null) {
@@ -163,38 +164,7 @@ public class JahiaTranslationNodeIndexer extends JahiaNodeIndexer {
                 doc.add(new Field(TRANSLATION_LANGUAGE, language, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
             }
 
-            // copy properties from parent into translation node, including node types
-            final Set<Name> parentNodePropertyNames = new HashSet<>(parentNodeState.getPropertyNames());
-            final Set<Name> localNames = new HashSet<>(node.getPropertyNames());
-            localNames.remove(PRIMARY_TYPE);
-            localNames.remove(MIXIN_TYPES);
-            parentNodePropertyNames.removeAll(localNames);
-            parentNodePropertyNames.removeAll(getIndexingConfig().getExcludesFromI18NCopy());
-
-            for (Name propName : parentNodePropertyNames) {
-                try {
-                    PropertyId id = new PropertyId(parentNodeState.getNodeId(), propName);
-                    PropertyState propState = (PropertyState) stateProvider.getItemState(id);
-
-                    // add each property to the _PROPERTIES_SET for searching
-                    // beginning with V2
-                    if (indexFormatVersion.getVersion() >= IndexFormatVersion.V2.getVersion()) {
-                        addPropertyName(doc, propState.getName());
-                    }
-
-                    InternalValue[] values = propState.getValues();
-                    for (InternalValue value : values) {
-                        addValue(doc, value, propState.getName());
-                    }
-                    if (values.length > 1) {
-                        // real multi-valued
-                        addMVPName(doc, propState.getName());
-                    }
-
-                } catch (ItemStateException e) {
-                    throwRepositoryException(e);
-                }
-            }
+            addProperties(doc, parentNodeState);
 
             if (isIndexed(J_VISIBILITY) && parentNodeState.hasChildNodeEntry(J_VISIBILITY)) {
                 doc.add(new Field(CHECK_VISIBILITY, false, "1",
@@ -211,6 +181,39 @@ public class JahiaTranslationNodeIndexer extends JahiaNodeIndexer {
         }
 
         return doc;
+    }
+    
+    private void addProperties(Document doc, NodeState parentNodeState) throws RepositoryException {
+        // copy properties from parent into translation node, including node types
+        final Set<Name> parentNodePropertyNames = new HashSet<>(parentNodeState.getPropertyNames());
+        final Set<Name> localNames = new HashSet<>(node.getPropertyNames());
+        localNames.remove(PRIMARY_TYPE);
+        localNames.remove(MIXIN_TYPES);
+        parentNodePropertyNames.removeAll(localNames);
+        parentNodePropertyNames.removeAll(getIndexingConfig().getExcludesFromI18NCopy());
+        for (Name propName : parentNodePropertyNames) {
+            try {
+                PropertyId id = new PropertyId(parentNodeState.getNodeId(), propName);
+                PropertyState propState = (PropertyState) stateProvider.getItemState(id);
+
+                // add each property to the _PROPERTIES_SET for searching
+                // beginning with V2
+                if (indexFormatVersion.getVersion() >= IndexFormatVersion.V2.getVersion()) {
+                    addPropertyName(doc, propState.getName());
+                }
+
+                InternalValue[] values = propState.getValues();
+                for (InternalValue value : values) {
+                    addValue(doc, value, propState.getName());
+                }
+                if (values.length > 1) {
+                    // real multi-valued
+                    addMVPName(doc, propState.getName());
+                }
+            } catch (ItemStateException e) {
+                throwRepositoryException(e);
+            }
+        }
     }
 
 }

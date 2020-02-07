@@ -59,8 +59,7 @@ import org.apache.jackrabbit.spi.commons.value.AbstractQValueFactory;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.solr.schema.DateField;
-import org.apache.solr.schema.SortableDoubleField;
-import org.apache.solr.schema.SortableLongField;
+import org.apache.solr.util.NumberUtils;
 import org.apache.tika.metadata.HttpHeaders;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.Parser;
@@ -150,13 +149,11 @@ public class JahiaNodeIndexer extends NodeIndexer {
      */
     protected boolean supportSpellchecking = false;
 
-    private static Name siteTypeName = null;
+    private Name siteTypeName = null;
 
-    private static Name siteFolderTypeName = null;
+    private Name siteFolderTypeName = null;
 
     private static final DateField dateType = new DateField();
-    private static final SortableDoubleField doubleType = new SortableDoubleField();
-    private static final SortableLongField longType = new SortableLongField();
 
     private boolean addAclUuidInIndex = true;
 
@@ -241,28 +238,29 @@ public class JahiaNodeIndexer extends NodeIndexer {
     }
 
     protected String resolveSite() {
-        if (site == null) {
-            try {
-                NodeState current = node;
-                do {
-                    if (isNodeType(current, siteTypeName)) {
-                        NodeState siteParent = (NodeState) stateProvider.getItemState(current.getParentId());
-                        if (isNodeType(siteParent, siteFolderTypeName)) {
-                            site = siteParent.getChildNodeEntry(current.getNodeId()).getName().getLocalName();
-                            break;
-                        }
+        if (site != null) {
+            return site;
+        }
+        try {
+            NodeState current = node;
+            do {
+                if (isNodeType(current, siteTypeName)) {
+                    NodeState siteParent = (NodeState) stateProvider.getItemState(current.getParentId());
+                    if (isNodeType(siteParent, siteFolderTypeName)) {
+                        site = siteParent.getChildNodeEntry(current.getNodeId()).getName().getLocalName();
+                        break;
                     }
-                    NodeId id = current.getParentId();
-                    if (id != null) {
-                        current = (NodeState) stateProvider.getItemState(id);
-                    } else {
-                        current = null;
-                    }
-                } while (current != null);
+                }
+                NodeId id = current.getParentId();
+                if (id != null) {
+                    current = (NodeState) stateProvider.getItemState(id);
+                } else {
+                    current = null;
+                }
+            } while (current != null);
 
-            } catch (ItemStateException e) {
-                // ignored
-            }
+        } catch (ItemStateException e) {
+            // ignored
         }
 
         return site;
@@ -428,11 +426,9 @@ public class JahiaNodeIndexer extends NodeIndexer {
                 return;
             }
 
-            if (includeInNodeIndex && isSupportSpellchecking() && getIndexingConfig().shouldPropertyBeSpellchecked(propertyName)) {
-                String site = resolveSite();
-                if (site != null) {
-                    doc.add(createFulltextField(getFullTextFieldName(site), internalValue, false));
-                }
+            if (includeInNodeIndex && isSupportSpellchecking() && getIndexingConfig().shouldPropertyBeSpellchecked(propertyName)
+                    && resolveSite() != null) {
+                doc.add(createFulltextField(getFullTextFieldName(site), internalValue, false));
             }
         }
         if (definition != null && definition.isFacetable()) {
@@ -609,7 +605,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
         super.addDoubleValue(doc, fieldName, internalValue);
         ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(getPropertyNameFromFieldname(fieldName));
         if (definition != null && definition.isFacetable()) {
-            addFacetValue(doc, fieldName, doubleType.toInternal(Double.toString(internalValue)));
+            addFacetValue(doc, fieldName, NumberUtils.double2sortableStr(Double.toString(internalValue)));
         }
     }
 
@@ -618,7 +614,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
         super.addLongValue(doc, fieldName, internalValue);
         ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(getPropertyNameFromFieldname(fieldName));
         if (definition != null && definition.isFacetable()) {
-            addFacetValue(doc, fieldName, longType.toInternal(Long.toString(internalValue)));
+            addFacetValue(doc, fieldName, NumberUtils.long2sortableStr(Long.toString(internalValue)));
         }
     }
 
@@ -712,7 +708,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
             Throwable rootCause = ExceptionUtils.getRootCause(e);
             if (rootCause instanceof NoSuchItemStateException) {
                 // Clean up nodestate before starting indexing, as ISM cache may contain removed entries
-                cleanupNodeProperties();
+                cleanupNodeProperties(node);
                 return super.createDoc();
             } else {
                 throw e;
@@ -720,7 +716,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
         }
     }
     
-    private void cleanupNodeProperties() {
+    protected void cleanupNodeProperties(NodeState node) {
         Set<Name> props = node.getPropertyNames();
         Set<Name> toRemove = null;
         NodeId nodeId = node.getNodeId();
@@ -756,43 +752,10 @@ public class JahiaNodeIndexer extends NodeIndexer {
             while (currentNode != null) {
                 ChildNodeEntry aclChildNode = currentNode.getChildNodeEntry(J_ACL, 1);
                 if (aclChildNode != null) {
-                    NodeState ns = (NodeState) stateProvider.getItemState(aclChildNode.getId());
-                    StringBuilder ace = new StringBuilder(currentNode.getId().toString());
-                    if (ns.getChildNodeEntries().size() == 1 && useOptimizedACEIndexation) {
-                        ChildNodeEntry childNodeEntry = ns.getChildNodeEntries().get(0);
-                        PropertyId principalPropId = new PropertyId(childNodeEntry.getId(), J_ACE_PRINCIPAL);
-                        PropertyState principal = (PropertyState) stateProvider.getItemState(principalPropId);
-                        InternalValue internalValue = principal.getValues()[0];
-                        final String principalValue = internalValue.getString();
-                        if (principalValue.startsWith("u:")) {
-                            PropertyId grantPropId = new PropertyId(childNodeEntry.getId(), J_ACE_GRANT);
-                            PropertyState grant = (PropertyState) stateProvider.getItemState(grantPropId);
+                    acls.add(0, getAce(currentNode, aclChildNode));
 
-                            PropertyId rolesPropId = new PropertyId(childNodeEntry.getId(), J_ACE_ROLES);
-                            PropertyState roles = (PropertyState) stateProvider.getItemState(rolesPropId);
-
-                            ace.append("/");
-                            if (grant.getValues()[0].getString().equals("GRANT")) {
-                                for (InternalValue value : roles.getValues()) {
-                                    ace.append(value.getName().getLocalName()).append("/");
-                                }
-                            }
-                            ace.append(principalValue.substring(2));
-                        }
-                    }
-
-                    acls.add(0, ace.toString());
-
-                    PropertyId propId = new PropertyId(aclChildNode.getId(), J_ACL_INHERITED);
-                    try {
-                        PropertyState ps = (PropertyState) stateProvider.getItemState(propId);
-                        if (ps.getValues().length == 1) {
-                            if (!ps.getValues()[0].getBoolean()) {
-                                break;
-                            }
-                        }
-                    } catch (ItemStateException e) {
-                        // ignored
+                    if (isAclNotInherited(aclChildNode)) {
+                        break;
                     }
                 }
 
@@ -806,9 +769,49 @@ public class JahiaNodeIndexer extends NodeIndexer {
             throwRepositoryException(e);
         }
 
-        doc.add(new Field(ACL_UUID, false, StringUtils.join(acls, " "),
-                Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS,
+        doc.add(new Field(ACL_UUID, false, StringUtils.join(acls, " "), Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS,
                 Field.TermVector.NO));
+    }
+    
+    private boolean isAclNotInherited(ChildNodeEntry aclChildNode) throws RepositoryException {
+        PropertyId propId = new PropertyId(aclChildNode.getId(), J_ACL_INHERITED);
+        try {
+            PropertyState ps = (PropertyState) stateProvider.getItemState(propId);
+            if (ps.getValues().length == 1 && !ps.getValues()[0].getBoolean()) {
+                return true;
+            }
+        } catch (ItemStateException e) {
+            // ignored
+        }
+        return false;
+    }
+    
+    private String getAce(NodeState node, ChildNodeEntry aclChildNode) throws RepositoryException, ItemStateException {
+        StringBuilder ace = new StringBuilder(node.getId().toString());
+        NodeState ns = (NodeState) stateProvider.getItemState(aclChildNode.getId());
+        if (ns.getChildNodeEntries().size() == 1 && useOptimizedACEIndexation) {
+            ChildNodeEntry childNodeEntry = ns.getChildNodeEntries().get(0);
+            PropertyId principalPropId = new PropertyId(childNodeEntry.getId(), J_ACE_PRINCIPAL);
+            PropertyState principal = (PropertyState) stateProvider.getItemState(principalPropId);
+            InternalValue internalValue = principal.getValues()[0];
+            final String principalValue = internalValue.getString();
+            if (principalValue.startsWith("u:")) {
+                PropertyId grantPropId = new PropertyId(childNodeEntry.getId(), J_ACE_GRANT);
+                PropertyState grant = (PropertyState) stateProvider.getItemState(grantPropId);
+
+                PropertyId rolesPropId = new PropertyId(childNodeEntry.getId(), J_ACE_ROLES);
+                PropertyState roles = (PropertyState) stateProvider.getItemState(rolesPropId);
+
+                ace.append("/");
+                if (grant.getValues()[0].getString().equals("GRANT")) {
+                    for (InternalValue value : roles.getValues()) {
+                        ace.append(value.getName().getLocalName()).append("/");
+                    }
+                }
+                ace.append(principalValue.substring(2));
+            }
+        }
+        return ace.toString();
     }
 
     /**
@@ -842,18 +845,15 @@ public class JahiaNodeIndexer extends NodeIndexer {
     }
 
     public static JahiaNodeIndexer createNodeIndexer(NodeState node, ItemStateManager itemStateManager, NamespaceMappings nsMappings,
-            Executor executor, Parser parser, QueryHandlerContext context) {
+            Executor executor, Parser parser, QueryHandlerContext context) throws RepositoryException {
 
         final NodeTypeRegistry typeRegistry = NodeTypeRegistry.getInstance();
         final NamespaceRegistry namespaceRegistry = context.getNamespaceRegistry();
-        try {
-            if (Constants.JAHIANT_TRANSLATION.equals(getTypeNameAsString(node.getNodeTypeName(), namespaceRegistry))) {
-                return new JahiaTranslationNodeIndexer(node, itemStateManager, nsMappings, executor, parser, context, typeRegistry, namespaceRegistry);
-            } else {
-                return new JahiaNodeIndexer(node, itemStateManager, nsMappings, executor, parser, context, typeRegistry, namespaceRegistry);
-            }
-        } catch (RepositoryException e) {
-            throw new RuntimeException(e);
+        if (Constants.JAHIANT_TRANSLATION.equals(getTypeNameAsString(node.getNodeTypeName(), namespaceRegistry))) {
+            return new JahiaTranslationNodeIndexer(node, itemStateManager, nsMappings, executor, parser, context, typeRegistry,
+                    namespaceRegistry);
+        } else {
+            return new JahiaNodeIndexer(node, itemStateManager, nsMappings, executor, parser, context, typeRegistry, namespaceRegistry);
         }
     }
 

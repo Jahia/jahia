@@ -89,8 +89,8 @@ public class AccessManagerUtils {
     private static volatile Cache<String, Boolean> matchingPermissions = null;
     public static ThreadLocal<Collection<String>> deniedPathes = new ThreadLocal<Collection<String>>();
 
-    private static final Pattern REFERENCE_FIELD_LANGUAGE_PATTERN = Pattern.compile("(.*)j:referenceInField_.*_([a-z]{2}(_[A-Z]{2})?)_[0-9]+([/].*)?$");
-    private static final Pattern TRANSLATION_LANGUAGE_PATTERN = Pattern.compile("(.*)j:translation_([a-z]{2}(_[A-Z]{2})?)([/].*)?$");
+    private static final Pattern REFERENCE_FIELD_LANGUAGE_PATTERN = Pattern.compile("(.*)j:referenceInField_.*_([a-z]{2,3}(_[A-Z]{2})?)_[0-9]+([/].*)?$");
+    private static final Pattern TRANSLATION_LANGUAGE_PATTERN = Pattern.compile("(.*)j:translation_([a-z]{2,3}(_[A-Z]{2})?)([/].*)?$");
 
     /**
      * Acl node representation to be store in cache

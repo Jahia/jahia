@@ -807,118 +807,120 @@ legend {
 }
 
 
-input[type="checkbox"] {
-    // UNCHECKED STATE
-    position: relative !important;
-    width: 15px !important;
-    height: 15px !important;
-    margin-right: 3px;
-    left: auto !important;
-
-    // AS SWITCHER
-    legend & {
-        position: absolute !important;
-        width: 46px !important;
-        height: 17px !important;
-        top: 13px;
-        right: 22px;
-
-        &:hover {
-            cursor: pointer;
-        }
-    }
-
-
-    &:before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        box-sizing: border-box;
-
-        border: _theme($CHECKBOX--BORDER, $APP);
-        background: _theme($CHECKBOX--BG, $APP);
-        box-shadow: _theme($CHECKBOX--SHADOW, $APP);
+.x-component{
+    input[type="checkbox"] {
+        // UNCHECKED STATE
+        position: relative !important;
+        width: 15px !important;
+        height: 15px !important;
+        margin-right: 3px;
+        left: auto !important;
 
         // AS SWITCHER
-        legend & {
+        @at-root .x-component legend input[type="checkbox"] {
+            position: absolute !important;
+            width: 46px !important;
+            height: 17px !important;
+            top: 13px;
+            right: 22px;
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+
+
+        &:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
             width: 100%;
             height: 100%;
-            width: 46px;
-            border: none;
-            text-align: right;
-            padding-right: 4px;
-            line-height: 17px;
+            box-sizing: border-box;
 
-            content: _dictionary("off");
-            background: _theme($TOGGLE--RAIL, $EDIT-ENGINE);
-            box-shadow: _theme($TOGGLE--SHADOW, $EDIT-ENGINE);
-            text-transform: uppercase;
+            border: _theme($CHECKBOX--BORDER, $APP);
+            background: _theme($CHECKBOX--BG, $APP);
+            box-shadow: _theme($CHECKBOX--SHADOW, $APP);
 
-            @include text(10px, _theme($TOGGLE--LABEL---OFF, $EDIT-ENGINE), _weight("extrabold"));
+            // AS SWITCHER
+            @at-root .x-component legend input[type="checkbox"]:before {
+                width: 100%;
+                height: 100%;
+                width: 46px;
+                border: none;
+                text-align: right;
+                padding-right: 4px;
+                line-height: 17px;
+
+                content: _dictionary("off");
+                background: _theme($TOGGLE--RAIL, $EDIT-ENGINE);
+                box-shadow: _theme($TOGGLE--SHADOW, $EDIT-ENGINE);
+                text-transform: uppercase;
+
+                @include text(10px, _theme($TOGGLE--LABEL---OFF, $EDIT-ENGINE), _weight("extrabold"));
+
+            }
         }
-    }
 
-    &:after {
-        content: " ";
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-
-        // AS SWITCHER
-        legend & {
-            right: auto;
-            left: 2px;
-            top: 2px;
-            width: 15px;
-            height: 13px;
-
+        &:after {
             content: " ";
-            background: _theme($TOGGLE--SHUTTLE---OFF, $EDIT-ENGINE);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+
+            // AS SWITCHER
+            @at-root .x-component legend input[type="checkbox"]:after {
+                right: auto;
+                left: 2px;
+                top: 2px;
+                width: 15px;
+                height: 13px;
+
+                content: " ";
+                background: _theme($TOGGLE--SHUTTLE---OFF, $EDIT-ENGINE);
+            }
         }
-    }
 
-    // CHECKED STATE
-    &:checked:before {
+        // CHECKED STATE
+        &:checked:before {
 
-        // AS SWITCHER
-        legend & {
-            content: " ";
+            // AS SWITCHER
+            @at-root .x-component legend input[type="checkbox"]:checked:before {
+                content: " ";
+            }
         }
-    }
 
-    &:checked:after {
-        background: no-repeat center center;
-        background-image: url(_icon("tick", "white"));
-        background-size: 15px 15px;
-        background-color: _theme($CHECKBOX--BG---CHECKED, $APP);
+        &:checked:after {
+            background: no-repeat center center;
+            background-image: url(_icon("tick", "white"));
+            background-size: 15px 15px;
+            background-color: _theme($CHECKBOX--BG---CHECKED, $APP);
 
-        // AS SWITCHER
-        legend & {
-            right: 2px;
-            left: auto;
-            text-align: center;
-            padding: 0 5px;
+            // AS SWITCHER
+            @at-root .x-component legend input[type="checkbox"]:checked:after {
+                right: 2px;
+                left: auto;
+                text-align: center;
+                padding: 0 5px;
 
-            content: _dictionary("on");
-            background: _theme($TOGGLE--SHUTTLE---ON, $EDIT-ENGINE);
-            text-transform: uppercase;
+                content: _dictionary("on");
+                background: _theme($TOGGLE--SHUTTLE---ON, $EDIT-ENGINE);
+                text-transform: uppercase;
 
-            @include text(10px, _theme($TOGGLE--LABEL---ON, $EDIT-ENGINE), _weight("extrabold"));
+                @include text(10px, _theme($TOGGLE--LABEL---ON, $EDIT-ENGINE), _weight("extrabold"));
+            }
         }
-    }
 
-    // FOCUS
-    &.x-form-checkbox:focus {
-        // Need extra weight to over ride GXT selector
-        outline: none !important;
+        // FOCUS
+        &.x-form-checkbox:focus {
+            // Need extra weight to over ride GXT selector
+            outline: none !important;
+        }
     }
 }
-
 
 fieldset {
     border: none !important;
@@ -936,7 +938,7 @@ fieldset {
     }
 }
 
-label {
+.x-component label {
     // See .x-form-item-label
     @include _label("normal")
 }

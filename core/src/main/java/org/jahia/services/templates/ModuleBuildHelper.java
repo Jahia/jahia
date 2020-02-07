@@ -691,7 +691,7 @@ public class ModuleBuildHelper implements InitializingBean {
         if (rbFolder.exists()) {
             Pattern rbPattern = Pattern.compile("(" + srcModule.getId()
                     + "|" + StringUtils.replace(srcModule.getName(), " ", "")
-                    + "|" + StringUtils.replace(srcModule.getName(), " ", "_") + ")(_[a-z]{2}(-[A-Z]{2})?)?.properties");
+                    + "|" + StringUtils.replace(srcModule.getName(), " ", "_") + ")(_[a-z]{2,3}(-[A-Z]{2})?)?.properties");
             File[] files = rbFolder.listFiles();
             if (files != null) {
                 for (File f : files) {

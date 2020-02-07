@@ -106,7 +106,7 @@ public class URLResolver {
 
     private static final String VANITY_URL_NODE_PATH_SEGMENT = "/" + VanityUrlManager.VANITYURLMAPPINGS_NODE + "/";
 
-    private static final Pattern CROSS_SITES_URL_PATTERN = Pattern.compile("[a-z]{0,2}_?[A-Z]{0,2}/sites/.*");
+    private static final Pattern CROSS_SITES_URL_PATTERN = Pattern.compile("[a-z]{0,3}_?[A-Z]{0,2}/sites/.*");
 
     private static final Logger logger = LoggerFactory.getLogger(URLResolver.class);
 

@@ -69,9 +69,9 @@ import javax.servlet.http.HttpServletRequest;
 
 public class LanguageCodeConverters {
 
-    public static final Pattern LANGUAGE_PATTERN = Pattern.compile("[a-z]{2}(_[A-Z]{2})?");
-    final static String JAVA7_LOCALE_LANGUAGE = "([a-zA-Z]{2,8})";
-    final static String JAVA7_LOCALE_COUNTRY = "([a-zA-Z]{2}|[0-9]{3})";
+    public static final Pattern LANGUAGE_PATTERN = Pattern.compile("[a-z]{2,3}(_[A-Z]{2})?");
+    final static String JAVA7_LOCALE_LANGUAGE = "([a-z]{2,3})";
+    final static String JAVA7_LOCALE_COUNTRY = "([A-Z]{2})";
     final static String JAVA7_LOCALE_VARIANT = "(?:_|-)([0-9a-zA-Z\\_\\-\\#]*)";
     public final static String JAVA7_LOCALE_TOSTRING = JAVA7_LOCALE_LANGUAGE + "?_?" + JAVA7_LOCALE_COUNTRY + "?(?:" + JAVA7_LOCALE_VARIANT + ")?";
     final static Pattern JAVA7_LOCALE_TOSTRING_PATTERN = Pattern.compile(JAVA7_LOCALE_TOSTRING);

@@ -32,7 +32,7 @@
         <condition type="attribute" name="jahiaSkipInboundSeoRules" operator="notequal">^true$</condition>
         <condition type="attribute" name="jahiaSiteKeyForCurrentServerName" operator="notequal">^$</condition>
         <condition type="attribute" name="vanityUrlTargetPath" operator="equal">^$</condition>
-        <from>^/cms/([a-z]{2}(_[A-Z]{2})?)$</from>
+        <from>^/cms/([a-z]{2,3}(_[A-Z]{2})?)$</from>
         <to>/cms/$1/</to>
     </rule>
 
@@ -41,7 +41,7 @@
         <condition type="attribute" name="jahiaSkipInboundSeoRules" operator="notequal">^true$</condition>
         <condition type="attribute" name="siteDefaultLanguage" operator="notequal">^$</condition>
         <condition type="attribute" name="contextPath" operator="equal">^$</condition>
-        <condition type="request-uri" operator="notequal">^/(cms/)?[a-z]{2}(_[A-Z]{2})?/.*</condition>
+        <condition type="request-uri" operator="notequal">^/(cms/)?[a-z]{2,3}(_[A-Z]{2})?/.*</condition>
         <condition type="attribute" name="vanityUrlTargetPath" operator="equal">^$</condition>
         <from>^/cms/(.*)$</from>
         <to>/cms/%{attribute:siteDefaultLanguage}/$1</to>
@@ -52,7 +52,7 @@
         <condition type="attribute" name="jahiaSkipInboundSeoRules" operator="notequal">^true$</condition>
         <condition type="attribute" name="siteDefaultLanguage" operator="notequal">^$</condition>
         <condition type="attribute" name="contextPath" operator="notequal">^$</condition>
-        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)/(cms/)?[a-z]{2}(_[A-Z]{2})?/.*</condition>
+        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)/(cms/)?[a-z]{2,3}(_[A-Z]{2})?/.*</condition>
         <condition type="attribute" name="vanityUrlTargetPath" operator="equal">^$</condition>
         <from>^/cms/(.*)$</from>
         <to>/cms/%{attribute:siteDefaultLanguage}/$1</to>
@@ -64,11 +64,11 @@
         <condition type="attribute" name="jahiaSiteKeyForCurrentServerName" operator="notequal">^$</condition>
         <condition type="attribute" name="vanityUrlTargetPath" operator="equal">^$</condition>
         <condition type="attribute" name="contextPath" operator="equal">^$</condition>
-        <condition type="request-uri" operator="notequal">^/(cms/)?([a-z]{2}(_[A-Z]{2})?/)?mounts/.*</condition>
-        <condition type="request-uri" operator="notequal">^/(cms/)?([a-z]{2}(_[A-Z]{2})?/)?users/.*</condition>
-        <condition type="request-uri" operator="notequal">^/(cms/)?([a-z]{2}(_[A-Z]{2})?/)?modules/.*</condition>
-        <condition type="request-uri" operator="notequal">^/(cms/)?([a-z]{2}(_[A-Z]{2})?/)?sites/.*</condition>
-        <from>^/cms/([a-z]{2}(_[A-Z]{2})?/)?(.*)$</from>
+        <condition type="request-uri" operator="notequal">^/(cms/)?([a-z]{2,3}(_[A-Z]{2})?/)?mounts/.*</condition>
+        <condition type="request-uri" operator="notequal">^/(cms/)?([a-z]{2,3}(_[A-Z]{2})?/)?users/.*</condition>
+        <condition type="request-uri" operator="notequal">^/(cms/)?([a-z]{2,3}(_[A-Z]{2})?/)?modules/.*</condition>
+        <condition type="request-uri" operator="notequal">^/(cms/)?([a-z]{2,3}(_[A-Z]{2})?/)?sites/.*</condition>
+        <from>^/cms/([a-z]{2,3}(_[A-Z]{2})?/)?(.*)$</from>
         <to>/cms/$1sites/%{attribute:jahiaSiteKeyForCurrentServerName}/$3</to>
     </rule>
 
@@ -78,11 +78,11 @@
         <condition type="attribute" name="jahiaSiteKeyForCurrentServerName" operator="notequal">^$</condition>
         <condition type="attribute" name="vanityUrlTargetPath" operator="equal">^$</condition>
         <condition type="attribute" name="contextPath" operator="notequal">^$</condition>
-        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/(cms/)?([a-z]{2}(_[A-Z]{2})?/)?mounts/.*</condition>
-        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/(cms/)?([a-z]{2}(_[A-Z]{2})?/)?users/.*</condition>
-        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/(cms/)?([a-z]{2}(_[A-Z]{2})?/)?modules/.*</condition>
-        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/(cms/)?([a-z]{2}(_[A-Z]{2})?/)?sites/.*</condition>
-        <from>^/cms/([a-z]{2}(_[A-Z]{2})?/)?(.*)$</from>
+        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/(cms/)?([a-z]{2,3}(_[A-Z]{2})?/)?mounts/.*</condition>
+        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/(cms/)?([a-z]{2,3}(_[A-Z]{2})?/)?users/.*</condition>
+        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/(cms/)?([a-z]{2,3}(_[A-Z]{2})?/)?modules/.*</condition>
+        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/(cms/)?([a-z]{2,3}(_[A-Z]{2})?/)?sites/.*</condition>
+        <from>^/cms/([a-z]{2,3}(_[A-Z]{2})?/)?(.*)$</from>
         <to>/cms/$1sites/%{attribute:jahiaSiteKeyForCurrentServerName}/$3</to>
     </rule>
 
@@ -103,7 +103,7 @@
         </note>
         <condition type="attribute" name="jahiaSiteKeyMatchesCurrentServerName" operator="equal">^true$</condition>
         <condition type="attribute" name="jahiaSeoServernameForLink" operator="equal">^$</condition>
-        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/([a-zA-Z_]{2,5})/sites/([\p{Alnum}\-_]+)(/(?!users/).*)?$</from>
+        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/([a-zA-Z_]{2,6})/sites/([\p{Alnum}\-_]+)(/(?!users/).*)?$</from>
         <to>$1%{attribute:jahiaSeoCmsToken}%{attribute:jahiaSeoLanguageToken}$4</to>
     </outbound-rule>
 
@@ -116,7 +116,7 @@
         </note>
         <condition type="attribute" name="jahiaSiteKeyMatchesCurrentServerName" operator="notequal">^true$</condition>
         <condition type="attribute" name="jahiaSeoServernameForLink" operator="equal">^$</condition>
-        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/([a-zA-Z_]{2,5})/sites/([\p{Alnum}\-_]+)(/(?!users/).*)?$</from>
+        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/([a-zA-Z_]{2,6})/sites/([\p{Alnum}\-_]+)(/(?!users/).*)?$</from>
         <to>$1%{attribute:jahiaSeoCmsToken}%{attribute:jahiaSeoLanguageToken}/sites/$3$4</to>
     </outbound-rule>
 
@@ -129,7 +129,7 @@
             Removes the /cms part if not disabled and in case the following path does not start with a reserved prefix.
         </note>
         <condition type="attribute" name="jahiaSeoServernameForLink" operator="notequal">^$</condition>
-        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/([a-zA-Z_]{2,5})/sites/([\p{Alnum}\-_]+)(/(?!users/).*)?$</from>
+        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/([a-zA-Z_]{2,6})/sites/([\p{Alnum}\-_]+)(/(?!users/).*)?$</from>
         <to>$1%{attribute:jahiaSeoCmsToken}%{attribute:jahiaSeoLanguageToken}$4</to>
     </outbound-rule>
 

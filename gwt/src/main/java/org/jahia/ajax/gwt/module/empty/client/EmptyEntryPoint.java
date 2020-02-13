@@ -28,10 +28,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.content.DeleteItemWindow;
 import org.jahia.ajax.gwt.client.widget.content.util.ContentHelper;
-import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEngine;
-import org.jahia.ajax.gwt.client.widget.contentengine.EditEngineJSConfig;
-import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
-import org.jahia.ajax.gwt.client.widget.contentengine.WorkflowHistoryPanel;
+import org.jahia.ajax.gwt.client.widget.contentengine.*;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.poller.ContentUnpublishedEvent;
 import org.jahia.ajax.gwt.client.widget.poller.EventDispatcherPollListener;
@@ -184,14 +181,17 @@ public class EmptyEntryPoint extends CommonEntryPoint {
         }
         return editTabs.getJavaScriptObject();
     }
+
     public static void editContent(String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, String uuid, boolean skipRefreshOnSave, EditEngineJSConfig jsConfig) {
         GWTJahiaNode node = MainModule.getGwtJahiaNode(uuid, path, displayName, nodeTypes, inheritedNodeTypes);
         EngineLoader.showEditEngine(getInstance().getLinker(), node, null, skipRefreshOnSave, jsConfig);
     }
 
     public static void openWorkflow(String target) {
-        final RootPanel panel = RootPanel.get(target);
-        panel.add(new WorkflowHistoryPanel(null, getInstance().getLinker()));
+        WorkflowHistoryPanel widget = new WorkflowHistoryPanel(getInstance().getLinker());
+        RootPanel rootPanel = RootPanel.get(target);
+        rootPanel.clear();
+        rootPanel.add(widget);
     }
 
     public static void showPageEdit(String target, String path, String template, String nodeTypes) {
@@ -234,7 +234,7 @@ public class EmptyEntryPoint extends CommonEntryPoint {
         String message = Messages.getWithArgs(
                 "message.undelete.confirm",
                 "Do you really want to undelete the selected resource {0}?",
-                new String[] {displayName}
+                new String[]{displayName}
         );
 
         MessageBox.confirm(Messages.get("label.information", "Information"), message, new Listener<MessageBoxEvent>() {
@@ -266,7 +266,7 @@ public class EmptyEntryPoint extends CommonEntryPoint {
         String message = Messages.getWithArgs(
                 "message.undelete.multiple.confirm",
                 "Do you really want to undelete the {0} selected resources?",
-                new String[] { String.valueOf(nodes.size()) });
+                new String[]{String.valueOf(nodes.size())});
         final List<String> paths = new ArrayList<String>();
         for (GWTJahiaNode node : nodes) {
             paths.add(node.getPath());

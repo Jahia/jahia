@@ -52,6 +52,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Window;
@@ -61,7 +62,9 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -93,7 +96,7 @@ import java.util.List;
  *
  * @author Sergiy Shyrkov
  */
-public class WorkflowHistoryPanel extends LayoutContainer {
+public class WorkflowHistoryPanel extends ContentPanel {
 
     private WorkflowDashboardEngine engine;
     private boolean dashboard = false;
@@ -126,6 +129,17 @@ public class WorkflowHistoryPanel extends LayoutContainer {
         this.linker = linker;
         this.engine = engine;
         init();
+    }
+
+    public WorkflowHistoryPanel(Linker linker) {
+        super(new FitLayout());
+
+        dashboard = true;
+        this.linker = linker;
+        setSize("100%","100%");
+        addStyleName("workflow-dashboard-engine");
+        init();
+        setHeadingHtml(Messages.get("label.workflowdashboard", "Workflow Dashboard"));
     }
 
 
@@ -188,7 +202,12 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                             b.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                 @Override
                                 public void componentSelected(ButtonEvent ce) {
-                                    EnginePanel container = new EnginePanel();
+                                    EngineWindow container = new EngineWindow();
+                                    container.setClosable(false);
+                                    container.setMaximizable(false);
+                                    container.setMinimizable(false);
+                                    container.addStyleName("publication-window");
+                                    container.setId("publication-window");
                                     // get path from the publication info, not used for unpublished
                                     CustomWorkflow customWorkflowInfo = parent.getRunningWorkflow().getCustomWorkflowInfo();
                                     String path = "";
@@ -197,15 +216,18 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                                     }
                                     new WorkflowActionDialog(path, parent.getRunningWorkflow(), task, linker, customWorkflowInfo, container);
                                     container.showEngine();
-                                    container.addListener(Events.Close, new Listener<BaseEvent>() {
+                                    final RootPanel rootPanel = RootPanel.get("workflowComponent");
+                                    final ContentPanel rootPanelWidget = (ContentPanel) rootPanel.getWidget(0);
+                                    rootPanelWidget.hide();
+                                    container.addListener(Events.Hide, new Listener<BaseEvent>() {
                                         @Override
                                         public void handleEvent(BaseEvent be) {
-                                            engine.show();
+                                            rootPanelWidget.show();
                                             init();
                                             layout(true);
                                         }
                                     });
-                                    engine.hide();
+                                    rootPanel.add(container.getPanel());
                                 }
                             });
                             return b;
@@ -283,7 +305,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                                                 window.setMaximizable(true);
                                                 window.setSize(800, 600);
                                                 window.setUrl(url);
-                                                window.setPosition(engine.getPosition(true).x + 50, engine.getPosition(true).y + 50);
+//                                                window.setPosition(engine.getPosition(true).x + 50, engine.getPosition(true).y + 50);
                                                 window.show();
                                             }
 
@@ -309,7 +331,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                                                 window.setMaximizable(true);
                                                 window.setSize(1000, 750);
                                                 window.setUrl(url);
-                                                window.setPosition(engine.getPosition(true).x + 50, engine.getPosition(true).y + 50);
+//                                                window.setPosition(engine.getPosition(true).x + 50, engine.getPosition(true).y + 50);
                                                 window.show();
                                             }
 
@@ -430,10 +452,8 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                             if (item.getAvailableTasks().isEmpty()) {
                                 store.remove(item);
                             }
-                        } else if (item instanceof GWTJahiaWorkflowHistoryTask) {
-                            if (item.getId().equals(result.getEndedTask())) {
+                        } else if (item instanceof GWTJahiaWorkflowHistoryTask && item.getId().equals(result.getEndedTask())) {
                                 store.remove(item);
-                            }
                         }
                     }
                 }

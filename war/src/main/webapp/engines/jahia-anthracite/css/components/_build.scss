@@ -3331,6 +3331,93 @@ body[data-indigo-gwt-side-panel="open"] {
 
 }
 
+.x-panel.workflow-dashboard-engine,.x-window.publication-window {
+
+    width: 100% !important;
+    height: 100% !important;
+    left: 56px !important;
+    top: 0px !important;
+
+    @include _button(".button-close", "ACTIONBAR", "remove-icons");
+    @include _button(".button-no", "ACTIONBAR", "remove-icons");
+    @include _button(".button-cancel", "ACTIONBAR", "remove-icons");
+    @include _button(".button-yes", "ACTIONBAR---SUGGESTED", "remove-icons");
+    @include _button(".button-publish", "ACTIONBAR---SUGGESTED", "remove-icons");
+    @include _button(".button-submit", "ACTIONBAR---SUGGESTED", "remove-icons");
+    @include _button(".button-create", "ACTIONBAR---SUGGESTED", "remove-icons");
+    @include _button(".button-ok", "ACTIONBAR---SUGGESTED", "remove-icons");
+    @include _button(".button-save", "ACTIONBAR---SUGGESTED", "remove-icons");
+    @include _button(".button-preview", "BUTTON_DISCREET", "remove-icons");
+    @include _button(".button-incontext-preview", "BUTTON_DISCREET", "remove-icons");
+    @include _button(".button-details", "BUTTON_DISCREET", "remove-icons");
+    @include _button(".button-abort", "WARNING", "remove-icons");
+
+    .x-panel-header {
+        .x-panel-toolbar {
+            display: block;
+            position: fixed;
+            background: #5c6164;
+            border-top: 1px solid #444749;
+            box-shadow: inset 3px 0px 16px _color("black", b);
+            box-sizing: border-box;
+            left: -30px;
+            width: calc(100% + 60px) !important;
+            bottom: -30px;
+            height: 109px;
+        }
+
+        .x-panel-header-text {
+            display: block;
+            color: #5c6164;
+
+            @include text(_size("big"), _color("primary"), 100, _font("raleway"));
+        }
+    }
+
+    > .x-panel-bwrap {
+        width: 100% !important;
+        padding: 0  !important;
+        .x-panel-body {
+            width: 100% !important;
+        }
+    }
+
+    .x-grid3-cell-inner {
+        padding: 0 !important;
+        line-height: 25px !important;
+    }
+
+    .x-grid3-row.indigo-opened + div {
+        margin-bottom: 20px;
+    }
+
+    .x-grid-panel {
+        width: 100% !important;
+    }
+
+    .x-grid3 {
+        width: 100% !important;
+        .x-grid3-header {
+            display: table-cell;
+            background: transparent;
+            width: 100% !important;
+            .x-component {
+                left: -12px;
+            }
+
+            .x-grid3-td-displayName {
+                .x-component {
+                    left: -3px;
+                }
+            }
+        }
+        .x-grid3-row {
+            height: 27px !important;
+        }
+    }
+
+}
+
 .x-window.compare-engine,
 .x-window.content-incontext-preview,
 .x-window.content-preview {

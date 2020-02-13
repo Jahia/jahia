@@ -19,6 +19,7 @@ import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -171,15 +172,29 @@ public class EmptyEntryPoint extends CommonEntryPoint {
     public static JavaScriptObject getEditTabs(String path, String uuid, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, boolean hasOrderableChildNodes) {
         GWTJahiaNode node = MainModule.getGwtJahiaNode(uuid, path, displayName, nodeTypes, inheritedNodeTypes);
         JSONArray editTabs = new JSONArray();
-        List<GWTEngineTab> gwtEngineTabs = EditContentEngine.resolveTabs(hasOrderableChildNodes, getInstance().getLinker().getConfig().getEngineConfiguration(node), node);
+        List<GWTEngineTab> gwtEngineTabs = resolveEditTabs(hasOrderableChildNodes, getInstance().getLinker().getConfig().getEngineConfiguration(node), node);
         for (int idx = 0; idx < gwtEngineTabs.size(); idx++) {
             JSONObject jsonTab = new JSONObject();
             GWTEngineTab gwtEngineTab = gwtEngineTabs.get(idx);
             jsonTab.put("id", new JSONString(gwtEngineTab.getId()));
             jsonTab.put("title", new JSONString(gwtEngineTab.getTitle()));
+            jsonTab.put("requiredPermission", new JSONString(gwtEngineTab.getRequiredPermission()));
             editTabs.set(idx, jsonTab);
         }
         return editTabs.getJavaScriptObject();
+    }
+
+    private static List<GWTEngineTab> resolveEditTabs(boolean hasOrderableChildNodes, GWTEngineConfiguration config, GWTJahiaNode node) {
+        List<GWTEngineTab> gwtEngineTabs = new ArrayList<GWTEngineTab>();
+        for (GWTEngineTab tabConfig : config.getEngineTabs()) {
+            EditEngineTabItem tabItem = tabConfig.getTabItem();
+            if (tabConfig.showInEngine() &&
+                    (tabItem.getHideForTypes().isEmpty() || !node.isNodeType(tabItem.getHideForTypes())) &&
+                    ((hasOrderableChildNodes && tabItem.isOrderableTab()) || (!tabItem.isOrderableTab() && (tabItem.getShowForTypes().isEmpty() || node.isNodeType(tabItem.getShowForTypes()))))) {
+                gwtEngineTabs.add(tabConfig);
+            }
+        }
+        return gwtEngineTabs;
     }
 
     public static void editContent(String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, String uuid, boolean skipRefreshOnSave, EditEngineJSConfig jsConfig) {

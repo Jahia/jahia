@@ -178,7 +178,9 @@ public class EmptyEntryPoint extends CommonEntryPoint {
             GWTEngineTab gwtEngineTab = gwtEngineTabs.get(idx);
             jsonTab.put("id", new JSONString(gwtEngineTab.getId()));
             jsonTab.put("title", new JSONString(gwtEngineTab.getTitle()));
-            jsonTab.put("requiredPermission", new JSONString(gwtEngineTab.getRequiredPermission()));
+            if (gwtEngineTab.getRequiredPermission() != null && gwtEngineTab.getRequiredPermission().length() > 0) {
+                jsonTab.put("requiredPermission", new JSONString(gwtEngineTab.getRequiredPermission()));
+            }
             editTabs.set(idx, jsonTab);
         }
         return editTabs.getJavaScriptObject();

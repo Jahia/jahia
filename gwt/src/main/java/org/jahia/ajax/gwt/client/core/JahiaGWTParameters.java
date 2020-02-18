@@ -422,4 +422,8 @@ public class JahiaGWTParameters {
     public static Long getStudioMaxDisplayableFileSize() {
         return Long.parseLong(jahiaParamDictionary.get(STUDIO_MAX_DISPLAYABLE_FILE_SIZE));
     }
+
+    public static Dictionary getJahiaParamDictionary() {
+        return jahiaParamDictionary;
+    }
 }

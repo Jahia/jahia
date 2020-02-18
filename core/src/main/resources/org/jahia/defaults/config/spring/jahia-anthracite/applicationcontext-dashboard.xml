@@ -11,36 +11,6 @@
                 <property name="layout" value="button-label"/>
                 <property name="items">
                     <list>
-                        <!--<bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Dashboard.Menu.Mode">-->
-                            <!--<property name="titleKey" value="label.mode"/>-->
-                            <!--<property name="items">-->
-                                <!--<list>-->
-                                    <!--<ref bean="Toolbar.Item.Edit"/>-->
-                                    <!--<ref bean="Toolbar.Item.Contribute"/>-->
-                                    <!--<ref bean="Toolbar.Item.Studio"/>-->
-                                    <!--<ref bean="Toolbar.Item.Admin"/>-->
-                                <!--</list>-->
-                            <!--</property>-->
-                        <!--</bean>-->
-                        <bean id="editmode.managers.menu" class="org.jahia.services.uicomponents.bean.toolbar.Menu" >
-                            <property name="visibility">
-                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                                    <property name="needAuthentication" value="true"/>
-                                </bean>
-                            </property>
-                            <property name="titleKey" value="label.managers"/>
-                            <property name="items" ref="bluemenu"/>
-                        </bean>
-                        <ref bean="Toolbar.Item.Separator"/>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Dashboard.Menu.User">
-                            <property name="icon" value="start"/>
-                            <property name="titleKey" value="label.user.loggedAs"/>
-                            <property name="items">
-                                <list>
-                                    <ref bean="Toolbar.Item.Logout"/>
-                                </list>
-                            </property>
-                        </bean>
                     </list>
                 </property>
             </bean>

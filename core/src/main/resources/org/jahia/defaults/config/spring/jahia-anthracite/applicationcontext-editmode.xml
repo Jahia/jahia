@@ -6,50 +6,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
                         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-    <util:list id="bluemenu">
-        <ref bean="Toolbar.Item.Logout"/>
-        <bean parent="Toolbar.Item.Start" scope="prototype">
-            <property name="icon" value="/engines/jahia-anthracite/images/logos/app-dashboard.svg"/>
-        </bean>
-        <bean parent="Toolbar.Item.Edit" scope="prototype">
-            <property name="icon" value="/engines/jahia-anthracite/images/logos/app-edit.svg"/>
-        </bean>
-        <bean parent="Toolbar.Item.Contribute" scope="prototype">
-            <property name="icon" value="/engines/jahia-anthracite/images/logos/app-contribute.svg"/>
-        </bean>
-        <bean parent="Toolbar.Item.Studio" scope="prototype">
-            <property name="icon" value="/engines/jahia-anthracite/images/logos/app-studio.svg"/>
-        </bean>
-        <bean parent="Toolbar.Item.Admin" scope="prototype">
-            <property name="icon" value="/engines/jahia-anthracite/images/logos/app-administration.svg"/>
-        </bean>
-        <bean parent="Toolbar.Item.FileManager.NewTab" scope="prototype">
-            <property name="icon" value="/engines/jahia-anthracite/images/logos/app-document.svg"/>
-        </bean>
-        <bean parent="Toolbar.Item.EditorialContentManager.NewTab" scope="prototype">
-            <property name="icon" value="/engines/jahia-anthracite/images/logos/app-content.svg"/>
-        </bean>
-        <bean parent="Toolbar.Item.SiteManager.NewTab" scope="prototype">
-            <property name="icon" value="/engines/jahia-anthracite/images/logos/app-site.svg"/>
-        </bean>
-        <bean parent="Toolbar.Item.RepositoryExplorer.NewTab" scope="prototype">
-            <property name="icon" value="/engines/jahia-anthracite/images/logos/app-explorer.svg"/>
-        </bean>
-        <bean parent="Toolbar.Item.CategoryManager.NewTab" scope="prototype">
-            <property name="icon" value="/engines/jahia-anthracite/images/logos/app-category.svg"/>
-        </bean>
-        <bean parent="Toolbar.Item.PortletManager.NewTab" scope="prototype">
-            <property name="icon" value="/engines/jahia-anthracite/images/logos/app-portlet.svg"/>
-        </bean>
-        <bean parent="Toolbar.Item.Documentation" scope="prototype">
-            <property name="icon" value="/engines/jahia-anthracite/images/logos/app-documentation.svg"/>
-        </bean>
-        <bean parent="Toolbar.Item.WhatsNew" scope="prototype">
-            <property name="icon" value="/engines/jahia-anthracite/images/logos/app-whatsNew.svg"/>
-        </bean>
-    </util:list>
-
-
     <util:list id="anthraciteEditmodeMainModuleMenuItems">
         <ref bean="Toolbar.Item.EditContent"/>
         <ref bean="Toolbar.Item.EditSourceContent"/>
@@ -74,16 +30,6 @@
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar" id="Edit.Menu.LeftTop">
                     <property name="items">
                         <list>
-                            <bean id="editmode.managers.menu" class="org.jahia.services.uicomponents.bean.toolbar.Menu">
-                                <property name="visibility">
-                                    <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                                        <property name="needAuthentication" value="true"/>
-                                    </bean>
-                                </property>
-                                <property name="titleKey" value="label.managers"/>
-                                <property name="items" ref="bluemenu"/>
-                            </bean>
-
                         </list>
                     </property>
                 </bean>
@@ -157,31 +103,6 @@
                             </bean>
 
                             <ref bean="Toolbar.Item.PublicationStatusWithText"/>
-
-                            <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Edit.Menu.Workflow">
-
-                                <property name="titleKey" value="label.workflow"/>
-                                <property name="items">
-                                    <list>
-                                        <!--<ref bean="Toolbar.Item.WorkflowStatusAction"/>-->
-                                        <ref bean="Toolbar.Item.WorkflowDashboard"/>
-                                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item"
-                                              scope="prototype" id="Edit.Menu.CustomWorkflows">
-                                            <property name="actionItem">
-                                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CustomWorkflowMenuActionItem"/>
-                                            </property>
-                                            <property name="titleKey" value="label.customWorkflowsMenu"/>
-                                            <property name="icon" value="workflowDashboard"/>
-                                        </bean>
-                                    </list>
-                                </property>
-                            </bean>
-                            <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
-                                  id="Edit.Menu.Tasks">
-                                <property name="actionItem" ref="Toolbar.Item.NumberOfTasksWorkflowMenuActionItem"/>
-                                <property name="titleKey" value="label.numberoftasksforuser"/>
-                                <property name="displayTitle" value="${jahia.ui.displayWorkflowCounter:true}"/>
-                            </bean>
 
                             <ref bean="Edit.Menu.Cache"/>
                             <ref bean="Toolbar.Item.ShowTrashboard"/>

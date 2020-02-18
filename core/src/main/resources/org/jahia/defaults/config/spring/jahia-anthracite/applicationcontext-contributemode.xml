@@ -67,37 +67,6 @@
                             </property>
                         </bean>
 
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Contribute.Menu.Workflow">
-                            <property name="titleKey" value="label.workflow"/>
-                            <property name="items">
-                                <list>
-                                    <!--<ref bean="Toolbar.Item.WorkflowStatusAction"/>-->
-                                    <ref bean="Toolbar.Item.WorkflowDashboard"/>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype" id="Contribute.Menu.CustomWorkflows">
-                                        <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CustomWorkflowMenuActionItem"/>
-                                        </property>
-                                        <property name="titleKey" value="label.customWorkflowsMenu"/>
-                                        <property name="icon" value="workflowDashboard"/>
-                                    </bean>
-                                </list>
-                            </property>
-                        </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype" id="Contribute.Menu.Tasks">
-                            <property name="actionItem" ref="Toolbar.Item.NumberOfTasksWorkflowMenuActionItem"/>
-                            <property name="titleKey" value="label.numberoftasksforuser"/>
-                            <property name="displayTitle" value="${jahia.ui.displayWorkflowCounter:true}"/>
-                        </bean>
-                        <bean id="editmode.managers.menu" class="org.jahia.services.uicomponents.bean.toolbar.Menu" >
-                            <property name="visibility">
-                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                                    <property name="needAuthentication" value="true"/>
-                                </bean>
-                            </property>
-                            <property name="titleKey" value="label.managers"/>
-                            <property name="items" ref="bluemenu"/>
-                        </bean>
-
                         <ref bean="Toolbar.Item.ShowTrashboard"/>
                         <ref bean="Toolbar.Item.ClipBoard"/>
 

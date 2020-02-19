@@ -3557,8 +3557,10 @@ body[data-indigo-gwt-side-panel="open"] {
     }
 
     #JahiaGxtContentEngine {
-        &::before {
-            content: _dictionary("edit_engine");
+        &:not(.hide-headers) {
+            &::before {
+                content: _dictionary("edit_engine");
+            }
         }
     }
 

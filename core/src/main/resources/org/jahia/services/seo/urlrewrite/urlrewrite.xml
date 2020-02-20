@@ -153,7 +153,7 @@
         <name>Jahia Administration</name>
         <note>Redirects to new Jahia Server Administration page</note>
         <from>^/administration(/)?$</from>
-        <to type="redirect">%{context-path}/welcome/adminmode</to>
+        <to type="redirect">%{context-path}/jahia/administration</to>
     </rule>
 
 </urlrewrite>

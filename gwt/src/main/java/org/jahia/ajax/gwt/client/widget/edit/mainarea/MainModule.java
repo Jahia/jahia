@@ -1562,6 +1562,10 @@ public class MainModule extends Module {
         nsAuthoringApi.getEditTabs = function (path, uuid, displayName, types, inheritedTypes, hasOrderableChildNodes) {
             return @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::getEditTabs(*)(path, uuid, displayName, types, inheritedTypes, hasOrderableChildNodes);
         };
+
+        $wnd.top.authoringApi.refreshContent = function () {
+            return @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::refreshContent(*)();
+        };
     }-*/;
 
     public InfoLayers getInfoLayers() {
@@ -1585,6 +1589,14 @@ public class MainModule extends Module {
         }
         return true;
     }-*/;
+
+
+    public static void refreshContent() {
+        Map<String, Object> data = new HashMap<>();
+        data.put(Linker.REFRESH_ALL, true);
+
+        module.refresh(data);
+    }
 
     public void goToExternalUrl(String url) {
         mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");

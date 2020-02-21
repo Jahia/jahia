@@ -23,7 +23,7 @@
         padding: 7px 10px;
         white-space: nowrap;
         text-align: center;
-        z-index: 9;
+        z-index: 9998;
         border-radius: 2px;
         box-shadow: 1px 2px 4px 0 rgba(40, 43, 45, 0.7);
         text-transform: uppercase;
@@ -37,7 +37,7 @@
         height: 0;
         content: "Arrow";
         text-indent: -50000px;
-        z-index: 10;
+        z-index: 9999;
         border-style: solid;
         border-width: 0 8px 8px 8px;
         border-color: transparent transparent _color("secondary") transparent;
@@ -65,6 +65,16 @@
             top: 12px;
             left: -9px;
             transform: rotate(90deg);
+        }
+    } @else if ($_position == "BOTTOM-LEFT"){
+        &::before {
+            bottom: -36px;
+            right: -10px;
+        }
+
+        &::after {
+            bottom: -18px;
+            right: 5px;
         }
     }
 

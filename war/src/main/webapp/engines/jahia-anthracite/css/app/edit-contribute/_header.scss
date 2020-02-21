@@ -65,13 +65,12 @@
 
     body[data-multiselect="on"][data-indigo-sidepanel-pinned="true"] & {
         position: absolute;
-        top: 30px !important;
-        right: -23px;
+        top: $EDIT-MODE-MULTIPLE-SELECT-TOP !important;
+        right: $EDIT-MODE-MULTIPLE-SELECT-RIGHT;
         left: auto !important;
         background-color: transparent !important;
-        background-position: left 3px top 2px;
         width: 22px;
-        background-size: 11px !important;
+        z-index: 9;
 
         &::before {
             color: #fdfdfd;
@@ -88,8 +87,9 @@
     }
 
     body[data-multiselect="on"][data-sitesettings="false"][data-indigo-sidepanel-pinned="true"] & { /* MULTI SELECT NOT WORKING IN CONTRIBUTE MODE !!! */
-        background-image: url( _icon("closeSmall", "white")); /* OPTIMISE URL ::: css/app/edit-contribute/_header.scss ::: 5 */
-        background-color: #a1a4a6;
+        &::before {
+            background: url( _icon("closeSmall", "white")) #a1a4a6 no-repeat left 9px top 6px #{/11px} !important; /* OPTIMISE URL ::: css/app/edit-contribute/_header.scss ::: 5 */
+        }
     }
 
     body[data-multiselect="on"][data-sitesettings="false"][data-indigo-sidepanel-pinned="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"] &,
@@ -118,6 +118,22 @@
         left: 394px;
         top: 32px;
     }
+
+    @if($theme == "anthracite-V8") {
+        &::after {
+            content: attr(data-nodepath);
+            position: absolute;
+            left: 31px;
+            top: 16px;
+            @include text(_size("small"), _color("primary"), _weight("light"));
+
+            body[data-multiselect="on"] & {
+                display: none;
+            }
+        }
+
+
+    }
 }
 
 .x-current-page-path {
@@ -131,31 +147,34 @@
     max-width: calc(100vw - 530px);
 
     body[data-INDIGO-SIDEPANEL-PINNED="true"] & {
-        left: 10px !important;
+        left: $EDIT-MODE--PAGE-TITLE---LEFT !important;
         clip: unset;
-        top: 10px !important;
+        top: $EDIT-MODE--PAGE-TITLE---TOP !important;
     }
 
     body[data-multiselect="on"] & {
-        left: 0px !important;
-        background: url(../images/icons/multiple_selection@2x.png) no-repeat left center/23px 23px; /* OPTIMISE URL ::: css/app/edit-contribute/_header.scss ::: 6 */
+        @if($theme == "anthracite"){
+            left: 0px !important;
+        }
+
+        background: url($EDIT-MODE-MULTIPLE-SELECT-ICON) no-repeat left center/23px 23px; /* OPTIMISE URL ::: css/app/edit-contribute/_header.scss ::: 6 */
         padding-left: 24px;
     }
 
-    body[data-multiselect="on"][data-INDIGO-SIDEPANEL-PINNED="true"] & {
-        top: 3px !important;
+    @if($theme == "anthracite"){
+        body[data-multiselect="on"][data-INDIGO-SIDEPANEL-PINNED="true"] & {
+            top: 3px !important;
+        }
     }
+
 
     &::before {
         content: attr(data-PAGE-NAME);
-        @include text(_size("medium"), _color("secondary"), _weight("semilight"));
+        @include text($EDIT-MODE--PAGE-TITLE---SIZE, $EDIT-MODE--PAGE-TITLE---COLOR, _weight("extralight"));
         display: block;
         max-width: 100%;
         overflow: hidden;
         text-overflow: ellipsis;
-        font-size: 25.2px;
-        font-weight: 100;
-        color: whitesmoke;
         line-height: 27px;
     }
 }
@@ -228,15 +247,15 @@ div[role="combobox"].toolbar-itemsgroup-languageswitcher {
 
     body[data-indigo-gwt-side-panel="open"] .x-viewport-editmode & {
         right: auto !important;
-        left: 115px !important;
-        top: 69px !important;
+        left: _theme($SIDE-PANEL--LANGUAGE-SWITCHER---LEFT) !important;
+        top: _theme($SIDE-PANEL--LANGUAGE-SWITCHER---TOP) !important;
 
         input {
-            color: _color("primary", normal);
+            color: _theme($SIDE-PANEL-OPEN--COMBO-COLOR, $SIDE-PANEL);
         }
 
         img {
-            background-image: url(../images/expanded-black.png) !important; /* OPTIMISE URL ::: css/app/edit-contribute/_header.scss ::: 10 */
+            background-image: url(_theme($SIDE-PANEL-OPEN--COMBO-ARROW, $SIDE-PANEL)) !important; /* OPTIMISE URL ::: css/app/edit-contribute/_header.scss ::: 10 */
         }
     }
 

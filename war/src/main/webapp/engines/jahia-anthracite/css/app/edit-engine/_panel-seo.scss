@@ -173,13 +173,13 @@
     }
 
     .x-row-editor-body.x-box-layout-ct {
-        background: $color-primary;
+        background: _color("primary");
         height: 36px !important;
         box-sizing: border-box;
     }
 
     .x-row-editor-footer {
-        background: $color-primary;
+        background: _color("primary");
         height: 1px;
     }
 
@@ -213,7 +213,7 @@
     }
 
     .x-toolbar-right-row > .x-toolbar-cell > div.x-form-label {
-        color: $color-white !important;
+        color: _color("white") !important;
         font-weight: 600;
         font-family: _font("nunito");
         background: _color("status", error);

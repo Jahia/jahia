@@ -36,20 +36,20 @@
 
     // Make the title look like the toolbar entries when a channel has NOT been selected
     #channel-title {
-        @include text(_size("tiny"), whitesmoke, _weight("light"));
+        @include text(_size("tiny"), _theme($SIDE-PANEL-TAB--DESKTOP-COLOR--UP, DARK), _weight("light"));
         text-transform: uppercase;
         position: absolute;
         left: 28px;
         bottom: 28px;
-        background: url( _icon("devices", "white")) no-repeat top 6px center;
+        background: url(_theme($SIDE-PANEL-TAB--DESKTOP-ICON--UP, DARK)) no-repeat top 6px center;
 
         body[data-indigo-gwt-side-panel="open"] & {
-            background-image: url(../images/icons/tabs-devices-black@X2.png); /* OPTIMISE URL ::: css/app/edit-contribute/_channel-menu.scss ::: 1 */
+            background-image: url(_theme($SIDE-PANEL-TAB--DESKTOP-ICON--UP, $SIDE-PANEL)); /* OPTIMISE URL ::: css/app/edit-contribute/_channel-menu.scss ::: 1 */
             color: #747b7f;
         }
 
         body[data-indigo-gwt-side-panel="open"] & {
-            color: _color("primary", c);
+            color: _theme($SIDE-PANEL-TAB--DESKTOP-COLOR--UP, $SIDE-PANEL)
         }
 
         background-size: 22px;

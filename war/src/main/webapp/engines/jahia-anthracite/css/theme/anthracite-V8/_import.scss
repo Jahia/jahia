@@ -1,10 +1,13 @@
-
-@import "theme-variables";
+@import "icons";
 @import "theme-config";
+@import "theme-typography";
 @import "theme-palette";
-@import "theme-fonts";
+@import "theme-animations";
+@import "override-animations";
+@import "override-typography";
+@import "override-icons";
 
-
+@import "modals";
 @import "backgrounds";
 @import "buttons";
 @import "ckeditor";
@@ -21,4 +24,7 @@
 @import "thumbs";
 @import "toggle";
 @import "trees";
-@import "dark";
+@import "side-panel";
+@import "edit-engine";
+@import "splitter";
+@import "misc";

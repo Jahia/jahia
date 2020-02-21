@@ -1,0 +1,243 @@
+$PICKER_SIDEPANEL_WIDTH: 340px;
+
+/////////////////////////////////////////////////
+// ICONS  ///////////////////////////////
+/////////////////////////////////////////////////
+
+$icons: (
+    "multipleSelect": (
+        "white": "../images/icons/multiple_selection@2x.png",
+        "grey": "../images/icons/multiple_selection-grey@2x.png",
+    ),
+    "publish": (
+        "white": "../images/icons_light/cloud-upload.svg",
+        "black": "../images/icons_dark/cloud-upload.svg",
+    ),
+    "download": (
+        "white": "../images/icons_light/cloud-download.svg",
+        "black": "../images/icons_dark/cloud-download.svg",
+    ),
+    "cache": (
+        "white": "../images/icons_light/cache.svg",
+        "grey": "../images/icons_grey/cache.svg",
+        "black": "../images/icons_dark/cache.svg",
+    ),
+    "virtualSite": (
+        "white": "../images/icons/tabs-site-white@X2.png",
+        "grey": "../images/icons/tabs-site-dark@X2.png",
+    ),
+    "warning": (
+        "white": "../images/icons/ic_warning@2x.png",
+    ),
+    "difference": (
+        "white": "../images/icons/diff-icon.png",
+    ),
+    "edit": (
+        "white": "../images/icons/tabs-edit.png",
+    ),
+    "add": (
+        "white": "../images/icons/add-icon.png",
+        "grey": "../images/icons/add-icon-grey.png",
+    ),
+    "lock": (
+        "yellow": "../images/icons/icon-locked@X2.png",
+    ),
+    "hamburger": (
+        "white": "../images/icons/small-hamburger.png",
+        "grey": "../images/icons/small-hamburger-grey.png",
+    ),
+    "usermenu": (
+        "white": "../images/icons/tabs-usermenu-white@X2.png",
+    ),
+    "splitter": (
+        "grey": "../images/icons/splitter@X2.png",
+        "white": "../images/icons/splitter-white@X2.png",
+    ),
+    "displayThumbs": (
+        "white": "../images/icons/icon_display_thumb_white_small@X2.png",
+        "grey": "../images/icons/icon_thumbs_grey_small.png",
+    ),
+    "displayDetails": (
+        "white": "../images/icons/icon_display_details_white_small@X2.png",
+        "grey": "../images/icons/icon_display_details_grey_small@X2.png",
+    ),
+    "displayList": (
+        "white": "../images/icons/icon_list_white_small@X2.png",
+        "grey": "../images/icons/icon_list_grey_small.png",
+    ),
+    "refresh": (
+        "white": "../images/icons/icon-publication-launcher.png",
+        "grey": "../images/icons/icon-publication-launcher-grey.png",
+    ),
+    "reload": (
+        "white": "../images/icons_light/refresh.svg",
+        "grey": "../images/icons_grey/refresh.svg",
+    ),
+    "preview": (
+        "white": "../images/icons/icon_preview_small_white.png",
+        "grey": "../images/icons/icon_preview_small_grey.png",
+    ),
+    "visibility":(
+        "white": "../images/icons_white/visibility.svg",
+        "grey": "../images/icons_grey/visibility.svg",
+        "black": "../images/icons_dark/visibility.svg",
+    ),
+    "ckeditor": (
+        "white": "../images/icons/icons-cke.png",
+    ),
+    "ckeditorLegacy": (
+        "white": "../images/icons/icons-cke-legacy.png",
+    ),
+    "tick": (
+        "white": "../images/icons/icon-check-white@X2.png",
+    ),
+    "magnifyingGlass": (
+        "white": "../images/icons/icon-magnifying-glass--small-white.png",
+        "grey": "../images/icons/icon-magnifying-glass--small-hover.png",
+    ),
+    "sortAsc": (
+        "white": "../images/icons/sort-ASC@X2.png",
+        "dark": "../images/icons/sort-dark-ASC@X2.png",
+    ),
+    "sortDesc": (
+        "white": "../images/icons/sort-DESC@X2.png",
+        "dark": "../images/icons/sort-dark-DESC@X2.png",
+    ),
+    "moreOptions": (
+        "white": "../images/icon-more-options-light.png",
+        "grey": "../images/icon-more-options-dark-50@X2.png",
+    ),
+    "arrowDown": (
+        "white": "../images/icons/combo-arrow.png",
+        "grey": "../images/icons/combo-arrow-grey.png",
+        "black": "../images/expanded-black.png",
+    ),
+    "arrowExpand": (
+        "grey": "../images/icons/icon-expand-side-bar.png",
+    ),
+    "arrowCollapse": (
+        "grey": "../images/icons/icon-combo-expand-white.png",
+    ),
+    "arrowSortAsc": (
+        "white": "../images/icons/icon-asc-white.png",
+    ),
+    "arrowSortDesc": (
+        "white": "../images/icons/icon-desc-white.png",
+    ),
+    "closeSmall": (
+        "white": "../images/icons/icon-close-white@X2.png",
+        "grey": "../images/icons/icon-close-small-light.png",
+    ),
+    "closeLarge": (
+        "white": "../images/icons/icon-close-white@X2.png",
+        "grey": "../images/icons/icon-close-grey@X2.png",
+    ),
+    "navFirst": (
+        "white": "../images/icons/icon_arrow_left_double_white@X2.png",
+        "grey": "../images/icons/icon_arrow_left_double_grey@X2.png",
+    ),
+    "navPrevious": (
+        "white": "../images/icons/icon_arrow_left_single_white@X2.png",
+        "grey": "../images/icons/icon-back-grey@X2.png",
+    ),
+    "navNext": (
+        "white": "../images/icons/icon-next-white@X2.png",
+        "grey": "../images/icons/icon-next-grey@X2.png",
+    ),
+    "navLast": (
+        "white": "../images/icons/icon_arrow_right_double_white@X2.png",
+        "grey": "../images/icons/icon_arrow_right_double_grey@X2.png",
+    ),
+    "folderOpen": (
+        "grey": "../images/icons/small-folder-open@x2.png",
+    ),
+    "folderClosed": (
+        "grey": "../images/icons/small-folder@x2.png",
+    ),
+    "folder": (
+        "white": "../images/icons_light/folder_closed.png",
+    ),
+    "device": (
+        "generic": "../images/devices/devices-generic-large.png",
+        "iphone": "../images/devices/devices-iphone-small.png",
+        "galaxyS4": "../images/devices/devices-galaxy-s4-small.png",
+        "galaxyTab7": "../images/devices/devices-galaxy-tab-3-small.png",
+        "android": "../images/devices/devices-android-small.png",
+        "blackberry": "../images/devices/devices-blackberry-storm-small.png",
+        "galaxyNote": "../images/devices/devices-galaxy-note-3-small.png",
+        "kindle": "../images/devices/devices-kindle-fire-small.png",
+        "ipad": "../images/devices/devices-apple-ipad-small.png",
+        "galaxyTab": "../images/devices/devices-galaxy-tab-3-small.png",
+    ),
+    "pages": (
+        "white": "../images/icons_light/page_icon.png",
+        "grey": "../images/icons_grey/page_icon.png",
+        "blue": "../images/icons_blue/page_icon.png",
+        "black": "../images/icons_dark/page_icon.png",
+    ),
+    "create": (
+        "white": "../images/tabs-create-white@X2.png",
+        "grey": "../images/tabs-create-dark@X2.png",
+        "blue": "../images/tabs-create-blue@X2.png",
+        "black": "../images/tabs-create-black@X2.png",
+    ),
+    "content": (
+        "white": "../images/icons_light/dashboard.svg",
+        "grey": "../images/icons/dashboard.svg",
+        "blue": "../images/icons_blue/dashboard.svg",
+        "black": "../images/icons_dark/dashboard.svg",
+    ),
+    "files": (
+        "white": "../images/icons_light/folder_closed.png",
+        "grey": "../images/icons_grey/folder_closed.png",
+        "blue": "../images/icons_blue/folder_closed.png",
+        "black": "../images/icons_dark/folder_closed.png",
+    ),
+    "search": (
+        "white": "../images/tabs-search-white@X2.png",
+        "grey": "../images/tabs-search-dark@X2.png",
+        "blue": "../images/tabs-search-blue@X2.png",
+        "black": "../images/tabs-search-black@X2.png",
+    ),
+    "taxonomy": (
+        "white": "../images/icons_light/category.svg",
+        "grey": "../images/icons/category.svg",
+        "blue": "../images/icons_blue/category.svg",
+        "black": "../images/icons_dark/category.svg",
+    ),
+    "devices": (
+        "white": "../images/icons/mobile_light.svg",
+        "grey": "../images/icons/mobile_grey.svg",
+        "blue": "../images/icons_blue/category.svg",
+        "black": "../images/icons/mobile_black.svg",
+    ),
+    "settings": (
+        "white": "../images/tabs-settings-white@X2.png",
+        "grey": "../images/tabs-settings-dark@X2.png",
+        "blue": "../images/tabs-settings-blue@X2.png",
+        "black": "../images/tabs-settings-black@X2.png",
+    ),
+    "app": (
+        "contentManager": "../images/dx_logo_inverted.png",
+        "fileManager": "../images/dx_logo_inverted.png",
+        "portletManager": "../images/dx_logo_inverted.png",
+        "repoExplorer": "../images/dx_logo_inverted.png",
+        "categoryMager": "../images/dx_logo_inverted.png",
+        "siteManager": "../images/dx_logo_inverted.png",
+    ),
+    "dxLogo": (
+        "white": "../images/dx_logo_inverted.png",
+        "black": "../images/dx_logo_solid-black.png",
+        "blue": "../images/dx_logo_solid.png",
+    ),
+    "jahiaLogo": (
+        "black": "../images/dx_solid.png",
+    ),
+    "jahiaLogoSmall": (
+        "black": "../images/dx_solid_small.png",
+    ),
+    "jcontent": (
+        "white": "../images/icons_light/jContent.svg",
+        "black": "../images/icons_dark/jContent.svg",
+    )
+);

@@ -1,0 +1,177 @@
+/****************************/
+/* DATE PICKER */
+/****************************/
+
+// Month Screen
+$DATE-PICKER--BG: (
+        LIGHT: red,
+        DARK: _color("primary"),
+);
+
+$DATE-PICKER--SHADOW: (
+        LIGHT: red,
+        DARK: 0px 1px 2px _color("black", a)
+);
+
+$DATE-PICKER--MONTH-TITLE: (
+        LIGHT: red,
+        DARK: _color("secondary"),
+);
+
+$DATE-PICKER--MONTH-TITLE---HOVER: (
+        LIGHT: red,
+        DARK: _color("secondary", a),
+);
+
+$DATE-PICKER--ACTION-BUTTON--COLOR: (
+        LIGHT: red,
+        DARK: _color("secondary"),
+);
+
+$DATE-PICKER--ACTION-BUTTON--BG: (
+        LIGHT: red,
+        DARK: _color("quaternary"),
+);
+
+$DATE-PICKER--ACTION-BUTTON--COLOR---HOVER: (
+        LIGHT: red,
+        DARK: _color("secondary"),
+);
+
+$DATE-PICKER--ACTION-BUTTON--BG---HOVER: (
+        LIGHT: red,
+        DARK: _color("quaternary", a),
+);
+
+// Other month ( previous, following )
+$DATE-PICKER--DAY-MUTED--COLOR: (
+        LIGHT: red,
+        DARK: _color("secondary", e)
+);
+
+$DATE-PICKER--DAY-MUTED--BG: (
+        LIGHT: red,
+        DARK: transparent,
+);
+
+$DATE-PICKER--DAY-MUTED--COLOR---HOVER: (
+        LIGHT: red,
+        DARK: _color("secondary")
+);
+
+$DATE-PICKER--DAY-MUTED--BG---HOVER: (
+        LIGHT: red,
+        DARK: transparent,
+);
+
+// Current month
+$DATE-PICKER--DAY--COLOR: (
+        LIGHT: red,
+        DARK: _color("secondary")
+);
+
+$DATE-PICKER--DAY--BG: (
+        LIGHT: red,
+        DARK: _color("primary", c)
+);
+
+$DATE-PICKER--DAY--COLOR---HOVER: (
+        LIGHT: red,
+        DARK: _color("secondary")
+);
+
+$DATE-PICKER--DAY--BG---HOVER: (
+        LIGHT: red,
+        DARK: _color("primary", d)
+);
+
+$DATE-PICKER--DAY--COLOR---SELECTED: (
+        LIGHT: red,
+        DARK: _color("primary", f)
+);
+
+$DATE-PICKER--DAY--BG---SELECTED: (
+        LIGHT: red,
+        DARK: _color("secondary")
+);
+
+// Modal screen
+$DATE-PICKER--MODAL--BG: (
+        LIGHT: red,
+        DARK: _color("primary", g)
+);
+
+$DATE-PICKER--MODAL-TITLE--COLOR: (
+        LIGHT: red,
+        DARK: _color("secondary")
+);
+
+$DATE-PICKER--YEAR-BG: (
+        LIGHT: red,
+        DARK: _color("primary", f)
+);
+
+$DATE-PICKER--YEAR-TITLE: (
+        LIGHT: red,
+        DARK: _color("secondary")
+);
+
+$DATE-PICKER--MONTH--COLOR: (
+        LIGHT: red,
+        DARK: _color("secondary", a)
+);
+
+$DATE-PICKER--MONTH--BG: (
+        LIGHT: red,
+        DARK: transparent,
+);
+
+$DATE-PICKER--MONTH--COLOR---HOVER: (
+        LIGHT: red,
+        DARK: _color("secondary")
+);
+
+$DATE-PICKER--MONTH--BG---HOVER: (
+        LIGHT: red,
+        DARK: _color("primary")
+);
+
+$DATE-PICKER--MONTH--COLOR---SELECTED: (
+        LIGHT: red,
+        DARK: _color("primary", f)
+);
+
+$DATE-PICKER--MONTH--BG---SELECTED: (
+        LIGHT: red,
+        DARK: _color("secondary")
+);
+
+$DATE-PICKER--YEAR--COLOR: (
+        LIGHT: red,
+        DARK: _color("secondary", a)
+);
+
+$DATE-PICKER--YEAR--BG: (
+        LIGHT: red,
+        DARK: _color("primary", f)
+);
+
+$DATE-PICKER--YEAR--COLOR---HOVER: (
+        LIGHT: red,
+        DARK: _color("secondary")
+);
+
+$DATE-PICKER--YEAR--BG---HOVER: (
+        LIGHT: red,
+        DARK: _color("primary")
+);
+
+$DATE-PICKER--YEAR--COLOR---SELECTED: (
+        LIGHT: red,
+        DARK: _color("primary", f)
+);
+
+$DATE-PICKER--YEAR--BG---SELECTED: (
+        LIGHT: red,
+        DARK: _color("secondary")
+);

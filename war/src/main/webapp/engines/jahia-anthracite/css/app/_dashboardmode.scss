@@ -204,7 +204,7 @@
 }
 
 body {
-    background: _color("primary") !important;
+    background: _theme($BODY--BG, $EDIT-MODE) !important;
 }
 
 #userSites_table_wrapper {

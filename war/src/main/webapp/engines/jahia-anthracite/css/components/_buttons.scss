@@ -283,7 +283,7 @@
     text-align: center;
     text-transform: uppercase;
 
-    @include text(_size("tiny"), whitesmoke, _weight("normal"));
+    @include text(_size("tiny"), _theme($TOOL-BUTTON--COLOR, $EDIT-MODE), _weight("normal"));
     margin-bottom: 0;
     opacity: 0.9;
 }

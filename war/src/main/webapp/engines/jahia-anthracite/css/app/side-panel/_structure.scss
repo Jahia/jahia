@@ -25,7 +25,7 @@
 
         // Edit Mode
         position: fixed;
-        left: 95px !important;
+        left: _theme($SIDE-PANEL--SITE-SWITCHER---LEFT) !important;
         top: 25px !important;
         background: transparent;
         pointer-events: none;
@@ -47,36 +47,36 @@
 
         // Side Panel
         body[data-indigo-gwt-side-panel="open"] & {
-            top: 25px !important;
-            left: 115px !important;
+            top: _theme($SIDE-PANEL--SITE-SWITCHER---TOP) !important;
+            left: _theme($SIDE-PANEL--OPENED--SITE-SWITCHER---LEFT) !important;
 
             div[role="combobox"] {
                 input.x-form-text {
                     background: transparent;
                     box-shadow: none;
-                    color: _color("primary", normal);
+                    color: _theme($SIDE-PANEL-OPEN--COMBO-COLOR, $SIDE-PANEL);
                     padding: 0 17px 0 0 !important;
                     font-size: 14px;
 
                     &:hover {
-                        background-color: _color("white", normal);
+                        background-color: _theme($INPUT--BG---FOCUS, $SIDE-PANEL);
                     }
 
                     &.x-form-focus {
-                        background-color: _color("white", normal);
-                        box-shadow: inset 0.5px 0.5px 0px #7c7c7c, inset -0.5px -0.5px 0px #7c7c7c, inset 1px 1px 1px _color("black", a);
+                        background-color: _theme($INPUT--BG---FOCUS, $SIDE-PANEL);
+                        box-shadow: _theme($INPUT--INSET-SHADOW---FOCUS, $SIDE-PANEL);
                         padding-left: 3px !important;
-                        color: _color("black", normal);
+                        color: _theme($INPUT--COLOR---FOCUS, $SIDE-PANEL);
 
                         & + img {
-                            background-image: url(../images/expanded-black.png) !important; /* OPTIMISE URL ::: css/app/side-panel/_structure.scss ::: 1 */
+                            background-image: url(_theme($INPUT--ARROW---FOCUS, $SIDE-PANEL)) !important; /* OPTIMISE URL ::: css/app/side-panel/_structure.scss ::: 1 */
                         }
                     }
                 }
 
                 img {
                     width: 15px !important;
-                    background: url(../images/expanded-black.png) no-repeat left center transparent !important; /* OPTIMISE URL ::: css/app/side-panel/_structure.scss ::: 2 */
+                    background: url(_theme($SIDE-PANEL-OPEN--COMBO-ARROW, $SIDE-PANEL)) no-repeat left center transparent !important; /* OPTIMISE URL ::: css/app/side-panel/_structure.scss ::: 2 */
                     background-size: 14px !important;
                 }
             }
@@ -148,7 +148,7 @@
     #JahiaGxtRefreshSidePanelButton {
         /* Refresh side panel button */
         pointer-events: all;
-        background: url(../images/icons_grey/refresh.svg) no-repeat center; /* OPTIMISE URL ::: css/app/side-panel/_structure.scss ::: 5 */
+        background: url(_theme($SIDE-PANEL-TAB--REFRESH---UP, $SIDE-PANEL)) no-repeat center; /* OPTIMISE URL ::: css/app/side-panel/_structure.scss ::: 5 */
         background-size: 20px;
         left: 275px;
         position: fixed;
@@ -175,7 +175,7 @@
 
         body[data-INDIGO-SIDEPANEL-PINNED="true"] &,
         body[data-indigo-gwt-side-panel="open"] & {
-            margin-left: 30px;
+            margin: _theme($SIDE-PANEL--REFRESH-PINNED---MARGIN);
         }
 
         &.x-tool-refresh-red {
@@ -257,7 +257,7 @@
                     z-index: 999;
                     position: fixed;
                     background: url(../images/icons_dark/pin.svg); /* OPTIMISE URL ::: css/app/side-panel/_structure.scss ::: 7 */
-                    display: block;
+                    display: _theme($SIDE-PANEL--PIN-BUTTON---DISPLAY);
                     background-size: 20px;
                     background-repeat: no-repeat;
                     opacity: .52;
@@ -352,9 +352,7 @@
 
     #JahiaGxtSidePanelTabs {
         border-right: 0 solid #f8f8f8;
-        padding-left: 21px;
-        padding-top: 49px;
-
+        padding: _theme($SIDE-PANEL---PADDING);
         body[indigo-dragging-panel="true"] &,
         body[data-indigo-sidepanel-pinned="true"] & {
             transition: none !important;
@@ -372,6 +370,8 @@
             left: 0;
             opacity: 0;
             transition: _transition("all", "quick");
+            border-right: _theme($SIDE-PANEL--BORDER, $SIDE-PANEL);
+            box-shadow: _theme($SIDE-PANEL--SHADOW, $SIDE-PANEL)
         }
 
         body[data-indigo-sidepanel-pinned="true"] & {
@@ -504,10 +504,14 @@
         }
 
         .x-grid-panel {
-            height: 100% !important;
+            height: _theme($SIDE-PANEL--TREE--HEIGHT) !important;
             display: none;
             width: 100% !important;
             top: 0 !important;
+            background-color: _theme($SIDE-PANEL--TREE--BG);
+            border-top: _theme($SIDE-PANEL--DIVIDER-DISCREET);
+            padding: _theme($SIDE-PANEL--TREE--PADDING);
+            box-sizing: border-box;
         }
 
         [data-INDIGO-GWT-SIDE-PANEL="open"] & {
@@ -523,7 +527,7 @@
             border: none;
             padding: 0;
             background-color: transparent !important;
-            display: inline-block;
+            display: _theme($SIDE-PANEL--TABS---DISPLAY);
             vertical-align: top;
             position: relative;
             z-index: $ZINDEX--SIDE_PANEL--CONTAINER_SUB;
@@ -577,11 +581,11 @@
             // Contains the Side Panel Tabs Content
             display: inline-block;
             box-sizing: border-box;
-            width: calc(100% - 81px) !important;
+            width: _theme($SIDE-PANEL---WIDTH) !important;
             height: 100% !important;
             vertical-align: top;
             background: transparent;
-            margin-top: -37px;
+            margin: _theme($SIDE-PANEL---MARGIN);
             transition: _transition("all", "quick");
 
             body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] &,

@@ -209,7 +209,7 @@ var DX_app = {
     },
     dev: {
         data: {
-            on: false
+            on: true
         },
         /**
          * Send Anthracite logs to the console panel if DX_app.dev.data.on is true.
@@ -2963,6 +2963,8 @@ var DX_app = {
             DX_app.dev.log('::: APP ::: EDIT ::: ONOPEN');
             DexV2.getCached('body').setAttribute("data-edit-mode-status", "loading");
 
+            var status = (DX_app.iframe.data.publication && DX_app.iframe.data.publication.status) ? jahia_gwt_messages["label_publication_" + DX_app.iframe.data.publication.status] : 'unknown';
+
             // Add Background mask used for modals
             if(!DexV2.class('background-mask').exists()){
               var backGroundMask = document.createElement('div');
@@ -2979,9 +2981,12 @@ var DX_app = {
                     publicationStatusTooltip = document.createElement('div'),
                     publicationStatusLabel = document.createElement('label'),
                     publicationStatusPath = document.createElement('p'),
+                    publicationStatusCode = document.createElement('span'),
 
-                    status = (DX_app.iframe.data.publication && DX_app.iframe.data.publication.status) ? jahia_gwt_messages["label_publication_" + DX_app.iframe.data.publication.status] : 'unknown',
                     path = jahiaGWTParameters[jahiaGWTParameters.lang];
+
+                publicationStatusCode.innerHTML = status;
+                publicationStatusCode.classList.add('publication-status-code');
 
                 publicationStatusLabel.setAttribute("data-label", jahia_gwt_messages.label_publication_status + ": ");
                 publicationStatusLabel.innerHTML = status;
@@ -2995,11 +3000,14 @@ var DX_app = {
                 publicationStatusTooltip.appendChild(publicationStatusLabel);
                 publicationStatusTooltip.appendChild(publicationStatusPath);
 
+                publicationStatus.appendChild(publicationStatusCode);
                 publicationStatus.appendChild(publicationStatusTooltip);
                 publicationStatus.classList.add('publication-status');
                 publicationStatus.setAttribute('data-publication-status', status);
                 DexV2.getCached('body').prepend(publicationStatus);
             }
+
+            DexV2.getCached('body').setAttribute('data-publication-status', status);
 
             DexV2('.mainmodule > div:nth-child(2)').nodes[0].style.removeProperty('width');
             DexV2('.mainmodule > div:nth-child(2)').nodes[0].style.removeProperty('left');
@@ -3038,6 +3046,18 @@ var DX_app = {
                 DexV2.class('side-panel-pin').trigger('click');
                 DexV2('#JahiaGxtSidePanelTabs .x-tab-strip-active').trigger('mousedown').trigger('mouseup');
 
+            }
+
+            // Check if V8, if so need to open and pin the pages panel
+            if(anthraciteV8){
+                if(DexV2.getCached("body").getAttribute("data-indigo-sidepanel-pinned") == "true"){
+                } else {
+                    DexV2("body").onceOpen("#JahiaGxtSidePanelTabs__JahiaGxtPagesTab", function(){
+                        DexV2("#JahiaGxtSidePanelTabs__JahiaGxtPagesTab").trigger("mouseup");
+                        DexV2.class("side-panel-pin").trigger("click");
+                    }, "SET_UP_V8")
+
+                }
             }
         },
         /**
@@ -3472,7 +3492,7 @@ var DX_app = {
                             // No Select
 
                             if(boxes.title){
-                                if (elements.refreshButton) {
+                                if (elements.refreshButton && !anthraciteV8) {
                                     elements.refreshButton.style.left = (boxes.title.left + boxes.title.width) + 'px';
                                 }
 
@@ -3498,7 +3518,10 @@ var DX_app = {
                             elements.publishButton.setAttribute('data-publication-status', DX_app.iframe.data.publication.status);
                         }
 
+                        DexV2.getCached('body').setAttribute('data-publication-status', DX_app.iframe.data.publication.status);
+
                         if (DexV2.class('publication-status').exists()) {
+                            DexV2.class("publication-status-code").setHTML(DX_app.dictionary(DX_app.iframe.data.publication.status));
                             DexV2.class("publication-status-path").setHTML(DexV2.getCached('body').getAttribute('data-main-node-path'));
                             DexV2.class("publication-status-label").setHTML(jahia_gwt_messages["label_publication_" + DX_app.iframe.data.publication.status]);
                             DexV2.class('publication-status').setAttribute('data-publication-status', DX_app.iframe.data.publication.status);
@@ -3506,7 +3529,7 @@ var DX_app = {
                     } else {
                         if(document.getElementsByClassName('edit-menu-publication')[0]){
                             document.getElementsByClassName('edit-menu-publication')[0].style.display = 'none';
-                            
+
                         }
                     }
                 }
@@ -3701,10 +3724,11 @@ var DX_app = {
                     return splitterXPos || null;
                 }();
 
+                xPos = xPos + 9;
+
                 if (xPos == null || DexV2.getCached('body').getAttribute('data-indigo-gwt-side-panel') !== 'open') {
                     return false;
                 }
-
                 // Block the minimum and maximum widths of the side panel
                 if (xPos < 360) {
                     // Block at minimum width
@@ -3747,10 +3771,15 @@ var DX_app = {
 
                 } else if (DX_app.edit.sidepanel.data.pinned) {
                     // Edit Mode pinned
-                    mainFrameWidth = xPos + 6;
-                    mainFrameLeft = xPos + 45;
+                    if(anthraciteV8){
+                        mainFrameWidth = xPos - 69;
+                        mainFrameLeft = xPos;
+                    } else {
+                        mainFrameWidth = xPos + 6;
+                        mainFrameLeft = xPos + 45;
+                    }
 
-                    if (DexV2.class('publication-status').exists()) {
+                    if (DexV2.class('publication-status').exists() && !anthraciteV8) {
                         DexV2.class('publication-status').nodes[0].style.setProperty('left', mainFrameLeft + 'px', 'important');
                     }
 
@@ -3763,14 +3792,21 @@ var DX_app = {
                     }
 
                     if (DexV2.class('node-path-text').exists()) {
-                        DexV2.class('node-path-text').nodes[0].style.setProperty('max-width', 'calc(100vw - ' + (mainFrameLeft + 60 + 380) + 'px)', 'important');
+                        var titleWidth = (anthraciteV8) ? mainFrameLeft + 250 : mainFrameLeft + 440;
+                        DexV2.class('node-path-text').nodes[0].style.setProperty('max-width', 'calc(100vw - ' + titleWidth + 'px)', 'important');
                     }
 
                     pageTitle = document.getElementsByClassName('x-current-page-path')[0];
                     pageTitleBox = (pageTitle) ? pageTitle.getBoundingClientRect() : null;
 
                     if (DexV2.class('window-actions-refresh').exists() && pageTitleBox) {
-                        DexV2.class('window-actions-refresh').nodes[0].style.setProperty('left', (pageTitleBox.left + pageTitleBox.width) + 'px', 'important');
+                        var refreshLeft = (anthraciteV8) ? xPos + 110 : pageTitleBox.left + pageTitleBox.width;
+                        console.log("HEY 1", anthraciteV8, refreshLeft);
+                        DexV2.class('window-actions-refresh').nodes[0].style.setProperty('left', refreshLeft + 'px', 'important');
+                    }
+
+                    if(DexV2.class("edit-menu-centertop").exists() && anthraciteV8){
+                        DexV2.class("edit-menu-centertop").nodes[0].style.setProperty('left', refreshLeft - 109 + 'px', 'important');
                     }
 
 
@@ -3793,7 +3829,8 @@ var DX_app = {
                     pageTitleBox = (pageTitle) ? pageTitle.getBoundingClientRect() : null;
 
                     if (DexV2.class('window-actions-refresh').exists() && pageTitleBox) {
-                        DexV2.class('window-actions-refresh').nodes[0].style.setProperty('left', (pageTitleBox.left + pageTitleBox.width) + 'px', 'important');
+                        var refreshLeft = (anthraciteV8) ? pageTitleBox.left + 90 : pageTitleBox.left + pageTitleBox.width;
+                        DexV2.class('window-actions-refresh').nodes[0].style.setProperty('left', refreshLeft + 'px', 'important');
                     }
                 }
 
@@ -3847,6 +3884,9 @@ var DX_app = {
 
                 // Move the split bar to the position of the mouse
                 if (DexV2.id('indigoSplitter').exists()) {
+                    if(anthraciteV8){
+                        xPos = xPos - 9;
+                    }
                     DexV2.id('indigoSplitter').nodes[0].style.setProperty('left', xPos + 'px', 'important');
                 }
             },

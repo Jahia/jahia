@@ -1,6 +1,6 @@
 /**
  * Contains localised strings used in the UI (EN, FR, DE)
- * @type {{DE: {metaLabel: string, cancel: string, optionsSingleSelection: string, "pickerTitle-imagepicker": *, multipleTasks: string, languageField: string, dateRange: string, dateCustom: string, ignoreMetadata: string, save: string, "pickerTitle-editoriallinkpicker": *, search: string, dateType: string, previewSingleSelection: string, singleTask: string, create: string, optionsMultipleSelection: string, "pickerTitle-portletmanager-anthracite": *, workflowType: string, sortBy: string, "pickerTitle-categorymanager-anthracite": *, "pickerTitle-sitemanager-anthracite": *, "pickerTitle-default": string, chooseWorkflowType: string, dateCustomLabel: string, autoRefresh: string, publishMultipleSelection: string, publishPage: string, optionsPage: string, "pickerTitle-repositoryexplorer-anthracite": *, jobs: string, toDate: string, filterContent: string, filterField: string, previewMultipleSelection: string, fromDate: string, previewPage: string, publishSingleSelection: string, "pickerTitle-filemanager-anthracite": *, backgroundJobs: string, dateAnyTime: string, zeroTasks: string, allMetadata: string, "pickerTitle-editorialcontentmanager-anthracite": *}, EN: {metaLabel: string, cancel: string, optionsSingleSelection: string, "pickerTitle-imagepicker": *, multipleTasks: string, languageField: string, dateRange: string, dateCustom: string, ignoreMetadata: string, save: string, "pickerTitle-editoriallinkpicker": *, search: string, dateType: string, previewSingleSelection: string, singleTask: string, create: string, optionsMultipleSelection: string, "pickerTitle-portletmanager-anthracite": *, workflowType: string, sortBy: string, "pickerTitle-categorymanager-anthracite": *, "pickerTitle-sitemanager-anthracite": *, "pickerTitle-default": string, chooseWorkflowType: string, dateCustomLabel: string, autoRefresh: string, publishMultipleSelection: string, publishPage: string, optionsPage: string, "pickerTitle-repositoryexplorer-anthracite": *, jobs: string, toDate: string, filterContent: string, filterField: string, previewMultipleSelection: string, fromDate: string, previewPage: string, publishSingleSelection: string, "pickerTitle-filemanager-anthracite": *, backgroundJobs: string, dateAnyTime: string, zeroTasks: string, allMetadata: string, "pickerTitle-editorialcontentmanager-anthracite": *}, FR: {metaLabel: string, cancel: string, optionsSingleSelection: string, "pickerTitle-imagepicker": *, multipleTasks: string, languageField: string, dateRange: string, dateCustom: string, ignoreMetadata: string, save: string, "pickerTitle-editoriallinkpicker": *, search: string, dateType: string, previewSingleSelection: string, singleTask: string, create: string, optionsMultipleSelection: string, "pickerTitle-portletmanager-anthracite": *, workflowType: string, sortBy: string, "pickerTitle-categorymanager-anthracite": *, "pickerTitle-sitemanager-anthracite": *, "pickerTitle-default": string, chooseWorkflowType: string, dateCustomLabel: string, autoRefresh: string, publishMultipleSelection: string, publishPage: string, optionsPage: string, "pickerTitle-repositoryexplorer-anthracite": *, jobs: string, toDate: string, filterContent: string, filterField: string, previewMultipleSelection: string, fromDate: string, previewPage: string, publishSingleSelection: string, "pickerTitle-filemanager-anthracite": *, backgroundJobs: string, dateAnyTime: string, zeroTasks: string, allMetadata: string, "pickerTitle-editorialcontentmanager-anthracite": *}}}
+ * @type {{DE: {metaLabel: string, cancel: string, optionsSingleSelection: string, 'pickerTitle-imagepicker': *, multipleTasks: string, languageField: string, dateRange: string, dateCustom: string, ignoreMetadata: string, save: string, 'pickerTitle-editoriallinkpicker': *, search: string, dateType: string, previewSingleSelection: string, singleTask: string, create: string, optionsMultipleSelection: string, 'pickerTitle-portletmanager-anthracite': *, workflowType: string, sortBy: string, 'pickerTitle-categorymanager-anthracite': *, 'pickerTitle-sitemanager-anthracite': *, 'pickerTitle-default': string, chooseWorkflowType: string, dateCustomLabel: string, autoRefresh: string, publishMultipleSelection: string, publishPage: string, optionsPage: string, 'pickerTitle-repositoryexplorer-anthracite': *, jobs: string, toDate: string, filterContent: string, filterField: string, previewMultipleSelection: string, fromDate: string, previewPage: string, publishSingleSelection: string, 'pickerTitle-filemanager-anthracite': *, backgroundJobs: string, dateAnyTime: string, zeroTasks: string, allMetadata: string, 'pickerTitle-editorialcontentmanager-anthracite': *}, EN: {metaLabel: string, cancel: string, optionsSingleSelection: string, 'pickerTitle-imagepicker': *, multipleTasks: string, languageField: string, dateRange: string, dateCustom: string, ignoreMetadata: string, save: string, 'pickerTitle-editoriallinkpicker': *, search: string, dateType: string, previewSingleSelection: string, singleTask: string, create: string, optionsMultipleSelection: string, 'pickerTitle-portletmanager-anthracite': *, workflowType: string, sortBy: string, 'pickerTitle-categorymanager-anthracite': *, 'pickerTitle-sitemanager-anthracite': *, 'pickerTitle-default': string, chooseWorkflowType: string, dateCustomLabel: string, autoRefresh: string, publishMultipleSelection: string, publishPage: string, optionsPage: string, 'pickerTitle-repositoryexplorer-anthracite': *, jobs: string, toDate: string, filterContent: string, filterField: string, previewMultipleSelection: string, fromDate: string, previewPage: string, publishSingleSelection: string, 'pickerTitle-filemanager-anthracite': *, backgroundJobs: string, dateAnyTime: string, zeroTasks: string, allMetadata: string, 'pickerTitle-editorialcontentmanager-anthracite': *}, FR: {metaLabel: string, cancel: string, optionsSingleSelection: string, 'pickerTitle-imagepicker': *, multipleTasks: string, languageField: string, dateRange: string, dateCustom: string, ignoreMetadata: string, save: string, 'pickerTitle-editoriallinkpicker': *, search: string, dateType: string, previewSingleSelection: string, singleTask: string, create: string, optionsMultipleSelection: string, 'pickerTitle-portletmanager-anthracite': *, workflowType: string, sortBy: string, 'pickerTitle-categorymanager-anthracite': *, 'pickerTitle-sitemanager-anthracite': *, 'pickerTitle-default': string, chooseWorkflowType: string, dateCustomLabel: string, autoRefresh: string, publishMultipleSelection: string, publishPage: string, optionsPage: string, 'pickerTitle-repositoryexplorer-anthracite': *, jobs: string, toDate: string, filterContent: string, filterField: string, previewMultipleSelection: string, fromDate: string, previewPage: string, publishSingleSelection: string, 'pickerTitle-filemanager-anthracite': *, backgroundJobs: string, dateAnyTime: string, zeroTasks: string, allMetadata: string, 'pickerTitle-editorialcontentmanager-anthracite': *}}}
  */
 
 var DX_localisedStrings = {
@@ -52,7 +52,24 @@ var DX_localisedStrings = {
         'pickerTitle-portletmanager-anthracite': jahia_gwt_messages.label_portletmanager_title,
         'pickerTitle-repositoryexplorer-anthracite': jahia_gwt_messages.label_repositoryexplorer_title,
         'pickerTitle-categorymanager-anthracite': jahia_gwt_messages.label_categorymanager_title,
-        'pickerTitle-sitemanager-anthracite': jahia_gwt_messages.label_sitemanager_title
+        'pickerTitle-sitemanager-anthracite': jahia_gwt_messages.label_sitemanager_title,
+
+        'conflict': 'Conflict',
+    	'deleted': 'Deleted',
+    	'livemodified': 'Live Modified',
+    	'liveonly': 'Live Only',
+    	'locked': 'Locked',
+    	'mandatorylanguageunpublishable': 'Publish error',
+    	'mandatorylanguagevalid': 'Publish error',
+    	'markedfordeletion': 'Marked for deletion',
+    	'modified': 'Modified',
+    	'multipleWF': '???',
+    	'notpublished': 'Not published',
+    	'oneWF': '???',
+    	'published': 'Published',
+    	'unpublished': 'Not published',
+    	'waiting': 'Waiting',
+    	'workinprogress': 'Work in progress',
     },
     EN: {
         'autoRefresh': 'Auto refresh',
@@ -102,7 +119,24 @@ var DX_localisedStrings = {
         'pickerTitle-portletmanager-anthracite': jahia_gwt_messages.label_portletmanager_title,
         'pickerTitle-repositoryexplorer-anthracite': jahia_gwt_messages.label_repositoryexplorer_title,
         'pickerTitle-categorymanager-anthracite': jahia_gwt_messages.label_categorymanager_title,
-        'pickerTitle-sitemanager-anthracite': jahia_gwt_messages.label_sitemanager_title
+        'pickerTitle-sitemanager-anthracite': jahia_gwt_messages.label_sitemanager_title,
+
+        'conflict': 'Conflict',
+    	'deleted': 'Deleted',
+    	'livemodified': 'Live Modified',
+    	'liveonly': 'Live Only',
+    	'locked': 'Locked',
+    	'mandatorylanguageunpublishable': 'Publish error',
+    	'mandatorylanguagevalid': 'Publish error',
+    	'markedfordeletion': 'Marked for deletion',
+    	'modified': 'Modified',
+    	'multipleWF': '???',
+    	'notpublished': 'Not published',
+    	'oneWF': '???',
+    	'published': 'Published',
+    	'unpublished': 'Not published',
+    	'waiting': 'Waiting',
+    	'workinprogress': 'Work in progress',
     },
     FR: {
         'autoRefresh': 'Rafraîchissement automatique',
@@ -152,6 +186,23 @@ var DX_localisedStrings = {
         'pickerTitle-portletmanager-anthracite': jahia_gwt_messages.label_portletmanager_title,
         'pickerTitle-repositoryexplorer-anthracite': jahia_gwt_messages.label_repositoryexplorer_title,
         'pickerTitle-categorymanager-anthracite': jahia_gwt_messages.label_categorymanager_title,
-        'pickerTitle-sitemanager-anthracite': jahia_gwt_messages.label_sitemanager_title
+        'pickerTitle-sitemanager-anthracite': jahia_gwt_messages.label_sitemanager_title,
+
+        'conflict': 'Conflict',
+    	'deleted': 'Deleted',
+    	'livemodified': 'Live Modified',
+    	'liveonly': 'Live Only',
+    	'locked': 'Locked',
+    	'mandatorylanguageunpublishable': 'Publish error',
+    	'mandatorylanguagevalid': 'Publish error',
+    	'markedfordeletion': 'Marked for deletion',
+    	'modified': 'Modified',
+    	'multipleWF': '???',
+    	'notpublished': 'Not published',
+    	'oneWF': '???',
+    	'published': 'Published',
+    	'unpublished': 'Not published',
+    	'waiting': 'Waiting',
+    	'workinprogress': 'Work in progress',
     }
 };

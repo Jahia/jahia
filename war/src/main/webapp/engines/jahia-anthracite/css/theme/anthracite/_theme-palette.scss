@@ -1,8 +1,8 @@
+
 /****************************/
-/* BASE COLORS  */
+/* BASE COLORS (PRIVATE TO THIS FILE)  */
 /****************************/
 
-// DEFAULT ANTRACITE GREY
 $color-primary: #363636; // #363636 (NEW GREY)
 $color-secondary: rgb(250, 250, 250); // #FAFAFA (WHITE)
 $color-tertiary: #007cb0; // #00a0e3 (JAHIA BLUE) - action colors
@@ -16,7 +16,7 @@ $color-green: rgb(4, 189, 4);
 
 
 /****************************/
-/* COLOR VARIATIONS  */
+/* EXPOSED COLORS  */
 /****************************/
 
 $colors: (
@@ -63,8 +63,7 @@ $colors: (
         ),
         "septenary": (
                 normal: $color-septenary,
-                a: lighten($color-septenary, 5%),
-                b: darken($color-septenary, 20%),
+                a: darken($color-septenary, 20%),
         ),
         "black": (
                 normal: $color-black,

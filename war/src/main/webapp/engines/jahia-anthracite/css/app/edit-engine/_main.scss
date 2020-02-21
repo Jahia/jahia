@@ -181,8 +181,9 @@ div.engine-window {
             top: 0;
             left: 0;
             position: fixed;
-            box-shadow: 0px 2px 12px 0px rgba(58, 58, 58, 0.4);
-            background: linear-gradient(to right bottom, #F5F5F5 50%, #e5e4e4 100%);
+            box-shadow: _theme($EDIT_ENGINE--SIDEPANEL---SHADOW, $EDIT-ENGINE-SIDEPANEL);
+            background: _theme($EDIT_ENGINE--SIDEPANEL---BG, $EDIT-ENGINE-SIDEPANEL);
+            border-right: _theme($EDIT_ENGINE--SIDEPANEL---BORDER, $EDIT-ENGINE-SIDEPANEL);
             z-index: 99;
 
             .x-tab-strip-wrap {
@@ -270,7 +271,7 @@ div.engine-window {
                             display: inline-block !important;
                             width: auto !important;
                             position: relative;
-                            color: _color("septenary", b);
+                            color: _color("septenary", a);
 
                             img {
                                 position: absolute;
@@ -300,7 +301,7 @@ div.engine-window {
                             display: inline-block !important;
                             width: auto !important;
                             position: relative;
-                            color: _color("septenary", b);
+                            color: _color("septenary", a);
 
                             img {
                                 position: absolute;
@@ -392,7 +393,7 @@ div.engine-window {
         content: _dictionary("edit_engine");
         font-size: 36px;
         display: inline-block;
-        color: _theme($TITLE--COLOR, $EDIT-ENGINE);
+        color: _theme($TITLE--COLOR, $EDIT-ENGINE-SIDEPANEL);
         margin-left: -2px;
         margin-right: 15px;
         margin-top: 15px;
@@ -539,25 +540,25 @@ div.engine-window {
         // At last the button label !!
         padding: 5px 0 5px 8px;
 
-        @include text(_size("normal"), _theme($TAB--COLOR, $EDIT-ENGINE), _weight("light"));
+        @include text(_size("normal"), _theme($TAB--COLOR, $EDIT-ENGINE-SIDEPANEL), _weight("light"));
     }
 
     ////////// TAB OVER
     .x-tab-strip-over .x-tab-strip-text {
         // At last the button label !!
-        @include text(_size("normal"), _theme($TAB--COLOR---HOVER, $EDIT-ENGINE) !important, _weight("light"));
+        @include text(_size("normal"), _theme($TAB--COLOR---HOVER, $EDIT-ENGINE-SIDEPANEL) !important, _weight("light"));
     }
 
     ////////// TAB SELECTED
     .x-tab-strip-active .x-tab-strip-text {
         // At last the button label !!
-        @include text(_size("normal"), _theme($TAB--COLOR---SELECTED, $EDIT-ENGINE) !important, _weight("light"));
+        @include text(_size("normal"), _theme($TAB--COLOR---SELECTED, $EDIT-ENGINE-SIDEPANEL) !important, _weight("light"));
     }
 
     ////////// TAB SELECTED & HOVER
     .x-tab-strip-active.x-tab-strip-over .x-tab-strip-text {
         // At last the button label !!
-        @include text(_size("normal"), _theme($TAB--COLOR---SELECTED-HOVER, $EDIT-ENGINE) !important, _weight("light"));
+        @include text(_size("normal"), _theme($TAB--COLOR---SELECTED-HOVER, $EDIT-ENGINE-SIDEPANEL) !important, _weight("light"));
     }
 
     ////////// PERSONALISED TABS
@@ -755,7 +756,7 @@ div.engine-window {
                 text-overflow: ellipsis;
                 white-space: nowrap;
 
-                @include text(_size("medium") !important, _color("tertiary", normal), _weight("extralight"));
+                @include text(_size("medium") !important, _theme($SUBTITLE--ACCENT, $EDIT-ENGINE-SIDEPANEL), _weight("extralight"));
             }
 
             // Add Locked icon if the node has been locked

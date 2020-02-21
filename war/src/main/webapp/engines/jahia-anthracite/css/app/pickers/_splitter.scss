@@ -11,13 +11,13 @@ body[indigo-dragging-panel="true"] {
 
 
 #indigoSplitter {
-    width: 16px;
+    width: $SPLITTER--WIDTH;
     height: 100%;
     position: fixed;
     left: 0;
     top: 0;
     z-index: 1000;
-    background: url( _icon("splitter", "grey")) no-repeat center right 6px transparent; /* OPTIMISE URL ::: css/app/pickers/_splitter.scss ::: 1 */
+    background: $SPLITTER--BG; /* OPTIMISE URL ::: css/app/pickers/_splitter.scss ::: 1 */
     background-size: 5px 10px;
     border-left: 1px solid transparent;
     display: block;
@@ -31,12 +31,12 @@ body[indigo-dragging-panel="true"] {
 
     body[data-indigo-gwt-side-panel="open"][data-sitesettings="false"] & {
         margin-left: -17px;
-        opacity: 1;
+        opacity: 0.7;
     }
 
     body[data-indigo-gwt-side-panel="open"][data-sitesettings="true"] & {
         margin-left: -17px;
-        opacity: 1;
+        opacity: 0.7;
     }
 
     body[data-sitesettings="true"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"]:not([data-indigo-app="admin"]) &,
@@ -58,7 +58,8 @@ body[indigo-dragging-panel="true"] {
 
     &:hover {
         cursor: ew-resize;
-        background-color: #e8ebed;
+        background-color: _theme($SPLITTER--BG---HOVER, $SIDE-PANEL);
+        opacity: 1!important;
     }
 
     &.move-east-only:hover {

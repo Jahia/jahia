@@ -7,11 +7,6 @@ $TITLE--COLOR: (
         DARK: _color("secondary"),
 );
 
-$SIDE-PANEL-TITLE--COLOR: (
-        LIGHT: _color("secondary"),
-        DARK: _color("primary"),
-);
-
 
 /****************************/
 /* SUBTITLE */
@@ -22,6 +17,10 @@ $SUBTITLE--COLOR: (
         DARK: _color("secondary", d),
 );
 
+$SUBTITLE--ACCENT: (
+        LIGHT: _color("tertiary", a),
+        DARK: _color("secondary", a),
+);
 
 /****************************/
 /* PARAGRAPH */

@@ -1,0 +1,13 @@
+/****************************/
+/* SCROLL BARS */
+/****************************/
+
+$SCROLL--SHUTTLE: (
+        LIGHT: _color("primary", d),
+        DARK: _color("primary", d),
+);
+
+$SCROLL--SHUTTLE---HOVER: (
+        LIGHT: _color("primary"),
+        DARK: _color("primary"),
+);

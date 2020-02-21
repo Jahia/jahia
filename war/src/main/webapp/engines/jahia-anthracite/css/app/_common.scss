@@ -63,7 +63,7 @@ body {
     transition: _transition("all", "quick");
 
     &[data-channel] {
-        box-shadow: inset 0px -120px 260px #343638;
+        box-shadow: $EDIT-MODE--CHANNEL---BG;
     }
 
     // DELETE START ::: Check if this can be deleted ...

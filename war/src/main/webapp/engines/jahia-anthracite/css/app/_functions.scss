@@ -9,12 +9,26 @@
     @return unquote($property) $speed-in ease-in $speed-delay;
 };
 
-@function _theme($variable, $context) {
-    @return map-get($variable, $context);
+@function _theme($variable, $context: "NOT_MAP") {
+    $property: $variable;
+
+    @if($context != "NOT_MAP"){
+        $property: map-get($variable, $context);
+
+    }
+
+    @return $property
 }
 
 @function _color($color-name, $color-variant: normal) {
     $color_map: map-get($colors, $color-name);
+    $color: map-get($color_map, $color-variant);
+
+    @return $color;
+}
+
+@function _moonstone-color($color-name, $color-variant: 100) {
+    $color_map: map-get($moonstone-colors, $color-name);
     $color: map-get($color_map, $color-variant);
 
     @return $color;

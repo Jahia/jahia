@@ -1,0 +1,14 @@
+$SPLITTER--ICON---UP: (
+    LIGHT: _icon("splitter", "grey"),
+    DARK: _icon("splitter", "white"),
+);
+
+$SPLITTER--BG---UP: (
+    LIGHT: transparent,
+    DARK: transparent,
+);
+
+$SPLITTER--BG---HOVER: (
+    LIGHT: _color("secondary", b),
+    DARK: _color("primary", h),
+);

@@ -5,6 +5,27 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 /////////////////////////////////////////////////
 
 $icons: (
+    "multipleSelect": (
+        "white": "../images/icons/multiple_selection@2x.png",
+        "grey": "../images/icons/multiple_selection-grey@2x.png",
+    ),
+    "publish": (
+        "white": "../images/icons_light/cloud-upload.svg",
+        "black": "../images/icons_dark/cloud-upload.svg",
+    ),
+    "download": (
+        "white": "../images/icons_light/cloud-download.svg",
+        "black": "../images/icons_dark/cloud-download.svg",
+    ),
+    "cache": (
+        "white": "../images/icons_light/cache.svg",
+        "grey": "../images/icons_grey/cache.svg",
+        "black": "../images/icons_dark/cache.svg",
+    ),
+    "virtualSite": (
+        "white": "../images/icons/tabs-site-white@X2.png",
+        "grey": "../images/icons/tabs-site-dark@X2.png",
+    ),
     "warning": (
         "white": "../images/icons/ic_warning@2x.png",
     ),
@@ -30,6 +51,7 @@ $icons: (
     ),
     "splitter": (
         "grey": "../images/icons/splitter@X2.png",
+        "white": "../images/icons/splitter-white@X2.png",
     ),
     "displayThumbs": (
         "white": "../images/icons/icon_display_thumb_white_small@X2.png",
@@ -47,9 +69,18 @@ $icons: (
         "white": "../images/icons/icon-publication-launcher.png",
         "grey": "../images/icons/icon-publication-launcher-grey.png",
     ),
+    "reload": (
+        "white": "../images/icons_light/refresh.svg",
+        "grey": "../images/icons_grey/refresh.svg",
+    ),
     "preview": (
         "white": "../images/icons/icon_preview_small_white.png",
         "grey": "../images/icons/icon_preview_small_grey.png",
+    ),
+    "visibility":(
+        "white": "../images/icons_white/visibility.svg",
+        "grey": "../images/icons_grey/visibility.svg",
+        "black": "../images/icons_dark/visibility.svg",
     ),
     "ckeditor": (
         "white": "../images/icons/icons-cke.png",
@@ -79,6 +110,7 @@ $icons: (
     "arrowDown": (
         "white": "../images/icons/combo-arrow.png",
         "grey": "../images/icons/combo-arrow-grey.png",
+        "black": "../images/expanded-black.png",
     ),
     "arrowExpand": (
         "grey": "../images/icons/icon-expand-side-bar.png",
@@ -197,62 +229,15 @@ $icons: (
         "white": "../images/dx_logo_inverted.png",
         "black": "../images/dx_logo_solid-black.png",
         "blue": "../images/dx_logo_solid.png",
+    ),
+    "jahiaLogo": (
+        "black": "../images/dx_solid.png",
+    ),
+    "jahiaLogoSmall": (
+        "black": "../images/dx_solid_small.png",
+    ),
+    "jcontent": (
+        "white": "../images/icons_light/jContent.svg",
+        "black": "../images/icons_dark/jContent.svg",
     )
-
-);
-
-
-
-
-
-/////////////////////////////////////////////////
-// FONT FAMILIES ////////////////////////////////
-/////////////////////////////////////////////////
-
-$fonts: (
-    "nunito": '"Nunito Sans", sans-serif',
-    "raleway": '"Raleway", sans-serif',
-);
-
-
-/////////////////////////////////////////////////
-// FONT WEIGHTS /////////////////////////////////
-/////////////////////////////////////////////////
-
-$weights: (
-    "extralight": 100,
-    "semilight": 200,
-    "light": 300,
-    "normal": 400,
-    "semibold": 500,
-    "bold": 700,
-    "extrabold": 800,
-);
-
-
-
-/////////////////////////////////////////////////
-// SIZES ////////////////////////////////////////
-/////////////////////////////////////////////////
-
-$sizes: (
-    "tiny": 9px,
-    "small": 12px,
-    "normal": 14px,
-    "medium": 18px,
-    "big": 36px,
-);
-
-
-/////////////////////////////////////////////////
-// TRANSITIONS //////////////////////////////////
-/////////////////////////////////////////////////
-
-$speeds: (
-    "immediate": 0,
-    "quickest": 0.1,
-    "quicker": 0.15,
-    "quick": 0.2,
-    "normal": 0.3,
-    "slow": 0.5
 );

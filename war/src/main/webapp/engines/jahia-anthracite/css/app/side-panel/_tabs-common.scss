@@ -22,7 +22,8 @@
         box-sizing: border-box;
         display: none;
         position: relative;
-        padding-left: 19px;
+        padding: _theme($TAB--PADDING);
+        box-shadow: _theme($TAB-BOX-SHADOW);
 
         body[data-indigo-gwt-side-panel="open"] & {
             display: block;
@@ -40,16 +41,19 @@
 
     &::before {
         content: _dictionary("site_settings");
-        @include text(33px, _theme($TITLE--COLOR, $SIDE-PANEL), _weight("extralight"));
+        @include text(_theme($SIDE-PANEL--TITLE--SIZE), _theme($TITLE--COLOR, $SIDE-PANEL), _theme($SIDE-PANEL--TITLE--WEIGHT));
         display: block;
         margin: 22px 0 30px -15px;
         transition: _transition("all", "quick");
-        font-size: 30px;
         line-height: 47px;
         letter-spacing: -0.5px;
 
         body[data-indigo-gwt-side-panel="open"] & {
-            margin: 26px 0 30px 1px;
+            margin: _theme($SIDE-PANEL--HEADER---MARGIN);
+            border-top: _theme($SIDE-PANEL--DIVIDER);
+            border-bottom: _theme($SIDE-PANEL--DIVIDER);
+            padding: _theme($SIDE-PANEL--HEADER---PADDING);
+            background: _theme($SIDE-PANEL--HEADER---BG);
         }
 
         body[data-indigo-gwt-side-panel="open"][data-indigo-app="edit"] & {

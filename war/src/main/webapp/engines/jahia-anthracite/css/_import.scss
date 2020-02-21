@@ -1,6 +1,8 @@
+$theme: "anthracite";
+
 @import "app/functions";
 @import "app/zindexes";
-@import "theme/import";
+@import "theme/anthracite/import";
 @import "components/import";
 
 @import "app/common";

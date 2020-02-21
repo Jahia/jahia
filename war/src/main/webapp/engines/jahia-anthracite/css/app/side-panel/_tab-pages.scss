@@ -18,7 +18,7 @@
         border-radius: 2px;
         position: relative;
         right: -8px;
-        top: 1px;
+        top: calc(#{$ROW--HEIGHT}/2 - 12px);
         background-size: 16px;
 
         > img {
@@ -44,6 +44,7 @@
         height: 27px;
         opacity: 0.8;
         background-position: center top 3px;
+        display: _theme($TAB--ICONS---DISPLAY);
 
         // Default
         &:not([src$="/jnt_page.png"]):not([src$="/jnt_virtualsite.png"]):not([src$="/jnt_nodeLink.png"]):not([src$="/jnt_externalLink.png"]):not([src$="/jnt_navMenuText.png"]) { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-pages.scss ::: 1 */
@@ -55,12 +56,12 @@
         }
 
         &[src$="/jnt_page.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-pages.scss ::: 2 */
-            background-image: url(_icon("pages", "grey"));
+            background-image: url(_theme($SIDE-PANEL-TAB--PAGES-ICON--UP, $SIDE-PANEL));
             background-size: 20px;
         }
 
         &[src$="/jnt_virtualsite.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-pages.scss ::: 3 */
-            background-image: url(../images/icons/tabs-site-dark@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-pages.scss ::: 1 */
+            background-image: url(_theme($SIDE-PANEL-TAB--VIRTUALSITES-ICON--UP, $SIDE-PANEL)); /* OPTIMISE URL ::: css/app/side-panel/_tab-pages.scss ::: 1 */
         }
 
         // Internal link
@@ -82,7 +83,7 @@
     .x-grid3-row-selected {
         .x-tree3-node-icon {
             &[src$="/jnt_page.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-pages.scss ::: 7 */
-                background-image: url(_icon("pages", "white"));
+                background-image: url(_theme($SIDE-PANEL-TAB--PAGES-ICON--SELECTED, $SIDE-PANEL));
                 opacity: 1;
                 background-position: center;
             }

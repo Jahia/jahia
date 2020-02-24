@@ -5,6 +5,7 @@
   "main": "gulpfile.js",
   "dependencies": {
     "gulp-watch": "^5.0.1",
+    "jsdoc": "^3.6.3",
     "yarn": "^1.17.3"
   },
   "devDependencies": {
@@ -23,8 +24,9 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "gulp generate",
-    "watch": "gulp watch"
+    "build": "gulp generate && yarn generate:jsdoc",
+    "watch": "gulp watch",
+    "generate:jsdoc": "jsdoc -c jsdoc-conf.json"
   },
   "author": "",
   "license": "ISC"

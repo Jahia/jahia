@@ -11,11 +11,27 @@ const gutil = require('gulp-util');
 const anthraciteRootDir = 'src/main/webapp/engines/jahia-anthracite';
 const anthraciteJsDir = anthraciteRootDir + '/js';
 const jsFiles = [
-    anthraciteJsDir + '/dependencies.js',
-    anthraciteJsDir + '/methods.js',
-    anthraciteJsDir + '/eventListeners.js',
-    anthraciteJsDir + '/localisedString.js',
-    anthraciteJsDir + '/edit.js'];
+    anthraciteJsDir + '/dependencies/polyfills.js',
+    anthraciteJsDir + '/dependencies/jGet.js',
+    anthraciteJsDir + '/Anthracite.js',
+    anthraciteJsDir + '/contextMenus.js',
+    anthraciteJsDir + '/backgroundJobs.js',
+    anthraciteJsDir + '/picker.js',
+    anthraciteJsDir + '/imagePreview.js',
+    anthraciteJsDir + '/engine.js',
+    anthraciteJsDir + '/workflow.js',
+    anthraciteJsDir + '/iframe.js',
+    anthraciteJsDir + '/admin.js',
+    anthraciteJsDir + '/modals.js',
+    anthraciteJsDir + '/dialog.js',
+    anthraciteJsDir + '/userPickers.js',
+    anthraciteJsDir + '/remote.js',
+    anthraciteJsDir + '/edit.js',
+    anthraciteJsDir + '/dashboard.js',
+    anthraciteJsDir + '/contribute.js',
+    anthraciteJsDir + '/localisedStrings.js',
+    anthraciteJsDir + '/listeners.js',
+    anthraciteJsDir + '/init.js'];
 const anthraciteJsDistDir = anthraciteJsDir + '/dist';
 
 gulp.task('concat', () => {

@@ -1,64 +1,32 @@
-// Polyfills
-if (!Element.prototype.matches) {
-    Element.prototype.matches =
-        Element.prototype.matchesSelector ||
-        Element.prototype.mozMatchesSelector ||
-        Element.prototype.msMatchesSelector ||
-        Element.prototype.oMatchesSelector ||
-        Element.prototype.webkitMatchesSelector ||
-        function (s) {
-            var matches = (this.document || this.ownerDocument).querySelectorAll(s),
-                i = matches.length;
-            while (--i >= 0 && matches.item(i) !== this) {}
-            return i > -1;
-        };
-}
+(function () {
 
-// Source: https://github.com/jserz/js_piece/blob/master/DOM/ParentNode/prepend()/prepend().md
-(function (arr) {
-    arr.forEach(function (item) {
-        if (item.hasOwnProperty('prepend')) {
-            return;
-        }
-        Object.defineProperty(item, 'prepend', {
-            configurable: true,
-            enumerable: true,
-            writable: true,
-            value: function prepend() {
-                var argArr = Array.prototype.slice.call(arguments),
-                    docFrag = document.createDocumentFragment();
 
-                argArr.forEach(function (argItem) {
-                    var isNode = argItem instanceof Node;
-                    docFrag.appendChild(isNode ? argItem : document.createTextNode(String(argItem)));
-                });
 
-                this.insertBefore(docFrag, this.firstChild);
-            }
-        });
-    });
-})([Element.prototype, Document.prototype, DocumentFragment.prototype]);
 
-(function (exposeAs) {
-
-    /**
-     * Returns a Dex Object with functions allowing us to manipulate nodes in nodelist
-     * @param selector
-     * @param nodes - optional, if not passed then the node list is built from the nodes matching the selector
-     * @returns {Dex.init|Dex}
-     * @constructor
-     */
-    var Dex = function (selector, nodes) {
-        return new Dex.fn.init(selector, nodes);
+     /**
+      * jGet is a small JavaScript Library enabling DOM traversal and manipulation. (To use jGet in this fashion please refer to {@link jGet.fn})
+      *
+      * Otherwise, here are some functions that do not require the use of selectors...
+      *
+      * @property {method} appendCSS Appends CSS file to header in <link> tag
+      * @property {method} class Returns a jGet object with elements matching the supplied classname
+      * @property {method} clearCache Removes a cached jGet Object
+      * @property {method} collection Build jGet object by converting a nodeCollection to a normal node list
+      * @property {method} dump Dumps a list of all event listeners created with jGet to the console panel
+      * @property {method} getCached Returns a cached jGet Object
+      * @property {method} id Returns a jGet object with an element matching the supplied ID
+      * @property {method} iframe Create a jGet Object with the iframes content document
+      * @property {method} node Return jGet object with the passed node
+      * @property {method} tag Returns a jGet object with a elements matching the supplied tag
+      * @property {object} fn Contains DOM manipulation methods <br> See {@link jGet.fn}
+      * @returns {jGet}
+      * @namespace jGet
+      */
+    var jGet = function (selector, nodes) {
+        return new jGet.fn.init(selector, nodes);
     };
 
-    Dex.fn = Dex.prototype = {
-        /**
-         * init
-         * @param selector
-         * @param nodes
-         * @returns {Dex}
-         */
+    jGet.fn = jGet.prototype = {
         init: function (selector, nodes) {
             this.selector = selector;
 
@@ -76,12 +44,6 @@ if (!Element.prototype.matches) {
     var cachedSelections = {};
     var delegatedEventListeners = {};
     var mutationObservers = {};
-    /**
-     * DOMMutationCallback
-     * @param mutations
-     * @param selector
-     * @constructor
-     */
     var DOMMutationCallback = function (mutations, selector) {
         var mutationRecord;
         var addedNode;
@@ -90,13 +52,6 @@ if (!Element.prototype.matches) {
         var callbacks;
         var modifiedSelector;
         var groupedCallbacks;
-        /**
-         * executeCallbacks
-         * @param queue
-         * @param node
-         * @param arg1
-         * @param arg2
-         */
         var executeCallbacks = function (queue, node, arg1, arg2) {
             for (var mutation_id in queue) {
                 // Call callback function
@@ -107,13 +62,6 @@ if (!Element.prototype.matches) {
                 }
             }
         };
-        /**
-         * executeAttributecallbacks
-         * @param queue
-         * @param node
-         * @param attrKey
-         * @param attrValue
-         */
         var executeAttributecallbacks = function (queue, node, attrKey, attrValue) {
             for (var mutation_id in queue) {
                 if (queue[mutation_id].attrKey == attrKey) {
@@ -367,26 +315,12 @@ if (!Element.prototype.matches) {
     };
 
     var eventListenerCounter = 0;
-    /**
-     * generateListenerID
-     * @returns {string}
-     */
     var generateListenerID = function () {
         eventListenerCounter++;
         return 'EVENT_ID_' + eventListenerCounter;
     };
-    /**
-     * Registers an event listener and sends it to attachEventListeners() for the actual creation
-     *
-     * @param dexObject - object to which the event listener is attached
-     * @param eventType - change|input|focusin|focusout|click|mouseup|mousedown|mouseenter|mouseleave|mouseover|mouseout
-     * @param selector -
-     * @param target
-     * @param callback - function to execute when the event triggers
-     * @param persistant - if set to false, then the event listener is removed once first executed
-     * @param event_id - a unique ID to identify the event listener ( needed to allow us to remove it when neccessary )
-     */
-    var createEventListener = function (dexObject, eventType, selector, target, callback, persistant, event_id) {
+
+    var createEventListener = function (jGetObject, eventType, selector, target, callback, persistant, event_id) {
         // Check that the event type exists in queue
         if (!delegatedEventListeners[eventType]) {
             delegatedEventListeners[eventType] = {};
@@ -398,7 +332,7 @@ if (!Element.prototype.matches) {
         }
 
         // Setup listener
-        attachEventListeners(eventType, dexObject);
+        attachEventListeners(eventType, jGetObject);
 
         // Check that this target is registered
         if (!delegatedEventListeners[eventType][selector][target]) {
@@ -411,18 +345,14 @@ if (!Element.prototype.matches) {
             persistant: persistant
         };
     };
-    /**
-     * Actually creates and add the event listener
-     * @param eventType
-     * @param dexObject
-     */
-    var attachEventListeners = function (eventType, dexObject) {
+
+    var attachEventListeners = function (eventType, jGetObject) {
         var selector = {
-            string: dexObject.selector
+            string: jGetObject.selector
         };
 
-        for (var n = 0; n < dexObject.nodes.length; n++) {
-            selector.node = dexObject.nodes[n];
+        for (var n = 0; n < jGetObject.nodes.length; n++) {
+            selector.node = jGetObject.nodes[n];
 
             if (!selector.node.indigo) {
                 selector.node.indigo = {
@@ -459,44 +389,159 @@ if (!Element.prototype.matches) {
         }
     };
 
+    /**
+     * jGet allows us to select element(s) in the DOM and manipulate them.
+     *
+     * Here is a list of methods that can be executed on a set of elements that match the supplied selector
+     * @version 8.0
+     * @property {method} addClass Add class to all matched elements
+     * @property {method} append Append the passed node to all matching elements
+     * @property {method} appendClone Appends a clone of the passed node to all matching elements
+     * @property {method} cache Cache matched elements with cacheID as UID
+     * @property {method} clone Clone all matching elements and return as jGet object
+     * @property {method} closest Traverse up through the DOM tree until the matchSelector is found and return it as a jGet object
+     * @property {method} css Set CSS of all matched elements
+     * @property {method} customTrigger Trigger custom event on all matched elements
+     * @property {method} each Apply the callback to all matched elements
+     * @property {method} exists Check if there is at least one matched element
+     * @property {method} filter Filter the first matched element with the passed selector and return as jGet object
+     * @property {method} first Reduce matched elements to the first in the list
+     * @property {method} getAttribute Get attribute of first matched elements
+     * @property {method} getHTML Get innerHTML of first matched element
+     * @property {method} getNode Return the HTML node at the specified index
+     * @property {method} hasClass Check whether first matched element contains classname
+     * @property {method} index Remove all matched elements except the one at the specified index
+     * @property {method} onAttribute Attach listeners to matched elements that execute whenever their specified attribute changes (create, modify or remove)
+     * @property {method} onBlur Callback executed when matched elements lose focus
+     * @property {method} onceAttribute Attach listeners to matched elements that execute whenever their specified attribute changes (create, modify or remove)
+     * @property {method} onceClose Attach listeners to matched elements that execute execute when they are removed from the DOM
+     * @property {method} onceGroupClose Attach listeners to matched elements that execute execute when they are removed from the DOM
+     * @property {method} onceGroupOpen Attach listeners to matched elements that execute execute when they are added to the DOM
+     * @property {method} onceOpen Attach listeners to matched elements that execute when they are added to the DOM
+     * @property {method} onChange Callback executed when matched \<input> elements value changes
+     * @property {method} onClick Callback executed when the matched elements are clicked
+     * @property {method} onClose Attach listeners to matched elements that execute execute when they are removed from the DOM
+     * @property {method} oneClick Callback executed when the matched elements are clicked
+     * @property {method} oneMouseDown Callback executed when the mouse is pressed on matched elements
+     * @property {method} oneMouseEnter Callback executed when the mouse enters the matched elements
+     * @property {method} oneMouseLeave Callback executed when the mouse leaves the matched elements
+     * @property {method} oneMouseOut Callback executed when the mouse moves out of the matched elements
+     * @property {method} oneMouseOver Callback executed when the mouse moves over the matched elements
+     * @property {method} oneMouseUp Callback executed when the mouse is released on matched elements
+     * @property {method} onFocus Callback executed when matched elements receive focus
+     * @property {method} onGroupClose Attach listeners to matched elements that execute execute when they are removed from the DOM
+     * @property {method} onGroupOpen Attach listeners to matched elements that execute execute when they are added to the DOM
+     * @property {method} onInput Callback executed when the matched \<input> elements receive input
+     * @property {method} onKeyDown Callback executed when key is pressed down on matched \<input> elements
+     * @property {method} onKeyPress Callback executed whilst key is pressed on matched \<input> elements
+     * @property {method} onKeyUp Callback executed when key is released on matched \<input> elements
+     * @property {method} onMouseDown Callback executed when the mouse is pressed on matched elements
+     * @property {method} onMouseEnter Callback executed when the mouse enters the matched elements
+     * @property {method} onMouseLeave Callback executed when the mouse leaves the matched elements
+     * @property {method} onMouseOut Callback executed when the mouse moves out of the matched elements
+     * @property {method} onMouseOver Callback executed when the mouse moves over the matched elements
+     * @property {method} onMouseUp Callback executed when the mouse is released on matched elements
+     * @property {method} onMutation Used by jGet
+     * @property {method} onOpen Attach listeners to matched elements that execute when they are added to the DOM
+     * @property {method} parent Get the parent node of the first matched element and return as jGet object
+     * @property {method} prepend Prepend the passed node to all matching elements
+     * @property {method} remove Remove all matching elements from the DOM
+     * @property {method} removeClass Remove class from all matched elements
+     * @property {method} replaceClass Replace old_classname with new_classname on all matched elements
+     * @property {method} setAttribute Set attribute of all matched elements
+     * @property {method} setHTML Set innerHTML of all matched elements
+     * @property {method} toggleAttribute Toggle the attributes of all matched elements
+     * @property {method} toggleClass Toggle classnames on all matched elements
+     * @property {method} trigger Trigger event on all matched elements
+     * @namespace jGet.fn
+     */
     // EXPOSED SELECTOR FUNCTIONS
-    Dex.fn.init.prototype = {
-        /**
-         * Remove all nodes except first from node list
-         * @returns {Dex.fn.init}
-         */
+    jGet.fn.init.prototype = {
+         /**
+          * Reduce matched elements to the first in the list
+          * @memberof jGet.fn
+          * @namespace jGet.fn.first
+          * @method first
+          * @example
+          * var buttons = jGet(".myButton"); // matches 5 elements
+          *
+          * buttons
+          *   .first() // Reduces the matched elements to the first in the list
+          *   .css({
+          *      "color": "red"
+          *   });
+          *
+          * @returns {jGet}
+          */
         first: function () {
             this.nodes = [this.nodes[0]];
             return this;
         },
         /**
-         * Remove all nodes except requested index
-         * @param index - index of the node to be kept
-         * @returns {Dex.fn.init}
+         * Remove all matched elements except the one at the specified index
+         * @memberof jGet.fn
+         * @namespace jGet.fn.index
+         * @method index
+         * @example
+         * var buttons = jGet(".myButton"); // matches 5 elements
+         *
+         * buttons
+         *   .index(1) // Reduces the matched elements to the second in the list
+         *   .css({
+         *      "color": "red"
+         *   });
+         *
+         * @returns {jGet}
          */
         index: function (index) {
             this.nodes = [this.nodes[index]];
             return this;
         },
         /**
-         * Return DOM node
-         * @param index of node to return
-         * @returns {*}
+         * Return the HTML node at the specified index
+         * @memberof jGet.fn
+         * @namespace jGet.fn.getNode
+         * @method getNode
+         * @example
+         * // Extract a matched jGet element as a node and add an HTML event listener directly to the node.
+         *
+         * var buttons = jGet(".myButton"); // matches 5 elements
+         * var firstButtonAsNode = buttons.getNode(0);
+         *
+         * firstButtonAsNode.addEventListener("click", function(){
+         *    console.log("Clicked");
+         * })
+         *
+         * @returns {HTMLElement}
          */
         getNode: function (index) {
             return this.nodes[index];
         },
         /**
-         * See if the node list contains at least one node
+         * Check if there is at least one matched element
+         * @memberof jGet.fn
+         * @namespace jGet.fn.exists
+         * @method exists
+         * @example
+         * var myButtons = jGet(".myButton");
+         *
+         * if (myButtons.exists()) {
+         *     console.log("At least one matching button exists");
+         * } else {
+         *     console.log("Could not find any matching buttons, sorry");
+         * }
+         *
          * @returns {boolean}
          */
         exists: function () {
             return this.nodes[0] != null;
         },
         /**
-         * Clones the passed node and appends
-         * @param node
-         * @returns {Dex.fn.init}
+         * Appends a clone of the passed node to all matching elements
+         * @memberof jGet.fn
+         * @namespace jGet.fn.appendClone
+         * @method appendClone
+         * @returns {jGet}
          */
         appendClone: function (node) {
             for (var n = 0; n < this.nodes.length; n++) {
@@ -506,9 +551,11 @@ if (!Element.prototype.matches) {
             return this;
         },
         /**
-         * append the actual passed node
-         * @param node
-         * @returns {Dex.fn.init}
+         * Append the passed node to all matching elements
+         * @memberof jGet.fn
+         * @namespace jGet.fn.append
+         * @method append
+         * @returns {jGet}
          */
         append: function (node) {
             for (var n = 0; n < this.nodes.length; n++) {
@@ -518,9 +565,11 @@ if (!Element.prototype.matches) {
             return this;
         },
         /**
-         * prepends the actual node
-         * @param node
-         * @returns {Dex.fn.init}
+         * Prepend the passed node to all matching elements
+         * @memberof jGet.fn
+         * @namespace jGet.fn.prepend
+         * @method prepend
+         * @returns {jGet}
          */
         prepend: function (node) {
             var parentNode;
@@ -532,8 +581,11 @@ if (!Element.prototype.matches) {
             return this;
         },
         /**
-         * remove all matching nodes
-         * @returns {Dex.fn.init}
+         * Remove all matching elements from the DOM
+         * @memberof jGet.fn
+         * @namespace jGet.fn.remove
+         * @method remove
+         * @returns {jGet}
          */
         remove: function () {
             for (var n = 0; n < this.nodes.length; n++) {
@@ -547,8 +599,11 @@ if (!Element.prototype.matches) {
             return this;
         },
         /**
-         * clone all matching nodes and return new node list of cloned nodes
-         * @returns {Dex.fn.init}
+         * Clone all matching elements and return as jGet object
+         * @memberof jGet.fn
+         * @namespace jGet.fn.clone
+         * @method clone
+         * @returns {jGet}
          */
         clone: function () {
             var clonedNodes = [];
@@ -560,8 +615,11 @@ if (!Element.prototype.matches) {
             return this;
         },
         /**
-         * Replace Dex Object node list with parent node of first node
-         * @returns {Dex.fn.init}
+         * Get the parent node of the first matched element and return as jGet object
+         * @memberof jGet.fn
+         * @namespace jGet.fn.parent
+         * @method parent
+         * @returns {jGet}
          */
         parent: function () {
             if (this.nodes[0] && this.nodes[0].parentNode) {
@@ -573,9 +631,12 @@ if (!Element.prototype.matches) {
             return this;
         },
         /**
-         * Go up the tree of the first node and return the first node that matches the matchSelector
-         * @param matchSelector
-         * @returns {Dex.fn.init}
+         * Traverse up through the DOM tree until the matchSelector is found and return it as a jGet object
+
+         * @memberof jGet.fn
+         * @namespace jGet.fn.closest
+         * @method closest
+         * @returns {jGet}
          */
         closest: function (matchSelector) {
             var closest = [];
@@ -593,21 +654,25 @@ if (!Element.prototype.matches) {
             return this;
         },
         /**
-         * Apply callback to each node in the list
-         * @param callback
-         * @returns {Dex.fn.init}
+         * Apply the callback to all matched elements
+         * @memberof jGet.fn
+         * @namespace jGet.fn.each
+         * @method each
+         * @returns {jGet}
          */
         each: function (callback) {
             for (var n = 0; n < this.nodes.length; n++) {
-                callback.call(this.nodes[n], Dex.node(this.nodes[n]), n);
+                callback.call(this.nodes[n], jGet.node(this.nodes[n]), n);
             }
 
             return this;
         },
         /**
-         * Filter then current node list - note: only filters on the first node in list
-         * @param selector
-         * @returns {Dex.fn.init}
+         * Filter the first matched element with the passed selector and return as jGet object
+         * @memberof jGet.fn
+         * @namespace jGet.fn.filter
+         * @method filter
+         * @returns {jGet}
          */
         filter: function (selector) {
             if (this.nodes[0]) {
@@ -620,9 +685,11 @@ if (!Element.prototype.matches) {
         },
 
         /**
-         * Set innerHTML of all nodes in nodelist
-         * @param value
-         * @returns {Dex.fn.init}
+         * Set innerHTML of all matched elements
+         * @memberof jGet.fn
+         * @namespace jGet.fn.setHTML
+         * @method setHTML
+         * @returns {jGet}
          */
         setHTML: function (value) {
             for (var n = 0; n < this.nodes.length; n++) {
@@ -632,16 +699,21 @@ if (!Element.prototype.matches) {
             return this;
         },
         /**
-         * Get innerHTML of first node in nodelist
-         * @returns {null}
+         * Get innerHTML of first matched element
+         * @memberof jGet.fn
+         * @namespace jGet.fn.getHTML
+         * @method getHTML
+         * @returns {string}
          */
         getHTML: function () {
             return (this.nodes[0]) ? this.nodes[0].innerHTML : null;
         },
         /**
-         * Set CSS of all nodes in nodelist
-         * @param styles
-         * @returns {Dex.fn.init}
+         * Set CSS of all matched elements
+         * @memberof jGet.fn
+         * @namespace jGet.fn.css
+         * @method css
+         * @returns {jGet}
          */
         css: function (styles) {
             for (var n = 0; n < this.nodes.length; n++) {
@@ -653,10 +725,11 @@ if (!Element.prototype.matches) {
             return this;
         },
         /**
-         * Set attribute of all nodes in nodelist
-         * @param key
-         * @param value
-         * @returns {Dex.fn.init}
+         * Set attribute of all matched elements
+         * @memberof jGet.fn
+         * @namespace jGet.fn.setAttribute
+         * @method setAttribute
+         * @returns {jGet}
          */
         setAttribute: function (key, value) {
             for (var n = 0; n < this.nodes.length; n++) {
@@ -666,18 +739,21 @@ if (!Element.prototype.matches) {
             return this;
         },
         /**
-         * Get attribute of first node in nodelist
-         * @param key
-         * @returns {*}
+         * Get attribute of first matched elements
+         * @memberof jGet.fn
+         * @namespace jGet.fn.getAttribute
+         * @method getAttribute
+         * @returns {string|null}
          */
         getAttribute: function (key) {
             return (this.nodes[0]) ? this.nodes[0].getAttribute(key) : null;
         },
         /**
-         * Toggle the attributes of all nodes in list
-         * @param key
-         * @param value - array with two values to be toggled
-         * @returns {Dex.fn.init}
+         * Toggle the attributes of all matched elements
+         * @memberof jGet.fn
+         * @namespace jGet.fn.toggleAttribute
+         * @method toggleAttribute
+         * @returns {jGet}
          */
         toggleAttribute: function (key, value) {
             var attrValue;
@@ -694,17 +770,21 @@ if (!Element.prototype.matches) {
             return this;
         },
         /**
-         * Cache node list with cacheID as ID
-         * @param cacheID
+         * Cache matched elements with cacheID as UID
+         * @memberof jGet.fn
+         * @namespace jGet.fn.cache
+         * @method cache
          */
         cache: function (cacheID) {
             cachedSelections[cacheID] = this;
         },
 
         /**
-         * Add class to all nodes in nodelist
-         * @param classname
-         * @returns {Dex.fn.init}
+         * Add class to all matched elements
+         * @memberof jGet.fn
+         * @namespace jGet.fn.addClass
+         * @method addClass
+         * @returns {jGet}
          */
         addClass: function (classname) {
             for (var n = 0; n < this.nodes.length; n++) {
@@ -716,9 +796,11 @@ if (!Element.prototype.matches) {
             return this;
         },
         /**
-         * Remove class from all nodes in nodelist
-         * @param classname
-         * @returns {Dex.fn.init}
+         * Remove class from all matched elements
+         * @memberof jGet.fn
+         * @namespace jGet.fn.removeClass
+         * @method removeClass
+         * @returns {jGet}
          */
         removeClass: function (classname) {
             for (var n = 0; n < this.nodes.length; n++) {
@@ -729,8 +811,10 @@ if (!Element.prototype.matches) {
             return this;
         },
         /**
-         * Check whether first node in list contains a classname
-         * @param classname
+         * Check whether first matched element contains classname
+         * @memberof jGet.fn
+         * @namespace jGet.fn.hasClass
+         * @method hasClass
          * @returns {boolean}
          */
         hasClass: function (classname) {
@@ -742,9 +826,11 @@ if (!Element.prototype.matches) {
             return result;
         },
         /**
-         * Toggle classnames on all nodes in nodelist
-         * @param classname
-         * @returns {Dex.fn.init}
+         * Toggle classnames on all matched elements
+         * @memberof jGet.fn
+         * @namespace jGet.fn.toggleClass
+         * @method toggleClass
+         * @returns {jGet}
          */
         toggleClass: function (classname) {
             for (var n = 0; n < this.nodes.length; n++) {
@@ -754,10 +840,11 @@ if (!Element.prototype.matches) {
             return this;
         },
         /**
-         * Replace old_classname with new_classname on all nodes in nodelist
-         * @param old_classname
-         * @param new_classname
-         * @returns {Dex.fn.init}
+         * Replace old_classname with new_classname on all matched elements
+         * @memberof jGet.fn
+         * @namespace jGet.fn.replaceClass
+         * @method replaceClass
+         * @returns {jGet}
          */
         replaceClass: function (old_classname, new_classname) {
             for (var n = 0; n < this.nodes.length; n++) {
@@ -767,11 +854,11 @@ if (!Element.prototype.matches) {
             return this;
         },
         /**
-         * Trigger event on all nodes in nodelist
-         * @param eventType - click|mouseover|etc|...
-         * @param xPos - optional X coordinate of mouse
-         * @param yPos - optional Y coordinate of mouse
-         * @returns {Dex.fn.init}
+         * Trigger event on all matched elements
+         * @memberof jGet.fn
+         * @namespace jGet.fn.trigger
+         * @method trigger
+         * @returns {jGet}
          */
         trigger: function (eventType, xPos, yPos) {
             xPos = xPos || 0;
@@ -790,10 +877,11 @@ if (!Element.prototype.matches) {
             return this;
         },
         /**
-         * Trigger custom event on all nodes in nodelist
-         * @param eventType
-         * @param params
-         * @returns {Dex.fn.init}
+         * Trigger custom event on all matched elements
+         * @memberof jGet.fn
+         * @namespace jGet.fn.customTrigger
+         * @method customTrigger
+         * @returns {jGet}
          */
         customTrigger: function (eventType, params) {
             params = params || {};
@@ -806,181 +894,185 @@ if (!Element.prototype.matches) {
 
         },
         /**
-         * Attach listener that executes whenever the target is added to the DOM (persistent)
-         * @param target
-         * @param callback
-         * @param mutation_id
-         * @returns {Dex.fn.init}
+         * Attach listeners to matched elements that execute when they are added to the DOM
+         * @memberof jGet.fn
+         * @namespace jGet.fn.onOpen
+         * @method onOpen
+         * @returns {jGet}
          */
-        onOpen: function (target, callback, mutation_id) {
-            this.onMutation('onOpen', target, callback, {
+        onOpen: function (listener) {
+            this.onMutation('onOpen', listener.target, listener.callback, {
                 children: false,
                 persistant: true,
-                mutation_id: mutation_id
+                mutation_id: listener.uid
             });
 
             return this;
         },
         /**
-         * Attach listener that executes ONCE when the target is first added to the DOM (non-persistent)
-         * @param target
-         * @param callback
-         * @param mutation_id
-         * @returns {Dex.fn.init}
+         * Attach listeners to matched elements that execute when they are added to the DOM
+         *  - The callback is removed after it is executed (non-persitant)
+         * @memberof jGet.fn
+         * @namespace jGet.fn.onceOpen
+         * @method onceOpen
+         * @returns {jGet}
          */
-        onceOpen: function (target, callback, mutation_id) {
-            this.onMutation('onOpen', target, callback, {
+        onceOpen: function (listener) {
+            this.onMutation('onOpen', listener.target, listener.callback, {
                 children: false,
                 persistant: false,
-                mutation_id: mutation_id
+                mutation_id: listener.uid
             });
 
             return this;
         },
         /**
-         * Attach listener that executes whenever the target is added to the DOM (persistent)
+         * Attach listeners to matched elements that execute execute when they are added to the DOM
          *  - If multiple matches are added at the same time then the callback is only executed once all items have been detected
-         * @param target
-         * @param callback
-         * @param mutation_id
-         * @returns {Dex.fn.init}
+         * @memberof jGet.fn
+         * @namespace jGet.fn.onGroupOpen
+         * @method onGroupOpen
+         * @returns {jGet}
          */
-        onGroupOpen: function (target, callback, mutation_id) {
-            this.onMutation('onGroupOpen', target, callback, {
+        onGroupOpen: function (listener) {
+            this.onMutation('onGroupOpen', listener.target, listener.callback, {
                 children: false,
                 persistant: true,
-                mutation_id: mutation_id,
+                mutation_id: listener.uid,
                 groupNodes: true
             });
 
             return this;
         },
         /**
-         * Attach listener that executes ONCE the target is added to the DOM (non-persistent)
-         *  - If multiple matches are added at the same time then the callback is only executed once all items have been detected
-         * @param target
-         * @param callback
-         * @param mutation_id
-         * @returns {Dex.fn.init}
+        * Attach listeners to matched elements that execute execute when they are added to the DOM
+         *  - The callback is removed after it is executed (non-persitant)
+         * @memberof jGet.fn
+         * @namespace jGet.fn.onceGroupOpen
+         * @method onceGroupOpen
+         * @returns {jGet}
          */
-        onceGroupOpen: function (target, callback, mutation_id) {
-            this.onMutation('onGroupOpen', target, callback, {
+        onceGroupOpen: function (listener) {
+            this.onMutation('onGroupOpen', listener.target, listener.callback, {
                 children: false,
                 persistant: false,
-                mutation_id: mutation_id,
+                mutation_id: listener.uid,
                 groupNodes: true
             });
 
             return this;
         },
         /**
-         * Attach listener that executes whenever the target is removed from the DOM (persistent)
-         * @param target
-         * @param callback
-         * @param mutation_id
-         * @returns {Dex.fn.init}
+        * Attach listeners to matched elements that execute execute when they are removed from the DOM
+         * @memberof jGet.fn
+         * @namespace jGet.fn.onClose
+         * @method onClose
+         * @returns {jGet}
          */
-        onClose: function (target, callback, mutation_id) {
+        onClose: function (listener) {
 
-            this.onMutation('onClose', target, callback, {
+            this.onMutation('onClose', listener.target, listener.callback, {
                 children: false,
                 persistant: true,
-                mutation_id: mutation_id
+                mutation_id: listener.uid
             });
 
             return this;
         },
         /**
-         * onGroupClose
-         * @param target
-         * @param callback
-         * @param mutation_id
-         * @returns {Dex.fn.init}
+        * Attach listeners to matched elements that execute execute when they are removed from the DOM
+        *  - If multiple matches are added at the same time then the callback is only executed once all items have been detected
+         * @memberof jGet.fn
+         * @namespace jGet.fn.onGroupClose
+         * @method onGroupClose
+         * @returns {jGet}
          */
-        onGroupClose: function (target, callback, mutation_id) {
-            this.onMutation('onGroupClose', target, callback, {
+        onGroupClose: function (listener) {
+            this.onMutation('onGroupClose', listener.target, listener.callback, {
                 children: false,
                 persistant: true,
-                mutation_id: mutation_id,
+                mutation_id: listener.uid,
                 groupNodes: true
             });
 
             return this;
         },
         /**
-         * onceGroupClose
-         * @param target
-         * @param callback
-         * @param mutation_id
-         * @returns {Dex.fn.init}
+        * Attach listeners to matched elements that execute execute when they are removed from the DOM
+        *  - If multiple matches are added at the same time then the callback is only executed once all items have been detected
+        *  - The callback is removed after it is executed (non-persitant)
+         * @memberof jGet.fn
+         * @namespace jGet.fn.onceGroupClose
+         * @method onceGroupClose
+         * @returns {jGet}
          */
-        onceGroupClose: function (target, callback, mutation_id) {
-            this.onMutation('onGroupClose', target, callback, {
+        onceGroupClose: function (listener) {
+            this.onMutation('onGroupClose', listener.target, listener.callback, {
                 children: false,
                 persistant: false,
-                mutation_id: mutation_id,
+                mutation_id: listener.uid,
                 groupNodes: true
             });
 
             return this;
         },
         /**
-         * onceClose
-         * @param target
-         * @param callback
-         * @param mutation_id
-         * @returns {Dex.fn.init}
+        * Attach listeners to matched elements that execute execute when they are removed from the DOM
+        *  - If multiple matches are added at the same time then the callback is only executed once all items have been detected
+        *  - The callback is removed after it is executed (non-persitant)
+         * @memberof jGet.fn
+         * @namespace jGet.fn.onceClose
+         * @method onceClose
+         * @returns {jGet}
          */
-        onceClose: function (target, callback, mutation_id) {
+        onceClose: function (listener) {
 
-            this.onMutation('onClose', target, callback, {
+            this.onMutation('onClose', listener.target, listener.callback, {
                 children: false,
                 persistant: false,
-                mutation_id: mutation_id
+                mutation_id: listener.uid
             });
 
             return this;
         },
         /**
-         * Attach listener that executes whenever the attribute on the target is changed (created, modified or removed)
-         * @param target
-         * @param attrKey
-         * @param callback
-         * @param mutation_id
-         * @returns {Dex.fn.init}
+         * Attach listeners to matched elements that execute whenever their specified attribute changes (create, modify or remove)
+         * @memberof jGet.fn
+         * @namespace jGet.fn.onAttribute
+         * @method onAttribute
+         * @returns {jGet}
          */
-        onAttribute: function (target, attrKey, callback, mutation_id) {
-            this.onMutation('onAttribute', target, callback, {
-                attrKey: attrKey,
+        onAttribute: function (listener) {
+            this.onMutation('onAttribute', listener.target, listener.callback, {
+                attrKey: listener.attrKey,
                 persistant: true,
-                mutation_id: mutation_id
+                mutation_id: listener.uid
             });
 
             return this;
         },
         /**
-         * onceAttribute
-         * @param target
-         * @param attrKey
-         * @param callback
-         * @param mutation_id
-         * @returns {Dex.fn.init}
+        * Attach listeners to matched elements that execute whenever their specified attribute changes (create, modify or remove)
+        *  - The callback is removed after it is executed (non-persitant)
+         * @memberof jGet.fn
+         * @namespace jGet.fn.onceAttribute
+         * @method onceAttribute
+         * @returns {jGet}
          */
-        onceAttribute: function (target, attrKey, callback, mutation_id) {
-            this.onMutation('onAttribute', target, callback, {
-                attrKey: attrKey,
+        onceAttribute: function (listener) {
+            this.onMutation('onAttribute', listener.target, listener.callback, {
+                attrKey: listener.attrKey,
                 persistant: false,
-                mutation_id: mutation_id
+                mutation_id: listener.uid
             });
 
             return this;
         },
         /**
-         * onMutation
-         * @param mutationType
-         * @param target
-         * @param callback
-         * @param parameters
+         * Used by jGet
+         * @memberof jGet.fn
+         * @namespace jGet.fn.onMutation
+         * @method onMutation
          */
         onMutation: function (mutationType, target, callback, parameters) {
             var selector = this.selector;
@@ -1068,229 +1160,257 @@ if (!Element.prototype.matches) {
             };
         },
         /**
-         * Callback executed when the target receives input (must be an input tag)
-         * @param target
-         * @param callback
-         * @param event_id
-         * @returns {Dex.fn.init}
+         * Callback executed when the matched \<input> elements receive input
+         * @memberof jGet.fn
+         * @namespace jGet.fn.onInput
+         * @method onInput
+         * @returns {jGet}
          */
-        onInput: function (target, callback, event_id) {
-            createEventListener(this, 'input', this.selector, target, callback, true, event_id);
+        onInput: function (listener) {
+            createEventListener(this, 'input', this.selector, listener.target, listener.callback, true, listener.uid);
             return this;
         },
         /**
-         * Callback executed when the target value changes (must be an input tag)
-         * @param target
-         * @param callback
-         * @param event_id
-         * @returns {Dex.fn.init}
+         * Callback executed when matched \<input> elements value changes
+         * @memberof jGet.fn
+         * @namespace jGet.fn.onChange
+         * @method onChange
+         * @returns {jGet}
          */
-        onChange: function (target, callback, event_id) {
-            createEventListener(this, 'change', this.selector, target, callback, true, event_id);
+        onChange: function (listener) {
+            createEventListener(this, 'change', this.selector, listener.target, listener.callback, true, listener.uid);
             return this;
         },
         /**
-         * Callback executed when the target receives focus
-         * @param target
-         * @param callback
-         * @param event_id
-         * @returns {Dex.fn.init}
+         * Callback executed when matched elements receive focus
+         * @memberof jGet.fn
+         * @namespace jGet.fn.onFocus
+         * @method onFocus
+         * @returns {jGet}
          */
-        onFocus: function (target, callback, event_id) {
-            createEventListener(this, 'focusin', this.selector, target, callback, true, event_id);
+        onFocus: function (listener) {
+            createEventListener(this, 'focusin', this.selector, listener.target, listener.callback, true, listener.uid);
             return this;
         },
         /**
-         * Callback executed when the target loses focus
-         * @param target
-         * @param callback
-         * @param event_id
-         * @returns {Dex.fn.init}
+         * Callback executed when matched elements lose focus
+         * @memberof jGet.fn
+         * @namespace jGet.fn.onBlur
+         * @method onBlur
+         * @returns {jGet}
          */
-        onBlur: function (target, callback, event_id) {
-            createEventListener(this, 'focusout', this.selector, target, callback, true, event_id);
+        onBlur: function (listener) {
+            createEventListener(this, 'focusout', this.selector, listener.target, listener.callback, true, listener.uid);
             return this;
         },
         /**
-         * Callback executed when the target is clicked
-         * @param target
-         * @param callback
-         * @param event_id
-         * @returns {Dex.fn.init}
+         * Callback executed when the matched elements are clicked
+         * @memberof jGet.fn
+         * @namespace jGet.fn.onClick
+         * @method onClick
+         * @returns {jGet}
          */
-		 onClick: function (target, callback, event_id) {
-             createEventListener(this, 'click', this.selector, target, callback, true, event_id);
+		 onClick: function (listener) {
+             createEventListener(this, 'click', this.selector, listener.target, listener.callback, true, listener.uid);
              return this;
          },
-		 onKeyDown: function (target, callback, event_id) {
-             createEventListener(this, 'keydown', this.selector, target, callback, true, event_id);
+         /**
+          * Callback executed when key is pressed down on matched \<input> elements
+          * @memberof jGet.fn
+          * @namespace jGet.fn.onKeyDown
+          * @method onKeyDown
+          * @returns {jGet}
+          */
+		 onKeyDown: function (listener) {
+             createEventListener(this, 'keydown', this.selector, listener.target, listener.callback, true, listener.uid);
              return this;
          },
-		 onKeyUp: function (target, callback, event_id) {
-             createEventListener(this, 'keyup', this.selector, target, callback, true, event_id);
+         /**
+         * Callback executed when key is released on matched \<input> elements
+          * @memberof jGet.fn
+          * @namespace jGet.fn.onKeyUp
+          * @method onKeyUp
+          * @returns {jGet}
+          */
+		 onKeyUp: function (listener) {
+             createEventListener(this, 'keyup', this.selector, listener.target, listener.callback, true, listener.uid);
              return this;
          },
-		 onKeyPress: function (target, callback, event_id) {
-             createEventListener(this, 'keypress', this.selector, target, callback, true, event_id);
+         /**
+         * Callback executed whilst key is pressed on matched \<input> elements
+          * @memberof jGet.fn
+          * @namespace jGet.fn.onKeyPress
+          * @method onKeyPress
+          * @returns {jGet}
+          */
+		 onKeyPress: function (listener) {
+             createEventListener(this, 'keypress', this.selector, listener.target, listener.callback, true, listener.uid);
              return this;
          },
         /**
-         * Callback executed when the target is clicked
+         * Callback executed when the matched elements are clicked
          *  - The callback is removed after it is executed (non-persitant)
-         * @param target
-         * @param callback
-         * @param event_id
-         * @returns {Dex.fn.init}
+         * @memberof jGet.fn
+         * @namespace jGet.fn.oneClick
+         * @method oneClick
+         * @returns {jGet}
          */
-        oneClick: function (target, callback, event_id) {
-            createEventListener(this, 'click', this.selector, target, callback, false, event_id);
+        oneClick: function (listener) {
+            createEventListener(this, 'click', this.selector, listener.target, listener.callback, false, listener.uid);
             return this;
         },
         /**
-         * Callback executed when the target registers a mouse up
-         * @param target
-         * @param callback
-         * @param event_id
-         * @returns {Dex.fn.init}
+        * Callback executed when the mouse is released on matched elements
+         * @memberof jGet.fn
+         * @namespace jGet.fn.onMouseUp
+         * @method onMouseUp
+         * @returns {jGet}
          */
-        onMouseUp: function (target, callback, event_id) {
-            createEventListener(this, 'mouseup', this.selector, target, callback, true, event_id);
+        onMouseUp: function (listener) {
+            createEventListener(this, 'mouseup', this.selector, listener.target, listener.callback, true, listener.uid);
             return this;
         },
         /**
-         * Callback executed when the target registers a mouse up
+        * Callback executed when the mouse is released on matched elements
          *  - The callback is removed after it is executed (non-persitant)
-         * @param target
-         * @param callback
-         * @param event_id
-         * @returns {Dex.fn.init}
+         * @memberof jGet.fn
+         * @namespace jGet.fn.oneMouseUp
+         * @method oneMouseUp
+         * @returns {jGet}
          */
-        oneMouseUp: function (target, callback, event_id) {
-            createEventListener(this, 'mouseup', this.selector, target, callback, false, event_id);
+        oneMouseUp: function (listener) {
+            createEventListener(this, 'mouseup', this.selector, listener.target, listener.callback, false, listener.uid);
             return this;
         },
         /**
-         * Callback executed when the target registers a mouse down
-         * @param target
-         * @param callback
-         * @param event_id
-         * @returns {Dex.fn.init}
+        * Callback executed when the mouse is pressed on matched elements
+         * @memberof jGet.fn
+         * @namespace jGet.fn.onMouseDown
+         * @method onMouseDown
+         * @returns {jGet}
          */
-        onMouseDown: function (target, callback, event_id) {
-            createEventListener(this, 'mousedown', this.selector, target, callback, true, event_id);
+        onMouseDown: function (listener) {
+            createEventListener(this, 'mousedown', this.selector, listener.target, listener.callback, true, listener.uid);
             return this;
         },
         /**
-         * Callback executed when the target registers a mouse down
+        * Callback executed when the mouse is pressed on matched elements
          *  - The callback is removed after it is executed (non-persitant)
-         * @param target
-         * @param callback
-         * @param event_id
-         * @returns {Dex.fn.init}
+         * @memberof jGet.fn
+         * @namespace jGet.fn.oneMouseDown
+         * @method oneMouseDown
+         * @returns {jGet}
          */
-        oneMouseDown: function (target, callback, event_id) {
-            createEventListener(this, 'mousedown', this.selector, target, callback, false, event_id);
+        oneMouseDown: function (listener) {
+            createEventListener(this, 'mousedown', this.selector, listener.target, listener.callback, false, listener.uid);
             return this;
         },
         /**
-         * Callback executed when the target registers a mouse enter
-         * @param target
-         * @param callback
-         * @param event_id
-         * @returns {Dex.fn.init}
+        * Callback executed when the mouse enters the matched elements
+         * @memberof jGet.fn
+         * @namespace jGet.fn.onMouseEnter
+         * @method onMouseEnter
+         * @returns {jGet}
          */
-        onMouseEnter: function (target, callback, event_id) {
-            createEventListener(this, 'mouseenter', this.selector, target, callback, true, event_id);
+        onMouseEnter: function (listener) {
+            createEventListener(this, 'mouseenter', this.selector, listener.target, listener.callback, true, listener.uid);
             return this;
         },
         /**
-         * Callback executed when the target registers a mouse enter
+        * Callback executed when the mouse enters the matched elements
          *  - The callback is removed after it is executed (non-persitant)
-         * @param target
-         * @param callback
-         * @param event_id
-         * @returns {Dex.fn.init}
+         * @memberof jGet.fn
+         * @namespace jGet.fn.oneMouseEnter
+         * @method oneMouseEnter
+         * @returns {jGet}
          */
-        oneMouseEnter: function (target, callback, event_id) {
-            createEventListener(this, 'mouseenter', this.selector, target, callback, false, event_id);
+        oneMouseEnter: function (listener) {
+            createEventListener(this, 'mouseenter', this.selector, listener.target, listener.callback, false, listener.uid);
             return this;
         },
         /**
-         * Callback executed when the target registers a mouse leave
-         * @param target
-         * @param callback
-         * @param event_id
-         * @returns {Dex.fn.init}
+        * Callback executed when the mouse leaves the matched elements
+         * @memberof jGet.fn
+         * @namespace jGet.fn.onMouseLeave
+         * @method onMouseLeave
+         * @returns {jGet}
          */
-        onMouseLeave: function (target, callback, event_id) {
-            createEventListener(this, 'mouseleave', this.selector, target, callback, true, event_id);
+        onMouseLeave: function (listener) {
+            createEventListener(this, 'mouseleave', this.selector, listener.target, listener.callback, true, listener.uid);
             return this;
         },
         /**
-         * Callback executed when the target registers a mouse leave
+        * Callback executed when the mouse leaves the matched elements
          *  - The callback is removed after it is executed (non-persitant)
-         * @param target
-         * @param callback
-         * @param event_id
-         * @returns {Dex.fn.init}
+         * @memberof jGet.fn
+         * @namespace jGet.fn.oneMouseLeave
+         * @method oneMouseLeave
+         * @returns {jGet}
          */
-        oneMouseLeave: function (target, callback, event_id) {
-            createEventListener(this, 'mouseleave', this.selector, target, callback, false, event_id);
+        oneMouseLeave: function (listener) {
+            createEventListener(this, 'mouseleave', this.selector, listener.target, listener.callback, false, listener.uid);
             return this;
         },
         /**
-         * Callback executed when the target registers a mouse over
-         * @param target
-         * @param callback
-         * @param event_id
-         * @returns {Dex.fn.init}
+        * Callback executed when the mouse moves over the matched elements
+         * @memberof jGet.fn
+         * @namespace jGet.fn.onMouseOver
+         * @method onMouseOver
+         * @returns {jGet}
          */
-        onMouseOver: function (target, callback, event_id) {
-            createEventListener(this, 'mouseover', this.selector, target, callback, true, event_id);
+        onMouseOver: function (listener) {
+            createEventListener(this, 'mouseover', this.selector, listener.target, listener.callback, true, listener.uid);
             return this;
         },
         /**
-         * Callback executed when the target registers a mouse over
+        * Callback executed when the mouse moves over the matched elements
          *  - The callback is removed after it is executed (non-persitant)
-         * @param target
-         * @param callback
-         * @param event_id
-         * @returns {Dex.fn.init}
+         * @memberof jGet.fn
+         * @namespace jGet.fn.oneMouseOver
+         * @method oneMouseOver
+         * @returns {jGet}
          */
-        oneMouseOver: function (target, callback, event_id) {
-            createEventListener(this, 'mouseover', this.selector, target, callback, false, event_id);
+        oneMouseOver: function (listener) {
+            createEventListener(this, 'mouseover', this.selector, listener.target, listener.callback, false, listener.uid);
             return this;
         },
         /**
-         * Callback executed when the target registers a mouse out
-         * @param target
-         * @param callback
-         * @param event_id
-         * @returns {Dex.fn.init}
+        * Callback executed when the mouse moves out of the matched elements
+         * @memberof jGet.fn
+         * @namespace jGet.fn.onMouseOut
+         * @method onMouseOut
+         * @returns {jGet}
          */
-        onMouseOut: function (target, callback, event_id) {
-            createEventListener(this, 'mouseout', this.selector, target, callback, true, event_id);
+        onMouseOut: function (listener) {
+            createEventListener(this, 'mouseout', this.selector, listener.target, listener.callback, true, listener.uid);
             return this;
         },
         /**
-         * Callback executed when the target registers a mouse out
+        * Callback executed when the mouse moves out of the matched elements
          *  - The callback is removed after it is executed (non-persitant)
-         * @param target
-         * @param callback
-         * @param event_id
-         * @returns {Dex.fn.init}
+         * @memberof jGet.fn
+         * @namespace jGet.fn.oneMouseOut
+         * @method oneMouseOut
+         * @returns {jGet}
          */
-        oneMouseOut: function (target, callback, event_id) {
-            createEventListener(this, 'mouseout', this.selector, target, callback, false, event_id);
+        oneMouseOut: function (listener) {
+            createEventListener(this, 'mouseout', this.selector, listener.target, listener.callback, false, listener.uid);
             return this;
         }
     };
     /**
-     * Appends CSS file to header in <link> tag
-     * @param url
-     * @returns {HTMLLinkElement}
+     * Adds a \<link> to the \<head> section of the HTML document targeting the supplied url
+     * @memberof jGet
+     * @method appendCSS
+     * @param url - URL of the CSS to append
+     * @example
+     * jGet.appendCSS("http://www.example.com/myStyles.css")
+     *
+     * // Outputs
+     * <link type="text/css" rel="stylesheet" href="http://www.example.com/myStyles.css">
+     * @returns {HTMLElement}
      */
-    Dex.appendCSS = function (url) {
+    jGet.appendCSS = function (url) {
         var head = document.head;
         var link = document.createElement('link');
 
@@ -1302,93 +1422,175 @@ if (!Element.prototype.matches) {
         return link;
     };
     /**
-     * Returns a cached Dex Object
-     * @param cacheID
-     * @returns {*}
+     * Returns a cached jGet Object
+      * @memberof jGet
+      * @method getCached
+      * @param cacheID - Unique Identifier for the cached jGet object
+      * @example
+      * // Assigning cached object to variable
+      * var myCachedBody = jGet.getCached("cachedBody");
+      * myCachedBody.setAttribute("data-my-name", "lee")
+      *
+      * // Chaining directly on the cached object
+      * jGet.getCached("cachedBody").setAttribute("data-my-name", "lee")
+      * @returns {jGet}
      */
-    Dex.getCached = function (cacheID) {
+    jGet.getCached = function (cacheID) {
         return cachedSelections[cacheID];
     };
     /**
-     * Removes a cached Dex Object
-     * @param cacheID
+     * Removes a cached jGet Object
+      * @memberof jGet
+      * @method clearCache
+      * @param cacheID - Unique Identifier for the cached jGet object
+      * @example
+      * // Delete the cached jGet object, "cachedBody"
+      * jGet.clearCache("cachedBody")
+      *
+      *
      */
-    Dex.clearCache = function (cacheID) {
+    jGet.clearCache = function (cacheID) {
         delete cachedSelections[cacheID];
     };
     /**
-     * Build node list using a tag selector
-     *  - Much quicker than using the general Dex(tag)
-     * @param tag
+    * Returns a jGet object with a elements matching the supplied tag
+     *  - Much quicker than using the general jGet(tag)
+      * @memberof jGet
+      * @method tag
+      * @param tag - Tag type to target
+      * @example
+      * // Set color of text to red in all <p> elements
+      * var pTags = jGet.tag("p");
+      * pTags.css({
+      *     "color": "red"
+      * });
+      *
+      * @returns {jGet}
      */
-    Dex.tag = function (tag) {
+    jGet.tag = function (tag) {
         /* Use Tag() to select nodes using the getElementsByTagName */
         var nodes = document.getElementsByTagName(tag);
-        return Dex(tag, nodes);
+        return jGet(tag, nodes);
     };
 
     /**
-     * Build node list using the class selector
-     *  - Much quicker than using the general Dex(.class)
-     * @param classname
+     * Returns a jGet object with elements matching the supplied classname
+     *  - Much quicker than using the general jGet(classname)
+     *  - Note that classname does not expect a preceding dot (.)
+      * @memberof jGet
+      * @method class
+      * @param classname - Tag type to target
+      * @example
+      * // Set color of text to red to all elements with the class .paragraph
+      * var paragraphs = jGet.class("paragraph");
+      * paragraphs.css({
+      *     "color": "red"
+      * });
+      *
+      * @returns {jGet}
      */
-    Dex.class = function (classname) {
+    jGet.class = function (classname) {
         /* Use Tag() to select nodes using the getElementsByClassName */
         var nodeCollection = document.getElementsByClassName(classname);
         var nodes = Array.prototype.slice.call(nodeCollection);
-        return Dex('.' + classname, nodes);
+        return jGet('.' + classname, nodes);
     };
     /**
-     * Create a Dex Object with the iframes document as index node
+     * Create a jGet Object with the iframes content document
      *  - This allows us to manipulate the content of the iframe
-     * @param selector
+      * @memberof jGet
+      * @method iframe
+      * @param selector - Selector that targets the required iFrame
+      * @example
+      * // Hide an iFrame
+      * var myIframe = jGet.iframe("myIframe");
+      * myIframe.css({
+      *    "display": "none"
+      * });
+      * @returns {HTMLElement}
      */
-    Dex.iframe = function (selector) {
+    jGet.iframe = function (selector) {
         var iframe = document.querySelectorAll(selector)[0];
-        return Dex.node(iframe.contentDocument || iframe.contentWindow.document);
+        return jGet.node(iframe.contentDocument || iframe.contentWindow.document);
     };
     /**
-     * Build node list using the ID selector
-     *  - Much quicker than using the general Dex(#id)
-     * @param classname
+    * Returns a jGet object with an element matching the supplied ID
+     *  - Much quicker than using the general jGet(id)
+     *  - Note that ID does not expect a preceding hashtag (#)
+      * @memberof jGet
+      * @method id
+      * @param id - ID of the element to target
+      * @example
+      * // Set color of text to red to tag with title ID
+      * var title = jGet.class("title");
+      * title.css({
+      *     "color": "red"
+      * });
+      *
+      * @returns {jGet}
      */
-    Dex.id = function (id) {
+    jGet.id = function (id) {
         /* Use Tag() to select nodes using the getElementById */
         var nodes = [document.getElementById(id)];
-        return Dex('#' + id, nodes);
+        return jGet('#' + id, nodes);
     };
     /**
-     * Return Dex object with the passed node
-     * @param node
-     * @returns {Dex.init|Dex}
+     * Return jGet object with the passed node
+      * @memberof jGet
+      * @method node
+      * @param node - HTMLElement
+      * @example
+      * // Set color of text to red
+      * var nodeButton = document.getElementById("myButton");
+      * var jGetButton = jGet.node(nodeButton);
+      * jGetButton.css({
+      *     "color": "red"
+      * });
+      *
+      * @returns {node}
      */
-    Dex.node = function (node) {
-        /* Use Node to create a Dex object with a DOM node directly */
-        return Dex('node', [node]);
+    jGet.node = function (node) {
+        /* Use Node to create a jGet object with a DOM node directly */
+        return jGet('node', [node]);
     };
     /**
-     * Build Dex object by converting a nodeCollection to a normal node list
-     * @param nodeCollection
-     * @returns {Dex.init|Dex}
+     * Build jGet object by converting a nodeCollection to a normal node list
+      * @memberof jGet
+      * @method collection
+      * @param nodeCollection - Node Collection
+      * @example
+      * // Set color of text to red
+      * var nodeCollectionButtons = document.querySelectorAll(".button");
+      * var jGetButtons = jGet.collection(nodeCollectionButtons);
+      * jGetButtons.css({
+      *     "color": "red"
+      * });
+      * @returns {jGet}
      */
-    Dex.collection = function (nodeCollection) {
-        /* Use Node to create a Dex object with an HTML Node Collection  directly */
+    jGet.collection = function (nodeCollection) {
+        /* Use Node to create a jGet object with an HTML Node Collection  directly */
         var nodes = [];
         for (var n = 0; n < nodeCollection.length; n++) {
             nodes.push(nodeCollection[n]);
         }
 
-        return Dex('node', nodes);
+        return jGet('node', nodes);
     };
     /**
-     * Dumps a list of all event listeners created with Dex to the console panel
+     * Dumps a list of all event listeners created with jGet to the console panel
+      * @memberof jGet
+      * @example
+      * // Outputs a list of all event listeners to the console panel - use ful for debuging
+      * jGet.dump();
+      *
+      *
+      * @method dump
      */
-    Dex.dump = function () {
+    jGet.dump = function () {
         console.log(mutationObservers);
         console.log(delegatedEventListeners);
     };
 
-    if (exposeAs) {
-        window[exposeAs] = Dex;
-    }
-})('DexV2');
+    window.jGet = jGet;
+
+})();

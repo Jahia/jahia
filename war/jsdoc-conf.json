@@ -1,0 +1,17 @@
+{
+    "opts": {
+        "destination": "./src/main/webapp/engines/jahia-anthracite/js/out/",
+        "recurse": true
+    },
+    "plugins": ["plugins/markdown"],
+    "source": {
+        "include": ["src/main/webapp/engines/jahia-anthracite/js"],
+        "exclude": ["src/main/webapp/engines/jahia-anthracite/js/dist", "src/main/webapp/engines/jahia-anthracite/js/out"]
+    },
+    "templates": {
+        "cleverLinks": true,
+        "default": {
+            "useLongnameInNav": true
+        }
+    }
+}

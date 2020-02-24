@@ -148,7 +148,7 @@ public class EditContentEngine extends AbstractContentEngine {
     protected void initTabs() {
         // container ID, concatenated to each tab's ID
         tabs.setId("JahiaGxtEditEngineTabs");
-        for (GWTEngineTab resolvedTab : resolveTabs(hasOrderableChildNodes, config, node)) {
+        for (GWTEngineTab resolvedTab : resolveTabs(hasOrderableChildNodes, config, node, jsConfig == null)) {
             if (jsConfig.isTabDisplayed(resolvedTab.getId())) {
                 AsyncTabItem tab = resolvedTab.getTabItem().create(resolvedTab, this);
 
@@ -161,11 +161,12 @@ public class EditContentEngine extends AbstractContentEngine {
         tabs.setSelection(tabs.getItem(0));
     }
 
-    public static List<GWTEngineTab> resolveTabs(boolean hasOrderableChildNodes, GWTEngineConfiguration config, GWTJahiaNode node) {
+    public static List<GWTEngineTab> resolveTabs(boolean hasOrderableChildNodes, GWTEngineConfiguration config, GWTJahiaNode node, boolean checkPermissions) {
         List<GWTEngineTab> gwtEngineTabs = new ArrayList<GWTEngineTab>();
         for (GWTEngineTab tabConfig : config.getEngineTabs()) {
             EditEngineTabItem tabItem = tabConfig.getTabItem();
-            if (tabConfig.showInEngine() && (tabConfig.getRequiredPermission() == null || PermissionsUtils.isPermitted(tabConfig.getRequiredPermission(), JahiaGWTParameters.getSiteNode()))) {
+            final boolean isAllowed = tabConfig.getRequiredPermission() == null || !checkPermissions || PermissionsUtils.isPermitted(tabConfig.getRequiredPermission(), JahiaGWTParameters.getSiteNode());
+            if (tabConfig.showInEngine() && isAllowed) {
                 if ((tabItem.getHideForTypes().isEmpty() || !node.isNodeType(tabItem.getHideForTypes())) &&
                         ((hasOrderableChildNodes && tabItem.isOrderableTab()) || (!tabItem.isOrderableTab() && (tabItem.getShowForTypes().isEmpty() || node.isNodeType(tabItem.getShowForTypes()))))) {
                     gwtEngineTabs.add(tabConfig);

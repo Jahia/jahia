@@ -5,7 +5,7 @@ $SIDE-PANEL--BORDER: (
 
 $SIDE-PANEL--BG: (
         LIGHT: linear-gradient(to right, #fcfdfd 0%, rgba(252, 253, 253, 0.92) 100%),
-        DARK: url(_icon("jcontent", "white")) no-repeat top 20px center #{/ 120px} _color("primary"),
+        DARK: _color("primary"),
 );
 
 $SIDE-PANEL--SHADOW: (

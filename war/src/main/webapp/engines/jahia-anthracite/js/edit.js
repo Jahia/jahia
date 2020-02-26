@@ -223,7 +223,7 @@
             jGet.getCached('body').setAttribute('data-indigo-gwt-side-panel', '');
         }
 
-        var pinnedPanel = Anthracite.storage.get('pinnedPanel');
+        var pinnedPanel = Anthracite.storage.get('pinnedPanel') || window.anthraciteV8;
 
         if(pinnedPanel){
             jGet.class('side-panel-pin').trigger('click');

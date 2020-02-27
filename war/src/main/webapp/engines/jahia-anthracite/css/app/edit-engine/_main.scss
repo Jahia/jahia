@@ -721,6 +721,7 @@ div.engine-window {
                 padding: 0 !important;
                 background: transparent;
                 box-shadow: none;
+                color: _theme($EDIT_ENGINE--LANGUAGE-SELECTOR, $EDIT-ENGINE-SIDEPANEL);
                 font-size: 14px;
             }
         }

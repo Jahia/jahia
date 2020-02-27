@@ -12,3 +12,8 @@ $EDIT_ENGINE--SIDEPANEL---SHADOW: (
         LIGHT: 0px 2px 12px 0px rgba(58, 58, 58, 0.4),
         DARK: 0px 2px 12px 0px red,
 );
+
+$EDIT_ENGINE--LANGUAGE-SELECTOR: (
+    LIGHT: _color("primary"),
+    DARK: _color("secondary", d)
+);

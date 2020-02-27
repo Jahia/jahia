@@ -112,7 +112,6 @@
      *
      */
     onOpen: function () {
-        var mouse = DX_mouse;
         Anthracite.dev.log('::: APP ::: ADMIN ::: OPENED');
 
         // Reset incase user is coming in from another app

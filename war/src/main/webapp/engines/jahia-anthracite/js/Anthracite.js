@@ -18,7 +18,7 @@
      * @property {method} switch Executed when the App changes mode
      * @namespace Anthracite
      */
-    window.Anthracite = {
+    window.Anthracite = window.DX = {
         /**
          * Used to add modules to the Anthracite Object Literal App
          * @memberof Anthracite

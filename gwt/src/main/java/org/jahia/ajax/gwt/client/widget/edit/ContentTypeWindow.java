@@ -54,6 +54,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.google.gwt.user.client.Event;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTHooks;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -64,10 +65,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.contentengine.ButtonItem;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  *
@@ -166,7 +164,6 @@ public class ContentTypeWindow extends Window {
     }
 
     public static void createContent(final Linker linker, final String name, final List<String> nodeTypes, final Map<String, GWTJahiaNodeProperty> props, final GWTJahiaNode targetNode, boolean includeSubTypes, final boolean createInParentAndMoveBefore, final Set<String> displayedNodeTypes, final boolean skipRefreshOnSave) {
-        linker.loading(Messages.get("label.loading", "Loading"));
         List<String> excluded = new ArrayList<String>();
         if (linker.getConfig().getNonEditableTypes() != null) {
             excluded.addAll(linker.getConfig().getNonEditableTypes());
@@ -177,6 +174,16 @@ public class ContentTypeWindow extends Window {
         if (linker.getConfig().getExcludedNodeTypes() != null) {
             excluded.addAll(linker.getConfig().getExcludedNodeTypes());
         }
+
+        if (JahiaGWTHooks.hasHook("create")) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("path", targetNode.getPath());
+            params.put("excludedNodeTypes", excluded);
+            JahiaGWTHooks.callHook("create", params);
+            return;
+        }
+
+        linker.loading(Messages.get("label.loading", "Loading"));
 
         JahiaContentManagementService.App.getInstance().getContentTypesAsTree(nodeTypes, excluded, includeSubTypes, new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
 

@@ -119,6 +119,9 @@ public class EngineLoader {
                     JahiaGWTParameters.getJahiaParamDictionary().keySet().forEach(key -> params.put(key, JahiaGWTParameters.getJahiaParamDictionary().get(key)));
                     // Provide the path
                     params.put("path", node.getPath());
+                    if (type != null) {
+                        params.put("contentType", type.getName());
+                    }
                     JahiaGWTHooks.callHook(operation, JsonUtils.serialize(params).getJavaScriptObject());
                     return;
                 }

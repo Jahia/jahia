@@ -115,14 +115,12 @@ public class EngineLoader {
                 String operation = t == CREATE ? "create" : "edit";
                 if (jsConfig == null && JahiaGWTHooks.hasHook(operation)) {
                     Map<String, Object> params = new HashMap<>();
-                    // Provide the current GWT parameters
-                    JahiaGWTParameters.getJahiaParamDictionary().keySet().forEach(key -> params.put(key, JahiaGWTParameters.getJahiaParamDictionary().get(key)));
                     // Provide the path
                     params.put("path", node.getPath());
                     if (type != null) {
                         params.put("contentType", type.getName());
                     }
-                    JahiaGWTHooks.callHook(operation, JsonUtils.serialize(params).getJavaScriptObject());
+                    JahiaGWTHooks.callHook(operation, params);
                     return;
                 }
                 EngineContainer container = createContainer(linker, forceEngineWindow);

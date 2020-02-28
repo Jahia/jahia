@@ -43,6 +43,11 @@
  */
 package org.jahia.ajax.gwt.client.core;
 
+import org.jahia.ajax.gwt.client.util.JsonUtils;
+
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Global class to provide hooks in GWT application
  * A hook is a function that will be call from "window.top.jahiaGwtHook" object
@@ -61,9 +66,21 @@ public class JahiaGWTHooks {
     /**
      * Call the hook define by key with associated params
      * @param key
-     * @param param
+     * @param customParams
      */
-    public static native void callHook(String key, Object param) /*-{
+    public static void callHook(String key, Map<String, Object> customParams) {
+        Map<String, Object> params = new HashMap<>();
+        // Provide the current GWT context
+        JahiaGWTParameters.getJahiaParamDictionary().keySet().forEach(keyEntry -> params.put(keyEntry, JahiaGWTParameters.getJahiaParamDictionary().get(keyEntry)));
+
+        // add custom params
+        params.putAll(customParams);
+
+        // call the hook
+        callHook(key, JsonUtils.serialize(params).getJavaScriptObject());
+    }
+
+    private static native void callHook(String key, Object param) /*-{
         if ( $wnd.top.jahiaGwtHook !== undefined && $wnd.top.jahiaGwtHook[key] !== undefined) {
             $wnd.top.jahiaGwtHook[key](param);
         } else {

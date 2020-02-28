@@ -982,6 +982,9 @@ public class MainModule extends Module {
 
     public static native void setDocumentTitle(String title) /*-{
         $doc.title = title;
+        if($wnd.parent !== $wnd) {
+            $wnd.parent.postMessage({msg:'setTitle', title:title}, $wnd.location.origin);
+        }
     }-*/;
 
     private void refreshImages(Element element) {
@@ -1122,6 +1125,7 @@ public class MainModule extends Module {
         } else {
             module.resetFramePosition();
             m.goToUrl(location + "##", false, false, false);
+            sendMessage("edit frame history updated", location);
         }
     }
 
@@ -1582,10 +1586,22 @@ public class MainModule extends Module {
 
     private native boolean pushState(String path, String location, String config) /*-{
         var state = {location: location, config: config};
+        var push = true;
         if ($wnd.history.state) {
             $wnd.history.pushState(state, null, path);
         } else {
             $wnd.history.replaceState(state, null, path);
+            push= false;
+        }
+        if($wnd.parent !== $wnd) {
+            $wnd.parent.postMessage({msg:'edit frame history updated', state:state, isPushState:push, url:path}, $wnd.location.origin)
+        }
+        return true;
+    }-*/;
+
+    private static native boolean sendMessage(String message, String location) /*-{
+        if($wnd.parent !== $wnd) {
+            $wnd.parent.postMessage({msg:message, state:{location: location}, isPushState:false, url:location}, $wnd.location.origin)
         }
         return true;
     }-*/;

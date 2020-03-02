@@ -1569,7 +1569,6 @@ form,
         .x-grid3-cell {
             /* Cell Containing the List Item */
             padding: 0;
-            width: 100%!important;
 
             &.x-grid3-td-locked {
                 width: 25px !important;
@@ -1620,8 +1619,9 @@ form,
     }
 }
 
-
-
+:not(.wcag-warning-grid) > .x-grid3 .x-grid3-row-table .x-grid3-cell {
+    width: 100%!important;
+}
 
 .x-panel .x-grid3 .x-grid3-row-table { // Changed to fix table bug on workflow modal.
     width: 100% !important;

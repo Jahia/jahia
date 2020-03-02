@@ -179,6 +179,8 @@ public class ContentTypeWindow extends Window {
             Map<String, Object> params = new HashMap<>();
             params.put("path", targetNode.getPath());
             params.put("excludedNodeTypes", excluded);
+            params.put("includeSubTypes", includeSubTypes);
+            params.put("contentTypes", nodeTypes);
             JahiaGWTHooks.callHook("create", params);
             return;
         }

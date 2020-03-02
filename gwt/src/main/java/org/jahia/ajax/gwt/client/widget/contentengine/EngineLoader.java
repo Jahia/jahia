@@ -46,21 +46,17 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 import com.extjs.gxt.ui.client.GXT;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
-import com.google.gwt.json.client.JSONObject;
 import org.jahia.ajax.gwt.client.core.JahiaGWTHooks;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineConfiguration;
-import org.jahia.ajax.gwt.client.util.JsonUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Hover;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem.SidePanelLinker;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.JSActionItem;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -118,7 +114,8 @@ public class EngineLoader {
                     // Provide the path
                     params.put("path", node.getPath());
                     if (type != null) {
-                        params.put("contentType", type.getName());
+                        params.put("contentTypes", Collections.singleton(type.getName()));
+                        params.put("includeSubTypes", false);
                     }
                     JahiaGWTHooks.callHook(operation, params);
                     return;

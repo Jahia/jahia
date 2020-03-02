@@ -43,19 +43,18 @@
  */
 package org.jahia.services.templates;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.List;
-import java.util.Map;
-
+import com.google.common.collect.ImmutableList;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.utils.ProcessHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.ImmutableList;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Base service class for SCM related operations.
@@ -175,7 +174,7 @@ public abstract class SourceControlManagement {
 
         String argumentsString = StringUtils.trimToEmpty(StringUtils.join(arguments, " "));
         String commandString = command + " " + argumentsString;
-        logger.info("Executing SCM command: '{}'...", commandString);
+        logger.debug("Executing SCM command: '{}'...", commandString);
 
         int res;
         StringBuilder resultOut = new StringBuilder();
@@ -188,7 +187,7 @@ public abstract class SourceControlManagement {
         }
         ExecutionResult result = new ExecutionResult(res, resultOut.toString(), resultErr.toString());
 
-        if (logger.isInfoEnabled()) {
+        if (logger.isDebugEnabled()) {
             StringBuilder logMessage = new StringBuilder("\n");
             logMessage.append("Executed SCM command: '").append(commandString).append("'\n");
             if (rootFolder != null) {
@@ -201,7 +200,7 @@ public abstract class SourceControlManagement {
             if (StringUtils.isNotBlank(result.err)) {
                 logMessage.append("Command errors:\n").append(result.err.trim()).append("\n");
             }
-            logger.info(logMessage.toString());
+            logger.debug(logMessage.toString());
         }
 
         return result;
@@ -230,7 +229,7 @@ public abstract class SourceControlManagement {
         Status s = statuses.get(path);
         if (s != null) {
             return s;
-        }        
+        }
         if (path.indexOf('/') != -1 && statuses.values().contains(Status.UNTRACKED)) {
             StringBuilder subPath = new StringBuilder(32);
             for (String segment : StringUtils.split(path, '/')) {
@@ -243,7 +242,7 @@ public abstract class SourceControlManagement {
                 subPath.append(segment);
             }
         }
-       
+
         return Status.UNMODIFIED;
     }
 

@@ -360,9 +360,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     protected List<String> contributeTypes(RenderContext renderContext, JCRNodeWrapper node) {
 
-        if (!"contributemode".equals(renderContext.getEditModeConfigName())) {
-            return null;
-        }
         JCRNodeWrapper contributeNode = null;
         if (renderContext.getRequest().getAttribute("areaListResource") != null) {
             contributeNode = (JCRNodeWrapper) renderContext.getRequest().getAttribute("areaListResource");

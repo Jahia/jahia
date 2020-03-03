@@ -234,8 +234,8 @@
     color: #FFFFFF;
 }
 .hover-draggable:before {
-    background: url(../images/ic_drag_handle_white_24px.svg) no-repeat top left;
-    cursor: move;
+    background: url(../images/HandleMove.svg) no-repeat top left;
+    cursor: grab;
     position: absolute;
     z-index: 99999;
     width: 20px;

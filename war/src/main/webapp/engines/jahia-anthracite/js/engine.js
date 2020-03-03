@@ -361,7 +361,7 @@
       *
       */
     closeConditionEditor: function () {
-        jGet('#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3)').removeClass('indigo-show');
+        jGet('#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(4)').removeClass('indigo-show');
         jGet.getCached('body').setAttribute('data-indigo-editing-condition', false);
     },
      /**
@@ -378,7 +378,7 @@
       *
       */
     createConditionMenu: function (newMenu) {
-        jGet('#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3) .x-panel-footer').setHTML('').append(newMenu);
+        jGet('#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(4) .x-panel-footer').setHTML('').append(newMenu);
     },
      /**
       * Callback executed when the user clicks on the Edit Condition button
@@ -393,7 +393,7 @@
       *
       */
     editCondition: function () {
-        jGet('#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3)').addClass('indigo-show');
+        jGet('#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(4)').addClass('indigo-show');
 
         jGet.getCached('body').setAttribute('data-indigo-add-visibility-condition', '').setAttribute('data-indigo-editing-condition', true);
         // Create menu ...
@@ -406,11 +406,11 @@
         doneButton.appendChild(doneButtonLabel);
         newMenu.appendChild(doneButton);
 
-        if (jGet('#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3) .x-panel-footer').exists()) {
+        if (jGet('#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(4) .x-panel-footer').exists()) {
             Anthracite.engine.createConditionMenu(newMenu);
         } else {
             jGet.id('JahiaGxtEditEnginePanel-visibility').onceOpen({
-                target: '.x-component:nth-child(3) .x-panel-footer',
+                target: '.x-component:nth-child(4) .x-panel-footer',
                 callback: function () {
                     Anthracite.engine.createConditionMenu(newMenu);
                 },
@@ -430,7 +430,7 @@
       *
       */
     addCondition: function () {
-        jGet('#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3)').addClass('indigo-show');
+        jGet('#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(4)').addClass('indigo-show');
         jGet.getCached('body').setAttribute('data-indigo-editing-condition', 'new');
 
         var newMenu = document.createElement('menu');
@@ -458,11 +458,11 @@
             },
         });
 
-        if (jGet('#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3) .x-panel-footer').exists()) {
+        if (jGet('#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(4) .x-panel-footer').exists()) {
             Anthracite.engine.createConditionMenu(newMenu);
         } else {
             jGet.id('JahiaGxtEditEnginePanel-visibility').onceOpen({
-                target: '.x-component:nth-child(3) .x-panel-footer',
+                target: '.x-component:nth-child(4) .x-panel-footer',
                 callback: function () {
                     Anthracite.engine.createConditionMenu(newMenu);
                 },
@@ -491,7 +491,7 @@
                     callback: function () {
                         // DEV NOTE ::: Get rid of this timeout
                         setTimeout(function () {
-                            jGet('#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(1) > .x-component:nth-child(2) > table > tbody > tr > td:nth-child(5) > table').trigger('click');
+                            jGet('#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(2) > .x-component:nth-child(2) > table > tbody > tr > td:nth-child(5) > table').trigger('click');
                         }, 5);
                     },
                 });

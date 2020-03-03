@@ -53,8 +53,34 @@ div.engine-window {
                 text-align: right;
             }
 
-            // Header Zone
+            // Custom look and feel for the timezone header
             &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 9 */
+                background: _theme($FIELDSET--BG, $EDIT-ENGINE);
+                border: 1px solid _theme($FIELDSET--BORDER, $EDIT-ENGINE) !important;
+                padding: 20px 10px 15px 29px;
+                box-sizing: border-box;
+                height: auto !important;
+                position: relative;
+                width: 100% !important;
+                margin: 0px 0 10px 0 !important;
+                overflow: visible !important;
+
+                > .x-component {
+                    height: auto !important;
+
+                    &:nth-child(1) {
+                        > table > tbody > tr > td > .x-component {
+                            padding: 0 !important;
+                            font-weight: _weight("light");
+                            font-size: _size("medium");
+                            color: _theme($FIELDSET--TITLE-COLOR, $EDIT-ENGINE);
+                        }
+                    }
+                }
+            }
+
+            // Visibility Zone
+            &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 10 */
                 background: _theme($FIELDSET--BG, $EDIT-ENGINE);
                 border: 1px solid _theme($FIELDSET--BORDER, $EDIT-ENGINE) !important;
                 padding: 43px 10px 20px 29px;
@@ -75,70 +101,16 @@ div.engine-window {
                 }
 
                 > .x-component {
-                    &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 10 */
+                    &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 11 */
                         > table > tbody > tr > td {
-                            // Publication status label
-                            &:nth-child(5) {
-                                position: fixed;
-                                top: 55px;
-                                left: 638px;
-                                z-index: 98;
 
-                                body[data-uilang="fr"] & {
-                                    left: 698px;
-                                }
-
-                                body[data-uilang="de"] & {
-                                    left: 714px;
-                                }
-                            }
-
-                            // Publication icon
-                            &:nth-child(6) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 11 */
-                                position: fixed;
-                                top: 54px;
-                                left: 745px;
-                                z-index: 98;
-
-                                body[data-uilang="fr"] & {
-                                    left: 820px;
-                                }
-
-                                body[data-uilang="de"] & {
-                                    left: 825px;
-                                }
-                            }
-
-                            // Publish conditions on save ( also used to create a fake fieldset )
+                            // https://jira.jahia.org/browse/QA-12611?focusedCommentId=103626&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-103626
+                            // Francois ask that this option (Publish conditions on save) should be hide, so be it
                             &:nth-child(7) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 12 */
-                                position: absolute;
-                                background: _theme($FIELDSET--BG, $EDIT-ENGINE);
-                                border: 1px solid _theme($FIELDSET--BORDER, $EDIT-ENGINE) !important;
-                                width: 100%;
-                                left: 0;
-                                top: -95px;
-                                padding: 43px 10px 20px 29px;
-                                box-sizing: border-box;
-                                height: 85px !important;
-
-                                // Actual label
-                                > div {
-                                    position: absolute;
-                                    top: 15px;
-                                    right: 40px;
-                                }
-
-                                &:before {
-                                    content: _dictionary("visibility_publication");
-                                    @include _label("legend");
-                                }
+                                display: none;
                             }
-
-                            // Save on publication checkbox
                             &:nth-child(8) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 13 */
-                                position: absolute;
-                                right: 10px;
-                                top: -79px;
+                                display: none;
                             }
                         }
                     }
@@ -149,7 +121,7 @@ div.engine-window {
                             // All conditions should match label
                             &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 16 */
                                 position: fixed;
-                                top: 120px;
+                                top: 127px;
                                 right: 48px;
                                 z-index: 98;
 
@@ -163,7 +135,7 @@ div.engine-window {
                             &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 17 */
                                 position: fixed;
                                 right: 17px;
-                                top: 120px;
+                                top: 127px;
                                 z-index: 98;
                             }
 
@@ -185,7 +157,7 @@ div.engine-window {
                                     width: 15px !important;
                                     height: 15px !important;
                                     position: fixed !important;
-                                    top: 30px;
+                                    top: 185px;
                                     right: 30px;
                                     z-index: 98;
                                     background-size: 14px !important;
@@ -207,7 +179,7 @@ div.engine-window {
             }
 
             // Conditions List
-            &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 21 */
+            &:nth-child(3) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 21 */
                 .x-grid-empty {
                     padding: 0;
 
@@ -294,7 +266,7 @@ div.engine-window {
             }
 
             // Condition settings
-            &:nth-child(3) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 22 */
+            &:nth-child(4) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 22 */
                 height: 100% !important;
                 position: fixed;
                 top: 0;
@@ -407,5 +379,18 @@ div.engine-window {
             }
         }
     }
+}
 
+// add new condition menu
+body[data-indigo-add-visibility-condition="new"] {
+    > .x-combo-list {
+        background: transparent !important;
+        width: auto !important;
+
+        > div {
+            position: fixed;
+            top: 185px;
+            right: 30px;
+        }
+    }
 }

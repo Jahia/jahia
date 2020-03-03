@@ -67,6 +67,7 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
@@ -119,6 +120,15 @@ public class VisibilityTabItem extends EditEngineTabItem {
         tab.setProcessed(true);
 
         final boolean editable = (!engine.isExistingNode() || (PermissionsUtils.isPermitted("jcr:modifyProperties", engine.getNode()) && !engine.getNode().isLocked()));
+
+        LayoutContainer header = new LayoutContainer(new FillLayout(Style.Orientation.VERTICAL));
+        tab.add(header, new RowData(1, 25, new Margins(5)));
+
+        final HorizontalPanel timeZonePanel = new HorizontalPanel();
+        timeZonePanel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
+        timeZonePanel.add(new HTML(Messages.get("label.visibility.timeZone", "All the visibility conditions are using the server timezone") +
+                ":&nbsp;" + JahiaGWTParameters.getServerDisplayableTimeZone()));
+        header.add(timeZonePanel);
 
         LayoutContainer top = new LayoutContainer(new FillLayout(Style.Orientation.VERTICAL));
         tab.add(top, new RowData(1, 60, new Margins(5)));

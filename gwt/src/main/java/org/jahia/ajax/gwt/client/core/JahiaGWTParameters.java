@@ -92,6 +92,7 @@ public class JahiaGWTParameters {
     public static final String AREA_AUTO_ACTIVATED = "areaAutoActivated";
     public static final String DX_VERSION = "dxVersion";
     public static final String STUDIO_MAX_DISPLAYABLE_FILE_SIZE = "studioMaxDisplayableFileSize";
+    public static final String SERVER_DISPLAYABLE_TIME_ZONE = "serverDisplayableTimeZone";
 
     public static final String SYSTEM_USER = " system "; // org.jahia.jaas.JahiaLoginModule.SYSTEM
 
@@ -421,5 +422,9 @@ public class JahiaGWTParameters {
 
     public static Long getStudioMaxDisplayableFileSize() {
         return Long.parseLong(jahiaParamDictionary.get(STUDIO_MAX_DISPLAYABLE_FILE_SIZE));
+    }
+
+    public static String getServerDisplayableTimeZone() {
+        return jahiaParamDictionary.get(SERVER_DISPLAYABLE_TIME_ZONE);
     }
 }

@@ -465,16 +465,3 @@
     }
 
 }
-
-body[data-indigo-add-visibility-condition="new"] {
-    > .x-combo-list {
-        background: transparent !important;
-        width: auto !important;
-
-        > div {
-            position: fixed;
-            top: 30px;
-            right: 30px;
-        }
-    }
-}

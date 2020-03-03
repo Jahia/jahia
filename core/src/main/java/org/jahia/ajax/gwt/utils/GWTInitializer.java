@@ -73,6 +73,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.net.MalformedURLException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author rfelden
@@ -234,6 +235,8 @@ public class GWTInitializer {
 
         params.put(JahiaGWTParameters.STUDIO_MAX_DISPLAYABLE_FILE_SIZE, String.valueOf(SettingsBean.getInstance().getStudioMaxDisplayableFileSize()));
 
+        params.put(JahiaGWTParameters.SERVER_DISPLAYABLE_TIME_ZONE, getServerDisplayableTimezone(Calendar.getInstance().getTimeZone(), uilocale));
+
         // add jahia parameter dictionary
         buf.append("<script type=\"text/javascript\">\n");
         buf.append(getJahiaGWTConfig(params));
@@ -242,6 +245,20 @@ public class GWTInitializer {
         addJavaScript(buf, request, response, renderContext);
 
         return buf.toString();
+    }
+
+    private static String getServerDisplayableTimezone(TimeZone timeZone, Locale locale) {
+        long hours = TimeUnit.MILLISECONDS.toHours(timeZone.getRawOffset());
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(timeZone.getRawOffset())
+                - TimeUnit.HOURS.toMinutes(hours);
+        // avoid -4:-30 issue
+        minutes = Math.abs(minutes);
+
+        if (hours > 0) {
+            return String.format("%s (GMT+%d:%02d)", timeZone.getDisplayName(locale), hours, minutes);
+        } else {
+            return String.format("%s (GMT%d:%02d)", timeZone.getDisplayName(locale), hours, minutes);
+        }
     }
 
     public static String getCustomCKEditorConfig(RenderContext ctx) {

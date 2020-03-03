@@ -531,22 +531,22 @@
 },{
     root: 'body',
     type: 'onClick',
-    target: '#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3) .x-panel-footer',
+    target: '#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(4) .x-panel-footer',
     callback: Anthracite.engine.closeConditionEditor,
 },{
     root: 'body',
     type: 'onClick',
-    target: '#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(2) .x-grid3-row',
+    target: '#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3) .x-grid3-row',
     callback: Anthracite.engine.editCondition,
 },{
     root: 'body',
     type: 'onClick',
-    target: '#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(1) > .x-component:nth-child(2) td:nth-child(5) > table',
+    target: '#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(2) > .x-component:nth-child(2) td:nth-child(5) > table',
     callback: Anthracite.engine.addCondition,
 },{
     root: 'body',
     type: 'onMouseDown',
-    target: '#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(1) img.x-form-trigger',
+    target: '#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(2) img.x-form-trigger',
     callback: Anthracite.engine.openConditionsMenu,
 },{
     root: 'body',

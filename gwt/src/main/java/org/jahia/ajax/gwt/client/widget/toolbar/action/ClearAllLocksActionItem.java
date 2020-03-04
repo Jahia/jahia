@@ -101,7 +101,7 @@ public class ClearAllLocksActionItem extends BaseActionItem {
         setEnabled(singleSelection!=null && singleSelection.isLockable() && hasPermission(lh.getSelectionPermissions()) &&
                 PermissionsUtils.isPermitted("jcr:lockManagement", lh.getSelectionPermissions()) && singleSelection.getLockInfos() != null &&
                 !lh.getSingleSelection().getLockInfos().isEmpty() &&
-                ("root".equals(JahiaGWTParameters.getCurrentUser()) || checkLockInfos(singleSelection.getLockInfos())));
+                (PermissionsUtils.isPermitted("clearLock", lh.getSelectionPermissions()) || checkLockInfos(singleSelection.getLockInfos())));
     }
 
     private boolean checkLockInfos(Map<String,List<String>> lockInfos) {

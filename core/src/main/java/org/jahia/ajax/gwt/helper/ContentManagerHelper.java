@@ -1066,10 +1066,10 @@ public class ContentManagerHelper {
 
     public void clearAllLocks(String path, boolean processChildNodes, JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
         try {
-            if (currentUserSession.getUserNode().isRoot()) {
+            JCRNodeWrapper node = currentUserSession.getNode(path);
+            if (node.hasPermission("clearLock")) {
                 JCRContentUtils.clearAllLocks(path, processChildNodes, currentUserSession.getWorkspace().getName());
             } else {
-                JCRNodeWrapper node = currentUserSession.getNode(path);
                 Map<String, List<String>> lockInfos = node.getLockInfos();
                 List<String> locks = lockInfos.get(null);
                 if (locks != null) {

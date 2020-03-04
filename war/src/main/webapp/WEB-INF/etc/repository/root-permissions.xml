@@ -50,6 +50,8 @@
                 <jcr:lifecycleManagement_live jcr:primaryType="jnt:permission"/>
             </jcr:all_live>
 
+            <clearLock jcr:primaryType="jnt:permission"/>
+
             <publish jcr:primaryType="jnt:permission"/>
         </repository-permissions>
 

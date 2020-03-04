@@ -1611,7 +1611,7 @@ public class MainModule extends Module {
         Map<String, Object> data = new HashMap<>();
         data.put(Linker.REFRESH_ALL, true);
 
-        module.refresh(data);
+        getInstance().getEditLinker().refresh(data);
     }
 
     public void goToExternalUrl(String url) {

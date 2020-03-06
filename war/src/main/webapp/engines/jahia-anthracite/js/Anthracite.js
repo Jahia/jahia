@@ -989,8 +989,6 @@
                 editMenuButton = (document.querySelectorAll('.edit-menu-edit')[0]) ? document.querySelectorAll('.edit-menu-edit')[0].parentNode : null;
 
             if (targetMenu && advancedPublishMenuButton && publishMenuButton && statusMenuButton) {
-                advancedPublishMenuButton.parentNode.classList.remove('x-hide-display');
-                advancedPublishMenuButton.parentNode.classList.add('force-display-inline-block');
                 targetMenu.insertBefore(advancedPublishMenuButton.parentNode, editMenuButton);
                 targetMenu.insertBefore(publishMenuButton.parentNode, editMenuButton);
                 targetMenu.insertBefore(statusMenuButton.parentNode, editMenuButton);

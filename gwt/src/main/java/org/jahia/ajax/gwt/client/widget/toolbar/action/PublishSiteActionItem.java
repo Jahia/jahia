@@ -42,6 +42,7 @@
  *     please contact the sales department at sales@jahia.com.
  */
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -71,7 +72,7 @@ public class PublishSiteActionItem extends PublishActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext ctx = linker.getSelectionContext();
-        if (isNodeTypeAllowed(ctx.getMultipleSelection())) {
+        if (hasPermission(ctx.getSelectionPermissions()) && isNodeTypeAllowed(ctx.getMultipleSelection())) {
             boolean hasOnlyOneLanguage = JahiaGWTParameters.getSiteLanguages().size() == 1;
             setEnabled(true);
             if (allLanguages) {

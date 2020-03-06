@@ -45,12 +45,11 @@ package org.jahia.ajax.gwt.client.data.toolbar;
 
 import com.extjs.gxt.ui.client.widget.Component;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
+import org.jahia.ajax.gwt.client.util.security.PermissionsResolver;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * User: jahia
@@ -58,6 +57,7 @@ import java.util.Map;
  * Time: 15:41:31
  */
 public class GWTJahiaToolbarItem implements Serializable {
+
     private String id;
     private String icon;
     private String title;
@@ -67,7 +67,8 @@ public class GWTJahiaToolbarItem implements Serializable {
     private int layout = 0;
     private List<String> processes;
     private Map<String, GWTJahiaProperty> properties = new HashMap<String, GWTJahiaProperty>();
-    private String requiredPermission;
+    private List<String> requiredPermissions = Collections.emptyList();
+    private PermissionsResolver requiredPermissionsResolver = PermissionsResolver.MATCH_ALL;
     private String requiredModule;
     private boolean hideWhenDisabled = false;
 
@@ -159,12 +160,70 @@ public class GWTJahiaToolbarItem implements Serializable {
         this.processes = processes;
     }
 
+    /**
+     * Returns the required permission for enabling this item.
+     *
+     * @return the required permission if any, {@code null} otherwise
+     * @deprecated Please consider using {@link #getRequiredPermissions()} instead of this method.
+     *      If multiple permissions were provided (using {@link #setRequiredPermissions(List)}
+     *      then this method will only return the first one.
+     */
+    @Deprecated
     public String getRequiredPermission() {
-        return requiredPermission;
+        return requiredPermissions.isEmpty() ? null : requiredPermissions.get(0);
     }
 
     public void setRequiredPermission(String requiredPermission) {
-        this.requiredPermission = requiredPermission;
+        if (requiredPermission == null) {
+            this.requiredPermissions = Collections.emptyList();
+        } else {
+            this.requiredPermissions = Collections.singletonList(requiredPermission);
+        }
+    }
+
+    /**
+     * Sets a list of required permissions to enable this item.
+     * <p>
+     * {@link #setRequiredPermissionsResolver(PermissionsResolver)}
+     * allows to specify how this list of permissions should be
+     * interpreted.
+     *
+     * @param requiredPermissions a list of permissions
+     */
+    public final void setRequiredPermissions(List<String> requiredPermissions) {
+        this.requiredPermissions = new ArrayList<String>(requiredPermissions);
+    }
+
+    /**
+     * Returns the list of required permissions to enable this item.
+     * <p>
+     * {@link #getRequiredPermissionsResolver()} provides a way to
+     * consume those permissions as expected.
+     *
+     * @return a list of required permissions
+     */
+    public final List<String> getRequiredPermissions() {
+        return new ArrayList<String>(requiredPermissions);
+    }
+
+    /**
+     * Sets the {@link PermissionsResolver} to use to interpret
+     * required permissions.
+     *
+     * @param resolver the permission resolver to use
+     */
+    public final void setRequiredPermissionsResolver(PermissionsResolver resolver) {
+        this.requiredPermissionsResolver = resolver;
+    }
+
+    /**
+     * Returns the {@link PermissionsResolver} to use to interpret
+     * required permissions.
+     *
+     * @return the permission resolver to use
+     */
+    public final PermissionsResolver getRequiredPermissionsResolver() {
+        return requiredPermissionsResolver;
     }
 
     public String getRequiredModule() {
@@ -201,4 +260,5 @@ public class GWTJahiaToolbarItem implements Serializable {
             }
         }
     }
+
 }

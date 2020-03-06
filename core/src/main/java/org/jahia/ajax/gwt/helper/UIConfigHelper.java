@@ -51,6 +51,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.*;
 import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaStateInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.Constants;
+import org.jahia.ajax.gwt.client.util.security.PermissionsResolver;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageAware;
 import org.jahia.services.SpringContextSingleton;
@@ -573,7 +574,8 @@ public class UIConfigHelper {
             pMap.put(gwtProperty.getName(), gwtProperty);
         }
         gwtToolbarItem.setLayout(getLayoutAsInt(item.getLayout()));
-        gwtToolbarItem.setRequiredPermission(item.getRequiredPermission());
+        gwtToolbarItem.setRequiredPermissions(item.getRequiredPermissions());
+        gwtToolbarItem.setRequiredPermissionsResolver(toPermissionsResolver(item.getRequiredPermissionsStrategy()));
         gwtToolbarItem.setRequiredModule(item.getRequiredModule());
         gwtToolbarItem.setHideWhenDisabled(item.isHideWhenDisabled());
         gwtToolbarItem.setProperties(pMap);
@@ -865,4 +867,17 @@ public class UIConfigHelper {
     private boolean checkVisibility(JCRNodeWrapper contextNode, JahiaUser jahiaUser, Locale locale, HttpServletRequest request, Visibility visibility) {
         return visibility == null || visibility.getRealValue(contextNode, jahiaUser, locale, request);
     }
+
+    private static PermissionsResolver toPermissionsResolver(Item.PermissionsStrategy strategy) {
+        switch (strategy) {
+            case MATCH_ANY:
+                return PermissionsResolver.MATCH_ANY;
+            case MATCH_ALL:
+                return PermissionsResolver.MATCH_ALL;
+            default:
+                logger.warn("Unsupported strategy {}", strategy);
+                return PermissionsResolver.MATCH_ALL;
+        }
+    }
+
 }

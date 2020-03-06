@@ -60,10 +60,7 @@ import org.springframework.context.ApplicationContextAware;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * User: jahia
@@ -71,7 +68,20 @@ import java.util.Map;
  * Time: 09:05:20
  */
 public class Item implements Serializable, BeanNameAware, InitializingBean, DisposableBean, ApplicationContextAware {
+
+    /**
+     * Provides a way to specify how to interpret a list of required permissions.
+     */
+    public enum PermissionsStrategy {
+        /** All permissions are required */
+        MATCH_ALL,
+
+        /** At least one of the permissions is required */
+        MATCH_ANY
+    }
+
     private static final long serialVersionUID = -5120594370234680709L;
+
     private String id;
     private String icon;
     private String title;
@@ -81,10 +91,11 @@ public class Item implements Serializable, BeanNameAware, InitializingBean, Disp
     private Visibility visibility;
     private Selected selected;
     private String layout;
-    private String requiredPermission;
+    private List<String> requiredPermissions = Collections.emptyList();
+    private PermissionsStrategy requiredPermissionsStrategy = PermissionsStrategy.MATCH_ALL;
     private String requiredModule;
     private boolean hideWhenDisabled;
-    private List<Property> properties = new ArrayList<Property>();
+    private List<Property> properties = new ArrayList<>();
     private ActionItem actionItem;
     private Object parent;
     private int position = -1;
@@ -198,8 +209,38 @@ public class Item implements Serializable, BeanNameAware, InitializingBean, Disp
         this.layout = layout;
     }
 
+    /**
+     * Returns the required permission for enabling this item.
+     *
+     * @return the required permission if any, {@code null} otherwise
+     * @deprecated Please consider using {@link #getRequiredPermissions()} instead of this method.
+     *      If multiple permissions were provided (using {@link #setRequiredPermissions(List)}
+     *      then this method will only return the first one.
+     */
+    @Deprecated
     public String getRequiredPermission() {
-        return requiredPermission;
+        return requiredPermissions.isEmpty() ? null : requiredPermissions.get(0);
+    }
+
+    /**
+     * Returns the list of required permissions to enable this item.
+     * <p>
+     * {@link #getRequiredPermissionsStrategy()} indicates how the
+     * required permissions should be interpreted.
+     *
+     * @return a list of required permissions
+     */
+    public final List<String> getRequiredPermissions() {
+        return Collections.unmodifiableList(requiredPermissions);
+    }
+
+    /**
+     * Returns the permission strategy to use to interpret required permissions.
+     *
+     * @return the permission strategy to use
+     */
+    public final PermissionsStrategy getRequiredPermissionsStrategy() {
+        return requiredPermissionsStrategy;
     }
 
     public String getRequiredModule() {
@@ -211,7 +252,34 @@ public class Item implements Serializable, BeanNameAware, InitializingBean, Disp
     }
 
     public void setRequiredPermission(String requiredPermission) {
-        this.requiredPermission = requiredPermission;
+        if (requiredPermission == null) {
+            this.requiredPermissions = Collections.emptyList();
+        } else {
+            this.requiredPermissions = Collections.singletonList(requiredPermission);
+        }
+    }
+
+    /**
+     * Sets a list of required permissions to enable this item.
+     * <p>
+     * {@link #setRequiredPermissionsStrategy(PermissionsStrategy)}
+     * allows to specify how this list of permissions should be
+     * interpreted.
+     *
+     * @param requiredPermissions a list of permissions
+     */
+    public final void setRequiredPermissions(List<String> requiredPermissions) {
+        Objects.requireNonNull(requiredPermissions);
+        this.requiredPermissions = new ArrayList<>(requiredPermissions);
+    }
+
+    /**
+     * Sets the permission strategy to use to interpret required permissions.
+     *
+     * @param permissionsStrategy the permission strategy to use
+     */
+    public final void setRequiredPermissionsStrategy(PermissionsStrategy permissionsStrategy) {
+        this.requiredPermissionsStrategy = Objects.requireNonNull(permissionsStrategy);
     }
 
     public boolean isHideWhenDisabled() {

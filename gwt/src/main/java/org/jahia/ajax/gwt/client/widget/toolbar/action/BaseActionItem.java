@@ -57,6 +57,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTBitSet;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.util.security.PermissionsResolver;
 import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
@@ -162,11 +163,11 @@ public abstract class BaseActionItem implements ActionItem {
         if (toolbarItem.getIcon() != null) {
             menuItem.setIcon(ToolbarIconProvider.getInstance().getIcon(toolbarItem.getIcon()));
         }
-        if (toolbarItem.getTitle() != null) {
-            menuItem.setText(toolbarItem.getTitle());
-            if (!toolbarItem.getTitle().equals(toolbarItem.getDescription())) {
-                menuItem.setToolTip(toolbarItem.getDescription());
-            }
+
+        // selection
+        menuItem.setText(toolbarItem.getTitle());
+        if (!toolbarItem.getTitle().equals(toolbarItem.getDescription())) {
+            menuItem.setToolTip(toolbarItem.getDescription());
         }
         SelectionListener<MenuEvent> listener = getSelectListener();
         menuItem.addSelectionListener(listener);
@@ -325,14 +326,14 @@ public abstract class BaseActionItem implements ActionItem {
     /**
      * Called when the action component is selected. Override this method to provide custom behaviour
      */
-    public  void onComponentSelection(){
+    public void onComponentSelection(){
 
     }
 
     /**
      *  Called when there is a new liker selection. Override this method to provide custom behaviour
      */
-    public  void handleNewLinkerSelection(){
+    public void handleNewLinkerSelection(){
         if (getGwtToolbarItem().getRequiredModule() != null) {
             @SuppressWarnings("unchecked")
             List<String> installedModules = (List<String>) JahiaGWTParameters.getSiteNode().get("j:installedModules");
@@ -340,22 +341,26 @@ public abstract class BaseActionItem implements ActionItem {
         }
     }
 
-    public  void handleNewMainNodeLoaded(GWTJahiaNode node){
+    public void handleNewMainNodeLoaded(GWTJahiaNode node){
 
     }
 
-    public boolean hasPermission(GWTJahiaNode node) {
-        if (gwtToolbarItem.getRequiredPermission() != null) {
-            return PermissionsUtils.isPermitted(gwtToolbarItem.getRequiredPermission(), node);
-        }
-        return true;
+    public boolean hasPermission(final GWTJahiaNode node) {
+        return hasPermission(gwtToolbarItem, new PermissionsResolver.Matcher() {
+            @Override
+            public boolean matches(String permission) {
+                return PermissionsUtils.isPermitted(permission, node);
+            }
+        });
     }
 
-    public boolean hasPermission(GWTBitSet permissions) {
-        if (gwtToolbarItem.getRequiredPermission() != null) {
-            return PermissionsUtils.isPermitted(gwtToolbarItem.getRequiredPermission(), permissions);
-        }
-        return true;
+    public boolean hasPermission(final GWTBitSet permissions) {
+        return hasPermission(gwtToolbarItem, new PermissionsResolver.Matcher() {
+            @Override
+            public boolean matches(String permission) {
+                return PermissionsUtils.isPermitted(permission, permissions);
+            }
+        });
     }
 
     protected void updateTitle(String title) {
@@ -374,6 +379,10 @@ public abstract class BaseActionItem implements ActionItem {
                 menuItem.getParentMenu().recalculate();
             }
         }
+    }
+
+    private static boolean hasPermission(GWTJahiaToolbarItem item, PermissionsResolver.Matcher matcher) {
+        return item.getRequiredPermissionsResolver().resolve(item.getRequiredPermissions(), matcher);
     }
 
 }

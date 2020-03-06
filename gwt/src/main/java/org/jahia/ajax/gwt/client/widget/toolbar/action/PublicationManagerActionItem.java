@@ -44,6 +44,7 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.publication.PublicationManagerEngine;
 
 import java.util.ArrayList;
@@ -62,7 +63,8 @@ public class PublicationManagerActionItem extends BaseActionItem {
     }
 
     public void handleNewLinkerSelection() {
-        setEnabled(true);
+        LinkerSelectionContext ctx = linker.getSelectionContext();
+        setEnabled(hasPermission(ctx.getSelectionPermissions()));
     }
 
     public void setNodeTypes(String nodeTypesString) {

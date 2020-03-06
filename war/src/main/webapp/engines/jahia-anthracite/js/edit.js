@@ -219,7 +219,7 @@
         Anthracite.common.resizeLanguageInput();
 
         if (jGet.id('JahiaGxtSidePanelTabs').exists()) {
-            jGet.id('JahiaGxtSidePanelTabs').nodes[0].style.setProperty('width', '60px', 'important');
+            jGet.id('JahiaGxtSidePanelTabs').nodes[0].style.setProperty('width', '360px', 'important');
             jGet.getCached('body').setAttribute('data-indigo-gwt-side-panel', '');
         }
 
@@ -2249,7 +2249,7 @@
                 jGet.iframe('.window-iframe').filter('body').nodes[0].style.pointerEvents = 'all';
 
                 if (jGet.id('JahiaGxtSidePanelTabs').exists()) {
-                    jGet.id('JahiaGxtSidePanelTabs').nodes[0].style.setProperty('width', '60px', 'important');
+                    jGet.id('JahiaGxtSidePanelTabs').nodes[0].style.setProperty('width', '360px', 'important');
                     jGet.getCached('body').setAttribute('data-indigo-gwt-side-panel', '');
                 }
             }

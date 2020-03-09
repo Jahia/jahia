@@ -62,6 +62,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * This filter handles edit modes requests.
@@ -81,6 +83,8 @@ public class EditModeFilter extends AbstractFilter {
      */
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+        String targetName = "target";
+        String editPart = "/edit/";
         String out = super.execute(previousOut, renderContext, resource, chain);
         if (renderContext.getServletPath().endsWith("frame")) {
             Source source = new Source(out);
@@ -89,20 +93,26 @@ public class EditModeFilter extends AbstractFilter {
             for (StartTag tag : tags) {
                 String href = tag.getAttributeValue("href");
                 if (href != null && ((href.startsWith("/") && !href.startsWith(renderContext.getRequest().getContextPath() + renderContext.getServletPath())) || href.contains("://"))) {
-                    String target = tag.getAttributeValue("target");
-                    if (target == null) {
-                        document.insert(tag.getEnd()-1, " target=\"_parent\"");
-                    } else if (target.equals("_self")) {
-                        HashMap<String, String> replaceMap = new HashMap<>();
-                        for (Attribute attribute : tag.getAttributes()) {
-                            String key = attribute.getKey();
-                            if ("target".equals(key)) {
-                                replaceMap.put(key, "_parent");
+                    // Rewrite link for edit mode to prevent nested rendering
+                    if (href.contains(editPart)) {
+                        Map<String, String> replaceMap = new HashMap<>();
+                        for (Attribute attr : tag.getAttributes()) {
+                            if (attr.getName().equals(targetName)) {
+                                replaceMap.put(targetName, null);
+                            } else if (attr.getName().equals("href") && attr.getValue().contains(editPart)) {
+                                String hrefValue = attr.getValue();
+                                hrefValue = hrefValue.replace(editPart, "/editframe/");
+                                replaceMap.put("href", hrefValue);
                             } else {
-                                replaceMap.put(key, attribute.getValue());
+                                replaceMap.put(attr.getKey(), attr.getValue());
                             }
                         }
                         document.replace(tag.getAttributes(), replaceMap);
+                    } else {
+                        String target = tag.getAttributeValue(targetName);
+                        if (target == null) {
+                            document.insert(tag.getEnd()-1, " target=\"_blank\"");
+                        }
                     }
                 }
             }

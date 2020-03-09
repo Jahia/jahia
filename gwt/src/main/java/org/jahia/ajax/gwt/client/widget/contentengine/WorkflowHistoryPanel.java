@@ -54,7 +54,6 @@ import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
@@ -62,7 +61,6 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -136,12 +134,11 @@ public class WorkflowHistoryPanel extends ContentPanel {
 
         dashboard = true;
         this.linker = linker;
-        setSize("100%","100%");
+        setSize("100%", "100%");
         addStyleName("workflow-dashboard-engine");
         init();
         setHeadingHtml(Messages.get("label.workflowdashboard", "Workflow Dashboard"));
     }
-
 
     private void init() {
         setBorders(false);
@@ -150,8 +147,7 @@ public class WorkflowHistoryPanel extends ContentPanel {
 
         // data proxy
         RpcProxy<List<GWTJahiaWorkflowHistoryItem>> proxy = new RpcProxy<List<GWTJahiaWorkflowHistoryItem>>() {
-            @Override
-            protected void load(Object loadConfig, AsyncCallback<List<GWTJahiaWorkflowHistoryItem>> callback) {
+            @Override protected void load(Object loadConfig, AsyncCallback<List<GWTJahiaWorkflowHistoryItem>> callback) {
                 if (loadConfig == null) {
                     if (dashboard) {
                         service.getWorkflowHistoryForUser(callback);
@@ -169,8 +165,7 @@ public class WorkflowHistoryPanel extends ContentPanel {
 
         // tree loader
         final TreeLoader<GWTJahiaWorkflowHistoryItem> loader = new BaseTreeLoader<GWTJahiaWorkflowHistoryItem>(proxy) {
-            @Override
-            public boolean hasChildren(GWTJahiaWorkflowHistoryItem parent) {
+            @Override public boolean hasChildren(GWTJahiaWorkflowHistoryItem parent) {
                 return parent instanceof GWTJahiaWorkflowHistoryProcess;
             }
         };
@@ -178,50 +173,48 @@ public class WorkflowHistoryPanel extends ContentPanel {
         // trees store
         final TreeStore<GWTJahiaWorkflowHistoryItem> store = new TreeStore<GWTJahiaWorkflowHistoryItem>(loader);
         store.setStoreSorter(new StoreSorter<GWTJahiaWorkflowHistoryItem>() {
-            @Override
-            public int compare(Store<GWTJahiaWorkflowHistoryItem> store, GWTJahiaWorkflowHistoryItem m1, GWTJahiaWorkflowHistoryItem m2, String property) {
+            @Override public int compare(Store<GWTJahiaWorkflowHistoryItem> store, GWTJahiaWorkflowHistoryItem m1,
+                    GWTJahiaWorkflowHistoryItem m2, String property) {
                 return m1.getStartDate().compareTo(m2.getStartDate());
             }
         });
         List<ColumnConfig> config = new ArrayList<ColumnConfig>();
 
-        ColumnConfig column = new ColumnConfig("displayName", Messages.get("label.name", "Name"), 160);
+        ColumnConfig column = new ColumnConfig("displayName", Messages.get("label.name", "Name"), 400);
         column.setRenderer(new WidgetTreeGridCellRenderer<GWTJahiaWorkflowHistoryItem>() {
-            @Override
-            public Widget getWidget(GWTJahiaWorkflowHistoryItem historyItem, String property, ColumnData config,
-                                    int rowIndex, int colIndex,
-                                    ListStore<GWTJahiaWorkflowHistoryItem> gwtJahiaWorkflowHistoryItemListStore,
-                                    Grid<GWTJahiaWorkflowHistoryItem> grid) {
+            @Override public Widget getWidget(GWTJahiaWorkflowHistoryItem historyItem, String property, ColumnData config, int rowIndex,
+                    int colIndex, ListStore<GWTJahiaWorkflowHistoryItem> gwtJahiaWorkflowHistoryItemListStore,
+                    Grid<GWTJahiaWorkflowHistoryItem> grid) {
                 if (dashboard && historyItem instanceof GWTJahiaWorkflowHistoryTask) {
-                    final GWTJahiaWorkflowHistoryProcess parent = (GWTJahiaWorkflowHistoryProcess) ((TreeGrid<GWTJahiaWorkflowHistoryItem>) grid).getTreeStore().getParent(
-                            historyItem);
+                    final GWTJahiaWorkflowHistoryProcess parent = (GWTJahiaWorkflowHistoryProcess) ((TreeGrid<GWTJahiaWorkflowHistoryItem>) grid)
+                            .getTreeStore().getParent(historyItem);
                     for (final GWTJahiaWorkflowTask task : parent.getAvailableTasks()) {
                         if (task.getId().equals(historyItem.getId())) {
                             Button b = new Button(historyItem.<String>get("displayName"));
                             b.addStyleName("button-details");
                             b.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                                @Override
-                                public void componentSelected(ButtonEvent ce) {
+                                @Override public void componentSelected(ButtonEvent ce) {
                                     EngineWindow container = new EngineWindow();
                                     container.setClosable(false);
                                     container.setMaximizable(false);
                                     container.setMinimizable(false);
-                                    container.addStyleName("publication-window");
-                                    container.setId("publication-window");
+                                    container.addStyleName("workflow-dashboard-publication-window");
+                                    container.setId("workflow-dashboard-publication-window");
                                     // get path from the publication info, not used for unpublished
                                     CustomWorkflow customWorkflowInfo = parent.getRunningWorkflow().getCustomWorkflowInfo();
                                     String path = "";
-                                    if (customWorkflowInfo instanceof PublicationWorkflow && ((PublicationWorkflow) customWorkflowInfo).getPublicationInfos().size() > 0) {
+                                    if (customWorkflowInfo instanceof PublicationWorkflow
+                                            && ((PublicationWorkflow) customWorkflowInfo).getPublicationInfos().size() > 0) {
                                         path = ((PublicationWorkflow) customWorkflowInfo).getPublicationInfos().get(0).getMainPath();
                                     }
-                                    new WorkflowActionDialog(path, parent.getRunningWorkflow(), task, linker, customWorkflowInfo, container);
+                                    new WorkflowActionDialog(path, parent.getRunningWorkflow(), task, linker, customWorkflowInfo,
+                                            container);
                                     container.showEngine();
                                     final RootPanel rootPanel = RootPanel.get("workflowComponent");
                                     final ContentPanel rootPanelWidget = (ContentPanel) rootPanel.getWidget(0);
-                                    rootPanelWidget.hide();
+//                                    rootPanelWidget.hide();
                                     container.addListener(Events.Hide, new Listener<BaseEvent>() {
-                                        @Override
-                                        public void handleEvent(BaseEvent be) {
+                                        @Override public void handleEvent(BaseEvent be) {
                                             rootPanelWidget.show();
                                             init();
                                             layout(true);
@@ -238,10 +231,10 @@ public class WorkflowHistoryPanel extends ContentPanel {
             }
         });
         config.add(column);
-        column = new ColumnConfig("locale", 40);
+        column = new ColumnConfig("locale", 80);
         column.setRenderer(new GridCellRenderer<ModelData>() {
-            @Override
-            public Object render(ModelData historyItem, String property, ColumnData config, int rowIndex, int colIndex, ListStore<ModelData> store, Grid<ModelData> grid) {
+            @Override public Object render(ModelData historyItem, String property, ColumnData config, int rowIndex, int colIndex,
+                    ListStore<ModelData> store, Grid<ModelData> grid) {
                 if (dashboard && historyItem.get("workflow") instanceof GWTJahiaWorkflow) {
                     String lang = ((GWTJahiaWorkflow) historyItem.get("workflow")).get("locale");
                     if (lang != null && JahiaGWTParameters.getLanguage(lang) != null) {
@@ -253,11 +246,10 @@ public class WorkflowHistoryPanel extends ContentPanel {
         });
         config.add(column);
 
-        column = new ColumnConfig("user", Messages.get("label.user", "User"), 70);
+        column = new ColumnConfig("user", Messages.get("label.user", "User"), 140);
         config.add(column);
 
-        column = new ColumnConfig("nodeWrapper", Messages.get("label.workflow.start.node", "Workflow Starting Node"),
-                200);
+        column = new ColumnConfig("nodeWrapper", Messages.get("label.workflow.start.node", "Workflow Starting Node"), 400);
         column.setRenderer(new GridCellRenderer<GWTJahiaWorkflowHistoryItem>() {
 
             /**
@@ -272,11 +264,8 @@ public class WorkflowHistoryPanel extends ContentPanel {
              * @param grid     the grid
              * @return the cell HTML or Component instance
              */
-            @Override
-            public Object render(GWTJahiaWorkflowHistoryItem model, String property, ColumnData config,
-                                 int rowIndex, int colIndex,
-                                 ListStore<GWTJahiaWorkflowHistoryItem> store,
-                                 Grid<GWTJahiaWorkflowHistoryItem> grid) {
+            @Override public Object render(GWTJahiaWorkflowHistoryItem model, String property, ColumnData config, int rowIndex,
+                    int colIndex, ListStore<GWTJahiaWorkflowHistoryItem> store, Grid<GWTJahiaWorkflowHistoryItem> grid) {
                 final GWTJahiaNode wrapper = (GWTJahiaNode) model.getProperties().get("nodeWrapper");
 
                 if (wrapper != null) {
@@ -285,27 +274,25 @@ public class WorkflowHistoryPanel extends ContentPanel {
                 List<GWTJahiaWorkflowHistoryItem> models = store.getModels();
                 for (final GWTJahiaWorkflowHistoryItem historyItem : models) {
                     final GWTJahiaNode nodewrapper = (GWTJahiaNode) historyItem.getProperties().get("nodeWrapper");
-                    if (nodewrapper != null && historyItem.getProcessId().equals(model.getProcessId()) &&
-                            historyItem instanceof GWTJahiaWorkflowHistoryProcess) {
+                    if (nodewrapper != null && historyItem.getProcessId().equals(model.getProcessId())
+                            && historyItem instanceof GWTJahiaWorkflowHistoryProcess) {
                         ButtonBar buttonBar = new ButtonBar();
                         Button previewButton = new Button(Messages.get("label.preview"));
                         previewButton.addStyleName("button-preview");
                         previewButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                            @Override
-                            public void componentSelected(ButtonEvent ce) {
+                            @Override public void componentSelected(ButtonEvent ce) {
                                 String path = nodewrapper.getPath();
                                 String locale = JahiaGWTParameters.getLanguage();
-                                JahiaContentManagementService.App.getInstance().getNodeURL("render", path, null, null,
-                                        "default", locale, false, new BaseAsyncCallback<String>() {
+                                JahiaContentManagementService.App.getInstance()
+                                        .getNodeURL("render", path, null, null, "default", locale, false, new BaseAsyncCallback<String>() {
 
-                                            @Override
-                                            public void onSuccess(String url) {
+                                            @Override public void onSuccess(String url) {
                                                 Window window = new Window();
                                                 window.addStyleName("content-preview");
                                                 window.setMaximizable(true);
                                                 window.setSize(800, 600);
                                                 window.setUrl(url);
-//                                                window.setPosition(engine.getPosition(true).x + 50, engine.getPosition(true).y + 50);
+                                                //                                                window.setPosition(engine.getPosition(true).x + 50, engine.getPosition(true).y + 50);
                                                 window.show();
                                             }
 
@@ -317,21 +304,19 @@ public class WorkflowHistoryPanel extends ContentPanel {
                         Button inContextButton = new Button(Messages.get("label.preview.context"));
                         inContextButton.addStyleName("button-incontext-preview");
                         inContextButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                            @Override
-                            public void componentSelected(ButtonEvent ce) {
+                            @Override public void componentSelected(ButtonEvent ce) {
                                 String path = nodewrapper.getPath();
                                 String locale = JahiaGWTParameters.getLanguage();
-                                JahiaContentManagementService.App.getInstance().getNodeURL("render", path, null, null,
-                                        "default", locale, true, new BaseAsyncCallback<String>() {
+                                JahiaContentManagementService.App.getInstance()
+                                        .getNodeURL("render", path, null, null, "default", locale, true, new BaseAsyncCallback<String>() {
 
-                                            @Override
-                                            public void onSuccess(String url) {
+                                            @Override public void onSuccess(String url) {
                                                 Window window = new Window();
                                                 window.addStyleName("content-incontext-preview");
                                                 window.setMaximizable(true);
                                                 window.setSize(1000, 750);
                                                 window.setUrl(url);
-//                                                window.setPosition(engine.getPosition(true).x + 50, engine.getPosition(true).y + 50);
+                                                //                                                window.setPosition(engine.getPosition(true).x + 50, engine.getPosition(true).y + 50);
                                                 window.show();
                                             }
 
@@ -347,24 +332,19 @@ public class WorkflowHistoryPanel extends ContentPanel {
         });
         config.add(column);
 
-        column = new ColumnConfig("startDate", Messages.get("org.jahia.engines.processDisplay.tab.startdate",
-                "Start date"), 90);
+        column = new ColumnConfig("startDate", Messages.get("org.jahia.engines.processDisplay.tab.startdate", "Start date"), 150);
         column.setDateTimeFormat(Formatter.DEFAULT_DATETIME_FORMAT);
         config.add(column);
 
-        column = new ColumnConfig("endDate", Messages.get("org.jahia.engines.processDisplay.tab.enddate", "End date"),
-                90);
+        column = new ColumnConfig("endDate", Messages.get("org.jahia.engines.processDisplay.tab.enddate", "End date"), 150);
         column.setDateTimeFormat(Formatter.DEFAULT_DATETIME_FORMAT);
         config.add(column);
 
-        column = new ColumnConfig("duration", Messages.get("org.jahia.engines.processDisplay.column.duration",
-                "Duration"), 60);
+        column = new ColumnConfig("duration", Messages.get("org.jahia.engines.processDisplay.column.duration", "Duration"), 80);
         column.setRenderer(new GridCellRenderer<GWTJahiaWorkflowHistoryItem>() {
 
-            @Override
-            public Object render(GWTJahiaWorkflowHistoryItem historyItem, String property, ColumnData config,
-                                 int rowIndex, int colIndex, ListStore<GWTJahiaWorkflowHistoryItem> store,
-                                 Grid<GWTJahiaWorkflowHistoryItem> grid) {
+            @Override public Object render(GWTJahiaWorkflowHistoryItem historyItem, String property, ColumnData config, int rowIndex,
+                    int colIndex, ListStore<GWTJahiaWorkflowHistoryItem> store, Grid<GWTJahiaWorkflowHistoryItem> grid) {
                 Long duration = historyItem.getDuration();
                 String display = "-";
                 if (duration != null) {
@@ -374,12 +354,11 @@ public class WorkflowHistoryPanel extends ContentPanel {
                     } else if (time < 1000 * 60L) {
                         display = ((long) (time / 1000)) + " " + Messages.get("label.seconds", "sec");
                     } else if (time < 1000 * 60 * 60L) {
-                        display = ((long) (time / (1000 * 60L))) + " " + Messages.get("label.minutes", "min") + " " +
-                                ((long) ((time % (1000 * 60L)) / 1000)) + " " + Messages.get("label.seconds", "sec");
+                        display = ((long) (time / (1000 * 60L))) + " " + Messages.get("label.minutes", "min") + " " + ((long) (
+                                (time % (1000 * 60L)) / 1000)) + " " + Messages.get("label.seconds", "sec");
                     } else {
-                        display = ((long) (time / (1000 * 60 * 60L))) + " " + Messages.get("label_hours", "h") + " " +
-                                ((long) ((time % (1000 * 60 * 60L)) / (1000 * 60L))) + " " + Messages.get(
-                                "label.minutes", "min");
+                        display = ((long) (time / (1000 * 60 * 60L))) + " " + Messages.get("label_hours", "h") + " " + ((long) (
+                                (time % (1000 * 60 * 60L)) / (1000 * 60L))) + " " + Messages.get("label.minutes", "min");
                     }
                 }
                 return new Label(display);
@@ -388,30 +367,27 @@ public class WorkflowHistoryPanel extends ContentPanel {
         config.add(column);
 
         if (PermissionsUtils.isPermitted("viewWorkflowTab", JahiaGWTParameters.getSiteNode().getPermissions())) {
-            column = new ColumnConfig("operation", Messages.get("label.operation", "Operation"), 100);
+            column = new ColumnConfig("operation", Messages.get("label.operation", "Operation"), 150);
             column.setRenderer(new GridCellRenderer<GWTJahiaWorkflowHistoryItem>() {
 
-                @Override
-                public Object render(final GWTJahiaWorkflowHistoryItem model, String property, ColumnData config,
-                                     int rowIndex, int colIndex,
-                                     ListStore<GWTJahiaWorkflowHistoryItem> gwtJahiaWorkflowHistoryItemListStore,
-                                     Grid<GWTJahiaWorkflowHistoryItem> gwtJahiaWorkflowHistoryItemGrid) {
+                @Override public Object render(final GWTJahiaWorkflowHistoryItem model, String property, ColumnData config, int rowIndex,
+                        int colIndex, ListStore<GWTJahiaWorkflowHistoryItem> gwtJahiaWorkflowHistoryItemListStore,
+                        Grid<GWTJahiaWorkflowHistoryItem> gwtJahiaWorkflowHistoryItemGrid) {
                     if (model instanceof GWTJahiaWorkflowHistoryProcess && !((GWTJahiaWorkflowHistoryProcess) model).isFinished()) {
                         Button button = new Button(Messages.get("label.abort", "Abort"));
                         button.addStyleName("button-abort");
 
                         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                            @Override
-                            public void componentSelected(ButtonEvent ce) {
-                                JahiaContentManagementService.App.getInstance().abortWorkflow(model.getId(), model.getProvider(), new BaseAsyncCallback<String>() {
+                            @Override public void componentSelected(ButtonEvent ce) {
+                                JahiaContentManagementService.App.getInstance()
+                                        .abortWorkflow(model.getId(), model.getProvider(), new BaseAsyncCallback<String>() {
 
-                                    @Override
-                                    public void onSuccess(String url) {
-                                        store.removeAll();
-                                        loader.load();
-                                    }
+                                            @Override public void onSuccess(String url) {
+                                                store.removeAll();
+                                                loader.load();
+                                            }
 
-                                });
+                                        });
                             }
                         });
                         button.setIcon(StandardIconsProvider.STANDARD_ICONS.delete());
@@ -434,12 +410,11 @@ public class WorkflowHistoryPanel extends ContentPanel {
         tree.setAutoExpandColumn("displayName");
         tree.getTreeView().setRowHeight(25);
         tree.setTrackMouseOver(false);
-        tree.setAutoExpandMax(5000);
+        tree.setAutoExpandMax(1000);
         add(tree);
 
         listener = new Poller.PollListener<TaskEvent>() {
-            @Override
-            public void handlePollingResult(TaskEvent result) {
+            @Override public void handlePollingResult(TaskEvent result) {
                 if (result.getEndedTask() != null) {
                     for (GWTJahiaWorkflowHistoryItem item : new ArrayList<GWTJahiaWorkflowHistoryItem>(store.getAllItems())) {
 
@@ -453,7 +428,7 @@ public class WorkflowHistoryPanel extends ContentPanel {
                                 store.remove(item);
                             }
                         } else if (item instanceof GWTJahiaWorkflowHistoryTask && item.getId().equals(result.getEndedTask())) {
-                                store.remove(item);
+                            store.remove(item);
                         }
                     }
                 }
@@ -464,8 +439,7 @@ public class WorkflowHistoryPanel extends ContentPanel {
         if (engine != null) {
             engine.addListener(Events.Hide, new Listener<BaseEvent>() {
 
-                @Override
-                public void handleEvent(BaseEvent be) {
+                @Override public void handleEvent(BaseEvent be) {
                     if (listener != null) {
                         Poller.getInstance().unregisterListener(listener, TaskEvent.class);
                     }

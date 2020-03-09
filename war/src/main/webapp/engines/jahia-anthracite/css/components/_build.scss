@@ -1619,7 +1619,7 @@ form,
     }
 }
 
-:not(.wcag-warning-grid) > .x-grid3 .x-grid3-row-table .x-grid3-cell {
+:not(.wcag-warning-grid,.workflow-dashboard-engine) > .x-grid3 .x-grid3-row-table .x-grid3-cell {
     width: 100%!important;
 }
 
@@ -3339,7 +3339,6 @@ div.x-window.publication-manager-engine {
     }
 }
 
-.x-window.workflow-dashboard-engine,
 .x-window.trashboard-engine {
 
     width: 100% !important;
@@ -3434,7 +3433,7 @@ div.x-window.publication-manager-engine {
     width: 100% !important;
     height: 100% !important;
     left: 56px !important;
-    top: 0px !important;
+    top: 0 !important;
 
     @include _button(".button-close", "ACTIONBAR", "remove-icons");
     @include _button(".button-no", "ACTIONBAR", "remove-icons");

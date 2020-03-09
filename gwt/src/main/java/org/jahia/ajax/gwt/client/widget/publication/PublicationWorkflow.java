@@ -131,6 +131,7 @@ public class PublicationWorkflow implements CustomWorkflow {
     protected void initDialog(WorkflowActionDialog dialog) {
         TabItem tab = new TabItem("Publication infos");
         tab.setLayout(new FitLayout());
+        tab.setStyleName("workflow-dialog-publication-tab");
         doRefresh = false;
 
         PublicationStatusGrid g = new PublicationStatusGrid(publicationInfos, true, dialog.getLinker(), dialog.getContainer());

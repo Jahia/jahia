@@ -18,7 +18,7 @@
  * @namespace Anthracite.edit
  * @type {object}
  */
- Anthracite.addModule("edit", {
+Anthracite.addModule("edit", {
      /**
       * XXX
       * @memberof Anthracite.edit
@@ -135,7 +135,7 @@
     *
     *
     */
-    togglePageInfoToolTip: function(){
+    togglePageInfoToolTip: function() {
       jGet.class("publication-status-tooltip").toggleClass("indigo-show");
     },
     /**
@@ -225,17 +225,15 @@
 
         var pinnedPanel = Anthracite.storage.get('pinnedPanel') || window.anthraciteV8;
 
-        if(pinnedPanel){
+        if (pinnedPanel) {
             jGet.class('side-panel-pin').trigger('click');
             jGet('#JahiaGxtSidePanelTabs .x-tab-strip-active').trigger('mousedown').trigger('mouseup');
-
         }
     },
     /**
      * Callback executes when leaving the Edit Mode
      * @memberof Anthracite.edit
      * @method onClose
-
      * @example
      *
      *
@@ -1073,7 +1071,7 @@
                     }
 
                     // Make sure correct class is added to publication button
-                    if(elements.publishButton){
+                    if (elements.publishButton) {
                         elements.publishButton.setAttribute('data-publication-status', Anthracite.iframe.data.publication.status);
                     }
 
@@ -1548,7 +1546,7 @@
                 mainFrameWidth = xPos + 6;
                 mainFrameLeft = xPos + 45;
 
-                if (jGet.class('publication-status').exists()) {
+                if (jGet.class('publication-status').exists() && !window.anthraciteV8) {
                     jGet.class('publication-status').nodes[0].style.setProperty('left', mainFrameLeft + 'px', 'important');
                 }
 

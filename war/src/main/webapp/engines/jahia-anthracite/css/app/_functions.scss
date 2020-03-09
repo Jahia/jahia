@@ -6,7 +6,7 @@
     $speed-in: map-get($speeds, $speed);
     $speed-delay: map-get($speeds, $delaySpeed);
 
-    @return unquote($property) $speed-in ease-in $speed-delay;
+    @return unquote($property) unquote($speed-in + 's') ease-in unquote($speed-delay + 's');
 };
 
 @function _theme($variable, $context: "NOT_MAP") {

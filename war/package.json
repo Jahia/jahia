@@ -3,31 +3,28 @@
   "version": "1.0.0",
   "description": "Default Anthracite dev env",
   "main": "gulpfile.js",
-  "dependencies": {
-    "gulp-watch": "^5.0.1",
-    "jsdoc": "^3.6.3",
-    "yarn": "^1.17.3"
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "build": "gulp generate-js && yarn generate:jsdoc",
+    "watch": "gulp watch",
+    "sass": "gulp sass",
+    "generate:jsdoc": "jsdoc -c jsdoc-conf.json",
+    "lint": "eslint --ext js .",
+    "lint:fix": "eslint --ext js --fix ."
   },
   "devDependencies": {
+    "fancy-log": "^1.3.3",
     "gulp": "^4.0.2",
     "gulp-concat": "^2.6.1",
     "gulp-copy": "^4.0.1",
-    "gulp-dest": "^0.2.3",
     "gulp-eslint": "^5.0.0",
     "gulp-javascript-obfuscator": "^1.1.6",
-    "gulp-minify": "^3.1.0",
     "gulp-rename": "^1.4.0",
     "gulp-sass": "^4.0.2",
+    "gulp-sourcemaps": "^2.6.5",
     "gulp-uglify": "^3.0.2",
-    "gulp-util": "^3.0.8",
+    "jsdoc": "^3.6.3",
     "node-sass": "^4.11.0"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "gulp generate && yarn generate:jsdoc",
-    "watch": "gulp watch",
-    "generate:jsdoc": "jsdoc -c jsdoc-conf.json"
-  },
-  "author": "",
-  "license": "ISC"
+  }
 }

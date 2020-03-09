@@ -8,9 +8,9 @@ Anthracite is a CSS/JS overlay for Jahia Default UI Edition. It fires events bas
 - To see JS modifications, run `gulp generate` or `yarn build`, then copy and paste the core-min.js file instead of your local core-min-.js instance of Jahia. (In your Tomcat) 
 - To see CSS modifications, watch edit.scss then compile it and replace it in your Tomcat instance's files.
 
-### Watch JS changes
-You can watch your JS anthracite and automatically build them in you Local instance of Jahia using `yarn watch --dest=YOUR_LOCAL_JAHIA-ANTHRACITE_JS_FOLDER_PATH`
-
+### Watch JS and SASS changes
+You can watch your JS and SASS changes in anthracite, so they will be automatically build and redeploy on your local Jahia instance by using:
+`yarn watch --dest=/path/to/your/local/tomcat/webapps/yourWebappsName`
 
 ## Documentation
 The Anthracite overlay core is located in: `/war/src/main/webapp/engines/jahia-anthracite`

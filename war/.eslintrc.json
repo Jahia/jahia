@@ -1,0 +1,12 @@
+{
+  "env": {
+    "browser": true
+  },
+  "rules": {
+    "eqeqeq": "warn",
+    "new-cap": "warn",
+    "no-class-assign": "warn",
+    "no-eq-null": "warn",
+    "no-unused-vars": "warn"
+  }
+}

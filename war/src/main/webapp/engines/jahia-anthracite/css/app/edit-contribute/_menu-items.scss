@@ -559,12 +559,13 @@ body[data-indigo-app="contribute"] {
     @if ($theme == "anthracite-V8") {
         right: 0;
         left: auto;
+        top: 26px;
     } @else if($theme == 'anthracite'){
         top: 31px;
         left: 16px;
     }
     padding: 6px 14px;
-    box-shadow: 0px 11px 14px 0px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 11px 14px 0 rgba(0, 0, 0, 0.3);
     border-radius: 5px;
     opacity: 0;
     pointer-events: none;
@@ -599,23 +600,40 @@ body[data-indigo-app="contribute"] {
 .publication-status {
     display: none;
     position: fixed;
-    left: 96px;
-    top: 44px;
-    border-radius: 0;
-    width: 5px;
-    height: 24px;
-    background-image: none !important;
-    box-shadow: none;
-    z-index: 999;
+
+    @if ($theme == "anthracite-V8") {
+        width: auto;
+        height: auto;
+        right: 13px;
+        left: auto !important;
+        top: 53px !important;
+        border-radius: 20px;
+        padding: 2px 10px;
+        z-index: 110;
+
+        &:before {
+            @include text(_size("small"), _color("secondary"), _weight("normal"));
+            text-transform: capitalize;
+        }
+    } @else {
+        width: 5px;
+        height: 24px;
+        left: 96px;
+        top: 44px;
+        border-radius: 0;
+        box-shadow: none;
+        z-index: 999;
+
+        .publication-status-code {
+            display: none;
+        }
+    }
 
     &:hover {
         cursor: default;
     }
 
-
-
     &:hover > div {
-        transition: _transition("opacity", "normal", "slow");
         opacity: 1;
     }
 
@@ -623,105 +641,180 @@ body[data-indigo-app="contribute"] {
         top: 43px;
     }
 
-    .publication-status-code {
-        display: none;
-        @include text(_size("tiny"), _color("secondary"), _weight("normal"));
-        text-transform: capitalize;
-    }
-
-    @if ($theme == "anthracite-V8") {
-        // background-color: transparent!important;
-        width: auto;
-        height: auto;
-        right: 13px;
-        left: auto!important;
-        top: 53px!important;
-        border-radius: 20px;
-        padding: 2px 10px;
-
-        .publication-status-code {
-            display: block;
-        }
-    }
-
     &[data-publication-status="conflict"] {
         /* Conflict */
-        content: _dictionary("conflict");
+        background-color: _color("status", conflict);
+
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("conflict");
+            }
+        }
     }
 
     &[data-publication-status="deleted"] {
         /* Deleted */
         background-color: _color("status", deleted);
+
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("deleted");
+            }
+        }
     }
 
     &[data-publication-status="livemodified"] {
         /* Live Modified */
         background-color: _color("status", livemodified);
+
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("livemodified");
+            }
+        }
     }
 
     &[data-publication-status="liveonly"] {
         /* Live Only */
         background-color: _color("status", liveonly);
+
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("liveonly");
+            }
+        }
     }
 
     &[data-publication-status="locked"] {
         /* Locked */
         background-color: _color("status", locked);
+
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("locked");
+            }
+        }
     }
 
     &[data-publication-status="mandatorylanguageunpublishable"] {
         /* Mandatory Language Unpublishable */
         background-color: _color("status", mandatorylanguageunpublishable);
+
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("mandatorylanguageunpublishable");
+            }
+        }
     }
 
     &[data-publication-status="mandatorylanguagevalid"] {
         /* Mandatory Language Valid */
         background-color: _color("status", mandatorylanguagevalid);
+
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("mandatorylanguagevalid");
+            }
+        }
     }
 
     &[data-publication-status="markedfordeletion"] {
         /* Marked FOr Deletion */
         background-color: _color("status", markedfordeletion);
+
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("markedfordeletion");
+            }
+        }
     }
 
     &[data-publication-status="modified"] {
         /* Modified */
         background-color: _color("status", modified);
+
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("modified");
+            }
+        }
     }
 
     &[data-publication-status="multipleWF"] {
         /* Multiple WF */
         background-color: _color("status", multipleWF);
+
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("multipleWF");
+            }
+        }
     }
 
     &[data-publication-status="notpublished"] {
         /* Not Published */
         background-color: _color("status", notpublished);
+
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("notpublished");
+            }
+        }
     }
 
     &[data-publication-status="oneWF"] {
         /* One WF */
         background-color: _color("status", oneWF);
+
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("oneWF");
+            }
+        }
     }
 
     &[data-publication-status="published"] {
         /* Published */
         background-color: _color("status", published);
+
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("published");
+            }
+        }
     }
 
     &[data-publication-status="unpublished"] {
         /* Unpublished */
         background-color: _color("status", unpublished);
+
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("unpublished");
+            }
+        }
     }
 
     &[data-publication-status="waiting"] {
         /* Waiting */
         background-color: _color("status", waiting);
+
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("waiting");
+            }
+        }
     }
 
     &[data-publication-status="workinprogress"] {
         /* Work In Progress */
         background-color: _color("status", workinprogress);
+
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("workinprogress");
+            }
+        }
     }
 
     body[data-indigo-app="edit"]:not([data-multiselect="on"]):not([data-sitesettings="true"]) & {

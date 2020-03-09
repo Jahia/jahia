@@ -1,0 +1,6 @@
+node
+node_modules
+target
+src/main/webapp/engines/jahia-anthracite/js/dist
+src/main/webapp/engines/jahia-anthracite/js/out
+gulpfile.js

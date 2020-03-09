@@ -211,6 +211,7 @@ public class WorkflowActionDialog extends LayoutContainer {
     private TabItem initActionTab(final String formResourceName, final Map<String, GWTJahiaNodeProperty> variables) {
         actionTab = new TabItem(Messages.get("label.action", "Action"));
         actionTab.setLayout(new BorderLayout());
+        actionTab.setStyleName("workflow-dialog-action-tab");
         if (formResourceName != null && !"".equals(formResourceName)) {
             NodeTypeCreationCaller nodeTypeCreationCaller = new NodeTypeCreationCaller(formResourceName, nodePath);
             nodeTypeCreationCaller.add(new BaseAsyncCallback<NodeTypeCreationInfo>() {
@@ -235,7 +236,7 @@ public class WorkflowActionDialog extends LayoutContainer {
         commentsTab = new TabItem(Messages.get("label.comments", "Comments"));
 
         commentsTab.setLayout(new BorderLayout());
-
+        commentsTab.setStyleName("workflow-dialog-comments-tab");
         final LayoutContainer commentsContainer = new LayoutContainer(new RowLayout(Style.Orientation.VERTICAL));
         commentsTab.add(commentsContainer, new BorderLayoutData(Style.LayoutRegion.CENTER));
 
@@ -404,6 +405,7 @@ public class WorkflowActionDialog extends LayoutContainer {
             if (outcome.getIcon() != null) {
                 button.setIcon(ToolbarIconProvider.getInstance().getIcon(outcome.getIcon()));
             }
+            button.addStyleName("button-workflow-action");
             allButtons.add(button);
             button.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 @Override

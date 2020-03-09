@@ -1,79 +1,139 @@
 'use strict';
 
-const gulp = require('gulp');
-const minify = require('gulp-minify');
+const { task, watch, series, src, dest } = require('gulp');
 const uglify = require('gulp-uglify');
 const javascriptObfuscator = require('gulp-javascript-obfuscator');
 const concat = require('gulp-concat');
-const watch = require('gulp-watch');
-const gutil = require('gulp-util');
+const log = require('fancy-log');
+const argv = require('minimist')(process.argv.slice(2));
+const sass = require('gulp-sass');
+const sourcemaps = require('gulp-sourcemaps');
+const copy = require('gulp-copy');
+const rename = require('gulp-rename');
 
+// Global path
 const anthraciteRootDir = 'src/main/webapp/engines/jahia-anthracite';
-const anthraciteJsDir = anthraciteRootDir + '/js';
-const jsFiles = [
-    anthraciteJsDir + '/dependencies/polyfills.js',
-    anthraciteJsDir + '/dependencies/jGet.js',
-    anthraciteJsDir + '/Anthracite.js',
-    anthraciteJsDir + '/contextMenus.js',
-    anthraciteJsDir + '/backgroundJobs.js',
-    anthraciteJsDir + '/picker.js',
-    anthraciteJsDir + '/imagePreview.js',
-    anthraciteJsDir + '/engine.js',
-    anthraciteJsDir + '/workflow.js',
-    anthraciteJsDir + '/iframe.js',
-    anthraciteJsDir + '/admin.js',
-    anthraciteJsDir + '/modals.js',
-    anthraciteJsDir + '/dialog.js',
-    anthraciteJsDir + '/userPickers.js',
-    anthraciteJsDir + '/remote.js',
-    anthraciteJsDir + '/edit.js',
-    anthraciteJsDir + '/dashboard.js',
-    anthraciteJsDir + '/contribute.js',
-    anthraciteJsDir + '/localisedStrings.js',
-    anthraciteJsDir + '/listeners.js',
-    anthraciteJsDir + '/init.js'];
-const anthraciteJsDistDir = anthraciteJsDir + '/dist';
 
-gulp.task('concat', () => {
-    return gulp.src(jsFiles)
-        .pipe(concat('anthracite.js'))
-        .pipe(gulp.dest(anthraciteJsDistDir));
+// Initialize sass compiler
+sass.compiler = require('node-sass');
+
+// sass path
+const sassSrc = anthraciteRootDir + '/css/**/*.scss';
+const cssSrc = anthraciteRootDir + '/css/*.css*';
+const cssDirDest = anthraciteRootDir + '/css';
+
+// javascript path
+const jsSrc = anthraciteRootDir + '/js';
+const jsDirDest = jsSrc + '/dist';
+const jsDirDestBuild = jsDirDest + '/build';
+
+const jsFiles = [
+    jsSrc + '/dependencies/polyfills.js',
+    jsSrc + '/dependencies/jGet.js',
+    jsSrc + '/Anthracite.js',
+    jsSrc + '/contextMenus.js',
+    jsSrc + '/backgroundJobs.js',
+    jsSrc + '/picker.js',
+    jsSrc + '/imagePreview.js',
+    jsSrc + '/engine.js',
+    jsSrc + '/workflow.js',
+    jsSrc + '/iframe.js',
+    jsSrc + '/admin.js',
+    jsSrc + '/modals.js',
+    jsSrc + '/dialog.js',
+    jsSrc + '/userPickers.js',
+    jsSrc + '/remote.js',
+    jsSrc + '/edit.js',
+    jsSrc + '/dashboard.js',
+    jsSrc + '/contribute.js',
+    jsSrc + '/localisedStrings.js',
+    jsSrc + '/listeners.js',
+    jsSrc + '/init.js'];
+
+task('sass', done => {
+    src(sassSrc).pipe(sourcemaps.init())
+        .pipe(sass().on('error', sass.logError))
+        .pipe(sourcemaps.write('.'))
+        .pipe(dest(cssDirDest));
+    done();
 });
 
-gulp.task('build', done => {
-    gulp.src([anthraciteJsDistDir + '/anthracite.js'])
-        .pipe(minify())
+task('build-js', done => {
+    src(jsFiles).pipe(concat('anthracite.js'))
+        .pipe(dest(jsDirDest));
+    done();
+});
+
+task('copy-js-to-build', done => {
+    src([jsDirDest + '/anthracite.js'])
+        .pipe(copy(jsDirDestBuild))
+        .pipe(rename('anthracite-min.js'))
+        .pipe(dest(jsDirDestBuild));
+    done();
+});
+
+task('minify-js', done => {
+    src([jsDirDestBuild + '/anthracite-min.js'])
+        .pipe(sourcemaps.init())
         .pipe(uglify())
         .pipe(javascriptObfuscator({
             compact: true
         }))
-        .pipe(gulp.dest('./' + anthraciteJsDistDir + '/build/'));
+        .pipe(sourcemaps.write('.'))
+        .pipe(dest(jsDirDestBuild));
     done();
 });
 
-gulp.task('watch', () => {
-    return watch(anthraciteJsDir + '/*.js', function () {
-        const h = new Date().getHours();
-        const m = new Date().getMinutes();
-        const s = new Date().getSeconds();
+/**
+ * For some reason gulp is going faster than the file system
+ * so we need to delay a little bit the tasks execution
+ *
+ * @param done      callback function
+ * @param timeout   time to wait
+ */
+const wait = (done, timeout) => {
+    setTimeout( ()=> {
+        done();
+    }, timeout);
+};
 
-        console.log("Build " + h + ':' + m + ':' + s);
+task('wait', done => wait(done, 1000));
 
-        if (gutil.env.dest === undefined) {
-            console.log("Dest env variable not set ! Use --dest=");
-        } else {
-            gulp.src(jsFiles)
-                .pipe(concat('anthracite.js'))
-                .pipe(gulp.dest(anthraciteJsDistDir));
-            gulp.src([anthraciteJsDistDir + '/anthracite.js'])
-                .pipe(minify())
-                .pipe(uglify())
-                .pipe(javascriptObfuscator({
-                    compact: true
-                }))
-                .pipe(gulp.dest(gutil.env.dest));
-        }
-    })
+task('wait-3s', done => wait(done, 3000));
+
+task('copy-js-to-webapp', done => {
+    const targetDist = argv.dest + '/engines/jahia-anthracite/js/dist';
+    const targetDistBuild = targetDist + '/build';
+
+    log.info('Copying JS file to local server: ' + targetDist);
+    src(jsDirDest + '/*').pipe(dest(targetDist));
+
+    log.info('Copying JS files to local server: ' + targetDistBuild);
+    src(jsDirDestBuild + '/*').pipe(dest(targetDistBuild));
+    done();
 });
 
-gulp.task('generate', gulp.series('concat', 'build'));
+task('copy-css-to-webapp', done => {
+    const targetDirectory = argv.dest + '/engines/jahia-anthracite/css';
+
+    log.info('Copying CSS file to local server: ' + targetDirectory);
+    src(cssSrc).pipe(dest(targetDirectory));
+    done();
+});
+
+task('watch', done => {
+    if (!argv.dest) {
+        log.error('--dest option not set (e.g: --dest=/path/to/your/tomcat/webapps/yourWebAppName)');
+        done();
+        return;
+    }
+
+    watch(jsFiles, series('generate-js', 'wait-3s', 'copy-js-to-webapp'));
+
+    watch(sassSrc, series('sass', 'wait', 'copy-css-to-webapp'));
+
+    log.info('Gulp is watching JS and SASS files');
+    log.info('Happy Coding!');
+});
+
+task('generate-js', series('build-js', 'wait', 'copy-js-to-build', 'wait', 'minify-js'));

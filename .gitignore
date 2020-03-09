@@ -12,6 +12,7 @@ war/src/main/webapp/engines/jahia-anthracite/*.css*
 war/src/main/webapp/engines/jahia-anthracite/package-lock.json
 war/src/main/webapp/engines/jahia-anthracite/node_modules/
 war/src/main/webapp/engines/jahia-anthracite/js/dist
+war/src/main/webapp/engines/jahia-anthracite/js/out
 war/src/main/webapp/engines/jahia-anthracite/css/*.css
 war/src/main/webapp/engines/jahia-anthracite/css/*.map
 war/node

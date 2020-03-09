@@ -17,7 +17,7 @@ var jASAJ=jASAJ || new Array();
             scayt_custom_params['sLang']=ckVal.lng;
         }
     }
-    window.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('DOMContentLoaded', function() {
         var aggregated = window.document.getElementById('jahia-data-aggregatedjs');
         if (aggregated) {
             var aggregatedVal = JSON.parse(aggregated.textContent);

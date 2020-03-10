@@ -6,10 +6,16 @@
 
     <rule>
         <name>Jahia AppShell</name>
-        <note>rewrite /jahia to /modules/moonstone</note>
+        <note>rewrite /jahia to /modules/appshell/jahia</note>
         <from>^/jahia(.*)$</from>
-        <to>/modules/moonstone$1</to>
+        <to>/modules/appshell/jahia$1</to>
     </rule>
+    <outbound-rule>
+        <name>Jahia AppShell out</name>
+        <from>^/modules/appshell/jahia(.*)$</from>
+        <to>/jahia$1</to>
+    </outbound-rule>
+
 
     <!-- Block direct access -->
     <rule enabled="true">

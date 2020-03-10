@@ -62,7 +62,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -93,25 +92,44 @@ public class EditModeFilter extends AbstractFilter {
             for (StartTag tag : tags) {
                 String href = tag.getAttributeValue("href");
                 if (href != null && ((href.startsWith("/") && !href.startsWith(renderContext.getRequest().getContextPath() + renderContext.getServletPath())) || href.contains("://"))) {
-                    // Rewrite link for edit mode to prevent nested rendering
-                    if (href.contains(editPart)) {
-                        Map<String, String> replaceMap = new HashMap<>();
-                        for (Attribute attr : tag.getAttributes()) {
-                            if (attr.getName().equals(targetName)) {
-                                replaceMap.put(targetName, null);
-                            } else if (attr.getName().equals("href") && attr.getValue().contains(editPart)) {
-                                String hrefValue = attr.getValue();
-                                hrefValue = hrefValue.replace(editPart, "/editframe/");
-                                replaceMap.put("href", hrefValue);
-                            } else {
-                                replaceMap.put(attr.getKey(), attr.getValue());
+                    // Need to distinguish between modes because the filter applies and affects not only editmode
+                    if (renderContext.getEditModeConfig().getName().equals("editmode")) {
+                        // Rewrite link for edit mode to prevent nested rendering
+                        if (href.contains(editPart)) {
+                            Map<String, String> replaceMap = new HashMap<>();
+                            for (Attribute attr : tag.getAttributes()) {
+                                if (attr.getName().equals(targetName)) {
+                                    replaceMap.put(targetName, null);
+                                } else if (attr.getName().equals("href") && attr.getValue().contains(editPart)) {
+                                    String hrefValue = attr.getValue();
+                                    hrefValue = hrefValue.replace(editPart, "/editframe/");
+                                    replaceMap.put("href", hrefValue);
+                                } else {
+                                    replaceMap.put(attr.getKey(), attr.getValue());
+                                }
+                            }
+                            document.replace(tag.getAttributes(), replaceMap);
+                        } else {
+                            String target = tag.getAttributeValue(targetName);
+                            if (target == null) {
+                                document.insert(tag.getEnd()-1, " target=\"_blank\"");
                             }
                         }
-                        document.replace(tag.getAttributes(), replaceMap);
                     } else {
                         String target = tag.getAttributeValue(targetName);
                         if (target == null) {
-                            document.insert(tag.getEnd()-1, " target=\"_blank\"");
+                            document.insert(tag.getEnd()-1, " target=\"_parent\"");
+                        } else if (target.equals("_self")) {
+                            HashMap<String, String> replaceMap = new HashMap<>();
+                            for (Attribute attribute : tag.getAttributes()) {
+                                String key = attribute.getKey();
+                                if (targetName.equals(key)) {
+                                    replaceMap.put(key, "_parent");
+                                } else {
+                                    replaceMap.put(key, attribute.getValue());
+                                }
+                            }
+                            document.replace(tag.getAttributes(), replaceMap);
                         }
                     }
                 }

@@ -95,8 +95,8 @@ import com.ibm.icu.text.DateFormat;
  */
 public final class Jahia {
 
-    public static final String YEAR = "2019";
-    public static final String CODE_NAME = "Hit-Girl";
+    public static final String YEAR = "2020";
+    public static final String CODE_NAME = "Indigo";
     public static final String PRODUCT_NAME = "Jahia";
     public static final String VENDOR_NAME = "Jahia Solutions Group SA";
     public static final String COPYRIGHT = "&copy; Copyright 2002-" + YEAR + "  <a href=\"https://www.jahia.com\" target=\"newJahia\">"
@@ -112,7 +112,7 @@ public final class Jahia {
             v = new Version(Constants.JAHIA_PROJECT_VERSION);
         } catch (NumberFormatException e) {
         }
-        JAHIA_VERSION = v != null ? v : new Version("7.4.0.0");
+        JAHIA_VERSION = v != null ? v : new Version("8.0.0.0");
     }
 
     public static final String VERSION = JAHIA_VERSION.getMajorVersion() + "." +

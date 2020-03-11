@@ -12,8 +12,8 @@
     </rule>
     <outbound-rule>
         <name>Jahia AppShell out</name>
-        <from>^/modules/appshell/jahia(.*)$</from>
-        <to>/jahia$1</to>
+        <from>^(/[\p{Alnum}\-_]*)?/modules/appshell/jahia(.*)$</from>
+        <to>$1/jahia$2</to>
     </outbound-rule>
 
 

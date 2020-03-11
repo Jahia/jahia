@@ -178,6 +178,7 @@ public class ContentTypeWindow extends Window {
         if (JahiaGWTHooks.hasHook("create")) {
             Map<String, Object> params = new HashMap<>();
             params.put("path", targetNode.getPath());
+            params.put("uuid", targetNode.getUUID());
             params.put("excludedNodeTypes", excluded);
             params.put("includeSubTypes", includeSubTypes);
             params.put("contentTypes", nodeTypes);

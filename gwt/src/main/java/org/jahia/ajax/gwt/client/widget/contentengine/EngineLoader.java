@@ -113,6 +113,7 @@ public class EngineLoader {
                     Map<String, Object> params = new HashMap<>();
                     // Provide the path
                     params.put("path", node.getPath());
+                    params.put("uuid", node.getUUID());
                     if (type != null) {
                         params.put("contentTypes", Collections.singleton(type.getName()));
                         params.put("includeSubTypes", false);

@@ -106,6 +106,22 @@ public class SiteImportJob extends BackgroundJob {
         siteImporter.onImportFinish();
     }
 
+    /**
+     * This method will try to resolve the file name from the path.
+     * For Backward compatibility reason and since this code is not documented, we use the original check first
+     * and if we don't get a result then we check with File.separator
+     *
+     * @param path  to the file or the node to resolve
+     * @return      the name of the file
+     */
+    private String resolveFileName(String path) {
+        String fileName = StringUtils.substringAfterLast(path, "/");
+        if (StringUtils.isBlank(fileName)) {
+            fileName = StringUtils.substringAfterLast(path, File.separator);
+        }
+        return fileName;
+    }
+
     private abstract class BaseSiteImporter {
         String uri;
         String name;
@@ -420,7 +436,7 @@ public class SiteImportJob extends BackgroundJob {
                 if (builder.length() != 0) {
                     notifyUserOfError(siteInfo, builder.toString());
                 }
-            };
+            }
         }
 
         private ValidationResults validateImport(List<Map<Object, Object>> importInfos, List<String> neededModules, Boolean isLegacyImport) throws IOException {
@@ -583,7 +599,7 @@ public class SiteImportJob extends BackgroundJob {
         boolean deleteFile;
 
         FileSiteImporter(String filePath, boolean deleteFile, JahiaUser user) throws RepositoryException, URISyntaxException {
-            super(filePath, StringUtils.substringAfterLast(filePath, "/"), user);
+            super(filePath, resolveFileName(filePath), user);
             this.file = Paths.get(filePath).toFile();
             this.deleteFile = deleteFile;
             if (!file.exists()) {
@@ -619,7 +635,7 @@ public class SiteImportJob extends BackgroundJob {
         JCRNodeWrapper node;
 
         NodeSiteImporter(String nodePath, JahiaUser user) throws RepositoryException, URISyntaxException {
-            super(nodePath, StringUtils.substringAfterLast(nodePath, "/"), user);
+            super(nodePath,  resolveFileName(nodePath), user);
             this.node = session.getNode(nodePath);
         }
 

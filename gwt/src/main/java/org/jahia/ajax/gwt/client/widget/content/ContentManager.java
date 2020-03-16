@@ -55,6 +55,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
 import com.extjs.gxt.ui.client.widget.Component;
@@ -64,6 +65,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ContentManager extends TriPanelBrowserLayout {
+
+    private static ContentManager manager;
 
     public ContentManager(final List<String> filters, final List<String> mimeTypes, final List<String> selectedPaths, final GWTManagerConfiguration config,
                                   final int southSize) {
@@ -160,6 +163,33 @@ public class ContentManager extends TriPanelBrowserLayout {
             linker.handleNewSelection();
         }
         addStyleName("x-viewport-"+ config.getName());
+
+        manager = this;
+        exportStaticMethod();
     }
+
+    public static void refreshContent() {
+        Map<String, Object> data = new HashMap<>();
+        data.put(Linker.REFRESH_ALL, true);
+
+        getInstance().getLinker().refresh(data);
+    }
+
+    public static ContentManager getInstance() {
+        return manager;
+    }
+
+    public static native void exportStaticMethod() /*-{
+        var nsAuthoringApi;
+        if ($wnd.top.authoringApi) {
+            nsAuthoringApi = $wnd.top.authoringApi;
+        } else {
+            nsAuthoringApi = $wnd.top.authoringApi = {};
+        }
+
+        nsAuthoringApi.refreshContent = function () {
+            return @org.jahia.ajax.gwt.client.widget.content.ContentManager::refreshContent(*)();
+        }
+    }-*/;
 
 }

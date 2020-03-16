@@ -331,6 +331,7 @@ public class EmptyEntryPoint extends CommonEntryPoint {
                 GWTJahiaNode siteNode = result.get(0);
                 validateSiteLanguage(siteNode, lang);
                 JahiaGWTParameters.setSiteNode(siteNode);
+                JahiaGWTParameters.setLanguage(JahiaGWTParameters.getLanguage(lang));
             }
         });
     }
@@ -352,6 +353,7 @@ public class EmptyEntryPoint extends CommonEntryPoint {
             return;
         }
         validateSiteLanguage(JahiaGWTParameters.getSiteNode(), lang);
+        JahiaGWTParameters.setLanguage(JahiaGWTParameters.getLanguage(lang));
     }
 
     /**

@@ -798,10 +798,6 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
         if (archive == null) {
             return false;
         }
-        if (zis == null) {
-            zis = new NoCloseZipInputStream(new BufferedInputStream(archive.getInputStream()));
-            nextEntry = zis.getNextEntry();
-        }
         String path = pathes.peek();
         if (path.endsWith("/jcr:content")) {
             String[] p = Patterns.SLASH.split(path);
@@ -816,8 +812,10 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             fileIndex = fileList.indexOf(baseFilesPath + path);
         }
         if (fileIndex != -1) {
-            if (fileList.indexOf("/" + nextEntry.getName().replace('\\', '/')) > fileIndex) {
-                zis.reallyClose();
+            if (nextEntry == null || fileList.indexOf("/" + nextEntry.getName().replace('\\', '/')) > fileIndex) {
+                if (zis != null) {
+                    zis.reallyClose();
+                }
                 zis = new NoCloseZipInputStream(new BufferedInputStream(archive.getInputStream()));
             }
             do {

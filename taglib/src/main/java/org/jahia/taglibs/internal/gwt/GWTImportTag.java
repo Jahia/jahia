@@ -84,17 +84,6 @@ public class GWTImportTag extends AbstractJahiaTag {
 
             if (request.getParameter(UI_THEME) != null) {
                 theme = request.getParameter(UI_THEME);
-                String userValue = jahiaUser.getProperty(UI_THEME);
-                if (userValue == null || !userValue.equals(theme)) {
-                    try {
-                        JCRSessionWrapper userSession = JCRSessionFactory.getInstance().getCurrentUserSession();
-                        JCRUserNode user = (JCRUserNode) userSession.getNode(jahiaUser.getLocalPath());
-                        user.setProperty(UI_THEME, theme);
-                        userSession.save();
-                    } catch (RepositoryException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
             } else if (jahiaUser != null && jahiaUser.getProperty(UI_THEME) != null) {
                 theme = jahiaUser.getProperty(UI_THEME);
             }

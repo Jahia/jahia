@@ -69,7 +69,7 @@
         </translator>
 
         <reviewer j:hidden="false"
-                  j:permissionNames="jcr:read_default publish"
+                  j:permissionNames="jcr:read_default publish workflow-dashboard-access"
                   j:privilegedAccess="true"
                   j:roleGroup="edit-role"
                   jcr:primaryType="jnt:role">

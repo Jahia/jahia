@@ -129,7 +129,10 @@
             <siteManager jcr:primaryType="jnt:permission"/>
         </legacy-managers>
 
-        <workflow-tasks jcr:primaryType="jnt:permission"/>
+        <workflow-tasks jcr:primaryType="jnt:permission">
+            <!-- New permission for accessing the V8 Workflow Dashboard from L1 navigation menu-->
+            <workflow-dashboard-access jcr:primaryType="jnt:permission"/>
+        </workflow-tasks>
 
         <wysiwyg-editor-toolbar jcr:primaryType="jnt:permission">
             <view-full-wysiwyg-editor jcr:primaryType="jnt:permission"/>

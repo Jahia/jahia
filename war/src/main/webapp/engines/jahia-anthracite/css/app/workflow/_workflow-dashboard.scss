@@ -8,6 +8,11 @@
     @include _button(".button-incontext-preview", "ACTIONBAR---SECONDARY", "remove-icons");
     @include _button(".button-details", "ACTIONBAR---SECONDARY", "remove-icons");
 
+    width: calc(100% - 56px) !important;
+    height: 100% !important;
+    left: 56px !important;
+    top: 0 !important;
+
     .x-tree3-node-text.x-tree3-node-text-widget,
     .x-grid3-row-selected .x-tree3-node-text.x-tree3-node-text-widget {
       color: _color("primary", a) !important;
@@ -19,32 +24,39 @@
 
     background: _color("secondary", a) !important;
 
-    .x-window-bwrap {
-      background: _color("secondary");
-    }
-
     .x-panel-toolbar .x-tool-restore {
       display: none;
     }
 
-    .x-window-header {
-      height: 64px !important;
-      line-height: 64px;
-      margin-top: 5px;
+    .x-panel-header {
+      height: 85px !important;
+      line-height: 85px;
+      top: 0;
+      background-color: _color("white");
+      box-shadow: 0 4px 4px rgba(59, 61, 64, 0.3);
+      border: none !important;
+      padding: 10px;
+      width: 100% !important;
 
       .x-panel-toolbar > table {
         pointer-events: all;
       }
 
-      .x-window-header-text {
-        text-shadow: none;
-        border: none;
-        padding: 0;
-        border-radius: 0;
-        background: transparent;
-        box-shadow: none;
-        margin-bottom: 10px;
-        pointer-events: none !important;
+      .x-panel-header-text {
+        position: relative;
+        height: 25px;
+        left: 24px;
+        top: calc(50% - 25px / 2);
+        font-style: normal;
+        font-weight: 300;
+        font-size: 25px;
+        line-height: 58px;
+        display: flex;
+        align-items: center;
+
+        /* Text Secondary */
+
+        color: _color("primary", normal);
       }
 
       > .x-component:first-child {
@@ -52,6 +64,14 @@
         margin-right: 16px;
       }
 
+    }
+
+    .x-panel-bwrap {
+      background: _color("secondary");
+      position: relative;
+      top: 10px;
+      padding: 2.5% !important;
+      width: 100% !important;
     }
 
     .x-grid3 {
@@ -67,57 +87,104 @@
         }
       }
 
+      .x-grid3-viewport {
+        width: 100% !important;
+        display: flex;
+        flex-direction: column;
+      }
+
       .x-grid3-header {
-        display: table-cell;
         background: transparent;
         color: _color("black", d) !important;
         text-transform: uppercase;
-        width: calc(100% - 56px) !important;
 
         .x-grid3-header-inner {
-          width: calc(100% - 56px) !important;
+          width: calc(100%) !important;
         }
-
-        //.x-grid3-td-displayName, .x-grid3-hd-displayName {
-        //  width: 35% !important;
-        //}
-        //
-        //.x-grid3-td-locale, .x-grid3-hd-locale {
-        //  width: 5% !important;
-        //}
-        //
-        //.x-grid3-td-user, .x-grid3-hd-user {
-        //  width: 5% !important;
-        //}
-        //
-        //.x-grid3-td-nodeWrapper, .x-grid3-hd-nodeWrapper {
-        //  width: 25% !important;
-        //}
-        //
-        //.x-grid3-td-startDate, .x-grid3-hd-startDate {
-        //  width: 5% !important;
-        //}
-        //
-        //.x-grid3-td-endDate, .x-grid3-hd-endDate {
-        //  width: 5% !important;
-        //}
-        //
-        //.x-grid3-td-duration, .x-grid3-hd-duration {
-        //  width: 5% !important;
-        //}
-        //
-        //.x-grid3-td-operation, .x-grid3-hd-operation {
-        //  width: 10% !important;
-        //}
 
         .x-grid3-hh {
           margin: 2px 0 12px;
-          width: calc(100% - 56px) !important;
+          width: calc(100%) !important;
 
           > table {
             padding: 4px 0;
-            width: calc(100% - 56px) !important;
-            table-layout: unset !important;
+            width: calc(100%) !important;
+
+            > tbody > tr {
+              display: flex;
+              flex-direction: row;
+              width: 100% !important;
+
+              .x-grid3-header .x-component {
+                left: unset !important;
+                overflow: hidden;
+              }
+
+              .x-grid3-header:first-child {
+                flex-basis: 25% !important;
+                flex-grow: 4;
+                width: unset !important;
+                display: block !important;
+                > div {
+                  width: 100% !important;
+                }
+              }
+
+              .x-grid3-header:nth-child(2) {
+                flex-basis: 32px !important;
+                flex-grow: 0 !important;
+                width: unset !important;
+                display: block !important;
+                > div {
+                  width: 32px !important;
+                }
+              }
+
+              .x-grid3-header:nth-child(3) {
+                flex-basis: 150px !important;
+                flex-grow: 1;
+                width: unset !important;
+                display: block !important;
+                > div {
+                  width: 150px !important;
+                }
+              }
+
+              .x-grid3-header:nth-child(4) {
+                flex-basis: 25% !important;
+                flex-grow: 2;
+                width: unset !important;
+                display: block !important;
+              }
+
+              .x-grid3-header:nth-child(5) {
+                flex-basis: 150px !important;
+                flex-grow: 0;
+                width: unset !important;
+                display: block !important;
+              }
+
+              .x-grid3-header:nth-child(6) {
+                flex-basis: 150px !important;
+                flex-grow: 0;
+                width: unset !important;
+                display: block !important;
+              }
+
+              .x-grid3-header:nth-child(7) {
+                flex-basis: 80px !important;
+                flex-grow: 0;
+                width: unset !important;
+                display: block !important;
+              }
+
+              .x-grid3-header:nth-child(8) {
+                flex-basis: 150px !important;
+                flex-grow: 0;
+                width: unset !important;
+                display: block !important;
+              }
+            }
 
             .x-grid3-hd.x-grid3-cell {
               border-color: transparent !important;
@@ -143,8 +210,14 @@
         opacity: 1.0;
       }
 
-      .x-grid3-scroller.x-grid3-scroller {
-        width: calc(100% - 56px) !important;
+      .x-grid3-scroller {
+        width: 100% !important;
+        display: table-cell;
+        height: 100% !important;
+
+        .x-grid3-body {
+          width: calc(100%) !important;
+        }
       }
 
       .x-grid3-row.x-grid3-row-selected {
@@ -161,36 +234,137 @@
         color: _color("primary", a) !important;
         box-sizing: border-box;
         margin-bottom: 1px;
-        width: 105% !important;
+        width: 100% !important;
         height: 38px !important;
       }
 
       .x-grid3-row-table {
-        width: 105% !important;
+        width: 100% !important;
         height: 38px !important;
 
+        > tbody > tr {
+          display: flex;
+          flex-direction: row;
+        }
+
+        .x-grid3-col {
+          height: 38px !important;
+          padding: 0 3px 0 5px !important;
+        }
+
+        .x-grid3-col:first-child {
+          flex-basis: 25% !important;
+          flex-grow: 4;
+          width: unset !important;
+          display: block !important;
+          padding: 0 3px 0 0 !important;
+          > div {
+            width: 100% !important;
+          }
+        }
+
+        .x-grid3-col:nth-child(2) {
+          flex-basis: 32px !important;
+          flex-grow: 0 !important;
+          width: unset !important;
+          display: block !important;
+          > div {
+            width: 32px !important;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+          }
+        }
+
+        .x-grid3-col:nth-child(3) {
+          flex-basis: 150px !important;
+          flex-grow: 1;
+          width: unset !important;
+          display: block !important;
+          > div {
+            width: 150px !important;
+          }
+        }
+
+        .x-grid3-col:nth-child(4) {
+          flex-basis: 25% !important;
+          flex-grow: 2;
+          width: unset !important;
+          display: block !important;
+        }
+
+        .x-grid3-col:nth-child(5) {
+          flex-basis: 150px !important;
+          flex-grow: 0;
+          width: unset !important;
+          display: block !important;
+        }
+
+        .x-grid3-col:nth-child(6) {
+          flex-basis: 150px !important;
+          flex-grow: 0;
+          width: unset !important;
+          display: block !important;
+        }
+
+        .x-grid3-col:nth-child(7) {
+          flex-basis: 80px !important;
+          flex-grow: 0;
+          width: unset !important;
+          display: block !important;
+        }
+
+        .x-grid3-col:nth-child(8) {
+          flex-basis: 150px !important;
+          flex-grow: 0;
+          width: unset !important;
+          display: block !important;
+        }
+
+        .x-grid3-cell .x-grid3-cell-inner {
+          white-space: pre-wrap !important;
+          line-height: 14px;
+
+          .x-tree3-node {
+            height: 38px !important;
+            width: 100% !important;
+
+            .x-tree3-el {
+              height: 38px !important;
+              width: 100% !important;
+
+              .x-btn-text {
+                position: relative !important;
+                top: -18px !important;
+                pointer-events: all !important;
+              }
+            }
+          }
+        }
+
         .x-grid3-cell .x-grid3-cell-inner label {
-          line-height: inherit;
           color: inherit;
-        }
-
-        .x-grid3-cell {
+          text-overflow: ellipsis;
+          width: 100% !important;
+          display: block;
           overflow: hidden;
-          display: inline-block;
-          pointer-events: all;
-
-          table,
-          tbody,
-          tr {
-            display: block;
-          }
-
-          td {
-            display: inline-block;
-            padding: 0 !important;
-          }
+          line-height: 18px !important;
+          height: 38px !important;
+          padding-top: 1px !important;
+          padding-bottom: 1px !important;
+          white-space: pre-wrap !important;
         }
 
+      }
+
+      .x-grid3 .x-grid3-row-table > tbody {
+        width: 100% !important;
+        height: 38px !important;
+      }
+
+      .x-grid3 .x-grid3-row-table > tbody > tr {
+        width: 100% !important;
+        height: 38px !important;
       }
 
       @if ($theme == "anthracite-V8") {
@@ -206,37 +380,6 @@
         }
       }
 
-      //.x-grid3-td-displayName {
-      //  width: 400px !important;
-      //}
-      //
-      //.x-grid3-td-locale {
-      //  width: 80px !important;
-      //}
-      //
-      //.x-grid3-td-user {
-      //  width: 140px !important;
-      //}
-      //
-      //.x-grid3-td-nodeWrapper {
-      //  width: 400px !important;
-      //}
-      //
-      //.x-grid3-td-startDate {
-      //  width: 180px !important;
-      //}
-      //
-      //.x-grid3-td-endDate {
-      //  width: 180px !important;
-      //}
-      //
-      //.x-grid3-td-duration {
-      //  width: 120px !important;
-      //}
-      //
-      //.x-grid3-td-operation {
-      //  width: 200px !important;
-      //}
     }
 
     .x-grid3-hd-row {
@@ -273,6 +416,8 @@
       background: unset !important;
       padding: 0 !important;
       height: 100px !important;
+      box-shadow: 0 4px 10px rgba(59, 61, 64, 0.3);
+      border: none !important;
 
       .x-window-tr {
         height: 100px !important;
@@ -334,7 +479,7 @@
               height: calc(100%) !important;
               border: none !important;
               background-color: unset !important;
-
+              padding-top: 2% !important;
               .x-tab-strip {
                 display: flex;
                 flex-direction: column;
@@ -395,9 +540,12 @@
               }
 
               ////////// TAB OVER
-              .x-tab-strip-over .x-tab-strip-text {
-                // At last the button label !!
-                @include text(_size("normal"), _theme($TAB--COLOR---HOVER, $EDIT-ENGINE) !important, _weight("light"));
+              .x-tab-strip-over {
+                background: _color("tertiary", a);
+                .x-tab-strip-text {
+                  // At last the button label !!
+                  @include text(_size("normal"), _theme($TAB--COLOR---HOVER, $EDIT-ENGINE) !important, _weight("light"));
+                }
               }
 
               ////////// TAB SELECTED
@@ -415,8 +563,12 @@
 
             .x-tab-panel-body {
               height: calc(100%) !important;
-              border: none !important;
+              border-top: none !important;
+              border-left: 1px solid _color("secondary",d) !important;
+              border-bottom: none !important;
+              border-right: none !important;
               width: 100% !important;
+              padding: 2% !important;
 
               .workflow-dialog-action-tab.x-border-layout-ct {
                 height: calc(100%) !important;
@@ -498,6 +650,7 @@
                   top: unset !important;
                   left: unset !important;
                   margin-top: 10px;
+
                   table {
                     width: 100% !important;
 
@@ -623,6 +776,7 @@
                       display: flex !important;
                       flex-direction: column;
                       width: 100% !important;
+
                       .x-grid3-row {
                         flex: 0 0 100% !important;
 
@@ -638,19 +792,23 @@
 
                         table {
                           width: 100% !important;
-                          tr{
+
+                          tr {
                             display: flex;
                             flex-direction: row;
                             width: 100% !important;
+
                             td {
                               flex-grow: 1;
                             }
+
                             td:nth-child(4) {
                               flex-grow: 2;
                               width: 100% !important;
                             }
                           }
                         }
+
                         .x-grid3-col-action {
                           @include _button(".button-compare", "FORM", "remove-icons");
                           @include _button(".button-review", "FORM", "remove-icons");
@@ -658,6 +816,7 @@
                       }
                     }
                   }
+
                   .x-grid-group-collapsed {
                     .x-grid-group-div {
                       @include text(_size("medium"), _theme($TAB--COLOR, $EDIT-ENGINE), _weight("light"));

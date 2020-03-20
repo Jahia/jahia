@@ -3,33 +3,12 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="studiomode.managers.menu.anthracite" parent="studiomode.managers.menu">
-        <property name="items">
-            <list>
-                <ref bean="Toolbar.Item.FileManager.NewTab"/>
-                <ref bean="Toolbar.Item.PortletManager.NewTab"/>
-                <ref bean="Toolbar.Item.RepositoryExplorer.NewTab"/>
-                <ref bean="Toolbar.Item.CategoryManager.NewTab"/>
-            </list>
-        </property>
-    </bean>
-
     <bean id="studiomode-jahia-anthracite" parent="studiomode">
         <property name="topToolbar">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="layout" value="button-label"/>
                 <property name="items">
                     <list>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Studiomode.Menu.Mode">
-                            <property name="titleKey" value="label.mode"/>
-                            <property name="items">
-                                <list>
-                                    <ref bean="Toolbar.Item.Edit"/>
-                                    <ref bean="Toolbar.Item.Admin"/>
-                                </list>
-                            </property>
-                        </bean>
-
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
                             <property name="actionItem">
                                 <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.GoToActionItem">
@@ -75,7 +54,6 @@
 
                         <ref bean="Toolbar.Item.Separator"/>
 
-                        <ref bean="studiomode.managers.menu.anthracite"/>
                         <ref bean="Studiomode.Menu.Cache"/>
                         <ref bean="Toolbar.Item.ClipBoard"/>
                         <ref bean="Toolbar.Item.Separator"/>
@@ -84,7 +62,6 @@
                             <property name="titleKey" value="label.user.loggedAs"/>
                             <property name="items">
                                 <list>
-                                    <ref bean="Toolbar.Item.Start"/>
                                     <ref bean="Toolbar.Item.Documentation"/>
                                     <ref bean="Toolbar.Item.Logout"/>
                                 </list>

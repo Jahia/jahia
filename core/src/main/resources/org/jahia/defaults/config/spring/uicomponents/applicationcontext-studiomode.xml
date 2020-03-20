@@ -5,23 +5,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
                         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-    <bean id="studiomode.managers.menu" class="org.jahia.services.uicomponents.bean.toolbar.Menu">
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="needAuthentication" value="true"/>
-            </bean>
-        </property>
-        <property name="titleKey" value="label.managers"/>
-        <property name="items">
-            <list>
-                <ref bean="Toolbar.Item.FileManager"/>
-                <ref bean="Toolbar.Item.PortletManager"/>
-                <ref bean="Toolbar.Item.RepositoryExplorer"/>
-                <ref bean="Toolbar.Item.CategoryManager"/>
-            </list>
-        </property>
-    </bean>
-
     <bean id="studiomode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
         <property name="requiredPermission" value="studioModeAccess"/>
         <property name="nodeCheckPermission" value="/modules"/>
@@ -74,16 +57,6 @@
                 <property name="layout" value="button-label"/>
                 <property name="items">
                     <list>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Studiomode.Menu.Mode">
-                            <property name="titleKey" value="label.mode"/>
-                            <property name="items">
-                                <list>
-                                    <ref bean="Toolbar.Item.Edit"/>
-                                    <ref bean="Toolbar.Item.Admin"/>
-                                </list>
-                            </property>
-                        </bean>
-
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
                             <property name="actionItem">
                                 <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.GoToActionItem">
@@ -129,7 +102,6 @@
 
                         <ref bean="Toolbar.Item.Separator"/>
 
-                        <ref bean="studiomode.managers.menu"/>
                         <ref bean="Studiomode.Menu.Cache"/>
                         <ref bean="Toolbar.Item.ClipBoard"/>
                         <ref bean="Toolbar.Item.Separator"/>
@@ -138,7 +110,6 @@
                             <property name="titleKey" value="label.user.loggedAs"/>
                             <property name="items">
                                 <list>
-                                    <ref bean="Toolbar.Item.Start"/>
                                     <ref bean="Toolbar.Item.Documentation"/>
                                     <ref bean="Toolbar.Item.Logout"/>
                                 </list>

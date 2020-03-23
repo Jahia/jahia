@@ -16,6 +16,12 @@
     .x-tree3-node-text.x-tree3-node-text-widget,
     .x-grid3-row-selected .x-tree3-node-text.x-tree3-node-text-widget {
       color: _color("primary", a) !important;
+      position: relative !important;
+      top:0 !important;
+    }
+
+    .x-tree3-node-check {
+      display: none !important;
     }
 
     .indigo-modal-mask {
@@ -125,6 +131,7 @@
                 flex-grow: 4;
                 width: unset !important;
                 display: block !important;
+
                 > div {
                   width: 100% !important;
                 }
@@ -135,6 +142,7 @@
                 flex-grow: 0 !important;
                 width: unset !important;
                 display: block !important;
+
                 > div {
                   width: 32px !important;
                 }
@@ -145,6 +153,7 @@
                 flex-grow: 1;
                 width: unset !important;
                 display: block !important;
+
                 > div {
                   width: 150px !important;
                 }
@@ -258,6 +267,7 @@
           width: unset !important;
           display: block !important;
           padding: 0 3px 0 0 !important;
+
           > div {
             width: 100% !important;
           }
@@ -268,6 +278,7 @@
           flex-grow: 0 !important;
           width: unset !important;
           display: block !important;
+
           > div {
             width: 32px !important;
             display: flex;
@@ -281,6 +292,7 @@
           flex-grow: 1;
           width: unset !important;
           display: block !important;
+
           > div {
             width: 150px !important;
           }
@@ -323,7 +335,7 @@
 
         .x-grid3-cell .x-grid3-cell-inner {
           white-space: pre-wrap !important;
-          line-height: 14px;
+          line-height: 14px !important;
 
           .x-tree3-node {
             height: 38px !important;
@@ -333,12 +345,49 @@
               height: 38px !important;
               width: 100% !important;
 
-              .x-btn-text {
-                position: relative !important;
-                top: -18px !important;
-                pointer-events: all !important;
+              > table {
+                height: 38px !important;
+                width: 100% !important;
+
+                > tbody {
+                  height: 38px !important;
+                  width: 100% !important;
+
+                  > tr {
+                    height: 38px !important;
+                    width: 100% !important;
+
+                    > td {
+                      display: none !important;
+                      height: 38px !important;
+                      width: 0 !important;
+                    }
+
+                    > td:nth-child(3) {
+                      display: table-cell !important;
+                      width: 32px !important;
+                    }
+
+                    > td:last-child {
+                      display: table-cell !important;
+                      width: auto !important;
+                      padding: 0 !important;
+                      vertical-align: top !important;
+                    }
+
+                    .x-btn-small {
+                      height: 38px !important;
+                      width: 100% !important;
+
+                    }
+                  }
+                }
               }
             }
+          }
+
+          .x-toolbar-ct {
+            height: 38px !important;
           }
         }
 
@@ -371,12 +420,13 @@
         .x-tree3-node-joint[style*='-66px'] {
           // Closed
           background: url(_icon("navNext", "grey")) no-repeat top 1px center !important;
-          background-size: 10px !important;
+          background-size: 12px !important;
         }
 
         .x-tree3-node-joint[style*='-34px'] {
           // Opened
           background: url(_icon("arrowDown", "grey")) no-repeat top 1px center !important;
+          background-size: 16px !important;
         }
       }
 
@@ -480,6 +530,7 @@
               border: none !important;
               background-color: unset !important;
               padding-top: 2% !important;
+
               .x-tab-strip {
                 display: flex;
                 flex-direction: column;
@@ -542,6 +593,7 @@
               ////////// TAB OVER
               .x-tab-strip-over {
                 background: _color("tertiary", a);
+
                 .x-tab-strip-text {
                   // At last the button label !!
                   @include text(_size("normal"), _theme($TAB--COLOR---HOVER, $EDIT-ENGINE) !important, _weight("light"));
@@ -564,7 +616,7 @@
             .x-tab-panel-body {
               height: calc(100%) !important;
               border-top: none !important;
-              border-left: 1px solid _color("secondary",d) !important;
+              border-left: 1px solid _color("secondary", d) !important;
               border-bottom: none !important;
               border-right: none !important;
               width: 100% !important;

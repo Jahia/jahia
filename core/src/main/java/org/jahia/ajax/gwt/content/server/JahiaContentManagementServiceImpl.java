@@ -95,6 +95,8 @@ import org.jahia.services.translation.TranslationException;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.visibility.VisibilityConditionRule;
 import org.jahia.services.visibility.VisibilityService;
+import org.jahia.services.wip.WIPInfo;
+import org.jahia.services.wip.WIPService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.NodeTypesUtils;
@@ -119,6 +121,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * GWT server code implementation for the DMS repository services.
@@ -158,7 +161,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private ModuleHelper moduleHelper;
     private TaggingService taggingService;
     private ToolbarWarningsService toolbarWarningsService;
-    private WIPHelper wipHelper;
+    private WIPService wipService;
 
     public void setAcl(ACLHelper acl) {
         this.aclHelper = acl;
@@ -273,8 +276,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         this.toolbarWarningsService = toolbarWarningsService;
     }
 
-    public void setWipHelper(WIPHelper wipHelper) {
-        this.wipHelper = wipHelper;
+    public void setWipService(WIPService wipService) {
+        this.wipService = wipService;
     }
 
     // ------------------------ INTERFACE METHODS ------------------------
@@ -778,7 +781,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         try {
             JCRNodeWrapper nodeWrapper = jcrSessionWrapper.getNodeByUUID(node.getUUID());
 
-            wipHelper.saveWipPropertiesIfNeeded(nodeWrapper, sharedProperties);
+            wipService.saveWipPropertiesIfNeeded(nodeWrapper, getWipInfo(sharedProperties));
+
+            // Clear wip properties
+            for (GWTJahiaNodeProperty property : sharedProperties) {
+                if (Constants.WORKINPROGRESS_STATUS.equals(property.getName()) || Constants.WORKINPROGRESS_LANGUAGES.equals(property.getName())) {
+                    sharedProperties.remove(property);
+                }
+            }
 
             if (!nodeWrapper.getName().equals(JCRContentUtils.escapeLocalNodeName(node.getName()))) {
                 String name = contentManager.findAvailableName(nodeWrapper.getParent(), JCRContentUtils.escapeLocalNodeName(node.getName()));
@@ -895,6 +905,22 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         closeEditEngine(node.getPath());
         return result;
+    }
+
+    public WIPInfo getWipInfo(List<GWTJahiaNodeProperty> sharedProperties) {
+        String status = Constants.WORKINPROGRESS_STATUS_DISABLED;
+        Set<String> languages = new HashSet<>();
+        for (GWTJahiaNodeProperty property : sharedProperties) {
+            if (property.getName().equals(Constants.WORKINPROGRESS_STATUS)) {
+                status = property.getValues().get(0).getString();
+            }
+            if (property.getName().equals(Constants.WORKINPROGRESS_LANGUAGES)) {
+                languages = property.getValues() != null
+                        ? property.getValues().stream().map(GWTJahiaNodePropertyValue::getString).collect(Collectors.toSet())
+                        : Collections.emptySet();
+            }
+        }
+        return new WIPInfo(status, languages);
     }
 
     private void saveProperties(GWTJahiaNode node, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> sharedProperties, Set<String> removedTypes) throws GWTJahiaServiceException {

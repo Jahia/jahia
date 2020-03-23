@@ -45,9 +45,6 @@ package org.jahia.services.publication;
 
 import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
-import org.jahia.ajax.gwt.helper.WIPHelper;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -55,6 +52,8 @@ import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.wip.WIPInfo;
+import org.jahia.services.wip.WIPService;
 import org.jahia.test.framework.AbstractJUnitTest;
 import org.jahia.test.utils.TestHelper;
 import org.junit.After;
@@ -75,14 +74,14 @@ public class WipIT extends AbstractJUnitTest {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(WipIT.class);
 
     private static JCRPublicationService jcrService;
-    private static WIPHelper wipHelper;
+    private static WIPService wipService;
 
     @Override
     public void beforeClassSetup() throws Exception {
         super.beforeClassSetup();
         jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
-        wipHelper = new WIPHelper();
-        wipHelper.setPublicationService(jcrService);
+        wipService = new WIPService();
+        wipService.setPublicationService(jcrService);
     }
 
     @After
@@ -134,7 +133,9 @@ public class WipIT extends AbstractJUnitTest {
         // set WIP for all content, alongs with props modification, content should not be published
         enEditSession.refresh(false);
         i18nContent = enEditSession.getNode(testContentPath);
-        wipHelper.saveWipPropertiesIfNeeded(i18nContent, buildWipProperties(Constants.WORKINPROGRESS_STATUS_ALLCONTENT, Collections.emptySet()));
+        final WIPInfo wipInfo = buildWipProperties(Constants.WORKINPROGRESS_STATUS_ALLCONTENT, Collections.emptySet());
+        wipService.saveWipPropertiesIfNeeded(i18nContent, wipInfo);
+        Assert.assertTrue(isSameWipInfo(i18nContent, wipInfo));
         setPropertyAndAssertItsAutoPublished(testContentPath, "j:titleKey", enEditSession, enLiveSession, "titleKey", "titleKey updated", true, false);
         setPropertyAndAssertItsAutoPublished(testContentPath, "text", enEditSession, enLiveSession, "en", "en updated", true, false);
         setPropertyAndAssertItsAutoPublished(testContentPath, "text", frEditSession, frLiveSession, "fr", "fr updated", true, false);
@@ -142,7 +143,9 @@ public class WipIT extends AbstractJUnitTest {
         // set WIP only for EN, check that FR and non 18n props are updated directly
         enEditSession.refresh(false);
         i18nContent = enEditSession.getNode(testContentPath);
-        wipHelper.saveWipPropertiesIfNeeded(i18nContent, buildWipProperties(Constants.WORKINPROGRESS_STATUS_LANG, Collections.singleton("en")));
+        final WIPInfo WipInfoEn = buildWipProperties(Constants.WORKINPROGRESS_STATUS_LANG, Collections.singleton("en"));
+        wipService.saveWipPropertiesIfNeeded(i18nContent, WipInfoEn);
+        Assert.assertTrue(isSameWipInfo(i18nContent, WipInfoEn));
         setPropertyAndAssertItsAutoPublished(testContentPath, "j:titleKey", enEditSession, enLiveSession, "titleKey", "titleKey updated", false, true);
         setPropertyAndAssertItsAutoPublished(testContentPath, "text", enEditSession, enLiveSession, "en", "en updated", false, false);
         setPropertyAndAssertItsAutoPublished(testContentPath, "text", frEditSession, frLiveSession, "fr", "fr updated", false, true);
@@ -156,7 +159,9 @@ public class WipIT extends AbstractJUnitTest {
         // now disable WIP completely, en should be published directly
         enEditSession.refresh(false);
         i18nContent = enEditSession.getNode(testContentPath);
-        wipHelper.saveWipPropertiesIfNeeded(i18nContent, buildWipProperties(Constants.WORKINPROGRESS_STATUS_DISABLED, Collections.emptySet()));
+        final WIPInfo wipInfoDisabled = buildWipProperties(Constants.WORKINPROGRESS_STATUS_DISABLED, Collections.emptySet());
+        wipService.saveWipPropertiesIfNeeded(i18nContent, wipInfoDisabled);
+        Assert.assertTrue(isSameWipInfo(i18nContent, wipInfoDisabled));
         setPropertyAndAssertItsAutoPublished(testContentPath, "j:titleKey", enEditSession, enLiveSession, "titleKey updated", "titleKey updated 2", false, true);
         setPropertyAndAssertItsAutoPublished(testContentPath, "text", enEditSession, enLiveSession, "en", "en updated 2", false, true);
         setPropertyAndAssertItsAutoPublished(testContentPath, "text", frEditSession, frLiveSession, "fr updated", "fr updated 2", false, true);
@@ -169,7 +174,9 @@ public class WipIT extends AbstractJUnitTest {
         // test that adding WIP on languages directly is working
         enEditSession.refresh(false);
         i18nContent = enEditSession.getNode(testContentPath);
-        wipHelper.saveWipPropertiesIfNeeded(i18nContent, buildWipProperties(Constants.WORKINPROGRESS_STATUS_LANG, Collections.singleton("fr")));
+        final WIPInfo wipInfoFr = buildWipProperties(Constants.WORKINPROGRESS_STATUS_LANG, Collections.singleton("fr"));
+        wipService.saveWipPropertiesIfNeeded(i18nContent, wipInfoFr);
+        Assert.assertTrue(isSameWipInfo(i18nContent, wipInfoFr));
         setPropertyAndAssertItsAutoPublished(testContentPath, "j:titleKey", enEditSession, enLiveSession, "titleKey updated 3", "titleKey updated 4", true, true);
         setPropertyAndAssertItsAutoPublished(testContentPath, "text", enEditSession, enLiveSession, "en updated 3", "en updated 4", true, true);
         setPropertyAndAssertItsAutoPublished(testContentPath, "text", frEditSession, frLiveSession, "fr updated 3", "fr updated 4", true, false);
@@ -177,7 +184,8 @@ public class WipIT extends AbstractJUnitTest {
         // test to switch WIP to EN only from WIP FR
         enEditSession.refresh(false);
         i18nContent = enEditSession.getNode(testContentPath);
-        wipHelper.saveWipPropertiesIfNeeded(i18nContent, buildWipProperties(Constants.WORKINPROGRESS_STATUS_LANG, Collections.singleton("en")));
+        wipService.saveWipPropertiesIfNeeded(i18nContent, WipInfoEn);
+        Assert.assertTrue(isSameWipInfo(i18nContent, WipInfoEn));
         setPropertyAndAssertItsAutoPublished(testContentPath, "j:titleKey", enEditSession, enLiveSession, "titleKey updated 3", "titleKey updated 4", false, true);
         setPropertyAndAssertItsAutoPublished(testContentPath, "text", enEditSession, enLiveSession, "en updated 3", "en updated 4", false, true);
         setPropertyAndAssertItsAutoPublished(testContentPath, "text", frEditSession, frLiveSession, "fr updated 3", "fr updated 4", false, true);
@@ -189,7 +197,8 @@ public class WipIT extends AbstractJUnitTest {
         // test swich to WIP to all content
         enEditSession.refresh(false);
         i18nContent = enEditSession.getNode(testContentPath);
-        wipHelper.saveWipPropertiesIfNeeded(i18nContent, buildWipProperties(Constants.WORKINPROGRESS_STATUS_ALLCONTENT, Collections.emptySet()));
+        wipService.saveWipPropertiesIfNeeded(i18nContent, wipInfo);
+        Assert.assertTrue(isSameWipInfo(i18nContent, wipInfo));
         setPropertyAndAssertItsAutoPublished(testContentPath, "j:titleKey", enEditSession, enLiveSession, "titleKey updated 5", "titleKey updated 6", true, false);
         setPropertyAndAssertItsAutoPublished(testContentPath, "text", enEditSession, enLiveSession, "en updated 4", "en updated 6", true, false);
         setPropertyAndAssertItsAutoPublished(testContentPath, "text", frEditSession, frLiveSession, "fr updated 5", "fr updated 6", true, false);
@@ -197,7 +206,8 @@ public class WipIT extends AbstractJUnitTest {
         // finally disable WIP and test autopublished
         enEditSession.refresh(false);
         i18nContent = enEditSession.getNode(testContentPath);
-        wipHelper.saveWipPropertiesIfNeeded(i18nContent, buildWipProperties(Constants.WORKINPROGRESS_STATUS_DISABLED, Collections.emptySet()));
+        wipService.saveWipPropertiesIfNeeded(i18nContent, wipInfoDisabled);
+        Assert.assertTrue(isSameWipInfo(i18nContent, wipInfoDisabled));
         setPropertyAndAssertItsAutoPublished(testContentPath, "j:titleKey", enEditSession, enLiveSession, "titleKey updated 5", "titleKey updated 6", false, true);
         setPropertyAndAssertItsAutoPublished(testContentPath, "text", enEditSession, enLiveSession, "en updated 4", "en updated 6", false, true);
         setPropertyAndAssertItsAutoPublished(testContentPath, "text", frEditSession, frLiveSession, "fr updated 5", "fr updated 6", false, true);
@@ -302,7 +312,7 @@ public class WipIT extends AbstractJUnitTest {
                 JCRNodeWrapper node = editSession.getNode(nodePath);
                 String path = node.getPath();
                 // Set WIP in the current language only
-                wipHelper.saveWipPropertiesIfNeeded(node, buildWipProperties(status, Collections.singleton(language)));
+                wipService.saveWipPropertiesIfNeeded(node, buildWipProperties(status, Collections.singleton(language)));
                 for (String checkedLanguage : siteLanguages) {
                     // publish the node in each language
                     jcrService.publishByMainId(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, Collections.singleton(checkedLanguage), true, null);
@@ -327,16 +337,16 @@ public class WipIT extends AbstractJUnitTest {
         }
     }
 
-    private List<GWTJahiaNodeProperty> buildWipProperties(String wipStatus, Set<String> wipLanguages) {
-        List<GWTJahiaNodeProperty> properties = new ArrayList<>();
-        GWTJahiaNodeProperty wipStatusProp = new GWTJahiaNodeProperty(Constants.WORKINPROGRESS_STATUS, wipStatus);
-        GWTJahiaNodeProperty wipLanguagesProp = new GWTJahiaNodeProperty(Constants.WORKINPROGRESS_LANGUAGES,"");
-        wipLanguagesProp.setValues(wipLanguages.stream().map(GWTJahiaNodePropertyValue::new).collect(Collectors.toList()));
-        properties.add(wipStatusProp);
-        properties.add(wipLanguagesProp);
-        return properties;
+    private WIPInfo buildWipProperties(String wipStatus, Set<String> wipLanguages) {
+        return new WIPInfo(wipStatus, wipLanguages);
     }
 
+    private boolean isSameWipInfo(JCRNodeWrapper node, WIPInfo wipInfo) throws Exception {
+        WIPInfo wipOnNode = wipService.getWipInfo(node);
+        final Set<String> wipLanguages = wipInfo.getLanguages();
+        final Set<String> wipOnNodeLanguages = wipOnNode.getLanguages();
+        return (wipOnNode.getStatus().equals(wipInfo.getStatus()) && wipLanguages.containsAll(wipOnNodeLanguages) && wipOnNodeLanguages.containsAll(wipLanguages));
+    }
 
     private Map<String, Map<String, JCRSessionWrapper>> getCleanSessionForLanguages(String ...languages) throws RepositoryException {
         JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();

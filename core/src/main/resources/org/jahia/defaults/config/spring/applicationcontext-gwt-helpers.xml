@@ -165,7 +165,4 @@
         <property name="jcrFolderName" value="pending-uploaded-files"/>
     </bean>
 
-    <bean name="WipHelper" class="org.jahia.ajax.gwt.helper.WIPHelper">
-        <property name="publicationService" ref="jcrPublicationService"/>
-    </bean>
 </beans>

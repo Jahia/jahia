@@ -10,7 +10,7 @@
 			<ref bean="jahiaProperties" />
 		</property>
 	</bean>
-	
+
     <bean name="gwtUrlHandlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="mappings">
             <value>
@@ -18,7 +18,7 @@
             </value>
         </property>
     </bean>
-    
+
     <bean name="abstractServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController"  abstract="true">
         <property name="sessionExpiryTime" value="${sessionExpiryTime}" />
         <property name="allowPostMethodOnly" value="true"/>
@@ -59,7 +59,7 @@
         <property name="moduleHelper" ref="ModuleHelper"/>
         <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
         <property name="toolbarWarningsService" ref="toolbarNotificationService"/>
-        <property name="wipHelper" ref="WipHelper"/>
+        <property name="wipService" ref="org.jahia.services.wip.WIPService"/>
     </bean>
 
     <bean id="localeResolver" class="org.jahia.services.multilang.UILocaleResolver" />

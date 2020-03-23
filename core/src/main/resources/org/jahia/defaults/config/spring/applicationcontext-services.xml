@@ -119,6 +119,10 @@
         <property name="tagHandler" ref="org.jahia.services.tags.TagHandler"/>
     </bean>
 
+    <bean name="org.jahia.services.wip.WIPService" class="org.jahia.services.wip.WIPService">
+        <property name="publicationService" ref="jcrPublicationService"/>
+    </bean>
+
     <bean id="ImportExportService" class="org.jahia.services.importexport.ImportExportBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
         <property name="sitesService" ref="JahiaSitesService"/>
         <property name="jcrStoreService" ref="JCRStoreService"/>

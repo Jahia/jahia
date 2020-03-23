@@ -41,10 +41,9 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.helper;
+package org.jahia.services.wip;
 
 import com.google.common.collect.Sets;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.api.Constants;
 import org.jahia.services.content.*;
 import org.jahia.utils.security.AccessManagerUtils;
@@ -54,14 +53,17 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.*;
 import javax.jcr.security.Privilege;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
- * Helper class related to Working in progress actions
+ * Work in progress Service
+ * Service that handle Wip Information for a given node
+ * A WIP Information is:
+ *  - a status that is one of: "DISABLED" (default value), "ALL_CONTENTS", "LANGUAGES"
+ *  - languages: list of language codes on witch WIP is set (only used by LANGUAGES status)
  */
-public class WIPHelper {
+public class WIPService {
 
-    private static final transient Logger logger = LoggerFactory.getLogger(WIPHelper.class);
+    private static final transient Logger logger = LoggerFactory.getLogger(WIPService.class);
 
     private JCRPublicationService publicationService;
 
@@ -70,17 +72,39 @@ public class WIPHelper {
     }
 
     /**
-     * Set the WIP status on the given node according to the given gwt properties.
-     * @param node where to set the property
-     * @param props
+     * Return work in progress information for the given node
+     * @param node to on witch to get WIP Information
+     * @return WIP Info (status + languages)
      * @throws RepositoryException
      */
-    public void saveWipPropertiesIfNeeded(JCRNodeWrapper node, List<GWTJahiaNodeProperty> props)
+    public WIPInfo getWipInfo(JCRNodeWrapper node) throws RepositoryException {
+        // status
+        String status = Constants.WORKINPROGRESS_STATUS_DISABLED;
+        if (node.hasProperty(Constants.WORKINPROGRESS_STATUS)) {
+            status = node.getProperty(Constants.WORKINPROGRESS_STATUS).getString();
+        }
+        // language
+        Set<String> languages = new HashSet<>();
+        if (node.hasProperty(Constants.WORKINPROGRESS_LANGUAGES)) {
+            // can't use lambda because of exception handling
+            for (Value langValue : node.getProperty(Constants.WORKINPROGRESS_LANGUAGES).getValues()) {
+                languages.add(langValue.getString());
+            }
+        }
+        return new WIPInfo(status, languages);
+
+    }
+
+    /**
+     * Set the WIP status on the given node according to the given WIPInfo.
+     * @param node where to set the property
+     * @param wipInfo
+     * @throws RepositoryException
+     */
+    public void saveWipPropertiesIfNeeded(JCRNodeWrapper node, WIPInfo wipInfo)
             throws RepositoryException {
         // do we have anything to update at all or we have other properties than WIP to update?
-        if (props == null || props.isEmpty()
-                || (props.stream().filter(prop -> (!Constants.WORKINPROGRESS_LANGUAGES.equals(prop.getName()))
-                && !Constants.WORKINPROGRESS_STATUS.equals(prop.getName())).count() > 0)) {
+        if (wipInfo.getStatus() == null) {
             return;
         }
 
@@ -90,11 +114,10 @@ public class WIPHelper {
         Set<String> newWipLanguages = null;
         JCRSessionWrapper session = node.getSession();
 
-        GWTJahiaNodeProperty wipStatusProperty = props.stream()
-                .filter(prop -> prop.getName().equals(Constants.WORKINPROGRESS_STATUS)).findFirst().orElse(null);
-        if (wipStatusProperty != null && wipStatusProperty.getValues() != null
-                && !wipStatusProperty.getValues().isEmpty()) {
-            newWipStatus = wipStatusProperty.getValues().get(0).getString();
+
+        if (wipInfo.getStatus() != null
+                && !wipInfo.getStatus().isEmpty()) {
+            newWipStatus = wipInfo.getStatus();
             if ((Constants.WORKINPROGRESS_STATUS_ALLCONTENT.equals(newWipStatus)
                     || Constants.WORKINPROGRESS_STATUS_DISABLED.equals(newWipStatus))
                     && !node.hasPermission(AccessManagerUtils.getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES,
@@ -105,12 +128,8 @@ public class WIPHelper {
         }
 
         // check languages
-        GWTJahiaNodeProperty languageProperty = props.stream()
-                .filter(prop -> prop.getName().equals(Constants.WORKINPROGRESS_LANGUAGES)).findFirst().orElse(null);
-        if (languageProperty != null) {
-            newWipLanguages = languageProperty.getValues() != null
-                    ? languageProperty.getValues().stream().map(v -> v.getString()).collect(Collectors.toSet())
-                    : Collections.emptySet();
+        if (wipInfo.getLanguages() != null) {
+            newWipLanguages = wipInfo.getLanguages();
 
             Set<String> existingWipLanguages = Collections.emptySet();
             if (node.hasProperty(Constants.WORKINPROGRESS_LANGUAGES)) {
@@ -140,8 +159,6 @@ public class WIPHelper {
 
         updateWipStatus(node, newWipStatus, newWipLanguages);
 
-        // we remove the WIP properties, as we've already handled them
-        props.clear();
     }
 
     private void updateWipStatus(JCRNodeWrapper node, String wipStatusToSet, final Set<String> wipLangugagesToSet)

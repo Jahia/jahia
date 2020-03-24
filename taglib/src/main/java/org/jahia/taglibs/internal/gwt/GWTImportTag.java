@@ -53,6 +53,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.WebUtils;
 import org.slf4j.Logger;
 import org.jahia.taglibs.AbstractJahiaTag;
 
@@ -79,14 +80,7 @@ public class GWTImportTag extends AbstractJahiaTag {
             pageContext.getOut().println(GWTIncluder.generateGWTImport(pageContext, getModule()));
 
             final HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-            String theme = SettingsBean.getInstance().getPropertiesFile().getProperty(UI_THEME);
-            JahiaUser jahiaUser = (JahiaUser) request.getSession().getAttribute(SESSION_USER);
-
-            if (request.getParameter(UI_THEME) != null) {
-                theme = request.getParameter(UI_THEME);
-            } else if (jahiaUser != null && jahiaUser.getProperty(UI_THEME) != null) {
-                theme = jahiaUser.getProperty(UI_THEME);
-            }
+            String theme = WebUtils.getUITheme(request);
 
             if (theme != null && !theme.equals("default")) {
                 request.getSession().setAttribute(UI_THEME, theme);

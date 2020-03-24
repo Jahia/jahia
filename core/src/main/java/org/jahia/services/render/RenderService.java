@@ -64,6 +64,7 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.WebUtils;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -723,10 +724,7 @@ public class RenderService implements InitializingBean {
         if (settingsPanelTheme != null) {
             theme = settingsPanelTheme.equals("default") ? null : settingsPanelTheme;
         } else if (renderContext.getRequest() != null) {
-            HttpSession httpSession = renderContext.getRequest().getSession(false);
-            if (httpSession != null) {
-                theme = (String) httpSession.getAttribute(Constants.UI_THEME);
-            }
+            theme = WebUtils.getUITheme(renderContext.getRequest());
         }
         return theme;
     }

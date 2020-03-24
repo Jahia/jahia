@@ -18,6 +18,7 @@
       color: _color("primary", a) !important;
       position: relative !important;
       top:0 !important;
+      pointer-events: all;
     }
 
     .x-tree3-node-check {

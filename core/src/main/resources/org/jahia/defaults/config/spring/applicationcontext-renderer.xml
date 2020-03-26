@@ -469,6 +469,7 @@
         <entry key="text" value="text/plain; charset=UTF-8"/>
         <entry key="vcf" value="text/vcard; charset=UTF-8"/>
         <entry key="xml" value="text/xml; charset=UTF-8"/>
+        <entry key="js" value="text/javascript; charset=UTF-8"/>
     </util:map>
 
     <bean id="jahiaBundleFlowRegistry" class="org.jahia.services.render.webflow.BundleFlowRegistry"/>

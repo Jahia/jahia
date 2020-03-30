@@ -46,6 +46,7 @@ package org.jahia.services.wip;
 import com.google.common.collect.Sets;
 import org.jahia.api.Constants;
 import org.jahia.services.content.*;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.security.AccessManagerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,7 +97,30 @@ public class WIPService {
     }
 
     /**
+     * Read "wip.checkbox.checked" system property value to get default WIP status.
+     * @return ALL_CONTENT if enabled
+     */
+    public WIPInfo getDefaultWipInfo() {
+        boolean isWipEnabled = Boolean.parseBoolean(SettingsBean.getInstance().getString("wip.checkbox.checked", "false"));
+        return new WIPInfo(isWipEnabled ? Constants.WORKINPROGRESS_STATUS_ALLCONTENT : Constants.WORKINPROGRESS_STATUS_DISABLED, Collections.emptySet());
+    }
+
+    /**
+     * Add work in progress properties on a created node.
+     * Use this method to set WIP properties on a newly created node
+     * @param node
+     * @param wipInfo
+     * @throws RepositoryException
+     */
+    public void createWipPropertiesOnNewNode(JCRNodeWrapper node, WIPInfo wipInfo) throws RepositoryException {
+        node.setProperty(Constants.WORKINPROGRESS_STATUS, wipInfo.getStatus());
+        final Collection<String> languages = wipInfo.getLanguages();
+        node.setProperty(Constants.WORKINPROGRESS_LANGUAGES, languages.toArray(new String[0]));
+    }
+
+    /**
      * Set the WIP status on the given node according to the given WIPInfo.
+     * For new node, please use "createWipPropertiesOnNewNode(JCRNodeWrapper node, WIPInfo wipInfo)"
      * @param node where to set the property
      * @param wipInfo
      * @throws RepositoryException

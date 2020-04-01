@@ -1175,6 +1175,10 @@
                     <artifactId>javassist</artifactId>
                     <groupId>org.javassist</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>cdi-api</artifactId>
+                    <groupId>javax.enterprise</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -1303,6 +1307,10 @@
                     <artifactId>jboss-el-api_2.2_spec</artifactId>
                     <groupId>org.jboss.spec.javax.el</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>cdi-api</artifactId>
+                    <groupId>javax.enterprise</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -1334,8 +1342,19 @@
                     <groupId>org.drools</groupId>
                     <artifactId>drools-compiler</artifactId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>cdi-api</artifactId>
+                    <groupId>javax.enterprise</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
+
+        <dependency>
+            <artifactId>cdi-api</artifactId>
+            <groupId>javax.enterprise</groupId>
+            <version>1.1</version>
+        </dependency>
+
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>

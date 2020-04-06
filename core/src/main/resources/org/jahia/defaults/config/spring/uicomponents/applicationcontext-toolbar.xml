@@ -1363,6 +1363,8 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
                 <property name="nodeTypes" value="jnt:navMenuText"/>
+                <!-- BACKLOG-11556 : includeSubTypes = false has been added to get menu entry to open CE in Page composer. Don't use this constraint in 8.1-->
+                <property name="includeSubTypes" value="false"/>
                 <property name="parentTypes" value="jnt:page jnt:navMenuText"/>
             </bean>
         </property>
@@ -1373,6 +1375,8 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
                 <property name="nodeTypes" value="jnt:nodeLink"/>
+                <!-- BACKLOG-11556 : includeSubTypes = false has been added to get menu entry to open CE in Page composer. Don't this constraint in 8.1-->
+                <property name="includeSubTypes" value="false"/>
                 <property name="parentTypes" value="jnt:page jnt:navMenuText"/>
             </bean>
         </property>
@@ -1383,6 +1387,8 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
                 <property name="nodeTypes" value="jnt:externalLink"/>
+                <!-- BACKLOG-11556 : includeSubTypes = false has been added to get menu entry to open CE in Page composer. Don't this constraint in 8.1-->
+                <property name="includeSubTypes" value="false"/>
                 <property name="parentTypes" value="jnt:page jnt:navMenuText"/>
             </bean>
         </property>

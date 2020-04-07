@@ -85,7 +85,7 @@ import org.slf4j.Logger;
 /**
  * Servlet for the first entry point in Jahia portal that performs a client-side redirect
  * to the home page of the appropriate site.
- * 
+ *
  * @author toto
  */
 public class WelcomeServlet extends HttpServlet {
@@ -94,11 +94,11 @@ public class WelcomeServlet extends HttpServlet {
      * The serialVersionUID.
      */
     private static final long serialVersionUID = -2055161334153523152L;
-    
+
     private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(WelcomeServlet.class);
-    
+
     private static final String DEFAULT_LOCALE = Locale.ENGLISH.toString();
-    private static final String DASHBOARD_HOME = ".projects.html";
+    private static final String DASHBOARD_HOME = "/jahia/dashboard";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -125,11 +125,7 @@ public class WelcomeServlet extends HttpServlet {
         JahiaUser user = (JahiaUser) request.getSession().getAttribute(Constants.SESSION_USER);
         JCRUserNode userNode = user != null ? JahiaUserManagerService.getInstance().lookupUserByPath(user.getLocalPath()) : null;
         if (!JahiaUserManagerService.isGuest(user) && userNode.isMemberOfGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
-            JCRSiteNode site = resolveSite(request, Constants.LIVE_WORKSPACE,
-                    JCRContentUtils.getSystemSitePath());
-            String language = resolveLanguage(request, site, userNode, true);
-            redirect(request.getContextPath() + "/cms/dashboard/default/"+ language + user.getLocalPath() +
-                     DASHBOARD_HOME, response);
+            redirect(request.getContextPath() + DASHBOARD_HOME, response);
         } else {
             throw new AccessDeniedException();
         }
@@ -168,7 +164,7 @@ public class WelcomeServlet extends HttpServlet {
             defaultSitePath = defaultSite != null ? defaultSite.getJCRLocalPath() : null;
             site = (JCRSiteNode) defaultSite;
         }
-        
+
         String redirect = null;
         String pathInfo = request.getPathInfo();
 
@@ -191,7 +187,7 @@ public class WelcomeServlet extends HttpServlet {
                 defaultSite = siteService.getDefaultSite();
                 defaultSitePath = defaultSite != null ? defaultSite.getJCRLocalPath() : null;
             }
-            
+
             JahiaUser user = (JahiaUser) request.getSession().getAttribute(Constants.SESSION_USER);
             JCRUserNode userNode = user != null ? JahiaUserManagerService.getInstance().lookupUserByPath(user.getLocalPath()) : null;
             String language = resolveLanguage(request, site, userNode, false);
@@ -220,7 +216,7 @@ public class WelcomeServlet extends HttpServlet {
                                 && defaultSite != null
                                 && !site.getSiteKey().equals(
                                         defaultSite.getSiteKey())
-                                && (!SettingsBean.getInstance()  // the check in this parenthesis is added to prevent immediate servername change in the url, which leads to the side effect with an automatic login on default site after logout on other site 
+                                && (!SettingsBean.getInstance()  // the check in this parenthesis is added to prevent immediate servername change in the url, which leads to the side effect with an automatic login on default site after logout on other site
                                         .isUrlRewriteUseAbsoluteUrls()
                                         || site.getServerName().equals(
                                                 defaultSite.getServerName()) || Url
@@ -250,12 +246,12 @@ public class WelcomeServlet extends HttpServlet {
                             redirect = request.getContextPath() + "/cms/contribute/"
                                     + Constants.EDIT_WORKSPACE + "/" + language
                                     + defSite.getHome().getPath() + ".html";
-                        } 
-                    } 
-                } 
+                        }
+                    }
+                }
             }
             if (redirect == null) {
-                redirect(request.getContextPath() + "/start", response);
+                redirect(request.getContextPath() + DASHBOARD_HOME, response);
                 return;
             }
             redirect(redirect, response);
@@ -265,12 +261,12 @@ public class WelcomeServlet extends HttpServlet {
     protected JCRSiteNode resolveSite(HttpServletRequest request, String workspace, String fallbackSitePath) throws JahiaException, RepositoryException {
         JahiaSitesService siteService = JahiaSitesService.getInstance();
         JahiaSite resolvedSite = !Url.isLocalhost(request.getServerName()) ? siteService.getSiteByServerName(request.getServerName()) : null;
-        String sitePath = resolvedSite == null ? fallbackSitePath : resolvedSite.getJCRLocalPath(); 
+        String sitePath = resolvedSite == null ? fallbackSitePath : resolvedSite.getJCRLocalPath();
 
         return sitePath != null ? (JCRSiteNode) JCRStoreService.getInstance().getSessionFactory()
                 .getCurrentUserSession(workspace).getNode(sitePath) : null;
     }
-    
+
     protected String resolveLanguage(HttpServletRequest request, final JCRSiteNode site, JCRUserNode user, boolean userRedirect)
             throws JahiaException {
         List<Locale> siteLanguages = null;
@@ -292,7 +288,7 @@ public class WelcomeServlet extends HttpServlet {
         // retrieve the browser locales, but if Accept-Language header is missing we won't fallback to the default system locale
         for (Enumeration<?> requestLocales = Util.getRequestLocales(request); requestLocales.hasMoreElements();) {
             final Locale curLocale = (Locale) requestLocales.nextElement();
-            if (curLocale != null) { 
+            if (curLocale != null) {
                 // check that the site contains the language and the home page exists in live for that language
                 if (isLocaleSupported(site, siteLanguages, curLocale)) {
                     return curLocale.toString();

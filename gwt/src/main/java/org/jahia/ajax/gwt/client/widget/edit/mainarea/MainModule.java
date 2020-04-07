@@ -1566,10 +1566,21 @@ public class MainModule extends Module {
         nsAuthoringApi.getEditTabs = function (path, uuid, displayName, types, inheritedTypes, hasOrderableChildNodes) {
             return @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::getEditTabs(*)(path, uuid, displayName, types, inheritedTypes, hasOrderableChildNodes);
         };
+    }-*/;
 
-        $wnd.top.authoringApi.refreshContent = function () {
+    public static native void exposeTopStaticMethod() /*-{
+        var nsTopAuthoringApi = $wnd.top.authoringApi || {};
+        $wnd.top.authoringApi = nsTopAuthoringApi;
+
+        nsTopAuthoringApi.refreshContent = function () {
             return @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::refreshContent(*)();
         };
+    }-*/;
+
+    public static native void removeTopStaticMethod() /*-{
+        if ($wnd.top.authoringApi) {
+            delete $wnd.top.authoringApi.refreshContent;
+        }
     }-*/;
 
     public InfoLayers getInfoLayers() {

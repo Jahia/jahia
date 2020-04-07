@@ -44,10 +44,10 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.Style;
 import com.google.gwt.user.client.Element;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -128,6 +128,18 @@ public class EditManager extends ContentPanel {
         }
     }
 
+    @Override
+    protected void onLoad() {
+        super.onLoad();
+        MainModule.exposeTopStaticMethod();
+    }
+
+    @Override
+    protected void onUnload() {
+        super.onUnload();
+        MainModule.removeTopStaticMethod();
+    }
+
     public MainModule getMainModule() {
         return mainModule;
     }
@@ -144,7 +156,7 @@ public class EditManager extends ContentPanel {
         return editLinker;
     }
 
-    
+
 
 
 }

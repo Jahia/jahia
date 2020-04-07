@@ -1126,6 +1126,11 @@ div.x-jahia-root {
     box-sizing: inherit;
 }
 
+.toolbar-item-publishone.x-item-disabled {
+    background-color: #DADADA;
+    pointer-events: none;
+}
+
 
 // Workflow Button
 .contribute-menu-workflow {

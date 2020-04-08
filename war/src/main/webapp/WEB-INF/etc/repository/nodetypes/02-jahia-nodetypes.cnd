@@ -612,6 +612,8 @@ extends = jnt:page
 
 [jmix:structuredContent] > jmix:droppableContent, jmix:accessControllableContent mixin
 
+[jmix:portletContent] > jmix:droppableContent, jmix:accessControllableContent mixin
+
 [jmix:socialComponent] > jmix:droppableContent, jmix:accessControllableContent mixin
 
 [jmix:multimediaContent] > jmix:droppableContent, jmix:accessControllableContent mixin
@@ -863,7 +865,7 @@ extends = jnt:content
  + * (jnt:portlet) = jnt:portlet
  + * (jnt:portletFolder)
 
-[jnt:portletReference] > jnt:content,  jmix:nodeReference, jmix:structuredContent
+[jnt:portletReference] > jnt:content,  jmix:nodeReference, jmix:portletContent
  - j:node (weakreference,picker[type='portlet']) < jnt:portlet
 
 //---------------------------------------------------------

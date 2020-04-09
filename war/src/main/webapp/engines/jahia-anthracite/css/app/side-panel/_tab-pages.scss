@@ -67,16 +67,31 @@
         // Internal link
         &[src$="jnt_nodeLink.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-pages.scss ::: 4 */
             background-image: url(../images/icons/tabs-placeholder-black@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-pages.scss ::: 2 */
+            display: inline-block !important;
+            padding: 0;
+            height: auto;
+            width: auto;
+            opacity: 1;
         }
 
         // External link
         &[src$="jnt_externalLink.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-pages.scss ::: 5 */
             background-image: url(../images/icons/tabs-placeholder-black@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-pages.scss ::: 3 */
+            display: inline-block !important;
+            padding: 0;
+            height: auto;
+            width: auto;
+            opacity: 1;
         }
 
         // Menu link
         &[src$="jnt_navMenuText.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-pages.scss ::: 6 */
             background-image: url(../images/icons/tabs-placeholder-black@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-pages.scss ::: 4 */
+            display: inline-block !important;
+            padding: 0;
+            height: auto;
+            width: auto;
+            opacity: 1;
         }
     }
 

@@ -1285,7 +1285,8 @@ form,
 
         .x-tree3-node-joint[style*='-34px'] {
             // Opened
-            background: url( _icon("arrowDown", "white")) no-repeat top 1px center!important;
+            background: url( _icon("arrowDown", "white")) no-repeat top -3px center!important;
+            background-size: 19px !important;
         }
     }
 

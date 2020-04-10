@@ -361,8 +361,10 @@ body[data-indigo-app="contribute"] {
     @include tooltip(_dictionary("tooltip_refresh_page"), "BOTTOM");
 
     @if($theme == "anthracite-V8"){
-        margin-left: -92px;
         top: 82px;
+        left: 536px !important;
+        position: absolute;
+        margin-left: 0px;
     } @else if ($theme == "anthracite"){
         body[data-INDIGO-SIDEPANEL-PINNED="true"] & {
             top: 43px;

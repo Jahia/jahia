@@ -56,8 +56,10 @@
         }
 
         &[src$="/jnt_page.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-pages.scss ::: 2 */
-            background-image: url(_theme($SIDE-PANEL-TAB--PAGES-ICON--UP, $SIDE-PANEL));
-            background-size: 20px;
+            display: inline-block !important;
+            padding: 0;
+            height: auto;
+            opacity: 1;
         }
 
         &[src$="/jnt_virtualsite.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-pages.scss ::: 3 */
@@ -66,31 +68,25 @@
 
         // Internal link
         &[src$="jnt_nodeLink.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-pages.scss ::: 4 */
-            background-image: url(../images/icons/tabs-placeholder-black@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-pages.scss ::: 2 */
             display: inline-block !important;
             padding: 0;
             height: auto;
-            width: auto;
             opacity: 1;
         }
 
         // External link
         &[src$="jnt_externalLink.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-pages.scss ::: 5 */
-            background-image: url(../images/icons/tabs-placeholder-black@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-pages.scss ::: 3 */
             display: inline-block !important;
             padding: 0;
             height: auto;
-            width: auto;
             opacity: 1;
         }
 
         // Menu link
         &[src$="jnt_navMenuText.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-pages.scss ::: 6 */
-            background-image: url(../images/icons/tabs-placeholder-black@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-pages.scss ::: 4 */
             display: inline-block !important;
             padding: 0;
             height: auto;
-            width: auto;
             opacity: 1;
         }
     }
@@ -98,7 +94,6 @@
     .x-grid3-row-selected {
         .x-tree3-node-icon {
             &[src$="/jnt_page.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-pages.scss ::: 7 */
-                background-image: url(_theme($SIDE-PANEL-TAB--PAGES-ICON--SELECTED, $SIDE-PANEL));
                 opacity: 1;
                 background-position: center;
             }
@@ -109,17 +104,14 @@
             }
 
             &[src$="jnt_nodeLink.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-pages.scss ::: 9 */
-                background-image: url(../images/icons/tabs-placeholder-white@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-pages.scss ::: 6 */
                 opacity: 1;
             }
 
             &[src$="jnt_externalLink.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-pages.scss ::: 10 */
-                background-image: url(../images/icons/tabs-placeholder-white@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-pages.scss ::: 7 */
                 opacity: 1;
             }
 
             &[src$="jnt_navMenuText.png"] { /* OPTIMISE SELECTOR ::: css/app/side-panel/_tab-pages.scss ::: 11 */
-                background-image: url(../images/icons/tabs-placeholder-white@X2.png); /* OPTIMISE URL ::: css/app/side-panel/_tab-pages.scss ::: 8 */
                 opacity: 1;
             }
         }

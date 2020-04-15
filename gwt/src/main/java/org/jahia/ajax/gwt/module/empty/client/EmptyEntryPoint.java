@@ -362,7 +362,6 @@ public class EmptyEntryPoint extends CommonEntryPoint {
      * @param lang    the target language code
      */
     public static void switchSite(final String siteKey, final String lang) {
-
         if (siteKey.equals(JahiaGWTParameters.getSiteKey()) && lang.equals(JahiaGWTParameters.getLanguage())) {
             return;
         }
@@ -372,18 +371,17 @@ public class EmptyEntryPoint extends CommonEntryPoint {
             @Override
             public void onSuccess(List<GWTJahiaNode> result) {
                 GWTJahiaNode siteNode = result.get(0);
-                validateSiteLanguage(siteNode, lang);
-                JahiaGWTParameters.setSiteNode(siteNode);
-                JahiaGWTParameters.setLanguage(JahiaGWTParameters.getLanguage(lang));
+                if (isValidSiteLanguage(siteNode, lang)) {
+                    JahiaGWTParameters.setSiteNode(siteNode);
+                    JahiaGWTParameters.setLanguage(JahiaGWTParameters.getLanguage(lang));
+                }
             }
         });
     }
 
-    private static void validateSiteLanguage(GWTJahiaNode siteNode, String lang) {
+    private static boolean isValidSiteLanguage(GWTJahiaNode siteNode, String lang) {
         @SuppressWarnings("unchecked") List<String> langs = (List<String>) siteNode.get("j:languages");
-        if (!langs.contains(lang)) {
-            throw new RuntimeException("Language '" + lang + "' is not a valid '" + siteNode.getName() + "' site language");
-        }
+        return langs.contains(lang);
     }
 
     /**
@@ -395,8 +393,9 @@ public class EmptyEntryPoint extends CommonEntryPoint {
         if (lang.equals(JahiaGWTParameters.getLanguage())) {
             return;
         }
-        validateSiteLanguage(JahiaGWTParameters.getSiteNode(), lang);
-        JahiaGWTParameters.setLanguage(JahiaGWTParameters.getLanguage(lang));
+        if (isValidSiteLanguage(JahiaGWTParameters.getSiteNode(), lang)) {
+            JahiaGWTParameters.setLanguage(JahiaGWTParameters.getLanguage(lang));
+        }
     }
 
     /**

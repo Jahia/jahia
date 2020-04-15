@@ -118,7 +118,7 @@
         Anthracite.common.resizeLanguageInput();
 
         if (jGet.id('JahiaGxtSidePanelTabs').exists()) {
-            jGet.id('JahiaGxtSidePanelTabs').nodes[0].style.setProperty('width', '360px', 'important');
+            jGet.id('JahiaGxtSidePanelTabs').nodes[0].style.setProperty('width', '245px', 'important');
             jGet.getCached('body').setAttribute('data-indigo-gwt-side-panel', '');
         }
         jGet('.mainmodule > div:nth-child(2) > div:not(.x-abs-layout-container)').nodes[0].setAttribute('style', 'height:100vh !important; transform: translateY(-109px) !important;');

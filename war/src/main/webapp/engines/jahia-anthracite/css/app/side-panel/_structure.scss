@@ -398,7 +398,7 @@
         }
 
         body[data-indigo-app="edit"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-sidepanel-pinned="false"] & {
-            width: 360px !important;
+            width: 245px !important;
             overflow: visible;
 
             &::before {
@@ -408,7 +408,7 @@
         }
 
         body[data-indigo-app="edit"][data-INDIGO-GWT-SIDE-PANEL="open"][data-sitesettings="true"] & {
-            width: 360px !important;
+            width: 245px !important;
             overflow: visible;
 
             &::before {

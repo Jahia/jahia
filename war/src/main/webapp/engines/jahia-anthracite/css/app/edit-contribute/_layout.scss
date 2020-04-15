@@ -69,7 +69,7 @@
         position: fixed !important;
         overflow: visible;
         text-align: center;
-        left: 60px;
+        left: 245px;
         width: calc(100% - 124px) !important;
         top: 0 !important;
         padding: 0;
@@ -100,6 +100,8 @@
     /* SAFARI FIX */
     &.gwt-only-panel.x-component {
         overflow: visible !important;
+        width: calc(100% - 245px);
+        left: 245px;
     }
 }
 

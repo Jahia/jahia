@@ -91,7 +91,6 @@ body[data-indigo-app="contribute"] {
         top: $EDIT-MODE--EDIT-MENU---TOP;
         body & {
             border-top: $EDIT-MODE--ACTION-TOOLBAR---BORDER !important;
-            padding: $EDIT-MODE--EDIT-MENU---PADDING;
 
             @if($theme == "anthracite-V8") {
                 width: 100%;
@@ -362,7 +361,7 @@ body[data-indigo-app="contribute"] {
 
     @if($theme == "anthracite-V8"){
         top: 82px;
-        left: 536px !important;
+        left: 245px !important;
         position: absolute;
         margin-left: 0px;
     } @else if ($theme == "anthracite"){

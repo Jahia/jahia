@@ -37,6 +37,6 @@
         Anthracite.dev.log('::: APP ::: PICKER ::: IMAGEPREVIEW ::: ONCLOSE');
         jGet.getCached('body').setAttribute('data-INDIGO-IMAGE-PREVIEW', '');
         var sidePanel = jGet.id('JahiaGxtSidePanelTabs').nodes[0];
-        sidePanel.style.setProperty('width', '360px', 'important');
+        sidePanel.style.setProperty('width', '245px', 'important');
     }
 });

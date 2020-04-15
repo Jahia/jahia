@@ -123,7 +123,7 @@
         &::after {
             content: attr(data-nodepath);
             position: absolute;
-            left: 31px;
+            left: 5px;
             top: 16px;
             @include text(_size("small"), _color("primary"), _weight("light"));
 
@@ -147,7 +147,6 @@
     max-width: calc(100vw - 530px);
 
     body[data-INDIGO-SIDEPANEL-PINNED="true"] & {
-        left: $EDIT-MODE--PAGE-TITLE---LEFT !important;
         clip: unset;
         top: $EDIT-MODE--PAGE-TITLE---TOP !important;
     }

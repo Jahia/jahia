@@ -967,6 +967,10 @@ Anthracite.addModule("edit", {
 
                 // Page Titles need centering
                 Anthracite.edit.topbar.reposition();
+
+                if(jGet.class('window-actions-refresh').exists() && window.anthraciteV8 && jGet.class('action-bar-container').exists()) {
+                    jGet.class('window-actions-refresh').nodes[0].style.setProperty('left', jGet.class('action-bar-container').nodes[0].style.left, 'important');
+                }
             }
         },
         /**

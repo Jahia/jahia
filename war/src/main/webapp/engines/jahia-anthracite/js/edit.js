@@ -969,7 +969,13 @@ Anthracite.addModule("edit", {
                 Anthracite.edit.topbar.reposition();
 
                 if(jGet.class('window-actions-refresh').exists() && window.anthraciteV8 && jGet.class('action-bar-container').exists()) {
-                    jGet.class('window-actions-refresh').nodes[0].style.setProperty('left', jGet.class('action-bar-container').nodes[0].style.left, 'important');
+                    var position = jGet.class('action-bar-container').nodes[0].style.left.substring(0, 3) - 40;
+                    jGet.class('window-actions-refresh').nodes[0].style.setProperty('left', position + 'px', 'important');
+                }
+
+                if(jGet.class('x-border-panel').exists() && window.anthraciteV8) {
+                    jGet.class('x-border-panel').nodes[3].style.setProperty('left', '251px', 'important');
+                    jGet.class('x-border-panel').nodes[3].style.setProperty('width', 'calc(100% - 245px)', 'important');
                 }
             }
         },
@@ -1651,7 +1657,12 @@ Anthracite.addModule("edit", {
              }
 
              if(jGet.class('window-actions-refresh').exists() && window.anthraciteV8) {
-                 jGet.class('window-actions-refresh').nodes[0].style.setProperty('left', xPos + 'px', 'important');
+                 jGet.class('window-actions-refresh').nodes[0].style.setProperty('left', (xPos - 40) + 'px', 'important');
+             }
+
+             if(jGet.class('x-border-panel').exists() && window.anthraciteV8) {
+                 jGet.class('x-border-panel').nodes[3].style.setProperty('left', (xPos + 6) + 'px', 'important');
+                 jGet.class('x-border-panel').nodes[3].style.setProperty('width', 'calc(100% - ' + xPos + ')', 'important');
              }
 
             // Move the split bar to the position of the mouse

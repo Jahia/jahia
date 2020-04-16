@@ -108,9 +108,8 @@
 .window-container {
     overflow: visible;
     background: transparent;
-
     height: calc(100% - 101px) !important;
-    width: calc(100% - 69px) !important;
+    width: calc(100% - 6px) !important;
 
     .x-viewport-contributemode & {
         width: 100% !important;

@@ -681,6 +681,8 @@ extends = jnt:page
 [jmix:requireLicense] mixin
  - j:requiredLicenseFeature (string) hidden indexed=no
 
+[jmix:mainResource] mixin
+
 //---------------------------------------------------------
 // References and links
 //---------------------------------------------------------

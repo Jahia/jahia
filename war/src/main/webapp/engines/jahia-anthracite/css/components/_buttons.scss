@@ -223,6 +223,7 @@
     text-transform: none !important;
     padding: 8px 15px !important;
     background: _theme($ACTION-SECONDARY--BG, $APP) !important;
+    box-shadow: inset 1px 1px 0 0 _color("tertiary", normal), inset -1px -1px 0 0 _color("tertiary", normal);
     @include text(_size("normal"), _theme($ACTION-SECONDARY--COLOR, $APP) !important, _weight("extralight"));
 }
 

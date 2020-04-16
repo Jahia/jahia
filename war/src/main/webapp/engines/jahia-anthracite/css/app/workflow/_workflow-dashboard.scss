@@ -17,7 +17,7 @@
     .x-grid3-row-selected .x-tree3-node-text.x-tree3-node-text-widget {
       color: _color("primary", a) !important;
       position: relative !important;
-      top:0 !important;
+      top: 0 !important;
       pointer-events: all;
     }
 
@@ -444,7 +444,7 @@
   }
 
 
-  .workflow-dashboard-publication-window {
+  #workflow-dashboard-publication-window {
     background: unset !important;
     position: fixed !important;
     width: 100% !important;
@@ -498,10 +498,9 @@
       width: 80% !important;
       height: 80% !important;
 
-      @include _button(".button-cancel", "ACTIONBAR---SECONDARY", "remove-icons");
-      @include _button(".button-workflow-action", "ACTIONBAR---SUGGESTED", "remove-icons");
       @include _button(".button-comment", "FORM", "remove-icons");
       @include _button(".button-start", "ACTIONBAR---SUGGESTED", "remove-icons");
+
       background: _color("secondary") !important;
 
       .x-window-mc {
@@ -892,13 +891,45 @@
       }
 
       .x-window-bbar {
+        flex-grow: 0;
+        flex-basis: 45px !important;
+        height: 45px !important;
         width: 100% !important;
-        flex: 0 0 36px !important;
-        height: 36px !important;
+        background-color: _color("secondary") !important;
 
-        .x-toolbar-left-row {
-          display: flex;
-          flex-direction: row;
+        > .x-panel-fbar {
+          height: 36px !important;
+          width: 100% !important;
+          @include _button(".button-cancel", "ACTIONBAR---SECONDARY", "remove-icons");
+          @include _button(".button-noworkflow", "ACTIONBAR---SECONDARY", "remove-icons");
+          @include _button(".button-start", "ACTIONBAR---SECONDARY", "remove-icons");
+          @include _button(".button-bypassworkflow", "ACTIONBAR---SECONDARY", "remove-icons");
+          @include _button(".button-workflow-action", "ACTIONBAR---SECONDARY", "remove-icons");
+
+          > table {
+            width: 100% !important;
+            display: block;
+
+            > tbody {
+              width: 100% !important;
+              display: block;
+
+              > tr {
+                width: 100% !important;
+                display: flex;
+                flex-direction: row-reverse;
+              }
+            }
+          }
+        }
+      }
+
+
+      .x-window-bbar {
+        .x-panel-fbar .x-toolbar-cell {
+          padding-bottom: 0 !important;
+          float: left;
+          margin-left: 5px !important;
         }
       }
     }

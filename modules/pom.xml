@@ -63,6 +63,7 @@
         <jahia-static-resources>/css,/icons,/images,/img,/javascript</jahia-static-resources>
         <embed-dependency>*; scope=compile|runtime; type=!pom; inline=false</embed-dependency>
         <require-capability></require-capability>
+        <jahia-key></jahia-key>
     </properties>
 
     <repositories>
@@ -230,6 +231,7 @@
                         <Jahia-Depends>${jahia-depends}</Jahia-Depends>
                         <Jahia-Depends-Skip-Require-Capability>${jahia-depends-skip-require-capability}</Jahia-Depends-Skip-Require-Capability>
                         <Jahia-Module-Type>${jahia-module-type}</Jahia-Module-Type>
+                        <Jahia-Key>${jahia-key}</Jahia-Key>
                         <Jahia-GroupId>${project.groupId}</Jahia-GroupId>
                         <Jahia-Source-Folders>${project.basedir}</Jahia-Source-Folders>
                         <Jahia-Source-Control-Connection>${project.scm.connection}</Jahia-Source-Control-Connection>

@@ -245,7 +245,7 @@
                         <Export-Package>${export-package}</Export-Package>
                         <Import-Package>${jahia.plugin.projectPackageImport},*</Import-Package>
                         <Provide-Capability>${jahia.plugin.providedNodeTypes}${jahia.plugin.providedModulesCapabilities}</Provide-Capability>
-                        <Require-Capability>${jahia.plugin.requiredNodeTypes}${jahia.plugin.requiredModulesCapabilities}${require-capability}</Require-Capability>
+                        <Require-Capability>${jahia.plugin.requiredNodeTypes}${jahia.plugin.requiredModulesCapabilities},${require-capability}</Require-Capability>
                         <Embed-Dependency>${embed-dependency}</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                         <Dynamic-ImportPackage>*</Dynamic-ImportPackage>

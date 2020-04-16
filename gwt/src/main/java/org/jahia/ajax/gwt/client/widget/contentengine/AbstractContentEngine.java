@@ -346,10 +346,9 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                         }
                     });
         } else {
-            dependentField.addListener(Events.Change, new Listener<FieldEvent>() {
-
+            dependentField.addListener(Events.SelectionChange, new Listener() {
                 @Override
-                public void handleEvent(FieldEvent event) {
+                public void handleEvent(BaseEvent event) {
                     refillDependantListWidgetOn(dependentField, propertyId, dependentProperties);
                 }
             });

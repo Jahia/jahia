@@ -310,7 +310,6 @@
                         <ref bean="Toolbar.Item.Export"/>
                         <ref bean="Toolbar.Item.Import"/>
                         <ref bean="Toolbar.Item.Update"/>
-                        <ref bean="Toolbar.Item.Rename"/>
                         <ref bean="Toolbar.Item.DeletePermanentlyNoMarkForDeletion"/>
                         <ref bean="Toolbar.Item.Copy"/>
                         <ref bean="Toolbar.Item.Cut"/>

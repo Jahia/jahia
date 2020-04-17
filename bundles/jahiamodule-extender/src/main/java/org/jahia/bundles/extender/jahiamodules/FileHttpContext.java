@@ -43,6 +43,7 @@
  */
 package org.jahia.bundles.extender.jahiamodules;
 
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.render.scripting.bundle.BundleSourceResourceResolver;
 import org.osgi.framework.Bundle;
@@ -53,8 +54,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.*;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -105,6 +105,14 @@ public class FileHttpContext implements HttpContext {
                 logger.debug("Getting resource: " + name);
             }
             url = parentHttpContext.getResource(name);
+            if (url != null && "bundle".equals(url.getProtocol())) {
+                try {
+                    url = new URL(url, "", new RoundingLastModifiedURLHandler(url));
+                } catch (MalformedURLException e) {
+                    logger.warn("Cannot transform bundle url", e);
+                }
+            }
+
             resourcesCache.put(name, url != null ? url : NULL_URL);
         }
         return url != NULL_URL ? url : null;
@@ -117,5 +125,38 @@ public class FileHttpContext implements HttpContext {
             mimeType = JahiaContextLoaderListener.getServletContext().getMimeType(name);
         }
         return mimeType;
+    }
+
+    private static class RoundingLastModifiedURLHandler extends URLStreamHandler {
+        private final URL baseUrl;
+
+        public RoundingLastModifiedURLHandler(URL url) {
+            this.baseUrl = url;
+        }
+
+        @Override
+        protected URLConnection openConnection(URL u) throws IOException {
+            URLConnection connection = baseUrl.openConnection();
+            try {
+                Long l = (Long) FieldUtils.readField(connection, "m_contentTime", true);
+                l = l / 1000 * 1000;
+                FieldUtils.writeField(connection, "m_contentTime", l, true);
+            } catch (IllegalAccessException e) {
+                throw new IOException(e);
+            }
+            return connection;
+        }
+
+        @Override
+        protected InetAddress getHostAddress(URL u) {
+            // Same as URLHandlersBundleStreamHandler
+            return null;
+        }
+
+        @Override
+        protected String toExternalForm(URL u) {
+            return baseUrl.toExternalForm();
+        }
+
     }
 }

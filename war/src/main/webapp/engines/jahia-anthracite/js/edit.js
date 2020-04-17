@@ -974,8 +974,9 @@ Anthracite.addModule("edit", {
                 }
 
                 if(jGet.class('x-border-panel').exists() && window.anthraciteV8) {
-                    jGet.class('x-border-panel').nodes[3].style.setProperty('left', '251px', 'important');
-                    jGet.class('x-border-panel').nodes[3].style.setProperty('width', 'calc(100% - 245px)', 'important');
+                    var pos = Number(jGet.id('JahiaGxtSidePanelTabs').nodes[0].style.width.substring(0, 3));
+                    jGet.class('x-border-panel').nodes[3].style.setProperty('left', (pos + 6) + 'px', 'important');
+                    jGet.class('x-border-panel').nodes[3].style.setProperty('width', 'calc(100% - ' + pos + 'px)', 'important');
                 }
             }
         },

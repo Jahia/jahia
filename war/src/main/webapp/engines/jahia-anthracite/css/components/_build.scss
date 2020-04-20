@@ -2519,7 +2519,7 @@ form,
 
         // NO BUTTON
         &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 21 */
-            @include _button(".x-btn", "ACTIONBAR", "remove-icons");
+            @include _button(".x-btn", "ACTIONBAR---SECONDARY", "remove-icons");
         }
     }
 

@@ -1,0 +1,98 @@
+div.engine-window {
+
+  #JahiaGxtEditEnginePanel-metadata {
+    .x-form-group.tag-field {
+      > table {
+        width: 100% !important;
+
+        > tbody {
+          width: 100% !important;
+
+          > tr {
+            width: 100% !important;
+
+            > .x-table-layout-cell {
+              width: 100% !important;
+
+              > .x-component {
+                width: 100% !important;
+
+                //  Existing tags
+                > .x-column-inner {
+                  display: flex;
+                  flex-direction: row;
+
+                  > .x-column {
+                    flex-grow: 0;
+                    flex-shrink: 0;
+                    height: 100% !important;
+
+                    tr {
+                      display: flex;
+                      flex-direction: row;
+                      justify-content: flex-start;
+                      align-items: baseline;
+                      height: 100% !important;
+
+                      .x-component {
+                        @include text(_size("normal") !important, _theme($FIELDSET--TITLE-COLOR, $EDIT-ENGINE) !important, _weight("extralight") !important);
+                      }
+
+                      button.x-btn-text {
+                        background: url(_icon("closeLarge", "grey")) no-repeat center bottom; /* OPTIMISE URL ::: css/app/edit-engine/_panel-history.scss ::: 9 */
+                        background-size: 10px;
+                        width: 15px !important;
+                        height: 15px !important;
+                        opacity: 0.8;
+                        display: block;
+
+                        &:hover {
+                          opacity: 1;
+                          cursor: pointer;
+                        }
+
+                        img {
+                          display: none;
+                        }
+                      }
+                    }
+                  }
+                }
+
+                // Input tag and add button
+                > table {
+                  width: 100% !important;
+
+                  > tbody {
+                    width: 100% !important;
+
+                    > tr {
+                      display: flex;
+                      flex-direction: row;
+                      width: 33% !important;
+
+                      > td {
+                        display: flex;
+                        width: 100%;
+                        flex-grow: 1;
+                        flex-shrink: 0;
+                        justify-content: flex-start;
+                        align-items: center;
+
+                        > div {
+                          width: 100%;
+                          flex-grow: 1;
+                          flex-shrink: 0;
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

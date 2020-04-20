@@ -33,6 +33,9 @@
 
     > .x-panel.x-component {
         max-width: 100%;
+        display: flex;
+        flex-direction: column;
+        padding-right: 20px !important;
     }
 
     .x-panel-tbar {
@@ -52,8 +55,13 @@
     }
 
     .x-grid3-header {
-        display: table-cell;
+        display: block;
         background: transparent !important;
+        width: 100% !important;
+
+        .x-grid3-header-inner {
+            width: 100% !important;
+        }
 
         .x-grid3-hh {
             margin: 2px 2px 8px;
@@ -69,6 +77,38 @@
 
             > table {
                 padding: 4px 0;
+                width: 100% !important;
+                colgroup {
+                    display: none;
+                }
+                tbody {
+                    width: 100% !important;
+                    display: block;
+                    .x-grid3-hd-row {
+                        display: flex !important;
+
+                        .x-grid3-header:first-child {
+                            flex-basis: 50%;
+                            width: 50% !important;
+                        }
+                        .x-grid3-header:nth-child(2) {
+                            flex-basis: 10%;
+                            width: 10% !important;
+                            display: flex;
+                            justify-content: center;
+                        }
+                        .x-grid3-header:nth-child(3) {
+                            flex-basis: 10%;
+                            width: 10% !important;
+                            display: flex;
+                            justify-content: center;
+                        }
+                        .x-grid3-header:last-child {
+                            flex-basis: 25%;
+                            width: 25% !important;
+                        }
+                    }
+                }
 
                 .x-grid3-hd.x-grid3-cell {
                     border-left-color: _color("secondary");
@@ -88,11 +128,56 @@
 
     .x-grid3-scroller {
         width: 100% !important;
-        display: table-row-group;
+        display: block;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
 
         > .x-grid3-body {
             padding-bottom: 30px;
             width: 100% !important;
+            background-color: _color("secondary") !important;
+
+            .x-grid3-row-table {
+                > tbody > tr {
+                    display: flex !important;
+                    flex-direction: row;
+
+                    td:first-child {
+                        flex-basis: 50%;
+                        width: 50% !important;
+                    }
+
+                    td:nth-child(2) {
+                        flex-basis: 10%;
+                        width: 10% !important;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+
+                        div {
+                            width: 100% !important;
+                            height: 100% !important;
+                        }
+                    }
+
+                    td:nth-child(3) {
+                        flex-basis: 10%;
+                        width: 10% !important;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        div {
+                            width: 100% !important;
+                            height: 100% !important;
+                        }
+                    }
+
+                    td:last-child {
+                        flex-basis: 25%;
+                        width: 25% !important;
+                    }
+                }
+            }
         }
     }
 
@@ -102,20 +187,38 @@
         width: inherit;
     }
 
+    .x-row-editor {
+        width: 100% !important;
+        display: block;
+
+        > .x-row-editor-bwrap {
+            width: 100% !important;
+        }
+    }
+
     .x-row-editor-header {
         display: none;
     }
 
     .x-panel-body {
         padding-bottom: 16px;
+        display: flex !important;
+        width: 100% !important;
+        height: 100% !important;
+
+        .x-grid-panel {
+            flex-grow: 1;
+            width: 100% !important;
+            height: 100% !important;
+        }
 
         .x-grid3 .x-grid3-row {
             height: 38px !important;
-            background: transparent !important;
+            background-color: _color("secondary") !important;
             width: 100% !important;
 
             &.x-grid3-row-over {
-                background: #f5f6f7 !important;
+                background-color: _color("secondary") !important;
             }
         }
     }
@@ -139,56 +242,97 @@
         opacity: 0.7;
     }
 
-    .x-box-inner .x-row-editor-field.x-component.x-box-item.x-form-check-wrap:nth-child(2) input { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-seo.scss ::: 2 */
-        margin-right: -2px;
-    }
-
-    .x-box-inner .x-row-editor-field.x-component.x-box-item.x-form-check-wrap:nth-child(3) input { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-seo.scss ::: 3 */
-        margin-right: 4px;
-    }
-
-    .x-box-inner .x-row-editor-field.x-component.x-box-item:not(.x-form-check-wrap) {
-        padding-left: 8px;
-        padding-top: 2px;
-    }
-
-    .x-box-inner .x-row-editor-field.x-component.x-box-item.x-form-check-wrap {
-        top: 9px !important;
-        padding-left: 41px;
-
-        &:nth-child(3) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-seo.scss ::: 4 */
-            padding-left: 33px;
-        }
-    }
-
     .x-row-editor button.x-btn-text {
-        padding: 5px 16px !important;
-        background: _color("secondary", a) !important;
-        color: _color("black", d) !important;
-
+        background: _color("quaternary") !important;
+        color: _color("white") !important;
+        text-transform: uppercase;
+        padding: 5px 10px !important;
+        margin-top: 2px;
+        @include text(10px, _theme($BUTTON--COLOR, $EDIT-ENGINE), _weight("normal"));
         &[aria-disabled="true"] {
             opacity: .6;
-            color: _color("black", c) !important;
+            color: _color("white",b) !important;
+        }
+
+        &:hover:not([aria-disabled="true"]) {
+            background: _color("quaternary", a) !important;
         }
     }
 
     .x-row-editor-body.x-box-layout-ct {
-        background: _color("primary");
-        height: 36px !important;
+        background: _color("secondary", a);
+        height: 40px !important;
         box-sizing: border-box;
+        width: 100% !important;
+        .x-box-inner {
+            width: 100% !important;
+            height: 40px !important;
+            display: flex;
+            flex-direction: row;
+
+            .x-box-item {
+                position: relative !important;
+                display: block;
+                flex-grow: 0;
+                flex-shrink: 0;
+                left: 0 !important;
+            }
+
+            .x-box-item:first-child {
+                flex-basis: 50%;
+                width: 50% !important;
+                height: 40px !important;
+                pointer-events: none !important;
+                > input {
+                    background: _color("quinary") !important;
+                    width: 100% !important;
+                    z-index: 9999 !important;
+                    height: 36px !important;
+                    color: _color("white");
+                    pointer-events: all !important;
+                    &:hover {
+                        background: _color("quinary", a) !important;
+                    }
+                    &:focus {
+                        background: _color("quinary", a) !important;
+                    }
+                }
+            }
+
+            .x-box-item:nth-child(2) {
+                flex-basis: 10%;
+                width: 10% !important;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .x-box-item:nth-child(3) {
+                flex-basis: 10%;
+                width: 10% !important;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .x-box-item:last-child {
+                flex-basis: 25%;
+                width: 25% !important;
+            }
+        }
     }
 
     .x-row-editor-footer {
-        background: _color("primary");
+        background: _color("secondary", a);
         height: 1px;
     }
 
     .x-row-editor .x-btns {
         background: transparent;
         position: absolute;
-        top: 4px !important;
-        left: 648px !important;
-
+        top: 0 !important;
+        left: 70% !important;
+        width: 30% !important;
         .x-plain-bwrap {
             background: transparent;
         }

@@ -21,8 +21,8 @@ body[data-indigo-edit-engine="open"] {
     }
 }
 
-.engine-panel:not(.trashboardengine-ctn),
-div.engine-window:not(.workflow-dashboard-publication-window, .workflowactiondialog-card) {
+.engine-panel:not(.trashboardengine-ctn):not(.workflowactiondialog-card),
+div.engine-window:not(.workflow-dashboard-publication-window):not(.workflowactiondialog-card):not(.publicationstatuswindow-card):not(#JahiaGxtEngineWindow) {
 
     .x-form-item {
         position: relative;

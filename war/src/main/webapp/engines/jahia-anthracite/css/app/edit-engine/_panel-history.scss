@@ -43,35 +43,137 @@ div.engine-window {
         > .x-component {
             width: 100% !important;
             height: 100% !important;
+            display: flex;
+            flex-direction: column;
+
+            .x-hsplitbar {
+                display: none !important;
+            }
 
             .x-panel {
 
                 // History List Container
                 &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-history.scss ::: 3 */
-
+                    position: relative !important;
+                    flex-shrink: 1;
+                    flex-grow: 1;
+                    height: 50% !important;
                     .x-panel-bwrap {
                         width: 100%;
-                        height: 100%;
+                        height: 75%;
 
                         .x-panel-ml,
-                        .x-panel-mr {
+                        .x-panel-mr,
+                        .x-panel-body {
                             height: 100%;
+                            width: 100% !important;
                         }
 
                         .x-grid3-viewport {
+
+                            > .x-grid3-header {
+                                width: 100% !important;
+                                .x-grid3-header-inner {
+                                    width: 100% !important;
+                                    .x-grid3-hh {
+                                        width: 100% !important;
+                                        > table {
+                                            width: 100% !important;
+
+                                            > tbody {
+                                                width: 100% !important;
+
+                                                > tr {
+                                                    width: 100% !important;
+                                                    display: flex;
+                                                    flex-direction: row;
+                                                    td {
+                                                        display: block;
+                                                        flex-grow: 1;
+                                                        flex-shrink: 1;
+                                                        width: 100% !important;
+                                                        > div {
+                                                            width: 100% !important;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
 
                             .x-grid3-scroller {
                                 width: 100% !important;
 
                                 .x-grid3-body {
                                     background: _color("white", normal) !important;
-                                    height: calc(100% - 150px) !important;
-                                    position: fixed;
-                                    width: calc(100% - 368px);
-                                    overflow: scroll;
-                                    right: 6px;
-                                    padding: 16px 24px;
-                                    margin-top: -16px;
+                                    height: calc(100%) !important;
+                                    position: relative !important;
+                                    width: calc(100%) !important;
+                                    overflow-y: scroll !important;
+                                    right: 0 !important;
+                                    padding: 0 !important;
+                                    margin-top: 0 !important;
+
+                                    .x-grid3-row {
+                                        width: 100% !important;
+                                        // Selected, Selected & hover
+                                        &.x-grid3-row-selected,
+                                        &.x-grid3-row-selected:hover {
+                                            .action-menu {
+                                                background: _theme($ROW--BG---SELECTED, $BACKGROUND-JOBS) !important;
+                                                display: flex;
+                                                justify-content: center;
+                                                align-items: center;
+                                                .info-button {
+                                                    background-image: url(../images/icons/ic_info_outline@2x.png); /* OPTIMISE URL ::: css/app/edit-engine/_panel-history.scss ::: 3 */
+                                                }
+                                            }
+
+                                            background: _theme($ROW--BG---SELECTED, $BACKGROUND-JOBS) !important;
+
+                                            .x-grid3-cell-inner,
+                                            .x-grid3-cell-inner label {
+                                                color: _theme($ROW--COLOR---SELECTED, $BACKGROUND-JOBS) !important;
+                                            }
+
+                                        }
+
+                                        // Hover
+                                        &:hover {
+                                            .action-menu {
+                                                display: flex;
+                                                justify-content: center;
+                                                align-items: center;
+
+                                                background: _color("secondary", d) !important;
+                                            }
+
+                                            background: _color("secondary", d) !important;
+
+                                            .x-grid3-cell-inner,
+                                            .x-grid3-cell-inner label {
+                                                color: _color("primary", a) !important;
+                                            }
+
+                                        }
+                                        .x-grid3-row-table {
+                                            width: 100% !important;
+                                            > tbody {
+                                                width: 100% !important;
+                                                > tr {
+                                                    width: 100% !important;
+                                                    display: flex;
+                                                    flex-direction: row;
+                                                    td {
+                                                        display: flex;
+                                                        justify-content: flex-start;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
 
                                 .x-grid-empty {
@@ -141,7 +243,7 @@ div.engine-window {
                                 position: absolute;
                                 top: 12px;
                                 left: 28px;
-                                @include text(11px, _theme($FIELDSET--TITLE-COLOR, $EDIT-ENGINE), _weight("semibold"));
+                                @include text(26px, _theme($TITLE--COLOR, $BACKGROUND-JOBS), _weight("semibold"));
                             }
                         }
 
@@ -151,15 +253,16 @@ div.engine-window {
                             // Delete more info buttons
                             .action-menu {
                                 position: absolute;
-                                right: 5px;
+                                right: 15% !important;
                                 top: 0;
                                 margin: 0;
-                                padding: 0 0 0 10px;
+                                padding: 0;
                                 display: none;
+                                height: 100% !important;
 
                                 button {
-                                    width: 23px;
-                                    height: 25px;
+                                    width: 20px;
+                                    height: 20px;
                                     display: inline-block;
                                     border: none;
 
@@ -174,42 +277,7 @@ div.engine-window {
                                 }
                             }
 
-                            // Selected, Selected & hover
-                            &.x-grid3-row-selected,
-                            &.x-grid3-row-selected:hover {
-                                .action-menu {
-                                    background: _theme($ROW--BG---SELECTED, $BACKGROUND-JOBS);
 
-                                    .info-button {
-                                        background-image: url(../images/icons/ic_info_outline@2x.png); /* OPTIMISE URL ::: css/app/edit-engine/_panel-history.scss ::: 3 */
-                                    }
-                                }
-
-                                background: _theme($ROW--BG---SELECTED, $BACKGROUND-JOBS) !important;
-
-                                .x-grid3-cell-inner,
-                                .x-grid3-cell-inner label {
-                                    color: _theme($ROW--COLOR---SELECTED, $BACKGROUND-JOBS) !important;
-                                }
-
-                            }
-
-                            // Hover
-                            &:hover {
-                                .action-menu {
-                                    display: block;
-
-                                    background: _theme($ROW--BG---HOVER, $BACKGROUND-JOBS);
-                                }
-
-                                background: _theme($ROW--BG---HOVER, $BACKGROUND-JOBS) !important;
-
-                                .x-grid3-cell-inner,
-                                .x-grid3-cell-inner label {
-                                    color: _theme($ROW--COLOR---HOVER, $BACKGROUND-JOBS) !important;
-                                }
-
-                            }
 
                             .x-grid3-cell-inner,
                             .x-grid3-cell-inner label {
@@ -306,34 +374,34 @@ div.engine-window {
 
                 // Selected Items Details Container
                 &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-history.scss ::: 12 */
+                    position: relative !important;
+                    flex-shrink: 1;
+                    flex-grow: 1;
                     display: none;
                     width: 100% !important;
-                    position: fixed !important;
-                    height: 100% !important;
+                    height: 50% !important;
                     top: 0 !important;
                     left: 0 !important;
-                    background: rgba(_color("secondary"), .9);
                     padding: 0;
                     box-sizing: border-box;
                     z-index: 9;
-
+                    border-top: 1px solid _color("secondary", d) !important;
                     // Header
                     .x-panel-header {
-                        background: none;
                         background: _theme($FIELDSET--BG---HOVER, $BACKGROUND-JOBS);
                         padding: 19px 30px 10px;
-                        margin: 17vh auto 0;
-                        width: 500px;
-                        border: 1px solid _theme($FIELDSET--BORDER, $BACKGROUND-JOBS);
-                        border-bottom: 0;
+                        margin: 0;
+                        width: 100% !important;
+                        border: none !important;
 
                         // Contains minimise button
                         .x-panel-toolbar {
                             background: url( _icon("closeLarge", "grey")) no-repeat center bottom; /* OPTIMISE URL ::: css/app/edit-engine/_panel-history.scss ::: 9 */
-                            background-size: 20px;
-                            width: 25px;
-                            height: 25px;
+                            background-size: 10px;
+                            width: 20px;
+                            height: 20px;
                             opacity: 0.8;
+                            display: block;
 
                             &:hover {
                                 opacity: 1;
@@ -354,11 +422,10 @@ div.engine-window {
                     // Body
                     .x-panel-bwrap {
                         background: _theme($FIELDSET--BG---HOVER, $BACKGROUND-JOBS);
-                        padding: 0 30px 23px;
+                        padding: 0 30px;
                         margin: 0 auto;
-                        width: 500px;
-                        border: 1px solid _theme($FIELDSET--BORDER, $BACKGROUND-JOBS);
-                        border-top: 0;
+                        width: 100% !important;
+
 
                         form {
                             height: auto !important;

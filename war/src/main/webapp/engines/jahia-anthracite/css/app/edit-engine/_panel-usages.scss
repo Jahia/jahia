@@ -39,6 +39,12 @@ div.engine-window {
                     }
                 }
             }
+
+            .x-grid3 .x-grid3-row-table > tbody > tr {
+                display: flex;
+                height: 100%;
+                position: relative;
+            }
         }
 
 }

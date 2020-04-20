@@ -62,11 +62,11 @@ div.engine-window {
                 border: 1px solid _color("secondary", b) !important;
                 padding: 22px 22px 30px 30px;
                 box-sizing: border-box;
-                margin-top: -40px;
-                position: fixed;
-                width: calc(100% - 462px);
+                margin-top: 0;
+                position: relative;
+                width: calc(100%);
                 height: auto !important;
-                max-height: calc(100% - 180px);
+                max-height: calc(100%);
                 overflow: scroll;
 
                 &:before {

@@ -443,10 +443,11 @@ div.publicationstatuswindow-card.engine-window {
                 position: relative !important;
 
                 .x-border-panel:first-child {
-                  flex: 0 0 3rem !important;
+                  flex: 0 0 4rem !important;
                   position: relative !important;
                   top: unset !important;
                   left: unset !important;
+                  overflow-y: auto !important;
 
                   .x-component {
                     line-height: 3rem !important;
@@ -765,9 +766,9 @@ div.publicationstatuswindow-card.engine-window {
       height: 36px !important;
       width: 100% !important;
       @include _button(".button-cancel", "ACTIONBAR---SECONDARY", "remove-icons");
-      @include _button(".button-noworkflow", "ACTIONBAR---SECONDARY", "remove-icons");
-      @include _button(".button-start", "ACTIONBAR---SECONDARY", "remove-icons");
-      @include _button(".button-bypassworkflow", "ACTIONBAR---SECONDARY", "remove-icons");
+      @include _button(".button-noworkflow", "ACTIONBAR---SUGGESTED", "remove-icons");
+      @include _button(".button-start", "ACTIONBAR---SUGGESTED", "remove-icons");
+      @include _button(".button-bypassworkflow", "ACTIONBAR---SUGGESTED", "remove-icons");
 
       > table {
         width: 100% !important;
@@ -781,6 +782,21 @@ div.publicationstatuswindow-card.engine-window {
             width: 100% !important;
             display: flex;
             flex-direction: row-reverse;
+
+            .x-toolbar-left-row {
+              display: flex !important;
+              flex-direction: row;
+
+              > td.x-toolbar-cell:first-child {
+                order: 2;
+              }
+              > td.x-toolbar-cell:nth-child(2) {
+                order: 3;
+              }
+              > td.x-toolbar-cell:last-child {
+                order: 1;
+              }
+            }
           }
         }
       }

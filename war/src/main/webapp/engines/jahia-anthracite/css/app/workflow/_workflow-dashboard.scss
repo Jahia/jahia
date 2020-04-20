@@ -6,7 +6,7 @@
 
     @include _button(".button-preview", "ACTIONBAR---SECONDARY", "remove-icons");
     @include _button(".button-incontext-preview", "ACTIONBAR---SECONDARY", "remove-icons");
-    @include _button(".button-details", "ACTIONBAR---SECONDARY", "remove-icons");
+    @include _button(".button-details", "ACTIONBAR---SUGGESTED", "remove-icons");
 
     width: calc(100% - 56px) !important;
     height: 100% !important;
@@ -901,10 +901,10 @@
           height: 36px !important;
           width: 100% !important;
           @include _button(".button-cancel", "ACTIONBAR---SECONDARY", "remove-icons");
-          @include _button(".button-noworkflow", "ACTIONBAR---SECONDARY", "remove-icons");
-          @include _button(".button-start", "ACTIONBAR---SECONDARY", "remove-icons");
-          @include _button(".button-bypassworkflow", "ACTIONBAR---SECONDARY", "remove-icons");
-          @include _button(".button-workflow-action", "ACTIONBAR---SECONDARY", "remove-icons");
+          @include _button(".button-noworkflow", "ACTIONBAR---SUGGESTED", "remove-icons");
+          @include _button(".button-start", "ACTIONBAR---SUGGESTED", "remove-icons");
+          @include _button(".button-bypassworkflow", "ACTIONBAR---SUGGESTED", "remove-icons");
+          @include _button(".button-workflow-action", "ACTIONBAR---SUGGESTED", "remove-icons");
 
           > table {
             width: 100% !important;
@@ -918,6 +918,7 @@
                 width: 100% !important;
                 display: flex;
                 flex-direction: row-reverse;
+                padding-right: 1rem !important;
               }
             }
           }

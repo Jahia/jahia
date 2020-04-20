@@ -99,6 +99,18 @@ div.engine-window {
                 .x-grid3-scroller {
                     width: auto !important;
                     overflow: hidden;
+
+                    .x-tree3-node-joint[style*='-66px'] {
+                        // Closed
+                        background: url( _icon("navNext", "grey")) no-repeat top 1px center!important;
+                        background-size: 10px!important;
+                    }
+
+                    .x-tree3-node-joint[style*='-34px'] {
+                        // Opened
+                        background: url( _icon("arrowDown", "grey")) no-repeat top -3px center!important;
+                        background-size: 19px !important;
+                    }
                 }
 
                 .x-grid3-td-displayName {

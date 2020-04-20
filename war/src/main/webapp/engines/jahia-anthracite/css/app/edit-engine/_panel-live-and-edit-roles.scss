@@ -11,15 +11,18 @@ div.engine-window {
 
         .x-panel-tbar {
             .x-toolbar-cell {
-                margin-top: 0 !important;
+                margin: 1rem !important;
+                display: inline-block;
             }
 
             .x-btn {
-                margin-bottom: 20px;
-                margin-top: 0;
+                margin:0;
             }
         }
 
+        .x-panel-header {
+            display: none !important;
+        }
         .x-toolbar {
             border: none;
             background: none;
@@ -48,14 +51,6 @@ div.engine-window {
                 color: _theme($ROW--COLOR, $EDIT-ENGINE) !important;
                 opacity: 1;
             }
-        }
-
-        // Main buttons (break inheritance, revert, add user / add groups)
-        .x-toolbar-cell {
-            margin-right: 1px !important;
-            margin-top: 10px;
-            display: inline-block;
-
         }
 
         // Icon for user / group (width 28px)

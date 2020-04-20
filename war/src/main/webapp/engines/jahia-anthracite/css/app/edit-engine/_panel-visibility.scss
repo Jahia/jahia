@@ -85,11 +85,12 @@ div.engine-window {
                 border: 1px solid _theme($FIELDSET--BORDER, $EDIT-ENGINE) !important;
                 padding: 43px 10px 20px 29px;
                 box-sizing: border-box;
-                height: auto !important;
+                height: 10rem !important;
                 position: relative;
                 width: 100% !important;
-                margin: 0px 0 10px 0 !important;
+                margin: 0 0 10px 0 !important;
                 overflow: visible !important;
+                display: flex;
 
                 .gwt-HTML {
                     @include text(_size("small"), _theme($LABEL--COLOR, $EDIT-ENGINE) !important, _weight("extralight"))
@@ -102,6 +103,8 @@ div.engine-window {
 
                 > .x-component {
                     &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 11 */
+                        width: 100% !important;
+                        height: 5rem !important;
                         > table > tbody > tr > td {
 
                             // https://jira.jahia.org/browse/QA-12611?focusedCommentId=103626&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-103626
@@ -116,13 +119,14 @@ div.engine-window {
                     }
 
                     &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 14 */
-
+                        width: 100% !important;
+                        height: 5rem !important;
                         > table > tbody > tr > td {
                             // All conditions should match label
                             &:nth-child(1) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 16 */
-                                position: fixed;
-                                top: 127px;
-                                right: 48px;
+                                position: relative;
+                                top: 0;
+                                right: 0;
                                 z-index: 98;
 
                                 div {
@@ -133,10 +137,11 @@ div.engine-window {
 
                             // All conditions should match checkbox
                             &:nth-child(2) { /* OPTIMISE SELECTOR ::: css/app/edit-engine/_panel-visibility.scss ::: 17 */
-                                position: fixed;
-                                right: 17px;
-                                top: 127px;
+                                position: relative;
+                                right: 0;
+                                top: 0;
                                 z-index: 98;
+                                left: 5px;
                             }
 
                             // Add New Condition Label
@@ -156,9 +161,9 @@ div.engine-window {
                                     background: url( _icon("add", "white")) no-repeat center center !important;
                                     width: 15px !important;
                                     height: 15px !important;
-                                    position: fixed !important;
-                                    top: 185px;
-                                    right: 30px;
+                                    position: relative !important;
+                                    top: 2px;
+                                    right: 0;
                                     z-index: 98;
                                     background-size: 14px !important;
                                     background-color: _theme($BUTTON--BG, $EDIT-ENGINE) !important;
@@ -203,6 +208,11 @@ div.engine-window {
 
                 .x-grid3 {
                     height: auto !important;
+                    .x-grid3-row-table > tbody > tr {
+                        display: flex;
+                        height: 100%;
+                        position: relative;
+                    }
                 }
 
                 .x-grid3-scroller {
@@ -232,7 +242,8 @@ div.engine-window {
 
                 .x-grid3-td-remove {
                     width: 55px !important;
-                    position: absolute;
+                    height: 20px !important;
+                    position: relative;
                     right: 0;
                     top: 0;
                     pointer-events: all;
@@ -252,6 +263,7 @@ div.engine-window {
                     background: transparent;
                     background: url("../images/icons_dark/deleted.svg") no-repeat center center;
                     background-size: 21px;
+                    top: 0;
 
                     > table {
                         width: 100%;
@@ -388,9 +400,9 @@ body[data-indigo-add-visibility-condition="new"] {
         width: auto !important;
 
         > div {
-            position: fixed;
-            top: 185px;
-            right: 30px;
+            position: relative;
+            top: 5px;
+            right: 0;
         }
     }
 }

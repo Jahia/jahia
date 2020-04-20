@@ -79,6 +79,42 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+        <!-- The 2 next entries have to be removed when Tika will be updated-->
+        <repository>
+            <id>eclipsePlugins</id>
+            <name>Eclipse components</name>
+            <layout>default</layout>
+            <url>https://repo1.maven.org/eclipse</url>
+
+            <releases>
+                <updatePolicy>never</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </releases>
+
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+
+        <!-- modify central repository access:
+             Turn on checksum checking-->
+        <repository>
+            <id>central</id>
+            <name>Maven Repository Switchboard</name>
+            <layout>default</layout>
+            <url>https://repo1.maven.org/maven2</url>
+
+            <releases>
+                <enabled>true</enabled>
+                <checksumPolicy>fail</checksumPolicy>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+
+        </repository>
     </repositories>
 
     <dependencies>

@@ -44,14 +44,10 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.URL;
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
-import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
-import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
@@ -95,11 +91,7 @@ public class EditContentActionItem extends NodeTypeAwareBaseActionItem {
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         GWTJahiaNode singleSelection = lh.getSingleSelection();
-        setEnabled(singleSelection != null
-                && isNodeTypeAllowed(singleSelection)
-                && hasPermission(lh.getSelectionPermissions())
-                && (allowRootNodeEditing || !lh.isRootNode())
-                && PermissionsUtils.isPermitted("jcr:modifyProperties", lh.getSelectionPermissions()));
+        setEnabled(singleSelection != null && (allowRootNodeEditing || !lh.isRootNode()));
     }
 
     public void setAllowRootNodeEditing(boolean allowRootNodeEditing) {

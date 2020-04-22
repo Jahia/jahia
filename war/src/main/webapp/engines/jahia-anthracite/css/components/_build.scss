@@ -1276,21 +1276,18 @@ form,
         pointer-events: all;
     }
 
-    @if ($theme == "anthracite-V8") {
-        .x-tree3-node-joint[style*='-66px'] {
-            // Closed
-            background: url( _icon("navNext", "grey")) no-repeat top 1px center!important;
-            background-size: 10px!important;
-        }
 
-        .x-tree3-node-joint[style*='-34px'] {
-            // Opened
-            background: url( _icon("arrowDown", "grey")) no-repeat top -3px center!important;
-            background-size: 19px !important;
-        }
+    .x-tree3-node-joint[style*='-66px'] {
+        // Closed
+        background: url( _icon("navNext", "grey")) no-repeat top 1px center!important;
+        background-size: 10px!important;
     }
 
-
+    .x-tree3-node-joint[style*='-34px'] {
+        // Opened
+        background: url( _icon("arrowDown", "grey")) no-repeat top -3px center!important;
+        background-size: 19px !important;
+    }
 
     .x-grid3-row {
         /* List Item */
@@ -1549,20 +1546,11 @@ form,
     .x-grid3-row-table {
         // Table containing actual List Item
         height: 100%;
-        @if ($theme == "anthracite") {
-            display: block;
-        }
 
         > tbody {
-            @if ($theme == "anthracite") {
-                display: block;
-            }
             height: 100%;
 
             > tr {
-                @if ($theme == "anthracite") {
-                    display: block;
-                }
                 height: 100%;
                 position: relative;
 
@@ -1611,9 +1599,6 @@ form,
                             font-size: inherit;
                             top: -3px;
                             line-height: _theme($ROW--HEIGHT);
-                            @if ($theme == "anthracite") {
-                                height: 100%;
-                            }
                         }
 
                         td > .x-tree3-node-icon {
@@ -1627,11 +1612,6 @@ form,
     }
 }
 
-@if ($theme == "anthracite") {
-    :not(.wcag-warning-grid,.workflow-dashboard-engine) > .x-grid3 .x-grid3-row-table .x-grid3-cell {
-        width: 100% !important;
-    }
-}
 .x-panel .x-grid3 .x-grid3-row-table { // Changed to fix table bug on workflow modal.
     width: 100% !important;
 }
@@ -3000,12 +2980,6 @@ div.x-window.publication-manager-engine {
         padding-top: 6px;
 
         img {
-            @if ($theme == "anthracite") {
-                position: absolute;
-                right: 20px;
-                top: 0;
-            }
-
             &[src$="/conflict.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 24 */
             &[src$="/deleted.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 25 */
             &[src$="/livemodified.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 26 */
@@ -3251,48 +3225,36 @@ div.x-window.publication-manager-engine {
         }
     }
 
+    .x-grid3-header {
+        width: 100% !important;
 
-    .x-grid3-header .x-grid3-hh {
-        border: none !important;
-        margin: 0 !important;
-    }
-
-    @if ($theme == "anthracite-V8") {
-        .x-grid3-header {
+        > .x-grid3-header-inner {
             width: 100% !important;
 
-            > .x-grid3-header-inner {
+            > .x-grid3-header-offset {
                 width: 100% !important;
 
-                > .x-grid3-header-offset {
+                > .x-grid3-hh {
+                    border: none !important;
+                    margin: 0 !important;
                     width: 100% !important;
 
-                    > .x-grid3-hh {
+                    > table {
                         width: 100% !important;
-
-                        > table {
-                            width: 100% !important;
-                        }
                     }
                 }
             }
         }
     }
 
-    .x-grid3-header-inner {
+    .x-grid3-scroller {
         width: 100% !important;
-    }
 
-    @if ($theme == "anthracite-V8") {
-        .x-grid3-scroller {
+        > .x-grid3-body {
             width: 100% !important;
 
-            > .x-grid3-body {
+            > div > table {
                 width: 100% !important;
-
-                > div > table {
-                    width: 100% !important;
-                }
             }
         }
     }
@@ -3384,25 +3346,23 @@ div.x-window.publication-manager-engine {
             color: $TREE--ROW--FONT--COLOUR---UP!important;
         }
 
-        @if ($theme == "anthracite-V8") {
-            .x-grid3 .x-grid3-row-over {
+        .x-grid3 .x-grid3-row-over {
 
-                .x-tree3-node-text {
-                    color: _theme($ROW--COLOR---HOVER, $SIDE-PANEL) !important;
+            .x-tree3-node-text {
+                color: _theme($ROW--COLOR---HOVER, $SIDE-PANEL) !important;
+            }
+
+            &:not(.x-grid3-row-selected) {
+                .x-tree3-node-joint[style*='-66px'] {
+                    // Closed
+                    background: url(_icon("navNext", "white")) no-repeat top 1px center !important;
+                    background-size: 10px !important;
                 }
 
-                &:not(.x-grid3-row-selected) {
-                    .x-tree3-node-joint[style*='-66px'] {
-                        // Closed
-                        background: url(_icon("navNext", "white")) no-repeat top 1px center !important;
-                        background-size: 10px !important;
-                    }
-
-                    .x-tree3-node-joint[style*='-34px'] {
-                        // Opened
-                        background: url(_icon("arrowDown", "white")) no-repeat top -3px center !important;
-                        background-size: 19px !important;
-                    }
+                .x-tree3-node-joint[style*='-34px'] {
+                    // Opened
+                    background: url(_icon("arrowDown", "white")) no-repeat top -3px center !important;
+                    background-size: 19px !important;
                 }
             }
         }

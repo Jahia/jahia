@@ -1,40 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<home changefreq="monthly" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+<home xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
       j:isHomePage="true"
       j:templateName="home"
-      jcr:mixinTypes="jmix:sitemap"
-      jcr:primaryType="jnt:page"
-      priority="0.5">
+      jcr:primaryType="jnt:page">
     <j:translation_en
             jcr:language="en"
             jcr:mixinTypes="mix:title"
             jcr:primaryType="jnt:translation"
             jcr:title="Home"/>
-    <acl1 changefreq="monthly"
-          j:templateName="two-cols"
-          jcr:mixinTypes="jmix:sitemap"
-          jcr:primaryType="jnt:page"
-          priority="0.5">
+    <acl1 j:templateName="two-cols"
+          jcr:primaryType="jnt:page">
         <j:translation_en
                 jcr:language="en"
                 jcr:mixinTypes="mix:title"
                 jcr:primaryType="jnt:translation"
                 jcr:title="acl1"/>
-        <page1-1 changefreq="monthly"
-                 j:templateName="two-cols"
-                 jcr:mixinTypes="jmix:sitemap"
-                 jcr:primaryType="jnt:page"
-                 priority="0.5">
+        <page1-1 j:templateName="two-cols"
+                 jcr:primaryType="jnt:page">
             <j:translation_en
                     jcr:language="en"
                     jcr:mixinTypes="mix:title"
                     jcr:primaryType="jnt:translation"
                     jcr:title="page1-1"/>
-            <page1-1-1 changefreq="monthly"
-                       j:templateName="two-cols"
-                       jcr:mixinTypes="jmix:sitemap"
-                       jcr:primaryType="jnt:page"
-                       priority="0.5">
+            <page1-1-1 j:templateName="two-cols"
+                       jcr:primaryType="jnt:page">
                 <j:translation_en
                         jcr:language="en"
                         jcr:mixinTypes="mix:title"
@@ -42,11 +31,8 @@
                         jcr:title="page1-1-1"/>
             </page1-1-1>
         </page1-1>
-        <page1-2 changefreq="monthly"
-                 j:templateName="two-cols"
-                 jcr:mixinTypes="jmix:sitemap"
-                 jcr:primaryType="jnt:page"
-                 priority="0.5">
+        <page1-2 j:templateName="two-cols"
+                 jcr:primaryType="jnt:page">
             <j:translation_en
                     jcr:language="en"
                     jcr:mixinTypes="mix:title"
@@ -453,19 +439,15 @@
             </simple-text>
         </absolute-1>
     </acl1>
-    <peruser changefreq="monthly"
-             j:templateName="two-cols"
-             jcr:mixinTypes="jmix:sitemap"
-             jcr:primaryType="jnt:page"
-             priority="0.5">
+    <peruser j:templateName="two-cols"
+             jcr:primaryType="jnt:page">
         <j:translation_en
                 jcr:language="en"
                 jcr:mixinTypes="mix:title"
                 jcr:primaryType="jnt:translation"
                 jcr:title="peruser"/>
         <main jcr:primaryType="jnt:contentList">
-            <simple-text j:perUser="true"
-                         jcr:mixinTypes="jmix:cache"
+            <simple-text
                          jcr:primaryType="jnt:text">
                 <j:translation_en
                         jcr:language="en"
@@ -479,11 +461,9 @@
                     jcr:title="ACL - Per user key"/>
         </main>
     </peruser>
-    <user-per-content-test changefreq="monthly"
-                           j:templateName="two-cols"
-                           jcr:mixinTypes="jmix:accessControlled jmix:sitemap"
-                           jcr:primaryType="jnt:page"
-                           priority="0.5">
+    <user-per-content-test j:templateName="two-cols"
+                           jcr:mixinTypes="jmix:accessControlled"
+                           jcr:primaryType="jnt:page">
         <j:translation_en jcr:language="en"
                           jcr:primaryType="jnt:translation"
                           jcr:title="User per content test"/>
@@ -571,11 +551,8 @@
                            jcr:primaryType="jnt:ace"/>
         </j:acl>
     </user-per-content-test>
-    <references changefreq="monthly"
-                j:templateName="two-cols"
-                jcr:mixinTypes="jmix:sitemap"
-                jcr:primaryType="jnt:page"
-                priority="0.5">
+    <references j:templateName="two-cols"
+                jcr:primaryType="jnt:page">
         <j:translation_en
                 jcr:language="en"
                 jcr:mixinTypes="mix:title"
@@ -601,11 +578,8 @@
                     jcr:title="Reference test - alternate view"/>
         </main>
     </references>
-    <pager changefreq="monthly"
-           j:templateName="two-cols"
-           jcr:mixinTypes="jmix:sitemap"
-           jcr:primaryType="jnt:page"
-           priority="0.5">
+    <pager j:templateName="two-cols"
+           jcr:primaryType="jnt:page">
         <j:translation_en
                 jcr:language="en"
                 jcr:mixinTypes="mix:title"
@@ -761,11 +735,8 @@
         <header-left j:allowedTypes=""
                      jcr:primaryType="jnt:absoluteArea"/>
     </header-col1>
-    <events changefreq="monthly"
-            j:templateName="events"
-            jcr:mixinTypes="jmix:sitemap"
-            jcr:primaryType="jnt:page"
-            priority="0.5">
+    <events j:templateName="events"
+            jcr:primaryType="jnt:page">
         <j:translation_en
                 jcr:language="en"
                 jcr:mixinTypes="mix:title"
@@ -799,11 +770,8 @@
                     jcr:title="Parameters test - facets"/>
         </events>
     </events>
-    <error changefreq="monthly"
-           j:templateName="two-cols"
-           jcr:mixinTypes="jmix:sitemap"
-           jcr:primaryType="jnt:page"
-           priority="0.5">
+    <error j:templateName="two-cols"
+           jcr:primaryType="jnt:page">
         <j:translation_en
                 jcr:language="en"
                 jcr:mixinTypes="mix:title"
@@ -832,11 +800,8 @@
                     jcr:title="login"/>
         </login>
     </aside>
-    <long changefreq="monthly"
-          j:templateName="two-cols"
-          jcr:mixinTypes="jmix:sitemap"
-          jcr:primaryType="jnt:page"
-          priority="0.5">
+    <long j:templateName="two-cols"
+          jcr:primaryType="jnt:page">
         <j:translation_en
                 jcr:language="en"
                 jcr:mixinTypes="mix:title"
@@ -853,11 +818,8 @@
             </simple-text>
         </main>
     </long>
-    <long5 changefreq="monthly"
-          j:templateName="two-cols"
-          jcr:mixinTypes="jmix:sitemap"
-          jcr:primaryType="jnt:page"
-          priority="0.5">
+    <long5 j:templateName="two-cols"
+          jcr:primaryType="jnt:page">
         <j:translation_en
                 jcr:language="en"
                 jcr:mixinTypes="mix:title"

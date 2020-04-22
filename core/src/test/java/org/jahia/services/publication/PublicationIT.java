@@ -455,35 +455,39 @@ public class PublicationIT extends AbstractJUnitTest {
     @Test
     public void testAddMixinAndPublish() throws RepositoryException {
         //  Add mixin to a node already published once, publish it, and verify that the new mixin was properly added.
-        testHomeEdit.addMixin("jmix:sitemap");
+        String testMixin = "jmix:cache";
+        String testProperty = "j:expiration";
+        String testPropertyValue= "10";
+        testHomeEdit.addMixin(testMixin);
+        testHomeEdit.setProperty(testProperty, testPropertyValue);
         englishEditSession.save();
 
-        assertTrue("Page should now have the sitemap mixin type in edit workspace", testHomeEdit.isNodeType(
-                "jmix:sitemap"));
+        assertTrue("Page should now have the cache mixin type in edit workspace", testHomeEdit.isNodeType(
+                testMixin));
 
-        testPropertyInWorkspace(englishEditSession, testHomeEdit.getPath(), "changefreq", "monthly",
-                "Propery changefreq should have default value of 'monthly'");
+        testPropertyInWorkspace(englishEditSession, testHomeEdit.getPath(), testProperty, testPropertyValue,
+                "Property " + testProperty + " should have default value of '" + testPropertyValue + "'");
 
         jcrService.publishByMainId(testHomeEdit.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
                 null, false, null);
 
         JCRNodeWrapper englishLivePage1 = englishLiveSession.getNode(testHomeEdit.getPath());
-        assertTrue("Page should now have the sitemap mixin type in live workspace", englishLivePage1.isNodeType(
-                "jmix:sitemap"));
-        testPropertyInWorkspace(englishLiveSession, testHomeEdit.getPath(), "changefreq", "monthly",
-                "Propery changefreq should have default value of 'monthly'");
+        assertTrue("Page should now have the cache mixin type in live workspace", englishLivePage1.isNodeType(
+                testMixin));
+        testPropertyInWorkspace(englishLiveSession, testHomeEdit.getPath(), testProperty, testPropertyValue,
+                "Property " + testProperty + " should have default value of '" + testPropertyValue + "'");
 
-        testHomeEdit.removeMixin("jmix:sitemap");
+        testHomeEdit.removeMixin(testMixin);
         englishEditSession.save();
 
-        assertFalse("pageAddMixin should now no longer have the sitemap mixin in the edit workspace!",
-                testHomeEdit.isNodeType("jmix:sitemap"));
+        assertFalse("pageAddMixin should now no longer have the cache mixin in the edit workspace!",
+                testHomeEdit.isNodeType(testMixin));
 
         jcrService.publishByMainId(testHomeEdit.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
                 null, false, null);
         englishLivePage1 = englishLiveSession.getNode(testHomeEdit.getPath());
-        assertFalse("Page should now no longer have the sitemap mixin in the live workspace!",
-                englishLivePage1.isNodeType("jmix:sitemap"));
+        assertFalse("Page should now no longer have the cache mixin in the live workspace!",
+                englishLivePage1.isNodeType(testMixin));
     }
 
     @Test

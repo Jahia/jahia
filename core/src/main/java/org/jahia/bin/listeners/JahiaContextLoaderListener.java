@@ -48,6 +48,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.VFS;
+import org.apache.http.HttpHeaders;
 import org.apache.pluto.driver.PortalStartupListener;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
@@ -464,8 +465,10 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         ServletRequest servletRequest = sre.getServletRequest();
         if (servletRequest instanceof HttpServletRequest) {
             HttpServletRequest req = (HttpServletRequest) servletRequest;
+            // Filter SSE request
             if (HTTP_METHOD.matcher(req.getMethod().toUpperCase()).matches()
-                    && !StringUtils.contains(req.getQueryString(), "X-Atmosphere-Transport=")) {
+                    && !StringUtils.contains(req.getQueryString(), "X-Atmosphere-Transport=")
+                    && !StringUtils.equals(req.getHeader(HttpHeaders.ACCEPT), "text/event-stream")) {
                 requestTimes.put(servletRequest, System.currentTimeMillis());
             }
         }

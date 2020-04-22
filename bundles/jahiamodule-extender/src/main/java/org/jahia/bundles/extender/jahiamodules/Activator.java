@@ -1191,13 +1191,8 @@ public class Activator implements BundleActivator {
 
     private boolean isBundleProcessedByBlueprintExtender(Bundle bundle) {
         boolean hasSpringFile = hasSpringFile(bundle);
-        // TODO BACKLOG-12094: remove this flag before releasing Jahia 8
-        boolean blueprintExtenderRestricted = Boolean.parseBoolean(System.getProperty("jahia.blueprint.extender.restricted"));
         if (!hasSpringFile) {
             return false;
-        }
-        if (!blueprintExtenderRestricted) {
-            return true;
         }
         BundleWiring wiring = bundle.adapt(BundleWiring.class);
         if (wiring != null) {

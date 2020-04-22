@@ -155,16 +155,6 @@ public class JahiaOsgiApplicationContextCreator implements OsgiApplicationContex
      * </code>
      */
     private boolean isAllowedForBundle(Bundle bundle) {
-        // As part of BACKLOG-11758, restriction is not enabled by default but by explicitly adding
-        // a system property. This system property will be removed prior to releasing Jahia 8. From
-        // there bundles won't benefit from {@code blueprint-extender-config} anymore unless their
-        // MANIFEST contains the required capability.
-        // TODO BACKLOG-12094: remove this flag before releasing Jahia 8
-        boolean usageRestricted = Boolean.parseBoolean(System.getProperty("jahia.blueprint.extender.restricted"));
-        if (!usageRestricted) {
-            return true;
-        }
-
         BundleWiring wiring = bundle.adapt(BundleWiring.class);
         if (wiring != null) {
             for (BundleWire wire : wiring.getRequiredWires(ExtenderNamespace.EXTENDER_NAMESPACE)) {

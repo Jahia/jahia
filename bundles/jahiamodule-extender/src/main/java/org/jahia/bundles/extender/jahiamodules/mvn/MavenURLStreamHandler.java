@@ -56,27 +56,23 @@ import java.net.URL;
 import java.net.URLConnection;
 
 /**
- * URL stream handler that transforms Jahia-Depends header values of module bundles into corresponding Require-Capability header and also
- * adds the Provide-Capability for the module itself.
+ * Maven URL stream handler that clean up the #runtime added by JDK 11 to allow a correct parsing by pax.
  */
 public class MavenURLStreamHandler extends AbstractURLStreamHandlerService {
 
     @Override public URLConnection openConnection(URL url) throws IOException {
-        try (MavenResolver resolver = MavenResolvers.createMavenResolver(null, ServiceConstants.PID)) {
-            // java11 adds #runtime as a ref in the URL which breaks the artifact version parser in pax-aether-url
-            String cleanedURL = url.toExternalForm().replace("#runtime", "");
-            return new URLConnection(new URL(cleanedURL)) {
-                @Override public void connect() throws IOException {
-                    // nothing to be done
+        MavenResolver resolver = MavenResolvers.createMavenResolver(null, ServiceConstants.PID);
+        // java11 adds #runtime as a ref in the URL which breaks the artifact version parser in pax-aether-url
+        String cleanedURL = url.toExternalForm().replace("#runtime", "");
+        return new URLConnection(new URL(cleanedURL)) {
+            @Override public void connect() throws IOException {
+                // nothing to be done
+            }
 
-                }
-
-                @Override public InputStream getInputStream() throws IOException {
-                    File resolve = resolver.resolve(url.toExternalForm());
-                    return new FileInputStream(resolve);
-                }
-
-            };
-        }
+            @Override public InputStream getInputStream() throws IOException {
+                File resolve = resolver.resolve(url.toExternalForm());
+                return new FileInputStream(resolve);
+            }
+        };
     }
 }

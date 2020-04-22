@@ -52,6 +52,7 @@ import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.bundles.extender.jahiamodules.fileinstall.FileInstallConfigurer;
 import org.jahia.bundles.extender.jahiamodules.jsp.JahiaJasperInitializer;
 import org.jahia.bundles.extender.jahiamodules.logging.PaxLoggingConfigurer;
+import org.jahia.bundles.extender.jahiamodules.mvn.MavenURLStreamHandler;
 import org.jahia.bundles.extender.jahiamodules.transform.DxModuleURLStreamHandler;
 import org.jahia.bundles.extender.jahiamodules.transform.ModuleDependencyURLStreamHandler;
 import org.jahia.bundles.extender.jahiamodules.transform.ModuleUrlTransformer;
@@ -1146,6 +1147,13 @@ public class Activator implements BundleActivator {
         serviceRegistrations.add(context.registerService(
                 new String[]{ArtifactUrlTransformer.class.getName(), ArtifactListener.class.getName()},
                 new ModuleUrlTransformer(), null));
+
+        // register mvn URL handler to verride the default from pax
+        props.put(URLConstants.URL_HANDLER_PROTOCOL, "mvn");
+        props.put(Constants.SERVICE_DESCRIPTION, "Override mvn URLs for Java 11");
+        props.put(Constants.SERVICE_VENDOR, Jahia.VENDOR_NAME);
+        props.put(Constants.SERVICE_RANKING, 1000);
+        serviceRegistrations.add(context.registerService(URLStreamHandlerService.class, new MavenURLStreamHandler(), props));
     }
 
     private ExecutorService getExecutorService() {

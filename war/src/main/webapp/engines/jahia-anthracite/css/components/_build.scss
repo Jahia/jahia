@@ -1279,13 +1279,13 @@ form,
     @if ($theme == "anthracite-V8") {
         .x-tree3-node-joint[style*='-66px'] {
             // Closed
-            background: url( _icon("navNext", "white")) no-repeat top 1px center!important;
+            background: url( _icon("navNext", "grey")) no-repeat top 1px center!important;
             background-size: 10px!important;
         }
 
         .x-tree3-node-joint[style*='-34px'] {
             // Opened
-            background: url( _icon("arrowDown", "white")) no-repeat top -3px center!important;
+            background: url( _icon("arrowDown", "grey")) no-repeat top -3px center!important;
             background-size: 19px !important;
         }
     }
@@ -1549,14 +1549,20 @@ form,
     .x-grid3-row-table {
         // Table containing actual List Item
         height: 100%;
-        display: block;
+        @if ($theme == "anthracite") {
+            display: block;
+        }
 
         > tbody {
-            display: block;
+            @if ($theme == "anthracite") {
+                display: block;
+            }
             height: 100%;
 
             > tr {
-                display: block;
+                @if ($theme == "anthracite") {
+                    display: block;
+                }
                 height: 100%;
                 position: relative;
 
@@ -1604,8 +1610,10 @@ form,
                             padding: inherit;
                             font-size: inherit;
                             top: -3px;
-                            height: 100%;
                             line-height: _theme($ROW--HEIGHT);
+                            @if ($theme == "anthracite") {
+                                height: 100%;
+                            }
                         }
 
                         td > .x-tree3-node-icon {
@@ -1619,10 +1627,11 @@ form,
     }
 }
 
-:not(.wcag-warning-grid,.workflow-dashboard-engine) > .x-grid3 .x-grid3-row-table .x-grid3-cell {
-    width: 100%!important;
+@if ($theme == "anthracite") {
+    :not(.wcag-warning-grid,.workflow-dashboard-engine) > .x-grid3 .x-grid3-row-table .x-grid3-cell {
+        width: 100% !important;
+    }
 }
-
 .x-panel .x-grid3 .x-grid3-row-table { // Changed to fix table bug on workflow modal.
     width: 100% !important;
 }
@@ -2982,130 +2991,131 @@ body[data-indigo-gwt-side-panel="open"] {
 
 div.x-window.publication-manager-engine {
 
-
-
-
     // Deal with icons here ...
     .x-tree3-node-text {
         padding-left: 2px !important;
     }
 
-    .x-grid3-col-publicationInfos img {
-        position: absolute;
-        right: 20px;
-        top: 0;
+    .x-grid3-col-publicationInfos {
+        padding-top: 6px;
 
-        &[src$="/conflict.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 24 */
-        &[src$="/deleted.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 25 */
-        &[src$="/livemodified.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 26 */
-        &[src$="/liveonly.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 27 */
-        &[src$="/locked.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 28 */
-        &[src$="/mandatorylanguageunpublishable.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 29 */
-        &[src$="/mandatorylanguagevalid.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 30 */
-        &[src$="/markedfordeletion.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 31 */
-        &[src$="/modified.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 32 */
-        &[src$="/multipleWF.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 33 */
-        &[src$="/notpublished.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 34 */
-        &[src$="/oneWF.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 35 */
-        &[src$="/published.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 36 */
-        &[src$="/unpublished.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 37 */
-        &[src$="/waiting.gif"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 38 */
-        &[src$="/workinprogress.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 39 */
-            background-size: 13px;
-            background-repeat: no-repeat;
-            opacity: 0.8;
-            width: 18px;
-            padding: 0 0 0 18px !important;
-            border-radius: 100%;
-            height: 18px;
-            background-position: top 1px center;
-            background-image: url( _icon("warning", "white"));
+        img {
+            @if ($theme == "anthracite") {
+                position: absolute;
+                right: 20px;
+                top: 0;
+            }
+
+            &[src$="/conflict.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 24 */
+            &[src$="/deleted.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 25 */
+            &[src$="/livemodified.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 26 */
+            &[src$="/liveonly.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 27 */
+            &[src$="/locked.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 28 */
+            &[src$="/mandatorylanguageunpublishable.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 29 */
+            &[src$="/mandatorylanguagevalid.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 30 */
+            &[src$="/markedfordeletion.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 31 */
+            &[src$="/modified.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 32 */
+            &[src$="/multipleWF.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 33 */
+            &[src$="/notpublished.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 34 */
+            &[src$="/oneWF.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 35 */
+            &[src$="/published.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 36 */
+            &[src$="/unpublished.png"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 37 */
+            &[src$="/waiting.gif"], /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 38 */
+            &[src$="/workinprogress.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 39 */
+                background-size: 13px;
+                background-repeat: no-repeat;
+                opacity: 0.8;
+                width: 18px;
+                padding: 0 0 0 18px !important;
+                border-radius: 100%;
+                height: 18px;
+                background-position: top 1px center;
+                background-image: url(_icon("warning", "white"));
+            }
+
+            &[src$="/conflict.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 40 */
+                /* Conflict */
+                background-color: _color("status", conflict);
+            }
+
+            &[src$="/deleted.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 41 */
+                /* Deleted */
+                background-color: _color("status", deleted);
+            }
+
+            &[src$="/livemodified.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 42 */
+                /* Live Modified */
+                background-color: _color("status", livemodified);
+            }
+
+            &[src$="/liveonly.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 43 */
+                /* Live Only */
+                background-color: _color("status", liveonly);
+            }
+
+            &[src$="/locked.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 44 */
+                /* Locked */
+                background-color: _color("status", locked);
+            }
+
+            &[src$="/mandatorylanguageunpublishable.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 45 */
+                /* Mandatory Language Unpublishable */
+                background-color: _color("status", mandatorylanguageunpublishable);
+            }
+
+            &[src$="/mandatorylanguagevalid.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 46 */
+                /* Mandatory Language Valid */
+                background-color: _color("status", mandatorylanguagevalid);
+            }
+
+            &[src$="/markedfordeletion.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 47 */
+                /* Marked FOr Deletion */
+                background-color: _color("status", markedfordeletion);
+            }
+
+            &[src$="/modified.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 48 */
+                /* Modified */
+                background-color: _color("status", modified);
+            }
+
+            &[src$="/multipleWF.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 49 */
+                /* Multiple WF */
+                background-color: _color("status", multipleWF);
+            }
+
+            &[src$="/notpublished.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 50 */
+                /* Not Published */
+                background-color: _color("status", notpublished);
+            }
+
+            &[src$="/oneWF.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 51 */
+                /* One WF */
+                background-color: _color("status", oneWF);
+            }
+
+            &[src$="/published.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 52 */
+                /* Published */
+                background-image: url(_icon("tick", "white"));
+                background-color: _color("status", published);
+                background-position: top left;
+                background-size: 18px;
+            }
+
+            &[src$="/unpublished.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 53 */
+                /* Unpublished */
+                background-color: _color("status", unpublished);
+            }
+
+            &[src$="/waiting.gif"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 54 */
+                /* Waiting */
+                background-color: _color("status", waiting);
+            }
+
+            &[src$="/workinprogress.png"] { /* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 55 */
+                /* Work In Progress */
+                background-color: _color("status", workinprogress);
+            }
         }
-
-        &[src$="/conflict.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 40 */
-            /* Conflict */
-             background-color: _color("status", conflict);
-        }
-
-        &[src$="/deleted.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 41 */
-            /* Deleted */
-             background-color: _color("status", deleted);
-        }
-
-        &[src$="/livemodified.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 42 */
-            /* Live Modified */
-             background-color: _color("status", livemodified);
-        }
-
-        &[src$="/liveonly.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 43 */
-            /* Live Only */
-             background-color: _color("status", liveonly);
-        }
-
-        &[src$="/locked.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 44 */
-            /* Locked */
-             background-color: _color("status", locked);
-        }
-
-        &[src$="/mandatorylanguageunpublishable.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 45 */
-            /* Mandatory Language Unpublishable */
-             background-color: _color("status", mandatorylanguageunpublishable);
-        }
-
-        &[src$="/mandatorylanguagevalid.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 46 */
-            /* Mandatory Language Valid */
-             background-color: _color("status", mandatorylanguagevalid);
-        }
-
-        &[src$="/markedfordeletion.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 47 */
-            /* Marked FOr Deletion */
-             background-color: _color("status", markedfordeletion);
-        }
-
-        &[src$="/modified.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 48 */
-            /* Modified */
-             background-color: _color("status", modified);
-        }
-
-        &[src$="/multipleWF.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 49 */
-            /* Multiple WF */
-             background-color: _color("status", multipleWF);
-        }
-
-        &[src$="/notpublished.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 50 */
-            /* Not Published */
-             background-color: _color("status", notpublished);
-        }
-
-        &[src$="/oneWF.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 51 */
-            /* One WF */
-             background-color: _color("status", oneWF);
-        }
-
-        &[src$="/published.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 52 */
-            /* Published */
-            background-image: url( _icon("tick", "white"));
-            background-color: _color("status", published);
-            background-position: top left;
-            background-size: 18px;
-        }
-
-        &[src$="/unpublished.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 53 */
-            /* Unpublished */
-             background-color: _color("status", unpublished);
-        }
-
-        &[src$="/waiting.gif"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 54 */
-            /* Waiting */
-             background-color: _color("status", waiting);
-        }
-
-        &[src$="/workinprogress.png"] {/* OPTIMISE SELECTOR ::: css/components/_build.scss ::: 55 */
-            /* Work In Progress */
-             background-color: _color("status", workinprogress);
-        }
-
-
     }
 
     .x-tree3-node-icon {
@@ -3241,13 +3251,50 @@ div.x-window.publication-manager-engine {
         }
     }
 
+
     .x-grid3-header .x-grid3-hh {
         border: none !important;
         margin: 0 !important;
     }
 
+    @if ($theme == "anthracite-V8") {
+        .x-grid3-header {
+            width: 100% !important;
+
+            > .x-grid3-header-inner {
+                width: 100% !important;
+
+                > .x-grid3-header-offset {
+                    width: 100% !important;
+
+                    > .x-grid3-hh {
+                        width: 100% !important;
+
+                        > table {
+                            width: 100% !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     .x-grid3-header-inner {
         width: 100% !important;
+    }
+
+    @if ($theme == "anthracite-V8") {
+        .x-grid3-scroller {
+            width: 100% !important;
+
+            > .x-grid3-body {
+                width: 100% !important;
+
+                > div > table {
+                    width: 100% !important;
+                }
+            }
+        }
     }
 
     @if ($MODAL-STYLE == "fullscreen") {
@@ -3335,6 +3382,29 @@ div.x-window.publication-manager-engine {
 
         .x-grid3 .x-tree3-node-text {
             color: $TREE--ROW--FONT--COLOUR---UP!important;
+        }
+
+        @if ($theme == "anthracite-V8") {
+            .x-grid3 .x-grid3-row-over {
+
+                .x-tree3-node-text {
+                    color: _theme($ROW--COLOR---HOVER, $SIDE-PANEL) !important;
+                }
+
+                &:not(.x-grid3-row-selected) {
+                    .x-tree3-node-joint[style*='-66px'] {
+                        // Closed
+                        background: url(_icon("navNext", "white")) no-repeat top 1px center !important;
+                        background-size: 10px !important;
+                    }
+
+                    .x-tree3-node-joint[style*='-34px'] {
+                        // Opened
+                        background: url(_icon("arrowDown", "white")) no-repeat top -3px center !important;
+                        background-size: 19px !important;
+                    }
+                }
+            }
         }
     }
 }

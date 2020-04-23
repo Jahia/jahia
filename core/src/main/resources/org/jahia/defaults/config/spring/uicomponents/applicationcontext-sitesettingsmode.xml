@@ -6,7 +6,7 @@
 
 
     <bean id="sitesettingsmode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
-        <property name="requiredPermission" value="editModeAccess"/>
+        <property name="requiredPermission" value="jContentAccess"/>
         <property name="nodeCheckPermission" value="$site"/>
         <property name="defaultLocation" value="$defaultSiteHome.html"/>
         <property name="defaultUrlMapping" value="/cms/settings"/>
@@ -91,7 +91,7 @@
                             <property name="settingPath" value="$site"/>
                         </bean>
                     </property>
-                    <property name="requiredPermission" value="siteSettingsSelector"/>
+                    <property name="requiredPermission" value="site-admin"/>
                 </bean>
             </list>
         </property>

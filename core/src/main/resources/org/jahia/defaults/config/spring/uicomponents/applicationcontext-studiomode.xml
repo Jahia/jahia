@@ -1102,7 +1102,6 @@
                             </property>
                         </bean>
                     </property>
-                    <property name="requiredPermission" value="contentSelector"/>
                 </bean>
 
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
@@ -1125,7 +1124,6 @@
                             <value>dependency,50</value>
                         </list>
                     </property>
-                    <property name="requiredPermission" value="createSelector"/>
                 </bean>
 
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
@@ -1149,7 +1147,6 @@
                 <ref bean="Engine.Tab.Options" />
                 <ref bean="Engine.Tab.RequiredPermissions" />
                 <ref bean="Engine.Tab.Usages" />
-                <ref bean="Engine.Tab.ContributeMode" />
             </list>
         </property>
         <property name="creationButtons">

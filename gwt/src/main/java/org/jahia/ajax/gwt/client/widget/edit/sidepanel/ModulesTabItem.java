@@ -118,7 +118,7 @@ public class ModulesTabItem extends BrowseTabItem {
                 if (node.getNodeTypes().contains("jmix:moduleImportFile")) {
                     classes += "notPublished ";
                 }
-                if (!PermissionsUtils.isPermitted("editModeAccess", JahiaGWTParameters.getSiteNode()) && !PermissionsUtils.isPermitted("jcr:write_default", node)) {
+                if (!PermissionsUtils.isPermitted("jContentAccess", JahiaGWTParameters.getSiteNode()) && !PermissionsUtils.isPermitted("jcr:write_default", node)) {
                     classes += "accessForbidden ";
                 }
                 if (classes.length() > 0) {

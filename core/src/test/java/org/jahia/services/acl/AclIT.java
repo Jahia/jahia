@@ -110,7 +110,7 @@ public class AclIT extends AbstractJUnitTest {
     @Override
     public void beforeClassSetup() throws Exception {
         super.beforeClassSetup();
-        
+
         JahiaSite system = TestHelper.createSite(SYSTEM_SITE_KEY, null);
         JahiaSite site = TestHelper.createSite(TESTSITE_NAME, null);
 
@@ -159,7 +159,7 @@ public class AclIT extends AbstractJUnitTest {
     @Override
     public void afterClassSetup() throws Exception {
         super.afterClassSetup();
-        
+
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
             if (session.nodeExists("/sites/"+TESTSITE_NAME)) {
@@ -284,26 +284,26 @@ public class AclIT extends AbstractJUnitTest {
 
     @Test
     public void testExternalPermissions() throws Exception {
-        assertFalse((JCRTemplate.getInstance().doExecute("user1", null, null, null, new CheckPermission(site.getPath(), "editModeAccess"))));
+        assertFalse((JCRTemplate.getInstance().doExecute("user1", null, null, null, new CheckPermission(site.getPath(), "jContentAccess"))));
 
         content1.grantRoles("u:user1", Collections.singleton("editor"));
         content2.grantRoles("u:user1", Collections.singleton("editor"));
         session.save();
 
-        assertTrue((JCRTemplate.getInstance().doExecute("user1", null, null, null, new CheckPermission(site.getPath(), "editModeAccess"))));
+        assertTrue((JCRTemplate.getInstance().doExecute("user1", null, null, null, new CheckPermission(site.getPath(), "jContentAccess"))));
 
         content1.revokeAllRoles();
         session.save();
-        assertTrue((JCRTemplate.getInstance().doExecute("user1", null, null, null, new CheckPermission(site.getPath(), "editModeAccess"))));
+        assertTrue((JCRTemplate.getInstance().doExecute("user1", null, null, null, new CheckPermission(site.getPath(), "jContentAccess"))));
 
         content2.revokeAllRoles();
         session.save();
-        assertFalse((JCRTemplate.getInstance().doExecute("user1", null, null, null, new CheckPermission(site.getPath(), "editModeAccess"))));
+        assertFalse((JCRTemplate.getInstance().doExecute("user1", null, null, null, new CheckPermission(site.getPath(), "jContentAccess"))));
 
-        assertFalse((JCRTemplate.getInstance().doExecute("user1", null, null, null, new CheckPermission(systemSite.getPath(), "editModeAccess"))));
+        assertFalse((JCRTemplate.getInstance().doExecute("user1", null, null, null, new CheckPermission(systemSite.getPath(), "jContentAccess"))));
         session.getNode("/modules").grantRoles("u:user1", Collections.singleton("editor"));
         session.save();
-        assertTrue((JCRTemplate.getInstance().doExecute("user1", null, null, null, new CheckPermission(systemSite.getPath(), "editModeAccess"))));
+        assertTrue((JCRTemplate.getInstance().doExecute("user1", null, null, null, new CheckPermission(systemSite.getPath(), "jContentAccess"))));
     }
 
 

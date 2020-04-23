@@ -264,7 +264,7 @@ public class PagesTabItem extends SidePanelTabItem {
             }
             if (activeItem != null && isAllowed) {
                 GWTJahiaNode activeNode = (GWTJahiaNode) activeItem.getModel();
-                isAllowed = PermissionsUtils.isPermitted("editModeAccess", JahiaGWTParameters.getSiteNode()) && PermissionsUtils.isPermitted(
+                isAllowed = PermissionsUtils.isPermitted("jContentAccess", JahiaGWTParameters.getSiteNode()) && PermissionsUtils.isPermitted(
                         "jcr:write_default", activeNode) && !activeNode.isLocked();
                 if (isAllowed) {
                     GWTJahiaNode parent = pageTree.getTreeStore().getParent(activeNode);

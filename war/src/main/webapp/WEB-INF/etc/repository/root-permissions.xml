@@ -69,23 +69,12 @@
             </studioSelector>
         </studioMode>
 
-        <editMode jcr:primaryType="jnt:permission">
-            <editModeAccess jcr:primaryType="jnt:permission"/>
+        <jContent jcr:primaryType="jnt:permission">
+            <jContentAccess jcr:primaryType="jnt:permission"/>
             <useComponent jcr:primaryType="jnt:permission">
                 <useComponentForCreate jcr:primaryType="jnt:permission"/>
                 <useComponentForEdit jcr:primaryType="jnt:permission"/>
             </useComponent>
-            <editSelector jcr:primaryType="jnt:permission">
-                <categoriesSelector jcr:primaryType="jnt:permission"/>
-                <contentSelector jcr:primaryType="jnt:permission"/>
-                <createSelector jcr:primaryType="jnt:permission"/>
-                <filesAndImagesSelector jcr:primaryType="jnt:permission"/>
-                <latestSelector jcr:primaryType="jnt:permission"/>
-                <portletsSelector jcr:primaryType="jnt:permission"/>
-                <searchSelector jcr:primaryType="jnt:permission"/>
-                <sitemapSelector jcr:primaryType="jnt:permission"/>
-                <siteSettingsSelector jcr:primaryType="jnt:permission"/>
-            </editSelector>
 
             <engineTabs jcr:primaryType="jnt:permission">
                 <viewCategoriesTab jcr:primaryType="jnt:permission"/>
@@ -107,14 +96,22 @@
                 <viewContributeModeTab jcr:primaryType="jnt:permission"/>
             </engineTabs>
 
+            <jContentActions jcr:primaryType="jnt:permission">
+                <createPageAction jcr:primaryType="jnt:permission"/>
+            </jContentActions>
+        </jContent>
+
+        <legacy-permissions jcr:primaryType="jnt:permission">
+            <editMode jcr:primaryType="jnt:permission"/>
+            <editModeAccess jcr:primaryType="jnt:permission"/>
+            <siteSettingsSelector jcr:primaryType="jnt:permission"/>
             <editModeActions jcr:primaryType="jnt:permission">
                 <createPageAction jcr:primaryType="jnt:permission"/>
             </editModeActions>
-        </editMode>
-
-        <contributeMode jcr:primaryType="jnt:permission">
-            <contributeModeAccess jcr:primaryType="jnt:permission"/>
-        </contributeMode>
+            <contributeMode jcr:primaryType="jnt:permission">
+                <contributeModeAccess jcr:primaryType="jnt:permission"/>
+            </contributeMode>
+        </legacy-permissions>
 
         <managers jcr:primaryType="jnt:permission">
             <categoryManager jcr:primaryType="jnt:permission"/>
@@ -122,12 +119,6 @@
             <portletDefinitionManager jcr:primaryType="jnt:permission"/>
             <portletManager jcr:primaryType="jnt:permission"/>
         </managers>
-
-        <legacy-managers jcr:primaryType="jnt:permission">
-            <editorialContentManager jcr:primaryType="jnt:permission"/>
-            <fileManager jcr:primaryType="jnt:permission"/>
-            <siteManager jcr:primaryType="jnt:permission"/>
-        </legacy-managers>
 
         <workflow-tasks jcr:primaryType="jnt:permission">
             <!-- New permission for accessing the V8 Workflow Dashboard from L1 navigation menu-->

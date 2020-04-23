@@ -169,7 +169,7 @@ class ContentBrowseTabItem extends BrowseTabItem {
                         contentStore.removeAll();
                     }
                     if (!node.getPath().equals(editLinker.getMainModule().getPath()) && node.getNodeTypes().contains("jnt:page") &&
-                            (PermissionsUtils.isPermitted("editModeAccess", JahiaGWTParameters.getSiteNode()) || PermissionsUtils.isPermitted("studioModeAccess", JahiaGWTParameters.getSiteNode()))
+                            (PermissionsUtils.isPermitted("jContentAccess", JahiaGWTParameters.getSiteNode()) || PermissionsUtils.isPermitted("studioModeAccess", JahiaGWTParameters.getSiteNode()))
                             ) {
                         MainModule.staticGoTo(node.getPath(), null);
                     }

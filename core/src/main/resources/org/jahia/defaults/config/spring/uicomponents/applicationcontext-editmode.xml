@@ -35,7 +35,6 @@
                         <ref bean="Engine.Tab.History"/>
                         <ref bean="Engine.Tab.Versioning"/>
                         <ref bean="Engine.Tab.Visibility"/>
-                        <ref bean="Engine.Tab.ContributeMode"/>
                     </list>
                 </property>
                 <property name="creationButtons">
@@ -101,7 +100,7 @@
     </bean>
 
     <bean id="editmode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
-        <property name="requiredPermission" value="editModeAccess"/>
+        <property name="requiredPermission" value="jContentAccess"/>
         <property name="nodeCheckPermission" value="$site"/>
         <property name="defaultLocation" value="$defaultSiteHome.html"/>
         <property name="defaultUrlMapping" value="/cms/edit"/>
@@ -131,7 +130,6 @@
                                 <list>
                                     <ref bean="Toolbar.Item.Live"/>
                                     <ref bean="Toolbar.Item.Preview"/>
-                                    <ref bean="Toolbar.Item.Contribute"/>
                                     <ref bean="Toolbar.Item.Studio"/>
                                     <ref bean="Toolbar.Item.Admin"/>
                                 </list>
@@ -306,7 +304,6 @@
                             <value>label,*,label.name</value>
                         </list>
                     </property>
-                    <property name="requiredPermission" value="createSelector"/>
                 </bean>
                 <!--
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
@@ -456,12 +453,9 @@
         <property name="titleKey" value="label.managers"/>
         <property name="items">
             <list>
-                <ref bean="Toolbar.Item.EditorialContentManager"/>
-                <ref bean="Toolbar.Item.FileManager"/>
                 <ref bean="Toolbar.Item.PortletManager"/>
                 <ref bean="Toolbar.Item.RepositoryExplorer"/>
                 <ref bean="Toolbar.Item.CategoryManager"/>
-                <ref bean="Toolbar.Item.SiteManager"/>
             </list>
         </property>
     </bean>
@@ -489,7 +483,6 @@
         </property>
         <property name="treeColumns" ref="#{jahiaProperties['useFullPublicationInfoInMainAreaModules'] == 'true' ? 'editModePagesTreeColumnListWithPublicationInfo' : 'editModePagesTreeColumnList'}"/>
         <property name="treeContextMenu" ref="pagesContextMenu"/>
-        <property name="requiredPermission" value="sitemapSelector"/>
     </bean>
 
     <bean id="pagesContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
@@ -556,7 +549,6 @@
             </list>
         </property>
         <property name="tableContextMenu" ref="contentTableContextMenu"/>
-        <property name="requiredPermission" value="contentSelector"/>
     </bean>
 
     <bean id="contentTreeContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
@@ -625,7 +617,6 @@
         </property>
         <property name="treeContextMenu" ref="filesTreeContextMenu"/>
         <property name="tableContextMenu" ref="filesTableContextMenu"/>
-        <property name="requiredPermission" value="filesAndImagesSelector"/>
     </bean>
 
     <bean id="filesTreeContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
@@ -689,7 +680,7 @@
                 <property name="settingPath" value="$site"/>
             </bean>
         </property>
-        <property name="requiredPermission" value="siteSettingsSelector"/>
+        <property name="requiredPermission" value="site-admin"/>
     </bean>
 
     <util:list id="searchTabItemDefaultSearchedTypes">
@@ -705,7 +696,6 @@
                 <property name="defaultSearchedTypes" ref="searchTabItemDefaultSearchedTypes"/>
             </bean>
         </property>
-        <property name="requiredPermission" value="searchSelector"/>
         <property name="tableContextMenu">
             <bean id="searchTableContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
@@ -755,7 +745,6 @@
                 <value>publicationInfo,20</value>
             </list>
         </property>
-        <property name="requiredPermission" value="categoriesSelector"/>
         <property name="tableContextMenu">
             <bean id="categoriesTableContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
@@ -1065,30 +1054,6 @@
                 <property name="dataType">
                     <list>
                         <value>permissions</value>
-                    </list>
-                </property>
-            </bean>
-        </property>
-    </bean>
-
-    <bean id="Engine.Tab.ContributeMode" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-        <property name="id" value="contributeMode"/>
-        <property name="titleKey" value="label.contributeMode"/>
-        <property name="requiredPermission" value="viewContributeModeTab"/>
-        <property name="tabItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.PropertiesTabItem">
-                <property name="dataType">
-                    <list>
-                        <value>contributeMode</value>
-                    </list>
-                </property>
-                <property name="showForTypes">
-                    <list value-type="java.lang.String">
-                        <value>jnt:contentList</value>
-                        <value>jnt:folder</value>
-                        <value>jnt:contentFolder</value>
-                        <value>jnt:area</value>
-                        <value>jnt:mainResourceDisplay</value>
                     </list>
                 </property>
             </bean>

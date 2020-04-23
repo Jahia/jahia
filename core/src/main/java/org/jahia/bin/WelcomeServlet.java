@@ -238,12 +238,8 @@ public class WelcomeServlet extends HttpServlet {
                         }
                     }
                     if (redirect == null && defSite != null && defSite.getHome() != null) {
-                        if (defSite.getHome().hasPermission("editModeAccess")) {
+                        if (defSite.getHome().hasPermission("jContentAccess")) {
                             redirect = request.getContextPath() + "/cms/edit/"
-                                    + Constants.EDIT_WORKSPACE + "/" + language
-                                    + defSite.getHome().getPath() + ".html";
-                        } else if (defSite.getHome().hasPermission("contributeModeAccess")) {
-                            redirect = request.getContextPath() + "/cms/contribute/"
                                     + Constants.EDIT_WORKSPACE + "/" + language
                                     + defSite.getHome().getPath() + ".html";
                         }

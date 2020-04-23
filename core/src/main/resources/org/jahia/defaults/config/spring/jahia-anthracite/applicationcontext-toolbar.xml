@@ -196,49 +196,6 @@
         </property>
     </bean>
 
-
-    <!-- Editorial Content Manager -->
-    <bean id="Toolbar.Item.EditorialContentManager.NewTab" parent="Toolbar.Item.EditorialContentManager" scope="prototype">
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="url"/>
-                    <property name="value"
-                              value="$context/engines/manager.jsp?conf=editorialcontentmanager-anthracite&amp;site=$siteuuid&amp;lang=$lang"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="target"/>
-                    <property name="value" value="_blank"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="no-options"/>
-                    <property name="value" value="true"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <!-- File Manager -->
-    <bean id="Toolbar.Item.FileManager.NewTab" parent="Toolbar.Item.FileManager" scope="prototype">
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="url"/>
-                    <property name="value"
-                              value="$context/engines/manager.jsp?conf=filemanager-anthracite&amp;site=$siteuuid&amp;lang=$lang"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="target"/>
-                    <property name="value" value="_blank"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="no-options"/>
-                    <property name="value" value="true"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
     <!-- Content Manager -->
     <bean id="Toolbar.Item.RepositoryExplorer.NewTab" parent="Toolbar.Item.RepositoryExplorer" scope="prototype">
         <property name="properties">
@@ -309,27 +266,6 @@
                     <property name="name" value="url"/>
                     <property name="value"
                               value="$context/engines/manager.jsp?conf=categorymanager-anthracite&amp;lang=$lang"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="target"/>
-                    <property name="value" value="_blank"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="no-options"/>
-                    <property name="value" value="true"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <!-- Site Manager -->
-    <bean id="Toolbar.Item.SiteManager.NewTab" parent="Toolbar.Item.SiteManager" scope="prototype">
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="url"/>
-                    <property name="value"
-                              value="$context/engines/manager.jsp?conf=sitemanager-anthracite&amp;site=$siteuuid&amp;lang=$lang"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="target"/>

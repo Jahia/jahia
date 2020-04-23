@@ -30,12 +30,6 @@
         <property name="availableInDistantPublicationServerMode" value="false"/>
         <property name="workspace" value="default"/>
     </bean>
-    <bean name="org.jahia.bin.Contribute" parent="abstractRender" class="org.jahia.bin.Edit">
-        <property name="sessionExpiryTime" value="${sessionExpiryTime}"/>
-        <property name="editConfiguration" ref="contributemode"/>
-        <property name="availableInDistantPublicationServerMode" value="false"/>
-        <property name="workspace" value="default"/>
-    </bean>
     <bean name="org.jahia.bin.Studio" parent="abstractRender" class="org.jahia.bin.Edit">
         <property name="sessionExpiryTime" value="60"/>
         <property name="editConfiguration" ref="studiomode"/>
@@ -92,8 +86,6 @@
                 <entry key="/adminframe/**" value-ref="org.jahia.bin.AdministrationLayout"/>
                 <entry key="/edit/**" value-ref="org.jahia.bin.Edit"/>
                 <entry key="/editframe/**" value-ref="org.jahia.bin.Edit"/>
-                <entry key="/contribute/**" value-ref="org.jahia.bin.Contribute"/>
-                <entry key="/contributeframe/**" value-ref="org.jahia.bin.Contribute"/>
                 <entry key="/dashboard/**" value-ref="org.jahia.bin.DashboardLayout"/>
                 <entry key="/dashboardframe/**" value-ref="org.jahia.bin.DashboardLayout"/>
                 <entry key="/settings/**" value-ref="org.jahia.bin.SiteSettingsLayout"/>

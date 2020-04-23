@@ -84,9 +84,13 @@ import javax.servlet.http.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.util.*;
 import java.util.regex.Pattern;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * Rendering controller. Resolves the node and the template, and renders it by executing the appropriate script.
@@ -714,10 +718,16 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     redirect = SessionidRemovalResponseWrapper.removeJsessionId(redirect);
                 }
             }
-            if (StringUtils.isEmpty(stayOnPage)) {
-                resp.setHeader("Location", UriUtils.encodePath(redirect, "UTF-8"));
-            } else if (responseCode == HttpServletResponse.SC_SEE_OTHER) {
-                resp.setHeader("Location", UriUtils.encodePath(redirect, "UTF-8"));
+            if (StringUtils.isEmpty(stayOnPage) || (responseCode == HttpServletResponse.SC_SEE_OTHER)) {
+                try {
+                    final URI redirectUri = new URI(redirect);
+                    final UriComponents uriComponents = UriComponentsBuilder.fromUri(redirectUri).build();
+                    String encodedUri = uriComponents.encode("UTF-8").toUriString();
+                    resp.setHeader("Location", encodedUri);
+                } catch (URISyntaxException ex) {
+                    logger.error("Impossible to build URI from {}", redirect);
+                    resp.setHeader("Location", UriUtils.encodePath(redirect, "UTF-8"));
+                }
             }
             if (responseCode == HttpServletResponse.SC_FOUND) {
                 resp.sendRedirect(redirect);

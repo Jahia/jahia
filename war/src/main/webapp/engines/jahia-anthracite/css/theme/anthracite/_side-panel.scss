@@ -1,6 +1,6 @@
 $SIDE-PANEL--BORDER: (
         LIGHT: none,
-        DARK: none
+        DARK: 1px solid _color("primary", i)
 );
 
 $SIDE-PANEL--BG: (
@@ -9,8 +9,8 @@ $SIDE-PANEL--BG: (
 );
 
 $SIDE-PANEL--SHADOW: (
-        LIGHT: none,
-        DARK: none,
+        LIGHT: 0 5px 10px 1px _color("black", b),
+        DARK: 0 5px 10px 1px _color("black", b),
 );
 
 $SIDE-PANEL-OPEN--COMBO-COLOR: (
@@ -20,7 +20,7 @@ $SIDE-PANEL-OPEN--COMBO-COLOR: (
 
 $SIDE-PANEL-OPEN--COMBO-ARROW: (
     LIGHT: "../images/expanded-black.png",
-    DARK: "../images/icons/icon-combo-expand-white.png",
+    DARK: _icon("arrowDown", "white"),
 );
 
 $SIDE-PANEL-TAB--PAGES-ICON--UP: (
@@ -29,7 +29,7 @@ $SIDE-PANEL-TAB--PAGES-ICON--UP: (
 );
 
 $SIDE-PANEL-TAB--PAGES-ICON--SELECTED: (
-    LIGHT: _icon("pages", "white"),
+    LIGHT: _icon("pages", "grey"),
     DARK: _icon("pages", "white"),
 );
 
@@ -63,25 +63,25 @@ $SIDE-PANEL-TITLE--COLOR: (
         DARK: _color("primary"),
 );
 
-$SIDE-PANEL--LANGUAGE-SWITCHER---LEFT: 115px;
-$SIDE-PANEL--LANGUAGE-SWITCHER---TOP: 69px;
-$SIDE-PANEL--SITE-SWITCHER---LEFT: 95px;
-$SIDE-PANEL--SITE-SWITCHER---TOP: 25px;
-$SIDE-PANEL--OPENED--SITE-SWITCHER---LEFT: 115px;
-$SIDE-PANEL--REFRESH-PINNED---MARGIN: 0 0 0 30px;
-$SIDE-PANEL--PIN-BUTTON---DISPLAY: block;
-$SIDE-PANEL--HAMBURGER---DISPLAY: block;
-$SIDE-PANEL--TABS---DISPLAY: inline-block;
-$SIDE-PANEL---WIDTH: calc(100% - 81px);
-$SIDE-PANEL---MARGIN: -37px 0 0 0;
-$SIDE-PANEL---PADDING: 49px 0 0 21px;
-$SIDE-PANEL--DIVIDER: none;
-$SIDE-PANEL--DIVIDER-DISCREET: none;
-$SIDE-PANEL--HEADER---PADDING: 0;
-$SIDE-PANEL--HEADER---MARGIN: 26px 0 30px 1px;
-$SIDE-PANEL--HEADER---BG: transparent;
+$SIDE-PANEL--LANGUAGE-SWITCHER---LEFT: 18px;
+$SIDE-PANEL--LANGUAGE-SWITCHER---TOP: 128px;
+$SIDE-PANEL--SITE-SWITCHER---LEFT: 130px;
+$SIDE-PANEL--SITE-SWITCHER---TOP: 128px;
+$SIDE-PANEL--OPENED--SITE-SWITCHER---LEFT: $SIDE-PANEL--SITE-SWITCHER---LEFT;
+$SIDE-PANEL--REFRESH-PINNED---MARGIN: 60px 0 0 47px;
+$SIDE-PANEL--PIN-BUTTON---DISPLAY: none;
+$SIDE-PANEL--HAMBURGER---DISPLAY: none;
+$SIDE-PANEL--TABS---DISPLAY: none;
+$SIDE-PANEL---WIDTH: 100%;
+$SIDE-PANEL---MARGIN: 0;
+$SIDE-PANEL---PADDING: 0;
+$SIDE-PANEL--DIVIDER: 1px solid _color("primary", d);
+$SIDE-PANEL--DIVIDER-DISCREET: 1px solid rgba(_color("primary", d), 0.35);
+$SIDE-PANEL--HEADER---PADDING: 5px 20px 5px 44px;
+$SIDE-PANEL--HEADER---MARGIN: 68px 0 33px 0px;
+$SIDE-PANEL--HEADER---BG: url(_icon("pages", "white")) no-repeat left 16px center / #{24px} _color("primary", "g");
 $SIDE-PANEL--TREE--BG: transparent;
-$SIDE-PANEL--TREE--HEIGHT: 100%;
-$SIDE-PANEL--TREE--PADDING: 0;
-$SIDE-PANEL--TITLE--SIZE: 30px;
-$SIDE-PANEL--TITLE--WEIGHT: _weight("extralight");
+$SIDE-PANEL--TREE--HEIGHT: calc(100% - 155px);
+$SIDE-PANEL--TREE--PADDING: 20px 0 0 20px;
+$SIDE-PANEL--TITLE--SIZE: 16px;
+$SIDE-PANEL--TITLE--WEIGHT: _weight("semibold");

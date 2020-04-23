@@ -374,17 +374,15 @@
             box-shadow: _theme($SIDE-PANEL--SHADOW, $SIDE-PANEL)
         }
 
-        @if($theme == "anthracite-V8") {
-            &::after {
-                content: _dictionary("page_composer");
-                position: absolute;
-                top: 0;
-                left: 0;
-                padding: 20px;
-                width: calc(100% - 40px);
-                text-align: center;
-                @include text(21px, _color("secondary"), _weight("semibold"));
-            }
+        &::after {
+            content: _dictionary("page_composer");
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 20px;
+            width: calc(100% - 40px);
+            text-align: center;
+            @include text(21px, _color("secondary"), _weight("semibold"));
         }
 
         body[data-indigo-sidepanel-pinned="true"] & {

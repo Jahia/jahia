@@ -1,5 +1,3 @@
-$theme: "anthracite";
-
 @import "app/functions";
 @import "app/zindexes";
 @import "theme/anthracite/import";
@@ -15,3 +13,5 @@ $theme: "anthracite";
 @import "app/dashboardmode";
 @import "app/workflow/import";
 @import "app/misc";
+
+@import "gobal_overrides/global_overrides";

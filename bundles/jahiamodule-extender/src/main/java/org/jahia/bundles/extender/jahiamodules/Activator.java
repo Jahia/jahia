@@ -91,6 +91,7 @@ import org.osgi.framework.startlevel.BundleStartLevel;
 import org.osgi.framework.wiring.BundleWire;
 import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.namespace.extender.ExtenderNamespace;
+import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.url.URLConstants;
 import org.osgi.service.url.URLStreamHandlerService;
@@ -1153,7 +1154,12 @@ public class Activator implements BundleActivator {
         props.put(Constants.SERVICE_DESCRIPTION, "Override mvn URLs for Java 11");
         props.put(Constants.SERVICE_VENDOR, Jahia.VENDOR_NAME);
         props.put(Constants.SERVICE_RANKING, 1000);
-        serviceRegistrations.add(context.registerService(URLStreamHandlerService.class, new MavenURLStreamHandler(), props));
+        ServiceReference configAdminServiceRef = context.getServiceReference(ConfigurationAdmin.class.getName());
+        ConfigurationAdmin configAdminService = null;
+        if(configAdminServiceRef != null) {
+            configAdminService = (ConfigurationAdmin) context.getService( configAdminServiceRef );
+        }
+        serviceRegistrations.add(context.registerService(URLStreamHandlerService.class, new MavenURLStreamHandler(configAdminService), props));
     }
 
     private ExecutorService getExecutorService() {

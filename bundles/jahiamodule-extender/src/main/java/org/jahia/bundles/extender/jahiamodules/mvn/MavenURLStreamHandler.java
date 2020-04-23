@@ -46,6 +46,8 @@ package org.jahia.bundles.extender.jahiamodules.mvn;
 import org.ops4j.pax.url.mvn.MavenResolver;
 import org.ops4j.pax.url.mvn.MavenResolvers;
 import org.ops4j.pax.url.mvn.ServiceConstants;
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.url.AbstractURLStreamHandlerService;
 
 import java.io.File;
@@ -54,14 +56,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 /**
  * Maven URL stream handler that clean up the #runtime added by JDK 11 to allow a correct parsing by pax.
  */
 public class MavenURLStreamHandler extends AbstractURLStreamHandlerService {
 
+    private final ConfigurationAdmin configurationAdmin;
+
+    public MavenURLStreamHandler(ConfigurationAdmin configurationAdmin) {
+        this.configurationAdmin = configurationAdmin;
+
+    }
+
     @Override public URLConnection openConnection(URL url) throws IOException {
-        MavenResolver resolver = MavenResolvers.createMavenResolver(null, ServiceConstants.PID);
+        Dictionary<String, String> props = getMavenConfig();
+        MavenResolver resolver = MavenResolvers.createMavenResolver(props, ServiceConstants.PID);
         // java11 adds #runtime as a ref in the URL which breaks the artifact version parser in pax-aether-url
         String cleanedURL = url.toExternalForm().replace("#runtime", "");
         return new URLConnection(new URL(cleanedURL)) {
@@ -74,5 +87,25 @@ public class MavenURLStreamHandler extends AbstractURLStreamHandlerService {
                 return new FileInputStream(resolve);
             }
         };
+    }
+
+    private Dictionary<String, String> getMavenConfig() throws IOException {
+        Hashtable<String, String> props = new Hashtable<>();
+        if (configurationAdmin != null) {
+            Configuration config = configurationAdmin.getConfiguration("org.ops4j.pax.url.mvn", null);
+            if (config != null) {
+                Dictionary<String, Object> cfg = config.getProperties();
+                if (cfg != null) {
+                    for (Enumeration<String> e = cfg.keys(); e.hasMoreElements(); ) {
+                        String key = e.nextElement();
+                        Object val = cfg.get(key);
+                        if (key != null) {
+                            props.put(key, val.toString());
+                        }
+                    }
+                }
+            }
+        }
+        return props;
     }
 }

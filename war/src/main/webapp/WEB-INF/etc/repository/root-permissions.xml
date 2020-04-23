@@ -93,7 +93,7 @@
                 <viewHistoryTab jcr:primaryType="jnt:permission"/>
                 <viewVersioningTab jcr:primaryType="jnt:permission"/>
                 <viewVisibilityTab jcr:primaryType="jnt:permission"/>
-                <viewContributeModeTab jcr:primaryType="jnt:permission"/>
+                <viewContentTypeRestrictionTab jcr:primaryType="jnt:permission"/>
             </engineTabs>
 
             <jContentActions jcr:primaryType="jnt:permission">

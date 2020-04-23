@@ -69,35 +69,36 @@ $SIDE_PANEL--ICON--DEVICES---OFF: _icon("devices", "black");
 $SIDE_PANEL--ICON--SETTINGS---OFF: _icon("settings", "black");
 
 // EDIT MODE
-$CACHE-ICON: _icon("cache", "white");
+$CACHE-ICON: _icon("cache", "grey");
 $PUBLISH-ICON: _icon("publish", "white");
-$PREVIEW-ICON: _icon("visibility", "white");
-$EDIT-MODE--PAGE-TITLE---COLOR: _color("secondary");
-$EDIT-MODE--PAGE-TITLE---SIZE: 25.2px;
-$EDIT-MODE--PAGE-TITLE---TOP: 10px;
-$EDIT-MODE--PAGE-TITLE---LEFT: 10px;
+$PREVIEW-ICON: _icon("visibility", "grey");
+$EDIT-MODE--PAGE-TITLE---COLOR: _color("primary");
+$EDIT-MODE--PAGE-TITLE---SIZE: _size("large");
+$EDIT-MODE--PAGE-TITLE---TOP: -15px;
+$EDIT-MODE--PAGE-TITLE---LEFT: 26px;
 
-$EDIT-MODE--ACTION-TOOLBAR---BORDER: none;
-$EDIT-MODE--ACTION-TOOLBAR---CELL: 10px;
-$EDIT-MODE--ACTION-TOOLBAR---FONT-SIZE: 13px;
-$EDIT-MODE--ACTION-TOOLBAR---SIMPLE-ARROW: "../images/expanded-white.png";
-$EDIT-MODE--ACTION-TOOLBAR---ARROW: url(../images/expanded-white.png) no-repeat center center #{/15px} hsla(210, 5%, 40%, 1);
-$EDIT-MODE--ACTION-TOOLBAR-BG---HOVER: _color("tertiary", normal);
+$EDIT-MODE--ACTION-TOOLBAR---BORDER: 1px solid _color("secondary", e);
+$EDIT-MODE--ACTION-TOOLBAR---CELL: 0;
+$EDIT-MODE--ACTION-TOOLBAR---FONT-SIZE: _size("small");
+$EDIT-MODE--ACTION-TOOLBAR---SIMPLE-ARROW: _icon("arrowDown", "grey");
+$EDIT-MODE--ACTION-TOOLBAR---ARROW: url(_icon("arrowDown", "grey")) no-repeat center center #{/15px};
+$EDIT-MODE--ACTION-TOOLBAR-BG---HOVER: _color("secondary", d);
 
-$EDIT-MODE--EDIT-MENU---TOP: 41px;
-$EDIT-MODE--EDIT-MENU---LEFT: auto;
-$EDIT-MODE--EDIT-MENU---RIGHT: 17px;
-$EDIT-MODE--EDIT-MENU---PADDING: 0;
-$EDIT-MODE--MORE-OPTIONS-POSITION: "BOTTOM";
+$EDIT-MODE--EDIT-MENU---TOP: 78px;
+$EDIT-MODE--EDIT-MENU---LEFT: 5px;
 
-$EDIT-MODE-MULTIPLE-SELECT-ICON: _icon("multipleSelect", "white");
-$EDIT-MODE-MULTIPLE-SELECT-TOP: 30px;
-$EDIT-MODE-MULTIPLE-SELECT-RIGHT: -23px;
+$EDIT-MODE--EDIT-MENU---RIGHT: auto;
+$EDIT-MODE--EDIT-MENU---PADDING: 3px 0 0 50px;
+$EDIT-MODE--MORE-OPTIONS-POSITION: "BOTTOM-LEFT";
 
-$EDIT-MODE--CHANNEL---BG: inset 0px -120px 260px #343638;
+$EDIT-MODE-MULTIPLE-SELECT-ICON: _icon("multipleSelect", "grey");
+$EDIT-MODE-MULTIPLE-SELECT-TOP: 18px;
+$EDIT-MODE-MULTIPLE-SELECT-RIGHT: -52px;
 
-$SPLITTER--BG: url(_theme($SPLITTER--ICON---UP, $SIDE-PANEL)) no-repeat center right 6px _theme($SPLITTER--BG---UP, $SIDE-PANEL);
-$SPLITTER--WIDTH: 16px;
+$EDIT-MODE--CHANNEL---BG: none;
+
+$SPLITTER--BG: url(_theme($SPLITTER--ICON---UP, $SIDE-PANEL)) no-repeat center _theme($SPLITTER--BG---UP, $SIDE-PANEL);
+$SPLITTER--WIDTH: 5px;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

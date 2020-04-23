@@ -1,16 +1,16 @@
 $EDIT_ENGINE--SIDEPANEL---BORDER: (
-    LIGHT: none,
-    DARK: 1px solid _color("primary", i)
+        LIGHT: none,
+        DARK: 1px solid _color("primary", i)
 );
 
 $EDIT_ENGINE--SIDEPANEL---BG: (
-    LIGHT: linear-gradient(to right bottom, #F5F5F5 50%, #e5e4e4 100%),
-    DARK: _color("primary"),
+        LIGHT: linear-gradient(to right bottom, #F5F5F5 50%, #e5e4e4 100%),
+        DARK: linear-gradient(to right bottom, _color("primary", f) 50%, _color("primary", g) 100%),
 );
 
 $EDIT_ENGINE--SIDEPANEL---SHADOW: (
-    LIGHT: 0px 2px 12px 0px _color("primary", b),
-    DARK: 0px 2px 12px 0px _color("primary", g),
+        LIGHT: 0px 2px 12px 0px rgba(58, 58, 58, 0.4),
+        DARK: 0px 2px 12px 0px red,
 );
 
 $EDIT_ENGINE--LANGUAGE-SELECTOR: (

@@ -10,7 +10,7 @@ $TAB--BAR: (
 
 $TAB--COLOR: (
         LIGHT: _color("primary", b),
-        DARK: _color("primary", e),
+        DARK: _color("secondary", e),
 );
 
 // HOVER
@@ -21,7 +21,7 @@ $TAB--BAR---HOVER: (
 
 $TAB--COLOR---HOVER: (
         LIGHT: _color("tertiary", normal),
-        DARK: _color("tertiary", normal),
+        DARK: _color("secondary", normal),
 );
 
 // SELECTED
@@ -46,6 +46,6 @@ $TAB--COLOR---SELECTED-HOVER: (
         DARK: #FCFCFC,
 );
 
-$TAB--ICONS---DISPLAY: inline-block;
-$TAB--PADDING: 0 0 0 19px;
-$TAB-BOX-SHADOW: none;
+$TAB--ICONS---DISPLAY: none;
+$TAB--PADDING: 0;
+$TAB-BOX-SHADOW: inset 0 85px 0 0 _color("primary", g);

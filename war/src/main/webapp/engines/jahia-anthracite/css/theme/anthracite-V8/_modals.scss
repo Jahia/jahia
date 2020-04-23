@@ -1,5 +1,5 @@
 $MODAL--DIVIDER: (
-        LIGHT: _color("primary"),
+        LIGHT: _color("secondary", e),
         DARK: _color("secondary"),
 );
 
@@ -29,5 +29,6 @@ $MODAL-SOLID--BG---LEGACY: (
         DARK: rgba(_color("primary"), .98),
 );
 
-$MODAL-MASK--BG: _color("primary", c);
-$MODAL--COLULMN---HEADER: _color("primary");
+$MODAL-MASK--BG: _color("primary", g);
+
+$MODAL--COLULMN---HEADER: _color("primary", d);

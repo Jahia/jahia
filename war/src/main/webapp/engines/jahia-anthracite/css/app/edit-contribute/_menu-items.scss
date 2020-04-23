@@ -33,10 +33,12 @@ body[data-indigo-app="contribute"] {
             min-width: 50%;
             text-align: right;
 
-            body div.x-viewport-editmode & {
-                background: transparent!important;
-                top: 81px;
-                padding-right: 10px !important;
+            @if($theme == "anthracite-V8"){
+                body div.x-viewport-editmode & {
+                    background: transparent!important;
+                    top: 81px;
+                    padding-right: 10px !important;
+                }
             }
 
             > table {
@@ -89,7 +91,10 @@ body[data-indigo-app="contribute"] {
         top: $EDIT-MODE--EDIT-MENU---TOP;
         body & {
             border-top: $EDIT-MODE--ACTION-TOOLBAR---BORDER !important;
-            width: 100%;
+
+            @if($theme == "anthracite-V8") {
+                width: 100%;
+            }
         }
         .x-toolbar-cell {
             display: inline-block;
@@ -282,16 +287,24 @@ body[data-indigo-app="contribute"] {
 .edit-menu-edit {
     /* More Info Button */
     display: block;
+    left: -10px !important;
+    position: relative;
+    width: 22px;
+    height: 22px;
+    background: url(../images/more-options.svg) no-repeat center center #61666b;
     background-size: 20px;
     border-radius: 2px;
-    position: fixed;
-    width: 26px;
-    height: 26px;
-    top: 18px;
-    right: 14px;
-    left: auto !important;
-    background: url(../images/more-options-blue.svg) no-repeat center center /17px white;
-    border: 1px solid #009fe3!important;
+
+    @if($theme == "anthracite-V8"){
+        position: fixed;
+        width: 26px;
+        height: 26px;
+        top: 18px;
+        right: 14px;
+        left: auto !important;
+        background: url(../images/more-options-blue.svg) no-repeat center center /17px white;
+        border: 1px solid #009fe3!important;
+    }
 
     &:hover {
         background-color: _color("tertiary", normal);
@@ -312,6 +325,14 @@ body[data-indigo-app="contribute"] {
 
     }
 
+    @if ($theme == "anthracite") {
+        @include tooltip(_dictionary("tooltip_more_options"), $EDIT-MODE--MORE-OPTIONS-POSITION);
+
+        &::after {
+            content: _dictionary("context_menu_edit_selection");
+        }
+    }
+
     td {
         /* Hide All the Junk from the old button */
         display: none;
@@ -326,17 +347,36 @@ body[data-indigo-app="contribute"] {
     overflow: visible;
     height: 23px;
     width: 23px;
+    top: 46px;
+    left: 0;
+    position: fixed;
     border-radius: 100%;
-    top: 82px;
-    left: 205px !important;
-    position: absolute;
-    margin-left: 0;
+    margin-left: 10px;
 
     body[data-chrome="false"] & {
         display: none;
     }
 
     @include tooltip(_dictionary("tooltip_refresh_page"), "BOTTOM");
+
+    @if($theme == "anthracite-V8"){
+        top: 82px;
+        left: 205px !important;
+        position: absolute;
+        margin-left: 0px;
+    } @else if ($theme == "anthracite"){
+        body[data-INDIGO-SIDEPANEL-PINNED="true"] & {
+            top: 43px;
+        }
+
+        body[data-multiselect="on"] & {
+            display: none;
+        }
+    }
+
+
+
+
 
     body[data-sitesettings="true"] & {
         display: none;
@@ -360,7 +400,7 @@ body[data-indigo-app="contribute"] {
 
     .x-viewport-editmode & {
         height: 14px;
-        width: 15px;
+        width: 14px;
         left: -30px !important;
         top: -6px !important;
         background: $EDIT-MODE--ACTION-TOOLBAR---ARROW; /* OPTIMISE URL ::: css/app/edit-contribute/_menu-items.scss ::: 1 */
@@ -371,13 +411,15 @@ body[data-indigo-app="contribute"] {
             left: -28px !important;
         }
 
+        @if($theme == "anthracite-V8"){
+            border-left: $EDIT-MODE--ACTION-TOOLBAR---BORDER!important;
+            padding-left: 2px;
+            width: 15px;
 
-        border-left: $EDIT-MODE--ACTION-TOOLBAR---BORDER!important;
-        padding-left: 2px;
-
-        &:hover {
-            background-color: $EDIT-MODE--ACTION-TOOLBAR-BG---HOVER !important;
-            left: -30px !important;
+            &:hover {
+                background-color: $EDIT-MODE--ACTION-TOOLBAR-BG---HOVER !important;
+                left: -30px !important;
+            }
         }
     }
 
@@ -385,6 +427,13 @@ body[data-indigo-app="contribute"] {
         width: 20px !important;
         @include tooltip(_dictionary("tooltip_preview"), "BOTTOM");
         display: none;
+    }
+
+    .hover-preview & {
+        @if($theme == "anthracite"){
+            left: -28px !important;
+
+        }
     }
 }
 
@@ -508,15 +557,22 @@ body[data-indigo-app="contribute"] {
     @include text(13px, _color("secondary"), _weight("normal"));
     background: hsla(210, 4%, 34%, 0.82);
     position: absolute;
-    right: 0;
-    left: auto;
-    top: 26px;
+    @if ($theme == "anthracite-V8") {
+        right: 0;
+        left: auto;
+        top: 26px;
+    } @else if($theme == 'anthracite'){
+        top: 31px;
+        left: 16px;
+    }
     padding: 6px 14px;
     box-shadow: 0 11px 14px 0 rgba(0, 0, 0, 0.3);
     border-radius: 5px;
     opacity: 0;
     pointer-events: none;
     transition: _transition("opacity", "quickest");
+
+
 
     &.indigo-show {
         transition: _transition("opacity", "normal", "slow");
@@ -545,18 +601,33 @@ body[data-indigo-app="contribute"] {
 .publication-status {
     display: none;
     position: fixed;
-    width: auto;
-    height: auto;
-    right: 13px;
-    left: auto !important;
-    top: 53px !important;
-    border-radius: 20px;
-    padding: 2px 10px;
-    z-index: 110;
 
-    &:before {
-        @include text(_size("small"), _color("secondary"), _weight("normal"));
-        text-transform: capitalize;
+    @if ($theme == "anthracite-V8") {
+        width: auto;
+        height: auto;
+        right: 13px;
+        left: auto !important;
+        top: 53px !important;
+        border-radius: 20px;
+        padding: 2px 10px;
+        z-index: 110;
+
+        &:before {
+            @include text(_size("small"), _color("secondary"), _weight("normal"));
+            text-transform: capitalize;
+        }
+    } @else {
+        width: 5px;
+        height: 24px;
+        left: 96px;
+        top: 44px;
+        border-radius: 0;
+        box-shadow: none;
+        z-index: 50;
+
+        .publication-status-code {
+            display: none;
+        }
     }
 
     &:hover {
@@ -575,8 +646,10 @@ body[data-indigo-app="contribute"] {
         /* Conflict */
         background-color: _color("status", conflict);
 
-        &:before {
-            content: _dictionary("conflict");
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("conflict");
+            }
         }
     }
 
@@ -584,8 +657,10 @@ body[data-indigo-app="contribute"] {
         /* Deleted */
         background-color: _color("status", deleted);
 
-        &:before {
-            content: _dictionary("deleted");
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("deleted");
+            }
         }
     }
 
@@ -593,8 +668,10 @@ body[data-indigo-app="contribute"] {
         /* Live Modified */
         background-color: _color("status", livemodified);
 
-        &:before {
-            content: _dictionary("livemodified");
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("livemodified");
+            }
         }
     }
 
@@ -602,8 +679,10 @@ body[data-indigo-app="contribute"] {
         /* Live Only */
         background-color: _color("status", liveonly);
 
-        &:before {
-            content: _dictionary("liveonly");
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("liveonly");
+            }
         }
     }
 
@@ -611,8 +690,10 @@ body[data-indigo-app="contribute"] {
         /* Locked */
         background-color: _color("status", locked);
 
-        &:before {
-            content: _dictionary("locked");
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("locked");
+            }
         }
     }
 
@@ -620,8 +701,10 @@ body[data-indigo-app="contribute"] {
         /* Mandatory Language Unpublishable */
         background-color: _color("status", mandatorylanguageunpublishable);
 
-        &:before {
-            content: _dictionary("mandatorylanguageunpublishable");
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("mandatorylanguageunpublishable");
+            }
         }
     }
 
@@ -629,8 +712,10 @@ body[data-indigo-app="contribute"] {
         /* Mandatory Language Valid */
         background-color: _color("status", mandatorylanguagevalid);
 
-        &:before {
-            content: _dictionary("mandatorylanguagevalid");
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("mandatorylanguagevalid");
+            }
         }
     }
 
@@ -638,8 +723,10 @@ body[data-indigo-app="contribute"] {
         /* Marked FOr Deletion */
         background-color: _color("status", markedfordeletion);
 
-        &:before {
-            content: _dictionary("markedfordeletion");
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("markedfordeletion");
+            }
         }
     }
 
@@ -647,8 +734,10 @@ body[data-indigo-app="contribute"] {
         /* Modified */
         background-color: _color("status", modified);
 
-        &:before {
-            content: _dictionary("modified");
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("modified");
+            }
         }
     }
 
@@ -656,8 +745,10 @@ body[data-indigo-app="contribute"] {
         /* Multiple WF */
         background-color: _color("status", multipleWF);
 
-        &:before {
-            content: _dictionary("multipleWF");
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("multipleWF");
+            }
         }
     }
 
@@ -665,8 +756,10 @@ body[data-indigo-app="contribute"] {
         /* Not Published */
         background-color: _color("status", notpublished);
 
-        &:before {
-            content: _dictionary("notpublished");
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("notpublished");
+            }
         }
     }
 
@@ -674,8 +767,10 @@ body[data-indigo-app="contribute"] {
         /* One WF */
         background-color: _color("status", oneWF);
 
-        &:before {
-            content: _dictionary("oneWF");
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("oneWF");
+            }
         }
     }
 
@@ -683,8 +778,10 @@ body[data-indigo-app="contribute"] {
         /* Published */
         background-color: _color("status", published);
 
-        &:before {
-            content: _dictionary("published");
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("published");
+            }
         }
     }
 
@@ -692,8 +789,10 @@ body[data-indigo-app="contribute"] {
         /* Unpublished */
         background-color: _color("status", unpublished);
 
-        &:before {
-            content: _dictionary("unpublished");
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("unpublished");
+            }
         }
     }
 
@@ -701,8 +800,10 @@ body[data-indigo-app="contribute"] {
         /* Waiting */
         background-color: _color("status", waiting);
 
-        &:before {
-            content: _dictionary("waiting");
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("waiting");
+            }
         }
     }
 
@@ -710,8 +811,10 @@ body[data-indigo-app="contribute"] {
         /* Work In Progress */
         background-color: _color("status", workinprogress);
 
-        &:before {
-            content: _dictionary("workinprogress");
+        @if ($theme == "anthracite-V8") {
+            &:before {
+                content: _dictionary("workinprogress");
+            }
         }
     }
 
@@ -906,21 +1009,36 @@ div.x-jahia-root {
 
 
 .action-bar-tool-item.edit-menu-publication {
-    position: fixed;
-    left: auto!important;
-    top: 18px !important;
-    right: 51px;
+    position: absolute;
+    left: -30px !important;
+    top: -6px !important;
     background: url(../images/expanded-white.png) no-repeat center center hsla(210, 5%, 40%, 1); /* OPTIMISE URL ::: css/app/edit-contribute/_menu-items.scss ::: 8 */
     background-size: 15px;
-    width: 25px;
-    height: 28px;
+    height: 14px;
+    width: 14px;
     transition: _transition("all", "quickest");
-    border-radius: 0 4px 4px 0;
-    background-color: _color("tertiary", a);
+    border-radius: 2px;
+
+    @if($theme == "anthracite-V8"){
+        position: fixed;
+        top: 18px !important;
+        right: 51px;
+        left: auto!important;
+        border-radius: 0 4px 4px 0;
+        height: 28px;
+        width: 25px;
+        background-color: _color("tertiary", a);
+
+    }
+
+
 
     &:hover {
         background-color: _color("tertiary", normal) !important;
-        left: -28px !important;
+
+        @if ($theme == "anthracite") {
+            left: -28px !important;
+        }
     }
 
     .x-btn-mc {
@@ -932,24 +1050,27 @@ div.x-jahia-root {
     }
 
     .hover-publish & {
-        left: -28px !important;
+        @if ($theme == "anthracite") {
+            left: -28px !important;
+        }
     }
 }
 
 .toolbar-item-publishone.action-bar-tool-item {
     width: auto;
-    background-size: 16px;
+    background: url($PUBLISH-ICON) no-repeat center left 4px; /* OPTIMISE URL ::: css/app/edit-contribute/_menu-items.scss ::: 9 */
+    background-size: 20px;
+    padding-left: 28px;
     height: 22px;
     left: auto !important;
-    top: 18px !important;
-    right: 47px;
-    position: fixed;
+    top: auto !important;
+    position: relative;
     margin-right: 30px !important;
-    padding: 3px 10px 3px 29px;
-    border-radius: 4px 0 0 4px;
+    padding-right: 6px;
+    border-radius: 2px;
     transition: _transition("all", "quickest");
-    background-color: _color("tertiary", a);
-    background-position: center left 9px;
+
+
 
     &:hover {
         background-color: _color("tertiary", normal);
@@ -960,15 +1081,40 @@ div.x-jahia-root {
         display: block;
         font-family: "Nunito Sans", sans-serif;
         font-size: 13px !important;
-        color: _color("white") !important;
+        color: whitesmoke;
         font-weight: 300 !important;
-        text-transform: uppercase !important;
+        text-transform: none !important;
         top: 3px;
         position: relative;
     }
 
+    @if($theme == "anthracite-V8"){
+        position: fixed;
+        top: 18px !important;
+        right: 42px;
+        border-radius: 4px 0 0 4px;
+        position: fixed;
+        top: 18px !important;
+        right: 47px;
+        padding: 3px 10px 3px 29px;
+        background-color: _color("tertiary", a);
+        background-position: center left 9px;
+        background-size: 16px;
+
+        &::after {
+            color: _color("white") !important;
+            text-transform: uppercase !important;
+        }
+    }
+
     .x-btn-mc {
         display: none;
+    }
+
+    .hover-publish-advanced & {
+        @if ($theme == "anthracite") {
+            background-color: rgba(245, 245, 245, 0.0784);
+        }
     }
 
 
@@ -1013,10 +1159,12 @@ div.x-jahia-root {
 
 }
 
-// Should not be neccessary as they wont even exist, but for dev purposes I need to remove it
-.edit-menu-workflow,
-.toolbar-item-showtrashboard {
-    display: none;
+@if($theme == "anthracite-V8"){
+    // Should not be neccessary as they wont even exist, but for dev purposes I need to remove it
+    .edit-menu-workflow,
+    .toolbar-item-showtrashboard {
+        display: none;
+    }
 }
 
 .edit-menu-workflow,

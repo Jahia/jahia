@@ -3,16 +3,16 @@
 /****************************/
 
 // UP
-$ROW--HEIGHT: 27px;
+$ROW--HEIGHT: 32px;
 
 $ROW--COLOR: (
         LIGHT: _color("primary", b),
-        DARK: _color("primary", b),
+        DARK: _color("secondary", d),
 );
 
 $ROW--COLOR--DIMMED: (
         LIGHT: _color("primary", c),
-        DARK: _color("secondary", c),
+        DARK: yellow,
 );
 
 $ROW--BG: (
@@ -23,23 +23,23 @@ $ROW--BG: (
 // HOVER
 $ROW--COLOR---HOVER: (
         LIGHT: _color("primary"),
-        DARK: _color("primary"),
+        DARK: _color("secondary"),
 );
 
 $ROW--BG---HOVER: (
         LIGHT: _color("secondary", a),
-        DARK: _color("primary", c),
+        DARK: _color("primary", b),
 );
 
 // SELECTED
 $ROW--COLOR---SELECTED: (
         LIGHT: #FCFCFC,
-        DARK: #FCFCFC,
+        DARK: _color("secondary", c),
 );
 
 $ROW--BG---SELECTED: (
         LIGHT: _color("primary", b),
-        DARK: _color("quinary"),
+        DARK: green,
 );
 
 // SELECTED HOVER
@@ -50,5 +50,5 @@ $ROW--COLOR---SELECTED-HOVER: (
 
 $ROW--BG---SELECTED-HOVER: (
         LIGHT: _color("primary", b),
-        DARK: _color("primary", e),
+        DARK: grey,
 );

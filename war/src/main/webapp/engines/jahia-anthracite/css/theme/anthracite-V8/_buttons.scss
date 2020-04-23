@@ -5,7 +5,7 @@
 // UP
 $TOOL-BUTTON--COLOR: (
         LIGHT: _color("primary", c),
-        DARK: _color("white"),
+        DARK: _color("primary", c),
 );
 
 // HOVER

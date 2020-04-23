@@ -1,8 +1,8 @@
-$theme: "anthracite";
+$theme: "anthracite-V8";
 
 @import "app/functions";
 @import "app/zindexes";
-@import "theme/anthracite/import";
+@import "theme/anthracite-V8/import";
 @import "components/import";
 
 @import "app/common";
@@ -15,3 +15,5 @@ $theme: "anthracite";
 @import "app/dashboardmode";
 @import "app/workflow/import";
 @import "app/misc";
+
+@import "V8_gobal_overrides/global_overrides";

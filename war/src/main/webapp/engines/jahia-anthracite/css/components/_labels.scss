@@ -1,4 +1,4 @@
-@mixin _label($type, $theme: LIGHT) {
+@mixin _label($type, $theme: LIGHT){
     padding: 0 !important;
     font-weight: _weight("light");
 
@@ -7,7 +7,8 @@
         line-height: 24px;
         font-size: 13px;
         color: _theme($LABEL--COLOR, $theme);
-    } @else if ($type == "legend") {
+
+    } @else if ($type == "legend"){
         position: absolute;
         top: 14px;
         left: 30px;

@@ -188,26 +188,28 @@
                 height: 100vh!important;
             }
 
-            &::before {
-                content: " ";
-                position: absolute;
-                background: _color("secondary");
-                width: 100%;
-                box-shadow: 1px 1px 6px 1px rgba(0, 0, 0, 0.6);
-                text-indent: -50000px;
-                height: 6px;
-                top: 2px;
-            }
+            @if($theme == "anthracite-V8") {
+                &::before {
+                    content: " ";
+                    position: absolute;
+                    background: _color("secondary");
+                    width: 100%;
+                    box-shadow: 1px 1px 6px 1px rgba(0, 0, 0, 0.6);
+                    text-indent: -50000px;
+                    height: 6px;
+                    top: 2px;
+                }
 
-            &::after {
-                content: " ";
-                background: _color("secondary");
-                position: absolute;
-                width: 100%;
-                top: -7px;
-                left: 0;
-                text-indent: -50000px;
-                height: 10px;
+                &::after {
+                    content: " ";
+                    background: _color("secondary");
+                    position: absolute;
+                    width: 100%;
+                    top: -7px;
+                    left: 0;
+                    text-indent: -50000px;
+                    height: 10px;
+                }
             }
         }
 

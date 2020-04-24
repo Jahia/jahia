@@ -17,6 +17,56 @@
     #JahiaGxtManagerToolbar {
         overflow: visible !important;
     }
+
+    .x-grid3 {
+        div.x-grid3-row.x-grid3-row-over:not(.x-grid3-row-selected) {
+            background-color: #cecccc !important;
+        }
+    }
+
+    div.x-grid3-row-selected {
+        table {
+            tr[role="presentation"] {
+                color: _theme($ROW--COLOR---SELECTED, $SIDE-PANEL) !important;
+
+                td.x-grid3-cell {
+                    color: _theme($ROW--COLOR---SELECTED, $SIDE-PANEL) !important;
+
+                    .x-grid3-cell-inner {
+                        color: _theme($ROW--COLOR---SELECTED, $SIDE-PANEL) !important;
+
+                        .x-tree3-node-text {
+                            color: _theme($ROW--COLOR---SELECTED, $SIDE-PANEL) !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    table {
+        tr[role="presentation"] {
+            color: _color("primary", a) !important;
+
+            td.x-grid3-cell {
+                color: _color("primary", a) !important;
+                line-height: 32px;
+                padding: 0;
+
+                .x-grid3-cell-inner {
+                    color: _color("primary", a) !important;
+                    line-height: 32px;
+                    padding: 0;
+
+                    .x-tree3-node-text {
+                        line-height: 32px;
+                        padding: 0;
+                        color: _color("primary", a) !important;
+                    }
+                }
+            }
+        }
+    }
 }
 
 /* Show buttons when searching on multiple selection picker */

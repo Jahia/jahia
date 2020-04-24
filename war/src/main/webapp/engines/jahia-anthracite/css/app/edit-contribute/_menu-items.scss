@@ -285,8 +285,8 @@ body[data-indigo-app="contribute"] {
     background-size: 20px;
     border-radius: 2px;
     position: fixed;
-    width: 26px;
-    height: 26px;
+    width: 28px;
+    height: 28px;
     top: 18px;
     right: 14px;
     left: auto !important;
@@ -294,7 +294,7 @@ body[data-indigo-app="contribute"] {
     border: 1px solid #009fe3!important;
 
     &:hover {
-        background-color: _color("tertiary", normal);
+        background: url(../images/more-options.svg) no-repeat center center /17px _color("tertiary", normal);
     }
 
     .x-btn-mc {
@@ -920,7 +920,6 @@ div.x-jahia-root {
 
     &:hover {
         background-color: _color("tertiary", normal) !important;
-        left: -28px !important;
     }
 
     .x-btn-mc {

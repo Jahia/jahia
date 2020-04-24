@@ -17,9 +17,10 @@
         height: 12px !important;
         border-radius: 2px;
         position: relative;
-        right: -8px;
+        right: -20px;
         top: calc(#{$ROW--HEIGHT}/2 - 12px);
         background-size: 16px;
+        padding: 3px !important;
 
         > img {
             display: none;
@@ -117,6 +118,58 @@
         }
     }
 
+    .x-grid3 {
+        .x-grid3-row {
+            height: 32px !important;
+
+            table {
+                height: 32px !important;
+
+                tbody {
+                    height: 32px !important;
+
+                    tr {
+                        height: 32px !important;
+
+                        td.x-grid3-cell {
+                            height: 32px !important;
+
+                            &.x-grid3-td-locked {
+                                width: 32px !important;
+                                position: relative !important;
+                            }
+
+                            div.x-grid3-cell-inner:not(.x-grid3-col-locked) {
+                                height: 32px !important;
+                            }
+
+                            &.x-grid3-td-displayName {
+                                position: relative !important;
+
+                                div.x-grid3-cell-inner {
+                                    div.x-tree3-node {
+                                        div.x-tree3-el {
+                                            img.x-tree3-node-icon {
+                                                width: 16px !important;;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            &.x-grid3-row-over:not(.x-grid3-row-selected) {
+                .x-grid3-td-displayName {
+                    &:after {
+                        background-image: url("../images/icon-more-options-white-50@X2.png") !important;
+                    }
+                }
+            }
+        }
+    }
 
     &::before {
         /* Tab Content Header Label */

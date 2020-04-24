@@ -155,8 +155,9 @@ public class EditModeFilter extends AbstractFilter {
         if(templatePackage == null) {
             throw new PathNotFoundException("Couldn't find the template associated with site " + site.getName() + ". Please check that all its dependencies are started.");
         }
+        //Allow access to block modes only for site node (access to site settings)
         if (blockableModes != null && blockableModes.contains(renderContext.getMode())
-                && templatePackage.isEditModeBlocked()) {
+                && templatePackage.isEditModeBlocked() && !(site.getPath().equals(resource.getNodePath()))) {
             throw new AccessDeniedException("This site is not accessible in Edit mode.");
         }
 

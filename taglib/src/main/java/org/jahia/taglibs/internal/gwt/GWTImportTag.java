@@ -94,6 +94,7 @@ public class GWTImportTag extends AbstractJahiaTag {
                     pageContext.setAttribute("themeLocale", "");
                 }
                 pageContext.setAttribute("theme", theme);
+                pageContext.setAttribute("uiLocale", uiLocale);
             } else {
                 request.getSession().setAttribute(UI_THEME, null);
             }

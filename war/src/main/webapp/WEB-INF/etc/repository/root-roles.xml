@@ -83,7 +83,7 @@
                               jcr:title="Web designer"/>
         </web-designer>
         <site-administrator j:hidden="false"
-                            j:permissionNames="components workflow-tasks publish jContent managers jcr:all_default site-admin templates wysiwyg-editor-toolbar"
+                            j:permissionNames="components workflow-tasks publish jContent managers jcr:all_default site-admin templates wysiwyg-editor-toolbar viewContentTypeRestrictionTab"
                             j:privilegedAccess="true"
                             j:roleGroup="site-role"
                             jcr:primaryType="jnt:role">

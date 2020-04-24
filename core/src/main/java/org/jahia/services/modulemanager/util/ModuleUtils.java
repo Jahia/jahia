@@ -43,15 +43,6 @@
  */
 package org.jahia.services.modulemanager.util;
 
-import static org.jahia.services.modulemanager.Constants.ATTR_NAME_BUNDLE_NAME;
-import static org.jahia.services.modulemanager.Constants.ATTR_NAME_BUNDLE_SYMBOLIC_NAME;
-import static org.jahia.services.modulemanager.Constants.ATTR_NAME_FRAGMENT_HOST;
-import static org.jahia.services.modulemanager.Constants.ATTR_NAME_JAHIA_DEPENDS;
-import static org.jahia.services.modulemanager.Constants.ATTR_NAME_PROVIDE_CAPABILITY;
-import static org.jahia.services.modulemanager.Constants.ATTR_NAME_REQUIRE_CAPABILITY;
-import static org.jahia.services.modulemanager.Constants.OSGI_CAPABILITY_MODULE_DEPENDENCIES;
-import static org.jahia.services.modulemanager.Constants.OSGI_CAPABILITY_MODULE_DEPENDENCIES_KEY;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -84,11 +75,14 @@ import org.jahia.services.modulemanager.persistence.BundlePersister;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+
+import static org.jahia.services.modulemanager.Constants.*;
 
 /**
  * Utility class that contains common module methods for persisting bundle and transforming Jahia-Depends header values of module bundles into corresponding Require-Capability header and also adding
@@ -221,10 +215,16 @@ public class ModuleUtils {
      * @param moduleId the ID of the module
      * @param dependencies the module dependencies (comma-separated)
      */
-    private static List<String> getRequireCapabilities(String moduleId, String dependencies) {
-
+    private static List<String> getRequireCapabilities(String moduleId, String requiredJahiaVersion, String dependencies) {
         List<String> capabilities = new LinkedList<>();
         Set<String> dependsList = new LinkedHashSet<>();
+
+        if (requiredJahiaVersion != null) {
+            Version v = new Version(requiredJahiaVersion);
+            String lowerBound = v.getMajor() + "." + v.getMinor();
+            String upperBound = Integer.toString(v.getMajor() + 1);
+            capabilities.add(OSGI_CAPABILITY_SERVER + ";filter:=\"(&("+ OSGI_CAPABILITY_SERVER_VERSION + ">="+ lowerBound + ")(!("+ OSGI_CAPABILITY_SERVER_VERSION + ">="+ upperBound + ")))\"");
+        }
 
         // build the set of provided dependencies
         if (StringUtils.isNotBlank(dependencies)) {
@@ -368,8 +368,9 @@ public class ModuleUtils {
      * @param atts the manifest attributes
      */
     private static void populateRequireCapabilities(String moduleId, Attributes atts) {
-        List<String> caps = getRequireCapabilities(moduleId, atts.getValue(ATTR_NAME_JAHIA_DEPENDS));
-        if (caps.size() > 0) {
+        List<String> caps = getRequireCapabilities(moduleId, atts.getValue(ATTR_NAME_JAHIA_REQUIRED_VERSION), atts.getValue(ATTR_NAME_JAHIA_DEPENDS));
+
+        if (!caps.isEmpty()) {
             StringBuilder require = new StringBuilder();
             String existingRequireValue = atts.getValue(ATTR_NAME_REQUIRE_CAPABILITY);
             if (StringUtils.isNotEmpty(existingRequireValue)) {
@@ -394,7 +395,8 @@ public class ModuleUtils {
      *         <code>false</code> if it already contains that info
      */
     public static boolean requiresTransformation(Attributes atts) {
-        return !StringUtils.contains(atts.getValue(ATTR_NAME_PROVIDE_CAPABILITY), OSGI_CAPABILITY_MODULE_DEPENDENCIES)
+        return (!StringUtils.contains(atts.getValue(ATTR_NAME_PROVIDE_CAPABILITY), OSGI_CAPABILITY_MODULE_DEPENDENCIES)
+                || !StringUtils.contains(atts.getValue(ATTR_NAME_PROVIDE_CAPABILITY), OSGI_CAPABILITY_SERVER))
                 && !atts.containsKey(ATTR_NAME_FRAGMENT_HOST);
     }
 

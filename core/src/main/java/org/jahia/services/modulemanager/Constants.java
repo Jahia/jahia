@@ -90,8 +90,12 @@ public interface Constants {
 
     String BUNDLE_SERVICE_PROPERTY_CLUSTERED = "clustered";
     
+    String OSGI_CAPABILITY_SERVER = "com.jahia.server";
+
+    String OSGI_CAPABILITY_SERVER_VERSION = "version";
+
     String OSGI_CAPABILITY_MODULE_DEPENDENCIES = "com.jahia.modules.dependencies";
-    
+
     String OSGI_CAPABILITY_MODULE_DEPENDENCIES_KEY = "moduleIdentifier";
     
     String URL_PROTOCOL_DX = "dx";

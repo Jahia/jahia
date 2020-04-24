@@ -73,6 +73,7 @@
                         <Private-Package>
                             org.jahia.bundles.extender.jahiamodules.*
                         </Private-Package>
+                        <Provide-Capability>com.jahia.server;version:Version="${project.version}"</Provide-Capability>
                         <Import-Package>
                             javax.el,
                             javax.servlet.jsp,

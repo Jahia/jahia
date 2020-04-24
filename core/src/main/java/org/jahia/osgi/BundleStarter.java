@@ -227,7 +227,7 @@ class BundleStarter {
                     } else {
                         // if another version was previously installed, then the previous one has to be uninstall and
                         // the new one ony started if previous one was
-                        if (otherBundle.getState() != Bundle.ACTIVE) {
+                        if (BundleUtils.getPersistentState(otherBundle) != Bundle.ACTIVE) {
                             // Previous bundle was not active, do not start the new one
                             toBeStarted.remove(bundle);
                         }

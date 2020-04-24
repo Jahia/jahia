@@ -34,10 +34,7 @@
                 </script>
             </c:when>
             <c:otherwise>
-                <link rel="stylesheet" type="text/css" media="screen" href="<c:url value='/engines/${theme}/css/edit_V8${themeLocale}.css'/>" />
-                <script>
-                    var anthraciteV8 = true;
-                </script>
+                <link rel="stylesheet" type="text/css" media="screen" href="<c:url value='/engines/${theme}/css/edit${themeLocale}.css'/>" />
                 <script type="text/javascript" src="<c:url value='/engines/${theme}/js/dist/build/anthracite-min.js'/>"></script>
             </c:otherwise>
         </c:choose>

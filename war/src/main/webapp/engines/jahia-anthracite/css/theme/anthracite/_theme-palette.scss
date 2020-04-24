@@ -1,108 +1,170 @@
+/****************************/
+/* BASE COLORS  */
+/****************************/
+
+$color-light: #FDFDFD;
+$color-gray-light: #DADADA;
+$color-gray: #7A7F88;
+$color-gray-dark: #293136;
+$color-dark: #131C21;
+$color-basic-black: #000000;
+$color-basic-white: #FFFFFF;
+$color-success: #43A047;
+$color-warning: #E8B606;
+$color-danger: #E0182D;
+$color-accent-light: #63D1FF;
+$color-accent: #00A0E3;
+$color-accent-dark: #0072B1;
+$color-accent-dark-contrast: #004781;
+
+$moonstone-colors: (
+    "light": (
+        100: $color-light,
+        60: rgba($color-light, 0.6),
+        40: rgba($color-light, 0.4),
+    ),
+    "gray-light": (
+        100: $color-gray-light,
+        60: rgba($color-gray-light, 0.6),
+        40: rgba($color-gray-light, 0.4),
+    ),
+    "gray": (
+        100: $color-gray,
+        60: rgba($color-gray, 0.6),
+        40: rgba($color-gray, 0.4),
+    ),
+    "gray-dark": (
+        100: $color-gray-dark,
+        60: lighten($color-gray-dark, 4%),
+        40: lighten($color-gray-dark, 6%),
+    ),
+    "dark": (
+        100: $color-dark,
+        60: rgba($color-dark, 0.6),
+        40: rgba($color-dark, 0.4),
+    ),
+    "black": (
+        100: $color-basic-black,
+        80: rgba($color-basic-black, 0.84),
+        60: rgba($color-basic-black, 0.6),
+        40: rgba($color-basic-black, 0.4),
+        20: rgba($color-basic-black, 0.2),
+    ),
+    "white": (
+        100: $color-basic-white,
+    ),
+    "success": (
+        100: $color-success,
+    ),
+    "warning": (
+        100: $color-warning,
+    ),
+    "danger": (
+        100: $color-danger,
+    ),
+    "accent-light": (
+        100: $color-accent-light,
+    ),
+    "accent": (
+        100: $color-accent,
+    ),
+    "accent-dark": (
+        100: $color-accent-dark,
+    ),
+    "accent-dark-contrast": (
+        100: $color-accent-dark-contrast,
+    )
+);
+
+
 
 /****************************/
-/* BASE COLORS (PRIVATE TO THIS FILE)  */
-/****************************/
-
-$color-primary: #363636; // #363636 (NEW GREY)
-$color-secondary: rgb(250, 250, 250); // #FAFAFA (WHITE)
-$color-tertiary: #007cb0; // #00a0e3 (JAHIA BLUE) - action colors
-$color-quaternary: #E67D3A; // #E67D3A (ORANGE) - secondary buttons  #E67D3A
-$color-quinary: rgb(0, 160, 227); // #00a0e3 (JAHIA BLUE) - highlight color, menu color, hamburger
-$color-senary: rgb(250, 250, 250); // #FAFAFA (WHITE)
-$color-septenary: rgb(217, 217, 62); // Yellow
-$color-black: rgb(0, 0, 0); // #000000 (BLACK)
-$color-white: rgb(255, 255, 255); // _color("white) (WHITE)
-$color-green: rgb(4, 189, 4);
-
-
-/****************************/
-/* EXPOSED COLORS  */
+/* COLOR VARIATIONS  */
 /****************************/
 
 $colors: (
         "primary": (
-                normal: $color-primary,
-                a: lighten($color-primary, 2%),
-                b: lighten($color-primary, 6%),
-                c: lighten($color-primary, 10%),
-                d: lighten($color-primary, 25%),
-                e: lighten($color-primary, 35%),
-                f: darken($color-primary, 5%),
-                g: darken($color-primary, 10%),
-                h: rgba(darken($color-primary, 10%), .2),
-                i: darken($color-primary, 35%),
+                normal: _moonstone-color("gray-dark"),
+                a: _moonstone-color("gray-dark", 60),
+                b: _moonstone-color("gray-dark", 60),
+                c: lighten(_moonstone-color("gray-dark"), 8%),
+                d: _moonstone-color("gray"),
+                e: _moonstone-color("gray"),
+                f: _moonstone-color("dark"),
+                g: _moonstone-color("dark", 60),
+                h: _moonstone-color("gray-dark"),
+                i: _moonstone-color("black", 100),
         ),
         "secondary": (
-                normal: $color-secondary,
-                a: darken($color-secondary, 5%),
-                b: darken($color-secondary, 7%),
-                c: darken($color-secondary, 10%),
-                d: darken($color-secondary, 20%),
-                e: darken($color-secondary, 35%),
-                f: rgba($color-secondary, .2),
-                g: lighten($color-secondary, 10%),
+                normal: _moonstone-color("light"),
+                a: _moonstone-color("light"),
+                b: _moonstone-color("light"),
+                c: _moonstone-color("light"),
+                d: _moonstone-color("gray-light"),
+                e: _moonstone-color("gray-light"),
+                f: _moonstone-color("gray"),
+                g: _moonstone-color("white", 100),
         ),
         "tertiary": (
-                normal: $color-tertiary,
-                a: lighten($color-tertiary, 2%)
+                normal: _moonstone-color("accent-dark"),
+                a: _moonstone-color("accent"),
         ),
         "quaternary": (
-                normal: $color-quaternary,
-                a: lighten($color-quaternary, 4%)
+                normal: _moonstone-color("warning", 100),
+                a: lighten(_moonstone-color("warning", 100), 4%)
         ),
         "quinary": (
-                normal: $color-quinary,
-                a: lighten($color-quinary, 4%),
-                b: darken($color-quinary, 5%),
-                c: darken($color-quinary, 25%),
-                d: darken($color-quinary, 10%),
+                normal: _moonstone-color("accent"),
+                a: _moonstone-color("accent-light"),
+                b: _moonstone-color("accent"),
+                c: _moonstone-color("accent-dark-contrast"),
+                d: _moonstone-color("accent-dark"),
         ),
         "senary": (
-                normal: $color-senary,
-                a: lighten($color-senary, 4%),
+                normal: _moonstone-color("light"),
+                a: _moonstone-color("light"),
         ),
         "septenary": (
-                normal: $color-septenary,
-                a: darken($color-septenary, 20%),
+                normal: _moonstone-color("warning", 100),
+                a: darken(_moonstone-color("warning", 100), 20%),
         ),
         "black": (
-                normal: $color-black,
-                a: rgba($color-black, .2),
-                b: rgba($color-black, .4),
-                c: rgba($color-black, .6),
-                d: rgba($color-black, .84),
+                normal: _moonstone-color("black", 100),
+                a: _moonstone-color("black", 20),
+                b: _moonstone-color("black", 40),
+                c: _moonstone-color("black", 60),
+                d: _moonstone-color("black", 80),
         ),
         "white": (
-                normal: $color-white,
-                a: rgba($color-white, .4),
-                b: rgba($color-white, .8)
+                normal: _moonstone-color("white", 100),
+                a: _moonstone-color("light", 40),
+                b: _moonstone-color("light"),
         ),
         "green": (
-                normal: $color-green,
-                a: rgba($color-white, .4)
+                normal: _moonstone-color("success"),
         ),
         "status": (
-                conflict: #f6d62f,
-                deleted: black,
-                livemodified: #f6d62f,
-                liveonly: #f6d62f,
-                locked: #c48F00,
-                mandatorylanguageunpublishable: #f6d62f,
-                mandatorylanguagevalid: #f6d62f,
-                markedfordeletion: red,
-                modified: orange,
-                multipleWF: orange,
-                notpublished: grey,
-                oneWF: orange,
-                published: green,
-                unpublished: grey,
-                waiting: white,
-                workinprogress: orange,
-                error: #f44336,
-                unknown: black,
-                visible: green,
-                hidden: red,
-                attention: red,
-                warning: #ffeb3b
+                conflict: _moonstone-color("warning"),
+                deleted: _moonstone-color("black"),
+                livemodified: _moonstone-color("warning"),
+                liveonly: _moonstone-color("warning"),
+                locked: _moonstone-color("warning"),
+                mandatorylanguageunpublishable: _moonstone-color("warning"),
+                mandatorylanguagevalid: _moonstone-color("warning"),
+                markedfordeletion: _moonstone-color("danger"),
+                modified: _moonstone-color("warning"),
+                multipleWF: _moonstone-color("warning"),
+                notpublished: _moonstone-color("gray-dark", 40),
+                oneWF: _moonstone-color("warning"),
+                published: _moonstone-color("success"),
+                unpublished: _moonstone-color("warning"),
+                waiting: _moonstone-color("white"),
+                workinprogress: _moonstone-color("warning"),
+                error: _moonstone-color("danger"),
+                unknown: _moonstone-color("black"),
+                visible: _moonstone-color("success"),
+                hidden: _moonstone-color("danger"),
+                attention: _moonstone-color("danger"),
+                warning: _moonstone-color("warning"),
         )
 );

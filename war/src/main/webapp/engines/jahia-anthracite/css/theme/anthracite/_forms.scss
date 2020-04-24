@@ -52,16 +52,6 @@ $INPUT--SHADOW: (
         DARK: 0px 1px 2px _color("black", a),
 );
 
-$INPUT--INSET-SHADOW---FOCUS: (
-        LIGHT: #{inset 0.5px 0.5px 0px #7c7c7c, inset -0.5px -0.5px 0px #7c7c7c, inset 1px 1px 1px _color("black", a)},
-        DARK: none,
-);
-
-$INPUT--ARROW---FOCUS: (
-    LIGHT: _icon("arrowDown", "black"),
-    DARK: _icon("arrowDown", "white"),
-);
-
 // HOVER
 $INPUT--COLOR---HOVER: (
         LIGHT: _color("primary"),
@@ -86,7 +76,7 @@ $INPUT--SHADOW---HOVER: (
 // FOCUS
 $INPUT--COLOR---FOCUS: (
         LIGHT: _color("primary"),
-        DARK: _color("primary"),
+        DARK: _color("secondary"),
 );
 
 $INPUT--PLACEHOLDER---FOCUS: (
@@ -96,7 +86,7 @@ $INPUT--PLACEHOLDER---FOCUS: (
 
 $INPUT--BG---FOCUS: (
         LIGHT: _color("white"),
-        DARK: _color("white"),
+        DARK: _color("tertiary"),
 );
 
 $INPUT--BORDER---FOCUS: (
@@ -107,6 +97,16 @@ $INPUT--BORDER---FOCUS: (
 $INPUT--SHADOW---FOCUS: (
         LIGHT: 0px 1px 2px _color("black", b),
         DARK: 0px 1px 2px _color("black", b),
+);
+
+$INPUT--INSET-SHADOW---FOCUS: (
+        LIGHT: #{inset 0.5px 0.5px 0px #7c7c7c, inset -0.5px -0.5px 0px #7c7c7c, inset 1px 1px 1px _color("black", a)},
+        DARK: none,
+);
+
+$INPUT--ARROW---FOCUS: (
+    LIGHT: _icon("arrowDown", "black"),
+    DARK: _icon("arrowDown", "white"),
 );
 
 // DISABLED

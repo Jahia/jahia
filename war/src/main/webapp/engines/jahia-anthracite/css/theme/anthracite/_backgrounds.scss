@@ -4,7 +4,7 @@
 
 $BODY--BG: (
         LIGHT: radial-gradient(ellipse at bottom right, darken(_color("secondary"), 4%) 0%, _color("secondary") 50%),
-        DARK: linear-gradient(to bottom right, #3b3d40 1%, #333537 100%),
+        DARK: _color("primary"),
 );
 
 $BODY--BG--SHADOW: (

@@ -417,20 +417,17 @@
         height: 38px !important;
       }
 
-      @if ($theme == "anthracite-V8") {
-        .x-tree3-node-joint[style*='-66px'] {
-          // Closed
-          background: url(_icon("navNext", "grey")) no-repeat top 1px center !important;
-          background-size: 12px !important;
-        }
-
-        .x-tree3-node-joint[style*='-34px'] {
-          // Opened
-          background: url(_icon("arrowDown", "grey")) no-repeat top 1px center !important;
-          background-size: 16px !important;
-        }
+      .x-tree3-node-joint[style*='-66px'] {
+        // Closed
+        background: url(_icon("navNext", "grey")) no-repeat top 1px center !important;
+        background-size: 12px !important;
       }
 
+      .x-tree3-node-joint[style*='-34px'] {
+        // Opened
+        background: url(_icon("arrowDown", "grey")) no-repeat top 1px center !important;
+        background-size: 16px !important;
+      }
     }
 
     .x-grid3-hd-row {
@@ -442,7 +439,6 @@
 
     }
   }
-
 
   #workflow-dashboard-publication-window {
     background: unset !important;

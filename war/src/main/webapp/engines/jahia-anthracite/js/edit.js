@@ -223,12 +223,8 @@ Anthracite.addModule("edit", {
             jGet.getCached('body').setAttribute('data-indigo-gwt-side-panel', '');
         }
 
-        var pinnedPanel = Anthracite.storage.get('pinnedPanel') || window.anthraciteV8;
-
-        if (pinnedPanel) {
-            jGet.class('side-panel-pin').trigger('click');
-            jGet('#JahiaGxtSidePanelTabs .x-tab-strip-active').trigger('mousedown').trigger('mouseup');
-        }
+        jGet.class('side-panel-pin').trigger('click');
+        jGet('#JahiaGxtSidePanelTabs .x-tab-strip-active').trigger('mousedown').trigger('mouseup');
     },
     /**
      * Callback executes when leaving the Edit Mode
@@ -968,12 +964,12 @@ Anthracite.addModule("edit", {
                 // Page Titles need centering
                 Anthracite.edit.topbar.reposition();
 
-                if(jGet.class('window-actions-refresh').exists() && window.anthraciteV8 && jGet.class('action-bar-container').exists()) {
+                if (jGet.class('window-actions-refresh').exists() && jGet.class('action-bar-container').exists()) {
                     var position = jGet.class('action-bar-container').nodes[0].style.left.substring(0, 3) - 40;
                     jGet.class('window-actions-refresh').nodes[0].style.setProperty('left', position + 'px', 'important');
                 }
 
-                if(jGet.class('x-border-panel').exists() && window.anthraciteV8) {
+                if (jGet.class('x-border-panel').exists()) {
                     var pos = Number(jGet.id('JahiaGxtSidePanelTabs').nodes[0].style.width.substring(0, 3));
                     jGet.class('x-border-panel').nodes[3].style.setProperty('left', (pos + 6) + 'px', 'important');
                     jGet.class('x-border-panel').nodes[3].style.setProperty('width', 'calc(100% - ' + pos + 'px)', 'important');
@@ -1557,10 +1553,6 @@ Anthracite.addModule("edit", {
                 mainFrameWidth = xPos + 6;
                 mainFrameLeft = xPos + 45;
 
-                if (jGet.class('publication-status').exists() && !window.anthraciteV8) {
-                    jGet.class('publication-status').nodes[0].style.setProperty('left', mainFrameLeft + 'px', 'important');
-                }
-
                 jGet('.mainmodule > div:nth-child(2)').nodes[0].style.setProperty('width', 'calc(100% - ' + mainFrameWidth + 'px)', 'important');
                 jGet('.mainmodule > div:nth-child(2)').nodes[0].style.setProperty('left', mainFrameLeft + 'px', 'important');
 
@@ -1652,16 +1644,16 @@ Anthracite.addModule("edit", {
                 jGet.id('JahiaGxtSidePanelTabs').nodes[0].style.setProperty('width', xPos + 'px', 'important');
             }
 
-             if(jGet.class('action-bar-container').exists() && window.anthraciteV8) {
+             if (jGet.class('action-bar-container').exists()) {
                  jGet.class('action-bar-container').nodes[0].style.setProperty('width', 'calc(100% - ' + xPos + 'px)', 'important');
                  jGet.class('action-bar-container').nodes[0].style.setProperty('left', xPos + 'px', 'important');
              }
 
-             if(jGet.class('window-actions-refresh').exists() && window.anthraciteV8) {
+             if (jGet.class('window-actions-refresh').exists()) {
                  jGet.class('window-actions-refresh').nodes[0].style.setProperty('left', (xPos - 40) + 'px', 'important');
              }
 
-             if(jGet.class('x-border-panel').exists() && window.anthraciteV8) {
+             if (jGet.class('x-border-panel').exists()) {
                  jGet.class('x-border-panel').nodes[3].style.setProperty('left', (xPos + 6) + 'px', 'important');
                  jGet.class('x-border-panel').nodes[3].style.setProperty('width', 'calc(100% - ' + xPos + ')', 'important');
              }

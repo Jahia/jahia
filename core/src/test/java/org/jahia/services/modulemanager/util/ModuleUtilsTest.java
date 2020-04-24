@@ -43,13 +43,7 @@
  */
 package org.jahia.services.modulemanager.util;
 
-import static org.jahia.services.modulemanager.Constants.ATTR_NAME_BUNDLE_NAME;
-import static org.jahia.services.modulemanager.Constants.ATTR_NAME_BUNDLE_SYMBOLIC_NAME;
-import static org.jahia.services.modulemanager.Constants.ATTR_NAME_JAHIA_DEPENDS;
-import static org.jahia.services.modulemanager.Constants.ATTR_NAME_PROVIDE_CAPABILITY;
-import static org.jahia.services.modulemanager.Constants.ATTR_NAME_REQUIRE_CAPABILITY;
-import static org.jahia.services.modulemanager.Constants.OSGI_CAPABILITY_MODULE_DEPENDENCIES;
-import static org.jahia.services.modulemanager.Constants.OSGI_CAPABILITY_MODULE_DEPENDENCIES_KEY;
+import static org.jahia.services.modulemanager.Constants.*;
 import static org.jahia.services.modulemanager.util.ModuleUtils.addCapabilities;
 import static org.jahia.services.modulemanager.util.ModuleUtils.buildClauseProvideCapability;
 import static org.jahia.services.modulemanager.util.ModuleUtils.buildClauseRequireCapability;
@@ -124,7 +118,7 @@ public class ModuleUtilsTest {
     public void testProvideCapability() {
         // no change if the manifest attribute is already there
         Attributes atts = new Attributes(ATTS_TEMPLATE);
-        String testCapability = buildClauseProvideCapability("aaa");
+        String testCapability = buildClauseProvideCapability("aaa") + "," + OSGI_CAPABILITY_SERVER;
         atts.put(ATTR_NAME_PROVIDE_CAPABILITY, testCapability);
         assertFalse(addCapabilities(atts));
         assertEquals(testCapability, atts.getValue(ATTR_NAME_PROVIDE_CAPABILITY));

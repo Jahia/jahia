@@ -193,6 +193,9 @@
                 <value>serverSettings</value>
                 <value>serverSettings-ee</value>
                 <value>siteSettings</value>
+                <value>app-shell</value>
+                <value>jahia-ui-root</value>
+                <value>jahia-administration</value>
             </list>
         </property>
         <property name="modulesWithNoDefaultDependency" ref="modulesWithNoDefaultDependency"/>

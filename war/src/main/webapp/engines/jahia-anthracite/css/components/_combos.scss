@@ -340,18 +340,6 @@
                 background-size: 16px;
             }
 
-            &.toolbar-item-live:after {
-                background-image: url(../images/icons/toggle-WE-white@X2.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 29 */
-                background-position: 5px 1px;
-                background-repeat: no-repeat;
-                background-size: 13px;
-                content: '';
-                height: 24px;
-                width: 24px;
-                position: absolute;
-                right: 0;
-            }
-
             &.toolbar-item-preview {
                 background-image: url(../images/icons/context-menu/preview.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 30 */
                 background-color: _theme($MENU-OPENED--BG, $type);

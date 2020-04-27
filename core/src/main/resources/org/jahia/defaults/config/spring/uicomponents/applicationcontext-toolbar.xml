@@ -166,11 +166,13 @@
     <!-- Live-->
     <bean id="Toolbar.Item.Live" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchModeActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchModeActionItem">
+                <property name="openInNewWindow" value="true"/>
+                <property name="showOpenInNewWindowSubmenu" value="false"/>
+            </bean>
         </property>
         <property name="titleKey" value="label.live"/>
         <property name="icon" value="live"/>
-
         <property name="properties">
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">

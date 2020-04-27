@@ -84,6 +84,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
+                        <Require-Capability>osgi.extender;filter:="(osgi.extender=org.jahia.bundles.blueprint.extender.config)"</Require-Capability>
                         <Fragment-Host>org.apache.felix.webconsole;bundle-version="[4,5)"</Fragment-Host>
                     </instructions>
                 </configuration>

@@ -471,7 +471,10 @@ public class PropertiesEditor extends FormPanel {
                             if (oldSelection.size() > 0) {
                                 oldSelection.remove(0);
                             }
-                            oldSelection.add(c.getSelection().get(0));
+                            // Store current selection as previous selection if it exists
+                            if (c.getSelection().size() > 0) {
+                                oldSelection.add(c.getSelection().get(0));
+                            }
 
                         }
                     });

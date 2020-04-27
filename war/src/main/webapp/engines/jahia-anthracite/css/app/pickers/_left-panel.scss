@@ -219,6 +219,7 @@
                                         height: 24px;
                                         background: _color("tertiary", normal);
                                         padding: 7px 10px;
+                                        border-collapse: initial;
 
                                         body.ext-gecko & {
                                             padding: 8px 10px;
@@ -244,6 +245,7 @@
                                         right: 7px;
                                         background: _color("tertiary", normal);
                                         padding: 6px 10px;
+                                        border-collapse: initial;
 
                                         > tbody {
                                             display: none;

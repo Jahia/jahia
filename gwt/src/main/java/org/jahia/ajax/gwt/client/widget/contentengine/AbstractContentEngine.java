@@ -313,19 +313,29 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         }
     }
 
-    protected void initChoiceListInitializers(EditEngineTabItem tabItem) {
+    private void initChoiceListInitializers(EditEngineTabItem tabItem) {
         if (choiceListInitializersValues != null && tabItem instanceof PropertiesTabItem) {
             PropertiesEditor pe = ((PropertiesTabItem) tabItem).getPropertiesEditor();
             for (Map.Entry<String, GWTChoiceListInitializer> initializer : choiceListInitializersValues
                     .entrySet()) {
-                if (initializer.getValue().getDependentProperties() != null) {
-                    for (String dependentProperty : initializer.getValue().getDependentProperties()) {
-                        if (pe.getFieldsMap().containsKey(dependentProperty)) {
-                            final Field<?> dependentField = pe.getFieldsMap().get(dependentProperty).getField();
-                            if (dependentField != null) {
-                                initChoiceListInitializer(dependentField, initializer.getKey(), pe, initializer.getValue().getDependentProperties());
-                            }
-                        }
+                initChoiceListInitializer(pe, initializer.getKey());
+            }
+        }
+    }
+
+    /**
+     * for the given property initialize the choicelist dependent values.
+     * @param pe current properties edited
+     * @param propertyId property to initialize
+     */
+    public void initChoiceListInitializer(PropertiesEditor pe, String propertyId) {
+        GWTChoiceListInitializer initializer = choiceListInitializersValues.get(propertyId);
+        if (initializer != null && initializer.getDependentProperties() != null) {
+            for (String dependentProperty : initializer.getDependentProperties()) {
+                if (pe.getFieldsMap().containsKey(dependentProperty)) {
+                    final Field<?> dependentField = pe.getFieldsMap().get(dependentProperty).getField();
+                    if (dependentField != null) {
+                        initChoiceListInitializer(dependentField, propertyId, initializer.getDependentProperties());
                     }
                 }
             }
@@ -333,30 +343,27 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     }
 
     @SuppressWarnings("unchecked")
-    protected void initChoiceListInitializer(final Field<?> dependentField, final String propertyId,
-                                             final PropertiesEditor pe, final List<String> dependentProperties) {
+    protected void initChoiceListInitializer(final Field<?> dependentField, final String propertyId, final List<String> dependentProperties) {
         if (dependentField instanceof DualListField<?>) {
             ((DualListField<GWTJahiaValueDisplayBean>) dependentField).getToList().getStore()
                     .addStoreListener(new StoreListener<GWTJahiaValueDisplayBean>() {
 
                         @Override
                         public void handleEvent(StoreEvent<GWTJahiaValueDisplayBean> event) {
-                            refillDependantListWidgetOn(dependentField, propertyId,
-                                    dependentProperties);
+                            refillDependantListWidgetOn(propertyId, dependentProperties);
                         }
                     });
         } else {
             dependentField.addListener(Events.SelectionChange, new Listener() {
                 @Override
                 public void handleEvent(BaseEvent event) {
-                    refillDependantListWidgetOn(dependentField, propertyId, dependentProperties);
+                    refillDependantListWidgetOn(propertyId, dependentProperties);
                 }
             });
         }
     }
 
-    protected void refillDependantListWidgetOn(final Field<?> dependentField, final String propertyId,
-                                               final List<String> dependentProperties) {
+    protected void refillDependantListWidgetOn(final String propertyId, final List<String> dependentProperties) {
         final String nodeTypeName = propertyId.substring(0, propertyId.indexOf('.'));
         final String propertyName = propertyId.substring(propertyId.indexOf('.') + 1);
         Map<String, List<GWTJahiaNodePropertyValue>> dependentValues = new HashMap<String, List<GWTJahiaNodePropertyValue>>();
@@ -369,8 +376,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                             if (field instanceof PropertiesEditor.PropertyAdapterField) {
                                 String name = ((PropertiesEditor.PropertyAdapterField) field).getDefinition().getName();
                                 if (dependentProperties.contains(name)) {
-                                    dependentValues.put(name, PropertiesEditor.getPropertyValues(field,
-                                            pe.getGWTJahiaItemDefinition(name)));
+                                    dependentValues.put(name, PropertiesEditor.getPropertyValues(field, pe.getGWTJahiaItemDefinition(name)));
                                 }
                             }
                         }
@@ -402,8 +408,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                                                     @SuppressWarnings("unchecked") DualListField<GWTJahiaValueDisplayBean> dualListField = (DualListField<GWTJahiaValueDisplayBean>) field;
                                                     ListStore<GWTJahiaValueDisplayBean> store = dualListField.getToField().getStore();
                                                     for (GWTJahiaValueDisplayBean toValue : store.getModels()) {
-                                                        if (!result.getDisplayValues()
-                                                                .contains(toValue)) {
+                                                        if (!result.getDisplayValues().contains(toValue)) {
                                                             store.remove(toValue);
                                                         }
                                                     }

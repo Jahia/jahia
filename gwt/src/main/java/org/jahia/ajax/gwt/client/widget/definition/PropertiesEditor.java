@@ -71,6 +71,7 @@ import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.widget.content.MultipleNumberField;
 import org.jahia.ajax.gwt.client.widget.content.MultipleTextField;
+import org.jahia.ajax.gwt.client.widget.contentengine.AbstractContentEngine;
 import org.jahia.ajax.gwt.client.widget.contentengine.NodeHolder;
 import org.jahia.ajax.gwt.client.widget.form.tag.TagField;
 
@@ -475,7 +476,6 @@ public class PropertiesEditor extends FormPanel {
                             if (c.getSelection().size() > 0) {
                                 oldSelection.add(c.getSelection().get(0));
                             }
-
                         }
                     });
                     if (c.getValue() != null) {
@@ -513,8 +513,20 @@ public class PropertiesEditor extends FormPanel {
                 externalMixin.put(mix.getName(), inheritedMixins);
                 removedTypes.remove(mix.getName());
                 addItems(mix, mix.getItems(), false, false, c);
+                List<String> newPropertyKeys = new ArrayList<String>();
                 for (GWTJahiaNodeType inheritedMixin : inheritedMixins) {
                     addItems(inheritedMixin, inheritedMixin.getItems(), false, false, c);
+                    for (GWTJahiaItemDefinition def : inheritedMixin.getItems()) {
+                        newPropertyKeys.add(inheritedMixin.getName() + "." + def.getName());
+                    }
+                }
+                for (GWTJahiaItemDefinition def : mix.getItems()) {
+                    newPropertyKeys.add(mix.getName() + "." + def.getName());
+                }
+                for (String propertyKey : newPropertyKeys) {
+                    if (engine instanceof AbstractContentEngine) {
+                        ((AbstractContentEngine) engine).initChoiceListInitializer(this, propertyKey);
+                    }
                 }
             }
         }

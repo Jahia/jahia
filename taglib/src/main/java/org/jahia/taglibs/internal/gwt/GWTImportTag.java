@@ -46,18 +46,14 @@ package org.jahia.taglibs.internal.gwt;
 import static org.jahia.api.Constants.*;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.settings.SettingsBean;
 import org.jahia.utils.WebUtils;
 import org.slf4j.Logger;
 import org.jahia.taglibs.AbstractJahiaTag;
 
-import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 
@@ -70,6 +66,9 @@ import javax.servlet.jsp.JspException;
 public class GWTImportTag extends AbstractJahiaTag {
 
     private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(GWTInitTag.class);
+
+    private static final List<String> AVAILABLE_ANTHRACITE_LOCALE = Arrays.asList("en", "fr", "de");
+    private static final String ANTHRACITE_LOCALE_FALLBACK = "en";
 
     private String module;
 
@@ -94,7 +93,7 @@ public class GWTImportTag extends AbstractJahiaTag {
                     pageContext.setAttribute("themeLocale", "");
                 }
                 pageContext.setAttribute("theme", theme);
-                pageContext.setAttribute("uiLocale", uiLocale);
+                pageContext.setAttribute("anthraciteUiLocale", resolveAnthraciteUiLocale(uiLocale));
             } else {
                 request.getSession().setAttribute(UI_THEME, null);
             }
@@ -117,5 +116,13 @@ public class GWTImportTag extends AbstractJahiaTag {
         super.doEndTag();
         module = null;
         return EVAL_PAGE;
+    }
+
+    private String resolveAnthraciteUiLocale(Locale uiLocale) {
+        if (AVAILABLE_ANTHRACITE_LOCALE.contains(uiLocale.getLanguage())) {
+            return uiLocale.getLanguage();
+        }
+
+        return ANTHRACITE_LOCALE_FALLBACK;
     }
 }

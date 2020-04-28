@@ -135,12 +135,12 @@ $TREE--ROW--FONT--COLOUR---HOVER: _color("primary", i);
 $TREE--ROW--ICON---HOVER: _icon("pages", "grey");
 
 // ROW SELECTED
-$TREE--ROW--BG--COLOUR---SELECTED: rgba(_color("primary", c), .7);
+$TREE--ROW--BG--COLOUR---SELECTED: _color("tertiary");
 $TREE--ROW--FONT--COLOUR---SELECTED: _color("secondary");
 $TREE--ROW--ICON---SELECTED: _icon("pages", "white");
 
 // ROW HOVER SELECTED
-$TREE--ROW--BG--COLOUR---SELECTED_HOVER: _color("primary", c);
+$TREE--ROW--BG--COLOUR---SELECTED_HOVER: _color("tertiary");
 $TREE--ROW--FONT--COLOUR---SELECTED_HOVER: _color("secondary");
 $TREE--ROW--ICON---SELECTED_HOVER: _icon("pages", "white");
 

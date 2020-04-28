@@ -295,22 +295,45 @@
         .x-grid3-row {
             padding-top: 4px;
 
-            &.x-grid3-row-selected {
-                pointer-events: none; // Basically disables the double click
-                background: _color("primary", b) !important; /* TO THEME */
+            &.x-grid3-row-over {
+                background: $TREE--ROW--BG--COLOUR---HOVER !important;
 
                 .x-grid3-cell {
-                    > div {
-                        color: _color("secondary") !important; /* TO THEME */
+                    > div.x-grid3-cell-inner {
+                        color: $TREE--ROW--FONT--COLOUR---HOVER !important;
+                    }
+                }
+            }
+
+            &.x-grid3-row-selected {
+                pointer-events: none; // Basically disables the double click
+                background: $TREE--ROW--BG--COLOUR---SELECTED !important;
+
+                .x-grid3-cell {
+                    > div.x-grid3-cell-inner {
+                        color: $TREE--ROW--FONT--COLOUR---SELECTED !important;
                     }
                 }
 
+                &.x-grid3-row-over {
+                    background: $TREE--ROW--BG--COLOUR---SELECTED_HOVER !important;
+
+                    .x-grid3-cell {
+                        > div.x-grid3-cell-inner {
+                            color: $TREE--ROW--FONT--COLOUR---SELECTED_HOVER !important;
+                        }
+                    }
+                }
             }
         }
 
         .x-grid3-cell {
             width: 25% !important;
             display: inline-block;
+
+            > div.x-grid3-cell-inner {
+                color: $TREE--ROW--FONT--COLOUR---UP !important;
+            }
 
             &::after {
                 display: none;

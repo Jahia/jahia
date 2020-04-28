@@ -49,8 +49,6 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.Info;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -148,7 +146,7 @@ public class EditContentEngine extends AbstractContentEngine {
     protected void initTabs() {
         // container ID, concatenated to each tab's ID
         tabs.setId("JahiaGxtEditEngineTabs");
-        for (GWTEngineTab resolvedTab : resolveTabs(hasOrderableChildNodes, config, node, jsConfig == null)) {
+        for (GWTEngineTab resolvedTab : resolveTabs(hasOrderableChildNodes, config, node)) {
             if (jsConfig.isTabDisplayed(resolvedTab.getId())) {
                 AsyncTabItem tab = resolvedTab.getTabItem().create(resolvedTab, this);
 
@@ -161,11 +159,11 @@ public class EditContentEngine extends AbstractContentEngine {
         tabs.setSelection(tabs.getItem(0));
     }
 
-    public static List<GWTEngineTab> resolveTabs(boolean hasOrderableChildNodes, GWTEngineConfiguration config, GWTJahiaNode node, boolean checkPermissions) {
+    public static List<GWTEngineTab> resolveTabs(boolean hasOrderableChildNodes, GWTEngineConfiguration config, GWTJahiaNode node) {
         List<GWTEngineTab> gwtEngineTabs = new ArrayList<GWTEngineTab>();
         for (GWTEngineTab tabConfig : config.getEngineTabs()) {
             EditEngineTabItem tabItem = tabConfig.getTabItem();
-            final boolean isAllowed = tabConfig.getRequiredPermission() == null || !checkPermissions || PermissionsUtils.isPermitted(tabConfig.getRequiredPermission(), JahiaGWTParameters.getSiteNode());
+            final boolean isAllowed = tabConfig.getRequiredPermission() == null || PermissionsUtils.isPermitted(tabConfig.getRequiredPermission(), JahiaGWTParameters.getSiteNode());
             if (tabConfig.showInEngine() && isAllowed) {
                 if ((tabItem.getHideForTypes().isEmpty() || !node.isNodeType(tabItem.getHideForTypes())) &&
                         ((hasOrderableChildNodes && tabItem.isOrderableTab()) || (!tabItem.isOrderableTab() && (tabItem.getShowForTypes().isEmpty() || node.isNodeType(tabItem.getShowForTypes()))))) {

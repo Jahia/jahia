@@ -602,7 +602,7 @@ public class MainModule extends Module {
         GWTJahiaNode node = getGwtJahiaNode(uuid, path, displayName, nodeTypes, inheritedNodeTypes);
 
         JSONArray editTabs = new JSONArray();
-        List<GWTEngineTab> gwtEngineTabs = EditContentEngine.resolveTabs(hasOrderableChildNodes, getInstance().getEditLinker().getConfig().getEngineConfiguration(node), node, false);
+        List<GWTEngineTab> gwtEngineTabs = EditContentEngine.resolveTabs(hasOrderableChildNodes, getInstance().getEditLinker().getConfig().getEngineConfiguration(node), node);
         for (int idx = 0; idx < gwtEngineTabs.size(); idx++) {
             JSONObject jsonTab = new JSONObject();
             GWTEngineTab gwtEngineTab = gwtEngineTabs.get(idx);

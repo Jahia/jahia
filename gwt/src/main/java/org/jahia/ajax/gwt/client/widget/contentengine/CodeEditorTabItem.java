@@ -435,7 +435,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
     }
 
     public boolean isEditable(GWTJahiaNode node) {
-        return node.isNodeType("jnt:file") && node.getSize() <= JahiaGWTParameters.getStudioMaxDisplayableFileSize();
+        return node == null || (node.isNodeType("jnt:file") && node.getSize() <= JahiaGWTParameters.getStudioMaxDisplayableFileSize());
     }
 
     public void setCodePropertyName(String codePropertyName) {

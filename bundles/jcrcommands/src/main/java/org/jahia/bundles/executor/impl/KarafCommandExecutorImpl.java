@@ -53,6 +53,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 import javax.security.auth.Subject;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.security.Principal;
@@ -145,7 +146,8 @@ public class KarafCommandExecutorImpl implements KarafCommandExecutor {
         final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         final PrintStream printStream = new PrintStream(byteArrayOutputStream);
         final PrintStream errPrintStream = new PrintStream(byteArrayOutputStream);
-        final Session session = sessionFactory.create(null, printStream, errPrintStream);
+        final ByteArrayInputStream in = new ByteArrayInputStream(new byte[1]);
+        final Session session = sessionFactory.create(in, printStream, errPrintStream);
 
         final Callable<String> commandCallable = () -> {
             Object result = session.execute(command);

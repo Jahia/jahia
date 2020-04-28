@@ -83,7 +83,7 @@ public class NavigationHelper {
     public final static String SELECTED_PATH = "org.jahia.contentmanager.selectedpath.";
 
     private Set<String> ignoreInUsages = Collections.emptySet();
-    
+
     private NodeHelper nodeHelper;
 
 
@@ -165,7 +165,7 @@ public class NavigationHelper {
         }
 
         boolean licenseCheck = haveToCheckLicense(fields);
-        
+
         Boolean hasOrderableChildren = null;
 
         int i = 1;
@@ -208,7 +208,7 @@ public class NavigationHelper {
                                             matchNodeType + "]");
                         	}
                         }
-                        logger.debug("----------"); 
+                        logger.debug("----------");
                     }
                     if (matchNodeType) {
                         boolean nameFilter = matchesFilters(childNode.getName(), nameFilters);
@@ -333,7 +333,7 @@ public class NavigationHelper {
                     openPaths = selectedNodes;
                 } else {
                     // copy the list to avoid ConcurrentModificationException, see QA-5200
-                    openPaths = new ArrayList<String>(openPaths);                    
+                    openPaths = new ArrayList<String>(openPaths);
                     openPaths.addAll(selectedNodes);
                 }
             }
@@ -447,7 +447,7 @@ public class NavigationHelper {
                     if (path.endsWith("/*")) {
                         getMatchingChildNodes(nodeTypes, mimeTypes, filters, fields, currentUserSession.getNode(StringUtils.substringBeforeLast(path, "/*")), userNodes ,checkSubChild, displayHiddenTypes, hiddenTypes,hiddenRegex,false, uiLocale);
                     } else {
-                        GWTJahiaNode root = getNode(path, fields, currentUserSession, uiLocale);
+                        GWTJahiaNode root = getNodeOrNull(path, fields, currentUserSession, uiLocale);
                         if (root != null) {
                             if (displayName != null) {
                                 root.setDisplayName(JCRContentUtils.unescapeLocalNodeName(displayName));
@@ -793,11 +793,21 @@ public class NavigationHelper {
         } catch (RepositoryException e) {
             logger.error("Error checking required license feature on node " + node, e);
         }
-        
+
         return allowed;
     }
-    
+
     private boolean haveToCheckLicense(List<String> fields) {
         return fields != null && Jahia.isEnterpriseEdition() && fields.contains("j:requiredLicenseFeature");
+    }
+
+    private GWTJahiaNode getNodeOrNull(String path, List<String> fields, JCRSessionWrapper currentUserSession, Locale uiLocale) {
+        try {
+            return getNode(path, fields, currentUserSession, uiLocale);
+        } catch (Exception e) {
+            // Swallow exception, handle null case instead
+            logger.warn("Did not find node with path: " + path);
+            return null;
+        }
     }
 }

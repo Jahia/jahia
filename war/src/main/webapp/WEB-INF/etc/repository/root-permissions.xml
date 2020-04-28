@@ -93,14 +93,13 @@
                 <viewHistoryTab jcr:primaryType="jnt:permission"/>
                 <viewVersioningTab jcr:primaryType="jnt:permission"/>
                 <viewVisibilityTab jcr:primaryType="jnt:permission"/>
+                <viewContentTypeRestrictionTab jcr:primaryType="jnt:permission"/>
             </engineTabs>
 
             <jContentActions jcr:primaryType="jnt:permission">
                 <createPageAction jcr:primaryType="jnt:permission"/>
             </jContentActions>
         </jContent>
-
-        <viewContentTypeRestrictionTab jcr:primaryType="jnt:permission"/>
 
         <legacy-permissions jcr:primaryType="jnt:permission">
             <editMode jcr:primaryType="jnt:permission">

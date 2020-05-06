@@ -1337,7 +1337,7 @@ public class ContentManagerHelper {
                     condition.setUUID(n.getUUID());
                     condition.setPath(n.getPath());
                 } else {
-                    JCRNodeWrapper jcrCondition = session.getNode(condition.getPath());
+                    JCRNodeWrapper jcrCondition = session.getNodeByIdentifier(condition.getUUID());
                     properties.setProperties(jcrCondition, props, httpSessionID);
                 }
             }
@@ -1350,7 +1350,7 @@ public class ContentManagerHelper {
             boolean doSave = false;
             for (GWTJahiaNode condition : conditions) {
                 if (condition.get("node-removed") != null) {
-                    JCRNodeWrapper jcrCondition = session.getNode(condition.getPath());
+                    JCRNodeWrapper jcrCondition = session.getNodeByIdentifier(condition.getUUID());
                     jcrCondition.remove();
                     doSave = true;
                 }

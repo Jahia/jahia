@@ -854,7 +854,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 try {
                     for (GWTJahiaNode condition : visibilityConditions) {
                         if (Boolean.TRUE.equals(condition.get("node-published") != null)) {
-                            publication.publish(Arrays.asList(jcrSessionWrapper.getNode(condition.getPath()).getIdentifier()));
+                            String uuid = jcrSessionWrapper.itemExists(condition.getPath()) ? jcrSessionWrapper.getNode(condition.getPath()).getIdentifier() : condition.getUUID();
+                            publication.publish(Collections.singletonList(uuid));
                         }
                     }
                     if (Boolean.TRUE.equals(node.get("conditions-published"))) {

@@ -1274,20 +1274,6 @@ form,
         pointer-events: all;
     }
 
-    @if ($theme == "anthracite-V8") {
-        .x-tree3-node-joint[style*='-66px'] {
-            // Closed
-            background: url( _icon("navNext", "white")) no-repeat top 1px center!important;
-            background-size: 10px!important;
-        }
-
-        .x-tree3-node-joint[style*='-34px'] {
-            // Opened
-            background: url( _icon("arrowDown", "white")) no-repeat top 1px center!important;
-        }
-    }
-
-
 
     .x-grid3-row {
         /* List Item */

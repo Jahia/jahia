@@ -1546,7 +1546,7 @@ Anthracite.addModule("edit", {
                 mainFrameWidth = xPos + 6;
                 mainFrameLeft = xPos + 45;
 
-                if (jGet.class('publication-status').exists() && !window.anthraciteV8) {
+                if (jGet.class('publication-status').exists()) {
                     jGet.class('publication-status').nodes[0].style.setProperty('left', mainFrameLeft + 'px', 'important');
                 }
 

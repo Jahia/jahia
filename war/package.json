@@ -9,6 +9,7 @@
     "build": "gulp generate-js && yarn generate:jsdoc",
     "watch": "gulp watch",
     "sass": "gulp sass",
+    "sass:copy-to-webapp": "yarn sass && gulp wait && gulp copy-css-to-webapp",
     "generate:jsdoc": "jsdoc -c jsdoc-conf.json",
     "lint": "eslint --ext js .",
     "lint:fix": "eslint --ext js --fix ."

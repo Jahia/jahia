@@ -19,7 +19,6 @@ sass.compiler = require('node-sass');
 
 // sass path
 const sassSrc = anthraciteRootDir + '/css/**/*.scss';
-const cssSrc = anthraciteRootDir + '/css/*.css*';
 const cssDirDest = anthraciteRootDir + '/css';
 
 // javascript path
@@ -117,7 +116,7 @@ task('copy-css-to-webapp', done => {
     const targetDirectory = argv.dest + '/engines/jahia-anthracite/css';
 
     log.info('Copying CSS file to local server: ' + targetDirectory);
-    src(cssSrc).pipe(dest(targetDirectory));
+    src(cssDirDest+ '/*.css*').pipe(dest(targetDirectory));
     done();
 });
 

@@ -1539,7 +1539,7 @@ form,
             height: 100%;
 
             > tr {
-                display: block;
+                display: flex;
                 height: 100%;
                 position: relative;
 
@@ -1553,7 +1553,7 @@ form,
         .x-grid3-cell {
             /* Cell Containing the List Item */
             padding: 0;
-            width: 100%!important;
+            width: 100%;
 
             &.x-grid3-td-locked {
                 width: 25px !important;

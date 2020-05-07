@@ -1086,19 +1086,19 @@
                     tagname: /^[a-z]*$/gi
                 };
 
-                if (target.match(regexpressions.id)) {
+                if (target && target.match(regexpressions.id)) {
                     // Its a simple ID tag
                     result = {
                         type: 'id',
                         modifiedSelector: target.slice(1)
                     };
-                } else if (target.match(regexpressions.classname)) {
+                } else if (target && target.match(regexpressions.classname)) {
                     // Its a simple ID tag
                     result = {
                         type: 'classname',
                         modifiedSelector: target.slice(1)
                     };
-                } else if (target.match(regexpressions.tagname)) {
+                } else if (target && target.match(regexpressions.tagname)) {
                     // Its a simple ID tag
                     result = {
                         type: 'tag',

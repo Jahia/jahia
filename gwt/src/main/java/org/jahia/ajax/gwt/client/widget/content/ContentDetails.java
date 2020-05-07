@@ -301,13 +301,15 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
     private void fillCurrentTab() {
         TabItem currentTab = tabs.getSelectedItem();
 
-        Object currentTabItem = currentTab.getData("item");
-        if (currentTabItem instanceof EditEngineTabItem) {
-            EditEngineTabItem engineTabItem = (EditEngineTabItem) currentTabItem;
+        if (currentTab != null) {
+            Object currentTabItem = currentTab.getData("item");
+            if (currentTabItem instanceof EditEngineTabItem) {
+                EditEngineTabItem engineTabItem = (EditEngineTabItem) currentTabItem;
 
-            if (!((AsyncTabItem)currentTab).isProcessed()) {
-                engineTabItem.init(this, (AsyncTabItem) currentTab, language.getLanguage());
-                m_component.layout();
+                if (!((AsyncTabItem)currentTab).isProcessed()) {
+                    engineTabItem.init(this, (AsyncTabItem) currentTab, language.getLanguage());
+                    m_component.layout();
+                }
             }
         }
     }

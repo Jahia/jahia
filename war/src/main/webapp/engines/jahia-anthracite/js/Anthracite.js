@@ -74,7 +74,7 @@
             jGet.getCached('body').setAttribute('data-CKEDITOR-VERSION', Anthracite.data.ckeditorVersion);
 
             // This is a content picker, not main Anthracite.
-            if (Anthracite.data.HTTP.app == 'contentpicker') {
+            if (Anthracite.data.HTTP.app === 'contentpicker') {
                 // This is a full page picker, not edit engine
                 Anthracite.picker.data.standalone = true;
                 Anthracite.picker.data.ID = Anthracite.picker.data.standaloneID;
@@ -96,7 +96,7 @@
             }
 
             // This is a manager, not main Anthracite.
-            if (Anthracite.data.HTTP.app == 'manager') {
+            if (Anthracite.data.HTTP.app === 'manager') {
                 // This is a manager, not edit engine
                 Anthracite.picker.data.standalone = true;
                 Anthracite.picker.data.ID = Anthracite.picker.data.standaloneManagerID;
@@ -126,6 +126,7 @@
                 callback();
             }
 
+            Anthracite.listeners.addListeners();
             Anthracite.listeners.queue.execute();
 
             window.onresize = Anthracite.onResize; // Use some kind of timer to reduce repaints / DOM manipulations
@@ -271,12 +272,12 @@
                     }
                 }
 
-                if (servletPath == '/engines/contentpicker.jsp') {
+                if (servletPath === '/engines/contentpicker.jsp') {
                     app = 'contentpicker';
                     DXApp = 'miniApp';
                     picker = QS['type'] || 'default';
 
-                } else if (servletPath == '/engines/manager.jsp') {
+                } else if (servletPath === '/engines/manager.jsp') {
                     app = 'manager';
                     DXApp = 'miniApp';
                     picker = QS['conf'] || 'default';

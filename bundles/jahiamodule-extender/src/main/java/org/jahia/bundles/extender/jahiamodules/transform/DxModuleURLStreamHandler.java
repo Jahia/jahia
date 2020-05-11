@@ -43,11 +43,7 @@
  */
 package org.jahia.bundles.extender.jahiamodules.transform;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
-
+import org.jahia.bin.Jahia;
 import org.jahia.services.modulemanager.Constants;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
@@ -55,6 +51,11 @@ import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.osgi.service.url.AbstractURLStreamHandlerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * URL stream handler that transforms the bundle URL by reading it from a persistence storage and applying additionally the module
@@ -76,14 +77,20 @@ public class DxModuleURLStreamHandler extends AbstractURLStreamHandlerService {
 
             @Override
             public InputStream getInputStream() throws IOException {
+                Thread current = Thread.currentThread();
+                ClassLoader contextCL = current.getContextClassLoader();
+
                 String bundleKey = url.getFile();
                 try {
+                    current.setContextClassLoader(Jahia.class.getClassLoader());
                     PersistentBundle bundle = ModuleUtils.loadPersistentBundle(bundleKey);
                     return bundle.isTransformationRequired() ? ModuleUtils.addModuleDependencies(bundle.getResource().getInputStream())
                             : bundle.getResource().getInputStream();
                 } catch (ModuleManagementException e) {
                     logger.warn("Couldn't resolve the {}: protocol path for: {}", Constants.URL_PROTOCOL_DX, bundleKey);
                     throw new IOException(e);
+                } finally {
+                    current.setContextClassLoader(contextCL);
                 }
             }
 

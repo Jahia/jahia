@@ -138,13 +138,17 @@ public class SwitchModeActionItem extends NodeTypeAwareBaseActionItem {
                                 Window.Location.assign(url1);
                             }
                         }
+                        public void onApplicationFailure(Throwable caught) {
+                            com.google.gwt.user.client.Window.alert(Messages.get("label.error.404.title"));
+                            setEnabled(false);
+                        }
                     });
         }
     }
 
     /**
      * Indicates if the action is performed in a new window or not.
-     * 
+     *
      * @param openInNewWindow <code>true</code> if the switch mode action should be performed in a new window; <code>false</code> in case of
      *            the same window
      */
@@ -154,7 +158,7 @@ public class SwitchModeActionItem extends NodeTypeAwareBaseActionItem {
 
     /**
      * Flag to indicate if the sub-menu to open the target mode in a new window should be shown or not.
-     * 
+     *
      * @param showOpenInNewWindowSubmenu <code>true</code> if the sub-menu should be shown; <code>false</code> if not.
      */
     public void setShowOpenInNewWindowSubmenu(boolean showOpenInNewWindowSubmenu) {

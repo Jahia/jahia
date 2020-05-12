@@ -1474,10 +1474,20 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public String getNodeURL(String servlet, String path, Date versionDate, String versionLabel, String workspace,
                              String locale, boolean findDisplayable) throws GWTJahiaServiceException {
         enableJcrSessionReadOnlyCache();
+
         final JCRSessionWrapper session = retrieveCurrentSession(workspace != null ? workspace : getWorkspace(),
                 locale != null ? LanguageCodeConverters.languageCodeToLocale(locale) : getLocale(), false);
         try {
-            JCRNodeWrapper node = session.getNode(path);
+            // use UUID to get the node
+            // Check default WS first, then provided WS (for example in case node has been deleted in default and path requested in live)
+            String nodeIdentifier;
+            if (retrieveCurrentSession().nodeExists(path)) {
+                nodeIdentifier = retrieveCurrentSession().getNode(path).getIdentifier();
+            } else {
+                nodeIdentifier = session.getNode(path).getIdentifier();
+            }
+
+            JCRNodeWrapper node = session.getNodeByIdentifier(nodeIdentifier);
 
             String nodeURL = this.navigation.getNodeURL(servlet, node, versionDate, versionLabel, session.getWorkspace().getName(),
                     session.getLocale(), findDisplayable);

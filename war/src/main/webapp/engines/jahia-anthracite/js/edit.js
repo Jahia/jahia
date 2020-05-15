@@ -2095,7 +2095,7 @@ Anthracite.addModule("edit", {
                 var sidePanelSplitter = document.createElement('div');
                 // Set ID
                 sidePanelSplitter.id = 'indigoSplitter';
-                sidePanelSplitter.style.setProperty('left', '360px', 'important');
+                sidePanelSplitter.style.setProperty('left', '344px', 'important');
 
                 // Attach event listener for drag start
                 sidePanelSplitter.onmousedown = Anthracite.edit.sidepanel.onStartResize;

@@ -70,14 +70,14 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
     @Override
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
         super.init(gwtToolbarItem, linker);
-        this.getGwtToolbarItem().setHideWhenDisabled(true);
+        this.getGwtToolbarItem().setHideWhenDisabled(false);
         setEnabled(false);
     }
 
     @Override
     public void handleNewLinkerSelection() {
         setEnabled(false);
-        this.getGwtToolbarItem().setHideWhenDisabled(true);
+        this.getGwtToolbarItem().setHideWhenDisabled(false);
         LinkerSelectionContext ctx = linker.getSelectionContext();
         boolean hasOnlyOneLanguage = JahiaGWTParameters.getSiteLanguages().size() == 1;
         GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();

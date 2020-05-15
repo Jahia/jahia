@@ -1110,6 +1110,11 @@ div.x-jahia-root {
     }
 }
 
+.toolbar-item-publishone.x-item-disabled {
+    background-color: #DADADA;
+    pointer-events: none;
+}
+
 // Background Jobs Button
 .toolbar-item-workinprogressadmin,
 .toolbar-item-workinprogress {

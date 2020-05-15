@@ -119,14 +119,18 @@
         if(Anthracite.data.currentApp == 'edit'){
             jGet.getCached('body').setAttribute("data-edit-mode-status", "initialised");
 
-            if(Anthracite.edit.sidepanel.data.pinned){
-                if( Anthracite.edit.sidepanel.data.previousTab === "JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab" ||
-                    Anthracite.edit.sidepanel.data.previousTab === "JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab" ||
-                    Anthracite.edit.sidepanel.data.previousTab === "JahiaGxtSidePanelTabs__JahiaGxtSearchTab" ||
-                    Anthracite.edit.sidepanel.data.previousTab === "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"){
-                        jGet.id(Anthracite.edit.sidepanel.data.previousTab).trigger("mousedown").trigger("mouseup");
-                }
-            }
+
+            // This was commented out for QA-12925
+            // This code is clicking on previous tab (mousedown/mouseup) and calls Anthracite.edit.sidePanel.tabs.all.onClick
+            // which replace the currentTab by the previous one, showing the resultsPanel along
+            // if(Anthracite.edit.sidepanel.data.pinned){
+            //     if( Anthracite.edit.sidepanel.data.previousTab === "JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab" ||
+            //         Anthracite.edit.sidepanel.data.previousTab === "JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab" ||
+            //         Anthracite.edit.sidepanel.data.previousTab === "JahiaGxtSidePanelTabs__JahiaGxtSearchTab" ||
+            //         Anthracite.edit.sidepanel.data.previousTab === "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"){
+            //             jGet.id(Anthracite.edit.sidepanel.data.previousTab).trigger("mousedown").trigger("mouseup");
+            //     }
+            // }
 
         }
 

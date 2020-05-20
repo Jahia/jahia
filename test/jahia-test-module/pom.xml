@@ -499,7 +499,7 @@
                             *
                         </Import-Package>
                         <Provide-Capability>${jahia.plugin.providedNodeTypes}${jahia.plugin.providedModulesCapabilities}</Provide-Capability>
-                        <Require-Capability>${jahia.plugin.requiredNodeTypes}${jahia.plugin.requiredModulesCapabilities}</Require-Capability>
+                        <Require-Capability>osgi.extender;filter:="(osgi.extender=org.jahia.bundles.blueprint.extender.config)",${jahia.plugin.requiredNodeTypes}${jahia.plugin.requiredModulesCapabilities}</Require-Capability>
                         <Embed-Dependency>${embed-dependency}</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                         <Dynamic-ImportPackage>*</Dynamic-ImportPackage>

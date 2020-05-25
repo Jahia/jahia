@@ -990,6 +990,9 @@
                 editMenuButton = (document.querySelectorAll('.edit-menu-edit')[0]) ? document.querySelectorAll('.edit-menu-edit')[0].parentNode : null;
 
             if (targetMenu && advancedPublishMenuButton && publishMenuButton && statusMenuButton) {
+                if (advancedPublishMenuButton.classList.contains('x-item-disabled')) {
+                    advancedPublishMenuButton.parentNode.style.pointerEvents = 'none';
+                }
                 targetMenu.insertBefore(advancedPublishMenuButton.parentNode, editMenuButton);
                 targetMenu.insertBefore(publishMenuButton.parentNode, editMenuButton);
                 targetMenu.insertBefore(statusMenuButton.parentNode, editMenuButton);

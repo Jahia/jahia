@@ -880,7 +880,7 @@ div.x-jahia-root {
     padding-right: 6px;
     border-radius: 2px;
     transition: _transition("all", "quickest");
-
+    pointer-events: all;
 
 
     &:hover {
@@ -1111,8 +1111,9 @@ div.x-jahia-root {
 }
 
 .toolbar-item-publishone.x-item-disabled {
-    background-color: #DADADA;
     pointer-events: none;
+    cursor: not-allowed;
+    opacity: 0.4 !important;
 }
 
 // Background Jobs Button

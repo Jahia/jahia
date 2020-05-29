@@ -86,7 +86,7 @@ public class VisibilityServiceTest extends JahiaTestCase {
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
-        site = TestHelper.createSite(TESTSITE_NAME, TestHelper.INTRANET_TEMPLATES);
+        site = TestHelper.createSite(TESTSITE_NAME, TestHelper.WEB_TEMPLATES);
         assertNotNull(site);
         publicationService = ServicesRegistry.getInstance().getJCRPublicationService();
         

@@ -110,7 +110,7 @@ public class VersioningTest extends JahiaTestCase {
     public void setUp() throws Exception {
         try {
             site = TestHelper.createSite(TESTSITE_NAME, "localhost" + System.currentTimeMillis(),
-                    TestHelper.INTRANET_TEMPLATES);
+                    TestHelper.WEB_TEMPLATES);
             assertNotNull(site);
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);

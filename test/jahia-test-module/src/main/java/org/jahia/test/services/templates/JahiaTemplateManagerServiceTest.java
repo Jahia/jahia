@@ -84,7 +84,7 @@ public class JahiaTemplateManagerServiceTest {
     public static void oneTimeSetUp() throws Exception {
         JahiaSite site = null;
         try {
-            site = TestHelper.createSite(TEST_SITE_NAME, "localhost" + System.currentTimeMillis(), TestHelper.INTRANET_TEMPLATES);
+            site = TestHelper.createSite(TEST_SITE_NAME, "localhost" + System.currentTimeMillis(), TestHelper.WEB_TEMPLATES);
             assertNotNull(site);
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);

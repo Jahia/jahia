@@ -105,7 +105,7 @@ public class RenderTest extends JahiaTestCase {
     @Before
     public void setUp() throws Exception {
         site = TestHelper.createSite(TESTSITE_NAME, "localhost" + System.currentTimeMillis(),
-                TestHelper.INTRANET_TEMPLATES);
+                TestHelper.WEB_TEMPLATES);
         assertNotNull(site);
 
         loginRoot();

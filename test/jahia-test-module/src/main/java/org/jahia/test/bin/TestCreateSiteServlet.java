@@ -157,7 +157,7 @@ public class TestCreateSiteServlet extends BaseTestController {
         } else if (httpServletRequest.getParameter("site").equals("mySite")) {
             try {
                 int numberOfSites = ServicesRegistry.getInstance().getJahiaSitesService().getNbSites();
-                TestHelper.createSite("mySite" + numberOfSites, "localhost" + numberOfSites, TestHelper.INTRANET_TEMPLATES);
+                TestHelper.createSite("mySite" + numberOfSites, "localhost" + numberOfSites, TestHelper.WEB_TEMPLATES);
             } catch (Exception e) {
                 logger.warn("Exception during mySite Creation", e);
             }

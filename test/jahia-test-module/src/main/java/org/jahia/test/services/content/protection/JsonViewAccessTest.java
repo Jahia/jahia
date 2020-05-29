@@ -190,7 +190,7 @@ public class JsonViewAccessTest extends JahiaTestCase {
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
         site = TestHelper.createSite(TESTSITE_NAME, "localhost" + System.currentTimeMillis(),
-                TestHelper.INTRANET_TEMPLATES);
+                TestHelper.WEB_TEMPLATES);
         assertNotNull(site);
 
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {

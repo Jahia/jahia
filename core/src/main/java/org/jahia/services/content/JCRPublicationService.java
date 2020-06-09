@@ -736,10 +736,9 @@ public class JCRPublicationService extends JahiaService {
 
         if (versionable) {
             destinationSession.checkout(destinationNode);
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Merge node : " + path + " source v=" + node.getBaseVersion().getName() + " , dest node v=" + destinationNode.getBaseVersion().getName());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Merge node : " + path + " source v=" + node.getBaseVersion().getName() + " , dest node v=" + destinationNode.getBaseVersion().getName());
+            }
         }
 
         // handle potential move or rename

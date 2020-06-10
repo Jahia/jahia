@@ -43,11 +43,10 @@
  */
 package org.jahia.api;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Commmon Jahia constants.
@@ -333,7 +332,7 @@ public class Constants {
             JCR_FROZENMIXINTYPES, JCR_FROZENPRIMARYTYPE,JCR_BASEVERSION,
             JCR_VERSIONHISTORY, JCR_PREDECESSORS, JCR_ISCHECKEDOUT));
 
-    public static final String JAHIA_PROJECT_VERSION = "${project.version}"; // this is filtered by Maven.
+    public static final String JAHIA_PROJECT_VERSION;
     public static final String SCM_DUMMY_URI = "scm:dummy:uri";
 
     public static final String UI_THEME = "jahia.ui.theme";
@@ -344,4 +343,14 @@ public class Constants {
      * TODO: this set might not be exhaustive at the moment. Please complete if needed!
      */
     public static final Set<String> nonI18nPropertiesCopiedToTranslationNodes = new HashSet<>(Arrays.asList(PUBLISHED, LASTPUBLISHED, LASTPUBLISHEDBY));
+
+    static {
+        Properties p = new Properties();
+        try {
+            p.load(Constants.class.getClassLoader().getResourceAsStream("version.properties"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        JAHIA_PROJECT_VERSION = p.getProperty("version");
+    }
 }

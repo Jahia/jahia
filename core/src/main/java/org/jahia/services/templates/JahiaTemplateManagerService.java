@@ -77,7 +77,6 @@ import org.jahia.services.modulemanager.ModuleManager;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.settings.SettingsBean;
 import org.jahia.utils.DateUtils;
 import org.jahia.utils.PomUtils;
 import org.jahia.utils.i18n.ResourceBundles;
@@ -111,7 +110,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
  *
  * @author Sergiy Shyrkov
  */
-public class JahiaTemplateManagerService extends JahiaService implements ApplicationEventPublisherAware, ApplicationListener<ApplicationEvent>, JahiaAfterInitializationService {
+public class JahiaTemplateManagerService extends JahiaService implements ApplicationEventPublisherAware, ApplicationListener<ApplicationEvent>, JahiaAfterInitializationService, org.jahia.api.templates.JahiaTemplateManagerService {
 
     private static final Logger logger = LoggerFactory.getLogger(JahiaTemplateManagerService.class);
 
@@ -169,6 +168,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return templatePackageDeployer;
     }
 
+    @Override
     public TemplatePackageRegistry getTemplatePackageRegistry() {
         return templatePackageRegistry;
     }
@@ -181,6 +181,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         prettyPrint.setIndentSize(i);
     }
 
+    @Override
     public List<String> getNonManageableModules() {
         return nonManageableModules;
     }
@@ -222,13 +223,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      * @throws RepositoryException in case of JCR-related errors
      * @throws BundleException
      */
-    public JCRNodeWrapper checkoutModule(File moduleSources, String scmURI, String branchOrTag, String moduleId,
-                                         String version, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
+    public JCRNodeWrapper checkoutModule(File moduleSources, String scmURI, String branchOrTag, String moduleId, String version, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
         return scmHelper.checkoutModule(moduleSources, scmURI, branchOrTag, moduleId, version, session);
     }
 
-    public File checkoutTempModule(String scmURI, String branchOrTag, String moduleId,
-                                   String version) throws RepositoryException, XmlPullParserException, DocumentException, IOException {
+    public File checkoutTempModule(String scmURI, String branchOrTag, String moduleId, String version) throws RepositoryException, XmlPullParserException, DocumentException, IOException {
         return scmHelper.checkoutTmpModule(moduleId, version, scmURI, branchOrTag);
     }
 
@@ -502,9 +501,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      * @return list of template packages
      * @throws JahiaException
      */
-    public List<JahiaTemplatesPackage> getInstalledModulesForSite(String siteKey,
-                                                                  boolean includeTemplateSet, boolean includeDirectDependencies,
-                                                                  boolean includeTransitiveDependencies) throws JahiaException {
+    @Override
+    public List<JahiaTemplatesPackage> getInstalledModulesForSite(String siteKey, boolean includeTemplateSet, boolean includeDirectDependencies, boolean includeTransitiveDependencies) throws JahiaException {
 
         JahiaSite site = siteService.getSiteByKey(siteKey);
         if (site == null) {
@@ -596,8 +594,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         moduleInstallationHelper.installModules(modules, sitePath, session);
     }
 
-    public void synchro(JCRNodeWrapper source, JCRNodeWrapper destinationNode, JCRSessionWrapper session, String moduleName,
-                        Map<String, List<String>> references) throws RepositoryException {
+    public void synchro(JCRNodeWrapper source, JCRNodeWrapper destinationNode, JCRSessionWrapper session, String moduleName, Map<String, List<String>> references) throws RepositoryException {
         moduleInstallationHelper.synchro(source, destinationNode, session, moduleName, references);
     }
 
@@ -656,10 +653,12 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      *
      * @return a list of all available template packages
      */
+    @Override
     public List<JahiaTemplatesPackage> getAvailableTemplatePackages() {
         return templatePackageRegistry.getAvailablePackages();
     }
 
+    @Override
     public List<JahiaTemplatesPackage> getNonSystemTemplateSetPackages() {
         final int packagesCount = getAvailableTemplatePackagesCount();
         if (packagesCount > 0) {
@@ -675,6 +674,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     }
 
+    @Override
     public List<JahiaTemplatesPackage> getNonSystemModulePackages() {
         final int packagesCount = getAvailableTemplatePackagesCount();
         if (packagesCount > 0) {
@@ -695,6 +695,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      *
      * @return the number of available template packages in the registry
      */
+    @Override
     public int getAvailableTemplatePackagesCount() {
         return templatePackageRegistry.getAvailablePackagesCount();
     }
@@ -722,6 +723,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      * repository
      * @deprecated use {@link #getTemplatePackageById(String)} instead
      */
+    @Deprecated
     public JahiaTemplatesPackage getTemplatePackageByFileName(String fileName) {
         return getTemplatePackageById(fileName);
     }
@@ -736,6 +738,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      * package with the specified Id is not registered in the
      * repository
      */
+    @Override
     public JahiaTemplatesPackage getTemplatePackageById(String moduleId) {
         return templatePackageRegistry.lookupById(moduleId);
     }
@@ -754,6 +757,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      *
      * @return a set of all available template packages
      */
+    @Override
     public Set<JahiaTemplatesPackage> getModulesWithViewsForComponent(String componentName) {
         Set<JahiaTemplatesPackage> r = templatePackageRegistry.getModulesWithViewsPerComponents().get(StringUtils.replaceChars(componentName, ':', '_'));
         return r != null ? r : Collections.<JahiaTemplatesPackage>emptySet();
@@ -769,6 +773,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      * package with the specified name is not registered in the
      * repository
      */
+    @Override
     public JahiaTemplatesPackage getTemplatePackage(String packageName) {
         return templatePackageRegistry.lookup(packageName);
     }
@@ -778,6 +783,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      *
      * @return the lookup map for template packages by the JCR node name
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Map<String, JahiaTemplatesPackage> getTemplatePackageByNodeName() {
 
@@ -790,6 +796,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         });
     }
 
+    @Override
     public JahiaTemplatesPackage getAnyDeployedTemplatePackage(String templatePackage) {
         JahiaTemplatesPackage pack = getTemplatePackageById(templatePackage);
         if (pack == null) {
@@ -809,6 +816,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      *
      * @return a set of existing template sets that are available for site creation
      */
+    @Override
     public Set<String> getTemplateSetNames() {
 
         try {
@@ -956,6 +964,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return moduleStates;
     }
 
+    @Override
     public Map<Bundle, JahiaTemplatesPackage> getRegisteredBundles() {
         return registeredBundles;
     }

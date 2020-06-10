@@ -66,6 +66,7 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="clusterSettingsInitializer" ref="clusterSettingsInitializer"/>
         <property name="startupOptionsMapping" ref="startupOptionsMapping"/>
+        <property name="cookieAuthConfig" ref="cookieAuthConfig"/>
     </bean>
 
     <util:map id="startupOptionsMapping" key-type="java.lang.String" value-type="java.util.Set">

@@ -43,6 +43,10 @@
  */
 package org.jahia.services.cache.dummy;
 
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.config.Searchable;
+import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
+import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 import org.jahia.services.cache.CacheProvider;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.cache.CacheImplementation;
@@ -55,14 +59,6 @@ import org.jahia.settings.SettingsBean;
  * @author rincevent
  */
 public class DummyCacheProvider implements CacheProvider {
-    public void init(SettingsBean settingsBean, CacheService cacheService) throws JahiaInitializationException {
-        // do nothing
-    }
-
-    public void shutdown() {
-        // do nothing
-    }
-
     public CacheImplementation<?, ?> newCacheImplementation(String name) {
         return new DummyCacheImpl(name);
     }

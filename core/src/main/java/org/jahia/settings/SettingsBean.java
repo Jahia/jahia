@@ -77,6 +77,7 @@ import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.configuration.deployers.ServerDeploymentFactory;
 import org.jahia.configuration.deployers.ServerDeploymentInterface;
 import org.jahia.exceptions.JahiaRuntimeException;
+import org.jahia.params.valves.CookieAuthConfig;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
 import org.jahia.settings.readonlymode.ReadOnlyModeController;
@@ -107,7 +108,7 @@ import java.util.*;
 import static org.jahia.bin.listeners.JahiaContextLoaderListener.setSystemProperty;
 import static org.jahia.settings.StartupOptions.*;
 
-public class SettingsBean implements ServletContextAware, InitializingBean, ApplicationContextAware, ReadOnlyModeCapable {
+public class SettingsBean implements ServletContextAware, InitializingBean, ApplicationContextAware, ReadOnlyModeCapable, org.jahia.api.settings.SettingsBean {
 
     /**
      * An initializer of DX cluster related settings.
@@ -230,6 +231,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private Map<String, Set<String>> startupOptionsMapping;
     private long studioMaxDisplayableFileSize;
 
+    private CookieAuthConfig cookieAuthConfig;
+
     /**
      * @param   pathResolver a path resolver used to locate files on the disk.
      * @param   propertiesFilename  The jahia.properties file complete path.
@@ -333,10 +336,12 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
                 .resolvePlaceholders(source, true) : source;
     }
 
+    @Override
     public String getJahiaDatabaseScriptsPath() {
         return jahiaDatabaseScriptsPath;
     }
 
+    @Override
     public long getJahiaJCRUserCountLimit() {
         return jahiaJCRUserCountLimit;
     }
@@ -349,6 +354,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      * This method load and convert properties from the jahia.properties file,
      * and set some variables used by the SettingsBean class.
      */
+    @Override
     public void load() {
 
         if (properties == null && propertiesFileName != null) {
@@ -533,6 +539,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         startupOptions = new StartupOptions(this, startupOptionsMapping);
     }
 
+    @Override
     public int getModuleStartLevel() {
         return moduleStartLevel;
     }
@@ -709,6 +716,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      *
      * @return <code>true</code> if the clustering is activated; <code>false</code> otherwise
      */
+    @Override
     public boolean isClusterActivated() {
         return clusterActivated;
     }
@@ -747,6 +755,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         }
     }
 
+    @Override
     public File getRepositoryHome() throws IOException {
         String path = getString("jahia.jackrabbit.home", null);
         if (path == null) {
@@ -793,11 +802,13 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         }
     }
 
+    @Override
     public Locale getDefaultLocale() {
         return defaultLocale;
     }
 
-    private boolean getBoolean (String propertyName, boolean defaultValue) {
+    @Override
+    public boolean getBoolean(String propertyName, boolean defaultValue) {
         boolean result = defaultValue;
         String curProperty = getPropertyValue(propertyName);
         if (curProperty != null) {
@@ -809,7 +820,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         return result;
     }
 
-    private String getString (String propertyName) throws NoSuchElementException {
+    @Override
+    public String getString(String propertyName) throws NoSuchElementException {
         String result;
         String curProperty = getPropertyValue(propertyName);
         if (curProperty != null) {
@@ -821,6 +833,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         }
     }
 
+    @Override
     public String getString(String propertyName, String defaultValue) {
         String result = defaultValue;
         String curProperty = getPropertyValue(propertyName);
@@ -830,7 +843,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         return result;
     }
 
-    private int getInt(String propertyName, int defaultValue) {
+    @Override
+    public int getInt(String propertyName, int defaultValue) {
         int result = defaultValue;
         String curProperty = getPropertyValue(propertyName);
         if (curProperty != null) {
@@ -840,7 +854,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         return result;
     }
 
-    private long getLong(String propertyName, long defaultValue) {
+    @Override
+    public long getLong(String propertyName, long defaultValue) {
         long result = defaultValue;
         String curProperty = getPropertyValue(propertyName);
         if (curProperty != null) {
@@ -850,7 +865,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         return result;
     }
 
-    private String getPropertyValue(String propertyName) {
+    @Override
+    public String getPropertyValue(String propertyName) {
         String result = properties.getProperty(propertyName);
         if (result != null && result.length() > 0 && result.contains(SystemPropertyUtils.PLACEHOLDER_PREFIX)) {
             result = SystemPropertyUtils.resolvePlaceholders(result, true);
@@ -864,7 +880,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      * @return      the requested parameter value. Returns <code>null</code> when the
      *               parameter could not be found.
      */
-    public String lookupString (String key) {
+    @Override
+    public String lookupString(String key) {
         Object param = settings.get (key);
         if (param instanceof String) {
             return (String) param;
@@ -879,7 +896,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      * @return      the requested parameter value. Return <code>false</code> when the
      *               parameter could not be found.
      */
-    public boolean lookupBoolean (String key) {
+    @Override
+    public boolean lookupBoolean(String key) {
         Object param = settings.get (key);
         if (param instanceof Boolean) {
             return ((Boolean) param).booleanValue();
@@ -894,7 +912,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      * @return      the requested parameter value. Return <code>Long.MIN_VALUE</code> when the
      *               parameter could not be found.
      */
-    public long lookupLong (String key) {
+    @Override
+    public long lookupLong(String key) {
         Object param = settings.get (key);
         if (param instanceof Long) {
             return ((Long) param).longValue();
@@ -909,7 +928,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      * @return      the requested parameter value. Return <code>Long.MIN_VALUE</code> when the
      *               parameter could not be found.
      */
-    public int lookupInt (String key) {
+    @Override
+    public int lookupInt(String key) {
         Object param = settings.get (key);
         if (param instanceof Integer) {
             return ((Integer) param).intValue();
@@ -922,18 +942,21 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      *
      * @return  Properties object containing all properties from jahia.properties file.
      */
-    public Properties getPropertiesFile () {
+    @Override
+    public Properties getPropertiesFile() {
         return this.properties;
-    } // end getPropertiesFile
+    }
 
 
-    public String getLicenseFileName () {
+    @Override
+    public String getLicenseFileName() {
         return licenseFilename;
     }
 
     /**
      * Activation / deactivation of relative URLs, instead of absolute URLs, when generating URL to exit the Admin Menu for example
     */
+    @Override
     public boolean isUseRelativeSiteURLs() {
         return useRelativeSiteURLs;
     }
@@ -942,11 +965,13 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         this.useRelativeSiteURLs = val;
     }
 
-    public String getJahiaWebAppsDeployerBaseURL () {
+    @Override
+    public String getJahiaWebAppsDeployerBaseURL() {
         return jahiaWebAppsDeployerBaseURL;
     }
 
-    public String getDefaultLanguageCode () {
+    @Override
+    public String getDefaultLanguageCode() {
         return defaultLanguageCode;
     }
 
@@ -955,9 +980,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      *
      * @return  The build number.
      */
+    @Override
     public int getBuildNumber() {
         return buildNumber;
-    } // end getBuildNumber
+    }
 
     public void setBuildNumber(int buildNumber) {
         this.buildNumber = buildNumber;
@@ -968,24 +994,27 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      *
      * @return  The server name.
      */
+    @Override
     public String getServer() {
         return server;
-    } // end getServer
+    }
 
     /**
      * Used to get the server home filesystem disk path.
      *
      * @return  The server home filesystem disk path.
      */
+    @Override
     public String getServerHome() {
         return serverHome;
-    } // end getServerHomeDiskPath
+    }
 
     /**
      * Used to get the jahiafiles /etc disk path.
      *
      * @return  The jahiafiles /etc disk path.
      */
+    @Override
     public String getJahiaEtcDiskPath() {
         return jahiaEtcDiskPath;
     }
@@ -995,6 +1024,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      *
      * @return  The jahiafiles /var disk path.
      */
+    @Override
     public String getJahiaVarDiskPath() {
         return jahiaVarDiskPath;
     }
@@ -1004,6 +1034,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      *
      * @return  The shared templates disk path.
      */
+    @Override
     public String getJahiaModulesDiskPath() {
         return jahiaModulesDiskPath;
     }
@@ -1011,29 +1042,35 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     /**
      * @return The generated resources disk path.
      */
+    @Override
     public String getJahiaGeneratedResourcesDiskPath() {
         return jahiaGeneratedResourcesDiskPath;
     }
 
+    @Override
     public String getClassDiskPath() {
         return classDiskPath;
     }
 
+    @Override
     public long getJahiaFileUploadMaxSize() {
         return jahiaFileUploadMaxSize;
     }
     /**
      * @deprecated since 7.0.0.2
      */
+    @Override
     @Deprecated
     public String getJahiaHomeDiskPath() {
         return servletContext.getRealPath("./");
     }
 
+    @Override
     public String getJahiaImportsDiskPath() {
         return jahiaImportsDiskPath;
     }
 
+    @Override
     public String getCharacterEncoding() {
         return characterEncoding;
     }
@@ -1046,22 +1083,27 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         this.pathResolver = pathResolver;
     }
 
+    @Override
     public String getTmpContentDiskPath() {
         return tmpContentDiskPath;
     }
 
+    @Override
     public String getModulesSourcesDiskPath() {
         return modulesSourcesDiskPath;
     }
 
+    @Override
     public boolean isProcessingServer() {
         return isProcessingServer;
     }
 
+    @Override
     public int getSiteURLPortOverride() {
         return siteURLPortOverride;
     }
 
+    @Override
     public void setSiteURLPortOverride(int siteURLPortOverride) {
         this.siteURLPortOverride = siteURLPortOverride;
     }
@@ -1074,6 +1116,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         this.mail_maxRegroupingOfPreviousException = mail_maxRegroupingOfPreviousException;
     }
 
+    @Override
     public boolean isDevelopmentMode() {
         return !productionMode;
     }
@@ -1082,10 +1125,12 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      * to get the Site errors page behavior
      * @return a boolean
      */
+    @Override
     public boolean getSiteErrorEnabled() {
         return isSiteErrorEnabled;
     }
 
+    @Override
     public boolean isConsiderDefaultJVMLocale() {
         return considerDefaultJVMLocale;
     }
@@ -1094,6 +1139,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         this.considerDefaultJVMLocale = considerDefaultJVMLocale;
     }
 
+    @Override
     public boolean isConsiderPreferredLanguageAfterLogin() {
         return considerPreferredLanguageAfterLogin;
     }
@@ -1103,10 +1149,12 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         this.considerPreferredLanguageAfterLogin = considerPreferredLanguageAfterLogin;
     }
 
+    @Override
     public boolean isPermanentMoveForVanityURL() {
         return permanentMoveForVanityURL;
     }
 
+    @Override
     public boolean isDumpErrorsToFiles() {
         return dumpErrorsToFiles;
     }
@@ -1115,6 +1163,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         this.dumpErrorsToFiles = dumpErrorsToFiles;
     }
 
+    @Override
     public int getFileDumpMaxRegroupingOfPreviousException() {
         return fileDumpMaxRegroupingOfPreviousException;
     }
@@ -1122,6 +1171,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     /**
      * @return the serverVersion
      */
+    @Override
     public String getServerVersion() {
         return serverVersion;
     }
@@ -1129,14 +1179,17 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     /**
      * @return the serverDeployer
      */
+    @Override
     public ServerDeploymentInterface getServerDeployer() {
         return serverDeployer;
     }
 
+    @Override
     public boolean isMaintenanceMode() {
         return maintenanceMode;
     }
 
+    @Override
     public int getSessionExpiryTime() {
         return sessionExpiryTime;
     }
@@ -1145,6 +1198,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         this.sessionExpiryTime = sessionExpiryTime;
     }
 
+    @Override
     public boolean isDisableJsessionIdParameter() {
         return disableJsessionIdParameter;
     }
@@ -1153,6 +1207,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         this.disableJsessionIdParameter = disableJsessionIdParameter;
     }
 
+    @Override
     public String getJsessionIdParameterName() {
         return jsessionIdParameterName;
     }
@@ -1161,14 +1216,17 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         this.jsessionIdParameterName = jsessionIdParameterName;
     }
 
+    @Override
     public String getGuestUserResourceKey() {
         return guestUserResourceKey;
     }
 
+    @Override
     public String getGuestUserResourceModuleName() {
         return guestUserResourceModuleName;
     }
 
+    @Override
     public String getGuestGroupResourceModuleName() {
         return guestGroupResourceModuleName;
     }
@@ -1177,6 +1235,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         this.guestGroupResourceModuleName = guestGroupResourceModuleName;
     }
 
+    @Override
     public String getGuestGroupResourceKey() {
         return guestGroupResourceKey;
     }
@@ -1228,6 +1287,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      *
      * @return  The templates context.
      */
+    @Override
     public String getTemplatesContext() {
         return "/modules/";
     }
@@ -1283,58 +1343,72 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         return 1000;
     }
 
+    @Override
     public String getOperatingMode() {
         return operatingMode;
     }
 
+    @Override
     public boolean isProductionMode() {
         return productionMode;
     }
 
+    @Override
     public boolean isDistantPublicationServerMode() {
         return distantPublicationServerMode;
     }
 
+    @Override
     public boolean isUseJstackForThreadDumps() {
         return useJstackForThreadDumps;
     }
 
+    @Override
     public boolean isUrlRewriteSeoRulesEnabled() {
         return urlRewriteSeoRulesEnabled;
     }
 
+    @Override
     public boolean isFileServletStatisticsEnabled() {
         return fileServletStatisticsEnabled;
     }
 
+    @Override
     public boolean isUrlRewriteUseAbsoluteUrls() {
         return urlRewriteUseAbsoluteUrls;
     }
 
+    @Override
     public boolean isUrlRewriteRemoveCmsPrefix() {
         return urlRewriteRemoveCmsPrefix;
     }
 
+    @Override
     public int getImportMaxBatch() {
         return importMaxBatch;
     }
 
+    @Override
     public int getMaxNameSize() {
         return maxNameSize;
     }
 
+    @Override
     public boolean isExpandImportedFilesOnDisk() {
         return expandImportedFilesOnDisk;
     }
 
+    @Override
     public String getExpandImportedFilesOnDiskPath() {
         return expandImportedFilesOnDiskPath;
     }
 
+    @Override
     public int getAccessManagerPathPermissionCacheMaxSize() {
         return accessManagerPathPermissionCacheMaxSize;
     }
 
+    @Override
     public int getQueryApproxCountLimit() {
         return queryApproxCountLimit;
     }
@@ -1346,6 +1420,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      * @return <code>true</code> if this Jahia instance operates in "read-only" mode, i.e. access to the edit/studio/administration modes is
      *         not allowed; otherwise returns <code>false</code>
      */
+    @Override
     public boolean isReadOnlyMode() {
         return readOnlyMode;
     }
@@ -1357,6 +1432,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      * @return <code>true</code> if this Jahia instance operates in "read-only" mode, i.e. access to the edit/studio/administration modes and
      * saving in the JCR are not allowed.; otherwise returns <code>false</code>
      */
+    @Override
     public boolean isFullReadOnlyMode() {
         return ReadOnlyModeController.getInstance().getReadOnlyStatus() != ReadOnlyModeController.ReadOnlyModeStatus.OFF;
     }
@@ -1379,6 +1455,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         this.clusterSettingsInitializer = clusterSettingsInitializer;
     }
 
+    @Override
     public String getInternetExplorerCompatibility() {
         return internetExplorerCompatibility;
     }
@@ -1386,6 +1463,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     /**
      * @return true if maven is available
      */
+    @Override
     public boolean isMavenExecutableSet() {
         return isMavenExecutableSet;
     }
@@ -1394,10 +1472,12 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         this.isMavenExecutableSet = isMavenExecutableSet;
     }
 
+    @Override
     public String[] getAuthorizedRedirectHosts() {
         return authorizedRedirectHosts;
     }
 
+    @Override
     public boolean isUseWebsockets() {
         return useWebsockets;
     }
@@ -1406,6 +1486,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         this.useWebsockets = useWebsockets;
     }
 
+    @Override
     public String getAtmosphereAsyncSupport() {
         return atmosphereAsyncSupport;
     }
@@ -1414,10 +1495,12 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         this.atmosphereAsyncSupport = atmosphereAsyncSupport;
     }
 
+    @Override
     public boolean isAreaAutoActivated() {
         return areaAutoActivated;
     }
 
+    @Override
     public int getModuleSpringBeansWaitingTimeout() {
         return moduleSpringBeansWaitingTimeout;
     }
@@ -1435,6 +1518,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      *
      * @return the startup options, which are set
      */
+    @Override
     public StartupOptions getStartupOptions() {
         return startupOptions;
     }
@@ -1445,6 +1529,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      * @param option the option key
      * @return <code>true</code> if the specified option is set; <code>false</code> otherwise
      */
+    @Override
     public boolean isStartupOptionSet(String option) {
         return startupOptions.isSet(option);
     }
@@ -1453,9 +1538,20 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         this.startupOptionsMapping = startupOptionsMapping;
     }
 
+    @Override
     public int getJahiaSiteImportScannerInterval() { return jahiaSiteImportScannerInterval; }
 
+    @Override
     public long getStudioMaxDisplayableFileSize() {
         return studioMaxDisplayableFileSize;
+    }
+
+    @Override
+    public CookieAuthConfig getCookieAuthConfig() {
+        return cookieAuthConfig;
+    }
+
+    public void setCookieAuthConfig(CookieAuthConfig cookieAuthConfig) {
+        this.cookieAuthConfig = cookieAuthConfig;
     }
 }

@@ -82,7 +82,7 @@ import java.util.regex.Pattern;
  * The is the general interface that Jahia code uses to offer user management
  * services throughout the product (administration, login, ACL popups, etc..)
  */
-public class JahiaUserManagerService extends JahiaService implements JahiaAfterInitializationService, ServletContextAware {
+public class JahiaUserManagerService extends JahiaService implements JahiaAfterInitializationService, ServletContextAware, org.jahia.api.usermanager.JahiaUserManagerService {
 
     private static final Logger logger = LoggerFactory.getLogger(JahiaUserManagerService.class);
     private static final String ROOT_PWD_RESET_FILE = "root.pwd";
@@ -123,6 +123,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
         return Holder.INSTANCE;
     }
 
+    @Override
     public JahiaUserSplittingRule getUserSplittingRule() {
         return userSplittingRule;
     }
@@ -151,6 +152,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @return Return a reference on a new created JCRUserNode object.
      * @deprecated use lookupUserByPath() instead
      */
+    @Override
     public JCRUserNode lookupUserByKey(String userKey) {
         return lookupUserByPath(userKey);
     }
@@ -161,6 +163,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      *
      * @return Return a reference on a new created JCRUserNode object.
      */
+    @Override
     public JCRUserNode lookupUserByPath(String path) {
         JCRUserNode userNode = lookupUserByPath(path, Constants.LIVE_WORKSPACE);
         if (userNode == null) {
@@ -184,6 +187,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      *
      * @return Return a reference on a new created JCRUserNode object.
      */
+    @Override
     public JCRUserNode lookupUserByPath(String userKey, JCRSessionWrapper session) {
         try {
             return (JCRUserNode) session.getNode(userKey);
@@ -206,14 +210,17 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @param name User's identification name.
      * @return Return a reference on a new created JCRUserNode object.
      */
+    @Override
     public JCRUserNode lookupUser(String name) {
         return lookupUser(name, null, false);
     }
 
+    @Override
     public JCRUserNode lookupUser(String name, String site) {
         return lookupUser(name, site, true);
     }
 
+    @Override
     public JCRUserNode lookupUser(String name, String site, boolean checkSiteAndGlobalUsers) {
         JCRUserNode userNode = null;
         try {
@@ -246,6 +253,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @param name User's identification name.
      * @return Return a reference on a new created JCRUserNode object.
      */
+    @Override
     public JCRUserNode lookupUser(String name, JCRSessionWrapper session) {
         return lookupUser(name, null, session);
     }
@@ -257,6 +265,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @param name User's identification name.
      * @return Return a reference on a new created JCRUserNode object.
      */
+    @Override
     public JCRUserNode lookupUser(String name, String site, JCRSessionWrapper session) {
         if (StringUtils.isBlank(name)) {
             logger.error("Should not be looking for empty name user");
@@ -269,10 +278,12 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
         return lookupUserByPath(path, session);
     }
 
+    @Override
     public String getUserPath(String name) {
         return getUserPath(name, "");
     }
 
+    @Override
     public String getUserPath(String name, String site) {
         return cacheHelper.getUserPath(name, site);
     }
@@ -285,10 +296,12 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @return Return true if the specified username has not been assigned yet,
      * return false on any failure.
      */
+    @Override
     public boolean userExists(String name) {
         return lookupUser(name) != null;
     }
 
+    @Override
     public boolean userExists(String name, String siteKey) {
         return lookupUser(name, siteKey) != null;
     }
@@ -298,6 +311,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      *
      * @return the system root user name (cached)
      */
+    @Override
     public String getRootUserName() {
         // Thread-safe lazy loading, using double-checked locking pattern
         // see https://en.wikipedia.org/wiki/Double-checked_locking#Usage_in_Java
@@ -318,6 +332,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      *
      * @return the system root user (not cached)
      */
+    @Override
     public JCRUserNode lookupRootUser() {
         try {
             return lookupRootUser(JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null));
@@ -332,6 +347,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      *
      * @return the system root user (not cached)
      */
+    @Override
     public JCRUserNode lookupRootUser(JCRSessionWrapper session) {
         try {
             return (JCRUserNode) session.getNodeByIdentifier(JCRUserNode.ROOT_USER_UUID);
@@ -346,10 +362,12 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      *
      * @return Return a List of strings holding the user identification key .
      */
+    @Override
     public List<String> getUserList() {
         return getUserList(null);
     }
 
+    @Override
     public List<String> getUserList(String siteKey) {
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(Constants.LIVE_WORKSPACE, null, null);
@@ -386,6 +404,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      *
      * @return Return a List of strings holding the user identification names.
      */
+    @Override
     public List<String> getUsernameList() {
         return getUsernameList(null);
     }
@@ -395,6 +414,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      *
      * @return Return a List of strings holding the user identification names.
      */
+    @Override
     public List<String> getUsernameList(String siteKey) {
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(Constants.LIVE_WORKSPACE, null, null);
@@ -428,6 +448,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      *                        null to search without criterias
      * @return a Set of JCRUserNode elements that correspond to those search criterias
      */
+    @Override
     public Set<JCRUserNode> searchUsers(Properties searchCriterias) {
         try {
             return searchUsers(searchCriterias, JCRSessionFactory.getInstance().getCurrentSystemSession(Constants.LIVE_WORKSPACE, null, null));
@@ -447,6 +468,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      *                        null to search without criterias
      * @return a Set of JCRUserNode elements that correspond to those search criterias
      */
+    @Override
     public Set<JCRUserNode> searchUsers(Properties searchCriterias, String[] providers) {
         try {
             return searchUsers(searchCriterias, providers, JCRSessionFactory.getInstance().getCurrentSystemSession(Constants.LIVE_WORKSPACE, null, null));
@@ -466,18 +488,22 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      *                        null to search without criterias
      * @return a Set of JCRUserNode elements that correspond to those search criterias
      */
+    @Override
     public Set<JCRUserNode> searchUsers(Properties searchCriterias, JCRSessionWrapper session) {
         return searchUsers(searchCriterias, null, session);
     }
 
+    @Override
     public Set<JCRUserNode> searchUsers(final Properties searchCriterias, final String[] providerKeys, JCRSessionWrapper session) {
         return searchUsers(searchCriterias, null, providerKeys, session);
     }
 
+    @Override
     public Set<JCRUserNode> searchUsers(final Properties searchCriterias, String siteKey, final String[] providerKeys, JCRSessionWrapper session) {
         return searchUsers(searchCriterias, siteKey, providerKeys, false, session);
     }
 
+    @Override
     public Set<JCRUserNode> searchUsers(Properties searchCriterias, String siteKey, final String[] providerKeys, boolean excludeProtected, JCRSessionWrapper session) {
 
         if (providerKeys != null) {
@@ -506,6 +532,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
         }
     }
 
+    @Override
     public Set<JCRUserNode> searchUsers(final Properties searchCriterias, String siteKey, final String providerKey, boolean excludeProtected, JCRSessionWrapper session) {
         try {
             int limit = 0;
@@ -625,10 +652,12 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @param session the session used
      * @return list of JCRStoreProvider
      */
+    @Override
     public List<JCRStoreProvider> getProviderList(JCRSessionWrapper session) {
         return getProviderList(null, session);
     }
 
+    @Override
     public List<JCRStoreProvider> getProviderList(String siteKey, JCRSessionWrapper session) {
         List<JCRStoreProvider> providers = new LinkedList<>();
         try {
@@ -655,10 +684,12 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @param session      the session used
      * @return list of JCRStoreProvider
      */
+    @Override
     public List<JCRStoreProvider> getProviders(String[] providerKeys, JCRSessionWrapper session) {
         return getProviders(null, providerKeys, session);
     }
 
+    @Override
     public List<JCRStoreProvider> getProviders(String siteKey, String[] providerKeys, JCRSessionWrapper session) {
         if (ArrayUtils.isEmpty(providerKeys)) {
             return Collections.emptyList();
@@ -679,10 +710,12 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @param session     the session used
      * @return JCRStoreProvider if it exist or null
      */
+    @Override
     public JCRStoreProvider getProvider(String providerKey, JCRSessionWrapper session) {
         return getProvider(null, providerKey, session);
     }
 
+    @Override
     public JCRStoreProvider getProvider(String siteKey, String providerKey, JCRSessionWrapper session) {
         List<JCRStoreProvider> providers = getProviders(siteKey, new String[]{providerKey}, session);
         return providers.size() == 1 ? providers.get(0) : null;
@@ -697,8 +730,8 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @param properties User additional parameters. If the user has no additional
      * @param session
      */
-    public JCRUserNode createUser(final String name, final String password,
-                                  final Properties properties, JCRSessionWrapper session) {
+    @Override
+    public JCRUserNode createUser(final String name, final String password, final Properties properties, JCRSessionWrapper session) {
         return createUser(name, null, password, properties, session);
     }
 
@@ -711,8 +744,8 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @param properties User additional parameters. If the user has no additional
      * @param session
      */
-    public JCRUserNode createUser(final String name, String siteKey, final String password,
-                                  final Properties properties, JCRSessionWrapper session) {
+    @Override
+    public JCRUserNode createUser(final String name, String siteKey, final String password, final Properties properties, JCRSessionWrapper session) {
         try {
             String jcrUsernamePath[] = Patterns.SLASH.split(StringUtils.substringAfter(
                     ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(
@@ -768,6 +801,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @param userPath reference on the user to be deleted.
      * @param session
      */
+    @Override
     public boolean deleteUser(final String userPath, JCRSessionWrapper session) {
 
         try {
@@ -808,7 +842,6 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
             return false;
         }
     }
-
 
     /**
      * Returns <code>true</code> if the specified user is <code>null</code> or a
@@ -856,6 +889,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @param name the user name to be validated
      * @return <code>true</code> if the specified user name matches the validation pattern
      */
+    @Override
     public boolean isUsernameSyntaxCorrect(String name) {
 
         if (name == null || name.length() == 0) {
@@ -941,6 +975,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      *
      * @deprecated
      */
+    @Override
     @Deprecated
     public List<? extends JahiaUserManagerProvider> getProviderList() {
         return new ArrayList<>(legacyUserProviders.values());
@@ -952,6 +987,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      *
      * @deprecated
      */
+    @Override
     @Deprecated
     public JahiaUserManagerProvider getProvider(String key) {
         return legacyUserProviders.get(key);
@@ -963,6 +999,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      *
      * @deprecated
      */
+    @Override
     @Deprecated
     public void registerProvider(JahiaUserManagerProvider jahiaUserManagerProvider) {
         legacyUserProviders.put(jahiaUserManagerProvider.getKey(), jahiaUserManagerProvider);
@@ -1001,6 +1038,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      *            the identifier to lookup the user (can be a JCR path, user name or legacy user key)
      * @return the corresponding user node or null if no user can be found for the specified key
      */
+    @Override
     public JCRUserNode lookup(String lookupKey) {
         JCRUserNode user = null;
         char first = lookupKey.charAt(0);

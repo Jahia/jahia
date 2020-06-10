@@ -118,6 +118,7 @@ public class EhCacheProvider implements CacheProvider {
         return new EhCacheImpl(name, cacheManager, this);
     }
 
+    @Override
     public CacheManager getCacheManager() {
         return cacheManager;
     }
@@ -152,6 +153,7 @@ public class EhCacheProvider implements CacheProvider {
      * @param factory the CacheFactory to be used to fill the CacheEntry
      * @return teh instance of the registered cache
      */
+    @Override
     public synchronized SelfPopulatingCache registerSelfPopulatingCache(String cacheName, CacheEntryFactory factory) {
         return registerSelfPopulatingCache(cacheName, null, factory);
     }
@@ -163,6 +165,7 @@ public class EhCacheProvider implements CacheProvider {
      * @param factory the CacheFactory to be used to fill the CacheEntry
      * @return the instance of the registered cache
      */
+    @Override
     public synchronized SelfPopulatingCache registerSelfPopulatingCache(String cacheName, Searchable searchable, CacheEntryFactory factory) {
         // Call getEhCache to be sure to have the decorated cache. We manipulate only EhCache not Cache object
         Ehcache cache = cacheManager.getEhcache(cacheName);

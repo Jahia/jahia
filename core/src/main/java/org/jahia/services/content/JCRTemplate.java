@@ -61,7 +61,7 @@ import java.util.Locale;
  *
  * @author Cedric Mailleux
  */
-public class JCRTemplate {
+public class JCRTemplate implements org.jahia.api.content.JCRTemplate {
 
     private JCRSessionFactory sessionFactory;
 
@@ -96,6 +96,7 @@ public class JCRTemplate {
     /**
      * @return Returns the sessionFactory.
      */
+    @Override
     public JCRSessionFactory getSessionFactory() {
         return sessionFactory;
     }
@@ -112,6 +113,7 @@ public class JCRTemplate {
      * @throws RepositoryException if the method could not find a current user session, or if any other underlying
      * JCR error occurred.
      */
+    @Override
     public <X> X doExecuteWithSystemSessionInSameWorkspaceAndLocale(JCRCallback<X> callback) throws RepositoryException {
         JCRSessionWrapper session = getSessionFactory().getCurrentUserSession();
         if (session == null) {
@@ -132,6 +134,7 @@ public class JCRTemplate {
      * @return a result object returned by the action, or null
      * @throws RepositoryException in case of JCR errors
      */
+    @Override
     public <X> X doExecuteWithSystemSession(JCRCallback<X> callback) throws RepositoryException {
         return doExecuteWithSystemSessionAsUser(null, null, null, callback);
     }
@@ -188,6 +191,7 @@ public class JCRTemplate {
      * @return a result object returned by the action, or null
      * @throws RepositoryException in case of JCR errors
      */
+    @Override
     public <X> X doExecuteWithSystemSessionAsUser(JahiaUser user, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException {
         JCRSessionWrapper session = null;
         try {
@@ -249,6 +253,7 @@ public class JCRTemplate {
      * @return a result object returned by the action, or null
      * @throws RepositoryException in case of JCR errors
      */
+    @Override
     public <X> X doExecute(String username, String realm, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException {
         JCRSessionWrapper session = null;
         try {
@@ -278,6 +283,7 @@ public class JCRTemplate {
      * @return a result object returned by the action, or null
      * @throws RepositoryException in case of JCR errors
      */
+    @Override
     public <X> X doExecute(JahiaUser user, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException {
         JCRSessionWrapper session = null;
         try {

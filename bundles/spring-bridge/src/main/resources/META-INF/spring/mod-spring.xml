@@ -6,7 +6,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
                         http://www.eclipse.org/gemini/blueprint/schema/blueprint http://www.eclipse.org/gemini/blueprint/schema/blueprint/gemini-blueprint.xsd">
 
-    <osgi:service interface="org.jahia.services.usermanager.JahiaUserManagerService">
+    <osgi:service interface="org.jahia.services.usermanager.JahiaUserManagerService, org.jahia.api.usermanager.JahiaUserManagerService">
         <osgi:service-properties>
             <entry key="Service Description" value="The user manager is responsible to manage all the users in the DX environment"/>
             <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
@@ -66,7 +66,7 @@
         </bean>
     </osgi:service>
 
-    <osgi:service interface="org.jahia.services.content.JCRTemplate">
+    <osgi:service interface="org.jahia.services.content.JCRTemplate,org.jahia.api.content.JCRTemplate">
         <osgi:service-properties>
             <entry key="Service Description" value="Helper server to simplify and unify JCR data access"/>
             <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
@@ -116,7 +116,7 @@
         </bean>
     </osgi:service>
 
-    <osgi:service interface="org.jahia.services.templates.JahiaTemplateManagerService">
+    <osgi:service interface="org.jahia.services.templates.JahiaTemplateManagerService,org.jahia.api.templates.JahiaTemplateManagerService">
         <osgi:service-properties>
             <entry key="Service Description" value="Template and template set deployment and management service"/>
             <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
@@ -293,6 +293,26 @@
         </osgi:service-properties>
         <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
             <property name="target" ref="org.jahia.services.wip.WIPService"/>
+        </bean>
+    </osgi:service>
+
+    <osgi:service interface="org.jahia.api.settings.SettingsBean">
+        <osgi:service-properties>
+            <entry key="Service Description" value="Settings beans"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="settingsBean"/>
+        </bean>
+    </osgi:service>
+
+    <osgi:service interface="org.jahia.services.cache.CacheProvider">
+        <osgi:service-properties>
+            <entry key="Service Description" value="EHCache provider"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="ehCacheProvider"/>
         </bean>
     </osgi:service>
 

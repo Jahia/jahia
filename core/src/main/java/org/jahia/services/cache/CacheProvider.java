@@ -41,21 +41,42 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
- package org.jahia.services.cache;
+package org.jahia.services.cache;
 
-import org.jahia.settings.SettingsBean;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.config.Searchable;
+import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
+import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.settings.SettingsBean;
 
 /**
  * Jahia cache provider definition.
- * 
+ *
  * @author Serge Huber
  */
 public interface CacheProvider {
 
-    void init(SettingsBean settingsBean, CacheService cacheService) throws JahiaInitializationException;
+    public CacheImplementation<?, ?> newCacheImplementation(String name);
 
-    void shutdown();
+    default void init(SettingsBean settingsBean, CacheService cacheService) throws JahiaInitializationException {
+        // do nothing
+    }
 
-    CacheImplementation<?, ?> newCacheImplementation(String name);
+    default void shutdown() {
+        // do nothing
+    }
+
+    default public CacheManager getCacheManager() {
+        return null;
+    }
+
+    default SelfPopulatingCache registerSelfPopulatingCache(String cacheName, CacheEntryFactory factory) {
+        return null;
+    }
+
+    default SelfPopulatingCache registerSelfPopulatingCache(String cacheName, Searchable searchable, CacheEntryFactory factory) {
+        return null;
+    }
+
 }

@@ -72,8 +72,8 @@ jobs:
         default: false
     <<: *workdir
     docker: # run the steps with Docker
-      - image: circleci/openjdk:8-jdk-stretch
-    resource_class: large
+      - image: circleci/openjdk:8-jdk-stretch-node
+    resource_class: xlarge
     steps:
       - *attach-workspace
       - restore_cache:

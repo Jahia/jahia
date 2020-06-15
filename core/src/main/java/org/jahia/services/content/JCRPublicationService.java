@@ -764,12 +764,11 @@ public class JCRPublicationService extends JahiaService {
         if (versionable) {
             ((JCRWorkspaceWrapper.VersionManagerWrapper) destinationVersionManager).addPredecessor(destinationPath, sourceVersionManager.getBaseVersion(path));
             toCheckpoint.add(destinationNode);
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Merge node end : " + path + " source v=" +
-                    sourceSession.getNode(path).getBaseVersion().getName() + " , dest node v=" +
-                    destinationSession.getNode(destinationPath).getBaseVersion().getName());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Merge node end : " + path + " source v=" +
+                        sourceSession.getNode(path).getBaseVersion().getName() + " , dest node v=" +
+                        destinationSession.getNode(destinationPath).getBaseVersion().getName());
+           }
         }
     }
 

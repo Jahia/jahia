@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<settings>
+    <profiles>
+        <profile>
+            <id>jahia-internal-repository</id>
+            <repositories>
+                <repository>
+                    <id>jahia-internal</id>
+                    <name>Jahia Internal Repository</name>
+                    <url>${env.NEXUS_INTERNAL_URL}</url>
+                    <releases>
+                        <enabled>true</enabled>
+                        <updatePolicy>never</updatePolicy>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                        <updatePolicy>always</updatePolicy>
+                    </snapshots>
+                </repository>
+            </repositories>
+        </profile>
+        <profile>
+            <id>sonar</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <sonar.host.url>${env.SONAR_URL}</sonar.host.url>
+                <sonar.login>${env.SONAR_TOKEN}</sonar.login>
+            </properties>
+        </profile>
+    </profiles>
+
+    <activeProfiles>
+        <activeProfile>jahia-internal-repository</activeProfile>
+    </activeProfiles>
+
+    <servers>
+        <server>
+            <id>jahia-enterprise</id>
+            <username>${env.NEXUS_USERNAME}</username>
+            <password>${env.NEXUS_PASSWORD}</password>
+        </server>
+        <server>
+            <id>jahia-snapshots</id>
+            <username>${env.NEXUS_USERNAME}</username>
+            <password>${env.NEXUS_PASSWORD}</password>
+        </server>
+        <server>
+            <id>jahia-internal</id>
+            <username>${env.NEXUS_USERNAME}</username>
+            <password>${env.NEXUS_PASSWORD}</password>
+        </server>
+    </servers>
+</settings>

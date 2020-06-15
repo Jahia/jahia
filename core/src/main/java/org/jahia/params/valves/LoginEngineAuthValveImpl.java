@@ -43,8 +43,11 @@
  */
 package org.jahia.params.valves;
 
+import org.apache.groovy.util.Maps;
 import org.jahia.api.Constants;
 import org.jahia.bin.Login;
+import org.jahia.osgi.BundleUtils;
+import org.jahia.osgi.FrameworkService;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.security.license.LicenseCheckerService;
@@ -56,6 +59,8 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -140,6 +145,11 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
 
             if (fireLoginEvent) {
                 SpringContextSingleton.getInstance().publishEvent(new LoginEvent(this, jahiaUser, authContext));
+                Map<String, Object> m = new HashMap<>();
+                m.put("user", jahiaUser);
+                m.put("authContext", authContext);
+                m.put("source", this);
+                FrameworkService.sendEvent("org/jahia/usersgroups/login/LOGIN", m, false);
             }
 
         } else {

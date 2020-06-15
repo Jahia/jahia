@@ -47,6 +47,7 @@ import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.osgi.FrameworkService;
 import org.jahia.params.valves.CookieAuthConfig;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
@@ -276,6 +277,10 @@ public class Logout implements Controller {
 
         if (fireLogoutEvent) {
             SpringContextSingleton.getInstance().publishEvent(new LogoutEvent(this, request, response));
+            Map<String, Object> m = new HashMap<>();
+            m.put("request", request);
+            m.put("response", response);
+            FrameworkService.sendEvent("org/jahia/usersgroups/login/LOGOUT", m, false);
         }
 
         Map<String,Object> savedSessionAttributes = preserveSessionAttributes(request);

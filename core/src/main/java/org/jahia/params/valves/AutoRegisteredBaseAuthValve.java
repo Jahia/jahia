@@ -71,72 +71,15 @@ public abstract class AutoRegisteredBaseAuthValve extends BaseAuthValve implemen
     public void afterPropertiesSet() {
         initialize();
         
-        removeValve(getId());
-        
-        int index = -1;
-        if (position >= 0) {
-            index = position;
-        } else if (positionBefore != null) {
-            index = indexOf(positionBefore);
-        } else if (positionAfter != null) {
-            index = indexOf(positionAfter);
-            if (index != -1) {
-                index++;
-            }
-            if (index >= authPipeline.getValves().length) {
-                index = -1;
-            }
-        }
-        if (index != -1) {
-            authPipeline.addValve(index, this);
-            logger.info("Registered authentication valve {} at position {}", getId(), index);
-        } else {
-            authPipeline.addValve(this);
-            logger.info("Registered authentication valve {}", getId());
-        }
+        removeValve(authPipeline);
+        addValve(authPipeline, position, positionAfter, positionBefore);
     }
 
     @Override
     public void destroy() throws Exception {
         if (JahiaContextLoaderListener.isRunning()) {
-            removeValve(getId());
+            removeValve(authPipeline);
             logger.info("Unregistered authentication valve {}", getId());
-        }
-    }
-
-    /**
-     * Returns the position of the specified valve by ID.
-     * 
-     * @param id
-     *            the ID of the valve to search for
-     * @return the position of the specified valve by ID or <code>-1</code> if the valve is not found
-     */
-    private int indexOf(String id) {
-        Valve[] registeredValves = authPipeline.getValves();
-        for (int i = 0; i < registeredValves.length; i++) {
-            Valve v = registeredValves[i];
-            if (v instanceof BaseAuthValve && StringUtils.equals(((BaseAuthValve) v).getId(), id)) {
-                return i;
-            }
-
-        }
-
-        return -1;
-    }
-
-    /**
-     * Removes the valve by its ID.
-     * 
-     * @param id
-     *            the ID of the valve to be removed from the pipeline
-     */
-    private void removeValve(String id) {
-        Valve[] registeredValves = authPipeline.getValves();
-        for (Valve v : registeredValves) {
-            if (v instanceof BaseAuthValve && StringUtils.equals(((BaseAuthValve) v).getId(), id)) {
-                authPipeline.removeValve(v);
-                // do not stop: remove all for that ID
-            }
         }
     }
 

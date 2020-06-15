@@ -44,21 +44,85 @@
 package org.jahia.params.valves;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.pipelines.Pipeline;
 import org.jahia.pipelines.valves.Valve;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanNameAware;
 
 /**
  * Common class for authentication valves.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public abstract class BaseAuthValve implements Valve, BeanNameAware {
+    private static final Logger logger = LoggerFactory.getLogger(BaseAuthValve.class);
 
     private String beanName;
 
     private boolean enabled = true;
 
     private String id;
+
+    /**
+     * Returns the position of the specified valve by ID.
+     *
+     * @param id
+     *            the ID of the valve to search for
+     * @return the position of the specified valve by ID or <code>-1</code> if the valve is not found
+     */
+    protected static int indexOf(String id, Pipeline authPipeline) {
+        Valve[] registeredValves = authPipeline.getValves();
+        for (int i = 0; i < registeredValves.length; i++) {
+            Valve v = registeredValves[i];
+            if (v instanceof BaseAuthValve && StringUtils.equals(((BaseAuthValve) v).getId(), id)) {
+                return i;
+            }
+
+        }
+
+        return -1;
+    }
+
+    protected void addValve(Pipeline authPipeline, Integer position, String positionAfter, String positionBefore) {
+        int index = -1;
+        if (position >= 0) {
+            index = position;
+        } else if (positionBefore != null) {
+            index = indexOf(positionBefore, authPipeline);
+        } else if (positionAfter != null) {
+            index = indexOf(positionAfter, authPipeline);
+            if (index != -1) {
+                index++;
+            }
+            if (index >= authPipeline.getValves().length) {
+                index = -1;
+            }
+        }
+        if (index != -1) {
+            authPipeline.addValve(index, this);
+            logger.info("Registered authentication valve {} at position {}", getId(), index);
+        } else {
+            authPipeline.addValve(this);
+            logger.info("Registered authentication valve {}", getId());
+        }
+
+    }
+
+    /**
+     * Removes the valve by its ID.
+     *
+     *            the ID of the valve to be removed from the pipeline
+     */
+    protected void removeValve(Pipeline authPipeline) {
+        Valve[] registeredValves = authPipeline.getValves();
+        for (Valve v : registeredValves) {
+            if (v instanceof BaseAuthValve && StringUtils.equals(((BaseAuthValve) v).getId(), id)) {
+                authPipeline.removeValve(v);
+                // do not stop: remove all for that ID
+            }
+        }
+    }
 
     @Override
     public boolean equals(Object obj) {

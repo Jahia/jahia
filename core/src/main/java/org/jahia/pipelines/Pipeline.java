@@ -68,8 +68,7 @@ import java.util.Map;
  */
 public interface Pipeline {
 
-    void initialize()
-            throws PipelineException;
+    void initialize() throws PipelineException;
 
     /**
      * <p>Add a new Valve to the end of the pipeline.</p>
@@ -79,6 +78,15 @@ public interface Pipeline {
      *                               initialized.
      */
     void addValve(Valve valve);
+
+    /**
+     * <p>Add a new Valve at the specified position of the pipeline.</p>
+     *
+     * @param valve Valve to be added.
+     * @throws IllegalStateException If the pipeline has not been
+     *                               initialized.
+     */
+    void addValve(int position, Valve valve);
 
     /**
      * <p>Return the set of all Valves in the pipeline.  If there are no
@@ -102,8 +110,7 @@ public interface Pipeline {
      *                request and response we are processing.
      * @throws PipelineException an input/output error occurred.
      */
-    void invoke(Object context)
-            throws PipelineException;
+    void invoke(Object context) throws PipelineException;
 
     /**
      * <p>Remove the specified Valve from the pipeline, if it is found;
@@ -112,8 +119,6 @@ public interface Pipeline {
      * @param valve Valve to be removed.
      */
     void removeValve(Valve valve);
-
-    // BEGIN [added by Pascal Aubry for CAS authentication]
 
     /**
      * <p>Tell if (at least) one of the valves of the pipeline is an instance
@@ -132,7 +137,6 @@ public interface Pipeline {
      * @return a Valve instance, or null if no valve matches.
      */
     public Valve getFirstValveOfClass(Class<Valve> c);
-    // END [added by Pascal Aubry for CAS authentication]
 
     /**
      * Used by users of the pipeline to provide an environment in which the valves

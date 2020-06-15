@@ -1,0 +1,183 @@
+version: 2.1
+
+references:
+  workdir: &workdir
+    working_directory: ~/source
+
+  persist-workspace: &persist-workspace
+    persist_to_workspace:
+      root: ~/source
+      paths:
+        - .
+
+  attach-workspace: &attach-workspace
+    attach_workspace:
+      at: .
+
+jobs:
+  checkout:
+    <<: *workdir
+    docker: # run the steps with Docker
+      - image: circleci/openjdk:8-jdk-stretch
+    steps:
+      - checkout
+      - *persist-workspace
+
+  build:
+    parameters:
+      is_pull_request:
+        type: boolean
+        default: false
+    <<: *workdir
+    docker: # run the steps with Docker
+      - image: circleci/openjdk:8-jdk-stretch
+    resource_class: large
+    steps:
+      - *attach-workspace
+      - restore_cache:
+          keys:
+            - v2-dependencies-{{ checksum "pom.xml" }}
+            # fallback to using the latest cache if no exact match is found
+            - v2-dependencies-
+      - when:
+          condition: <<parameters.is_pull_request>>
+          steps:
+            - run:
+                # TODO For now I just replaced the Bamboo build number by the CircleCI build number
+                name: mvn clean install
+                command: mvn -s .circleci/.circleci.settings.xml -e clean install -Pgwt-production,unit-tests -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
+      - unless:
+          condition: <<parameters.is_pull_request>>
+          steps:
+            - run:
+                # TODO One day we may want to replace the install by deploy in the name and the command
+                # TODO For now I just replaced the Bamboo build number by the CircleCI build number
+                name: mvn clean install
+                command: mvn -s .circleci/.circleci.settings.xml -e clean install -Pgwt-production,unit-tests -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
+      - run:
+          # TODO For now I just replaced the Bamboo build number by the CircleCI build number
+          name: Compile GWT development
+          working_directory: ~/source/gwt
+          command: mvn -s ../.circleci/.circleci.settings.xml -e clean install -Pgwt-development -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v2-dependencies-{{ checksum "pom.xml" }}
+      - *persist-workspace
+
+  sonar:
+    parameters:
+      is_pull_request:
+        type: boolean
+        default: false
+    <<: *workdir
+    docker: # run the steps with Docker
+      - image: circleci/openjdk:8-jdk-stretch
+    resource_class: large
+    steps:
+      - *attach-workspace
+      - restore_cache:
+          keys:
+            - v2-dependencies-{{ checksum "pom.xml" }}
+            # fallback to using the latest cache if no exact match is found
+            - v2-dependencies-
+      - when:
+          condition: <<parameters.is_pull_request>>
+          steps:
+            - run:
+                name: Sonar analysis
+                command: |
+                  mvn -s .circleci/.circleci.settings.xml sonar:sonar -Dsonar.pullrequest.branch=$CIRCLE_BRANCH \
+                  -Dsonar.pullrequest.key=<< pipeline.parameters.pull_request_number >> \
+                  -Dsonar.pullrequest.base=<< pipeline.parameters.target_branch >> \
+                  -Dsonar.pullrequest.github.repository=<< pipeline.parameters.github_repository >>
+      - unless:
+          condition: <<parameters.is_pull_request>>
+          steps:
+            - run:
+                name: Analyze pull request with sonar
+                command: |
+                  if [[ "${CIRCLE_BRANCH}" == "master" ]];
+                  then
+                    mvn -s .circleci/.circleci.settings.xml sonar:sonar
+                  else
+                    mvn -s .circleci/.circleci.settings.xml sonar:sonar -Dsonar.branch.name=$CIRCLE_BRANCH
+                  fi
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v2-dependencies-{{ checksum "pom.xml" }}
+
+  trigger_pack_build:
+    <<: *workdir
+    docker: # run the steps with Docker
+      - image: circleci/openjdk:8-jdk-stretch
+    steps:
+      - run:
+          name: Trigger the build of jahia-ee
+          command: curl -X POST --url 'https://circleci.com/api/v2/project/gh/Jahia/jahia-pack-private/pipeline'
+            --header 'circle-token:'"$CIRCLECI_PIPELINE_LAUNCH_TOKEN"''
+            --header 'content-type:application/json'
+            --data '{ "branch":"'"$CIRCLE_BRANCH"'" }'
+
+# Pipeline parameter must be declared
+parameters:
+  run_pull_request:
+    type: boolean
+    default: false
+  target_branch:
+    type: string
+    default: ""
+  pull_request_number:
+    type: string
+    default: ""
+  github_repository:
+    type: string
+    default: ""
+
+workflows:
+  version: 2
+  # This one is run only when triggered with the API, using a GitHub action
+  pull_request:
+    when: << pipeline.parameters.run_pull_request >>
+    jobs:
+      - checkout:
+          name: PR Checkout
+      - build:
+          name: PR Build Jahia
+          is_pull_request: true
+          context: QA_ENVIRONMENT
+          requires:
+            - PR Checkout
+      - sonar:
+          name: PR Sonar analysis
+          is_pull_request: true
+          context: QA_ENVIRONMENT
+          requires:
+            - PR Build Jahia
+  on-code-change:
+    jobs:
+      - checkout:
+          filters:
+            branches:
+              only:
+                - master
+                - /feature-.*/
+                - /JAHIA-[0-9]-[0-9]-[0-9]-X-BRANCH/
+      - build:
+          name: Build Jahia
+          is_pull_request: false
+          context: QA_ENVIRONMENT
+          requires:
+            - checkout
+      - sonar:
+          name: Sonar analysis
+          is_pull_request: false
+          context: QA_ENVIRONMENT
+          requires:
+            - Build Jahia
+      - trigger_pack_build:
+          name: Trigger build of jahia-pack-private
+          context: QA_ENVIRONMENT
+          requires:
+            - Build Jahia

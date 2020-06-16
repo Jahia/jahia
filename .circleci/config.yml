@@ -31,7 +31,7 @@ jobs:
     <<: *workdir
     docker: # run the steps with Docker
       - image: circleci/openjdk:8-jdk-stretch
-    resource_class: large
+    resource_class: xlarge
     steps:
       - *attach-workspace
       - restore_cache:
@@ -85,7 +85,7 @@ jobs:
           condition: <<parameters.is_pull_request>>
           steps:
             - run:
-                name: Sonar analysis
+                name: Analyze pull request with sonar
                 command: |
                   mvn -s .circleci/.circleci.settings.xml sonar:sonar -Dsonar.pullrequest.branch=$CIRCLE_BRANCH \
                   -Dsonar.pullrequest.key=<< pipeline.parameters.pull_request_number >> \
@@ -95,7 +95,7 @@ jobs:
           condition: <<parameters.is_pull_request>>
           steps:
             - run:
-                name: Analyze pull request with sonar
+                name: Sonar analysis
                 command: |
                   if [[ "${CIRCLE_BRANCH}" == "master" ]];
                   then

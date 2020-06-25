@@ -87,7 +87,7 @@ public class ModulesProviderTest {
 
         // get default module
         templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
-        final JCRNodeWrapper dummy1 = templateManagerService.checkoutModule(null, "scm:git:git@github.com:Jahia/test-module-dummy1.git", null, "dummy1", null, s);
+        final JCRNodeWrapper dummy1 = templateManagerService.checkoutModule(null, "scm:git:git@github.com:Jahia/test-module-dummy1.git", "1_x", "dummy1", null, s);
         root = dummy1.getNode("sources/src/main/resources");
     }
 

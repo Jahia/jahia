@@ -176,6 +176,16 @@ public class HttpHeadRequestFilter implements Filter{
                 throw new IOException("Negative Length given in write method");
             }
         }
+
+        @Override
+        public boolean isReady() {
+            return true;
+        }
+
+        @Override
+        public void setWriteListener(WriteListener writeListener) {
+
+        }
     }
 
     /**

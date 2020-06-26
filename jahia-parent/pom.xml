@@ -175,8 +175,8 @@
         <pax.logging.version>1.11.2</pax.logging.version>
         <pax.swissbox.version>1.8.3</pax.swissbox.version>
         <pax.url.version>2.6.1</pax.url.version>
-        <pax.web.api.version>7.2.11</pax.web.api.version>
-        <pax.web.jsp.version>7.2.11</pax.web.jsp.version>
+        <pax.web.api.version>7.3.7</pax.web.api.version>
+        <pax.web.jsp.version>7.3.7</pax.web.jsp.version>
         <karaf.version>4.2.7</karaf.version>
         <karaf.jaas.config.version>${karaf.version}</karaf.jaas.config.version>
         <!-- End of OSGi versions -->
@@ -734,7 +734,7 @@
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
-                <version>3.0.1</version>
+                <version>3.1.0</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>

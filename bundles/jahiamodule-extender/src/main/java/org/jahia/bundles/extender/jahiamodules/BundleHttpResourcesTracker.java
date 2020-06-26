@@ -142,6 +142,8 @@ public class BundleHttpResourcesTracker extends ServiceTracker<HttpService, Http
         }
         cfg.put("scratchdir", scratchDirFile.getPath());
         cfg.put("alias", jspServletAlias);
+        cfg.put("compilerSourceVM", "1.7");
+        cfg.put("compilerTargetVM", "1.7");
 
         JahiaJspServletWrapper jspServletWrapper = new JahiaJspServletWrapper(bundle);
 

@@ -412,4 +412,8 @@ public final class ServletContextImpl implements ExtServletContext {
         return this.httpContext.handleSecurity(req, res);
     }
 
+    @Override
+    public String getVirtualServerName() {
+        return this.context.getVirtualServerName();
+    }
 }

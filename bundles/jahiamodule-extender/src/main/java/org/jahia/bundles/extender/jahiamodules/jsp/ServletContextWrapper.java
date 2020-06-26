@@ -322,4 +322,9 @@ public class ServletContextWrapper implements ServletContext {
     public void declareRoles(String... strings) {
         servletContext.declareRoles(strings);
     }
+
+    @Override
+    public String getVirtualServerName() {
+        return servletContext.getVirtualServerName();
+    }
 }

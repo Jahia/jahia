@@ -51,6 +51,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
@@ -86,6 +87,15 @@ public class StringResponseWrapper extends HttpServletResponseWrapper {
         @Override
         public void write(int b) throws IOException {
             bos.write(b);
+        }
+
+        @Override
+        public boolean isReady() {
+            return true;
+        }
+
+        @Override
+        public void setWriteListener(WriteListener writeListener) {
         }
     };
 

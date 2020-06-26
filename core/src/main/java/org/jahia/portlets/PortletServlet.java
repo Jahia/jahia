@@ -753,6 +753,11 @@ public class PortletServlet extends HttpServlet {
             //To change body of implemented methods use File | Settings | File Templates.
         }
 
+        @Override
+        public String getVirtualServerName() {
+            return deleguee.getVirtualServerName();
+        }
+
 
     }
 }

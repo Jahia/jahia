@@ -120,18 +120,18 @@ public class ModuleDeploymentTest {
             @Override
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 logger.info("--- clear deployed modules");
-                JahiaTemplatesPackage oldpack = managerService.getTemplatePackageRegistry().lookupByIdAndVersion("dummy1", new ModuleVersion("1.0"));
+                JahiaTemplatesPackage oldpack = managerService.getTemplatePackageRegistry().lookupByIdAndVersion("dummy1", new ModuleVersion("2.0.0"));
                 if (oldpack != null) {
                     managerService.undeployModule(oldpack);
                 }
-                oldpack = managerService.getTemplatePackageRegistry().lookupByIdAndVersion("dummy1", new ModuleVersion("1.1"));
+                oldpack = managerService.getTemplatePackageRegistry().lookupByIdAndVersion("dummy1", new ModuleVersion("2.1.0"));
                 if (oldpack != null) {
                     managerService.undeployModule(oldpack);
                 }
 
                 SettingsBean settingsBean = SettingsBean.getInstance();
-                FileUtils.deleteQuietly(new File(settingsBean.getJahiaModulesDiskPath(), "dummy1-" + "1.0" + ".jar"));
-                FileUtils.deleteQuietly(new File(settingsBean.getJahiaModulesDiskPath(), "dummy1-" + "1.1" + ".jar"));
+                FileUtils.deleteQuietly(new File(settingsBean.getJahiaModulesDiskPath(), "dummy1-" + "2.0.0" + ".jar"));
+                FileUtils.deleteQuietly(new File(settingsBean.getJahiaModulesDiskPath(), "dummy1-" + "2.1.0" + ".jar"));
 
                 Bundle[] bundles = FrameworkService.getBundleContext().getBundles();
                 for (Bundle bundle : bundles) {
@@ -162,7 +162,7 @@ public class ModuleDeploymentTest {
 
                 try {
                     File tmpFile = File.createTempFile("module",".jar");
-                    InputStream stream = managerService.getTemplatePackageById("jahia-test-module").getResource("dummy1-" + "1.0" + ".jar").getInputStream();
+                    InputStream stream = managerService.getTemplatePackageById("jahia-test-module").getResource("dummy1-" + "2.0.0" + ".jar").getInputStream();
                     FileUtils.copyInputStreamToFile(stream,  tmpFile);
                     managerService.deployModule(tmpFile, session);
                     tmpFile.delete();
@@ -202,12 +202,12 @@ public class ModuleDeploymentTest {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 try {
                     File tmpFile = File.createTempFile("module",".jar");
-                    InputStream stream = managerService.getTemplatePackageById("jahia-test-module").getResource("dummy1-" + "1.0" + ".jar").getInputStream();
+                    InputStream stream = managerService.getTemplatePackageById("jahia-test-module").getResource("dummy1-" + "2.0.0" + ".jar").getInputStream();
                     FileUtils.copyInputStreamToFile(stream,  tmpFile);
                     managerService.deployModule(tmpFile, session);
                     tmpFile.delete();
                     tmpFile = File.createTempFile("module",".jar");
-                    stream = managerService.getTemplatePackageById("jahia-test-module").getResource("dummy1-" + "1.1" + ".jar").getInputStream();
+                    stream = managerService.getTemplatePackageById("jahia-test-module").getResource("dummy1-" + "2.1.0" + ".jar").getInputStream();
                     FileUtils.copyInputStreamToFile(stream,  tmpFile);
                     managerService.deployModule(tmpFile, session);
                     tmpFile.delete();
@@ -224,7 +224,7 @@ public class ModuleDeploymentTest {
                     logger.error(e.getMessage(), e);
                 }
                 assertEquals("Module is not started", ModuleState.State.STARTED, pack.getState().getState());
-                assertEquals("Active module version is incorrect", "1.1", pack.getVersion().toString());
+                assertEquals("Active module version is incorrect", "2.1.0", pack.getVersion().toString());
 
                 return null;
             }
@@ -238,7 +238,7 @@ public class ModuleDeploymentTest {
         File f = null;
         try {
             File tmpFile = File.createTempFile("module",".jar");
-            InputStream stream = managerService.getTemplatePackageById("jahia-test-module").getResource("dummy1-" + "1.0" + ".jar").getInputStream();
+            InputStream stream = managerService.getTemplatePackageById("jahia-test-module").getResource("dummy1-" + "2.0.0" + ".jar").getInputStream();
             FileUtils.copyInputStreamToFile(stream,  tmpFile);
             FileUtils.copyFileToDirectory(tmpFile, new File(settingsBean.getJahiaModulesDiskPath()));
             tmpFile.delete();
@@ -284,7 +284,7 @@ public class ModuleDeploymentTest {
                 try {
                     tmpFile = File.createTempFile("module", ".jar");
                     FileUtils.copyURLToFile(managerService.getTemplatePackageById("jahia-test-module")
-                            .getResource("dummy1-" + "1.0" + ".jar").getURL(), tmpFile);
+                            .getResource("dummy1-" + "2.0.0" + ".jar").getURL(), tmpFile);
                     Map<String, String> env = new HashMap<>();
                     env.put("create", "true");
                     try (FileSystem fs = FileSystems.newFileSystem(URI.create("jar:" + tmpFile.toURI().toURL()), env)) {
@@ -330,7 +330,7 @@ public class ModuleDeploymentTest {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 try {
                     File tmpFile = File.createTempFile("module",".jar");
-                    InputStream stream = managerService.getTemplatePackageById("jahia-test-module").getResource("dummy1-" + "1.0" + ".jar").getInputStream();
+                    InputStream stream = managerService.getTemplatePackageById("jahia-test-module").getResource("dummy1-" + "2.0.0" + ".jar").getInputStream();
                     FileUtils.copyInputStreamToFile(stream,  tmpFile);
                     JahiaTemplatesPackage pack = managerService.deployModule(tmpFile, session);
                     tmpFile.delete();
@@ -369,7 +369,7 @@ public class ModuleDeploymentTest {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 try {
                     File tmpFile = File.createTempFile("module",".jar");
-                    InputStream stream = managerService.getTemplatePackageById("jahia-test-module").getResource("dummy1-" + "1.0" + ".jar").getInputStream();
+                    InputStream stream = managerService.getTemplatePackageById("jahia-test-module").getResource("dummy1-" + "2.0.0" + ".jar").getInputStream();
                     FileUtils.copyInputStreamToFile(stream,  tmpFile);
                     managerService.deployModule(tmpFile, session);
                     tmpFile.delete();

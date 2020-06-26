@@ -66,7 +66,7 @@ import java.io.FileReader;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 /**
  * Test class for modules provider
@@ -116,7 +116,7 @@ public class ModulesProviderTest {
 
     private void readType(String nodeType, String path) throws RepositoryException {
         String resolvedNodeType = root.getNode(path).getPrimaryNodeType().getName();
-        assertEquals(nodeType + " is expected on path " + path + " but " + resolvedNodeType + " has been found", resolvedNodeType, nodeType);
+        assertThat(resolvedNodeType).isEqualTo(nodeType);
 
     }
 
@@ -127,7 +127,7 @@ public class ModulesProviderTest {
         //read properties
         Node viewNode = root.getNode("jnt_testComponent1/html/testComponent1.jsp");
         String sourceCode = viewNode.getProperty("sourceCode").getString();
-        assertTrue("testComponent1 source not match", sourceCode.equals("--------------\ntest component\n--------------\n"));
+        assertThat(sourceCode).isEqualToNormalizingNewlines("--------------\ntest component\n--------------\n");
 
         // write properties
         String testString = System.currentTimeMillis() + "\n";
@@ -142,9 +142,9 @@ public class ModulesProviderTest {
         dummyPackage = templateManagerService.getTemplatePackageById("dummy1");
         root = s.getNode("/modules/" + dummyPackage.getIdWithVersion() + "/sources/src/main/resources");
         viewNode = root.getNode("jnt_testComponent1/html/testComponent1.jsp");
-        assertTrue("testComponent1 source not match", viewNode.getProperty("sourceCode").getString().endsWith(testString));
-        assertTrue("cache.perUser not set to true", viewNode.getProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_PER_USER).getBoolean());
-        assertTrue("cache.requestParameters not set to dummyParam", viewNode.getProperty("cache.requestParameters").getString().equals("dummyParam"));
+        assertThat(viewNode.getProperty("sourceCode").getString()).endsWith(testString);
+        assertThat(viewNode.getProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_PER_USER).getBoolean()).isTrue();
+        assertThat(viewNode.getProperty("cache.requestParameters").getString()).isEqualTo("dummyParam");
 
         viewNode.setProperty("sourceCode", sourceCode);
         s.save();
@@ -153,108 +153,108 @@ public class ModulesProviderTest {
     @Test
     public void readNodeTypeDefinition() throws Exception {
         Node nodeType = root.getNode("META-INF/definitions.cnd/jnt:testComponent2");
-        assertEquals("jnt:primaryNodeType", nodeType.getPrimaryNodeType().getName());
-        assertEquals("jnt:content", nodeType.getProperty("j:supertype").getString());
+        assertThat(nodeType.getPrimaryNodeType().getName()).isEqualTo("jnt:primaryNodeType");
+        assertThat(nodeType.getProperty("j:supertype").getString()).isEqualTo("jnt:content");
         Set<String> testValues = new HashSet<String>();
         for (Value value : nodeType.getProperty("j:mixins").getValues()) {
             testValues.add(value.getString());
         }
-        assertTrue(Sets.newHashSet("jmix:editorialContent", "mix:title", "jmix:tagged", "jmix:structuredContent").equals(testValues));
-        assertTrue(nodeType.getProperty("j:hasOrderableChildNodes").getBoolean());
-        assertTrue(nodeType.getProperty("j:isQueryable").getBoolean());
-        assertFalse(nodeType.getProperty("j:isAbstract").getBoolean());
+        assertThat(testValues).isEqualTo(Sets.newHashSet("jmix:editorialContent", "mix:title", "jmix:tagged", "jmix:structuredContent"));
+        assertThat(nodeType.getProperty("j:hasOrderableChildNodes").getBoolean()).isTrue();
+        assertThat(nodeType.getProperty("j:isQueryable").getBoolean()).isTrue();
+        assertThat(nodeType.getProperty("j:isAbstract").getBoolean()).isFalse();
 
         Node propertyDefinition = nodeType.getNode("property1");
-        assertEquals("jnt:propertyDefinition", propertyDefinition.getPrimaryNodeType().getName());
-        assertEquals("String", propertyDefinition.getProperty("j:requiredType").getString());
-        assertEquals("RichText", propertyDefinition.getProperty("j:selectorType").getString());
-        assertTrue(propertyDefinition.getProperty("j:isInternationalized").getBoolean());
-        assertTrue(propertyDefinition.getProperty("j:mandatory").getBoolean());
-        assertFalse(propertyDefinition.getProperty("j:isFullTextSearchable").getBoolean());
+        assertThat(propertyDefinition.getPrimaryNodeType().getName()).isEqualTo("jnt:propertyDefinition");
+        assertThat(propertyDefinition.getProperty("j:requiredType").getString()).isEqualTo("String");
+        assertThat(propertyDefinition.getProperty("j:selectorType").getString()).isEqualTo("RichText");
+        assertThat(propertyDefinition.getProperty("j:isInternationalized").getBoolean()).isTrue();
+        assertThat(propertyDefinition.getProperty("j:mandatory").getBoolean()).isTrue();
+        assertThat(propertyDefinition.getProperty("j:isFullTextSearchable").getBoolean()).isFalse();
         propertyDefinition = nodeType.getNode("property2");
-        assertEquals("WeakReference", propertyDefinition.getProperty("j:requiredType").getString());
-        assertEquals("Picker", propertyDefinition.getProperty("j:selectorType").getString());
-        assertEquals("type='image'", propertyDefinition.getProperty("j:selectorOptions").getValues()[0].getString());
-        assertTrue(propertyDefinition.getProperty("j:protected").getBoolean());
+        assertThat(propertyDefinition.getProperty("j:requiredType").getString()).isEqualTo("WeakReference");
+        assertThat(propertyDefinition.getProperty("j:selectorType").getString()).isEqualTo("Picker");
+        assertThat(propertyDefinition.getProperty("j:selectorOptions").getValues()[0].getString()).isEqualTo("type='image'");
+        assertThat(propertyDefinition.getProperty("j:protected").getBoolean()).isTrue();
         propertyDefinition = nodeType.getNode("property3");
-        assertEquals("String", propertyDefinition.getProperty("j:requiredType").getString());
-        assertEquals("Choicelist", propertyDefinition.getProperty("j:selectorType").getString());
-        assertEquals("resourceBundle", propertyDefinition.getProperty("j:selectorOptions").getValues()[0].getString());
-        assertTrue(propertyDefinition.getProperty("j:multiple").getBoolean());
-        assertEquals("no", propertyDefinition.getProperty("j:index").getString());
-        testValues = new HashSet<String>();
+        assertThat(propertyDefinition.getProperty("j:requiredType").getString()).isEqualTo("String");
+        assertThat(propertyDefinition.getProperty("j:selectorType").getString()).isEqualTo("Choicelist");
+        assertThat(propertyDefinition.getProperty("j:selectorOptions").getValues()[0].getString()).isEqualTo("resourceBundle");
+        assertThat(propertyDefinition.getProperty("j:multiple").getBoolean()).isTrue();
+        assertThat(propertyDefinition.getProperty("j:index").getString()).isEqualTo("no");
+        testValues = new HashSet<>();
         for (Value value : propertyDefinition.getProperty("j:defaultValues").getValues()) {
             testValues.add(value.getString());
         }
-        assertTrue(Sets.newHashSet("one", "three").equals(testValues));
-        testValues = new HashSet<String>();
+        assertThat(testValues).isEqualTo(Sets.newHashSet("one", "three"));
+        testValues = new HashSet<>();
         for (Value value : propertyDefinition.getProperty("j:valueConstraints").getValues()) {
             testValues.add(value.getString());
         }
-        assertTrue(Sets.newHashSet("one", "two", "three").equals(testValues));
+        assertThat(testValues).isEqualTo(Sets.newHashSet("one", "two", "three"));
         propertyDefinition = nodeType.getNode("property4");
-        assertEquals("Long", propertyDefinition.getProperty("j:requiredType").getString());
-        assertEquals("2", propertyDefinition.getProperty("j:defaultValues").getValues()[0].getString());
-        assertTrue(propertyDefinition.getProperty("j:autoCreated").getBoolean());
-        assertTrue(propertyDefinition.getProperty("j:isHidden").getBoolean());
-        assertTrue(propertyDefinition.getProperty("j:isFullTextSearchable").getBoolean());
-        assertEquals("tokenized", propertyDefinition.getProperty("j:index").getString());
-        assertEquals("VERSION", propertyDefinition.getProperty("j:onParentVersion").getString());
-        assertEquals("latest", propertyDefinition.getProperty("j:onConflictAction").getString());
-        assertEquals(1.0, propertyDefinition.getProperty("j:scoreboost").getDouble(), 0);
-        assertTrue(propertyDefinition.getProperty("j:isQueryOrderable").getBoolean());
-        assertEquals("=", propertyDefinition.getProperty("j:availableQueryOperators").getValues()[0].getString());
+        assertThat(propertyDefinition.getProperty("j:requiredType").getString()).isEqualTo("Long");
+        assertThat(propertyDefinition.getProperty("j:defaultValues").getValues()[0].getString()).isEqualTo("2");
+        assertThat(propertyDefinition.getProperty("j:autoCreated").getBoolean()).isTrue();
+        assertThat(propertyDefinition.getProperty("j:isHidden").getBoolean()).isTrue();
+        assertThat(propertyDefinition.getProperty("j:isFullTextSearchable").getBoolean()).isTrue();
+        assertThat(propertyDefinition.getProperty("j:index").getString()).isEqualTo("tokenized");
+        assertThat(propertyDefinition.getProperty("j:onParentVersion").getString()).isEqualTo("VERSION");
+        assertThat(propertyDefinition.getProperty("j:onConflictAction").getString()).isEqualTo("latest");
+        assertThat(propertyDefinition.getProperty("j:scoreboost").getDouble()).isEqualTo(1.0);
+        assertThat(propertyDefinition.getProperty("j:isQueryOrderable").getBoolean()).isTrue();
+        assertThat(propertyDefinition.getProperty("j:availableQueryOperators").getValues()[0].getString()).isEqualTo("=");
         propertyDefinition = nodeType.getNode("property5");
-        assertFalse(propertyDefinition.getProperty("j:autoCreated").getBoolean());
-        assertFalse(propertyDefinition.getProperty("j:isHidden").getBoolean());
-        assertTrue(propertyDefinition.getProperty("j:isFacetable").getBoolean());
-        assertTrue(propertyDefinition.getProperty("j:isHierarchical").getBoolean());
-        assertEquals("COPY", propertyDefinition.getProperty("j:onParentVersion").getString());
-        assertEquals("oldest", propertyDefinition.getProperty("j:onConflictAction").getString());
-        assertEquals(2.0, propertyDefinition.getProperty("j:scoreboost").getDouble(), 0);
-        assertFalse(propertyDefinition.getProperty("j:isQueryOrderable").getBoolean());
-        testValues = new HashSet<String>();
+        assertThat(propertyDefinition.getProperty("j:autoCreated").getBoolean()).isFalse();
+        assertThat(propertyDefinition.getProperty("j:isHidden").getBoolean()).isFalse();
+        assertThat(propertyDefinition.getProperty("j:isFacetable").getBoolean()).isTrue();
+        assertThat(propertyDefinition.getProperty("j:isHierarchical").getBoolean()).isTrue();
+        assertThat(propertyDefinition.getProperty("j:onParentVersion").getString()).isEqualTo("COPY");
+        assertThat(propertyDefinition.getProperty("j:onConflictAction").getString()).isEqualTo("oldest");
+        assertThat(propertyDefinition.getProperty("j:scoreboost").getDouble()).isEqualTo(2.0);
+        assertThat(propertyDefinition.getProperty("j:isQueryOrderable").getBoolean()).isFalse();
+        testValues = new HashSet<>();
         for (Value value : propertyDefinition.getProperty("j:availableQueryOperators").getValues()) {
             testValues.add(value.getString());
         }
-        assertTrue(Sets.newHashSet("=", "<>", "<", "<=", ">", ">=", "LIKE").equals(testValues));
-        assertEquals("keyword", propertyDefinition.getProperty("j:analyzer").getString());
+        assertThat(testValues).isEqualTo(Sets.newHashSet("=", "<>", "<", "<=", ">", ">=", "LIKE"));
+        assertThat(propertyDefinition.getProperty("j:analyzer").getString()).isEqualTo("keyword");
 
         Node childNodeDefinition = nodeType.getNode("child1");
-        assertEquals("jnt:childNodeDefinition", childNodeDefinition.getPrimaryNodeType().getName());
-        assertEquals("jnt:testComponent1", childNodeDefinition.getProperty("j:requiredPrimaryTypes").getValues()[0].getString());
-        assertEquals("jnt:testComponent1", childNodeDefinition.getProperty("j:defaultPrimaryType").getString());
-        assertTrue(childNodeDefinition.getProperty("j:autoCreated").getBoolean());
-        assertFalse(childNodeDefinition.getProperty("j:mandatory").getBoolean());
-        assertFalse(childNodeDefinition.getProperty("j:protected").getBoolean());
-        assertEquals("VERSION", childNodeDefinition.getProperty("j:onParentVersion").getString());
+        assertThat(childNodeDefinition.getPrimaryNodeType().getName()).isEqualTo("jnt:childNodeDefinition");
+        assertThat(childNodeDefinition.getProperty("j:requiredPrimaryTypes").getValues()[0].getString()).isEqualTo("jnt:testComponent1");
+        assertThat(childNodeDefinition.getProperty("j:defaultPrimaryType").getString()).isEqualTo("jnt:testComponent1");
+        assertThat(childNodeDefinition.getProperty("j:autoCreated").getBoolean()).isTrue();
+        assertThat(childNodeDefinition.getProperty("j:mandatory").getBoolean()).isFalse();
+        assertThat(childNodeDefinition.getProperty("j:protected").getBoolean()).isFalse();
+        assertThat(childNodeDefinition.getProperty("j:onParentVersion").getString()).isEqualTo("VERSION");
         childNodeDefinition = nodeType.getNode("child2");
-        assertFalse(childNodeDefinition.getProperty("j:autoCreated").getBoolean());
-        assertTrue(childNodeDefinition.getProperty("j:mandatory").getBoolean());
-        assertTrue(childNodeDefinition.getProperty("j:protected").getBoolean());
-        assertEquals("COPY", childNodeDefinition.getProperty("j:onParentVersion").getString());
+        assertThat(childNodeDefinition.getProperty("j:autoCreated").getBoolean()).isFalse();
+        assertThat(childNodeDefinition.getProperty("j:mandatory").getBoolean()).isTrue();
+        assertThat(childNodeDefinition.getProperty("j:protected").getBoolean()).isTrue();
+        assertThat(childNodeDefinition.getProperty("j:onParentVersion").getString()).isEqualTo("COPY");
         childNodeDefinition = nodeType.getNode("__node__jnt@@testComponent2");
-        assertEquals("jnt:unstructuredChildNodeDefinition", childNodeDefinition.getPrimaryNodeType().getName());
-        assertEquals("jnt:testComponent2", childNodeDefinition.getProperty("j:requiredPrimaryTypes").getValues()[0].getString());
+        assertThat(childNodeDefinition.getPrimaryNodeType().getName()).isEqualTo("jnt:unstructuredChildNodeDefinition");
+        assertThat(childNodeDefinition.getProperty("j:requiredPrimaryTypes").getValues()[0].getString()).isEqualTo("jnt:testComponent2");
 
         nodeType = root.getNode("META-INF/definitions.cnd/jnt:testComponent3");
-        assertEquals("jnt:primaryNodeType", nodeType.getPrimaryNodeType().getName());
-        assertEquals("jnt:content", nodeType.getProperty("j:supertype").getString());
-        assertEquals("mix:title", nodeType.getProperty("j:mixins").getValues()[0].getString());
-        assertFalse(nodeType.getProperty("j:hasOrderableChildNodes").getBoolean());
-        assertFalse(nodeType.getProperty("j:isQueryable").getBoolean());
-        assertTrue(nodeType.getProperty("j:isAbstract").getBoolean());
-        assertEquals("metadata", nodeType.getProperty("j:itemsType").getString());
+        assertThat(nodeType.getPrimaryNodeType().getName()).isEqualTo("jnt:primaryNodeType");
+        assertThat(nodeType.getProperty("j:supertype").getString()).isEqualTo("jnt:content");
+        assertThat(nodeType.getProperty("j:mixins").getValues()[0].getString()).isEqualTo("mix:title");
+        assertThat(nodeType.getProperty("j:hasOrderableChildNodes").getBoolean()).isFalse();
+        assertThat(nodeType.getProperty("j:isQueryable").getBoolean()).isFalse();
+        assertThat(nodeType.getProperty("j:isAbstract").getBoolean()).isTrue();
+        assertThat(nodeType.getProperty("j:itemsType").getString()).isEqualTo("metadata");
 
         nodeType = root.getNode("META-INF/definitions.cnd/jmix:testMixin1");
-        assertEquals("jnt:mixinNodeType", nodeType.getPrimaryNodeType().getName());
-        assertEquals("jmix:templateMixin", nodeType.getProperty("j:mixins").getValues()[0].getString());
-        testValues = new HashSet<String>();
+        assertThat(nodeType.getPrimaryNodeType().getName()).isEqualTo("jnt:mixinNodeType");
+        assertThat(nodeType.getProperty("j:mixins").getValues()[0].getString()).isEqualTo("jmix:templateMixin");
+        testValues = new HashSet<>();
         for (Value value : nodeType.getProperty("j:mixinExtends").getValues()) {
             testValues.add(value.getString());
         }
-        assertTrue(Sets.newHashSet(Constants.JAHIAMIX_LIST, "jnt:area").equals(testValues));
-        assertEquals("layout", nodeType.getProperty("j:itemsType").getString());
+        assertThat(testValues).isEqualTo(Sets.newHashSet(Constants.JAHIAMIX_LIST, "jnt:area"));
+        assertThat(nodeType.getProperty("j:itemsType").getString()).isEqualTo("layout");
     }
 
     @Test
@@ -280,61 +280,55 @@ public class ModulesProviderTest {
         s = JCRSessionFactory.getInstance().getCurrentUserSession();
         dummyPackage = templateManagerService.getTemplatePackageById("dummy1");
         String cndPath = dummyPackage.getSourcesFolder().getAbsolutePath() + "/src/main/resources/META-INF/definitions.cnd";
-        BufferedReader input = new BufferedReader(new FileReader(cndPath));
-        try {
+        try (BufferedReader input = new BufferedReader(new FileReader(cndPath))){
             String line = null;
             int n = 1;
             while ((line = input.readLine()) != null) {
                 if (n == 31) {
-                    assertEquals("[jnt:testComponent4] > jnt:content, jmix:tagged, jmix:structuredContent orderable noquery", line);
+                    assertThat(line).isEqualTo("[jnt:testComponent4] > jnt:content, jmix:tagged, jmix:structuredContent orderable noquery");
                 } else if (n == 32) {
-                    assertEquals(" - property1 (string) mandatory", line);
+                    assertThat(line).isEqualTo(" - property1 (string) mandatory");
                 } else if (n == 33) {
-                    assertEquals(" - property2 (long) protected", line);
+                    assertThat(line).isEqualTo(" - property2 (long) protected");
                 }
                 n++;
             }
-        } finally {
-            input.close();
         }
         root = s.getNode("/modules/" + dummyPackage.getIdWithVersion() + "/sources/src/main/resources");
         nodeType = root.getNode("META-INF/definitions.cnd/jnt:testComponent4");
-        assertEquals("jnt:primaryNodeType", nodeType.getPrimaryNodeType().getName());
-        assertEquals("jnt:content", nodeType.getProperty("j:supertype").getString());
-        Set<String> testValues = new HashSet<String>();
+        assertThat(nodeType.getPrimaryNodeType().getName()).isEqualTo("jnt:primaryNodeType");
+        assertThat(nodeType.getProperty("j:supertype").getString()).isEqualTo("jnt:content");
+        Set<String> testValues = new HashSet<>();
         for (Value value : nodeType.getProperty("j:mixins").getValues()) {
             testValues.add(value.getString());
         }
-        assertTrue(Sets.newHashSet("jmix:tagged", "jmix:structuredContent").equals(testValues));
-        assertTrue(nodeType.getProperty("j:hasOrderableChildNodes").getBoolean());
-        assertFalse(nodeType.getProperty("j:isAbstract").getBoolean());
-        assertFalse(nodeType.getProperty("j:isQueryable").getBoolean());
+        assertThat(testValues).isEqualTo(Sets.newHashSet("jmix:tagged", "jmix:structuredContent"));
+        assertThat(nodeType.getProperty("j:hasOrderableChildNodes").getBoolean()).isTrue();
+        assertThat(nodeType.getProperty("j:isAbstract").getBoolean()).isFalse();
+        assertThat(nodeType.getProperty("j:isQueryable").getBoolean()).isFalse();
 
         propertyDefinition = nodeType.getNode("property1");
-        assertEquals("jnt:propertyDefinition", propertyDefinition.getPrimaryNodeType().getName());
-        assertEquals("String", propertyDefinition.getProperty("j:requiredType").getString());
-        assertTrue(propertyDefinition.getProperty("j:mandatory").getBoolean());
+        assertThat(propertyDefinition.getPrimaryNodeType().getName()).isEqualTo("jnt:propertyDefinition");
+        assertThat(propertyDefinition.getProperty("j:requiredType").getString()).isEqualTo("String");
+        assertThat(propertyDefinition.getProperty("j:mandatory").getBoolean()).isTrue();
         propertyDefinition = nodeType.getNode("property2");
-        assertEquals("Long", propertyDefinition.getProperty("j:requiredType").getString());
-        assertTrue(propertyDefinition.getProperty("j:protected").getBoolean());
+        assertThat(propertyDefinition.getProperty("j:requiredType").getString()).isEqualTo("Long");
+        assertThat(propertyDefinition.getProperty("j:protected").getBoolean()).isTrue();
 
         nodeType.orderBefore("property2", "property1");
         s.save();
         s.logout();
-        input = new BufferedReader(new FileReader(cndPath));
-        try {
+        try (BufferedReader input = new BufferedReader(new FileReader(cndPath))){
             String line = null;
             int n = 1;
             while ((line = input.readLine()) != null) {
                 if (n == 32) {
-                    assertEquals(" - property2 (long) protected", line);
+                    assertThat(line).isEqualTo(" - property2 (long) protected");
                 } else if (n == 33) {
-                    assertEquals(" - property1 (string) mandatory", line);
+                    assertThat(line).isEqualTo(" - property1 (string) mandatory");
                 }
                 n++;
             }
-        } finally {
-            input.close();
         }
 
         /**
@@ -347,21 +341,18 @@ public class ModulesProviderTest {
                 "/modules/" + dummyPackage.getIdWithVersion() + "/sources/src/main/resources/META-INF/definitions.cnd/jnt:testRenamedComponent");
         s.save();
 
-        input = new BufferedReader(new FileReader(cndPath));
-        try {
+        try (BufferedReader input = new BufferedReader(new FileReader(cndPath))){
             String line = null;
             int n = 1;
             while ((line = input.readLine()) != null) {
                 if (n == 31) {
-                    assertEquals("[jnt:testRenamedComponent] > jnt:content, jmix:tagged, jmix:structuredContent orderable noquery", line);
+                    assertThat(line).isEqualTo("[jnt:testRenamedComponent] > jnt:content, jmix:tagged, jmix:structuredContent orderable noquery");
                 }
                 n++;
             }
-        } finally {
-            input.close();
         }
         root = s.getNode("/modules/" + dummyPackage.getIdWithVersion() + "/sources/src/main/resources");
-        assertTrue(root.hasNode("META-INF/definitions.cnd/jnt:testRenamedComponent"));
+        assertThat(root.hasNode("META-INF/definitions.cnd/jnt:testRenamedComponent")).isTrue();
         s.save();
         s.logout();
 
@@ -374,20 +365,17 @@ public class ModulesProviderTest {
         root.orderBefore("property2", "property1");
         s.save();
         s.logout();
-        input = new BufferedReader(new FileReader(cndPath));
-        try {
+        try (BufferedReader input = new BufferedReader(new FileReader(cndPath))) {
             String line = null;
             int n = 1;
             while ((line = input.readLine()) != null) {
                 if (n == 32) {
-                    assertEquals(" - property2 (long) protected", line);
+                    assertThat(line).isEqualTo(" - property2 (long) protected");
                 } else if (n == 33) {
-                    assertEquals(" - property1 (string) mandatory", line);
+                    assertThat(line).isEqualTo(" - property1 (string) mandatory");
                 }
                 n++;
             }
-        } finally {
-            input.close();
         }
 
 
@@ -404,7 +392,7 @@ public class ModulesProviderTest {
         s = JCRSessionFactory.getInstance().getCurrentUserSession();
         dummyPackage = templateManagerService.getTemplatePackageById("dummy1");
         root = s.getNode("/modules/" + dummyPackage.getIdWithVersion() + "/sources/src/main/resources");
-        assertFalse(root.hasNode("META-INF/definitions.cnd/jnt:testRenamedComponent"));
+        assertThat(root.hasNode("META-INF/definitions.cnd/jnt:testRenamedComponent")).isFalse();
     }
 
 }

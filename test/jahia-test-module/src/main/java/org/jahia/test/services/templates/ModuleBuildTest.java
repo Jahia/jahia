@@ -107,9 +107,9 @@ public class ModuleBuildTest {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
                         Assert.assertNotNull("Module creation failed", templateManagerService.createModule(
-                                "Test module A", "test-module-a", "org.jahia.modules", "module", sources, session));
+                                "Test module A", "test-module-a", "org.jahia.test.modules", "module", sources, session));
 
-                        templateManagerService.undeployModule("test-module-a", "1.0-SNAPSHOT");
+                        templateManagerService.undeployModule("test-module-a", "1.0.0-SNAPSHOT");
                     } catch (IOException | BundleException e) {
                         logger.error(e.getMessage(), e);
                         throw new RuntimeException(e);

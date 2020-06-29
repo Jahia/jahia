@@ -280,7 +280,7 @@
         </init-param>
         <init-param>
             <param-name>org.atmosphere.interceptor.HeartbeatInterceptor.heartbeatFrequencyInSeconds</param-name>
-            <param-value>${jahia.atmosphere.heartbeat}</param-value>
+            <param-value>60</param-value>
         </init-param>
         <init-param>
             <param-name>org.atmosphere.cpr.annotation.useBytecodeProcessor</param-name>

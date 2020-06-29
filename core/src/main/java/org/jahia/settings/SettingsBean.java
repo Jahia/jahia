@@ -233,6 +233,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     private CookieAuthConfig cookieAuthConfig;
 
+    private String atmosphereHeartbeatFrequency;
+
     /**
      * @param   pathResolver a path resolver used to locate files on the disk.
      * @param   propertiesFilename  The jahia.properties file complete path.
@@ -344,6 +346,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     @Override
     public long getJahiaJCRUserCountLimit() {
         return jahiaJCRUserCountLimit;
+    }
+
+    public String getAtmosphereHeartbeatFrequency() {
+        return atmosphereHeartbeatFrequency;
     }
 
     public void setJahiaJCRUserCountLimit(long jahiaJCRUserCountLimit) {
@@ -464,6 +470,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             moduleStartLevel = getInt("jahia.moduleStartLevel", 90);
 
             jahiaSiteImportScannerInterval = getInt("jahia.site.import.scanner.interval", 1000);
+
+            atmosphereHeartbeatFrequency = getString("jahia.atmosphere.heartbeat", "60");
 
             String authorizedRedirectHostsStr = getString("authorizedRedirectHosts", null);
             authorizedRedirectHosts = StringUtils.isBlank(authorizedRedirectHostsStr) ? new String[0] : authorizedRedirectHostsStr.trim().split("\\s*,\\s*");

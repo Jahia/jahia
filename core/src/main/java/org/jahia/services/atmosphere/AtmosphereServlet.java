@@ -64,18 +64,19 @@ import com.google.common.collect.Lists;
 /**
  * Jahia specific servlet for Atmosphere framework that allows to configure asynchronous support implementation using
  * <code>jahia.properties</code>.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class AtmosphereServlet extends org.atmosphere.cpr.AtmosphereServlet {
 
     private static final String DEFAULT_ASYNC_SUPPORT = "org.atmosphere.container.Servlet30CometSupport";
+    private static final String HEARTBEAT_FREQUENCY = "org.atmosphere.interceptor.HeartbeatInterceptor.heartbeatFrequencyInSeconds";
 
     private static final long serialVersionUID = 7618272237237696835L;
 
     /**
      * Looks up an instance of the {@link BroadcasterFactory}.
-     * 
+     *
      * @return an instance of the {@link BroadcasterFactory},
      * or null if broadcasterFactory can be accessed because ServletContext not ready
      */
@@ -92,13 +93,21 @@ public class AtmosphereServlet extends org.atmosphere.cpr.AtmosphereServlet {
         ServletConfig scFacade;
 
         String asyncSupport = SettingsBean.getInstance().getAtmosphereAsyncSupport();
+        String heartbeatFrequency = SettingsBean.getInstance().getAtmosphereHeartbeatFrequency();
         // override asyncSupport only if explicitly set via jahia.properties or not set at all
         if (StringUtils.isNotEmpty(asyncSupport) || sc.getInitParameter(PROPERTY_COMET_SUPPORT) == null) {
             final String implName = StringUtils.defaultIfBlank(asyncSupport, DEFAULT_ASYNC_SUPPORT);
             scFacade = new ServletConfig() {
                 @Override
                 public String getInitParameter(String name) {
-                    return PROPERTY_COMET_SUPPORT.equals(name) ? implName : sc.getInitParameter(name);
+                    switch (name) {
+                        case PROPERTY_COMET_SUPPORT:
+                            return implName;
+                        case HEARTBEAT_FREQUENCY:
+                            return heartbeatFrequency;
+                        default:
+                            return sc.getInitParameter(name);
+                    }
                 }
 
                 @Override

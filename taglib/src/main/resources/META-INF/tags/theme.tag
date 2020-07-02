@@ -25,13 +25,13 @@
 <c:forEach var="tpl" items="${previousTemplate.nextTemplates}">
     <jcr:node uuid="${tpl.node}" var="tplnode" />
     <jcr:nodeProperty var="theme" node="${tplnode}" name="j:theme" />
-    <c:if test="${not empty theme.node}">
+    <c:if test="${not empty theme and not empty theme.node}">
         <c:set var="themeFiles" value="${jcr:getChildrenOfType(theme.node,'jnt:file')}"/>
         <c:if test="${sortAssetsByNodeName}">
-            <jcr:sort list="${themeFiles}" properties="false,j:nodename,asc" var="themeFiles" />
+            <jcr:sort list="${themeFiles}" properties="false,j:nodename,asc" var="themeFiles"/>
         </c:if>
         <c:forEach var="themeFile" items="${themeFiles}">
-            <template:addResources type="css" resources="${themeFile.url}" />
+            <template:addResources type="css" resources="${themeFile.url}"/>
         </c:forEach>
     </c:if>
 </c:forEach>

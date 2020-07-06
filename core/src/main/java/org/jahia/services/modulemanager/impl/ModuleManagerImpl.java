@@ -251,7 +251,12 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
             }
 
             if (FrameworkService.getInstance().isStarted()) {
-                storeAllLocalPersistentStates();
+                try {
+                    storeAllLocalPersistentStates();
+                } catch (ModuleManagementException e) {
+                    // Don't propagate this. The main operation did actually succeed.
+                    logger.warn("Failed to persist modules state", e);
+                }
             }
 
             return result;
@@ -303,7 +308,12 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
         }
 
         if (FrameworkService.getInstance().isStarted() && operation.changesModuleState()) {
-            storeAllLocalPersistentStates();
+            try {
+                storeAllLocalPersistentStates();
+            } catch (ModuleManagementException e) {
+                // Don't propagate this. The main operation did actually succeed.
+                logger.warn("Failed to persist modules state", e);
+            }
         }
 
         return result;

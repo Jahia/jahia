@@ -112,7 +112,7 @@ public class TagsSuggesterImpl implements TagsSuggester{
                                                boolean sortByCount, JCRSessionWrapper sessionWrapper) throws RepositoryException {
         Map<String, Long> tagsMap = new LinkedHashMap<String, Long>();
         QueryManager queryManager = sessionWrapper.getWorkspace().getQueryManager();
-        String searchPath = StringUtils.isEmpty(startPath) ? "/sites" : startPath;
+        String searchPath = StringUtils.isEmpty(startPath) ? "/sites" : JCRContentUtils.sqlEncode(startPath);
 
         StringBuilder facet = new StringBuilder();
         facet.append("rep:facet(nodetype=jmix:tagged&key=j:tagList")
@@ -157,7 +157,7 @@ public class TagsSuggesterImpl implements TagsSuggester{
         }
 
         QueryManager queryManager = sessionWrapper.getWorkspace().getQueryManager();
-        String searchPath = StringUtils.isEmpty(startPath) ? "/sites" : startPath;
+        String searchPath = StringUtils.isEmpty(startPath) ? "/sites" : JCRContentUtils.sqlEncode(startPath);
         Query query = queryManager.createQuery("select t.[j:tagList] from [jmix:tagged] as t where " +
                 "isdescendantnode(t, [" + searchPath + "]) and t.[j:tagList] like '" + JCRContentUtils.sqlEncode(prefix) + "%'", Query.JCR_SQL2);
 

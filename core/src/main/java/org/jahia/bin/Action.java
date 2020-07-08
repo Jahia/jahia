@@ -134,6 +134,8 @@ public abstract class Action {
 
     private String requiredWorkspace;
 
+    private List<String> requiredMethods = Collections.singletonList("POST");
+
     protected JCRNodeWrapper createNode(HttpServletRequest req, Map<String, List<String>> parameters,
                                         JCRNodeWrapper node, String nodeType, String nodeName, boolean forceCreation)
             throws RepositoryException {
@@ -268,7 +270,14 @@ public abstract class Action {
     public String getRequiredWorkspace() {
         return requiredWorkspace;
     }
-    
+
+    /**
+     * Get the HTTP method that can be used to execute this action or <code>null</code> if any method can be used.
+     */
+    public Collection<String> getRequiredMethods() {
+        return requiredMethods;
+    }
+
     public boolean isPermitted(JCRNodeWrapper node) throws RepositoryException {
         if (StringUtils.isEmpty(getRequiredPermission())) {
             return true;
@@ -326,4 +335,17 @@ public abstract class Action {
         this.requiredWorkspace = requiredWorkspace;
     }
 
+    /**
+     * Sets the HTTP method that is required to execute this action or <code>null</code> if any method can be used.
+     *
+     * @param requiredMethods
+     *            the HTTP method that is required to execute this action or <code>null</code> if any method can be used.
+     */
+    public void setRequiredMethods(String requiredMethods) {
+        if (requiredMethods != null) {
+            this.requiredMethods = Arrays.asList(StringUtils.split(requiredMethods, ','));
+        } else {
+            this.requiredMethods = null;
+        }
+    }
 }

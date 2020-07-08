@@ -444,6 +444,12 @@
         <property name="defaultPutAction">
             <bean class="org.jahia.bin.DefaultPutAction">
                 <property name="loggingService" ref="loggingService"/>
+                <property name="requiredMethods" value="POST,PUT"/>
+            </bean>
+        </property>
+        <property name="defaultDeleteAction">
+            <bean class="org.jahia.bin.DefaultDeleteAction">
+                <property name="requiredMethods" value="POST,DELETE"/>
             </bean>
         </property>
         <property name="webflowAction">

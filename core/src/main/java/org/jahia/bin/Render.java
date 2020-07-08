@@ -200,8 +200,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private transient JahiaTemplateManagerService templateService;
     private transient Action defaultPostAction;
     private transient Action defaultPutAction;
-
-    private final transient Action defaultDeleteAction = new DefaultDeleteAction();
+    private transient Action defaultDeleteAction;
     private transient Action webflowAction;
     private transient Map<String, String> defaultContentType = new HashMap<>();
 
@@ -1083,6 +1082,10 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
     private static void checkActionRequirements(Action action, final Action originalAction, RenderContext renderContext,
             URLResolver urlResolver) throws RepositoryException {
+        if (action.getRequiredMethods() != null && !action.getRequiredMethods().contains(renderContext.getRequest().getMethod())) {
+            throw new AccessDeniedException("Action requires " + action.getRequiredMethods());
+        }
+
         if (!(action instanceof SystemAction)) {
             if (action.getRequiredWorkspace() != null
                     && !action.getRequiredWorkspace().equals(urlResolver.getWorkspace())) {
@@ -1169,6 +1172,10 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
     public void setDefaultPutAction(Action defaultPutActionResult) {
         this.defaultPutAction = defaultPutActionResult;
+    }
+
+    public void setDefaultDeleteAction(Action defaultDeleteAction) {
+        this.defaultDeleteAction = defaultDeleteAction;
     }
 
     public void setWebflowAction(Action webflowAction) {

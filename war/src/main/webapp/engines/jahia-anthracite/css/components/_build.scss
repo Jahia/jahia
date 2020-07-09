@@ -1895,6 +1895,29 @@ form,
     border: 1px solid _theme($CKE--CONTENTS--BORDER, $EDIT-ENGINE) !important;
 }
 
+// CKEditor readOnly mode
+div[data-sel-content-editor-field-readonly='true'] .cke_contents {
+    border: 1px solid #F6FAFC !important;
+}
+
+div[data-sel-content-editor-field-readonly='true'] .cke_wysiwyg_frame {
+    background: #F6FAFC;
+}
+
+div[data-sel-content-editor-field-readonly='true'] .cke_combo_button,
+div[data-sel-content-editor-field-readonly='true'] .cke_combo_button:hover,
+div[data-sel-content-editor-field-readonly='true'] .cke_contents {
+    box-shadow: none !important;
+}
+
+div[data-sel-content-editor-field-readonly='true'] .cke_button_arrow {
+    border-top: 3px solid #cccccc !important;
+}
+
+div[data-sel-content-editor-field-readonly='true'] .cke_button_disabled {
+    cursor: not-allowed;
+}
+
 .cke_bottom {
     // CKE Footer Container
     border: none !important;

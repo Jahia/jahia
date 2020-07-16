@@ -5,37 +5,44 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
        
     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="loginUrl" value="/cms/login"/>
+        <property name="unauthorizedUrl" value="/cms/unauthorized"/>
         <property name="securityManager" ref="securityManager"/>
+        <property name="filters">
+            <map>
+                <entry key="authcJahia">
+                    <bean class="org.jahia.services.security.shiro.JahiaAuthenticationFilter">
+                        <property name="authPipeline" ref="authPipeline"/>
+                        <property name="sessionFactory" ref="jcrSessionFactory"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
         <property name="filterChainDefinitions">
             <value>
-                /modules/**/*.jsp = authcBasic, roles[toolManager]
-                
-                /**/*.raw = authcBasic, roles[toolManager]
-                /**/*.raw.ajax = authcBasic, roles[toolManager]
-                /cms/serverStats = authcBasic, roles[toolManager]
-                /cms/serverStats/** = authcBasic, roles[toolManager]
-                /cms/text-extract = authcBasic, roles[toolManager]
-                /cms/text-extract/** = authcBasic, roles[toolManager]
-                /tools/** = authcBasic, roles[toolManager]
-                /modules/tools/** = authcBasic, roles[toolManager]
+                /modules/**/*.jsp = authcJahia, roles[owner]
+                /**/*.raw = authcJahia, roles[toolManager]
+                /**/*.raw.ajax = authcJahia, roles[toolManager]
+                /cms/serverStats = authcJahia, roles[toolManager]
+                /cms/serverStats/** = authcJahia, roles[toolManager]
+                /cms/text-extract = authcJahia, roles[toolManager]
+                /cms/text-extract/** = authcJahia, roles[toolManager]
+                /tools/** = authcJahia, roles[owner]
+                /modules/tools/** = authcJahia, roles[owner]
             </value>
         </property>
     </bean>
     
-    <bean name="textConfigurationRealm" class="org.jahia.services.security.shiro.SpringTextConfigurationRealm">
-        <property name="name" value="DX Tools"/>
-        <property name="userDefinitions">
-            <value>
-                ${jahiaToolManagerUsername}=${jahiaToolManagerPassword},toolManager
-            </value>
-        </property>
+    <bean name="jahiaRealm" class="org.jahia.services.security.shiro.JahiaAccountRealm">
+        <property name="name" value="Jahia"/>
+        <property name="authenticationTokenClass" value="org.jahia.services.security.shiro.JahiaUserToken"/>
         <property name="credentialsMatcher">
-            <bean class="org.jahia.services.security.shiro.HashedCredentialsMatcher"/>
+            <bean class="org.apache.shiro.authc.credential.AllowAllCredentialsMatcher"/>
         </property>
     </bean>
-    
+
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
-        <property name="realm" ref="textConfigurationRealm"/>
+        <property name="realm" ref="jahiaRealm"/>
         <property name="rememberMeManager"><null/></property>
     </bean>
     <bean class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>

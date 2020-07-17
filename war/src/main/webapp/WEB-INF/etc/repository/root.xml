@@ -46,4 +46,8 @@
                             jcr:primaryType="jnt:ace"/>
     </j:acl>
 
+    <tools>
+        <j:acl jcr:primaryType="jnt:acl" j:inherit="false" />
+    </tools>
+
 </content>

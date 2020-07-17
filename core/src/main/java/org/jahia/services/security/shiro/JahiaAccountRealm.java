@@ -43,6 +43,7 @@
  */
 package org.jahia.services.security.shiro;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -60,10 +61,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class JahiaAccountRealm extends AuthorizingRealm {
@@ -92,6 +90,17 @@ public class JahiaAccountRealm extends AuthorizingRealm {
         return new SimpleAuthorizationInfo(Collections.emptySet());
     }
 
+    public boolean isPermitted(PrincipalCollection principals, String permission) {
+        JahiaUser jahiaUser = (JahiaUser) principals.getPrimaryPrincipal();
+        PermissionOnPath permissionOnPath = new PermissionOnPath(permission);
+        try {
+            return JCRTemplate.getInstance().doExecute(jahiaUser, null, null, session -> session.getNode(permissionOnPath.getNode()).hasPermission(permissionOnPath.getPermission()));
+        } catch (RepositoryException e) {
+            logger.error("Cannot check permission", e);
+        }
+        return false;
+    }
+
     @NotNull
     private Set<String> getRoles(JahiaUser userNode, JCRNodeWrapper node) {
         Set<String> roles = new HashSet<>();
@@ -117,4 +126,27 @@ public class JahiaAccountRealm extends AuthorizingRealm {
         return new SimpleAuthenticationInfo(token.getPrincipal(), token.getPrincipal(), getName());
     }
 
+    private class PermissionOnPath {
+        private String node;
+        private String permission;
+
+        public PermissionOnPath(String value) {
+            String[] split = StringUtils.split(value,':');
+            if (split.length == 0) {
+                node = "/";
+                permission = split[0].replace('_', ':');
+            } else {
+                node = split[0];
+                permission = split[1].replace('_', ':');
+            }
+        }
+
+        public String getNode() {
+            return node;
+        }
+
+        public String getPermission() {
+            return permission;
+        }
+    }
 }

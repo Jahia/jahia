@@ -20,15 +20,15 @@
         </property>
         <property name="filterChainDefinitions">
             <value>
-                /modules/**/*.jsp = authcJahia, perms[/:jcr_write]
-                /**/*.raw = authcJahia, perms[/:jcr_write]
-                /**/*.raw.ajax = authcJahia, perms[/:jcr_write]
-                /cms/serverStats = authcJahia, perms[/tools:jcr_write]
-                /cms/serverStats/** = authcJahia, perms[/tools:jcr_write]
-                /cms/text-extract = authcJahia, perms[/:jcr_write]
-                /cms/text-extract/** = authcJahia, perms[/:jcr_write]
-                /tools/** = authcJahia, perms[/tools:jcr_write]
-                /modules/tools/** = authcJahia, perms[/tools:jcr_write]
+                /modules/**/*.jsp = authcJahia, perms[/tools:systemToolsAccess]
+                /**/*.raw = authcJahia, perms[/tools:systemToolsAccess]
+                /**/*.raw.ajax = authcJahia, perms[/tools:systemToolsAccess]
+                /cms/serverStats = authcJahia, perms[/tools:systemToolsAccess]
+                /cms/serverStats/** = authcJahia, perms[/tools:systemToolsAccess]
+                /cms/text-extract = authcJahia, perms[/tools:systemToolsAccess]
+                /cms/text-extract/** = authcJahia, perms[/tools:systemToolsAccess]
+                /tools/** = authcJahia, perms[/tools:systemToolsAccess]
+                /modules/tools/** = authcJahia, perms[/tools:systemToolsAccess]
             </value>
         </property>
     </bean>

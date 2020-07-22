@@ -149,6 +149,10 @@
         <templates jcr:primaryType="jnt:permission"/>
 
         <components jcr:primaryType="jnt:permission"/>
+
+        <systemTools jcr:primaryType="jnt:permission">
+            <systemToolsAccess jcr:primaryType="jnt:permission"/>
+        </systemTools>
     </permissions>
 
 </content>

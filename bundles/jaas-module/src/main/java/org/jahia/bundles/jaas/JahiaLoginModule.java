@@ -47,9 +47,12 @@ import org.apache.karaf.jaas.boot.principal.GroupPrincipal;
 import org.apache.karaf.jaas.boot.principal.RolePrincipal;
 import org.apache.karaf.jaas.boot.principal.UserPrincipal;
 import org.apache.karaf.jaas.modules.AbstractKarafLoginModule;
-import org.jahia.services.pwd.PasswordService;
-import org.jahia.settings.SettingsBean;
+import org.jahia.api.usermanager.JahiaUserManagerService;
+import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.decorator.JCRUserNode;
 
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.*;
 import javax.security.auth.login.FailedLoginException;
@@ -62,9 +65,13 @@ import java.util.Map;
  * Login module checks against Jahia tools user.
  */
 public class JahiaLoginModule extends AbstractKarafLoginModule {
+
+    private JahiaUserManagerService userManagerService;
+
     @Override
     public void initialize(Subject subject, CallbackHandler callbackHandler, Map<String, ?> sharedState, Map<String, ?> options) {
         super.initialize(subject, callbackHandler, options);
+        this.userManagerService = bundleContext.getService(bundleContext.getServiceReference(JahiaUserManagerService.class));
     }
 
     @Override
@@ -83,21 +90,38 @@ public class JahiaLoginModule extends AbstractKarafLoginModule {
         if(((NameCallback)callbacks[0]).getName() == null) {
             throw new LoginException("Username can not be null");
         } else {
-            this.user = ((NameCallback)callbacks[0]).getName();
-            if(((PasswordCallback)callbacks[1]).getPassword() == null) {
-                throw new LoginException("Password can not be null");
-            } else {
-                String password = new String(((PasswordCallback) callbacks[1]).getPassword());
-                boolean userCheck = user.equals(SettingsBean.getInstance().getPropertiesFile().getProperty("jahiaToolManagerUsername"));
-                if (!userCheck) {
-                    throw new FailedLoginException(new StringBuilder().append("User ").append(user).append(" does not exist").toString());
-                }
-                boolean passwordCheck = PasswordService.getInstance().matches(password, SettingsBean.getInstance().getPropertiesFile().getProperty("jahiaToolManagerPassword"));
-                if (!passwordCheck) {
-                    throw new FailedLoginException(new StringBuilder().append("Password for ").append(user).append(" does not match").toString());
-                }
-                principals = new HashSet<>();
-                principals.add(new UserPrincipal(user));
+            JCRUserNode jahiaUser = checkUser(callbacks);
+            checkPermissions(jahiaUser);
+        }
+        this.succeeded = true;
+        return true;
+    }
+
+    private JCRUserNode checkUser(Callback[] callbacks) throws LoginException {
+        this.user = ((NameCallback)callbacks[0]).getName();
+        if(((PasswordCallback)callbacks[1]).getPassword() == null) {
+            throw new LoginException("Password can not be null");
+        } else {
+            String password = new String(((PasswordCallback) callbacks[1]).getPassword());
+            JCRUserNode jahiaUser = userManagerService.lookup(user);
+            boolean userCheck = jahiaUser != null;
+            if (!userCheck) {
+                throw new FailedLoginException("User " + user + " does not exist");
+            }
+            boolean passwordCheck = jahiaUser.verifyPassword(password);
+            if (!passwordCheck) {
+                throw new FailedLoginException("Password for " + user + " does not match");
+            }
+            return jahiaUser;
+        }
+    }
+
+    private void checkPermissions(JCRUserNode jahiaUser) throws FailedLoginException {
+        principals = new HashSet<>();
+        principals.add(new UserPrincipal(user));
+        try {
+            boolean permissionCheck = JCRTemplate.getInstance().doExecute(jahiaUser.getJahiaUser(), null, null, session -> session.getNode("/tools").hasPermission("jcr:write"));
+            if (permissionCheck) {
                 principals.add(new GroupPrincipal("admingroup"));
                 principals.add(new RolePrincipal("group"));
                 principals.add(new RolePrincipal("admin"));
@@ -106,8 +130,10 @@ public class JahiaLoginModule extends AbstractKarafLoginModule {
                 principals.add(new RolePrincipal("ssh"));
                 principals.add(new RolePrincipal("systembundles"));
             }
+        } catch (PathNotFoundException e) {
+            // Node not readable, ignore
+        } catch (RepositoryException e) {
+            throw new FailedLoginException("Cannot check permission : " + e.getMessage());
         }
-        this.succeeded = true;
-        return true;
     }
 }

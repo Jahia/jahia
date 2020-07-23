@@ -5,7 +5,7 @@
 
     <service interface="org.apache.felix.webconsole.WebConsoleSecurityProvider">
         <bean class="org.jahia.bundles.webconsole.security.DelegateWebConsoleSecurityProvider">
-            <property name="requiredRole" value="toolManager" />
+            <property name="requiredPermission" value="systemToolsAccess" />
         </bean>
     </service>
     

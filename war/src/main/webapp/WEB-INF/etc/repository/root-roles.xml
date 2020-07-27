@@ -111,7 +111,7 @@
         <system-administrator j:hidden="false"
                     j:permissionNames="systemToolsAccess repository-permissions"
                     j:privilegedAccess="false"
-                    j:roleGroup="tools-role"
+                    j:roleGroup="system-role"
                     jcr:primaryType="jnt:role">
             <j:translation_en jcr:description="Grant access to the system administration"
                               jcr:language="en"

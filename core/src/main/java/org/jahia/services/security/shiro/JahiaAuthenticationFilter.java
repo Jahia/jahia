@@ -70,7 +70,7 @@ public class JahiaAuthenticationFilter extends AuthenticatingFilter {
 
     @Override
     protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) throws Exception {
-        return new JahiaUserToken((JahiaUser) WebUtils.toHttp(request).getSession().getAttribute(Constants.SESSION_USER));
+        return new JahiaUserToken((JahiaUser) WebUtils.toHttp(request).getAttribute(Constants.SESSION_USER));
     }
 
     @Override
@@ -82,6 +82,7 @@ public class JahiaAuthenticationFilter extends AuthenticatingFilter {
         boolean userSet = jahiaUser != null;
 
         if (userSet) {
+            request.setAttribute(Constants.SESSION_USER, jahiaUser);
             executeLogin(request, response);
         } else {
             saveRequestAndRedirectToLogin(request, response);

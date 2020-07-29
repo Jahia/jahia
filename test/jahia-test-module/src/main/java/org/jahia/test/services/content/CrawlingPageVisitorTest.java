@@ -219,7 +219,7 @@ public class CrawlingPageVisitorTest extends JahiaTestCase {
     @Test
     public void testPrecompileJsps() throws IOException {
         HttpClient client = new HttpClient();
-        client.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials("jahia", "password"));
+        client.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials("root", "root1234"));
         GetMethod get = new GetMethod(getPrecompileServletURL());
         try {
             get.setDoAuthentication(true);

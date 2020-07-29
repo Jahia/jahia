@@ -7,6 +7,7 @@
 	<c:url var="actionUrl" value="${url.base}${renderContext.mainResource.node.path}.html"/>
 </c:if>
 <c:set target="${attributes}" property="action" value="${functions:default(attributes.action, actionUrl)}"/>
+<c:set target="${attributes}" property="id" value="${functions:default(attributes.id, 'searchDrillDownForm')}"/>
 <c:set target="${attributes}" property="name" value="${functions:default(attributes.name, 'searchDrillDownForm')}"/>
 <c:set target="${attributes}" property="method" value="${functions:default(attributes.method, 'post')}"/>
 <form ${functions:attributes(attributes)}>

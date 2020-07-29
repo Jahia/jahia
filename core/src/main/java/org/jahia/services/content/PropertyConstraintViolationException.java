@@ -57,7 +57,7 @@ public class PropertyConstraintViolationException extends NodeConstraintViolatio
     private ExtendedPropertyDefinition definition;
 
     public PropertyConstraintViolationException(JCRNodeWrapper node, String constraintMessage, Locale locale, ExtendedPropertyDefinition definition) throws RepositoryException {
-        super(node.getPath() + " " + definition.getLabel(LocaleContextHolder.getLocale(), node.getPrimaryNodeType()) + ": "+ constraintMessage, node, constraintMessage, locale);
+        super(node.getPath() + " " + definition.getName() + ": "+ constraintMessage, node, constraintMessage, locale);
         this.definition = definition;
     }
 

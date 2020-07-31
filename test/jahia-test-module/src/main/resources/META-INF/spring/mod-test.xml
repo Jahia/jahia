@@ -24,7 +24,6 @@
                 <value>org.jahia.test.bin.FindPrincipalTest</value>
                 <value>org.jahia.test.bin.FindTest</value>
                 <value>org.jahia.test.bin.RenderTest</value>
-                <value>org.jahia.test.bin.actions.ChainActionHttpTest</value>
                 <value>org.jahia.test.osgi.SpringBridgeTest</value>
                 <value>org.jahia.test.osgi.SpringContextSingletonTest</value>
                 <value>org.jahia.test.services.acl.AclTest</value>
@@ -108,16 +107,16 @@
                 <value>testExpandedNameValue(org.apache.jackrabbit.test.api.NameTest)</value>
                 <value>testExpandedNameValueProperty(org.apache.jackrabbit.test.api.NameTest)</value>
                 <value>testResolvedIdentifierBasedPropertyValue(org.apache.jackrabbit.test.api.PathTest)</value>
-                <value>testHasCapability(org.apache.jackrabbit.test.api.SessionTest)</value>                
+                <value>testHasCapability(org.apache.jackrabbit.test.api.SessionTest)</value>
                 <value>testNodeNotReferenceable(org.apache.jackrabbit.test.api.SetValueValueFormatExceptionTest)</value>
-                
+
                 <value>testSave(org.apache.jackrabbit.test.api.observation.GetUserDataTest)</value>
                 <value>testVersioning(org.apache.jackrabbit.test.api.observation.GetUserDataTest)</value>
                 <value>testWorkspaceOperation(org.apache.jackrabbit.test.api.observation.GetUserDataTest)</value>
                 <value>testNodeReorderMove(org.apache.jackrabbit.test.api.observation.NodeReorderTest)</value>
 
                 <value>testElementTestNameTestSomeNTWithSNS(org.apache.jackrabbit.test.api.query.ElementTest)</value>
-                
+
                 <value>testRightOuterJoin(org.apache.jackrabbit.test.api.query.qom.ChildNodeJoinConditionTest)</value>
                 <value>testRightOuterJoin(org.apache.jackrabbit.test.api.query.qom.DescendantNodeJoinConditionTest)</value>
                 <value>testLeftOuterJoin2(org.apache.jackrabbit.test.api.query.qom.EquiJoinConditionTest)</value>
@@ -129,10 +128,10 @@
                 <value>testLeftOuterJoin(org.apache.jackrabbit.test.api.query.qom.SameNodeJoinConditionTest)</value>
                 <value>testRightOuterJoinWithPath(org.apache.jackrabbit.test.api.query.qom.SameNodeJoinConditionTest)</value>
                 <value>testLeftOuterJoinWithPath(org.apache.jackrabbit.test.api.query.qom.SameNodeJoinConditionTest)</value>
-                
-                
+
+
                 <!-- Failing due to incompatible Jahia modifications -->
-                
+
                 <value>testAddNodeRepositoryExceptionSaveOnNewNode(org.apache.jackrabbit.test.api.AddNodeTest)</value> <!-- Node.save() is deprecated anyway -->
                 <value>testSameNameSiblings(org.apache.jackrabbit.test.api.AddNodeTest)</value> <!-- Same name siblings not supported with Jahia -->
                 <value>testSameUUIDAtAncestorSession(org.apache.jackrabbit.test.api.DocumentViewImportTest)</value> <!-- QA-12212 -->
@@ -141,13 +140,13 @@
                 <value>testExportDocView_handler_session_saveBinary_recurse(org.apache.jackrabbit.test.api.ExportDocViewTest)</value>
                 <value>testExportDocView_stream_session_skipBinary_recurse(org.apache.jackrabbit.test.api.ExportDocViewTest)</value>
                 <value>testExportDocView_stream_session_saveBinary_recurse(org.apache.jackrabbit.test.api.ExportDocViewTest)</value>
-                <value>testExportSysView_handler_session_saveBinary_recurse(org.apache.jackrabbit.test.api.ExportSysViewTest)</value> 
+                <value>testExportSysView_handler_session_saveBinary_recurse(org.apache.jackrabbit.test.api.ExportSysViewTest)</value>
                 <value>testExportSysView_handler_session_skipBinary_recurse(org.apache.jackrabbit.test.api.ExportSysViewTest)</value>
                 <value>testExportSysView_stream_session_saveBinary_noRecurse(org.apache.jackrabbit.test.api.ExportSysViewTest)</value>
                 <value>testExportSysView_stream_session_saveBinary_recurse(org.apache.jackrabbit.test.api.ExportSysViewTest)</value>
                 <value>testExportSysView_stream_session_skipBinary_noRecurse(org.apache.jackrabbit.test.api.ExportSysViewTest)</value>
                 <value>testExportSysView_stream_session_skipBinary_recurse(org.apache.jackrabbit.test.api.ExportSysViewTest)</value>
-                <value>testGetNode(org.apache.jackrabbit.test.api.NamePropertyTest)</value>  <!-- Jahia throws PathNotFoundException instead of ItemNotFoundException --> 
+                <value>testGetNode(org.apache.jackrabbit.test.api.NamePropertyTest)</value>  <!-- Jahia throws PathNotFoundException instead of ItemNotFoundException -->
                 <value>testGetProperty(org.apache.jackrabbit.test.api.NamePropertyTest)</value>
                 <value>testRegisterNamespace(org.apache.jackrabbit.test.api.NamespaceRegistryTest)</value> <!-- QA-12211 for all in this and next class-->
                 <value>testAutomaticNewLocalPrefix(org.apache.jackrabbit.test.api.NamespaceRemappingTest)</value>
@@ -167,11 +166,11 @@
                 <value>testGetDescriptorKeys(org.apache.jackrabbit.test.api.RepositoryDescriptorTest)</value>
                 <value>testGetDescriptorValues(org.apache.jackrabbit.test.api.RepositoryDescriptorTest)</value>
                 <value>testNoSuchWorkspaceException(org.apache.jackrabbit.test.api.RepositoryLoginTest)</value> <!-- QA-12214 -->
-                <value>testRemoveItem2(org.apache.jackrabbit.test.api.SessionRemoveItemTest)</value> <!-- QA-12216 --> 
+                <value>testRemoveItem2(org.apache.jackrabbit.test.api.SessionRemoveItemTest)</value> <!-- QA-12216 -->
                 <value>testMoveConstraintViolationExceptionDest(org.apache.jackrabbit.test.api.SessionTest)</value>  <!-- Node.save() is deprecated anyway -->
                 <value>testMoveConstraintViolationExceptionSrc(org.apache.jackrabbit.test.api.SessionTest)</value>  <!-- Node.save() is deprecated anyway -->
                 <value>testSaveReferentialIntegrityException(org.apache.jackrabbit.test.api.SessionUUIDTest)</value> <!-- Jahia only supports weak references -->
-                <value>testNodeAssumeTypeOfValue(org.apache.jackrabbit.test.api.SetPropertyAssumeTypeTest)</value>   <!-- QA-12210 for all in this class --> 
+                <value>testNodeAssumeTypeOfValue(org.apache.jackrabbit.test.api.SetPropertyAssumeTypeTest)</value>   <!-- QA-12210 for all in this class -->
                 <value>testString(org.apache.jackrabbit.test.api.SetPropertyAssumeTypeTest)</value>
                 <value>testStringConstraintViolationExceptionBecauseOfInvalidTypeParameter(org.apache.jackrabbit.test.api.SetPropertyAssumeTypeTest)</value>
                 <value>testValue(org.apache.jackrabbit.test.api.SetPropertyAssumeTypeTest)</value>
@@ -180,10 +179,10 @@
                 <value>testValuesAssumeTypeOfValue(org.apache.jackrabbit.test.api.SetPropertyAssumeTypeTest)</value>
                 <value>testSetMixedValueArrayValueFormatException(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value> <!-- Jahia throws a ConstraintViolationException instead of ValueFormatException -->
                 <value>testSetMixedValueArrayValueFormatExceptionWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value> <!-- Jahia throws a ConstraintViolationException instead of ValueFormatException -->
-                <value>testUndefinedProperty(org.apache.jackrabbit.test.api.UndefinedPropertyTest)</value> <!-- QA-12210  --> 
-                <value>testValueFormatException(org.apache.jackrabbit.test.api.ValueFactoryTest)</value>  <!-- QA-12215 --> 
+                <value>testUndefinedProperty(org.apache.jackrabbit.test.api.UndefinedPropertyTest)</value> <!-- QA-12210  -->
+                <value>testValueFormatException(org.apache.jackrabbit.test.api.ValueFactoryTest)</value>  <!-- QA-12215 -->
                 <value>testValueType(org.apache.jackrabbit.test.api.ValueFactoryTest)</value>  <!-- Jahia only supports weak references -->
- 
+
                 <value>testLockHoldingNode(org.apache.jackrabbit.test.api.lock.DeepLockTest)</value> <!-- NodeImpl.isSame does not find match when argument is our wrapper -->
                 <value>testLockTransfer2(org.apache.jackrabbit.test.api.lock.LockManagerTest)</value> <!-- QA-12217 for this and next 4 failures-->
                 <value>testLockTransfer3(org.apache.jackrabbit.test.api.lock.LockManagerTest)</value>
@@ -197,7 +196,7 @@
                 <value>testLockHoldingNode(org.apache.jackrabbit.test.api.lock.SessionScopedLockTest)</value>  <!-- NodeImpl.isSame does not find match when argument is our wrapper -->
                 <value>testGetLockOnNewChild(org.apache.jackrabbit.test.api.lock.SessionScopedLockTest)</value> <!-- node.getLock() method catches exceptions in our wrapper on purpose (?) -->
                 <value>testGetLockOnChild(org.apache.jackrabbit.test.api.lock.SessionScopedLockTest)</value> <!-- node.getLock() method catches exceptions in our wrapper on purpose (?) -->
- 
+
                 <value>testResidualWithDefault(org.apache.jackrabbit.test.api.nodetype.CanAddChildNodeCallWithoutNodeTypeTest)</value>  <!-- QA-12220 for all *.nodetype.Can* failures -->
                 <value>testMandatoryChildNode(org.apache.jackrabbit.test.api.nodetype.CanRemoveItemTest)</value>
                 <value>testProtectedChildNode(org.apache.jackrabbit.test.api.nodetype.CanRemoveItemTest)</value>
@@ -213,7 +212,7 @@
                 <value>testValueConstraintNotSatisfied(org.apache.jackrabbit.test.api.nodetype.CanSetPropertyPathTest)</value>
                 <value>testIsNodeTypeQName(org.apache.jackrabbit.test.api.nodetype.NodeTypeTest)</value> <!-- QA-12219 -->
                 <value>org.apache.jackrabbit.test.api.nodetype.PredefinedNodeTypeTest</value> <!-- changes have been done on purpose -->
-                 
+
                 <value>testIsDeepFalseNodeAdded(org.apache.jackrabbit.test.api.observation.AddEventListenerTest)</value>  <!-- QA-12221 for all failures in this class -->
                 <value>testIsDeepFalsePropertyAdded(org.apache.jackrabbit.test.api.observation.AddEventListenerTest)</value>
                 <value>testNoLocalTrue(org.apache.jackrabbit.test.api.observation.AddEventListenerTest)</value>
@@ -226,14 +225,14 @@
                 <value>testAddLockToNode(org.apache.jackrabbit.test.api.observation.LockingTest)</value> <!-- no events for lock related properties may get ignored -->
                 <value>testRemoveLockFromNode(org.apache.jackrabbit.test.api.observation.LockingTest)</value>
                 <value>testItemExistsException(org.apache.jackrabbit.test.api.query.SaveTest)</value>
-                
+
                 <value>org.apache.jackrabbit.test.api.query.qom.BindVariableValueTest</value> <!-- feature possibility has been removed to improve performance -->
-                  
-                <value>testCheckoutNonVersionableNode(org.apache.jackrabbit.test.api.version.CheckoutTest)</value>         <!-- no exception throwing probably done on purpose -->                
-                <value>testGetVersionLabelsForVersion(org.apache.jackrabbit.test.api.version.VersionLabelTest)</value>     <!-- QA-12222 for all in this class -->       
+
+                <value>testCheckoutNonVersionableNode(org.apache.jackrabbit.test.api.version.CheckoutTest)</value>         <!-- no exception throwing probably done on purpose -->
+                <value>testGetVersionLabelsForVersion(org.apache.jackrabbit.test.api.version.VersionLabelTest)</value>     <!-- QA-12222 for all in this class -->
                 <value>testGetVersionLabelsForVersionJcr2(org.apache.jackrabbit.test.api.version.VersionLabelTest)</value>
                 <value>testHasVersionLabelForVersion(org.apache.jackrabbit.test.api.version.VersionLabelTest)</value>
-                            
+
                 <!-- Failing due to incompatible Jahia modifications : UnsupportedRepositoryOperationException by Jahia code -->
 
                 <value>testCheckPermission(org.apache.jackrabbit.test.api.CheckPermissionTest)</value>
@@ -255,7 +254,7 @@
                 <value>testSetCurrentTypeOnNew(org.apache.jackrabbit.test.api.NodeSetPrimaryTypeTest)</value>
                 <value>testSetMixinAsPrimaryType(org.apache.jackrabbit.test.api.NodeSetPrimaryTypeTest)</value>
                 <value>testSetPrimaryType(org.apache.jackrabbit.test.api.NodeSetPrimaryTypeTest)</value>
-                <value>org.apache.jackrabbit.test.api.SerializationTest</value>    
+                <value>org.apache.jackrabbit.test.api.SerializationTest</value>
                 <value>testCloneNodesNodeExistsAtDestPath(org.apache.jackrabbit.test.api.WorkspaceCloneSameNameSibsTest)</value>
                 <value>testCloneNodesOrderingSupportedByParent(org.apache.jackrabbit.test.api.WorkspaceCloneSameNameSibsTest)</value>
                 <value>testCloneNodesReferenceableAndNonreferenceable(org.apache.jackrabbit.test.api.WorkspaceCloneReferenceableTest)</value>
@@ -282,7 +281,7 @@
                 <value>testCopyNodesPathNotExisting(org.apache.jackrabbit.test.api.WorkspaceCopyBetweenWorkspacesTest)</value>
                 <value>testCopyNodesReferenceableNodesNewUUID(org.apache.jackrabbit.test.api.WorkspaceCopyBetweenWorkspacesReferenceableTest)</value>
                 <value>testCopyNodesVersionableAndCheckedIn(org.apache.jackrabbit.test.api.WorkspaceCopyBetweenWorkspacesVersionableTest)</value>
- 
+
                 <value>testMergeNodeCancelMerge(org.apache.jackrabbit.test.api.version.MergeCancelMergeTest)</value>
                 <value>testFailIfCorrespondingNodeIsSuccessor(org.apache.jackrabbit.test.api.version.MergeCheckedoutSubNodeTest)</value>
                 <value>testLeaveIfCorrespondingNodeIsPredeccessor(org.apache.jackrabbit.test.api.version.MergeCheckedoutSubNodeTest)</value>
@@ -311,7 +310,7 @@
                 <value>testWorkspaceRestoreWithPendingChanges(org.apache.jackrabbit.test.api.version.WorkspaceRestoreTest)</value>
 
                 <!-- Failing due to incompatible Jahia modifications : Value wrapper problems with identity checks implemented in StringValue.equals and DateValue.equals-->
-                
+
                 <value>testModifyCalendarPropertyParent(org.apache.jackrabbit.test.api.SetPropertyCalendarTest)</value>
                 <value>testModifyCalendarPropertySession(org.apache.jackrabbit.test.api.SetPropertyCalendarTest)</value>
                 <value>testNewCalendarPropertyParent(org.apache.jackrabbit.test.api.SetPropertyCalendarTest)</value>
@@ -347,10 +346,10 @@
                 <value>testMultiValueSession(org.apache.jackrabbit.test.api.SetValueStringTest)</value>
                 <value>testValueParent(org.apache.jackrabbit.test.api.SetValueStringTest)</value>
                 <value>testValueSession(org.apache.jackrabbit.test.api.SetValueStringTest)</value>
-                
-                
+
+
                 <!--Test needs to be removed or rewritten-->
-                
+
                 <value>testEntryPointDefinitions(org.jahia.test.services.applications.ApplicationsManagerServiceTest)</value>
                 <value>testEntryPointInstance(org.jahia.test.services.applications.ApplicationsManagerServiceTest)</value>
                 <value>testUniqueValue(org.jahia.test.services.i18n.ResourceBundleTest)</value>

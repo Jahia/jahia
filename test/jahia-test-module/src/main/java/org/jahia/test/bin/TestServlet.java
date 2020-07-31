@@ -183,8 +183,8 @@ public class TestServlet extends BaseTestController {
 
                 @Override
                 public boolean shouldRun(Description description) {
-                    return !ignoreTests.contains(description.getDisplayName())
-                            && (methodName == null || methodName.equalsIgnoreCase(description.getMethodName()));
+                    return !ignoreTests.contains(description.getDisplayName()) && (methodName == null || description.getMethodName() == null
+                            || methodName.equalsIgnoreCase(description.getMethodName()));
                 }
 
                 @Override

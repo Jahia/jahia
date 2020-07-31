@@ -24,7 +24,6 @@
                 <value>org.jahia.test.bin.FindPrincipalTest</value>
                 <value>org.jahia.test.bin.FindTest</value>
                 <value>org.jahia.test.bin.RenderTest</value>
-                <value>org.jahia.test.bin.actions.ChainActionHttpTest</value>
                 <value>org.jahia.test.osgi.SpringBridgeTest</value>
                 <value>org.jahia.test.osgi.SpringContextSingletonTest</value>
                 <value>org.jahia.test.services.acl.AclTest</value>

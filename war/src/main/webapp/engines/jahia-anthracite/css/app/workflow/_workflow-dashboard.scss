@@ -479,6 +479,10 @@
         align-content: center;
 
         .x-window-header-text {
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+          padding: 0 16px;
           display: inline !important;
           width: 100% !important;
           background: unset !important;

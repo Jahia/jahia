@@ -58,6 +58,7 @@ public class AuthValveContext {
     private HttpServletResponse response;
     private JCRSessionFactory sessionFactory;
     private boolean authRetrievedFromSession = false;
+    private boolean shouldStoreAuthInSession = true;
 
     public AuthValveContext(HttpServletRequest request, HttpServletResponse response, JCRSessionFactory sessionFactory) {
         this.request = request;
@@ -95,5 +96,13 @@ public class AuthValveContext {
      */
     public void setAuthRetrievedFromSession(boolean authRetrievedFromSession) {
         this.authRetrievedFromSession = authRetrievedFromSession;
+    }
+
+    public boolean isShouldStoreAuthInSession() {
+        return shouldStoreAuthInSession;
+    }
+
+    public void setShouldStoreAuthInSession(boolean shouldStoreAuthInSession) {
+        this.shouldStoreAuthInSession = shouldStoreAuthInSession;
     }
 }

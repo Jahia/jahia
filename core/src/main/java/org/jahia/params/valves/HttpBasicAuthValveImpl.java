@@ -97,6 +97,8 @@ public class HttpBasicAuthValveImpl extends BaseAuthValve {
                                 return;
                             }
                             authContext.getSessionFactory().setCurrentUser(jcrUserNode.getJahiaUser());
+                            // Do not store HTTP Basic auth into session
+                            authContext.setShouldStoreAuthInSession(false);
                             return;
                         } else {
                             logger.debug("User found but password verification failed for user : " + user);

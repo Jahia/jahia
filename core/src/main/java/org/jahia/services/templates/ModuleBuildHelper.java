@@ -271,7 +271,7 @@ public class ModuleBuildHelper implements InitializingBean {
         if (StringUtils.isNotBlank(groupId)) {
             archetypeParams.add("-DgroupId=" + groupId);
         }
-        archetypeParams.add("-DdigitalFactoryVersion=" + Constants.JAHIA_PROJECT_VERSION);
+        archetypeParams.add("-DjahiaVersion=" + Constants.JAHIA_PROJECT_VERSION);
         archetypeParams.add("-DinteractiveMode=false");
 
         StringBuilder out = new StringBuilder();

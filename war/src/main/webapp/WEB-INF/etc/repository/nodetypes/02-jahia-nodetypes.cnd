@@ -656,6 +656,8 @@ extends = jnt:page
 
 [jmix:templateMixin] mixin
 
+[jmix:dynamicFieldset] > jmix:templateMixin mixin
+
 [jmix:markedForDeletion] mixin
 
 [jmix:markedForDeletionRoot] mixin

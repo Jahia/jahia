@@ -128,7 +128,7 @@ public class WIPService {
     public void saveWipPropertiesIfNeeded(JCRNodeWrapper node, WIPInfo wipInfo)
             throws RepositoryException {
         // do we have anything to update at all or we have other properties than WIP to update?
-        if (wipInfo.getStatus() == null) {
+        if (!node.isNodeType("jmix:lastPublished") || wipInfo.getStatus() == null) {
             return;
         }
 

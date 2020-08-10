@@ -249,8 +249,8 @@
         <property name="toolbarWarningsService" ref="toolbarNotificationService"/>
         <property name="ignoreSnapshots" value="${jahia.mavenReleasePlugin.ignoreSnapshots:}"/>
         <property name="mavenArchetypePlugin" value="${jahia.mavenArchetypePlugin:org.apache.maven.plugins:maven-archetype-plugin:2.4}"/>
-        <property name="mavenArchetypeCatalog" value="${jahia.mavenArchetypeCatalog:https://oss.sonatype.org/content/repositories/snapshots/archetype-catalog.xml,local}"/>
-        <property name="mavenArchetypeVersion" value="${jahia.mavenArchetypeVersion:4.2-SNAPSHOT}"/>
+        <property name="mavenArchetypeCatalog" value="${jahia.mavenArchetypeCatalog:https://repo.maven.apache.org/maven2,local}"/>
+        <property name="mavenArchetypeVersion" value="${jahia.mavenArchetypeVersion:4.2}"/>
         <property name="mavenMinRequiredVersion" value="3.0"/>
         <property name="mavenWarnIfVersionIsOlderThan" value="3.1"/>
         <property name="mavenExecutable" value="${mvnPath:mvn}"/>

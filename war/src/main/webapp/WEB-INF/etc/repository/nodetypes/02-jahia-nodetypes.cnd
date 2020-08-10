@@ -753,6 +753,8 @@ extends = jnt:content
 
 [jmix:navMenuItem] mixin
 
+[jmix:automaticallyOrderable] mixin
+
 [jnt:page] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged, jmix:navMenuItem, jmix:hasTemplateNode, jmix:searchable
  orderable
  - jcr:title (string) i18n mandatory boost=2.0
@@ -773,7 +775,7 @@ extends = jnt:content
 
 [jmix:orderedList] mixin
  itemtype = listOrdering
- extends = jnt:contentList, jnt:area
+ extends = jnt:contentList, jnt:area, jmix:automaticallyOrderable
  - ignoreCase (boolean) = true autocreated
  - firstField (string, choicelist[sortableFieldnames]) indexed=no
  - firstDirection (string, choicelist[resourceBundle]) = 'asc' autocreated indexed=no < 'asc','desc'

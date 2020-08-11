@@ -20,6 +20,7 @@
         </property>
         <property name="filterChainDefinitions">
             <value>
+                /modules/**/configs/*.jsp = authcJahia, perms[/:jcr_read]
                 /modules/**/*.jsp = authcJahia, perms[/tools:systemToolsAccess]
                 /**/*.raw = authcJahia, perms[/tools:systemToolsAccess]
                 /**/*.raw.ajax = authcJahia, perms[/tools:systemToolsAccess]

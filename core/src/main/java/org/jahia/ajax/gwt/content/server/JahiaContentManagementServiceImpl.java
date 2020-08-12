@@ -2099,10 +2099,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         if (gwtMixin != null) {
             List<GWTJahiaNodeType> gwtMixinCopy = new ArrayList<>(gwtMixin);
             for (GWTJahiaNodeType type : gwtMixinCopy) {
-                for (String superType : type.getSuperTypes()) {
-                    GWTJahiaNodeType nodeType = contentDefinition.getGWTJahiaNodeType(NodeTypeRegistry.getInstance().getNodeType(superType), getUILocale());
-                    if (!gwtMixin.contains(nodeType)) {
-                        gwtMixin.add(nodeType);
+                if(type.getSuperTypes().contains("jmix:templateMixin")) {
+                    for (String superType : type.getSuperTypes()) {
+                        GWTJahiaNodeType nodeType = contentDefinition
+                                .getGWTJahiaNodeType(NodeTypeRegistry.getInstance().getNodeType(superType), getUILocale());
+                        if (!gwtMixin.contains(nodeType)) {
+                            gwtMixin.add(nodeType);
+                        }
                     }
                 }
             }

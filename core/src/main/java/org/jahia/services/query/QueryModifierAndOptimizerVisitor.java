@@ -43,10 +43,7 @@
  */
 package org.jahia.services.query;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
@@ -102,6 +99,7 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
     private Map<String, Set<String>> nodeTypesPerSelector = new HashMap<String, Set<String>>();
 
     private static final String NO_LOCALE = "no_locale";
+    private static final List<String> NO_LOCALE_NODE_TYPES = Arrays.asList(Constants.JAHIANT_FILE, Constants.JAHIANT_USER);
 
     private JCRSessionWrapper session = null;
 
@@ -678,7 +676,7 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
                                     .getNodeType(selector.getNodeTypeName());
                             ExtendedPropertyDefinition propDef = propertyName != null ? getPropertyDefinition(
                                     nodeType, selector, propertyName) : null;
-                            if (!Constants.JAHIANT_FILE.equals(selector.getNodeTypeName())
+                            if (!NO_LOCALE_NODE_TYPES.contains(selector.getNodeTypeName())
                                     && propDef != null && propDef.isInternationalized()) {
                                 newLanguageCodes.remove(NO_LOCALE);
                             }

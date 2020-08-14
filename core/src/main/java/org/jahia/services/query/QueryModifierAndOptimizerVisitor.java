@@ -63,28 +63,28 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 
 /**
  * We use this QOMTreeVisitor implementation to traverse through the query object model three times.
- * 
+ *
  * The ModificationInfo.mode changes before each iteration from INITIALIZE_MODE to CHECK_FOR_MODIFICATION_MODE and at last MODIFY_MODE,
  * which is only called if modification is necessary.
- * 
+ *
  * In INITIALIZE_MODE we analyze the query to check, whether language constraints are already set for selectors and we check whether
  * selectors to nodes having internationlized properties are already joined with their translation nodes and we store the node types per
  * selector.
- * 
+ *
  * In CHECK_FOR_MODIFICATION_MODE we analyze the query to see, whether modifications needs to be made because of Jahia's internal
  * datamodel changes (mainly internationalized properties, which are copied to subnodes and propertynames are suffixed with the language
  * code). We will also check if modifications need to be done due to performance optimizations. This mode sets the
  * ModificationInfo.modificationNecessary variable to mark the necessity of modification.
- * 
+ *
  * The MODIFY_MODE is only called if modification appears necessary (after previous step). This mode returns a modified query object
  * model in ModificationInfo.newQueryObjectModel.
- * 
+ *
  */
 class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
 
     protected enum TraversingMode {INITIALIZE_MODE, CHECK_FOR_MODIFICATION_MODE, MODIFY_MODE};
-    
-    private ValueFactory valueFactory;    
+
+    private ValueFactory valueFactory;
 
     private ModificationInfo modificationInfo;
 
@@ -99,13 +99,13 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
     private Map<String, Set<String>> nodeTypesPerSelector = new HashMap<String, Set<String>>();
 
     private static final String NO_LOCALE = "no_locale";
-    private static final List<String> NO_LOCALE_NODE_TYPES = Arrays.asList(Constants.JAHIANT_FILE, Constants.JAHIANT_USER);
+    private static final List<String> NO_LOCALE_NODE_TYPES = Arrays.asList(Constants.JAHIANT_FILE, Constants.JAHIANT_USER, Constants.JAHIANT_GROUP);
 
     private JCRSessionWrapper session = null;
 
     /**
      * Constructor for the QueryModifierAndOptimizerVisitor
-     * 
+     *
      * @param modificationInfo
      *            object gathering all modification infos
      * @param originalSource
@@ -117,7 +117,7 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
     public QueryModifierAndOptimizerVisitor(ValueFactory valueFactory, ModificationInfo modificationInfo,
             Source originalSource, JCRSessionWrapper session) {
         super();
-        this.valueFactory = valueFactory;        
+        this.valueFactory = valueFactory;
         this.modificationInfo = modificationInfo;
         this.originalSource = originalSource;
         this.session = session;
@@ -127,7 +127,7 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
      * In INITIALIZE_MODE checks whether a selector is set to nt:base and in such a case looks, which nodes are actually placed as child
      * nodes. If all are the same then store the primaryChildNodeType, otherwise the nodetypes, common to all child nodes. This is
      * needed to be able to obtain property definitions.
-     * 
+     *
      * In MODIFY_MODE return the unchanged node.
      */
     @Override
@@ -155,7 +155,7 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
     /**
      * In INITIALIZE_MODE checks whether the propertyName of the QOM node is internationalized. If yes and the selector for the
      * translation subnode is missing, indicate creation and that the query must be modified, which is done in MODIFY_MODE.
-     * 
+     *
      * In MODIFY_MODE either return the modified node or if modification is not necessary, the unchanged node.
      */
     @Override
@@ -167,7 +167,7 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
     /**
      * In INITIALIZE_MODE checks whether the propertyName of the QOM node is internationalized. If yes and the selector for the
      * translation subnode is missing, indicate creation and that the query must be modified, which is done in MODIFY_MODE.
-     * 
+     *
      * In MODIFY_MODE either return the modified node or if modification is not necessary, the unchanged node.
      */
     @Override
@@ -179,7 +179,7 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
     /**
      * In INITIALIZE_MODE checks whether the propertyName of the QOM node is internationalized. If yes and the selector for the
      * translation subnode is missing, indicate creation and that the query must be modified, which is done in MODIFY_MODE.
-     * 
+     *
      * In MODIFY_MODE either return the modified node or if modification is not necessary, the unchanged node.
      */
     @Override
@@ -191,7 +191,7 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
     /**
      * In INITIALIZE_MODE checks whether the propertyName of the QOM node is internationalized. If yes and the selector for the
      * translation subnode is missing, indicate creation and that the query must be modified, which is done in MODIFY_MODE.
-     * 
+     *
      * In MODIFY_MODE either return the modified node or if modification is not necessary, the unchanged node.
      */
     @Override
@@ -210,14 +210,14 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
                 languages.add(NO_LOCALE);
             }
         }
-    	
+
         Object returnedData = getNewPropertyBasedNodeIfRequired(node);
         return (getModificationInfo().getMode() == TraversingMode.MODIFY_MODE ? returnedData : node);
     }
 
     /**
      * Calls accept on each of the attached constraints of the AND node.
-     * 
+     *
      * In MODIFY_MODE check if the constraints returned were modified, and if yes create a new node and return it, otherwise return the
      * unchanged node.
      */
@@ -247,10 +247,10 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
 
     /**
      * Calls accept on the two operands in the comparison node.
-     * 
+     *
      * In INITIALIZE_MODE check whether there is already a language based comparison in the original query, so that this language is
      * used instead of the current locale in the session.
-     * 
+     *
      * In MODIFY_MODE check if the dynamic operand returned was modified, and if yes create a new node and return it, otherwise return
      * the unchanged node.
      */
@@ -291,10 +291,10 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
 
     /**
      * Calls accept on the two sources and the join condition in the join node.
-     * 
+     *
      * In INITIALIZE_MODE check whether the original query already contains a childnode-JOIN on the translation node, so that it then
      * does not have to be added.
-     * 
+     *
      * In MODIFY_MODE check if the sources or join condition returned were modified, and if yes create a new node and return it,
      * otherwise return the unchanged node.
      */
@@ -340,7 +340,7 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
 
     /**
      * Calls accept on the property value in the length node.
-     * 
+     *
      * In MODIFY_MODE check if the property value returned was modified, and if yes create a new node and return it, otherwise return
      * the unchanged node.
      */
@@ -356,7 +356,7 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
 
     /**
      * Calls accept on the dynamic operand in the lower-case node.
-     * 
+     *
      * In MODIFY_MODE check if the operand returned was modified, and if yes create a new node and return it, otherwise return the
      * unchanged node.
      */
@@ -373,7 +373,7 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
 
     /**
      * Calls accept on the constraint in the NOT node.
-     * 
+     *
      * In MODIFY_MODE check if the constraint returned was modified, and if yes create a new node and return it, otherwise return the
      * unchanged node.
      */
@@ -389,7 +389,7 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
 
     /**
      * Calls accept on the dynamic operand in the ordering node.
-     * 
+     *
      * In MODIFY_MODE check if the operand returned was modified, and if yes create a new node and return it, otherwise return the
      * unchanged node.
      */
@@ -409,7 +409,7 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
 
     /**
      * Calls accept on each of the attached constraints of the OR node.
-     * 
+     *
      * In MODIFY_MODE check if the constraints returned were modified, and if yes create a new node and return it, otherwise return the
      * unchanged node.
      */
@@ -445,7 +445,7 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
      * <li>Orderings</li>
      * <li>Columns</li>
      * </ul>
-     * 
+     *
      * In MODIFY_MODE check if the nodes returned were modified, and if yes create a new QOM and return it, otherwise return the
      * unchanged QOM.
      */
@@ -481,7 +481,7 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
 
     /**
      * Calls accept on the dynamic operand in the lower-case node.
-     * 
+     *
      * In MODIFY_MODE check if the operand returned was modified, and if yes create a new node and return it, otherwise return the
      * unchanged node.
      */
@@ -575,7 +575,7 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
     /**
      * In INITIALIZE_MODE checks whether the propertyName of the QOM node is internationalized. If yes and the selector for the
      * translation subnode is missing, indicate creation and that the query must be modified, which is done in MODIFY_MODE.
-     * 
+     *
      * In MODIFY_MODE either return the modified node or if modification is not necessary, the unchanged node.
      */
     @Override
@@ -649,7 +649,7 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
                     || getModificationInfo().getMode() == TraversingMode.MODIFY_MODE) {
                 // check for language dependent modifications and use the translation selector on
                 // jnt:translation node if user specified it in query
-                
+
                 if (getSelectorsJoinedWithTranslation().get(selector.getSelectorName()) != null) {
                     selector = getSelectorsJoinedWithTranslation().get(selector.getSelectorName());
                 }
@@ -661,7 +661,7 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
                                 .getNodeTypeName()) || Constants.JAHIANT_QUERY
                                 .equals(selector.getNodeTypeName()))) {
                     if (getModificationInfo().getMode() == TraversingMode.CHECK_FOR_MODIFICATION_MODE) {
-                        
+
                         Set<String> newLanguageCodes = getNewLanguagesPerSelector().get(
                                 selector.getSelectorName());
                         if (newLanguageCodes == null) {
@@ -670,7 +670,7 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
                             newLanguageCodes.add(NO_LOCALE);
                             getNewLanguagesPerSelector().put(selector.getSelectorName(),
                                     newLanguageCodes);
-                        } 
+                        }
                         if (newLanguageCodes.contains(NO_LOCALE)) {
                             ExtendedNodeType nodeType = NodeTypeRegistry.getInstance()
                                     .getNodeType(selector.getNodeTypeName());
@@ -859,8 +859,8 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
         }
         return foundSelector;
     }
-    
+
     public ValueFactory getValueFactory() {
         return this.valueFactory;
-    }    
+    }
 }

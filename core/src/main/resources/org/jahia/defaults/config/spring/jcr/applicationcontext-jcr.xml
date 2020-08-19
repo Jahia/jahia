@@ -217,6 +217,7 @@
                         </bean>
                         <bean class="org.jahia.services.mail.MailSettingsListener"/>
                         <bean class="org.jahia.services.search.SearchSettingsListener"/>
+                        <bean class="org.jahia.services.content.PageModelListener"/>
                         <ref bean="mountPointListener"/>
                         <!--
                         <ref bean="NodeOperationEventListener" />

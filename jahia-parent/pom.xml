@@ -286,6 +286,12 @@
             <organizationUrl>http://www.jahia.com/</organizationUrl>
         </developer>
         <developer>
+            <name>Jonathan Sinovassin-naïk</name>
+            <email>jsinovassinnaik@jahia.com</email>
+            <organization>Jahia Solutions Group SA</organization>
+            <organizationUrl>http://www.jahia.com/</organizationUrl>
+        </developer>
+        <developer>
             <name>Julian Maurel</name>
             <email>julian.maurel@jahia.com</email>
             <organization>Jahia Solutions Group SA</organization>

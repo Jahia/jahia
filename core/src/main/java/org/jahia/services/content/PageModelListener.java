@@ -89,7 +89,8 @@ public class PageModelListener extends DefaultEventListener {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     while (events.hasNext()) {
                         Event event = events.nextEvent();
-                        if (isExternal(event)) {
+                        // Don't process nodes that have been moved or removed by another listener in the same session.
+                        if (isExternal(event) || !session.nodeExists(event.getPath())) {
                             continue;
                         }
                         JCRNodeWrapper newPage = session.getNode(event.getPath());

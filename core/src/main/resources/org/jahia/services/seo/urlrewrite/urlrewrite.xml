@@ -6,9 +6,15 @@
 
     <rule>
         <name>Jahia AppShell</name>
+        <note>rewrite /jahia/* to /modules/appshell/jahia/</note>
+        <from>^/jahia/(.*)$</from>
+        <to>/modules/appshell/jahia/$1</to>
+    </rule>
+    <rule>
+        <name>Jahia AppShell Root</name>
         <note>rewrite /jahia to /modules/appshell/jahia</note>
-        <from>^/jahia(.*)$</from>
-        <to>/modules/appshell/jahia$1</to>
+        <from>^/jahia$</from>
+        <to>/modules/appshell/jahia</to>
     </rule>
     <outbound-rule>
         <name>Jahia AppShell out</name>

@@ -559,6 +559,9 @@ public class ContentTabItem extends PropertiesTabItem {
     }
 
     private boolean isNameEditableForType(NodeHolder engine) {
+        if (engine instanceof CreateContentEngine && ((CreateContentEngine) engine).getTargetName() != null) {
+            return false;
+        }
         return nameNotEditableForTypes == null || nameNotEditableForTypes.isEmpty()
                 || engine == null || !engine.isExistingNode()
                 || !engine.getNode().isNodeType(nameNotEditableForTypes);

@@ -153,6 +153,10 @@
         <systemTools jcr:primaryType="jnt:permission">
             <systemToolsAccess jcr:primaryType="jnt:permission"/>
         </systemTools>
+
+        <developerTools jcr:primaryType="jnt:permission">
+            <developerToolsAccess jcr:primaryType="jnt:permission"/>
+        </developerTools>
     </permissions>
 
 </content>

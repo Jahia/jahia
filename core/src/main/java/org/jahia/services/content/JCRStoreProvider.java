@@ -857,8 +857,10 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         }
         if (objectNode.isNew() || w.checkValidity()) {
             return service.decorate(w);
+        } else if (session.getLocale() != null) {
+            throw new PathNotFoundException("This node "+ objectNode.getPath() + " doesn't exist in this language " + session.getLocale().toString());
         } else {
-            throw new PathNotFoundException("This node doesn't exist in this language " + objectNode.getPath());
+            throw new PathNotFoundException("This node "+ objectNode.getPath() + " doesn't exist");
         }
     }
 

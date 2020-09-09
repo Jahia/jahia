@@ -109,7 +109,8 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
 
     private String title = null;
 
-    private boolean suppressPublicationInfo;
+    private boolean suppressTreePublicationInfo;
+    private boolean suppressTablePublicationInfo;
 
     private boolean editableGrid = false;
 
@@ -438,12 +439,20 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
         this.title = title;
     }
 
-    public boolean isSuppressPublicationInfo() {
-        return suppressPublicationInfo;
+    public boolean isSuppressTablePublicationInfo() {
+        return suppressTablePublicationInfo;
     }
 
-    public void setSuppressPublicationInfo(boolean suppressPublicationInfo) {
-        this.suppressPublicationInfo = suppressPublicationInfo;
+    public boolean isSuppressTreePublicationInfo() {
+        return suppressTreePublicationInfo;
+    }
+
+    public void setSuppressTreePublicationInfo(boolean suppressTreePublicationInfo) {
+        this.suppressTreePublicationInfo = suppressTreePublicationInfo;
+    }
+
+    public void setSuppressTablePublicationInfo(boolean suppressTablePublicationInfo) {
+        this.suppressTablePublicationInfo = suppressTablePublicationInfo;
     }
 
     /**

@@ -111,9 +111,9 @@ public class RepositoryTab extends ContentPanel {
 
         List<String> keys = new ArrayList<String>(config.getTreeColumnKeys());
         int indexOf = keys.indexOf(GWTJahiaNode.PUBLICATION_INFO);
-        if (indexOf == -1 && !config.isSuppressPublicationInfo()) {
+        if (indexOf == -1 && !config.isSuppressTreePublicationInfo()) {
             keys.add(GWTJahiaNode.PUBLICATION_INFO);
-        } else if (indexOf != -1 && config.isSuppressPublicationInfo()) {
+        } else if (indexOf != -1 && config.isSuppressTreePublicationInfo()) {
             keys.remove(indexOf);
         }
         keys.add(GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO);

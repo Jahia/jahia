@@ -385,7 +385,8 @@ public class UIConfigHelper {
                     gwtConfig.setManagerEngineTabs(managerTabs);
                 }
 
-                gwtConfig.setSuppressPublicationInfo(config.isSuppressPublicationInfo());
+                gwtConfig.setSuppressTreePublicationInfo(config.isSuppressTreePublicationInfo());
+                gwtConfig.setSuppressTablePublicationInfo(config.isSuppressTablePublicationInfo());
 
                 gwtConfig.setSiteNode(navigation.getGWTJahiaNode(site, GWTJahiaNode.DEFAULT_SITE_FIELDS, uiLocale));
                 gwtConfig.setPermissions(JahiaPrivilegeRegistry.getRegisteredPrivilegeNames());

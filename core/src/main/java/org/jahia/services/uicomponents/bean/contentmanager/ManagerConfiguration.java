@@ -117,7 +117,8 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
 
     private String titleKey = null;
 
-    private boolean suppressPublicationInfo;
+    private boolean suppressTreePublicationInfo;
+    private boolean suppressTablePublicationInfo;
 
     private boolean useLargeThumbnails;
 
@@ -446,12 +447,29 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
         this.titleKey = titleKey;
     }
 
-    public boolean isSuppressPublicationInfo() {
-        return suppressPublicationInfo;
+    public boolean isSuppressTreePublicationInfo() {
+        return suppressTreePublicationInfo;
     }
 
+    public boolean isSuppressTablePublicationInfo() {
+        return suppressTablePublicationInfo;
+    }
+
+    /**
+     * @deprecated use setSuppressTreePublicationInfo and/or setSuppressTablePublicationInfo
+     */
+    @Deprecated
     public void setSuppressPublicationInfo(boolean suppressPublicationInfo) {
-        this.suppressPublicationInfo = suppressPublicationInfo;
+        this.suppressTreePublicationInfo = suppressPublicationInfo;
+        this.suppressTablePublicationInfo = suppressPublicationInfo;
+    }
+
+    public void setSuppressTreePublicationInfo(boolean suppressTreePublicationInfo) {
+        this.suppressTreePublicationInfo = suppressTreePublicationInfo;
+    }
+
+    public void setSuppressTablePublicationInfo(boolean suppressTablePublicationInfo) {
+        this.suppressTablePublicationInfo = suppressTablePublicationInfo;
     }
 
     /**

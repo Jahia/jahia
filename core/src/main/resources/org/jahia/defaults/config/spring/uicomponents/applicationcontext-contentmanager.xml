@@ -21,6 +21,8 @@
     <bean id="abstractmanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration"
           abstract="true">
         <!-- edit engine -->
+        <property name="suppressTreePublicationInfo" value="${jahia.ui.managers.suppressTreePublicationInfo:false}"/>
+        <property name="suppressTablePublicationInfo" value="${jahia.ui.managers.suppressTablePublicationInfo:false}"/>
         <property name="engineConfigurations">
             <map>
                 <entry key="nt:base">

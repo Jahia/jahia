@@ -634,18 +634,17 @@ public class ContentDefinitionHelper {
                 theValue = val.getString();
                 break;
             case PropertyType.WEAKREFERENCE:
+            case PropertyType.REFERENCE:
                 GWTJahiaNodePropertyValue convertedValue = null;
                 JCRNodeWrapper node = ((JCRValueWrapper) val).getNode();
                 // check if the referenced node exists
                 if (node != null) {
+                    int refType = ( def.getRequiredType() == PropertyType.WEAKREFERENCE ) ? GWTJahiaNodePropertyType.WEAKREFERENCE :
+                            GWTJahiaNodePropertyType.REFERENCE;
                     convertedValue = new GWTJahiaNodePropertyValue(navigation.getGWTJahiaNode(node),
-                            GWTJahiaNodePropertyType.WEAKREFERENCE);
+                                                                   refType);
                 }
                 return convertedValue;
-            case PropertyType.REFERENCE:
-                return new GWTJahiaNodePropertyValue(
-                        navigation.getGWTJahiaNode(((JCRValueWrapper) val).getNode()),
-                        GWTJahiaNodePropertyType.REFERENCE);
             case PropertyType.STRING:
                 type = GWTJahiaNodePropertyType.STRING;
                 theValue = val.getString();

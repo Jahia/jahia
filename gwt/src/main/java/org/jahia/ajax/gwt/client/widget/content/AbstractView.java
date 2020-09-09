@@ -100,9 +100,9 @@ public abstract class AbstractView extends TopRightComponent {
                     keys.add("fields-content");
                 }
                 int indexOf = keys.indexOf(GWTJahiaNode.PUBLICATION_INFO);
-                if (indexOf == -1 && !configuration.isSuppressPublicationInfo()) {
+                if (indexOf == -1 && !configuration.isSuppressTablePublicationInfo()) {
                     keys.add(GWTJahiaNode.PUBLICATION_INFO);
-                } else if (indexOf != -1 && configuration.isSuppressPublicationInfo()) {
+                } else if (indexOf != -1 && configuration.isSuppressTablePublicationInfo()) {
                     keys.remove(indexOf);
                 }
                 keys.add(GWTJahiaNode.PERMISSIONS);

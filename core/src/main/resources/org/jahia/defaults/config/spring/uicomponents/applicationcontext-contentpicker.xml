@@ -5,7 +5,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
     <bean id="abstractpicker" parent="abstractmanager" abstract="true">
-        <property name="suppressPublicationInfo" value="${jahia.ui.pickers.suppressPublicationInfo:false}"/>
+        <property name="suppressTreePublicationInfo" value="${jahia.ui.pickers.suppressPublicationInfo:false}"/>
+        <property name="suppressTablePublicationInfo" value="${jahia.ui.pickers.suppressPublicationInfo:false}"/>
     </bean>
     
     <!-- filepicker -->

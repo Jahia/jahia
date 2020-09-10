@@ -49,6 +49,7 @@ import javax.servlet.http.HttpSession;
  * simple GWT handler for atmosphere
  */
 
+import org.apache.commons.lang.StringUtils;
 import org.atmosphere.client.TrackMessageSizeInterceptor;
 import org.atmosphere.config.service.Disconnect;
 import org.atmosphere.config.service.ManagedService;
@@ -110,7 +111,7 @@ public class ManagedGWTResource {
     public static final String GWT_BROADCASTER_ID = "org.jahia.broadcaster";
 
     @Ready
-    public void onReady(final AtmosphereResource r) {
+    public String onReady(final AtmosphereResource r) {
         r.suspend();
         BroadcasterFactory broadcasterFactory = AtmosphereServlet.getBroadcasterFactory();
         broadcasterFactory.lookup(GWT_BROADCASTER_ID, true).addAtmosphereResource(r);
@@ -121,6 +122,8 @@ public class ManagedGWTResource {
 
         SpringContextSingleton.getInstance().publishEvent(new AtmosphereClientReadyEvent(r));
         logger.debug("Received RPC GET");
+        // Work around to avoid NPE at initialisation
+        return StringUtils.EMPTY;
     }
 
     @Disconnect

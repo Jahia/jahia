@@ -70,7 +70,7 @@
 
         <web-designer j:hidden="false"
                       j:nodeTypes="rep:root"
-                      j:permissionNames="adminTemplates"
+                      j:permissionNames="adminTemplates developerToolsAccess"
                       j:privilegedAccess="true"
                       j:roleGroup="server-role"
                       jcr:primaryType="jnt:role">

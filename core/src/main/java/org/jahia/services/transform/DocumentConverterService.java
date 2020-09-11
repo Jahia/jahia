@@ -43,24 +43,27 @@
  */
 package org.jahia.services.transform;
 
-import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.jodconverter.core.DocumentConverter;
+import org.jodconverter.core.document.DefaultDocumentFormatRegistry;
+import org.jodconverter.core.document.DocumentFormat;
+import org.jodconverter.core.document.DocumentFormatRegistry;
+import org.jodconverter.core.office.OfficeException;
+import org.jodconverter.core.office.OfficeManager;
+import org.jodconverter.local.LocalConverter;
+import org.jodconverter.local.office.LocalOfficeManager;
+import org.jodconverter.remote.RemoteConverter;
+import org.jodconverter.remote.office.RemoteOfficeManager;
 import org.slf4j.Logger;
-import org.artofsolving.jodconverter.StandardConversionTask;
-import org.artofsolving.jodconverter.document.DefaultDocumentFormatRegistry;
-import org.artofsolving.jodconverter.document.DocumentFormat;
-import org.artofsolving.jodconverter.document.DocumentFormatRegistry;
-import org.artofsolving.jodconverter.office.OfficeException;
-import org.artofsolving.jodconverter.office.OfficeManager;
-import org.artofsolving.jodconverter.office.OfficeTask;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Document transformation service that uses OpenOffice for file conversion.
@@ -70,7 +73,7 @@ import org.springframework.context.ApplicationContextAware;
  */
 public class DocumentConverterService implements ApplicationContextAware {
 
-    protected static final Map<String, Object> DEF_PROPS = new HashMap<String, Object>(2);
+    protected static final Map<String, Object> DEF_PROPS = new HashMap<>();
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(DocumentConverterService.class);
 
@@ -79,12 +82,12 @@ public class DocumentConverterService implements ApplicationContextAware {
         DEF_PROPS.put("ReadOnly", true);
     }
 
-    private Map<String, ?> defaultLoadProperties = DEF_PROPS;
+    private Map<String, Object> defaultLoadProperties = DEF_PROPS;
     private boolean enabled;
-    private DocumentFormatRegistry formatRegistry = new DefaultDocumentFormatRegistry();
+    private DocumentFormatRegistry formatRegistry = DefaultDocumentFormatRegistry.getInstance();
 
     private OfficeManager officeManager;
-    
+
     private String officeManagerBeanName;
 
     private ApplicationContext applicationContext;
@@ -107,7 +110,7 @@ public class DocumentConverterService implements ApplicationContextAware {
         long startTime = System.currentTimeMillis();
 
         try {
-            officeManager.execute(getConversionTask(inputFile, inputFormat, outputFile, outputFormat));
+            getDocumentConverter().convert(inputFile).as(inputFormat).to(outputFile).as(outputFormat).execute();
         } catch (OfficeException e) {
             if (logger.isDebugEnabled()) {
                 logger.debug(e.getMessage(), e);
@@ -242,6 +245,14 @@ public class DocumentConverterService implements ApplicationContextAware {
         }
     }
 
+    private DocumentConverter getDocumentConverter() {
+        if (officeManager instanceof RemoteOfficeManager) {
+            return RemoteConverter.make(officeManager);
+        } else {
+            return LocalConverter.make(officeManager);
+        }
+    }
+
     /**
      * Create a {@link File} from an {@link InputStream}
      * @param is The inputStream to read from
@@ -266,25 +277,6 @@ public class DocumentConverterService implements ApplicationContextAware {
             IOUtils.closeQuietly(is);
         }
         return file;
-    }
-
-    /**
-     * Converts the provided input file into output, considering provided
-     * document formats.
-     * 
-     * @param inputFile the source file
-     * @param inputFormat description of the source file
-     * @param outputFile the output file descriptor to store converted content
-     *            into
-     * @param outputFormat description of the output file
-     */
-    protected OfficeTask getConversionTask(File inputFile, DocumentFormat inputFormat, File outputFile,
-            DocumentFormat outputFormat) {
-        StandardConversionTask officeTask = new StandardConversionTask(inputFile, outputFile,
-                outputFormat != null ? outputFormat : getFormat(outputFile));
-        officeTask.setDefaultLoadProperties(defaultLoadProperties);
-        officeTask.setInputFormat(inputFormat != null ? inputFormat : getFormat(inputFile));
-        return officeTask;
     }
 
     /**
@@ -331,7 +323,7 @@ public class DocumentConverterService implements ApplicationContextAware {
     /**
      * @param defaultLoadProperties the defaultLoadProperties to set
      */
-    public void setDefaultLoadProperties(Map<String, ?> defaultLoadProperties) {
+    public void setDefaultLoadProperties(Map<String, Object> defaultLoadProperties) {
         this.defaultLoadProperties = defaultLoadProperties;
     }
 
@@ -360,7 +352,7 @@ public class DocumentConverterService implements ApplicationContextAware {
         if (!isEnabled()) {
             return;
         }
-        
+
         try {
             officeManager = (OfficeManager) applicationContext.getBean(officeManagerBeanName);
         } catch (Exception e) {

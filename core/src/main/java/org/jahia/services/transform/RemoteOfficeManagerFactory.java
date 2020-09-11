@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2019 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2020 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -43,9 +43,9 @@
  */
 package org.jahia.services.transform;
 
-import org.artofsolving.jodconverter.office.ExternalOfficeManagerConfiguration;
-import org.artofsolving.jodconverter.office.OfficeConnectionProtocol;
-import org.artofsolving.jodconverter.office.OfficeManager;
+import org.jodconverter.core.office.OfficeManager;
+import org.jodconverter.local.office.ExternalOfficeManager;
+import org.jodconverter.local.office.OfficeConnectionProtocol;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 
 /**
@@ -57,14 +57,14 @@ import org.springframework.beans.factory.config.AbstractFactoryBean;
  */
 public class RemoteOfficeManagerFactory extends AbstractFactoryBean<OfficeManager> {
 
-    private ExternalOfficeManagerConfiguration cfg;
+    private ExternalOfficeManager.Builder cfg;
 
     /**
      * Initializes an instance of this class.
      */
     public RemoteOfficeManagerFactory() {
         super();
-        cfg = new ExternalOfficeManagerConfiguration();
+        cfg = ExternalOfficeManager.builder();
     }
 
     /*
@@ -76,12 +76,12 @@ public class RemoteOfficeManagerFactory extends AbstractFactoryBean<OfficeManage
      */
     @Override
     protected OfficeManager createInstance() throws Exception {
-        return cfg.buildOfficeManager();
+        return cfg.build();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.springframework.beans.factory.config.AbstractFactoryBean#getObjectType
      * ()
@@ -91,21 +91,21 @@ public class RemoteOfficeManagerFactory extends AbstractFactoryBean<OfficeManage
         return OfficeManager.class;
     }
 
+
     public void setConnectOnStart(boolean connectOnStart) {
-        cfg.setConnectOnStart(connectOnStart);
+        cfg.connectOnStart(connectOnStart);
     }
 
     public void setHost(String host) {
-        cfg.setHost(host);
+//        cfg.host(host);
     }
 
     public void setPipeName(String pipeName) throws NullPointerException {
-        cfg.setPipeName(pipeName);
-        cfg.setConnectionProtocol(OfficeConnectionProtocol.PIPE);
+        cfg.pipeName(pipeName);
+        cfg.connectionProtocol(OfficeConnectionProtocol.PIPE);
     }
 
     public void setPortNumber(int portNumber) {
-        cfg.setPortNumber(portNumber);
+        cfg.portNumber(portNumber);
     }
-
 }

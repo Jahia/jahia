@@ -1387,9 +1387,21 @@
         </dependency>
 
         <dependency>
-            <groupId>org.artofsolving.jodconverter</groupId>
+            <groupId>org.jodconverter</groupId>
             <artifactId>jodconverter-core</artifactId>
-            <version>3.0-beta-4-jahia5</version>
+            <version>4.3.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jodconverter</groupId>
+            <artifactId>jodconverter-local</artifactId>
+            <version>4.3.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jodconverter</groupId>
+            <artifactId>jodconverter-remote</artifactId>
+            <version>4.3.0</version>
         </dependency>
 
         <!-- Apache Shiro -->

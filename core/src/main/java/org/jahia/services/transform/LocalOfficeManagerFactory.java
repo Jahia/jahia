@@ -43,18 +43,18 @@
  */
 package org.jahia.services.transform;
 
-import java.io.File;
-
-import org.artofsolving.jodconverter.office.DefaultOfficeManagerConfiguration;
-import org.artofsolving.jodconverter.office.OfficeConnectionProtocol;
-import org.artofsolving.jodconverter.office.OfficeManager;
-import org.artofsolving.jodconverter.process.ProcessManager;
-import org.artofsolving.jodconverter.process.ProcessQuery;
-import org.artofsolving.jodconverter.process.WindowsProcessManager;
-import org.artofsolving.jodconverter.util.PlatformUtils;
+import org.apache.commons.lang3.SystemUtils;
+import org.jodconverter.core.office.OfficeManager;
+import org.jodconverter.local.office.LocalOfficeManager;
+import org.jodconverter.local.office.OfficeConnectionProtocol;
+import org.jodconverter.local.process.ProcessManager;
+import org.jodconverter.local.process.ProcessQuery;
+import org.jodconverter.local.process.WindowsProcessManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
+
+import java.io.File;
 
 /**
  * Factory bean for instantiating and configuring instance of the
@@ -66,7 +66,7 @@ public class LocalOfficeManagerFactory extends AbstractFactoryBean<OfficeManager
 
     private static final Logger logger = LoggerFactory.getLogger(LocalOfficeManagerFactory.class);
     
-    private DefaultOfficeManagerConfiguration cfg;
+    private LocalOfficeManager.Builder cfg;
     
     private boolean killExistingOfficeProcessOnWindows = true;
 
@@ -79,7 +79,7 @@ public class LocalOfficeManagerFactory extends AbstractFactoryBean<OfficeManager
      */
     public LocalOfficeManagerFactory() {
         super();
-        cfg = new DefaultOfficeManagerConfiguration();
+        cfg = LocalOfficeManager.builder();
     }
 
     /*
@@ -91,9 +91,9 @@ public class LocalOfficeManagerFactory extends AbstractFactoryBean<OfficeManager
      */
     @Override
     protected OfficeManager createInstance() throws Exception {
-        if (killExistingOfficeProcessOnWindows && PlatformUtils.isWindows()
+        if (killExistingOfficeProcessOnWindows && SystemUtils.IS_OS_WINDOWS
                 && connectionProtocol == OfficeConnectionProtocol.SOCKET
-                && WindowsProcessManager.isSupported()) {
+                && WindowsProcessManager.getDefault().isUsable()) {
             WindowsProcessManager mgr = new WindowsProcessManager();
             for (int port : portNumbers) {
                 ProcessQuery q = new ProcessQuery("soffice.bin", "socket,host=127.0.0.1,port="
@@ -109,7 +109,7 @@ public class LocalOfficeManagerFactory extends AbstractFactoryBean<OfficeManager
             }
         }
 
-        return cfg.buildOfficeManager();
+        return cfg.build();
     }
 
     /*
@@ -126,53 +126,52 @@ public class LocalOfficeManagerFactory extends AbstractFactoryBean<OfficeManager
 
     public void setConnectionProtocol(OfficeConnectionProtocol connectionProtocol) throws NullPointerException {
         this.connectionProtocol  = connectionProtocol;
-        cfg.setConnectionProtocol(connectionProtocol);
     }
 
     public void setMaxTasksPerProcess(int maxTasksPerProcess) {
-        cfg.setMaxTasksPerProcess(maxTasksPerProcess);
+        cfg.maxTasksPerProcess(maxTasksPerProcess);
     }
 
     public void setOfficeHome(File officeHome) throws NullPointerException, IllegalArgumentException {
-        cfg.setOfficeHome(officeHome);
+        cfg.officeHome(officeHome);
     }
 
     public void setOfficeHome(String officeHome) throws NullPointerException, IllegalArgumentException {
-        cfg.setOfficeHome(officeHome);
+        cfg.officeHome(officeHome);
     }
 
     public void setPipeName(String pipeName) throws NullPointerException {
-        cfg.setPipeName(pipeName);
+        cfg.pipeNames(pipeName);
     }
 
     public void setPipeNames(String... pipeNames) throws NullPointerException, IllegalArgumentException {
-        cfg.setPipeNames(pipeNames);
+        cfg.pipeNames(pipeNames);
     }
 
     public void setPortNumber(int portNumber) {
         this.portNumbers = new int[] {portNumber};
-        cfg.setPortNumber(portNumber);
+        cfg.portNumbers(portNumber);
     }
 
     public void setPortNumbers(int... portNumbers) throws NullPointerException, IllegalArgumentException {
         this.portNumbers = portNumbers;
-        cfg.setPortNumbers(portNumbers);
+        cfg.portNumbers(portNumbers);
     }
 
     public void setProcessManager(ProcessManager processManager) throws NullPointerException {
-        cfg.setProcessManager(processManager);
+        cfg.processManager(processManager);
     }
 
     public void setTaskExecutionTimeout(long taskExecutionTimeout) {
-        cfg.setTaskExecutionTimeout(taskExecutionTimeout);
+        cfg.taskExecutionTimeout(taskExecutionTimeout);
     }
 
     public void setTaskQueueTimeout(long taskQueueTimeout) {
-        cfg.setTaskQueueTimeout(taskQueueTimeout);
+        cfg.taskQueueTimeout(taskQueueTimeout);
     }
 
     public void setTemplateProfileDir(File templateProfileDir) throws IllegalArgumentException {
-        cfg.setTemplateProfileDir(templateProfileDir);
+        cfg.templateProfileDir(templateProfileDir);
     }
 
     public void setKillExistingOfficeProcessOnWindows(boolean killExistingOfficeProcessOnWindows) {

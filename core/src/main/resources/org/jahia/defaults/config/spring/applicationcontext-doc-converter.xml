@@ -17,10 +17,10 @@
         <property name="killExistingOfficeProcessOnWindows" value="${documentConverter.killExistingOfficeProcessOnWindows:true}"/>
     </bean>
 
-    <bean name="remoteOfficeManagerFactory" class="org.jahia.services.transform.RemoteOfficeManagerFactory" lazy-init="true">
-        <property name="host" value="127.0.0.1"/>
-        <property name="portNumber" value="2002"/>
-    </bean>
+<!--    <bean name="remoteOfficeManagerFactory" class="org.jahia.services.transform.RemoteOfficeManagerFactory" lazy-init="true">-->
+<!--        <property name="host" value="127.0.0.1"/>-->
+<!--        <property name="portNumber" value="2002"/>-->
+<!--    </bean>-->
 
     <bean name="DocumentConverterController" class="org.jahia.bin.DocumentConverter">
         <property name="converterService" ref="DocumentConverterService" />

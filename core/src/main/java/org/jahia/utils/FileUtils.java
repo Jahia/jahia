@@ -55,10 +55,10 @@ import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.artofsolving.jodconverter.document.DefaultDocumentFormatRegistry;
-import org.artofsolving.jodconverter.document.DocumentFamily;
-import org.artofsolving.jodconverter.document.DocumentFormat;
-import org.artofsolving.jodconverter.document.DocumentFormatRegistry;
+import org.jodconverter.core.document.DefaultDocumentFormatRegistry;
+import org.jodconverter.core.document.DocumentFamily;
+import org.jodconverter.core.document.DocumentFormat;
+import org.jodconverter.core.document.DocumentFormatRegistry;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.SpringContextSingleton;
 import org.springframework.core.io.Resource;
@@ -98,7 +98,7 @@ public final class FileUtils {
         }
     }
 
-    private static DocumentFormatRegistry formatRegistry = new DefaultDocumentFormatRegistry();
+    private static DocumentFormatRegistry formatRegistry = DefaultDocumentFormatRegistry.getInstance();
 
     /**
      * Calculates the MD5 digest from the content of the supplied input stream. The supplied stream is closed after reading it.

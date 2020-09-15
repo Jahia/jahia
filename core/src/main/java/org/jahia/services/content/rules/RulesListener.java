@@ -212,12 +212,12 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
             if (!compiledRulesDir.exists()) {
                 compiledRulesDir.mkdirs();
             }
-            
+
             ClassLoader packageClassLoader =  aPackage != null ? aPackage.getClassLoader() : null;
             if (packageClassLoader != null) {
-                ruleBaseClassLoader.addClassLoaderToEnd(packageClassLoader);
+                addClassLoader(aPackage);
             }
-            
+
             // first let's test if the file exists in the same location, if it was pre-packaged as a compiled rule
             File pkgFile = new File(compiledRulesDir, StringUtils.substringAfterLast(dsrlFile.getURL().getPath(),"/") + ".pkg");
             if (pkgFile.exists() && pkgFile.lastModified() > dsrlFile.lastModified()) {
@@ -257,7 +257,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                         drl.append(line);
                     }
                 }
-                
+
                 PackageBuilderConfiguration cfg = packageClassLoader != null ? new PackageBuilderConfiguration(
                         packageClassLoader) : new PackageBuilderConfiguration();
 
@@ -275,7 +275,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                 if (errors.getErrors().length == 0) {
                     Package pkg = builder.getPackage();
 
-                    ObjectOutputStream oos = null; 
+                    ObjectOutputStream oos = null;
                     try {
                         pkgFile.getParentFile().mkdirs();
                         oos = new DroolsObjectOutputStream(new FileOutputStream(pkgFile));
@@ -303,6 +303,18 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
             logger.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
+    }
+
+    private void addClassLoader(JahiaTemplatesPackage aPackage) {
+        // Keep only one class loader for a given package name.
+        List<ClassLoader> classLoadersToRemove = new ArrayList<>();
+        ruleBaseClassLoader.getClassLoaders().forEach(classLoader -> {
+            if (classLoader instanceof BundleDelegatingClassLoader && StringUtils.equals(((BundleDelegatingClassLoader) classLoader).getBundle().getSymbolicName(), aPackage.getName())) {
+                classLoadersToRemove.add(classLoader);
+            }
+        });
+        classLoadersToRemove.forEach(ruleBaseClassLoader::removeClassLoader);
+        ruleBaseClassLoader.addClassLoaderToEnd(aPackage.getClassLoader());
     }
 
     private long lastModified() {
@@ -349,7 +361,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
         if (events.isEmpty()) {
             return;
         }
-        
+
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(session.getUser(), workspace, locale, new JCRCallback<Object>() {
 
@@ -588,7 +600,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
             logger.error("Error when executing event", e);
         }
     }
-        
+
     private JCRPropertyWrapper getProperty(JCRSessionWrapper s, String path, String eventUuid, String propertyName)
             throws RepositoryException {
         JCRPropertyWrapper p = null;
@@ -630,7 +642,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
         dslFiles.add(resource);
         ClassLoader packageClassLoader =  aPackage != null ? aPackage.getClassLoader() : null;
         if (packageClassLoader != null) {
-            ruleBaseClassLoader.addClassLoaderToEnd(packageClassLoader);
+            addClassLoader(aPackage);
         }
     }
 
@@ -778,11 +790,11 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
             // classloader has changed -> force rebuild of rule base
             forceRebuildOfRuleBase = true;
         }
-        
+
         // now rebuild the rule base
         removeRules(module.getName(), forceRebuildOfRuleBase);
     }
-    
+
     public boolean removeRulesDescriptor(Resource resource) {
         return dslFiles.remove(resource);
     }
@@ -794,21 +806,21 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     /**
      * Sets the configuration for rules to be disabled. The string format is as follows:
-     * 
+     *
      * <pre>
      * ["&lt;workspace&gt;".]"&lt;package-name-1&gt;"."&lt;rule-name-1&gt;",["&lt;workspace&gt;".]"&lt;package-name-2&gt;"."&lt;rule-name-2&gt;"...
      * </pre>
-     * 
+     *
      * The workspace part is optional. For example the following configuration:
-     * 
+     *
      * <pre>
      * "org.jahia.modules.rules"."Image update","live"."org.jahia.modules.dm.thumbnails"."Automatically generate thumbnail for the document"
      * </pre>
-     * 
+     *
      * will disable rule <code>Image update</code> (from package <code>org.jahia.modules.rules</code>) in rules for all workspaces (live and
      * default) and the rule <code>Automatically generate thumbnail for the document</code> (package
      * <code>org.jahia.modules.dm.thumbnails</code>) will be disabled in rules for live workspace only.
-     * 
+     *
      * @param rulesToDisable the configuration for rules to be disabled
      */
     public void setDisabledRules(String rulesToDisable) {
@@ -823,7 +835,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
             this.disabledRules = null;
             return;
         }
-        
+
         Map<String, Map<String, Set<String>>> disabledRulesFromConfig = new HashMap<>();
 
         for (String ruleCfg : disabledRulesConfig) {
@@ -854,7 +866,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     /**
      * Checks if the specified rule is disabled by configuration.
-     * 
+     *
      * @param packageName the name of the rule package
      * @param ruleName the rule name
      * @return <code>true</code> if the specified rule is disabled by configuration; <code>false</code> otherwise
@@ -878,7 +890,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     /**
      * If there are rules configured, which needs to be disabled, apply this configuration to the provided rule package.
-     * 
+     *
      * @param pkg the rule package to apply configuration to
      */
     private void applyDisabledRulesConfiguration(Package pkg) {
@@ -898,7 +910,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     /**
      * Returns the rule base, used by this listener.
-     * 
+     *
      * @return the rule base, used by this listener
      */
     public RuleBase getRuleBase() {

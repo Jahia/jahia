@@ -16,6 +16,11 @@
                         <property name="sessionFactory" ref="jcrSessionFactory"/>
                     </bean>
                 </entry>
+                <entry key="invalidRequest">
+                    <bean class="org.apache.shiro.web.filter.InvalidRequestFilter">
+                        <property name="blockSemicolon" value="false"/>
+                    </bean>
+                </entry>
             </map>
         </property>
         <property name="filterChainDefinitions">

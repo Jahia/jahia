@@ -174,7 +174,7 @@ public class PlaceholderModule extends Module {
                             if ((path != null) && !"*".equals(path) && !path.startsWith("/")) {
                                 nodeName = path;
                             }
-                            ContentActions.showContentWizard(mainModule.getEditLinker(), s, parentNode, nodeName, true, displayedNodeTypes, false);
+                            ContentActions.showContentWizard(mainModule.getEditLinker(), s, parentNode, nodeName, true, displayedNodeTypes, false, nodeName != null);
                         }
                     }
                 });

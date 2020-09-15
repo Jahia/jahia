@@ -68,34 +68,35 @@ public class EngineLoader {
     public static final int EDIT = 2;
 
     public static void showEditEngine(final Linker linker, final GWTJahiaNode node, GWTEngineConfiguration engineConfiguration) {
-        showEngine(EDIT, linker, node, null, null, null, false, false, engineConfiguration, false, null);
+        showEngine(EDIT, linker, node, null, null, null, false, false, engineConfiguration, false, null, false);
     }
 
     public static void showEditEngine(final Linker linker, final GWTJahiaNode node, GWTEngineConfiguration engineConfiguration, boolean skipRefreshOnSave, EditEngineJSConfig jsConfig) {
-        showEngine(EDIT, linker, node, null, null, null, false, false, engineConfiguration, skipRefreshOnSave, jsConfig);
+        showEngine(EDIT, linker, node, null, null, null, false, false, engineConfiguration, skipRefreshOnSave, jsConfig, false);
     }
 
     public static void showEditEngine(final Linker linker, final GWTJahiaNode node, boolean forceEngineWindow, GWTEngineConfiguration engineConfiguration) {
-        showEngine(EDIT, linker, node, null, null, null, false, forceEngineWindow, engineConfiguration, false, null);
+        showEngine(EDIT, linker, node, null, null, null, false, forceEngineWindow, engineConfiguration, false, null, false);
     }
 
     public static void showCreateEngine(final Linker linker, final GWTJahiaNode node, final GWTJahiaNodeType type,
                                         final Map<String, GWTJahiaNodeProperty> props, final String targetName,
                                         final boolean createInParentAndMoveBefore, GWTEngineConfiguration engineConfiguration) {
-        showCreateEngine(linker, node, type, props, targetName, createInParentAndMoveBefore, engineConfiguration, false);
+        showCreateEngine(linker, node, type, props, targetName, createInParentAndMoveBefore, engineConfiguration, false, false);
     }
 
     public static void showCreateEngine(final Linker linker, final GWTJahiaNode node, final GWTJahiaNodeType type,
                                         final Map<String, GWTJahiaNodeProperty> props, final String targetName,
-                                        final boolean createInParentAndMoveBefore, GWTEngineConfiguration engineConfiguration, boolean skipRefreshOnSave) {
-        showEngine(CREATE, linker, node, type, props, targetName, createInParentAndMoveBefore, false, engineConfiguration, skipRefreshOnSave, null);
+                                        final boolean createInParentAndMoveBefore, GWTEngineConfiguration engineConfiguration, boolean skipRefreshOnSave, boolean systemNameReadOnly) {
+        showEngine(CREATE, linker, node, type, props, targetName, createInParentAndMoveBefore, false, engineConfiguration, skipRefreshOnSave, null, systemNameReadOnly);
     }
 
     private static void showEngine(final int t, final Linker linker, final GWTJahiaNode node,
                                    final GWTJahiaNodeType type, final Map<String, GWTJahiaNodeProperty> props,
                                    final String targetName, final boolean createInParentAndMoveBefore,
                                    final boolean forceEngineWindow, final GWTEngineConfiguration engineConfiguration,
-                                   final boolean skipRefreshOnSave, final EditEngineJSConfig jsConfig) {
+                                   final boolean skipRefreshOnSave, final EditEngineJSConfig jsConfig,
+                                   final boolean systemNameReadOnly) {
         GWT.runAsync(new RunAsyncCallback() {
 
             @Override
@@ -109,7 +110,7 @@ public class EngineLoader {
 
                 if (t == CREATE) {
                     new CreateContentEngine(engineConfiguration == null ? linker.getConfig().getEngineConfiguration(type) : engineConfiguration, linker, node, type, props, targetName, createInParentAndMoveBefore,
-                            container, skipRefreshOnSave);
+                            container, skipRefreshOnSave, systemNameReadOnly);
                 } else if (t == EDIT) {
                     new EditContentEngine(engineConfiguration == null ? linker.getConfig().getEngineConfiguration(node) : engineConfiguration, node, linker, container, skipRefreshOnSave, jsConfig);
                 }

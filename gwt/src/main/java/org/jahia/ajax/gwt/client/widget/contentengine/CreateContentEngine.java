@@ -81,6 +81,7 @@ public class CreateContentEngine extends AbstractContentEngine {
     protected GWTJahiaNodeType type = null;
     protected String targetName = null;
     protected boolean createInParentAndMoveBefore = false;
+    private boolean systemNameReadOnly;
 
     private int childCount;
     private int listLimit;
@@ -95,9 +96,10 @@ public class CreateContentEngine extends AbstractContentEngine {
      * @param targetName                  The name of the new node, or null if automatically defined
      * @param createInParentAndMoveBefore
      */
-    public CreateContentEngine(GWTEngineConfiguration configuration, Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, Map<String, GWTJahiaNodeProperty> props, String targetName, boolean createInParentAndMoveBefore, EngineContainer engineContainer, boolean skipRefreshOnSave) {
+    public CreateContentEngine(GWTEngineConfiguration configuration, Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, Map<String, GWTJahiaNodeProperty> props, String targetName, boolean createInParentAndMoveBefore, EngineContainer engineContainer, boolean skipRefreshOnSave, boolean systemNameReadOnly) {
         super(configuration, linker, createInParentAndMoveBefore ? parent.getPath().substring(0, parent.getPath().lastIndexOf('/')) : parent.getPath(), skipRefreshOnSave);
         this.existingNode = false;
+        this.systemNameReadOnly = systemNameReadOnly;
         this.targetNode = parent;
         this.type = type;
         if (!"*".equals(targetName)) {
@@ -255,6 +257,10 @@ public class CreateContentEngine extends AbstractContentEngine {
 
     public int getListLimit() {
         return listLimit;
+    }
+
+    public boolean isSystemNameReadOnly() {
+        return systemNameReadOnly;
     }
 
     @Override

@@ -559,7 +559,7 @@ public class ContentTabItem extends PropertiesTabItem {
     }
 
     private boolean isNameEditableForType(NodeHolder engine) {
-        if (engine instanceof CreateContentEngine && ((CreateContentEngine) engine).getTargetName() != null) {
+        if (engine instanceof CreateContentEngine && ((CreateContentEngine) engine).isSystemNameReadOnly()) {
             return false;
         }
         return nameNotEditableForTypes == null || nameNotEditableForTypes.isEmpty()

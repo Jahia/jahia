@@ -84,53 +84,6 @@ public class ModulesAdministrationTest {
     }
 
     @Test
-    public void testListSvnBranchTags() throws Exception {
-        Set<String> supportedSourceControls = sourceControlHelper.getSourceControlFactory().getSupportedSourceControls();
-        if (supportedSourceControls.contains("svn")) {
-            // 1.1 Test root project using trunk
-            String scmURI = "scm:svn:https://devtools.jahia.com/svn/jahia/trunk";
-            Map<String, String> branches = sourceControlHelper.listBranches(scmURI);
-            assertTrue("Jahia Root should have at least 'JAHIA-6-6-X-X-BRANCH' and 'JAHIA-7-0-X-X-BRANCH' branches", branches.containsKey("JAHIA-6-6-X-X-BRANCH") && branches.containsKey("JAHIA-7-0-X-X-BRANCH"));
-            assertEquals("Wrong URI for branch JAHIA-7-0-X-X-BRANCH", "scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-0-X-X-BRANCH", branches.get("JAHIA-7-0-X-X-BRANCH"));
-            
-            Map<String, String> tags = sourceControlHelper.listTags(scmURI);
-            assertTrue("Jahia Root should have at least 'JAHIA_6_6_2_8' and 'JAHIA_7_0_0_3' tags", tags.containsKey("JAHIA_6_6_2_8") && tags.containsKey("JAHIA_7_0_0_3"));
-            assertEquals("Wrong URI for tag JAHIA_7_0_0_3", "scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_7_0_0_3", tags.get("JAHIA_7_0_0_3"));
-
-            // 1.2 Test root project using tag
-            scmURI = "scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_6_6_2_0";
-            branches = sourceControlHelper.listBranches(scmURI);
-            assertTrue("Jahia Root should have at least 'JAHIA-6-6-X-X-BRANCH' and 'JAHIA-7-0-X-X-BRANCH' branches", branches.containsKey("JAHIA-6-6-X-X-BRANCH") && branches.containsKey("JAHIA-7-0-X-X-BRANCH"));
-            assertEquals("Wrong URI for branch JAHIA-7-0-X-X-BRANCH", "scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-0-X-X-BRANCH", branches.get("JAHIA-7-0-X-X-BRANCH"));
-            
-            tags = sourceControlHelper.listTags(scmURI);
-            assertTrue("Jahia Root should have at least 'JAHIA_6_6_2_8' and 'JAHIA_7_0_0_3' tags", tags.containsKey("JAHIA_6_6_2_8") && tags.containsKey("JAHIA_7_0_0_3"));
-            assertEquals("Wrong URI for tag JAHIA_7_0_0_3", "scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_7_0_0_3", tags.get("JAHIA_7_0_0_3"));
-
-            
-            // 2.1 Test sub-project using trunk
-            scmURI = "scm:svn:https://devtools.jahia.com/svn/jahia/trunk/test/jahia-test-module";
-            branches = sourceControlHelper.listBranches(scmURI);
-            assertTrue("Jahia Test Module should have at least 'JAHIA-6-6-X-X-BRANCH' and 'JAHIA-7-0-X-X-BRANCH' branches", branches.containsKey("JAHIA-6-6-X-X-BRANCH") && branches.containsKey("JAHIA-7-0-X-X-BRANCH"));
-            assertEquals("Wrong URI for branch JAHIA-7-0-X-X-BRANCH", "scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-0-X-X-BRANCH/test/jahia-test-module", branches.get("JAHIA-7-0-X-X-BRANCH"));
-            
-            tags = sourceControlHelper.listTags(scmURI);
-            assertTrue("Jahia Test Module should have at least 'JAHIA_6_6_2_8' and 'JAHIA_7_0_0_3' tags", tags.containsKey("JAHIA_6_6_2_8") && tags.containsKey("JAHIA_7_0_0_3"));
-            assertEquals("Wrong URI for tag JAHIA_7_0_0_3", "scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_7_0_0_3/test/jahia-test-module", tags.get("JAHIA_7_0_0_3"));
-            
-            // 2.2 Test sub-project using tag
-            scmURI = "scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_6_6_2_0/test/jahia-test-module";
-            branches = sourceControlHelper.listBranches(scmURI);
-            assertTrue("Jahia Test Module should have at least 'JAHIA-6-6-X-X-BRANCH' and 'JAHIA-7-0-X-X-BRANCH' branches", branches.containsKey("JAHIA-6-6-X-X-BRANCH") && branches.containsKey("JAHIA-7-0-X-X-BRANCH"));
-            assertEquals("Wrong URI for branch JAHIA-7-0-X-X-BRANCH", "scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-0-X-X-BRANCH/test/jahia-test-module", branches.get("JAHIA-7-0-X-X-BRANCH"));
-            
-            tags = sourceControlHelper.listTags(scmURI);
-            assertTrue("Jahia Test Module should have at least 'JAHIA_6_6_2_8' and 'JAHIA_7_0_0_3' tags", tags.containsKey("JAHIA_6_6_2_8") && tags.containsKey("JAHIA_7_0_0_3"));
-            assertEquals("Wrong URI for tag JAHIA_7_0_0_3", "scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_7_0_0_3/test/jahia-test-module", tags.get("JAHIA_7_0_0_3"));
-        }
-    }
-
-    @Test
     public void testGuessBranchOrTag() throws Exception {
         Set<String> gitBranches = Sets.newHashSet("1_x", "2_x", "master");
         assertEquals("Branch for version 1.2.3-SNAPSHOT should be 1_x", "1_x", sourceControlHelper.guessBranchOrTag("1.2.3-SNAPSHOT", "git", gitBranches));

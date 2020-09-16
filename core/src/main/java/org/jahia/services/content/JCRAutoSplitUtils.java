@@ -61,8 +61,8 @@ import org.jahia.utils.Patterns;
 /**
  * Utility class for auto-splitting child nodes of a node, based on the provided
  * settings.
- * 
- * @author Thomas Draier 
+ *
+ * @author Thomas Draier
  * @author Sergiy Shyrkov
  */
 public final class JCRAutoSplitUtils {
@@ -82,7 +82,7 @@ public final class JCRAutoSplitUtils {
      * month (jcr:created).<br>
      * I.e. the node report.pdf, created by user 'sergiy' on 1st or July 2010,
      * will land under:
-     * 
+     *
      * <pre>
      *    <parent-node>
      *       |_sergiy
@@ -90,9 +90,9 @@ public final class JCRAutoSplitUtils {
      *                     |_07
      *                         |_report.pdf
      * </pre>
-     * 
+     *
      * The intermediate folders will be created.
-     * 
+     *
      * @param node the node to be moved
      * @return the moved node
      * @throws RepositoryException in case of an error when relocating node
@@ -138,7 +138,7 @@ public final class JCRAutoSplitUtils {
                     } else if (type.equals("firstChars")) {
                         key = getKey(node, propertyName);
                         final int index = Integer.parseInt(folderConfig[2]);
-                        if (key != null && key.length() > index) {
+                        if (key != null && key.length() >= index) {
                             key = key.substring(0, index);
                         }
                     } else if (type.equals("substring")) {
@@ -146,7 +146,7 @@ public final class JCRAutoSplitUtils {
                         String[] indexes = Patterns.DASH.split(folderConfig[2]);
                         final int startIndex = Integer.parseInt(indexes[0]);
                         final int endIndex = Integer.parseInt(indexes[1]);
-                        if (key != null && key.length() > endIndex) {
+                        if (key != null && key.length() >= endIndex) {
                             key = key.substring(startIndex, endIndex);
                         }
                     } else if (type.equals("date")) {
@@ -185,7 +185,7 @@ public final class JCRAutoSplitUtils {
     /**
      * Iterates over all sub nodes of the specified node and applies auto-split
      * rules on them.
-     * 
+     *
      * @param node the node, which children should be moved to split folders
      * @return a map of nodes that were moved, useful to update any code that was using the sub nodes. The key is the
      * previous node bean, and the value is the new node bean.
@@ -207,7 +207,7 @@ public final class JCRAutoSplitUtils {
     /**
      * Adds a mixin type to the specified node to enable auto-splitting of the
      * child nodes, based on the provided configuration.
-     * 
+     *
      * @param node the node to enable splitting of children on
      * @param splitConfig auto-splitting settings;
      * @param splitFolderNodeType
@@ -280,7 +280,7 @@ public final class JCRAutoSplitUtils {
      */
     public static JCRNodeWrapper addNodeWithAutoSplitting(JCRNodeWrapper parentNode,
                                                           String nodeName,
-                                                          String nodeType, 
+                                                          String nodeType,
                                                           String splitConfig,
                                                           String splitNodeType,
                                                           Object valueBean) throws RepositoryException {
@@ -305,7 +305,7 @@ public final class JCRAutoSplitUtils {
                 } else if (type.equals("firstChars")) {
                     key = getKey(valueBean, nodeName, propertyName);
                     final int index = Integer.parseInt(folderConfig[2]);
-                    if (key != null && key.length() > index) {
+                    if (key != null && key.length() >= index) {
                         key = key.substring(0, index);
                     }
                 } else if (type.equals("substring")) {
@@ -313,7 +313,7 @@ public final class JCRAutoSplitUtils {
                     String[] indexes = Patterns.DASH.split(folderConfig[2]);
                     final int startIndex = Integer.parseInt(indexes[0]);
                     final int endIndex = Integer.parseInt(indexes[1]);
-                    if (key != null && key.length() > endIndex) {
+                    if (key != null && key.length() >= endIndex) {
                         key = key.substring(startIndex, endIndex);
                     }
                 } else if (type.equals("date")) {

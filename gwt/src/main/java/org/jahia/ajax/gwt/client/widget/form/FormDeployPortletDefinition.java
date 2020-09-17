@@ -65,8 +65,36 @@ public abstract class FormDeployPortletDefinition extends FormPanel {
         createUI();
     }
 
+    public static String getPortletDeploymentParam(String key) {
+        try {
+            //Log.debug("Dictionary name: " + jahiaModuleType + "_rb_" + elementId);
+            Dictionary dictionary = Dictionary.getDictionary("portletDeployment");
+            return dictionary.get(key.replace('.', '_'));
+        } catch (Exception e) {
+            Log.error("Can't retrieve [" + key + "]", e);
+            return key;
+        }
+    }
+
+    public static boolean autoDeploySupported() {
+        try {
+            return Boolean.valueOf(getPortletDeploymentParam("autoDeploySupported"));
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public static String getAppserverDeployerUrl() {
+        try {
+            return getPortletDeploymentParam("appserverDeployerUrl");
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
     protected void createUI() {
         setAction(getPortletDeploymentParam("formActionUrl"));
+        setId("gwt-portlet-upload");
         setEncoding(Encoding.MULTIPART);
         setMethod(Method.POST);
         setBodyBorder(false);
@@ -157,75 +185,59 @@ public abstract class FormDeployPortletDefinition extends FormPanel {
             }
         });
         addButton(helpButton);
-        
-        final FormPanel form = this;
-
-        addListener(Events.BeforeSubmit, new Listener<FormEvent>() {
-            public void handleEvent(FormEvent formEvent) {
-                form.mask(Messages.get("label.loading", "Loading..."));
-            }
-        });
-        addListener(Events.Submit, new Listener<FormEvent>() {
-            public void handleEvent(FormEvent formEvent) {
-                if (doCloseParent) {
-                    closeParent();
-                }
-                HTML responseHTML = new HTML(formEvent.getResultHtml());
-                String response = responseHTML.getText();
-
-                if (!response.trim().isEmpty()) {
-                    JSONValue rspValue = JSONParser.parseStrict(response);
-                    if (rspValue != null && rspValue.isObject() != null && rspValue.isObject().containsKey("dspMsg")) {
-                        String dspMsg = rspValue.isObject().get("dspMsg").isString().stringValue();
-                        MessageBox.info(Messages.get("label.deployNewPortlet", "Deploy new portlets"), dspMsg, new Listener<MessageBoxEvent>() {
-                            public void handleEvent(MessageBoxEvent be) {
-                                refreshParent();
-                            }
-                        });
-                    }
-                }
-                form.unmask();
-            }
-        });
-
 
         layout();
+    }
+
+    private void onBeforeSubmit() {
+        mask(Messages.get("label.loading", "Loading..."));
+    }
+
+    private void onSubmit(String resultHtml) {
+        if (doCloseParent) {
+            closeParent();
+        }
+        HTML responseHTML = new HTML(resultHtml);
+        String response = responseHTML.getText();
+
+        if (!response.trim().isEmpty()) {
+            JSONValue rspValue = JSONParser.parseStrict(response);
+            if (rspValue != null && rspValue.isObject() != null && rspValue.isObject().containsKey("dspMsg")) {
+                String dspMsg = rspValue.isObject().get("dspMsg").isString().stringValue();
+                MessageBox.info(Messages.get("label.deployNewPortlet", "Deploy new portlets"), dspMsg, new Listener<MessageBoxEvent>() {
+                    public void handleEvent(MessageBoxEvent be) {
+                        refreshParent();
+                    }
+                });
+            }
+        }
+        unmask();
     }
 
     private void submitAfterValidation(com.extjs.gxt.ui.client.widget.form.FileUploadField portletDefinitionField) {
         if (portletDefinitionField.getValue() != null && portletDefinitionField.getValue().length() > 0) {
             submit();
-        }else{
-             MessageBox.alert(Messages.get("label.deployNewPortlet", "Deploy new portlets"), Messages.get("message.selectFileForUpload", "Please select a *.war file"), null);
+        } else {
+            MessageBox.alert(Messages.get("label.deployNewPortlet", "Deploy new portlets"), Messages.get("message.selectFileForUpload", "Please select a *.war file"), null);
         }
     }
 
-    public static String getPortletDeploymentParam(String key) {
-        try {
-            //Log.debug("Dictionary name: " + jahiaModuleType + "_rb_" + elementId);
-            Dictionary dictionary = Dictionary.getDictionary("portletDeployment");
-            return dictionary.get(key.replace('.','_'));
-        } catch (Exception e) {
-            Log.error("Can't retrieve [" + key + "]", e);
-            return key;
-        }
+    @Override
+    public void submit() {
+        submitForm(getAction(), getId(), this);
     }
 
-    public static boolean autoDeploySupported() {
-        try {
-            return Boolean.valueOf(getPortletDeploymentParam("autoDeploySupported"));
-        } catch (Exception e) {
-            return false;
-        }
-    }
+    public static native void submitForm(String url, String id, FormDeployPortletDefinition instance) /*-{
+        instance.@org.jahia.ajax.gwt.client.widget.form.FormDeployPortletDefinition::onBeforeSubmit()();
 
-    public static String getAppserverDeployerUrl() {
-        try {
-            return getPortletDeploymentParam("appserverDeployerUrl");
-        } catch (Exception e) {
-            return "";
-        }
-    }
+        var xhr = new $wnd.parent.XMLHttpRequest();
+        xhr.open('POST', url);
+        xhr.addEventListener("load", function (event) {
+            instance.@org.jahia.ajax.gwt.client.widget.form.FormDeployPortletDefinition::onSubmit(*)(xhr.response);
+        });
+
+        xhr.send(new FormData($doc.querySelector("#gwt-portlet-upload form")));
+    }-*/;
 
     public abstract void closeParent();
 

@@ -43,6 +43,7 @@
  */
 package org.jahia.ajax.gwt.client.widget.edit;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
@@ -188,12 +189,15 @@ public class ContentTypeWindow extends Window {
             params.put("excludedNodeTypes", excluded);
             params.put("includeSubTypes", includeSubTypes);
             params.put("contentTypes", nodeTypes);
-            JahiaGWTHooks.callHook("create", params);
+            try {
+                JahiaGWTHooks.callHook("create", params);
+            } catch (Exception e) {
+                // Always work
+                Log.error("Unable to execute hook Create because of ", e);
+            }
+            linker.loaded();
             return;
         }
-
-        linker.loading(Messages.get("label.loading", "Loading"));
-
         JahiaContentManagementService.App.getInstance().getContentTypesAsTree(nodeTypes, excluded, includeSubTypes, new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
 
             @Override

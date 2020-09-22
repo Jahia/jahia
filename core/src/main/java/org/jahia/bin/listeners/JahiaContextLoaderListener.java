@@ -330,11 +330,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
 
     private static void requireLicense() {
         try {
-            AbstractFilter editModeFilter = (AbstractFilter) ContextLoader.getCurrentWebApplicationContext().getBean("editModeFilter");
-            if (!ContextLoader.getCurrentWebApplicationContext().getBean("licenseChecker")
-                    .getClass().getName().equals("org.jahia.security.license.LicenseChecker")
-                    || !editModeFilter.getClass().getName().equals("org.jahia.services.render.filter.SecureEditModeFilter")
-                    || editModeFilter.isDisabled()) {
+            if (!ContextLoader.getCurrentWebApplicationContext().getBean("licenseChecker").getClass().getName().equals("org.jahia.security.license.LicenseChecker")) {
                 throw new FatalBeanException("Required classes for license manager were not found");
             }
         } catch (NoSuchBeanDefinitionException e) {

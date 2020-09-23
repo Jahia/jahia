@@ -866,7 +866,7 @@
             if (jGet.node(this).filter('.more-info-button').nodes.length == 0) {
                 var moreInfoButton = document.createElement('button');
                 moreInfoButton.classList.add('more-info-button');
-                jGet.node(this).prepend(moreInfoButton);
+                jGet.node(this).append(moreInfoButton);
             }
 
             // Create and edit button ( If this is a Manager and if it hasnt aleady been added )

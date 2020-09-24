@@ -82,22 +82,18 @@ public class FileInstallConfigurer {
         @Override
         public ConfigurationAdmin addingService(ServiceReference<ConfigurationAdmin> reference) {
             ConfigurationAdmin configurationAdmin = bundleContext.getService(reference);
-            boolean forceRegistration = unregister(configurationAdmin);
-            register(configurationAdmin, forceRegistration);
+            register(configurationAdmin);
             return configurationAdmin;
         }
 
         @Override
         public void modifiedService(ServiceReference<ConfigurationAdmin> reference,
                 ConfigurationAdmin configurationAdmin) {
-            boolean forceRegistration = unregister(configurationAdmin);
-            register(configurationAdmin, forceRegistration);
         }
 
         @Override
         public void removedService(ServiceReference<ConfigurationAdmin> reference,
                 ConfigurationAdmin configurationAdmin) {
-            unregister(configurationAdmin);
         }
     }
 
@@ -136,20 +132,17 @@ public class FileInstallConfigurer {
         return (Properties) SpringContextSingleton.getBean("felixFileInstallConfig");
     }
 
-    private void register(ConfigurationAdmin configurationAdmin, boolean forceRegistration) {
+    private void register(ConfigurationAdmin configurationAdmin) {
         Properties felixProperties = getConfig();
         String watchedDir = felixProperties.getProperty("felix.fileinstall.dir");
         Configuration cfg = findExisting(configurationAdmin, watchedDir);
-        if (cfg != null && !forceRegistration) {
-            logger.info("FileInstall configuration for directory {} already exists. No need to create it: {}",
-                    watchedDir, cfg);
-            return;
-        }
-        if (cfg != null) {
-            logger.warn("Force registration of configuration {} for directory {} that already exists", cfg, watchedDir);
-        }
         try {
-            cfg = configurationAdmin.createFactoryConfiguration("org.apache.felix.fileinstall");
+            if (cfg == null) {
+                cfg = configurationAdmin.createFactoryConfiguration("org.apache.felix.fileinstall");
+                cfg.setBundleLocation(null);
+            } else {
+                logger.info("FileInstall configuration for directory {} already exists. Update it: {}", watchedDir, cfg);
+            }
             Dictionary<String, Object> properties = cfg.getProperties();
             if (properties == null) {
                 properties = new Hashtable<String, Object>();
@@ -160,7 +153,6 @@ public class FileInstallConfigurer {
                     properties.put(key, entry.getValue());
                 }
             }
-            cfg.setBundleLocation(null);
             cfg.update(properties);
             logger.info("Registered FileInstall configuration for directory {}: {}", watchedDir, cfg);
         } catch (IOException e) {

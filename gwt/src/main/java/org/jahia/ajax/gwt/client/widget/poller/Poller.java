@@ -69,18 +69,16 @@ import java.util.Map;
 public class Poller {
 
     private static final boolean SSE_SUPPORT;
+    private static final int RECONNECT_INTERVAL_MS = 2000;
+    private static final int CONNECTION_RESTORED_NOTIFICATION_DELAY_MS = 15000;
+    private static Poller instance;
+
     static {
         String userAgent = GXT.getUserAgent();
         SSE_SUPPORT = !(GXT.isIE || userAgent != null && userAgent.indexOf("trident/7") != -1);
     }
 
-    private static final int RECONNECT_INTERVAL_MS = 2000;
-    private static final int CONNECTION_RESTORED_NOTIFICATION_DELAY_MS = 15000;
-
-    private static Poller instance;
-
     private Map<Class, ArrayList<PollListener>> listeners = new HashMap<Class, ArrayList<PollListener>>();
-
     // There are two basic scenarios of how instant communication with the server may be broken:
     // 1) The server closes the connection in a conventional way (for example, due to shutdown).
     // 2) The server disappears unexpectedly (for example, due to a network issue).
@@ -92,21 +90,11 @@ public class Poller {
     // often need few seconds to tens seconds to recognize connection status change.
     private boolean reconnectingAfterError;
 
-    public static Poller getInstance() {
-        if (instance == null) {
-            instance = new Poller(JahiaGWTParameters.isWebSockets());
-        }
-        return instance;
-    }
-
     public Poller(final boolean useWebsockets) {
+        RPCSerializer serializer = GWT.create(RPCSerializer.class);
 
-        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-
-            @Override
-            public void execute() {
-
-                RPCSerializer serializer = GWT.create(RPCSerializer.class);
+        if (initGWTMessageHandler(this, serializer)) {
+            Scheduler.get().scheduleDeferred(() -> {
                 AtmosphereRequestConfig requestConfig = AtmosphereRequestConfig.create(serializer);
                 requestConfig.setUrl(GWT.getModuleBaseURL().substring(0, GWT.getModuleBaseURL().indexOf("/gwt/")) + "/atmosphere/rpc?windowId=" + JahiaContentManagementService.App.getWindowId());
                 Transport transport = useWebsockets ? AtmosphereRequestConfig.Transport.WEBSOCKET : (SSE_SUPPORT ? AtmosphereRequestConfig.Transport.SSE : AtmosphereRequestConfig.Transport.STREAMING);
@@ -138,15 +126,8 @@ public class Poller {
 
                 requestConfig.setMessageHandler(response -> {
                     List<RPCEvent> messages = response.getMessages();
-                    for (RPCEvent event : messages) {
-                        for (Map.Entry<Class, ArrayList<PollListener>> entry : listeners.entrySet()) {
-                            if (entry.getKey() == event.getClass()) {
-                                for (PollListener pollListener : entry.getValue()) {
-                                    pollListener.handlePollingResult(event);
-                                }
-                            }
-                        }
-                    }
+                    handleMessages(messages);
+                    dispatchToGWTConsumers(response.getResponseBody());
                 });
 
                 requestConfig.setFlags(AtmosphereRequestConfig.Flags.enableProtocol);
@@ -154,9 +135,48 @@ public class Poller {
 
                 Atmosphere atmosphere = Atmosphere.create();
                 atmosphere.subscribe(requestConfig);
-            }
-        });
+            });
+        }
     }
+
+    public static Poller getInstance() {
+        if (instance == null) {
+            instance = new Poller(JahiaGWTParameters.isWebSockets());
+        }
+        return instance;
+    }
+
+    private void handleMessages(List<RPCEvent> messages) {
+        for (RPCEvent event : messages) {
+            for (Map.Entry<Class, ArrayList<PollListener>> entry : listeners.entrySet()) {
+                if (entry.getKey() == event.getClass()) {
+                    for (PollListener pollListener : entry.getValue()) {
+                        pollListener.handlePollingResult(event);
+                    }
+                }
+            }
+        }
+    }
+
+    private native boolean initGWTMessageHandler(Poller that, RPCSerializer serializer) /*-{
+        if ($wnd.parent !== $wnd && $wnd.parent.authoringApi) {
+            $wnd.parent.authoringApi.gwtMessageHandler.push(function (event) {
+                that.@Poller::handleMessages(*)(serializer.@RPCSerializer::deserialize(*)(event));
+            })
+            return false;
+        } else {
+            $wnd.authoringApi.gwtMessageHandler = [];
+        }
+        return true;
+    }-*/;
+
+    private native void dispatchToGWTConsumers(String eventData) /*-{
+        if ($wnd.authoringApi && $wnd.authoringApi.gwtMessageHandler && $wnd.authoringApi.gwtMessageHandler.length > 0) {
+            $wnd.authoringApi.gwtMessageHandler.forEach(function (handler) {
+                handler.call(null, eventData);
+            });
+        }
+    }-*/;
 
     private void onConnectionOpen() {
         if (!reconnectingAfterError) {
@@ -172,7 +192,7 @@ public class Poller {
 
     public void registerListener(PollListener listener, Class eventType) {
         if (!listeners.containsKey(eventType)) {
-            listeners.put(eventType, new ArrayList<PollListener>());
+            listeners.put(eventType, new ArrayList<>());
         }
         listeners.get(eventType).add(listener);
     }

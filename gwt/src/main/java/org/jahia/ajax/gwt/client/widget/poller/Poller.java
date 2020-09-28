@@ -165,6 +165,7 @@ public class Poller {
             })
             return false;
         } else {
+            $wnd.authoringApi = $wnd.authoringApi || {};
             $wnd.authoringApi.gwtMessageHandler = [];
         }
         return true;

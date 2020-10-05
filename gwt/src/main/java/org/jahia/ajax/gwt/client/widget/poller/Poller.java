@@ -160,22 +160,24 @@ public class Poller {
 
     private native boolean initGWTMessageHandler(Poller that, RPCSerializer serializer) /*-{
         if ($wnd.parent !== $wnd && $wnd.parent.authoringApi) {
-            $wnd.parent.authoringApi.gwtMessageHandler.push(function (event) {
+            $wnd.parent.authoringApi.gwtMessageHandler = function (event) {
                 that.@Poller::handleMessages(*)(serializer.@RPCSerializer::deserialize(*)(event));
-            })
+            };
+            $wnd.addEventListener("unload", function() {
+                $wnd.parent.authoringApi.gwtMessageHandler = null;
+            });
+
             return false;
         } else {
             $wnd.authoringApi = $wnd.authoringApi || {};
-            $wnd.authoringApi.gwtMessageHandler = [];
+            $wnd.authoringApi.gwtMessageHandler = null;
         }
         return true;
     }-*/;
 
     private native void dispatchToGWTConsumers(String eventData) /*-{
-        if ($wnd.authoringApi && $wnd.authoringApi.gwtMessageHandler && $wnd.authoringApi.gwtMessageHandler.length > 0) {
-            $wnd.authoringApi.gwtMessageHandler.forEach(function (handler) {
-                handler.call(null, eventData);
-            });
+        if ($wnd.authoringApi && $wnd.authoringApi.gwtMessageHandler) {
+            $wnd.authoringApi.gwtMessageHandler(eventData);
         }
     }-*/;
 

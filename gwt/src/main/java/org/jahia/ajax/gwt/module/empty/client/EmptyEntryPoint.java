@@ -370,10 +370,12 @@ public class EmptyEntryPoint extends CommonEntryPoint {
 
             @Override
             public void onSuccess(List<GWTJahiaNode> result) {
-                GWTJahiaNode siteNode = result.get(0);
-                if (isValidSiteLanguage(siteNode, lang)) {
-                    JahiaGWTParameters.setSiteNode(siteNode);
-                    JahiaGWTParameters.setLanguage(JahiaGWTParameters.getLanguage(lang));
+                if (!result.isEmpty()) {
+                    GWTJahiaNode siteNode = result.get(0);
+                    if (isValidSiteLanguage(siteNode, lang)) {
+                        JahiaGWTParameters.setSiteNode(siteNode);
+                        JahiaGWTParameters.setLanguage(JahiaGWTParameters.getLanguage(lang));
+                    }
                 }
             }
         });

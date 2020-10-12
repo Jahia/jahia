@@ -66,6 +66,9 @@
                 <configuration>
                     <instructions>
                         <Bundle-Category>jahia-bundle</Bundle-Category>
+                        <Export-Package>
+                            org.jahia.bundles.config
+                        </Export-Package>
                         <_dsannotations>
                             org.jahia.bundles.config.*
                         </_dsannotations>

@@ -3791,11 +3791,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
             return (site = (JCRSiteNode) (getSession().getNode(JCRContentUtils.getSystemSitePath())));
         } catch (PathNotFoundException e) {
-            logger.debug("Cannot resolve site for node " + this.getPath(), e);
+            logger.error("Cannot resolve site for node " + this.getPath(), e);
+            return null;
         }
-        logger.debug("Cannot resolve site for node " + this.getPath());
-        return null;
-//        return ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite();
     }
 
     @Override

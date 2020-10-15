@@ -49,10 +49,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Login configuration settings.
@@ -75,7 +76,7 @@ public class LoginConfig implements ApplicationListener<ApplicationEvent> {
         return Holder.INSTANCE;
     }
 
-    private LoginUrlProvider loginUrlProvider;
+    private LinkedList<LoginUrlProvider> loginUrlProviders = new LinkedList<>();
 
     /**
      * Returns custom login URL if the corresponding authentication provider is found. <code>null</code> otherwise.
@@ -84,7 +85,7 @@ public class LoginConfig implements ApplicationListener<ApplicationEvent> {
      * @return custom login URL if the corresponding authentication provider is found. <code>null</code> otherwise.
      */
     public String getCustomLoginUrl(HttpServletRequest request) {
-        return loginUrlProvider != null ? loginUrlProvider.getLoginUrl(request) : null;
+        return loginUrlProviders.isEmpty() ? null : loginUrlProviders.getFirst().getLoginUrl(request);
     }
 
     public void onApplicationEvent(ApplicationEvent event) {
@@ -102,12 +103,22 @@ public class LoginConfig implements ApplicationListener<ApplicationEvent> {
         }
         if (beansOfType != null && !beansOfType.isEmpty()) {
             for (LoginUrlProvider provider : beansOfType.values()) {
-                if (provider.hasCustomLoginUrl()) {
-                    logger.info("Using login URL provider {}", provider);
-                    loginUrlProvider = provider;
-                    return;
-                }
+                osgiBind(provider);
             }
+        }
+    }
+
+    public void osgiBind(LoginUrlProvider provider) {
+        if (provider != null && provider.hasCustomLoginUrl()) {
+            logger.info("Using login URL provider {}", provider);
+            loginUrlProviders.addFirst(provider);
+        }
+    }
+
+    public void osgiUnbind(LoginUrlProvider provider) {
+        if (provider != null && provider.hasCustomLoginUrl()) {
+            logger.info("Using login URL provider {}", provider);
+            loginUrlProviders.remove(provider);
         }
     }
 

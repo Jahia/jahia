@@ -444,4 +444,12 @@
                        unbind-method="osgiUnbind"/>
     </osgi:list>
 
+    <osgi:list id="LoginUrlProviderList" interface="org.jahia.params.valves.LoginUrlProvider" availability="optional">
+        <osgi:listener ref="jahiaLoginConfig" bind-method="osgiBind" unbind-method="osgiUnbind"/>
+    </osgi:list>
+
+    <osgi:list id="LogoutUrlProviderList" interface="org.jahia.params.valves.LogoutUrlProvider" availability="optional">
+        <osgi:listener ref="jahiaLogoutConfig" bind-method="osgiBind" unbind-method="osgiUnbind"/>
+    </osgi:list>
+
 </beans>

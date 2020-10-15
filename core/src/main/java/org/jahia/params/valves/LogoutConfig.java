@@ -52,7 +52,10 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Logout configuration settings.
@@ -74,7 +77,7 @@ public class LogoutConfig implements ApplicationListener<ApplicationEvent> {
     private LogoutConfig() {
     }
 
-    private LogoutUrlProvider logoutUrlProvider;
+    private LinkedList<LogoutUrlProvider> logoutUrlProviders = new LinkedList<>();
 
     /**
      * Returns custom logout URL if the corresponding authentication provider is found. <code>null</code> otherwise.
@@ -83,7 +86,7 @@ public class LogoutConfig implements ApplicationListener<ApplicationEvent> {
      * @return custom logout URL if the corresponding authentication provider is found. <code>null</code> otherwise.
      */
     public String getCustomLogoutUrl(HttpServletRequest request) {
-        return logoutUrlProvider != null ? logoutUrlProvider.getLogoutUrl(request) : null;
+        return logoutUrlProviders.isEmpty() ? null : logoutUrlProviders.getFirst().getLogoutUrl(request);
     }
 
     public void onApplicationEvent(ApplicationEvent event) {
@@ -101,12 +104,22 @@ public class LogoutConfig implements ApplicationListener<ApplicationEvent> {
         }
         if (beansOfType != null && !beansOfType.isEmpty()) {
             for (LogoutUrlProvider provider : beansOfType.values()) {
-                if (provider.hasCustomLogoutUrl()) {
-                    logger.info("Using logout URL provider {}", provider);
-                    logoutUrlProvider = provider;
-                    return;
-                }
+                osgiBind(provider);
             }
+        }
+    }
+
+    public void osgiBind(LogoutUrlProvider provider) {
+        if (provider != null && provider.hasCustomLogoutUrl()) {
+            logger.info("Using login URL provider {}", provider);
+            logoutUrlProviders.addFirst(provider);
+        }
+    }
+
+    public void osgiUnbind(LogoutUrlProvider provider) {
+        if (provider != null && provider.hasCustomLogoutUrl()) {
+            logger.info("Using login URL provider {}", provider);
+            logoutUrlProviders.remove(provider);
         }
     }
 }

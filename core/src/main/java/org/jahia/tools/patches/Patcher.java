@@ -49,6 +49,7 @@ import org.apache.commons.io.filefilter.NotFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.commons.Version;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.settings.SettingsBean;
@@ -63,6 +64,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
  * Simple patch service that monitors specified folder (by default <code>WEB-INF/var/patches/</code>) for scripts, executes
@@ -79,11 +83,14 @@ public class Patcher implements JahiaAfterInitializationService, DisposableBean 
     public static final String FAILED = ".failed";
     public static final String SKIPPED = ".skipped";
 
+    private Version jahiaPreviousVersion;
+
     private static class InstanceHolder {
         public static final Patcher instance = new Patcher();
     }
 
     private Patcher() {
+        initPreviousVersion();
     }
 
     public static Patcher getInstance() {
@@ -100,6 +107,10 @@ public class Patcher implements JahiaAfterInitializationService, DisposableBean 
 
     public void executeScripts(String lifecyclePhase) {
         try {
+            if (System.getProperty("skipPatches") != null) {
+                return;
+            }
+
             File lookupFolder = getPatchesFolder();
             if (lookupFolder == null) {
                 return;
@@ -284,5 +295,32 @@ public class Patcher implements JahiaAfterInitializationService, DisposableBean 
 
     public void setPatchers(List<PatchExecutor> patchers) {
         this.patchers = patchers;
+    }
+
+    public Version getJahiaPreviousVersion() {
+        return jahiaPreviousVersion;
+    }
+
+    private void initPreviousVersion() {
+        Pattern p = Pattern.compile("^mvn:org.jahia.bundles/org.jahia.bundles.extender.jahiamodules/(.*)$");
+
+        File file = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/bundles-deployed");
+        if (file.exists()) {
+            Arrays.stream(file.listFiles((File::isDirectory)))
+                    .map(f -> new File(f, "bundle.info"))
+                    .filter(File::exists)
+                    .flatMap(f -> {
+                try {
+                    return FileUtils.readLines(f).stream();
+                } catch (IOException ioException) {
+                    return Stream.empty();
+                }
+            }).forEach(l -> {
+                Matcher m = p.matcher(l);
+                if (m.matches()) {
+                    jahiaPreviousVersion = new Version(m.group(1));
+                }
+            });
+        }
     }
 }

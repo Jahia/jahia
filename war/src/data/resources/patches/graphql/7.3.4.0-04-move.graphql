@@ -1,0 +1,17 @@
+mutation {
+    jcr {
+        addNode(parentPathOrId: "/permissions", name: "legacy-managers", primaryNodeType: "jnt:permission") {
+            uuid
+        }
+        mutateNodes(pathsOrIds: ["/permissions/managers/editorialContentManager", "/permissions/managers/fileManager", "/permissions/managers/siteManager"]) {
+            move(parentPathOrId: "/permissions/legacy-managers")
+        }
+        mutateNodesByQuery(query: "select * from [jnt:externalPermissions] where [j:permissionNames]='editorialContentManager' or  [j:permissionNames]='fileManager' or  [j:permissionNames]='siteManager'") {
+            uuid
+            mutateProperty(name: "j:permissionNames") {
+                removeValues(values: ["editorialContentManager", "fileManager", "siteManager"])
+                addValue(value: "contentManager")
+            }
+        }
+    }
+}

@@ -635,7 +635,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         }
     }
 
-    private void initPaths() {
+    public void initPaths() {
 
         classDiskPath = pathResolver.resolvePath ("/WEB-INF/classes/");
 
@@ -1307,6 +1307,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
+    }
+
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
     }
 
     @Override

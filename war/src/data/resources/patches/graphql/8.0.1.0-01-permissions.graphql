@@ -1,0 +1,26 @@
+mutation {
+    jcr {
+        updatePermission: mutateNodesByQuery(query: "/jcr:root/permissions[not(systemTools/@jcr:primaryType='jnt:permission')]", queryLanguage: XPATH) {
+            addChild(name: "systemTools", primaryNodeType: "jnt:permission") {
+                addChild(name: "systemToolsAccess", primaryNodeType: "jnt:permission") {
+                    uuid
+                }
+            }
+        }
+        updateRole: mutateNodesByQuery(query: "/jcr:root/roles[not(system-administrator/@jcr:primaryType='jnt:role')]", queryLanguage: XPATH) {
+            addChild(name: "system-administrator", primaryNodeType: "jnt:role", properties: [{name: "j:hidden", value: "false"}, {name: "j:privilegedAccess", value: "false"}, {name: "j:roleGroup", value: "system-role"}, {name: "j:permissionNames", values: ["systemToolsAccess", "repository-permissions"]}]) {
+                addChild(name: "rootNode-access", primaryNodeType: "jnt:externalPermissions", properties: [{name: "j:path", value: "/"}, {name: "j:permissionNames", values: "systemToolsAccess"}]) {
+                    uuid
+                }
+            }
+        }
+        updateRoot: mutateNodesByQuery(query: "/jcr:root[not(tools/@jcr:primaryType='nt:base')]", queryLanguage: XPATH) {
+            addChild(name: "tools", primaryNodeType: "nt:unstructured") {
+                addMixins(mixins: "jmix:accessControlled")
+                addChild(name: "j:acl", primaryNodeType: "jnt:acl", properties: [{name: "j:inherit", value: "false"}]) {
+                    uuid
+                }
+            }
+        }
+    }
+}

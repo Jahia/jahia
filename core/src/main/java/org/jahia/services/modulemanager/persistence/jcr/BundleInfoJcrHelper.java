@@ -123,8 +123,8 @@ final public class BundleInfoJcrHelper {
      */
     public static Collection<BundlePersistentInfo> getPersistentStates() throws JSONException, RepositoryException {
         String propertyValue = JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
-           JCRPropertyWrapper property = session.getNode(PATH_MODULE_MANAGEMENT).getProperty(PROP_BUNDLES_PERSISTENT_STATE);
-           return property.getValue().getString();
+            JCRNodeWrapper node = session.getNode(PATH_MODULE_MANAGEMENT);
+            return node.hasProperty(PROP_BUNDLES_PERSISTENT_STATE) ? node.getProperty(PROP_BUNDLES_PERSISTENT_STATE).getValue().getString() : "";
         });
 
         if (StringUtils.isEmpty(propertyValue)) {

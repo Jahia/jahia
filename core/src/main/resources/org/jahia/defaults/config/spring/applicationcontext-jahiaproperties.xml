@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+    <bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="properties">
+            <ref bean="jahiaProperties"/>
+        </property>
+    </bean>
+
+    <bean id="pathResolver" class="org.jahia.utils.WebAppPathResolver"/>
+
+    <bean name="jahiaProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="locations">
+            <list>
+                <value>classpath*:org/jahia/defaults/config/properties/jahia*.properties</value>
+                <value>/WEB-INF/etc/config/jahia.properties</value>
+                <value>/WEB-INF/etc/config/jahia.advanced.properties</value>
+                <value>/WEB-INF/etc/config/jahia.node.properties</value>
+                <value>/WEB-INF/etc/config/jahia.custom.properties</value>
+                <value>classpath*:org/jahia/config/jahia*.properties</value>
+                <value>classpath*:jahia/jahia.properties</value>
+                <value>classpath*:jahia/jahia.node.properties</value>
+                <value>classpath*:jahia/jahia*.properties</value>
+                <value>file:${jahia.config}</value>
+            </list>
+        </property>
+        <property name="localOverride" value="true"/>
+        <property name="properties" ref="jahiaSystemProperties"/>
+    </bean>
+
+    <bean id="jahiaSystemProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="propertiesArray">
+            <list>
+                <bean class="org.jahia.settings.SystemPropertiesFactoryBean">
+                    <property name="prefix" value="jahiaConfig."/>
+                </bean>
+                <bean class="org.jahia.settings.EnvironmentVariablesPropertiesFactoryBean">
+                    <property name="prefix" value="jahia_cfg_"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <util:list id="licensesList">
+        <!-- we will take the first found license file -->
+        <value>file:/${jahia.license}</value>
+        <value>classpath*:jahia/license*.xml</value>
+        <value>classpath*:org/jahia/config/license*.xml</value>
+        <value>WEB-INF/etc/config/license*.xml</value>
+    </util:list>
+
+    <util:map id="startupOptionsMapping" key-type="java.lang.String" value-type="java.util.Set">
+
+        <description>
+            The key represents the marker file on the file system,
+            whereas the value represents a set of "actions" to be taken on
+            startup when such marker file is detected
+        </description>
+
+        <entry key="#jahia.jackrabbit.home#/index-check" value="index-check"/>
+        <entry key="#jahia.jackrabbit.home#/index-fix" value="index-fix"/>
+        <entry key="#jahia.jackrabbit.home#/reindex" value="reindex"/>
+
+        <entry key="#jahia.data.dir#/disable-mail-service" value="disable-mail-service"/>
+        <entry key="#jahia.data.dir#/reset-discovery-info" value="reset-discovery-info"/>
+        <entry key="#jahia.data.dir#/rolling-upgrade" value="reset-discovery-info"/>
+
+        <entry key="#jahia.data.dir#/backup-restore">
+            <set>
+                <value>disable-mail-service</value>
+                <value>reset-discovery-info</value>
+            </set>
+        </entry>
+        <entry key="#jahia.data.dir#/safe-env-clone">
+            <set>
+                <value>disable-mail-service</value>
+                <value>reset-discovery-info</value>
+            </set>
+        </entry>
+    </util:map>
+
+</beans>

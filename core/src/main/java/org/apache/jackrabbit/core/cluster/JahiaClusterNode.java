@@ -43,6 +43,7 @@
  */
 package org.apache.jackrabbit.core.cluster;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.journal.*;
 import org.apache.jackrabbit.core.state.ItemState;
@@ -53,10 +54,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
-
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * Extends default clustered node implementation. Add support for NodeLevelLockableJournal
@@ -82,6 +84,11 @@ public class JahiaClusterNode extends ClusterNode {
      * Logger.
      */
     private static final Logger log = LoggerFactory.getLogger(JahiaClusterNode.class);
+
+    /**
+     * Retryier
+     */
+    private final Retryier retry = new Retryier(20, 100, 1.5d);
 
     /**
      * Status flag, one of {@link #NONE}, {@link #STARTED} or {@link #STOPPED}.
@@ -147,131 +154,14 @@ public class JahiaClusterNode extends ClusterNode {
     }
 
     /**
-     * Workspace update channel.
+     * Create a {@link LockEventChannel} for some workspace.
+     *
+     * @param workspace workspace name
+     * @return lock event channel
      */
-    private class WorkspaceUpdateChannel extends ClusterNode.WorkspaceUpdateChannel implements UpdateEventChannel {
-
-        /**
-         * Create a new instance of this class.
-         *
-         * @param workspace workspace name
-         */
-        public WorkspaceUpdateChannel(String workspace) {
-            super(workspace);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void updateCreated(Update update) throws ClusterException {
-            if (status != STARTED) {
-                log.info("not started: update create ignored.");
-                return;
-            }
-            super.updateCreated(update);
-            try {
-                storeNodeIds(update);
-                lockNodes(update);
-            } catch (JournalException e) {
-                throw new ClusterException("Unable to create log entry: " + e.getMessage(), e);
-            } catch (Exception e) {
-                throw new ClusterException("Unexpected error while creating log entry: " + e.getMessage(), e);
-            }
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void updateCommitted(Update update, String path) {
-            if (status != STARTED) {
-                log.info("not started: update commit ignored.");
-                return;
-            }
-            try {
-                super.updateCommitted(update, path);
-            } finally {
-                try {
-                    unlockNodes(update);
-                } catch (JournalException e) {
-                    log.error("Unable to commit log entry: " + e.getMessage(), e);
-                } catch (Exception e) {
-                    log.error("Unexpected error while committing log entry: " + e.getMessage(), e);
-                }
-            }
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void updateCancelled(Update update) {
-            if (status != STARTED) {
-                log.info("not started: update cancel ignored.");
-                return;
-            }
-            try {
-                super.updateCancelled(update);
-            } finally {
-                try {
-                    unlockNodes(update);
-                } catch (JournalException e) {
-                    log.error("Unable to cancel log entry: " + e.getMessage(), e);
-                } catch (Exception e) {
-                    log.error("Unexpected error while cancelling log entry: " + e.getMessage(), e);
-                }
-            }
-        }
-
-        @SuppressWarnings("unchecked")
-        private void unlockNodes(Update update) throws JournalException {
-            Journal journal = getJournal();
-            if (journal instanceof NodeLevelLockableJournal) {
-                Set<NodeId> ids = (Set<NodeId>) update.getAttribute("allIds");
-                ((NodeLevelLockableJournal) journal).unlockNodes(ids);
-            }
-        }
-
-        @SuppressWarnings("unchecked")
-        private void lockNodes(Update update) throws JournalException {
-            Journal journal = getJournal();
-            if (journal instanceof NodeLevelLockableJournal) {
-                Set<NodeId> ids = (Set<NodeId>) update.getAttribute("allIds");
-                ((NodeLevelLockableJournal) journal).lockNodes(ids);
-            }
-        }
-
-        private void storeNodeIds(Update update) {
-            if (getJournal() instanceof NodeLevelLockableJournal) {
-                Set<NodeId> nodeIdList = new HashSet<>();
-                for (ItemState state : update.getChanges().addedStates()) {
-                    // For added states we always lock the parent, whatever the type. The node itself does not exist yet,
-                    // oes not need to be locked - only the parent will be modified
-                    nodeIdList.add(state.getParentId());
-                }
-                for (ItemState state : update.getChanges().modifiedStates()) {
-                    // Lock the modified node - take the parent node if state is a property
-                    if (state.isNode()) {
-                        nodeIdList.add((NodeId) state.getId());
-                    } else {
-                        nodeIdList.add(state.getParentId());
-                    }
-                }
-                for (ItemState state : update.getChanges().deletedStates()) {
-                    // Lock the deleted node - take the parent node if state is a property, otherwise lock node and its
-                    // parent
-                    if (state.isNode()) {
-                        nodeIdList.add(state.getParentId());
-                        nodeIdList.add((NodeId) state.getId());
-                    } else {
-                        nodeIdList.add(state.getParentId());
-                    }
-                }
-                update.setAttribute("allIds", nodeIdList);
-            }
-        }
-
+    @Override
+    public LockEventChannel createLockChannel(String workspace) {
+        return new WorkspaceLockChannel(workspace);
     }
 
     @Override
@@ -345,7 +235,7 @@ public class JahiaClusterNode extends ClusterNode {
     /**
      * Switch read only mode on or off.
      *
-     * @param enable Whether to enable or disable read only mode
+     * @param enable  Whether to enable or disable read only mode
      * @param timeout Timeout waiting for ongoing sync operations to finish before switching read only mode, ms.
      */
     public void setReadOnly(boolean enable, long timeout) {
@@ -361,7 +251,7 @@ public class JahiaClusterNode extends ClusterNode {
         }
 
         try {
-             // Mode switch and node stop must be performed while owning the syncLock to ensure there are no sync operations in progress.
+            // Mode switch and node stop must be performed while owning the syncLock to ensure there are no sync operations in progress.
             readOnly = enable;
             if (enable) {
                 // Even though sync will be muted via the readOnly flag, we still need to stop the node to save the last processed journal revision,
@@ -383,5 +273,219 @@ public class JahiaClusterNode extends ClusterNode {
         }
 
         log.info("Read only mode is {} now.", (readOnly ? "ON" : "OFF"));
+    }
+
+    /**
+     * Invoked when a restartable cluster operation has ended.
+     * Tries to end to underlying cluster operation, and retries when it fails.
+     * Operation is recreated on every try to get a new revision ID.
+     */
+    public void ended(RestartableClusterOperation operation, boolean successful) {
+        try {
+            retry.retry(() -> {
+                DefaultClusterOperation defaultClusterOperation = operation.getClusterOperation();
+                ClusterRecord record = defaultClusterOperation.getRecord();
+                Long revisionToInsert = record != null ? record.getRevision() : null;
+                super.ended(defaultClusterOperation, successful);
+                checkRevisionInsertion(revisionToInsert);
+            }, operation::init);
+        } catch (Retryier.RetryException e) {
+            log.error("Unable to create log entry", e);
+        }
+    }
+
+    /**
+     * Check if revision has been correctly inserted
+     * Will look into lastInsertedRevision property from JahiaDatabaseJournal to ensure it has been correctly updated
+     */
+    private void checkRevisionInsertion(Long revisionToInsert) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClusterException {
+        Long lastInsertedRevision = (Long) PropertyUtils.getProperty(getJournal(), "lastInsertedRevision");
+        if (revisionToInsert != null && !revisionToInsert.equals(lastInsertedRevision)) {
+            throw new ClusterException("Revision has not been inserted, retrying");
+        }
+    }
+
+    /**
+     * Workspace update channel.
+     */
+    private class WorkspaceUpdateChannel extends ClusterNode.WorkspaceUpdateChannel implements UpdateEventChannel {
+
+        /**
+         * Create a new instance of this class.
+         *
+         * @param workspace workspace name
+         */
+        public WorkspaceUpdateChannel(String workspace) {
+            super(workspace);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void updateCreated(Update update) throws ClusterException {
+            if (status != STARTED) {
+                log.info("not started: update create ignored.");
+                return;
+            }
+
+            try {
+                retry.retry(() -> {
+                    super.updateCreated(update);
+                    storeNodeIds(update);
+                    lockNodes(update);
+                }, null);
+            } catch (Retryier.RetryException e) {
+                try {
+                    throw e.getCause();
+                } catch (JournalException ee) {
+                    throw new ClusterException("Unable to create log entry: " + e.getMessage(), e);
+                } catch (Exception ee) {
+                    throw new ClusterException("Unexpected error while creating log entry: " + e.getMessage(), e);
+                }
+            }
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void updateCommitted(Update update, String path) {
+            if (status != STARTED) {
+                log.info("not started: update commit ignored.");
+                return;
+            }
+
+            try {
+                retry.retry(() -> {
+                    try {
+                        Record record = (Record) update.getAttribute("record");
+                        Long revisionToInsert = record != null ? record.getRevision() : null;
+                        super.updateCommitted(update, path);
+                        checkRevisionInsertion(revisionToInsert);
+                    } finally {
+                        try {
+                            unlockNodes(update);
+                        } catch (JournalException e) {
+                            log.error("Unable to commit log entry: " + e.getMessage(), e);
+                        } catch (Exception e) {
+                            log.error("Unexpected error while committing log entry: " + e.getMessage(), e);
+                        }
+                    }
+                }, () -> {
+                    // Recreate a new record with a new revision id
+                    updateCreated(update);
+                    updatePrepared(update);
+                });
+            } catch (Retryier.RetryException e) {
+                log.error("Unexpected error while committing log entry: " + e.getMessage(), e.getCause());
+            }
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void updateCancelled(Update update) {
+            if (status != STARTED) {
+                log.info("not started: update cancel ignored.");
+                return;
+            }
+            try {
+                super.updateCancelled(update);
+            } finally {
+                try {
+                    unlockNodes(update);
+                } catch (JournalException e) {
+                    log.error("Unable to cancel log entry: " + e.getMessage(), e);
+                } catch (Exception e) {
+                    log.error("Unexpected error while cancelling log entry: " + e.getMessage(), e);
+                }
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        private void unlockNodes(Update update) throws JournalException {
+            Journal journal = getJournal();
+            if (journal instanceof NodeLevelLockableJournal) {
+                Set<NodeId> ids = (Set<NodeId>) update.getAttribute("allIds");
+                ((NodeLevelLockableJournal) journal).unlockNodes(ids);
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        private void lockNodes(Update update) throws JournalException {
+            Journal journal = getJournal();
+            if (journal instanceof NodeLevelLockableJournal) {
+                Set<NodeId> ids = (Set<NodeId>) update.getAttribute("allIds");
+                ((NodeLevelLockableJournal) journal).lockNodes(ids);
+            }
+        }
+
+        private void storeNodeIds(Update update) {
+            if (getJournal() instanceof NodeLevelLockableJournal) {
+                Set<NodeId> nodeIdList = new HashSet<>();
+                for (ItemState state : update.getChanges().addedStates()) {
+                    // For added states we always lock the parent, whatever the type. The node itself does not exist yet,
+                    // oes not need to be locked - only the parent will be modified
+                    nodeIdList.add(state.getParentId());
+                }
+                for (ItemState state : update.getChanges().modifiedStates()) {
+                    // Lock the modified node - take the parent node if state is a property
+                    if (state.isNode()) {
+                        nodeIdList.add((NodeId) state.getId());
+                    } else {
+                        nodeIdList.add(state.getParentId());
+                    }
+                }
+                for (ItemState state : update.getChanges().deletedStates()) {
+                    // Lock the deleted node - take the parent node if state is a property, otherwise lock node and its
+                    // parent
+                    if (state.isNode()) {
+                        nodeIdList.add(state.getParentId());
+                        nodeIdList.add((NodeId) state.getId());
+                    } else {
+                        nodeIdList.add(state.getParentId());
+                    }
+                }
+                update.setAttribute("allIds", nodeIdList);
+            }
+        }
+    }
+
+    private class WorkspaceLockChannel extends ClusterNode.WorkspaceLockChannel implements LockEventChannel {
+        public WorkspaceLockChannel(String workspace) {
+            super(workspace);
+        }
+
+        @Override
+        public ClusterOperation create(NodeId nodeId, boolean deep, String owner) {
+            return create(() -> (DefaultClusterOperation) super.create(nodeId, deep, owner));
+        }
+
+        @Override
+        public ClusterOperation create(NodeId nodeId) {
+            return create(() -> (DefaultClusterOperation) super.create(nodeId));
+        }
+
+        private RestartableClusterOperation create(Supplier<DefaultClusterOperation> supplier) {
+            if (status != STARTED) {
+                log.info("not started: lock operation ignored.");
+                return null;
+            }
+
+            RestartableClusterOperation op = new RestartableClusterOperation(JahiaClusterNode.this, supplier);
+
+            try {
+                // Tries to create the ClusterOperation until it succeeds
+                retry.retry(op::init, null);
+
+                return op;
+            } catch (Retryier.RetryException e) {
+                String msg = "Unable to create log entry: " + e.getMessage();
+                log.error(msg);
+                return null;
+            }
+        }
     }
 }

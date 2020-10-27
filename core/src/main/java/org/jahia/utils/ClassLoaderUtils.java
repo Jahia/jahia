@@ -55,6 +55,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.jahia.osgi.BundleUtils;
+import org.osgi.framework.Bundle;
 
 /**
  * Class loading related utilities.
@@ -93,7 +94,7 @@ public final class ClassLoaderUtils {
             try {
                 return super.loadClass(name);
             } catch (ClassNotFoundException e) {
-                return BundleUtils.loadModuleClass(name);
+                return BundleUtils.loadModuleClass(name, Bundle.RESOLVED, false);
             }
         }
     }

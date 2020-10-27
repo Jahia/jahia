@@ -365,7 +365,7 @@ public class JahiaPropertiesUtils {
         public void logError() {
             logger.info("[WARNING] The fix applier failed to remove (comments and/or property) from jahia.properties");
             logger.info("The concerned deprecated property is: {}", concernedProperty);
-            logger.info("please remove manually the following line(s) from your jahia.properties file:");
+            logger.info("It could be that the property no longer exists or requires manual removal. Verify by looking at the following line(s) from your jahia.properties file:");
             if (type.equals(Type.EXACT_BLOCK)) {
                 logger.info("-- START --");
                 for (String line : pattern) {

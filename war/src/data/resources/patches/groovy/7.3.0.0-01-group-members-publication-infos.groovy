@@ -13,6 +13,14 @@ final java.util.Calendar baseCalendar = new java.util.GregorianCalendar();
 
 private static void fixMemberNode(JCRNodeWrapper memberNode, java.util.Calendar calendar) {
     javax.jcr.Node realNode = memberNode.getRealNode();
+
+    // Do not update publication properties if they are already set
+    if (realNode.hasProperty(Constants.PUBLISHED) && realNode.getProperty(Constants.PUBLISHED).getBoolean()
+            && realNode.hasProperty(Constants.LASTPUBLISHEDBY) && !"".equals(realNode.getProperty(Constants.LASTPUBLISHEDBY).getString())
+            && realNode.hasProperty(Constants.LASTPUBLISHED) && realNode.getProperty(Constants.LASTPUBLISHED).getDate() != null) {
+        return;
+    }
+
     realNode.setProperty(Constants.LASTPUBLISHED, calendar);
     realNode.setProperty(Constants.LASTPUBLISHEDBY, "root");
     realNode.setProperty(Constants.PUBLISHED, true);

@@ -322,30 +322,45 @@ public final class BundleUtils {
      * @throws ClassNotFoundException in case the corresponding class cannot be found
      */
     public static Class<?> loadModuleClass(String className, int requiredModuleStatus) throws ClassNotFoundException {
+        return loadModuleClass(className, requiredModuleStatus, true);
+    }
+
+    /**
+     * Performs lookup of the specified class in classloaders of all modules, which are at least in the requested state.
+     * Also you can decide of using classloading fallback on Jahia webapp in case class not found in modules classloaders
+     *
+     * @param className the fully qualified class name to look up
+     * @param requiredModuleStatus the minimal required state of the bundle to be considered for class lookup
+     * @param fallbackCoreClassloader Specify if we should try to look for the class inside Jahia core classloader in case it's not found in modules classloaders
+     * @return the requested class
+     * @throws ClassNotFoundException in case the corresponding class cannot be found
+     */
+    public static Class<?> loadModuleClass(String className, int requiredModuleStatus, boolean fallbackCoreClassloader) throws ClassNotFoundException {
         Class<?> clazz = null;
         String[] moduleKey = moduleForClass.get(className); // [moduleId, moduleVersion]
         if (moduleKey != null) {
-            ClassLoader cl = null;
             Map<String, JahiaTemplatesPackage> versions = modules.get(moduleKey[0]);
             if (versions != null) {
                 JahiaTemplatesPackage pkg = versions.get(moduleKey[1]);
-                if (pkg != null && pkg.getBundle().getState() >= requiredModuleStatus) {
-                    cl = pkg.getClassLoader();
+                if (pkg != null && pkg.getBundle() != null && pkg.getBundle().getState() >= requiredModuleStatus) {
+                    try {
+                        return pkg.getBundle().loadClass(className);
+                    } catch (IllegalStateException | ClassNotFoundException e) {
+                        // remove the cached version since we didnt found the class
+                        moduleForClass.remove(className);
+                    }
                 }
-            }
-            if (cl == null) {
-                moduleForClass.remove(className);
-            } else {
-                return cl.loadClass(className);
             }
         }
 
         for (Map<String, JahiaTemplatesPackage> moduleVersions : modules.values()) {
             for (JahiaTemplatesPackage pkg : moduleVersions.values()) {
-                ClassLoader pkgClassLoader = pkg.getClassLoader();
-                if (pkg.getBundle().getState() >= requiredModuleStatus && pkgClassLoader != null) {
+                if (pkg.getBundle() != null && pkg.getBundle().getState() >= requiredModuleStatus) {
                     try {
-                        clazz = pkgClassLoader.loadClass(className);
+                        // Do not use the classLoader of the template package because it's a BundleDelegatingClassLoader
+                        // And it will fallback to Jahia core classloader if not finding the class in the module classloader.
+                        // That is why we use directly the bundle to load the class in the current context.
+                        clazz = pkg.getBundle().loadClass(className);
                     } catch (IllegalStateException e) {
                         // An un-installed bundle was likely cached in the modules. This should never happen, but if it does, log to have more info
                         // and continue searching the class in other modules.
@@ -357,7 +372,7 @@ public final class BundleUtils {
                         continue;
                     }
                     Bundle bundle = getSourceBundleForClass(clazz);
-                    if (bundle != null && bundle.equals(pkg.getBundle()) && bundle.getState() >= requiredModuleStatus) {
+                    if (bundle != null && bundle.getState() >= requiredModuleStatus) {
                         moduleForClass.put(className, new String[] { pkg.getId(), pkg.getVersion().toString() });
                         return clazz;
                     }
@@ -365,7 +380,16 @@ public final class BundleUtils {
             }
         }
 
-        throw new ClassNotFoundException("Unable to find class '" + className + "' in the class loaders of modules");
+        if (fallbackCoreClassloader) {
+            try {
+                return BundleUtils.class.getClassLoader().loadClass(className);
+            } catch (ClassNotFoundException e) {
+                // do nothing, the ClassNotFoundException is throw at the end of the current fct.
+            }
+        }
+
+        throw new ClassNotFoundException("Unable to find class '" + className + "' in the class loaders of modules" +
+                (fallbackCoreClassloader ? " and Jahia webapp" : ""));
     }
 
     private static Bundle getSourceBundleForClass(Class<?> clazz) {

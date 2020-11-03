@@ -65,8 +65,10 @@ import static org.jahia.api.Constants.*;
  * Time: 2:36:05 PM
  */
 public class LastModifiedListener extends DefaultEventListener {
+    public static final String JMIX_AUTO_PUBLISH = "jmix:autoPublish";
+    public static final String J_DELETED_CHILDREN = "j:deletedChildren";
     private static Logger logger = LoggerFactory.getLogger(LastModifiedListener.class);
-    
+
     private JCRPublicationService publicationService;
 
     public int getEventTypes() {
@@ -82,10 +84,10 @@ public class LastModifiedListener extends DefaultEventListener {
                 return;
             }
 
-            final Set<Session> sessions = new HashSet<Session>();
-            final Set<String> nodes = new HashSet<String>();
-            final Set<String> addedNodes = new HashSet<String>();
-            final Set<String> reorderedNodes = new HashSet<String>();
+            final Set<Session> sessions = new LinkedHashSet<>();
+            final Set<String> nodes = new LinkedHashSet<>();
+            final Set<String> addedNodes = new LinkedHashSet<>();
+            final Set<String> reorderedNodes = new LinkedHashSet<>();
             final List<String> autoPublishedIds;
 
             if (workspace.equals("default")) {
@@ -96,7 +98,7 @@ public class LastModifiedListener extends DefaultEventListener {
 
             JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, workspace, null, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    Calendar c = GregorianCalendar.getInstance();
+                    Calendar c = Calendar.getInstance();
                     while (eventIterator.hasNext()) {
                         final Event event = eventIterator.nextEvent();
                         if (event.getType() == Event.NODE_REMOVED && event.getIdentifier() != null) {
@@ -111,12 +113,12 @@ public class LastModifiedListener extends DefaultEventListener {
                                             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                                 JCRNodeWrapper nodeByIdentifier = session.getNodeByIdentifier(event.getIdentifier());
                                                 boolean lastPublished = nodeByIdentifier.hasProperty(Constants.LASTPUBLISHED);
-                                                if (lastPublished && !parent.isNodeType("jmix:autoPublish")) {
+                                                if (lastPublished && !parent.isNodeType(JMIX_AUTO_PUBLISH)) {
                                                     List<String> nodeTypes = (event instanceof JCRObservationManager.EventWrapper) ? ((JCRObservationManager.EventWrapper) event).getNodeTypes() : null;
                                                     if (nodeTypes != null) {
                                                         for (String nodeType : nodeTypes) {
                                                             ExtendedNodeType eventNodeType = NodeTypeRegistry.getInstance().getNodeType(nodeType);
-                                                            if (eventNodeType != null && eventNodeType.isNodeType("jmix:autoPublish")) {
+                                                            if (eventNodeType != null && eventNodeType.isNodeType(JMIX_AUTO_PUBLISH)) {
                                                                 nodeByIdentifier.remove();
                                                                 session.save();
                                                                 return false;
@@ -131,11 +133,11 @@ public class LastModifiedListener extends DefaultEventListener {
                                         if (lastPublished) {
                                             if (!parent.isNodeType("jmix:deletedChildren")) {
                                                 parent.addMixin("jmix:deletedChildren");
-                                                parent.setProperty("j:deletedChildren", new String[]{event.getIdentifier()});
-                                            } else if (!parent.hasProperty("j:deletedChildren")) {
-                                                parent.setProperty("j:deletedChildren", new String[]{event.getIdentifier()});
+                                                parent.setProperty(J_DELETED_CHILDREN, new String[]{event.getIdentifier()});
+                                            } else if (!parent.hasProperty(J_DELETED_CHILDREN)) {
+                                                parent.setProperty(J_DELETED_CHILDREN, new String[]{event.getIdentifier()});
                                             } else {
-                                                parent.getProperty("j:deletedChildren").addValue(event.getIdentifier());
+                                                parent.getProperty(J_DELETED_CHILDREN).addValue(event.getIdentifier());
                                             }
                                             sessions.add(parent.getRealNode().getSession());
                                         }
@@ -156,19 +158,15 @@ public class LastModifiedListener extends DefaultEventListener {
                         if (path.startsWith("/jcr:system/")) {
                             continue;
                         }
-                        if ((event.getType() & Event.PROPERTY_CHANGED + Event.PROPERTY_ADDED + Event.PROPERTY_REMOVED) != 0) {
-                            if (propertiesToIgnore.contains(StringUtils.substringAfterLast(path, "/"))) {
-                                continue;
-                            }
+                        if ((event.getType() & Event.PROPERTY_CHANGED + Event.PROPERTY_ADDED + Event.PROPERTY_REMOVED) != 0 &&
+                                propertiesToIgnore.contains(StringUtils.substringAfterLast(path, "/"))) {
+                            continue;
                         }
                         if (logger.isDebugEnabled()) {
-                            logger.debug("Receiving event for lastModified date for : " + path);
+                            logger.debug("Receiving event for lastModified date for : {}", path);
                         }
                         if (event.getType() == Event.NODE_ADDED) {
                             addedNodes.add(path);
-//                            if(!path.contains("j:translation")) {
-//                                nodes.add(StringUtils.substringBeforeLast(path,"/"));
-//                            }
                         } else if (Event.NODE_MOVED == event.getType()) {
                             // in the case of a real node move, we won't track this as we want to have last modification
                             // properties on moved nodes so we only handle the reordering case.
@@ -189,9 +187,9 @@ public class LastModifiedListener extends DefaultEventListener {
                     }
                     if (!nodes.isEmpty() || !addedNodes.isEmpty()) {
                         if (logger.isDebugEnabled()) {
-                            logger.debug("Updating lastModified date for existing nodes : " +
+                            logger.debug("Updating lastModified date for existing nodes : {}",
                                     Arrays.deepToString(nodes.toArray(new String[nodes.size()])));
-                            logger.debug("Updating lastModified date for added nodes : " +
+                            logger.debug("Updating lastModified date for added nodes : {}",
                                     Arrays.deepToString(addedNodes.toArray(new String[addedNodes.size()])));
                         }
                         for (String node : nodes) {
@@ -270,16 +268,12 @@ public class LastModifiedListener extends DefaultEventListener {
     }
 
     private boolean addAutoPublish(JCRNodeWrapper n, List<String> autoPublished) throws RepositoryException {
-        if (autoPublished != null) {
-            if (!n.getPath().startsWith("/modules")) {
-                if (!autoPublished.contains(n.getIdentifier()) && n.isNodeType("jmix:autoPublish")) {
-                    autoPublished.add(n.getIdentifier());
-                    return true;
-                } else if (!autoPublished.contains(n.getIdentifier()) && n.isNodeType(JAHIANT_TRANSLATION) && n.getParent().isNodeType("jmix:autoPublish")) {
-                    autoPublished.add(n.getIdentifier());
-                    return true;
-                }
-            }
+        if (autoPublished != null &&
+                !n.getPath().startsWith("/modules") &&
+                !autoPublished.contains(n.getIdentifier()) &&
+                (n.isNodeType(JMIX_AUTO_PUBLISH) || (n.isNodeType(JAHIANT_TRANSLATION) && n.getParent().isNodeType(JMIX_AUTO_PUBLISH)))) {
+            autoPublished.add(n.getIdentifier());
+            return true;
         }
         return false;
     }

@@ -31,8 +31,6 @@
 
 [jmix:rssable] > jmix:containerExtension mixin
 
-[jmix:sendAsNewsletter] mixin
-
 [jnt:navLink] > jnt:container
  page navLink primary
  smallText separator
@@ -121,7 +119,7 @@
 [jnt:portletsBox] > jnt:box
  containerList portletContainer (jnt:portletContainer)
 
-[jnt:peopleContainer] > jnt:container 
+[jnt:peopleContainer] > jnt:container
  sharedSmallText peopleFirstname
  sharedSmallText peopleLastname sortable
  date peopleBirthdate

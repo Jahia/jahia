@@ -9,9 +9,6 @@
  - field (string, choicelist[sortableFieldnames]) indexed=no
  - useMainResource (boolean)
 
-[jmix:sendAsNewsletter] mixin
- extends = jnt:page
-
 [jmix:listOrdered] > jmix:templateMixin mixin
  extends = jmix:list, jnt:area
  itemtype = layout

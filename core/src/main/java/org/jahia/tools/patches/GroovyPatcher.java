@@ -46,12 +46,14 @@ package org.jahia.tools.patches;
 import org.jahia.utils.ScriptEngineUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import groovy.lang.Closure;
 
 import javax.script.*;
 import java.io.StringWriter;
+import java.util.concurrent.atomic.AtomicReference;
 
-import static org.jahia.tools.patches.Patcher.FAILED;
-import static org.jahia.tools.patches.Patcher.INSTALLED;
+import static org.jahia.tools.patches.Patcher.SUFFIX_FAILED;
+import static org.jahia.tools.patches.Patcher.SUFFIX_INSTALLED;
 
 /**
  * Simple patch that executes Groovy scripts
@@ -73,16 +75,22 @@ public class GroovyPatcher implements PatchExecutor {
             ScriptContext ctx = new SimpleScriptContext();
             ctx.setWriter(new StringWriter());
             Bindings bindings = engine.createBindings();
-            bindings.put("log", new LoggerWrapper(logger, logger.getName(), ctx.getWriter()));
+            AtomicReference<String> res = new AtomicReference<>(SUFFIX_INSTALLED);
+            bindings.put("log", logger);
+            bindings.put("setResult", new Closure<Void>(this) {
+                @Override
+                public Void call(Object... args) {
+                    res.set(args[0].toString());
+                    return null;
+                }
+            });
             ctx.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
 
             engine.eval(scriptContent, ctx);
-            String result = ((StringWriter) ctx.getWriter()).getBuffer().toString();
-            logger.info(result);
-            return INSTALLED;
+            return res.get();
         } catch (ScriptException e) {
             logger.error("Execution of script failed with error: " + e.getMessage(), e);
-            return FAILED;
+            return SUFFIX_FAILED;
         }
     }
 

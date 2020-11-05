@@ -52,8 +52,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.Servlet;
 
-import static org.jahia.tools.patches.Patcher.FAILED;
-import static org.jahia.tools.patches.Patcher.INSTALLED;
+import static org.jahia.tools.patches.Patcher.SUFFIX_FAILED;
+import static org.jahia.tools.patches.Patcher.SUFFIX_INSTALLED;
 
 /**
  * Execute graphql mutations in files ending with .graphql
@@ -75,12 +75,12 @@ public class GraphqlPatcher implements PatchExecutor {
             logger.info("Graphql execution result : {}", json);
             JSONObject object = new JSONObject(json);
             if (object.has("errors") && object.getJSONArray("errors").length() > 0) {
-                return FAILED;
+                return SUFFIX_FAILED;
             }
-            return INSTALLED;
+            return SUFFIX_INSTALLED;
         } catch (Exception e) {
-            logger.error("Execution of script failed with error: " + e.getMessage(), e);
-            return FAILED;
+            logger.error("Execution of script failed with error: {}", e.getMessage(), e);
+            return SUFFIX_FAILED;
         } finally {
             JCRSessionFactory.getInstance().setCurrentUser(null);
         }

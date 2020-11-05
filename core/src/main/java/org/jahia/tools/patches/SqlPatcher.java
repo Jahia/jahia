@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2019 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2020 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -51,9 +51,9 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.sql.SQLException;
 
-import static org.jahia.tools.patches.Patcher.FAILED;
-import static org.jahia.tools.patches.Patcher.INSTALLED;
-import static org.jahia.tools.patches.Patcher.SKIPPED;
+import static org.jahia.tools.patches.Patcher.SUFFIX_FAILED;
+import static org.jahia.tools.patches.Patcher.SUFFIX_INSTALLED;
+import static org.jahia.tools.patches.Patcher.SUFFIX_SKIPPED;
 
 /**
  * Utility class for applying SQL-based patches on Jahia startup.
@@ -73,12 +73,12 @@ public final class SqlPatcher implements PatchExecutor {
         if (name.contains("/" + DatabaseUtils.getDatabaseType() + "/")) {
             try {
                 DatabaseUtils.executeScript(new StringReader(scriptContent));
-                return INSTALLED;
+                return SUFFIX_INSTALLED;
             } catch (SQLException | IOException e) {
-                logger.error("Execution of script failed with error: " + e.getMessage(), e);
-                return FAILED;
+                logger.error("Execution of script failed with error: {}", e.getMessage(), e);
+                return SUFFIX_FAILED;
             }
         }
-        return SKIPPED;
+        return SUFFIX_SKIPPED;
     }
 }

@@ -64,6 +64,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -82,9 +83,11 @@ public class Patcher implements JahiaAfterInitializationService, DisposableBean 
     private static final Logger logger = LoggerFactory.getLogger(Patcher.class);
 
     public static final String README = "README";
-    public static final String INSTALLED = ".installed";
-    public static final String FAILED = ".failed";
-    public static final String SKIPPED = ".skipped";
+    public static final String SUFFIX_INSTALLED = ".installed";
+    public static final String SUFFIX_FAILED = ".failed";
+    public static final String SUFFIX_SKIPPED = ".skipped";
+    public static final String KEEP = "keep";
+    public static final String REMOVE = "remove";
 
     private Version jahiaPreviousVersion;
 
@@ -122,7 +125,11 @@ public class Patcher implements JahiaAfterInitializationService, DisposableBean 
             if (logger.isTraceEnabled()) {
                 logger.trace("Looking up patches in the folder {}", lookupFolder);
             }
-            List<File> patches = new LinkedList<>(FileUtils.listFiles(lookupFolder, new NotFileFilter(new SuffixFileFilter(new String[] {README, INSTALLED, FAILED, SKIPPED})), TrueFileFilter.INSTANCE));
+            List<File> patches = new LinkedList<>(FileUtils.listFiles(
+                    lookupFolder,
+                    new NotFileFilter(new SuffixFileFilter(new String[] {README, SUFFIX_INSTALLED, SUFFIX_FAILED, SUFFIX_SKIPPED})),
+                    TrueFileFilter.INSTANCE
+            ));
 
             if (patches.isEmpty()) {
                 if (logger.isTraceEnabled()) {
@@ -158,20 +165,18 @@ public class Patcher implements JahiaAfterInitializationService, DisposableBean 
                     for (PatchExecutor patcher : patchers) {
                         if (patcher.canExecute(script.getURL().getPath(), lifecyclePhase)) {
                             String result = patcher.executeScript(script.getURL().getPath(), scriptContent);
-                            logger.info("Execution of script {} took {} ms",
-                                    new String[]{script.getFilename(),
-                                            String.valueOf(System.currentTimeMillis() - timerSingle)});
-                            rename(script, result);
+                            logger.info("Execution of script {} took {} ms", script.getFilename(), System.currentTimeMillis() - timerSingle);
+                            afterExecution(script, result);
                             break;
                         }
                     }
                 } else {
                     logger.warn("Content of the script {} is either empty or cannot be read. Skipping.", script.getFilename());
-                    rename(script, SKIPPED);
+                    afterExecution(script, SUFFIX_SKIPPED);
                 }
             } catch (Exception e) {
-                logger.error("Execution of script " + script + " failed with error: " + e.getMessage(), e);
-                rename(script, FAILED);
+                logger.error("Execution of script {} failed with error: ", e.getMessage(), e);
+                afterExecution(script, SUFFIX_FAILED);
             }
         }
 
@@ -182,7 +187,7 @@ public class Patcher implements JahiaAfterInitializationService, DisposableBean 
         InputStream in = null;
         try {
             in = r.getInputStream();
-            return IOUtils.toString(in, "UTF-8");
+            return IOUtils.toString(in, StandardCharsets.UTF_8);
         } finally {
             IOUtils.closeQuietly(in);
         }
@@ -200,21 +205,23 @@ public class Patcher implements JahiaAfterInitializationService, DisposableBean 
         return lookupFolder.isDirectory() ? lookupFolder : null;
     }
 
-    protected void rename(Resource script, String suffix) {
+    protected void afterExecution(Resource script, String result) {
         File scriptFile;
         try {
             scriptFile = script.getFile();
-            File dest = new File(scriptFile.getParentFile(), scriptFile.getName() + suffix);
-            if (dest.exists()) {
-                FileUtils.deleteQuietly(dest);
-            }
-            if (!scriptFile.renameTo(dest)) {
-                logger.warn("Unable to rename script file {} to {}. Skip renaming.", script
-                        .getFile().getPath(), dest.getPath());
+            if (REMOVE.equals(result)) {
+                Files.delete(scriptFile.toPath());
+            } else if (result.startsWith(".")) {
+                File dest = new File(scriptFile.getParentFile(), scriptFile.getName() + result);
+                if (dest.exists()) {
+                    FileUtils.deleteQuietly(dest);
+                }
+                if (!scriptFile.renameTo(dest)) {
+                    logger.warn("Unable to rename script file {} to {}. Skip renaming.", script.getFile().getPath(), dest.getPath());
+                }
             }
         } catch (IOException e) {
-            logger.warn("Unable to rename the script file for resurce " + script
-                    + " due to an error: " + e.getMessage(), e);
+            logger.warn("Unable to rename the script file for resource {} due to an error: {}", script, e.getMessage(), e);
         }
     }
 

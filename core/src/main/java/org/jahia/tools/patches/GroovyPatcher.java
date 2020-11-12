@@ -70,12 +70,12 @@ public class GroovyPatcher implements PatchExecutor {
     }
 
     public String executeScript(String name, String scriptContent) {
+        AtomicReference<String> res = new AtomicReference<>();
         try {
             ScriptEngine engine = getEngine();
             ScriptContext ctx = new SimpleScriptContext();
             ctx.setWriter(new StringWriter());
             Bindings bindings = engine.createBindings();
-            AtomicReference<String> res = new AtomicReference<>(SUFFIX_INSTALLED);
             bindings.put("log", logger);
             bindings.put("setResult", new Closure<Void>(this) {
                 @Override
@@ -87,10 +87,10 @@ public class GroovyPatcher implements PatchExecutor {
             ctx.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
 
             engine.eval(scriptContent, ctx);
-            return res.get();
+            return res.get() == null ? SUFFIX_INSTALLED : res.get();
         } catch (ScriptException e) {
-            logger.error("Execution of script failed with error: " + e.getMessage(), e);
-            return SUFFIX_FAILED;
+            logger.error("Execution of script failed with error: {}", e.getMessage(), e);
+            return res.get() == null ? SUFFIX_FAILED : res.get();
         }
     }
 

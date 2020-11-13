@@ -95,7 +95,11 @@
                 jGet.getCached('body').setAttribute('data-indigo-is-manager', 'true');
             }
 
-            // This is a manager, not main Anthracite.
+            if (Anthracite.data.HTTP.app === 'contentmanager') {
+                jGet.getCached('body').setAttribute('data-indigo-is-manager', 'true');
+            }
+
+                // This is a manager, not main Anthracite.
             if (Anthracite.data.HTTP.app === 'manager') {
                 // This is a manager, not edit engine
                 Anthracite.picker.data.standalone = true;

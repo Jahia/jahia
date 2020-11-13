@@ -79,7 +79,7 @@ public class RenameActionItem extends NodeTypeAwareBaseActionItem {
             }
             MainModule mainModule = MainModule.getInstance();
             final boolean goTo;
-            if (mainModule != null) {
+            if (mainModule != null && mainModule.getNode() != null) {
                 goTo = selection.getPath().equals(mainModule.getNode().getPath());
             } else {
                 goTo = false;

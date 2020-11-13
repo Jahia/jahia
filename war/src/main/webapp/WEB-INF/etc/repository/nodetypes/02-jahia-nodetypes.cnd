@@ -685,6 +685,8 @@ extends = jnt:page
 
 [jmix:mainResource] mixin
 
+[jmix:systemNameReadonly] mixin
+
 //---------------------------------------------------------
 // References and links
 //---------------------------------------------------------

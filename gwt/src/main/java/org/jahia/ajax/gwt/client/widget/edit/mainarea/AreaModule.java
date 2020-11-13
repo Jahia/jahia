@@ -64,6 +64,7 @@ import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -227,7 +228,7 @@ public class AreaModule extends SimpleModule {
     public void createNode(final AsyncCallback<GWTJahiaNode> callback) {
         if (node == null) {
             JahiaContentManagementService.App.getInstance().createNode(path.substring(0, path.lastIndexOf('/')), path.substring(path.lastIndexOf('/') + 1),
-                    areaType, null,null,null,null, null, null, true, new AsyncCallback<GWTJahiaNode>() {
+                    areaType, Collections.singletonList("jmix:systemNameReadonly"),null,null,null, null, null, true, new AsyncCallback<GWTJahiaNode>() {
                 public void onSuccess(GWTJahiaNode result) {
                     node = result;
                     callback.onSuccess(result);

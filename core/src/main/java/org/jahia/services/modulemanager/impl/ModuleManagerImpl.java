@@ -64,6 +64,7 @@ import org.jahia.services.templates.ModuleVersion;
 import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
 import org.jahia.settings.readonlymode.ReadOnlyModeException;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleException;
 import org.osgi.framework.wiring.FrameworkWiring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -290,6 +291,7 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
             operation.perform(info, target);
             result = OperationResult.success(info);
         } catch (ModuleManagementException e) {
+            checkForMissingDependency(e, info);
             error = e;
             throw e;
         } catch (Exception e) {
@@ -759,5 +761,36 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
         }
 
         return OperationResult.success(Collections.emptyList());
+    }
+
+    private Map<String, Object> missingDependency(BundleInfo info) {
+        // Return first missing dependency
+        for (Bundle b : templateManagerService.getInstalledBundles()) {
+            if (b.getSymbolicName().equals(info.getSymbolicName())) {
+                String[] dependencies = b.getHeaders().get("Jahia-Depends").split(",");
+                List<String> missing = Arrays.stream(dependencies)
+                        .filter(dep -> templateManagerService.getAnyDeployedTemplatePackage(dep) == null)
+                        .collect(Collectors.toList());
+                if (!missing.isEmpty()) {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("bundle", b);
+                    map.put("dependency", missing.get(0));
+                    return map;
+                }
+            }
+        }
+
+        return Collections.emptyMap();
+    }
+
+    private void checkForMissingDependency(Exception e, BundleInfo info) {
+        // Missing dependency on initial install case
+        if (e.getCause() instanceof BundleException && ((BundleException) e.getCause()).getType() == BundleException.RESOLVE_ERROR) {
+            Map<String, Object> missing = missingDependency(info);
+            if (!missing.isEmpty()) {
+                throw new ModuleManagementException(
+                        String.format("Bundle %s has unresolved dependency %s and won't be started", missing.get("bundle"), missing.get("dependency")));
+            }
+        }
     }
 }

@@ -239,7 +239,7 @@ public class WelcomeServlet extends HttpServlet {
                     }
                     if (redirect == null && defSite != null && defSite.getHome() != null) {
                         if (defSite.getHome().hasPermission("jContentAccess")) {
-                            redirect = request.getContextPath() + "/cms/edit/"
+                            redirect = request.getContextPath() + "/jahia/page-composer/"
                                     + Constants.EDIT_WORKSPACE + "/" + language
                                     + defSite.getHome().getPath() + ".html";
                         }

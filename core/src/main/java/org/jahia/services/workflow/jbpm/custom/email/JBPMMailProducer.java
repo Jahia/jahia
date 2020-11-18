@@ -543,8 +543,8 @@ public class JBPMMailProducer {
             bindings.put("site", siteNode);
             bindings.put("servername", servername);
             bindings.put("previewPrefix", String.format("%s%s/cms/render/%s/%s", servername, contextPath, Constants.EDIT_WORKSPACE, locale));
-            bindings.put("editPrefix", String.format("%s%s/cms/edit/%s/%s", servername, contextPath, Constants.EDIT_WORKSPACE, locale));
-            bindings.put("cmmPrefix", String.format("%s%s/cms/contentmanager/%s/%s", servername, contextPath, siteNode.getSiteKey(), locale));
+            bindings.put("editPrefix", String.format("%s%s/jahia/page-composer/%s/%s", servername, contextPath, Constants.EDIT_WORKSPACE, locale));
+            bindings.put("cmmPrefix", String.format("%s%s/jahia/jcontent/%s/%s", servername, contextPath, siteNode.getSiteKey(), locale));
             bindings.put("renderContext", new RenderContext(null, null, JCRSessionFactory.getInstance().getCurrentUser()));
         }
         return bindings;

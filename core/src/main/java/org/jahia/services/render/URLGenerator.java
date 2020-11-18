@@ -141,9 +141,9 @@ public class URLGenerator {
         baseLive = renderServletPath + liveLanguage;
         live = baseLive + resourcePath;
         if (!SettingsBean.getInstance().isDistantPublicationServerMode()) {
-            baseEdit = "/cms/edit" + editLanguage;
+            baseEdit = "/jahia/page-composer" + editLanguage;
             edit = baseEdit + resourcePath;
-            baseContribute = "/cms/contribute" + editLanguage;
+            baseContribute = "/jahia/page-composer" + editLanguage;
             contribute = baseContribute + resourcePath;
         }
         basePreview = renderServletPath + editLanguage;

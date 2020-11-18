@@ -1,6 +1,4 @@
-import org.jahia.services.content.JCRNodeWrapper
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.content.JCRTemplate
+import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry
 

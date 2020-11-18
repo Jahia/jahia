@@ -58,6 +58,7 @@ import javax.servlet.ServletRequest;
 public class WebflowTokenListener extends FlowExecutionListenerAdapter {
 
     public static final String WEBFLOW_TOKEN = "webflowToken";
+    public static final String CHECK_WEBFLOW_TOKEN = "checkWebflowToken";
 
     @Override
     public void sessionStarting(RequestContext context, FlowSession session, MutableAttributeMap<?> input) {
@@ -69,6 +70,7 @@ public class WebflowTokenListener extends FlowExecutionListenerAdapter {
 
     @Override
     public void resuming(RequestContext context) {
+        context.getFlowScope().put(CHECK_WEBFLOW_TOKEN, true);
         String token = (String) context.getFlowScope().get(WEBFLOW_TOKEN);
         storeToken(context, token);
         super.resuming(context);
@@ -80,10 +82,12 @@ public class WebflowTokenListener extends FlowExecutionListenerAdapter {
 
     @Override
     public void eventSignaled(RequestContext context, Event event) {
-        String token = (String) context.getFlowScope().get(WEBFLOW_TOKEN);
-        String reqToken = context.getRequestParameters().get(WEBFLOW_TOKEN);
-        if (token != null && !token.equals(reqToken)) {
-            throw new IllegalStateException("Invalid token");
+        if (context.getFlowScope().get(CHECK_WEBFLOW_TOKEN) != null) {
+            String token = (String) context.getFlowScope().get(WEBFLOW_TOKEN);
+            String reqToken = context.getRequestParameters().get(WEBFLOW_TOKEN);
+            if (token != null && !token.equals(reqToken)) {
+                throw new IllegalStateException("Invalid token");
+            }
         }
 
         super.eventSignaled(context, event);

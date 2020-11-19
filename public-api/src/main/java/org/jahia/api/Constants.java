@@ -319,7 +319,8 @@ public class Constants {
             "j:locktoken", JCR_LOCKOWNER, JCR_LOCKISDEEP, JAHIA_SOURCE_TEMPLATE, PUBLISHED, MARKED_FOR_DELETION_DATE,
             MARKED_FOR_DELETION_MESSAGE, MARKED_FOR_DELETION_USER, ORIGIN_WORKSPACE));
 
-    public static final Set<String> forbiddenMixinToCopy = new HashSet<String>(Arrays.asList(JAHIAMIX_WORKFLOW, JAHIAMIX_MARKED_FOR_DELETION, JAHIAMIX_MARKED_FOR_DELETION_ROOT));
+    public static final Set<String> forbiddenMixinToCopy = new HashSet<>(Arrays.asList(JAHIAMIX_WORKFLOW,
+            JAHIAMIX_MARKED_FOR_DELETION, JAHIAMIX_MARKED_FOR_DELETION_ROOT, "jmix:systemNameReadonly"));
 
     public static final String JCR_LASTLOGINDATE = "lastLoginDate";
     public static final String J_ROLES = "j:roles";

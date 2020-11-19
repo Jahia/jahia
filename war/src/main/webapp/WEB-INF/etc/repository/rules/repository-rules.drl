@@ -8,6 +8,7 @@ import org.slf4j.Logger
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.sites.JahiaSitesService;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 
 
 expander rules.dsl
@@ -256,4 +257,17 @@ rule "Flush external permissions in role cache"
             - the node has the type jnt:externalPermissions
     then
 >       JahiaAccessManager.flushPrivilegesInRoles();
+end
+
+rule "Remove mixin jmix:systemNameReadonly when the node is moved"
+    salience 100
+    when
+        A node is moved
+            - the node has the type jmix:systemNameReadonly
+            - not in operation import
+    then
+>       try {
+>           node.getNode().removeMixin("jmix:systemNameReadonly");
+>           node.getNode().getSession().save();
+>       } catch (NoSuchNodeTypeException e) { /* do nothing, mixin is probably on the definition and not on the node */ }
 end

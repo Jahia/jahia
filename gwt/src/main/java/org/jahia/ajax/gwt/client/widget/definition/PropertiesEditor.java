@@ -468,7 +468,7 @@ public class PropertiesEditor extends FormPanel {
                         @Override
                         public void selectionChanged(SelectionChangedEvent<GWTJahiaValueDisplayBean> event) {
                             removeExternalMixin(oldSelection, adapterField);
-                            setExternalMixin(adapterField);
+                            setExternalMixin(adapterField, false);
                             if (oldSelection.size() > 0) {
                                 oldSelection.remove(0);
                             }
@@ -479,7 +479,7 @@ public class PropertiesEditor extends FormPanel {
                         }
                     });
                     if (c.getValue() != null) {
-                        setExternalMixin(adapterField);
+                        setExternalMixin(adapterField, true);
                     }
                 }
                 if (defaultedProperties.contains(field.getName())) {
@@ -489,8 +489,13 @@ public class PropertiesEditor extends FormPanel {
         }
     }
 
+    /**
+     * Regarding the given PropertyAdapterField, checks if the field value "addMixin" exists and add according fields.
+     * @param c the field to look for added mixins in its value.
+     * @param init true if the field is added the first time the form is displayed.
+     */
     @SuppressWarnings("unchecked")
-    public void setExternalMixin(PropertyAdapterField c) {
+    public void setExternalMixin(PropertyAdapterField c, boolean init) {
         String addMixin = null;
         if (c.getValue() != null) {
             addMixin = ((ComboBox<GWTJahiaValueDisplayBean>)c.getField()).getValue().get("addMixin");
@@ -526,6 +531,11 @@ public class PropertiesEditor extends FormPanel {
                 for (String propertyKey : newPropertyKeys) {
                     if (engine instanceof AbstractContentEngine) {
                         ((AbstractContentEngine) engine).initChoiceListInitializer(this, propertyKey);
+                    }
+                    if (!init) {
+                        final PropertyAdapterField field = fields.get(propertyKey.substring(propertyKey.lastIndexOf(".") + 1));
+                        // Ensure that added fields are well saved
+                        field.setDirty(true);
                     }
                 }
             }

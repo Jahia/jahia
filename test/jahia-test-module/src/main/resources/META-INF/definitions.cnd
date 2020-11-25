@@ -140,6 +140,8 @@
 [test:emptyContent] > jnt:content, jmix:droppableContent
 
 [test:dynamicValuesTest] > jnt:content, jmix:droppableContent
+ - propertyTextNotAutoCreated (string) = 'Text plain'
+ - propertyTextNotAutoCreatedI18n (string) = 'Text i18n' i18n
  - propertyText (string) = 'Text plain' autocreated
  - propertyTextI18n (string) = 'Text i18n' autocreated i18n
  - propertyLong (long) = 12 autocreated
@@ -153,6 +155,8 @@
  
 
 [test:dynamicValuesTestMixin] mixin
+ - propertyTextNotAutoCreatedMixin (string) = 'Text plain'
+ - propertyTextNotAutoCreatedI18nMixin (string) = 'Text i18n' i18n
  - propertyTextMixin (string) = 'Text plain' autocreated
  - propertyTextI18nMixin (string) = 'Text i18n' autocreated i18n
  - propertyLongMixin (long) = 12 autocreated

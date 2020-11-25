@@ -94,11 +94,7 @@ public class NodePropertyDefaultValueTest extends JahiaTestCase {
 
     @Before
     public void setUp() throws RepositoryException {
-        englishSession = JCRSessionFactory.getInstance()
-                .getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
-        frenchSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.FRENCH);
-        germanSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
-                new Locale("de", "AT"));
+        refreshSession();
         if (englishSession.nodeExists(NODE_PATH)) {
             englishSession.getNode(NODE_PATH).remove();
             englishSession.save();
@@ -118,8 +114,7 @@ public class NodePropertyDefaultValueTest extends JahiaTestCase {
         englishSession.getNode(FOLDER_PATH).addNode(NODE_NAME, "test:dynamicValuesTest");
         englishSession.save();
         englishSession.logout();
-        englishSession = JCRSessionFactory.getInstance()
-                .getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
+        refreshSession();
 
         checkPropertyValues(now, tomorrow, "");
     }
@@ -133,8 +128,7 @@ public class NodePropertyDefaultValueTest extends JahiaTestCase {
         node.addMixin("test:dynamicValuesTestMixin");
         englishSession.save();
         englishSession.logout();
-        englishSession = JCRSessionFactory.getInstance()
-                .getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
+        refreshSession();
 
         checkPropertyValues(now, tomorrow, "Mixin");
     }
@@ -143,6 +137,8 @@ public class NodePropertyDefaultValueTest extends JahiaTestCase {
         JCRNodeWrapper node = englishSession.getNode(NODE_PATH);
 
         // check if the properties were created
+        assertFalse(node.hasProperty("propertyTextNotAutoCreated" + propNameSuffix));
+        assertFalse(node.hasProperty("propertyTextNotAutoCreatedI18n" + propNameSuffix));
         assertTrue(node.hasProperty("propertyText" + propNameSuffix));
         assertTrue(node.hasProperty("propertyTextI18n" + propNameSuffix));
         assertTrue(node.hasProperty("propertyLong" + propNameSuffix));
@@ -156,11 +152,8 @@ public class NodePropertyDefaultValueTest extends JahiaTestCase {
 
         // check values for node properties
         assertEquals("Text plain", node.getProperty("propertyText" + propNameSuffix).getString());
-
         assertEquals("Text i18n", node.getProperty("propertyTextI18n" + propNameSuffix).getString());
-
         assertEquals(12, node.getProperty("propertyLong" + propNameSuffix).getLong());
-
         assertEquals(12.28, node.getProperty("propertyDouble" + propNameSuffix).getDouble(), 0.01);
 
         Calendar date = node.getProperty("propertyDate" + propNameSuffix).getDate();
@@ -182,10 +175,24 @@ public class NodePropertyDefaultValueTest extends JahiaTestCase {
         assertEquals(tomorrow.get(Calendar.DAY_OF_MONTH), dateTomorrow.get(Calendar.DAY_OF_MONTH));
 
         assertEquals(englishSession.getUserID(), node.getProperty("propertyCurrentUser" + propNameSuffix).getString());
-
         assertEquals("Test value 1", node.getProperty("propertyResourceBundleShared" + propNameSuffix).getString());
-
         assertEquals("Test value 2", node.getProperty("propertyResourceBundleI18n" + propNameSuffix).getString());
+
+        // test I18n french and german should have been auto created too
+        JCRNodeWrapper frenchNode = frenchSession.getNode(node.getPath());
+        JCRNodeWrapper germanNode = germanSession.getNode(node.getPath());
+
+        assertFalse(frenchNode.hasProperty("propertyTextNotAutoCreatedI18n" + propNameSuffix));
+        assertFalse(germanNode.hasProperty("propertyTextNotAutoCreatedI18n" + propNameSuffix));
+
+        assertEquals("Text i18n", frenchNode.getProperty("propertyTextI18n" + propNameSuffix).getString());
+        assertEquals("Text i18n", germanNode.getProperty("propertyTextI18n" + propNameSuffix).getString());
+
+        assertEquals("Test value 1", germanNode.getProperty("propertyResourceBundleShared" + propNameSuffix).getString());
+        assertEquals("Test value 1", frenchNode.getProperty("propertyResourceBundleShared" + propNameSuffix).getString());
+
+        assertEquals("Valeur de test 2", frenchNode.getProperty("propertyResourceBundleI18n" + propNameSuffix).getString());
+        assertEquals("Testwert 2", germanNode.getProperty("propertyResourceBundleI18n" + propNameSuffix).getString());
     }
 
     @Test
@@ -212,5 +219,11 @@ public class NodePropertyDefaultValueTest extends JahiaTestCase {
     private void createNode(JCRSessionWrapper session) throws Exception {
         session.getNode(FOLDER_PATH).addNode(NODE_NAME, "test:dynamicValuesTest");
         session.save();
+    }
+
+    private void refreshSession() throws RepositoryException {
+        englishSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
+        frenchSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.FRENCH);
+        germanSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.GERMAN);
     }
 }

@@ -45,6 +45,7 @@ package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.content.nodetypes.initializers.I15dValueInitializer;
 import org.jahia.services.usermanager.JahiaUser;
@@ -143,12 +144,18 @@ public class DefaultValueListener extends DefaultEventListener {
     private boolean handleNode(JCRNodeWrapper node) throws RepositoryException {
         boolean anythingChanged = false;
 
+        // No site resolved, no need to process autocreated i18n/overides props
+        JCRSiteNode resolvedSite = node.getResolveSite();
+        if (resolvedSite == null) {
+            return false;
+        }
+
         List<NodeType> nodeTypes = new ArrayList<>();
         NodeType primaryNodeType = node.getPrimaryNodeType();
         nodeTypes.add(primaryNodeType);
         NodeType[] mixin = node.getMixinNodeTypes();
         nodeTypes.addAll(Arrays.asList(mixin));
-        List<Locale> locales = node.getResolveSite().getLanguagesAsLocales();
+        List<Locale> locales = resolvedSite.getLanguagesAsLocales();
 
         for (NodeType nodeType : nodeTypes) {
             ExtendedNodeType extendedNodeType = NodeTypeRegistry.getInstance().getNodeType(nodeType.getName());

@@ -65,11 +65,13 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.patches.Patcher;
 import org.jahia.utils.Patterns;
+import org.jahia.utils.WebAppPathResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.FatalBeanException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationEvent;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.XmlWebApplicationContext;
@@ -80,10 +82,7 @@ import javax.servlet.jsp.jstl.core.Config;
 import java.io.File;
 import java.io.InputStream;
 import java.lang.management.ManagementFactory;
-import java.util.Collections;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.regex.Pattern;
 
@@ -216,6 +215,9 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         }
 
         detectPID(servletContext);
+
+        initializeTemporarySettingsBean();
+
         Patcher.getInstance().setServletContext(servletContext);
         Patcher.getInstance().executeScripts("beforeContextInitializing");
 
@@ -256,7 +258,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
 
             // start OSGi container
             FrameworkService.getInstance().start();
-            
+
         } catch (JahiaException e) {
             running = false;
             logger.error(e.getMessage(), e);
@@ -268,6 +270,16 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         } finally {
             JCRSessionFactory.getInstance().closeAllSessions();
         }
+    }
+
+    private void initializeTemporarySettingsBean() {
+        ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("classpath*:org/jahia/defaults/config/**/applicationcontext-jahiaproperties.xml");
+        WebAppPathResolver pathResolver = (WebAppPathResolver) ctx.getBean("pathResolver");
+        pathResolver.setServletContext(servletContext);
+        SettingsBean settingsBean = new SettingsBean(pathResolver, (Properties) ctx.getBean("jahiaProperties"), (List<String>) ctx.getBean("licensesList"));
+        settingsBean.setStartupOptionsMapping((Map<String, Set<String>>) ctx.getBean("startupOptionsMapping"));
+        settingsBean.setApplicationContext(ctx);
+        settingsBean.initPaths();
     }
 
     private static void initWebAppRoot() {

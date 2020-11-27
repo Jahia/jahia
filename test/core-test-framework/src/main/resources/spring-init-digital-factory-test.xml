@@ -4,6 +4,7 @@
 
 	<!-- These files can be found in jahia-impl.jar -->
 	<import resource="classpath:/org/jahia/defaults/config/spring/applicationcontext-basejahiaconfig.xml" />
+	<import resource="classpath:/org/jahia/defaults/config/spring/applicationcontext-jahiaproperties.xml" />
 	<import resource="classpath:/org/jahia/defaults/config/spring/applicationcontext-cache.xml" />
 	<import resource="classpath:/org/jahia/defaults/config/spring/applicationcontext-hibernate.xml" />
 	<import resource="classpath*:/org/jahia/defaults/config/spring/users-groups/*.xml" />

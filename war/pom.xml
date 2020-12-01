@@ -156,6 +156,28 @@
                                 </configuration>
                             </execution>
                             <execution>
+                                <id>ddl-mssql-drop</id>
+                                <goals>
+                                    <goal>export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.mssql}</hibernateDialect>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/mssql/00-drop-jahia-schema.sql</outputFile>
+                                    <type>DROP</type>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>ddl-mssql-create</id>
+                                <goals>
+                                    <goal>export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.mssql}</hibernateDialect>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/mssql/01-create-jahia-schema.sql</outputFile>
+                                    <type>CREATE</type>
+                                </configuration>
+                            </execution>
+                            <execution>
                                 <id>ddl-mysql-drop</id>
                                 <goals>
                                     <goal>export</goal>
@@ -174,6 +196,28 @@
                                 <configuration>
                                     <hibernateDialect>${hibernateDialect.mysql}</hibernateDialect>
                                     <outputFile>${basedir}/src/data/resources/db/sql/schema/mysql/01-create-jahia-schema.sql</outputFile>
+                                    <type>CREATE</type>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>ddl-oracle-drop</id>
+                                <goals>
+                                    <goal>export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.oracle}</hibernateDialect>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/oracle/00-drop-jahia-schema.sql</outputFile>
+                                    <type>DROP</type>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>ddl-oracle-create</id>
+                                <goals>
+                                    <goal>export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.oracle}</hibernateDialect>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/oracle/01-create-jahia-schema.sql</outputFile>
                                     <type>CREATE</type>
                                 </configuration>
                             </execution>
@@ -244,6 +288,28 @@
                                 </configuration>
                             </execution>
                             <execution>
+                                <id>ddl-mssql-drop</id>
+                                <goals>
+                                    <goal>jpa-schema-export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.mssql}</hibernateDialect>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/mssql/00-drop-jbpm-schema.sql</outputFile>
+                                    <statementType>DROP</statementType>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>ddl-mssql-create</id>
+                                <goals>
+                                    <goal>jpa-schema-export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.mssql}</hibernateDialect>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/mssql/01-create-jbpm-schema.sql</outputFile>
+                                    <statementType>CREATE</statementType>
+                                </configuration>
+                            </execution>
+                            <execution>
                                 <id>ddl-mysql-drop</id>
                                 <goals>
                                     <goal>jpa-schema-export</goal>
@@ -262,6 +328,28 @@
                                 <configuration>
                                     <hibernateDialect>${hibernateDialect.mysql}</hibernateDialect>
                                     <outputFile>${basedir}/src/data/resources/db/sql/schema/mysql/01-create-jbpm-schema.sql</outputFile>
+                                    <statementType>CREATE</statementType>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>ddl-oracle-drop</id>
+                                <goals>
+                                    <goal>jpa-schema-export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.oracle}</hibernateDialect>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/oracle/00-drop-jbpm-schema.sql</outputFile>
+                                    <statementType>DROP</statementType>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>ddl-oracle-create</id>
+                                <goals>
+                                    <goal>jpa-schema-export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.oracle}</hibernateDialect>
+                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/oracle/01-create-jbpm-schema.sql</outputFile>
                                     <statementType>CREATE</statementType>
                                 </configuration>
                             </execution>
@@ -677,6 +765,16 @@
                                     <fileset dir="${basedir}/src/data/resources/db/sql/schema/derby" includes="01-create-*-index.sql,01-create-*-triggers.sql" />
                                 </concat>
 
+                                <concat destfile="${project.build.directory}/ddl/mssql/00-drop-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mssql" includes="00-drop-*" />
+                                </concat>
+                                <concat destfile="${project.build.directory}/ddl/mssql/01-create-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mssql" includes="01-create-*" excludes="01-create-*-index.sql,01-create-*-triggers.sql" />
+                                </concat>
+                                <concat destfile="${project.build.directory}/ddl/mssql/01-create-jahia-core-schema.sql" append="yes" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mssql" includes="01-create-*-index.sql,01-create-*-triggers.sql" />
+                                </concat>
+
                                 <concat destfile="${project.build.directory}/ddl/mysql/00-drop-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
                                     <fileset dir="${basedir}/src/data/resources/db/sql/schema/mysql" includes="00-drop-*" />
                                 </concat>
@@ -685,6 +783,16 @@
                                 </concat>
                                 <concat destfile="${project.build.directory}/ddl/mysql/01-create-jahia-core-schema.sql" append="yes" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
                                     <fileset dir="${basedir}/src/data/resources/db/sql/schema/mysql" includes="01-create-*-index.sql,01-create-*-triggers.sql" />
+                                </concat>
+
+                                <concat destfile="${project.build.directory}/ddl/oracle/00-drop-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/oracle" includes="00-drop-*" />
+                                </concat>
+                                <concat destfile="${project.build.directory}/ddl/oracle/01-create-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/oracle" includes="01-create-*" excludes="01-create-*-index.sql,01-create-*-triggers.sql" />
+                                </concat>
+                                <concat destfile="${project.build.directory}/ddl/oracle/01-create-jahia-core-schema.sql" append="yes" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/oracle" includes="01-create-*-index.sql,01-create-*-triggers.sql" />
                                 </concat>
 
                                 <concat destfile="${project.build.directory}/ddl/postgresql/00-drop-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">

@@ -175,8 +175,12 @@ public class ErrorLoggingFilter implements Filter {
                         + request.getAttribute("javax.servlet.error.request_uri");
                 break;
 
+            case SC_SERVICE_UNAVAILABLE:
+                message = "Service unavailable";
+                break;
+
             default:
-                if (message != null) {
+                if (StringUtils.isNotEmpty(message)) {
                     if (ex != null && StringUtils.isNotEmpty(ex.getMessage())
                             && !message.equals(ex.getMessage())) {
                         message = message + ". Error message: " + ex.getMessage();

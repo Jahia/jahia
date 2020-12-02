@@ -146,39 +146,40 @@ public class DefaultValueListener extends DefaultEventListener {
 
         // No site resolved, no need to process autocreated i18n/overides props
         JCRSiteNode resolvedSite = node.getResolveSite();
-        if (resolvedSite == null) {
-            return false;
-        }
 
         List<NodeType> nodeTypes = new ArrayList<>();
         NodeType primaryNodeType = node.getPrimaryNodeType();
         nodeTypes.add(primaryNodeType);
         NodeType[] mixin = node.getMixinNodeTypes();
         nodeTypes.addAll(Arrays.asList(mixin));
-        List<Locale> locales = resolvedSite.getLanguagesAsLocales();
+        List<Locale> locales = resolvedSite == null ? null : resolvedSite.getLanguagesAsLocales();
 
         for (NodeType nodeType : nodeTypes) {
+            // Handle autoCreated properties
             ExtendedNodeType extendedNodeType = NodeTypeRegistry.getInstance().getNodeType(nodeType.getName());
-            if (extendedNodeType != null) {
+            if (extendedNodeType != null && locales != null) {
                 Collection<ExtendedPropertyDefinition> propertyDefinitions = extendedNodeType.getPropertyDefinitionsAsMap().values();
-                for (ExtendedPropertyDefinition propertyDefinition : propertyDefinitions) {
+                    for (ExtendedPropertyDefinition propertyDefinition : propertyDefinitions) {
 
-                    // Condition is:
-                    // - Auto created
-                    // - i18n or override
-                    if (propertyDefinition.isAutoCreated() &&
-                            (propertyDefinition.isInternationalized() || propertyDefinition.isOverride())) {
-                        Value[] defValues = propertyDefinition.getDefaultValues();
-                        for (Locale locale : locales) {
-                            defValues = propertyDefinition.hasDynamicDefaultValues() ? propertyDefinition.getDefaultValues(locale) : defValues;
-                            if (defValues.length > 0) {
-                                boolean handled = handlePropertyDefaultValues(node, propertyDefinition, defValues, locale);
-                                anythingChanged = anythingChanged || handled;
+                        // Condition is:
+                        // - Auto created
+                        // - i18n or override
+                        if (propertyDefinition.isAutoCreated() &&
+                                (propertyDefinition.isInternationalized() || propertyDefinition.isOverride())) {
+                            Value[] defValues = propertyDefinition.getDefaultValues();
+                            for (Locale locale : locales) {
+                                defValues = propertyDefinition.hasDynamicDefaultValues() ? propertyDefinition.getDefaultValues(locale) : defValues;
+                                if (defValues.length > 0) {
+                                    boolean handled = handlePropertyDefaultValues(node, propertyDefinition, defValues, locale);
+                                    anythingChanged = anythingChanged || handled;
+                                }
                             }
-                        }
                     }
                 }
+            }
 
+            // Handle autoCreated child nodes
+            if (extendedNodeType != null) {
                 Collection<ExtendedNodeDefinition> childNodeDefinitions = extendedNodeType.getChildNodeDefinitionsAsMap().values();
                 for (ExtendedNodeDefinition definition : childNodeDefinitions) {
                     if (definition.isAutoCreated() && !node.hasNode(definition.getName())) {

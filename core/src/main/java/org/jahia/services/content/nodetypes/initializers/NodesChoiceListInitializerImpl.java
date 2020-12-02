@@ -43,6 +43,15 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.jcr.query.Query;
+import org.apache.camel.util.jsse.FilterParameters.Patterns;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRContentUtils;
@@ -53,16 +62,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
-
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 /**
  * Choice list initializer that looks up child nodes of the specified one
@@ -81,7 +81,7 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
     }
 
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale,
-                                                     Map<String, Object> context) {
+            Map<String, Object> context) {
         final ArrayList<ChoiceListValue> listValues = new ArrayList<ChoiceListValue>();
         if (CollectionUtils.isNotEmpty(values)) listValues.addAll(values);
         if (param != null) {
@@ -133,7 +133,7 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
                     } else {
                         node = jcrSessionWrapper.getNode(path);
                     }
-                    addSubnodes(listValues, nodetype, node, subTree, returnType);
+                    addSubnodes(listValues, nodetype, node, subTree, returnType, jcrSessionWrapper);
                 } catch (PathNotFoundException e) {
                     logger.debug("Cannot find node " + e.getMessage(), e);
                 } catch (Exception e) {
@@ -144,17 +144,20 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
         return listValues;
     }
 
-    private void addSubnodes(ArrayList<ChoiceListValue> listValues, String nodetype, JCRNodeWrapper node, boolean subTree, String returnType) throws RepositoryException {
-        final NodeIterator nodeIterator = node.getNodes();
+    private void addSubnodes(ArrayList<ChoiceListValue> listValues, String nodeType, JCRNodeWrapper node, boolean subTree, String returnType, JCRSessionWrapper jcrSessionWrapper) throws RepositoryException {
+        final String queryStmt;
+
+        if (subTree) {
+            queryStmt = "select * from [" + JCRContentUtils.sqlEncode(nodeType) + "] as t where isdescendantnode(t, ['" + JCRContentUtils.sqlEncode(node.getPath()) + "']) ORDER BY t.[j:nodename] ASC";
+        } else {
+            queryStmt = "select * from [" + JCRContentUtils.sqlEncode(nodeType) + "] as t where ischildnode(t, ['" + JCRContentUtils.sqlEncode(node.getPath()) + "']) ORDER BY t.[j:nodename] ASC";
+        }
+        final Query query = jcrSessionWrapper.getWorkspace().getQueryManager().createQuery(queryStmt, Query.JCR_SQL2);
+        final NodeIterator nodeIterator = query.execute().getNodes();
         while (nodeIterator.hasNext()) {
-            JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodeIterator.next();
-            if (nodeWrapper.isNodeType(nodetype)) {
-                String displayName = nodeWrapper.getDisplayableName();
-                listValues.add(new ChoiceListValue(displayName, "name".equals(returnType) ? nodeWrapper.getName() : nodeWrapper.getIdentifier()));
-            }
-            if (subTree) {
-                addSubnodes(listValues, nodetype, nodeWrapper, subTree, returnType);
-            }
+            final JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodeIterator.next();
+            final String displayName = nodeWrapper.getDisplayableName();
+            listValues.add(new ChoiceListValue(displayName, "name".equals(returnType) ? nodeWrapper.getName() : nodeWrapper.getIdentifier()));
         }
     }
 }

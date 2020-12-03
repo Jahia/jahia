@@ -327,6 +327,17 @@
         </bean>
     </osgi:service>
 
+    <osgi:service interface="org.jahia.pipelines.Pipeline">
+        <osgi:service-properties>
+            <entry key="Service Description" value="Workflow people assignement pipeline"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+            <entry key="type" value="peopleAssignmentPipeline"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="peopleAssignmentPipeline"/>
+        </bean>
+    </osgi:service>
+
     <osgi:list id="RenderFilterList" interface="org.jahia.services.render.filter.RenderFilter" availability="optional">
         <osgi:listener ref="org.jahia.modules.default.ModuleRegistry" bind-method="osgiBind"
                        unbind-method="osgiUnbind"/>

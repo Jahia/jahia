@@ -48,9 +48,8 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.workflow.WorkflowObservationManager;
-import org.kie.api.event.process.DefaultProcessEventListener;
-import org.kie.api.event.process.ProcessCompletedEvent;
-import org.kie.api.event.process.ProcessStartedEvent;
+import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
+import org.kie.api.event.process.*;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +57,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * An process event listener to synchronize the JCR nodes process ID storage with the current state of a process
@@ -170,4 +170,25 @@ public class JBPMListener extends DefaultProcessEventListener {
         super.afterProcessCompleted(event);    //call default behavior last
     }
 
+    @Override
+    public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+        logger.debug("Before node '{}' triggered {}, variables={}", event.getNodeInstance().getNodeName(), event, getVariables(event));
+    }
+
+    @Override
+    public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
+        logger.debug("After node '{}' triggered {}, variables={}", event.getNodeInstance().getNodeName(), event, getVariables(event));
+    }
+
+    @Override
+    public void beforeVariableChanged(ProcessVariableChangedEvent event) {
+        logger.debug("Variable changed {}",event);
+    }
+
+    private Map<String,Object> getVariables(ProcessNodeTriggeredEvent event) {
+        if (event.getProcessInstance() instanceof WorkflowProcessInstanceImpl) {
+            return ((WorkflowProcessInstanceImpl) event.getProcessInstance()).getVariables();
+        }
+        return null;
+    }
 }

@@ -163,4 +163,12 @@ public class WorkflowVariable implements Serializable {
         }
         return map;
     }
+
+    @Override
+    public String toString() {
+        return "WorkflowVariable{" +
+                "value='" + value + '\'' +
+                ", type=" + type +
+                '}';
+    }
 }

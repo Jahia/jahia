@@ -13,8 +13,13 @@ modules
         .listFiles((FilenameFilter) new SuffixFileFilter(".cfg"))
         .each(
                 { file ->
-                    log.info("Moving file " + file + " to " + karafEtc.toPath())
-                    Files.move(file.toPath(), Paths.get(karafEtc.getPath(), file.getName()))
+                    def target = Paths.get(karafEtc.getPath(), file.getName())
+                    if (!Files.exists(target)) {
+                        log.info("Moving file " + file + " to " + karafEtc.toPath())
+                        Files.move(file.toPath(), target)
+                    } else {
+                        log.warn("File " + file + " already exists at " + karafEtc.toPath() + ", please check etc and modules folder for duplicates")
+                    }
                 }
         )
 

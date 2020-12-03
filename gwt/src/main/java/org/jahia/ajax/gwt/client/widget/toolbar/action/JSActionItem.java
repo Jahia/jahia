@@ -90,9 +90,8 @@ public class JSActionItem extends NodeTypeAwareBaseActionItem {
     public void handleNewLinkerSelection() {
         if (handleNewSelection != null) {
             doCall(handleNewSelection, getSelection(selectionTarget, linker));
-        } else {
-            setEnabled(isNodeTypeAllowed());
-        }
+        } 
+        setEnabled(isNodeTypeAllowed());
     }
 
     public boolean isNodeTypeAllowed() {

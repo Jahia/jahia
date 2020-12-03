@@ -44,9 +44,11 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.util.ISO8601;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.workflow.*;
@@ -80,7 +82,6 @@ import org.slf4j.Logger;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
-
 import java.util.*;
 
 /**
@@ -294,7 +295,13 @@ public class WorkflowHelper {
                     properties.put(entry.getKey(), property);
                 }
             } else if (variable instanceof WorkflowVariable) {
-                property.setValue(new GWTJahiaNodePropertyValue(((WorkflowVariable) variable).getValue(), ((WorkflowVariable) variable).getType()));
+                WorkflowVariable workflowVariable = (WorkflowVariable) variable;
+                String value = workflowVariable.getValue();
+                if (workflowVariable.getType() == GWTJahiaNodePropertyType.DATE) {
+                    Calendar cal = ISO8601.parse(value);
+                    value = ContentDefinitionHelper.dateTimeFormat.format(cal.getTime());
+                }
+                property.setValue(new GWTJahiaNodePropertyValue(value, workflowVariable.getType()));
                 properties.put(entry.getKey(), property);
             }
         }

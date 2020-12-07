@@ -395,16 +395,54 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
         return ISO9075.decode(processKey);
     }
 
+
+    /**
+     * Add a resource into KIE filesystem. It will use the same path as the one of the resource
+     *
+     * @param kieResource The resource to add
+     * @throws IOException Resource cannot be read
+     */
     public void addResource(Resource kieResource) throws IOException {
         synchronized (workflowService) {
-            kieFileSystem.write(kieServices.getResources().newUrlResource(kieResource.getURL()));
+            kieFileSystem.write("src/main/resources" + kieResource.getURL().getPath(), kieServices.getResources().newUrlResource(kieResource.getURL()));
             definitionMap.clear();
         }
     }
 
-    public void removeResource(Resource kieResource) throws IOException {
+    /**
+     * Add a resource into KIE filesystem at a specific path
+     *
+     * @param kieResource The resource to add
+     * @param targetPath The target path
+     * @throws IOException Resource cannot be read
+     */
+    public void addResource(Resource kieResource, String targetPath) throws IOException {
         synchronized (workflowService) {
-            kieFileSystem.delete(kieResource.getURL().getPath());
+            org.kie.api.io.Resource resource = kieServices.getResources().newUrlResource(kieResource.getURL());
+            resource.setTargetPath(targetPath);
+            kieFileSystem.write(resource);
+            definitionMap.clear();
+        }
+    }
+
+    /**
+     * Remove a resource from KIE filesystem at the path of the specified resource
+     *
+     * @param kieResource The resource (only used for getting the path)
+     * @throws IOException Resource cannot be read
+     */
+    public void removeResource(Resource kieResource) throws IOException {
+        removeResource(kieResource.getURL().getPath());
+    }
+
+    /**
+     * Remove a resource from KIE filesystem at the specified path
+     *
+     * @param path The path
+     */
+    public void removeResource(String path) {
+        synchronized (workflowService) {
+            kieFileSystem.delete("src/main/resources" + path);
             definitionMap.clear();
         }
     }

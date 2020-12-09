@@ -105,6 +105,7 @@ public class JBPMMailProducer {
 
     private static final Logger logger = LoggerFactory.getLogger(JBPMMailProducer.class);
     private static final Pattern ACTORS_PATTERN = Pattern.compile("(assignableFor\\([^)]+\\))|([^,;\\s]+)");
+    public static final String CUSTOM_WORKFLOW_INFO = "customWorkflowInfo";
     protected ScriptEngine scriptEngine;
     protected Bindings bindings;
 
@@ -550,11 +551,11 @@ public class JBPMMailProducer {
         return bindings;
     }
 
-    private void processPublicationWorkFlow(JCRSessionWrapper session, WorkflowDefinition workflowDefinition, Workflow workflow, final Bindings bindings, Locale locale) throws RepositoryException {
-        if (workflow.getVariables().containsKey("customWorkflowInfo") && workflow.getVariables().get("customWorkflowInfo") instanceof PublicationWorkflow) {
-            @SuppressWarnings("unchecked") Map<String, List<Map<String, Object>>> publications = new LinkedHashMap();
-            initPublicationsMap(publications, locale);
-            @SuppressWarnings("unchecked") PublicationWorkflow publicationWorkflow = (PublicationWorkflow) workflow.getVariables().get("customWorkflowInfo");
+    private void processPublicationWorkFlow(JCRSessionWrapper session, WorkflowDefinition workflowDefinition,
+                                            Workflow workflow, final Bindings bindings, Locale locale) throws RepositoryException {
+        Map<String, Object> variables = workflow.getVariables();
+        if (variables.containsKey(CUSTOM_WORKFLOW_INFO) && variables.get(CUSTOM_WORKFLOW_INFO) instanceof PublicationWorkflow) {
+            @SuppressWarnings("unchecked") PublicationWorkflow publicationWorkflow = (PublicationWorkflow) variables.get(CUSTOM_WORKFLOW_INFO);
             List<GWTJahiaPublicationInfo> publicationInfoList = publicationWorkflow.getPublicationInfos();
             int publicationCount = publicationInfoList.size();
             bindings.put("publicationCount", publicationCount);
@@ -563,40 +564,50 @@ public class JBPMMailProducer {
             DateTool dateTool = new DateTool();
             String workflowTitle = String.format("%s - %s started by %s on %s - %d content item(s) involved",
                     locale, workflowDefinition.getDisplayName(), workflowUserName, dateTool.format("short_date", workflow.getStartTime(), locale), publicationCount);
+            if(variables.containsKey("jcr_title")) {
+                workflowTitle = ((org.jahia.services.workflow.WorkflowVariable) variables.get("jcr_title")).getValue();
+            }
             bindings.put("workflowTitle", workflowTitle);
             if (publicationCount > 10) {
                 publicationInfoList = publicationInfoList.subList(0, 9);
             }
-            for (GWTJahiaPublicationInfo publicationInfo : publicationInfoList) {
-                Map<String, Object> node = new HashMap<>();
-                node.put("status", publicationInfo.getStatus());
-                //For a deleted node populate with information from workflow
-                if (publicationInfo.getStatus() == PublicationInfo.DELETED) {
-                    node.put("path", publicationInfo.getPath());
-                    node.put("type", publicationInfo.getNodetype());
-                    String displayableName = publicationInfo.getTitle();
-                    if (displayableName.length() > 100) {
-                        displayableName = String.format("%s...", displayableName.substring(0, 100));
-                    }
-                    node.put("displayableName", displayableName);
-                    publications.get(getPublicationLabelI18N(publicationInfo.getStatus(), locale)).add(node);
-                } else {
-                    JCRNodeWrapper nodeByUUID = session.getNodeByUUID(publicationInfo.getUuid());
-                    node.put("node", nodeByUUID);
-                    node.put("path", publicationInfo.getPath());
-                    node.put("type", publicationInfo.getNodetype());
-                    String displayableName = nodeByUUID.getDisplayableName();
-                    if (displayableName.length() > 100) {
-                        displayableName = String.format("%s...", displayableName.substring(0, 100));
-                    }
-                    node.put("displayableName", displayableName);
-                    node.put("displayablePath", publicationInfo.getMainPath());
-                    //Place node in the related publication status list
-                    publications.get(getPublicationLabelI18N(publicationInfo.getStatus(), locale)).add(node);
-                }
-            }
-            bindings.put("publications", publications);
+            bindings.put("publications", processPublicationInfoList(session, locale, publicationInfoList));
         }
+    }
+
+    private Map<String, List<Map<String, Object>>> processPublicationInfoList(JCRSessionWrapper session, Locale locale,
+                                                                              List<GWTJahiaPublicationInfo> publicationInfoList) throws RepositoryException {
+        Map<String, List<Map<String, Object>>> publications = new LinkedHashMap<>();
+        initPublicationsMap(publications, locale);
+        for (GWTJahiaPublicationInfo publicationInfo : publicationInfoList) {
+            Map<String, Object> node = new HashMap<>();
+            node.put("status", publicationInfo.getStatus());
+            //For a deleted node populate with information from workflow
+            if (publicationInfo.getStatus() == PublicationInfo.DELETED) {
+                node.put("path", publicationInfo.getPath());
+                node.put("type", publicationInfo.getNodetype());
+                String displayableName = publicationInfo.getTitle();
+                if (displayableName.length() > 100) {
+                    displayableName = String.format("%s...", displayableName.substring(0, 100));
+                }
+                node.put("displayableName", displayableName);
+                publications.get(getPublicationLabelI18N(publicationInfo.getStatus(), locale)).add(node);
+            } else {
+                JCRNodeWrapper nodeByUUID = session.getNodeByUUID(publicationInfo.getUuid());
+                node.put("node", nodeByUUID);
+                node.put("path", publicationInfo.getPath());
+                node.put("type", publicationInfo.getNodetype());
+                String displayableName = nodeByUUID.getDisplayableName();
+                if (displayableName.length() > 100) {
+                    displayableName = String.format("%s...", displayableName.substring(0, 100));
+                }
+                node.put("displayableName", displayableName);
+                node.put("displayablePath", publicationInfo.getMainPath());
+                //Place node in the related publication status list
+                publications.get(getPublicationLabelI18N(publicationInfo.getStatus(), locale)).add(node);
+            }
+        }
+        return publications;
     }
 
     private void processWorkflowComments(Workflow workflow, final Bindings bindings) {

@@ -152,11 +152,16 @@ public class DocumentViewExporter extends Observable {
         ch.startDocument();
 
         nodesList = new ArrayList<JCRNodeWrapper>(nodes);
-        for (int i = 0; i<nodesList.size(); i++) {
-            List<JCRNodeWrapper> subList = new ArrayList<JCRNodeWrapper>(nodesList.subList(i, nodesList.size()));
-            Collections.sort(subList, nodes.comparator());
-            nodesList.removeAll(subList);
-            nodesList.addAll(subList);
+        long nodesListSize = nodesList.size();
+        for (int i = 0; i < nodesList.size(); i++) {
+            if (nodesList.size() != nodesListSize) {
+                // We have add node to be exported ensure we export them by path order
+                final List<JCRNodeWrapper> subList = new ArrayList<JCRNodeWrapper>(nodesList.subList(i, nodesList.size()));
+                Collections.sort(subList, nodes.comparator());
+                nodesList.removeAll(subList);
+                nodesList.addAll(subList);
+                nodesListSize = nodesList.size();
+            }
             if (nodesList.get(i).getProvider().canExportNode(nodesList.get(i))) {
                 exportNode(nodesList.get(i));
             }

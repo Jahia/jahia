@@ -45,9 +45,7 @@ package org.jahia.tools.patches;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.filefilter.NotFileFilter;
-import org.apache.commons.io.filefilter.SuffixFileFilter;
-import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.io.filefilter.*;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.commons.Version;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -81,6 +79,15 @@ import static org.apache.commons.io.FileUtils.readLines;
 public class Patcher implements JahiaAfterInitializationService, DisposableBean {
 
     private static final Logger logger = LoggerFactory.getLogger(Patcher.class);
+
+    private static final String[] LIFECYCLE_PHASES = {
+            "beforeContextInitializing",
+            "contextInitializing",
+            "contextInitialized",
+            "nonProcessingServer",
+            "jcrStoreProviderStarted",
+            "rootContextInitialized"
+    };
 
     public static final String README = "README";
     public static final String SUFFIX_INSTALLED = ".installed";
@@ -127,7 +134,10 @@ public class Patcher implements JahiaAfterInitializationService, DisposableBean 
             }
             List<File> patches = new LinkedList<>(FileUtils.listFiles(
                     lookupFolder,
-                    new NotFileFilter(new SuffixFileFilter(new String[] {README, SUFFIX_INSTALLED, SUFFIX_FAILED, SUFFIX_SKIPPED})),
+                    new AndFileFilter(
+                            new NotFileFilter(new SuffixFileFilter(new String[]{README, SUFFIX_INSTALLED, SUFFIX_FAILED, SUFFIX_SKIPPED})),
+                            new LifecycleFilter(lifecyclePhase)
+                    ),
                     TrueFileFilter.INSTANCE
             ));
 
@@ -153,7 +163,7 @@ public class Patcher implements JahiaAfterInitializationService, DisposableBean 
     public void executeScripts(Resource[] scripts, String lifecyclePhase) {
         long timer = System.currentTimeMillis();
         if (logger.isInfoEnabled()) {
-            logger.info("Found new patch scripts {}. Executing...", StringUtils.join(scripts, ','));
+            logger.info("Found patch scripts {}. Executing...", StringUtils.join(scripts, ','));
         }
 
         for (Resource script : scripts) {
@@ -332,6 +342,33 @@ public class Patcher implements JahiaAfterInitializationService, DisposableBean 
                     jahiaPreviousVersion = new Version(m.group(1));
                 }
             });
+        }
+    }
+
+    private static class LifecycleFilter implements IOFileFilter {
+        private final String lifecyclePhase;
+
+        public LifecycleFilter(String lifecyclePhase) {
+            this.lifecyclePhase = lifecyclePhase;
+        }
+
+        private boolean isValid(String name) {
+            String filePhase = StringUtils.substringAfterLast(StringUtils.substringBeforeLast(name, "."), ".");
+            if (lifecyclePhase.equals("")) {
+                return Arrays.stream(LIFECYCLE_PHASES).noneMatch(filePhase::equals);
+            } else {
+                return filePhase.equals(lifecyclePhase);
+            }
+        }
+
+        @Override
+        public boolean accept(File file) {
+            return isValid(file.getName());
+        }
+
+        @Override
+        public boolean accept(File dir, String name) {
+            return isValid(name);
         }
     }
 }

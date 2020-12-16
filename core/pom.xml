@@ -1676,6 +1676,33 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Cluster -->
+        <dependency>
+            <groupId>org.jgroups</groupId>
+            <artifactId>jgroups</artifactId>
+            <version>${jgroups.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-jgroupsreplication</artifactId>
+            <version>1.7-jahia1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.sf.ehcache</groupId>
+                    <artifactId>ehcache-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.sf.ehcache</groupId>
+                    <artifactId>ehcache</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jgroups</groupId>
+                    <artifactId>jgroups</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- end of Cluster dependencies -->
+
     </dependencies>
     <build>
 
@@ -1774,6 +1801,7 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <includes>
+                    <include>META-INF/jahiapublickeystore</include>
                     <include>**/*.txt</include>
                     <include>**/*.xsl</include>
                     <include>**/*.xml</include>

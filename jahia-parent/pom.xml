@@ -97,6 +97,7 @@
         <camel.version>2.25.2</camel.version>
         <gwt.version.base>2.8.2</gwt.version.base>
         <gwt.version>${gwt.version.base}</gwt.version>
+        <jgroups.version>3.4.8.Final</jgroups.version>
         <!--Atmosphere javascript is defined as a static resource in Jahia and has to be update manually-->
         <atmosphere.version>2.5.4-jahia</atmosphere.version>
         <atmosphere.gwt.version>2.5.2</atmosphere.gwt.version>
@@ -182,7 +183,7 @@
         <!-- End of OSGi versions -->
 
         <jahia.commons.version>1.0.8</jahia.commons.version>
-        <jahia.plugin.version>5.9</jahia.plugin.version>
+        <jahia.plugin.version>5.10-SNAPSHOT</jahia.plugin.version>
         <jahia.archivers.version>${jahia.plugin.version}</jahia.archivers.version>
         <jahia.configurators.version>${jahia.plugin.version}</jahia.configurators.version>
         <jahia.deployers.version>${jahia.plugin.version}</jahia.deployers.version>

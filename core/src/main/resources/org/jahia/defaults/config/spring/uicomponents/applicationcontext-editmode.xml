@@ -36,6 +36,7 @@
                         <ref bean="Engine.Tab.Versioning"/>
                         <ref bean="Engine.Tab.Visibility"/>
                         <ref bean="Engine.Tab.ContributeMode"/>
+                        <ref bean="Engine.Tab.Workflow"/>
                     </list>
                 </property>
                 <property name="creationButtons">
@@ -933,6 +934,21 @@
                         <value>jnt:templateSets</value>
                         <value>jnt:modules</value>
                         <value>jnt:module</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="Engine.Tab.Workflow" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="id" value="workflow"/>
+        <property name="titleKey" value="label.engineTab.workflow"/>
+        <property name="requiredPermission" value="viewWorkflowTab"/>
+        <property name="tabItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.WorkflowTabItem">
+                <property name="hideForTypes">
+                    <list>
+                        <value>jnt:category</value>
                     </list>
                 </property>
             </bean>

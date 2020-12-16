@@ -110,28 +110,6 @@ import static org.jahia.settings.StartupOptions.*;
 
 public class SettingsBean implements ServletContextAware, InitializingBean, ApplicationContextAware, ReadOnlyModeCapable, org.jahia.api.settings.SettingsBean {
 
-    /**
-     * An initializer of DX cluster related settings.
-     */
-    public interface ClusterSettingsInitializer {
-
-        /**
-         * Initialize DX cluster related settings.
-         * @param settings Common settings bean
-         */
-        void initClusterSettings(SettingsBean settings);
-    }
-
-    /**
-     * Dummy cluster settings initializer that does nothing; particularly to be used by DX CE that does not support clustering.
-     */
-    public static class ClusterSettingsInitializerDummy implements ClusterSettingsInitializer {
-
-        @Override
-        public void initClusterSettings(SettingsBean settings) {
-        }
-    }
-
     public static final String JAHIA_PROPERTIES_FILE_PATH = "/WEB-INF/etc/config/jahia.properties";
     /**
      * @deprecated Use {@link #isStartupOptionSet(String)} instead
@@ -1566,4 +1544,5 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     public void setCookieAuthConfig(CookieAuthConfig cookieAuthConfig) {
         this.cookieAuthConfig = cookieAuthConfig;
     }
+
 }

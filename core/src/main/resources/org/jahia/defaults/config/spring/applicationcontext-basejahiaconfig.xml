@@ -465,6 +465,6 @@
 
     <bean id="JahiaDocumentBuilderFactory" class="org.jahia.utils.xml.JahiaDocumentBuilderFactory" parent="BaseXMLParserFactory"/>
 
-    <bean id="clusterSettingsInitializer" class="org.jahia.settings.SettingsBean$ClusterSettingsInitializerDummy"/>
+    <bean id="clusterSettingsInitializer" class="org.jahia.settings.ClusterSettingsInitializer"/>
 
 </beans>

@@ -228,7 +228,7 @@ public final class WebUtils {
                     if (jahiaUser != null) {
                         theme = jahiaUser.getProperty(UI_THEME);
                         if (theme == null) {
-                            theme = SettingsBean.getInstance().getPropertiesFile().getProperty(UI_THEME);
+                            theme = "jahia-anthracite";
                         }
                     }
                 }

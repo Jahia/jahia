@@ -163,7 +163,7 @@ public class ErrorServlet extends HttpServlet {
         }
 
         if (null == path) {
-            String theme = SettingsBean.getInstance().getPropertiesFile().getProperty(Constants.UI_THEME);
+            String theme = "jahia-anthracite";
             path = getErrorPagePath(page, theme);
             if (null == path) {
                 path = getErrorPagePath("error.jsp", theme);

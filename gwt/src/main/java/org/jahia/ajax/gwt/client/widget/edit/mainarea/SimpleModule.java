@@ -86,6 +86,8 @@ import java.util.*;
  * @author Thomas Draier
  */
 public class SimpleModule extends Module {
+    public static final String FALSE = "false";
+    public static final String TRUE = "true";
     protected boolean hasDragDrop = true;
     protected boolean canHover = true;
     protected boolean editable = true;
@@ -103,16 +105,16 @@ public class SimpleModule extends Module {
 
     public SimpleModule(String id, String path, Element divElement, MainModule mainModule) {
         super(id, path, divElement, mainModule);
-        editable = !"false".equals(DOM.getElementAttribute(divElement, "editable"));
+        editable = !FALSE.equals(divElement.getAttribute("editable"));
         initializeListeners();
     }
 
     public SimpleModule(String id, final String path, Element divElement, final MainModule mainModule, boolean header) {
         super(id, path, divElement, mainModule);
 
-        hasDragDrop = !"false".equals(DOM.getElementAttribute(divElement, "dragdrop")) && !(MainModule.getInstance().getDragAndDropBehavior() == GWTConfiguration.DragAndDropBehavior.NO_DRAG_IN_EDIT_AREA);
-        editable = !"false".equals(DOM.getElementAttribute(divElement, "editable"));
-        bindable = "true".equals(DOM.getElementAttribute(divElement, "bindable"));
+        hasDragDrop = !FALSE.equals(divElement.getAttribute("dragdrop"));
+        editable = !FALSE.equals(divElement.getAttribute("editable"));
+        bindable = TRUE.equals(divElement.getAttribute("bindable"));
 
         if ((header || bindable) && editable) {
             head = new Header();

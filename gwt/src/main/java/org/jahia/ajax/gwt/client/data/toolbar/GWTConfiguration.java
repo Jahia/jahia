@@ -82,7 +82,6 @@ public class GWTConfiguration implements IsSerializable, Serializable {
     public enum DragAndDropBehavior {
         DISABLED,
         ENABLED,
-        NO_DRAG_IN_EDIT_AREA,
         DRAG_ZONE_IN_EDIT_AREA
     }
 

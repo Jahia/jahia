@@ -89,8 +89,7 @@ public class SettingsServiceImpl implements SettingsService {
             // not possible
         }
 
-        Configuration result = configurationAdmin.createFactoryConfiguration(factoryPid);
-        result.setBundleLocation(null);
+        Configuration result = configurationAdmin.createFactoryConfiguration(factoryPid, "?");
         return new SettingsImpl(result, identifier);
     }
 

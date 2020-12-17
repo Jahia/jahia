@@ -1241,7 +1241,7 @@ form,
 
     .x-grid3-scroller {
         /* Another List Container */
-        height: 100% !important;
+        height: calc(100% - 14px) !important;
         width: calc(100% - 10px) !important;
 
         .modal-editorialpicker & {

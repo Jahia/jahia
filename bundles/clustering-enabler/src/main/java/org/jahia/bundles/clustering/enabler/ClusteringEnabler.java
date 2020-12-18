@@ -95,7 +95,7 @@ public class ClusteringEnabler implements EventHandler {
             throw new JahiaRuntimeException("Unable to lookup FeaturesService instance");
         }
 
-        FeatureState clusteringState = FeatureState.Uninstalled;
+        FeatureState clusteringState;
         String featureId = FEATURE_NAME;
         Feature feature = null;
         try {
@@ -105,8 +105,8 @@ public class ClusteringEnabler implements EventHandler {
                     + ". Ensure its repository is known to the OSGi platform.", e);
         }
         if (feature == null) {
-            throw new JahiaRuntimeException("Unable to locate feature " + FEATURE_NAME
-                    + ". Ensure its repository is known to the OSGi platform.");
+            logger.debug("Unable to locate feature " + FEATURE_NAME + ". Ensure its repository is known to the OSGi platform.");
+            return;
         }
 
         // get exact feature ID
@@ -136,8 +136,6 @@ public class ClusteringEnabler implements EventHandler {
             String msg = "Unable to " + (clusterActivated ? "enable" : "disable") + " clustering feature. Cause: "
                     + e.getMessage();
             logger.error(msg, e);
-            // for now we do not fail the startup of the DX
-            // throw new JahiaInitializationException(msg, e);
         }
 
         logger.info("Clustering feature enabler finished in {} ms", System.currentTimeMillis() - startTime);

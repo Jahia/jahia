@@ -66,6 +66,7 @@ import java.nio.file.Files;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.apache.commons.io.FileUtils.readLines;
@@ -76,18 +77,7 @@ import static org.apache.commons.io.FileUtils.readLines;
  *
  * @author Sergiy Shyrkov
  */
-public class Patcher implements JahiaAfterInitializationService, DisposableBean {
-
-    private static final Logger logger = LoggerFactory.getLogger(Patcher.class);
-
-    private static final String[] LIFECYCLE_PHASES = {
-            "beforeContextInitializing",
-            "contextInitializing",
-            "contextInitialized",
-            "nonProcessingServer",
-            "jcrStoreProviderStarted",
-            "rootContextInitialized"
-    };
+public final class Patcher implements JahiaAfterInitializationService, DisposableBean {
 
     public static final String README = "README";
     public static final String SUFFIX_INSTALLED = ".installed";
@@ -96,11 +86,34 @@ public class Patcher implements JahiaAfterInitializationService, DisposableBean 
     public static final String KEEP = "keep";
     public static final String REMOVE = "remove";
 
-    private Version jahiaPreviousVersion;
+    private static final Logger logger = LoggerFactory.getLogger(Patcher.class);
+    private static final String[] LIFECYCLE_PHASES = {
+            "beforeContextInitializing",
+            "contextInitializing",
+            "contextInitialized",
+            "nonProcessingServer",
+            "jcrStoreProviderStarted",
+            "rootContextInitialized"
+    };
+    private static final Pattern VERSION_PATTERN = Pattern.compile("([0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+).*");
+    private static final Comparator<Resource> RESOURCE_COMPARATOR = Comparator.comparing(Resource::getFilename);
 
     private static class InstanceHolder {
         public static final Patcher instance = new Patcher();
     }
+
+    private Version jahiaPreviousVersion;
+    private List<PatchExecutor> patchers = Arrays.asList(
+            new GroovyPatcher(),
+            new SqlPatcher(),
+            new GraphqlPatcher()
+    );
+
+    // 5 minutes interval by default
+    private long interval = 5 * 60000L;
+    private String patchesLookup;
+    private ServletContext servletContext;
+    private Timer watchdog;
 
     private Patcher() {
         initPreviousVersion();
@@ -110,14 +123,10 @@ public class Patcher implements JahiaAfterInitializationService, DisposableBean 
         return InstanceHolder.instance;
     }
 
-    private List<PatchExecutor> patchers = Arrays.asList(
-            new GroovyPatcher(),
-            new SqlPatcher(),
-            new GraphqlPatcher()
-    );
-
-    private static final Comparator<Resource> RESOURCE_COMPARATOR = Comparator.comparing(Resource::getFilename);
-
+    /**
+     * Execute scripts for the given lifecycle phase
+     * @param lifecyclePhase the lifecycle phase
+     */
     public void executeScripts(String lifecyclePhase) {
         try {
             if (System.getProperty("skipPatches") != null) {
@@ -148,19 +157,18 @@ public class Patcher implements JahiaAfterInitializationService, DisposableBean 
                 return;
             }
 
-            Resource[] resources = new Resource[patches.size()];
-            for (int i = 0; i < patches.size(); i++) {
-                resources[i] = patches.get(i) == null ? null : new FileSystemResource(patches.get(i));
-            }
+            List<Resource> resources = patches.stream()
+                    .map(p -> p == null ? null : new FileSystemResource(p))
+                    .sorted(RESOURCE_COMPARATOR)
+                    .collect(Collectors.toList());
 
-            Arrays.sort(resources, RESOURCE_COMPARATOR);
             executeScripts(resources, lifecyclePhase);
         } catch (Exception e) {
             logger.error("Error executing patches", e);
         }
     }
 
-    public void executeScripts(Resource[] scripts, String lifecyclePhase) {
+    private void executeScripts(Collection<Resource> scripts, String lifecyclePhase) {
         long timer = System.currentTimeMillis();
         if (logger.isInfoEnabled()) {
             logger.info("Found patch scripts {}. Executing...", StringUtils.join(scripts, ','));
@@ -168,21 +176,10 @@ public class Patcher implements JahiaAfterInitializationService, DisposableBean 
 
         for (Resource script : scripts) {
             try {
-                long timerSingle = System.currentTimeMillis();
-                String scriptContent = getContent(script);
-
-                if (StringUtils.isNotEmpty(scriptContent)) {
-                    for (PatchExecutor patcher : patchers) {
-                        if (patcher.canExecute(script.getURL().getPath(), lifecyclePhase)) {
-                            String result = patcher.executeScript(script.getURL().getPath(), scriptContent);
-                            logger.info("Execution of script {} took {} ms", script.getFilename(), System.currentTimeMillis() - timerSingle);
-                            afterExecution(script, result);
-                            break;
-                        }
-                    }
-                } else {
-                    logger.warn("Content of the script {} is either empty or cannot be read. Skipping.", script.getFilename());
+                if (shouldSkipMigrationScript(script.getFilename())) {
                     afterExecution(script, SUFFIX_SKIPPED);
+                } else {
+                    executeScript(lifecyclePhase, script);
                 }
             } catch (Exception e) {
                 logger.error("Execution of script {} failed with error: ", e.getMessage(), e);
@@ -193,7 +190,31 @@ public class Patcher implements JahiaAfterInitializationService, DisposableBean 
         logger.info("Execution took {} ms", (System.currentTimeMillis() - timer));
     }
 
-    protected String getContent(Resource r) throws IOException {
+    private void executeScript(String lifecyclePhase, Resource script) throws IOException {
+        long timerSingle = System.currentTimeMillis();
+        String scriptContent = getContent(script);
+
+        if (StringUtils.isNotEmpty(scriptContent)) {
+            for (PatchExecutor patcher : patchers) {
+                if (patcher.canExecute(script.getURL().getPath(), lifecyclePhase)) {
+                    String result = patcher.executeScript(script.getURL().getPath(), scriptContent);
+                    logger.info("Execution of script {} took {} ms", script.getFilename(), System.currentTimeMillis() - timerSingle);
+                    afterExecution(script, result);
+                    break;
+                }
+            }
+        } else {
+            logger.warn("Content of the script {} is either empty or cannot be read. Skipping.", script.getFilename());
+            afterExecution(script, SUFFIX_SKIPPED);
+        }
+    }
+
+    private boolean shouldSkipMigrationScript(String filename) {
+        Matcher matcher = VERSION_PATTERN.matcher(filename);
+        return matcher.matches() && (jahiaPreviousVersion == null || new Version(matcher.group(1)).compareTo(jahiaPreviousVersion) <= 0);
+    }
+
+    private String getContent(Resource r) throws IOException {
         InputStream in = null;
         try {
             in = r.getInputStream();
@@ -215,7 +236,7 @@ public class Patcher implements JahiaAfterInitializationService, DisposableBean 
         return lookupFolder.isDirectory() ? lookupFolder : null;
     }
 
-    protected void afterExecution(Resource script, String result) {
+    private void afterExecution(Resource script, String result) {
         File scriptFile;
         try {
             scriptFile = script.getFile();
@@ -234,14 +255,6 @@ public class Patcher implements JahiaAfterInitializationService, DisposableBean 
             logger.warn("Unable to rename the script file for resource {} due to an error: {}", script, e.getMessage(), e);
         }
     }
-
-    private long interval = 5 * 60000L; // 5 minutes interval by default
-
-    private String patchesLookup;
-
-    private ServletContext servletContext;
-
-    private Timer watchdog;
 
     public void destroy() throws Exception {
         if (watchdog != null) {
@@ -292,10 +305,6 @@ public class Patcher implements JahiaAfterInitializationService, DisposableBean 
         this.interval = interval;
     }
 
-    public void setPatchesLookup(String patchesLookup) {
-        this.patchesLookup = patchesLookup;
-    }
-
     public String getPatchesLookup() {
         if (patchesLookup == null) {
             File patchesFolder = getPatchesFolder();
@@ -307,6 +316,10 @@ public class Patcher implements JahiaAfterInitializationService, DisposableBean 
             }
         }
         return patchesLookup;
+    }
+
+    public void setPatchesLookup(String patchesLookup) {
+        this.patchesLookup = patchesLookup;
     }
 
     public void setServletContext(ServletContext servletContext) {
@@ -326,14 +339,11 @@ public class Patcher implements JahiaAfterInitializationService, DisposableBean 
 
         File file = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/bundles-deployed");
         if (file.exists()) {
-            Arrays.stream(file.listFiles((File::isDirectory)))
-                    .map(f -> new File(f, "bundle.info"))
-                    .filter(File::exists)
-                    .flatMap(f -> {
+            Arrays.stream(file.listFiles((File::isDirectory))).map(f -> new File(f, "bundle.info")).filter(File::exists).flatMap(f -> {
                 try {
-                    return readLines(f, StandardCharsets.UTF_8).stream();
+                    return FileUtils.readLines(f, StandardCharsets.UTF_8).stream();
                 } catch (IOException ioException) {
-                    logger.error(ioException.getMessage(), ioException);
+                    logger.debug("Cannot read bundle.info", ioException);
                     return Stream.empty();
                 }
             }).forEach(l -> {

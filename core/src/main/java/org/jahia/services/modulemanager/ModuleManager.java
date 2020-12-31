@@ -43,13 +43,12 @@
  */
 package org.jahia.services.modulemanager;
 
-import java.util.Collection;
-import java.util.Map;
-
 import org.jahia.osgi.BundleState;
 import org.jahia.services.modulemanager.spi.BundleService;
-import org.jahia.services.modulemanager.spi.ConfigService;
 import org.springframework.core.io.Resource;
+
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * Entry point interface for the module management service, providing functionality for module deployment, undeployment, start and stop
@@ -118,6 +117,18 @@ public interface ModuleManager {
      * @throws ModuleManagementException In case of problems
      */
     OperationResult install(Collection<Resource> bundleResources, String target, boolean start) throws ModuleManagementException;
+
+    /**
+     * Install specified bundles on the target group of cluster nodes, optionally starting them right after.
+     *
+     * @param bundleResources A collection of resources, representing bundles to install
+     * @param target          The group of cluster nodes targeted by the install operation (see BundleService class JavaDoc)
+     * @param start           Whether installed bundles should be started right away
+     * @param startLevel      The start level
+     * @return The result of the install operation
+     * @throws ModuleManagementException In case of problems
+     */
+    OperationResult install(Collection<Resource> bundleResources, String target, boolean start, int startLevel);
 
     /**
      * Start the specified bundle on the target group of cluster nodes.

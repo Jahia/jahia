@@ -41,87 +41,42 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.modulemanager.spi;
+package org.jahia.services.provisioning;
 
-import java.io.IOException;
-import java.util.Collection;
 import java.util.Map;
 
 /**
- * Service to store and restore OSGi configurations to/from JCR
+ * An operation that can be done by the provisioning script
  */
-public interface ConfigService {
+public interface Operation {
 
     /**
-     * Configuration types
+     * Can the entry be handled by this operation
+     * @param entry the entry to handle
+     * @return true if it can be handled
      */
-    enum ConfigType {
-        SYSTEM, MODULE, MODULE_DEFAULT, USER
+    boolean canHandle(Map<String, Object> entry);
+
+    /**
+     * Execute the operation
+     *
+     * @param entry operation entry params
+     * @param executionContext context
+     */
+    void perform(Map<String, Object> entry, ExecutionContext executionContext);
+
+    /**
+     * Initialize the context, before executing any operation
+     * @param executionContext context
+     */
+    default void init(ExecutionContext executionContext) {
     }
 
     /**
-     * Get the config for the specified PID
-     *
-     * If it does not exist yet, create a new config
-     *
-     * @param pid The config PID
-     * @return the Config object
-     * @throws IOException exception
+     * Cleanup after script completion
+     * @param executionContext context
      */
-    Config getConfig(String pid) throws IOException ;
-
-    /**
-     * Get the settings for the specified factory PID and identifer
-     *
-     * If it does not exist yet, create a new config
-     *
-     * @param factoryPid The factory PID
-     * @param identifier The identifier
-     * @return the Config object
-     * @throws IOException exception
-     */
-    Config getConfig(String factoryPid, String identifier) throws IOException ;
-
-    /**
-     * Persist the changes on the config into the the Configuration Manager storage
-     * @param config The config to store
-     * @throws IOException exception
-     */
-    void storeConfig(Config config) throws IOException;
-
-    /**
-     * Delete the associated configuration
-     *
-     * @param config The config to delete
-     * @throws IOException exception
-     */
-    void deleteConfig(Config config) throws IOException;
-
-    /**
-     * Get all configurations currently deployed
-     *
-     * @return the list of configurations files saved along with their type
-     */
-    Map<String, ConfigType> getAllConfigurationTypes();
-
-    /**
-     * Store configurations into JCR
-     *
-     * @return the list of configurations files saved
-     */
-    Collection<String> storeAllConfigurationsToJCR();
-
-    /**
-     * Restore configurations from JCR
-     *
-     * @param types The types to store, null for all configurations
-     * @return the list of restored configurations
-     */
-    public Collection<String> restoreConfigurationsFromJCR(Collection<ConfigType> types);
-
-    /**
-     * Auto save configuration on change
-     */
-    void setAutoSaveToJCR(boolean autoSave);
+    default void cleanup(ExecutionContext executionContext) {
+    }
 
 }

@@ -160,7 +160,7 @@ public final class BundleUtils {
             String n = getModuleId(bundle);
             if (StringUtils.equals(n, moduleId)) {
                 String v = getModuleVersion(bundle);
-                if (StringUtils.equals(v, version)) {
+                if (StringUtils.equals(v, version) || StringUtils.equals(bundle.getVersion().toString(), version)) {
                     return bundle;
                 }
             }

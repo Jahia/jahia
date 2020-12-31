@@ -43,15 +43,18 @@
  */
 package org.jahia.services.modulemanager.impl;
 
-import java.util.Collection;
-
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jahia.services.modulemanager.ModuleManagementException;
+import org.jahia.settings.SettingsBean;
 import org.jahia.settings.readonlymode.ReadOnlyModeException;
 import org.springframework.core.io.Resource;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Properties;
 
 public class ModuleManagerImplTest {
 
@@ -60,6 +63,7 @@ public class ModuleManagerImplTest {
     @BeforeClass
     public static void oneTimeSetup() {
         moduleManager = new ModuleManagerImpl();
+        new SettingsBean(null, new Properties(), Collections.<String>emptyList());
     }
 
     @Test

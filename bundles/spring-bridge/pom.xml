@@ -66,6 +66,7 @@
                 <configuration>
                     <instructions>
                         <Require-Capability>osgi.extender;filter:="(osgi.extender=org.jahia.bundles.blueprint.extender.config)"</Require-Capability>
+                        <Provide-Capability>osgi.service;effective:=active;objectClass="org.jahia.services.modulemanager.ModuleManager"</Provide-Capability>
                         <Bundle-Category>jahia-bundle</Bundle-Category>
                         <Import-Package>
                             org.jahia.defaults.config.spring,

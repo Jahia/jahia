@@ -47,9 +47,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
+import org.jahia.bundles.config.OsgiConfigService;
 import org.jahia.services.content.*;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.persistence.jcr.BundleInfoJcrHelper;
+import org.jahia.services.modulemanager.spi.Config;
 import org.jahia.services.modulemanager.spi.ConfigService;
 import org.jahia.settings.SettingsBean;
 import org.osgi.framework.InvalidSyntaxException;
@@ -66,21 +68,23 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.RepositoryException;
 import java.io.*;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.*;
 
 /**
  * Service to store and restore OSGi configurations to/from JCR
  */
-@Component(service = {ConfigService.class, ConfigurationListener.class})
-public class ConfigServiceImpl implements ConfigService, ConfigurationListener {
+@Component(service = {OsgiConfigService.class, ConfigService.class, ConfigurationListener.class})
+public class ConfigServiceImpl implements OsgiConfigService, ConfigurationListener {
 
     public static final String CONFIGS_NODE_NAME = "configs";
 
     public static final String CONFIG_TYPES = "org.jahia.bundles.config";
-    public static final String UTF_8 = "UTF-8";
     public static final String CONFIG_TYPE = "configType";
 
     private static Logger logger = LoggerFactory.getLogger(ConfigServiceImpl.class);
+    private static final String FELIX_FILEINSTALL_FILENAME = "felix.fileinstall.filename";
 
     private ConfigurationAdmin configAdmin;
 
@@ -91,27 +95,109 @@ public class ConfigServiceImpl implements ConfigService, ConfigurationListener {
         this.configAdmin = configAdmin;
     }
 
+    /**
+     * Activate
+     */
     @Activate
     public void start() {
         File restoreConfigurations = new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "[persisted-configurations].dorestore");
         if (System.getProperty("restoreConfigurations") != null || restoreConfigurations.exists()) {
-            restoreConfigurations(Arrays.asList(ConfigService.ConfigType.MODULE_DEFAULT, ConfigService.ConfigType.USER));
+            restoreConfigurationsFromJCR(Arrays.asList(ConfigType.MODULE_DEFAULT, ConfigType.USER));
             if (restoreConfigurations.exists()) {
-                restoreConfigurations.delete();
+                try {
+                    Files.delete(restoreConfigurations.toPath());
+                } catch (IOException e) {
+                    logger.debug("Cannot delete marker file", e);
+                }
             }
         }
     }
 
-    public Map<String, ConfigType> getAllConfigurations() {
+    public Config getConfig(String pid) throws IOException {
+        Configuration configuration = configAdmin.getConfiguration(pid);
+        if (configuration.getBundleLocation() != null && configuration.getBundleLocation().contains("org.jahia.bundles.config.manager")) {
+            configuration.setBundleLocation(null);
+        }
+        return new ConfigImpl(configuration, null);
+    }
+
+    public Config getConfig(String factoryPid, String identifier) throws IOException  {
+        try {
+            Configuration[] configurations = configAdmin.listConfigurations("(service.factoryPid=" + factoryPid + ")");
+            if (configurations != null) {
+                for (Configuration configuration : configurations) {
+                    Object filename = configuration.getProperties().get(FELIX_FILEINSTALL_FILENAME);
+                    if (filename != null && filename.toString().endsWith("/" + factoryPid + "-" + identifier + ".cfg")) {
+                        return new ConfigImpl(configuration, identifier);
+                    }
+                }
+            }
+        } catch (InvalidSyntaxException e) {
+            logger.debug("invalid syntax", e);
+            // not possible
+        }
+
+        Configuration result = configAdmin.createFactoryConfiguration(factoryPid, "?");
+        return new ConfigImpl(result, identifier);
+    }
+
+    public Config getConfig(Configuration configuration) {
+        String identifier = null;
+        if (configuration.getFactoryPid() != null && configuration.getProperties() != null) {
+            Object filename = configuration.getProperties().get(FELIX_FILEINSTALL_FILENAME);
+            if (filename != null) {
+                identifier = StringUtils.substringBetween(filename.toString(), configuration.getFactoryPid() + "-", ".cfg");
+            }
+        }
+        return new ConfigImpl(configuration, identifier);
+    }
+
+    public void storeConfig(Config config) throws IOException {
+        if (!(config instanceof ConfigImpl)) {
+            throw new IllegalArgumentException("Config must have been created with ConfigService");
+        }
+        Configuration configuration = ((ConfigImpl)config).getConfiguration();
+
+        // refresh and save config
+        if (configuration.getProperties() == null) {
+            @SuppressWarnings("java:S1149") Dictionary<String, Object> properties = new Hashtable<>();
+            String filename = (config.getIdentifier() != null ? (configuration.getFactoryPid() + "-" + config.getIdentifier()) : (configuration.getPid())) + ".cfg";
+            File file = new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "karaf/etc/" + filename);
+
+            try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
+                bw.write(config.getContent());
+            }
+
+            properties.put(FELIX_FILEINSTALL_FILENAME, file.toURI().toString());
+            config.getRawProperties().forEach(properties::put);
+            configuration.update(properties);
+        } else {
+            Dictionary<String, Object> properties = configuration.getProperties();
+            config.getRawProperties().forEach(properties::put);
+            configuration.update(properties);
+        }
+    }
+
+    public void deleteConfig(Config config) throws IOException {
+        if (!(config instanceof ConfigImpl)) {
+            throw new IllegalArgumentException("Config must have been created with ConfigService");
+        }
+        Configuration configuration = ((ConfigImpl)config).getConfiguration();
+        if (configuration.getProperties() != null) {
+            configuration.delete();
+        }
+    }
+
+    public Map<String, ConfigType> getAllConfigurationTypes() {
         try {
             Map<String, List<String>> configurationsContent = loadConfigs();
             return getConfigTypes(configurationsContent);
-        } catch (IOException | InvalidSyntaxException e) {
+        } catch (IOException e) {
             throw new ModuleManagementException(e);
         }
     }
 
-    public Collection<String> storeAllConfigurations() {
+    public Collection<String> storeAllConfigurationsToJCR() {
         try {
             Map<String, List<String>> configurationsContent = loadConfigs();
             return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Collection<String>>() {
@@ -123,18 +209,18 @@ public class ConfigServiceImpl implements ConfigService, ConfigurationListener {
                     }
                     JCRNodeWrapper configsNode = moduleManagement.getNode(CONFIGS_NODE_NAME);
                     removeUnusedConfigurations(configsNode, configurationsContent);
-                    Collection<String> l = storeConfigurations(configsNode, configurationsContent);
+                    Collection<String> l = storeConfigurationsToJCR(configsNode, configurationsContent);
                     session.save();
                     return l;
                 }
             });
-        } catch (IOException | InvalidSyntaxException | RepositoryException e) {
+        } catch (IOException | RepositoryException e) {
             throw new ModuleManagementException(e);
         }
     }
 
     @Override
-    public Collection<String> restoreConfigurations(Collection<ConfigType> types) {
+    public Collection<String> restoreConfigurationsFromJCR(Collection<ConfigType> types) {
         try {
             File folder = new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "karaf/etc");
 
@@ -143,9 +229,9 @@ public class ConfigServiceImpl implements ConfigService, ConfigurationListener {
                 public Collection<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRNodeWrapper moduleManagement = session.getNode("/module-management");
                     if (moduleManagement.hasNode(CONFIGS_NODE_NAME)) {
-                        Map<String, ConfigType> all = getAllConfigurations();
+                        Map<String, ConfigType> all = getAllConfigurationTypes();
                         JCRNodeWrapper configsNode = moduleManagement.getNode(CONFIGS_NODE_NAME);
-                        List<String> restored = restoreConfigurations(all, configsNode, types, folder);
+                        List<String> restored = restoreConfigurationsFromJCR(all, configsNode, types, folder);
                         removeUnusedConfigurations(all, types, folder);
                         return restored;
                     }
@@ -157,7 +243,10 @@ public class ConfigServiceImpl implements ConfigService, ConfigurationListener {
         }
     }
 
-    private List<String> restoreConfigurations(Map<String, ConfigType> all, JCRNodeWrapper configsNode, Collection<ConfigType> types, File folder) throws RepositoryException {
+    private List<String> restoreConfigurationsFromJCR(Map<String, ConfigType> all,
+                                                      JCRNodeWrapper configsNode,
+                                                      Collection<ConfigType> types,
+                                                      File folder) throws RepositoryException {
         List<String> restored = new ArrayList<>();
         JCRNodeIteratorWrapper ni = configsNode.getNodes();
         while (ni.hasNext()) {
@@ -180,27 +269,45 @@ public class ConfigServiceImpl implements ConfigService, ConfigurationListener {
     }
 
     @Override
-    public void setAutoSave(boolean autoSave) {
+    public void setAutoSaveToJCR(boolean autoSave) {
         this.autoSave = autoSave;
     }
 
-    public Map<String, List<String>> loadConfigs() throws IOException, InvalidSyntaxException {
+    /**
+     * Load all available configurations
+     * @return config-name/content map
+     * @throws IOException exception
+     */
+    public Map<String, List<String>> loadConfigs() throws IOException {
         Map<String, List<String>> configurationsContent = new TreeMap<>();
-        Configuration[] configs = configAdmin.listConfigurations(null);
+        Configuration[] configs = new Configuration[0];
+        try {
+            configs = configAdmin.listConfigurations(null);
+        } catch (InvalidSyntaxException e) {
+            // not possible
+            logger.debug("invalid syntax", e);
+            return configurationsContent;
+        }
         for (Configuration config : configs) {
-            String filename = (String) config.getProperties().get("felix.fileinstall.filename");
+            String filename = (String) config.getProperties().get(FELIX_FILEINSTALL_FILENAME);
             if (filename != null) {
                 try {
-                    List<String> lines = IOUtils.readLines(new URL(filename).openStream(), UTF_8);
+                    List<String> lines = IOUtils.readLines(new URL(filename).openStream(), StandardCharsets.UTF_8);
                     configurationsContent.put(StringUtils.substringAfterLast(filename, "/"), lines);
                 } catch (FileNotFoundException e) {
-                    logger.warn("Cannot find file {}", filename);
+                    logger.warn("Cannot find file {}", filename, e);
                 }
             }
         }
         return configurationsContent;
     }
 
+    /**
+     * Get the types of all specified configurations
+     * @param configurationsContent configuration name with their content
+     * @return name/type map
+     * @throws IOException exception
+     */
     public Map<String, ConfigType> getConfigTypes(Map<String, List<String>> configurationsContent) throws IOException {
         Dictionary<String, Object> configTypes = configAdmin.getConfiguration(CONFIG_TYPES).getProperties();
 
@@ -224,7 +331,7 @@ public class ConfigServiceImpl implements ConfigService, ConfigurationListener {
         return result;
     }
 
-    private Collection<String> storeConfigurations(JCRNodeWrapper configsNode, Map<String, List<String>> configurationsContent) throws RepositoryException {
+    private Collection<String> storeConfigurationsToJCR(JCRNodeWrapper configsNode, Map<String, List<String>> configurationsContent) throws RepositoryException {
         try {
             List<String> saved = new ArrayList<>();
             Map<String, ConfigType> configTypes = getConfigTypes(configurationsContent);
@@ -234,7 +341,7 @@ public class ConfigServiceImpl implements ConfigService, ConfigurationListener {
                 IOUtils.writeLines(entry.getValue(), null, writer);
                 String configContent = writer.getBuffer().toString();
 
-                try (InputStream is = IOUtils.toInputStream(configContent, UTF_8)) {
+                try (InputStream is = IOUtils.toInputStream(configContent, StandardCharsets.UTF_8)) {
                     boolean exists = configsNode.hasNode(entry.getKey());
                     if (exists) {
                         JCRNodeWrapper previousFile = configsNode.getNode(entry.getKey());
@@ -270,10 +377,10 @@ public class ConfigServiceImpl implements ConfigService, ConfigurationListener {
 
     private boolean restoreConfiguration(JCRNodeWrapper savedFile, File folder) throws RepositoryException {
         try {
-            List<String> savedContent = IOUtils.readLines(savedFile.getNode(Constants.JCR_CONTENT).getProperty(Constants.JCR_DATA).getBinary().getStream(), UTF_8);
+            List<String> savedContent = IOUtils.readLines(savedFile.getNode(Constants.JCR_CONTENT).getProperty(Constants.JCR_DATA).getBinary().getStream(), StandardCharsets.UTF_8);
             File configFile = new File(folder, savedFile.getName());
-            if (!configFile.exists() || !FileUtils.readLines(configFile, UTF_8).equals(savedContent)) {
-                FileUtils.writeLines(configFile, UTF_8, savedContent);
+            if (!configFile.exists() || !FileUtils.readLines(configFile, StandardCharsets.UTF_8).equals(savedContent)) {
+                FileUtils.writeLines(configFile, StandardCharsets.UTF_8.name(), savedContent);
                 return true;
             }
 
@@ -286,7 +393,7 @@ public class ConfigServiceImpl implements ConfigService, ConfigurationListener {
     @Override
     public void configurationEvent(ConfigurationEvent event) {
         if (autoSave && SettingsBean.getInstance().isProcessingServer()) {
-            storeAllConfigurations();
+            storeAllConfigurationsToJCR();
         }
     }
 }

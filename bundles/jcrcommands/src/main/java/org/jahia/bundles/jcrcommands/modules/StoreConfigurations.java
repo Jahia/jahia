@@ -41,87 +41,55 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.modulemanager.spi;
+package org.jahia.bundles.jcrcommands.modules;
 
-import java.io.IOException;
+import org.apache.karaf.shell.api.action.Action;
+import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
+import org.apache.karaf.shell.api.action.lifecycle.Service;
+import org.apache.karaf.shell.support.table.Col;
+import org.apache.karaf.shell.support.table.ShellTable;
+import org.jahia.services.modulemanager.spi.ConfigService;
+
 import java.util.Collection;
 import java.util.Map;
 
 /**
- * Service to store and restore OSGi configurations to/from JCR
+ * Command to store karaf configuration into JCR
  */
-public interface ConfigService {
+@Command(
+        scope = "config",
+        name = "store",
+        description = "Store confgiuration into JCR"
+)
+@Service
+@SuppressWarnings({"java:S106","java:S1166"})
+public class StoreConfigurations implements Action {
 
-    /**
-     * Configuration types
-     */
-    enum ConfigType {
-        SYSTEM, MODULE, MODULE_DEFAULT, USER
+    @Reference
+    private ConfigService configService;
+
+    public void setConfigService(ConfigService configService) {
+        this.configService = configService;
     }
 
-    /**
-     * Get the config for the specified PID
-     *
-     * If it does not exist yet, create a new config
-     *
-     * @param pid The config PID
-     * @return the Config object
-     * @throws IOException exception
-     */
-    Config getConfig(String pid) throws IOException ;
+    @Override
+    public Object execute() throws Exception {
+        Map<String, ConfigService.ConfigType> configs = configService.getAllConfigurationTypes();
 
-    /**
-     * Get the settings for the specified factory PID and identifer
-     *
-     * If it does not exist yet, create a new config
-     *
-     * @param factoryPid The factory PID
-     * @param identifier The identifier
-     * @return the Config object
-     * @throws IOException exception
-     */
-    Config getConfig(String factoryPid, String identifier) throws IOException ;
+        Collection<String> saved = configService.storeAllConfigurationsToJCR();
 
-    /**
-     * Persist the changes on the config into the the Configuration Manager storage
-     * @param config The config to store
-     * @throws IOException exception
-     */
-    void storeConfig(Config config) throws IOException;
+        // Fill the table to output result.
+        ShellTable table = new ShellTable();
+        table.column(new Col("Filename"))
+                .column(new Col("Type"))
+                .column(new Col("Updated"));
+        for (Map.Entry<String, ConfigService.ConfigType> entry : configs.entrySet()) {
+            table.addRow().addContent(entry.getKey(), entry.getValue().toString(), saved.contains(entry.getKey()));
+        }
 
-    /**
-     * Delete the associated configuration
-     *
-     * @param config The config to delete
-     * @throws IOException exception
-     */
-    void deleteConfig(Config config) throws IOException;
+        table.print(System.out, true);
 
-    /**
-     * Get all configurations currently deployed
-     *
-     * @return the list of configurations files saved along with their type
-     */
-    Map<String, ConfigType> getAllConfigurationTypes();
-
-    /**
-     * Store configurations into JCR
-     *
-     * @return the list of configurations files saved
-     */
-    Collection<String> storeAllConfigurationsToJCR();
-
-    /**
-     * Restore configurations from JCR
-     *
-     * @param types The types to store, null for all configurations
-     * @return the list of restored configurations
-     */
-    public Collection<String> restoreConfigurationsFromJCR(Collection<ConfigType> types);
-
-    /**
-     * Auto save configuration on change
-     */
-    void setAutoSaveToJCR(boolean autoSave);
-
+        return null;
+    }
 }

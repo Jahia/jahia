@@ -68,9 +68,9 @@
                     <instructions>
                         <Karaf-Commands>*</Karaf-Commands>
                         <JAX-RS-Alias>/api/commands</JAX-RS-Alias>
-                        <JAX-RS-Application>org.jahia.bundles.rest.RestConfig</JAX-RS-Application>
+                        <JAX-RS-Application>org.jahia.bundles.jcrcommands.rest.RestConfig</JAX-RS-Application>
                         <_dsannotations>
-                            org.jahia.bundles.executor.*
+                            org.jahia.bundles.jcrcommands.executor.*
                         </_dsannotations>
                     </instructions>
                 </configuration>

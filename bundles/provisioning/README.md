@@ -1,0 +1,170 @@
+# Provisioning service
+
+This service provides scripting capabilities to provision Jahia at startup. 
+This can also be used to manage modules and configurations at runtime, import sites, or to script administrative tasks.
+
+A script can be triggered at startup by setting the `executeProvisioningScript` system property. It should contain a valid URL pointing to a script.
+
+## Syntax
+
+The service accepts a URL that should point to a valid script. Both JSON and YAML formats are supported. A script is basically
+a list of commands. Each command is a list of key/value pair.
+
+Both examples are equivalent :
+
+JSON :
+```json
+[
+  {
+    "installBundle": "mvn:org.jahia.modules/article/3.0.0", 
+    "autoStart": true
+  },
+  {
+    "installBundle": "mvn:org.jahia.modules/bookmarks/3.0.0"
+  }
+]
+```
+
+YAML :
+```yaml
+- installBundle: "mvn:org.jahia.modules/article/3.0.0" 
+  autoStart: true
+- installBundle: "mvn:org.jahia.modules/bookmarks/3.0.0"
+```
+
+
+## Available operations
+
+### Install bundle
+
+Install bundle from a URL (supporting all pax-url protocols). This action is triggered when `installBundle` is set to a valid URL.
+
+These additional options are available :
+- `target`: The cluster group name where the operation will be done (unset to execute on all nodes)
+- `autoStart`: Autostart the bundle after installation (at the end of the script execution)
+- `uninstallPreviousVersion`: Uninstall all other versions (at the end of the script execution)
+
+Examples :
+
+```yaml
+- installBundle: "mvn:org.jahia.modules/article/3.0.0"
+  autoStart: true
+  uninstallPreviousVersion: true
+```
+
+```yaml
+- installBundle: "file:/tmp/example-1.0.0.jar"
+```
+
+### Uninstall bundle
+
+Uninstall a bundle, based on a key composed of the symbolic name and optionally the version : `<symbolic-name>[/<version>]`
+
+These additional options are available :
+- `target`: The cluster group name where the operation will be done (unset to execute on all nodes)
+
+```yaml
+- uninstallBundle: "article/3.0.0"
+```
+
+### Start/stop bundle
+
+Start or stop a bundle, based on a key composed of the symbolic name and optionally the version : `<symbolic-name>[/<version>]`
+
+These additional options are available :
+- `target`: The cluster group name where the operation will be done (unset to execute on all nodes)
+
+```yaml
+- stopBundle: "article/3.0.0"
+- startBundle: "article/3.0.1"
+```
+
+### Install / edit configuration
+
+Install or edit configuration. Install a configuration from a URL :
+
+```yaml
+- installConfiguration: "file:/tmp/org.jahia.services.usermanager.ldap-config-rqa5.cfg"
+```
+
+You can also create or edit configurations by using `editConfiguration` with the configuration pid. If the pid is a factory pid, you will need to specify the `configIdentifier` value, or use the syntax `<factory-pid>-<config-Id>` 
+
+```yaml
+- editConfiguration: "org.jahia.modules.test"
+  configIdentifier: "id1"
+  properties: 
+    user.uid.search.name: "dc=jahia,dc=com"
+    group.search.name: "dc=jahia,dc=com"
+    url: "ldap://rqa5.jahia.com:389/"
+```
+
+You can also directly put the content of the properties file in the script (the formatting will be kept for config creation only) :
+
+```yaml
+- editConfiguration: "org.jahia.modules.test"
+  configIdentifier: "id1"
+  content: |
+    # LDAP configuration
+    user.uid.search.name:dc=jahia,dc=com
+    group.search.name:dc=jahia,dc=com
+    url=ldap://rqa5.jahia.com:389/
+```
+
+### Import site
+
+Import a site from the export at the specified url. The file must be a site export, in zip format.
+
+```yaml
+- importSite: "file:/Users/toto/mySite_export_2020-12-30-10-37/mySite.zip"
+```
+
+### Add maven repository
+
+Add a maven repository in the maven pax-url configuration. The repository will be available when using a `mvn://` URL.
+
+```yaml
+- addMavenRepository: "https://user:xxx@devtools.jahia.com/nexus/content/groups/enterprise@id=jahia-enterprise@snapshots"
+```
+
+### Features management
+
+Install or uninstall karaf features : 
+
+```yaml
+- installFeature: "transaction-api"
+- uninstallFeature: "webconsole"
+```
+
+You can also add a feature repository : 
+```yaml
+- addFeatureRepository: "mvn:org.ops4j.pax.jdbc/pax-jdbc-features/LATEST/xml/features"
+```
+
+### Karaf command 
+
+Execute a karaf command. This can be useful to perform a command which is not available as a dedicated operation. The command output will be displayed in the logs.
+
+```yaml
+- karafCommand: "bundle:refresh news"
+- karafCommand: "bundle:list"
+```
+
+### Script includes and conditional flow
+
+It's possible to include another script with the `include` operation :
+```yaml
+- include: "http://myserver.com/modules-provisioning.yaml"
+```
+
+You can add condition in the script based on jahia.properties values :
+```yaml
+- if: "cluster.activated"
+  do: 
+    - installFeature: "dx-clustering"
+```
+
+## Adding new operations
+
+Adding a new operation can be done by extending the `org.jahia.services.provisioning.Operation` class and exposing it as an OSGi service.
+
+

@@ -68,6 +68,7 @@
         <module>spring-bridge</module>
         <module>config-manager</module>
         <module>clustering-enabler</module>
+        <module>provisioning</module>
     </modules>
 
     <build>

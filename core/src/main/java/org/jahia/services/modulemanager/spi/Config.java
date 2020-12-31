@@ -43,85 +43,47 @@
  */
 package org.jahia.services.modulemanager.spi;
 
+import org.jahia.services.modulemanager.util.PropertiesValues;
+
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Map;
 
 /**
- * Service to store and restore OSGi configurations to/from JCR
+ * Wrapper around OSGi configuration
+ * Provides an identifier for service factory configs
+ * Allows to manipulate properties in a structured way with a PropertiesValues object
  */
-public interface ConfigService {
+public interface Config {
 
     /**
-     * Configuration types
+     * Get the identifier for this config, if based on a service factory - null otherwise
+     * @return
      */
-    enum ConfigType {
-        SYSTEM, MODULE, MODULE_DEFAULT, USER
-    }
+    String getIdentifier();
 
     /**
-     * Get the config for the specified PID
-     *
-     * If it does not exist yet, create a new config
-     *
-     * @param pid The config PID
-     * @return the Config object
+     * Get the map of properties as they will be stored in the OSGi configuration
+     * @return
+     */
+    Map<String, String> getRawProperties();
+
+    /**
+     * Get structured values
+     * @return
+     */
+    PropertiesValues getValues();
+
+    /**
+     * Get config file content
+     * @return content as a string
      * @throws IOException exception
      */
-    Config getConfig(String pid) throws IOException ;
+    String getContent() throws IOException;
 
     /**
-     * Get the settings for the specified factory PID and identifer
-     *
-     * If it does not exist yet, create a new config
-     *
-     * @param factoryPid The factory PID
-     * @param identifier The identifier
-     * @return the Config object
+     * Set config file content from a string
+     * @param content content as a string
      * @throws IOException exception
      */
-    Config getConfig(String factoryPid, String identifier) throws IOException ;
-
-    /**
-     * Persist the changes on the config into the the Configuration Manager storage
-     * @param config The config to store
-     * @throws IOException exception
-     */
-    void storeConfig(Config config) throws IOException;
-
-    /**
-     * Delete the associated configuration
-     *
-     * @param config The config to delete
-     * @throws IOException exception
-     */
-    void deleteConfig(Config config) throws IOException;
-
-    /**
-     * Get all configurations currently deployed
-     *
-     * @return the list of configurations files saved along with their type
-     */
-    Map<String, ConfigType> getAllConfigurationTypes();
-
-    /**
-     * Store configurations into JCR
-     *
-     * @return the list of configurations files saved
-     */
-    Collection<String> storeAllConfigurationsToJCR();
-
-    /**
-     * Restore configurations from JCR
-     *
-     * @param types The types to store, null for all configurations
-     * @return the list of restored configurations
-     */
-    public Collection<String> restoreConfigurationsFromJCR(Collection<ConfigType> types);
-
-    /**
-     * Auto save configuration on change
-     */
-    void setAutoSaveToJCR(boolean autoSave);
-
+    void setContent(String content) throws IOException;
 }

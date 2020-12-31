@@ -45,7 +45,7 @@ package org.jahia.services.modulemanager.impl;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import org.drools.core.util.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleLifecycleUtils;
@@ -61,6 +61,7 @@ import org.jahia.services.modulemanager.spi.BundleService;
 import org.jahia.services.modulemanager.spi.BundleService.BundleInformation;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.ModuleVersion;
+import org.jahia.settings.SettingsBean;
 import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
 import org.jahia.settings.readonlymode.ReadOnlyModeException;
 import org.osgi.framework.Bundle;
@@ -171,12 +172,12 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
         }
     }
 
-    private OperationResult doInstall(Collection<PersistentBundle> infos, final String target, boolean start) {
+    private OperationResult doInstall(Collection<PersistentBundle> infos, final String target, boolean start, int startLevel) {
         ArrayList<BundleInfo> bundleInfos = new ArrayList<>(infos.size());
         // phase #1: install bundles but do not start
         for (PersistentBundle info : infos) {
             // install but do not start bundle yet
-            bundleService.install(info.getLocation(), target, false);
+            bundleService.install(info.getLocation(), target, false, startLevel);
             bundleInfos.add(toBundleInfo(info));
         }
         // phase #2: if start requested, stop the previous versions of bundles, start requested versions and perform refresh
@@ -213,6 +214,10 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
 
     @Override
     public OperationResult install(Collection<Resource> bundleResources, String target, boolean start) {
+        return install(bundleResources, target, start, SettingsBean.getInstance().getModuleStartLevel());
+    }
+
+    public OperationResult install(Collection<Resource> bundleResources, String target, boolean start, int startLevel) {
         readOnlyModeLock.readLock().lock();
         try {
             long startTime = System.currentTimeMillis();
@@ -233,7 +238,7 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
                     }
                     bundleInfos.add(bundleInfo);
                 }
-                result = doInstall(bundleInfos, target, start);
+                result = doInstall(bundleInfos, target, start, startLevel);
             } catch (ModuleManagementException e) {
                 error = e;
                 throw e;

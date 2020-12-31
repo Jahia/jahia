@@ -106,7 +106,7 @@ public class ConfigTest {
 
         Thread.sleep(5000);
 
-        configService.setAutoSave(false);
+        configService.setAutoSaveToJCR(false);
 
         deployConfig("test-user-modified.cfg", "test-user.cfg");
         deployConfig("test-default-modified.cfg","test-default.cfg");
@@ -116,7 +116,7 @@ public class ConfigTest {
         checkFileContent("test-default-modified.cfg","test-default.cfg");
         checkFileContent("test-module-modified.cfg","test-module.cfg");
 
-        configService.restoreConfigurations(Arrays.asList(ConfigService.ConfigType.MODULE_DEFAULT, ConfigService.ConfigType.USER));
+        configService.restoreConfigurationsFromJCR(Arrays.asList(ConfigService.ConfigType.MODULE_DEFAULT, ConfigService.ConfigType.USER));
 
         checkFileContent("test-user.cfg", "test-user.cfg");
         checkFileContent("test-default.cfg","test-default.cfg");
@@ -148,7 +148,7 @@ public class ConfigTest {
     }
 
     private ConfigService.ConfigType checkType(String file, ConfigService.ConfigType expected) {
-        ConfigService.ConfigType type = configService.getAllConfigurations().get(file);
+        ConfigService.ConfigType type = configService.getAllConfigurationTypes().get(file);
         assertNotNull(type);
         assertEquals(expected, type);
         return type;

@@ -104,7 +104,8 @@ public final class Patcher implements JahiaAfterInitializationService, Disposabl
     private List<PatchExecutor> patchers = Arrays.asList(
             new GroovyPatcher(),
             new SqlPatcher(),
-            new GraphqlPatcher()
+            new GraphqlPatcher(),
+            new ProvisioningPatcher()
     );
 
     // 5 minutes interval by default

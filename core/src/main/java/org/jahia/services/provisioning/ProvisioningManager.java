@@ -41,87 +41,65 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.modulemanager.spi;
+package org.jahia.services.provisioning;
 
 import java.io.IOException;
-import java.util.Collection;
+import java.net.URL;
+import java.util.List;
 import java.util.Map;
 
 /**
- * Service to store and restore OSGi configurations to/from JCR
+ * Service to provision bundles/features/configs/content with script
  */
-public interface ConfigService {
-
+public interface ProvisioningManager {
     /**
-     * Configuration types
+     * Parse script as the specified URL
+     * @param url url
+     * @return script
+     * @exception IOException any io exception
      */
-    enum ConfigType {
-        SYSTEM, MODULE, MODULE_DEFAULT, USER
-    }
+    public List<Map<String, Object>> parseScript(URL url) throws IOException;
 
     /**
-     * Get the config for the specified PID
+     * Parse script as the specified URL
+     * @param content The script content
+     * @param format The script format
+     * @return script
+     * @exception IOException any io exception
+     */
+    public List<Map<String, Object>> parseScript(String content, String format) throws IOException;
+
+    /**
+     * Apply batch operations from a file, yaml or json
      *
-     * If it does not exist yet, create a new config
-     *
-     * @param pid The config PID
-     * @return the Config object
-     * @throws IOException exception
+     * @param url The url where the script can be found
+     * @exception IOException any io exception
      */
-    Config getConfig(String pid) throws IOException ;
+    void executeScript(URL url) throws IOException;
 
     /**
-     * Get the settings for the specified factory PID and identifer
+     * Apply batch operations from a file, yaml or json
      *
-     * If it does not exist yet, create a new config
-     *
-     * @param factoryPid The factory PID
-     * @param identifier The identifier
-     * @return the Config object
-     * @throws IOException exception
+     * @param content The script content
+     * @param format The script format
+     * @exception IOException any io exception
      */
-    Config getConfig(String factoryPid, String identifier) throws IOException ;
+    void executeScript(String content, String format) throws IOException;
 
     /**
-     * Persist the changes on the config into the the Configuration Manager storage
-     * @param config The config to store
-     * @throws IOException exception
-     */
-    void storeConfig(Config config) throws IOException;
-
-    /**
-     * Delete the associated configuration
+     * Apply batch operations
      *
-     * @param config The config to delete
-     * @throws IOException exception
+     * @param script The list of operations
+     * @exception IOException any io exception
      */
-    void deleteConfig(Config config) throws IOException;
+    void executeScript(List<Map<String, Object>> script);
 
     /**
-     * Get all configurations currently deployed
+     * Apply batch operations from a list of entries
      *
-     * @return the list of configurations files saved along with their type
+     * @param script The entries to execute
+     * @param executionContext The context
+     * @exception IOException any io exception
      */
-    Map<String, ConfigType> getAllConfigurationTypes();
-
-    /**
-     * Store configurations into JCR
-     *
-     * @return the list of configurations files saved
-     */
-    Collection<String> storeAllConfigurationsToJCR();
-
-    /**
-     * Restore configurations from JCR
-     *
-     * @param types The types to store, null for all configurations
-     * @return the list of restored configurations
-     */
-    public Collection<String> restoreConfigurationsFromJCR(Collection<ConfigType> types);
-
-    /**
-     * Auto save configuration on change
-     */
-    void setAutoSaveToJCR(boolean autoSave);
-
+    void executeScript(List<Map<String, Object>> script, ExecutionContext executionContext);
 }

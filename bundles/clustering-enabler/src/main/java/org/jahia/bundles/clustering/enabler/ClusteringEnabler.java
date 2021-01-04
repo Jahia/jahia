@@ -43,14 +43,14 @@
  */
 package org.jahia.bundles.clustering.enabler;
 
-import java.util.Collections;
-
-import org.apache.karaf.features.Feature;
-import org.apache.karaf.features.FeatureState;
-import org.apache.karaf.features.FeaturesService;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.karaf.features.*;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.osgi.FrameworkService;
+import org.jahia.services.modulemanager.spi.Config;
+import org.jahia.services.modulemanager.spi.ConfigService;
 import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
@@ -60,6 +60,12 @@ import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 
 /**
  * Activator for the DX clustering feature that checks if the cluster is activated or not and either starts dx-clustering feature or
@@ -81,9 +87,16 @@ public class ClusteringEnabler implements EventHandler {
 
     private FeaturesService featuresService;
 
-    @Reference(service = FeaturesService.class)
-    protected void bindFeaturesService(FeaturesService featuresService) {
+    private ConfigService configService;
+
+    @Reference
+    public void setFeaturesService(FeaturesService featuresService) {
         this.featuresService = featuresService;
+    }
+
+    @Reference
+    public void setConfigService(ConfigService configService) {
+        this.configService = configService;
     }
 
     @Override
@@ -120,6 +133,9 @@ public class ClusteringEnabler implements EventHandler {
         try {
             if (clusterActivated) {
                 if (FeatureState.Started != clusteringState) {
+                    logger.info("Installing configurations");
+                    installConfigurations(feature);
+
                     logger.info("Installing feature {}", featureId);
                     featuresService.installFeature(featureId);
                     FrameworkService.sendEvent(FrameworkService.EVENT_TOPIC_LIFECYCLE,
@@ -139,5 +155,25 @@ public class ClusteringEnabler implements EventHandler {
         }
 
         logger.info("Clustering feature enabler finished in {} ms", System.currentTimeMillis() - startTime);
+    }
+
+    private void installConfigurations(Feature feature) throws Exception {
+        for (Dependency dependency : feature.getDependencies()) {
+            installConfigurations(featuresService.getFeature(dependency.getName(), dependency.getVersion()));
+        }
+
+        for (ConfigFileInfo configuration : feature.getConfigurationFiles()) {
+            loadConfig(StringUtils.substringBetween(configuration.getFinalname(), "etc/", ".cfg"), configuration.getLocation());
+        }
+    }
+
+    private void loadConfig(String name, String url) throws IOException, URISyntaxException {
+        if (name != null) {
+            Config config = configService.getConfig(name);
+            if (config.getRawProperties().isEmpty()) {
+                config.setContent(IOUtils.toString(new URI(url), StandardCharsets.UTF_8));
+                configService.storeConfig(config);
+            }
+        }
     }
 }

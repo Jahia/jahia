@@ -110,12 +110,31 @@ You can also directly put the content of the properties file in the script (the 
     url=ldap://rqa5.jahia.com:389/
 ```
 
+### Import zip
+
+Import a zip from the export at the specified url. The file must be a zip expot.
+
+```yaml
+- import: "file:/Users/toto/users.zip"
+```
+
+You can add the `rootPath` option to specify where the content will be imported, or leave it undefined to import in `/`
+
 ### Import site
 
 Import a site from the export at the specified url. The file must be a site export, in zip format.
 
 ```yaml
 - importSite: "file:/Users/toto/mySite_export_2020-12-30-10-37/mySite.zip"
+```
+
+### Enable module on site
+
+Enable a module on the specified site :
+
+```yaml
+- enable: "news"
+  site: "digitall"
 ```
 
 ### Add maven repository

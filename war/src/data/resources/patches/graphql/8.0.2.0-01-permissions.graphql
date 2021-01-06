@@ -1,0 +1,8 @@
+mutation {
+    jcr {
+        # Mutate permissions if workflow-dashboard-access does not exist yet
+        workflowPermissions: mutateNodesByQuery(query: "/jcr:root/permissions/workflow-tasks/workflow-dashboard-access", queryLanguage:XPATH) {
+            move(parentPathOrId:"/permissions/managers")
+        }
+    }
+}

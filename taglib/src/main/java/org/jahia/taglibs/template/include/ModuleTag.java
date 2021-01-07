@@ -380,13 +380,11 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 for (String s : l) {
                     ExtendedNodeType nt = NodeTypeRegistry.getInstance().getNodeType(s);
                     if (nt != null) {
-                        if (!nt.isAbstract() && !nt.isMixin() &&
-                                (nt.getTemplatePackage() == null || installedModulesWithAllDependencies.contains(nt.getTemplatePackage().getId()))) {
+                        if (isValidContributeType(installedModulesWithAllDependencies, nt)) {
                             subtypes.add(nt.getName());
                         }
                         for (ExtendedNodeType subtype : nt.getSubtypesAsList()) {
-                            if (!subtype.isAbstract() && !subtype.isMixin() &&
-                                    (subtype.getTemplatePackage() == null|| installedModulesWithAllDependencies.contains(subtype.getTemplatePackage().getId()))) {
+                            if (isValidContributeType(installedModulesWithAllDependencies, subtype)) {
                                 subtypes.add(subtype.getName());
                             }
                         }
@@ -401,6 +399,13 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             logger.error(e.getMessage(), e);
         }
         return null;
+    }
+
+    private boolean isValidContributeType(Set<String> installedModulesWithAllDependencies, ExtendedNodeType nt) {
+        boolean isBaseType = !nt.isAbstract() && !nt.isMixin();
+        return isBaseType &&
+                !nt.isNodeType("jmix:hiddenType") &&
+                (nt.getTemplatePackage() == null || installedModulesWithAllDependencies.contains(nt.getTemplatePackage().getId()));
     }
 
     private boolean contributeAccess(RenderContext renderContext, JCRNodeWrapper node) {

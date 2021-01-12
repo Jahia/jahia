@@ -68,14 +68,14 @@ import java.util.*;
  * Time: 12:04:41 PM
  */
 public class ModuleHelper {
-    
+
     /**
      * Callback interface that is used to get a result of a possibly asynchronous call for the component edit permission check.
      */
     public interface CanUseComponentForEditCallback {
         /**
          * Callback function that is passed the result of the component check.
-         * 
+         *
          * @param canUseComponentForEdit
          *            <code>true</code> if the components can be used for edit; <code>false</code> otherwise
          */
@@ -144,6 +144,7 @@ public class ModuleHelper {
                 String type = DOM.getElementAttribute(divElement, "type");
                 String path = DOM.getElementAttribute(divElement, "path");
                 String nodetypes = DOM.getElementAttribute(divElement, "nodetypes");
+
                 Module module = null;
                 if (type.equals("main")) {
                 } else if (type.equals("area") || type.equals("absoluteArea")) {
@@ -159,7 +160,15 @@ public class ModuleHelper {
                 } else if (type.equals("placeholder")) {
                     module = new PlaceholderModule(id, path, divElement, mainModule);
                 }
-                allNodetypes.addAll(Arrays.asList(nodetypes.split(" ")));
+
+                List<String> moduleNodetypes = Arrays.asList(nodetypes.split(" "));
+                // Use droppableContent to display "Any content" when more than MAX_NODETYPES_DISPLAYED different
+                // types are allowed. Type restriction is handled by the content type selector.
+                if (moduleNodetypes.size() > Module.MAX_NODETYPES_DISPLAYED) {
+                    allNodetypes.add("jmix:droppableContent");
+                } else {
+                    allNodetypes.addAll(moduleNodetypes);
+                }
                 if (module != null) {
                     if (!modulesByPath.containsKey(path)) {
                         modulesByPath.put(path, new ArrayList<Module>());
@@ -212,7 +221,7 @@ public class ModuleHelper {
             params.add(modelData1);
         } else {
             list.remove(mainPath);
-    
+
             BaseModelData modelData1 = new BaseModelData();
             modelData1.set("paths", list);
             modelData1.set("fields", FIELDS);
@@ -446,7 +455,7 @@ public class ModuleHelper {
 
     /**
      * Checks if the specified node is allowed to be edited according to the component permissions.
-     * 
+     *
      * @param nodeType
      *            the node type to be checked
      * @return <code>true</code> if the specified node is allowed to be edited; <code>false</code> otherwise
@@ -454,7 +463,7 @@ public class ModuleHelper {
     public static boolean canUseComponentForEdit(GWTJahiaNodeType nodeType) {
         Object value = nodeType.get("canUseComponentForEdit");
 
-        // positive return is in case when either we do not have a value for the canUseComponentForEdit in the node type (null) 
+        // positive return is in case when either we do not have a value for the canUseComponentForEdit in the node type (null)
         // or the value is true
         return value == null || Boolean.TRUE.equals(value);
     }
@@ -463,7 +472,7 @@ public class ModuleHelper {
      * Check the specified node type if it permits the editing. If the node type information is not available on the client side, it loads
      * the specified node type information from the server first. In both cases the method does a call to the provided callback after the
      * check.
-     * 
+     *
      * @param nodeTypeName
      *            the node type name to request from server
      * @param callback

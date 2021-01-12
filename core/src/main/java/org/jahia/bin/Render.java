@@ -495,7 +495,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                         final String requestWith = req.getHeader("x-requested-with");
                         boolean isAjaxRequest =
                                 req.getHeader("accept") != null && req.getHeader("accept").contains("application/json") && requestWith != null &&
-                                        requestWith.equals("XMLHttpRequest") || fileUpload.getParameterMap().isEmpty();
+                                        requestWith.contains("XMLHttpRequest") || fileUpload.getParameterMap().isEmpty();
                         List<String> uuids = new LinkedList<String>();
                         List<String> files = new ArrayList<String>();
                         List<String> urls = new LinkedList<String>();
@@ -1111,8 +1111,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
     /**
      * Performs all required checks for this action.
-     * 
-     * @param action the action to check requirements for 
+     *
+     * @param action the action to check requirements for
      * @param renderContext current render context instance
      * @param urlResolver the URL resolver instance
      * @throws RepositoryException in case of requirements violation

@@ -57,10 +57,8 @@ import org.apache.tika.parser.Parser;
 import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.utils.LuceneUtils;
 
-import javax.jcr.NamespaceRegistry;
 import javax.jcr.RepositoryException;
 import java.util.HashSet;
 import java.util.Set;
@@ -81,9 +79,9 @@ public class JahiaTranslationNodeIndexer extends JahiaNodeIndexer {
     private ExtendedNodeType parentNodeType;
 
     protected JahiaTranslationNodeIndexer(NodeState node, ItemStateManager stateProvider, NamespaceMappings mappings, Executor executor,
-            Parser parser, QueryHandlerContext context, NodeTypeRegistry typeRegistry, NamespaceRegistry nameRegistry) {
+            Parser parser, QueryHandlerContext context) {
 
-        super(node, stateProvider, mappings, executor, parser, context, typeRegistry, nameRegistry);
+        super(node, stateProvider, mappings, executor, parser, context);
         try {
             for (Name propName : node.getPropertyNames()) {
                 if ("language".equals(propName.getLocalName()) && Name.NS_JCR_URI.equals(propName.getNamespaceURI())) {

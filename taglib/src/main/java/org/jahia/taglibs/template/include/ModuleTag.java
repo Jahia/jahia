@@ -43,7 +43,6 @@
  */
 package org.jahia.taglibs.template.include;
 
-import com.google.common.collect.Ordering;
 import org.apache.commons.lang.StringUtils;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.api.Constants;
@@ -62,6 +61,7 @@ import org.jahia.services.render.scripting.Script;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.touk.throwing.ThrowingPredicate;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
@@ -73,6 +73,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Handler for the &lt;template:module/&gt; tag, used to render content objects.
@@ -527,12 +528,13 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
         builder.append(" path=\"").append(path != null && path.indexOf('"') != -1 ? Patterns.DOUBLE_QUOTE.matcher(path).replaceAll("&quot;") : path).append("\"");
 
+        nodeTypes = filterNodeTypes(nodeTypes);
+        constraints = filterNodeTypes(constraints);
+
         if (!StringUtils.isEmpty(nodeTypes)) {
-            nodeTypes = StringUtils.join(Ordering.natural().sortedCopy(Arrays.asList(Patterns.SPACE.split(nodeTypes))),' ');
             builder.append(" nodetypes=\"").append(nodeTypes).append("\"");
             builder.append(" allowReferences=\"").append(isReferenceAllowed).append("\"");
         } else if (!StringUtils.isEmpty(constraints)) {
-            constraints = StringUtils.join(Ordering.natural().sortedCopy(Arrays.asList(Patterns.SPACE.split(constraints))),' ');
             builder.append(" nodetypes=\"").append(constraints).append("\"");
             builder.append(" allowReferences=\"").append(isReferenceAllowed).append("\"");
         }
@@ -555,6 +557,19 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         builder.append(">");
 
         printAndClean();
+    }
+
+    private String filterNodeTypes(String nodeTypes) throws RepositoryException {
+        if (nodeTypes == null) {
+            return null;
+        }
+        Set<String> modules = getNode() != null && getNode().getResolveSite() != null ?
+                getNode().getResolveSite().getInstalledModulesWithAllDependencies() : null;
+        return Patterns.SPACE.splitAsStream(nodeTypes)
+                .filter(ThrowingPredicate.unchecked(nt -> NodeTypeRegistry.getInstance().hasNodeType(nt)))
+                .filter(ThrowingPredicate.unchecked(nt -> modules == null || modules.contains(NodeTypeRegistry.getInstance().getNodeType(nt).getSystemId())))
+                .sorted()
+                .collect(Collectors.joining(" "));
     }
 
     protected boolean isReferencesAllowed(final JCRNodeWrapper node) throws RepositoryException {

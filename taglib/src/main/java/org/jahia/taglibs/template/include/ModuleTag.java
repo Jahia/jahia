@@ -566,7 +566,10 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             return null;
         }
         Set<String> modules = getNode() != null && getNode().getResolveSite() != null ?
-                getNode().getResolveSite().getInstalledModulesWithAllDependencies() : null;
+                new LinkedHashSet<>(getNode().getResolveSite().getInstalledModulesWithAllDependencies()) : null;
+        if (modules != null) {
+            modules.add("system-jahia");
+        }
         return Patterns.SPACE.splitAsStream(nodeTypes)
                 .filter(ThrowingPredicate.unchecked(nt -> NodeTypeRegistry.getInstance().hasNodeType(nt)))
                 .filter(ThrowingPredicate.unchecked(nt -> modules == null || modules.contains(NodeTypeRegistry.getInstance().getNodeType(nt).getSystemId())))

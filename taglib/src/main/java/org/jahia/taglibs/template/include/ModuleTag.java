@@ -539,6 +539,9 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             builder.append(" allowReferences=\"").append(isReferenceAllowed).append("\"");
         }
 
+        // Override listLimit if listLimitSize mixin was used in content-editor
+        overrideLimit(node);
+
         if (listLimit > -1) {
             builder.append(" listlimit=\"").append(listLimit).append("\"");
         }
@@ -573,6 +576,12 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 .filter(ThrowingPredicate.unchecked(nt -> modules == null || modules.contains(NodeTypeRegistry.getInstance().getNodeType(nt).getSystemId())))
                 .sorted()
                 .collect(Collectors.joining(" "));
+    }
+
+    private void overrideLimit(JCRNodeWrapper node) throws RepositoryException {
+        if (node != null && node.isNodeType("jmix:listSizeLimit") && node.hasProperty("limit")) {
+            setListLimit((int) node.getProperty("limit").getLong());
+        }
     }
 
     protected boolean isReferencesAllowed(final JCRNodeWrapper node) throws RepositoryException {

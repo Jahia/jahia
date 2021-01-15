@@ -1,6 +1,5 @@
 -- DbFileSystem - global
-create table JR_FSG_FSENTRY (FSENTRY_PATH text not null, FSENTRY_NAME varchar(255) not null,
- FSENTRY_DATA longblob null, FSENTRY_LASTMOD bigint not null, FSENTRY_LENGTH bigint not null , PRIMARY KEY (`FSENTRY_PATH`(245),`FSENTRY_NAME`)) ENGINE=InnoDB character set latin1;
+create table JR_FSG_FSENTRY (FSENTRY_PATH text not null, FSENTRY_NAME varchar(255) not null, FSENTRY_DATA longblob null, FSENTRY_LASTMOD bigint not null, FSENTRY_LENGTH bigint not null, PRIMARY KEY (`FSENTRY_PATH`(245),`FSENTRY_NAME`)) ENGINE=InnoDB character set latin1;
 create unique index JR_FSG_FSENTRY_IDX on JR_FSG_FSENTRY (FSENTRY_PATH(245), FSENTRY_NAME);
 
 -- PersistenceManager - default workspace

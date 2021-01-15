@@ -58,6 +58,8 @@ import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.utils.LuceneUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import java.util.HashSet;
@@ -71,6 +73,11 @@ import java.util.concurrent.Executor;
  * @author Christophe Laprun
  */
 public class JahiaTranslationNodeIndexer extends JahiaNodeIndexer {
+    /**
+     * The logger instance for this class.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(JahiaTranslationNodeIndexer.class);
+    
     private static final Name MIXIN_TYPES = NameFactoryImpl.getInstance().create(Name.NS_JCR_URI, "mixinTypes");
     private static final Name PRIMARY_TYPE = NameFactoryImpl.getInstance().create(Name.NS_JCR_URI, "primaryType");
 
@@ -93,9 +100,7 @@ public class JahiaTranslationNodeIndexer extends JahiaNodeIndexer {
             }
         } catch (Exception e) {
             // shouldn't happen
-            if (logger.isDebugEnabled()) {
-                logger.debug("Error finding language property", e);
-            }
+            logger.debug("Error finding language property", e);
         }
     }
 
@@ -175,7 +180,7 @@ public class JahiaTranslationNodeIndexer extends JahiaNodeIndexer {
                 doc.add(field);
             }
         } catch (ItemStateException e) {
-            logger.error(e.getMessage(), e);
+            logger.warn("Error while indexing translation node {}: {}", node.getNodeId(), e.getMessage());
         }
 
         return doc;

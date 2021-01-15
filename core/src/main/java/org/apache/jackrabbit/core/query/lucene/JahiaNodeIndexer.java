@@ -91,7 +91,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
     /**
      * The logger instance for this class.
      */
-    protected static final Logger logger = LoggerFactory.getLogger(JahiaNodeIndexer.class);
+    private static final Logger logger = LoggerFactory.getLogger(JahiaNodeIndexer.class);
 
     /**
      * Prefix for all field names that are facet indexed by property name.
@@ -526,7 +526,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
         } catch (NoSuchItemStateException e) {
             logger.debug(e.getMessage(), e);
         } catch (ItemStateException | RepositoryException e) {
-            logger.error(e.getMessage(), e);
+            logger.warn("Error while indexing hierarchical facet value for node {}: {}", node.getNodeId(), e.getMessage());
         }
 
         int hierarchyIndex = hierarchyPaths.size();

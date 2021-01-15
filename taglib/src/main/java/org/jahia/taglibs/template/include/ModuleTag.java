@@ -560,7 +560,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     }
 
     private String filterNodeTypes(String nodeTypes) throws RepositoryException {
-        if (nodeTypes == null) {
+        if (nodeTypes == null || StringUtils.isEmpty(StringUtils.trim(nodeTypes))) {
             return null;
         }
         Set<String> modules = getNode() != null && getNode().getResolveSite() != null ?
@@ -568,7 +568,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         if (modules != null) {
             modules.add("system-jahia");
         }
-        return Patterns.SPACE.splitAsStream(nodeTypes)
+        return Arrays.stream(StringUtils.split(nodeTypes))
                 .filter(ThrowingPredicate.unchecked(nt -> NodeTypeRegistry.getInstance().hasNodeType(nt)))
                 .filter(ThrowingPredicate.unchecked(nt -> modules == null || modules.contains(NodeTypeRegistry.getInstance().getNodeType(nt).getSystemId())))
                 .sorted()

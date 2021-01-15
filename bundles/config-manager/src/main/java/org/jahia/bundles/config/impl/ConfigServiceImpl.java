@@ -114,11 +114,7 @@ public class ConfigServiceImpl implements OsgiConfigService, ConfigurationListen
     }
 
     public Config getConfig(String pid) throws IOException {
-        Configuration configuration = configAdmin.getConfiguration(pid);
-        if (configuration.getBundleLocation() != null && configuration.getBundleLocation().contains("org.jahia.bundles.config.manager")) {
-            configuration.setBundleLocation(null);
-        }
-        return new ConfigImpl(configuration, null);
+        return new ConfigImpl(configAdmin.getConfiguration(pid, "?"), null);
     }
 
     public Config getConfig(String factoryPid, String identifier) throws IOException  {

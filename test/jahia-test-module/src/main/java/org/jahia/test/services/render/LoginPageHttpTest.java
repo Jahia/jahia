@@ -240,7 +240,7 @@ public class LoginPageHttpTest extends JahiaTestCase {
         String content = getAsText("/cms/login?username=root&password=" + ROOT_PASSWORD + "&redirect="
                 + Jahia.getContextPath() + "/cms/admin/default/en/settings.aboutJahia.html");
         assertTrue("After login the root user should see the about page in the administration",
-                content.contains("<title>Edit</title>") && content.contains("template=\"aboutJahia\""));
+                content.contains("<title>settings</title>") && content.contains("template=\"aboutJahia\""));
     }
 
     @Test

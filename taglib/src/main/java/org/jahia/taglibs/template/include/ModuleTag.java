@@ -43,7 +43,6 @@
  */
 package org.jahia.taglibs.template.include;
 
-import com.google.common.collect.Ordering;
 import org.apache.commons.lang.StringUtils;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.api.Constants;
@@ -62,6 +61,7 @@ import org.jahia.services.render.scripting.Script;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.touk.throwing.ThrowingPredicate;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
@@ -73,6 +73,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Handler for the &lt;template:module/&gt; tag, used to render content objects.
@@ -380,13 +381,11 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 for (String s : l) {
                     ExtendedNodeType nt = NodeTypeRegistry.getInstance().getNodeType(s);
                     if (nt != null) {
-                        if (!nt.isAbstract() && !nt.isMixin() &&
-                                (nt.getTemplatePackage() == null || installedModulesWithAllDependencies.contains(nt.getTemplatePackage().getId()))) {
+                        if (isValidContributeType(installedModulesWithAllDependencies, nt)) {
                             subtypes.add(nt.getName());
                         }
                         for (ExtendedNodeType subtype : nt.getSubtypesAsList()) {
-                            if (!subtype.isAbstract() && !subtype.isMixin() &&
-                                    (subtype.getTemplatePackage() == null|| installedModulesWithAllDependencies.contains(subtype.getTemplatePackage().getId()))) {
+                            if (isValidContributeType(installedModulesWithAllDependencies, subtype)) {
                                 subtypes.add(subtype.getName());
                             }
                         }
@@ -401,6 +400,13 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             logger.error(e.getMessage(), e);
         }
         return null;
+    }
+
+    private boolean isValidContributeType(Set<String> installedModulesWithAllDependencies, ExtendedNodeType nt) {
+        boolean isBaseType = !nt.isAbstract() && !nt.isMixin();
+        return isBaseType &&
+                !nt.isNodeType("jmix:hiddenType") &&
+                (nt.getTemplatePackage() == null || installedModulesWithAllDependencies.contains(nt.getTemplatePackage().getId()));
     }
 
     private boolean contributeAccess(RenderContext renderContext, JCRNodeWrapper node) {
@@ -522,15 +528,19 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
         builder.append(" path=\"").append(path != null && path.indexOf('"') != -1 ? Patterns.DOUBLE_QUOTE.matcher(path).replaceAll("&quot;") : path).append("\"");
 
+        nodeTypes = filterNodeTypes(nodeTypes);
+        constraints = filterNodeTypes(constraints);
+
         if (!StringUtils.isEmpty(nodeTypes)) {
-            nodeTypes = StringUtils.join(Ordering.natural().sortedCopy(Arrays.asList(Patterns.SPACE.split(nodeTypes))),' ');
             builder.append(" nodetypes=\"").append(nodeTypes).append("\"");
             builder.append(" allowReferences=\"").append(isReferenceAllowed).append("\"");
         } else if (!StringUtils.isEmpty(constraints)) {
-            constraints = StringUtils.join(Ordering.natural().sortedCopy(Arrays.asList(Patterns.SPACE.split(constraints))),' ');
             builder.append(" nodetypes=\"").append(constraints).append("\"");
             builder.append(" allowReferences=\"").append(isReferenceAllowed).append("\"");
         }
+
+        // Override listLimit if listLimitSize mixin was used in content-editor
+        overrideLimit(node);
 
         if (listLimit > -1) {
             builder.append(" listlimit=\"").append(listLimit).append("\"");
@@ -550,6 +560,28 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         builder.append(">");
 
         printAndClean();
+    }
+
+    private String filterNodeTypes(String nodeTypes) throws RepositoryException {
+        if (nodeTypes == null || StringUtils.isEmpty(StringUtils.trim(nodeTypes))) {
+            return null;
+        }
+        Set<String> modules = getNode() != null && getNode().getResolveSite() != null ?
+                new LinkedHashSet<>(getNode().getResolveSite().getInstalledModulesWithAllDependencies()) : null;
+        if (modules != null) {
+            modules.add("system-jahia");
+        }
+        return Arrays.stream(StringUtils.split(nodeTypes))
+                .filter(ThrowingPredicate.unchecked(nt -> NodeTypeRegistry.getInstance().hasNodeType(nt)))
+                .filter(ThrowingPredicate.unchecked(nt -> modules == null || modules.contains(NodeTypeRegistry.getInstance().getNodeType(nt).getSystemId())))
+                .sorted()
+                .collect(Collectors.joining(" "));
+    }
+
+    private void overrideLimit(JCRNodeWrapper node) throws RepositoryException {
+        if (node != null && node.isNodeType("jmix:listSizeLimit") && node.hasProperty("limit")) {
+            setListLimit((int) node.getProperty("limit").getLong());
+        }
     }
 
     protected boolean isReferencesAllowed(final JCRNodeWrapper node) throws RepositoryException {

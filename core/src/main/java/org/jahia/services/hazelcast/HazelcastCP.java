@@ -29,13 +29,29 @@ package org.jahia.services.hazelcast;
 public interface HazelcastCP {
     /**
      * Lock
+     *
      * @param key lock key
      */
     void lock(String key);
 
     /**
      * Unlock
+     *
      * @param key lock key
      */
     void unlock(String key);
+
+    /**
+     * Get atomic long value from CP
+     * @param key atomic long key
+     * @return value value
+     */
+    Long getAtomic(String key);
+
+    /**
+     * Set atomic long from CP
+     * @param key atomic long key
+     * @param value value
+     */
+    void setAtomic(String key, long value);
 }

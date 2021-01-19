@@ -70,10 +70,8 @@ import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -134,19 +132,30 @@ public class PlaceholderModule extends Module {
         if ((getNodeTypes() != null) && (getNodeTypes().length() > 0)) {
             nodeTypesArray = getNodeTypes().split(" ");
         }
+
         if (nodeTypesArray != null) {
-            List<String> filter = null;
+            // by default display all types resolved.
+            final Set<String> displayedNodeTypes = new HashSet<>(Arrays.asList(nodeTypesArray));
+
+            // in case of nodetypes are from the parent but current module has its own restrictions
             if (nodeTypes != null && nodeTypes.length() > 0) {
-                filter = Arrays.asList(nodeTypes.split(" "));
+                final List<String> filter = new ArrayList<>(Arrays.asList(nodeTypes.split(" ")));
+                displayedNodeTypes.clear();
+                displayedNodeTypes.addAll(Arrays.stream(nodeTypesArray).filter(filter::contains).collect(Collectors.toSet()));
             }
-            final Set<String> displayedNodeTypes = new HashSet<String>(Arrays.asList(nodeTypesArray));
-            for (final String s : nodeTypesArray) {
-                if (filter != null && !filter.contains(s)) {
-                    continue;
-                }
+
+            // in case there are more than MAX_NODETYPES_DISPLAYED types to display, display "Any content" and let the content type selector
+            // do the work.
+            final boolean displayAnyContent = displayedNodeTypes.size() > Module.MAX_NODETYPES_DISPLAYED;
+            if (displayAnyContent) {
+                displayedNodeTypes.clear();
+                displayedNodeTypes.add("jmix:droppableContent");
+            }
+
+            for (final String s : displayedNodeTypes) {
                 GWTJahiaNodeType nodeType = ModuleHelper.getNodeType(s);
                 if (nodeType != null) {
-                    Boolean canUseComponentForCreate = (Boolean) nodeType.get("canUseComponentForCreate");
+                    Boolean canUseComponentForCreate = nodeType.get("canUseComponentForCreate");
                     if (canUseComponentForCreate != null && !canUseComponentForCreate) {
                         continue;
                     }
@@ -174,7 +183,7 @@ public class PlaceholderModule extends Module {
                             if ((path != null) && !"*".equals(path) && !path.startsWith("/")) {
                                 nodeName = path;
                             }
-                            ContentActions.showContentWizard(mainModule.getEditLinker(), s, parentNode, nodeName, true, displayedNodeTypes, false, nodeName != null);
+                            ContentActions.showContentWizard(mainModule.getEditLinker(), displayAnyContent ? null : s, parentNode, nodeName, true, displayAnyContent ? null : displayedNodeTypes, false, nodeName != null);
                         }
                     }
                 });

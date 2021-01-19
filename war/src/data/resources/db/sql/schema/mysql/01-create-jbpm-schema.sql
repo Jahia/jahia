@@ -76,7 +76,8 @@
 
     create table jbpm_delegation_delegates (
         task_id bigint not null,
-        entity_id varchar(255) not null
+        entity_id varchar(255) not null,
+        primary key(task_id,entity_id)
     ) ENGINE=InnoDB;
 
     create table jbpm_email_header (
@@ -151,12 +152,14 @@
 
     create table jbpm_notification_bas (
         task_id bigint not null,
-        entity_id varchar(255) not null
+        entity_id varchar(255) not null,
+        primary key(task_id,entity_id)
     ) ENGINE=InnoDB;
 
     create table jbpm_notification_recipients (
         task_id bigint not null,
-        entity_id varchar(255) not null
+        entity_id varchar(255) not null,
+        primary key(task_id,entity_id)
     ) ENGINE=InnoDB;
 
     create table jbpm_organizational_entity (
@@ -167,27 +170,32 @@
 
     create table jbpm_people_ass_excl_owners (
         task_id bigint not null,
-        entity_id varchar(255) not null
+        entity_id varchar(255) not null,
+        primary key(task_id,entity_id)
     ) ENGINE=InnoDB;
 
     create table jbpm_people_assignm_pot_owners (
         task_id bigint not null,
-        entity_id varchar(255) not null
+        entity_id varchar(255) not null,
+        primary key(task_id,entity_id)
     ) ENGINE=InnoDB;
 
     create table jbpm_people_assignm_recipients (
         task_id bigint not null,
-        entity_id varchar(255) not null
+        entity_id varchar(255) not null,
+        primary key(task_id,entity_id)
     ) ENGINE=InnoDB;
 
     create table jbpm_people_assignm_stakehold (
         task_id bigint not null,
-        entity_id varchar(255) not null
+        entity_id varchar(255) not null,
+        primary key(task_id,entity_id)
     ) ENGINE=InnoDB;
 
     create table jbpm_people_assignments_bas (
         task_id bigint not null,
-        entity_id varchar(255) not null
+        entity_id varchar(255) not null,
+        primary key(task_id,entity_id)
     ) ENGINE=InnoDB;
 
     create table jbpm_process_instance_info (
@@ -221,7 +229,8 @@
 
     create table jbpm_reass_potential_owners (
         task_id bigint not null,
-        entity_id varchar(255) not null
+        entity_id varchar(255) not null,
+        primary key(task_id,entity_id)
     ) ENGINE=InnoDB;
 
     create table jbpm_reassignment (

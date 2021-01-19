@@ -62,6 +62,7 @@ import java.util.concurrent.TimeoutException;
 @Component(service = Operation.class, property = "type=karafCommand")
 public class KarafCommand implements Operation {
     public static final String KARAF_COMMAND = "karafCommand";
+    public static final String KARAF_TIMEOUT = "timeout";
     public static final long DEFAULT_TIMEOUT = 1000L;
     private static final Logger logger = LoggerFactory.getLogger(KarafCommand.class);
     private KarafCommandExecutor commandExecutor;
@@ -79,7 +80,8 @@ public class KarafCommand implements Operation {
     @Override
     public void perform(Map<String, Object> entry, ExecutionContext executionContext) {
         try {
-            String s = commandExecutor.executeCommand((String) entry.get(KARAF_COMMAND), DEFAULT_TIMEOUT, new RolePrincipal("manager"), new RolePrincipal("admin"));
+            long timeout = entry.containsKey(KARAF_TIMEOUT) ? Long.parseLong((String) entry.get(KARAF_TIMEOUT)) : DEFAULT_TIMEOUT;
+            String s = commandExecutor.executeCommand((String) entry.get(KARAF_COMMAND), timeout, new RolePrincipal("manager"), new RolePrincipal("admin"));
             logger.info("Karaf command result : {}", s);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

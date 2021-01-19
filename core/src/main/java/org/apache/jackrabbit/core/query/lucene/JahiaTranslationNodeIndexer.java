@@ -57,10 +57,10 @@ import org.apache.tika.parser.Parser;
 import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.utils.LuceneUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.jcr.NamespaceRegistry;
 import javax.jcr.RepositoryException;
 import java.util.HashSet;
 import java.util.Set;
@@ -73,6 +73,11 @@ import java.util.concurrent.Executor;
  * @author Christophe Laprun
  */
 public class JahiaTranslationNodeIndexer extends JahiaNodeIndexer {
+    /**
+     * The logger instance for this class.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(JahiaTranslationNodeIndexer.class);
+    
     private static final Name MIXIN_TYPES = NameFactoryImpl.getInstance().create(Name.NS_JCR_URI, "mixinTypes");
     private static final Name PRIMARY_TYPE = NameFactoryImpl.getInstance().create(Name.NS_JCR_URI, "primaryType");
 
@@ -81,9 +86,9 @@ public class JahiaTranslationNodeIndexer extends JahiaNodeIndexer {
     private ExtendedNodeType parentNodeType;
 
     protected JahiaTranslationNodeIndexer(NodeState node, ItemStateManager stateProvider, NamespaceMappings mappings, Executor executor,
-            Parser parser, QueryHandlerContext context, NodeTypeRegistry typeRegistry, NamespaceRegistry nameRegistry) {
+            Parser parser, QueryHandlerContext context) {
 
-        super(node, stateProvider, mappings, executor, parser, context, typeRegistry, nameRegistry);
+        super(node, stateProvider, mappings, executor, parser, context);
         try {
             for (Name propName : node.getPropertyNames()) {
                 if ("language".equals(propName.getLocalName()) && Name.NS_JCR_URI.equals(propName.getNamespaceURI())) {
@@ -95,9 +100,7 @@ public class JahiaTranslationNodeIndexer extends JahiaNodeIndexer {
             }
         } catch (Exception e) {
             // shouldn't happen
-            if (logger.isDebugEnabled()) {
-                logger.debug("Error finding language property", e);
-            }
+            logger.debug("Error finding language property", e);
         }
     }
 
@@ -177,7 +180,7 @@ public class JahiaTranslationNodeIndexer extends JahiaNodeIndexer {
                 doc.add(field);
             }
         } catch (ItemStateException e) {
-            logger.error(e.getMessage(), e);
+            logger.warn("Error while indexing translation node {}: {}", node.getNodeId(), e.getMessage());
         }
 
         return doc;

@@ -68,6 +68,7 @@
                         <Export-Package>
                             org.jahia.bundles.provisioning
                         </Export-Package>
+                        <Embed-Dependency>*; scope=compile|runtime; type=!pom; inline=false</Embed-Dependency>
                         <_dsannotations>org.jahia.bundles.provisioning.*</_dsannotations>
                     </instructions>
                 </configuration>
@@ -116,6 +117,12 @@
             <artifactId>org.jahia.bundles.jcrcommands</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.8</version>
         </dependency>
     </dependencies>
 

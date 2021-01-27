@@ -150,10 +150,17 @@ public class ModuleUtils {
      * @param dependency the dependency to use in the clause
      * @return a single clause for the Require-Capability header
      */
-    static String buildClauseProvideCapability(String dependency) {
-        return new StringBuilder()
-                .append(OSGI_CAPABILITY_MODULE_DEPENDENCIES + ";" + OSGI_CAPABILITY_MODULE_DEPENDENCIES_KEY + "=\"")
-                .append(dependency).append("\"").toString();
+    static String buildClauseProvideCapability(String dependency, String version) {
+        // e.g. com.jahia.modules.dependencies;moduleIdentifier="<id>";module-version:Version=<version>
+        String prefix = String.format("%s;%s=\"", OSGI_CAPABILITY_MODULE_DEPENDENCIES,
+                OSGI_CAPABILITY_MODULE_DEPENDENCIES_KEY);
+        StringBuilder strBuilder = new StringBuilder(prefix).append(dependency).append('\"');
+        if (StringUtils.isNotEmpty(version)) {
+            strBuilder.append(';')
+                    .append(OSGI_CAPABILITY_MODULE_DEPENDENCIES_VERSION_KEY)
+                    .append(":Version=").append(version);
+        }
+        return strBuilder.toString();
     }
 
     /**
@@ -163,9 +170,21 @@ public class ModuleUtils {
      * @return a single clause for the Require-Capability header
      */
     static String buildClauseRequireCapability(String dependency) {
-        return new StringBuilder().append(
-                OSGI_CAPABILITY_MODULE_DEPENDENCIES + ";filter:=\"(" + OSGI_CAPABILITY_MODULE_DEPENDENCIES_KEY + "=")
-                .append(dependency).append(")\"").toString();
+        String[] deps = dependency.split("=");
+        String moduleName = deps[0];
+        String moduleVersion = (deps.length > 1) ?  deps[1] : "";
+
+        StringBuilder strBuilder = new StringBuilder(OSGI_CAPABILITY_MODULE_DEPENDENCIES).append(";filter:=\"(");
+        String nameFilter = String.format("%s=%s", OSGI_CAPABILITY_MODULE_DEPENDENCIES_KEY, moduleName);
+        if (StringUtils.isEmpty(moduleVersion)) {
+            // e.g. com.jahia.modules.dependencies;filter:="(moduleIdentifier=<moduleName>)"
+            strBuilder.append(nameFilter);
+        } else {
+            // e.g. com.jahia.modules.dependencies;filter:="(&(moduleIdentifier=<moduleName>)(moduleVersion=<moduleVersion>))"
+            strBuilder.append(String.format("&(%s)", nameFilter))
+                    .append(String.format("(%s=%s)", OSGI_CAPABILITY_MODULE_DEPENDENCIES_VERSION_KEY, moduleVersion));
+        }
+        return strBuilder.append(")\"").toString();
     }
 
     private static File getBundleFile(Bundle bundle) {
@@ -353,10 +372,12 @@ public class ModuleUtils {
         if (StringUtils.isNotEmpty(existingProvideValue)) {
             provide.append(existingProvideValue).append(",");
         }
-        provide.append(buildClauseProvideCapability(moduleId));
+
+        String bundleVersion = atts.getValue(ATTR_NAME_BUNDLE_VERSION);
+        provide.append(buildClauseProvideCapability(moduleId, bundleVersion));
         String bundleName = atts.getValue(ATTR_NAME_BUNDLE_NAME);
         if (StringUtils.isNotEmpty(bundleName)) {
-            provide.append(",").append(buildClauseProvideCapability(bundleName));
+            provide.append(",").append(buildClauseProvideCapability(bundleName, bundleVersion));
         }
         atts.put(ATTR_NAME_PROVIDE_CAPABILITY, provide.toString());
     }

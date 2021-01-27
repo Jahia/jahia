@@ -97,6 +97,8 @@ public interface Constants {
     String OSGI_CAPABILITY_MODULE_DEPENDENCIES = "com.jahia.modules.dependencies";
 
     String OSGI_CAPABILITY_MODULE_DEPENDENCIES_KEY = "moduleIdentifier";
+
+    String OSGI_CAPABILITY_MODULE_DEPENDENCIES_VERSION_KEY = "moduleVersion";
     
     String URL_PROTOCOL_DX = "dx";
     

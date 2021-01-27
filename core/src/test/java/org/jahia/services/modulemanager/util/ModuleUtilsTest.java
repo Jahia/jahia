@@ -43,6 +43,7 @@
  */
 package org.jahia.services.modulemanager.util;
 
+import static java.util.stream.Collectors.joining;
 import static org.jahia.services.modulemanager.Constants.*;
 import static org.jahia.services.modulemanager.util.ModuleUtils.addCapabilities;
 import static org.jahia.services.modulemanager.util.ModuleUtils.buildClauseProvideCapability;
@@ -52,9 +53,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.jar.Attributes;
 
-import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.junit.Test;
 
 /**
@@ -66,59 +67,68 @@ public class ModuleUtilsTest {
 
     private static final String BUNDLE_ID = "my-bundle";
     private static final String BUNDLE_NAME = "My Bundle";
+    private static final String BUNDLE_VERSION = "1.0.4";
 
     private static final Attributes ATTS_TEMPLATE;
     static {
         ATTS_TEMPLATE = new Attributes();
         ATTS_TEMPLATE.put(ATTR_NAME_BUNDLE_SYMBOLIC_NAME, BUNDLE_ID);
+        ATTS_TEMPLATE.put(ATTR_NAME_BUNDLE_VERSION, BUNDLE_VERSION);
     }
 
     private void assertProvides(Attributes atts, String... provides) {
         String value = atts.getValue(ATTR_NAME_PROVIDE_CAPABILITY);
-        if (provides.length == 1) {
-            assertEquals(buildClauseProvideCapability(provides[0]), value);
-        } else {
-            StringBuilder b = new StringBuilder();
-            for (String p : provides) {
-                if (b.length() > 0) {
-                    b.append(',');
-                }
-                b.append(buildClauseProvideCapability(p));
-            }
-            assertEquals(b.toString(), value);
-        }
+        String b = Arrays.stream(provides)
+                .map(p -> buildClauseProvideCapability(p, BUNDLE_VERSION))
+                .collect(joining(","));
+        assertEquals(b, value);
     }
 
     private void assertRequires(Attributes atts, String... requires) {
         String value = atts.getValue(ATTR_NAME_REQUIRE_CAPABILITY);
-        StringBuilder b = new StringBuilder();
-        for (String p : requires) {
-            if (b.length() > 0) {
-                b.append(',');
-            }
-            b.append(buildClauseRequireCapability(p));
-        }
-        assertEquals(b.toString(), value);
+        String b = Arrays.stream(requires)
+                .map(p -> buildClauseRequireCapability(p))
+                .collect(joining(","));
+        assertEquals(b, value);
     }
 
     @Test
-    public void testBuildClauses() {
-        assertEquals(OSGI_CAPABILITY_MODULE_DEPENDENCIES + ';' + OSGI_CAPABILITY_MODULE_DEPENDENCIES_KEY + "=\""
-                + BUNDLE_ID + "\"", buildClauseProvideCapability(BUNDLE_ID));
-        assertEquals(OSGI_CAPABILITY_MODULE_DEPENDENCIES + ';' + OSGI_CAPABILITY_MODULE_DEPENDENCIES_KEY + "=\""
-                + BUNDLE_NAME + "\"", buildClauseProvideCapability(BUNDLE_NAME));
+    public void testBuildClauseProvide() {
+        String clausePrefix = OSGI_CAPABILITY_MODULE_DEPENDENCIES + ';' + OSGI_CAPABILITY_MODULE_DEPENDENCIES_KEY + "=\"";
+        String versionClause = OSGI_CAPABILITY_MODULE_DEPENDENCIES_VERSION_KEY + ":Version=" + BUNDLE_VERSION;
 
-        assertEquals(OSGI_CAPABILITY_MODULE_DEPENDENCIES + ";filter:=\"(" + OSGI_CAPABILITY_MODULE_DEPENDENCIES_KEY
-                + "=" + BUNDLE_ID + ")\"", buildClauseRequireCapability(BUNDLE_ID));
-        assertEquals(OSGI_CAPABILITY_MODULE_DEPENDENCIES + ";filter:=\"(" + OSGI_CAPABILITY_MODULE_DEPENDENCIES_KEY
-                + "=" + BUNDLE_NAME + ")\"", buildClauseRequireCapability(BUNDLE_NAME));
+        assertEquals(clausePrefix + BUNDLE_ID + "\";" + versionClause,
+                buildClauseProvideCapability(BUNDLE_ID, BUNDLE_VERSION));
+        assertEquals(clausePrefix + BUNDLE_NAME + "\";" + versionClause,
+                buildClauseProvideCapability(BUNDLE_NAME, BUNDLE_VERSION));
+    }
+
+    @Test
+    public void testBuildClauseRequire() {
+        String clausePrefix = String.format("%s;filter:=\"(%s=",
+                OSGI_CAPABILITY_MODULE_DEPENDENCIES, OSGI_CAPABILITY_MODULE_DEPENDENCIES_KEY);
+        assertEquals(clausePrefix + BUNDLE_ID + ")\"", buildClauseRequireCapability(BUNDLE_ID));
+        assertEquals(clausePrefix + BUNDLE_NAME + ")\"", buildClauseRequireCapability(BUNDLE_NAME));
+    }
+
+    @Test
+    public void testBuildClauseRequireWithVersion() {
+        String reqClausePrefix = String.format("%s;filter:=\"(&(%s=",
+                OSGI_CAPABILITY_MODULE_DEPENDENCIES, OSGI_CAPABILITY_MODULE_DEPENDENCIES_KEY);
+        String reqVersionClause = String.format(")(%s=%s))\"", OSGI_CAPABILITY_MODULE_DEPENDENCIES_VERSION_KEY, BUNDLE_VERSION);
+
+        assertEquals(reqClausePrefix + BUNDLE_ID + reqVersionClause,
+                buildClauseRequireCapability(BUNDLE_ID + '=' + BUNDLE_VERSION));
+        assertEquals(reqClausePrefix + BUNDLE_NAME + reqVersionClause,
+                buildClauseRequireCapability(BUNDLE_NAME + '=' + BUNDLE_VERSION));
     }
 
     @Test
     public void testProvideCapability() {
         // no change if the manifest attribute is already there
         Attributes atts = new Attributes(ATTS_TEMPLATE);
-        String testCapability = buildClauseProvideCapability("aaa") + "," + OSGI_CAPABILITY_SERVER;
+        String testCapability = buildClauseProvideCapability("aaa", BUNDLE_VERSION) +
+                "," + OSGI_CAPABILITY_SERVER;
         atts.put(ATTR_NAME_PROVIDE_CAPABILITY, testCapability);
         assertFalse(addCapabilities(atts));
         assertEquals(testCapability, atts.getValue(ATTR_NAME_PROVIDE_CAPABILITY));
@@ -139,7 +149,7 @@ public class ModuleUtilsTest {
         String existingValue = "my;aaa=bbb";
         atts.put(ATTR_NAME_PROVIDE_CAPABILITY, existingValue);
         assertTrue(addCapabilities(atts));
-        assertEquals(existingValue + "," + buildClauseProvideCapability(BUNDLE_ID),
+        assertEquals(existingValue + "," + buildClauseProvideCapability(BUNDLE_ID, BUNDLE_VERSION),
                 atts.getValue(ATTR_NAME_PROVIDE_CAPABILITY));
 
     }
@@ -195,6 +205,20 @@ public class ModuleUtilsTest {
         atts.put(ATTR_NAME_JAHIA_DEPENDS, "my1, my2");
         addCapabilities(atts);
         assertRequires(atts, "my1", "my2");
+
+        // depends with version
+        atts = new Attributes();
+        atts.put(ATTR_NAME_BUNDLE_SYMBOLIC_NAME, "assets");
+        atts.put(ATTR_NAME_JAHIA_DEPENDS, "depend-module=1.5");
+        addCapabilities(atts);
+        assertRequires(atts, "depend-module=1.5");
+
+        // depends with version, mixed multiple
+        atts = new Attributes();
+        atts.put(ATTR_NAME_BUNDLE_SYMBOLIC_NAME, "assets");
+        atts.put(ATTR_NAME_JAHIA_DEPENDS, "depend-module=1.5,depend-module2,depend-module3=4.0.1");
+        addCapabilities(atts);
+        assertRequires(atts, "depend-module=1.5", "depend-module2", "depend-module3=4.0.1");
 
         // existing value, multiple depends
         atts = new Attributes();

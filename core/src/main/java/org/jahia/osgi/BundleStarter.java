@@ -62,6 +62,8 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.startlevel.BundleStartLevel;
+import org.osgi.framework.wiring.BundleWire;
+import org.osgi.framework.wiring.BundleWiring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -239,13 +241,22 @@ class BundleStarter {
                 }
             }
 
+            Set<Bundle> toBeRefreshed = new HashSet<>();
             for (Bundle bundle : toBeUninstalled) {
                 try {
+                    if (bundle.getState() >= Bundle.RESOLVED) {
+                        List<BundleWire> providedWires = bundle.adapt(BundleWiring.class).getProvidedWires(null);
+                        for (BundleWire providedWire : providedWires) {
+                            toBeRefreshed.add(providedWire.getRequirer().getBundle());
+                        }
+                    }
                     bundle.uninstall();
                 } catch (BundleException e) {
                     logger.error("Cannot uninstall bundle", e);
                 }
             }
+
+            BundleLifecycleUtils.refreshBundles(toBeRefreshed, true, true);
 
             if (!toBeStarted.isEmpty()) {
                 startModules(toBeStarted, false);

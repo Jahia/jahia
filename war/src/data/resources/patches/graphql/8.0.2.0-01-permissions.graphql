@@ -4,5 +4,12 @@ mutation {
         workflowPermissions: mutateNodesByQuery(query: "/jcr:root/permissions/workflow-tasks/workflow-dashboard-access", queryLanguage:XPATH) {
             move(parentPathOrId:"/permissions/managers")
         }
+        addPermission: mutateNodesByQuery(query: "/jcr:root/permissions[not(developerTools/@jcr:primaryType='jnt:permission')]", queryLanguage: XPATH) {
+            addChild(name: "developerTools", primaryNodeType: "jnt:permission") {
+                addChild(name: "developerToolsAccess", primaryNodeType: "jnt:permission") {
+                    uuid
+                }
+            }
+        }
     }
 }

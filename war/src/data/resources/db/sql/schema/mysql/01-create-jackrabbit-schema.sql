@@ -1,5 +1,6 @@
 -- DbFileSystem - global
-create table JR_FSG_FSENTRY (FSENTRY_PATH text not null, FSENTRY_NAME varchar(255) not null, FSENTRY_DATA longblob null, FSENTRY_LASTMOD bigint not null, FSENTRY_LENGTH bigint not null) ENGINE=InnoDB character set latin1;
+create table JR_FSG_FSENTRY (FSENTRY_PATH text not null, FSENTRY_NAME varchar(255) not null,
+ FSENTRY_DATA longblob null, FSENTRY_LASTMOD bigint not null, FSENTRY_LENGTH bigint not null , PRIMARY KEY (`FSENTRY_PATH`(245),`FSENTRY_NAME`)) ENGINE=InnoDB character set latin1;
 create unique index JR_FSG_FSENTRY_IDX on JR_FSG_FSENTRY (FSENTRY_PATH(245), FSENTRY_NAME);
 
 -- PersistenceManager - default workspace
@@ -32,7 +33,7 @@ create table JR_J_JOURNAL (REVISION_ID BIGINT NOT NULL, JOURNAL_ID varchar(255),
 create unique index JR_J_JOURNAL_IDX on JR_J_JOURNAL (REVISION_ID);
 create table JR_J_GLOBAL_REVISION (REVISION_ID BIGINT NOT NULL) ENGINE=InnoDB;
 create unique index JR_J_GLOBAL_REVISION_IDX on JR_J_GLOBAL_REVISION (REVISION_ID);
-create table JR_J_LOCAL_REVISIONS (JOURNAL_ID varchar(255) NOT NULL, REVISION_ID BIGINT NOT NULL) ENGINE=InnoDB;
+create table JR_J_LOCAL_REVISIONS (JOURNAL_ID varchar(255) NOT NULL PRIMARY KEY, REVISION_ID BIGINT NOT NULL) ENGINE=InnoDB;
 create table JR_J_LOCKS (NODE_ID CHAR(40) NOT NULL, JOURNAL_ID VARCHAR(255) NOT NULL, PRIMARY KEY (NODE_ID)) ENGINE=InnoDB;
 -- Inserting the one and only revision counter record now helps avoiding race conditions
 insert into JR_J_GLOBAL_REVISION VALUES(0);

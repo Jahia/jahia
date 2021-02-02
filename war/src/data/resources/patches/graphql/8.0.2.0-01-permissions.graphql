@@ -11,5 +11,11 @@ mutation {
                 }
             }
         }
+        updateWebDesignerRole: mutateNodesByQuery(query: "select * from [jnt:role] where localname()='web-designer'", queryLanguage: SQL2) {
+            mutateProperty(name: "j:permissionNames") {
+                addValue(value: "developerToolsAccess")
+            }
+        }
+
     }
 }

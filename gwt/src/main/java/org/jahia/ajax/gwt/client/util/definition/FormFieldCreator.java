@@ -551,7 +551,10 @@ public class FormFieldCreator {
         }
         if (initializer != null && values.size() == 0) {
             for (GWTJahiaValueDisplayBean v : initializer.getDisplayValues()) {
-                if (v.get("defaultProperty") != null && (Boolean) v.get("defaultProperty")) {
+                Object defaultProp = v.get("defaultProperty");
+                if ((defaultProp instanceof String) && Boolean.parseBoolean((String) defaultProp)) {
+                    values = Arrays.asList(new GWTJahiaNodePropertyValue(v.getValue()));
+                } else if ((defaultProp instanceof Boolean) && Boolean.TRUE.equals(defaultProp)) {
                     values = Arrays.asList(new GWTJahiaNodePropertyValue(v.getValue()));
                 }
             }

@@ -105,5 +105,7 @@ public final class Constants {
 
     public static final String URL_PROTOCOL_DX = "dx";
 
+    public static final String DEPENDENCY_DELIMITER = ";";
+
     public static final String URL_PROTOCOL_MODULE_DEPENDENCIES = "legacydepends";
 }

@@ -52,10 +52,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -71,6 +68,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.ModuleManager;
+import org.jahia.services.modulemanager.models.JahiaDepends;
 import org.jahia.services.modulemanager.persistence.BundlePersister;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.jahia.services.templates.JahiaTemplateManagerService;
@@ -170,19 +168,24 @@ public class ModuleUtils {
      * @return a single clause for the Require-Capability header
      */
     static String buildClauseRequireCapability(String dependency) {
-        String[] deps = dependency.split("=");
-        String moduleName = deps[0];
-        String moduleVersion = (deps.length > 1) ?  deps[1] : "";
-
+        JahiaDepends depends = new JahiaDepends(dependency);
         StringBuilder strBuilder = new StringBuilder(OSGI_CAPABILITY_MODULE_DEPENDENCIES).append(";filter:=\"(");
-        String nameFilter = String.format("%s=%s", OSGI_CAPABILITY_MODULE_DEPENDENCIES_KEY, moduleName);
-        if (StringUtils.isEmpty(moduleVersion)) {
+        String nameFilter = String.format("%s=%s", OSGI_CAPABILITY_MODULE_DEPENDENCIES_KEY, depends.getModuleName());
+        if (!depends.hasVersion()) {
             // e.g. com.jahia.modules.dependencies;filter:="(moduleIdentifier=<moduleName>)"
             strBuilder.append(nameFilter);
         } else {
-            // e.g. com.jahia.modules.dependencies;filter:="(&(moduleIdentifier=<moduleName>)(moduleVersion=<moduleVersion>))"
-            strBuilder.append(String.format("&(%s)", nameFilter))
-                    .append(String.format("(%s=%s)", OSGI_CAPABILITY_MODULE_DEPENDENCIES_VERSION_KEY, moduleVersion));
+            // e.g. com.jahia.modules.dependencies;filter:="(&(moduleIdentifier=<moduleName>)(moduleVersion>=<minVersion>)
+            // (moduleVersion<=<maxVersion>))"
+            strBuilder.append(String.format("&(%s)", nameFilter));
+            if (depends.hasMinVersion()) {
+                strBuilder.append('(').append(OSGI_CAPABILITY_MODULE_DEPENDENCIES_VERSION_KEY)
+                        .append(">=").append(depends.getMinVersion()).append(')');
+            }
+            if (depends.hasMaxVersion()) {
+                strBuilder.append('(').append(OSGI_CAPABILITY_MODULE_DEPENDENCIES_VERSION_KEY)
+                        .append("<=").append(depends.getMaxVersion()).append(')');
+            }
         }
         return strBuilder.append(")\"").toString();
     }
@@ -247,7 +250,8 @@ public class ModuleUtils {
 
         // build the set of provided dependencies
         if (StringUtils.isNotBlank(dependencies)) {
-            for (String dependency : StringUtils.split(dependencies, ",")) {
+            dependencies = replaceDependsDelimiter(dependencies);
+            for (String dependency : StringUtils.split(dependencies, DEPENDENCY_DELIMITER)) {
                 dependsList.add(dependency.trim());
             }
         }
@@ -267,6 +271,36 @@ public class ModuleUtils {
         }
 
         return capabilities;
+    }
+
+    /**
+     *
+     * @return intermediary string for easy parsing of module and version ranges
+     *
+     * e.g. 'module1=[1.2,2),module2,module3=(,4.0]'
+     * to 'module1=[1.2,2);module2;module3=(,4.0]'
+     */
+    public static String replaceDependsDelimiter(String dependsValue) {
+        List<String> result = new ArrayList<>();
+        StringTokenizer tokens = new StringTokenizer(dependsValue, ",");
+        String nextToken = null;
+        while (nextToken != null || tokens.hasMoreTokens()) {
+            String token = (nextToken != null) ? nextToken : tokens.nextToken().trim();
+            nextToken = (tokens.hasMoreTokens()) ? tokens.nextToken().trim() : null;
+            String[] dep = token.split("=", 2);
+
+            if (dep.length > 1) {
+                if (JahiaDepends.isMinVersion(dep[1]) && JahiaDepends.isMaxVersion(nextToken)) {
+                    result.add(String.format("%s=%s,%s", dep[0].trim(), dep[1].trim(), nextToken));
+                    nextToken = null;
+                } else {
+                    throw new ModuleManagementException("Error while parsing Jahia-depends version clause: " + token);
+                }
+            } else {
+                result.add(token);
+            }
+        }
+        return String.join(DEPENDENCY_DELIMITER, result);
     }
 
     /**

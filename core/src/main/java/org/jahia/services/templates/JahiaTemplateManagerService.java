@@ -811,6 +811,26 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return pack;
     }
 
+    /** Get matching JahiaTemplatesPackage for a given version range */
+    public JahiaTemplatesPackage getAnyDeployedTemplatePackage(String templatePackage, String minVersion, String maxVersion) {
+        TemplatePackageRegistry registry = getTemplatePackageRegistry();
+        Set<ModuleVersion> versions = registry.getAvailableVersionsForModule(templatePackage);
+        if (versions.isEmpty()) return null;
+
+        Iterator<ModuleVersion> iter = versions.iterator();
+        JahiaTemplatesPackage pack = null;
+        while (pack == null && iter.hasNext()) {
+            ModuleVersion ver = iter.next();
+            boolean outOfRange = (minVersion != null && ver.compareTo(new ModuleVersion(minVersion)) < 0) ||
+                    (maxVersion != null && ver.compareTo(new ModuleVersion(maxVersion)) > 0);
+            if (outOfRange) continue;
+
+            pack = registry.lookupByIdAndVersion(templatePackage, ver);
+            if (pack == null) pack = registry.lookupByNameAndVersion(templatePackage, ver);
+        }
+        return pack;
+    }
+
     /**
      * Returns a set of existing template sets that are available for site creation.
      *

@@ -53,12 +53,14 @@ import org.jahia.osgi.BundleState;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.services.modulemanager.*;
+import org.jahia.services.modulemanager.models.JahiaDepends;
 import org.jahia.services.modulemanager.persistence.BundlePersister;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.jahia.services.modulemanager.persistence.PersistentBundleInfoBuilder;
 import org.jahia.services.modulemanager.persistence.jcr.BundleInfoJcrHelper;
 import org.jahia.services.modulemanager.spi.BundleService;
 import org.jahia.services.modulemanager.spi.BundleService.BundleInformation;
+import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.settings.SettingsBean;
@@ -304,11 +306,11 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
             throw new ModuleManagementException(e);
         } finally {
             if (error == null) {
-                logger.info("{} operation completed for bundle {} on target {} in {} ms. Opearation result: {}",
+                logger.info("{} operation completed for bundle {} on target {} in {} ms. Operation result: {}",
                         new Object[]{operation.getName(), bundleKey, target, System.currentTimeMillis() - startTime,
                                 result});
             } else {
-                logger.info("{} operation failed for bundle {} on target {} (took {} ms). Opearation error: {}",
+                logger.info("{} operation failed for bundle {} on target {} (took {} ms). Operation error: {}",
                         new Object[]{operation.getName(), bundleKey, target, System.currentTimeMillis() - startTime,
                                 error});
             }
@@ -772,9 +774,11 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
         // Return first missing dependency
         for (Bundle b : templateManagerService.getInstalledBundles()) {
             if (b.getSymbolicName().equals(info.getSymbolicName())) {
-                String[] dependencies = b.getHeaders().get("Jahia-Depends").split(",");
+                String jahiaDepends = b.getHeaders().get("Jahia-Depends");
+                jahiaDepends = ModuleUtils.replaceDependsDelimiter(jahiaDepends);
+                String[] dependencies = jahiaDepends.split(Constants.DEPENDENCY_DELIMITER);
                 List<String> missing = Arrays.stream(dependencies)
-                        .filter(dep -> templateManagerService.getAnyDeployedTemplatePackage(dep) == null)
+                        .filter(dep -> !hasDependencyMatch(dep))
                         .collect(Collectors.toList());
                 if (!missing.isEmpty()) {
                     Map<String, Object> map = new HashMap<>();
@@ -784,8 +788,17 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
                 }
             }
         }
-
         return Collections.emptyMap();
+    }
+
+    private boolean hasDependencyMatch(String dependency) {
+        JahiaDepends depends = new JahiaDepends(dependency);
+        if (depends.hasVersion()) {
+            return templateManagerService.getAnyDeployedTemplatePackage(
+                    depends.getModuleName(), depends.getMinVersion(), depends.getMaxVersion()) != null;
+        } else {
+            return templateManagerService.getAnyDeployedTemplatePackage(depends.getModuleName()) != null;
+        }
     }
 
     private void checkForMissingDependency(Exception e, BundleInfo info) {

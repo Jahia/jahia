@@ -46,6 +46,9 @@ package org.jahia.osgi;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.modulemanager.Constants;
+import org.jahia.services.modulemanager.models.JahiaDepends;
+import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
@@ -125,9 +128,11 @@ class JahiaBundleTemplatesPackageHandler {
 
         String depends = getHeader(bundle, "Jahia-Depends");
         if (StringUtils.isNotBlank(depends)) {
-            String[] dependencies = StringUtils.split(depends, ",");
+            depends = ModuleUtils.replaceDependsDelimiter(depends);
+            String[] dependencies = depends.split(Constants.DEPENDENCY_DELIMITER);
             for (String dependency : dependencies) {
-                pkg.setDepends(dependency.trim());
+                JahiaDepends dep = new JahiaDepends(dependency);
+                pkg.setDepends(dep.getModuleName());
             }
         }
 

@@ -1,0 +1,34 @@
+@startuml
+SharedItemStateManager -> SharedItemStateManager : beginUpdate
+SharedItemStateManager -> Update : begin  
+Update -> ClusterNode : updateCreated
+ClusterNode -> DefaultRecordProducer : append
+DefaultRecordProducer -> Journal : lockAndSync
+Journal -> RWLock : acquire
+Journal -> Journal : doSync
+DefaultRecordProducer <-- Journal
+ClusterNode <-- DefaultRecordProducer  
+ClusterNode -> Journal : lockNodes
+Journal -> ConnectionHelper : startBatch
+Journal -> ConnectionHelper : exec insert jahia_locks
+Journal -> ConnectionHelper : endBatch
+ClusterNode <-- Journal
+Update <-- ClusterNode
+SharedItemStateManager <-- Update
+
+SharedItemStateManager -> SharedItemStateManager : end
+SharedItemStateManager -> ClusterNode : updateCommited
+ClusterNode -> Journal : append
+Journal -> ConnectionHelper : startBatch
+Journal -> ConnectionHelper : exec update global revision
+Journal -> ConnectionHelper : exec insert journal
+Journal -> ConnectionHelper : endBatch
+Journal -> Journal : unlock
+Journal -> RWLock : release
+ClusterNode <-- Journal
+ClusterNode -> ClusterNode : setRevision
+ClusterNode -> ClusterNode : unlockNodes
+ClusterNode -> ConnectionHelper : exec delete jahia_locks
+SharedItemStateManager <-- SharedItemStateManager
+
+@enduml

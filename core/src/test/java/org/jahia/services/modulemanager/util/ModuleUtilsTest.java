@@ -45,10 +45,7 @@ package org.jahia.services.modulemanager.util;
 
 import static java.util.stream.Collectors.joining;
 import static org.jahia.services.modulemanager.Constants.*;
-import static org.jahia.services.modulemanager.util.ModuleUtils.addCapabilities;
-import static org.jahia.services.modulemanager.util.ModuleUtils.buildClauseProvideCapability;
-import static org.jahia.services.modulemanager.util.ModuleUtils.buildClauseRequireCapability;
-import static org.jahia.services.modulemanager.util.ModuleUtils.replaceDependsDelimiter;
+import static org.jahia.services.modulemanager.util.ModuleUtils.*;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
@@ -112,12 +109,14 @@ public class ModuleUtilsTest {
 
     @Test
     public void testBuildClauseRequireWithVersion() {
-        String minVersion = "1.0";
+        String minVersion = "1";
+        String minVersionExpected = "1.0.0";
         String maxVersion = "2.3";
+        String maxVersionExpected = "2.3.0";
         String reqClausePrefix = String.format("%s;filter:=\"(&(%s=",
                 OSGI_CAPABILITY_MODULE_DEPENDENCIES, OSGI_CAPABILITY_MODULE_DEPENDENCIES_KEY);
-        String reqVersionClause = String.format(")(%s>=%s)(%s<=%s))\"",
-                OSGI_CAPABILITY_MODULE_DEPENDENCIES_VERSION_KEY, minVersion, OSGI_CAPABILITY_MODULE_DEPENDENCIES_VERSION_KEY, maxVersion);
+        String reqVersionClause = String.format(")(%s>=%s)(%s<=%s))\"", OSGI_CAPABILITY_MODULE_DEPENDENCIES_VERSION_KEY,
+                minVersionExpected, OSGI_CAPABILITY_MODULE_DEPENDENCIES_VERSION_KEY, maxVersionExpected);
         assertEquals(reqClausePrefix + BUNDLE_ID + reqVersionClause,
                 buildClauseRequireCapability(String.format("%s=[%s,%s]", BUNDLE_ID, minVersion, maxVersion)));
     }
@@ -125,25 +124,27 @@ public class ModuleUtilsTest {
     @Test
     public void testBuildClauseRequireWithMinVersionOnly() {
         String minVersion = "1.0";
-        String maxVersion = "";
+        String minVersionExpected = "1.0.0"; // padded with 0
         String reqClausePrefix = String.format("%s;filter:=\"(&(%s=",
                 OSGI_CAPABILITY_MODULE_DEPENDENCIES, OSGI_CAPABILITY_MODULE_DEPENDENCIES_KEY);
         String reqVersionClause = String.format(")(%s>=%s))\"",
-                OSGI_CAPABILITY_MODULE_DEPENDENCIES_VERSION_KEY, minVersion);
+                OSGI_CAPABILITY_MODULE_DEPENDENCIES_VERSION_KEY, minVersionExpected);
         assertEquals(reqClausePrefix + BUNDLE_ID + reqVersionClause,
-                buildClauseRequireCapability(String.format("%s=[%s,%s]", BUNDLE_ID, minVersion, maxVersion)));
+                buildClauseRequireCapability(String.format("%s=%s", BUNDLE_ID, minVersion)));
     }
 
     @Test
     public void testBuildClauseRequireWithMaxVersionOnly() {
-        String minVersion = "";
+        String minVersion = "0";
+        String minVersionExpected = "0.0.0"; // padded with 0
         String maxVersion = "2.3";
+        String maxVersionExpected = "2.3.0"; // padded with 0
         String reqClausePrefix = String.format("%s;filter:=\"(&(%s=",
                 OSGI_CAPABILITY_MODULE_DEPENDENCIES, OSGI_CAPABILITY_MODULE_DEPENDENCIES_KEY);
-        String reqVersionClause = String.format(")(%s<=%s))\"",
-                OSGI_CAPABILITY_MODULE_DEPENDENCIES_VERSION_KEY, maxVersion);
+        String reqVersionClause = String.format(")(moduleVersion>=%s)(!(%s>=%s)))\"",
+                minVersionExpected, OSGI_CAPABILITY_MODULE_DEPENDENCIES_VERSION_KEY, maxVersionExpected);
         assertEquals(reqClausePrefix + BUNDLE_ID + reqVersionClause,
-                buildClauseRequireCapability(String.format("%s=[%s,%s]", BUNDLE_ID, minVersion, maxVersion)));
+                buildClauseRequireCapability(String.format("%s=[%s,%s)", BUNDLE_ID, minVersion, maxVersion)));
     }
 
     @Test
@@ -239,9 +240,9 @@ public class ModuleUtilsTest {
         // depends with version, mixed multiple
         atts = new Attributes();
         atts.put(ATTR_NAME_BUNDLE_SYMBOLIC_NAME, "assets");
-        atts.put(ATTR_NAME_JAHIA_DEPENDS, "depend-module=[,1.5],depend-module2,depend-module3=[4,5]");
+        atts.put(ATTR_NAME_JAHIA_DEPENDS, "depend-module=1.5,depend-module2,depend-module3=[4,5]");
         addCapabilities(atts);
-        assertRequires(atts, "depend-module=[,1.5]", "depend-module2", "depend-module3=[4,5]");
+        assertRequires(atts, "depend-module=1.5", "depend-module2", "depend-module3=[4,5]");
 
         // existing value, multiple depends
         atts = new Attributes();
@@ -260,13 +261,11 @@ public class ModuleUtilsTest {
         try {
             String jahiaDepends;
             jahiaDepends = "module1";
-            assertEquals(jahiaDepends,  replaceDependsDelimiter(jahiaDepends));
-            jahiaDepends = "module1=[,]";
-            assertEquals(jahiaDepends,  replaceDependsDelimiter(jahiaDepends));
-            jahiaDepends = "module1=[1.4,]";
+            assertEquals(jahiaDepends, replaceDependsDelimiter(jahiaDepends));
+            jahiaDepends = "module1=1.4";
             assertEquals(jahiaDepends,  replaceDependsDelimiter(jahiaDepends));
             jahiaDepends = "module1 = [ 1.4,  2]  ";
-            assertEquals("module1=[ 1.4,2]",  replaceDependsDelimiter(jahiaDepends));
+            assertEquals("module1 = [ 1.4,  2]  ",  replaceDependsDelimiter(jahiaDepends));
         } catch (Exception e) {
             fail("Unexpected exception: " + e.getMessage());
         }
@@ -275,10 +274,11 @@ public class ModuleUtilsTest {
     @Test
     public void testParseJahiaDependsMixed() {
         try {
-            String jahiaDepends = "module-name1=[,],module-name2=[2.5.4, ], module-name3=[,1.4], module with a space ,module-name5=[2,3.4"
-                    + ".23]";
+            String jahiaDepends = "module-name1,module-name2=2.5.4, module-name3=[ ,1.4], "
+                    + "module with a space = 2.0,module-name5=[2,3.4.23]";
             String actual = replaceDependsDelimiter(jahiaDepends);
-            assertEquals("module-name1=[,];module-name2=[2.5.4,];module-name3=[,1.4];module with a space;module-name5=[2,3.4.23]", actual);
+            assertEquals("module-name1;module-name2=2.5.4; module-name3=[ ,1.4]; "
+                            + "module with a space = 2.0;module-name5=[2,3.4.23]", actual);
         } catch (Exception e) {
             fail("Unexpected exception: " + e.getMessage());
         }

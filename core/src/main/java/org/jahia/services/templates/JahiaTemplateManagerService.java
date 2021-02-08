@@ -74,6 +74,7 @@ import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.rules.BackgroundAction;
 import org.jahia.services.modulemanager.ModuleManager;
+import org.jahia.services.modulemanager.models.JahiaDepends;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
@@ -798,35 +799,20 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     @Override
     public JahiaTemplatesPackage getAnyDeployedTemplatePackage(String templatePackage) {
-        JahiaTemplatesPackage pack = getTemplatePackageById(templatePackage);
-        if (pack == null) {
-            Set<ModuleVersion> versions = getTemplatePackageRegistry().getAvailableVersionsForModule(templatePackage);
-            if (!versions.isEmpty()) {
-                pack = getTemplatePackageRegistry().lookupByIdAndVersion(templatePackage, versions.iterator().next());
-                if (pack == null) {
-                    pack = getTemplatePackageRegistry().lookupByNameAndVersion(templatePackage, versions.iterator().next());
-                }
-            }
-        }
-        return pack;
-    }
-
-    /** Get matching JahiaTemplatesPackage for a given version range */
-    public JahiaTemplatesPackage getAnyDeployedTemplatePackage(String templatePackage, String minVersion, String maxVersion) {
+        JahiaDepends depends = new JahiaDepends(templatePackage);
+        String moduleName = depends.getModuleName();
         TemplatePackageRegistry registry = getTemplatePackageRegistry();
-        Set<ModuleVersion> versions = registry.getAvailableVersionsForModule(templatePackage);
+        Set<ModuleVersion> versions = registry.getAvailableVersionsForModule(moduleName);
         if (versions.isEmpty()) return null;
 
         Iterator<ModuleVersion> iter = versions.iterator();
         JahiaTemplatesPackage pack = null;
         while (pack == null && iter.hasNext()) {
             ModuleVersion ver = iter.next();
-            boolean outOfRange = (minVersion != null && ver.compareTo(new ModuleVersion(minVersion)) < 0) ||
-                    (maxVersion != null && ver.compareTo(new ModuleVersion(maxVersion)) > 0);
-            if (outOfRange) continue;
+            if (!depends.inRange(ver.toString())) continue;
 
-            pack = registry.lookupByIdAndVersion(templatePackage, ver);
-            if (pack == null) pack = registry.lookupByNameAndVersion(templatePackage, ver);
+            pack = registry.lookupByIdAndVersion(moduleName, ver);
+            if (pack == null) pack = registry.lookupByNameAndVersion(moduleName, ver);
         }
         return pack;
     }

@@ -111,15 +111,18 @@ public class PublicationWorkflow implements CustomWorkflow {
     @Override
     public void initStartWorkflowDialog(GWTJahiaWorkflowDefinition workflow, WorkflowActionDialog dialog) {
         initDialog(dialog);
-
-        dialog.getButtonsBar().remove(dialog.getButtonsBar().getItem(0));
+        if (dialog.getButtonsBar().getItemCount() > 0) {
+            dialog.getButtonsBar().remove(dialog.getButtonsBar().getItem(0));
+        }
         Button button = getBypassWorkflowButton(workflow, dialog);
         if (button != null) {
             dialog.getButtonsBar().insert(button, 0);
         }
-        button = getStartWorkflowButton(workflow, dialog);
-        if (button != null) {
-            dialog.getButtonsBar().insert(button, 0);
+        if (workflow != null) {
+            button = getStartWorkflowButton(workflow, dialog);
+            if (button != null) {
+                dialog.getButtonsBar().insert(button, 0);
+            }
         }
     }
 
@@ -365,6 +368,7 @@ public class PublicationWorkflow implements CustomWorkflow {
         if (infosListByWorflowGroup.entrySet().isEmpty()) {
             new PublicationStatusWindow(linker, null, null, cards, unpublish);
         }
+        boolean showStartWfButton = false;
         for (Map.Entry<String, List<GWTJahiaPublicationInfo>> entry : infosListByWorflowGroup.entrySet()) {
             final List<GWTJahiaPublicationInfo> infoList = entry.getValue();
 
@@ -377,12 +381,19 @@ public class PublicationWorkflow implements CustomWorkflow {
                         definitions.get(workflowDefinition),
                         linker, custom, cards, infoList.get(0).getLanguage()
                 );
+                showStartWfButton = true;
             } else {
                 // No Workflow defined
-                new PublicationStatusWindow(linker, getAllUuids(infoList), infoList, cards, unpublish);
+                final PublicationWorkflow custom = unpublish ? new UnpublicationWorkflow(infoList) : new PublicationWorkflow(infoList);
+                new WorkflowActionDialog(infoList.get(0).getMainPath(), Messages.get("label.engineTab.publication", "Publication"),
+                        null,
+                        linker, custom, cards, infoList.get(0).getLanguage()
+                );
             }
         }
-        cards.addGlobalButton(getStartAllWorkflows(cards, linker, unpublish));
+        if (showStartWfButton) {
+            cards.addGlobalButton(getStartAllWorkflows(cards, linker, unpublish));
+        }
         cards.addGlobalButton(getBypassAllWorkflowsButton(cards, linker, unpublish));
         Button button = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
 

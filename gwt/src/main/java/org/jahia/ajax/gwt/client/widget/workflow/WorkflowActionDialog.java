@@ -51,7 +51,6 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
@@ -102,7 +101,7 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     public WorkflowActionDialog(final String nodePath, final String title, final GWTJahiaWorkflowDefinition wfDefinition,
                                 final Linker linker, CustomWorkflow custom, EngineContainer container) {
-        this(nodePath, linker, container, title, null, wfDefinition.getFormResourceName(), null);
+        this(nodePath, linker, container, title, null, wfDefinition.getFormResourceName(), null, false);
         this.wfDefinition = wfDefinition;
         initStartWorkflowDialog(wfDefinition);
         if (custom != null) {
@@ -112,7 +111,7 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     public WorkflowActionDialog(String nodePath, final GWTJahiaWorkflow workflow, final GWTJahiaWorkflowTask task, final Linker linker,
                                 CustomWorkflow custom, EngineContainer container) {
-        this(nodePath, linker, container, (workflow.getVariables().get("jcr_title") != null && workflow.getVariables().get("jcr_title").getValues().size() == 1) ? workflow.getVariables().get("jcr_title").getValues().get(0).getString() : null, null, (String) task.get("formResourceName"),workflow);
+        this(nodePath, linker, container, (workflow.getVariables().get("jcr_title") != null && workflow.getVariables().get("jcr_title").getValues().size() == 1) ? workflow.getVariables().get("jcr_title").getValues().get(0).getString() : null, null, (String) task.get("formResourceName"),workflow, false);
         initExecuteActionDialog(task);
         if (custom != null) {
             custom.initExecuteActionDialog(workflow, this);
@@ -121,17 +120,19 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     public WorkflowActionDialog(final String nodePath, final String title, final GWTJahiaWorkflowDefinition wfDefinition,
                                 final Linker linker, CustomWorkflow custom, final EngineContainer container, String language) {
-        this(nodePath, linker, container, title, language, wfDefinition.getFormResourceName(), null);
+        this(nodePath, linker, container, title, language, wfDefinition != null ? wfDefinition.getFormResourceName() : null, null, wfDefinition == null);
         this.wfDefinition = wfDefinition;
         this.customWorkflow = custom;
-        initStartWorkflowDialog(wfDefinition);
+        if (wfDefinition != null) {
+            initStartWorkflowDialog(wfDefinition);
+        }
         if (custom != null) {
             custom.initStartWorkflowDialog(wfDefinition, this);
         }
 
     }
 
-    private WorkflowActionDialog(String nodePath, Linker linker, EngineContainer container, String title, String language, String wfDefinitionNodeType, final GWTJahiaWorkflow workflow) {
+    private WorkflowActionDialog(String nodePath, Linker linker, EngineContainer container, String title, String language, String wfDefinitionNodeType, final GWTJahiaWorkflow workflow, boolean skipWorkflow) {
         super();
         addStyleName("workflow-action-dialog");
         this.nodePath = nodePath;
@@ -150,15 +151,15 @@ public class WorkflowActionDialog extends LayoutContainer {
         actionTab = new TabItem();
 
         this.container = container;
-
-        initTabs(wfDefinitionNodeType,workflow!=null?workflow.getVariables(): new HashMap<String, GWTJahiaNodeProperty>(), language);
-
+        if (!skipWorkflow) {
+            initTabs(wfDefinitionNodeType, workflow != null ? workflow.getVariables() : new HashMap<String, GWTJahiaNodeProperty>(), language);
+        }
         container.setEngine(this, this.title, buttonsBar, JahiaGWTParameters.getLanguage(language), this.linker);
         addCancelButton(container);
     }
 
     private void addCancelButton(final EngineContainer container) {
-        if (! (container instanceof EngineCards)) {
+        if (!(container instanceof EngineCards)) {
             Button cancel = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent event) {
                     container.closeEngine();
@@ -354,6 +355,7 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     /**
      * Create a start button for a specific workflow definition
+     *
      * @param wf the workflow definition for which we need to generate a button
      * @return the newly generated button
      */
@@ -454,6 +456,7 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     /**
      * get the custom workflow associated with this workflow dialog
+     *
      * @return the CustomWorkflow object
      */
     public CustomWorkflow getCustomWorkflow() {
@@ -462,6 +465,7 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     /**
      * return the nodePath used to create this dialog
+     *
      * @return the nodePath associated at creation with this dialog
      */
     public String getNodePath() {
@@ -470,6 +474,7 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     /**
      * return the workflow definition used to create this dialog
+     *
      * @return the workflow definition associated at creation with this dialog
      */
     public GWTJahiaWorkflowDefinition getWfDefinition() {
@@ -482,6 +487,7 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     /**
      * The list of comments in this workflow
+     *
      * @return list of comments in this workflow
      */
     public List<String> getComments() {
@@ -515,7 +521,7 @@ public class WorkflowActionDialog extends LayoutContainer {
         private NodeTypeCreationInfo result;
         private List<AsyncCallback<NodeTypeCreationInfo>> deferredCallbacks = new ArrayList<AsyncCallback<NodeTypeCreationInfo>>();
 
-        public NodeTypeCreationCaller(String nodeTypeName,final String path) {
+        public NodeTypeCreationCaller(String nodeTypeName, final String path) {
             contentManagement.getWFFormForNodeAndNodeType(nodeTypeName, new BaseAsyncCallback<GWTJahiaNodeType>() {
                 public void onSuccess(final GWTJahiaNodeType nodeType) {
                     JahiaContentManagementService.App.getInstance().initializeCreateEngine(nodeType.getName(), path, null,

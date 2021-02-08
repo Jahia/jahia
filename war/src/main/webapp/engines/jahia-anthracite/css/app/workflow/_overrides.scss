@@ -101,10 +101,6 @@
         z-index: 9999999;
     }
 
-    .x-border-panel:nth-child(2) .x-panel-body.x-panel-body-noheader.x-panel-body-noborder { /* OPTIMISE SELECTOR ::: css/app/workflow/_overrides.scss ::: 6 */
-        height: 214px !important;
-    }
-
     .x-border-panel > .x-panel-bwrap {
         width: calc(100% - 16px) !important;
         height: 100% !important;

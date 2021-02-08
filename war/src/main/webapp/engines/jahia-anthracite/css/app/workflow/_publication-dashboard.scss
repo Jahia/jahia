@@ -486,10 +486,6 @@ div.publicationstatuswindow-card.engine-window {
                       border: none !important;
                       background: none !important;
 
-                      .x-form-item-label {
-                        display: none !important;
-                      }
-
                       .x-form-text {
                         @include text(_size("normal"), _theme($TAB--COLOR, $EDIT-ENGINE), _weight("light"));
                         line-height: 2rem !important;

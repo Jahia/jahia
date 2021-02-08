@@ -149,7 +149,8 @@ public class SurefireTestNGXMLResultFormatter implements ISuiteListener,
     private static DocumentBuilder getDocumentBuilder() {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
             return factory.newDocumentBuilder();
         } catch (Exception exc) {
             throw new ExceptionInInitializerError(exc);

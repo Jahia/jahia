@@ -665,7 +665,7 @@
         <dependency>
             <groupId>net.sf.saxon</groupId>
             <artifactId>Saxon-HE</artifactId>
-            <version>9.9.1-5</version>
+            <version>10.3</version>
         </dependency>
         <!-- Pluto 2.0 shared lib-->
         <dependency>

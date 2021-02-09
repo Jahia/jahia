@@ -130,6 +130,7 @@ public abstract class JahiaAbstractJournal extends AbstractJournal {
     /**
      * Return the minimal revision of all registered consumers.
      */
+    @SuppressWarnings("java:S2177")
     private long getMinimalRevision() {
         long minimalRevision = Long.MAX_VALUE;
 
@@ -147,40 +148,39 @@ public abstract class JahiaAbstractJournal extends AbstractJournal {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings({"java:S135","java:S3626"})
     public void sync(boolean startup) throws JournalException {
         log.debug("Synchronize to the latest change. Startup: {}", startup);
         for (;;) {
-            doVersionedLockInternalSyncIfNeeded(startup);
+            if (internalVersionManager != null) {
+                VersioningLock.ReadLock lock =
+                        internalVersionManager.acquireReadLock();
+                try {
+                    internalSync(startup);
+                } finally {
+                    lock.release();
+                }
+            } else {
+                internalSync(startup);
+            }
             // startup sync already done, don't do it again
             startup = false;
             if (syncAgainOnNewRecords()) {
                 // sync again if there are more records available
                 RecordIterator it = getRecords(getMinimalRevision());
                 try {
-                    if (!it.hasNext()) {
-                        break;
+                    if (it.hasNext()) {
+                        continue;
                     }
                 } finally {
                     it.close();
                 }
             }
+            break;
         }
     }
 
-    private void doVersionedLockInternalSyncIfNeeded(boolean startup) throws JournalException {
-        if (internalVersionManager != null) {
-            VersioningLock.ReadLock lock =
-                    internalVersionManager.acquireReadLock();
-            try {
-                internalSync(startup);
-            } finally {
-                lock.release();
-            }
-        } else {
-            internalSync(startup);
-        }
-    }
-
+    @SuppressWarnings({"java:S2142","java:S2177"})
     private void internalSync(boolean startup) throws JournalException {
         try {
             if (log.isDebugEnabled()) {
@@ -283,7 +283,7 @@ public abstract class JahiaAbstractJournal extends AbstractJournal {
         }
     }
 
-    @SuppressWarnings("java:S3776")
+    @SuppressWarnings({"java:S3776","java:S2177"})
     private void internalLockAndSync() throws JournalException {
         acquireWriteLock();
 
@@ -337,6 +337,7 @@ public abstract class JahiaAbstractJournal extends AbstractJournal {
         }
     }
 
+    @SuppressWarnings({"java:S2142"})
     private void acquireWriteLock() throws JournalException {
         try {
             if (log.isDebugEnabled()) {

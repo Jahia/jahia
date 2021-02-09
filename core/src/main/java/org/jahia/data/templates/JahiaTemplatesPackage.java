@@ -57,6 +57,7 @@ import org.jahia.osgi.BundleResource;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.modulemanager.BundleInfo;
+import org.jahia.services.modulemanager.models.JahiaDepends;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.templates.SourceControlManagement;
 import org.jahia.settings.SettingsBean;
@@ -130,7 +131,12 @@ public class JahiaTemplatesPackage {
     /**
      * Name of the dependent package
      */
-    private List<String> depends = new LinkedList<String>();
+    private List<String> depends = new LinkedList<>();
+
+    /**
+     * Name of the dependent package with version
+     */
+    private List<JahiaDepends> versionDepends = new LinkedList<>();
 
     /**
      * The module id (= artifactId)
@@ -428,12 +434,30 @@ public class JahiaTemplatesPackage {
     }
 
     /**
+     * Returns the name of the parent template package.
+     *
+     * @return the name of the parent template package
+     */
+    public List<JahiaDepends> getVersionDepends() {
+        return versionDepends;
+    }
+
+    /**
      * Sets the name of the parent template package.
      *
      * @param dep name of the parent template package
      */
     public void setDepends(String dep) {
         depends.add(dep);
+    }
+
+    /**
+     * Sets the name of the parent template package with version restriction
+     *
+     * @param dep name of the parent template package
+     */
+    public void setVersionDepends(JahiaDepends dep) {
+        versionDepends.add(dep);
     }
 
     @Override

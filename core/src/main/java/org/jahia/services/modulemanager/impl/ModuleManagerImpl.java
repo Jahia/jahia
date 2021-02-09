@@ -774,8 +774,7 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
         for (Bundle b : templateManagerService.getInstalledBundles()) {
             if (b.getSymbolicName().equals(info.getSymbolicName())) {
                 String jahiaDepends = b.getHeaders().get("Jahia-Depends");
-                jahiaDepends = ModuleUtils.replaceDependsDelimiter(jahiaDepends);
-                String[] dependencies = jahiaDepends.split(Constants.DEPENDENCY_DELIMITER);
+                String[] dependencies = ModuleUtils.toDependsArray(jahiaDepends);
                 List<String> missing = Arrays.stream(dependencies)
                         .filter(dep -> templateManagerService.getAnyDeployedTemplatePackage(dep) == null)
                         .collect(Collectors.toList());

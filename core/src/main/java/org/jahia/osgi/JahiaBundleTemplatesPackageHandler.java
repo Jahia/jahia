@@ -127,14 +127,7 @@ class JahiaBundleTemplatesPackageHandler {
         }
 
         String depends = getHeader(bundle, "Jahia-Depends");
-        if (StringUtils.isNotBlank(depends)) {
-            depends = ModuleUtils.replaceDependsDelimiter(depends);
-            String[] dependencies = depends.split(Constants.DEPENDENCY_DELIMITER);
-            for (String dependency : dependencies) {
-                JahiaDepends dep = new JahiaDepends(dependency);
-                pkg.setDepends(dep.getModuleName());
-            }
-        }
+        setPackageDepends(pkg, depends);
 
         pkg.setProvider(StringUtils.defaultString(getHeader(bundle, "Implementation-Vendor"),
                 "Jahia Solutions Group SA"));
@@ -144,6 +137,17 @@ class JahiaBundleTemplatesPackageHandler {
         pkg.setGroupId(getHeader(bundle, "Jahia-GroupId"));
 
         return pkg;
+    }
+
+    private static void setPackageDepends(JahiaTemplatesPackage pkg, String depends) {
+        if (StringUtils.isNotBlank(depends)) {
+            String[] dependencies = ModuleUtils.toDependsArray(depends);
+            for (String dependency : dependencies) {
+                JahiaDepends dep = new JahiaDepends(dependency);
+                pkg.setDepends(dep.getModuleName());
+                if (dep.hasVersion()) pkg.setVersionDepends(dep);
+            }
+        }
     }
 
     private static void detectResourceBundle(Bundle bundle, JahiaTemplatesPackage pkg) {

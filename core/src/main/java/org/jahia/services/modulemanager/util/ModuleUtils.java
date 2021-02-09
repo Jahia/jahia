@@ -233,8 +233,8 @@ public class ModuleUtils {
 
         // build the set of provided dependencies
         if (StringUtils.isNotBlank(dependencies)) {
-            dependencies = replaceDependsDelimiter(dependencies);
-            for (String dependency : StringUtils.split(dependencies, DEPENDENCY_DELIMITER)) {
+            String[] depList = ModuleUtils.toDependsArray(dependencies);
+            for (String dependency : depList) {
                 dependsList.add(dependency.trim());
             }
         }
@@ -287,6 +287,11 @@ public class ModuleUtils {
             result.add(dependency);
         }
         return String.join(DEPENDENCY_DELIMITER, result);
+    }
+
+    public static String[] toDependsArray(String dependsValue) {
+        dependsValue = ModuleUtils.replaceDependsDelimiter(dependsValue);
+        return dependsValue.split(DEPENDENCY_DELIMITER);
     }
 
     /**

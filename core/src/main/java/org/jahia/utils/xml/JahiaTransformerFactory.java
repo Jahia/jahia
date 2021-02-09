@@ -60,7 +60,7 @@ import net.sf.saxon.lib.FeatureKeys;
  */
 public class JahiaTransformerFactory {
     private static final Logger logger = LoggerFactory.getLogger(JahiaTransformerFactory.class);
-
+    
     private JahiaTransformerFactory() {
         throw new IllegalStateException("Utility class");
       }
@@ -89,28 +89,17 @@ public class JahiaTransformerFactory {
      * Prevent external entities from accessing.
      */
     private static TransformerFactory setDefaultAttributes(TransformerFactory factory) {
-        setOptionalAttribute(factory, XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        setOptionalAttribute(factory, XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+        factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
         setOptionalFeature(factory, FeatureKeys.ALLOW_EXTERNAL_FUNCTIONS, false);
         return factory;
     }
-
-    private static void setOptionalAttribute(TransformerFactory factory, String name, Object value) {
-        try {
-            factory.setAttribute(name, value);
-        } catch (IllegalArgumentException e) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("{} property not supported by {}", name, factory.getClass().getCanonicalName());
-            }
-        }
-    }
+    
     private static void setOptionalFeature(TransformerFactory factory, String name, boolean value) {
         try {
             factory.setFeature(name, value);
         } catch (IllegalArgumentException | TransformerConfigurationException e) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("{} feature not supported by {}", name, factory.getClass().getCanonicalName());
-            }
+            logger.debug("{} feature not supported by {}", name, factory.getClass().getCanonicalName());
         }
     }
 }

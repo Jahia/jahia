@@ -61,9 +61,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.tools.ant.util.DOMElementWriter;
 import org.jahia.utils.xml.JahiaDocumentBuilderFactory;

@@ -62,6 +62,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.tools.ant.util.DOMElementWriter;
+import org.jahia.utils.xml.JahiaDocumentBuilderFactory;
 import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
@@ -136,10 +137,7 @@ public class SurefireJUnitXMLResultFormatter extends RunListener {
 
     private static DocumentBuilder getDocumentBuilder() {
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-            return factory.newDocumentBuilder();
+            return JahiaDocumentBuilderFactory.newInstance().newDocumentBuilder();
         } catch (Exception exc) {
             throw new ExceptionInInitializerError(exc);
         }

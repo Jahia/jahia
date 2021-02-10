@@ -51,6 +51,7 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sf.saxon.BasicTransformerFactory;
 import net.sf.saxon.lib.FeatureKeys;
 
 /**
@@ -69,7 +70,7 @@ public class JahiaTransformerFactory {
      * Build a new {@link TransformerFactory} using the default constructor and prevent external entities from accessing.
      */
     public static TransformerFactory newInstance() {
-        return setDefaultAttributes(TransformerFactory.newInstance());
+        return newInstance(BasicTransformerFactory.class);
     }
 
     /**

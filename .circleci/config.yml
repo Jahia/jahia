@@ -1,5 +1,14 @@
 version: 2.1
 
+commands:
+  generate_cachekey_seed:
+      description: Generate Cache Key Seeds
+      steps:
+      - run: 
+          name: Generate Cache Key Seeds
+          command: |
+            find . -name 'pom.xml' | sort | xargs cat > ~/source/maven_cache_seed
+
 references:
   workdir: &workdir
     working_directory: ~/source
@@ -21,6 +30,7 @@ jobs:
       - image: circleci/openjdk:8-jdk-stretch
     steps:
       - checkout
+      - generate_cachekey_seed
       - *persist-workspace
 
   build:
@@ -36,33 +46,30 @@ jobs:
       - *attach-workspace
       - restore_cache:
           keys:
-            - v2-dependencies-{{ checksum "pom.xml" }}
-            # fallback to using the latest cache if no exact match is found
-            - v2-dependencies-
-      - when:
-          condition: <<parameters.is_pull_request>>
-          steps:
-            - run:
-                # TODO For now I just replaced the Bamboo build number by the CircleCI build number
-                name: mvn clean install
-                command: mvn -s .circleci/.circleci.settings.xml -e clean install -Pgwt-production,unit-tests -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
-      - unless:
-          condition: <<parameters.is_pull_request>>
-          steps:
-            - run:
-                # TODO One day we may want to replace the install by deploy in the name and the command
-                # TODO For now I just replaced the Bamboo build number by the CircleCI build number
-                name: mvn clean install
-                command: mvn -s .circleci/.circleci.settings.xml -e clean install -Pgwt-production,unit-tests -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
+            - v1-maven-dependencies-{{ checksum "maven_cache_seed" }}
+      - run:
+          # TODO For now I just replaced the Bamboo build number by the CircleCI build number
+          name: Build package and load all dependencies into local Maven repository
+          command: |
+            mvn -s .circleci/.circleci.settings.xml -e clean package de.qaware.maven:go-offline-maven-plugin:resolve-dependencies \
+               -Pgwt-production,unit-tests -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM 
       - run:
           # TODO For now I just replaced the Bamboo build number by the CircleCI build number
           name: Compile GWT development
           working_directory: ~/source/gwt
-          command: mvn -s ../.circleci/.circleci.settings.xml -e clean install -Pgwt-development -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
+          command: mvn -s ../.circleci/.circleci.settings.xml -e clean package -Pgwt-development -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
       - save_cache:
           paths:
             - ~/.m2
-          key: v2-dependencies-{{ checksum "pom.xml" }}
+          key: v1-maven-dependencies-{{ checksum "maven_cache_seed" }}
+#      - when:
+#          not: <<parameters.is_pull_request>>
+#          steps:
+#            - run:
+#                # TODO One day we may want to do a deploy
+#                # TODO For now I just replaced the Bamboo build number by the CircleCI build number
+#                name: Deploy artifacts to server repository  
+#                command: mvn -s .circleci/.circleci.settings.xml -e deploy -Pgwt-production -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM          
       - *persist-workspace
 
   sonar:
@@ -78,9 +85,13 @@ jobs:
       - *attach-workspace
       - restore_cache:
           keys:
-            - v2-dependencies-{{ checksum "pom.xml" }}
+            - v1-maven-dependencies-{{ checksum "maven_cache_seed" }}
             # fallback to using the latest cache if no exact match is found
-            - v2-dependencies-
+            - v1-maven-dependencies-
+      - restore_cache:
+          keys:
+            - v1-sonar-owasp-dependencies-<<parameters.is_pull_request>>
+            - v1-sonar-owasp-dependencies-
       - when:
           condition: <<parameters.is_pull_request>>
           steps:
@@ -96,17 +107,25 @@ jobs:
           steps:
             - run:
                 name: Sonar analysis
+                environment: 
+                  DEPENDENCY_CHECK_SETTINGS: -DfailOnError=false -DskipProvidedScope=true -DskipTestScope=false 
+                      -DretireJsAnalyzerEnabled=false -DnodeAnalyzerEnabled=false -Dformats=HTML,JSON 
+                      -Dsonar.dependencyCheck.jsonReportPath=target/dependency-check-report.json 
+                      -Dsonar.dependencyCheck.htmlReportPath=target/dependency-check-report.html 
+                      -DdataDirectory=~/.owasp/dependency-check-data
                 command: |
-                  if [[ "${CIRCLE_BRANCH}" == "master" ]];
-                  then
-                    mvn -s .circleci/.circleci.settings.xml sonar:sonar
+                  if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
+                    mvn -s .circleci/.circleci.settings.xml dependency-check:aggregate sonar:sonar \
+                        $DEPENDENCY_CHECK_SETTINGS
                   else
-                    mvn -s .circleci/.circleci.settings.xml sonar:sonar -Dsonar.branch.name=$CIRCLE_BRANCH
+                    mvn -s .circleci/.circleci.settings.xml dependency-check:aggregate sonar:sonar \
+                        -Dsonar.branch.name=$CIRCLE_BRANCH $DEPENDENCY_CHECK_SETTINGS
                   fi
       - save_cache:
           paths:
-            - ~/.m2
-          key: v2-dependencies-{{ checksum "pom.xml" }}
+            - ~/.owasp/dependency-check-data
+            - ~/.sonar/cache
+          key: v1-sonar-owasp-dependencies-<<parameters.is_pull_request>>
 
   trigger_pack_build:
     <<: *workdir

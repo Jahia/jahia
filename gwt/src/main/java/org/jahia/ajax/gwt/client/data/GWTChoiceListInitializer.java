@@ -46,6 +46,8 @@ package org.jahia.ajax.gwt.client.data;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+
 /**
  * Field initializer GWT bean. 
  *

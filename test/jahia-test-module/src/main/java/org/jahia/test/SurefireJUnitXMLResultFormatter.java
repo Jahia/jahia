@@ -69,6 +69,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+
 
 /**
  * Prints XML output of the test to a specified Writer.

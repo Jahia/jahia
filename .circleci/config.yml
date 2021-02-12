@@ -47,6 +47,7 @@ jobs:
       - restore_cache:
           keys:
             - v1-maven-dependencies-{{ checksum "maven_cache_seed" }}
+            - v1-maven-dependencies-
       - run:
           # TODO For now I just replaced the Bamboo build number by the CircleCI build number
           name: Build package and load all dependencies into local Maven repository
@@ -95,17 +96,10 @@ jobs:
       - when:
           condition: <<parameters.is_pull_request>>
           steps:
-            - checkout
-            - run:
-               name: Git custom command to fix circle-ci checkout for sonar analysis on PR
-               command: |
-                 git fetch --all
-                 git branch -D master
-                 git rev-parse origin/master
             - run:
                 name: Analyze pull request with sonar
                 command: |
-                  mvn -s .circleci/.circleci.settings.xml clean verify sonar:sonar -Dsonar.pullrequest.branch=$CIRCLE_BRANCH \
+                  mvn -s .circleci/.circleci.settings.xml sonar:sonar -Dsonar.pullrequest.branch=$CIRCLE_BRANCH \
                   -Dsonar.pullrequest.key=<< pipeline.parameters.pull_request_number >> \
                   -Dsonar.pullrequest.base=<< pipeline.parameters.target_branch >> \
                   -Dsonar.pullrequest.github.repository=<< pipeline.parameters.github_repository >>
@@ -119,7 +113,7 @@ jobs:
                       -DretireJsAnalyzerEnabled=false -DnodeAnalyzerEnabled=false -Dformats=HTML,JSON 
                       -Dsonar.dependencyCheck.jsonReportPath=target/dependency-check-report.json 
                       -Dsonar.dependencyCheck.htmlReportPath=target/dependency-check-report.html 
-                      -DdataDirectory=~/.owasp/dependency-check-data
+                      -DdataDirectory=/home/circleci/.owasp/dependency-check-data
                 command: |
                   if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
                     mvn -s .circleci/.circleci.settings.xml dependency-check:aggregate sonar:sonar \

@@ -70,6 +70,7 @@ import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.node.HumanTaskNode;
+import org.jbpm.workflow.core.node.Join;
 import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
@@ -112,13 +113,13 @@ public abstract class BaseCommand<T> implements GenericCommand<T> {
     private transient static Logger logger = LoggerFactory.getLogger(BaseCommand.class);
 
     private KnowledgeCommandContext context;
-    private KieSession ksession;
+    protected KieSession ksession;
     private TaskService taskService;
     private AuditLogService auditLogService;
     private EntityManager em;
     private RuntimeEngine runtimeEngine;
     private JbpmServicesPersistenceManager persistenceManager;
-    private WorkflowService workflowService;
+    protected WorkflowService workflowService;
     private JahiaUserManagerService userManager;
     private JahiaGroupManagerService groupManager;
     private String key;
@@ -309,13 +310,7 @@ public abstract class BaseCommand<T> implements GenericCommand<T> {
         final WorkflowDefinition definition = getWorkflowDefinitionById(instance.getProcessId(), uiLocale, ksession.getKieBase());
         workflow.setWorkflowDefinition(definition);
         workflow.setAvailableActions(getAvailableActions(ksession, taskService, Long.toString(instance.getId()), uiLocale));
-        /*
-        Not sure how to handle this in jBPM 6 since we don't use timers in our processes
-        Job job = managementService.createJobQuery().timers().processInstanceId(instance.getId()).uniqueResult();
-        if (job != null) {
-            workflow.setDuedate(job.getDueDate());
-        }
-        */
+
         ProcessInstanceLog processInstanceLog =  (ProcessInstanceLog) ((ProcessInstanceImpl)instance).getMetaData().get("ProcessInstanceLog");
         if (processInstanceLog == null) {
             processInstanceLog = auditLogService.findProcessInstance(instance.getId());
@@ -346,7 +341,14 @@ public abstract class BaseCommand<T> implements GenericCommand<T> {
         }
         workflowTask.setId(Long.toString(task.getId()));
         Set<String> connectionIds = getTaskOutcomes(taskNodeInstance.getNode());
-        workflowTask.setOutcome(connectionIds);
+        workflowTask.setOutcomes(connectionIds);
+
+        Map<String, String> permissions = workflowService.getWorkflowRegistration(taskNodeInstance.getProcessInstance().getProcessId()).getPermissions();
+        String prefix = taskNodeInstance.getNodeName() + ".";
+        permissions = permissions.entrySet().stream()
+                .filter(entry -> entry.getKey().startsWith(prefix))
+                .collect(Collectors.toMap(e -> e.getKey().substring(prefix.length()), Map.Entry::getValue));
+        workflowTask.setOutcomesPermissions(permissions);
         PeopleAssignments peopleAssignements = task.getPeopleAssignments();
         List<WorkflowParticipation> participations = new ArrayList<WorkflowParticipation>();
         if (peopleAssignements.getPotentialOwners().size() > 0) {
@@ -428,6 +430,8 @@ public abstract class BaseCommand<T> implements GenericCommand<T> {
             for (Connection connection : outgoingConnectionEntry.getValue()) {
                 if (connection.getTo() instanceof Split) {
                     connectionIds.addAll(getConstraintNamesOrderedByPriority(((Split) connection.getTo()).getConstraints().values()));
+                } else if (connection.getTo() instanceof Join) {
+                    getOutgoingConnectionNames(connectionIds, ((Join)connection.getTo()).getTo().getTo());
                 } else {
                     String uniqueId = (String) connection.getMetaData().get("UniqueId");
                     connectionIds.add(uniqueId);

@@ -45,13 +45,12 @@ package org.jahia.services.workflow.jbpm.command;
 
 import com.google.common.base.Joiner;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.WorkflowObservationManager;
 import org.jahia.services.workflow.jbpm.BaseCommand;
 import org.jahia.services.workflow.jbpm.JBPM6WorkflowProvider;
+import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.task.model.Task;
 import org.slf4j.Logger;
 
@@ -84,6 +83,25 @@ public class CompleteTaskCommand extends BaseCommand<Object> {
     public Object execute() {
         long id = Long.parseLong(taskId);
         Task task = getTaskService().getTaskById(id);
+
+        NodeInstance taskNodeInstance = getTaskNodeInstance(task, ksession);
+        String processId = taskNodeInstance.getProcessInstance().getProcessId();
+        Map<String, String> permissions = workflowService.getWorkflowRegistration(processId).getPermissions();
+        String permission = permissions.get(taskNodeInstance.getNodeName() + "." + outcome);
+        if (permission != null) {
+            String nodeId = (String) taskNodeInstance.getProcessInstance().getVariable("nodeId");
+            try {
+                if (nodeId != null && !JCRTemplate.getInstance().doExecute(jahiaUser, null, null,
+                        session -> session.getNodeByIdentifier(nodeId).hasPermission(permission)
+                )) {
+                    logger.error("User does not have permission to complete {} with {}", taskNodeInstance.getNodeName(), outcome);
+                    return null;
+                }
+            } catch (RepositoryException e) {
+                logger.warn("Cannot read node {}", nodeId, e);
+            }
+        }
+
         Map<String, Object> taskInputParameters = getTaskInputParameters(task, getKieSession(), getTaskService());
         Map<String, Object> taskOutputParameters = getTaskOutputParameters(task, taskInputParameters, getKieSession(), getTaskService());
         final String uuid = (String) taskOutputParameters.get("task-" + taskId);

@@ -66,6 +66,7 @@ public class WorkflowTask extends WorkflowAction {
     private JahiaUser assignee;
     private String id;
     private Set<String> outcomes;
+    private Map<String, String> outcomesPermissions;
     private List<WorkflowParticipation> participations;
     private String formResourceName;
     private String processId;
@@ -117,12 +118,20 @@ public class WorkflowTask extends WorkflowAction {
         return id;
     }
 
-    public void setOutcome(Set<String> outcome) {
+    public void setOutcomes(Set<String> outcome) {
         this.outcomes = outcome;
     }
 
     public Set<String> getOutcomes() {
         return outcomes;
+    }
+
+    public Map<String, String> getOutcomesPermissions() {
+        return outcomesPermissions;
+    }
+
+    public void setOutcomesPermissions(Map<String, String> outcomesPermissions) {
+        this.outcomesPermissions = outcomesPermissions;
     }
 
     public List<WorkflowParticipation> getParticipations() {

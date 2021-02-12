@@ -134,12 +134,12 @@ public class WorkflowHelper {
                                         JCRGroupNode groupNode = groupManagerService.lookupGroupByPath(principal.getLocalPath());
                                         JCRUserNode userNode = userManagerService.lookupUserByPath(session.getUser().getLocalPath());
                                         if (groupNode != null && userNode != null && groupNode.isMember(userNode)) {
-                                            gwtWf.getAvailableTasks().add(getGWTJahiaWorkflowTask(workflowTask));
+                                            gwtWf.getAvailableTasks().add(getGWTJahiaWorkflowTask(workflowTask, null));
                                             break;
                                         }
                                     }
                                     if (principal instanceof JahiaUser && principal.getLocalPath().equals(session.getUser().getLocalPath())) {
-                                        gwtWf.getAvailableTasks().add(getGWTJahiaWorkflowTask(workflowTask));
+                                        gwtWf.getAvailableTasks().add(getGWTJahiaWorkflowTask(workflowTask, null));
                                         break;
                                     }
                                 }
@@ -176,7 +176,7 @@ public class WorkflowHelper {
         return gwtWf;
     }
 
-    public GWTJahiaWorkflowTask getGWTJahiaWorkflowTask(WorkflowTask workflowTask) {
+    public GWTJahiaWorkflowTask getGWTJahiaWorkflowTask(WorkflowTask workflowTask, JCRNodeWrapper nodeWrapper) {
         GWTJahiaWorkflowTask task = new GWTJahiaWorkflowTask();
         List<GWTJahiaWorkflowOutcome> gwtOutcomes = new ArrayList<GWTJahiaWorkflowOutcome>();
         task.setProvider(workflowTask.getProvider());
@@ -188,16 +188,19 @@ public class WorkflowHelper {
         task.setCreateTime(workflowTask.getCreateTime());
         task.setProcessId(workflowTask.getProcessId());
         Set<String> outcomes = workflowTask.getOutcomes();
+        Map<String, String> outcomesPermissions = workflowTask.getOutcomesPermissions();
         List<String> display = workflowTask.getDisplayOutcomes();
         List<String> icons = workflowTask.getOutcomeIcons();
         int i = 0;
         for (String outcome : outcomes) {
-            GWTJahiaWorkflowOutcome gwtOutcome = new GWTJahiaWorkflowOutcome();
-            gwtOutcome.setName(outcome);
-            gwtOutcome.setLabel(display.get(i));
-            gwtOutcome.setIcon(icons.get(i));
+            if (!outcomesPermissions.containsKey(outcome) || nodeWrapper == null || nodeWrapper.hasPermission(outcomesPermissions.get(outcome))) {
+                GWTJahiaWorkflowOutcome gwtOutcome = new GWTJahiaWorkflowOutcome();
+                gwtOutcome.setName(outcome);
+                gwtOutcome.setLabel(display.get(i));
+                gwtOutcome.setIcon(icons.get(i));
+                gwtOutcomes.add(gwtOutcome);
+            }
             i++;
-            gwtOutcomes.add(gwtOutcome);
         }
         task.setVariables(getPropertiesMap(workflowTask.getVariables()));
         return task;
@@ -452,7 +455,15 @@ public class WorkflowHelper {
                         }
                     }
                 }
-                gwtWfHistory.getAvailableTasks().add(getGWTJahiaWorkflowTask(task));
+                JCRNodeWrapper node = null;
+                try {
+                    if (gwtWfHistory.getNodeId() != null) {
+                        node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByIdentifier(gwtWfHistory.getNodeId());
+                    }
+                } catch (RepositoryException e) {
+                    logger.warn("Cannot read node {}", gwtWfHistory.getNodeId(), e);
+                }
+                gwtWfHistory.getAvailableTasks().add(getGWTJahiaWorkflowTask(task, node));
             }
         }
 

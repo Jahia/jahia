@@ -115,6 +115,7 @@
                 <module>bundles</module>
                 <module>features</module>
                 <module>war</module>
+                <module>package</module>
                 <module>test</module>
             </modules>
         </profile>

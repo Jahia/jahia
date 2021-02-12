@@ -47,8 +47,6 @@ import javax.jcr.RepositoryException;
 
 import org.jahia.services.content.JCRNodeWrapper;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-
 /**
  * Instances implementing this interface are used during JCR import to process attributes of each element in the imported XML content, thus
  * providing special handling for particular attributes.

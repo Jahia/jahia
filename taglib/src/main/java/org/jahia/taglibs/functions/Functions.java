@@ -78,8 +78,6 @@ import javax.servlet.jsp.JspTagException;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-
 /**
  * Custom functions, which are exposed into the template scope.
  *

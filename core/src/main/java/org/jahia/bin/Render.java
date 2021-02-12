@@ -718,15 +718,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 }
             }
             if (StringUtils.isEmpty(stayOnPage) || (responseCode == HttpServletResponse.SC_SEE_OTHER)) {
-                try {
-                    final URI redirectUri = new URI(redirect);
-                    final UriComponents uriComponents = UriComponentsBuilder.fromUri(redirectUri).build();
-                    String encodedUri = uriComponents.encode("UTF-8").toUriString();
-                    resp.setHeader("Location", encodedUri);
-                } catch (URISyntaxException ex) {
-                    logger.error("Impossible to build URI from {}", redirect);
-                    resp.setHeader("Location", UriUtils.encodePath(redirect, "UTF-8"));
-                }
+                resp.setHeader("Location", Url.encodeUri(redirect, "UTF-8"));
             }
             if (responseCode == HttpServletResponse.SC_FOUND) {
                 resp.sendRedirect(redirect);

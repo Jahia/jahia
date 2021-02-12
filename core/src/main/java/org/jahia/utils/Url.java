@@ -48,12 +48,16 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.util.UriUtils;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Set;
 import java.util.zip.DataFormatException;
@@ -186,5 +190,30 @@ public class Url {
         }
 
         return url.toString();
+    }
+
+    /**
+     * Simple help method to encode uri
+     * If the encodingStr is null set to "UTF-8" by default
+     *
+     * @param uri               [String]
+     * @param encodingStr       [String]
+     * @return encoded uri
+     * @throws IOException io specific exceptions
+     */
+    public static String encodeUri(String uri, String encodingStr) throws IOException {
+        String encodedUri = null;
+        String encoding = (encodingStr != null && !encodingStr.isEmpty()) ? encodingStr : StandardCharsets.UTF_8.name();
+        try {
+            final URI redirectUri = new URI(uri);
+            final UriComponents uriComponents = UriComponentsBuilder.fromUri(redirectUri).build();
+            encodedUri = uriComponents.encode(encoding).toUriString();
+        } catch (URISyntaxException ex) {
+            logger.error("Impossible to build URI from {}", uri);
+            encodedUri = UriUtils.encodeQuery(uri, encoding);
+        } catch (NullPointerException npe) {
+            logger.error("The URI to encode is null.");
+        }
+        return encodedUri;
     }
 }

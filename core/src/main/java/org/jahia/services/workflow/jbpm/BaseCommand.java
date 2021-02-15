@@ -44,6 +44,7 @@
 package org.jahia.services.workflow.jbpm;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.jackrabbit.util.ISO9075;
 import org.drools.core.command.impl.FixedKnowledgeCommandContext;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
@@ -343,7 +344,7 @@ public abstract class BaseCommand<T> implements GenericCommand<T> {
         Set<String> connectionIds = getTaskOutcomes(taskNodeInstance.getNode());
         workflowTask.setOutcomes(connectionIds);
 
-        Map<String, String> permissions = workflowService.getWorkflowRegistration(taskNodeInstance.getProcessInstance().getProcessId()).getPermissions();
+        Map<String, String> permissions = workflowService.getWorkflowRegistration(ISO9075.decode(taskNodeInstance.getProcessInstance().getProcessId())).getPermissions();
         String prefix = taskNodeInstance.getNodeName() + ".";
         permissions = permissions.entrySet().stream()
                 .filter(entry -> entry.getKey().startsWith(prefix))

@@ -44,8 +44,11 @@
 package org.jahia.services.workflow.jbpm.command;
 
 import com.google.common.base.Joiner;
+import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.*;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.WorkflowObservationManager;
 import org.jahia.services.workflow.jbpm.BaseCommand;
@@ -86,7 +89,7 @@ public class CompleteTaskCommand extends BaseCommand<Object> {
 
         NodeInstance taskNodeInstance = getTaskNodeInstance(task, ksession);
         String processId = taskNodeInstance.getProcessInstance().getProcessId();
-        Map<String, String> permissions = workflowService.getWorkflowRegistration(processId).getPermissions();
+        Map<String, String> permissions = workflowService.getWorkflowRegistration(ISO9075.decode(processId)).getPermissions();
         String permission = permissions.get(taskNodeInstance.getNodeName() + "." + outcome);
         if (permission != null) {
             String nodeId = (String) taskNodeInstance.getProcessInstance().getVariable("nodeId");

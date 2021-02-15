@@ -317,7 +317,7 @@ public class WorkflowHelper {
             ExtendedNodeType nodeType = nodeTypeName != null ? NodeTypeRegistry.getInstance().getNodeType(nodeTypeName) : null;           
             for (GWTJahiaNodeProperty property : properties) {
                 List<GWTJahiaNodePropertyValue> propertyValues = property.getValues();
-                ExtendedPropertyDefinition epd = nodeType.getPropertyDefinition(property.getName());
+                ExtendedPropertyDefinition epd = nodeType.getPropertyDefinitionsAsMap().get(property.getName());
                 if (property.isMultiple()) {
                     List<WorkflowVariable> values = new ArrayList<WorkflowVariable>();
                     for (GWTJahiaNodePropertyValue value : propertyValues) {

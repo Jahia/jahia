@@ -45,7 +45,6 @@ package org.jahia.services.modulemanager.persistence.jcr;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.modulemanager.BundleInfo;
@@ -88,6 +87,7 @@ final public class BundleInfoJcrHelper {
     public static final String PATH_BUNDLES = PATH_MODULE_MANAGEMENT + '/' + NODE_BUNDLES;
 
     public static final String PROP_BUNDLES_PERSISTENT_STATE = "j:bundlesPersistentState";
+    public static final String PROP_BUNDLES_SCRIPTS = "j:bundlesScripts";
 
     /**
      * This method will save a collection of bundles as JSON on the node /module-management
@@ -147,6 +147,53 @@ final public class BundleInfoJcrHelper {
             );
         }
         return persistentStates;
+    }
+
+    /**
+     * Get the status for migration scripts for a specific bundle
+     *
+     * @param name bundle symbolic name
+     * @return status
+     * @throws RepositoryException jcr exception
+     */
+    public static JSONObject getModuleScriptsStatus(String name) throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
+            try {
+                JCRNodeWrapper node = session.getNode(PATH_MODULE_MANAGEMENT);
+                String scriptStates = node.hasProperty(PROP_BUNDLES_SCRIPTS) ? node.getProperty(PROP_BUNDLES_SCRIPTS).getString() : "{}";
+                JSONObject json = new JSONObject(scriptStates);
+                if (json.has(name)) {
+                    return json.getJSONObject(name);
+                } else {
+                    return new JSONObject();
+                }
+            } catch (JSONException e) {
+                throw new RepositoryException(e);
+            }
+        });
+    }
+
+    /**
+     * Store the status for migration scripts
+     *
+     * @param name bundle symbolic name
+     * @param status status
+     * @throws RepositoryException jcr exception
+     */
+    public static void storeModuleScriptStatus(String name, JSONObject status) throws RepositoryException {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
+            try {
+                JCRNodeWrapper node = session.getNode(PATH_MODULE_MANAGEMENT);
+                String scriptStates = node.hasProperty(PROP_BUNDLES_SCRIPTS) ? node.getProperty(PROP_BUNDLES_SCRIPTS).getString() : "{}";
+                JSONObject json = new JSONObject(scriptStates);
+                json.put(name, status);
+                node.setProperty(PROP_BUNDLES_SCRIPTS, json.toString());
+                session.save();
+            } catch (JSONException e) {
+                throw new RepositoryException(e);
+            }
+            return null;
+        });
     }
 
     /**

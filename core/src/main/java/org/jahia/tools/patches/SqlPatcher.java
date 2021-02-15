@@ -65,7 +65,7 @@ public final class SqlPatcher implements PatchExecutor {
 
     @Override
     public boolean canExecute(String name, String lifecyclePhase) {
-        return name.endsWith(".sql") && lifecyclePhase.equals("contextInitializing");
+        return name.endsWith(".sql");
     }
 
     @Override

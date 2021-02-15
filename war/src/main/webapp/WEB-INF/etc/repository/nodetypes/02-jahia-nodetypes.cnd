@@ -1072,6 +1072,7 @@ extends = jnt:content
 
 [jnt:moduleManagement] > nt:base, mix:created, mix:lastModified, jmix:nolive
   - j:bundlesPersistentState (string) nofulltext
+  - j:bundlesScripts (string) nofulltext
   + bundles (jnt:moduleManagementBundleFolder) = jnt:moduleManagementBundleFolder
   + configs (jnt:configurationsFolder) = jnt:configurationsFolder
 

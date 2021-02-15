@@ -66,6 +66,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -96,7 +97,7 @@ public final class Patcher implements JahiaAfterInitializationService, Disposabl
             "rootContextInitialized"
     };
     private static final Pattern VERSION_PATTERN = Pattern.compile("([0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+).*");
-    private static final Comparator<Resource> RESOURCE_COMPARATOR = Comparator.comparing(Resource::getFilename);
+    public static final Comparator<Resource> RESOURCE_COMPARATOR = Comparator.comparing(Resource::getFilename);
 
     private static class InstanceHolder {
         public static final Patcher instance = new Patcher();
@@ -169,7 +170,26 @@ public final class Patcher implements JahiaAfterInitializationService, Disposabl
         }
     }
 
-    private void executeScripts(Collection<Resource> scripts, String lifecyclePhase) {
+    /**
+     * Execute scripts in the specified lifecycle phase
+     * @param scripts scripts
+     * @param lifecyclePhase lifecyclePhase
+     */
+    public void executeScripts(Collection<Resource> scripts, String lifecyclePhase) {
+        executeScripts(scripts, lifecyclePhase, this::afterExecution);
+    }
+
+    /**
+     * Execute scripts in the specified lifecycle phase, use a callback after execution
+     * @param scripts scripts
+     * @param lifecyclePhase lifecyclePhase
+     * @param afterExecution afterExecution callback
+     */
+    public void executeScripts(Collection<Resource> scripts, String lifecyclePhase, BiConsumer<Resource, String> afterExecution) {
+        if (scripts.isEmpty()) {
+            return;
+        }
+
         long timer = System.currentTimeMillis();
         if (logger.isInfoEnabled()) {
             logger.info("Found patch scripts {}. Executing...", StringUtils.join(scripts, ','));
@@ -178,20 +198,20 @@ public final class Patcher implements JahiaAfterInitializationService, Disposabl
         for (Resource script : scripts) {
             try {
                 if (shouldSkipMigrationScript(script.getFilename())) {
-                    afterExecution(script, SUFFIX_SKIPPED);
+                    afterExecution.accept(script, SUFFIX_SKIPPED);
                 } else {
-                    executeScript(lifecyclePhase, script);
+                    executeScript(lifecyclePhase, script, afterExecution);
                 }
             } catch (Exception e) {
                 logger.error("Execution of script {} failed with error: ", e.getMessage(), e);
-                afterExecution(script, SUFFIX_FAILED);
+                afterExecution.accept(script, SUFFIX_FAILED);
             }
         }
 
         logger.info("Execution took {} ms", (System.currentTimeMillis() - timer));
     }
 
-    private void executeScript(String lifecyclePhase, Resource script) throws IOException {
+    private void executeScript(String lifecyclePhase, Resource script, BiConsumer<Resource, String> afterExecution) throws IOException {
         long timerSingle = System.currentTimeMillis();
         String scriptContent = getContent(script);
 
@@ -199,14 +219,14 @@ public final class Patcher implements JahiaAfterInitializationService, Disposabl
             for (PatchExecutor patcher : patchers) {
                 if (patcher.canExecute(script.getURL().getPath(), lifecyclePhase)) {
                     String result = patcher.executeScript(script.getURL().getPath(), scriptContent);
-                    logger.info("Execution of script {} took {} ms", script.getFilename(), System.currentTimeMillis() - timerSingle);
-                    afterExecution(script, result);
+                    logger.info("Execution of script {} : {} took {} ms", script.getFilename(), result, System.currentTimeMillis() - timerSingle);
+                    afterExecution.accept(script, result);
                     break;
                 }
             }
         } else {
             logger.warn("Content of the script {} is either empty or cannot be read. Skipping.", script.getFilename());
-            afterExecution(script, SUFFIX_SKIPPED);
+            afterExecution.accept(script, SUFFIX_SKIPPED);
         }
     }
 

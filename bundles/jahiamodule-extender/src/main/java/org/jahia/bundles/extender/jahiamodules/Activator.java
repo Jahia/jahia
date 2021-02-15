@@ -71,6 +71,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
+import org.jahia.services.modulemanager.persistence.jcr.BundleInfoJcrHelper;
 import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.jahia.services.render.scripting.bundle.BundleScriptEngineManager;
 import org.jahia.services.render.scripting.bundle.BundleScriptResolver;
@@ -83,7 +84,9 @@ import org.jahia.services.templates.TemplatePackageRegistry;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
+import org.jahia.tools.patches.Patcher;
 import org.jahia.utils.spring.http.converter.json.JahiaMappingJackson2HttpMessageConverter;
+import org.json.JSONObject;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.ops4j.pax.swissbox.extender.BundleURLScanner;
 import org.osgi.framework.*;
@@ -101,7 +104,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import pl.touk.throwing.ThrowingBiConsumer;
+import pl.touk.throwing.ThrowingPredicate;
 
 import javax.jcr.RepositoryException;
 import java.io.File;
@@ -115,9 +121,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 import static org.jahia.services.modulemanager.Constants.URL_PROTOCOL_DX;
 import static org.jahia.services.modulemanager.Constants.URL_PROTOCOL_MODULE_DEPENDENCIES;
+import static org.jahia.tools.patches.Patcher.KEEP;
+import static org.jahia.tools.patches.Patcher.RESOURCE_COMPARATOR;
 
 /**
  * Activator for DX Modules extender.
@@ -137,6 +146,15 @@ public class Activator implements BundleActivator {
     private static final String EXTENDER_CAPABILITY_NAME = "org.jahia.bundles.blueprint.extender.config";
 
     private static Activator instance;
+
+    private static Map<Integer, String> status = new HashMap<>();
+
+    static {
+        status.put(BundleEvent.RESOLVED, "resolved");
+        status.put(BundleEvent.STARTED, "started");
+        status.put(BundleEvent.STOPPED, "stopped");
+        status.put(BundleEvent.UNINSTALLED, "uninstalled");
+    }
 
     private CndBundleObserver cndBundleObserver;
     private List<ServiceRegistration<?>> serviceRegistrations = new ArrayList<>();
@@ -409,6 +427,8 @@ public class Activator implements BundleActivator {
             if (!BundleUtils.isJahiaModuleBundle(bundle)) {
                 return;
             }
+
+            handlePatches(bundleEvent);
 
             if (logger.isDebugEnabled()) {
                 logger.debug("Received event {} for bundle {}", BundleUtils.bundleEventToString(bundleEventType), getDisplayName(bundleEvent.getBundle()));
@@ -1210,5 +1230,43 @@ public class Activator implements BundleActivator {
             }
         }
         return false;
+    }
+
+    protected synchronized void handlePatches(BundleEvent event) {
+        String eventType = status.get(event.getType());
+
+        if (eventType != null) {
+            List<Resource> migrationScripts = getMigrationScripts(event.getBundle(), eventType);
+            if (!migrationScripts.isEmpty()) {
+                try {
+                    JSONObject moduleScriptsStatus = BundleInfoJcrHelper.getModuleScriptsStatus(event.getBundle().getSymbolicName());
+
+                    List<Resource> filteredMigrationScripts = migrationScripts.stream().filter(ThrowingPredicate.unchecked(resource ->
+                            !moduleScriptsStatus.has(resource.getURI().getPath()) || moduleScriptsStatus.get(resource.getURI().getPath()).equals(KEEP)
+                    )).collect(Collectors.toList());
+
+                    if (!filteredMigrationScripts.isEmpty()) {
+                        Patcher.getInstance().executeScripts(filteredMigrationScripts, eventType, ThrowingBiConsumer.unchecked((resource, result) -> {
+                            moduleScriptsStatus.put(resource.getURI().getPath(), result);
+                            logger.info("Execution result for {} : {}", resource, result);
+                        }));
+
+                        BundleInfoJcrHelper.storeModuleScriptStatus(event.getBundle().getSymbolicName(), moduleScriptsStatus);
+                    }
+                } catch (RepositoryException e) {
+                    logger.error("Cannot execute scripts", e);
+                }
+            }
+        }
+    }
+
+    private List<Resource> getMigrationScripts(Bundle bundle, String eventType) {
+        Enumeration<URL> migrationScriptsURLs = bundle.findEntries("META-INF/patches", "*." + eventType + ".*", true);
+        if (migrationScriptsURLs == null) {
+            return Collections.emptyList();
+        }
+        return Collections.list(migrationScriptsURLs).stream().map(UrlResource::new)
+                .sorted(RESOURCE_COMPARATOR)
+                .collect(Collectors.toList());
     }
 }

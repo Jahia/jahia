@@ -68,6 +68,8 @@
                         <Export-Package>
                             org.jahia.bundles.provisioning
                         </Export-Package>
+                        <JAX-RS-Alias>/api/provisioning</JAX-RS-Alias>
+                        <JAX-RS-Application>org.jahia.bundles.provisioning.rest.RestConfig</JAX-RS-Application>
                         <Embed-Dependency>*; scope=compile|runtime; type=!pom; inline=false</Embed-Dependency>
                         <_dsannotations>org.jahia.bundles.provisioning.*</_dsannotations>
                     </instructions>
@@ -123,6 +125,20 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
             <version>1.8</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.bundles</groupId>
+            <artifactId>jaxrs-ri</artifactId>
+            <version>2.6</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
+            <version>${jackson.osgi.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

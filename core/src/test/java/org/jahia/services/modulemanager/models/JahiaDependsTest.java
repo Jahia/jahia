@@ -23,6 +23,7 @@
  */
 package org.jahia.services.modulemanager.models;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -37,6 +38,7 @@ public class JahiaDependsTest {
         assertEquals(moduleName, depends.getModuleName());
         assertEquals(min, depends.getMinVersion());
         assertEquals(max, depends.getMaxVersion());
+        assertEquals(StringUtils.isNotEmpty(min) || StringUtils.isNotEmpty(max), depends.hasVersion());
         assertEquals(filterString, depends.toFilterString());
     }
 

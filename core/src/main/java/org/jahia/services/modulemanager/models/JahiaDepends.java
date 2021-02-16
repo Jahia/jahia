@@ -51,7 +51,7 @@ public class JahiaDepends {
 
     public boolean hasVersion() {
         return StringUtils.isNotEmpty(getMinVersion())
-                && StringUtils.isNotEmpty(getMaxVersion());
+                || StringUtils.isNotEmpty(getMaxVersion());
     }
 
 

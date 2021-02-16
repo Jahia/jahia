@@ -114,6 +114,7 @@ div[role="combobox"] {
             // Last container
             .x-date-picker {
                 background: transparent;
+                width: 18em !important;
 
                 // Header and footer containers
                 > table {
@@ -147,7 +148,9 @@ div[role="combobox"] {
 
                                 // Button container, contains downward arrow
                                 .x-btn-arrow {
-
+                                    .x-btn-text {
+                                        width: 13em !important;
+                                    }
                                     background: none;
                                     padding: 0;
 
@@ -311,7 +314,7 @@ div[role="combobox"] {
                 top: -5px !important;
                 left: -10px !important;
                 height: calc(100% + 15px) !important;
-                background: _theme($DATE-PICKER--MODAL--BG, $DATE-PICKER);
+                background: _theme($DATE-PICKER--YEAR--BG, $DATE-PICKER);
                 padding-top: 33px;
                 box-sizing: border-box;
 
@@ -366,7 +369,7 @@ div[role="combobox"] {
                         // Month button
                         &.x-date-mp-month {
                             @include text(11px, _theme($DATE-PICKER--MONTH--COLOR, $DATE-PICKER), _weight("normal"));
-                            background: _theme($DATE-PICKER--MONTH--BG, $DATE-PICKER);
+                            background: _theme($DATE-PICKER--YEAR--BG, $DATE-PICKER);
 
                             &:hover {
                                 color: _theme($DATE-PICKER--MONTH--COLOR---HOVER, $DATE-PICKER);

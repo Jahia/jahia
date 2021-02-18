@@ -153,7 +153,6 @@ public class Activator implements BundleActivator {
         status.put(BundleEvent.RESOLVED, "resolved");
         status.put(BundleEvent.STARTED, "started");
         status.put(BundleEvent.STOPPED, "stopped");
-        status.put(BundleEvent.UNINSTALLED, "uninstalled");
     }
 
     private CndBundleObserver cndBundleObserver;

@@ -77,7 +77,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
 
     /**
      * Constructor
-     * 
+     *
      * @param objectNode JCRNodeWrapper of the node holding this property
      * @param property wrapped property object
      * @param session wrapped session which loaded this property
@@ -100,7 +100,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
 
     /**
      * Constructor
-     * 
+     *
      * @param objectNode JCRNodeWrapper of the node holding this property
      * @param property wrapped property object
      * @param session wrapped session which loaded this property
@@ -391,7 +391,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     }
 
     public int getType() throws RepositoryException {
-        return def.getRequiredType();
+        return property.getType();
     }
 
     public String getName() throws RepositoryException {
@@ -519,7 +519,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
             LockException, ConstraintViolationException, RepositoryException {
         return removeValues(new Value[]{value});
     }
-    
+
     @Override
     public boolean removeValues(Value[] values) throws ValueFormatException, VersionException,
             LockException, ConstraintViolationException, RepositoryException {

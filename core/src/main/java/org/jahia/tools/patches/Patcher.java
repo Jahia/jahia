@@ -47,6 +47,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.*;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
 import org.jahia.commons.Version;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaAfterInitializationService;
@@ -59,6 +60,7 @@ import org.springframework.core.io.Resource;
 
 import javax.servlet.ServletContext;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -335,6 +337,34 @@ public final class Patcher implements JahiaAfterInitializationService, Disposabl
     }
 
     private void initPreviousVersion() {
+        File versionFile = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/info/version.properties");
+        if (versionFile.exists()) {
+            try(FileInputStream inputStream = new FileInputStream(versionFile)) {
+                Properties p = new Properties();
+                p.load(inputStream);
+                jahiaPreviousVersion = new Version(p.getProperty("version"));
+            } catch (IOException ioException) {
+                logger.error("Cannot read version.txt", ioException);
+            }
+        }
+
+        if (jahiaPreviousVersion == null) {
+            initPreviousVersionFromBundlesDeployed();
+        }
+
+        if (!versionFile.getParentFile().exists()) {
+            versionFile.getParentFile().mkdirs();
+        }
+        if (!versionFile.exists() || jahiaPreviousVersion == null || !jahiaPreviousVersion.toString().equals(Constants.JAHIA_PROJECT_VERSION)) {
+            try {
+                FileUtils.writeStringToFile(versionFile, "version=" + Constants.JAHIA_PROJECT_VERSION, StandardCharsets.UTF_8);
+            } catch (IOException ioException) {
+                logger.error("Cannot store version.txt", ioException);
+            }
+        }
+    }
+
+    private void initPreviousVersionFromBundlesDeployed() {
         Pattern p = Pattern.compile("^mvn:org.jahia.bundles/org.jahia.bundles.extender.jahiamodules/(.*)$");
 
         File file = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/bundles-deployed");

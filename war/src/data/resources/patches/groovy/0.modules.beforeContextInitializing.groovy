@@ -7,10 +7,9 @@ setResult("keep")
 
 if (Patcher.getInstance().getJahiaPreviousVersion() != null && !Patcher.getInstance().getJahiaPreviousVersion().equals(Jahia.JAHIA_VERSION)) {
     def file = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/bundles-deployed")
-    if (file.exists()) {
-        log.info("*** Migration detected, cleaning all previous bundles and instructing for modules reinstallation ***")
-        FileUtils.deleteQuietly(file)
-        FileUtils.touch(new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "[persisted-bundles].dorestore"))
-        FileUtils.touch(new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "[generated-resources].dodelete"))
-    }
+    log.info("*** Migration detected, cleaning all previous bundles and instructing for modules reinstallation ***")
+    FileUtils.deleteQuietly(file)
+    FileUtils.touch(new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "[persisted-bundles].dorestore"))
+    FileUtils.touch(new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "[generated-resources].dodelete"))
+    FileUtils.touch(new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "[persisted-configurations].dorestore"))
 }

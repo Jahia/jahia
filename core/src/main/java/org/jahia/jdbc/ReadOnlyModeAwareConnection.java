@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.*;
@@ -177,7 +178,12 @@ final class ReadOnlyModeAwareConnection extends DelegatingConnection {
                 throw new ReadOnlySQLException();
             }
 
-            Object result = method.invoke(target, args);
+            Object result = null;
+            try {
+                result = method.invoke(target, args);
+            } catch (InvocationTargetException e) {
+                throw e.getTargetException();
+            }
 
             if (ADD_BATCH_OPERATION.equals(method.getName())) {
                 // Those queries need to be tracked in order to prevent their execution if one is forbidden

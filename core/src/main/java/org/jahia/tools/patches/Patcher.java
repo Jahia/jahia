@@ -358,9 +358,9 @@ public final class Patcher implements JahiaAfterInitializationService, Disposabl
     private void initPreviousVersion() {
         File versionFile = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/info/version.properties");
         if (versionFile.exists()) {
-            try {
+            try(FileInputStream inputStream = new FileInputStream(versionFile)) {
                 Properties p = new Properties();
-                p.load(new FileInputStream(versionFile));
+                p.load(inputStream);
                 jahiaPreviousVersion = new Version(p.getProperty("version"));
             } catch (IOException ioException) {
                 logger.error("Cannot read version.txt", ioException);

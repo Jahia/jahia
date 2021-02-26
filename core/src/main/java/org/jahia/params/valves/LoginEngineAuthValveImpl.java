@@ -43,14 +43,12 @@
  */
 package org.jahia.params.valves;
 
-import org.apache.groovy.util.Maps;
 import org.jahia.api.Constants;
 import org.jahia.bin.Login;
-import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
-import org.jahia.security.license.LicenseCheckerService;
+import org.jahia.security.spi.LicenseCheckUtil;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
@@ -59,8 +57,6 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -176,7 +172,7 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
         if (theUser != null) {
             if (theUser.verifyPassword(password)) {
                 if (!theUser.isAccountLocked()) {
-                    if (!theUser.isRoot() && LicenseCheckerService.Stub.isLoggedInUsersLimitReached()) {
+                    if (!theUser.isRoot() && LicenseCheckUtil.isLoggedInUsersLimitReached()) {
                         logger.warn("The number of logged in users has reached the authorized limit.");
                         httpServletRequest.setAttribute(VALVE_RESULT, LOGGED_IN_USERS_LIMIT_REACHED);
                     } else {

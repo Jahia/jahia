@@ -60,15 +60,7 @@
 
 package org.jahia.bin;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.JarURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Locale;
-
+import com.ibm.icu.text.DateFormat;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
@@ -79,7 +71,14 @@ import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ibm.icu.text.DateFormat;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Jahia version and support utilities.
@@ -417,14 +416,10 @@ public final class Jahia {
         StringBuilder version = new StringBuilder();
 
         if (Jahia.JAHIA_VERSION.toString().endsWith("SNAPSHOT")) {
-            version.append(Jahia.PRODUCT_NAME).append(" ").append(Jahia.VERSION).append(" [" + CODE_NAME + "] - ")
-                    .append(isEnterpriseEdition() ? "Enterprise" : "Community").append(" Distribution - Build ").append(Jahia.getBuildNumber());
-            if (isEnterpriseEdition()) {
-                version.append(".").append(Jahia.getEEBuildNumber());
-            }
+            version.append(Jahia.PRODUCT_NAME).append(" ").append(Jahia.VERSION)
+                    .append(" [" + CODE_NAME + "] - Build ").append(Jahia.getBuildNumber());
         } else {
-            version.append(Jahia.PRODUCT_NAME).append(" ").append(Jahia.VERSION).append(isEnterpriseEdition() ? " - Enterprise" : "Community").append(
-                    " Distribution");
+            version.append(Jahia.PRODUCT_NAME).append(" ").append(Jahia.VERSION);
         }
         return version.toString();
     }

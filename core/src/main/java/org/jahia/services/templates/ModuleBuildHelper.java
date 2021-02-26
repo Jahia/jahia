@@ -62,7 +62,6 @@ import org.jahia.data.templates.ModuleReleaseInfo;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleUtils;
-import org.jahia.security.license.LicenseCheckException;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -107,6 +106,7 @@ public class ModuleBuildHelper implements InitializingBean {
 
     private static final Logger logger = LoggerFactory.getLogger(ModuleBuildHelper.class);
     private static final Pattern UNICODE_PATTERN = Pattern.compile("\\\\u([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})");
+    private static final String LICENSE_CHECK_EXCEPTION = "org.jahia.security.license.LicenseCheckException";
 
     private String mavenExecutable;
     private String ignoreSnapshots;
@@ -135,6 +135,7 @@ public class ModuleBuildHelper implements InitializingBean {
         logger.warn("");
     }
 
+    @SuppressWarnings("java:S1872")
     public JahiaTemplatesPackage compileAndDeploy(final String moduleId, File sources, JCRSessionWrapper session)
             throws RepositoryException, IOException, BundleException {
 
@@ -154,7 +155,8 @@ public class ModuleBuildHelper implements InitializingBean {
             } finally {
                 IOUtils.closeQuietly(is);
             }
-            if (BundleUtils.getContextStartException(bundle.getSymbolicName()) != null && BundleUtils.getContextStartException(bundle.getSymbolicName()) instanceof LicenseCheckException) {
+            if (BundleUtils.getContextStartException(bundle.getSymbolicName()) != null &&
+                    BundleUtils.getContextStartException(bundle.getSymbolicName()).getClass().getName().equals(LICENSE_CHECK_EXCEPTION)) {
                 throw new IOException(BundleUtils.getContextStartException(bundle.getSymbolicName()).getLocalizedMessage());
             }
             return templatePackageRegistry.lookupByIdAndVersion(moduleInfo.getModuleName(), new ModuleVersion(
@@ -169,7 +171,8 @@ public class ModuleBuildHelper implements InitializingBean {
             if (pkg == null) {
                 throw new IOException("Cannot deploy module");
             }
-            if (BundleUtils.getContextStartException(bundle.getSymbolicName()) != null && BundleUtils.getContextStartException(bundle.getSymbolicName()) instanceof LicenseCheckException) {
+            if (BundleUtils.getContextStartException(bundle.getSymbolicName()) != null &&
+                    BundleUtils.getContextStartException(bundle.getSymbolicName()).getClass().getName().equals(LICENSE_CHECK_EXCEPTION)) {
                 throw new IOException(BundleUtils.getContextStartException(bundle.getSymbolicName()).getLocalizedMessage());
             }
             return templatePackageRegistry.lookupByIdAndVersion(moduleInfo.getModuleName(), new ModuleVersion(moduleInfo.getVersion()));
@@ -573,6 +576,7 @@ public class ModuleBuildHelper implements InitializingBean {
         this.toolbarWarningsService = toolbarWarningsService;
     }
 
+    @SuppressWarnings("java:S1872")
     public JahiaTemplatesPackage duplicateModule(String dstModuleName, String dstModuleId, String dstGroupId, String srcPath, String scmURI, String branchOrTag,
                                                  String srcModuleId, String srcModuleVersion, boolean uninstallSrcModule, String dstPath, boolean deleteSrcFolder, JCRSessionWrapper session)
             throws IOException, RepositoryException, BundleException {
@@ -665,7 +669,8 @@ public class ModuleBuildHelper implements InitializingBean {
             FileUtils.deleteQuietly(dstFolder);
             throw new IOException("Cannot deploy module");
         }
-        if (BundleUtils.getContextStartException(bundle.getSymbolicName()) != null && BundleUtils.getContextStartException(bundle.getSymbolicName()) instanceof LicenseCheckException) {
+        if (BundleUtils.getContextStartException(bundle.getSymbolicName()) != null &&
+                BundleUtils.getContextStartException(bundle.getSymbolicName()).getClass().getName().equals(LICENSE_CHECK_EXCEPTION)) {
             throw new BundleException(BundleUtils.getContextStartException(bundle.getSymbolicName()).getLocalizedMessage());
         }
 

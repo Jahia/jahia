@@ -432,6 +432,8 @@
         <property name="threadDumpOnHighLoad" value="${jcrSessionLoadAverage.threadDumpOnHighLoad:false}"/>
     </bean>
 
+    <bean id="HttpListenersRegistry" class="org.jahia.bin.listeners.HttpListenersRegistry"/>
+
     <bean id="jahiaContextListenersConfiguration" class="org.springframework.beans.factory.config.MapFactoryBean">
         <property name="sourceMap">
             <map>

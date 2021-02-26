@@ -68,8 +68,6 @@ import org.jahia.utils.Patterns;
 import org.jahia.utils.WebAppPathResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.FatalBeanException;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.context.ContextLoader;
@@ -190,7 +188,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     public void contextInitialized(ServletContextEvent event) {
 
         startupTime = System.currentTimeMillis();
-        startupWithTrust(Jahia.isEnterpriseEdition() ? (Jahia.getBuildNumber() + "." + Jahia.getEEBuildNumber()) : String.valueOf(Jahia.getBuildNumber()));
+        startupWithTrust(String.valueOf(Jahia.getBuildNumber()));
 
         logger.info("Starting up Jahia, please wait...");
 
@@ -245,10 +243,6 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
             WebApplicationContext rootCtx = ContextLoader.getCurrentWebApplicationContext();
             rootCtx.publishEvent(new RootContextInitializedEvent(rootCtx));
 
-            if (Jahia.isEnterpriseEdition()) {
-                requireLicense();
-            }
-
             boolean isProcessingServer = SettingsBean.getInstance().isProcessingServer();
 
             // execute patches after root context initialization
@@ -258,7 +252,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
 
             // start OSGi container
             FrameworkService.getInstance().start();
-            
+
         } catch (JahiaException e) {
             running = false;
             logger.error(e.getMessage(), e);
@@ -339,16 +333,6 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         }
     }
 
-    private static void requireLicense() {
-        try {
-            if (!ContextLoader.getCurrentWebApplicationContext().getBean("licenseChecker").getClass().getName().equals("org.jahia.security.license.LicenseChecker")) {
-                throw new FatalBeanException("Required classes for license manager were not found");
-            }
-        } catch (NoSuchBeanDefinitionException e) {
-            throw new FatalBeanException("Required classes for license manager were not found", e);
-        }
-    }
-
     @Override
     public void contextDestroyed(ServletContextEvent event) {
 
@@ -365,6 +349,9 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         if (isEventInterceptorActivated("interceptServletContextListenerEvents")) {
             SpringContextSingleton.getInstance().publishEvent(
                     new ServletContextDestroyedEvent(event.getServletContext()));
+        }
+        for (HttpListener listener : getListeners()) {
+            listener.contextDestroyed(event);
         }
 
         long timer = System.currentTimeMillis();
@@ -448,6 +435,9 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         if (isEventInterceptorActivated("interceptHttpSessionListenerEvents")) {
             SpringContextSingleton.getInstance().publishEvent(new HttpSessionCreatedEvent(se.getSession()));
         }
+        for (HttpListener listener : getListeners()) {
+            listener.sessionCreated(se);
+        }
     }
 
     @Override
@@ -457,6 +447,9 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         if (isEventInterceptorActivated("interceptHttpSessionListenerEvents")) {
             SpringContextSingleton.getInstance().publishEvent(new HttpSessionDestroyedEvent(se.getSession()));
         }
+        for (HttpListener listener : getListeners()) {
+            listener.sessionDestroyed(se);
+        }
     }
 
     @Override
@@ -464,6 +457,9 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         requestTimes.remove(sre.getServletRequest());
         if (isEventInterceptorActivated("interceptServletRequestListenerEvents")) {
             SpringContextSingleton.getInstance().publishEvent(new ServletRequestDestroyedEvent(sre.getServletRequest()));
+        }
+        for (HttpListener listener : getListeners()) {
+            listener.requestDestroyed(sre);
         }
     }
 
@@ -481,6 +477,9 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         }
         if (isEventInterceptorActivated("interceptServletRequestListenerEvents")) {
             SpringContextSingleton.getInstance().publishEvent(new ServletRequestInitializedEvent(servletRequest));
+        }
+        for (HttpListener listener : getListeners()) {
+            listener.requestInitialized(sre);
         }
     }
 
@@ -518,10 +517,21 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         }
     }
 
+    private List<HttpListener> getListeners() {
+        if (contextInitialized) {
+            HttpListenersRegistry registry = (HttpListenersRegistry) SpringContextSingleton.getInstance().getContext().getBean("HttpListenersRegistry");
+            return registry.getEventListeners();
+        }
+        return Collections.emptyList();
+    }
+
     @Override
     public void sessionWillPassivate(HttpSessionEvent se) {
         if (isEventInterceptorActivated("interceptHttpSessionActivationEvents")) {
             SpringContextSingleton.getInstance().publishEvent(new HttpSessionWillPassivateEvent(se.getSession()));
+        }
+        for (HttpListener listener : getListeners()) {
+            listener.sessionWillPassivate(se);
         }
     }
 
@@ -530,12 +540,18 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         if (isEventInterceptorActivated("interceptHttpSessionActivationEvents")) {
             SpringContextSingleton.getInstance().publishEvent(new HttpSessionDidActivateEvent(se.getSession()));
         }
+        for (HttpListener listener : getListeners()) {
+            listener.sessionDidActivate(se);
+        }
     }
 
     @Override
     public void attributeAdded(HttpSessionBindingEvent se) {
         if (isEventInterceptorActivated("interceptHttpSessionAttributeListenerEvents")) {
             SpringContextSingleton.getInstance().publishEvent(new HttpSessionAttributeAddedEvent(se));
+        }
+        for (HttpListener listener : getListeners()) {
+            listener.attributeAdded(se);
         }
     }
 
@@ -544,12 +560,18 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         if (isEventInterceptorActivated("interceptHttpSessionAttributeListenerEvents")) {
             SpringContextSingleton.getInstance().publishEvent(new HttpSessionAttributeRemovedEvent(se));
         }
+        for (HttpListener listener : getListeners()) {
+            listener.attributeRemoved(se);
+        }
     }
 
     @Override
     public void attributeReplaced(HttpSessionBindingEvent se) {
         if (isEventInterceptorActivated("interceptHttpSessionAttributeListenerEvents")) {
             SpringContextSingleton.getInstance().publishEvent(new HttpSessionAttributeReplacedEvent(se));
+        }
+        for (HttpListener listener : getListeners()) {
+            listener.attributeReplaced(se);
         }
     }
 
@@ -558,12 +580,18 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         if (isEventInterceptorActivated("interceptHttpSessionBindingListenerEvents")) {
             SpringContextSingleton.getInstance().publishEvent(new HttpSessionValueBoundEvent(event));
         }
+        for (HttpListener listener : getListeners()) {
+            listener.valueBound(event);
+        }
     }
 
     @Override
     public void valueUnbound(HttpSessionBindingEvent event) {
         if (isEventInterceptorActivated("interceptHttpSessionBindingListenerEvents")) {
             SpringContextSingleton.getInstance().publishEvent(new HttpSessionValueUnboundEvent(event));
+        }
+        for (HttpListener listener : getListeners()) {
+            listener.valueUnbound(event);
         }
     }
 
@@ -572,6 +600,9 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         if (contextInitialized) {
             if (isEventInterceptorActivated("interceptServletContextAttributeListenerEvents")) {
                 SpringContextSingleton.getInstance().publishEvent(new ServletContextAttributeAddedEvent(scab));
+            }
+            for (HttpListener listener : getListeners()) {
+                listener.attributeAdded(scab);
             }
         }
     }
@@ -582,6 +613,9 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
             if (isEventInterceptorActivated("interceptServletContextAttributeListenerEvents")) {
                 SpringContextSingleton.getInstance().publishEvent(new ServletContextAttributeRemovedEvent(scab));
             }
+            for (HttpListener listener : getListeners()) {
+                listener.attributeRemoved(scab);
+            }
         }
     }
 
@@ -591,6 +625,9 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
             if (isEventInterceptorActivated("interceptServletContextAttributeListenerEvents")) {
                 SpringContextSingleton.getInstance().publishEvent(new ServletContextAttributeReplacedEvent(scab));
             }
+            for (HttpListener listener : getListeners()) {
+                listener.attributeReplaced(scab);
+            }
         }
     }
 
@@ -599,6 +636,9 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         if (isEventInterceptorActivated("interceptServletRequestAttributeListenerEvents")) {
             SpringContextSingleton.getInstance().publishEvent(new ServletRequestAttributeAddedEvent(srae));
         }
+        for (HttpListener listener : getListeners()) {
+            listener.attributeAdded(srae);
+        }
     }
 
     @Override
@@ -606,12 +646,18 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         if (isEventInterceptorActivated("interceptServletRequestAttributeListenerEvents")) {
             SpringContextSingleton.getInstance().publishEvent(new ServletRequestAttributeRemovedEvent(srae));
         }
+        for (HttpListener listener : getListeners()) {
+            listener.attributeRemoved(srae);
+        }
     }
 
     @Override
     public void attributeReplaced(ServletRequestAttributeEvent srae) {
         if (isEventInterceptorActivated("interceptServletRequestAttributeListenerEvents")) {
             SpringContextSingleton.getInstance().publishEvent(new ServletRequestAttributeReplacedEvent(srae));
+        }
+        for (HttpListener listener : getListeners()) {
+            listener.attributeReplaced(srae);
         }
     }
 

@@ -43,17 +43,12 @@
  */
 package org.jahia.bundles.blueprint.extender.config;
 
-import org.eclipse.gemini.blueprint.context.event.OsgiBundleApplicationContextEvent;
-import org.eclipse.gemini.blueprint.context.event.OsgiBundleApplicationContextListener;
-import org.eclipse.gemini.blueprint.context.event.OsgiBundleContextClosedEvent;
-import org.eclipse.gemini.blueprint.context.event.OsgiBundleContextFailedEvent;
-import org.eclipse.gemini.blueprint.context.event.OsgiBundleContextRefreshedEvent;
+import org.eclipse.gemini.blueprint.context.event.*;
 import org.eclipse.gemini.blueprint.util.OsgiStringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.security.license.LicenseCheckException;
 import org.jahia.services.templates.TemplatePackageRegistry;
 import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
@@ -113,6 +108,7 @@ public class JahiaOsgiBundleApplicationContextListener implements
         }
     }
 
+    @SuppressWarnings("java:S1872")
     public void onOsgiApplicationEvent(OsgiBundleApplicationContextEvent event) {
         Bundle bundle = event.getBundle();
         String bundleDisplayName = OsgiStringUtils.nullSafeNameAndSymName(event.getBundle());
@@ -128,7 +124,7 @@ public class JahiaOsgiBundleApplicationContextListener implements
                 module.getState().setState(ModuleState.State.SPRING_NOT_STARTED);
             }
 
-            if (cause instanceof LicenseCheckException) {
+            if (cause.getClass().getName().equals("org.jahia.security.license.LicenseCheckException")) {
                 logger.info("Stopping module, no license");
                 try {
                     bundle.stop();

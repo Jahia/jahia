@@ -41,11 +41,7 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.security.license;
-
-import org.jahia.bin.Jahia;
-import org.jahia.services.SpringContextSingleton;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+package org.jahia.security.spi;
 
 import java.util.Optional;
 
@@ -55,67 +51,6 @@ import java.util.Optional;
  * @author Sergiy Shyrkov
  */
 public interface LicenseCheckerService {
-
-    class Stub {
-
-        private static volatile boolean initialized = false;
-        private static volatile LicenseCheckerService instance;
-
-        /**
-         * @see LicenseCheckerService#checkFeature(String)
-         */
-        public static boolean isAllowed(String featureId) {
-            LicenseCheckerService service = getInstance();
-            return service != null && service.checkFeature(featureId);
-        }
-
-        /**
-         * @see LicenseCheckerService#isLimitExceeded(String, String)
-         */
-        public static boolean isLimitReached(String componentName, String limitName) {
-            LicenseCheckerService service = getInstance();
-            return service != null && service.isLimitReached(componentName, limitName);
-        }
-
-        /**
-         * @see LicenseCheckerService#isLoggedInUsersLimitReached()
-         */
-        public static boolean isLoggedInUsersLimitReached() {
-            LicenseCheckerService service = getInstance();
-            return (service != null) && service.isLoggedInUsersLimitReached();
-        }
-
-        /**
-         * @see LicenseCheckerService#getSiteLimit()
-         */
-        public static Optional<Long> getSiteLimit() {
-            LicenseCheckerService service = getInstance();
-            if (service != null) {
-                return service.getSiteLimit();
-            }
-            return Optional.empty();
-        }
-
-        private static LicenseCheckerService getInstance() {
-            if (!initialized) {
-                synchronized (Stub.class) {
-                    if (!initialized) {
-                        if (Jahia.isEnterpriseEdition()) {
-                            if (SpringContextSingleton.getInstance().isInitialized()) {
-                                try {
-                                    instance = (LicenseCheckerService) SpringContextSingleton.getInstance().getContext().getBean("licenseChecker");
-                                } catch (NoSuchBeanDefinitionException e) {
-                                    // no bean defined
-                                }
-                            }
-                        }
-                        initialized = true;
-                    }
-                }
-            }
-            return instance;
-        }
-    }
 
     /**
      * Checks if the corresponding product feature is allowed by the current license.

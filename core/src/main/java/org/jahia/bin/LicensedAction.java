@@ -43,52 +43,16 @@
  */
 package org.jahia.bin;
 
-import javax.jcr.RepositoryException;
-
-import org.jahia.security.license.LicenseChangedListener;
-import org.jahia.security.license.LicenseCheckerService;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.springframework.beans.factory.InitializingBean;
-
 /**
  * Action implementation that is checking the configured license feature for being enabled.
  * 
  * @author Sergiy Shyrkov
+ * @deprecated No license check is done on actions anymore
  */
-public abstract class LicensedAction extends Action implements InitializingBean, LicenseChangedListener {
-
-    private boolean allowedByLicense;
-
-    private String licenseFeature;
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        evaluateLicenseFeature();
-    }
-
-    private void evaluateLicenseFeature() {
-        allowedByLicense = licenseFeature == null || LicenseCheckerService.Stub.isAllowed(licenseFeature);
-    }
-
-    public String getLicenseFeature() {
-        return licenseFeature;
-    }
-
-    public boolean isAllowedByLicense() {
-        return allowedByLicense;
-    }
-
-    @Override
-    public boolean isPermitted(JCRNodeWrapper node) throws RepositoryException {
-        return allowedByLicense && super.isPermitted(node);
-    }
+@Deprecated
+public abstract class LicensedAction extends Action {
 
     public final void setLicenseFeature(String licenseFeature) {
-        this.licenseFeature = licenseFeature;
     }
 
-    @Override
-    public void onLicenseChanged() {
-        evaluateLicenseFeature();
-    }
 }

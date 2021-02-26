@@ -41,21 +41,16 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.security.license;
+package org.jahia.security.spi;
 
-public class LicenseCheckException extends Exception {
-    public LicenseCheckException() {
-    }
-
-    public LicenseCheckException(String message) {
-        super(message);
-    }
-
-    public LicenseCheckException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public LicenseCheckException(Throwable cause) {
-        super(cause);
-    }
+/**
+ * Implementors of this interface are able to react on the event of license change to enable/disable some features.
+ * 
+ * @author Sergiy Shyrkov
+ */
+public interface LicenseChangedListener {
+    /**
+     * Called by the Digital Factory license checker service when the license has bean reloaded/changed.
+     */
+    void onLicenseChanged();
 }

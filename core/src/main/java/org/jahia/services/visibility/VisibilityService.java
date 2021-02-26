@@ -43,7 +43,7 @@
  */
 package org.jahia.services.visibility;
 
-import org.jahia.security.license.LicenseChangedListener;
+import org.jahia.security.spi.LicenseChangedListener;
 import org.jahia.services.Conditional;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;

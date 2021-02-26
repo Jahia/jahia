@@ -76,7 +76,6 @@ import org.slf4j.Logger;
 import org.springframework.web.context.ServletConfigAware;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.web.util.UriUtils;
 
 import javax.jcr.*;
 import javax.servlet.ServletConfig;
@@ -84,13 +83,9 @@ import javax.servlet.http.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.util.*;
 import java.util.regex.Pattern;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * Rendering controller. Resolves the node and the template, and renders it by executing the appropriate script.
@@ -1088,15 +1083,6 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             }
             if (StringUtils.isNotEmpty(action.getRequiredPermission()) && !action.isPermitted(urlResolver.getNode())) {
                 throw new AccessDeniedException("Action '" + action.getName() + "' requires '" + action.getRequiredPermission() + "' permission.");
-            }
-        } else if (originalAction instanceof LicensedAction) {
-            LicensedAction licensedAction = (LicensedAction) originalAction;
-            if (!licensedAction.isAllowedByLicense()) {
-                logger.error("Action '{}' requires a licene feature '{}'"
-                                + " which is not allowed by the current license terms", originalAction.getName(),
-                        licensedAction.getLicenseFeature());
-                throw new AccessDeniedException("Action '" + action.getName() + "' requires a licene feature '"
-                        + licensedAction.getLicenseFeature() + "' which is not allowed by the current license terms");
             }
         }
     }

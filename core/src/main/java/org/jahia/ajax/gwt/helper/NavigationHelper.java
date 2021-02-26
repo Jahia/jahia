@@ -52,10 +52,9 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
-import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.security.license.LicenseCheckerService;
+import org.jahia.security.spi.LicenseCheckUtil;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRQueryNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -785,7 +784,7 @@ public class NavigationHelper {
             if (node.isNodeType("jmix:requireLicense")) {
                 try {
                     String feature = node.getProperty("j:requiredLicenseFeature").getString();
-                    allowed = StringUtils.isEmpty(feature) || LicenseCheckerService.Stub.isAllowed(feature);
+                    allowed = StringUtils.isEmpty(feature) || LicenseCheckUtil.isAllowed(feature);
                 } catch (PathNotFoundException e) {
                     // ignore
                 }
@@ -798,7 +797,7 @@ public class NavigationHelper {
     }
 
     private boolean haveToCheckLicense(List<String> fields) {
-        return fields != null && Jahia.isEnterpriseEdition() && fields.contains("j:requiredLicenseFeature");
+        return fields != null && fields.contains("j:requiredLicenseFeature");
     }
 
     private GWTJahiaNode getNodeOrNull(String path, List<String> fields, JCRSessionWrapper currentUserSession, Locale uiLocale) {

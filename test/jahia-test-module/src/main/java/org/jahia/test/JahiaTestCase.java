@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.SimpleCredentials;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -67,7 +68,6 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.test.bin.BaseTestController;
 import org.slf4j.Logger;
@@ -80,12 +80,10 @@ import org.slf4j.LoggerFactory;
  */
 public class JahiaTestCase {
 
-    public static final String ROOT_PASSWORD = "root1234";
-
     protected class PostResult {
-        public int statusCode;
-        public String statusLine;
-        public String responseBody;
+        private int statusCode;
+        private String statusLine;
+        private String responseBody;
         
         PostResult(int statusCode, String statusLine, String responseBody) {
             super();
@@ -93,13 +91,27 @@ public class JahiaTestCase {
             this.statusLine = statusLine;
             this.responseBody = responseBody;
         }
+        
+        public int getStatusCode() {
+            return statusCode;
+        }
+
+        public String getStatusLine() {
+            return statusLine;
+        }
+
+        public String getResponseBody() {
+            return responseBody;
+        }
     }
 
-    private final static String PORT = "9090";
+    private static final String PORT = "9090";
     
-    private final static String BASE_URL = "http://localhost:" + PORT;
+    private static final String BASE_URL = "http://localhost:" + PORT;
 
     private static boolean baseUrlForTestsLogged;
+    
+    private static SimpleCredentials rootUserCredentials;
 
     private static Logger logger = LoggerFactory.getLogger(JahiaTestCase.class);
 
@@ -128,32 +140,45 @@ public class JahiaTestCase {
     protected static final JCRUserNode getUserNode(JahiaUser admin) {
         return ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByPath(admin.getLocalPath());
     }
+    
+    protected static final SimpleCredentials getRootUserCredentials() {
+        if (rootUserCredentials != null) {
+            rootUserCredentials = new SimpleCredentials("root", "root1234".toCharArray());
+        }
+        return rootUserCredentials;
+    }
 
     protected static void publishAll(String nodeIdentifier) throws RepositoryException {
         JCRPublicationService.getInstance().publishByMainId(nodeIdentifier);
-    }
-
-    /**
-     * @deprecated
-     */
-    protected static void setSessionSite(JahiaSite site) {
     }
 
     protected static void sleep(long millis) {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
-            // ignore
+            logger.warn("Thread interrupted", e);
+            Thread.currentThread().interrupt();
         }
     }
+    
+    protected static String getBaseServerURL() {
+        HttpServletRequest req = getRequest();
+        String url = req != null ? req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() : BASE_URL;
+        if (!baseUrlForTestsLogged) {
+            logger.info("Base URL for tests is: {}", url);
+            baseUrlForTestsLogged = true;
+        }
+        return url;
+    }
+
 
     private HttpClient client;
 
-    protected String getAsText(String relativeUrl) throws IOException {
+    protected String getAsText(String relativeUrl) {
         return getAsText(relativeUrl, 200);
     }
 
-    protected String getAsText(String relativeUrl, int expectedResponseCode) throws IOException {
+    protected String getAsText(String relativeUrl, int expectedResponseCode) {
         return getAsText(relativeUrl, null, expectedResponseCode, null);
     }
 
@@ -174,7 +199,7 @@ public class JahiaTestCase {
                 for (Header header : getMethod.getResponseHeaders()) {
                     String headerName = header.getName();
                     if (!collectedResponseHeaders.containsKey(headerName)) {
-                        collectedResponseHeaders.put(headerName, new LinkedList<String>());
+                        collectedResponseHeaders.put(headerName, new LinkedList<>());
                     }
                     collectedResponseHeaders.get(headerName).add(header.getValue());
                 }
@@ -192,16 +217,6 @@ public class JahiaTestCase {
         return new GetMethod(getBaseServerURL() + Jahia.getContextPath() + relativeUrl);
     }
 
-    protected String getBaseServerURL() {
-        HttpServletRequest req = getRequest();
-        String url = req != null ? req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() : BASE_URL;
-        if (!baseUrlForTestsLogged) {
-            logger.info("Base URL for tests is: " + url);
-            baseUrlForTestsLogged = true;
-        }
-        return url;
-    }
-
     protected String getBaseServerURLPort() {
         HttpServletRequest req = getRequest();
         return req != null ? String.valueOf(getRequest().getServerPort()) : PORT;
@@ -216,20 +231,20 @@ public class JahiaTestCase {
 
     protected void login(String username, String password) throws IOException {
         int statusCode = post(getBaseServerURL() + Jahia.getContextPath() + "/cms/login", new String[] { "username", username },
-                new String[] { "password", password }, new String[] { "restMode", "true" }).statusCode;
+                new String[] { "password", password }, new String[] { "restMode", "true" }).getStatusCode();
 
         assertEquals("Login failed for user", HttpStatus.SC_OK, statusCode);
     }
 
     protected void loginRoot() throws IOException {
-        login("root", ROOT_PASSWORD);
+        login(getRootUserCredentials().getUserID(), new String(getRootUserCredentials().getPassword()));
     }
 
     protected void logout() throws IOException {
-        PostResult post = post(getBaseServerURL() + Jahia.getContextPath() + "/cms/logout", new String[] { "redirectActive", "false" });
+        PostResult post = post(getBaseServerURL() + Jahia.getContextPath() + "/cms/logout", (new String[] { "redirectActive", "false" }));
 
-        if (post.statusCode != HttpStatus.SC_OK) {
-            System.err.println("Method failed: " + post.statusLine);
+        if (post.getStatusCode() != HttpStatus.SC_OK) {
+            logger.error("Method failed: {}", post.getStatusLine());
         }
     }
 

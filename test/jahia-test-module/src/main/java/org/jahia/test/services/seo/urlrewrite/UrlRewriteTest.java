@@ -121,8 +121,6 @@ public class UrlRewriteTest extends JahiaTestCase {
         site.setDefaultLanguage(DEFAULT_LANG);
         JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
         service.updateSystemSitePermissions(site);
-
-        setSessionSite(site);
     }
 
     @AfterClass

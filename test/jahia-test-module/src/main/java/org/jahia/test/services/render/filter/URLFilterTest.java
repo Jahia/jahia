@@ -89,9 +89,7 @@ public class URLFilterTest extends JahiaTestCase {
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
-        JahiaSite site = TestHelper.createSite(TESTSITE_NAME, Sets.newHashSet("en", "fr"), null, false);
-
-        setSessionSite(site);
+        TestHelper.createSite(TESTSITE_NAME, Sets.newHashSet("en", "fr"), null, false);
     }
 
     @AfterClass

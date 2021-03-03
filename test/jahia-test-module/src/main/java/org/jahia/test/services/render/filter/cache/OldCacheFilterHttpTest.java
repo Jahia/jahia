@@ -48,6 +48,7 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.cache.AreaResourceCacheKeyPartGenerator;
 import org.jahia.services.render.filter.cache.ModuleGeneratorQueue;
+import org.jahia.test.JahiaTestCase;
 import org.jahia.test.services.render.filter.cache.base.CacheFilterHttpTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -80,37 +81,40 @@ public class OldCacheFilterHttpTest extends CacheFilterHttpTest {
 
     @Test
     public void testModuleError() throws Exception {
-        String s = getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", "error1");
+        String rootUserID = JahiaTestCase.getRootUserCredentials().getUserID();
+        String rootUserPassword = new String(JahiaTestCase.getRootUserCredentials().getPassword());
+        String s = getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), rootUserID, rootUserPassword, "error1");
         assertThat(s).contains("<!-- Module error :");
-        getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", "error2");
+        getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), rootUserID, rootUserPassword, "error2");
         // All served from cache
         assertThat(getCheckFilter("CacheHttpTestRenderFilter1").getData("error2").getCount()).isEqualTo(1);
         Thread.sleep(5000);
         // Error should be flushed
-        getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", "error3");
+        getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), rootUserID, rootUserPassword, "error3");
         assertThat(getCheckFilter("CacheHttpTestRenderFilter1").getData("error3").getCount()).isEqualTo(2);
     }
 
     @Test
     public void testModuleWait() throws Exception {
-
+        String rootUserID = JahiaTestCase.getRootUserCredentials().getUserID();
+        String rootUserPassword = new String(JahiaTestCase.getRootUserCredentials().getPassword());
         long previousModuleGenerationWaitTime = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getModuleGenerationWaitTime();
 
         try {
 
             ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(1000);
 
-            HttpThread t1 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home/long", "testModuleWait1"), "root", "root1234", "testModuleWait1");
+            HttpThread t1 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home/long", "testModuleWait1"), rootUserID, rootUserPassword, "testModuleWait1");
             t1.start();
             Thread.sleep(5000);
 
-            String content2 = getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/long", "testModuleWait2"), "root", "root1234", "testModuleWait2");
-            String content3 = getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/long", "testModuleWait3"), "root", "root1234", "testModuleWait3");
+            String content2 = getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/long", "testModuleWait2"), rootUserID, rootUserPassword, "testModuleWait2");
+            String content3 = getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/long", "testModuleWait3"), rootUserID, rootUserPassword, "testModuleWait3");
 
             t1.join();
             String content1 = t1.getResult();
 
-            String content4 = getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/long", "testModuleWait4"), "root", "root1234", "testModuleWait4");
+            String content4 = getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/long", "testModuleWait4"), rootUserID, rootUserPassword, "testModuleWait4");
 
             CacheFilterCheckFilter f1 = getCheckFilter("CacheHttpTestRenderFilter1");
 

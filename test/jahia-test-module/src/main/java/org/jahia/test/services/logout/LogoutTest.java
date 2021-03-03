@@ -118,8 +118,6 @@ public class LogoutTest extends JahiaTestCase {
         site.setDefaultLanguage("en");
         service.updateSystemSitePermissions(site);
         service.setDefaultSite(site);
-
-        setSessionSite(site);
                 
         JahiaSite siteForServerName = service.getSiteByServerName(getRequest().getServerName());
 

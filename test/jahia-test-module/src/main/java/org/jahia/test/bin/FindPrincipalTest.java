@@ -48,6 +48,7 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.SimpleCredentials;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
@@ -135,8 +136,9 @@ public class FindPrincipalTest extends JahiaTestCase {
 
         PostMethod loginMethod = new PostMethod(getLoginServletURL());
         try {
-            loginMethod.addParameter("username", "root");
-            loginMethod.addParameter("password", "root1234");
+            SimpleCredentials rootUserCredentials = JahiaTestCase.getRootUserCredentials();
+            loginMethod.addParameter("username", rootUserCredentials.getUserID());
+            loginMethod.addParameter("password", new String(rootUserCredentials.getPassword()));
             loginMethod.addParameter("redirectActive", "false");
             // the next parameter is required to properly activate the valve check.
             loginMethod.addParameter(

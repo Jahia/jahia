@@ -192,17 +192,17 @@ public class FindTest extends JahiaTestCase {
             new String[] {"removeDuplicatePropValues", "true"},
             new String[] {"depthLimit", "1"});
  
-        assertEquals("Method failed: " + post.statusLine, HttpStatus.SC_OK, post.statusCode);
+        assertEquals("Method failed: " + post.getStatusLine(), HttpStatus.SC_OK, post.getStatusCode());
 
         // Read the response body.
-        String responseBody = post.responseBody;
+        String responseBody = post.getResponseBody();
         if (!responseBody.startsWith("[")) {
             StringBuilder responseBodyBuilder = new StringBuilder();
-            responseBodyBuilder.append("[").append(post.responseBody).append("]");
+            responseBodyBuilder.append("[").append(post.getResponseBody()).append("]");
             responseBody = responseBodyBuilder.toString();
         }
 
-        logger.debug("Status code={} JSON response={}", post.statusCode, post.responseBody);
+        logger.debug("Status code={} JSON response={}", post.getStatusCode(), post.getResponseBody());
 
         JSONArray jsonResults = new JSONArray(responseBody);
 
@@ -228,17 +228,17 @@ public class FindTest extends JahiaTestCase {
             new String[] {"depthLimit", "1"},
             new String[] {"getNodes", "true"});
 
-        assertEquals("Method failed: " + post.statusLine, HttpStatus.SC_OK, post.statusCode);
+        assertEquals("Method failed: " + post.getStatusLine(), HttpStatus.SC_OK, post.getStatusCode());
 
         // Read the response body.
-        String responseBody = post.responseBody;
+        String responseBody = post.getResponseBody();
         if (!responseBody.startsWith("[")) {
             StringBuilder responseBodyBuilder = new StringBuilder();
-            responseBodyBuilder.append("[").append(post.responseBody).append("]");
+            responseBodyBuilder.append("[").append(post.getResponseBody()).append("]");
             responseBody = responseBodyBuilder.toString();
         }
 
-        logger.debug("Status code={} JSON response={}", post.statusCode, post.responseBody);
+        logger.debug("Status code={} JSON response={}", post.getStatusCode(), post.getResponseBody());
 
         JSONArray jsonResults = new JSONArray(responseBody);
 
@@ -264,17 +264,17 @@ public class FindTest extends JahiaTestCase {
             new String[] {"depthLimit", "1"},
             new String[] {"getNodes", "true"});
 
-        assertEquals("Method failed: " + post.statusLine, HttpStatus.SC_OK, post.statusCode);
+        assertEquals("Method failed: " + post.getStatusLine(), HttpStatus.SC_OK, post.getStatusCode());
 
         // Read the response body.
-        String responseBody = post.responseBody;
+        String responseBody = post.getResponseBody();
         if (!responseBody.startsWith("[")) {
             StringBuilder responseBodyBuilder = new StringBuilder();
-            responseBodyBuilder.append("[").append(post.responseBody).append("]");
+            responseBodyBuilder.append("[").append(post.getResponseBody()).append("]");
             responseBody = responseBodyBuilder.toString();
         }
 
-        logger.debug("Status code={} JSON response={}", post.statusCode, post.responseBody);
+        logger.debug("Status code={} JSON response={}", post.getStatusCode(), post.getResponseBody());
 
         JSONArray jsonResults = new JSONArray(responseBody);
 
@@ -330,18 +330,18 @@ public class FindTest extends JahiaTestCase {
         PostResult post = post(getFindServletURL() + "/" + Constants.LIVE_WORKSPACE + "/en", new String[] { "query",
                 "select * from [jnt:user] where ischildnode('/users/')" }, new String[] { "depthLimit", "10" });
 
-        logger.debug("Status code={} JSON response=[]", post.statusCode, post.responseBody);
+        logger.debug("Status code={} JSON response={}", post.getStatusCode(), post.getResponseBody());
 
-        assertFalse("Root user is not filtered out from the results", post.responseBody.contains("/users/root"));
+        assertFalse("Root user is not filtered out from the results", post.getResponseBody().contains("/users/root"));
         assertFalse("Password policy nodes are not filtered out from the results",
-                post.responseBody.contains("jnt:passwordHistory"));
+                post.getResponseBody().contains("jnt:passwordHistory"));
 
         post = post(getFindServletURL() + "/" + Constants.LIVE_WORKSPACE + "/en", new String[] { "query",
                 "select * from [jnt:user]" }, new String[] { "depthLimit", "10" }, new String[] { "limit", "10" });
 
         assertFalse("j:password property is not filtered out from the results",
-                post.responseBody.contains("j:password"));
+                post.getResponseBody().contains("j:password"));
         assertFalse("Password policy nodes are not filtered out from the results",
-                post.responseBody.contains("jnt:passwordHistory"));
+                post.getResponseBody().contains("jnt:passwordHistory"));
     }
 }

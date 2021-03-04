@@ -92,17 +92,17 @@ public class LoginPageHttpTest extends JahiaTestCase {
 
     private static Logger logger = LoggerFactory.getLogger(LoginPageHttpTest.class);
 
-    private final static String PASSWORD = "password";
+    private static final String PASSWORD = "password";
 
     private static JCRPublicationService publicationService;
 
     private static JahiaSite site;
 
-    private final static String SITE_NAME = "loginPageHttpTest";
+    private static final String SITE_NAME = "loginPageHttpTest";
 
     private static final String SITE_PATH = "/sites/" + SITE_NAME;
 
-    private final static String USERNAME = "loginPageHttpTestUser";
+    private static final String USERNAME = "loginPageHttpTestUser";
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
@@ -237,8 +237,9 @@ public class LoginPageHttpTest extends JahiaTestCase {
 
     @Test
     public void testRootLogin() throws Exception {
-        String content = getAsText("/cms/login?username=root&password=" + ROOT_PASSWORD + "&redirect="
-                + Jahia.getContextPath() + "/cms/admin/default/en/settings.aboutJahia.html");
+        String content = getAsText("/cms/login?username=" + JahiaTestCase.getRootUserCredentials().getUserID() + "&password="
+                + new String(JahiaTestCase.getRootUserCredentials().getPassword()) + "&redirect=" + Jahia.getContextPath()
+                + "/cms/admin/default/en/settings.aboutJahia.html");
         assertTrue("After login the root user should see the about page in the administration",
                 content.contains("<title>Edit</title>") && content.contains("template=\"aboutJahia\""));
     }

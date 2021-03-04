@@ -142,7 +142,7 @@ public class JahiaTestCase {
     }
     
     protected static final SimpleCredentials getRootUserCredentials() {
-        if (rootUserCredentials != null) {
+        if (rootUserCredentials == null) {
             rootUserCredentials = new SimpleCredentials("root", "root1234".toCharArray());
         }
         return rootUserCredentials;

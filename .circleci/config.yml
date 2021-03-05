@@ -48,12 +48,21 @@ jobs:
           keys:
             - v1-maven-dependencies-{{ checksum "maven_cache_seed" }}
             - v1-maven-dependencies-
+      - setup_remote_docker:
+          version: 19.03.13
+          docker_layer_caching: true
+      - run:
+          name: Docker login
+          # This is needed to push docker image
+          command: |
+            echo "$DOCKERHUB_LOGIN"
+            echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_LOGIN" --password-stdin
       - run:
           # TODO For now I just replaced the Bamboo build number by the CircleCI build number
           name: Build package and load all dependencies into local Maven repository
           command: |
             mvn -s .circleci/.circleci.settings.xml -e clean package de.qaware.maven:go-offline-maven-plugin:resolve-dependencies \
-               -Pgwt-production,unit-tests -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM 
+               -Pgwt-production,unit-tests,docker -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
       - run:
           # TODO For now I just replaced the Bamboo build number by the CircleCI build number
           name: Compile GWT development
@@ -69,9 +78,30 @@ jobs:
 #            - run:
 #                # TODO One day we may want to do a deploy
 #                # TODO For now I just replaced the Bamboo build number by the CircleCI build number
-#                name: Deploy artifacts to server repository  
-#                command: mvn -s .circleci/.circleci.settings.xml -e deploy -Pgwt-production -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM          
+#                name: Deploy artifacts to server repository
+#                command: mvn -s .circleci/.circleci.settings.xml -e deploy -Pgwt-production -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
       - *persist-workspace
+
+#  build_docker:
+#    <<: *workdir
+#    docker: # run the steps with Docker
+#      - image: circleci/openjdk:8-jdk-stretch
+#    steps:
+#      - *attach-workspace
+#      - setup_remote_docker:
+#          version: 19.03.13
+#          docker_layer_caching: true
+#      - run:
+#          name: Docker login
+#          # This is needed to push docker image
+#          command: |
+#            echo "$DOCKERHUB_LOGIN"
+#            echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_LOGIN" --password-stdin
+#      - run:
+#          name: Build docker
+#          working_directory: ~/source/docker
+#          command: |
+#            mvn -s ../.circleci/.circleci.settings.xml -e clean package de.qaware.maven:go-offline-maven-plugin:resolve-dependencies
 
   sonar:
     parameters:
@@ -108,11 +138,11 @@ jobs:
           steps:
             - run:
                 name: Sonar analysis
-                environment: 
-                  DEPENDENCY_CHECK_SETTINGS: -DfailOnError=false -DskipProvidedScope=true -DskipTestScope=false 
-                      -DretireJsAnalyzerEnabled=false -DnodeAnalyzerEnabled=false -Dformats=HTML,JSON 
-                      -Dsonar.dependencyCheck.jsonReportPath=target/dependency-check-report.json 
-                      -Dsonar.dependencyCheck.htmlReportPath=target/dependency-check-report.html 
+                environment:
+                  DEPENDENCY_CHECK_SETTINGS: -DfailOnError=false -DskipProvidedScope=true -DskipTestScope=false
+                      -DretireJsAnalyzerEnabled=false -DnodeAnalyzerEnabled=false -Dformats=HTML,JSON
+                      -Dsonar.dependencyCheck.jsonReportPath=target/dependency-check-report.json
+                      -Dsonar.dependencyCheck.htmlReportPath=target/dependency-check-report.html
                       -DdataDirectory=/home/circleci/.owasp/dependency-check-data
                 command: |
                   if [[ "${CIRCLE_BRANCH}" == "master" ]]; then

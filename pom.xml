@@ -120,6 +120,12 @@
             </modules>
         </profile>
         <profile>
+            <id>docker</id>
+            <modules>
+                <module>docker</module>
+            </modules>
+        </profile>
+        <profile>
             <id>release-to-staging-repository</id>
             <build>
                 <plugins>

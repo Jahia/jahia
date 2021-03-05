@@ -142,7 +142,8 @@ public class GetFeedActionTest extends JahiaTestCase {
         String baseurl = getBaseServerURL() + Jahia.getContextPath() + "/cms";
         final URL url = new URL(baseurl + "/render/default/en" + sdaFeedNode.getPath() + ".getfeed.do");
 
-        Credentials defaultcreds = new UsernamePasswordCredentials("root", "root1234");
+        Credentials defaultcreds = new UsernamePasswordCredentials(JahiaTestCase.getRootUserCredentials().getUserID(),
+                new String(JahiaTestCase.getRootUserCredentials().getPassword()));
         client.getState().setCredentials(new AuthScope(url.getHost(), url.getPort(), AuthScope.ANY_REALM), defaultcreds);
 
         client.getHostConfiguration().setHost(url.getHost(), url.getPort(), url.getProtocol());

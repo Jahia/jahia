@@ -55,7 +55,6 @@ import org.jahia.api.Constants;
 import org.jahia.bin.Find;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -93,15 +92,25 @@ public class FindTest extends JahiaTestCase {
     private static final String TESTSITE_NAME = "findTestSite";
     private static final String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
 
-    private static JahiaSite site;
     private static final String INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE = "English text";
     private static final String COMPLEX_QUERY_VALUE = "b:+-*\"&()[]{}$/\\%\'";
-    
+    private static final String METHOD_FAILED = "Method failed: ";
     private static final String FIND_DISABLED = "jahia.find.disabled";
+    private static final String JSON_RESPONSE_STATUS = "Status code={} JSON response={}";
+    private static final String QUERY_PARAM = "query";
+    private static final String LANGUAGE_PARAM = "language";
+    private static final String PROPERTY_MATCH_REGEXP_PARAM = "propertyMatchRegexp";
+    private static final String PROPERTY_MATCH_REGEXP = "{$q}.*";
+    private static final String REMOVE_DUPLICATE_PARAM = "removeDuplicatePropValues";
+    private static final String DEPTH_LIMIT_PARAM = "depthLimit";
+    private static final String RESULT_NOT_EMPTY_MSG = "Result should not be empty !";
+    private static final String JSONOBJECT_NULL_MSG = "A proper JSONObject instance was expected, got null instead";
+    
     private static String isFindDisabled;
+    private static JahiaSite site;
 
     @BeforeClass
-    public static void oneTimeSetUp() throws Exception {
+    public static void oneTimeSetUp() {
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -125,7 +134,7 @@ public class FindTest extends JahiaTestCase {
 
             JCRSessionWrapper englishEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, englishLocale, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
             JCRNodeWrapper englishEditSiteRootNode = englishEditSession.getNode(SITECONTENT_ROOT_NODE);
-            JCRNodeWrapper englishEditSiteHomeNode = (JCRNodeWrapper) englishEditSiteRootNode.getNode("home");
+            JCRNodeWrapper englishEditSiteHomeNode = englishEditSiteRootNode.getNode("home");
 
             JCRNodeWrapper contentList0 = TestHelper.createList(englishEditSiteHomeNode, "contentList0", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
             JCRNodeWrapper complexValueNode = contentList0.addNode("complex-value", "jnt:mainContent");
@@ -147,7 +156,7 @@ public class FindTest extends JahiaTestCase {
     }
 
     @AfterClass
-    public static void oneTimeTearDown() throws Exception {
+    public static void oneTimeTearDown() {
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
             if (session.nodeExists(SITECONTENT_ROOT_NODE)) {
@@ -170,45 +179,45 @@ public class FindTest extends JahiaTestCase {
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws IOException {
         loginRoot();
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() throws IOException {
         logout();
     }
 
     @Test
-    public void testFindEscapingWithXPath() throws IOException, JSONException, JahiaException {
+    public void testFindEscapingWithXPath() throws IOException, JSONException {
 
         @SuppressWarnings("deprecation")
         PostResult post = post(getFindServletURL()+ "/"+Constants.EDIT_WORKSPACE+"/en",
-            new String[] {"query", "/jcr:root" + SITECONTENT_ROOT_NODE
+            new String[] {QUERY_PARAM, "/jcr:root" + SITECONTENT_ROOT_NODE
                     + "//element(*, nt:base)[jcr:contains(.,'{$q}')]"},
             new String[] {"q", COMPLEX_QUERY_VALUE}, // to test if the reserved characters work correctly.
-            new String[] {"language", javax.jcr.query.Query.XPATH},
-            new String[] {"propertyMatchRegexp", "{$q}.*"},
-            new String[] {"removeDuplicatePropValues", "true"},
-            new String[] {"depthLimit", "1"});
+            new String[] {LANGUAGE_PARAM, javax.jcr.query.Query.XPATH},
+            new String[] {PROPERTY_MATCH_REGEXP_PARAM, PROPERTY_MATCH_REGEXP},
+            new String[] {REMOVE_DUPLICATE_PARAM, "true"},
+            new String[] {DEPTH_LIMIT_PARAM, "1"});
  
-        assertEquals("Method failed: " + post.statusLine, HttpStatus.SC_OK, post.statusCode);
+        assertEquals(METHOD_FAILED + post.getStatusLine(), HttpStatus.SC_OK, post.getStatusCode());
 
         // Read the response body.
-        String responseBody = post.responseBody;
+        String responseBody = post.getResponseBody();
         if (!responseBody.startsWith("[")) {
             StringBuilder responseBodyBuilder = new StringBuilder();
-            responseBodyBuilder.append("[").append(post.responseBody).append("]");
+            responseBodyBuilder.append("[").append(post.getResponseBody()).append("]");
             responseBody = responseBodyBuilder.toString();
         }
 
-        logger.debug("Status code={} JSON response={}", post.statusCode, post.responseBody);
+        logger.debug(JSON_RESPONSE_STATUS, post.getStatusCode(), post.getResponseBody());
 
         JSONArray jsonResults = new JSONArray(responseBody);
 
-        assertNotNull("A proper JSONObject instance was expected, got null instead", jsonResults);
+        assertNotNull(JSONOBJECT_NULL_MSG, jsonResults);
 
-        assertTrue("Result should not be empty !", (jsonResults.length() > 0));
+        assertTrue(RESULT_NOT_EMPTY_MSG, (jsonResults.length() > 0));
 
         validateFindJSONResults(jsonResults, COMPLEX_QUERY_VALUE);
     }
@@ -217,34 +226,34 @@ public class FindTest extends JahiaTestCase {
     public void testSimpleFindWithSQL2() throws IOException, JSONException {
 
         PostResult post = post(getFindServletURL()+ "/"+Constants.EDIT_WORKSPACE+"/en",
-            new String[] {"query",
+            new String[] {QUERY_PARAM,
                     "select * from [nt:base] as base where isdescendantnode(["
                             + SITECONTENT_ROOT_NODE
                             + "/]) and contains(base.*,'{$q}*')"},
             new String[] {"q", INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE},
-            new String[] {"language", javax.jcr.query.Query.JCR_SQL2},
-            new String[] {"propertyMatchRegexp", "{$q}.*"},
-            new String[] {"removeDuplicatePropValues", "true"},
-            new String[] {"depthLimit", "1"},
+            new String[] {LANGUAGE_PARAM, javax.jcr.query.Query.JCR_SQL2},
+            new String[] {PROPERTY_MATCH_REGEXP_PARAM, PROPERTY_MATCH_REGEXP},
+            new String[] {REMOVE_DUPLICATE_PARAM, "true"},
+            new String[] {DEPTH_LIMIT_PARAM, "1"},
             new String[] {"getNodes", "true"});
 
-        assertEquals("Method failed: " + post.statusLine, HttpStatus.SC_OK, post.statusCode);
+        assertEquals(METHOD_FAILED + post.getStatusLine(), HttpStatus.SC_OK, post.getStatusCode());
 
         // Read the response body.
-        String responseBody = post.responseBody;
+        String responseBody = post.getResponseBody();
         if (!responseBody.startsWith("[")) {
             StringBuilder responseBodyBuilder = new StringBuilder();
-            responseBodyBuilder.append("[").append(post.responseBody).append("]");
+            responseBodyBuilder.append("[").append(post.getResponseBody()).append("]");
             responseBody = responseBodyBuilder.toString();
         }
 
-        logger.debug("Status code={} JSON response={}", post.statusCode, post.responseBody);
+        logger.debug(JSON_RESPONSE_STATUS, post.getStatusCode(), post.getResponseBody());
 
         JSONArray jsonResults = new JSONArray(responseBody);
 
-        assertNotNull("A proper JSONObject instance was expected, got null instead", jsonResults);
+        assertNotNull(JSONOBJECT_NULL_MSG, jsonResults);
 
-        assertTrue("Result should not be empty !", (jsonResults.length() > 0));
+        assertTrue(RESULT_NOT_EMPTY_MSG, (jsonResults.length() > 0));
 
         validateFindJSONResults(jsonResults, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
     }
@@ -253,34 +262,34 @@ public class FindTest extends JahiaTestCase {
     public void testFindEscapingWithSQL2() throws IOException, JSONException {
 
         PostResult post = post(getFindServletURL()+ "/"+Constants.EDIT_WORKSPACE+"/en",
-            new String[] {"query",
+            new String[] {QUERY_PARAM,
                     "select * from [nt:base] as base where isdescendantnode(["
                             + SITECONTENT_ROOT_NODE
                             + "/]) and contains(base.*,'{$q}')"},
             new String[] {"q", COMPLEX_QUERY_VALUE}, // to test if the reserved characters work correctly.
-            new String[] {"language", javax.jcr.query.Query.JCR_SQL2},
-            new String[] {"propertyMatchRegexp", "{$q}.*"},
-            new String[] {"removeDuplicatePropValues", "true"},
-            new String[] {"depthLimit", "1"},
+            new String[] {LANGUAGE_PARAM, javax.jcr.query.Query.JCR_SQL2},
+            new String[] {PROPERTY_MATCH_REGEXP_PARAM, PROPERTY_MATCH_REGEXP},
+            new String[] {REMOVE_DUPLICATE_PARAM, "true"},
+            new String[] {DEPTH_LIMIT_PARAM, "1"},
             new String[] {"getNodes", "true"});
 
-        assertEquals("Method failed: " + post.statusLine, HttpStatus.SC_OK, post.statusCode);
+        assertEquals(METHOD_FAILED + post.getStatusLine(), HttpStatus.SC_OK, post.getStatusCode());
 
         // Read the response body.
-        String responseBody = post.responseBody;
+        String responseBody = post.getResponseBody();
         if (!responseBody.startsWith("[")) {
             StringBuilder responseBodyBuilder = new StringBuilder();
-            responseBodyBuilder.append("[").append(post.responseBody).append("]");
+            responseBodyBuilder.append("[").append(post.getResponseBody()).append("]");
             responseBody = responseBodyBuilder.toString();
         }
 
-        logger.debug("Status code={} JSON response={}", post.statusCode, post.responseBody);
+        logger.debug(JSON_RESPONSE_STATUS, post.getStatusCode(), post.getResponseBody());
 
         JSONArray jsonResults = new JSONArray(responseBody);
 
-        assertNotNull("A proper JSONObject instance was expected, got null instead", jsonResults);
+        assertNotNull(JSONOBJECT_NULL_MSG, jsonResults);
 
-        assertTrue("Result should not be empty !", (jsonResults.length() > 0));
+        assertTrue(RESULT_NOT_EMPTY_MSG, (jsonResults.length() > 0));
 
         validateFindJSONResults(jsonResults, COMPLEX_QUERY_VALUE);
     }
@@ -325,23 +334,23 @@ public class FindTest extends JahiaTestCase {
     }
 
     @Test
-    public void testFiltering() throws IOException, JSONException {
+    public void testFiltering() throws IOException {
 
-        PostResult post = post(getFindServletURL() + "/" + Constants.LIVE_WORKSPACE + "/en", new String[] { "query",
-                "select * from [jnt:user] where ischildnode('/users/')" }, new String[] { "depthLimit", "10" });
+        PostResult post = post(getFindServletURL() + "/" + Constants.LIVE_WORKSPACE + "/en", new String[] { QUERY_PARAM,
+                "select * from [jnt:user] where ischildnode('/users/')" }, new String[] { DEPTH_LIMIT_PARAM, "10" });
 
-        logger.debug("Status code={} JSON response=[]", post.statusCode, post.responseBody);
+        logger.debug(JSON_RESPONSE_STATUS, post.getStatusCode(), post.getResponseBody());
 
-        assertFalse("Root user is not filtered out from the results", post.responseBody.contains("/users/root"));
+        assertFalse("Root user is not filtered out from the results", post.getResponseBody().contains("/users/root"));
         assertFalse("Password policy nodes are not filtered out from the results",
-                post.responseBody.contains("jnt:passwordHistory"));
+                post.getResponseBody().contains("jnt:passwordHistory"));
 
-        post = post(getFindServletURL() + "/" + Constants.LIVE_WORKSPACE + "/en", new String[] { "query",
-                "select * from [jnt:user]" }, new String[] { "depthLimit", "10" }, new String[] { "limit", "10" });
+        post = post(getFindServletURL() + "/" + Constants.LIVE_WORKSPACE + "/en", new String[] { QUERY_PARAM,
+                "select * from [jnt:user]" }, new String[] { DEPTH_LIMIT_PARAM, "10" }, new String[] { "limit", "10" });
 
         assertFalse("j:password property is not filtered out from the results",
-                post.responseBody.contains("j:password"));
+                post.getResponseBody().contains("j:password"));
         assertFalse("Password policy nodes are not filtered out from the results",
-                post.responseBody.contains("jnt:passwordHistory"));
+                post.getResponseBody().contains("jnt:passwordHistory"));
     }
 }

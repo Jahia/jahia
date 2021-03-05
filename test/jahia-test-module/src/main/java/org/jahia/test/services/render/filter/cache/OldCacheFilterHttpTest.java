@@ -48,12 +48,15 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.cache.AreaResourceCacheKeyPartGenerator;
 import org.jahia.services.render.filter.cache.ModuleGeneratorQueue;
+import org.jahia.test.JahiaTestCase;
 import org.jahia.test.services.render.filter.cache.base.CacheFilterHttpTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.IOException;
 
 /**
  * Old implementation of AggregateCacheFilter specific unit tests
@@ -68,51 +71,62 @@ public class OldCacheFilterHttpTest extends CacheFilterHttpTest {
     }
 
     @BeforeClass
-    public static void oneTimeSetUp() throws Exception {
+    public static void oneTimeSetUp() {
         CacheFilterHttpTest.oneTimeSetUp();
         switchCacheImplem();
     }
 
     @AfterClass
-    public static void oneTimeTearDown() throws Exception {
+    public static void oneTimeTearDown() {
         CacheFilterHttpTest.oneTimeTearDown();
     }
 
     @Test
-    public void testModuleError() throws Exception {
-        String s = getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", "error1");
+    public void testModuleError() throws IOException {
+        String s = getContent(getUrl(ERROR_PAGE_PATH), JahiaTestCase.getRootUserCredentials(), "error1");
         assertThat(s).contains("<!-- Module error :");
-        getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", "error2");
+        getContent(getUrl(ERROR_PAGE_PATH), JahiaTestCase.getRootUserCredentials(), "error2");
         // All served from cache
-        assertThat(getCheckFilter("CacheHttpTestRenderFilter1").getData("error2").getCount()).isEqualTo(1);
-        Thread.sleep(5000);
+        assertThat(getCheckFilter(CACHE_RENDER_FILTER_1).getData("error2").getCount()).isEqualTo(1);
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
         // Error should be flushed
-        getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", "error3");
-        assertThat(getCheckFilter("CacheHttpTestRenderFilter1").getData("error3").getCount()).isEqualTo(2);
+        getContent(getUrl(ERROR_PAGE_PATH), JahiaTestCase.getRootUserCredentials(), "error3");
+        assertThat(getCheckFilter(CACHE_RENDER_FILTER_1).getData("error3").getCount()).isEqualTo(2);
     }
 
     @Test
-    public void testModuleWait() throws Exception {
-
-        long previousModuleGenerationWaitTime = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getModuleGenerationWaitTime();
+    public void testModuleWait() throws IOException {
+        ModuleGeneratorQueue moduleGeneratorQueue = (ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue");
+        long previousModuleGenerationWaitTime = moduleGeneratorQueue.getModuleGenerationWaitTime();
 
         try {
 
-            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(1000);
-
-            HttpThread t1 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home/long", "testModuleWait1"), "root", "root1234", "testModuleWait1");
+            moduleGeneratorQueue.setModuleGenerationWaitTime(1000);
+            int counter = 1;
+            HttpThread t1 = new HttpThread(getUrl(LONG_PAGE_PATH, REQUEST_ID_PREFIX + counter), JahiaTestCase.getRootUserCredentials(), REQUEST_ID_PREFIX + counter++);
             t1.start();
-            Thread.sleep(5000);
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
 
-            String content2 = getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/long", "testModuleWait2"), "root", "root1234", "testModuleWait2");
-            String content3 = getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/long", "testModuleWait3"), "root", "root1234", "testModuleWait3");
-
-            t1.join();
+            String content2 = getContent(getUrl(LONG_PAGE_PATH, REQUEST_ID_PREFIX + counter), JahiaTestCase.getRootUserCredentials(), REQUEST_ID_PREFIX + counter++);
+            String content3 = getContent(getUrl(LONG_PAGE_PATH, REQUEST_ID_PREFIX + counter), JahiaTestCase.getRootUserCredentials(), REQUEST_ID_PREFIX + counter++);
+            try {
+                t1.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
             String content1 = t1.getResult();
 
-            String content4 = getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/long", "testModuleWait4"), "root", "root1234", "testModuleWait4");
+            String content4 = getContent(getUrl(LONG_PAGE_PATH, REQUEST_ID_PREFIX + counter), JahiaTestCase.getRootUserCredentials(), REQUEST_ID_PREFIX + counter++);
 
-            CacheFilterCheckFilter f1 = getCheckFilter("CacheHttpTestRenderFilter1");
+            CacheFilterCheckFilter f1 = getCheckFilter(CACHE_RENDER_FILTER_1);
 
             SoftAssertions softly = new SoftAssertions();
 
@@ -137,12 +151,12 @@ public class OldCacheFilterHttpTest extends CacheFilterHttpTest {
 
             softly.assertAll();
         } finally {
-            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
+            moduleGeneratorQueue.setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
         }
     }
 
     @Test
-    public void testMaxConcurrent() throws Exception {
+    public void testMaxConcurrent() throws IOException {
         testMaxConcurrent(1000);
     }
 }

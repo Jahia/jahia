@@ -50,6 +50,7 @@ import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.render.filter.cache.AreaResourceCacheKeyPartGenerator;
 import org.jahia.services.render.filter.cache.CacheFilter;
 import org.jahia.services.render.filter.cache.ModuleGeneratorQueue;
+import org.jahia.test.JahiaTestCase;
 import org.jahia.test.services.render.filter.cache.base.CacheFilterHttpTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -57,12 +58,15 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.IOException;
+
 /**
  * New implementation of CacheFilter specific unit tests
  */
 @SuppressWarnings("deprecation")
 public class NewCacheFilterHttpTest extends CacheFilterHttpTest {
-
+    private static final String REQUEST_HAS_NO_PAGE_TITLE = "Request %s should contain page title";
+    
     protected static void switchCacheImplem() {
         ((CacheFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.cache.CacheFilter")).setDisabled(false);
         ((AggregateFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.AggregateFilter")).setDisabled(false);
@@ -71,80 +75,105 @@ public class NewCacheFilterHttpTest extends CacheFilterHttpTest {
     }
 
     @BeforeClass
-    public static void oneTimeSetUp() throws Exception {
+    public static void oneTimeSetUp() {
         CacheFilterHttpTest.oneTimeSetUp();
         switchCacheImplem();
     }
 
     @AfterClass
-    public static void oneTimeTearDown() throws Exception {
+    public static void oneTimeTearDown() {
         CacheFilterHttpTest.oneTimeTearDown();
     }
 
     @Test
-    public void testModuleError() throws Exception {
-        String s = getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", "error1");
+    public void testModuleError() throws IOException {
+        String s = getContent(getUrl(ERROR_PAGE_PATH), JahiaTestCase.getRootUserCredentials(), "error1");
         assertThat(s).contains("<!-- Module error :");
-        getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", "error2");
+        getContent(getUrl(ERROR_PAGE_PATH), JahiaTestCase.getRootUserCredentials(), "error2");
         // All served from cache
         // No request go after cache filter, everything is served by the cache
-        assertThat(getCheckFilter("CacheHttpTestRenderFilter2").getData("error2")).isNull();
-        Thread.sleep(5000);
+        assertThat(getCheckFilter(CACHE_RENDER_FILTER_2).getData("error2")).isNull();
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
         // Error should be flushed, and only this fragment should be regenerate
-        getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", "error3");
-        CacheFilterCheckFilter.RequestData data = getCheckFilter("CacheHttpTestRenderFilter2").getData("error3");
+        getContent(getUrl(ERROR_PAGE_PATH), JahiaTestCase.getRootUserCredentials(), "error3");
+        CacheFilterCheckFilter.RequestData data = getCheckFilter(CACHE_RENDER_FILTER_2).getData("error3");
         assertThat(data.getCount()).isEqualTo(1);
         assertThat(data.getRenderCalled().toArray()[0]).isEqualTo("/sites/cachetest/home/error/main/simple-text.error.html");
     }
 
     @Test
-    public void testModuleWait() throws Exception {
-
-        long previousModuleGenerationWaitTime = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getModuleGenerationWaitTime();
+    public void testModuleWait() throws IOException {
+        ModuleGeneratorQueue moduleGeneratorQueue = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue"));
+        long previousModuleGenerationWaitTime = moduleGeneratorQueue.getModuleGenerationWaitTime();
 
         try {
 
-            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(1000);
-
-            HttpThread t1 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home/long", "testModuleWait1"), "root", "root1234", "testModuleWait1");
+            moduleGeneratorQueue.setModuleGenerationWaitTime(1000);
+            int counter = 1;
+            HttpThread t1 = new HttpThread(getUrl(LONG_PAGE_PATH, REQUEST_ID_PREFIX + counter), JahiaTestCase.getRootUserCredentials(),
+                    REQUEST_ID_PREFIX + counter++);
             t1.start();
-            Thread.sleep(5000);
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
 
-            String content2 = getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/long", "testModuleWait2"), "root", "root1234", "testModuleWait2");
-            String content3 = getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/long", "testModuleWait3"), "root", "root1234", "testModuleWait3");
-
-            t1.join();
+            String content2 = getContent(getUrl(LONG_PAGE_PATH, REQUEST_ID_PREFIX + counter), JahiaTestCase.getRootUserCredentials(),
+                    REQUEST_ID_PREFIX + counter++);
+            String content3 = getContent(getUrl(LONG_PAGE_PATH, REQUEST_ID_PREFIX + counter), JahiaTestCase.getRootUserCredentials(),
+                    REQUEST_ID_PREFIX + counter++);
+            try {
+                t1.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
             String content1 = t1.getResult();
 
-            String content4 = getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/long", "testModuleWait4"), "root", "root1234", "testModuleWait4");
+            String content4 = getContent(getUrl(LONG_PAGE_PATH, REQUEST_ID_PREFIX + counter), JahiaTestCase.getRootUserCredentials(),
+                    REQUEST_ID_PREFIX + counter++);
 
-            CacheFilterCheckFilter f1 = getCheckFilter("CacheHttpTestRenderFilter1");
-            CacheFilterCheckFilter f2 = getCheckFilter("CacheHttpTestRenderFilter2");
+            CacheFilterCheckFilter f1 = getCheckFilter(CACHE_RENDER_FILTER_1);
+            CacheFilterCheckFilter f2 = getCheckFilter(CACHE_RENDER_FILTER_2);
 
             SoftAssertions softly = new SoftAssertions();
-
-            softly.assertThat(content1).as("Request testModuleWait1 (length=%s, time=%s) should contain text", content1.length(), f1.getData("testModuleWait1").getTime()).contains(LONG_CREATED_ELEMENT_TEXT);
-            softly.assertThat(content1).as("Request testModuleWait1 should contain page title").contains(LONG_PAGE_TITLE);
-            softly.assertThat(f1.getData("testModuleWait1").getTime()).withFailMessage("First thread did not spend correct time").isGreaterThanOrEqualTo(5000);
+            counter = 1;
+            String requestId = REQUEST_ID_PREFIX + counter++;
+            softly.assertThat(content1).as("Request %s (length=%s, time=%s) should contain text", requestId, content1.length(),
+                    f1.getData(requestId).getTime()).contains(LONG_CREATED_ELEMENT_TEXT);
+            softly.assertThat(content1).as(REQUEST_HAS_NO_PAGE_TITLE, requestId).contains(LONG_PAGE_TITLE);
+            softly.assertThat(f1.getData(requestId).getTime()).withFailMessage("First thread did not spend correct time")
+                    .isGreaterThanOrEqualTo(5000);
 
             // Long module is left blank
-            softly.assertThat(content2).as("Request testModuleWait2 (length=%s, time=%s) should not contain text", content2.length(), f1.getData("testModuleWait2").getTime()).doesNotContain(LONG_CREATED_ELEMENT_TEXT);
-            softly.assertThat(content2).as("Request testModuleWait2 should contain page title").contains(LONG_PAGE_TITLE);
-            softly.assertThat(f1.getData("testModuleWait2").getTime()).withFailMessage("Second thread did not spend correct time").isGreaterThanOrEqualTo(1000);
+            requestId = REQUEST_ID_PREFIX + counter++;
+            softly.assertThat(content2).as("Request %s (length=%s, time=%s) should not contain text", requestId, content2.length(),
+                    f1.getData(requestId).getTime()).doesNotContain(LONG_CREATED_ELEMENT_TEXT);
+            softly.assertThat(content2).as(REQUEST_HAS_NO_PAGE_TITLE, requestId).contains(LONG_PAGE_TITLE);
+            softly.assertThat(f1.getData(requestId).getTime()).withFailMessage("Second thread did not spend correct time")
+                    .isGreaterThanOrEqualTo(1000);
 
             // Entry is cached without the long module
-            softly.assertThat(content3).as("Request testModuleWait3 (length=%s, time=%s) should not contain text", content3.length(), f1.getData("testModuleWait3").getTime()).doesNotContain(LONG_CREATED_ELEMENT_TEXT);
-            softly.assertThat(content3).as("Request testModuleWait3 should contain page title").contains(LONG_PAGE_TITLE);
-            softly.assertThat(f2.getData("testModuleWait3")).isNull();
+            requestId = REQUEST_ID_PREFIX + counter++;
+            softly.assertThat(content3).as("Request %s (length=%s, time=%s) should not contain text", requestId, content3.length(),
+                    f1.getData(requestId).getTime()).doesNotContain(LONG_CREATED_ELEMENT_TEXT);
+            softly.assertThat(content3).as(REQUEST_HAS_NO_PAGE_TITLE, requestId).contains(LONG_PAGE_TITLE);
+            softly.assertThat(f2.getData(requestId)).isNull();
 
             // Entry is now cached with the long module
-            softly.assertThat(content4).as("Request testModuleWait4 (length=%s, time=%s) should contain text", content4.length(), f1.getData("testModuleWait4").getTime()).contains(LONG_CREATED_ELEMENT_TEXT);
-            softly.assertThat(content4).as("Request testModuleWait4 should contain page title").contains(LONG_PAGE_TITLE);
-            softly.assertThat(f2.getData("testModuleWait4")).isNull();
+            requestId = REQUEST_ID_PREFIX + counter++;
+            softly.assertThat(content4).as("Request %s (length=%s, time=%s) should contain text", requestId, content4.length(),
+                    f1.getData(requestId).getTime()).contains(LONG_CREATED_ELEMENT_TEXT);
+            softly.assertThat(content4).as(REQUEST_HAS_NO_PAGE_TITLE, requestId).contains(LONG_PAGE_TITLE);
+            softly.assertThat(f2.getData(requestId)).isNull();
 
             softly.assertAll();
         } finally {
-            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
+            moduleGeneratorQueue.setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
         }
     }
 }

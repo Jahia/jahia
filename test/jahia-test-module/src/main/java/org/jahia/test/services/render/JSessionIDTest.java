@@ -108,42 +108,6 @@ public class JSessionIDTest extends JahiaTestCase {
         findJSessionId(true);
     }
 
-//    public void testJsessionIdWithCache() throws Exception {
-//        SettingsBean.getInstance().setDisableJsessionIdParameter(false);
-//        SettingsBean.getInstance().setJsessionIdParameterName(jsessionid);
-//        httpClient.getParams().setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
-//
-//        GetMethod displayLoginMethod = new GetMethod(getBaseServerURL() + Jahia.getContextPath()+"/administration");
-//        int result = httpClient.executeMethod(displayLoginMethod);
-//        String responseBodyAsString = displayLoginMethod.getResponseBodyAsString();
-//
-//        Pattern p = Pattern.compile("action=\"([^\"]*)\"");
-//        Matcher m = p.matcher(responseBodyAsString);
-//        assertTrue (m.find());
-//
-//        String url = m.group(1);
-//
-//        p = Pattern.compile("name=\"redirect\" value=\"([^\"]*)\"");
-//        m = p.matcher(responseBodyAsString);
-//        assertTrue (m.find());
-//
-//        String redirect = m.group(1);
-//        PostMethod login = new PostMethod(getBaseServerURL() + url);
-//        login.setParameter("username","root");
-//        login.setParameter("password","root1234");
-//        login.setParameter("doLogin","true");
-//        login.setParameter("redirect",redirect);
-//        result = httpClient.executeMethod(login);
-//
-//        String sessionid = StringUtils.substringAfter(login.getURI().toString(), ";"+jsessionid);
-//        assertNotNull("Session id is not in the url !",sessionid);
-//
-//        GetMethod home = new GetMethod(getBaseServerURL() + Jahia.getContextPath()+"/cms/render/live/en/users/root.user-home.html;"+jsessionid+sessionid);
-//        result = httpClient.executeMethod(home);
-//        System.out.println(home.getResponseBodyAsString());
-//        System.out.println("ok");
-//    }
-
     private void findJSessionId(boolean removeJsessionId) throws IOException {
         SettingsBean.getInstance().setDisableJsessionIdParameter(removeJsessionId);
         SettingsBean.getInstance().setJsessionIdParameterName(jsessionid);

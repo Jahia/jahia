@@ -74,8 +74,12 @@ import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableSet;
+
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.SimpleCredentials;
 import javax.jcr.query.Query;
 import java.io.IOException;
 import java.io.InputStream;
@@ -85,6 +89,7 @@ import java.security.SecureRandom;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
@@ -94,22 +99,48 @@ import static org.junit.Assert.*;
  */
 public class CacheFilterHttpTest extends JahiaTestCase {
 
-    public static final Logger logger = LoggerFactory.getLogger(CacheFilterTest.class);
+    public static final Logger logger = LoggerFactory.getLogger(CacheFilterHttpTest.class);
     public static final String TESTSITE_NAME = "cachetest";
     public static final String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
     public static final String LONG_PAGE_TITLE = "<h1>long</h1>";
     public static final String LONG_CREATED_ELEMENT_TEXT = "Very long to appear";
-
+    private static final String USER_1 = "user1";
+    private static final String USER_2 = "user2";
+    private static final String USER_3 = "user3";
+    private static final String USER_AB = "userAB";
+    private static final String USER_AC = "userAC";
+    private static final String USER_BC = "userBC";
+    private static final String SIMPLE_PASSWORD = "password";
+    private static final String READER = "reader";
+    private static final String GROUP_A = "g:groupA";
+    private static final String GROUP_B = "g:groupB";
+    private static final String CANNOT_SEE_CONTENT = " cannot see content, she should see";
+    private static final String SEES_WRONG_CONTENT = " sees content, she should not see";
+    private static final String CONTENT_FOR = "content for ";
+    
+    protected static final String ERROR_PAGE_PATH = SITECONTENT_ROOT_NODE + "/home/error";
+    protected static final String LONG_PAGE_PATH = SITECONTENT_ROOT_NODE + "/home/long";
+    protected static final String LONG_5_PAGE_PATH = SITECONTENT_ROOT_NODE + "/home/long5";
+    
+    protected static final String REQUEST_ID_PREFIX = "testModuleWait";
+    protected static final String CONCURRENT_REQUEST_ID_PREFIX = "testMaxConcurrent";
+    
+    protected static final String CACHE_RENDER_FILTER_1 = "CacheHttpTestRenderFilter1";
+    protected static final String CACHE_RENDER_FILTER_2 = "CacheHttpTestRenderFilter2";
+    private static final Set<String> PAGE_NAMES_TO_SKIP = ImmutableSet.of("long", "error", "user-per-content-test", "simple-page-A", "simple-page-B",
+            "simple-page-C", "simple-page-AC", "simple-page-BC", "simple-page-AB", "simple-page-root", "simple-page-users");
+    
     private static boolean cacheFilterDisabled;
     private static boolean aggregateFilterDisabled;
     private static boolean aggregateCacheFilterDisabled;
     private static boolean areaResourceCacheKeyPartGeneratorDisabled;
-
+    
     Random random = new SecureRandom();
     private String[] texts = {"visible for root", "visible for users only", "visible for userAB", "visible for userBC", "visible for userAC", "visible for groupA", "visible for groupB", "visible for groupC"};
+    char[] simplePassword = SIMPLE_PASSWORD.toCharArray();
 
     @BeforeClass
-    public static void oneTimeSetUp() throws Exception {
+    public static void oneTimeSetUp() {
 
         try {
 
@@ -121,12 +152,12 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             ServicesRegistry.getInstance().getJahiaTemplateManagerService().installModule("jahia-test-module", SITECONTENT_ROOT_NODE, session.getUser().getName());
 
             final JahiaUserManagerService userManagerProvider = JahiaUserManagerService.getInstance();
-            final JCRUserNode userAB = userManagerProvider.createUser("userAB", "password", new Properties(), session);
-            final JCRUserNode userAC = userManagerProvider.createUser("userAC", "password", new Properties(), session);
-            final JCRUserNode userBC = userManagerProvider.createUser("userBC", "password", new Properties(), session);
-            userManagerProvider.createUser("user1", "password", new Properties(), session);
-            userManagerProvider.createUser("user2", "password", new Properties(), session);
-            userManagerProvider.createUser("user3", "password", new Properties(), session);
+            final JCRUserNode userAB = userManagerProvider.createUser(USER_AB, SIMPLE_PASSWORD, new Properties(), session);
+            final JCRUserNode userAC = userManagerProvider.createUser(USER_AC, SIMPLE_PASSWORD, new Properties(), session);
+            final JCRUserNode userBC = userManagerProvider.createUser(USER_BC, SIMPLE_PASSWORD, new Properties(), session);
+            userManagerProvider.createUser(USER_1, SIMPLE_PASSWORD, new Properties(), session);
+            userManagerProvider.createUser(USER_2, SIMPLE_PASSWORD, new Properties(), session);
+            userManagerProvider.createUser(USER_3, SIMPLE_PASSWORD, new Properties(), session);
 
             // Create three groups
             final JahiaGroupManagerService groupManagerProvider = JahiaGroupManagerService.getInstance();
@@ -155,8 +186,8 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             areaResourceCacheKeyPartGeneratorDisabled = ((AreaResourceCacheKeyPartGenerator) SpringContextSingleton.getBean("areaResourceCacheKeyPartGenerator")).isDisabled();
 
             //enable test filters
-            getCheckFilter("CacheHttpTestRenderFilter1").setDisabled(false);
-            getCheckFilter("CacheHttpTestRenderFilter2").setDisabled(false);
+            getCheckFilter(CACHE_RENDER_FILTER_1).setDisabled(false);
+            getCheckFilter(CACHE_RENDER_FILTER_2).setDisabled(false);
         } catch (Exception e) {
             logger.warn("Exception during test setUp", e);
             fail();
@@ -164,17 +195,17 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     }
 
     @AfterClass
-    public static void oneTimeTearDown() throws Exception {
+    public static void oneTimeTearDown() {
         try {
             TestHelper.deleteSite(TESTSITE_NAME);
             final JahiaUserManagerService userManagerProvider = JahiaUserManagerService.getInstance();
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-            userManagerProvider.deleteUser(userManagerProvider.lookupUser("userAB").getPath(), session);
-            userManagerProvider.deleteUser(userManagerProvider.lookupUser("userAC").getPath(), session);
-            userManagerProvider.deleteUser(userManagerProvider.lookupUser("userBC").getPath(), session);
-            userManagerProvider.deleteUser(userManagerProvider.lookupUser("user1").getPath(), session);
-            userManagerProvider.deleteUser(userManagerProvider.lookupUser("user2").getPath(), session);
-            userManagerProvider.deleteUser(userManagerProvider.lookupUser("user3").getPath(), session);
+            userManagerProvider.deleteUser(userManagerProvider.lookupUser(USER_AB).getPath(), session);
+            userManagerProvider.deleteUser(userManagerProvider.lookupUser(USER_AC).getPath(), session);
+            userManagerProvider.deleteUser(userManagerProvider.lookupUser(USER_BC).getPath(), session);
+            userManagerProvider.deleteUser(userManagerProvider.lookupUser(USER_1).getPath(), session);
+            userManagerProvider.deleteUser(userManagerProvider.lookupUser(USER_2).getPath(), session);
+            userManagerProvider.deleteUser(userManagerProvider.lookupUser(USER_3).getPath(), session);
             session.save();
 
             // restore filters config
@@ -184,24 +215,24 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             ((AreaResourceCacheKeyPartGenerator) SpringContextSingleton.getBean("areaResourceCacheKeyPartGenerator")).setDisabled(areaResourceCacheKeyPartGeneratorDisabled);
 
             //enable test filters
-            getCheckFilter("CacheHttpTestRenderFilter1").setDisabled(true);
-            getCheckFilter("CacheHttpTestRenderFilter2").setDisabled(true);
-            getCheckFilter("CacheHttpTestRenderFilter1").clear();
-            getCheckFilter("CacheHttpTestRenderFilter2").clear();
+            getCheckFilter(CACHE_RENDER_FILTER_1).setDisabled(true);
+            getCheckFilter(CACHE_RENDER_FILTER_2).setDisabled(true);
+            getCheckFilter(CACHE_RENDER_FILTER_1).clear();
+            getCheckFilter(CACHE_RENDER_FILTER_2).clear();
         } catch (Exception e) {
             logger.warn("Exception during test tearDown", e);
         }
         JCRSessionFactory.getInstance().closeAllSessions();
     }
 
-    static void permute(List<String> arr, int k, List<List<String>> res) {
+    static void permute(List<SimpleCredentials> arr, int k, List<List<SimpleCredentials>> res) {
         for (int i = k; i < arr.size(); i++) {
             Collections.swap(arr, i, k);
             permute(arr, k + 1, res);
             Collections.swap(arr, k, i);
         }
         if (k == arr.size() - 1) {
-            res.add(new ArrayList<String>(arr));
+            res.add(new ArrayList<>(arr));
         }
     }
 
@@ -223,8 +254,8 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         depCache.flush();
         depCache.removeAll();
         cacheProvider.flushNonCacheableFragments();
-        getCheckFilter("CacheHttpTestRenderFilter1").clear();
-        getCheckFilter("CacheHttpTestRenderFilter2").clear();
+        getCheckFilter(CACHE_RENDER_FILTER_1).clear();
+        getCheckFilter(CACHE_RENDER_FILTER_2).clear();
         cache.getCacheConfiguration().setEternal(true);
         depCache.getCacheConfiguration().setEternal(true);
     }
@@ -239,22 +270,22 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     }
 
     @Test
-    public void testACLs() throws Exception {
+    public void testACLs() throws RepositoryException, IOException {
         testACLs(SITECONTENT_ROOT_NODE + "/home/acl1");
     }
 
     @Test
-    public void testReferencesFlush() throws Exception {
+    public void testReferencesFlush() throws RepositoryException, IOException {
 
         URL url = getUrl(SITECONTENT_ROOT_NODE + "/home/references");
-        getContent(url, "root", ROOT_PASSWORD, null);
+        getContent(url, JahiaTestCase.getRootUserCredentials(), null);
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
         JCRNodeWrapper n = session.getNode(SITECONTENT_ROOT_NODE + "/home/references/main/simple-text");
         try {
             n.setProperty("text", "text content updated");
             session.save();
-            String newvalue = getContent(url, "root", ROOT_PASSWORD, "testReferencesFlush1");
+            String newvalue = getContent(url, JahiaTestCase.getRootUserCredentials(), "testReferencesFlush1");
             Matcher m = Pattern.compile("text content updated").matcher(newvalue);
             assertTrue("Value has not been updated", m.find());
             assertTrue("References have not been flushed", m.find());
@@ -267,46 +298,42 @@ public class CacheFilterHttpTest extends JahiaTestCase {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testRandomFlush() throws Exception {
+    public void testRandomFlush() throws RepositoryException, IOException {
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
         Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:page] as p where isdescendantnode(p,'" + SITECONTENT_ROOT_NODE + "/home')", Query.JCR_SQL2);
-        List<String> paths = new ArrayList<String>();
+        List<String> paths = new ArrayList<>();
         NodeIterator nodes = q.execute().getNodes();
-        Set<String> skipped = new HashSet<>(Arrays.asList("long", "error", "user-per-content-test", "simple-page-A", "simple-page-B", "simple-page-C", "simple-page-AC", "simple-page-BC", "simple-page-AB", "simple-page-root", "simple-page-users"));
         while (nodes.hasNext()) {
-            JCRNodeWrapper next = (JCRNodeWrapper) nodes.next();
-            if (!skipped.contains(next.getName())) {
-                paths.add(next.getPath());
+            JCRNodeWrapper node = (JCRNodeWrapper) nodes.next();
+            if (!PAGE_NAMES_TO_SKIP.contains(node.getName())) {
+                paths.add(node.getPath());
             }
         }
-        List<String> users = Arrays.asList("userAB", "userAC", "userBC");
-        Map<String, String> m = new HashMap<String, String>();
-        for (String user : users) {
+        List<SimpleCredentials> users = Arrays.asList(new SimpleCredentials(USER_AB, simplePassword),
+                new SimpleCredentials(USER_AC, simplePassword), new SimpleCredentials(USER_BC, simplePassword));
+        Map<String, String> m = new HashMap<>();
+        for (SimpleCredentials userCredentials : users) {
             for (String path : paths) {
-                m.put(user + path, getContent(getUrl(path), user, "password", null));
+                m.put(userCredentials.getUserID() + path, getContent(getUrl(path), userCredentials, null));
             }
         }
 
         final Cache cache = ModuleCacheProvider.getInstance().getCache();
         List<String> keysBefore = cache.getKeys();
 
-        Map<String, Object> cacheCopy = new HashMap<String, Object>();
-        for (String s : keysBefore) {
-            final Element element = cache.get(s);
-            if (element != null) {
-                cacheCopy.put(s, element.getObjectValue());
-            }
-        }
+        Map<Object, Element> cacheCopy = cache.getAll(keysBefore);
 
         SoftAssertions softly = new SoftAssertions();
 
         for (int j = 0; j < 10; j++) {
-            System.out.println("flush " + j);
+            logger.info("flush {}", j);
             List<String> toFlush = randomizeFlush(keysBefore, 10);
-            for (String user : users) {
+            for (SimpleCredentials userCredentials : users) {
                 for (String path : paths) {
-                    System.out.println(user + " - " + path);
-                    softly.assertThat(getContent(getUrl(path), user, "password", null)).as("Different content for " + user + " , " + path + " when flushing : " + toFlush).isEqualTo(m.get(user + path));
+                    logger.info("{} - {}", userCredentials.getUserID(), path);
+                    softly.assertThat(getContent(getUrl(path), userCredentials, null))
+                            .as("Different content for " + userCredentials.getUserID() + " , " + path + " when flushing : " + toFlush)
+                            .isEqualTo(m.get(userCredentials.getUserID() + path));
                     checkCacheContent(cache, cacheCopy, toFlush, softly);
                 }
             }
@@ -314,9 +341,9 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             Collections.sort(keysBefore);
             Collections.sort(keysAfter);
             if (!keysBefore.equals(keysAfter)) {
-                List<String> onlyInBefore = new ArrayList<String>(keysBefore);
+                List<String> onlyInBefore = new ArrayList<>(keysBefore);
                 onlyInBefore.removeAll(keysAfter);
-                List<String> onlyInAfter = new ArrayList<String>(keysAfter);
+                List<String> onlyInAfter = new ArrayList<>(keysAfter);
                 softly.fail("Key sets are not the same before and after flushing : " + toFlush + "\n Before flushs :" + onlyInBefore + " ,\n After flush : " + onlyInAfter);
             }
             checkCacheContent(cache, cacheCopy, toFlush, softly);
@@ -326,63 +353,79 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     }
 
     @Test
-    public void testACLsUserPerContent() throws Exception {
+    public void testACLsUserPerContent() throws IOException {
         // test for https://jira.jahia.org/browse/QA-7383
         String path = SITECONTENT_ROOT_NODE + "/home/user-per-content-test";
 
-        String contentForUser1 = getContent(getUrl(path), "user1", "password", "testACLs11");
-        assertTrue("user1 cannot see content, she should see", contentForUser1.contains("content for user1"));
-        assertFalse("user1 sees content, she should not see", contentForUser1.contains("content for user2"));
-        assertFalse("user1 sees content, she should not see", contentForUser1.contains("content for user3"));
+        String contentForUser1 = getContent(getUrl(path), new SimpleCredentials(USER_1, simplePassword), "testACLs11");
+        assertTrue(USER_1 + CANNOT_SEE_CONTENT, contentForUser1.contains(CONTENT_FOR + USER_1));
+        assertFalse(USER_1 + SEES_WRONG_CONTENT, contentForUser1.contains(CONTENT_FOR + USER_2));
+        assertFalse(USER_1 + SEES_WRONG_CONTENT, contentForUser1.contains(CONTENT_FOR + USER_3));
 
-        String contentForUser2 = getContent(getUrl(path), "user2", "password", "testACLs12");
-        assertTrue("user2 cannot see content, she should see", contentForUser2.contains("content for user2"));
-        assertFalse("user2 sees content, she should not see", contentForUser2.contains("content for user1"));
-        assertFalse("user2 sees content, she should not see", contentForUser2.contains("content for user3"));
+        String contentForUser2 = getContent(getUrl(path), new SimpleCredentials(USER_2, simplePassword), "testACLs12");
+        assertTrue(USER_2 + CANNOT_SEE_CONTENT, contentForUser2.contains(CONTENT_FOR + USER_2));
+        assertFalse(USER_2 + SEES_WRONG_CONTENT, contentForUser2.contains(CONTENT_FOR + USER_1));
+        assertFalse(USER_2 + SEES_WRONG_CONTENT, contentForUser2.contains(CONTENT_FOR + USER_3));
 
-        String contentForUser3 = getContent(getUrl(path), "user3", "password", "testACLs13");
-        assertTrue("user3 cannot see content, she should see", contentForUser3.contains("content for user3"));
-        assertFalse("user3 sees content, she should not see", contentForUser3.contains("content for user1"));
-        assertFalse("user3 sees content, she should not see", contentForUser3.contains("content for user2"));
+        String contentForUser3 = getContent(getUrl(path), new SimpleCredentials(USER_3, simplePassword), "testACLs13");
+        assertTrue(USER_3 + CANNOT_SEE_CONTENT, contentForUser3.contains(CONTENT_FOR + USER_3));
+        assertFalse(USER_3 + SEES_WRONG_CONTENT, contentForUser3.contains(CONTENT_FOR + USER_1));
+        assertFalse(USER_3 + SEES_WRONG_CONTENT, contentForUser3.contains(CONTENT_FOR + USER_2));
     }
 
-    public void testMaxConcurrent(int generationTime) throws Exception {
-        long previousModuleGenerationWaitTime = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getModuleGenerationWaitTime();
-        int previousMaxModulesToGenerateInParallel = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getMaxModulesToGenerateInParallel();
+    public void testMaxConcurrent(int generationTime) throws IOException {
+        ModuleGeneratorQueue moduleGeneratorQueue = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue"));
+        long previousModuleGenerationWaitTime = moduleGeneratorQueue.getModuleGenerationWaitTime();
+        int previousMaxModulesToGenerateInParallel = moduleGeneratorQueue.getMaxModulesToGenerateInParallel();
 
         try {
-
-            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(generationTime);
-            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setMaxModulesToGenerateInParallel(1);
-
-            HttpThread t1 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home/long"), "root", ROOT_PASSWORD, "testMaxConcurrent1");
+            moduleGeneratorQueue.setModuleGenerationWaitTime(generationTime);
+            moduleGeneratorQueue.setMaxModulesToGenerateInParallel(1);
+            int counter = 1;
+            HttpThread t1 = new HttpThread(getUrl(LONG_PAGE_PATH), JahiaTestCase.getRootUserCredentials(),
+                    CONCURRENT_REQUEST_ID_PREFIX + counter++);
             t1.start();
-            Thread.sleep(500);
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
 
-            HttpThread t2 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home"), "root", ROOT_PASSWORD, "testMaxConcurrent2");
+            HttpThread t2 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home"), JahiaTestCase.getRootUserCredentials(),
+                    CONCURRENT_REQUEST_ID_PREFIX + counter++);
             t2.start();
-            t2.join();
-            t1.join();
+            try {
+                t2.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            try {
+                t1.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
 
             assertEquals("Incorrect response code for first thread", 200, t1.resultCode);
             assertEquals("Incorrect response code for second thread", 503, t2.resultCode);
 
-            assertTrue(getContent(getUrl(SITECONTENT_ROOT_NODE + "/home"), "root", ROOT_PASSWORD, "testMaxConcurrent3").contains("<title>Home</title>"));
+            assertTrue(getContent(getUrl(SITECONTENT_ROOT_NODE + "/home"), JahiaTestCase.getRootUserCredentials(),
+                    CONCURRENT_REQUEST_ID_PREFIX + counter++).contains("<title>Home</title>"));
         } finally {
-            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
-            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setMaxModulesToGenerateInParallel(previousMaxModulesToGenerateInParallel);
+            moduleGeneratorQueue.setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
+            moduleGeneratorQueue.setMaxModulesToGenerateInParallel(previousMaxModulesToGenerateInParallel);
         }
     }
 
     @Test
-    public void testMaxRequestRenderTime() throws Exception {
+    public void testMaxRequestRenderTime() throws IOException {
         DefaultRenderTimeMonitor renderTimeMonitor = (DefaultRenderTimeMonitor) SpringContextSingleton.getBean("RenderTimeMonitor");
         long previousMaxRequestRenderTime = renderTimeMonitor.getMaxRequestRenderTime();
         try {
             // disable render time monitoring
             renderTimeMonitor.setMaxRequestRenderTime(-1);
             long startTime = System.currentTimeMillis();
-            assertTrue(getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/long5"), "root", ROOT_PASSWORD, "testMaxConcurrent3").contains("Very long to appear"));
+            assertTrue(getContent(getUrl(LONG_5_PAGE_PATH), JahiaTestCase.getRootUserCredentials(), CONCURRENT_REQUEST_ID_PREFIX + 3)
+                    .contains(LONG_CREATED_ELEMENT_TEXT));
             assertTrue("Execution time was too short", (System.currentTimeMillis() - startTime) >= 5000);
 
             // flush caches
@@ -390,49 +433,66 @@ public class CacheFilterHttpTest extends JahiaTestCase {
 
             // set max render time to 3 seconds
             renderTimeMonitor.setMaxRequestRenderTime(3000);
-            HttpThread t1 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home/long5"), "root", ROOT_PASSWORD, "testMaxConcurrent1");
+            HttpThread t1 = new HttpThread(getUrl(LONG_5_PAGE_PATH), JahiaTestCase.getRootUserCredentials(),
+                    CONCURRENT_REQUEST_ID_PREFIX + 1);
             t1.start();
-            Thread.sleep(500);
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
 
-            HttpThread t2 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home/long5"), "root", ROOT_PASSWORD, "testMaxConcurrent2");
+            HttpThread t2 = new HttpThread(getUrl(LONG_5_PAGE_PATH), JahiaTestCase.getRootUserCredentials(),
+                    CONCURRENT_REQUEST_ID_PREFIX + 2);
             t2.start();
-            t2.join();
-            t1.join();
+            try {
+                t2.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            try {
+                t1.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
 
             assertEquals("Incorrect response code for first thread", 503, t1.resultCode);
             assertEquals("Incorrect response code for second thread", 503, t2.resultCode);
 
-            assertTrue(getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/long5"), "root", ROOT_PASSWORD, "testMaxConcurrent3").contains("Very long to appear"));
+            assertTrue(getContent(getUrl(LONG_5_PAGE_PATH), JahiaTestCase.getRootUserCredentials(), CONCURRENT_REQUEST_ID_PREFIX + 3)
+                    .contains(LONG_CREATED_ELEMENT_TEXT));
         } finally {
             renderTimeMonitor.setMaxRequestRenderTime(previousMaxRequestRenderTime);
         }
     }
 
-    private void testACLs(String path) throws Exception {
-        List<String> users = Arrays.asList(null, "root", "userAB", "userAC");
+    private void testACLs(String path) throws RepositoryException, IOException {
+        List<SimpleCredentials> users = Arrays.asList(new SimpleCredentials(null, simplePassword), JahiaTestCase.getRootUserCredentials(),
+                new SimpleCredentials(USER_AB, simplePassword), new SimpleCredentials(USER_AC, simplePassword));
+        List<String> userIds = users.stream().map(SimpleCredentials::getUserID).collect(Collectors.toList());
 
-        List<List<String>> allPerms = new ArrayList<>();
+        List<List<SimpleCredentials>> allPerms = new ArrayList<>();
         permute(users, 0, allPerms);
 
         Map<String, String> results = new HashMap<>();
 
-        for (List<String> allPerm : allPerms) {
+        for (List<SimpleCredentials> allPerm : allPerms) {
             results.clear();
             clearAll();
 
-            for (String user : allPerm) {
-                results.put(user, getContent(getUrl(path), user, getPassword(user), null));
+            for (SimpleCredentials userCredentials : allPerm) {
+                results.put(userCredentials.getUserID(), getContent(getUrl(path), userCredentials, null));
             }
-
-            try {
-                checkAcl(allPerm + ", guest : ", results.get(null), new boolean[]{false, false, false, false, false, false, false, false});
-                checkAcl(allPerm + ", root : ", results.get("root"), new boolean[]{true, true, true, true, true, true, true, true});
-                checkAcl(allPerm + ", userAB : ", results.get("userAB"), new boolean[]{false, true, true, false, false, true, true, false});
-                checkAcl(allPerm + ", userAC : ", results.get("userAC"), new boolean[]{false, true, false, false, true, true, false, true});
-            } catch (AssertionError e) {
-                logger.error(e.getMessage(), e);
-                throw e;
-            }
+            
+            List<String> allPermUserIds = allPerm.stream().map(SimpleCredentials::getUserID).collect(Collectors.toList());
+            checkAcl(allPermUserIds + ", guest : ", results.get(null), new boolean[] { false, false, false, false, false, false, false, false });
+            checkAcl(allPermUserIds + ", " + JahiaTestCase.getRootUserCredentials().getUserID() + " : ",
+                    results.get(JahiaTestCase.getRootUserCredentials().getUserID()),
+                    new boolean[] { true, true, true, true, true, true, true, true });
+            checkAcl(allPermUserIds + ", " + USER_AB + " : ", results.get(USER_AB),
+                    new boolean[] { false, true, true, false, false, true, true, false });
+            checkAcl(allPermUserIds + ", " + USER_AC + " : ", results.get(USER_AC),
+                    new boolean[] { false, true, false, false, true, true, false, true });
         }
 
 
@@ -440,36 +500,37 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         JCRNodeWrapper n = session.getNode(path + "/main/simple-text-A");
         JCRNodeWrapper n2 = session.getNode(path + "/simple-page-A");
         try {
-            n.revokeRolesForPrincipal("g:groupA");
-            n.grantRoles("g:groupB", new HashSet<String>(Arrays.asList("reader")));
-            n2.revokeRolesForPrincipal("g:groupA");
-            n2.grantRoles("g:groupB", new HashSet<String>(Arrays.asList("reader")));
+            n.revokeRolesForPrincipal(GROUP_A);
+            n.grantRoles(GROUP_B, new HashSet<>(Arrays.asList(READER)));
+            n2.revokeRolesForPrincipal(GROUP_A);
+            n2.grantRoles(GROUP_B, new HashSet<>(Arrays.asList(READER)));
             session.save();
 
             Map<String, String> results2 = new HashMap<>();
 
-            for (String user : users) {
-                results2.put(user, getContent(getUrl(path), user, getPassword(user), null));
+            for (SimpleCredentials userCredentials : users) {
+                results2.put(userCredentials.getUserID(), getContent(getUrl(path), userCredentials, null));
             }
-            checkAcl(users + ", guest : ", results2.get(null), new boolean[]{false, false, false, false, false, false, false, false});
-            checkAcl(users + ", root : ", results2.get("root"), new boolean[]{true, true, true, true, true, true, true, true});
-            checkAcl(users + ", userAB : ", results2.get("userAB"), new boolean[]{false, true, true, false, false, true, true, false});
-            checkAcl(users + ", userAC : ", results2.get("userAC"), new boolean[]{false, true, false, false, true, false, false, true});
+            checkAcl(userIds + ", guest : ", results2.get(null), new boolean[] { false, false, false, false, false, false, false, false });
+            checkAcl(userIds + ", " + JahiaTestCase.getRootUserCredentials().getUserID() + " : ",
+                    results2.get(JahiaTestCase.getRootUserCredentials().getUserID()),
+                    new boolean[] { true, true, true, true, true, true, true, true });
+            checkAcl(userIds + ", " + USER_AB + " : ", results2.get(USER_AB),
+                    new boolean[] { false, true, true, false, false, true, true, false });
+            checkAcl(userIds + ", " + USER_AC + " : ", results2.get(USER_AC),
+                    new boolean[] { false, true, false, false, true, false, false, true });
         } finally {
-            n.revokeRolesForPrincipal("g:groupB");
-            n.grantRoles("g:groupA", new HashSet<String>(Arrays.asList("reader")));
-            n2.revokeRolesForPrincipal("g:groupB");
-            n2.grantRoles("g:groupA", new HashSet<String>(Arrays.asList("reader")));
+            n.revokeRolesForPrincipal(GROUP_B);
+            n.grantRoles(GROUP_A, new HashSet<>(Arrays.asList(READER)));
+            n2.revokeRolesForPrincipal(GROUP_B);
+            n2.grantRoles(GROUP_A, new HashSet<>(Arrays.asList(READER)));
             session.save();
         }
 
-        for (String user : users) {
-            assertEquals("Content served is not the same for " + user, results.get(user), getContent(getUrl(path), user, getPassword(user), null));
+        for (SimpleCredentials userCredentials : users) {
+            assertEquals("Content served is not the same for " + userCredentials.getUserID(),
+                    results.get(userCredentials.getUserID()), getContent(getUrl(path), userCredentials, null));
         }
-    }
-
-    private String getPassword(String user) {
-        return user == null ? null : (user.equals("root") ? ROOT_PASSWORD : "password");
     }
 
     private void checkAcl(String message, String content, boolean[] b) {
@@ -480,21 +541,23 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     }
 
     @SuppressWarnings("unchecked")
-    public void checkCacheContent(Cache cache, Map<String, Object> cacheCopy, List<String> toFlush, SoftAssertions softly) {
+    public void checkCacheContent(Cache cache, Map<Object, Element> cacheCopy, List<String> toFlush, SoftAssertions softly) {
         List<String> keysNow = cache.getKeys();
         for (String s : keysNow) {
-            CacheEntry<?> c1 = ((CacheEntry<?>) cacheCopy.get(s));
+            CacheEntry<?> c1 = ((CacheEntry<?>) cacheCopy.get(s).getObjectValue());
             final Element element = cache.get(s);
             if (element != null && c1 != null) {
                 CacheEntry<?> c2 = ((CacheEntry<?>) element.getObjectValue());
-                softly.assertThat(c2.getObject()).as("Cache fragment different for : " + s + " after flushing : " + toFlush).isEqualTo(c1.getObject());
-                softly.assertThat(c2.getExtendedProperties()).as("Cache properties different for : " + s + " after flushing : " + toFlush).isEqualTo(c1.getExtendedProperties());
+                softly.assertThat(c2.getObject()).as("Cache fragment different for : " + s + " after flushing : " + toFlush)
+                        .isEqualTo(c1.getObject());
+                softly.assertThat(c2.getExtendedProperties()).as("Cache properties different for : " + s + " after flushing : " + toFlush)
+                        .isEqualTo(c1.getExtendedProperties());
             }
         }
     }
 
     public List<String> randomizeFlush(List<String> l, int number) {
-        List<String> toFlush = new ArrayList<String>();
+        List<String> toFlush = new ArrayList<>();
         for (int i = 0; i < number; i++) {
             String s = l.get(random.nextInt(l.size()));
             toFlush.add(s);
@@ -503,11 +566,11 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         return toFlush;
     }
 
-    public String getContent(URL url, String user, String password, String requestId) throws Exception {
+    public String getContent(URL url, SimpleCredentials credentials, String requestId) throws IOException {
         String content = null;
         GetMethod method = null;
         try {
-            method = executeCall(url, user, password, requestId);
+            method = executeCall(url, credentials, requestId);
             assertEquals("Bad result code", 200, method.getStatusCode());
             content = method.getResponseBodyAsString();
         } finally {
@@ -517,13 +580,13 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         }
         return content;
     }
-
-    public GetMethod executeCall(URL url, String user, String password, String requestId) throws IOException {
+    
+    public GetMethod executeCall(URL url, SimpleCredentials credentials, String requestId) throws IOException {
         HttpClient client = new HttpClient();
         client.getParams().setAuthenticationPreemptive(true);
 
-        if (user != null && password != null) {
-            Credentials defaultcreds = new UsernamePasswordCredentials(user, password);
+        if (credentials != null && credentials.getUserID() != null) {
+            Credentials defaultcreds = new UsernamePasswordCredentials(credentials.getUserID(), new String(credentials.getPassword()));
             client.getState().setCredentials(new AuthScope(url.getHost(), url.getPort(), AuthScope.ANY_REALM), defaultcreds);
         }
 
@@ -549,17 +612,15 @@ public class CacheFilterHttpTest extends JahiaTestCase {
 
     public class HttpThread extends Thread {
 
-        public String result;
-        public int resultCode;
-        public URL url;
-        public String user;
-        public String password;
-        public String requestId;
+        private String result;
+        private int resultCode;
+        private URL url;
+        private SimpleCredentials credentials;
+        private String requestId;
 
-        public HttpThread(URL url, String user, String password, String requestId) {
+        public HttpThread(URL url, SimpleCredentials credentials, String requestId) {
             this.url = url;
-            this.user = user;
-            this.password = password;
+            this.credentials = credentials;
             this.requestId = requestId;
         }
 
@@ -571,7 +632,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         public void run() {
             GetMethod method = null;
             try {
-                method = executeCall(url, user, password, requestId);
+                method = executeCall(url, credentials, requestId);
                 resultCode = method.getStatusCode();
                 result = method.getResponseBodyAsString();
             } catch (Exception e) {

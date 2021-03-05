@@ -112,10 +112,11 @@
                 <module>core</module>
                 <module>gwt</module>
                 <module>modules</module>
+                <module>jahia-packages-parent</module>
                 <module>bundles</module>
                 <module>features</module>
                 <module>war</module>
-                <module>package</module>
+                <module>jahia-shared-package</module>
                 <module>test</module>
             </modules>
         </profile>

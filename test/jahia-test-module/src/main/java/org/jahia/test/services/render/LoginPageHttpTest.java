@@ -45,6 +45,7 @@ package org.jahia.test.services.render;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -53,12 +54,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.params.valves.CookieAuthConfig;
 import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.jahia.registries.ServicesRegistry;
@@ -87,30 +90,25 @@ import com.google.common.collect.Iterables;
  * @author Sergiy Shyrkov
  */
 public class LoginPageHttpTest extends JahiaTestCase {
-
-    private static String aboutUsPageUrl;
-
     private static Logger logger = LoggerFactory.getLogger(LoginPageHttpTest.class);
 
     private static final String PASSWORD = "password";
-
-    private static JCRPublicationService publicationService;
-
-    private static JahiaSite site;
-
     private static final String SITE_NAME = "loginPageHttpTest";
-
     private static final String SITE_PATH = "/sites/" + SITE_NAME;
-
     private static final String USERNAME = "loginPageHttpTestUser";
+    private static final String LOGIN_URL_FORMAT = "/cms/login?sername=%s&password=%s&redirect=%s";
+    private static final String ABOUT_US_TITLE = "<title>About Us</title>";
+    private static final String LOGIN_FORM_NAME_LOCATOR = "name=\"loginForm\"";
+    
+    private static String aboutUsPageUrl;
 
     @BeforeClass
-    public static void oneTimeSetUp() throws Exception {
+    public static void oneTimeSetUp() throws RepositoryException, IOException, JahiaException {
         // create site
-        site = TestHelper.createSite(SITE_NAME);
+        JahiaSite site = TestHelper.createSite(SITE_NAME);
         assertNotNull(site);
 
-        publicationService = ServicesRegistry.getInstance().getJCRPublicationService();
+        JCRPublicationService publicationService = ServicesRegistry.getInstance().getJCRPublicationService();
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
 
         // create user
@@ -142,7 +140,7 @@ public class LoginPageHttpTest extends JahiaTestCase {
     }
 
     @AfterClass
-    public static void oneTimeTearDown() throws Exception {
+    public static void oneTimeTearDown() throws RepositoryException {
         try {
             TestHelper.deleteSite(SITE_NAME);
         } catch (Exception ex) {
@@ -165,41 +163,37 @@ public class LoginPageHttpTest extends JahiaTestCase {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() throws IOException {
         logout();
     }
 
     @Test
-    public void testInvalidPassword() throws Exception {
-        String content = getAsText("/cms/login?username=" + USERNAME + "&password=" + PASSWORD + "_invalid"
-                + "&redirect=" + Jahia.getContextPath() + aboutUsPageUrl);
+    public void testInvalidPassword() {
+        String content = getAsText(
+                String.format(LOGIN_URL_FORMAT, USERNAME, PASSWORD + "_invalid", Jahia.getContextPath() + aboutUsPageUrl));
         assertTrue("Should see a login page with invalid password error",
-                content.contains("name=\"loginForm\"") && content.contains("Invalid username/password"));
+                content.contains(LOGIN_FORM_NAME_LOCATOR) && content.contains("Invalid username/password"));
     }
 
     @Test
-    public void testNoGuestAccess() throws Exception {
+    public void testNoGuestAccess() {
         String content = getAsText(aboutUsPageUrl, HttpServletResponse.SC_UNAUTHORIZED);
         assertTrue("Guest can access the home page, which should not be the case",
-                content.contains("name=\"loginForm\""));
+                content.contains(LOGIN_FORM_NAME_LOCATOR));
     }
 
     @Test
-    public void testNormalLogin() throws Exception {
-        String content = getAsText("/cms/login?username=" + USERNAME + "&password=" + PASSWORD + "&redirect="
-                + Jahia.getContextPath() + aboutUsPageUrl);
-        assertTrue("After normal login the user should see the About Us page",
-                content.contains("<title>About Us</title>"));
+    public void testNormalLogin() {
+        String content = getAsText(String.format(LOGIN_URL_FORMAT, USERNAME, PASSWORD, Jahia.getContextPath() + aboutUsPageUrl));
+        assertTrue("After normal login the user should see the About Us page", content.contains(ABOUT_US_TITLE));
     }
 
     @Test
-    public void testRememberMe() throws Exception {
+    public void testRememberMe() {
         CookieAuthConfig cookieAuthConfig = (CookieAuthConfig) SpringContextSingleton.getBean("cookieAuthConfig");
         Map<String, List<String>> responseHeaders = new HashMap<>();
-        getAsText(
-                "/cms/login?username=" + USERNAME + "&password=" + PASSWORD + "&restMode=true" + "&"
-                        + LoginEngineAuthValveImpl.USE_COOKIE + "=on",
-                null, HttpServletResponse.SC_OK, responseHeaders);
+        getAsText("/cms/login?username=" + USERNAME + "&password=" + PASSWORD + "&restMode=true" + "&" + LoginEngineAuthValveImpl.USE_COOKIE
+                + "=on", null, HttpServletResponse.SC_OK, responseHeaders);
 
         String cookieName = cookieAuthConfig.getCookieName();
         List<String> setCookie = responseHeaders.get("Set-Cookie");
@@ -217,14 +211,14 @@ public class LoginPageHttpTest extends JahiaTestCase {
         String content = getAsText(aboutUsPageUrl);
 
         assertTrue("After normal login the user should see the About Us page",
-                content.contains("<title>About Us</title>"));
+                content.contains(ABOUT_US_TITLE));
 
         // we clear the cookies to remove current session cookie from HTTP state
         getHttpClient().getState().clearCookies();
 
         content = getAsText(aboutUsPageUrl, HttpServletResponse.SC_UNAUTHORIZED);
         assertTrue("Guest can access the home page, which should not be the case",
-                content.contains("name=\"loginForm\""));
+                content.contains(LOGIN_FORM_NAME_LOCATOR));
 
         // we put the remember me cookie into HTTP state
         getHttpClient().getState().addCookie(authCookie);
@@ -232,24 +226,22 @@ public class LoginPageHttpTest extends JahiaTestCase {
         content = getAsText(aboutUsPageUrl);
         assertTrue(
                 "With a remember me cookie the login should be done automatically and the user should see the About Us page",
-                content.contains("<title>About Us</title>"));
+                content.contains(ABOUT_US_TITLE));
     }
 
     @Test
-    public void testRootLogin() throws Exception {
-        String content = getAsText("/cms/login?username=" + JahiaTestCase.getRootUserCredentials().getUserID() + "&password="
-                + new String(JahiaTestCase.getRootUserCredentials().getPassword()) + "&redirect=" + Jahia.getContextPath()
-                + "/cms/admin/default/en/settings.aboutJahia.html");
+    public void testRootLogin() {
+        String content = getAsText(String.format(LOGIN_URL_FORMAT, JahiaTestCase.getRootUserCredentials().getUserID(),
+                new String(JahiaTestCase.getRootUserCredentials().getPassword()),
+                Jahia.getContextPath() + "/cms/admin/default/en/settings.aboutJahia.html"));
         assertTrue("After login the root user should see the about page in the administration",
                 content.contains("<title>settings</title>") && content.contains("template=\"aboutJahia\""));
     }
 
     @Test
-    public void testXssOnRedirect() throws Exception {
-        String content = getAsText(
-                "/cms/login?redirect=%2fsites%2fwhatever%22%3C%2Fscript%3E%3Cscript%3Ealert(%27xss%27)%3C%2Fscript%3E");
-        assertFalse("<script> element should not be in the page output",
-                content.contains("<script>alert('xss')</script>"));
+    public void testXssOnRedirect() {
+        String content = getAsText("/cms/login?redirect=%2fsites%2fwhatever%22%3C%2Fscript%3E%3Cscript%3Ealert(%27xss%27)%3C%2Fscript%3E");
+        assertFalse("<script> element should not be in the page output", content.contains("<script>alert('xss')</script>"));
     }
 
 }

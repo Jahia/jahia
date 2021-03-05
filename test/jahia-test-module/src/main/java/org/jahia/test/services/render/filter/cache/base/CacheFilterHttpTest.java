@@ -74,6 +74,8 @@ import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableSet;
+
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
@@ -116,11 +118,23 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     private static final String SEES_WRONG_CONTENT = " sees content, she should not see";
     private static final String CONTENT_FOR = "content for ";
     
+    protected static final String ERROR_PAGE_PATH = SITECONTENT_ROOT_NODE + "/home/error";
+    protected static final String LONG_PAGE_PATH = SITECONTENT_ROOT_NODE + "/home/long";
+    protected static final String LONG_5_PAGE_PATH = SITECONTENT_ROOT_NODE + "/home/long5";
+    
+    protected static final String REQUEST_ID_PREFIX = "testModuleWait";
+    protected static final String CONCURRENT_REQUEST_ID_PREFIX = "testMaxConcurrent";
+    
+    protected static final String CACHE_RENDER_FILTER_1 = "CacheHttpTestRenderFilter1";
+    protected static final String CACHE_RENDER_FILTER_2 = "CacheHttpTestRenderFilter2";
+    private static final Set<String> PAGE_NAMES_TO_SKIP = ImmutableSet.of("long", "error", "user-per-content-test", "simple-page-A", "simple-page-B",
+            "simple-page-C", "simple-page-AC", "simple-page-BC", "simple-page-AB", "simple-page-root", "simple-page-users");
+    
     private static boolean cacheFilterDisabled;
     private static boolean aggregateFilterDisabled;
     private static boolean aggregateCacheFilterDisabled;
     private static boolean areaResourceCacheKeyPartGeneratorDisabled;
-
+    
     Random random = new SecureRandom();
     private String[] texts = {"visible for root", "visible for users only", "visible for userAB", "visible for userBC", "visible for userAC", "visible for groupA", "visible for groupB", "visible for groupC"};
     char[] simplePassword = SIMPLE_PASSWORD.toCharArray();
@@ -172,8 +186,8 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             areaResourceCacheKeyPartGeneratorDisabled = ((AreaResourceCacheKeyPartGenerator) SpringContextSingleton.getBean("areaResourceCacheKeyPartGenerator")).isDisabled();
 
             //enable test filters
-            getCheckFilter("CacheHttpTestRenderFilter1").setDisabled(false);
-            getCheckFilter("CacheHttpTestRenderFilter2").setDisabled(false);
+            getCheckFilter(CACHE_RENDER_FILTER_1).setDisabled(false);
+            getCheckFilter(CACHE_RENDER_FILTER_2).setDisabled(false);
         } catch (Exception e) {
             logger.warn("Exception during test setUp", e);
             fail();
@@ -201,10 +215,10 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             ((AreaResourceCacheKeyPartGenerator) SpringContextSingleton.getBean("areaResourceCacheKeyPartGenerator")).setDisabled(areaResourceCacheKeyPartGeneratorDisabled);
 
             //enable test filters
-            getCheckFilter("CacheHttpTestRenderFilter1").setDisabled(true);
-            getCheckFilter("CacheHttpTestRenderFilter2").setDisabled(true);
-            getCheckFilter("CacheHttpTestRenderFilter1").clear();
-            getCheckFilter("CacheHttpTestRenderFilter2").clear();
+            getCheckFilter(CACHE_RENDER_FILTER_1).setDisabled(true);
+            getCheckFilter(CACHE_RENDER_FILTER_2).setDisabled(true);
+            getCheckFilter(CACHE_RENDER_FILTER_1).clear();
+            getCheckFilter(CACHE_RENDER_FILTER_2).clear();
         } catch (Exception e) {
             logger.warn("Exception during test tearDown", e);
         }
@@ -240,8 +254,8 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         depCache.flush();
         depCache.removeAll();
         cacheProvider.flushNonCacheableFragments();
-        getCheckFilter("CacheHttpTestRenderFilter1").clear();
-        getCheckFilter("CacheHttpTestRenderFilter2").clear();
+        getCheckFilter(CACHE_RENDER_FILTER_1).clear();
+        getCheckFilter(CACHE_RENDER_FILTER_2).clear();
         cache.getCacheConfiguration().setEternal(true);
         depCache.getCacheConfiguration().setEternal(true);
     }
@@ -289,12 +303,10 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:page] as p where isdescendantnode(p,'" + SITECONTENT_ROOT_NODE + "/home')", Query.JCR_SQL2);
         List<String> paths = new ArrayList<>();
         NodeIterator nodes = q.execute().getNodes();
-        Set<String> skipped = new HashSet<>(Arrays.asList("long", "error", "user-per-content-test", "simple-page-A", "simple-page-B",
-                "simple-page-C", "simple-page-AC", "simple-page-BC", "simple-page-AB", "simple-page-root", "simple-page-users"));
         while (nodes.hasNext()) {
-            JCRNodeWrapper next = (JCRNodeWrapper) nodes.next();
-            if (!skipped.contains(next.getName())) {
-                paths.add(next.getPath());
+            JCRNodeWrapper node = (JCRNodeWrapper) nodes.next();
+            if (!PAGE_NAMES_TO_SKIP.contains(node.getName())) {
+                paths.add(node.getPath());
             }
         }
         List<SimpleCredentials> users = Arrays.asList(new SimpleCredentials(USER_AB, simplePassword),
@@ -309,13 +321,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         final Cache cache = ModuleCacheProvider.getInstance().getCache();
         List<String> keysBefore = cache.getKeys();
 
-        Map<String, Object> cacheCopy = new HashMap<>();
-        for (String s : keysBefore) {
-            final Element element = cache.get(s);
-            if (element != null) {
-                cacheCopy.put(s, element.getObjectValue());
-            }
-        }
+        Map<Object, Element> cacheCopy = cache.getAll(keysBefore);
 
         SoftAssertions softly = new SoftAssertions();
 
@@ -375,9 +381,9 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         try {
             moduleGeneratorQueue.setModuleGenerationWaitTime(generationTime);
             moduleGeneratorQueue.setMaxModulesToGenerateInParallel(1);
-
-            HttpThread t1 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home/long"), JahiaTestCase.getRootUserCredentials(),
-                    "testMaxConcurrent1");
+            int counter = 1;
+            HttpThread t1 = new HttpThread(getUrl(LONG_PAGE_PATH), JahiaTestCase.getRootUserCredentials(),
+                    CONCURRENT_REQUEST_ID_PREFIX + counter++);
             t1.start();
             try {
                 Thread.sleep(500);
@@ -386,7 +392,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             }
 
             HttpThread t2 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home"), JahiaTestCase.getRootUserCredentials(),
-                    "testMaxConcurrent2");
+                    CONCURRENT_REQUEST_ID_PREFIX + counter++);
             t2.start();
             try {
                 t2.join();
@@ -402,8 +408,8 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             assertEquals("Incorrect response code for first thread", 200, t1.resultCode);
             assertEquals("Incorrect response code for second thread", 503, t2.resultCode);
 
-            assertTrue(getContent(getUrl(SITECONTENT_ROOT_NODE + "/home"), JahiaTestCase.getRootUserCredentials(), "testMaxConcurrent3")
-                    .contains("<title>Home</title>"));
+            assertTrue(getContent(getUrl(SITECONTENT_ROOT_NODE + "/home"), JahiaTestCase.getRootUserCredentials(),
+                    CONCURRENT_REQUEST_ID_PREFIX + counter++).contains("<title>Home</title>"));
         } finally {
             moduleGeneratorQueue.setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
             moduleGeneratorQueue.setMaxModulesToGenerateInParallel(previousMaxModulesToGenerateInParallel);
@@ -418,8 +424,8 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             // disable render time monitoring
             renderTimeMonitor.setMaxRequestRenderTime(-1);
             long startTime = System.currentTimeMillis();
-            assertTrue(getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/long5"), JahiaTestCase.getRootUserCredentials(), "testMaxConcurrent3")
-                            .contains(LONG_CREATED_ELEMENT_TEXT));
+            assertTrue(getContent(getUrl(LONG_5_PAGE_PATH), JahiaTestCase.getRootUserCredentials(), CONCURRENT_REQUEST_ID_PREFIX + 3)
+                    .contains(LONG_CREATED_ELEMENT_TEXT));
             assertTrue("Execution time was too short", (System.currentTimeMillis() - startTime) >= 5000);
 
             // flush caches
@@ -427,7 +433,8 @@ public class CacheFilterHttpTest extends JahiaTestCase {
 
             // set max render time to 3 seconds
             renderTimeMonitor.setMaxRequestRenderTime(3000);
-            HttpThread t1 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home/long5"), JahiaTestCase.getRootUserCredentials(), "testMaxConcurrent1");
+            HttpThread t1 = new HttpThread(getUrl(LONG_5_PAGE_PATH), JahiaTestCase.getRootUserCredentials(),
+                    CONCURRENT_REQUEST_ID_PREFIX + 1);
             t1.start();
             try {
                 Thread.sleep(500);
@@ -435,7 +442,8 @@ public class CacheFilterHttpTest extends JahiaTestCase {
                 Thread.currentThread().interrupt();
             }
 
-            HttpThread t2 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home/long5"), JahiaTestCase.getRootUserCredentials(), "testMaxConcurrent2");
+            HttpThread t2 = new HttpThread(getUrl(LONG_5_PAGE_PATH), JahiaTestCase.getRootUserCredentials(),
+                    CONCURRENT_REQUEST_ID_PREFIX + 2);
             t2.start();
             try {
                 t2.join();
@@ -451,7 +459,8 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             assertEquals("Incorrect response code for first thread", 503, t1.resultCode);
             assertEquals("Incorrect response code for second thread", 503, t2.resultCode);
 
-            assertTrue(getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/long5"), JahiaTestCase.getRootUserCredentials(), "testMaxConcurrent3").contains(LONG_CREATED_ELEMENT_TEXT));
+            assertTrue(getContent(getUrl(LONG_5_PAGE_PATH), JahiaTestCase.getRootUserCredentials(), CONCURRENT_REQUEST_ID_PREFIX + 3)
+                    .contains(LONG_CREATED_ELEMENT_TEXT));
         } finally {
             renderTimeMonitor.setMaxRequestRenderTime(previousMaxRequestRenderTime);
         }
@@ -460,7 +469,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     private void testACLs(String path) throws RepositoryException, IOException {
         List<SimpleCredentials> users = Arrays.asList(new SimpleCredentials(null, simplePassword), JahiaTestCase.getRootUserCredentials(),
                 new SimpleCredentials(USER_AB, simplePassword), new SimpleCredentials(USER_AC, simplePassword));
-        List<String> userIds = users.stream().map(credentials -> credentials.getUserID()).collect(Collectors.toList());
+        List<String> userIds = users.stream().map(SimpleCredentials::getUserID).collect(Collectors.toList());
 
         List<List<SimpleCredentials>> allPerms = new ArrayList<>();
         permute(users, 0, allPerms);
@@ -475,7 +484,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
                 results.put(userCredentials.getUserID(), getContent(getUrl(path), userCredentials, null));
             }
             
-            List<String> allPermUserIds = allPerm.stream().map(credentials -> credentials.getUserID()).collect(Collectors.toList());
+            List<String> allPermUserIds = allPerm.stream().map(SimpleCredentials::getUserID).collect(Collectors.toList());
             checkAcl(allPermUserIds + ", guest : ", results.get(null), new boolean[] { false, false, false, false, false, false, false, false });
             checkAcl(allPermUserIds + ", " + JahiaTestCase.getRootUserCredentials().getUserID() + " : ",
                     results.get(JahiaTestCase.getRootUserCredentials().getUserID()),
@@ -532,15 +541,17 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     }
 
     @SuppressWarnings("unchecked")
-    public void checkCacheContent(Cache cache, Map<String, Object> cacheCopy, List<String> toFlush, SoftAssertions softly) {
+    public void checkCacheContent(Cache cache, Map<Object, Element> cacheCopy, List<String> toFlush, SoftAssertions softly) {
         List<String> keysNow = cache.getKeys();
         for (String s : keysNow) {
-            CacheEntry<?> c1 = ((CacheEntry<?>) cacheCopy.get(s));
+            CacheEntry<?> c1 = ((CacheEntry<?>) cacheCopy.get(s).getObjectValue());
             final Element element = cache.get(s);
             if (element != null && c1 != null) {
                 CacheEntry<?> c2 = ((CacheEntry<?>) element.getObjectValue());
-                softly.assertThat(c2.getObject()).as("Cache fragment different for : " + s + " after flushing : " + toFlush).isEqualTo(c1.getObject());
-                softly.assertThat(c2.getExtendedProperties()).as("Cache properties different for : " + s + " after flushing : " + toFlush).isEqualTo(c1.getExtendedProperties());
+                softly.assertThat(c2.getObject()).as("Cache fragment different for : " + s + " after flushing : " + toFlush)
+                        .isEqualTo(c1.getObject());
+                softly.assertThat(c2.getExtendedProperties()).as("Cache properties different for : " + s + " after flushing : " + toFlush)
+                        .isEqualTo(c1.getExtendedProperties());
             }
         }
     }

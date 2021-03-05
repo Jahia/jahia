@@ -58,7 +58,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.UrlResource;
 
-import java.net.MalformedURLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -69,6 +68,7 @@ import java.util.stream.Collectors;
 public class InstallBundle implements Operation {
     public static final String AUTO_START = "autoStart";
     public static final String INSTALL_BUNDLE = "installBundle";
+    public static final String INSTALL_BUNDLE_AND_START = "installAndStartBundle";
     public static final String START_LEVEL = "startLevel";
     public static final String UNINSTALL_PREVIOUS_VERSION = "uninstallPreviousVersion";
     public static final String TARGET = "target";
@@ -92,7 +92,7 @@ public class InstallBundle implements Operation {
 
     @Override
     public boolean canHandle(Map<String, Object> entry) {
-        return entry.get(INSTALL_BUNDLE) instanceof String;
+        return entry.get(INSTALL_BUNDLE) instanceof String || entry.get(INSTALL_BUNDLE_AND_START) instanceof String;
     }
 
     @Override
@@ -109,17 +109,18 @@ public class InstallBundle implements Operation {
         try {
             Map<String, Set<String>> installedBundles = (Map<String, Set<String>>) executionContext.getContext().get("installedBundles");
 
+            String bundleKey = (String) Optional.ofNullable(entry.get(INSTALL_BUNDLE_AND_START)).orElse(entry.get(INSTALL_BUNDLE));
             OperationResult result = moduleManager.install(
-                    Collections.singleton(new UrlResource((String) entry.get(INSTALL_BUNDLE))), (String) entry.get(TARGET),
+                    Collections.singleton(new UrlResource(bundleKey)), (String) entry.get(TARGET),
                     false,
-                    entry.containsKey(START_LEVEL) ? (Integer) entry.get(START_LEVEL) : SettingsBean.getInstance().getModuleStartLevel()
+                    Optional.ofNullable((Integer) entry.get(START_LEVEL)).orElse(SettingsBean.getInstance().getModuleStartLevel())
             );
             if (result.getBundleInfos().size() == 1) {
                 BundleInfo bundleInfo = result.getBundleInfos().get(0);
 
                 // Should this (autostart / uninstall) be done immediately ?
 
-                if (entry.get(AUTO_START) == Boolean.TRUE) {
+                if (entry.get(AUTO_START) == Boolean.TRUE || entry.get(INSTALL_BUNDLE_AND_START) != null) {
                     getToStart(executionContext).add(bundleInfo);
                 }
 
@@ -132,7 +133,7 @@ public class InstallBundle implements Operation {
                     }
                 }
             }
-        } catch (MalformedURLException e) {
+        } catch (Exception e) {
             logger.error("Cannot install {}", entry.get(INSTALL_BUNDLE), e);
         }
     }

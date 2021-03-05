@@ -1,0 +1,23 @@
+<settings>
+  <profiles>
+    <profile>
+      <id>configuration</id>
+
+      <pluginRepositories>
+        <pluginRepository>
+          <id>jahia</id>
+          <url>https://devtools.jahia.com/nexus/content/groups/public/</url>
+        </pluginRepository>
+      </pluginRepositories>
+
+      <repositories>
+        <repository><id>jahia</id><url>https://devtools.jahia.com/nexus/content/groups/public/</url></repository>
+        <!-- repositories here -->
+      </repositories>
+    </profile>
+  </profiles>
+
+  <pluginGroups>
+    <pluginGroup>org.jahia.server</pluginGroup>
+  </pluginGroups>
+</settings>

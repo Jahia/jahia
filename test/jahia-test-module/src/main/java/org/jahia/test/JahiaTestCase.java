@@ -104,7 +104,9 @@ public class JahiaTestCase {
             return responseBody;
         }
     }
-
+    
+    private static Logger logger = LoggerFactory.getLogger(JahiaTestCase.class);
+    
     private static final String PORT = "9090";
     
     private static final String BASE_URL = "http://localhost:" + PORT;
@@ -113,8 +115,7 @@ public class JahiaTestCase {
     
     private static SimpleCredentials rootUserCredentials;
 
-    private static Logger logger = LoggerFactory.getLogger(JahiaTestCase.class);
-
+    private HttpClient client;
     /**
      * Returns the <code>HttpServletRequest</code> object for the current call.
      * 
@@ -161,7 +162,8 @@ public class JahiaTestCase {
         }
     }
     
-    protected static String getBaseServerURL() {
+    @SuppressWarnings("java:S2696")
+    protected String getBaseServerURL() {
         HttpServletRequest req = getRequest();
         String url = req != null ? req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() : BASE_URL;
         if (!baseUrlForTestsLogged) {
@@ -170,9 +172,6 @@ public class JahiaTestCase {
         }
         return url;
     }
-
-
-    private HttpClient client;
 
     protected String getAsText(String relativeUrl) {
         return getAsText(relativeUrl, 200);

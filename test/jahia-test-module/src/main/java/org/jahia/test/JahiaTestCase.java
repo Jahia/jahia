@@ -162,7 +162,7 @@ public class JahiaTestCase {
         }
     }
     
-    @java.lang.SuppressWarnings("java:S2696")
+    @SuppressWarnings("java:S2696")
     protected String getBaseServerURL() {
         HttpServletRequest req = getRequest();
         String url = req != null ? req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() : BASE_URL;

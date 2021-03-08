@@ -76,7 +76,7 @@ jobs:
                 # TODO For now I just replaced the Bamboo build number by the CircleCI build number
                 name: Deploy artifacts to server repository
                 working_directory: ~/source/docker-jahia-core
-                command: mvn -s .circleci/.circleci.settings.xml -e deploy -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
+                command: mvn -s ../.circleci/.circleci.settings.xml -e deploy -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
       - save_cache:
           paths:
             - ~/.m2

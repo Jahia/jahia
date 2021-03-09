@@ -68,18 +68,19 @@ jobs:
           name: Compile GWT development
           working_directory: ~/source/gwt
           command: mvn -s ../.circleci/.circleci.settings.xml -e clean package -Pgwt-development -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
+      - unless:
+          condition: <<parameters.is_pull_request>>
+          steps:
+            - run:
+                # TODO One day we may want to do a deploy - right now only docker project is deployed
+                # TODO For now I just replaced the Bamboo build number by the CircleCI build number
+                name: Deploy artifacts to server repository
+                working_directory: ~/source/docker-jahia-core
+                command: mvn -s ../.circleci/.circleci.settings.xml -e deploy -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
       - save_cache:
           paths:
             - ~/.m2
           key: v1-maven-dependencies-{{ checksum "maven_cache_seed" }}
-#      - when:
-#          not: <<parameters.is_pull_request>>
-#          steps:
-#            - run:
-#                # TODO One day we may want to do a deploy
-#                # TODO For now I just replaced the Bamboo build number by the CircleCI build number
-#                name: Deploy artifacts to server repository
-#                command: mvn -s .circleci/.circleci.settings.xml -e deploy -Pgwt-production -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
       - *persist-workspace
 
 #  build_docker:

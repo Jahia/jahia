@@ -96,7 +96,7 @@ public class LoginPageHttpTest extends JahiaTestCase {
     private static final String SITE_NAME = "loginPageHttpTest";
     private static final String SITE_PATH = "/sites/" + SITE_NAME;
     private static final String USERNAME = "loginPageHttpTestUser";
-    private static final String LOGIN_URL_FORMAT = "/cms/login?sername=%s&password=%s&redirect=%s";
+    private static final String LOGIN_URL_FORMAT = "/cms/login?username=%s&password=%s&redirect=%s";
     private static final String ABOUT_US_TITLE = "<title>About Us</title>";
     private static final String LOGIN_FORM_NAME_LOCATOR = "name=\"loginForm\"";
     

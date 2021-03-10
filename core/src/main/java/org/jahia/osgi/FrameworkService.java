@@ -163,10 +163,23 @@ public class FrameworkService implements FrameworkListener {
     }
 
     /**
+     * Notifies the service that the Spring bridge has been started
+     */
+    public static void notifySpringBridgeStarted() {
+        final FrameworkService instance = getInstance();
+
+        synchronized (instance) {
+            instance.springBridgeStarted = true;
+            logger.info("Spring bridge started");
+            instance.notifyStarted();
+        }
+    }
+
+    /**
      * Notify this service that the container has actually started.
      */
     private synchronized void notifyStarted() {
-        if (frameworkStartLevelReached && fileInstallStarted) {
+        if (frameworkStartLevelReached && fileInstallStarted && springBridgeStarted) {
             // send synchronous event about startup
             sendEvent(EVENT_TOPIC_LIFECYCLE, Collections.singletonMap("type", EVENT_TYPE_OSGI_STARTED), false);
 
@@ -217,6 +230,7 @@ public class FrameworkService implements FrameworkListener {
 
     private boolean firstStartup;
     private boolean fileInstallStarted;
+    private boolean springBridgeStarted;
     private boolean frameworkStartLevelReached;
     private Main main;
     private final ServletContext servletContext;
@@ -251,7 +265,7 @@ public class FrameworkService implements FrameworkListener {
      * @return <code>true</code> if the OSGi container is completely started; <code>false</code> otherwise
      */
     public boolean isStarted() {
-        return frameworkStartLevelReached && fileInstallStarted;
+        return frameworkStartLevelReached && fileInstallStarted && springBridgeStarted;
     }
 
     /**

@@ -467,4 +467,5 @@
         <osgi:listener ref="HttpListenersRegistry" bind-method="addListener" unbind-method="removeListener"/>
     </osgi:list>
 
+    <bean class="org.jahia.bundles.spring.bridge.StartListener" init-method="start"/>
 </beans>

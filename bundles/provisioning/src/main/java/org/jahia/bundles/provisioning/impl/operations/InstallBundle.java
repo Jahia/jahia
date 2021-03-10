@@ -43,6 +43,7 @@
  */
 package org.jahia.bundles.provisioning.impl.operations;
 
+import org.jahia.osgi.BundleUtils;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.ModuleManager;
 import org.jahia.services.modulemanager.OperationResult;
@@ -142,7 +143,10 @@ public class InstallBundle implements Operation {
     public void cleanup(ExecutionContext executionContext) {
         for (BundleInfo bundleInfo : getToStart(executionContext)) {
             try {
-                moduleManager.start(bundleInfo.getKey(), null);
+                Bundle bundle = BundleUtils.getBundle(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
+                if (bundle != null && !BundleUtils.isFragment(bundle)) {
+                    moduleManager.start(bundleInfo.getKey(), null);
+                }
             } catch (Exception e) {
                 logger.error("Cannot start {}", bundleInfo.getKey(), e);
             }

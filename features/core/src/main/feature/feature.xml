@@ -17,6 +17,7 @@
         <feature>shell</feature>
         <feature>scr</feature>
         <feature>spring</feature>
+        <bundle start-level="35">mvn:org.jahia.bundles/org.jahia.bundles.spring.bridge/8.0.3.0-SNAPSHOT</bundle>
     </feature>
 
 </features>

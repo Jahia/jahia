@@ -1,0 +1,6 @@
+{
+  "reporterEnabled": "mocha-junit-reporter",
+  "mochaJunitReporterReporterOptions": {
+    "mochaFile": "./results/xml_reports/results-[hash].xml"
+  }
+}

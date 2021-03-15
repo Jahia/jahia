@@ -1,19 +1,5 @@
 #!/bin/bash
 
-function check_db_access {
-    for n in {1..667}; do
-        [ $n -gt 666 ] && echo "Database unreachable... aborting" && exit 1
-        echo -n "Testing network database access on host $DB_HOST (test $n)... "
-        if (nc -w 1 -v ${DB_HOST} ${DB_PORT} > /dev/null 2>&1 </dev/null); then
-            echo "SUCCESS"
-            break
-        else
-            echo "FAILED"
-        fi
-        sleep 1
-    done
-}
-
 if [ ! -f "/data/configured" ]; then
     echo "Initial startup, configuring Jahia..."
 
@@ -40,12 +26,12 @@ if [ ! -f "/data/configured" ]; then
         "mariadb")
             DB_PORT="3306"
             DB_URL="jdbc:mariadb://${DB_HOST}/${DB_NAME}?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false&amp;useSSL=false"
-            check_db_access
+            alive.sh ${DB_HOST} 3306
             ;;
         "postgresql")
             DB_PORT="5432"
             DB_URL="jdbc:postgresql://${DB_HOST}/${DB_NAME}"
-            check_db_access
+            alive.sh ${DB_HOST} 5432
             ;;
         "derby_embedded")
             DB_URL="jdbc:derby:directory:/data/jahiadb;create=true"
@@ -54,6 +40,25 @@ if [ ! -f "/data/configured" ]; then
     esac
 
     echo "Configure jahia..."
+
+    echo "/opt/apache-maven-${MAVEN_VER}/bin/mvn ${JAHIA_PLUGIN}:configure \
+    -Djahia.deploy.targetServerType="tomcat" \
+    -Djahia.deploy.targetServerDirectory="/usr/local/tomcat" \
+    -Djahia.deploy.dataDir="/data/digital-factory-data" \
+    -Djahia.configure.externalizedTargetPath="/usr/local/tomcat/conf/digital-factory-config" \
+    -Djahia.configure.databaseType="${DB_VENDOR}" \
+    -Djahia.configure.databaseUrl="${DB_URL}" \
+    -Djahia.configure.databaseUsername="${DB_USER}" \
+    -Djahia.configure.databasePassword=xxxxx \
+    -Djahia.configure.storeFilesInDB="${DS_IN_DB}" \
+    -Djahia.configure.jahiaRootPassword=xxxxx \
+    -Djahia.configure.processingServer="${PROCESSING_SERVER}" \
+    -Djahia.configure.operatingMode="${OPERATING_MODE}" \
+    -Djahia.configure.deleteFiles="false" \
+    -Djahia.configure.overwritedb="${OVERWRITEDB}" \
+    -Djahia.configure.jahiaProperties="{mvnPath:\"/opt/apache-maven-${MAVEN_VER}/bin/mvn\",svnPath:\"/usr/bin/svn\",gitPath:\"/usr/bin/git\",karaf.remoteShell.host:\"0.0.0.0\"}" \
+    $JAHIA_CONFIGURE_OPTS -Pconfiguration"
+
     /opt/apache-maven-${MAVEN_VER}/bin/mvn ${JAHIA_PLUGIN}:configure \
     -Djahia.deploy.targetServerType="tomcat" \
     -Djahia.deploy.targetServerDirectory="/usr/local/tomcat" \

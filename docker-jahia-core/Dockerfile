@@ -86,10 +86,9 @@ RUN mvn -q -Pconfiguration ${JAHIA_PLUGIN}:help
 USER root
 
 # Add scripts
-COPY entrypoint.sh /
-COPY downloadProvisioning.sh /usr/local/bin
+COPY bin/* /usr/local/bin/
 COPY setenv.sh /usr/local/tomcat/bin
-RUN chmod +x /entrypoint.sh /usr/local/bin/downloadProvisioning.sh /usr/local/tomcat/bin/setenv.sh
+RUN chmod +x /usr/local/bin/* /usr/local/tomcat/bin/setenv.sh
 RUN ln -s /home/${C_USER}/.m2 /data/m2
 
 COPY target/dependency/shared-libraries /usr/local/tomcat/lib
@@ -115,4 +114,4 @@ EXPOSE 8080
 EXPOSE 7860
 EXPOSE 8101
 
-CMD ["/entrypoint.sh"]
+CMD ["/usr/local/bin/entrypoint.sh"]

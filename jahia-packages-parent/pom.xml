@@ -98,7 +98,7 @@
                         <configuration>
                             <source><![CDATA[
                                 if (project.properties['package.skip'] != 'true' || project.properties['package.provisioning.skip'] != 'true') {
-                                    def file = new File('${project.build.directory}/${project.artifactId}.dependencies');
+                                    def file = new File(project.build.directory, '${project.artifactId}.dependencies');
                                     deps = []
                                     artifactIds = [];
                                     file.eachLine { line ->
@@ -112,7 +112,7 @@
                                     }
 
                                     if (project.properties['package.provisioning.skip'] != 'true') {
-                                        new File('${project.build.directory}/${project.artifactId}.provisioning.yaml').withWriter('utf-8') { writer ->
+                                        new File(project.build.directory, '${project.artifactId}.provisioning.yaml').withWriter('utf-8') { writer ->
                                             artifactIds.forEach { f -> writer.writeLine(" - installAndStartBundle: 'mvn:${f[0]}/${f[1]}/${f[3]}'") }
                                         }
                                     }

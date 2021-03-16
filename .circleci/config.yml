@@ -68,7 +68,7 @@ jobs:
             if [ "false" = "<<parameters.is_pull_request>>" ]; then
               cp jahia.version image.tag
             else
-              echo "${CIRCLE_BRANCH}" > image.tag
+              echo `cat jahia.version`-"${CIRCLE_BRANCH}" > image.tag
             fi
       - run:
           # TODO For now I just replaced the Bamboo build number by the CircleCI build number
@@ -88,8 +88,8 @@ jobs:
                 # TODO One day we may want to do a deploy - right now only docker project is deployed
                 # TODO For now I just replaced the Bamboo build number by the CircleCI build number
                 name: Deploy artifacts to server repository
-                working_directory: ~/source/docker-jahia-core
-                command: mvn -s ../.circleci/.circleci.settings.xml -e -Dimage.tag=`cat ../image.tag` deploy -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
+                working_directory: ~/source/docker/docker-jahia-core
+                command: mvn -s ../.circleci/.circleci.settings.xml -e -Dimage.tag=`cat ../../image.tag` deploy -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
       - when:
           condition: <<parameters.is_pull_request>>
           steps:
@@ -107,27 +107,6 @@ jobs:
           key: v1-maven-dependencies-{{ checksum "maven_cache_seed" }}
       - *persist-workspace
 
-#  build_docker:
-#    <<: *workdir
-#    docker: # run the steps with Docker
-#      - image: circleci/openjdk:8-jdk-stretch
-#    steps:
-#      - *attach-workspace
-#      - setup_remote_docker:
-#          version: 19.03.13
-#          docker_layer_caching: true
-#      - run:
-#          name: Docker login
-#          # This is needed to push docker image
-#          command: |
-#            echo "$DOCKERHUB_LOGIN"
-#            echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_LOGIN" --password-stdin
-#      - run:
-#          name: Build docker
-#          working_directory: ~/source/docker
-#          command: |
-#            mvn -s ../.circleci/.circleci.settings.xml -e clean package de.qaware.maven:go-offline-maven-plugin:resolve-dependencies
-
   integration_tests:
     <<: *workdir
     docker: # run the steps with Docker
@@ -143,7 +122,7 @@ jobs:
         default: true
       TESTS_PATH:
         type: string
-        default: "docker-tests/"
+        default: "docker/docker-tests/"
     steps:
       - *attach-workspace
       - setup_remote_docker:
@@ -179,7 +158,7 @@ jobs:
             if [[ ! -e .env ]]; then
               mv .env.example .env
             fi
-            echo JAHIA_IMAGE=jahia/jahia-core:`cat ../image.tag` >> .env
+            echo JAHIA_IMAGE=jahia/jahia-core:`cat ../../image.tag` >> .env
             docker-compose -f docker-compose.yml up -d jahia
           no_output_timeout: 2h
       - run:

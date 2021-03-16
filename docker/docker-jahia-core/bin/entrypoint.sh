@@ -39,6 +39,15 @@ if [ ! -f "/data/configured" ]; then
             ;;
     esac
 
+    echo "Copy license file if available"
+    if [ -z "${JAHIA_LICENSE}" ]; then
+      echo "No license found"
+    else
+      echo "decoding license"
+      echo "${JAHIA_LICENSE}" | base64 --decode > /data/license.xml
+      JAHIA_LICENSE_OPTS="-Djahia.configure.licenseFile=/data/license.xml"
+    fi
+
     echo "Configure jahia..."
 
     echo "/opt/apache-maven-${MAVEN_VER}/bin/mvn ${JAHIA_PLUGIN}:configure \
@@ -57,7 +66,7 @@ if [ ! -f "/data/configured" ]; then
     -Djahia.configure.deleteFiles="false" \
     -Djahia.configure.overwritedb="${OVERWRITEDB}" \
     -Djahia.configure.jahiaProperties="{mvnPath:\"/opt/apache-maven-${MAVEN_VER}/bin/mvn\",svnPath:\"/usr/bin/svn\",gitPath:\"/usr/bin/git\",karaf.remoteShell.host:\"0.0.0.0\"}" \
-    $JAHIA_CONFIGURE_OPTS -Pconfiguration"
+    $JAHIA_CONFIGURE_OPTS $JAHIA_LICENSE_OPTS -Pconfiguration"
 
     /opt/apache-maven-${MAVEN_VER}/bin/mvn ${JAHIA_PLUGIN}:configure \
     -Djahia.deploy.targetServerType="tomcat" \
@@ -75,7 +84,7 @@ if [ ! -f "/data/configured" ]; then
     -Djahia.configure.deleteFiles="false" \
     -Djahia.configure.overwritedb="${OVERWRITEDB}" \
     -Djahia.configure.jahiaProperties="{mvnPath:\"/opt/apache-maven-${MAVEN_VER}/bin/mvn\",svnPath:\"/usr/bin/svn\",gitPath:\"/usr/bin/git\",karaf.remoteShell.host:\"0.0.0.0\"}" \
-    $JAHIA_CONFIGURE_OPTS -Pconfiguration
+    $JAHIA_CONFIGURE_OPTS $JAHIA_LICENSE_OPTS -Pconfiguration
 
     if [ -f "/data/digital-factory-data/info/passwd" ] && [ "`cat "/data/digital-factory-data/info/passwd"`" != "`echo -n "$SUPER_USER_PASSWORD" | sha256sum`" ]; then
         echo "Update root's password..."

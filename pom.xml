@@ -118,12 +118,7 @@
                 <module>war</module>
                 <module>jahia-shared-package</module>
                 <module>test</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>docker</id>
-            <modules>
-                <module>docker-jahia-core</module>
+                <module>docker</module>
             </modules>
         </profile>
         <profile>

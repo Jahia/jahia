@@ -62,7 +62,7 @@
                             <source>
                                 if (project.properties['build.skip'] != 'true') {
                                     def properties = []
-                                    new File('${project.build.directory}/dependency').eachFile { file ->
+                                    new File(project.build.directory, 'dependency').eachFile { file ->
                                         file.eachLine { line ->
                                             if ((matcher = line =~ /.*mvn:([^\/]+)\/([^\/]+).*/)) {
                                                 properties.add(matcher[0][2]);

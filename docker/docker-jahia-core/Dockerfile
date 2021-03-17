@@ -89,11 +89,10 @@ USER root
 COPY bin/* /usr/local/bin/
 COPY setenv.sh /usr/local/tomcat/bin
 RUN chmod +x /usr/local/bin/* /usr/local/tomcat/bin/setenv.sh
-RUN ln -s /home/${C_USER}/.m2 /data/m2
 
 COPY target/dependency/shared-libraries /usr/local/tomcat/lib
 COPY target/dependency/jdbc-drivers /usr/local/tomcat/lib
-COPY --chown=${C_USER}:${C_GROUP} target/dependency/jahia-war-data-package /data/digital-factory-data
+COPY --chown=${C_USER}:${C_GROUP} target/dependency/jahia-war-data-package /usr/local/tomcat/digital-factory-data
 COPY --chown=${C_USER}:${C_GROUP} target/dependency/jahia-war /usr/local/tomcat/webapps/ROOT
 
 RUN mkdir -p /usr/local/tomcat/conf/digital-factory-config  \

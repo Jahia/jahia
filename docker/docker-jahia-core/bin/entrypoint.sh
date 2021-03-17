@@ -1,7 +1,10 @@
 #!/bin/bash
 
-if [ ! -f "/data/configured" ]; then
+if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
     echo "Initial startup, configuring Jahia..."
+
+    echo "Preparing digital-factory-data..."
+    cp -a /usr/local/tomcat/digital-factory-data/* /data/digital-factory-data/
 
     echo "Update /usr/local/tomcat/conf/server.xml..."
     sed -i '/<!-- Access log processes all example./i \\t<!-- Remote IP Valve -->\n \t<Valve className="org.apache.catalina.valves.RemoteIpValve" protocolHeader="X-Forwarded-Proto" />\n' /usr/local/tomcat/conf/server.xml
@@ -93,7 +96,7 @@ if [ ! -f "/data/configured" ]; then
 
     echo -n "$SUPER_USER_PASSWORD" | sha256sum > /data/digital-factory-data/info/passwd
 
-    touch "/data/configured"
+    touch "/usr/local/tomcat/conf/configured"
 fi
 
 if [ "$RESTORE_MODULE_STATES" == "true" ]; then

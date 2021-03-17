@@ -45,8 +45,11 @@ package org.jahia.bundles.provisioning.impl.operations;
 
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.modulemanager.BundleInfo;
+import org.jahia.services.modulemanager.InvalidModuleException;
 import org.jahia.services.modulemanager.ModuleManager;
 import org.jahia.services.modulemanager.OperationResult;
+import org.jahia.services.modulemanager.persistence.PersistentBundle;
+import org.jahia.services.modulemanager.persistence.PersistentBundleInfoBuilder;
 import org.jahia.services.provisioning.ExecutionContext;
 import org.jahia.services.provisioning.Operation;
 import org.jahia.settings.SettingsBean;
@@ -59,6 +62,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.UrlResource;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -69,10 +73,13 @@ import java.util.stream.Collectors;
 public class InstallBundle implements Operation {
     public static final String AUTO_START = "autoStart";
     public static final String INSTALL_BUNDLE = "installBundle";
-    public static final String INSTALL_BUNDLE_AND_START = "installAndStartBundle";
+    public static final String INSTALL_AND_START_BUNDLE = "installAndStartBundle";
+    public static final String INSTALL_OR_UPGRADE_BUNDLE = "installOrUpgradeBundle";
     public static final String START_LEVEL = "startLevel";
+    public static final String FORCE_UPDATE = "forceUpdate";
     public static final String UNINSTALL_PREVIOUS_VERSION = "uninstallPreviousVersion";
     public static final String TARGET = "target";
+    private static final String[] SUPPORTED_KEYS = { INSTALL_BUNDLE, INSTALL_AND_START_BUNDLE, INSTALL_OR_UPGRADE_BUNDLE };
     private static final Logger logger = LoggerFactory.getLogger(InstallBundle.class);
     private BundleContext bundleContext;
     private ModuleManager moduleManager;
@@ -93,13 +100,13 @@ public class InstallBundle implements Operation {
 
     @Override
     public boolean canHandle(Map<String, Object> entry) {
-        return entry.get(INSTALL_BUNDLE) instanceof String || entry.get(INSTALL_BUNDLE_AND_START) instanceof String;
+        return Arrays.stream(SUPPORTED_KEYS).anyMatch(k -> entry.get(k) instanceof String);
     }
 
     @Override
     public void init(ExecutionContext executionContext) {
-        Map<String, Set<String>> installedBundles = Arrays.stream(bundleContext.getBundles())
-                .collect(Collectors.groupingBy(Bundle::getSymbolicName, Collectors.mapping(b -> b.getVersion().toString(), Collectors.toSet())));
+        Map<String, Set<Bundle>> installedBundles = Arrays.stream(bundleContext.getBundles())
+                .collect(Collectors.groupingBy(Bundle::getSymbolicName, Collectors.toSet()));
         executionContext.getContext().put("installedBundles", installedBundles);
         executionContext.getContext().put("toStart", new ArrayList<BundleInfo>());
         executionContext.getContext().put("toUninstall", new ArrayList<BundleInfo>());
@@ -108,35 +115,71 @@ public class InstallBundle implements Operation {
     @Override
     public void perform(Map<String, Object> entry, ExecutionContext executionContext) {
         try {
-            Map<String, Set<String>> installedBundles = (Map<String, Set<String>>) executionContext.getContext().get("installedBundles");
-
-            String bundleKey = (String) Optional.ofNullable(entry.get(INSTALL_BUNDLE_AND_START)).orElse(entry.get(INSTALL_BUNDLE));
-            OperationResult result = moduleManager.install(
-                    Collections.singleton(new UrlResource(bundleKey)), (String) entry.get(TARGET),
-                    false,
-                    Optional.ofNullable((Integer) entry.get(START_LEVEL)).orElse(SettingsBean.getInstance().getModuleStartLevel())
-            );
-            if (result.getBundleInfos().size() == 1) {
-                BundleInfo bundleInfo = result.getBundleInfos().get(0);
-
-                // Should this (autostart / uninstall) be done immediately ?
-
-                if (entry.get(AUTO_START) == Boolean.TRUE || entry.get(INSTALL_BUNDLE_AND_START) != null) {
-                    getToStart(executionContext).add(bundleInfo);
+            Map<String, Set<Bundle>> installedBundles = (Map<String, Set<Bundle>>) executionContext.getContext().get("installedBundles");
+            Optional<String> bundleKeyOptional = Arrays.stream(SUPPORTED_KEYS).map(k -> (String) entry.get(k)).filter(Objects::nonNull).findFirst();
+            if (bundleKeyOptional.isPresent()) {
+                String bundleKey = bundleKeyOptional.get();
+                UrlResource resource = new UrlResource(bundleKey);
+                if (entry.get(FORCE_UPDATE) != Boolean.TRUE && checkAlreadyInstalled(bundleKey, resource)) {
+                    return;
                 }
+                OperationResult result = moduleManager.install(
+                        Collections.singleton(resource), (String) entry.get(TARGET),
+                        false,
+                        Optional.ofNullable((Integer) entry.get(START_LEVEL)).orElse(SettingsBean.getInstance().getModuleStartLevel())
+                );
+                if (result.getBundleInfos().size() == 1) {
+                    BundleInfo bundleInfo = result.getBundleInfos().get(0);
+                    Set<Bundle> installedVersions = installedBundles.get(bundleInfo.getSymbolicName());
 
-                Set<String> installedVersions = installedBundles.get(bundleInfo.getSymbolicName());
-                if (entry.get(UNINSTALL_PREVIOUS_VERSION) == Boolean.TRUE && installedVersions != null) {
-                    for (String installedVersion : installedVersions) {
-                        if (!installedVersion.equals(bundleInfo.getVersion())) {
-                            getToUninstall(executionContext).add(BundleInfo.fromModuleInfo(bundleInfo.getSymbolicName(), installedVersion));
-                        }
-                    }
+                    setupAutoStart(entry, executionContext, bundleInfo, installedVersions);
+                    setupUninstall(entry, executionContext, bundleInfo, installedVersions);
                 }
             }
         } catch (Exception e) {
             logger.error("Cannot install {}", entry.get(INSTALL_BUNDLE), e);
         }
+    }
+
+    private void setupAutoStart(Map<String, Object> entry, ExecutionContext executionContext, BundleInfo bundleInfo, Set<Bundle> installedVersions) {
+        // Should this (autostart / uninstall) be done immediately ?
+
+        boolean autoStart = entry.get(AUTO_START) == Boolean.TRUE || entry.get(INSTALL_AND_START_BUNDLE) != null;
+
+        if (entry.get(AUTO_START) != Boolean.FALSE && entry.get(INSTALL_OR_UPGRADE_BUNDLE) != null) {
+            // In case of upgrade, get the previous version state, or auto-start by default
+            autoStart = installedVersions == null || installedVersions.stream().anyMatch(b -> b.getState() == Bundle.ACTIVE);
+        }
+
+        if (autoStart) {
+            getToStart(executionContext).add(bundleInfo);
+        }
+    }
+
+    private void setupUninstall(Map<String, Object> entry, ExecutionContext executionContext, BundleInfo bundleInfo, Set<Bundle> installedVersions) {
+        boolean uninstallPreviousVersions = installedVersions != null &&
+                (entry.get(UNINSTALL_PREVIOUS_VERSION) == Boolean.TRUE || entry.get(INSTALL_OR_UPGRADE_BUNDLE) != null);
+
+        if (uninstallPreviousVersions) {
+            for (Bundle installedVersion : installedVersions) {
+                if (!installedVersion.getVersion().toString().equals(bundleInfo.getVersion())) {
+                    getToUninstall(executionContext).add(BundleInfo.fromBundle(installedVersion));
+                }
+            }
+        }
+    }
+
+    private boolean checkAlreadyInstalled(String bundleKey, UrlResource resource) throws IOException {
+        PersistentBundle bundleInfo = PersistentBundleInfoBuilder.build(resource, false, false);
+        if (bundleInfo == null) {
+            throw new InvalidModuleException();
+        }
+        Bundle bundle = bundleContext.getBundle(bundleInfo.getLocation());
+        if (bundle != null) {
+            logger.info("Bundle {} already installed, skip", bundleKey);
+            return true;
+        }
+        return false;
     }
 
     @Override

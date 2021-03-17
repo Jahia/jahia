@@ -113,7 +113,7 @@
 
                                     if (project.properties['package.provisioning.skip'] != 'true') {
                                         new File(project.build.directory, '${project.artifactId}.provisioning.yaml').withWriter('utf-8') { writer ->
-                                            artifactIds.forEach { f -> writer.writeLine(" - installAndStartBundle: 'mvn:${f[0]}/${f[1]}/${f[3]}'") }
+                                            artifactIds.forEach { f -> writer.writeLine(" - installOrUpgradeBundle: 'mvn:${f[0]}/${f[1]}/${f[3]}'") }
                                         }
                                     }
                                 }

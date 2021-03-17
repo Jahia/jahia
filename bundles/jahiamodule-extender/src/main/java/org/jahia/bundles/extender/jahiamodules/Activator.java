@@ -59,10 +59,7 @@ import org.jahia.bundles.extender.jahiamodules.transform.ModuleUrlTransformer;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.data.templates.ModuleState.State;
-import org.jahia.osgi.BundleLifecycleUtils;
-import org.jahia.osgi.BundleResource;
-import org.jahia.osgi.BundleUtils;
-import org.jahia.osgi.ExtensionObserverRegistry;
+import org.jahia.osgi.*;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheHelper;
@@ -304,15 +301,25 @@ public class Activator implements BundleActivator {
             }
         });
 
-        checkPersistentStateMarker();
+        stopBundleWithErrorInRules = Boolean.valueOf(SettingsBean.getInstance().getString("jahia.modules.stopBundleWithErrorInRules", "true"));
 
-        fileInstallConfigurer = new FileInstallConfigurer();
-        fileInstallConfigurer.start(context);
+        // Wait for spring-bridge to be started (and so all other system bundles) before initializing persistent bundles and fileinstall
+        new ServiceTracker<Object,Object>(context, "org.jahia.api.settings.SettingsBean", null) {
+            @Override
+            public Object addingService(ServiceReference<Object> reference) {
+                close();
+                new Thread(() -> {
+                    logger.info("== Start initial modules provisioning");
+                    checkPersistentStateMarker();
+                    fileInstallConfigurer = new FileInstallConfigurer();
+                    fileInstallConfigurer.start(context);
+                }).start();
+                return super.addingService(reference);
+            }
+        }.open(true);
 
         log4jConfigurer = new PaxLoggingConfigurer();
         log4jConfigurer.start(context);
-
-        stopBundleWithErrorInRules = Boolean.valueOf(SettingsBean.getInstance().getString("jahia.modules.stopBundleWithErrorInRules", "true"));
 
         logger.info("== DX Extender started in {}ms ============================================================== ", System.currentTimeMillis() - startTime);
     }

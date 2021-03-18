@@ -208,6 +208,15 @@ You can specify an optional timeout in ms (default 1s):
   timeout: 10000
 ```
 
+### Execute scripts
+
+It's possible to execute `.groovy` or `.graphql` scripts using the `executeScript` command
+
+```yaml
+- executeScript: "http://myserver.com/a-graphql-query.graphql"
+- executeScript: "file:/tmp/my-new-script.groovy"
+```
+
 ### Script includes and conditional flow
 
 It's possible to include another script with the `include` operation :

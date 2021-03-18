@@ -74,6 +74,7 @@ import java.util.regex.Pattern;
  *         Date: Jun 16, 2010
  *         Time: 10:38:40 AM
  */
+@Deprecated
 public class FindPrincipal extends BaseFindController {
 
     private static Logger logger = LoggerFactory.getLogger(FindPrincipal.class);

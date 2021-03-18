@@ -80,6 +80,7 @@ import org.json.JSONObject;
  * Date: Jan 26, 2010
  * Time: 5:55:17 PM
  */
+@Deprecated
 public class Find extends BaseFindController {
 
     private static Logger logger = LoggerFactory.getLogger(Find.class);

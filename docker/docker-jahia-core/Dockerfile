@@ -33,7 +33,7 @@ ENV CATALINA_OPTS="" JPDA="false" JPDA_ADDRESS="*:8000"
 
 ENV DB_VENDOR="derby_embedded" DB_HOST="mariadb" DB_NAME="jahia" DB_USER="jahia" DB_PASS="fakepassword"
 ENV SUPER_USER_PASSWORD="root1234"
-ENV DS_IN_DB="true" DS_PATH="/datastore/jahia"
+ENV DS_IN_DB="true" DS_PATH=""
 
 WORKDIR /tmp
 

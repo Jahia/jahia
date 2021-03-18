@@ -63,6 +63,7 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
     -Djahia.configure.databaseUsername="${DB_USER}" \
     -Djahia.configure.databasePassword=xxxxx \
     -Djahia.configure.storeFilesInDB="${DS_IN_DB}" \
+    -Djahia.configure.fileDataStorePath="${DS_PATH}" \
     -Djahia.configure.jahiaRootPassword=xxxxx \
     -Djahia.configure.processingServer="${PROCESSING_SERVER}" \
     -Djahia.configure.operatingMode="${OPERATING_MODE}" \
@@ -81,6 +82,7 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
     -Djahia.configure.databaseUsername="${DB_USER}" \
     -Djahia.configure.databasePassword="${DB_PASS}" \
     -Djahia.configure.storeFilesInDB="${DS_IN_DB}" \
+    -Djahia.configure.fileDataStorePath="${DS_PATH}" \
     -Djahia.configure.jahiaRootPassword="${SUPER_USER_PASSWORD}" \
     -Djahia.configure.processingServer="${PROCESSING_SERVER}" \
     -Djahia.configure.operatingMode="${OPERATING_MODE}" \

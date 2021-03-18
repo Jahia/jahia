@@ -79,6 +79,7 @@ import org.json.JSONObject;
  * @author loom
  * Date: Jan 26, 2010
  * Time: 5:55:17 PM
+ * @deprecated as its no longer used and should be removed with 8.1.x (see also QA-13520)
  */
 @Deprecated
 public class Find extends BaseFindController {

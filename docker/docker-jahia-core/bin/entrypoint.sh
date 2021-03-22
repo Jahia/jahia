@@ -1,9 +1,33 @@
 #!/bin/bash
 
 if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
-    echo "Initial startup, configuring Jahia..."
+    echo "Initial container startup, configuring Jahia..."
 
-    echo "Preparing digital-factory-data..."
+    OVERWRITEDB="if-necessary"
+
+    if [ -f "/data/digital-factory-data/info/version.properties" ] || [ -d "/data/digital-factory-data/bundles-deployed" ]; then
+        echo "Previous installation detected. Do not override db and existing data."
+        PREVIOUS_INSTALL="true"
+        OVERWRITEDB="false"
+    else
+        PREVIOUS_INSTALL="false"
+    fi
+
+    if [ -f "/data/env" ]; then
+        source /data/env
+    else
+        echo "Storing environment to prevent changes"
+        echo "DB_VENDOR=${DB_VENDOR}" >> /data/env
+        echo "DB_VENDOR=${DB_VENDOR}" >> /data/env
+        echo "DB_HOST=${DB_HOST}" >> /data/env
+        echo "DB_NAME=${DB_NAME}" >> /data/env
+        echo "DB_USER=${DB_USER}" >> /data/env
+        echo "DB_PASS=${DB_PASS}" >> /data/env
+        echo "DS_IN_DB=${DS_IN_DB}" >> /data/env
+        echo "DS_PATH=${DS_PATH}" >> /data/env
+    fi
+
+    echo "Updating digital-factory-data..."
     cp -a /usr/local/tomcat/digital-factory-data/* /data/digital-factory-data/
 
     echo "Update /usr/local/tomcat/conf/server.xml..."
@@ -12,17 +36,6 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
     sed -i 's/prefix="localhost_access_log"/prefix="access_log" rotatable="true" maxDays="'$LOG_MAX_DAYS'"/g' /usr/local/tomcat/conf/server.xml
     sed -i 's/^\([^#].*\.maxDays\s*=\s*\).*$/\1'$LOG_MAX_DAYS'/' /usr/local/tomcat/conf/logging.properties
     sed -i '/name="ROLL"/,+2 s/debug/warn/' -i /usr/local/tomcat/webapps/ROOT/WEB-INF/etc/config/log4j.xml
-
-    OVERWRITEDB="if-necessary"
-
-    if [ -f "/data/digital-factory-data/info/version.properties" ]; then
-        echo "Previous installation detected"
-        PREVIOUS_INSTALL="true"
-        OVERWRITEDB="false"
-    else
-        PREVIOUS_INSTALL="false"
-    fi
-
 
     echo "Check database..."
     case "$DB_VENDOR" in

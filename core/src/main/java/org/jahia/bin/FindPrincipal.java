@@ -73,7 +73,9 @@ import java.util.regex.Pattern;
  * @author loom
  *         Date: Jun 16, 2010
  *         Time: 10:38:40 AM
+ * @deprecated as its no longer used and should be removed with 8.1.x (see also QA-13520) 
  */
+@Deprecated
 public class FindPrincipal extends BaseFindController {
 
     private static Logger logger = LoggerFactory.getLogger(FindPrincipal.class);

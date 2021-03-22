@@ -78,6 +78,7 @@ public class URLGenerator {
     private String contribute;
     private String studio;
     private String studioVisual;
+    @Deprecated
     private String find;
     private String initializers;
     private Resource resource;
@@ -247,10 +248,12 @@ public class URLGenerator {
         return studioVisual;
     }
     
+    @Deprecated
     public String getFind() {
         return find;
     }
-
+    
+    @Deprecated
     public String getFindPrincipal() {
         return FindPrincipal.getFindPrincipalServletPath();
     }

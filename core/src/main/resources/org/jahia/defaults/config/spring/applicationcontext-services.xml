@@ -229,6 +229,12 @@
                 <value>.project</value>
                 <value>.classpath</value>
                 <value>repository.xml.generated</value>
+                <value>node</value>
+                <value>node_modules</value>
+                <value>.github</value>
+                <value>.circleci</value>
+                <value>.git</value>
+                <value>tests</value>
             </list>
         </property>
         <property name="sourceControlExecutables">

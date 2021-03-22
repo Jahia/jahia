@@ -47,7 +47,10 @@ import org.apache.commons.collections.EnumerationUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.utils.collections.MapToDictionary;
-import org.apache.jasper.JspCompilationContext;
+import org.apache.jasper.*;
+import org.apache.jasper.compiler.JspConfig;
+import org.apache.jasper.compiler.TagPluginManager;
+import org.apache.jasper.compiler.TldCache;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.bundles.extender.jahiamodules.jsp.JahiaJspServletWrapper;
 import org.jahia.osgi.BundleUtils;
@@ -63,6 +66,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
+import javax.servlet.jsp.tagext.TagLibraryInfo;
 import java.io.File;
 import java.net.URL;
 import java.util.*;
@@ -156,12 +160,15 @@ public class BundleHttpResourcesTracker extends ServiceTracker<HttpService, Http
         }
     }
 
-    // TODO: BACKLOG-10862 this method has been changed please check the changes
     public static void flushJspCache(Bundle bundle, String jspFile) {
         File scratchDirFile = new File(new File(System.getProperty("java.io.tmpdir"), "jahia-jsps"),
                 bundle.getSymbolicName() + "-" + bundle.getBundleId());
         if (jspFile != null && jspFile.length() > 0) {
-            JspCompilationContext jspCompilationContext = new JspCompilationContext(jspFile, null, JahiaContextLoaderListener.getServletContext(), null, null);
+            JspCompilationContext jspCompilationContext = new JspCompilationContext(jspFile,
+                                                                                    new EmptyOptions(),
+                                                                                    JahiaContextLoaderListener.getServletContext(),
+                                                                                    null,
+                                                                                    null);
             String javaPath = jspCompilationContext.getJavaPath();
             String classPath = StringUtils.substringBeforeLast(javaPath, ".java") + ".class";
             FileUtils.deleteQuietly(new File(scratchDirFile, javaPath));
@@ -260,5 +267,172 @@ public class BundleHttpResourcesTracker extends ServiceTracker<HttpService, Http
         }
 
         super.removedService(reference, service);
+    }
+
+    private static class EmptyOptions implements Options {
+        @Override
+        public boolean getErrorOnUseBeanInvalidClassAttribute() {
+            return false;
+        }
+
+        @Override
+        public boolean getKeepGenerated() {
+            return false;
+        }
+
+        @Override
+        public boolean isPoolingEnabled() {
+            return false;
+        }
+
+        @Override
+        public boolean getMappedFile() {
+            return false;
+        }
+
+        @Override
+        public boolean getClassDebugInfo() {
+            return false;
+        }
+
+        @Override
+        public int getCheckInterval() {
+            return 0;
+        }
+
+        @Override
+        public boolean getDevelopment() {
+            return false;
+        }
+
+        @Override
+        public boolean getDisplaySourceFragment() {
+            return false;
+        }
+
+        @Override
+        public boolean isSmapSuppressed() {
+            return false;
+        }
+
+        @Override
+        public boolean isSmapDumped() {
+            return false;
+        }
+
+        @Override
+        public TrimSpacesOption getTrimSpaces() {
+            return null;
+        }
+
+        @Override
+        public String getIeClassId() {
+            return null;
+        }
+
+        @Override
+        public File getScratchDir() {
+            return null;
+        }
+
+        @Override
+        public String getClassPath() {
+            return null;
+        }
+
+        @Override
+        public String getCompiler() {
+            return null;
+        }
+
+        @Override
+        public String getCompilerTargetVM() {
+            return null;
+        }
+
+        @Override
+        public String getCompilerSourceVM() {
+            return null;
+        }
+
+        @Override
+        public String getCompilerClassName() {
+            return null;
+        }
+
+        @Override
+        public TldCache getTldCache() {
+            return null;
+        }
+
+        @Override
+        public String getJavaEncoding() {
+            return null;
+        }
+
+        @Override
+        public boolean getFork() {
+            return false;
+        }
+
+        @Override
+        public JspConfig getJspConfig() {
+            return null;
+        }
+
+        @Override
+        public boolean isXpoweredBy() {
+            return false;
+        }
+
+        @Override
+        public TagPluginManager getTagPluginManager() {
+            return null;
+        }
+
+        @Override
+        public boolean genStringAsCharArray() {
+            return false;
+        }
+
+        @Override
+        public int getModificationTestInterval() {
+            return 0;
+        }
+
+        @Override
+        public boolean getRecompileOnFail() {
+            return false;
+        }
+
+        @Override
+        public boolean isCaching() {
+            return false;
+        }
+
+        @Override
+        public Map<String, TagLibraryInfo> getCache() {
+            return null;
+        }
+
+        @Override
+        public int getMaxLoadedJsps() {
+            return 0;
+        }
+
+        @Override
+        public int getJspIdleTimeout() {
+            return 0;
+        }
+
+        @Override
+        public boolean getStrictQuoteEscaping() {
+            return false;
+        }
+
+        @Override
+        public boolean getQuoteAttributeEL() {
+            return false;
+        }
     }
 }

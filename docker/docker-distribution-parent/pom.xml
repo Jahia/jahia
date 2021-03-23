@@ -132,6 +132,7 @@
                         <PARENT_TAG>${parent.tag}</PARENT_TAG>
                         <PROJECT_VERSION>${project.version}</PROJECT_VERSION>
                     </buildArgs>
+                    <pullNewerImage>false</pullNewerImage>
                     <skip>${build.skip}</skip>
                 </configuration>
             </plugin>

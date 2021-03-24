@@ -108,6 +108,10 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
         echo "$SUPER_USER_PASSWORD" > $FACTORY_DATA/root.pwd
     fi
 
+    if [ "${EXECUTE_PROVISIONING_SCRIPT}" != "" ]; then
+      echo " - include: ${EXECUTE_PROVISIONING_SCRIPT}" > $FACTORY_DATA/patches/provisioning/999-docker-provisioning.yaml
+    fi
+
     echo -n "$SUPER_USER_PASSWORD" | sha256sum > /data/digital-factory-data/info/passwd
 
     touch "/usr/local/tomcat/conf/configured"

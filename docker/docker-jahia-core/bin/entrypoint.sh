@@ -55,13 +55,12 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
             ;;
     esac
 
-    echo "Copy license file if available"
-    if [ -z "${JAHIA_LICENSE}" ]; then
-      echo "No license found"
-    else
+    if [ "${JAHIA_LICENSE}" != "" ]; then
       echo "decoding license"
       echo "${JAHIA_LICENSE}" | base64 --decode > /data/license.xml
       JAHIA_LICENSE_OPTS="-Djahia.configure.licenseFile=/data/license.xml"
+    else
+      echo "No license provided via environment variable"    
     fi
 
     echo "Configure jahia..."

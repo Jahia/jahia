@@ -224,9 +224,9 @@ It's possible to include another script with the `include` operation :
 - include: "http://myserver.com/modules-provisioning.yaml"
 ```
 
-You can add condition in the script based on jahia.properties values :
+You can add condition in the script based on any groovy expression values :
 ```yaml
-- if: "cluster.activated"
+- if: org.jahia.settings.SettingsBean.getInstance().isClusterActivated()
   do: 
     - installFeature: "dx-clustering"
 ```

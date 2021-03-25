@@ -99,6 +99,7 @@
                             <source><![CDATA[
                                 if (project.properties['package.skip'] != 'true' || project.properties['package.provisioning.skip'] != 'true') {
                                     def file = new File(project.build.directory, '${project.artifactId}.dependencies');
+                                    def conditionsFile = new File(project.basedir, 'src/main/conditions.properties');
                                     deps = []
                                     artifactIds = [];
                                     file.eachLine { line ->
@@ -110,14 +111,28 @@
                                     if (project.properties['package.skip'] != 'true') {
                                         project.properties['jahia.manifest.description'] = artifactIds.collect({ f -> f[1] }).join(',')
                                     }
-
+                                    def conditions = [:];
+                                    if (conditionsFile.exists()) {
+                                        conditionsFile.eachLine { line ->
+                                            def key = line.split(":")[0]
+                                            conditions[key] = line.substring(key.length() + 1)
+                                        }
+                                    }
                                     if (project.properties['package.provisioning.skip'] != 'true') {
                                         new File(project.build.directory, '${project.artifactId}.provisioning.yaml').withWriter('utf-8') { writer ->
-                                            artifactIds.forEach { f -> writer.writeLine(" - installOrUpgradeBundle: 'mvn:${f[0]}/${f[1]}/${f[3]}'") }
+                                            artifactIds.forEach { f ->
+                                                if (conditions[f[1]] == null) {
+                                                    writer.writeLine(" - installOrUpgradeBundle: 'mvn:${f[0]}/${f[1]}/${f[3]}'")
+                                                } else {
+                                                    writer.writeLine(" - if: \"${conditions[f[1]].replace('"', '\\"')}\"")
+                                                    writer.writeLine("   do:");
+                                                    writer.writeLine("     - installOrUpgradeBundle: 'mvn:${f[0]}/${f[1]}/${f[3]}'")
+                                                }
+                                            }
                                         }
                                     }
                                 }
-                            ]]></source>
+                                ]]></source>
                         </configuration>
                     </execution>
                 </executions>

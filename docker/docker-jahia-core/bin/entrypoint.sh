@@ -63,8 +63,13 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
       echo "No license provided via environment variable"    
     fi
 
-    echo "Configure jahia..."
+    if [ "${JAHIA_PROPERTIES}" != "" ]; then
+      JAHIA_PROPERTIES="${JAHIA_PROPERTIES},mvnPath:\"/opt/apache-maven-${MAVEN_VER}/bin/mvn\",svnPath:\"/usr/bin/svn\",gitPath:\"/usr/bin/git\",karaf.remoteShell.host:\"0.0.0.0\""
+    else
+      JAHIA_PROPERTIES="mvnPath:\"/opt/apache-maven-${MAVEN_VER}/bin/mvn\",svnPath:\"/usr/bin/svn\",gitPath:\"/usr/bin/git\",karaf.remoteShell.host:\"0.0.0.0\""
+    fi
 
+    echo "Configure jahia..."
     echo "/opt/apache-maven-${MAVEN_VER}/bin/mvn ${JAHIA_PLUGIN}:configure \
     -Djahia.deploy.targetServerType="tomcat" \
     -Djahia.deploy.targetServerDirectory="/usr/local/tomcat" \
@@ -81,7 +86,7 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
     -Djahia.configure.operatingMode="${OPERATING_MODE}" \
     -Djahia.configure.deleteFiles="false" \
     -Djahia.configure.overwritedb="${OVERWRITEDB}" \
-    -Djahia.configure.jahiaProperties="{mvnPath:\"/opt/apache-maven-${MAVEN_VER}/bin/mvn\",svnPath:\"/usr/bin/svn\",gitPath:\"/usr/bin/git\",karaf.remoteShell.host:\"0.0.0.0\"}" \
+    -Djahia.configure.jahiaProperties="{${JAHIA_PROPERTIES}}" \
     $JAHIA_CONFIGURE_OPTS $JAHIA_LICENSE_OPTS -Pconfiguration"
 
     /opt/apache-maven-${MAVEN_VER}/bin/mvn ${JAHIA_PLUGIN}:configure \
@@ -100,7 +105,7 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
     -Djahia.configure.operatingMode="${OPERATING_MODE}" \
     -Djahia.configure.deleteFiles="false" \
     -Djahia.configure.overwritedb="${OVERWRITEDB}" \
-    -Djahia.configure.jahiaProperties="{mvnPath:\"/opt/apache-maven-${MAVEN_VER}/bin/mvn\",svnPath:\"/usr/bin/svn\",gitPath:\"/usr/bin/git\",karaf.remoteShell.host:\"0.0.0.0\"}" \
+    -Djahia.configure.jahiaProperties="{${JAHIA_PROPERTIES}}" \
     $JAHIA_CONFIGURE_OPTS $JAHIA_LICENSE_OPTS -Pconfiguration
 
     if [ -f "/data/digital-factory-data/info/passwd" ] && [ "`cat "/data/digital-factory-data/info/passwd"`" != "`echo -n "$SUPER_USER_PASSWORD" | sha256sum`" ]; then

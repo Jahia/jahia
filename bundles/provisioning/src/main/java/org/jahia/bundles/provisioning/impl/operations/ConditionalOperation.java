@@ -45,8 +45,10 @@ package org.jahia.bundles.provisioning.impl.operations;
 
 import org.jahia.services.provisioning.ExecutionContext;
 import org.jahia.services.provisioning.Operation;
-import org.jahia.settings.SettingsBean;
+import org.jahia.utils.ScriptEngineUtils;
 import org.osgi.service.component.annotations.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -56,6 +58,7 @@ import java.util.Map;
  */
 @Component(service = Operation.class, property = "type=conditional")
 public class ConditionalOperation implements Operation {
+    private static final Logger logger = LoggerFactory.getLogger(ConditionalOperation.class);
 
     public static final String IF = "if";
 
@@ -67,9 +70,18 @@ public class ConditionalOperation implements Operation {
     @Override
     public void perform(Map<String, Object> entry, ExecutionContext executionContext) {
         String onlyIf = (String) entry.get(IF);
-        if (SettingsBean.getInstance().getBoolean(onlyIf, false)) {
+        if (evalCondition(onlyIf)) {
             List<Map<String, Object>> entries = (List<Map<String, Object>>)entry.get("do");
             executionContext.getProvisioningManager().executeScript(entries, executionContext);
         }
+    }
+
+    private boolean evalCondition(String onlyIf) {
+        try {
+            return (boolean) ScriptEngineUtils.getInstance().scriptEngine("groovy").eval(onlyIf);
+        } catch (Exception e) {
+            logger.error("Cannot eval {} to boolean", onlyIf, e);
+        }
+        return false;
     }
 }

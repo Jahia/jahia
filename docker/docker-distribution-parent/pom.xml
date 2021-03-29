@@ -14,6 +14,7 @@
         <parent.tag>${project.version}</parent.tag>
         <image.repo></image.repo>
         <image.tag>${project.version}</image.tag>
+        <image.pull>true</image.pull>
     </properties>
 
     <repositories>
@@ -132,7 +133,7 @@
                         <PARENT_TAG>${parent.tag}</PARENT_TAG>
                         <PROJECT_VERSION>${project.version}</PROJECT_VERSION>
                     </buildArgs>
-                    <pullNewerImage>false</pullNewerImage>
+                    <pullNewerImage>${image.pull}</pullNewerImage>
                     <skip>${build.skip}</skip>
                 </configuration>
             </plugin>

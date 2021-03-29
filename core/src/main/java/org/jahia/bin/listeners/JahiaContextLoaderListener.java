@@ -154,11 +154,14 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
 
             // execute patches after the complete initialization
             if (SettingsBean.getInstance().isProcessingServer()) {
-                Patcher.getInstance().executeScripts("contextInitialized");
+                Patcher.getInstance().executeScripts("contextInitialized-processingServer");
             } else {
                 // we leave the possibility to provide Groovy scripts for non-processing servers
-                Patcher.getInstance().executeScripts("nonProcessingServer");
+                Patcher.getInstance().executeScripts("contextInitialized-nonProcessingServer");
             }
+
+            Patcher.getInstance().executeScripts("contextInitialized");
+
             logger.info("Context initialization phase finished");
         } catch (JahiaException e) {
             running = false;

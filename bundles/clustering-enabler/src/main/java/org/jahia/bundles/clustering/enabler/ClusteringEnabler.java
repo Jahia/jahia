@@ -52,12 +52,17 @@ import org.jahia.osgi.FrameworkService;
 import org.jahia.services.modulemanager.spi.Config;
 import org.jahia.services.modulemanager.spi.ConfigService;
 import org.jahia.settings.SettingsBean;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
+import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +70,10 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Activator for the DX clustering feature that checks if the cluster is activated or not and either starts dx-clustering feature or
@@ -78,16 +86,19 @@ import java.util.Collections;
         Constants.SERVICE_DESCRIPTION + "=DX clustring feature enabler",
         Constants.SERVICE_VENDOR + "=" + Jahia.VENDOR_NAME,
         EventConstants.EVENT_TOPIC + "=" + FrameworkService.EVENT_TOPIC_LIFECYCLE,
-        EventConstants.EVENT_FILTER + "=(type=" + FrameworkService.EVENT_TYPE_OSGI_STARTED + ")" }, immediate = true)
+        EventConstants.EVENT_FILTER + "=(type=" + FrameworkService.EVENT_TYPE_FILEINSTALL_STARTED + ")" }, immediate = true)
 public class ClusteringEnabler implements EventHandler {
 
     private static final String FEATURE_NAME = "dx-clustering";
 
     private static final Logger logger = LoggerFactory.getLogger(ClusteringEnabler.class);
 
+    private BundleContext bundleContext;
+
     private FeaturesService featuresService;
 
     private ConfigService configService;
+    private ServiceTracker<Object,Object> tracker;
 
     @Reference
     public void setFeaturesService(FeaturesService featuresService) {
@@ -97,6 +108,18 @@ public class ClusteringEnabler implements EventHandler {
     @Reference
     public void setConfigService(ConfigService configService) {
         this.configService = configService;
+    }
+
+    @Activate
+    public void activate(BundleContext context) {
+        this.bundleContext = context;
+    }
+
+    @Deactivate
+    public void deactivate() {
+        if (tracker != null) {
+            tracker.close();
+        }
     }
 
     @Override
@@ -132,6 +155,21 @@ public class ClusteringEnabler implements EventHandler {
 
         try {
             if (clusterActivated) {
+                final Set<String> clusterServices = new HashSet<>(Arrays.asList("config", "bundle", "feature"));
+                tracker = new ServiceTracker<Object,Object>(bundleContext, "org.apache.karaf.cellar.core.Synchronizer", null) {
+                    @Override
+                    public Object addingService(ServiceReference<Object> reference) {
+                        clusterServices.remove(reference.getProperty("resource"));
+                        if (clusterServices.isEmpty()) {
+                            FrameworkService.notifyClusterStarted();
+                            tracker.close();
+                            tracker = null;
+                        }
+                        return super.addingService(reference);
+                    }
+                };
+                tracker.open();
+
                 if (FeatureState.Started != clusteringState) {
                     logger.info("Installing configurations");
                     installConfigurations(feature);

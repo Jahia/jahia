@@ -92,7 +92,8 @@ public final class Patcher implements JahiaAfterInitializationService, Disposabl
             "beforeContextInitializing",
             "contextInitializing",
             "contextInitialized",
-            "nonProcessingServer",
+            "contextInitialized-processingServer",
+            "contextInitialized-nonProcessingServer",
             "jcrStoreProviderStarted",
             "rootContextInitialized"
     };

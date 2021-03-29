@@ -62,7 +62,7 @@ public class ProvisioningPatcher implements PatchExecutor {
 
     @Override
     public boolean canExecute(String name, String lifecyclePhase) {
-        return lifecyclePhase.equals("") && name.endsWith(".yaml");
+        return name.endsWith(".yaml");
     }
 
     @Override

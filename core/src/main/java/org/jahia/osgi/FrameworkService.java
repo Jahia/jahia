@@ -121,6 +121,7 @@ public class FrameworkService implements FrameworkListener {
     public static final String EVENT_TYPE_CLUSTERING_FEATURE_INSTALLED = "clusteringFeatureInstalled";
 
     public static final String EVENT_TYPE_OSGI_STARTED = "osgiContainerStarted";
+    public static final String EVENT_TYPE_FILEINSTALL_STARTED = "fileInstallStarted";
 
     private static final Logger logger = LoggerFactory.getLogger(FrameworkService.class);
 
@@ -160,6 +161,8 @@ public class FrameworkService implements FrameworkListener {
             logger.info("FileInstall watcher started");
             instance.notifyStarted();
         }
+
+        sendEvent(EVENT_TOPIC_LIFECYCLE, Collections.singletonMap("type", EVENT_TYPE_FILEINSTALL_STARTED), false);
     }
 
     /**
@@ -176,10 +179,23 @@ public class FrameworkService implements FrameworkListener {
     }
 
     /**
+     * Notifies the service that the FileInstall watcher has been started and processed the found modules.
+     */
+    public static void notifyClusterStarted() {
+        final FrameworkService instance = getInstance();
+
+        synchronized (instance) {
+            instance.clusterStarted = true;
+            logger.info("Cluster started");
+            instance.notifyStarted();
+        }
+    }
+
+    /**
      * Notify this service that the container has actually started.
      */
     private synchronized void notifyStarted() {
-        if (frameworkStartLevelReached && fileInstallStarted && springBridgeStarted) {
+        if (isStarted()) {
             // send synchronous event about startup
             sendEvent(EVENT_TOPIC_LIFECYCLE, Collections.singletonMap("type", EVENT_TYPE_OSGI_STARTED), false);
 
@@ -231,6 +247,7 @@ public class FrameworkService implements FrameworkListener {
     private boolean firstStartup;
     private boolean fileInstallStarted;
     private boolean springBridgeStarted;
+    private boolean clusterStarted;
     private boolean frameworkStartLevelReached;
     private Main main;
     private final ServletContext servletContext;
@@ -265,7 +282,8 @@ public class FrameworkService implements FrameworkListener {
      * @return <code>true</code> if the OSGi container is completely started; <code>false</code> otherwise
      */
     public boolean isStarted() {
-        return frameworkStartLevelReached && fileInstallStarted && springBridgeStarted;
+        boolean clusterReady = !SettingsBean.getInstance().isClusterActivated() || clusterStarted;
+        return frameworkStartLevelReached && fileInstallStarted && springBridgeStarted && clusterReady;
     }
 
     /**

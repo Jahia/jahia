@@ -276,11 +276,24 @@ jobs:
       - image: circleci/openjdk:8-jdk-stretch
     steps:
       - run:
-          name: Trigger the build of jahia-ee
+          name: Trigger the build of jahia-pack
           command: curl -X POST --url 'https://circleci.com/api/v2/project/gh/Jahia/jahia-pack-private/pipeline'
             --header 'circle-token:'"$CIRCLECI_PIPELINE_LAUNCH_TOKEN"''
             --header 'content-type:application/json'
             --data '{ "branch":"'"$CIRCLE_BRANCH"'" }'
+
+  trigger_pr_pack_build:
+    <<: *workdir
+    docker: # run the steps with Docker
+      - image: circleci/openjdk:8-jdk-stretch
+    steps:
+      - *attach-workspace
+      - run:
+          name: Trigger the build of jahia-pack
+          command: curl -X POST --url 'https://circleci.com/api/v2/project/gh/Jahia/jahia-pack-private/pipeline'
+            --header 'circle-token:'"$CIRCLECI_PIPELINE_LAUNCH_TOKEN"''
+            --header 'content-type:application/json'
+            --data '{ "parameters":{"PARENT_IMAGE_TAG":"'"`cat image.tag`"'"} }'
 
 # Pipeline parameter must be declared
 parameters:
@@ -319,6 +332,11 @@ workflows:
       - sonar:
           name: PR Sonar analysis
           is_pull_request: true
+          context: QA_ENVIRONMENT
+          requires:
+            - PR Build Jahia
+      - trigger_pr_pack_build:
+          name: Trigger build of jahia-pack-private for PR
           context: QA_ENVIRONMENT
           requires:
             - PR Build Jahia

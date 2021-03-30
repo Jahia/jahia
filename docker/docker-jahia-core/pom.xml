@@ -12,6 +12,7 @@
 
     <properties>
         <image.repo>jahia-core</image.repo>
+        <image.repo.classifier>-dev</image.repo.classifier>
         <image.tag>${project.version}</image.tag>
     </properties>
 
@@ -99,7 +100,7 @@
                 </executions>
                 <configuration>
                     <dockerfile>Dockerfile</dockerfile>
-                    <repository>jahia/${image.repo}</repository>
+                    <repository>jahia/${image.repo}${image.repo.classifier}</repository>
                     <tag>${image.tag}</tag>
                 </configuration>
             </plugin>

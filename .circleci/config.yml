@@ -97,10 +97,10 @@ jobs:
                 # This is only done on PR, as master is pushed with mvn deploy in "Deploy artifacts to server repository"
                 name: Push PR Docker image
                 command: |
-                  docker push jahia/jahia-core:`cat image.tag`
+                  docker push jahia/jahia-core-dev:`cat image.tag`
       - run:
           name: Store docker image
-          command: docker save -o image.tar jahia/jahia-core:`cat image.tag`
+          command: docker save -o image.tar jahia/jahia-core-dev:`cat image.tag`
       - save_cache:
           paths:
             - ~/.m2
@@ -116,7 +116,7 @@ jobs:
     parameters:
       TESTS_IMAGE:
         type: string
-        default: "jahia/jahia-core_test"
+        default: "jahia/jahia-core-test"
       BUILD_TESTSIMAGE:
         type: boolean
         default: true
@@ -158,7 +158,7 @@ jobs:
             if [[ ! -e .env ]]; then
               mv .env.example .env
             fi
-            echo JAHIA_IMAGE=jahia/jahia-core:`cat ../../image.tag` >> .env
+            echo JAHIA_IMAGE=jahia/jahia-core-dev:`cat ../../image.tag` >> .env
             docker-compose -f docker-compose.yml up -d jahia
           no_output_timeout: 2h
       - run:

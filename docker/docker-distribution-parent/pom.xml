@@ -12,9 +12,9 @@
 
     <properties>
         <parent.tag>${project.version}</parent.tag>
+        <image.repo.classifier>-dev</image.repo.classifier>
         <image.repo></image.repo>
         <image.tag>${project.version}</image.tag>
-        <image.pull>true</image.pull>
     </properties>
 
     <repositories>
@@ -127,13 +127,13 @@
                 </executions>
                 <configuration>
                     <dockerfile>Dockerfile</dockerfile>
-                    <repository>jahia/${image.repo}</repository>
+                    <repository>jahia/${image.repo}${image.repo.classifier}</repository>
                     <tag>${image.tag}</tag>
                     <buildArgs>
                         <PARENT_TAG>${parent.tag}</PARENT_TAG>
+                        <IMAGE_REPO_CLASSIFIER>${image.repo.classifier}</IMAGE_REPO_CLASSIFIER>
                         <PROJECT_VERSION>${project.version}</PROJECT_VERSION>
                     </buildArgs>
-                    <pullNewerImage>${image.pull}</pullNewerImage>
                     <skip>${build.skip}</skip>
                 </configuration>
             </plugin>

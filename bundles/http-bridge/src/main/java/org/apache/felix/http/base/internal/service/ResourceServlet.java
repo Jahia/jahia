@@ -117,17 +117,9 @@ public final class ResourceServlet
     private long getLastModified(URL url)
     {
         long lastModified = 0;
-        ServletContext servletContext = getServletContext();
-        if (servletContext instanceof ServletContextImpl) {
-            Bundle bundle = ((ServletContextImpl)servletContext).getBundle();
-            String lastModifiedString = bundle.getHeaders().get("Bnd-LastModified");
-            if (lastModifiedString != null) {
-                try {
-                    return Long.parseLong(lastModifiedString);
-                } catch (NumberFormatException e) {
-                    // Ignore header
-                }
-            }
+        if("bundle".equals(url.getProtocol())) {
+            Long lastModifiedLong = getLastModifiedFromBundleHeaders();
+            if (lastModifiedLong != null) return lastModifiedLong;
         }
         try {
             URLConnection conn = url.openConnection();
@@ -150,6 +142,22 @@ public final class ResourceServlet
         return lastModified;
     }
 
+    private Long getLastModifiedFromBundleHeaders() {
+        ServletContext servletContext = getServletContext();
+        if (servletContext instanceof ServletContextImpl) {
+            Bundle bundle = ((ServletContextImpl) servletContext).getBundle();
+            String lastModifiedString = bundle.getHeaders().get("Bnd-LastModified");
+            if (lastModifiedString != null) {
+                try {
+                    return Long.parseLong(lastModifiedString);
+                } catch (NumberFormatException e) {
+                    // Ignore header
+                }
+            }
+        }
+        return null;
+    }
+
     private boolean resourceModified(long resTimestamp, long modSince)
     {
         modSince /= 1000;
@@ -161,31 +169,19 @@ public final class ResourceServlet
     private void copyResource(URL url, HttpServletResponse res)
             throws IOException
     {
-        OutputStream os = null;
-        InputStream is = null;
 
-        try {
-            os = res.getOutputStream();
-            is = url.openStream();
+        try (OutputStream os = res.getOutputStream(); InputStream is = url.openStream()) {
 
             int len = 0;
             byte[] buf = new byte[1024];
             int n;
 
             while ((n = is.read(buf, 0, buf.length)) >= 0) {
-                os.write( buf, 0, n );
+                os.write(buf, 0, n);
                 len += n;
             }
 
             res.setContentLength(len);
-        } finally {
-            if (is != null) {
-                is.close();
-            }
-
-            if (os != null) {
-                os.close();
-            }
         }
     }
 }

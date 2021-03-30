@@ -45,6 +45,7 @@ package org.jahia.services.render.scripting.bundle;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.Model;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.PomUtils;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
@@ -57,6 +58,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,6 +90,7 @@ public class BundleSourceResourceResolver {
         URL[] urls = EMPTY_URL_ARRAY;
         String sourceFolder = bundle.getHeaders().get("Jahia-Source-Folders");
         if (StringUtils.isNotEmpty(sourceFolder)) {
+            sourceFolder = getRealSourceFolder(sourceFolder);
             File pomFile = new File(sourceFolder, "pom.xml");
             if (!pomFile.exists()) {
                 return null;
@@ -135,10 +138,22 @@ public class BundleSourceResourceResolver {
         return urls;
     }
 
+    private static String getRealSourceFolder(String sourceFolder) {
+        File sourceDirectoryHeader = new File(sourceFolder);
+        if (!Files.exists(sourceDirectoryHeader.toPath())) {
+            String sourceProjectName = sourceDirectoryHeader.getName();
+            String containerSourceRoot = SettingsBean.getInstance().getModulesSourcesDiskPath();
+            if (Files.exists(new File(containerSourceRoot + File.separator + sourceProjectName).toPath())) {
+                sourceFolder = containerSourceRoot + File.separator + sourceProjectName;
+            }
+        }
+        return sourceFolder;
+    }
+
     public URL getResource(String name) {
         if (name != null && name.charAt(0) == '/' && name.length() > 1) {
             name = name.substring(1);
-        } 
+        }
         for (URL sourceURL : sourceURLs) {
             URL resourceURL;
             try {

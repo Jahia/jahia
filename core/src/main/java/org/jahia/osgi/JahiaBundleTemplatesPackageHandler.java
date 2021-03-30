@@ -55,11 +55,12 @@ import org.osgi.framework.Bundle;
 
 import java.io.File;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.Enumeration;
 
 /**
  * Utility class for creating {@link JahiaTemplatesPackage} from a provided bundle and populating data from the manifest headers.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 class JahiaBundleTemplatesPackageHandler {
@@ -92,13 +93,7 @@ class JahiaBundleTemplatesPackageHandler {
         pkg.setDescription(getHeader(bundle, "Bundle-Description"));
         detectResourceBundle(bundle, pkg);
 
-        String srcFolder = getHeader(bundle, "Jahia-Source-Folders");
-        if (srcFolder != null) {
-            File sources = new File(srcFolder);
-            if (sources.exists()) {
-                ServicesRegistry.getInstance().getJahiaTemplateManagerService().setSourcesFolderInPackage(pkg, sources);
-            }
-        }
+        setSourcesFolderInPackageIfPossible(bundle, pkg);
 
         if (pkg.getScmURI() == null) {
             String scmUri = getHeader(bundle, "Jahia-Source-Control-Connection");
@@ -137,6 +132,21 @@ class JahiaBundleTemplatesPackageHandler {
         pkg.setGroupId(getHeader(bundle, "Jahia-GroupId"));
 
         return pkg;
+    }
+
+    private static void setSourcesFolderInPackageIfPossible(Bundle bundle, JahiaTemplatesPackage pkg) {
+        String srcFolder = getHeader(bundle, "Jahia-Source-Folders");
+        if (srcFolder != null) {
+            File sources = new File(srcFolder);
+            if (sources.exists()) {
+                ServicesRegistry.getInstance().getJahiaTemplateManagerService().setSourcesFolderInPackage(pkg, sources);
+            } else {
+                File containerSources = new File(SettingsBean.getInstance().getModulesSourcesDiskPath() + File.separator + sources.getName());
+                if (Files.exists(containerSources.toPath())) {
+                    ServicesRegistry.getInstance().getJahiaTemplateManagerService().setSourcesFolderInPackage(pkg, containerSources);
+                }
+            }
+        }
     }
 
     private static void setPackageDepends(JahiaTemplatesPackage pkg, String depends) {

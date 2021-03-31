@@ -34,10 +34,6 @@ jobs:
       - *persist-workspace
 
   build:
-    parameters:
-      is_pull_request:
-        type: boolean
-        default: false
     <<: *workdir
     docker: # run the steps with Docker
       - image: circleci/openjdk:8-jdk-stretch
@@ -65,7 +61,7 @@ jobs:
       - run:
           name: Determine tag
           command: |
-            if [ "false" = "<<parameters.is_pull_request>>" ]; then
+            if [ "false" = "<< pipeline.parameters.run_pull_request >>" ]; then
               cp jahia.version image.tag
             else
               echo `cat jahia.version`-"${CIRCLE_BRANCH}" > image.tag
@@ -82,7 +78,7 @@ jobs:
           working_directory: ~/source/gwt
           command: mvn -s ../.circleci/.circleci.settings.xml -e -Dimage.tag=`cat image.tag` clean package -Pgwt-development -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
       - unless:
-          condition: <<parameters.is_pull_request>>
+          condition: << pipeline.parameters.run_pull_request >>
           steps:
             - run:
                 # TODO One day we may want to do a deploy - right now only docker project is deployed
@@ -91,7 +87,7 @@ jobs:
                 working_directory: ~/source/docker/docker-jahia-core
                 command: mvn -s ../../.circleci/.circleci.settings.xml -e -Dimage.tag=`cat ../../image.tag` deploy -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
       - when:
-          condition: <<parameters.is_pull_request>>
+          condition: << pipeline.parameters.run_pull_request >>
           steps:
             - run:
                 # This is only done on PR, as master is pushed with mvn deploy in "Deploy artifacts to server repository"
@@ -216,10 +212,6 @@ jobs:
 
 
   sonar:
-    parameters:
-      is_pull_request:
-        type: boolean
-        default: false
     <<: *workdir
     docker: # run the steps with Docker
       - image: circleci/openjdk:8-jdk-stretch-node
@@ -233,10 +225,10 @@ jobs:
             - v1-maven-dependencies-
       - restore_cache:
           keys:
-            - v1-sonar-owasp-dependencies-<<parameters.is_pull_request>>
+            - v1-sonar-owasp-dependencies-<< pipeline.parameters.run_pull_request >>
             - v1-sonar-owasp-dependencies-
       - when:
-          condition: <<parameters.is_pull_request>>
+          condition: << pipeline.parameters.run_pull_request >>
           steps:
             - run:
                 name: Analyze pull request with sonar
@@ -246,7 +238,7 @@ jobs:
                   -Dsonar.pullrequest.base=<< pipeline.parameters.target_branch >> \
                   -Dsonar.pullrequest.github.repository=<< pipeline.parameters.github_repository >>
       - unless:
-          condition: <<parameters.is_pull_request>>
+          condition: << pipeline.parameters.run_pull_request >>
           steps:
             - run:
                 name: Sonar analysis
@@ -268,32 +260,33 @@ jobs:
           paths:
             - ~/.owasp/dependency-check-data
             - ~/.sonar/cache
-          key: v1-sonar-owasp-dependencies-<<parameters.is_pull_request>>
+          key: v1-sonar-owasp-dependencies-<< pipeline.parameters.run_pull_request >>
 
   trigger_pack_build:
     <<: *workdir
     docker: # run the steps with Docker
       - image: circleci/openjdk:8-jdk-stretch
     steps:
-      - run:
-          name: Trigger the build of jahia-pack
-          command: curl -X POST --url 'https://circleci.com/api/v2/project/gh/Jahia/jahia-pack-private/pipeline'
-            --header 'circle-token:'"$CIRCLECI_PIPELINE_LAUNCH_TOKEN"''
-            --header 'content-type:application/json'
-            --data '{ "branch":"'"$CIRCLE_BRANCH"'" }'
-
-  trigger_pr_pack_build:
-    <<: *workdir
-    docker: # run the steps with Docker
-      - image: circleci/openjdk:8-jdk-stretch
-    steps:
-      - *attach-workspace
-      - run:
-          name: Trigger the build of jahia-pack
-          command: curl -X POST --url 'https://circleci.com/api/v2/project/gh/Jahia/jahia-pack-private/pipeline'
-            --header 'circle-token:'"$CIRCLECI_PIPELINE_LAUNCH_TOKEN"''
-            --header 'content-type:application/json'
-            --data '{ "parameters":{"PARENT_IMAGE_TAG":"'"`cat image.tag`"'"} }'
+      - when:
+          condition:
+            not: << pipeline.parameters.run_pull_request >>
+          steps:
+            - run:
+                name: Trigger the build of jahia-pack
+                command: curl -X POST --url 'https://circleci.com/api/v2/project/gh/Jahia/jahia-pack-private/pipeline'
+                  --header 'circle-token:'"$CIRCLECI_PIPELINE_LAUNCH_TOKEN"''
+                  --header 'content-type:application/json'
+                  --data '{ "parameters:":{"run_core_code_change":true}, "branch":"'"$CIRCLE_BRANCH"'" }'
+      - when:
+          condition: << pipeline.parameters.run_pull_request >>
+          steps:
+            - *attach-workspace
+            - run:
+                name: Trigger the build of jahia-pack
+                command: curl -X POST --url 'https://circleci.com/api/v2/project/gh/Jahia/jahia-pack-private/pipeline'
+                  --header 'circle-token:'"$CIRCLECI_PIPELINE_LAUNCH_TOKEN"''
+                  --header 'content-type:application/json'
+                  --data '{ "parameters":{"run_core_code_change":true, "run_pull_request":true, "PARENT_IMAGE_TAG":"'"`cat image.tag`"'"} }'
 
 # Pipeline parameter must be declared
 parameters:
@@ -320,7 +313,6 @@ workflows:
           name: PR Checkout
       - build:
           name: PR Build Jahia
-          is_pull_request: true
           context: QA_ENVIRONMENT
           requires:
             - PR Checkout
@@ -331,11 +323,10 @@ workflows:
             - PR Build Jahia
       - sonar:
           name: PR Sonar analysis
-          is_pull_request: true
           context: QA_ENVIRONMENT
           requires:
             - PR Build Jahia
-      - trigger_pr_pack_build:
+      - trigger_pack_build:
           name: Trigger build of jahia-pack-private for PR
           context: QA_ENVIRONMENT
           requires:
@@ -351,7 +342,6 @@ workflows:
                 - /JAHIA-[0-9]-[0-9]-[0-9]-X-BRANCH/
       - build:
           name: Build Jahia
-          is_pull_request: false
           context: QA_ENVIRONMENT
           requires:
             - checkout
@@ -362,7 +352,6 @@ workflows:
             - Build Jahia
       - sonar:
           name: Sonar analysis
-          is_pull_request: false
           context: QA_ENVIRONMENT
           requires:
             - Build Jahia

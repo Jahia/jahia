@@ -62,7 +62,6 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.WebUtils;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.ServletContextAware;
@@ -187,7 +186,7 @@ public class Export extends JahiaController implements ServletContextAware {
         throw new JahiaBadRequestException("Unable to handle export format");
     }
 
-    @NotNull private Matcher getMatcher(HttpServletRequest request) {
+    private Matcher getMatcher(HttpServletRequest request) {
         Matcher m = StringUtils.isNotEmpty(request.getPathInfo()) ? URI_PATTERN.matcher(request.getPathInfo()) : null;
         if (m == null || !m.matches()) {
             throw new JahiaBadRequestException("Requested URI '" + request.getRequestURI()
@@ -308,7 +307,7 @@ public class Export extends JahiaController implements ServletContextAware {
         }
     }
 
-    @NotNull private List<JCRSiteNode> getJcrSiteNodes(HttpServletRequest request) throws JahiaException {
+    private List<JCRSiteNode> getJcrSiteNodes(HttpServletRequest request) throws JahiaException {
         List<JCRSiteNode> sites = new ArrayList<>();
         String[] sitekeys = request.getParameterValues("sitebox");
         if (sitekeys != null) {

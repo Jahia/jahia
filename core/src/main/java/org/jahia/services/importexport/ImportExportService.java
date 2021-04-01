@@ -44,6 +44,7 @@
  package org.jahia.services.importexport;
 
 import org.jahia.exceptions.JahiaException;
+import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -127,7 +128,7 @@ public interface ImportExportService {
      * @throws SAXException
      */
     void exportSites(OutputStream outputStream, Map<String, Object> params, List<JCRSiteNode> sites)
-            throws RepositoryException, IOException, SAXException, TransformerException;
+            throws RepositoryException, IOException, SAXException, TransformerException, JahiaForbiddenAccessException;
 
 
     /**
@@ -154,7 +155,7 @@ public interface ImportExportService {
      * @throws SAXException
      * @throws IOException
      */
-    void exportZip(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws RepositoryException, SAXException, IOException, TransformerException;
+    void exportZip(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws RepositoryException, SAXException, IOException, TransformerException, JahiaForbiddenAccessException;
 
     // Import
 

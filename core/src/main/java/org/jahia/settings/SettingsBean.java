@@ -198,6 +198,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private String jahiaVarDiskPath;
     private String jahiaWebAppsDeployerBaseURL;
     private String jahiaImportsDiskPath;
+    private String jahiaExportsDiskPath;
     private String jahiaModulesDiskPath;
     private String modulesSourcesDiskPath;
     private String jahiaDatabaseScriptsPath;
@@ -641,6 +642,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             logger.error("Provided folder for tmpContentDiskPath is not valid. Cause: " + e.getMessage(), e);
         }
         jahiaImportsDiskPath = new File(convertContexted(getString("jahiaImportsDiskPath"), pathResolver)).getAbsolutePath();
+        jahiaExportsDiskPath = new File(convertContexted(getString("jahiaExportsDiskPath"), pathResolver)).getAbsolutePath();
         jahiaModulesDiskPath = new File(convertContexted(getString("jahiaModulesDiskPath"), pathResolver)).getAbsolutePath();
         jahiaDatabaseScriptsPath = jahiaVarDiskPath + File.separator + "db";
         modulesSourcesDiskPath = new File(convertContexted(getString("modulesSourcesDiskPath"), pathResolver)).getAbsolutePath();
@@ -1054,6 +1056,11 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     @Override
     public String getJahiaImportsDiskPath() {
         return jahiaImportsDiskPath;
+    }
+
+    @Override
+    public String getJahiaExportsDiskPath() {
+        return jahiaExportsDiskPath;
     }
 
     @Override

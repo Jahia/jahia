@@ -59,6 +59,7 @@ import org.jahia.api.Constants;
 import org.jahia.commons.Version;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleReleaseInfo;
+import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleUtils;
@@ -717,16 +718,8 @@ public class ModuleBuildHelper implements InitializingBean {
 
         JCRNodeWrapper srcModuleNode = session.getNode("/modules/" + srcModule.getIdWithVersion());
         JCRNodeWrapper dstModuleNode = session.getNode("/modules");
-        if (dstModuleNode.hasNode(dstModuleId)) {
-            dstModuleNode = dstModuleNode.getNode(dstModuleId);
-        } else {
-            dstModuleNode = dstModuleNode.addNode(dstModuleId, "jnt:module");
-        }
-        if (dstModuleNode.hasNode(dstVersion)) {
-            dstModuleNode = dstModuleNode.getNode(dstVersion);
-        } else {
-            dstModuleNode = dstModuleNode.addNode(dstVersion, "jnt:moduleVersion");
-        }
+        dstModuleNode = getJcrNodeWrapper(dstModuleId, dstModuleNode, "jnt:module");
+        dstModuleNode = getJcrNodeWrapper(dstVersion, dstModuleNode, "jnt:moduleVersion");
         for (JCRNodeWrapper node : srcModuleNode.getNodes()) {
             if (!node.isNodeType("jnt:moduleVersionFolder") && !node.isNodeType("jnt:versionInfo")) {
                 node.copy(dstModuleNode.getPath());
@@ -749,13 +742,22 @@ public class ModuleBuildHelper implements InitializingBean {
         FileUtils.deleteQuietly(new File(dstFolder, "src/main/import/content/modules/" + srcModule.getId()));
         try {
             regenerateImportFile(session, new ArrayList<File>(), dstFolder, dstModuleId, dstModuleId + "/" + dstVersion);
-        } catch (SAXException | TransformerException e) {
+        } catch (SAXException | TransformerException | JahiaForbiddenAccessException e) {
             throw new IOException("Unable to generate import files in " + dstFolder);
         } finally {
             // clean up dest repository
             session.getNode("/modules/" + dstModuleId).remove();
             session.save();
         }
+    }
+
+    private JCRNodeWrapper getJcrNodeWrapper(String dstModuleId, JCRNodeWrapper dstModuleNode, String nodeType) throws RepositoryException {
+        if (dstModuleNode.hasNode(dstModuleId)) {
+            dstModuleNode = dstModuleNode.getNode(dstModuleId);
+        } else {
+            dstModuleNode = dstModuleNode.addNode(dstModuleId, nodeType);
+        }
+        return dstModuleNode;
     }
 
     private void cleanScmFiles(File dstFolder) throws IOException {
@@ -788,7 +790,8 @@ public class ModuleBuildHelper implements InitializingBean {
     }
 
     public void regenerateImportFile(JCRSessionWrapper session, List<File> modifiedFiles, File sources,
-                                     String moduleId, String moduleIdWithVersion) throws RepositoryException, SAXException, IOException, TransformerException {
+                                     String moduleId, String moduleIdWithVersion) throws RepositoryException, SAXException, IOException,
+            TransformerException, JahiaForbiddenAccessException {
         File f = File.createTempFile("import", null);
 
         Map<String, Object> params = new HashMap<String, Object>();

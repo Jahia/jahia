@@ -47,11 +47,8 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import net.sf.saxon.TransformerFactoryImpl;
 import org.apache.commons.collections.set.ListOrderedSet;
-import org.apache.commons.io.Charsets;
-import org.apache.commons.io.FileCleaningTracker;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.*;
 import org.apache.commons.io.output.DeferredFileOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -60,8 +57,7 @@ import org.apache.jackrabbit.commons.xml.SystemViewExporter;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.exceptions.*;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaService;
 import org.jahia.services.SpringContextSingleton;
@@ -116,12 +112,16 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -152,6 +152,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     public static final String MOUNTS_ZIP = "mounts.zip";
     public static final String REFERENCES_ZIP = "references.zip";
     public static final String ROLES_ZIP = "roles.zip";
+    private static final File EXPORT_PATH = new File(SettingsBean.getInstance().getJahiaExportsDiskPath());
 
     public static final String STATIC_MOUNT_POINT_ATTR = "j:staticMountPointProviderKey";
     public static final String DYNAMIC_MOUNT_POINT_ATTR = "j:dynamicMountPointProviderPath";
@@ -214,6 +215,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     public void start() {
         try {
             new ImportFileObserver(org.jahia.settings.SettingsBean.getInstance().getJahiaImportsDiskPath(), false, scannerInterval, true);
+            new File(EXPORT_PATH.getPath()).mkdirs();
         } catch (JahiaException je) {
             logger.error("exception with FilesObserver", je);
         }
@@ -458,11 +460,15 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     @Override
     public void exportSites(OutputStream outputStream, Map<String, Object> params, List<JCRSiteNode> sites)
-            throws RepositoryException, IOException, SAXException, TransformerException {
+            throws RepositoryException, IOException, SAXException, TransformerException, JahiaForbiddenAccessException {
 
         logger.info("Sites {} export started", sites);
         long startSitesExportTime = System.currentTimeMillis();
-        String serverDirectory = (String) params.get(SERVER_DIRECTORY);
+        String serverDirectory = ImportExportBaseService.updatedServerDirectoryPath((String) params.get(SERVER_DIRECTORY));
+        if (serverDirectory != null && !ImportExportBaseService.isValidServerDirectory(serverDirectory)) {
+            logger.error("Invalid server directory {}", serverDirectory);
+            throw new JahiaForbiddenAccessException("The directory " + serverDirectory + " failed the validation check");
+        }
         ZipOutputStream zout = getZipOutputStream(outputStream, serverDirectory);
         ZipEntry anEntry = new ZipEntry(EXPORT_PROPERTIES);
         zout.putNextEntry(anEntry);
@@ -474,137 +480,146 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             bw.flush();
 
             Set<String> externalReferences = new HashSet<>();
-
-            for (JCRSiteNode jahiaSite : sites) {
-                long startSiteExportTime = System.currentTimeMillis();
-                logger.info("Exporting site internal nodes {} content started", jahiaSite.getName());
-                if (serverDirectory == null) {
-                    anEntry = new ZipEntry(jahiaSite.getSiteKey() + ".zip");
-                    zout.putNextEntry(anEntry);
-
-                    exportSite(jahiaSite, zout, externalReferences, params, null);
-                } else {
-                    exportSite(jahiaSite, zout, externalReferences, params, serverDirectory + "/" + jahiaSite.getSiteKey());
-                }
-                logger.info("Exporting site internal nodes {} ended in {} seconds", jahiaSite.getName(), getDuration(startSiteExportTime));
-            }
-
             JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession();
 
-            if (params.containsKey(INCLUDE_USERS)) {
-                // export users
-                ZipOutputStream zzout;
-                if (serverDirectory == null) {
-                    zout.putNextEntry(new ZipEntry(USERS_ZIP));
-                    zzout = getZipOutputStream(zout, null);
-                } else {
-                    zzout = getZipOutputStream(zout, serverDirectory + "/users");
-                }
-
-                try {
-                    logger.info("Exporting Users Started");
-                    exportNodesWithBinaries(session.getRootNode(), Collections.singleton(session.getNode("/users")), zzout,
-                            defaultExportNodeTypesToIgnore, externalReferences, params, true);
-                    logger.info("Exporting Users Ended");
-                } catch (IOException e) {
-                    logger.warn("Cannot export due to some IO exception :{}", e.getMessage());
-                } catch (Exception e) {
-                    logger.error("Cannot export Users", e);
-                }
-                zzout.finish();
-            }
-            if (params.containsKey(INCLUDE_ROLES)) {
-                // export roles
-                ZipOutputStream zzout;
-                if (serverDirectory == null) {
-                    zout.putNextEntry(new ZipEntry(ROLES_ZIP));
-                    zzout = getZipOutputStream(zout, null);
-                } else {
-                    zzout = getZipOutputStream(zout, serverDirectory + "/roles");
-                }
-
-                try {
-                    logger.info("Exporting Roles Started");
-                    exportNodesWithBinaries(session.getRootNode(), Collections.singleton(session.getNode("/roles")), zzout,
-                            defaultExportNodeTypesToIgnore, externalReferences, params, true);
-                    logger.info("Exporting Roles Ended");
-                } catch (Exception e) {
-                    logger.error("Cannot export roles", e);
-                }
-                zzout.finish();
-            }
-            if (params.containsKey(INCLUDE_MOUNTS) && session.nodeExists("/mounts")) {
-                JCRNodeWrapper mounts = session.getNode("/mounts");
-                if (mounts.hasNodes()) {
-                    // export mounts
-                    zout.putNextEntry(new ZipEntry(MOUNTS_ZIP));
-                    ZipOutputStream zzout = new ZipOutputStream(zout);
-
-                    try {
-                        logger.info("Exporting Mount points Started");
-                        exportNodesWithBinaries(session.getRootNode(), Collections.singleton(mounts), zzout, defaultExportNodeTypesToIgnore,
-                                externalReferences, params, true);
-                        logger.info("Exporting Mount points Ended");
-                    } catch (Exception e) {
-                        logger.error("Cannot export mount points", e);
-                    }
-                    zzout.finish();
-                }
-            }
-
-            Set<JCRNodeWrapper> refs = new HashSet<>();
-            for (String reference : externalReferences) {
-                JCRNodeWrapper node = session.getNodeByUUID(reference);
-                if (!defaultExportNodeTypesToIgnore.contains(node.getPrimaryNodeTypeName())) {
-                    refs.add(node);
-                }
-            }
-            if (!refs.isEmpty()) {
-                zout.putNextEntry(new ZipEntry(REFERENCES_ZIP));
-                ZipOutputStream zzout = getZipOutputStream(zout, serverDirectory + "/" + REFERENCES_ZIP);
-                try {
-                    logger.info("Exporting References Started");
-                    exportNodesWithBinaries(session.getRootNode(), refs, zzout, defaultExportNodeTypesToIgnore, externalReferences, params,
-                            true);
-                    logger.info("Exporting References Ended");
-                } catch (Exception e) {
-                    logger.error("Cannot export References", e);
-                }
-                zzout.finish();
-            }
-            zout.finish();
+            exportSites(params, sites, serverDirectory, zout, externalReferences);
+            exportUsers(params, serverDirectory, zout, externalReferences, session);
+            exportRoles(params, serverDirectory, zout, externalReferences, session);
+            exportMounts(params, zout, externalReferences, session);
+            exportReferences(params, serverDirectory, zout, externalReferences, session);
         }
 
         logger.info("Total Sites {} export ended in {} seconds", sites, getDuration(startSitesExportTime));
     }
 
-    private ZipOutputStream getZipOutputStream(OutputStream outputStream, String serverDirectory) {
-        ZipOutputStream zout = null;
-        if (serverDirectory != null) {
-            File serverDirectoryFile = new File(serverDirectory);
-            if (serverDirectoryFile.getParentFile().exists()) {
-                if (!serverDirectoryFile.exists()) {
-                    if (!serverDirectoryFile.mkdir()) {
-                        serverDirectoryFile = null;
-                    }
-                } else {
-                    if (!serverDirectoryFile.isDirectory()) {
-                        serverDirectoryFile = null;
-                    }
-                }
+    private void exportSites(Map<String, Object> params, List<JCRSiteNode> sites, String serverDirectory, ZipOutputStream zout,
+            Set<String> externalReferences) throws IOException, RepositoryException, SAXException, TransformerException {
+        ZipEntry anEntry;
+        for (JCRSiteNode jahiaSite : sites) {
+            long startSiteExportTime = System.currentTimeMillis();
+            logger.info("Exporting site internal nodes {} content started", jahiaSite.getName());
+            if (serverDirectory == null) {
+                anEntry = new ZipEntry(jahiaSite.getSiteKey() + ".zip");
+                zout.putNextEntry(anEntry);
+
+                exportSite(jahiaSite, zout, externalReferences, params, null);
             } else {
-                // parent directory doesn't exist, we fail the export to avoid potential security issues using the
-                // export functionality to write on the server file system.
-                serverDirectoryFile = null;
+                exportSite(jahiaSite, zout, externalReferences, params, serverDirectory + "/" + jahiaSite.getSiteKey());
             }
-            if (serverDirectoryFile != null) {
-                zout = new DirectoryZipOutputStream(serverDirectoryFile, outputStream);
+            logger.info("Exporting site internal nodes {} ended in {} seconds", jahiaSite.getName(), getDuration(startSiteExportTime));
+        }
+    }
+
+    private void exportReferences(Map<String, Object> params, String serverDirectory, ZipOutputStream zout, Set<String> externalReferences,
+            JCRSessionWrapper session) throws RepositoryException, IOException {
+        Set<JCRNodeWrapper> refs = new HashSet<>();
+        for (String reference : externalReferences) {
+            JCRNodeWrapper node = session.getNodeByUUID(reference);
+            if (!defaultExportNodeTypesToIgnore.contains(node.getPrimaryNodeTypeName())) {
+                refs.add(node);
             }
         }
-        if (zout == null) {
-            zout = new ZipOutputStream(outputStream);
+        if (!refs.isEmpty()) {
+            zout.putNextEntry(new ZipEntry(REFERENCES_ZIP));
+            ZipOutputStream zzout = getZipOutputStream(zout, serverDirectory + "/" + REFERENCES_ZIP);
+            try {
+                logger.info("Exporting References Started");
+                exportNodesWithBinaries(session.getRootNode(), refs, zzout, defaultExportNodeTypesToIgnore, externalReferences, params,
+                        true);
+                logger.info("Exporting References Ended");
+            } catch (Exception e) {
+                logger.error("Cannot export References", e);
+            }
+            zzout.finish();
         }
-        return zout;
+        zout.finish();
+    }
+
+    private void exportMounts(Map<String, Object> params, ZipOutputStream zout, Set<String> externalReferences, JCRSessionWrapper session)
+            throws RepositoryException, IOException {
+        if (params.containsKey(INCLUDE_MOUNTS) && session.nodeExists("/mounts")) {
+            JCRNodeWrapper mounts = session.getNode("/mounts");
+            if (mounts.hasNodes()) {
+                // export mounts
+                zout.putNextEntry(new ZipEntry(MOUNTS_ZIP));
+                ZipOutputStream zzout = new ZipOutputStream(zout);
+
+                try {
+                    logger.info("Exporting Mount points Started");
+                    exportNodesWithBinaries(session.getRootNode(), Collections.singleton(mounts), zzout, defaultExportNodeTypesToIgnore,
+                            externalReferences, params, true);
+                    logger.info("Exporting Mount points Ended");
+                } catch (Exception e) {
+                    logger.error("Cannot export mount points", e);
+                }
+                zzout.finish();
+            }
+        }
+    }
+
+    private void exportRoles(Map<String, Object> params, String serverDirectory, ZipOutputStream zout, Set<String> externalReferences,
+            JCRSessionWrapper session) throws IOException {
+        if (params.containsKey(INCLUDE_ROLES)) {
+            // export roles
+            ZipOutputStream zzout;
+            String rolesPath = "roles";
+            if (serverDirectory == null) {
+                zout.putNextEntry(new ZipEntry(ROLES_ZIP));
+                zzout = getZipOutputStream(zout, null);
+            } else {
+                zzout = getZipOutputStream(zout, String.format("%s/%s",serverDirectory, rolesPath));
+            }
+
+            try {
+                logger.info("Exporting Roles Started");
+                exportNodesWithBinaries(session.getRootNode(), Collections.singleton(session.getNode(String.format("/%s", rolesPath))), zzout,
+                        defaultExportNodeTypesToIgnore, externalReferences, params, true);
+                logger.info("Exporting Roles Ended");
+            } catch (Exception e) {
+                logger.error("Cannot export roles", e);
+            }
+            zzout.finish();
+        }
+    }
+
+    private void exportUsers(Map<String, Object> params, String serverDirectory, ZipOutputStream zout, Set<String> externalReferences,
+            JCRSessionWrapper session) throws IOException {
+        if (params.containsKey(INCLUDE_USERS)) {
+            // export users
+            ZipOutputStream zzout;
+            String usersPath = "users";
+            if (serverDirectory == null) {
+                zout.putNextEntry(new ZipEntry(USERS_ZIP));
+                zzout = getZipOutputStream(zout, null);
+            } else {
+                zzout = getZipOutputStream(zout, String.format("%s/%s",serverDirectory, usersPath));
+            }
+
+            try {
+                logger.info("Exporting Users Started");
+                exportNodesWithBinaries(session.getRootNode(), Collections.singleton(session.getNode(String.format("/%s", usersPath))), zzout,
+                        defaultExportNodeTypesToIgnore, externalReferences, params, true);
+                logger.info("Exporting Users Ended");
+            } catch (IOException e) {
+                logger.warn("Cannot export due to some IO exception :{}", e.getMessage());
+            } catch (Exception e) {
+                logger.error("Cannot export Users", e);
+            }
+            zzout.finish();
+        }
+    }
+
+    private ZipOutputStream getZipOutputStream(OutputStream outputStream, String serverDirectory) {
+        if (serverDirectory != null ) {
+            File serverDirectoryFile = new File(serverDirectory);
+            if (serverDirectoryFile.mkdirs()) {
+                return new DirectoryZipOutputStream(serverDirectoryFile, outputStream);
+            }
+            logger.error("Unable to create directory {}. Check permission", serverDirectory);
+            throw new JahiaRuntimeException("Unable to create directory");
+        } else {
+            return new ZipOutputStream(outputStream);
+        }
     }
 
     private void exportSite(final JCRSiteNode site, OutputStream out, Set<String> externalReferences, Map<String, Object> params, String serverDirectory)
@@ -615,8 +630,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         zout.putNextEntry(new ZipEntry(SITE_PROPERTIES));
         exportSiteInfos(zout, site);
         final JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession();
-        JCRNodeWrapper node = session.getNode("/sites/" +
-                site.getSiteKey());
+        JCRNodeWrapper node = session.getNode(String.format("/sites/%s", site.getSiteKey()));
         Set<JCRNodeWrapper> nodes = Collections.singleton(node);
         exportNodesWithBinaries(session.getRootNode(), nodes, zout, siteExportNodeTypesToIgnore,
                 externalReferences, params, true);
@@ -625,9 +639,14 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     @Override
     public void exportZip(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params)
-            throws RepositoryException, SAXException, IOException, TransformerException {
+            throws RepositoryException, SAXException, IOException, TransformerException, JahiaForbiddenAccessException {
 
-        ZipOutputStream zout = getZipOutputStream(out, (String) params.get(SERVER_DIRECTORY));
+        String serverDirectory = (String)params.get(SERVER_DIRECTORY);
+        if (serverDirectory != null && !ImportExportBaseService.isValidServerDirectory(serverDirectory)) {
+            logger.error("Invalid server directory {}", serverDirectory);
+            throw new JahiaRuntimeException("The directory " + serverDirectory + " failed the validation check");
+        }
+        ZipOutputStream zout = getZipOutputStream(out, serverDirectory);
         Set<JCRNodeWrapper> nodes = new HashSet<JCRNodeWrapper>();
         nodes.add(node);
         exportNodesWithBinaries(exportRoot == null ? node : exportRoot, nodes, zout, new HashSet<String>(), null,
@@ -2325,5 +2344,65 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 documentViewExporter.setExportContext(exportContext);
             }
         }
+    }
+
+    /**
+     * Update that the export path to be under ${jahia.data.dir}/exports/
+     * @param serverDirectoryPath inputted export path from user
+     * @return the canonical path of the server directory
+     * @throws IOException if unable to get the canonical path
+     */
+    public static String updatedServerDirectoryPath(String serverDirectoryPath) throws IOException {
+        if (serverDirectoryPath == null) {
+            return null;
+        }
+        File exportPath = new File(serverDirectoryPath);
+        return exportPath.getCanonicalPath().startsWith(SettingsBean.getInstance().getJahiaExportsDiskPath())
+                ? exportPath.getCanonicalPath()
+                : new File(SettingsBean.getInstance().getJahiaExportsDiskPath(), serverDirectoryPath).getCanonicalPath();
+    }
+
+    /**
+     * Check if a directory is empty
+     * @param pathStr
+     * @return True if the directory is empty, False otherwise
+     * @throws IOException if unable to read files under the path provided
+     */
+    public static boolean isDirectoryEmpty(String pathStr) throws IOException {
+        Path path = new File(pathStr).toPath();
+        if (!Files.exists(path)) {
+            return true;
+        }
+        if (Files.isDirectory(path)) {
+            try (Stream<Path> entries = Files.list(path)) {
+                return !entries.findFirst().isPresent();
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Validate the server directory a.k.a export path specified by the user
+     * @param serverDirectory
+     * @return true if no issues found, false otherwise
+     */
+    public static boolean isValidServerDirectory(String serverDirectory) {
+        try {
+            File serverDirectoryFile = new File(serverDirectory);
+            if (!serverDirectoryFile.getCanonicalPath().startsWith(EXPORT_PATH.getCanonicalPath())) {
+                logger.error("User is trying to export to {} which is outside the allowed location {}",
+                        serverDirectory, EXPORT_PATH.getCanonicalPath());
+                return false;
+            }
+            if (!ImportExportBaseService.isDirectoryEmpty(serverDirectory)) {
+                logger.error("There are already files in the given path {}. "
+                        + "You have to use a path, which is empty or does not exist yet.", serverDirectory);
+                return false;
+            }
+            return true;
+        } catch (IOException e) {
+            logger.error("Invalid server directory path {}", serverDirectory);
+        }
+        return false;
     }
 }

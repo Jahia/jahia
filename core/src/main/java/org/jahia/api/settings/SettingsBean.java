@@ -159,6 +159,8 @@ public interface SettingsBean {
 
     String getJahiaImportsDiskPath();
 
+    String getJahiaExportsDiskPath();
+
     String getCharacterEncoding();
 
     String getTmpContentDiskPath();

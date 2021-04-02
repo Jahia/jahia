@@ -901,12 +901,7 @@
         <property name="requiredPermission" value="viewVersioningTab"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.VersioningTabItem">
-                <property name="showForTypes">
-                    <list value-type="java.lang.String">
-                        <value>jmix:editorialContent</value>
-                        <value>nt:file</value>
-                    </list>
-                </property>
+                <property name="showForTypesString" value="${jahia.publication.versionedTypes}"/>
             </bean>
         </property>
     </bean>

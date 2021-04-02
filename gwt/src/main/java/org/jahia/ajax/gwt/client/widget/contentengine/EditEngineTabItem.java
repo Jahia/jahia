@@ -139,12 +139,20 @@ public abstract class EditEngineTabItem implements Serializable {
         this.showForTypes = showForTypes;
     }
 
+    public void setShowForTypesString(String showForTypes) {
+        this.showForTypes = (showForTypes != null && showForTypes.length() > 0) ? Arrays.asList(showForTypes.split(",")) : new ArrayList<>();
+    }
+
     public List<String> getHideForTypes() {
         return hideForTypes;
     }
 
     public void setHideForTypes(List<String> hideForTypes) {
         this.hideForTypes = hideForTypes;
+    }
+
+    public void setHideForTypesString(String hideForTypes) {
+        this.hideForTypes = (hideForTypes != null && hideForTypes.length() > 0) ? Arrays.asList(hideForTypes.split(",")) : new ArrayList<>();
     }
 
     public GWTEngineTab getGwtEngineTab() {

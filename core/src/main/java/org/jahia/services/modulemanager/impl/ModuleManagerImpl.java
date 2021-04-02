@@ -598,31 +598,13 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
             for (JahiaTemplatesPackage pkg : allModuleVersions.values()) {
                 Bundle otherVersion = pkg.getBundle();
                 if (otherVersion != null && otherVersion.getState() == Bundle.RESOLVED
-                        && !otherVersion.getVersion().toString().equals(thisVersionInfo.getVersion())
-                        && shouldRefresh(otherVersion, thisVersionInfo)) {
+                        && !otherVersion.getVersion().toString().equals(thisVersionInfo.getVersion())) {
                     result.add(otherVersion);
                 }
             }
         }
 
         return result;
-    }
-
-    private boolean shouldRefresh(Bundle otherVersion, BundleInfo thisVersionInfo) {
-        // Sometimes a bundle depends on another version of the same bundle,
-        // doing a refresh in this case will cause an infinite loop of start/stop operations
-        FrameworkWiring frameworkWiring = BundleLifecycleUtils.getFrameworkWiring();
-
-        Collection<Bundle> dependencies = frameworkWiring
-                .getDependencyClosure(Collections.singleton(otherVersion));
-        for (Bundle dependency : dependencies) {
-            if (dependency.getSymbolicName().equals(thisVersionInfo.getSymbolicName())
-                    && dependency.getVersion().toString().equals(thisVersionInfo.getVersion())) {
-                // the active bundle depends on this one -> won't refresh it
-                return false;
-            }
-        }
-        return true;
     }
 
     public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {

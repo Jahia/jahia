@@ -11,6 +11,7 @@ ARG MODULES_BASE_URL="https://store.jahia.com/cms/mavenproxy/private-app-store/o
 ARG IMAGEMAGICK_BINARIES_DOWNLOAD_URL="https://imagemagick.org/download/binaries/magick"
 ARG LOG_MAX_DAYS="5"
 ARG JAHIA_PLUGIN="org.jahia.server:jahia-maven-plugin:5.12-SNAPSHOT"
+ARG DATA_FOLDER="/data"
 
 # Container user
 ARG C_USER="tomcat"
@@ -18,8 +19,7 @@ ARG C_GROUP="tomcat"
 
 ENV RESTORE_MODULE_STATES="false"
 ENV RESTORE_PERSISTED_CONFIGURATION="false"
-ENV FACTORY_DATA="/data/digital-factory-data"
-ENV FACTORY_CONFIG="/usr/local/tomcat/conf/digital-factory-config"
+ENV DATA_FOLDER=${DATA_FOLDER}
 ENV PROCESSING_SERVER="true"
 ENV OPERATING_MODE="development"
 ENV MAX_UPLOAD="268435456"
@@ -30,9 +30,8 @@ ENV JAHIA_PLUGIN="${JAHIA_PLUGIN}"
 ENV JAHIA_LICENSE=""
 
 ENV CATALINA_BASE="/usr/local/tomcat" CATALINA_HOME="/usr/local/tomcat" CATALINA_TMPDIR="/usr/local/tomcat/temp" LOG_MAX_DAYS="5"
-ENV CATALINA_OPTS="" JPDA="false" JPDA_ADDRESS="*:8000"
 
-ENV DB_VENDOR="derby_embedded" DB_HOST="mariadb" DB_NAME="jahia" DB_USER="jahia" DB_PASS="fakepassword"
+ENV DB_VENDOR="derby_embedded" DB_HOST="mariadb" DB_NAME="jahia" DB_USER="jahia" DB_PASS="fakepassword" DB_PORT="" DB_URL=""
 ENV SUPER_USER_PASSWORD="root1234"
 ENV DS_IN_DB="true" DS_PATH=""
 ENV EXECUTE_PROVISIONING_SCRIPT=""
@@ -72,8 +71,8 @@ RUN groupadd -g 999 ${C_GROUP}
 RUN useradd -r -u 999 -g ${C_GROUP} ${C_USER} -d /home/${C_USER} -m
 
 # Prepare data folders
-RUN mkdir -p /data/digital-factory-data/info /data/digital-factory-data/repository /data/digital-factory-data/modules /data/digital-factory-data/patches/provisioning \
-    && chown -R ${C_USER}:${C_GROUP} /data
+RUN mkdir -p ${DATA_FOLDER}/digital-factory-data/info ${DATA_FOLDER}/digital-factory-data/repository ${DATA_FOLDER}/digital-factory-data/modules ${DATA_FOLDER}/digital-factory-data/patches/provisioning \
+    && chown -R ${C_USER}:${C_GROUP} ${DATA_FOLDER}
 
 # Prepare maven
 RUN wget -nv -O maven.zip ${MAVEN_BASE_URL}/${MAVEN_VER}/binaries/apache-maven-${MAVEN_VER}-bin.zip \

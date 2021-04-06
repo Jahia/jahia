@@ -43,24 +43,11 @@
  */
 package org.jahia.bin;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.exceptions.JahiaBadRequestException;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.registries.ServicesRegistry;
@@ -68,6 +55,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
@@ -78,6 +66,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ModelAndView;
+import org.xml.sax.SAXException;
+
+import javax.jcr.RepositoryException;
+import javax.servlet.ServletContext;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.transform.TransformerException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Content export handler.
@@ -94,7 +98,8 @@ public class Export extends JahiaController implements ServletContextAware {
     private static final String EXPORT_SITES_REQUIRED_PERMISSION = "adminVirtualSites";
     private static final Pattern URI_PATTERN = Pattern.compile(CONTROLLER_MAPPING + "/("
             + Constants.LIVE_WORKSPACE + "|" + Constants.EDIT_WORKSPACE + ")/(.*)\\.(xml|zip)");
-
+    private static final String MEDIATYPE_ZIP = "application/zip";
+    private static final String MEDIATYPE_XML = "text/xml";
     public static String getExportServletPath() {
         // TODO move this into configuration
         return "/cms" + CONTROLLER_MAPPING;
@@ -125,172 +130,44 @@ public class Export extends JahiaController implements ServletContextAware {
 
             checkUserLoggedIn();
 
-            Matcher m = StringUtils.isNotEmpty(request.getPathInfo()) ? URI_PATTERN.matcher(request.getPathInfo()) : null;
-            if (m == null || !m.matches()) {
-                throw new JahiaBadRequestException("Requested URI '" + request.getRequestURI()
-                        + "' is malformed");
-            }
+            Matcher m = getMatcher(request);
             String workspace = m.group(1);
-            String nodePath = "/" + m.group(2);
+            String nodePath = String.format("/%s",m.group(2));
             String exportFormat = m.group(3);
-            String serverDirectory = null;
-            if (StringUtils.isNotEmpty(request.getParameter("exportformat"))) {
-                exportFormat = request.getParameter("exportformat");
-            }
-
-            Map<String, Object> params = getParams(request);
-
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace);
             JCRNodeWrapper exportRoot = null;
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace);
+            Map<String, Object> params = getRequestParams(request);
 
-            if (request.getParameter("root") != null) {
-                exportRoot = session.getNode(request.getParameter("root"));
+            if (StringUtils.isNotEmpty(request.getParameter("exportformat"))) {
+                exportFormat = validateExportFormatType(request.getParameter("exportformat"));
             }
 
-            if (StringUtils.isNotBlank(request.getParameter("exportPath"))) {
-                serverDirectory = request.getParameter("exportPath");
-                params.put(ImportExportService.SERVER_DIRECTORY, serverDirectory);
+            switch (exportFormat.trim().toLowerCase()) {
+                case "all":
+                    handleExportFormatTypeAll(response, params, session);
+                    break;
+                case "site":
+                    handleExportFormatTypeSite(request, response, params, session);
+                    break;
+                case "xml":
+                    exportRoot = request.getParameter("root") != null ? session.getNode(request.getParameter("root")) : null;
+                    handleExportFormatTypeXML(request, response, nodePath, params, session, exportRoot);
+                    break;
+                case "zip":
+                    exportRoot = request.getParameter("root") != null ? session.getNode(request.getParameter("root")) : null;
+                    handleExportFormatTypeZip(request, response, nodePath, params, session, exportRoot);
+                    break;
+                default:
+                    logger.error("Export format type entered is {} which is not recognized or handled yet", exportFormat);
+                    throw new JahiaBadRequestException("exportFormat parameter needs to be one of ALL, SITE, XML, or ZIP");
             }
-
-            if ("all".equals(exportFormat) || "site".equals(exportFormat)) {
-                if (JahiaUserManagerService.isGuest(session.getUser())) {
-                    throw new JahiaUnauthorizedException("User guest is not allowed to export site content");
-                } else if (!session.getRootNode().hasPermission(EXPORT_SITES_REQUIRED_PERMISSION)) {
-                    throw new JahiaForbiddenAccessException(
-                            "User has no sufficient permissions to perform export of site content");
-                }
-                JahiaUser userToReset = null;
-                if (!session.getUser().isRoot()) {
-                    // if an authorized user is not root, we explicitly use root user for the export
-                    userToReset = JCRSessionFactory.getInstance().getCurrentUser();
-                    JCRSessionFactory.getInstance().setCurrentUser(JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser());
-                }
-                try {
-                    if ("all".equals(exportFormat)) {
-        
-                        response.setContentType("application/zip");
-                        //make sure this file is not cached by the client (or a proxy middleman)
-                        WebUtils.setNoCacheHeaders(response);
-        
-                        params.put(ImportExportService.INCLUDE_ALL_FILES, Boolean.TRUE);
-                        params.put(ImportExportService.INCLUDE_TEMPLATES, Boolean.TRUE);
-                        params.put(ImportExportService.INCLUDE_SITE_INFOS, Boolean.TRUE);
-                        params.put(ImportExportService.INCLUDE_DEFINITIONS, Boolean.TRUE);
-                        params.put(ImportExportService.VIEW_WORKFLOW, Boolean.TRUE);
-                        params.put(ImportExportService.XSL_PATH, cleanupXsl);
-        
-                        OutputStream outputStream = response.getOutputStream();
-                        importExportService.exportAll(outputStream, params);
-                        outputStream.close();
-        
-                    } else if ("site".equals(exportFormat)) {
-        
-                        List<JCRSiteNode> sites = new ArrayList<JCRSiteNode>();
-                        String[] sitekeys = request.getParameterValues("sitebox");
-                        if (sitekeys != null) {
-                            for (String sitekey : sitekeys) {
-                                JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(sitekey);
-                                sites.add((JCRSiteNode) site);
-                            }
-                        }
-        
-                        if (sites.isEmpty()) {
-                            // Todo redirect to new administration
-                        } else {
-                            response.setContentType("application/zip");
-                            //make sure this file is not cached by the client (or a proxy middleman)
-                            WebUtils.setNoCacheHeaders(response);
-        
-                            params.put(ImportExportService.INCLUDE_ALL_FILES, Boolean.TRUE);
-                            params.put(ImportExportService.INCLUDE_TEMPLATES, Boolean.TRUE);
-                            params.put(ImportExportService.INCLUDE_SITE_INFOS, Boolean.TRUE);
-                            params.put(ImportExportService.INCLUDE_DEFINITIONS, Boolean.TRUE);
-                            if (request.getParameter("live") == null || Boolean.valueOf(request.getParameter("live"))) {
-                                params.put(ImportExportService.INCLUDE_LIVE_EXPORT, Boolean.TRUE);
-                            }
-                            if (request.getParameter("users") == null && SettingsBean.getInstance().getPropertiesFile().getProperty("siteExportUsersDefaultValue") != null) {
-                                Boolean siteExportUsersDefaultValue = Boolean.valueOf(SettingsBean.getInstance().getPropertiesFile().getProperty("siteExportUsersDefaultValue"));
-                                if (siteExportUsersDefaultValue.booleanValue()) {
-                                    params.put(ImportExportService.INCLUDE_USERS, Boolean.TRUE);
-                                } else {
-                                    params.remove(ImportExportService.INCLUDE_USERS);
-                                }
-                            } else if (request.getParameter("users") != null) {
-                                if (Boolean.valueOf(request.getParameter("users"))) {
-                                    params.put(ImportExportService.INCLUDE_USERS, Boolean.TRUE);
-                                } else {
-                                    params.remove(ImportExportService.INCLUDE_USERS);
-                                }
-                            } else {
-                                params.put(ImportExportService.INCLUDE_USERS, Boolean.TRUE);
-                            }
-                            params.put(ImportExportService.INCLUDE_ROLES, Boolean.TRUE);
-                            params.put(ImportExportService.INCLUDE_MOUNTS, Boolean.TRUE);
-                            params.put(ImportExportService.VIEW_WORKFLOW, Boolean.TRUE);
-                            params.put(ImportExportService.XSL_PATH, cleanupXsl);
-        
-                            OutputStream outputStream = response.getOutputStream();
-                            importExportService.exportSites(outputStream, params, sites);
-                            outputStream.close();
-                        }
-                    }
-                } finally {
-                    if (userToReset != null)  {
-                        JCRSessionFactory.getInstance().setCurrentUser(userToReset);
-                    }
-                }
-            } else if ("xml".equals(exportFormat)) {
-
-                JCRNodeWrapper node = session.getNode(nodePath);
-                response.setContentType("text/xml");
-                //make sure this file is not cached by the client (or a proxy middleman)
-                WebUtils.setNoCacheHeaders(response);
-                if (downloadExportedXmlAsFile) {
-                    WebUtils.setFileDownloadHeaders(response, StringUtils.substringBeforeLast(node.getName(), ".") + ".xml");
-                }
-
-                if ("template".equals(request.getParameter(CLEANUP))) {
-                    params.put(ImportExportService.XSL_PATH, templatesCleanupXsl);
-                } else if ("simple".equals(request.getParameter(CLEANUP))) {
-                    params.put(ImportExportService.XSL_PATH, cleanupXsl);
-                }
-                OutputStream outputStream = response.getOutputStream();
-                Cookie exportedNode = new Cookie("exportedNode", node.getIdentifier());
-                exportedNode.setMaxAge(60);
-                exportedNode.setPath("/");
-                response.addCookie(exportedNode);
-                //No export log for the node export
-                importExportService.exportNode(node, exportRoot, outputStream, params);
-
-            } else if ("zip".equals(exportFormat)) {
-
-                JCRNodeWrapper node = session.getNode(nodePath);
-                response.setContentType("application/zip");
-                //make sure this file is not cached by the client (or a proxy middleman)
-                WebUtils.setNoCacheHeaders(response);
-
-                if ("template".equals(request.getParameter(CLEANUP))) {
-                    params.put(ImportExportService.XSL_PATH, templatesCleanupXsl);
-                } else if ("simple".equals(request.getParameter(CLEANUP))) {
-                    params.put(ImportExportService.XSL_PATH, cleanupXsl);
-                }
-                if (request.getParameter("live") == null || Boolean.valueOf(request.getParameter("live"))) {
-                    params.put(ImportExportService.INCLUDE_LIVE_EXPORT, Boolean.TRUE);
-                }
-                OutputStream outputStream = response.getOutputStream();
-                Cookie exportedNode = new Cookie("exportedNode", node.getIdentifier());
-                exportedNode.setMaxAge(60);
-                exportedNode.setPath("/");
-                response.addCookie(exportedNode);
-                importExportService.exportZip(node, exportRoot, outputStream, params);
-                outputStream.close();
-            }
-
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (IOException e) {
-            if (logger.isDebugEnabled())
-                logger.debug("Cannot export due to some IO exception", e);
-            else logger.warn("Cannot export due to some IO exception :" + e.getMessage());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Cannot export due to some IO exception ", e);
+            } else {
+                logger.warn("Cannot export due to some IO exception {}", e.getMessage());
+            }
             DefaultErrorHandler.getInstance().handle(e, request, response);
         } catch (Exception e) {
             logger.error("Cannot export", e);
@@ -300,14 +177,235 @@ public class Export extends JahiaController implements ServletContextAware {
         return null;
     }
 
-    private Map<String, Object> getParams(HttpServletRequest request) {
-        Map<String, Object> params = new HashMap<String, Object>(6);
-        params.put(ImportExportService.VIEW_CONTENT, !"false".equals(request.getParameter("viewContent")));
-        params.put(ImportExportService.VIEW_VERSION, "true".equals(request.getParameter("viewVersion")));
-        params.put(ImportExportService.VIEW_ACL, !"false".equals(request.getParameter("viewAcl")));
-        params.put(ImportExportService.VIEW_METADATA, !"false".equals(request.getParameter("viewMetadata")));
-        params.put(ImportExportService.VIEW_JAHIALINKS, !"false".equals(request.getParameter("viewLinks")));
-        params.put(ImportExportService.VIEW_WORKFLOW, "true".equals(request.getParameter("viewWorkflow")));
+    private String validateExportFormatType(String exportformat) {
+        String formatType = exportformat.trim().toLowerCase();
+        if (formatType.equals("zip") || formatType.equals("xml") || formatType.equals("site") || formatType.equals("all")) {
+            return formatType;
+        }
+        logger.error("Unable to handle export format type {}.", exportformat);
+        throw new JahiaBadRequestException("Unable to handle export format");
+    }
+
+    private Matcher getMatcher(HttpServletRequest request) {
+        Matcher m = StringUtils.isNotEmpty(request.getPathInfo()) ? URI_PATTERN.matcher(request.getPathInfo()) : null;
+        if (m == null || !m.matches()) {
+            throw new JahiaBadRequestException("Requested URI '" + request.getRequestURI()
+                    + "' is malformed");
+        }
+        return m;
+    }
+
+    private void handleExportFormatTypeZip(HttpServletRequest request, HttpServletResponse response, String nodePath, Map<String, Object> params,
+            JCRSessionWrapper session, JCRNodeWrapper exportRoot)
+            throws RepositoryException, IOException, SAXException, TransformerException, JahiaForbiddenAccessException {
+        JCRNodeWrapper sessionNode = session.getNode(nodePath);
+        OutputStream outputStream = response.getOutputStream();
+        Cookie exportedNodeCookie = new Cookie("exportedNode", sessionNode.getIdentifier());
+        exportedNodeCookie.setSecure(true);
+        response.setContentType(MEDIATYPE_ZIP);
+        //make sure this file is not cached by the client (or a proxy middleman)
+        WebUtils.setNoCacheHeaders(response);
+
+        if ("template".equals(request.getParameter(CLEANUP))) {
+            params.put(ImportExportService.XSL_PATH, templatesCleanupXsl);
+        } else if ("simple".equals(request.getParameter(CLEANUP))) {
+            params.put(ImportExportService.XSL_PATH, cleanupXsl);
+        }
+        if (request.getParameter("live") == null || Boolean.valueOf(request.getParameter("live"))) {
+            params.put(ImportExportService.INCLUDE_LIVE_EXPORT, Boolean.TRUE);
+        }
+        exportedNodeCookie.setMaxAge(60);
+        exportedNodeCookie.setPath("/");
+        response.addCookie(exportedNodeCookie);
+        importExportService.exportZip(sessionNode, exportRoot, outputStream, params);
+        outputStream.close();
+    }
+
+    private void handleExportFormatTypeXML(HttpServletRequest request, HttpServletResponse response, String nodePath, Map<String, Object> params,
+            JCRSessionWrapper session, JCRNodeWrapper exportRoot)
+            throws RepositoryException, IOException, SAXException, TransformerException {
+        JCRNodeWrapper sessionNode = session.getNode(nodePath);
+        OutputStream outputStream = response.getOutputStream();
+        Cookie exportedNodeCookie = new Cookie("exportedNode", sessionNode.getIdentifier());
+        exportedNodeCookie.setSecure(true);
+        response.setContentType(MEDIATYPE_XML);
+        //make sure this file is not cached by the client (or a proxy middleman)
+        WebUtils.setNoCacheHeaders(response);
+        if (downloadExportedXmlAsFile) {
+            WebUtils.setFileDownloadHeaders(response, String.format("%s.xml", StringUtils.substringBeforeLast(sessionNode.getName(), ".")));
+        }
+
+        if ("template".equals(request.getParameter(CLEANUP))) {
+            params.put(ImportExportService.XSL_PATH, templatesCleanupXsl);
+        } else if ("simple".equals(request.getParameter(CLEANUP))) {
+            params.put(ImportExportService.XSL_PATH, cleanupXsl);
+        }
+        exportedNodeCookie.setMaxAge(60);
+        exportedNodeCookie.setPath("/");
+        response.addCookie(exportedNodeCookie);
+        //No export log for the node export
+        importExportService.exportNode(sessionNode, exportRoot, outputStream, params);
+        outputStream.close();
+    }
+
+    private void handleExportFormatTypeSite(HttpServletRequest request, HttpServletResponse response, Map<String, Object> params,
+            JCRSessionWrapper session)
+            throws JahiaException, IOException, RepositoryException, SAXException, TransformerException {
+
+        List<JCRSiteNode> sites = getJcrSiteNodes(request);
+        JahiaUser currentUser = session.getUser();
+        boolean isElevated = false;
+        try {
+            if (!sites.isEmpty()) {
+                isElevated = elevateSecurityPrivilege(session);
+                response.setContentType(MEDIATYPE_ZIP);
+                //make sure this file is not cached by the client (or a proxy middleman)
+                WebUtils.setNoCacheHeaders(response);
+
+                params.put(ImportExportService.INCLUDE_ROLES, Boolean.TRUE);
+                params.put(ImportExportService.INCLUDE_MOUNTS, Boolean.TRUE);
+                params.put(ImportExportService.VIEW_WORKFLOW, Boolean.TRUE);
+                params.put(ImportExportService.XSL_PATH, cleanupXsl);
+                params.put(ImportExportService.INCLUDE_ALL_FILES, Boolean.TRUE);
+                params.put(ImportExportService.INCLUDE_TEMPLATES, Boolean.TRUE);
+                params.put(ImportExportService.INCLUDE_SITE_INFOS, Boolean.TRUE);
+                params.put(ImportExportService.INCLUDE_DEFINITIONS, Boolean.TRUE);
+                if (request.getParameter("live") == null || Boolean.valueOf(request.getParameter("live"))) {
+                    params.put(ImportExportService.INCLUDE_LIVE_EXPORT, Boolean.TRUE);
+                }
+                handleUserParameter(request, params);
+
+                OutputStream outputStream = response.getOutputStream();
+                importExportService.exportSites(outputStream, params, sites);
+                outputStream.close();
+            }
+        } finally {
+            if (isElevated) {
+                restoreSecurityPrivilege(currentUser);
+            }
+        }
+    }
+
+    private void handleUserParameter(HttpServletRequest request, Map<String, Object> params) {
+        final String userParameter = "users";
+        if (request.getParameter(userParameter) == null && SettingsBean.getInstance().getPropertiesFile().getProperty("siteExportUsersDefaultValue") != null) {
+            boolean siteExportUsersDefaultValue = Boolean
+                    .parseBoolean(SettingsBean.getInstance().getPropertiesFile().getProperty("siteExportUsersDefaultValue"));
+            if (siteExportUsersDefaultValue) {
+                params.put(ImportExportService.INCLUDE_USERS, Boolean.TRUE);
+            } else {
+                params.remove(ImportExportService.INCLUDE_USERS);
+            }
+        } else if (request.getParameter(userParameter) != null) {
+            if (Boolean.parseBoolean(request.getParameter(userParameter))) {
+                params.put(ImportExportService.INCLUDE_USERS, Boolean.TRUE);
+            } else {
+                params.remove(ImportExportService.INCLUDE_USERS);
+            }
+        } else {
+            params.put(ImportExportService.INCLUDE_USERS, Boolean.TRUE);
+        }
+    }
+
+    private List<JCRSiteNode> getJcrSiteNodes(HttpServletRequest request) throws JahiaException {
+        List<JCRSiteNode> sites = new ArrayList<>();
+        String[] sitekeys = request.getParameterValues("sitebox");
+        if (sitekeys != null) {
+            for (String sitekey : sitekeys) {
+                JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(sitekey);
+                sites.add((JCRSiteNode) site);
+            }
+        }
+        return sites;
+    }
+
+    private void handleExportFormatTypeAll(HttpServletResponse response, Map<String, Object> params, JCRSessionWrapper session)
+            throws IOException, JahiaException, RepositoryException, SAXException, TransformerException {
+        JahiaUser currentUser = session.getUser();
+        boolean isElevated = false;
+        try {
+            isElevated = elevateSecurityPrivilege(session);
+            response.setContentType(MEDIATYPE_ZIP);
+            //make sure this file is not cached by the client (or a proxy middleman)
+            WebUtils.setNoCacheHeaders(response);
+
+            params.put(ImportExportService.INCLUDE_ALL_FILES, Boolean.TRUE);
+            params.put(ImportExportService.INCLUDE_TEMPLATES, Boolean.TRUE);
+            params.put(ImportExportService.INCLUDE_SITE_INFOS, Boolean.TRUE);
+            params.put(ImportExportService.INCLUDE_DEFINITIONS, Boolean.TRUE);
+            params.put(ImportExportService.VIEW_WORKFLOW, Boolean.TRUE);
+            params.put(ImportExportService.XSL_PATH, cleanupXsl);
+
+            OutputStream outputStream = response.getOutputStream();
+            importExportService.exportAll(outputStream, params);
+            outputStream.close();
+        } finally {
+            if (isElevated) {
+                restoreSecurityPrivilege(currentUser);
+            }
+        }
+    }
+
+    /**
+     * Set the current user of the session to root
+     */
+    private boolean elevateSecurityPrivilege(JCRSessionWrapper session) throws JahiaForbiddenAccessException, RepositoryException {
+        if (!session.getUser().isRoot()) {
+            checkAuthorization(session);
+            logger.debug("Elevating security");
+            JCRSessionFactory.getInstance().setCurrentUser(JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser());
+        }
+        return !JCRSessionFactory.getInstance().getCurrentUser().equals(session.getUser());
+    }
+
+    /**
+     * Restore access back to the current user before
+     */
+    private void restoreSecurityPrivilege(JahiaUser user) {
+        logger.debug("Restoring security permission back");
+        JCRSessionFactory.getInstance().setCurrentUser(user);
+    }
+
+    /**
+     * Check if current user has permission to perform export requests
+     * @param session
+     * @throws RepositoryException
+     * @throws JahiaForbiddenAccessException
+     */
+    private void checkAuthorization(JCRSessionWrapper session) throws RepositoryException, JahiaForbiddenAccessException {
+        if (JahiaUserManagerService.isGuest(session.getUser())) {
+            throw new JahiaUnauthorizedException("User guest is not allowed to export site content");
+        } else if (!session.getRootNode().hasPermission(EXPORT_SITES_REQUIRED_PERMISSION)) {
+            throw new JahiaForbiddenAccessException("User does not have sufficient permission to perform export of site content");
+        }
+    }
+
+    /**
+     * Get the parameters from the request
+     * @param request
+     * @return parameter mapping from the request
+     * @throws IOException
+     * @throws JahiaBadRequestException
+     */
+    private Map<String, Object> getRequestParams(HttpServletRequest request) throws IOException {
+        Map<String, Object> params = new HashMap<>(6);
+        params.put(ImportExportService.VIEW_CONTENT, Boolean.valueOf(request.getParameter("viewContent")));
+        params.put(ImportExportService.VIEW_VERSION, Boolean.valueOf(request.getParameter("viewVersion")));
+        params.put(ImportExportService.VIEW_ACL, Boolean.valueOf(request.getParameter("viewAcl")));
+        params.put(ImportExportService.VIEW_METADATA, Boolean.valueOf(request.getParameter("viewMetadata")));
+        params.put(ImportExportService.VIEW_JAHIALINKS, Boolean.valueOf(request.getParameter("viewLinks")));
+        params.put(ImportExportService.VIEW_WORKFLOW, Boolean.valueOf(request.getParameter("viewWorkflow")));
+
+        String exportPath = request.getParameter("exportPath");
+        if (StringUtils.isNotBlank(exportPath)) {
+            String serverDirectory = ImportExportBaseService.updatedServerDirectoryPath(exportPath);
+            if (serverDirectory != null && ImportExportBaseService.isValidServerDirectory(serverDirectory)) {
+                params.put(ImportExportService.SERVER_DIRECTORY, serverDirectory);
+            } else {
+                logger.error("Failed validation to the path {}. Check logs for more details", serverDirectory);
+                throw new JahiaBadRequestException("exportPath parameter is invalid.");
+            }
+        }
         return params;
     }
 

@@ -62,6 +62,7 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleReleaseInfo;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.JahiaAfterInitializationService;
@@ -434,7 +435,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                             logger.error(e.getMessage(), e);
                         }
                     }
-                } catch (RepositoryException | SAXException | TransformerException | IOException e1) {
+                } catch (RepositoryException | SAXException | TransformerException | IOException | JahiaForbiddenAccessException e1) {
                     logger.error(e1.getMessage(), e1);
                 }
                 return null;

@@ -17,6 +17,9 @@ ARG DATA_FOLDER="/data"
 ARG C_USER="tomcat"
 ARG C_GROUP="tomcat"
 
+ARG INSTALL_GRAALVM=""
+ARG GRAALVM_URL="https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.0.0.2/graalvm-ce-java11-linux-amd64-21.0.0.2.tar.gz"
+
 ENV RESTORE_MODULE_STATES="false"
 ENV RESTORE_PERSISTED_CONFIGURATION="false"
 ENV DATA_FOLDER=${DATA_FOLDER}
@@ -56,6 +59,19 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         ${packages} \
     && rm -rf /var/lib/apt/lists/*
+
+RUN if ${INSTALL_GRAALVM:-false}; then \
+        echo "Get Graalvm..." \
+        && cd /usr/local \
+        && wget -nv ${GRAALVM_URL} \
+        && tar -xzf graalvm-ce-java*.tar.gz \
+        && rm graalvm-ce-java*.tar.gz \
+        && mv graalvm* graalvm; \
+    fi
+
+ENV GRAALVM_PATH=${INSTALL_GRAALVM:+/usr/local/graalvm}
+ENV PATH=/usr/local/graalvm/bin:${PATH}
+ENV JAVA_HOME=${GRAALVM_PATH:-$JAVA_HOME}
 
 # Retrieve latest ImageMagick binaries
 RUN echo "Retrieve latest ImageMagick binaries..." \

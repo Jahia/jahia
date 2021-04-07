@@ -970,7 +970,7 @@
 
     <bean id="Engine.Tab.Seo" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="id" value="seo"/>
-        <property name="titleKey" value="label.engineTab.seo"/>
+        <property name="titleKey" value="label.engineTab.vanityUrls"/>
         <property name="requiredPermission" value="viewSeoTab"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.SeoTabItem"/>

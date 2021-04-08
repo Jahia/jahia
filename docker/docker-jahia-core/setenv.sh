@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # GC setup
-export CATALINA_OPTS="-XX:+UseParallelGC -XX:SurvivorRatio=8"
+export CATALINA_OPTS="${CATALINA_OPTS} -XX:+UseParallelGC -XX:SurvivorRatio=8"
 
 # JMX setup
 export CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=7199 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false"

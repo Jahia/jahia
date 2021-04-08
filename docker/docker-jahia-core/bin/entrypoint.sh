@@ -5,7 +5,7 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
 
     OVERWRITEDB="if-necessary"
 
-    if [ -f "${DATA_FOLDER}/digital-factory-data/info/version.properties" ] || [ -d "${DATA_FOLDER}/digital-factory-data/bundles-deployed" ]; then
+    if [ -f "${DATA_FOLDER}/info/version.properties" ] || [ -d "${DATA_FOLDER}/bundles-deployed" ]; then
         echo "Previous installation detected. Do not override db and existing data."
         PREVIOUS_INSTALL="true"
         OVERWRITEDB="false"
@@ -28,14 +28,27 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
     fi
 
     echo "Updating digital-factory-data..."
-    cp -a /usr/local/tomcat/digital-factory-data/* ${DATA_FOLDER}/digital-factory-data/
+    cp -a /usr/local/tomcat/digital-factory-data/* ${DATA_FOLDER}/
 
-    echo "Update /usr/local/tomcat/conf/server.xml..."
-    sed -i '/<!-- Access log processes all example./i \\t<!-- Remote IP Valve -->\n \t<Valve className="org.apache.catalina.valves.RemoteIpValve" protocolHeader="X-Forwarded-Proto" />\n' /usr/local/tomcat/conf/server.xml
-    sed -i 's/pattern="%h /pattern="%{org.apache.catalina.AccessLog.RemoteAddr}r /' /usr/local/tomcat/conf/server.xml
-    sed -i 's/prefix="localhost_access_log"/prefix="access_log" rotatable="true" maxDays="'$LOG_MAX_DAYS'"/g' /usr/local/tomcat/conf/server.xml
-    sed -i 's/^\([^#].*\.maxDays\s*=\s*\).*$/\1'$LOG_MAX_DAYS'/' /usr/local/tomcat/conf/logging.properties
-    sed -i '/name="ROLL"/,+2 s/debug/warn/' -i /usr/local/tomcat/webapps/ROOT/WEB-INF/etc/config/log4j.xml
+    echo "Updating /usr/local/tomcat/conf/server.xml and logging.properties..."
+    sed -i "s|#LOGS_FOLDER#|$LOGS_FOLDER|g" /usr/local/tomcat/conf/server.xml /usr/local/tomcat/conf/logging.properties
+
+    if [ "$SSL_ENABLED" == "true" ]; then
+      if [ ! -d /usr/local/tomcat/conf/ssl ]; then
+        mkdir -p /usr/local/tomcat/conf/ssl
+        openssl req -x509 -newkey rsa:4096 -keyout /usr/local/tomcat/conf/ssl/localhost-rsa-key.pem -out /usr/local/tomcat/conf/ssl/localhost-rsa-cert.pem -days 36500 -subj "/CN=localhost" -passout env:SSL_CERTIFICATE_PASSWD
+      fi
+
+      sed -i '/#SSL_DISABLED#/d' /usr/local/tomcat/conf/server.xml
+      sed -i "s/#SSL_CERTIFICATE_PASSWD#/${SSL_CERTIFICATE_PASSWD}/" /usr/local/tomcat/conf/server.xml
+    fi
+
+    echo "Update log4j..."
+    sed -i 's/DailyRollingFileAppender/FileAppender/' /usr/local/tomcat/webapps/ROOT/WEB-INF/etc/config/log4j.xml
+
+    echo "LOGS_FOLDER=${LOGS_FOLDER}" >> ${DATA_FOLDER}/logs_env
+    echo "LOG_MAX_DAYS=${LOG_MAX_DAYS}" >> ${DATA_FOLDER}/logs_env
+    echo "LOG_MAX_SIZE=${LOG_MAX_SIZE}" >> ${DATA_FOLDER}/logs_env
 
     if [ "$DB_URL" == "" ]; then
       case "$DB_VENDOR" in
@@ -94,8 +107,8 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
     echo "/opt/apache-maven-${MAVEN_VER}/bin/mvn ${JAHIA_PLUGIN}:configure \
     -Djahia.deploy.targetServerType="tomcat" \
     -Djahia.deploy.targetServerDirectory="/usr/local/tomcat" \
-    -Djahia.deploy.dataDir="${DATA_FOLDER}/digital-factory-data" \
-    -Djahia.configure.externalizedTargetPath="/usr/local/tomcat/conf/digital-factory-config" \
+    -Djahia.deploy.dataDir="${DATA_FOLDER}" \
+    -Djahia.configure.externalizedTargetPath="/etc/jahia" \
     -Djahia.configure.databaseType="${DB_VENDOR}" \
     -Djahia.configure.databaseUrl="${DB_URL}" \
     -Djahia.configure.databaseUsername="${DB_USER}" \
@@ -113,8 +126,8 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
     /opt/apache-maven-${MAVEN_VER}/bin/mvn ${JAHIA_PLUGIN}:configure \
     -Djahia.deploy.targetServerType="tomcat" \
     -Djahia.deploy.targetServerDirectory="/usr/local/tomcat" \
-    -Djahia.deploy.dataDir="${DATA_FOLDER}/digital-factory-data" \
-    -Djahia.configure.externalizedTargetPath="/usr/local/tomcat/conf/digital-factory-config" \
+    -Djahia.deploy.dataDir="${DATA_FOLDER}" \
+    -Djahia.configure.externalizedTargetPath="/etc/jahia" \
     -Djahia.configure.databaseType="${DB_VENDOR}" \
     -Djahia.configure.databaseUrl="${DB_URL}" \
     -Djahia.configure.databaseUsername="${DB_USER}" \
@@ -129,28 +142,36 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
     -Djahia.configure.jahiaProperties="{${JAHIA_PROPERTIES}}" \
     $JAHIA_CONFIGURE_OPTS $JAHIA_LICENSE_OPTS -Pconfiguration
 
-    if [ -f "${DATA_FOLDER}/digital-factory-data/info/passwd" ] && [ "`cat "${DATA_FOLDER}/digital-factory-data/info/passwd"`" != "`echo -n "$SUPER_USER_PASSWORD" | sha256sum`" ]; then
+    if [ -f "${DATA_FOLDER}/info/passwd" ] && [ "`cat "${DATA_FOLDER}/info/passwd"`" != "`echo -n "$SUPER_USER_PASSWORD" | sha256sum`" ]; then
         echo "Update root's password..."
-        echo "${SUPER_USER_PASSWORD}" > ${DATA_FOLDER}/digital-factory-data/root.pwd
+        echo "${SUPER_USER_PASSWORD}" > ${DATA_FOLDER}/root.pwd
     fi
 
     if [ "${EXECUTE_PROVISIONING_SCRIPT}" != "" ]; then
-      echo " - include: ${EXECUTE_PROVISIONING_SCRIPT}" > ${DATA_FOLDER}/digital-factory-data/patches/provisioning/999-docker-provisioning.contextInitialized.yaml
+      echo " - include: ${EXECUTE_PROVISIONING_SCRIPT}" > ${DATA_FOLDER}/patches/provisioning/999-docker-provisioning.contextInitialized.yaml
     fi
 
-    echo -n "${SUPER_USER_PASSWORD}" | sha256sum > ${DATA_FOLDER}/digital-factory-data/info/passwd
+    echo -n "${SUPER_USER_PASSWORD}" | sha256sum > ${DATA_FOLDER}/info/passwd
 
     touch "/usr/local/tomcat/conf/configured"
 fi
 
+if [[ $CATALINA_OPTS != *"-Djava.security.egd"* ]]; then
+    export CATALINA_OPTS="${CATALINA_OPTS} -Djava.security.egd=file:/dev/urandom"
+fi
+
+if [[ $CATALINA_OPTS != *"-Djahia.log.dir"* ]]; then
+    export CATALINA_OPTS="${CATALINA_OPTS} -Djahia.log.dir=${LOGS_FOLDER}"
+fi
+
 if [ "${RESTORE_MODULE_STATES}" == "true" ]; then
     echo " -- Restore module states have been asked"
-    touch "${DATA_FOLDER}/digital-factory-data/[persisted-bundles].dorestore"
+    touch "${DATA_FOLDER}/[persisted-bundles].dorestore"
 fi
 
 if [ "${RESTORE_PERSISTED_CONFIGURATION}" == "true" ]; then
     echo " -- Restore OSGi configuration have been asked"
-    touch "${DATA_FOLDER}/digital-factory-data/[persisted-configurations].dorestore"
+    touch "${DATA_FOLDER}/[persisted-configurations].dorestore"
 fi
 
 if [ "$JPDA" == "true" ]; then

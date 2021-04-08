@@ -2,7 +2,7 @@ FROM tomcat:9-jdk11-openjdk-slim-buster
 
 LABEL maintainer="Jahia Product team <product@jahia.com>"
 
-ARG DEBUG_TOOLS="false"
+ARG DEBUG_TOOLS="true"
 ARG FFMPEG="false"
 ARG LIBREOFFICE="false"
 ARG MAVEN_VER="3.6.3"
@@ -11,7 +11,8 @@ ARG MODULES_BASE_URL="https://store.jahia.com/cms/mavenproxy/private-app-store/o
 ARG IMAGEMAGICK_BINARIES_DOWNLOAD_URL="https://imagemagick.org/download/binaries/magick"
 ARG LOG_MAX_DAYS="5"
 ARG JAHIA_PLUGIN="org.jahia.server:jahia-maven-plugin:5.12-SNAPSHOT"
-ARG DATA_FOLDER="/data"
+ARG DATA_FOLDER="/var/jahia"
+ARG LOGS_FOLDER="/var/log/jahia"
 
 # Container user
 ARG C_USER="tomcat"
@@ -22,7 +23,7 @@ ARG GRAALVM_URL="https://github.com/graalvm/graalvm-ce-builds/releases/download/
 
 ENV RESTORE_MODULE_STATES="false"
 ENV RESTORE_PERSISTED_CONFIGURATION="false"
-ENV DATA_FOLDER=${DATA_FOLDER}
+ENV DATA_FOLDER=${DATA_FOLDER} LOGS_FOLDER=${LOGS_FOLDER}
 ENV PROCESSING_SERVER="true"
 ENV OPERATING_MODE="development"
 ENV MAX_UPLOAD="268435456"
@@ -32,13 +33,15 @@ ENV MAVEN_VER="${MAVEN_VER}"
 ENV JAHIA_PLUGIN="${JAHIA_PLUGIN}"
 ENV JAHIA_LICENSE=""
 
-ENV CATALINA_BASE="/usr/local/tomcat" CATALINA_HOME="/usr/local/tomcat" CATALINA_TMPDIR="/usr/local/tomcat/temp" LOG_MAX_DAYS="5"
+ENV CATALINA_BASE="/usr/local/tomcat" CATALINA_HOME="/usr/local/tomcat" CATALINA_TMPDIR="/usr/local/tomcat/temp" LOG_MAX_DAYS="5" LOG_MAX_SIZE="500M"
+ENV CATALINA_OPTS="" JPDA="false" JPDA_ADDRESS="*:8000"
 
 ENV DB_VENDOR="derby_embedded" DB_HOST="mariadb" DB_NAME="jahia" DB_USER="jahia" DB_PASS="fakepassword" DB_PORT="" DB_URL=""
 ENV SUPER_USER_PASSWORD="root1234"
 ENV DS_IN_DB="true" DS_PATH=""
 ENV EXECUTE_PROVISIONING_SCRIPT=""
 ENV JAHIA_PROPERTIES=""
+ENV SSL_ENABLED="false" SSL_CERTIFICATE_PASSWD="changeit"
 
 WORKDIR /tmp
 
@@ -46,9 +49,9 @@ WORKDIR /tmp
 # jq needed for healtcheck, python3 for old password script (removed) - others to be checked ?
 
 RUN apt-get update \
-    && packages="ncat wget unzip" \
+    && packages="ncat wget unzip logrotate" \
     && if ${DEBUG_TOOLS}; then \
-        packages="${packages} vim binutils"; \
+        packages="${packages} vim binutils less procps iputils-ping"; \
        fi \
     && if ${LIBREOFFICE}; then \
         packages="${packages} libreoffice"; \
@@ -87,8 +90,10 @@ RUN groupadd -g 999 ${C_GROUP}
 RUN useradd -r -u 999 -g ${C_GROUP} ${C_USER} -d /home/${C_USER} -m
 
 # Prepare data folders
-RUN mkdir -p ${DATA_FOLDER}/digital-factory-data/info ${DATA_FOLDER}/digital-factory-data/repository ${DATA_FOLDER}/digital-factory-data/modules ${DATA_FOLDER}/digital-factory-data/patches/provisioning \
-    && chown -R ${C_USER}:${C_GROUP} ${DATA_FOLDER}
+RUN mkdir -p ${DATA_FOLDER}/info ${DATA_FOLDER}/repository ${DATA_FOLDER}/modules ${DATA_FOLDER}/patches/provisioning ${LOGS_FOLDER} \
+    && chown -R ${C_USER}:${C_GROUP} ${DATA_FOLDER} ${LOGS_FOLDER} \
+    && rm -r /usr/local/tomcat/logs \
+    && ln -s ${LOGS_FOLDER} /usr/local/tomcat/logs
 
 # Prepare maven
 RUN wget -nv -O maven.zip ${MAVEN_BASE_URL}/${MAVEN_VER}/binaries/apache-maven-${MAVEN_VER}-bin.zip \
@@ -105,22 +110,20 @@ USER root
 
 # Add scripts
 COPY bin/* /usr/local/bin/
+RUN ln -s /usr/local/bin/setup-logrotate.sh /etc/cron.hourly/setup-logrotate
 COPY setenv.sh /usr/local/tomcat/bin
 RUN chmod +x /usr/local/bin/* /usr/local/tomcat/bin/setenv.sh
+
+COPY conf/tomcat/* /usr/local/tomcat/conf/
+COPY conf/logrotate/* /etc/logrotate.d
 
 COPY target/dependency/shared-libraries /usr/local/tomcat/lib
 COPY target/dependency/jdbc-drivers /usr/local/tomcat/lib
 COPY --chown=${C_USER}:${C_GROUP} target/dependency/jahia-war-data-package /usr/local/tomcat/digital-factory-data
 COPY --chown=${C_USER}:${C_GROUP} target/dependency/jahia-war /usr/local/tomcat/webapps/ROOT
 
-RUN mkdir -p /usr/local/tomcat/conf/digital-factory-config  \
-    && chown -R ${C_USER}:${C_GROUP} /usr/local/tomcat/conf
-
-# Setup tomcat
-RUN sed -e "s/\"org.apache.catalina.startup.VersionLoggerListener\"/\"org.apache.catalina.startup.VersionLoggerListener\" logArgs=\"false\"/g" -i /usr/local/tomcat/conf/server.xml
-RUN sed -e "s#common.loader=\"\\\$#common.loader=\"/usr/local/tomcat/conf/digital-factory-config\",\"\$#g" -i /usr/local/tomcat/conf/catalina.properties \
-    && sed -e 's/tomcat.util.scan.StandardJarScanFilter.jarsToSkip=/tomcat.util.scan.StandardJarScanFilter.jarsToSkip=derby*.jar,mysql-connector-java-*.jar,ojdbc*.jar,orai18n-*.jar,postgresql-*.jar,sqljdbc*.jar,mssql-jdbc-*.jar,mariadb-java-client-*.jar/' -i /usr/local/tomcat/conf/catalina.properties \
-    && echo
+RUN mkdir -p /etc/jahia  \
+    && chown -R ${C_USER}:${C_GROUP} /usr/local/tomcat/conf /etc/jahia
 
 ## fix hadolint DL4006
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -128,7 +131,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 USER ${C_USER}
 
 EXPOSE 8080
-EXPOSE 7860
 EXPOSE 8101
+EXPOSE 8443
 
 CMD ["/usr/local/bin/entrypoint.sh"]

@@ -1,0 +1,11 @@
+#LOGS_FOLDER#/*.log {
+        missingok
+        su tomcat tomcat
+        compress
+        copytruncate
+        rotate #LOG_MAX_DAYS#
+        daily
+        maxsize #LOG_MAX_SIZE#
+        dateext
+        dateformat _%Y-%m-%d
+}

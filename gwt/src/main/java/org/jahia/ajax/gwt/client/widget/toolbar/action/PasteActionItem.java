@@ -104,7 +104,12 @@ public class PasteActionItem extends NodeTypeAwareBaseActionItem {
             }
 
             if (b && linker instanceof EditLinker) {
-                final List<String> nodeTypeNames = linker.getSelectionContext().getSingleSelection().getNodeTypes();
+                final GWTJahiaNode singleSelection = linker.getSelectionContext().getSingleSelection();
+                final List<String> nodeTypeNames = singleSelection.getNodeTypes();
+                final List<String> inheritedNodeTypeNames = singleSelection.getInheritedNodeTypes();
+                if (inheritedNodeTypeNames != null) {
+                    nodeTypeNames.addAll(inheritedNodeTypeNames);
+                }
                 final StringBuilder nodeTypes = new StringBuilder(nodeTypeNames.size() * 15);
                 boolean isFirst = true;
                 for (String nodeType : nodeTypeNames) {

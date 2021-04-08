@@ -140,7 +140,7 @@ public abstract class EditEngineTabItem implements Serializable {
     }
 
     public void setShowForTypesString(String showForTypes) {
-        this.showForTypes = (showForTypes != null && showForTypes.length() > 0) ? Arrays.asList(showForTypes.split(",")) : new ArrayList<>();
+        this.showForTypes = (showForTypes != null && showForTypes.length() > 0) ? Arrays.asList(showForTypes.split(",")) : new ArrayList<String>();
     }
 
     public List<String> getHideForTypes() {
@@ -152,7 +152,7 @@ public abstract class EditEngineTabItem implements Serializable {
     }
 
     public void setHideForTypesString(String hideForTypes) {
-        this.hideForTypes = (hideForTypes != null && hideForTypes.length() > 0) ? Arrays.asList(hideForTypes.split(",")) : new ArrayList<>();
+        this.hideForTypes = (hideForTypes != null && hideForTypes.length() > 0) ? Arrays.asList(hideForTypes.split(",")) : new ArrayList<String>();
     }
 
     public GWTEngineTab getGwtEngineTab() {

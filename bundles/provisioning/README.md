@@ -76,6 +76,7 @@ These additional options are available :
 - `target`: The cluster group name where the operation will be done (unset to execute on all nodes)
 - `autoStart`: Autostart the bundle after installation (at the end of the script execution)
 - `uninstallPreviousVersion`: Uninstall all other versions (at the end of the script execution)
+- `forceUpdate`: If true, module will be updated if it is already installed. Default is `false`
 
 Examples :
 
@@ -87,6 +88,23 @@ Examples :
 
 ```yaml
 - installBundle: "file:/tmp/example-1.0.0.jar"
+```
+
+#### Additional syntax
+
+As as alternate to `autoStart: true`, you can use `installAndStartBundle` :
+
+```yaml
+- installAndStartBundle: "file:/tmp/example-1.0.0.jar"
+```
+
+An additional command `installOrUpgradeBundle` is also available for upgrades. Its behaviour changes if it's a new install or an upgrade :
+- If no version of this bundle is installed, it behaves like `installAndStartBundle`.
+- If another version of the bundle is installed, it will install the new version, uninstall the previous ones (as with `uninstallPreviousVersion`) 
+  and restore the state of the previous version (started or stopped)
+
+```yaml
+- installOrUpgradeBundle: "mvn:org.jahia.modules/article/3.0.0"
 ```
 
 ### Uninstall bundle
@@ -235,4 +253,11 @@ You can add condition in the script based on any groovy expression values :
 
 Adding a new operation can be done by extending the `org.jahia.services.provisioning.Operation` class and exposing it as an OSGi service.
 
+## Packages and provisioning script
 
+All packages based on `jahia-packages-parent` from 8.0.3.0 have an associated provisioning script, generated when building.
+It's then possible to install a "package" by just referencing its script :
+
+```yaml
+- include: "mvn:org.jahia.packages/forms-package/3.2.1/yaml/provisioning"
+```

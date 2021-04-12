@@ -10,7 +10,7 @@ ARG MAVEN_BASE_URL="https://mirrors.ircam.fr/pub/apache/maven/maven-3"
 ARG MODULES_BASE_URL="https://store.jahia.com/cms/mavenproxy/private-app-store/org/jahia/modules"
 ARG IMAGEMAGICK_BINARIES_DOWNLOAD_URL="https://imagemagick.org/download/binaries/magick"
 ARG LOG_MAX_DAYS="5"
-ARG JAHIA_PLUGIN="org.jahia.server:jahia-maven-plugin:5.12-SNAPSHOT"
+ARG JAHIA_PLUGIN="jahia"
 ARG DATA_FOLDER="/var/jahia"
 ARG LOGS_FOLDER="/var/log/jahia"
 

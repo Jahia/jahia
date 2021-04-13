@@ -66,29 +66,29 @@ jobs:
             else
               echo `cat jahia.version`-"${CIRCLE_BRANCH}" > image.tag
             fi
-      - run:
-          # TODO For now I just replaced the Bamboo build number by the CircleCI build number
-          name: Build package and load all dependencies into local Maven repository
-          command: |
-            mvn -s .circleci/.circleci.settings.xml -e -Dimage.tag=`cat image.tag` clean package de.qaware.maven:go-offline-maven-plugin:resolve-dependencies \
-               -Pgwt-production,unit-tests,docker -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
-      - run:
-          # TODO For now I just replaced the Bamboo build number by the CircleCI build number
-          name: Compile GWT development
-          working_directory: ~/source/gwt
-          command: mvn -s ../.circleci/.circleci.settings.xml -e -Dimage.tag=`cat image.tag` clean package -Pgwt-development -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
       - unless:
           condition: << pipeline.parameters.run_pull_request >>
           steps:
             - run:
-                # TODO One day we may want to do a deploy - right now only docker project is deployed
                 # TODO For now I just replaced the Bamboo build number by the CircleCI build number
-                name: Deploy artifacts to server repository
-                working_directory: ~/source/docker/docker-jahia-core
-                command: mvn -s ../../.circleci/.circleci.settings.xml -e -Dimage.tag=`cat ../../image.tag` deploy -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
+                name: Build package and load all dependencies into local Maven repository
+                command: |
+                  mvn -s .circleci/.circleci.settings.xml -e -Dimage.tag=`cat image.tag` clean deploy de.qaware.maven:go-offline-maven-plugin:resolve-dependencies \
+                     -Pgwt-production,unit-tests,docker -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
+            - run:
+                # TODO For now I just replaced the Bamboo build number by the CircleCI build number
+                name: Compile GWT development
+                working_directory: ~/source/gwt
+                command: mvn -s ../.circleci/.circleci.settings.xml -e -Dimage.tag=`cat ../image.tag` clean deploy -Pgwt-development -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
       - when:
           condition: << pipeline.parameters.run_pull_request >>
           steps:
+            - run:
+                # TODO For now I just replaced the Bamboo build number by the CircleCI build number
+                name: Build package and load all dependencies into local Maven repository
+                command: |
+                  mvn -s .circleci/.circleci.settings.xml -e -Dimage.tag=`cat image.tag` clean install de.qaware.maven:go-offline-maven-plugin:resolve-dependencies \
+                     -Pgwt-production,unit-tests,docker -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
             - run:
                 # This is only done on PR, as master is pushed with mvn deploy in "Deploy artifacts to server repository"
                 name: Push PR Docker image

@@ -16,6 +16,7 @@
  - j:codePage (string) protected nofulltext
 
 [jmix:exif] mixin
+ itemtype = metadata
  - j:colorSpace (string) nofulltext
  - j:componentsConfiguration (string) nofulltext
  - j:compression (string) nofulltext

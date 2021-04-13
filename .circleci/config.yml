@@ -48,17 +48,29 @@ jobs:
           keys:
             - v1-maven-dependencies-{{ checksum "maven_cache_seed" }}
             - v1-maven-dependencies-
-      - run:
-          # TODO For now I just replaced the Bamboo build number by the CircleCI build number
-          name: Build package and load all dependencies into local Maven repository
-          command: |
-            mvn -s .circleci/.circleci.settings.xml -e clean install de.qaware.maven:go-offline-maven-plugin:resolve-dependencies \
-               -Pgwt-production,unit-tests -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM 
-      - run:
-          # TODO For now I just replaced the Bamboo build number by the CircleCI build number
-          name: Compile GWT development
-          working_directory: ~/source/gwt
-          command: mvn -s ../.circleci/.circleci.settings.xml -e clean install -Pgwt-development -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
+      - unless:
+          condition: << pipeline.parameters.run_pull_request >>
+          steps:
+            - run:
+                # TODO For now I just replaced the Bamboo build number by the CircleCI build number
+                name: Build package and load all dependencies into local Maven repository
+                command: |
+                  mvn -s .circleci/.circleci.settings.xml -e clean deploy de.qaware.maven:go-offline-maven-plugin:resolve-dependencies \
+                     -Pgwt-production,unit-tests -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
+            - run:
+                # TODO For now I just replaced the Bamboo build number by the CircleCI build number
+                name: Compile GWT development
+                working_directory: ~/source/gwt
+                command: mvn -s ../.circleci/.circleci.settings.xml -e clean deploy -Pgwt-development -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
+      - when:
+          condition: << pipeline.parameters.run_pull_request >>
+          steps:
+            - run:
+                # TODO For now I just replaced the Bamboo build number by the CircleCI build number
+                name: Build package and load all dependencies into local Maven repository
+                command: |
+                  mvn -s .circleci/.circleci.settings.xml -e clean install de.qaware.maven:go-offline-maven-plugin:resolve-dependencies \
+                     -Pgwt-production,unit-tests -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
       - save_cache:
           paths:
             - ~/.m2

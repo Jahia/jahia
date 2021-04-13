@@ -2,7 +2,7 @@ FROM tomcat:9-jdk11-openjdk-slim-buster
 
 LABEL maintainer="Jahia Product team <product@jahia.com>"
 
-ARG DEBUG_TOOLS="true"
+ARG DEBUG_TOOLS="false"
 ARG FFMPEG="false"
 ARG LIBREOFFICE="false"
 ARG MAVEN_VER="3.6.3"
@@ -44,9 +44,6 @@ ENV JAHIA_PROPERTIES=""
 ENV SSL_ENABLED="false" SSL_CERTIFICATE_PASSWD="changeit"
 
 WORKDIR /tmp
-
-# I removed : "python3 jq libx11-6 libharfbuzz0b libfribidi0"
-# jq needed for healtcheck, python3 for old password script (removed) - others to be checked ?
 
 RUN apt-get update \
     && packages="ncat wget unzip logrotate" \
@@ -110,12 +107,10 @@ USER root
 
 # Add scripts
 COPY bin/* /usr/local/bin/
-RUN ln -s /usr/local/bin/setup-logrotate.sh /etc/cron.hourly/setup-logrotate
 COPY setenv.sh /usr/local/tomcat/bin
 RUN chmod +x /usr/local/bin/* /usr/local/tomcat/bin/setenv.sh
 
-COPY conf/tomcat/* /usr/local/tomcat/conf/
-COPY conf/logrotate/* /etc/logrotate.d
+COPY conf/* /usr/local/tomcat/conf/
 
 COPY target/dependency/shared-libraries /usr/local/tomcat/lib
 COPY target/dependency/jdbc-drivers /usr/local/tomcat/lib

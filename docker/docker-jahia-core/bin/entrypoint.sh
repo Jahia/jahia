@@ -46,9 +46,7 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
     echo "Update log4j..."
     sed -i 's/DailyRollingFileAppender/FileAppender/' /usr/local/tomcat/webapps/ROOT/WEB-INF/etc/config/log4j.xml
 
-    echo "LOGS_FOLDER=${LOGS_FOLDER}" >> ${DATA_FOLDER}/logs_env
-    echo "LOG_MAX_DAYS=${LOG_MAX_DAYS}" >> ${DATA_FOLDER}/logs_env
-    echo "LOG_MAX_SIZE=${LOG_MAX_SIZE}" >> ${DATA_FOLDER}/logs_env
+    sed -i "s|#LOGS_FOLDER#|$LOGS_FOLDER|g;s|#LOG_MAX_DAYS#|$LOG_MAX_DAYS|g;s|#LOG_MAX_SIZE#|$LOG_MAX_SIZE|g" /usr/local/tomcat/conf/jahia_logrotate
 
     if [ "$DB_URL" == "" ]; then
       case "$DB_VENDOR" in
@@ -179,6 +177,8 @@ if [ "$JPDA" == "true" ]; then
 else
   OPT="run"
 fi
+
+rotate-jahia-logs.sh &
 
 echo "Start catalina... : /usr/local/tomcat/bin/catalina.sh $OPT"
 exec /usr/local/tomcat/bin/catalina.sh $OPT

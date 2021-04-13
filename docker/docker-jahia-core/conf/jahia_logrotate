@@ -1,6 +1,5 @@
 #LOGS_FOLDER#/*.log {
         missingok
-        su tomcat tomcat
         compress
         copytruncate
         rotate #LOG_MAX_DAYS#

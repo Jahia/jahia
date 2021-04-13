@@ -201,7 +201,7 @@ public class Export extends JahiaController implements ServletContextAware {
         JCRNodeWrapper sessionNode = session.getNode(nodePath);
         OutputStream outputStream = response.getOutputStream();
         Cookie exportedNodeCookie = new Cookie("exportedNode", sessionNode.getIdentifier());
-        exportedNodeCookie.setSecure(true);
+        exportedNodeCookie.setSecure(request.isSecure());
         response.setContentType(MEDIATYPE_ZIP);
         //make sure this file is not cached by the client (or a proxy middleman)
         WebUtils.setNoCacheHeaders(response);
@@ -227,7 +227,7 @@ public class Export extends JahiaController implements ServletContextAware {
         JCRNodeWrapper sessionNode = session.getNode(nodePath);
         OutputStream outputStream = response.getOutputStream();
         Cookie exportedNodeCookie = new Cookie("exportedNode", sessionNode.getIdentifier());
-        exportedNodeCookie.setSecure(true);
+        exportedNodeCookie.setSecure(request.isSecure());
         response.setContentType(MEDIATYPE_XML);
         //make sure this file is not cached by the client (or a proxy middleman)
         WebUtils.setNoCacheHeaders(response);

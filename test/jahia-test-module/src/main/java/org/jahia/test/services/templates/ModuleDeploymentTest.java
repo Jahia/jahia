@@ -44,7 +44,7 @@
 package org.jahia.test.services.templates;
 
 import org.apache.commons.io.FileUtils;
-import org.awaitility.Duration;
+import org.awaitility.Durations;
 import org.jahia.bin.Action;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
@@ -244,7 +244,7 @@ public class ModuleDeploymentTest {
             tmpFile.delete();
             f = new File(settingsBean.getJahiaModulesDiskPath(), tmpFile.getName());
 
-            with().pollInterval(Duration.ONE_SECOND).await().atMost(20, SECONDS).until(isPackageDeployedAndServiceInstalled("dummy1"));
+            with().pollInterval(Durations.ONE_SECOND).await().atMost(20, SECONDS).until(isPackageDeployedAndServiceInstalled("dummy1"));
 
             JahiaTemplatesPackage pack = managerService.getTemplatePackageById("dummy1");
 
@@ -297,7 +297,7 @@ public class ModuleDeploymentTest {
                     JahiaTemplatesPackage pack = managerService.deployModule(tmpFile, session);
 
                     // we expect the module to be in ERROR_WITH_RULES and the bundle in RESOLVED state after deployment
-                    with().pollInterval(Duration.ONE_SECOND).await().atMost(20, SECONDS).until(new Callable<Boolean>() {
+                    with().pollInterval(Durations.ONE_SECOND).await().atMost(20, SECONDS).until(new Callable<Boolean>() {
                         public Boolean call() throws Exception {
                             return pack.getState().getState() == ModuleState.State.ERROR_WITH_RULES
                                     && pack.getBundle().getState() == Bundle.RESOLVED;

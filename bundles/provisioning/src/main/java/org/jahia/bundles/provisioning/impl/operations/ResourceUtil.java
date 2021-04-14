@@ -5,7 +5,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Utility to get a resource
@@ -14,6 +16,7 @@ public final class ResourceUtil {
     private ResourceUtil() {
     }
 
+    private static final Pattern PATTERN = Pattern.compile("^[a-z][a-z0-9+.-]+:.*");
     /**
      * Get resource
      * @param key key
@@ -22,7 +25,7 @@ public final class ResourceUtil {
      * @throws IOException exception
      */
     public static Resource getResource(String key, ExecutionContext executionContext) throws IOException {
-        if (key.contains("://")) {
+        if (PATTERN.matcher(key).matches()) {
             return new UrlResource(key);
         } else {
             Map<String, Resource> resources = (Map<String, Resource>) executionContext.getContext().get("resources");
@@ -30,7 +33,7 @@ public final class ResourceUtil {
                 return resources.get(key);
             }
         }
-        throw new IOException("Resource not found");
+        throw new IOException(MessageFormat.format("Resource not found, {0}", key));
     }
 }
 

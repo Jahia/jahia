@@ -370,7 +370,7 @@ public class QueryResultIT extends AbstractJUnitTest {
         JCRNodeWrapper cat1 = null;
         JCRNodeWrapper cat2 = null;
         JCRNodeWrapper cat3 = null;
-        if (session.nodeExists("/sites/systemsite")) {
+        if (session.nodeExists("/sites/systemsite/categories")) {
             JCRNodeWrapper cats = session.getNode("/sites/systemsite/categories");
             if (!cats.hasNode("cat1"))
                 cats.addNode("cat1", "jnt:category");

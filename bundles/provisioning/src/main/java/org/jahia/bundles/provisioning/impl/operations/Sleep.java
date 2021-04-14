@@ -43,63 +43,36 @@
  */
 package org.jahia.bundles.provisioning.impl.operations;
 
-import org.jahia.osgi.BundleUtils;
-import org.jahia.services.modulemanager.BundleInfo;
-import org.jahia.services.modulemanager.ModuleManager;
 import org.jahia.services.provisioning.ExecutionContext;
 import org.jahia.services.provisioning.Operation;
-import org.osgi.framework.Bundle;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import java.util.Map;
 
 /**
- * Start bundle operation
+ * Sleep operation
  */
-@Component(service = Operation.class, property = "type=startBundle")
-public class StartBundle implements Operation {
-    private static final Logger logger = LoggerFactory.getLogger(StartBundle.class);
-    public static final String START_BUNDLE = "startBundle";
-    public static final String TARGET = "target";
-    private ModuleManager moduleManager;
-
-    @Reference
-    public void setModuleManager(ModuleManager moduleManager) {
-        this.moduleManager = moduleManager;
-    }
+@Component(service = Operation.class, property = "type=sleep")
+public class Sleep implements Operation {
+    private static final Logger logger = LoggerFactory.getLogger(Sleep.class);
+    public static final String SLEEP_OP = "sleep";
 
     @Override
     public boolean canHandle(Map<String, Object> entry) {
-        return entry.get(START_BUNDLE) instanceof String;
+        return entry.get(SLEEP_OP) instanceof Integer;
     }
 
     @Override
     public void perform(Map<String, Object> entry, ExecutionContext executionContext) {
-        if (entry.get(START_BUNDLE).equals("pending")) {
-            startPending(executionContext, (String) entry.get(TARGET));
-        } else {
-            moduleManager.start((String) entry.get(START_BUNDLE), (String) entry.get(TARGET));
-        }
-    }
-
-    private void startPending(ExecutionContext executionContext, String target) {
-        List<BundleInfo> toStart = (List<BundleInfo>) executionContext.getContext().get("toStart");
-        if (toStart != null) {
-            for (BundleInfo bundleInfo : toStart) {
-                try {
-                    Bundle bundle = BundleUtils.getBundle(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
-                    if (bundle != null && !BundleUtils.isFragment(bundle)) {
-                        moduleManager.start(bundleInfo.getKey(), target);
-                    }
-                } catch (Exception e) {
-                    logger.error("Cannot start {}", bundleInfo.getKey(), e);
-                }
+        Integer sleep = (Integer) entry.get(SLEEP_OP);
+        if (sleep != null) {
+            try {
+                Thread.sleep(sleep);
+            } catch (Exception e) {
+                logger.error("Cannot sleep {}", sleep, e);
             }
-            toStart.clear();
         }
     }
 }

@@ -91,6 +91,8 @@ public class ModuleDeploymentTest {
 
     private static final String TESTSITE_NAME = "ModuleDeploymentTestSite";
     private static final String DUMMY_1_MODULE = "dummy1";
+    private static final String JAHIA_TEST_MODULE = "jahia-test-module";
+    private static final String V_2_0_0_JAR = "-2.0.0.jar";
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
@@ -131,7 +133,7 @@ public class ModuleDeploymentTest {
                 }
 
                 SettingsBean settingsBean = SettingsBean.getInstance();
-                FileUtils.deleteQuietly(new File(settingsBean.getJahiaModulesDiskPath(), DUMMY_1_MODULE + "-2.0.0.jar"));
+                FileUtils.deleteQuietly(new File(settingsBean.getJahiaModulesDiskPath(), DUMMY_1_MODULE + V_2_0_0_JAR));
                 FileUtils.deleteQuietly(new File(settingsBean.getJahiaModulesDiskPath(), DUMMY_1_MODULE + "-2.1.0.jar"));
 
                 Bundle[] bundles = FrameworkService.getBundleContext().getBundles();
@@ -163,7 +165,7 @@ public class ModuleDeploymentTest {
 
                 try {
                     File tmpFile = File.createTempFile("module",".jar");
-                    InputStream stream = managerService.getTemplatePackageById("jahia-test-module").getResource(DUMMY_1_MODULE + "-2.0.0.jar").getInputStream();
+                    InputStream stream = managerService.getTemplatePackageById(JAHIA_TEST_MODULE).getResource(DUMMY_1_MODULE + V_2_0_0_JAR).getInputStream();
                     FileUtils.copyInputStreamToFile(stream,  tmpFile);
                     managerService.deployModule(tmpFile, session);
                     tmpFile.delete();
@@ -203,12 +205,12 @@ public class ModuleDeploymentTest {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 try {
                     File tmpFile = File.createTempFile("module",".jar");
-                    InputStream stream = managerService.getTemplatePackageById("jahia-test-module").getResource(DUMMY_1_MODULE + "-2.0.0.jar").getInputStream();
+                    InputStream stream = managerService.getTemplatePackageById(JAHIA_TEST_MODULE).getResource(DUMMY_1_MODULE + V_2_0_0_JAR).getInputStream();
                     FileUtils.copyInputStreamToFile(stream,  tmpFile);
                     managerService.deployModule(tmpFile, session);
                     tmpFile.delete();
                     tmpFile = File.createTempFile("module",".jar");
-                    stream = managerService.getTemplatePackageById("jahia-test-module").getResource(DUMMY_1_MODULE + "-2.1.0.jar").getInputStream();
+                    stream = managerService.getTemplatePackageById(JAHIA_TEST_MODULE).getResource(DUMMY_1_MODULE + "-2.1.0.jar").getInputStream();
                     FileUtils.copyInputStreamToFile(stream,  tmpFile);
                     managerService.deployModule(tmpFile, session);
                     tmpFile.delete();
@@ -239,7 +241,7 @@ public class ModuleDeploymentTest {
         File f = null;
         try {
             File tmpFile = File.createTempFile("module",".jar");
-            InputStream stream = managerService.getTemplatePackageById("jahia-test-module").getResource(DUMMY_1_MODULE + "-2.0.0.jar").getInputStream();
+            InputStream stream = managerService.getTemplatePackageById(JAHIA_TEST_MODULE).getResource(DUMMY_1_MODULE + V_2_0_0_JAR).getInputStream();
             FileUtils.copyInputStreamToFile(stream,  tmpFile);
             FileUtils.copyFileToDirectory(tmpFile, new File(settingsBean.getJahiaModulesDiskPath()));
             tmpFile.delete();
@@ -284,8 +286,8 @@ public class ModuleDeploymentTest {
                 File tmpFile = null;
                 try {
                     tmpFile = File.createTempFile("module", ".jar");
-                    FileUtils.copyURLToFile(managerService.getTemplatePackageById("jahia-test-module")
-                            .getResource(DUMMY_1_MODULE + "-2.0.0.jar").getURL(), tmpFile);
+                    FileUtils.copyURLToFile(managerService.getTemplatePackageById(JAHIA_TEST_MODULE)
+                            .getResource(DUMMY_1_MODULE + V_2_0_0_JAR).getURL(), tmpFile);
                     Map<String, String> env = new HashMap<>();
                     env.put("create", "true");
                     try (FileSystem fs = FileSystems.newFileSystem(URI.create("jar:" + tmpFile.toURI().toURL()), env)) {
@@ -331,7 +333,7 @@ public class ModuleDeploymentTest {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 try {
                     File tmpFile = File.createTempFile("module",".jar");
-                    InputStream stream = managerService.getTemplatePackageById("jahia-test-module").getResource(DUMMY_1_MODULE + "-2.0.0.jar").getInputStream();
+                    InputStream stream = managerService.getTemplatePackageById(JAHIA_TEST_MODULE).getResource(DUMMY_1_MODULE + V_2_0_0_JAR).getInputStream();
                     FileUtils.copyInputStreamToFile(stream,  tmpFile);
                     JahiaTemplatesPackage pack = managerService.deployModule(tmpFile, session);
                     tmpFile.delete();
@@ -370,7 +372,7 @@ public class ModuleDeploymentTest {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 try {
                     File tmpFile = File.createTempFile("module",".jar");
-                    InputStream stream = managerService.getTemplatePackageById("jahia-test-module").getResource(DUMMY_1_MODULE + "-2.0.0.jar").getInputStream();
+                    InputStream stream = managerService.getTemplatePackageById(JAHIA_TEST_MODULE).getResource(DUMMY_1_MODULE + V_2_0_0_JAR).getInputStream();
                     FileUtils.copyInputStreamToFile(stream,  tmpFile);
                     managerService.deployModule(tmpFile, session);
                     tmpFile.delete();

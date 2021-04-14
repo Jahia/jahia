@@ -89,7 +89,8 @@ public class ModuleDeploymentTest {
 
     private static JahiaTemplateManagerService managerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
 
-    private final static String TESTSITE_NAME = "ModuleDeploymentTestSite";
+    private static final String TESTSITE_NAME = "ModuleDeploymentTestSite";
+    private static final String DUMMY_1_MODULE = "dummy1";
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
@@ -120,22 +121,22 @@ public class ModuleDeploymentTest {
             @Override
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 logger.info("--- clear deployed modules");
-                JahiaTemplatesPackage oldpack = managerService.getTemplatePackageRegistry().lookupByIdAndVersion("dummy1", new ModuleVersion("2.0.0"));
+                JahiaTemplatesPackage oldpack = managerService.getTemplatePackageRegistry().lookupByIdAndVersion(DUMMY_1_MODULE, new ModuleVersion("2.0.0"));
                 if (oldpack != null) {
                     managerService.undeployModule(oldpack);
                 }
-                oldpack = managerService.getTemplatePackageRegistry().lookupByIdAndVersion("dummy1", new ModuleVersion("2.1.0"));
+                oldpack = managerService.getTemplatePackageRegistry().lookupByIdAndVersion(DUMMY_1_MODULE, new ModuleVersion("2.1.0"));
                 if (oldpack != null) {
                     managerService.undeployModule(oldpack);
                 }
 
                 SettingsBean settingsBean = SettingsBean.getInstance();
-                FileUtils.deleteQuietly(new File(settingsBean.getJahiaModulesDiskPath(), "dummy1-" + "2.0.0" + ".jar"));
-                FileUtils.deleteQuietly(new File(settingsBean.getJahiaModulesDiskPath(), "dummy1-" + "2.1.0" + ".jar"));
+                FileUtils.deleteQuietly(new File(settingsBean.getJahiaModulesDiskPath(), DUMMY_1_MODULE + "-2.0.0.jar"));
+                FileUtils.deleteQuietly(new File(settingsBean.getJahiaModulesDiskPath(), DUMMY_1_MODULE + "-2.1.0.jar"));
 
                 Bundle[] bundles = FrameworkService.getBundleContext().getBundles();
                 for (Bundle bundle : bundles) {
-                    if (bundle.getSymbolicName().equals("dummy1")) {
+                    if (bundle.getSymbolicName().equals(DUMMY_1_MODULE)) {
                         try {
                             bundle.uninstall();
                         } catch (BundleException e) {
@@ -162,7 +163,7 @@ public class ModuleDeploymentTest {
 
                 try {
                     File tmpFile = File.createTempFile("module",".jar");
-                    InputStream stream = managerService.getTemplatePackageById("jahia-test-module").getResource("dummy1-" + "2.0.0" + ".jar").getInputStream();
+                    InputStream stream = managerService.getTemplatePackageById("jahia-test-module").getResource(DUMMY_1_MODULE + "-2.0.0.jar").getInputStream();
                     FileUtils.copyInputStreamToFile(stream,  tmpFile);
                     managerService.deployModule(tmpFile, session);
                     tmpFile.delete();
@@ -171,7 +172,7 @@ public class ModuleDeploymentTest {
                     fail(e.toString());
                 }
 
-                JahiaTemplatesPackage pack = managerService.getTemplatePackageById("dummy1");
+                JahiaTemplatesPackage pack = managerService.getTemplatePackageById(DUMMY_1_MODULE);
                 assertNotNull(pack);
                 try {
                     Thread.sleep(500);
@@ -202,12 +203,12 @@ public class ModuleDeploymentTest {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 try {
                     File tmpFile = File.createTempFile("module",".jar");
-                    InputStream stream = managerService.getTemplatePackageById("jahia-test-module").getResource("dummy1-" + "2.0.0" + ".jar").getInputStream();
+                    InputStream stream = managerService.getTemplatePackageById("jahia-test-module").getResource(DUMMY_1_MODULE + "-2.0.0.jar").getInputStream();
                     FileUtils.copyInputStreamToFile(stream,  tmpFile);
                     managerService.deployModule(tmpFile, session);
                     tmpFile.delete();
                     tmpFile = File.createTempFile("module",".jar");
-                    stream = managerService.getTemplatePackageById("jahia-test-module").getResource("dummy1-" + "2.1.0" + ".jar").getInputStream();
+                    stream = managerService.getTemplatePackageById("jahia-test-module").getResource(DUMMY_1_MODULE + "-2.1.0.jar").getInputStream();
                     FileUtils.copyInputStreamToFile(stream,  tmpFile);
                     managerService.deployModule(tmpFile, session);
                     tmpFile.delete();
@@ -216,7 +217,7 @@ public class ModuleDeploymentTest {
                     fail(e.toString());
                 }
 
-                JahiaTemplatesPackage pack = managerService.getTemplatePackageById("dummy1");
+                JahiaTemplatesPackage pack = managerService.getTemplatePackageById(DUMMY_1_MODULE);
                 assertNotNull(pack);
                 try {
                     Thread.sleep(500);
@@ -238,15 +239,15 @@ public class ModuleDeploymentTest {
         File f = null;
         try {
             File tmpFile = File.createTempFile("module",".jar");
-            InputStream stream = managerService.getTemplatePackageById("jahia-test-module").getResource("dummy1-" + "2.0.0" + ".jar").getInputStream();
+            InputStream stream = managerService.getTemplatePackageById("jahia-test-module").getResource(DUMMY_1_MODULE + "-2.0.0.jar").getInputStream();
             FileUtils.copyInputStreamToFile(stream,  tmpFile);
             FileUtils.copyFileToDirectory(tmpFile, new File(settingsBean.getJahiaModulesDiskPath()));
             tmpFile.delete();
             f = new File(settingsBean.getJahiaModulesDiskPath(), tmpFile.getName());
 
-            with().pollInterval(Durations.ONE_SECOND).await().atMost(20, SECONDS).until(isPackageDeployedAndServiceInstalled("dummy1"));
+            with().pollInterval(Durations.ONE_SECOND).await().atMost(20, SECONDS).until(isPackageDeployedAndServiceInstalled(DUMMY_1_MODULE));
 
-            JahiaTemplatesPackage pack = managerService.getTemplatePackageById("dummy1");
+            JahiaTemplatesPackage pack = managerService.getTemplatePackageById(DUMMY_1_MODULE);
 
             assertNotNull(pack);
             assertEquals("Module is not started", ModuleState.State.STARTED, pack.getState().getState());
@@ -284,7 +285,7 @@ public class ModuleDeploymentTest {
                 try {
                     tmpFile = File.createTempFile("module", ".jar");
                     FileUtils.copyURLToFile(managerService.getTemplatePackageById("jahia-test-module")
-                            .getResource("dummy1-" + "2.0.0" + ".jar").getURL(), tmpFile);
+                            .getResource(DUMMY_1_MODULE + "-2.0.0.jar").getURL(), tmpFile);
                     Map<String, String> env = new HashMap<>();
                     env.put("create", "true");
                     try (FileSystem fs = FileSystems.newFileSystem(URI.create("jar:" + tmpFile.toURI().toURL()), env)) {
@@ -317,7 +318,7 @@ public class ModuleDeploymentTest {
     private Callable<Boolean> isPackageDeployedAndServiceInstalled(final String packageId) {
         return new Callable<Boolean>() {
             public Boolean call() throws Exception {
-                JahiaTemplatesPackage pack = managerService.getTemplatePackageById("dummy1");
+                JahiaTemplatesPackage pack = managerService.getTemplatePackageById(DUMMY_1_MODULE);
                 return pack != null && pack.getContext() != null && pack.isServiceInitialized();
             }
         };
@@ -330,7 +331,7 @@ public class ModuleDeploymentTest {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 try {
                     File tmpFile = File.createTempFile("module",".jar");
-                    InputStream stream = managerService.getTemplatePackageById("jahia-test-module").getResource("dummy1-" + "2.0.0" + ".jar").getInputStream();
+                    InputStream stream = managerService.getTemplatePackageById("jahia-test-module").getResource(DUMMY_1_MODULE + "-2.0.0.jar").getInputStream();
                     FileUtils.copyInputStreamToFile(stream,  tmpFile);
                     JahiaTemplatesPackage pack = managerService.deployModule(tmpFile, session);
                     tmpFile.delete();
@@ -343,7 +344,7 @@ public class ModuleDeploymentTest {
 
                     managerService.undeployModule(pack);
 
-                    pack = managerService.getTemplatePackageById("dummy1");
+                    pack = managerService.getTemplatePackageById(DUMMY_1_MODULE);
                     assertNull(pack);
                     assertFalse("Action not unregistered", managerService.getActions().containsKey("my-post-action"));
 //                    try {
@@ -369,7 +370,7 @@ public class ModuleDeploymentTest {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 try {
                     File tmpFile = File.createTempFile("module",".jar");
-                    InputStream stream = managerService.getTemplatePackageById("jahia-test-module").getResource("dummy1-" + "2.0.0" + ".jar").getInputStream();
+                    InputStream stream = managerService.getTemplatePackageById("jahia-test-module").getResource(DUMMY_1_MODULE + "-2.0.0.jar").getInputStream();
                     FileUtils.copyInputStreamToFile(stream,  tmpFile);
                     managerService.deployModule(tmpFile, session);
                     tmpFile.delete();
@@ -378,22 +379,22 @@ public class ModuleDeploymentTest {
                     fail(e.toString());
                 }
 
-                JahiaTemplatesPackage pack = managerService.getTemplatePackageById("dummy1");
+                JahiaTemplatesPackage pack = managerService.getTemplatePackageById(DUMMY_1_MODULE);
 
                 JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
                 JahiaSite site = service.getSiteByKey(TESTSITE_NAME, session);
 
-                assertFalse("Module was installed before test", site.getInstalledModules().contains("dummy1"));
+                assertFalse("Module was installed before test", site.getInstalledModules().contains(DUMMY_1_MODULE));
 
                 managerService.installModule(pack, site.getJCRLocalPath(), session);
                 session.save();
                 
-                assertTrue("Module has not been installed on site", site.getInstalledModules().contains("dummy1"));
+                assertTrue("Module has not been installed on site", site.getInstalledModules().contains(DUMMY_1_MODULE));
                 assertTrue("Module content has not been copied", session.itemExists("/sites/"+TESTSITE_NAME+"/contents/test-contents"));
 
                 managerService.uninstallModule(pack, site.getJCRLocalPath(), session);
                 session.save();
-                assertFalse("Module has not been removed from site", site.getInstalledModules().contains("dummy1"));
+                assertFalse("Module has not been removed from site", site.getInstalledModules().contains(DUMMY_1_MODULE));
                 return null;
             }
         });

@@ -50,7 +50,6 @@ import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
@@ -73,7 +72,7 @@ public class Include implements Operation {
         if (include != null) {
             try {
                 ProvisioningManager manager = executionContext.getProvisioningManager();
-                List<Map<String, Object>> script = manager.parseScript(new URL(include));
+                List<Map<String, Object>> script = manager.parseScript(ResourceUtil.getResource(include, executionContext).getURL());
                 manager.executeScript(script, executionContext);
             } catch (Exception e) {
                 logger.error("Cannot include {}", include, e);

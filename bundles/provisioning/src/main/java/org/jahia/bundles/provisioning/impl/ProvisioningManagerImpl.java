@@ -128,7 +128,14 @@ public class ProvisioningManagerImpl implements ProvisioningManager {
 
     @Override
     public void executeScript(List<Map<String, Object>> script) {
+        executeScript(script, Collections.emptyMap());
+    }
+
+    @Override
+    public void executeScript(List<Map<String, Object>> script, Map<String,Object> context) {
         ExecutionContext executionContext = new ExecutionContext(this);
+        executionContext.getContext().putAll(context);
+
         operations.forEach(op -> op.init(executionContext));
 
         executeScript(script, executionContext);

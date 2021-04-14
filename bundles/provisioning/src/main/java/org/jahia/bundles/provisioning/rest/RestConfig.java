@@ -44,6 +44,7 @@
 package org.jahia.bundles.provisioning.rest;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
 /**
@@ -55,6 +56,6 @@ public class RestConfig extends ResourceConfig {
      * Constructor
      */
     public RestConfig() {
-        super(ProvisioningResource.class, YamlProvider.class, JacksonJaxbJsonProvider.class, AuthenticationFilter.class);
+        super(MultiPartFeature.class, ProvisioningResource.class, YamlProvider.class, JacksonJaxbJsonProvider.class, AuthenticationFilter.class);
     }
 }

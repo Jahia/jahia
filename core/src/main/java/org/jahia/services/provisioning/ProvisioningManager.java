@@ -94,6 +94,8 @@ public interface ProvisioningManager {
      */
     void executeScript(List<Map<String, Object>> script);
 
+    void executeScript(List<Map<String, Object>> script, Map<String,Object> context);
+
     /**
      * Apply batch operations from a list of entries
      *

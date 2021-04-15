@@ -51,11 +51,9 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.UrlResource;
 
 import javax.jcr.RepositoryException;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Map;
 
 import static org.jahia.services.importexport.DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE;
@@ -94,7 +92,7 @@ public class ImportZip implements Operation {
         try {
             jcrTemplate.doExecuteWithSystemSession(session -> {
                 try {
-                    importExportService.importZip(rootPath != null ? rootPath : "/", new UrlResource(new URL(url)), ROOT_BEHAVIOUR_IGNORE, session);
+                    importExportService.importZip(rootPath != null ? rootPath : "/", ResourceUtil.getResource(url, executionContext), ROOT_BEHAVIOUR_IGNORE, session);
                 } catch (IOException e) {
                     throw new RepositoryException(e);
                 }

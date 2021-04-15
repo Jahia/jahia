@@ -52,11 +52,9 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.UrlResource;
 
 import javax.jcr.RepositoryException;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Map;
 
 /**
@@ -91,7 +89,7 @@ public class ImportSite implements Operation {
         try {
             jcrTemplate.doExecuteWithSystemSession(session -> {
                 try {
-                    importExportService.importSiteZip(new UrlResource(new URL(url)), session);
+                    importExportService.importSiteZip(ResourceUtil.getResource(url, executionContext), session);
                 } catch (IOException | JahiaException e) {
                     throw new RepositoryException(e);
                 }

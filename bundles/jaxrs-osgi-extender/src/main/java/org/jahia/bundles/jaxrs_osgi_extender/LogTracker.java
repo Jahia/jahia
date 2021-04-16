@@ -41,18 +41,42 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.bundles.spring.bridge;
+package org.jahia.bundles.jaxrs_osgi_extender;
 
-import org.jahia.osgi.FrameworkService;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.log.LogService;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
- * Send event to framework when started
+ * Log tracker
  */
-public class StartListener {
+public class LogTracker extends ServiceTracker<LogService,LogService> implements LogService {
     /**
-     * Send event to framework when started
+     * New LogTracker
+     * @param context context
      */
-    public void start() {
-        FrameworkService.getInstance().notifySpringBridgeStarted();
+    public LogTracker(BundleContext context) {
+        super(context, LogService.class.getName(), null);
+    }
+
+    public void log(int level, String message) {
+        log(null, level, message, null);
+    }
+
+    public void log(int level, String message, Throwable exception) {
+        log(null, level, message, exception);
+    }
+
+    public void log(ServiceReference sr, int level, String message) {
+        log(sr, level, message, null);
+    }
+
+    public void log(ServiceReference sr, int level, String message,
+                    Throwable exception) {
+        LogService log = getService();
+        if (log != null) {
+            log.log(sr, level, message, exception);
+        }
     }
 }

@@ -180,6 +180,8 @@
         <pax.web.jsp.version>7.3.7</pax.web.jsp.version>
         <karaf.version>4.2.7</karaf.version>
         <karaf.jaas.config.version>${karaf.version}</karaf.jaas.config.version>
+        <jersey.version>2.18</jersey.version>
+        <hk2.version>2.4.0-b25</hk2.version>
         <!-- End of OSGi versions -->
 
         <jahia.commons.version>1.0.8</jahia.commons.version>

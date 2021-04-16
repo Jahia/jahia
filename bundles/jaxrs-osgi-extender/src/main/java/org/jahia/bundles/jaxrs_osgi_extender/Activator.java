@@ -41,18 +41,32 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.bundles.spring.bridge;
+package org.jahia.bundles.jaxrs_osgi_extender;
 
-import org.jahia.osgi.FrameworkService;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 /**
- * Send event to framework when started
+ * Activator
  */
-public class StartListener {
-    /**
-     * Send event to framework when started
-     */
-    public void start() {
-        FrameworkService.getInstance().notifySpringBridgeStarted();
+public class Activator implements BundleActivator {
+
+    private LogTracker logTracker;
+    private HttpServiceTracker httpTracker;
+
+    @Override
+    public void start(BundleContext context) throws Exception {
+        logTracker = new LogTracker(context);
+        logTracker.open();
+
+        httpTracker = new HttpServiceTracker(context, logTracker);
+        httpTracker.open();
     }
+
+    @Override
+    public void stop(BundleContext context) throws Exception {
+        httpTracker.close();
+        logTracker.close();
+    }
+
 }

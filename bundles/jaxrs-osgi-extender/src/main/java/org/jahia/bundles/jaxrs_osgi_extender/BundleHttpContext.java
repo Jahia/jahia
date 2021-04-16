@@ -41,18 +41,44 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.bundles.spring.bridge;
+package org.jahia.bundles.jaxrs_osgi_extender;
 
-import org.jahia.osgi.FrameworkService;
+import org.osgi.framework.Bundle;
+import org.osgi.service.http.HttpContext;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URL;
 
 /**
- * Send event to framework when started
+ * Http context, mapping rest endpoints
  */
-public class StartListener {
+public class BundleHttpContext implements HttpContext {
+
+    private final Bundle bundle;
+
     /**
-     * Send event to framework when started
+     * New BundleHttpContext
+     * @param bundle bundle
      */
-    public void start() {
-        FrameworkService.getInstance().notifySpringBridgeStarted();
+    public BundleHttpContext(Bundle bundle) {
+        this.bundle = bundle;
     }
+
+    @Override
+    public URL getResource(String name) {
+        return bundle.getEntry(name);
+    }
+
+    @Override
+    public String getMimeType(String name) {
+        return null;
+    }
+
+    @Override
+    public boolean handleSecurity(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        return true;
+    }
+
 }

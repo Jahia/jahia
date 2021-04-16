@@ -55,80 +55,53 @@
     <name>Jahia DX JAX-RS Karaf OSGi Feature</name>
     <packaging>kar</packaging>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.jahia.modules</groupId>
-                <artifactId>jaxrs-osgi-extender-bom</artifactId>
-                <version>2.0.4</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.osgi</groupId>
-                <artifactId>osgi.cmpn</artifactId>
-                <version>${osgi.compendium.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
-        <!-- JAX-RS OSGi Extender dependencies -->
-        <!-- Jersey and dependencies, versions are defined in jaxrs-osgi-extender-bom -->
-        <dependency>
-            <groupId>org.glassfish.jersey.bundles</groupId>
-            <artifactId>jaxrs-ri</artifactId>
-            <scope>compile</scope>
-        </dependency>
         <dependency>
             <groupId>org.glassfish.hk2</groupId>
             <artifactId>hk2-api</artifactId>
+            <version>${hk2.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.glassfish.hk2</groupId>
             <artifactId>hk2-locator</artifactId>
+            <version>${hk2.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.glassfish.hk2</groupId>
             <artifactId>hk2-utils</artifactId>
+            <version>${hk2.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.glassfish.hk2.external</groupId>
             <artifactId>asm-all-repackaged</artifactId>
+            <version>${hk2.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.bundles.repackaged</groupId>
             <artifactId>jersey-guava</artifactId>
+            <version>${jersey.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.glassfish.hk2</groupId>
             <artifactId>osgi-resource-locator</artifactId>
+            <version>1.0.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.spec.javax.annotation</groupId>
             <artifactId>jboss-annotations-api_1.2_spec</artifactId>
+            <version>1.0.0.Final</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-multipart</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-sse</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jvnet.mimepull</groupId>
-            <artifactId>mimepull</artifactId>
+            <groupId>org.jahia.bundles</groupId>
+            <artifactId>org.jahia.bundles.jaxrs-osgi-extender</artifactId>
+            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

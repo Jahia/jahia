@@ -43,7 +43,6 @@
  */
 package org.jahia.osgi;
 
-import com.google.common.base.Charsets;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.reflect.MethodUtils;
@@ -52,10 +51,10 @@ import org.apache.karaf.util.config.PropertiesLoader;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.ScriptEngineUtils;
 import org.osgi.framework.*;
+import org.osgi.framework.startlevel.FrameworkStartLevel;
 import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,64 +65,46 @@ import javax.script.*;
 import javax.servlet.ServletContext;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * OSGi framework service. This class is responsible for setting up and starting the embedded Karaf OSGi runtime.
  *
  * @author Serge Huber
  */
-public class FrameworkService implements FrameworkListener {
-
-    // Initialization on demand holder idiom: thread-safe singleton initialization
-    private static class Holder {
-        static final FrameworkService INSTANCE = new FrameworkService(JahiaContextLoaderListener.getServletContext());
-
-        private Holder() {
-        }
-    }
-
-    /**
-     * Timer task that checks if we have reached the OSGi framework beginning start level.
-     *
-     * @author Sergiy Shyrkov
-     */
-    private class StartLevelChecker extends TimerTask {
-
-        @Override
-        public void run() {
-            synchronized (FrameworkService.this) {
-                if (frameworkStartLevelReached) {
-                    // we are done here: cancel the task
-                    cancel();
-                } else if (BundleLifecycleUtils.getFrameworkStartLevel() >= frameworkBeginningStartLevel) {
-                    frameworkStartLevelReached = true;
-                    logger.info("Framework start level reached {}", frameworkBeginningStartLevel);
-                    notifyStarted();
-                    // we are done here: cancel the task
-                    cancel();
-                }
-            }
-        }
-
-        @Override
-        public boolean cancel() {
-            logger.info("Cancelling the start level checker task");
-            boolean result = super.cancel();
-            FrameworkService.this.destroyTimer();
-
-            return result;
-        }
-    }
+public final class FrameworkService implements FrameworkListener {
+    private static final Logger logger = LoggerFactory.getLogger(FrameworkService.class);
 
     public static final String EVENT_TOPIC_LIFECYCLE = "org/jahia/dx/lifecycle";
-
     public static final String EVENT_TYPE_CLUSTERING_FEATURE_INSTALLED = "clusteringFeatureInstalled";
-
-    public static final String EVENT_TYPE_OSGI_STARTED = "osgiContainerStarted";
+    public static final String EVENT_TYPE_INITIAL_START_LEVEL_REACHED = "initialStartLevelReached";
     public static final String EVENT_TYPE_FILEINSTALL_STARTED = "fileInstallStarted";
+    public static final String EVENT_TYPE_SPRING_BRIDGE_STARTED = "springBridgeStarted";
+    public static final String EVENT_TYPE_CLUSTER_STARTED = "clusterStarted";
+    public static final String EVENT_TYPE_FINAL_START_LEVEL_REACHED = "finalStartLevelReached";
 
-    private static final Logger logger = LoggerFactory.getLogger(FrameworkService.class);
+    private final ServletContext servletContext;
+    private boolean firstStartup;
+    private Main main;
+    private long startTime;
+    private int initialFrameworkStartLevel = 80;
+    private int finalFrameworkStartLevel = 100;
+    private long osgiStartupWaitTimeout;
+    private BundleStarter bundleStarter;
+    private Timer startLevelTimer = new Timer("OSGi-FrameworkService-Startup-Timer", true);
+
+    private final CountDownLatch initialStartLevelReachedLatch = new CountDownLatch(1);
+    private final CountDownLatch fileInstallStartedLatch = new CountDownLatch(1);
+    private final CountDownLatch springBridgeStartedLatch = new CountDownLatch(1);
+    private final CountDownLatch finalStartLevelReachedLatch = new CountDownLatch(1);
+    private final CountDownLatch clusterStartedLatch = new CountDownLatch(1);
+
+    private FrameworkService(ServletContext servletContext) {
+        this.servletContext = servletContext;
+    }
 
     /**
      * Returns bundle context.
@@ -149,74 +130,13 @@ public class FrameworkService implements FrameworkListener {
     }
 
     /**
-     * Notifies the service that the FileInstall watcher has been started and processed the found modules.
-     */
-    public static void notifyFileInstallStarted(List<Long> createdOnStartup) {
-        final FrameworkService instance = getInstance();
-
-        instance.bundleStarter.afterFileInstallStarted(createdOnStartup);
-
-        synchronized (instance) {
-            instance.fileInstallStarted = true;
-            logger.info("FileInstall watcher started");
-            instance.notifyStarted();
-        }
-
-        sendEvent(EVENT_TOPIC_LIFECYCLE, Collections.singletonMap("type", EVENT_TYPE_FILEINSTALL_STARTED), false);
-    }
-
-    /**
-     * Notifies the service that the Spring bridge has been started
-     */
-    public static void notifySpringBridgeStarted() {
-        final FrameworkService instance = getInstance();
-
-        synchronized (instance) {
-            instance.springBridgeStarted = true;
-            logger.info("Spring bridge started");
-            instance.notifyStarted();
-        }
-    }
-
-    /**
-     * Notifies the service that the FileInstall watcher has been started and processed the found modules.
-     */
-    public static void notifyClusterStarted() {
-        final FrameworkService instance = getInstance();
-
-        synchronized (instance) {
-            instance.clusterStarted = true;
-            logger.info("Cluster started");
-            instance.notifyStarted();
-        }
-    }
-
-    /**
-     * Notify this service that the container has actually started.
-     */
-    private synchronized void notifyStarted() {
-        if (isStarted()) {
-            // send synchronous event about startup
-            sendEvent(EVENT_TOPIC_LIFECYCLE, Collections.singletonMap("type", EVENT_TYPE_OSGI_STARTED), false);
-
-            if (SettingsBean.getInstance().isProcessingServer()) {
-                ModuleUtils.getModuleManager().storeAllLocalPersistentStates();
-            }
-            // both pre-requisites for startup are fulfilled
-            // notify any threads waiting
-            notifyAll();
-            logger.info("OSGi platform service initialized in {} ms", (System.currentTimeMillis() - startTime));
-        }
-    }
-
-    /**
      * Initiate synchronous or asynchronous delivery of an OSGi event using {@link EventAdmin} service. If synchronous delivery is
      * requested, this method does not return to the caller until delivery of the event is completed.
      *
-     * @param topic the topic of the event
-     * @param properties the event's properties (may be {@code null}). A property whose key is not of type {@code String} will be ignored.
+     * @param topic        the topic of the event
+     * @param properties   the event's properties (may be {@code null}). A property whose key is not of type {@code String} will be ignored.
      * @param asynchronous if <code>true</code> an event is delivered asynchronously; in case of <code>false</code> this method does not
-     *            return to the caller until delivery of the event is completed
+     *                     return to the caller until delivery of the event is completed
      */
     public static void sendEvent(String topic, Map<String, ?> properties, boolean asynchronous) {
         BundleContext context = FrameworkService.getBundleContext();
@@ -230,8 +150,7 @@ public class FrameworkService implements FrameworkListener {
                     Object evt = classLoader.loadClass("org.osgi.service.event.Event")
                             .getConstructor(String.class, Map.class).newInstance(topic, properties);
 
-                    logger.info("Sending {} event with the properties {} to the topic {}...",
-                            new Object[]{asynchronous ? "asynchronous" : "synchronous", properties, topic});
+                    logger.info("Sending {} event with the properties {} to the topic {}...", asynchronous ? "asynchronous" : "synchronous", properties, topic);
 
                     MethodUtils.invokeExactMethod(service, asynchronous ? "postEvent" : "sendEvent", evt);
 
@@ -244,46 +163,13 @@ public class FrameworkService implements FrameworkListener {
         }
     }
 
-    private boolean firstStartup;
-    private boolean fileInstallStarted;
-    private boolean springBridgeStarted;
-    private boolean clusterStarted;
-    private boolean frameworkStartLevelReached;
-    private Main main;
-    private final ServletContext servletContext;
-    private long startTime;
-    private int frameworkBeginningStartLevel = 100;
-
-    private BundleStarter bundleStarter;
-
-    private Timer startLevelTimer = new Timer("OSGi-FrameworkService-Startup-Timer", true);
-
-    private FrameworkService(ServletContext servletContext) {
-        this.servletContext = servletContext;
-    }
-
-
-    @Override
-    public void frameworkEvent(FrameworkEvent event) {
-        if (event.getType() == FrameworkEvent.STARTLEVEL_CHANGED && BundleLifecycleUtils.getFrameworkStartLevel() >= frameworkBeginningStartLevel) {
-            synchronized (this) {
-                if (!frameworkStartLevelReached) {
-                    frameworkStartLevelReached = true;
-                    logger.info("Framework start level reached {}", frameworkBeginningStartLevel);
-                    notifyStarted();
-                }
-            }
-        }
-    }
-
     /**
      * Returns <code>true</code> if the OSGi container is completely started.
      *
      * @return <code>true</code> if the OSGi container is completely started; <code>false</code> otherwise
      */
     public boolean isStarted() {
-        boolean clusterReady = !SettingsBean.getInstance().isClusterActivated() || clusterStarted;
-        return frameworkStartLevelReached && fileInstallStarted && springBridgeStarted && clusterReady;
+        return finalStartLevelReachedLatch.getCount() == 0;
     }
 
     /**
@@ -295,28 +181,16 @@ public class FrameworkService implements FrameworkListener {
         return firstStartup;
     }
 
-    private void restoreSystemProperties(Map<String, String> systemPropertiesToRestore) {
-
-        if (systemPropertiesToRestore == null || systemPropertiesToRestore.isEmpty()) {
-            // nothing to restore
-            return;
-        }
-
-        for (Map.Entry<String, String> prop : systemPropertiesToRestore.entrySet()) {
-            logger.info("Restoring system property {}", prop.getKey());
-            System.setProperty(prop.getKey(), prop.getValue());
-        }
-    }
-
     private void setupStartupListener() {
-        frameworkBeginningStartLevel = Integer.parseInt(System.getProperty(Constants.FRAMEWORK_BEGINNING_STARTLEVEL));
+        initialFrameworkStartLevel = Integer.parseInt(System.getProperty(Constants.FRAMEWORK_BEGINNING_STARTLEVEL));
+        osgiStartupWaitTimeout = Long.getLong("org.jahia.osgi.startupWaitTimeout", 10 * 60 * 1000L);
         try {
             Map<String, BundleListener> m = SpringContextSingleton.getBeansOfType(BundleListener.class);
             for (BundleListener value : m.values()) {
                 main.getFramework().getBundleContext().addBundleListener(value);
             }
         } catch (BeansException e) {
-            logger.warn("Error when getting framework listeners",e);
+            logger.warn("Error when getting framework listeners", e);
         }
         main.getFramework().getBundleContext().addFrameworkListener(this);
 
@@ -326,8 +200,8 @@ public class FrameworkService implements FrameworkListener {
     private void setupSystemProperties() {
 
         @SuppressWarnings("unchecked")
-        Map<String,String> unreplaced = (Map<String,String>) SpringContextSingleton.getBean("osgiProperties");
-        Map<String,String> newSystemProperties = new TreeMap<>();
+        Map<String, String> unreplaced = (Map<String, String>) SpringContextSingleton.getBean("osgiProperties");
+        Map<String, String> newSystemProperties = new TreeMap<>();
 
         PropertyPlaceholderHelper placeholderHelper = new PropertyPlaceholderHelper("${", "}");
         Properties systemProps = System.getProperties();
@@ -336,14 +210,14 @@ public class FrameworkService implements FrameworkListener {
             newSystemProperties.put(entry.getKey(), placeholderHelper.replacePlaceholders(entry.getValue(), systemProps));
         }
 
-        for (Map.Entry<String,String> property : newSystemProperties.entrySet()) {
+        for (Map.Entry<String, String> property : newSystemProperties.entrySet()) {
             String propertyName = property.getKey();
             String oldPropertyValue = System.getProperty(propertyName);
             String newPropertyValue = property.getValue();
             boolean valueHasChanged = oldPropertyValue != null
                     && !StringUtils.equals(oldPropertyValue, newPropertyValue);
             if (valueHasChanged) {
-                logger.warn("Overriding system property {}={} with new value={}", new Object[] { propertyName, oldPropertyValue, newPropertyValue });
+                logger.warn("Overriding system property {}={} with new value={}", propertyName, oldPropertyValue, newPropertyValue);
             }
             if (oldPropertyValue == null || valueHasChanged) {
                 JahiaContextLoaderListener.setSystemProperty(propertyName, newPropertyValue);
@@ -355,7 +229,7 @@ public class FrameworkService implements FrameworkListener {
         try {
             karafConfigProperties = PropertiesLoader.loadConfigProperties(file);
         } catch (Exception e) {
-            logger.error("Unable to load properties from file " + file + ". Cause: " + e.getMessage(), e);
+            logger.error("Unable to load properties from file {}. Cause: {}", file, e.getMessage(), e);
             karafConfigProperties = new org.apache.felix.utils.properties.Properties();
         }
 
@@ -373,6 +247,9 @@ public class FrameworkService implements FrameworkListener {
 
     }
 
+    /**
+     * Start framework
+     */
     public void start() {
 
         try {
@@ -400,7 +277,7 @@ public class FrameworkService implements FrameworkListener {
             bundleStarter.startInitialBundlesIfNeeded();
         } catch (Exception e) {
             main = null;
-            logger.error("Error starting OSGi container", e);
+            logger.error("Error starting OSGi container");
             throw new JahiaRuntimeException("Error starting OSGi container", e);
         }
     }
@@ -423,7 +300,7 @@ public class FrameworkService implements FrameworkListener {
         logger.info("OSGi framework stopped");
     }
 
-    protected void destroyTimer() {
+    private void destroyTimer() {
         if (startLevelTimer != null) {
             try {
                 startLevelTimer.cancel();
@@ -457,12 +334,168 @@ public class FrameworkService implements FrameworkListener {
         bindings.put("logger", logger);
         scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
         try (FileInputStream scriptInputStream = new FileInputStream(script);
-                InputStreamReader scriptReader = new InputStreamReader(scriptInputStream, Charsets.UTF_8);
-                StringWriter out = new StringWriter()) {
+             InputStreamReader scriptReader = new InputStreamReader(scriptInputStream, StandardCharsets.UTF_8);
+             StringWriter out = new StringWriter()) {
             scriptContext.setWriter(out);
             scriptEngine.eval(scriptReader, scriptContext);
         } catch (ScriptException | IOException e) {
             throw new JahiaRuntimeException(e);
+        }
+    }
+
+    // Startup lifecycle
+
+    @Override
+    public void frameworkEvent(FrameworkEvent event) {
+        if (event.getType() == FrameworkEvent.STARTLEVEL_CHANGED && BundleLifecycleUtils.getFrameworkStartLevel() >= initialFrameworkStartLevel) {
+            notifyInitialStartLevelReached();
+        }
+    }
+
+    /**
+     * Notifies the service that the Initial start leve has been reached
+     */
+    public void notifyInitialStartLevelReached() {
+        logger.info("Inital start level reached {}", initialFrameworkStartLevel);
+        initialStartLevelReachedLatch.countDown();
+        sendEvent(EVENT_TOPIC_LIFECYCLE, Collections.singletonMap("type", EVENT_TYPE_INITIAL_START_LEVEL_REACHED), false);
+    }
+
+    /**
+     * Wait for initial start level to be reached
+     */
+    public void waitForInitialStartLevelReached() {
+        waitForLatch(initialStartLevelReachedLatch, "initial start level to be reached");
+    }
+
+    /**
+     * Notifies the service that the FileInstall watcher has been started and processed the found modules.
+     * @param createdOnStartup List of bundles that have installed by fileinstall
+     */
+    public void notifyFileInstallStarted(List<Long> createdOnStartup) {
+        bundleStarter.afterFileInstallStarted(createdOnStartup);
+
+        logger.info("FileInstall watcher started");
+        fileInstallStartedLatch.countDown();
+        sendEvent(EVENT_TOPIC_LIFECYCLE, Collections.singletonMap("type", EVENT_TYPE_FILEINSTALL_STARTED), false);
+    }
+
+    /**
+     * Wait for fileinstall
+     */
+    public void waitForFileInstallStarted() {
+        waitForLatch(fileInstallStartedLatch, "file-install");
+    }
+
+    /**
+     * Notifies the service that the Spring bridge has been started
+     */
+    public void notifySpringBridgeStarted() {
+        logger.info("Spring bridge started");
+        springBridgeStartedLatch.countDown();
+        sendEvent(EVENT_TOPIC_LIFECYCLE, Collections.singletonMap("type", EVENT_TYPE_SPRING_BRIDGE_STARTED), false);
+    }
+
+    /**
+     * Wait for Spring bridge to be started
+     */
+    public void waitForSpringBridgeStarted() {
+        waitForLatch(springBridgeStartedLatch, "Spring bridge to be started");
+    }
+
+    /**
+     * Raise the start level to its final state
+     */
+    public void raiseStartLevel() {
+        logger.info("Raising start level to {}", finalFrameworkStartLevel);
+        FrameworkStartLevel frameworkStartLevel = main.getFramework().getBundleContext().getBundle(0).adapt(FrameworkStartLevel.class);
+        frameworkStartLevel.setStartLevel(finalFrameworkStartLevel, event -> notifyFinalStartLevelReached());
+    }
+
+    /**
+     * Notifies the service that the Spring bridge has been started
+     */
+    public void notifyFinalStartLevelReached() {
+        logger.info("Final start level reached");
+        logger.info("OSGi platform service initialized in {} ms", (System.currentTimeMillis() - startTime));
+        finalStartLevelReachedLatch.countDown();
+        sendEvent(EVENT_TOPIC_LIFECYCLE, Collections.singletonMap("type", EVENT_TYPE_FINAL_START_LEVEL_REACHED), false);
+    }
+
+    /**
+     * Wait for final start level to be reached
+     */
+    public void waitForFinalStartLevelReached() {
+        waitForLatch(finalStartLevelReachedLatch, "final start level to be reached");
+    }
+
+    /**
+     * Notifies the service that the FileInstall watcher has been started and processed the found modules.
+     */
+    public void notifyClusterStarted() {
+        logger.info("Cluster started");
+        clusterStartedLatch.countDown();
+        sendEvent(EVENT_TOPIC_LIFECYCLE, Collections.singletonMap("type", EVENT_TYPE_CLUSTER_STARTED), false);
+    }
+
+    /**
+     * Wait for cluster sync to be finished
+     */
+    public void waitForClusterStarted() {
+        if (SettingsBean.getInstance().isClusterActivated()) {
+            waitForLatch(clusterStartedLatch, "cluster sync to be finished");
+        }
+    }
+
+    private void waitForLatch(CountDownLatch latch, String name) {
+        if (osgiStartupWaitTimeout > 0) {
+            logger.info("Waiting for {} ...", name);
+            try {
+                if (!latch.await(osgiStartupWaitTimeout, TimeUnit.MILLISECONDS)) {
+                    logger.warn("Timeout reached when waiting for {}", name);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new JahiaRuntimeException(e);
+            }
+        }
+    }
+
+    // Initialization on demand holder idiom: thread-safe singleton initialization
+    private static final class Holder {
+        static final FrameworkService INSTANCE = new FrameworkService(JahiaContextLoaderListener.getServletContext());
+
+        private Holder() {
+        }
+    }
+
+    /**
+     * Timer task that checks if we have reached the OSGi framework beginning start level.
+     *
+     * @author Sergiy Shyrkov
+     */
+    private class StartLevelChecker extends TimerTask {
+
+        @Override
+        public void run() {
+            if (initialStartLevelReachedLatch.getCount() == 0) {
+                // we are done here: cancel the task
+                cancel();
+            } else if (BundleLifecycleUtils.getFrameworkStartLevel() >= initialFrameworkStartLevel) {
+                logger.info("Framework start level reached {}", initialFrameworkStartLevel);
+                initialStartLevelReachedLatch.countDown();
+                // we are done here: cancel the task
+                cancel();
+            }
+        }
+
+        @Override
+        public boolean cancel() {
+            logger.info("Cancelling the start level checker task");
+            boolean result = super.cancel();
+            FrameworkService.this.destroyTimer();
+
+            return result;
         }
     }
 }

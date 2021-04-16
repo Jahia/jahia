@@ -41,18 +41,47 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.bundles.spring.bridge;
+package org.jahia.bundles.jaxrs_osgi_extender;
 
-import org.jahia.osgi.FrameworkService;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.http.HttpService;
+import org.osgi.service.log.LogService;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
- * Send event to framework when started
+ * Http tracker, starts the ResourceBundleTracker
  */
-public class StartListener {
+public class HttpServiceTracker extends ServiceTracker<HttpService, ResourceBundleTracker> {
+
+    private final LogService log;
+
     /**
-     * Send event to framework when started
+     * New HttpServiceTracker
+     * @param context context
+     * @param log log
      */
-    public void start() {
-        FrameworkService.getInstance().notifySpringBridgeStarted();
+    public HttpServiceTracker(BundleContext context, LogService log) {
+        super(context, HttpService.class.getName(), null);
+        this.log = log;
+    }
+
+    @Override
+    public ResourceBundleTracker addingService(ServiceReference<HttpService> reference) {
+        HttpService httpService = context.getService(reference);
+
+        log.log(LogService.LOG_INFO, "Starting to track JAX-RS bundles");
+
+        ResourceBundleTracker bundleTracker = new ResourceBundleTracker(context, httpService, log);
+        bundleTracker.open();
+
+        return bundleTracker;
+    }
+
+    @Override
+    public void removedService(ServiceReference<HttpService> reference, ResourceBundleTracker bundleTracker) {
+        log.log(LogService.LOG_INFO, "Stopping tracking JAX-RS bundles");
+        bundleTracker.close();
+        context.ungetService(reference);
     }
 }

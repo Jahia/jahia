@@ -43,26 +43,22 @@
  */
 package org.jahia.bin;
 
-import java.io.IOException;
-import java.util.List;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.data.templates.ModuleState.State;
-import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.exceptions.JahiaRuntimeException;
-import org.jahia.osgi.FrameworkService;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * This servlet is used to catch the end of the initialization of the web application, as the order of
@@ -74,8 +70,6 @@ import org.slf4j.LoggerFactory;
  * HTTP request to it to check if the web application has completed initialization or not.
  */
 public class EndInit extends HttpServlet {
-
-    private static final long OSGI_STARTUP_WAIT_TIMEOUT = Long.getLong("org.jahia.osgi.startupWaitTimeout", 10 * 60 * 1000L);
 
     private static Logger logger = LoggerFactory.getLogger(EndInit.class);
 
@@ -108,29 +102,13 @@ public class EndInit extends HttpServlet {
         }
     }
 
-    private void finishInit() {
-        try {
-            JahiaContextLoaderListener.endContextInitialized();
-
-            // start schedulers
-            ServicesRegistry.getInstance().getSchedulerService().startSchedulers();
-        } catch (JahiaInitializationException e) {
-            logger.error(e.getMessage(), e);
-            throw new JahiaRuntimeException(e);
-        }
-    }
-
     @Override
     public void init() throws ServletException {
         super.init();
 
         logger.info("Got into EndInit");
 
-        if (OSGI_STARTUP_WAIT_TIMEOUT > 0) {
-            waitForStartup();
-        }
-
-        finishInit();
+        JahiaContextLoaderListener.endContextInitialized();
 
         printEndMessage();
 
@@ -161,25 +139,6 @@ public class EndInit extends HttpServlet {
         "\n  ").append(Jahia.getFullProductVersion()).append(" is now ready. Initialization completed in ").append((initializationTime/1000)).append(" seconds");
         out.append("\n--------------------------------------------------------------------------------------------------");
         logger.info(out.toString());
-    }
-
-    private void waitForStartup() {
-        boolean stopWaiting = false;
-        FrameworkService instance = FrameworkService.getInstance();
-        synchronized (instance) {
-            if (!instance.isStarted()) {
-                logger.info("Start waiting for OSGi framework startup");
-                while (!stopWaiting && !instance.isStarted()) {
-                    try {
-                        instance.wait(OSGI_STARTUP_WAIT_TIMEOUT);
-                        stopWaiting = true;
-                    } catch (InterruptedException e) {
-                        // ignore
-                    }
-                }
-                logger.info("Stopped waiting for OSGi framework startup");
-            }
-        }
     }
 
 }

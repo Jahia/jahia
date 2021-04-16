@@ -146,7 +146,7 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
     fi
 
     if [ "${EXECUTE_PROVISIONING_SCRIPT}" != "" ]; then
-      echo " - include: ${EXECUTE_PROVISIONING_SCRIPT}" > ${DATA_FOLDER}/patches/provisioning/999-docker-provisioning.contextInitialized.yaml
+      echo " - include: ${EXECUTE_PROVISIONING_SCRIPT}" > ${DATA_FOLDER}/patches/provisioning/999-docker-provisioning.yaml
     fi
 
     echo -n "${SUPER_USER_PASSWORD}" | sha256sum > ${DATA_FOLDER}/info/passwd

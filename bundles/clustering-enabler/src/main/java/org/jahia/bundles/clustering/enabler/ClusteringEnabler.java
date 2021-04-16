@@ -86,7 +86,7 @@ import java.util.Set;
         Constants.SERVICE_DESCRIPTION + "=DX clustring feature enabler",
         Constants.SERVICE_VENDOR + "=" + Jahia.VENDOR_NAME,
         EventConstants.EVENT_TOPIC + "=" + FrameworkService.EVENT_TOPIC_LIFECYCLE,
-        EventConstants.EVENT_FILTER + "=(type=" + FrameworkService.EVENT_TYPE_FILEINSTALL_STARTED + ")" }, immediate = true)
+        EventConstants.EVENT_FILTER + "=(type=" + FrameworkService.EVENT_TYPE_FINAL_START_LEVEL_REACHED + ")" }, immediate = true)
 public class ClusteringEnabler implements EventHandler {
 
     private static final String FEATURE_NAME = "dx-clustering";
@@ -161,7 +161,7 @@ public class ClusteringEnabler implements EventHandler {
                     public Object addingService(ServiceReference<Object> reference) {
                         clusterServices.remove(reference.getProperty("resource"));
                         if (clusterServices.isEmpty()) {
-                            FrameworkService.notifyClusterStarted();
+                            FrameworkService.getInstance().notifyClusterStarted();
                             tracker.close();
                             tracker = null;
                         }

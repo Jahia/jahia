@@ -55,6 +55,7 @@ import org.jahia.services.provisioning.Operation;
 import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.startlevel.BundleStartLevel;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -148,7 +149,8 @@ public class InstallBundle implements Operation {
 
         if (entry.get(AUTO_START) != Boolean.FALSE && entry.get(INSTALL_OR_UPGRADE_BUNDLE) != null) {
             // In case of upgrade, get the previous version state, or auto-start by default
-            autoStart = installedVersions == null || installedVersions.stream().anyMatch(b -> b.getState() == Bundle.ACTIVE);
+            autoStart = installedVersions == null || installedVersions.stream()
+                    .anyMatch(b -> b.getState() == Bundle.ACTIVE || b.adapt(BundleStartLevel.class).isPersistentlyStarted());
         }
 
         if (autoStart) {

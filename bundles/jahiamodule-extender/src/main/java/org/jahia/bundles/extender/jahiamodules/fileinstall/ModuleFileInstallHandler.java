@@ -405,7 +405,7 @@ public class ModuleFileInstallHandler implements CustomHandler {
     @Override
     public void watcherStarted() {
         // notify the framework that the file install watcher has started and processed found modules
-        FrameworkService.notifyFileInstallStarted(createdOnStartup);
+        FrameworkService.getInstance().notifyFileInstallStarted(createdOnStartup);
     }
 
     /*

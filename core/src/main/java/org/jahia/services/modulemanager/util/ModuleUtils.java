@@ -43,23 +43,6 @@
  */
 package org.jahia.services.modulemanager.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.util.*;
-import java.util.jar.Attributes;
-import java.util.jar.JarFile;
-import java.util.jar.Manifest;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
-
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -80,6 +63,20 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
+import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.util.*;
+import java.util.jar.Attributes;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+
 import static org.jahia.services.modulemanager.Constants.*;
 
 /**
@@ -87,8 +84,12 @@ import static org.jahia.services.modulemanager.Constants.*;
  * the Provide-Capability for the module itself.
  */
 public class ModuleUtils {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(ModuleUtils.class);
+    protected static final Collection<String> DEPENDENCIES_TO_REMOVE = Arrays.asList("jaxrs-osgi-extender");
+
+    private ModuleUtils() {
+    }
 
     /**
      * Modifies the manifest attributes for Provide-Capability and Require-Capability (if needed) based on the module dependencies.
@@ -102,9 +103,21 @@ public class ModuleUtils {
             return false;
         }
         String moduleId = atts.getValue(ATTR_NAME_BUNDLE_SYMBOLIC_NAME);
+        cleanupJahiaDepends(atts);
         populateProvideCapabilities(moduleId, atts);
         populateRequireCapabilities(moduleId, atts);
         return true;
+    }
+
+    private static void cleanupJahiaDepends(Attributes atts) {
+        if (atts.getValue(ATTR_NAME_JAHIA_DEPENDS) != null) {
+            String[] split = StringUtils.split(atts.getValue(ATTR_NAME_JAHIA_DEPENDS), ",");
+            if (Arrays.stream(split).anyMatch(DEPENDENCIES_TO_REMOVE::contains)) {
+                atts.putValue(ATTR_NAME_JAHIA_DEPENDS.toString(), Arrays.stream(split)
+                        .filter(s -> !DEPENDENCIES_TO_REMOVE.contains(s))
+                        .collect(Collectors.joining(",")));
+            }
+        }
     }
 
     /**

@@ -194,7 +194,7 @@
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-all</artifactId>
+            <artifactId>hamcrest</artifactId>
             <version>${hamcrest.version}</version>
         </dependency>
 
@@ -219,8 +219,8 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>xmlunit</groupId>
-            <artifactId>xmlunit</artifactId>
+            <groupId>org.xmlunit</groupId>
+            <artifactId>xmlunit-core</artifactId>
             <version>${xmlunit.version}</version>
         </dependency>
         <dependency>
@@ -364,7 +364,7 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.8.0</version>
+            <version>${assertj.version}</version>
         </dependency>
 
         <!-- Template sets, required by tests -->

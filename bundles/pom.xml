@@ -65,6 +65,7 @@
         <module>bridging-log4j-appender</module>
         <module>jaas-module</module>
         <module>jcrcommands</module>
+        <module>jaxrs-osgi-extender</module>
         <module>spring-bridge</module>
         <module>config-manager</module>
         <module>clustering-enabler</module>

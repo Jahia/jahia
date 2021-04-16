@@ -53,6 +53,6 @@ public class StartListener {
      * Send event to framework when started
      */
     public void start() {
-        FrameworkService.notifySpringBridgeStarted();
+        FrameworkService.getInstance().notifySpringBridgeStarted();
     }
 }

@@ -41,21 +41,47 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.bundles.provisioning.rest;
+package org.jahia.bundles.jaxrs_osgi_extender;
 
-import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.glassfish.jersey.server.ResourceConfig;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.http.HttpService;
+import org.osgi.service.log.LogService;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
- * REST App for provisioning endpoint
+ * Http tracker, starts the ResourceBundleTracker
  */
-public class RestConfig extends ResourceConfig {
+public class HttpServiceTracker extends ServiceTracker<HttpService, ResourceBundleTracker> {
+
+    private final LogService log;
 
     /**
-     * Constructor
+     * New HttpServiceTracker
+     * @param context context
+     * @param log log
      */
-    public RestConfig() {
-        super(MultiPartFeature.class, ProvisioningResource.class, YamlProvider.class, JacksonJaxbJsonProvider.class, AuthenticationFilter.class);
+    public HttpServiceTracker(BundleContext context, LogService log) {
+        super(context, HttpService.class.getName(), null);
+        this.log = log;
+    }
+
+    @Override
+    public ResourceBundleTracker addingService(ServiceReference<HttpService> reference) {
+        HttpService httpService = context.getService(reference);
+
+        log.log(LogService.LOG_INFO, "Starting to track JAX-RS bundles");
+
+        ResourceBundleTracker bundleTracker = new ResourceBundleTracker(context, httpService, log);
+        bundleTracker.open();
+
+        return bundleTracker;
+    }
+
+    @Override
+    public void removedService(ServiceReference<HttpService> reference, ResourceBundleTracker bundleTracker) {
+        log.log(LogService.LOG_INFO, "Stopping tracking JAX-RS bundles");
+        bundleTracker.close();
+        context.ungetService(reference);
     }
 }

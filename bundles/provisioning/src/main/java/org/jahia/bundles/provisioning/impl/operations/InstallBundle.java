@@ -55,12 +55,13 @@ import org.jahia.services.provisioning.Operation;
 import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.startlevel.BundleStartLevel;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.UrlResource;
+import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.util.*;
@@ -119,7 +120,7 @@ public class InstallBundle implements Operation {
             Optional<String> bundleKeyOptional = Arrays.stream(SUPPORTED_KEYS).map(k -> (String) entry.get(k)).filter(Objects::nonNull).findFirst();
             if (bundleKeyOptional.isPresent()) {
                 String bundleKey = bundleKeyOptional.get();
-                UrlResource resource = new UrlResource(bundleKey);
+                Resource resource = ResourceUtil.getResource(bundleKey, executionContext);
                 if (entry.get(FORCE_UPDATE) != Boolean.TRUE && checkAlreadyInstalled(bundleKey, resource)) {
                     return;
                 }
@@ -148,7 +149,8 @@ public class InstallBundle implements Operation {
 
         if (entry.get(AUTO_START) != Boolean.FALSE && entry.get(INSTALL_OR_UPGRADE_BUNDLE) != null) {
             // In case of upgrade, get the previous version state, or auto-start by default
-            autoStart = installedVersions == null || installedVersions.stream().anyMatch(b -> b.getState() == Bundle.ACTIVE);
+            autoStart = installedVersions == null || installedVersions.stream()
+                    .anyMatch(b -> b.getState() == Bundle.ACTIVE || b.adapt(BundleStartLevel.class).isPersistentlyStarted());
         }
 
         if (autoStart) {
@@ -169,7 +171,7 @@ public class InstallBundle implements Operation {
         }
     }
 
-    private boolean checkAlreadyInstalled(String bundleKey, UrlResource resource) throws IOException {
+    private boolean checkAlreadyInstalled(String bundleKey, Resource resource) throws IOException {
         PersistentBundle bundleInfo = PersistentBundleInfoBuilder.build(resource, false, false);
         if (bundleInfo == null) {
             throw new InvalidModuleException();

@@ -61,6 +61,7 @@ import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.applications.ApplicationsManagerServiceImpl;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.patches.Patcher;
@@ -134,7 +135,32 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     @SuppressWarnings("unchecked")
     public static void endContextInitialized() {
         try {
+            FrameworkService frameworkService = FrameworkService.getInstance();
+
+            frameworkService.waitForInitialStartLevelReached();
+            frameworkService.waitForFileInstallStarted();
+            frameworkService.waitForSpringBridgeStarted();
+
+            // execute patches after the complete initialization
+            if (SettingsBean.getInstance().isProcessingServer()) {
+                Patcher.getInstance().executeScripts("contextInitialized-processingServer");
+            } else {
+                // we leave the possibility to provide Groovy scripts for non-processing servers
+                Patcher.getInstance().executeScripts("contextInitialized-nonProcessingServer");
+            }
+
+            Patcher.getInstance().executeScripts("contextInitialized");
+
+            frameworkService.raiseStartLevel();
+            frameworkService.waitForFinalStartLevelReached();
+            // wait for cluster synchronization if enabled
+            frameworkService.waitForClusterStarted();
+
             logger.info("Finishing context initialization phase");
+
+            if (SettingsBean.getInstance().isProcessingServer()) {
+                ModuleUtils.getModuleManager().storeAllLocalPersistentStates();
+            }
 
             // do initialization of all services, implementing JahiaAfterInitializationService
             initJahiaAfterInitializationServices();
@@ -152,15 +178,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
             }
             contextInitialized = true;
 
-            // execute patches after the complete initialization
-            if (SettingsBean.getInstance().isProcessingServer()) {
-                Patcher.getInstance().executeScripts("contextInitialized-processingServer");
-            } else {
-                // we leave the possibility to provide Groovy scripts for non-processing servers
-                Patcher.getInstance().executeScripts("contextInitialized-nonProcessingServer");
-            }
-
-            Patcher.getInstance().executeScripts("contextInitialized");
+            ServicesRegistry.getInstance().getSchedulerService().startSchedulers();
 
             logger.info("Context initialization phase finished");
         } catch (JahiaException e) {

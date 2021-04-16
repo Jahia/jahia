@@ -41,21 +41,38 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.bundles.provisioning.rest;
+package org.jahia.bundles.provisioning.impl.operations;
 
-import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.glassfish.jersey.server.ResourceConfig;
+import org.jahia.services.provisioning.ExecutionContext;
+import org.jahia.services.provisioning.Operation;
+import org.osgi.service.component.annotations.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 /**
- * REST App for provisioning endpoint
+ * Sleep operation
  */
-public class RestConfig extends ResourceConfig {
+@Component(service = Operation.class, property = "type=sleep")
+public class Sleep implements Operation {
+    private static final Logger logger = LoggerFactory.getLogger(Sleep.class);
+    public static final String SLEEP_OP = "sleep";
 
-    /**
-     * Constructor
-     */
-    public RestConfig() {
-        super(MultiPartFeature.class, ProvisioningResource.class, YamlProvider.class, JacksonJaxbJsonProvider.class, AuthenticationFilter.class);
+    @Override
+    public boolean canHandle(Map<String, Object> entry) {
+        return entry.get(SLEEP_OP) instanceof Integer;
+    }
+
+    @Override
+    public void perform(Map<String, Object> entry, ExecutionContext executionContext) {
+        Integer sleep = (Integer) entry.get(SLEEP_OP);
+        if (sleep != null) {
+            try {
+                Thread.sleep(sleep);
+            } catch (Exception e) {
+                logger.error("Cannot sleep {}", sleep, e);
+            }
+        }
     }
 }

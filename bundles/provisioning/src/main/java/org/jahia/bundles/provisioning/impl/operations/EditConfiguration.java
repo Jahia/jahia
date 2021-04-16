@@ -55,7 +55,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
@@ -91,10 +90,11 @@ public class EditConfiguration implements Operation {
             String content = (String) entry.get(CONTENT);
             Map<String, String> properties = (Map<String, String>) entry.get(PROPERTIES);
 
-            if (entry.get(INSTALL_CONFIGURATION) != null) {
-                String filename = StringUtils.substringAfterLast((String) entry.get(INSTALL_CONFIGURATION), "/");
+            String installConfiguration = (String) entry.get(INSTALL_CONFIGURATION);
+            if (installConfiguration != null) {
+                String filename = installConfiguration.contains("/") ? StringUtils.substringAfterLast(installConfiguration, "/") : installConfiguration;
                 pid = StringUtils.substringBeforeLast(filename, ".cfg");
-                content = IOUtils.toString(new URL((String) entry.get(INSTALL_CONFIGURATION)), StandardCharsets.UTF_8);
+                content = IOUtils.toString(ResourceUtil.getResource(installConfiguration, executionContext).getURL(), StandardCharsets.UTF_8);
             }
 
             if (pid.contains("-")) {

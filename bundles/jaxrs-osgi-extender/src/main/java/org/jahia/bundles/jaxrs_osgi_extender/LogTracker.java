@@ -41,21 +41,42 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.bundles.provisioning.rest;
+package org.jahia.bundles.jaxrs_osgi_extender;
 
-import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.glassfish.jersey.server.ResourceConfig;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.log.LogService;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
- * REST App for provisioning endpoint
+ * Log tracker
  */
-public class RestConfig extends ResourceConfig {
-
+public class LogTracker extends ServiceTracker<LogService,LogService> implements LogService {
     /**
-     * Constructor
+     * New LogTracker
+     * @param context context
      */
-    public RestConfig() {
-        super(MultiPartFeature.class, ProvisioningResource.class, YamlProvider.class, JacksonJaxbJsonProvider.class, AuthenticationFilter.class);
+    public LogTracker(BundleContext context) {
+        super(context, LogService.class.getName(), null);
+    }
+
+    public void log(int level, String message) {
+        log(null, level, message, null);
+    }
+
+    public void log(int level, String message, Throwable exception) {
+        log(null, level, message, exception);
+    }
+
+    public void log(ServiceReference sr, int level, String message) {
+        log(sr, level, message, null);
+    }
+
+    public void log(ServiceReference sr, int level, String message,
+                    Throwable exception) {
+        LogService log = getService();
+        if (log != null) {
+            log.log(sr, level, message, exception);
+        }
     }
 }

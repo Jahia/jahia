@@ -49,9 +49,7 @@ import org.jahia.tools.patches.Patcher;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.UrlResource;
 
-import java.net.URL;
 import java.util.Collections;
 import java.util.Map;
 
@@ -73,7 +71,7 @@ public class ExecuteScript implements Operation {
         String script = (String) entry.get(EXECUTE_SCRIPT);
         if (script != null) {
             try {
-                Patcher.getInstance().executeScripts(Collections.singleton(new UrlResource(new URL(script))), "",
+                Patcher.getInstance().executeScripts(Collections.singleton(ResourceUtil.getResource(script, executionContext)), "",
                         (resource, s) -> logger.info("Script {} result: {}", script, s)
                 );
             } catch (Exception e) {

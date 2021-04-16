@@ -41,21 +41,32 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.bundles.provisioning.rest;
+package org.jahia.bundles.jaxrs_osgi_extender;
 
-import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.glassfish.jersey.server.ResourceConfig;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 /**
- * REST App for provisioning endpoint
+ * Activator
  */
-public class RestConfig extends ResourceConfig {
+public class Activator implements BundleActivator {
 
-    /**
-     * Constructor
-     */
-    public RestConfig() {
-        super(MultiPartFeature.class, ProvisioningResource.class, YamlProvider.class, JacksonJaxbJsonProvider.class, AuthenticationFilter.class);
+    private LogTracker logTracker;
+    private HttpServiceTracker httpTracker;
+
+    @Override
+    public void start(BundleContext context) throws Exception {
+        logTracker = new LogTracker(context);
+        logTracker.open();
+
+        httpTracker = new HttpServiceTracker(context, logTracker);
+        httpTracker.open();
     }
+
+    @Override
+    public void stop(BundleContext context) throws Exception {
+        httpTracker.close();
+        logTracker.close();
+    }
+
 }

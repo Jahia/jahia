@@ -130,6 +130,11 @@ These additional options are available :
 - startBundle: "article/3.0.1"
 ```
 
+`startBundle` can also be used to start pending bundle, installed by `installBundle` with auto-start option :
+```yaml
+- startBundle: "pending"
+```
+
 ### Install / edit configuration
 
 Install or edit configuration. Install a configuration from a URL :
@@ -233,6 +238,14 @@ It's possible to execute `.groovy` or `.graphql` scripts using the `executeScrip
 ```yaml
 - executeScript: "http://myserver.com/a-graphql-query.graphql"
 - executeScript: "file:/tmp/my-new-script.groovy"
+```
+
+### Sleep
+
+You can tell the script to wait for a specific amount of time (in ms) before proceeding with the next instructions :
+
+```yaml
+-sleep: 1000
 ```
 
 ### Script includes and conditional flow

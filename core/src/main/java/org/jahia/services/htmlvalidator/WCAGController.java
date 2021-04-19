@@ -60,6 +60,7 @@ import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.json.AbstractJsonWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
@@ -70,23 +71,35 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
  */
 public class WCAGController extends JahiaMultiActionController {
 
-    private static final XStream JSON_SERIALIZER = new XStream(new JsonHierarchicalStreamDriver() {
-        public HierarchicalStreamWriter createWriter(Writer writer) {
-            return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-        }
-    });
+    private static Logger log = LoggerFactory.getLogger(WCAGController.class);
 
-    private static Logger logger = LoggerFactory.getLogger(WCAGController.class);
+    private static class Holder {
+        static XStream serializer = createSerializer();
+
+        private static XStream createSerializer() {
+
+            XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
+                @Override
+                public HierarchicalStreamWriter createWriter(Writer writer) {
+                    return new JsonWriter(writer, AbstractJsonWriter.DROP_ROOT_MODE);
+                }
+            });
+            XStream.setupDefaultSecurity(xstream);
+            return xstream;
+        }
+    }
+
+    private static XStream getJSonSerializer() {
+        return Holder.serializer;
+    }
 
     private String toJSON(ValidatorResults validateResults) {
-        return JSON_SERIALIZER.toXML(validateResults);
+        return getJSonSerializer().toXML(validateResults);
     }
 
     public void validate(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            // TODO add a role?
-            // checkUserAuthorized();
             checkUserLoggedIn();
 
             String text = getParameter(request, "text");
@@ -95,8 +108,8 @@ public class WCAGController extends JahiaMultiActionController {
                     Constants.SESSION_UI_LOCALE);
             locale = locale != null ? locale : request.getLocale();
 
-            if (logger.isDebugEnabled()) {
-                logger.debug("Request received for validating text using locale '{}'. Text: {}",
+            if (log.isDebugEnabled()) {
+                log.debug("Request received for validating text using locale '{}'. Text: {}",
                         locale, text);
             }
 
@@ -104,8 +117,8 @@ public class WCAGController extends JahiaMultiActionController {
 
             response.setContentType("application/json; charset=UTF-8");
             String serialized = toJSON(validateResults);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Validation results: {}", serialized);
+            if (log.isDebugEnabled()) {
+                log.debug("Validation results: {}", serialized);
             }
             response.getWriter().append(serialized);
 

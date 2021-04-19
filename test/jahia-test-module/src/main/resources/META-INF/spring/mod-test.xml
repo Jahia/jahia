@@ -29,14 +29,13 @@
                 <value>org.jahia.test.services.acl.AclTest</value>
                 <!--<value>org.jahia.test.services.acl.AclExtendedNodesPerformanceTest</value>-->
                 <!--<value>org.jahia.test.services.applications.ApplicationsManagerServiceTest</value>-->
-                <!--<value>org.jahia.test.services.atmosphere.AtmosphereTest</value>-->
                 <value>org.jahia.test.services.categories.CategoryTest</value>
                 <value>org.jahia.test.services.channels.ChannelsTest</value>
                 <value>org.jahia.test.services.content.AutoSplittingTest</value>
                 <value>org.jahia.test.services.content.ContentTest</value>
-                <value>org.jahia.test.services.content.CrawlingPageVisitorTest</value>
                 <value>org.jahia.test.services.content.MarkForDeletionTest</value>
                 <value>org.jahia.test.services.content.MultiLanguageTest</value>
+                <value>org.jahia.test.services.content.PrecompileJspsTest</value>
                 <value>org.jahia.test.services.content.ReferencesTest</value>
                 <value>org.jahia.test.services.content.decorator.PasswordHistoryEntryDecoratorTest</value>
                 <value>org.jahia.test.services.content.files.FileServletTest</value>

@@ -63,16 +63,17 @@ public class Include implements Operation {
 
     @Override
     public boolean canHandle(Map<String, Object> entry) {
-        return entry.get(INCLUDE_SCRIPT) instanceof String;
+        return entry.containsKey(INCLUDE_SCRIPT);
     }
 
     @Override
     public void perform(Map<String, Object> entry, ExecutionContext executionContext) {
-        String include = (String) entry.get(INCLUDE_SCRIPT);
-        if (include != null) {
+        List<Map<String, Object>> entries = ProvisioningScriptUtil.convertToList(entry, INCLUDE_SCRIPT, "url");
+        for (Map<String, Object> subEntry : entries) {
+            String include = (String) subEntry.get(INCLUDE_SCRIPT);
             try {
                 ProvisioningManager manager = executionContext.getProvisioningManager();
-                List<Map<String, Object>> script = manager.parseScript(ResourceUtil.getResource(include, executionContext).getURL());
+                List<Map<String, Object>> script = manager.parseScript(ProvisioningScriptUtil.getResource(include, executionContext).getURL());
                 manager.executeScript(script, executionContext);
             } catch (Exception e) {
                 logger.error("Cannot include {}", include, e);

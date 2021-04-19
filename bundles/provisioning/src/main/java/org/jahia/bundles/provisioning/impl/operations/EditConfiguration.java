@@ -94,7 +94,7 @@ public class EditConfiguration implements Operation {
             if (installConfiguration != null) {
                 String filename = installConfiguration.contains("/") ? StringUtils.substringAfterLast(installConfiguration, "/") : installConfiguration;
                 pid = StringUtils.substringBeforeLast(filename, ".cfg");
-                content = IOUtils.toString(ResourceUtil.getResource(installConfiguration, executionContext).getURL(), StandardCharsets.UTF_8);
+                content = IOUtils.toString(ProvisioningScriptUtil.getResource(installConfiguration, executionContext).getURL(), StandardCharsets.UTF_8);
             }
 
             if (pid.contains("-")) {

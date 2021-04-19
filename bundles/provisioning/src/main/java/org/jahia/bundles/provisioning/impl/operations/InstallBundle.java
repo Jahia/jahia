@@ -80,6 +80,7 @@ public class InstallBundle implements Operation {
     public static final String FORCE_UPDATE = "forceUpdate";
     public static final String UNINSTALL_PREVIOUS_VERSION = "uninstallPreviousVersion";
     public static final String TARGET = "target";
+    public static final String IF = "if";
     private static final String[] SUPPORTED_KEYS = { INSTALL_BUNDLE, INSTALL_AND_START_BUNDLE, INSTALL_OR_UPGRADE_BUNDLE };
     private static final Logger logger = LoggerFactory.getLogger(InstallBundle.class);
     private BundleContext bundleContext;
@@ -101,7 +102,7 @@ public class InstallBundle implements Operation {
 
     @Override
     public boolean canHandle(Map<String, Object> entry) {
-        return Arrays.stream(SUPPORTED_KEYS).anyMatch(k -> entry.get(k) instanceof String);
+        return Arrays.stream(SUPPORTED_KEYS).anyMatch(entry::containsKey);
     }
 
     @Override
@@ -109,42 +110,83 @@ public class InstallBundle implements Operation {
         Map<String, Set<Bundle>> installedBundles = Arrays.stream(bundleContext.getBundles())
                 .collect(Collectors.groupingBy(Bundle::getSymbolicName, Collectors.toSet()));
         executionContext.getContext().put("installedBundles", installedBundles);
-        executionContext.getContext().put("toStart", new ArrayList<BundleInfo>());
-        executionContext.getContext().put("toUninstall", new ArrayList<BundleInfo>());
     }
 
     @Override
     public void perform(Map<String, Object> entry, ExecutionContext executionContext) {
-        try {
-            Map<String, Set<Bundle>> installedBundles = (Map<String, Set<Bundle>>) executionContext.getContext().get("installedBundles");
-            Optional<String> bundleKeyOptional = Arrays.stream(SUPPORTED_KEYS).map(k -> (String) entry.get(k)).filter(Objects::nonNull).findFirst();
-            if (bundleKeyOptional.isPresent()) {
-                String bundleKey = bundleKeyOptional.get();
-                Resource resource = ResourceUtil.getResource(bundleKey, executionContext);
-                if (entry.get(FORCE_UPDATE) != Boolean.TRUE && checkAlreadyInstalled(bundleKey, resource)) {
-                    return;
-                }
-                OperationResult result = moduleManager.install(
-                        Collections.singleton(resource), (String) entry.get(TARGET),
-                        false,
-                        Optional.ofNullable((Integer) entry.get(START_LEVEL)).orElse(SettingsBean.getInstance().getModuleStartLevel())
-                );
-                if (result.getBundleInfos().size() == 1) {
-                    BundleInfo bundleInfo = result.getBundleInfos().get(0);
-                    Set<Bundle> installedVersions = installedBundles.get(bundleInfo.getSymbolicName());
+        Map<String, Set<Bundle>> installedBundles = (Map<String, Set<Bundle>>) executionContext.getContext().get("installedBundles");
+        Optional<String> keyOptional = Arrays.stream(SUPPORTED_KEYS).filter(entry::containsKey).findFirst();
+        if (keyOptional.isPresent()) {
+            String key = keyOptional.get();
+            List<Map<String, Object>> entries = ProvisioningScriptUtil.convertToList(entry, key, "url");
 
-                    setupAutoStart(entry, executionContext, bundleInfo, installedVersions);
-                    setupUninstall(entry, executionContext, bundleInfo, installedVersions);
+            LinkedHashMap<BundleInfo, String> toStart = new LinkedHashMap<>();
+            LinkedHashMap<BundleInfo, String> toUninstall = new LinkedHashMap<>();
+
+            for (Map<String, Object> subEntry : entries) {
+                String condition = (String) subEntry.get(IF);
+                if (condition == null || ProvisioningScriptUtil.evalCondition(condition)) {
+                    doInstall(subEntry, key, executionContext, installedBundles, toStart, toUninstall);
                 }
             }
-        } catch (Exception e) {
-            logger.error("Cannot install {}", entry.get(INSTALL_BUNDLE), e);
+
+            processAutoStart(toStart);
+            processUninstall(toUninstall);
         }
     }
 
-    private void setupAutoStart(Map<String, Object> entry, ExecutionContext executionContext, BundleInfo bundleInfo, Set<Bundle> installedVersions) {
-        // Should this (autostart / uninstall) be done immediately ?
+    private void processUninstall(LinkedHashMap<BundleInfo, String> toUninstall) {
+        for (Map.Entry<BundleInfo, String> bundleInfoStringEntry : toUninstall.entrySet()) {
+            BundleInfo bundleInfo = bundleInfoStringEntry.getKey();
+            try {
+                moduleManager.uninstall(bundleInfo.getKey(), bundleInfoStringEntry.getValue());
+            } catch (Exception e) {
+                logger.error("Cannot uninstall {}", bundleInfo.getKey(), e);
+            }
+        }
+    }
 
+    private void processAutoStart(LinkedHashMap<BundleInfo, String> toStart) {
+        for (Map.Entry<BundleInfo, String> bundleInfoStringEntry : toStart.entrySet()) {
+            BundleInfo bundleInfo = bundleInfoStringEntry.getKey();
+            try {
+                Bundle bundle = BundleUtils.getBundle(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
+                if (bundle != null && !BundleUtils.isFragment(bundle)) {
+                    moduleManager.start(bundleInfo.getKey(), bundleInfoStringEntry.getValue());
+                }
+            } catch (Exception e) {
+                logger.error("Cannot start {}", bundleInfo.getKey(), e);
+            }
+        }
+    }
+
+    private void doInstall(Map<String, Object> entry, String key, ExecutionContext executionContext, Map<String, Set<Bundle>> installedBundles,
+                           LinkedHashMap<BundleInfo, String> toStart, LinkedHashMap<BundleInfo, String> toUninstall) {
+        String bundleKey = (String) entry.get(key);
+        try {
+            Resource resource = ProvisioningScriptUtil.getResource(bundleKey, executionContext);
+            if (entry.get(FORCE_UPDATE) != Boolean.TRUE && checkAlreadyInstalled(bundleKey, resource)) {
+                return;
+            }
+            String target = (String) entry.get(TARGET);
+            OperationResult result = moduleManager.install(
+                    Collections.singleton(resource), target,
+                    false,
+                    Optional.ofNullable((Integer) entry.get(START_LEVEL)).orElse(SettingsBean.getInstance().getModuleStartLevel())
+            );
+            if (result.getBundleInfos().size() == 1) {
+                BundleInfo bundleInfo = result.getBundleInfos().get(0);
+                Set<Bundle> installedVersions = installedBundles.get(bundleInfo.getSymbolicName());
+
+                setupAutoStart(entry, bundleInfo, target, installedVersions, toStart);
+                setupUninstall(entry, bundleInfo, target, installedVersions, toUninstall);
+            }
+        } catch (Exception e) {
+            logger.error("Cannot install {}", bundleKey, e);
+        }
+    }
+
+    private void setupAutoStart(Map<String, Object> entry, BundleInfo bundleInfo, String target, Set<Bundle> installedVersions, LinkedHashMap<BundleInfo, String> toStart) {
         boolean autoStart = entry.get(AUTO_START) == Boolean.TRUE || entry.get(INSTALL_AND_START_BUNDLE) != null;
 
         if (entry.get(AUTO_START) != Boolean.FALSE && entry.get(INSTALL_OR_UPGRADE_BUNDLE) != null) {
@@ -154,18 +196,18 @@ public class InstallBundle implements Operation {
         }
 
         if (autoStart) {
-            getToStart(executionContext).add(bundleInfo);
+            toStart.put(bundleInfo, target);
         }
     }
 
-    private void setupUninstall(Map<String, Object> entry, ExecutionContext executionContext, BundleInfo bundleInfo, Set<Bundle> installedVersions) {
+    private void setupUninstall(Map<String, Object> entry, BundleInfo bundleInfo, String target, Set<Bundle> installedVersions, LinkedHashMap<BundleInfo, String> toUninstall) {
         boolean uninstallPreviousVersions = installedVersions != null &&
                 (entry.get(UNINSTALL_PREVIOUS_VERSION) == Boolean.TRUE || entry.get(INSTALL_OR_UPGRADE_BUNDLE) != null);
 
         if (uninstallPreviousVersions) {
             for (Bundle installedVersion : installedVersions) {
                 if (!installedVersion.getVersion().toString().equals(bundleInfo.getVersion())) {
-                    getToUninstall(executionContext).add(BundleInfo.fromBundle(installedVersion));
+                    toUninstall.put(BundleInfo.fromBundle(installedVersion), target);
                 }
             }
         }
@@ -182,36 +224,6 @@ public class InstallBundle implements Operation {
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void cleanup(ExecutionContext executionContext) {
-        for (BundleInfo bundleInfo : getToStart(executionContext)) {
-            try {
-                Bundle bundle = BundleUtils.getBundle(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
-                if (bundle != null && !BundleUtils.isFragment(bundle)) {
-                    moduleManager.start(bundleInfo.getKey(), null);
-                }
-            } catch (Exception e) {
-                logger.error("Cannot start {}", bundleInfo.getKey(), e);
-            }
-        }
-
-        for (BundleInfo bundleInfo : getToUninstall(executionContext)) {
-            try {
-                moduleManager.uninstall(bundleInfo.getKey(), null);
-            } catch (Exception e) {
-                logger.error("Cannot uninstall {}", bundleInfo.getKey(), e);
-            }
-        }
-    }
-
-    private List<BundleInfo> getToUninstall(ExecutionContext executionContext) {
-        return (List<BundleInfo>) executionContext.getContext().get("toUninstall");
-    }
-
-    private List<BundleInfo> getToStart(ExecutionContext executionContext) {
-        return (List<BundleInfo>) executionContext.getContext().get("toStart");
     }
 
 }

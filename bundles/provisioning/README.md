@@ -74,9 +74,10 @@ Install bundle from a URL (supporting all pax-url protocols). This action is tri
 
 These additional options are available :
 - `target`: The cluster group name where the operation will be done (unset to execute on all nodes)
-- `autoStart`: Autostart the bundle after installation (at the end of the script execution)
-- `uninstallPreviousVersion`: Uninstall all other versions (at the end of the script execution)
+- `autoStart`: Autostart the bundle after installation
+- `uninstallPreviousVersion`: Uninstall all other versions
 - `forceUpdate`: If true, module will be updated if it is already installed. Default is `false`
+- `if`: Optional condition that must be met to do the operation
 
 Examples :
 
@@ -88,6 +89,52 @@ Examples :
 
 ```yaml
 - installBundle: "file:/tmp/example-1.0.0.jar"
+```
+
+Multiple bundles can be installed with the same command and options :
+
+```yaml
+- installBundle:
+  - 'mvn:org.jahia.modules/forms-snippets-extension/3.0.0'
+  - 'mvn:org.jahia.modules/forms-nocss-theme/2.0.0'
+  - 'mvn:org.jahia.modules/font-awesome/6.0.0'
+  - 'mvn:org.jahia.modules/forms-prefill/2.0.0'
+  - 'mvn:org.jahia.modules/forms-core/3.2.0'  
+  autoStart: true
+  uninstallPreviousVersion: true
+```
+
+Or using inline format :
+
+```yaml
+- installBundle: ['mvn:org.jahia.modules/forms-prefill/2.0.0','mvn:org.jahia.modules/forms-core/3.2.0']
+  autoStart: true
+  uninstallPreviousVersion: true
+```
+
+If some bundles need different options, you can use a nested block, using `url` key for the url itself :
+
+```yaml
+- installBundle:
+  - 'mvn:org.jahia.modules/forms-snippets-extension/3.0.0'
+  - 'mvn:org.jahia.modules/forms-nocss-theme/2.0.0'
+  - { url: 'mvn:org.jahia.modules/font-awesome/6.0.0', autoStart: false}
+  - 'mvn:org.jahia.modules/forms-prefill/2.0.0'
+  - 'mvn:org.jahia.modules/forms-core/3.2.0'  
+  autoStart: true
+  uninstallPreviousVersion: true
+```
+
+The autoStart option will start all listed bundles once all of them have been installed. 
+Then, previous versions will be uninstalled.
+
+#### Conditional
+
+You can add a condition on install, by adding the `if` option. The condition is a groovy expression, as described [below](#script-includes-and-conditional-flow)
+
+```yaml
+- installBundle: 'mvn:org.jahia.modules/sdl-generator-tools/2.1.0'
+  if: "'${jahia:operatingMode}' == 'development'"
 ```
 
 #### Additional syntax
@@ -130,10 +177,12 @@ These additional options are available :
 - startBundle: "article/3.0.1"
 ```
 
-`startBundle` can also be used to start pending bundle, installed by `installBundle` with auto-start option :
+A list of bundles can be passed :
+
 ```yaml
-- startBundle: "pending"
+- startBundle: ["article/3.0.1", "news/3.0.0"]
 ```
+
 
 ### Install / edit configuration
 
@@ -176,6 +225,8 @@ Import a zip from the export at the specified url. The file must be a zip expot.
 
 You can add the `rootPath` option to specify where the content will be imported, or leave it undefined to import in `/`
 
+Multiple import files can be specified.
+
 ### Import site
 
 Import a site from the export at the specified url. The file must be a site export, in zip format.
@@ -184,13 +235,22 @@ Import a site from the export at the specified url. The file must be a site expo
 - importSite: "file:/Users/toto/mySite_export_2020-12-30-10-37/mySite.zip"
 ```
 
+Multiple import files can be specified.
+
 ### Enable module on site
 
-Enable a module on the specified site :
+Enable modules on a site :
 
 ```yaml
 - enable: "news"
   site: "digitall"
+```
+
+Both arguments can be list, allowing to install multiple modules on multiple sites :
+
+```yaml
+- enable: ["news", "article"]
+  site: ["digitall", "demo"]
 ```
 
 ### Add maven repository
@@ -239,6 +299,8 @@ It's possible to execute `.groovy` or `.graphql` scripts using the `executeScrip
 - executeScript: "http://myserver.com/a-graphql-query.graphql"
 - executeScript: "file:/tmp/my-new-script.groovy"
 ```
+
+Multiple scripts can be specified.
 
 ### Sleep
 

@@ -120,13 +120,13 @@
                                     }
                                     if (project.properties['package.provisioning.skip'] != 'true') {
                                         new File(project.build.directory, '${project.artifactId}.provisioning.yaml').withWriter('utf-8') { writer ->
+                                            writer.writeLine(" - installOrUpgradeBundle: ")
                                             artifactIds.forEach { f ->
                                                 if (conditions[f[1]] == null) {
-                                                    writer.writeLine(" - installOrUpgradeBundle: 'mvn:${f[0]}/${f[1]}/${f[3]}'")
+                                                    writer.writeLine("   - 'mvn:${f[0]}/${f[1]}/${f[3]}'")
                                                 } else {
-                                                    writer.writeLine(" - if: \"${conditions[f[1]].replace('"', '\\"')}\"")
-                                                    writer.writeLine("   do:");
-                                                    writer.writeLine("     - installOrUpgradeBundle: 'mvn:${f[0]}/${f[1]}/${f[3]}'")
+                                                    writer.writeLine("   - url: 'mvn:${f[0]}/${f[1]}/${f[3]}'");
+                                                    writer.writeLine("     if: \"${conditions[f[1]].replace('"', '\\"')}\"")
                                                 }
                                             }
                                         }

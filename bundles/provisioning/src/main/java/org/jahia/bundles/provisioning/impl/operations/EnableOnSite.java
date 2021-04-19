@@ -57,10 +57,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -93,30 +90,39 @@ public class EnableOnSite implements Operation {
 
     @Override
     public boolean canHandle(Map<String, Object> entry) {
-        return entry.get(ENABLE_ON_SITE) instanceof String && entry.get(SITE) instanceof String;
+        return entry.containsKey(ENABLE_ON_SITE) && entry.containsKey(SITE);
     }
 
     @Override
     public void perform(Map<String, Object> entry, ExecutionContext executionContext) {
-        String[] moduleName = StringUtils.split((String) entry.get(ENABLE_ON_SITE), " ,");
-        String siteName = (String) entry.get(SITE);
+        List<Map<String, Object>> entries = ProvisioningScriptUtil.convertToList(entry, ENABLE_ON_SITE, "key");
+
+        Map<?, List<String>> values = entries.stream()
+                .collect(Collectors.groupingBy(m -> m.get(SITE), Collectors.mapping(m -> (String) m.get(ENABLE_ON_SITE), Collectors.toList())));
+
         try {
             jcrTemplate.doExecuteWithSystemSession(session -> {
-                JahiaSite site = sitesService.getSiteByKey(siteName, session);
-                if (site != null) {
-                    List<JahiaTemplatesPackage> pkgs = Arrays.stream(moduleName).map(name -> StringUtils.substringBefore(name, "/"))
-                            .map(n -> templateManagerService.getTemplatePackageById(n))
-                            .filter(Objects::nonNull)
-                            .collect(Collectors.toList());
-                    templateManagerService.installModules(pkgs, site.getJCRLocalPath(), session);
-                    session.save();
-                } else {
-                    logger.error("Site {} does not exist", siteName);
+                for (Map.Entry<?, List<String>> listEntry : values.entrySet()) {
+                    List<String> sites = (listEntry.getKey() instanceof List) ? (List) listEntry.getKey() : Collections.singletonList((String) listEntry.getKey());
+                    for (String siteName : sites) {
+                        if (sitesService.siteExists(siteName, session)) {
+                            JahiaSite site = sitesService.getSiteByKey(siteName, session);
+                            List<JahiaTemplatesPackage> pkgs = listEntry.getValue().stream()
+                                    .map(name -> StringUtils.substringBefore(name, "/"))
+                                    .map(n -> templateManagerService.getTemplatePackageById(n))
+                                    .filter(Objects::nonNull)
+                                    .collect(Collectors.toList());
+                            templateManagerService.installModules(pkgs, site.getJCRLocalPath(), session);
+                            session.save();
+                        } else {
+                            logger.error("Site {} does not exist", siteName);
+                        }
+                    }
                 }
                 return null;
             });
         } catch (RepositoryException e) {
-            logger.error("Cannot enable module on site {}", siteName, e);
+            logger.error("Cannot enable modules", e);
         }
     }
 }

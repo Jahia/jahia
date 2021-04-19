@@ -55,6 +55,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -80,23 +81,26 @@ public class ImportSite implements Operation {
 
     @Override
     public boolean canHandle(Map<String, Object> entry) {
-        return entry.get(IMPORT_SITE) instanceof String;
+        return entry.containsKey(IMPORT_SITE);
     }
 
     @Override
     public void perform(Map<String, Object> entry, ExecutionContext executionContext) {
-        String url = (String) entry.get(IMPORT_SITE);
         try {
             jcrTemplate.doExecuteWithSystemSession(session -> {
-                try {
-                    importExportService.importSiteZip(ResourceUtil.getResource(url, executionContext), session);
-                } catch (IOException | JahiaException e) {
-                    throw new RepositoryException(e);
+                List<Map<String, Object>> entries = ProvisioningScriptUtil.convertToList(entry, IMPORT_SITE, "url");
+                for (Map<String, Object> subEntry : entries) {
+                    try {
+                        String url = (String) subEntry.get(IMPORT_SITE);
+                        importExportService.importSiteZip(ProvisioningScriptUtil.getResource(url, executionContext), session);
+                    } catch (IOException | JahiaException e) {
+                        throw new RepositoryException(e);
+                    }
                 }
                 return null;
             });
         } catch (RepositoryException e) {
-            logger.error("Cannot import site at {}", url, e);
+            logger.error("Cannot import site", e);
         }
     }
 

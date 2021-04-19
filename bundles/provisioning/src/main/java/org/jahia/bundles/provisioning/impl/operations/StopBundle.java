@@ -49,6 +49,7 @@ import org.jahia.services.provisioning.Operation;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -67,11 +68,15 @@ public class StopBundle implements Operation {
 
     @Override
     public boolean canHandle(Map<String, Object> entry) {
-        return entry.get(STOP_BUNDLE) instanceof String;
+        return entry.containsKey(STOP_BUNDLE);
     }
 
     @Override
     public void perform(Map<String, Object> entry, ExecutionContext executionContext) {
-        moduleManager.stop((String) entry.get(STOP_BUNDLE), (String) entry.get(TARGET));
+        List<Map<String, Object>> entries = ProvisioningScriptUtil.convertToList(entry, STOP_BUNDLE, "key");
+        for (Map<String, Object> subEntry : entries) {
+            moduleManager.stop((String) subEntry.get(STOP_BUNDLE), (String) entry.get(TARGET));
+        }
+
     }
 }

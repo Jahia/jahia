@@ -51,6 +51,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -63,20 +64,24 @@ public class ExecuteScript implements Operation {
 
     @Override
     public boolean canHandle(Map<String, Object> entry) {
-        return entry.get(EXECUTE_SCRIPT) instanceof String;
+        return entry.containsKey(EXECUTE_SCRIPT);
     }
 
     @Override
     public void perform(Map<String, Object> entry, ExecutionContext executionContext) {
-        String script = (String) entry.get(EXECUTE_SCRIPT);
-        if (script != null) {
-            try {
-                Patcher.getInstance().executeScripts(Collections.singleton(ResourceUtil.getResource(script, executionContext)), "",
-                        (resource, s) -> logger.info("Script {} result: {}", script, s)
-                );
-            } catch (Exception e) {
-                logger.error("Cannot include {}", script, e);
+        List<Map<String, Object>> entries = ProvisioningScriptUtil.convertToList(entry, EXECUTE_SCRIPT, "url");
+        for (Map<String, Object> subEntry : entries) {
+            String script = (String) subEntry.get(EXECUTE_SCRIPT);
+            if (script != null) {
+                try {
+                    Patcher.getInstance().executeScripts(Collections.singleton(ProvisioningScriptUtil.getResource(script, executionContext)), "",
+                            (resource, s) -> logger.info("Script {} result: {}", script, s)
+                    );
+                } catch (Exception e) {
+                    logger.error("Cannot include {}", script, e);
+                }
             }
         }
+
     }
 }

@@ -49,6 +49,7 @@ import org.jahia.services.provisioning.Operation;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -67,11 +68,14 @@ public class UninstallBundle implements Operation {
 
     @Override
     public boolean canHandle(Map<String, Object> entry) {
-        return entry.get(UNINSTALL_BUNDLE) instanceof String;
+        return entry.containsKey(UNINSTALL_BUNDLE);
     }
 
     @Override
     public void perform(Map<String, Object> entry, ExecutionContext executionContext) {
-        moduleManager.uninstall((String) entry.get(UNINSTALL_BUNDLE), (String) entry.get(TARGET));
+        List<Map<String, Object>> entries = ProvisioningScriptUtil.convertToList(entry, UNINSTALL_BUNDLE, "key");
+        for (Map<String, Object> subEntry : entries) {
+            moduleManager.uninstall((String) subEntry.get(UNINSTALL_BUNDLE), (String) entry.get(TARGET));
+        }
     }
 }

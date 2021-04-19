@@ -54,6 +54,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import static org.jahia.services.importexport.DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE;
@@ -82,24 +83,28 @@ public class ImportZip implements Operation {
 
     @Override
     public boolean canHandle(Map<String, Object> entry) {
-        return entry.get(IMPORT) instanceof String;
+        return entry.containsKey(IMPORT);
     }
 
     @Override
     public void perform(Map<String, Object> entry, ExecutionContext executionContext) {
-        String url = (String) entry.get(IMPORT);
-        String rootPath = (String) entry.get(ROOT_PATH);
+
         try {
             jcrTemplate.doExecuteWithSystemSession(session -> {
-                try {
-                    importExportService.importZip(rootPath != null ? rootPath : "/", ResourceUtil.getResource(url, executionContext), ROOT_BEHAVIOUR_IGNORE, session);
-                } catch (IOException e) {
-                    throw new RepositoryException(e);
+                List<Map<String, Object>> entries = ProvisioningScriptUtil.convertToList(entry, IMPORT, "url");
+                for (Map<String, Object> subEntry : entries) {
+                    try {
+                        String url = (String) subEntry.get(IMPORT);
+                        String rootPath = (String) subEntry.get(ROOT_PATH);
+                        importExportService.importZip(rootPath != null ? rootPath : "/", ProvisioningScriptUtil.getResource(url, executionContext), ROOT_BEHAVIOUR_IGNORE, session);
+                    } catch (IOException e) {
+                        throw new RepositoryException(e);
+                    }
                 }
                 return null;
             });
         } catch (RepositoryException e) {
-            logger.error("Cannot import site at {}", url, e);
+            logger.error("Cannot import site", e);
         }
     }
 

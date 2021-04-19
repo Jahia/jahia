@@ -84,32 +84,29 @@ class JahiaPasswordPolicyManager {
 
     private static final String POLICY_PROPERTY = "j:policy";
 
-    private static volatile XStream serializer;
+    private static class Holder {
+        static XStream serializer = createSerializer();
 
-    private static XStream createSerializer() {
-        XStream xstream = new XStream(new XppDriver() {
-            @Override
-            public HierarchicalStreamWriter createWriter(Writer out) {
-                return new CompactWriter(out, getNameCoder());
-            }
-        });
-        xstream.alias("password-policy", JahiaPasswordPolicy.class);
-        xstream.alias("rule", JahiaPasswordPolicyRule.class);
-        xstream.alias("param", JahiaPasswordPolicyRuleParam.class);
+        private static XStream createSerializer() {
+            XStream xstream = new XStream(new XppDriver() {
+                @Override
+                public HierarchicalStreamWriter createWriter(Writer out) {
+                    return new CompactWriter(out, getNameCoder());
+                }
+            });
+            XStream.setupDefaultSecurity(xstream);
+            xstream.allowTypes(
+                    new Class[] { JahiaPasswordPolicy.class, JahiaPasswordPolicyRule.class, JahiaPasswordPolicyRuleParam.class });
+            xstream.alias("password-policy", JahiaPasswordPolicy.class);
+            xstream.alias("rule", JahiaPasswordPolicyRule.class);
+            xstream.alias("param", JahiaPasswordPolicyRuleParam.class);
 
-        return xstream;
+            return xstream;
+        }
     }
 
     private static XStream getSerializer() {
-        if (serializer == null) {
-            synchronized (JahiaPasswordPolicyManager.class) {
-                if (serializer == null) {
-                    serializer = createSerializer();
-                }
-            }
-        }
-
-        return serializer;
+        return Holder.serializer;
     }
 
     /**

@@ -71,6 +71,7 @@
 
         <jContent jcr:primaryType="jnt:permission">
             <jContentAccess jcr:primaryType="jnt:permission"/>
+            <pageComposerAccess jcr:primaryType="jnt:permission"/>
             <useComponent jcr:primaryType="jnt:permission">
                 <useComponentForCreate jcr:primaryType="jnt:permission"/>
                 <useComponentForEdit jcr:primaryType="jnt:permission"/>

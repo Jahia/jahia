@@ -116,12 +116,12 @@
         <log4j.version>1.2.17</log4j.version>
         <jahia.tomcat.version>9.0.45</jahia.tomcat.version>
 
-        <driver.derby.version>10.12.1.1</driver.derby.version>
-        <driver.mssql.version>6.4.0.jre8</driver.mssql.version>
-        <driver.mysql.version>5.1.48</driver.mysql.version>
-        <driver.oracle.version>12.2.0.1</driver.oracle.version>
-        <driver.postgresql.version>42.2.9</driver.postgresql.version>
-        <driver.mariadb.version>2.4.1</driver.mariadb.version>
+        <driver.derby.version>10.14.2.0</driver.derby.version>
+        <driver.mssql.version>9.2.1.jre8</driver.mssql.version>
+        <driver.mysql.version>8.0.23</driver.mysql.version>
+        <driver.oracle.version>18.3.0.0</driver.oracle.version>
+        <driver.postgresql.version>42.2.19</driver.postgresql.version>
+        <driver.mariadb.version>2.7.2</driver.mariadb.version>
 
         <hibernateDialect.derby>org.hibernate.dialect.DerbyTenSevenDialect</hibernateDialect.derby>
         <hibernateDialect.mssql>org.hibernate.dialect.SQLServer2008Dialect</hibernateDialect.mssql>

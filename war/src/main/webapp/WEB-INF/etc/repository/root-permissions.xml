@@ -98,7 +98,36 @@
             </engineTabs>
 
             <jContentActions jcr:primaryType="jnt:permission">
-                <createPageAction jcr:primaryType="jnt:permission"/>
+                <pageTreeActions jcr:primaryType="jnt:permission">
+                    <createPageAction jcr:primaryType="jnt:permission"/>
+                    <orderPagesAction jcr:primaryType="jnt:permission"/>
+                    <editPageAction jcr:primaryType="jnt:permission"/>
+                    <copyPageAction jcr:primaryType="jnt:permission"/>
+                    <cutPageAction jcr:primaryType="jnt:permission"/>
+                    <pastePageAction jcr:primaryType="jnt:permission"/>
+                    <pasteOnePageAction jcr:primaryType="jnt:permission"/>
+                    <lockPageAction jcr:primaryType="jnt:permission"/>
+                    <newInternalLinkAction jcr:primaryType="jnt:permission"/>
+                    <newExternalLinkAction jcr:primaryType="jnt:permission"/>
+                    <newMenuLabelAction jcr:primaryType="jnt:permission"/>
+                    <deletePageAction jcr:primaryType="jnt:permission"/>
+                    <exportPageAction jcr:primaryType="jnt:permission"/>
+                    <importPageAction jcr:primaryType="jnt:permission"/>
+                </pageTreeActions>
+                <editAction jcr:primaryType="jnt:permission"/>
+                <copyAction jcr:primaryType="jnt:permission"/>
+                <cutAction jcr:primaryType="jnt:permission"/>
+                <pasteAction jcr:primaryType="jnt:permission"/>
+                <exportAction jcr:primaryType="jnt:permission"/>
+                <importAction jcr:primaryType="jnt:permission"/>
+                <translateAction jcr:primaryType="jnt:permission"/>
+                <newContentFolderAction jcr:primaryType="jnt:permission"/>
+                <newMediaFolderAction jcr:primaryType="jnt:permission"/>
+                <zipAction jcr:primaryType="jnt:permission"/>
+                <uploadFilesAction jcr:primaryType="jnt:permission"/>
+                <replaceWithAction jcr:primaryType="jnt:permission"/>
+                <openImageEditorAction jcr:primaryType="jnt:permission"/>
+                <downloadAction jcr:primaryType="jnt:permission"/>
             </jContentActions>
         </jContent>
 

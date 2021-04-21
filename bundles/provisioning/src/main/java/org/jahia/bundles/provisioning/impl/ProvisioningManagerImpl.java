@@ -154,7 +154,17 @@ public class ProvisioningManagerImpl implements ProvisioningManager {
 
     @Override
     public List<Map<String, Object>> parseScript(URL url) throws IOException {
-        return parseScript(IOUtils.toString(url, StandardCharsets.UTF_8), StringUtils.substringAfterLast(url.getFile(), "."));
+        String format = "json";
+
+        if ("mvn".equals(url.getProtocol())) {
+            String[] parts = StringUtils.split(url.getFile(), "/");
+            if (parts.length >= 4) {
+                format = parts[3];
+            }
+        } else {
+            format = StringUtils.substringAfterLast(url.getFile(), ".");
+        }
+        return parseScript(IOUtils.toString(url, StandardCharsets.UTF_8), format);
     }
 
     @Override

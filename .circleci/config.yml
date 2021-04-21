@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  docker-tags-orb: jahia/docker-tags-orb@1.1.0
+
 commands:
   generate_cachekey_seed:
       description: Generate Cache Key Seeds
@@ -80,6 +83,10 @@ jobs:
                 name: Compile GWT development
                 working_directory: ~/source/gwt
                 command: mvn -s ../.circleci/.circleci.settings.xml -e -Dimage.tag=`cat ../image.tag` clean deploy -Pgwt-development -Dbamboo.buildNumber=$CIRCLE_BUILD_NUM
+            - docker-tags-orb/docker-tags:
+                version: "image.tag"
+                repo: "jahia-core-dev"
+                dry-run: false
       - when:
           condition: << pipeline.parameters.run_pull_request >>
           steps:

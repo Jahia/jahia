@@ -98,9 +98,7 @@ public class PrecompileJspsTest extends JahiaTestCase {
     @Test
     public void testPrecompileJsps() throws IOException {
         HttpClient client = new HttpClient();
-        client.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(JahiaTestCase.getRootUserCredentials().getUserID(),
-                new String(JahiaTestCase.getRootUserCredentials().getPassword())));
-        client.getParams().setAuthenticationPreemptive(true);
+        client.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials("jahia", "password"));
         GetMethod get = new GetMethod(getPrecompileServletURL());
         try {
             get.setDoAuthentication(true);

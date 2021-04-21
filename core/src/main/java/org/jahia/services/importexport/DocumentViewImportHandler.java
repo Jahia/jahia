@@ -45,7 +45,6 @@ package org.jahia.services.importexport;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO8601;
 import org.apache.jackrabbit.util.ISO9075;
@@ -91,14 +90,11 @@ import java.util.zip.ZipEntry;
  * Time: 16:38:38
  */
 public class DocumentViewImportHandler extends BaseDocumentViewHandler implements ImportUUIDBehavior {
-    private static Logger logger = LoggerFactory.getLogger(DocumentViewImportHandler.class);
-
     public static final int IMPORT_UUID_COLLISION_MOVE_EXISTING = 4;
-
     public static final int ROOT_BEHAVIOUR_IGNORE = 0;
     public static final int ROOT_BEHAVIOUR_REPLACE = 1;
     public static final int ROOT_BEHAVIOUR_RENAME = 2;
-
+    private static Logger logger = LoggerFactory.getLogger(DocumentViewImportHandler.class);
     private int rootBehavior = ROOT_BEHAVIOUR_REPLACE;
 
     private int maxBatch = SettingsBean.getInstance().getImportMaxBatch();
@@ -148,7 +144,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     private List<String> uuids = new ArrayList<String>();
 
     private boolean expandImportedFilesOnDisk = SettingsBean.getInstance().isExpandImportedFilesOnDisk();
-    private String expandImportedFilesOnDiskPath = SettingsBean.getInstance().getExpandImportedFilesOnDiskPath();
+    private String expandedFolder;
 
     private Set<String> missingDependencies = new HashSet<String>();
 
@@ -171,7 +167,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 node = (JCRNodeWrapper) session.getNode(rootPath);
             }
         } catch (RepositoryException e) {
-            logger.error(e.getMessage()+ getLocation(), e);
+            logger.error(e.getMessage() + getLocation(), e);
             throw new IOException();
         }
         nodes.add(node);
@@ -179,11 +175,10 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
         this.archive = archive;
 
         if (archive != null && !archive.isReadable() && archive instanceof FileSystemResource) {
-            expandImportedFilesOnDiskPath = archive.getFile().getPath();
+            expandedFolder = archive.getFile().getPath();
             expandImportedFilesOnDisk = true;
         } else if (expandImportedFilesOnDisk && archive != null) {
-            expandImportedFilesOnDiskPath = SettingsBean.getInstance().getExpandImportedFilesOnDiskPath() + File.separator
-                    + FilenameUtils.getBaseName(archive.getFilename());
+            expandedFolder = ImportExportBaseService.getExpandFolder(archive, SettingsBean.getInstance().getExpandImportedFilesOnDiskPath()).getPath();
         }
 
         this.fileList = fileList;
@@ -325,7 +320,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
 
             if (pathMapping.containsKey(path + "/")) {
                 path = StringUtils.substringBeforeLast(pathMapping.get(path + "/"), "/");
-                decodedQName = StringUtils.substringAfter(path,"/");
+                decodedQName = StringUtils.substringAfter(path, "/");
             }
 
             if (noSubNodesImport.contains(pt)) {
@@ -480,7 +475,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                         }
 //                    }
                     } else {
-                        throw new AccessDeniedException("Missing jcr:addChildNodes permission for user "+session.getUser().getName());
+                        throw new AccessDeniedException("Missing jcr:addChildNodes permission for user " + session.getUser().getName());
                     }
                 } else {
                     if (child.hasPermission("jcr:modifyProperties") && child.isCheckedOut()) {
@@ -497,7 +492,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 }
                 if (nodes.peek().getPrimaryNodeType().hasOrderableChildNodes() && nodes.peek().hasPermission("jcr:write")
                         && !JCRSessionFactory.getInstance().getMountPoints().containsKey(child.getPath())) {
-                    nodes.peek().orderBefore(decodedQName,null);
+                    nodes.peek().orderBefore(decodedQName, null);
                 }
             }
             if (child == null) {
@@ -539,8 +534,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
         } else {
             String contentInExpandedPath = findContentInExpandedPath();
             if (contentInExpandedPath != null) {
-                final InputStream is = FileUtils.openInputStream(new File(
-                        expandImportedFilesOnDiskPath + contentInExpandedPath));
+                final InputStream is = FileUtils.openInputStream(new File(expandedFolder + contentInExpandedPath));
                 uploadFile(atts, decodedQName, path, child, is);
                 is.close();
             }
@@ -616,7 +610,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
         ExtendedNodeType[] existingMixinNodeTypes = child.getMixinNodeTypes();
         String m = atts.getValue(Constants.JCR_MIXINTYPES);
         if (m != null) {
-            Set<String> addedMixins =  new LinkedHashSet<String>(Arrays.asList(StringUtils.split(m, " ,")));
+            Set<String> addedMixins = new LinkedHashSet<String>(Arrays.asList(StringUtils.split(m, " ,")));
             if (removeMixins) {
                 // first we remove existing mixins that are no longer present in added mixins
                 for (ExtendedNodeType existingMixin : existingMixinNodeTypes) {
@@ -662,7 +656,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
 
             boolean processed = false;
             for (AttributeProcessor processor : attributeProcessors) {
-                if (processor.process(child,attrName, attrValue)) {
+                if (processor.process(child, attrName, attrValue)) {
                     processed = true;
                     break;
                 }
@@ -757,7 +751,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                             }
                         } else {
                             List<Value> values = new ArrayList<Value>(oldvalues);
-                            for (int j=0; j < s.length; j++) {
+                            for (int j = 0; j < s.length; j++) {
                                 final Value value = child.getRealNode().getSession().getValueFactory().createValue(JCRMultipleValueUtils.decode(s[j]), propDef.getRequiredType());
                                 if (!oldvalues.contains(value)) {
                                     values.add(value);
@@ -768,7 +762,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                                     child.getRealNode().setProperty(attrName, values.toArray(new Value[values.size()]));
                                 }
                             } catch (RepositoryException e) {
-                                logger.error(e.getMessage(),e);  //To change body of catch statement use File | Settings | File Templates.
+                                logger.error(e.getMessage(), e);  //To change body of catch statement use File | Settings | File Templates.
                             }
                         }
                     } else {
@@ -803,7 +797,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             String[] p = Patterns.SLASH.split(path);
             path = path.replace("/jcr:content", "/" + p[p.length - 2]);
         } else {
-            path =JCRContentUtils.replaceColon(path);
+            path = JCRContentUtils.replaceColon(path);
         }
         int fileIndex = fileList.indexOf(baseFilesPath + path);
         if (fileIndex == -1 && path.startsWith("/content")) {
@@ -836,7 +830,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             String[] p = Patterns.SLASH.split(path);
             path = path.replace("/jcr:content", "/" + p[p.length - 2]);
         } else {
-            path =JCRContentUtils.replaceColon(path);
+            path = JCRContentUtils.replaceColon(path);
         }
         int fileIndex = fileList.indexOf(baseFilesPath + path);
         if (fileIndex == -1 && path.startsWith("/content")) {
@@ -1024,7 +1018,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
 
     public String getLocation() {
         if (documentLocator != null) {
-            return " (line " + documentLocator.getLineNumber() + ", column "+documentLocator.getColumnNumber()+")";
+            return " (line " + documentLocator.getLineNumber() + ", column " + documentLocator.getColumnNumber() + ")";
         }
         return "";
     }

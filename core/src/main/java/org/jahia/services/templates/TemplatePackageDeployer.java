@@ -51,7 +51,10 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
-import org.jahia.services.content.*;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRObservationManager;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.scheduler.SchedulerService;
@@ -80,8 +83,11 @@ import java.util.*;
  */
 public class TemplatePackageDeployer {
 
+    public static final String PERMISSIONS_XML = "permissions.xml";
+    public static final String ROLES_XML = "roles.xml";
+    public static final String MODULES = "/modules";
+    public static final String SOURCES = "/sources";
     private static final Logger logger = LoggerFactory.getLogger(TemplatePackageDeployer.class);
-
     protected JahiaTemplateManagerService service;
 
     private TemplatePackageRegistry templatePackageRegistry;
@@ -110,14 +116,13 @@ public class TemplatePackageDeployer {
     public void initializeModuleContent(JahiaTemplatesPackage aPackage, JCRSessionWrapper session) throws RepositoryException {
         resetModuleNodes(aPackage, session);
 
-        logger.info("Starting import for the module package '" + aPackage.getName() + "' including: "
-                + aPackage.getInitialImports());
+        logger.info("Starting import for the module package '{}' including: {}", aPackage.getName(), aPackage.getInitialImports());
         for (String imp : aPackage.getInitialImports()) {
             String targetPath = "/" + StringUtils.substringAfter(StringUtils.substringBeforeLast(imp, "."), "import-").replace('-', '/');
             Resource importFile = aPackage.getResource(imp);
             logger.info("... importing " + importFile + " into " + targetPath);
-            session.getPathMapping().put("/templateSets/", "/modules/");
-            session.getPathMapping().put("/modules/" + aPackage.getId() + "/", "/modules/" + aPackage.getId() + "/" + aPackage.getVersion() + "/");
+            session.getPathMapping().put("/templateSets/", MODULES + "/");
+            session.getPathMapping().put(MODULES + "/" + aPackage.getId() + "/", MODULES + "/" + aPackage.getId() + "/" + aPackage.getVersion() + "/");
 
             try {
                 if (imp.toLowerCase().endsWith(".xml")) {
@@ -131,33 +136,33 @@ public class TemplatePackageDeployer {
                 } else if (imp.toLowerCase().contains("/importsite")) {
                     importExportService.importSiteZip(importFile, session);
                 } else {
-//                    importExportService.importZip(targetPath, importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session);
-                    importExportService.importZip(targetPath, importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session, new HashSet<String>(Arrays.asList("permissions.xml", "roles.xml")), false);
-                    if (targetPath.equals("/")) {
-                        List<String> fileList = new ArrayList<String>();
-                        Map<String, Long> sizes = new HashMap<String, Long>();
-                        File expandedFolder = importExportService.getFileList(importFile, sizes, fileList);
-                        try {
-                            if (sizes.containsKey("permissions.xml")) {
-                                Set<String> s = new HashSet<String>(sizes.keySet());
-                                s.remove("permissions.xml");
-                                if (!session.itemExists("/modules/" + aPackage.getIdWithVersion() + "/permissions")) {
-                                    session.getNode("/modules/" + aPackage.getIdWithVersion()).addNode("permissions", "jnt:permission");
+                    List<String> fileList = new ArrayList<>();
+                    Map<String, Long> sizes = new HashMap<>();
+                    File expandedFolder = importExportService.getFileList(importFile, sizes, fileList, true);
+                    try {
+                        importExportService.importZip(targetPath, importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session,
+                                new HashSet<>(Arrays.asList(PERMISSIONS_XML, ROLES_XML)), false);
+                        if (targetPath.equals("/")) {
+                            if (sizes.containsKey(PERMISSIONS_XML)) {
+                                Set<String> s = new HashSet<>(sizes.keySet());
+                                s.remove(PERMISSIONS_XML);
+                                if (!session.itemExists(MODULES + "/" + aPackage.getIdWithVersion() + "/permissions")) {
+                                    session.getNode(MODULES + "/" + aPackage.getIdWithVersion()).addNode("permissions", "jnt:permission");
                                 }
-                                importExportService.importZip("/modules/" + aPackage.getIdWithVersion(), importFile,
+                                importExportService.importZip(MODULES + "/" + aPackage.getIdWithVersion(), importFile,
                                         DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session, s, false);
                             }
-                            if (sizes.containsKey("roles.xml")) {
-                                Set<String> s = new HashSet<String>(sizes.keySet());
-                                s.remove("roles.xml");
-                                session.getPathMapping().put("/permissions", "/modules/" + aPackage.getIdWithVersion() + "/permissions");
+                            if (sizes.containsKey(ROLES_XML)) {
+                                Set<String> s = new HashSet<>(sizes.keySet());
+                                s.remove(ROLES_XML);
+                                session.getPathMapping().put("/permissions", MODULES + "/" + aPackage.getIdWithVersion() + "/permissions");
                                 importExportService.importZip("/", importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session, s,
                                         false);
                                 session.getPathMapping().remove("/permissions");
                             }
-                        } finally {
-                            importExportService.cleanFilesList(expandedFolder, fileList);
                         }
+                    } finally {
+                        importExportService.cleanFilesList(expandedFolder);
                     }
                 }
             } catch (IOException e) {
@@ -184,32 +189,28 @@ public class TemplatePackageDeployer {
     }
 
     private synchronized void cloneModuleInLive(final JahiaTemplatesPackage pack) throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, "live", null, new JCRCallback<Object>() {
-
-            @Override
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                try {
-                    JCRObservationManager.pushEventListenersAvailableDuringPublishOnly();
-                    if (!session.itemExists("/modules")) {
-                        JahiaAccessManager.setDeniedPaths(Arrays.asList("/modules/" + pack.getIdWithVersion() + "/sources"));
-                        session.getWorkspace().clone("default", "/modules", "/modules", true);
-                    } else if (!session.itemExists("/modules/" + pack.getId())) {
-                        JahiaAccessManager.setDeniedPaths(Arrays.asList("/modules/" + pack.getIdWithVersion() + "/sources"));
-                        session.getWorkspace().clone("default", "/modules/" + pack.getId(), "/modules/" + pack.getId(), true);
-                    } else {
-                        if (session.itemExists("/modules/" + pack.getIdWithVersion())) {
-                            session.getNode("/modules/" + pack.getIdWithVersion()).remove();
-                            session.save();
-                        }
-                        JahiaAccessManager.setDeniedPaths(Arrays.asList("/modules/" + pack.getIdWithVersion() + "/sources"));
-                        session.getWorkspace().clone("default", "/modules/" + pack.getIdWithVersion(), "/modules/" + pack.getIdWithVersion(), true);
+        JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, "live", null, session -> {
+            try {
+                JCRObservationManager.pushEventListenersAvailableDuringPublishOnly();
+                if (!session.itemExists(MODULES)) {
+                    JahiaAccessManager.setDeniedPaths(Collections.singletonList(MODULES + "/" + pack.getIdWithVersion() + SOURCES));
+                    session.getWorkspace().clone(Constants.EDIT_WORKSPACE, MODULES, MODULES, true);
+                } else if (!session.itemExists(MODULES + "/" + pack.getId())) {
+                    JahiaAccessManager.setDeniedPaths(Collections.singletonList(MODULES + "/" + pack.getIdWithVersion() + SOURCES));
+                    session.getWorkspace().clone(Constants.EDIT_WORKSPACE, MODULES + "/" + pack.getId(), MODULES + "/" + pack.getId(), true);
+                } else {
+                    if (session.itemExists(MODULES + "/" + pack.getIdWithVersion())) {
+                        session.getNode(MODULES + "/" + pack.getIdWithVersion()).remove();
+                        session.save();
                     }
-                } finally {
-                    JahiaAccessManager.setDeniedPaths(null);
-                    JCRObservationManager.popEventListenersAvailableDuringPublishOnly();
+                    JahiaAccessManager.setDeniedPaths(Collections.singletonList(MODULES + "/" + pack.getIdWithVersion() + SOURCES));
+                    session.getWorkspace().clone(Constants.EDIT_WORKSPACE, MODULES + "/" + pack.getIdWithVersion(), MODULES + "/" + pack.getIdWithVersion(), true);
                 }
-                return null;
+            } finally {
+                JahiaAccessManager.setDeniedPaths(null);
+                JCRObservationManager.popEventListenersAvailableDuringPublishOnly();
             }
+            return null;
         });
     }
 
@@ -223,6 +224,7 @@ public class TemplatePackageDeployer {
 
     /**
      * Clear all module nodes for given package
+     *
      * @param pkg the module package
      * @throws RepositoryException in case of JCR-related errors
      */
@@ -234,6 +236,7 @@ public class TemplatePackageDeployer {
 
     /**
      * Clear all module nodes for given package via a background job
+     *
      * @param pkg the module package
      */
     public void clearModuleNodesAsync(final JahiaTemplatesPackage pkg) {
@@ -249,7 +252,8 @@ public class TemplatePackageDeployer {
 
     /**
      * Clear all module nodes for given package id and version
-     * @param id the id of the module to clean nodes for
+     *
+     * @param id      the id of the module to clean nodes for
      * @param version the version of the module
      * @throws RepositoryException in case of JCR-related errors
      */
@@ -262,7 +266,8 @@ public class TemplatePackageDeployer {
     /**
      * clear all module nodes for given package and session
      * Deprecated: use clearModuleNodes(final JahiaTemplatesPackage pkg)
-     * @param pkg the module package
+     *
+     * @param pkg     the module package
      * @param session current JCR session instance
      * @throws RepositoryException in case of JCR-related errors
      */
@@ -272,26 +277,24 @@ public class TemplatePackageDeployer {
     }
 
     private void clearModuleNodes(String workspace, final String id, final ModuleVersion version) throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null, new JCRCallback<Object>() {
-            @Override
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                clearModuleNodes(id, version, session);
-                return null;
-            }
+        JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null, session -> {
+            clearModuleNodes(id, version, session);
+            return null;
         });
     }
 
     /**
      * Clear all module nodes for given package id, version and session
-     *  if you want to remove a module nodes, use clearModuleNodes(String id, ModuleVersion version) to be sure to remove
-     *  nodes in both workspaces.
-     * @param id the module ID to clean nodes for
+     * if you want to remove a module nodes, use clearModuleNodes(String id, ModuleVersion version) to be sure to remove
+     * nodes in both workspaces.
+     *
+     * @param id      the module ID to clean nodes for
      * @param version the module version
      * @param session current JCR session instance
      * @throws RepositoryException in case of JCR-related errors
      */
     public void clearModuleNodes(String id, ModuleVersion version, JCRSessionWrapper session) throws RepositoryException {
-        String modulePath = "/modules/" + id + "/" + version;
+        String modulePath = MODULES + "/" + id + "/" + version;
         if (session.nodeExists(modulePath)) {
             JCRNodeWrapper moduleNode = session.getNode(modulePath);
             NodeIterator nodeIterator = moduleNode.getNodes();
@@ -309,11 +312,11 @@ public class TemplatePackageDeployer {
     private boolean initModuleNode(JCRSessionWrapper session, JahiaTemplatesPackage pack, boolean updateDeploymentDate)
             throws RepositoryException {
         boolean modified = false;
-        if (!session.nodeExists("/modules")) {
+        if (!session.nodeExists(MODULES)) {
             session.getRootNode().addNode("modules", "jnt:modules");
             modified = true;
         }
-        JCRNodeWrapper modules = session.getNode("/modules");
+        JCRNodeWrapper modules = session.getNode(MODULES);
         JCRNodeWrapper m;
         if (!modules.hasNode(pack.getId())) {
             modified = true;
@@ -384,7 +387,7 @@ public class TemplatePackageDeployer {
     }
 
     private void resetModuleAttributes(JCRSessionWrapper session, JahiaTemplatesPackage pack) throws RepositoryException {
-        JCRNodeWrapper modules = session.getNode("/modules");
+        JCRNodeWrapper modules = session.getNode(MODULES);
         JCRNodeWrapper m = modules.getNode(pack.getIdWithVersion());
 
         m.setProperty("j:title", pack.getName());
@@ -435,7 +438,7 @@ public class TemplatePackageDeployer {
                 try {
                     String key = resource.getURI().getPath().substring(1).replace("/", ".");
                     if (key.startsWith(pack.getResourceBundleName())) {
-                        String langCode = StringUtils.substringBetween(key , pack.getResourceBundleName() + "_", ".properties");
+                        String langCode = StringUtils.substringBetween(key, pack.getResourceBundleName() + "_", ".properties");
                         if (langCode != null) {
                             langs.add(langCode);
                         }
@@ -459,8 +462,8 @@ public class TemplatePackageDeployer {
 
     private String guessModuleType(JCRSessionWrapper session, JahiaTemplatesPackage pack) throws RepositoryException {
         String moduleType = JahiaTemplateManagerService.MODULE_TYPE_MODULE;
-        if (session.itemExists("/modules/" + pack.getIdWithVersion() + "/j:moduleType")) {
-            moduleType = session.getNode("/modules/" + pack.getIdWithVersion()).getProperty("j:moduleType").getValue().getString();
+        if (session.itemExists(MODULES + "/" + pack.getIdWithVersion() + "/j:moduleType")) {
+            moduleType = session.getNode(MODULES + "/" + pack.getIdWithVersion()).getProperty("j:moduleType").getValue().getString();
         } else {
             String[] fileNames = new File(pack.getFilePath()).list();
             if (fileNames != null) {

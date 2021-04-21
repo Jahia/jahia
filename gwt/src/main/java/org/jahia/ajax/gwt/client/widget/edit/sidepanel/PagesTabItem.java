@@ -210,7 +210,8 @@ public class PagesTabItem extends SidePanelTabItem {
         super.initWithLinker(linker);
         path = linker.getMainModule().getPath();
         initPageTree();
-        if (linker.getConfig().isDragAndDropEnabled()) {
+        boolean isAllowed = PermissionsUtils.isPermitted("orderPagesAction", linker.getConfig().getSiteNode().getPermissions());
+        if (linker.getConfig().isDragAndDropEnabled() && isAllowed) {
             initDND();
         }
     }

@@ -789,28 +789,20 @@
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-core</artifactId>
-            <version>1.24.1-jahia1</version>
+            <version>1.26</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-parsers</artifactId>
-            <version>1.24.1</version>
+            <version>1.26</version>
             <exclusions>
                 <exclusion>
                     <!--
-                        guava 17.0 is used by edu.ucar:cdm:jar:4.5.5, but core already declare guava 15.0 as dependency
-                        Looking at edu.ucar:cdm:jar:4.5.5 sources, guava 15.0 should work for runtime
+                        guava 30.1.1 is used as tika-parser dependency, but core already declare guava 15.0 as dependency
+                        guave upgrade in core should be done in next feature release
                      -->
                     <groupId>com.google.guava</groupId>
                     <artifactId>guava</artifactId>
-                </exclusion>
-                <exclusion>
-                    <!--
-                        ehcache-core 2.6.2 is used by edu.ucar:cdm:jar:4.5.5, but core already declare ehcache 2.8.5
-                        Looking at edu.ucar:cdm:jar:4.5.5 sources, ehcache 2.8.5 should work for runtime
-                    -->
-                    <groupId>net.sf.ehcache</groupId>
-                    <artifactId>ehcache-core</artifactId>
                 </exclusion>
                 <exclusion>
                     <!--
@@ -930,6 +922,21 @@
                     <artifactId>commons-csv</artifactId>
                     <groupId>org.apache.commons</groupId>
                 </exclusion>
+                <exclusion>
+                    <!-- Ogg, Vorbis and FLAC files -->
+                    <artifactId>vorbis-java-core</artifactId>
+                    <groupId>org.gagravarr</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- Ogg, Vorbis and FLAC files -->
+                    <artifactId>vorbis-java-tika</artifactId>
+                    <groupId>org.gagravarr</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- Property lists -->
+                    <groupId>com.googlecode.plist</groupId>
+                    <artifactId>dd-plist</artifactId>
+                </exclusion>
                 <!-- end of excluded dependencies for various formats -->
 
                 <!-- Exclude further dependencies from Tika -->
@@ -989,20 +996,7 @@
                     <groupId>org.jdom</groupId>
                     <artifactId>jdom2</artifactId>
                 </exclusion>
-                <!-- We exclude asm to override it with a patched JAR -->
-                <exclusion>
-                    <groupId>org.ow2.asm</groupId>
-                    <artifactId>asm</artifactId>
-                </exclusion>
             </exclusions>
-        </dependency>
-
-        <!-- Tika dependency: repackaged JAR with a module-info.class file removed as it causes issues on JBoss startup -->
-        <dependency>
-            <groupId>org.ow2.asm</groupId>
-            <artifactId>asm</artifactId>
-            <classifier>no-module-info</classifier>
-            <version>7.0</version>
         </dependency>
 
         <dependency>
@@ -1165,6 +1159,10 @@
                 <exclusion>
                     <artifactId>stax-api</artifactId>
                     <groupId>javax.xml.stream</groupId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.codehaus.woodstox</groupId>
+                    <artifactId>woodstox-core-asl</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -1505,6 +1503,10 @@
                 <exclusion>
                     <groupId>com.sun.xml.bind</groupId>
                     <artifactId>jaxb-impl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.codehaus.woodstox</groupId>
+                    <artifactId>woodstox-core-asl</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

@@ -50,6 +50,7 @@ import org.jahia.osgi.FrameworkService;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.ModuleManager;
+import org.jahia.services.modulemanager.OperationResult;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.jahia.services.modulemanager.persistence.PersistentBundleInfoBuilder;
 import org.jahia.services.modulemanager.util.ModuleUtils;
@@ -187,24 +188,20 @@ public class ModuleFileInstallHandler implements CustomHandler {
             ((ArtifactInstaller) artifact.getListener()).install(path);
         } else if (artifact.getListener() instanceof ArtifactUrlTransformer) {
             // if the listener is an url transformer
-            URL transformed = artifact.getTransformedUrl();
-            String location = transformed.toString();
-            getModuleManager().install(new UrlResource(transformed), TARGET_GROUP);
-            Bundle b = BundleUtils.getBundle(location);
-            if (b != null) {
-                artifact.setBundleId(b.getBundleId());
-            }
-
-            addLocationMapping(location, path);
-
+            install(artifact, new UrlResource(artifact.getTransformedUrl()));
         } else if (artifact.getListener() instanceof ArtifactTransformer) {
             // if the listener is an artifact transformer
-            File transformed = artifact.getTransformed();
-            String location = path.toURI().normalize().toString();
-            getModuleManager().install(new FileSystemResource(transformed), TARGET_GROUP);
-            Bundle b = BundleUtils.getBundle(location);
+            install(artifact, new FileSystemResource(artifact.getTransformed()));
+        }
+    }
+
+    private void install(Artifact artifact, Resource bundleResource) {
+        OperationResult result = getModuleManager().install(bundleResource, TARGET_GROUP);
+        for (BundleInfo bundleInfo : result.getBundleInfos()) {
+            Bundle b = BundleUtils.getBundle(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
             if (b != null) {
                 artifact.setBundleId(b.getBundleId());
+                addLocationMapping(b.getLocation(), artifact.getPath());
             }
         }
     }

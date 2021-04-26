@@ -45,8 +45,6 @@ package org.jahia.bundles.extender.jahiamodules;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.felix.fileinstall.ArtifactListener;
-import org.apache.felix.fileinstall.ArtifactUrlTransformer;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.bundles.extender.jahiamodules.fileinstall.FileInstallConfigurer;
@@ -55,11 +53,13 @@ import org.jahia.bundles.extender.jahiamodules.logging.PaxLoggingConfigurer;
 import org.jahia.bundles.extender.jahiamodules.mvn.MavenURLStreamHandler;
 import org.jahia.bundles.extender.jahiamodules.transform.DxModuleURLStreamHandler;
 import org.jahia.bundles.extender.jahiamodules.transform.ModuleDependencyURLStreamHandler;
-import org.jahia.bundles.extender.jahiamodules.transform.ModuleUrlTransformer;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.data.templates.ModuleState.State;
-import org.jahia.osgi.*;
+import org.jahia.osgi.BundleLifecycleUtils;
+import org.jahia.osgi.BundleResource;
+import org.jahia.osgi.BundleUtils;
+import org.jahia.osgi.ExtensionObserverRegistry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheHelper;
@@ -1166,14 +1166,6 @@ public class Activator implements BundleActivator {
         props.put(Constants.SERVICE_DESCRIPTION, "URL stream protocol handler for DX modules that handles dependencies between them using OSGi capabilities");
         props.put(Constants.SERVICE_VENDOR, Jahia.VENDOR_NAME);
         serviceRegistrations.add(context.registerService(URLStreamHandlerService.class, new ModuleDependencyURLStreamHandler(), props));
-
-        // register artifact listener and URL transformer
-        props = new Hashtable<>();
-        props.put(Constants.SERVICE_DESCRIPTION, "Artifact listener to perist the underlying bundle and transform its URL");
-        props.put(Constants.SERVICE_VENDOR, Jahia.VENDOR_NAME);
-        serviceRegistrations.add(context.registerService(
-                new String[]{ArtifactUrlTransformer.class.getName(), ArtifactListener.class.getName()},
-                new ModuleUrlTransformer(), null));
 
         // register mvn URL handler to verride the default from pax
         props.put(URLConstants.URL_HANDLER_PROTOCOL, "mvn");

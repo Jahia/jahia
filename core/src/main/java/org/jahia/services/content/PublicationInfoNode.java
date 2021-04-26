@@ -53,14 +53,15 @@ import java.util.List;
  * Time: 5:31:55 PM
  */
 public class PublicationInfoNode implements Serializable {
-    
+
     private static final long serialVersionUID = 8826165087616513109L;
-    
+
     private String uuid;
     private String path;
     private int status;
     private boolean locked;
     private boolean workInProgress = false;
+    private boolean workInProgressChild = false;
     private List<PublicationInfoNode> child = new LinkedList<PublicationInfoNode>();
     private List<PublicationInfo> references = new LinkedList<PublicationInfo>();
 
@@ -74,6 +75,14 @@ public class PublicationInfoNode implements Serializable {
         this();
         this.uuid = uuid;
         this.path = path;
+    }
+
+    public boolean isWorkInProgressChild() {
+        return workInProgressChild;
+    }
+
+    public void setWorkInProgressChild(boolean workInProgressChild) {
+        this.workInProgressChild = workInProgressChild;
     }
 
     public String getUuid() {
@@ -160,7 +169,7 @@ public class PublicationInfoNode implements Serializable {
         return result;
     }
 
-    
+
     @Override
     public String toString() {
         return path != null ? path : super.toString();

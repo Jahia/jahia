@@ -103,7 +103,7 @@
         <cve>CVE-2020-13956</cve>
     </suppress> 
     <suppress>
-   <     notes><![CDATA[
+        <notes><![CDATA[
         file name: spring-core-3.1.1.RELEASE.jar - we package spring-core-3.2.18.RELEASE_OSGI.jar 
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-core@.*$</packageUrl>

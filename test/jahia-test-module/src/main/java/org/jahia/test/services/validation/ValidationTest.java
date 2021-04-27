@@ -223,12 +223,12 @@ public class ValidationTest {
             }
             assertThat(errors).hasSize(7).extracting(Exception::getLocalizedMessage).containsExactlyInAnyOrder(
                     "/sites/validationTest/testTranslation Champ non nul: ne peut pas être nul",
-                    "/sites/validationTest/testTranslation Champ dont la taille est comprise entre 6 et 20: la taille doit être entre 6 et 20",
+                    "/sites/validationTest/testTranslation Champ dont la taille est comprise entre 6 et 20: la taille doit être comprise entre 6 et 20",
                     "/sites/validationTest/testTranslation Champ de confirmation d'e-mail: Les champs ne correspondent pas",
-                    "/sites/validationTest/testTranslation Champ d'e-mail: Adresse email mal formée",
-                    "/sites/validationTest/testTranslation Champ de confirmation d'e-mail: Adresse email mal formée",
+                    "/sites/validationTest/testTranslation Champ d'e-mail: adresse email mal formée",
+                    "/sites/validationTest/testTranslation Champ de confirmation d'e-mail: adresse email mal formée",
                     "/sites/validationTest/testTranslation Champ de date dans le futur: doit être dans le futur",
-                    "/sites/validationTest/testTranslation Champ avec valeur strictement supérieure à 2: doit être plus grand que 3"
+                    "/sites/validationTest/testTranslation Champ avec valeur strictement supérieure à 2: doit être au minimum égal à 3"
             );
         } finally {
             if (localeContext != null) {

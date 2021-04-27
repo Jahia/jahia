@@ -55,7 +55,6 @@
                 <value>org.jahia.test.services.notification.HttpClientServiceTest</value>
                 <value>org.jahia.test.services.providers.ModulesProviderTest</value>
                 <value>org.jahia.test.services.publication.PublicationTest</value>
-                <value>org.jahia.test.services.publication.WipTest</value>
                 <value>org.jahia.test.services.query.FacetedQueryTest</value>
                 <value>org.jahia.test.services.query.IndexOptionsTest</value>
                 <value>org.jahia.test.services.query.NativeSortTest</value>

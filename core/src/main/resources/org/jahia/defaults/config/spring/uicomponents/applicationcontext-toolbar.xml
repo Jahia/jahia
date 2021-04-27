@@ -758,6 +758,28 @@
         <property name="icon" value="lock"/>
     </bean>
 
+    <bean id="Toolbar.Item.LockPage" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype" parent="Toolbar.Item.Lock">
+        <property name="requiredPermission" value="lockPageAction"/>
+    </bean>
+
+    <bean id="Toolbar.Item.LockPageHeader" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
+          parent="Toolbar.Item.LockPage">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.LockActionItem">
+                <property name="allowedNodeTypes" ref="exclusiveHeaderPageTypes"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="Toolbar.Item.LockContentHeader" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
+          parent="Toolbar.Item.Lock">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.LockActionItem">
+                <property name="forbiddenNodeTypes" ref="exclusiveHeaderPageTypes"/>
+            </bean>
+        </property>
+    </bean>
+
     <!-- new edit mode buttons: unlock -->
     <bean id="Toolbar.Item.Unlock" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
@@ -765,6 +787,29 @@
         </property>
         <property name="titleKey" value="label.unlock"/>
         <property name="icon" value="unlock"/>
+    </bean>
+
+    <bean id="Toolbar.Item.UnlockPage" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
+          parent="Toolbar.Item.Unlock">
+        <property name="requiredPermission" value="lockPageAction"/>
+    </bean>
+
+    <bean id="Toolbar.Item.UnlockPageHeader" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
+          parent="Toolbar.Item.UnlockPage">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UnlockActionItem">
+                <property name="allowedNodeTypes" ref="exclusiveHeaderPageTypes"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="Toolbar.Item.UnlockContentHeader" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
+          parent="Toolbar.Item.Unlock">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UnlockActionItem">
+                <property name="forbiddenNodeTypes" ref="exclusiveHeaderPageTypes"/>
+            </bean>
+        </property>
     </bean>
 
     <bean id="Toolbar.Item.ClearLock" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
@@ -812,36 +857,108 @@
     </bean>
 
     <!-- new edit mode buttons: delete -->
+    <bean id="Toolbar.Item.DeleteActionItem" class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeleteActionItem" scope="prototype">
+        <property name="referenceTitleKey" value="label.remove"/>
+        <property name="permanentlyDelete" value="false"/>
+        <property name="forbiddenNodeTypes" ref="forbidDeleteRenameCutForNodeTypes"/>
+    </bean>
+
     <bean id="Toolbar.Item.Delete" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeleteActionItem">
-                <property name="referenceTitleKey" value="label.remove"/>
-                <property name="permanentlyDelete" value="false"/>
-                <property name="forbiddenNodeTypes" ref="forbidDeleteRenameCutForNodeTypes"/>
-            </bean>
-        </property>
+        <property name="actionItem" ref="Toolbar.Item.DeleteActionItem"/>
         <property name="titleKey" value="label.delete"/>
         <property name="icon" value="delete"/>
     </bean>
 
-    <bean id="Toolbar.Item.Undelete" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+    <bean id="Toolbar.Item.DeletePage" class="org.jahia.services.uicomponents.bean.toolbar.Item"
+          scope="prototype" parent="Toolbar.Item.Delete">
+        <property name="requiredPermission" value="deletePageAction"/>
+    </bean>
+
+    <bean id="Toolbar.Item.DeletePageHeader" class="org.jahia.services.uicomponents.bean.toolbar.Item"
+          scope="prototype" parent="Toolbar.Item.DeletePage">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UndeleteActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeleteActionItem" parent="Toolbar.Item.DeleteActionItem">
+                <property name="allowedNodeTypes" ref="exclusiveHeaderPageTypes"/>
+            </bean>
         </property>
+    </bean>
+
+    <bean id="Toolbar.Item.DeleteContentHeader" class="org.jahia.services.uicomponents.bean.toolbar.Item"
+          scope="prototype" parent="Toolbar.Item.Delete">
+        <property name="actionItem">
+            <bean parent="Toolbar.Item.DeleteActionItem" class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeleteActionItem">
+                <property name="forbiddenNodeTypes" ref="forbidDeleteRenameCutForNodeTypesNonPage"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="Toolbar.Item.UndeleteActionItem" class="org.jahia.ajax.gwt.client.widget.toolbar.action.UndeleteActionItem"
+          scope="prototype"/>
+
+    <bean id="Toolbar.Item.Undelete" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem" ref="Toolbar.Item.UndeleteActionItem"/>
         <property name="titleKey" value="label.undelete"/>
         <property name="icon" value="undelete"/>
     </bean>
 
-    <bean id="Toolbar.Item.DeletePermanently" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+    <bean id="Toolbar.Item.UndeletePage" class="org.jahia.services.uicomponents.bean.toolbar.Item"
+          scope="prototype" parent="Toolbar.Item.Undelete">
+        <property name="requiredPermission" value="deletePageAction"/>
+    </bean>
+
+    <bean id="Toolbar.Item.UndeletePageHeader" class="org.jahia.services.uicomponents.bean.toolbar.Item"
+          scope="prototype" parent="Toolbar.Item.UndeletePage">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeleteActionItem">
-                <property name="referenceTitleKey" value="label.deletePermanently"/>
-                <property name="permanentlyDelete" value="true"/>
-                <property name="forbiddenNodeTypes" ref="forbidDeleteRenameCutForNodeTypes"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UndeleteActionItem" parent="Toolbar.Item.UndeleteActionItem">
+                <property name="allowedNodeTypes" ref="exclusiveHeaderPageTypes"/>
             </bean>
         </property>
+    </bean>
+
+    <bean id="Toolbar.Item.UndeleteContentHeader" class="org.jahia.services.uicomponents.bean.toolbar.Item"
+          scope="prototype" parent="Toolbar.Item.UndeletePage">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UndeleteActionItem" scope="prototype">
+                <property name="forbiddenNodeTypes">
+                    <list><value>jnt:page</value></list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="Toolbar.Item.DeletePermanentlyActionItem" class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeleteActionItem">
+        <property name="referenceTitleKey" value="label.deletePermanently"/>
+        <property name="permanentlyDelete" value="true"/>
+        <property name="forbiddenNodeTypes" ref="forbidDeleteRenameCutForNodeTypes"/>
+    </bean>
+
+    <bean id="Toolbar.Item.DeletePermanently" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem" ref="Toolbar.Item.DeletePermanentlyActionItem"/>
         <property name="titleKey" value="label.deletePermanently"/>
         <property name="icon" value="delete"/>
+    </bean>
+
+    <bean id="Toolbar.Item.DeletePermanentlyPage" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
+          parent="Toolbar.Item.DeletePermanently">
+        <property name="requiredPermission" value="deletePageAction"/>
+    </bean>
+
+    <bean id="Toolbar.Item.DeletePermanentlyPageHeader" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
+          parent="Toolbar.Item.DeletePermanentlyPage">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeleteActionItem" parent="Toolbar.Item.DeletePermanentlyActionItem">
+                <property name="allowedNodeTypes" ref="exclusiveHeaderPageTypes"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="Toolbar.Item.DeletePermanentlyContentHeader" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
+          parent="Toolbar.Item.DeletePermanently">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeleteActionItem" parent="Toolbar.Item.DeletePermanentlyActionItem">
+                <property name="allowedNodeTypes" ref="exclusiveHeaderPageTypes"/>
+            </bean>
+        </property>
     </bean>
 
     <bean id="Toolbar.Item.DeletePermanentlyNoMarkForDeletion" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
@@ -858,14 +975,37 @@
     </bean>
 
     <!-- new content action buttons  -->
+    <bean id="Toolbar.Item.CopyActionItem" class="org.jahia.ajax.gwt.client.widget.toolbar.action.CopyActionItem" scope="prototype">
+        <property name="forbiddenNodeTypes" ref="forbidDeleteRenameCutForNodeTypes"/>
+    </bean>
+
     <bean id="Toolbar.Item.Copy" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CopyActionItem">
-                <property name="forbiddenNodeTypes" ref="forbidDeleteRenameCutForNodeTypes"/>
-            </bean>
-        </property>
+        <property name="actionItem" ref="Toolbar.Item.CopyActionItem"/>
         <property name="titleKey" value="label.copy"/>
         <property name="icon" value="copy"/>
+    </bean>
+
+    <bean id="Toolbar.Item.CopyPage" class="org.jahia.services.uicomponents.bean.toolbar.Item"
+          scope="prototype" parent="Toolbar.Item.Copy">
+        <property name="requiredPermission" value="copyPageAction"/>
+    </bean>
+
+    <bean id="Toolbar.Item.CopyPageHeader" class="org.jahia.services.uicomponents.bean.toolbar.Item"
+          scope="prototype" parent="Toolbar.Item.CopyPage">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CopyActionItem">
+                <property name="allowedNodeTypes" ref="exclusiveHeaderPageTypes"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="Toolbar.Item.CopyContentHeader" class="org.jahia.services.uicomponents.bean.toolbar.Item"
+          scope="prototype" parent="Toolbar.Item.CopyPage">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CopyActionItem">
+                <property name="forbiddenNodeTypes" ref="forbidDeleteRenameCutForNodeTypesNonPage"/>
+            </bean>
+        </property>
     </bean>
 
     <bean id="Toolbar.Item.NewCategory" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
@@ -996,6 +1136,28 @@
         <property name="icon" value="cut"/>
     </bean>
 
+    <bean id="Toolbar.Item.CutPage" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype" parent="Toolbar.Item.Cut">
+        <property name="requiredPermission" value="cutPageAction"/>
+    </bean>
+
+    <bean id="Toolbar.Item.CutPageHeader" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
+          parent="Toolbar.Item.CutPage">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CutActionItem">
+                <property name="allowedNodeTypes" ref="exclusiveHeaderPageTypes"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="Toolbar.Item.CutContentHeader" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
+          parent="Toolbar.Item.Cut">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CutActionItem">
+                <property name="forbiddenNodeTypes" ref="forbidDeleteRenameCutForNodeTypesNonPage"/>
+            </bean>
+        </property>
+    </bean>
+
     <bean id="Toolbar.Item.Download" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DownloadActionItem"/>
@@ -1012,12 +1174,57 @@
         <property name="icon" value="export"/>
     </bean>
 
+    <bean id="Toolbar.Item.ExportPage" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="requiredPermission" value="exportPageAction"/>
+    </bean>
+
+    <bean id="Toolbar.Item.ExportPageHeader" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
+          parent="Toolbar.Item.ExportPage">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DownloadActionItem">
+                <property name="allowedNodeTypes" ref="exclusiveHeaderPageTypes"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="Toolbar.Item.ExportContentHeader" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
+          parent="Toolbar.Item.Export">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DownloadActionItem">
+                <property name="forbiddenNodeTypes" ref="exclusiveHeaderPageTypes"/>
+            </bean>
+        </property>
+    </bean>
+
     <bean id="Toolbar.Item.Import" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ImportActionItem"/>
         </property>
         <property name="titleKey" value="label.import"/>
         <property name="icon" value="import"/>
+    </bean>
+
+    <bean id="Toolbar.Item.ImportPage" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
+          parent="Toolbar.Item.Import">
+        <property name="requiredPermission" value="importPageAction"/>
+    </bean>
+
+    <bean id="Toolbar.Item.ImportPageHeader" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
+          parent="Toolbar.Item.ImportPage">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ImportActionItem">
+                <property name="allowedNodeTypes" ref="exclusiveHeaderPageTypes"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="Toolbar.Item.ImportContentHeader" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
+          parent="Toolbar.Item.Import">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ImportActionItem">
+                <property name="forbiddenNodeTypes" ref="exclusiveHeaderPageTypes"/>
+            </bean>
+        </property>
     </bean>
 
     <bean id="Toolbar.Item.Update" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
@@ -1034,6 +1241,11 @@
         </property>
         <property name="titleKey" value="label.paste"/>
         <property name="icon" value="paste"/>
+    </bean>
+
+    <bean id="Toolbar.Item.PastePage" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
+          parent="Toolbar.Item.Paste">
+        <property name="requiredPermission" value="pastePageAction"/>
     </bean>
 
     <bean id="Toolbar.Item.PasteCurrentPage" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
@@ -1055,6 +1267,11 @@
         <property name="icon" value="paste"/>
     </bean>
 
+    <bean id="Toolbar.Item.PastePageCurrentPage" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
+          parent="Toolbar.Item.PasteCurrentPage">
+        <property name="requiredPermission" value="pasteOnePageAction"/>
+    </bean>
+
     <bean id="Toolbar.Item.PasteInMain" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PasteActionItem">
@@ -1071,6 +1288,11 @@
         </property>
         <property name="titleKey" value="label.pasteReference"/>
         <property name="icon" value="pasteReference"/>
+    </bean>
+
+    <bean id="Toolbar.Item.PasteReferencePage" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
+          parent="Toolbar.Item.PasteReference">
+        <property name="requiredPermission" value="pastePageAction"/>
     </bean>
 
     <bean id="Toolbar.Item.FilePreview" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
@@ -1293,6 +1515,7 @@
         </property>
         <property name="titleKey" value="label.newNavMenuText"/>
         <property name="icon" value="newNavMenuText"/>
+        <property name="requiredPermission" value="newMenuLabelAction"/>
     </bean>
     <bean id="Toolbar.Item.NewInternalLink" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">
@@ -1305,6 +1528,7 @@
         </property>
         <property name="titleKey" value="label.newInternalLink"/>
         <property name="icon" value="newInternalLink"/>
+        <property name="requiredPermission" value="newInternalLinkAction"/>
     </bean>
     <bean id="Toolbar.Item.NewExternalLink" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">
@@ -1317,6 +1541,7 @@
         </property>
         <property name="titleKey" value="label.newExternalLink"/>
         <property name="icon" value="newExternalLink"/>
+        <property name="requiredPermission" value="newExternalLinkAction"/>
     </bean>
 
     <bean id="Toolbar.Item.ShowTrashboard" class="org.jahia.services.uicomponents.bean.toolbar.Item">
@@ -1351,6 +1576,21 @@
         <value>jnt:componentFolder</value>
         <value>jnt:component</value>
     </util:list>
+
+    <!-- used for page componser banner context menu for pages -->
+    <util:list id="exclusiveHeaderPageTypes">
+        <value>jnt:page</value>
+    </util:list>
+
+    <!-- extend forbidDeleteRenameCutForNodeTypes list with jnt:page; for non-page context menu items -->
+    <bean id="forbidDeleteRenameCutForNodeTypesNonPage" parent="forbidDeleteRenameCutForNodeTypes"
+          class="org.springframework.beans.factory.config.ListFactoryBean">
+        <property name="sourceList">
+            <list merge="true">
+                <value>jnt:page</value>
+            </list>
+        </property>
+    </bean>
 
     <bean id="Toolbar.Item.SiteHome" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">

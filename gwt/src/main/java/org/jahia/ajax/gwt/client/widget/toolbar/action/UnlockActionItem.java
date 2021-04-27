@@ -54,7 +54,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 * Time: 6:57:08 PM
 * 
 */
-public class UnlockActionItem extends BaseActionItem {
+public class UnlockActionItem extends NodeTypeAwareBaseActionItem {
     public void onComponentSelection() {
         ContentActions.lock(false, linker);
     }

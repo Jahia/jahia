@@ -53,7 +53,7 @@ import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 * Time: 6:58:15 PM
 * 
 */
-public class DownloadActionItem extends BaseActionItem   {
+public class DownloadActionItem extends NodeTypeAwareBaseActionItem {
     public void onComponentSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         ContentActions.download(linker, lh.getSingleSelection(), lh.getSingleSelection().getUrl());

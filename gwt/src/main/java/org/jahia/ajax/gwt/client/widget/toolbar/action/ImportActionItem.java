@@ -54,7 +54,7 @@ import org.jahia.ajax.gwt.client.widget.content.ContentImport;
 * Time: 6:58:48 PM
 * 
 */
-public class ImportActionItem extends BaseActionItem {
+public class ImportActionItem extends NodeTypeAwareBaseActionItem {
     public void onComponentSelection() {
         new ContentImport(linker, linker.getSelectionContext().getSingleSelection()).show();
     }

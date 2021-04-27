@@ -1,11 +1,45 @@
 mutation {
-    jcr {
-        addPermission: mutateNodesByQuery(query: "/jcr:root/permissions/jContent/jContentActions[not(pageTreeActions/@jcr:primaryType='jnt:permission')]", queryLanguage: XPATH) {
-            addChild(name: "pageTreeActions", primaryNodeType: "jnt:permission") {
-                addChild(name: "orderPagesAction", primaryNodeType: "jnt:permission") {
-                    uuid
-                }
-            }
-        }
+  jcr {
+    addPageTreePermissions: mutateNodesByQuery(query: "/jcr:root/permissions/jContent/jContentActions[not(pageTreeActions/@jcr:primaryType='jnt:permission')]", queryLanguage: XPATH) {
+
+      # Add new pageTreeActions and new jContent action permissions
+      addChildrenBatch(nodes: [
+        { name:"pageTreeActions", primaryNodeType:"jnt:permission", children: [
+            { name:"orderPagesAction", primaryNodeType: "jnt:permission" },
+            { name:"editPageAction", primaryNodeType: "jnt:permission" },,
+            { name:"copyPageAction", primaryNodeType: "jnt:permission" },
+            { name:"cutPageAction", primaryNodeType: "jnt:permission" },
+            { name:"pastePageAction", primaryNodeType: "jnt:permission" },
+            { name:"lockPageAction", primaryNodeType: "jnt:permission" },
+            { name:"newInternalLinkAction", primaryNodeType: "jnt:permission" },
+            { name:"newExternalLinkAction", primaryNodeType: "jnt:permission" },
+            { name:"newMenuLabelAction", primaryNodeType: "jnt:permission" },
+            { name:"deletePageAction", primaryNodeType: "jnt:permission" },
+            { name:"exportPageAction", primaryNodeType: "jnt:permission" },
+            { name:"importPageAction", primaryNodeType: "jnt:permission" }
+        ]},
+        { name:"editAction", primaryNodeType: "jnt:permission" },
+        { name:"copyAction", primaryNodeType: "jnt:permission" },
+        { name:"cutAction", primaryNodeType: "jnt:permission" },
+        { name:"pasteAction", primaryNodeType: "jnt:permission" },
+        { name:"exportAction", primaryNodeType: "jnt:permission" },
+        { name:"importAction", primaryNodeType: "jnt:permission" },
+        { name:"translateAction", primaryNodeType: "jnt:permission" },
+        { name:"newContentFolderAction", primaryNodeType: "jnt:permission" },
+        { name:"newMediaFolderAction", primaryNodeType: "jnt:permission" },
+        { name:"zipAction", primaryNodeType: "jnt:permission" },
+        { name:"uploadFilesAction", primaryNodeType: "jnt:permission" },
+        { name:"replaceWithAction", primaryNodeType: "jnt:permission" },
+        { name:"openImageEditorAction", primaryNodeType: "jnt:permission" },
+        { name:"downloadAction", primaryNodeType: "jnt:permission" }
+      ]) {
+        uuid
+      }
+
+      # Migrate createPageAction from jContent actions to pageTreeActions
+      mutateChildren(names: "createPageAction") {
+        move(parentPathOrId:"/permissions/jContent/jContentActions/pageTreeActions")
+      }
     }
+  }
 }

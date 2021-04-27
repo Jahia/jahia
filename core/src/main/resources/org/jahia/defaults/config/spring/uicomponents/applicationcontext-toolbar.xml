@@ -1174,14 +1174,15 @@
         <property name="icon" value="export"/>
     </bean>
 
-    <bean id="Toolbar.Item.ExportPage" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+    <bean id="Toolbar.Item.ExportPage" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
+          parent="Toolbar.Item.Export">
         <property name="requiredPermission" value="exportPageAction"/>
     </bean>
 
     <bean id="Toolbar.Item.ExportPageHeader" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
           parent="Toolbar.Item.ExportPage">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DownloadActionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ExportActionItem">
                 <property name="allowedNodeTypes" ref="exclusiveHeaderPageTypes"/>
             </bean>
         </property>
@@ -1190,7 +1191,7 @@
     <bean id="Toolbar.Item.ExportContentHeader" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
           parent="Toolbar.Item.Export">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DownloadActionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ExportActionItem">
                 <property name="forbiddenNodeTypes" ref="exclusiveHeaderPageTypes"/>
             </bean>
         </property>

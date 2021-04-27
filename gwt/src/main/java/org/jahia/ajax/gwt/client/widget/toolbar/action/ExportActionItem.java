@@ -52,7 +52,7 @@ import org.jahia.ajax.gwt.client.widget.content.ContentExport;
 * Time: 6:58:45 PM
 * 
 */
-public class ExportActionItem extends BaseActionItem    {
+public class ExportActionItem extends NodeTypeAwareBaseActionItem {
     public void onComponentSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         new ContentExport(linker, lh.getSingleSelection()).show();

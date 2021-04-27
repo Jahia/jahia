@@ -52,6 +52,7 @@ import javax.servlet.jsp.PageContext;
 
 import org.jahia.services.render.RenderContext;
 import org.jahia.taglibs.jcr.AbstractJCRTag;
+import org.owasp.encoder.Encode;
 import org.slf4j.Logger;
 
 /**
@@ -79,7 +80,7 @@ public class UserPropertyTag extends AbstractJCRTag {
             if (propertyName != null) {
                 buff.append(getJCRSession().getUserNode().getPropertyAsString(propertyName));
             } else {
-                buff.append(renderContext.getUser().getName());
+                buff.append(Encode.forHtml(renderContext.getUser().getName()));
             }
             if (cssClassName != null && cssClassName.length() > 0) {
                 buff.append("</div>");

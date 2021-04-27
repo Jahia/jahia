@@ -66,6 +66,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.Messages;
+import org.owasp.encoder.Encode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -263,7 +264,8 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
                 for (FileItem fileItem : uploads.values()) {
                     storeUploadedFile(request.getSession().getId(), fileItem);
                     printWriter.write("<html><body>");
-                    printWriter.write("<div id=\"uploaded\" key=\"" + fileItem.getName() + "\" name=\"" + fileItem.getName() + "\"></div>\n");
+                    String itemName = Encode.forHtmlAttribute(fileItem.getName());
+                    printWriter.write("<div id=\"uploaded\" key=\"" + itemName + "\" name=\"" + itemName + "\"></div>\n");
                     printWriter.write("</body></html>");
                 }
             }

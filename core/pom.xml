@@ -220,7 +220,7 @@
             <artifactId>protobuf-java</artifactId>
             <version>3.15.3</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-core</artifactId>
@@ -1729,6 +1729,12 @@
         </dependency>
         <!-- end of Cluster dependencies -->
 
+        <!-- OWASP dependencies -->
+        <dependency>
+            <groupId>org.owasp.encoder</groupId>
+            <artifactId>encoder</artifactId>
+            <version>1.2.3</version>
+        </dependency>
     </dependencies>
     <build>
 

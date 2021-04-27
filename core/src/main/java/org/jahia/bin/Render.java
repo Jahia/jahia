@@ -285,8 +285,15 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     }
 
     public void addCookie(HttpServletRequest req, HttpServletResponse resp) {
-        if (req.getParameter(COOKIE_NAME) != null && req.getParameter(COOKIE_VALUE) != null) {
-            Cookie cookie = new Cookie(req.getParameter(COOKIE_NAME), req.getParameter(COOKIE_VALUE));
+        String cookieValue = req.getParameter(COOKIE_VALUE);
+        if (req.getParameter(COOKIE_NAME) != null && cookieValue != null) {
+            Cookie cookie = new Cookie(req.getParameter(COOKIE_NAME), cookieValue);
+            //Cookie value should only be a node identifier
+            try {
+                jcrSessionFactory.getCurrentUserSession(workspace).getNodeByUUID(cookieValue);
+            } catch (RepositoryException e) {
+                throw new JahiaBadRequestException("Cookie value should be a node UUID");
+            }
             cookie.setMaxAge(60 * 60 * 24 * cookieExpirationInDays);
             if (req.getParameter(COOKIE_PATH) != null)
                 cookie.setPath(req.getParameter(COOKIE_PATH));

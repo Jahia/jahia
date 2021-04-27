@@ -68,6 +68,7 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.tools.patches.Patcher;
 import org.jahia.utils.LuceneUtils;
 import org.jahia.utils.Patterns;
+import org.owasp.encoder.Encode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -959,7 +960,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     public String getAbsoluteContextPath(ServletRequest request) {
         StringBuilder serverUrlBuffer = new StringBuilder(request.getScheme());
         serverUrlBuffer.append("://");
-        serverUrlBuffer.append(request.getServerName());
+        serverUrlBuffer.append(Encode.forUriComponent(request.getServerName()));
         if (request.getServerPort() != 80 && request.getServerPort() != 443) {
             serverUrlBuffer.append(":");
             serverUrlBuffer.append(request.getServerPort());

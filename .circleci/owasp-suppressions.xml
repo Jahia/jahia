@@ -31,4 +31,90 @@
 	   <cve>CVE-2021-25122</cve>
 	   <cve>CVE-2021-25329</cve>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: commons-io-2.2.jar - we already package commons-io-2.8.0.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/commons\-io/commons\-io@.*$</packageUrl>
+        <cve>CVE-2021-29425</cve>
+    </suppress>    
+    <suppress>
+        <notes><![CDATA[
+        file name: jackson-core-2.8.4.jar - we already package jackson-core-2.9.10.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/com\.fasterxml\.jackson\.core/jackson\-core@.*$</packageUrl>
+        <cve>CVE-2018-1000873</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: jackson-databind-2.8.4.jar - we already package jackson-databind-2.9.10.8.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/com\.fasterxml\.jackson\.core/jackson\-databind@.*$</packageUrl>
+        <cve>CVE-2017-15095</cve>
+        <cve>CVE-2017-17485</cve>
+        <cve>CVE-2017-7525</cve>
+        <cve>CVE-2018-1000873</cve>
+        <cve>CVE-2018-11307</cve>
+        <cve>CVE-2018-12022</cve>
+        <cve>CVE-2018-12023</cve>
+        <cve>CVE-2018-14718</cve>
+        <cve>CVE-2018-14719</cve>
+        <cve>CVE-2018-14720</cve>
+        <cve>CVE-2018-14721</cve>
+        <cve>CVE-2018-19360</cve>
+        <cve>CVE-2018-19361</cve>
+        <cve>CVE-2018-19362</cve>
+        <cve>CVE-2018-5968</cve>
+        <cve>CVE-2018-7489</cve>
+        <cve>CVE-2019-12086</cve>
+        <cve>CVE-2019-12384</cve>
+        <cve>CVE-2019-12814</cve>
+        <cve>CVE-2019-14379</cve>
+        <cve>CVE-2019-14439</cve>
+        <cve>CVE-2019-14540</cve>
+        <cve>CVE-2019-14892</cve>
+        <cve>CVE-2019-14893</cve>
+        <cve>CVE-2019-16335</cve>
+        <cve>CVE-2019-16942</cve>
+        <cve>CVE-2019-16943</cve>
+        <cve>CVE-2019-17267</cve>
+        <cve>CVE-2019-17531</cve>
+        <cve>CVE-2019-20330</cve>
+        <cve>CVE-2020-10969</cve>
+        <cve>CVE-2020-35490</cve>
+        <cve>CVE-2020-35491</cve>
+        <cve>CVE-2020-8840</cve>
+        <cve>CVE-2020-9546</cve>
+        <cve>CVE-2020-9547</cve>
+        <cve>CVE-2020-9548</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: jasypt-1.9.1-lite.jar - we already package jasypt-1.9.3-lite.jar 
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.jasypt/jasypt@.*$</packageUrl>
+        <cve>CVE-2014-9970</cve>
+    </suppress>       
+    <suppress>
+        <notes><![CDATA[
+        file name: httpclient-4.5.6.jar - we already package httpclient-4.5.13.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.httpcomponents/httpclient@.*$</packageUrl>
+        <cve>CVE-2020-13956</cve>
+    </suppress> 
+    <suppress>
+   <     notes><![CDATA[
+        file name: spring-core-3.1.1.RELEASE.jar - we package spring-core-3.2.18.RELEASE_OSGI.jar 
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-core@.*$</packageUrl>
+        <cve>CVE-2013-4152</cve>
+        <cve>CVE-2013-6429</cve>
+        <cve>CVE-2013-6430</cve>
+        <cve>CVE-2013-7315</cve>
+        <cve>CVE-2014-0054</cve>
+        <cve>CVE-2014-0225</cve>
+        <cve>CVE-2014-1904</cve>
+        <cve>CVE-2014-3625</cve>
+        <cve>CVE-2016-9878</cve>
+    </suppress>
 </suppressions>

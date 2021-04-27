@@ -59,6 +59,7 @@ import org.jahia.services.cache.ehcache.EhCacheImpl;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.jvm.ThreadMonitor;
 import org.jahia.utils.RequestLoadAverage;
+import org.owasp.encoder.Encode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -145,9 +146,9 @@ public class ErrorFileDumper {
             }
             String originalQueryString = (String) request.getAttribute(RequestDispatcher.FORWARD_QUERY_STRING);
             if (originalQueryString == null) {
-                this.queryString = request.getQueryString();
+                this.queryString = Encode.forJava(request.getQueryString());
             } else {
-                this.queryString = originalQueryString;
+                this.queryString = Encode.forJava(originalQueryString);
             }
 
             this.method = request.getMethod();

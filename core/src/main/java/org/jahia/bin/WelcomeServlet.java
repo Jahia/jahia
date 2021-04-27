@@ -43,21 +43,6 @@
  */
 package org.jahia.bin;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Locale;
-
-import javax.jcr.AccessDeniedException;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.api.Constants;
@@ -82,6 +67,20 @@ import org.jahia.utils.Url;
 import org.jahia.utils.WebUtils;
 import org.slf4j.Logger;
 
+import javax.jcr.AccessDeniedException;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Locale;
+
 /**
  * Servlet for the first entry point in Jahia portal that performs a client-side redirect
  * to the home page of the appropriate site.
@@ -99,6 +98,8 @@ public class WelcomeServlet extends HttpServlet {
 
     private static final String DEFAULT_LOCALE = Locale.ENGLISH.toString();
     private static final String DASHBOARD_HOME = "/jahia/dashboard";
+    private static final String HTML_EXTENSION = ".html";
+    private static final String DEFAULT_SITE_HOME = "$defaultSiteHome";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -151,107 +152,149 @@ public class WelcomeServlet extends HttpServlet {
         request.getSession(true);
 
         final JahiaSitesService siteService = JahiaSitesService.getInstance();
-        JahiaSite defaultSite = null;
-        String defaultSitePath = null;
-        final JCRSiteNode site;
         String siteKey = !Url.isLocalhost(request.getServerName()) ? siteService.getSitenameByServerName(request.getServerName()) : null;
-        if (siteKey != null) {
-            // site resolved by the hostname -> read it with user session to check the access rights
-            site = (JCRSiteNode) siteService.getSiteByKey(siteKey);
-        } else {
-            // use the default site
-            defaultSite = siteService.getDefaultSite();
-            defaultSitePath = defaultSite != null ? defaultSite.getJCRLocalPath() : null;
-            site = (JCRSiteNode) defaultSite;
-        }
+        JahiaSite defaultSite = siteKey == null ? siteService.getDefaultSite() : null;
+        final JCRSiteNode site = siteKey != null ? (JCRSiteNode) siteService.getSiteByKey(siteKey) : (JCRSiteNode) defaultSite;
 
         String redirect = null;
         String pathInfo = request.getPathInfo();
 
-        String defaultLocation = null;
-        String mapping = null;
+        String defaultLocation = getDefaultLocationFromPathInfo(pathInfo);
+        String mapping = getDefaultUrlMappingFromPathInfo(pathInfo);
 
-        if (pathInfo != null && (pathInfo.endsWith("mode") || pathInfo.endsWith("mode/"))) {
-            String mode = pathInfo.endsWith("/") ? StringUtils.substringBetween(pathInfo, "/", "/") : StringUtils.substringAfter(pathInfo, "/");
-            if (SpringContextSingleton.getInstance().getContext().containsBean(mode)) {
-                EditConfiguration editConfiguration =  (EditConfiguration) SpringContextSingleton.getInstance().getContext().getBean(mode);
-                defaultLocation = editConfiguration.getDefaultLocation();
-                mapping = editConfiguration.getDefaultUrlMapping();
-            }
-        }
-
-        if (site == null && (defaultLocation == null || defaultLocation.contains("$defaultSiteHome"))) {
+        if (site == null && (defaultLocation == null || defaultLocation.contains(DEFAULT_SITE_HOME))) {
             userRedirect(request, response, context);
         } else {
-            if (defaultSite == null) {
-                defaultSite = siteService.getDefaultSite();
-                defaultSitePath = defaultSite != null ? defaultSite.getJCRLocalPath() : null;
-            }
-
-            JahiaUser user = (JahiaUser) request.getSession().getAttribute(Constants.SESSION_USER);
-            JCRUserNode userNode = user != null ? JahiaUserManagerService.getInstance().lookupUserByPath(user.getLocalPath()) : null;
-            String language = resolveLanguage(request, site, userNode, false);
-            if (defaultLocation != null) {
-                if (site != null && defaultLocation.contains("$defaultSiteHome")) {
-                    JCRNodeWrapper home = site.getHome();
-                    if (home == null) {
-                        home = resolveSite(request, Constants.EDIT_WORKSPACE, defaultSitePath).getHome();
-                    }
-                    defaultLocation = defaultLocation.replace("$defaultSiteHome",home.getPath());
-                }
-
-                redirect = request.getContextPath() + mapping + "/" + language +defaultLocation;
-            } else {
-                JCRNodeWrapper home = site.getHome();
-                if (home != null) {
-                    redirect = request.getContextPath() + "/cms/render/"
-                            + Constants.LIVE_WORKSPACE + "/" + language + home.getPath() + ".html";
-                } else if (!SettingsBean.getInstance().isDistantPublicationServerMode()) {
-                    JCRSiteNode defSite = null;
-                    try {
-                        defSite = (JCRSiteNode) JCRStoreService.getInstance().getSessionFactory()
-                                .getCurrentUserSession().getNode(site.getPath());
-                    } catch (PathNotFoundException e) {
-                        if (!Url.isLocalhost(request.getServerName())
-                                && defaultSite != null
-                                && !site.getSiteKey().equals(
-                                        defaultSite.getSiteKey())
-                                && (!SettingsBean.getInstance()  // the check in this parenthesis is added to prevent immediate servername change in the url, which leads to the side effect with an automatic login on default site after logout on other site
-                                        .isUrlRewriteUseAbsoluteUrls()
-                                        || site.getServerName().equals(
-                                                defaultSite.getServerName()) || Url
-                                            .isLocalhost(defaultSite
-                                                    .getServerName()))) {
-                            JCRSiteNode defaultSiteNode = (JCRSiteNode) JCRStoreService
-                                    .getInstance()
-                                    .getSessionFactory()
-                                    .getCurrentUserSession(
-                                            Constants.LIVE_WORKSPACE)
-                                    .getNode(defaultSitePath);
-                            if (defaultSiteNode.getHome() != null) {
-                                redirect = request.getContextPath()
-                                        + "/cms/render/"
-                                        + Constants.LIVE_WORKSPACE + "/"
-                                        + language
-                                        + defaultSiteNode.getHome().getPath() + ".html";
-                            }
-                        }
-                    }
-                    if (redirect == null && defSite != null && defSite.getHome() != null) {
-                        if (defSite.getHome().hasPermission("jContentAccess")) {
-                            redirect = request.getContextPath() + "/jahia/page-composer/"
-                                    + Constants.EDIT_WORKSPACE + "/" + language
-                                    + defSite.getHome().getPath() + ".html";
-                        }
-                    }
-                }
-            }
+            redirect = getRedirectUrl(request, siteService, defaultSite, site, redirect, defaultLocation, mapping);
             if (redirect == null) {
                 redirect(request.getContextPath() + DASHBOARD_HOME, response);
                 return;
             }
             redirect(redirect, response);
         }
+    }
+
+    private String getRedirectUrl(HttpServletRequest request, JahiaSitesService siteService, JahiaSite defaultSite, JCRSiteNode site,
+            String redirect, String defaultLocation, String mapping) throws JahiaException, RepositoryException {
+        defaultSite = defaultSite == null ? siteService.getDefaultSite() : defaultSite;
+        String defaultSitePath = defaultSite != null ? defaultSite.getJCRLocalPath() : null;
+
+        JahiaUser user = (JahiaUser) request.getSession().getAttribute(Constants.SESSION_USER);
+        JCRUserNode userNode = user != null ? JahiaUserManagerService.getInstance().lookupUserByPath(user.getLocalPath()) : null;
+        String language = resolveLanguage(request, site, userNode, false);
+        if (defaultLocation != null) {
+            defaultLocation = getDefaultLocation(request, site, defaultLocation, defaultSitePath);
+            redirect = request.getContextPath() + mapping + "/" + language + defaultLocation;
+        } else {
+            redirect = getRedirectUrlForHomePage(request, defaultSite, site, redirect, defaultSitePath, language);
+        }
+        return redirect;
+    }
+
+    private String getDefaultLocation(HttpServletRequest request, JCRSiteNode site, String defaultLocation, String defaultSitePath)
+            throws RepositoryException, JahiaException {
+        if (site != null && defaultLocation.contains(DEFAULT_SITE_HOME)) {
+            JCRNodeWrapper home = site.getHome() == null
+                    ? resolveSite(request, Constants.EDIT_WORKSPACE, defaultSitePath).getHome()
+                    : site.getHome();
+            defaultLocation = defaultLocation.replace(DEFAULT_SITE_HOME,home.getPath());
+        }
+        return defaultLocation;
+    }
+
+    private String getRedirectUrlForHomePage(HttpServletRequest request, JahiaSite defaultSite, JCRSiteNode site, String redirect,
+            String defaultSitePath, String language) throws RepositoryException {
+        JCRNodeWrapper home = site.getHome();
+        if (home != null) {
+            redirect = request.getContextPath() + "/cms/render/"
+                    + Constants.LIVE_WORKSPACE + "/" + language + home.getPath() + HTML_EXTENSION;
+        } else if (!SettingsBean.getInstance().isDistantPublicationServerMode()) {
+            JCRSiteNode defSite = null;
+            try {
+                defSite = (JCRSiteNode) JCRStoreService.getInstance().getSessionFactory()
+                        .getCurrentUserSession().getNode(site.getPath());
+            } catch (PathNotFoundException e) {
+                if (isValidDefaultSite(request, defaultSite, site)) {
+                    redirect = getRedirectedDefaultSite(request, defaultSitePath, redirect, language);
+                }
+            }
+            redirect = getHomePageRedirect(request, redirect, language, defSite);
+        }
+        return redirect;
+    }
+
+    private String getRedirectedDefaultSite(HttpServletRequest request, String defaultSitePath, String redirect, String language)
+            throws RepositoryException {
+        JCRSiteNode defaultSiteNode = (JCRSiteNode) JCRStoreService
+                .getInstance()
+                .getSessionFactory()
+                .getCurrentUserSession(
+                        Constants.LIVE_WORKSPACE)
+                .getNode(defaultSitePath);
+        if (defaultSiteNode.getHome() != null) {
+            redirect = request.getContextPath()
+                    + "/cms/render/"
+                    + Constants.LIVE_WORKSPACE + "/"
+                    + language
+                    + defaultSiteNode.getHome().getPath() + HTML_EXTENSION;
+        }
+        return redirect;
+    }
+
+    private boolean isValidDefaultSite(HttpServletRequest request, JahiaSite defaultSite, JCRSiteNode site) {
+        return !Url.isLocalhost(request.getServerName()) && defaultSite != null && !site.getSiteKey().equals(defaultSite.getSiteKey()) && (
+                !SettingsBean
+                        .getInstance()  // the check in this parenthesis is added to prevent immediate servername change in the url, which leads to the side effect with an automatic login on default site after logout on other site
+                        .isUrlRewriteUseAbsoluteUrls() || site.getServerName().equals(defaultSite.getServerName()) || Url
+                        .isLocalhost(defaultSite.getServerName()));
+    }
+
+    private String getModeFromPathInfo(String pathInfo) {
+        if (pathInfo != null && (pathInfo.endsWith("mode") || pathInfo.endsWith("mode/"))) {
+            return pathInfo.endsWith("/") ? StringUtils.substringBetween(pathInfo, "/", "/") : StringUtils.substringAfter(pathInfo, "/");
+        }
+        return null;
+    }
+
+    private String getDefaultUrlMappingFromPathInfo(String pathInfo) {
+        String mode = getModeFromPathInfo(pathInfo);
+        if (mode != null && SpringContextSingleton.getInstance().getContext().containsBean(mode)) {
+            return ((EditConfiguration) SpringContextSingleton.getInstance().getContext().getBean(mode)).getDefaultUrlMapping();
+        }
+        return null;
+    }
+
+    private String getDefaultLocationFromPathInfo(String pathInfo) {
+        String mode = getModeFromPathInfo(pathInfo);
+        if (mode != null && SpringContextSingleton.getInstance().getContext().containsBean(mode)) {
+            return ((EditConfiguration) SpringContextSingleton.getInstance().getContext().getBean(mode)).getDefaultLocation();
+        }
+        return null;
+    }
+
+    /**
+     * Redirect to the default home page
+     * @param request
+     * @param redirect
+     * @param language
+     * @param defSite
+     * @return the home page base on the permission.
+     * @throws RepositoryException
+     */
+    private String getHomePageRedirect(HttpServletRequest request, String redirect, String language, JCRSiteNode defSite)
+            throws RepositoryException {
+        if (redirect == null && defSite != null && defSite.getHome() != null) {
+            if (defSite.getHome().hasPermission("jContentAccess")) {
+                redirect = String.format("%s/jahia/jcontent/%s/%s/pages", request.getContextPath(), defSite.getSiteKey(),
+                        defSite.getDefaultLanguage());
+            }
+            if (defSite.getHome().hasPermission("pageComposerAccess")) {
+                redirect = request.getContextPath() + "/jahia/page-composer/"
+                        + Constants.EDIT_WORKSPACE + "/" + language
+                        + defSite.getHome().getPath() + HTML_EXTENSION;
+            }
+        }
+        return redirect;
     }
 
     protected JCRSiteNode resolveSite(HttpServletRequest request, String workspace, String fallbackSitePath) throws JahiaException, RepositoryException {

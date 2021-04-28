@@ -926,7 +926,7 @@
         </property>
     </bean>
 
-    <bean id="Toolbar.Item.DeletePermanentlyActionItem" class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeleteActionItem">
+    <bean id="Toolbar.Item.DeletePermanentlyActionItem" class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeleteActionItem" scope="prototype">
         <property name="referenceTitleKey" value="label.deletePermanently"/>
         <property name="permanentlyDelete" value="true"/>
         <property name="forbiddenNodeTypes" ref="forbidDeleteRenameCutForNodeTypes"/>
@@ -956,7 +956,7 @@
           parent="Toolbar.Item.DeletePermanently">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeleteActionItem" parent="Toolbar.Item.DeletePermanentlyActionItem">
-                <property name="allowedNodeTypes" ref="exclusiveHeaderPageTypes"/>
+                <property name="forbiddenNodeTypes" ref="exclusiveHeaderPageTypes"/>
             </bean>
         </property>
     </bean>
@@ -1000,7 +1000,7 @@
     </bean>
 
     <bean id="Toolbar.Item.CopyContentHeader" class="org.jahia.services.uicomponents.bean.toolbar.Item"
-          scope="prototype" parent="Toolbar.Item.CopyPage">
+          scope="prototype" parent="Toolbar.Item.Copy">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CopyActionItem">
                 <property name="forbiddenNodeTypes" ref="forbidDeleteRenameCutForNodeTypesNonPage"/>

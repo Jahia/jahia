@@ -61,6 +61,9 @@ public class DownloadActionItem extends NodeTypeAwareBaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getSingleSelection() != null && hasPermission(lh.getSingleSelection()) && lh.isFile());
+        setEnabled(lh.getSingleSelection() != null
+                && hasPermission(lh.getSingleSelection())
+                && lh.isFile()
+                && super.isNodeTypeAllowed(lh.getSingleSelection()) );
     }
 }

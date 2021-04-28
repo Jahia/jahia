@@ -63,8 +63,11 @@ public class UnlockActionItem extends NodeTypeAwareBaseActionItem {
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         GWTJahiaNode singleSelection = lh.getSingleSelection();
-        setEnabled(singleSelection!=null && singleSelection.isLockable() &&
-                PermissionsUtils.isPermitted("jcr:lockManagement", lh.getSelectionPermissions()) && singleSelection.getLockInfos() != null &&
-                singleSelection.canUnlock());
+        setEnabled(singleSelection != null
+                && singleSelection.isLockable()
+                && PermissionsUtils.isPermitted("jcr:lockManagement", lh.getSelectionPermissions())
+                && singleSelection.getLockInfos() != null
+                && singleSelection.canUnlock()
+                && super.isNodeTypeAllowed(singleSelection));
     }
 }

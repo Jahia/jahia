@@ -60,6 +60,9 @@ public class ExportActionItem extends NodeTypeAwareBaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getSingleSelection() != null && hasPermission(lh.getSingleSelection()) && !lh.getSingleSelection().isNodeType("jnt:virtualsite"));
+        setEnabled(lh.getSingleSelection() != null
+                && hasPermission(lh.getSingleSelection())
+                && !lh.getSingleSelection().isNodeType("jnt:virtualsite")
+                && super.isNodeTypeAllowed(lh.getSingleSelection()));
     }
 }

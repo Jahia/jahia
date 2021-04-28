@@ -67,7 +67,13 @@
                 background-size: 16px;
             }
 
+            &.toolbar-item-deletepage,
+            &.toolbar-item-deletepageheader,
+            &.toolbar-item-deletecontentheader,
             &.toolbar-item-delete, /* OPTIMISE SELECTOR ::: css/components/_combos.scss ::: 4 */
+            &.toolbar-item-deletepermanentlypage,
+            &.toolbar-item-deletepermanentlypageheader,
+            &.toolbar-item-deletepermanentlycontentheader,
             &.toolbar-item-deletepermanently, /* OPTIMISE SELECTOR ::: css/components/_combos.scss ::: 5 */
             &.toolbar-item-deletepermanentlynomarkfordeletion { /* OPTIMISE SELECTOR ::: css/components/_combos.scss ::: 6 */
                 /* OPTIMISE NOTE ::: replace #4/#5/#6 classes with one classname */
@@ -79,6 +85,9 @@
                 background-size: 16px;
             }
 
+            &.toolbar-item-copypage,
+            &.toolbar-item-copypageheader,
+            &.toolbar-item-copycontentheader,
             &.toolbar-item-copy, /* OPTIMISE SELECTOR ::: css/components/_combos.scss ::: 7 */
             &.toolbar-item-webdavurlcopy { /* OPTIMISE SELECTOR ::: css/components/_combos.scss ::: 8 */
                 /* OPTIMISE NOTE ::: replace #7/#8 classes with one classname */
@@ -90,6 +99,9 @@
                 background-size: 16px;
             }
 
+            &.toolbar-item-cutpage,
+            &.toolbar-item-cutpageheader,
+            &.toolbar-item-cutcontentheader,
             &.toolbar-item-cut {
                 background-image: url(../images/icons/context-menu/cut.svg); /* OPTIMISE URL ::: css/components/_combos.scss ::: 6 */
                 background-color: _theme($MENU-OPENED--BG, $type);
@@ -147,7 +159,10 @@
                 background-size: 16px;
             }
 
+
+            &.toolbar-item-pastepage,
             &.toolbar-item-paste, /* OPTIMISE SELECTOR ::: css/components/_combos.scss ::: 12 */
+            &.toolbar-item-pastepagecurrentpage,
             &.toolbar-item-pastecurrentpage, /* OPTIMISE SELECTOR ::: css/components/_combos.scss ::: 13 */
             &.toolbar-item-pastereference { /* OPTIMISE SELECTOR ::: css/components/_combos.scss ::: 14 */
                 /* OPTIMISE NOTE ::: replace #12/#13/#14 classes with one classname */
@@ -212,6 +227,9 @@
                 background-size: 16px;
             }
 
+            &.toolbar-item-lockpage,
+            &.toolbar-item-lockpageheader,
+            &.toolbar-item-lockcontentheader,
             &.toolbar-item-lock {
                 background-image: url(../images/icons/context-menu/lock.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 16 */
                 background-color: _theme($MENU-OPENED--BG, $type);
@@ -221,6 +239,9 @@
                 background-size: 16px;
             }
 
+            &.toolbar-item-unlockpage,
+            &.toolbar-item-unlockpageheader,
+            &.toolbar-item-unlockcontentheader,
             &.toolbar-item-unlock {
                 background-image: url(../images/icons/context-menu/unlock.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 17 */
                 background-color: _theme($MENU-OPENED--BG, $type);
@@ -260,6 +281,9 @@
                 background-size: 16px;
             }
 
+            &.toolbar-item-exportpage,
+            &.toolbar-item-exportpageheader,
+            &.toolbar-item-exportcontentheader,
             &.toolbar-item-export {
                 background-image: url(../images/icons/context-menu/export.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 21 */
                 background-color: _theme($MENU-OPENED--BG, $type);
@@ -269,6 +293,9 @@
                 background-size: 16px;
             }
 
+            &.toolbar-item-importpage,
+            &.toolbar-item-importpageheader,
+            &.toolbar-item-importcontentheader,
             &.toolbar-item-import {
                 background-image: url(../images/icons/context-menu/import.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 22 */
                 background-color: _theme($MENU-OPENED--BG, $type);
@@ -417,6 +444,9 @@
                 background-size: 16px;
             }
 
+            &.toolbar-item-undeletepage,
+            &.toolbar-item-undeletepageheader,
+            &.toolbar-item-undeletecontentheader,
             &.toolbar-item-undelete {
                 background-image: url(../images/icons/context-menu/undo.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 38 */
                 background-color: _theme($MENU-OPENED--BG, $type);

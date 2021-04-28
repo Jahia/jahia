@@ -64,6 +64,7 @@ public class ImportActionItem extends NodeTypeAwareBaseActionItem {
         setEnabled(lh.getSingleSelection() != null
                 && hasPermission(lh.getSelectionPermissions()) && PermissionsUtils.isPermitted("jcr:write", lh.getSelectionPermissions())
                 && !lh.isLocked()
-                && !lh.getSingleSelection().isNodeType("jnt:virtualsite"));
+                && !lh.getSingleSelection().isNodeType("jnt:virtualsite")
+                && super.isNodeTypeAllowed(lh.getSingleSelection()));
     }
 }

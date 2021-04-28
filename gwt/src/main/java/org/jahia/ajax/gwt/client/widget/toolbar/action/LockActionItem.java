@@ -69,6 +69,7 @@ public class LockActionItem extends NodeTypeAwareBaseActionItem   {
                 && singleSelection.isLockable()
                 && !lh.isLocked()
                 && PermissionsUtils.isPermitted("jcr:lockManagement", lh.getSelectionPermissions())
-                && singleSelection.canLock());
+                && singleSelection.canLock()
+                && super.isNodeTypeAllowed(singleSelection));
     }
 }

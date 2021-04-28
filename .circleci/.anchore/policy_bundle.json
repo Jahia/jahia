@@ -1,0 +1,47 @@
+{
+  "id": "docker_jahia",
+  "version": "1_0",
+  "name": "docker-jahia bundle",
+  "comment": "docker-jahia bundle",
+  "whitelisted_images": [],
+  "mappings": [
+    {
+      "name": "default",
+      "registry": "*",
+      "repository": "*",
+      "image": { "type": "tag", "value": "*" },
+      "policy_ids": [ "policy" ],
+      "whitelist_ids": [ "whitelist" ]
+    }
+  ],
+  "whitelists": [
+    {
+      "id": "whitelist",
+      "name": "Whitelisted CVE for docker jahia",
+      "version": "1_0",
+      "items": [
+      ]
+    }
+  ],
+  "policies": [
+    {
+      "name": "high_policy",
+      "version": "1_0",
+      "comment": "Policy stopping on any dpkg > medium CVE",
+      "id": "policy",
+      "rules": [
+        {
+          "action": "STOP",
+          "gate": "vulnerabilities",
+          "trigger": "package",
+          "id": "greater_than_medium",
+          "params": [
+            { "name": "package_type", "value": "os" },
+            { "name": "severity_comparison", "value": ">" },
+            { "name": "severity", "value": "medium"}
+          ]
+        }
+      ]
+    }
+  ]
+}

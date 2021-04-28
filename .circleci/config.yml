@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   docker-tags-orb: jahia/docker-tags-orb@1.1.0
+  anchore: anchore/anchore-engine@1.8.1
 
 commands:
   generate_cachekey_seed:
@@ -113,6 +114,32 @@ jobs:
             - ~/.m2
           key: v1-maven-dependencies-{{ checksum "maven_cache_seed" }}
       - *persist-workspace
+
+  security_scan:
+    <<: *workdir
+    docker: # run the steps with Docker
+      - image: circleci/openjdk:8-jdk-stretch
+    steps:
+      - *attach-workspace
+      - setup_remote_docker:
+          version: 19.03.13
+          docker_layer_caching: true
+      - run:
+          name: Load docker image
+          command: docker load -i image.tar
+      - run:
+          name: Local tag
+          command: |
+            docker tag jahia/jahia-core-dev:`cat image.tag` jahia/jahia-core-dev:current
+      - anchore/analyze_local_image:
+          anchore_version: "v0.9.3"
+          image_name: "jahia/jahia-core-dev:current"
+          dockerfile_path: ./docker/docker-jahia-core/Dockerfile
+          timeout: '500'
+          policy_bundle_file_path: ".circleci/.anchore/policy_bundle.json"
+          policy_failure: true
+      - store_artifacts:
+          path: ./anchore-reports
 
   integration_tests:
     <<: *workdir
@@ -343,6 +370,11 @@ workflows:
           context: QA_ENVIRONMENT
           requires:
             - PR Build Jahia
+      - security_scan:
+          name: Security scan
+          context: QA_ENVIRONMENT
+          requires:
+            - PR Build Jahia
       - sonar:
           name: PR Sonar analysis
           context: QA_ENVIRONMENT
@@ -369,6 +401,11 @@ workflows:
             - checkout
       - integration_tests:
           name: Integration tests
+          context: QA_ENVIRONMENT
+          requires:
+            - Build Jahia
+      - security_scan:
+          name: Security scan
           context: QA_ENVIRONMENT
           requires:
             - Build Jahia

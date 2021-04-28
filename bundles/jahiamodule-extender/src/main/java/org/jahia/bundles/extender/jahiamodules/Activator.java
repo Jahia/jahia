@@ -327,7 +327,9 @@ public class Activator implements BundleActivator {
     private void checkPersistentStateMarker() {
         File applyBundlesPersistentStatesMarker = new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "[persisted-bundles].dorestore");
         if (System.getProperty("applyBundlesPersistentStates") != null || applyBundlesPersistentStatesMarker.exists()) {
+            logger.info("== Applying persistent states");
             ModuleUtils.getModuleManager().applyBundlesPersistentStates(null);
+            logger.info("== Successfully applied persistent states");
             if (applyBundlesPersistentStatesMarker.exists()) {
                 applyBundlesPersistentStatesMarker.delete();
             }

@@ -72,6 +72,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditModeTreeGridDragSource;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Selection;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
+import org.jahia.api.Constants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -127,35 +128,10 @@ public class PagesTabItem extends SidePanelTabItem {
         pageTree.getTreeView().setForceFit(true);
         pageTree.setHeight("100%");
         pageTree.setIconProvider(ContentModelIconProvider.getInstance());
-        pageTree.getTreeStore().setStoreSorter(new StoreSorter<GWTJahiaNode>() {
-
-            @Override
-            public int compare(Store<GWTJahiaNode> gwtJahiaNodeStore, GWTJahiaNode m1, GWTJahiaNode m2,
-                                         String property) {
-                if (!m1.getInheritedNodeTypes().contains("jmix:navMenuItem") && m2.getInheritedNodeTypes().contains("jmix:navMenuItem")) {
-                    return 1;
-                } else if (!m2.getInheritedNodeTypes().contains("jmix:navMenuItem") && m1.getInheritedNodeTypes().contains("jmix:navMenuItem")) {
-                    return -1;
-                } else {
-                    return gwtJahiaNodeStore.getModels().indexOf(m2) - gwtJahiaNodeStore.getModels().indexOf(m1);
-                }
-            }
-        });
+        setStoreSorterForPageTree();
         final TreeGridClickSelectionModel selectionModel = new TreeGridClickSelectionModel();
         pageTree.setSelectionModel(selectionModel);
-        this.pageTree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
-
-            @Override
-            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
-                final GWTJahiaNode node = se.getSelectedItem();
-                if (node != null && !node.getPath().equals(editLinker.getMainModule().getPath()) &&
-                    !node.getNodeTypes().contains("jnt:virtualsite") && !node.getNodeTypes().contains("jnt:navMenuText") &&
-                        !node.getInheritedNodeTypes().contains("jmix:link")
-                        ) {
-                    MainModule.staticGoTo(node.getPath(), null);
-                }
-            }
-        });
+        addSelectionChangeListenerForPageTree();
         this.pageTree.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
 
         Menu contextMenu = createContextMenu(config.getTreeContextMenu(), selectionModel);
@@ -183,6 +159,39 @@ public class PagesTabItem extends SidePanelTabItem {
 
         selectMainNodeTreeLoadListener = new SelectMainNodeTreeLoadListener(pageTree);
         tab.add(pageTree);
+    }
+
+    private void setStoreSorterForPageTree() {
+        pageTree.getTreeStore().setStoreSorter(new StoreSorter<GWTJahiaNode>() {
+
+            @Override
+            public int compare(Store<GWTJahiaNode> gwtJahiaNodeStore, GWTJahiaNode m1, GWTJahiaNode m2,
+                                         String property) {
+                if (!m1.getInheritedNodeTypes().contains(Constants.JAHIAMIX_NAVMENUITEM) && m2.getInheritedNodeTypes().contains(Constants.JAHIAMIX_NAVMENUITEM)) {
+                    return 1;
+                } else if (!m2.getInheritedNodeTypes().contains(Constants.JAHIAMIX_NAVMENUITEM) && m1.getInheritedNodeTypes().contains(Constants.JAHIAMIX_NAVMENUITEM)) {
+                    return -1;
+                } else {
+                    return gwtJahiaNodeStore.getModels().indexOf(m2) - gwtJahiaNodeStore.getModels().indexOf(m1);
+                }
+            }
+        });
+    }
+
+    private void addSelectionChangeListenerForPageTree() {
+        this.pageTree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
+
+            @Override
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
+                final GWTJahiaNode node = se.getSelectedItem();
+                if (node != null && !node.getPath().equals(editLinker.getMainModule().getPath()) &&
+                    !node.getNodeTypes().contains("jnt:virtualsite") && !node.getNodeTypes().contains("jnt:navMenuText") &&
+                        !node.getInheritedNodeTypes().contains("jmix:link")
+                        ) {
+                    MainModule.staticGoTo(node.getPath(), null);
+                }
+            }
+        });
     }
 
     @Override
@@ -265,8 +274,8 @@ public class PagesTabItem extends SidePanelTabItem {
             }
             if (activeItem != null && isAllowed) {
                 GWTJahiaNode activeNode = (GWTJahiaNode) activeItem.getModel();
-                isAllowed = PermissionsUtils.isPermitted("jContentAccess", JahiaGWTParameters.getSiteNode()) && PermissionsUtils.isPermitted(
-                        "jcr:write_default", activeNode) && !activeNode.isLocked();
+                isAllowed = checkPermission(activeNode);
+
                 if (isAllowed) {
                     GWTJahiaNode parent = pageTree.getTreeStore().getParent(activeNode);
                     e.getStatus().setData(EditModeDNDListener.TARGET_NODE, activeNode);
@@ -289,16 +298,7 @@ public class PagesTabItem extends SidePanelTabItem {
                         }
                     }
 
-                    if (activeNode.getInheritedNodeTypes().contains("jmix:navMenuItem")) {
-                        e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.PAGETREE_TYPE);
-                    } else if (activeNode.getNodeTypes().contains("jnt:templatesFolder") &&
-                               EditModeDNDListener.PAGETREE_TYPE.equals(e.getStatus().getData(
-                                       EditModeDNDListener.SOURCE_TYPE))) {
-                        e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.TEMPLATETREE_TYPE);
-                    } else {
-                        e.getStatus().setStatus(false);
-                        e.setCancelled(true);
-                    }
+                    updateEditModeDNDListenerTargetType(e, activeNode);
                     return;
                 }
             }
@@ -329,6 +329,25 @@ public class PagesTabItem extends SidePanelTabItem {
             };
             return callback;
         }
+
+        private boolean checkPermission(GWTJahiaNode activeNode) {
+            return (PermissionsUtils.isPermitted("pageComposerAccess", JahiaGWTParameters.getSiteNode()) || PermissionsUtils
+                    .isPermitted("jContentAccess", JahiaGWTParameters.getSiteNode())) && PermissionsUtils
+                    .isPermitted("jcr:write_default", activeNode) && !activeNode.isLocked();
+        }
+
+        private void updateEditModeDNDListenerTargetType(DNDEvent e, GWTJahiaNode activeNode) {
+            if (activeNode.getInheritedNodeTypes().contains(Constants.JAHIAMIX_NAVMENUITEM)) {
+                e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.PAGETREE_TYPE);
+            } else if (activeNode.getNodeTypes().contains("jnt:templatesFolder") &&
+                    EditModeDNDListener.PAGETREE_TYPE.equals(e.getStatus().getData(
+                            EditModeDNDListener.SOURCE_TYPE))) {
+                e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.TEMPLATETREE_TYPE);
+            } else {
+                e.getStatus().setStatus(false);
+                e.setCancelled(true);
+            }
+        }
     }
 
     private class PageTreeGridDragSource extends EditModeTreeGridDragSource {
@@ -345,7 +364,10 @@ public class PagesTabItem extends SidePanelTabItem {
             editLinker.getMainModule().getSelections().clear();
             List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
             final GWTJahiaNode node = PagesTabItem.this.pageTree.getSelectionModel().getSelectedItem();
-            if (node.getInheritedNodeTypes().contains("jmix:navMenuItem") && PermissionsUtils.isPermitted("jcr:removeNode", node) && !node.isLocked()) {
+            boolean isNodeLocked = node.isLocked();
+            if (node.getInheritedNodeTypes().contains(Constants.JAHIAMIX_NAVMENUITEM)
+                    && PermissionsUtils.isPermitted("jcr:removeNode", node)
+                    && !isNodeLocked) {
                 l.add(node);
                 e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.PAGETREE_TYPE);
                 e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, l);

@@ -217,6 +217,7 @@ public class Constants {
     public static final String JAHIANT_JAVASCRIPTFILE = "jnt:javascriptFile";
     public static final String JAHIANT_VIEWFILE = "jnt:viewFile";
     public static final String JAHIANT_TEMPLATEFILE = "jnt:templateFile";
+    public static final String JAHIANT_TEMPLATESFOLDER = "jnt:templatesFolder";
     public static final String JAHIAMIX_VIEWPROPERTIES = "jmix:viewProperties";
     public static final String JAHIANT_DEFINITIONFILE = "jnt:definitionFile";
     public static final String JAHIANT_RESOURCEBUNDLE_FILE = "jnt:resourceBundleFile";
@@ -312,6 +313,8 @@ public class Constants {
 
     public static final String JAHIA_EDITABLE_IN_CONTRIBUTION = "j:editableInContribution";
     public static final String JAHIA_CONTRIBUTE_TYPES = "j:contributeTypes";
+
+    public static final String JAHIAMIX_NAVMENUITEM = "jmix:navMenuItem";
 
     public static final Set<String> forbiddenPropertiesToCopy = new HashSet<String>(Arrays.asList(PROCESSID,JCR_FROZENUUID,
             JCR_FROZENMIXINTYPES, JCR_FROZENPRIMARYTYPE,JCR_UUID,JCR_BASEVERSION,JCR_MIXINTYPES,JCR_PRIMARYTYPE,

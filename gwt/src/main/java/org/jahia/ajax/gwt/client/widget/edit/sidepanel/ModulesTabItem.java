@@ -66,6 +66,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbar;
+import org.jahia.api.Constants;
 
 import java.util.List;
 import java.util.Map;
@@ -85,20 +86,7 @@ public class ModulesTabItem extends BrowseTabItem {
         layoutContainer.setHeight(24);
         tab.insert(layoutContainer, 0, treeVBoxData);
 
-        this.tree.setSelectionModel(new TreeGridSelectionModel<GWTJahiaNode>() {
-            @Override
-            protected void handleMouseClick(GridEvent<GWTJahiaNode> e) {
-                super.handleMouseClick(e);
-                if (!getSelectedItem().getPath().equals(editLinker.getMainModule().getPath())) {
-                    if (!getSelectedItem().getNodeTypes().contains("jnt:virtualsite")
-                            && !getSelectedItem().getNodeTypes().contains("jnt:folder")
-                            && !getSelectedItem().getInheritedNodeTypes().contains("jnt:folder")
-                            && !getSelectedItem().getNodeTypes().contains("jnt:templatesFolder")) {
-                        MainModule.staticGoTo(getSelectedItem().getPath(), null, "generic", "");
-                    }
-                }
-            }
-        });
+        handleMouseClick();
         this.tree.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
 
         final Menu contextMenu = createContextMenu(config.getTreeContextMenu(), tree.getSelectionModel());
@@ -118,7 +106,7 @@ public class ModulesTabItem extends BrowseTabItem {
                 if (node.getNodeTypes().contains("jmix:moduleImportFile")) {
                     classes += "notPublished ";
                 }
-                if (!PermissionsUtils.isPermitted("jContentAccess", JahiaGWTParameters.getSiteNode()) && !PermissionsUtils.isPermitted("jcr:write_default", node)) {
+                if (!isPermitted(node)) {
                     classes += "accessForbidden ";
                 }
                 if (classes.length() > 0) {
@@ -127,6 +115,34 @@ public class ModulesTabItem extends BrowseTabItem {
                 return v;
             }
         });
+        handleEvent(contextMenu);
+
+        return tab;
+    }
+
+    private boolean isPermitted(GWTJahiaNode node) {
+        return PermissionsUtils.isPermitted("pageComposerAccess", JahiaGWTParameters.getSiteNode())
+                || PermissionsUtils.isPermitted("jContentAccess", JahiaGWTParameters.getSiteNode())
+                || PermissionsUtils.isPermitted("jcr:write_default", node);
+    }
+
+    private void handleMouseClick() {
+        this.tree.setSelectionModel(new TreeGridSelectionModel<GWTJahiaNode>() {
+            @Override
+            protected void handleMouseClick(GridEvent<GWTJahiaNode> e) {
+                super.handleMouseClick(e);
+                if (!getSelectedItem().getPath().equals(editLinker.getMainModule().getPath())
+                        && !getSelectedItem().getNodeTypes().contains(Constants.JAHIANT_VIRTUALSITE)
+                        && !getSelectedItem().getNodeTypes().contains(Constants.JAHIANT_FOLDER)
+                        && !getSelectedItem().getInheritedNodeTypes().contains(Constants.JAHIANT_FOLDER)
+                        && !getSelectedItem().getNodeTypes().contains(Constants.JAHIANT_TEMPLATESFOLDER)) {
+                    MainModule.staticGoTo(getSelectedItem().getPath(), null, "generic", "");
+                }
+            }
+        });
+    }
+
+    private void handleEvent(Menu contextMenu) {
         this.tree.getSelectionModel().addListener(Events.BeforeSelect, new Listener<SelectionEvent<GWTJahiaNode>>() {
             @Override
             public void handleEvent(SelectionEvent<GWTJahiaNode> be) {
@@ -139,8 +155,6 @@ public class ModulesTabItem extends BrowseTabItem {
                 }
             }
         });
-
-        return tab;
     }
 
     @Override

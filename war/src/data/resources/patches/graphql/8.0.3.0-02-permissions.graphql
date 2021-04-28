@@ -1,0 +1,9 @@
+mutation {
+    jcr {
+        addPermission: mutateNodesByQuery(query: "/jcr:root/permissions/jContent[not(pageTreeActions/@jcr:primaryType='jnt:permission')]", queryLanguage: XPATH) {
+            addChild(name: "pageComposerAccess", primaryNodeType: "jnt:permission") {
+                uuid
+            }
+        }
+    }
+}

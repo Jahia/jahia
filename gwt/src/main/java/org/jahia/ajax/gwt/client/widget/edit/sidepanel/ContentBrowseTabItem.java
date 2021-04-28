@@ -104,23 +104,9 @@ class ContentBrowseTabItem extends BrowseTabItem {
         loadedNodeTypes.addAll(JCRClientUtils.FILE_NODETYPES);
         loadedNodeTypes.addAll(JCRClientUtils.CONTENT_NODETYPES);
 
-        RpcProxy<PagingLoadResult<GWTJahiaNode>> listProxy = new RpcProxy<PagingLoadResult<GWTJahiaNode>>() {
-            @Override
-            protected void load(Object gwtJahiaFolder, AsyncCallback<PagingLoadResult<GWTJahiaNode>> listAsyncCallback) {
-                if (gwtJahiaFolder != null) {
-                    String path = ((GWTJahiaNode) gwtJahiaFolder).getPath();
-                    Log.debug("retrieving children of " + path);
-                    List<String> tableColumnKeys = new ArrayList<String> (config.getTableColumnKeys());
-                    tableColumnKeys.addAll(Arrays.asList(GWTJahiaNode.PERMISSIONS, GWTJahiaNode.ICON, GWTJahiaNode.LOCKABLE, GWTJahiaNode.LOCKED, GWTJahiaNode.LOCKS_INFO));
-                    JahiaContentManagementService.App.getInstance()
-                            .lsLoad(path, loadedNodeTypes, null, null, tableColumnKeys, false, -1, -1, false, null, null, false, false, listAsyncCallback);
-                } else {
-                    contentContainer.unmask();
-                }
-            }
-        };
+        RpcProxy<PagingLoadResult<GWTJahiaNode>> listProxy = getPagingLoadResultRpcProxy(config, loadedNodeTypes);
 
-        listLoader = new BaseListLoader<ListLoadResult<GWTJahiaNode>>(listProxy);
+        listLoader = new BaseListLoader<>(listProxy);
         listLoader.addLoadListener(new LoadListener() {
             @Override
             public void loaderLoad(LoadEvent le) {
@@ -146,38 +132,7 @@ class ContentBrowseTabItem extends BrowseTabItem {
             }
         }));
 
-        tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
-                boolean displayGrid = false;
-                final GWTJahiaNode node = event.getSelectedItem();
-                if (node != null) {
-                    if (displayGridForTypes != null) {
-                        for (String type : node.getNodeTypes()) {
-                            displayGrid = displayGridForTypes.contains(type);
-                            if (displayGrid) {
-                                break;
-                            }
-                        }
-                    } else {
-                        displayGrid = true;
-                    }
-                    if (displayGrid) {
-                        listLoader.load(node);
-                        contentContainer.mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
-                    } else {
-                        contentStore.removeAll();
-                    }
-                    if (!node.getPath().equals(editLinker.getMainModule().getPath()) && node.getNodeTypes().contains("jnt:page") &&
-                            (PermissionsUtils.isPermitted("jContentAccess", JahiaGWTParameters.getSiteNode()) || PermissionsUtils.isPermitted("studioModeAccess", JahiaGWTParameters.getSiteNode()))
-                            ) {
-                        MainModule.staticGoTo(node.getPath(), null);
-                    }
-                } else {
-                    contentStore.removeAll();
-                }
-            }
-        });
+        addSelectionChangedListener();
 
         tree.setContextMenu(createContextMenu(config.getTreeContextMenu(), tree.getSelectionModel()));
 
@@ -232,6 +187,55 @@ class ContentBrowseTabItem extends BrowseTabItem {
         tab.add(contentContainer, contentVBoxData);
         tab.setId("JahiaGxtContentBrowseTab");
         return tab;
+    }
+
+    private void addSelectionChangedListener() {
+        tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
+                final GWTJahiaNode node = event.getSelectedItem();
+                if (node != null) {
+                    boolean displayGrid = displayGridForTypes == null || node.getInheritedNodeTypes().stream()
+                            .anyMatch(type -> displayGridForTypes.contains(type));
+                    if (displayGrid) {
+                        listLoader.load(node);
+                        contentContainer.mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
+                    } else {
+                        contentStore.removeAll();
+                    }
+                    if (!node.getPath().equals(editLinker.getMainModule().getPath()) && node.getNodeTypes().contains("jnt:page")
+                            && hasPermission()) {
+                        MainModule.staticGoTo(node.getPath(), null);
+                    }
+                } else {
+                    contentStore.removeAll();
+                }
+            }
+        });
+    }
+
+    private boolean hasPermission() {
+        return PermissionsUtils.isPermitted("pageComposerAccess", JahiaGWTParameters.getSiteNode())
+                || PermissionsUtils.isPermitted("jContentAccess", JahiaGWTParameters.getSiteNode())
+                || PermissionsUtils.isPermitted("studioModeAccess", JahiaGWTParameters.getSiteNode());
+    }
+
+    private RpcProxy<PagingLoadResult<GWTJahiaNode>> getPagingLoadResultRpcProxy(GWTSidePanelTab config, List<String> loadedNodeTypes) {
+        return new RpcProxy<PagingLoadResult<GWTJahiaNode>>() {
+            @Override
+            protected void load(Object gwtJahiaFolder, AsyncCallback<PagingLoadResult<GWTJahiaNode>> listAsyncCallback) {
+                if (gwtJahiaFolder != null) {
+                    String path = ((GWTJahiaNode) gwtJahiaFolder).getPath();
+                    Log.debug("retrieving children of " + path);
+                    List<String> tableColumnKeys = new ArrayList<> (config.getTableColumnKeys());
+                    tableColumnKeys.addAll(Arrays.asList(GWTJahiaNode.PERMISSIONS, GWTJahiaNode.ICON, GWTJahiaNode.LOCKABLE, GWTJahiaNode.LOCKED, GWTJahiaNode.LOCKS_INFO));
+                    JahiaContentManagementService.App.getInstance()
+                            .lsLoad(path, loadedNodeTypes, null, null, tableColumnKeys, false, -1, -1, false, null, null, false, false, listAsyncCallback);
+                } else {
+                    contentContainer.unmask();
+                }
+            }
+        };
     }
 
     @Override

@@ -23,7 +23,7 @@
                 j:roleGroup="edit-role"
                 jcr:primaryType="jnt:role">
             <currentSite-access j:path="currentSite"
-                                j:permissionNames="components jContentAccess jContentActions managers templates view-full-wysiwyg-editor viewCategoriesTab viewContentTab viewLayoutTab viewMetadataTab viewOptionsTab viewSeoTab viewVisibilityTab"
+                                j:permissionNames="components pageComposerAccess jContentAccess jContentActions managers templates view-full-wysiwyg-editor viewCategoriesTab viewContentTab viewLayoutTab viewMetadataTab viewOptionsTab viewSeoTab viewVisibilityTab"
                                 jcr:primaryType="jnt:externalPermissions"/>
             <editor-in-chief j:hidden="false"
                              j:permissionNames="publish workflow-tasks"
@@ -50,7 +50,7 @@
                     j:roleGroup="edit-role"
                     jcr:primaryType="jnt:role">
             <currentSite-access j:path="currentSite"
-                                j:permissionNames="components jContentAccess view-full-wysiwyg-editor"
+                                j:permissionNames="components pageComposerAccess jContentAccess view-full-wysiwyg-editor"
                                 jcr:primaryType="jnt:externalPermissions"/>
         </translator>
 
@@ -60,7 +60,7 @@
                   j:roleGroup="edit-role"
                   jcr:primaryType="jnt:role">
             <currentSite-access j:path="currentSite"
-                                j:permissionNames="jContentAccess viewCategoriesTab viewContentTab viewLayoutTab viewMetadataTab viewSeoTab"
+                                j:permissionNames="jContentAccess pageComposerAccess viewCategoriesTab viewContentTab viewLayoutTab viewMetadataTab viewSeoTab"
                                 jcr:primaryType="jnt:externalPermissions"/>
             <j:translation_en jcr:description="Grant access to view the content and validate changes done by editors before publication"
                               jcr:language="en"

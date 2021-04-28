@@ -204,7 +204,7 @@
     <bean id="Toolbar.Item.Edit" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="titleKey" value="label.editMode"/>
         <property name="icon" value="editMode"/>
-        <property name="requiredPermission" value="jContentAccess"/>
+        <property name="requiredPermission" value="pageComposerAccess"/>
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchConfigActionItem">
                 <property name="configurationName" value="editmode"/>
@@ -222,7 +222,7 @@
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
                 <property name="operatingMode" value="development,production"/>
-                <property name="permission" value="jContentAccess"/>
+                <property name="permission" value="pageComposerAccess"/>
                 <property name="contextNodePath" value="$anysite"/>
             </bean>
         </property>

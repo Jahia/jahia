@@ -44,7 +44,6 @@
 package org.jahia.bin.errors;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaRuntimeException;
@@ -68,7 +67,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
-import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+import static javax.servlet.http.HttpServletResponse.*;
 
 /**
  * Error pages dispatcher servlet.
@@ -114,18 +113,12 @@ public class ErrorServlet extends HttpServlet {
 
     }
 
-    protected String getErrorPagePath(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
+    protected String getErrorPagePath(HttpServletRequest request) throws IOException {
         String path = null;
-
         int errorCode = getErrorCode(request);
-        String page = "error_" + errorCode + ".jsp";
+        String page = getDedicateErrorPage(errorCode);
 
-        String requestUri = (String) request.getAttribute("javax.servlet.error.request_uri");
-        if (requestUri != null && requestUri.matches(getServletContext().getContextPath() + "/cms/[^/]+frame/.*")) {
-            page = "gwt_error.jsp";
-        } else if (siteLevelErrorPagesEnabled) {
+        if (siteLevelErrorPagesEnabled) {
             String siteKey = resolveSiteKey(request);
 
             // site information available?
@@ -171,6 +164,17 @@ public class ErrorServlet extends HttpServlet {
         }
 
         return path;
+    }
+
+    private String getDedicateErrorPage(int errorCode) {
+        switch (errorCode) {
+            case SC_FORBIDDEN:
+            case SC_NOT_FOUND:
+            case SC_UNAUTHORIZED:
+            case SC_BAD_REQUEST:
+            case SC_SERVICE_UNAVAILABLE: return "error_" + errorCode + ".jsp";
+            default: return "error.jsp";
+        }
     }
 
     private String getErrorPagePath(String page, String theme) throws MalformedURLException {
@@ -249,7 +253,7 @@ public class ErrorServlet extends HttpServlet {
                 + SettingsBean.getInstance().getCharacterEncoding());
         response.resetBuffer();
 
-        String errorPagePath = getErrorPagePath(request, response);
+        String errorPagePath = getErrorPagePath(request);
         forwardToErrorPage(errorPagePath, request, response);
     }
 

@@ -47,10 +47,8 @@ import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.wip.WIPInfo;
 import org.jahia.services.wip.WIPService;
@@ -66,6 +64,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.junit.Assert.*;
+
 /**
  * Integration test for the Work in progress
  * Check publication of content with WIP Status for language
@@ -73,15 +73,17 @@ import java.util.stream.Stream;
 public class WipIT extends AbstractJUnitTest {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(WipIT.class);
 
-    private static JCRPublicationService jcrService;
+    private static JCRPublicationService publicationService;
+    private ComplexPublicationService complexPublicationService;
     private static WIPService wipService;
 
     @Override
     public void beforeClassSetup() throws Exception {
         super.beforeClassSetup();
-        jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
+        publicationService = ServicesRegistry.getInstance().getJCRPublicationService();
         wipService = new WIPService();
-        wipService.setPublicationService(jcrService);
+        wipService.setPublicationService(publicationService);
+        complexPublicationService = (ComplexPublicationService) SpringContextSingleton.getInstance().getContext().getBean("ComplexPublicationService");
     }
 
     @After
@@ -102,6 +104,41 @@ public class WipIT extends AbstractJUnitTest {
         // Given a site with several languages
         Set<String> siteLanguages = Stream.of("en", "fr", "de").collect(Collectors.toSet());
         testWipSiteWithMultipleLanguage(siteLanguages, "multipleLanguageSite");
+    }
+
+    @Test
+    public void testWIPChildrenAreNotPublishable() throws Exception {
+        Map<String, Map<String, JCRSessionWrapper>> sessions = getCleanSessionForLanguages("en");
+        JCRSessionWrapper englishEditSession = sessions.get("en").get(Constants.EDIT_WORKSPACE);
+        Set<String> siteLanguages = Stream.of("en", "fr", "de").collect(Collectors.toSet());
+        JahiaSite site = TestHelper.createSite("exampleSite" , siteLanguages, siteLanguages, false);
+        JCRNodeWrapper page = englishEditSession.getNode(site.getJCRLocalPath()).addNode("testPage", "jnt:page");
+        page.setProperty("j:templateName", "home");
+        page.setProperty(Constants.JCR_TITLE, "testPage");
+        englishEditSession.getNode(site.getJCRLocalPath()+ "/testPage").addNode("child1", "jnt:text");
+        englishEditSession.getNode(site.getJCRLocalPath() + "/testPage").addNode("child2", "jnt:text");
+        englishEditSession.save();
+        JCRNodeWrapper siteNode = englishEditSession.getNode(site.getJCRLocalPath());
+        Collection<ComplexPublicationService.FullPublicationInfo> infos = complexPublicationService.getFullPublicationInfos(Collections.singletonList(siteNode.getIdentifier()),
+                Collections.singletonList("en"), true, englishEditSession);
+        assertEquals(6, infos.size());
+        assertTrue(infos.stream().anyMatch(e -> e.getNodePath().endsWith("/testPage/child1")));
+        assertTrue(infos.stream().anyMatch(e -> e.getNodePath().endsWith("/testPage/child2")));
+        wipService.createWipPropertiesOnNewNode(page, new WIPInfo(Constants.WORKINPROGRESS_STATUS_ALLCONTENT, siteLanguages));
+        englishEditSession.save();
+        Collection<ComplexPublicationService.FullPublicationInfo> infosAfterWIPStatusSet = complexPublicationService.getFullPublicationInfos(Collections.singletonList(siteNode.getIdentifier()),
+                Collections.singletonList("en"), true, englishEditSession);
+
+        //Make sure child nodes of WIP node are not getting published
+        assertEquals(4, infosAfterWIPStatusSet.size());
+        assertFalse(infosAfterWIPStatusSet.stream().anyMatch(e -> e.getNodePath().endsWith("/testPage/child1")));
+        assertFalse(infosAfterWIPStatusSet.stream().anyMatch(e -> e.getNodePath().endsWith("/testPage/child2")));
+        //check that child node is publishable, if checked separately
+        Collection<ComplexPublicationService.FullPublicationInfo> childNodeInfos = complexPublicationService
+                .getFullPublicationInfos(Collections.singletonList(englishEditSession.getNode("/sites/exampleSite/testPage/child1").getIdentifier()),
+                Collections.singletonList("en"), true, englishEditSession);
+        assertEquals(1, childNodeInfos.size());
+        TestHelper.deleteSite("exampleSite");
     }
 
     @Test
@@ -230,7 +267,7 @@ public class WipIT extends AbstractJUnitTest {
 
         JCRNodeWrapper liveNode = liveSession.getNode(nodePath);
         String liveValue = liveNode.hasProperty(propName) ? liveNode.getPropertyAsString(propName) : null;
-        Assert.assertEquals(expectAutoPublish ? "Prop should be auto published" : "Prop should not be auto published",
+        assertEquals(expectAutoPublish ? "Prop should be auto published" : "Prop should not be auto published",
                 expectAutoPublish ? newValue : oldValue,
                 liveValue);
     }
@@ -252,6 +289,7 @@ public class WipIT extends AbstractJUnitTest {
         // create nodes with non i18n content
         JCRNodeWrapper i18nContent = englishEditSession.getNode(basePath).addNode("i18nContent", "jnt:text");
 
+
         JCRNodeWrapper nonI18nContent = englishEditSession.getNode(basePath).addNode("nonI18nContent", "jnt:reference");
         nonI18nContent.addMixin("jmix:lastPublished");
         nonI18nContent.setProperty("j:propertyName", "property");
@@ -268,6 +306,7 @@ public class WipIT extends AbstractJUnitTest {
         mixContentOnlyI18n.addMixin("jmix:lastPublished");
 
         // set i18n properties
+        englishEditSession.save();
         englishEditSession.save();
         for (String lang : languages) {
             Map<String, Map<String, JCRSessionWrapper>> i18nSessions = getCleanSessionForLanguages(lang);
@@ -315,7 +354,7 @@ public class WipIT extends AbstractJUnitTest {
                 wipService.saveWipPropertiesIfNeeded(node, buildWipProperties(status, Collections.singleton(language)));
                 for (String checkedLanguage : siteLanguages) {
                     // publish the node in each language
-                    jcrService.publishByMainId(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, Collections.singleton(checkedLanguage), true, null);
+                    publicationService.publishByMainId(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, Collections.singleton(checkedLanguage), true, null);
                     Boolean published = expectedResultsByStatus.get(status).get(checkedLanguage);
                     // When WIP Status is by language, result is true (content published) for all but current language
                     if (StringUtils.equals(status, Constants.WORKINPROGRESS_STATUS_LANG)) {
@@ -326,7 +365,7 @@ public class WipIT extends AbstractJUnitTest {
                     Map<String, Map<String, JCRSessionWrapper>> checkedSessioms = getCleanSessionForLanguages(checkedLanguage);
                     JCRSessionWrapper liveSession = checkedSessioms.get(checkedLanguage).get(Constants.LIVE_WORKSPACE);
 
-                    Assert.assertEquals(liveSession.nodeExists(path), published);
+                    assertEquals(liveSession.nodeExists(path), published);
                     // clean up
                     if (liveSession.nodeExists(path)) {
                         liveSession.getNode(path).remove();

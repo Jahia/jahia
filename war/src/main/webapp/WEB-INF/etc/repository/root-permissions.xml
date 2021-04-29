@@ -124,6 +124,7 @@
                 <newContentFolderAction jcr:primaryType="jnt:permission"/>
                 <newMediaFolderAction jcr:primaryType="jnt:permission"/>
                 <zipAction jcr:primaryType="jnt:permission"/>
+                <unzipAction jcr:primaryType="jnt:permission"/>
                 <uploadFilesAction jcr:primaryType="jnt:permission"/>
                 <replaceWithAction jcr:primaryType="jnt:permission"/>
                 <openImageEditorAction jcr:primaryType="jnt:permission"/>

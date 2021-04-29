@@ -28,6 +28,7 @@ mutation {
         { name:"newContentFolderAction", primaryNodeType: "jnt:permission" },
         { name:"newMediaFolderAction", primaryNodeType: "jnt:permission" },
         { name:"zipAction", primaryNodeType: "jnt:permission" },
+        { name:"unzipAction", primaryNodeType: "jnt:permission" },
         { name:"uploadFilesAction", primaryNodeType: "jnt:permission" },
         { name:"replaceWithAction", primaryNodeType: "jnt:permission" },
         { name:"openImageEditorAction", primaryNodeType: "jnt:permission" },

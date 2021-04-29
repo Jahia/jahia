@@ -92,6 +92,7 @@ public class ErrorFileDumper {
     private static final long MIN_INTERVAL_BETWEEN_QUEUE_WARNING = 1000L;
     private static final long MIN_INTERVAL_BETWEEN_HIGHLOAD_WARNING = 1000L;
     private static final Logger logger = LoggerFactory.getLogger(ErrorFileDumper.class);
+	private static final String PASSWORD = "password";
 
     private static Throwable previousException = null;
     private static int previousExceptionOccurrences = 0;
@@ -471,7 +472,9 @@ public class ErrorFileDumper {
                 Map.Entry<Object, Object> curEntry = entrySetIter.next();
                 String curPropertyName = (String) curEntry.getKey();
                 String curPropertyValue = (String) curEntry.getValue();
-                strOut.println("   " + curPropertyName + " : " + curPropertyValue);
+                if (!curPropertyName.toLowerCase().contains(PASSWORD)) {
+                    strOut.println("   " + curPropertyName + " : " + curPropertyValue);
+                }
             }
         }
 
@@ -486,7 +489,9 @@ public class ErrorFileDumper {
                 Map.Entry<String, String> curEntry = entrySetIter.next();
                 String curPropertyName = curEntry.getKey();
                 String curPropertyValue = curEntry.getValue();
-                strOut.println("   " + curPropertyName + " : " + curPropertyValue);
+                if (!curPropertyName.toLowerCase().contains(PASSWORD)) {
+                    strOut.println("   " + curPropertyName + " : " + curPropertyValue);
+                }
             }
         }
 
@@ -511,7 +516,7 @@ public class ErrorFileDumper {
                     } else {
                         curPropertyValue = curEntry.getValue().toString();
                     }
-                    if (curPropertyName.toLowerCase().indexOf("password") == -1
+                    if (!curPropertyName.toLowerCase().contains(PASSWORD)
                             && (!"mail_server".equals(curPropertyName)
                             || !StringUtils.contains(curPropertyValue, "&password=") && !StringUtils
                             .contains(curPropertyValue, "?password="))) {

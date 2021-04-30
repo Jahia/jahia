@@ -127,7 +127,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private PathResolver pathResolver = null;
     private String licenseFilename;
     private String propertiesFileName;
-    private int buildNumber; // this is the famous build number...
+    private String buildNumber; // this is the famous build number...
     private Properties properties;
     private String classDiskPath;
     private long jahiaFileUploadMaxSize; // this is the list of jahia.properties files values...
@@ -220,7 +220,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      * @param   licenseFilename the name of the license file.
      * @param   buildNumber The Jahia build number.
      */
-    public SettingsBean(PathResolver pathResolver, String propertiesFilename, String licenseFilename, int buildNumber) {
+    public SettingsBean(PathResolver pathResolver, String propertiesFilename, String licenseFilename, String buildNumber) {
         this.pathResolver = pathResolver;
         this.propertiesFileName = propertiesFilename;
         this.buildNumber = buildNumber;
@@ -969,11 +969,11 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      * @return  The build number.
      */
     @Override
-    public int getBuildNumber() {
+    public String getBuildNumber() {
         return buildNumber;
     }
 
-    public void setBuildNumber(int buildNumber) {
+    public void setBuildNumber(String buildNumber) {
         this.buildNumber = buildNumber;
     }
 

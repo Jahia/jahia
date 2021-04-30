@@ -1740,6 +1740,37 @@
 
         <plugins>
             <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>4.0.0</version>
+                <executions>
+                    <execution>
+                        <id>get-the-git-infos</id>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                        <phase>initialize</phase>
+                    </execution>
+                    <execution>
+                        <id>validate-the-git-infos</id>
+                        <goals>
+                            <goal>validateRevision</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <verbose>true</verbose>
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                    <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties
+                    </generateGitPropertiesFilename>
+                    <includeOnlyProperties>
+                        <includeOnlyProperty>git.build.time</includeOnlyProperty>
+                        <includeOnlyProperty>git.commit.id.abbrev</includeOnlyProperty>
+                    </includeOnlyProperties>
+                    <commitIdGenerationMode>full</commitIdGenerationMode>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire.plugin.version}</version>
@@ -1794,7 +1825,7 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <echo message="${buildNumber}" file="${project.build.directory}/classes/META-INF/jahia-impl-marker.txt" />
+                                <echo message="${git.commit.id.abbrev}" file="${project.build.directory}/classes/META-INF/jahia-impl-marker.txt" />
                             </tasks>
                         </configuration>
                     </execution>

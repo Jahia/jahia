@@ -105,7 +105,7 @@ public interface SettingsBean {
      *
      * @return  The build number.
      */
-    int getBuildNumber();
+    String getBuildNumber();
 
     /**
      * Used to get the server name (tomcat, orion, etc).

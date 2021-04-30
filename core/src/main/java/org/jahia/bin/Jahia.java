@@ -76,9 +76,15 @@ import java.io.InputStream;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Properties;
 
 /**
  * Jahia version and support utilities.
@@ -101,15 +107,22 @@ public final class Jahia {
     public static final String COPYRIGHT = "&copy; Copyright 2002-" + YEAR + "  <a href=\"https://www.jahia.com\" target=\"newJahia\">"
             + VENDOR_NAME + "</a> -";
     public static final String COPYRIGHT_TXT = YEAR + " " + VENDOR_NAME;
+    private static final Logger logger = LoggerFactory.getLogger(Jahia.class);
 
     private static final Version JAHIA_VERSION;
     public static final String LOGGER_INVALID_SUPPORTED_JDK_VERSIONS = "Invalid supported_jdk_versions initialization parameter in web.xml, it MUST be in the ";
+
+    private static final DateTimeFormatter BUILD_DATE_PATTERN = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ");
+    private static final DateTimeFormatter UTC_FORMATTER = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG).withZone(ZoneId.of("UTC"));
+    private static final String GIT_PROPERTIES = "git.properties";
+    private static final String GIT_COMMIT_ID_ABBREV = "git.commit.id.abbrev";
 
     static {
         Version v = null;
         try {
             v = new Version(Constants.JAHIA_PROJECT_VERSION);
         } catch (NumberFormatException e) {
+            logger.error("Version number is not correct", e);
         }
         JAHIA_VERSION = v != null ? v : new Version("8.0.0.0");
     }
@@ -120,25 +133,24 @@ public final class Jahia {
             JAHIA_VERSION.getPatchVersion();
 
     private static final String INIT_PARAM_SUPPORTED_JDK_VERSIONS = "supported_jdk_versions";
-    private static final Logger logger = LoggerFactory.getLogger(Jahia.class);
 
     private static String jahiaServletPath;
     private static String jahiaContextPath;
     private static boolean maintenance = false;
-    private static volatile int buildNumber = -1;
     private static volatile int eeBuildNumber = -1;
     private static volatile String edition;
     private static volatile String buildDate;
 
-    public static int getBuildNumber() {
-        if (buildNumber == -1) {
-            synchronized (Jahia.class) {
-                if (buildNumber == -1) {
-                    buildNumber = getBuildNumber("/META-INF/jahia-impl-marker.txt");
-                }
+    public static String getBuildNumber() {
+        Properties properties = new Properties();
+        synchronized (Jahia.class) {
+            try {
+                properties.load(Jahia.class.getClassLoader().getResourceAsStream(GIT_PROPERTIES));
+            } catch (IOException e) {
+                logger.error("Properties file wasn't read properly", e);
             }
         }
-        return buildNumber;
+        return properties.getProperty(GIT_COMMIT_ID_ABBREV);
     }
 
     public static String getBuildDate() {
@@ -183,20 +195,11 @@ public final class Jahia {
      */
     public static int getBuildNumber(String markerFilePathName) {
         int buildNumber = 0;
-        try {
-            InputStream in = Jahia.class.getResourceAsStream(markerFilePathName);
-            if (in != null) {
-                try {
-                    String number = IOUtils.toString(in);
-                    buildNumber = Integer.parseInt(number);
-                } finally {
-                    IOUtils.closeQuietly(in);
-                }
-            }
-        } catch (IOException e) {
+        try (InputStream in = Jahia.class.getResourceAsStream(markerFilePathName)) {
+            String number = IOUtils.toString(in, StandardCharsets.UTF_8);
+            buildNumber = Integer.parseInt(number);
+        } catch (IOException | NumberFormatException e) {
             logger.error(e.getMessage(), e);
-        } catch (NumberFormatException nfe) {
-            logger.warn(nfe.getMessage());
         }
         return buildNumber;
     }
@@ -206,16 +209,12 @@ public final class Jahia {
     }
 
     public static String getLicenseText() {
-        InputStream in = null;
         String txt;
-        try {
-            in = JahiaContextLoaderListener.getServletContext().getResourceAsStream("/LICENSE");
-            txt = IOUtils.toString(in);
+        try (InputStream in = JahiaContextLoaderListener.getServletContext().getResourceAsStream("/LICENSE")) {
+            txt = IOUtils.toString(in, StandardCharsets.UTF_8);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
             txt = "Unable to parse licence file";
-        } finally {
-            IOUtils.closeQuietly(in);
         }
         return txt;
     }
@@ -416,8 +415,17 @@ public final class Jahia {
         StringBuilder version = new StringBuilder();
 
         if (Jahia.JAHIA_VERSION.toString().endsWith("SNAPSHOT")) {
-            version.append(Jahia.PRODUCT_NAME).append(" ").append(Jahia.VERSION)
-                    .append(" [" + CODE_NAME + "] - Build ").append(Jahia.getBuildNumber());
+            try {
+                Properties properties = new Properties();
+                properties.load(Jahia.class.getClassLoader().getResourceAsStream(GIT_PROPERTIES));
+                version.append(Jahia.PRODUCT_NAME).append(" ").append(Jahia.VERSION)
+                        .append(" [" + CODE_NAME + "] - Build: ")
+                        .append(properties.getProperty(GIT_COMMIT_ID_ABBREV))
+                        .append(" - Built on: ")
+                        .append(ZonedDateTime.parse(properties.getProperty("git.build.time"), BUILD_DATE_PATTERN).format(UTC_FORMATTER));
+            } catch (IOException e) {
+                logger.error("Properties file wasn't read properly", e);
+            }
         } else {
             version.append(Jahia.PRODUCT_NAME).append(" ").append(Jahia.VERSION);
         }

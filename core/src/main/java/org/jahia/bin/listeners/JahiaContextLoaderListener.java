@@ -209,7 +209,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     public void contextInitialized(ServletContextEvent event) {
 
         startupTime = System.currentTimeMillis();
-        startupWithTrust(String.valueOf(Jahia.getBuildNumber()));
+        startupWithTrust(Jahia.getBuildNumber());
 
         logger.info("Starting up Jahia, please wait...");
 

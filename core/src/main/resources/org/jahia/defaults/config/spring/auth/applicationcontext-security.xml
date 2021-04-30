@@ -19,6 +19,7 @@
                 <entry key="invalidRequest">
                     <bean class="org.apache.shiro.web.filter.InvalidRequestFilter">
                         <property name="blockSemicolon" value="false"/>
+                        <property name="blockNonAscii" value="false"/>
                     </bean>
                 </entry>
             </map>

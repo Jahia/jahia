@@ -55,8 +55,11 @@
 
             @include text(13px, _theme($MENU-OPENED--COLOR, $type), _weight("light"));
 
+            &.toolbar-item-editcontentpageheader,
+            &.toolbar-item-editcontentheader,
             &.toolbar-item-editcontent, /* OPTIMISE SELECTOR ::: css/components/_combos.scss ::: 1 */
             &.toolbar-item-editsourcecontent, /* OPTIMISE SELECTOR ::: css/components/_combos.scss ::: 2 */
+            &.toolbar-item-editcontentrootnodeeditablepage,
             &.toolbar-item-editcontentrootnodeeditable { /* OPTIMISE SELECTOR ::: css/components/_combos.scss ::: 3 */
                 /* OPTIMISE NOTE ::: replace #1/#2/#3 classes with one classname */
                 background-image: url(../images/icons/context-menu/edit.png); /* OPTIMISE URL ::: css/components/_combos.scss ::: 3 */

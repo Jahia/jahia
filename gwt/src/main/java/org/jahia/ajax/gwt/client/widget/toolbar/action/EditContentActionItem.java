@@ -91,7 +91,10 @@ public class EditContentActionItem extends NodeTypeAwareBaseActionItem {
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         GWTJahiaNode singleSelection = lh.getSingleSelection();
-        setEnabled(singleSelection != null && (allowRootNodeEditing || !lh.isRootNode()));
+        setEnabled(singleSelection != null
+                && (allowRootNodeEditing || !lh.isRootNode())
+                && hasPermission(singleSelection)
+                && super.isNodeTypeAllowed(singleSelection));
     }
 
     public void setAllowRootNodeEditing(boolean allowRootNodeEditing) {

@@ -7,7 +7,8 @@
                         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
     <util:list id="anthraciteEditmodeMainModuleMenuItems">
-        <ref bean="Toolbar.Item.EditContent"/>
+        <ref bean="Toolbar.Item.EditContentPageHeader"/>
+        <ref bean="Toolbar.Item.EditContentHeader"/>
         <ref bean="Toolbar.Item.EditSourceContent"/>
         <ref bean="Toolbar.Item.DeleteContentHeader"/>
         <ref bean="Toolbar.Item.DeletePageHeader"/>
@@ -205,7 +206,7 @@
                 <ref bean="Toolbar.Item.NewPage"/>
                 <ref bean="Toolbar.Item.NewContentFolder"/>
                 <ref bean="Toolbar.Item.PagesTab.AddMenu"/>
-                <ref bean="Toolbar.Item.EditContentRootNodeEditable"/>
+                <ref bean="Toolbar.Item.EditContentRootNodeEditablePage"/>
                 <ref bean="Toolbar.Item.PagesTab.PublicationMenu"/>
                 <ref bean="Toolbar.Item.PublishSite.SiteNode"/>
                 <ref bean="Toolbar.Item.PublishSiteInAllLanguages.SiteNode"/>

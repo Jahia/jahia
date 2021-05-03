@@ -840,6 +840,27 @@
         <property name="titleKey" value="label.edit"/>
         <property name="icon" value="editContent"/>
     </bean>
+
+    <bean id="Toolbar.Item.EditContentPageHeader" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
+          parent="Toolbar.Item.EditContent">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.EditContentActionItem">
+                <property name="allowedNodeTypes" ref="exclusiveHeaderPageTypes"/>
+            </bean>
+        </property>
+        <property name="requiredPermission" value="editPageAction"/>
+    </bean>
+
+    <bean id="Toolbar.Item.EditContentHeader" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
+          parent="Toolbar.Item.EditContent">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.EditContentActionItem">
+                <property name="forbiddenNodeTypes" ref="exclusiveHeaderPageTypes"/>
+            </bean>
+        </property>
+    </bean>
+
+
     <bean id="Toolbar.Item.EditContentRootNodeEditable" parent="Toolbar.Item.EditContent" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.EditContentActionItem">
@@ -847,6 +868,11 @@
             </bean>
         </property>
     </bean>
+
+    <bean id="Toolbar.Item.EditContentRootNodeEditablePage" scope="prototype" parent="Toolbar.Item.EditContentRootNodeEditable">
+        <property name="requiredPermission" value="editPageAction"/>
+    </bean>
+
     <bean id="Toolbar.Item.EditSourceContent" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.EditSourceContentActionItem"/>

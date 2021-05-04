@@ -74,6 +74,7 @@ public class TranslateMenuActionItem extends BaseActionItem {
 
     private void initMenu(final Linker linker) {
         boolean notEmpty = false;
+        menu.removeAll();
         final String currentLanguage = JahiaGWTParameters.getLanguage();
         for (final GWTJahiaLanguage sourceLang : JahiaGWTParameters.getSiteLanguages()) {
             for (final GWTJahiaLanguage destLang : JahiaGWTParameters.getSiteLanguages()) {
@@ -81,7 +82,6 @@ public class TranslateMenuActionItem extends BaseActionItem {
                     (destLang.getLanguage().equals(currentLanguage) ||
                      sourceLang.getLanguage().equals(currentLanguage))) {
                     final LinkerSelectionContext lh = linker.getSelectionContext();
-
                     if (PermissionsUtils.isPermitted("jcr:modifyProperties_" + JahiaGWTParameters.getWorkspace() + "_" + destLang.getLanguage(), lh.getSelectionPermissions())) {
                         final GWTJahiaNode selection = lh.getSingleSelection();
                         if (selection != null && (!selection.isLocked() || !selection.getLockInfos().containsKey(destLang.getLanguage()))) {
@@ -111,11 +111,11 @@ public class TranslateMenuActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getSingleSelection() != null
-                && hasPermission(lh.getSingleSelection())
-                && !lh.isRootNode());
-        menu.removeAll();
-        initMenu(linker);
+        boolean isEnabled = lh.getSingleSelection() != null && hasPermission(lh.getSingleSelection()) && !lh.isRootNode();
+        setEnabled(isEnabled);
+        if (isEnabled) {
+            initMenu(linker);
+        }
     }
 }
 

@@ -1460,6 +1460,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.TranslateMenuActionItem"/>
         </property>
+        <property name="requiredPermission" value="translateAction" />
         <property name="titleKey" value="label.translate"/>
         <property name="icon" value="translate"/>
     </bean>

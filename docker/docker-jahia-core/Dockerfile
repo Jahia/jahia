@@ -19,7 +19,7 @@ ARG C_USER="tomcat"
 ARG C_GROUP="tomcat"
 
 ARG INSTALL_GRAALVM=""
-ARG GRAALVM_URL="https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.0.0.2/graalvm-ce-java11-linux-amd64-21.0.0.2.tar.gz"
+ARG GRAALVM_URL="https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-linux-amd64-21.1.0.tar.gz"
 
 ENV RESTORE_MODULE_STATES="false"
 ENV RESTORE_PERSISTED_CONFIGURATION="false"

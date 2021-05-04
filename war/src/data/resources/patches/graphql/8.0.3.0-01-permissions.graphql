@@ -10,6 +10,7 @@ mutation {
             { name:"copyPageAction", primaryNodeType: "jnt:permission" },
             { name:"cutPageAction", primaryNodeType: "jnt:permission" },
             { name:"pastePageAction", primaryNodeType: "jnt:permission" },
+            { name:"pasteOnePageAction", primaryNodeType: "jnt:permission" },
             { name:"lockPageAction", primaryNodeType: "jnt:permission" },
             { name:"newInternalLinkAction", primaryNodeType: "jnt:permission" },
             { name:"newExternalLinkAction", primaryNodeType: "jnt:permission" },

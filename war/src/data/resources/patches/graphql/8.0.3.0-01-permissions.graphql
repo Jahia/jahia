@@ -42,12 +42,37 @@ mutation {
         move(parentPathOrId:"/permissions/jContent/jContentActions/pageTreeActions")
       }
     }
-
+    addPageComposerAccessPermission: mutateNodesByQuery(query: "/jcr:root/permissions/jContent[not(pageComposerAccess/@jcr:primaryType='jnt:permission')]", queryLanguage: XPATH) {
+      addChild(name: "pageComposerAccess", primaryNodeType: "jnt:permission") {
+          uuid
+      }
+    }
+    updateTranslatorRoleWithPageComposerAccess: mutateNodesByQuery(query: "select * from [jnt:role] where localname()='translator'",queryLanguage: SQL2) {
+      mutateChildren(names: ["currentSite-access"]) {
+          mutateProperty(name: "j:permissionNames") {
+              addValue(value: "pageComposerAccess")
+          }
+      }
+    }
+    updateEditorRoleWithPageComposerAccess: mutateNodesByQuery(query: "select * from [jnt:role] where localname()='editor'",queryLanguage: SQL2) {
+      mutateChildren(names: ["currentSite-access"]) {
+          mutateProperty(name: "j:permissionNames") {
+              addValue(value: "pageComposerAccess")
+          }
+      }
+    }
+    updateReviewerRoleWithPageComposerAccess: mutateNodesByQuery(query: "select * from [jnt:role] where localname()='reviewer'",queryLanguage: SQL2) {
+      mutateChildren(names: ["currentSite-access"]) {
+          mutateProperty(name: "j:permissionNames") {
+              addValue(value: "pageComposerAccess")
+          }
+      }
+    }
     updateTranslatorRole: mutateNodesByQuery(query: "select * from [jnt:role] where localname()='translator'", queryLanguage: SQL2) {
-      	mutateChildren(names: ["currentSite-access"]) {
-        		mutateProperty(name: "j:permissionNames") {
-          		addValue(value: "translateAction")
-        }
+      mutateChildren(names: ["currentSite-access"]) {
+          mutateProperty(name: "j:permissionNames") {
+              addValue(value: "translateAction")
+          }
       }
     }
   }

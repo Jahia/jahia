@@ -839,6 +839,7 @@
         </property>
         <property name="titleKey" value="label.edit"/>
         <property name="icon" value="editContent"/>
+        <property name="requiredPermission" value="editAction"/>
     </bean>
 
     <bean id="Toolbar.Item.EditContentPageHeader" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
@@ -858,6 +859,7 @@
                 <property name="forbiddenNodeTypes" ref="exclusiveHeaderPageTypes"/>
             </bean>
         </property>
+        <property name="requiredPermission" value="editAction"/>
     </bean>
 
 
@@ -1009,6 +1011,7 @@
         <property name="actionItem" ref="Toolbar.Item.CopyActionItem"/>
         <property name="titleKey" value="label.copy"/>
         <property name="icon" value="copy"/>
+        <property name="requiredPermission" value="copyAction"/>
     </bean>
 
     <bean id="Toolbar.Item.CopyPage" class="org.jahia.services.uicomponents.bean.toolbar.Item"
@@ -1032,6 +1035,7 @@
                 <property name="forbiddenNodeTypes" ref="forbidDeleteRenameCutForNodeTypesNonPage"/>
             </bean>
         </property>
+        <property name="requiredPermission" value="copyAction"/>
     </bean>
 
     <bean id="Toolbar.Item.NewCategory" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
@@ -1160,6 +1164,7 @@
         </property>
         <property name="titleKey" value="label.cut"/>
         <property name="icon" value="cut"/>
+        <property name="requiredPermission" value="cutAction"/>
     </bean>
 
     <bean id="Toolbar.Item.CutPage" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype" parent="Toolbar.Item.Cut">
@@ -1182,6 +1187,7 @@
                 <property name="forbiddenNodeTypes" ref="forbidDeleteRenameCutForNodeTypesNonPage"/>
             </bean>
         </property>
+        <property name="requiredPermission" value="cutAction"/>
     </bean>
 
     <bean id="Toolbar.Item.Download" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
@@ -1198,6 +1204,7 @@
         </property>
         <property name="titleKey" value="label.export"/>
         <property name="icon" value="export"/>
+        <property name="requiredPermission" value="exportAction"/>
     </bean>
 
     <bean id="Toolbar.Item.ExportPage" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
@@ -1212,6 +1219,7 @@
                 <property name="allowedNodeTypes" ref="exclusiveHeaderPageTypes"/>
             </bean>
         </property>
+        <property name="requiredPermission" value="exportAction"/>
     </bean>
 
     <bean id="Toolbar.Item.ExportContentHeader" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
@@ -1221,6 +1229,7 @@
                 <property name="forbiddenNodeTypes" ref="exclusiveHeaderPageTypes"/>
             </bean>
         </property>
+        <property name="requiredPermission" value="exportAction"/>
     </bean>
 
     <bean id="Toolbar.Item.Import" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
@@ -1229,6 +1238,7 @@
         </property>
         <property name="titleKey" value="label.import"/>
         <property name="icon" value="import"/>
+        <property name="requiredPermission" value="importAction"/>
     </bean>
 
     <bean id="Toolbar.Item.ImportPage" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
@@ -1243,6 +1253,7 @@
                 <property name="allowedNodeTypes" ref="exclusiveHeaderPageTypes"/>
             </bean>
         </property>
+        <property name="requiredPermission" value="exportAction"/>
     </bean>
 
     <bean id="Toolbar.Item.ImportContentHeader" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
@@ -1252,6 +1263,7 @@
                 <property name="forbiddenNodeTypes" ref="exclusiveHeaderPageTypes"/>
             </bean>
         </property>
+        <property name="requiredPermission" value="importAction"/>
     </bean>
 
     <bean id="Toolbar.Item.Update" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
@@ -1268,6 +1280,7 @@
         </property>
         <property name="titleKey" value="label.paste"/>
         <property name="icon" value="paste"/>
+        <property name="requiredPermission" value="pasteAction"/>
     </bean>
 
     <bean id="Toolbar.Item.PastePage" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"

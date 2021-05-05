@@ -89,9 +89,10 @@ public class ExternalUsersImportUpdater extends ImportFileUpdater {
     private static final String LIVE_CONTENT = "live-content";
     private static final String CONTENT = "content";
 
-    public boolean mustUpdate(Version version, int buildNumber) {
+    @Override
+    public boolean mustUpdate(Version version) {
         Version sevenOne = new Version("7.1");
-        return version.compareTo(sevenOne) < 0 || ( version.compareTo(sevenOne) == 0 && buildNumber < 50366);  // User & group refactoring
+        return version.compareTo(sevenOne) < 0; // User & group refactoring
     }
 
     public File updateImport(File importFile, String fileName, String fileType)  {

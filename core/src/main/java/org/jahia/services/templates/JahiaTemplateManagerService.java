@@ -801,6 +801,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     @Override
     public JahiaTemplatesPackage getAnyDeployedTemplatePackage(String templatePackage) {
         JahiaDepends depends = new JahiaDepends(templatePackage);
+        if (!depends.hasVersion()) {
+            JahiaTemplatesPackage pack = getTemplatePackageById(templatePackage);
+            if (pack != null) return pack;
+        }
+
         String moduleName = depends.getModuleName();
         TemplatePackageRegistry registry = getTemplatePackageRegistry();
         Set<ModuleVersion> versions = registry.getAvailableVersionsForModule(moduleName);

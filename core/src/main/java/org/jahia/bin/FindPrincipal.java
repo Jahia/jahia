@@ -44,25 +44,28 @@
 package org.jahia.bin;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.services.content.decorator.JCRGroupNode;
-import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.sites.JahiaSitesService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
+import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.render.RenderException;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.*;
+import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.Patterns;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.owasp.encoder.Encode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.jcr.*;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -73,12 +76,12 @@ import java.util.regex.Pattern;
  * @author loom
  *         Date: Jun 16, 2010
  *         Time: 10:38:40 AM
- * @deprecated as its no longer used and should be removed with 8.1.x (see also QA-13520) 
+ * @deprecated as its no longer used and should be removed with 8.1.x (see also QA-13520)
  */
 @Deprecated
 public class FindPrincipal extends BaseFindController {
 
-    private static Logger logger = LoggerFactory.getLogger(FindPrincipal.class);
+    private static final Logger logger = LoggerFactory.getLogger(FindPrincipal.class);
 
     private static final String PRINCIPALTYPE_PARAMNAME = "principalType";
     private static final String WILDCARDTERM_PARAMNAME = "wildcardTerm";
@@ -117,7 +120,7 @@ public class FindPrincipal extends BaseFindController {
     }
 
     protected String expandRequestMarkers(HttpServletRequest request, String sourceString) {
-        String result = new String(sourceString);
+        String result = sourceString;
         int refMarkerPos = result.indexOf("{$");
         while (refMarkerPos >= 0) {
             int endRefMarkerPos = result.indexOf("}", refMarkerPos);
@@ -133,7 +136,7 @@ public class FindPrincipal extends BaseFindController {
             refMarkerPos = result.indexOf("{$", refMarkerPos + 2);
         }
         return result;
-    }        
+    }
 
     protected String retrieveParameter(HttpServletRequest request, HttpServletResponse response, String parameterName, boolean mandatory) throws IOException {
         String parameterValue = request.getParameter(parameterName);
@@ -151,11 +154,14 @@ public class FindPrincipal extends BaseFindController {
     }
 
     protected Map<String, String[]> retrieveOtherParameters(HttpServletRequest request) throws IOException {
-        Map<String, String[]> parameterMap = new HashMap<String, String[]>(request.getParameterMap());
-        for (String reservedParameterName : RESERVED_PARAMETERNAMES) {
-            parameterMap.remove(reservedParameterName);
+        Map<String, String[]> requestParameterMap = request.getParameterMap();
+        HashMap<String, String[]> map = new HashMap<>(requestParameterMap.size());
+        for (Map.Entry<String, String[]> s : requestParameterMap.entrySet()) {
+            if (!RESERVED_PARAMETERNAMES.contains(s.getKey())) {
+                map.put(Encode.forJava(s.getKey()), Arrays.stream(s.getValue()).map(Encode::forJava).toArray(String[]::new));
+            }
         }
-        return parameterMap;
+        return map;
     }
 
     protected Properties buildSearchCriterias(String wildcardTerm, Map<String, String[]> otherRequestParameters, HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -166,10 +172,11 @@ public class FindPrincipal extends BaseFindController {
         String includeCriteriaNames = retrieveParameter(request, response, INCLUDECRITERIANAMES_PARAMNAME, false);
         Set<String> criteriasToInclude = new HashSet<String>();
         if (includeCriteriaNames != null) {
-            if (includeCriteriaNames.indexOf(",") >= 0) {
+            if (includeCriteriaNames.contains(",")) {
                 String[] criteriaNamesArray = Patterns.COMMA.split(includeCriteriaNames);
-                List<String> criteriaNamesList = Arrays.asList(criteriaNamesArray);
-                criteriasToInclude.addAll(criteriaNamesList);
+                for (String criteriaName : criteriaNamesArray) {
+                    criteriasToInclude.add(Encode.forJava(criteriaName));
+                }
             } else {
                 criteriasToInclude.add(includeCriteriaNames);
             }
@@ -177,18 +184,16 @@ public class FindPrincipal extends BaseFindController {
 
         for (Map.Entry<String, String[]> curEntry : otherRequestParameters.entrySet()) {
             String[] paramValues = curEntry.getValue();
-            if (criteriasToInclude.size() > 0) {
-                if (!criteriasToInclude.contains(curEntry.getKey())) {
-                    logger.debug("Ignoring parameter with name " + curEntry.getKey() + " since it wasn't specified in the include criteria name list");
-                    continue;
-                }
+            if (logger.isDebugEnabled() && !criteriasToInclude.isEmpty() && !criteriasToInclude.contains(curEntry.getKey())) {
+                logger.debug("Ignoring parameter with name {} since it wasn't specified in the include criteria name list",
+                             Encode.forJava(curEntry.getKey()));
+                continue;
             }
-            if (paramValues.length < 1) {
-                logger.warn("Parameter " + curEntry.getKey() + " has invalid value(s), ignoring it.");
+            if (paramValues.length < 1 && logger.isWarnEnabled()) {
+                logger.warn("Parameter {} has invalid value(s), ignoring it.", curEntry.getKey());
                 continue;
-            } else if (paramValues.length > 1) {
-                logger.warn("Parameter " + curEntry.getKey() + " has more than one value, only the first one will be used.");
-                continue;
+            } else if (paramValues.length > 1 && logger.isWarnEnabled()) {
+                logger.warn("Parameter {} has more than one value, only the first one will be used.", curEntry.getKey());
             }
             criterias.setProperty(curEntry.getKey(), expandRequestMarkers(request, paramValues[0]));
         }
@@ -280,7 +285,7 @@ public class FindPrincipal extends BaseFindController {
                         // property starts with the propertyMatchRegexp, let's add it to the list of matching properties.
                         matchingProperties.add(curPropertyName);
                     }
-    
+
                 }
                 jsonGroup.put("matchingProperties", new JSONArray(matchingProperties));
             }
@@ -299,10 +304,10 @@ public class FindPrincipal extends BaseFindController {
     @Override
     protected void handle(HttpServletRequest request, HttpServletResponse response) throws RenderException,
             IOException, RepositoryException, JahiaForbiddenAccessException {
-        
+
         checkUserLoggedIn();
         checkUserAuthorized();
-        
+
         try {
             String principalType = retrieveParameter(request, response, PRINCIPALTYPE_PARAMNAME, true);
             if (principalType == null) {
@@ -315,10 +320,7 @@ public class FindPrincipal extends BaseFindController {
             if (removeDuplicatePropValuesStr != null) {
                 removeDuplicatePropValues = Boolean.parseBoolean(removeDuplicatePropValuesStr);
             }
-            boolean siteKeyMandatory = false;
-            if ("groups".equals(principalType)) {
-                siteKeyMandatory = true;
-            }
+            boolean siteKeyMandatory = "groups".equals(principalType);
             String siteKey = retrieveParameter(request, response, SITEKEY_PARAMNAME, siteKeyMandatory);
             Map<String, String[]> otherRequestParameters = retrieveOtherParameters(request);
             Properties searchCriterias = buildSearchCriterias(wildcardTerm, otherRequestParameters, request, response);

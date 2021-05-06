@@ -140,6 +140,9 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
     -Djahia.configure.jahiaProperties="{${JAHIA_PROPERTIES}}" \
     $JAHIA_CONFIGURE_OPTS $JAHIA_LICENSE_OPTS -Pconfiguration
 
+    mkdir -p ${DATA_FOLDER}/info/initial-config
+    cp /etc/jahia/jahia/* ${DATA_FOLDER}/info/initial-config
+
     if [ -f "${DATA_FOLDER}/info/passwd" ] && [ "`cat "${DATA_FOLDER}/info/passwd"`" != "`echo -n "$SUPER_USER_PASSWORD" | sha256sum`" ]; then
         echo "Update root's password..."
         echo "${SUPER_USER_PASSWORD}" > ${DATA_FOLDER}/root.pwd

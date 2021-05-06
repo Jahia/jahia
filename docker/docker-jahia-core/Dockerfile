@@ -120,6 +120,8 @@ COPY --chown=${C_USER}:${C_GROUP} target/dependency/jahia-war /usr/local/tomcat/
 RUN mkdir -p /etc/jahia  \
     && chown -R ${C_USER}:${C_GROUP} /usr/local/tomcat/conf /etc/jahia
 
+STOPSIGNAL SIGINT
+
 ## fix hadolint DL4006
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 

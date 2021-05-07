@@ -87,12 +87,11 @@ public class ImportUpdateService {
      * @param fileName
      * @param fileType @return updated file OR the original file if no updates have been performed
      * @param version
-     * @param buildNumber
      */
-    public File updateImport(File importFile, String fileName, String fileType, Version version, int buildNumber) {
+    public File updateImport(File importFile, String fileName, String fileType, Version version) {
         File file = importFile;
         for (ImportFileUpdater updater : updaters) {
-            if (updater.mustUpdate(version, buildNumber)) {
+            if (updater.mustUpdate(version)) {
                 file = updater.updateImport(file, fileName, fileType);
             }
         }

@@ -60,7 +60,7 @@ public abstract class ImportFileUpdater {
      * @param buildNumber
      * @return true if this updater is applicable on an import originating from the specified version and build number
      */
-    public abstract boolean mustUpdate(Version version, int buildNumber);
+    public abstract boolean mustUpdate(Version version);
 
     /**
      * Method used to update an import zip file

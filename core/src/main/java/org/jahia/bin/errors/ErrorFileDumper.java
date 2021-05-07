@@ -77,6 +77,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 /**
  * System information utility.
@@ -93,7 +94,7 @@ public class ErrorFileDumper {
     private static final long MIN_INTERVAL_BETWEEN_QUEUE_WARNING = 1000L;
     private static final long MIN_INTERVAL_BETWEEN_HIGHLOAD_WARNING = 1000L;
     private static final Logger logger = LoggerFactory.getLogger(ErrorFileDumper.class);
-	private static final String PASS = "pass";
+	private static final Pattern SECRET_REGEX = Pattern.compile(".*pass.*|.*secret.*");
 
     private static Throwable previousException = null;
     private static int previousExceptionOccurrences = 0;
@@ -473,7 +474,7 @@ public class ErrorFileDumper {
                 Map.Entry<Object, Object> curEntry = entrySetIter.next();
                 String curPropertyName = (String) curEntry.getKey();
                 String curPropertyValue = (String) curEntry.getValue();
-                if (!curPropertyName.toLowerCase().contains(PASS)) {
+                if (!SECRET_REGEX.matcher(curPropertyName.toLowerCase()).matches()) {
                     strOut.println("   " + curPropertyName + " : " + curPropertyValue);
                 }
             }
@@ -490,7 +491,7 @@ public class ErrorFileDumper {
                 Map.Entry<String, String> curEntry = entrySetIter.next();
                 String curPropertyName = curEntry.getKey();
                 String curPropertyValue = curEntry.getValue();
-                if (!curPropertyName.toLowerCase().contains(PASS)) {
+                if (!SECRET_REGEX.matcher(curPropertyName.toLowerCase()).matches()) {
                     strOut.println("   " + curPropertyName + " : " + curPropertyValue);
                 }
             }
@@ -517,7 +518,7 @@ public class ErrorFileDumper {
                     } else {
                         curPropertyValue = curEntry.getValue().toString();
                     }
-                    if (!curPropertyName.toLowerCase().contains(PASS)
+                    if (!SECRET_REGEX.matcher(curPropertyName.toLowerCase()).matches()
                             && (!"mail_server".equals(curPropertyName)
                             || !StringUtils.contains(curPropertyValue, "&password=") && !StringUtils
                             .contains(curPropertyValue, "?password="))) {

@@ -44,50 +44,64 @@
         please contact the sales department at sales@jahia.com.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.jahia.server</groupId>
-        <artifactId>jahia-root</artifactId>
+        <groupId>org.jahia.bundles</groupId>
+        <artifactId>jahia-bundles</artifactId>
         <version>8.0.3.0-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.jahia.bundles</groupId>
-    <artifactId>jahia-bundles</artifactId>
-    <name>Jahia OSGi Bundles</name>
-    <packaging>pom</packaging>
 
-    <modules>
-        <module>blueprint-extender-config</module>
-        <module>http-bridge</module>
-        <module>jahiamodule-extender</module>
-        <module>webconsole-config</module>
-        <module>jspapiusage-repackaging</module>
-        <module>bridging-log4j-appender</module>
-        <module>jaas-module</module>
-        <module>jcrcommands</module>
-        <module>jaxrs-osgi-extender</module>
-        <module>spring-bridge</module>
-        <module>config-manager</module>
-        <module>clustering-enabler</module>
-        <module>provisioning</module>
-        <module>websocket-bridge</module>
-    </modules>
+    <name>Jahia websocket module</name>
+    <artifactId>org.jahia.bundles.websocket</artifactId>
+    <packaging>bundle</packaging>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.felix</groupId>
-                    <artifactId>maven-bundle-plugin</artifactId>
-                    <extensions>true</extensions>
-                    <configuration>
-                        <instructions>
-                            <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-                            <Bundle-Version>${project.version}</Bundle-Version>
-                        </instructions>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <_dsannotations>org.jahia.bundles.websocket.ModuleEndpointTracker</_dsannotations>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi.core</artifactId>
+            <version>${osgi.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi.annotation</artifactId>
+            <version>${osgi.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi.cmpn</artifactId>
+            <version>${osgi.compendium.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.websocket</groupId>
+            <artifactId>javax.websocket-api</artifactId>
+            <version>1.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-impl</artifactId>
+            <version>8.0.3.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
 </project>

@@ -171,6 +171,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.jahia.bundles</groupId>
+            <artifactId>org.jahia.bundles.websocket</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.jahia.configuration</groupId>
             <artifactId>migrators</artifactId>
             <version>${jahia.plugin.version}</version>

@@ -335,7 +335,7 @@ jobs:
                   curl -X POST --url 'https://circleci.com/api/v2/project/gh/Jahia/jahia-pack-private/pipeline' \
                     --header 'circle-token:'"$CIRCLECI_PIPELINE_LAUNCH_TOKEN"'' \
                     --header 'content-type:application/json' \
-                    --data '{ "parameters":{"run_core_code_change":true, "run_pull_request":true, "BASE_BRANCH":"'"$BASE_BRANCH"'", "PARENT_IMAGE_TAG":"'"`cat image.tag`"'"}, "branch":"'"$BRANCH"'" }'
+                    --data '{ "parameters":{"run_core_code_change":true, "run_pull_request":true, "BASE_BRANCH":"'"$BASE_BRANCH"'", "PARENT_IMAGE_TAG":"'"`cat image.tag`"'", "JAHIA_PRIVATE_SHA1":"'"$CIRCLE_SHA1"'"}, "branch":"'"$BRANCH"'" }'
 
 # Pipeline parameter must be declared
 parameters:

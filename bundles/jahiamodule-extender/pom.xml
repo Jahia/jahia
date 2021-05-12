@@ -49,7 +49,7 @@
     <parent>
         <groupId>org.jahia.bundles</groupId>
         <artifactId>jahia-bundles</artifactId>
-        <version>7.3.8.0-SNAPSHOT</version>
+        <version>7.3.8.0</version>
     </parent>
 
     <name>Jahia Module OSGi Extender bundle</name>
@@ -158,13 +158,13 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>7.3.8.0-SNAPSHOT</version>
+            <version>7.3.8.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-taglib</artifactId>
-            <version>7.3.8.0-SNAPSHOT</version>
+            <version>7.3.8.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

@@ -48,7 +48,7 @@
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
-        <version>7.3.8.0-SNAPSHOT</version>
+        <version>7.3.8.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jahia-war</artifactId>
@@ -298,25 +298,25 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>7.3.8.0-SNAPSHOT</version>
+            <version>7.3.8.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-api</artifactId>
-            <version>7.3.8.0-SNAPSHOT</version>
+            <version>7.3.8.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-taglib</artifactId>
-            <version>7.3.8.0-SNAPSHOT</version>
+            <version>7.3.8.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-gwt</artifactId>
-            <version>7.3.8.0-SNAPSHOT</version>
+            <version>7.3.8.0</version>
             <type>war</type>
             <scope>compile</scope>
         </dependency>

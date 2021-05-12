@@ -50,7 +50,7 @@
     <artifactId>jahia-parent</artifactId>
     <name>Jahia Common Project Parent</name>
     <groupId>org.jahia</groupId>
-    <version>7.3.8.0-SNAPSHOT</version>
+    <version>7.3.8.0</version>
     <packaging>pom</packaging>
     <inceptionYear>2004</inceptionYear>
     <!--

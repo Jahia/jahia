@@ -43,6 +43,7 @@
  */
 package org.jahia.bundles.provisioning.impl.operations;
 
+import org.apache.felix.fileinstall.ArtifactUrlTransformer;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.InvalidModuleException;
@@ -56,14 +57,16 @@ import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.startlevel.BundleStartLevel;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -81,13 +84,16 @@ public class InstallBundle implements Operation {
     public static final String UNINSTALL_PREVIOUS_VERSION = "uninstallPreviousVersion";
     public static final String TARGET = "target";
     public static final String IF = "if";
-    private static final String[] SUPPORTED_KEYS = { INSTALL_BUNDLE, INSTALL_AND_START_BUNDLE, INSTALL_OR_UPGRADE_BUNDLE };
+    private static final String[] SUPPORTED_KEYS = {INSTALL_BUNDLE, INSTALL_AND_START_BUNDLE, INSTALL_OR_UPGRADE_BUNDLE};
     private static final Logger logger = LoggerFactory.getLogger(InstallBundle.class);
     private BundleContext bundleContext;
     private ModuleManager moduleManager;
 
+    private Collection<ArtifactUrlTransformer> transformers = new HashSet<>();
+
     /**
      * Activate
+     *
      * @param bundleContext bundle context
      */
     @Activate
@@ -99,6 +105,26 @@ public class InstallBundle implements Operation {
     public void setModuleManager(ModuleManager moduleManager) {
         this.moduleManager = moduleManager;
     }
+
+    /**
+     * Register ArtifactUrlTransformer service
+     *
+     * @param transformer transformer
+     */
+    @Reference(service = ArtifactUrlTransformer.class, cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+    public void addOperation(ArtifactUrlTransformer transformer) {
+        this.transformers.add(transformer);
+    }
+
+    /**
+     * Unregister ArtifactUrlTransformer service
+     *
+     * @param transformer transformer
+     */
+    public void removeOperation(ArtifactUrlTransformer transformer) {
+        this.transformers.remove(transformer);
+    }
+
 
     @Override
     public boolean canHandle(Map<String, Object> entry) {
@@ -165,6 +191,9 @@ public class InstallBundle implements Operation {
         String bundleKey = (String) entry.get(key);
         try {
             Resource resource = ProvisioningScriptUtil.getResource(bundleKey, executionContext);
+            logger.info("Installing resource {}", resource);
+            resource = transformURL(resource);
+
             if (entry.get(FORCE_UPDATE) != Boolean.TRUE && checkAlreadyInstalled(bundleKey, resource)) {
                 return;
             }
@@ -184,6 +213,27 @@ public class InstallBundle implements Operation {
         } catch (Exception e) {
             logger.error("Cannot install {}", bundleKey, e);
         }
+    }
+
+    private Resource transformURL(Resource resource) throws Exception {
+        if (resource instanceof FileSystemResource) {
+            ArtifactUrlTransformer transformer = findTransformer(resource.getFile());
+            if (transformer != null) {
+                URL transformedURL = transformer.transform(resource.getURL());
+                resource = new UrlResource(transformedURL);
+                logger.info("Resource has been transformed to {}", resource);
+            }
+        }
+        return resource;
+    }
+
+    private ArtifactUrlTransformer findTransformer(File artifact) {
+        for (ArtifactUrlTransformer transformer : transformers) {
+            if (transformer.canHandle(artifact)) {
+                return transformer;
+            }
+        }
+        return null;
     }
 
     private void setupAutoStart(Map<String, Object> entry, BundleInfo bundleInfo, String target, Set<Bundle> installedVersions, LinkedHashMap<BundleInfo, String> toStart) {

@@ -43,7 +43,9 @@
  */
 package org.jahia.bundles.provisioning.rest;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.glassfish.jersey.media.multipart.BodyPartEntity;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -60,6 +62,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -101,22 +104,30 @@ public class ProvisioningResource {
     @POST
     @Consumes({MediaType.MULTIPART_FORM_DATA})
     public Response executeMultipart(@FormDataParam("script") FormDataBodyPart script, @FormDataParam("file") List<FormDataBodyPart> files) {
+        List<File> tmpFiles = new ArrayList<>();
         try {
             String scriptAsString = IOUtils.toString(script.getEntityAs(BodyPartEntity.class).getInputStream(), StandardCharsets.UTF_8);
             List<Map<String,Object>> sc = getService().parseScript(scriptAsString, script.getMediaType().getSubtype());
             Map<String, FileSystemResource> resources = new HashMap<>();
             if (files != null) {
                 for (FormDataBodyPart file : files) {
-                    resources.put(file.getFormDataContentDisposition().getFileName(), new FileSystemResource(file.getEntityAs(File.class)));
+                    //Creating temp file in order to define a specific name
+                    final BodyPartEntity entity = file.getEntityAs(BodyPartEntity.class);
+                    File tmpFile = File.createTempFile("tmp-", "." + StringUtils.substringAfterLast(file.getFormDataContentDisposition().getFileName(), "."));
+                    tmpFiles.add(tmpFile);
+                    entity.moveTo(tmpFile);
+                    resources.put(file.getFormDataContentDisposition().getFileName(), new FileSystemResource(tmpFile));
                 }
             }
             getService().executeScript(sc, Collections.singletonMap("resources", resources));
         } catch (Exception e) {
             logger.error("Cannot execute script", e);
             return Response.serverError().entity(e.getMessage()).build();
+        }finally {
+            for (File tmpFile : tmpFiles) {
+                FileUtils.deleteQuietly(tmpFile);
+            }
         }
-
         return Response.ok().build();
-
     }
 }

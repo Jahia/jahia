@@ -94,12 +94,17 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
                 }
                 try {
                     JCRSiteNode site;
-                    JCRNodeWrapper contextNode = (JCRNodeWrapper) context.get("contextParent");
-                    if (contextNode == null) {
-                        contextNode = (JCRNodeWrapper) context.get("contextNode");
+                    JCRNodeWrapper resolvedNode = (JCRNodeWrapper) context.get("contextParent");
+                    JCRNodeWrapper ctxNode = (JCRNodeWrapper) context.get("contextNode");
+                    if (resolvedNode == null) {
+                        resolvedNode = ctxNode;
                     }
-                    if (contextNode != null) {
-                        site = contextNode.getResolveSite();
+
+                    // Always try to resolve site based on passed context node if it is available
+                    if (ctxNode != null) {
+                        site = ctxNode.getResolveSite();
+                    } else if (resolvedNode != null) {
+                        site = resolvedNode.getResolveSite();
                     } else {
                         final JahiaSite defaultSite = JahiaSitesService.getInstance().getDefaultSite();
                         if (defaultSite != null) {
@@ -107,7 +112,7 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
                         } else {
                             site = (JCRSiteNode) sessionFactory.getCurrentUserSession().getNode(JCRContentUtils.getSystemSitePath());
                         }
-                        contextNode = site;
+                        resolvedNode = site;
                     }
                     String path = s[0];
                     String returnType = "";
@@ -125,12 +130,12 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
                         path = StringUtils.substringBeforeLast(path, "//*");
                         subTree = true;
                     }
-                    JCRSessionWrapper jcrSessionWrapper = contextNode.getSession();
+                    JCRSessionWrapper jcrSessionWrapper = resolvedNode.getSession();
                     JCRNodeWrapper node;
                     if (path.equals(".")) {
-                        node = contextNode;
+                        node = resolvedNode;
                     } else if (path.startsWith("./")) {
-                        node = contextNode.getNode(path.substring(2));
+                        node = resolvedNode.getNode(path.substring(2));
                     } else {
                         node = jcrSessionWrapper.getNode(path);
                     }

@@ -70,6 +70,19 @@ import java.util.*;
 public class UpdateButtonItem extends SaveButtonItem {
 
     @Override
+    protected void save(AbstractContentEngine engine, boolean closeAfterSave, boolean skipValidation) {
+        // Maintain WIP properties
+        // Has to be done because the engine does not support WIP anymore, previous WIP functionality was partially implemented
+        // directly in the "manage work in progress button". WIP status must be set in order to add wip properties to
+        // changed props list which is sent to save() method of JahiaContentManagementServiceImpl.
+        if (engine.getNode().getWorkInProgressStatus() != null) {
+            engine.setWipStatus(GWTJahiaNode.WipStatus.valueOf(engine.getNode().getWorkInProgressStatus()));
+        }
+
+        super.save(engine, closeAfterSave, skipValidation);
+    }
+
+    @Override
     protected void prepareAndSave(final AbstractContentEngine engine, final boolean closeAfterSave) {
         // node
         final Set<String> addedTypes = new HashSet<String>();

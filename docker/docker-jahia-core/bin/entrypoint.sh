@@ -3,14 +3,16 @@
 if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
     echo "Initial container startup, configuring Jahia..."
 
-    OVERWRITEDB="if-necessary"
-
     if [ -f "${DATA_FOLDER}/info/version.properties" ] || [ -d "${DATA_FOLDER}/bundles-deployed" ]; then
         echo "Previous installation detected. Do not override db and existing data."
         PREVIOUS_INSTALL="true"
         OVERWRITEDB="false"
     else
         PREVIOUS_INSTALL="false"
+    fi
+
+    if [ "$PROCESSING_SERVER" == "false" ]; then
+        OVERWRITEDB="false"
     fi
 
     if [ -f "${DATA_FOLDER}/env" ]; then

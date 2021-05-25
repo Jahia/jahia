@@ -379,7 +379,7 @@ public class VanityUrlManager {
         } else if (vanityUrlNode.getProperty(PROPERTY_ACTIVE).getBoolean() == vanityUrl.isActive()
                 && vanityUrlNode.getProperty(PROPERTY_URL).getString().equals(vanityUrl.getUrl())
                 && vanityUrlNode.getProperty(PROPERTY_DEFAULT).getBoolean() == vanityUrl.isDefaultMapping()
-                && vanityUrlNode.getProperty(PROPERTY_FILE).getBoolean() == vanityUrl.isFile()
+                && vanityUrlNode.hasProperty(PROPERTY_FILE) && vanityUrlNode.getProperty(PROPERTY_FILE).getBoolean() == vanityUrl.isFile()
                 && vanityUrlNode.getProperty(JCR_LANGUAGE).getString().equals(vanityUrl.getLanguage())) {
             return false;
         } else {

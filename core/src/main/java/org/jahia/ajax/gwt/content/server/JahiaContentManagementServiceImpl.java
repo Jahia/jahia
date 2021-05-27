@@ -784,11 +784,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             wipService.saveWipPropertiesIfNeeded(nodeWrapper, getWipInfo(sharedProperties));
 
             // Clear wip properties
-            for (GWTJahiaNodeProperty property : sharedProperties) {
-                if (Constants.WORKINPROGRESS_STATUS.equals(property.getName()) || Constants.WORKINPROGRESS_LANGUAGES.equals(property.getName())) {
-                    sharedProperties.remove(property);
-                }
-            }
+            sharedProperties.removeIf(property ->
+                    Constants.WORKINPROGRESS_STATUS.equals(property.getName()) || Constants.WORKINPROGRESS_LANGUAGES.equals(property.getName()));
 
             if (!nodeWrapper.getName().equals(JCRContentUtils.escapeLocalNodeName(node.getName()))) {
                 String name = contentManager.findAvailableName(nodeWrapper.getParent(), JCRContentUtils.escapeLocalNodeName(node.getName()));

@@ -78,9 +78,12 @@ import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Jahia rules-based event listener.
@@ -95,8 +98,13 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     private Timer rulesTimer = new Timer("rules-timer", true);
 
+    String name;
+
     private RuleBase ruleBase;
-    private long lastRead = 0;
+    ReentrantReadWriteLock ruleBaseLock = new ReentrantReadWriteLock();
+    Lock ruleBaseWriteLock = ruleBaseLock.writeLock();
+    Lock ruleBaseReadLock = ruleBaseLock.readLock();
+    private long lastInit = 0;
 
     private static final int UPDATE_DELAY_FOR_LOCKED_NODE = 2000;
     private Set<String> ruleFiles;
@@ -107,7 +115,6 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     private List<String> filesAccepted;
     private Map<String,String> modulePackageNameMap;
-
     private CompositeClassLoader ruleBaseClassLoader;
 
     /**
@@ -146,15 +153,30 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
     }
 
     public void executeRules(Object fact, Map<String, Object> globals) {
-        getStatelessSession(globals).execute(fact);
+        ruleBaseReadLock.lock();
+        try {
+            getStatelessSession(globals).execute(fact);
+        } finally {
+            ruleBaseReadLock.unlock();
+        }
     }
 
     public void executeRules(Object[] facts, Map<String, Object> globals) {
-        getStatelessSession(globals).execute(facts);
+        ruleBaseReadLock.lock();
+        try {
+            getStatelessSession(globals).execute(facts);
+        } finally {
+            ruleBaseReadLock.unlock();
+        }
     }
 
     public void executeRules(Collection<?> facts, Map<String, Object> globals) {
-        getStatelessSession(globals).execute(facts);
+        ruleBaseReadLock.lock();
+        try {
+            getStatelessSession(globals).execute(facts);
+        } finally {
+            ruleBaseReadLock.unlock();
+        }
     }
 
     public void setRuleFiles(Set<String> ruleFiles) {
@@ -162,24 +184,75 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
     }
 
     public void start() throws Exception {
-        initRules();
-    }
-
-    private void initRules() throws Exception {
         ruleBaseClassLoader = new CompositeClassLoader();
         ruleBaseClassLoader.setCachingEnabled(true);
         ruleBaseClassLoader.addClassLoader(this.getClass().getClassLoader());
-        RuleBaseConfiguration conf = new RuleBaseConfiguration(ruleBaseClassLoader);
-        ruleBase = RuleBaseFactory.newRuleBase(conf);
+        initCoreSystemRules();
+    }
 
-        dslFiles.add(
-                new FileSystemResource(SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/rules/rules.dsl"));
-
+    private void initCoreSystemRules() {
+        dslFiles.add(new FileSystemResource(SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/rules/rules.dsl"));
         for (String s : ruleFiles) {
             addRules(new File(SettingsBean.getInstance().getJahiaEtcDiskPath() + s));
         }
+        lastInit = System.currentTimeMillis();
+    }
 
-        lastRead = System.currentTimeMillis();
+    private RuleBase rebuildRuleBase(String packageToRemove, Package packageToAdd) {
+        RuleBaseConfiguration conf = new RuleBaseConfiguration(ruleBaseClassLoader);
+        RuleBase newRuleBase = RuleBaseFactory.newRuleBase(conf);
+
+        if (this.ruleBase != null) {
+            newRuleBase.addPackages(Arrays
+                    .stream(this.ruleBase.getPackages())
+                    .filter(rulePackage -> packageToRemove == null || !rulePackage.getName().equals(packageToRemove))
+                    .toArray(Package[]::new));
+        }
+        if (packageToAdd != null) {
+            newRuleBase.addPackage(packageToAdd);
+        }
+        return newRuleBase;
+    }
+
+    private void addRuleBasePackage(JahiaTemplatesPackage jahiaTemplatesPackage, Package rulePackage) {
+        ruleBaseWriteLock.lock();
+        try {
+            // apply disabled rules config first
+            applyDisabledRulesConfiguration(rulePackage);
+
+            // update memory object related to the template package
+            if(jahiaTemplatesPackage != null) {
+                addClassLoader(jahiaTemplatesPackage);
+                modulePackageNameMap.put(jahiaTemplatesPackage.getName(), rulePackage.getName());
+            }
+
+            // rebuild ruleBase
+            this.ruleBase = rebuildRuleBase(rulePackage.getName(), rulePackage);
+            logger.info("Rules package: {} added to runtime rule engine for {}", rulePackage.getName(), this.name);
+        } finally {
+            ruleBaseWriteLock.unlock();
+        }
+    }
+
+    private void removeRuleBasePackage(JahiaTemplatesPackage jahiaTemplatesPackage) {
+        ruleBaseWriteLock.lock();
+        try {
+            // update memory object related to the template package
+            boolean classLoaderRemoved = removeClassLoader(jahiaTemplatesPackage);
+
+            // Check package to remove
+            String rulePackageNameToRemove = modulePackageNameMap.get(jahiaTemplatesPackage.getName());
+            Package rulePackageToRemove = rulePackageNameToRemove != null ? this.ruleBase.getPackage(rulePackageNameToRemove) : null;
+
+            if (classLoaderRemoved || rulePackageToRemove != null) {
+                this.ruleBase = rebuildRuleBase(rulePackageNameToRemove, null);
+                if (rulePackageToRemove != null) {
+                    logger.info("Rules package: {} removed from runtime rule engine for {}", rulePackageNameToRemove, this.name);
+                }
+            }
+        } finally {
+            ruleBaseWriteLock.unlock();
+        }
     }
 
     private String getDslFiles() throws IOException {
@@ -196,109 +269,94 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
         return stringBuilder.toString();
     }
 
+    private Package recoverCompiledRules(File compiledRulesFile, Resource dsrlFile, ClassLoader packageClassLoader) throws IOException, ClassNotFoundException {
+        Package rulePackage = null;
+        if (compiledRulesFile.exists() && compiledRulesFile.lastModified() > dsrlFile.lastModified()) {
+            ObjectInputStream ois = null;
+            try {
+                ois = new DroolsObjectInputStream(new FileInputStream(compiledRulesFile), packageClassLoader);
+                rulePackage = new Package();
+                rulePackage.readExternal(ois);
+                logger.info("Rules package: {} from file: {} reloaded from previous compilation for {}", rulePackage.getName(), dsrlFile.getURI(), this.name);
+            } finally {
+                IOUtils.closeQuietly(ois, null);
+            }
+        }
+        return rulePackage;
+    }
+
+    private Package compileRules(File compiledRulesFile, Resource dsrlFile, ClassLoader packageClassLoader) throws IOException, DroolsParserException {
+        long start = System.currentTimeMillis();
+        InputStream drlInputStream = dsrlFile.getInputStream();
+        List<String> lines;
+        try {
+            lines = IOUtils.readLines(drlInputStream, Charset.defaultCharset());
+        } finally {
+            IOUtils.closeQuietly(drlInputStream, null);
+        }
+        StringBuilder drl = new StringBuilder(4 * 1024);
+        for (String line : lines) {
+            if (drl.length() > 0) {
+                drl.append("\n");
+            }
+            if (line.trim().length() > 0 && line.trim().charAt(0) == '#') {
+                drl.append(StringUtils.replaceOnce(line, "#", "//"));
+            } else {
+                drl.append(line);
+            }
+        }
+
+        PackageBuilderConfiguration cfg = packageClassLoader != null ? new PackageBuilderConfiguration(packageClassLoader) : new PackageBuilderConfiguration();
+        PackageBuilder builder = new PackageBuilder(cfg);
+        Reader drlReader = new StringReader(drl.toString());
+        try {
+            builder.addPackageFromDrl(drlReader, new StringReader(getDslFiles()));
+        } finally {
+            IOUtils.closeQuietly(drlReader, null);
+        }
+
+        PackageBuilderErrors errors = builder.getErrors();
+
+        if (errors.getErrors().length == 0) {
+            Package rulePackage = builder.getPackage();
+
+            ObjectOutputStream oos = null;
+            try {
+                compiledRulesFile.getParentFile().mkdirs();
+                oos = new DroolsObjectOutputStream(new FileOutputStream(compiledRulesFile));
+                rulePackage.writeExternal(oos);
+            } catch (IOException e) {
+                logger.error("Error writing rule package to file {}", compiledRulesFile, e);
+            } finally {
+                IOUtils.closeQuietly(oos, null);
+            }
+            logger.info("Rules package: {} from file: {} compiled in {}ms for {}", rulePackage.getName(), dsrlFile.getURI(), (System.currentTimeMillis() - start), this.name);
+            return rulePackage;
+        } else {
+            throw new RuntimeException("Errors when compiling rules in " + dsrlFile + " : " + errors.toString());
+        }
+    }
+
     public void addRules(File dsrlFile) {
         addRules(dsrlFile == null ? null : new FileSystemResource(dsrlFile), null);
     }
 
-    public void addRules(Resource dsrlFile, JahiaTemplatesPackage aPackage) {
-        long start = System.currentTimeMillis();
+    public void addRules(Resource dsrlFile, JahiaTemplatesPackage jahiaTemplatesPackage) {
         try {
             File compiledRulesDir = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/compiledRules");
-            if (aPackage != null) {
-                compiledRulesDir = new File(compiledRulesDir, aPackage.getIdWithVersion());
-            } else {
-                compiledRulesDir = new File(compiledRulesDir, "system");
-            }
+            compiledRulesDir = new File(compiledRulesDir, jahiaTemplatesPackage != null ? jahiaTemplatesPackage.getIdWithVersion() : "system");
             if (!compiledRulesDir.exists()) {
                 compiledRulesDir.mkdirs();
             }
 
-            ClassLoader packageClassLoader =  aPackage != null ? aPackage.getClassLoader() : null;
-            if (packageClassLoader != null) {
-                addClassLoader(aPackage);
+            ClassLoader packageClassLoader =  jahiaTemplatesPackage != null ? jahiaTemplatesPackage.getClassLoader() : null;
+            File compileRulesFile = new File(compiledRulesDir, StringUtils.substringAfterLast(dsrlFile.getURL().getPath(),"/") + ".pkg");
+
+            Package rulePackage = recoverCompiledRules(compileRulesFile, dsrlFile, packageClassLoader);
+            if (rulePackage == null) {
+                rulePackage = compileRules(compileRulesFile, dsrlFile, packageClassLoader);
             }
-
-            // first let's test if the file exists in the same location, if it was pre-packaged as a compiled rule
-            File pkgFile = new File(compiledRulesDir, StringUtils.substringAfterLast(dsrlFile.getURL().getPath(),"/") + ".pkg");
-            if (pkgFile.exists() && pkgFile.lastModified() > dsrlFile.lastModified()) {
-                ObjectInputStream ois = null;
-                try {
-                    ois = new DroolsObjectInputStream(new FileInputStream(pkgFile),
-                            packageClassLoader != null ? packageClassLoader : null);
-                    Package pkg = new Package();
-                    pkg.readExternal(ois);
-                    if (ruleBase.getPackage(pkg.getName()) != null) {
-                        ruleBase.removePackage(pkg.getName());
-                    }
-                    applyDisabledRulesConfiguration(pkg);
-                    ruleBase.addPackage(pkg);
-                    if(aPackage!=null) {
-                        modulePackageNameMap.put(aPackage.getName(),pkg.getName());
-                    }
-                } finally {
-                    IOUtils.closeQuietly(ois);
-                }
-            } else {
-                InputStream drlInputStream = dsrlFile.getInputStream();
-                List<String> lines = Collections.emptyList();
-                try {
-                    lines = IOUtils.readLines(drlInputStream);
-                } finally {
-                    IOUtils.closeQuietly(drlInputStream);
-                }
-                StringBuilder drl = new StringBuilder(4 * 1024);
-                for (String line : lines) {
-                    if (drl.length() > 0) {
-                        drl.append("\n");
-                    }
-                    if (line.trim().length() > 0 && line.trim().charAt(0) == '#') {
-                        drl.append(StringUtils.replaceOnce(line, "#", "//"));
-                    } else {
-                        drl.append(line);
-                    }
-                }
-
-                PackageBuilderConfiguration cfg = packageClassLoader != null ? new PackageBuilderConfiguration(
-                        packageClassLoader) : new PackageBuilderConfiguration();
-
-                PackageBuilder builder = new PackageBuilder(cfg);
-
-                Reader drlReader = new StringReader(drl.toString());
-                try {
-                    builder.addPackageFromDrl(drlReader, new StringReader(getDslFiles()));
-                } finally {
-                    IOUtils.closeQuietly(drlReader);
-                }
-
-                PackageBuilderErrors errors = builder.getErrors();
-
-                if (errors.getErrors().length == 0) {
-                    Package pkg = builder.getPackage();
-
-                    ObjectOutputStream oos = null;
-                    try {
-                        pkgFile.getParentFile().mkdirs();
-                        oos = new DroolsObjectOutputStream(new FileOutputStream(pkgFile));
-                        pkg.writeExternal(oos);
-                    } catch (IOException e) {
-                        logger.error("Error writing rule package to file " + pkgFile, e);
-                    } finally {
-                    	IOUtils.closeQuietly(oos);
-                    }
-
-                    if (ruleBase.getPackage(pkg.getName()) != null) {
-                        ruleBase.removePackage(pkg.getName());
-                    }
-                    applyDisabledRulesConfiguration(pkg);
-                    ruleBase.addPackage(pkg);
-                    if(aPackage!=null) {
-                        modulePackageNameMap.put(aPackage.getName(),pkg.getName());
-                    }
-                    logger.info("Rules for " + pkg.getName() + " updated in " + (System.currentTimeMillis() - start) + "ms.");
-                } else {
-                    throw new RuntimeException("Errors when compiling rules in " + dsrlFile + " : " + errors.toString());
-                }
-            }
+            addRuleBasePackage(jahiaTemplatesPackage, rulePackage);
         } catch (ClassNotFoundException | IOException | DroolsParserException e) {
             logger.error(e.getMessage(), e);
             throw new RuntimeException(e);
@@ -315,6 +373,25 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
         });
         classLoadersToRemove.forEach(ruleBaseClassLoader::removeClassLoader);
         ruleBaseClassLoader.addClassLoaderToEnd(aPackage.getClassLoader());
+    }
+
+    private boolean removeClassLoader(JahiaTemplatesPackage aPackage) {
+        ClassLoader classLoaderToRemove = aPackage.getClassLoader();
+        if (classLoaderToRemove == null) {
+            for (ClassLoader classLoader : ruleBaseClassLoader.getClassLoaders()) {
+                if (classLoader instanceof BundleDelegatingClassLoader
+                        && aPackage.getBundle().getBundleId() == ((BundleDelegatingClassLoader) classLoader).getBundle().getBundleId()) {
+                    classLoaderToRemove = classLoader;
+                    break;
+                }
+            }
+        }
+
+        if (classLoaderToRemove != null) {
+            ruleBaseClassLoader.removeClassLoader(classLoaderToRemove);
+            return true;
+        }
+        return false;
     }
 
     private long lastModified() {
@@ -340,9 +417,9 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
             return;
         }
 
-        if (ruleBase == null || SettingsBean.getInstance().isDevelopmentMode() && lastModified() > lastRead) {
+        if (ruleBase == null || SettingsBean.getInstance().isDevelopmentMode() && lastModified() > lastInit) {
             try {
-                initRules();
+                initCoreSystemRules();
             } catch (Exception e) {
                 logger.error("Cannot compile rules",e);
             }
@@ -756,43 +833,8 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     }
 
-    private void removeRules(String moduleName, boolean forceRebuildOfRuleBase) {
-        String pkgName = modulePackageNameMap.get(moduleName);
-        if (pkgName != null && ruleBase.getPackage(pkgName) != null) {
-            ruleBase.removePackage(pkgName);
-            forceRebuildOfRuleBase = true;
-        }
-        if (forceRebuildOfRuleBase) {
-            RuleBaseConfiguration conf = new RuleBaseConfiguration(ruleBaseClassLoader);
-            RuleBase ruleBase = RuleBaseFactory.newRuleBase(conf);
-            for (Package aPackage : this.ruleBase.getPackages()) {
-                ruleBase.addPackage(aPackage);
-            }
-            this.ruleBase = ruleBase;
-        }
-    }
-
     public void removeRules(JahiaTemplatesPackage module) {
-        // first update the composite classloader
-        ClassLoader cl = module.getClassLoader();
-        if (cl == null) {
-            for (ClassLoader classLoader : ruleBaseClassLoader.getClassLoaders()) {
-                if (classLoader instanceof BundleDelegatingClassLoader
-                        && module.getBundle().getBundleId() == ((BundleDelegatingClassLoader) classLoader).getBundle().getBundleId()) {
-                    cl = classLoader;
-                    break;
-                }
-            }
-        }
-        boolean forceRebuildOfRuleBase = false;
-        if (cl != null) {
-            ruleBaseClassLoader.removeClassLoader(cl);
-            // classloader has changed -> force rebuild of rule base
-            forceRebuildOfRuleBase = true;
-        }
-
-        // now rebuild the rule base
-        removeRules(module.getName(), forceRebuildOfRuleBase);
+        removeRuleBasePackage(module);
     }
 
     public boolean removeRulesDescriptor(Resource resource) {
@@ -917,4 +959,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
         return ruleBase;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
 }

@@ -176,6 +176,7 @@
                         </bean>
                         <bean class="org.apache.jackrabbit.core.security.PrivilegesListener"/>
                         <bean class="org.jahia.services.content.rules.RulesListener" parent="BaseRulesListener">
+                            <property name="name" value="JCR Rules listener (Default)"/>
                             <property name="ruleFiles">
                                 <set>
                                     <value>/repository/rules/repository-rules.drl</value>
@@ -243,6 +244,7 @@
                             <property name="publicationService" ref="jcrPublicationService"/>
                         </bean>
                         <bean class="org.jahia.services.content.rules.RulesListener" parent="BaseRulesListener">
+                            <property name="name" value="JCR Rules listener (Live)"/>
                             <property name="ruleFiles" value="/repository/rules/repository-live-rules.drl"/>
                             <property name="filesAccepted">
                                 <list value-type="java.lang.String">
@@ -257,6 +259,7 @@
                             </property>
                         </bean>
                         <bean class="org.jahia.services.content.rules.RulesListener" parent="BaseRulesListener">
+                            <property name="name" value="JCR Rules listener (Live and publication)"/>
                             <property name="ruleFiles">
                                 <set/>
                             </property>

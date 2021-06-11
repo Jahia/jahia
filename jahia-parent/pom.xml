@@ -161,7 +161,8 @@
         <eclipse.plugin.version>2.9</eclipse.plugin.version>
         <nexus.maven.plugin.version>1.5.1</nexus.maven.plugin.version>
         <dependency.plugin.version>2.8</dependency.plugin.version>
-
+        <sonar.plugin.version>3.9.0.2155</sonar.plugin.version>
+        <dependency.check.plugin.version>6.1.6</dependency.check.plugin.version>
         <!-- OSGi versions -->
         <felix.configadmin.version>1.9.16</felix.configadmin.version>
         <felix.coordinator.version>1.0.2</felix.coordinator.version>
@@ -1018,10 +1019,15 @@
                         <additionalparam>-Xdoclint:none --allow-script-in-comments</additionalparam>
                     </configuration>
                 </plugin>
-               <plugin>
+                <plugin>
                     <groupId>org.sonarsource.scanner.maven</groupId>
                     <artifactId>sonar-maven-plugin</artifactId>
-                    <version>3.8.0.2131</version>
+                    <version>${sonar.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.owasp</groupId>
+                    <artifactId>dependency-check-maven</artifactId>
+                    <version>${dependency.check.plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>de.qaware.maven</groupId>
@@ -1032,13 +1038,13 @@
                             <DynamicDependency>
                                 <groupId>org.apache.maven.surefire</groupId>
                                 <artifactId>surefire-junit4</artifactId>
-                                <version>2.20.1</version>
+                                <version>${surefire.plugin.version}</version>
                                 <repositoryType>PLUGIN</repositoryType>
                             </DynamicDependency>
                             <DynamicDependency>
                                 <groupId>org.owasp</groupId>
                                 <artifactId>dependency-check-maven</artifactId>
-                                <version>6.1.0</version>
+                                <version>${dependency.check.plugin.version}</version>
                                 <repositoryType>PLUGIN</repositoryType>
                             </DynamicDependency>
                         </dynamicDependencies>

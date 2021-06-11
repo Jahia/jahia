@@ -53,22 +53,23 @@ import javax.jcr.ValueFormatException;
 import javax.jcr.Binary;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.services.content.nodetypes.initializers.I15dValueInitializer;
 import org.jahia.services.content.nodetypes.initializers.ValueInitializer;
 
 /**
- * 
+ *
  * User: toto
  * Date: Apr 3, 2008
  * Time: 12:26:22 PM
- * 
+ *
  */
 public class DynamicValueImpl implements Value {
-    
+
     private static final transient Logger logger = LoggerFactory.getLogger(DynamicValueImpl.class);
-    
+
     private List<String> params;
     protected ExtendedPropertyDefinition declaringPropertyDefinition;
     private String fn;
@@ -128,7 +129,7 @@ public class DynamicValueImpl implements Value {
     public Value[] expand() {
         return expand(null);
     }
-    
+
     public Value[] expand(Locale locale) {
         Value[] v = null;
         String classname;
@@ -138,18 +139,18 @@ public class DynamicValueImpl implements Value {
             classname = "org.jahia.services.content.nodetypes.initializers."+ StringUtils.capitalize(fn);
         }
         try {
-            ValueInitializer init = (ValueInitializer) Class.forName(classname).newInstance();
+            // Resolve class loader from the node type.
+            final JahiaTemplatesPackage definitionTemplatePackage = declaringPropertyDefinition.getDeclaringNodeType().getTemplatePackage();
+            ValueInitializer init = (ValueInitializer) definitionTemplatePackage.getClassLoader().loadClass(classname).newInstance();
             if (init instanceof I15dValueInitializer) {
                 v = ((I15dValueInitializer) init).getValues(declaringPropertyDefinition, getParams(), locale);
             } else {
                 v = init.getValues(declaringPropertyDefinition, getParams());
             }
-        } catch (InstantiationException e) {
-            logger.error(e.getMessage(), e);
-        } catch (IllegalAccessException e) {
-            logger.error(e.getMessage(), e);
-        } catch (ClassNotFoundException e) {
-            logger.error(e.getMessage(), e);
+        } catch (Exception e) {
+            // Show why it failed
+            logger.error("Unable to resolve {} initializer because {} {} (set DynamicValueImpl in debug for more details)", fn, e.getClass().getName(), e.getMessage());
+            logger.debug(e.getMessage(), e);
         }
         List<Value> res = new ArrayList<Value>();
         if (v != null) {

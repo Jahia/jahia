@@ -43,13 +43,19 @@
  */
 package org.jahia.bundles.config.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import org.jahia.bundles.config.ConfigUtil;
 import org.jahia.services.modulemanager.spi.Config;
 import org.jahia.services.modulemanager.util.PropertiesManager;
 import org.jahia.services.modulemanager.util.PropertiesValues;
 import org.osgi.service.cm.Configuration;
 
 import java.io.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.TreeMap;
 
 /**
  * Config implementation
@@ -64,19 +70,33 @@ public class ConfigImpl implements Config {
     private Map<String, String> contentProps;
     private String content;
 
+    private Format format;
+
     private PropertiesManager propertiesManager;
 
     /**
      * Build ConfigImpl from an existing configuration and identifier
      *
-     * @param conf the CM conf
+     * @param conf       the CM conf
      * @param identifier the identifier
      */
     public ConfigImpl(Configuration conf, String identifier) {
+        this(conf, identifier, Format.CFG);
+    }
+
+    /**
+     * Build ConfigImpl from an existing configuration and identifier, specify format
+     *
+     * @param conf       the CM conf
+     * @param identifier the identifier
+     * @param format     the format
+     */
+    public ConfigImpl(Configuration conf, String identifier, Format format) {
         this.conf = conf;
-        this.props = (conf.getProperties() != null) ? getMap(conf.getProperties()) : new HashMap<>();
+        this.props = (conf.getProperties() != null) ? ConfigUtil.getMap(conf.getProperties()) : new HashMap<>();
         this.propertiesManager = new PropertiesManager(this.props);
         this.identifier = identifier;
+        this.format = format;
     }
 
     public Configuration getConfiguration() {
@@ -97,48 +117,64 @@ public class ConfigImpl implements Config {
 
     public String getContent() throws IOException {
         if (content == null || !props.equals(contentProps)) {
-            this.contentProps = new HashMap<>(props);
-            StringWriter out = new StringWriter();
+            if (format == Format.CFG) {
+                this.contentProps = new HashMap<>(props);
+                StringWriter out = new StringWriter();
 
-            try (BufferedWriter writer = new BufferedWriter(out)) {
-                Map<String, String> p = new TreeMap<>(getRawProperties());
+                try (BufferedWriter writer = new BufferedWriter(out)) {
+                    Map<String, String> p = new TreeMap<>(getRawProperties());
 
-                for (Map.Entry<String, String> entry : p.entrySet()) {
-                    if (entry.getValue() != null) {
-                        writer.write(entry.getKey() + " = " + entry.getValue());
-                        writer.newLine();
+                    for (Map.Entry<String, String> entry : p.entrySet()) {
+                        if (entry.getValue() != null) {
+                            writer.write(entry.getKey() + " = " + entry.getValue());
+                            writer.newLine();
+                        }
                     }
                 }
+                content = out.getBuffer().toString();
+            } else if (format == Format.YAML) {
+                StringWriter out = new StringWriter();
+                YAMLMapper yamlMapper = new YAMLMapper();
+                yamlMapper.writeValue(out, getValues().getStructuredMap());
+                content = out.getBuffer().toString();
             }
-            content = out.getBuffer().toString();
         }
         return content;
     }
 
     public void setContent(String content) throws IOException {
-        Properties p = new Properties();
-        p.load(new StringReader(content));
+        if (format == Format.CFG) {
+            Properties p = new Properties();
+            p.load(new StringReader(content));
 
-        this.content = content;
-        this.props.clear();
-        p.stringPropertyNames().forEach(e -> props.put(e, p.getProperty(e)));
-        this.contentProps = new HashMap<>(props);
+            this.content = content;
+            this.props.clear();
+            p.stringPropertyNames().forEach(e -> props.put(e, p.getProperty(e)));
+            this.contentProps = new HashMap<>(props);
+        } else if (format == Format.YAML) {
+            YAMLMapper yamlMapper = new YAMLMapper();
+            try (Reader r = new StringReader(content)) {
+                this.props = yamlMapper.readValue(r, new TypeReference<Map<String, Object>>() {
+                });
+            }
+            this.contentProps = new HashMap<>(props);
+        }
+    }
+
+    @Override
+    public String getFormat() {
+        return format.name();
+    }
+
+    public void setFormat(String format) {
+        if (this.format != Format.valueOf(format)) {
+            this.format = Format.valueOf(format);
+            this.content = null;
+        }
     }
 
     @Override
     public String toString() {
         return props.toString();
-    }
-
-    private Map<String, String> getMap(Dictionary<String, ?> d) {
-        Map<String, String> m = new HashMap<>();
-        Enumeration<String> en = d.keys();
-        while (en.hasMoreElements()) {
-            String key = en.nextElement();
-            if (!key.startsWith("felix.") && !key.startsWith("service.")) {
-                m.put(key, d.get(key).toString());
-            }
-        }
-        return m;
     }
 }

@@ -46,6 +46,8 @@ package org.jahia.services.modulemanager.util;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.util.List;
+
 /**
  * List of values
  */
@@ -161,6 +163,8 @@ public interface PropertiesList {
      * @return properties list
      */
     PropertiesList addList();
+
+    List<Object> getStructuredList();
 
     /**
      * Convert to JSON array

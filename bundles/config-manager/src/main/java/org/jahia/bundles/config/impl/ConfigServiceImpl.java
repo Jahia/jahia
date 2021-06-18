@@ -47,6 +47,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
+import org.jahia.bundles.config.ConfigUtil;
 import org.jahia.bundles.config.OsgiConfigService;
 import org.jahia.services.content.*;
 import org.jahia.services.modulemanager.ModuleManagementException;
@@ -114,7 +115,9 @@ public class ConfigServiceImpl implements OsgiConfigService, ConfigurationListen
     }
 
     public Config getConfig(String pid) throws IOException {
-        return new ConfigImpl(configAdmin.getConfiguration(pid, "?"), null);
+        Configuration configuration = configAdmin.getConfiguration(pid, "?");
+        Object filename = configuration.getProperties() != null ? configuration.getProperties().get(FELIX_FILEINSTALL_FILENAME) : null;
+        return new ConfigImpl(configuration, null, getFormat(filename));
     }
 
     public Config getConfig(String factoryPid, String identifier) throws IOException  {
@@ -123,8 +126,11 @@ public class ConfigServiceImpl implements OsgiConfigService, ConfigurationListen
             if (configurations != null) {
                 for (Configuration configuration : configurations) {
                     Object filename = configuration.getProperties().get(FELIX_FILEINSTALL_FILENAME);
-                    if (filename != null && filename.toString().endsWith("/" + factoryPid + "-" + identifier + ".cfg")) {
-                        return new ConfigImpl(configuration, identifier);
+                    if (filename != null) {
+                        String name = new File(filename.toString()).getName();
+                        if (name.startsWith(factoryPid + "-" + identifier + ".")) {
+                            return new ConfigImpl(configuration, identifier, getFormat(name));
+                        }
                     }
                 }
             }
@@ -139,13 +145,15 @@ public class ConfigServiceImpl implements OsgiConfigService, ConfigurationListen
 
     public Config getConfig(Configuration configuration) {
         String identifier = null;
-        if (configuration.getFactoryPid() != null && configuration.getProperties() != null) {
-            Object filename = configuration.getProperties().get(FELIX_FILEINSTALL_FILENAME);
-            if (filename != null) {
-                identifier = StringUtils.substringBetween(filename.toString(), configuration.getFactoryPid() + "-", ".cfg");
-            }
+
+        Object filename = configuration.getProperties().get(FELIX_FILEINSTALL_FILENAME);
+        Format format = getFormat(filename);
+
+        if (configuration.getFactoryPid() != null && configuration.getProperties() != null && filename != null) {
+            identifier = StringUtils.substringBetween(filename.toString(), configuration.getFactoryPid() + "-", ".");
         }
-        return new ConfigImpl(configuration, identifier);
+
+        return new ConfigImpl(configuration, identifier, format);
     }
 
     public void storeConfig(Config config) throws IOException {
@@ -157,12 +165,17 @@ public class ConfigServiceImpl implements OsgiConfigService, ConfigurationListen
         // refresh and save config
         if (configuration.getProperties() == null) {
             @SuppressWarnings("java:S1149") Dictionary<String, Object> properties = new Hashtable<>();
-            String filename = (config.getIdentifier() != null ? (configuration.getFactoryPid() + "-" + config.getIdentifier()) : (configuration.getPid())) + ".cfg";
-            File file = new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "karaf/etc/" + filename);
+            String baseName = config.getIdentifier() != null ? (configuration.getFactoryPid() + "-" + config.getIdentifier()) : (configuration.getPid());
+            Format format = Format.valueOf(config.getFormat());
+            File file = new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "karaf/etc/" + baseName + format.getDefaultExtension());
 
             try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
                 bw.write(config.getContent());
             }
+
+            Arrays.stream(Format.values()).filter(f -> f != format).flatMap(f -> f.getSupportedExtensions().stream()).forEach(
+                    ext -> new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "karaf/etc/" + baseName + ext).delete()
+            );
 
             properties.put(FELIX_FILEINSTALL_FILENAME, file.toURI().toString());
             config.getRawProperties().forEach(properties::put);
@@ -170,6 +183,9 @@ public class ConfigServiceImpl implements OsgiConfigService, ConfigurationListen
         } else {
             Dictionary<String, Object> properties = configuration.getProperties();
             config.getRawProperties().forEach(properties::put);
+            Set<String> toRemove = new HashSet<>(ConfigUtil.getMap(properties).keySet());
+            toRemove.removeAll(config.getRawProperties().keySet());
+            toRemove.forEach(properties::remove);
             configuration.update(properties);
         }
     }
@@ -182,6 +198,13 @@ public class ConfigServiceImpl implements OsgiConfigService, ConfigurationListen
         if (configuration.getProperties() != null) {
             configuration.delete();
         }
+    }
+
+    private Format getFormat(Object filename) {
+        return Arrays.stream(Format.values())
+                .filter(f -> filename != null && f.getSupportedExtensions().stream().anyMatch(ext -> filename.toString().endsWith(ext)))
+                .findFirst()
+                .orElse(Format.CFG);
     }
 
     public Map<String, ConfigType> getAllConfigurationTypes() {

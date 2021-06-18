@@ -86,4 +86,15 @@ public interface Config {
      * @throws IOException exception
      */
     void setContent(String content) throws IOException;
+
+    /**
+     * Get the file format, cfg or yml
+     * @return cfg or yml
+     */
+    String getFormat();
+
+    /**
+     * Change the file format
+     */
+    void setFormat(String format);
 }

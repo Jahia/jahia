@@ -46,6 +46,7 @@ package org.jahia.services.modulemanager.util;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -144,6 +145,8 @@ public interface PropertiesValues {
      * @param name property name
      */
     void remove(String name);
+
+    Map<String, Object> getStructuredMap();
 
     /**
      * Convert to JSON object

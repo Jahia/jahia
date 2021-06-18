@@ -62,6 +62,7 @@ public class PropertiesManager {
 
     /**
      * Create a properties manager based on existing props
+     *
      * @param props the props
      */
     public PropertiesManager(Map<String, String> props) {
@@ -173,6 +174,20 @@ public class PropertiesManager {
                     .collect(Collectors.toSet());
         }
 
+        public Map<String, Object> getStructuredMap() {
+            Map<String, Object> map = new HashMap<>();
+            for (String key : getKeys()) {
+                if (getList(key).size > 0) {
+                    map.put(key, getList(key).getStructuredList());
+                } else if (!getValues(key).isEmpty()) {
+                    map.put(key, getValues(key).getStructuredMap());
+                } else {
+                    map.put(key, getProperty(key));
+                }
+            }
+            return Collections.unmodifiableMap(map);
+        }
+
         @Override
         public JSONObject toJSON() throws JSONException {
             JSONObject response = new JSONObject();
@@ -194,9 +209,9 @@ public class PropertiesManager {
                 String key = (String) it.next();
                 Object value = object.get(key);
                 if (value instanceof JSONObject) {
-                    getValues(key).updateFromJSON((JSONObject)value);
+                    getValues(key).updateFromJSON((JSONObject) value);
                 } else if (value instanceof JSONArray) {
-                    getList(key).updateFromJSON((JSONArray)value);
+                    getList(key).updateFromJSON((JSONArray) value);
                 } else {
                     setProperty(key, value.toString());
                 }
@@ -308,6 +323,22 @@ public class PropertiesManager {
             return v;
         }
 
+        public List<Object> getStructuredList() {
+            List<Object> list = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                if (getList(i).size > 0) {
+                    list.add(getList(i).getStructuredList());
+                } else if (!getValues(i).isEmpty()) {
+                    list.add(getValues(i).getStructuredMap());
+                } else if (getProperty(i) != null) {
+                    list.add(getProperty(i));
+                } else {
+                    list.add(null);
+                }
+            }
+            return Collections.unmodifiableList(list);
+        }
+
         @Override
         public JSONArray toJSON() throws JSONException {
             JSONArray response = new JSONArray();
@@ -329,12 +360,12 @@ public class PropertiesManager {
 
         public void updateFromJSON(JSONArray array) throws JSONException {
             int length = array.length();
-            for (int index=0; index<length; index++) {
+            for (int index = 0; index < length; index++) {
                 Object value = array.get(index);
                 if (value instanceof JSONObject) {
-                    getValues(index).updateFromJSON((JSONObject)value);
+                    getValues(index).updateFromJSON((JSONObject) value);
                 } else if (value instanceof JSONArray) {
-                    getList(index).updateFromJSON((JSONArray)value);
+                    getList(index).updateFromJSON((JSONArray) value);
                 } else {
                     setProperty(index, value.toString());
                 }

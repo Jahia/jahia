@@ -133,7 +133,7 @@ public class Activator implements BundleActivator {
     private static final Logger logger = LoggerFactory.getLogger(Activator.class);
 
     private static final BundleURLScanner CND_SCANNER = new BundleURLScanner("META-INF", "*.cnd", false);
-    private static final BundleURLScanner CFG_SCANNER = new BundleURLScanner("META-INF/configurations", "*.cfg", false);
+    private static final BundleURLScanner CFG_SCANNER = new BundleURLScanner("META-INF/configurations", "*", false);
     private static final BundleURLScanner DSL_SCANNER = new BundleURLScanner("META-INF", "*.dsl", false);
     private static final BundleURLScanner DRL_SCANNER = new BundleURLScanner("META-INF", "*.drl", false);
     private static final BundleURLScanner URLREWRITE_SCANNER = new BundleURLScanner("META-INF", "*urlrewrite*.xml", false);

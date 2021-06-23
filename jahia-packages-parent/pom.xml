@@ -99,6 +99,7 @@
                                 if (project.properties['package.skip'] != 'true' || project.properties['package.provisioning.skip'] != 'true') {
                                     def file = new File(project.build.directory, '${project.artifactId}.dependencies');
                                     def conditionsFile = new File(project.basedir, 'src/main/conditions.properties');
+                                    def startlevelFile = new File(project.basedir, 'src/main/startlevel.properties');
                                     deps = []
                                     artifactIds = [];
                                     file.eachLine { line ->
@@ -117,15 +118,23 @@
                                             conditions[key] = line.substring(key.length() + 1)
                                         }
                                     }
+                                    def startlevel = [:];
+                                    if (startlevelFile.exists()) {
+                                        startlevelFile.eachLine { line ->
+                                            def key = line.split(":")[0]
+                                            startlevel[key] = line.substring(key.length() + 1)
+                                        }
+                                    }
                                     if (project.properties['package.provisioning.skip'] != 'true') {
                                         new File(project.build.directory, '${project.artifactId}.provisioning.yaml').withWriter('utf-8') { writer ->
                                             writer.writeLine(" - installOrUpgradeBundle: ")
                                             artifactIds.forEach { f ->
-                                                if (conditions[f[1]] == null) {
-                                                    writer.writeLine("   - 'mvn:${f[0]}/${f[1]}/${f[3]}'")
-                                                } else {
-                                                    writer.writeLine("   - url: 'mvn:${f[0]}/${f[1]}/${f[3]}'");
+                                                writer.writeLine("   - url: 'mvn:${f[0]}/${f[1]}/${f[3]}'");
+                                                if (conditions[f[1]] != null) {
                                                     writer.writeLine("     if: \"${conditions[f[1]].replace('"', '\\"')}\"")
+                                                }
+                                                if (startlevel[f[1]] != null) {
+                                                    writer.writeLine("     startLevel: ${startlevel[f[1]]}")
                                                 }
                                             }
                                         }

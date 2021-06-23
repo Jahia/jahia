@@ -20,6 +20,13 @@
      */
     window.Anthracite = {
         /**
+         * Anthracite constants
+         */
+        constants: {
+            SIDE_PANEL_WIDTH: 245,
+            SIDE_PANEL_WIDTH_MAX: 500
+        },
+        /**
          * Used to add modules to the Anthracite Object Literal App
          * @memberof Anthracite
          * @method addModule
@@ -64,6 +71,7 @@
          *
          */
         init: function(callback){
+            Anthracite.data.sidePanelWidth = Anthracite.constants.SIDE_PANEL_WIDTH;
             // Get UI Language from GWT parameters
             Anthracite.data.UILanguage = jahiaGWTParameters.uilang.toUpperCase();
 
@@ -247,6 +255,7 @@
             ckeditorVersion: CKEDITOR.version,
             resizingWindow: false,
             fallbackLanguage: 'EN',
+            sidePanelWidth: 0,
             HTTP: function () {
                 var contextIndexOffset = (jahiaGWTParameters.contextPath) ? 1 : 0; // DX is running under a context, need to take this into account with the URL
                 var pathnameSplit = document.location.pathname.split('/');
@@ -1098,7 +1107,7 @@
 
                 ctx.font = params.fontSize + "px " + params.fontFace;
 
-                return ctx.measureText(params.text).width + params.padding;
+                return Math.min(ctx.measureText(params.text).width + params.padding, params.maxWidth);
             },
             /**
              * XXX
@@ -1121,10 +1130,13 @@
                             text: languageInputValue,
                             fontSize: 14,
                             fontFace: "Nunito Sans",
-                            padding: 20
+                            padding: 20,
+                            maxWidth: Anthracite.data.sidePanelWidth / 2
                         });
 
-                    jGet('.toolbar-itemsgroup-languageswitcher').nodes[0].style.setProperty('width', (width + 'px'), 'important');
+                    var node = jGet('.toolbar-itemsgroup-languageswitcher').nodes[0];
+                    node.style.setProperty('width', (width + 'px'), 'important');
+                    node.style.setProperty('overflow', 'hidden', 'important');
                 }
             },
             /**
@@ -1141,19 +1153,25 @@
              */
             resizeSiteSelector: function () {
                 Anthracite.dev.log("app ::: common ::: resizeSiteSelector");
+                var padding = 20;
+                var left = Anthracite.data.sidePanelWidth / 2 + padding;
                 if(jGet('.edit-menu-sites input').exists() && Anthracite.data.currentApp == "edit"){
                     var siteInputValue = jGet('.edit-menu-sites input').nodes[0].value,
                         width = Anthracite.common.calculateTextWidth({
                             text: siteInputValue,
                             fontSize: 14,
                             fontFace: "Nunito Sans",
-                            padding: 20
+                            padding: padding,
+                            maxWidth: Anthracite.data.sidePanelWidth / 2
                         });
 
-                    jGet('.edit-menu-sites').nodes[0].style.setProperty('width', (width + 'px'), 'important');
+                    var node = jGet('.edit-menu-sites').nodes[0];
+                    node.style.setProperty('width', (Anthracite.data.sidePanelWidth - left + 'px'), 'important');
+                    node.style.setProperty('overflow', 'hidden', 'important');
+                    node.style.setProperty('left', left + 'px', 'important');
                 }
             }
-        },
+        }
     };
 
     // Protect Anthracte Objects

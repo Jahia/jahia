@@ -219,7 +219,7 @@ Anthracite.addModule("edit", {
         Anthracite.common.resizeLanguageInput();
 
         if (jGet.id('JahiaGxtSidePanelTabs').exists()) {
-            jGet.id('JahiaGxtSidePanelTabs').nodes[0].style.setProperty('width', '245px', 'important');
+            jGet.id('JahiaGxtSidePanelTabs').nodes[0].style.setProperty('width', Anthracite.constants.SIDE_PANEL_WIDTH + 'px', 'important');
             jGet.getCached('body').setAttribute('data-indigo-gwt-side-panel', '');
         }
 
@@ -1509,15 +1509,15 @@ Anthracite.addModule("edit", {
             }
 
             // Block the minimum and maximum widths of the side panel
-            if (xPos < 245) {
+            if (xPos < Anthracite.constants.SIDE_PANEL_WIDTH) {
                 // Block at minimum width
-                xPos = 245;
+                xPos = Anthracite.constants.SIDE_PANEL_WIDTH;
 
                 // This is the minimum it can go, so change to an east only cursor when hovering the split bar
                 jGet.id('indigoSplitter').addClass('move-east-only');
-            } else if (xPos > 500) {
+            } else if (xPos > Anthracite.constants.SIDE_PANEL_WIDTH_MAX) {
                 // Block at maximum width
-                xPos = 500;
+                xPos = Anthracite.constants.SIDE_PANEL_WIDTH_MAX;
 
                 // This is the maximum it can go, so change to an west only cursor when hovering the split bar
                 jGet.id('indigoSplitter').addClass('move-west-only');
@@ -1662,6 +1662,10 @@ Anthracite.addModule("edit", {
             if (jGet.id('indigoSplitter').exists()) {
                 jGet.id('indigoSplitter').nodes[0].style.setProperty('left', xPos + 'px', 'important');
             }
+
+            Anthracite.data.sidePanelWidth = mainFrameWidth;
+            Anthracite.common.resizeLanguageInput();
+            Anthracite.common.resizeSiteSelector();
         },
         /**
          * Callback executed once when the user starts to resize the side panel
@@ -2112,7 +2116,7 @@ Anthracite.addModule("edit", {
                 var sidePanelSplitter = document.createElement('div');
                 // Set ID
                 sidePanelSplitter.id = 'indigoSplitter';
-                sidePanelSplitter.style.setProperty('left', '245px', 'important');
+                sidePanelSplitter.style.setProperty('left', Anthracite.constants.SIDE_PANEL_WIDTH + 'px', 'important');
 
                 // Attach event listener for drag start
                 sidePanelSplitter.onmousedown = Anthracite.edit.sidepanel.onStartResize;
@@ -2264,7 +2268,7 @@ Anthracite.addModule("edit", {
                 jGet.iframe('.window-iframe').filter('body').nodes[0].style.pointerEvents = 'all';
 
                 if (jGet.id('JahiaGxtSidePanelTabs').exists()) {
-                    jGet.id('JahiaGxtSidePanelTabs').nodes[0].style.setProperty('width', '245px', 'important');
+                    jGet.id('JahiaGxtSidePanelTabs').nodes[0].style.setProperty('width', Anthracite.constants.SIDE_PANEL_WIDTH + 'px', 'important');
                     jGet.getCached('body').setAttribute('data-indigo-gwt-side-panel', '');
                 }
             }

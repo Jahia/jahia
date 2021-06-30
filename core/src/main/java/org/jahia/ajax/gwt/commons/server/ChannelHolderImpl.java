@@ -69,7 +69,7 @@ public class ChannelHolderImpl implements InitializingBean, DisposableBean, Chan
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if (SettingsBean.getInstance().isClusterActivated()) {
+        if (SettingsBean.getInstance().isClusterActivated() && SettingsBean.getInstance().getBoolean("atmosphere.jgroups", true)) {
             JChannel jChannel = new JChannel(System.getProperty("cluster.configFile.jahia", "tcp.xml"));
             this.channel = new JGroupsChannelImpl(jChannel, clusterName);
             this.channel.init();

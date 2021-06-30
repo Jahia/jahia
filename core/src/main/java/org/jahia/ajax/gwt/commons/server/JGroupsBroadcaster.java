@@ -61,7 +61,7 @@ public class JGroupsBroadcaster extends DefaultBroadcaster {
     public Broadcaster initialize(String name, URI uri, AtmosphereConfig config) {
         Broadcaster broadcaster = super.initialize(name, uri, config);
 
-        if (SettingsBean.getInstance().isClusterActivated()) {
+        if (SettingsBean.getInstance().isClusterActivated() && SettingsBean.getInstance().getBoolean("atmosphere.jgroups", true)) {
             try {
                 JGroupsChannelImpl jc = ((ChannelHolderImpl)SpringContextSingleton.getBean("org.jahia.ajax.gwt.commons.server.ChannelHolderImpl")).getChannel();
                 broadcaster.getBroadcasterConfig().addFilter(new JGroupsFilter(jc, broadcaster));

@@ -167,7 +167,7 @@ public class CookieAuthValveImpl extends BaseAuthValve {
         String cookieUserKey = CookieAuthValveImpl.getAvailableCookieKey(cookieAuthConfig);
         // let's save the identifier for the user in the database
         try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
+            JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, session -> {
                 JCRUserNode innerUserNode = (JCRUserNode) session.getNode(theUser.getPath());
                 innerUserNode.setProperty(cookieAuthConfig.getUserPropertyName(), cookieUserKey);
                 session.save();

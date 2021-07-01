@@ -453,14 +453,32 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
             <version>${log4j.version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>apache-log4j-extras</artifactId>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-1.2-api</artifactId>
+            <version>${log4j.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-jcl</artifactId>
+            <version>${log4j.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>${log4j.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-web</artifactId>
             <version>${log4j.version}</version>
             <scope>runtime</scope>
         </dependency>
@@ -690,9 +708,15 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.ops4j.pax.logging</groupId>
-                                    <artifactId>pax-logging-service</artifactId>
+                                    <artifactId>pax-logging-api</artifactId>
                                     <version>${pax.logging.version}</version>
-                                    <outputDirectory>${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}/system/org/ops4j/pax/logging/pax-logging-service/${pax.logging.version}</outputDirectory>
+                                    <outputDirectory>${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}/system/org/ops4j/pax/logging/pax-logging-api/${pax.logging.version}</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.ops4j.pax.logging</groupId>
+                                    <artifactId>pax-logging-log4j2</artifactId>
+                                    <version>${pax.logging.version}</version>
+                                    <outputDirectory>${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}/system/org/ops4j/pax/logging/pax-logging-log4j2/${pax.logging.version}</outputDirectory>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>

@@ -534,8 +534,10 @@ public class PropertiesEditor extends FormPanel {
                     }
                     if (!init) {
                         final PropertyAdapterField field = fields.get(propertyKey.substring(propertyKey.lastIndexOf(".") + 1));
-                        // Ensure that added fields are well saved
-                        field.setDirty(true);
+                        // Ensure that displayed added fields are well saved
+                        if (field != null) {
+                            field.setDirty(true);
+                        }
                     }
                 }
             }

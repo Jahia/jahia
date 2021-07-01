@@ -95,18 +95,7 @@ public class PaxLoggingConfigurer implements EventHandler {
                     Dictionary<String, Object> properties = configurationAdmin.getConfiguration(CFG_PID, null)
                             .getProperties();
                     if (properties != null) {
-                        Enumeration<String> keys = properties.keys();
-                        while (keys.hasMoreElements()) {
-                            String s = keys.nextElement();
-                            if (s != null && s.startsWith("log4j2.logger.") && !coreConfig.containsKey(s)) {
-                                logger.info(
-                                        "Logging logger {} does not present in Jahia core configuration. Will remove it from the {}.cfg file",
-                                        s, CFG_PID);
-                                needsUpdate = true;
-                            } else {
-                                defaultConfig.put(s, properties.get(s));
-                            }
-                        }
+                        needsUpdate = checkOsgiLogConfig(properties, coreConfig);
                         loggerConfig.putAll(defaultConfig);
                     }
                 }
@@ -121,6 +110,22 @@ public class PaxLoggingConfigurer implements EventHandler {
             } catch (IOException e) {
                 logger.error("Cannot update logging configuration", e);
             }
+        }
+        
+        private boolean checkOsgiLogConfig(Dictionary<String, Object> properties, Map<String, Object> coreConfig) {
+            boolean needsUpdate = false;
+            Enumeration<String> keys = properties.keys();
+            while (keys.hasMoreElements()) {
+                String s = keys.nextElement();
+                if (s != null && s.startsWith("log4j2.logger.") && !coreConfig.containsKey(s)) {
+                    logger.info("Logging logger {} is not present in Jahia core configuration. Will remove it from the {}.cfg file", s,
+                            CFG_PID);
+                    needsUpdate = true;
+                } else {
+                    defaultConfig.put(s, properties.get(s));
+                }
+            }
+            return needsUpdate;
         }
         
         private void updateConfig(Map<String, Object> newConfig) throws IOException {

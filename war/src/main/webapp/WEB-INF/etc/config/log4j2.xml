@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration xmlns:xi="http://www.w3.org/2001/XInclude"
+	packages="org.jahia.bin.errors,org.jahia.services.notification">
+  <Appenders>
+    <RollingFile name="ROLL" fileName="${sys:jahia.log.dir}jahia.log"
+                 filePattern="${sys:jahia.log.dir}jahia_%d{yyyy-MM-dd}.log">
+      <PatternLayout pattern="%d: %-5p [%t] %c: %m%n"/>
+      <!-- another useful pattern to see date time, class, lines, 
+           BUT cpu intensive-->
+      <!-- <PatternLayout pattern="(%r)%d %5p [%t] (%F:%L) - %m%n"/>  -->
+      <TimeBasedTriggeringPolicy/>
+      <ThresholdFilter level="DEBUG"/>                               
+    </RollingFile>
+    
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d: %-5p [%c{1}] - %m%n"/>
+      <!-- another useful pattern to see date time, class, lines, 
+           BUT cpu intensive-->
+      <!-- <PatternLayout pattern="(%r)%d %5p [%t] (%F:%L) - %m%n"/>  -->
+      <ThresholdFilter level="DEBUG"/>
+    </Console>   
+
+    <RollingFile name="profilerLogs" fileName="${sys:jahia.log.dir}jahia_profiler.log"
+                 filePattern="${sys:jahia.log.dir}jahia_profiler_%d{yyyy-MM-dd}.log">
+      <PatternLayout pattern="%d %m%n"/>
+      <Policies>
+        <TimeBasedTriggeringPolicy/>
+      </Policies>
+      <Filters>
+        <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
+      </Filters>          
+    </RollingFile>
+
+    <RollingFile name="hitAccess" fileName="${sys:jahia.log.dir}jahia_access.log"
+                 filePattern="${sys:jahia.log.dir}jahia_access_%d{yyyy-MM-dd}.log">
+      <PatternLayout pattern="%d %m%n"/>
+      <Policies>
+        <TimeBasedTriggeringPolicy/>
+      </Policies>
+      <Filters>
+        <ThresholdFilter level="TRACE" onMatch="ACCEPT" onMismatch="DENY"/>
+      </Filters>          
+    </RollingFile>
+
+    <ExceptionAppender name="exceptionLogging"/>
+    
+    <CamelAppender name="camelNotification" targetUri="direct:logs">
+      <PatternLayout pattern="%d %m"/>
+      <Filters>
+        <ThresholdFilter level="TRACE" onMatch="ACCEPT" onMismatch="DENY"/>
+      </Filters>  
+    </CamelAppender>
+  </Appenders>    
+  
+  <Loggers>
+    <Logger name="REQUEST">
+        <AppenderRef ref="ROLL"/>
+    </Logger>
+
+    <Logger name="SysOut">
+        <AppenderRef ref="Console"/>
+    </Logger>
+    
+    <Logger name="accessLogger" additivity="false">
+        <AppenderRef ref="hitAccess"/>
+        <AppenderRef ref="camelNotification"/>
+    </Logger>
+
+    <Logger name="loggingService" additivity="false" level="trace">
+        <AppenderRef ref="hitAccess"/>
+        <AppenderRef ref="camelNotification"/>
+    </Logger>
+
+    <Logger name="profilerLoggingService" additivity="false" level="info">
+        <AppenderRef ref="profilerLogs"/>
+    </Logger>
+    
+
+    <Logger name="org.apache.commons" level="error"/>
+    <Logger name="org.apache.jackrabbit.spi.commons.nodetype.constraint.ValueConstraint" level="error"/>
+    <Logger name="net.htmlparser.jericho" level="warn"/>
+    <Logger name="net.sf.ehcache" level="error"/>
+    <Logger name="net.sf.ehcache.pool.impl" level="warn"/>
+    <Logger name="org.quartz" level="info"/>
+    <Logger name="org.jahia.bin.errors" level="warn"/>
+    <Logger name="org.jahia.services.render.filter.cache" level="info"/>
+    <Logger name="org.jahia.services.textextraction.TextExtractionService" level="info"/>
+    <Logger name="org.jgroups.protocols.pbcast.GMS" level="debug"/>
+    <Logger name="org.hibernate" level="warn"/>
+    <Logger name="org.hibernate.cfg.Environment" level="info"/>
+    <Logger name="org.springframework" level="error"/>
+    <Logger name="org.jahia.bundles.extender.jahiamodules.Activator" level="debug"/>
+    <Logger name="org.apache.karaf.cellar" level="debug"/>
+    <Logger name="org.jahia.bundles.clustering.impl.BundleEventHandler" level="debug"/>
+    <Root level="info">
+        <AppenderRef ref="ROLL"/>
+        <AppenderRef ref="Console"/>
+        <AppenderRef ref="exceptionLogging"/>
+    </Root>
+  </Loggers>    
+</Configuration>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration xmlns:xi="http://www.w3.org/2001/XInclude">
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%-5p - %m%n"/>
+      <ThresholdFilter level="DEBUG"/>
+    </Console>  
+  </Appenders>
+  <Loggers>
+    <Root level="info">
+        <AppenderRef ref="Console"/>
+    </Root>  
+  </Loggers>  
+</Configuration>

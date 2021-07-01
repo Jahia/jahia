@@ -24,12 +24,10 @@ Development Tips
 
  Jahia 6.6 use a pipeline of filter to render your page, each component of your page will pass through this pipeline. It is not always easy to understand what is going on when an issue arise.
 
- You should then activate the log for the Rendering system that will show you exactly which filters are applied before and after your component is called. Here how to achieve that, modify your tomcat/webapps/ROOT/WEB-INF/etc/config/log4j.xml file by adding the following category at the end of your file before the <root/> tag :
+ You should then activate the log for the Rendering system that will show you exactly which filters are applied before and after your component is called. Here how to achieve that, modify your tomcat/webapps/ROOT/WEB-INF/etc/config/log4j2.xml file by adding the following logger at the end of your file before the <Root/> tag :
 
 +-----------------------------
-<category name="org.jahia.services.render.filter.RenderChain">
-    <priority value="debug"/>
-</category>
+<Logger name="org.jahia.services.render.filter.RenderChain" level="debug"/>
 +-----------------------------
 
  Before testing your templates/components for performances before production, you can/should look at the profiler logs provided by Jahia 6.6 that lists all the modules we have encounter during render phase and the time spent in each of them, by default this file is found in the bin folder of your tomcat installation, here an example of a listing for the home page of the site ACME provided as a demo :

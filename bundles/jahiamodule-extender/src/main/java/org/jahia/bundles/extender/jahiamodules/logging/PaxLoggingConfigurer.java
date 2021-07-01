@@ -46,7 +46,9 @@ package org.jahia.bundles.extender.jahiamodules.logging;
 import java.io.IOException;
 import java.util.Dictionary;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -68,7 +70,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Synchronizes Log4j configuration from DX core into Pax Logging configuration.
+ * Synchronizes Log4j configuration from Jahia core into Pax Logging configuration.
  */
 public class PaxLoggingConfigurer implements EventHandler {
 
@@ -88,16 +90,16 @@ public class PaxLoggingConfigurer implements EventHandler {
             }
             try {
                 boolean needsUpdate = false;
-                Hashtable<String, Object> coreConfig = LoggingConfigListener.getConfig();
+                Map<String, Object> coreConfig = LoggingConfigListener.getConfig();
                 if (defaultConfig.isEmpty()) {
                     Dictionary<String, Object> properties = configurationAdmin.getConfiguration(CFG_PID, null)
                             .getProperties();
                     if (properties != null) {
                         Enumeration<String> keys = properties.keys();
                         while (keys.hasMoreElements()) {
-                            String s = (String) keys.nextElement();
-                            if (s != null && s.startsWith("log4j.category.") && !coreConfig.containsKey(s)) {
-                                logger.info("Logging category {} does not present in DX core configuration."
+                            String s = keys.nextElement();
+                            if (s != null && s.startsWith("log4j2.logger.") && !coreConfig.containsKey(s)) {
+                                logger.info("Logging logger {} does not present in Jahia core configuration."
                                         + " Will remove it from the " + CFG_PID + ".cfg file", s);
                                 needsUpdate = true;
                             } else {
@@ -108,10 +110,10 @@ public class PaxLoggingConfigurer implements EventHandler {
                     }
                 }
                 needsUpdate = needsUpdate | syncRootLoggerLevel();
-                Hashtable<String, Object> newConfig = new Hashtable<>();
+                Map<String, Object> newConfig = new HashMap<>();
                 // put the defaults
                 newConfig.putAll(defaultConfig);
-                // put the current DX core levels
+                // put the current Jahia core levels
                 newConfig.putAll(coreConfig);
                 if (needsUpdate || !newConfig.equals(loggerConfig)) {
                     loggerConfig.clear();
@@ -125,18 +127,16 @@ public class PaxLoggingConfigurer implements EventHandler {
         }
 
         private boolean syncRootLoggerLevel() {
-            String rootLogger = ObjectUtils.toString(defaultConfig.get("log4j.rootLogger"), null);
-            if (null == rootLogger) {
-                logger.warn("Unable to find log4j.rootLogger in the logging configuration " + CFG_PID
+            String rootLoggerLevel = ObjectUtils.toString(defaultConfig.get("log4j2.rootLogger.level"), null);
+            if (null == rootLoggerLevel) {
+                logger.warn("Unable to find log4j2.rootLogger.level in the logging configuration " + CFG_PID
                         + ". Please, check your configuration and correct it.");
                 return false;
             }
-            String level = StringUtils.substringBefore(rootLogger, ",");
             String newLevel = LoggingConfigListener.getRootLoggerLevel();
-            if (!level.trim().equalsIgnoreCase(newLevel)) {
+            if (!rootLoggerLevel.trim().equalsIgnoreCase(newLevel)) {
                 logger.info("Root logger level has changed to {}. Updating it in Pax Logging configuration.", newLevel);
-                defaultConfig.put("log4j.rootLogger", newLevel + "," + StringUtils.substringAfter(rootLogger, ","));
-
+                defaultConfig.put("log4j2.rootLogger.level", newLevel);
                 return true;
             }
             return false;
@@ -187,7 +187,7 @@ public class PaxLoggingConfigurer implements EventHandler {
         
         Dictionary<String, String> props = new Hashtable<>();
         props.put(Constants.SERVICE_PID, "org.jahia.bundles.extender.jahiamodules.PaxLoggingConfigurer");
-        props.put(Constants.SERVICE_DESCRIPTION, "Synchronizes Log4j configuration from DX core into Pax Logging configuration");
+        props.put(Constants.SERVICE_DESCRIPTION, "Synchronizes Log4j configuration from Jahia core into Pax Logging configuration");
         props.put(Constants.SERVICE_VENDOR, Jahia.VENDOR_NAME);
         props.put(EventConstants.EVENT_TOPIC, LoggingConfigListener.EVENT_TOPIC_LOGGING);
         props.put(EventConstants.EVENT_FILTER, "(type=" + LoggingConfigListener.EVENT_TYPE_LOGGING_CONFIG_CHANGED + ")");

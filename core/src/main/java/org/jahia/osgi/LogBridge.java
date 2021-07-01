@@ -43,7 +43,7 @@
  */
 package org.jahia.osgi;
 
-import org.apache.log4j.Level;
+import org.apache.logging.log4j.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -51,12 +51,15 @@ import org.slf4j.MDC;
 import java.util.Map;
 
 /**
- * This LogBridge is used by a custom pax-logging-service appender to bring back up the log messages inside the OSGi runtime back into DX's
+ * This LogBridge is used by a custom pax-logging-log4j2 appender to bring back up the log messages inside the OSGi runtime back into DX's
  * core. It also supports SLF4j's MDC bridging through the *MDC methods. These are deliberately not using the MDCAdapter interface to avoid
- * class loader issues (because this class is being exposed by the DX core).
+ * class loader issues (because this class is being exposed by the Jahia core).
  */
 public class LogBridge {
 
+    private LogBridge() {
+        throw new IllegalStateException("Utility class");
+    }
     /**
      * Performs logging of the provided message and exception.
      *
@@ -67,20 +70,20 @@ public class LogBridge {
      */
     public static void log(String loggerName, int level, Object message, Throwable t) {
 
-        if (level == Level.OFF_INT) {
+        if (level == Level.OFF.intLevel()) {
             return;
         }
 
         Logger logger = LoggerFactory.getLogger(loggerName);
         String msg = (message != null ? message.toString() : null);
 
-        if (level >= Level.ERROR_INT) {
+        if (level <= Level.ERROR.intLevel()) {
             logger.error(msg, t);
-        } else if (level >= Level.WARN_INT) {
+        } else if (level <= Level.WARN.intLevel()) {
             logger.warn(msg, t);
-        } else if (level >= Level.INFO_INT) {
+        } else if (level <= Level.INFO.intLevel()) {
             logger.info(msg, t);
-        } else if (level >= Level.DEBUG_INT) {
+        } else if (level <= Level.DEBUG.intLevel()) {
             logger.debug(msg, t);
         } else {
             logger.trace(msg, t);
@@ -126,7 +129,7 @@ public class LogBridge {
      * @return despite the fact that this is a generic Map (for compatibility reasons), it should normally only contain
      * entries with String objects as key and String objects as values
      */
-    public static Map getCopyOfContextMap() {
+    public static Map<String, String> getCopyOfContextMap() {
         return MDC.getCopyOfContextMap();
     }
 
@@ -136,7 +139,7 @@ public class LogBridge {
      * objects.
      * @param contextMap a map that only contains keys and values that are String objects
      */
-    public static void setContextMap(Map contextMap) {
+    public static void setContextMap(Map<String, String> contextMap) {
         MDC.setContextMap(contextMap);
     }
 }

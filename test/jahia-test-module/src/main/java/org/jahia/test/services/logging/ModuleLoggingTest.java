@@ -50,7 +50,7 @@ import java.io.IOException;
 
 import javax.jcr.RepositoryException;
 
-import org.apache.log4j.Level;
+import org.apache.logging.log4j.Level;
 import org.jahia.bin.listeners.LoggingConfigListener;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
@@ -81,41 +81,41 @@ public class ModuleLoggingTest extends JahiaTestCase {
         
         logger.error("Debug enabled for logger {}: {}", logger.getName(), logger.isDebugEnabled());
 
-        if (level <= Level.TRACE_INT) {
+        if (level >= Level.TRACE.intLevel()) {
             assertTrue(logger.isTraceEnabled());
         }
-        if (level <= Level.DEBUG_INT) {
+        if (level >= Level.DEBUG.intLevel()) {
             assertTrue(logger.isDebugEnabled());
         }
-        if (level <= Level.INFO_INT) {
+        if (level >= Level.INFO.intLevel()) {
             assertTrue(logger.isInfoEnabled());
         }
-        if (level <= Level.ERROR_INT) {
+        if (level >= Level.ERROR.intLevel()) {
             assertTrue(logger.isErrorEnabled());
         }
 
-        if (level > Level.ERROR_INT) {
+        if (level < Level.ERROR.intLevel()) {
             assertFalse(logger.isErrorEnabled());
         }
-        if (level > Level.WARN_INT) {
+        if (level < Level.WARN.intLevel()) {
             assertFalse(logger.isWarnEnabled());
         }
-        if (level > Level.INFO_INT) {
+        if (level < Level.INFO.intLevel()) {
             assertFalse(logger.isInfoEnabled());
         }
-        if (level > Level.DEBUG_INT) {
+        if (level < Level.DEBUG.intLevel()) {
             assertFalse(logger.isDebugEnabled());
         }
-        if (level > Level.TRACE_INT) {
+        if (level < Level.TRACE.intLevel()) {
             assertFalse(logger.isTraceEnabled());
         }
     }
 
     @Before
-    public void defaultLoggingLevelIsInfo() throws RepositoryException, IOException {
-        assertLevel(loggerA, Level.INFO_INT);
-        assertLevel(loggerB, Level.INFO_INT);
-        assertLevel(loggerC, Level.INFO_INT);
+    public void defaultLoggingLevelIsInfo() {
+        assertLevel(loggerA, Level.INFO.intLevel());
+        assertLevel(loggerB, Level.INFO.intLevel());
+        assertLevel(loggerC, Level.INFO.intLevel());
     }
 
     @Test
@@ -123,9 +123,9 @@ public class ModuleLoggingTest extends JahiaTestCase {
         LoggingConfigListener.setLoggerLevel(loggerB.getName(), Level.ERROR.toString());
         TestHelper.sleep(2000);
         try {
-            assertLevel(loggerA, Level.INFO_INT);
-            assertLevel(loggerB, Level.ERROR_INT);
-            assertLevel(loggerC, Level.INFO_INT);
+            assertLevel(loggerA, Level.INFO.intLevel());
+            assertLevel(loggerB, Level.ERROR.intLevel());
+            assertLevel(loggerC, Level.INFO.intLevel());
         } finally {
             LoggingConfigListener.setLoggerLevel(loggerB.getName(), Level.INFO.toString());
             TestHelper.sleep(2000);

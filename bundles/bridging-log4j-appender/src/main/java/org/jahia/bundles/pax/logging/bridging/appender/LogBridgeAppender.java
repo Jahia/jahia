@@ -43,49 +43,48 @@
  */
 package org.jahia.bundles.pax.logging.bridging.appender;
 
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.ThrowableInformation;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.Node;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.jahia.osgi.LogBridge;
 import org.slf4j.MDC;
 import org.slf4j.spi.MDCAdapter;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Map;
 
 /**
- * An appender for the Log4J using inside the pax-logging-service implementation that will bridge the log messages
- * to the Log4J implementation used by DX's core. This appender also support SLF4j's MDC by bridging it into the core's
+ * An appender for the Log4J using inside the pax-logging-log4j2 implementation that will bridge the log messages
+ * to the Log4J implementation used by Jahia's core. This appender also support SLF4j's MDC by bridging it into the core's
  * SLF4j MDC. This is currently using reflection API to inject the MDC adapter into the MDC class, so this might easily
  * break if upgrading SLF4j.
  */
-public class LogBridgeAppender extends AppenderSkeleton {
+@Plugin(name = "LogBridgeAppender", category = Node.CATEGORY, elementType = Appender.ELEMENT_TYPE, printObject = true)
+public class LogBridgeAppender extends AbstractAppender {
 
     MDCAdapter logBridgeAdapter = null;
 
-    public LogBridgeAppender() {
-        super();
+    @PluginFactory
+    public static LogBridgeAppender createAppender(
+            @PluginAttribute("name") final String name) {
+        return new LogBridgeAppender(name, null, null);
+    }
+    
+    private LogBridgeAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter) {
+        super(name, filter, layout, false);
         init();
     }
 
-    public LogBridgeAppender(boolean isActive) {
-        super(isActive);
-        init();
-    }
-
     @Override
-    protected void append(LoggingEvent event) {
-        ThrowableInformation throwableInfo = event.getThrowableInformation();
-        LogBridge.log(event.getLogger().getName(), event.getLevel().toInt(), event.getMessage(), (throwableInfo != null ? throwableInfo.getThrowable() : null));
-    }
-
-    @Override
-    public void close() {
-    }
-
-    @Override
-    public boolean requiresLayout() {
-        return false;
+    public void append(LogEvent event) {
+        LogBridge.log(event.getLoggerName(), event.getLevel().intLevel(), event.getMessage(), event.getThrown());
     }
 
     private void init() {
@@ -94,9 +93,7 @@ public class LogBridgeAppender extends AppenderSkeleton {
             Field mdcAdapterField = MDC.class.getDeclaredField("mdcAdapter");
             mdcAdapterField.setAccessible(true);
             mdcAdapterField.set(null, logBridgeAdapter);
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
     }
@@ -138,12 +135,12 @@ public class LogBridgeAppender extends AppenderSkeleton {
         }
 
         @Override
-        public Map getCopyOfContextMap() {
+        public Map<String, String> getCopyOfContextMap() {
             return LogBridge.getCopyOfContextMap();
         }
 
         @Override
-        public void setContextMap(Map contextMap) {
+        public void setContextMap(Map<String, String> contextMap) {
             wrappedMDCAdapter.setContextMap(contextMap);
             LogBridge.setContextMap(contextMap);
         }

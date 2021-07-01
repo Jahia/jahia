@@ -47,6 +47,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -69,6 +70,7 @@ import org.jahia.osgi.FrameworkService;
  * @author Sergiy Shyrkov
  */
 public class LoggingConfigListener extends Log4jServletContextListener {
+    static final Logger logger = Logger.getLogger(LoggingConfigListener.class.getName());
     
     public static final String EVENT_TOPIC_LOGGING = "org/jahia/dx/logging";
     public static final String EVENT_TYPE_LOGGING_CONFIG_CHANGED = "loggingConfigurationChanged";
@@ -146,7 +148,7 @@ public class LoggingConfigListener extends Log4jServletContextListener {
         } else {
             lookup = System.getProperty(JAHIA_LOG4J_CONFIG, lookup);
         }
-        System.out.println("Set log4j2.xml configuration location to: " + lookup);
+        logger.log(java.util.logging.Level.INFO, "Set log4j2.xml configuration location to: {}", lookup);
     }
 
     protected void initLogDir(ServletContext servletContext) {
@@ -169,7 +171,7 @@ public class LoggingConfigListener extends Log4jServletContextListener {
             JahiaContextLoaderListener.setSystemProperty(JAHIA_LOG_DIR, logDir);
         }
 
-        System.out.println("Logging directory set to: " + (logDir != null ? logDir : "<current>"));
+        logger.log(java.util.logging.Level.INFO, "Logging directory set to: {}", (logDir != null ? logDir : "<current>"));
     }
 
     private String resolveLogDir(String path) {
@@ -187,7 +189,7 @@ public class LoggingConfigListener extends Log4jServletContextListener {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(java.util.logging.Level.WARNING, "Cannot resolve logging directory", e);
         }
         return null;
     }

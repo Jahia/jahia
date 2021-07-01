@@ -6,27 +6,19 @@
     <RollingFile name="ROLL" fileName="${sys:jahia.log.dir}jahia.log"
                  filePattern="${sys:jahia.log.dir}jahia_%d{yyyy-MM-dd}.log">
       <PatternLayout pattern="%d: %-5p [%t] %c: %m%n"/>
-      <!-- another useful pattern to see date time, class, lines, 
-           BUT cpu intensive-->
-      <!-- <PatternLayout pattern="(%r)%d %5p [%t] (%F:%L) - %m%n"/>  -->
       <TimeBasedTriggeringPolicy/>
       <ThresholdFilter level="DEBUG"/>                               
     </RollingFile>
     
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout pattern="%d: %-5p [%c{1}] - %m%n"/>
-      <!-- another useful pattern to see date time, class, lines, 
-           BUT cpu intensive-->
-      <!-- <PatternLayout pattern="(%r)%d %5p [%t] (%F:%L) - %m%n"/>  -->
       <ThresholdFilter level="DEBUG"/>
     </Console>   
 
     <RollingFile name="profilerLogs" fileName="${sys:jahia.log.dir}jahia_profiler.log"
                  filePattern="${sys:jahia.log.dir}jahia_profiler_%d{yyyy-MM-dd}.log">
       <PatternLayout pattern="%d %m%n"/>
-      <Policies>
-        <TimeBasedTriggeringPolicy/>
-      </Policies>
+      <TimeBasedTriggeringPolicy/>
       <Filters>
         <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
       </Filters>          
@@ -35,9 +27,7 @@
     <RollingFile name="hitAccess" fileName="${sys:jahia.log.dir}jahia_access.log"
                  filePattern="${sys:jahia.log.dir}jahia_access_%d{yyyy-MM-dd}.log">
       <PatternLayout pattern="%d %m%n"/>
-      <Policies>
-        <TimeBasedTriggeringPolicy/>
-      </Policies>
+      <TimeBasedTriggeringPolicy/>
       <Filters>
         <ThresholdFilter level="TRACE" onMatch="ACCEPT" onMismatch="DENY"/>
       </Filters>          

@@ -99,8 +99,9 @@ public class PaxLoggingConfigurer implements EventHandler {
                         while (keys.hasMoreElements()) {
                             String s = keys.nextElement();
                             if (s != null && s.startsWith("log4j2.logger.") && !coreConfig.containsKey(s)) {
-                                logger.info("Logging logger {} does not present in Jahia core configuration."
-                                        + " Will remove it from the " + CFG_PID + ".cfg file", s);
+                                logger.info(
+                                        "Logging logger {} does not present in Jahia core configuration. Will remove it from the {}.cfg file",
+                                        s, CFG_PID);
                                 needsUpdate = true;
                             } else {
                                 defaultConfig.put(s, properties.get(s));
@@ -109,21 +110,24 @@ public class PaxLoggingConfigurer implements EventHandler {
                         loggerConfig.putAll(defaultConfig);
                     }
                 }
-                needsUpdate = needsUpdate | syncRootLoggerLevel();
-                Map<String, Object> newConfig = new HashMap<>();
+                needsUpdate = needsUpdate || syncRootLoggerLevel();
                 // put the defaults
-                newConfig.putAll(defaultConfig);
+                Map<String, Object> newConfig = new HashMap<>(defaultConfig);
                 // put the current Jahia core levels
                 newConfig.putAll(coreConfig);
                 if (needsUpdate || !newConfig.equals(loggerConfig)) {
-                    loggerConfig.clear();
-                    loggerConfig.putAll(newConfig);
-                    logger.info("Log4j configuration updated. Updating configuration " + CFG_PID);
-                    configurationAdmin.getConfiguration(CFG_PID, null).update(loggerConfig);
+                    updateConfig(newConfig);
                 }
             } catch (IOException e) {
                 logger.error("Cannot update logging configuration", e);
             }
+        }
+        
+        private void updateConfig(Map<String, Object> newConfig) throws IOException {
+            loggerConfig.clear();
+            loggerConfig.putAll(newConfig);
+            logger.info("Log4j configuration updated. Updating configuration {}", CFG_PID);
+            serviceTrackerConfigAdmin.getService().getConfiguration(CFG_PID, null).update(loggerConfig);
         }
 
         private boolean syncRootLoggerLevel() {
@@ -175,8 +179,7 @@ public class PaxLoggingConfigurer implements EventHandler {
      * @param bundleContext the OSGi bundle context
      */
     public void start(BundleContext bundleContext) {
-        serviceTrackerConfigAdmin = new ServiceTracker<ConfigurationAdmin, ConfigurationAdmin>(bundleContext,
-                ConfigurationAdmin.class, null);
+        serviceTrackerConfigAdmin = new ServiceTracker<>(bundleContext, ConfigurationAdmin.class, null);
         serviceTrackerConfigAdmin.open();
         timer = new Timer("Log4j configuration synchronization", true);
 

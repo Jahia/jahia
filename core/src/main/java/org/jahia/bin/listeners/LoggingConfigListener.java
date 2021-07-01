@@ -148,7 +148,7 @@ public class LoggingConfigListener extends Log4jServletContextListener {
         } else {
             lookup = System.getProperty(JAHIA_LOG4J_CONFIG, lookup);
         }
-        logger.log(java.util.logging.Level.INFO, "Set log4j2.xml configuration location to: {}", lookup);
+        logger.log(java.util.logging.Level.INFO, "Set log4j2.xml configuration location to: {0}", lookup);
     }
 
     protected void initLogDir(ServletContext servletContext) {
@@ -171,7 +171,7 @@ public class LoggingConfigListener extends Log4jServletContextListener {
             JahiaContextLoaderListener.setSystemProperty(JAHIA_LOG_DIR, logDir);
         }
 
-        logger.log(java.util.logging.Level.INFO, "Logging directory set to: {}", (logDir != null ? logDir : "<current>"));
+        logger.log(java.util.logging.Level.INFO, "Logging directory set to: {0}", (logDir != null ? logDir : "<current>"));
     }
 
     private String resolveLogDir(String path) {

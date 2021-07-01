@@ -45,39 +45,49 @@ package org.jahia.bin.listeners;
 
 import java.io.File;
 import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.AppenderRef;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
+import org.apache.logging.log4j.core.config.builder.impl.DefaultConfigurationBuilder;
+import org.apache.logging.log4j.web.Log4jServletContextListener;
 import org.jahia.osgi.FrameworkService;
-import org.springframework.web.util.Log4jConfigListener;
 
 /**
  * Listener for log4j configuration initialization.
  * 
  * @author Sergiy Shyrkov
  */
-public class LoggingConfigListener extends Log4jConfigListener {
+public class LoggingConfigListener extends Log4jServletContextListener {
     
     public static final String EVENT_TOPIC_LOGGING = "org/jahia/dx/logging";
     public static final String EVENT_TYPE_LOGGING_CONFIG_CHANGED = "loggingConfigurationChanged";
     private static final String JAHIA_LOG_DIR = "jahia.log.dir";
     private static final String JAHIA_LOG4J_CONFIG = "jahia.log4j.config";
-    private static final String JAHIA_LOG4J_XML = "jahia/log4j.xml";
+    private static final String JAHIA_LOG4J_XML = "jahia/log4j2.xml";
 
-    public static Hashtable<String, Object> getConfig() {
-        Hashtable<String, Object> p = new Hashtable<>();
-        @SuppressWarnings("rawtypes")
-        Enumeration loggers = LogManager.getCurrentLoggers();
-        while (loggers.hasMoreElements()) {
-            org.apache.log4j.Logger next = (org.apache.log4j.Logger) loggers.nextElement();
-            if (next.getLevel() != null) {
-                p.put("log4j.category." + next.getName(), next.getLevel().toString());
+    public static Map<String, Object> getConfig() {
+        Map<String, Object> p = new HashMap<>();
+        LoggerContext logContext = (LoggerContext) LogManager.getContext(false);
+        for (LoggerConfig logger : logContext.getConfiguration().getLoggers().values()) {
+            if (logger.getLevel() != null) {
+                if (StringUtils.isEmpty(logger.getName())) {
+                    p.put("log4j2.rootLogger.level", logger.getLevel().toString());
+                } else {
+                    String loggerIdentifier = StringUtils.replace(logger.getName(), ".", "_");
+                    p.put("log4j2.logger." + loggerIdentifier + ".name", logger.getName());
+                    p.put("log4j2.logger." + loggerIdentifier + ".level", logger.getLevel().toString());
+                }
             }
         }
         return p;
@@ -92,10 +102,9 @@ public class LoggingConfigListener extends Log4jConfigListener {
         return LogManager.getRootLogger().getLevel().toString();
     }
 
-    private static Logger getTargetLogger(String logger) {
-        Logger rootLogger = LogManager.getRootLogger();
-
-        return logger.equals(rootLogger.getName()) ? rootLogger : LogManager.getLogger(logger);
+    private static LoggerConfig getTargetLoggerConfig(Configuration config, String logger) {
+        return StringUtils.isEmpty(logger) || StringUtils.equalsIgnoreCase(logger, LoggerConfig.ROOT) ? config.getRootLogger()
+                : config.getLoggerConfig(logger);
     }
 
     /**
@@ -105,7 +114,15 @@ public class LoggingConfigListener extends Log4jConfigListener {
      * @param level the logging level value
      */
     public static void setLoggerLevel(String logger, String level) {
-        getTargetLogger(logger).setLevel(Level.toLevel(level));
+        LoggerContext logContext = (LoggerContext) LogManager.getContext(false);
+        Configuration config = logContext.getConfiguration();
+        if (StringUtils.isEmpty(logger) || LoggerConfig.ROOT.equals(logger) || getTargetLoggerConfig(config, logger).getName().equals(logger)) {
+            getTargetLoggerConfig(config, logger).setLevel(Level.toLevel(level));
+        } else {
+            config.addLogger(logger, LoggerConfig.createLogger(true, Level.getLevel(level), logger, null, new AppenderRef[] {}, null,
+                    new DefaultConfigurationBuilder<BuiltConfiguration>().build(), null));
+        }
+        logContext.updateLoggers();
 
         // send an OSGi event about changed configuration
         FrameworkService.sendEvent(EVENT_TOPIC_LOGGING,
@@ -116,6 +133,7 @@ public class LoggingConfigListener extends Log4jConfigListener {
     public void contextInitialized(ServletContextEvent event) {
         initLogDir(event.getServletContext());
         initLog4jLocation();
+        JahiaContextLoaderListener.setSystemProperty("java.util.logging.manager", "org.apache.logging.log4j.jul.LogManager");
         super.contextInitialized(event);
     }
 
@@ -123,42 +141,24 @@ public class LoggingConfigListener extends Log4jConfigListener {
         String lookup = null;
         if (System.getProperty(JAHIA_LOG4J_CONFIG) == null) {
             lookup = getClass().getResource("/" + JAHIA_LOG4J_XML) != null ? "classpath:" + JAHIA_LOG4J_XML
-                    : "/WEB-INF/etc/config/log4j.xml";
+                    : "/WEB-INF/etc/config/log4j2.xml";
             JahiaContextLoaderListener.setSystemProperty(JAHIA_LOG4J_CONFIG, lookup);
         } else {
             lookup = System.getProperty(JAHIA_LOG4J_CONFIG, lookup);
         }
-        System.out.println("Set log4j.xml configuration location to: " + lookup);
+        System.out.println("Set log4j2.xml configuration location to: " + lookup);
     }
 
     protected void initLogDir(ServletContext servletContext) {
         String logDir = System.getProperty(JAHIA_LOG_DIR);
 
         if (logDir == null) {
-            try {
-                String server = servletContext.getServerInfo() != null ? servletContext
-                        .getServerInfo().toLowerCase() : null;
-                String path = servletContext.getRealPath("/");
-                if (server != null && path != null) {
-                    if (server.contains("tomcat")) {
-                        File war = new File(path);
-                        if (war.getParentFile() != null
-                                && "webapps".equals(war.getParentFile().getName())) {
-                            File tomcatHome = war.getParentFile().getParentFile();
-                            if (tomcatHome.exists()) {
-                                File logs = new File(tomcatHome, "logs");
-                                if (logs.isDirectory() && logs.canWrite()) {
-                                    logDir = logs.getAbsolutePath();
-                                }
-                            }
-                        }
-                    } else {
-                        // no handling for other application servers
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (StringUtils.containsIgnoreCase(servletContext.getServerInfo(), "tomcat")) {
+                logDir = resolveLogDir(servletContext.getRealPath("/"));
+            } else {
+                // no handling for other application servers
             }
+
         }
 
         if (logDir != null) {
@@ -172,4 +172,23 @@ public class LoggingConfigListener extends Log4jConfigListener {
         System.out.println("Logging directory set to: " + (logDir != null ? logDir : "<current>"));
     }
 
+    private String resolveLogDir(String path) {
+        try {
+            if (path != null) {
+                File war = new File(path);
+                if (war.getParentFile() != null && "webapps".equals(war.getParentFile().getName())) {
+                    File tomcatHome = war.getParentFile().getParentFile();
+                    if (tomcatHome.exists()) {
+                        File logs = new File(tomcatHome, "logs");
+                        if (logs.isDirectory() && logs.canWrite()) {
+                            return logs.getAbsolutePath();
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

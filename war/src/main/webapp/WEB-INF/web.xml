@@ -25,8 +25,12 @@
     </context-param>
 
     <context-param>
-        <param-name>log4jConfigLocation</param-name>
-        <param-value>${jahia.log4j.config}</param-value>
+        <param-name>log4jConfiguration</param-name>
+        <param-value>${sys:jahia.log4j.config}</param-value>
+    </context-param>
+    <context-param>
+        <param-name>isLog4jAutoInitializationDisabled</param-name>
+        <param-value>true</param-value>
     </context-param>
     <context-param>
         <param-name>log4jRefreshInterval</param-name>

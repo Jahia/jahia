@@ -46,8 +46,15 @@ package org.jahia.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Filter.Result;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.filter.LevelRangeFilter;
+import org.apache.logging.log4j.core.impl.ThrowableProxy;
 
 /**
  * Wraps the Log4jEventCollector providing for methods similar to Log4jEventCollector, which are decoupled from Log4J however.
@@ -64,13 +71,13 @@ public class Log4jEventCollectorWrapper implements AutoCloseable {
      */
     public static class LoggingEventWrapper {
 
-        private LoggingEvent target;
+        private LogEvent target;
 
         /**
          * Create a logging event.
          * @param target Underlying Log4J logging event
          */
-        public LoggingEventWrapper(LoggingEvent target) {
+        public LoggingEventWrapper(LogEvent target) {
             this.target = target;
         }
 
@@ -78,28 +85,29 @@ public class Log4jEventCollectorWrapper implements AutoCloseable {
          * @return Event level
          */
         public int getLevel() {
-            return target.getLevel().toInt();
+            return target.getLevel().intLevel();
         }
 
         /**
          * @return Event timestamp
          */
         public long getTimestamp() {
-            return target.getTimeStamp();
+            return target.getTimeMillis();
         }
 
         /**
          * @return Event message
          */
         public String getMessage() {
-            return target.getRenderedMessage();
+            return target.getMessage().getFormattedMessage();
         }
 
         /**
          * @return Event exception info if any, null otherwise
          */
         public String[] getThrowableInfo() {
-            return target.getThrowableStrRep();
+            ThrowableProxy t = target.getThrownProxy();
+            return t != null ? t.getExtendedStackTraceAsString("").split("\n") : null;
         }
     }
 
@@ -107,7 +115,7 @@ public class Log4jEventCollectorWrapper implements AutoCloseable {
      * Create a wrapper and start collecting events.
      * @param level Logging level of events to collect
      */
-    public Log4jEventCollectorWrapper(int level) {
+    public Log4jEventCollectorWrapper(String level) {
         this(level, level);
     }
 
@@ -116,15 +124,16 @@ public class Log4jEventCollectorWrapper implements AutoCloseable {
      * @param minLevel Minimum logging level of events to collect
      * @param maxLevel Maximum logging level of events to collect
      */
-    public Log4jEventCollectorWrapper(int minLevel, int maxLevel) {
-        target = new Log4jEventCollector(minLevel, maxLevel);
-        Logger.getRootLogger().addAppender(target);
+    public Log4jEventCollectorWrapper(String minLevel, String maxLevel) {
+        target = Log4jEventCollector.createAppender("eventCollector",
+                LevelRangeFilter.createFilter(Level.getLevel(minLevel), Level.getLevel(maxLevel), Result.ACCEPT, Result.DENY));
+        getRootLoggerConfig().addAppender(target, Level.getLevel(minLevel), null);
     }
 
     @Override
     public void close() {
-        Logger.getRootLogger().removeAppender(target);
-        target.close();
+        getRootLoggerConfig().removeAppender(target.getName());
+        target.stop();
     }
 
     /**
@@ -133,10 +142,16 @@ public class Log4jEventCollectorWrapper implements AutoCloseable {
     public List<LoggingEventWrapper> getCollectedEvents() {
         return convert(target.getCollectedEvents());
     }
+    
+    private LoggerConfig getRootLoggerConfig() {
+        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        Configuration config = ctx.getConfiguration();
+        return config.getLoggerConfig(LogManager.getRootLogger().getName());
+    }
 
-    private static List<LoggingEventWrapper> convert(List<LoggingEvent> events) {
-        ArrayList<LoggingEventWrapper> result = new ArrayList<LoggingEventWrapper>(events.size());
-        for (LoggingEvent event : events) {
+    private static List<LoggingEventWrapper> convert(List<LogEvent> events) {
+        ArrayList<LoggingEventWrapper> result = new ArrayList<>(events.size());
+        for (LogEvent event : events) {
             result.add(new LoggingEventWrapper(event));
         }
         return result;

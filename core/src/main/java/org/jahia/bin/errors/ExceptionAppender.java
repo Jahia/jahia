@@ -43,11 +43,18 @@
  */
 package org.jahia.bin.errors;
 
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.Node;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.slf4j.Logger;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * A Log4J appender that will log exceptions through the ErrorFileDumper system.
@@ -56,21 +63,45 @@ import java.io.IOException;
  * Date: Jul 16, 2010
  * Time: 3:40:31 PM
  */
-public class ExceptionAppender extends AppenderSkeleton {
+@Plugin(name = "ExceptionAppender", category = Node.CATEGORY, elementType = Appender.ELEMENT_TYPE, printObject = true)
+public class ExceptionAppender extends AbstractAppender {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(ExceptionAppender.class);
 
     private boolean alreadyDumping = false;
+    
+    /**
+     * Builds ExceptionAppender instances.
+     * 
+     * @param <B> The type to build
+     */
+    public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
+            implements org.apache.logging.log4j.core.util.Builder<ExceptionAppender> {
+
+        @Override
+        public ExceptionAppender build() {
+            return new ExceptionAppender(getName(), getLayout(), getFilter());
+        }
+    }
+    
+    @PluginBuilderFactory
+    public static <B extends Builder<B>> B newBuilder() {
+        return new Builder<B>().asBuilder();
+    }
+
+    private ExceptionAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter) {
+        super(name, filter, layout, false);
+    }
 
     @Override
-    protected void append(LoggingEvent event) {
+    public void append(LogEvent event) {
         // first let's prevent re-entry
-        if (alreadyDumping || event.getThrowableInformation() == null || ErrorFileDumper.isShutdown()) {
+        if (alreadyDumping || event.getThrown() == null || ErrorFileDumper.isShutdown()) {
             return;
         }
 
         try {
             alreadyDumping = true;
-            ErrorFileDumper.dumpToFile(event.getThrowableInformation().getThrowable(), null);
+            ErrorFileDumper.dumpToFile(event.getThrown(), null);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         } finally {

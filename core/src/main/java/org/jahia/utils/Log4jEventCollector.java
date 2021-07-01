@@ -43,62 +43,58 @@
  */
 package org.jahia.utils;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.Node;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.filter.LevelRangeFilter;
 
 /**
  * A Log4j appender that accumulates logging events and provides access to accumulated items.
  */
-public class Log4jEventCollector extends AppenderSkeleton {
+@Plugin(name = "Log4jEventCollector", category = Node.CATEGORY, elementType = Appender.ELEMENT_TYPE, printObject = true)
+public class Log4jEventCollector extends AbstractAppender {
 
-    private int minLevel;
-    private int maxLevel;
     private boolean closed;
-    private List<LoggingEvent> events = new LinkedList<LoggingEvent>();
-
-    /**
-     * Create a collector.
-     * @param minLevel Minimum logging level of events to collect
-     * @param maxLevel Maximum logging level of events to collect
-     */
-    public Log4jEventCollector(int minLevel, int maxLevel) {
-        if (minLevel > maxLevel) {
-            throw new IllegalArgumentException("Min level must be lower than or equal to max level");
+    private List<LogEvent> events = new LinkedList<>();
+    
+    @PluginFactory
+    public static Log4jEventCollector createAppender(
+            @PluginAttribute("name") final String name,
+            @PluginElement("LevelRangeFilter") final LevelRangeFilter filter) {
+        if (name == null) {
+            LOGGER.error("A name for the Appender must be specified");
+            return null;
         }
-        this.minLevel = minLevel;
-        this.maxLevel = maxLevel;
+        return new Log4jEventCollector(name, null, filter);
+    }
+
+    private Log4jEventCollector(final String name, final Layout<? extends Serializable> layout, final LevelRangeFilter filter) {
+        super(name, filter, layout, false);
     }
 
     @Override
-    protected synchronized void append(LoggingEvent event) {
+    public synchronized void append(LogEvent event) {
         if (closed) {
             throw new IllegalStateException("Event collector is closed");
         }
-        int level = event.getLevel().toInt();
-        if (level < minLevel || level > maxLevel) {
-            return;
-        }
         events.add(event);
-    }
-
-    @Override
-    public synchronized void close() {
-        closed = true;
-    }
-
-    @Override
-    public boolean requiresLayout() {
-        return false;
     }
 
     /**
      * @return Logging events that have been collected
      */
-    public synchronized List<LoggingEvent> getCollectedEvents() {
+    public synchronized List<LogEvent> getCollectedEvents() {
         return Collections.unmodifiableList(events);
     }
 }

@@ -43,8 +43,18 @@
  */
 package org.jahia.services.notification;
 
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.spi.LoggingEvent;
+import java.io.Serializable;
+
+import org.apache.logging.log4j.core.AbstractLifeCycle;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.Node;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.jahia.services.SpringContextSingleton;
 
 /**
@@ -52,34 +62,52 @@ import org.jahia.services.SpringContextSingleton;
  * 
  * @author Sergiy Shyrkov
  */
-public class CamelAppender extends AppenderSkeleton {
+@Plugin(name = "CamelAppender", category = Node.CATEGORY, elementType = Appender.ELEMENT_TYPE, printObject = true)
+public class CamelAppender extends AbstractAppender {
+    
+    private CamelNotificationService camelNotificationService;
+    private String targetUri;
+    
+   /**
+     * Builds CamelAppender instances.
+     * 
+     * @param <B> The type to build
+     */
+    public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
+            implements org.apache.logging.log4j.core.util.Builder<CamelAppender> {
+        @PluginAttribute(value = "targetUri", defaultString = "direct:logs")
+        private String targetUri;
 
-	private CamelNotificationService notificationService;
-	private String targetUri = "direct:logs";
+        @Override
+        public CamelAppender build() {
+            final Layout<? extends Serializable> layout = getLayout();
+            if (layout == null) {
+                AbstractLifeCycle.LOGGER.error("No layout provided for CamelAppender");
+                return null;
+            }
+            CamelAppender appender = new CamelAppender(getName(), layout, getFilter(), isIgnoreExceptions());
+            appender.setTargetUri(targetUri);
+            return appender;
+        }
+    }
+	
+    @PluginBuilderFactory
+    public static <B extends Builder<B>> B newBuilder() {
+        return new Builder<B>().asBuilder();
+    }
 
-	/**
-	 * Initializes an instance of this class.
-	 */
-	public CamelAppender() {
-		super();
-	}
-
-	/**
-	 * Initializes an instance of this class.
-	 * 
-	 * @param isActive
-	 */
-	public CamelAppender(boolean isActive) {
-		super(isActive);
-	}
+    private CamelAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
+            final boolean ignoreExceptions) {
+        super(name, filter, layout, ignoreExceptions);
+    }
 
 	@Override
-	protected void append(LoggingEvent event) {
+    public void append(LogEvent event) {
 		CamelNotificationService notificationService = getNotificationService();
 		if (notificationService != null) {
 			// sending formatted message to the configured URI
 			notificationService.queueMessagesWithBodyAndHeaders(targetUri,
-			        getLayout().format(event), null);
+			        getLayout().toSerializable(event), null);
 		}
 	}
 
@@ -88,14 +116,14 @@ public class CamelAppender extends AppenderSkeleton {
 	}
 
 	private CamelNotificationService getNotificationService() {
-		if (notificationService == null) {
+		if (camelNotificationService == null) {
 			SpringContextSingleton springCtx = SpringContextSingleton.getInstance();
 			if (springCtx.isInitialized()) {
-				notificationService = (CamelNotificationService) springCtx.getContext().getBean(
+				camelNotificationService = (CamelNotificationService) springCtx.getContext().getBean(
 				        "camelNotificationService");
 			}
 		}
-		return notificationService;
+		return camelNotificationService;
 	}
 
 	public boolean requiresLayout() {

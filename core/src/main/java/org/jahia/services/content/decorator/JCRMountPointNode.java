@@ -44,9 +44,10 @@
 package org.jahia.services.content.decorator;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.jahia.services.content.*;
 import org.jahia.settings.SettingsBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.InvalidItemStateException;
 import javax.jcr.ItemNotFoundException;
@@ -63,7 +64,8 @@ import java.util.Map;
  * Time: 2:19:40 PM
  */
 public class JCRMountPointNode extends JCRProtectedNodeAbstractDecorator {
-
+    private static final Logger logger = LoggerFactory.getLogger(JCRMountPointNode.class);
+    
     public static final String MOUNT_POINT_PROPERTY_NAME = "mountPoint";
     public static final String MOUNT_STATUS_PROPERTY_NAME = "mountStatus";
     public static final String MOUNT_SUFFIX = "-mount";
@@ -133,8 +135,6 @@ public class JCRMountPointNode extends JCRProtectedNodeAbstractDecorator {
             return getTargetMountPointPath();
         }
     }
-
-    private transient static Logger logger = Logger.getLogger(JCRMountPointNode.class);
 
     /**
      * Initializes an instance of this class.

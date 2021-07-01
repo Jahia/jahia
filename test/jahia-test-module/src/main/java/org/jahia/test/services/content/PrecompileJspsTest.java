@@ -48,8 +48,7 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
+import org.apache.logging.log4j.Level;
 import org.jahia.bin.Jahia;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.utils.Log4jEventCollectorWrapper;
@@ -57,6 +56,8 @@ import org.jahia.utils.Log4jEventCollectorWrapper.LoggingEventWrapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.HTMLElementName;
@@ -77,13 +78,13 @@ import static org.assertj.core.api.Assertions.*;
 
 public class PrecompileJspsTest extends JahiaTestCase {
 
-    private static final Logger logger = Logger.getLogger(PrecompileJspsTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(PrecompileJspsTest.class);
 
     private Log4jEventCollectorWrapper logEventCollector;
 
     @Before
     public void setUp() {
-        logEventCollector = new Log4jEventCollectorWrapper(Priority.ERROR_INT);
+        logEventCollector = new Log4jEventCollectorWrapper(Level.ERROR.name());
     }
 
     @After
@@ -99,7 +100,7 @@ public class PrecompileJspsTest extends JahiaTestCase {
     public void testPrecompileJsps() throws IOException {
         HttpClient client = new HttpClient();
         client.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(JahiaTestCase.getRootUserCredentials().getUserID(),
-                new String(JahiaTestCase.getRootUserCredentials().getPassword())));
+                String.valueOf(JahiaTestCase.getRootUserCredentials().getPassword())));
         client.getParams().setAuthenticationPreemptive(true);
         GetMethod get = new GetMethod(getPrecompileServletURL());
         try {
@@ -110,7 +111,7 @@ public class PrecompileJspsTest extends JahiaTestCase {
             Source source = new Source(get.getResponseBodyAsString());
             Element aElement = source.getFirstElement(HTMLElementName.A);
             String url = getBaseServerURL() + aElement.getAttributeValue("href");
-            logger.info("Starting the precompileServlet with the following url: " + url);
+            logger.info("Starting the precompileServlet with the following url: {}", url);
             get = new GetMethod(url);
             statusCode = client.executeMethod(get);
             assertThat(statusCode).isEqualTo(HttpStatus.SC_OK).withFailMessage("Precompile servlet failed");

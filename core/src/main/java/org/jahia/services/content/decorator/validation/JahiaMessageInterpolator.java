@@ -43,11 +43,12 @@
  */
 package org.jahia.services.content.decorator.validation;
 
-import org.apache.log4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.i18n.Messages;
 import org.jahia.utils.i18n.ResourceBundles;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.i18n.LocaleContextHolder;
 
 import javax.validation.MessageInterpolator;
@@ -63,7 +64,7 @@ import java.util.regex.Pattern;
  *        Created : 19/10/12
  */
 public class JahiaMessageInterpolator implements MessageInterpolator {
-    private transient static Logger logger = Logger.getLogger(JahiaMessageInterpolator.class);
+    private static final Logger logger = LoggerFactory.getLogger(JahiaMessageInterpolator.class);
 
     /**
      * The name of the default message bundle.

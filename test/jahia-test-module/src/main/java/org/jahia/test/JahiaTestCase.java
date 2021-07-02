@@ -43,18 +43,6 @@
  */
 package org.jahia.test;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.SimpleCredentials;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
@@ -72,6 +60,17 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.test.bin.BaseTestController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.SimpleCredentials;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Super class for Jahia tests
@@ -213,7 +212,9 @@ public class JahiaTestCase {
     }
 
     protected GetMethod createGetMethod(String relativeUrl) {
-        return new GetMethod(getBaseServerURL() + Jahia.getContextPath() + relativeUrl);
+        GetMethod getMethod = new GetMethod(getBaseServerURL() + Jahia.getContextPath() + relativeUrl);
+        getMethod.addRequestHeader("Origin", getBaseServerURL());
+        return getMethod;
     }
 
     protected String getBaseServerURLPort() {
@@ -249,6 +250,7 @@ public class JahiaTestCase {
 
     protected PostResult post(String url, String[]... params) throws IOException {
         PostMethod method = new PostMethod(url);
+        method.addRequestHeader("Origin", getBaseServerURL());
         for (String[] param : params) {
             method.addParameter(param[0], param[1]);
         }

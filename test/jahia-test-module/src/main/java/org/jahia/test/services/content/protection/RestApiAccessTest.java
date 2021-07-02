@@ -43,30 +43,9 @@
  */
 package org.jahia.test.services.content.protection;
 
-import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
-import static javax.servlet.http.HttpServletResponse.SC_OK;
-import static org.jahia.api.Constants.EDIT_WORKSPACE;
-import static org.jahia.api.Constants.LIVE_WORKSPACE;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
-
-import javax.jcr.RepositoryException;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -75,6 +54,18 @@ import org.jahia.test.TestHelper;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import javax.jcr.RepositoryException;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
+
+import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
+import static javax.servlet.http.HttpServletResponse.SC_OK;
+import static org.jahia.api.Constants.EDIT_WORKSPACE;
+import static org.jahia.api.Constants.LIVE_WORKSPACE;
+import static org.junit.Assert.*;
 
 /**
  * Test case for protecting access to JCR via REST API.
@@ -164,8 +155,8 @@ public class RestApiAccessTest extends JahiaTestCase {
 
     @Test
     public void accessWithGuestToFoldersAndPages() throws RepositoryException, IOException {
-        checkLiveAccess("/sites/" + TESTSITE_NAME + "/files");
-        checkLiveAccess("/sites/" + TESTSITE_NAME + "/home");
+        checkNoAccess("/sites/" + TESTSITE_NAME + "/files");
+        checkNoAccess("/sites/" + TESTSITE_NAME + "/home");
     }
 
     private void checkLiveAccess(String path) throws IOException {

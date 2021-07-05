@@ -43,32 +43,13 @@
  */
 package org.jahia.test.services.content.protection;
 
-import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
-import static javax.servlet.http.HttpServletResponse.SC_OK;
-import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Locale;
-import java.util.Properties;
-
-import javax.jcr.RepositoryException;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.categories.Category;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.sites.JahiaSite;
@@ -78,6 +59,16 @@ import org.jahia.test.TestHelper;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import javax.jcr.RepositoryException;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Locale;
+import java.util.Properties;
+
+import static javax.servlet.http.HttpServletResponse.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test case for protecting access to JCR settings node.
@@ -296,12 +287,11 @@ public class JsonViewAccessTest extends JahiaTestCase {
         String[] relativePaths = new String[] { "/files", "/files/folder-1", "/files/folder-2" };
 
         for (String path : relativePaths) {
-            checkHasAccess(sitePath + path + ".json", "\"jcr:created\"");
+            checkNoAccess(sitePath + path + ".json");
             checkHasAccess(sitePath + path + ".tree.json",
                     "/files".equals(path) ? "\"path\":\"" + sitePath + path : "[]");
             checkHasAccess(sitePath + path + ".treeItem.json", "\"path\":\"" + sitePath + path);
-            checkHasAccess(sitePath + path + ".treeRootItem.json",
-                    "\"path\":\"" + sitePath + path);
+            checkNoAccess(sitePath + ".treeRootItem.json");
         }
     }
 
@@ -315,11 +305,10 @@ public class JsonViewAccessTest extends JahiaTestCase {
         // access for pages with sub-pages
         String[] relativePaths = new String[] { "/home", "/home/page-a", "/home/label-c" };
         for (String path : relativePaths) {
-            checkHasAccess(sitePath + path + ".json", "\"jcr:created\"");
+            checkNoAccess(sitePath + path + ".json");
             checkHasAccess(sitePath + path + ".tree.json", "\"path\":\"" + sitePath + path);
             checkHasAccess(sitePath + path + ".treeItem.json", "\"path\":\"" + sitePath + path);
-            checkHasAccess(sitePath + path + ".treeRootItem.json",
-                    "\"path\":\"" + sitePath + path);
+            checkNoAccess(sitePath + path + ".treeRootItem.json");
         }
 
         // access for pages without subpages

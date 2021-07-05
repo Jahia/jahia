@@ -4,13 +4,12 @@ Production Tips
 
     * Fine tune the underlying connections between Jahia 6.6 and the DB, monitor regularly your database performances, log all slow queries so that you can find what need to be improved on the DB side. See our fine tuning guide for more Jahia 6.6 specific information.
 
-    * Deactivate profiler logs, turn the following category to higher level than DEBUG, for example ERROR:
+    * Deactivate profiler logs, turn the following logger to higher level than DEBUG, for example ERROR:
 
 +----------------
-<category name="profilerLoggingService" additivity="false">
-    <priority value="ERROR"/>
-    <appender-ref ref="profilerLogs"/>
-</category>
+    <Logger name="profilerLoggingService" additivity="false" level="info">
+        <AppenderRef ref="RollingProfilerLog"/>
+    </Logger>
 +-----------------
 
     * Reduce the general level of the ROOT category to at least WARN level (ERROR and FATAL having even less impact on performance), if you have some issue then you can go back to INFO or DEBUG level if needed or asked by our customer services. Anyway Jahia 6.6 will log all your errors in a separate file for each of them so if needed you can at least provide this file to our customer services.

@@ -3,49 +3,53 @@
 <Configuration xmlns:xi="http://www.w3.org/2001/XInclude"
 	packages="org.jahia.bin.errors,org.jahia.services.notification">
   <Appenders>
-    <RollingFile name="ROLL" fileName="${sys:jahia.log.dir}jahia.log"
+    <RollingFile name="RollingJahiaLog" fileName="${sys:jahia.log.dir}jahia.log"
                  filePattern="${sys:jahia.log.dir}jahia_%d{yyyy-MM-dd}.log">
       <PatternLayout pattern="%d: %-5p [%t] %c: %m%n"/>
       <TimeBasedTriggeringPolicy/>
       <ThresholdFilter level="DEBUG"/>                               
     </RollingFile>
     
+    <File name="JahiaLog" fileName="${sys:jahia.log.dir}jahia.log">
+      <PatternLayout pattern="%d: %-5p [%t] %c: %m%n"/>
+      <ThresholdFilter level="DEBUG"/>                               
+    </File>
+    
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout pattern="%d: %-5p [%c{1}] - %m%n"/>
       <ThresholdFilter level="DEBUG"/>
     </Console>   
 
-    <RollingFile name="profilerLogs" fileName="${sys:jahia.log.dir}jahia_profiler.log"
+    <RollingFile name="RollingProfilerLog" fileName="${sys:jahia.log.dir}jahia_profiler.log"
                  filePattern="${sys:jahia.log.dir}jahia_profiler_%d{yyyy-MM-dd}.log">
       <PatternLayout pattern="%d %m%n"/>
       <TimeBasedTriggeringPolicy/>
-      <Filters>
-        <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
-      </Filters>          
+      <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
     </RollingFile>
 
-    <RollingFile name="hitAccess" fileName="${sys:jahia.log.dir}jahia_access.log"
+    <RollingFile name="RollingJahiaAccessLog" fileName="${sys:jahia.log.dir}jahia_access.log"
                  filePattern="${sys:jahia.log.dir}jahia_access_%d{yyyy-MM-dd}.log">
       <PatternLayout pattern="%d %m%n"/>
       <TimeBasedTriggeringPolicy/>
-      <Filters>
-        <ThresholdFilter level="TRACE" onMatch="ACCEPT" onMismatch="DENY"/>
-      </Filters>          
+      <ThresholdFilter level="TRACE" onMatch="ACCEPT" onMismatch="DENY"/>
+    </RollingFile>
+    
+    <RollingFile name="JahiaAccessLog" fileName="${sys:jahia.log.dir}jahia_access.log">
+      <PatternLayout pattern="%d %m%n"/>
+      <ThresholdFilter level="TRACE" onMatch="ACCEPT" onMismatch="DENY"/>
     </RollingFile>
 
-    <ExceptionAppender name="exceptionLogging"/>
+    <ExceptionAppender name="ExceptionLogging"/>
     
-    <CamelAppender name="camelNotification" targetUri="direct:logs">
+    <CamelAppender name="CamelNotification" targetUri="direct:logs">
       <PatternLayout pattern="%d %m"/>
-      <Filters>
-        <ThresholdFilter level="TRACE" onMatch="ACCEPT" onMismatch="DENY"/>
-      </Filters>  
+      <ThresholdFilter level="TRACE" onMatch="ACCEPT" onMismatch="DENY"/>
     </CamelAppender>
   </Appenders>    
   
   <Loggers>
     <Logger name="REQUEST">
-        <AppenderRef ref="ROLL"/>
+        <AppenderRef ref="RollingJahiaLog"/>
     </Logger>
 
     <Logger name="SysOut">
@@ -53,17 +57,17 @@
     </Logger>
     
     <Logger name="accessLogger" additivity="false">
-        <AppenderRef ref="hitAccess"/>
-        <AppenderRef ref="camelNotification"/>
+        <AppenderRef ref="RollingJahiaAccessLog"/>
+        <AppenderRef ref="CamelNotification"/>
     </Logger>
 
     <Logger name="loggingService" additivity="false" level="trace">
-        <AppenderRef ref="hitAccess"/>
-        <AppenderRef ref="camelNotification"/>
+        <AppenderRef ref="RollingJahiaAccessLog"/>
+        <AppenderRef ref="CamelNotification"/>
     </Logger>
 
     <Logger name="profilerLoggingService" additivity="false" level="info">
-        <AppenderRef ref="profilerLogs"/>
+        <AppenderRef ref="RollingProfilerLog"/>
     </Logger>
     
 
@@ -84,9 +88,9 @@
     <Logger name="org.apache.karaf.cellar" level="debug"/>
     <Logger name="org.jahia.bundles.clustering.impl.BundleEventHandler" level="debug"/>
     <Root level="info">
-        <AppenderRef ref="ROLL"/>
+        <AppenderRef ref="RollingJahiaLog"/>
         <AppenderRef ref="Console"/>
-        <AppenderRef ref="exceptionLogging"/>
+        <AppenderRef ref="ExceptionLogging"/>
     </Root>
   </Loggers>    
 </Configuration>

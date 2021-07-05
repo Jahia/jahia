@@ -46,8 +46,7 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
     fi
 
     echo "Update log4j..."
-    sed -i 's/ref="RollingJahiaLog"/ref="JahiaLog"/' /usr/local/tomcat/webapps/ROOT/WEB-INF/etc/config/log4j2.xml
-    sed -i 's/ref="RollingJahiaAccessLog"/ref="JahiaAccessLog"/' /usr/local/tomcat/webapps/ROOT/WEB-INF/etc/config/log4j2.xml
+    sed -i 's/ref="RollingJahia/ref="Jahia/' /usr/local/tomcat/webapps/ROOT/WEB-INF/etc/config/log4j2.xml
 
     sed -i "s|#LOGS_FOLDER#|$LOGS_FOLDER|g;s|#LOG_MAX_DAYS#|$LOG_MAX_DAYS|g;s|#LOG_MAX_SIZE#|$LOG_MAX_SIZE|g" /usr/local/tomcat/conf/jahia_logrotate
 

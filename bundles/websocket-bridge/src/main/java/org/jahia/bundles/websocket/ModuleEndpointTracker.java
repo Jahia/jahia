@@ -104,7 +104,7 @@ public class ModuleEndpointTracker {
                         }
 
                         // read @ServerEndPoint infos
-                        String path = serverEndpoint.value();
+                        String path = "/modules" + serverEndpoint.value();
                         List<Class<? extends Decoder>> decoders = Arrays.asList(serverEndpoint.decoders());
                         List<Class<? extends Encoder>> encoders = Arrays.asList(serverEndpoint.encoders());
                         List<String> subprotocol = Arrays.asList(serverEndpoint.subprotocols());

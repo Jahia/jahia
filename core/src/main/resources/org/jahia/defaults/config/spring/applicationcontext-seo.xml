@@ -42,7 +42,7 @@
         <property name="siteService" ref="JahiaSitesService"/>
         <property name="settingsBean" ref="settingsBean"/>
         <property name="reservedUrlPrefixes"
-                  value="${seoReservedUrlPrefixesInternal:administration,jahia,atmosphere,gwtAtmosphere,cms,error,files,flow,generated-resources,gwt,initializationCompleted,PlutoInvoker,repository,start,tools,validateTicket,welcome,css,javascript,engines,errors,favicon.ico,icons,iphone,modules,ping.jsp,tools,server,websocket},${seoReservedUrlPrefixes:}"/>
+                  value="${seoReservedUrlPrefixesInternal:administration,jahia,atmosphere,gwtAtmosphere,cms,error,files,flow,generated-resources,gwt,initializationCompleted,PlutoInvoker,repository,start,tools,validateTicket,welcome,css,javascript,engines,errors,favicon.ico,icons,iphone,modules,ping.jsp,tools,server},${seoReservedUrlPrefixes:}"/>
     </bean>
 
     <bean id="UrlRewriteFilter" class="org.jahia.services.seo.urlrewrite.UrlRewriteFilter">

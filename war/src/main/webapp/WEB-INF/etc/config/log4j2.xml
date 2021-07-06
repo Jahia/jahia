@@ -10,7 +10,7 @@
       <ThresholdFilter level="DEBUG"/>                               
     </RollingFile>
     
-    <File name="JahiaLog" fileName="${sys:jahia.log.dir}jahia.log">
+    <File name="JahiaLog" fileName="${sys:jahia.log.dir}/jahia.log">
       <PatternLayout pattern="%d: %-5p [%t] %c: %m%n"/>
       <ThresholdFilter level="DEBUG"/>                               
     </File>
@@ -34,10 +34,10 @@
       <ThresholdFilter level="TRACE" onMatch="ACCEPT" onMismatch="DENY"/>
     </RollingFile>
     
-    <RollingFile name="JahiaAccessLog" fileName="${sys:jahia.log.dir}jahia_access.log">
+    <File name="JahiaAccessLog" fileName="${sys:jahia.log.dir}/jahia_access.log">
       <PatternLayout pattern="%d %m%n"/>
       <ThresholdFilter level="TRACE" onMatch="ACCEPT" onMismatch="DENY"/>
-    </RollingFile>
+    </File>
 
     <ExceptionAppender name="ExceptionLogging"/>
     

@@ -44,6 +44,8 @@
 package org.jahia.bin.listeners;
 
 import java.io.File;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,6 +58,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.WriterAppender;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
@@ -129,6 +132,48 @@ public class LoggingConfigListener extends Log4jServletContextListener {
         // send an OSGi event about changed configuration
         FrameworkService.sendEvent(EVENT_TOPIC_LOGGING,
                 Collections.singletonMap("type", EVENT_TYPE_LOGGING_CONFIG_CHANGED), false);
+    }
+    
+    /**
+     * Creates a {@link Writer} and adds a dynamic {@link WriterAppender} to the specified logger.
+     * The created and returned Writer needs to be removed with removeLogAwareWriter
+     * 
+     * @param logger the name of the logger obtaining the WriterAppender
+     * @return the created {@link Writer}
+     */
+    public static Writer createLogAwareWriter(String logger) {
+        StringWriter stringWriter = new StringWriter();
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final Configuration config = ctx.getConfiguration();
+        
+        WriterAppender writerAppender = WriterAppender.newBuilder().setName(logger + "writeLogger").setTarget(stringWriter)
+                .build();
+        writerAppender.start();
+        config.addAppender(writerAppender);
+        
+        LoggerConfig loggerConfig = config.getLoggerConfig(logger);
+        if (loggerConfig.getName().equals(logger)) {
+            config.addLogger(logger, LoggerConfig.createLogger(true, Level.INFO, logger, null,
+                    new AppenderRef[] {}, null, new DefaultConfigurationBuilder<BuiltConfiguration>().build(), null));
+            loggerConfig = config.getLoggerConfig(logger);
+        }
+        loggerConfig.addAppender(writerAppender, null, null);
+
+        ctx.updateLoggers();
+        return stringWriter;
+    }
+
+    /**
+     * Removes the {@link WriterAppender} from the specified logger.
+     * 
+     * @param logger the name of the logger getting the WriterAppender removed
+     */
+    public static void removeLogAwareWriter(String logger){
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final Configuration config = ctx.getConfiguration();
+        LoggerConfig loggerConfig = config.getLoggerConfig(logger);
+        loggerConfig.removeAppender(logger + "writeLogger");
+        ctx.updateLoggers();
     }
 
     @Override

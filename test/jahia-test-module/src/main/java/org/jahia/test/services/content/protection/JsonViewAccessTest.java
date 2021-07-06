@@ -291,7 +291,7 @@ public class JsonViewAccessTest extends JahiaTestCase {
             checkHasAccess(sitePath + path + ".tree.json",
                     "/files".equals(path) ? "\"path\":\"" + sitePath + path : "[]");
             checkHasAccess(sitePath + path + ".treeItem.json", "\"path\":\"" + sitePath + path);
-            checkNoAccess(sitePath + ".treeRootItem.json");
+            checkNoAccess(sitePath + path + ".treeRootItem.json");
         }
     }
 
@@ -315,11 +315,10 @@ public class JsonViewAccessTest extends JahiaTestCase {
         relativePaths = new String[] { "/home/page-a/sub-page-1", "/home/label-c/label-sub-page-1" };
 
         for (String path : relativePaths) {
-            checkHasAccess(sitePath + path + ".json", "\"jcr:created\"");
+            checkNoAccess(sitePath + path + ".json");
             checkHasAccess(sitePath + path + ".tree.json", null);
             checkHasAccess(sitePath + path + ".treeItem.json", "\"path\":\"" + sitePath + path);
-            checkHasAccess(sitePath + path + ".treeRootItem.json",
-                    "\"path\":\"" + sitePath + path);
+            checkNoAccess(sitePath + path + ".treeRootItem.json");
         }
     }
 

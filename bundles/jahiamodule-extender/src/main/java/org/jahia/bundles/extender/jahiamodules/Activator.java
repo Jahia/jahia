@@ -119,6 +119,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.jahia.services.modulemanager.Constants.URL_PROTOCOL_DX;
 import static org.jahia.services.modulemanager.Constants.URL_PROTOCOL_MODULE_DEPENDENCIES;
@@ -709,7 +710,7 @@ public class Activator implements BundleActivator {
                     List<String> lines = IOUtils.readLines(url.openStream());
                     boolean isEditable = lines.stream().map(String::toLowerCase).anyMatch(p -> p.startsWith("# default configuration"));
                     if (!path.toFile().exists() || !isEditable) {
-                        if (!isEditable) {
+                        if (!isEditable && Stream.of("cfg","config","yml","yaml").anyMatch(path::endsWith)) {
                             lines.add(0, "# Do not edit - Configuration file provided by module, any change will be lost");
                         }
                         try (Writer w = new FileWriter(path.toFile())) {

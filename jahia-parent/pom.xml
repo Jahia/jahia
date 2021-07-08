@@ -81,7 +81,7 @@
 
         <pluto.version>2.0.2</pluto.version>
         <spring.version>3.2.18.RELEASE_OSGI</spring.version>
-        <springwebflow-version>2.4.1.RELEASE</springwebflow-version>
+        <springwebflow-version>2.4.8.RELEASE</springwebflow-version>
         <jackrabbit.version>2.18.4-jahia1</jackrabbit.version>
         <jackson.core.version>2.9.10</jackson.core.version>
         <jackson-databind.core.version>2.9.10.8</jackson-databind.core.version>

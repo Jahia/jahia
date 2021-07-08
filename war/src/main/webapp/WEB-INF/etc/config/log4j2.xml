@@ -1,97 +1,122 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <Configuration xmlns:xi="http://www.w3.org/2001/XInclude"
-	packages="org.jahia.bin.errors,org.jahia.services.notification"
+    packages="org.jahia.bin.errors,org.jahia.services.notification"
     monitorInterval="30">
-  <Appenders>
-    <RollingFile name="RollingJahiaLog" fileName="${sys:jahia.log.dir}jahia.log"
-                 filePattern="${sys:jahia.log.dir}jahia_%d{yyyy-MM-dd}.log">
-      <PatternLayout pattern="%d: %-5p [%t] %c: %m%n"/>
-      <TimeBasedTriggeringPolicy/>
-      <ThresholdFilter level="DEBUG"/>                               
-    </RollingFile>
-    
-    <File name="JahiaLog" fileName="${sys:jahia.log.dir}/jahia.log">
-      <PatternLayout pattern="%d: %-5p [%t] %c: %m%n"/>
-      <ThresholdFilter level="DEBUG"/>                               
-    </File>
-    
-    <Console name="Console" target="SYSTEM_OUT">
-      <PatternLayout pattern="%d: %-5p [%c{1}] - %m%n"/>
-      <ThresholdFilter level="DEBUG"/>
-    </Console>   
+    <Appenders>
+        <RollingFile name="RollingJahiaLog"
+            fileName="${sys:jahia.log.dir}jahia.log"
+            filePattern="${sys:jahia.log.dir}jahia_%d{yyyy-MM-dd}.log">
+            <PatternLayout
+                pattern="%d: %-5p [%t] %c: %m%n" />
+            <TimeBasedTriggeringPolicy />
+            <ThresholdFilter level="DEBUG" />
+        </RollingFile>
 
-    <RollingFile name="RollingProfilerLog" fileName="${sys:jahia.log.dir}jahia_profiler.log"
-                 filePattern="${sys:jahia.log.dir}jahia_profiler_%d{yyyy-MM-dd}.log">
-      <PatternLayout pattern="%d %m%n"/>
-      <TimeBasedTriggeringPolicy/>
-      <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
-    </RollingFile>
+        <File name="JahiaLog"
+            fileName="${sys:jahia.log.dir}/jahia.log">
+            <PatternLayout
+                pattern="%d: %-5p [%t] %c: %m%n" />
+            <ThresholdFilter level="DEBUG" />
+        </File>
 
-    <RollingFile name="RollingJahiaAccessLog" fileName="${sys:jahia.log.dir}jahia_access.log"
-                 filePattern="${sys:jahia.log.dir}jahia_access_%d{yyyy-MM-dd}.log">
-      <PatternLayout pattern="%d %m%n"/>
-      <TimeBasedTriggeringPolicy/>
-      <ThresholdFilter level="TRACE" onMatch="ACCEPT" onMismatch="DENY"/>
-    </RollingFile>
-    
-    <File name="JahiaAccessLog" fileName="${sys:jahia.log.dir}/jahia_access.log">
-      <PatternLayout pattern="%d %m%n"/>
-      <ThresholdFilter level="TRACE" onMatch="ACCEPT" onMismatch="DENY"/>
-    </File>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout
+                pattern="%d: %-5p [%c{1}] - %m%n" />
+            <ThresholdFilter level="DEBUG" />
+        </Console>
 
-    <ExceptionAppender name="ExceptionLogging"/>
-    
-    <CamelAppender name="CamelNotification" targetUri="direct:logs">
-      <PatternLayout pattern="%d %m"/>
-      <ThresholdFilter level="TRACE" onMatch="ACCEPT" onMismatch="DENY"/>
-    </CamelAppender>
-  </Appenders>    
-  
-  <Loggers>
-    <Logger name="REQUEST">
-        <AppenderRef ref="RollingJahiaLog"/>
-    </Logger>
+        <RollingFile name="RollingProfilerLog"
+            fileName="${sys:jahia.log.dir}jahia_profiler.log"
+            filePattern="${sys:jahia.log.dir}jahia_profiler_%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="%d %m%n" />
+            <TimeBasedTriggeringPolicy />
+            <ThresholdFilter level="DEBUG"
+                onMatch="ACCEPT" onMismatch="DENY" />
+        </RollingFile>
 
-    <Logger name="SysOut">
-        <AppenderRef ref="Console"/>
-    </Logger>
-    
-    <Logger name="accessLogger" additivity="false">
-        <AppenderRef ref="RollingJahiaAccessLog"/>
-        <AppenderRef ref="CamelNotification"/>
-    </Logger>
+        <RollingFile name="RollingJahiaAccessLog"
+            fileName="${sys:jahia.log.dir}jahia_access.log"
+            filePattern="${sys:jahia.log.dir}jahia_access_%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="%d %m%n" />
+            <TimeBasedTriggeringPolicy />
+            <ThresholdFilter level="TRACE"
+                onMatch="ACCEPT" onMismatch="DENY" />
+        </RollingFile>
 
-    <Logger name="loggingService" additivity="false" level="trace">
-        <AppenderRef ref="RollingJahiaAccessLog"/>
-        <AppenderRef ref="CamelNotification"/>
-    </Logger>
+        <File name="JahiaAccessLog"
+            fileName="${sys:jahia.log.dir}/jahia_access.log">
+            <PatternLayout pattern="%d %m%n" />
+            <ThresholdFilter level="TRACE"
+                onMatch="ACCEPT" onMismatch="DENY" />
+        </File>
 
-    <Logger name="profilerLoggingService" additivity="false" level="info">
-        <AppenderRef ref="RollingProfilerLog"/>
-    </Logger>
-    
+        <ExceptionAppender name="ExceptionLogging" />
 
-    <Logger name="org.apache.commons" level="error"/>
-    <Logger name="org.apache.jackrabbit.spi.commons.nodetype.constraint.ValueConstraint" level="error"/>
-    <Logger name="net.htmlparser.jericho" level="warn"/>
-    <Logger name="net.sf.ehcache" level="error"/>
-    <Logger name="net.sf.ehcache.pool.impl" level="warn"/>
-    <Logger name="org.quartz" level="info"/>
-    <Logger name="org.jahia.bin.errors" level="warn"/>
-    <Logger name="org.jahia.services.render.filter.cache" level="info"/>
-    <Logger name="org.jahia.services.textextraction.TextExtractionService" level="info"/>
-    <Logger name="org.jgroups.protocols.pbcast.GMS" level="debug"/>
-    <Logger name="org.hibernate" level="warn"/>
-    <Logger name="org.hibernate.cfg.Environment" level="info"/>
-    <Logger name="org.springframework" level="error"/>
-    <Logger name="org.jahia.bundles.extender.jahiamodules.Activator" level="debug"/>
-    <Logger name="org.apache.karaf.cellar" level="debug"/>
-    <Logger name="org.jahia.bundles.clustering.impl.BundleEventHandler" level="debug"/>
-    <Root level="info">
-        <AppenderRef ref="RollingJahiaLog"/>
-        <AppenderRef ref="Console"/>
-        <AppenderRef ref="ExceptionLogging"/>
-    </Root>
-  </Loggers>    
+        <CamelAppender name="CamelNotification"
+            targetUri="direct:logs">
+            <PatternLayout pattern="%d %m" />
+            <ThresholdFilter level="TRACE"
+                onMatch="ACCEPT" onMismatch="DENY" />
+        </CamelAppender>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="REQUEST">
+            <AppenderRef ref="RollingJahiaLog" />
+        </Logger>
+
+        <Logger name="SysOut">
+            <AppenderRef ref="Console" />
+        </Logger>
+
+        <Logger name="accessLogger" additivity="false">
+            <AppenderRef ref="RollingJahiaAccessLog" />
+            <AppenderRef ref="CamelNotification" />
+        </Logger>
+
+        <Logger name="loggingService" additivity="false"
+            level="trace">
+            <AppenderRef ref="RollingJahiaAccessLog" />
+            <AppenderRef ref="CamelNotification" />
+        </Logger>
+
+        <Logger name="profilerLoggingService" additivity="false"
+            level="info">
+            <AppenderRef ref="RollingProfilerLog" />
+        </Logger>
+
+
+        <Logger name="org.apache.commons" level="error" />
+        <Logger
+            name="org.apache.jackrabbit.spi.commons.nodetype.constraint.ValueConstraint"
+            level="error" />
+        <Logger name="net.htmlparser.jericho" level="warn" />
+        <Logger name="net.sf.ehcache" level="error" />
+        <Logger name="net.sf.ehcache.pool.impl" level="warn" />
+        <Logger name="org.quartz" level="info" />
+        <Logger name="org.jahia.bin.errors" level="warn" />
+        <Logger name="org.jahia.services.render.filter.cache"
+            level="info" />
+        <Logger
+            name="org.jahia.services.textextraction.TextExtractionService"
+            level="info" />
+        <Logger name="org.jgroups.protocols.pbcast.GMS"
+            level="debug" />
+        <Logger name="org.hibernate" level="warn" />
+        <Logger name="org.hibernate.cfg.Environment" level="info" />
+        <Logger name="org.springframework" level="error" />
+        <Logger
+            name="org.jahia.bundles.extender.jahiamodules.Activator"
+            level="debug" />
+        <Logger name="org.apache.karaf.cellar" level="debug" />
+        <Logger
+            name="org.jahia.bundles.clustering.impl.BundleEventHandler"
+            level="debug" />
+        <Root level="info">
+            <AppenderRef ref="RollingJahiaLog" />
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="ExceptionLogging" />
+        </Root>
+    </Loggers>
 </Configuration>

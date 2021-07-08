@@ -4,7 +4,8 @@
 	packages="org.jahia.bin.errors,org.jahia.services.notification">
   <Appenders>
     <RollingFile name="RollingJahiaLog" fileName="${sys:jahia.log.dir}jahia.log"
-                 filePattern="${sys:jahia.log.dir}jahia_%d{yyyy-MM-dd}.log">
+                 filePattern="${sys:jahia.log.dir}jahia_%d{yyyy-MM-dd}.log"
+                 monitorInterval="30">
       <PatternLayout pattern="%d: %-5p [%t] %c: %m%n"/>
       <TimeBasedTriggeringPolicy/>
       <ThresholdFilter level="DEBUG"/>                               

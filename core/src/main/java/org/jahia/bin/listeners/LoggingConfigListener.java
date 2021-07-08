@@ -121,7 +121,10 @@ public class LoggingConfigListener extends Log4jServletContextListener {
     public static void setLoggerLevel(String logger, String level) {
         LoggerContext logContext = (LoggerContext) LogManager.getContext(false);
         Configuration config = logContext.getConfiguration();
-        if (StringUtils.isEmpty(logger) || LoggerConfig.ROOT.equals(logger) || getTargetLoggerConfig(config, logger).getName().equals(logger)) {
+        // if root logger or existing logger configuration is to be updated do it, 
+        // otherwise create the specific logger configuration
+        if (StringUtils.isEmpty(logger) || LoggerConfig.ROOT.equals(logger)
+                || getTargetLoggerConfig(config, logger).getName().equals(logger)) {
             getTargetLoggerConfig(config, logger).setLevel(Level.toLevel(level));
         } else {
             config.addLogger(logger, LoggerConfig.createLogger(true, Level.getLevel(level), logger, null, new AppenderRef[] {}, null,
@@ -152,9 +155,10 @@ public class LoggingConfigListener extends Log4jServletContextListener {
         config.addAppender(writerAppender);
         
         LoggerConfig loggerConfig = config.getLoggerConfig(logger);
-        if (loggerConfig.getName().equals(logger)) {
-            config.addLogger(logger, LoggerConfig.createLogger(true, Level.INFO, logger, null,
-                    new AppenderRef[] {}, null, new DefaultConfigurationBuilder<BuiltConfiguration>().build(), null));
+        // if a logger higher in the hierarchy is returned, we have to create the configuration for the specific logger
+        if (!loggerConfig.getName().equals(logger)) {
+            config.addLogger(logger, LoggerConfig.createLogger(true, Level.INFO, logger, null, new AppenderRef[] {}, null,
+                    new DefaultConfigurationBuilder<BuiltConfiguration>().build(), null));
             loggerConfig = config.getLoggerConfig(logger);
         }
         loggerConfig.addAppender(writerAppender, null, null);

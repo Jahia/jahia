@@ -762,6 +762,11 @@
                                     <replacetoken>org.apache.karaf.jaas.config/${karaf.version}</replacetoken>
                                     <replacevalue>org.apache.karaf.jaas.config/${karaf.jaas.config.version}</replacevalue>
                                 </replace>
+                                <replace file="${project.build.directory}/jahia/WEB-INF/karaf/system/org/apache/karaf/features/standard/${karaf.version}/standard-${karaf.version}-features.xml" failOnNoReplacements="true">
+                                    <replacetoken>pax-web-features/7.2.11</replacetoken>
+                                    <replacevalue>pax-web-features/${pax.web.api.version}</replacevalue>
+                                </replace>
+                                <delete dir="${project.build.directory}/jahia/WEB-INF/karaf/system/org/ops4j/pax/web/pax-web-features/7.2.11"/>
                             </target>
                         </configuration>
                     </execution>

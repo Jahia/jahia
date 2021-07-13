@@ -68,6 +68,7 @@ public class DependenciesCacheEvictionPolicy extends LruPolicy {
     /**
      * @return the name of the Policy. Inbuilt examples are LRU, LFU and FIFO.
      */
+    @Override
     public String getName() {
         return NAME;
     }
@@ -76,7 +77,7 @@ public class DependenciesCacheEvictionPolicy extends LruPolicy {
     @Override
     public boolean compare(Element element1, Element element2) {
         if(logger.isDebugEnabled()){
-            logger.debug("Comparing desirableness of element:\n"+element1+"\nto element:\n"+element2);
+            logger.debug("Comparing desirableness of element: {} to element: {}", element1, element2);
         }
         return ((Set<String>) element1.getObjectValue()).contains(ALL) || !((Set<String>) element2.getObjectValue()).contains(ALL) && super.compare(element1, element2);
     }

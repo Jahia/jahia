@@ -71,14 +71,18 @@ public final class BundleUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(BundleUtils.class);
 
-    private static Map<String, String[]> moduleForClass = new ConcurrentHashMap<String, String[]>();
+    private static Map<String, String[]> moduleForClass = new ConcurrentHashMap<>();
 
-    private static Map<Bundle, AbstractApplicationContext> contextToStart = new HashMap<Bundle, AbstractApplicationContext>();
+    private static Map<Bundle, AbstractApplicationContext> contextToStart = new HashMap<>();
 
-    private static Map<String, Throwable> contextException = new HashMap<String, Throwable>();
+    private static Map<String, Throwable> contextException = new HashMap<>();
 
-    private static Map<String, Map<String, JahiaTemplatesPackage>> modules = new ConcurrentHashMap<String, Map<String, JahiaTemplatesPackage>>(
+    private static Map<String, Map<String, JahiaTemplatesPackage>> modules = new ConcurrentHashMap<>(
             64);
+    
+    private BundleUtils() {
+        throw new IllegalStateException("Utility class");
+      }
 
     /**
      * Returns a String representation for the given bundle event.
@@ -118,10 +122,8 @@ public final class BundleUtils {
     public static Bundle getBundleBySymbolicName(String symbolicName, String version) {
         for (Bundle bundle : FrameworkService.getBundleContext().getBundles()) {
             String n = bundle.getSymbolicName();
-            if (StringUtils.equals(n, symbolicName)) {
-                if (version == null || StringUtils.equals(bundle.getVersion().toString(), version)) {
-                    return bundle;
-                }
+            if (StringUtils.equals(n, symbolicName) && (version == null || StringUtils.equals(bundle.getVersion().toString(), version))) {
+                return bundle;
             }
         }
         return null;
@@ -187,13 +189,10 @@ public final class BundleUtils {
      */
     public static JahiaTemplatesPackage getModule(Bundle bundle) {
 
-        if (bundle.getState() == Bundle.UNINSTALLED) {
+        if (bundle.getState() == Bundle.UNINSTALLED && logger.isWarnEnabled()) {
             // This should not happen: log detailed info if it does.
-            if (logger.isWarnEnabled()) {
-                logger.warn("Uninstalled bundle passed; name: {}, version: {}, stack trace: {}",
-                        new Object[] { bundle.getSymbolicName(), bundle.getVersion(),
-                                Arrays.toString(Thread.currentThread().getStackTrace()) });
-            }
+            logger.warn("Uninstalled bundle passed; name: {}, version: {}, stack trace: {}", bundle.getSymbolicName(), bundle.getVersion(),
+                    Arrays.toString(Thread.currentThread().getStackTrace()));
         }
 
         JahiaTemplatesPackage pkg = null;
@@ -204,14 +203,14 @@ public final class BundleUtils {
 
         Map<String, JahiaTemplatesPackage> moduleVersions = modules.get(moduleId);
         if (moduleVersions == null) {
-            moduleVersions = new ConcurrentHashMap<String, JahiaTemplatesPackage>(1);
+            moduleVersions = new ConcurrentHashMap<>(1);
             modules.put(moduleId, moduleVersions);
         } else {
             if (!moduleVersions.isEmpty()) {
                 JahiaTemplatesPackage firstVersionTemplatePackage = moduleVersions.values().iterator().next();
                 if (((firstVersionTemplatePackage.getGroupId() != null) && (!firstVersionTemplatePackage.getGroupId().equals(groupId))) ||
                         ((firstVersionTemplatePackage.getGroupId() == null) && (groupId != null))) {
-                    logger.error("A different Jahia Module with the Id " + bundle.getSymbolicName() + " already exists");
+                    logger.error("A different Jahia Module with the Id {} already exists", bundle.getSymbolicName());
                     return null;
                 }
             }
@@ -222,16 +221,14 @@ public final class BundleUtils {
         if (pkg == null) {
             logger.info("Building module instance for bundle {} v{}", moduleId, version);
             pkg = JahiaBundleTemplatesPackageHandler.build(bundle);
-            if (pkg != null) {
-                moduleVersions.put(version, pkg);
-            } else {
-                logger.warn(
-                        "Bundle {} seems to be not a valid Jahia module. Cannot build JahiaTemplatesPackage instance for it",
+            if (pkg == null) {
+                logger.warn("Bundle {} seems to be not a valid Jahia module. Cannot build JahiaTemplatesPackage instance for it",
                         bundle.getSymbolicName());
-                logger.info("The following manifest headers were found in the bundle: \n{}", bundle.getHeaders());
+                logger.info("The following manifest headers were found in the bundle: {}", bundle.getHeaders());
                 throw new IllegalArgumentException("Bundle " + bundle.getSymbolicName()
                         + " is not a valid Jahia module");
             }
+            moduleVersions.put(version, pkg);
         }
 
         return pkg;
@@ -284,7 +281,7 @@ public final class BundleUtils {
      */
     public static boolean isJahiaBundle(Bundle bundle) {
         return isJahiaModuleBundle(bundle)
-                || StringUtils.defaultString((String) bundle.getHeaders().get("Bundle-Category")).toLowerCase()
+                || StringUtils.defaultString(bundle.getHeaders().get("Bundle-Category")).toLowerCase()
                 .contains("jahia");
     }
 
@@ -360,8 +357,8 @@ public final class BundleUtils {
                     } catch (IllegalStateException e) {
                         // An un-installed bundle was likely cached in the modules. This should never happen, but if it does, log to have more info
                         // and continue searching the class in other modules.
-                        String message = "Error loading class via module's class loader; group: " + pkg.getGroupId() + ", ID/version: " + pkg.getIdWithVersion();
-                        logger.warn(message, e);
+                        logger.warn("Error loading class via module's class loader; group: {}, ID/version: {}", pkg.getGroupId(),
+                                pkg.getIdWithVersion(), e);
                         continue;
                     } catch (ClassNotFoundException e) {
                         // Continue searching the class in other modules.
@@ -392,9 +389,7 @@ public final class BundleUtils {
         Bundle bundle = null;
         try {
             bundle = (Bundle) MethodUtils.invokeExactMethod(clazz.getClassLoader(), "getBundle", null, null);
-        } catch (IllegalAccessException e) {
-            logger.error(e.getMessage(), e);
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException e) {
             logger.error(e.getMessage(), e);
         } catch (NoSuchMethodException e) {
             // not a bundle class loader
@@ -419,7 +414,7 @@ public final class BundleUtils {
                 JahiaTemplatesPackage firstVersionTemplatePackage = moduleVersions.values().iterator().next();
                 if (((firstVersionTemplatePackage.getGroupId() != null) && (!firstVersionTemplatePackage.getGroupId().equals(groupId))) ||
                         ((firstVersionTemplatePackage.getGroupId() == null) && (groupId != null))) {
-                    logger.warn("A different Jahia Module with the Id " + bundle.getSymbolicName() + " already exists");
+                    logger.warn("A different Jahia Module with the Id {} already exists",  bundle.getSymbolicName());
                     return;
                 }
             }
@@ -520,7 +515,7 @@ public final class BundleUtils {
      * @return <code>true</code> in case the supplied bundle is a fragment bundle; <code>false</code> otherwise
      */
     public static boolean isFragment(Bundle bundle) {
-        return StringUtils.isNotBlank((String) bundle.getHeaders().get(org.osgi.framework.Constants.FRAGMENT_HOST));
+        return StringUtils.isNotBlank(bundle.getHeaders().get(org.osgi.framework.Constants.FRAGMENT_HOST));
     }
 
     /**

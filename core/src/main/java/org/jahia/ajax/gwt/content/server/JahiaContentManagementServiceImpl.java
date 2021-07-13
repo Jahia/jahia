@@ -388,15 +388,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                                       List<String> hiddenTypes, String hiddenRegex, boolean useUILocale) throws GWTJahiaServiceException {
         enableJcrSessionReadOnlyCache();
 
-        if (openPaths == null || openPaths.size() == 0) {
+        if (openPaths == null || openPaths.isEmpty()) {
             openPaths = getOpenPathsForRepository(paths.toString());
         }
 
-        logger.debug("retrieving open paths for {} :\n{}", paths, openPaths);
+        logger.debug("retrieving open paths for {} : {}", paths, openPaths);
         Locale locale = useUILocale ? getUILocale() : getLocale();
-        List<GWTJahiaNode> result = navigation.retrieveRoot(paths, nodeTypes, mimeTypes, filters, fields, selectedNodes, openPaths, getSite(),
+        return navigation.retrieveRoot(paths, nodeTypes, mimeTypes, filters, fields, selectedNodes, openPaths, getSite(),
                 retrieveCurrentSession(getWorkspace(), locale, true), locale, checkSubChild, displayHiddenTypes, hiddenTypes, hiddenRegex);
-        return result;
     }
 
     @Override
@@ -409,8 +408,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         if (logger.isDebugEnabled()) {
             if (paths.size() > 3) {
-                logger.debug("getNodes took {} ms for {} paths: {},...", new Object[]{
-                        System.currentTimeMillis() - timer, paths.size(), StringUtils.join(paths.subList(0, 3), ", ")});
+                logger.debug("getNodes took {} ms for {} paths: {},...", 
+                        System.currentTimeMillis() - timer, paths.size(), StringUtils.join(paths.subList(0, 3), ", "));
             } else {
                 logger.debug("getNodes took {} ms for paths: {}", System.currentTimeMillis() - timer,
                         StringUtils.join(paths, ", "));
@@ -464,11 +463,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         if (logger.isDebugEnabled()) {
             if (paths.size() > 3) {
-                logger.debug(
-                        "getNodesAndTypes took {} ms for {} paths: {},...",
-                        new Object[]{System.currentTimeMillis() - timer, paths.size(),
-                                StringUtils.join(paths.subList(0, 3), ", ")}
-                );
+                logger.debug("getNodesAndTypes took {} ms for {} paths: {},...", System.currentTimeMillis() - timer, paths.size(),
+                        StringUtils.join(paths.subList(0, 3), ", "));
             } else {
                 logger.debug("getNodesAndTypes took {} ms for paths: {}", System.currentTimeMillis() - timer,
                         StringUtils.join(paths, ", "));

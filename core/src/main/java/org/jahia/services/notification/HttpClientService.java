@@ -79,6 +79,7 @@ import static org.apache.commons.httpclient.HttpStatus.SC_OK;
 public class HttpClientService implements ServletContextAware {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpClientService.class);
+    private static final String URL_NOT_PROVIDED = "Provided URL is null";
 
     private static HttpClient cloneHttpClient(HttpClient source) {
         HttpClient cloned = new HttpClient(source.getParams(), source.getHttpConnectionManager());
@@ -113,9 +114,10 @@ public class HttpClientService implements ServletContextAware {
             client.getState().setProxyCredentials(AuthScope.ANY, credentials);
         }
 
-        logger.info("Initialized HttpClient for {} protocol using proxy {} {} credentials",
-                new String[] { protocol.toUpperCase(), key, credentials != null ? "with" : "without" });
-
+        if (logger.isInfoEnabled()) {
+            logger.info("Initialized HttpClient for {} protocol using proxy {} {} credentials", protocol.toUpperCase(), key,
+                    credentials != null ? "with" : "without");
+        }
         return key;
     }
 
@@ -156,7 +158,7 @@ public class HttpClientService implements ServletContextAware {
      */
     public String executeGet(String url, Map<String, String> headers) throws IllegalArgumentException {
         if (StringUtils.isEmpty(url)) {
-            throw new IllegalArgumentException("Provided URL is null");
+            throw new IllegalArgumentException(URL_NOT_PROVIDED);
         }
         if (logger.isDebugEnabled()) {
             logger.debug("Asked to get content from the URL {} using GET method", url);
@@ -177,21 +179,19 @@ public class HttpClientService implements ServletContextAware {
             if (statusLine != null && statusLine.getStatusCode() == SC_OK) {
                 content = httpMethod.getResponseBodyAsString();
             } else {
-                logger.warn("Connection to URL: " + url + " failed with status " + statusLine);
+                logger.warn("Connection to URL: {} failed with status {}", url,statusLine);
             }
 
-        } catch (HttpException e) {
-            logger.error("Unable to get the content of the URL: " + url + ". Cause: " + e.getMessage(), e);
         } catch (IOException e) {
-            logger.error("Unable to get the content of the URL: " + url + ". Cause: " + e.getMessage(), e);
+            logger.error("Unable to get the content of the URL: {}. Cause: {}", url, e.getMessage(), e);
         } finally {
             httpMethod.releaseConnection();
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Retrieved " + (content != null ? content.length() : 0) + " characters as a response");
+            logger.debug("Retrieved {} characters as a response", content != null ? content.length() : 0);
             if (logger.isTraceEnabled()) {
-                logger.trace("Content:\n" + content);
+                logger.trace("Content: {}", content);
             }
         }
 
@@ -223,7 +223,7 @@ public class HttpClientService implements ServletContextAware {
      */
     public String executePost(String url, Map<String, String> parameters, Map<String, String> headers, HttpState state) throws IllegalArgumentException {
         if (StringUtils.isEmpty(url)) {
-            throw new IllegalArgumentException("Provided URL is null");
+            throw new IllegalArgumentException(URL_NOT_PROVIDED);
         }
         if (logger.isDebugEnabled()) {
             logger.debug("Asked to get content from the URL {} using POST method with parameters {}", url, parameters);
@@ -250,23 +250,16 @@ public class HttpClientService implements ServletContextAware {
             if (statusLine != null && statusLine.getStatusCode() == SC_OK) {
                 content = httpMethod.getResponseBodyAsString();
             } else {
-                logger.warn("Connection to URL: " + url + " failed with status " + statusLine);
+                logger.warn("Connection to URL: {} failed with status {}", url, statusLine);
             }
 
-        } catch (HttpException e) {
-            logger.error("Unable to get the content of the URL: " + url + ". Cause: " + e.getMessage(), e);
         } catch (IOException e) {
-            logger.error("Unable to get the content of the URL: " + url + ". Cause: " + e.getMessage(), e);
+            logger.error("Unable to get the content of the URL: {}. Cause: {}", url, e.getMessage(), e);
         } finally {
             httpMethod.releaseConnection();
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Retrieved " + (content != null ? content.length() : 0) + " characters as a response");
-            if (logger.isTraceEnabled()) {
-                logger.trace("Content:\n" + content);
-            }
-        }
+        logContent(content);
 
         return content;
     }
@@ -280,7 +273,7 @@ public class HttpClientService implements ServletContextAware {
      */
     public String getAbsoluteResourceAsString(String url) throws IllegalArgumentException {
         if (StringUtils.isEmpty(url)) {
-            throw new IllegalArgumentException("Provided URL is null");
+            throw new IllegalArgumentException(URL_NOT_PROVIDED);
         }
         if (!isAbsoluteUrl(url)) {
             throw new IllegalArgumentException("Cannot handle non-absolute URL: " + url);
@@ -300,10 +293,10 @@ public class HttpClientService implements ServletContextAware {
      */
     public String getContextResourceAsString(String url) throws IllegalArgumentException {
         if (StringUtils.isEmpty(url)) {
-            throw new IllegalArgumentException("Provided URL is null");
+            throw new IllegalArgumentException(URL_NOT_PROVIDED);
         }
         if (logger.isDebugEnabled()) {
-            logger.debug("Asked to get content from the context resource: " + url);
+            logger.debug("Asked to get content from the context resource: {}", url);
         }
 
         String content = null;
@@ -314,20 +307,15 @@ public class HttpClientService implements ServletContextAware {
                 IOUtils.copy(is, writer, SettingsBean.getInstance().getCharacterEncoding());
                 content = writer.toString();
             } catch (IOException e) {
-                logger.warn("Error reading content of the resource " + url + ". Cause: " + e.getMessage(), e);
+                logger.warn("Error reading content of the resource {}. Cause: {}", url, e.getMessage(), e);
             } finally {
                 IOUtils.closeQuietly(is);
             }
         } else {
-            logger.warn("Unable to find context resource at path " + url);
+            logger.warn("Unable to find context resource at path {}", url);
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Retrieved " + (content != null ? content.length() : 0) + " characters as a response");
-            if (logger.isTraceEnabled()) {
-                logger.trace("Content:\n" + content);
-            }
-        }
+        logContent(content);
 
         return content;
     }
@@ -388,7 +376,7 @@ public class HttpClientService implements ServletContextAware {
      */
     public String getResourceAsString(String url) throws IllegalArgumentException {
         if (StringUtils.isEmpty(url)) {
-            throw new IllegalArgumentException("Provided URL is null");
+            throw new IllegalArgumentException(URL_NOT_PROVIDED);
         }
         return isAbsoluteUrl(url) ? getAbsoluteResourceAsString(url) : getContextResourceAsString(url);
     }
@@ -403,7 +391,7 @@ public class HttpClientService implements ServletContextAware {
     public String getResourceAsString(String url, HttpServletRequest request, HttpServletResponse response)
             throws IllegalArgumentException {
         if (StringUtils.isEmpty(url)) {
-            throw new IllegalArgumentException("Provided URL is null");
+            throw new IllegalArgumentException(URL_NOT_PROVIDED);
         }
         if (isAbsoluteUrl(url)) {
             return getAbsoluteResourceAsString(url);
@@ -413,7 +401,7 @@ public class HttpClientService implements ServletContextAware {
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Asked to get content from the URL: " + url);
+            logger.debug("Asked to get content from the URL: {}", url);
         }
 
         String content = null;
@@ -424,26 +412,29 @@ public class HttpClientService implements ServletContextAware {
             try {
                 rd.include(request, wrapper);
                 if (wrapper.getStatus() < 200 || wrapper.getStatus() > 299) {
-                    logger.warn("Unable to get the content of the resource " + url + ". Got response status code: "
-                            + wrapper.getStatus());
+                    logger.warn("Unable to get the content of the resource {}. Got response status code: {}", url, wrapper.getStatus());
                 } else {
                     content = wrapper.getString();
                 }
             } catch (Exception e) {
-                logger.warn("Unable to get the content of the resource " + url + ". Cause: " + e.getMessage(), e);
+                logger.warn("Unable to get the content of the resource {}. Cause: {}", url, e.getMessage(), e);
             }
         } else {
-            logger.warn("Unable to get a RequestDispatcher for the path " + url);
+            logger.warn("Unable to get a RequestDispatcher for the path {}", url);
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Retrieved " + (content != null ? content.length() : 0) + " characters as a response");
-            if (logger.isTraceEnabled()) {
-                logger.trace("Content:\n" + content);
-            }
-        }
+        logContent(content);
 
         return content;
+    }
+    
+    private void logContent(String content) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Retrieved {} characters as a response", content != null ? content.length() : 0);
+            if (logger.isTraceEnabled()) {
+                logger.trace("Content: {}", content);
+            }
+        }        
     }
 
     /**

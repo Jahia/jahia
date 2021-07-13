@@ -71,16 +71,16 @@ public class JobHistoryPurgeJob extends BackgroundJob {
             logger.info("No purge strategy configured. Skip execution of this task.");
             return;
         }
-        logger.info("Loaded the following purge strategy\n{}", purgeStrategyData);
+        logger.info("Loaded the following purge strategy {}", purgeStrategyData);
 
-        Map<Pattern, Long> purgeStrategy = new LinkedHashMap<Pattern, Long>(
+        Map<Pattern, Long> purgeStrategy = new LinkedHashMap<>(
                 purgeStrategyData.size());
 
         for (Map.Entry<String, Long> entry : purgeStrategyData.entrySet()) {
             purgeStrategy.put(Pattern.compile(entry.getKey()), entry.getValue());
         }
-        boolean purgeWithNoEndDate = jobDataMap.containsKey("purgeWithNoEndDate") ? jobDataMap
-                .getBooleanValueFromString("purgeWithNoEndDate") : true;
+        boolean purgeWithNoEndDate = !jobDataMap.containsKey("purgeWithNoEndDate")
+                || jobDataMap.getBooleanValueFromString("purgeWithNoEndDate");
         ServicesRegistry.getInstance().getSchedulerService()
                 .deleteAllCompletedJobs(purgeStrategy, purgeWithNoEndDate);
     }

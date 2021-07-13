@@ -188,19 +188,17 @@ public abstract class SourceControlManagement {
         ExecutionResult result = new ExecutionResult(res, resultOut.toString(), resultErr.toString());
 
         if (logger.isDebugEnabled()) {
-            StringBuilder logMessage = new StringBuilder("\n");
-            logMessage.append("Executed SCM command: '").append(commandString).append("'\n");
+            logger.debug("Executed SCM command: '{}'", commandString);
             if (rootFolder != null) {
-                logMessage.append("In the directory: '").append(rootFolder).append("'\n");
+                logger.debug("In the directory: '{}'", rootFolder);
             }
-            logMessage.append("Exit code: ").append(result.exitValue).append("\n");
+            logger.debug("Exit code: {}", result.exitValue);
             if (StringUtils.isNotBlank(result.out)) {
-                logMessage.append("Command output:\n").append(result.out.trim()).append("\n");
+                logger.debug("Command output: {}", result.out.trim());
             }
             if (StringUtils.isNotBlank(result.err)) {
-                logMessage.append("Command errors:\n").append(result.err.trim()).append("\n");
+                logger.debug("Command errors: {}", result.err.trim());
             }
-            logger.debug(logMessage.toString());
         }
 
         return result;

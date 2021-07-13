@@ -63,10 +63,13 @@ import org.slf4j.LoggerFactory;
  */
 public final class TextExtractionHelper {
 
-    private static boolean checkingExtractions;
-
-    static final Logger logger = LoggerFactory.getLogger(TextExtractionHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(TextExtractionHelper.class);
     
+    private static final String CHECKING = "checking";
+    private static final String FIXING = "fixing";
+    private static final String REDOING = "redoing";
+    
+    private static boolean checkingExtractions;    
     private static TextExtractionChecker extractionChecker;
 
     /**
@@ -96,7 +99,7 @@ public final class TextExtractionHelper {
         
         final OutWrapper out = new OutWrapper(logger, statusOut);
 
-        out.echo("Start {} missing extraction ", fixMissingExtraction ? "fixing" : "checking");
+        out.echo("Start {} missing extraction ", fixMissingExtraction ? FIXING : CHECKING);
         
         extractionChecker = new TextExtractionChecker(status, fixMissingExtraction, out);
 
@@ -108,23 +111,20 @@ public final class TextExtractionHelper {
                 }
             };
             out.echo("Missing extractions in DEFAULT workspace for: ");
-            JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.EDIT_WORKSPACE, callback);
+            JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.EDIT_WORKSPACE, null, callback);
             if (status.extractable == 0) {
                 out.echo("none");
             }
             long extractableInDefault = status.extractable; 
             out.echo("\nMissing extractions in LIVE workspace for: ");            
-            JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, callback);
+            JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, callback);
             if (status.extractable == extractableInDefault) {
                 out.echo("none");
             }
         } finally {
             checkingExtractions = false;
-            logger.info("\nDone {} text extractions in {} ms. Status: {}",
-                    new Object[] {
-                            fixMissingExtraction ? "fixing" : "checking",
-                            (System.currentTimeMillis() - timer),
-                            status.toString() });
+            logger.info("Done {} text extractions in {} ms. Status: {}", fixMissingExtraction ? FIXING : CHECKING,
+                    (System.currentTimeMillis() - timer), status);
         }
 
         return status;
@@ -157,7 +157,7 @@ public final class TextExtractionHelper {
         
         final OutWrapper out = new OutWrapper(logger, statusOut);
 
-        out.echo("Start {} extraction by filter", redoExtraction ? "redoing" : "checking");
+        out.echo("Start {} extraction by filter", redoExtraction ? REDOING : CHECKING);
         
         extractionChecker = new TextExtractionChecker(status, redoExtraction, filter, out);
 
@@ -171,8 +171,8 @@ public final class TextExtractionHelper {
             if (StringUtils.isEmpty(filter.getWorkspace())
                     || "default".equals(filter.getWorkspace())) {
                 out.echo("Extractions in DEFAULT workspace for: ");
-                JCRTemplate.getInstance().doExecuteWithSystemSession(null,
-                        Constants.EDIT_WORKSPACE, callback);
+                JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null,
+                        Constants.EDIT_WORKSPACE, null, callback);
                 if (status.extractable == 0) {
                     out.echo("none");
                 }
@@ -181,19 +181,16 @@ public final class TextExtractionHelper {
             if (StringUtils.isEmpty(filter.getWorkspace())
                     || "live".equals(filter.getWorkspace())) {
                 out.echo("\nExtractions in LIVE workspace for: ");
-                JCRTemplate.getInstance().doExecuteWithSystemSession(null,
-                        Constants.LIVE_WORKSPACE, callback);
+                JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null,
+                        Constants.LIVE_WORKSPACE, null, callback);
                 if (status.extractable == extractableInDefault) {
                     out.echo("none");
                 }
             }
         } finally {
             checkingExtractions = false;
-            logger.info(
-                    "\nDone {} text extractions in {} ms. Status: {}",
-                    new Object[] { redoExtraction ? "redoing" : "checking",
-                            (System.currentTimeMillis() - timer),
-                            status.toString() });
+            logger.info("Done {} text extractions in {} ms. Status: {}", redoExtraction ? REDOING : CHECKING,
+                    (System.currentTimeMillis() - timer), status);
         }
 
         return status;

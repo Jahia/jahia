@@ -260,8 +260,7 @@ public class JCRSessionWrapper implements Session {
         RepositoryException originalEx = null;
         for (JCRStoreProvider provider : sessionFactory.getProviderList()) {
             if (!provider.isInitialized()) {
-                logger.debug("Provider " + provider.getKey() + " / " + provider.getClass().getName() +
-                        " is not yet initialized, skipping...");
+                logger.debug("Provider {} / {}  is not yet initialized, skipping...", provider.getKey(), provider.getClass().getName());
                 continue;
             }
 
@@ -299,10 +298,7 @@ public class JCRSessionWrapper implements Session {
                 if (originalEx == null) {
                     originalEx = ex;
                 }
-                logger.warn(
-                        "repository exception : " + provider.getKey() + " / " + provider.getClass().getName() + " : " +
-                                ex.getMessage()
-                );
+                logger.warn("repository exception : {} / {} : {}", provider.getKey(), provider.getClass().getName(), ex.getMessage());
             }
         }
         if (originalEx != null) {
@@ -775,7 +771,7 @@ public class JCRSessionWrapper implements Session {
                     nsReg.registerNamespace(prefix, uri);
                 }
             } catch (RepositoryException e) {
-                logger.debug("Prefix/uri could not be registered in workspace's registry- " + prefix + "/" + uri, e);
+                logger.debug("Prefix/uri could not be registered in workspace's registry- {}/{}", prefix, uri, e);
             }
         }
     }
@@ -826,17 +822,22 @@ public class JCRSessionWrapper implements Session {
         }
         isLive = false;
         if (activeSessionsObjects.remove(uuid) == null) {
-            logger.error("Could not removed session " + this + " opened here \n", thisSessionTrace);
+            logger.error("Could not remove session {} opened here ", this, thisSessionTrace);
         }
         if (!isSystem) {
             long actives = activeSessions.decrementAndGet();
             if (logger.isDebugEnabled() && actives < activeSessionsObjects.size()) {
-                Map<UUID, JCRSessionWrapper> copyActives = new HashMap<>(activeSessionsObjects);
-                logger.debug("There is {} sessions but {} is retained", actives, copyActives.size());
-                for (Map.Entry<UUID, JCRSessionWrapper> entry : copyActives.entrySet()) {
-                    logger.debug("Active Session " + entry.getKey() + " is" + (entry.getValue().isLive() ? "" : " not") + " live", entry.getValue().getSessionTrace());
-                }
+                logActiveSessions(actives);
             }
+        }
+    }
+    
+    private void logActiveSessions(long actives) {
+        Map<UUID, JCRSessionWrapper> copyActives = new HashMap<>(activeSessionsObjects);
+        logger.debug("There is {} sessions but {} is retained", actives, copyActives.size());
+        for (Map.Entry<UUID, JCRSessionWrapper> entry : copyActives.entrySet()) {
+            logger.debug("Active Session {} is {}", entry.getKey(), entry.getValue().isLive() ? "live" : "not live",
+                    entry.getValue().getSessionTrace());
         }
     }
 

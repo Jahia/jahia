@@ -243,7 +243,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
                                 break;
                         }
                     } catch (IOException e) {
-                        logger.error("Upload failed for file \n", e);
+                        logger.error("Upload failed for file", e);
                     }
                 }
 
@@ -310,7 +310,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
             locale = (Locale) request.getSession().getAttribute(Constants.SESSION_LOCALE);
         }
         if (logger.isDebugEnabled()) {
-            logger.warn("File upload exceeding limit of " + fileSizeLimit + " bytes", e);
+            logger.warn("File upload exceeding limit of {} bytes", fileSizeLimit, e);
         } else {
             logger.warn("File upload exceeding limit of {} bytes", fileSizeLimit);
         }
@@ -356,10 +356,10 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
 
         String filename = name.toString();
         if (logger.isDebugEnabled()) {
-            logger.debug("item : " + item);
-            logger.debug("destination : " + location);
-            logger.debug("filename : " + filename);
-            logger.debug("size : " + item.getSize());
+            logger.debug("item : {}", item);
+            logger.debug("destination : {}", location);
+            logger.debug("filename : {}", filename);
+            logger.debug("size : {}", item.getSize());
         }
         if (item == null || location == null || filename == null) {
             return UNKNOWN_ERROR;

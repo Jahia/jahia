@@ -52,6 +52,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.io.IOUtils;
+import org.apache.tika.metadata.HttpHeaders;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
 import org.apache.tika.parser.AutoDetectParser;
@@ -84,8 +85,7 @@ public class TextExtractionService {
                 parser = (CompositeParser) cfg.getParser();
             }
         } catch (Exception e) {
-            logger.error("Error initializing text extraction service. Service will be disabled. Cause: "
-                    + e.getMessage(), e);
+            logger.error("Error initializing text extraction service. Service will be disabled. Cause: {}", e.getMessage(), e);
         } finally {
             IOUtils.closeQuietly(stream);
         }
@@ -115,7 +115,7 @@ public class TextExtractionService {
             throws IOException, SAXException, TikaException {
         long startTime = System.currentTimeMillis();
         if (logger.isDebugEnabled()) {
-            logger.debug("Start text extraction using metadata: " + metadata);
+            logger.debug("Start text extraction using metadata: {}", metadata);
         }
         WriteOutContentHandler handler = new WriteOutContentHandler(characterLimit);
         try {
@@ -123,8 +123,7 @@ public class TextExtractionService {
         } catch (SAXException e) {
             if (handler.isWriteLimitReached(e)) {
                 if (characterLimit > 0) {
-                    logger.info("Document content length exceeded the configured limit. Extracted first "
-                            + characterLimit + " characters.");
+                    logger.info("Document content length exceeded the configured limit. Extracted first {} characters.", characterLimit);
                 }
             } else {
                 throw e;
@@ -132,12 +131,9 @@ public class TextExtractionService {
         }
         String extractedText = handler.toString();
         if (logger.isDebugEnabled()) {
-            logger.debug("Text extraction finished in " + (System.currentTimeMillis() - startTime) + " ms. Extracted "
-                    + extractedText.length() + " characters.");
-            logger.debug("Extracted metadata: " + metadata);
-            if (logger.isTraceEnabled()) {
-                logger.trace("Extracted text:\n" + extractedText);
-            }
+            logger.debug("Text extraction finished in {} ms. Extracted {} characters.", System.currentTimeMillis() - startTime,
+                    extractedText.length());
+            logger.debug("Extracted metadata: {}", metadata);
         }
         return extractedText;
     }
@@ -183,11 +179,11 @@ public class TextExtractionService {
         	contentMediaType = ((AutoDetectParser) parser).getDetector().detect(stream, metadata);
         }
         if (contentMediaType == null) {
-        	String contentType = metadata.get(Metadata.CONTENT_TYPE);
+        	String contentType = metadata.get(HttpHeaders.CONTENT_TYPE);
         	contentMediaType = contentType != null ? new MediaType(StringUtils.substringBefore(contentType, "/"), StringUtils.substringAfter(contentType, "/")) : null;
         }
 
-        return contentMediaType != null ? parser.getParsers().containsKey(contentMediaType) : false;
+        return contentMediaType != null && parser.getParsers().containsKey(contentMediaType);
     }
 
     private void ensureInitialized() {
@@ -216,10 +212,8 @@ public class TextExtractionService {
      */
     public void extractMetadata(InputStream stream, Metadata metadata) throws IOException, SAXException, TikaException {
         ensureInitialized();
-        if (!isEnabled()) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Text extraction service is disabled. Skipping metadata extraction.");
-            }
+        if (!isEnabled() && logger.isDebugEnabled()) {
+            logger.debug("Text extraction service is disabled. Skipping metadata extraction.");
         }
         // TODO check if for HTML file parsing the approach with setting character limit to 0
         // actually works.
@@ -242,9 +236,9 @@ public class TextExtractionService {
         }
 
         parser = configureParser(config, autoDetectType);
-        if (enabled && (parser == null || parser.getParsers().isEmpty())) {
-            logger.error("No parsers have been found for text extraction service in the configuration '"
-                    + config.getDescription() + "'. Disabling service.");
+        if (parser == null || parser.getParsers().isEmpty()) {
+            logger.error("No parsers have been found for text extraction service in the configuration '{}'. Disabling service.",
+                    config.getDescription());
             enabled = false;
         }
         if (!enabled) {
@@ -252,10 +246,10 @@ public class TextExtractionService {
         }
 
         if (enabled) {
-            logger.info("Initialized text extraction parser using " + config);
+            logger.info("Initialized text extraction parser using {}", config);
             if (!config.equals(configMetadata)) {
                 parserMetadata = configureParser(configMetadata, autoDetectType);
-                logger.info("Initialized metadata extraction parser using " + configMetadata);
+                logger.info("Initialized metadata extraction parser using {}", configMetadata);
             } else {
                 // use same parser
                 parserMetadata = parser;
@@ -340,7 +334,7 @@ public class TextExtractionService {
     public String parse(InputStream stream, String contentType) throws IOException, SAXException, TikaException {
         ensureInitialized();
         Metadata metadata = new Metadata();
-        metadata.set(Metadata.CONTENT_TYPE, contentType);
+        metadata.set(HttpHeaders.CONTENT_TYPE, contentType);
         return parse(stream, metadata);
     }
 

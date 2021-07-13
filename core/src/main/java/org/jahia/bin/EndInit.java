@@ -71,21 +71,22 @@ import java.util.List;
  */
 public class EndInit extends HttpServlet {
 
-    private static Logger logger = LoggerFactory.getLogger(EndInit.class);
+    private static final Logger logger = LoggerFactory.getLogger(EndInit.class);
+    private static final String LINE = "--------------------------------------------------------------------------------------------------";
 
     private static final long serialVersionUID = -2221764992780224013L;
 
     private boolean initialized = false;
 
-    private void appendModulesInfo(StringBuilder out) {
+    private void appendModulesInfo() {
         JahiaTemplateManagerService templateService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
-        out.append("  Modules:");
+        logger.info("  Modules:");
         for (State state : ModuleState.State.values()) {
             List<Bundle> modules = templateService.getModulesByState(state);
             if (modules.isEmpty()) {
                 continue;
             }
-            out.append("\n      ").append(state).append(": ").append(modules.size());
+            logger.info("      {}: {}", state, modules.size());
         }
     }
 
@@ -117,28 +118,23 @@ public class EndInit extends HttpServlet {
 
     private void printEndMessage() {
         long initializationTime = System.currentTimeMillis() - JahiaContextLoaderListener.getStartupTime() ;
-        StringBuilder out = new StringBuilder(256);
+        logger.info(LINE);        
         if (SettingsBean.getInstance().isDevelopmentMode()) {
-            out.append("\n--------------------------------------------------------------------------------------------------" +
-            "\n  D E V E L O P M E N T   M O D E   A C T I V E" +
-            "\n" +
-            "\n  In development mode, Jahia will allow JSPs to be modified, modules to be" +
-            "\n  re-deployed and other modifications to happen immediately, but these DO have a performance impact." +
-            "\n  It is strongly recommended to switch to production mode when running performance tests or going live." +
-            "\n  The setting to change modes is called operatingMode in the jahia.properties configuration file.");
+            logger.info("  D E V E L O P M E N T   M O D E   A C T I V E");
+            logger.info("  In development mode, Jahia will allow JSPs to be modified, modules to be");
+            logger.info("  re-deployed and other modifications to happen immediately, but these DO have a performance impact.");
+            logger.info("  It is strongly recommended to switch to production mode when running performance tests or going live.");
+            logger.info("  The setting to change modes is called operatingMode in the jahia.properties configuration file.");
         } else if (SettingsBean.getInstance().isDistantPublicationServerMode()) {
-            out.append("\n--------------------------------------------------------------------------------------------------" +
-            "\n  D I S T A N T  P U B L I C A T I O N  S E R V E R  M O D E   A C T I V E");
+            logger.info("  D I S T A N T  P U B L I C A T I O N  S E R V E R  M O D E   A C T I V E");
         } else {
-            out.append("\n--------------------------------------------------------------------------------------------------" +
-            "\n  P R O D U C T I O N   M O D E   A C T I V E");
+            logger.info("  P R O D U C T I O N   M O D E   A C T I V E");
         }
-        out.append("\n--------------------------------------------------------------------------------------------------\n");
-        appendModulesInfo(out);
-        out.append("\n--------------------------------------------------------------------------------------------------"+
-        "\n  ").append(Jahia.getFullProductVersion()).append(" is now ready. Initialization completed in ").append((initializationTime/1000)).append(" seconds");
-        out.append("\n--------------------------------------------------------------------------------------------------");
-        logger.info(out.toString());
+        logger.info(LINE);
+        appendModulesInfo();
+        logger.info(LINE);
+        logger.info("  {} is now ready. Initialization completed in {} seconds", Jahia.getFullProductVersion(), initializationTime/1000);
+        logger.info(LINE);
     }
 
 }

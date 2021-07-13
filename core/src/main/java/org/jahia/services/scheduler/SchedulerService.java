@@ -260,14 +260,10 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
             if (settingsBean.isProcessingServer() && (!scheduler.isStarted() || scheduler.isInStandbyMode())) {
                 if (logger.isDebugEnabled()) {
                     SchedulerMetaData schedulerMetadata = scheduler.getMetaData();
-                    logger.debug("Starting scheduler...\n"
-                               + " instanceId:{} instanceName:{}\n"
-                               + "{}",
-                        new Object[] {
+                    logger.debug("Starting scheduler... instanceId:{} instanceName:{} / Summary: {}",
                             schedulerMetadata.getSchedulerInstanceId(),
                             schedulerMetadata.getSchedulerName(),
                             schedulerMetadata.getSummary()
-                        }
                     );
                 }
 
@@ -292,7 +288,8 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
         trigger.setVolatility(jobDetail.isVolatile());
 
         data.put(JOB_STATUS, STATUS_ADDED);
-        logger.debug("schedule job {} volatile({}) @ {}", new Object[] {jobDetail.getName(), jobDetail.isVolatile(), new Date(System.currentTimeMillis())});
+        logger.debug("schedule job {} volatile({}) @ {}", jobDetail.getName(), jobDetail.isVolatile(),
+                new Date(System.currentTimeMillis()));
         if (useRamScheduler) {
             ramScheduler.scheduleJob(jobDetail, trigger);
         } else {

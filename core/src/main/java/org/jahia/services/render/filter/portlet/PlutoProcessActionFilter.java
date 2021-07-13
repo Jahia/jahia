@@ -140,8 +140,7 @@ public class PlutoProcessActionFilter extends AbstractFilter {
                     throw new ServletException(ex);
                 }
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Action request processed, send a redirect.\n\n");
-
+                    logger.debug("Action request processed, send a redirect.");
                 }
 
                 return "";

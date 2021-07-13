@@ -519,7 +519,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             for (String path : depNodeWrappers) {
                 stringBuilder.append(path).append("\n");
             }
-            logger.debug("Dependencies of {}:\n", finalKey, stringBuilder.toString());
+            logger.debug("Dependencies of {}: {}", finalKey, stringBuilder);
         }
     }
 

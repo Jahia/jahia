@@ -321,7 +321,7 @@ public class CacheFilter extends AbstractFilter {
             for (String path : depNodeWrappers) {
                 stringBuilder.append(path).append("\n");
             }
-            logger.debug("Dependencies of {}:\n", finalKey, stringBuilder.toString());
+            logger.debug("Dependencies of {}: {}", finalKey, stringBuilder);
         }
     }
 

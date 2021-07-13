@@ -8,7 +8,7 @@
             fileName="${sys:jahia.log.dir}jahia.log"
             filePattern="${sys:jahia.log.dir}jahia_%d{yyyy-MM-dd}.log">
             <PatternLayout
-                pattern="%d: %-5p [%t] %c: %m%n" />
+                pattern="%d: %-5p [%t] %c: %encode{%.-500m}{CRLF}%n%sxThrowable" />
             <TimeBasedTriggeringPolicy />
             <ThresholdFilter level="DEBUG" />
         </RollingFile>
@@ -16,20 +16,20 @@
         <File name="JahiaLog"
             fileName="${sys:jahia.log.dir}/jahia.log">
             <PatternLayout
-                pattern="%d: %-5p [%t] %c: %m%n" />
+                pattern="%d: %-5p [%t] %c: %encode{%.-500m}{CRLF}%n%sxThrowable" />
             <ThresholdFilter level="DEBUG" />
         </File>
 
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout
-                pattern="%d: %-5p [%c{1}] - %m%n" />
+                pattern="%d: %-5p [%c{1}] - %encode{%.-500m}{CRLF}%n%sxThrowable" />
             <ThresholdFilter level="DEBUG" />
         </Console>
 
         <RollingFile name="RollingProfilerLog"
             fileName="${sys:jahia.log.dir}jahia_profiler.log"
             filePattern="${sys:jahia.log.dir}jahia_profiler_%d{yyyy-MM-dd}.log">
-            <PatternLayout pattern="%d %m%n" />
+            <PatternLayout pattern="%d %encode{%.-500m}{CRLF}%n" />
             <TimeBasedTriggeringPolicy />
             <ThresholdFilter level="DEBUG"
                 onMatch="ACCEPT" onMismatch="DENY" />
@@ -38,7 +38,7 @@
         <RollingFile name="RollingJahiaAccessLog"
             fileName="${sys:jahia.log.dir}jahia_access.log"
             filePattern="${sys:jahia.log.dir}jahia_access_%d{yyyy-MM-dd}.log">
-            <PatternLayout pattern="%d %m%n" />
+            <PatternLayout pattern="%d %encode{%.-500m}{CRLF}%n" />
             <TimeBasedTriggeringPolicy />
             <ThresholdFilter level="TRACE"
                 onMatch="ACCEPT" onMismatch="DENY" />
@@ -46,7 +46,7 @@
 
         <File name="JahiaAccessLog"
             fileName="${sys:jahia.log.dir}/jahia_access.log">
-            <PatternLayout pattern="%d %m%n" />
+            <PatternLayout pattern="%d %encode{%.-500m}{CRLF}%n" />
             <ThresholdFilter level="TRACE"
                 onMatch="ACCEPT" onMismatch="DENY" />
         </File>
@@ -55,7 +55,7 @@
 
         <CamelAppender name="CamelNotification"
             targetUri="direct:logs">
-            <PatternLayout pattern="%d %m" />
+            <PatternLayout pattern="%d %encode{%.-500m}{CRLF}" />
             <ThresholdFilter level="TRACE"
                 onMatch="ACCEPT" onMismatch="DENY" />
         </CamelAppender>

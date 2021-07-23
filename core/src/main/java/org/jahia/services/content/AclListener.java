@@ -572,9 +572,12 @@ public class AclListener extends DefaultEventListener {
             refNode.addNode("j:acl", "jnt:acl");
         }
 
-        JCRNodeWrapper p = getPrincipal(ace.getResolveSite().getSiteKey(), principal);
-        if (p == null || p.getResolveSite() == null || (!p.getResolveSite().getSiteKey().equals("systemsite") && !p.getResolveSite().getSiteKey().equals(refNode.getResolveSite().getSiteKey()))) {
-            return;
+        final String externalPermissionsPath = externalPermissions.getPropertyAsString("j:path");
+        if (CURRENT_SITE_PATTERN.matcher(externalPermissionsPath).find()) {
+            JCRNodeWrapper p = getPrincipal(ace.getResolveSite().getSiteKey(), principal);
+            if (p == null || p.getResolveSite() == null || (!p.getResolveSite().getSiteKey().equals("systemsite") && !p.getResolveSite().getSiteKey().equals(refNode.getResolveSite().getSiteKey()))) {
+                return;
+            }
         }
 
         JCRNodeWrapper acl = refNode.getNode("j:acl");

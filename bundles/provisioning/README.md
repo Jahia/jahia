@@ -237,6 +237,25 @@ Import a site from the export at the specified url. The file must be a site expo
 
 Multiple import files can be specified.
 
+### Create site
+
+Create a site with the provided site info:
+ - siteKey
+ - templateSet
+ - modulesToDeploy
+ - language
+ - serverName
+````yaml
+- createSite:
+  siteKey: "test1"
+  templateSet: "templates-system"
+  modulesToDeploy: 
+    - "facets"
+    - "channels"
+  language: "en"
+````
+
+
 ### Enable module on site
 
 Enable modules on a site :

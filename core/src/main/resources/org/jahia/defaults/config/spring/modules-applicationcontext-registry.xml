@@ -103,7 +103,7 @@
         <webflow:flow-location-pattern value="**/*.flow/flow.xml"/>
     </webflow:flow-registry>
 
-    <bean id="moduleSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"
+    <bean id="moduleSessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"
           depends-on="settingsBean" lazy-init="true">
         <property name="dataSource" ref="dataSource"/>
         <property name="packagesToScan" value="org.jahia.modules"/>
@@ -119,6 +119,8 @@
                         <entry key="hibernate.max_fetch_depth" value="3"/>
                         <entry key="hibernate.query.substitutions" value="true 1, false 0"/>
                         <entry key="hibernate.generate_statistics" value="false"/>
+                        <entry key="hibernate.id.new_generator_mappings" value="false"/>
+                        <entry key="hibernate.implicit_naming_strategy" value="org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyHbmImpl" />
                     </map>
                 </property>
             </bean>

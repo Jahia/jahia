@@ -91,8 +91,8 @@
         <jbpm.version>6.0.0.Final</jbpm.version>
         <jbpm.version.jahia>${jbpm.version}-jahia</jbpm.version.jahia>
         <drools.version>${jbpm.version}</drools.version>
-        <hibernate.version>4.2.7.SP1</hibernate.version>
-        <hibernate.core.version>4.2.7.SP1-jahia1</hibernate.core.version>
+        <hibernate.version>5.5.3.Final</hibernate.version>
+        <hibernate.core.version>5.5.3.Final</hibernate.core.version>
         <hibernate.validator.version>5.4.3.Final</hibernate.validator.version>
         <camel.version>2.25.2</camel.version>
         <gwt.version.base>2.8.2</gwt.version.base>

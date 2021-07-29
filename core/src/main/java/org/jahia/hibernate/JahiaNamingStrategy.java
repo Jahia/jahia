@@ -45,37 +45,34 @@ package org.jahia.hibernate;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.cfg.ImprovedNamingStrategy;
-import org.hibernate.cfg.NamingStrategy;
+import org.hibernate.boot.model.naming.*;
+import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment;
 import org.slf4j.Logger;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A custom naming strategy to prefix the table names, prefix any name that uses an SQL reserved word, and forces names to use lowercase.
  * Also limits the table and column names to 30 characters using the
  * <a href="http://code.google.com/p/hibernate-naming-strategy-for-oracle/">hibernate-naming-strategy-for-oracle</a> project as an example.
- * 
+ *
  * @author Serge Huber
  * @author Sergiy Shyrkov
  */
-public class JahiaNamingStrategy extends ImprovedNamingStrategy implements Serializable {
+public class JahiaNamingStrategy extends PhysicalNamingStrategyStandardImpl {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaNamingStrategy.class);
 
-    /**
-     * A convenient singleton instance
-     */
-    public static final NamingStrategy INSTANCE = new JahiaNamingStrategy();
-    
     private static final int MAX_LENGTH = 30;
 
     private static final long serialVersionUID = 2436201913019906777L;
-
-    private static String[] sqlReservedWords = new String[0];
-
     private static final String VOWELS = "aeiou";
+    private static String[] sqlReservedWords = new String[0];
 
     static {
         InputStream sqlReservedWordsStream = JahiaNamingStrategy.class.getClassLoader().getResourceAsStream(
@@ -90,11 +87,25 @@ public class JahiaNamingStrategy extends ImprovedNamingStrategy implements Seria
                 }
                 sqlReservedWords = reservedWordList.toArray(new String[reservedWordList.size()]);
             } catch (IOException e) {
-                logger.error(e.getMessage(),e);
+                logger.error(e.getMessage(), e);
             } finally {
                 IOUtils.closeQuietly(bufferedReader);
             }
         }
+    }
+
+    protected static String addUnderscores(String name) {
+        StringBuilder buf = new StringBuilder(name.replace('.', '_'));
+        for (int i = 1; i < buf.length() - 1; i++) {
+            if (
+                    Character.isLowerCase(buf.charAt(i - 1)) &&
+                            Character.isUpperCase(buf.charAt(i)) &&
+                            Character.isLowerCase(buf.charAt(i + 1))
+            ) {
+                buf.insert(i++, '_');
+            }
+        }
+        return buf.toString().toLowerCase(Locale.ROOT);
     }
 
     private static String ensureLength(String name) {
@@ -102,7 +113,7 @@ public class JahiaNamingStrategy extends ImprovedNamingStrategy implements Seria
             return name;
 
         String[] tokens = StringUtils.split(name, '_');
-        
+
         shorten(name, tokens);
 
         return StringUtils.join(tokens, '_');
@@ -140,7 +151,7 @@ public class JahiaNamingStrategy extends ImprovedNamingStrategy implements Seria
     }
 
     public static String processColumnName(String columnName) {
-        return processNameCase(prefixSqlReservedWords(columnName));
+        return ensureLength(processNameCase(prefixSqlReservedWords(addUnderscores(columnName))));
     }
 
     public static String processNameCase(String name) {
@@ -148,7 +159,7 @@ public class JahiaNamingStrategy extends ImprovedNamingStrategy implements Seria
     }
 
     public static String processTableName(String tableName) {
-        return processNameCase("jbpm_" + tableName);
+        return ensureLength(processNameCase("jbpm_" + addUnderscores(tableName)));
     }
 
     private static void shorten(String someName, String[] tokens) {
@@ -163,37 +174,31 @@ public class JahiaNamingStrategy extends ImprovedNamingStrategy implements Seria
 
     private static String substringAfterLastVowel(String token) {
         boolean vowelFound = false;
-        for (int i = token.length() -1; i >= 0 ; i--) {
+        for (int i = token.length() - 1; i >= 0; i--) {
             char c = token.charAt(i);
             boolean isVowel = VOWELS.indexOf(c) != -1;
             if (isVowel) {
                 vowelFound = true;
             } else if (vowelFound) {
-                return token.substring(0, i+1);
-            } 
+                return token.substring(0, i + 1);
+            }
         }
         return StringUtils.EMPTY;
     }
 
+
     @Override
-    public String classToTableName(String className) {
-        String tableName = super.classToTableName(className);
-        return processTableName(tableName);
-    }
-    
-    @Override
-    public String columnName(String columnName) {
-        return ensureLength(processColumnName(super.columnName(columnName)));
+    public Identifier toPhysicalTableName(Identifier name, JdbcEnvironment context) {
+        return Identifier.toIdentifier(processTableName(super.toPhysicalTableName(name, context).getText()));
     }
 
     @Override
-    public String propertyToColumnName(String propertyName) {
-        String columnName = super.propertyToColumnName(propertyName);
-        return ensureLength(processColumnName(columnName));
+    public Identifier toPhysicalSequenceName(Identifier name, JdbcEnvironment context) {
+        return Identifier.toIdentifier(processColumnName(super.toPhysicalSequenceName(name, context).getText()));
     }
 
     @Override
-    public String tableName(String tableName) {
-        return ensureLength(processTableName(super.tableName(tableName)));
+    public Identifier toPhysicalColumnName(Identifier name, JdbcEnvironment context) {
+        return Identifier.toIdentifier(processColumnName(super.toPhysicalColumnName(name, context).getText()));
     }
 }

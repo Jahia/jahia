@@ -18,7 +18,7 @@
         <property name="persistenceUnitName" value="org.jahia.services.workflow.jbpm"/>
         <property name="persistenceXmlLocation" value="classpath:META-INF/jahia-persistence.xml"/>
         <property name="jpaDialect">
-            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/>            
+            <bean class="org.springframework.orm.jpa.vendor.Hibernate5JpaDialect"/>
         </property>
         <property name="jpaPropertyMap">
             <map>
@@ -26,7 +26,8 @@
                 <entry key="hibernate.hbm2ddl.auto" value="" />
                 <entry key="hibernate.show_sql" value="false" />
                 <entry key="hibernate.id.new_generator_mappings" value="false" />
-                <entry key="hibernate.ejb.naming_strategy" value="org.jahia.hibernate.JahiaNamingStrategy" />
+                <entry key="hibernate.implicit_naming_strategy" value="org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyHbmImpl" />
+                <entry key="hibernate.physical_naming_strategy" value="org.jahia.hibernate.JahiaNamingStrategy" />
             </map>
         </property>
     </bean>

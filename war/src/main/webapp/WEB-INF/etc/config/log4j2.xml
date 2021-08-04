@@ -105,6 +105,9 @@
             level="debug" />
         <Logger name="org.hibernate" level="warn" />
         <Logger name="org.hibernate.cfg.Environment" level="info" />
+        <Logger name="org.hibernate.orm.deprecation" additivity="false" level="WARN">
+            <RegexFilter regex=".*HHH90000014|HHH90000016.*" onMatch="DENY" onMismatch="NEUTRAL"/>
+        </Logger>
         <Logger name="org.springframework" level="error" />
         <Logger
             name="org.jahia.bundles.extender.jahiamodules.Activator"

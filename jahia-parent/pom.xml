@@ -98,7 +98,7 @@
         <gwt.version.base>2.8.2</gwt.version.base>
         <gwt.version>${gwt.version.base}</gwt.version>
         <jgroups.version>3.4.8.Final</jgroups.version>
-        <groovy.version>2.5.14</groovy.version>
+        <groovy.version>3.0.8</groovy.version>
         <shiro.version>1.7.1</shiro.version>
         <jodconverter.version>4.3.0</jodconverter.version>
         <!--Atmosphere javascript is defined as a static resource in Jahia and has to be update manually-->

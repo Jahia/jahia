@@ -100,7 +100,7 @@
         <jgroups.version>3.4.8.Final</jgroups.version>
         <groovy.version>3.0.8</groovy.version>
         <shiro.version>1.7.1</shiro.version>
-        <jodconverter.version>4.3.0</jodconverter.version>
+        <jodconverter.version>4.4.2</jodconverter.version>
         <!--Atmosphere javascript is defined as a static resource in Jahia and has to be update manually-->
         <atmosphere.version>2.5.4-jahia</atmosphere.version>
         <atmosphere.gwt.version>2.5.2</atmosphere.gwt.version>

@@ -154,7 +154,7 @@ public class ConfigImpl implements Config {
         } else if (format == Format.YAML) {
             YAMLMapper yamlMapper = new YAMLMapper();
             try (Reader r = new StringReader(content)) {
-                this.props = yamlMapper.readValue(r, new TypeReference<Map<String, Object>>() {
+                this.props = yamlMapper.readValue(r, new TypeReference<Map<String, String>>() {
                 });
             }
             this.contentProps = new HashMap<>(props);

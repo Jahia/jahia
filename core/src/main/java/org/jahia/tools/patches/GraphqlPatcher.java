@@ -70,7 +70,7 @@ public class GraphqlPatcher implements PatchExecutor {
     public String executeScript(String name, String scriptContent) {
         try {
             JCRSessionFactory.getInstance().setCurrentUser(JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser());
-            Servlet servlet = BundleUtils.getOsgiService(Servlet.class, "(component.name=graphql.servlet.OsgiGraphQLServlet)");
+            Servlet servlet = BundleUtils.getOsgiService(Servlet.class, "(component.name=graphql.kickstart.servlet.OsgiGraphQLHttpServlet)");
             String json = (String) servlet.getClass().getMethod("executeQuery", String.class).invoke(servlet, scriptContent);
             logger.info("Graphql execution result : {}", json);
             JSONObject object = new JSONObject(json);

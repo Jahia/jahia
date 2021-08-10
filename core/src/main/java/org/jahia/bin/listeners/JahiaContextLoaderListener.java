@@ -48,7 +48,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.VFS;
-import org.apache.http.HttpHeaders;
+import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.pluto.driver.PortalStartupListener;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;

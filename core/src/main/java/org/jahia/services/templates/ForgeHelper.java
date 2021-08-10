@@ -43,24 +43,17 @@
  */
 package org.jahia.services.templates;
 
-import static org.apache.commons.httpclient.HttpStatus.SC_OK;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
 import net.htmlparser.jericho.Source;
-
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.StatusLine;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.multipart.FilePart;
-import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
-import org.apache.commons.httpclient.methods.multipart.Part;
-import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.lang.StringUtils;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.util.Timeout;
 import org.apache.maven.model.Model;
 import org.apache.xerces.impl.dv.util.Base64;
 import org.jahia.data.templates.ModuleReleaseInfo;
@@ -69,6 +62,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import static javax.servlet.http.HttpServletResponse.SC_OK;
 
 /**
  * Helper class for Private App Store related operations.
@@ -88,56 +87,31 @@ class ForgeHelper {
 
         String moduleUrl = null;
         final String url = releaseInfo.getForgeUrl();
-        HttpClient client = httpClientService.getHttpClient(url);
+        CloseableHttpClient client = httpClientService.getHttpClient(url);
         // Get token from Private App Store home page
-        GetMethod getMethod = new GetMethod(url + "/home.html");
-        getMethod.addRequestHeader("Authorization", "Basic " + Base64.encode((releaseInfo.getUsername() + ":" + releaseInfo.getPassword()).getBytes()));
-        String token = "";
-        try {
-            client.executeMethod(getMethod);
-            Source source = new Source(getMethod.getResponseBodyAsString());
-            if (source.getFirstElementByClass("file_upload") != null) {
-                List<net.htmlparser.jericho.Element> els = source
-                        .getFirstElementByClass("file_upload").getAllElements(
-                                "input");
-                for (net.htmlparser.jericho.Element el : els) {
-                    if (StringUtils.equals(el.getAttributeValue("name"),
-                            "form-token")) {
-                        token = el.getAttributeValue("value");
-                    }
-                }
-            } else {
-                throw new IOException(
-                        "Unable to get Private App Store site information, please check your credentials");
-            }
-        } finally {
-            getMethod.releaseConnection();
-        }
-        Part[] parts = {new StringPart("form-token",token),new FilePart("file",jar) };
-
+        HttpGet getMethod = new HttpGet(url + "/home.html");
+        getMethod.addHeader("Authorization", "Basic " + Base64.encode((releaseInfo.getUsername() + ":" + releaseInfo.getPassword()).getBytes()));
+        String token = getToken(client, getMethod);
+        HttpEntity entity = MultipartEntityBuilder.create()
+                .addTextBody("form-token",token)
+                .addBinaryBody("file",jar)
+                .build();
         // send module
-        PostMethod postMethod = new PostMethod(url + "/contents/modules-repository.createModuleFromJar.do");
-        postMethod.getParams().setSoTimeout(0);
-        postMethod.addRequestHeader("Authorization", "Basic " + Base64.encode((releaseInfo.getUsername() + ":" + releaseInfo.getPassword()).getBytes()));
-        postMethod.addRequestHeader("accept", "application/json");
-        postMethod.setRequestEntity(new MultipartRequestEntity(parts, postMethod.getParams()));
+        HttpPost postMethod = new HttpPost(url + "/contents/modules-repository.createModuleFromJar.do");
+
+        postMethod.setConfig(httpClientService.getRequestConfigBuilder(client).setResponseTimeout(Timeout.DISABLED).build());
+        postMethod.addHeader("Authorization", "Basic " + Base64.encode((releaseInfo.getUsername() + ":" + releaseInfo.getPassword()).getBytes()));
+        postMethod.addHeader("accept", "application/json");
+        postMethod.setEntity(entity);
         String result = null;
-        try {
-            client.executeMethod(null, postMethod);
-            StatusLine statusLine = postMethod.getStatusLine();
-
-            if (statusLine != null && statusLine.getStatusCode() == SC_OK) {
-                result = postMethod.getResponseBodyAsString();
+        try (CloseableHttpResponse response = client.execute(postMethod)) {
+            if (response.getCode() == SC_OK) {
+                result = EntityUtils.toString(response.getEntity());
             } else {
-                logger.warn("Connection to URL: " + url + " failed with status " + statusLine);
+                logger.warn("Connection to URL: {} failed with status {}", url, response.getCode());
             }
-
-        } catch (HttpException e) {
-            logger.error("Unable to get the content of the URL: " + url + ". Cause: " + e.getMessage(), e);
-        } catch (IOException e) {
-            logger.error("Unable to get the content of the URL: " + url + ". Cause: " + e.getMessage(), e);
-        } finally {
-            postMethod.releaseConnection();
+        } catch (IOException | ParseException e) {
+            logger.error("Unable to get the content of the URL: {}. Cause: {}", url, e.getMessage(), e);
         }
 
         if (StringUtils.isNotEmpty(result)) {
@@ -158,7 +132,31 @@ class ForgeHelper {
 
         return moduleUrl;
     }
-    
+
+    private String getToken(CloseableHttpClient client, HttpGet getMethod) throws IOException {
+        String token = "";
+        try (CloseableHttpResponse response = client.execute(getMethod)) {
+            Source source = new Source(EntityUtils.toString(response.getEntity()));
+            if (source.getFirstElementByClass("file_upload") != null) {
+                List<net.htmlparser.jericho.Element> els = source
+                        .getFirstElementByClass("file_upload").getAllElements(
+                                "input");
+                for (net.htmlparser.jericho.Element el : els) {
+                    if (StringUtils.equals(el.getAttributeValue("name"),
+                            "form-token")) {
+                        token = el.getAttributeValue("value");
+                    }
+                }
+            } else {
+                throw new IOException(
+                        "Unable to get Private App Store site information, please check your credentials");
+            }
+        } catch (ParseException e) {
+            throw new IOException(e);
+        }
+        return token;
+    }
+
     String computeModuleJarUrl(String releaseVersion, ModuleReleaseInfo releaseInfo, Model model) {
         StringBuilder url = new StringBuilder(64);
         url.append(releaseInfo.getRepositoryUrl());

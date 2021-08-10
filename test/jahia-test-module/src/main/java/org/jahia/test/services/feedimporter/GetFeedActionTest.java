@@ -43,17 +43,10 @@
  */
 package org.jahia.test.services.feedimporter;
 
-import java.io.IOException;
-import java.net.URL;
-
-import javax.jcr.RepositoryException;
-
-import org.apache.commons.httpclient.Credentials;
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.xerces.impl.dv.util.Base64;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -65,12 +58,16 @@ import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URL;
+
+import static junit.framework.TestCase.assertEquals;
 
 /**
  * Unit test for feed importer action.
@@ -136,30 +133,18 @@ public class GetFeedActionTest extends JahiaTestCase {
         JCRPublicationService.getInstance().publishByMainId(sdaFeedNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
                 true, null);
 
-        HttpClient client = new HttpClient();
-        client.getParams().setAuthenticationPreemptive(true);
+        CloseableHttpClient client = getHttpClient();
 
         String baseurl = getBaseServerURL() + Jahia.getContextPath() + "/cms";
         final URL url = new URL(baseurl + "/render/default/en" + sdaFeedNode.getPath() + ".getfeed.do");
 
-        Credentials defaultcreds = new UsernamePasswordCredentials(JahiaTestCase.getRootUserCredentials().getUserID(),
-                new String(JahiaTestCase.getRootUserCredentials().getPassword()));
-        client.getState().setCredentials(new AuthScope(url.getHost(), url.getPort(), AuthScope.ANY_REALM), defaultcreds);
+        HttpPost getFeedAction = new HttpPost(url.toExternalForm());
+            getFeedAction.addHeader("Authorization", "Basic " + Base64.encode((JahiaTestCase.getRootUserCredentials().getUserID() + ":" + String.valueOf(JahiaTestCase.getRootUserCredentials().getPassword())).getBytes()));
 
-        client.getHostConfiguration().setHost(url.getHost(), url.getPort(), url.getProtocol());
+            getFeedAction.addHeader("accept", "application/json");
 
-        PostMethod getFeedAction = new PostMethod(url.toExternalForm());
-        try {
-            getFeedAction.addRequestHeader(new Header("accept",
-                    "application/json"));
-
-            client.executeMethod(getFeedAction);
-            assertEquals("Bad result code", 200, getFeedAction.getStatusCode());
-
-            JSONObject response = new JSONObject(
-                    getFeedAction.getResponseBodyAsString());
-        } finally {
-            getFeedAction.releaseConnection();
+        try (CloseableHttpResponse httpResponse = client.execute(getFeedAction)) {
+            assertEquals("Bad result code", HttpServletResponse.SC_OK, httpResponse.getCode());
         }
 
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance()

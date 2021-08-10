@@ -43,16 +43,16 @@
  */
 package org.jahia.services.seo;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Arrays;
-import java.util.Collection;
-
-import org.apache.commons.httpclient.HttpException;
+import org.apache.hc.core5.http.HttpException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+
+import java.util.Arrays;
+import java.util.Collection;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Unit test for vanity URL creation (only processing of the URL string).

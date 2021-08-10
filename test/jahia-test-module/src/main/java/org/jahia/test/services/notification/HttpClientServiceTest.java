@@ -43,12 +43,12 @@
  */
 package org.jahia.test.services.notification;
 
-import static org.junit.Assert.assertTrue;
-
-import org.apache.commons.httpclient.HttpException;
+import org.apache.hc.core5.http.HttpException;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.notification.HttpClientService;
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test for the {@link HttpClientService}.

@@ -117,8 +117,6 @@ public interface JahiaContentManagementServiceAsync {
 
     void createRSSPortletInstance(String path, String name, String url, AsyncCallback<GWTJahiaNode> async);
 
-    void createRemotePublication(String nodeName, Map<String, String> props, boolean validateConnectionSettings, AsyncCallback<Boolean> async);
-
     void createModule(String moduleName, String artifactId, String groupId, String siteType, String sources, AsyncCallback<GWTJahiaNode> asyncCallback);
 
     void checkoutModule(String moduleId, String scmURI, String scmType, String branchOrTag, String sources, AsyncCallback<GWTJahiaNode> asyncCallback);

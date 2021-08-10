@@ -43,12 +43,17 @@
  */
 package org.jahia.test.services.content;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.GetMethod;
+import net.htmlparser.jericho.Element;
+import net.htmlparser.jericho.HTMLElementName;
+import net.htmlparser.jericho.Source;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.logging.log4j.Level;
+import org.apache.xerces.impl.dv.util.Base64;
 import org.jahia.bin.Jahia;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.utils.Log4jEventCollectorWrapper;
@@ -59,16 +64,12 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.htmlparser.jericho.Element;
-import net.htmlparser.jericho.HTMLElementName;
-import net.htmlparser.jericho.Source;
-
 import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Precompile all JSPs (of core and all deployed modules) and fail test, if there was an error
@@ -98,27 +99,26 @@ public class PrecompileJspsTest extends JahiaTestCase {
 
     @Test
     public void testPrecompileJsps() throws IOException {
-        HttpClient client = new HttpClient();
-        client.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(JahiaTestCase.getRootUserCredentials().getUserID(),
-                String.valueOf(JahiaTestCase.getRootUserCredentials().getPassword())));
-        client.getParams().setAuthenticationPreemptive(true);
-        GetMethod get = new GetMethod(getPrecompileServletURL());
-        try {
-            get.setDoAuthentication(true);
-            int statusCode = client.executeMethod(get);
-            assertThat(statusCode).isEqualTo(HttpStatus.SC_OK).withFailMessage("Authenticating to precompile page in tools failed");
+        CloseableHttpClient client = getHttpClient();
+        HttpGet get = new HttpGet(getPrecompileServletURL());
+        get.addHeader("Authorization", "Basic " + Base64.encode((JahiaTestCase.getRootUserCredentials().getUserID() + ":" + String.valueOf(JahiaTestCase.getRootUserCredentials().getPassword())).getBytes()));
+        try (CloseableHttpResponse response = client.execute(get)) {
+            assertThat(response.getCode()).isEqualTo(HttpStatus.SC_OK).withFailMessage("Authenticating to precompile page in tools failed");
             
-            Source source = new Source(get.getResponseBodyAsString());
+            Source source = new Source(EntityUtils.toString(response.getEntity()));
             Element aElement = source.getFirstElement(HTMLElementName.A);
             String url = getBaseServerURL() + aElement.getAttributeValue("href");
             logger.info("Starting the precompileServlet with the following url: {}", url);
-            get = new GetMethod(url);
-            statusCode = client.executeMethod(get);
-            assertThat(statusCode).isEqualTo(HttpStatus.SC_OK).withFailMessage("Precompile servlet failed");
-            assertThat(get.getResponseBodyAsString()).contains("No problems found!");
+            get = new HttpGet(url);
+        } catch (ParseException e) {
+            throw new IOException(e);
+        }
+        try (CloseableHttpResponse response = client.execute(get)) {
+            assertThat(response.getCode()).isEqualTo(HttpStatus.SC_OK).withFailMessage("Precompile servlet failed");
+            assertThat(EntityUtils.toString(response.getEntity())).contains("No problems found!");
             assertThat(toText(logEventCollector.getCollectedEvents())).isEmpty();
-        } finally {
-            get.releaseConnection();
+        } catch (ParseException e) {
+            throw new IOException(e);
         }
     }
 

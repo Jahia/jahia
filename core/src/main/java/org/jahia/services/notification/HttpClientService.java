@@ -43,13 +43,28 @@
  */
 package org.jahia.services.notification;
 
-import org.apache.commons.httpclient.*;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.hc.client5.http.auth.AuthScope;
+import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.config.Configurable;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
+import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.cookie.IgnoreCookieSpecFactory;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.apache.taglibs.standard.tag.common.core.ImportSupport;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.StringResponseWrapper;
@@ -64,10 +79,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-import static org.apache.commons.httpclient.HttpStatus.SC_OK;
+import static javax.servlet.http.HttpServletResponse.SC_OK;
 
 /**
  * Utility class for HTTP communication.<br>
@@ -80,45 +98,69 @@ public class HttpClientService implements ServletContextAware {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpClientService.class);
     private static final String URL_NOT_PROVIDED = "Provided URL is null";
+    private PoolingHttpClientConnectionManager connManager;
 
-    private static HttpClient cloneHttpClient(HttpClient source) {
-        HttpClient cloned = new HttpClient(source.getParams(), source.getHttpConnectionManager());
-        String sourceProxyHost = source.getHostConfiguration().getProxyHost();
-        if (sourceProxyHost != null) {
-            cloned.getHostConfiguration().setProxy(sourceProxyHost, source.getHostConfiguration().getProxyPort());
+    public void init() {
+        connManager = new PoolingHttpClientConnectionManager();
+        connManager.setMaxTotal(20);
+        connManager.setDefaultMaxPerRoute(2);
+
+        // bypass proxy client
+        httpClients.put(null, getNewHttpClientBuilder().build());
+
+        // HTTPS proxy client
+        if (StringUtils.isNotEmpty(System.getProperty("https.proxyHost"))) {
+            CloseableHttpClient client = initHttpClient(getNewHttpClientBuilder(), "https");
+            fallbackHttpClient = client;
         }
-        Credentials proxyCredentials = source.getState().getProxyCredentials(AuthScope.ANY);
-        if (proxyCredentials != null) {
-            HttpState state = new HttpState();
-            state.setProxyCredentials(AuthScope.ANY, proxyCredentials);
-            cloned.setState(state);
+
+        // HTTP proxy client
+        if (StringUtils.isNotEmpty(System.getProperty("http.proxyHost"))) {
+            CloseableHttpClient client = initHttpClient(getNewHttpClientBuilder(), "http");
+            if (fallbackHttpClient == null) {
+                fallbackHttpClient = client;
+            }
         }
-
-        return cloned;
-
     }
 
-    private static String initHttpClient(HttpClient client, String protocol) {
+    private CloseableHttpClient initHttpClient(HttpClientBuilder builder, String protocol) {
         String host = System.getProperty(protocol + ".proxyHost");
-        int port = Integer.getInteger(protocol + ".proxyPort", -1).intValue();
-        port = port != -1 ? port : Protocol.getProtocol(protocol).getDefaultPort();
+        int port = Integer.getInteger(protocol + ".proxyPort", -1);
 
-        client.getHostConfiguration().setProxy(host, port);
+        HttpHost proxy = new HttpHost(protocol, host, port);
+        builder.setProxy(proxy);
 
         String key = host + ':' + port;
 
-        Credentials credentials = null;
+        BasicCredentialsProvider credsProvider = null;
         String user = System.getProperty(protocol + ".proxyUser");
         if (StringUtils.isNotEmpty(user)) {
-            credentials = new UsernamePasswordCredentials(user, System.getProperty(protocol + ".proxyPassword"));
-            client.getState().setProxyCredentials(AuthScope.ANY, credentials);
+            credsProvider = new BasicCredentialsProvider();
+            credsProvider.setCredentials(new AuthScope(proxy), new UsernamePasswordCredentials(user, System.getProperty(protocol + ".proxyPassword").toCharArray()));
+            builder.setDefaultCredentialsProvider(credsProvider);
         }
 
         if (logger.isInfoEnabled()) {
             logger.info("Initialized HttpClient for {} protocol using proxy {} {} credentials", protocol.toUpperCase(), key,
-                    credentials != null ? "with" : "without");
+                    credsProvider != null ? "with" : "without");
         }
-        return key;
+        CloseableHttpClient client = builder.build();
+        httpClients.put(key, client);
+        return client;
+    }
+
+    private HttpClientBuilder getNewHttpClientBuilder() {
+        HttpClientBuilder builder = HttpClients.custom();
+        builder.setDefaultCookieSpecRegistry(name -> new IgnoreCookieSpecFactory());
+
+        builder.setConnectionManager(connManager);
+        RequestConfig config = RequestConfig.custom()
+                .setConnectTimeout(15000L, TimeUnit.MILLISECONDS)
+                .setResponseTimeout(60000L, TimeUnit.MILLISECONDS)
+                .build();
+        builder.setDefaultRequestConfig(config);
+
+        return builder;
     }
 
     /**
@@ -131,9 +173,9 @@ public class HttpClientService implements ServletContextAware {
         return ImportSupport.isAbsoluteUrl(url);
     }
 
-    private HttpClient fallbackHttpClient;
+    private CloseableHttpClient fallbackHttpClient;
     
-    private Map<String, HttpClient> httpClients = new HashMap<>(3);
+    private Map<String, CloseableHttpClient> httpClients = new HashMap<>(3);
             
     private ServletContext servletContext;
 
@@ -166,26 +208,20 @@ public class HttpClientService implements ServletContextAware {
 
         String content = null;
 
-        GetMethod httpMethod = new GetMethod(url);
+        HttpGet httpMethod = new HttpGet(url);
         if (headers != null && !headers.isEmpty()) {
             for (Map.Entry<String, String> header : headers.entrySet()) {
-                httpMethod.addRequestHeader(header.getKey(), header.getValue());
+                httpMethod.addHeader(header.getKey(), header.getValue());
             }
         }
-        try {
-            getHttpClient(url).executeMethod(httpMethod);
-            StatusLine statusLine = httpMethod.getStatusLine();
-
-            if (statusLine != null && statusLine.getStatusCode() == SC_OK) {
-                content = httpMethod.getResponseBodyAsString();
+        try (CloseableHttpResponse response = getHttpClient(url).execute(httpMethod)) {
+            if (response.getCode() == SC_OK) {
+                content = EntityUtils.toString(response.getEntity());
             } else {
-                logger.warn("Connection to URL: {} failed with status {}", url,statusLine);
+                logger.warn("Connection to URL: {} failed with status {}", url, response.getCode());
             }
-
-        } catch (IOException e) {
+        } catch (IOException | ParseException e) {
             logger.error("Unable to get the content of the URL: {}. Cause: {}", url, e.getMessage(), e);
-        } finally {
-            httpMethod.releaseConnection();
         }
 
         if (logger.isDebugEnabled()) {
@@ -208,20 +244,6 @@ public class HttpClientService implements ServletContextAware {
      * @throws {@link IllegalArgumentException} in case of a malformed URL
      */
     public String executePost(String url, Map<String, String> parameters, Map<String, String> headers) throws IllegalArgumentException {
-        return executePost(url, parameters, headers, null);
-    }
-
-    /**
-     * Executes a request with POST method to the specified URL and reads the response content as a string.
-     *
-     * @param url a URL to connect to
-     * @param parameters the request parameter to submit; <code>null</code> if no parameters are passed
-     * @param headers request headers to be set for connection; <code>null</code> if no additional headers needs to be set
-     * @param state the HTTP state object if additional state options, e.g. credentials, needs to be specified; otherwise can be <code>null</code>
-     * @return the string representation of the URL connection response
-     * @throws {@link IllegalArgumentException} in case of a malformed URL
-     */
-    public String executePost(String url, Map<String, String> parameters, Map<String, String> headers, HttpState state) throws IllegalArgumentException {
         if (StringUtils.isEmpty(url)) {
             throw new IllegalArgumentException(URL_NOT_PROVIDED);
         }
@@ -231,32 +253,32 @@ public class HttpClientService implements ServletContextAware {
 
         String content = null;
 
-        PostMethod httpMethod = new PostMethod(url);
+        HttpPost httpMethod = new HttpPost(url);
+        List<NameValuePair> nvps = new ArrayList<>();
+
         if (parameters != null && !parameters.isEmpty()) {
             for (Map.Entry<String, String> param : parameters.entrySet()) {
-                httpMethod.addParameter(param.getKey(), param.getValue());
+                nvps.add(new BasicNameValuePair(param.getKey(), param.getValue()));
             }
         }
+
         if (headers != null && !headers.isEmpty()) {
             for (Map.Entry<String, String> header : headers.entrySet()) {
-                httpMethod.addRequestHeader(header.getKey(), header.getValue());
+                httpMethod.addHeader(header.getKey(), header.getValue());
             }
         }
 
-        try {
-            getHttpClient(url).executeMethod(null, httpMethod, state);
-            StatusLine statusLine = httpMethod.getStatusLine();
+        httpMethod.setEntity(new UrlEncodedFormEntity(nvps));
 
-            if (statusLine != null && statusLine.getStatusCode() == SC_OK) {
-                content = httpMethod.getResponseBodyAsString();
+        try (CloseableHttpResponse response = getHttpClient(url).execute(httpMethod)) {
+            if (response.getCode() == SC_OK) {
+                content = EntityUtils.toString(response.getEntity());
             } else {
-                logger.warn("Connection to URL: {} failed with status {}", url, statusLine);
+                logger.warn("Connection to URL: {} failed with status {}", url, response.getCode());
             }
 
-        } catch (IOException e) {
+        } catch (IOException | ParseException e) {
             logger.error("Unable to get the content of the URL: {}. Cause: {}", url, e.getMessage(), e);
-        } finally {
-            httpMethod.releaseConnection();
         }
 
         logContent(content);
@@ -338,8 +360,8 @@ public class HttpClientService implements ServletContextAware {
      * @return an instance of the {@link HttpClient} that is the most appropriate to handle the specified URL, considering proxy settings,
      *         if any
      */
-    public HttpClient getHttpClient(String url) {
-        HttpClient selectedClient = null;
+    public CloseableHttpClient getHttpClient(String url) {
+        CloseableHttpClient selectedClient = null;
         if (url == null) {
             // we have no information about the target URL
             selectedClient = fallbackHttpClient;
@@ -362,6 +384,14 @@ public class HttpClientService implements ServletContextAware {
         }
 
         return selectedClient;
+    }
+
+    public RequestConfig.Builder getRequestConfigBuilder(HttpClient httpClient) {
+        if (httpClient instanceof Configurable) {
+            RequestConfig config = ((Configurable) httpClient).getConfig();
+            return RequestConfig.copy(config);
+        }
+        return RequestConfig.custom();
     }
 
     /**
@@ -437,33 +467,6 @@ public class HttpClientService implements ServletContextAware {
         }        
     }
 
-    /**
-     * Injects an instance of the {@link HttpClient}.
-     *
-     * @param httpClient an instance of the {@link HttpClient}
-     */
-    public void setHttpClient(HttpClient httpClient) {
-        // bypass proxy client
-        httpClients.put(null, httpClient);
-
-        // HTTPS proxy client
-        if (StringUtils.isNotEmpty(System.getProperty("https.proxyHost"))) {
-            HttpClient httpsProxyClient = cloneHttpClient(httpClient);
-            String key = initHttpClient(httpsProxyClient, "https");
-            httpClients.put(key, httpsProxyClient);
-            fallbackHttpClient = httpsProxyClient;
-        }
-        
-        // HTTP proxy client
-        if (StringUtils.isNotEmpty(System.getProperty("http.proxyHost"))) {
-            HttpClient httpProxyClient = cloneHttpClient(httpClient);
-            httpClients.put(initHttpClient(httpProxyClient, "http"), httpProxyClient);
-            if (fallbackHttpClient == null) {
-                fallbackHttpClient = httpProxyClient;
-            }
-        }
-    }
-
     public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
     }
@@ -471,26 +474,10 @@ public class HttpClientService implements ServletContextAware {
     public void shutdown() {
         logger.info("Shutting down HttpClient...");
         try {
-            for (Map.Entry<String, HttpClient> client : httpClients.entrySet()) {
-                shutdown(client.getValue());
-            }
-            MultiThreadedHttpConnectionManager.shutdownAll();
+            connManager.close();
         } catch (Exception e) {
             logger.warn("Error shutting down HttpClient. Cause: " + e.getMessage(), e);
         }
         logger.info("...done");
     }
-
-    private void shutdown(HttpClient client) {
-        try {
-            if (client.getHttpConnectionManager() instanceof MultiThreadedHttpConnectionManager) {
-                ((MultiThreadedHttpConnectionManager) client.getHttpConnectionManager()).shutdown();
-            } else if (client.getHttpConnectionManager() instanceof SimpleHttpConnectionManager) {
-                ((SimpleHttpConnectionManager) client.getHttpConnectionManager()).shutdown();
-            }
-        } catch (Exception e) {
-            logger.warn("Error shutting down HttpClient. Cause: " + e.getMessage(), e);
-        }
-    }
-
 }

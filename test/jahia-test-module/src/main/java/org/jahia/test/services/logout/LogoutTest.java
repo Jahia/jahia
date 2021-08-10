@@ -43,17 +43,10 @@
  */
 package org.jahia.test.services.logout;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
-
-import javax.jcr.PathNotFoundException;
-
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang.StringUtils;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.protocol.HttpClientContext;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
@@ -72,6 +65,13 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import javax.jcr.PathNotFoundException;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * User: david
@@ -226,16 +226,14 @@ public class LogoutTest extends JahiaTestCase {
     protected String logout(String url) throws Exception {
         String returnUrl = null;
         String baseurl = getBaseServerURL() + Jahia.getContextPath();
-        HttpMethod method = new GetMethod(baseurl + "/cms/logout");
-        try {
-            method.setRequestHeader("Referer", baseurl + url);
-            getHttpClient().executeMethod(method);
-            returnUrl = StringUtils.isEmpty(Jahia.getContextPath())
-                    || !(method.getPath().startsWith(Jahia.getContextPath())) ? method
-                    .getPath() : StringUtils.substringAfter(method.getPath(),
-                    Jahia.getContextPath());
-        } finally {
-            method.releaseConnection();
+        HttpGet method = new HttpGet(baseurl + "/cms/logout");
+        method.addHeader("Referer", baseurl + url);
+        HttpClientContext context = HttpClientContext.create();
+
+        try (CloseableHttpResponse response = getHttpClient().execute(method, context)) {
+            String path = context.getRedirectLocations().get(context.getRedirectLocations().size() - 1).getPath();
+            returnUrl = StringUtils.isEmpty(Jahia.getContextPath()) || !(path.startsWith(Jahia.getContextPath())) ?
+                    path : StringUtils.substringAfter(path, Jahia.getContextPath());
         }
        return returnUrl;
     }

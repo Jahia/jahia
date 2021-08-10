@@ -2548,44 +2548,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     @Override
-    public boolean createRemotePublication(String nodeName, Map<String, String> props, boolean validateConnectionSettings)
-            throws GWTJahiaServiceException {
-
-        String theUrl = props.get("remoteUrl");
-        while (theUrl.endsWith("/")) {
-            theUrl = theUrl.substring(0, theUrl.length() - 1);
-        }
-        if (!theUrl.startsWith("http://") && !theUrl.startsWith("https://")) {
-            theUrl = "http://" + theUrl;
-        }
-        props.put("remoteUrl", theUrl);
-
-        String thePath = props.get("remotePath");
-        while (thePath.endsWith("/")) {
-            thePath = thePath.substring(0, thePath.length() - 1);
-        }
-        props.put("remotePath", thePath);
-
-        if (validateConnectionSettings) {
-            publication.validateConnection(props, retrieveCurrentSession(), getUILocale());
-        }
-
-        List<GWTJahiaNodeProperty> gwtProps = new ArrayList<GWTJahiaNodeProperty>();
-        gwtProps.add(new GWTJahiaNodeProperty("remoteUrl", props.get("remoteUrl")));
-        gwtProps.add(new GWTJahiaNodeProperty("remotePath", props.get("remotePath")));
-        gwtProps.add(new GWTJahiaNodeProperty("remoteUser", props.get("remoteUser")));
-        gwtProps.add(new GWTJahiaNodeProperty("remotePassword", props.get("remotePassword")));
-        gwtProps.add(new GWTJahiaNodeProperty("node", props.get("node")));
-        gwtProps.add(new GWTJahiaNodeProperty("schedule", props.get("schedule")));
-
-        createNode("/remotePublications", JCRContentUtils.generateNodeName(nodeName),
-                "jnt:remotePublication", null, null, gwtProps,
-                new HashMap<String, List<GWTJahiaNodeProperty>>(), null, null, true);
-
-        return true;
-    }
-
-    @Override
     public Integer deleteAllCompletedJobs() throws GWTJahiaServiceException {
         return schedulerHelper.deleteAllCompletedJobs();
     }

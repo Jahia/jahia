@@ -43,13 +43,13 @@
  */
 package org.jahia.services.notification;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
-import org.apache.commons.httpclient.HttpException;
+import org.apache.hc.core5.http.HttpException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * Unit test for the {@link ProxyAddressSelector}.

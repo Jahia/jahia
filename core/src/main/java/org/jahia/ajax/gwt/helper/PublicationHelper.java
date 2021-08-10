@@ -43,9 +43,6 @@
  */
 package org.jahia.ajax.gwt.helper;
 
-import org.apache.commons.httpclient.*;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang.StringUtils;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;
@@ -56,17 +53,14 @@ import org.jahia.ajax.gwt.client.widget.poller.ContentUnpublishedEvent;
 import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
 import org.jahia.ajax.gwt.commons.server.ManagedGWTResource;
 import org.jahia.api.Constants;
-import org.jahia.bin.Render;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.atmosphere.AtmosphereServlet;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.notification.HttpClientService;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
-import org.jahia.utils.i18n.Messages;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
@@ -74,8 +68,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
-import java.io.IOException;
-import java.net.URL;
 import java.util.*;
 
 /**
@@ -91,7 +83,6 @@ public class PublicationHelper {
     private ComplexPublicationService complexPublicationService;
     private WorkflowHelper workflowHelper;
     private WorkflowService workflowService;
-    private HttpClientService httpClientService;
 
     public void setPublicationService(JCRPublicationService publicationService) {
         this.publicationService = publicationService;
@@ -111,10 +102,6 @@ public class PublicationHelper {
 
     public void setWorkflowHelper(WorkflowHelper workflowHelper) {
         this.workflowHelper = workflowHelper;
-    }
-
-    public void setHttpClientService(HttpClientService httpClientService) {
-        this.httpClientService = httpClientService;
     }
 
     /**
@@ -333,57 +320,6 @@ public class PublicationHelper {
             if (broadcaster != null) {
                 // we send an event only in case there are active broadcasters (listeners) registered and we do not propagate this to cluster
                 broadcaster.broadcast(new ContentUnpublishedEvent(uuids));
-            }
-        }
-    }
-
-    public void validateConnection(Map<String, String> props, JCRSessionWrapper jcrSession, Locale uiLocale)
-            throws GWTJahiaServiceException {
-        PostMethod post = null;
-        URL url = null;
-        try {
-            String languageCode = jcrSession.getNodeByIdentifier(props.get("node")).getResolveSite().getDefaultLanguage();
-            String theUrl = props.get("remoteUrl") + Render.getRenderServletPath() + "/live/" + languageCode + props.get("remotePath") + ".preparereplay.do";
-            url = new URL(theUrl);
-            post = new PostMethod(theUrl);
-            post.addParameter("testOnly", "true");
-            post.addRequestHeader("accept", "application/json");
-            HttpState state = new HttpState();
-            state.setCredentials(
-                    new AuthScope(url.getHost(), url.getPort()),
-                    new UsernamePasswordCredentials(props.get("remoteUser"), props
-                            .get("remotePassword")));
-            HttpClient httpClient = httpClientService.getHttpClient(theUrl);
-            Credentials proxyCredentials = httpClient.getState().getProxyCredentials(AuthScope.ANY);
-            if (proxyCredentials != null) {
-                state.setProxyCredentials(AuthScope.ANY, proxyCredentials);
-            }
-            if (httpClient.executeMethod(null, post, state) != 200) {
-                logger.warn("Connection to URL: {} failed with status {}", url,
-                        post.getStatusLine());
-                throw new GWTJahiaServiceException(
-                        Messages.getInternalWithArguments("label.gwt.error.connection.failed.with.the.status", uiLocale, post.getStatusLine()));
-            }
-        } catch (RepositoryException e) {
-            logger.error("Unable to get source node with identifier: " + props.get("node")
-                    + ". Cause: " + e.getMessage(), e);
-            throw new GWTJahiaServiceException(
-                    Messages.getInternalWithArguments("label.gwt.error.connection.failed.with.the.an.error", uiLocale, e.getMessage()));
-        } catch (HttpException e) {
-            logger.error(
-                    "Unable to get the content of the URL: " + url + ". Cause: " + e.getMessage(),
-                    e);
-            throw new GWTJahiaServiceException(
-                    Messages.getInternalWithArguments("label.gwt.error.connection.failed.with.the.an.error", uiLocale, e.getMessage()));
-        } catch (IOException e) {
-            logger.error(
-                    "Unable to get the content of the URL: " + url + ". Cause: " + e.getMessage(),
-                    e);
-            throw new GWTJahiaServiceException(
-                    Messages.getInternalWithArguments("label.gwt.error.connection.failed.with.the.an.error", uiLocale, e.getMessage()));
-        } finally {
-            if (post != null) {
-                post.releaseConnection();
             }
         }
     }

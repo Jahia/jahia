@@ -43,14 +43,19 @@
  */
 package org.jahia.test.services.render.filter.cache.base;
 
+import com.google.common.collect.ImmutableSet;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
-import org.apache.commons.httpclient.Credentials;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.DefaultHttpRequestRetryStrategy;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.util.TimeValue;
+import org.apache.xerces.impl.dv.util.Base64;
 import org.assertj.core.api.SoftAssertions;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
@@ -74,13 +79,12 @@ import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.ImmutableSet;
-
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.SimpleCredentials;
 import javax.jcr.query.Query;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -405,8 +409,8 @@ public class CacheFilterHttpTest extends JahiaTestCase {
                 Thread.currentThread().interrupt();
             }
 
-            assertEquals("Incorrect response code for first thread", 200, t1.resultCode);
-            assertEquals("Incorrect response code for second thread", 503, t2.resultCode);
+            assertEquals("Incorrect response code for first thread", HttpServletResponse.SC_OK, t1.resultCode);
+            assertEquals("Incorrect response code for second thread", HttpServletResponse.SC_SERVICE_UNAVAILABLE, t2.resultCode);
 
             assertTrue(getContent(getUrl(SITECONTENT_ROOT_NODE + "/home"), JahiaTestCase.getRootUserCredentials(),
                     CONCURRENT_REQUEST_ID_PREFIX + counter++).contains("<title>Home</title>"));
@@ -442,7 +446,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
                 Thread.currentThread().interrupt();
             }
 
-            HttpThread t2 = new HttpThread(getUrl(LONG_5_PAGE_PATH), JahiaTestCase.getRootUserCredentials(),
+            HttpThread t2 = new HttpThread(getUrl(LONG_PAGE_PATH), JahiaTestCase.getRootUserCredentials(),
                     CONCURRENT_REQUEST_ID_PREFIX + 2);
             t2.start();
             try {
@@ -567,37 +571,27 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     }
 
     public String getContent(URL url, SimpleCredentials credentials, String requestId) throws IOException {
-        String content = null;
-        GetMethod method = null;
-        try {
-            method = executeCall(url, credentials, requestId);
-            assertEquals("Bad result code", 200, method.getStatusCode());
-            content = method.getResponseBodyAsString();
-        } finally {
-            if (method != null) {
-                method.releaseConnection();
-            }
+        String content;
+        try (CloseableHttpResponse response = executeCall(url, credentials, requestId)) {
+            assertEquals("Bad result code", HttpServletResponse.SC_OK, response.getCode());
+            content = EntityUtils.toString(response.getEntity());
+        } catch (ParseException e) {
+            throw new IOException(e);
         }
         return content;
     }
     
-    public GetMethod executeCall(URL url, SimpleCredentials credentials, String requestId) throws IOException {
-        HttpClient client = new HttpClient();
-        client.getParams().setAuthenticationPreemptive(true);
+    public CloseableHttpResponse executeCall(URL url, SimpleCredentials credentials, String requestId) throws IOException {
+        CloseableHttpClient client = HttpClients.custom().setRetryStrategy(new DefaultHttpRequestRetryStrategy(0, TimeValue.MAX_VALUE)).build();
 
+        HttpGet method = new HttpGet(url.toExternalForm());
         if (credentials != null && credentials.getUserID() != null) {
-            Credentials defaultcreds = new UsernamePasswordCredentials(credentials.getUserID(), new String(credentials.getPassword()));
-            client.getState().setCredentials(new AuthScope(url.getHost(), url.getPort(), AuthScope.ANY_REALM), defaultcreds);
+            method.addHeader("Authorization", "Basic " + Base64.encode((credentials.getUserID() + ":" + String.valueOf(credentials.getPassword())).getBytes()));
         }
-
-        client.getHostConfiguration().setHost(url.getHost(), url.getPort(), url.getProtocol());
-
-        GetMethod method = new GetMethod(url.toExternalForm());
         if (requestId != null) {
-            method.setRequestHeader("request-id", requestId);
+            method.setHeader("request-id", requestId);
         }
-        client.executeMethod(method);
-        return method;
+        return client.execute(method);
     }
 
     public URL getUrl(String path) throws MalformedURLException {
@@ -630,17 +624,11 @@ public class CacheFilterHttpTest extends JahiaTestCase {
 
         @Override
         public void run() {
-            GetMethod method = null;
-            try {
-                method = executeCall(url, credentials, requestId);
-                resultCode = method.getStatusCode();
-                result = method.getResponseBodyAsString();
+            try (CloseableHttpResponse response = executeCall(url, credentials, requestId)){
+                resultCode = response.getCode();
+                result = EntityUtils.toString(response.getEntity());
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
-            } finally {
-                if (method != null) {
-                    method.releaseConnection();
-                }
             }
         }
     }

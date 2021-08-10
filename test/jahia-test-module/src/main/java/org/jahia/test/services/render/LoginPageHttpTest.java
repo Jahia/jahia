@@ -43,22 +43,11 @@
  */
 package org.jahia.test.services.render;
 
-import static org.junit.Assert.*;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.jcr.RepositoryException;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.httpclient.Cookie;
+import com.google.common.base.Predicates;
+import com.google.common.collect.Iterables;
 import org.apache.commons.lang.StringUtils;
+import org.apache.hc.client5.http.cookie.Cookie;
+import org.apache.hc.client5.http.protocol.HttpClientContext;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
@@ -81,8 +70,12 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Predicates;
-import com.google.common.collect.Iterables;
+import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.*;
+
+import static org.assertj.core.api.Assertions.*;
 
 /**
  * HTTP-based test for the login page.
@@ -106,7 +99,7 @@ public class LoginPageHttpTest extends JahiaTestCase {
     public static void oneTimeSetUp() throws RepositoryException, IOException, JahiaException {
         // create site
         JahiaSite site = TestHelper.createSite(SITE_NAME);
-        assertNotNull(site);
+        assertThat(site).isNotNull();
 
         JCRPublicationService publicationService = ServicesRegistry.getInstance().getJCRPublicationService();
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
@@ -153,8 +146,8 @@ public class LoginPageHttpTest extends JahiaTestCase {
         session.save();
     }
 
-    protected Cookie getCookie(String cookieName) {
-        for (Cookie c : getHttpClient().getState().getCookies()) {
+    protected Cookie getCookie(HttpClientContext context, String cookieName) {
+        for (Cookie c : context.getCookieStore().getCookies()) {
             if (cookieName.equals(c.getName())) {
                 return c;
             }
@@ -171,77 +164,78 @@ public class LoginPageHttpTest extends JahiaTestCase {
     public void testInvalidPassword() {
         String content = getAsText(
                 String.format(LOGIN_URL_FORMAT, USERNAME, PASSWORD + "_invalid", Jahia.getContextPath() + aboutUsPageUrl));
-        assertTrue("Should see a login page with invalid password error",
-                content.contains(LOGIN_FORM_NAME_LOCATOR) && content.contains("Invalid username/password"));
+        assertThat(content).contains(LOGIN_FORM_NAME_LOCATOR, "login-error")
+                .withFailMessage("Should see a login page with invalid password error");
     }
 
     @Test
     public void testNoGuestAccess() {
         String content = getAsText(aboutUsPageUrl, HttpServletResponse.SC_UNAUTHORIZED);
-        assertTrue("Guest can access the home page, which should not be the case",
-                content.contains(LOGIN_FORM_NAME_LOCATOR));
+        assertThat(content).contains(LOGIN_FORM_NAME_LOCATOR)
+                .withFailMessage("Guest can access the home page, which should not be the case");
     }
 
     @Test
     public void testNormalLogin() {
         String content = getAsText(String.format(LOGIN_URL_FORMAT, USERNAME, PASSWORD, Jahia.getContextPath() + aboutUsPageUrl));
-        assertTrue("After normal login the user should see the About Us page", content.contains(ABOUT_US_TITLE));
+        assertThat(content).contains(ABOUT_US_TITLE).withFailMessage("After normal login the user should see the About Us page");
     }
 
     @Test
     public void testRememberMe() {
+        HttpClientContext context = new HttpClientContext();
+
         CookieAuthConfig cookieAuthConfig = (CookieAuthConfig) SpringContextSingleton.getBean("cookieAuthConfig");
         Map<String, List<String>> responseHeaders = new HashMap<>();
         getAsText("/cms/login?username=" + USERNAME + "&password=" + PASSWORD + "&restMode=true" + "&" + LoginEngineAuthValveImpl.USE_COOKIE
-                + "=on", null, HttpServletResponse.SC_OK, responseHeaders);
+                + "=on", null, HttpServletResponse.SC_OK, responseHeaders, context);
 
         String cookieName = cookieAuthConfig.getCookieName();
         List<String> setCookie = responseHeaders.get("Set-Cookie");
         Iterator<String> cookieValueIteraror = setCookie != null
                 ? Iterables.filter(setCookie, Predicates.containsPattern(cookieName + "=")).iterator()
                 : null;
-        assertTrue("The response header should contain the corresponding remember me cookie " + cookieName,
-                cookieValueIteraror != null && cookieValueIteraror.hasNext());
+        assertThat(cookieValueIteraror).isNotNull()
+                .withFailMessage("The response header should contain the corresponding remember me cookie %s", cookieName);
         String cookieValue = StringUtils.substringBetween(cookieValueIteraror.next(), cookieName + "=", ";");
 
-        Cookie authCookie = getCookie(cookieName);
-        assertNotNull("Remember me cookie is not present in HTTP client state", authCookie);
-        assertEquals("Remember me cookie has wrong value in HTTP client state", cookieValue, authCookie.getValue());
+        Cookie authCookie = getCookie(context, cookieName);
+        assertThat(authCookie).isNotNull().withFailMessage("Remember me cookie is not present in HTTP client state");
+        assertThat(authCookie.getValue()).isEqualTo(cookieValue).withFailMessage("Remember me cookie has wrong value in HTTP client state");
 
-        String content = getAsText(aboutUsPageUrl);
+        String content = getAsText(aboutUsPageUrl, null, HttpServletResponse.SC_OK, null, context);
 
-        assertTrue("After normal login the user should see the About Us page",
-                content.contains(ABOUT_US_TITLE));
+        assertThat(content).contains(ABOUT_US_TITLE).withFailMessage("After normal login the user should see the About Us page");
 
         // we clear the cookies to remove current session cookie from HTTP state
-        getHttpClient().getState().clearCookies();
+        context.getCookieStore().clear();
 
-        content = getAsText(aboutUsPageUrl, HttpServletResponse.SC_UNAUTHORIZED);
-        assertTrue("Guest can access the home page, which should not be the case",
-                content.contains(LOGIN_FORM_NAME_LOCATOR));
+        content = getAsText(aboutUsPageUrl, null, HttpServletResponse.SC_UNAUTHORIZED, null, context);
+        assertThat(content).contains(LOGIN_FORM_NAME_LOCATOR)
+                .withFailMessage("Guest can access the home page, which should not be the case");
 
         // we put the remember me cookie into HTTP state
-        getHttpClient().getState().addCookie(authCookie);
+        context.getCookieStore().addCookie(authCookie);
 
-        content = getAsText(aboutUsPageUrl);
-        assertTrue(
-                "With a remember me cookie the login should be done automatically and the user should see the About Us page",
-                content.contains(ABOUT_US_TITLE));
+        content = getAsText(aboutUsPageUrl, null, HttpServletResponse.SC_OK, null, context);
+        assertThat(content).contains(ABOUT_US_TITLE).withFailMessage(
+                "With a remember me cookie the login should be done automatically and the user should see the About Us page");
     }
 
     @Test
     public void testRootLogin() {
         String content = getAsText(String.format(LOGIN_URL_FORMAT, JahiaTestCase.getRootUserCredentials().getUserID(),
                 new String(JahiaTestCase.getRootUserCredentials().getPassword()),
-                Jahia.getContextPath() + "/cms/admin/default/en/settings.aboutJahia.html"));
-        assertTrue("After login the root user should see the about page in the administration",
-                content.contains("<title>settings</title>") && content.contains("template=\"aboutJahia\""));
+                Jahia.getContextPath() + "/cms/adminframe/default/en/settings.aboutJahia.html"));
+        assertThat(content).contains("<title>settings</title>", "template=\"aboutJahia\"")
+                .withFailMessage("After login the root user should see the about page in the administration");
     }
 
     @Test
     public void testXssOnRedirect() {
         String content = getAsText("/cms/login?redirect=%2fsites%2fwhatever%22%3C%2Fscript%3E%3Cscript%3Ealert(%27xss%27)%3C%2Fscript%3E");
-        assertFalse("<script> element should not be in the page output", content.contains("<script>alert('xss')</script>"));
+        assertThat(content).doesNotContain("<script>alert('xss')</script>")
+                .withFailMessage("<script> element should not be in the page output");
     }
 
 }

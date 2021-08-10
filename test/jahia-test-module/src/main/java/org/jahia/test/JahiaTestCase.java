@@ -43,14 +43,19 @@
  */
 package org.jahia.test;
 
-import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.lang.StringUtils;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
+import org.apache.hc.client5.http.impl.DefaultRedirectStrategy;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.protocol.HttpClientContext;
+import org.apache.hc.core5.http.*;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
+import org.apache.hc.core5.http.protocol.HttpContext;
 import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRPublicationService;
@@ -66,6 +71,9 @@ import javax.jcr.SimpleCredentials;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -114,7 +122,7 @@ public class JahiaTestCase {
     
     private static SimpleCredentials rootUserCredentials;
 
-    private HttpClient client;
+    private CloseableHttpClient client;
     /**
      * Returns the <code>HttpServletRequest</code> object for the current call.
      * 
@@ -182,19 +190,23 @@ public class JahiaTestCase {
 
     protected String getAsText(String relativeUrl, Map<String, String> requestHeaders, int expectedResponseCode,
             Map<String, List<String>> collectedResponseHeaders) {
+        return getAsText(relativeUrl, requestHeaders, expectedResponseCode, collectedResponseHeaders, new HttpClientContext());
+    }
+
+    protected String getAsText(String relativeUrl, Map<String, String> requestHeaders, int expectedResponseCode,
+            Map<String, List<String>> collectedResponseHeaders, HttpClientContext context) {
         String body = StringUtils.EMPTY;
-        GetMethod getMethod = createGetMethod(relativeUrl);
+        HttpGet getMethod = createHttpGet(relativeUrl);
         if (requestHeaders != null && !requestHeaders.isEmpty()) {
             for (Map.Entry<String, String> header : requestHeaders.entrySet()) {
-                getMethod.addRequestHeader(header.getKey(), header.getValue());
+                getMethod.addHeader(header.getKey(), header.getValue());
             }
         }
-        try {
-            int responseCode = getHttpClient().executeMethod(getMethod);
-            assertEquals("Response code for URL " + relativeUrl + " is incorrect", expectedResponseCode, responseCode);
-            body = getMethod.getResponseBodyAsString();
+        try (CloseableHttpResponse response = getHttpClient().execute(getMethod, context)) {
+            assertEquals("Response code for URL " + relativeUrl + " is incorrect", expectedResponseCode, response.getCode());
+            body = EntityUtils.toString(response.getEntity());
             if (collectedResponseHeaders != null) {
-                for (Header header : getMethod.getResponseHeaders()) {
+                for (Header header : response.getHeaders()) {
                     String headerName = header.getName();
                     if (!collectedResponseHeaders.containsKey(headerName)) {
                         collectedResponseHeaders.put(headerName, new LinkedList<>());
@@ -202,18 +214,16 @@ public class JahiaTestCase {
                     collectedResponseHeaders.get(headerName).add(header.getValue());
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException | ParseException e) {
             logger.error(e.getMessage(), e);
-        } finally {
-            getMethod.releaseConnection();
         }
 
         return body;
     }
 
-    protected GetMethod createGetMethod(String relativeUrl) {
-        GetMethod getMethod = new GetMethod(getBaseServerURL() + Jahia.getContextPath() + relativeUrl);
-        getMethod.addRequestHeader("Origin", getBaseServerURL());
+    protected HttpGet createHttpGet(String relativeUrl) {
+        HttpGet getMethod = new HttpGet(getBaseServerURL() + Jahia.getContextPath() + relativeUrl);
+        getMethod.addHeader("Origin", getBaseServerURL());
         return getMethod;
     }
 
@@ -222,9 +232,19 @@ public class JahiaTestCase {
         return req != null ? String.valueOf(getRequest().getServerPort()) : PORT;
     }
 
-    protected HttpClient getHttpClient() {
+    protected CloseableHttpClient getHttpClient() {
         if (client == null) {
-            client = new HttpClient();
+            client = HttpClients.custom().setRedirectStrategy(new DefaultRedirectStrategy() {
+                @Override
+                public URI getLocationURI(HttpRequest request, HttpResponse response, HttpContext context) throws HttpException {
+                    URI uri = super.getLocationURI(request, response, context);
+                    try {
+                        return new URI(uri.toString().replace("%3Bjsessionid%3D", ";jsessionid="));
+                    } catch (URISyntaxException e) {
+                        return uri;
+                    }
+                }
+            }).build();
         }
         return client;
     }
@@ -249,31 +269,30 @@ public class JahiaTestCase {
     }
 
     protected PostResult post(String url, String[]... params) throws IOException {
-        PostMethod method = new PostMethod(url);
-        method.addRequestHeader("Origin", getBaseServerURL());
+        HttpPost method = new HttpPost(url);
+        method.addHeader("Origin", getBaseServerURL());
+
+        List <NameValuePair> nvps = new ArrayList<>();
         for (String[] param : params) {
-            method.addParameter(param[0], param[1]);
+            nvps.add(new BasicNameValuePair(param[0], param[1]));
         }
+        method.setEntity(new UrlEncodedFormEntity(nvps));
 
-        // Provide custom retry handler is necessary
-        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
+        int statusCode;
+        String statusLine;
+        String responseBody;
 
-        int statusCode = 0;
-        String statusLine = null;
-        String responseBody = null;
-        try {
-            // Execute the method.
-            statusCode = getHttpClient().executeMethod(method);
-
-            statusLine = method.getStatusLine().toString();
-            if (statusCode != HttpStatus.SC_OK) {
-                logger.warn("Method failed: {}", statusLine);
+        try (CloseableHttpResponse response = getHttpClient().execute(method)) {
+            statusCode = response.getCode();
+            statusLine = response.getReasonPhrase();
+            if (response.getCode() != HttpStatus.SC_OK) {
+                logger.warn("Method failed: {} {}", response.getCode(), response.getReasonPhrase());
             }
 
             // Read the response body.
-            responseBody = method.getResponseBodyAsString();
-        } finally {
-            method.releaseConnection();
+            responseBody = EntityUtils.toString(response.getEntity());
+        } catch (ParseException e) {
+            throw new IOException(e);
         }
 
         return new PostResult(statusCode, statusLine, responseBody);

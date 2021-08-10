@@ -43,27 +43,15 @@
  */
 package org.jahia.test.services.render.filter.channels;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.jcr.ImportUUIDBehavior;
-
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
@@ -72,6 +60,13 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
+
+import javax.jcr.ImportUUIDBehavior;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+
+import static org.junit.Assert.*;
 
 public class ChannelResolutionAndExclusionTest extends JahiaTestCase {
 
@@ -115,94 +110,79 @@ public class ChannelResolutionAndExclusionTest extends JahiaTestCase {
 
     @Test
     public void testGenericChannelResolution() throws Exception, IOException {
-        HttpClient client = new HttpClient();
-        GetMethod nodeGet = new GetMethod(
+        CloseableHttpClient client = getHttpClient();
+        HttpGet nodeGet = new HttpGet(
         		getBaseServerURL() + Jahia.getContextPath() + "/cms/render/live/en" +
                         SITECONTENT_ROOT_NODE + "/home.html");
         String response = null;
-        try {
-            int responseCode = client.executeMethod(nodeGet);
-            assertEquals("Response code " + responseCode, 200, responseCode);
-            response = nodeGet.getResponseBodyAsString();
+        try (CloseableHttpResponse responseCode = client.execute(nodeGet)) {
+            assertEquals("Response code " + responseCode, HttpServletResponse.SC_OK, responseCode.getCode());
+            response = EntityUtils.toString(responseCode.getEntity());
             assertTrue("This text should be displayed on generic channel", response.contains("This banner shouldn&#39;t appear on an iPhone."));
-        } finally {
-            nodeGet.releaseConnection();
         }
     }
 
     @Test
     public void testSupportedChannelResolution() throws Exception, IOException {
-        HttpClient client = new HttpClient();
-        client.getParams().setParameter(HttpMethodParams.USER_AGENT,
-                "Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3");
-        GetMethod nodeGet = new GetMethod(
+        CloseableHttpClient client = HttpClients.custom()
+                .setUserAgent("Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3")
+                .build();
+        HttpGet nodeGet = new HttpGet(
         		getBaseServerURL() + Jahia.getContextPath() + "/cms/render/live/en" +
                         SITECONTENT_ROOT_NODE + "/home.html");
         String response = null;
-        try {
-            int responseCode = client.executeMethod(nodeGet);
-            assertEquals("Response code " + responseCode, 200, responseCode);
-            response = nodeGet.getResponseBodyAsString();
+        try (CloseableHttpResponse responseCode = client.execute(nodeGet)) {
+            assertEquals("Response code " + responseCode.getCode(), HttpServletResponse.SC_OK, responseCode.getCode());
+            response = EntityUtils.toString(responseCode.getEntity());
             assertFalse("This text shouldn't be displayed on iPhone channel", response.contains("This banner shouldn&#39;t appear on an iPhone."));
-        } finally {
-            nodeGet.releaseConnection();
         }
     }
 
     @Test
     public void testUnsupportedChannelResolution() throws Exception, IOException {
-        HttpClient client = new HttpClient();
-        client.getParams().setParameter(HttpMethodParams.USER_AGENT,
-                "Mozilla/5.0 (SymbianOS/9.4; Series60/5.0 NokiaN97-1/12.0.024; Profile/MIDP-2.1 Configuration/CLDC-1.1; en-us) AppleWebKit/525 (KHTML, like Gecko) BrowserNG/7.1.12344");
-        GetMethod nodeGet = new GetMethod(
+        CloseableHttpClient client = HttpClients.custom()
+                .setUserAgent("Mozilla/5.0 (SymbianOS/9.4; Series60/5.0 NokiaN97-1/12.0.024; Profile/MIDP-2.1 Configuration/CLDC-1.1; en-us) AppleWebKit/525 (KHTML, like Gecko) BrowserNG/7.1.12344")
+                .build();
+        HttpGet nodeGet = new HttpGet(
         		getBaseServerURL() + Jahia.getContextPath() + "/cms/render/live/en" +
                         SITECONTENT_ROOT_NODE + "/home.html");
         String response = null;
-        try {
-            int responseCode = client.executeMethod(nodeGet);
-            assertEquals("Response code " + responseCode, 200, responseCode);
-            response = nodeGet.getResponseBodyAsString();
+        try (CloseableHttpResponse responseCode = client.execute(nodeGet)) {
+            assertEquals("Response code " + responseCode.getCode(), HttpServletResponse.SC_OK, responseCode.getCode());
+            response = EntityUtils.toString(responseCode.getEntity());
             assertTrue("Non supported channel should fall back on generic", response.contains("This banner shouldn&#39;t appear on an iPhone."));
-        } finally {
-            nodeGet.releaseConnection();
         }
     }
 
     @Test
     public void testNonExcludedChannel() throws Exception, IOException {
-        HttpClient client = new HttpClient();
-        client.getParams().setParameter(HttpMethodParams.USER_AGENT,
-                "Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3");
-        GetMethod nodeGet = new GetMethod(
+        CloseableHttpClient client = HttpClients.custom()
+                .setUserAgent("Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3")
+                .build();
+        HttpGet nodeGet = new HttpGet(
         		getBaseServerURL() + Jahia.getContextPath() + "/cms/render/live/en" +
                         SITECONTENT_ROOT_NODE + "/home.html");
         String response = null;
-        try {
-            int responseCode = client.executeMethod(nodeGet);
-            assertEquals("Response code " + responseCode, 200, responseCode);
-            response = nodeGet.getResponseBodyAsString();
+        try (CloseableHttpResponse responseCode = client.execute(nodeGet)) {
+            assertEquals("Response code " + responseCode.getCode(), HttpServletResponse.SC_OK, responseCode.getCode());
+            response = EntityUtils.toString(responseCode.getEntity());
             assertTrue("This text should be displayed when channel is not iPad", response.contains("This text shouldn&#39;t appear on an iPad."));
-        } finally {
-            nodeGet.releaseConnection();
         }
     }
 
     @Test
     public void testExcludedChannel() throws Exception, IOException {
-        HttpClient client = new HttpClient();
-        client.getParams().setParameter(HttpMethodParams.USER_AGENT,
-                "Mozilla/5.0 (iPad; CPU OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3");
-        GetMethod nodeGet = new GetMethod(
+        CloseableHttpClient client = HttpClients.custom()
+                .setUserAgent("Mozilla/5.0 (iPad; CPU OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3")
+                .build();
+        HttpGet nodeGet = new HttpGet(
         		getBaseServerURL() + Jahia.getContextPath() + "/cms/render/live/en" +
                         SITECONTENT_ROOT_NODE + "/home.html");
         String response = null;
-        try {
-            int responseCode = client.executeMethod(nodeGet);
-            assertEquals("Response code " + responseCode, 200, responseCode);
-            response = nodeGet.getResponseBodyAsString();
+        try (CloseableHttpResponse responseCode = client.execute(nodeGet)) {
+            assertEquals("Response code " + responseCode.getCode(), HttpServletResponse.SC_OK, responseCode.getCode());
+            response = EntityUtils.toString(responseCode.getEntity());
             assertFalse("This text should be hidden when channel is iPad", response.contains("This text shouldn&#39;t appear on an iPad."));
-        } finally {
-            nodeGet.releaseConnection();
         }
     }
 

@@ -121,8 +121,6 @@ public interface JahiaContentManagementService extends RemoteService {
 
     GWTJahiaNode createRSSPortletInstance(String path, String name, String url) throws GWTJahiaServiceException;
 
-    boolean createRemotePublication(String nodeName, Map<String, String> props, boolean validateConnectionSettings) throws GWTJahiaServiceException;
-
     GWTJahiaNode createModule(String moduleName, String artifactId, String groupId, String siteType, String source) throws GWTJahiaServiceException;
 
     GWTJahiaNode checkoutModule(String moduleId, String scmURI, String scmType, String branchOrTag, String sources) throws GWTJahiaServiceException;

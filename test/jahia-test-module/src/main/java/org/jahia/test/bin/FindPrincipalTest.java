@@ -43,18 +43,15 @@
  */
 package org.jahia.test.bin;
 
-import static org.junit.Assert.assertNotNull;
-
-import java.io.IOException;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.SimpleCredentials;
-
-import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.jahia.bin.FindPrincipal;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
@@ -67,12 +64,14 @@ import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.slf4j.Logger;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.SimpleCredentials;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -80,16 +79,15 @@ import static org.junit.Assert.*;
  * Test of the find principal servlet.
  *
  * @author loom
- *         Date: Jun 16, 2010
- *         Time: 12:03:19 PM
+ * Date: Jun 16, 2010
+ * Time: 12:03:19 PM
  */
 public class FindPrincipalTest extends JahiaTestCase {
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(FindPrincipalTest.class);
-
-    private HttpClient client;
     private final static String TESTSITE_NAME = "findPrincipalTestSite";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(FindPrincipalTest.class);
+    private CloseableHttpClient client;
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
@@ -97,7 +95,7 @@ public class FindPrincipalTest extends JahiaTestCase {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
-                         TestHelper.createSite(TESTSITE_NAME, "localhost", TestHelper.WEB_TEMPLATES);
+                        TestHelper.createSite(TESTSITE_NAME, "localhost", TestHelper.WEB_TEMPLATES);
                     } catch (Exception ex) {
                         logger.warn("Exception during site creation", ex);
                         fail("Exception during site creation");
@@ -130,82 +128,61 @@ public class FindPrincipalTest extends JahiaTestCase {
     public void setUp() throws Exception {
 
         // Create an instance of HttpClient.
-        client = new HttpClient();
+        client = getHttpClient();
 
         // todo we should really insert content to test the find.
 
-        PostMethod loginMethod = new PostMethod(getLoginServletURL());
-        try {
+        HttpPost loginMethod = new HttpPost(getLoginServletURL());
             SimpleCredentials rootUserCredentials = JahiaTestCase.getRootUserCredentials();
-            loginMethod.addParameter("username", rootUserCredentials.getUserID());
-            loginMethod.addParameter("password", new String(rootUserCredentials.getPassword()));
-            loginMethod.addParameter("redirectActive", "false");
+            List<NameValuePair> nvps = new ArrayList<>();
+            nvps.add(new BasicNameValuePair("username", rootUserCredentials.getUserID()));
+            nvps.add(new BasicNameValuePair("password", new String(rootUserCredentials.getPassword())));
+            nvps.add(new BasicNameValuePair("redirectActive", "false"));
             // the next parameter is required to properly activate the valve check.
-            loginMethod.addParameter(
-                    LoginEngineAuthValveImpl.LOGIN_TAG_PARAMETER, "1");
-            // Provide custom retry handler is necessary
-            loginMethod.getParams().setParameter(
-                    HttpMethodParams.RETRY_HANDLER,
-                    new DefaultHttpMethodRetryHandler(3, false));
+            nvps.add(new BasicNameValuePair(LoginEngineAuthValveImpl.LOGIN_TAG_PARAMETER, "1"));
+            loginMethod.setEntity(new UrlEncodedFormEntity(nvps));
 
-            int statusCode = client.executeMethod(loginMethod);
-            assertEquals("Method failed: " + loginMethod.getStatusLine(),
-                    HttpStatus.SC_OK, statusCode);
-        } finally {
-            loginMethod.releaseConnection();
+        try (CloseableHttpResponse response = client.execute(loginMethod)) {
+            assertEquals("Method failed: " + response.getCode(), HttpStatus.SC_OK, response.getCode());
         }
     }
 
     @After
     public void tearDown() throws Exception {
+        HttpPost logoutMethod = new HttpPost(getLogoutServletURL());
+        List<NameValuePair> nvps = new ArrayList<>();
+        nvps.add(new BasicNameValuePair("redirectActive", "false"));
+        logoutMethod.setEntity(new UrlEncodedFormEntity(nvps));
 
-        PostMethod logoutMethod = new PostMethod(getLogoutServletURL());
-        try {
-            logoutMethod.addParameter("redirectActive", "false");
-            // Provide custom retry handler is necessary
-            logoutMethod.getParams().setParameter(
-                    HttpMethodParams.RETRY_HANDLER,
-                    new DefaultHttpMethodRetryHandler(3, false));
-
-            int statusCode = client.executeMethod(logoutMethod);
-            assertEquals("Method failed: " + logoutMethod.getStatusLine(),
-                    HttpStatus.SC_OK, statusCode);
-        } finally {
-            logoutMethod.releaseConnection();
+        try (CloseableHttpResponse response = client.execute(logoutMethod)) {
+            assertEquals("Method failed: " + response.getCode(), HttpStatus.SC_OK, response.getCode());
         }
     }
 
     @Test
     public void testFindUsers() throws IOException, JSONException, JahiaException {
 
-        PostMethod method = new PostMethod(getFindPrincipalServletURL());
-        try {
-            method.addParameter("principalType", "users");
-            method.addParameter("wildcardTerm", "*root*");
-
-            // Provide custom retry handler is necessary
-            method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
-                    new DefaultHttpMethodRetryHandler(3, false));
+        HttpPost method = new HttpPost(getFindPrincipalServletURL());
+            List<NameValuePair> nvps = new ArrayList<>();
+            nvps.add(new BasicNameValuePair("principalType", "users"));
+            nvps.add(new BasicNameValuePair("wildcardTerm", "*root*"));
+            method.setEntity(new UrlEncodedFormEntity(nvps));
 
             // Execute the method.
-            int statusCode = client.executeMethod(method);
-
-            assertEquals("Method failed: " + method.getStatusLine(),
-                    HttpStatus.SC_OK, statusCode);
+        try (CloseableHttpResponse response = client.execute(method)) {
+            assertEquals("Method failed: " + response.getCode(), HttpStatus.SC_OK, response.getCode());
 
             // Read the response body.
             StringBuilder responseBodyBuilder = new StringBuilder();
             responseBodyBuilder.append("[")
-                    .append(method.getResponseBodyAsString()).append("]");
+                    .append(EntityUtils.toString(response.getEntity())).append("]");
             String responseBody = responseBodyBuilder.toString();
 
             JSONArray jsonResults = new JSONArray(responseBody);
 
-            assertNotNull(
-                    "A proper JSONObject instance was expected, got null instead",
-                    jsonResults);
-        } finally {
-            method.releaseConnection();
+            assertNotNull("A proper JSONObject instance was expected, got null instead", jsonResults);
+        } catch (ParseException e) {
+            throw new IOException(e);
         }
 
         // @todo we need to add more tests to validate results.
@@ -215,26 +192,23 @@ public class FindPrincipalTest extends JahiaTestCase {
     @Test
     public void testFindGroups() throws IOException, JSONException {
 
-        PostMethod method = new PostMethod(getFindPrincipalServletURL());
-        try {
-            method.addParameter("principalType", "groups");
-            method.addParameter("siteKey", TESTSITE_NAME);
-            method.addParameter("wildcardTerm", "*administrators*");
+        HttpPost method = new HttpPost(getFindPrincipalServletURL());
+        List<NameValuePair> nvps = new ArrayList<>();
+        nvps.add(new BasicNameValuePair("principalType", "groups"));
+        nvps.add(new BasicNameValuePair("siteKey", TESTSITE_NAME));
+        nvps.add(new BasicNameValuePair("wildcardTerm", "*administrators*"));
+        method.setEntity(new UrlEncodedFormEntity(nvps));
 
-            // Provide custom retry handler is necessary
-            method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
-                    new DefaultHttpMethodRetryHandler(3, false));
+        // Execute the method.
+        try (CloseableHttpResponse response = client.execute(method)) {
 
-            // Execute the method.
-            int statusCode = client.executeMethod(method);
-
-            assertEquals("Method failed: " + method.getStatusLine(),
-                    HttpStatus.SC_OK, statusCode);
+            assertEquals("Method failed: " + response.getCode(),
+                    HttpStatus.SC_OK, response.getCode());
 
             // Read the response body.
             StringBuilder responseBodyBuilder = new StringBuilder();
             responseBodyBuilder.append("[")
-                    .append(method.getResponseBodyAsString()).append("]");
+                    .append(EntityUtils.toString(response.getEntity())).append("]");
             String responseBody = responseBodyBuilder.toString();
 
             JSONArray jsonResults = new JSONArray(responseBody);
@@ -242,8 +216,8 @@ public class FindPrincipalTest extends JahiaTestCase {
             assertNotNull(
                     "A proper JSONObject instance was expected, got null instead",
                     jsonResults);
-        } finally {
-            method.releaseConnection();
+        } catch (ParseException e) {
+            throw new IOException(e);
         }
 
         // @todo we need to add more tests to validate results.
@@ -251,11 +225,11 @@ public class FindPrincipalTest extends JahiaTestCase {
     }
 
     private String getLoginServletURL() {
-        return getBaseServerURL()+ Jahia.getContextPath() + "/cms/login";
+        return getBaseServerURL() + Jahia.getContextPath() + "/cms/login";
     }
 
     private String getLogoutServletURL() {
-        return getBaseServerURL()+ Jahia.getContextPath() + "/cms/logout";
+        return getBaseServerURL() + Jahia.getContextPath() + "/cms/logout";
     }
 
     private String getFindPrincipalServletURL() {

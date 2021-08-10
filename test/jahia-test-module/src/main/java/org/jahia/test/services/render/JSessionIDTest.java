@@ -43,52 +43,51 @@
  */
 package org.jahia.test.services.render;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.cookie.IgnoreCookieSpecFactory;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.jahia.bin.Jahia;
+import org.jahia.settings.SettingsBean;
+import org.jahia.test.JahiaTestCase;
+import org.junit.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.cookie.CookiePolicy;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.lang.StringUtils;
-import org.jahia.bin.Jahia;
-import org.jahia.settings.SettingsBean;
-import org.jahia.test.JahiaTestCase;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This test case verify that the jsessionid parameter is correctly removed from the URL
  */
 public class JSessionIDTest extends JahiaTestCase {
     private static Logger logger = LoggerFactory.getLogger(JSessionIDTest.class);
-    private HttpClient httpClient;
-    private String jsessionid;
-
     private static boolean isJsessionIdActive;
+    private CloseableHttpClient httpClient;
+    private String jsessionid;
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
         isJsessionIdActive = SettingsBean.getInstance().isDisableJsessionIdParameter();
     }
-    
+
     @AfterClass
     public static void oneTimeTearDown() throws Exception {
-        SettingsBean.getInstance().setDisableJsessionIdParameter(isJsessionIdActive);        
-    }    
-    
+        SettingsBean.getInstance().setDisableJsessionIdParameter(isJsessionIdActive);
+    }
+
     @Before
     public void setUp() {
-        httpClient = new HttpClient();
-        httpClient.getParams().setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
+        httpClient = HttpClients.custom().setDefaultCookieSpecRegistry(name -> new IgnoreCookieSpecFactory()).build();
         jsessionid = "jsessionid";
     }
 
@@ -112,35 +111,28 @@ public class JSessionIDTest extends JahiaTestCase {
         SettingsBean.getInstance().setDisableJsessionIdParameter(removeJsessionId);
         SettingsBean.getInstance().setJsessionIdParameterName(jsessionid);
 
-        GetMethod displayLoginMethod = new GetMethod(getBaseServerURL() + Jahia.getContextPath()+"/start");
-        try {
-            int statusCode = httpClient.executeMethod(displayLoginMethod);
+        HttpGet displayLoginMethod = new HttpGet(getBaseServerURL() + Jahia.getContextPath() + "/start");
+        try (CloseableHttpResponse httpResponse = httpClient.execute(displayLoginMethod)) {
+            assertEquals("Method failed: " + httpResponse.getCode(), HttpStatus.SC_UNAUTHORIZED, httpResponse.getCode());
 
-            assertEquals(
-                    "Method failed: " + displayLoginMethod.getStatusLine(),
-                    HttpStatus.SC_UNAUTHORIZED, statusCode);
-
-            String responseBodyAsString = displayLoginMethod
-                    .getResponseBodyAsString();
+            String responseBodyAsString = EntityUtils.toString(httpResponse.getEntity());
 
             Pattern p = Pattern.compile("action=\"([^\"]*)\"");
             Matcher m = p.matcher(responseBodyAsString);
             assertTrue(m.find());
 
             String url = m.group(1);
-            if (!removeJsessionId) {
-                logger.info("Unencoded URL: " + getBaseServerURL() + Jahia.getContextPath() + "/start");
-                logger.info("Encoded redirect URL: " +
-                        getResponse().encodeRedirectURL(getBaseServerURL() + Jahia.getContextPath() + "/start"));
-                logger.info("Encoded URL: " + getResponse().encodeURL(getBaseServerURL() + Jahia.getContextPath() + "/start"));
+            if (!removeJsessionId && logger.isInfoEnabled()) {
+                String unencodedUrl = getBaseServerURL() + Jahia.getContextPath() + "/start";
+                logger.info("Unencoded URL: {}", unencodedUrl);
+                logger.info("Encoded redirect URL: {}", getResponse().encodeRedirectURL(unencodedUrl));
+                logger.info("Encoded URL: {}", getResponse().encodeURL(unencodedUrl));
             }
-            
-            assertEquals("jsession ID is not "
-                    + (removeJsessionId ? "removed" : "present")
-                    + " in administration login url:" + url, removeJsessionId,
+
+            assertEquals("jsession ID is not " + (removeJsessionId ? "removed" : "present") + " in administration login url:" + url, removeJsessionId,
                     !StringUtils.containsIgnoreCase(url, jsessionid));
-        } finally {
-            displayLoginMethod.releaseConnection();
+        } catch (ParseException e) {
+            throw new IOException(e);
         }
     }
 

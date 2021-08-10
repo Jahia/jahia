@@ -43,13 +43,13 @@
  */
 package org.apache.jackrabbit.core.security;
 
-import static org.junit.Assert.assertEquals;
+import org.apache.hc.core5.http.HttpException;
+import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.junit.Test;
 
 import javax.jcr.SimpleCredentials;
 
-import org.apache.commons.httpclient.HttpException;
-import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Unit test for the {@link JahiaLoginModule}.

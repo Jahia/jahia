@@ -43,33 +43,17 @@
  */
 package org.jahia.test.bin;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.GregorianCalendar;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.version.Version;
-
-import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRVersionService;
-import org.jahia.services.content.PublicationInfo;
-import org.jahia.services.content.VersionInfo;
+import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
@@ -81,6 +65,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.version.Version;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -132,7 +123,7 @@ public class RenderTest extends JahiaTestCase {
     }
 
     @Test
-    public void testVersionRender() throws RepositoryException, ParseException, IOException {
+    public void testVersionRender() throws RepositoryException, java.text.ParseException {
         JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
         JCRVersionService jcrVersionService = ServicesRegistry.getInstance().getJCRVersionService();
         JCRSessionWrapper editSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE,
@@ -164,7 +155,7 @@ public class RenderTest extends JahiaTestCase {
         editSession.checkout(stageNode);
         JCRNodeWrapper stagedSubPage = stageNode.addNode("home_subpage1", "jnt:page");
         stagedSubPage.setProperty("j:templateName", "simple");
-        stagedSubPage.setProperty("jcr:title", "title0");
+        stagedSubPage.setProperty(Constants.JCR_TITLE, "title0");
         editSession.save();
 
         // publish it
@@ -182,7 +173,7 @@ public class RenderTest extends JahiaTestCase {
         }
         for (int i = 1; i < NUMBER_OF_VERSIONS; i++) {
             editSession.checkout(stagedSubPage);
-            stagedSubPage.setProperty("jcr:title", "title" + i);
+            stagedSubPage.setProperty(Constants.JCR_TITLE, "title" + i);
             editSession.save();
 
             // each time the node i published, a new version should be created
@@ -252,27 +243,29 @@ public class RenderTest extends JahiaTestCase {
 
         JCRNodeWrapper stagedPageContent = stageNode.getNode("listA");
         JCRNodeWrapper mainContent = stagedPageContent.addNode("mainContent", "jnt:mainContent");
-        mainContent.setProperty("jcr:title", MAIN_CONTENT_TITLE + "0");
+        mainContent.setProperty(Constants.JCR_TITLE, MAIN_CONTENT_TITLE + "0");
         mainContent.setProperty("body", MAIN_CONTENT_BODY + "0");
         editSession.save();
 
-        PostMethod createPost = new PostMethod(
+        HttpPost createPost = new HttpPost(
         		getBaseServerURL() + Jahia.getContextPath() + "/cms/render/default/en" + SITECONTENT_ROOT_NODE +
                 "/home/listA/*");
-        createPost.addRequestHeader("x-requested-with", "XMLHttpRequest");
-        createPost.addRequestHeader("accept", "application/json");
+        createPost.addHeader("x-requested-with", "XMLHttpRequest");
+        createPost.addHeader("accept", "application/json");
         // here we voluntarily don't set the node name to test automatic name creation.
-        createPost.addParameter("jcrNodeType", "jnt:mainContent");
-        createPost.addParameter("jcr:title", MAIN_CONTENT_TITLE + "1");
-        createPost.addParameter("body", MAIN_CONTENT_BODY + "1");
+        List<NameValuePair> nvps = new ArrayList<>();
+        nvps.add(new BasicNameValuePair("jcrNodeType",  "jnt:mainContent"));
+        nvps.add(new BasicNameValuePair(Constants.JCR_TITLE, MAIN_CONTENT_TITLE + "1"));
+        nvps.add(new BasicNameValuePair("body", MAIN_CONTENT_BODY + "1"));
+        createPost.setEntity(new UrlEncodedFormEntity(nvps));
+
 
         String responseBody = "";
-        try {
-            int responseCode = getHttpClient().executeMethod(createPost);
-            assertEquals("Error in response, code=" + responseCode, 201, responseCode);
-            responseBody = createPost.getResponseBodyAsString();
-        } finally {
-            createPost.releaseConnection();
+        try (CloseableHttpResponse response = getHttpClient().execute(createPost)) {
+            assertEquals("Error in response, code=" + response.getCode(), 201, response.getCode());
+            responseBody = EntityUtils.toString(response.getEntity());
+        } catch (ParseException e) {
+            throw new IOException(e);
         }
 
         JSONObject jsonResults = new JSONObject(responseBody);

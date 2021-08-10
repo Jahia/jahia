@@ -255,6 +255,7 @@
         <servlet-class>org.apache.felix.http.proxy.ProxyServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
         <async-supported>true</async-supported>
+        <multipart-config/>
     </servlet>
 
     <!-- This servlet is used to indicate the end of the initialization process of Jahia, so it should always have

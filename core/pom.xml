@@ -1690,8 +1690,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>15.0</version>
-            <classifier>cdi1.0</classifier>
+            <version>30.1.1-jre</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.findbugs</groupId>

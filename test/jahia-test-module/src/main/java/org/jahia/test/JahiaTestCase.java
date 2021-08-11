@@ -204,7 +204,7 @@ public class JahiaTestCase {
         }
         try (CloseableHttpResponse response = getHttpClient().execute(getMethod, context)) {
             assertEquals("Response code for URL " + relativeUrl + " is incorrect", expectedResponseCode, response.getCode());
-            body = EntityUtils.toString(response.getEntity());
+            body = response.getEntity() == null ? null : EntityUtils.toString(response.getEntity());
             if (collectedResponseHeaders != null) {
                 for (Header header : response.getHeaders()) {
                     String headerName = header.getName();

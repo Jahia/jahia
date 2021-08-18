@@ -25,6 +25,7 @@ import org.apache.logging.log4j.util.Strings;
 @ConverterKeys({ "sxEx", "sxThrowable", "sxException" })
 public final class SafeExtendedThrowablePatternConverter extends ThrowablePatternConverter {
     private static final String STACKTRACE_LINE_START = "\n\tat";
+    private static final String NESTED_STACKTRACE_LINE_START = "\n\t\tat";
     /**
      * Private constructor.
      * 
@@ -91,21 +92,46 @@ public final class SafeExtendedThrowablePatternConverter extends ThrowablePatter
         int messageStartIndex = 0;
         int stackTraceStartIndex;
         do {
-            stackTraceStartIndex = extStackTrace.indexOf(STACKTRACE_LINE_START, messageStartIndex) - 1;
-            if (StringUtils.lastIndexOf(extStackTrace, '\r', stackTraceStartIndex) >= messageStartIndex
-                    || StringUtils.lastIndexOf(extStackTrace, '\n', stackTraceStartIndex) >= messageStartIndex) {
-                return messageStartIndex;
-            } else if (stackTraceStartIndex != -1) {
-                messageStartIndex = extStackTrace.indexOf("Caused by:", stackTraceStartIndex);
+            stackTraceStartIndex = getNextIndex(extStackTrace.indexOf(STACKTRACE_LINE_START, messageStartIndex),
+                    extStackTrace.indexOf(NESTED_STACKTRACE_LINE_START, messageStartIndex));
+            if (stackTraceStartIndex != -1) {
+                stackTraceStartIndex--;
+                if (StringUtils.lastIndexOf(extStackTrace, '\r', stackTraceStartIndex) >= messageStartIndex
+                        || StringUtils.lastIndexOf(extStackTrace, '\n', stackTraceStartIndex) >= messageStartIndex) {
+                    return messageStartIndex;
+                } else if (stackTraceStartIndex != -1) {
+                    messageStartIndex = getNextNestedMessageIndex(extStackTrace, stackTraceStartIndex);
+                }
             }
         } while (messageStartIndex != -1 && stackTraceStartIndex != -1);
         return -1;
     }
     
+    private int getNextNestedMessageIndex(String extStackTrace, int stackTraceStartIndex) {
+        return getNextIndex(extStackTrace.indexOf("Caused by:", stackTraceStartIndex),
+                extStackTrace.indexOf("Suppressed:", stackTraceStartIndex));
+    }
+
+    private int getNextNestedMessageIndex(StringBuilder extStackTrace, int stackTraceStartIndex) {
+        return getNextIndex(extStackTrace.indexOf("Caused by:", stackTraceStartIndex),
+                extStackTrace.indexOf("Suppressed:", stackTraceStartIndex));
+    }
+
+    private int getNextIndex(int firstIndex, int secondIndex) {
+        if (secondIndex == -1) {
+            return firstIndex;
+        } else if (firstIndex == -1) {
+            return secondIndex;
+        } else {
+            return Math.min(firstIndex, secondIndex);
+        }
+    }
+    
     private String replaceLineSeparatorInMessages(String extStackTrace, int messageWithCRLFIndex) {
         final StringBuilder sb = new StringBuilder(extStackTrace);
         do {
-            int beginningOfStackTrace = sb.indexOf(STACKTRACE_LINE_START, messageWithCRLFIndex);
+            int beginningOfStackTrace = getNextIndex(sb.indexOf(STACKTRACE_LINE_START, messageWithCRLFIndex),
+                    sb.indexOf(NESTED_STACKTRACE_LINE_START, messageWithCRLFIndex));
             replaceCRLF(sb, messageWithCRLFIndex, beginningOfStackTrace);
             messageWithCRLFIndex = indexOfNestedExceptionMessageWithCRLF(sb, beginningOfStackTrace);
         } while (messageWithCRLFIndex != -1);
@@ -115,15 +141,19 @@ public final class SafeExtendedThrowablePatternConverter extends ThrowablePatter
     private int indexOfNestedExceptionMessageWithCRLF(StringBuilder extStackTrace, int startIndex) {
         int stackTraceStartIndex;
         do {
-            startIndex = extStackTrace.indexOf("Caused by:", startIndex);
+            startIndex = getNextNestedMessageIndex(extStackTrace, startIndex);
             if (startIndex == -1) {
                 return startIndex;
             }
-            stackTraceStartIndex = extStackTrace.indexOf(STACKTRACE_LINE_START, startIndex) - 1;
-            if (StringUtils.lastIndexOf(extStackTrace, '\r', stackTraceStartIndex) >= startIndex
-                    || StringUtils.lastIndexOf(extStackTrace, '\n', stackTraceStartIndex) >= startIndex) {
-                return startIndex;
-            } 
+            stackTraceStartIndex = getNextIndex(extStackTrace.indexOf(STACKTRACE_LINE_START, startIndex),
+                    extStackTrace.indexOf(NESTED_STACKTRACE_LINE_START, startIndex));
+            if (stackTraceStartIndex != -1) {
+                stackTraceStartIndex--;
+                if (StringUtils.lastIndexOf(extStackTrace, '\r', stackTraceStartIndex) >= startIndex
+                        || StringUtils.lastIndexOf(extStackTrace, '\n', stackTraceStartIndex) >= startIndex) {
+                    return startIndex;
+                }
+            }
             startIndex = stackTraceStartIndex; 
         } while (startIndex != -1 && stackTraceStartIndex != -1);
         return -1;

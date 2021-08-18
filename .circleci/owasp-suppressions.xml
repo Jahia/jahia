@@ -2,14 +2,6 @@
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
     <suppress>
         <notes><![CDATA[
-            False positive: commons-fileupload-1.3.1.jar - we already have commons-fileupload 1.3.3. deployed
-        ]]></notes>
-        <packageUrl regex="true">^pkg:maven/commons\-fileupload/commons\-fileupload@1\.3\.1$</packageUrl>
-		<cve>CVE-2016-1000031</cve>
-		<cve>CVE-2016-3092</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
             False positive: tomcat-embed-jasper-9.0.16.jar - Jahia is installed with a more recent Tomcat version
         ]]></notes>
        <packageUrl regex="true">^pkg:maven/org\.apache\.tomcat\.embed/tomcat\-embed\-jasper@9\.0\.16$</packageUrl>
@@ -30,81 +22,49 @@
 	   <cve>CVE-2021-24122</cve>
 	   <cve>CVE-2021-25122</cve>
 	   <cve>CVE-2021-25329</cve>
+       <cve>CVE-2021-30640</cve>
+       <cve>CVE-2021-33037</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
-        file name: commons-io-2.2.jar - we already package commons-io-2.8.0.jar
+        file name: commons-io-2.2.jar - we package newer commons-io
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/commons\-io/commons\-io@.*$</packageUrl>
         <cve>CVE-2021-29425</cve>
-    </suppress>    
-    <suppress>
-        <notes><![CDATA[
-        file name: jackson-*-2.8.4.jar - we already package jackson-*-2.9.10.jar
-        ]]></notes>
-        <packageUrl regex="true">^pkg:maven/com\.fasterxml\.jackson\.core/jackson\-.*@2\.8\.4$</packageUrl>
-        <cpe>cpe:/a:fasterxml:jackson-modules-java8</cpe>
-        <cpe>cpe:/a:fasterxml:jackson-databind</cpe>
-        <vulnerabilityName>CVE-2017-15095</vulnerabilityName>
-        <vulnerabilityName>CVE-2017-17485</vulnerabilityName>
-        <vulnerabilityName>CVE-2017-7525</vulnerabilityName>
-        <vulnerabilityName>CVE-2018-1000873</vulnerabilityName>
-        <vulnerabilityName>CVE-2018-11307</vulnerabilityName>
-        <vulnerabilityName>CVE-2018-12022</vulnerabilityName>
-        <vulnerabilityName>CVE-2018-12023</vulnerabilityName>
-        <vulnerabilityName>CVE-2018-14718</vulnerabilityName>
-        <vulnerabilityName>CVE-2018-14719</vulnerabilityName>
-        <vulnerabilityName>CVE-2018-14720</vulnerabilityName>
-        <vulnerabilityName>CVE-2018-14721</vulnerabilityName>
-        <vulnerabilityName>CVE-2018-19360</vulnerabilityName>
-        <vulnerabilityName>CVE-2018-19361</vulnerabilityName>
-        <vulnerabilityName>CVE-2018-19362</vulnerabilityName>
-        <vulnerabilityName>CVE-2018-5968</vulnerabilityName>
-        <vulnerabilityName>CVE-2018-7489</vulnerabilityName>
-        <vulnerabilityName>CVE-2019-12086</vulnerabilityName>
-        <vulnerabilityName>CVE-2019-12384</vulnerabilityName>
-        <vulnerabilityName>CVE-2019-12814</vulnerabilityName>
-        <vulnerabilityName>CVE-2019-14379</vulnerabilityName>
-        <vulnerabilityName>CVE-2019-14439</vulnerabilityName>
-        <vulnerabilityName>CVE-2019-14540</vulnerabilityName>
-        <vulnerabilityName>CVE-2019-14892</vulnerabilityName>
-        <vulnerabilityName>CVE-2019-14893</vulnerabilityName>
-        <vulnerabilityName>CVE-2019-16335</vulnerabilityName>
-        <vulnerabilityName>CVE-2019-16942</vulnerabilityName>
-        <vulnerabilityName>CVE-2019-16943</vulnerabilityName>
-        <vulnerabilityName>CVE-2019-17267</vulnerabilityName>
-        <vulnerabilityName>CVE-2019-17531</vulnerabilityName>
-        <vulnerabilityName>CVE-2019-20330</vulnerabilityName>
-        <vulnerabilityName>CVE-2020-10969</vulnerabilityName>
-        <vulnerabilityName>CVE-2020-35490</vulnerabilityName>
-        <vulnerabilityName>CVE-2020-35491</vulnerabilityName>
-        <vulnerabilityName>CVE-2020-8840</vulnerabilityName>
-        <vulnerabilityName>CVE-2020-9546</vulnerabilityName>
-        <vulnerabilityName>CVE-2020-9547</vulnerabilityName>
-        <vulnerabilityName>CVE-2020-9548</vulnerabilityName>
     </suppress>
     <suppress>
         <notes><![CDATA[
-        file name: jasypt-1.9.1-lite.jar - we already package jasypt-1.9.3-lite.jar 
+        file name: jackson-*-2.10.0.jar - we package jackson >= 2.10.5.1
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/com\.fasterxml\.jackson\.core/jackson\-.*@2\.10\.0$</packageUrl>
+        <cpe>cpe:/a:fasterxml:jackson-modules-java8</cpe>
+        <cpe>cpe:/a:fasterxml:jackson-databind</cpe>
+        <vulnerabilityName>CVE-2020-25649</vulnerabilityName>
+    </suppress>    
+    <suppress>
+        <notes><![CDATA[
+        file name: jasypt-1.9.1-lite.jar - we package jasypt > 1.9.1 
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.jasypt/jasypt@.*$</packageUrl>
         <cve>CVE-2014-9970</cve>
-    </suppress>       
+    </suppress>
     <suppress>
         <notes><![CDATA[
-        file name: httpclient-4.5.6.jar - we already package httpclient-4.5.13.jar
+        file name: httpclient-4.5.6.jar - we package httpclient >= 4.5.13
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.apache\.httpcomponents/httpclient@.*$</packageUrl>
         <cve>CVE-2020-13956</cve>
     </suppress> 
     <suppress>
         <notes><![CDATA[
-        file name: spring-*-3.1.1.RELEASE.jar - we package spring-*-3.2.18.RELEASE_OSGI.jar 
+        file name: spring-*-3.1.1.RELEASE.jar - we package newer spring 
         ]]></notes>
-        <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-.*@3\.1\.1.*$</packageUrl>
+        <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-.*@3\.1\.1.RELEASE$</packageUrl>
         <cpe>cpe:/a:pivotal_software:spring_framework</cpe>
         <cpe>cpe:/a:springsource:spring_framework</cpe>
         <cpe>cpe:/a:vmware:springsource_spring_framework</cpe>
+        <cpe>cpe:/a:vmware:spring_framework</cpe>
+        <vulnerabilityName regex="true"></vulnerabilityName>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -132,11 +92,18 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
-        file name: log4j-1.2.16.jar - we use log4j-1.2.17.jar
+        file name: log4j-1.2.16.jar - we use log4j2
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/.*log4j@1\.2\.16$</packageUrl>
         <cpe>cpe:/a:apache:log4j</cpe>
         <vulnerabilityName>CVE-2019-17571</vulnerabilityName>
         <vulnerabilityName>CVE-2020-9488</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: abdera-i18n-1.1.3.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.abdera/abdera\-i18n@.*$</packageUrl>
+        <cve>CVE-2020-7791</cve>
     </suppress>
 </suppressions>

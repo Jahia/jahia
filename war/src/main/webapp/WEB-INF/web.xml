@@ -255,6 +255,13 @@
         <servlet-class>org.apache.felix.http.proxy.ProxyServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
         <async-supported>true</async-supported>
+    </servlet>
+
+    <servlet>
+        <servlet-name>graphqlOsgiProxy</servlet-name>
+        <servlet-class>org.jahia.bin.GraphqlProxyServlet</servlet-class>
+        <load-on-startup>998</load-on-startup>
+        <async-supported>true</async-supported>
         <multipart-config/>
     </servlet>
 
@@ -392,6 +399,10 @@
         <url-pattern>/cms/*</url-pattern>
     </servlet-mapping>
 
+    <servlet-mapping>
+        <servlet-name>graphqlOsgiProxy</servlet-name>
+        <url-pattern>/modules/graphql/*</url-pattern>
+    </servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>osgiProxy</servlet-name>

@@ -78,8 +78,6 @@ public class URLGenerator {
     private String contribute;
     private String studio;
     private String studioVisual;
-    @Deprecated
-    private String find;
     private String initializers;
     private Resource resource;
     private RenderContext context;
@@ -150,7 +148,6 @@ public class URLGenerator {
         basePreview = renderServletPath + editLanguage;
         preview = basePreview + resourcePath;
         final String workspaceLanguage = "/" + resource.getWorkspace() + "/" + languageCode;
-        find = Find.getFindServletPath() + workspaceLanguage;
         initializers = Initializers.getInitializersServletPath() + workspaceLanguage;
         convert = DocumentConverter.getPath() + "/" + resource.getWorkspace();
         templatesPath = "/modules";
@@ -248,16 +245,6 @@ public class URLGenerator {
         return studioVisual;
     }
     
-    @Deprecated
-    public String getFind() {
-        return find;
-    }
-    
-    @Deprecated
-    public String getFindPrincipal() {
-        return FindPrincipal.getFindPrincipalServletPath();
-    }
-
     public String getLogout() {
         if (logout == null) {
             logout = StringUtils.defaultIfEmpty(
@@ -528,7 +515,6 @@ public class URLGenerator {
         sb.append(", preview='").append(preview).append('\'');
         sb.append(", contribute='").append(contribute).append('\'');
         sb.append(", studio='").append(studio).append('\'');
-        sb.append(", find='").append(find).append('\'');
         sb.append(", initializers='").append(initializers).append('\'');
         sb.append(", resource=").append(resource);
         sb.append(", context=").append(context);

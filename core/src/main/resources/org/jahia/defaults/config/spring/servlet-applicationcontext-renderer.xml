@@ -94,15 +94,6 @@
                 <entry key="/studioframe/**" value-ref="org.jahia.bin.Studio"/>
                 <entry key="/studiovisual/**" value-ref="org.jahia.bin.StudioVisual"/>
                 <entry key="/studiovisualframe/**" value-ref="org.jahia.bin.StudioVisual"/>
-                <entry key="/find/**" value-ref="org.jahia.bin.Find"/>
-                <entry key="/findPrincipal">
-                    <bean class="org.jahia.bin.FindPrincipal">
-                        <property name="jahiaUserManagerService" ref="JahiaUserManagerService"/>
-                        <property name="jahiaGroupManagerService" ref="JahiaGroupManagerService"/>
-                        <property name="jahiaSitesService" ref="JahiaSitesService"/>
-                        <property name="requiredPermission" value="adminUsers"/>
-                    </bean>
-                </entry>
                 <entry key="/findUser">
                     <bean class="org.jahia.bin.FindUser">
                         <property name="jahiaUserManagerService" ref="JahiaUserManagerService"/>
@@ -215,16 +206,4 @@
     <bean class="org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter"/>
     <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/>
 
-    <bean id="org.jahia.bin.Find" class="org.jahia.bin.Find">
-        <property name="urlResolverFactory" ref="urlResolverFactory" />
-        <property name="disabled" value="${jahia.find.disabled:false}" />
-        <property name="requireAuthenticatedUser" value="${jahia.find.requireAuthenticatedUser:false}" />
-        <property name="requiredPermission" value="${jahia.find.requiredPermission:}"/>
-        <property name="hardLimit" value="${jahia.find.hardLimit:100}" />
-        <property name="nodeTypesToSkip"
-            value="${jahia.find.nodeTypesToSkip:jnt:passwordHistory,jnt:passwordHistoryEntry}" />
-        <property name="pathsToSkip" value="${jahia.find.pathsToSkip:/users/root}" />
-        <property name="propertiesToSkip"
-            value="${jahia.find.propertiesToSkip:jnt:user.j:password,jnt:user.j:email,jnt:passwordHistoryEntry.j:password}" />
-    </bean>
 </beans>

@@ -99,11 +99,13 @@
         <gwt.version>${gwt.version.base}-jahia1</gwt.version>
         <groovy.version>2.5.14</groovy.version>
         <shiro.version>1.7.1</shiro.version>
-        <jodconverter.version>4.3.0</jodconverter.version>
+        <jodconverter.version>4.4.2</jodconverter.version>
+        <tika.version>1.27</tika.version>
+        <xstream.version>1.4.17</xstream.version>
         <!--Atmosphere javascript is defined as a static resource in Jahia and has to be update manually-->
         <atmosphere.version>2.3.10-jahia1</atmosphere.version>
         <atmosphere.gwt.version>2.3.0</atmosphere.gwt.version>
-        <ant.version>1.10.9</ant.version>
+        <ant.version>1.10.11</ant.version>
         <junit.version>4.13.2</junit.version>
         <junit.addons.version>1.4</junit.addons.version>
         <testng.version>6.9.10</testng.version>

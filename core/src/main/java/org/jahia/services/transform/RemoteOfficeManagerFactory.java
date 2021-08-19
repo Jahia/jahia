@@ -45,7 +45,6 @@ package org.jahia.services.transform;
 
 import org.jodconverter.core.office.OfficeManager;
 import org.jodconverter.local.office.ExternalOfficeManager;
-import org.jodconverter.local.office.OfficeConnectionProtocol;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 
 /**
@@ -97,15 +96,14 @@ public class RemoteOfficeManagerFactory extends AbstractFactoryBean<OfficeManage
     }
 
     public void setHost(String host) {
-//        cfg.host(host);
+        cfg.hostName(host);
     }
 
     public void setPipeName(String pipeName) throws NullPointerException {
-        cfg.pipeName(pipeName);
-        cfg.connectionProtocol(OfficeConnectionProtocol.PIPE);
+        cfg.pipeNames(pipeName);
     }
 
     public void setPortNumber(int portNumber) {
-        cfg.portNumber(portNumber);
+        cfg.portNumbers(portNumber);
     }
 }

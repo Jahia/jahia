@@ -45,13 +45,9 @@ package org.jahia.services.transform;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.jodconverter.core.office.OfficeManager;
+import org.jodconverter.local.office.ExistingProcessAction;
 import org.jodconverter.local.office.LocalOfficeManager;
-import org.jodconverter.local.office.OfficeConnectionProtocol;
 import org.jodconverter.local.process.ProcessManager;
-import org.jodconverter.local.process.ProcessQuery;
-import org.jodconverter.local.process.WindowsProcessManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 
 import java.io.File;
@@ -64,15 +60,9 @@ import java.io.File;
  */
 public class LocalOfficeManagerFactory extends AbstractFactoryBean<OfficeManager> {
 
-    private static final Logger logger = LoggerFactory.getLogger(LocalOfficeManagerFactory.class);
-    
     private LocalOfficeManager.Builder cfg;
     
     private boolean killExistingOfficeProcessOnWindows = true;
-
-    private OfficeConnectionProtocol connectionProtocol = OfficeConnectionProtocol.SOCKET;
-
-    private int[] portNumbers = new int[] { 2002 };
 
     /**
      * Initializes an instance of this class.
@@ -91,22 +81,8 @@ public class LocalOfficeManagerFactory extends AbstractFactoryBean<OfficeManager
      */
     @Override
     protected OfficeManager createInstance() throws Exception {
-        if (killExistingOfficeProcessOnWindows && SystemUtils.IS_OS_WINDOWS
-                && connectionProtocol == OfficeConnectionProtocol.SOCKET
-                && WindowsProcessManager.getDefault().isUsable()) {
-            WindowsProcessManager mgr = new WindowsProcessManager();
-            for (int port : portNumbers) {
-                ProcessQuery q = new ProcessQuery("soffice.bin", "socket,host=127.0.0.1,port="
-                        + port);
-                long pid = mgr.findPid(q);
-                if (pid > 0) {
-                    try {
-                        mgr.kill(null, pid);
-                    } catch (Exception e) {
-                        logger.error("Error killing existing office process with pid " + pid, e);
-                    }
-                }
-            }
+        if (killExistingOfficeProcessOnWindows && SystemUtils.IS_OS_WINDOWS) {
+            cfg.existingProcessAction(ExistingProcessAction.KILL);
         }
 
         return cfg.build();
@@ -122,10 +98,6 @@ public class LocalOfficeManagerFactory extends AbstractFactoryBean<OfficeManager
     @Override
     public Class<? extends OfficeManager> getObjectType() {
         return OfficeManager.class;
-    }
-
-    public void setConnectionProtocol(OfficeConnectionProtocol connectionProtocol) throws NullPointerException {
-        this.connectionProtocol  = connectionProtocol;
     }
 
     public void setMaxTasksPerProcess(int maxTasksPerProcess) {
@@ -149,12 +121,10 @@ public class LocalOfficeManagerFactory extends AbstractFactoryBean<OfficeManager
     }
 
     public void setPortNumber(int portNumber) {
-        this.portNumbers = new int[] {portNumber};
         cfg.portNumbers(portNumber);
     }
 
     public void setPortNumbers(int... portNumbers) throws NullPointerException, IllegalArgumentException {
-        this.portNumbers = portNumbers;
         cfg.portNumbers(portNumbers);
     }
 

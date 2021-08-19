@@ -2,6 +2,7 @@ package org.jahia.bundles.config.fileinstall;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import org.apache.commons.io.output.WriterOutputStream;
 import org.apache.felix.fileinstall.ArtifactInstaller;
 import org.apache.felix.fileinstall.ArtifactListener;
 import org.apache.felix.fileinstall.internal.DirectoryWatcher;
@@ -134,8 +135,13 @@ public class YamlConfigInstaller implements ArtifactInstaller, ConfigurationList
         if (file != null && file.isFile() && canHandle(file)) {
             pidToFile.put(configuration.getPid(), fileName);
             Map<String, Object> previousValues;
+
             StringWriter previousContent = new StringWriter();
-            IOUtils.copy(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8), previousContent);
+            try (InputStream input = new FileInputStream(file);
+                 OutputStream out = new WriterOutputStream(previousContent, StandardCharsets.UTF_8)) {
+                IOUtils.copy(input, out);
+            }
+
             // read YAML file
             try (Reader r = new StringReader(previousContent.getBuffer().toString())) {
                 previousValues = yamlMapper.readValue(r, new TypeReference<Map<String, Object>>() {
@@ -147,8 +153,9 @@ public class YamlConfigInstaller implements ArtifactInstaller, ConfigurationList
             Map<String, Object> newValues = configImpl.getValues().getStructuredMap();
 
             if (!previousValues.equals(newValues)) {
-                try (Writer fw = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
-                    IOUtils.copy(new StringReader(configImpl.getContent()), fw);
+                try (StringReader input = new StringReader(configImpl.getContent());
+                     Writer fw = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
+                    IOUtils.copy(input, fw);
                 }
             }
         }

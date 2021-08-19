@@ -119,7 +119,7 @@
         <izpack.version>4.3.5-jahia11</izpack.version>
         <launch4j.version>3.12</launch4j.version>
         <log4j.version>2.10.0</log4j.version>
-        <jahia.tomcat.version>9.0.45</jahia.tomcat.version>
+        <jahia.tomcat.version>9.0.52</jahia.tomcat.version>
 
         <driver.derby.version>10.14.2.0</driver.derby.version>
         <driver.mssql.version>9.2.1.jre8</driver.mssql.version>

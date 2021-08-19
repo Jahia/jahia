@@ -63,14 +63,16 @@ private static File getBundleLocationMapFile() {
 }
 
 private static String getDataDirLocationFromKarafInstanceProperties() {
-    Properties props = PropertyUtils.loadProperties(getKarafInstancePropertiesFile());
+    File instancePropertiesFile = getKarafInstancePropertiesFile();
+    Properties props = instancePropertiesFile.exists() ? PropertyUtils.loadProperties(instancePropertiesFile) : null;
 
     String path = props != null ? props.getProperty("item.0.loc") : null;
     return path != null ? getParent(normalize(path)) : null;
 }
 
 private static String getDataDirLocationFromLocationMapProperties() {
-    Properties props = PropertyUtils.loadProperties(getBundleLocationMapFile());
+    File bundleLocationMapFile = getBundleLocationMapFile();
+    Properties props = bundleLocationMapFile.exists() ? PropertyUtils.loadProperties(bundleLocationMapFile) : null;
 
     if (props == null) {
         return null;

@@ -1,4 +1,4 @@
-package org.jahia.bundles.config.impl;
+package org.jahia.bundles.config;
 
 import java.util.Arrays;
 import java.util.Collection;

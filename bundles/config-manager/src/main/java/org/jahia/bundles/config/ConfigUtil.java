@@ -1,9 +1,6 @@
 package org.jahia.bundles.config;
 
-import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ConfigUtil {
     private ConfigUtil() {
@@ -21,5 +18,28 @@ public class ConfigUtil {
             }
         }
         return m;
+    }
+
+    public static void flatten(Map<String, String> builder, String key, Map<String, ?> m) {
+        for (Map.Entry<String, ?> entry : m.entrySet()) {
+            flatten(builder, (key.isEmpty() ? key : (key + '.')) + entry.getKey(), entry.getValue());
+        }
+    }
+
+    private static void flatten(Map<String, String> builder, String key, List<?> m) {
+        int i = 0;
+        for (Object value : m) {
+            flatten(builder, key + '[' + (i++) + ']', value);
+        }
+    }
+
+    private static void flatten(Map<String, String> builder, String key, Object value) {
+        if (value instanceof Map) {
+            flatten(builder, key, (Map<String, ?>) value);
+        } else if (value instanceof List) {
+            flatten(builder, key, (List<?>) value);
+        } else if (value != null) {
+            builder.put(key, value.toString());
+        }
     }
 }

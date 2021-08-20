@@ -43,9 +43,11 @@
  */
 package org.jahia.bundles.provisioning.impl.operations;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bundles.config.OsgiConfigService;
+import org.jahia.bundles.config.Format;
 import org.jahia.services.modulemanager.spi.Config;
 import org.jahia.services.provisioning.ExecutionContext;
 import org.jahia.services.provisioning.Operation;
@@ -89,11 +91,15 @@ public class EditConfiguration implements Operation {
             String configId = (String) entry.get(CONFIG_IDENTIFIER);
             String content = (String) entry.get(CONTENT);
             Map<String, String> properties = (Map<String, String>) entry.get(PROPERTIES);
-
+            Format format = Format.CFG;
             String installConfiguration = (String) entry.get(INSTALL_CONFIGURATION);
             if (installConfiguration != null) {
                 String filename = installConfiguration.contains("/") ? StringUtils.substringAfterLast(installConfiguration, "/") : installConfiguration;
-                pid = StringUtils.substringBeforeLast(filename, ".cfg");
+                String extension = FilenameUtils.getExtension(filename);
+                if(Format.YAML.getSupportedExtensions().contains("."+extension)) {
+                    format = Format.YAML;
+                }
+                pid = FilenameUtils.getBaseName(filename);
                 content = IOUtils.toString(ProvisioningScriptUtil.getResource(installConfiguration, executionContext).getURL(), StandardCharsets.UTF_8);
             }
 
@@ -105,11 +111,13 @@ public class EditConfiguration implements Operation {
             Config settings = configId != null ? configService.getConfig(pid, configId) : configService.getConfig(pid);
 
             if (content != null) {
+                settings.setFormat(format.toString());
                 settings.setContent(content);
             }
             if (properties != null) {
                 settings.getRawProperties().putAll(properties);
             }
+
             configService.storeConfig(settings);
         } catch (IOException e) {
             logger.error("Cannot update configurations", e);

@@ -9,7 +9,7 @@ import org.apache.felix.fileinstall.internal.DirectoryWatcher;
 import org.apache.tika.io.IOUtils;
 import org.jahia.bundles.config.ConfigUtil;
 import org.jahia.bundles.config.impl.ConfigImpl;
-import org.jahia.bundles.config.impl.Format;
+import org.jahia.bundles.config.Format;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
@@ -30,6 +30,8 @@ import java.nio.file.Files;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.*;
+
+import static org.jahia.bundles.config.ConfigUtil.flatten;
 
 /**
  * Install configuration written in YAML
@@ -184,7 +186,7 @@ public class YamlConfigInstaller implements ArtifactInstaller, ConfigurationList
      * @throws Exception
      */
     boolean setConfig(final File f) throws IOException, InvalidSyntaxException{
-        final Map<String, Object> ht = new HashMap<>();
+        final Map<String, String> ht = new HashMap<>();
         try (InputStream in = new BufferedInputStream(new FileInputStream(f))) {
             Map<String, Object> m = yamlMapper.readValue(in, new TypeReference<Map<String, Object>>() {
             });
@@ -216,28 +218,7 @@ public class YamlConfigInstaller implements ArtifactInstaller, ConfigurationList
         }
     }
 
-    private void flatten(Map<String, Object> builder, String key, Map<String, ?> m) {
-        for (Map.Entry<String, ?> entry : m.entrySet()) {
-            flatten(builder, (key.isEmpty() ? key : (key + '.')) + entry.getKey(), entry.getValue());
-        }
-    }
 
-    private void flatten(Map<String, Object> builder, String key, List<?> m) {
-        int i = 0;
-        for (Object value : m) {
-            flatten(builder, key + '[' + (i++) + ']', value);
-        }
-    }
-
-    private void flatten(Map<String, Object> builder, String key, Object value) {
-        if (value instanceof Map) {
-            flatten(builder, key, (Map<String, ?>) value);
-        } else if (value instanceof List) {
-            flatten(builder, key, (List<?>) value);
-        } else if (value != null) {
-            builder.put(key, value.toString());
-        }
-    }
 
     /**
      * Remove the configuration.

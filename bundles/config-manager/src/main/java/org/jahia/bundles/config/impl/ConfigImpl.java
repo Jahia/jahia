@@ -46,16 +46,16 @@ package org.jahia.bundles.config.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import org.jahia.bundles.config.ConfigUtil;
+import org.jahia.bundles.config.Format;
 import org.jahia.services.modulemanager.spi.Config;
 import org.jahia.services.modulemanager.util.PropertiesManager;
 import org.jahia.services.modulemanager.util.PropertiesValues;
 import org.osgi.service.cm.Configuration;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.TreeMap;
+import java.util.*;
+
+import static org.jahia.bundles.config.ConfigUtil.flatten;
 
 /**
  * Config implementation
@@ -152,11 +152,14 @@ public class ConfigImpl implements Config {
             p.stringPropertyNames().forEach(e -> props.put(e, p.getProperty(e)));
             this.contentProps = new HashMap<>(props);
         } else if (format == Format.YAML) {
-            YAMLMapper yamlMapper = new YAMLMapper();
+            YAMLMapper yamlMapper = YAMLMapper.builder().build();
+            final Map<String, String> ht = new HashMap<>();
             try (Reader r = new StringReader(content)) {
-                this.props = yamlMapper.readValue(r, new TypeReference<Map<String, String>>() {
+                Map<String, Object> m = yamlMapper.readValue(r, new TypeReference<Map<String, Object>>() {
                 });
+                flatten(ht, "", m);
             }
+            this.props = ht;
             this.contentProps = new HashMap<>(props);
         }
     }
@@ -177,4 +180,5 @@ public class ConfigImpl implements Config {
     public String toString() {
         return props.toString();
     }
+
 }

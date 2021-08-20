@@ -48,6 +48,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.bundles.config.ConfigUtil;
+import org.jahia.bundles.config.Format;
 import org.jahia.bundles.config.OsgiConfigService;
 import org.jahia.services.content.*;
 import org.jahia.services.modulemanager.ModuleManagementException;

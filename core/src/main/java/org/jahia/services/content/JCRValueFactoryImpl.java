@@ -88,6 +88,12 @@ public class JCRValueFactoryImpl extends AbstractValueFactory {
     }
 
     @Override
+    public Value createValue(Node value, boolean weak) throws RepositoryException {
+        final Value valueToBeWrapped = super.createValue(value, weak);
+        return new EqualsFriendlierValue(valueToBeWrapped);
+    }
+
+    @Override
     public Value createValue(String value, int type) throws ValueFormatException {
         final Value valueToBeWrapped = super.createValue(value, type != PropertyType.REFERENCE ? type : PropertyType.WEAKREFERENCE);
         return new EqualsFriendlierValue(valueToBeWrapped);

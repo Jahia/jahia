@@ -65,7 +65,7 @@ public class PermissionServiceImpl implements PermissionService, ManagedService 
     private void deployProfileConfig(String profile) {
         URL url = context.getBundle().getResource("META-INF/configuration-profiles/profile-" + profile + "." + "yml");
         if (url != null) {
-            Path path = Paths.get(settingsBean.getJahiaVarDiskPath(), "karaf", "etc", "org.jahia.modules.api.authorization-default." + "yml");
+            Path path = Paths.get(settingsBean.getJahiaVarDiskPath(), "karaf", "etc", "org.jahia.bundles.api.authorization-default." + "yml");
             try (InputStream input = url.openStream()) {
                 List<String> lines = IOUtils.readLines(input, StandardCharsets.UTF_8);
                 lines.add(0, "# Do not edit - Configuration file provided by module, any change will be lost");
@@ -84,7 +84,7 @@ public class PermissionServiceImpl implements PermissionService, ManagedService 
 
     private void removeProfile() {
         try {
-            Path path = Paths.get(settingsBean.getJahiaVarDiskPath(), "karaf", "etc", "org.jahia.modules.api.authorization-default.yml");
+            Path path = Paths.get(settingsBean.getJahiaVarDiskPath(), "karaf", "etc", "org.jahia.bundles.api.authorization-default.yml");
             if (Files.exists(path)) {
                 Files.delete(path);
             }

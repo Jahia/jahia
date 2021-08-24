@@ -46,9 +46,13 @@ package org.jahia.bundles.websocket;
 import org.osgi.framework.ServiceObjects;
 
 import javax.websocket.Endpoint;
+import javax.websocket.Extension;
+import javax.websocket.HandshakeResponse;
+import javax.websocket.server.HandshakeRequest;
 import javax.websocket.server.ServerEndpointConfig;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -58,9 +62,11 @@ public class ModuleEndpointConfigurator extends ServerEndpointConfig.Configurato
 
     private final Set<ModuleEndpoint> endpoints = new HashSet<>();
     private final ServiceObjects<Endpoint> endpointServiceRef;
+    private ServerEndpointConfig.Configurator customConfigurator;
 
-    public ModuleEndpointConfigurator(ServiceObjects<Endpoint> endpointServiceRef) {
+    public ModuleEndpointConfigurator(ServiceObjects<Endpoint> endpointServiceRef, ServerEndpointConfig.Configurator customConfigurator) {
         this.endpointServiceRef = endpointServiceRef;
+        this.customConfigurator = customConfigurator;
     }
 
     public void close() {
@@ -78,5 +84,36 @@ public class ModuleEndpointConfigurator extends ServerEndpointConfig.Configurato
         ModuleEndpoint moduleEndpoint = new ModuleEndpoint(endpointServiceRef);
         endpoints.add(moduleEndpoint);
         return (T) moduleEndpoint;
+    }
+
+    @Override
+    public void modifyHandshake(ServerEndpointConfig sec, HandshakeRequest request, HandshakeResponse response) {
+        if (customConfigurator != null) {
+            customConfigurator.modifyHandshake(sec, request, response);
+        }
+    }
+
+    @Override
+    public String getNegotiatedSubprotocol(List<String> supported, List<String> requested) {
+        if (customConfigurator != null) {
+            return customConfigurator.getNegotiatedSubprotocol(supported, requested);
+        }
+        return super.getNegotiatedSubprotocol(supported, requested);
+    }
+
+    @Override
+    public List<Extension> getNegotiatedExtensions(List<Extension> installed, List<Extension> requested) {
+        if (customConfigurator != null) {
+            return customConfigurator.getNegotiatedExtensions(installed, requested);
+        }
+        return super.getNegotiatedExtensions(installed, requested);
+    }
+
+    @Override
+    public boolean checkOrigin(String originHeaderValue) {
+        if (customConfigurator != null) {
+            return customConfigurator.checkOrigin(originHeaderValue);
+        }
+        return super.checkOrigin(originHeaderValue);
     }
 }

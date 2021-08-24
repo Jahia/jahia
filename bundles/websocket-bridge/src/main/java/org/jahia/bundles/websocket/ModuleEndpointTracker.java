@@ -63,6 +63,7 @@ import javax.websocket.Endpoint;
 import javax.websocket.server.ServerContainer;
 import javax.websocket.server.ServerEndpoint;
 import javax.websocket.server.ServerEndpointConfig;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -108,13 +109,19 @@ public class ModuleEndpointTracker {
                         List<Class<? extends Decoder>> decoders = Arrays.asList(serverEndpoint.decoders());
                         List<Class<? extends Encoder>> encoders = Arrays.asList(serverEndpoint.encoders());
                         List<String> subprotocol = Arrays.asList(serverEndpoint.subprotocols());
+                        ServerEndpointConfig.Configurator customConfigurator = null;
+                        try {
+                            customConfigurator = serverEndpoint.configurator().getDeclaredConstructor().newInstance();
+                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                            logger.error("Cannot instantiate configurator", e);
+                        }
 
                         ModuleServerEndpointConfig moduleServerEndpointConfig = moduleServerEndpointConfigs.get(path);
 
                         // it's a new endpoint
                         if (moduleServerEndpointConfig == null) {
                             moduleServerEndpointConfig = new ModuleServerEndpointConfig(path, decoders, encoders, subprotocol);
-                            moduleServerEndpointConfig.setConfigurator(new ModuleEndpointConfigurator(endpointServiceRef));
+                            moduleServerEndpointConfig.setConfigurator(new ModuleEndpointConfigurator(endpointServiceRef, customConfigurator));
 
                             try {
                                 serverContainer.addEndpoint(moduleServerEndpointConfig);
@@ -130,7 +137,7 @@ public class ModuleEndpointTracker {
                             if (configurator.getClass().equals(ModuleServerEndpointConfig.UnregisteredEndpointConfigurator.class)) {
                                 moduleServerEndpointConfig.update(decoders, encoders, subprotocol);
                             }
-                            moduleServerEndpointConfig.setConfigurator(new ModuleEndpointConfigurator(endpointServiceRef));
+                            moduleServerEndpointConfig.setConfigurator(new ModuleEndpointConfigurator(endpointServiceRef, customConfigurator));
                         }
 
                         return moduleServerEndpointConfig;

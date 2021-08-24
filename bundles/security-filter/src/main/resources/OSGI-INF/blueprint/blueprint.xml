@@ -8,9 +8,6 @@
         <property name="context" ref="blueprintBundleContext"/>
         <property name="permissionsConfig" ref="permissionsConfig"/>
         <property name="authorizationConfig" ref="authorizationConfig"/>
-        <property name="artifactInstaller">
-            <reference-list interface="org.apache.felix.fileinstall.ArtifactInstaller"/>
-        </property>
     </bean>
 
     <service interface="org.jahia.services.securityfilter.PermissionService" ref="permissionService"/>

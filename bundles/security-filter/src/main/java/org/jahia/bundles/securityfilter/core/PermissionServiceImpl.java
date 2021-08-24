@@ -33,7 +33,6 @@ public class PermissionServiceImpl implements PermissionService, ManagedService 
     private ThreadLocal<Set<ScopeDefinition>> currentScopesLocal = new ThreadLocal<>();
     private BundleContext context;
     private SettingsBean settingsBean = org.jahia.settings.SettingsBean.getInstance();
-    private boolean supportYaml = false;
 
     private boolean legacyMode = false;
     private boolean migrationReporting = false;
@@ -57,18 +56,16 @@ public class PermissionServiceImpl implements PermissionService, ManagedService 
         if (profile != null) {
             deployProfileConfig(profile);
         } else {
-            removeProfile("cfg");
-            removeProfile("yml");
+            removeProfile();
         }
         legacyMode = Boolean.parseBoolean(m.get("security.legacyMode"));
         migrationReporting = Boolean.parseBoolean(m.get("security.migrationReporting"));
     }
 
     private void deployProfileConfig(String profile) {
-        String ext = supportYaml ? "yml" : "cfg";
-        URL url = context.getBundle().getResource("META-INF/configuration-profiles/profile-" + profile + "." + ext);
+        URL url = context.getBundle().getResource("META-INF/configuration-profiles/profile-" + profile + "." + "yml");
         if (url != null) {
-            Path path = Paths.get(settingsBean.getJahiaVarDiskPath(), "karaf", "etc", "org.jahia.modules.api.authorization-default." + ext);
+            Path path = Paths.get(settingsBean.getJahiaVarDiskPath(), "karaf", "etc", "org.jahia.modules.api.authorization-default." + "yml");
             try (InputStream input = url.openStream()) {
                 List<String> lines = IOUtils.readLines(input, StandardCharsets.UTF_8);
                 lines.add(0, "# Do not edit - Configuration file provided by module, any change will be lost");
@@ -79,17 +76,15 @@ public class PermissionServiceImpl implements PermissionService, ManagedService 
             } catch (IOException e) {
                 logger.error("unable to copy configuration", e);
             }
-            removeProfile(supportYaml ? "cfg" : "yml");
         } else {
             logger.error("Invalid security-filter profile : {}", profile);
-            removeProfile("cfg");
-            removeProfile("yml");
+            removeProfile();
         }
     }
 
-    private void removeProfile(final String ext) {
+    private void removeProfile() {
         try {
-            Path path = Paths.get(settingsBean.getJahiaVarDiskPath(), "karaf", "etc", "org.jahia.modules.api.authorization-default." + ext);
+            Path path = Paths.get(settingsBean.getJahiaVarDiskPath(), "karaf", "etc", "org.jahia.modules.api.authorization-default.yml");
             if (Files.exists(path)) {
                 Files.delete(path);
             }
@@ -193,12 +188,6 @@ public class PermissionServiceImpl implements PermissionService, ManagedService 
 
     public void setContext(BundleContext context) {
         this.context = context;
-    }
-
-    public void setArtifactInstaller(Collection<ArtifactInstaller> installers) {
-         for (ArtifactInstaller installer : installers) {
-            supportYaml |= installer.canHandle(new File("config.yml"));
-        }
     }
 
     public void setPermissionsConfig(PermissionsConfig permissionsConfig) {

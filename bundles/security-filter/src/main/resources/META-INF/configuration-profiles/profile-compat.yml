@@ -1,0 +1,92 @@
+graphql:
+  description: Can access graphql API
+  metadata:
+    visible: true
+  auto_apply:
+    - always: true
+  grants:
+    - api: graphql
+      node: none
+    - api: graphql
+      node:
+        withPermission: api-access
+    - api: graphql
+      node:
+        pathPattern: /,/sites(/.*)?,/modules(/.*)?,/mounts(/.*)?
+        excludedPathPattern: /sites/[^/]+/users(/.*)?,/sites/[^/]+/groups(/.*)?
+
+jcrestapi:
+  description: Can access JCR REST API
+  metadata:
+    visible: true
+  auto_apply:
+    - always: true
+  grants:
+    - api: jcrestapi
+      node: none
+    - api: jcrestapi
+      node:
+        withPermission: api-access
+    - api: jcrestapi
+      node:
+        pathPattern: /,/sites(/.*)?,/modules(/.*)?,/mounts(/.*)?
+        excludedPathPattern: /sites/[^/]+/users(/.*)?,/sites/[^/]+/groups(/.*)?
+
+access_category:
+  description: Can access category tree
+  auto_apply:
+    - always: true
+  grants:
+    - node:
+        nodeType: jnt:category
+
+site_tree:
+  description: Can access site tree
+  auto_apply:
+    - always: true
+  grants:
+    - api: view.json.treeRootItem
+      node:
+        nodeType: jnt:virtualsite
+        pathPattern: /sites/.*
+    - api: view.json.treeItem, view.json.tree
+      node:
+        nodeType: jnt:folder, jnt:page, jnt:portlet, jnt:navMenuText
+        pathPattern: /sites/.*
+
+open_all:
+  description: All API calls allowed on the configured node types inside /sites/*
+  auto_apply:
+    - always: true
+  grants:
+    - node:
+        nodeType: jnt:folder,jnt:page,jnt:portlet,jnt:navMenuText
+        pathPattern: /sites/.*
+
+html_views:
+  description: Can access HTML views
+  auto_apply:
+    - always: true
+  grants:
+    - api: view.html
+
+api_access_permission:
+  description: Can access anything with api-access
+  auto_apply:
+    - always: true
+  constraints:
+    - privileged_user: true
+  grants:
+    - node:
+        withPermission: api-access
+
+deploy_modules:
+  description: Can manage modules deployment
+  metadata:
+    visible: true
+  constraints:
+    - user_permission: adminTemplates
+      path: /
+  grants:
+    - api: provisioning
+    - api: module_manager

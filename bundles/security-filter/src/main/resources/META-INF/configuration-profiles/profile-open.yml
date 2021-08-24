@@ -1,0 +1,7 @@
+all:
+  description: Open for all
+  auto_apply:
+    - always: true
+  grants:
+    - api:
+        exclude: none

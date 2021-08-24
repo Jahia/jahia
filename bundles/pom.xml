@@ -69,6 +69,7 @@
         <module>spring-bridge</module>
         <module>config-manager</module>
         <module>clustering-enabler</module>
+        <module>security-filter</module>
         <module>provisioning</module>
         <module>websocket-bridge</module>
     </modules>

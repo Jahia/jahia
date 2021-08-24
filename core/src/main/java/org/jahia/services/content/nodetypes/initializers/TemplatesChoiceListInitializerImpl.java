@@ -81,7 +81,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
     /**
      * We use this View wrapper because for filtering common views we just want to compare the keys, not all the attributes like in
      * View.equals()
-     * 
+     *
      * @author guillaume
      */
     public class ViewWrapper implements Comparable<ViewWrapper> {
@@ -109,7 +109,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
             return view.getKey().compareTo(((ViewWrapper) o).getView().getKey());
         }
     }
-    
+
     private transient static Logger logger = LoggerFactory.getLogger(TemplatesChoiceListInitializerImpl.class);
 
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition declaringPropertyDefinition, String param,
@@ -184,7 +184,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                 if (propertyName == null) {
                     propertyName = Constants.NODE;
                 }
-                if (context.containsKey(propertyName)) {
+                if (context.containsKey(propertyName) && context.get(propertyName) != null) {
                     JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
                     List<String> refNodeUuids = (List<String>)context.get(propertyName);
                     for (String refNodeUuid : refNodeUuids) {

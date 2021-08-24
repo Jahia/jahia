@@ -46,6 +46,8 @@ package org.jahia.services.wip;
 import com.google.common.collect.Sets;
 import org.jahia.api.Constants;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRNodeDecorator;
+import org.jahia.services.content.decorator.JCRReferenceNode;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.security.AccessManagerUtils;
 import org.slf4j.Logger;
@@ -237,13 +239,21 @@ public class WIPService {
                 });
 
         // flush cache of the node wrapper because we may have done modification on the real node directly, and cache may be corrupted
-        if (node instanceof JCRNodeWrapperImpl) {
-            ((JCRNodeWrapperImpl) node).flushLocalCaches();
-        }
+        flushLocalCache(node);
 
         // check for auto publish
         if (autoPublishNode) {
             checkForAutoPublication(node);
+        }
+    }
+
+    private void flushLocalCache(JCRNodeWrapper jcrNode) {
+        if (jcrNode instanceof JCRNodeDecorator) {
+            jcrNode = ((JCRNodeDecorator) jcrNode).getDecoratedNode(); // unwrap decorator
+        }
+
+        if (jcrNode instanceof JCRNodeWrapperImpl) {
+            ((JCRNodeWrapperImpl) jcrNode).flushLocalCaches();
         }
     }
 

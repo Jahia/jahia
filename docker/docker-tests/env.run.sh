@@ -16,7 +16,9 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 echo " == Using JAHIA_URL= ${JAHIA_URL}"
 
 echo " == Waiting for Jahia to startup"
-./node_modules/jahia-reporter/bin/run utils:alive --jahiaUrl=${JAHIA_URL}
+while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' ${JAHIA_URL}/cms/login)" != "200" ]];
+  do sleep 5;
+done
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
 echo " == Jahia became alive in ${ELAPSED_TIME} seconds"
 

@@ -94,7 +94,7 @@
 
     <service interface="org.osgi.service.cm.ManagedServiceFactory" ref="permissionsConfig">
         <service-properties>
-            <entry key="service.pid" value="org.jahia.bundles.modules.api.permissions"/>
+            <entry key="service.pid" value="org.jahia.modules.api.permissions"/>
             <entry key="service.description" value="JCREST-API configuration service"/>
             <entry key="service.vendor" value="Jahia Solutions Group SA"/>
         </service-properties>

@@ -53,26 +53,12 @@
     <version>8.1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <inceptionYear>2004</inceptionYear>
-    <!--
-   <licenses>
-       <license>
-         <name>GNU General Public License</name>
-         <url>http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt</url>
-         <distribution>repo</distribution>
-         <comments>Jahia Community Edition is licensed under the terms of the GNU General Public License v2</comments>
-       </license>
-   </licenses>
-    -->
     <organization>
         <name>Jahia Solutions Group SA</name>
         <url>http://www.jahia.com</url>
     </organization>
-    <!--logo>/images/jahia.gif</logo-->
     <description>Jahia Commons Parent Project</description>
     <url>http://www.jahia.com</url>
-    <prerequisites>
-        <maven>3.0</maven>
-    </prerequisites>
     <properties>
         <year>2020</year>
         <!-- general encoding -->

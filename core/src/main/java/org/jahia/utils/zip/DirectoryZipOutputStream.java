@@ -77,7 +77,14 @@ public class DirectoryZipOutputStream extends ZipOutputStream {
         if (currentEntryOutputStream != null) {
             closeEntry();
         }
+        String canonicalDestinationDirPath = destination.getCanonicalPath();
         currentEntry = new File(destination, e.getName());
+        String canonicalDestinationPath = currentEntry.getCanonicalPath();
+
+        if (!canonicalDestinationPath.startsWith(canonicalDestinationDirPath + File.separator)) {
+            throw new IOException("Entry is outside of the target directory");
+        }
+
         if (!currentEntry.getParentFile().exists()) {
             currentEntry.getParentFile().mkdirs();
         }

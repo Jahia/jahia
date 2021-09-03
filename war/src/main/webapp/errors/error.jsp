@@ -13,6 +13,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="robots" content="noindex, nofollow"/>
+    <meta name="description" content="500"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/errors.css" type="text/css"/>
     <script src="${pageContext.request.contextPath}/javascript/errors.js" ></script>
     <title><fmt:message key="label.error"/></title>

@@ -117,40 +117,17 @@ public class ErrorServlet extends HttpServlet {
         String path = null;
         int errorCode = getErrorCode(request);
         String page = getDedicateErrorPage(errorCode);
-
-        if (siteLevelErrorPagesEnabled) {
+        URLResolver urlResolver = (URLResolver) request.getAttribute("urlResolver");
+        boolean isEdit = urlResolver != null && !urlResolver.getServletPart().equals("render");
+        if (siteLevelErrorPagesEnabled && !isEdit) {
             String siteKey = resolveSiteKey(request);
 
             // site information available?
             if (siteKey != null) {
                 // check site-specific page
-                String pathToCheck = "/errors/sites/" + siteKey + "/" + page;
-                if (getServletContext().getResource(pathToCheck) != null) {
-                    path = pathToCheck;
-                } else {
-                    pathToCheck = "/errors/sites/" + siteKey + "/error.jsp";
-                    path = getServletContext().getResource(pathToCheck) != null ? pathToCheck
-                            : null;
-                }
+                path = getSiteSpecificErrorPagePath(page, siteKey);
                 if (null == path) {
-                    try {
-                        JahiaSite site = sitesService.getSiteByKey(siteKey);
-                        if (site != null) {
-                            // try template set error page considering inheritance
-                            JahiaTemplatesPackage pkg = templateService
-                                    .getTemplatePackage(site
-                                            .getTemplatePackageName());
-                            if (pkg != null) {
-                                if (pkg.getResource("/errors/" + page) != null) {
-                                    path = "/modules/" + pkg.getId() + "/errors/" + page;
-                                } else if (pkg.getResource("/errors/error.jsp") != null) {
-                                    path = "/modules/" + pkg.getId() + "/errors/error.jsp";
-                                }
-                            }
-                        }
-                    } catch (JahiaException e) {
-                        logger.debug("Cannot find site", e);
-                    }
+                    path = getModuleErrorPagePath(page, siteKey);
                 }
             }
         }
@@ -163,6 +140,41 @@ public class ErrorServlet extends HttpServlet {
             }
         }
 
+        return path;
+    }
+
+    private String getModuleErrorPagePath(String page, String siteKey) {
+        try {
+            JahiaSite site = sitesService.getSiteByKey(siteKey);
+            if (site != null) {
+                // try template set error page considering inheritance
+                JahiaTemplatesPackage pkg = templateService
+                        .getTemplatePackage(site
+                                .getTemplatePackageName());
+                if (pkg != null) {
+                    if (pkg.getResource("/errors/" + page) != null) {
+                        return "/modules/" + pkg.getId() + "/errors/" + page;
+                    } else if (pkg.getResource("/errors/error.jsp") != null) {
+                        return "/modules/" + pkg.getId() + "/errors/error.jsp";
+                    }
+                }
+            }
+        } catch (JahiaException e) {
+            logger.debug("Cannot find site", e);
+        }
+        return null;
+    }
+
+    private String getSiteSpecificErrorPagePath(String page, String siteKey) throws MalformedURLException {
+        String path;
+        String pathToCheck = "/errors/sites/" + siteKey + "/" + page;
+        if (getServletContext().getResource(pathToCheck) != null) {
+            path = pathToCheck;
+        } else {
+            pathToCheck = "/errors/sites/" + siteKey + "/error.jsp";
+            path = getServletContext().getResource(pathToCheck) != null ? pathToCheck
+                    : null;
+        }
         return path;
     }
 

@@ -8,6 +8,7 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <meta name="description" content="503"/>
     <meta name="robots" content="noindex, nofollow"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/errors.css" type="text/css"/>
     <title><fmt:message key="label.error.503.title" var="i18nTitle"/><c:set var="i18nTitle" value="${fn:escapeXml(i18nTitle)}"/>${i18nTitle}</title>

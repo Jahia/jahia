@@ -1733,6 +1733,8 @@ public class MainModule extends Module {
         public void onBrowserEvent(Event event) {
             try {
                 if (event.getTypeInt() == Event.ONLOAD) {
+                    sendEventOnParent(IFrameElement.as(frame.getElement()));
+
                     if (isValidUrl(url) && config.isNeedFrameParsing()) {
                         final IFrameElement iframe = IFrameElement.as(frame.getElement());
                         Document contentDocument = iframe.getContentDocument();
@@ -1858,6 +1860,10 @@ public class MainModule extends Module {
                 super.setUrl(url);
             }
         }
+
+        public final native String sendEventOnParent(IFrameElement iFrameElement) /*-{
+            iFrameElement.contentWindow.parent.parent.dispatchEvent(new Event('iframeloaded', {"bubbles":true, "cancelable":false}));
+        }-*/;
 
         public final native String getFrameUrl(IFrameElement iFrameElement) /*-{
             // This is known to work on all modern browsers.

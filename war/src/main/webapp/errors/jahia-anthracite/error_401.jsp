@@ -13,7 +13,7 @@
 <head>
     <!-- Meta info -->
     <title><fmt:message key="label.login"/></title>
-    <meta name="description" content=""/>
+    <meta name="description" content="401"/>
     <meta name="keywords" content="">
     <meta charset="UTF-8">
     <meta name="robots" content="noindex, nofollow"/>

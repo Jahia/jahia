@@ -132,6 +132,10 @@ public class ErrorServlet extends HttpServlet {
             }
         }
 
+        if (isEdit && !urlResolver.getServletPart().equals("studio")) {
+            path = getErrorPagePath(page, "react");
+        }
+
         if (null == path) {
             String theme = "jahia-anthracite";
             path = getErrorPagePath(page, theme);

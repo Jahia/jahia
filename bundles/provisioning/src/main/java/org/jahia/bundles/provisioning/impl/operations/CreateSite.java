@@ -48,6 +48,7 @@ import org.jahia.services.provisioning.ExecutionContext;
 import org.jahia.services.provisioning.Operation;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.sites.SiteCreationInfo;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,10 +102,23 @@ public class CreateSite implements Operation {
         } else {
             siteInfo.setLocale("en");
         }
+        if (entry.get("title") != null) {
+            siteInfo.setTitle((String) entry.get("title"));
+        } else {
+            siteInfo.setTitle((String) entry.get("siteKey"));
+        }
         if (entry.get("serverName") != null) {
             siteInfo.setServerName((String) entry.get("serverName"));
         }
-
+        if (entry.get("description") != null) {
+            siteInfo.setDescription((String) entry.get("description"));
+        }
+        if (entry.get("serverNameAliases") != null) {
+            siteInfo.setServerNameAliases((String[]) ((ArrayList) entry.get("serverNameAliases")).toArray(new String[0]));
+        }
+        if (entry.get("siteAdmin") != null) {
+            siteInfo.setSiteAdmin(JahiaUserManagerService.getInstance().lookupUser((String) entry.get("siteAdmin")).getJahiaUser());
+        }
         return siteInfo;
     }
 }

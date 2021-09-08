@@ -241,10 +241,15 @@ Multiple import files can be specified.
 
 Create a site with the provided site info:
  - siteKey
+ - title: default is `siteKey`
+ - language: default is `en`
  - templateSet
  - modulesToDeploy
  - language
  - serverName
+ - serverNameAliases
+ - description
+ - siteAdmin
 ````yaml
 - createSite:
   siteKey: "test1"

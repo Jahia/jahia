@@ -219,7 +219,7 @@
 
             // Stop GWT from disabling the buttons.
             &.x-item-disabled {
-                display: none;
+                display: block !important;
             }
 
             // Refresh icon ( do not need, let user use the one above source selection )

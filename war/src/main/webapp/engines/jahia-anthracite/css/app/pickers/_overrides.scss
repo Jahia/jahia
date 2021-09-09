@@ -194,7 +194,7 @@
                 right: 95px !important;
                 @include _combo(LIGHT);
                 transition: none;
-                left: auto!important;
+                left: auto !important;
 
                 body[data-indigo-is-manager="true"][data-indigo-picker-search="open"] & {
                     right: 5px !important;
@@ -299,13 +299,191 @@
         }
 
         // Fixes for Category Manager labels in List mode
-        &.x-viewport-categorymanager,
-        &.x-viewport-categorymanager-anthracite {
+        &.x-viewport-categorymanager #JahiaGxtManagerTobTable,
+        &.x-viewport-categorymanager-anthracite #JahiaGxtManagerTobTable {
+            div.x-grid3-header {
+                /* Header bar (contains column names) */
+                display: block !important;
+                background-color: red;
+                width: 100% !important;
+
+                .x-grid3-hd-checker {
+                    display: none !important;
+                }
+            }
+
             // Names & Paths
             .x-grid3-td-displayName,
             .x-grid3-td-name,
             .x-grid3-td-path {
                 width: 25% !important;
+                flex-grow: 1;
+            }
+
+            .x-grid3-hh {
+                width: 100% !important;
+
+                table {
+                    width: 100% !important;
+                    table-layout: unset !important;
+
+                    tbody:nth-child(2) {
+                        display: none !important;
+                    }
+
+                    tbody:last-child {
+                        width: 100% !important;
+
+                        .x-grid3-hd-row {
+                            display: flex;
+                            flex-flow: row;
+                            justify-content: space-between;
+                            align-content: flex-start;
+                            width: 100% !important;
+                            padding: 0 10px;
+                            // Names & Paths
+                            .x-grid3-td-displayName,
+                            .x-grid3-td-name,
+                            .x-grid3-td-path {
+                                width: 25% !important;
+                                flex-grow: 1;
+
+                                div {
+                                    display: flex;
+                                    justify-content: start;
+                                    align-content: center;
+                                    width: 100% !important;
+                                    align-items: center;
+                                }
+
+                                div > span {
+                                    font-weight: bold;
+                                    text-transform: uppercase;
+                                }
+                            }
+                        }
+
+                        .x-grid3-hd {
+                            display: block;
+                            flex-grow: 0;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Fixes for Repository Explorer
+        &.x-viewport-repositoryexplorer #JahiaGxtManagerTobTable,
+        &.x-viewport-repositoryexplorer-anthracite #JahiaGxtManagerTobTable {
+            div.x-grid3-header {
+                /* Header bar (contains column names) */
+                display: block !important;
+                background-color: red;
+                width: 100% !important;
+
+                .x-grid3-hd-checker {
+                    display: none !important;
+                }
+            }
+
+            // Names & Paths
+            .x-grid3-td-displayName,
+            .x-grid3-td-name,
+            .x-grid3-td-path {
+                width: 25% !important;
+                flex-grow: 1;
+            }
+
+            .x-grid3-hh {
+                width: 100% !important;
+
+                table {
+                    width: 100% !important;
+                    table-layout: unset !important;
+
+                    tbody:nth-child(2) {
+                        display: none !important;
+                    }
+
+                    tbody:last-child {
+                        width: 100% !important;
+
+                        .x-grid3-hd-row {
+                            display: flex;
+                            flex-flow: row;
+                            justify-content: space-between;
+                            align-content: flex-start;
+                            width: 100% !important;
+                            padding: 0 10px;
+                            // Names & Paths
+                            .x-grid3-td-providerKey,
+                            .x-grid3-td-name,
+                            .x-grid3-td-locked,
+                            .x-grid3-td-primaryTypeLabel,
+                            .x-grid3-td-jcr\:created,
+                            .x-grid3-td-jcr\:createdBy {
+                                div {
+                                    display: flex;
+                                    justify-content: start;
+                                    align-content: center;
+                                    width: 100% !important;
+                                    align-items: center;
+                                }
+
+                                div > span {
+                                    font-weight: bold;
+                                    text-transform: uppercase;
+                                }
+                            }
+
+                            .x-grid3-td-checker {
+                                order: 1;
+                            }
+
+                            .x-grid3-td-publicationInfo {
+                                order: 2;
+                                height: 20px !important;
+                            }
+
+                            .x-grid3-td-providerKey {
+                                order: 3;
+                            }
+
+                            .x-grid3-td-icon {
+                                order: 4;
+                            }
+
+                            .x-grid3-td-name {
+                                width: 15% !important;
+                                flex-grow: 1;
+                                order: 5;
+                            }
+
+                            .x-grid3-td-primaryTypeLabel {
+                                order: 6;
+                            }
+
+                            .x-grid3-td-jcr\:created {
+                                order: 7;
+                            }
+
+                            .x-grid3-td-jcr\:createdBy {
+                                width: 100px !important;
+                                order: 8;
+                            }
+
+                            .x-grid3-td-locked {
+                                order: 10;
+                                width: 64px !important;
+                            }
+                        }
+
+                        .x-grid3-hd {
+                            display: block;
+                            flex-grow: 0;
+                        }
+                    }
+                }
             }
         }
 

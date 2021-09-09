@@ -241,12 +241,12 @@ Multiple import files can be specified.
 
 Create a site with the provided site info:
  - siteKey
- - title: default is `siteKey`
+ - title: default is the value of `siteKey`
  - language: default is `en`
  - templateSet
  - modulesToDeploy
  - language
- - serverName
+ - serverName: default is `localhost`
  - serverNameAliases
  - description
  - siteAdmin

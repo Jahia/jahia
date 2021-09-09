@@ -102,13 +102,15 @@ public class CreateSite implements Operation {
         } else {
             siteInfo.setLocale("en");
         }
+        if (entry.get("serverName") != null) {
+            siteInfo.setServerName((String) entry.get("serverName"));
+        } else {
+            siteInfo.setServerName("localhost");
+        }
         if (entry.get("title") != null) {
             siteInfo.setTitle((String) entry.get("title"));
         } else {
             siteInfo.setTitle((String) entry.get("siteKey"));
-        }
-        if (entry.get("serverName") != null) {
-            siteInfo.setServerName((String) entry.get("serverName"));
         }
         if (entry.get("description") != null) {
             siteInfo.setDescription((String) entry.get("description"));

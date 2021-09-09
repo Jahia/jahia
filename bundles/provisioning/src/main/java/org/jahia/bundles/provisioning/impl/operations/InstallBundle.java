@@ -143,6 +143,9 @@ public class InstallBundle implements Operation {
     public void perform(Map<String, Object> entry, ExecutionContext executionContext) {
         Map<String, Set<Bundle>> installedBundles = (Map<String, Set<Bundle>>) executionContext.getContext().get("installedBundles");
         Optional<String> keyOptional = Arrays.stream(SUPPORTED_KEYS).filter(entry::containsKey).findFirst();
+        List<OperationResult> installResults = new ArrayList<>();
+        List<OperationResult> startResults = new ArrayList<>();
+        List<OperationResult> uninstallResults = new ArrayList<>();
         if (keyOptional.isPresent()) {
             String key = keyOptional.get();
             List<Map<String, Object>> entries = ProvisioningScriptUtil.convertToList(entry, key, "url");
@@ -153,33 +156,41 @@ public class InstallBundle implements Operation {
             for (Map<String, Object> subEntry : entries) {
                 String condition = (String) subEntry.get(IF);
                 if (condition == null || ProvisioningScriptUtil.evalCondition(condition)) {
-                    doInstall(subEntry, key, executionContext, installedBundles, toStart, toUninstall);
+                    doInstall(subEntry, key, executionContext, installedBundles, toStart, toUninstall, installResults);
                 }
             }
 
-            processAutoStart(toStart);
-            processUninstall(toUninstall);
+            processAutoStart(toStart, startResults);
+            processUninstall(toUninstall, uninstallResults);
+
+            if (executionContext.getContext().get("result") instanceof Collection) {
+                Map<String, List<OperationResult>> all = new HashMap<>();
+                all.put("install", installResults);
+                all.put("start", startResults);
+                all.put("uninstall", uninstallResults);
+                ((Collection) executionContext.getContext().get("result")).add(all);
+            }
         }
     }
 
-    private void processUninstall(LinkedHashMap<BundleInfo, String> toUninstall) {
+    private void processUninstall(LinkedHashMap<BundleInfo, String> toUninstall, List<OperationResult> results) {
         for (Map.Entry<BundleInfo, String> bundleInfoStringEntry : toUninstall.entrySet()) {
             BundleInfo bundleInfo = bundleInfoStringEntry.getKey();
             try {
-                moduleManager.uninstall(bundleInfo.getKey(), bundleInfoStringEntry.getValue());
+                results.add(moduleManager.uninstall(bundleInfo.getKey(), bundleInfoStringEntry.getValue()));
             } catch (Exception e) {
                 logger.error("Cannot uninstall {}", bundleInfo.getKey(), e);
             }
         }
     }
 
-    private void processAutoStart(LinkedHashMap<BundleInfo, String> toStart) {
+    private void processAutoStart(LinkedHashMap<BundleInfo, String> toStart, List<OperationResult> results) {
         for (Map.Entry<BundleInfo, String> bundleInfoStringEntry : toStart.entrySet()) {
             BundleInfo bundleInfo = bundleInfoStringEntry.getKey();
             try {
                 Bundle bundle = BundleUtils.getBundle(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
                 if (bundle != null && !BundleUtils.isFragment(bundle)) {
-                    moduleManager.start(bundleInfo.getKey(), bundleInfoStringEntry.getValue());
+                    results.add(moduleManager.start(bundleInfo.getKey(), bundleInfoStringEntry.getValue()));
                 }
             } catch (Exception e) {
                 logger.error("Cannot start {}", bundleInfo.getKey(), e);
@@ -188,7 +199,7 @@ public class InstallBundle implements Operation {
     }
 
     private void doInstall(Map<String, Object> entry, String key, ExecutionContext executionContext, Map<String, Set<Bundle>> installedBundles,
-                           LinkedHashMap<BundleInfo, String> toStart, LinkedHashMap<BundleInfo, String> toUninstall) {
+                           LinkedHashMap<BundleInfo, String> toStart, LinkedHashMap<BundleInfo, String> toUninstall, List<OperationResult> results) {
         String bundleKey = (String) entry.get(key);
         try {
             Resource resource = ProvisioningScriptUtil.getResource(bundleKey, executionContext);
@@ -211,6 +222,7 @@ public class InstallBundle implements Operation {
                 setupAutoStart(entry, bundleInfo, target, installedVersions, toStart);
                 setupUninstall(entry, bundleInfo, target, installedVersions, toUninstall);
             }
+            results.add(result);
         } catch (Exception e) {
             logger.error("Cannot install {}", bundleKey, e);
         }

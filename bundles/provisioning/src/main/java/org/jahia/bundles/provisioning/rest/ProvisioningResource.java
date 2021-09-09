@@ -105,6 +105,7 @@ public class ProvisioningResource {
     @Consumes({MediaType.MULTIPART_FORM_DATA})
     public Response executeMultipart(@FormDataParam("script") FormDataBodyPart script, @FormDataParam("file") List<FormDataBodyPart> files) {
         List<File> tmpFiles = new ArrayList<>();
+        List<String> result = new ArrayList<>();
         try {
             String scriptAsString = IOUtils.toString(script.getEntityAs(BodyPartEntity.class).getInputStream(), StandardCharsets.UTF_8);
             List<Map<String,Object>> sc = getService().parseScript(scriptAsString, script.getMediaType().getSubtype());
@@ -119,7 +120,10 @@ public class ProvisioningResource {
                     resources.put(file.getFormDataContentDisposition().getFileName(), new FileSystemResource(tmpFile));
                 }
             }
-            getService().executeScript(sc, Collections.singletonMap("resources", resources));
+            Map<String, Object> context = new HashMap<>();
+            context.put("resources", resources);
+            context.put("result", result);
+            getService().executeScript(sc, context);
         } catch (Exception e) {
             logger.error("Cannot execute script", e);
             return Response.serverError().entity(e.getMessage()).build();
@@ -128,6 +132,9 @@ public class ProvisioningResource {
                 FileUtils.deleteQuietly(tmpFile);
             }
         }
-        return Response.ok().build();
+        return Response.status(Response.Status.OK)
+                .entity(result)
+                .type(MediaType.APPLICATION_JSON)
+                .build();
     }
 }

@@ -44,13 +44,13 @@
 package org.jahia.bundles.provisioning.impl.operations;
 
 import org.jahia.services.modulemanager.ModuleManager;
+import org.jahia.services.modulemanager.OperationResult;
 import org.jahia.services.provisioning.ExecutionContext;
 import org.jahia.services.provisioning.Operation;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Start bundle operation
@@ -74,8 +74,12 @@ public class StartBundle implements Operation {
     @Override
     public void perform(Map<String, Object> entry, ExecutionContext executionContext) {
         List<Map<String, Object>> entries = ProvisioningScriptUtil.convertToList(entry, START_BUNDLE, "key");
+        List<OperationResult> startResults = new ArrayList<>();
         for (Map<String, Object> subEntry : entries) {
-            moduleManager.start((String) subEntry.get(START_BUNDLE), (String) entry.get(TARGET));
+            startResults.add(moduleManager.start((String) subEntry.get(START_BUNDLE), (String) entry.get(TARGET)));
+        }
+        if (executionContext.getContext().get("result") instanceof Collection) {
+            ((Collection) executionContext.getContext().get("result")).add(Collections.singletonMap("start", startResults));
         }
     }
 }

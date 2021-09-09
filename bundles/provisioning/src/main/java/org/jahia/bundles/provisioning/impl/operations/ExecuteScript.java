@@ -50,6 +50,7 @@ import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -75,7 +76,12 @@ public class ExecuteScript implements Operation {
             if (script != null) {
                 try {
                     Patcher.getInstance().executeScripts(Collections.singleton(ProvisioningScriptUtil.getResource(script, executionContext)), "",
-                            (resource, s) -> logger.info("Script {} result: {}", script, s)
+                            (resource, s) -> {
+                                logger.info("Script {} result: {}", script, s);
+                                if (executionContext.getContext().get("result") instanceof Collection) {
+                                    ((Collection) executionContext.getContext().get("result")).add(s);
+                                }
+                            }
                     );
                 } catch (Exception e) {
                     logger.error("Cannot include {}", script, e);

@@ -47,12 +47,12 @@ import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.NodeIterator;
-import javax.jcr.PropertyIterator;
-import javax.jcr.RepositoryException;
+import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeType;
 
@@ -62,7 +62,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public abstract class AbstractNodeFact implements NodeFact {
-    
+    private static final Logger logger = LoggerFactory.getLogger(AbstractNodeFact.class);
+
     protected static List<String> recurseOnTypes(List<String> nodeTypeNames) {
         if (nodeTypeNames == null || nodeTypeNames.size() == 0) {
             return Collections.emptyList();
@@ -79,7 +80,7 @@ public abstract class AbstractNodeFact implements NodeFact {
 
         return res;
     }
-    
+
     protected static void recurseOnTypes(List<String> res, NodeType... nt) {
         for (NodeType nodeType : nt) {
             if (!res.contains(nodeType.getName()))
@@ -101,6 +102,7 @@ public abstract class AbstractNodeFact implements NodeFact {
     }
 
     protected JCRNodeWrapper node;
+    protected String nodePath = "";
     protected String workspace;
 
     protected String operationType;
@@ -110,6 +112,7 @@ public abstract class AbstractNodeFact implements NodeFact {
         this.node = node;
         if (node != null) {
             workspace = node.getSession().getWorkspace().getName();
+            nodePath = node.getPath();
         }
     }
 
@@ -199,10 +202,14 @@ public abstract class AbstractNodeFact implements NodeFact {
 
     public List<ChangedPropertyFact> getProperties() throws RepositoryException {
         List<ChangedPropertyFact> results = new ArrayList<ChangedPropertyFact>();
-        PropertyIterator it = node.getProperties();
-        while (it.hasNext()) {
-            JCRPropertyWrapper p = (JCRPropertyWrapper) it.nextProperty();
-            results.add(new ChangedPropertyFact(new AddedNodeFact(node),p));
+        try {
+            PropertyIterator it = node.getProperties();
+            while (it.hasNext()) {
+                JCRPropertyWrapper p = (JCRPropertyWrapper) it.nextProperty();
+                results.add(new ChangedPropertyFact(new AddedNodeFact(node),p));
+            }
+        } catch (InvalidItemStateException e) {
+            logger.warn("{} doesn't exist anymore", nodePath);
         }
         return results;
     }
@@ -212,8 +219,16 @@ public abstract class AbstractNodeFact implements NodeFact {
     }
 
     public List<String> getTypes() throws RepositoryException {
-        return recurseOnTypes(node.getPrimaryNodeType(), node.getMixinNodeTypes());
-    }
+        ExtendedNodeType primaryNodeType = null;
+        ExtendedNodeType[] mixinNodeTypes = null;
+        try {
+            primaryNodeType = node.getPrimaryNodeType();
+            mixinNodeTypes = node.getMixinNodeTypes();
+        } catch (InvalidItemStateException e) {
+            logger.warn("{} doesn't exist anymore", nodePath);
+        }
+        return recurseOnTypes(primaryNodeType, mixinNodeTypes);
+}
 
     public AddedNodeFact getAncestor(String type) throws RepositoryException {
         AddedNodeFact ancestor = new AddedNodeFact(node);

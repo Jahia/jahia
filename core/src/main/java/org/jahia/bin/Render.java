@@ -130,6 +130,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static final String COOKIE_VALUE = "jcrCookieValue";
     public static final String COOKIE_NAME = "jcrCookieName";
     public static final String COOKIE_PATH = "jcrCookiePath";
+    public static final String COOKIE_HTTP_ONLY = "jcrCookieHttpOnly";
     public static final String CONTRIBUTE_POST = "jcrContributePost";
     public static final String MARK_FOR_DELETION = "jcrMarkForDeletion";
     public static final String MARK_FOR_DELETION_MESSAGE = "jcrDeletionMessage";
@@ -180,6 +181,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         RESERVED_PARAMETERS.add(COOKIE_NAME);
         RESERVED_PARAMETERS.add(COOKIE_VALUE);
         RESERVED_PARAMETERS.add(COOKIE_PATH);
+        RESERVED_PARAMETERS.add(COOKIE_HTTP_ONLY);
         RESERVED_PARAMETERS.add(CONTRIBUTE_POST);
         RESERVED_PARAMETERS.add(MARK_FOR_DELETION);
         RESERVED_PARAMETERS.add(DISABLE_XSS_FILTERING);
@@ -288,6 +290,10 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         String cookieValue = req.getParameter(COOKIE_VALUE);
         if (req.getParameter(COOKIE_NAME) != null && cookieValue != null) {
             Cookie cookie = new Cookie(req.getParameter(COOKIE_NAME), cookieValue);
+            cookie.setHttpOnly(true);
+            if (req.getParameter(COOKIE_HTTP_ONLY) != null) {
+                cookie.setHttpOnly(Boolean.valueOf(req.getParameter(COOKIE_HTTP_ONLY)));
+            }
             //Cookie value should only be a node identifier
             try {
                 jcrSessionFactory.getCurrentUserSession(workspace).getNodeByUUID(cookieValue);

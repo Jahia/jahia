@@ -52,7 +52,6 @@ import org.apache.jackrabbit.core.journal.Record;
 import org.apache.jackrabbit.core.journal.RecordIterator;
 import org.jahia.api.Constants;
 import org.jahia.services.content.DefaultEventListener;
-import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository;
@@ -64,13 +63,11 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.EventIterator;
 import java.io.File;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Service that reads the JCR events directly from the JCR journal and passes them to the specified listeners.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class JournalEventReader {
@@ -87,23 +84,23 @@ public class JournalEventReader {
     /**
      * Polls the underlying journal for events of the type ChangeLogRecord that happened after a given revision, on a given workspace.
      *
-     * @param revision starting revision
+     * @param revision  starting revision
      * @param workspace the workspace name
      * @return the list of collected {@link ChangeLogRecord}s
      */
-    private List<ChangeLogRecord> getChangeLogRecords(long revision, final String workspace) {
+    private int processChangeLogRecords(long revision, final String workspace, ProcessRecordCallback callback) {
         ClusterNode cn = SpringJackrabbitRepository.getInstance().getClusterNode();
         if (cn == null) {
-            return Collections.emptyList();
+            return 0;
         }
 
         logger.info("Getting journal change log records starting with revision {} for workspace {}", revision,
                 workspace);
 
         Journal journal = cn.getJournal();
-        final List<ChangeLogRecord> changeLogRecords = new LinkedList<>();
         ClusterRecordDeserializer deserializer = new ClusterRecordDeserializer();
         RecordIterator records = null;
+        final AtomicInteger processedRecords = new AtomicInteger();
         try {
             records = journal.getRecords(revision);
             while (records.hasNext()) {
@@ -121,7 +118,8 @@ public class JournalEventReader {
                     public void process(ChangeLogRecord record) {
                         String eventW = record.getWorkspace();
                         if (eventW != null ? eventW.equals(workspace) : workspace == null) {
-                            changeLogRecords.add(record);
+                            callback.processRecord(record);
+                            processedRecords.incrementAndGet();
                         }
                     }
 
@@ -147,7 +145,7 @@ public class JournalEventReader {
                 });
             }
 
-            logger.info("Found {} journal change log records for workspace {}", changeLogRecords.size(), workspace);
+            logger.info("Found {} journal change log records for workspace {}", processedRecords.get(), workspace);
         } catch (JournalException e) {
             logger.error(e.getMessage(), e);
         } finally {
@@ -155,7 +153,7 @@ public class JournalEventReader {
                 records.close();
             }
         }
-        return changeLogRecords;
+        return processedRecords.get();
     }
 
     private EventIterator getEventIterator(SessionImpl session, ChangeLogRecord record, int eventTypes) {
@@ -184,6 +182,7 @@ public class JournalEventReader {
 
     /**
      * Stores in a dedicated properties file the last processed journal revision.
+     *
      * @param key the key is associate to the last processed journal revision value, it allow to identify the property
      */
     public void rememberLastProcessedJournalRevision(String key) {
@@ -196,7 +195,7 @@ public class JournalEventReader {
             PropertiesManager propManager = new PropertiesManager(lastProcessedRevisionFilePath);
             String propertyKey = getPropertyKey(key);
             if (!StringUtils.equals(propManager.getProperty(propertyKey), revision)) {
-                propManager.setProperty(propertyKey, String.valueOf(revision));
+                propManager.setProperty(propertyKey, revision);
                 propManager.storeProperties();
 
                 logger.info("Remembered last processed journal revision as {}", revision);
@@ -206,9 +205,9 @@ public class JournalEventReader {
 
     /**
      * Reads the JCR events directly from the JCR journal and passes them to the specified listener.
-     * 
+     *
      * @param listener the listener to call with the read events
-     * @param key the key is associate to the last processed journal revision value, it allow to identify the property
+     * @param key      the key is associate to the last processed journal revision value, it allow to identify the property
      */
     public void replayMissedEvents(DefaultEventListener listener, String key) {
         if (!isEnabled()) {
@@ -227,16 +226,11 @@ public class JournalEventReader {
                 startRevision);
 
         try {
-            Integer processedRecords = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Integer>() {
-                @Override
-                public Integer doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    return replayMissedEvents(startRevision, listener, session);
-                }
-            });
+            Integer processedRecords = JCRTemplate.getInstance().doExecuteWithSystemSession(session -> replayMissedEvents(startRevision, listener, session));
 
-            if (processedRecords != null && processedRecords.intValue() > 0) {
+            if (processedRecords != null && processedRecords > 0) {
                 logger.info("Done replaying {} missed JCR journal revisions for listener {} in {} ms",
-                        new Object[] { processedRecords, listener, System.currentTimeMillis() - startTime });
+                        processedRecords, listener, System.currentTimeMillis() - startTime);
             } else {
                 logger.info(
                         "Done checking missed JCR events for listener {} in {} ms. No records to replay were found.",
@@ -249,32 +243,25 @@ public class JournalEventReader {
 
     private int replayMissedEvents(long startRevision, DefaultEventListener listener, JCRSessionWrapper session)
             throws RepositoryException {
-        List<ChangeLogRecord> changeLogRecords = getChangeLogRecords(startRevision,
-                StringUtils.defaultString(listener.getWorkspace(), Constants.EDIT_WORKSPACE));
-
-        if (changeLogRecords.isEmpty()) {
-            return 0;
-        }
-
         SessionImpl jrSession = (SessionImpl) session.getRootNode().getRealNode().getSession();
 
-        int processedRecords = 0;
-        for (ChangeLogRecord r : changeLogRecords) {
-            EventIterator evtIterator = getEventIterator(jrSession, r, listener.getEventTypes());
-            processedRecords++;
+        return processChangeLogRecords(startRevision,
+                StringUtils.defaultString(listener.getWorkspace(), Constants.EDIT_WORKSPACE), new ProcessRecordCallback() {
+                    @Override
+                    void processRecord(ChangeLogRecord r) {
+                        EventIterator evtIterator = getEventIterator(jrSession, r, listener.getEventTypes());
 
-            try {
-                listener.onEvent(evtIterator);
+                        try {
+                            listener.onEvent(evtIterator);
 
-                logger.info("Processed {} event(s) (revision: {}) by listener {}",
-                        new Object[] { evtIterator.getSize(), r.getRevision(), listener });
-            } catch (Exception e) {
-                logger.error("Error replaying JCR events (revision: " + r.getRevision() + ") by listener " + listener,
-                        e);
-            }
-        }
-
-        return processedRecords;
+                            logger.info("Processed {} event(s) (revision: {}) by listener {}",
+                                    evtIterator.getSize(), r.getRevision(), listener);
+                        } catch (Exception e) {
+                            logger.error("Error replaying JCR events (revision: " + r.getRevision() + ") by listener " + listener,
+                                    e);
+                        }
+                    }
+                });
     }
 
     public void setSettingsBean(SettingsBean settingsBean) {
@@ -283,5 +270,12 @@ public class JournalEventReader {
         lastProcessedRevisionFilePath = new File(
                 new File(settingsBean.getJahiaVarDiskPath(), LAST_PROCESSED_JOURNAL_REVISION_FOLDER),
                 LAST_PROCESSED_JOURNAL_REVISION_FILE).getPath();
+    }
+
+    /**
+     * Process records callback.
+     */
+    private abstract static class ProcessRecordCallback {
+        abstract void processRecord(ChangeLogRecord r);
     }
 }

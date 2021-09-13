@@ -177,14 +177,14 @@ public class ModulesPackage {
         description = manifestAttributes.getValue(Constants.ATTR_NAME_JAHIA_PACKAGE_DESCRIPTION);
         // read jars
         Enumeration<JarEntry> jars = jarFile.entries();
-        FileAttribute<Set<PosixFilePermission>> posixFileAttributes = PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("+w"));
-        File slipZipControlFile = Files.createTempFile("slipZip", "", posixFileAttributes).toFile();
+        FileAttribute<Set<PosixFilePermission>> posixFileAttributes = PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwx------"));
+        File slipZipControlDirectory = Files.createTempDirectory("slipZip", posixFileAttributes).toFile();
         while (jars.hasMoreElements()) {
             JarEntry jar = jars.nextElement();
             JarFile moduleJarFile = null;
             if (StringUtils.endsWith(jar.getName(), ".jar")) {
                 try (InputStream input = jarFile.getInputStream(jar)) {
-                    File moduleFile = getModuleFile(slipZipControlFile, jar, input);
+                    File moduleFile = getModuleFile(slipZipControlDirectory, jar, input);
                     moduleJarFile = new JarFile(moduleFile);
                     Attributes moduleManifestAttributes = moduleJarFile.getManifest().getMainAttributes();
                     String bundleName = moduleManifestAttributes.getValue(Constants.ATTR_NAME_BUNDLE_SYMBOLIC_NAME);

@@ -385,7 +385,6 @@
                     display: none !important;
                 }
             }
-
             // Names & Paths
             .x-grid3-td-displayName,
             .x-grid3-td-name,
@@ -437,43 +436,51 @@
                             }
 
                             .x-grid3-td-checker {
-                                order: 1;
+                                order: 0;
                             }
 
                             .x-grid3-td-publicationInfo {
-                                order: 2;
+                                order: 1;
                                 height: 20px !important;
+                                width: 3px !important;
+                                position: relative !important;
+                                display: inline-flex !important;
+                                left: 0 !important;
                             }
 
                             .x-grid3-td-providerKey {
-                                order: 3;
+                                order: 2;
                             }
 
                             .x-grid3-td-icon {
-                                order: 4;
+                                order: 3;
+                                width: 40px !important;
                             }
 
                             .x-grid3-td-name {
                                 width: 15% !important;
-                                flex-grow: 1;
-                                order: 5;
+                                flex-grow: 4;
+                                order: 4;
                             }
 
                             .x-grid3-td-primaryTypeLabel {
-                                order: 6;
+                                order: 5;
+                                flex-grow: 2;
                             }
 
                             .x-grid3-td-jcr\:created {
-                                order: 7;
+                                order: 6;
+                                flex-grow: 1;
                             }
 
                             .x-grid3-td-jcr\:createdBy {
                                 width: 100px !important;
-                                order: 8;
+                                order: 7;
+                                flex-grow: 1;
                             }
 
                             .x-grid3-td-locked {
-                                order: 10;
+                                order: 8;
                                 width: 64px !important;
                             }
                         }
@@ -481,6 +488,100 @@
                         .x-grid3-hd {
                             display: block;
                             flex-grow: 0;
+                        }
+                    }
+                }
+            }
+
+            div.x-grid3-viewport {
+                div.x-grid3-scroller {
+                    & > .x-grid3-body {
+                        padding: 0 10px !important;
+                    }
+                    table.x-grid3-row-table {
+                        width: 100% !important;
+                        table-layout: unset !important;
+                        display: table;
+
+                        & > tbody {
+                            & > tr {
+                                display: flex;
+                                flex-flow: row;
+                                justify-content: space-between;
+                                align-content: flex-start;
+                                width: 100% !important;
+                                padding: 0 10px;
+                                // Names & Paths
+                                .x-grid3-td-providerKey,
+                                .x-grid3-td-name,
+                                .x-grid3-td-locked,
+                                .x-grid3-td-primaryTypeLabel,
+                                .x-grid3-td-jcr\:created,
+                                .x-grid3-td-jcr\:createdBy {
+                                    div {
+                                        display: flex;
+                                        justify-content: start;
+                                        align-content: center;
+                                        width: 100% !important;
+                                        align-items: center;
+                                    }
+
+                                    div > span {
+                                        font-weight: bold;
+                                        text-transform: uppercase;
+                                    }
+                                }
+
+                                .x-grid3-td-checker {
+                                    order: 0;
+                                }
+
+                                .x-grid3-td-publicationInfo {
+                                    order: 1;
+                                    height: 20px !important;
+                                    width: 3px !important;
+                                    position: relative !important;
+                                    display: inline-flex !important;
+                                    left: 0 !important;
+                                }
+
+                                .x-grid3-td-providerKey {
+                                    order: 2;
+                                }
+
+                                .x-grid3-td-icon {
+                                    order: 3;
+                                    width: 40px !important;
+                                }
+
+                                .x-grid3-td-name {
+                                    width: 15% !important;
+                                    flex-grow: 4;
+                                    order: 4;
+                                }
+
+                                .x-grid3-td-primaryTypeLabel {
+                                    order: 5;
+                                    flex-grow: 2;
+                                }
+
+                                .x-grid3-td-jcr\:created {
+                                    order: 6;
+                                    flex-grow: 1;
+                                }
+
+                                .x-grid3-td-jcr\:createdBy {
+                                    width: 100px !important;
+                                    order: 7;
+                                    flex-grow: 1;
+                                }
+
+                                .x-grid3-td-locked {
+                                    order: 8;
+                                    width: 64px !important;
+                                    position: relative !important;
+                                }
+                            }
                         }
                     }
                 }
@@ -495,7 +596,7 @@
             width: $PICKER_SIDEPANEL_WIDTH !important;
             left: 0 !important;
             right: auto !important;
-            padding: 0px 35px;
+            padding: 0 35px;
             box-shadow: none !important;
             background: transparent !important;
         }

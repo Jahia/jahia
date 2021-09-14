@@ -562,10 +562,10 @@ public class Service extends JahiaService {
         final BackgroundAction action = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getBackgroundActions().get(
                 actionToExecute);
         if (action != null) {
-            if (node instanceof AddedNodeFact) {
-                action.executeBackgroundAction(((AddedNodeFact) node).getNode());
-            } else {
+            if (node instanceof DeletedNodeFact) {
                 action.executeBackgroundAction(node.getParent().getNode());
+            } else {
+            	action.executeBackgroundAction(((AbstractNodeFact)node).getNode());
             }
         }
     }

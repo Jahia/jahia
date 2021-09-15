@@ -155,6 +155,10 @@ public class JahiaSearchIndex extends SearchIndex {
 
     private static final Name JNT_ACE = NameFactoryImpl.getInstance().create(Constants.JAHIANT_NS, "ace");
 
+    private static final Name JNT_CONDITIONALVISIBILITY = NameFactoryImpl.getInstance().create(Constants.JAHIANT_NS, "conditionalVisibility");
+
+    private static final Name JNT_CONDITION = NameFactoryImpl.getInstance().create(Constants.JAHIANT_NS, "condition");
+
     public static final String SKIP_VERSION_INDEX_SYSTEM_PROPERTY = "jahia.jackrabbit.searchIndex.skipVersionIndex";
 
     public static final boolean SKIP_VERSION_INDEX = Boolean.parseBoolean(System.getProperty(SKIP_VERSION_INDEX_SYSTEM_PROPERTY, "true"));
@@ -401,6 +405,7 @@ public class JahiaSearchIndex extends SearchIndex {
         final Set<NodeId> topIdsRecursedForAcl = new HashSet<>();
 
         boolean hasAclOrAce = false;
+        boolean hasConditionalVisibiltyNodeOrSubConditions = false;
         while (add.hasNext()) {
             final NodeState state = add.next();
             if (state != null) {
@@ -411,6 +416,11 @@ public class JahiaSearchIndex extends SearchIndex {
                         && (JNT_ACL.equals(state.getNodeTypeName()) ||
                         JNT_ACE.equals(state.getNodeTypeName()))) {
                     hasAclOrAce = true;
+                }
+                if (!hasConditionalVisibiltyNodeOrSubConditions &&
+                        (JNT_CONDITIONALVISIBILITY.equals(state.getNodeTypeName()) ||
+                                JNT_CONDITION.equals(state.getNodeTypeName()))) {
+                    hasConditionalVisibiltyNodeOrSubConditions = true;
                 }
             }
         }
@@ -480,6 +490,34 @@ public class JahiaSearchIndex extends SearchIndex {
                 } catch (ItemStateException | RepositoryException e) {
                     log.warn("ACL_UUID field in documents may not be updated, so access rights check in search may not work correctly", e);
                 }
+            }
+        }
+
+        if (hasConditionalVisibiltyNodeOrSubConditions) {
+            final ItemStateManager itemStateManager = getContext().getItemStateManager();
+            for (final NodeState node : new ArrayList<>(addList)) {
+               try {
+                   Event event = null;
+                   if (add instanceof JahiaSearchManager.NodeStateIterator) {
+                       event = ((JahiaSearchManager.NodeStateIterator) add).getEvent(node.getNodeId());
+                       // skip adding subnodes if just a property changed and its not j:inherit
+                       if (event != null && event.getType() != Event.NODE_ADDED && event.getType() != Event.NODE_REMOVED) {
+                           continue;
+                       }
+                       NodeState nodeParent = null;
+                       if (JNT_CONDITIONALVISIBILITY.equals(node.getNodeTypeName())) {
+                           nodeParent = (NodeState) itemStateManager.getItemState(node.getParentId());
+                       } else if (JNT_CONDITION.equals(node.getNodeTypeName())) {
+                           NodeState conditionalVisibilityNode = (NodeState) itemStateManager.getItemState(node.getParentId());
+                           nodeParent = (NodeState) itemStateManager.getItemState(conditionalVisibilityNode.getParentId());
+                       }
+                       if(nodeParent != null) {
+                           addIdToBeIndexed(nodeParent.getNodeId(), addedIds, removedIds, addList, removeList);
+                       }
+                   }
+               } catch (ItemStateException e) {
+                   log.warn("CHECK_VISIBILITY field in documents may not be updated, so access rights check in search may not work correctly", e);
+               }
             }
         }
 
@@ -1000,7 +1038,7 @@ public class JahiaSearchIndex extends SearchIndex {
                     // If worker is already started, wait until it's finished
                     if (start.getCount() == 0) {
                         getMethod(worker, "join", long.class).invoke(worker, 500);
-                        if ((Boolean) getMethod(worker,"isAlive").invoke(worker)) {
+                        if ((Boolean) getMethod(worker, "isAlive").invoke(worker)) {
                             log.info("Unable to stop IndexMerger.Worker. Daemon is busy.");
                         } else {
                             log.debug("Worker stopped");

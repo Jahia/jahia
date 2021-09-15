@@ -63,6 +63,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 import javax.jcr.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -74,7 +77,7 @@ import java.util.regex.Pattern;
  * Time: 3:02:35 PM
  *
  */
-public class DocumentViewExporter extends Observable {
+public class DocumentViewExporter {
     protected static final Logger logger = LoggerFactory.getLogger(DocumentViewExporter.class);
 
     private static final String CDATA = "CDATA";
@@ -98,6 +101,7 @@ public class DocumentViewExporter extends Observable {
 
     private List<String> propertiestoIgnore = Arrays.asList("jcr:predecessors", "j:nodename", "jcr:versionHistory", "jcr:baseVersion", "jcr:isCheckedOut", "jcr:uuid", "jcr:mergeFailed");
     private ExportContext exportContext;
+    private PropertyChangeSupport pcs;
 
     public DocumentViewExporter(JCRSessionWrapper session, ContentHandler ch, boolean skipBinary, boolean noRecurse) {
         this.session = session;
@@ -105,7 +109,7 @@ public class DocumentViewExporter extends Observable {
         this.noRecurse = noRecurse;
         this.skipBinary = skipBinary;
         this.stack = new Stack<String>();
-
+        this.pcs = new PropertyChangeSupport(this);
         prefixes = new HashMap<String, String>();
         try {
             Map<String, String> map = NodeTypeRegistry.getInstance().getNamespaces();
@@ -352,9 +356,8 @@ public class DocumentViewExporter extends Observable {
      */
     private void notifyListObservers(String path) {
         if(exportContext!= null) {
-            setChanged();
             exportContext.setActualPath(path);
-            notifyObservers(exportContext);
+            pcs.firePropertyChange(new PropertyChangeEvent(this, "exportContext", null, exportContext));
         }
     }
 
@@ -466,5 +469,9 @@ public class DocumentViewExporter extends Observable {
 
     public ExportContext getExportContext() {
         return exportContext;
+    }
+
+    public void addObserver(PropertyChangeListener propertyChangeListener) {
+        pcs.addPropertyChangeListener("exportContext", propertyChangeListener);
     }
 }

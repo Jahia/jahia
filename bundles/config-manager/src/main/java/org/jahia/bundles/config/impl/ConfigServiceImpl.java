@@ -311,8 +311,8 @@ public class ConfigServiceImpl implements OsgiConfigService, ConfigurationListen
         for (Configuration config : configs) {
             String filename = (String) config.getProperties().get(FELIX_FILEINSTALL_FILENAME);
             if (filename != null) {
-                try {
-                    List<String> lines = IOUtils.readLines(new URL(filename).openStream(), StandardCharsets.UTF_8);
+                try (InputStream openStream = new URL(filename).openStream()){
+                    List<String> lines = IOUtils.readLines(openStream, StandardCharsets.UTF_8);
                     configurationsContent.put(StringUtils.substringAfterLast(filename, "/"), lines);
                 } catch (FileNotFoundException e) {
                     logger.warn("Cannot find file {}", filename, e);

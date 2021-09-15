@@ -107,13 +107,11 @@ import pl.touk.throwing.ThrowingBiConsumer;
 import pl.touk.throwing.ThrowingPredicate;
 
 import javax.jcr.RepositoryException;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -713,9 +711,9 @@ public class Activator implements BundleActivator {
         List<URL> foundURLs = CFG_SCANNER.scan(bundle);
         if (!foundURLs.isEmpty()) {
             for (URL url : foundURLs) {
-                try {
+                try (InputStream openStream = url.openStream()){
                     Path path = Paths.get(SettingsBean.getInstance().getJahiaVarDiskPath(), "karaf", "etc", StringUtils.substringAfterLast(url.getFile(), "/"));
-                    List<String> lines = IOUtils.readLines(url.openStream());
+                    List<String> lines = IOUtils.readLines(openStream, StandardCharsets.UTF_8);
                     boolean isEditable = lines.stream().map(String::toLowerCase).anyMatch(p -> p.startsWith("# default configuration"));
                     if (!path.toFile().exists() || !isEditable) {
                         if (!isEditable && Stream.of("cfg","config","yml","yaml").anyMatch(path::endsWith)) {
@@ -1156,10 +1154,7 @@ public class Activator implements BundleActivator {
     }
 
     public ModuleState getModuleState(Bundle bundle) {
-        if (!moduleStates.containsKey(bundle)) {
-            moduleStates.put(bundle, new ModuleState());
-        }
-        return moduleStates.get(bundle);
+        return moduleStates.computeIfAbsent(bundle, bundle1 -> new ModuleState());
     }
 
     public void setModuleState(Bundle bundle, ModuleState.State state, Object details) {

@@ -43,6 +43,7 @@
  */
 package org.jahia.bundles.extender.jahiamodules.mvn;
 
+import org.apache.felix.utils.collections.MapToDictionary;
 import org.ops4j.pax.url.mvn.MavenResolver;
 import org.ops4j.pax.url.mvn.MavenResolvers;
 import org.ops4j.pax.url.mvn.ServiceConstants;
@@ -56,9 +57,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.*;
 
 /**
  * Maven URL stream handler that clean up the #runtime added by JDK 11 to allow a correct parsing by pax.
@@ -72,25 +71,29 @@ public class MavenURLStreamHandler extends AbstractURLStreamHandlerService {
 
     }
 
-    @Override public URLConnection openConnection(URL url) throws IOException {
+    @Override
+    public URLConnection openConnection(URL url) throws IOException {
         Dictionary<String, String> props = getMavenConfig();
-        MavenResolver resolver = MavenResolvers.createMavenResolver(props, ServiceConstants.PID);
         // java11 adds #runtime as a ref in the URL which breaks the artifact version parser in pax-aether-url
         String cleanedURL = url.toExternalForm().replace("#runtime", "");
         return new URLConnection(new URL(cleanedURL)) {
-            @Override public void connect() throws IOException {
+            @Override
+            public void connect() throws IOException {
                 // nothing to be done
             }
 
-            @Override public InputStream getInputStream() throws IOException {
-                File resolve = resolver.resolve(url.toExternalForm());
-                return new FileInputStream(resolve);
+            @Override
+            public InputStream getInputStream() throws IOException {
+                try (MavenResolver resolver = MavenResolvers.createMavenResolver(props, ServiceConstants.PID)) {
+                    File resolve = resolver.resolve(url.toExternalForm());
+                    return new FileInputStream(resolve);
+                }
             }
         };
     }
 
     private Dictionary<String, String> getMavenConfig() throws IOException {
-        Hashtable<String, String> props = new Hashtable<>();
+        Map<String, String> props = new HashMap<>();
         if (configurationAdmin != null) {
             Configuration config = configurationAdmin.getConfiguration("org.ops4j.pax.url.mvn", null);
             if (config != null) {
@@ -106,6 +109,6 @@ public class MavenURLStreamHandler extends AbstractURLStreamHandlerService {
                 }
             }
         }
-        return props;
+        return new MapToDictionary(props);
     }
 }

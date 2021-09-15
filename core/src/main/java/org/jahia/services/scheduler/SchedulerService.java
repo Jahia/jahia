@@ -127,31 +127,7 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
             for (String jobName : jobNames) {
                 logger.debug("Checking job {}.{}", jobGroup, jobName);
                 if (ArrayUtils.isEmpty(schedulerInstance.getTriggersOfJob(jobName, jobGroup))) {
-                    Long age = getAge(jobName, jobGroup, purgeStrategy);
-                    if (age != null && age.longValue() >= 0) {
-                        JobDetail job = schedulerInstance.getJobDetail(jobName, jobGroup);
-                        if (job == null) {
-                            logger.warn("Unable to find job {}.{}", jobGroup, jobName);
-                            continue;
-                        }
-                        String status = job.getJobDataMap().getString(JOB_STATUS);
-                        if (STATUS_SUCCESSFUL.equals(status) || STATUS_FAILED.equals(status)
-                                || STATUS_CANCELED.equals(status)) {
-                            Long ended = job.getJobDataMap().containsKey(JOB_END) ? job
-                                    .getJobDataMap().getLongFromString(JOB_END) : null;
-                            if (ended != null && (System.currentTimeMillis() - ended > age)
-                                    || ended == null && purgeWithNoEndDate) {
-                                logger.debug("Job {} matches purge policy. Deleting it.",
-                                        job.getFullName());
-                                try {
-                                    schedulerInstance.deleteJob(jobName, jobGroup);
-                                    deletedCount++;
-                                } catch (SchedulerException e) {
-                                    logger.warn("Error deleting job " + jobGroup + "." + jobName, e);
-                                }
-                            }
-                        }
-                    }
+                    deletedCount = getDeletedCount(purgeStrategy, purgeWithNoEndDate, deletedCount, schedulerInstance, jobGroup, jobName);
                 }
             }
 
@@ -159,6 +135,39 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
 
         logger.info("Removed {} completed jobs", deletedCount);
 
+        return deletedCount;
+    }
+
+    private int getDeletedCount(Map<Pattern, Long> purgeStrategy, boolean purgeWithNoEndDate, int deletedCount, Scheduler schedulerInstance, String jobGroup, String jobName) throws SchedulerException {
+        Long age = getAge(jobName, jobGroup, purgeStrategy);
+        if (age != null && age >= 0L) {
+            JobDetail job = schedulerInstance.getJobDetail(jobName, jobGroup);
+            if (job == null) {
+                logger.warn("Unable to find job {}.{}", jobGroup, jobName);
+                return deletedCount;
+            }
+            deletedCount = checkStatusAndDeleteJobIfPossible(purgeWithNoEndDate, deletedCount, schedulerInstance, jobGroup, jobName, age, job);
+        }
+        return deletedCount;
+    }
+
+    private int checkStatusAndDeleteJobIfPossible(boolean purgeWithNoEndDate, int deletedCount, Scheduler schedulerInstance, String jobGroup, String jobName, Long age, JobDetail job) {
+        String status = job.getJobDataMap().getString(JOB_STATUS);
+        if (STATUS_SUCCESSFUL.equals(status) || STATUS_FAILED.equals(status) || STATUS_CANCELED.equals(status)) {
+            Long ended = job.getJobDataMap().containsKey(JOB_END) ? job
+                    .getJobDataMap().getLongFromString(JOB_END) : null;
+            if (ended != null && (System.currentTimeMillis() - ended > age)
+                    || ended == null && purgeWithNoEndDate) {
+                logger.debug("Job {} matches purge policy. Deleting it.",
+                        job.getFullName());
+                try {
+                    schedulerInstance.deleteJob(jobName, jobGroup);
+                    deletedCount++;
+                } catch (SchedulerException e) {
+                    logger.warn("Error deleting job " + jobGroup + "." + jobName, e);
+                }
+            }
+        }
         return deletedCount;
     }
 
@@ -328,10 +337,10 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
         List<JobDetail> jobList;
         if (useRamScheduler) {
             jobList = ramScheduledAtEndOfRequest.get();
-            ramScheduledAtEndOfRequest.set(null);
+            ramScheduledAtEndOfRequest.remove();
         } else {
             jobList = scheduledAtEndOfRequest.get();
-            scheduledAtEndOfRequest.set(null);
+            scheduledAtEndOfRequest.remove();
         }
         if (jobList != null) {
             for (JobDetail detail : jobList) {
@@ -425,8 +434,10 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
     }
 
     @Override
+    @SuppressWarnings("java:S2276")
     public synchronized void switchReadOnlyMode(boolean enable) {
-
+        // Suppressing warning about the usage of Thread.sleep as it is exactly the behaviour we desire here.
+        // We need to keep the lock on the 'this' monitor to ensure this is the only method running.
         // switch db persisted scheduler read only mode flag
         scheduler.setReadOnly(enable);
 
@@ -438,7 +449,8 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
                 logger.info("Done putting schedulers to standby");
                 logger.info("Waiting for running jobs to complete...");
                 long start = System.currentTimeMillis();
-                for (int count = getRunningJobsCount(); count > 0; count = getRunningJobsCount()) {
+                int count = getRunningJobsCount();
+                while ( count > 0) {
                     logger.info("{} job(s) are still running...", count);
                     if (System.currentTimeMillis() - start > timeoutSwitchingToReadOnlyMode) {
                         logger.error("Timed out waiting for running jobs to complete.");
@@ -448,12 +460,13 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
-                        throw new RuntimeException(e);
+                        throw new JahiaRuntimeException(e);
                     }
+                    count = getRunningJobsCount();
                 }
                 logger.info("All running jobs have completed.");
             } catch (SchedulerException e) {
-                throw new RuntimeException(e);
+                throw new JahiaRuntimeException(e);
             }
         } else {
             logger.info("Exiting read-only mode...");
@@ -462,7 +475,7 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
                 startSchedulers();
                 logger.info("Done starting schedulers");
             } catch (JahiaInitializationException e) {
-                throw new RuntimeException(e);
+                throw new JahiaRuntimeException(e);
             }
         }
     }

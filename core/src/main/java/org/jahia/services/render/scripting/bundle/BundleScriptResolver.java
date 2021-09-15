@@ -73,6 +73,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.script.ScriptEngineFactory;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -225,7 +226,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
             final int priority = getPriority(extension, context);
             extensionPriorities.put(extension, priority);
 
-            logger.info("ScriptEngineFactory {} registered extension {} with priority {}", new Object[]{scriptEngineFactory, extension, priority});
+            logger.info("ScriptEngineFactory {} registered extension {} with priority {}", scriptEngineFactory, extension, priority);
 
             // now we need to activate the bundle script scanner inside of newly deployed or existing bundles
             // register view script observers
@@ -432,8 +433,8 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         final URL propertiesResource = bundle.getResource(properties);
         if (propertiesResource != null) {
             Properties p = new Properties();
-            try {
-                p.load(propertiesResource.openStream());
+            try (InputStream inStream = propertiesResource.openStream()){
+                p.load(inStream);
             } catch (IOException e) {
                 logger.error("Cannot read properties", e);
             }
@@ -529,7 +530,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         List<String> templateTypeMappings = null;
         Channel channel = renderContext.getChannel();
         if (channel != null && !channel.getFallBack().equals("root")) {
-            templateTypeMappings = new LinkedList<String>();
+            templateTypeMappings = new LinkedList<>();
             while (!channel.getFallBack().equals("root")) {
                 if (channel.getCapability("template-type-mapping") != null) {
                     templateTypeMappings.add(resource.getTemplateType() + "-" + channel.getCapability("template-type-mapping"));
@@ -584,7 +585,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
      * @throws NoSuchNodeTypeException
      */
     private List<ExtendedNodeType> getNodeTypeList(ExtendedNodeType nt) throws NoSuchNodeTypeException {
-        List<ExtendedNodeType> nodeTypeList = new LinkedList<ExtendedNodeType>();
+        List<ExtendedNodeType> nodeTypeList = new LinkedList<>();
         nodeTypeList.add(nt);
         nodeTypeList.addAll(nt.getSupertypeSet());
         ExtendedNodeType base = NodeTypeRegistry.getInstance().getNodeType("nt:base");
@@ -610,7 +611,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         if (viewSetCache.containsKey(s)) {
             return viewSetCache.get(s);
         } else {
-            Map<String, View> views = new HashMap<String, View>();
+            Map<String, View> views = new HashMap<>();
 
             Set<String> installedModules = getInstalledModules(site);
 
@@ -643,7 +644,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
                     }
                 }
             }
-            SortedSet<View> t = new TreeSet<View>(views.values());
+            SortedSet<View> t = new TreeSet<>(views.values());
             viewSetCache.put(s, t);
             return t;
         }
@@ -660,7 +661,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         } else if (sitePath.startsWith("/modules/")) {
             JahiaTemplatesPackage aPackage = templateManagerService.getTemplatePackageById(site.getName());
             if (aPackage != null) {
-                installedModules = new LinkedHashSet<String>();
+                installedModules = new LinkedHashSet<>();
                 installedModules.add(aPackage.getId());
                 for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
                     if (!installedModules.contains(depend.getId())) {
@@ -719,7 +720,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         for (ViewResourceInfo res : sortedScripts) {
             if (!views.containsKey(res.viewKey)) {
                 if (!scriptFactoryMap.containsKey(res.extension)) {
-                    logger.error("Script extension " + res.extension + " can not be handled by this system.");
+                    logger.error("Script extension {} can not be handled by this system.", res.extension);
                     break;
                 }
                 BundleView view = new BundleView(res.path, res.viewKey, tplPackage, res.filename);
@@ -756,11 +757,11 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         if (!viewInfosWithPathGTEThanPrefix.firstKey().startsWith(pathPrefix)) {
             return Collections.emptySet();
         } else {
-            SortedSet<ViewResourceInfo> sortedScripts = new TreeSet<ViewResourceInfo>(scriptExtensionComparator);
-            for (String path : viewInfosWithPathGTEThanPrefix.keySet()) {
+            SortedSet<ViewResourceInfo> sortedScripts = new TreeSet<>(scriptExtensionComparator);
+            for (Map.Entry<String,ViewResourceInfo> entry : viewInfosWithPathGTEThanPrefix.entrySet()) {
                 // we should have only few values to look at
-                if (path.startsWith(pathPrefix)) {
-                    sortedScripts.add(viewInfosWithPathGTEThanPrefix.get(path));
+                if (entry.getKey().startsWith(pathPrefix)) {
+                    sortedScripts.add(entry.getValue());
                 } else {
                     // as soon as the path doesn't start with the given prefix anymore, we won't have a match in the remaining so return
                     return sortedScripts;

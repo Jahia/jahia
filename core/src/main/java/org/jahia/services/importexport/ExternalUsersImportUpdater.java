@@ -82,6 +82,11 @@ import java.util.zip.ZipOutputStream;
 import static org.jahia.services.importexport.ImportExportBaseService.LIVE_REPOSITORY_XML;
 import static org.jahia.services.importexport.ImportExportBaseService.REPOSITORY_XML;
 
+/**
+ * @deprecated Since 8.1.0.0
+ */
+@Deprecated
+@SuppressWarnings({"java:S2093","java:S2095","java:S3776"})
 public class ExternalUsersImportUpdater extends ImportFileUpdater {
 
     private static Logger logger = LoggerFactory.getLogger(ExternalUsersImportUpdater.class);

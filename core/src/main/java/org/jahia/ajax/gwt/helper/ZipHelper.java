@@ -93,47 +93,20 @@ public class ZipHelper {
 
     /**
      * @param parentDirectory the directory to create the archive into
-     * @param zipname         the archive name
+     * @param zipName         the archive name
      * @param files           the file list
      * @return null if everything went fine, a list of untreated files otherwise
      * @throws RepositoryException in case of JCR-related errors
      */
-    public List<String> zipFiles(final JCRNodeWrapper parentDirectory, final String zipname, final List<JCRNodeWrapper> files) {
-        List<String> missedPaths = null;
+    public List<String> zipFiles(final JCRNodeWrapper parentDirectory, final String zipName, final List<JCRNodeWrapper> files) {
+        List<String> missedPaths;
         File tmp = null;
         try {
             tmp = File.createTempFile("jahiazip", ".zip");
-            final ZipOutputStream zout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(tmp)));
-            final byte[] buffer = new byte[4096];
-            String parentDir = parentDirectory.getPath();
-            if (!parentDir.endsWith("/")) {
-                parentDir = parentDir + "/";
-            }
-            for (JCRNodeWrapper file : files) {
-                try {
-                    zipFileEntry(file, zout, buffer, parentDir);
-                } catch (IOException e) {
-                    logger.error("Error zipping file " + file.getPath(), e);
-                    if (missedPaths == null) {
-                        missedPaths = new ArrayList<>();
-                    }
-                    missedPaths.add(file.getPath());
-                }
-            }
-            InputStream is = new BufferedInputStream(new FileInputStream(tmp));
-            try {
-                zout.close();
-                JCRNodeWrapper result = parentDirectory.uploadFile(zipname, is, "application/zip");
-                result.saveSession();
-            } catch (IOException | RepositoryException e) {
-                logger.error("Error writing resulting zipped file", e);
-                missedPaths = new ArrayList<>();
-                for (JCRNodeWrapper node : files) {
-                    missedPaths.add(node.getName());
-                }
-            } finally {
-                IOUtils.closeQuietly(is);
-            }
+            missedPaths = zipRequestedFilesInTmpArchiveFile(parentDirectory, files, tmp);
+            // zipOutputStream is closed by previous try-with-resources
+            // Copy tmp file into zipName
+            missedPaths = uploadTmpArchiveFileToDestinationDirectory(parentDirectory, zipName, files, missedPaths, tmp);
         } catch (final IOException e) {
             logger.error("Error creating zipped file", e);
             missedPaths = new ArrayList<>();
@@ -146,6 +119,44 @@ public class ZipHelper {
         return missedPaths;
     }
 
+    private List<String> uploadTmpArchiveFileToDestinationDirectory(JCRNodeWrapper parentDirectory, String zipName, List<JCRNodeWrapper> files, List<String> missedPaths, File tmp) {
+        try (InputStream is = new BufferedInputStream(new FileInputStream(tmp))) {
+            JCRNodeWrapper result = parentDirectory.uploadFile(zipName, is, "application/zip");
+            result.saveSession();
+        } catch (IOException | RepositoryException e) {
+            logger.error("Error writing resulting zipped file", e);
+            missedPaths = new ArrayList<>();
+            for (JCRNodeWrapper node : files) {
+                missedPaths.add(node.getName());
+            }
+        }
+        return missedPaths;
+    }
+
+    private List<String> zipRequestedFilesInTmpArchiveFile(JCRNodeWrapper parentDirectory, List<JCRNodeWrapper> files, File tmp) throws IOException {
+        List<String> missedPaths = null;
+        // Zip files in tmp file
+        try (final ZipOutputStream zipOutputStream = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(tmp)))) {
+            final byte[] buffer = new byte[4096];
+            String parentDir = parentDirectory.getPath();
+            if (!parentDir.endsWith("/")) {
+                parentDir = parentDir + "/";
+            }
+            for (JCRNodeWrapper file : files) {
+                try {
+                    zipFileEntry(file, zipOutputStream, buffer, parentDir);
+                } catch (IOException e) {
+                    logger.error("Error zipping file " + file.getPath(), e);
+                    if (missedPaths == null) {
+                        missedPaths = new ArrayList<>();
+                    }
+                    missedPaths.add(file.getPath());
+                }
+            }
+        }
+        return missedPaths;
+    }
+
     private void zipFileEntry(final JCRNodeWrapper file, final ZipOutputStream zout, final byte[] buffer, String rootDir) throws IOException {
         ZipEntry anEntry;
         String relativePath = file.getPath().replace(rootDir, "");
@@ -153,7 +164,7 @@ public class ZipHelper {
             anEntry = new ZipEntry(relativePath + "/");
             zout.putNextEntry(anEntry);
             try {
-                for (final NodeIterator iterator = file.getNodes(); iterator.hasNext();) {
+                for (final NodeIterator iterator = file.getNodes(); iterator.hasNext(); ) {
                     final JCRNodeWrapper fileNode = (JCRNodeWrapper) iterator.next();
                     zipFileEntry(fileNode, zout, buffer, rootDir);
                 }
@@ -161,22 +172,20 @@ public class ZipHelper {
                 logger.error(e.getMessage(), e);
             }
         } else {
-            final InputStream is = file.getFileContent().downloadFile();
-            if (is != null) {
-                try {
+            try (InputStream is = file.getFileContent().downloadFile()) {
+                if(is != null) {
                     anEntry = new ZipEntry(relativePath);
                     zout.putNextEntry(anEntry);
                     int bytesIn;
                     while ((bytesIn = is.read(buffer)) != -1) {
                         zout.write(buffer, 0, bytesIn);
                     }
-                } finally {
-                    IOUtils.closeQuietly(is);
                 }
             }
         }
     }
 
+    @SuppressWarnings("java:S2093")
     public boolean unzipFile(final JCRNodeWrapper zipfile, final JCRNodeWrapper destination,
             JCRSessionWrapper currentUserSession) throws RepositoryException {
         NoCloseZipInputStream zis = null;
@@ -315,18 +324,18 @@ public class ZipHelper {
                 List<String> errorPaths = zipFiles(parent, archiveName, nodesToZip);
                 if (errorPaths != null) {
                     errorPaths.addAll(missedPaths);
-                    StringBuilder errors = new StringBuilder(Messages.getInternal("label.gwt.error.the.following.files.could.not.be.zipped",uiLocale));
+                    StringBuilder errors = new StringBuilder(Messages.getInternal("label.gwt.error.the.following.files.could.not.be.zipped", uiLocale));
                     for (String err : errorPaths) {
                         errors.append("\n").append(err);
                     }
                     throw new GWTJahiaServiceException(errors.toString());
                 }
             } else {
-                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.directory.is.not.writable",uiLocale, parent.getPath()));
+                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.directory.is.not.writable", uiLocale, parent.getPath()));
             }
         }
         if (missedPaths.size() > 0) {
-            StringBuilder errors = new StringBuilder(Messages.getInternal("label.gwt.error.the.following.files.could.not.be.zipped",uiLocale));
+            StringBuilder errors = new StringBuilder(Messages.getInternal("label.gwt.error.the.following.files.could.not.be.zipped", uiLocale));
             for (String err : missedPaths) {
                 errors.append("\n").append(err);
             }
@@ -382,7 +391,7 @@ public class ZipHelper {
                     }
                 }
             } else {
-                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.directory.is.not.writable",uiLocale, parent.getPath()));
+                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.directory.is.not.writable", uiLocale, parent.getPath()));
             }
             try {
                 parent.saveSession();

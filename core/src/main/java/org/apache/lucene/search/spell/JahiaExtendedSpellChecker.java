@@ -44,11 +44,13 @@
 package org.apache.lucene.search.spell;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.lucene.analysis.LimitTokenCountAnalyzer;
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.*;
 import org.apache.lucene.search.BooleanClause.Occur;
@@ -56,7 +58,9 @@ import org.apache.lucene.store.AlreadyClosedException;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.BytesRefIterator;
+import org.apache.lucene.util.Version;
 import org.jahia.utils.LuceneUtils;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,7 +105,6 @@ public class JahiaExtendedSpellChecker implements java.io.Closeable {
      * the spell index
      */
     // don't modify the directory directly - see #swapSearcher()
-    // TODO: why is this package private?
     Directory spellIndex;
     
     /**
@@ -156,21 +159,25 @@ public class JahiaExtendedSpellChecker implements java.io.Closeable {
      * @throws AlreadyClosedException if the Spellchecker is already closed
      * @throws  IOException if spellchecker can not open the directory
      */
-    // TODO: we should make this final as it is called in the constructor
     public void setSpellIndex(Directory spellIndexDir) throws IOException {
         // this could be the same directory as the current spellIndex
         // modifications to the directory should be synchronized 
         synchronized (modifyCurrentIndexLock) {
           ensureOpen();
           if (!IndexReader.indexExists(spellIndexDir)) {
-              IndexWriter writer = new IndexWriter(spellIndexDir, null, true,
-                  IndexWriter.MaxFieldLength.UNLIMITED);
-              writer.close();
+              createIndexWriter(spellIndexDir);
           }
           swapSearcher(spellIndexDir);
         }        
     }
-    
+
+    private void createIndexWriter(Directory spellIndexDir) throws IOException {
+        IndexWriter writer = new IndexWriter(spellIndexDir,
+                new IndexWriterConfig(Version.LUCENE_36,
+                new LimitTokenCountAnalyzer(null, Integer.MAX_VALUE)).setOpenMode(IndexWriterConfig.OpenMode.CREATE));
+        writer.close();
+    }
+
     /**
      * Sets the {@link StringDistance} implementation for this
      * {@link SpellChecker} instance.
@@ -199,14 +206,7 @@ public class JahiaExtendedSpellChecker implements java.io.Closeable {
     public void setAccuracy(float minScore) {
         this.minScore = minScore;
     }
-    
-    /**
-     * @deprecated
-     */
-    public String[] suggestSimilar(String word, int numSug, IndexReader ir, String field, boolean morePopular,
-                                   String sites, String language) throws IOException {
-        return suggestSimilar(word, numSug, ir, morePopular, new String[]{sites}, language);
-    }
+
 
     /**
      * Suggest similar words (optionally restricted to a field of an index).
@@ -252,14 +252,7 @@ public class JahiaExtendedSpellChecker implements java.io.Closeable {
             float min = this.minScore;
             final int lengthWord = word.length();
 
-            List<String> fields = new ArrayList<>();
-            for (String site : sites) {
-                fields.add(LuceneUtils.getFullTextFieldName(site, language));
-                if (language != null) {
-                    // we also consider non-language specific full text field to cover non-18n properties
-                    fields.add(LuceneUtils.getFullTextFieldName(site, null));
-                }
-            }
+            List<String> fields = getFields(sites, language);
 
             int freq = 0;
             for (String aField : fields) {
@@ -273,93 +266,64 @@ public class JahiaExtendedSpellChecker implements java.io.Closeable {
                 return new String[] { word };
             }
 
-            BooleanQuery query = new BooleanQuery();
-            String[] grams;
-            String key;
-
-            // ensure language
-            if (language != null) {
-                add(query, F_LANGUAGE, language, BooleanClause.Occur.MUST);
-            }
-
-            // ensure site
-            BooleanQuery subQuery = new BooleanQuery();
-            query.add(new BooleanClause(subQuery, BooleanClause.Occur.MUST));
-            for (String site : sites) {
-                add(subQuery, F_SITE, site, Occur.SHOULD);
-            }
-
-            for (int ng = getMin(lengthWord); ng <= getMax(lengthWord); ng++) {
-
-                key = "gram" + ng; // form key
-
-                grams = formGrams(word, ng); // form word into ngrams (allow dups
-                // too)
-
-                if (grams.length == 0) {
-                    continue; // hmm
-                }
-
-                if (bStart > 0) { // should we boost prefixes?
-                    add(query, "start" + ng, grams[0], bStart); // matches start of
-                    // word
-
-                }
-                if (bEnd > 0) { // should we boost suffixes
-                    add(query, "end" + ng, grams[grams.length - 1], bEnd); // matches
-                    // end of
-                    // word
-
-                }
-                for (int i = 0; i < grams.length; i++) {
-                    add(query, key, grams[i]);
-                }
-            }
+            BooleanQuery query = getClauses(word, sites, language, lengthWord);
 
             int maxHits = 10 * numSug;
 
-            // System.out.println("Q: " + query);
             SuggestWordQueue sugQueue = new SuggestWordQueue(numSug);
             ScoreDoc[] hits = indexSearcher.search(query, maxHits).scoreDocs;
 
-            // go thru more than 'maxr' matches in case the distance filter triggers
+            // go through more than 'maxr' matches in case the distance filter triggers
 
             int stop = hits == null ? 0 : Math.min(hits.length, 10 * numSug);
 
-            SuggestWord sugWord = new SuggestWord();
-            Set<String> foundWords = new HashSet<>();
-            for (int i = 0; i < stop; i++) {
-                // get orig word
-                sugWord.string = indexSearcher.doc(hits[i].doc).get(language != null ? (F_WORD + "-" + language) : F_WORD);
+            getSuggestionWords(word, numSug, ir, morePopular, language, indexSearcher, min, fields, goalFreq, sugQueue, hits, stop);
 
-                // don't suggest a word for itself, that would be silly
-                if (sugWord.string == null || word.equals(sugWord.string)) {
-                    continue;
-                }
+            // convert to array string
+            return suggestedWordsArray(word, startTime, sugQueue);
+        } finally {
+            releaseSearcher(indexSearcher);
+        }
+    }
 
-                if (foundWords.contains(sugWord.string)) {
-                    continue;
-                }
+    private String[] suggestedWordsArray(String word, long startTime, SuggestWordQueue sugQueue) {
+        String[] list = null;
+        int queueSize = sugQueue.size();
+        if (queueSize > 0) {
+            list = new String[queueSize];
+            for (int i = sugQueue.size() - 1; i >= 0; i--) {
+                list[i] = sugQueue.pop().string;
+            }
+            if (logger.isDebugEnabled()) {
+                logger.debug("Found suggestions for word '{}' (took {} ms): {}", word, System.currentTimeMillis() - startTime, list);
+            }
+        } else {
+            list = ArrayUtils.EMPTY_STRING_ARRAY;
+            if (logger.isDebugEnabled()) {
+                logger.debug("No suggestions found for word {} (took {} ms)", word,
+                        System.currentTimeMillis() - startTime);
+            }
+        }
 
-                foundWords.add(sugWord.string);
+        return list;
+    }
 
-                // edit distance
-                sugWord.score = getStringDistance().getDistance(word, sugWord.string);
-                if (sugWord.score < min) {
-                    continue;
-                }
+    @SuppressWarnings("java:S107")
+    private void getSuggestionWords(String word, int numSug, IndexReader ir, boolean morePopular, String language, IndexSearcher indexSearcher, float min, List<String> fields, int goalFreq, SuggestWordQueue sugQueue, ScoreDoc[] hits, int stop) throws IOException {
+        SuggestWord sugWord = new SuggestWord();
+        Set<String> foundWords = new HashSet<>();
+        for (int i = 0; i < stop; i++) {
+            // get orig word
+            sugWord.string = indexSearcher.doc(hits[i].doc).get(language != null ? (F_WORD + "-" + language) : F_WORD);
 
-                if (ir != null) { // use the user index
-                    sugWord.freq = 0;
-                    for (String aField : fields) {
-                        sugWord.freq += ir.docFreq(new Term(aField, sugWord.string)); // freq
-                    }
+            // don't suggest a word for itself, that would be silly
+            if (sugWord.string == null || word.equals(sugWord.string) || foundWords.contains(sugWord.string)) {
+                continue;
+            }
 
-                    // in the index don't suggest a word that is not present in the field
-                    if ((morePopular && goalFreq > sugWord.freq) || sugWord.freq < 1) {
-                        continue;
-                    }
-                }
+            foundWords.add(sugWord.string);
+
+            if (!shouldSkipWord(word, ir, morePopular, min, fields, goalFreq, sugWord)) {
                 sugQueue.insertWithOverflow(sugWord);
                 if (sugQueue.size() == numSug) {
                     // if queue full, maintain the minScore score
@@ -367,30 +331,89 @@ public class JahiaExtendedSpellChecker implements java.io.Closeable {
                 }
                 sugWord = new SuggestWord();
             }
+        }
+    }
 
-            // convert to array string
-            String[] list = null;
-            int queueSize = sugQueue.size();
-            if (queueSize > 0) {
-                list = new String[queueSize];
-                for (int i = sugQueue.size() - 1; i >= 0; i--) {
-                    list[i] = sugQueue.pop().string;
-                }
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Found suggestions for word '{}' (took {} ms): {}",
-                            new Object[] { word, System.currentTimeMillis() - startTime, list });
-                }
-            } else {
-                list = ArrayUtils.EMPTY_STRING_ARRAY;
-                if (logger.isDebugEnabled()) {
-                    logger.debug("No suggestions found for word {} (took {} ms)", word,
-                            System.currentTimeMillis() - startTime);
-                }
+    private boolean shouldSkipWord(String word, IndexReader ir, boolean morePopular, float min, List<String> fields, int goalFreq, SuggestWord sugWord) throws IOException {
+        // edit distance
+        sugWord.score = getStringDistance().getDistance(word, sugWord.string);
+        if (sugWord.score < min) {
+            return true;
+        }
+
+        if (ir != null) { // use the user index
+            sugWord.freq = 0;
+            for (String aField : fields) {
+                sugWord.freq += ir.docFreq(new Term(aField, sugWord.string)); // freq
             }
 
-            return list;
-        } finally {
-            releaseSearcher(indexSearcher);
+            // in the index don't suggest a word that is not present in the field
+            return (morePopular && goalFreq > sugWord.freq) || sugWord.freq < 1;
+        }
+        return false;
+    }
+
+    @NotNull
+    private BooleanQuery getClauses(String word, String[] sites, String language, int lengthWord) {
+        BooleanQuery query = new BooleanQuery();
+
+        // ensure language
+        if (language != null) {
+            add(query, F_LANGUAGE, language, Occur.MUST);
+        }
+
+        // ensure site
+        BooleanQuery subQuery = new BooleanQuery();
+        query.add(new BooleanClause(subQuery, Occur.MUST));
+        for (String site : sites) {
+            add(subQuery, F_SITE, site, Occur.SHOULD);
+        }
+
+        addNGRAMQueries(word, lengthWord, query);
+        return query;
+    }
+
+    @NotNull
+    private List<String> getFields(String[] sites, String language) {
+        List<String> fields = new ArrayList<>();
+        for (String site : sites) {
+            fields.add(LuceneUtils.getFullTextFieldName(site, language));
+            if (language != null) {
+                // we also consider non-language specific full text field to cover non-18n properties
+                fields.add(LuceneUtils.getFullTextFieldName(site, null));
+            }
+        }
+        return fields;
+    }
+
+    private void addNGRAMQueries(String word, int lengthWord, BooleanQuery query) {
+        String key;
+        String[] grams;
+        for (int ng = getMin(lengthWord); ng <= getMax(lengthWord); ng++) {
+
+            key = "gram" + ng; // form key
+
+            grams = formGrams(word, ng); // form word into ngrams (allow dups
+            // too)
+
+            if (grams.length == 0) {
+                continue; // hmm
+            }
+
+            if (bStart > 0) { // should we boost prefixes?
+                add(query, "start" + ng, grams[0], bStart); // matches start of
+                // word
+
+            }
+            if (bEnd > 0) { // should we boost suffixes
+                add(query, "end" + ng, grams[grams.length - 1], bEnd); // matches
+                // end of
+                // word
+
+            }
+            for (int i = 0; i < grams.length; i++) {
+                add(query, key, grams[i]);
+            }
         }
     }
 
@@ -442,8 +465,7 @@ public class JahiaExtendedSpellChecker implements java.io.Closeable {
         synchronized (modifyCurrentIndexLock) {
             ensureOpen();
             final Directory dir = this.spellIndex;
-            IndexWriter writer = new IndexWriter(dir, null, true, IndexWriter.MaxFieldLength.UNLIMITED);
-            writer.close();
+            createIndexWriter(dir);
             swapSearcher(dir);
         }
     }
@@ -483,35 +505,31 @@ public class JahiaExtendedSpellChecker implements java.io.Closeable {
         synchronized (modifyCurrentIndexLock) {
             ensureOpen();
             final Directory dir = this.spellIndex;
-            IndexWriter writer = new IndexWriter(dir, new WhitespaceAnalyzer(), IndexWriter.MaxFieldLength.UNLIMITED);
-            writer.setMergeFactor(mergeFactor);
-            writer.setRAMBufferSizeMB(ramMB);
+            try (WhitespaceAnalyzer whitespaceAnalyzer = new WhitespaceAnalyzer(Version.LUCENE_36)) {
+                IndexWriterConfig writerConfig = new IndexWriterConfig(Version.LUCENE_36,new LimitTokenCountAnalyzer(whitespaceAnalyzer, Integer.MAX_VALUE)).setRAMBufferSizeMB(ramMB);
+                IndexWriter writer = new IndexWriter(dir, writerConfig);
 
-            BytesRefIterator iter = dict.getWordsIterator();
-            BytesRef spare;
-            while ((spare = iter.next()) != null) {
-                String word = spare.utf8ToString();
+                BytesRefIterator iter = dict.getWordsIterator();
+                BytesRef spare;
+                while ((spare = iter.next()) != null) {
+                    String word = spare.utf8ToString();
 
-                int len = word.length();
-                if (len < 3) {
-                    continue; // too short we bail but "too long" is fine...
+                    int len = word.length();
+                    if (len < 3 || this.exist(word, langCode, site)) {
+                        // if len is too short or the word already exist in the ram index skip it
+                        continue;
+                    }
+
+                    // ok index the word
+                    Document doc = createDocument(word, getMin(len), getMax(len), site, langCode);
+                    writer.addDocument(doc);
                 }
-
-                if (this.exist(word, langCode, site)) { // if the word already exist in
-                    // the gramindex
-                    continue;
-                }
-
-                // ok index the word
-                Document doc = createDocument(word, getMin(len), getMax(len), site, langCode);
-                writer.addDocument(doc);
+                // No need to optimize anymore as it has been deprecated
+                // Lucene's multi-segment search performance has improved over time, and the default TieredMergePolicy now targets segments with deletions.
+                writer.close();
+                // also re-open the spell index to see our own changes when the next suggestion is fetched:
+                swapSearcher(dir);
             }
-            // close writer
-            writer.optimize();
-            writer.close();
-            // also re-open the spell index to see our own changes when the next suggestion
-            // is fetched:
-            swapSearcher(dir);
         }
     }
 
@@ -626,7 +644,7 @@ public class JahiaExtendedSpellChecker implements java.io.Closeable {
        */
       // for testing purposes
       IndexSearcher createSearcher(final Directory dir) throws IOException{
-        return new IndexSearcher(dir, true);
+        return new IndexSearcher(IndexReader.open(dir));
       }
       
       /**

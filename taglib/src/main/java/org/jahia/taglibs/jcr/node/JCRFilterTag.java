@@ -118,7 +118,7 @@ public class JCRFilterTag extends AbstractJCRTag {
             if (StringUtils.isNotEmpty(properties) && node != null) {
                 final JSONObject jsonObject = new JSONObject(properties);
                 final String uuid = (String) jsonObject.get("uuid");
-                if (uuid.equals(node.getIdentifier())) {
+                if (uuid.equals(node.getIdentifier()) && list != null) {
                     res = new ArrayList<>();
 
                     final String name = (String) jsonObject.get("name");
@@ -183,7 +183,7 @@ public class JCRFilterTag extends AbstractJCRTag {
             }
 
             // filter based on node types
-            if (StringUtils.isNotEmpty(types)) {
+            if (StringUtils.isNotEmpty(types) && (res != null || list != null)) {
                 if (res != null) {
                     list = new ArrayList<>(res);
                 }

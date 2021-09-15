@@ -280,9 +280,16 @@ Both arguments can be list, allowing to install multiple modules on multiple sit
 ### Add maven repository
 
 Add a maven repository in the maven pax-url configuration. The repository will be available when using a `mvn://` URL.
-
+Note that credentials must be escaped
 ```yaml
-- addMavenRepository: "https://user:xxx@devtools.jahia.com/nexus/content/groups/enterprise@id=jahia-enterprise@snapshots"
+- addMavenRepository: "https://user%40mail.org:xxx@devtools.jahia.com/nexus/content/groups/enterprise@id=jahia-enterprise@snapshots"
+```
+
+Unescaped credentials can be provided separately.
+```yaml
+- addMavenRepository: "https://devtools.jahia.com/nexus/content/groups/enterprise@id=jahia-enterprise@snapshots"
+  username: "user@mail.org"
+  password: "xxx"
 ```
 
 ### Features management

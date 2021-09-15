@@ -55,6 +55,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -67,6 +69,9 @@ import java.util.Set;
 public class AddMavenRepository implements Operation {
     private static final Logger logger = LoggerFactory.getLogger(AddMavenRepository.class);
     public static final String ADD_MAVEN_REPOSITORY = "addMavenRepository";
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
+    public static final String DELIMITER = "//";
     private OsgiConfigService configService;
 
     @Reference
@@ -85,12 +90,28 @@ public class AddMavenRepository implements Operation {
             Config settings = configService.getConfig("org.ops4j.pax.url.mvn");
             PropertiesValues values = settings.getValues();
             Set<String> vals = new LinkedHashSet<>(Arrays.asList(values.getProperty("org.ops4j.pax.url.mvn.repositories").split("[, ]+")));
-            if (vals.add((String) entry.get(ADD_MAVEN_REPOSITORY))) {
+            String url = buildMavenUrl(entry);
+            if (vals.add(url)) {
                 values.setProperty("org.ops4j.pax.url.mvn.repositories", StringUtils.join(vals, ", "));
                 configService.storeConfig(settings);
             }
         } catch (IOException e) {
             logger.error("Cannot update configurations", e);
         }
+    }
+
+    private String buildMavenUrl(Map<String, Object> entry) throws UnsupportedEncodingException {
+        final String url = (String) entry.get(ADD_MAVEN_REPOSITORY);
+        String username = entry.get(USERNAME) != null ? URLEncoder.encode((String) entry.get(USERNAME), "UTF-8") : null;
+        int pos = StringUtils.indexOf(url, DELIMITER) + DELIMITER.length();
+        // Add credentials to url if:
+        // - username is set
+        // - url starts with http
+        // - "//" is part of the url
+        if (username != null && StringUtils.startsWith(url, "http") && pos > DELIMITER.length()) {
+            String password = entry.get(PASSWORD) != null ? URLEncoder.encode((String) entry.get(PASSWORD), "UTF-8") : "";
+            return  StringUtils.substring(url, 0, pos) + username + ":" + password + "@" + StringUtils.substring(url,  pos);
+        }
+        return url;
     }
 }

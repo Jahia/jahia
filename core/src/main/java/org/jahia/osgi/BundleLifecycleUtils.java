@@ -310,6 +310,38 @@ public final class BundleLifecycleUtils {
             boolean considerBundlesWithOptionalPackages) {
 
         logger.info("Requested refresh for the following {} bundle(s): {}", bundlesToRefresh.size(), bundlesToRefresh);
+        Collection<Bundle> fullBundleList = getBundles(bundlesToRefresh, considerFragments, considerBundlesWithOptionalPackages);
+
+        if (fullBundleList != bundlesToRefresh) {
+            // we collected some "dependencies"
+            logger.info("Triggering refresh for the following {} bundle(s): {}", fullBundleList.size(), fullBundleList);
+        }
+
+        // perform the refresh
+        refreshBundles(fullBundleList);
+    }
+
+    /**
+     * Refreshes the bundle dependencies
+     *
+     * @param bundle the bundle to refresh
+     */
+    public static void refreshBundleDependencies(Bundle bundle) {
+        logger.info("Requested refresh for the dependencies of  {}", bundle);
+        Collection<Bundle> fullBundleList = getBundles(Collections.singleton(bundle), true, true);
+
+        if (fullBundleList.size() > 1) {
+            fullBundleList.remove(bundle);
+
+            // we collected some "dependencies"
+            logger.info("Triggering refresh for the following {} bundle(s): {}", fullBundleList.size(), fullBundleList);
+
+            // perform the refresh
+            refreshBundles(fullBundleList);
+        }
+    }
+
+    private static Collection<Bundle> getBundles(Collection<Bundle> bundlesToRefresh, boolean considerFragments, boolean considerBundlesWithOptionalPackages) {
         Collection<Bundle> fullBundleList = bundlesToRefresh;
         if (considerFragments) {
             Set<Bundle> fragments = findFragmentsForBundles(bundlesToRefresh);
@@ -325,14 +357,7 @@ public final class BundleLifecycleUtils {
                 fullBundleList.addAll(bundlesWithOptionalPackages);
             }
         }
-
-        if (fullBundleList != bundlesToRefresh) {
-            // we collected some "dependencies"
-            logger.info("Triggering refresh for the following {} bundle(s): {}", fullBundleList.size(), fullBundleList);
-        }
-
-        // perform the refresh
-        refreshBundles(fullBundleList);
+        return fullBundleList;
     }
 
     /**
@@ -446,7 +471,7 @@ public final class BundleLifecycleUtils {
                 bundle.update();
 
                 // refresh the wirings
-                refreshBundle(bundle);
+                refreshBundleDependencies(bundle);
 
                 // start manually
                 bundle.start();

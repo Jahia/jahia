@@ -816,8 +816,19 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
             if (node.isNodeType(Constants.JAHIAMIX_SYSTEMNODE)) {
                 return false;
             }
-            String query = "SELECT * FROM [jnt:ace] as ace where ace.[j:principal]='u:" + JCRContentUtils.sqlEncode(node.getName()) + "'";
-            Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
+
+            // Site of origin for the user, if the user is from /users this will be an empty string
+            String site = StringUtils.substringBefore(StringUtils.substringAfter(userPath, "/sites/"), "/");
+            StringBuilder sb = new StringBuilder("SELECT * FROM [jnt:ace] as ace where ");
+
+            // In the case user was created for specific site remove only aces which are under the site to prevent cross site issues
+            if (!"".equals(site)) {
+                sb.append(String.format("isdescendantnode(ace,'/sites/%s') and ", site));
+            }
+
+            sb.append(String.format("ace.[j:principal]='u:%s'", JCRContentUtils.sqlEncode(node.getName())));
+
+            Query q = session.getWorkspace().getQueryManager().createQuery(sb.toString(), Query.JCR_SQL2);
             QueryResult qr = q.execute();
             NodeIterator nodeIterator = qr.getNodes();
             while (nodeIterator.hasNext()) {

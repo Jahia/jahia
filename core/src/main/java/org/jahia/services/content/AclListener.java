@@ -89,7 +89,7 @@ public class AclListener extends DefaultEventListener {
 
     @Override
     public int getEventTypes() {
-        return Event.NODE_ADDED + Event.NODE_REMOVED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED +
+        return Event.NODE_ADDED + Event.NODE_REMOVED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED + Event.NODE_MOVED +
                 Event.PROPERTY_REMOVED;
     }
 
@@ -109,6 +109,14 @@ public class AclListener extends DefaultEventListener {
                 Event next = events.nextEvent();
                 if (next.getPath().contains("/j:acl/") || next.getPath().startsWith("/roles/")) {
                     aclEvents.add(next);
+                } else if (next.getType() == Event.NODE_MOVED && isCrossSiteMove(next.getInfo())) {
+                    JCRNodeWrapper node = session.getNode(next.getPath());
+                    NodeIterator descendantNodes = JCRContentUtils.getDescendantNodes(node, "jnt:ace");
+
+                    while (descendantNodes.hasNext()) {
+                        JCRNodeWrapper nextAce = (JCRNodeWrapper) descendantNodes.next();
+                        aclEvents.add(new CrossSiteACLRemoveNodeEvent(next, nextAce));
+                    }
                 }
             }
             if (aclEvents.isEmpty()) {
@@ -126,10 +134,11 @@ public class AclListener extends DefaultEventListener {
                     final Set<String> addedExtPermIds = new HashSet<String>();
                     final Set<List<String>> removedExtPermissions = new HashSet<List<String>>();
                     final Set<String> removedRoles = new HashSet<String>();
+                    final Set<String> crossSiteMovedAces = new HashSet<String>();
 
-                    parseEvents(systemSession, aclEvents, aceIdentifiers, addedAceIdentifiers, removedAcePaths, addedExtPermIds, removedExtPermissions, removedRoles);
+                    parseEvents(systemSession, aclEvents, aceIdentifiers, addedAceIdentifiers, removedAcePaths, addedExtPermIds, removedExtPermissions, removedRoles, crossSiteMovedAces);
 
-                    handleAclModifications(systemSession, aceIdentifiers, addedAceIdentifiers, removedAcePaths, (JCREventIterator) events);
+                    handleAclModifications(systemSession, aceIdentifiers, addedAceIdentifiers, removedAcePaths, crossSiteMovedAces, (JCREventIterator) events);
                     handleRoleModifications(systemSession, addedExtPermIds, removedExtPermissions);
 
                     if (removedRoles.size() > 0) {
@@ -150,7 +159,7 @@ public class AclListener extends DefaultEventListener {
         }
     }
 
-    private void parseEvents(JCRSessionWrapper systemSession, List<Event> aclEvents, Set<String> aceIdentifiers, Set<String> addedAceIdentifiers, Set<String> removedAcePaths, Set<String> addedExtPermIds, Set<List<String>> removedExtPermissions, Set<String> removedRoles) throws RepositoryException {
+    private void parseEvents(JCRSessionWrapper systemSession, List<Event> aclEvents, Set<String> aceIdentifiers, Set<String> addedAceIdentifiers, Set<String> removedAcePaths, Set<String> addedExtPermIds, Set<List<String>> removedExtPermissions, Set<String> removedRoles, Set<String> crossSiteMovedAces) throws RepositoryException {
         for (Event next : aclEvents) {
             if (next.getPath().contains("/j:acl/")) {
                 if (next.getType() == Event.PROPERTY_ADDED || next.getType() == Event.PROPERTY_CHANGED) {
@@ -175,6 +184,10 @@ public class AclListener extends DefaultEventListener {
                     String identifier = next.getIdentifier();
                     if (identifier != null) {
                         aceIdentifiers.add(identifier);
+                        // Identify ace as one which was removed on one site and added to another
+                        if (next instanceof CrossSiteACLRemoveNodeEvent) {
+                            crossSiteMovedAces.add(identifier);
+                        }
                     }
                     removedAcePaths.add(next.getPath());
                 }
@@ -200,7 +213,7 @@ public class AclListener extends DefaultEventListener {
         }
     }
 
-    private void handleAclModifications(final JCRSessionWrapper systemSession, Set<String> aceIdentifiers, final Set<String> addedAceIdentifiers, Set<String> removedAcePaths, final JCREventIterator events) throws RepositoryException {
+    private void handleAclModifications(final JCRSessionWrapper systemSession, Set<String> aceIdentifiers, final Set<String> addedAceIdentifiers, Set<String> removedAcePaths, Set<String> crossSiteMovedAces, final JCREventIterator events) throws RepositoryException {
 
         final Map<String, Set<String>> privilegedAdded = new HashMap<String, Set<String>>();
         final Map<String, Set<String>> privilegedToCheck = new HashMap<String, Set<String>>();
@@ -234,7 +247,9 @@ public class AclListener extends DefaultEventListener {
                 while (ni.hasNext()) {
                     JCRNodeWrapper n = (JCRNodeWrapper) ni.nextNode();
                     String role = n.getProperty("j:roles").getValues()[0].getString();
-                    if (!roles.contains(role)) {
+                    // When ace is moved cross site we still want to reset source values on external ace or remove the ace.
+                    // External ace will be recreated later if it is removed.
+                    if (!roles.contains(role) || crossSiteMovedAces.contains(aceIdentifier)) {
                         List<Value> newVals = new ArrayList<Value>();
                         for (Value value : n.getProperty("j:sourceAce").getValues()) {
                             if (!value.getString().equals(aceIdentifier)) {
@@ -629,5 +644,68 @@ public class AclListener extends DefaultEventListener {
             logger.debug(ace.getPath() + " / " + role + " ---> " + externalPermissions.getName() + " on " + path);
         }
         return session.getNode(path);
+    }
+
+    private boolean isCrossSiteMove(Map<String, String> eventInfo) {
+        String srcSite = StringUtils.substringBefore(StringUtils.substringAfter(eventInfo.get("srcAbsPath"), "/sites/"), "/");
+        String destSite = StringUtils.substringBefore(StringUtils.substringAfter(eventInfo.get("destAbsPath"), "/sites/"), "/");
+        return !srcSite.equals(destSite);
+    }
+
+    private class CrossSiteACLRemoveNodeEvent implements Event {
+        private Event originalEvent;
+        private JCRNodeWrapper movedAce;
+
+        public CrossSiteACLRemoveNodeEvent(Event original, JCRNodeWrapper movedAce) {
+           this.originalEvent = original;
+           this.movedAce = movedAce;
+        }
+
+        @Override
+        public int getType() {
+            return Event.NODE_REMOVED;
+        }
+
+        @Override
+        public String getPath() throws RepositoryException {
+            String srcSite = getSrcSite();
+            String destSite = getDestSite();
+            return movedAce.getPath().replace(String.format("/%s/", destSite), String.format("/%s/", srcSite));
+        }
+
+        @Override
+        public String getUserID() {
+            return null;
+        }
+
+        @Override
+        public String getIdentifier() throws RepositoryException {
+            return movedAce.getIdentifier();
+        }
+
+        @Override
+        public Map getInfo() throws RepositoryException {
+            return null;
+        }
+
+        @Override
+        public String getUserData() throws RepositoryException {
+            return null;
+        }
+
+        @Override
+        public long getDate() throws RepositoryException {
+            return 0;
+        }
+
+        public String getSrcSite() throws RepositoryException {
+            Map<String, String> eventInfo = originalEvent.getInfo();
+            return StringUtils.substringBefore(StringUtils.substringAfterLast(eventInfo.get("srcAbsPath"), "/sites/"), "/");
+        }
+
+        public String getDestSite() throws RepositoryException {
+            Map<String, String> eventInfo = originalEvent.getInfo();
+            return StringUtils.substringBefore(StringUtils.substringAfterLast(eventInfo.get("destAbsPath"), "/sites/"), "/");
+        }
     }
 }

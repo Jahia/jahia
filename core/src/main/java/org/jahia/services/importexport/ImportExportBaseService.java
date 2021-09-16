@@ -2210,6 +2210,45 @@ public final class ImportExportBaseService extends JahiaService implements Impor
      * @throws IOException
      */
     public File getFileList(Resource file, Map<String, Long> sizes, List<String> fileList, boolean forceClean) throws IOException {
+        File expandedFolder = getExpandedFolder(file, forceClean);
+        ZipInputStream zis = getZipInputStream(file);
+        try {
+            while (true) {
+                ZipEntry zipentry = zis.getNextEntry();
+                if (zipentry == null) {
+                    break;
+                }
+                String name = zipentry.getName().replace('\\', '/');
+                if (expandedFolder != null) {
+                    expandZipEntryInExpandedFolderTarget(expandedFolder, zis, zipentry, name);
+                }
+                storeFileSizeInSizesMap(sizes, zis, zipentry, name);
+                if (name.contains("/")) {
+                    fileList.add("/" + name);
+                }
+                zis.closeEntry();
+            }
+        } finally {
+            closeInputStream(zis);
+        }
+        return expandedFolder;
+    }
+
+    private void storeFileSizeInSizesMap(Map<String, Long> sizes, ZipInputStream zis, ZipEntry zipentry, String name) throws IOException {
+        if (name.endsWith(".xml")) {
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(zis))) {
+                long i = 0;
+                while (br.readLine() != null) {
+                    i++;
+                }
+                sizes.put(name, i);
+            }
+        } else {
+            sizes.put(name, zipentry.getSize());
+        }
+    }
+
+    private File getExpandedFolder(Resource file, boolean forceClean) throws IOException {
         File expandedFolder = null;
         if (expandImportedFilesOnDisk) {
             final File expandFolder = getExpandFolder(file, expandImportedFilesOnDiskPath);
@@ -2221,52 +2260,29 @@ public final class ImportExportBaseService extends JahiaService implements Impor
                 expandedFolder = expandFolder;
             }
         }
-        ZipInputStream zis = getZipInputStream(file);
-        try {
-            while (true) {
-                ZipEntry zipentry = zis.getNextEntry();
-                if (zipentry == null) {
-                    break;
-                }
-                String name = zipentry.getName().replace('\\', '/');
-                if (expandedFolder != null) {
-                    final File importedFile = new File(expandedFolder + File.separator + name);
-                    if (zipentry.isDirectory()) {
-                        FileUtils.forceMkdir(importedFile);
-                    } else {
-                        long timer = System.currentTimeMillis();
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Expanding {} into {}", zipentry.getName(), importedFile);
-                        }
-                        FileUtils.forceMkdir(importedFile.getParentFile());
-                        try (final OutputStream output = new BufferedOutputStream(new FileOutputStream(importedFile), 1024 * 64)) {
-                            IOUtils.copyLarge(zis, output);
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("Expanded {} in {}", zipentry.getName(), DateUtils.formatDurationWords(System.currentTimeMillis() - timer));
-                            }
-                        }
-                    }
-                }
-                if (name.endsWith(".xml")) {
-                    try (BufferedReader br = new BufferedReader(new InputStreamReader(zis))) {
-                        long i = 0;
-                        while (br.readLine() != null) {
-                            i++;
-                        }
-                        sizes.put(name, i);
-                    }
-                } else {
-                    sizes.put(name, zipentry.getSize());
-                }
-                if (name.contains("/")) {
-                    fileList.add("/" + name);
-                }
-                zis.closeEntry();
-            }
-        } finally {
-            closeInputStream(zis);
-        }
         return expandedFolder;
+    }
+
+    private void expandZipEntryInExpandedFolderTarget(File expandedFolder, ZipInputStream zis, ZipEntry zipentry, String name) throws IOException {
+        final File importedFile = new File(expandedFolder + File.separator + name);
+        if (!importedFile.getCanonicalPath().startsWith(expandedFolder.getCanonicalPath() + File.separator)) {
+            throw new IOException("Zip entry is outside of the 'expandedFolder' directory. Potential Zip file attack averted.");
+        }
+        if (zipentry.isDirectory()) {
+            FileUtils.forceMkdir(importedFile);
+        } else {
+            long timer = System.currentTimeMillis();
+            if (logger.isDebugEnabled()) {
+                logger.debug("Expanding {} into {}", zipentry.getName(), importedFile);
+            }
+            FileUtils.forceMkdir(importedFile.getParentFile());
+            try (final OutputStream output = new BufferedOutputStream(new FileOutputStream(importedFile), 1024 * 64)) {
+                IOUtils.copyLarge(zis, output);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Expanded {} in {}", zipentry.getName(), DateUtils.formatDurationWords(System.currentTimeMillis() - timer));
+                }
+            }
+        }
     }
 
     public static File getExpandFolder(Resource file, String expandImportedFilesOnDiskPath) throws IOException {

@@ -43,7 +43,6 @@
  */
 package org.jahia.data.templates;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.utils.manifest.Clause;
 import org.apache.felix.utils.manifest.Parser;
@@ -55,6 +54,10 @@ import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.modulemanager.Constants;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
@@ -95,11 +98,11 @@ public class ModulesPackage {
 
     /**
      * Parses the corresponding manifest attribute and extracts package names.
-     * 
-     * @param module the module package to retrieve manifest attribute
+     *
+     * @param module        the module package to retrieve manifest attribute
      * @param attributeName the name of the manifest attribute to parse its value
      * @return the set of package names, parsed from the requested manifest attribute; an empty set is returned if no requested attribute is
-     *         found in manifest
+     * found in manifest
      */
     private static Collection<String> getPackageNames(PackagedModule module, String attributeName) {
         String attributeValue = module.getManifestAttributes().getValue(attributeName);
@@ -113,17 +116,6 @@ public class ModulesPackage {
         return packageNames;
     }
 
-    private static Set<String> parseDependencies(Attributes manifestAttributes) {
-        Set<String> dependencies = Collections.emptySet();
-        String dependsValue = manifestAttributes.getValue(Constants.ATTR_NAME_JAHIA_DEPENDS);
-        if (dependsValue != null && dependsValue.length() > 0) {
-            dependencies = new LinkedHashSet<>();
-            dependencies.addAll(Arrays.asList(StringUtils.split(dependsValue, ", ")));
-        }
-
-        return dependencies;
-    }
-
     protected static void sortByDependencies(Map<String, PackagedModule> modules) throws CycleDetectedException {
         if (modules.size() <= 1) {
             return;
@@ -132,7 +124,7 @@ public class ModulesPackage {
 
         // we build a Directed Acyclic Graph of dependencies (only those, which are present in the package)
         DAG dag = new DAG();
-        
+
         Map<String, String> exports = new HashMap<>();
         // collect the exported package names, exported by all provided modules
         for (PackagedModule module : modules.values()) {
@@ -143,6 +135,19 @@ public class ModulesPackage {
         }
 
         // iterate on all modules in the package
+        buildEdgeGraph(modules, dag, exports);
+
+        // use topological sort (Depth First Search) on the created graph
+        @SuppressWarnings("unchecked")
+        List<String> vertexes = TopologicalSorter.sort(dag);
+
+        modules.clear();
+        for (String vertex : vertexes) {
+            modules.put(vertex, copy.get(vertex));
+        }
+    }
+
+    private static void buildEdgeGraph(Map<String, PackagedModule> modules, DAG dag, Map<String, String> exports) throws CycleDetectedException {
         for (PackagedModule module : modules.values()) {
             String moduleName = module.getName();
             dag.addVertex(moduleName);
@@ -162,41 +167,24 @@ public class ModulesPackage {
                 }
             }
         }
-
-        // use topological sort (Depth First Search) on the created graph
-        @SuppressWarnings("unchecked")
-        List<String> vertexes = TopologicalSorter.sort(dag);
-
-        modules.clear();
-        for (String vertex : vertexes) {
-            modules.put(vertex, copy.get(vertex));
-        }
     }
 
     private ModulesPackage(JarFile jarFile) throws IOException {
-        modules = new LinkedHashMap<String, PackagedModule>();
+        modules = new LinkedHashMap<>();
         Attributes manifestAttributes = jarFile.getManifest().getMainAttributes();
         version = new Version(manifestAttributes.getValue(Constants.ATTR_NAME_JAHIA_PACKAGE_VERSION));
         name = manifestAttributes.getValue(Constants.ATTR_NAME_JAHIA_PACKAGE_NAME);
         description = manifestAttributes.getValue(Constants.ATTR_NAME_JAHIA_PACKAGE_DESCRIPTION);
         // read jars
         Enumeration<JarEntry> jars = jarFile.entries();
-
+        FileAttribute<Set<PosixFilePermission>> posixFileAttributes = PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwx------"));
+        File slipZipControlDirectory = Files.createTempDirectory("slipZip", posixFileAttributes).toFile();
         while (jars.hasMoreElements()) {
             JarEntry jar = jars.nextElement();
             JarFile moduleJarFile = null;
-            OutputStream output = null;
             if (StringUtils.endsWith(jar.getName(), ".jar")) {
-                try {
-                    InputStream input = jarFile.getInputStream(jar);
-                    File moduleFile = File.createTempFile(jar.getName(), "");
-                    output = new FileOutputStream(moduleFile);
-                    int read = 0;
-                    byte[] bytes = new byte[1024];
-
-                    while ((read = input.read(bytes)) != -1) {
-                        output.write(bytes, 0, read);
-                    }
+                try (InputStream input = jarFile.getInputStream(jar)) {
+                    File moduleFile = getModuleFile(slipZipControlDirectory, jar, input);
                     moduleJarFile = new JarFile(moduleFile);
                     Attributes moduleManifestAttributes = moduleJarFile.getManifest().getMainAttributes();
                     String bundleName = moduleManifestAttributes.getValue(Constants.ATTR_NAME_BUNDLE_SYMBOLIC_NAME);
@@ -205,7 +193,6 @@ public class ModulesPackage {
                     }
                     modules.put(bundleName, new PackagedModule(bundleName, moduleManifestAttributes, moduleFile));
                 } finally {
-                    IOUtils.closeQuietly(output);
                     if (moduleJarFile != null) {
                         moduleJarFile.close();
                     }
@@ -219,6 +206,24 @@ public class ModulesPackage {
         } catch (CycleDetectedException e) {
             throw new JahiaRuntimeException("A cyclic dependency detected in the modules of the supplied package", e);
         }
+    }
+
+    private File getModuleFile(File slipZipControlFile, JarEntry jar, InputStream input) throws IOException {
+        String canonicalSlipZipControlDirPath = slipZipControlFile.getCanonicalPath();
+        File moduleFile = new File(canonicalSlipZipControlDirPath, jar.getName());
+        if (!moduleFile.getCanonicalPath().startsWith(canonicalSlipZipControlDirPath + File.separator)) {
+            throw new IOException("Jar entry is outside of the target directory");
+        }
+        Files.deleteIfExists(moduleFile.toPath());
+        try (OutputStream output = new FileOutputStream(moduleFile)) {
+            int read = 0;
+            byte[] bytes = new byte[1024];
+
+            while ((read = input.read(bytes)) != -1) {
+                output.write(bytes, 0, read);
+            }
+        }
+        return moduleFile;
     }
 
     public String getName() {
@@ -264,6 +269,17 @@ public class ModulesPackage {
 
         public Set<String> getDepends() {
             return depends;
+        }
+
+        private static Set<String> parseDependencies(Attributes manifestAttributes) {
+            Set<String> dependencies = Collections.emptySet();
+            String dependsValue = manifestAttributes.getValue(Constants.ATTR_NAME_JAHIA_DEPENDS);
+            if (dependsValue != null && dependsValue.length() > 0) {
+                dependencies = new LinkedHashSet<>();
+                dependencies.addAll(Arrays.asList(StringUtils.split(dependsValue, ", ")));
+            }
+
+            return dependencies;
         }
     }
 }

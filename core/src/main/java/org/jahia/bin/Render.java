@@ -1023,6 +1023,11 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             case TokenChecker.INVALID_HIDDEN_FIELDS:
                 throw new AccessDeniedException();
             case TokenChecker.VALID_TOKEN:
+                if (req.getSession().getAttribute("formDatas") != null
+                        || req.getSession().getAttribute("formError") != null) {
+                    req.getSession().removeAttribute("formDatas");
+                    req.getSession().removeAttribute("formError");
+                }
                 action = new SystemAction() {
                     @Override
                     public ActionResult doExecuteAsSystem(HttpServletRequest req, RenderContext renderContext, JCRSessionWrapper systemSession, Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {

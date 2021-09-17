@@ -239,6 +239,10 @@ class BundleStarter {
                 }
             }
 
+            if (!toBeStarted.isEmpty()) {
+                startModules(toBeStarted, true);
+            }
+
             for (Bundle bundle : toBeUninstalled) {
                 try {
                     bundle.uninstall();
@@ -246,11 +250,6 @@ class BundleStarter {
                     logger.error("Cannot uninstall bundle", e);
                 }
             }
-
-            if (!toBeStarted.isEmpty()) {
-                startModules(toBeStarted, false);
-            }
-
         }
 
         // Migrations from versions < 7.3.1.1

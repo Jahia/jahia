@@ -246,7 +246,7 @@ public final class Patcher implements JahiaAfterInitializationService, Disposabl
         }
     }
 
-    private File getPatchesFolder() {
+    public File getPatchesFolder() {
         String varFolder = System.getProperty("jahiaVarDiskPath");
         if (varFolder == null) {
             varFolder = SettingsBean.getInstance() != null ? SettingsBean.getInstance().getJahiaVarDiskPath() : null;

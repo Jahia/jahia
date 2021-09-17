@@ -99,12 +99,14 @@
     </suppress> 
     <suppress>
         <notes><![CDATA[
-        file name: spring-*-3.1.1.RELEASE.jar - we package spring-*-3.2.18.RELEASE_OSGI.jar 
+        file name: spring-*-3.1.1.RELEASE.jar - we package newer spring 
         ]]></notes>
-        <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-.*@3\.1\.1.*$</packageUrl>
+        <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-.*@3\.1\.1.RELEASE$</packageUrl>
         <cpe>cpe:/a:pivotal_software:spring_framework</cpe>
         <cpe>cpe:/a:springsource:spring_framework</cpe>
         <cpe>cpe:/a:vmware:springsource_spring_framework</cpe>
+        <cpe>cpe:/a:vmware:spring_framework</cpe>
+        <vulnerabilityName regex="true">.*</vulnerabilityName>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -123,6 +125,7 @@
         <cve>CVE-2018-11802</cve>
         <cve>CVE-2018-1308</cve>
         <cve>CVE-2019-0193</cve>
+        <cve>CVE-2019-12401</cve>
         <cve>CVE-2020-13941</cve>
         <cve>CVE-2021-27905</cve>
         <cve>CVE-2021-29262</cve>
@@ -132,11 +135,35 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
+        file name: zookeeper-3.3.1.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.zookeeper/zookeeper@.*$</packageUrl>
+        <cpe>cpe:/a:apache:zookeeper</cpe>
+        <vulnerabilityName>CVE-2016-5017</vulnerabilityName>
+        <vulnerabilityName>CVE-2018-8012</vulnerabilityName>
+        <vulnerabilityName>CVE-2019-0201</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
         file name: log4j-1.2.16.jar - we use log4j-1.2.17.jar
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/.*log4j@1\.2\.16$</packageUrl>
         <cpe>cpe:/a:apache:log4j</cpe>
         <vulnerabilityName>CVE-2019-17571</vulnerabilityName>
         <vulnerabilityName>CVE-2020-9488</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: abdera-i18n-1.1.3.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.abdera/abdera\-i18n@.*$</packageUrl>
+        <cve>CVE-2020-7791</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: templates-intranet-2.0.0.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.jahia\.modules/templates\-intranet@.*$</packageUrl>
+        <cpe>cpe:/a:virtual_calendar:virtual_calendar</cpe>
     </suppress>
 </suppressions>

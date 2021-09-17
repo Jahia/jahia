@@ -649,6 +649,11 @@ public class AclListener extends DefaultEventListener {
     private boolean isCrossSiteMove(Map<String, String> eventInfo) {
         String srcSite = StringUtils.substringBefore(StringUtils.substringAfter(eventInfo.get("srcAbsPath"), "/sites/"), "/");
         String destSite = StringUtils.substringBefore(StringUtils.substringAfter(eventInfo.get("destAbsPath"), "/sites/"), "/");
+
+        if (srcSite == null || destSite == null) {
+            return false;
+        }
+
         return !srcSite.equals(destSite);
     }
 

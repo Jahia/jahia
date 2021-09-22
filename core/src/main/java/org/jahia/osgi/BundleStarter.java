@@ -134,13 +134,19 @@ class BundleStarter {
     }
 
     private static void startBundles(Map<Bundle, JahiaTemplatesPackage> toBeStarted, boolean useModuleManagerApi) {
-        logger.info("Will start {} bundle(s)", toBeStarted.size());
         Collection<Bundle> sortedBundles = getSortedModules(toBeStarted);
+        if(logger.isInfoEnabled()) {
+            StringJoiner joiner = new StringJoiner(",");
+            for (Bundle bundle : sortedBundles) {
+                joiner.add(bundle.getSymbolicName());
+            }
+            logger.info("Will start {} bundle(s) : {}", toBeStarted.size(), joiner);
+        }
 
         try {
             for (Bundle bundle : sortedBundles) {
                 try {
-                    logger.info("Triggering start for bundle {}/{}", bundle.getSymbolicName(), bundle.getVersion());
+                    logger.info("Triggering start for bundle {}/{}, state: {}", bundle.getSymbolicName(), bundle.getVersion(), BundleState.fromInt(bundle.getState()));
                     if (useModuleManagerApi) {
                         ModuleUtils.getModuleManager().start(BundleInfo.fromBundle(bundle).getKey(), null);
                     } else {
@@ -194,6 +200,7 @@ class BundleStarter {
      */
     void afterFileInstallStarted(List<Long> createdOnStartup) {
         if (!createdOnStartup.isEmpty()) {
+            logger.info("Handling bundles created on fileinstall startup");
             List<Bundle> toBeStarted = new LinkedList<>();
             List<Bundle> toBeUninstalled = new LinkedList<>();
 
@@ -239,9 +246,12 @@ class BundleStarter {
                 }
             }
 
-            if (!toBeStarted.isEmpty()) {
-                startModules(toBeStarted, true);
-            }
+            Collection<Bundle> toBeRefreshed = BundleLifecycleUtils.getBundlesDependencies(new HashSet<>(toBeUninstalled), true, true);
+            logger.info("Full list of to be refreshed bundles : {}", toBeRefreshed);
+            toBeRefreshed.removeAll(toBeUninstalled);
+            toBeUninstalled.sort((b1,b2) -> Boolean.compare(BundleUtils.isFragment(b1),BundleUtils.isFragment(b2)));
+
+            logger.info("Uninstall bundles : {}", toBeUninstalled);
 
             for (Bundle bundle : toBeUninstalled) {
                 try {
@@ -250,6 +260,20 @@ class BundleStarter {
                     logger.error("Cannot uninstall bundle", e);
                 }
             }
+
+            logger.info("Refreshing bundles : {}", toBeRefreshed);
+
+            if (!toBeRefreshed.isEmpty()) {
+                BundleLifecycleUtils.refreshBundles(toBeRefreshed);
+            }
+
+            logger.info("Start bundles : {}", toBeStarted);
+
+            if (!toBeStarted.isEmpty()) {
+                startModules(toBeStarted, false);
+            }
+
+            logger.info("Done processing fileinstall bundles");
         }
 
         // Migrations from versions < 7.3.1.1

@@ -180,12 +180,13 @@ public class ModuleFileInstallHandler implements CustomHandler {
 
     private void install(Artifact artifact) throws Exception {
         File path = artifact.getPath();
-        logger.info("Installing {}", path);
 
-        // If the listener is an installer, ask for an install
+        // If the listener is an installer, ask for an installer
         if (artifact.getListener() instanceof ArtifactInstaller) {
+            logger.info("Installing artifact {}", path);
             ((ArtifactInstaller) artifact.getListener()).install(path);
         } else if (artifact.getListener() instanceof ArtifactUrlTransformer) {
+            logger.info("Installing url transformed artifact {}", path);
             // if the listener is an url transformer
             URL transformed = artifact.getTransformedUrl();
             String location = transformed.toString();
@@ -198,6 +199,7 @@ public class ModuleFileInstallHandler implements CustomHandler {
             addLocationMapping(location, path);
 
         } else if (artifact.getListener() instanceof ArtifactTransformer) {
+            logger.info("Installing transformed artifact {}", path);
             // if the listener is an artifact transformer
             File transformed = artifact.getTransformed();
             String location = path.toURI().normalize().toString();
@@ -229,6 +231,7 @@ public class ModuleFileInstallHandler implements CustomHandler {
         logger.info("Processing FileInstall artifacts: {} created, {} modified, {} deleted",
                 new Object[] { created.size(), modified.size(), deleted.size() });
 
+        deleted.sort(Comparator.comparing(o -> o.getPath().getName()));
         for (Artifact artifact : deleted) {
             try {
                 uninstall(artifact);
@@ -237,6 +240,7 @@ public class ModuleFileInstallHandler implements CustomHandler {
             }
         }
 
+        modified.sort(Comparator.comparing(o -> o.getPath().getName()));
         for (Artifact artifact : modified) {
             try {
                 update(artifact);
@@ -249,16 +253,28 @@ public class ModuleFileInstallHandler implements CustomHandler {
         List<Artifact> restored = Collections.emptyList();
         if (!FrameworkService.getInstance().isStarted() && FrameworkService.getInstance().isFirstStartup()) {
             // When the framework is starting for the first time, we avoid calling install if the bundle corresponding
-            // to a create artifact is already installed to avoid excessive and non-necessary refreshes.
+            // to a created artifact is already installed to avoid excessive and non-necessary refreshes.
             // This would occur when bundles' states are restored on startup. In this situation the restored
-            // bundles have actually been re-installed before FileInstall kicks off. Thus we just need to
+            // bundles have actually been re-installed before FileInstall kicks off. Thus, we just need to
             // reconcile the artifact with the restored bundle to preserve FileInstall consistency.
             Map<Boolean, List<Artifact>> alreadyInstalled = created.stream().collect(Collectors.partitioningBy(a -> isAlreadyInstalled(a)));
             added = alreadyInstalled.get(false);
             restored = alreadyInstalled.get(true);
             logger.info("Processing FileInstall artifacts: {} to be upgraded", added.size());
+            if(logger.isInfoEnabled()) {
+                StringJoiner joiner = new StringJoiner(",");
+                for (Artifact bundle : added) {
+                    try {
+                        joiner.add(bundle.getPath().getCanonicalPath());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                logger.info("Upgrading  artifacts : {}", joiner);
+            }
         }
 
+        restored.sort(Comparator.comparing(o -> o.getPath().getName()));
         for (Artifact artifact : restored) {
             try {
                 reconcile(artifact);
@@ -267,6 +283,7 @@ public class ModuleFileInstallHandler implements CustomHandler {
             }
         }
 
+        added.sort(Comparator.comparing(o -> o.getPath().getName()));
         for (Artifact artifact : added) {
             try {
                 install(artifact);

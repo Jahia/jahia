@@ -279,7 +279,7 @@ public final class BundleLifecycleUtils {
      *
      * @param bundlesToRefresh the bundles to refresh
      */
-    private static void refreshBundles(Collection<Bundle> bundlesToRefresh) {
+    public static void refreshBundles(Collection<Bundle> bundlesToRefresh) {
 
         final CountDownLatch latch = new CountDownLatch(1);
 
@@ -310,7 +310,7 @@ public final class BundleLifecycleUtils {
             boolean considerBundlesWithOptionalPackages) {
 
         logger.info("Requested refresh for the following {} bundle(s): {}", bundlesToRefresh.size(), bundlesToRefresh);
-        Collection<Bundle> fullBundleList = getBundles(bundlesToRefresh, considerFragments, considerBundlesWithOptionalPackages);
+        Collection<Bundle> fullBundleList = getBundlesDependencies(bundlesToRefresh, considerFragments, considerBundlesWithOptionalPackages);
 
         if (fullBundleList != bundlesToRefresh) {
             // we collected some "dependencies"
@@ -328,7 +328,7 @@ public final class BundleLifecycleUtils {
      */
     public static void refreshBundleDependencies(Bundle bundle) {
         logger.info("Requested refresh for the dependencies of  {}", bundle);
-        Collection<Bundle> fullBundleList = getBundles(Collections.singleton(bundle), true, true);
+        Collection<Bundle> fullBundleList = getBundlesDependencies(Collections.singleton(bundle), true, true);
 
         if (fullBundleList.size() > 1) {
             fullBundleList.remove(bundle);
@@ -341,7 +341,7 @@ public final class BundleLifecycleUtils {
         }
     }
 
-    private static Collection<Bundle> getBundles(Collection<Bundle> bundlesToRefresh, boolean considerFragments, boolean considerBundlesWithOptionalPackages) {
+    public static Collection<Bundle> getBundlesDependencies(Collection<Bundle> bundlesToRefresh, boolean considerFragments, boolean considerBundlesWithOptionalPackages) {
         Collection<Bundle> fullBundleList = bundlesToRefresh;
         if (considerFragments) {
             Set<Bundle> fragments = findFragmentsForBundles(bundlesToRefresh);

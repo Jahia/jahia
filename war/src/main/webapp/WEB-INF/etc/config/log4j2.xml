@@ -116,6 +116,10 @@
         <Logger
             name="org.jahia.bundles.clustering.impl.BundleEventHandler"
             level="debug" />
+<!--    Logger AetherBasedResolver set in ERROR as the WARN is displaying some credentials    -->
+        <Logger
+            name="org.ops4j.pax.url.mvn.internal.AetherBasedResolver"
+            level="ERROR" />
         <Root level="info">
             <AppenderRef ref="RollingJahiaLog" />
             <AppenderRef ref="Console" />

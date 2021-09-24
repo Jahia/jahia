@@ -46,6 +46,7 @@ package org.jahia.bundles.provisioning.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.google.common.base.Joiner;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
@@ -146,10 +147,17 @@ public class ProvisioningManagerImpl implements ProvisioningManager {
     @Override
     public void executeScript(List<Map<String, Object>> script, ExecutionContext executionContext) {
         script.forEach(entry ->
-                operations.stream()
+        {
+            Optional<Operation> operation = operations.stream()
                         .filter(op -> op.canHandle(entry))
-                        .findFirst()
-                        .ifPresent(op -> op.perform(entry, executionContext)));
+                        .findFirst();
+            if (operation.isPresent()) {
+                operation.ifPresent(op -> op.perform(entry, executionContext));
+            } else {
+                logger.warn("Operation {} not found", Joiner.on(",").withKeyValueSeparator("=").useForNull("").join(entry));
+            }
+        }
+        );
     }
 
     @Override

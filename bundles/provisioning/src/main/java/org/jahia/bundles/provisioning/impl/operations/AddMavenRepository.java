@@ -43,10 +43,15 @@
  */
 package org.jahia.bundles.provisioning.impl.operations;
 
+import com.google.common.base.Joiner;
 import org.apache.commons.lang.StringUtils;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.xerces.impl.dv.util.Base64;
 import org.jahia.bundles.config.OsgiConfigService;
 import org.jahia.services.modulemanager.spi.Config;
 import org.jahia.services.modulemanager.util.PropertiesValues;
+import org.jahia.services.notification.HttpClientService;
 import org.jahia.services.provisioning.ExecutionContext;
 import org.jahia.services.provisioning.Operation;
 import org.osgi.service.component.annotations.Component;
@@ -54,8 +59,10 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -73,6 +80,12 @@ public class AddMavenRepository implements Operation {
     public static final String PASSWORD = "password";
     public static final String DELIMITER = "//";
     private OsgiConfigService configService;
+    private HttpClientService httpClientService;
+
+    @Reference
+    public void setHttpClientService(HttpClientService httpClientService) {
+        this.httpClientService = httpClientService;
+    }
 
     @Reference
     protected void setConfigService(OsgiConfigService configService) {
@@ -91,12 +104,32 @@ public class AddMavenRepository implements Operation {
             PropertiesValues values = settings.getValues();
             Set<String> vals = new LinkedHashSet<>(Arrays.asList(values.getProperty("org.ops4j.pax.url.mvn.repositories").split("[, ]+")));
             String url = buildMavenUrl(entry);
-            if (vals.add(url)) {
-                values.setProperty("org.ops4j.pax.url.mvn.repositories", StringUtils.join(vals, ", "));
-                configService.storeConfig(settings);
+            if (!vals.contains(url)) {
+                int checkUrl = getUrlResponseCode(url);
+                if (HttpServletResponse.SC_OK == checkUrl) {
+                    vals.add(url);
+                    values.setProperty("org.ops4j.pax.url.mvn.repositories", StringUtils.join(vals, ", "));
+                    configService.storeConfig(settings);
+                } else {
+                    logger.warn("Url not valid. Response code {}", checkUrl);
+                }
+            } else {
+                logger.warn("Added url already exists");
             }
-        } catch (IOException e) {
-            logger.error("Cannot update configurations", e);
+        } catch (Exception e) {
+            logger.error("Cannot update configurations because {}, set class in debug for more details", e.getMessage());
+            logger.debug("unable to register entry {}", Joiner.on(",").withKeyValueSeparator("=").useForNull("").join(entry), e);
+        }
+    }
+    // Check url validity
+    private int getUrlResponseCode(String url) throws IOException {
+        // Build url without userInfo
+        URI baseUri = URI.create(url);
+        String baseUrl = baseUri.getScheme() + "://" + baseUri.getHost() + (baseUri.getPort() > 0 ? (":" + baseUri.getPort()) : "") + StringUtils.substringBefore(baseUri.getPath(), "@");
+        HttpGet method = new HttpGet(baseUrl);
+        method.addHeader("Authorization", "Basic " + Base64.encode(baseUri.getUserInfo().getBytes()));
+        try (CloseableHttpResponse response = httpClientService.getHttpClient(baseUrl).execute(method)) {
+            return response.getCode();
         }
     }
 

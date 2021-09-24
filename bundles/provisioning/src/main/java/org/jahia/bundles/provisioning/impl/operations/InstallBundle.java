@@ -224,7 +224,8 @@ public class InstallBundle implements Operation {
             }
             results.add(result);
         } catch (Exception e) {
-            logger.error("Cannot install {}", bundleKey, e);
+            logger.error("Cannot install {}, check your maven URL / Credentials (Set class InstallBundle in debug for more info)", bundleKey);
+            logger.debug("Error while installing ", e);
         }
     }
 

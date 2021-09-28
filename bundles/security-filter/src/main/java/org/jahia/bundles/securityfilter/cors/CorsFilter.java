@@ -34,6 +34,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 
+import static org.jahia.bundles.securityfilter.core.ParserHelper.isSameOrigin;
+
 /**
  * <p>
  * A {@link Filter} that enable client-side cross-origin requests by
@@ -231,7 +233,7 @@ public final class CorsFilter extends AbstractServletFilter implements ManagedSe
      * Origin,Accept,X-Requested-With, Content-Type,
      * Access-Control-Request-Method, and Access-Control-Request-Headers.
      */
-    public static final String DEFAULT_ALLOWED_HTTP_HEADERS = "Origin,Accept,X-Requested-With,Content-Type," +
+    public static final String DEFAULT_ALLOWED_HTTP_HEADERS = "Authorization,Origin,Accept,X-Requested-With,Content-Type," +
             "Access-Control-Request-Method,Access-Control-Request-Headers,CSRFTOKEN";
 
     /**
@@ -750,17 +752,6 @@ public final class CorsFilter extends AbstractServletFilter implements ManagedSe
         return requestType;
     }
 
-    private boolean isSameOrigin(final HttpServletRequest request, final String origin) {
-        try {
-            if ((new URI(origin).getHost()).equals(request.getServerName())) {
-                return true;
-            }
-        } catch (URISyntaxException e) {
-            // Cannot parse URI
-        }
-        return false;
-    }
-
     /**
      * Checks if the Origin is allowed to make a CORS request.
      *
@@ -773,7 +764,7 @@ public final class CorsFilter extends AbstractServletFilter implements ManagedSe
             return true;
         }
 
-        if (isSameOrigin(request, origin)) {
+        if (isSameOrigin(request.getRequestURL().toString(), origin)) {
             return true;
         }
 
@@ -981,4 +972,5 @@ public final class CorsFilter extends AbstractServletFilter implements ManagedSe
          */
         INVALID_CORS
     }
+
 }

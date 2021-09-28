@@ -1,14 +1,13 @@
 package org.jahia.bundles.securityfilter.core.apply;
 
 import org.jahia.services.modulemanager.util.PropertiesValues;
-
 import javax.servlet.http.HttpServletRequest;
-import java.net.MalformedURLException;
-import java.net.URL;
+
+import static org.jahia.bundles.securityfilter.core.ParserHelper.isSameOrigin;
 
 public class AutoApplyByOrigin implements AutoApply {
 
-    private String origin;
+    private final String origin;
 
     public static AutoApply build(PropertiesValues values) {
         String origin = values.getProperty("origin");
@@ -34,16 +33,10 @@ public class AutoApplyByOrigin implements AutoApply {
             requestOrigin = request.getHeader("Referer");
         }
         if (requestOrigin != null) {
-            try {
-                String host = new URL(requestOrigin).getHost();
-                String originToCheck = (origin.equals("hosted") || origin.equals("same")) ? request.getServerName() : origin;
-                if (host.equals(originToCheck)) {
-                    return true;
-                }
-            } catch (MalformedURLException e) {
-                // Cannot parse URL
-            }
+            String originToCheck = (origin.equals("hosted") || origin.equals("same")) ? request.getRequestURL().toString() : origin;
+            return isSameOrigin(originToCheck, requestOrigin);
         }
+
         return false;
     }
 }

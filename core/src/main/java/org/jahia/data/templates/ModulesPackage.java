@@ -55,9 +55,6 @@ import org.jahia.services.modulemanager.Constants;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.attribute.FileAttribute;
-import java.nio.file.attribute.PosixFilePermission;
-import java.nio.file.attribute.PosixFilePermissions;
 import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
@@ -77,6 +74,7 @@ import java.util.jar.JarFile;
  * - Jahia-Required-Version : the required version of Jahia
  * - Jahia-Package-License : the required license to install this package
  */
+@SuppressWarnings("java:S899")
 public class ModulesPackage {
 
     private Map<String, PackagedModule> modules;
@@ -177,8 +175,15 @@ public class ModulesPackage {
         description = manifestAttributes.getValue(Constants.ATTR_NAME_JAHIA_PACKAGE_DESCRIPTION);
         // read jars
         Enumeration<JarEntry> jars = jarFile.entries();
-        FileAttribute<Set<PosixFilePermission>> posixFileAttributes = PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwx------"));
-        File slipZipControlDirectory = Files.createTempDirectory("slipZip", posixFileAttributes).toFile();
+        File slipZipControlDirectory = Files.createTempDirectory("slipZip").toFile();
+        //deny for all
+        slipZipControlDirectory.setReadable(false);
+        slipZipControlDirectory.setWritable(false);
+        slipZipControlDirectory.setExecutable(false);
+        // allow for owner only
+        slipZipControlDirectory.setExecutable(true, true);
+        slipZipControlDirectory.setWritable(true, true);
+        slipZipControlDirectory.setReadable(true, true);
         while (jars.hasMoreElements()) {
             JarEntry jar = jars.nextElement();
             JarFile moduleJarFile = null;

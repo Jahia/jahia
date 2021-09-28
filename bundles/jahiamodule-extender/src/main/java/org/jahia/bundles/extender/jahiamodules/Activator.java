@@ -162,7 +162,7 @@ public class Activator implements BundleActivator {
     private TemplatePackageRegistry templatePackageRegistry;
     private TemplatePackageDeployer templatePackageDeployer;
     private ExtensionObserverRegistry startExtensionObservers;
-    private ExtensionObserverRegistry resolveExtensionObservers;
+    private RulesDSLBundleObserver rulesDSLBundleObserver;
     private BundleScriptEngineManager scriptEngineManager;
     private Map<String, List<Bundle>> toBeResolved;
     private Map<Bundle, ModuleState> moduleStates;
@@ -235,15 +235,11 @@ public class Activator implements BundleActivator {
 
         // extension observers used during start phase (unregistered is done in stop phase)
         startExtensionObservers = bundleScriptResolver.getObserverRegistry();
-        // extension observers used during resolve phase (unregistered is done in unresolved phase)
-        resolveExtensionObservers = bundleScriptResolver.getObserverRegistry();
 
-        // register rule observers
-        RulesBundleObserver rulesBundleObserver = new RulesBundleObserver();
         // DSL are registered during resolve state because other dependants module can use .dsl rules instructions from other modules.
-        resolveExtensionObservers.put(DSL_SCANNER, rulesBundleObserver);
+        rulesDSLBundleObserver = new RulesDSLBundleObserver();
         // DRL are registered and compile when module is started
-        startExtensionObservers.put(DRL_SCANNER, rulesBundleObserver);
+        startExtensionObservers.put(DRL_SCANNER, new RulesBundleObserver());
 
         // Get all module state information from the service
         registeredBundles = templatesService.getRegisteredBundles();
@@ -668,7 +664,8 @@ public class Activator implements BundleActivator {
             return;
         }
 
-        registerRules(bundle, pkg, resolveExtensionObservers);
+        // manually scan and perform observer for rules .dsl files
+        scanBundleAndPerformObserver(bundle, pkg, DSL_SCANNER, rulesDSLBundleObserver, false);
 
         logger.info("--- Done resolving DX OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
 
@@ -762,13 +759,8 @@ public class Activator implements BundleActivator {
     private synchronized void unresolve(Bundle bundle) {
         setModuleState(bundle, ModuleState.State.INSTALLED, null);
 
-        // scan for resource and call observers
-        for (Map.Entry<BundleURLScanner, BundleObserver<URL>> scannerAndObserver : resolveExtensionObservers.entrySet()) {
-            List<URL> foundURLs = scannerAndObserver.getKey().scan(bundle);
-            if (!foundURLs.isEmpty()) {
-                scannerAndObserver.getValue().removingEntries(bundle, foundURLs);
-            }
-        }
+        // Unload .dsl rules files for bundle
+        rulesDSLBundleObserver.removingEntries(bundle, null);
 
         JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupByBundle(bundle);
         if (jahiaTemplatesPackage != null) {
@@ -837,7 +829,7 @@ public class Activator implements BundleActivator {
         templatesService.fireTemplatePackageRedeployedEvent(jahiaTemplatesPackage);
 
         // scan for resource and call observers
-        registerRules(bundle, jahiaTemplatesPackage, startExtensionObservers);
+        scanBundleAndPerformObservers(bundle, jahiaTemplatesPackage, startExtensionObservers);
         registerHttpResources(bundle);
 
         long totalTime = System.currentTimeMillis() - startTime;
@@ -888,28 +880,33 @@ public class Activator implements BundleActivator {
         flushOutputCachesForModule(jahiaTemplatesPackage);
     }
 
-    private void registerRules(Bundle bundle, JahiaTemplatesPackage jahiaTemplatesPackage, ExtensionObserverRegistry extensionObservers) {
+    private void scanBundleAndPerformObservers(Bundle bundle, JahiaTemplatesPackage jahiaTemplatesPackage, ExtensionObserverRegistry extensionObservers) {
         boolean hasSpringFile = hasSpringFile(bundle);
         for (final Map.Entry<BundleURLScanner, BundleObserver<URL>> scannerAndObserver : extensionObservers.entrySet()) {
-            final List<URL> foundURLs = scannerAndObserver.getKey().scan(bundle);
-            if (!foundURLs.isEmpty()) {
-                // rules may use Global objects from his own spring beans, so we delay the rules registration until the spring context is initialized
-                // to insure that potential global objects are available before rules executions
-                if (DRL_SCANNER.equals(scannerAndObserver.getKey()) && hasSpringFile) {
-                    logger.info("--- Rules registration for bundle {} has been delayed until its Spring context is initialized --", getDisplayName(bundle));
-                    jahiaTemplatesPackage.doExecuteAfterContextInitialized(context -> registerRules(bundle, jahiaTemplatesPackage, scannerAndObserver, foundURLs));
-                } else {
-                    registerRules(bundle, jahiaTemplatesPackage, scannerAndObserver, foundURLs);
-                }
+            scanBundleAndPerformObserver(bundle, jahiaTemplatesPackage, scannerAndObserver.getKey(), scannerAndObserver.getValue(),
+                    DRL_SCANNER.equals(scannerAndObserver.getKey()) && hasSpringFile);
+        }
+    }
+
+    private void scanBundleAndPerformObserver(Bundle bundle, JahiaTemplatesPackage jahiaTemplatesPackage, BundleURLScanner scanner,
+                                 BundleObserver<URL> observer, boolean postPoneObserverAfterSpringStart) {
+        final List<URL> foundURLs = scanner.scan(bundle);
+        if (!foundURLs.isEmpty()) {
+            // rules may use Global objects from his own spring beans, so we delay the rules registration until the spring context is initialized
+            // to insure that potential global objects are available before rules executions
+            if (postPoneObserverAfterSpringStart) {
+                logger.info("--- Rules registration for bundle {} has been delayed until its Spring context is initialized --", getDisplayName(bundle));
+                jahiaTemplatesPackage.doExecuteAfterContextInitialized(context -> performObserver(bundle, jahiaTemplatesPackage, observer, foundURLs));
+            } else {
+                performObserver(bundle, jahiaTemplatesPackage, observer, foundURLs);
             }
         }
     }
 
-    private void registerRules(final Bundle bundle, final JahiaTemplatesPackage jahiaTemplatesPackage,
-                               final Map.Entry<BundleURLScanner, BundleObserver<URL>> scannerAndObserver,
-                               final List<URL> foundURLs) {
+    private void performObserver(final Bundle bundle, final JahiaTemplatesPackage jahiaTemplatesPackage, BundleObserver<URL> observer,
+                                 final List<URL> foundURLs) {
         try {
-            scannerAndObserver.getValue().addingEntries(bundle, foundURLs);
+            observer.addingEntries(bundle, foundURLs);
         } catch (Exception e) {
             String bundleDisplayName = jahiaTemplatesPackage.getId() + " v" + jahiaTemplatesPackage.getVersion();
             logger.error("--- Error parsing rules for DX OSGi bundle " + bundleDisplayName, e);

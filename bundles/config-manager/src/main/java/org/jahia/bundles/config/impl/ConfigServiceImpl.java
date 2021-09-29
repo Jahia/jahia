@@ -104,7 +104,7 @@ public class ConfigServiceImpl implements OsgiConfigService, ConfigurationListen
     public void start() {
         File restoreConfigurations = new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "[persisted-configurations].dorestore");
         if (System.getProperty("restoreConfigurations") != null || restoreConfigurations.exists()) {
-            restoreConfigurationsFromJCR(Arrays.asList(ConfigType.MODULE_DEFAULT, ConfigType.USER));
+            restoreConfigurationsFromJCR(Arrays.asList(ConfigType.MODULE_DEFAULT, ConfigType.USER), false);
             if (restoreConfigurations.exists()) {
                 try {
                     Files.delete(restoreConfigurations.toPath());
@@ -241,6 +241,10 @@ public class ConfigServiceImpl implements OsgiConfigService, ConfigurationListen
 
     @Override
     public Collection<String> restoreConfigurationsFromJCR(Collection<ConfigType> types) {
+        return restoreConfigurationsFromJCR(types, true);
+    }
+
+    public Collection<String> restoreConfigurationsFromJCR(Collection<ConfigType> types, boolean removeUnused) {
         try {
             File folder = new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "karaf/etc");
 
@@ -252,7 +256,9 @@ public class ConfigServiceImpl implements OsgiConfigService, ConfigurationListen
                         Map<String, ConfigType> all = getAllConfigurationTypes();
                         JCRNodeWrapper configsNode = moduleManagement.getNode(CONFIGS_NODE_NAME);
                         List<String> restored = restoreConfigurationsFromJCR(all, configsNode, types, folder);
-                        removeUnusedConfigurations(all, types, folder);
+                        if (removeUnused) {
+                            removeUnusedConfigurations(all, types, folder);
+                        }
                         return restored;
                     }
                     return Collections.emptySet();

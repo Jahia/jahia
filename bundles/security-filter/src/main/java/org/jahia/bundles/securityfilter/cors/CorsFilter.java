@@ -764,7 +764,7 @@ public final class CorsFilter extends AbstractServletFilter implements ManagedSe
             return true;
         }
 
-        if (isSameOrigin(request.getRequestURL().toString(), origin)) {
+        if (isSameOrigin(request, origin)) {
             return true;
         }
 

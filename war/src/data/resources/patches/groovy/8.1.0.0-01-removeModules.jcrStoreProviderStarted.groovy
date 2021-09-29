@@ -7,6 +7,6 @@ import org.jahia.services.modulemanager.persistence.jcr.BundleInfoJcrHelper;
 BundleInfoJcrHelper.storePersistentStates(
         BundleInfoJcrHelper.getPersistentStates()
                 .stream()
-                .filter { bpi -> !(bpi.getSymbolicName() in ["security-filter"]) }
+                .filter { bpi -> !(bpi.getSymbolicName() in ["security-filter", "webflow-filter"]) }
                 .collect(Collectors.toList())
 );

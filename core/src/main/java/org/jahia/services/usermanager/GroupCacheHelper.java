@@ -64,6 +64,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRUserNode;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -180,7 +181,7 @@ public class GroupCacheHelper {
             return internalGetMembershipByPath((String) key);
         }
 
-        private List<String> internalGetMembershipByPath(String principalPath) {
+        private Object internalGetMembershipByPath(String principalPath) {
             try {
                 JCRNodeWrapper principalNode = JCRSessionFactory.getInstance()
                         .getCurrentSystemSession(Constants.LIVE_WORKSPACE, null, null)
@@ -204,9 +205,14 @@ public class GroupCacheHelper {
                     }
                     populateSpecialGroups(groups, JahiaGroupManagerService.GUEST_GROUPPATH);
                 }
-
-                return new LinkedList<>(groups);
-
+                LinkedList<String> result = new LinkedList<>(groups);
+                if (!principalNode.getProvider().isDefault()) {
+                    Element e = new Element(principalPath, result);
+                    e.setTimeToLive(7200);
+                    return e;
+                } else {
+                    return result;
+                }
             } catch (PathNotFoundException e) {
                 // Non existing user/group
             } catch (RepositoryException e) {

@@ -1,0 +1,44 @@
+{
+  "a":"aa",
+  "b":"bb",
+  "nestedList":[
+    "a",
+    [
+      "a",
+      "b",
+      "c"
+    ],
+    {
+      "text": "aa",
+      "list": [
+        "a",
+        "b",
+        "c"
+      ],
+      "object": {
+        "a": "aa",
+        "b": "bb",
+        "c": "cc"
+      }
+    }
+  ],
+  "c":"cc",
+  "nestedObj":{
+    "text": "aa",
+    "list": [
+      "a",
+      "b",
+      "c"
+    ],
+    "object": {
+      "a": "aa",
+      "b": "bb",
+      "c": "cc"
+    }
+  },
+  "list":[
+    "a",
+    "b",
+    "c"
+  ]
+}

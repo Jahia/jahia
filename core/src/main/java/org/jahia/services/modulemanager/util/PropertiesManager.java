@@ -363,10 +363,19 @@ public class PropertiesManager {
             for (int index = 0; index < length; index++) {
                 Object value = array.get(index);
                 if (value instanceof JSONObject) {
+                    if (size == index) {
+                        addValues();
+                    }
                     getValues(index).updateFromJSON((JSONObject) value);
                 } else if (value instanceof JSONArray) {
+                    if (size == index) {
+                        addList();
+                    }
                     getList(index).updateFromJSON((JSONArray) value);
                 } else {
+                    if (size == index) {
+                        addValues();
+                    }
                     setProperty(index, value.toString());
                 }
             }

@@ -485,7 +485,9 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
                             if (userNode != null) {
                                 logger.debug("user {} is granted", userNode.getUserKey());
                                 JahiaUser jahiaUser = userNode.getJahiaUser();
-                                principals.add(jahiaUser);
+                                if (!principals.contains(jahiaUser)) {
+                                    principals.add(jahiaUser);
+                                }
                             }
                         } else if (principal.charAt(0) == 'g') {
                             JCRGroupNode group = groupService.lookupGroup(site.getSiteKey(),
@@ -495,7 +497,9 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
                             }
                             if (group != null) {
                                 logger.debug("group {} is granted", group.getGroupKey());
-                                principals.add(group.getJahiaGroup());
+                                if (!principals.contains(group.getJahiaGroup())) {
+                                    principals.add(group.getJahiaGroup());
+                                }
                             }
                         }
                     }

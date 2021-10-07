@@ -371,7 +371,7 @@ public class CopyPasteEngine {
         List<GWTJahiaNode> sources = getCopiedNodes();
         if (!sources.isEmpty()) {
             for (GWTJahiaNode source : sources) {
-                if (source.isReference()) {
+                if (source.isReference() || !source.isNodeType("jmix:droppableContent")) {
                     return false;
                 }
             }

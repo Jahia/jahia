@@ -11,6 +11,7 @@ import javax.jcr.RepositoryException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -74,15 +75,13 @@ public class NodeGrant implements Grant {
     }
 
     private boolean nodeTypeMatches(Node node) {
-        boolean includesMatch = nodeTypes.isEmpty() || (node != null && nodeTypes.stream().anyMatch(ThrowingPredicate.unchecked(node::isNodeType)));
-        boolean excludesMatch = excludesNodeTypes.isEmpty() || node == null || excludesNodeTypes.stream().noneMatch(ThrowingPredicate.unchecked(node::isNodeType));
-        return includesMatch && excludesMatch;
+        Predicate<String> predicate = ThrowingPredicate.unchecked(nt -> node != null && node.isNodeType(nt));
+        return Grant.anyMatch(nodeTypes, predicate) && Grant.noneMatch(excludesNodeTypes, predicate);
     }
 
     private boolean pathMatches(Node node) {
-        boolean includesMatch = pathPatterns.isEmpty() || (node != null && pathPatterns.stream().anyMatch(ThrowingPredicate.unchecked(pattern -> pattern.matcher(node.getPath()).matches())));
-        boolean excludesMatch = excludedPathPatterns.isEmpty() || node == null || excludedPathPatterns.stream().noneMatch(ThrowingPredicate.unchecked(pattern -> pattern.matcher(node.getPath()).matches()));
-        return includesMatch && excludesMatch;
+        Predicate<Pattern> predicate = ThrowingPredicate.unchecked(pattern -> node != null && pattern.matcher(node.getPath()).matches());
+        return Grant.anyMatch(pathPatterns, predicate) && Grant.noneMatch(excludedPathPatterns, predicate);
     }
 
     private boolean workspaceMatches(Node node) throws RepositoryException {

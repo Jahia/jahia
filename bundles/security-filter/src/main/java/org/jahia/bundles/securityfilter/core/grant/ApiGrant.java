@@ -6,6 +6,7 @@ import org.jahia.services.modulemanager.util.PropertiesValues;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * Check pattern on the requested API
@@ -34,8 +35,7 @@ public class ApiGrant implements Grant {
     @Override
     public boolean matches(Map<String, Object> query) {
         String apiToCheck = (String) query.get("api");
-        boolean includeMatch = apis.isEmpty() || (apiToCheck != null && apis.stream().anyMatch(api -> api.equals(apiToCheck) || apiToCheck.startsWith(api + ".")));
-        boolean excludeMatch = excludes.isEmpty() || apiToCheck == null || excludes.stream().noneMatch(api -> api.equals(apiToCheck) || apiToCheck.startsWith(api + "."));
-        return includeMatch && excludeMatch;
+        Predicate<String> predicate = api -> apiToCheck != null && (api.equals(apiToCheck) || apiToCheck.startsWith(api + "."));
+        return Grant.anyMatch(apis, predicate) && Grant.noneMatch(excludes, predicate);
     }
 }

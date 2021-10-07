@@ -61,19 +61,32 @@ public class ScopeDefinitionImpl implements ScopeDefinition {
     }
 
     public boolean shouldAutoApply(HttpServletRequest request) {
-        return apply.stream().anyMatch(a -> a.shouldApply(request));
+        for (AutoApply autoApply : apply) {
+            if (autoApply.shouldApply(request)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean isValid(HttpServletRequest request) {
-        return constraints.isEmpty() || constraints.stream().allMatch(c -> c.isValid(request));
+        for (Constraint constraint : constraints) {
+            if (!constraint.isValid(request)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public boolean isGrantAccess(Map<String, Object> query) {
-        boolean match = grants.stream().anyMatch(grant -> grant.matches(query));
-        if (match) {
-            logger.debug("Access granted for {} by scope {}", query, scopeName);
+        for (Grant grant : grants) {
+            if (grant.matches(query)) {
+                logger.debug("Access granted for {} by scope {} (grant {})", query, scopeName, grant);
+                return true;
+            }
         }
-        return match;
+        return false;
     }
 
 }

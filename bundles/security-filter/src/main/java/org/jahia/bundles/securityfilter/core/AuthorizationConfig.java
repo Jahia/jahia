@@ -134,7 +134,12 @@ public class AuthorizationConfig implements ManagedServiceFactory {
 
         @Override
         public boolean matches(Map<String, Object> query) {
-            return !grants.isEmpty() && grants.stream().allMatch(g -> g.matches(query));
+            for (Grant grant : grants) {
+                if (!grant.matches(query)) {
+                    return false;
+                }
+            }
+            return !grants.isEmpty();
         }
     }
 

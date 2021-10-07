@@ -1,12 +1,11 @@
 package org.jahia.bundles.securityfilter.core;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.felix.fileinstall.ArtifactInstaller;
 import org.jahia.api.settings.SettingsBean;
-import org.jahia.services.securityfilter.PermissionService;
-import org.jahia.services.securityfilter.ScopeDefinition;
 import org.jahia.bundles.securityfilter.legacy.PermissionsConfig;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.securityfilter.PermissionService;
+import org.jahia.services.securityfilter.ScopeDefinition;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -16,7 +15,10 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
-import java.io.*;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Writer;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -156,10 +158,10 @@ public class PermissionServiceImpl implements PermissionService, ManagedService 
         boolean hasLegacyPermission = false;
 
         if (!legacyMode || migrationReporting) {
-            hasPermission = authorizationConfig.getScopes().stream()
-                    .filter(currentScopes::contains)
-                    .anyMatch(p -> p.isGrantAccess(query));
-            logger.debug("Checking api permission {} with scopes {} : {}", query, currentScopes.stream().map(ScopeDefinition::getScopeName).collect(Collectors.toList()), debugResult(hasPermission));
+            hasPermission = hasPermission(query, currentScopes);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Checking api permission {} with scopes {} : {}", query, currentScopes.stream().map(ScopeDefinition::getScopeName).collect(Collectors.toList()), debugResult(hasPermission));
+            }
         }
 
         if (legacyMode || migrationReporting) {
@@ -180,6 +182,15 @@ public class PermissionServiceImpl implements PermissionService, ManagedService 
         } else {
             return hasLegacyPermission;
         }
+    }
+
+    private boolean hasPermission(Map<String, Object> query, Collection<ScopeDefinition> currentScopes) {
+        for (ScopeDefinitionImpl scope : authorizationConfig.getScopes()) {
+            if (currentScopes.contains(scope) && scope.isGrantAccess(query)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private String debugResult(boolean value) {

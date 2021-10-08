@@ -127,7 +127,9 @@ public class AddMavenRepository implements Operation {
         URI baseUri = URI.create(url);
         String baseUrl = baseUri.getScheme() + "://" + baseUri.getHost() + (baseUri.getPort() > 0 ? (":" + baseUri.getPort()) : "") + StringUtils.substringBefore(baseUri.getPath(), "@");
         HttpGet method = new HttpGet(baseUrl);
-        method.addHeader("Authorization", "Basic " + Base64.encode(baseUri.getUserInfo().getBytes()));
+        if (baseUri.getUserInfo() != null) {
+            method.addHeader("Authorization", "Basic " + Base64.encode(baseUri.getUserInfo().getBytes()));
+        }
         try (CloseableHttpResponse response = httpClientService.getHttpClient(baseUrl).execute(method)) {
             return response.getCode();
         }

@@ -28,6 +28,28 @@ public class ParserHelper {
         return isSameOrigin(request.getScheme(), request.getServerName(), request.getServerPort(), origin);
     }
 
+    public static boolean isSameOriginFromHeader(HttpServletRequest request, String origin) {
+        String requestOrigin = request.getHeader("Origin");
+        if (requestOrigin == null) {
+            // Get the referer in case origin is not available
+            requestOrigin = request.getHeader("Referer");
+            // find 3rd "/" in the request
+            int delimiterPos = StringUtils.ordinalIndexOf(requestOrigin, "/", 3);
+            if (delimiterPos > 0) {
+                requestOrigin = StringUtils.substring(requestOrigin, 0, delimiterPos);
+            }
+        }
+        if (requestOrigin != null) {
+            // In case of hosted or same, compare to the request
+            if (origin.equals("hosted") || origin.equals("same")) {
+                return isSameOrigin(request, requestOrigin);
+            } else {
+                return isSameOrigin(origin, requestOrigin);
+            }
+        }
+        return false;
+    }
+
     public static boolean isSameOrigin(String originToCheck, String origin) {
         try {
             URL originURL = new URL(originToCheck);

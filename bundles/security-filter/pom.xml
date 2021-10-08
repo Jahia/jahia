@@ -116,6 +116,12 @@
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jahia.test</groupId>
+            <artifactId>core-test-framework</artifactId>
+            <version>8.1.0.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>

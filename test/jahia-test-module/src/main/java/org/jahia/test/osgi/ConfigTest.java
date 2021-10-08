@@ -51,6 +51,8 @@ import org.jahia.services.modulemanager.spi.ConfigService;
 import org.jahia.settings.SettingsBean;
 import org.junit.Test;
 import org.osgi.service.cm.ConfigurationAdmin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,7 +63,7 @@ import java.util.Arrays;
 import static org.junit.Assert.*;
 
 public class ConfigTest {
-
+    private static final Logger logger = LoggerFactory.getLogger(ConfigTest.class);
     private ConfigurationAdmin configAdmin = BundleUtils.getOsgiService(ConfigurationAdmin.class, null);
     private ConfigService configService = BundleUtils.getOsgiService(ConfigService.class, null);
 
@@ -134,9 +136,9 @@ public class ConfigTest {
             try {
                 r = IOUtils.toString(getClass().getClassLoader().getResource("org/jahia/test/osgi/" + resource).openStream());
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.warn("Error getting resource", e);
             }
-            assertEquals(r,content);
+            assertEquals(r, content);
             return null;
         });
     }

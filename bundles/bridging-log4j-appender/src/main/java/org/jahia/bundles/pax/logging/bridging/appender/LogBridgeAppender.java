@@ -53,6 +53,8 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.jahia.osgi.LogBridge;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.slf4j.spi.MDCAdapter;
 
@@ -68,7 +70,8 @@ import java.util.Map;
  */
 @Plugin(name = "LogBridgeAppender", category = Node.CATEGORY, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class LogBridgeAppender extends AbstractAppender {
-
+    private static final Logger logger = LoggerFactory.getLogger(LogBridgeAppender.class);
+    
     MDCAdapter logBridgeAdapter = null;
 
     @PluginFactory
@@ -94,7 +97,7 @@ public class LogBridgeAppender extends AbstractAppender {
             mdcAdapterField.setAccessible(true);
             mdcAdapterField.set(null, logBridgeAdapter);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
+            logger.warn("Error initializing log bridge adapter", e);
         }
     }
 

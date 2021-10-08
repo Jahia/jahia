@@ -264,7 +264,7 @@ public class ModuleFileInstallHandler implements CustomHandler {
                     try {
                         joiner.add(bundle.getPath().getCanonicalPath());
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        logger.error("Error getting bundle path", e);
                     }
                 }
                 logger.info("Upgrading  artifacts : {}", joiner);

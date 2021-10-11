@@ -133,6 +133,13 @@ public class GWTController extends RemoteServiceServlet implements Controller,
         if (requireAuthenticatedUser
                 && JahiaUserManagerService.isGuest(JCRSessionFactory.getInstance().getCurrentUser())
                 || StringUtils.isNotEmpty(requiredPermission) && !isAllowed(request)) {
+            if (logger.isDebugEnabled()) {
+                JCRNodeWrapper targetNodeForPermissionCheck = getTargetNodeForPermissionCheck(request);
+                logger.debug("Access rejected to {}, authentication is required {} and user is {} or user is not allowed to access {} with permission {}",
+                        remoteServiceName, requireAuthenticatedUser,
+                        JahiaUserManagerService.isGuest(JCRSessionFactory.getInstance().getCurrentUser())?"guest":"not guest",
+                        targetNodeForPermissionCheck!=null?targetNodeForPermissionCheck.getPath():"no target node found for this request: "+request.getRequestURI(), requiredPermission);
+            }
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
             return null;
         }
@@ -185,10 +192,10 @@ public class GWTController extends RemoteServiceServlet implements Controller,
             if (debugEnabled) {
                 logger.debug(
                         "Checked permission for GWT service access and target node {} in {} ms."
-                                + " User {} is {}allowed to access it.",
-                        new Object[] { targetNode != null ? targetNode.getPath() : null,
-                                System.currentTimeMillis() - startTime, currentUser.getUsername(),
-                                allowed ? "" : "NOT " });
+                                + " User {} with session {} is {}allowed to access it.",
+                        targetNode != null ? targetNode.getPath() : null,
+                        System.currentTimeMillis() - startTime, currentUser.getUsername(),
+                        session != null ? session.getId() : "undefined", allowed ? "" : "NOT ");
             }
         } catch (ItemNotFoundException e) {
             // ignore
@@ -225,7 +232,7 @@ public class GWTController extends RemoteServiceServlet implements Controller,
         } catch (ItemNotFoundException e) {
             // no access
         } catch (RepositoryException e) {
-            logger.warn("Unble to find target JCR node for permission check", e);
+            logger.warn("Unable to find target JCR node for permission check", e);
         }
 
         return null;

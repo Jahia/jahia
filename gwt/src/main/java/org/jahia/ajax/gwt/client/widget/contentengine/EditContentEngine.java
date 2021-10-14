@@ -69,6 +69,7 @@ import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 import java.util.*;
 
@@ -146,8 +147,14 @@ public class EditContentEngine extends AbstractContentEngine {
     protected void initTabs() {
         // container ID, concatenated to each tab's ID
         tabs.setId("JahiaGxtEditEngineTabs");
+        MainModule.log("EditContentEngine.initTabs");
+
         for (GWTEngineTab resolvedTab : resolveTabs(hasOrderableChildNodes, config, node)) {
+            MainModule.log("EditContentEngine.initTabs Checking if tab " + resolvedTab.getId() + " should be displayed");
+
             if (jsConfig.isTabDisplayed(resolvedTab.getId())) {
+                MainModule.log("EditContentEngine.initTabs Tab is displayed: "+resolvedTab.getId());
+
                 AsyncTabItem tab = resolvedTab.getTabItem().create(resolvedTab, this);
 
                 if (jsConfig.hideHeaders()) {
@@ -164,9 +171,11 @@ public class EditContentEngine extends AbstractContentEngine {
         for (GWTEngineTab tabConfig : config.getEngineTabs()) {
             EditEngineTabItem tabItem = tabConfig.getTabItem();
             final boolean isAllowed = tabConfig.getRequiredPermission() == null || PermissionsUtils.isPermitted(tabConfig.getRequiredPermission(), JahiaGWTParameters.getSiteNode());
+            MainModule.log("EditContentEngine.resolveTabs : Is tab allowed: " + tabConfig.getId() + " : " + isAllowed);
             if (tabConfig.showInEngine() && isAllowed) {
                 if ((tabItem.getHideForTypes().isEmpty() || !node.isNodeType(tabItem.getHideForTypes())) &&
                         ((hasOrderableChildNodes && tabItem.isOrderableTab()) || (!tabItem.isOrderableTab() && (tabItem.getShowForTypes().isEmpty() || node.isNodeType(tabItem.getShowForTypes()))))) {
+                    MainModule.log("EditContentEngine.resolveTabs : Adding tab " + tabConfig.getId());
                     gwtEngineTabs.add(tabConfig);
                 }
             }

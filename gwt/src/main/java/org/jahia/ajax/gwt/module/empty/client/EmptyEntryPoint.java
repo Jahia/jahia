@@ -236,7 +236,6 @@ public class EmptyEntryPoint extends CommonEntryPoint {
             if (tabConfig.showInEngine() &&
                     (tabItem.getHideForTypes().isEmpty() || !node.isNodeType(tabItem.getHideForTypes())) &&
                     ((hasOrderableChildNodes && tabItem.isOrderableTab()) || (!tabItem.isOrderableTab() && (tabItem.getShowForTypes().isEmpty() || node.isNodeType(tabItem.getShowForTypes()))))) {
-                MainModule.log("EmptyEntryPoint.resolveEditTabs : tab [" + tabConfig.getId() + "] has been resolved");
                 gwtEngineTabs.add(tabConfig);
             }
         }

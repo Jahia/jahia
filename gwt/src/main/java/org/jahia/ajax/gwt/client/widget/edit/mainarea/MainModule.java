@@ -226,11 +226,6 @@ public class MainModule extends Module {
 
     boolean inframe = false;
 
-    public static void log(String s) {
-        consoleLog(s);
-        GWT.log(s);
-    }
-
     public boolean isInframe() {
         return inframe;
     }
@@ -605,7 +600,7 @@ public class MainModule extends Module {
 
     public static JavaScriptObject getEditTabs(String path, String uuid, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, boolean hasOrderableChildNodes) {
         GWTJahiaNode node = getGwtJahiaNode(uuid, path, displayName, nodeTypes, inheritedNodeTypes);
-        MainModule.log("MainModule.getEditTabs for " + path);
+
         JSONArray editTabs = new JSONArray();
         List<GWTEngineTab> gwtEngineTabs = EditContentEngine.resolveTabs(hasOrderableChildNodes, getInstance().getEditLinker().getConfig().getEngineConfiguration(node), node);
         for (int idx = 0; idx < gwtEngineTabs.size(); idx++) {
@@ -1929,9 +1924,5 @@ public class MainModule extends Module {
 
     public final native void scrollTo(IFrameElement iFrameElement, int x, int y) /*-{
         iFrameElement.contentWindow.scrollTo(x, y);
-    }-*/;
-
-    public static native void consoleLog(String message) /*-{
-        console.log(message);
     }-*/;
 }

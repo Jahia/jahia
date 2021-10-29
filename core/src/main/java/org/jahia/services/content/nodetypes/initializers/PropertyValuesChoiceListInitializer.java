@@ -43,17 +43,6 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
@@ -62,20 +51,29 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.PathNotFoundException;
+import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 /**
  * Choice list initializer that uses values of the specified node property (multiple).
- * 
+ *
  * @author Sergiy Shyrkov
- * 
  * @since Jahia 6.6.1.0
  */
 public class PropertyValuesChoiceListInitializer implements ChoiceListInitializer {
 
-    private static final Logger logger = LoggerFactory
-            .getLogger(PropertyValuesChoiceListInitializer.class);
+    private static final Logger logger = LoggerFactory.getLogger(PropertyValuesChoiceListInitializer.class);
 
-    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param,
-            List<ChoiceListValue> values, Locale locale, Map<String, Object> context) {
+    private static final String CONTEXT_NODE = "contextNode";
+
+    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values,
+            Locale locale, Map<String, Object> context) {
         if (param == null || !param.contains(";")) {
             throw new IllegalArgumentException(
                     "Parameter format is wrong. Expecting 'targetNode;targetProperty' or 'targetNode;targetProperty;valueType'");
@@ -83,68 +81,21 @@ public class PropertyValuesChoiceListInitializer implements ChoiceListInitialize
 
         List<ChoiceListValue> choices = null;
 
-        JCRNodeWrapper contextNode = context != null ? (JCRNodeWrapper) context.get("contextNode")
-                : null;
-
-        if (contextNode != null) {
+        if (context != null) {
+            JCRNodeWrapper contextNode = context.containsKey(CONTEXT_NODE) && context.get(CONTEXT_NODE) != null ?
+                    (JCRNodeWrapper) context.get(CONTEXT_NODE) :
+                    (JCRNodeWrapper) context.get("contextParent");
             try {
-                choices = getChoices(contextNode, param);
+                choices = contextNode != null ? getChoices(contextNode, param) : new LinkedList<>();
             } catch (RepositoryException e) {
                 logger.warn(e.getMessage(), e);
-            }
-        } else if (context.containsKey("contextParent")) {
-            String propertyName = context.containsKey("dependentProperties") ? ((List<String>) context
-                    .get("dependentProperties")).get(0) : null;
-            List<String> currentSelection = (List<String>) (propertyName != null
-                    && context.containsKey(propertyName) ? context.get(propertyName) : null);
-            if (currentSelection != null) {
-                try {
-                    choices = getChoices((JCRNodeWrapper) context.get("contextParent"),
-                            currentSelection, param);
-                } catch (RepositoryException e) {
-                    logger.warn(e.getMessage(), e);
-                }
-            }
-        }
-
-        return choices != null ? choices : new LinkedList<ChoiceListValue>();
-    }
-
-    private List<ChoiceListValue> getChoices(JCRNodeWrapper parentNode,
-            List<String> currentSelection, String param) throws RepositoryException {
-        String targetProperty = StringUtils.substringAfter(param, ";").trim();
-        boolean isReference = targetProperty.contains(";");
-        String valueType = isReference ? StringUtils.substringAfter(targetProperty, ";").trim()
-                : "uuid";
-
-        List<ChoiceListValue> choices = new LinkedList<ChoiceListValue>();
-        for (String selected : currentSelection) {
-            if (isReference) {
-                try {
-                    String listValue = null;
-                    JCRNodeWrapper referencedNode = parentNode.getSession().getNodeByIdentifier(
-                            selected);
-                    if ("name".equalsIgnoreCase(valueType)) {
-                        listValue = referencedNode.getName();
-                    } else if ("path".equalsIgnoreCase(valueType)) {
-                        listValue = referencedNode.getPath();
-                    } else {
-                        listValue = referencedNode.getIdentifier();
-                    }
-                    choices.add(new ChoiceListValue(referencedNode.getDisplayableName(), listValue));
-                } catch (ItemNotFoundException e) {
-                    logger.warn("Unable to find node by UUID {}. Skipping it.", selected);
-                }
-            } else {
-                choices.add(new ChoiceListValue(selected, selected));
             }
         }
 
         return choices;
     }
 
-    private List<ChoiceListValue> getChoices(JCRNodeWrapper contextNode, String param)
-            throws RepositoryException {
+    private List<ChoiceListValue> getChoices(JCRNodeWrapper contextNode, String param) throws RepositoryException {
         Value[] values = null;
 
         String targetNode = StringUtils.substringBefore(param, ";").trim();
@@ -162,8 +113,7 @@ public class PropertyValuesChoiceListInitializer implements ChoiceListInitialize
             try {
                 target = contextNode.getSession().getNode(targetNode);
             } catch (PathNotFoundException e) {
-                logger.warn("Node {} cannot be found. The choice list for the {} will be empty",
-                        targetNode, contextNode.getPath());
+                logger.warn("Node {} cannot be found. The choice list for the {} will be empty", targetNode, contextNode.getPath());
             }
         }
 
@@ -176,9 +126,8 @@ public class PropertyValuesChoiceListInitializer implements ChoiceListInitialize
         List<ChoiceListValue> choices = null;
 
         if (values != null && values.length > 0) {
-            choices = new LinkedList<ChoiceListValue>();
-            boolean isReference = prop.getType() == PropertyType.REFERENCE
-                    || prop.getType() == PropertyType.WEAKREFERENCE;
+            choices = new LinkedList<>();
+            boolean isReference = prop.getType() == PropertyType.REFERENCE || prop.getType() == PropertyType.WEAKREFERENCE;
             for (Value val : values) {
                 if (isReference) {
                     JCRNodeWrapper referencedNode = ((JCRValueWrapper) val).getNode();
@@ -193,8 +142,7 @@ public class PropertyValuesChoiceListInitializer implements ChoiceListInitialize
                         }
                         listValue = listValue == null ? referencedNode.getIdentifier() : listValue;
 
-                        choices.add(new ChoiceListValue(referencedNode.getDisplayableName(),
-                                listValue));
+                        choices.add(new ChoiceListValue(referencedNode.getDisplayableName(), listValue));
                     }
                 } else {
                     String listValue = val.getString();

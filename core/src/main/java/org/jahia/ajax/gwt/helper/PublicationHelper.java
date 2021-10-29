@@ -136,8 +136,7 @@ public class PublicationHelper {
     public Map<String, List<GWTJahiaPublicationInfo>> getFullPublicationInfosByLanguage(List<String> uuids, Set<String> languages,
                                                             JCRSessionWrapper currentUserSession, boolean allSubTree) throws GWTJahiaServiceException {
 
-        List<GWTJahiaPublicationInfo> all = getFullPublicationInfos(uuids, languages, currentUserSession, allSubTree,
-                false);
+        List<GWTJahiaPublicationInfo> all = getFullPublicationInfos(uuids, languages, currentUserSession, allSubTree, false, false);
 
         Map<String, List<GWTJahiaPublicationInfo>> res = new HashMap<String, List<GWTJahiaPublicationInfo>>();
 
@@ -153,13 +152,13 @@ public class PublicationHelper {
 
     public List<GWTJahiaPublicationInfo> getFullPublicationInfos(List<String> uuids, Set<String> languages,
                                                                  JCRSessionWrapper currentUserSession,
-                                                                 boolean allSubTree, boolean checkForUnpublication) throws GWTJahiaServiceException {
+                                                                 boolean allSubTree, boolean includeNotPublishable, boolean checkForUnpublication) throws GWTJahiaServiceException {
         try {
             Collection<ComplexPublicationService.FullPublicationInfo> infos;
             if (checkForUnpublication) {
                 infos = complexPublicationService.getFullUnpublicationInfos(uuids, languages, allSubTree, currentUserSession);
             } else {
-                infos = complexPublicationService.getFullPublicationInfos(uuids, languages, allSubTree, currentUserSession);
+                infos = complexPublicationService.getFullPublicationInfos(uuids, languages, allSubTree, includeNotPublishable, currentUserSession);
             }
 
             return convert(infos, currentUserSession);
@@ -183,6 +182,9 @@ public class PublicationHelper {
         gwtInfo.setPath(info.getNodePath());
         gwtInfo.setTitle(info.getNodeTitle());
         gwtInfo.setNodetype(info.getNodeType() != null ? info.getNodeType().getLabel(session.getLocale()) : "");
+        if (info.getNodeType().isNodeType("jnt:page")) {
+            gwtInfo.set("isPage", Boolean.TRUE);
+        }
         gwtInfo.setMainUUID(info.getPublicationRootNodeIdentifier());
         gwtInfo.setMainPath(info.getPublicationRootNodePath());
         gwtInfo.setMainPathIndex(info.getPublicationRootNodePathIndex());

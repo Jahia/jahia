@@ -50,7 +50,6 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.workflow.Workflow;
-import org.jahia.services.workflow.WorkflowProvider;
 import org.jahia.services.workflow.WorkflowRule;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.utils.LanguageCodeConverters;
@@ -65,9 +64,7 @@ import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import java.util.*;
 
-import static org.jahia.services.content.PublicationInfo.MANDATORY_LANGUAGE_VALID;
-import static org.jahia.services.content.PublicationInfo.NOT_PUBLISHED;
-import static org.jahia.services.content.PublicationInfo.UNPUBLISHED;
+import static org.jahia.services.content.PublicationInfo.*;
 
 /**
  * Service implementation that:
@@ -214,6 +211,10 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
 
     @Override
     public Collection<FullPublicationInfo> getFullPublicationInfos(Collection<String> nodeIdentifiers, Collection<String> languages, boolean allSubTree, JCRSessionWrapper sourceSession) {
+        return getFullPublicationInfos(nodeIdentifiers, languages, allSubTree, false, sourceSession);
+    }
+
+    public Collection<FullPublicationInfo> getFullPublicationInfos(Collection<String> nodeIdentifiers, Collection<String> languages, boolean allSubTree, boolean includeNotPublishable, JCRSessionWrapper sourceSession) {
         try {
             if (languages == null) {
                 languages = Collections.singletonList(null);
@@ -226,7 +227,7 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
                     publicationInfo.clearInternalAndPublishedReferences(nodeIdentifierList);
                 }
                 Collection<FullPublicationInfoImpl> infos = convert(publicationInfos, language, PUBLISH, sourceSession);
-                setWorkflowTitle(result, language, infos);
+                addItem(result, language, infos, includeNotPublishable);
             }
             return new ArrayList<>(result.values());
         } catch (RepositoryException e) {
@@ -234,12 +235,12 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
         }
     }
 
-    private void setWorkflowTitle(LinkedHashMap<String, FullPublicationInfo> result, String language, Collection<FullPublicationInfoImpl> infos) {
+    private void addItem(LinkedHashMap<String, FullPublicationInfo> result, String language, Collection<FullPublicationInfoImpl> infos, boolean includeNotPublishable) {
         String lastGroup = null;
         String lastTitle = null;
         Locale locale = language != null ? new Locale(language) : null;
         for (FullPublicationInfoImpl info : infos) {
-            if ((!info.isPublishable() && info.getPublicationStatus() != PublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE) || (info.getWorkflowDefinition() == null && !info.isAllowedToPublishWithoutWorkflow())) {
+            if ((!includeNotPublishable && !info.isPublishable() && info.getPublicationStatus() != PublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE) || (info.getWorkflowDefinition() == null && !info.isAllowedToPublishWithoutWorkflow())) {
                 continue;
             }
             result.put(language != null ? (language + "/" + info.getNodeIdentifier()) : info.getNodeIdentifier(), info);
@@ -339,7 +340,7 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
 
         FullPublicationInfoImpl info = new FullPublicationInfoImpl(node.getUuid(), node.getStatus());
         List<String> lockInfos = new ArrayList<>();
-        lastRule = checkRuleAndLocks(lastRule, node, workflowAction, session, info, lockInfos);
+        lastRule = checkRuleAndLocks(lastRule, node, workflowAction, session, info);
 
         info.setAllPublishedLanguagesInSubTree(getAllPublishedLanguagesInSubTree(node));
         info.setLanguage(language);
@@ -362,19 +363,12 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
 
         String translationNodePath = !node.getChildren().isEmpty() ? J_TRANSLATION_UNDERSCORE + language : null;
 
-        boolean isTranslated = false;
+        checkLockForLanguage(info, language);
+
         for (PublicationInfoNode childNode : node.getChildren()) {
-            if (childNode.getPath().contains(J_TRANSLATION)) {
-                isTranslated = true;
-            }
+            processChildNodes(allInfos, mainPaths, node, language, workflowAction, session, info, infosByNodePath, referenceUuids, translationNodePath, childNode);
         }
-        if (isTranslated) {
-            for (PublicationInfoNode childNode : node.getChildren()) {
-                processChildNodes(allInfos, mainPaths, node, language, workflowAction, session, info, infosByNodePath, referenceUuids, translationNodePath, childNode);
-            }
-        } else {
-            checkLockForLanguage(node, language, info, lockInfos);
-        }
+
         references.addAll(node.getReferences());
 
         for (PublicationInfo publicationInfo : node.getReferences()) {
@@ -394,7 +388,7 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
     }
 
     @Nullable
-    private WorkflowRule checkRuleAndLocks(WorkflowRule lastRule, PublicationInfoNode node, String workflowAction, JCRSessionWrapper session, FullPublicationInfoImpl info, List<String> lockInfos) {
+    private WorkflowRule checkRuleAndLocks(WorkflowRule lastRule, PublicationInfoNode node, String workflowAction, JCRSessionWrapper session, FullPublicationInfoImpl info) {
         try {
             JCRNodeWrapper jcrNode;
             if (node.getStatus() == PublicationInfo.DELETED) {
@@ -412,9 +406,16 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
             info.setNodeType(jcrNode.getPrimaryNodeType());
             info.setAllowedToPublishWithoutWorkflow(jcrNode.hasPermission(PUBLISH));
             info.setNonRootMarkedForDeletion(jcrNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION) && !jcrNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
-            Map<String, List<String>> locks = jcrNode.getLockInfos();
-            if (locks != null && locks.get(null) != null) {
-                lockInfos.addAll(locks.get(null));
+            if (jcrNode.hasProperty("j:processId")) {
+                JCRValueWrapper[] values = jcrNode.getProperty("j:processId").getValues();
+                for (JCRValueWrapper value : values) {
+                    String[] wf = StringUtils.split(value.getString(), ":");
+                    Workflow workflow = workflowService.getWorkflow(wf[0], wf[1], null);
+                    if (workflow != null && workflow.getWorkflowDefinition() != null &&
+                            (workflow.getWorkflowDefinition().getWorkflowType().equals("publish") || workflow.getWorkflowDefinition().getWorkflowType().equals("unpublish"))) {
+                        info.getOngoingProcessLanguages().add(workflow.getVariables().get("locale").toString());
+                    }
+                }
             }
         } catch (RepositoryException e) {
             logger.warn("Issue when reading workflow and delete status of node " + node.getPath(), e);
@@ -423,21 +424,9 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
         return lastRule;
     }
 
-    private void checkLockForLanguage(PublicationInfoNode node, String language, FullPublicationInfoImpl info, List<String> lockInfos) {
-        if (node.isLocked()) {
-            for (String lockInfo : lockInfos) {
-                lockInfo = StringUtils.split(lockInfo, ':')[0].trim();
-                if (lockInfo.startsWith("publication-process-")) {
-                    String id = StringUtils.substringAfter(lockInfo.trim(),"publication-process-");
-                    for (WorkflowProvider value : workflowService.getProviders().values()) {
-                        Workflow w = workflowService.getWorkflow(value.getKey(), id, null);
-                        String lang = w.getVariables().get("locale").toString();
-                        if (lang.equals(language)) {
-                            info.setLocked(true);
-                        }
-                    }
-                }
-            }
+    private void checkLockForLanguage(FullPublicationInfoImpl info, String language) {
+        if (info.getOngoingProcessLanguages().contains(language)) {
+            info.setLocked(true);
         }
     }
 
@@ -476,9 +465,6 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
             }
             if (lastInfo.getPublicationStatus() == UNPUBLISHED && childNode.getStatus() != UNPUBLISHED) {
                 lastInfo.setPublicationStatus(childNode.getStatus());
-            }
-            if (childNode.isLocked()) {
-                info.setLocked(true);
             }
             if (childNode.isWorkInProgress()) {
                 info.setWorkInProgress(true);
@@ -639,6 +625,7 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
         private boolean childOfWIPNode;
         private boolean allowedToPublishWithoutWorkflow;
         private boolean nonRootMarkedForDeletion;
+        private List<String> ongoingProcessLanguages = new ArrayList<>();
 
         public PublicationInfoSupport(int publicationStatus) {
             this.publicationStatus = publicationStatus;
@@ -690,6 +677,10 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
 
         public void setNonRootMarkedForDeletion(boolean nonRootMarkedForDeletion) {
             this.nonRootMarkedForDeletion = nonRootMarkedForDeletion;
+        }
+
+        public List<String> getOngoingProcessLanguages() {
+            return ongoingProcessLanguages;
         }
     }
 

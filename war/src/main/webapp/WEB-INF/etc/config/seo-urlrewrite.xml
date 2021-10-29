@@ -32,7 +32,7 @@
         <condition type="attribute" name="jahiaSkipInboundSeoRules" operator="notequal">^true$</condition>
         <condition type="attribute" name="jahiaSiteKeyForCurrentServerName" operator="notequal">^$</condition>
         <condition type="attribute" name="vanityUrlTargetPath" operator="equal">^$</condition>
-        <from>^/cms/([a-z]{2,3}(_[A-Z]{2})?)$</from>
+        <from>^/cms/(?!.*cms)([a-z]{2,3}(_[A-Z]{2})?)$</from>
         <to>/cms/$1/</to>
     </rule>
 
@@ -41,7 +41,7 @@
         <condition type="attribute" name="jahiaSkipInboundSeoRules" operator="notequal">^true$</condition>
         <condition type="attribute" name="siteDefaultLanguage" operator="notequal">^$</condition>
         <condition type="attribute" name="contextPath" operator="equal">^$</condition>
-        <condition type="request-uri" operator="notequal">^/(cms/)?[a-z]{2,3}(_[A-Z]{2})?/.*</condition>
+        <condition type="request-uri" operator="notequal">^/(cms/)?(?!.*cms)[a-z]{2,3}(_[A-Z]{2})?/.*</condition>
         <condition type="attribute" name="vanityUrlTargetPath" operator="equal">^$</condition>
         <from>^/cms/(.*)$</from>
         <to>/cms/%{attribute:siteDefaultLanguage}/$1</to>
@@ -52,7 +52,7 @@
         <condition type="attribute" name="jahiaSkipInboundSeoRules" operator="notequal">^true$</condition>
         <condition type="attribute" name="siteDefaultLanguage" operator="notequal">^$</condition>
         <condition type="attribute" name="contextPath" operator="notequal">^$</condition>
-        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)/(cms/)?[a-z]{2,3}(_[A-Z]{2})?/.*</condition>
+        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)/(cms/)?(?!.*cms)[a-z]{2,3}(_[A-Z]{2})?/.*</condition>
         <condition type="attribute" name="vanityUrlTargetPath" operator="equal">^$</condition>
         <from>^/cms/(.*)$</from>
         <to>/cms/%{attribute:siteDefaultLanguage}/$1</to>
@@ -64,10 +64,10 @@
         <condition type="attribute" name="jahiaSiteKeyForCurrentServerName" operator="notequal">^$</condition>
         <condition type="attribute" name="vanityUrlTargetPath" operator="equal">^$</condition>
         <condition type="attribute" name="contextPath" operator="equal">^$</condition>
-        <condition type="request-uri" operator="notequal">^/(cms/)?([a-z]{2,3}(_[A-Z]{2})?/)?mounts/.*</condition>
-        <condition type="request-uri" operator="notequal">^/(cms/)?([a-z]{2,3}(_[A-Z]{2})?/)?users/.*</condition>
-        <condition type="request-uri" operator="notequal">^/(cms/)?([a-z]{2,3}(_[A-Z]{2})?/)?modules/.*</condition>
-        <condition type="request-uri" operator="notequal">^/(cms/)?([a-z]{2,3}(_[A-Z]{2})?/)?sites/.*</condition>
+        <condition type="request-uri" operator="notequal">^/(cms/)?(?!.*cms)([a-z]{2,3}(_[A-Z]{2})?/)?mounts/.*</condition>
+        <condition type="request-uri" operator="notequal">^/(cms/)?(?!.*cms)([a-z]{2,3}(_[A-Z]{2})?/)?users/.*</condition>
+        <condition type="request-uri" operator="notequal">^/(cms/)?(?!.*cms)([a-z]{2,3}(_[A-Z]{2})?/)?modules/.*</condition>
+        <condition type="request-uri" operator="notequal">^/(cms/)?(?!.*cms)([a-z]{2,3}(_[A-Z]{2})?/)?sites/.*</condition>
         <from>^/cms/([a-z]{2,3}(_[A-Z]{2})?/)?(.*)$</from>
         <to>/cms/$1sites/%{attribute:jahiaSiteKeyForCurrentServerName}/$3</to>
     </rule>
@@ -78,10 +78,10 @@
         <condition type="attribute" name="jahiaSiteKeyForCurrentServerName" operator="notequal">^$</condition>
         <condition type="attribute" name="vanityUrlTargetPath" operator="equal">^$</condition>
         <condition type="attribute" name="contextPath" operator="notequal">^$</condition>
-        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/(cms/)?([a-z]{2,3}(_[A-Z]{2})?/)?mounts/.*</condition>
-        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/(cms/)?([a-z]{2,3}(_[A-Z]{2})?/)?users/.*</condition>
-        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/(cms/)?([a-z]{2,3}(_[A-Z]{2})?/)?modules/.*</condition>
-        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/(cms/)?([a-z]{2,3}(_[A-Z]{2})?/)?sites/.*</condition>
+        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/(cms/)?(?!.*cms)([a-z]{2,3}(_[A-Z]{2})?/)?mounts/.*</condition>
+        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/(cms/)?(?!.*cms)([a-z]{2,3}(_[A-Z]{2})?/)?users/.*</condition>
+        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/(cms/)?(?!.*cms)([a-z]{2,3}(_[A-Z]{2})?/)?modules/.*</condition>
+        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/(cms/)?(?!.*cms)([a-z]{2,3}(_[A-Z]{2})?/)?sites/.*</condition>
         <from>^/cms/([a-z]{2,3}(_[A-Z]{2})?/)?(.*)$</from>
         <to>/cms/$1sites/%{attribute:jahiaSiteKeyForCurrentServerName}/$3</to>
     </rule>

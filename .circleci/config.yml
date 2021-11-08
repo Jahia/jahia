@@ -196,7 +196,7 @@ workflows:
               only:
                 - master
                 - /feature-.*/
-                - /JAHIA-[0-9]-[0-9]-[0-9]-X-BRANCH/
+                - /JAHIA-[0-9]+-[X0-9]+-[X0-9]+-X-BRANCH/
       - build:
           name: Build Jahia
           is_pull_request: false

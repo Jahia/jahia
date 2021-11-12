@@ -249,6 +249,7 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
         return  !isLocked() &&
                 getStatus() > GWTJahiaPublicationInfo.PUBLISHED &&
                 getStatus() != GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE &&
+                getStatus() != GWTJahiaPublicationInfo.CONFLICT &&
                 getStatus() != GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID &&
                 !isWorkInProgress() && !isNonRootMarkedForDeletion();
     }

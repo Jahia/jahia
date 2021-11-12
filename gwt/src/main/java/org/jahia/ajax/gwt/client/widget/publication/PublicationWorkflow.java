@@ -587,49 +587,33 @@ public class PublicationWorkflow implements CustomWorkflow {
             }
 
             List<GWTJahiaPublicationInfo> toPublish = new ArrayList<>();
+            List<GWTJahiaPublicationInfo> unpublishable = new ArrayList<>();
             List<GWTJahiaPublicationInfo> locked = new ArrayList<>();
 
+            parseResults(result, toPublish, unpublishable, locked);
+            if (unpublishable.isEmpty()) {
+                if (toPublish.isEmpty()) {
+                    handleEmpty(locked);
+                } else {
+                    PublicationWorkflow.create(toPublish, linker, checkForUnpublication);
+                }
+            } else {
+                handleUnpublishable(toPublish, unpublishable);
+            }
+        }
+
+        private void parseResults(List<GWTJahiaPublicationInfo> result, List<GWTJahiaPublicationInfo> toPublish, List<GWTJahiaPublicationInfo> unpublishable, List<GWTJahiaPublicationInfo> locked) {
             for (GWTJahiaPublicationInfo info : result) {
+                Integer status = info.getStatus();
                 if (info.isPublishable() || (!info.isLocked() && info.isNonRootMarkedForDeletion()) || checkForUnpublication) {
                     toPublish.add(info);
+                }
+                if (status == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE || status == GWTJahiaPublicationInfo.CONFLICT) {
+                    unpublishable.add(info);
                 }
                 if (Boolean.TRUE.equals(info.isLocked())) {
                     locked.add(info);
                 }
-            }
-
-            if (toPublish.isEmpty()) {
-                handleEmpty(locked);
-            } else {
-                openWorkflow(result, toPublish);
-            }
-        }
-
-        private void openWorkflow(List<GWTJahiaPublicationInfo> result, List<GWTJahiaPublicationInfo> toPublish) {
-            List<GWTJahiaPublicationInfo> unpublishable = new ArrayList<>();
-            for (GWTJahiaPublicationInfo info : toPublish) {
-                Integer status = info.getStatus();
-                if (status == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE || status == GWTJahiaPublicationInfo.CONFLICT) {
-                    unpublishable.add(info);
-                }
-            }
-
-            toPublish.removeAll(unpublishable);
-
-            if (unpublishable.isEmpty()) {
-                PublicationWorkflow.create(toPublish, linker, checkForUnpublication);
-            } else {
-                StringBuilder message = new StringBuilder();
-
-                Map<Integer, List<String>> unpublishableMap = new HashMap<>();
-                for (GWTJahiaPublicationInfo info : unpublishable) {
-                    Integer status = info.getStatus();
-                    unpublishableMap.computeIfAbsent(status, ArrayList::new)
-                            .add("<span class=\"info-publication-label\"><strong>" + info.getTitle() + "</strong>" +
-                                    "</span><span class=\"info-publication-path\">(" + info.getPath() + ")</span>");
-                }
-
-                handleUnpublishable(result, toPublish, message, unpublishableMap);
             }
         }
 
@@ -649,7 +633,17 @@ public class PublicationWorkflow implements CustomWorkflow {
             }
         }
 
-        private void handleUnpublishable(List<GWTJahiaPublicationInfo> result, List<GWTJahiaPublicationInfo> toPublish, StringBuilder message, Map<Integer, List<String>> unpublishableMap) {
+        private void handleUnpublishable(List<GWTJahiaPublicationInfo> toPublish, List<GWTJahiaPublicationInfo> unpublishable) {
+            StringBuilder message = new StringBuilder();
+
+            Map<Integer, List<String>> unpublishableMap = new HashMap<>();
+            for (GWTJahiaPublicationInfo info : unpublishable) {
+                Integer status = info.getStatus();
+                unpublishableMap.computeIfAbsent(status, ArrayList::new)
+                        .add("<span class=\"info-publication-label\"><strong>" + info.getTitle() + "</strong>" +
+                                "</span><span class=\"info-publication-path\">(" + info.getPath() + ")</span>");
+            }
+
             for (Map.Entry<Integer, List<String>> entry : unpublishableMap.entrySet()) {
                 Integer status = entry.getKey();
 
@@ -677,7 +671,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                 message.append("<div class=\"info-publication-continue\">").append(Messages.get("message.continue")).append("</div>");
                 MessageBox.confirm(Messages.get(LABEL_PUBLISH, PUBLICATION), message.toString(), be -> {
                     if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.YES)) {
-                        PublicationWorkflow.create(result, linker, checkForUnpublication);
+                        PublicationWorkflow.create(toPublish, linker, checkForUnpublication);
                     }
                 });
             } else {

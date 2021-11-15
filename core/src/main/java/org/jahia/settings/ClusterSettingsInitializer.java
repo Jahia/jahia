@@ -99,6 +99,14 @@ public class ClusterSettingsInitializer {
         if (System.getProperty(CLUSTER_HAZELCAST_BIND_PORT) == null) {
             setSystemProperty(CLUSTER_HAZELCAST_BIND_PORT, settings.getString(CLUSTER_HAZELCAST_BIND_PORT, "7860"));
         }
+
+        if (System.getProperty("cluster.hazelcast.manager.enabled") == null) {
+            setSystemProperty("cluster.hazelcast.manager.enabled", settings.getString("cluster.hazelcast.manager.enabled", "false"));
+        }
+
+        if (System.getProperty("cluster.hazelcast.manager.url") == null) {
+            setSystemProperty("cluster.hazelcast.manager.url", settings.getString("cluster.hazelcast.manager.url", "http://localhost:8080/mancenter"));
+        }
     }
 
     @SuppressWarnings("deprecation")

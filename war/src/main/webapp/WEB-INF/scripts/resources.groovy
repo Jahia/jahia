@@ -61,7 +61,7 @@ renderContext.request.getAttribute("staticAssets").each { resource ->
                 break
             case "aggregatedjavascript":
                 if (type.getValue().size() > 0) {
-                    println "<script type=\"application/json\" id=\"jahia-data-aggregatedjs\">{\"scripts\":[" + type.value.collect { javascript -> '"' + javascript.key + '"' }.join(',') + "]}</script>"
+                    println "<script type=\"application/json\" id=\"jahia-data-aggregatedjs${targetTag == 'HEAD' ? '' : targetTag}\">{\"scripts\":[" + type.value.collect { javascript -> '"' + javascript.key + '"' }.join(',') + "]}</script>"
                 }
 
                 break

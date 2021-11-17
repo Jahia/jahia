@@ -104,8 +104,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 
     private static final String CACHE_TAG_START_1_NOSRC = "<!-- cache:include";
     private static final String CACHE_TAG_START_1 = CACHE_TAG_START_1_NOSRC + " src=\"";
-    private static final String CACHE_TAG_START_2 = "\" -->\n";
-    private static final String CACHE_TAG_END = "\n<!-- /cache:include -->";
+    private static final String CACHE_TAG_START_2 = "\" -->";
+    private static final String CACHE_TAG_END = "<!-- /cache:include -->";
     private static final String CACHE_ESI_TAG_START = "<jahia_esi:include src=\"";
     private static final String CACHE_ESI_TAG_END = "\"></jahia_esi:include>";
     private static final int CACHE_ESI_TAG_END_LENGTH = CACHE_ESI_TAG_END.length();
@@ -135,7 +135,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     protected ModuleCacheProvider cacheProvider;
     protected ModuleGeneratorQueue generatorQueue;
 
-    protected static final Pattern CLEANUP_REGEXP = Pattern.compile(CACHE_TAG_START_1 + "(.*)" + CACHE_TAG_START_2 + "|" + CACHE_TAG_END);
+    protected static final Pattern CLEANUP_REGEXP = Pattern.compile("<!-- [/]?cache:include [^>]*-->");
 
     // We use ConcurrentHashMap instead of Set since we absolutely need the thread safety of this implementation but we don't want reads to lock.
     // @todo when migrating to JDK 1.6 we can replacing this with Collections.newSetFromMap(Map m) calls.

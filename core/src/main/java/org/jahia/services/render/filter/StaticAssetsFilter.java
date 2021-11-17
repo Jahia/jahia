@@ -122,7 +122,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     private boolean forceLiveIEcompatiblity;
     private Set<String> aggregateSupportedMedias = new HashSet<>();
 
-    private static final Pattern CLEANUP_REGEXP = Pattern.compile("<!-- jahia:temp value=\".*?\" -->");
+    private static final Pattern CLEANUP_REGEXP = Pattern.compile("<!-- jahia:temp [^>]*-->");
 
     private static final FastHashMap RANK;
     static {

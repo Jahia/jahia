@@ -96,6 +96,44 @@
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.apache\.httpcomponents/httpclient@.*$</packageUrl>
         <cve>CVE-2020-13956</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: camel-core-2.25.2.jar (shaded: org.apache.camel:spi-annotations:2.25.2)
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.camel/spi\-annotations@.*$</packageUrl>
+        <cve>CVE-2020-11971</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: apache-log4j-extras-1.2.17.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/log4j/apache\-log4j\-extras@.*$</packageUrl>
+        <cve>CVE-2019-17571</cve>
+        <cve>CVE-2020-9488</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: log4j-1.2.17.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/log4j/log4j@.*$</packageUrl>
+        <cve>CVE-2019-17571</cve>
+        <cve>CVE-2020-9488</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: ognl-2.6.11.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/opensymphony/ognl@.*$</packageUrl>
+        <cve>CVE-2016-3093</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: pluto-*.jar 
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.portals\.pluto/pluto\-.*@.*$</packageUrl>
+        <cve>CVE-2020-15250</cve>
+        <cve>CVE-2021-29425</cve>
     </suppress> 
     <suppress>
         <notes><![CDATA[

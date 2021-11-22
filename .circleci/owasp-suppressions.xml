@@ -24,6 +24,8 @@
 	   <cve>CVE-2021-25329</cve>
        <cve>CVE-2021-30640</cve>
        <cve>CVE-2021-33037</cve>
+       <cve>CVE-2021-41079</cve>
+       <cve>CVE-2021-42340</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[

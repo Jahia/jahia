@@ -108,4 +108,18 @@
         <packageUrl regex="true">^pkg:maven/org\.apache\.abdera/abdera\-i18n@.*$</packageUrl>
         <cve>CVE-2020-7791</cve>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: camel-core-2.25.2.jar (shaded: org.apache.camel:spi-annotations:2.25.2)
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.camel/spi\-annotations@.*$</packageUrl>
+        <cve>CVE-2020-11971</cve>
+    </suppress>
+   <suppress>
+        <notes><![CDATA[
+        file name: pluto-util-2.0.2.jar 
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.portals\.pluto/pluto\-.*@.*$</packageUrl>
+        <cve>CVE-2021-29425</cve>
+    </suppress> 
 </suppressions>

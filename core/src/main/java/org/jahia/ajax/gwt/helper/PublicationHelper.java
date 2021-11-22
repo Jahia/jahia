@@ -152,6 +152,12 @@ public class PublicationHelper {
 
     public List<GWTJahiaPublicationInfo> getFullPublicationInfos(List<String> uuids, Set<String> languages,
                                                                  JCRSessionWrapper currentUserSession,
+                                                                 boolean allSubTree, boolean checkForUnpublication) throws GWTJahiaServiceException {
+        return getFullPublicationInfos(uuids, languages, currentUserSession, allSubTree, false, checkForUnpublication);
+    }
+
+    public List<GWTJahiaPublicationInfo> getFullPublicationInfos(List<String> uuids, Set<String> languages,
+                                                                 JCRSessionWrapper currentUserSession,
                                                                  boolean allSubTree, boolean includeNotPublishable, boolean checkForUnpublication) throws GWTJahiaServiceException {
         try {
             Collection<ComplexPublicationService.FullPublicationInfo> infos;

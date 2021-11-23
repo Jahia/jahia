@@ -49,9 +49,9 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.interceptor.URLInterceptor;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.utils.WebUtils;
+import org.jahia.utils.i18n.JahiaLocaleContextHolder;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
-import org.springframework.context.i18n.LocaleContextHolder;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.PathNotFoundException;
@@ -93,7 +93,9 @@ public class BaseURLReplacer implements URLReplacer {
             // Remove CMS context part
             Matcher m = urlInterceptor.getCmsPattern().matcher(pathPart);
             if (!m.matches()) {
-                throw new PropertyConstraintViolationException(node, Messages.getInternal("label.error.invalidlink", LocaleContextHolder.getLocale(), "Invalid link") + pathPart, definition.isInternationalized() ? locale : null,definition);
+                throw new PropertyConstraintViolationException(node, Messages.getInternal("label.error.invalidlink",
+                        JahiaLocaleContextHolder.getLocale(), "Invalid link") + pathPart, definition.isInternationalized() ? locale :
+                        null,definition);
             }
             pathPart = m.group(5);
             isCmsContext = true;
@@ -152,7 +154,10 @@ public class BaseURLReplacer implements URLReplacer {
                         value = URLInterceptor.DOC_CONTEXT_PLACEHOLDER + StringUtils.substringAfter(value, urlInterceptor.getDmsContext());
                     }
                 } catch (PathNotFoundException e) {
-                    throw new PropertyConstraintViolationException(node, Messages.getInternal("label.error.invalidlink", LocaleContextHolder.getLocale(), "Invalid link") + path, definition.isInternationalized() ? locale : null, definition);
+                    throw new PropertyConstraintViolationException(node, Messages.getInternal("label.error.invalidlink",
+                            JahiaLocaleContextHolder.getLocale(), "Invalid link") + path, definition.isInternationalized() ?
+                            locale : null,
+                            definition);
                 }
                 String id = reference.getIdentifier();
                 if (!newRefs.containsKey(id)) {

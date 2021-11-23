@@ -53,7 +53,9 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.utils.i18n.JahiaLocaleContextHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,20 +70,20 @@ import java.util.List;
 /**
  * Servlet filter that performs user authentication and the initialization of
  * the JCR session for current user.
- * 
+ *
  * @author Thomas Draier
  */
 public class JcrSessionFilter implements Filter {
     private static final Logger logger = LoggerFactory.getLogger(JcrSessionFilter.class);
-    
+
     private Pipeline authPipeline;
-    
+
     private List<String> bypassForPatterns;
 
     private JCRSessionFactory sessionFactory;
 
     private JahiaUserManagerService userManagerService;
-    
+
     public void destroy() {
     	// do nothing
     }
@@ -132,6 +134,9 @@ public class JcrSessionFilter implements Filter {
                     // an IllegalStateException might be raised by the setAttribute call if the session was
                     // invalidated, which is the expected behavior because we do want to interrupt the
                     // processing in that case.
+
+                    // Save locale to use it to translate correctly the error messages
+                    JahiaLocaleContextHolder.setLocale(UserPreferencesHelper.getPreferredLocale(userNode));
                 }
             }
 
@@ -178,9 +183,10 @@ public class JcrSessionFilter implements Filter {
         sessionFactory.closeAllSessions();
 
         ServicesRegistry.getInstance().getSchedulerService().triggerEndOfRequest();
+        JahiaLocaleContextHolder.resetLocale();
     }
-    
-    
+
+
 
     public void init(FilterConfig filterConfig) throws ServletException {
     	// do nothing;

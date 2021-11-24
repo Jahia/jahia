@@ -120,6 +120,7 @@
         file name: pluto-util-2.0.2.jar 
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.apache\.portals\.pluto/pluto\-.*@.*$</packageUrl>
+        <cve>CVE-2020-15250</cve>
         <cve>CVE-2021-29425</cve>
     </suppress> 
 </suppressions>

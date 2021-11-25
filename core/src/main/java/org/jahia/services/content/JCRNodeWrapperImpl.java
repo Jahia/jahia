@@ -2522,7 +2522,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             addLockTypeValue(objectNode, userID + ":" + type);
 
-            if (session.getLocale() != null && !isNodeType(Constants.JAHIANT_TRANSLATION)) {
+            if (!MARKED_FOR_DELETION_LOCK_TYPE.equals(type) && session.getLocale() != null && !isNodeType(Constants.JAHIANT_TRANSLATION)) {
                 Node trans = null;
                 try {
                     trans = getI18N(session.getLocale());

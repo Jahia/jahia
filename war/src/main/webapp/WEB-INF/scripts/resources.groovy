@@ -32,7 +32,7 @@ if (renderContext.mainResource.contextConfiguration == 'page' && targetTag == 'H
     }
     println "</script>"
 }
-println "<script type=\"text/javascript\" src=\"${contextPath}/javascript/initJahiaContext.js\"></script>";
+println "<script src=\"${contextPath}/javascript/initJahiaContext.js\"></script>";
 
 renderContext.request.getAttribute("staticAssets").each { resource ->
     resource.each { type ->
@@ -55,7 +55,7 @@ renderContext.request.getAttribute("staticAssets").each { resource ->
                     def defer = javascript.value != null ? javascript.value.get("defer") : null
                     if (condition != null) println("<!--[" + condition + "]>")
                     def url = renderContext.response.encodeURL(javascript.key)
-                    println "<script id=\"staticAssetJavascript${targetTag == 'HEAD' ? '' : targetTag}${i}\" type=\"text/javascript\" src=\"${url}\" ${async != null ? "async" : ""} ${defer != null ? "defer" : ""}></script>"
+                    println "<script id=\"staticAssetJavascript${targetTag == 'HEAD' ? '' : targetTag}${i}\" src=\"${url}\" ${async != null ? "async" : ""} ${defer != null ? "defer" : ""}></script>"
                     if (condition != null) println("<![endif]-->")
                 }
                 break

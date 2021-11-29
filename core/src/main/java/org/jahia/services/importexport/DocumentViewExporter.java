@@ -272,7 +272,7 @@ public class DocumentViewExporter {
                             localname = key.substring(key.indexOf(':') + 1);
                         }
 
-                        String attrName = ISO9075.encode(localname);
+                        String encodedLocalName = ISO9075.encode(localname);
 
                         String value;
                         if (!property.isMultiple()) {
@@ -300,9 +300,9 @@ public class DocumentViewExporter {
                         }
 
                         if (prefix == null) {
-                            atts.addAttribute("", localname, attrName, CDATA, value);
+                            atts.addAttribute("", encodedLocalName, encodedLocalName, CDATA, value);
                         } else {
-                            atts.addAttribute(prefixes.get(prefix), localname, prefix + ":" + attrName, CDATA, value);
+                            atts.addAttribute(prefixes.get(prefix), encodedLocalName, prefix + ":" + encodedLocalName, CDATA, value);
                         }
                     }
                 } catch (RepositoryException e) {

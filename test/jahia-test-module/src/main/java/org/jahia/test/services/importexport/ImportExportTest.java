@@ -64,12 +64,7 @@ import java.util.TreeMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import javax.jcr.ItemExistsException;
-import javax.jcr.NodeIterator;
-import javax.jcr.PropertyIterator;
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
+import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
@@ -414,6 +409,37 @@ public class ImportExportTest {
         
         testExportImportWithUGCComplexChanges();
     }
+
+    @Test
+    public void testExportWithEncodedAttribute() throws Exception {
+        try {
+            JCRTemplate.getInstance().doExecute(JCRSessionFactory.getInstance().getCurrentUser(), Constants.EDIT_WORKSPACE,
+                    LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
+                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            // Add usernode as it allows unstructured properties
+                            Node userNode = session.getRootNode().getNode(SITECONTENT_ROOT_NODE).addNode("testExportWithEncodedAttribute-userNode", "jnt:user");
+                            userNode.setProperty("jnt:3n", "test");
+                            userNode.setProperty("3n", "test");
+                            userNode.setProperty("_x0033_n", "test");
+                            session.save();
+                            exportImportAndCheck(session);
+                            return null;
+                        }
+                    });
+            // Add Content with properties starting with xml invalid characters but valid in JCR
+
+
+
+        } finally {
+            // Cleanup content
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+            if (session.nodeExists("/" + SITECONTENT_ROOT_NODE + "/testExportWithEncodedAttribute-userNode")) {
+                session.getNode("/" + SITECONTENT_ROOT_NODE + "/testExportWithEncodedAttribute-userNode").remove();
+                session.save();
+            }
+        }
+    }
+
 
     public void testExportImportWithUGCComplexChanges() throws Exception {
         JCRSessionFactory sf = JCRSessionFactory.getInstance();

@@ -50,17 +50,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -408,6 +399,167 @@ public class ImportExportTest {
         sf.closeAllSessions();
         
         testExportImportWithUGCComplexChanges();
+    }
+
+    @Test
+    public void testImportValidation() throws Exception {
+        JCRSessionFactory sf = JCRSessionFactory.getInstance();
+        sf.closeAllSessions();
+        JCRTemplate.getInstance().doExecute(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
+                LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        JCRNodeWrapper englishSiteRootNode = session.getNode("/" + SITECONTENT_ROOT_NODE);
+                        JCRSiteNode site = englishSiteRootNode.getResolveSite();
+                        ImportExportService importExport = ServicesRegistry.getInstance().getImportExportService();
+                        String prepackedZIPFile = SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites/acme.zip";
+                        String siteZIPName = "ACME.zip";
+                        File siteZIPFile = null;
+                        try {
+                            ZipInputStream zis = null;
+                            OutputStream os = null;
+                            try {
+                                zis = new ZipInputStream(new FileInputStream(new File(prepackedZIPFile)));
+                                ZipEntry z = null;
+                                while ((z = zis.getNextEntry()) != null) {
+                                    if (siteZIPName.equalsIgnoreCase(z.getName())) {
+                                        File zipFile = File.createTempFile("import", ".zip");
+                                        os = new FileOutputStream(zipFile);
+                                        byte[] buf = new byte[4096];
+                                        int r;
+                                        while ((r = zis.read(buf)) > 0) {
+                                            os.write(buf, 0, r);
+                                        }
+                                        os.close();
+
+                                        siteZIPFile = zipFile;
+                                    }
+                                }
+                            } catch (IOException e) {
+                                logger.error(e.getMessage(), e);
+                            } finally {
+                                if (os != null) {
+                                    try {
+                                        os.close();
+                                    } catch (IOException e) {
+                                        logger.error(e.getMessage(), e);
+                                    }
+                                }
+                                if (zis != null) {
+                                    try {
+                                        zis.close();
+                                    } catch (IOException e) {
+                                        logger.error(e.getMessage(), e);
+                                    }
+                                }
+                            }
+
+                            NoCloseZipInputStream noCloseZis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(
+                                    siteZIPFile)));
+                            try {
+                                while (true) {
+                                    ZipEntry zipentry = noCloseZis.getNextEntry();
+                                    if (zipentry == null)
+                                        break;
+                                    String name = zipentry.getName();
+                                    if (name.equals("repository.xml")) {
+                                        ValidationResults results = importExport.validateImportFile(session, noCloseZis, "application/xml",
+                                                site.getInstalledModules());
+                                        List<ValidationResult> valResults = results.getResults();
+                                        assertTrue("No validation errors found although there should be some", valResults.size() > 0);
+
+                                        for (ValidationResult result : valResults) {
+                                            if (!result.isSuccessful()) {
+                                                if (result instanceof MissingNodetypesValidationResult) {
+                                                    assertEquals("There should be 4 missing nodetypes", 4, ((MissingNodetypesValidationResult) result).getMissingNodetypes().size());
+                                                    assertEquals("There should be 1 missing mixin", 1, ((MissingNodetypesValidationResult) result).getMissingMixins().size());
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            } finally {
+                                noCloseZis.reallyClose();
+                            }
+                        } catch (IOException e) {
+                            logger.error(e.getMessage(), e);
+                        } finally {
+                            if (siteZIPFile != null) {
+                                siteZIPFile.delete();
+                            }
+                        }
+                        return null;
+                    }
+                });
+        sf.closeAllSessions();
+    }
+
+    @Test
+    public void testExportWithNonExportableContent() throws Exception {
+        JCRSessionFactory sf = JCRSessionFactory.getInstance();
+        AtomicReference<String> userPath = new AtomicReference<>("");
+        sf.closeAllSessions();
+        try {
+            JCRTemplate.getInstance().doExecute(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
+                    LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), session -> {
+                        // Delete user if any.
+                        Session jcrSession = session.getProviderSession((session).getNode("/").getProvider());
+                        deleteTestUser("external-user", session, jcrSession);
+                        // Create user and content.
+                        JCRUserNode user = JahiaUserManagerService.getInstance().createUser("external-user", "password", new Properties(), session);
+                        JCRNodeWrapper text = session.getRootNode().getNode(SITECONTENT_ROOT_NODE).addNode("text", "jnt:text");
+                        text.grantRoles("u:" + user.getName(), Collections.singleton("editor"));
+                        JCRNodeWrapper userText = user.addNode("text", "jnt:text");
+                        session.save();
+
+                        // create a reference from the user node into the site
+                        JCRNodeWrapper ref = session.getRootNode().getNode(SITECONTENT_ROOT_NODE).addNode("reference", "jnt:text");
+                        ref.addMixin("jmix:internalLink");
+                        ref.setProperty("j:linknode", userText);
+                        // Set user node as external
+                        Node jcrUserNode = jcrSession.getNode(user.getPath());
+                        userPath.set(jcrUserNode.getPath());
+                        jcrUserNode.addMixin("jmix:externalProviderExtension");
+                        jcrUserNode.setProperty("j:isExternalProviderRoot", false);
+                        jcrSession.save();
+                        return null;
+                    });
+            sf.closeAllSessions();
+            File createdZip = exportSite(TESTSITE_NAME);
+            assertNotNull("Export failed - see console log for detailed exception", createdZip);
+
+        } finally {
+            // clean up data
+            JCRTemplate.getInstance().doExecute(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
+                    LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), session -> {
+                        Session jcrSession = session.getProviderSession((session).getNode("/").getProvider());
+                        deleteTestUser("external-user", session, jcrSession);
+                        if (session.nodeExists("/" + SITECONTENT_ROOT_NODE + "/text")) {
+                            session.getNode("/" + SITECONTENT_ROOT_NODE + "/text").remove();
+                        }
+                        if (session.nodeExists("/" + SITECONTENT_ROOT_NODE + "/reference")) {
+                            session.getNode("/" + SITECONTENT_ROOT_NODE + "/reference").remove();
+                        }
+                        session.save();
+                        return null;
+                    });
+            sf.closeAllSessions();
+        }
+    }
+
+    private void deleteTestUser(String userName, JCRSessionWrapper session, Session jcrSession) throws RepositoryException {
+        if (JahiaUserManagerService.getInstance().userExists(userName)) {
+            JCRUserNode user = JahiaUserManagerService.getInstance().lookupUser(userName);
+            Node jcrUserNode = jcrSession.getNode(user.getPath());
+            if (jcrUserNode.isNodeType("jmix:externalProviderExtension")) {
+                jcrUserNode.removeMixin("jmix:externalProviderExtension");
+            }
+            if (jcrUserNode.hasProperty("j:isExternalProviderRoot")) {
+                jcrUserNode.getProperty("j:isExternalProviderRoot").remove();
+            }
+            jcrSession.save();
+            JahiaUserManagerService.getInstance().deleteUser(user.getPath(), session);
+            session.save();
+        }
     }
 
     @Test
@@ -1003,97 +1155,5 @@ public class ImportExportTest {
             }
         }
         return propsList.toArray(new String[propsList.size()]);
-    }
-    
-    @Test
-    public void testImportValidation() throws Exception {
-        JCRSessionFactory sf = JCRSessionFactory.getInstance();
-        sf.closeAllSessions();
-        JCRTemplate.getInstance().doExecute(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
-                LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
-                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        JCRNodeWrapper englishSiteRootNode = session.getNode("/" + SITECONTENT_ROOT_NODE);
-                        JCRSiteNode site = englishSiteRootNode.getResolveSite();
-                        ImportExportService importExport = ServicesRegistry.getInstance().getImportExportService();
-                        String prepackedZIPFile = SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites/acme.zip";
-                        String siteZIPName = "ACME.zip";
-                        File siteZIPFile = null;
-                        try {
-                            ZipInputStream zis = null;
-                            OutputStream os = null;
-                            try {
-                                zis = new ZipInputStream(new FileInputStream(new File(prepackedZIPFile)));
-                                ZipEntry z = null;
-                                while ((z = zis.getNextEntry()) != null) {
-                                    if (siteZIPName.equalsIgnoreCase(z.getName())) {
-                                        File zipFile = File.createTempFile("import", ".zip");
-                                        os = new FileOutputStream(zipFile);
-                                        byte[] buf = new byte[4096];
-                                        int r;
-                                        while ((r = zis.read(buf)) > 0) {
-                                            os.write(buf, 0, r);
-                                        }
-                                        os.close();
-
-                                        siteZIPFile = zipFile;
-                                    }
-                                }
-                            } catch (IOException e) {
-                                logger.error(e.getMessage(), e);
-                            } finally {
-                                if (os != null) {
-                                    try {
-                                        os.close();
-                                    } catch (IOException e) {
-                                        logger.error(e.getMessage(), e);
-                                    }
-                                }
-                                if (zis != null) {
-                                    try {
-                                        zis.close();
-                                    } catch (IOException e) {
-                                        logger.error(e.getMessage(), e);
-                                    }
-                                }
-                            }
-
-                            NoCloseZipInputStream noCloseZis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(
-                                    siteZIPFile)));
-                            try {
-                                while (true) {
-                                    ZipEntry zipentry = noCloseZis.getNextEntry();
-                                    if (zipentry == null)
-                                        break;
-                                    String name = zipentry.getName();
-                                    if (name.equals("repository.xml")) {
-                                        ValidationResults results = importExport.validateImportFile(session, noCloseZis, "application/xml",
-                                                site.getInstalledModules());
-                                        List<ValidationResult> valResults = results.getResults();
-                                        assertTrue("No validation errors found although there should be some", valResults.size() > 0);
-
-                                        for (ValidationResult result : valResults) {
-                                            if (!result.isSuccessful()) {
-                                                if (result instanceof MissingNodetypesValidationResult) {
-                                                    assertEquals("There should be 4 missing nodetypes", 4, ((MissingNodetypesValidationResult) result).getMissingNodetypes().size());
-                                                    assertEquals("There should be 1 missing mixin", 1, ((MissingNodetypesValidationResult) result).getMissingMixins().size());
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            } finally {
-                                noCloseZis.reallyClose();
-                            }
-                        } catch (IOException e) {
-                            logger.error(e.getMessage(), e);
-                        } finally {
-                            if (siteZIPFile != null) {
-                                siteZIPFile.delete();
-                            }
-                        }
-                        return null;
-                    }
-                });
-        sf.closeAllSessions();
     }
 }

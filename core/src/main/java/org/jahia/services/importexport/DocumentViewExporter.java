@@ -75,7 +75,6 @@ import java.util.regex.Pattern;
  * User: toto
  * Date: Dec 17, 2009
  * Time: 3:02:35 PM
- *
  */
 public class DocumentViewExporter {
     protected static final Logger logger = LoggerFactory.getLogger(DocumentViewExporter.class);
@@ -185,177 +184,183 @@ public class DocumentViewExporter {
     }
 
     private void exportNode(JCRNodeWrapper node) throws SAXException, RepositoryException {
-        if (!typesToIgnore.contains(node.getPrimaryNodeTypeName())) {
-            String path = "";
-            Node current = node;
-            while (!current.getPath().equals("/")) {
-                path = "/" + current.getName() + path;
-                current = current.getParent();
-            }
-            if (path.equals("")) {
-                path = "/";
-            }
-
-            if (!path.equals(rootNode.getPath())) {
-
-                String parentpath = path.substring(0, path.lastIndexOf('/'));
-
-                while (!stack.isEmpty() && !parentpath.startsWith(stack.peek()+"/") && !parentpath.equals(stack.peek())) {
-                    String end = stack.pop();
-                    if (stack.isEmpty()) {
-                        throw new RepositoryException("Node not in path : " + node.getPath());
-                    }
-                    String name = end.substring(end.lastIndexOf('/') + 1);
-                    String encodedName = ISO9075.encode(name);
-                    endElement(encodedName);
+        try {
+            if (!typesToIgnore.contains(node.getPrimaryNodeTypeName())) {
+                String path = "";
+                Node current = node;
+                while (!current.getPath().equals("/")) {
+                    path = "/" + current.getName() + path;
+                    current = current.getParent();
                 }
-                if (stack.isEmpty() && !node.getPath().equals(rootNode.getPath())) {
-                    String name = rootNode.getName();
-                    String encodedName = ISO9075.encode(name);
-                    AttributesImpl atts = new AttributesImpl();
-                    startElement(encodedName, atts);
-                    if (rootNode.getPath().equals("/")) {
-                        stack.push("");
+                if (path.equals("")) {
+                    path = "/";
+                }
+
+                if (!path.equals(rootNode.getPath())) {
+
+                    String parentpath = path.substring(0, path.lastIndexOf('/'));
+
+                    while (!stack.isEmpty() && !parentpath.startsWith(stack.peek() + "/") && !parentpath.equals(stack.peek())) {
+                        String end = stack.pop();
+                        if (stack.isEmpty()) {
+                            throw new RepositoryException("Node not in path : " + node.getPath());
+                        }
+                        String name = end.substring(end.lastIndexOf('/') + 1);
+                        String encodedName = ISO9075.encode(name);
+                        endElement(encodedName);
+                    }
+                    if (stack.isEmpty() && !node.getPath().equals(rootNode.getPath())) {
+                        String name = rootNode.getName();
+                        String encodedName = ISO9075.encode(name);
+                        AttributesImpl atts = new AttributesImpl();
+                        startElement(encodedName, atts);
+                        if (rootNode.getPath().equals("/")) {
+                            stack.push("");
+                        } else {
+                            stack.push(rootNode.getPath());
+                        }
+                    }
+
+                    while (!stack.isEmpty() && !stack.peek().equals(parentpath)) {
+                        String peek = stack.peek();
+                        String name = parentpath.substring(peek.length() + 1);
+                        if (name.contains("/")) {
+                            name = name.substring(0, name.indexOf('/'));
+                        }
+                        String encodedName = ISO9075.encode(name);
+                        String currentpath = peek + "/" + name;
+                        JCRNodeWrapper n = session.getNode(currentpath);
+                        String pt = n.getPrimaryNodeTypeName();
+                        AttributesImpl atts = new AttributesImpl();
+                        atts.addAttribute(Name.NS_JCR_URI, "primaryType", "jcr:primaryType", CDATA, pt);
+                        setProviderRootAttribute(n, atts);
+                        startElement(encodedName, atts);
+                        stack.push(currentpath);
+                    }
+                }
+                AttributesImpl atts = new AttributesImpl();
+                if (node.isNodeType("jmix:shareable")) {
+
+                    if (exportedShareable.containsKey(node.getIdentifier())) {
+                        atts.addAttribute(Constants.JAHIA_NS, "share", "j:share", CDATA, exportedShareable.get(node.getIdentifier()));
+                        String encodedName = ISO9075.encode(node.getName());
+                        startElement(encodedName, atts);
+                        endElement(encodedName);
+                        notifyListObservers(node.getPath());
+                        return;
                     } else {
-                        stack.push(rootNode.getPath());
+                        exportedShareable.put(node.getIdentifier(), node.getPath());
                     }
                 }
-
-                while (!stack.isEmpty() && !stack.peek().equals(parentpath)) {
-                    String peek = stack.peek();
-                    String name = parentpath.substring(peek.length() + 1);
-                    if (name.contains("/")) {
-                        name = name.substring(0, name.indexOf('/'));
+                PropertyIterator propsIterator = node.getRealNode().getProperties();
+                SortedSet<String> sortedProps = new TreeSet<String>();
+                while (propsIterator.hasNext()) {
+                    Property property = propsIterator.nextProperty();
+                    if (node.getProvider().canExportProperty(property)) {
+                        sortedProps.add(property.getName());
                     }
-                    String encodedName = ISO9075.encode(name);
-                    String currentpath = peek + "/" + name;
-                    JCRNodeWrapper n = session.getNode(currentpath);
-                    String pt = n.getPrimaryNodeTypeName();
-                    AttributesImpl atts = new AttributesImpl();
-                    atts.addAttribute(Name.NS_JCR_URI, "primaryType", "jcr:primaryType", CDATA, pt);
-                    setProviderRootAttribute(n, atts);
-                    startElement(encodedName, atts);
-                    stack.push(currentpath);
                 }
-            }
-            AttributesImpl atts = new AttributesImpl();
-            if (node.isNodeType("jmix:shareable")) {
+                for (String prop : sortedProps) {
+                    try {
+                        Property property = node.getRealNode().getProperty(prop);
+                        if (node.hasProperty(prop) && (property.getType() != PropertyType.BINARY || !skipBinary) && !propertiestoIgnore.contains(property.getName())) {
+                            String key = property.getName();
+                            String prefix = null;
+                            String localname = key;
+                            if (key.indexOf(':') > -1) {
+                                prefix = key.substring(0, key.indexOf(':'));
+                                localname = key.substring(key.indexOf(':') + 1);
+                            }
 
-                if (exportedShareable.containsKey(node.getIdentifier())) {
-                    atts.addAttribute(Constants.JAHIA_NS,  "share", "j:share", CDATA, exportedShareable.get(node.getIdentifier()));
-                    String encodedName = ISO9075.encode(node.getName());
-                    startElement(encodedName, atts);
-                    endElement(encodedName);
-                    notifyListObservers(node.getPath());
-                    return;
-                } else {
-                    exportedShareable.put(node.getIdentifier(), node.getPath());
-                }
-            }
-            PropertyIterator propsIterator = node.getRealNode().getProperties();
-            SortedSet<String> sortedProps = new TreeSet<String>();
-            while (propsIterator.hasNext()) {
-                Property property = propsIterator.nextProperty();
-                if (node.getProvider().canExportProperty(property)) {
-                    sortedProps.add(property.getName());
-                }
-            }
-            for (String prop : sortedProps) {
-                try {
-                    Property property = node.getRealNode().getProperty(prop);
-                    if (node.hasProperty(prop) && (property.getType() != PropertyType.BINARY || !skipBinary) && !propertiestoIgnore.contains(property.getName())) {
-                        String key = property.getName();
-                        String prefix = null;
-                        String localname = key;
-                        if (key.indexOf(':') > -1) {
-                            prefix = key.substring(0, key.indexOf(':'));
-                            localname = key.substring(key.indexOf(':') + 1);
-                        }
+                            String encodedLocalName = ISO9075.encode(localname);
 
-                        String encodedLocalName = ISO9075.encode(localname);
-
-                        String value;
-                        if (!property.isMultiple()) {
-                            if (property.getDefinition().getRequiredType() == PropertyType.REFERENCE || property.getDefinition().getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
-                                value = JCRMultipleValueUtils.encode(getValue(property.getValue()));
+                            String value;
+                            if (!property.isMultiple()) {
+                                if (property.getDefinition().getRequiredType() == PropertyType.REFERENCE || property.getDefinition().getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
+                                    value = JCRMultipleValueUtils.encode(getValue(property.getValue()));
+                                } else {
+                                    value = getValue(property.getValue());
+                                }
                             } else {
-                                value = getValue(property.getValue());
-                            }
-                        } else {
-                            Value[] vs = property.getValues();
-                            List<String> values = new ArrayList<String>();
-                            for (Value v : vs) {
-                                values.add(JCRMultipleValueUtils.encode(getValue(v)));
-                            }
-                            Collections.sort(values);
-                            StringBuilder b = new StringBuilder();
-                            for (int i = 0; i < values.size(); i++) {
-                                String v = values.get(i);
-                                b.append(v);
-                                if (i + 1 < values.size()) {
-                                    b.append(" ");
+                                Value[] vs = property.getValues();
+                                List<String> values = new ArrayList<String>();
+                                for (Value v : vs) {
+                                    values.add(JCRMultipleValueUtils.encode(getValue(v)));
                                 }
+                                Collections.sort(values);
+                                StringBuilder b = new StringBuilder();
+                                for (int i = 0; i < values.size(); i++) {
+                                    String v = values.get(i);
+                                    b.append(v);
+                                    if (i + 1 < values.size()) {
+                                        b.append(" ");
+                                    }
+                                }
+                                value = b.toString();
                             }
-                            value = b.toString();
-                        }
 
-                        if (prefix == null) {
-                            atts.addAttribute("", encodedLocalName, encodedLocalName, CDATA, value);
-                        } else {
-                            atts.addAttribute(prefixes.get(prefix), encodedLocalName, prefix + ":" + encodedLocalName, CDATA, value);
+                            if (prefix == null) {
+                                atts.addAttribute("", encodedLocalName, encodedLocalName, CDATA, value);
+                            } else {
+                                atts.addAttribute(prefixes.get(prefix), encodedLocalName, prefix + ":" + encodedLocalName, CDATA, value);
+                            }
                         }
+                    } catch (RepositoryException e) {
+                        logger.error("Cannot export property", e);
                     }
-                } catch (RepositoryException e) {
-                    logger.error("Cannot export property",e);
                 }
-            }
-            if (publicationStatusSession != null && node.isNodeType("jmix:publication")) {
-                String s = Integer.toString(JCRPublicationService.getInstance().getStatus(node, publicationStatusSession, null));
-                atts.addAttribute(prefixes.get("j"), "publicationStatus", "j:publicationStatus", CDATA, s);
-            }
-            setProviderRootAttribute(node, atts);
+                if (publicationStatusSession != null && node.isNodeType("jmix:publication")) {
+                    String s = Integer.toString(JCRPublicationService.getInstance().getStatus(node, publicationStatusSession, null));
+                    atts.addAttribute(prefixes.get("j"), "publicationStatus", "j:publicationStatus", CDATA, s);
+                }
+                setProviderRootAttribute(node, atts);
 
-            String encodedName = ISO9075.encode(node.getName());
-            startElement(encodedName, atts);
-            if (path.equals("/")) {
-                stack.push("");
-            } else {
-                stack.push(path);
-            }
+                String encodedName = ISO9075.encode(node.getName());
+                startElement(encodedName, atts);
+                if (path.equals("/")) {
+                    stack.push("");
+                } else {
+                    stack.push(path);
+                }
 
-            if (!noRecurse) {
-                List<String> exportedMountPointNodes = new ArrayList<String>();
-                NodeIterator ni = node.getNodes();
-                while (ni.hasNext()) {
-                    JCRNodeWrapper c = (JCRNodeWrapper) ni.next();
-                    if (c.getProvider().canExportNode(c) && !exportedMountPointNodes.contains(c.getName())) {
-                        if (!"/".equals(path) && !c.getProvider().equals(node.getProvider())) { // is external provider root
-                            String mountPointName = c.getName() + JCRMountPointNode.MOUNT_SUFFIX;
-                            if (node.hasNode(mountPointName) && !exportedMountPointNodes.contains(mountPointName)) { // mounted from a dynamic mountPoint
-                                JCRNodeWrapper mountPointNode = node.getNode(mountPointName);
-                                if (mountPointNode.isNodeType(Constants.JAHIANT_MOUNTPOINT)) {
-                                    exportNode(mountPointNode);
-                                    exportedMountPointNodes.add(mountPointName);
+                if (!noRecurse) {
+                    List<String> exportedMountPointNodes = new ArrayList<String>();
+                    NodeIterator ni = node.getNodes();
+                    while (ni.hasNext()) {
+                        JCRNodeWrapper c = (JCRNodeWrapper) ni.next();
+                        if (c.getProvider().canExportNode(c) && !exportedMountPointNodes.contains(c.getName())) {
+                            if (!"/".equals(path) && !c.getProvider().equals(node.getProvider())) { // is external provider root
+                                String mountPointName = c.getName() + JCRMountPointNode.MOUNT_SUFFIX;
+                                if (node.hasNode(mountPointName) && !exportedMountPointNodes.contains(mountPointName)) { // mounted from a dynamic mountPoint
+                                    JCRNodeWrapper mountPointNode = node.getNode(mountPointName);
+                                    if (mountPointNode.isNodeType(Constants.JAHIANT_MOUNTPOINT)) {
+                                        exportNode(mountPointNode);
+                                        exportedMountPointNodes.add(mountPointName);
+                                    }
                                 }
                             }
-                        }
-                        exportNode(c);
-                        if (c.getName().endsWith(JCRMountPointNode.MOUNT_SUFFIX) && c.isNodeType(Constants.JAHIANT_MOUNTPOINT)) {
-                            exportedMountPointNodes.add(c.getName());
+                            exportNode(c);
+                            if (c.getName().endsWith(JCRMountPointNode.MOUNT_SUFFIX) && c.isNodeType(Constants.JAHIANT_MOUNTPOINT)) {
+                                exportedMountPointNodes.add(c.getName());
+                            }
                         }
                     }
                 }
+                notifyListObservers(node.getPath());
             }
-            notifyListObservers(node.getPath());
+        } catch (Exception e) {
+            logger.warn("Unable to export node with path {}, it won't be part of the export. Set class in DEBUG to get full error", node.getPath());
+            logger.debug(e.getMessage(), e);
         }
     }
 
     /**
      * Notify the list of observers about a node path being exported
+     *
      * @param path the node path
      */
     private void notifyListObservers(String path) {
-        if(exportContext!= null) {
+        if (exportContext != null) {
             exportContext.setActualPath(path);
             pcs.firePropertyChange(new PropertyChangeEvent(this, "exportContext", null, exportContext));
         }
@@ -380,11 +385,11 @@ public class DocumentViewExporter {
 
                 Matcher matcher = TEMPLATE_PATTERN.matcher(path);
                 if (matcher.matches()) {
-                    path = "$currentSite/templates/"+matcher.group(1);
+                    path = "$currentSite/templates/" + matcher.group(1);
 
                 } else {
                     boolean root = rootNode.getPath().equals("/");
-                    if (!root && !path.startsWith(rootNode.getPath()+"/") && !path.equals(rootNode.getPath())) {
+                    if (!root && !path.startsWith(rootNode.getPath() + "/") && !path.equals(rootNode.getPath())) {
                         externalReferences.add(v.getString());
                     } else if (!typesToIgnore.contains(reference.getPrimaryNodeTypeName()) && reference.getResolveSite() != null) {
                         if (reference.getResolveSite().getSiteKey().equals(JahiaSitesService.SYSTEM_SITE_KEY)) {
@@ -424,7 +429,7 @@ public class DocumentViewExporter {
         }
 
         if (stack.isEmpty()) {
-            for (Iterator<String> iterator = (new TreeSet<String>(prefixes.keySet())).iterator(); iterator.hasNext();) {
+            for (Iterator<String> iterator = (new TreeSet<String>(prefixes.keySet())).iterator(); iterator.hasNext(); ) {
                 String prefix = iterator.next();
                 String uri = prefixes.get(prefix);
                 atts.addAttribute(NS_URI, prefix, "xmlns:" + prefix, CDATA, uri);

@@ -14,7 +14,7 @@ if (renderContext.request.getParameter("includeJavascripts")) {
     renderContext.request.getAttribute("staticAssets").javascript.eachWithIndex { resource, i ->
         condition = resource.value != null ? resource.value.get("condition") : null;
         if (condition != null) println("<!--["+condition+"]>");
-        println "<script id=\"staticAssetJavascript${targetTag == 'HEAD'?'':targetTag}${i}\" type=\"text/javascript\" src=\"${resource.key}\"></script>";
+        println "<script id=\"staticAssetJavascript${targetTag == 'HEAD'?'':targetTag}${i}\" src=\"${resource.key}\"></script>";
         if (condition != null) println("<![endif]-->");
     }
 }

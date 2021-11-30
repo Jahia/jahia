@@ -177,7 +177,7 @@
         <!-- End of OSGi versions -->
 
         <jahia.commons.version>1.0.8</jahia.commons.version>
-        <jahia.plugin.version>5.18</jahia.plugin.version>
+        <jahia.plugin.version>6.0-SNAPSHOT</jahia.plugin.version>
         <jahia.archivers.version>${jahia.plugin.version}</jahia.archivers.version>
         <jahia.configurators.version>${jahia.plugin.version}</jahia.configurators.version>
         <jahia.deployers.version>${jahia.plugin.version}</jahia.deployers.version>
@@ -899,12 +899,12 @@
                     <artifactId>maven-bundle-plugin</artifactId>
                     <groupId>org.apache.felix</groupId>
                     <!-- QA-10988 We didn't manage to upgrade to 2.5.4 because of bugs https://issues.apache.org/jira/browse/FELIX-4556 and https://issues.apache.org/jira/browse/FELIX-4882 -->
-                    <version>2.5.3</version>
+                    <version>5.1.2</version>
                     <dependencies>
                         <dependency>
                             <groupId>biz.aQute.bnd</groupId>
-                            <artifactId>bndlib</artifactId>
-                            <version>2.4.0</version> <!-- Using version 2.4.0 as recommended in https://issues.apache.org/jira/browse/FELIX-4556?focusedCommentId=14213575&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-14213575 -->
+                            <artifactId>biz.aQute.bndlib</artifactId>
+                            <version>6.1.0</version>
                         </dependency>
                     </dependencies>
                 </plugin>

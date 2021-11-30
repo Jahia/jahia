@@ -72,6 +72,7 @@
                         <JAX-RS-Application>org.jahia.bundles.provisioning.rest.RestConfig</JAX-RS-Application>
                         <Embed-Dependency>*; scope=compile|runtime; type=!pom; inline=false</Embed-Dependency>
                         <_dsannotations>org.jahia.bundles.provisioning.*</_dsannotations>
+                        <_dsannotations-options>norequirements</_dsannotations-options>
                     </instructions>
                 </configuration>
             </plugin>

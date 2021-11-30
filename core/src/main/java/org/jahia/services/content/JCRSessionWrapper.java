@@ -62,13 +62,13 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.settings.readonlymode.ReadOnlyModeController;
+import org.jahia.utils.i18n.JahiaLocaleContextHolder;
 import org.jahia.utils.i18n.Messages;
 import org.jahia.utils.xml.JahiaSAXParserFactory;
 import org.jahia.utils.xml.JahiaTransformerFactory;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -574,7 +574,7 @@ public class JCRSessionWrapper implements Session {
                                 errorLocale = getLocale();
                             }
 
-                            ccve = addError(ccve, new PropertyConstraintViolationException(node, Messages.getInternal("label.error.mandatoryField", LocaleContextHolder.getLocale(), "Field is mandatory"), errorLocale, propertyDefinition));
+                            ccve = addError(ccve, new PropertyConstraintViolationException(node, Messages.getInternal("label.error.mandatoryField", JahiaLocaleContextHolder.getLocale(), "Field is mandatory"), errorLocale, propertyDefinition));
                         }
                     }
                 }

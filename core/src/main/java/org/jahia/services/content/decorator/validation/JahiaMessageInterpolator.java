@@ -45,11 +45,11 @@ package org.jahia.services.content.decorator.validation;
 
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.utils.i18n.JahiaLocaleContextHolder;
 import org.jahia.utils.i18n.Messages;
 import org.jahia.utils.i18n.ResourceBundles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.i18n.LocaleContextHolder;
 
 import javax.validation.MessageInterpolator;
 import java.util.*;
@@ -86,7 +86,7 @@ public class JahiaMessageInterpolator implements MessageInterpolator {
      * @return Interpolated error message.
      */
     public String interpolate(String messageTemplate, Context context) {
-        return interpolate(messageTemplate, context, LocaleContextHolder.getLocale());
+        return interpolate(messageTemplate, context, JahiaLocaleContextHolder.getLocale());
     }
 
     /**
@@ -99,7 +99,8 @@ public class JahiaMessageInterpolator implements MessageInterpolator {
      * @return Interpolated error message.
      */
     public String interpolate(String messageTemplate, Context context, Locale locale) {
-        ResourceBundle resourceBundle = ResourceBundles.get(DEFAULT_VALIDATION_MESSAGES, locale);
+        Locale uiLocale = JahiaLocaleContextHolder.getLocale();
+        ResourceBundle resourceBundle = ResourceBundles.get(DEFAULT_VALIDATION_MESSAGES, uiLocale);
         String key = messageTemplate.substring(1, messageTemplate.length() - 1);
         if (resourceBundle != null && resourceBundle.containsKey(key)) {
             return replaceAnnotationAttributes(resourceBundle.getString(key), context.getConstraintDescriptor().getAttributes());
@@ -113,7 +114,7 @@ public class JahiaMessageInterpolator implements MessageInterpolator {
             }
             processedRB.add(rbName);
             try {
-                ResourceBundle rb = ResourceBundles.get(rbName, locale);
+                ResourceBundle rb = ResourceBundles.get(rbName, uiLocale);
                 if (rb != null && rb.containsKey(key)) {
                     return replaceAnnotationAttributes(rb.getString(key), context.getConstraintDescriptor()
                             .getAttributes());
@@ -122,7 +123,7 @@ public class JahiaMessageInterpolator implements MessageInterpolator {
                 logger.error(e.getMessage(), e);
             }
         }
-        String msg = Messages.getInternal(key, locale, null);
+        String msg = Messages.getInternal(key, uiLocale, null);
         if (msg != null) {
             return replaceAnnotationAttributes(msg, context.getConstraintDescriptor().getAttributes());
         }

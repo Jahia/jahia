@@ -56,10 +56,10 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.utils.i18n.JahiaLocaleContextHolder;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONObject;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.bind.ServletRequestUtils;
 
 import javax.jcr.PathNotFoundException;
@@ -225,7 +225,7 @@ public abstract class Action {
         if (e instanceof PropertyConstraintViolationException) {
             ExtendedPropertyDefinition definition = ((PropertyConstraintViolationException) e).getDefinition();
             m.put("propertyName", definition.getName());
-            m.put("propertyLabel", definition.getLabel(LocaleContextHolder.getLocale(), definition.getDeclaringNodeType()));
+            m.put("propertyLabel", definition.getLabel(JahiaLocaleContextHolder.getLocale(), definition.getDeclaringNodeType()));
         }
         return new JSONObject(m);
     }

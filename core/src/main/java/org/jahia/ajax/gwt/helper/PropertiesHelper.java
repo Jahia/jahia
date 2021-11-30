@@ -63,10 +63,10 @@ import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.utils.EncryptionUtils;
+import org.jahia.utils.i18n.JahiaLocaleContextHolder;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.i18n.LocaleContextHolder;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
@@ -502,7 +502,7 @@ public class PropertiesHelper {
     private void addConvertedException(NodeConstraintViolationException violationException, GWTCompositeConstraintViolationException gwt) throws GWTJahiaServiceException {
         if (violationException instanceof PropertyConstraintViolationException) {
             PropertyConstraintViolationException v = (PropertyConstraintViolationException) violationException;
-            gwt.addError(v.getPath(), v.getConstraintMessage(), v.getLocale() != null ? v.getLocale().toString() : null, v.getDefinition().getName(), v.getDefinition().getLabel(LocaleContextHolder.getLocale(), v.getDefinition().getDeclaringNodeType()));
+            gwt.addError(v.getPath(), v.getConstraintMessage(), v.getLocale() != null ? v.getLocale().toString() : null, v.getDefinition().getName(), v.getDefinition().getLabel(JahiaLocaleContextHolder.getLocale(), v.getDefinition().getDeclaringNodeType()));
         } else {
             NodeConstraintViolationException v = violationException;
             gwt.addError(v.getPath(), v.getConstraintMessage(), v.getLocale() != null ? v.getLocale().toString() : null, null, null);

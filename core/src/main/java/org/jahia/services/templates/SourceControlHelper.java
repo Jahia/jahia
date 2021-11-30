@@ -58,12 +58,12 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.PomUtils;
+import org.jahia.utils.i18n.JahiaLocaleContextHolder;
 import org.jahia.utils.i18n.Messages;
 import org.jahia.utils.i18n.ResourceBundles;
 import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.i18n.LocaleContextHolder;
 
 import javax.jcr.RepositoryException;
 import java.io.File;
@@ -265,7 +265,7 @@ public class SourceControlHelper {
             }
         } else {
             FileUtils.deleteQuietly(sources);
-            String msg = Messages.getInternalWithArguments("source.not.found.with.uri",LocaleContextHolder.getLocale(),moduleId,StringUtils.defaultIfEmpty(version, ""),scmURI,StringUtils.defaultIfEmpty(branchOrTag, ""));
+            String msg = Messages.getInternalWithArguments("source.not.found.with.uri", JahiaLocaleContextHolder.getLocale(),moduleId,StringUtils.defaultIfEmpty(version, ""),scmURI,StringUtils.defaultIfEmpty(branchOrTag, ""));
             logger.error(msg);
             throw new IOException(msg);
         }

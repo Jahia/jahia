@@ -66,6 +66,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.touk.throwing.ThrowingRunnable;
 
 import javax.jcr.RepositoryException;
 import java.io.*;
@@ -73,6 +74,9 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Service to store and restore OSGi configurations to/from JCR
@@ -89,7 +93,7 @@ public class ConfigServiceImpl implements OsgiConfigService, ConfigurationListen
     private static final String FELIX_FILEINSTALL_FILENAME = "felix.fileinstall.filename";
 
     private ConfigurationAdmin configAdmin;
-
+    private ConcurrentHashMap<String, CountDownLatch> latches = new ConcurrentHashMap<>();
     private boolean autoSave = true;
 
     @Reference
@@ -180,14 +184,14 @@ public class ConfigServiceImpl implements OsgiConfigService, ConfigurationListen
 
             properties.put(FELIX_FILEINSTALL_FILENAME, file.toURI().toString());
             config.getRawProperties().forEach(properties::put);
-            configuration.update(properties);
+            awaitConfigOperation(configuration.getPid(), ThrowingRunnable.unchecked(() -> configuration.update(properties)));
         } else {
             Dictionary<String, Object> properties = configuration.getProperties();
             config.getRawProperties().forEach(properties::put);
             Set<String> toRemove = new HashSet<>(ConfigUtil.getMap(properties).keySet());
             toRemove.removeAll(config.getRawProperties().keySet());
             toRemove.forEach(properties::remove);
-            configuration.update(properties);
+            awaitConfigOperation(configuration.getPid(), ThrowingRunnable.unchecked(() -> configuration.update(properties)));
         }
     }
 
@@ -197,7 +201,20 @@ public class ConfigServiceImpl implements OsgiConfigService, ConfigurationListen
         }
         Configuration configuration = ((ConfigImpl)config).getConfiguration();
         if (configuration.getProperties() != null) {
-            configuration.delete();
+            awaitConfigOperation(configuration.getPid(), ThrowingRunnable.unchecked(configuration::delete));
+        }
+    }
+
+    private void awaitConfigOperation(String id, Runnable runnable) {
+        CountDownLatch latch = latches.computeIfAbsent(id, pid -> new CountDownLatch(1));
+        runnable.run();
+        try {
+            boolean success = latch.await(10, TimeUnit.SECONDS);
+            if (!success) {
+                logger.warn("Timeout after updating configuration, will continue");
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -418,6 +435,12 @@ public class ConfigServiceImpl implements OsgiConfigService, ConfigurationListen
 
     @Override
     public void configurationEvent(ConfigurationEvent event) {
+        if (event.getType() == ConfigurationEvent.CM_UPDATED || event.getType() == ConfigurationEvent.CM_DELETED) {
+            CountDownLatch l = latches.remove(event.getPid());
+            if (l != null) {
+                l.countDown();
+            }
+        }
         if (autoSave && SettingsBean.getInstance().isProcessingServer()) {
             storeAllConfigurationsToJCR();
         }

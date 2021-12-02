@@ -45,6 +45,7 @@ package org.jahia.services.content.rules;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
+import org.jahia.osgi.FrameworkService;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.files.FileCacheManager;
@@ -55,6 +56,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
 
 import javax.jcr.RepositoryException;
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * Background action that invalidates output caches for the node or its parents.
@@ -142,7 +145,9 @@ public class FlushCacheOnNodeBackgroundAction extends BaseBackgroundAction {
             }
         }
         if (eventMessage != null) {
-            SpringContextSingleton.getInstance().publishEvent(new CacheFlushedEvent(node.getPath(), eventMessage, startLevel, levelsUp));
+            CacheFlushedEvent event = new CacheFlushedEvent(node.getPath(), eventMessage, startLevel, levelsUp);
+            SpringContextSingleton.getInstance().publishEvent(event);
+            FrameworkService.sendEvent(CacheFlushedEvent.TOPIC, event.toMap(), true);
         }
     }
 
@@ -159,6 +164,7 @@ public class FlushCacheOnNodeBackgroundAction extends BaseBackgroundAction {
     }
 
     public static class CacheFlushedEvent extends ApplicationEvent {
+        public static final String TOPIC = "org/jahia/services/content/rules/cacheFlushed";
         private String reason;
         private int startLevel;
         private int levelsUp;
@@ -184,6 +190,10 @@ public class FlushCacheOnNodeBackgroundAction extends BaseBackgroundAction {
 
         public int getLevelsUp() {
             return levelsUp;
+        }
+
+        public Map<String, Object> toMap() {
+            return Collections.singletonMap("event", this);
         }
     }
 }

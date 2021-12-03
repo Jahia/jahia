@@ -46,13 +46,12 @@ package org.jahia.test.services.validation;
 import org.jahia.api.Constants;
 import org.jahia.services.content.*;
 import org.jahia.test.TestHelper;
+import org.jahia.utils.i18n.JahiaLocaleContextHolder;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
-import org.springframework.context.i18n.LocaleContext;
-import org.springframework.context.i18n.LocaleContextHolder;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.ConstraintViolationException;
@@ -205,7 +204,7 @@ public class ValidationTest {
     @Test
     public void testMessageTranslation() throws RepositoryException {
         List<ConstraintViolationException> errors = null;
-        LocaleContext localeContext = null;
+        Locale previousLocale = JahiaLocaleContextHolder.getLocale();
         try {
             try {
                 JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,Locale.ENGLISH);
@@ -215,8 +214,7 @@ public class ValidationTest {
                 testGreaterThan2.setProperty("test:confirmEmail", "badmail2.com");
                 testGreaterThan2.setProperty("test:futureDate", Calendar.getInstance());
                 testGreaterThan2.setProperty("test:greaterThan2", 2);
-                localeContext = LocaleContextHolder.getLocaleContext();
-                LocaleContextHolder.setLocale(Locale.FRENCH, true);
+                JahiaLocaleContextHolder.setLocale(Locale.FRENCH);
                 session.save();
             } catch (CompositeConstraintViolationException e) {
                 errors = e.getErrors();
@@ -231,9 +229,7 @@ public class ValidationTest {
                     "/sites/validationTest/testTranslation Champ avec valeur strictement supérieure à 2: doit être supérieur ou égal à 3"
             );
         } finally {
-            if (localeContext != null) {
-                LocaleContextHolder.setLocaleContext(localeContext);
-            }
+            JahiaLocaleContextHolder.setLocale(previousLocale);
         }
     }
 

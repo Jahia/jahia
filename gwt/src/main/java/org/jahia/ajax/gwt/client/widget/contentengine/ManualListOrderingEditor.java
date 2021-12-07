@@ -251,20 +251,6 @@ public class ManualListOrderingEditor extends ContentPanel {
         moveLast.addStyleName("button-movelast");
         toolBar.add(moveLast);
 
-        Button remove = new Button(Messages.get("label.remove", "Delete"), new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                for (GWTJahiaNode node : childrenGrid.getSelectionModel().getSelectedItems()) {
-                    childrenGrid.getStore().remove(node);
-                    removedNodes.add(node);
-                }
-                childrenGrid.getView().refresh(false);
-            }
-        });
-        remove.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
-        remove.addStyleName("button-remove");
-        toolBar.add(remove);
-
         setLayout(new FitLayout());
         setHeaderVisible(false);
         setTopComponent(toolBar);

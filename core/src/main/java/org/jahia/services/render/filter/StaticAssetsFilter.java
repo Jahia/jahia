@@ -60,6 +60,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.stream.Streams;
 import org.jahia.ajax.gwt.utils.GWTInitializer;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -123,14 +124,17 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     private Set<String> aggregateSupportedMedias = new HashSet<>();
 
     private static final Pattern CLEANUP_REGEXP = Pattern.compile("<!-- jahia:temp [^>]*-->");
+    private static final String HEAD_TAG = "HEAD";
+    private static final String BODY_TAG = "BODY";
 
+    private static final String JS_TYPE = "javascript";
     private static final FastHashMap RANK;
     static {
         RANK = new FastHashMap();
         RANK.put("inlinebefore", 0);
         RANK.put("css", 1);
         RANK.put("inlinecss", 2);
-        RANK.put("javascript", 3);
+        RANK.put(JS_TYPE, 3);
         RANK.put("inlinejavascript", 4);
         RANK.put("inline", 5);
         RANK.put("html", 6);
@@ -240,149 +244,22 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     @Override
     @SuppressWarnings("unchecked")
-    public String execute(String previousOut, RenderContext renderContext, org.jahia.services.render.Resource resource, RenderChain chain) throws Exception {
+    public String execute(String previousOut, RenderContext renderContext,
+            org.jahia.services.render.Resource resource, RenderChain chain) throws Exception {
 
         String out = previousOut;
         Source source = new Source(previousOut);
+
         Map<String, Map<String, Map<String, Map<String, String>>>> assetsByTarget = new LinkedHashMap<>();
+        getAssetsByTarget(out, source, assetsByTarget);
 
-        List<Element> esiResourceElements = source.getAllElements("jahia:resource");
-        Set<String> keys = new HashSet<>();
-        for (Element esiResourceElement : esiResourceElements) {
-            StartTag esiResourceStartTag = esiResourceElement.getStartTag();
-            Map<String, Map<String, Map<String, String>>> assets;
-            String targetTag = esiResourceStartTag.getAttributeValue(TARGET_TAG);
-            if (targetTag == null) {
-                targetTag = "HEAD";
-            } else {
-                targetTag = targetTag.toUpperCase();
-            }
-            if (!assetsByTarget.containsKey(targetTag)) {
-                assets = LazySortedMap
-                        .decorate(TransformedSortedMap.decorate(new TreeMap<String, Map<String, Map<String, String>>>(ASSET_COMPARATOR),
-                                LOW_CASE_TRANSFORMER, NOPTransformer.INSTANCE), new AssetsMapFactory());
-                assetsByTarget.put(targetTag, assets);
-            } else {
-                assets = assetsByTarget.get(targetTag);
-            }
-
-            String type = esiResourceStartTag.getAttributeValue("type");
-            String path = StringUtils.equals(type, "inline")
-                    ? StringUtils.substring(out, esiResourceStartTag.getEnd(), esiResourceElement.getEndTag().getBegin())
-                    : URLDecoder.decode(esiResourceStartTag.getAttributeValue("path"), ASSET_ENCODING);
-            Boolean insert = Boolean.parseBoolean(esiResourceStartTag.getAttributeValue("insert"));
-            String key = esiResourceStartTag.getAttributeValue("key");
-
-            // get options
-            Map<String, String> optionsMap = getOptionMaps(esiResourceStartTag);
-
-            Map<String, Map<String, String>> stringMap = assets.get(type);
-            if (stringMap == null) {
-                Map<String, Map<String, String>> assetMap = new LinkedHashMap<>();
-                stringMap = assets.put(type, assetMap);
-            }
-
-            if (insert) {
-                Map<String, Map<String, String>> my = new LinkedHashMap<>();
-                my.put(path, optionsMap);
-                my.putAll(stringMap);
-                stringMap = my;
-            } else {
-                if ("".equals(key) || !keys.contains(key)) {
-                    Map<String, Map<String, String>> my = new LinkedHashMap<>();
-                    my.put(path, optionsMap);
-                    stringMap.putAll(my);
-                    keys.add(key);
-                }
-            }
-            assets.put(type, stringMap);
-        }
-
-        renderContext.getRequest().setAttribute(STATIC_ASSETS, assetsByTarget.get("HEAD"));
-
+        renderContext.getRequest().setAttribute(STATIC_ASSETS, assetsByTarget.get(HEAD_TAG));
         OutputDocument outputDocument = new OutputDocument(source);
 
         if (renderContext.isAjaxRequest()) {
-            String templateContent = getAjaxResolvedTemplate();
-            if (templateContent != null) {
-                for (Map.Entry<String, Map<String, Map<String, Map<String, String>>>> entry : assetsByTarget.entrySet()) {
-                    renderContext.getRequest().setAttribute(STATIC_ASSETS, entry.getValue());
-                    Element element = source.getFirstElement(TARGET_TAG);
-                    final EndTag tag = element != null ? element.getEndTag() : null;
-                    ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(ajaxTemplateExtension);
-                    ScriptContext scriptContext = new AssetsScriptContext();
-                    final Bindings bindings = scriptEngine.createBindings();
-                    bindings.put(TARGET_TAG, entry.getKey());
-                    bindings.put("renderContext", renderContext);
-                    bindings.put("resource", resource);
-                    scriptContext.setBindings(bindings, ScriptContext.GLOBAL_SCOPE);
-                    // The following binding is necessary for Javascript, which doesn't offer a console by default.
-                    bindings.put("out", new PrintWriter(scriptContext.getWriter()));
-                    scriptEngine.eval(templateContent, scriptContext);
-                    StringWriter writer = (StringWriter) scriptContext.getWriter();
-                    final String staticsAsset = writer.toString();
-
-                    if (StringUtils.isNotBlank(staticsAsset)) {
-                        if (tag != null) {
-                            outputDocument.replace(tag.getBegin(), tag.getBegin() + 1, "\n" + staticsAsset + "\n<");
-                            out = outputDocument.toString();
-                        } else {
-                            out = staticsAsset + "\n" + previousOut;
-                        }
-                    }
-                }
-            }
+            out = renderAjaxStaticAssets(previousOut, renderContext, resource, out, source, outputDocument, assetsByTarget);
         } else if (resource.getContextConfiguration().equals("page")) {
-            if (renderContext.isEditMode()) {
-                if (renderContext.getServletPath().endsWith("frame")) {
-                    boolean doParse = true;
-                    if (renderContext.getEditModeConfig().getSkipMainModuleTypesDomParsing() != null) {
-                        for (String nt : renderContext.getEditModeConfig().getSkipMainModuleTypesDomParsing()) {
-                            doParse = !resource.getNode().isNodeType(nt);
-                            if (!doParse) {
-                                break;
-                            }
-                        }
-                    }
-                    List<Element> bodyElementList = source.getAllElements(HTMLElementName.BODY);
-                    if (bodyElementList.size() > 0) {
-                        Element bodyElement = bodyElementList.get(bodyElementList.size() - 1);
-                        EndTag bodyEndTag = bodyElement.getEndTag();
-                        outputDocument.replace(bodyEndTag.getBegin(), bodyEndTag.getBegin() + 1, "</div><");
-
-                        bodyElement = bodyElementList.get(0);
-
-                        StartTag bodyStartTag = bodyElement.getStartTag();
-                        JCRNodeWrapper currentTemplateNode = (JCRNodeWrapper) renderContext.getRequest().getAttribute("currentTemplateNode");
-                        outputDocument.replace(bodyStartTag.getEnd(), bodyStartTag.getEnd(), "\n" +
-                                "<div jahiatype=\"mainmodule\""
-                                + " path=\"" +
-                                resource.getNode().getPath() +
-                                "\" locale=\"" +
-                                resource.getLocale() +
-                                "\" template=\"" +
-                                (resource.getTemplate() != null && !resource.getTemplate().equals("default") ? resource.getTemplate() : "") +
-                                "\" templateName=\"" +
-                                (currentTemplateNode != null ? StringEscapeUtils.escapeHtml(currentTemplateNode.getDisplayableName()) : "") +
-                                "\" nodetypes=\"" +
-                                ConstraintsHelper.getConstraints(
-                                        renderContext.getMainResource().getNode()) +
-                                "\">");
-                        if (doParse) {
-                            outputDocument.replace(bodyStartTag.getEnd() - 1, bodyStartTag.getEnd(), " jahia-parse-html=\"true\">");
-                        }
-                    }
-                }
-            }
-            if (!assetsByTarget.containsKey("HEAD")) {
-                addResources(renderContext, resource, source, outputDocument, "HEAD", new HashMap<String, Map<String, Map<String, String>>>());
-            }
-            for (Map.Entry<String, Map<String, Map<String, Map<String, String>>>> entry : assetsByTarget.entrySet()) {
-                String targetTag = entry.getKey();
-                Map<String, Map<String, Map<String, String>>> assets = entry.getValue();
-                addResources(renderContext, resource, source, outputDocument, targetTag, assets);
-            }
-            out = outputDocument.toString();
+            out = renderPageStaticAssets(renderContext, resource, source, outputDocument, assetsByTarget);
         }
 
         // Clean all jahia:resource tags
@@ -394,6 +271,186 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         String s = outputDocument.toString();
         s = removeTempTags(s);
         return s.trim();
+    }
+
+    private void getAssetsByTarget(String out, Source source, Map<String, Map<String, Map<String, Map<String, String>>>> assetsByTarget)
+            throws UnsupportedEncodingException {
+        Map<String, Integer> resourceCountMap = new HashMap<>(); // keep track of potential duplicates and log
+        List<Element> esiResourceElements = source.getAllElements("jahia:resource");
+        Set<String> keys = new HashSet<>();
+        for (Element esiResourceElement : esiResourceElements) {
+            addAssetByTarget(out, assetsByTarget, resourceCountMap, keys, esiResourceElement);
+        }
+
+        // remove duplicate resources on head if it's already added in body for given types; log other duplicates
+        removeDuplicates(assetsByTarget, new String[] {JS_TYPE, "css"}, resourceCountMap);
+        for (Map.Entry<String, Integer> e: resourceCountMap.entrySet()) {
+            if (e.getValue() > 1) {
+                logger.warn("Potential duplicate static resource with path: '{}'", e.getKey());
+            }
+        }
+    }
+
+    private void addAssetByTarget(String out, Map<String, Map<String, Map<String, Map<String, String>>>> assetsByTarget,
+            Map<String, Integer> resourceCountMap, Set<String> keys, Element esiResourceElement) throws UnsupportedEncodingException {
+        StartTag esiResourceStartTag = esiResourceElement.getStartTag();
+        Map<String, Map<String, Map<String, String>>> assets;
+        String targetTag = esiResourceStartTag.getAttributeValue(TARGET_TAG);
+        targetTag = (targetTag != null) ? targetTag.toUpperCase() : HEAD_TAG; // default to HEAD tag
+        if (!assetsByTarget.containsKey(targetTag)) {
+            assets = LazySortedMap.decorate(TransformedSortedMap.decorate(
+                    new TreeMap<String, Map<String, Map<String, String>>>(ASSET_COMPARATOR),
+                    LOW_CASE_TRANSFORMER, NOPTransformer.INSTANCE), new AssetsMapFactory());
+            assetsByTarget.put(targetTag, assets);
+        } else {
+            assets = assetsByTarget.get(targetTag);
+        }
+
+        String type = esiResourceStartTag.getAttributeValue("type");
+        String path = StringUtils.equals(type, "inline")
+                ? StringUtils.substring(out, esiResourceStartTag.getEnd(), esiResourceElement.getEndTag().getBegin())
+                : URLDecoder.decode(esiResourceStartTag.getAttributeValue("path"), ASSET_ENCODING);
+        boolean insert = Boolean.parseBoolean(esiResourceStartTag.getAttributeValue("insert"));
+        String key = esiResourceStartTag.getAttributeValue("key");
+
+        int resourceCountNum = resourceCountMap.containsKey(path) ? resourceCountMap.get(path) + 1 : 1;
+        resourceCountMap.put(path, resourceCountNum);
+
+        // get options
+        Map<String, String> optionsMap = getOptionMaps(esiResourceStartTag);
+
+        Map<String, Map<String, String>> stringMap = assets.get(type);
+        if (stringMap == null) {
+            Map<String, Map<String, String>> assetMap = new LinkedHashMap<>();
+            stringMap = assets.put(type, assetMap);
+        }
+
+        if (insert) {
+            Map<String, Map<String, String>> my = new LinkedHashMap<>();
+            my.put(path, optionsMap);
+            my.putAll(stringMap);
+            stringMap = my;
+        } else if ("".equals(key) || !keys.contains(key)) {
+            Map<String, Map<String, String>> my = new LinkedHashMap<>();
+            my.put(path, optionsMap);
+            stringMap.putAll(my);
+            keys.add(key);
+        }
+        assets.put(type, stringMap);
+    }
+
+    private String renderAjaxStaticAssets(String previousOut, RenderContext renderContext,
+            org.jahia.services.render.Resource resource, String out, Source source, OutputDocument outputDocument,
+            Map<String, Map<String, Map<String, Map<String, String>>>> assetsByTarget) throws IOException, ScriptException {
+
+        String templateContent = getAjaxResolvedTemplate();
+        if (templateContent == null) {
+            return out;
+        }
+
+        for (Map.Entry<String, Map<String, Map<String, Map<String, String>>>> entry : assetsByTarget.entrySet()) {
+            renderContext.getRequest().setAttribute(STATIC_ASSETS, entry.getValue());
+            Element element = source.getFirstElement(TARGET_TAG);
+            final EndTag tag = element != null ? element.getEndTag() : null;
+            ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(ajaxTemplateExtension);
+            ScriptContext scriptContext = new AssetsScriptContext();
+            final Bindings bindings = scriptEngine.createBindings();
+            bindings.put(TARGET_TAG, entry.getKey());
+            bindings.put("renderContext", renderContext);
+            bindings.put("resource", resource);
+            scriptContext.setBindings(bindings, ScriptContext.GLOBAL_SCOPE);
+            // The following binding is necessary for Javascript, which doesn't offer a console by default.
+            bindings.put("out", new PrintWriter(scriptContext.getWriter()));
+            scriptEngine.eval(templateContent, scriptContext);
+            StringWriter writer = (StringWriter) scriptContext.getWriter();
+            final String staticsAsset = writer.toString();
+
+            if (StringUtils.isNotBlank(staticsAsset)) {
+                if (tag != null) {
+                    outputDocument.replace(tag.getBegin(), tag.getBegin() + 1, "\n" + staticsAsset + "\n<");
+                    out = outputDocument.toString();
+                } else {
+                    out = staticsAsset + "\n" + previousOut;
+                }
+            }
+        }
+        return out;
+    }
+
+    private String renderPageStaticAssets(RenderContext renderContext, org.jahia.services.render.Resource resource, Source source,
+            OutputDocument outputDocument, Map<String, Map<String, Map<String, Map<String, String>>>> assetsByTarget)
+            throws RepositoryException, IOException, ScriptException {
+        String out;
+
+        String resourceTemplate = (resource.getTemplate() != null && !resource.getTemplate().equals("default")) ?
+                resource.getTemplate() : "";
+        JCRNodeWrapper currentTemplateNode = (JCRNodeWrapper) renderContext.getRequest().getAttribute("currentTemplateNode");
+        String templateName = (currentTemplateNode != null) ? StringEscapeUtils.escapeHtml(currentTemplateNode.getDisplayableName()) : "";
+
+        if (renderContext.isEditMode() && renderContext.getServletPath().endsWith("frame")) {
+            boolean doParse = true;
+            Set<String> mainModuleTypesDomParsing = renderContext.getEditModeConfig().getSkipMainModuleTypesDomParsing();
+            if (mainModuleTypesDomParsing != null) {
+                doParse = !Streams.stream(mainModuleTypesDomParsing.stream())
+                        .anyMatch(nt -> !resource.getNode().isNodeType(nt));
+            }
+
+            List<Element> bodyElementList = source.getAllElements(HTMLElementName.BODY);
+            if (bodyElementList.size() > 0) {
+                Element bodyElement = bodyElementList.get(bodyElementList.size() - 1);
+                EndTag bodyEndTag = bodyElement.getEndTag();
+                outputDocument.replace(bodyEndTag.getBegin(), bodyEndTag.getBegin() + 1, "</div><");
+                bodyElement = bodyElementList.get(0);
+                StartTag bodyStartTag = bodyElement.getStartTag();
+                outputDocument.replace(bodyStartTag.getEnd(), bodyStartTag.getEnd(), "\n" +
+                        "<div jahiatype=\"mainmodule\"" +
+                        " path=\"" + resource.getNode().getPath() +
+                        "\" locale=\"" + resource.getLocale() +
+                        "\" template=\"" + resourceTemplate +
+                        "\" templateName=\"" + templateName +
+                        "\" nodetypes=\"" + ConstraintsHelper.getConstraints(renderContext.getMainResource().getNode()) +
+                        "\">");
+                if (doParse) {
+                    outputDocument.replace(bodyStartTag.getEnd() - 1, bodyStartTag.getEnd(), " jahia-parse-html=\"true\">");
+                }
+            }
+        }
+        if (!assetsByTarget.containsKey(HEAD_TAG)) {
+            addResources(renderContext, resource, source, outputDocument, HEAD_TAG, new HashMap<>());
+        }
+        for (Map.Entry<String, Map<String, Map<String, Map<String, String>>>> entry : assetsByTarget.entrySet()) {
+            String targetTag = entry.getKey();
+            Map<String, Map<String, Map<String, String>>> assets = entry.getValue();
+            addResources(renderContext, resource, source, outputDocument, targetTag, assets);
+        }
+        out = outputDocument.toString();
+        return out;
+    }
+
+    /**
+     * Remove all static assets in head tag that are already in body tag, for the given asset types;
+     * Update resource count for removed duplicates
+     */
+    private void removeDuplicates(Map<String, Map<String, Map<String, Map<String, String>>>> assetsByTarget,
+            String[] targetedTypes, Map<String,Integer> resourceCount) {
+        if (!assetsByTarget.containsKey(HEAD_TAG) || !assetsByTarget.containsKey(BODY_TAG)) {
+            return;
+        }
+
+        for (String targetedType : targetedTypes) {
+            Map<String, Map<String,String>> headPaths = assetsByTarget.get(HEAD_TAG).get(targetedType);
+            Map<String, Map<String,String>> bodyPaths = assetsByTarget.get(BODY_TAG).get(targetedType);
+            if (headPaths == null || bodyPaths == null) {
+                break;
+            }
+
+            for (String path: bodyPaths.keySet()) {
+                if (headPaths.containsKey(path)) {
+                    headPaths.remove(path);
+                    resourceCount.put(path, resourceCount.get(path) - 1); // update count
+                }
+            }
+        }
     }
 
     private void addResources(RenderContext renderContext, org.jahia.services.render.Resource resource, Source source, OutputDocument outputDocument, String targetTag, Map<String, Map<String, Map<String, String>>> assetsByType) throws IOException, ScriptException {
@@ -425,11 +482,11 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 if (cssAssets != null) {
                     assetsByType.put("css", aggregate(cssAssets, "css"));
                 }
-                Map<String, Map<String, String>> javascriptAssets = assetsByType.get("javascript");
+                Map<String, Map<String, String>> javascriptAssets = assetsByType.get(JS_TYPE);
                 if (javascriptAssets != null) {
                     Map<String, Map<String, String>> scripts = new LinkedHashMap<String, Map<String, String>>(javascriptAssets);
                     Map<String, Map<String, String>> newScripts = aggregate(javascriptAssets, "js");
-                    assetsByType.put("javascript", newScripts);
+                    assetsByType.put(JS_TYPE, newScripts);
                     scripts.keySet().removeAll(newScripts.keySet());
                     assetsByType.put("aggregatedjavascript", scripts);
                 }
@@ -501,7 +558,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     private void addLastModified(Map<String, Map<String, Map<String, String>>> assets) throws IOException {
         for (Map.Entry<String, Map<String, Map<String, String>>> assetsEntry : assets.entrySet()) {
-            if (assetsEntry.getKey().equals("css") || assetsEntry.getKey().equals("javascript")) {
+            if (assetsEntry.getKey().equals("css") || assetsEntry.getKey().equals(JS_TYPE)) {
                 Map<String, Map<String, String>> newMap = new LinkedHashMap<String, Map<String, String>>();
                 for (Map.Entry<String, Map<String, String>> entry : assetsEntry.getValue().entrySet()) {
                     Resource r = getResource(getKey(entry.getKey()));
@@ -529,7 +586,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         params.append("\",\"wcag\":").append(
                 ctx.getSiteInfo() != null ? ctx.getSiteInfo().isWCAGComplianceCheckEnabled() : "false");
 
-        Map<String, Map<String, String>> js = assets.get("javascript");
+        Map<String, Map<String, String>> js = assets.get(JS_TYPE);
         if (js != null && js.containsKey(ckeditorJavaScript)) {
             String customCkeditorConfig = GWTInitializer.getCustomCKEditorConfig(ctx);
             if (customCkeditorConfig != null) {

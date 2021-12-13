@@ -171,7 +171,7 @@ public class Constants {
     public static final String JAHIAMIX_HIDDEN_NODE = "jmix:hiddenNode";
 
     public final static String JAHIAMIX_RB_TITLE = "jmix:rbTitle";
-    
+
     public static final String JAHIAMIX_SEARCHABLE = "jmix:searchable";
 
     public static final String JAHIANT_FOLDER = "jnt:folder";
@@ -265,7 +265,7 @@ public class Constants {
 
     public static final String JAHIANT_CONDITION = "jnt:condition";
     public static final String JAHIANT_CONDITIONAL_VISIBILITY = "jnt:conditionalVisibility";
-	
+
     public static final String JAHIANT_GROUP = "jnt:group";
     public static final String JAHIANT_MEMBERS = "jnt:members";
     public static final String JAHIANT_MEMBER = "jnt:member";
@@ -318,9 +318,10 @@ public class Constants {
             JCR_FROZENMIXINTYPES, JCR_FROZENPRIMARYTYPE,JCR_UUID,JCR_BASEVERSION,JCR_MIXINTYPES,JCR_PRIMARYTYPE,
             JCR_VERSIONHISTORY, JCR_PREDECESSORS, JCR_ISCHECKEDOUT, JCR_CREATED, JCR_CREATEDBY, "j:lockTypes",
             "j:locktoken", JCR_LOCKOWNER, JCR_LOCKISDEEP, JAHIA_SOURCE_TEMPLATE, PUBLISHED, MARKED_FOR_DELETION_DATE,
-            MARKED_FOR_DELETION_MESSAGE, MARKED_FOR_DELETION_USER, ORIGIN_WORKSPACE));
+            MARKED_FOR_DELETION_MESSAGE, MARKED_FOR_DELETION_USER, ORIGIN_WORKSPACE, LASTPUBLISHED, LASTPUBLISHEDBY));
 
-    public static final Set<String> forbiddenMixinToCopy = new HashSet<String>(Arrays.asList(JAHIAMIX_WORKFLOW, JAHIAMIX_MARKED_FOR_DELETION, JAHIAMIX_MARKED_FOR_DELETION_ROOT));
+    public static final Set<String> forbiddenMixinToCopy = new HashSet<String>(Arrays.asList(JAHIAMIX_WORKFLOW,
+            JAHIAMIX_MARKED_FOR_DELETION, JAHIAMIX_MARKED_FOR_DELETION_ROOT));
 
     public static final String JCR_LASTLOGINDATE = "lastLoginDate";
     public static final String J_ROLES = "j:roles";

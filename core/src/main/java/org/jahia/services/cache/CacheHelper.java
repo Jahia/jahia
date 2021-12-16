@@ -58,12 +58,15 @@ import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository;
 import org.jahia.services.render.filter.cache.CacheClusterEvent;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Sets;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.util.*;
 
@@ -133,6 +136,15 @@ public final class CacheHelper {
 
         if (propagateInCluster) {
             sendCacheFlushCommandToCluster(CMD_FLUSH_ALL_CACHES, false, null, false);
+        }
+
+        try {
+            File gr = new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "generated-resources");
+            if (gr.exists()) {
+                org.apache.commons.io.FileUtils.cleanDirectory(gr);
+            }
+        } catch (IOException e) {
+            logger.error("Cannot flush generated-resources", e);
         }
 
         logger.info("...done flushing all caches.");

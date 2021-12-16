@@ -391,8 +391,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             boolean doParse = true;
             Set<String> mainModuleTypesDomParsing = renderContext.getEditModeConfig().getSkipMainModuleTypesDomParsing();
             if (mainModuleTypesDomParsing != null) {
+                // if one of mainModuleTypesDomParsing is a resource nodetype, then do not parse
                 doParse = !Streams.stream(mainModuleTypesDomParsing.stream())
-                        .anyMatch(nt -> !resource.getNode().isNodeType(nt));
+                        .anyMatch(nt -> resource.getNode().isNodeType(nt));
             }
 
             List<Element> bodyElementList = source.getAllElements(HTMLElementName.BODY);

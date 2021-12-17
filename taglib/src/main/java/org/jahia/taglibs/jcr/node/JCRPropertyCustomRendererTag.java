@@ -43,6 +43,8 @@
  */
 package org.jahia.taglibs.jcr.node;
 
+import org.jahia.services.content.JCRValueWrapper;
+import org.jahia.services.content.nodetypes.renderer.NodeReferenceChoiceListRenderer;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
@@ -53,7 +55,6 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.jcr.PathNotFoundException;
-import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.nodetype.ConstraintViolationException;
@@ -94,7 +95,7 @@ public class JCRPropertyCustomRendererTag extends AbstractJahiaTag {
             pageContext.removeAttribute(var);
         }
         try {
-            final Property property = node.getProperty(name);
+            final JCRPropertyWrapper property = node.getProperty(name);
             if (property != null) {
                 boolean isMultiple = property.getDefinition().isMultiple();
                 if (!"".equals(renderer)) {
@@ -106,11 +107,13 @@ public class JCRPropertyCustomRendererTag extends AbstractJahiaTag {
                     Map<String,Object> m = new HashMap<String,Object>();
                     String s = "";
                     if (isMultiple) {
-                        for (Value v : property.getValues()) {
+                        for (JCRValueWrapper v : property.getValues()) {
+                            ExtendedPropertyDefinition propertyDefinition = (ExtendedPropertyDefinition) property.getDefinition();
                             if (var != null) {
-                                l.add(renderer1.getObjectRendering(renderContext, (ExtendedPropertyDefinition) property.getDefinition(), v.getString()));
+                                l.add(renderer1.getObjectRendering(renderContext, propertyDefinition, v.getString()));
                             } else {
-                                s = (!"".equals(s)?s + ", ":"")  + renderer1.getStringRendering(renderContext, (ExtendedPropertyDefinition) property.getDefinition(), v.getString());
+                                Object propertyValue = renderer1 instanceof NodeReferenceChoiceListRenderer ? v.getNode() : v.getString();
+                                s = (!"".equals(s)?s + ", ":"")  + renderer1.getStringRendering(renderContext, propertyDefinition, propertyValue);
                             }
                         }
                     } else {

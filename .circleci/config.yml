@@ -158,6 +158,9 @@ parameters:
   run_pull_request:
     type: boolean
     default: false
+  release_change:
+    type: boolean
+    default: false
   target_branch:
     type: string
     default: ""
@@ -189,6 +192,9 @@ workflows:
           requires:
             - PR Build Jahia
   on-code-change:
+    when:
+      condition:
+        not: << pipeline.parameters.release_change >>
     jobs:
       - checkout:
           filters:
@@ -214,3 +220,21 @@ workflows:
           context: QA_ENVIRONMENT
           requires:
             - Build Jahia
+  # Used to trigger a next-development version build during release time as a release dependency.
+  # Since it's used during release, we only need to do the build step and deploy to maven and skip the rest.
+  release-change:
+    when: << pipeline.parameters.release_change >>
+    jobs:
+      - checkout:
+          filters:
+            branches:
+              only:
+                - master
+                - /feature-.*/
+                - /JAHIA-[0-9]-[0-9]-[0-9]-X-BRANCH/
+      - build:
+          name: Build Jahia
+          context: QA_ENVIRONMENT
+          requires:
+            - checkout
+            

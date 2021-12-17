@@ -37,6 +37,7 @@ rule "Profile Image update"
     when
         A property j:picture has been set on a node
              - the node has the type jnt:user
+             - not in operation import
     then
         Create a square thumbnail on reference "avatar_120" of size 120
         Create a square thumbnail on reference "avatar_60" of size 60

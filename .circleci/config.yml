@@ -389,6 +389,9 @@ workflows:
           requires:
             - PR Build Jahia
   on-code-change:
+    when:
+      condition:
+        not: << pipeline.parameters.release_change >>
     jobs:
       - checkout:
           filters:

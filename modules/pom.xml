@@ -299,6 +299,7 @@
                         <Embed-Transitive>true</Embed-Transitive>
                         <Dynamic-ImportPackage>*</Dynamic-ImportPackage>
                         <_removeheaders>${jahia.modules.bundle.removeheaders}</_removeheaders>
+                        <_noimportjava>true</_noimportjava>
                     </instructions>
                 </configuration>
             </plugin>

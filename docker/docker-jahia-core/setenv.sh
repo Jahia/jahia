@@ -11,3 +11,6 @@ export CATALINA_OPTS="${CATALINA_OPTS} -Xlog:gc::time,uptime,level,pid,tid,tags 
 
 # Memory settings
 export CATALINA_OPTS="${CATALINA_OPTS} -XX:+UseContainerSupport -XX:MaxRAMPercentage=${MAX_RAM_PERCENTAGE}"
+
+# CVE-2021-44228
+export CATALINA_OPTS="${CATALINA_OPTS} -Dlog4j2.formatMsgNoLookups=true"

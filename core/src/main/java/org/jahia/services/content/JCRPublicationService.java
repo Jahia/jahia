@@ -1352,7 +1352,7 @@ public class JCRPublicationService extends JahiaService {
      */
     public int getStatus(JCRNodeWrapper node, JCRSessionWrapper destinationSession, Set<String> languages, Set<String> includedUuids) throws RepositoryException {
         int status;
-        if (!node.checkLanguageValidity(languages)) {
+        if (!node.checkLanguageValidity(languages) && !node.isMarkedForDeletion()) {
             status = PublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE;
             for (String language : languages) {
                 Locale locale = LanguageCodeConverters.getLocaleFromCode(language);

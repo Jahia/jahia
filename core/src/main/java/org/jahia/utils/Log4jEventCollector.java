@@ -53,6 +53,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Node;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -67,7 +68,7 @@ public class Log4jEventCollector extends AbstractAppender {
 
     private boolean closed;
     private List<LogEvent> events = new LinkedList<>();
-    
+
     @PluginFactory
     public static Log4jEventCollector createAppender(
             @PluginAttribute("name") final String name,
@@ -80,7 +81,7 @@ public class Log4jEventCollector extends AbstractAppender {
     }
 
     private Log4jEventCollector(final String name, final Layout<? extends Serializable> layout, final LevelRangeFilter filter) {
-        super(name, filter, layout, false);
+        super(name, filter, layout, false, Property.EMPTY_ARRAY);
     }
 
     @Override

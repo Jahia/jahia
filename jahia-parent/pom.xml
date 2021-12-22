@@ -104,7 +104,7 @@
         <xmlunit.version>2.8.2</xmlunit.version>
         <izpack.version>4.3.5-jahia11</izpack.version>
         <launch4j.version>3.12</launch4j.version>
-        <log4j.version>2.10.0</log4j.version>
+        <log4j.version>2.17.0</log4j.version>
         <jahia.tomcat.version>9.0.55</jahia.tomcat.version>
 
         <driver.derby.version>10.14.2.0</driver.derby.version>
@@ -165,7 +165,7 @@
         <slf4j.version>1.7.31</slf4j.version>
         <osgi.version>6.0.0</osgi.version>
         <osgi.compendium.version>6.0.0</osgi.compendium.version>
-        <pax.logging.version>1.11.9</pax.logging.version>
+        <pax.logging.version>1.11.12</pax.logging.version>
         <pax.swissbox.version>1.8.3</pax.swissbox.version>
         <pax.url.version>2.6.1</pax.url.version>
         <pax.web.api.version>7.3.7</pax.web.api.version>

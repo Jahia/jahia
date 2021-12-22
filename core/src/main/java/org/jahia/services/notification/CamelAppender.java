@@ -52,6 +52,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Node;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
@@ -59,18 +60,18 @@ import org.jahia.services.SpringContextSingleton;
 
 /**
  * Log4j appender that sends the message using {@link CamelNotificationService}.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 @Plugin(name = "CamelAppender", category = Node.CATEGORY, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class CamelAppender extends AbstractAppender {
-    
+
     private CamelNotificationService camelNotificationService;
     private String targetUri;
-    
+
    /**
      * Builds CamelAppender instances.
-     * 
+     *
      * @param <B> The type to build
      */
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
@@ -90,7 +91,7 @@ public class CamelAppender extends AbstractAppender {
             return appender;
         }
     }
-	
+
     @PluginBuilderFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
@@ -98,7 +99,7 @@ public class CamelAppender extends AbstractAppender {
 
     private CamelAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
             final boolean ignoreExceptions) {
-        super(name, filter, layout, ignoreExceptions);
+        super(name, filter, layout, ignoreExceptions, Property.EMPTY_ARRAY);
     }
 
 	@Override

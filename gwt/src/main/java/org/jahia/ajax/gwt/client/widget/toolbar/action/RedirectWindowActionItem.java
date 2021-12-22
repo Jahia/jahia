@@ -44,9 +44,9 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.google.gwt.user.client.Window;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.util.Constants;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.util.URL;
 
 import java.util.Map;
@@ -58,7 +58,6 @@ import java.util.Map;
  */
 public class RedirectWindowActionItem extends BaseActionItem {
 
-
     @Override
     public void onComponentSelection() {
         String jsUrl = getPropertyValue(getGwtToolbarItem(), "js.url");
@@ -68,10 +67,15 @@ public class RedirectWindowActionItem extends BaseActionItem {
             Map preferences = getGwtToolbarItem().getProperties();
             final GWTJahiaProperty windowUrl = (GWTJahiaProperty) preferences.get(Constants.URL);
             if (windowUrl != null && windowUrl.getValue() != null) {
-                Window.Location.assign(URL.replacePlaceholders(windowUrl.getValue(), linker.getSelectionContext().getSingleSelection()));
+                reloadPage(URL.replacePlaceholders(windowUrl.getValue(),
+                        linker.getSelectionContext().getSingleSelection()));
             }
         }
     }
+
+    private native void reloadPage(String url) /*-{
+        $wnd.top.location.assign(url);
+    }-*/;
 
     @Override
     public void handleNewLinkerSelection() {

@@ -193,8 +193,10 @@ File bundleLocationMapFile = getBundleLocationMapFile();
 
 List<File> filesToModify = new LinkedList<File>();
 filesToModify.add(getKarafInstancePropertiesFile());
-filesToModify.add(bundleLocationMapFile);
-filesToModify.addAll(IteratorUtils.toList(iterateOnConfigFiles()));
+if (getDeployedBundlesDir().exists()) {
+    filesToModify.add(bundleLocationMapFile);
+    filesToModify.addAll(IteratorUtils.toList(iterateOnConfigFiles()));
+}
 
 log.info("Collected " + filesToModify.size() + " files to be checked");
 

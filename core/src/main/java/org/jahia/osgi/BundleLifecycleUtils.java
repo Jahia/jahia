@@ -470,8 +470,8 @@ public final class BundleLifecycleUtils {
                 // do the update
                 bundle.update();
 
-                // refresh the wirings
-                refreshBundleDependencies(bundle);
+                // refresh the wirings (Only refresh the bundle that is providing the wires)
+                refreshBundles(Collections.singleton(bundle), true, false);
 
                 // start manually
                 bundle.start();

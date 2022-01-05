@@ -43,7 +43,9 @@
  */
 package org.jahia.osgi;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.reflect.MethodUtils;
 import org.apache.karaf.main.Main;
@@ -270,6 +272,11 @@ public final class FrameworkService implements FrameworkListener {
         try {
             setupSystemProperties();
             firstStartup = !new File(System.getProperty("org.osgi.framework.storage"), "bundle0").exists();
+
+            if (!firstStartup) {
+                checkJavaVersion();
+            }
+
             bundleStarter = new BundleStarter();
             main = new Main(new String[0]);
             main.launch();
@@ -280,6 +287,40 @@ public final class FrameworkService implements FrameworkListener {
             logger.error("Error starting OSGi container");
             throw new JahiaRuntimeException("Error starting OSGi container", e);
         }
+    }
+
+    private void checkJavaVersion() throws IOException {
+        String javaVersion = StringUtils.substringBefore(System.getProperty("java.version"), "_");
+        if (javaVersion.startsWith("1.")) {
+            javaVersion = StringUtils.substringBeforeLast(javaVersion, ".") + ".0";
+        } else {
+            javaVersion = StringUtils.substringBefore(javaVersion, ".") + ".0.0";
+        }
+        File wiring = new File(System.getProperty("org.osgi.framework.storage"), "bundle0/wiring");
+        if (wiring.exists()) {
+            for (File file : Objects.requireNonNull(wiring.listFiles())) {
+                if (checkWiringFile(javaVersion, wiring, file)) {
+                    return;
+                }
+            }
+        }
+    }
+
+    private boolean checkWiringFile(String javaVersion, File wiring, File file) throws IOException {
+        try (FileInputStream input = new FileInputStream(file)) {
+            Iterator<String> lines = IOUtils.readLines(input, StandardCharsets.UTF_8).iterator();
+            while (lines.hasNext()) {
+                String line = lines.next();
+                if (line.startsWith("osgi.ee; (&(osgi.ee=JavaSE)")) {
+                    String nextList = lines.next();
+                    if (!nextList.contains(javaVersion)) {
+                        FileUtils.deleteDirectory(wiring);
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**

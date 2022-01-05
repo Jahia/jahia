@@ -54,6 +54,9 @@ import javax.jcr.Binary;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.templates.ModuleVersion;
+import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.services.content.nodetypes.initializers.I15dValueInitializer;
@@ -140,12 +143,16 @@ public class DynamicValueImpl implements Value {
         }
         try {
             // Resolve class loader from the node type.
-            final JahiaTemplatesPackage definitionTemplatePackage = declaringPropertyDefinition.getDeclaringNodeType().getTemplatePackage();
-            ValueInitializer init = (ValueInitializer) definitionTemplatePackage.getClassLoader().loadClass(classname).newInstance();
-            if (init instanceof I15dValueInitializer) {
-                v = ((I15dValueInitializer) init).getValues(declaringPropertyDefinition, getParams(), locale);
+            JahiaTemplatesPackage definitionTemplatePackage = getDefinitionTemplatePackage();
+            if (definitionTemplatePackage != null) {
+                ValueInitializer init = (ValueInitializer) definitionTemplatePackage.getClassLoader().loadClass(classname).newInstance();
+                if (init instanceof I15dValueInitializer) {
+                    v = ((I15dValueInitializer) init).getValues(declaringPropertyDefinition, getParams(), locale);
+                } else {
+                    v = init.getValues(declaringPropertyDefinition, getParams());
+                }
             } else {
-                v = init.getValues(declaringPropertyDefinition, getParams());
+                logger.error("Unable to resolve {} initializer because bundle owning definition cannot be found {} ", fn, declaringPropertyDefinition.getDeclaringNodeType().getSystemId());
             }
         } catch (Exception e) {
             // Show why it failed
@@ -164,6 +171,20 @@ public class DynamicValueImpl implements Value {
             }
         }
         return res.toArray(new Value[res.size()]);
+    }
+
+    private JahiaTemplatesPackage getDefinitionTemplatePackage() {
+        JahiaTemplatesPackage definitionTemplatePackage = declaringPropertyDefinition.getDeclaringNodeType().getTemplatePackage();
+        if (definitionTemplatePackage == null) {
+            Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> allModuleVersions = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().getAllModuleVersions();
+            String systemId = declaringPropertyDefinition.getDeclaringNodeType().getSystemId();
+            for (JahiaTemplatesPackage jahiaTemplatesPackage : allModuleVersions.get(systemId).values()) {
+                if (jahiaTemplatesPackage.getBundle().getState() >= Bundle.RESOLVED) {
+                    return jahiaTemplatesPackage;
+                }
+            }
+        }
+        return definitionTemplatePackage;
     }
 
     private Value getExpandedValue() throws ValueFormatException {

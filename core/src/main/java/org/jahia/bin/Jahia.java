@@ -284,10 +284,13 @@ public final class Jahia {
     }
 
     public static boolean isMaintenance() {
-        return maintenance;
+        return maintenance || SettingsBean.getInstance().isMaintenanceMode();
     }
-
+    
     public static void setMaintenance(boolean maintenance) {
+        if (SettingsBean.getInstance().isMaintenanceMode()) {
+            logger.info("Maintenance mode has been enforced in Jahia properties, impossible to change at runtime level.");
+        }
         Jahia.maintenance = maintenance;
     }
 

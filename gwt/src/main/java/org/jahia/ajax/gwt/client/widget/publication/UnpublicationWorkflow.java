@@ -43,10 +43,16 @@
  */
 package org.jahia.ajax.gwt.client.widget.publication;
 
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
@@ -83,6 +89,42 @@ public class UnpublicationWorkflow extends PublicationWorkflow {
         tab.add(g);
 
         dialog.getTabPanel().add(tab);
+
+        TabItem p = dialog.getTabPanel().getItem(0);
+        LayoutContainer layoutContainer = new LayoutContainer(new RowLayout());
+        layoutContainer.setStyleAttribute("margin", "5px");
+
+        int results = 0;
+        int pageResults = 0;
+        for (GWTJahiaPublicationInfo info : publicationInfos) {
+            results++;
+            if (Boolean.TRUE.equals(info.get("isPage"))) {
+                pageResults++;
+            }
+        }
+
+        HorizontalPanel h = new HorizontalPanel();
+        h.add(GWTJahiaPublicationInfo.renderPublicationStatusImage(GWTJahiaPublicationInfo.UNPUBLISHED));
+        String text = "&nbsp;" + Messages.get("label.publication.unpublished.task", "Unpublishing content") + " : ";
+        if (results > 10) {
+            text += " <span style=\"color:red\">" + results + " " + Messages.get("label.items", "Items") + "</span>";
+        } else if (results > 1) {
+            text += results + " " + Messages.get("label.items", "Items");
+        } else {
+            text += results + " " + Messages.get("label.item", "Item");
+        }
+        if (pageResults > 0) {
+            if (pageResults > 1) {
+                text += " " + Messages.get("label.including", "including") + " <span style=\"color:red\">" + pageResults + " " + Messages.get("label.pages", "pages") + "</span>";
+            } else {
+                text += " " + Messages.get("label.including", "including") + " " + pageResults + " " + Messages.get("label.page", "page");
+            }
+        }
+        Html w = new Html(text);
+        h.add(w);
+
+        layoutContainer.add(h);
+        p.add(layoutContainer, new BorderLayoutData(Style.LayoutRegion.NORTH, 25));
     }
 
     protected void doPublish(List<GWTJahiaNodeProperty> nodeProperties, final WorkflowActionDialog dialog) {

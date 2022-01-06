@@ -272,7 +272,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                             @Override
                             public void componentSelected(ButtonEvent ce) {
                                 String path = nodewrapper.getPath();
-                                String locale = JahiaGWTParameters.getLanguage();
+                                String locale = nodewrapper.getLanguageCode();
                                 JahiaContentManagementService.App.getInstance().getNodeURL("render", path, null, null,
                                         "default", locale, false, new BaseAsyncCallback<String>() {
 

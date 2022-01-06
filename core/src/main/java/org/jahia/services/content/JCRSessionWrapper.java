@@ -285,7 +285,7 @@ public class JCRSessionWrapper implements Session {
                 }
 
                 return wrapper;
-            } catch (ItemNotFoundException ee) {
+            } catch (ItemNotFoundException | PathNotFoundException ee) {
                 // All good
                 if (originalEx == null) {
                     originalEx = ee;

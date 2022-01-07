@@ -53,6 +53,7 @@ import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.jahia.services.modulemanager.persistence.PersistentBundleInfoBuilder;
 import org.jahia.services.provisioning.ExecutionContext;
 import org.jahia.services.provisioning.Operation;
+import org.jahia.services.templates.ModuleVersion;
 import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -67,8 +68,11 @@ import org.springframework.core.io.UrlResource;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
+import java.util.jar.JarInputStream;
+import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 
 /**
@@ -209,6 +213,11 @@ public class InstallBundle implements Operation {
             if (entry.get(FORCE_UPDATE) != Boolean.TRUE && checkAlreadyInstalled(bundleKey, resource)) {
                 return;
             }
+
+            if (entry.get(INSTALL_OR_UPGRADE_BUNDLE) != null && checkMoreRecentVersion(resource, bundleKey, installedBundles)) {
+                return;
+            }
+
             String target = (String) entry.get(TARGET);
             OperationResult result = moduleManager.install(
                     Collections.singleton(resource), target,
@@ -227,6 +236,34 @@ public class InstallBundle implements Operation {
             logger.error("Cannot install {}, check your maven URL / Credentials (Set class InstallBundle in debug for more info)", bundleKey);
             logger.debug("Error while installing ", e);
         }
+    }
+
+    private boolean checkMoreRecentVersion(Resource resource, String bundleKey, Map<String, Set<Bundle>> installedBundles) {
+        // Check if a more recent version is already installed
+        try (InputStream is = resource.getInputStream()) {
+            JarInputStream zip = new JarInputStream(is);
+            Manifest mf = zip.getManifest();
+            String name = mf.getMainAttributes().getValue("Bundle-SymbolicName");
+            String versionString = mf.getMainAttributes().getValue("Implementation-Version");
+            if (name == null || versionString == null) {
+                logger.warn("Cannot read manifest from {}", bundleKey);
+                return false;
+            }
+            ModuleVersion moduleVersion = new ModuleVersion(versionString);
+            List<Integer> versionNumbers = moduleVersion.getOrderedVersionNumbers();
+            Version thisVersion = new Version(versionNumbers.size() > 0 ? versionNumbers.get(0) : 0,
+                    versionNumbers.size() > 1 ? versionNumbers.get(1) : 0,
+                    versionNumbers.size() > 2 ? versionNumbers.get(2) : 0,
+                    moduleVersion.isSnapshot() ? "SNAPSHOT" : null);
+            Set<Bundle> installedVersions = installedBundles.get(name);
+            if (installedVersions != null && installedVersions.stream().anyMatch(b -> b.getVersion().compareTo(thisVersion) > 0)) {
+                logger.info("Skipping installation of {}, a more recent version is already installed", bundleKey);
+                return true;
+            }
+        } catch (IOException e) {
+            logger.error("Cannot read bundle information for {}", bundleKey, e);
+        }
+        return false;
     }
 
     private Resource transformURL(Resource resource) throws Exception {

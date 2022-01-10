@@ -159,10 +159,12 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
     protected JCRSiteNode getSite() {
         try {
             final String site = request.getParameter("site");
-            if (!StringUtils.isEmpty(site)) {
-                return (JCRSiteNode) retrieveCurrentSession().getNodeByUUID(site);
-            } else {
+            if (StringUtils.isEmpty(site)) {
                 return (JCRSiteNode) retrieveCurrentSession().getNode(JCRContentUtils.getSystemSitePath());
+            } else if (site.startsWith("/")) {
+                return (JCRSiteNode) retrieveCurrentSession().getNode(site);
+            } else {
+                return (JCRSiteNode) retrieveCurrentSession().getNodeByUUID(site);
             }
         } catch (Exception e) {
             logger.error("Cannot get site",e);

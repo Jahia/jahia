@@ -564,7 +564,11 @@ public interface JahiaContentManagementService extends RemoteService {
         }
 
         private static String createEntryPointUrl() {
-            return JahiaGWTParameters.getServiceEntryPoint() + "contentManager.gwt?lang=" + JahiaGWTParameters.getLanguage() + "&site=" + JahiaGWTParameters.getSiteUUID() + "&workspace=" + JahiaGWTParameters.getWorkspace() + "&windowId=" + windowId;
+            if (JahiaGWTParameters.getReactSiteKey() != null && JahiaGWTParameters.getReactLanguage() != null) {
+                return JahiaGWTParameters.getServiceEntryPoint() + "contentManager.gwt?lang=" + JahiaGWTParameters.getReactLanguage() + "&site=/sites/" + JahiaGWTParameters.getReactSiteKey() + "&workspace=" + JahiaGWTParameters.getWorkspace() + "&windowId=" + windowId;
+            } else {
+                return JahiaGWTParameters.getServiceEntryPoint() + "contentManager.gwt?lang=" + JahiaGWTParameters.getLanguage() + "&site=" + JahiaGWTParameters.getSiteUUID() + "&workspace=" + JahiaGWTParameters.getWorkspace() + "&windowId=" + windowId;
+            }
         }
     }
 }

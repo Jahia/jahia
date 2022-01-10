@@ -362,23 +362,33 @@ public class EmptyEntryPoint extends CommonEntryPoint {
      * @param lang    the target language code
      */
     public static void switchSite(final String siteKey, final String lang) {
+        if (!lang.equals(JahiaGWTParameters.getReactLanguage())) {
+            JahiaGWTParameters.setReactLanguage(lang);
+        }
+        if (!siteKey.equals(JahiaGWTParameters.getReactSiteKey())) {
+            JahiaGWTParameters.setReactSiteKey(siteKey);
+        }
         if (siteKey.equals(JahiaGWTParameters.getSiteKey()) && lang.equals(JahiaGWTParameters.getLanguage())) {
             return;
         }
-
-        JahiaContentManagementService.App.getInstance().getNodes(Arrays.asList("/sites/" + siteKey), GWTJahiaNode.DEFAULT_SITE_FIELDS, new BaseAsyncCallback<List<GWTJahiaNode>>() {
-
-            @Override
-            public void onSuccess(List<GWTJahiaNode> result) {
-                if (!result.isEmpty()) {
-                    GWTJahiaNode siteNode = result.get(0);
-                    if (isValidSiteLanguage(siteNode, lang)) {
-                        JahiaGWTParameters.setSiteNode(siteNode);
-                        JahiaGWTParameters.setLanguage(JahiaGWTParameters.getLanguage(lang));
+        if (!siteKey.equals(JahiaGWTParameters.getSiteKey())) {
+            JahiaContentManagementService.App.getInstance().getNodes(Arrays.asList("/sites/" + siteKey), GWTJahiaNode.DEFAULT_SITE_FIELDS, new BaseAsyncCallback<List<GWTJahiaNode>>() {
+                @Override
+                public void onSuccess(List<GWTJahiaNode> result) {
+                    if (!result.isEmpty()) {
+                        GWTJahiaNode siteNode = result.get(0);
+                        if (isValidSiteLanguage(siteNode, lang)) {
+                            JahiaGWTParameters.setSiteNode(siteNode);
+                            JahiaGWTParameters.setLanguage(JahiaGWTParameters.getLanguage(lang));
+                        }
                     }
                 }
+            });
+        } else {
+            if (isValidSiteLanguage(JahiaGWTParameters.getSiteNode(), lang)) {
+                JahiaGWTParameters.setLanguage(JahiaGWTParameters.getLanguage(lang));
             }
-        });
+        }
     }
 
     private static boolean isValidSiteLanguage(GWTJahiaNode siteNode, String lang) {
@@ -392,6 +402,9 @@ public class EmptyEntryPoint extends CommonEntryPoint {
      * @param lang the target language code
      */
     public static void switchLanguage(String lang) {
+        if (!lang.equals(JahiaGWTParameters.getReactLanguage())) {
+            JahiaGWTParameters.setReactLanguage(lang);
+        }
         if (lang.equals(JahiaGWTParameters.getLanguage())) {
             return;
         }

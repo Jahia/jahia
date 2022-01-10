@@ -107,6 +107,8 @@ public class JahiaGWTParameters {
     private static String channelIdentifier;
     private static String channelOrientation;
     private static List<GWTJahiaChannel> channels;
+    private static String reactSiteKey;
+    private static String reactLanguage;
 
     private static Map<String, GWTJahiaNode> sitesMap;
     private static GWTJahiaNode siteNode;
@@ -431,4 +433,27 @@ public class JahiaGWTParameters {
     public static String getServerDisplayableTimeZone() {
         return jahiaParamDictionary.get(SERVER_DISPLAYABLE_TIME_ZONE);
     }
+
+    public static String getReactSiteKey() {
+        return reactSiteKey;
+    }
+
+    public static void setReactSiteKey(String reactSiteKey) {
+        JahiaGWTParameters.reactSiteKey = reactSiteKey;
+        for (UrlUpdater urlUpdater : updaters) {
+            urlUpdater.updateEntryPointUrl();
+        }
+    }
+
+    public static String getReactLanguage() {
+        return reactLanguage;
+    }
+
+    public static void setReactLanguage(String reactLanguage) {
+        JahiaGWTParameters.reactLanguage = reactLanguage;
+        for (UrlUpdater urlUpdater : updaters) {
+            urlUpdater.updateEntryPointUrl();
+        }
+    }
+
 }

@@ -767,6 +767,9 @@
                                     <replacevalue>pax-web-features/${pax.web.api.version}</replacevalue>
                                 </replace>
                                 <delete dir="${project.build.directory}/jahia/WEB-INF/karaf/system/org/ops4j/pax/web/pax-web-features/7.2.11" />
+                                <delete dir="${project.build.directory}/jahia/WEB-INF/karaf/system/org/ops4j/pax/logging/pax-logging-log4j2/1.11.2" />
+                                <delete dir="${project.build.directory}/jahia/WEB-INF/karaf/system/org/ops4j/pax/logging/pax-logging-api/1.11.2" />
+                                <delete dir="${project.build.directory}/jahia/WEB-INF/karaf/system/org/ops4j/pax/logging/pax-logging-logback/1.11.2" />
                             </target>
                         </configuration>
                     </execution>

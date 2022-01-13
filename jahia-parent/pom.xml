@@ -7,7 +7,7 @@
 
                                     http://www.jahia.com
 
-        Copyright (C) 2002-2019 Jahia Solutions Group SA. All rights reserved.
+        Copyright (C) 2002-2020 Jahia Solutions Group SA. All rights reserved.
 
         THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
         1/GPL OR 2/JSEL
@@ -70,11 +70,8 @@
     <!--logo>/images/jahia.gif</logo-->
     <description>Jahia Commons Parent Project</description>
     <url>http://www.jahia.com</url>
-    <prerequisites>
-        <maven>3.0</maven>
-    </prerequisites>
     <properties>
-        <year>2019</year>
+        <year>2020</year>
         <!-- general encoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -95,10 +92,11 @@
         <hibernate.core.version>4.2.7.SP1-jahia1</hibernate.core.version>
         <hibernate.validator.version>5.4.3.Final</hibernate.validator.version>
         <camel.version>2.25.2</camel.version>
+
         <gwt.version.base>2.5.1</gwt.version.base>
         <gwt.version>${gwt.version.base}-jahia1</gwt.version>
         <groovy.version>2.5.14</groovy.version>
-        <shiro.version>1.7.1</shiro.version>
+        <shiro.version>1.8.0</shiro.version>
         <jodconverter.version>4.4.2</jodconverter.version>
         <tika.version>1.27</tika.version>
         <xstream.version>1.4.18</xstream.version>
@@ -292,6 +290,12 @@
             <organizationUrl>http://www.jahia.com/</organizationUrl>
         </developer>
         <developer>
+            <name>Jonathan Sinovassin-naïk</name>
+            <email>jsinovassinnaik@jahia.com</email>
+            <organization>Jahia Solutions Group SA</organization>
+            <organizationUrl>http://www.jahia.com/</organizationUrl>
+        </developer>
+        <developer>
             <name>Julian Maurel</name>
             <email>julian.maurel@jahia.com</email>
             <organization>Jahia Solutions Group SA</organization>
@@ -363,6 +367,12 @@
             <organization>Jahia Solutions Group SA</organization>
             <organizationUrl>http://www.jahia.com/</organizationUrl>
         </developer>
+	    <developer>
+	        <name>Xiang Yu He</name>
+	        <email>xhe@jahia.com</email>
+	        <organization>Jahia Solutions Group SA</organization>
+	        <organizationUrl>http://www.jahia.com/</organizationUrl>
+	    </developer>
     </developers>
     <contributors>
         <!-- List of contributors and former developers. Thanks to all of you guys! -->

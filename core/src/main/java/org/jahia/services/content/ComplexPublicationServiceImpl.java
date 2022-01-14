@@ -575,8 +575,12 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
 
     @Override
     public void publish(Collection<String> nodeIdentifiers, Collection<String> languages, JCRSessionWrapper session) {
+        publish(nodeIdentifiers, languages, session, false);
+    }
+    @Override
+    public void publish(Collection<String> nodeIdentifiers, Collection<String> languages, JCRSessionWrapper session, Boolean includeAllSubTree) {
 
-        Collection<FullPublicationInfo> infos = getFullPublicationInfos(nodeIdentifiers, languages, false, session);
+        Collection<FullPublicationInfo> infos = getFullPublicationInfos(nodeIdentifiers, languages, includeAllSubTree, session);
 
         LinkedList<String> uuids = new LinkedList<>();
         for (FullPublicationInfo info : infos) {

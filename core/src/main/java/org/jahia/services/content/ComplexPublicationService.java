@@ -99,12 +99,22 @@ public interface ComplexPublicationService {
 
     /**
      * Publish JCR nodes (along with their translation sub-nodes when appropriate) in certain languages.
-     *
+     * Does not including sub tree
      * @param nodeIdentifiers UUIDs of the nodes
      * @param languages Publication languages
      * @param session
      */
     void publish(Collection<String> nodeIdentifiers, Collection<String> languages, JCRSessionWrapper session);
+
+    /**
+     * Publish JCR nodes (along with their translation sub-nodes when appropriate) in certain languages.
+     *
+     * @param nodeIdentifiers UUIDs of the nodes
+     * @param languages Publication languages
+     * @param includeAllSubTree Includes all nodes under the published node (included page nodes)
+     * @param session
+     */
+    void publish(Collection<String> nodeIdentifiers, Collection<String> languages, JCRSessionWrapper session, Boolean includeAllSubTree);
 
     /**
      * Aggregated (un-)publication info about a JCR node.

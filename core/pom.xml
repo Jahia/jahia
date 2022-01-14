@@ -175,9 +175,9 @@
 
         <!--javax dependencies-->
         <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
-            <version>1.4.7</version>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>javax.activation</groupId>
@@ -1206,6 +1206,10 @@
                     <artifactId>commons-httpclient</artifactId>
                     <groupId>commons-httpclient</groupId>
                 </exclusion>
+                <exclusion>
+                    <groupId>javax.mail</groupId>
+                    <artifactId>mail</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -1241,6 +1245,10 @@
                 <exclusion>
                     <groupId>org.hibernate.javax.persistence</groupId>
                     <artifactId>hibernate-jpa-2.0-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.mail</groupId>
+                    <artifactId>mail</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

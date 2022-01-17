@@ -48,6 +48,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.api.Constants;
+import org.jahia.bin.Edit;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.Render;
 import org.jahia.bin.filters.ContentManagerAccessCheckFilter;
@@ -222,6 +223,7 @@ public class GWTInitializer {
             addLanguageSwitcherLinks(renderContext, params, url);
         } else {
             params.put(JahiaGWTParameters.BASE_URL, contextPath + Render.getRenderServletPath() + "/" + params.get("workspace") + "/" + locale.toString());
+            params.put(JahiaGWTParameters.EDIT_URL, contextPath + "/cms/edit/" + params.get("workspace") + "/" + locale.toString());
         }
 
         if (SettingsBean.getInstance().isUseWebsockets()) {

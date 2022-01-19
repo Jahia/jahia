@@ -169,4 +169,6 @@
         <param name="copyWhenReading" value="true"/>
         <param name="minRecordLength" value="1024"/>
     </DataStore>
+
+    <DataStore class="org.jahia.services.content.impl.jackrabbit.S3DataStore"/>
 </Repository>

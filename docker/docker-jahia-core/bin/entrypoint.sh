@@ -25,6 +25,7 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
         echo "DB_NAME=${DB_NAME}" >> ${DATA_FOLDER}/env
         echo "DB_USER=${DB_USER}" >> ${DATA_FOLDER}/env
         echo "DB_PASS=${DB_PASS}" >> ${DATA_FOLDER}/env
+        echo "DS_IN_AWS=${DS_IN_AWS}" >> ${DATA_FOLDER}/env
         echo "DS_IN_DB=${DS_IN_DB}" >> ${DATA_FOLDER}/env
         echo "DS_PATH=${DS_PATH}" >> ${DATA_FOLDER}/env
     fi
@@ -113,6 +114,7 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
     -Djahia.configure.databaseUrl="${DB_URL}" \
     -Djahia.configure.databaseUsername="${DB_USER}" \
     -Djahia.configure.databasePassword=xxxxx \
+    -Djahia.configure.storeFilesInAWS="${DS_IN_AWS}" \
     -Djahia.configure.storeFilesInDB="${DS_IN_DB}" \
     -Djahia.configure.fileDataStorePath="${DS_PATH}" \
     -Djahia.configure.jahiaRootPassword=xxxxx \
@@ -132,6 +134,7 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
     -Djahia.configure.databaseUrl="${DB_URL}" \
     -Djahia.configure.databaseUsername="${DB_USER}" \
     -Djahia.configure.databasePassword="${DB_PASS}" \
+    -Djahia.configure.storeFilesInAWS="${DS_IN_AWS}" \
     -Djahia.configure.storeFilesInDB="${DS_IN_DB}" \
     -Djahia.configure.fileDataStorePath="${DS_PATH}" \
     -Djahia.configure.jahiaRootPassword="${SUPER_USER_PASSWORD}" \

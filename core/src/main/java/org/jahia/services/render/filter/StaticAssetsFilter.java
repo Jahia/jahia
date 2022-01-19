@@ -273,26 +273,28 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         return s.trim();
     }
 
-    private void getAssetsByTarget(String out, Source source, Map<String, Map<String, Map<String, Map<String, String>>>> assetsByTarget)
+    private void getAssetsByTarget(String out, Source source,
+            Map<String, Map<String, Map<String, Map<String, String>>>> assetsByTarget)
             throws UnsupportedEncodingException {
-        Map<String, Integer> resourceCountMap = new HashMap<>(); // keep track of potential duplicates and log
+        // keep track of resource asset path with the targets it's been added in to track potential duplicates
+        Map<String, Set<String>> resourceTargetsMap = new HashMap<>();
         List<Element> esiResourceElements = source.getAllElements("jahia:resource");
         Set<String> keys = new HashSet<>();
         for (Element esiResourceElement : esiResourceElements) {
-            addAssetByTarget(out, assetsByTarget, resourceCountMap, keys, esiResourceElement);
+            addAssetByTarget(out, assetsByTarget, resourceTargetsMap, keys, esiResourceElement);
         }
 
-        // remove duplicate resources on head if it's already added in body for given types; log other duplicates
-        removeDuplicates(assetsByTarget, new String[] {JS_TYPE, "css"}, resourceCountMap);
-        for (Map.Entry<String, Integer> e: resourceCountMap.entrySet()) {
-            if (e.getValue() > 1) {
-                logger.warn("Potential duplicate static resource with path: '{}'", e.getKey());
+        removeDuplicates(assetsByTarget, new String[] {JS_TYPE, "css"}, resourceTargetsMap);
+        for (Map.Entry<String, Set<String>> e: resourceTargetsMap.entrySet()) {
+            if (logger.isInfoEnabled() && e.getValue() != null && e.getValue().size() > 1) {
+                logger.info("Potential duplicate static resource with path '{}' added to these tags: {}",
+                        e.getKey(), e.getValue());
             }
         }
     }
 
     private void addAssetByTarget(String out, Map<String, Map<String, Map<String, Map<String, String>>>> assetsByTarget,
-            Map<String, Integer> resourceCountMap, Set<String> keys, Element esiResourceElement) throws UnsupportedEncodingException {
+            Map<String, Set<String>> resourceTargetsMap, Set<String> keys, Element esiResourceElement) throws UnsupportedEncodingException {
         StartTag esiResourceStartTag = esiResourceElement.getStartTag();
         Map<String, Map<String, Map<String, String>>> assets;
         String targetTag = esiResourceStartTag.getAttributeValue(TARGET_TAG);
@@ -313,8 +315,10 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         boolean insert = Boolean.parseBoolean(esiResourceStartTag.getAttributeValue("insert"));
         String key = esiResourceStartTag.getAttributeValue("key");
 
-        int resourceCountNum = resourceCountMap.containsKey(path) ? resourceCountMap.get(path) + 1 : 1;
-        resourceCountMap.put(path, resourceCountNum);
+        // keep track of targets that resource path has been added in
+        Set<String> targetTags = resourceTargetsMap.containsKey(path) ? resourceTargetsMap.get(path) : new HashSet<>();
+        targetTags.add(targetTag);
+        resourceTargetsMap.put(path, targetTags);
 
         // get options
         Map<String, String> optionsMap = getOptionMaps(esiResourceStartTag);
@@ -430,10 +434,10 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     /**
      * Remove all static assets in head tag that are already in body tag, for the given asset types;
-     * Update resource count for removed duplicates
+     * Update resourceTargetsMap for removed duplicates
      */
     private void removeDuplicates(Map<String, Map<String, Map<String, Map<String, String>>>> assetsByTarget,
-            String[] targetedTypes, Map<String,Integer> resourceCount) {
+            String[] targetedTypes, Map<String,Set<String>> resourceTargetsMap) {
         if (!assetsByTarget.containsKey(HEAD_TAG) || !assetsByTarget.containsKey(BODY_TAG)) {
             return;
         }
@@ -448,7 +452,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             for (String path: bodyPaths.keySet()) {
                 if (headPaths.containsKey(path)) {
                     headPaths.remove(path);
-                    resourceCount.put(path, resourceCount.get(path) - 1); // update count
+                    // update resourceTargetsMap
+                    Set<String> targetTags = resourceTargetsMap.get(path);
+                    targetTags.remove(HEAD_TAG);
                 }
             }
         }

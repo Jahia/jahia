@@ -33,6 +33,16 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
+        False positive: apache-mime4j-core-0.8.4.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.james/apache\-mime4j\-.*@.*$</packageUrl>
+        <cve>CVE-2021-38542</cve>
+        <cve>CVE-2021-40110</cve>
+        <cve>CVE-2021-40111</cve>
+        <cve>CVE-2021-40525</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
         file name: commons-io-2.2.jar - we already package commons-io-2.8.0.jar
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/commons\-io/commons\-io@.*$</packageUrl>
@@ -106,7 +116,7 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
-        file name: apache-log4j-extras-1.2.17.jar
+        file name: apache-log4j-extras-.*
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/log4j/apache\-log4j\-extras@.*$</packageUrl>
         <cve>CVE-2019-17571</cve>
@@ -114,11 +124,25 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
-        file name: log4j-1.2.17.jar
+        file name: log4j-.*
         ]]></notes>
-        <packageUrl regex="true">^pkg:maven/log4j/log4j@.*$</packageUrl>
-        <cve>CVE-2019-17571</cve>
-        <cve>CVE-2020-9488</cve>
+        <packageUrl regex="true">^pkg:maven/.*log4j@.*$</packageUrl>
+        <cpe>cpe:/a:apache:log4j</cpe>
+        <vulnerabilityName>CVE-2019-17571</vulnerabilityName>
+        <vulnerabilityName>CVE-2020-9488</vulnerabilityName>
+        <vulnerabilityName>CVE-2021-4104</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: jsp-2.1-glassfish-2.1.v20091210.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.mortbay\.jetty/jsp.*\-2\.1\-glassfish@.*$</packageUrl>
+        <cve>CVE-2005-3747</cve>
+        <cve>CVE-2007-5615</cve>
+        <cve>CVE-2009-1523</cve>
+        <cve>CVE-2009-1524</cve>
+        <cve>CVE-2009-5048</cve>
+        <cve>CVE-2009-5049</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -134,6 +158,8 @@
         <packageUrl regex="true">^pkg:maven/org\.apache\.portals\.pluto/pluto\-.*@.*$</packageUrl>
         <cve>CVE-2020-15250</cve>
         <cve>CVE-2021-29425</cve>
+        <cve>CVE-2021-36737</cve>
+        <cve>CVE-2021-36738</cve>
     </suppress> 
     <suppress>
         <notes><![CDATA[
@@ -168,6 +194,7 @@
         <cve>CVE-2021-27905</cve>
         <cve>CVE-2021-29262</cve>
         <cve>CVE-2021-29943</cve>
+        <cve>CVE-2021-44548</cve>
         <vulnerabilityName>CVE-2014-3628</vulnerabilityName>
         <vulnerabilityName>CVE-2017-7660</vulnerabilityName>
     </suppress>
@@ -185,7 +212,7 @@
         <notes><![CDATA[
         file name: log4j-1.2.16.jar - we use log4j-1.2.17.jar
         ]]></notes>
-        <packageUrl regex="true">^pkg:maven/.*log4j@1\.2\.16$</packageUrl>
+        <packageUrl regex="true">^pkg:maven/.*log4j@1\.2\..*$</packageUrl>
         <cpe>cpe:/a:apache:log4j</cpe>
         <vulnerabilityName>CVE-2019-17571</vulnerabilityName>
         <vulnerabilityName>CVE-2020-9488</vulnerabilityName>

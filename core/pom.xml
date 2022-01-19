@@ -180,9 +180,9 @@
 
         <!--javax dependencies-->
         <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
-            <version>1.4.7</version>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>javax.activation</groupId>
@@ -1164,6 +1164,10 @@
                     <groupId>org.codehaus.woodstox</groupId>
                     <artifactId>woodstox-core-asl</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>javax.mail</groupId>
+                    <artifactId>mail</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -1191,6 +1195,10 @@
                 <exclusion>
                     <artifactId>javassist</artifactId>
                     <groupId>org.javassist</groupId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.mail</groupId>
+                    <artifactId>mail</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

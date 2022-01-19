@@ -282,7 +282,7 @@ jobs:
                 name: Sonar analysis
                 environment:
                   DEPENDENCY_CHECK_SETTINGS: -DfailOnError=false -DskipProvidedScope=true -DskipTestScope=false
-                      -DretireJsAnalyzerEnabled=false -DnodeAnalyzerEnabled=false -Dformats=HTML,JSON
+                      -DskipSystemScope=true -DretireJsAnalyzerEnabled=false -DnodeAnalyzerEnabled=false -Dformats=HTML,JSON
                       -Dsonar.dependencyCheck.jsonReportPath=target/dependency-check-report.json
                       -Dsonar.dependencyCheck.htmlReportPath=target/dependency-check-report.html
                       -DdataDirectory=/home/circleci/.owasp/dependency-check-data

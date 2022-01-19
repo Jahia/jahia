@@ -29,10 +29,27 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
+        False positive: apache-mime4j-core-0.8.4.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.james/apache\-mime4j\-.*@.*$</packageUrl>
+        <cve>CVE-2021-38542</cve>
+        <cve>CVE-2021-40110</cve>
+        <cve>CVE-2021-40111</cve>
+        <cve>CVE-2021-40525</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
         file name: commons-io-2.2.jar - we package newer commons-io
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/commons\-io/commons\-io@.*$</packageUrl>
         <cve>CVE-2021-29425</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: gwt-servlet-2.8.2.jar (shaded: com.google.protobuf:protobuf-java:2.5.0)
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/com\.google\.protobuf/protobuf\-java@2\.5\.0$</packageUrl>
+        <cve>CVE-2021-22569</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -89,6 +106,7 @@
         <cve>CVE-2021-27905</cve>
         <cve>CVE-2021-29262</cve>
         <cve>CVE-2021-29943</cve>
+        <cve>CVE-2021-44548</cve>
         <vulnerabilityName>CVE-2014-3628</vulnerabilityName>
         <vulnerabilityName>CVE-2017-7660</vulnerabilityName>
     </suppress>
@@ -100,6 +118,7 @@
         <cpe>cpe:/a:apache:log4j</cpe>
         <vulnerabilityName>CVE-2019-17571</vulnerabilityName>
         <vulnerabilityName>CVE-2020-9488</vulnerabilityName>
+        <vulnerabilityName>CVE-2021-4104</vulnerabilityName>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -122,5 +141,7 @@
         <packageUrl regex="true">^pkg:maven/org\.apache\.portals\.pluto/pluto\-.*@.*$</packageUrl>
         <cve>CVE-2020-15250</cve>
         <cve>CVE-2021-29425</cve>
+        <cve>CVE-2021-36737</cve>
+        <cve>CVE-2021-36738</cve>
     </suppress> 
 </suppressions>

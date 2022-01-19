@@ -44,6 +44,7 @@
 package org.apache.jackrabbit.core.query;
 
 import org.apache.jackrabbit.api.stats.RepositoryStatistics;
+import org.apache.jackrabbit.commons.query.sql2.QOMFormatter;
 import org.apache.jackrabbit.core.query.lucene.JahiaLuceneQueryFactoryImpl;
 import org.apache.jackrabbit.core.query.lucene.LuceneQueryFactory;
 import org.apache.jackrabbit.core.query.lucene.SearchIndex;
@@ -59,6 +60,10 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.QueryResult;
+import javax.jcr.query.qom.Column;
+import javax.jcr.query.qom.QueryObjectModelFactory;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Override QueryObjectModelImpl :
@@ -74,7 +79,30 @@ public class JahiaQueryObjectModelImpl extends QueryObjectModelImpl {
 
         this.lqf = new JahiaLuceneQueryFactoryImpl(sessionContext.getSessionImpl(), (SearchIndex) handler,
                 variables);
+        // wrap columns facet statement with double quotes
 
+        QueryObjectModelFactory qomQueryFactory = sessionContext.getSessionImpl().getWorkspace().getQueryManager().getQOMFactory();
+        boolean hasFacet = false;
+        if (getColumns() != null) {
+            List<Column> columns = new ArrayList<>();
+            for (Column col : getColumns()) {
+                if (col.getColumnName() != null && col.getColumnName().startsWith("rep:facet")) {
+                    try {
+                        hasFacet = true;
+                        columns.add(qomQueryFactory.column(col.getSelectorName(), col.getPropertyName(), String.format("\"%s\"", col.getColumnName())));
+                    } catch (Exception e) {
+                        log.warn("Unable to generate statement for column {} with column name {}", col, col.getColumnName());
+                        columns.add(col);
+                    }
+                }  else {
+                    columns.add(col);
+                }
+            }
+            // Build statement with wrapped facet columns
+            if (hasFacet) {
+                this.statement = QOMFormatter.format(qomQueryFactory.createQuery(getSource(), getConstraint(), getOrderings(), columns.toArray(new Column[0])));
+            }
+        }
     }
 
     @Override
@@ -105,7 +133,7 @@ public class JahiaQueryObjectModelImpl extends QueryObjectModelImpl {
                 .logQuery(language, statement, timeMs);
         return result;
     }
-    
+
     public LuceneQueryFactory getLuceneQueryFactory() {
         return this.lqf;
     }

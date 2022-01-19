@@ -43,6 +43,8 @@
  */
 package org.jahia.test.services.query;
 
+import com.google.common.collect.MapDifference;
+import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
 import org.apache.solr.client.solrj.response.FacetField;
@@ -61,6 +63,7 @@ import org.junit.*;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
+import javax.jcr.query.Query;
 import javax.jcr.query.qom.QueryObjectModel;
 import javax.jcr.query.qom.QueryObjectModelConstants;
 import javax.jcr.query.qom.QueryObjectModelFactory;
@@ -542,22 +545,53 @@ public class FacetedQueryTest {
 
         qomBuilder.setSource(factory.selector("jnt:event", "event"));
         qomBuilder.andConstraint(factory.descendantNode("event", "/sites/jcrFacetTest"));
+        boolean skipStatementCheck = false;
         for (int j = 0; j < facet.length; j++) {
             String prop = facet[j++];
+            // Skip part of i18n test that fails because of bad constraint SQL2 statement generation with NOT operator
+            skipStatementCheck = "rep:filter(location)".equals(prop);
             String val = facet[j];
             if (prop.startsWith("rep:filter(")) {
                 qomBuilder.andConstraint(factory.fullTextSearch("event", "rep:filter("
                         + Text.escapeIllegalJcrChars(StringUtils
-                                .substringAfter(prop, "rep:filter(")), factory.literal(session
+                        .substringAfter(prop, "rep:filter(")), factory.literal(session
                         .getValueFactory().createValue(val))));
             } else {
-                qomBuilder.getColumns().add(factory.column("event", prop, val));                
+                qomBuilder.getColumns().add(factory.column("event", prop, val));
             }
         }
-
         QueryObjectModel qom = qomBuilder.createQOM();
-        QueryResultWrapper res = (QueryResultWrapper) qom.execute();
-        return res;
+        QueryResultWrapper qomRes = (QueryResultWrapper) qom.execute();
+        if (skipStatementCheck) {
+            return qomRes;
+        }
+        // Check that the statement from the QOM execution is equal to to the QOM execution
+        QueryResultWrapper statementRes = session.getWorkspace().getQueryManager().createQuery(qom.getStatement(), Query.JCR_SQL2).execute();
+        List<JCRNodeWrapper> qomResults = new ArrayList<>();
+        NodeIterator ni = qomRes.getNodes();
+        while (ni.hasNext()) {
+            qomResults.add((JCRNodeWrapper) ni.next());
+        }
+        ni = statementRes.getNodes();
+        List<JCRNodeWrapper> statementResults = new ArrayList<>();
+        while (ni.hasNext()) {
+            JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
+            assertTrue(qomResults.stream().anyMatch(node -> {
+                try {
+                    return node.getIdentifier().equals(next.getIdentifier());
+                } catch (Exception e) {
+                    return false;
+                }
+            }));
+            statementResults.add(next);
+        }
+        checkResultSize(qomRes, statementResults.size());
+        // if one of two is null then it should fail.
+        if (qomRes.getFacetQuery() != null || statementRes.getFacetQuery() != null) {
+            MapDifference<String, Long> diff = Maps.difference(qomRes.getFacetQuery(), statementRes.getFacetQuery());
+            assertTrue("statement query and QOM query should have the same facet results", diff.areEqual());
+        }
+        return qomRes;
     }
     
     private QueryResultWrapper doFilteredQuery(JCRSessionWrapper session, final String... constraints)

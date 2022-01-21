@@ -46,6 +46,7 @@ package org.jahia.services.content.nodetypes;
 import org.jahia.api.Constants;
 import org.jahia.services.content.*;
 import org.jahia.test.framework.AbstractJUnitTest;
+import org.jahia.test.utils.TestHelper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,6 +54,8 @@ import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import java.util.Locale;
+
+import static org.jahia.services.sites.JahiaSitesService.SYSTEM_SITE_KEY;
 
 /**
  * Node types related tests
@@ -65,6 +68,8 @@ public class NodeTypesIT extends AbstractJUnitTest {
     @Override
     public void beforeClassSetup() throws Exception {
         super.beforeClassSetup();
+
+        TestHelper.createSite(SYSTEM_SITE_KEY, null);
         JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.EDIT_WORKSPACE, Locale.ENGLISH, session -> {
             session.getNode("/").addNode("nodeTypesTest", "jnt:contentList");
             session.save();

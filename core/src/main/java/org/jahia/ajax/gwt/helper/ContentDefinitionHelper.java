@@ -527,7 +527,7 @@ public class ContentDefinitionHelper {
     }
 
 
-        private void recurseAdd(ExtendedNodeType req, List<String> baseTypes, Map<String, ExtendedNodeType> contentTypes,
+    private void recurseAdd(ExtendedNodeType req, List<String> baseTypes, Map<String, ExtendedNodeType> contentTypes,
                             Collection<ExtendedNodeType> result, boolean includeSubTypes) {
         boolean excludeNonDroppable = false;
         if (req.getName().equals("jmix:droppableContent") || contentTypes.keySet().contains(req.getName())) {

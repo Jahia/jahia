@@ -76,11 +76,10 @@ import java.util.stream.Collectors;
 
 /**
  * Module where a content can be created by clicking on a button or drag'n'dropping on it a content type
- *
+ * <p>
  * User: toto
  * Date: Aug 19, 2009
  * Time: 12:03:48 PM
- *
  */
 public class PlaceholderModule extends Module {
     private LayoutContainer panel;
@@ -152,8 +151,8 @@ public class PlaceholderModule extends Module {
                 displayedNodeTypes.add("jmix:droppableContent");
             }
 
-            for (final String s : displayedNodeTypes) {
-                GWTJahiaNodeType nodeType = ModuleHelper.getNodeType(s);
+            for (final String currentNodeType : displayedNodeTypes) {
+                GWTJahiaNodeType nodeType = ModuleHelper.getNodeType(currentNodeType);
                 if (nodeType != null) {
                     Boolean canUseComponentForCreate = nodeType.get("canUseComponentForCreate");
                     if (canUseComponentForCreate != null && !canUseComponentForCreate) {
@@ -161,16 +160,19 @@ public class PlaceholderModule extends Module {
                     }
                 }
                 Image icon = ContentModelIconProvider.getInstance().getIcon(nodeType).createImage();
-                icon.setTitle(nodeType != null ? nodeType.getLabel() : s);
+                icon.setTitle(nodeType != null ? nodeType.getLabel() : currentNodeType);
                 LayoutContainer p = new HorizontalPanel();
                 p.add(icon);
 
-                Text label = new Text(nodeType != null ? nodeType.getLabel() : s);
+                Text label = new Text(nodeType != null ? nodeType.getLabel() : currentNodeType);
                 if (getWidth() >= MIN_WIDTH || getWidth() == 0) {
                     p.add(label);
                 } else {
                     p.setTitle(label.getText());
                 }
+
+                final String effectiveNodeTypes = displayAnyContent ? String.join(" ", nodeTypesArray) : currentNodeType;
+
                 p.sinkEvents(Event.ONCLICK);
                 p.addStyleName("button-placeholder");
                 p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
@@ -183,7 +185,7 @@ public class PlaceholderModule extends Module {
                             if ((path != null) && !"*".equals(path) && !path.startsWith("/")) {
                                 nodeName = path;
                             }
-                            ContentActions.showContentWizard(mainModule.getEditLinker(), displayAnyContent ? null : s, parentNode, nodeName, true, displayAnyContent ? null : displayedNodeTypes, false, nodeName != null);
+                            ContentActions.showContentWizard(mainModule.getEditLinker(), effectiveNodeTypes, parentNode, nodeName, true, displayAnyContent ? null : displayedNodeTypes, false, nodeName != null);
                         }
                     }
                 });

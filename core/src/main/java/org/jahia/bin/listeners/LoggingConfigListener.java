@@ -131,7 +131,7 @@ public class LoggingConfigListener extends Log4jServletContextListener {
                     new DefaultConfigurationBuilder<BuiltConfiguration>().build(), null));
         }
         logContext.updateLoggers();
-
+        logContext.getLogger(logger);
         // send an OSGi event about changed configuration
         FrameworkService.sendEvent(EVENT_TOPIC_LOGGING,
                 Collections.singletonMap("type", EVENT_TYPE_LOGGING_CONFIG_CHANGED), false);

@@ -49,9 +49,6 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.common.base.Joiner;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.text.StringSubstitutor;
-import org.apache.commons.text.lookup.StringLookup;
-import org.apache.commons.text.lookup.StringLookupFactory;
 import org.jahia.services.provisioning.ExecutionContext;
 import org.jahia.services.provisioning.Operation;
 import org.jahia.services.provisioning.ProvisioningManager;
@@ -73,7 +70,6 @@ public class ProvisioningManagerImpl implements ProvisioningManager {
     private static final Logger logger = LoggerFactory.getLogger(ProvisioningManagerImpl.class);
 
     private Collection<Operation> operations = new ArrayList<>();
-    private StringSubstitutor stringSubstitutor;
     private ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
     private ObjectMapper jsonMapper = new ObjectMapper();
 
@@ -82,10 +78,6 @@ public class ProvisioningManagerImpl implements ProvisioningManager {
      */
     @Activate
     public void activate() {
-        Map<String, StringLookup> l = new HashMap<>();
-        l.put("jahia", key -> SettingsBean.getInstance().getPropertyValue(key));
-        stringSubstitutor = new StringSubstitutor(StringLookupFactory.INSTANCE.interpolatorStringLookup(l, null, true));
-        stringSubstitutor.setEnableSubstitutionInVariables(true);
 
         String script = System.getProperty("executeProvisioningScript");
         if (script != null) {
@@ -178,7 +170,7 @@ public class ProvisioningManagerImpl implements ProvisioningManager {
     @Override
     public List<Map<String, Object>> parseScript(String content, String format) throws IOException {
         boolean yaml = format.equalsIgnoreCase("yml") || format.equalsIgnoreCase("yaml");
-        content = stringSubstitutor.replace(content);
+        content = SettingsBean.getInstance().replaceBySubsitutor(content);
         ObjectMapper objectMapper = yaml ? yamlMapper : jsonMapper;
         return objectMapper.readValue(content, new TypeReference<List<Map<String, Object>>>() {});
     }

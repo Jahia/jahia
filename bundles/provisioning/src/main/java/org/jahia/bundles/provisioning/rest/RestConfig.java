@@ -56,6 +56,6 @@ public class RestConfig extends ResourceConfig {
      * Constructor
      */
     public RestConfig() {
-        super(MultiPartFeature.class, ProvisioningResource.class, YamlProvider.class, JacksonJaxbJsonProvider.class, AuthenticationFilter.class);
+        super(VariableSubstitutionInterceptor.class, MultiPartFeature.class, ProvisioningResource.class, YamlProvider.class, JacksonJaxbJsonProvider.class, AuthenticationFilter.class);
     }
 }

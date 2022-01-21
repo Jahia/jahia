@@ -66,6 +66,9 @@ import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.text.StringSubstitutor;
+import org.apache.commons.text.lookup.StringLookup;
+import org.apache.commons.text.lookup.StringLookupFactory;
 import org.apache.jackrabbit.core.JahiaSearchManager;
 import org.apache.jackrabbit.core.query.lucene.JahiaSearchIndex;
 import org.apache.jackrabbit.core.query.lucene.join.QueryEngine;
@@ -213,6 +216,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private CookieAuthConfig cookieAuthConfig;
 
     private String atmosphereHeartbeatFrequency;
+    private StringSubstitutor stringSubstitutor;
 
     /**
      * @param   pathResolver a path resolver used to locate files on the disk.
@@ -497,9 +501,20 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             if (isProcessingServer()) {
                 Patcher.getInstance().executeScripts("contextInitializing");
             }
+
+            // Init String substitutor
+
+            Map<String, StringLookup> l = new HashMap<>();
+            l.put("jahia", this::getPropertyValue);
+            stringSubstitutor = new StringSubstitutor(StringLookupFactory.INSTANCE.interpolatorStringLookup(l, null, true));
+            stringSubstitutor.setEnableSubstitutionInVariables(true);
         } catch (NullPointerException | NumberFormatException e) {
             logger.error("Properties file is not valid...!", e);
         }
+    }
+
+    public String replaceBySubsitutor(String source) {
+        return stringSubstitutor.replace(source);
     }
 
     private void initDatabaseIfNeeded() throws JahiaRuntimeException {

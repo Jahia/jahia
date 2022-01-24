@@ -51,9 +51,20 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.slf4j.Logger;
 
-import javax.jcr.*;
-import javax.jcr.nodetype.ConstraintViolationException;
-import java.util.*;
+import javax.jcr.ItemExistsException;
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * User: toto
@@ -268,10 +279,24 @@ public class ReferencesHelper {
             JCRNodeWrapper ref = n.addNode(pName.substring(1), "jnt:contentReference");
             updateProperty(session, ref, Constants.NODE, value, false);
         } else {
-            final ExtendedPropertyDefinition propertyDefinition = n.getApplicablePropertyDefinition(pName);
+            ExtendedPropertyDefinition propertyDefinition = n.getApplicablePropertyDefinition(pName);
             if (propertyDefinition == null) {
-                throw new ConstraintViolationException("Couldn't find definition for property " + pName);
+                logger.warn("Error setting property {} on node {}, definition not found",pName, n.getPath());
+                if (live) {
+                    JCRSessionWrapper liveSession =
+                            JCRTemplate.getInstance().getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE);
+                    try {
+                        propertyDefinition = liveSession.getNode(n.getPath()).getApplicablePropertyDefinition(pName);
+                        if (propertyDefinition != null) {
+                            setResolvedReferenceForLive(n, pName, session, value, propertyDefinition);
+                        }
+                    } catch (RepositoryException e) {
+                        // Do nothing
+                    }
+                }
+                return;
             }
+
             String[] constraints = propertyDefinition.getValueConstraints();
             if (constraints != null && constraints.length > 0) {
                 boolean b = false;
@@ -305,32 +330,16 @@ public class ReferencesHelper {
                     if (!n.hasProperty(pName) || !Arrays.equals(newValues, n.getProperty(pName).getValues())) {
                         session.checkout(n);
                         JCRPropertyWrapper property = n.setProperty(pName, newValues);
-    
                         if (live) {
-                            try {
-                                property.getParent().getCorrespondingNodePath("live");
-                                String key = property.getParent().getIdentifier() + "/" + property.getName();
-                                if (!session.getResolvedReferences().containsKey(key)) {
-                                    session.getResolvedReferences().put(key, new HashSet<String>());
-                                }
-                                ((Set<String>) session.getResolvedReferences().get(key)).add(value);
-                            } catch (ItemNotFoundException e) {
-                                // Not in live
-                            }
+                            setResolvedReferenceForLive(property.getParent(), pName, session, value, propertyDefinition);
                         }
                     }
                 } else {
                     if (!n.hasProperty(pName) || !value.equals(n.getProperty(pName).getString())) {
                         session.checkout(n);
                         JCRPropertyWrapper property = n.setProperty(pName, session.getValueFactory().createValue(value, propertyDefinition.getRequiredType()));
-                        String key = property.getParent().getIdentifier() + "/" + property.getName();
                         if (live) {
-                            try {
-                                property.getParent().getCorrespondingNodePath("live");
-                                session.getResolvedReferences().put(key, property.getValue().getString());
-                            } catch (ItemNotFoundException e) {
-                                // Not in live
-                            }
+                            setResolvedReferenceForLive(property.getParent(), pName, session, value, propertyDefinition);
                         }
                     }
                 }
@@ -345,6 +354,24 @@ public class ReferencesHelper {
                     logger.error(msg);
                 }
             }
+        }
+    }
+
+    private static void setResolvedReferenceForLive(JCRNodeWrapper node, String propertyName, JCRSessionWrapper session, String value,
+            ExtendedPropertyDefinition definition) throws RepositoryException {
+        try {
+            String key = node.getIdentifier() + "/" + propertyName;
+            node.getCorrespondingNodePath("live");
+            if (definition.isMultiple()) {
+                if (!session.getResolvedReferences().containsKey(key)) {
+                    session.getResolvedReferences().put(key, new HashSet<String>());
+                }
+                ((Set<String>) session.getResolvedReferences().get(key)).add(value);
+            } else {
+                session.getResolvedReferences().put(key, value);
+            }
+        } catch (ItemNotFoundException e) {
+            // Not in live
         }
     }
 

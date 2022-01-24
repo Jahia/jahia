@@ -62,6 +62,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.SocketException;
 import java.util.*;
 
 /**
@@ -339,5 +340,44 @@ public class ErrorFileDumperTest {
                 logger.error("Error while dumping error", e);
             }
         }
+    }
+
+    private void generateSocketExceptions() {
+        for (int i=0; i < LOOP_COUNT; i++) {
+            MockHttpServletRequest request = new MockHttpServletRequest();
+            request.setRequestURI("/cms");
+            request.setQueryString("name=value");
+            request.addHeader("headerName", "headerValue");
+            try {
+                ErrorFileDumper.dumpToFile(new SocketException("mock error " + i), (HttpServletRequest) request);
+            } catch (IOException e) {
+                logger.error("Error while dumping error", e);
+            }
+        }
+    }
+
+    @Test
+    public void testIgnoreExceptionClass() throws InterruptedException {
+
+        logger.info("Starting testIgnoreExceptionClass test...");
+
+        ErrorFileDumper.start();
+
+        logger.info("Activating Error file dumping...");
+        ErrorFileDumper.setFileDumpActivated(true);
+
+        File[] files = todaysDirectory.listFiles();
+        int fileCountBeforeTest = (files == null ? 0 : files.length);
+
+        generateSocketExceptions();
+
+        Thread.sleep(5000);
+
+        files = todaysDirectory.listFiles();
+        int fileCountAfterTest = (files == null ? 0 : files.length);
+        Assert.assertTrue("File count after test should be same but it is not", (fileCountAfterTest == fileCountBeforeTest));
+
+        ErrorFileDumper.shutdown(10000L);
+
     }
 }

@@ -292,6 +292,10 @@ public class ErrorFileDumper {
 
     private static void performDumpToFile(Throwable exception, HttpRequestData httpRequestData) throws IOException {
 
+        if (exceptionShouldBeIgnored(exception)) {
+            return;
+        }
+
         long dumpStartTime = System.currentTimeMillis();
 
         Throwable previousExceptionToDump;
@@ -346,7 +350,7 @@ public class ErrorFileDumper {
     public static StringWriter generateErrorReport(HttpRequestData requestData, Throwable exception, int previousExceptionOccurences, Throwable previousException) {
 
         StringWriter msgBodyWriter = new StringWriter();
-        if (isHighLoad()) {
+        if (isHighLoad() || exceptionShouldBeIgnored(exception)) {
             return msgBodyWriter;
         }
         PrintWriter strOut = new PrintWriter(msgBodyWriter);
@@ -716,5 +720,13 @@ public class ErrorFileDumper {
         mBeanServer.invoke(hotSpotDiagnostic, "dumpHeap", new Object[] { hprofFilePath.getPath(), Boolean.TRUE },
                 new String[] { String.class.getName(), boolean.class.getName() });
         return hprofFilePath;
+    }
+
+    private static boolean exceptionShouldBeIgnored(Throwable exception) {
+        try {
+            return Class.forName("java.net.SocketException").isInstance(exception);
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
     }
 }

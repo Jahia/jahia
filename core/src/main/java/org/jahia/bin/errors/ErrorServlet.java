@@ -251,6 +251,7 @@ public class ErrorServlet extends HttpServlet {
 
         if (response.isCommitted()) {
             logger.warn("Response is already committed. Skipping error processing.");
+            ErrorLoggingFilter.handle(request, response);
             return;
         }
 

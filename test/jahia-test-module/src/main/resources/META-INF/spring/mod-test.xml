@@ -21,8 +21,6 @@
                 <value>org.apache.jackrabbit.test.api.util.TestAll</value>
                 <value>org.apache.jackrabbit.test.api.version.TestAll</value>
                 <value>org.apache.jackrabbit.test.api.version.simple.TestAll</value>
-                <value>org.jahia.test.bin.FindPrincipalTest</value>
-                <value>org.jahia.test.bin.FindTest</value>
                 <value>org.jahia.test.bin.RenderTest</value>
                 <value>org.jahia.test.osgi.SpringBridgeTest</value>
                 <value>org.jahia.test.osgi.SpringContextSingletonTest</value>

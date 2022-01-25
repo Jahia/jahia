@@ -41,6 +41,14 @@ rule "Profile Image update"
     then
         Create a square thumbnail on reference "avatar_120" of size 120
         Create a square thumbnail on reference "avatar_60" of size 60
+end
+
+rule "Profile Image publication"
+    salience 10
+    when
+        A property j:picture has been set on a node
+             - the node has the type jnt:user
+    then
         Publish user profile picture node.getProperty("j:picture").getNodeValue()
 end
 

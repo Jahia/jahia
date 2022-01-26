@@ -12,7 +12,7 @@
 //---------------------------------------------------------
 
 [jmix:nodenameInfo] > mix:referenceable mixin
- - j:nodename (string) protected hidden nofulltext
+ - j:nodename (string) protected hidden
  - j:fullpath (string) protected hidden nofulltext
 
 [jmix:systemNode] mixin

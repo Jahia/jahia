@@ -74,11 +74,15 @@ import javax.jcr.RepositoryException;
 /**
  * Unit test for simple fulltext search
  * settings (all, none, one, two languages) - with using user not having rights - publication with automatically publishing parent
- * 
+ *
  * @author Benjamin Papez
- * 
+ *
  */
 public class SimpleSearchTest extends JahiaTestCase {
+    public static final String UNEXPECTED_NUMBER_OF_SEARCH_RESULTS_FOR = "Unexpected number of search results for: ";
+    public static final String UNEXPECTED_SEARCH_RESULT_TITLE_FOR = "Unexpected search result title for: ";
+    public static final long ONE_SITE_RESULT = 21L;
+    public static final int SITE_MULTIPLIER = 2;
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(SimpleSearchTest.class);
     private final static String FIRST_TESTSITE_NAME = "jcrSearchTest";
     private final static String SECOND_TESTSITE_NAME = "jcrSearchTest2";
@@ -128,7 +132,7 @@ public class SimpleSearchTest extends JahiaTestCase {
     private RenderContext getContext() throws RepositoryException {
     	return getContext(FIRST_SITECONTENT_ROOT_NODE, Locale.ENGLISH);
     }
-    
+
     protected static RenderContext getContext(String siteRootNode, Locale locale) throws RepositoryException {
         RenderContext context = new RenderContext(getRequest(), getResponse(), getUser());
         JCRSessionWrapper session = JCRSessionFactory.getInstance()
@@ -140,10 +144,10 @@ public class SimpleSearchTest extends JahiaTestCase {
         context.setSite(homeNode.getResolveSite());
         context.setServletPath("/cms/render");
         new URLGenerator(context, resource);
-        
+
         return context;
     }
-    
+
     @Test
     public void testSimpleFulltextSearchOnSingleSite() throws Exception {
         SearchService searchService = ServicesRegistry.getInstance()
@@ -168,7 +172,7 @@ public class SimpleSearchTest extends JahiaTestCase {
         for (Hit<?> hit : hits) {
             logger.info("[" + (++i) + "]: " + hit.getLink());
         }
-        assertEquals("Unexpected number of search results for: " + criteria.toString(), 19, hits.size());
+        assertEquals(UNEXPECTED_NUMBER_OF_SEARCH_RESULTS_FOR + criteria.toString(), 21, hits.size());
     }
 
     @Test
@@ -191,7 +195,7 @@ public class SimpleSearchTest extends JahiaTestCase {
         criteria.getTerms().get(0).getFields().setSiteContent(true);
 
         List<Hit<?>> hits = searchService.search(criteria, context).getResults();
-        assertEquals("Unexpected number of search results for: " + criteria.toString(), 15, hits.size());
+        assertEquals(UNEXPECTED_NUMBER_OF_SEARCH_RESULTS_FOR + criteria.toString(), 15, hits.size());
     }
 
     @Test
@@ -219,11 +223,11 @@ public class SimpleSearchTest extends JahiaTestCase {
         criteria.getTerms().get(0).getFields().setKeywords(true);
 
         List<Hit<?>> hits = searchService.search(criteria, context).getResults();
-        assertEquals("Unexpected number of search results for: " + criteria.toString(), 15, hits.size());
+        assertEquals(UNEXPECTED_NUMBER_OF_SEARCH_RESULTS_FOR + criteria.toString(), 15, hits.size());
 
         criteria.setFileType("pdf");
         hits = searchService.search(criteria, context).getResults();
-        assertEquals("Unexpected number of search results for: " + criteria.toString(), 10, hits.size());
+        assertEquals(UNEXPECTED_NUMBER_OF_SEARCH_RESULTS_FOR + criteria.toString(), 10, hits.size());
     }
 
     @Test
@@ -247,29 +251,33 @@ public class SimpleSearchTest extends JahiaTestCase {
         criteria.getTerms().get(0).getFields().setSiteContent(true);
 
         List<Hit<?>> hits = searchService.search(criteria, context).getResults();
-        assertEquals("Unexpected number of search results for: " + criteria.toString(), 1, hits.size());
+        assertEquals(UNEXPECTED_NUMBER_OF_SEARCH_RESULTS_FOR + criteria.toString(), 1, hits.size());
 
         criteria.getTerms().get(0).setTerm("civil Polytech");
         criteria.getTerms().get(0).setMatch(MatchType.ANY_WORD);
         hits = searchService.search(criteria, context).getResults();
-        assertEquals("Unexpected number of search results for: " + criteria.toString(), 3, hits.size());
+        assertEquals(UNEXPECTED_NUMBER_OF_SEARCH_RESULTS_FOR + criteria.toString(), 3, hits.size());
 
         criteria.getTerms().get(0).setTerm("civil engineering");
         criteria.getTerms().get(0).setMatch(MatchType.EXACT_PHRASE);
         hits = searchService.search(criteria, context).getResults();
-        assertEquals("Unexpected number of search results for: " + criteria.toString(), 3, hits.size());
+        assertEquals(UNEXPECTED_NUMBER_OF_SEARCH_RESULTS_FOR + criteria.toString(), 3, hits.size());
 
         criteria.getTerms().get(0).setTerm("civil -engineering");
         criteria.getTerms().get(0).setMatch(MatchType.AS_IS);
         hits = searchService.search(criteria, context).getResults();
-        assertEquals("Unexpected number of search results for: " + criteria.toString(), 0, hits.size());
+        assertEquals(UNEXPECTED_NUMBER_OF_SEARCH_RESULTS_FOR + criteria.toString(), 1, hits.size());
+        assertEquals(UNEXPECTED_SEARCH_RESULT_TITLE_FOR + criteria.toString(),
+                "/cms/render/default/en/sites/jcrSearchTest/home/activities/construction-et-projets-civils-d.html", hits.get(0).getLink());
 
         criteria.getTerms().get(0).setTerm("civil");
         criteria.getTerms().get(0).setMatch(MatchType.ANY_WORD);
         criteria.getTerms().get(1).setTerm("engineering");
         criteria.getTerms().get(1).setMatch(MatchType.WITHOUT_WORDS);
         hits = searchService.search(criteria, context).getResults();
-        assertEquals("Unexpected number of search results for: " + criteria.toString(), 0, hits.size());
+        assertEquals(UNEXPECTED_NUMBER_OF_SEARCH_RESULTS_FOR + criteria.toString(), 1, hits.size());
+        assertEquals(UNEXPECTED_SEARCH_RESULT_TITLE_FOR + criteria.toString(),
+                "/cms/render/default/en/sites/jcrSearchTest/home/activities/construction-et-projets-civils-d.html", hits.get(0).getLink());
     }
 
     @Test
@@ -292,7 +300,8 @@ public class SimpleSearchTest extends JahiaTestCase {
         criteria.getTerms().get(0).getFields().setSiteContent(true);
 
         List<Hit<?>> hits = searchService.search(criteria, context).getResults();
-        assertEquals("Unexpected number of search results for: " + criteria.toString(), 19 * 2, hits.size());
+        long expectedResults = ONE_SITE_RESULT * SITE_MULTIPLIER;
+        assertEquals(UNEXPECTED_NUMBER_OF_SEARCH_RESULTS_FOR + criteria.toString(),  expectedResults, hits.size());
     }
 
     @Test
@@ -351,7 +360,7 @@ public class SimpleSearchTest extends JahiaTestCase {
                 countsByType.put(hit.getType(), 1);
             }
         }
-        
+
         assertEquals("Expected result counts/types are not matched", expectedCountsByType, countsByType);
     }
 

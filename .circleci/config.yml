@@ -3,6 +3,7 @@ version: 2.1
 orbs:
   docker-tags-orb: jahia/docker-tags-orb@1.1.0
   anchore: anchore/anchore-engine@1.8.1
+  jahia-modules-orb: jahia/jahia-modules-orb@1
 
 commands:
   generate_cachekey_seed:
@@ -109,6 +110,15 @@ jobs:
       - run:
           name: Store docker image
           command: docker save -o image.tar jahia/jahia-core-dev:`cat image.tag`
+      - when:
+          condition:
+            and:
+              - on_fail
+              - not: << pipeline.parameters.run_pull_request >>
+          steps:
+            - jahia-modules-orb/slack-jahia:
+                job_event: "fail"
+                skip_docker: true
       - save_cache:
           paths:
             - ~/.m2
@@ -365,7 +375,9 @@ workflows:
           name: PR Checkout
       - build:
           name: PR Build Jahia
-          context: QA_ENVIRONMENT
+          context: 
+            - QA_ENVIRONMENT
+            - product-slack
           requires:
             - PR Checkout
       - integration_tests:
@@ -402,7 +414,9 @@ workflows:
                 - /JAHIA-[0-9]-[0-9]-[0-9]-X-BRANCH/
       - build:
           name: Build Jahia
-          context: QA_ENVIRONMENT
+          context: 
+            - QA_ENVIRONMENT
+            - product-slack
           requires:
             - checkout
       - integration_tests:
@@ -440,6 +454,8 @@ workflows:
                 - /JAHIA-[0-9]-[0-9]-[0-9]-X-BRANCH/
       - build:
           name: Build Jahia
-          context: QA_ENVIRONMENT
+          context: 
+            - QA_ENVIRONMENT
+            - product-slack
           requires:
             - checkout

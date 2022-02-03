@@ -235,7 +235,7 @@ public class SimpleSearchTest extends JahiaTestCase {
         SearchService searchService = ServicesRegistry.getInstance()
                 .getSearchService();
         RenderContext context = getContext();
-
+        String contextPath = context.getRequest().getContextPath();
         SearchCriteria criteria = new SearchCriteria();
 
         CommaSeparatedMultipleValue oneSite = new CommaSeparatedMultipleValue();
@@ -268,7 +268,7 @@ public class SimpleSearchTest extends JahiaTestCase {
         hits = searchService.search(criteria, context).getResults();
         assertEquals(UNEXPECTED_NUMBER_OF_SEARCH_RESULTS_FOR + criteria.toString(), 1, hits.size());
         assertEquals(UNEXPECTED_SEARCH_RESULT_TITLE_FOR + criteria.toString(),
-                "/cms/render/default/en/sites/jcrSearchTest/home/activities/construction-et-projets-civils-d.html", hits.get(0).getLink());
+                contextPath + "/cms/render/default/en/sites/jcrSearchTest/home/activities/construction-et-projets-civils-d.html", hits.get(0).getLink());
 
         criteria.getTerms().get(0).setTerm("civil");
         criteria.getTerms().get(0).setMatch(MatchType.ANY_WORD);
@@ -277,7 +277,7 @@ public class SimpleSearchTest extends JahiaTestCase {
         hits = searchService.search(criteria, context).getResults();
         assertEquals(UNEXPECTED_NUMBER_OF_SEARCH_RESULTS_FOR + criteria.toString(), 1, hits.size());
         assertEquals(UNEXPECTED_SEARCH_RESULT_TITLE_FOR + criteria.toString(),
-                "/cms/render/default/en/sites/jcrSearchTest/home/activities/construction-et-projets-civils-d.html", hits.get(0).getLink());
+                contextPath + "/cms/render/default/en/sites/jcrSearchTest/home/activities/construction-et-projets-civils-d.html", hits.get(0).getLink());
     }
 
     @Test

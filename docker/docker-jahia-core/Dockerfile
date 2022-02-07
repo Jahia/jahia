@@ -44,6 +44,7 @@ ENV DS_IN_DB="true" DS_PATH=""
 ENV EXECUTE_PROVISIONING_SCRIPT=""
 ENV JAHIA_PROPERTIES=""
 ENV SSL_ENABLED="false" SSL_CERTIFICATE_PASSWD="changeit"
+ENV YOURKIT_ACTIVATED="false"
 
 WORKDIR /tmp
 
@@ -83,6 +84,11 @@ RUN echo "Retrieve latest ImageMagick binaries..." \
     && mkdir /opt/magick \
     && mv squashfs-root/usr/* /opt/magick \
     && rm -rf /opt/magick/share/ squashfs-root/ ./magick
+
+RUN echo "Retrieve latest Yourkit agent binaries..." \
+    && wget https://www.yourkit.com/download/docker/YourKit-JavaProfiler-2021.11-docker.zip -P /tmp/ \
+    && unzip /tmp/YourKit-JavaProfiler-2021.11-docker.zip -d /usr/local \
+    && rm /tmp/YourKit-JavaProfiler-2021.11-docker.zip
 
 # Add container user and grant permissions
 RUN groupadd -g 999 ${C_GROUP}
@@ -132,5 +138,6 @@ USER ${C_USER}
 EXPOSE 8080
 EXPOSE 8101
 EXPOSE 8443
+EXPOSE 10001
 
 CMD ["/usr/local/bin/entrypoint.sh"]

@@ -95,13 +95,13 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
       echo "${JAHIA_LICENSE}" | base64 --decode > ${DATA_FOLDER}/license.xml
       JAHIA_LICENSE_OPTS="-Djahia.configure.licenseFile=${DATA_FOLDER}/license.xml"
     else
-      echo "No license provided via environment variable"    
+      echo "No license provided via environment variable"
     fi
 
     if [ "${JAHIA_PROPERTIES}" != "" ]; then
-      JAHIA_PROPERTIES="${JAHIA_PROPERTIES},mvnPath:\"/opt/apache-maven-${MAVEN_VER}/bin/mvn\",svnPath:\"/usr/bin/svn\",gitPath:\"/usr/bin/git\",karaf.remoteShell.host:\"0.0.0.0\""
+      JAHIA_PROPERTIES="${JAHIA_PROPERTIES},\"mvnPath\":\"/opt/apache-maven-${MAVEN_VER}/bin/mvn\",\"svnPath\":\"/usr/bin/svn\",\"gitPath\":\"/usr/bin/git\",\"karaf.remoteShell.host\":\"0.0.0.0\""
     else
-      JAHIA_PROPERTIES="mvnPath:\"/opt/apache-maven-${MAVEN_VER}/bin/mvn\",svnPath:\"/usr/bin/svn\",gitPath:\"/usr/bin/git\",karaf.remoteShell.host:\"0.0.0.0\""
+      JAHIA_PROPERTIES="\"mvnPath\":\"/opt/apache-maven-${MAVEN_VER}/bin/mvn\",\"svnPath\":\"/usr/bin/svn\",\"gitPath\":\"/usr/bin/git\",\"karaf.remoteShell.host\":\"0.0.0.0\""
     fi
 
     echo "Configure jahia..."
@@ -178,6 +178,10 @@ fi
 if [ "${RESTORE_PERSISTED_CONFIGURATION}" == "true" ]; then
     echo " -- Restore OSGi configuration have been asked"
     touch "${DATA_FOLDER}/[persisted-configurations].dorestore"
+fi
+
+if [ "$YOURKIT_ACTIVATED" == "true" ]; then
+    export CATALINA_OPTS="${CATALINA_OPTS} -agentpath:/usr/local/YourKit-JavaProfiler-2021.11/bin/linux-x86-64/libyjpagent.so=port=10001,listen=all"
 fi
 
 if [ "$JPDA" == "true" ]; then

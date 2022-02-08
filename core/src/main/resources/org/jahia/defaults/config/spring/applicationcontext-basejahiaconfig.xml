@@ -327,15 +327,6 @@
                 </bean>
 
                 <bean class="org.jahia.bin.filters.ServletFilter">
-                    <property name="filterName" value="SpnegoHttpFilter"/>
-                    <property name="filter">
-                        <bean class="org.jahia.bin.filters.FallbackDelegatingFilterProxy"/>
-                    </property>
-                    <property name="order" value="-2"/>
-                    <property name="matchAllUrls" value="true"/>
-                </bean>
-
-                <bean class="org.jahia.bin.filters.ServletFilter">
                     <property name="filterName" value="JcrSessionFilter"/>
                     <property name="filter" ref="JcrSessionFilter"/>
                     <property name="dispatcherTypes">

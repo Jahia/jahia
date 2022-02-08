@@ -77,6 +77,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 /**
  * System information utility.
@@ -723,10 +724,12 @@ public class ErrorFileDumper {
     }
 
     private static boolean exceptionShouldBeIgnored(Throwable exception) {
-        try {
-            return Class.forName("java.net.SocketException").isInstance(exception);
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
+        return Stream.of("java.net.SocketException", "org.apache.catalina.connector.ClientAbortException").anyMatch(s -> {
+            try {
+                return Class.forName(s).isInstance(exception);
+            } catch (ClassNotFoundException e) {
+                return false;
+            }
+        });
     }
 }

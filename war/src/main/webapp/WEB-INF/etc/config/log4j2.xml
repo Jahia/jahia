@@ -120,6 +120,7 @@
         <Logger
             name="org.ops4j.pax.url.mvn.internal.AetherBasedResolver"
             level="ERROR" />
+        <Logger name="org.atmosphere.handler" level="ERROR" />
         <Root level="info">
             <AppenderRef ref="RollingJahiaLog" />
             <AppenderRef ref="Console" />

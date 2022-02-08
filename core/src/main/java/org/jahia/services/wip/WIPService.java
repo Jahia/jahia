@@ -197,8 +197,7 @@ public class WIPService {
 
         boolean autoPublishNode = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(session.getUser(), session.getWorkspace().getName(),
                 session.getLocale(), systemSession -> {
-                    Node targetNode = systemSession.getProviderSession(node.getProvider())
-                            .getNodeByIdentifier(node.getIdentifier());
+                    JCRNodeWrapper targetNode = systemSession.getNodeByIdentifier(node.getIdentifier());
 
                     boolean debugEnabled = logger.isDebugEnabled();
                     boolean checkForAutoPublish = false;
@@ -234,7 +233,7 @@ public class WIPService {
                                 throw new IllegalStateException("Unknown work in progress status: " + wipStatusToSet);
                         }
                     }
-                    targetNode.getSession().save();
+                    systemSession.save();
                     return checkForAutoPublish;
                 });
 

@@ -298,6 +298,14 @@
             <param-name>org.atmosphere.cpr.annotation.useBytecodeProcessor</param-name>
             <param-value>true</param-value>
         </init-param>
+        <!--
+            This is necessary to avoid Atmosphere creating tomcat session. In clustered env it's conflicting with distributed sessions.
+            Also, there is no need to create new sessions during Atmosphere handshake as Jahia is responsible for the session lifecycle.
+        -->
+        <init-param>
+            <param-name>org.atmosphere.cpr.sessionCreate</param-name>
+            <param-value>false</param-value>
+        </init-param>
 
         <load-on-startup>1</load-on-startup>
         <!--Uncomment if you want to use Servlet 3.0 Async Support-->

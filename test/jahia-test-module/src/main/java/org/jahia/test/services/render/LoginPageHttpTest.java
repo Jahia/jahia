@@ -79,7 +79,7 @@ import static org.assertj.core.api.Assertions.*;
 
 /**
  * HTTP-based test for the login page.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class LoginPageHttpTest extends JahiaTestCase {
@@ -92,7 +92,7 @@ public class LoginPageHttpTest extends JahiaTestCase {
     private static final String LOGIN_URL_FORMAT = "/cms/login?username=%s&password=%s&redirect=%s";
     private static final String ABOUT_US_TITLE = "<title>About Us</title>";
     private static final String LOGIN_FORM_NAME_LOCATOR = "name=\"loginForm\"";
-    
+
     private static String aboutUsPageUrl;
 
     @BeforeClass
@@ -215,6 +215,7 @@ public class LoginPageHttpTest extends JahiaTestCase {
                 .withFailMessage("Guest can access the home page, which should not be the case");
 
         // we put the remember me cookie into HTTP state
+        context.getCookieStore().clear();
         context.getCookieStore().addCookie(authCookie);
 
         content = getAsText(aboutUsPageUrl, null, HttpServletResponse.SC_OK, null, context);

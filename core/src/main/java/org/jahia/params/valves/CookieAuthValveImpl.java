@@ -85,17 +85,25 @@ public class CookieAuthValveImpl extends BaseAuthValve {
             return;
         }
 
+        logger.debug("Invoking cookie auth...");
         AuthValveContext authContext = (AuthValveContext) context;
         JCRUserNode jahiaUser = null;
+
         // now lets look for a cookie in case we are using cookie-based
         // authentication.
         Cookie[] cookies = cookieAuthConfig.isActivated() ? authContext.getRequest().getCookies() : null;
+        if (!cookieAuthConfig.isActivated()) {
+            logger.debug("Cookie auth not activated");
+        }
+
         if (cookies == null) {
+            logger.debug("No cookies found");
             // no cookies at all sent by the client, let's go to the next
             // valve.
             valveContext.invokeNext(context);
             return;
         }
+
         // we first need to find the authentication cookie in the list.
         Cookie authCookie = null;
         for (Cookie curCookie : cookies) {
@@ -117,28 +125,34 @@ public class CookieAuthValveImpl extends BaseAuthValve {
                 value = StringUtils.substringBefore(value, ":");
             }
             if (value.equals("deleted")) {
+                logger.debug("Deleted cookie");
                 valveContext.invokeNext(context);
                 return;
             }
             searchCriterias.setProperty(userPropertyName, value);
             Set<JCRUserNode> foundUsers = null;
             try {
+                logger.debug("Auth cookie found. Searching users...");
                 foundUsers = ServicesRegistry.getInstance().getJahiaUserManagerService().searchUsers(searchCriterias, realm, null, JCRSessionFactory.getInstance().getCurrentSystemSession("live", null, null));
                 if (foundUsers.size() == 1) {
                     jahiaUser = foundUsers.iterator().next();
                     if (jahiaUser.isAccountLocked()) {
+                        logger.debug("Account locked");
                         jahiaUser = null;
                     } else {
                         HttpSession session = authContext.getRequest().getSession(false);
                         if (session != null) {
+                            logger.debug("Attaching user to session");
                             session.setAttribute(Constants.SESSION_USER, jahiaUser.getJahiaUser());
                         }
 
                         if (cookieAuthConfig.isRenewalActivated()) {
+                            logger.debug("Renewal activated. Recreating cookie..");
                             sendCookie(value, authContext, jahiaUser, cookieAuthConfig);
                         }
                     }
                 } else {
+                    logger.debug("Creating deleted cookie...");
                     authCookie = new Cookie(cookieAuthConfig.getCookieName(), "deleted");
                     authCookie.setPath(StringUtils.isNotEmpty(authContext.getRequest().getContextPath()) ?
                             authContext.getRequest().getContextPath() : "/");
@@ -150,16 +164,23 @@ public class CookieAuthValveImpl extends BaseAuthValve {
             } catch (RepositoryException e) {
                 logger.error("Error while searching for users", e);
             }
+        } else {
+            logger.debug("Cookie auth not found");
         }
+
         if (jahiaUser == null) {
+            logger.debug("No user found");
             valveContext.invokeNext(context);
         } else {
+            logger.debug("User found");
             JahiaUser user = jahiaUser.getJahiaUser();
             if (authContext.getRequest().getSession(false) != null) {
+                logger.debug("Invalidated session");
                 authContext.getRequest().getSession().invalidate();
             }
             authContext.getSessionFactory().setCurrentUser(user);
         }
+        logger.debug("Cookie auth invoked");
     }
 
     public static void createAndSendCookie(AuthValveContext authContext, JCRUserNode theUser, CookieAuthConfig cookieAuthConfig) {
@@ -168,6 +189,9 @@ public class CookieAuthValveImpl extends BaseAuthValve {
         // let's save the identifier for the user in the database
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, session -> {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Saving cookie auth for user: {}...", theUser.getPath());
+                }
                 JCRUserNode innerUserNode = (JCRUserNode) session.getNode(theUser.getPath());
                 innerUserNode.setProperty(cookieAuthConfig.getUserPropertyName(), cookieUserKey);
                 session.save();
@@ -182,6 +206,9 @@ public class CookieAuthValveImpl extends BaseAuthValve {
     protected static void sendCookie(String cookieUserKey, AuthValveContext authContext, JCRUserNode theUser, CookieAuthConfig cookieAuthConfig) {
         // now let's save the same identifier in the cookie.
         String realm = theUser.getRealm();
+        if (realm != null && logger.isDebugEnabled()) {
+            logger.debug("Found realm: {}", realm);
+        }
         Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieUserKey + (realm != null ? (":"+realm) : ""));
         authCookie.setPath(StringUtils.isNotEmpty(authContext.getRequest().getContextPath()) ?
                 authContext.getRequest().getContextPath() : "/");

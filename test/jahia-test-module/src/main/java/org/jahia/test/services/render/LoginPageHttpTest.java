@@ -48,10 +48,13 @@ import com.google.common.collect.Iterables;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hc.client5.http.cookie.Cookie;
 import org.apache.hc.client5.http.protocol.HttpClientContext;
+import org.apache.logging.log4j.Level;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
+import org.jahia.bin.listeners.LoggingConfigListener;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.valves.CookieAuthConfig;
+import org.jahia.params.valves.CookieAuthValveImpl;
 import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
@@ -183,44 +186,52 @@ public class LoginPageHttpTest extends JahiaTestCase {
 
     @Test
     public void testRememberMe() {
-        HttpClientContext context = new HttpClientContext();
+        String loggerName = LoggerFactory.getLogger(CookieAuthValveImpl.class).getName();
+        try {
+            // enable debug logging
+            LoggingConfigListener.setLoggerLevel(loggerName, Level.DEBUG.toString());
 
-        CookieAuthConfig cookieAuthConfig = (CookieAuthConfig) SpringContextSingleton.getBean("cookieAuthConfig");
-        Map<String, List<String>> responseHeaders = new HashMap<>();
-        getAsText("/cms/login?username=" + USERNAME + "&password=" + PASSWORD + "&restMode=true" + "&" + LoginEngineAuthValveImpl.USE_COOKIE
-                + "=on", null, HttpServletResponse.SC_OK, responseHeaders, context);
+            HttpClientContext context = new HttpClientContext();
+            CookieAuthConfig cookieAuthConfig = (CookieAuthConfig) SpringContextSingleton.getBean("cookieAuthConfig");
+            Map<String, List<String>> responseHeaders = new HashMap<>();
+            getAsText("/cms/login?username=" + USERNAME + "&password=" + PASSWORD + "&restMode=true" + "&" + LoginEngineAuthValveImpl.USE_COOKIE
+                    + "=on", null, HttpServletResponse.SC_OK, responseHeaders, context);
 
-        String cookieName = cookieAuthConfig.getCookieName();
-        List<String> setCookie = responseHeaders.get("Set-Cookie");
-        Iterator<String> cookieValueIteraror = setCookie != null
-                ? Iterables.filter(setCookie, Predicates.containsPattern(cookieName + "=")).iterator()
-                : null;
-        assertThat(cookieValueIteraror).isNotNull()
-                .withFailMessage("The response header should contain the corresponding remember me cookie %s", cookieName);
-        String cookieValue = StringUtils.substringBetween(cookieValueIteraror.next(), cookieName + "=", ";");
+            String cookieName = cookieAuthConfig.getCookieName();
+            List<String> setCookie = responseHeaders.get("Set-Cookie");
+            Iterator<String> cookieValueIteraror = setCookie != null
+                    ? Iterables.filter(setCookie, Predicates.containsPattern(cookieName + "=")).iterator()
+                    : null;
+            assertThat(cookieValueIteraror).isNotNull()
+                    .withFailMessage("The response header should contain the corresponding remember me cookie %s", cookieName);
+            String cookieValue = StringUtils.substringBetween(cookieValueIteraror.next(), cookieName + "=", ";");
 
-        Cookie authCookie = getCookie(context, cookieName);
-        assertThat(authCookie).isNotNull().withFailMessage("Remember me cookie is not present in HTTP client state");
-        assertThat(authCookie.getValue()).isEqualTo(cookieValue).withFailMessage("Remember me cookie has wrong value in HTTP client state");
+            Cookie authCookie = getCookie(context, cookieName);
+            assertThat(authCookie).isNotNull().withFailMessage("Remember me cookie is not present in HTTP client state");
+            assertThat(authCookie.getValue()).isEqualTo(cookieValue).withFailMessage("Remember me cookie has wrong value in HTTP client state");
 
-        String content = getAsText(aboutUsPageUrl, null, HttpServletResponse.SC_OK, null, context);
+            String content = getAsText(aboutUsPageUrl, null, HttpServletResponse.SC_OK, null, context);
 
-        assertThat(content).contains(ABOUT_US_TITLE).withFailMessage("After normal login the user should see the About Us page");
+            assertThat(content).contains(ABOUT_US_TITLE).withFailMessage("After normal login the user should see the About Us page");
 
-        // we clear the cookies to remove current session cookie from HTTP state
-        context.getCookieStore().clear();
+            // we clear the cookies to remove current session cookie from HTTP state
+            context.getCookieStore().clear();
 
-        content = getAsText(aboutUsPageUrl, null, HttpServletResponse.SC_UNAUTHORIZED, null, context);
-        assertThat(content).contains(LOGIN_FORM_NAME_LOCATOR)
-                .withFailMessage("Guest can access the home page, which should not be the case");
+            content = getAsText(aboutUsPageUrl, null, HttpServletResponse.SC_UNAUTHORIZED, null, context);
+            assertThat(content).contains(LOGIN_FORM_NAME_LOCATOR)
+                    .withFailMessage("Guest can access the home page, which should not be the case");
 
-        // we put the remember me cookie into HTTP state
-        context.getCookieStore().clear();
-        context.getCookieStore().addCookie(authCookie);
+            // we put the remember me cookie into HTTP state
+            context.getCookieStore().clear();
+            context.getCookieStore().addCookie(authCookie);
 
-        content = getAsText(aboutUsPageUrl, null, HttpServletResponse.SC_OK, null, context);
-        assertThat(content).contains(ABOUT_US_TITLE).withFailMessage(
-                "With a remember me cookie the login should be done automatically and the user should see the About Us page");
+            content = getAsText(aboutUsPageUrl, null, HttpServletResponse.SC_OK, null, context);
+            assertThat(content).contains(ABOUT_US_TITLE).withFailMessage(
+                    "With a remember me cookie the login should be done automatically and the user should see the About Us page");
+        } finally {
+            // restore default logging level
+            LoggingConfigListener.setLoggerLevel(loggerName, LoggingConfigListener.getRootLoggerLevel());
+        }
     }
 
     @Test

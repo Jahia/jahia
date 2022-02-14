@@ -47,7 +47,6 @@ import com.google.common.collect.Sets;
 import org.jahia.api.Constants;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRNodeDecorator;
-import org.jahia.services.content.decorator.JCRReferenceNode;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.security.AccessManagerUtils;
 import org.slf4j.Logger;
@@ -233,7 +232,7 @@ public class WIPService {
                                 throw new IllegalStateException("Unknown work in progress status: " + wipStatusToSet);
                         }
                     }
-                    systemSession.save();
+                    targetNode.getSession().save();
                     return checkForAutoPublish;
                 });
 

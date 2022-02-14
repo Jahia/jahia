@@ -40,6 +40,45 @@
  *
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
+ *
+ *      INCLUDED LICENSES:
+ *
+ *      Indiana University Extreme! Lab Software License Version 1.1.1
+ *
+ *      Copyright (c) 2002 Extreme! Lab, Indiana University. All rights reserved.
+ *
+ *      Redistribution and use in source and binary forms, with or without modification, are permitted provided that
+ *      the following conditions are met:
+ *
+ *      1. Redistributions of source code must retain the above copyright notice, this list of conditions and the
+ *         following disclaimer.
+ *
+ *      2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
+ *         following disclaimer in the documentation and/or other materials provided with the distribution.
+ *
+ *      3. The end-user documentation included with the redistribution, if any, must include the following
+ *         acknowledgment:
+ *
+ *      "This product includes software developed by the Indiana University Extreme! Lab
+ *       (http://www.extreme.indiana.edu/)."
+ *
+ *      Alternately, this acknowledgment may appear in the software itself, if and wherever such third-party
+ *      acknowledgments normally appear.
+ *
+ *      4. The names "Indiana University" and "Indiana University Extreme! Lab" must not be used to endorse or promote
+ *         products derived from this software without prior written permission. For written permission, please contact
+ *          (http://www.extreme.indiana.edu/).
+ *
+ *      5. Products derived from this software may not use "Indiana University" name nor may "Indiana University"
+ *         appear in their name, without prior written permission of the Indiana University.
+ *
+ *     THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ *     IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ *     AUTHORS, COPYRIGHT HOLDERS OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ *     EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *     LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+ *     IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ *     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.jahia.services.pwdpolicy;
 
@@ -68,7 +107,7 @@ import com.thoughtworks.xstream.io.xml.XppDriver;
 
 /**
  * Business object controller class for the Jahia Password Policy Service.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 class JahiaPasswordPolicyManager {
@@ -111,7 +150,7 @@ class JahiaPasswordPolicyManager {
 
     /**
      * Returns the default password policy.
-     * 
+     *
      * @return the default password policy
      * @throws RepositoryException
      *             in case of a JCR error
@@ -142,7 +181,7 @@ class JahiaPasswordPolicyManager {
     /**
      * Returns the (encrypted) password history map, sorted by change date
      * descending, i.e. the newer passwords are at the top of the list.
-     * 
+     *
      * @return the (encrypted) password history list, sorted by change date
      *         descending, i.e. the newer passwords are at the top of the list
      * @throws RepositoryException
@@ -177,7 +216,7 @@ class JahiaPasswordPolicyManager {
 
     /**
      * Stores the current user's password into password history.
-     * 
+     *
      * @param user
      *            the user to store password history for
      * @throws RepositoryException
@@ -193,7 +232,7 @@ class JahiaPasswordPolicyManager {
 
     /**
      * Updates the specified policy.
-     * 
+     *
      * @param policy
      *            the policy to update
      * @throws RepositoryException

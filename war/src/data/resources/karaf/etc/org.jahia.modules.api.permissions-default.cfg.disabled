@@ -1,0 +1,29 @@
+# default configuration - won't be overriden
+# Legacy configuration - only used if org.jahia.bundles.api.security / security.legacyMode is set to true
+
+// All API calls allowed on the configured node types inside /sites/*
+permission.siteResources.nodeType=jnt:folder,jnt:page,jnt:portlet,jnt:navMenuText
+permission.siteResources.pathPattern=/sites/.*
+
+// All API calls allowed on jnt:category
+permission.category.nodeType=jnt:category
+
+// treeRootItem json view allowed for virtualsite
+permission.treeRootItem.api=view.json.treeRootItem
+permission.treeRootItem.nodeType=jnt:virtualsite
+permission.treeRootItem.pathPattern=/sites/.*
+
+// No permission check by default for html views
+permission.htmlviews.api=view.html
+permission.htmlviews.priority=99998
+
+// Require write permission by default, if no other rule matches
+permission.global.access=restricted
+permission.global.priority=99999
+
+// Graphql
+permission.gql.api=graphql
+permission.gql.pathPattern=/
+permission.gql.requiredPermission=jcr:read_default
+permission.gql.priority=99997
+

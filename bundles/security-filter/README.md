@@ -56,11 +56,12 @@ Examples below are given in yaml format.
 ### Scope name, description and metadata
 
 Every scope must have a unique name. The description explains what the scope is granting.
-Metadata can be freely added and used by UI or other services.
-
+Metadata can be freely added and used by UI or other services. For example, `visible` metadata makes the scope visible in Personal Api Tokens administration UI.
+ 
 ### Scope grants
 
-A scope contains a list of grants, one for each API access.
+A scope contains a list of grants, one for each API access. A grant can contain one or more conditions - in order for the permission to be granted, all conditions must match.
+You can use one these conditions, or both of them in the same grant :
 
 - `api` : The names of the API (in a comma separated list), if the rule should only apply to some entry points.
   Different API names are provided by the API services. For example : ajax views (`view.<view-type>`), the JCRest API module (`jcrestapi`), or the GraphQL API (`graphql.<gql-type>.<gql-field>`)
@@ -95,6 +96,26 @@ A scope contains a list of grants, one for each API access.
              pathPattern: /,/sites(/.*)?,/modules(/.*)?,/mounts(/.*)?
              excludedPathPattern: /sites/[^/]+/users(/.*)?
     ```
+
+You can combining multiple conditions in one grant :
+
+```yaml
+   grants:
+     - api: graphql
+       node: none
+```
+
+This will allow all Graphql calls that do not involve a node.
+
+Beware that this is completely different from creating multiple grants with one condition :
+
+```yaml
+   grants:
+     - api: graphql
+     - node: none
+```
+
+This will allow all Graphql calls, *and* all calls that do not involve a node.
 
 ### Auto-apply rules
 
@@ -136,22 +157,32 @@ The scope will be available only to users who fulfill the constraints. It will n
 
 ### Configuration profiles
 
-The user can choose a predefined security profile by setting a value in `security.profile`, in `org.jahia.bundles.api.security.cfg` file
+The user can choose a predefined security profile by setting a value in `security.profile`, in `org.jahia.bundles.api.security.cfg` file. These profiles can be found [here](`src/main/resources/META-INF/configuration-profiles`).
 
-- "default" profile is recommended one. It will not allow any API call from external origin, and from non-privileged users.
-- "compat" profile is more open and is compatible with the previous security-filter implementation. Most graphql/rest calls are allowed for any user
-- "open" profile allows every call.
+- "[default](`src/main/resources/META-INF/configuration-profiles/profiles-default.yml`)" profile is recommended one. It will not allow any API call from external origin, and from non-privileged users.
+- "[compat](`src/main/resources/META-INF/configuration-profiles/profiles-compat.yml`)" profile is more open and is compatible with the previous security-filter implementation. Most graphql/rest calls are allowed for any user
+- "[open](`src/main/resources/META-INF/configuration-profiles/profiles-open.yml`)" profile allows every call.
 
 It's also possible to not use any profile (everything will be denied by default) - you will have to fully provide your own configuration. Without any configuration Jahia GUI will not be work.
 
 ### Legacy mode and migration report
 
 The legacy mode can be used to keep the exact same behaviour as the previous version. It can be enabled by setting `security.legacyMode=true` into `org.jahia.bundles.api.security.cfg`.
-The old `org.jahia.modules.api.permissions-*.cfg` files will be used as before.
+The old `org.jahia.modules.api.permissions-*.cfg` files will be used as before. 
+Note that you must have all `permissions.cfg` files required to run your application, as the new authorization files won't be read anymore. Enabled the file [org.jahia.modules.api.permissions-default.cfg.disabled](/war/src/data/resources/karaf/etc/org.jahia.modules.api.permissions-default.cfg.disabled) to restore default legacy configurations.
+
+Legacy configuration documentation can be found [here](`https://github.com/Jahia/security-filter/tree/2_0_0/README.md`).
 
 Reporting in the logs can be enabled with `security.migrationReporting=true`, to check what API call that was allowed with legacy mode, will be denied with the new configuration, or the opposite.
-This is useful when migrating, if you were using API calls and you are unsure if they will still pass.
-Reporting can also be enabled when running in standard mode - it will continue to report when there's a difference between legacy and standard mode.
+The configuration effectively being used is still the one defined by `legacyMode` - the `migrationReporting` option only add logs to tell what would have happened with `legacyMode` set to the opposite value.
+This is useful when migrating, if you were using API calls and you are unsure if they will still pass. 
+Reporting can be enabled when running in standard mode (`security.legacyMode=false`) - it will continue to report when there's a difference between legacy and standard mode.
+
+### Debugging
+
+In order to understand why a call is granted or not, you can set the `org.jahia.bundles.securityfilter.core` package (or `org.jahia.bundles.securityfilter.legacy`, if using legacy mode) to debug in log4j configuration.
+This will enable log for every permission check, with the API that is being checked and the result, and the grant that matches, if any. 
+If no grant match, the list of enabled scopes will give you the information on which grants were unsuccesfully checked. 
 
 ### Configuration in a module
 

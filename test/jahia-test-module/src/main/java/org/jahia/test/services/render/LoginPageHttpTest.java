@@ -197,14 +197,14 @@ public class LoginPageHttpTest extends JahiaTestCase {
             getAsText("/cms/login?username=" + USERNAME + "&password=" + PASSWORD + "&restMode=true" + "&" + LoginEngineAuthValveImpl.USE_COOKIE
                     + "=on", null, HttpServletResponse.SC_OK, responseHeaders, context);
 
-            String cookieName = cookieAuthConfig.getCookieName();
+            final String cookieName = cookieAuthConfig.getCookieName();
             List<String> setCookie = responseHeaders.get("Set-Cookie");
             Iterator<String> cookieValueIteraror = setCookie != null
                     ? Iterables.filter(setCookie, Predicates.containsPattern(cookieName + "=")).iterator()
                     : null;
             assertThat(cookieValueIteraror).isNotNull()
                     .withFailMessage("The response header should contain the corresponding remember me cookie %s", cookieName);
-            String cookieValue = StringUtils.substringBetween(cookieValueIteraror.next(), cookieName + "=", ";");
+            final String cookieValue = StringUtils.substringBetween(cookieValueIteraror.next(), cookieName + "=", ";");
 
             Cookie authCookie = getCookie(context, cookieName);
             assertThat(authCookie).isNotNull().withFailMessage("Remember me cookie is not present in HTTP client state");
@@ -224,6 +224,11 @@ public class LoginPageHttpTest extends JahiaTestCase {
             // we put the remember me cookie into HTTP state
             context.getCookieStore().clear();
             context.getCookieStore().addCookie(authCookie);
+
+            // validate reuse of remember me cookie is correctly added in cookie store
+            Cookie authCookieClone = getCookie(context, cookieName);
+            assertThat(authCookieClone.getValue()).isEqualTo(cookieValue)
+                    .withFailMessage("Reuse of Remember me cookie has wrong value in HTTP client state");
 
             content = getAsText(aboutUsPageUrl, null, HttpServletResponse.SC_OK, null, context);
             assertThat(content).contains(ABOUT_US_TITLE).withFailMessage(

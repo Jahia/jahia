@@ -196,7 +196,8 @@ public class WIPService {
 
         boolean autoPublishNode = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(session.getUser(), session.getWorkspace().getName(),
                 session.getLocale(), systemSession -> {
-                    JCRNodeWrapper targetNode = systemSession.getNodeByIdentifier(node.getIdentifier());
+                    Node targetNode = systemSession.getProviderSession(node.getProvider())
+                            .getNodeByIdentifier(node.getIdentifier());
 
                     boolean debugEnabled = logger.isDebugEnabled();
                     boolean checkForAutoPublish = false;

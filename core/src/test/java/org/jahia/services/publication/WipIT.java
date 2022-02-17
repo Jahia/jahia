@@ -286,29 +286,27 @@ public class WipIT extends AbstractJUnitTest {
     private List<String> createContentNodes(String basePath, Set<String> languages) throws RepositoryException {
         Map<String, Map<String, JCRSessionWrapper>> sessions = getCleanSessionForLanguages("en");
         JCRSessionWrapper englishEditSession = sessions.get("en").get(Constants.EDIT_WORKSPACE);
-        JCRNodeWrapper page = englishEditSession.getNode(basePath).addNode("wip-test-page", "jnt:page");
-        page.setProperty("j:templateName", "home");
-        page.setProperty(Constants.JCR_TITLE, "wip-test-page");
         // create nodes with non i18n content
-        JCRNodeWrapper i18nContent = page.addNode("i18nContent", "jnt:text");
+        JCRNodeWrapper i18nContent = englishEditSession.getNode(basePath).addNode("i18nContent", "jnt:text");
 
 
-        JCRNodeWrapper nonI18nContent = page.addNode("nonI18nContent", "jnt:reference");
+        JCRNodeWrapper nonI18nContent = englishEditSession.getNode(basePath).addNode("nonI18nContent", "jnt:reference");
         nonI18nContent.addMixin("jmix:lastPublished");
         nonI18nContent.setProperty("j:propertyName", "property");
 
-        JCRNodeWrapper mixContent = page.addNode("mixContent", "jnt:query");
+        JCRNodeWrapper mixContent = englishEditSession.getNode(basePath).addNode("mixContent", "jnt:query");
         mixContent.addMixin("jmix:lastPublished");
         mixContent.setProperty("maxItems", 10);
 
-        JCRNodeWrapper mixContentOnlyNonI18n = page.addNode("mixContentOnlyNonI18n", "jnt:query");
+        JCRNodeWrapper mixContentOnlyNonI18n = englishEditSession.getNode(basePath).addNode("mixContentOnlyNonI18n", "jnt:query");
         mixContentOnlyNonI18n.addMixin("jmix:lastPublished");
         mixContentOnlyNonI18n.setProperty("maxItems", 10);
 
-        JCRNodeWrapper mixContentOnlyI18n = page.addNode("mixContentOnlyI18n", "jnt:query");
+        JCRNodeWrapper mixContentOnlyI18n = englishEditSession.getNode(basePath).addNode("mixContentOnlyI18n", "jnt:query");
         mixContentOnlyI18n.addMixin("jmix:lastPublished");
 
         // set i18n properties
+        englishEditSession.save();
         englishEditSession.save();
         for (String lang : languages) {
             Map<String, Map<String, JCRSessionWrapper>> i18nSessions = getCleanSessionForLanguages(lang);

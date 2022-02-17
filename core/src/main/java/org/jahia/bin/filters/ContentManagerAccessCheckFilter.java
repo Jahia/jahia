@@ -244,7 +244,11 @@ public class ContentManagerAccessCheckFilter implements Filter,
         try {
             JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession();
             if (StringUtils.isNotEmpty(siteId)) {
-                return currentUserSession.getNodeByUUID(siteId).getResolveSite();
+                if (siteId.startsWith("/")) {
+                    return currentUserSession.getNode(siteId).getResolveSite();
+                } else {
+                    return currentUserSession.getNodeByUUID(siteId).getResolveSite();
+                }
             } else {
                 JahiaSitesService siteService = JahiaSitesService.getInstance();
                 JahiaSite defaultSite = siteService.getDefaultSite();

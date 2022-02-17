@@ -63,6 +63,7 @@ import org.jahia.utils.i18n.Messages;
 import org.springframework.web.context.ServletContextAware;
 
 import javax.jcr.ItemNotFoundException;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -134,16 +135,23 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
 
         try {
             final String siteParam = request.getParameter("site");
-            if (siteParam == null) {
+            if (StringUtils.isEmpty(siteParam)) {
                 return null;
             }
-            JCRSiteNode site = (JCRSiteNode) JCRSessionFactory.getInstance().getCurrentUserSession(getWorkspace()).getNodeByUUID(siteParam);
+
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(getWorkspace());
+            JCRSiteNode site;
+            if (siteParam.startsWith("/")) {
+                site = (JCRSiteNode) session.getNode(siteParam);
+            } else {
+                site = (JCRSiteNode) session.getNodeByUUID(siteParam);
+            }
 
             if (site.isMixLanguagesActive()) {
                 fallback = LanguageCodeConverters.getLocaleFromCode(site.getDefaultLanguage());
             }
             return fallback;
-        } catch (ItemNotFoundException e) {
+        } catch (ItemNotFoundException | PathNotFoundException e) {
             return null;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

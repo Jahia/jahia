@@ -219,7 +219,11 @@ public class GWTController extends RemoteServiceServlet implements Controller,
         try {
             JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession();
             if (StringUtils.isNotEmpty(siteId)) {
-                return currentUserSession.getNodeByUUID(siteId);
+                if (siteId.startsWith("/")) {
+                    return currentUserSession.getNode(siteId);
+                } else {
+                    return currentUserSession.getNodeByUUID(siteId);
+                }
             } else {
                 JahiaSitesService siteService = JahiaSitesService.getInstance();
                 JahiaSite defaultSite = siteService.getDefaultSite();

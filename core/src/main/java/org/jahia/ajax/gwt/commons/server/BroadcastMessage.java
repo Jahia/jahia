@@ -76,6 +76,7 @@ public class BroadcastMessage implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final ObjectWriter writer = new ObjectMapper().writer();
     private final String topic;
+    private final long revision;
     private final String message;
     private final String clazz;
 
@@ -85,8 +86,9 @@ public class BroadcastMessage implements Serializable {
      * @param message the message to broadcast
      */
     @SuppressWarnings("java:S112")
-    public BroadcastMessage(String topic, Object message) {
+    public BroadcastMessage(String topic, Object message, long revision) {
         this.topic = topic;
+        this.revision = revision;
         try {
             clazz = message.getClass().getName();
             this.message = writer.writeValueAsString(message);
@@ -112,5 +114,9 @@ public class BroadcastMessage implements Serializable {
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public long getRevision() {
+        return revision;
     }
 }

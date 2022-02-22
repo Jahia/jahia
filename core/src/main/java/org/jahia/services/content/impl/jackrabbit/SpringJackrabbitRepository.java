@@ -46,7 +46,6 @@ package org.jahia.services.content.impl.jackrabbit;
 import org.apache.jackrabbit.api.JackrabbitRepository;
 import org.apache.jackrabbit.commons.AbstractRepository;
 import org.apache.jackrabbit.core.JahiaRepositoryImpl;
-import org.apache.jackrabbit.core.cluster.ClusterException;
 import org.apache.jackrabbit.core.cluster.ClusterNode;
 import org.apache.jackrabbit.core.cluster.JahiaClusterNode;
 import org.jahia.settings.SettingsBean;
@@ -291,15 +290,13 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
     /**
      * Performs the sync on the Jackrabbit cluster node. If clustering is not activated this method does nothing. Possible exceptions during
      * cluster sync are logged by not propagated upper by this method.
+     * @deprecated Since 8.1.1.0
      */
+    @Deprecated
     public void syncClusterNode() {
         ClusterNode clusterNode = getClusterNode();
         if (clusterNode != null) {
-            try {
-                clusterNode.sync();
-            } catch (ClusterException e) {
-                logger.error("Error ocurred synchronizing cluster", e);
-            }
+            logger.error("Manual synchronization of the cluster has been deprecated, and do not execute cluster.sync() anymore. Please implements a org.apache.jackrabbit.core.journal.RecordConsumer if you need to react on cluster sync.");
         }
     }
 

@@ -59,6 +59,10 @@ package org.jahia.ajax.gwt.commons.server;
  * the License.
  */
 
+import org.apache.jackrabbit.core.cluster.ClusterNode;
+import org.apache.jackrabbit.core.journal.JournalException;
+import org.apache.jackrabbit.core.journal.Record;
+import org.apache.jackrabbit.core.journal.RecordConsumer;
 import org.atmosphere.cpr.Broadcaster;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository;
@@ -71,6 +75,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -86,7 +91,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  *
  * @author westraj
  */
-public class JGroupsChannelImpl extends ReceiverAdapter implements JGroupsChannel {
+public class JGroupsChannelImpl extends ReceiverAdapter implements JGroupsChannel, RecordConsumer {
     private static final Logger logger = LoggerFactory.getLogger(JGroupsChannelImpl.class);
 
     /**
@@ -108,6 +113,9 @@ public class JGroupsChannelImpl extends ReceiverAdapter implements JGroupsChanne
      * Holds original messages (not BroadcastMessage) received over a cluster broadcast
      */
     private final ConcurrentLinkedQueue<Object> receivedMessages = new ConcurrentLinkedQueue<>();
+    private final ClusterNode clusterNode;
+    private long revision;
+    private Queue<BroadcastMessage> bcMessages = new ConcurrentLinkedQueue<>();
 
     /**
      * Constructor
@@ -122,6 +130,13 @@ public class JGroupsChannelImpl extends ReceiverAdapter implements JGroupsChanne
 
         this.jChannel = jChannel;
         this.clusterName = clusterName;
+        this.clusterNode = SpringJackrabbitRepository.getInstance().getClusterNode();
+        try {
+            clusterNode.getJournal().register(this);
+            this.setRevision(clusterNode.getRevision());
+        } catch (JournalException e) {
+            logger.debug(e.getMessage(), e);
+        }
     }
 
     /**
@@ -171,25 +186,30 @@ public class JGroupsChannelImpl extends ReceiverAdapter implements JGroupsChanne
         //To avoid issue be sure to test that Jahia has started before trying to broadcast messages locally.
         if (JahiaContextLoaderListener.isContextInitialized() && BroadcastMessage.class.isAssignableFrom(payload.getClass())) {
             BroadcastMessage broadcastMsg = (BroadcastMessage) payload;
-
-            // original message from the sending node's JGroupsFilter.filter() method
-            Object origMessage = broadcastMsg.getMessage();
-            SpringJackrabbitRepository.getInstance().syncClusterNode();
-            // add original message to list to check re-broadcast logic in send()
-            receivedMessages.offer(origMessage);
-
-            String topicId = broadcastMsg.getTopic();
-            if (broadcasters.containsKey(topicId)) {
-                Broadcaster bc = broadcasters.get(topicId);
-                try {
-                    bc.broadcast(origMessage).get();
-                } catch (Exception ex) {
-                    logger.error("Failed to broadcast message received over the JGroups cluster {}", this.clusterName, ex);
-                }
+            if (clusterNode.getRevision() >= broadcastMsg.getRevision()) {
+                broadcastMessage(broadcastMsg);
+            } else {
+                bcMessages.add(broadcastMsg);
             }
         }
 
 
+    }
+
+    private void broadcastMessage(BroadcastMessage broadcastMsg) {
+        // original message from the sending node's JGroupsFilter.filter() method
+        Object origMessage = broadcastMsg.getMessage();
+        // add original message to list to check re-broadcast logic in send()
+        receivedMessages.offer(origMessage);
+        String topicId = broadcastMsg.getTopic();
+        if (broadcasters.containsKey(topicId)) {
+            Broadcaster bc = broadcasters.get(topicId);
+            try {
+                bc.broadcast(origMessage).get();
+            } catch (Exception ex) {
+                logger.error("Failed to broadcast message received over the JGroups cluster {}", this.clusterName, ex);
+            }
+        }
     }
 
     /**
@@ -205,9 +225,8 @@ public class JGroupsChannelImpl extends ReceiverAdapter implements JGroupsChanne
         // one already received from another cluster node
         if (jChannel.isConnected() && !receivedMessages.remove(message)) {
             try {
-                BroadcastMessage broadcastMsg = new BroadcastMessage(topic, message);
+                BroadcastMessage broadcastMsg = new BroadcastMessage(topic, message, clusterNode.getRevision());
                 Message jgroupMsg = new Message(null, null, broadcastMsg);
-
                 jChannel.send(jgroupMsg);
             } catch (Exception e) {
                 logger.warn("Failed to send message {}", message, e);
@@ -233,5 +252,38 @@ public class JGroupsChannelImpl extends ReceiverAdapter implements JGroupsChanne
         this.broadcasters.remove(broadcaster.getID());
     }
 
+    @Override
+    public String getId() {
+        return "ATMOSPHERE_BROADCAST";
+    }
 
+    @Override
+    public long getRevision() {
+        return revision;
+    }
+
+    @Override
+    public void consume(Record notUsedRecord) {
+        logger.error("This consumer can not handle records.");
+    }
+
+    @Override
+    public void setRevision(long revision) {
+        logger.debug("Broadcasting messages previous to revision: {}", revision);
+        BroadcastMessage peek = bcMessages.peek();
+        while (peek != null && peek.getRevision() <= revision) {
+            bcMessages.remove();
+            broadcastMessage(peek);
+            peek = bcMessages.peek();
+        }
+        if (logger.isDebugEnabled()) {
+            if (bcMessages.isEmpty()) {
+                logger.debug("No more message to broadcast");
+            } else {
+                logger.debug("Still some messages to broadcast. Next revision to broadcast is {}",
+                        bcMessages.peek().getRevision());
+            }
+        }
+        this.revision = revision;
+    }
 }

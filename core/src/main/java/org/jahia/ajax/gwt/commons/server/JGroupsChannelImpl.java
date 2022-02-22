@@ -115,7 +115,7 @@ public class JGroupsChannelImpl extends ReceiverAdapter implements JGroupsChanne
     private final ConcurrentLinkedQueue<Object> receivedMessages = new ConcurrentLinkedQueue<>();
     private final ClusterNode clusterNode;
     private long revision;
-    private Queue<BroadcastMessage> bcMessages = new ConcurrentLinkedQueue<>();
+    private static final Queue<BroadcastMessage> bcMessages = new ConcurrentLinkedQueue<>();
 
     /**
      * Constructor
@@ -123,14 +123,14 @@ public class JGroupsChannelImpl extends ReceiverAdapter implements JGroupsChanne
      * @param jChannel    unconnected JGroups  JChannel object
      * @param clusterName name of the group to connect the JChannel to
      */
-    public JGroupsChannelImpl(JChannel jChannel, String clusterName) {
+    public JGroupsChannelImpl(JChannel jChannel, String clusterName, SpringJackrabbitRepository jackrabbitRepository) {
         if (jChannel.isConnected()) {
             throw new IllegalArgumentException("JChannel already connected");
         }
-
+        logger.info("Starting JGroupsChannelImpl");
         this.jChannel = jChannel;
         this.clusterName = clusterName;
-        this.clusterNode = SpringJackrabbitRepository.getInstance().getClusterNode();
+        this.clusterNode = jackrabbitRepository.getClusterNode();
         try {
             clusterNode.getJournal().register(this);
             this.setRevision(clusterNode.getRevision());

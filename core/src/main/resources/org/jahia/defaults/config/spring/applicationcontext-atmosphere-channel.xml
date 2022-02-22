@@ -6,6 +6,7 @@
 
     <bean class="org.jahia.ajax.gwt.commons.server.ChannelHolderImpl">
         <property name="clusterName" value="atmosphere-jahia"/>
+        <property name="jackrabbitRepository" ref="jackrabbit"/>
     </bean>
 
 </beans>

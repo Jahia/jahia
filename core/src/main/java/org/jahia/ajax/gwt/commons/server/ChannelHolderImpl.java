@@ -43,6 +43,7 @@
  */
 package org.jahia.ajax.gwt.commons.server;
 
+import org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository;
 import org.jahia.settings.SettingsBean;
 import org.jgroups.JChannel;
 import org.jgroups.jmx.JmxConfigurator;
@@ -67,11 +68,13 @@ public class ChannelHolderImpl implements InitializingBean, DisposableBean, Chan
 
     private String clusterName;
 
+    private SpringJackrabbitRepository jackrabbitRepository;
+
     @Override
     public void afterPropertiesSet() throws Exception {
         if (SettingsBean.getInstance().isClusterActivated() && SettingsBean.getInstance().getBoolean("atmosphere.jgroups", true)) {
             JChannel jChannel = new JChannel(System.getProperty("cluster.configFile.jahia", "tcp.xml"));
-            this.channel = new JGroupsChannelImpl(jChannel, clusterName);
+            this.channel = new JGroupsChannelImpl(jChannel, clusterName, jackrabbitRepository);
             this.channel.init();
             registerMBeans();
         }
@@ -116,5 +119,9 @@ public class ChannelHolderImpl implements InitializingBean, DisposableBean, Chan
                 logger.warn("Unable to unregister JMX beans for the JGroups channel {} due to {}", clusterName, e.getMessage());
             }
         }
+    }
+
+    public void setJackrabbitRepository(SpringJackrabbitRepository jackrabbitRepository) {
+        this.jackrabbitRepository = jackrabbitRepository;
     }
 }

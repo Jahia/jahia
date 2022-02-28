@@ -100,7 +100,7 @@ import java.util.Properties;
  */
 public final class Jahia {
 
-    public static final String YEAR = "2020";
+    public static final String YEAR = "2022";
     public static final String CODE_NAME = "Indigo";
     public static final String PRODUCT_NAME = "Jahia";
     public static final String VENDOR_NAME = "Jahia Solutions Group SA";
@@ -290,7 +290,7 @@ public final class Jahia {
     public static boolean isMaintenance() {
         return maintenance || SettingsBean.getInstance().isMaintenanceMode();
     }
-    
+
     public static void setMaintenance(boolean maintenance) {
         if (SettingsBean.getInstance().isMaintenanceMode()) {
             logger.info("Maintenance mode has been enforced in Jahia properties, impossible to change at runtime level.");

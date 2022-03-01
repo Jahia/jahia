@@ -76,7 +76,9 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * JGroupsChannel establishes a connection to a
@@ -205,7 +207,11 @@ public class JGroupsChannelImpl extends ReceiverAdapter implements JGroupsChanne
         if (broadcasters.containsKey(topicId)) {
             Broadcaster bc = broadcasters.get(topicId);
             try {
-                bc.broadcast(origMessage).get();
+                bc.broadcast(origMessage).get(3, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                logger.warn("Failed to broadcast message received over the JGroups cluster {}", this.clusterName, e);
+                // Restore interrupted state...
+                Thread.currentThread().interrupt();
             } catch (Exception ex) {
                 logger.error("Failed to broadcast message received over the JGroups cluster {}", this.clusterName, ex);
             }
@@ -273,7 +279,8 @@ public class JGroupsChannelImpl extends ReceiverAdapter implements JGroupsChanne
         BroadcastMessage peek = bcMessages.peek();
         while (peek != null && peek.getRevision() <= revision) {
             bcMessages.remove();
-            broadcastMessage(peek);
+            BroadcastMessage finalPeek = peek;
+            CompletableFuture.runAsync(() -> broadcastMessage(finalPeek));
             peek = bcMessages.peek();
         }
         if (logger.isDebugEnabled()) {

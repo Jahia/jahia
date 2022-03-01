@@ -232,9 +232,15 @@ public class InstallBundle implements Operation {
                 setupUninstall(entry, bundleInfo, target, installedVersions, toUninstall);
             }
             results.add(result);
+        } catch (IOException e) {
+            if (e.getCause() != null) {
+                // Hide main exception which may contain credentials
+                logger.error("Cannot install {}, {} : ", bundleKey, e.getClass().getName(), e.getCause());
+            } else {
+                logger.error("Cannot install {} : ", bundleKey, e);
+            }
         } catch (Exception e) {
-            logger.error("Cannot install {}, check your maven URL / Credentials (Set class InstallBundle in debug for more info)", bundleKey);
-            logger.debug("Error while installing ", e);
+            logger.error("Cannot install {} : ", bundleKey, e);
         }
     }
 

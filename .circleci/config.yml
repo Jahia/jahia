@@ -400,6 +400,10 @@ workflows:
           context: QA_ENVIRONMENT
           requires:
             - PR Build Jahia
+            - Integration tests
+            - Security scan
+            - PR Sonar analysis
+
   on-code-change:
     when:
       condition:
@@ -439,6 +443,9 @@ workflows:
           context: QA_ENVIRONMENT
           requires:
             - Build Jahia
+            - Integration tests
+            - Security scan
+            - Sonar analysis
   
   # Used to trigger a next-development version build during release time as a release dependency.
   # Since it's used during release, we only need to do the build step and deploy to maven and skip the rest.

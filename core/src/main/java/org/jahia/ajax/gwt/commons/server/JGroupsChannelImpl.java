@@ -207,7 +207,7 @@ public class JGroupsChannelImpl extends ReceiverAdapter implements JGroupsChanne
         if (broadcasters.containsKey(topicId)) {
             Broadcaster bc = broadcasters.get(topicId);
             try {
-                bc.broadcast(origMessage).get(3, TimeUnit.SECONDS);
+                bc.broadcast(origMessage).get(30, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 logger.warn("Failed to broadcast message received over the JGroups cluster {}", this.clusterName, e);
                 // Restore interrupted state...

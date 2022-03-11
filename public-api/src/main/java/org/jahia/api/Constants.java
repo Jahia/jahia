@@ -43,9 +43,7 @@
  */
 package org.jahia.api;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -316,14 +314,17 @@ public class Constants {
 
     public static final String JAHIAMIX_NAVMENUITEM = "jmix:navMenuItem";
 
-    public static final Set<String> forbiddenPropertiesToCopy = new HashSet<String>(Arrays.asList(PROCESSID,JCR_FROZENUUID,
+    public static final Set<String> forbiddenPropertiesToCopy = new HashSet<>(Arrays.asList(PROCESSID,JCR_FROZENUUID,
             JCR_FROZENMIXINTYPES, JCR_FROZENPRIMARYTYPE,JCR_UUID,JCR_BASEVERSION,JCR_MIXINTYPES,JCR_PRIMARYTYPE,
             JCR_VERSIONHISTORY, JCR_PREDECESSORS, JCR_ISCHECKEDOUT, JCR_CREATED, JCR_CREATEDBY, "j:lockTypes",
             "j:locktoken", JCR_LOCKOWNER, JCR_LOCKISDEEP, JAHIA_SOURCE_TEMPLATE, PUBLISHED, MARKED_FOR_DELETION_DATE,
             MARKED_FOR_DELETION_MESSAGE, MARKED_FOR_DELETION_USER, ORIGIN_WORKSPACE, LASTPUBLISHED, LASTPUBLISHEDBY));
 
-    public static final Set<String> forbiddenMixinToCopy = new HashSet<String>(Arrays.asList(JAHIAMIX_WORKFLOW,
-            JAHIAMIX_MARKED_FOR_DELETION, JAHIAMIX_MARKED_FOR_DELETION_ROOT));
+    public static final Set<String> forbiddenMixinToCopy = new HashSet<>(Arrays.asList(JAHIAMIX_WORKFLOW,
+            JAHIAMIX_MARKED_FOR_DELETION, JAHIAMIX_MARKED_FOR_DELETION_ROOT, "jmix:vanityUrlMapped"));
+
+    public static final Set<String> forbiddenChildNodeTypesToCopy = new HashSet<>(Arrays.asList(JAHIAMIX_MARKED_FOR_DELETION_ROOT,
+            JAHIANT_REFERENCEINFIELD, "jnt:vanityUrls"));
 
     public static final String JCR_LASTLOGINDATE = "lastLoginDate";
     public static final String J_ROLES = "j:roles";

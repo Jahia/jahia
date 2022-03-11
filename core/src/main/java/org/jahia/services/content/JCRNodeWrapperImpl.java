@@ -70,6 +70,7 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
+import pl.touk.throwing.ThrowingPredicate;
 
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
@@ -2398,9 +2399,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 } else if (allowsExternalSharedNodes) {
                     copy.clone(source, source.getName());
                 } else {
-                    doCopy(source, copy, source.getName(), allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batchCount, false);
+                    doCopy(source, copy, source.getName(), false, references, ignoreNodeTypes, maxBatch, batchCount, false);
                 }
-            } else if (!source.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT) && !source.isNodeType(Constants.JAHIANT_REFERENCEINFIELD)) {
+            } else if (forbiddenChildNodeTypesToCopy.stream().noneMatch(ThrowingPredicate.unchecked(source::isNodeType))){
                 doCopy(source, copy, source.getName(), allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batchCount, false);
             }
         }

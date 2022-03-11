@@ -528,7 +528,7 @@ public class ContentManagerHelper {
                     }
                 }
             }
-            if (childNodeTypesToSkip == null) {
+            if (childNodeTypesToSkip == null || childNodeTypesToSkip.isEmpty()) {
                 node.copy(targetNode, name, true, null, SettingsBean.getInstance().getImportMaxBatch());
             } else {
                 String newName = JCRContentUtils.findAvailableNodeName(targetNode, name);
@@ -542,8 +542,11 @@ public class ContentManagerHelper {
                 node.copyProperties(newNode, references);
                 ReferencesHelper.resolveCrossReferences(node.getSession(), references, false);
 
+                Set<String> ignoreNodeTypes = new HashSet<>(childNodeTypesToSkip);
+                // add default child node to skip to specified ones.
+                ignoreNodeTypes.addAll(Constants.forbiddenChildNodeTypesToCopy);
                 for (JCRNodeWrapper childNode : node.getNodes()) {
-                    childNode.copy(newNode, childNode.getName(), true, childNodeTypesToSkip, SettingsBean.getInstance().getImportMaxBatch());
+                    childNode.copy(newNode, childNode.getName(), true, new ArrayList<>(ignoreNodeTypes), SettingsBean.getInstance().getImportMaxBatch());
                 }
             }
         }

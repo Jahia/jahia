@@ -228,8 +228,10 @@ public class PermissionServiceImpl implements PermissionService, ManagedService 
     }
 
     private boolean hasPermission(Map<String, Object> query, Collection<ScopeDefinition> currentScopes) {
+
         for (ScopeDefinitionImpl scope : authorizationConfig.getScopes()) {
-            if (currentScopes.contains(scope) && scope.isGrantAccess(query)) {
+            boolean sameScope = currentScopes.stream().anyMatch(scopeDefinition -> scopeDefinition.getScopeName().equals(scope.getScopeName()));
+            if (sameScope && scope.isGrantAccess(query)) {
                 return true;
             }
         }

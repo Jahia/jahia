@@ -43,6 +43,8 @@
  */
 package org.jahia.services.templates;
 
+import org.jahia.utils.comparator.VersionComparator;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -51,13 +53,13 @@ import java.util.regex.Pattern;
  * Represents version of a module.
  */
 public class ModuleVersion implements Comparable<ModuleVersion> {
-    
+
     private static final Pattern VERSION_PATTERN = Pattern.compile("[^0-9]+");
 
     private boolean isSnapshot;
 
     private List<Integer> orderedVersionNumbers = new ArrayList<Integer>();
-    
+
     private String versionString;
 
     /**
@@ -77,24 +79,7 @@ public class ModuleVersion implements Comparable<ModuleVersion> {
 
     @Override
     public int compareTo(ModuleVersion o) {
-        for (int i = 0; i < Math.min(orderedVersionNumbers.size(), o.orderedVersionNumbers.size()); i++) {
-            int c = orderedVersionNumbers.get(i).compareTo(o.getOrderedVersionNumbers().get(i));
-            if (c != 0) {
-                return c;
-            }
-        }
-        int c = Integer.valueOf(orderedVersionNumbers.size()).compareTo(o.orderedVersionNumbers.size());
-        if (c != 0) {
-            return c;
-        }
-
-        // Snapshot is older than released version
-        c = Boolean.compare(o.isSnapshot, isSnapshot);
-        if (c != 0) {
-            return c;
-        }
-
-        return versionString.compareTo(o.versionString);
+        return VersionComparator.compare(this.versionString, o.versionString);
     }
 
     @Override

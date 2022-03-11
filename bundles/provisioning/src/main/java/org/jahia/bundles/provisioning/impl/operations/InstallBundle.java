@@ -44,6 +44,7 @@
 package org.jahia.bundles.provisioning.impl.operations;
 
 import org.apache.felix.fileinstall.ArtifactUrlTransformer;
+import org.apache.felix.utils.version.VersionCleaner;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.InvalidModuleException;
@@ -53,8 +54,8 @@ import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.jahia.services.modulemanager.persistence.PersistentBundleInfoBuilder;
 import org.jahia.services.provisioning.ExecutionContext;
 import org.jahia.services.provisioning.Operation;
-import org.jahia.services.templates.ModuleVersion;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.comparator.VersionComparator;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
@@ -255,14 +256,11 @@ public class InstallBundle implements Operation {
                 logger.warn("Cannot read manifest from {}", bundleKey);
                 return false;
             }
-            ModuleVersion moduleVersion = new ModuleVersion(versionString);
-            List<Integer> versionNumbers = moduleVersion.getOrderedVersionNumbers();
-            Version thisVersion = new Version(versionNumbers.size() > 0 ? versionNumbers.get(0) : 0,
-                    versionNumbers.size() > 1 ? versionNumbers.get(1) : 0,
-                    versionNumbers.size() > 2 ? versionNumbers.get(2) : 0,
-                    moduleVersion.isSnapshot() ? "SNAPSHOT" : null);
+            String osgiVersion = VersionCleaner.clean(versionString);
+            Version thisVersion = new Version(osgiVersion);
             Set<Bundle> installedVersions = installedBundles.get(name);
-            if (installedVersions != null && installedVersions.stream().anyMatch(b -> b.getVersion().compareTo(thisVersion) > 0)) {
+            if (installedVersions != null && installedVersions.stream().anyMatch(b ->
+                VersionComparator.compare(b.getVersion(), thisVersion) > 0)) {
                 logger.info("Skipping installation of {}, a more recent version is already installed", bundleKey);
                 return true;
             }
@@ -300,7 +298,7 @@ public class InstallBundle implements Operation {
             // In case of upgrade, get the previous version state, or auto-start by default
             Version thisVersion = new Version(bundleInfo.getVersion());
             autoStart = installedVersions == null || (
-                    installedVersions.stream().noneMatch(b -> b.getVersion().compareTo(thisVersion) > 0) &&
+                    installedVersions.stream().noneMatch(b -> VersionComparator.compare(b.getVersion(), thisVersion) > 0) &&
                     installedVersions.stream().anyMatch(b -> b.getState() == Bundle.ACTIVE || b.adapt(BundleStartLevel.class).isPersistentlyStarted())
             );
         }
@@ -316,7 +314,7 @@ public class InstallBundle implements Operation {
 
         if (uninstallPreviousVersions) {
             for (Bundle installedVersion : installedVersions) {
-                if (installedVersion.getVersion().compareTo(new Version(bundleInfo.getVersion())) < 0) {
+                if (VersionComparator.compare(installedVersion.getVersion(), new Version(bundleInfo.getVersion())) < 0) {
                     toUninstall.put(BundleInfo.fromBundle(installedVersion), target);
                 }
             }
@@ -329,7 +327,8 @@ public class InstallBundle implements Operation {
             throw new InvalidModuleException();
         }
         Bundle bundle = bundleContext.getBundle(bundleInfo.getLocation());
-        if (bundle != null && !"SNAPSHOT".equals(bundle.getVersion().getQualifier())) {
+        String qualifier = (bundle != null) ? bundle.getVersion().getQualifier() : "";
+        if (qualifier != null && qualifier.endsWith("SNAPSHOT")) {
             logger.info("Bundle {} already installed, skip", bundleKey);
             return true;
         }

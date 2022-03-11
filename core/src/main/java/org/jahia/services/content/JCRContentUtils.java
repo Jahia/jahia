@@ -44,7 +44,6 @@
 package org.jahia.services.content;
 
 import com.google.common.collect.ImmutableSet;
-import com.ibm.icu.text.Normalizer;
 import org.apache.commons.collections.map.UnmodifiableMap;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -84,6 +83,7 @@ import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.servlet.ServletContext;
 import java.io.*;
+import java.text.Normalizer;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
@@ -374,7 +374,8 @@ public final class JCRContentUtils implements ServletContextAware {
                 buffer.append(ch);
             }
         }
-        return buffer.toString();
+        // Use NFC normalization to format characters as some browser like SAFARI encode requests using NFC (QA-14109)
+        return Normalizer.normalize(buffer.toString(), Normalizer.Form.NFC);
     }
 
     public static String escapeNodePath(String path) {
@@ -500,7 +501,7 @@ public final class JCRContentUtils implements ServletContextAware {
      */
     public static String generateNodeName(String text, int maxLength) {
         String nodeName = text;
-        final char[] chars = Normalizer.normalize(nodeName, Normalizer.NFKD).toCharArray();
+        final char[] chars = Normalizer.normalize(nodeName, Normalizer.Form.NFKD).toCharArray();
         final char[] newChars = new char[chars.length];
         int j = 0;
         for (char aChar : chars) {

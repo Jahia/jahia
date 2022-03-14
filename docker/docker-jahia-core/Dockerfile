@@ -126,6 +126,7 @@ COPY --chown=${C_USER}:${C_GROUP} target/dependency/jahia-war-data-package /usr/
 COPY --chown=${C_USER}:${C_GROUP} target/dependency/jahia-war /usr/local/tomcat/webapps/ROOT
 
 RUN mkdir -p /etc/jahia  \
+    && mkdir -p /etc/jahia/jahia \
     && chown -R ${C_USER}:${C_GROUP} /usr/local/tomcat/conf /etc/jahia
 
 STOPSIGNAL SIGINT

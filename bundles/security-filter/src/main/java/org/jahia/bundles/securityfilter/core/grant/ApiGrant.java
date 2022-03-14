@@ -81,4 +81,9 @@ public class ApiGrant implements Grant {
         Predicate<String> predicate = api -> apiToCheck != null && (api.equals(apiToCheck) || apiToCheck.startsWith(api + "."));
         return Grant.anyMatch(apis, predicate) && Grant.noneMatch(excludes, predicate);
     }
+
+    @Override
+    public String toString() {
+        return String.format("apis: [%s], excludes: [%s]", String.join(",", apis), String.join(",", excludes));
+    }
 }

@@ -180,10 +180,61 @@ Reporting can be enabled when running in standard mode (`security.legacyMode=fal
 
 ### Debugging
 
-In order to understand why a call is granted or not, you can set the `org.jahia.bundles.securityfilter.core` package (or `org.jahia.bundles.securityfilter.legacy`, if using legacy mode) to debug in log4j configuration.
+In order to understand why a call is granted or not, you can set the `org.jahia.bundles.securityfilter.core` package (or `org.jahia.bundles.securityfilter.legacy`, if using legacy mode) to `DEBUG`.
 This will enable log for every permission check, with the API that is being checked and the result, and the grant that matches, if any. 
 If no grant match, the list of enabled scopes will give you the information on which grants were unsuccesfully checked. 
+Here an example of a graphql execution once the logger is enabled:
+```
+2022-03-14 14:14:53,323: DEBUG [PermissionServiceImpl] - ============ Start query check {node=null, api=graphql.GenericJCRNode.path} ============
+2022-03-14 14:14:53,323: DEBUG [ScopeDefinitionImpl] - Grant apis: [view.json.treeRootItem], excludes: [],  - nodeTypes: [jnt:virtualsite] - pathPatterns: [[/sites/.*]]: DENIED
+2022-03-14 14:14:53,324: DEBUG [ScopeDefinitionImpl] - Grant apis: [view.json.treeItem,view.json.tree], excludes: [],  - nodeTypes: [jnt:folder,jnt:page,jnt:portlet,jnt:navMenuText] - pathPatterns: [[/sites/.*]]: DENIED
+2022-03-14 14:14:53,324: DEBUG [ScopeDefinitionImpl] - Grant  - nodeTypes: [jnt:category]: DENIED
+2022-03-14 14:14:53,325: DEBUG [ScopeDefinitionImpl] - Grant apis: [jcrestapi], excludes: [],  - excludedPathPatterns: [[.*]]: DENIED
+2022-03-14 14:14:53,325: DEBUG [ScopeDefinitionImpl] - Grant apis: [jcrestapi], excludes: [],  - permission: [api-access]: DENIED
+2022-03-14 14:14:53,325: DEBUG [ScopeDefinitionImpl] - Grant apis: [jcrestapi], excludes: [],  - pathPatterns: [[/mounts(/.*)?, /sites(/.*)?, /, /modules(/.*)?]] - excludedPathPatterns: [[/sites/[^/]+/groups(/.*)?, /sites/[^/]+/users(/.*)?]]: DENIED
+2022-03-14 14:14:53,325: DEBUG [ScopeDefinitionImpl] - Grant apis: [graphql], excludes: [],  - excludedPathPatterns: [[.*]]: GRANTED
+2022-03-14 14:14:53,325: DEBUG [PermissionServiceImpl] - == Permission check result : GRANTED
+```
 
+By setting the logger to `TRACE` and updating the log4j configuration (found in /WEB-INF/etc/config/log4j2.xml) to allow trace output, you can get detailed information
+
+```
+2022-03-14 14:16:22,213: DEBUG [PermissionServiceImpl] - ============ Start query check {node=null, api=graphql.GenericJCRNode.path} ============
+2022-03-14 14:16:22,213: TRACE [PermissionServiceImpl] - == Check Scope : [site_tree]
+2022-03-14 14:16:22,213: DEBUG [ScopeDefinitionImpl] - Grant apis: [view.json.treeRootItem], excludes: [],  - nodeTypes: [jnt:virtualsite] - pathPatterns: [[/sites/.*]]: DENIED
+2022-03-14 14:16:22,213: DEBUG [ScopeDefinitionImpl] - Grant apis: [view.json.treeItem,view.json.tree], excludes: [],  - nodeTypes: [jnt:folder,jnt:page,jnt:portlet,jnt:navMenuText] - pathPatterns: [[/sites/.*]]: DENIED
+2022-03-14 14:16:22,214: TRACE [PermissionServiceImpl] - => Scope [site_tree] : DENIED
+2022-03-14 14:16:22,214: TRACE [PermissionServiceImpl] - == Check Scope : [access_category]
+2022-03-14 14:16:22,214: DEBUG [ScopeDefinitionImpl] - Grant  - nodeTypes: [jnt:category]: DENIED
+2022-03-14 14:16:22,214: TRACE [PermissionServiceImpl] - => Scope [access_category] : DENIED
+2022-03-14 14:16:22,214: TRACE [PermissionServiceImpl] - == Check Scope : [jcrestapi]
+2022-03-14 14:16:22,214: DEBUG [ScopeDefinitionImpl] - Grant apis: [jcrestapi], excludes: [],  - excludedPathPatterns: [[.*]]: DENIED
+2022-03-14 14:16:22,214: DEBUG [ScopeDefinitionImpl] - Grant apis: [jcrestapi], excludes: [],  - permission: [api-access]: DENIED
+2022-03-14 14:16:22,214: DEBUG [ScopeDefinitionImpl] - Grant apis: [jcrestapi], excludes: [],  - pathPatterns: [[/mounts(/.*)?, /sites(/.*)?, /, /modules(/.*)?]] - excludedPathPatterns: [[/sites/[^/]+/groups(/.*)?, /sites/[^/]+/users(/.*)?]]: DENIED
+2022-03-14 14:16:22,214: TRACE [PermissionServiceImpl] - => Scope [jcrestapi] : DENIED
+2022-03-14 14:16:22,215: TRACE [PermissionServiceImpl] - == Check Scope : [graphql]
+2022-03-14 14:16:22,215: DEBUG [ScopeDefinitionImpl] - Grant apis: [graphql], excludes: [],  - excludedPathPatterns: [[.*]]: GRANTED
+2022-03-14 14:16:22,215: TRACE [PermissionServiceImpl] - => Scope [graphql] : GRANTED
+2022-03-14 14:16:22,215: DEBUG [PermissionServiceImpl] - == Permission check result : GRANTED
+2022-03-14 14:16:22,215: TRACE [PermissionServiceImpl] - ============ End query check {node=null, api=graphql.GenericJCRNode.path} ============
+```
+`Start query check {node=null, api=graphql.GenericJCRNode.path}` provides the queried resource
+For each scope, we check if a rule grants the query.
+In the example above, the `[graphql]` scope
+```
+2022-02-22 10:47:40,101: DEBUG [PermissionServiceImpl] - == Check Scope : [graphql]
+```
+providing the api `graphql` 
+```
+2022-02-22 10:47:40,101: DEBUG [ScopeDefinitionImpl] - Grant (apis: [graphql], excludes: []), ( - excludedPathPatterns: [[.*]]): GRANTED
+2022-02-22 10:47:40,101: DEBUG [PermissionServiceImpl] - => Scope [graphql] : GRANTED
+2022-02-22 10:47:40,101: DEBUG [PermissionServiceImpl] - == Permission check result : GRANTED
+```
+
+matches the queried `api=graphql.Mutation.jExperience`
+```
+2022-02-22 10:47:40,091: DEBUG [PermissionServiceImpl] - ============ Start query check {node=null, api=graphql.Mutation.jExperience} ============
+```
 ### Configuration in a module
 
 A module can package a configuration file in META-INF/configurations folder. Since DX version 7.2.2.0, all  files in this folder are deployed in `karaf/etc` at module startup.

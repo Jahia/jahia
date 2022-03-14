@@ -184,6 +184,14 @@ public class AuthorizationConfig implements ManagedServiceFactory {
             }
             return !grants.isEmpty();
         }
+
+        @Override
+        public String toString() {
+            if (grants.isEmpty()) {
+                return "empty";
+            }
+            return grants.stream().map(Object::toString).collect(Collectors.joining(", "));
+        }
     }
 
 }

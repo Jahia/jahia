@@ -43,10 +43,10 @@
  */
 package org.jahia.bundles.securityfilter.core;
 
-import org.jahia.services.securityfilter.ScopeDefinition;
 import org.jahia.bundles.securityfilter.core.apply.AutoApply;
 import org.jahia.bundles.securityfilter.core.constraint.Constraint;
 import org.jahia.bundles.securityfilter.core.grant.Grant;
+import org.jahia.services.securityfilter.ScopeDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,8 +125,13 @@ public class ScopeDefinitionImpl implements ScopeDefinition {
     public boolean isGrantAccess(Map<String, Object> query) {
         for (Grant grant : grants) {
             if (grant.matches(query)) {
-                logger.debug("Access granted for {} by scope {} (grant {})", query, scopeName, grant);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Grant {}: GRANTED", grant);
+                }
                 return true;
+            }
+            if (logger.isDebugEnabled()) {
+                logger.debug("Grant {}: DENIED", grant);
             }
         }
         return false;

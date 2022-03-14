@@ -130,4 +130,14 @@ public class NodeGrant implements Grant {
     private boolean workspaceMatches(Node node) throws RepositoryException {
         return workspaces.isEmpty() || (node != null && workspaces.contains(node.getSession().getWorkspace().getName()));
     }
+
+    @Override
+    public String toString() {
+        return (withPermission == null ? "" : String.format(" - permission: [%s]", withPermission)) +
+                (nodeTypes == null || nodeTypes.isEmpty() ? "" : String.format(" - nodeTypes: [%s]", String.join(",", nodeTypes))) +
+                (excludesNodeTypes == null || excludesNodeTypes.isEmpty() ? "" : String.format(" - excludesNodeTypes: [%s]", String.join(",", excludesNodeTypes))) +
+                (pathPatterns == null || pathPatterns.isEmpty() ? "" : String.format(" - pathPatterns: [%s]", pathPatterns.stream().map(Pattern::toString).collect(Collectors.toSet()))) +
+                (excludedPathPatterns == null || excludedPathPatterns.isEmpty() ? "" : String.format(" - excludedPathPatterns: [%s]", excludedPathPatterns.stream().map(Pattern::toString).collect(Collectors.toSet()))) +
+                (workspaces == null || workspaces.isEmpty() ? "" : String.format(" - workspaces: [%s]", String.join(",", workspaces)));
+    }
 }

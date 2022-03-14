@@ -189,6 +189,9 @@ public class PermissionServiceImpl implements PermissionService, ManagedService 
         if (query == null) {
             throw new IllegalArgumentException("Must pass a valid api query");
         }
+        if (logger.isDebugEnabled()) {
+            logger.debug("============ Start query check {} ============ ", query);
+        }
 
         Collection<ScopeDefinition> currentScopes = getCurrentScopes();
 
@@ -203,7 +206,7 @@ public class PermissionServiceImpl implements PermissionService, ManagedService 
         if (!legacyMode || migrationReporting) {
             hasPermission = hasPermission(query, currentScopes);
             if (logger.isDebugEnabled()) {
-                logger.debug("Checking api permission {} with scopes {} : {}", query, currentScopes.stream().map(ScopeDefinition::getScopeName).collect(Collectors.toList()), debugResult(hasPermission));
+                logger.debug("== Permission check result : {}", debugResult(hasPermission));
             }
         }
 
@@ -219,6 +222,11 @@ public class PermissionServiceImpl implements PermissionService, ManagedService 
         if (migrationReporting && (hasLegacyPermission != hasPermission) && logger.isWarnEnabled()) {
             logger.warn("Permission check for {} : legacy mode is {}, standard mode is {}. Active scopes are {}", query, debugResult(hasLegacyPermission), debugResult(hasPermission), currentScopes.stream().map(ScopeDefinition::getScopeName).collect(Collectors.toList()));
         }
+        if (logger.isTraceEnabled()) {
+            logger.trace("============ End query check {} ============", query);
+            // add new line for reading
+            logger.trace("");
+        }
 
         if (!legacyMode) {
             return hasPermission;
@@ -230,9 +238,19 @@ public class PermissionServiceImpl implements PermissionService, ManagedService 
     private boolean hasPermission(Map<String, Object> query, Collection<ScopeDefinition> currentScopes) {
 
         for (ScopeDefinitionImpl scope : authorizationConfig.getScopes()) {
+            logger.trace("== Check Scope : [{}]", scope.getScopeName());
             boolean sameScope = currentScopes.stream().anyMatch(scopeDefinition -> scopeDefinition.getScopeName().equals(scope.getScopeName()));
             if (sameScope && scope.isGrantAccess(query)) {
+                if (logger.isTraceEnabled()) {
+                    logger.trace("=> Scope [{}] : GRANTED", scope.getScopeName());
+                }
                 return true;
+            }
+            if (logger.isTraceEnabled()) {
+                if (!currentScopes.contains(scope)) {
+                    logger.trace("Scope not in current scopes [{}]", currentScopes.stream().map(ScopeDefinition::getScopeName).collect(Collectors.joining(",")));
+                }
+                logger.trace("=> Scope [{}] : DENIED", scope.getScopeName());
             }
         }
         return false;

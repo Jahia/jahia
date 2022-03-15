@@ -124,11 +124,36 @@ public interface ModuleManager {
      * @param bundleResources A collection of resources, representing bundles to install
      * @param target          The group of cluster nodes targeted by the install operation (see BundleService class JavaDoc)
      * @param start           Whether installed bundles should be started right away
+     * @param ignoreChecks    Ignore Checks
+     * @return The result of the install operation
+     * @throws ModuleManagementException In case of problems
+     */
+    OperationResult install(Collection<Resource> bundleResources, String target, boolean start, boolean ignoreChecks);
+
+    /**
+     * Install specified bundles on the target group of cluster nodes, optionally starting them right after.
+     *
+     * @param bundleResources A collection of resources, representing bundles to install
+     * @param target          The group of cluster nodes targeted by the install operation (see BundleService class JavaDoc)
+     * @param start           Whether installed bundles should be started right away
      * @param startLevel      The start level
      * @return The result of the install operation
      * @throws ModuleManagementException In case of problems
      */
     OperationResult install(Collection<Resource> bundleResources, String target, boolean start, int startLevel);
+
+    /**
+     * Install specified bundles on the target group of cluster nodes, optionally starting them right after.
+     *
+     * @param bundleResources A collection of resources, representing bundles to install
+     * @param target          The group of cluster nodes targeted by the install operation (see BundleService class JavaDoc)
+     * @param start           Whether installed bundles should be started right away
+     * @param startLevel      The start level
+     * @param ignoreChecks    Ignore Checks
+     * @return The result of the install operation
+     * @throws ModuleManagementException In case of problems
+     */
+    OperationResult install(Collection<Resource> bundleResources, String target, boolean start, int startLevel, boolean ignoreChecks);
 
     /**
      * Start the specified bundle on the target group of cluster nodes.

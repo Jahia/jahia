@@ -162,6 +162,8 @@ public class JahiaCndReader {
     protected String currentToken;
 
 
+    private boolean doCheckConsistency = true;
+
     protected List<String> parsingErrors = new ArrayList<String>();
 
     /**
@@ -332,36 +334,42 @@ public class JahiaCndReader {
             }
         }
 
-        // Consistency checks
-        for (ExtendedNodeType type : nodeTypesList) {
-            // Check that supertypes / mixin are available in the current scope
-            for (String s : type.getDeclaredSupertypeNames()) {
-                try {
-                    ExtendedNodeType nodeType = nodeTypeNames.get(s);
-                    if (nodeType == null) {
-                        nodeType = registry.getNodeType(s);
-                    }
-                    if (!nodeType.isMixin() && type.isMixin()) {
+        if (doCheckConsistency) {
+            // Consistency checks
+            for (ExtendedNodeType type : nodeTypesList) {
+                // Check that supertypes / mixin are available in the current scope
+                for (String s : type.getDeclaredSupertypeNames()) {
+                    try {
+                        ExtendedNodeType nodeType = nodeTypeNames.get(s);
+                        if (nodeType == null) {
+                            nodeType = registry.getNodeType(s);
+                        }
+                        if (!nodeType.isMixin() && type.isMixin()) {
+                            hasEncounteredIssuesWithDefinitions = true;
+                            parsingErrors.add("Mixin type " + type.getName() + " cannot have non-mixin supertype " + s);
+                        }
+                    } catch (NoSuchNodeTypeException e) {
                         hasEncounteredIssuesWithDefinitions = true;
-                        parsingErrors.add("Mixin type " + type.getName() + " cannot have non-mixin supertype " + s);
+                        parsingErrors.add("Unknown supertype " + s + " for type " + type.getName());
                     }
-                } catch (NoSuchNodeTypeException e) {
-                    hasEncounteredIssuesWithDefinitions = true;
-                    parsingErrors.add("Unknown supertype " + s + " for type " + type.getName());
                 }
-            }
-            for (String s : type.getMixinExtendNames()) {
-                if (!registry.hasNodeType(s) && !nodeTypeNames.containsKey(s)) {
-                    hasEncounteredIssuesWithDefinitions = true;
-                    parsingErrors.add("Unknown mixin " + s + " for type " + type.getName());
+                for (String s : type.getMixinExtendNames()) {
+                    if (!registry.hasNodeType(s) && !nodeTypeNames.containsKey(s)) {
+                        hasEncounteredIssuesWithDefinitions = true;
+                        parsingErrors.add("Unknown mixin " + s + " for type " + type.getName());
+                    }
                 }
+                checkRecursiveInheritance(type, nodeTypeNames, new ArrayList<String>());
             }
-            checkRecursiveInheritance(type, nodeTypeNames, new ArrayList<String>());
         }
 
         if (hasEncounteredIssuesWithDefinitions) {
             throw new ParseException(StringUtils.join(parsingErrors, "\n"), -1, -1, filename);
         }
+    }
+
+    public void setDoCheckConsistency(boolean doCheckConsistency) {
+        this.doCheckConsistency = doCheckConsistency;
     }
 
     private boolean validateNameAndSystemId(Map<String, ExtendedNodeType> nodeTypeNames, ExtendedNodeType ntd) {

@@ -196,6 +196,16 @@
         </bean>
     </osgi:service>
 
+    <osgi:service interface="org.jahia.services.modulemanager.DefinitionsManagerService">
+        <osgi:service-properties>
+            <entry key="Service Description" value="Entry point interface for CND definition-related functions"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="DefinitionsManagerService"/>
+        </bean>
+    </osgi:service>
+
     <osgi:service interface="org.jahia.services.mail.MailService">
         <osgi:service-properties>
             <entry key="Service Description" value="DX mail service implementation"/>

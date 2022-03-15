@@ -48,7 +48,6 @@ import com.google.common.collect.Sets;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
-import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleState;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
@@ -67,7 +66,6 @@ import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
 import org.jahia.settings.readonlymode.ReadOnlyModeException;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.wiring.FrameworkWiring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -94,6 +92,8 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
     private BundlePersister persister;
     private JahiaTemplateManagerService templateManagerService;
     private boolean readOnly;
+
+    private Collection<BundleChecker> bundleCheckers;
 
     private interface BundleOperation {
 
@@ -174,6 +174,13 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
     }
 
     private OperationResult doInstall(Collection<PersistentBundle> infos, final String target, boolean start, int startLevel) {
+        for (PersistentBundle info : infos) {
+            if (!info.isIgnoreChecks()) {
+                for (BundleChecker bundleChecker : bundleCheckers) {
+                    bundleChecker.check(info);
+                }
+            }
+        }
         ArrayList<BundleInfo> bundleInfos = new ArrayList<>(infos.size());
         // phase #1: install bundles but do not start
         for (PersistentBundle info : infos) {
@@ -218,7 +225,15 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
         return install(bundleResources, target, start, SettingsBean.getInstance().getModuleStartLevel());
     }
 
+    public OperationResult install(Collection<Resource> bundleResources, String target, boolean start, boolean ignoreChecks) {
+        return install(bundleResources, target, start, SettingsBean.getInstance().getModuleStartLevel(), ignoreChecks);
+    }
+
     public OperationResult install(Collection<Resource> bundleResources, String target, boolean start, int startLevel) {
+        return install(bundleResources, target, start, startLevel, false);
+    }
+
+    public OperationResult install(Collection<Resource> bundleResources, String target, boolean start, int startLevel, boolean ignoreChecks) {
         readOnlyModeLock.readLock().lock();
         try {
             long startTime = System.currentTimeMillis();
@@ -234,6 +249,7 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
                     if (bundleInfo == null) {
                         throw new InvalidModuleException();
                     }
+                    bundleInfo.setIgnoreChecks(ignoreChecks);
                     if (requiresPersisting) {
                         persister.store(bundleInfo);
                     }
@@ -609,6 +625,10 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
 
     public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
         this.templateManagerService = templateManagerService;
+    }
+
+    public void setBundleCheckers(Collection<BundleChecker> bundleCheckers) {
+        this.bundleCheckers = bundleCheckers;
     }
 
     @Override

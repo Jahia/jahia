@@ -86,6 +86,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author toto
  */
 public class JCRStoreService extends JahiaService implements JahiaAfterInitializationService {
+    public static final String LAST_MODIFIED_PROP_KEY = ".lastModified";
+    public static final String VERSION_PROP_KEY = ".version";
     private static Logger logger = LoggerFactory.getLogger(JCRStoreService.class);
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
@@ -300,10 +302,10 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         synchronized (deploymentProperties) {
             // If deployment goes well, store deployed definitions in DB
             if (moduleVersion != null) {
-                deploymentProperties.put(systemId + ".version", moduleVersion);
+                deploymentProperties.put(systemId + VERSION_PROP_KEY, moduleVersion);
             }
             if (lastModified > -1) {
-                deploymentProperties.put(systemId + ".lastModified", Long.toString(lastModified));
+                deploymentProperties.put(systemId + LAST_MODIFIED_PROP_KEY, Long.toString(lastModified));
             }
             final StringWriter out = new StringWriter();
             new JahiaCndWriter(NodeTypeRegistry.getInstance().getNodeTypes(systemId), NodeTypeRegistry.getInstance().getNamespaces(), out);
@@ -321,8 +323,8 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         logger.info("Removing {} definitions, updating database cnd", systemId);
 
         synchronized (deploymentProperties) {
-            deploymentProperties.remove(systemId + ".version");
-            deploymentProperties.remove(systemId + ".lastModified");
+            deploymentProperties.remove(systemId + VERSION_PROP_KEY);
+            deploymentProperties.remove(systemId + LAST_MODIFIED_PROP_KEY);
             nodeTypesDBService.saveCndFile(systemId + ".cnd", null, deploymentProperties);
         }
     }
@@ -577,9 +579,19 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         }
     }
 
+    public String getDefinitionVersion(String systemId) {
+        return (systemId == null) ? null :
+                deploymentProperties.getProperty(systemId + VERSION_PROP_KEY, null);
+    }
+
+    public String getDefinitionLastModified(String systemId) {
+        return (systemId == null) ? null :
+                deploymentProperties.getProperty(systemId + LAST_MODIFIED_PROP_KEY, null);
+    }
+
     public boolean isLatestDefinitions(String systemId, ModuleVersion version, long lastModified) {
         if (version != null) {
-            String key = systemId + ".version";
+            String key = systemId + VERSION_PROP_KEY;
             if (deploymentProperties.containsKey(key)) {
                 ModuleVersion lastDeployed = new ModuleVersion(deploymentProperties.getProperty(key));
                 if (lastDeployed.compareTo(version) > 0) {
@@ -590,7 +602,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                 }
             }
         }
-        String key2 = systemId + ".lastModified";
+        String key2 = systemId + LAST_MODIFIED_PROP_KEY;
         if (deploymentProperties.containsKey(key2)) {
             long lastDeployed = (long) Long.parseLong(deploymentProperties.getProperty(key2));
             if (lastDeployed >= lastModified) {
@@ -646,7 +658,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
     public Map<String, Constructor<?>> getValidators() {
         return validatorCreators;
     }
-    
+
     @SuppressWarnings("unchecked")
     public void setValidators(Map<String, String> validators) {
         if (validators == null) {

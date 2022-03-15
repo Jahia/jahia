@@ -86,6 +86,7 @@ public class InstallBundle implements Operation {
     public static final String INSTALL_AND_START_BUNDLE = "installAndStartBundle";
     public static final String INSTALL_OR_UPGRADE_BUNDLE = "installOrUpgradeBundle";
     public static final String START_LEVEL = "startLevel";
+    public static final String IGNORE_CHECKS = "ignoreChecks";
     public static final String FORCE_UPDATE = "forceUpdate";
     public static final String UNINSTALL_PREVIOUS_VERSION = "uninstallPreviousVersion";
     public static final String TARGET = "target";
@@ -223,7 +224,8 @@ public class InstallBundle implements Operation {
             OperationResult result = moduleManager.install(
                     Collections.singleton(resource), target,
                     false,
-                    Optional.ofNullable((Integer) entry.get(START_LEVEL)).orElse(SettingsBean.getInstance().getModuleStartLevel())
+                    Optional.ofNullable((Integer) entry.get(START_LEVEL)).orElse(SettingsBean.getInstance().getModuleStartLevel()),
+                    entry.get(IGNORE_CHECKS) == Boolean.TRUE
             );
             if (result.getBundleInfos().size() == 1) {
                 BundleInfo bundleInfo = result.getBundleInfos().get(0);

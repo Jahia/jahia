@@ -64,6 +64,7 @@ public class PersistentBundle extends BundleInfo {
     private long lastModified;
     private Resource resource;
     private boolean transformationRequired;
+    private boolean ignoreChecks;
 
     /**
      * Initializes an instance of this class.
@@ -138,6 +139,10 @@ public class PersistentBundle extends BundleInfo {
         return transformationRequired;
     }
 
+    public boolean isIgnoreChecks() {
+        return ignoreChecks;
+    }
+
     /**
      * Sets the checksum of the bundle file.
      *
@@ -182,6 +187,10 @@ public class PersistentBundle extends BundleInfo {
      */
     public void setTransformationRequired(boolean transformationRequired) {
         this.transformationRequired = transformationRequired;
+    }
+
+    public void setIgnoreChecks(boolean ignoreChecks) {
+        this.ignoreChecks = ignoreChecks;
     }
 
     @Override

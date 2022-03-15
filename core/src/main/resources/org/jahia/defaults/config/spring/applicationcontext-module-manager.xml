@@ -8,6 +8,11 @@
         <property name="bundleService" ref="org.jahia.services.modulemanager.spi.impl.BundleServiceDelegate"/>
         <property name="persister" ref="org.jahia.services.modulemanager.persistence.BundlePersister"/>
         <property name="templateManagerService" ref="JahiaTemplateManagerService"/>
+        <property name="bundleCheckers">
+            <list>
+                <bean class="org.jahia.services.modulemanager.impl.DefinitionsBundleChecker"/>
+            </list>
+        </property>
     </bean>
 
     <bean id="org.jahia.services.modulemanager.spi.impl.BundleServiceDelegate" class="org.jahia.services.modulemanager.spi.impl.BundleServiceDelegate">
@@ -20,5 +25,10 @@
     </bean>
 
     <bean id="org.jahia.services.modulemanager.persistence.BundlePersister" class="org.jahia.services.modulemanager.persistence.jcr.JCRBundlePersister"/>
+
+    <bean id="DefinitionsManagerService" class="org.jahia.services.modulemanager.DefinitionsManagerService">
+        <property name="templateManagerService" ref="JahiaTemplateManagerService" />
+        <property name="jcrStoreService" ref="JCRStoreService" />
+    </bean>
 
 </beans>

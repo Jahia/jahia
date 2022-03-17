@@ -482,7 +482,7 @@ public class DefinitionsBundleChecker implements BundleChecker {
                     operationString = "NONE";
                 }
                 return new ToStringBuilder(this, ToStringStyle.NO_CLASS_NAME_STYLE)
-                        .append("itemName", newDef.getName())
+                        .append("itemName", newDef != null ? newDef.getName() : oldDef.getName())
                         .append("type", type)
                         .append("operation", operationString)
                         .toString();
@@ -574,10 +574,12 @@ public class DefinitionsBundleChecker implements BundleChecker {
 
             @Override
             boolean isModified() {
-                return super.isModified()
-                        || getOldDef().getRequiredType() != getNewDef().getRequiredType()
-                        || getOldDef().isMultiple() != getNewDef().isMultiple()
-                        || getOldDef().isInternationalized() != getNewDef().isInternationalized();
+                return oldDef != null && newDef != null && (
+                        super.isModified()
+                                || getOldDef().getRequiredType() != getNewDef().getRequiredType()
+                                || getOldDef().isMultiple() != getNewDef().isMultiple()
+                                || getOldDef().isInternationalized() != getNewDef().isInternationalized()
+                );
             }
         }
 

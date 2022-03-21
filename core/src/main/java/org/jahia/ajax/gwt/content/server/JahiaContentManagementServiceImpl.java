@@ -1565,7 +1565,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         final JCRSessionWrapper session = retrieveCurrentSession();
         return publication.getFullPublicationInfos(uuids,
                 Collections.singleton(retrieveCurrentSession().getLocale().toString()),
-                session, allSubTree, checkForUnpublication);
+                session, allSubTree, true, checkForUnpublication);
     }
 
     /**
@@ -1586,7 +1586,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         enableJcrSessionReadOnlyCache();
         final JCRSessionWrapper session = retrieveCurrentSession();
 
-        return publication.getFullPublicationInfos(uuids, languages, session, allSubTree, checkForUnpublication);
+        return publication.getFullPublicationInfos(uuids, languages, session, allSubTree, true, checkForUnpublication);
     }
 
 

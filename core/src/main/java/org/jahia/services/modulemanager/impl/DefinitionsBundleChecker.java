@@ -574,12 +574,16 @@ public class DefinitionsBundleChecker implements BundleChecker {
 
             @Override
             boolean isModified() {
-                return oldDef != null && newDef != null && (
-                        super.isModified()
-                                || getOldDef().getRequiredType() != getNewDef().getRequiredType()
-                                || getOldDef().isMultiple() != getNewDef().isMultiple()
-                                || getOldDef().isInternationalized() != getNewDef().isInternationalized()
-                );
+                if (oldDef != null && newDef != null) {
+                    Set<String> set1 = new HashSet<>(Arrays.asList(getOldDef().getValueConstraints()));
+                    Set<String> set2 = new HashSet<>(Arrays.asList(getNewDef().getValueConstraints()));
+                    return super.isModified()
+                            || getOldDef().getRequiredType() != getNewDef().getRequiredType()
+                            || getOldDef().isMultiple() != getNewDef().isMultiple()
+                            || getOldDef().isInternationalized() != getNewDef().isInternationalized()
+                            || !set1.equals(set2);
+                }
+                return false;
             }
         }
 

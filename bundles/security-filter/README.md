@@ -157,11 +157,11 @@ The scope will be available only to users who fulfill the constraints. It will n
 
 ### Configuration profiles
 
-The user can choose a predefined security profile by setting a value in `security.profile`, in `org.jahia.bundles.api.security.cfg` file. These profiles can be found [here](`src/main/resources/META-INF/configuration-profiles`).
+The user can choose a predefined security profile by setting a value in `security.profile`, in `org.jahia.bundles.api.security.cfg` file. These profiles can be found [here](src/main/resources/META-INF/configuration-profiles).
 
-- "[default](`src/main/resources/META-INF/configuration-profiles/profiles-default.yml`)" profile is recommended one. It will not allow any API call from external origin, and from non-privileged users.
-- "[compat](`src/main/resources/META-INF/configuration-profiles/profiles-compat.yml`)" profile is more open and is compatible with the previous security-filter implementation. Most graphql/rest calls are allowed for any user
-- "[open](`src/main/resources/META-INF/configuration-profiles/profiles-open.yml`)" profile allows every call.
+- "[default](src/main/resources/META-INF/configuration-profiles/profiles-default.yml)" profile is recommended one. It will not allow any API call from external origin, and from non-privileged users.
+- "[compat](src/main/resources/META-INF/configuration-profiles/profiles-compat.yml)" profile is more open and is compatible with the previous security-filter implementation. Most graphql/rest calls are allowed for any user
+- "[open](src/main/resources/META-INF/configuration-profiles/profiles-open.yml)" profile allows every call.
 
 It's also possible to not use any profile (everything will be denied by default) - you will have to fully provide your own configuration. Without any configuration Jahia GUI will not be work.
 
@@ -263,7 +263,7 @@ It's possible to restrict the usage of a token based on the client IP or referer
 
 ### Configuration
 
-Tokens can be generated via the tools section "jwtConfiguration" - the user can specify the list of scopes that will be owned by the token, and fill in the optional restrictions.
+When Jahia is started in development mode, tokens can be generated from the "Developer Tools" via the section "JWT Configuration" - the user can specify the list of scopes that will be owned by the token, and fill in the optional restrictions.
 You must customize `org.jahia.bundles.jwt.token.cfg` configuration file before generating any token.
 The file contains the following properties :
 

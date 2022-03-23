@@ -85,10 +85,6 @@ public class CndBundleObserver implements BundleObserver<URL> {
 
     @Override
     public void addingEntries(Bundle bundle, List<URL> urls) {
-        if (!SettingsBean.getInstance().isProcessingServer()) {
-            return;
-        }
-
         if (urls.size() == 0) {
             return;
         }
@@ -115,7 +111,6 @@ public class CndBundleObserver implements BundleObserver<URL> {
 
         ModuleVersion moduleVersion = module.getVersion();
         NodeTypeRegistry nodeTypeRegistry = NodeTypeRegistry.getInstance();
-
         String systemId = bundle.getSymbolicName();
 
         try {
@@ -127,21 +122,23 @@ public class CndBundleObserver implements BundleObserver<URL> {
         }
 
         boolean latestDefinitions = JCRStoreService.getInstance().isLatestDefinitions(systemId, moduleVersion, lastModified);
-
         if (!latestDefinitions) {
             return;
         }
 
-        String bundleName = BundleUtils.getDisplayName(bundle);
-
-        try {
-            nodeTypeRegistry.addDefinitionsFile(resources, systemId);
-
-            jcrStoreService.deployDefinitions(systemId, module.getVersion().toString(), lastModified);
-            logger.info("Registered definitions for bundle {}", bundleName);
-        } catch (IOException | ParseException | RepositoryException e) {
-            // Error when loading nodetypes. Stop module deployment
-            throw new RuntimeException("Error registering node type definition for bundle " + bundle, e);
+        if (!SettingsBean.getInstance().isProcessingServer()) {
+            // Need to update deployment properties for browsing nodes
+            jcrStoreService.updateDeploymentProperties(systemId, module.getVersion().toString(), lastModified);
+            logger.info("Updated deployment properties for bundle {}", systemId);
+        } else {
+            try {
+                nodeTypeRegistry.addDefinitionsFile(resources, systemId);
+                jcrStoreService.deployDefinitions(systemId, module.getVersion().toString(), lastModified);
+                logger.info("Registered definitions for bundle {}", BundleUtils.getDisplayName(bundle));
+            } catch (IOException | ParseException | RepositoryException e) {
+                // Error when loading nodetypes. Stop module deployment
+                throw new RuntimeException("Error registering node type definition for bundle " + bundle, e);
+            }
         }
     }
 

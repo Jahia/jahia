@@ -313,6 +313,17 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         }
     }
 
+    public void updateDeploymentProperties(String systemId, String moduleVersion, long lastModified) {
+        synchronized (deploymentProperties) {
+            if (moduleVersion != null) {
+                deploymentProperties.put(systemId + VERSION_PROP_KEY, moduleVersion);
+            }
+            if (lastModified > -1) {
+                deploymentProperties.put(systemId + LAST_MODIFIED_PROP_KEY, Long.toString(lastModified));
+            }
+        }
+    }
+
     public void undeployDefinitions(String systemId) throws IOException, RepositoryException {
         for (JCRStoreProvider provider : sessionFactory.getProviders().values()) {
             if (provider.canRegisterCustomNodeTypes()) {

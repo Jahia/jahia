@@ -56,6 +56,7 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermDocs;
 import org.apache.lucene.index.TermPositionVector;
+import org.jahia.osgi.BundleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,7 +81,11 @@ public class HTMLExcerpt extends AbstractExcerpt {
     private static final Logger log = LoggerFactory.getLogger(HTMLExcerpt.class);
 
     private static final Pattern APOS = Pattern.compile("&apos;");
-    
+
+    private ExcerptProcessor excerptProcessor;
+
+    private boolean lookForExcerptProcessor = true;
+
     @SuppressWarnings("serial")
     public static final FieldSelector FULLTEXT = new FieldSelector() {
         public FieldSelectorResult accept(String fieldName) {
@@ -90,12 +95,22 @@ public class HTMLExcerpt extends AbstractExcerpt {
                 return FieldSelectorResult.NO_LOAD;
             }
         }
-    };    
+    };
 
 
     @Override
     protected String createExcerpt(TermPositionVector tpv, String text,
                                    int maxFragments, int maxFragmentSize) throws IOException {
+        // Custom excerpt processor exists, use that processor
+        if(lookForExcerptProcessor) {
+            excerptProcessor = BundleUtils.getOsgiService(ExcerptProcessor.class, null);
+            lookForExcerptProcessor = false;
+        }
+
+        if (excerptProcessor != null) {
+            return excerptProcessor.handleText(tpv, text, getQueryTerms(), maxFragments, maxFragmentSize);
+        }
+
         // TODO Auto-generated method stub
         return JahiaHighlighter.highlight(tpv, getQueryTerms(), text,
                 "<div>", "</div>", "...", " ", "<span class=\"searchHighlightedText\">", "</span>",

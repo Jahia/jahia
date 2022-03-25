@@ -408,7 +408,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         if (logger.isDebugEnabled()) {
             if (paths.size() > 3) {
-                logger.debug("getNodes took {} ms for {} paths: {},...", 
+                logger.debug("getNodes took {} ms for {} paths: {},...",
                         System.currentTimeMillis() - timer, paths.size(), StringUtils.join(paths.subList(0, 3), ", "));
             } else {
                 logger.debug("getNodes took {} ms for paths: {}", System.currentTimeMillis() - timer,
@@ -1565,7 +1565,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         final JCRSessionWrapper session = retrieveCurrentSession();
         return publication.getFullPublicationInfos(uuids,
                 Collections.singleton(retrieveCurrentSession().getLocale().toString()),
-                session, allSubTree, true, checkForUnpublication);
+                session, allSubTree, false, checkForUnpublication);
     }
 
     /**

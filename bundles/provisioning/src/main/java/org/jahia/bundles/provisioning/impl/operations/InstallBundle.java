@@ -254,6 +254,9 @@ public class InstallBundle implements Operation {
             Manifest mf = zip.getManifest();
             String name = mf.getMainAttributes().getValue("Bundle-SymbolicName");
             String versionString = mf.getMainAttributes().getValue("Implementation-Version");
+            if (versionString == null) {
+                versionString = mf.getMainAttributes().getValue("Bundle-Version");
+            }
             if (name == null || versionString == null) {
                 logger.warn("Cannot read manifest from {}", bundleKey);
                 return false;

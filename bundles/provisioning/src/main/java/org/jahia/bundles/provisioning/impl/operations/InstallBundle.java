@@ -300,11 +300,19 @@ public class InstallBundle implements Operation {
         boolean autoStart = entry.get(AUTO_START) == Boolean.TRUE || entry.get(INSTALL_AND_START_BUNDLE) != null;
 
         if (entry.get(AUTO_START) != Boolean.FALSE && entry.get(INSTALL_OR_UPGRADE_BUNDLE) != null) {
+            logger.info("Setup autostart {} {}", bundleInfo.getSymbolicName(), bundleInfo.getVersion());
             // In case of upgrade, get the previous version state, or auto-start by default
             Version thisVersion = new Version(bundleInfo.getVersion());
+            if (installedVersions != null && logger.isDebugEnabled()) {
+                logger.debug("Installed versions : {}", installedVersions.stream().map(Bundle::getVersion).collect(Collectors.toList()));
+                logger.debug("Any more recent match : {}", installedVersions.stream().filter(b -> VersionComparator.compare(b.getVersion(), thisVersion) > 0).findAny());
+                logger.debug("Previous versions started : {}", installedVersions.stream().map(b -> b.getVersion() + "=" + (b.getState() == Bundle.ACTIVE || b.adapt(BundleStartLevel.class).isPersistentlyStarted())).collect(Collectors.toList()));
+            } else {
+                logger.debug("No previously installed versions, autostart module");
+            }
             autoStart = installedVersions == null || (
                     installedVersions.stream().noneMatch(b -> VersionComparator.compare(b.getVersion(), thisVersion) > 0) &&
-                    installedVersions.stream().anyMatch(b -> b.getState() == Bundle.ACTIVE || b.adapt(BundleStartLevel.class).isPersistentlyStarted())
+                            installedVersions.stream().anyMatch(b -> b.getState() == Bundle.ACTIVE || b.adapt(BundleStartLevel.class).isPersistentlyStarted())
             );
         }
 

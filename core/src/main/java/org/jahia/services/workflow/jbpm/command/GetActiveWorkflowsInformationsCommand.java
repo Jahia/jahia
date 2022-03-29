@@ -60,7 +60,7 @@ import java.util.Locale;
 public class GetActiveWorkflowsInformationsCommand extends BaseCommand<List<Workflow>> {
 
 	private transient static Logger logger = LoggerFactory.getLogger(GetActiveWorkflowsInformationsCommand.class);
-	
+
     private final List<String> processIds;
     private final Locale uiLocale;
 
@@ -75,7 +75,7 @@ public class GetActiveWorkflowsInformationsCommand extends BaseCommand<List<Work
         for (String processId : processIds) {
         	ProcessInstance processInstance = getKieSession().getProcessInstance(Long.parseLong(processId));
         	if (processInstance != null) {
-                activeWorkflows.add(convertToWorkflow(processInstance, uiLocale, getKieSession(), getTaskService(), getLogService()));
+                activeWorkflows.add(convertToWorkflow(processInstance, uiLocale, getKieSession(), getTaskService(), getLogService(), true, true));
         	} else {
         		logger.debug("Retrieving process instance with ID {} returned null while getting active workflows", processId);
         	}

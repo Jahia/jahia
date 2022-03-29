@@ -55,16 +55,26 @@ import java.util.Locale;
 public class GetWorkflowCommand extends BaseCommand<Workflow> {
     private final String processId;
     private final Locale uiLocale;
+    private boolean includeTasks = true;
+    private boolean includeStartTime = true;
 
     public GetWorkflowCommand(String processId, Locale uiLocale) {
         this.processId = processId;
         this.uiLocale = uiLocale;
     }
 
+    public void setIncludeTasks(boolean includeTasks) {
+        this.includeTasks = includeTasks;
+    }
+
+    public void setIncludeStartTime(boolean includeStartTime) {
+        this.includeStartTime = includeStartTime;
+    }
+
     @Override
     public Workflow execute() {
         ProcessInstance processInstance = getKieSession().getProcessInstance(Long.parseLong(processId));
-        return processInstance != null ? convertToWorkflow(processInstance, uiLocale, getKieSession(), getTaskService(), getLogService()) : null;
+        return processInstance != null ? convertToWorkflow(processInstance, uiLocale, getKieSession(), getTaskService(), getLogService(), includeTasks, includeStartTime) : null;
     }
 
     @Override

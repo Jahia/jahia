@@ -74,7 +74,7 @@ public class GetWorkflowsForDefinitionCommand extends BaseCommand<List<Workflow>
             for (ProcessInstanceLog processInstanceLog : processInstanceLogs) {
                 ProcessInstance processInstance = getKieSession().getProcessInstance(processInstanceLog.getProcessInstanceId());
                 if (processInstance != null && processInstance.getProcessName().equals(definition) && processInstance instanceof WorkflowProcessInstance) {
-                    workflows.add(convertToWorkflow(processInstance, uiLocale, getKieSession(), getTaskService(), getLogService()));
+                    workflows.add(convertToWorkflow(processInstance, uiLocale, getKieSession(), getTaskService(), getLogService(), true, true));
                 }
             }
         }

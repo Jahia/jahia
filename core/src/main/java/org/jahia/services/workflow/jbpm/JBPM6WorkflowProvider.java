@@ -278,13 +278,6 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
         return executeCommand(new GetWorkflowCommand(processId, uiLocale));
     }
 
-    public Workflow getWorkflowFast(final String processId, final Locale uiLocale) {
-        GetWorkflowCommand getWorkflowCommand = new GetWorkflowCommand(processId, uiLocale);
-        getWorkflowCommand.setIncludeTasks(false);
-        getWorkflowCommand.setIncludeStartTime(false);
-        return executeCommand(getWorkflowCommand);
-    }
-
     @Override
     public Set<WorkflowAction> getAvailableActions(final String processId, final Locale uiLocale) {
         return executeCommand(new GetAvailableActionsCommand(processId, uiLocale));

@@ -75,7 +75,7 @@ public class GetWorkflowsForUserCommand extends BaseCommand<List<Workflow>> {
                 WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) processInstance;
                 String userKey = (String) workflowProcessInstance.getVariable("user");
                 if (user.getUserKey().equals(userKey)) {
-                    workflows.add(convertToWorkflow(processInstance, uiLocale, getKieSession(), getTaskService(), getLogService(), true, true));
+                    workflows.add(convertToWorkflow(processInstance, uiLocale, getKieSession(), getTaskService(), getLogService()));
                 }
             }
         }

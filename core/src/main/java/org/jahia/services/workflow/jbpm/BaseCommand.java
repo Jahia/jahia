@@ -305,22 +305,18 @@ public abstract class BaseCommand<T> implements GenericCommand<T> {
         return wf;
     }
 
-    protected Workflow convertToWorkflow(ProcessInstance instance, Locale uiLocale, KieSession ksession, TaskService taskService, AuditLogService auditLogService, boolean includeTasks, boolean includeStartTime) {
+    protected Workflow convertToWorkflow(ProcessInstance instance, Locale uiLocale, KieSession ksession, TaskService taskService, AuditLogService auditLogService) {
         WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) instance;
         final Workflow workflow = new Workflow(instance.getProcessName(), Long.toString(instance.getId()), key);
         final WorkflowDefinition definition = getWorkflowDefinitionById(instance.getProcessId(), uiLocale, ksession.getKieBase());
         workflow.setWorkflowDefinition(definition);
-        if (includeTasks) {
-            workflow.setAvailableActions(getAvailableActions(ksession, taskService, Long.toString(instance.getId()), uiLocale));
-        }
+        workflow.setAvailableActions(getAvailableActions(ksession, taskService, Long.toString(instance.getId()), uiLocale));
 
-        if (includeStartTime) {
-            ProcessInstanceLog processInstanceLog = (ProcessInstanceLog) ((ProcessInstanceImpl) instance).getMetaData().get("ProcessInstanceLog");
-            if (processInstanceLog == null) {
-                processInstanceLog = auditLogService.findProcessInstance(instance.getId());
-            }
-            workflow.setStartTime(processInstanceLog.getStart());
+        ProcessInstanceLog processInstanceLog =  (ProcessInstanceLog) ((ProcessInstanceImpl)instance).getMetaData().get("ProcessInstanceLog");
+        if (processInstanceLog == null) {
+            processInstanceLog = auditLogService.findProcessInstance(instance.getId());
         }
+        workflow.setStartTime(processInstanceLog.getStart());
 
         Object user = workflowProcessInstance.getVariable("user");
         if (user != null) {

@@ -216,7 +216,10 @@ public class RenderChain {
                             }
                         }
                     } catch (Exception e) {
-                        logger.warn("Error during finalizing of filter", e);
+                        logger.warn("Something wrong happened during finalizing of filter: {}, the render filters might have been modified externally, set that class in DEBUG log level for more detail ", e.getMessage());
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Error during finalizing of filter", e);
+                        }
                     }
                 }
             }

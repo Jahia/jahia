@@ -67,6 +67,7 @@
 
         <pluto.version>2.0.2</pluto.version>
         <spring.version>3.2.18.RELEASE_OSGI</spring.version>
+        <spring-beans.version>3.2.18.jahia1_OSGI</spring-beans.version>
         <springtx.version>3.2.18.RELEASE_OSGI2</springtx.version>
         <springwebflow-version>2.4.8.RELEASE</springwebflow-version>
         <jackrabbit.version>2.18.4-jahia1</jackrabbit.version>

@@ -582,7 +582,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
-            <version>${spring.version}</version>
+            <version>${spring-beans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

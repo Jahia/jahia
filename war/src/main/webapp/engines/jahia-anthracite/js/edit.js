@@ -1795,7 +1795,10 @@ Anthracite.addModule("edit", {
             // Force GWT to load the GWT tab for channels
             // Remove just incase already been added ( can happen when returning to Edit Mode from another app)
             jGet.id('channel-menu').remove();
-
+            if (!document.getElementById('JahiaGxtSidePanelTabs__JahiaGxtChannelsTab'))  {
+                // Channel Menu not available do nothing
+                return;
+            }
             jGet.id('JahiaGxtSidePanelTabs__JahiaGxtChannelsTab').trigger('click');
 
             // Build the Channels bar

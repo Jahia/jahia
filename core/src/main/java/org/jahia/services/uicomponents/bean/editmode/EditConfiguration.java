@@ -45,6 +45,7 @@ package org.jahia.services.uicomponents.bean.editmode;
 
 import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
+import org.jahia.services.channels.ChannelService;
 import org.jahia.services.uicomponents.bean.toolbar.Toolbar;
 import org.springframework.beans.factory.BeanNameAware;
 
@@ -389,7 +390,7 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     }
 
     public boolean isSupportChannelsDisplay() {
-        return supportChannelsDisplay;
+        return ChannelService.getInstance().getAllChannels().size() > 1 && supportChannelsDisplay;
     }
 
     public void setSupportChannelsDisplay(boolean supportChannelsDisplay) {

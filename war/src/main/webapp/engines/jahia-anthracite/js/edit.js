@@ -1663,6 +1663,12 @@ Anthracite.addModule("edit", {
                 jGet.id('indigoSplitter').nodes[0].style.setProperty('left', xPos + 'px', 'important');
             }
 
+             // Set position of the layers if any
+             if (jGet.class('header-info-layer').exists()) {
+                 jGet.class('header-info-layer').nodes[0].style.setProperty('left', (xPos + 6) + 'px', 'important');
+                 jGet.class('header-info-layer').nodes[0].style.setProperty('width', 'calc(100% - ' + (xPos + 6) + ')', 'important');
+             }
+
             Anthracite.data.sidePanelWidth = mainFrameWidth;
             Anthracite.common.resizeLanguageInput();
             Anthracite.common.resizeSiteSelector();

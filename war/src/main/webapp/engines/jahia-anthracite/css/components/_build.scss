@@ -63,6 +63,10 @@ div[role="combobox"] {
     }
 }
 
+.x-form-date-trigger {
+    color: _theme($INPUT--COLOR, normal) !important
+}
+
 
 /////////////////////////////////////////////////
 // DATE PICKER //////////////////////////////////

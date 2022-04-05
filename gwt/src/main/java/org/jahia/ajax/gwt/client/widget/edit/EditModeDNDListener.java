@@ -51,6 +51,7 @@ import com.extjs.gxt.ui.client.widget.Info;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
@@ -303,8 +304,20 @@ public class EditModeDNDListener extends DNDListener {
                         Map<String, Object> data = new HashMap<String, Object>();
                         data.put("node", mainNode);
                         if (!replacedPath.equals(selectedPath)) {
-                            MainModule.staticGoTo(replacedPath, null);
-                            editLinker.refresh(data);
+                            JahiaContentManagementService.App.getInstance().getNodes(Arrays.asList(replacedPath), GWTJahiaNode.DEFAULT_SITE_FIELDS, new BaseAsyncCallback<List<GWTJahiaNode>>() {
+                                @Override
+                                public void onSuccess(List<GWTJahiaNode> result) {
+                                    // Set the main area to the new path
+                                    MainModule.staticGoTo(replacedPath, null);
+                                    if (result.isEmpty()) {
+                                        CommonEntryPoint.consoleError("Unable to read node with path: " + replacedPath);
+                                    }
+                                    data.put("node", result.get(0));
+                                    // Refresh the side panel
+                                    editLinker.refresh(data);
+                                }
+                            });
+
                         } else if (e.getDropTarget() instanceof PagesTabItem.PageTreeGridDropTarget) {
                             ((PagesTabItem.PageTreeGridDropTarget) e.getDropTarget()).getCallback().onSuccess(data);
                         }

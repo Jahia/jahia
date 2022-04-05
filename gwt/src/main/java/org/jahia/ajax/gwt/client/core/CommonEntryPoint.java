@@ -115,4 +115,20 @@ public class CommonEntryPoint implements EntryPoint {
         return loginUrl;
     }
 
+    /**
+     * Utility function to log a message in the console
+     * @param message
+     */
+    public static native void consoleLog(String message) /*-{
+        console.log(message);
+    }-*/;
+
+    /**
+     * Utility function to send an error to the console
+     * @param message
+     */
+    public static native void consoleError(String message) /*-{
+        console.error(message);
+    }-*/;
+
 }

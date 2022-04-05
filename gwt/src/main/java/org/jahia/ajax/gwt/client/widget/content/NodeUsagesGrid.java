@@ -74,7 +74,7 @@ public class NodeUsagesGrid {
     public static Grid<GWTJahiaNodeUsage> createUsageGrid(final List<GWTJahiaNode> nodes, final String baseUsageUrl) {
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
-        ColumnConfig col = new ColumnConfig("pagePath", Messages.get("label.pageUrl", "Page URL"), 300);
+        ColumnConfig col = new ColumnConfig("pagePath", Messages.get("label.pageUrl", "Page URL"), 200);
         col.setRenderer(new GridCellRenderer<GWTJahiaNodeUsage>() {
 
             @Override
@@ -103,7 +103,7 @@ public class NodeUsagesGrid {
 
         columns.add(col);
 
-        col = new ColumnConfig("path", Messages.get("label.path", "URL"), 300);
+        col = new ColumnConfig("path", Messages.get("label.path", "URL"), 600);
         columns.add(col);
         ColumnModel cm = new ColumnModel(columns);
         final ListStore<GWTJahiaNodeUsage> usageStore = new ListStore<GWTJahiaNodeUsage>(new BaseListLoader(

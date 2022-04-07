@@ -105,7 +105,7 @@
    		<Journal class="@JOURNAL_CLASS@">
                <param name="dataSourceName" value="jahiaDS" />
                <param name="revision" value="${rep.home}/revisionNode"/>
-               <param name="janitorEnabled" value="true"/>
+               <param name="janitorEnabled" value="${processingServer}"/>
                <param name="schemaObjectPrefix" value="jr_j_"/>
                <param name="schemaCheckEnabled" value="false"/>
     	</Journal>

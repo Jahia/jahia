@@ -474,6 +474,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             settings.setFast(true);
             clusterActivated = getBoolean("cluster.activated", false);
             setSystemProperty("cluster.activated", Boolean.toString(clusterActivated));
+            setSystemProperty("processingServer", Boolean.toString(isProcessingServer));
             if (System.getProperty("cluster.node.serverId") == null) {
                 setSystemProperty("cluster.node.serverId", getString("cluster.node.serverId", "jahiaServer1"));
             }

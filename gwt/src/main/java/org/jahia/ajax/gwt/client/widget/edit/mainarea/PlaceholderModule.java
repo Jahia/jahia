@@ -70,9 +70,12 @@ import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
-
 
 /**
  * Module where a content can be created by clicking on a button or drag'n'dropping on it a content type
@@ -120,7 +123,8 @@ public class PlaceholderModule extends Module {
             return;
         }
 
-        if (getParentModule() instanceof AreaModule && getParentModule().getChildCount() == 0 && ((AreaModule) getParentModule()).editable) {
+        if (getParentModule() instanceof AreaModule && getParentModule().getChildCount() == 0
+                && ((AreaModule) getParentModule()).editable) {
             ((AreaModule) getParentModule()).setEnabledEmptyArea();
         }
 
@@ -180,12 +184,14 @@ public class PlaceholderModule extends Module {
                     @Override
                     public void handleEvent(ComponentEvent be) {
                         final GWTJahiaNode parentNode = getParentModule().getNode();
-                        if (parentNode != null && PermissionsUtils.isPermitted("jcr:addChildNodes", parentNode) && (!parentNode.isLocked() || parentNode.isLockAllowsAdd())) {
+                        if (parentNode != null && PermissionsUtils.isPermitted("jcr:addChildNodes", parentNode) && (!parentNode.isLocked()
+                                || parentNode.isLockAllowsAdd())) {
                             String nodeName = null;
                             if ((path != null) && !"*".equals(path) && !path.startsWith("/")) {
                                 nodeName = path;
                             }
-                            ContentActions.showContentWizard(mainModule.getEditLinker(), effectiveNodeTypes, parentNode, nodeName, true, displayAnyContent ? null : displayedNodeTypes, false, nodeName != null);
+                            ContentActions.showContentWizard(mainModule.getEditLinker(), effectiveNodeTypes, parentNode, nodeName, true,
+                                    displayAnyContent ? null : displayedNodeTypes, false, nodeName != null);
                         }
                     }
                 });
@@ -211,7 +217,8 @@ public class PlaceholderModule extends Module {
                 @Override
                 public void handleEvent(ComponentEvent be) {
                     GWTJahiaNode parentNode = getParentModule().getNode();
-                    if (parentNode != null && PermissionsUtils.isPermitted("jcr:addChildNodes", parentNode) && (!parentNode.isLocked() || parentNode.isLockAllowsAdd())) {
+                    if (parentNode != null && PermissionsUtils.isPermitted("jcr:addChildNodes", parentNode) && (!parentNode.isLocked()
+                            || parentNode.isLockAllowsAdd())) {
                         String nodeName = null;
                         if ((path != null) && !"*".equals(path) && !path.startsWith("/")) {
                             nodeName = path;
@@ -238,15 +245,16 @@ public class PlaceholderModule extends Module {
                 @Override
                 public void handleEvent(ComponentEvent be) {
                     GWTJahiaNode parentNode = getParentModule().getNode();
-                    if (parentNode != null && PermissionsUtils.isPermitted("jcr:addChildNodes", parentNode) && (!parentNode.isLocked() || parentNode.isLockAllowsAdd())) {
+                    if (parentNode != null && PermissionsUtils.isPermitted("jcr:addChildNodes", parentNode) && (!parentNode.isLocked()
+                            || parentNode.isLockAllowsAdd())) {
                         CopyPasteEngine.getInstance().pasteReference(parentNode, mainModule.getEditLinker());
                     }
                 }
             });
 
             CopyPasteEngine.getInstance().addPlaceholder(this);
-            updatePasteButton();
 
+            updatePasteButton();
             panel.add(pasteButton, new RowData());
             panel.add(pasteAsReferenceButton, new RowData());
             panel.layout();
@@ -266,8 +274,12 @@ public class PlaceholderModule extends Module {
     public void updatePasteButton() {
         String restrictToNodeTypes = getNodeTypes() != null && !getNodeTypes().isEmpty() ? getNodeTypes() : parentModule.getNodeTypes();
         if (!CopyPasteEngine.getInstance().getCopiedNodes().isEmpty()) {
-            pasteButton.setVisible(CopyPasteEngine.getInstance().checkNodeType(restrictToNodeTypes, false) && CopyPasteEngine.getInstance().canCopyTo(getParentModule().getNode()));
-            pasteAsReferenceButton.setVisible(CopyPasteEngine.getInstance().checkNodeType(restrictToNodeTypes, true) && CopyPasteEngine.getInstance().canPasteAsReference() && parentModule.isAllowReferences() && isAllowReferences());
+             boolean hasPastePermission =PermissionsUtils.isPermitted("pasteAction", getParentModule().getNode());
+            pasteButton.setVisible(CopyPasteEngine.getInstance().checkNodeType(restrictToNodeTypes, false) && CopyPasteEngine.getInstance()
+                    .canCopyTo(getParentModule().getNode()) && hasPastePermission);
+            pasteAsReferenceButton.setVisible(
+                    CopyPasteEngine.getInstance().checkNodeType(restrictToNodeTypes, true) && CopyPasteEngine.getInstance()
+                            .canPasteAsReference() && parentModule.isAllowReferences() && isAllowReferences() && hasPastePermission);
         } else {
             pasteButton.setVisible(false);
             pasteAsReferenceButton.setVisible(false);

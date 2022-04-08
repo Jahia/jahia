@@ -1328,6 +1328,7 @@
         </property>
         <property name="titleKey" value="label.pasteReference"/>
         <property name="icon" value="pasteReference"/>
+        <property name="requiredPermission" value="pasteAction"/>
     </bean>
 
     <bean id="Toolbar.Item.PasteReferencePage" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"

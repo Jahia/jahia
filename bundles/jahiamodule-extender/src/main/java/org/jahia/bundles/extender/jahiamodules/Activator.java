@@ -713,7 +713,7 @@ public class Activator implements BundleActivator {
                     List<String> lines = IOUtils.readLines(openStream, StandardCharsets.UTF_8);
                     boolean isEditable = lines.stream().map(String::toLowerCase).anyMatch(p -> p.startsWith("# default configuration"));
                     if (!path.toFile().exists() || !isEditable) {
-                        if (!isEditable && Stream.of("cfg","config","yml","yaml").anyMatch(path::endsWith)) {
+                        if (!isEditable && Stream.of("cfg","config","yml","yaml").anyMatch(suffix -> path.toString().endsWith(suffix))) {
                             lines.add(0, "# Do not edit - Configuration file provided by module, any change will be lost");
                         }
                         try (Writer w = new FileWriter(path.toFile())) {

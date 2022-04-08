@@ -1221,14 +1221,14 @@ public class XMLWriter extends XMLFilterImpl
                     }else if(ch[i] >= '\uE000' && ch[i] <= '\uFFFD') {
                         //ok
                         write(ch[i]);
-                    }
-                    /*
-                               //later for UTF-16 maybe
-                             else if(ch[i] >= '\u10000' && ch[i] <= '\u10FFFF') {
-                                 //ok
-                               write(ch[i]);
-                            }*/
-                    else {
+                    } else if (Character.isHighSurrogate(ch[i]) && (i+1<start+length) &&
+                            Character.isLowSurrogate(ch[i+1])) {
+                        // Characters with codes above Unicode 0xFFFF use high & low surrogate characters in Java UTF-16
+                        // representation. See https://docs.oracle.com/javase/8/docs/api/java/lang/Character.html#supplementary
+                        write(ch[i]);
+                        i++;
+                        write(ch[i]);
+                    } else {
                         //nothing
                         logger.error("Avoided char: " + ch[i] + " or as: " + Integer.toString(ch[i]));
                         if (logger.isDebugEnabled()) {

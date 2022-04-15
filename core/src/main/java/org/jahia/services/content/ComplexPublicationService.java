@@ -76,17 +76,6 @@ public interface ComplexPublicationService {
     Collection<FullPublicationInfo> getFullPublicationInfos(Collection<String> nodeIdentifiers, Collection<String> languages, boolean allSubTree, JCRSessionWrapper sourceSession);
 
     /**
-     * Get full publication info about JCR nodes.
-     *
-     * @param nodeIdentifiers UUIDs of the nodes
-     * @param languages Publication languages
-     * @param allSubTree
-     * @param sourceSession Session representing the publication source workspace (the target workspace is always LIVE)
-     * @return A collection of full publication infos
-     */
-    Collection<FullPublicationInfo> getFullPublicationInfos(Collection<String> nodeIdentifiers, Collection<String> languages, boolean allSubTree, boolean includeNotPublishable, JCRSessionWrapper sourceSession);
-
-    /**
      * Get full un-publication info about JCR nodes.
      *
      * @param nodeIdentifiers UUIDs of the nodes

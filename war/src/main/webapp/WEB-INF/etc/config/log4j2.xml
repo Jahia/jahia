@@ -114,7 +114,7 @@
             level="debug" />
         <Logger name="org.apache.karaf.cellar" level="debug" />
         <Logger
-            name="org.jahia.bundles.clustering.impl.BundleEventHandler"
+            name="org.jahia.bundles.clustering.impl.ClusterBundleEventHandler"
             level="debug" />
 <!--    Logger AetherBasedResolver set in ERROR as the WARN is displaying some credentials    -->
         <Logger

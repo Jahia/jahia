@@ -157,7 +157,7 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
         set("isAllowedToPublishWithoutWorkflow", canPublish);
     }
 
-    public Boolean getIsNonRootMarkedForDeletion() {
+    public Boolean isNonRootMarkedForDeletion() {
         return get("nonRootMarkedForDeletion");
     }
 
@@ -249,8 +249,9 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
         return  !isLocked() &&
                 getStatus() > GWTJahiaPublicationInfo.PUBLISHED &&
                 getStatus() != GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE &&
+                getStatus() != GWTJahiaPublicationInfo.CONFLICT &&
                 getStatus() != GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID &&
-                !isWorkInProgress() && !getIsNonRootMarkedForDeletion();
+                !isWorkInProgress() && !isNonRootMarkedForDeletion();
     }
 
     public boolean isUnpublishable() {

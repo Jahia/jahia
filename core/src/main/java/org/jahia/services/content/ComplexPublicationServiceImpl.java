@@ -63,9 +63,7 @@ import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import java.util.*;
 
-import static org.jahia.services.content.PublicationInfo.MANDATORY_LANGUAGE_VALID;
-import static org.jahia.services.content.PublicationInfo.NOT_PUBLISHED;
-import static org.jahia.services.content.PublicationInfo.UNPUBLISHED;
+import static org.jahia.services.content.PublicationInfo.*;
 
 /**
  * Service implementation that:
@@ -212,6 +210,11 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
 
     @Override
     public Collection<FullPublicationInfo> getFullPublicationInfos(Collection<String> nodeIdentifiers, Collection<String> languages, boolean allSubTree, JCRSessionWrapper sourceSession) {
+        return getFullPublicationInfos(nodeIdentifiers, languages, allSubTree, false, sourceSession);
+    }
+
+    @Override
+    public Collection<FullPublicationInfo> getFullPublicationInfos(Collection<String> nodeIdentifiers, Collection<String> languages, boolean allSubTree, boolean includeRemoved, JCRSessionWrapper sourceSession) {
         try {
             if (languages == null) {
                 languages = Collections.singletonList(null);
@@ -224,27 +227,28 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
                     publicationInfo.clearInternalAndPublishedReferences(nodeIdentifierList);
                 }
                 Collection<FullPublicationInfoImpl> infos = convert(publicationInfos, language, PUBLISH, sourceSession);
-                String lastGroup = null;
-                String lastTitle = null;
-                Locale locale = language != null ? new Locale(language) : null;
-                for (FullPublicationInfoImpl info : infos) {
-                    if (!info.isPublishable() && info.getPublicationStatus() != PublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE) {
-                        continue;
-                    }
-                    if (info.getWorkflowDefinition() == null && !info.isAllowedToPublishWithoutWorkflow()) {
-                        continue;
-                    }
-                    result.put(language != null ? (language + "/" + info.getNodeIdentifier()) : info.getNodeIdentifier(), info);
-                    if (!info.getWorkflowGroup().equals(lastGroup)) {
-                        lastGroup = info.getWorkflowGroup();
-                        lastTitle = locale != null ? (info.getNodeTitle() + " ( " + locale.getDisplayName(locale) + " )") : info.getNodeTitle();
-                    }
-                    info.setWorkflowTitle(lastTitle);
-                }
+                addItem(result, language, infos, includeRemoved);
             }
             return new ArrayList<>(result.values());
         } catch (RepositoryException e) {
             throw new JahiaRuntimeException(e);
+        }
+    }
+
+    private void addItem(LinkedHashMap<String, FullPublicationInfo> result, String language, Collection<FullPublicationInfoImpl> infos, boolean includeRemoved) {
+        String lastGroup = null;
+        String lastTitle = null;
+        Locale locale = language != null ? new Locale(language) : null;
+        for (FullPublicationInfoImpl info : infos) {
+            if ((info.isPublishable() || info.getPublicationStatus() == PublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE || (info.isNonRootMarkedForDeletion() && includeRemoved)) &&
+                    (info.getWorkflowDefinition() != null || info.isAllowedToPublishWithoutWorkflow())) {
+                result.put(language != null ? (language + "/" + info.getNodeIdentifier()) : info.getNodeIdentifier(), info);
+                if (!info.getWorkflowGroup().equals(lastGroup)) {
+                    lastGroup = info.getWorkflowGroup();
+                    lastTitle = locale != null ? (info.getNodeTitle() + " ( " + locale.getDisplayName(locale) + " )") : info.getNodeTitle();
+                }
+                info.setWorkflowTitle(lastTitle);
+            }
         }
     }
 
@@ -263,18 +267,14 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
                 String lastTitle = null;
                 Locale locale = new Locale(language);
                 for (FullPublicationInfoImpl info : infos) {
-                    if (info.getPublicationStatus() != PublicationInfo.PUBLISHED) {
-                        continue;
+                    if (info.getPublicationStatus() == PublicationInfo.PUBLISHED && (info.getWorkflowDefinition() != null || info.isAllowedToPublishWithoutWorkflow())) {
+                        result.put(language + "/" + info.getNodeIdentifier(), info);
+                        if (!info.getWorkflowGroup().equals(lastGroup)) {
+                            lastGroup = info.getWorkflowGroup();
+                            lastTitle = info.getNodeTitle() + " ( " + locale.getDisplayName(locale) + " )";
+                        }
+                        info.setWorkflowTitle(lastTitle);
                     }
-                    if (info.getWorkflowDefinition() == null && !info.isAllowedToPublishWithoutWorkflow()) {
-                        continue;
-                    }
-                    result.put(language + "/" + info.getNodeIdentifier(), info);
-                    if (lastGroup == null || !info.getWorkflowGroup().equals(lastGroup)) {
-                        lastGroup = info.getWorkflowGroup();
-                        lastTitle = info.getNodeTitle() + " ( " + locale.getDisplayName(locale) + " )";
-                    }
-                    info.setWorkflowTitle(lastTitle);
                 }
             }
             // remove identifier of contents with a translation
@@ -287,7 +287,7 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
         }
     }
 
-    private Collection<FullPublicationInfoImpl> convert(Collection<PublicationInfo> publicationInfos, String language, String workflowAction, JCRSessionWrapper session) throws RepositoryException {
+    private Collection<FullPublicationInfoImpl> convert(Collection<PublicationInfo> publicationInfos, String language, String workflowAction, JCRSessionWrapper session) {
         List<FullPublicationInfoImpl> result = new ArrayList<>();
         List<String> mainPaths = new ArrayList<>();
         for (PublicationInfo publicationInfo : publicationInfos) {
@@ -394,7 +394,7 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
         allInfos.put(node.getUuid(), info);
 
         for (PublicationInfoNode sub : node.getChildren()) {
-            if (!sub.getPath().contains(J_TRANSLATION)) {
+            if (!sub.getPath().contains(J_TRANSLATION) && !sub.getPath().contains("j:referenceInField_")) {
                 convert(allInfos, root, mainPaths, lastRule, sub, references, language, workflowAction, session);
             }
         }

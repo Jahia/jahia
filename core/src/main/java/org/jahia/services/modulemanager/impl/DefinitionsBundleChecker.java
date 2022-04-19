@@ -1,6 +1,7 @@
 package org.jahia.services.modulemanager.impl;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.SetUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -24,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 
 import static org.jahia.api.Constants.MIX_REFERENCEABLE;
@@ -87,6 +89,7 @@ public class DefinitionsBundleChecker implements BundleChecker {
         } catch (ParseException e) {
             logger.error("Error", e);
         }
+        r.setDeclaredSuperTypes(); // register super types defined in the CND after parsing
         for (ExtendedNodeType newNt : r.getNodeTypesList()) {
             NodeTypeRegistry registry = NodeTypeRegistry.getInstance();
             if (registry.hasNodeType(newNt.getName())) {
@@ -156,8 +159,30 @@ public class DefinitionsBundleChecker implements BundleChecker {
                     CollectionUtils.union(oldDef.getRawProperties().values(), oldDef.getRawUnstructuredProperties().values()),
                     CollectionUtils.union(newDef.getRawProperties().values(), newDef.getRawUnstructuredProperties().values())
             );
-            propDefDiffs.addAll(propDefDiffBuilder.getChildItemDefDiffs());
-            tmpType = propDefDiffBuilder.getMaxType();
+
+            /*
+             * Verify if any of the removed properties are actually refactored/moved
+             * within the same CND definition. This means property has been moved to another type
+             * and is a declared supertype of current node type.
+             * If so, use that prop diff instead
+             */
+            Map<String,ExtendedPropertyDefinition> propDefsMap = Arrays.stream(newDef.getPropertyDefinitions())
+                    .collect(Collectors.toMap(ExtendedPropertyDefinition::getName, p->p));
+            List<PropDefDiff> childItemDefDiffs = propDefDiffBuilder.getChildItemDefDiffs().stream()
+                    .map(propDefDiff -> {
+                        if (!propDefDiff.isRemoved()) {
+                            return propDefDiff;
+                        }
+                        ExtendedPropertyDefinition oldProp = propDefDiff.getOldDef();
+                        ExtendedPropertyDefinition movedProp = propDefsMap.get(oldProp.getName());
+                        return (movedProp != null) ?
+                                // we found oldProp defined somewhere else; verify if it's still the same
+                                new PropDefDiff(oldProp, movedProp) :
+                                propDefDiff;
+                    })
+                    .collect(Collectors.toList());
+            propDefDiffs.addAll(childItemDefDiffs);
+            tmpType = ChildItemDefDiffBuilder.getMaxType(childItemDefDiffs); // get max using new list
             if (tmpType.compareTo(type) > 0) {
                 type = tmpType;
             }
@@ -245,11 +270,28 @@ public class DefinitionsBundleChecker implements BundleChecker {
          */
         public DiffType supertypesDiff() {
             // Remove mix:referenceable from list of supertypes as it is added by NodeTypeRegistry
-            Set<String> set1 = new HashSet<>(Arrays.asList(oldDef.getDeclaredSupertypeNames()));
-            set1.remove(MIX_REFERENCEABLE);
-            Set<String> set2 = new HashSet<>(Arrays.asList(newDef.getDeclaredSupertypeNames()));
-            set2.remove(MIX_REFERENCEABLE);
-            return !set1.equals(set2) ? DiffType.MAJOR : DiffType.NONE;
+            Set<String> oldSupertypes = new HashSet<>(Arrays.asList(oldDef.getDeclaredSupertypeNames()));
+            oldSupertypes.remove(MIX_REFERENCEABLE);
+            Set<String> newSupertypes = new HashSet<>(Arrays.asList(newDef.getDeclaredSupertypeNames()));
+            newSupertypes.remove(MIX_REFERENCEABLE);
+
+            List<PropDefDiff> result = new ArrayList<>();
+
+            // get all propDefs that are coming from added supertypes and validate
+            Set<String> addedSupertypes = SetUtils.difference(newSupertypes, oldSupertypes);
+            Arrays.stream(newDef.getPropertyDefinitions())
+                    .filter(propDef -> addedSupertypes.contains(propDef.getDeclaringNodeType().getName())) // added superType
+                    .map(propDef -> new PropDefDiff(null, propDef))
+                    .forEach(result::add);
+
+            // get all propDefs that are coming from removed supertypes and validate
+            Set<String> removedSupertypes = SetUtils.difference(oldSupertypes, newSupertypes);
+            Arrays.stream(oldDef.getPropertyDefinitions())
+                    .filter(propDef -> removedSupertypes.contains(propDef.getDeclaringNodeType().getName())) // removed superType
+                    .map(propDef -> new PropDefDiff(propDef, null))
+                    .forEach(result::add);
+
+            return ChildItemDefDiffBuilder.getMaxType(result);
         }
 
         @Override
@@ -386,6 +428,10 @@ public class DefinitionsBundleChecker implements BundleChecker {
             }
 
             DiffType getMaxType() {
+                return getMaxType(this.childItemDefDiffs);
+            }
+
+            static DiffType getMaxType(List<? extends ChildItemDefDiff> childItemDefDiffs) {
                 return childItemDefDiffs.stream().map(ChildItemDefDiff::getType).max(Comparator.naturalOrder()).orElse(DiffType.NONE);
             }
         }
@@ -403,43 +449,34 @@ public class DefinitionsBundleChecker implements BundleChecker {
 
             protected void init() {
                 // determine type of modification
+                type = DiffType.NONE;
                 if (isAdded()) {
-                    if (!newDef.isMandatory()) {
-                        // adding a non-mandatory child item is a DiffType.TRIVIAL change
-                        type = DiffType.TRIVIAL;
-                    } else {
+                    if (newDef.isMandatory()) {
                         // adding a mandatory child item is a DiffType.MAJOR change
                         type = DiffType.MAJOR;
+                    } else {
+                        // adding a non-mandatory child item is a DiffType.TRIVIAL change
+                        type = DiffType.TRIVIAL;
                     }
                 } else if (isRemoved()) {
                     // removing a child item is a DiffType.MAJOR change
                     type = DiffType.MAJOR;
 
                 } else if (isModified()) {
-                    // modified
-                    if (oldDef.isMandatory() != newDef.isMandatory()
-                                && newDef.isMandatory()) {
-                            // making a child item mandatory is a DiffType.MAJOR change
-                            type = DiffType.MAJOR;
+                    if (oldDef.isMandatory() != newDef.isMandatory() && newDef.isMandatory()) {
+                        // making a child item mandatory is a DiffType.MAJOR change
+                        type = DiffType.MAJOR;
+                    } else if (!oldDef.getName().equals("*") && newDef.getName().equals("*")) {
+                        // just making a child item residual is a DiffType.TRIVIAL change
+                        type = DiffType.TRIVIAL;
+                    } else if (!oldDef.getName().equals(newDef.getName())) {
+                        // changing the name of a child item is a DiffType.MAJOR change
+                        type = DiffType.MAJOR;
                     } else {
-                        if (!oldDef.getName().equals("*")
-                                && newDef.getName().equals("*")) {
-                            // just making a child item residual is a DiffType.TRIVIAL change
-                            type = DiffType.TRIVIAL;
-                        } else {
-                            if (!oldDef.getName().equals(newDef.getName())) {
-                                // changing the name of a child item is a DiffType.MAJOR change
-                                type = DiffType.MAJOR;
-                            } else {
-                                // all other changes are DiffType.TRIVIAL
-                                type = DiffType.TRIVIAL;
-                            }
-                        }
+                        // all other changes are DiffType.TRIVIAL
+                        type = DiffType.TRIVIAL;
                     }
-                } else {
-                    type = DiffType.NONE;
                 }
-
             }
 
             T getOldDef() {

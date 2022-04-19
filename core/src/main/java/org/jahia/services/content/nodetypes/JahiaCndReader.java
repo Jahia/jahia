@@ -44,6 +44,7 @@
 package org.jahia.services.content.nodetypes;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.stream.Streams;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 
@@ -54,6 +55,7 @@ import javax.jcr.query.qom.QueryObjectModelConstants;
 import javax.jcr.version.OnParentVersionAction;
 import java.io.Reader;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * JahiaCndReader. Parses node type definitions written in the compact
@@ -370,6 +372,24 @@ public class JahiaCndReader {
 
     public void setDoCheckConsistency(boolean doCheckConsistency) {
         this.doCheckConsistency = doCheckConsistency;
+    }
+
+    /**
+     * Set (shallow) declared superTypes that exists in the parsed node type definitions
+     */
+    public void setDeclaredSuperTypes() {
+        Map<String, ExtendedNodeType> nodeTypesMap = nodeTypesList.stream()
+                .collect(Collectors.toMap(ExtendedNodeType::getName, n -> n));
+        for (ExtendedNodeType nodeType : nodeTypesList) {
+            ExtendedNodeType[] supertypes = Streams.stream(Arrays.stream(nodeType.getDeclaredSupertypeNames()))
+                    .map(supertypeName -> {
+                        ExtendedNodeType supertype = nodeTypesMap.get(supertypeName);
+                        return (supertype != null) ? supertype : registry.getNodeType(supertypeName, false);
+                    })
+                    .stream()
+                    .toArray(ExtendedNodeType[]::new);
+            nodeType.setDeclaredSupertypes(supertypes);
+        }
     }
 
     private boolean validateNameAndSystemId(Map<String, ExtendedNodeType> nodeTypeNames, ExtendedNodeType ntd) {

@@ -292,6 +292,15 @@ public class ExtendedNodeType implements NodeType {
         this.declaredSupertypeNames = declaredSupertypes;
     }
 
+    /**
+     * Used only for setting supertypes during validation.
+     * Otherwise, declaredSupertypes are set through {@link ExtendedNodeType#validate()}
+     * @see org.jahia.services.modulemanager.impl.DefinitionsBundleChecker
+     */
+    public void setDeclaredSupertypes(ExtendedNodeType[] declaredSupertypes) {
+        this.declaredSupertypes = declaredSupertypes;
+    }
+
     public void validate() throws NoSuchNodeTypeException {
         this.declaredSupertypes = new ExtendedNodeType[declaredSupertypeNames.length];
         int mixIndex = 0;

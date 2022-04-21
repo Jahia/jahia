@@ -54,10 +54,11 @@ import java.nio.charset.UnsupportedCharsetException;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.decorator.JCRFileContent;
@@ -103,33 +104,14 @@ public final class ZipEntryCharsetDetector {
     }
 
     private static boolean canRead(InputStream is, Charset charset) throws IOException {
-        boolean canRead = true;
-        ZipInputStream zis = null;
+        File f = File.createTempFile(UUID.randomUUID() + ".zip", "");
+        FileUtils.copyInputStreamToFile(is, f);
+
         try {
-            zis = charset != null ? new ZipInputStream(is, charset) : new ZipInputStream(is);
-            try {
-                ZipEntry entry = zis.getNextEntry();
-                while (entry != null) {
-                    try {
-                        entry = zis.getNextEntry();
-                    } finally {
-
-                    }
-                }
-            } catch (IllegalArgumentException e) {
-                canRead = false;
-            }
+            return canRead(f, charset);
         } finally {
-            if (zis != null) {
-                try {
-                    zis.close();
-                } catch (IOException e) {
-                    // ignore
-                }
-            }
+            FileUtils.deleteQuietly(f);
         }
-
-        return canRead;
     }
 
     /**

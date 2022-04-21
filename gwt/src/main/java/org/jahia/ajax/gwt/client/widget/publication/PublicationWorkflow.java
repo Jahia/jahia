@@ -109,13 +109,13 @@ public class PublicationWorkflow implements CustomWorkflow {
     }
 
     public static List<String> getAllUuids(List<GWTJahiaPublicationInfo> publicationInfos) {
-        return getAllUuids(publicationInfos, false);
+        return getAllUuids(publicationInfos, false, false);
     }
 
-    public static List<String> getAllUuids(List<GWTJahiaPublicationInfo> publicationInfos, boolean onlyAllowedToPublishWithoutWorkflow) {
+    public static List<String> getAllUuids(List<GWTJahiaPublicationInfo> publicationInfos, boolean onlyAllowedToPublishWithoutWorkflow, boolean unpublish) {
         List<String> l = new ArrayList<>();
         for (GWTJahiaPublicationInfo info : publicationInfos) {
-            if (info.getStatus() != GWTJahiaPublicationInfo.DELETED && info.isPublishable() && (!onlyAllowedToPublishWithoutWorkflow || info.isAllowedToPublishWithoutWorkflow())) {
+            if (info.getStatus() != GWTJahiaPublicationInfo.DELETED && (unpublish || info.isPublishable()) && (!onlyAllowedToPublishWithoutWorkflow || info.isAllowedToPublishWithoutWorkflow())) {
                 if (info.getUuid() != null) {
                     l.add(info.getUuid());
                 }
@@ -550,7 +550,7 @@ public class PublicationWorkflow implements CustomWorkflow {
         private void handleWorkflowActionDialog(String status, int[] nbWF, WorkflowActionDialog dialog, List<GWTJahiaNodeProperty> nodeProperties, PublicationWorkflow customWorkflow, List<GWTJahiaPublicationInfo> thisWFInfo) {
             if (thisWFInfo.get(0).isAllowedToPublishWithoutWorkflow()) {
                 if (customWorkflow instanceof UnpublicationWorkflow) {
-                    JahiaContentManagementService.App.getInstance().unpublish(getAllUuids(thisWFInfo),
+                    JahiaContentManagementService.App.getInstance().unpublish(getAllUuids(thisWFInfo, false, true),
                             getCallback(cards, nbWF, Messages.get("message.content.unpublished", "Content unpublished"),
                                     Messages.get("message.content.unpublished.error", "Cannot unpublish"), status, linker, null));
                 } else {
@@ -592,6 +592,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                 if (component instanceof WorkflowActionDialog) {
                     final WorkflowActionDialog dialog = (WorkflowActionDialog) component;
                     dialog.disableButtons();
+                    boolean unpublish = dialog.getCustomWorkflow() instanceof UnpublicationWorkflow;
                     List<GWTJahiaNodeProperty> nodeProperties = new ArrayList<>();
                     if (!fillDialogProperties(dialog, nodeProperties)) {
                         return;
@@ -603,7 +604,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                     map.put("customWorkflowInfo", customWorkflow);
                     String workflowGroup = thisWFInfo.get(0).getWorkflowGroup();
                     String locale = workflowGroup.substring(0, workflowGroup.indexOf("/"));
-                    JahiaContentManagementService.App.getInstance().startWorkflow(getAllUuids(thisWFInfo), dialog.getWfDefinition(), nodeProperties,
+                    JahiaContentManagementService.App.getInstance().startWorkflow(getAllUuids(thisWFInfo, false, unpublish), dialog.getWfDefinition(), nodeProperties,
                             dialog.getComments(), map, locale, getCallback(cards, nbWF, Messages.get("label.workflow.start", "Start Workflow"),
                                     Messages.get("label.workflow.cannotStart", "Cannot start workflow"), status, linker, refreshData)
                     );
@@ -754,7 +755,7 @@ public class PublicationWorkflow implements CustomWorkflow {
             String workflowGroup = publicationInfos.get(0).getWorkflowGroup();
             String locale = workflowGroup.substring(0, workflowGroup.indexOf("/"));
 
-            JahiaContentManagementService.App.getInstance().startWorkflow(getAllUuids(), wf, nodeProperties,
+            JahiaContentManagementService.App.getInstance().startWorkflow(getAllUuids(publicationInfos, false, true), wf, nodeProperties,
                     dialog.getComments(), map, locale, new StartWorkflowCallback(status)
             );
         }

@@ -153,6 +153,11 @@ public class UnpublicationWorkflow extends PublicationWorkflow {
     }
 
     @Override
+    public List<String> getAllUuids() {
+        return getAllUuids(publicationInfos, false, true);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

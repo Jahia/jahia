@@ -450,9 +450,8 @@
                 width: 100% !important;
                 padding: 4px 5px 5px 27px !important;
                 font-size: 12px;
-                font-family: _font("nunito");
-                color: _color("primary", c); /* TO THEME */
-                background-size: 23px;
+                font-family: _font("nunito"), sans-serif;
+                color: _color("primary", c) !important; /* TO THEME */
 
                 &:hover {
                     opacity: 1;

@@ -135,20 +135,20 @@
 %BUTTON--TEXT---ACTIONBAR {
     text-transform: none;
     padding: 8px 15px !important;
-    background: _theme($ACTION-DEFAULT--BG, $APP) !important;
-    @include text(_size("normal"), _theme($ACTION-DEFAULT--COLOR, $APP) !important, _weight("extralight"));
+    background: _theme($ACTION-DEFAULT--BG, $APP-MENUS) !important;
+    @include text(_size("normal"), _theme($ACTION-DEFAULT--COLOR, $APP-MENUS) !important, _weight("extralight"));
 }
 
 %BUTTON--TEXT---HOVER---ACTIONBAR {
-    background: _theme($ACTION-DEFAULT--BG---HOVER, $APP) !important;
+    background: _theme($ACTION-DEFAULT--BG---HOVER, $APP-MENUS) !important;
     padding: 5px 10px;
-    @include text(_size("normal"), _theme($ACTION-DEFAULT--COLOR---HOVER, $APP) !important, _weight("extralight"));
+    @include text(_size("normal"), _theme($ACTION-DEFAULT--COLOR---HOVER, $APP-MENUS) !important, _weight("extralight"));
 }
 
 %BUTTON--ICON---ACTIONBAR {
     padding: 8px 15px !important;
-    background: _theme($ACTION-DEFAULT--BG, $APP) !important;
-    @include text(_size("normal"), _theme($ACTION-DEFAULT--COLOR, $APP) !important, _weight("extralight"));
+    background: _theme($ACTION-DEFAULT--BG, $APP-MENUS) !important;
+    @include text(_size("normal"), _theme($ACTION-DEFAULT--COLOR, $APP-MENUS) !important, _weight("extralight"));
 
     img {
         left: 5px !important;
@@ -156,8 +156,8 @@
 }
 
 %BUTTON--ICON---HOVER---ACTIONBAR {
-    background: _theme($ACTION-DEFAULT--BG---HOVER, $APP) !important;
-    @include text(_size("normal"), _theme($ACTION-DEFAULT--COLOR---HOVER, $APP) !important, _weight("extralight"));
+    background: _theme($ACTION-DEFAULT--BG---HOVER, $APP-MENUS) !important;
+    @include text(_size("normal"), _theme($ACTION-DEFAULT--COLOR---HOVER, $APP-MENUS) !important, _weight("extralight"));
 }
 
 // INVERTED BUTTON
@@ -183,25 +183,25 @@
 %BUTTON--TEXT---ACTIONBAR---SUGGESTED {
     padding: 8px 15px !important;
     text-transform: none !important;
-    background: _theme($ACTION-SUGGESTED--BG, $APP) !important;
-    @include text(_size("normal"), _theme($ACTION-SUGGESTED--COLOR, $APP) !important, _weight("extralight"));
+    background: _theme($ACTION-SUGGESTED--BG, $APP-MENUS) !important;
+    @include text(_size("normal"), _theme($ACTION-SUGGESTED--COLOR, $APP-MENUS) !important, _weight("extralight"));
 }
 
 %BUTTON--TEXT---HOVER---ACTIONBAR---SUGGESTED {
-    background: _theme($ACTION-SUGGESTED--BG---HOVER, $APP) !important;
-    @include text(_size("normal"), _theme($ACTION-SUGGESTED--COLOR---HOVER, $APP) !important, _weight("extralight"));
+    background: _theme($ACTION-SUGGESTED--BG---HOVER, $APP-MENUS) !important;
+    @include text(_size("normal"), _theme($ACTION-SUGGESTED--COLOR---HOVER, $APP-MENUS) !important, _weight("extralight"));
 }
 
 %BUTTON--ICON---ACTIONBAR---SUGGESTED {
     text-transform: none !important;
     padding: 8px 15px !important;
-    background: _theme($ACTION-SUGGESTED--BG, $APP) !important;
-    @include text(_size("normal"), _theme($ACTION-SUGGESTED--COLOR, $APP) !important, _weight("extralight"));
+    background: _theme($ACTION-SUGGESTED--BG, $APP-MENUS) !important;
+    @include text(_size("normal"), _theme($ACTION-SUGGESTED--COLOR, $APP-MENUS) !important, _weight("extralight"));
 }
 
 %BUTTON--ICON---HOVER---ACTIONBAR---SUGGESTED {
-    background: _theme($ACTION-SUGGESTED--BG---HOVER, $APP) !important;
-    @include text(_size("normal"), _theme($ACTION-SUGGESTED--COLOR---HOVER, $APP) !important, _weight("extralight"));
+    background: _theme($ACTION-SUGGESTED--BG---HOVER, $APP-MENUS) !important;
+    @include text(_size("normal"), _theme($ACTION-SUGGESTED--COLOR---HOVER, $APP-MENUS) !important, _weight("extralight"));
 }
 
 
@@ -209,27 +209,27 @@
 %BUTTON--TEXT---ACTIONBAR---SECONDARY {
     padding: 8px 15px !important;
     text-transform: none !important;
-    background: _theme($ACTION-SECONDARY--BG, $APP) !important;
+    background: _theme($ACTION-SECONDARY--BG, $APP-MENUS) !important;
     box-shadow: inset 1px 1px 0 0 _color("tertiary", normal), inset -1px -1px 0 0 _color("tertiary", normal);
-    @include text(_size("normal"), _theme($ACTION-SECONDARY--COLOR, $APP) !important, _weight("extralight"));
+    @include text(_size("normal"), _theme($ACTION-SECONDARY--COLOR, $APP-MENUS) !important, _weight("extralight"));
 }
 
 %BUTTON--TEXT---HOVER---ACTIONBAR---SECONDARY {
-    background: _theme($ACTION-SECONDARY--BG---HOVER, $APP) !important;
-    @include text(_size("normal"), _theme($ACTION-SECONDARY--COLOR---HOVER, $APP) !important, _weight("extralight"));
+    background: _theme($ACTION-SECONDARY--BG---HOVER, $APP-MENUS) !important;
+    @include text(_size("normal"), _theme($ACTION-SECONDARY--COLOR---HOVER, $APP-MENUS) !important, _weight("extralight"));
 }
 
 %BUTTON--ICON---ACTIONBAR---SECONDARY {
     text-transform: none !important;
     padding: 8px 15px !important;
-    background: _theme($ACTION-SECONDARY--BG, $APP) !important;
+    background: _theme($ACTION-SECONDARY--BG, $APP-MENUS) !important;
     box-shadow: inset 1px 1px 0 0 _color("tertiary", normal), inset -1px -1px 0 0 _color("tertiary", normal);
-    @include text(_size("normal"), _theme($ACTION-SECONDARY--COLOR, $APP) !important, _weight("extralight"));
+    @include text(_size("normal"), _theme($ACTION-SECONDARY--COLOR, $APP-MENUS) !important, _weight("extralight"));
 }
 
 %BUTTON--ICON---HOVER---ACTIONBAR---SECONDARY {
-    background: _theme($ACTION-SECONDARY--BG---HOVER, $APP) !important;
-    @include text(_size("normal"), _theme($ACTION-SECONDARY--COLOR---HOVER, $APP) !important, _weight("extralight"));
+    background: _theme($ACTION-SECONDARY--BG---HOVER, $APP-MENUS) !important;
+    @include text(_size("normal"), _theme($ACTION-SECONDARY--COLOR---HOVER, $APP-MENUS) !important, _weight("extralight"));
 }
 
 // WORK IN PROGRESS ON ACTION BAR

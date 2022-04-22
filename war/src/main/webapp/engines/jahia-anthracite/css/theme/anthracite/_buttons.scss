@@ -146,8 +146,8 @@ $ACTION-DEFAULT--SHADOW---HOVER: (
 
 // SUGGESTED UP
 $ACTION-SUGGESTED--COLOR: (
-        LIGHT: #FCFCFC,
-        DARK: #FCFCFC,
+        LIGHT: _color("secondary"),
+        DARK: _color("secondary"),
 );
 
 $ACTION-SUGGESTED--BG: (

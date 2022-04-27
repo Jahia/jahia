@@ -70,6 +70,12 @@ public class EditEngineJSConfig extends JavaScriptObject {
     public final native boolean hideHeaders() /*-{ return !!this.hideHeaders; }-*/;
 
     /**
+     * skip lock
+     * Default value "false"
+     */
+    public final native boolean skipLock() /*-{ return !!this.skipLock; }-*/;
+
+    /**
      * Check if the given tab should be displayed or not
      * @param tabId the given tab
      * @return true if the tab should be displayed

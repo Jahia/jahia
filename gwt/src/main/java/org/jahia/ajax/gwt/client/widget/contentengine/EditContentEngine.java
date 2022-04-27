@@ -229,7 +229,7 @@ public class EditContentEngine extends AbstractContentEngine {
      */
     private void loadEngine() {
 
-        JahiaContentManagementService.App.getInstance().initializeEditEngine(contentPath, true, new BaseAsyncCallback<GWTJahiaEditEngineInitBean>() {
+        JahiaContentManagementService.App.getInstance().initializeEditEngine(contentPath, !jsConfig.skipLock(), new BaseAsyncCallback<GWTJahiaEditEngineInitBean>() {
 
             @Override
             public void onSuccess(GWTJahiaEditEngineInitBean result) {

@@ -4433,8 +4433,8 @@ div.x-window.publication-manager-engine {
     }
 
     .x-form-field-wrap .x-form-text {
-        background: _color("white");
-        color: _color("primary");
+        background: _color("white") !important;
+        color: _color("primary") !important;
         margin-top: 5px;
 
         &.x-form-focus {

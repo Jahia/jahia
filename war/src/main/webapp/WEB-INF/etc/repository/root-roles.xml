@@ -50,7 +50,7 @@
                     j:roleGroup="edit-role"
                     jcr:primaryType="jnt:role">
             <currentSite-access j:path="currentSite"
-                                j:permissionNames="components pageComposerAccess jContentAccess jContentActions view-full-wysiwyg-editor"
+                                j:permissionNames="components pageComposerAccess jContentAccess jContentActions viewContentTab view-full-wysiwyg-editor"
                                 jcr:primaryType="jnt:externalPermissions"/>
         </translator>
 

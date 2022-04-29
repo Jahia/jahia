@@ -1,0 +1,11 @@
+mutation {
+    jcr {
+        mutateNodesByQuery(query: "select * from [jnt:role] where localname()='translator'", queryLanguage: SQL2) {
+            mutateChildren(names: "currentSite-access") {
+                mutateProperty(name: "j:permissionNames") {
+                    addValue(value: "viewContentTab")
+                }
+            }
+        }
+    }
+}

@@ -169,10 +169,12 @@ public class MainModule extends Module {
         headContainer = new LayoutContainer(new FitLayout());
         headContainer.addStyleName("mainmodule-head-container");
         headContainer.add(head);
-        add(headContainer, new BorderLayoutData(Style.LayoutRegion.NORTH, 32));
-
-        if (config.getMainModuleToolbar() == null || config.getMainModuleToolbar().getGwtToolbarItems().isEmpty()) {
-            headContainer.hide();
+        String fullscreen = com.google.gwt.user.client.Window.Location.getParameter("fullscreen");
+        if (fullscreen == null) {
+            add(headContainer, new BorderLayoutData(Style.LayoutRegion.NORTH, 32));
+            if (config.getMainModuleToolbar() == null || config.getMainModuleToolbar().getGwtToolbarItems().isEmpty()) {
+                headContainer.hide();
+            }
         }
 
         frame = new EditFrame();
@@ -199,6 +201,7 @@ public class MainModule extends Module {
                     });
                 }
             }
+
         };
         scrollContainer.addStyleName("gwt-body-edit");
         scrollContainer.setStyleAttribute("position", "relative");

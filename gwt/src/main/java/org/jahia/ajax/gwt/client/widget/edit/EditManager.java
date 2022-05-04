@@ -89,7 +89,10 @@ public class EditManager extends ContentPanel {
         sidePanel.setStyleAttribute("z-index", "999");
         sidePanel.addStyleName("gwt-only-panel");
         sidePanel.addStyleName("window-side-panel");
-        add(sidePanel, data);
+        String fullscreen = com.google.gwt.user.client.Window.Location.getParameter("fullscreen");
+        if (fullscreen == null) {
+            add(sidePanel, data);
+        }
 
         sidePanel.setVisible(!config.getTabs().isEmpty());
 
@@ -97,7 +100,9 @@ public class EditManager extends ContentPanel {
         toolbar.setStyleAttribute("z-index", "999");
         toolbar.setStyleAttribute("position", "relative");
         toolbar.addStyleName("gwt-only-panel");
-        setTopComponent(toolbar);
+        if (fullscreen == null) {
+            setTopComponent(toolbar);
+        }
 
         setScrollMode(Style.Scroll.NONE);
         mainModule = new MainModule(path, template, nodeTypes, config);

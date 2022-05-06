@@ -81,7 +81,7 @@ public class AddedNodeFact extends AbstractNodeFact implements UpdateableWithNew
         boolean locked = node.isLocked();
         if (locked) {
             Lock lock = node.getLock();
-            locked = lock == null || !lock.isLockOwningSession();
+            locked = !node.getSession().isSystem() && (lock == null || !lock.isLockOwningSession());
         }
         return locked;
     }

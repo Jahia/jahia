@@ -108,7 +108,7 @@ public class JWTFilter extends AbstractServletFilter {
             } catch (Exception e) {
                 tvr.setVerificationStatusCode(TokenVerificationResult.VerificationStatus.REJECTED);
                 tvr.setMessage("Failed to verify token");
-                logger.error("Failed to verify JWT token: {}", e.getMessage());
+                logger.debug("Failed to verify JWT token: {}", e.getMessage());
             }
         }
 

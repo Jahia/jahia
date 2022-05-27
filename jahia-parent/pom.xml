@@ -91,6 +91,7 @@
         <jodconverter.version>4.4.2</jodconverter.version>
         <tika.version>1.27</tika.version>
         <xstream.version>1.4.19</xstream.version>
+        <jericho.version>3.4</jericho.version>
         <!--Atmosphere javascript is defined as a static resource in Jahia and has to be update manually-->
         <atmosphere.version>2.5.4-jahia</atmosphere.version>
         <atmosphere.gwt.version>2.5.2</atmosphere.gwt.version>

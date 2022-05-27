@@ -89,7 +89,7 @@
         <groovy.version>3.0.8</groovy.version>
         <shiro.version>1.8.0</shiro.version>
         <jodconverter.version>4.4.2</jodconverter.version>
-        <tika.version>1.27</tika.version>
+        <tika.version>1.28.2</tika.version>
         <xstream.version>1.4.19</xstream.version>
         <jericho.version>3.4</jericho.version>
         <!--Atmosphere javascript is defined as a static resource in Jahia and has to be update manually-->
@@ -109,7 +109,7 @@
         <launch4j.version>3.12</launch4j.version>
         <log4j.version>2.17.1</log4j.version>
         <jahia.tomcat.version>9.0.62</jahia.tomcat.version>
-        <protobuf.java.version>3.16.1</protobuf.java.version>
+        <protobuf.java.version>3.21.0</protobuf.java.version>
 
         <driver.derby.version>10.14.2.0</driver.derby.version>
         <driver.mssql.version>9.2.1.jre8</driver.mssql.version>

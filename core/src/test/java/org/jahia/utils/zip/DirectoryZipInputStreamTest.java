@@ -43,11 +43,9 @@
  */
 package org.jahia.utils.zip;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -60,6 +58,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * A unit test class for the DirectoryZipInputStream class
@@ -115,11 +115,12 @@ public class DirectoryZipInputStreamTest {
             }
         }
 
-        Assert.assertEquals("Bytes read does not match bytes written", bytesWritten, bytesRead);
-        Assert.assertEquals("Number of files read does not match number of files created", filesCreated, filesRead);
-        Assert.assertEquals("Directories found does not match number of directories created", directoriesCreated, directoriesFound);
-        Assert.assertEquals("Number of entry names does not match !", entryNames.size(), entryNamesFound.size());
-        Assert.assertTrue("Entry names do not match !", CollectionUtils.isEqualCollection(entryNames, entryNamesFound));
+        assertThat(entryNamesFound).hasSameElementsAs(entryNames);
+        assertThat(filesRead).withFailMessage("Number of files read does not match number of files created").isEqualTo(filesCreated);
+        assertThat(directoriesFound).withFailMessage("Directories found does not match number of directories created")
+                .isEqualTo(directoriesCreated);
+        assertThat(entryNamesFound.size()).withFailMessage("Number of entry names does not match !").isEqualTo(entryNames.size());
+        assertThat(bytesRead).withFailMessage("Bytes read does not match bytes written").isEqualTo(bytesWritten);
 
         fileInputStream.close();
         inputStreamFile.delete();

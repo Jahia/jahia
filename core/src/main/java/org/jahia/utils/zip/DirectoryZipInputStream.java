@@ -71,10 +71,13 @@ public class DirectoryZipInputStream extends ZipInputStream {
     public DirectoryZipInputStream(File sourceDirectory) {
         super(new ByteArrayInputStream(new byte[0]));
         this.sourceDirectory = sourceDirectory;
-        this.sourceDirectoryEntries = new ArrayList<File>(FileUtils.listFilesAndDirs(sourceDirectory, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE));
+        this.sourceDirectoryEntries = new ArrayList<>(FileUtils.listFilesAndDirs(sourceDirectory, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE));
         if (sourceDirectoryEntries.get(0).equals(sourceDirectory)) {
             sourceDirectoryEntries.remove(0);
+        } else if (sourceDirectoryEntries.get(sourceDirectoryEntries.size() - 1).equals(sourceDirectory)) {
+            sourceDirectoryEntries.remove(sourceDirectoryEntries.size() - 1);
         }
+        
         this.sourceDirectoryEntriesIterator = sourceDirectoryEntries.iterator();
     }
 

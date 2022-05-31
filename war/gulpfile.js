@@ -6,16 +6,13 @@ const javascriptObfuscator = require('gulp-javascript-obfuscator');
 const concat = require('gulp-concat');
 const log = require('fancy-log');
 const argv = require('minimist')(process.argv.slice(2));
-const sass = require('gulp-sass');
+const sass = require('gulp-sass')(require('sass'));
 const sourcemaps = require('gulp-sourcemaps');
 const copy = require('gulp-copy');
 const rename = require('gulp-rename');
 
 // Global path
 const anthraciteRootDir = 'src/main/webapp/engines/jahia-anthracite';
-
-// Initialize sass compiler
-sass.compiler = require('node-sass');
 
 // sass path
 const sassSrc = anthraciteRootDir + '/css/**/*.scss';

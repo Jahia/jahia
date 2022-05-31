@@ -1,4 +1,6 @@
-FROM cypress/base:13.8.0
+FROM cypress/base:16.14.2
+
+RUN apt-get update && apt-get install curl -y
 
 RUN adduser --disabled-password jahians
 USER jahians

@@ -22,10 +22,13 @@
     "gulp-eslint": "^5.0.0",
     "gulp-javascript-obfuscator": "^1.1.6",
     "gulp-rename": "^1.4.0",
-    "gulp-sass": "^4.0.2",
+    "gulp-sass": "^5.1.0",
     "gulp-sourcemaps": "^2.6.5",
     "gulp-uglify": "^3.0.2",
     "jsdoc": "^3.6.3",
-    "node-sass": "^4.11.0"
+    "sass": "^1.52.1"
+  },
+  "resolutions": {
+    "glob-parent": "5.1.2"
   }
 }

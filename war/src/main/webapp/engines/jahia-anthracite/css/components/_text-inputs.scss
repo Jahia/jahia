@@ -20,7 +20,7 @@
     box-sizing: border-box;
     box-shadow: _theme($INPUT--SHADOW, $type);
 
-    @include text(13px, _theme($INPUT--COLOR, $type) !important, _weight("semilight"));
+    @include text(13px, _theme($INPUT--COLOR, $type), _weight("semilight"));
 
     &:hover {
         background: _theme($INPUT--BG---HOVER, $type);

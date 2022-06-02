@@ -71,10 +71,10 @@
         <springtx.version>3.2.18.RELEASE_OSGI2</springtx.version>
         <springwebflow-version>2.4.8.RELEASE</springwebflow-version>
         <jackrabbit.version>2.18.4-jahia1</jackrabbit.version>
-        <jackson.core.version>2.10.5</jackson.core.version>
-        <jackson-databind.core.version>2.10.5.1</jackson-databind.core.version>
-        <jackson.osgi.version>2.10.5</jackson.osgi.version>
-        <jackson-databind.osgi.version>2.10.5.1</jackson-databind.osgi.version>
+        <jackson.core.version>2.13.3</jackson.core.version>
+        <jackson-databind.core.version>2.13.3</jackson-databind.core.version>
+        <jackson.osgi.version>2.13.3</jackson.osgi.version>
+        <jackson-databind.osgi.version>2.13.3</jackson-databind.osgi.version>
         <lucene.version>3.6.2</lucene.version>
         <jbpm.version>6.0.0.Final</jbpm.version>
         <jbpm.version.jahia>${jbpm.version}-jahia</jbpm.version.jahia>
@@ -107,16 +107,16 @@
         <xmlunit.version>2.8.2</xmlunit.version>
         <izpack.version>4.3.5-jahia11</izpack.version>
         <launch4j.version>3.12</launch4j.version>
-        <log4j.version>2.17.1</log4j.version>
+        <log4j.version>2.17.2</log4j.version>
         <jahia.tomcat.version>9.0.62</jahia.tomcat.version>
         <protobuf.java.version>3.21.0</protobuf.java.version>
 
         <driver.derby.version>10.14.2.0</driver.derby.version>
         <driver.mssql.version>9.2.1.jre8</driver.mssql.version>
-        <driver.mysql.version>8.0.23</driver.mysql.version>
+        <driver.mysql.version>8.0.29</driver.mysql.version>
         <driver.oracle.version>18.3.0.0</driver.oracle.version>
-        <driver.postgresql.version>42.2.19</driver.postgresql.version>
-        <driver.mariadb.version>2.7.2</driver.mariadb.version>
+        <driver.postgresql.version>42.3.6</driver.postgresql.version>
+        <driver.mariadb.version>2.7.3</driver.mariadb.version>
 
         <hibernateDialect.derby>org.hibernate.dialect.DerbyTenSevenDialect</hibernateDialect.derby>
         <hibernateDialect.mssql>org.hibernate.dialect.SQLServer2008Dialect</hibernateDialect.mssql>
@@ -166,7 +166,7 @@
         <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
         <gemini.blueprint.core.version>1.0.2.RELEASE-jahia2</gemini.blueprint.core.version>
         <jansi.version>1.18</jansi.version>
-        <slf4j.version>1.7.31</slf4j.version>
+        <slf4j.version>1.7.36</slf4j.version>
         <osgi.version>6.0.0</osgi.version>
         <osgi.compendium.version>6.0.0</osgi.compendium.version>
         <pax.logging.version>1.11.13</pax.logging.version>

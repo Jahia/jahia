@@ -9,7 +9,7 @@ commands:
   generate_cachekey_seed:
       description: Generate Cache Key Seeds
       steps:
-      - run: 
+      - run:
           name: Generate Cache Key Seeds
           command: |
             find . -name 'pom.xml' | sort | xargs cat > ~/source/maven_cache_seed
@@ -150,6 +150,23 @@ jobs:
           policy_failure: true
       - store_artifacts:
           path: ./anchore-reports
+
+  vulnerability_scan:
+    <<: *workdir
+    docker: # run the steps with Docker
+      - image: cimg/node:16.14
+    resource_class: large
+    parameters:
+      auditci_level:
+        type: string
+        default: "critical"
+    steps:
+      - *attach-workspace
+      - jahia-modules-orb/security:
+          module_path: war/
+          tests_path: docker/docker-tests/
+          auditci_level: << parameters.auditci_level >>
+          auditci_level_tests: << parameters.auditci_level >>
 
   integration_tests:
     <<: *workdir
@@ -364,6 +381,9 @@ parameters:
   github_repository:
     type: string
     default: ""
+  AUDITCI_LEVEL:
+    type: string
+    default: "critical"
 
 workflows:
   version: 2
@@ -375,7 +395,7 @@ workflows:
           name: PR Checkout
       - build:
           name: PR Build Jahia
-          context: 
+          context:
             - QA_ENVIRONMENT
             - product-slack
           requires:
@@ -383,6 +403,11 @@ workflows:
       - integration_tests:
           name: Integration tests
           context: QA_ENVIRONMENT
+          requires:
+            - PR Build Jahia
+      - vulnerability_scan:
+          name: Vulnerability scan
+          auditci_level: << pipeline.parameters.AUDITCI_LEVEL >>
           requires:
             - PR Build Jahia
       - security_scan:
@@ -406,8 +431,7 @@ workflows:
 
   on-code-change:
     when:
-      condition:
-        not: << pipeline.parameters.release_change >>
+      not: << pipeline.parameters.release_change >>
     jobs:
       - checkout:
           filters:
@@ -418,7 +442,7 @@ workflows:
                 - /JAHIA-[0-9]-[0-9]-[0-9]-X-BRANCH/
       - build:
           name: Build Jahia
-          context: 
+          context:
             - QA_ENVIRONMENT
             - product-slack
           requires:
@@ -446,7 +470,7 @@ workflows:
             - Integration tests
             - Security scan
             - Sonar analysis
-  
+
   # Used to trigger a next-development version build during release time as a release dependency.
   # Since it's used during release, we only need to do the build step and deploy to maven and skip the rest.
   release-change:
@@ -461,7 +485,7 @@ workflows:
                 - /JAHIA-[0-9]-[0-9]-[0-9]-X-BRANCH/
       - build:
           name: Build Jahia
-          context: 
+          context:
             - QA_ENVIRONMENT
             - product-slack
           requires:

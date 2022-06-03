@@ -23,5 +23,6 @@
     "url": "git+https://github.com/Jahia/jahia-private.git"
   },
   "author": "",
-  "license": "SEE LICENSE IN LICENSE.txt"
+  "license": "SEE LICENSE IN LICENSE.txt",
+  "dependencies": {}
 }

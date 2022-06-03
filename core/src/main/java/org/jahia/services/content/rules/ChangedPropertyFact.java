@@ -44,6 +44,7 @@
 package org.jahia.services.content.rules;
 
 import org.drools.core.spi.KnowledgeHelper;
+import org.jahia.api.Constants;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -195,18 +196,36 @@ public class ChangedPropertyFact implements Updateable, ModifiedPropertyFact {
     }
 
     private void setProperty(JCRNodeWrapper node, String name, ExtendedPropertyDefinition propDef, Value[] values) throws RepositoryException {
+        JCRNodeWrapper nodeRef = node;
+
+        if (propDef.isInternationalized()) {
+            String language = node.getResolveSite().getDefaultLanguage();
+            String translationNodeName = "j:translation_" + language;
+
+            if (!node.hasNode(translationNodeName)) {
+                nodeRef = node.addNode(translationNodeName, Constants.JAHIANT_TRANSLATION);
+                nodeRef.setProperty(Constants.JCR_LANGUAGE, language);
+            } else {
+                nodeRef = node.getNode(translationNodeName);
+            }
+
+            if (propDef.getDeclaringNodeType().isMixin() && !nodeRef.isNodeType(propDef.getDeclaringNodeType().getName())) {
+                nodeRef.addMixin(propDef.getDeclaringNodeType().getName());
+            }
+        }
+
         if (!propDef.isMultiple()) {
-            property = node.setProperty(name, values[0]);
+            property = nodeRef.setProperty(name, values[0]);
         } else {
-            if (node.hasProperty(name)) {
-                property = node.getProperty(name);
+            if (nodeRef.hasProperty(name)) {
+                property = nodeRef.getProperty(name);
                 Value[] oldValues = property.getValues();
                 Value[] newValues = new Value[oldValues.length + values.length];
                 System.arraycopy(oldValues, 0, newValues, 0, oldValues.length);
                 System.arraycopy(values, 0, newValues, oldValues.length, values.length);
                 property.setValue(newValues);
             } else {
-                property = node.setProperty(name, values);
+                property = nodeRef.setProperty(name, values);
             }
         }
 

@@ -103,7 +103,9 @@ public class BaseURLReplacer implements URLReplacer {
             return originalValue;
         }
 
-        final String path = StringUtils.substringBeforeLast("/" + WebUtils.urlDecode(pathPart), "?");
+        String pathTmp = StringUtils.substringBeforeLast("/" + WebUtils.urlDecode(pathPart), "?");
+        pathTmp = StringUtils.substringBeforeLast(pathTmp, "#");
+        final String path = pathTmp;
 
         return JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null, new JCRCallback<String>() {
             public String doInJCR(JCRSessionWrapper session) throws RepositoryException {

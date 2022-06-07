@@ -472,6 +472,9 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
                 @Override
                 public void perform(BundleInfo info, String target) {
                     bundleService.uninstall(info, target);
+                    if (!persister.delete(bundleKey)) {
+                        logger.warn("Unable to remove persisted module with bundle key {}, please remove it manually", bundleKey);
+                    }
                 }
             });
 

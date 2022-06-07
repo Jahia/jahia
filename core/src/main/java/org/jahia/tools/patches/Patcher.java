@@ -145,7 +145,7 @@ public final class Patcher implements JahiaAfterInitializationService, Disposabl
                 logger.trace("Looking up patches in the folder {}", lookupFolder);
             }
             List<File> patches = new LinkedList<>(FileUtils.listFiles(
-                    lookupFolder,
+                    lookupFolder.getCanonicalFile(),
                     new AndFileFilter(
                             new NotFileFilter(new SuffixFileFilter(new String[]{README, SUFFIX_INSTALLED, SUFFIX_FAILED, SUFFIX_SKIPPED})),
                             new LifecycleFilter(lifecyclePhase)

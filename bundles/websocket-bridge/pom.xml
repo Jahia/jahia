@@ -49,7 +49,7 @@
     <parent>
         <groupId>org.jahia.bundles</groupId>
         <artifactId>jahia-bundles</artifactId>
-        <version>8.1.2.0-SNAPSHOT</version>
+        <version>8.1.2.0</version>
     </parent>
 
     <name>Jahia websocket module</name>
@@ -99,7 +99,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>8.1.2.0-SNAPSHOT</version>
+            <version>8.1.2.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

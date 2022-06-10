@@ -287,7 +287,6 @@ public class DocumentViewExporter {
                                 for (Value v : vs) {
                                     values.add(JCRMultipleValueUtils.encode(getValue(v)));
                                 }
-                                Collections.sort(values);
                                 StringBuilder b = new StringBuilder();
                                 for (int i = 0; i < values.size(); i++) {
                                     String v = values.get(i);

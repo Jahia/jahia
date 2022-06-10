@@ -209,10 +209,10 @@ public class JCRNodeWrapperImplIT extends AbstractJUnitTest {
         testValuesArrayEquals(dates, testNode.getProperty("DateMultiple").getValues());
         testValuesArrayEquals(doubles, testNode.getProperty("DoubleMultiple").getValues());
         testValuesArrayEquals(longs, testNode.getProperty("LongMultiple").getValues());
-        // TODO following cases are KO: https://jira.jahia.org/browse/QA-12037
-        //testValuesArrayEquals(booleans, testNode.getProperty("BooleanMultiple").getValues());
-        //testRefsArrayEquals(new String[] {"/sites/" + siteKey, "/users", "/sites/" + siteKey + "/files"}, testNode.getProperty("WeakReferenceMultiple").getValues());
-        //testRefsArrayEquals(new String[] {"/sites/" + siteKey, "/users", "/sites/" + siteKey + "/files"}, testNode.getProperty("ReferenceMultiple").getValues());
+        testValuesArrayEquals(booleans, testNode.getProperty("BooleanMultiple").getValues());
+        testRefsArrayEquals(new String[] {"/sites/" + siteKey, "/users", "/sites/" + siteKey + "/files"}, testNode.getProperty(
+                "WeakReferenceMultiple").getValues());
+        testRefsArrayEquals(new String[] {"/sites/" + siteKey, "/users", "/sites/" + siteKey + "/files"}, testNode.getProperty("ReferenceMultiple").getValues());
     }
 
     private void testMultipleValuesOrdering(Value[] values, JCRNodeWrapper testNode, String propName) throws RepositoryException {

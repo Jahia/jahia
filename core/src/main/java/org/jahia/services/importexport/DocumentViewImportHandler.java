@@ -714,6 +714,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 if (propDef.getRequiredType() == PropertyType.REFERENCE || propDef.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
                     if (attrValue.length() > 0) {
                         String[] values = propDef.isMultiple() ? Patterns.SPACE.split(attrValue) : new String[]{attrValue};
+                        int idx = 0;
                         for (String value : values) {
                             value = JCRMultipleValueUtils.decode(value);
                             if (!StringUtils.isEmpty(value)) {
@@ -725,7 +726,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                                 if (!references.containsKey(value)) {
                                     references.put(value, new ArrayList<String>());
                                 }
-                                references.get(value).add(child.getIdentifier() + "/" + attrName);
+                                references.get(value).add(child.getIdentifier() + "/" + attrName + "["+ idx++ + "]");
                             }
                         }
                     }

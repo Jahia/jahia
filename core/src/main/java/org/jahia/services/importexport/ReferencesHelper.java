@@ -58,13 +58,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * User: toto
@@ -279,6 +273,11 @@ public class ReferencesHelper {
             JCRNodeWrapper ref = n.addNode(pName.substring(1), "jnt:contentReference");
             updateProperty(session, ref, Constants.NODE, value, false);
         } else {
+            int idx = -1;
+            if (pName.contains("[")) {
+                idx = Integer.parseInt(StringUtils.substringBetween(pName, "[", "]"));
+                pName = StringUtils.substringBefore(pName, "[");
+            }
             ExtendedPropertyDefinition propertyDefinition = n.getApplicablePropertyDefinition(pName);
             if (propertyDefinition == null) {
                 logger.warn("Error setting property {} on node {}, definition not found",pName, n.getPath());
@@ -312,21 +311,25 @@ public class ReferencesHelper {
             }
             try {
                 if (propertyDefinition.isMultiple()) {
-                    Value[] newValues;
+                    List<Value> values;
+                    Value newVal = session.getValueFactory().createValue(value, propertyDefinition.getRequiredType());
                     if (n.hasProperty(pName)) {
-                        final Value[] oldValues = n.getProperty(pName).getValues();
-                        newValues = new Value[oldValues.length + 1];
-                        for (Value oldValue : oldValues) {
+                        values = new ArrayList<>(Arrays.asList(n.getProperty(pName).getValues()));
+                        for (Value oldValue : values) {
                             // value already set
                             if (oldValue.getString().equals(value)) {
                                 return;
                             }
                         }
-                        System.arraycopy(oldValues, 0, newValues, 0, oldValues.length);
+                        if (idx == -1 || idx >= value.length()) {
+                            values.add(newVal);
+                        } else {
+                            values.add(idx, newVal);
+                        }
                     } else {
-                        newValues = new Value[1];
+                        values = Collections.singletonList(newVal);
                     }
-                    newValues[newValues.length - 1] = session.getValueFactory().createValue(value, propertyDefinition.getRequiredType());
+                    Value[] newValues = values.toArray(new Value[0]);
                     if (!n.hasProperty(pName) || !Arrays.equals(newValues, n.getProperty(pName).getValues())) {
                         session.checkout(n);
                         JCRPropertyWrapper property = n.setProperty(pName, newValues);

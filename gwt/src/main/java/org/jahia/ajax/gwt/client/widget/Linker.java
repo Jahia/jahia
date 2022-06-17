@@ -49,7 +49,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 
+ *
  *
  * @author : rincevent
  * @since JAHIA 6.5
@@ -78,5 +78,4 @@ public interface Linker {
     GWTConfiguration getConfig();
 
     boolean isDisplayHiddenProperties();
-
 }

@@ -210,10 +210,6 @@ public class DeleteItemWindow extends Window {
                         }
                         linker.select(null);
 
-                        if (permanentlyDelete && selectedNodeList.size() == 1 && selectedNodeList.get(0).isPage()) {
-                            updateReduxStoreForPageComposer();
-                        }
-
                         String operation = (permanentlyDelete ? "delete" : "update");
                         for (GWTJahiaNode selectedNode : selectedNodeList) {
                             ContentHelper.sendContentModificationEvent(selectedNode.getUUID(), selectedNode.getPath(), selectedNode.getName(), operation, null);
@@ -265,14 +261,4 @@ public class DeleteItemWindow extends Window {
         }
         return message;
     }
-
-    public static native void updateReduxStoreForPageComposer() /*-{
-        try {
-            if ($wnd.top.jahia && $wnd.top.jahia.reduxStore) {
-               $wnd.top.jahia.reduxStore.dispatch({type: 'PC_SET_NAVIGATE_TO', payload: null});
-            }
-        } catch (e) {
-            console.warn('Failed to update PageComposer redux store, you should still have all functionality but may have to do an extra click.', e);
-        }
-    }-*/;
 }

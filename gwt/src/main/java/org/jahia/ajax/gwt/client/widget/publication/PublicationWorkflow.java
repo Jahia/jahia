@@ -473,7 +473,7 @@ public class PublicationWorkflow implements CustomWorkflow {
 
             @Override
             public void onSuccess(Object result) {
-                WorkInProgressActionItem.removeStatus(status);
+                WorkInProgressActionItem.removeStatus(status, true);
             }
         });
     }
@@ -561,22 +561,8 @@ public class PublicationWorkflow implements CustomWorkflow {
                                     Messages.get(MESSAGE_CONTENT_UNPUBLISHED_ERROR, "Cannot unpublish"), status, linker, null));
                 } else {
                     // When deleted node is published we need to go to it's parent, depending on the linker
-                    Map<String, Object> rd = null;
-                    if (linker.getSelectionContext().getMainNode().isMarkedForDeletion()) {
-                        GWTJahiaNode nodeToGoTo = linker.getSelectionContext().getParent();
-                        String oldPath = linker.getSelectionContext().getMainNode().getPath();
-
-                        if (nodeToGoTo != null && nodeToGoTo.getPath().equals(oldPath)) {
-                            String[] pathSplit = oldPath.split("/");
-                            nodeToGoTo = new GWTJahiaNode();
-                            nodeToGoTo.setPath(Arrays.stream(pathSplit).limit(pathSplit.length - 1L).collect(Collectors.joining("/")));
-                            nodeToGoTo.setNodeTypes(Collections.emptyList());
-                        }
-
-                        rd = new HashMap<>();
-                        rd.put(Linker.MAIN_DELETED, true);
-                        rd.put("node", nodeToGoTo);
-                    }
+                    Map<String, Object> rd = new HashMap<>();
+                    addRedirectToParentDataIfPublishedDeletion(rd, linker);
 
                     JahiaContentManagementService.App.getInstance().publish(getAllUuids(thisWFInfo), nodeProperties, null,
                             getCallback(cards, nbWF, Messages.get("message.content.published", "Content published"),
@@ -835,6 +821,23 @@ public class PublicationWorkflow implements CustomWorkflow {
             }
             closeDialog(dialog);
             doPublish(nodeProperties, dialog);
+        }
+    }
+
+    public static void addRedirectToParentDataIfPublishedDeletion(Map<String, Object> rd, Linker linker) {
+        if (linker.getSelectionContext() != null && linker.getSelectionContext().getMainNode() != null && linker.getSelectionContext().getMainNode().isMarkedForDeletion()) {
+            GWTJahiaNode nodeToGoTo = linker.getSelectionContext().getParent();
+            String oldPath = linker.getSelectionContext().getMainNode().getPath();
+
+            if (nodeToGoTo != null && nodeToGoTo.getPath().equals(oldPath)) {
+                String[] pathSplit = oldPath.split("/");
+                nodeToGoTo = new GWTJahiaNode();
+                nodeToGoTo.setPath(Arrays.stream(pathSplit).limit(pathSplit.length - 1L).collect(Collectors.joining("/")));
+                nodeToGoTo.setNodeTypes(Collections.emptyList());
+            }
+
+            rd.put(Linker.MAIN_DELETED, true);
+            rd.put("node", nodeToGoTo);
         }
     }
 }

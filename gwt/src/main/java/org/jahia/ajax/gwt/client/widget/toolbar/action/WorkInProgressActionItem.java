@@ -53,11 +53,9 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.job.JobListWindow;
 import org.jahia.ajax.gwt.client.widget.poller.Poller;
 import org.jahia.ajax.gwt.client.widget.poller.ProcessPollingEvent;
+import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * User: toto
@@ -80,7 +78,7 @@ public class WorkInProgressActionItem extends BaseActionItem implements Poller.P
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
         super.init(gwtToolbarItem, linker);
         instance = this;
-        refreshStatus();
+        refreshStatus(false);
 
         Poller.getInstance().registerListener(this, ProcessPollingEvent.class);
     }
@@ -92,25 +90,32 @@ public class WorkInProgressActionItem extends BaseActionItem implements Poller.P
         if (!lastStartedJobs.isEmpty() || !lastEndedJobs.isEmpty() || processesCount != result.getTotalCount()) {
             processesCount = result.getTotalCount();
 
-            refreshStatus();
+            refreshStatus(false);
+        }
+    }
+
+    public static void removeStatus(String status, boolean checkForDeletion) {
+        if(instance!=null) {
+            instance.statuses.remove(status);
+            instance.refreshStatus(checkForDeletion);
         }
     }
 
     public static void removeStatus(String status) {
         if(instance!=null) {
             instance.statuses.remove(status);
-            instance.refreshStatus();
+            instance.refreshStatus(false);
         }
     }
 
     public static void setStatus(String status) {
         if(instance!=null) {
             instance.statuses.add(status);
-            instance.refreshStatus();
+            instance.refreshStatus(false);
         }
     }
 
-    private void refreshStatus() {
+    private void refreshStatus(boolean checkForDeletion) {
         Button b = (Button) getTextToolItem();
         if (statuses.isEmpty() && processesCount == 0) {
             b.setText(getMenuItem().getHtml());
@@ -130,9 +135,13 @@ public class WorkInProgressActionItem extends BaseActionItem implements Poller.P
             b.setEnabled(true);
         }
 
-        Map<String, Object> refreshData = new HashMap<String, Object>();
+        Map<String, Object> refreshData = new HashMap<>();
 
-        if (!lastEndedJobs.isEmpty()) {
+        if (checkForDeletion) {
+             PublicationWorkflow.addRedirectToParentDataIfPublishedDeletion(refreshData, linker);
+        }
+
+        if (refreshData.isEmpty() && !lastEndedJobs.isEmpty()) {
             for (GWTJahiaJobDetail endedJob : lastEndedJobs) {
                 if (endedJob.getSite() == null || endedJob.getSite().equals(JahiaGWTParameters.getSiteKey())) {
                     if (endedJob.getGroup().equals("PublicationJob")) {
@@ -145,6 +154,7 @@ public class WorkInProgressActionItem extends BaseActionItem implements Poller.P
                 }
             }
         }
+
         if (!refreshData.isEmpty()) {
             linker.refresh(refreshData);
         }
@@ -164,5 +174,4 @@ public class WorkInProgressActionItem extends BaseActionItem implements Poller.P
 	public void setAdminMode(boolean adminMode) {
     	this.adminMode = adminMode;
     }
-
 }

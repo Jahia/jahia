@@ -457,23 +457,22 @@ public class MainModule extends Module {
                 GWTJahiaNode n = (GWTJahiaNode) data.get("node");
                 if (n != null) {
                     newPath = n.getPath();
-                    path = newPath;
                     forceCssRefresh = n.getNodeTypes().contains("jnt:cssFile");
                     forceJavascriptRefresh = n.getNodeTypes().contains("jnt:javascriptFile");
                     isMainDeleted = data.containsKey(Linker.MAIN_DELETED) && (Boolean) data.get(Linker.MAIN_DELETED);
                 }
             }
 
-            // we preserve the available query string during refresh of main area
-            // change the url to the parent path if main url has been deleted
-            final String url = getUrl(path, template, activeChannel != null ? activeChannel.getValue() : null, activeChannelVariant, true);
-
             // Update redux store to clear navigateTo parameter in page composer, this allows parameter to be set again
             // so that it can be picked up on change by useEffect
             if (isMainDeleted) {
+                path = newPath;
                 resetNavigateToInRedux();
             }
 
+            // we preserve the available query string during refresh of main area
+            // change the url to the parent path if main url has been deleted
+            final String url = getUrl(path, template, activeChannel != null ? activeChannel.getValue() : null, activeChannelVariant, true);
             goToUrl(url, data.containsKey("forceImageRefresh"), forceCssRefresh, forceJavascriptRefresh);
         }
     }

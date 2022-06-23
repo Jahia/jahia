@@ -7,7 +7,7 @@
             factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
             type="javax.sql.DataSource" username="@USERNAME@" password="@PASSWORD@"
             driverClassName="@DRIVER@" url="@URL@" defaultAutoCommit="true" accessToUnderlyingConnectionAllowed="true"
-            maxActive="200" maxIdle="30" maxWait="10000" initialSize="10"
+            maxActive="330" maxIdle="30" maxWait="10000" initialSize="10"
             validationQuery="@VALIDATION_QUERY@" testWhileIdle="true" testOnBorrow="false" testOnReturn="false"
             timeBetweenEvictionRunsMillis="300000" minEvictableIdleTimeMillis="1800000" numTestsPerEvictionRun="5"/>
 

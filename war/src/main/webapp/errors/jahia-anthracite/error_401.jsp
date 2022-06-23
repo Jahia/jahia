@@ -23,9 +23,6 @@
     <!-- Import font (Nunito Sans) -->
     <link href="${pageContext.request.contextPath}/css/loginFont.css" rel="stylesheet">
 
-    <!-- jQuery -->
-    <script src="${pageContext.request.contextPath}/css/jquery.min.js"></script>
-
     <!-- Main style -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/loginMain_dark.css">
 </head>

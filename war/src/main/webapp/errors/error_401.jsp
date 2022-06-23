@@ -23,8 +23,6 @@
     <!-- Import Google font (Lato) -->
     <link href="${pageContext.request.contextPath}/css/loginFont.css" rel="stylesheet">
 
-    <!-- Import jQuery (from Google) -->
-    <script src="${pageContext.request.contextPath}/css/jquery.min.js"></script>
     <script src="${pageContext.request.contextPath}/javascript/error401.js"></script>
 
     <!-- Main style -->

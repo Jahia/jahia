@@ -321,7 +321,7 @@ public class ReferencesHelper {
                                 return;
                             }
                         }
-                        if (idx == -1 || idx >= value.length()) {
+                        if (idx == -1 || idx >= values.size()) {
                             values.add(newVal);
                         } else {
                             values.add(idx, newVal);

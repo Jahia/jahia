@@ -8,7 +8,7 @@ ARG LIBREOFFICE="false"
 ARG MAVEN_VER="3.8.1"
 ARG MAVEN_BASE_URL="https://archive.apache.org/dist/maven/maven-3"
 ARG MODULES_BASE_URL="https://store.jahia.com/cms/mavenproxy/private-app-store/org/jahia/modules"
-ARG IMAGEMAGICK_BINARIES_DOWNLOAD_URL="https://imagemagick.org/download/binaries/magick"
+ARG IMAGEMAGICK_BINARIES_DOWNLOAD_URL="https://imagemagick.org/archive/binaries/magick"
 ARG LOG_MAX_DAYS="5"
 ARG JAHIA_PLUGIN="jahia"
 ARG DATA_FOLDER="/var/jahia"
@@ -49,9 +49,10 @@ ENV YOURKIT_ACTIVATED="false"
 WORKDIR /tmp
 
 RUN apt-get update \
-    && packages="ncat wget unzip logrotate" \
+    && magick_packages="libfontconfig1 libx11-6 libharfbuzz0b libfribidi0" \
+    && packages="ncat wget unzip logrotate ${magick_packages}" \
     && if ${DEBUG_TOOLS}; then \
-        packages="${packages} vim binutils less procps iputils-ping"; \
+        packages="${packages} vim binutils less procps iputils-ping htop"; \
        fi \
     && if ${LIBREOFFICE}; then \
         packages="${packages} libreoffice"; \

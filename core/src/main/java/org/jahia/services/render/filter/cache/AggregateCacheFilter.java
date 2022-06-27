@@ -573,6 +573,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         Set<String> dependencies = element1 != null ? (Set<String>) element1.getObjectValue() : Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
         if (!dependencies.contains(ALL)) {
             if ((dependencies.size() + 1) > dependenciesLimit) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Dependencies limit exceeded by path {}: {}/{}",
+                            path, dependencies.size(), dependenciesLimit);
+                }
                 Element element = new Element(path, ALL_SET);
                 element.setEternal(true);
                 dependenciesCache.put(element);
@@ -1170,7 +1174,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
     protected CountDownLatch avoidParallelProcessingOfSameModule(String key, RenderContext renderContext,
-                                                                 Resource resource, Properties properties) throws RepositoryException {   
+                                                                 Resource resource, Properties properties) throws RepositoryException {
         final HttpServletRequest request = renderContext.getRequest();
         CountDownLatch latch = null;
         boolean mustWait = true;

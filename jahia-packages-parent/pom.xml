@@ -137,6 +137,7 @@
                                                     writer.writeLine("     startLevel: ${startlevel[f[1]]}")
                                                 }
                                             }
+                                            writer.writeLine("   ignoreChecks: true ")
                                         }
                                     }
                                 }

@@ -443,15 +443,14 @@ public class MainModule extends Module {
      * @param data the refresh data
      */
     public void refresh(Map<String, Object> data) {
-        if (!config.isRefreshEnabled() || data == null) {
+
+        if (!config.isRefreshEnabled()) {
             return;
         }
-
-        if (data.containsKey(Linker.REFRESH_ALL) || data.containsKey(Linker.REFRESH_MAIN) || needRefresh(data)) {
+        if (data != null && (data.containsKey(Linker.REFRESH_ALL) || data.containsKey(Linker.REFRESH_MAIN) || needRefresh(data))) {
             saveCurrentFramePosition();
             boolean forceCssRefresh = false;
             boolean forceJavascriptRefresh = false;
-            boolean isMainDeleted = false;
             String newPath = null;
             if (data.containsKey("node")) {
                 GWTJahiaNode n = (GWTJahiaNode) data.get("node");
@@ -459,20 +458,12 @@ public class MainModule extends Module {
                     newPath = n.getPath();
                     forceCssRefresh = n.getNodeTypes().contains("jnt:cssFile");
                     forceJavascriptRefresh = n.getNodeTypes().contains("jnt:javascriptFile");
-                    isMainDeleted = data.containsKey(Linker.MAIN_DELETED) && (Boolean) data.get(Linker.MAIN_DELETED);
                 }
             }
-
-            // Update redux store to clear navigateTo parameter in page composer, this allows parameter to be set again
-            // so that it can be picked up on change by useEffect
-            if (isMainDeleted) {
-                path = newPath;
-                resetNavigateToInRedux();
-            }
-
+            boolean isMainDeleted = newPath != null && data.containsKey(Linker.MAIN_DELETED) && (Boolean) data.get(Linker.MAIN_DELETED);
             // we preserve the available query string during refresh of main area
             // change the url to the parent path if main url has been deleted
-            final String url = getUrl(path, template, activeChannel != null ? activeChannel.getValue() : null, activeChannelVariant, true);
+            final String url = getUrl(isMainDeleted ? newPath : path, template, activeChannel != null ? activeChannel.getValue() : null, activeChannelVariant, true);
             goToUrl(url, data.containsKey("forceImageRefresh"), forceCssRefresh, forceJavascriptRefresh);
         }
     }
@@ -1936,15 +1927,5 @@ public class MainModule extends Module {
 
     public final native void scrollTo(IFrameElement iFrameElement, int x, int y) /*-{
         iFrameElement.contentWindow.scrollTo(x, y);
-    }-*/;
-
-    public static native void resetNavigateToInRedux() /*-{
-        try {
-            if ($wnd.top.jahia && $wnd.top.jahia.reduxStore) {
-               $wnd.top.jahia.reduxStore.dispatch({type: 'PC_SET_NAVIGATE_TO', payload: null});
-            }
-        } catch (e) {
-            console.warn('Failed to update PageComposer redux store, you should still have all functionality but may have to do an extra click.', e);
-        }
     }-*/;
 }

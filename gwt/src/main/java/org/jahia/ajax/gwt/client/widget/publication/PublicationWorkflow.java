@@ -62,7 +62,6 @@ import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflow;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
@@ -80,7 +79,6 @@ import org.jahia.ajax.gwt.client.widget.workflow.CustomWorkflow;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowActionDialog;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Implementation of CustomWorkflow for publication type workflow
@@ -96,9 +94,6 @@ public class PublicationWorkflow implements CustomWorkflow {
             GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE,
             GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID);
     private static final long serialVersionUID = -4916142720074054130L;
-    public static final String CANNOT_PUBLISH = "Cannot publish";
-    public static final String MESSAGE_CONTENT_PUBLISHED_ERROR = "message.content.published.error";
-    public static final String MESSAGE_CONTENT_UNPUBLISHED_ERROR = "message.content.unpublished.error";
     private static transient boolean doRefresh;
     protected List<GWTJahiaPublicationInfo> publicationInfos;
 
@@ -306,7 +301,6 @@ public class PublicationWorkflow implements CustomWorkflow {
             WorkInProgressActionItem.removeStatus(statusMessage);
             if (refreshData != null) {
                 linker.refresh(refreshData);
-                linker.select(null);
             }
             cards.closeAllEngines();
         }
@@ -467,13 +461,13 @@ public class PublicationWorkflow implements CustomWorkflow {
             @Override
             public void onApplicationFailure(Throwable caught) {
                 WorkInProgressActionItem.removeStatus(status);
-                Info.display(CANNOT_PUBLISH, CANNOT_PUBLISH);
+                Info.display("Cannot publish", "Cannot publish");
                 Window.alert("Cannot publish " + caught.getMessage());
             }
 
             @Override
             public void onSuccess(Object result) {
-                WorkInProgressActionItem.removeStatus(status, true);
+                WorkInProgressActionItem.removeStatus(status);
             }
         });
     }
@@ -540,11 +534,11 @@ public class PublicationWorkflow implements CustomWorkflow {
                     if (dialog.isUnpublish()) {
                         JahiaContentManagementService.App.getInstance().unpublish(dialog.getUuids(),
                                 getCallback(cards, nbWF, Messages.get("message.content.unpublished", "Content unpublished"),
-                                        Messages.get(MESSAGE_CONTENT_UNPUBLISHED_ERROR, "Cannot unpublish"), status, linker, null));
+                                        Messages.get("message.content.unpublished.error", "Cannot unpublish"), status, linker, null));
                     } else {
                         JahiaContentManagementService.App.getInstance().publish(dialog.getUuids(), null, null,
                                 getCallback(cards, nbWF, Messages.get("message.content.published", "Content published"),
-                                        Messages.get(MESSAGE_CONTENT_PUBLISHED_ERROR, CANNOT_PUBLISH), status, linker, null));
+                                        Messages.get("message.content.published.error", "Cannot publish"), status, linker, null));
                     }
                 } else {
                     close(cards, nbWF, Messages.get("label.workflow.start", "Start Workflow"), status, linker, null);
@@ -558,15 +552,11 @@ public class PublicationWorkflow implements CustomWorkflow {
                 if (customWorkflow instanceof UnpublicationWorkflow) {
                     JahiaContentManagementService.App.getInstance().unpublish(getAllUuids(thisWFInfo, false, true),
                             getCallback(cards, nbWF, Messages.get("message.content.unpublished", "Content unpublished"),
-                                    Messages.get(MESSAGE_CONTENT_UNPUBLISHED_ERROR, "Cannot unpublish"), status, linker, null));
+                                    Messages.get("message.content.unpublished.error", "Cannot unpublish"), status, linker, null));
                 } else {
-                    // When deleted node is published we need to go to it's parent, depending on the linker
-                    Map<String, Object> rd = new HashMap<>();
-                    addRedirectToParentDataIfPublishedDeletion(rd, linker);
-
                     JahiaContentManagementService.App.getInstance().publish(getAllUuids(thisWFInfo), nodeProperties, null,
                             getCallback(cards, nbWF, Messages.get("message.content.published", "Content published"),
-                                    Messages.get(MESSAGE_CONTENT_PUBLISHED_ERROR, CANNOT_PUBLISH), status, linker, rd));
+                                    Messages.get("message.content.published.error", "Cannot publish"), status, linker, null));
                 }
             } else {
                 close(cards, nbWF, Messages.get("message.content.published", "Content published"), status, dialog.getLinker(), null);
@@ -642,7 +632,7 @@ public class PublicationWorkflow implements CustomWorkflow {
             }
             MessageBox.alert(
                     Messages.get(checkForUnpublication ? "label.unpublish" : "label.publish", checkForUnpublication ? "Unpublish" : "Publish"),
-                    Messages.get(checkForUnpublication ? MESSAGE_CONTENT_UNPUBLISHED_ERROR : MESSAGE_CONTENT_PUBLISHED_ERROR, checkForUnpublication ? "Cannot be unpublished" : "Cannot be published"),
+                    Messages.get(checkForUnpublication ? "message.content.unpublished.error" : "message.content.published.error", checkForUnpublication ? "Cannot be unpublished" : "Cannot be published"),
                     null
             );
         }
@@ -821,23 +811,6 @@ public class PublicationWorkflow implements CustomWorkflow {
             }
             closeDialog(dialog);
             doPublish(nodeProperties, dialog);
-        }
-    }
-
-    public static void addRedirectToParentDataIfPublishedDeletion(Map<String, Object> rd, Linker linker) {
-        if (linker.getSelectionContext() != null && linker.getSelectionContext().getMainNode() != null && linker.getSelectionContext().getMainNode().isMarkedForDeletion()) {
-            GWTJahiaNode nodeToGoTo = linker.getSelectionContext().getParent();
-            String oldPath = linker.getSelectionContext().getMainNode().getPath();
-
-            if (nodeToGoTo != null && nodeToGoTo.getPath().equals(oldPath)) {
-                String[] pathSplit = oldPath.split("/");
-                nodeToGoTo = new GWTJahiaNode();
-                nodeToGoTo.setPath(Arrays.stream(pathSplit).limit(pathSplit.length - 1L).collect(Collectors.joining("/")));
-                nodeToGoTo.setNodeTypes(Collections.emptyList());
-            }
-
-            rd.put(Linker.MAIN_DELETED, true);
-            rd.put("node", nodeToGoTo);
         }
     }
 }

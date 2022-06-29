@@ -46,6 +46,7 @@ package org.jahia.services.content.impl.jackrabbit;
 import org.apache.jackrabbit.core.journal.*;
 import org.apache.jackrabbit.core.util.db.*;
 import org.apache.jackrabbit.spi.commons.namespace.NamespaceResolver;
+import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -177,6 +178,11 @@ public class JahiaDatabaseJournal extends JahiaAbstractJournal implements Databa
     protected String selectMinLocalRevisionStmtSQL;
 
     /**
+     * SQL statement returning the minimum of the journal revisions
+     */
+    protected String selectMinJournalStmtSQL;
+
+    /**
      * SQL statement removing a set of revisions with from the journal table.
      */
     protected String cleanRevisionStmtSQL;
@@ -200,6 +206,11 @@ public class JahiaDatabaseJournal extends JahiaAbstractJournal implements Databa
      * Schema object prefix, bean property.
      */
     protected String schemaObjectPrefix;
+
+    /**
+     * Maximum number of revisions to remove during clean-up of old revisions
+     */
+    protected long cleanRevisionBatchLimit = 10000L;
 
     /**
      * The repositories {@link ConnectionFactory}.
@@ -356,6 +367,10 @@ public class JahiaDatabaseJournal extends JahiaAbstractJournal implements Databa
             InstanceRevision currentFileRevision = new FileRevision(new File(getRevision()), true);
             localFileRevision = currentFileRevision.get();
             currentFileRevision.close();
+        }
+
+        if (SettingsBean.getInstance().getCleanRevisionBatchLimit() > 0) {
+            cleanRevisionBatchLimit = SettingsBean.getInstance().getCleanRevisionBatchLimit();
         }
 
         // Now write the localFileRevision (or 0 if it does not exist) to the LOCAL_REVISIONS
@@ -627,8 +642,10 @@ public class JahiaDatabaseJournal extends JahiaAbstractJournal implements Databa
                         + "values (?,?,?,?)";
         selectMinLocalRevisionStmtSQL =
                 "select MIN(REVISION_ID) from " + schemaObjectPrefix + LOCAL_REVISIONS_TABLE;
+        selectMinJournalStmtSQL =
+                "select MIN(REVISION_ID) from " + schemaObjectPrefix + DEFAULT_JOURNAL_TABLE;
         cleanRevisionStmtSQL =
-                "delete from " + schemaObjectPrefix + "JOURNAL " + "where REVISION_ID < ?";
+                "delete from " + schemaObjectPrefix + "JOURNAL where REVISION_ID < ? ORDER BY REVISION_ID LIMIT ?";
         getLocalRevisionStmtSQL =
                 "select REVISION_ID from " + schemaObjectPrefix + LOCAL_REVISIONS_TABLE
                         + " where JOURNAL_ID = ?";
@@ -924,21 +941,44 @@ public class JahiaDatabaseJournal extends JahiaAbstractJournal implements Databa
                 long minRevision = 0;
                 rs = conHelper.exec(selectMinLocalRevisionStmtSQL, null, false, 0);
                 boolean cleanUp = rs.next();
-                if (cleanUp) {
-                    minRevision = rs.getLong(1);
-                }
-
                 // Clean up if necessary:
                 if (cleanUp) {
-                    conHelper.exec(cleanRevisionStmtSQL, minRevision);
+                    minRevision = rs.getLong(1);
+                    DbUtility.close(rs); // close rs connection before recursing
+                    doCleanUpOldRevisions(minRevision);
                     log.info("Cleaned old revisions up to revision {}.", minRevision);
                 }
 
             } catch (Exception e) {
                 log.warn("Failed to clean up old revisions.", e);
             } finally {
-                DbUtility.close(rs);
+                DbUtility.close(rs); // close in case of exception
+            }
+        }
+
+        private void doCleanUpOldRevisions(long minRevision) throws SQLException {
+            // batch clean-up
+            conHelper.exec(cleanRevisionStmtSQL, minRevision, cleanRevisionBatchLimit);
+
+            // check if there are more to delete
+            ResultSet rs = null;
+            try {
+                long nextRevision = 0;
+                rs = conHelper.exec(selectMinJournalStmtSQL, null, false, 0);
+                if (rs.next()) {
+                    nextRevision = rs.getLong(1);
+                    DbUtility.close(rs); // close rs connection before recursing
+                    if (nextRevision < minRevision) {
+                        log.debug("Cleaning next {} revisions...", cleanRevisionBatchLimit);
+                        doCleanUpOldRevisions(minRevision);
+                    }
+                }
+            } catch (Exception e) {
+                log.warn("Failed to clean up old revisions.", e);
+            } finally {
+                DbUtility.close(rs); // close in case of exception
             }
         }
     }
+
 }

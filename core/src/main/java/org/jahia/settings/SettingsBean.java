@@ -187,6 +187,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private String atmosphereAsyncSupport;
     private boolean areaAutoActivated;
     private int jahiaSiteImportScannerInterval;
+    private long cleanRevisionBatchLimit;
 
     // Timeout (in seconds) waiting for a bean to be available when using SpringContextSingleton.
     // Mostly used during startup when a module needs to access beans from another module starting independently.
@@ -1568,4 +1569,11 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         this.cookieAuthConfig = cookieAuthConfig;
     }
 
+    public void setCleanRevisionBatchLimit(long cleanRevisionBatchLimit) {
+        this.cleanRevisionBatchLimit = cleanRevisionBatchLimit;
+    }
+
+    public long getCleanRevisionBatchLimit() {
+        return cleanRevisionBatchLimit;
+    }
 }

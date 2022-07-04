@@ -187,7 +187,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private String atmosphereAsyncSupport;
     private boolean areaAutoActivated;
     private int jahiaSiteImportScannerInterval;
-    private long cleanRevisionBatchLimit;
+    private long dbJournalJanitorBatchLimit;
+    private int dbJournalJanitorHourOfDay;
 
     // Timeout (in seconds) waiting for a bean to be available when using SpringContextSingleton.
     // Mostly used during startup when a module needs to access beans from another module starting independently.
@@ -456,6 +457,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             jahiaSiteImportScannerInterval = getInt("jahia.site.import.scanner.interval", 1000);
 
             atmosphereHeartbeatFrequency = getString("jahia.atmosphere.heartbeat", "60");
+
+            dbJournalJanitorBatchLimit = getLong("jahia.jackrabbit.dbJournal.janitorBatchLimit", 10000L);
+            dbJournalJanitorHourOfDay = getInt("jahia.jackrabbit.dbJournal.janitorHourOfDay", 3);
 
             String authorizedRedirectHostsStr = getString("authorizedRedirectHosts", null);
             authorizedRedirectHosts = StringUtils.isBlank(authorizedRedirectHostsStr) ? new String[0] : authorizedRedirectHostsStr.trim().split("\\s*,\\s*");
@@ -1569,11 +1573,11 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         this.cookieAuthConfig = cookieAuthConfig;
     }
 
-    public void setCleanRevisionBatchLimit(long cleanRevisionBatchLimit) {
-        this.cleanRevisionBatchLimit = cleanRevisionBatchLimit;
+    public long getDbJournalJanitorBatchLimit() {
+        return dbJournalJanitorBatchLimit;
     }
 
-    public long getCleanRevisionBatchLimit() {
-        return cleanRevisionBatchLimit;
+    public int getDbJournalJanitorHourOfDay() {
+        return dbJournalJanitorHourOfDay;
     }
 }

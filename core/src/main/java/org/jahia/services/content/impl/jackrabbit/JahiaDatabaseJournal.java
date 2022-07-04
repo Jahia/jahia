@@ -56,7 +56,9 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 /**
  * JahiaDatabaseJournal is a copy of DatabaseJournal, but extends JahiaAbstractJournal to use lockAndSync timeouts
@@ -138,7 +140,7 @@ public class JahiaDatabaseJournal extends JahiaAbstractJournal implements Databa
      * Indicates when the next run of the janitor is scheduled.
      * The first run is scheduled by default at 03:00 hours.
      */
-    Calendar janitorNextRun = Calendar.getInstance();
+    Calendar janitorNextRun;
 
     private Thread janitorThread;
 
@@ -210,7 +212,7 @@ public class JahiaDatabaseJournal extends JahiaAbstractJournal implements Databa
     /**
      * Maximum number of revisions to remove during clean-up of old revisions
      */
-    protected long cleanRevisionBatchLimit = 10000L;
+    protected long janitorBatchLimit = 10000L;
 
     /**
      * The repositories {@link ConnectionFactory}.
@@ -223,14 +225,7 @@ public class JahiaDatabaseJournal extends JahiaAbstractJournal implements Databa
     public JahiaDatabaseJournal() {
         databaseType = "default";
         schemaObjectPrefix = "";
-        if (janitorNextRun.get(Calendar.HOUR_OF_DAY) >= 3) {
-            janitorNextRun.add(Calendar.DAY_OF_MONTH, 1);
-        }
-        janitorNextRun.set(Calendar.HOUR_OF_DAY, 3);
-        janitorNextRun.set(Calendar.MINUTE, 0);
-        janitorNextRun.set(Calendar.SECOND, 0);
-        janitorNextRun.set(Calendar.MILLISECOND, 0);
-
+        setJanitorFirstRunHourOfDay(3);
     }
 
     /**
@@ -369,9 +364,13 @@ public class JahiaDatabaseJournal extends JahiaAbstractJournal implements Databa
             currentFileRevision.close();
         }
 
-        if (SettingsBean.getInstance().getCleanRevisionBatchLimit() > 0) {
-            cleanRevisionBatchLimit = SettingsBean.getInstance().getCleanRevisionBatchLimit();
+        // set batch limit for deleting revisions
+        if (SettingsBean.getInstance().getDbJournalJanitorBatchLimit() > 0) {
+            janitorBatchLimit = SettingsBean.getInstance().getDbJournalJanitorBatchLimit();
         }
+
+        // set hour of day
+        setJanitorFirstRunHourOfDay(SettingsBean.getInstance().getDbJournalJanitorHourOfDay());
 
         // Now write the localFileRevision (or 0 if it does not exist) to the LOCAL_REVISIONS
         // table, but only if the LOCAL_REVISIONS table has no entry yet for this cluster node
@@ -764,7 +763,7 @@ public class JahiaDatabaseJournal extends JahiaAbstractJournal implements Databa
     }
 
     public void setJanitorFirstRunHourOfDay(int hourOfDay) {
-        janitorNextRun = Calendar.getInstance();
+        janitorNextRun = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         if (janitorNextRun.get(Calendar.HOUR_OF_DAY) >= hourOfDay) {
             janitorNextRun.add(Calendar.DAY_OF_MONTH, 1);
         }
@@ -912,13 +911,19 @@ public class JahiaDatabaseJournal extends JahiaAbstractJournal implements Databa
      */
     public class RevisionTableJanitor implements Runnable {
 
+        private String getUTCTime(Calendar c) {
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ssX");
+            df.setTimeZone(TimeZone.getTimeZone("UTC"));
+            return df.format(c.getTime());
+        }
+
         /**
          * {@inheritDoc}
          */
         public void run() {
             while (!Thread.currentThread().isInterrupted()) {
                 try {
-                    log.info("Next clean-up run scheduled at {}", janitorNextRun.getTime());
+                    log.info("Next clean-up run scheduled at {}", getUTCTime(janitorNextRun));
                     long sleepTime = janitorNextRun.getTimeInMillis() - System.currentTimeMillis();
                     if (sleepTime > 0) {
                         Thread.sleep(sleepTime);
@@ -958,7 +963,7 @@ public class JahiaDatabaseJournal extends JahiaAbstractJournal implements Databa
 
         private void doCleanUpOldRevisions(long minRevision) throws SQLException {
             // batch clean-up
-            conHelper.exec(cleanRevisionStmtSQL, minRevision, cleanRevisionBatchLimit);
+            conHelper.exec(cleanRevisionStmtSQL, minRevision, janitorBatchLimit);
 
             // check if there are more to delete
             ResultSet rs = null;
@@ -969,7 +974,7 @@ public class JahiaDatabaseJournal extends JahiaAbstractJournal implements Databa
                     nextRevision = rs.getLong(1);
                     DbUtility.close(rs); // close rs connection before recursing
                     if (nextRevision < minRevision) {
-                        log.debug("Cleaning next {} revisions...", cleanRevisionBatchLimit);
+                        log.debug("Cleaning next {} revisions...", janitorBatchLimit);
                         doCleanUpOldRevisions(minRevision);
                     }
                 }

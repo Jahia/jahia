@@ -121,6 +121,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
      * A map of rules, which should be disabled.
      */
     private Map</* workspace */String, Map</* package name */String, /* set of rule names */Set<String>>> disabledRules;
+    private RuleBaseConfiguration conf;
 
     public RulesListener() {
         instances.add(this);
@@ -187,6 +188,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
         ruleBaseClassLoader = new CompositeClassLoader();
         ruleBaseClassLoader.setCachingEnabled(true);
         ruleBaseClassLoader.addClassLoader(this.getClass().getClassLoader());
+        conf = new RuleBaseConfiguration(ruleBaseClassLoader);
         initCoreSystemRules();
     }
 
@@ -199,7 +201,6 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
     }
 
     private RuleBase rebuildRuleBase(String packageToRemove, Package packageToAdd) {
-        RuleBaseConfiguration conf = new RuleBaseConfiguration(ruleBaseClassLoader);
         RuleBase newRuleBase = RuleBaseFactory.newRuleBase(conf);
 
         if (this.ruleBase != null) {
@@ -417,15 +418,8 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
             return;
         }
 
-        if (ruleBase == null || SettingsBean.getInstance().isDevelopmentMode() && lastModified() > lastInit) {
-            try {
-                initCoreSystemRules();
-            } catch (Exception e) {
-                logger.error("Cannot compile rules",e);
-            }
-            if (ruleBase == null) {
-                return;
-            }
+        if (ruleBase == null) {
+            return;
         }
 
         final List<Event> events = new ArrayList<Event>();

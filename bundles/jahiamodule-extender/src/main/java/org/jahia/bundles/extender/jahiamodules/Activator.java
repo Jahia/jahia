@@ -896,7 +896,11 @@ public class Activator implements BundleActivator {
             // to insure that potential global objects are available before rules executions
             if (postPoneObserverAfterSpringStart) {
                 logger.info("--- Rules registration for bundle {} has been delayed until its Spring context is initialized --", getDisplayName(bundle));
-                jahiaTemplatesPackage.doExecuteAfterContextInitialized(context -> performObserver(bundle, jahiaTemplatesPackage, observer, foundURLs));
+                jahiaTemplatesPackage.doExecuteAfterContextInitialized(context -> {
+                    synchronized (Activator.this) {
+                        performObserver(bundle, jahiaTemplatesPackage, observer, foundURLs);
+                    }
+                });
             } else {
                 performObserver(bundle, jahiaTemplatesPackage, observer, foundURLs);
             }

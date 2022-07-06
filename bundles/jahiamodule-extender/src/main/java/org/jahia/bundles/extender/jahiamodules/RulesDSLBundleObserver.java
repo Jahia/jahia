@@ -109,12 +109,14 @@ public class RulesDSLBundleObserver  implements BundleObserver<URL> {
     public void removingEntries(Bundle bundle, List<URL> urls) {
         List<URL> cachedUrls = dslCachePerBundleId.get(bundle.getBundleId());
         if (cachedUrls != null && !cachedUrls.isEmpty()) {
+            JahiaTemplatesPackage module = templatePackageRegistry.lookupByBundle(bundle);
             for (RulesListener listener : RulesListener.getInstances()) {
                 for (URL url : cachedUrls) {
                     if(listener.removeRulesDescriptor(new BundleResource(url, bundle))){
                         logger.info("Removing rule file descriptor {}", url);
                     }
                 }
+                listener.removeRules(module);
             }
             dslCachePerBundleId.remove(bundle.getBundleId());
         }

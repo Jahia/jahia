@@ -98,7 +98,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
     private boolean limitedAbsoluteAreaEdit = true;
 
     private String conflictsWith = null;
-    
+
     public void setAreaType(String areaType) {
         this.areaType = areaType;
     }
@@ -209,12 +209,12 @@ public class AreaTag extends ModuleTag implements ParamParent {
                 additionalParameters.append(" mockupStyle=\"").append(mockupStyle).append("\"");
             }
             additionalParameters.append(" areaHolder=\"").append(resource.getNode().getIdentifier()).append("\"");
-            
+
             if (isEditable && JCRContentUtils.isLockedAndCannotBeEdited(parent)) {
                 // if the parent is locked -> disable area editing
                 additionalParameters.append(" editable=\"false\"");
             }
-            
+
             printModuleStart(getModuleType(renderContext), areaPath, null, null, additionalParameters.toString(), isReferencesAllowed(resource.getNode()));
             if (enableArea && areaNode != null) {
                 try {
@@ -241,8 +241,8 @@ public class AreaTag extends ModuleTag implements ParamParent {
                 areaNode = areaParentNode.addNode(areaName, areaType);
                 areaNode.addMixin("jmix:systemNameReadonly");
                 session.save();
-            } catch (ItemExistsException e1) {
-                // possible race condition when page is accessed concurrently in edit mode 
+            } catch (Exception e1) {
+                // possible race condition when page is accessed concurrently in edit mode
                 areaNode = areaParentNode.getNode(areaName);
             }
         }

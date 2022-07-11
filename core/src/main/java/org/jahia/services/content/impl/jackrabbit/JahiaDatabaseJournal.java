@@ -642,9 +642,9 @@ public class JahiaDatabaseJournal extends JahiaAbstractJournal implements Databa
         selectMinLocalRevisionStmtSQL =
                 "select MIN(REVISION_ID) from " + schemaObjectPrefix + LOCAL_REVISIONS_TABLE;
         selectMinJournalStmtSQL =
-                "select MIN(REVISION_ID) from " + schemaObjectPrefix + DEFAULT_JOURNAL_TABLE;
+                "select MIN(REVISION_ID) from " + schemaObjectPrefix + DEFAULT_JOURNAL_TABLE + " where REVISION_ID < ?";
         cleanRevisionStmtSQL =
-                "delete from " + schemaObjectPrefix + "JOURNAL where REVISION_ID < ? ORDER BY REVISION_ID LIMIT ?";
+                "delete from " + schemaObjectPrefix + "JOURNAL where REVISION_ID < ?";
         getLocalRevisionStmtSQL =
                 "select REVISION_ID from " + schemaObjectPrefix + LOCAL_REVISIONS_TABLE
                         + " where JOURNAL_ID = ?";
@@ -941,48 +941,43 @@ public class JahiaDatabaseJournal extends JahiaAbstractJournal implements Databa
          * Cleans old revisions from the clustering table.
          */
         protected void cleanUpOldRevisions() {
-            ResultSet rs = null;
             try {
-                long minRevision = 0;
-                rs = conHelper.exec(selectMinLocalRevisionStmtSQL, null, false, 0);
-                boolean cleanUp = rs.next();
-                // Clean up if necessary:
-                if (cleanUp) {
-                    minRevision = rs.getLong(1);
-                    DbUtility.close(rs); // close rs connection before recursing
-                    doCleanUpOldRevisions(minRevision);
-                    log.info("Cleaned old revisions up to revision {}.", minRevision);
+                long maxRevision = getQueryLong(selectMinLocalRevisionStmtSQL);
+                if (maxRevision > 0) {
+                    doCleanUpOldRevisions(maxRevision);
+                    log.info("Cleaned old revisions up to revision {}.", maxRevision);
                 }
-
             } catch (Exception e) {
                 log.warn("Failed to clean up old revisions.", e);
-            } finally {
-                DbUtility.close(rs); // close in case of exception
             }
         }
 
-        private void doCleanUpOldRevisions(long minRevision) throws SQLException {
-            // batch clean-up
-            conHelper.exec(cleanRevisionStmtSQL, minRevision, janitorBatchLimit);
-
-            // check if there are more to delete
-            ResultSet rs = null;
+        private void doCleanUpOldRevisions(long maxRevision) {
             try {
-                long nextRevision = 0;
-                rs = conHelper.exec(selectMinJournalStmtSQL, null, false, 0);
-                if (rs.next()) {
-                    nextRevision = rs.getLong(1);
-                    DbUtility.close(rs); // close rs connection before recursing
-                    if (nextRevision < minRevision) {
-                        log.debug("Cleaning next {} revisions...", janitorBatchLimit);
-                        doCleanUpOldRevisions(minRevision);
-                    }
+                long nextRevision = getQueryLong(selectMinJournalStmtSQL, maxRevision);
+                while (nextRevision > 0) {
+                    log.debug("Cleaning next {} revisions...", janitorBatchLimit);
+                    long maxRevisionBatch = Math.min(maxRevision, nextRevision + janitorBatchLimit);
+                    conHelper.exec(cleanRevisionStmtSQL, maxRevisionBatch);
+                    nextRevision = getQueryLong(selectMinJournalStmtSQL, maxRevision);
                 }
             } catch (Exception e) {
                 log.warn("Failed to clean up old revisions.", e);
-            } finally {
-                DbUtility.close(rs); // close in case of exception
             }
+        }
+
+        private long getQueryLong(String query, Object ...params) throws SQLException {
+            ResultSet rs = null;
+            long result = 0;
+            try {
+                rs = conHelper.exec(query, params, false, 0);
+                if (rs.next()) {
+                    result = rs.getLong(1);
+                }
+            } finally {
+                DbUtility.close(rs);
+            }
+            return result;
         }
     }
 

@@ -264,6 +264,25 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
         return s;
     }
 
+    public Set<JCRSessionWrapper> getAllOpenUserSessions() {
+        return getAllOpenSessions(userSession);
+    }
+
+    public Set<JCRSessionWrapper> getAllOpenSystemSessions() {
+        return getAllOpenSessions(systemSession);
+    }
+
+    private Set<JCRSessionWrapper> getAllOpenSessions(ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>> mapThreadLocal) {
+        Set<JCRSessionWrapper> sessions = new HashSet<>();
+        Map<String, Map<String, JCRSessionWrapper>> smap = mapThreadLocal.get();
+        if (smap != null) {
+            for (Map<String, JCRSessionWrapper> wsMap : smap.values()) {
+                sessions.addAll(wsMap.values());
+            }
+        }
+        return sessions;
+    }
+
     @Override
     public JCRSessionWrapper login(Credentials credentials, String workspace)
             throws LoginException, NoSuchWorkspaceException, RepositoryException {

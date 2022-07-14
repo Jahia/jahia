@@ -290,8 +290,8 @@ jobs:
             - v1-maven-dependencies-
       - restore_cache:
           keys:
-            - v1-sonar-owasp-dependencies-<< pipeline.parameters.run_pull_request >>
-            - v1-sonar-owasp-dependencies-
+            - v2-sonar-owasp-dependencies-<< pipeline.parameters.run_pull_request >>
+            - v2-sonar-owasp-dependencies-
       - when:
           condition: << pipeline.parameters.run_pull_request >>
           steps:
@@ -309,8 +309,8 @@ jobs:
                 name: Sonar analysis
                 environment:
                   DEPENDENCY_CHECK_SETTINGS: -DfailOnError=false -DskipProvidedScope=true -DskipTestScope=false
-                      -DskipSystemScope=true -DretireJsAnalyzerEnabled=false -DnodeAnalyzerEnabled=false -Dformats=HTML,JSON
-                      -Dsonar.dependencyCheck.jsonReportPath=target/dependency-check-report.json
+                      -DskipSystemScope=true -DretireJsAnalyzerEnabled=false -DnodeAnalyzerEnabled=false -DassemblyAnalyzerEnabled=false
+                      -Dformats=HTML,JSON -Dsonar.dependencyCheck.jsonReportPath=target/dependency-check-report.json
                       -Dsonar.dependencyCheck.htmlReportPath=target/dependency-check-report.html
                       -DdataDirectory=/home/circleci/.owasp/dependency-check-data
                       -DsuppressionFile=.circleci/owasp-suppressions.xml
@@ -327,7 +327,7 @@ jobs:
           paths:
             - ~/.owasp/dependency-check-data
             - ~/.sonar/cache
-          key: v1-sonar-owasp-dependencies-<< pipeline.parameters.run_pull_request >>
+          key: v2-sonar-owasp-dependencies-<< pipeline.parameters.run_pull_request >>
 
   trigger_pack_build:
     <<: *workdir

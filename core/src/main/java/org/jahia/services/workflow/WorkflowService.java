@@ -1221,6 +1221,7 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
     // TODO: implement JahiaAfterInitializationService instead of relying on invocation of this method from JBPM6WorkflowProvider.
     public synchronized void initAfterAllServicesAreStarted() {
         servicesStarted = true;
+        observationManager.initAfterAllServicesAreStarted();
         registerWorkflowTypes();
     }
 

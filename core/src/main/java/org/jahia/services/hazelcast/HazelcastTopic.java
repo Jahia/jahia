@@ -41,30 +41,33 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.workflow;
+package org.jahia.services.hazelcast;
 
-import org.jahia.services.usermanager.JahiaPrincipal;
+public interface HazelcastTopic {
+    /**
+     * Send a message on an hazelcast topic
+     * @param topic topic
+     * @param message message
+     */
+    void send(String topic, Object message);
 
-import java.io.Serializable;
+    /**
+     * Add a listener to a topic
+     * @param topic topic
+     * @param listener listener
+     * @return listener id
+     * @param <T>
+     */
+    <T> String addListener(String topic, MessageListener<T> listener);
 
-/**
- * @author rincevent
- * @since JAHIA 6.5
- */
-public class WorkflowParticipation implements Serializable {
-    private final String role;
-    private final JahiaPrincipal principal;
+    /**
+     * Remove a listener
+     * @param topic topic
+     * @param id id
+     */
+    void removeListener(String topic, String id);
 
-    public WorkflowParticipation(String role, JahiaPrincipal principal) {
-        this.role = role;
-        this.principal = principal;
-    }
-
-    public JahiaPrincipal getJahiaPrincipal() {
-        return principal;
-    }
-
-    public String getRole() {
-        return role;
+    static interface MessageListener<T> {
+        public void onMessage(T m);
     }
 }

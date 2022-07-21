@@ -51,6 +51,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -440,6 +441,14 @@ public class Functions {
         URLResolver urlResolver = (URLResolver) request.getAttribute("urlResolver");
         if (urlResolver != null) {
             return urlResolver.getSiteKey();
+        }
+
+        String siteKey = request.getParameter("site");
+        if (siteKey != null && siteKey.length() < 200) {
+            // we must validate the siteKey before returning it.
+            if (ServicesRegistry.getInstance().getJahiaSitesService().getSitesNames().contains(siteKey)) {
+                return siteKey;
+            }
         }
 
         try {

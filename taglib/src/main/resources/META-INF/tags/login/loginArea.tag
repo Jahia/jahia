@@ -36,7 +36,7 @@
                 <c:url var="redirect" value="${redirectUrl}" context="/">
                     <c:forEach items="${paramValues}" var="paramValueEntry">
                         <c:forEach items="${paramValueEntry.value}" var="paramValue">
-                            <c:if test="${paramValueEntry.key != 'username' && paramValueEntry.key != 'password' && paramValueEntry.key != 'redirect'}">
+                            <c:if test="${paramValueEntry.key != 'username' && paramValueEntry.key != 'password' && paramValueEntry.key != 'redirect' && paramValueEntry.key != 'site'}">
                                 <c:param name="${paramValueEntry.key}" value="${paramValue}"/>
                             </c:if>    
                         </c:forEach>

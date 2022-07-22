@@ -54,13 +54,11 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
+import org.quartz.SimpleTrigger;
 import org.slf4j.Logger;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class WorkflowObservationManager implements HazelcastTopic.MessageListener<Map<String,Object>> {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(WorkflowObservationManager.class);
@@ -176,10 +174,10 @@ public class WorkflowObservationManager implements HazelcastTopic.MessageListene
                 oos.writeObject(obj);
                 m.put("data", out.toByteArray());
                 m.put("source", SettingsBean.getInstance().getPropertyValue("cluster.node.serverId"));
-                JobDetail messageJob = BackgroundJob.createJahiaJob("x", MessageJob.class);
+                JobDetail messageJob = BackgroundJob.createJahiaJob("WorkflowMessageJob", MessageJob.class);
                 messageJob.getJobDataMap().put("message", m);
                 messageJob.getJobDataMap().put("hazelcastTopic",hazelcastTopic);
-                ServicesRegistry.getInstance().getSchedulerService().scheduleJobAtEndOfRequest(messageJob, true);
+                ServicesRegistry.getInstance().getSchedulerService().getRAMScheduler().scheduleJob(messageJob,new SimpleTrigger(messageJob.getName() + "_Trigger", new Date(System.currentTimeMillis() + 2000)));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

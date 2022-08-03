@@ -97,6 +97,7 @@ import org.jahia.ajax.gwt.client.widget.edit.InfoLayers;
 import org.jahia.ajax.gwt.client.widget.edit.ToolbarHeader;
 import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageSwitcherActionItem;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowDashboardEngine;
 
 import java.util.*;
@@ -1744,6 +1745,15 @@ public class MainModule extends Module {
 
                         parseFrameContent(forceImageRefresh, forceCssRefresh, forceJavascriptRefresh);
 
+                        GWTJahiaLanguage language = JahiaGWTParameters.getLanguage(mainModuleElement.getAttribute("locale"));
+                        if (language != null && !language.getLanguage().equals(JahiaGWTParameters.getLanguage())) {
+                            JahiaGWTParameters.setLanguage(language);
+                            editLinker.setLocale(language);
+                            LanguageSwitcherActionItem.setLanguage(language);
+                            Map<String, Object> data = new HashMap<>();
+                            data.put(Linker.REFRESH_ALL, true);
+                            editLinker.getSidePanel().refresh(data);
+                        }
                         DOM.sinkEvents((Element) contentDocument.getDocumentElement(), Event.ONMOUSEMOVE + Event.ONMOUSEUP + Event.ONCONTEXTMENU + Event.ONCLICK + Event.ONMOUSEDOWN);
                         DOM.setEventListener((Element) contentDocument.getDocumentElement(), new EventListener() {
 

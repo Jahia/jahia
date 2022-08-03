@@ -68,6 +68,7 @@ import java.util.Arrays;
  */
 public class LanguageSwitcherActionItem extends BaseLanguageAwareActionItem {
     private static final long serialVersionUID = 9115660301140902069L;
+    private static LanguageSwitcherActionItem instance;
     protected transient ComboBox<GWTJahiaLanguage> mainComponent;
     protected boolean events = true;
 
@@ -75,6 +76,7 @@ public class LanguageSwitcherActionItem extends BaseLanguageAwareActionItem {
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
         super.init(gwtToolbarItem, linker);
         initMainComponent();
+        instance = this;
     }
 
     /**
@@ -155,6 +157,10 @@ public class LanguageSwitcherActionItem extends BaseLanguageAwareActionItem {
             }
             events = true;
         }
+    }
+
+    public static void setLanguage(GWTJahiaLanguage language) {
+        instance.mainComponent.setSelection(Arrays.asList(language));
     }
 
     @Override

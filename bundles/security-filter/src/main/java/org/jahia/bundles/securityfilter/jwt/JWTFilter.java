@@ -93,22 +93,23 @@ public class JWTFilter extends AbstractServletFilter {
 
         if (authorization != null && authorization.contains(BEARER)) {
             String token = StringUtils.substringAfter(authorization, BEARER).trim();
+            if (!StringUtils.isEmpty(token)) {
+                try {
+                    DecodedJWT decodedToken = jwtConfig.verifyToken(token);
 
-            try {
-                DecodedJWT decodedToken = jwtConfig.verifyToken(token);
+                    verifyToken(httpRequest, tvr, decodedToken);
 
-                verifyToken(httpRequest, tvr, decodedToken);
-
-                if (tvr.getVerificationStatusCode() == TokenVerificationResult.VerificationStatus.VERIFIED) {
-                    List<String> scopes = decodedToken.getClaim("scopes").asList(String.class);
-                    if (scopes != null) {
-                        permissionService.addScopes(scopes, httpRequest);
+                    if (tvr.getVerificationStatusCode() == TokenVerificationResult.VerificationStatus.VERIFIED) {
+                        List<String> scopes = decodedToken.getClaim("scopes").asList(String.class);
+                        if (scopes != null) {
+                            permissionService.addScopes(scopes, httpRequest);
+                        }
                     }
+                } catch (Exception e) {
+                    tvr.setVerificationStatusCode(TokenVerificationResult.VerificationStatus.REJECTED);
+                    tvr.setMessage("Failed to verify token");
+                    logger.debug("Failed to verify JWT token: {}", e.getMessage());
                 }
-            } catch (Exception e) {
-                tvr.setVerificationStatusCode(TokenVerificationResult.VerificationStatus.REJECTED);
-                tvr.setMessage("Failed to verify token");
-                logger.debug("Failed to verify JWT token: {}", e.getMessage());
             }
         }
 

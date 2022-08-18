@@ -5,4 +5,4 @@
 
     drop table if exists jahia_nodetypes_provider cascade;
 
-    drop sequence jahia_nodetypes_provider_seq;
+    drop sequence if exists jahia_nodetypes_provider_seq;

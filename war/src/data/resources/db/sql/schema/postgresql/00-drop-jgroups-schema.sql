@@ -1,2 +1,2 @@
-    drop table JGROUPSPING;
+    drop table if exists JGROUPSPING;
     

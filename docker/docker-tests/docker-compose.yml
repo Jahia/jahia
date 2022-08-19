@@ -7,6 +7,7 @@ services:
             - '${JAHIA_PORT}:8080'
         environment:
             - SUPER_USER_PASSWORD=${JAHIA_PASSWORD}
+            - NEXUS_USERNAME=${NEXUS_USERNAME}
         extra_hosts:
             - ${JAHIA_HOST}:127.0.0.1
         networks:
@@ -21,10 +22,11 @@ services:
             - jahia
         environment:
             - JAHIA_USERNAME=root
-            - JAHIA_PASSWORD=${JAHIA_PASSWORD}
             - JAHIA_URL=${JAHIA_URL}
             - JAHIA_HOST=${JAHIA_HOST}
             - JAHIA_PORT=${JAHIA_PORT}
+            - SUPER_USER_PASSWORD=${SUPER_USER_PASSWORD}
+            - NEXUS_USERNAME=${NEXUS_USERNAME}
         networks:
             - stack
 networks:

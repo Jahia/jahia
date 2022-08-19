@@ -3,20 +3,28 @@
   "version": "1.0.0",
   "description": "cypress",
   "devDependencies": {
-    "cypress": "^6.5.0",
-    "cypress-file-upload": "^5.0.2",
-    "cypress-multi-reporters": "^1.4.0",
-    "cypress-terminal-report": "^3.0.0",
+    "@jahia/cypress": "^1.0.10",
+    "@jahia/jahia-reporter": "^1.0.27",
+    "@cypress/webpack-preprocessor": "^5.9.1",
+    "cypress": "^8.7.0",
+    "cypress-file-upload": "^5.0.8",
+    "cypress-multi-reporters": "^1.5.0",
+    "cypress-terminal-report": "^3.3.4",
     "dotenv": "^8.2.0",
-    "jahia-reporter": "^0.2.14",
-    "mocha": "^10.0.0",
-    "mocha-junit-reporter": "^2.0.0",
+    "mocha-junit-reporter": "^2.0.2",
+    "mochawesome": "^7.1.3",
+    "mochawesome-merge": "^4.2.1",
+    "mochawesome-report-generator": "^6.2.0",
+    "webpack": "5.60.0",
     "yarn": "^1.22.4"
   },
   "scripts": {
     "e2e:coverage": "yarn instrument && yarn cypress run --config integrationFolder=./instrumented/integration && yarn nyc report --reporter=html --report-dir=./results/coverage && yarn nyc report",
     "e2e:ci": "cypress run",
-    "e2e:debug": "cypress open"
+    "e2e:debug": "cypress open",
+    "lint": "eslint . -c .eslintrc.json --ext .ts",
+    "report:merge": "mochawesome-merge results/reports/cypress*.json > results/reports/report.json && rm results/reports/cypress*.json",
+    "report:html": "marge --inline results/reports/report.json --reportDir results/reports/" 
   },
   "repository": {
     "type": "git",

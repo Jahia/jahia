@@ -1,0 +1,309 @@
+name: On Code Change
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+  push:
+    branches:
+      - master
+      - '/feature-.*/'
+      - '/JAHIA-[0-9]-[0-9]-[0-9]-X-BRANCH/'
+
+env:
+  TESTS_PATH: docker/docker-tests/
+  TARGET_BRANCH: ""
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      jahia_version: ${{ steps.tags.outputs.jahia_version }}
+      image_tag: ${{ steps.tags.outputs.image_tag }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache local Maven repository
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.m2/repository
+            /root/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Save/Restore build artifacts from cache
+        uses: actions/cache@v3
+        with:
+          key: run-${{ github.run_id }}
+          path: |
+            ./**/target/**
+      - name: Set environment variables from parameters
+        shell: bash
+        run: |
+          echo "NEXUS_USERNAME=${{ secrets.NEXUS_USERNAME }}" >> $GITHUB_ENV
+          echo "NEXUS_PASSWORD=${{ secrets.NEXUS_PASSWORD }}" >> $GITHUB_ENV
+      - uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Store project version
+        shell: bash
+        run: mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec > jahia.version
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v5.4
+      - name: Determine tag
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            cp jahia.version image.tag
+          else
+            echo `cat jahia.version`-"${{ steps.branch-name.outputs.current_branch}}" > image.tag
+          fi
+      - id: tags
+        name: Set Output variables
+        run: | 
+          echo "::set-output name=jahia_version::`cat jahia.version`"
+          echo "::set-output name=image_tag::`cat image.tag`"
+      - name: Display Output variables
+        run: | 
+          echo "OUTPUT: jahia_version = ${{steps.tags.outputs.jahia_version}}"
+          echo "OUTPUT: image_tag = ${{steps.tags.outputs.image_tag}}"
+
+      # Series of steps only executed when pushing to master or to one of the maintenance branches
+      - name: Build package and load all dependencies into local Maven repository
+        shell: bash
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          mvn -U -ntp -s .github/maven.settings.xml -e \
+            -Dimage.tag=${{steps.tags.outputs.image_tag}} \
+            clean deploy de.qaware.maven:go-offline-maven-plugin:resolve-dependencies \
+            -Pgwt-production,unit-tests,docker \
+            -Dbamboo.buildNumber=${{ github.run_id }}
+      - name: Compile GWT development
+        shell: bash
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          cd gwt/
+          mvn -U -ntp -s ../.github/maven.settings.xml -e \
+            -Dimage.tag=${{steps.tags.outputs.image_tag}} \
+            clean deploy \
+            -Pgwt-development \
+            -Dbamboo.buildNumber=${{ github.run_id }}
+      - uses: jahia/jahia-modules-action/docker-tags@v2
+        if: ${{ github.event_name == 'push' }}
+        with:
+          docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
+          docker_password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          version: ${{steps.tags.outputs.image_tag}}
+          repo: "jahia-core-dev"
+          dry-run: false
+      - name: Build graalvm image
+        shell: bash
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          cd docker/docker-jahia-core/
+          mvn -U -ntp -s ../../.github/maven.settings.xml -e \
+            -Dimage.tag=${{steps.tags.outputs.image_tag}}-graalvm \
+            -Dimage.graalvm=true deploy \
+            -Dbamboo.buildNumber=${{ github.run_id }}
+
+      # Series of steps only executed when in a PR
+      - name: Build package and load all dependencies into local Maven repository
+        shell: bash
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          mvn -U -ntp -s .github/maven.settings.xml -e \
+            -Dimage.tag=${{steps.tags.outputs.image_tag}} \
+            clean install de.qaware.maven:go-offline-maven-plugin:resolve-dependencies \
+            -Pgwt-production,unit-tests,docker \
+            -Dbamboo.buildNumber=${{ github.run_id }}
+      - name: Push PR Docker image
+        # This is only done on PR, as master is pushed with mvn deploy in "Deploy artifacts to server repository"
+        shell: bash
+        if: ${{ github.event_name == 'pull_request' }}
+        run: docker push jahia/jahia-core-dev:${{steps.tags.outputs.image_tag}}
+
+      - name: Store docker image
+        shell: bash
+        run: docker save -o image.tar jahia/jahia-core-dev:${{steps.tags.outputs.image_tag}}
+      - uses: jahia/jahia-modules-action/slack-jahia@v2
+        if: ${{ failure() && github.event_name == 'push' }}
+        with:
+          job-event: "fail"
+          skip-docker: true
+          slack-webhook: ${{ secrets.SLACK_WEBHOOK_TEAM_PRODUCT_SNAPSHOTS_NOTIFICATIONS }}
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: integration-artifacts
+          path: image.tar
+
+  integration-tests:
+    name: Integration Tests (Standalone)
+    needs: build
+    runs-on: self-hosted
+    timeout-minutes: 45
+    steps:
+      - uses: jahia/jahia-modules-action/helper@v2
+      - uses: KengoTODA/actions-setup-docker-compose@main
+        with:
+          version: '1.29.2'
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 'lts/*'
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v3
+        with:
+          name: integration-artifacts
+      - name: Load docker image 
+        shell: bash
+        run: |
+          docker load -i image.tar
+      - name: Prepare environment variable for Jahia Image
+        shell: bash
+        run: |
+          export JAHIA_IMAGE=jahia/jahia-core-dev:${{needs.build.outputs.image_tag}}
+          echo "JAHIA_IMAGE = ${JAHIA_IMAGE}"
+          echo "JAHIA_IMAGE=${JAHIA_IMAGE}" >> $GITHUB_ENV
+      - uses: jahia/jahia-modules-action/integration-tests@v2
+        with:
+          module_id: jahia-root
+          testrail_project: Jahia
+          tests_manifest: provisioning-manifest-build.yml
+          tests_path: ${{ env.TESTS_PATH }}
+          jahia_image: ${{ env.JAHIA_IMAGE }}
+          should_use_build_artifacts: false
+          should_skip_testrail: true
+          should_skip_zencrepes: true
+          github_artifact_name: jahia-integ-tests-${{ github.run_number }}
+          jahia_license: ${{ secrets.JAHIA_LICENSE_8X_FULL }}
+          docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
+          docker_password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          nexus_username: ${{ secrets.NEXUS_USERNAME }}
+          nexus_password: ${{ secrets.NEXUS_PASSWORD }}
+          tests_report_name: Test report (Standalone)
+          testrail_username: ${{ secrets.TESTRAIL_USERNAME }}
+          testrail_password: ${{ secrets.TESTRAIL_PASSWORD }}
+          incident_pagerduty_api_key: ${{ secrets.INCIDENT_PAGERDUTY_API_KEY }}
+          incident_pagerduty_reporter_email: ${{ secrets.INCIDENT_PAGERDUTY_REPORTER_EMAIL }}
+          incident_pagerduty_reporter_id: ${{ secrets.INCIDENT_PAGERDUTY_REPORTER_ID }}
+          incident_google_spreadsheet_id: ${{ secrets.INCIDENT_GOOGLE_SPREADSHEET_ID }}
+          incident_google_client_email: ${{ secrets.INCIDENT_GOOGLE_CLIENT_EMAIL }}
+          incident_google_api_key_base64: ${{ secrets.INCIDENT_GOOGLE_PRIVATE_KEY_BASE64 }}
+          zencrepes_secret: ${{ secrets.ZENCREPES_WEBHOOK_SECRET }}
+  
+  vulnerability-scan:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v2
+      - uses: jahia/jahia-modules-action/static-analysis@v2
+        with:
+          node_version: 14
+          auditci_level: critical
+          auditci_level_tests: critical
+          module_path: war/
+          tests_path: ${{ env.TESTS_PATH }}
+          skip_lint_modules: true
+          skip_lint_tests: true
+  
+  security-scan:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v2
+      - uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Scan image
+        id: scan-build-sbom
+        uses: anchore/scan-action@v3
+        with:
+          image: jahia/jahia-core-dev:${{needs.build.outputs.image_tag}}
+          fail-build: false
+          acs-report-enable: true
+      - name: Print content from the SARIF file
+        shell: bash
+        run: cat ${{ steps.scan-build-sbom.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text'
+      - uses: actions/upload-artifact@v3
+        with:
+          name: SARIF
+          retention-days: 5
+          path: |
+            ${{ steps.scan-build-sbom.outputs.sarif }}
+
+  sonar-analysis:
+    name: Sonar Analysis
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v3
+        with: 
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v5.4
+      - name: Save/Restore build artifacts from cache
+        uses: actions/cache@v3
+        with:
+          key: run-${{ github.run_id }}
+          path: |
+            ./**/target/**
+      - name: Set environment variables
+        shell: bash
+        run: |
+          echo "SONAR_URL=${{ secrets.SONAR_URL }}" >> $GITHUB_ENV
+          echo "SONAR_TOKEN=${{ secrets.SONAR_TOKEN }}" >> $GITHUB_ENV
+          echo "NEXUS_USERNAME=${{ secrets.NEXUS_USERNAME }}" >> $GITHUB_ENV
+          echo "NEXUS_PASSWORD=${{ secrets.NEXUS_PASSWORD }}" >> $GITHUB_ENV
+      - name: Analyze pull request with sonar
+        if: ${{ github.event_name == 'pull_request' }}
+        shell: bash
+        run: |
+          mvn -B -U -ntp -s .github/maven.settings.xml sonar:sonar -Dsonar.pullrequest.branch=${{ steps.branch-name.outputs.current_branch }} \
+          -Dsonar.pullrequest.key=${{ github.run_id }} \
+          -Dsonar.pullrequest.base=${{ env.TARGET_BRANCH }} \
+          -Dsonar.pullrequest.github.repository=${{ github.event.repository.name }}
+      - name: Sonar analysis
+        shell: bash
+        if: ${{ github.event_name != 'pull_request' }}
+        env:
+          DEPENDENCY_CHECK_SETTINGS: -DfailOnError=false -DskipProvidedScope=true -DskipTestScope=false
+            -DretireJsAnalyzerEnabled=false -DnodeAnalyzerEnabled=false -Dformats=HTML,JSON
+            -Dsonar.dependencyCheck.jsonReportPath=target/dependency-check-report.json
+            -Dsonar.dependencyCheck.htmlReportPath=target/dependency-check-report.html
+            -DdataDirectory=/home/circleci/.owasp/dependency-check-data
+            -DsuppressionFile=.circleci/owasp-suppressions.xml
+        run: |
+          if [[ "${{ steps.branch-name.outputs.current_branch }}" == "master" ]];
+          then
+            mvn -B -U -ntp -s .github/maven.settings.xml dependency-check:aggregate sonar:sonar \
+                $DEPENDENCY_CHECK_SETTINGS
+          else
+            mvn -B -U -ntp -s .github/maven.settings.xml dependency-check:aggregate sonar:sonar \
+                -Dsonar.branch.name=$CIRCLE_BRANCH $DEPENDENCY_CHECK_SETTINGS
+          fi
+
+  trigger-jahia-pack-private:
+    runs-on: ubuntu-latest
+    needs: [integration-tests, sonar-analysis, security-scan, vulnerability-scan, build]
+    steps:
+      - name: Call Jahia-pack-private
+        id: trigger-step
+        uses: jonas-schievink/workflow-proxy@v1
+        with:
+          workflow: do-it-all.yml
+          ref: master
+          repo: Jahia/jahia-pack-private
+          inputs: '{ "parent_image_tag": "${{needs.build.outputs.image_tag}}" }'
+          token: ${{ secrets.GH_API_TOKEN }}
+      - name: Get results of Jahia-pack-private
+        if: always()
+        shell: bash
+        run: | 
+          echo "Jahia-pack-private workflow conclustion -> ${{ steps.trigger-step.outputs.workflow-conclusion }}"
+          echo "::notice title=Jahia-pack-private workflow::The following workflow has been executed: ${{ steps.trigger-step.outputs.workflow-url }} its conclusion was: ${{ steps.trigger-step.outputs.workflow-conclusion }}"
+

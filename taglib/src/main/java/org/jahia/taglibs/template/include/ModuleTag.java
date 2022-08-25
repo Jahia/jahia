@@ -574,6 +574,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         return Arrays.stream(StringUtils.split(nodeTypes))
                 .filter(ThrowingPredicate.unchecked(nt -> NodeTypeRegistry.getInstance().hasNodeType(nt)))
                 .filter(ThrowingPredicate.unchecked(nt -> modules == null || modules.contains(NodeTypeRegistry.getInstance().getNodeType(nt).getSystemId())))
+                .filter(ThrowingPredicate.unchecked(nt -> !NodeTypeRegistry.getInstance().getNodeType(nt).isNodeType("jmix:hiddenType")))
                 .sorted()
                 .collect(Collectors.joining(" "));
     }

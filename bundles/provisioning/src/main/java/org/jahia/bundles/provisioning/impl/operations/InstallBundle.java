@@ -235,15 +235,8 @@ public class InstallBundle implements Operation {
                 setupUninstall(entry, bundleInfo, target, installedVersions, toUninstall);
             }
             results.add(result);
-        } catch (IOException e) {
-            if (e.getCause() != null) {
-                // Hide main exception which may contain credentials
-                logger.error("Cannot install {}, {} : ", bundleKey, e.getClass().getName(), e.getCause());
-            } else {
-                logger.error("Cannot install {} : ", bundleKey, e);
-            }
-        } catch (Exception e) {
-            logger.error("Cannot install {} : ", bundleKey, e);
+        } catch (Throwable e) {
+            logger.error("Cannot install {} = {}. Please make sure the artifact is reachable within the registered maven repositories (network, credentials ...)", bundleKey, e.getClass().getName());
         }
     }
 

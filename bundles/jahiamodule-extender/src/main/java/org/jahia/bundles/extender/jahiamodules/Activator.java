@@ -437,7 +437,9 @@ public class Activator implements BundleActivator {
                 return;
             }
 
-            handlePatches(bundleEvent);
+            if (SettingsBean.getInstance().isProcessingServer()) {
+                handlePatches(bundleEvent);
+            }
 
             if (logger.isDebugEnabled()) {
                 logger.debug("Received event {} for bundle {}", BundleUtils.bundleEventToString(bundleEventType), getDisplayName(bundleEvent.getBundle()));

@@ -49,13 +49,16 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.seo.VanityUrl;
+import org.jahia.services.seo.jcr.ReservedUrlMappingException;
 import org.jahia.services.seo.jcr.VanityUrlManager;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 import org.junit.*;
 
 import javax.jcr.RepositoryException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 public final class VanityUrlManagerTest {
 
@@ -107,6 +110,26 @@ public final class VanityUrlManagerTest {
             // clean-up: delete the page and un-publish it
             deleteNode(pageId);
             publishSite();
+        }
+    }
+
+    @Test
+    public void testSaveReservedVanityUrls() throws Exception {
+        final String language = "en";
+        final String pageId = createPage("pageToSetAnInvalidVanity");
+
+        try {
+            final VanityUrl vanityUrl = new VanityUrl("/GWT/testregexp", SITE_NAME, language, true, true);
+            try {
+                saveVanityUrlMappings(pageId, Arrays.asList(vanityUrl), Sets.newHashSet(language));
+            } catch (ReservedUrlMappingException e) {
+                return;
+            }
+            Assert.fail("/GWT/testregexp is not a valid vanity url");
+
+        } finally {
+            // clean-up: delete the page and un-publish it
+            deleteNode(pageId);
         }
     }
 

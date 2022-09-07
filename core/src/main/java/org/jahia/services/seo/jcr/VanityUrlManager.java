@@ -100,6 +100,11 @@ public class VanityUrlManager {
     public static final String PROPERTY_FILE = "j:file";
 
     /**
+     * Property that contains a list of reserved URLs that cannot be used as vanity
+     */
+    private List<String> reservedJahiaUrls;
+
+    /**
      * Find any mappings for the given vanity URL. If a site is specified the
      * query will be done only for the specified site, otherwise all sites in the
      * workspace will be searched through and a list of VanityURL beans will be
@@ -340,7 +345,7 @@ public class VanityUrlManager {
                                         VanityUrl vanityUrl, JCRSessionWrapper session, boolean save)
             throws RepositoryException {
 
-        checkUniqueConstraint(contentNode, vanityUrl, null);
+        checkUniqueAndValidConstraint(contentNode, vanityUrl, null);
 
         JCRNodeWrapper vanityUrlNode = null;
         JCRNodeWrapper previousDefaultVanityUrlNode = null;
@@ -572,7 +577,7 @@ public class VanityUrlManager {
 
         // Check if the added vanity URLs are really unique for the site
         for (VanityUrl vanityUrl : toAdd) {
-            checkUniqueConstraint(contentNode, vanityUrl, toDelete);
+            checkUniqueAndValidConstraint(contentNode, vanityUrl, toDelete);
         }
 
         // If there is no change do nothing otherwise do all the operations and
@@ -615,15 +620,21 @@ public class VanityUrlManager {
         return true;
     }
 
-    private void checkUniqueConstraint(final JCRNodeWrapper contentNode, final VanityUrl vanityUrl,
-                                       final List<Map.Entry<String, VanityUrl>> toDelete) throws RepositoryException, NonUniqueUrlMappingException {
+    private void checkUniqueAndValidConstraint(final JCRNodeWrapper contentNode, final VanityUrl vanityUrl,
+                                               final List<Map.Entry<String, VanityUrl>> toDelete) throws RepositoryException, NonUniqueUrlMappingException {
+        // Ensure URL is not a reserved one
+        final String reservedUrl = getReservedJahiaUrls().stream().filter(StringUtils.lowerCase(vanityUrl.getUrl())::matches).findAny().get();
+        if (StringUtils.isNotEmpty(reservedUrl)) {
+            throw new ReservedUrlMappingException(String.format("%s cannot be use as a vanity as matching the reserved url %s", vanityUrl.getUrl(), reservedUrl), reservedUrl);
+        }
+
         NonUniqueUrlMappingException ex = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null,
                 Constants.EDIT_WORKSPACE, null, new JCRCallback<NonUniqueUrlMappingException>() {
 
                     @Override
                     public NonUniqueUrlMappingException doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         try {
-                            checkUniqueConstraint(contentNode, vanityUrl, toDelete, session);
+                            checkUniqueAndValidConstraint(contentNode, vanityUrl, toDelete, session);
                         } catch (NonUniqueUrlMappingException e) {
                             return e;
                         }
@@ -639,7 +650,7 @@ public class VanityUrlManager {
                     @Override
                     public NonUniqueUrlMappingException doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         try {
-                            checkUniqueConstraint(contentNode, vanityUrl, toDelete, session);
+                            checkUniqueAndValidConstraint(contentNode, vanityUrl, toDelete, session);
                         } catch (NonUniqueUrlMappingException e) {
                             return e;
                         }
@@ -651,9 +662,9 @@ public class VanityUrlManager {
         }
     }
 
-    private void checkUniqueConstraint(JCRNodeWrapper contentNode,
-                                       VanityUrl vanityUrl, List<Map.Entry<String, VanityUrl>> toDelete,
-                                       JCRSessionWrapper session) throws RepositoryException, NonUniqueUrlMappingException {
+    private void checkUniqueAndValidConstraint(JCRNodeWrapper contentNode,
+                                               VanityUrl vanityUrl, List<Map.Entry<String, VanityUrl>> toDelete,
+                                               JCRSessionWrapper session) throws RepositoryException, NonUniqueUrlMappingException {
         List<VanityUrl> existingUrls = findExistingVanityUrls(vanityUrl
                 .getUrl(), vanityUrl.getSite(), session);
         if (existingUrls != null && !existingUrls.isEmpty()) {
@@ -718,4 +729,11 @@ public class VanityUrlManager {
                 && Objects.equals(u1.getSite(), u2.getSite());
     }
 
+    public void setReservedJahiaUrls(List<String> reservedJahiaUrls) {
+        this.reservedJahiaUrls = reservedJahiaUrls;
+    }
+
+    public List<String> getReservedJahiaUrls() {
+        return reservedJahiaUrls;
+    }
 }

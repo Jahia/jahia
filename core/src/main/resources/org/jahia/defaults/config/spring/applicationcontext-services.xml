@@ -292,13 +292,34 @@
         <property name="name" value="Default JCR search provider"/>
     </bean>
 
-    <bean id="org.jahia.services.seo.jcr.VanityUrlManager" class="org.jahia.services.seo.jcr.VanityUrlManager"/>
+    <bean id="org.jahia.services.seo.jcr.VanityUrlManager" class="org.jahia.services.seo.jcr.VanityUrlManager">
+        <property name="reservedJahiaUrls" ref="reservedJahiaVanityUrls"/>
+    </bean>
 
     <bean id="org.jahia.services.seo.jcr.VanityUrlService" class="org.jahia.services.seo.jcr.VanityUrlService">
         <property name="vanityUrlManager" ref="org.jahia.services.seo.jcr.VanityUrlManager"/>
         <property name="cacheService" ref="JahiaCacheService"/>
         <property name="urlResolverListener" ref="urlResolverListener"/>
     </bean>
+
+    <util:list id="reservedJahiaVanityUrls">
+        <value>/cms/.*</value>
+        <value>/start</value>
+        <value>/welcome/*</value>
+        <value>/atmosphere/.*</value>
+        <value>/jahia/.*</value>
+        <value>/validateticket</value>
+        <value>/gwt/.*</value>
+        <value>/rmi</value>
+        <value>/files/.*</value>
+        <value>/generated-resources/.*</value>
+        <value>/plutoinvoker/.*</value>
+        <value>/error</value>
+        <value>/initializationcompleted/.*</value>
+        <value>/modules/*</value>
+        <value>/flow/.*</value>
+        <value>/tools/.*</value>
+    </util:list>
 
     <bean id="ContentHistoryService" class="org.jahia.services.history.ContentHistoryService"
           factory-method="getInstance">

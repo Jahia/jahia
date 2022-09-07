@@ -623,9 +623,9 @@ public class VanityUrlManager {
     private void checkUniqueAndValidConstraint(final JCRNodeWrapper contentNode, final VanityUrl vanityUrl,
                                                final List<Map.Entry<String, VanityUrl>> toDelete) throws RepositoryException, NonUniqueUrlMappingException {
         // Ensure URL is not a reserved one
-        final String reservedUrl = getReservedJahiaUrls().stream().filter(StringUtils.lowerCase(vanityUrl.getUrl())::matches).findAny().get();
-        if (StringUtils.isNotEmpty(reservedUrl)) {
-            throw new ReservedUrlMappingException(String.format("%s cannot be use as a vanity as matching the reserved url %s", vanityUrl.getUrl(), reservedUrl), reservedUrl);
+        final Optional<String> anyReservedUrl = getReservedJahiaUrls().stream().filter(StringUtils.lowerCase(vanityUrl.getUrl())::matches).findAny();
+        if (anyReservedUrl.isPresent()) {
+            throw new ReservedUrlMappingException(String.format("%s cannot be use as a vanity as matching the reserved url %s", vanityUrl.getUrl(), anyReservedUrl.get()), anyReservedUrl.get());
         }
 
         NonUniqueUrlMappingException ex = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null,

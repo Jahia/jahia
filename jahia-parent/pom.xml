@@ -44,7 +44,8 @@
         please contact the sales department at sales@jahia.com.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jahia-parent</artifactId>
@@ -113,10 +114,10 @@
 
         <driver.derby.version>10.14.2.0</driver.derby.version>
         <driver.mssql.version>9.2.1.jre8</driver.mssql.version>
-        <driver.mysql.version>8.0.27</driver.mysql.version>
+        <driver.mysql.version>8.0.30</driver.mysql.version>
         <driver.oracle.version>18.3.0.0</driver.oracle.version>
         <driver.postgresql.version>42.3.6</driver.postgresql.version>
-        <driver.mariadb.version>2.7.3</driver.mariadb.version>
+        <driver.mariadb.version>3.0.7</driver.mariadb.version>
 
         <hibernateDialect.derby>org.hibernate.dialect.DerbyTenSevenDialect</hibernateDialect.derby>
         <hibernateDialect.mssql>org.hibernate.dialect.SQLServer2008Dialect</hibernateDialect.mssql>
@@ -362,12 +363,12 @@
             <organization>Jahia Solutions Group SA</organization>
             <organizationUrl>http://www.jahia.com/</organizationUrl>
         </developer>
-	    <developer>
-	        <name>Xiang Yu He</name>
-	        <email>xhe@jahia.com</email>
-	        <organization>Jahia Solutions Group SA</organization>
-	        <organizationUrl>http://www.jahia.com/</organizationUrl>
-	    </developer>
+        <developer>
+            <name>Xiang Yu He</name>
+            <email>xhe@jahia.com</email>
+            <organization>Jahia Solutions Group SA</organization>
+            <organizationUrl>http://www.jahia.com/</organizationUrl>
+        </developer>
     </developers>
     <contributors>
         <!-- List of contributors and former developers. Thanks to all of you guys! -->
@@ -590,7 +591,7 @@
                                     <destFile>${sonar.jacoco.reportPath}</destFile>
                                 </configuration>
                             </execution>
-                    </executions>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
@@ -619,32 +620,32 @@
                             <checkstyleRules>
                                 <module name="Checker">
                                     <module name="TreeWalker">
-                                        <module name="JavadocType" />
+                                        <module name="JavadocType"/>
                                         <module name="JavadocMethod">
-                                            <property name="scope" value="public" />
-                                            <property name="allowMissingPropertyJavadoc" value="true" />
+                                            <property name="scope" value="public"/>
+                                            <property name="allowMissingPropertyJavadoc" value="true"/>
                                         </module>
-                                        <module name="UnusedImports" />
+                                        <module name="UnusedImports"/>
                                         <module name="ConstantName">
-                                            <property name="applyToProtected" value="false" />
-                                            <property name="applyToPackage" value="false" />
-                                            <property name="applyToPrivate" value="false" />
+                                            <property name="applyToProtected" value="false"/>
+                                            <property name="applyToPackage" value="false"/>
+                                            <property name="applyToPrivate" value="false"/>
                                         </module>
                                         <module name="EmptyBlock">
-                                            <property name="option" value="text" />
+                                            <property name="option" value="text"/>
                                         </module>
-                                        <module name="NeedBraces" />
-                                        <module name="EqualsHashCode" />
+                                        <module name="NeedBraces"/>
+                                        <module name="EqualsHashCode"/>
                                         <module name="MagicNumber">
-                                            <property name="ignoreNumbers" value=" -1, 0, 1, 2, 17, 31, 37" />
+                                            <property name="ignoreNumbers" value=" -1, 0, 1, 2, 17, 31, 37"/>
                                         </module>
-                                        <module name="SimplifyBooleanReturn" />
+                                        <module name="SimplifyBooleanReturn"/>
                                         <module name="IllegalCatch">
-                                            <property name="illegalClassNames" value=" java.lang.Throwable" />
+                                            <property name="illegalClassNames" value=" java.lang.Throwable"/>
                                         </module>
-                                        <module name="MultipleVariableDeclarations" />
-                                        <module name="OneStatementPerLine" />
-                                        <module name="RedundantModifier" />
+                                        <module name="MultipleVariableDeclarations"/>
+                                        <module name="OneStatementPerLine"/>
+                                        <module name="RedundantModifier"/>
                                     </module>
                                 </module>
                             </checkstyleRules>
@@ -995,9 +996,9 @@
                         <enableFeatureVersions>true</enableFeatureVersions>
                         <pushFeatures>true</pushFeatures>
                         <noFeatureBuild>true</noFeatureBuild>
-                        <scmCommentPrefix>[jgitflow-maven-plugin] </scmCommentPrefix>
+                        <scmCommentPrefix>[jgitflow-maven-plugin]</scmCommentPrefix>
                         <versionChangeFilesPath>..</versionChangeFilesPath>
-                     </configuration>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -1100,8 +1101,10 @@
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <goals>deploy</goals>
                     <preparationGoals>clean install</preparationGoals>
-                    <releaseProfiles>do-attach-javadocs,aggregate-javadocs,attach-taglibdoc,gwt-production,installer,sign-installer-jar,windows-installer,sign-installer-exe,no-source-folders</releaseProfiles>
-		    <scmCommentPrefix>[skip ci] [maven-release-plugin]</scmCommentPrefix>
+                    <releaseProfiles>
+                        do-attach-javadocs,aggregate-javadocs,attach-taglibdoc,gwt-production,installer,sign-installer-jar,windows-installer,sign-installer-exe,no-source-folders
+                    </releaseProfiles>
+                    <scmCommentPrefix>[skip ci] [maven-release-plugin]</scmCommentPrefix>
                 </configuration>
             </plugin>
             <plugin>

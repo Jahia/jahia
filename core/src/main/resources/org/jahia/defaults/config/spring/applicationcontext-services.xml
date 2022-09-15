@@ -305,7 +305,7 @@
     <util:list id="reservedJahiaVanityUrls">
         <value>/cms/.*</value>
         <value>/start</value>
-        <value>/welcome/*</value>
+        <value>/welcome/.*</value>
         <value>/atmosphere/.*</value>
         <value>/jahia/.*</value>
         <value>/validateticket</value>
@@ -316,7 +316,7 @@
         <value>/plutoinvoker/.*</value>
         <value>/error</value>
         <value>/initializationcompleted/.*</value>
-        <value>/modules/*</value>
+        <value>/modules/.*</value>
         <value>/flow/.*</value>
         <value>/tools/.*</value>
     </util:list>

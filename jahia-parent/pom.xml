@@ -113,10 +113,10 @@
         <protobuf.java.version>3.21.0</protobuf.java.version>
 
         <driver.derby.version>10.14.2.0</driver.derby.version>
-        <driver.mssql.version>9.2.1.jre8</driver.mssql.version>
+        <driver.mssql.version>11.2.0.jre8</driver.mssql.version>
         <driver.mysql.version>8.0.30</driver.mysql.version>
-        <driver.oracle.version>18.3.0.0</driver.oracle.version>
-        <driver.postgresql.version>42.3.6</driver.postgresql.version>
+        <driver.oracle.version>21.1.0.0</driver.oracle.version>
+        <driver.postgresql.version>42.5.0</driver.postgresql.version>
         <driver.mariadb.version>3.0.7</driver.mariadb.version>
 
         <hibernateDialect.derby>org.hibernate.dialect.DerbyTenSevenDialect</hibernateDialect.derby>

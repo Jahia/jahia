@@ -114,6 +114,9 @@ public class WIPService {
      * @throws RepositoryException
      */
     public void createWipPropertiesOnNewNode(JCRNodeWrapper node, WIPInfo wipInfo) throws RepositoryException {
+        if (!node.isNodeType("jmix:lastPublished")) {
+            return;
+        }
         node.setProperty(Constants.WORKINPROGRESS_STATUS, wipInfo.getStatus());
         final Collection<String> languages = wipInfo.getLanguages();
         node.setProperty(Constants.WORKINPROGRESS_LANGUAGES, languages.toArray(new String[0]));

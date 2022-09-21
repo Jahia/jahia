@@ -49,7 +49,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.files.FileServlet;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.render.URLResolverFactory;
@@ -80,6 +79,10 @@ public class VanityUrlMapper {
 
     public static final String VANITY_KEY = "org.jahia.services.seo.jcr.VanityUrl";
 
+    private static String encode(String fullUrl) {
+        return fullUrl.replaceAll("\\$", "\\\\\\$");
+    }
+
     /**
      * checks if a vanity exists and put the result as an attribute of the request
      * this is used in urlRewriting rules
@@ -96,7 +99,7 @@ public class VanityUrlMapper {
 
         String ctx = StringUtils.defaultIfEmpty(hsRequest.getContextPath(), "");
         String fullUrl = ctx + Render.getRenderServletPath() + outboundUrl;
-        hsRequest.setAttribute(VANITY_KEY, fullUrl);
+        hsRequest.setAttribute(VANITY_KEY, encode(fullUrl));
 
         if (StringUtils.isNotEmpty(outboundUrl) && !Url.isLocalhost(hsRequest.getServerName())) {
             String serverName = null;
@@ -157,7 +160,7 @@ public class VanityUrlMapper {
                                 } else if (queryIndex >= 0) {
                                     extension = outboundUrl.substring(queryIndex);
                                 }
-                                hsRequest.setAttribute(VANITY_KEY, ctx + Render.getRenderServletPath() + "/" + urlResolver.getWorkspace() + vanityUrl.getUrl() + extension);
+                                hsRequest.setAttribute(VANITY_KEY, encode(ctx + Render.getRenderServletPath() + "/" + urlResolver.getWorkspace() + vanityUrl.getUrl() + extension));
                                 if (serverName != null) {
                                     hsRequest.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SERVERNAME_FOR_LINK, serverName);
                                 }
@@ -192,7 +195,7 @@ public class VanityUrlMapper {
 
         String ctx = StringUtils.defaultIfEmpty(hsRequest.getContextPath(), "");
         String fullUrl = ctx + "/files/live" + outboundUrl;
-        hsRequest.setAttribute(VANITY_KEY, fullUrl);
+        hsRequest.setAttribute(VANITY_KEY, encode(fullUrl));
 
         if (StringUtils.isNotEmpty(outboundUrl) && !Url.isLocalhost(hsRequest.getServerName()) && context != null) {
             String siteKey = context.getSite().getSiteKey();
@@ -200,7 +203,7 @@ public class VanityUrlMapper {
             try {
                 VanityUrl vanityUrl = vanityUrlService.getVanityUrlForWorkspaceAndLocale(outboundUrl, "live", context.getMainResource().getLocale(), siteKey);
                 if (vanityUrl != null && vanityUrl.isActive()) {
-                    hsRequest.setAttribute(VANITY_KEY, ctx + vanityUrl.getUrl());
+                    hsRequest.setAttribute(VANITY_KEY, encode(ctx + vanityUrl.getUrl()));
                 }
             } catch (RepositoryException e) {
                 logger.debug("Error when trying to obtain vanity url", e);

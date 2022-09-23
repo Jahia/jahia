@@ -876,7 +876,7 @@ public class MainModule extends Module {
         if (template != null && "default".equals(template)) {
             template = null;
         }
-        StringBuilder url = new StringBuilder(getBaseUrl() + path + (template != null && !template.equals("") ? ("." + template) : "") + ".html");
+        StringBuilder url = new StringBuilder(getBaseUrl() + URL.encodeQueryString(path).replaceAll("%2F", "/") + (template != null && !template.equals("") ? ("." + template) : "") + ".html");
         // add channel parameters if needed
         if (channel != null && channel.equals("generic") && (editLinker.getActiveChannel() == null || editLinker.getActiveChannel().getValue().equals("generic"))) {
             channel = null;

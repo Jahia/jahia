@@ -58,6 +58,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A bundle observer for Jahia Modules. Used by the BundleWatcher defined in the activator.
@@ -70,8 +71,7 @@ public class RulesBundleObserver implements BundleObserver<URL> {
 
     public RulesBundleObserver() {
         super();
-        templatePackageRegistry = ((JahiaTemplateManagerService) SpringContextSingleton
-                .getBean("JahiaTemplateManagerService")).getTemplatePackageRegistry();
+        templatePackageRegistry = ((JahiaTemplateManagerService) SpringContextSingleton.getBean("JahiaTemplateManagerService")).getTemplatePackageRegistry();
     }
 
     @Override
@@ -80,26 +80,18 @@ public class RulesBundleObserver implements BundleObserver<URL> {
             return;
         }
         String bundleName = BundleUtils.getDisplayName(bundle);
-        for (URL url : urls) {
-            BundleResource bundleResource = new BundleResource(url, bundle);
-            try {
+        JahiaTemplatesPackage module = templatePackageRegistry.lookupByBundle(bundle);
+        urls.forEach(url -> module.setRulesFile(url.getPath().substring(1)));
 
-                JahiaTemplatesPackage module = templatePackageRegistry.lookupByBundle(bundle);
-                module.setRulesFile(bundleResource.getURL().getPath().substring(1));
-
-                for (RulesListener listener : RulesListener.getInstances()) {
-                    List<String> filesAccepted = listener.getFilesAccepted();
-                    if(filesAccepted.contains(StringUtils.substringAfterLast(url.getPath(), "/"))) {
-                        listener.addRules(bundleResource, module);
-                    }
-                }
-
-                logger.info("Registered rules from file {} for bundle {}", url, bundleName);
-            } catch (IOException e) {
-                logger.error("Error registering rules file " + url + " for bundle " + bundle, e);
-                throw new RuntimeException("Error registering rules file " + url + " for bundle " + bundle, e);
-            }
+        for (RulesListener listener : RulesListener.getInstances()) {
+            List<String> filesAccepted = listener.getFilesAccepted();
+            listener.addRules(urls.stream()
+                            .filter(url -> filesAccepted.contains(StringUtils.substringAfterLast(url.getPath(), "/")))
+                            .map(url -> new BundleResource(url, bundle)).collect(Collectors.toList()),
+                    module);
         }
+
+        logger.info("Registered rules from file {} for bundle {}", urls, bundleName);
     }
 
     @Override

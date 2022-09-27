@@ -65,10 +65,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.script.*;
 import java.io.*;
-import java.util.Locale;
-import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * Notification service that is used in the right-hand-side (consequences) of
@@ -255,8 +252,8 @@ public class RulesNotificationService {
             RulesListener rulesListener = RulesListener.getInstance(node.getSession().getWorkspace().getName());
             String packageName = drools.getRule().getPackageName();
             JahiaTemplateManagerService jahiaTemplateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
-            for (Map.Entry<String, String> entry : rulesListener.getModulePackageNameMap().entrySet()) {
-                if (packageName.equals(entry.getValue())) {
+            for (Map.Entry<String, Collection<String>> entry : rulesListener.getModulePackageNameMap().entrySet()) {
+                if (entry.getValue().contains(packageName)) {
                     JahiaTemplatesPackage templatePackage = jahiaTemplateManagerService.getTemplatePackage(entry.getKey());
                     Resource resource = templatePackage.getResource(template);
                     if (resource != null) {

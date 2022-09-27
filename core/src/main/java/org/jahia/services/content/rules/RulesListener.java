@@ -83,6 +83,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 
 /**
  * Jahia rules-based event listener.
@@ -113,7 +114,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
     private Map<String, Object> globalObjects;
 
     private List<String> filesAccepted;
-    private Map<String,String> modulePackageNameMap;
+    private Map<String, Collection<String>> modulePackageNameMap;
     private CompositeClassLoader ruleBaseClassLoader;
 
     /**
@@ -124,10 +125,10 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     public RulesListener() {
         instances.add(this);
-        dslFiles = new CopyOnWriteArrayList<Resource>();
-        globalObjects = new ConcurrentHashMap<String, Object>();
-        inRules = new ThreadLocal<Boolean>();
-        modulePackageNameMap = new ConcurrentHashMap<String, String>();
+        dslFiles = new CopyOnWriteArrayList<>();
+        globalObjects = new ConcurrentHashMap<>();
+        inRules = new ThreadLocal<>();
+        modulePackageNameMap = new ConcurrentHashMap<>();
     }
 
     public static RulesListener getInstance(String workspace) {
@@ -193,42 +194,46 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     private void initCoreSystemRules() {
         dslFiles.add(new FileSystemResource(SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/rules/rules.dsl"));
-        for (String s : ruleFiles) {
-            addRules(new File(SettingsBean.getInstance().getJahiaEtcDiskPath() + s));
-        }
+        addRules(ruleFiles.stream().map(s -> new FileSystemResource(SettingsBean.getInstance().getJahiaEtcDiskPath() + s)).collect(Collectors.toList()), null);
         lastInit = System.currentTimeMillis();
     }
 
-    private RuleBase rebuildRuleBase(String packageToRemove, Package packageToAdd) {
+    private RuleBase rebuildRuleBase(Collection<String> packageToRemove, Collection<Package> packageToAdd) {
         RuleBase newRuleBase = RuleBaseFactory.newRuleBase(conf);
 
         if (this.ruleBase != null) {
             newRuleBase.addPackages(Arrays
                     .stream(this.ruleBase.getPackages())
-                    .filter(rulePackage -> packageToRemove == null || !rulePackage.getName().equals(packageToRemove))
+                    .filter(rulePackage -> packageToRemove == null || !packageToRemove.contains(rulePackage.getName()))
                     .toArray(Package[]::new));
         }
         if (packageToAdd != null) {
-            newRuleBase.addPackage(packageToAdd);
+            newRuleBase.addPackages(packageToAdd.toArray(new Package[0]));
         }
         return newRuleBase;
     }
 
-    private void addRuleBasePackage(JahiaTemplatesPackage jahiaTemplatesPackage, Package rulePackage) {
+    private void addRuleBasePackage(JahiaTemplatesPackage jahiaTemplatesPackage, Collection<Package> rulePackages) {
         ruleBaseWriteLock.lock();
         try {
             // apply disabled rules config first
-            applyDisabledRulesConfiguration(rulePackage);
+            for (Package rulePackage : rulePackages) {
+                applyDisabledRulesConfiguration(rulePackage);
+            }
+
+            List<String> packageNames = rulePackages.stream().map(Package::getName).collect(Collectors.toList());
 
             // update memory object related to the template package
-            if(jahiaTemplatesPackage != null) {
+            if (jahiaTemplatesPackage != null) {
                 addClassLoader(jahiaTemplatesPackage);
-                modulePackageNameMap.put(jahiaTemplatesPackage.getName(), rulePackage.getName());
+                modulePackageNameMap
+                        .computeIfAbsent(jahiaTemplatesPackage.getIdWithVersion(), (s) -> new ArrayList<>())
+                        .addAll(packageNames);
             }
 
             // rebuild ruleBase
-            this.ruleBase = rebuildRuleBase(rulePackage.getName(), rulePackage);
-            logger.info("Rules package: {} added to runtime rule engine for {}", rulePackage.getName(), this.name);
+            this.ruleBase = rebuildRuleBase(packageNames, rulePackages);
+            logger.info("Rules package: {} added to runtime rule engine for {}", packageNames, this.name);
         } finally {
             ruleBaseWriteLock.unlock();
         }
@@ -241,15 +246,14 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
             boolean classLoaderRemoved = removeClassLoader(jahiaTemplatesPackage);
 
             // Check package to remove
-            String rulePackageNameToRemove = modulePackageNameMap.get(jahiaTemplatesPackage.getName());
-            Package rulePackageToRemove = rulePackageNameToRemove != null ? this.ruleBase.getPackage(rulePackageNameToRemove) : null;
+            Collection<String> rulePackageNamesToRemove = modulePackageNameMap.get(jahiaTemplatesPackage.getIdWithVersion());
 
-            if (classLoaderRemoved || rulePackageToRemove != null) {
-                this.ruleBase = rebuildRuleBase(rulePackageNameToRemove, null);
-                if (rulePackageToRemove != null) {
-                    logger.info("Rules package: {} removed from runtime rule engine for {}", rulePackageNameToRemove, this.name);
-                }
+            if (classLoaderRemoved) {
+                this.ruleBase = rebuildRuleBase(rulePackageNamesToRemove, null);
+                logger.info("Rules package: {} removed from runtime rule engine for {}", rulePackageNamesToRemove, this.name);
             }
+
+            rulePackageNamesToRemove.clear();
         } finally {
             ruleBaseWriteLock.unlock();
         }
@@ -341,26 +345,32 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
         addRules(dsrlFile == null ? null : new FileSystemResource(dsrlFile), null);
     }
 
-    public void addRules(Resource dsrlFile, JahiaTemplatesPackage jahiaTemplatesPackage) {
-        try {
-            File compiledRulesDir = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/compiledRules");
-            compiledRulesDir = new File(compiledRulesDir, jahiaTemplatesPackage != null ? jahiaTemplatesPackage.getIdWithVersion() : "system");
-            if (!compiledRulesDir.exists()) {
-                compiledRulesDir.mkdirs();
-            }
+    public void addRules(Resource dsrlFiles, JahiaTemplatesPackage jahiaTemplatesPackage) {
+        addRules(Collections.singleton(dsrlFiles), jahiaTemplatesPackage);
+    }
 
-            ClassLoader packageClassLoader =  jahiaTemplatesPackage != null ? jahiaTemplatesPackage.getClassLoader() : null;
-            File compileRulesFile = new File(compiledRulesDir, StringUtils.substringAfterLast(dsrlFile.getURL().getPath(),"/") + ".pkg");
-
-            Package rulePackage = recoverCompiledRules(compileRulesFile, dsrlFile, packageClassLoader);
-            if (rulePackage == null) {
-                rulePackage = compileRules(compileRulesFile, dsrlFile, packageClassLoader);
-            }
-            addRuleBasePackage(jahiaTemplatesPackage, rulePackage);
-        } catch (ClassNotFoundException | IOException | DroolsParserException e) {
-            logger.error(e.getMessage(), e);
-            throw new RuntimeException(e);
+    public void addRules(Collection<Resource> dsrlFiles, JahiaTemplatesPackage jahiaTemplatesPackage) {
+        File compiledRulesDir = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/compiledRules", jahiaTemplatesPackage != null ? jahiaTemplatesPackage.getIdWithVersion() : "system");
+        if (!compiledRulesDir.exists()) {
+            compiledRulesDir.mkdirs();
         }
+
+        Collection<Package> rulesPackage = dsrlFiles.stream().map(dsrlFile -> {
+            try {
+                ClassLoader packageClassLoader = jahiaTemplatesPackage != null ? jahiaTemplatesPackage.getClassLoader() : null;
+                File compileRulesFile = new File(compiledRulesDir, StringUtils.substringAfterLast(dsrlFile.getURL().getPath(), "/") + ".pkg");
+
+                Package rulePackage = recoverCompiledRules(compileRulesFile, dsrlFile, packageClassLoader);
+                if (rulePackage == null) {
+                    rulePackage = compileRules(compileRulesFile, dsrlFile, packageClassLoader);
+                }
+                return rulePackage;
+            } catch (ClassNotFoundException | IOException | DroolsParserException e) {
+                logger.error(e.getMessage(), e);
+                throw new RuntimeException(e);
+            }
+        }).collect(Collectors.toList());
+        addRuleBasePackage(jahiaTemplatesPackage, rulesPackage);
     }
 
     private void addClassLoader(JahiaTemplatesPackage aPackage) {
@@ -508,7 +518,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                                 list.add(new ChangedPropertyFact(rn, p));
                                             }
                                         } catch (PathNotFoundException pnfe) {
-                                            if(JCRSessionFactory.getInstance().getProvider(path,false)==null || logger.isDebugEnabled()) {
+                                            if (JCRSessionFactory.getInstance().getProvider(path, false) == null || logger.isDebugEnabled()) {
                                                 logger.error("Couldn't access path {}, ignoring it.", pnfe);
                                             }
                                         }
@@ -710,7 +720,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     public void addRulesDescriptor(Resource resource, JahiaTemplatesPackage aPackage) {
         dslFiles.add(resource);
-        ClassLoader packageClassLoader =  aPackage != null ? aPackage.getClassLoader() : null;
+        ClassLoader packageClassLoader = aPackage != null ? aPackage.getClassLoader() : null;
         if (packageClassLoader != null) {
             addClassLoader(aPackage);
         }
@@ -805,12 +815,12 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
     }
 
     String getNodeFactOperationType(int operationType) {
-        if(operationType==JCRObservationManager.IMPORT) {
-            return("import");
-        } else if(operationType==JCRObservationManager.SESSION_SAVE) {
-            return("session");
-        } else if(operationType==JCRObservationManager.WORKSPACE_CLONE) {
-            return("clone");
+        if (operationType == JCRObservationManager.IMPORT) {
+            return ("import");
+        } else if (operationType == JCRObservationManager.SESSION_SAVE) {
+            return ("session");
+        } else if (operationType == JCRObservationManager.WORKSPACE_CLONE) {
+            return ("clone");
         }
         return null;
     }
@@ -834,7 +844,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
         return dslFiles.remove(resource);
     }
 
-    public Map<String, String> getModulePackageNameMap() {
+    public Map<String, Collection<String>> getModulePackageNameMap() {
         return modulePackageNameMap;
     }
 
@@ -845,13 +855,13 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
      * <pre>
      * ["&lt;workspace&gt;".]"&lt;package-name-1&gt;"."&lt;rule-name-1&gt;",["&lt;workspace&gt;".]"&lt;package-name-2&gt;"."&lt;rule-name-2&gt;"...
      * </pre>
-     *
+     * <p>
      * The workspace part is optional. For example the following configuration:
      *
      * <pre>
      * "org.jahia.modules.rules"."Image update","live"."org.jahia.modules.dm.thumbnails"."Automatically generate thumbnail for the document"
      * </pre>
-     *
+     * <p>
      * will disable rule <code>Image update</code> (from package <code>org.jahia.modules.rules</code>) in rules for all workspaces (live and
      * default) and the rule <code>Automatically generate thumbnail for the document</code> (package
      * <code>org.jahia.modules.dm.thumbnails</code>) will be disabled in rules for live workspace only.
@@ -903,7 +913,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
      * Checks if the specified rule is disabled by configuration.
      *
      * @param packageName the name of the rule package
-     * @param ruleName the rule name
+     * @param ruleName    the rule name
      * @return <code>true</code> if the specified rule is disabled by configuration; <code>false</code> otherwise
      */
     private boolean isRuleDisabled(String packageName, String ruleName) {
@@ -938,7 +948,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
             if (isRuleDisabled(pkg.getName(), r.getName())) {
                 r.setEnabled(EnabledBoolean.ENABLED_FALSE);
                 logger.info("Rule \"{}\" from package \"{}\" in workspace \"{}\" has been disabled by configuration",
-                        new String[] { r.getName(), pkg.getName(), getWorkspace() });
+                        new String[]{r.getName(), pkg.getName(), getWorkspace()});
             }
         }
     }

@@ -50,6 +50,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -61,6 +62,8 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.WebUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.ServletContextAware;
@@ -75,10 +78,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -87,7 +88,7 @@ import java.util.regex.Pattern;
  *
  * @author rincevent
  * @since JAHIA 6.5
- *        Created : 2 avr. 2010
+ * Created : 2 avr. 2010
  */
 public class Export extends JahiaController implements ServletContextAware {
 
@@ -99,13 +100,14 @@ public class Export extends JahiaController implements ServletContextAware {
             + Constants.LIVE_WORKSPACE + "|" + Constants.EDIT_WORKSPACE + ")/(.*)\\.(xml|zip)");
     private static final String MEDIATYPE_ZIP = "application/zip";
     private static final String MEDIATYPE_XML = "text/xml";
+
     public static String getExportServletPath() {
         // TODO move this into configuration
         return "/cms" + CONTROLLER_MAPPING;
     }
 
     private String cleanupXsl;
-    
+
     private boolean downloadExportedXmlAsFile;
 
     private ImportExportService importExportService;
@@ -131,7 +133,7 @@ public class Export extends JahiaController implements ServletContextAware {
 
             Matcher m = getMatcher(request);
             String workspace = m.group(1);
-            String nodePath = String.format("/%s",m.group(2));
+            String nodePath = JCRContentUtils.escapeNodePath(String.format("/%s", m.group(2)));
             String exportFormat = m.group(3);
             JCRNodeWrapper exportRoot = null;
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace);
@@ -195,7 +197,7 @@ public class Export extends JahiaController implements ServletContextAware {
     }
 
     private void handleExportFormatTypeZip(HttpServletRequest request, HttpServletResponse response, String nodePath, Map<String, Object> params,
-            JCRSessionWrapper session, JCRNodeWrapper exportRoot)
+                                           JCRSessionWrapper session, JCRNodeWrapper exportRoot)
             throws RepositoryException, IOException, SAXException, TransformerException, JahiaForbiddenAccessException {
         JCRNodeWrapper sessionNode = session.getNode(nodePath);
         OutputStream outputStream = response.getOutputStream();
@@ -213,6 +215,13 @@ public class Export extends JahiaController implements ServletContextAware {
         if (request.getParameter("live") == null || Boolean.valueOf(request.getParameter("live"))) {
             params.put(ImportExportService.INCLUDE_LIVE_EXPORT, Boolean.TRUE);
         }
+        final String filesToZip = request.getParameter("filesToZip");
+        if (filesToZip != null) {
+            // Either the param is a path (one file or folder), or a list of path
+            String[] files = StringUtils.isEmpty(filesToZip) ? new String[]{nodePath} : extractJCRFilesPathFromJson(new String(Base64.getDecoder().decode(filesToZip), StandardCharsets.UTF_8));
+            params.put("filesToZip", files);
+        }
+
         exportedNodeCookie.setMaxAge(60);
         exportedNodeCookie.setPath("/");
         response.addCookie(exportedNodeCookie);
@@ -220,8 +229,29 @@ public class Export extends JahiaController implements ServletContextAware {
         outputStream.close();
     }
 
+    /**
+     * Utility function to transform a given json array as string to an array of strings
+     * @param jsonAsString
+     * @return an array of strings
+     */
+    private String[] extractJCRFilesPathFromJson(String jsonAsString) {
+        try {
+            JSONArray json = new JSONArray(jsonAsString);
+            String[] array = new String[json.length()];
+            int i = 0;
+            while (i < json.length()) {
+                array[i] = json.getString(i);
+                i++;
+            }
+            return array;
+        } catch (JSONException e) {
+            logger.warn("Unable to read json files {}", jsonAsString);
+        }
+        return new String[0];
+    }
+
     private void handleExportFormatTypeXML(HttpServletRequest request, HttpServletResponse response, String nodePath, Map<String, Object> params,
-            JCRSessionWrapper session, JCRNodeWrapper exportRoot)
+                                           JCRSessionWrapper session, JCRNodeWrapper exportRoot)
             throws RepositoryException, IOException, SAXException, TransformerException {
         JCRNodeWrapper sessionNode = session.getNode(nodePath);
         OutputStream outputStream = response.getOutputStream();
@@ -248,7 +278,7 @@ public class Export extends JahiaController implements ServletContextAware {
     }
 
     private void handleExportFormatTypeSite(HttpServletRequest request, HttpServletResponse response, Map<String, Object> params,
-            JCRSessionWrapper session)
+                                            JCRSessionWrapper session)
             throws JahiaException, IOException, RepositoryException, SAXException, TransformerException {
 
         List<JCRSiteNode> sites = getJcrSiteNodes(request);
@@ -367,6 +397,7 @@ public class Export extends JahiaController implements ServletContextAware {
 
     /**
      * Check if current user has permission to perform export requests
+     *
      * @param session
      * @throws RepositoryException
      * @throws JahiaForbiddenAccessException
@@ -381,6 +412,7 @@ public class Export extends JahiaController implements ServletContextAware {
 
     /**
      * Get the parameters from the request
+     *
      * @param request
      * @return parameter mapping from the request
      * @throws IOException

@@ -46,8 +46,9 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import net.sf.saxon.TransformerFactoryImpl;
 import org.apache.commons.collections.set.ListOrderedSet;
+import org.apache.commons.io.FileCleaningTracker;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.*;
 import org.apache.commons.io.output.DeferredFileOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -648,6 +649,22 @@ public final class ImportExportBaseService extends JahiaService implements Impor
 
         TreeSet<JCRNodeWrapper> liveSortedNodes = new TreeSet<>(Comparator.comparing(JCRNodeWrapper::getPath));
 
+        // handle download as zip a set of nodes
+        if (params.containsKey("filesToZip")) {
+            String[] filesToZip = (String[]) params.get("filesToZip");
+            byte[] buffer = new byte[4096];
+            Set<String> exportedFiles = new HashSet<>();
+            for (String file : filesToZip) {
+                try {
+                    final String basePath = rootNode.getParent().getPath();
+                    zipFiles(StringUtils.equals(basePath, "/") ? "" : basePath, zout, buffer, exportedFiles, rootNode.getSession().getNode(file));
+                } catch (Throwable e) {
+                    logger.warn("Unable to add {} to zip file", file);
+                }
+
+            }
+            return;
+        }
         if (params.containsKey(INCLUDE_LIVE_EXPORT) &&
                 params.get(INCLUDE_LIVE_EXPORT) != null &&
                 Boolean.TRUE.equals(params.get(INCLUDE_LIVE_EXPORT))) {
@@ -658,6 +675,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
                 logger.debug("Item not found in live while exporting {}", e.getMessage());
             }
         }
+
         TreeSet<JCRNodeWrapper> sortedNodes = new TreeSet<>(Comparator.comparing(JCRNodeWrapper::getPath));
         sortedNodes.addAll(nodes);
         for (JCRNodeWrapper liveSortedNode : liveSortedNodes) {
@@ -673,6 +691,51 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         zout.closeEntry();
         exportNodesBinary(rootNode, sortedNodes, zout, typesToIgnore, "/content");
         logger.info("Default workspace exported for nodes {}", nodes);
+    }
+
+    private void zipFiles(String basePath, ZipOutputStream zout, byte[] buffer, Set<String> exportedFiles, JCRNodeWrapper fileNode) throws RepositoryException {
+        if (fileNode.isNodeType("nt:file")) {
+            // export file node
+            if (exportedFiles.contains(fileNode.getIdentifier())) {
+                // File already processed.
+                return;
+            }
+            exportedFiles.add(fileNode.getIdentifier());
+            int bytesIn;
+            try {
+                if (!fileNode.hasNode(Constants.JCR_CONTENT)) {
+                    logger.debug("Node {} of type will not be part of the zip ", fileNode.getPath(), fileNode.getPrimaryNodeTypeName());
+                    return;
+                }
+                JCRNodeWrapper child = fileNode.getNode(Constants.JCR_CONTENT);
+                JCRPropertyWrapper property = child.getProperty("jcr:data");
+                if (child.getProvider().canExportProperty(property)) {
+                    try (InputStream is = property.getBinary().getStream()) {
+                        if (is != null) {
+                            String path = fileNode.getPath().substring(basePath.length());
+                            zout.putNextEntry(new ZipEntry(path.substring(1)));
+                            while ((bytesIn = is.read(buffer)) != -1) {
+                                zout.write(buffer, 0, bytesIn);
+                            }
+                        }
+                    }
+                }
+            } catch (RepositoryException | AssertionError | IOException e) {
+                logger.warn("Unable to export {}", fileNode.getPath());
+            }
+            return;
+        }
+        // recurse on children
+        if (exportedFiles.contains(fileNode.getIdentifier())) {
+            return;
+        }
+        fileNode.getNodes().forEach(child -> {
+            try {
+                zipFiles(basePath, zout, buffer, exportedFiles, child);
+            } catch (RepositoryException e) {
+                logger.warn("Unable to read file {}", child.getPath());
+            }
+        });
     }
 
     @SuppressWarnings("java:S107")
@@ -716,7 +779,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         String filename = Patterns.SPACE.matcher(rootNode.getName()).replaceAll("_");
         File tempFile = File.createTempFile("exportTemplates-" + filename, ".xml");
 
-        try (OutputStream tmpOut = xsl != null ? new DeferredFileOutputStream(1024 * 1024 * 10, tempFile) : outputStream){
+        try (OutputStream tmpOut = xsl != null ? new DeferredFileOutputStream(1024 * 1024 * 10, tempFile) : outputStream) {
             DataWriter dw = new DataWriter(new OutputStreamWriter(tmpOut, StandardCharsets.UTF_8));
             if (Boolean.TRUE.equals(params.get(SYSTEM_VIEW))) {
                 SystemViewExporter exporter = new SystemViewExporter(rootNode.getSession(), dw, !noRecurse, !skipBinary);
@@ -1102,11 +1165,11 @@ public final class ImportExportBaseService extends JahiaService implements Impor
             final long timerPIP = System.currentTimeMillis();
             logger.info("Executing post import patches");
             this.postImportPatcher.executePatches(site);
-            if(logger.isInfoEnabled()) {
+            if (logger.isInfoEnabled()) {
                 logger.info("Executed post import patches in {}", DateUtils.formatDurationWords(System.currentTimeMillis() - timerPIP));
             }
         }
-        if(logger.isInfoEnabled()) {
+        if (logger.isInfoEnabled()) {
             logger.info("Done importing site {} in {}", site != null ? site.getSiteKey() : "", DateUtils.formatDurationWords(System.currentTimeMillis() - timerSite));
         }
     }
@@ -1289,12 +1352,12 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         Map<String, String> pathMapping = session.getPathMapping();
         for (JahiaTemplatesPackage pkg : templatePackageRegistry.getRegisteredModules().values()) {
             String key = "/modules/" + pkg.getId() + "/";
-            pathMapping.computeIfAbsent(key, s -> "/modules/" + pkg.getId() + "/" + pkg.getVersion() + "/" );
+            pathMapping.computeIfAbsent(key, s -> "/modules/" + pkg.getId() + "/" + pkg.getVersion() + "/");
         }
         return pathMapping;
     }
 
-    @SuppressWarnings({"java:S107","java:S3776"})
+    @SuppressWarnings({"java:S107", "java:S3776"})
     private void performLegacyImport(Resource file, JahiaSite site, Map<Object, Object> infos, Resource legacyMappingFilePath, Resource legacyDefinitionsFilePath, JCRSessionWrapper session, long timerSite, List<String> fileList, NodeTypeRegistry reg, DefinitionsMapping mapping) throws IOException, RepositoryException {
         long timerLegacy = System.currentTimeMillis();
         final String originatingJahiaRelease = (String) infos.get("originatingJahiaRelease");
@@ -1398,7 +1461,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
             );
 
             for (String builtInLegacyDefsFile : builtInLegacyDefs) {
-                try (InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("org/jahia/migration/legacyDefinitions/jahia6/" + builtInLegacyDefsFile)){
+                try (InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("org/jahia/migration/legacyDefinitions/jahia6/" + builtInLegacyDefsFile)) {
                     if (inputStream != null) {
                         try (InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
                             final JahiaCndReaderLegacy r = new JahiaCndReaderLegacy(inputStreamReader, builtInLegacyDefsFile,
@@ -1433,8 +1496,8 @@ public final class ImportExportBaseService extends JahiaService implements Impor
 
     /**
      * Remove the list of files temporarily expanded to the given folder.
-     *  @param expandedFolder path to the expanded folder on disk - if null, do nothing
      *
+     * @param expandedFolder path to the expanded folder on disk - if null, do nothing
      */
     public void cleanFilesList(File expandedFolder) {
         if (expandedFolder == null) {
@@ -2032,7 +2095,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         } finally {
             cleanFilesList(expandedFolder);
         }
-        if(logger.isInfoEnabled()) {
+        if (logger.isInfoEnabled()) {
             logger.info("Done importing file {} in {}", file, DateUtils.formatDurationWords(System.currentTimeMillis() - timer));
         }
     }
@@ -2066,7 +2129,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
                     logger.debug("Saving JCR session for UGC");
 
                     liveSession.save(JCRObservationManager.IMPORT);
-                    if(logger.isInfoEnabled()) {
+                    if (logger.isInfoEnabled()) {
                         logger.info("Done importing user generated content in {}",
                                 DateUtils.formatDurationWords(System.currentTimeMillis() - timerUGC));
                     }
@@ -2082,7 +2145,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         }
     }
 
-    @SuppressWarnings({"java:S107","java:S3776"})
+    @SuppressWarnings({"java:S107", "java:S3776"})
     private void importRepositoryContent(String parentNodePath, Resource file, int rootBehaviour, JCRSessionWrapper session, Set<String> filesToIgnore, List<String> fileList, Map<String, List<String>> references, boolean importLive, List<String> liveUuids) throws IOException, RepositoryException {
         ZipInputStream zis;
         // Import repository content
@@ -2103,7 +2166,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
                     importXML(thisPath, zis, rootBehaviour, references, session);
                     logger.debug("Saving JCR session for {}", name);
                     session.save(JCRObservationManager.IMPORT);
-                    if(logger.isInfoEnabled()) {
+                    if (logger.isInfoEnabled()) {
                         logger.info("Done importing {} in {}", name, DateUtils.formatDurationWords(System.currentTimeMillis() - timerOther));
                     }
                 }
@@ -2163,7 +2226,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         }
         logger.debug("Saving JCR session for {}", REPOSITORY_XML);
         session.save(JCRObservationManager.IMPORT);
-        if(logger.isInfoEnabled()) {
+        if (logger.isInfoEnabled()) {
             logger.info("Done importing {} in {}", REPOSITORY_XML, DateUtils.formatDurationWords(System.currentTimeMillis() - timerDefault));
         }
     }
@@ -2201,9 +2264,9 @@ public final class ImportExportBaseService extends JahiaService implements Impor
      * If expandImportedFilesOnDiskPath is set to true (in jahia.properties), then
      * also expand the files to a temporary directory if it is not already expanded.
      *
-     * @param file     ZIP file with content to be imported
-     * @param sizes    collection holding sizes of uncompressed file elements
-     * @param fileList collection into which the files from ZIP file will be added
+     * @param file       ZIP file with content to be imported
+     * @param sizes      collection holding sizes of uncompressed file elements
+     * @param fileList   collection into which the files from ZIP file will be added
      * @param forceClean
      * @return null if files were not expanded to disk (it is just optional), otherwise path to temporary local folder
      * @throws IOException
@@ -2337,7 +2400,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
 
     @Override
     public void propertyChange(PropertyChangeEvent event) {
-        if (event.getPropertyName().equals("exportContext")  && event.getSource() instanceof DocumentViewExporter) {
+        if (event.getPropertyName().equals("exportContext") && event.getSource() instanceof DocumentViewExporter) {
             ExportContext exportContext = (ExportContext) event.getNewValue();
             DocumentViewExporter documentViewExporter = (DocumentViewExporter) event.getSource();
             exportContext.setExportIndex(exportContext.getExportIndex() + 1);

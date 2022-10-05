@@ -793,12 +793,18 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             minifiedAggregatedPath += "?" + maxLastModified;
         }
 
-        if (!minifiedAggregatedFile.exists()) {
+        if (minifiedAggregatedFile.exists()) {
+            return minifiedAggregatedPath;
+        }
+        synchronized (this) {
+            if (minifiedAggregatedFile.exists()) {
+                return minifiedAggregatedPath;
+            }
 
             generatedResourcesFolder.mkdirs();
 
             // aggregate minified resources
-            LinkedHashMap<String, String> minifiedFileNames = new LinkedHashMap<String, String>();
+            LinkedHashMap<String, String> minifiedFileNames = new LinkedHashMap<>();
             for (Map.Entry<String, Resource> entry : pathsToAggregate.entrySet()) {
                 String path = entry.getKey();
                 Resource resource = entry.getValue();
@@ -837,7 +843,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 logger.error(e.getMessage(), e);
             }
         }
-
         return minifiedAggregatedPath;
     }
 

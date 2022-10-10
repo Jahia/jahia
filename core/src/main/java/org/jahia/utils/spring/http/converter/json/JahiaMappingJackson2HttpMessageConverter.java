@@ -52,7 +52,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 import org.jahia.exceptions.JahiaRuntimeException;
-import org.osgi.framework.BundleReference;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
@@ -63,8 +62,8 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Own implementation of the JSON (using Jackson 2) message converter that handles correctly class loading. In case of an object, coming
- * from a bundle, it looks up the corresponding message converter instance in OSGi and delegates the work to it. This implementation
+ * Own implementation of the JSON (using Jackson 2) message converter that handles correctly class loading. It looks up the corresponding
+ * message converter instance in OSGi and delegates the work to it. This implementation
  * overrides only several methods from the parent, which are using the {@link ObjectMapper} instance, to be able to delegate to the
  * corresponding message converter delegate (see {@link #PARAMETER_TYPES} for the methods, we use for delegation).
  *
@@ -73,13 +72,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class JahiaMappingJackson2HttpMessageConverter extends MappingJackson2HttpMessageConverter {
 
     private static final Map<String, Class<?>[]> PARAMETER_TYPES;
+
     static {
         PARAMETER_TYPES = new HashMap<>(5);
-        PARAMETER_TYPES.put("canRead", new Class<?>[] {Type.class, Class.class, MediaType.class});
-        PARAMETER_TYPES.put("canWrite", new Class<?>[] {Class.class, MediaType.class});
-        PARAMETER_TYPES.put("read", new Class<?>[] {Type.class, Class.class, HttpInputMessage.class});
-        PARAMETER_TYPES.put("readInternal", new Class<?>[] {Class.class, HttpInputMessage.class});
-        PARAMETER_TYPES.put("writeInternal", new Class<?>[] {Object.class, HttpOutputMessage.class});
+        PARAMETER_TYPES.put("canRead", new Class<?>[] { Type.class, Class.class, MediaType.class });
+        PARAMETER_TYPES.put("canWrite", new Class<?>[] { Class.class, MediaType.class });
+        PARAMETER_TYPES.put("read", new Class<?>[] { Type.class, Class.class, HttpInputMessage.class });
+        PARAMETER_TYPES.put("readInternal", new Class<?>[] { Class.class, HttpInputMessage.class });
+        PARAMETER_TYPES.put("writeInternal", new Class<?>[] { Object.class, HttpOutputMessage.class });
     }
 
     // This is an instance of the MappingJackson2HttpMessageConverter, injected from the OSGi. In order to avoid class loading issue
@@ -88,24 +88,20 @@ public class JahiaMappingJackson2HttpMessageConverter extends MappingJackson2Htt
     private Object delegate;
 
     // Function, that looks up the target method, when not found in the cache.
-    private Function<String, Method> methodProvider = new Function<String, Method>() {
-
-        @Override
-        public Method apply(String name) {
-            try {
-                Method targetMethod = delegate.getClass().getDeclaredMethod(name, PARAMETER_TYPES.get(name));
-                if (!targetMethod.isAccessible()) {
-                    targetMethod.setAccessible(true);
-                }
-                return targetMethod;
-            } catch (NoSuchMethodException | SecurityException e) {
-                throw new JahiaRuntimeException(e);
+    private final Function<String, Method> methodProvider = name -> {
+        try {
+            Method targetMethod = delegate.getClass().getDeclaredMethod(name, PARAMETER_TYPES.get(name));
+            if (!targetMethod.isAccessible()) {
+                targetMethod.setAccessible(true);
             }
+            return targetMethod;
+        } catch (NoSuchMethodException | SecurityException e) {
+            throw new JahiaRuntimeException(e);
         }
     };
 
     // Cache of the methods on the delegate object, we are calling.
-    private Map<String, Method> methods = new ConcurrentHashMap<>();
+    private final Map<String, Method> methods = new ConcurrentHashMap<>();
 
     private Object call(Method method, Object... args) {
         try {
@@ -117,18 +113,12 @@ public class JahiaMappingJackson2HttpMessageConverter extends MappingJackson2Htt
 
     @Override
     public boolean canRead(Type type, Class<?> contextClass, MediaType mediaType) {
-        if (shouldDelegate(type)) {
-            return (boolean) call(getMethod("canRead"), type, contextClass, mediaType);
-        }
-        return super.canRead(type, contextClass, mediaType);
+        return (boolean) call(getMethod("canRead"), type, contextClass, mediaType);
     }
 
     @Override
     public boolean canWrite(Class<?> clazz, MediaType mediaType) {
-        if (shouldDelegate(clazz)) {
-            return (boolean) call(getMethod("canWrite"), clazz, mediaType);
-        }
-        return super.canWrite(clazz, mediaType);
+        return (boolean) call(getMethod("canWrite"), clazz, mediaType);
     }
 
     private Method getMethod(final String methodName) {
@@ -136,19 +126,14 @@ public class JahiaMappingJackson2HttpMessageConverter extends MappingJackson2Htt
     }
 
     @Override
-    public Object read(Type type, Class<?> contextClass, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
-        if (shouldDelegate(type)) {
-            return call(getMethod("read"), type, contextClass, inputMessage);
-        }
-        return super.read(type, contextClass, inputMessage);
+    public Object read(Type type, Class<?> contextClass, HttpInputMessage inputMessage)
+            throws IOException, HttpMessageNotReadableException {
+        return call(getMethod("read"), type, contextClass, inputMessage);
     }
 
     @Override
     protected Object readInternal(Class<?> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
-        if (shouldDelegate(clazz)) {
-            return call(getMethod("readInternal"), clazz, inputMessage);
-        }
-        return super.readInternal(clazz, inputMessage);
+        return call(getMethod("readInternal"), clazz, inputMessage);
     }
 
     public void setDelegate(Object delegate) {
@@ -156,27 +141,8 @@ public class JahiaMappingJackson2HttpMessageConverter extends MappingJackson2Htt
         methods.clear();
     }
 
-    protected boolean shouldDelegate(Object obj) {
-
-        if (delegate != null && obj != null) {
-
-            // We obtain the class loader for the supplied object (distinguishing, if it is a Class or an Object).
-            ClassLoader classLoader = (obj instanceof Class) ? ((Class<?>) obj).getClassLoader() : obj.getClass().getClassLoader();
-
-            // If the class loader is an instance of BundleReference, than it is a an OSGi class loader and we should delegate.
-            return (classLoader instanceof BundleReference);
-        }
-
-        // If nothing of above is not applicable, then no need to delegate.
-        return false;
-    }
-
     @Override
-    protected void writeInternal(Object object, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
-        if (shouldDelegate(object)) {
-            call(getMethod("writeInternal"), object, outputMessage);
-        } else {
-            super.writeInternal(object, outputMessage);
-        }
+    protected void writeInternal(Object object, HttpOutputMessage outputMessage) throws HttpMessageNotWritableException {
+        call(getMethod("writeInternal"), object, outputMessage);
     }
 }

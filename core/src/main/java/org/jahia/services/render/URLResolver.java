@@ -42,6 +42,8 @@
  */
 package org.jahia.services.render;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -205,7 +207,14 @@ public class URLResolver {
         if (request == null || StringUtils.isEmpty(request.getQueryString())) {
             setRedirectUrl(defaultVanityUrl.getUrl());
         } else {
-            setRedirectUrl(defaultVanityUrl.getUrl() + "?" + request.getQueryString());
+            String queryString = "?";
+            try {
+                queryString += URLDecoder.decode(request.getQueryString(), "UTF-8");
+            } catch (UnsupportedEncodingException uee) {
+                logger.error("Error decoding query string, will use undecoded query string instead", uee);
+                queryString += request.getQueryString();
+            }
+            setRedirectUrl(defaultVanityUrl.getUrl() + queryString);
         }
     }
 

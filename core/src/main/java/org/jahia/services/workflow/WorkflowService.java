@@ -1192,6 +1192,10 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
         observationManager.addWorkflowListener(listener);
     }
 
+    public void removeWorkflowListener(WorkflowListener listener) {
+        observationManager.removeWorkflowListener(listener);
+    }
+
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) {
         return bean;

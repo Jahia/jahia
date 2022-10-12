@@ -164,6 +164,10 @@ public class WorkflowObservationManager implements HazelcastTopic.MessageListene
         listeners.add(listener);
     }
 
+    public void removeWorkflowListener(WorkflowListener listener) {
+        listeners.remove(listener);
+    }
+
     public void sendRemote(String type, Object obj) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         if (hazelcastTopic != null) {

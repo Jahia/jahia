@@ -95,6 +95,8 @@
 
 [jmix:nolive] mixin
 
+[jmix:noImportExport] mixin
+
 [jmix:autoPublish] > jmix:observable mixin
 
 [jmix:size] mixin

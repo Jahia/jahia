@@ -60,6 +60,7 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
+import pl.touk.throwing.ThrowingPredicate;
 
 import javax.jcr.*;
 import java.beans.PropertyChangeEvent;
@@ -184,7 +185,7 @@ public class DocumentViewExporter {
 
     private void exportNode(JCRNodeWrapper node) throws SAXException, RepositoryException {
         try {
-            if (!typesToIgnore.contains(node.getPrimaryNodeTypeName())) {
+            if (typesToIgnore.stream().noneMatch(ThrowingPredicate.unchecked(node::isNodeType))) {
                 String path = "";
                 Node current = node;
                 while (!current.getPath().equals("/")) {
@@ -389,7 +390,7 @@ public class DocumentViewExporter {
                     boolean root = rootNode.getPath().equals("/");
                     if (!root && !path.startsWith(rootNode.getPath() + "/") && !path.equals(rootNode.getPath())) {
                         externalReferences.add(v.getString());
-                    } else if (!typesToIgnore.contains(reference.getPrimaryNodeTypeName()) && reference.getResolveSite() != null) {
+                    } else if (typesToIgnore.stream().noneMatch(ThrowingPredicate.unchecked(reference::isNodeType)) && reference.getResolveSite() != null) {
                         if (reference.getResolveSite().getSiteKey().equals(JahiaSitesService.SYSTEM_SITE_KEY)) {
                             boolean foundInExportedNodes = false;
 

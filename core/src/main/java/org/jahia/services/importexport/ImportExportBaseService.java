@@ -165,8 +165,8 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     private static final String DEFINITIONS_MAP = "definitions.map";
     private static final File EXPORT_PATH = new File(SettingsBean.getInstance().getJahiaExportsDiskPath());
     private static final FileCleaningTracker fileCleaningTracker = new FileCleaningTracker();
-    private static final HashSet<String> siteExportNodeTypesToIgnore = Sets.newHashSet("jnt:templatesFolder", "jnt:externalUser", "jnt:workflowTask");
-    private static final HashSet<String> defaultExportNodeTypesToIgnore = Sets.newHashSet(Constants.JAHIANT_VIRTUALSITE, "jnt:workflowTask");
+    private static final HashSet<String> siteExportNodeTypesToIgnore = Sets.newHashSet("jnt:templatesFolder", "jnt:externalUser", "jnt:workflowTask", "jmix:noImportExport");
+    private static final HashSet<String> defaultExportNodeTypesToIgnore = Sets.newHashSet(Constants.JAHIANT_VIRTUALSITE, "jnt:workflowTask", "jmix:noImportExport");
     private final long scannerInterval = SettingsBean.getInstance().getJahiaSiteImportScannerInterval();
     private JahiaSitesService sitesService;
     private JahiaFileWatcherService fileWatcherService;
@@ -816,8 +816,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
 
     @SuppressWarnings("java:S107")
     private void exportNodesUsingDocumentViewExporter(JCRNodeWrapper rootNode, TreeSet<JCRNodeWrapper> sortedNodes, Set<String> typesToIgnore, Set<String> externalReferences, Map<String, Object> params, ExportContext exportContext, boolean skipBinary, boolean noRecurse, DataWriter dw) throws RepositoryException, SAXException {
-        DocumentViewExporter exporter = new DocumentViewExporter(rootNode.getSession(), dw, skipBinary,
-                noRecurse);
+        DocumentViewExporter exporter = new DocumentViewExporter(rootNode.getSession(), dw, skipBinary, noRecurse);
         exporter.setExportContext(exportContext);
         exporter.addObserver(this);
 

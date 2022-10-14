@@ -120,11 +120,11 @@ public class YamlConfigInstaller implements ArtifactInstaller, ConfigurationList
     }
 
     public void install(File artifact) throws Exception {
-        setConfig(artifact);
+        setConfigFromFile(artifact);
     }
 
     public void update(File artifact) throws Exception {
-        setConfig(artifact);
+        setConfigFromFile(artifact);
     }
 
     public void uninstall(File artifact) throws Exception {
@@ -152,7 +152,7 @@ public class YamlConfigInstaller implements ArtifactInstaller, ConfigurationList
 
         if (configurationEvent.getType() == ConfigurationEvent.CM_UPDATED) {
             try {
-                update(configurationEvent);
+                updateConfigurationFileFromEvent(configurationEvent);
             } catch (Exception e) {
                 logger.error("Unable to save configuration", e);
             }
@@ -171,25 +171,29 @@ public class YamlConfigInstaller implements ArtifactInstaller, ConfigurationList
         }
     }
 
-    private void update(ConfigurationEvent configurationEvent) throws IOException {
+    private void updateConfigurationFileFromEvent(ConfigurationEvent configurationEvent) throws IOException {
         Configuration configuration = getConfigurationAdmin().getConfiguration(configurationEvent.getPid(), "?");
         Dictionary<String, ?> dict = configuration.getProperties();
         String fileName = dict != null ? (String) dict.get(DirectoryWatcher.FILENAME) : null;
         File file = fileName != null ? fromConfigKey(fileName) : null;
-        if (file != null && file.isFile() && canHandle(file)) {
+        if (file != null && (!file.exists() || file.isFile()) && canHandle(file)) {
             pidToFile.put(configuration.getPid(), fileName);
             Map<String, Object> previousValues;
 
             StringWriter previousContent = new StringWriter();
-            try (InputStream input = new FileInputStream(file);
-                 OutputStream out = new WriterOutputStream(previousContent, StandardCharsets.UTF_8)) {
-                IOUtils.copy(input, out);
-            }
+            if (file.exists()) {
+                try (InputStream input = new FileInputStream(file);
+                     OutputStream out = new WriterOutputStream(previousContent, StandardCharsets.UTF_8)) {
+                    IOUtils.copy(input, out);
+                }
 
-            // read YAML file
-            try (Reader r = new StringReader(previousContent.getBuffer().toString())) {
-                previousValues = yamlMapper.readValue(r, new TypeReference<Map<String, Object>>() {
-                });
+                // read YAML file
+                try (Reader r = new StringReader(previousContent.getBuffer().toString())) {
+                    previousValues = yamlMapper.readValue(r, new TypeReference<Map<String, Object>>() {
+                    });
+                }
+            } else {
+                previousValues = new HashMap<>();
             }
 
             String[] parsed = parsePid(file.getName());
@@ -227,7 +231,7 @@ public class YamlConfigInstaller implements ArtifactInstaller, ConfigurationList
      * @return <code>true</code> if the configuration has been updated
      * @throws Exception
      */
-    boolean setConfig(final File f) throws IOException, InvalidSyntaxException{
+    private boolean setConfigFromFile(final File f) throws IOException, InvalidSyntaxException{
         final Map<String, String> ht = new HashMap<>();
         try (InputStream in = new BufferedInputStream(new FileInputStream(f))) {
             Map<String, Object> m = yamlMapper.readValue(in, new TypeReference<Map<String, Object>>() {

@@ -43,6 +43,7 @@
 package org.jahia.services.render.filter.cache;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.json.JSONException;
@@ -63,8 +64,6 @@ public class ModuleParamsCacheKeyPartGenerator implements CacheKeyPartGenerator,
 
     private static final Logger logger = LoggerFactory.getLogger(ModuleParamsCacheKeyPartGenerator.class);
     private static final String ENCODED_DOUBLE_AT = "&dblAt;";
-    private static final String ENCODED_DOUBLE_QUOTES = "&dblQuote;";
-    private static final String ENCODED_PREFIX = "&amp;";
 
     @Override
     public String getKey() {
@@ -82,17 +81,20 @@ public class ModuleParamsCacheKeyPartGenerator implements CacheKeyPartGenerator,
         return keyPart;
     }
 
-    protected static String decodeString(String toBeDencoded) {
-        return toBeDencoded != null && toBeDencoded.indexOf('&') != -1
-                ? StringUtils.replace(StringUtils.replace(StringUtils.replace(toBeDencoded, ENCODED_DOUBLE_AT, "@@"),
-                        ENCODED_DOUBLE_QUOTES, "\""), ENCODED_PREFIX, "&")
-                : toBeDencoded;
+    protected static String decodeString(String toBeDecoded) {
+        if (toBeDecoded != null && toBeDecoded.indexOf('&') != -1) {
+            toBeDecoded = StringUtils.replace(toBeDecoded, ENCODED_DOUBLE_AT, "@@");
+            toBeDecoded = StringEscapeUtils.unescapeHtml4(toBeDecoded);
+        }
+        return toBeDecoded;
     }
 
     protected static String encodeString(String toBeEncoded) {
-        return toBeEncoded != null ? StringUtils.replace(
-                StringUtils.replace(StringUtils.replace(toBeEncoded, "&", ENCODED_PREFIX), "@@", ENCODED_DOUBLE_AT),
-                "\"", ENCODED_DOUBLE_QUOTES) : toBeEncoded;
+        if (toBeEncoded != null) {
+            toBeEncoded = StringEscapeUtils.escapeHtml4(toBeEncoded);
+            toBeEncoded = StringUtils.replace(toBeEncoded, "@@", ENCODED_DOUBLE_AT);
+        }
+        return toBeEncoded;
     }
 
     @Override

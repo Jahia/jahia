@@ -156,6 +156,15 @@ public class GWTController extends RemoteServiceServlet implements Controller,
         return null;
     }
 
+    protected void onAfterResponseSerialized(String serializedResponse) {
+        logger.debug("GWT response payload: {}", serializedResponse);
+    }
+
+    @Override
+    protected void onBeforeRequestDeserialized(String serializedRequest) {
+        logger.debug("GWT request payload: {}", serializedRequest);
+    }
+
     /**
      * Checks the required permission to access the GWT service.
      *

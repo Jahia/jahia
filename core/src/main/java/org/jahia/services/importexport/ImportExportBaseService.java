@@ -46,6 +46,8 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import net.sf.saxon.TransformerFactoryImpl;
 import org.apache.commons.collections.set.ListOrderedSet;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.io.FileCleaningTracker;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -132,6 +134,10 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
+
+import static org.apache.commons.io.FileUtils.ONE_MB;
+
 
 /**
  * Service used to perform all import/export operations for content and documents.
@@ -1945,25 +1951,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         }
         documentViewValidationHandler.setSession(session);
         if (contentType.equals(APPLICATION_ZIP)) {
-            NoCloseZipInputStream zis = new NoCloseZipInputStream(new BufferedInputStream(is));
-            try {
-                ZipEntry zipentry = zis.getNextEntry();
-                while (zipentry != null) {
-                    final String name = zipentry.getName();
-                    if (name.endsWith("xml")) {
-                        handleImport(zis, documentViewValidationHandler, name);
-                    }
-                    zipentry = zis.getNextEntry();
-                }
-            } catch (IOException e) {
-                logger.error("Cannot import", e);
-            } finally {
-                try {
-                    zis.reallyClose();
-                } catch (IOException e) {
-                    logger.error("Cannot import", e);
-                }
-            }
+            validateImportZip(is, documentViewValidationHandler);
         } else {
             try {
                 handleImport(is, documentViewValidationHandler, null);
@@ -1976,6 +1964,70 @@ public final class ImportExportBaseService extends JahiaService implements Impor
             }
         }
         return documentViewValidationHandler.getResults();
+    }
+
+    private void validateImportZip(InputStream is, DocumentViewValidationHandler documentViewValidationHandler) {
+        final long maxSize = SettingsBean.getInstance().getLong("zipFile.maxSize", 100L * ONE_MB);
+        final int maxEntries = SettingsBean.getInstance().getInt("zipFile.maxEntriesCount", 1024);
+        final int BUFFER = 4096;
+
+        File tempFile = null;
+        ZipFile zipFile = null;
+
+        try {
+            // Copy to temp file to validate filename extraction targets
+            tempFile = File.createTempFile("import", ".zip");
+            FileUtils.copyToFile(is, tempFile);
+            zipFile = new ZipFile(tempFile);
+
+            int entries = 0;
+            long totalSize = 0;
+            for (Enumeration<ZipArchiveEntry> e = zipFile.getEntries(); e.hasMoreElements();) {
+                if (entries++ > maxEntries) {
+                    throw new IllegalStateException("Too many files/directories to unzip.");
+                }
+
+                ZipArchiveEntry entry = e.nextElement();
+                String name = validateZipName(entry.getName());
+                if (entry.isDirectory()) {
+                    continue;
+                }
+
+                // Read file entry and check total size
+                try (InputStream eis = zipFile.getInputStream(entry)) {
+                    byte[] data = new byte[BUFFER];
+                    for (int size = 0; (size = eis.read(data, 0, BUFFER)) != -1;) {
+                        totalSize += size;
+                        if (totalSize > maxSize) {
+                            throw new IllegalStateException("Zip file being extracted is too big.");
+                        }
+                    }
+                }
+
+                if (name.endsWith("xml")) {
+                    // Get a new input stream to parse xml entry
+                    try (InputStream zis = zipFile.getInputStream(entry)) {
+                        handleImport(zis, documentViewValidationHandler, name);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            logger.error("Cannot import", e);
+        } finally {
+            FileUtils.deleteQuietly(tempFile);
+            IOUtils.closeQuietly(zipFile);
+        }
+    }
+
+    private String validateZipName(String filename) throws java.io.IOException {
+        String canonicalPath = new File(filename).getCanonicalPath();
+        String canonicalID = new File(".").getCanonicalPath();
+
+        if (canonicalPath.startsWith(canonicalID)) {
+            return canonicalPath.substring(canonicalID.length() + 1);
+        } else {
+            throw new IllegalStateException("File is outside extraction target directory.");
+        }
     }
 
     @Override

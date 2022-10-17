@@ -246,7 +246,12 @@ public class ConfigServiceImpl implements OsgiConfigService, ConfigurationListen
                     JCRNodeWrapper configsNode = moduleManagement.getNode(CONFIGS_NODE_NAME);
                     removeUnusedConfigurations(configsNode, configurationsContent);
                     Collection<String> l = storeConfigurationsToJCR(configsNode, configurationsContent);
-                    session.save();
+                    try {
+                        JCRObservationManager.setAllEventListenersDisabled(true);
+                        session.save();
+                    } finally {
+                        JCRObservationManager.setAllEventListenersDisabled(false);
+                    }
                     return l;
                 }
             });

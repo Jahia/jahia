@@ -43,6 +43,7 @@
 package org.apache.jackrabbit.core.query.lucene;
 
 import com.google.common.collect.Sets;
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.JahiaSearchManager;
@@ -64,11 +65,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.*;
 import org.apache.lucene.store.AlreadyClosedException;
 import org.apache.tika.parser.Parser;
 import org.jahia.api.Constants;
@@ -161,6 +158,8 @@ public class JahiaSearchIndex extends SearchIndex {
     public static final String SKIP_VERSION_INDEX_SYSTEM_PROPERTY = "jahia.jackrabbit.searchIndex.skipVersionIndex";
 
     public static final boolean SKIP_VERSION_INDEX = Boolean.parseBoolean(System.getProperty(SKIP_VERSION_INDEX_SYSTEM_PROPERTY, "true"));
+
+    public static final int PARTITION_SIZE = 2000;
 
     private Boolean versionIndex;
 
@@ -479,35 +478,49 @@ public class JahiaSearchIndex extends SearchIndex {
         if (hasConditionalVisibiltyNodeOrSubConditions) {
             final ItemStateManager itemStateManager = getContext().getItemStateManager();
             for (final NodeState node : new ArrayList<>(addList)) {
-               try {
-                   Event event = null;
-                   if (add instanceof JahiaSearchManager.NodeStateIterator) {
-                       event = ((JahiaSearchManager.NodeStateIterator) add).getEvent(node.getNodeId());
-                       // skip adding subnodes if just a property changed and its not j:inherit
-                       if (event != null && event.getType() != Event.NODE_ADDED && event.getType() != Event.NODE_REMOVED) {
-                           continue;
-                       }
-                       NodeState nodeParent = null;
-                       if (JNT_CONDITIONALVISIBILITY.equals(node.getNodeTypeName())) {
-                           nodeParent = (NodeState) itemStateManager.getItemState(node.getParentId());
-                       } else if (JNT_CONDITION.equals(node.getNodeTypeName())) {
-                           NodeState conditionalVisibilityNode = (NodeState) itemStateManager.getItemState(node.getParentId());
-                           nodeParent = (NodeState) itemStateManager.getItemState(conditionalVisibilityNode.getParentId());
-                       }
-                       if(nodeParent != null) {
-                           addIdToBeIndexed(nodeParent.getNodeId(), addedIds, removedIds, addList, removeList);
-                       }
-                   }
-               } catch (ItemStateException e) {
-                   log.warn("CHECK_VISIBILITY field in documents may not be updated, so access rights check in search may not work correctly", e);
-               }
+                try {
+                    Event event = null;
+                    if (add instanceof JahiaSearchManager.NodeStateIterator) {
+                        event = ((JahiaSearchManager.NodeStateIterator) add).getEvent(node.getNodeId());
+                        // skip adding subnodes if just a property changed and its not j:inherit
+                        if (event != null && event.getType() != Event.NODE_ADDED && event.getType() != Event.NODE_REMOVED) {
+                            continue;
+                        }
+                        NodeState nodeParent = null;
+                        if (JNT_CONDITIONALVISIBILITY.equals(node.getNodeTypeName())) {
+                            nodeParent = (NodeState) itemStateManager.getItemState(node.getParentId());
+                        } else if (JNT_CONDITION.equals(node.getNodeTypeName())) {
+                            NodeState conditionalVisibilityNode = (NodeState) itemStateManager.getItemState(node.getParentId());
+                            nodeParent = (NodeState) itemStateManager.getItemState(conditionalVisibilityNode.getParentId());
+                        }
+                        if (nodeParent != null) {
+                            addIdToBeIndexed(nodeParent.getNodeId(), addedIds, removedIds, addList, removeList);
+                        }
+                    }
+                } catch (ItemStateException e) {
+                    log.warn("CHECK_VISIBILITY field in documents may not be updated, so access rights check in search may not work correctly", e);
+                }
             }
         }
 
         long timer = System.currentTimeMillis();
 
         try {
-            super.updateNodes(removeList.iterator(), addList.iterator());
+            if (addList.size() < PARTITION_SIZE && removeList.size() < PARTITION_SIZE) {
+                super.updateNodes(removeList.iterator(), addList.iterator());
+            } else {
+                List<List<NodeState>> addListPartitioned = ListUtils.partition(addList, PARTITION_SIZE);
+                List<List<NodeId>> removeListPartitioned = ListUtils.partition(removeList, PARTITION_SIZE);
+                for (int i = 0; i < Math.max(addListPartitioned.size(), removeListPartitioned.size()); i++) {
+                    long partitionTimer = System.currentTimeMillis();
+                    List<NodeState> addPartition = addListPartitioned.size() > i ? addListPartitioned.get(i) : Collections.emptyList();
+                    List<NodeId> removePartition = removeListPartitioned.size() > i ? removeListPartitioned.get(i) : Collections.emptyList();
+                    super.updateNodes(removePartition.iterator(), addPartition.iterator());
+                    if (debugEnabled) {
+                        log.debug("Re-indexed nodes partition  in {} ms: {} removed, {} added", (System.currentTimeMillis() - partitionTimer), removePartition.size(), addPartition.size());
+                    }
+                }
+            }
         } catch (AlreadyClosedException e) {
             if (!switching) {
                 throw e;
@@ -516,8 +529,7 @@ public class JahiaSearchIndex extends SearchIndex {
         }
 
         if (debugEnabled) {
-            log.debug("Re-indexed nodes in {} ms: {} removed, {} added", new Object[]{
-                    (System.currentTimeMillis() - timer), removeList.size(), addList.size()});
+            log.debug("Re-indexed nodes in {} ms: {} removed, {} added", (System.currentTimeMillis() - timer), removeList.size(), addList.size());
         }
 
         if (!aclChangedList.isEmpty()) {
@@ -551,8 +563,8 @@ public class JahiaSearchIndex extends SearchIndex {
                 aclSubListEnd = Math.min(aclChangedList.size(), aclSubListEnd + batchSize);
             }
             if (debugEnabled) {
-                log.debug("Re-indexed {} nodes after ACL change in {} ms", new Object[]{aclChangedList.size(),
-                        (System.currentTimeMillis() - timer)});
+                log.debug("Re-indexed {} nodes after ACL change in {} ms", aclChangedList.size(),
+                        (System.currentTimeMillis() - timer));
             }
         }
     }
@@ -1064,7 +1076,7 @@ public class JahiaSearchIndex extends SearchIndex {
      * Attempts to get a language specific analyzer from a registry.
      *
      * @param registry the registry
-     * @param locale the targeted locale
+     * @param locale   the targeted locale
      * @return a language specific analyzer if any is found, {@code null} otherwise
      */
     private static Analyzer getLanguageSpecificAnalyzer(AnalyzerRegistry registry, Locale locale) {

@@ -298,6 +298,7 @@ jobs:
           workflow: do-it-all.yml
           ref: master
           repo: Jahia/jahia-pack-private
+          wait-for-completion-timeout: 2h
           inputs: '{ "parent_image_tag": "${{needs.build.outputs.image_tag}}" }'
           token: ${{ secrets.GH_API_TOKEN }}
       - name: Get results of Jahia-pack-private

@@ -7,7 +7,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
        http://www.springframework.org/schema/webflow-config
-       http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.3.xsd
+       http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.4.xsd
        http://www.springframework.org/schema/util
        http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
@@ -91,10 +91,13 @@
         <constructor-arg ref="springTypeConversionService"/>
     </bean>
 
+    <bean id="JahiaBeanValidationHintResolver" class="org.jahia.services.render.webflow.JahiaBeanValidationHintResolver" lazy-init="true"/>
+
     <bean id="JahiaViewFactoryCreator" class="org.jahia.services.render.webflow.BundleViewFactoryCreator" lazy-init="true"/>
 
     <webflow:flow-builder-services id="jahiaFlowBuilderServices" development="true"
                                    conversion-service="JahiaFlowConversionService"
+                                   validation-hint-resolver="JahiaBeanValidationHintResolver"
                                    view-factory-creator="JahiaViewFactoryCreator"
                                    validator="validatorFactoryBean"/>
 

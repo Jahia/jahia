@@ -246,14 +246,12 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
             boolean classLoaderRemoved = removeClassLoader(jahiaTemplatesPackage);
 
             // Check package to remove
-            Collection<String> rulePackageNamesToRemove = modulePackageNameMap.get(jahiaTemplatesPackage.getIdWithVersion());
+            Collection<String> rulePackageNamesToRemove = modulePackageNameMap.remove(jahiaTemplatesPackage.getIdWithVersion());
 
-            if (classLoaderRemoved) {
+            if (classLoaderRemoved && rulePackageNamesToRemove != null) {
                 this.ruleBase = rebuildRuleBase(rulePackageNamesToRemove, null);
                 logger.info("Rules package: {} removed from runtime rule engine for {}", rulePackageNamesToRemove, this.name);
             }
-
-            rulePackageNamesToRemove.clear();
         } finally {
             ruleBaseWriteLock.unlock();
         }

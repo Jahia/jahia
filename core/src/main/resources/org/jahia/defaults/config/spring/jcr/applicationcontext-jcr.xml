@@ -202,7 +202,10 @@
                                       ref="org.jahia.services.content.rules.ExtractionService"/>
                             <property name="schedulerService" ref="SchedulerService"/>
                         </bean>
-                        <bean class="org.jahia.services.content.files.FileCacheListener"/>
+                        <bean class="org.jahia.services.content.files.FileCacheListener">
+                            <property name="moduleCacheProvider" ref="ModuleCacheProvider"/>
+                            <property name="cacheManager" ref="FileCacheManager"/>
+                        </bean>
                         <bean class="org.jahia.services.logging.MetricsLoggingJCReventListener">
                             <property name="loggingService" ref="loggingService"/>
                             <property name="nodeTypesList">
@@ -285,6 +288,8 @@
                             <property name="schedulerService" ref="SchedulerService"/>
                         </bean>
                         <bean class="org.jahia.services.content.files.FileCacheListener">
+                            <property name="moduleCacheProvider" ref="ModuleCacheProvider"/>
+                            <property name="cacheManager" ref="FileCacheManager"/>
                             <property name="availableDuringPublish" value="true"/>
                         </bean>
                         <ref bean="htmlCacheEventListener"/>

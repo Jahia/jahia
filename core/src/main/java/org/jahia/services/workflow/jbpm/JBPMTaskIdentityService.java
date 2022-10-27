@@ -74,11 +74,6 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
     protected JahiaGroupManagerService groupService;
     protected JahiaUserManagerService userService;
 
-    public JBPMTaskIdentityService() {
-        groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-        userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
-    }
-
     public List<Group> findGroupsByUser(String userId) {
         List<Group> results = new ArrayList<Group>();
         JCRUserNode user = this.userService.lookupUserByPath(userId);
@@ -112,6 +107,14 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
     @Override
     public void removeUser(String userId) {
         throw new UnsupportedOperationException();
+    }
+
+    public void setGroupService(JahiaGroupManagerService groupService) {
+        this.groupService = groupService;
+    }
+
+    public void setUserService(JahiaUserManagerService userService) {
+        this.userService = userService;
     }
 
     @Override
@@ -304,7 +307,7 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
         /**
          * Returns <code>true</code> if the user has explicitly disabled e-mail
          * notification in the profile.
-         * 
+         *
          * @return <code>true</code> if the user has explicitly disabled e-mail
          *         notification in the profile
          */

@@ -111,7 +111,10 @@
         <property name="name" value="Set node property"/>
     </bean>
 
-    <bean id="taskIdentityService" class="org.jahia.services.workflow.jbpm.JBPMTaskIdentityService"/>
+    <bean id="taskIdentityService" class="org.jahia.services.workflow.jbpm.JBPMTaskIdentityService">
+        <property name="groupService" ref="JahiaGroupManagerService"/>
+        <property name="userService" ref="JahiaUserManagerService"/>
+    </bean>
 
     <bean id="mailProducer" class="org.jahia.services.workflow.jbpm.custom.email.JBPMMailProducer">
         <property name="workflowService" ref="workflowService"/>

@@ -1041,4 +1041,25 @@ public class ContentTest {
         assertFalse("Property width is still there",
                 video2.hasProperty("width"));
     }
+
+    @Test
+    public void testSpecialCharactersInNodeName() throws Exception {
+        JCRNodeWrapper root = session.getNode(SITECONTENT_ROOT_NODE);
+
+        try {
+            root.addNode("[]*|/%", "jnt:contentFolder");
+        } catch (RepositoryException re) {
+            assertEquals("Failed to resolve path []*|/% relative to node /sites/contentTestSite", re.getMessage());
+        }
+
+        JCRNodeWrapper newNode = root.addNode("..", "jnt:contentFolder");
+        assertEquals("/sites[2]", newNode.getPath());
+
+        try {
+            root.addNode(".", "jnt:contentFolder");
+        } catch (RepositoryException re) {
+            assertEquals("No child node definition for contentTestSite found in node /sites", re.getMessage());
+        }
+
+    }
 }

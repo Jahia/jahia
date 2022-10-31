@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<Configuration xmlns:xi="http://www.w3.org/2001/XInclude"
+<Configuration
     packages="org.jahia.bin.errors,org.jahia.services.notification"
     monitorInterval="30">
     <Appenders>
@@ -8,123 +8,138 @@
             fileName="${sys:jahia.log.dir}jahia.log"
             filePattern="${sys:jahia.log.dir}jahia_%d{yyyy-MM-dd}.log">
             <PatternLayout
-                pattern="%d: %-5p [%t] %c: %encode{%.-500m}{CRLF}%n%sxThrowable" />
-            <TimeBasedTriggeringPolicy />
-            <ThresholdFilter level="DEBUG" />
+                pattern="%d: %-5p [%t] %c: %encode{%.-500m}{CRLF}%n%sxThrowable"/>
+            <TimeBasedTriggeringPolicy/>
+            <ThresholdFilter level="DEBUG"/>
         </RollingFile>
-
+        
         <File name="JahiaLog"
             fileName="${sys:jahia.log.dir}/jahia.log">
             <PatternLayout
-                pattern="%d: %-5p [%t] %c: %encode{%.-500m}{CRLF}%n%sxThrowable" />
-            <ThresholdFilter level="DEBUG" />
+                pattern="%d: %-5p [%t] %c: %encode{%.-500m}{CRLF}%n%sxThrowable"/>
+            <ThresholdFilter level="DEBUG"/>
         </File>
-
+        
+        <RollingRandomAccessFile name="GWTRPC"
+            fileName="${sys:jahia.log.dir}/gwtrpc.log"
+            filePattern="${sys:jahia.log.dir}gwtrpc_%d{yyyy-MM-dd}.log">
+            <PatternLayout
+                pattern="%d: %-5p [%t] %c: %encode{%m}{CRLF}%n%sxThrowable"/>
+            <ThresholdFilter level="DEBUG"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="100MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="5"/>
+        </RollingRandomAccessFile>
+        
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout
-                pattern="%d: %-5p [%c{1}] - %encode{%.-500m}{CRLF}%n%sxThrowable" />
-            <ThresholdFilter level="DEBUG" />
+                pattern="%d: %-5p [%c{1}] - %encode{%.-500m}{CRLF}%n%sxThrowable"/>
+            <ThresholdFilter level="DEBUG"/>
         </Console>
-
+        
         <RollingFile name="RollingProfilerLog"
             fileName="${sys:jahia.log.dir}jahia_profiler.log"
             filePattern="${sys:jahia.log.dir}jahia_profiler_%d{yyyy-MM-dd}.log">
-            <PatternLayout pattern="%d %encode{%.-500m}{CRLF}%n" />
-            <TimeBasedTriggeringPolicy />
+            <PatternLayout pattern="%d %encode{%.-500m}{CRLF}%n"/>
+            <TimeBasedTriggeringPolicy/>
             <ThresholdFilter level="DEBUG"
-                onMatch="ACCEPT" onMismatch="DENY" />
+                onMatch="ACCEPT" onMismatch="DENY"/>
         </RollingFile>
-
+        
         <RollingFile name="RollingJahiaAccessLog"
             fileName="${sys:jahia.log.dir}jahia_access.log"
             filePattern="${sys:jahia.log.dir}jahia_access_%d{yyyy-MM-dd}.log">
-            <PatternLayout pattern="%d %encode{%.-500m}{CRLF}%n" />
-            <TimeBasedTriggeringPolicy />
+            <PatternLayout pattern="%d %encode{%.-500m}{CRLF}%n"/>
+            <TimeBasedTriggeringPolicy/>
             <ThresholdFilter level="TRACE"
-                onMatch="ACCEPT" onMismatch="DENY" />
+                onMatch="ACCEPT" onMismatch="DENY"/>
         </RollingFile>
-
+        
         <File name="JahiaAccessLog"
             fileName="${sys:jahia.log.dir}/jahia_access.log">
-            <PatternLayout pattern="%d %encode{%.-500m}{CRLF}%n" />
+            <PatternLayout pattern="%d %encode{%.-500m}{CRLF}%n"/>
             <ThresholdFilter level="TRACE"
-                onMatch="ACCEPT" onMismatch="DENY" />
+                onMatch="ACCEPT" onMismatch="DENY"/>
         </File>
-
-        <ExceptionAppender name="ExceptionLogging" />
-
+        
+        <ExceptionAppender name="ExceptionLogging"/>
+        
         <CamelAppender name="CamelNotification"
             targetUri="direct:logs">
-            <PatternLayout pattern="%d %encode{%.-500m}{CRLF}" />
+            <PatternLayout pattern="%d %encode{%.-500m}{CRLF}"/>
             <ThresholdFilter level="TRACE"
-                onMatch="ACCEPT" onMismatch="DENY" />
+                onMatch="ACCEPT" onMismatch="DENY"/>
         </CamelAppender>
     </Appenders>
-
+    
     <Loggers>
         <Logger name="REQUEST">
-            <AppenderRef ref="RollingJahiaLog" />
+            <AppenderRef ref="RollingJahiaLog"/>
         </Logger>
-
+        
         <Logger name="SysOut">
-            <AppenderRef ref="Console" />
+            <AppenderRef ref="Console"/>
         </Logger>
-
+        
         <Logger name="accessLogger" additivity="false">
-            <AppenderRef ref="RollingJahiaAccessLog" />
-            <AppenderRef ref="CamelNotification" />
+            <AppenderRef ref="RollingJahiaAccessLog"/>
+            <AppenderRef ref="CamelNotification"/>
         </Logger>
-
+        
         <Logger name="loggingService" additivity="false"
             level="trace">
-            <AppenderRef ref="RollingJahiaAccessLog" />
-            <AppenderRef ref="CamelNotification" />
+            <AppenderRef ref="RollingJahiaAccessLog"/>
+            <AppenderRef ref="CamelNotification"/>
         </Logger>
-
+        
         <Logger name="profilerLoggingService" additivity="false"
             level="info">
-            <AppenderRef ref="RollingProfilerLog" />
+            <AppenderRef ref="RollingProfilerLog"/>
         </Logger>
-
-
-        <Logger name="org.apache.commons" level="error" />
+        
+        <Logger name="org.jahia.ajax.gwt.commons.server.GWTController" level="info">
+            <AppenderRef ref="GWTRPC"/>
+        </Logger>
+        
+        <Logger name="org.apache.commons" level="error"/>
         <Logger
             name="org.apache.jackrabbit.spi.commons.nodetype.constraint.ValueConstraint"
-            level="error" />
-        <Logger name="net.htmlparser.jericho" level="warn" />
-        <Logger name="net.sf.ehcache" level="error" />
-        <Logger name="net.sf.ehcache.pool.impl" level="warn" />
-        <Logger name="org.quartz" level="info" />
-        <Logger name="org.jahia.bin.errors" level="warn" />
+            level="error"/>
+        <Logger name="net.htmlparser.jericho" level="warn"/>
+        <Logger name="net.sf.ehcache" level="error"/>
+        <Logger name="net.sf.ehcache.pool.impl" level="warn"/>
+        <Logger name="org.quartz" level="info"/>
+        <Logger name="org.jahia.bin.errors" level="warn"/>
         <Logger name="org.jahia.services.render.filter.cache"
-            level="info" />
+            level="info"/>
         <Logger
             name="org.jahia.services.textextraction.TextExtractionService"
-            level="info" />
+            level="info"/>
         <Logger name="org.jgroups.protocols.pbcast.GMS"
-            level="debug" />
-        <Logger name="org.hibernate" level="warn" />
-        <Logger name="org.hibernate.cfg.Environment" level="info" />
+            level="debug"/>
+        <Logger name="org.hibernate" level="warn"/>
+        <Logger name="org.hibernate.cfg.Environment" level="info"/>
         <Logger name="org.hibernate.orm.deprecation" additivity="false" level="WARN">
             <RegexFilter regex=".*HHH90000014|HHH90000016.*" onMatch="DENY" onMismatch="NEUTRAL"/>
         </Logger>
-        <Logger name="org.springframework" level="error" />
+        <Logger name="org.springframework" level="error"/>
         <Logger
             name="org.jahia.bundles.extender.jahiamodules.Activator"
-            level="debug" />
-        <Logger name="org.apache.karaf.cellar" level="debug" />
+            level="debug"/>
+        <Logger name="org.apache.karaf.cellar" level="debug"/>
         <Logger
             name="org.jahia.bundles.clustering.impl.ClusterBundleEventHandler"
-            level="debug" />
-<!--    Logger AetherBasedResolver set in ERROR as the WARN is displaying some credentials    -->
+            level="debug"/>
+        <!--    Logger AetherBasedResolver set in ERROR as the WARN is displaying some credentials    -->
         <Logger
             name="org.ops4j.pax.url.mvn.internal.AetherBasedResolver"
-            level="ERROR" />
-        <Logger name="org.atmosphere.handler" level="ERROR" />
+            level="ERROR"/>
+        <Logger name="org.atmosphere.handler" level="ERROR"/>
         <Root level="info">
-            <AppenderRef ref="RollingJahiaLog" />
-            <AppenderRef ref="Console" />
-            <AppenderRef ref="ExceptionLogging" />
+            <AppenderRef ref="RollingJahiaLog"/>
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="ExceptionLogging"/>
         </Root>
     </Loggers>
 </Configuration>

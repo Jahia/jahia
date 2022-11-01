@@ -65,7 +65,13 @@ jobs:
         run: mvn -s .github/maven.settings.xml -e -Dimage.tag=${{steps.tags.outputs.image_tag}} clean deploy de.qaware.maven:go-offline-maven-plugin:resolve-dependencies -Pgwt-production,unit-tests,docker -Dbamboo.buildNumber=${{ github.run_id }}
       - name: Compile GWT development
         shell: bash
-        run:  mvn -s .github/maven.settings.xml -e -Dimage.tag=${{steps.tags.outputs.image_tag}} clean deploy -Pgwt-development -Dbamboo.buildNumber=${{ github.run_id }}
+        run: |
+          cd gwt/
+          mvn -s .github/maven.settings.xml -e \
+            -Dimage.tag=${{steps.tags.outputs.image_tag}} \
+            clean deploy \
+            -Pgwt-development \
+            -Dbamboo.buildNumber=${{ github.run_id }}
       - uses: jahia/jahia-modules-action/docker-tags@v2
         with:
           docker_username: ${{ secrets.DOCKERHUB_USERNAME }}

@@ -48,7 +48,7 @@
     <parent>
         <artifactId>jahia-modules</artifactId>
         <groupId>org.jahia.modules</groupId>
-        <version>8.2.0.0-SNAPSHOT</version>
+        <version>8.1.3.0</version>
         <relativePath>../../../modules/pom.xml</relativePath>
     </parent>
     <artifactId>springbean-dummy</artifactId>
@@ -59,7 +59,7 @@
         <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/test/dummy-modules/springbean-dummy</connection>
         <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/test/dummy-modules/springbean-dummy</developerConnection>
         <url>https://devtools.jahia.com/svn/jahia/trunk/test/dummy-modules/springbean-dummy</url>
-      <tag>HEAD</tag>
+      <tag>JAHIA_8_1_3_0</tag>
   </scm>
 
     <properties>

@@ -232,7 +232,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
             return null;
         }
         File exportPath = new File(serverDirectoryPath);
-        return exportPath.getCanonicalPath().startsWith(SettingsBean.getInstance().getJahiaExportsDiskPath())
+        return exportPath.getCanonicalFile().toPath().startsWith(SettingsBean.getInstance().getJahiaExportsDiskPath())
                 ? exportPath.getCanonicalPath()
                 : new File(SettingsBean.getInstance().getJahiaExportsDiskPath(), serverDirectoryPath).getCanonicalPath();
     }
@@ -266,7 +266,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     public static boolean isValidServerDirectory(String serverDirectory) {
         try {
             File serverDirectoryFile = new File(serverDirectory);
-            if (!serverDirectoryFile.getCanonicalPath().startsWith(EXPORT_PATH.getCanonicalPath())) {
+            if (!serverDirectoryFile.getCanonicalFile().toPath().startsWith(EXPORT_PATH.getCanonicalFile().toPath())) {
                 logger.error("User is trying to export to {} which is outside the allowed location {}",
                         serverDirectory, EXPORT_PATH.getCanonicalPath());
                 return false;
@@ -2023,7 +2023,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         String canonicalPath = new File(filename).getCanonicalPath();
         String canonicalID = new File(".").getCanonicalPath();
 
-        if (canonicalPath.startsWith(canonicalID)) {
+        if (new File(filename).getCanonicalFile().toPath().startsWith(canonicalID)) {
             return canonicalPath.substring(canonicalID.length() + 1);
         } else {
             throw new IllegalStateException("File is outside extraction target directory.");

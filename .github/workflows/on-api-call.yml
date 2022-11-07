@@ -67,7 +67,7 @@ jobs:
         shell: bash
         run: |
           cd gwt/
-          mvn -s ../github/maven.settings.xml -e \
+          mvn -s ../.github/maven.settings.xml -e \
             -Dimage.tag=${{steps.tags.outputs.image_tag}} \
             clean deploy \
             -Pgwt-development \

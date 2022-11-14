@@ -51,6 +51,7 @@ import javax.servlet.http.HttpSession;
 
 import com.google.gwt.user.server.rpc.SerializationPolicy;
 
+import com.google.gwt.user.server.rpc.impl.SerializabilityUtil;
 import org.codehaus.plexus.util.StringUtils;
 import org.jahia.bin.JahiaControllerUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -262,6 +263,11 @@ public class GWTController extends RemoteServiceServlet implements Controller,
 
             if (logger.isDebugEnabled()) {
                 logger.debug("Executing method {}", rpcRequest.getMethod());
+
+                Class<?> serializer = SerializabilityUtil.hasCustomFieldSerializer(Long.class);
+                if (serializer == null) {
+                    logger.warn("Serializer for java.lang.Long is null, some calls will fail");
+                }
             }
 
             return JahiaRPC.invokeAndEncodeResponse(remoteService, rpcRequest

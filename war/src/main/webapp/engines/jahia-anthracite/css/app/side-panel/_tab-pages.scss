@@ -117,32 +117,32 @@
 
     .x-grid3 {
         .x-grid3-row {
-            height: 32px !important;
+            height: 27px !important;
 
             table {
-                height: 32px !important;
+                height: 27px !important;
 
                 tbody {
-                    height: 32px !important;
+                    height: 27px !important;
 
                     tr {
-                        height: 32px !important;
+                        height: 27px !important;
 
                         td.x-grid3-cell {
-                            height: 32px !important;
+                            height: 27px !important;
                             display: inline-block !important;
 
                             &.x-grid3-td-locked {
                                 height: auto !important;
                                 width: auto !important;
-                                padding: 7px !important;
+                                padding: 5px !important;
                                 position: static !important;
                                 top: 0 !important;
                                 right: 0 !important;
                             }
 
                             div.x-grid3-cell-inner:not(.x-grid3-col-locked) {
-                                height: 32px !important;
+                                height: 27px !important;
                             }
 
                             &.x-grid3-td-displayName {

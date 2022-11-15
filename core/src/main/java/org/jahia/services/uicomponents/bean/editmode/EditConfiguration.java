@@ -82,6 +82,7 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     private GWTConfiguration.DragAndDropBehavior dragAndDropBehavior;
     private boolean refreshOnExternalModification = true;
     private boolean refreshEnabled = true;
+    private int createChildrenDirectButtonsLimit;
 
     private String requiredPermission;
     private String nodeCheckPermission;
@@ -233,6 +234,14 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     public void setRefreshOnExternalModification(boolean refreshOnExternalModification) {
         this.refreshOnExternalModification = refreshOnExternalModification;
+    }
+
+    public int getCreateChildrenDirectButtonsLimit() {
+        return createChildrenDirectButtonsLimit;
+    }
+
+    public void setCreateChildrenDirectButtonsLimit(int createChildrenDirectButtonsLimit) {
+        this.createChildrenDirectButtonsLimit = createChildrenDirectButtonsLimit;
     }
 
     public String getRequiredPermission() {

@@ -148,7 +148,8 @@ public class PlaceholderModule extends Module {
 
             // in case there are more than MAX_NODETYPES_DISPLAYED types to display, display "Any content" and let the content type selector
             // do the work.
-            final boolean displayAnyContent = displayedNodeTypes.size() > Module.MAX_NODETYPES_DISPLAYED;
+            final int maxNtDisplayed = mainModule.getConfig().getCreateChildrenDirectButtonsLimit() < 1 ? Module.MAX_NODETYPES_DISPLAYED : mainModule.getConfig().getCreateChildrenDirectButtonsLimit();
+            final boolean displayAnyContent = displayedNodeTypes.size() > maxNtDisplayed;
             if (displayAnyContent) {
                 displayedNodeTypes.clear();
                 displayedNodeTypes.add("jmix:droppableContent");

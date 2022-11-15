@@ -110,6 +110,7 @@
         <property name="eventDispatchingEnabled" value="${jahia.ui.eventDispatchingEnabled:true}"/>
         <property name="refreshOnExternalModification" value="${jahia.ui.refreshOnExternalModification:true}"/>
         <property name="dragAndDropBehavior" value="#{jahiaProperties['jahia.ui.dragAndDrop.edit'] != null ? jahiaProperties['jahia.ui.dragAndDrop.edit'] : (jahiaProperties['jahia.ui.dragAndDrop'] != null ? jahiaProperties['jahia.ui.dragAndDrop'] : 'ENABLED')}"/>
+        <property name="createChildrenDirectButtonsLimit" value="#{jahiaProperties['jahia.ui.createChildrenDirectButtons.limit'] != null ? jahiaProperties['jahia.ui.createChildrenDirectButtons.limit'] : 5}"/>
         <property name="nonEditableTypes">
             <set>
                 <value>jmix:studioOnly</value>

@@ -66,6 +66,7 @@ public class GWTEditConfiguration extends GWTConfiguration implements Serializab
     private boolean refreshOnExternalModification = true;
     private boolean needFrameParsing = true;
     private boolean refreshEnabled = true;
+    private int createChildrenDirectButtonsLimit;
 
     private List<GWTSidePanelTab> tabs;
 
@@ -136,6 +137,14 @@ public class GWTEditConfiguration extends GWTConfiguration implements Serializab
 
     public void setRefreshOnExternalModification(boolean refreshOnExternalModification) {
         this.refreshOnExternalModification = refreshOnExternalModification;
+    }
+
+    public int getCreateChildrenDirectButtonsLimit() {
+        return createChildrenDirectButtonsLimit;
+    }
+
+    public void setCreateChildrenDirectButtonsLimit(int createChildrenDirectButtonsLimit) {
+        this.createChildrenDirectButtonsLimit = createChildrenDirectButtonsLimit;
     }
 
     public String getDefaultUrlMapping() {

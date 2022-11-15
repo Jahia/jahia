@@ -85,7 +85,7 @@ public abstract class Module extends LayoutContainer {
     protected String overlayColorText = "";
     protected String translatableFromLanguage = null;
 
-    public static final int MAX_NODETYPES_DISPLAYED = 3;
+    public static final int MAX_NODETYPES_DISPLAYED = 5;
 
     public Module() {
         super();

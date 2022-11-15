@@ -686,6 +686,7 @@ public class UIConfigHelper {
                 gwtConfig.setSitesLocation(config.getSitesLocation());
                 gwtConfig.setDragAndDropBehavior(config.getDragAndDropBehavior());
                 gwtConfig.setRefreshOnExternalModification(config.getRefreshOnExternalModification());
+                gwtConfig.setCreateChildrenDirectButtonsLimit(config.getCreateChildrenDirectButtonsLimit());
                 gwtConfig.setDefaultUrlMapping(config.getDefaultUrlMapping());
                 gwtConfig.setComponentsPaths(config.getComponentsPaths());
                 gwtConfig.setEditableTypes(config.getEditableTypes());

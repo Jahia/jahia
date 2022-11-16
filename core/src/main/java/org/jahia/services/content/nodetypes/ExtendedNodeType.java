@@ -928,6 +928,10 @@ public class ExtendedNodeType implements NodeType {
         return label;
     }
 
+    public void addLabel(Locale locale, String label){
+        labels.put(locale, label);
+    }
+
     public String getDescription(Locale locale) {
         String description = descriptions.get(locale);
         if (description == null) {
@@ -936,6 +940,10 @@ public class ExtendedNodeType implements NodeType {
             descriptions.put(locale, description);
         }
         return description;
+    }
+
+    public void addDescription(Locale locale, String description){
+        descriptions.put(locale, description);
     }
 
     public NodeTypeDefinition getNodeTypeDefinition() {

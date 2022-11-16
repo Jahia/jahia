@@ -101,7 +101,7 @@ public class ExtendedItemDefinition implements ItemDefinition {
 
     public String getPrefix() {
         return name.getPrefix();
-    }    
+    }
 
     public boolean isProtected() {
         return isProtected;
@@ -219,6 +219,10 @@ public class ExtendedItemDefinition implements ItemDefinition {
         return label;
     }
 
+    public void addLabel(Locale locale, String label){
+        labels.put(locale, label);
+    }
+
     public String getTooltip(Locale locale,ExtendedNodeType extendedNodeType) {
         ExtendedNodeType nodeType = extendedNodeType;
         if(nodeType==null) {
@@ -235,6 +239,15 @@ public class ExtendedItemDefinition implements ItemDefinition {
             labelNodeType.put(nodeType.getName(), label);
         }
         return label;
+    }
+
+    public void addTooltip(Locale locale,ExtendedNodeType extendedNodeType,String label){
+        Map<String, String> labelByNodeType = tooltipsByNodeType.get(locale);
+        if (labelByNodeType == null) {
+            labelByNodeType = new ConcurrentHashMap<>();
+        }
+        labelByNodeType.put(extendedNodeType.getName(), label);
+        tooltipsByNodeType.put(locale, labelByNodeType);
     }
 
     public String getItemType() {
@@ -278,7 +291,7 @@ public class ExtendedItemDefinition implements ItemDefinition {
         }
         return overridenItemDefintion;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)

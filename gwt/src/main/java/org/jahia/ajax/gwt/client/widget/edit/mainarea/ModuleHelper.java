@@ -163,7 +163,7 @@ public class ModuleHelper {
                 List<String> moduleNodetypes = Arrays.asList(nodetypes.split(" "));
                 // Use droppableContent to display "Any content" when more than MAX_NODETYPES_DISPLAYED different
                 // types are allowed. Type restriction is handled by the content type selector.
-                if (moduleNodetypes.size() > Module.MAX_NODETYPES_DISPLAYED) {
+                if (shouldDisplayAnyContentButton(mainModule, moduleNodetypes.size())) {
                     allNodetypes.add("jmix:droppableContent");
                 } else {
                     allNodetypes.addAll(moduleNodetypes);
@@ -265,6 +265,11 @@ public class ModuleHelper {
 
 
         GWT.log("Parsing : " + (System.currentTimeMillis() - start) + " ms");
+    }
+
+    public static boolean shouldDisplayAnyContentButton(MainModule mainModule, int currentNodeTypeButtonsSize) {
+        final int maxNtDisplayed = mainModule.getConfig().getCreateChildrenDirectButtonsLimit() < 1 ? Module.MAX_NODETYPES_DISPLAYED : mainModule.getConfig().getCreateChildrenDirectButtonsLimit();
+        return currentNodeTypeButtonsSize > maxNtDisplayed;
     }
 
     private static void handleNodesAndTypesResult(Map<String,List<? extends ModelData>> nodesAndTypes, MainModule mainModule, String fmainPath, String fmainTemplate) {

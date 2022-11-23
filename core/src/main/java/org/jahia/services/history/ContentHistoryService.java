@@ -52,10 +52,10 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.*;
 import org.hibernate.criterion.Restrictions;
-import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +63,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -166,39 +167,53 @@ public class ContentHistoryService implements Processor, CamelContextAware {
 
             final String nodeIdentifier = matcher.group(5);
             if ((nodeIdentifier != null) && !"null".equals(nodeIdentifier) && (ignoreNodeTypes.size() > 0)) {
-                final JCRTemplate tpl = JCRTemplate.getInstance();
                 String matchingNodeType = null;
                 try {
-                    matchingNodeType = tpl.doExecuteWithSystemSession(new JCRCallback<String>() {
-                        public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                            JCRNodeWrapper node = session.getNodeByIdentifier(nodeIdentifier);
-                            if (node != null) {
+                    matchingNodeType = JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
+                        JCRNodeWrapper node = session.getNodeByIdentifier(nodeIdentifier);
+                        if (node != null) {
+                            for (String ignoreNodeType : ignoreNodeTypes) {
+                                if (node.isNodeType(ignoreNodeType)) {
+                                    return ignoreNodeType;
+                                }
+                            }
+                        }
+                        return null;
+                    });
+                } catch (RepositoryException e) {
+                    // Node not found, this can happen in case of deleted action the node is already removed from the JCR,
+                    // We will check if we can read the node type from the message
+                    String nodeType = matcher.group(7);
+                    if ((nodeType != null) && nodeType.length() > 0 && !"null".equals(nodeType)) {
+                        try {
+                            ExtendedNodeType extendedNodeType = NodeTypeRegistry.getInstance().getNodeType(nodeType);
+                            if (extendedNodeType != null) {
                                 for (String ignoreNodeType : ignoreNodeTypes) {
-                                    if (node.isNodeType(ignoreNodeType)) {
-                                        return ignoreNodeType;
+                                    if (extendedNodeType.isNodeType(ignoreNodeType)) {
+                                        matchingNodeType = ignoreNodeType;
+                                        break;
                                     }
                                 }
                             }
-                            return null;
+                        } catch (NoSuchNodeTypeException noSuchNodeTypeException) {
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("We cannot check if the log entry should be ignored or not because both " +
+                                                "node type: {} and node: {} are not found, this log entry won't be ignored",
+                                        nodeType, nodeIdentifier);
+                            }
                         }
-                    });
-                    if (matchingNodeType != null) {
-                        ignoredCount.incrementAndGet();
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Ignoring node type " + matchingNodeType + " as configured.");
-                        }
-                        return;
                     }
-                } catch (RepositoryException e) {
-                    // Node not found might be due to old logs so fail silently
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Couldn't find node " + nodeIdentifier + " will not insert log entry. This could be due to parsing an old log.");
-                    }
-                    ignoredCount.incrementAndGet();
-                    return;
                 }
 
+                if (matchingNodeType != null) {
+                    ignoredCount.incrementAndGet();
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Ignoring node type " + matchingNodeType + " as configured.");
+                    }
+                    return;
+                }
             }
+
             long timer = System.currentTimeMillis();
             Session session = sessionFactoryBean.openSession();
             String whatDidWeDo = "inserted";

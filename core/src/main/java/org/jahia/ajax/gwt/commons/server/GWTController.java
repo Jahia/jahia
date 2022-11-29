@@ -263,11 +263,11 @@ public class GWTController extends RemoteServiceServlet implements Controller,
 
             if (logger.isDebugEnabled()) {
                 logger.debug("Executing method {}", rpcRequest.getMethod());
+            }
 
-                Class<?> serializer = SerializabilityUtil.hasCustomFieldSerializer(Long.class);
-                if (serializer == null) {
-                    logger.warn("Serializer for java.lang.Long is null, some calls will fail");
-                }
+            Class<?> serializer = SerializabilityUtil.hasCustomFieldSerializer(Long.class);
+            if (serializer == null) {
+                logger.warn("Serializer for java.lang.Long is null, some calls will fail");
             }
 
             return JahiaRPC.invokeAndEncodeResponse(remoteService, rpcRequest

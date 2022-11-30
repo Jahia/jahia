@@ -74,10 +74,14 @@ public class GroupCacheHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(GroupCacheHelper.class);
     private static final int DEFAULT_TTL_FOR_NON_EXISTING_GROUPS = 600;
+    private static final int DEFAULT_TTL_FOR_EXTERNAL_MEMBERSHIP = 7200;
 
     private EhCacheProvider ehCacheProvider;
     private volatile SelfPopulatingCache groupPathByGroupNameCache;
     private volatile SelfPopulatingCache membershipCache;
+
+    private int membershipCacheTimeToLive = DEFAULT_TTL_FOR_EXTERNAL_MEMBERSHIP;
+
     private int timeToLiveForNonExistingGroups = DEFAULT_TTL_FOR_NON_EXISTING_GROUPS;
 
     private static GroupPathByGroupNameCacheKey getPathCacheKey(String groupPath) {
@@ -123,6 +127,10 @@ public class GroupCacheHelper {
                             "org.jahia.services.usermanager.JahiaGroupManagerService.membershipCache",
                             new MembershipCacheEntryFactory()
                     );
+                    int timeToLive = (int) membershipCache.getCacheConfiguration().getTimeToLiveSeconds();
+                    if (timeToLive > 0) {
+                        membershipCacheTimeToLive = timeToLive;
+                    }
                 }
             }
         }
@@ -310,7 +318,7 @@ public class GroupCacheHelper {
             LinkedList<String> result = new LinkedList<>(groups);
             if (!principalNode.getProvider().isDefault()) {
                 Element e = new Element(principalPath, result);
-                e.setTimeToLive(7200);
+                e.setTimeToLive(membershipCacheTimeToLive);
                 return e;
             } else {
                 return result;

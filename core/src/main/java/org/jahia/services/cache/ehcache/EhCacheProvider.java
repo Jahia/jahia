@@ -160,7 +160,7 @@ public class EhCacheProvider implements CacheProvider {
     /**
      * This method register a SelfPopulatingCache in the CacheManager.
      * @param cacheName the name of the cache to be registered
-     * @param searchable optional search configuration for the cache 
+     * @param searchable optional search configuration for the cache
      * @param factory the CacheFactory to be used to fill the CacheEntry
      * @return the instance of the registered cache
      */

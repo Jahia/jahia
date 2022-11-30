@@ -64,7 +64,7 @@ import org.tuckey.web.filters.urlrewrite.utils.ServerNameMatcher;
 /**
  * Jahia specific implementation of the {@link org.tuckey.web.filters.urlrewrite.UrlRewriteFilter} that adds multiple configuration
  * resources lookup support and other features.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class UrlRewriteFilter implements Filter {
@@ -119,13 +119,17 @@ public class UrlRewriteFilter implements Filter {
         }
 
         urlRewriteService.prepareInbound(hsRequest, hsResponse);
-        
+
         // if no rewrite has taken place continue as normal
         if (!urlRewriter.processRequest(hsRequest, hsResponse, chain)) {
             chain.doFilter(hsRequest, hsResponse);
-        } else if (hsRequest.getAttribute("UrlRewriteFilter.sendError") != null) {
-            // workaround: call sendError with the specified error code 
-            hsResponse.sendError(Integer.valueOf((String) hsRequest.getAttribute("UrlRewriteFilter.sendError")));
+        }
+
+        Object sendErrorAttribute = hsRequest.getAttribute("UrlRewriteFilter.sendError");
+        if (sendErrorAttribute != null) {
+            // workaround: call sendError with the specified error code
+            hsRequest.removeAttribute("UrlRewriteFilter.sendError");
+            hsResponse.sendError(Integer.parseInt((String) sendErrorAttribute));
         }
     }
 
@@ -147,7 +151,7 @@ public class UrlRewriteFilter implements Filter {
 
     /**
      * Show the status of the conf and the filter to the user.
-     * 
+     *
      * @param request
      *            to get status info from
      * @param response

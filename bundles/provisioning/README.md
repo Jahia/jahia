@@ -256,6 +256,16 @@ Create a site with the provided site info:
 ````
 
 
+### Delete site
+
+Delete a site with the provided siteKey
+- siteKey
+
+````yaml
+- deleteSite:
+  siteKey: "test1"
+````
+
 ### Enable module on site
 
 Enable modules on a site :

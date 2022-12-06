@@ -1,0 +1,18 @@
+name: Docker images cleanup
+
+on:
+  schedule:
+    - cron: '0 0 1 * *'
+  workflow_dispatch:
+
+jobs:
+  cleanup:
+    name: Remove old Docker images
+    runs-on: ubuntu-latest
+    steps:
+      - uses: jahia/jahia-modules-action/docker-images-cleanup@v2
+        with:
+          docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
+          docker_delete_token: ${{ secrets.DOCKERHUB_DELETE_TOKEN }}
+          docker_repository: "jahia-core-dev"
+          dry_run: false

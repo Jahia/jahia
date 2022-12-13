@@ -169,10 +169,20 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     private static final String SITE_PERMISSIONS_XML = "sitePermissions.xml";
     private static final String DEFINITIONS_CND = "definitions.cnd";
     private static final String DEFINITIONS_MAP = "definitions.map";
-    private static final File EXPORT_PATH = new File(SettingsBean.getInstance().getJahiaExportsDiskPath());
     private static final FileCleaningTracker fileCleaningTracker = new FileCleaningTracker();
     private static final HashSet<String> siteExportNodeTypesToIgnore = Sets.newHashSet("jnt:templatesFolder", "jnt:externalUser", "jnt:workflowTask", "jmix:noImportExport");
     private static final HashSet<String> defaultExportNodeTypesToIgnore = Sets.newHashSet(Constants.JAHIANT_VIRTUALSITE, "jnt:workflowTask", "jmix:noImportExport");
+    private static final Path EXPORT_PATH; 
+    static {
+        Path exportsPath = null;
+        try {
+            exportsPath = new File(SettingsBean.getInstance().getJahiaExportsDiskPath()).getCanonicalFile().toPath();
+        } catch (Exception e) {
+            logger.error("Invalid server directory of configured jahiaExportsDiskPath {}. Configuration or environment is broken leading to exceptions during content export.", SettingsBean.getInstance().getJahiaExportsDiskPath());
+        } finally {
+            EXPORT_PATH = exportsPath; 
+        }
+    };
     private final long scannerInterval = SettingsBean.getInstance().getJahiaSiteImportScannerInterval();
     private JahiaSitesService sitesService;
     private JahiaFileWatcherService fileWatcherService;
@@ -232,9 +242,9 @@ public final class ImportExportBaseService extends JahiaService implements Impor
             return null;
         }
         File exportPath = new File(serverDirectoryPath);
-        return exportPath.getCanonicalPath().startsWith(SettingsBean.getInstance().getJahiaExportsDiskPath())
+        return exportPath.getCanonicalFile().toPath().startsWith(EXPORT_PATH)
                 ? exportPath.getCanonicalPath()
-                : new File(SettingsBean.getInstance().getJahiaExportsDiskPath(), serverDirectoryPath).getCanonicalPath();
+                : new File(EXPORT_PATH.toFile(), serverDirectoryPath).getCanonicalPath();
     }
 
     /**
@@ -266,9 +276,9 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     public static boolean isValidServerDirectory(String serverDirectory) {
         try {
             File serverDirectoryFile = new File(serverDirectory);
-            if (!serverDirectoryFile.getCanonicalPath().startsWith(EXPORT_PATH.getCanonicalPath())) {
+            if (!serverDirectoryFile.getCanonicalFile().toPath().startsWith(EXPORT_PATH)) {
                 logger.error("User is trying to export to {} which is outside the allowed location {}",
-                        serverDirectory, EXPORT_PATH.getCanonicalPath());
+                        serverDirectory, EXPORT_PATH);
                 return false;
             }
             if (!ImportExportBaseService.isDirectoryEmpty(serverDirectory)) {
@@ -287,7 +297,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     public void start() {
         try {
             new ImportFileObserver(org.jahia.settings.SettingsBean.getInstance().getJahiaImportsDiskPath(), false, scannerInterval, true);
-            new File(EXPORT_PATH.getPath()).mkdirs();
+            EXPORT_PATH.toFile().mkdirs();
         } catch (JahiaException je) {
             logger.error("exception with FilesObserver", je);
         }
@@ -2023,7 +2033,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         String canonicalPath = new File(filename).getCanonicalPath();
         String canonicalID = new File(".").getCanonicalPath();
 
-        if (canonicalPath.startsWith(canonicalID)) {
+        if (canonicalPath.startsWith(canonicalID) && canonicalPath.length() > canonicalID.length()) {
             return canonicalPath.substring(canonicalID.length() + 1);
         } else {
             throw new IllegalStateException("File is outside extraction target directory.");

@@ -34,7 +34,7 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
                 logger.info(String.format("Module %s/%s found", node.getProperty("j:symbolicName").getString(), node.getProperty("j:version").getString()));
             }
         } catch (Exception e) {
-            logger.error("Unable to remove bundle entry " + bundleKey + " for path " + node.getPath() + " - please remove the node manually", e);
+            logger.error("Unable to remove bundle entry for path " + node.getPath() + " - please remove the node manually", e);
         }
     })
 })

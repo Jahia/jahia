@@ -964,6 +964,11 @@ Anthracite.addModule("edit", {
                 // Page Titles need centering
                 Anthracite.edit.topbar.reposition();
 
+                if (jGet.class('window-actions-refresh').exists() && jGet.class('action-bar-container').exists()) {
+                    var position = jGet.class('action-bar-container').nodes[0].style.left.substring(0, 3) - 40;
+                    jGet.class('window-actions-refresh').nodes[0].style.setProperty('left', position + 'px', 'important');
+                }
+
                 if (jGet.class('x-border-panel').exists()) {
                     var pos = Number(jGet.id('JahiaGxtSidePanelTabs').nodes[0].style.width.substring(0, 3));
                     jGet.class('x-border-panel').nodes[3].style.setProperty('left', (pos + 6) + 'px', 'important');

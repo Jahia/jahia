@@ -964,11 +964,6 @@ Anthracite.addModule("edit", {
                 // Page Titles need centering
                 Anthracite.edit.topbar.reposition();
 
-                if (jGet.class('window-actions-refresh').exists() && jGet.class('action-bar-container').exists()) {
-                    var position = jGet.class('action-bar-container').nodes[0].style.left.substring(0, 3) - 40;
-                    jGet.class('window-actions-refresh').nodes[0].style.setProperty('left', position + 'px', 'important');
-                }
-
                 if (jGet.class('x-border-panel').exists()) {
                     var pos = Number(jGet.id('JahiaGxtSidePanelTabs').nodes[0].style.width.substring(0, 3));
                     jGet.class('x-border-panel').nodes[3].style.setProperty('left', (pos + 6) + 'px', 'important');
@@ -1056,10 +1051,6 @@ Anthracite.addModule("edit", {
                         // No Select
 
                         if(boxes.title){
-                            if (elements.refreshButton) {
-                                elements.refreshButton.style.left = (boxes.title.left + boxes.title.width) + 'px';
-                            }
-
                             if(elements.previewButton){
                                 elements.previewButton.style.left = (boxes.title.left + boxes.title.width + 39) + 'px';
                             }
@@ -1568,11 +1559,6 @@ Anthracite.addModule("edit", {
                 pageTitle = document.getElementsByClassName('x-current-page-path')[0];
                 pageTitleBox = (pageTitle) ? pageTitle.getBoundingClientRect() : null;
 
-                if (jGet.class('window-actions-refresh').exists() && pageTitleBox) {
-                    //jGet.class('window-actions-refresh').nodes[0].style.setProperty('left', (pageTitleBox.left + pageTitleBox.width) + 'px', 'important');
-                }
-
-
             } else if (Anthracite.data.currentApp === 'edit') {
                 // Edit Mode Unpinned
                 jGet('.mainmodule > div:nth-child(2)').nodes[0].style.removeProperty('width');
@@ -1590,10 +1576,6 @@ Anthracite.addModule("edit", {
 
                 pageTitle = document.getElementsByClassName('x-current-page-path')[0];
                 pageTitleBox = (pageTitle) ? pageTitle.getBoundingClientRect() : null;
-
-                if (jGet.class('window-actions-refresh').exists() && pageTitleBox) {
-                    //jGet.class('window-actions-refresh').nodes[0].style.setProperty('left', (pageTitleBox.left + pageTitleBox.width) + 'px', 'important');
-                }
             }
 
             // Reposition the pin button
@@ -1647,10 +1629,6 @@ Anthracite.addModule("edit", {
              if (jGet.class('action-bar-container').exists()) {
                  jGet.class('action-bar-container').nodes[0].style.setProperty('width', 'calc(100% - ' + xPos + 'px)', 'important');
                  jGet.class('action-bar-container').nodes[0].style.setProperty('left', xPos + 'px', 'important');
-             }
-
-             if (jGet.class('window-actions-refresh').exists()) {
-                 jGet.class('window-actions-refresh').nodes[0].style.setProperty('left', (xPos - 40) + 'px', 'important');
              }
 
              if (jGet.class('x-border-panel').exists()) {

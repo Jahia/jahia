@@ -271,6 +271,26 @@ body[data-indigo-app="contribute"] {
     }
 }
 
+body:not([data-lang='fr']) .action-toolbar > table,
+body:not([data-lang='de']) .action-toolbar > table,
+body[data-uilang='en']  .action-toolbar > table {
+    margin-left: 110px;
+}
+
+body[data-uilang='fr']  .action-toolbar > table {
+    margin-left: 92px;
+}
+
+body[data-uilang='de']  .action-toolbar > table {
+    margin-left: 120px;
+}
+
+.toolbar-item-preview.action-bar-tool-item,
+.action-bar-tool-item.edit-menu-status {
+    height: 23px !important;
+    margin-top: 1px;
+}
+
 // Fix for x-hide-display when windows is resized.
 .edit-menu-topright > table > tbody > tr > td > table > tbody > tr:first-child > td.x-toolbar-cell.x-hide-display, /* OPTIMISE SELECTOR ::: css/app/edit-contribute/_menu-items.scss ::: 2 */
 .edit-menu-topright > table > tbody > tr > td > table > tbody > tr:first-child > td.x-toolbar-cell.x-hide-display > table.x-hide-display:not(.x-item-disabled) { /* OPTIMISE SELECTOR ::: css/app/edit-contribute/_menu-items.scss ::: 3 */
@@ -322,13 +342,13 @@ body[data-indigo-app="contribute"] {
 .window-actions-refresh {
     pointer-events: all;
     background: url(../images/icons_grey/refresh.svg) no-repeat center #fff;
-    background-size: 19px;
+    background-size: 20px;
     overflow: visible;
     height: 23px;
     width: 23px;
-    border-radius: 100%;
+    border-radius: 2px 0 0 2px !important;
     top: 82px;
-    left: 205px !important;
+    left: 10px !important;
     position: absolute;
     margin-left: 0;
 
@@ -336,7 +356,39 @@ body[data-indigo-app="contribute"] {
         display: none;
     }
 
-    @include tooltip(_dictionary("tooltip_refresh_page"), "BOTTOM");
+    &:hover {
+        background-color: #DADADA;
+        transition: unset ;
+    }
+
+    &:hover {
+        &::before {
+            opacity: 1;
+            background-color: #DADADA;
+            transition: unset ;
+        }
+    }
+
+    &::before {
+        content: _dictionary("tooltip_refresh_page");
+        top: 0;
+        left: 21px;
+        position: absolute;
+        opacity: 1;
+        box-shadow: none;
+        font-family: "Nunito Sans", sans-serif;
+        font-size: 12px;
+        color: #3b464d;
+        font-weight: 300;
+        text-transform: none;
+        pointer-events: auto;
+        height: 23px;
+        padding: 0 6px 0 4px;
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap;
+        border-radius: 0 2px 2px 0;
+    }
 
     body[data-sitesettings="true"] & {
         display: none;

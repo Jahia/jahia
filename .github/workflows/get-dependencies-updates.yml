@@ -1,0 +1,22 @@
+name: Get dependencies updates (new and unused versions)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  java-checks:
+    name: Get Java dependencies new and unused versions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: jahia/jahia-modules-action/dependencies-get-unused-java@v2
+        with:
+          default_issue_assignee: 'rknj'
+          github_token: ${{ secrets.GH_API_TOKEN }}
+          root_folder: 'core'
+      - uses: jahia/jahia-modules-action/dependencies-get-new-versions-java@v2
+        if: always()
+        with:
+          default_issue_assignee: 'rknj'
+          github_token: ${{ secrets.GH_API_TOKEN }}
+          root_folder: 'core'

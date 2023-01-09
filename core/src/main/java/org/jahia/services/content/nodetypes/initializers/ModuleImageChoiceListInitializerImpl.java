@@ -42,22 +42,21 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
-import org.slf4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.slf4j.Logger;
 import org.springframework.core.io.Resource;
 
 import javax.jcr.RepositoryException;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 /**
- * 
+ *
  *
  * @author : rincevent
  * @since JAHIA 6.5
@@ -85,23 +84,25 @@ public class ModuleImageChoiceListInitializerImpl implements ChoiceListInitializ
         if (values != null && values.size() > 0) {
             final JahiaTemplatesPackage template = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(
                     epd.getDeclaringNodeType().getSystemId());
-            for (ChoiceListValue value : values) {
-                try {
-                    final Resource imagePath = template.getResource("/img/" + value.getValue().getString() + "." + param);
-                    if (imagePath != null && imagePath.exists()) {
-                        String s = Jahia.getContextPath();
-                        if (s.equals("/")) {
-                            s = "";
+            if (template != null) {
+                for (ChoiceListValue value : values) {
+                    try {
+                        final Resource imagePath = template.getResource("/img/" + value.getValue().getString() + "." + param);
+                        if (imagePath != null && imagePath.exists()) {
+                            String s = Jahia.getContextPath();
+                            if (s.equals("/")) {
+                                s = "";
+                            }
+                            value.addProperty("image", s + (template.getRootFolderPath().startsWith("/") ? "" : "/") + template.getRootFolderPath() + "/img/" + value.getValue().getString() + "." + param);
+                        } else {
+                            logger.debug("ModuleImageChoiceListInitializerImpl : unable to find image /img/" + value.getValue().getString() + "." + param
+                                    + " in module " + template.getName()
+                                    + " for property " + epd.getName()
+                                    + " for type " + epd.getDeclaringNodeType().getName());
                         }
-                        value.addProperty("image", s + (template.getRootFolderPath().startsWith("/")?"":"/")+template.getRootFolderPath() + "/img/" + value.getValue().getString() + "." + param);
-                    } else {
-                        logger.debug("ModuleImageChoiceListInitializerImpl : unable to find image /img/" + value.getValue().getString() + "."  + param
-                                + " in module " + template.getName()
-                                + " for property " + epd.getName()
-                                + " for type " + epd.getDeclaringNodeType().getName() );
+                    } catch (RepositoryException e) {
+                        logger.error(e.getMessage(), e);
                     }
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
                 }
             }
             return values;

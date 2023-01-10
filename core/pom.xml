@@ -1982,6 +1982,42 @@
                     </additionalDependencies>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <configuration>
+                    <usedDependencies>
+                        <usedDependency>org.apache.lucene:lucene-highlighter</usedDependency>
+                        <usedDependency>org.slf4j:jcl-over-slf4j</usedDependency>
+                        <usedDependency>org.jbpm:jbpm-persistence-jpa</usedDependency>
+                        <usedDependency>org.jbpm:jbpm-human-task-audit</usedDependency>
+                        <usedDependency>org.jbpm:jbpm-workitems</usedDependency>
+                        <usedDependency>org.jbpm:jbpm-bpmn2</usedDependency>
+                        <usedDependency>org.jbpm:jbpm-executor</usedDependency>
+                        <usedDependency>org.jbpm:jbpm-flow-builder</usedDependency>
+                        <usedDependency>org.eclipse.jdt.core.compiler:ecj</usedDependency>
+                        <usedDependency>net.sf.ehcache:ehcache-jgroupsreplication</usedDependency>
+                        <usedDependency>org.hibernate:hibernate-entitymanager</usedDependency>
+                        <usedDependency>org.hibernate:hibernate-ehcache</usedDependency>
+                        <usedDependency>org.hibernate.validator:hibernate-validator-annotation-processor</usedDependency>
+                        <usedDependency>antlr:antlr</usedDependency>
+                        <usedDependency>org.ops4j.pax.swissbox:pax-swissbox-core</usedDependency>
+                        <usedDependency>org.codehaus.groovy:groovy-json</usedDependency>
+                        <usedDependency>org.codehaus.groovy:groovy-dateutil</usedDependency>
+                        <usedDependency>org.codehaus.groovy:groovy-jsr223</usedDependency>
+                        <usedDependency>org.codehaus.groovy:groovy-xml</usedDependency>
+                        <usedDependency>com.amazonaws:aws-java-sdk-s3</usedDependency>
+                        <usedDependency>org.apache.tika:tika-parsers</usedDependency>
+                        <usedDependency>org.apache.felix:org.apache.felix.configadmin</usedDependency>
+                        <usedDependency>com.fasterxml.jackson.core:jackson-annotations</usedDependency>
+                        <usedDependency>com.fasterxml.jackson.dataformat:jackson-dataformat-cbor</usedDependency>
+                        <usedDependency>org.apache.httpcomponents:httpclient</usedDependency>
+                        <usedDependency>org.apache.httpcomponents:httpcore</usedDependency>
+                        <usedDependency>org.apache.velocity:velocity</usedDependency>
+                        <usedDependency>org.apache.karaf:org.apache.karaf.main</usedDependency>
+                    </usedDependencies>
+                </configuration>
+            </plugin>
         </plugins>
 
         <resources>

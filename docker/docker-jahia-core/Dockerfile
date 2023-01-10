@@ -1,4 +1,4 @@
-FROM tomcat:9-jdk11-openjdk-slim-buster
+FROM tomcat:9-jdk11
 
 LABEL maintainer="Jahia Product team <product@jahia.com>"
 
@@ -49,8 +49,9 @@ ENV YOURKIT_ACTIVATED="false"
 WORKDIR /tmp
 
 RUN apt-get update \
+    && apt-get upgrade -y \
     && magick_packages="libfontconfig1 libx11-6 libharfbuzz0b libfribidi0" \
-    && packages="ncat wget unzip logrotate ${magick_packages}" \
+    && packages="apt-utils ncat wget unzip logrotate ${magick_packages}" \
     && if ${DEBUG_TOOLS}; then \
         packages="${packages} vim binutils less procps iputils-ping htop"; \
        fi \

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:base"],
+  "labels": ["dependencies"],
+  "packageRules": [
+    {
+      "updateTypes": ["minor", "patch"],
+      "automerge": false
+    },
+    {
+      "matchPackagePatterns": ["^eslint"],
+      "enabled": false
+    },
+    {
+      "matchDepTypes": ["optionalDependencies"],
+      "addLabels": ["optional"]
+    },
+    {
+      "matchDepTypes": ["devDependencies"],
+      "enabled": false
+    }
+  ],
+  "timezone": "Europe/Paris",
+  "schedule": ["every 3 months on the first day of the month"]
+}

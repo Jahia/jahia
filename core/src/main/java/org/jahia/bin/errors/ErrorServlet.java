@@ -101,7 +101,15 @@ public class ErrorServlet extends HttpServlet {
         } else {
             logger.debug("Forwarding request to the following error page: {}", errorPagePath);
             request.setAttribute("org.jahia.exception.forwarded", Boolean.TRUE);
-            getServletContext().getRequestDispatcher(errorPagePath).forward(request, response);
+            try {
+                getServletContext().getRequestDispatcher(errorPagePath).forward(request, response);
+            } catch (Throwable e) {
+                // In case of an error in the process of the resource, fallback to Jahia error page.
+                logger.error("Unable to process error page {}", errorPagePath, e);
+                request.setAttribute("org.jahia.exception", e);
+                String theme = "jahia-anthracite";
+                getServletContext().getRequestDispatcher(getErrorPagePath("error.jsp", theme)).forward(request, response);
+            }
         }
     }
 
@@ -212,7 +220,10 @@ public class ErrorServlet extends HttpServlet {
 
 
     protected String resolveSiteKey(HttpServletRequest request) {
-        String siteKey = null;
+        String siteKey = (String) request.getAttribute("siteKey");
+        if (siteKey != null) {
+            return siteKey;
+        }
         // site information available?
         try {
             URLResolver urlResolver = ((URLResolver) request.getAttribute("urlResolver"));
@@ -282,29 +293,22 @@ public class ErrorServlet extends HttpServlet {
         // check if the Basic Authentication is required
         Integer errorCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
 
-        if (errorCode == HttpServletResponse.SC_UNAUTHORIZED && getException(request) == null) {
-            if (!response.containsHeader("WWW-Authenticate")) {
-                response.setHeader("WWW-Authenticate", "BASIC realm=\"Secured Jahia tools\"");
-            }
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        if (errorCode == HttpServletResponse.SC_SERVICE_UNAVAILABLE
+                && StringUtils.equals(ErrorServlet.MAINTENANCE_MODE,
+                (String) request.getAttribute("javax.servlet.error.message"))) {
+            forwardToErrorPage("/errors/maintenance.jsp", request, response);
+        } else if (errorCode == HttpServletResponse.SC_SERVICE_UNAVAILABLE
+                && StringUtils.equals(ErrorServlet.LICENSE_TERMS_VIOLATION_MODE,
+                (String) request.getAttribute("javax.servlet.error.message"))) {
+            forwardToErrorPage("/errors/license.jsp", request, response);
         } else {
-            if (errorCode == HttpServletResponse.SC_SERVICE_UNAVAILABLE
-                    && StringUtils.equals(ErrorServlet.MAINTENANCE_MODE,
-                    (String) request.getAttribute("javax.servlet.error.message"))) {
-                forwardToErrorPage("/errors/maintenance.jsp", request, response);
-            } else if (errorCode == HttpServletResponse.SC_SERVICE_UNAVAILABLE
-                    && StringUtils.equals(ErrorServlet.LICENSE_TERMS_VIOLATION_MODE,
-                    (String) request.getAttribute("javax.servlet.error.message"))) {
-                forwardToErrorPage("/errors/license.jsp", request, response);
+            // otherwise continue with processing of the error
+            String method = request.getMethod();
+            if (method.equals("GET") || method.equals("POST")) {
+                process(request, response);
             } else {
-                // otherwise continue with processing of the error
-                String method = request.getMethod();
-                if (method.equals("GET") || method.equals("POST")) {
-                    process(request, response);
-                } else {
-                    response.sendError(errorCode != null ? errorCode.intValue()
-                            : HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                }
+                response.sendError(errorCode != null ? errorCode.intValue()
+                        : HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
         }
     }

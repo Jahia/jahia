@@ -455,7 +455,8 @@ public class Functions {
                     .createURLResolver(request.getPathInfo(), request.getServerName(), request).getSiteKey();
         } catch (Exception e) {
             logger.warn("Unable to detect current site key based on the data from current HTTP request. Cause: "
-                    + e.getMessage(), e);
+                    + e.getMessage());
+            logger.debug("Full error",e);
 
             return null;
         }

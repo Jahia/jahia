@@ -71,6 +71,7 @@ public abstract class AbstractFilter extends ConditionalExecution implements Ren
     private static final double THRESHOLD = .0001;
 
     private String description;
+    private String name;
     private boolean disabled;
     private float priority = 99;
     protected RenderService service;
@@ -654,6 +655,15 @@ public abstract class AbstractFilter extends ConditionalExecution implements Ren
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public String getName() {
+        return name != null ? name : this.getClass().getSimpleName();
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setDisabled(boolean disabled) {

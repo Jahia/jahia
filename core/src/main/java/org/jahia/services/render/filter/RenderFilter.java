@@ -70,4 +70,52 @@ public interface RenderFilter extends RenderServiceAware, Comparable<RenderFilte
     String getContentForError(RenderContext renderContext, Resource resource, RenderChain renderChain, Exception e);
 
     void finalize(RenderContext renderContext, Resource resource, RenderChain renderChain);
+
+    /**
+     * Get the name of the current render filter instance
+     * @return The name of the filter
+     */
+    default String getName() {
+        return null;
+    }
+
+    /**
+     * Get the description of the current render filter instance
+     * @return The description of the filter
+     */
+    default String getDescription() {
+        return null;
+    }
+
+    /**
+     * Check if the filter is disabled or not.
+     * @return true if the filter is disabled
+     */
+    default boolean isDisabled() {
+        return false;
+    }
+
+    /**
+     * Get a summary of all conditions applied to the current render filter
+     * @return the human-readable summary of the conditions
+     */
+    default String getConditionsSummary() {
+        return null;
+    }
+
+    /**
+     * Disable or enable current render filter
+     * @param disabled true to disable the filter, false to enable it
+     */
+    default void setDisabled(boolean disabled) {
+        throw new UnsupportedOperationException("Please extends AbstractFilter class to be able to enable/disable the instance");
+    }
+
+    /**
+     * Set the priority of the current render filter instance
+     * @param priority the new priority to be applied
+     */
+    default void setPriority(float priority) {
+        throw new UnsupportedOperationException("Please extends AbstractFilter class to be able to override the filter priority");
+    }
 }

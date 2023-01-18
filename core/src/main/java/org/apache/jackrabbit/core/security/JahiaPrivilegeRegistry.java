@@ -45,6 +45,8 @@ package org.apache.jackrabbit.core.security;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.authorization.Permission;
 import org.jahia.services.content.JCRContentUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import javax.jcr.security.AccessControlException;
@@ -59,6 +61,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public final class JahiaPrivilegeRegistry {
 
+    private static final Logger logger = LoggerFactory.getLogger(JahiaPrivilegeRegistry.class);
     private static Map<Integer, String> STANDARD_PRIVILEGES = new HashMap<Integer, String>();
 
     static {
@@ -87,7 +90,7 @@ public final class JahiaPrivilegeRegistry {
     private static ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
     private static Lock readLock = readWriteLock.readLock();
     private static Lock writeLock = readWriteLock.writeLock();
-    
+
     private NamespaceRegistry ns;
 
     public static void init(Session session) throws RepositoryException {
@@ -109,6 +112,9 @@ public final class JahiaPrivilegeRegistry {
             try {
                 for (Privilege p : privileges) {
                     privilegesByName.put(p.getName(), p);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Adding privilege {} under path {}{}", p.getName(), path, ((PrivilegeImpl) p).getNodePath());
+                    }
                 }
                 registeredPrivileges = privilegesByName.values().toArray(new Privilege[privilegesByName.size()]);
             } finally {
@@ -121,7 +127,7 @@ public final class JahiaPrivilegeRegistry {
             registeredPrivilegeNames = privilegeNames;
         }
     }
-    
+
     public JahiaPrivilegeRegistry(NamespaceRegistry ns) {
         this.ns = ns;
     }
@@ -173,7 +179,7 @@ public final class JahiaPrivilegeRegistry {
                 r.add(getPrivilege(entry.getValue(),workspace));
             }
         }
-        
+
         // special case for MODIFY_CHILD_NODE_COLLECTION: in this case we enforce both ADD_NODE and REMOVE_NODE permissions
         if ((permissions & Permission.MODIFY_CHILD_NODE_COLLECTION) == Permission.MODIFY_CHILD_NODE_COLLECTION) {
             r.add(getPrivilege(STANDARD_PRIVILEGES.get(Permission.ADD_NODE), workspace));
@@ -191,7 +197,7 @@ public final class JahiaPrivilegeRegistry {
     public static Privilege[] getRegisteredPrivileges() {
         return registeredPrivileges;
     }
-    
+
     /**
      * Returns all registered privileges.
      *
@@ -200,7 +206,7 @@ public final class JahiaPrivilegeRegistry {
     public static List<String> getRegisteredPrivilegeNames() {
         return registeredPrivilegeNames;
     }
-    
+
     private static Privilege getPrivilegeByName(String... privilegeNames) {
         Privilege privilege = null;
         readLock.lock();

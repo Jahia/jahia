@@ -73,6 +73,7 @@ import javax.jcr.security.Privilege;
 import javax.security.auth.Subject;
 import java.security.Principal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Current ACL policy :
@@ -229,6 +230,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     @Override
     public boolean hasPrivileges(String absPath, Set<Principal> principals, Privilege[] privileges)
             throws PathNotFoundException, AccessDeniedException, RepositoryException {
+        logCheckedPrivileges(absPath, privileges);
         checkInitialized();
         checkValidNodePath(absPath);
         checkPermission(absPath, Permission.READ_AC);
@@ -395,6 +397,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
     public boolean hasPrivileges(Path absPath, Privilege[] privileges) throws PathNotFoundException, RepositoryException {
+        logCheckedPrivileges(absPath.getString(), privileges);
         checkInitialized();
         checkValidNodePath(absPath);
         if (privileges == null || privileges.length == 0) {
@@ -449,6 +452,13 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
     public static void flushMatchingPermissions() {
         AccessManagerUtils.flushMatchingPermissions();
+    }
+
+    private void logCheckedPrivileges(String path, Privilege[] privileges) {
+        if (logger.isDebugEnabled()) {
+            String privs = Arrays.stream(privileges).map(Privilege::getName).collect(Collectors.joining(", "));
+            logger.debug("Checking privileges for path {}: {} ", path.replaceAll("\t\\{\\}|\t", "/"), privs);
+        }
     }
 
 }

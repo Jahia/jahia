@@ -16,7 +16,7 @@
       "addLabels": ["optional"]
     },
     {
-      "matchDepTypes": ["devDependencies"],
+      "matchDepTypes": ["devDependencies", "test", "provided"],
       "enabled": false
     }
   ],

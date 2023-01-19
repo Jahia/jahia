@@ -333,7 +333,7 @@ public class InstallBundle implements Operation {
         }
         Bundle bundle = bundleContext.getBundle(bundleInfo.getLocation());
         String qualifier = (bundle != null) ? bundle.getVersion().getQualifier() : "";
-        if (qualifier != null && qualifier.endsWith("SNAPSHOT")) {
+        if (qualifier != null && !qualifier.endsWith("SNAPSHOT")) {
             logger.info("Bundle {} already installed, skip", bundleKey);
             return true;
         }

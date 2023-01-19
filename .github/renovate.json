@@ -2,13 +2,18 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:base"],
   "labels": ["dependencies"],
+  "commitMessageExtra": "from {{#if currentValue}}{{{currentValue}}} to {{#if isPinDigest}}{{{newDigestShort}}}{{else}}{{#if isMajor}}{{prettyNewMajor}}{{else}}{{#if isSingleVersion}}{{prettyNewVersion}}{{else}}{{#if newValue}}{{{newValue}}}{{else}}{{{newDigestShort}}}{{/if}}{{/if}}{{/if}}{{/if}}",
   "packageRules": [
     {
-      "updateTypes": ["minor", "patch"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "matchUpdateTypes": ["minor", "patch"],
       "automerge": false
     },
     {
-      "matchPackagePatterns": ["^eslint"],
+      "matchDepTypes": ["devDependencies", "test", "provided"],
       "enabled": false
     },
     {
@@ -16,8 +21,20 @@
       "addLabels": ["optional"]
     },
     {
-      "matchDepTypes": ["devDependencies", "test", "provided"],
+      "matchPackagePatterns": ["^org.springframework", "^org.jbpm", "^org.drools", "^org.apache.jackrabbit", "^org.apache.portals.pluto"],
       "enabled": false
+    },
+    {
+      "matchPackagePatterns": ["^org.apache.karaf"],
+      "allowedVersions": "<=4.2"
+    },
+    {
+      "matchPackagePatterns": ["^org.apache.lucene"],
+      "allowedVersions": "<9"
+    },
+    {
+      "matchPackagePatterns": ["^org.apache.solr"],
+      "allowedVersions": "<9"
     }
   ],
   "timezone": "Europe/Paris",

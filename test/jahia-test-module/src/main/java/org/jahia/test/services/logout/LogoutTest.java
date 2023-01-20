@@ -201,7 +201,7 @@ public class LogoutTest extends JahiaTestCase {
     @Test
     public void logoutAdministration() throws Exception {
         String returnUrl = perform("/administration");
-        assertEquals("Logout from administration failed ", "/cms/login", returnUrl);
+        assertEquals("Logout from administration failed ", "/jahia/administration", returnUrl);
     }
 
     @Test

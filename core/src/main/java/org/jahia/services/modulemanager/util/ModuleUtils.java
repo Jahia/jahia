@@ -181,8 +181,12 @@ public class ModuleUtils {
      */
     static String buildClauseRequireCapability(String dependency) {
         JahiaDepends depends = new JahiaDepends(dependency);
-        return new StringBuilder(OSGI_CAPABILITY_MODULE_DEPENDENCIES)
-                .append(";filter:=\"").append(depends.toFilterString()).append("\"").toString();
+        StringBuilder sb = new StringBuilder(OSGI_CAPABILITY_MODULE_DEPENDENCIES)
+                .append(";filter:=\"").append(depends.toFilterString()).append("\"");
+        if (depends.isOptional()) {
+            sb.append(";resolution:=\"optional\"");
+        }
+        return sb.toString();
     }
 
     private static File getBundleFile(Bundle bundle) {
@@ -210,7 +214,7 @@ public class ModuleUtils {
 
     /**
      * Retrieves an instance of the module manager.
-     * 
+     *
      * @return an instance of the module manager
      */
     public static ModuleManager getModuleManager() {
@@ -290,7 +294,8 @@ public class ModuleUtils {
 
             String dependency = token;
             String[] deps = token.split("=");
-            if (JahiaDepends.isOpenClause(deps[1])) {
+            // remove 'optional' tag (if it exists) when checking open clause
+            if (JahiaDepends.isOpenClause(deps[1].replace("optional;", ""))) {
                 String nextTokenStr = (nextToken != null) ? nextToken : "";
                 dependency = String.format("%s,%s", token, nextTokenStr);
                 nextToken = null;
@@ -336,7 +341,7 @@ public class ModuleUtils {
 
     /**
      * Returns the persistent bundle info for the specified key.
-     * 
+     *
      * @param bundleKey the key of the bundle to look up
      * @return the persistent bundle info for the specified key
      * @throws ModuleManagementException in case of a lookup error
@@ -374,7 +379,7 @@ public class ModuleUtils {
             throw new ModuleManagementException(msg, e);
         }
     }
-    
+
     /**
      * Performs the persistence of the supplied bundle resource and returns the information about it.
      *
@@ -460,7 +465,7 @@ public class ModuleUtils {
 
     /**
      * Performs the update of the bundle original location.
-     * 
+     *
      * @param bundle the bundle to update location for
      * @param updatedLocation the new value of the location
      */

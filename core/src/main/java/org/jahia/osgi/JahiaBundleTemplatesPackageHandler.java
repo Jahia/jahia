@@ -153,8 +153,10 @@ class JahiaBundleTemplatesPackageHandler {
             String[] dependencies = ModuleUtils.toDependsArray(depends);
             for (String dependency : dependencies) {
                 JahiaDepends dep = new JahiaDepends(dependency);
-                pkg.setDepends(dep.getModuleName());
-                if (dep.hasVersion()) pkg.setVersionDepends(dep);
+                if (!dep.isOptional()) {
+                    pkg.setDepends(dep.getModuleName());
+                }
+                pkg.setVersionDepends(dep);
             }
         }
     }

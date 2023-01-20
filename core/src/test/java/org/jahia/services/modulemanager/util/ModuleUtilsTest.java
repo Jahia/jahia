@@ -50,6 +50,7 @@ import static org.junit.Assert.*;
 import java.util.Arrays;
 import java.util.jar.Attributes;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 /**
@@ -276,8 +277,15 @@ public class ModuleUtilsTest {
             String jahiaDepends = "module-name1,module-name2=2.5.4, module-name3=[ ,1.4], "
                     + "module with a space = 2.0,module-name5=[2,3.4.23]";
             String actual = replaceDependsDelimiter(jahiaDepends);
-            assertEquals("module-name1;module-name2=2.5.4; module-name3=[ ,1.4]; "
-                            + "module with a space = 2.0;module-name5=[2,3.4.23]", actual);
+
+            String expected = StringUtils.join(new String[] {
+                    "module-name1",
+                    "module-name2=2.5.4",
+                    " module-name3=[ ,1.4]",
+                    " module with a space = 2.0",
+                    "module-name5=[2,3.4.23]",
+            }, DEPENDENCY_DELIMITER);
+            assertEquals(expected, actual);
         } catch (Exception e) {
             fail("Unexpected exception: " + e.getMessage());
         }

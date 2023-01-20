@@ -46,20 +46,20 @@ import java.util.jar.Attributes;
 
 /**
  * Module management related constants.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public final class Constants {
 
     private Constants() {}
 
-    
+
     public static final  String ATTR_JAHIA_MODULE_TYPE = "Jahia-Module-Type";
-    
+
     public static final  Attributes.Name ATTR_NAME_BUNDLE_NAME = new Attributes.Name(org.osgi.framework.Constants.BUNDLE_NAME);
 
     public static final  Attributes.Name ATTR_NAME_BUNDLE_SYMBOLIC_NAME = new Attributes.Name(org.osgi.framework.Constants.BUNDLE_SYMBOLICNAME);
-    
+
     public static final  Attributes.Name ATTR_NAME_BUNDLE_VERSION = new Attributes.Name(org.osgi.framework.Constants.BUNDLE_VERSION);
 
     public static final  Attributes.Name ATTR_NAME_FRAGMENT_HOST = new Attributes.Name(org.osgi.framework.Constants.FRAGMENT_HOST);
@@ -73,13 +73,13 @@ public final class Constants {
     public static final  Attributes.Name ATTR_NAME_JAHIA_DEPENDS = new Attributes.Name("Jahia-Depends");
 
     public static final  Attributes.Name ATTR_NAME_JAHIA_MODULE_TYPE = new Attributes.Name(ATTR_JAHIA_MODULE_TYPE);
-    
+
     public static final  Attributes.Name ATTR_NAME_JAHIA_PACKAGE_DESCRIPTION = new Attributes.Name("Jahia-Package-Description");
 
     public static final  Attributes.Name ATTR_NAME_JAHIA_PACKAGE_LICENSE = new Attributes.Name("Jahia-Package-License");
 
     public static final  Attributes.Name ATTR_NAME_JAHIA_PACKAGE_NAME = new Attributes.Name("Jahia-Package-Name");
-    
+
     public static final Attributes.Name ATTR_NAME_JAHIA_PACKAGE_VERSION = new Attributes.Name("Jahia-Package-Version");
 
     public static final Attributes.Name ATTR_NAME_JAHIA_REQUIRED_VERSION = new Attributes.Name("Jahia-Required-Version");
@@ -104,7 +104,7 @@ public final class Constants {
 
     public static final String URL_PROTOCOL_DX = "dx";
 
-    public static final String DEPENDENCY_DELIMITER = ";"; // anything except comma
+    public static final String DEPENDENCY_DELIMITER = "#"; // anything except comma or semicolon
 
     public static final String URL_PROTOCOL_MODULE_DEPENDENCIES = "legacydepends";
 }

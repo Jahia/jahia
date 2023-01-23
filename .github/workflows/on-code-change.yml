@@ -6,8 +6,8 @@ on:
   push:
     branches:
       - master
-      - '/feature-.*/'
-      - '/JAHIA-[0-9]-[0-9]-[0-9]-X-BRANCH/'
+      - 'feature-.*'
+      - 'JAHIA-[0-9]-[0-9]-[0-9]-X-BRANCH'
 
 env:
   TESTS_PATH: docker/docker-tests/

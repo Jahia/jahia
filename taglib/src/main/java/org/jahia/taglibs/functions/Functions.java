@@ -54,6 +54,8 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.modulemanager.spi.Config;
+import org.jahia.services.modulemanager.spi.ConfigService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.URLResolver;
@@ -68,6 +70,11 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.ISODateTimeFormat;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,8 +82,11 @@ import javax.jcr.RangeIterator;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspTagException;
+import java.io.IOException;
 import java.util.*;
+import java.util.function.Function;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Custom functions, which are exposed into the template scope.
@@ -461,4 +471,69 @@ public class Functions {
             return null;
         }
     }
+
+    public static Map<String,String> getConfigValues(String pid) {
+        try{
+            ConfigService configService = getConfigService();
+            Config config = configService.getConfig(pid);
+            if (config != null) {
+                return config.getRawProperties();
+            }
+        } catch (Exception e) {
+            logger.error("Error accessing configuration for pid={} : {} ", pid, e);
+        }
+        return null;
+    }
+
+    public static Map<String,String> getConfigFactoryValues(String factoryPid, String identifier) {
+        try{
+            ConfigService configService = getConfigService();
+            Config config = configService.getConfig(factoryPid, identifier);
+            if (config != null) {
+                return config.getRawProperties();
+            }
+        } catch (Exception e) {
+            logger.error("Error accessing configuration for factoryPid={}, identifier={} : {} ", factoryPid, identifier, e);
+        }
+        return null;
+    }
+
+    private static ConfigService getConfigService() {
+        BundleContext bundleContext = FrameworkUtil.getBundle(Functions.class).getBundleContext();
+        ServiceReference<ConfigService> cmRef = bundleContext.getServiceReference(ConfigService.class);
+        ConfigService configService = bundleContext.getService(cmRef);
+        return configService;
+    }
+
+    public static String getConfigValue(String pid, String key) {
+        Map<String, String> properties = getConfigValues(pid);
+        if (properties != null) {
+            return properties.get(key);
+        }
+        return null;
+    }
+
+    public static String getConfigFactoryValue(String factoryPid, String identifier, String key) {
+        Map<String, String> properties = getConfigFactoryValues(factoryPid, identifier);
+        if (properties != null) {
+            return properties.get(key);
+        }
+        return null;
+    }
+
+    public static Set<String> getConfigPids() {
+        Set<String> identifiers = getConfigService().getAllConfigurationTypes().keySet().stream()
+                .map(identifier -> identifier.replaceFirst("[.][^.]+$", ""))
+                .collect(Collectors.toCollection(TreeSet::new));
+        return identifiers;
+    }
+
+    public static Set<String> getConfigFactoryIdentifiers(String factoryPid) {
+        Set<String> configPids = getConfigPids();
+        return configPids.stream()
+                .filter(identifier -> identifier.startsWith(factoryPid + "-"))
+                .map(pid -> pid.substring(factoryPid.length()+1))
+                .collect(Collectors.toCollection(TreeSet::new));
+    }
+
 }

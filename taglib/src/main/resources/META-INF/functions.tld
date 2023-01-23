@@ -617,4 +617,67 @@
         <function-signature>java.lang.String getInternetExplorerCompatibility(javax.servlet.http.HttpServletRequest)</function-signature>
     </function>
 
+    <function>
+        <description>
+            Returns the configuration values for a specified OSGi configuration PID
+            This function will return a Map&lt;String,String&gt; that contains the properties that are contained in the
+            configuration, or null if it doesn't exist.
+        </description>
+        <name>getConfigValues</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>java.util.Map getConfigValues(java.lang.String)</function-signature>
+    </function>
+
+    <function>
+        <description>
+            Returns the configuration values for a specified OSGi configuration for a given factoryPID/identifier.
+            This function will return a Map&lt;String,String&gt; that contains the properties that are contained in the
+            configuration, or null if it doesn't exist.
+        </description>
+        <name>getConfigFactoryValues</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>java.util.Map getConfigFactoryValues(java.lang.String,java.lang.String)</function-signature>
+    </function>
+
+    <function>
+        <description>
+            Returns a specific configuration entry using the following parameters:
+            - PID : the PID of a configuration
+            - key : the name of the property inside the configuration that we want to retrieve the value for
+        </description>
+        <name>getConfigValue</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>java.lang.String getConfigValue(java.lang.String,java.lang.String)</function-signature>
+    </function>
+
+    <function>
+        <description>
+            Returns a specific configuration entry using the following parameters:
+             - factoryPID : the factoryPID of a factory configuration
+             - identifier : the identifier of the factory
+             - key : the name of the property inside the configuration that we want to retrieve the value for
+        </description>
+        <name>getConfigFactoryValue</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>java.lang.String getConfigFactoryValue(java.lang.String,java.lang.String,java.lang.String)</function-signature>
+    </function>
+
+    <function>
+        <description>
+            Returns the PIDs deployed in the configuration admin.
+        </description>
+        <name>getConfigPids</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>java.util.Set getConfigPids()</function-signature>
+    </function>
+
+    <function>
+        <description>
+            Returns the identifiers for the available configuration for a given factoryPID.
+        </description>
+        <name>getConfigFactoryIdentifiers</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>java.util.Set getConfigFactoryIdentifiers(java.lang.String)</function-signature>
+    </function>
+
 </taglib>

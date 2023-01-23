@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+  labels:
+    app: my-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+        - name: my-app
+          image: my-app:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: ENV
+              value: prod
+          resources:
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+            requests:
+              cpu: "0.5"
+              memory: "512Mi"
+        - name: sidecar
+          image: my-sidecar:latest
+          env:
+            - name: ENV
+              value: prod
+      initContainers:
+        - name: init-my-db
+          image: busybox
+          command: ['sh', '-c', 'until nslookup my-db; do echo waiting for my-db; sleep 2; done;']
+        - name: init-my-config
+          image: busybox
+          command: ['sh', '-c', 'until nslookup my-config; do echo waiting for my-config; sleep 2; done;']
+      volumes:
+        - name: config-volume
+          configMap:
+            name: my-config
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: my-pv-claim

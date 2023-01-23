@@ -16,7 +16,7 @@ jobs:
       jahia_version: ${{ steps.tags.outputs.jahia_version }}
       image_tag: ${{ steps.tags.outputs.image_tag }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Cache local Maven repository
         uses: actions/cache@v3
         with:
@@ -46,7 +46,7 @@ jobs:
         run: mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec > jahia.version
       - name: Get branch name
         id: branch-name
-        uses: tj-actions/branch-names@v5.4
+        uses: tj-actions/branch-names@v6
       - name: Determine tag
         shell: bash
         run: |

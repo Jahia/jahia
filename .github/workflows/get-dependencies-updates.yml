@@ -8,7 +8,7 @@ jobs:
     name: Get Java dependencies new and unused versions
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: jahia/jahia-modules-action/dependencies-get-unused-java@v2
         with:
           default_issue_assignee: 'rknj'

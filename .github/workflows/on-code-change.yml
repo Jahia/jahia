@@ -24,7 +24,7 @@ jobs:
       jahia_version: ${{ steps.tags.outputs.jahia_version }}
       image_tag: ${{ steps.tags.outputs.image_tag }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Cache local Maven repository
         uses: actions/cache@v3
         with:
@@ -54,7 +54,7 @@ jobs:
         run: mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec > jahia.version
       - name: Get branch name
         id: branch-name
-        uses: tj-actions/branch-names@v5.4
+        uses: tj-actions/branch-names@v6
       - name: Determine tag
         shell: bash
         run: |
@@ -152,10 +152,10 @@ jobs:
       - uses: KengoTODA/actions-setup-docker-compose@main
         with:
           version: '1.29.2'
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: 'lts/*'
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: actions/download-artifact@v3
         with:
           name: integration-artifacts
@@ -200,7 +200,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: jahia/jahia-modules-action/static-analysis@v2
         with:
           node_version: 14
@@ -215,7 +215,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -242,14 +242,14 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: actions/cache@v3
         with: 
           path: ~/.m2
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
       - name: Get branch name
         id: branch-name
-        uses: tj-actions/branch-names@v5.4
+        uses: tj-actions/branch-names@v6
       - name: Save/Restore build artifacts from cache
         uses: actions/cache@v3
         with:
@@ -296,7 +296,7 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: jahia/jahia-modules-action/dependencies-check-java@v2
         with:
           github_token: ${{ secrets.GH_API_TOKEN }}
@@ -309,7 +309,7 @@ jobs:
     steps:
       - name: Get branch name
         id: branch-name
-        uses: tj-actions/branch-names@v5.4
+        uses: tj-actions/branch-names@v6
       - name: Preparing variables for remote branch
         id: exports
         shell: bash

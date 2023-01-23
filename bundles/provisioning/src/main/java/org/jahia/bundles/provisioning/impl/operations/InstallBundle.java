@@ -332,7 +332,7 @@ public class InstallBundle implements Operation {
             throw new InvalidModuleException();
         }
         Bundle bundle = bundleContext.getBundle(bundleInfo.getLocation());
-        String qualifier = (bundle != null) ? bundle.getVersion().getQualifier() : "";
+        String qualifier = (bundle != null) ? bundle.getVersion().getQualifier() : null;
         if (qualifier != null && !qualifier.endsWith("SNAPSHOT")) {
             logger.info("Bundle {} already installed, skip", bundleKey);
             return true;

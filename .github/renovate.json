@@ -9,8 +9,7 @@
     },
     {
       "matchUpdateTypes": ["minor", "patch"],
-      "automerge": false,
-      "commitMessageExtra": "from {{#if currentValue}}{{{currentValue}}} to {{#if isPinDigest}}{{{newDigestShort}}}{{else}}{{#if isMajor}}{{prettyNewMajor}}{{else}}{{#if isSingleVersion}}{{prettyNewVersion}}{{else}}{{#if newValue}}{{{newValue}}}{{else}}{{{newDigestShort}}}{{/if}}{{/if}}{{/if}}{{/if}}"
+      "automerge": false
     },
     {
       "matchDepTypes": ["devDependencies", "test", "provided"],

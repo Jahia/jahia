@@ -88,6 +88,9 @@ public class DxModuleURLStreamHandler extends AbstractURLStreamHandlerService {
                 } catch (ModuleManagementException e) {
                     logger.warn("Couldn't resolve the {}: protocol path for: {}", Constants.URL_PROTOCOL_DX, bundleKey);
                     throw new IOException(e);
+                } catch (NullPointerException e) {
+                    logger.warn("Couldn't resolve bundle with key: {}", bundleKey, e);
+                    throw new IOException("Encountered NPE trying to get PersistentBundle", e);
                 } finally {
                     current.setContextClassLoader(contextCL);
                 }

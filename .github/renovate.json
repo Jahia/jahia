@@ -20,7 +20,7 @@
       "addLabels": ["optional"]
     },
     {
-      "matchPackagePatterns": ["^org.springframework", "^org.jbpm", "^org.drools", "^org.apache.jackrabbit", "^org.apache.portals.pluto"],
+      "matchPackagePatterns": ["^org.springframework", "^org.jbpm", "^org.drools", "^org.apache.jackrabbit", "^org.apache.portals.pluto", "^org.apache.maven.plugins", ".*maven-.*plugin", ".*cypress.*"],
       "enabled": false
     },
     {

@@ -95,33 +95,32 @@ public class DirectoryZipInputStreamTest {
         createDirectoryZip();
 
         File inputStreamFile = File.createTempFile("dirzip-input", null);
-        FileInputStream fileInputStream = new FileInputStream(inputStreamFile);
-        DirectoryZipInputStream directoryZipInputStream = new DirectoryZipInputStream(outputDirectory);
+        try (FileInputStream fileInputStream = new FileInputStream(inputStreamFile);
+                DirectoryZipInputStream directoryZipInputStream = new DirectoryZipInputStream(outputDirectory);) {
 
-        ZipEntry zipEntry = null;
-        int directoriesFound = 0;
-        int filesRead = 0;
-        long bytesRead = 0;
-        List<String> entryNamesFound = new ArrayList<String>();
-        while ((zipEntry = directoryZipInputStream.getNextEntry()) != null) {
-            entryNamesFound.add(zipEntry.getName().replace('\\', '/'));
-            if (zipEntry.isDirectory()) {
-                directoriesFound++;
-            } else {
-                filesRead++;
-                byte[] fileContents = IOUtils.toByteArray(directoryZipInputStream);
-                bytesRead += fileContents.length;
+            ZipEntry zipEntry = null;
+            int directoriesFound = 0;
+            int filesRead = 0;
+            long bytesRead = 0;
+            List<String> entryNamesFound = new ArrayList<String>();
+            while ((zipEntry = directoryZipInputStream.getNextEntry()) != null) {
+                entryNamesFound.add(zipEntry.getName().replace('\\', '/'));
+                if (zipEntry.isDirectory()) {
+                    directoriesFound++;
+                } else {
+                    filesRead++;
+                    byte[] fileContents = IOUtils.toByteArray(directoryZipInputStream);
+                    bytesRead += fileContents.length;
+                }
             }
+
+            assertThat(entryNamesFound).hasSameElementsAs(entryNames);
+            assertThat(filesRead).withFailMessage("Number of files read does not match number of files created").isEqualTo(filesCreated);
+            assertThat(directoriesFound).withFailMessage("Directories found does not match number of directories created")
+                    .isEqualTo(directoriesCreated);
+            assertThat(entryNamesFound.size()).withFailMessage("Number of entry names does not match !").isEqualTo(entryNames.size());
+            assertThat(bytesRead).withFailMessage("Bytes read does not match bytes written").isEqualTo(bytesWritten);
         }
-
-        assertThat(entryNamesFound).hasSameElementsAs(entryNames);
-        assertThat(filesRead).withFailMessage("Number of files read does not match number of files created").isEqualTo(filesCreated);
-        assertThat(directoriesFound).withFailMessage("Directories found does not match number of directories created")
-                .isEqualTo(directoriesCreated);
-        assertThat(entryNamesFound.size()).withFailMessage("Number of entry names does not match !").isEqualTo(entryNames.size());
-        assertThat(bytesRead).withFailMessage("Bytes read does not match bytes written").isEqualTo(bytesWritten);
-
-        fileInputStream.close();
         inputStreamFile.delete();
     }
 

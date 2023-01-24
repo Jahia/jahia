@@ -228,6 +228,8 @@ public class TestHelper {
         } finally {
             if (zis2 instanceof NoCloseZipInputStream) {
                 ((NoCloseZipInputStream) zis2).reallyClose();
+            } else {
+                zis2.close();
             }
         }
 

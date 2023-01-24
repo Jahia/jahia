@@ -1198,7 +1198,8 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         // and eventual plain file from 5.x imports
         if (!sizes.containsKey(REPOSITORY_XML) || sizes.containsKey(SITE_PROPERTIES) || sizes.containsKey(CATEGORIES_XML)
                 || sizes.containsKey(SITE_PERMISSIONS_XML) || sizes.containsKey(DEFINITIONS_CND) || sizes.containsKey(DEFINITIONS_MAP)) {
-            try (ZipInputStream zis = getZipInputStream(file)) {
+            ZipInputStream zis = getZipInputStream(file);
+            try {
                 ZipEntry zipentry;
                 while ((zipentry = zis.getNextEntry()) != null) {
                     String name = zipentry.getName();
@@ -1218,6 +1219,8 @@ public final class ImportExportBaseService extends JahiaService implements Impor
                     }
                     zis.closeEntry();
                 }
+            } finally {
+                closeInputStream(zis);
             }
         }
 
@@ -1293,7 +1296,8 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     private void importRepositoryDescriptorIfPresentInArchive(Resource file, JahiaSite site, JCRSessionWrapper session, Map<String, String> pathMapping) throws IOException, RepositoryException {
         long timer;
         // Parse import file to detect sites
-        try (ZipInputStream zis = getZipInputStream(file)) {
+        ZipInputStream zis = getZipInputStream(file);
+        try {
             ZipEntry zipentry;
             while ((zipentry = zis.getNextEntry()) != null) {
                 String name = zipentry.getName();
@@ -1327,6 +1331,8 @@ public final class ImportExportBaseService extends JahiaService implements Impor
                 }
                 zis.closeEntry();
             }
+        } finally {
+            closeInputStream(zis);
         }
 
         importZip(null, file, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session, Sets.newHashSet(USERS_XML, CATEGORIES_XML), true);
@@ -1334,7 +1340,8 @@ public final class ImportExportBaseService extends JahiaService implements Impor
 
     private void importSitePropertiesIfPresentInArchive(Resource file, JahiaSite site, JCRSessionWrapper session, Map<String, Long> sizes) throws IOException {
         if (sizes.containsKey(SITE_PROPERTIES)) {
-            try (ZipInputStream zis = getZipInputStream(file)) {
+            ZipInputStream zis = getZipInputStream(file);
+            try {
                 ZipEntry zipentry;
                 while ((zipentry = zis.getNextEntry()) != null) {
                     if (zipentry.getName().equals(SITE_PROPERTIES)) {
@@ -1343,6 +1350,8 @@ public final class ImportExportBaseService extends JahiaService implements Impor
                     }
                     zis.closeEntry();
                 }
+            } finally {
+                closeInputStream(zis);
             }
         }
     }
@@ -1350,7 +1359,8 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     private List<String[]> importUsersIfPresentInArchive(Resource file, UsersImportHandler usersImportHandler, List<String[]> userProps, Map<String, Long> sizes) throws IOException {
         if (sizes.containsKey(USERS_XML)) {
             // Import users first
-            try (ZipInputStream zis = getZipInputStream(file)) {
+            ZipInputStream zis = getZipInputStream(file);
+            try {
                 ZipEntry zipentry;
                 while ((zipentry = zis.getNextEntry()) != null) {
                     if (zipentry.getName().equals(USERS_XML)) {
@@ -1358,6 +1368,8 @@ public final class ImportExportBaseService extends JahiaService implements Impor
                         break;
                     }
                 }
+            } finally {
+                closeInputStream(zis);
             }
         }
         return userProps;
@@ -2074,8 +2086,6 @@ public final class ImportExportBaseService extends JahiaService implements Impor
 
         File expandedFolder = getFileList(file, sizes, fileList, false);
         try {
-            ZipInputStream zis;
-
             Map<String, String> pathMapping = getRegisteredModulesPathMapping(session);
 
             boolean importLive = sizes.containsKey(LIVE_REPOSITORY_XML);
@@ -2083,13 +2093,10 @@ public final class ImportExportBaseService extends JahiaService implements Impor
             List<String> liveUuids = null;
             if (importLive) {
                 // Import live content
-                zis = getZipInputStream(file);
+                ZipInputStream zis = getZipInputStream(file);
                 try {
-                    while (true) {
-                        ZipEntry zipentry = zis.getNextEntry();
-                        if (zipentry == null) {
-                            break;
-                        }
+                    ZipEntry zipentry;
+                    while ((zipentry = zis.getNextEntry()) != null) {
                         String name = zipentry.getName();
                         if (name.equals(LIVE_REPOSITORY_XML) && !filesToIgnore.contains(name)) {
                             long timerLive = System.currentTimeMillis();
@@ -2162,15 +2169,11 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     }
 
     private void importUserGeneratedContent(String parentNodePath, Resource file, int rootBehaviour, List<String> fileList, Map<String, String> pathMapping) throws IOException {
-        ZipInputStream zis;
         // Import user generated content
-        zis = getZipInputStream(file);
+        ZipInputStream zis = getZipInputStream(file);
         try {
-            while (true) {
-                ZipEntry zipentry = zis.getNextEntry();
-                if (zipentry == null) {
-                    break;
-                }
+            ZipEntry zipentry;
+            while ((zipentry = zis.getNextEntry()) != null) {
                 String name = zipentry.getName();
                 if (name.equals(LIVE_REPOSITORY_XML) && jcrStoreService.getSessionFactory().getCurrentUser() != null) {
                     long timerUGC = System.currentTimeMillis();
@@ -2208,15 +2211,11 @@ public final class ImportExportBaseService extends JahiaService implements Impor
 
     @SuppressWarnings({"java:S107", "java:S3776"})
     private void importRepositoryContent(String parentNodePath, Resource file, int rootBehaviour, JCRSessionWrapper session, Set<String> filesToIgnore, List<String> fileList, Map<String, List<String>> references, boolean importLive, List<String> liveUuids) throws IOException, RepositoryException {
-        ZipInputStream zis;
         // Import repository content
-        zis = getZipInputStream(file);
+        ZipInputStream zis = getZipInputStream(file);
         try {
-            while (true) {
-                ZipEntry zipentry = zis.getNextEntry();
-                if (zipentry == null) {
-                    break;
-                }
+            ZipEntry zipentry;
+            while ((zipentry = zis.getNextEntry()) != null) {
                 String name = zipentry.getName();
                 if (name.equals(REPOSITORY_XML) && !filesToIgnore.contains(name)) {
                     importRepositoryXMLFile(parentNodePath, file, rootBehaviour, session, fileList, references, zis, importLive, liveUuids);

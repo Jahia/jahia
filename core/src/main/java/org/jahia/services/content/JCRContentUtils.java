@@ -46,7 +46,6 @@ import com.google.common.collect.ImmutableSet;
 import org.apache.commons.collections.map.UnmodifiableMap;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.CharUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.core.gc.GarbageCollector;
@@ -85,6 +84,7 @@ import java.io.*;
 import java.text.Normalizer;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.jahia.api.Constants.*;
@@ -499,22 +499,30 @@ public final class JCRContentUtils implements ServletContextAware {
      *         truncating to ${@code maxLength} characters
      */
     public static String generateNodeName(String text, int maxLength) {
-        String nodeName = text;
-        final char[] chars = Normalizer.normalize(nodeName, Normalizer.Form.NFKD).toCharArray();
-        final char[] newChars = new char[chars.length];
-        int j = 0;
-        for (char aChar : chars) {
-            if (CharUtils.isAsciiAlphanumeric(aChar) || aChar == 32 || aChar == '-') {
-                newChars[j++] = aChar;
+        String nodeName = text.toLowerCase();
+        nodeName = Normalizer.normalize(nodeName, Normalizer.Form.NFKD);
+        nodeName = Patterns.ACCENTS.matcher(nodeName).replaceAll("");
+
+        Matcher matcher = Patterns.NON_ALLOWED_CHARS.matcher(nodeName);
+        StringBuffer buffer = new StringBuffer();
+        while (matcher.find()) {
+            String replacement = Patterns.CHARMAP.getProperty(matcher.group(0));
+            if (replacement == null) {
+                replacement = "-";
             }
+            matcher.appendReplacement(buffer, "");
+            buffer.append(replacement);
         }
-        nodeName = Patterns.SPACE.matcher(new String(newChars, 0, j).trim()).replaceAll("-").toLowerCase();
+        matcher.appendTail(buffer);
+        nodeName = buffer.toString();
+
+        nodeName = Patterns.NON_ALLOWED_CHARS.matcher(nodeName).replaceAll("-");
+        nodeName = Patterns.CONSECUTIVE_DASHES.matcher(nodeName).replaceAll("-");
+        nodeName = Patterns.HEADING_DASH.matcher(nodeName).replaceAll("");
         if (nodeName.length() > maxLength) {
             nodeName = nodeName.substring(0, maxLength);
-            if (nodeName.endsWith("-") && nodeName.length() > 2) {
-                nodeName = nodeName.substring(0, nodeName.length() - 1);
-            }
         }
+        nodeName = Patterns.TRAILING_DASH.matcher(nodeName).replaceAll("");
 
         return StringUtils.isNotEmpty(nodeName) ? nodeName : "untitled";
     }

@@ -42,14 +42,28 @@
  */
 package org.jahia.utils;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.util.Properties;
 import java.util.regex.Pattern;
 
 /**
  * Collections of reusable {@link Pattern} instances.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public final class Patterns {
+
+    public static final Properties CHARMAP = new Properties();
+
+    static {
+        try (InputStreamReader reader = new InputStreamReader(Patterns.class.getResourceAsStream("/org/jahia/utils/charmap.txt"), Charset.forName("UTF-8"))) {
+            CHARMAP.load(reader);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static final Pattern AT = Pattern.compile("@", Pattern.LITERAL);
 
@@ -70,7 +84,7 @@ public final class Patterns {
     public static final Pattern DOUBLE_QUOTE = Pattern.compile("\"", Pattern.LITERAL);
 
     public static final Pattern EXCLAMATION_MARK = Pattern.compile("!", Pattern.LITERAL);
-    
+
     public static final Pattern NUMBERS = Pattern.compile("[0-9]+");
 
     public static final Pattern PERCENT = Pattern.compile("%", Pattern.LITERAL);
@@ -82,10 +96,20 @@ public final class Patterns {
     public static final Pattern SEMICOLON = Pattern.compile(";", Pattern.LITERAL);
 
     public static final Pattern SINGLE_QUOTE = Pattern.compile("'", Pattern.LITERAL);
-    
+
     public static final Pattern SLASH = Pattern.compile("/", Pattern.LITERAL);
 
     public static final Pattern SPACE = Pattern.compile(" ", Pattern.LITERAL);
+
+    public static final Pattern ACCENTS = Pattern.compile("[\u0300-\u036f]");
+
+    public static final Pattern NON_ALLOWED_CHARS = Pattern.compile("[^\\w\\-,()!]");
+
+    public static final Pattern CONSECUTIVE_DASHES = Pattern.compile("-+");
+
+    public static final Pattern HEADING_DASH = Pattern.compile("^-");
+
+    public static final Pattern TRAILING_DASH = Pattern.compile("-$");
 
     public static final Pattern STAR = Pattern.compile("*", Pattern.LITERAL);
 

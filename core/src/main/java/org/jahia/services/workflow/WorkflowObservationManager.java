@@ -42,10 +42,13 @@
  */
 package org.jahia.services.workflow;
 
+import org.jahia.bin.filters.jcr.JcrSessionFilter;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.hazelcast.HazelcastTopic;
 import org.jahia.services.scheduler.BackgroundJob;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -173,6 +176,7 @@ public class WorkflowObservationManager implements HazelcastTopic.MessageListene
         if (hazelcastTopic != null) {
             Map<String, Object> m = new HashMap<>();
             m.put("type", type);
+            m.put("user", JCRSessionFactory.getInstance().getCurrentUser());
             try (ObjectOutputStream oos = new ObjectOutputStream(out)) {
                 oos.writeObject(obj);
                 m.put("data", out.toByteArray());
@@ -207,17 +211,20 @@ public class WorkflowObservationManager implements HazelcastTopic.MessageListene
             Object obj;
             try (ObjectInputStream is = new ObjectInputStream(new ByteArrayInputStream((byte[]) m.get("data")))) {
                 obj = is.readObject();
+                JCRSessionFactory.getInstance().setCurrentUser((JahiaUser) m.get("user"));
+                if (m.get("type").equals("notifyWorkflowStarted")) {
+                    notifyWorkflowStarted((Workflow) obj);
+                } else if (m.get("type").equals("notifyWorkflowEnded")) {
+                    notifyWorkflowEnded((HistoryWorkflow) obj);
+                } else if (m.get("type").equals("notifyNewTask")) {
+                    notifyNewTask((WorkflowTask) obj);
+                } else if (m.get("type").equals("notifyTaskEnded")) {
+                    notifyTaskEnded((WorkflowTask) obj);
+                }
             } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
-            }
-            if (m.get("type").equals("notifyWorkflowStarted")) {
-                notifyWorkflowStarted((Workflow) obj);
-            } else if (m.get("type").equals("notifyWorkflowEnded")) {
-                notifyWorkflowEnded((HistoryWorkflow) obj);
-            } else if (m.get("type").equals("notifyNewTask")) {
-                notifyNewTask((WorkflowTask) obj);
-            } else if (m.get("type").equals("notifyTaskEnded")) {
-                notifyTaskEnded((WorkflowTask) obj);
+            } finally {
+                JcrSessionFilter.endRequest();
             }
         }
     }

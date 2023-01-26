@@ -5,7 +5,7 @@ LABEL maintainer="Jahia Product team <product@jahia.com>"
 ARG DEBUG_TOOLS="false"
 ARG FFMPEG="false"
 ARG LIBREOFFICE="false"
-ARG MAVEN_VER="3.8.1"
+ARG MAVEN_VER="3.8.7"
 ARG MAVEN_BASE_URL="https://archive.apache.org/dist/maven/maven-3"
 ARG MODULES_BASE_URL="https://store.jahia.com/cms/mavenproxy/private-app-store/org/jahia/modules"
 ARG IMAGEMAGICK_BINARIES_DOWNLOAD_URL="https://imagemagick.org/archive/binaries/magick"
@@ -19,7 +19,6 @@ ARG C_USER="tomcat"
 ARG C_GROUP="tomcat"
 
 ARG INSTALL_GRAALVM=""
-ARG GRAALVM_URL="https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.3.0/graalvm-ce-java11-linux-amd64-21.3.0.tar.gz"
 
 ENV RESTORE_MODULE_STATES="false"
 ENV RESTORE_PERSISTED_CONFIGURATION="false"
@@ -51,7 +50,7 @@ WORKDIR /tmp
 RUN apt-get update \
     && apt-get upgrade -y \
     && magick_packages="libfontconfig1 libx11-6 libharfbuzz0b libfribidi0" \
-    && packages="apt-utils ncat wget unzip logrotate ${magick_packages}" \
+    && packages="apt-utils ncat wget unzip logrotate ${magick_packages} imagemagick" \
     && if ${DEBUG_TOOLS}; then \
         packages="${packages} vim binutils less procps iputils-ping htop"; \
        fi \
@@ -65,32 +64,23 @@ RUN apt-get update \
         ${packages} \
     && rm -rf /var/lib/apt/lists/*
 
-RUN if ${INSTALL_GRAALVM:-false}; then \
+RUN /bin/bash -c 'if ${INSTALL_GRAALVM:-false}; then \
         echo "Get Graalvm..." \
         && cd /usr/local \
-        && wget -nv ${GRAALVM_URL} \
-        && tar -xzf graalvm-ce-java*.tar.gz \
-        && rm graalvm-ce-java*.tar.gz \
-        && mv graalvm* graalvm; \
-    fi
+        && wget -nv https://get.graalvm.org/jdk \
+        && /bin/bash jdk --no-progress \
+        && mv graalvm* graalvm \
+        && rm jdk; \
+    fi'
 
 ENV GRAALVM_PATH=${INSTALL_GRAALVM:+/usr/local/graalvm}
 ENV PATH=/usr/local/graalvm/bin:${PATH}
-ENV JAVA_HOME=${GRAALVM_PATH:-$JAVA_HOME}
-
-# Retrieve latest ImageMagick binaries
-RUN echo "Retrieve latest ImageMagick binaries..." \
-    && wget -nv -O magick ${IMAGEMAGICK_BINARIES_DOWNLOAD_URL} \
-    && chmod +x magick \
-    && ./magick --appimage-extract \
-    && mkdir /opt/magick \
-    && mv squashfs-root/usr/* /opt/magick \
-    && rm -rf /opt/magick/share/ squashfs-root/ ./magick
 
 RUN echo "Retrieve latest Yourkit agent binaries..." \
-    && wget https://www.yourkit.com/download/docker/YourKit-JavaProfiler-2021.11-docker.zip -P /tmp/ \
-    && unzip /tmp/YourKit-JavaProfiler-2021.11-docker.zip -d /usr/local \
-    && rm /tmp/YourKit-JavaProfiler-2021.11-docker.zip
+    && wget -nv -O yourkit.zip https://www.yourkit.com/download/docker/YourKit-JavaProfiler-2022.3-docker.zip -P /tmp/ \
+    && unzip /tmp/yourkit.zip -d /usr/local \
+    && rm /tmp/yourkit.zip \
+    && mv /usr/local/YourKit-JavaProfiler* /usr/local/yourkit
 
 # Add container user and grant permissions
 RUN groupadd -g 999 ${C_GROUP}
@@ -110,11 +100,6 @@ RUN wget -nv -O maven.zip ${MAVEN_BASE_URL}/${MAVEN_VER}/binaries/apache-maven-$
 
 COPY --chown=${C_USER}:${C_GROUP} settings.xml /home/${C_USER}/.m2/settings.xml
 
-# Download jahia plugin
-USER ${C_USER}
-RUN mvn -q -Pconfiguration ${JAHIA_PLUGIN}:help
-USER root
-
 # Add scripts
 COPY bin/* /usr/local/bin/
 COPY setenv.sh /usr/local/tomcat/bin
@@ -130,6 +115,11 @@ COPY --chown=${C_USER}:${C_GROUP} target/dependency/jahia-war /usr/local/tomcat/
 RUN mkdir -p /etc/jahia  \
     && mkdir -p /etc/jahia/jahia \
     && chown -R ${C_USER}:${C_GROUP} /usr/local/tomcat/conf /etc/jahia
+
+# Download jahia plugin
+USER ${C_USER}
+RUN mvn -q -Pconfiguration ${JAHIA_PLUGIN}:help
+USER root
 
 STOPSIGNAL SIGINT
 

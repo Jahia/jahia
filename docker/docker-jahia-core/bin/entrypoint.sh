@@ -181,7 +181,16 @@ if [ "${RESTORE_PERSISTED_CONFIGURATION}" == "true" ]; then
 fi
 
 if [ "$YOURKIT_ACTIVATED" == "true" ]; then
-    export CATALINA_OPTS="${CATALINA_OPTS} -agentpath:/usr/local/YourKit-JavaProfiler-2021.11/bin/linux-x86-64/libyjpagent.so=port=10001,listen=all"
+    case $(uname -m) in
+
+    x86_64)
+      export CATALINA_OPTS="${CATALINA_OPTS} -agentpath:/usr/local/yourkit/bin/linux-x86-64/libyjpagent.so=port=10001,listen=all"
+      ;;
+
+    arm64)
+      export CATALINA_OPTS="${CATALINA_OPTS} -agentpath:/usr/local/yourkit/bin/linux-arm-64/libyjpagent.so=port=10001,listen=all"
+      ;;
+    esac
 fi
 
 if [ "$JPDA" == "true" ]; then

@@ -6,16 +6,16 @@
     </parent>
     <artifactId>docker-jahia-core</artifactId>
     <modelVersion>4.0.0</modelVersion>
-
+    
     <packaging>pom</packaging>
-
+    
     <properties>
         <image.repo>jahia-core</image.repo>
         <image.repo.classifier>-dev</image.repo.classifier>
         <image.tag>${project.version}</image.tag>
-        <image.graalvm />
+        <image.graalvm/>
     </properties>
-
+    
     <repositories>
         <repository>
             <id>jahia-public</id>
@@ -30,7 +30,7 @@
             </snapshots>
         </repository>
     </repositories>
-
+    
     <build>
         <plugins>
             <plugin>
@@ -58,17 +58,19 @@
                                     <version>${project.version}</version>
                                     <classifier>data-package</classifier>
                                     <type>zip</type>
-                                    <outputDirectory>${project.build.directory}/dependency/jahia-war-data-package</outputDirectory>
+                                    <outputDirectory>${project.build.directory}/dependency/jahia-war-data-package
+                                    </outputDirectory>
                                 </artifactItem>
                                 <!-- the following artifacts must be moved from pack to here ! -->
-
+                                
                                 <artifactItem>
                                     <groupId>org.jahia.server</groupId>
                                     <artifactId>shared-libraries</artifactId>
                                     <version>${project.version}</version>
                                     <classifier>all</classifier>
                                     <type>zip</type>
-                                    <outputDirectory>${project.build.directory}/dependency/shared-libraries</outputDirectory>
+                                    <outputDirectory>${project.build.directory}/dependency/shared-libraries
+                                    </outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.jahia.server</groupId>
@@ -76,19 +78,19 @@
                                     <version>${project.version}</version>
                                     <classifier>all</classifier>
                                     <type>zip</type>
-                                    <outputDirectory>${project.build.directory}/dependency/jdbc-drivers</outputDirectory>
+                                    <outputDirectory>${project.build.directory}/dependency/jdbc-drivers
+                                    </outputDirectory>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- tried to use plugin from spotify -->
+            
             <plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>dockerfile-maven-plugin</artifactId>
-                <version>1.4.13</version>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.40.3</version>
                 <executions>
                     <execution>
                         <id>default</id>
@@ -99,16 +101,33 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <dockerfile>Dockerfile</dockerfile>
-                    <repository>jahia/${image.repo}${image.repo.classifier}</repository>
-                    <tag>${image.tag}</tag>
-                    <buildArgs>
-                        <JAHIA_PLUGIN>org.jahia.server:jahia-maven-plugin:${jahia.plugin.version}</JAHIA_PLUGIN>
-                        <INSTALL_GRAALVM>${image.graalvm}</INSTALL_GRAALVM>
-                    </buildArgs>
+                    <images>
+                        <image>
+                            <name>jahia/${image.repo}${image.repo.classifier}</name>
+                            <build>
+                                <contextDir>${project.basedir}</contextDir>
+                                <buildx>
+                                    <builderName>jahia_builder</builderName>
+                                    <platforms>
+                                        <platform>linux/amd64</platform>
+                                        <platform>linux/arm64</platform>
+                                    </platforms>
+                                </buildx>
+                                <tags>${image.tag}</tags>
+                                <args>
+                                    <JAHIA_PLUGIN>org.jahia.server:jahia-maven-plugin:${jahia.plugin.version}
+                                    </JAHIA_PLUGIN>
+                                    <INSTALL_GRAALVM>${image.graalvm}</INSTALL_GRAALVM>
+                                </args>
+                                <env>
+                                    <JAVA_HOME>/opt/java/openjdk</JAVA_HOME>
+                                </env>
+                            </build>
+                        </image>
+                    </images>
                 </configuration>
             </plugin>
-
+        
         </plugins>
     </build>
 

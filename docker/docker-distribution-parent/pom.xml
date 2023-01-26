@@ -50,16 +50,16 @@
     </parent>
     <artifactId>docker-distribution-parent</artifactId>
     <modelVersion>4.0.0</modelVersion>
-
+    
     <packaging>pom</packaging>
-
+    
     <properties>
         <parent.tag>${project.version}</parent.tag>
         <image.repo.classifier>-dev</image.repo.classifier>
-        <image.repo />
+        <image.repo/>
         <image.tag>${project.version}</image.tag>
     </properties>
-
+    
     <repositories>
         <repository>
             <id>jahia-public</id>
@@ -74,7 +74,7 @@
             </snapshots>
         </repository>
     </repositories>
-
+    
     <build>
         <plugins>
             <plugin>
@@ -120,7 +120,7 @@
                     </execution>
                 </executions>
             </plugin>
-
+            
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
@@ -152,35 +152,62 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- tried to use plugin from spotify -->
-            <plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>dockerfile-maven-plugin</artifactId>
-                <version>1.4.13</version>
-                <executions>
-                    <execution>
-                        <id>default</id>
-                        <goals>
-                            <goal>build</goal>
-                            <goal>tag</goal>
-                            <goal>push</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <dockerfile>Dockerfile</dockerfile>
-                    <repository>jahia/${image.repo}${image.repo.classifier}</repository>
-                    <tag>${image.tag}</tag>
-                    <buildArgs>
-                        <PARENT_TAG>${parent.tag}</PARENT_TAG>
-                        <IMAGE_REPO_CLASSIFIER>${image.repo.classifier}</IMAGE_REPO_CLASSIFIER>
-                        <PROJECT_VERSION>${project.version}</PROJECT_VERSION>
-                    </buildArgs>
-                    <skip>${build.skip}</skip>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
-
+    <profiles>
+        <profile>
+            <id>docker-plugin</id>
+            <activation>
+                <file>
+                    <exists>${basedir}/Dockerfile</exists>
+                </file>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>0.40.3</version>
+                        <executions>
+                            <execution>
+                                <id>default</id>
+                                <goals>
+                                    <goal>build</goal>
+                                    <goal>tag</goal>
+                                    <goal>push</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <name>jahia/${image.repo}${image.repo.classifier}</name>
+                                    <build>
+                                        <contextDir>${project.basedir}</contextDir>
+                                        <buildx>
+                                            <builderName>jahia_builder</builderName>
+                                            <platforms>
+                                                <platform>linux/amd64</platform>
+                                                <platform>linux/arm64</platform>
+                                            </platforms>
+                                        </buildx>
+                                        <tags>${image.tag}</tags>
+                                        <args>
+                                            <PARENT_TAG>${parent.tag}</PARENT_TAG>
+                                            <IMAGE_REPO_CLASSIFIER>${image.repo.classifier}</IMAGE_REPO_CLASSIFIER>
+                                            <PROJECT_VERSION>${project.version}</PROJECT_VERSION>
+                                        </args>
+                                        <env>
+                                            <JAVA_HOME>/opt/java/openjdk</JAVA_HOME>
+                                        </env>
+                                        <skip>${build.skip}</skip>
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

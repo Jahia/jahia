@@ -96,7 +96,7 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         run: |
           cd gwt/
-          mvn -U -ntp -s ../.github/maven.settings.xml -e \            
+          mvn -U -ntp -s ../.github/maven.settings.xml -e \
             clean deploy \
             -Pgwt-development \
             -Dbamboo.buildNumber=${{ github.run_id }}

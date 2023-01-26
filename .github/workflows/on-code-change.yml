@@ -74,15 +74,6 @@ jobs:
           echo "OUTPUT: image_tag = ${{steps.tags.outputs.image_tag}}"
 
       # Series of steps only executed when pushing to master or to one of the maintenance branches
-      - name: Build package and load all dependencies into local Maven repository
-        shell: bash
-        if: ${{ github.event_name == 'push' }}
-        run: |
-          mvn -U -ntp -s .github/maven.settings.xml -e \
-            -Dimage.tag=${{steps.tags.outputs.image_tag}} \
-            clean deploy de.qaware.maven:go-offline-maven-plugin:resolve-dependencies \
-            -Pgwt-production,unit-tests,docker \
-            -Dbamboo.buildNumber=${{ github.run_id }}
       - uses: jahia/jahia-modules-action/docker-tags@v2
         if: ${{ github.event_name == 'push' }}
         with:
@@ -91,13 +82,21 @@ jobs:
           version: ${{steps.tags.outputs.image_tag}}
           repo: "jahia-core-dev"
           dry-run: true
+      - name: Build package and load all dependencies into local Maven repository
+        shell: bash
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          mvn -U -ntp -s .github/maven.settings.xml -e \
+            -Dimage.tag=`echo "${{steps.tags.outputs.image_tag}},${{ env.PARAM_VERSION_MAJOR }}.${{ env.PARAM_VERSION_MINOR}}.${{ env.PARAM_VERSION_HF}}${{ env.PARAM_VERSION_CLASSIFIER}},${{ env.PARAM_VERSION_MAJOR }}.${{ env.PARAM_VERSION_MINOR}}${{ env.PARAM_VERSION_CLASSIFIER}},${{ env.PARAM_VERSION_MAJOR }}${{ env.PARAM_VERSION_CLASSIFIER}}"` \            
+            clean deploy de.qaware.maven:go-offline-maven-plugin:resolve-dependencies \
+            -Pgwt-production,unit-tests,docker \
+            -Dbamboo.buildNumber=${{ github.run_id }}
       - name: Compile GWT development
         shell: bash
         if: ${{ github.event_name == 'push' }}
         run: |
           cd gwt/
-          mvn -U -ntp -s ../.github/maven.settings.xml -e \
-            -Dimage.tag=`echo "$(cat image.tag),${{ env.PARAM_VERSION_MAJOR }}.${{ env.PARAM_VERSION_MINOR}}.${{ env.PARAM_VERSION_HF}}${{ env.PARAM_VERSION_CLASSIFIER}},${{ env.PARAM_VERSION_MAJOR }}.${{ env.PARAM_VERSION_MINOR}}${{ env.PARAM_VERSION_CLASSIFIER}},${{ env.PARAM_VERSION_MAJOR }}${{ env.PARAM_VERSION_CLASSIFIER}}"` \
+          mvn -U -ntp -s ../.github/maven.settings.xml -e \            
             clean deploy \
             -Pgwt-development \
             -Dbamboo.buildNumber=${{ github.run_id }}

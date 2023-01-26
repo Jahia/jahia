@@ -97,7 +97,7 @@ jobs:
         run: |
           cd gwt/
           mvn -U -ntp -s ../.github/maven.settings.xml -e \
-            -Dimage.tag=`echo "$(cat image.tag) , ${{ env.PARAM_VERSION_MAJOR }}.${{ env.PARAM_VERSION_MINOR}}.${{ env.PARAM_VERSION_HF}}${{ env.PARAM_VERSION_CLASSIFIER}} , ${{ env.PARAM_VERSION_MAJOR }}.${{ env.PARAM_VERSION_MINOR}}${{ env.PARAM_VERSION_CLASSIFIER}} , ${{ env.PARAM_VERSION_MAJOR }}${{ env.PARAM_VERSION_CLASSIFIER}}"` \
+            -Dimage.tag=`echo "$(cat image.tag),${{ env.PARAM_VERSION_MAJOR }}.${{ env.PARAM_VERSION_MINOR}}.${{ env.PARAM_VERSION_HF}}${{ env.PARAM_VERSION_CLASSIFIER}},${{ env.PARAM_VERSION_MAJOR }}.${{ env.PARAM_VERSION_MINOR}}${{ env.PARAM_VERSION_CLASSIFIER}},${{ env.PARAM_VERSION_MAJOR }}${{ env.PARAM_VERSION_CLASSIFIER}}"` \
             clean deploy \
             -Pgwt-development \
             -Dbamboo.buildNumber=${{ github.run_id }}

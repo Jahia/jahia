@@ -87,7 +87,8 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         run: |
           mvn -U -ntp -s .github/maven.settings.xml -e \
-            -Dimage.tag=`echo "${{steps.tags.outputs.image_tag}},${{ env.PARAM_VERSION_MAJOR }}.${{ env.PARAM_VERSION_MINOR}}.${{ env.PARAM_VERSION_HF}}${{ env.PARAM_VERSION_CLASSIFIER}},${{ env.PARAM_VERSION_MAJOR }}.${{ env.PARAM_VERSION_MINOR}}${{ env.PARAM_VERSION_CLASSIFIER}},${{ env.PARAM_VERSION_MAJOR }}${{ env.PARAM_VERSION_CLASSIFIER}}"` \
+            -Dimage.tag=${{steps.tags.outputs.image_tag}} \
+            -Dimage.alias=`echo "latest,${{ env.PARAM_VERSION_MAJOR }}.${{ env.PARAM_VERSION_MINOR}}.${{ env.PARAM_VERSION_HF}}${{ env.PARAM_VERSION_CLASSIFIER}},${{ env.PARAM_VERSION_MAJOR }}.${{ env.PARAM_VERSION_MINOR}}${{ env.PARAM_VERSION_CLASSIFIER}},${{ env.PARAM_VERSION_MAJOR }}${{ env.PARAM_VERSION_CLASSIFIER}}"` \
             clean deploy de.qaware.maven:go-offline-maven-plugin:resolve-dependencies \
             -Pgwt-production,unit-tests,docker \
             -Dbamboo.buildNumber=${{ github.run_id }}

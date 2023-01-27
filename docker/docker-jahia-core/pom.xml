@@ -13,6 +13,7 @@
         <image.repo>jahia-core</image.repo>
         <image.repo.classifier>-dev</image.repo.classifier>
         <image.tag>${project.version}</image.tag>
+        <image.alias/>
         <image.graalvm/>
     </properties>
     
@@ -103,7 +104,7 @@
                 <configuration>
                     <images>
                         <image>
-                            <name>jahia/${image.repo}${image.repo.classifier}</name>
+                            <name>jahia/${image.repo}${image.repo.classifier}:${image.tag}</name>
                             <build>
                                 <contextDir>${project.basedir}</contextDir>
                                 <buildx>
@@ -113,7 +114,7 @@
                                         <platform>linux/arm64</platform>
                                     </platforms>
                                 </buildx>
-                                <tags>${image.tag}</tags>
+                                <tags>${image.alias}</tags>
                                 <args>
                                     <JAHIA_PLUGIN>org.jahia.server:jahia-maven-plugin:${jahia.plugin.version}
                                     </JAHIA_PLUGIN>

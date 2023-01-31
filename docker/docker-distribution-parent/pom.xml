@@ -209,5 +209,52 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>docker-plugin-amd64-only</id>
+            <activation>
+                <file>
+                    <exists>${basedir}/Dockerfile.amd64</exists>
+                </file>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>0.40.3</version>
+                        <executions>
+                            <execution>
+                                <id>default</id>
+                                <goals>
+                                    <goal>build</goal>
+                                    <goal>push</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <name>jahia/${image.repo}${image.repo.classifier}:${image.tag}</name>
+                                    <build>
+                                        <contextDir>${project.basedir}</contextDir>
+                                        <dockerFile>Dockerfile.amd64</dockerFile>
+                                        <tags>${image.alias}</tags>
+                                        <args>
+                                            <PARENT_TAG>${parent.tag}</PARENT_TAG>
+                                            <IMAGE_REPO_CLASSIFIER>${image.repo.classifier}</IMAGE_REPO_CLASSIFIER>
+                                            <PROJECT_VERSION>${project.version}</PROJECT_VERSION>
+                                        </args>
+                                        <env>
+                                            <JAVA_HOME>/opt/java/openjdk</JAVA_HOME>
+                                        </env>
+                                        <skip>${build.skip}</skip>
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>

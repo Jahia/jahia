@@ -103,7 +103,7 @@ public final class Patterns {
 
     public static final Pattern ACCENTS = Pattern.compile("[\u0300-\u036f]");
 
-    public static final Pattern NON_ALLOWED_CHARS = Pattern.compile("[^\\w\\-,()!]");
+    public static final Pattern NON_ALLOWED_CHARS = Pattern.compile("[^\\w\\-]");
 
     public static final Pattern CONSECUTIVE_DASHES = Pattern.compile("-+");
 

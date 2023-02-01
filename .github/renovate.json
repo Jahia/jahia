@@ -3,6 +3,7 @@
   "extends": ["config:base"],
   "labels": ["dependencies"],
   "branchPrefix": "renovate_",
+  "rebaseWhen": "never",
   "packageRules": [
     {
       "matchUpdateTypes": ["major"],

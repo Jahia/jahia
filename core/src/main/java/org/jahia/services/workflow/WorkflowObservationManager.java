@@ -110,7 +110,7 @@ public class WorkflowObservationManager implements HazelcastTopic.MessageListene
             try {
                 listener.workflowStarted(wf);
             } catch (Exception e) {
-                logger.error(e.getMessage(), e);
+                logger.debug("Message cannot be delivered", e);
             }
         }
     }
@@ -126,7 +126,7 @@ public class WorkflowObservationManager implements HazelcastTopic.MessageListene
             try {
                 listener.workflowEnded(wf);
             } catch (Exception e) {
-                logger.error(e.getMessage(), e);
+                logger.debug("Message cannot be delivered", e);
             }
         }
     }
@@ -142,7 +142,7 @@ public class WorkflowObservationManager implements HazelcastTopic.MessageListene
             try {
                 listener.newTaskCreated(task);
             } catch (Exception e) {
-                logger.error(e.getMessage(), e);
+                logger.debug("Message cannot be delivered", e);
             }
         }
     }
@@ -158,7 +158,7 @@ public class WorkflowObservationManager implements HazelcastTopic.MessageListene
             try {
                 listener.taskEnded(task);
             } catch (Exception e) {
-                logger.error(e.getMessage(), e);
+                logger.debug("Message cannot be delivered", e);
             }
         }
     }

@@ -67,7 +67,6 @@ import org.jahia.services.content.decorator.JCRPortletNode;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.utils.InsertionSortedMap;
 import org.jahia.utils.Patterns;
 import org.xml.sax.SAXException;
 
@@ -79,7 +78,6 @@ import javax.portlet.WindowState;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -121,7 +119,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
      * This map contains a mapping of application type names to application
      * management providers for the different application types.
      */
-    private Map<String, ApplicationsManagerProvider> managerProviders = new InsertionSortedMap<String, ApplicationsManagerProvider>();
+    private Map<String, ApplicationsManagerProvider> managerProviders = new LinkedHashMap<>();
 
     private JCRTemplate jcrTemplate;
 

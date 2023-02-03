@@ -48,11 +48,11 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.utils.InsertionSortedMap;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -74,7 +74,7 @@ public class DispatchingServiceImpl extends DispatchingService {
 
     private static final String ENTRYPOINT_ID_SEPARATOR = "_";
 
-    private Map dispatchingProviders = new InsertionSortedMap();
+    private Map dispatchingProviders = new LinkedHashMap();
 
     private ApplicationsManagerService applicationsManager;
 

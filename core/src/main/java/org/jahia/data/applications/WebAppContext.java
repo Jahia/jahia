@@ -58,14 +58,8 @@
 
 package org.jahia.data.applications;
 
-import org.jahia.utils.InsertionSortedMap;
-
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import java.util.*;
 
 
 /**
@@ -88,7 +82,7 @@ public class WebAppContext implements Serializable
     private String descr = "";
 
     /** The Map of servlet bean , keyed by the servlet name **/
-    private InsertionSortedMap<String, ServletBean> servlets = new InsertionSortedMap<String, ServletBean>();
+    private LinkedHashMap<String, ServletBean> servlets = new LinkedHashMap<>();
     private static final Object servletsLock = new Object();
 
     /**

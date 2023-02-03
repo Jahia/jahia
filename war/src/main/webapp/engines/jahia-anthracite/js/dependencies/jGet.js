@@ -1121,7 +1121,7 @@
             if (!mutationObservers[this.selector]) {
                 mutationObservers[this.selector] = {
                     observer: new MutationObserver(function (mutations) {
-                        DOMMutationCallback(mutations, selector, parentNodes);
+                        DOMMutationCallback(mutations, selector);
                     }),
                     callbacks: {}
                 };

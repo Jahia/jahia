@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -79,7 +79,7 @@ import com.google.common.collect.ImmutableSet;
 
 /**
  * HTTP-based test for the /files servlet, including caching.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class FileServletTest extends JahiaTestCase {
@@ -234,7 +234,7 @@ public class FileServletTest extends JahiaTestCase {
         // should be accessible with a logged in user
         testCached(SWITCH_SMALL_TXT_URL, "aaaaa");
         testCached(SWITCH_LARGE_TXT_URL, "bbbbb");
-        
+
         logout();
 
         // should not be accessible as guest

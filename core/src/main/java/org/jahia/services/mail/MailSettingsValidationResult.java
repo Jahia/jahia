@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ package org.jahia.services.mail;
 
 /**
  * Mail settings validation result.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class MailSettingsValidationResult {
@@ -58,7 +58,7 @@ public class MailSettingsValidationResult {
 
     private boolean success = true;
 
-    
+
     private MailSettingsValidationResult() {
         super();
     }
@@ -78,7 +78,7 @@ public class MailSettingsValidationResult {
 
     /**
      * Returns the args.
-     * 
+     *
      * @return the args
      */
     public Object[] getArgs() {
@@ -87,7 +87,7 @@ public class MailSettingsValidationResult {
 
     /**
      * Returns the messageKey.
-     * 
+     *
      * @return the messageKey
      */
     public String getMessageKey() {
@@ -96,7 +96,7 @@ public class MailSettingsValidationResult {
 
     /**
      * Returns the property.
-     * 
+     *
      * @return the property
      */
     public String getProperty() {
@@ -105,7 +105,7 @@ public class MailSettingsValidationResult {
 
     /**
      * Returns the success.
-     * 
+     *
      * @return the success
      */
     public boolean isSuccess() {

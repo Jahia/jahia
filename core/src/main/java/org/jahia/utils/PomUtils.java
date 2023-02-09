@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ import java.util.jar.JarFile;
 
 /**
  * Utility class for reading and manipulating Maven project files (pom.xml).
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public final class PomUtils {
@@ -95,7 +95,7 @@ public final class PomUtils {
     /**
      * Reads the artifact version from the provided pom.xml file. If the artifact version is not specified, takes the version of the parent,
      * if present. Otherwise returns <code>null</code>.
-     * 
+     *
      * @param pomXmlFile
      *            the Maven project descriptor file to read
      * @return the artifact version from the provided pom.xml file. If the artifact version is not specified, takes the version of the
@@ -112,7 +112,7 @@ public final class PomUtils {
     /**
      * Gets the artifact version from the provided model. If the artifact version is not specified, takes the version of the parent, if
      * present. Otherwise returns <code>null</code>.
-     * 
+     *
      * @param model
      *            the Maven project model
      * @return the artifact version from the provided model. If the artifact version is not specified, takes the version of the parent, if
@@ -129,7 +129,7 @@ public final class PomUtils {
 
     /**
      * Parses the Maven project model from the specified pom.xml file.
-     * 
+     *
      * @param pomXmlFile
      *            the Maven project descriptor to read model from
      * @return the Maven project model from the specified pom.xml file
@@ -149,7 +149,7 @@ public final class PomUtils {
 
     /**
      * Parses the Maven project model from the specified pom.xml input stream.
-     * 
+     *
      * @param pomXmlStream the Maven project descriptor input stream to read model from
      * @return the Maven project model from the specified pom.xml input stream
      * @throws IOException in case of a reading problem
@@ -166,7 +166,7 @@ public final class PomUtils {
 
     /**
      * Updates the distribution management repository in the specified Maven project file.
-     * 
+     *
      * @param pomXmlFile
      *            the Maven project descriptor file to update
      * @param repositoryId
@@ -206,7 +206,7 @@ public final class PomUtils {
 
     /**
      * Updates the Jahia-Depends information in the maven-bundle-plugin to reflect the new list of dependencies.
-     * 
+     *
      * @param pomXmlFile
      *            the Maven project descriptor file to update
      * @param depends
@@ -265,7 +265,7 @@ public final class PomUtils {
 
     /**
      * Updates the SCM connection URL in the specified Maven project file.
-     * 
+     *
      * @param pomXmlFile
      *            the Maven project descriptor file to update
      * @param scmUrl
@@ -290,7 +290,7 @@ public final class PomUtils {
 
     /**
      * Updates the project version in the specified Maven project file.
-     * 
+     *
      * @param pomXmlFile
      *            the Maven project descriptor file to update
      * @param version
@@ -308,7 +308,7 @@ public final class PomUtils {
 
     /**
      * Serializes Maven project model into a specified file.
-     * 
+     *
      * @param model
      *            the Maven project model to serialize
      * @param targetPomXmlFile

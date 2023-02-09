@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -120,24 +120,24 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     private static final String CANNOT_SEE_CONTENT = " cannot see content, she should see";
     private static final String SEES_WRONG_CONTENT = " sees content, she should not see";
     private static final String CONTENT_FOR = "content for ";
-    
+
     protected static final String ERROR_PAGE_PATH = SITECONTENT_ROOT_NODE + "/home/error";
     protected static final String LONG_PAGE_PATH = SITECONTENT_ROOT_NODE + "/home/long";
     protected static final String LONG_5_PAGE_PATH = SITECONTENT_ROOT_NODE + "/home/long5";
-    
+
     protected static final String REQUEST_ID_PREFIX = "testModuleWait";
     protected static final String CONCURRENT_REQUEST_ID_PREFIX = "testMaxConcurrent";
-    
+
     protected static final String CACHE_RENDER_FILTER_1 = "CacheHttpTestRenderFilter1";
     protected static final String CACHE_RENDER_FILTER_2 = "CacheHttpTestRenderFilter2";
     private static final Set<String> PAGE_NAMES_TO_SKIP = ImmutableSet.of("long", "error", "user-per-content-test", "simple-page-A", "simple-page-B",
             "simple-page-C", "simple-page-AC", "simple-page-BC", "simple-page-AB", "simple-page-root", "simple-page-users");
-    
+
     private static boolean cacheFilterDisabled;
     private static boolean aggregateFilterDisabled;
     private static boolean aggregateCacheFilterDisabled;
     private static boolean areaResourceCacheKeyPartGeneratorDisabled;
-    
+
     Random random = new SecureRandom();
     private String[] texts = {"visible for root", "visible for users only", "visible for userAB", "visible for userBC", "visible for userAC", "visible for groupA", "visible for groupB", "visible for groupC"};
     char[] simplePassword = SIMPLE_PASSWORD.toCharArray();
@@ -486,7 +486,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             for (SimpleCredentials userCredentials : allPerm) {
                 results.put(userCredentials.getUserID(), getContent(getUrl(path), userCredentials, null));
             }
-            
+
             List<String> allPermUserIds = allPerm.stream().map(SimpleCredentials::getUserID).collect(Collectors.toList());
             checkAcl(allPermUserIds + ", guest : ", results.get(null), new boolean[] { false, false, false, false, false, false, false, false });
             checkAcl(allPermUserIds + ", " + JahiaTestCase.getRootUserCredentials().getUserID() + " : ",
@@ -579,7 +579,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         }
         return content;
     }
-    
+
     public CloseableHttpResponse executeCall(URL url, SimpleCredentials credentials, String requestId) throws IOException {
         CloseableHttpClient client = HttpClients.custom().setRetryStrategy(new DefaultHttpRequestRetryStrategy(0, TimeValue.MAX_VALUE)).build();
 

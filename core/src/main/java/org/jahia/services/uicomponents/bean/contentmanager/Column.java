@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -47,11 +47,11 @@ import org.jahia.services.uicomponents.bean.Visibility;
 import java.io.Serializable;
 
 /**
- * 
+ *
  * User: ktlili
  * Date: Apr 12, 2010
  * Time: 3:03:45 PM
- * 
+ *
  */
 public class Column implements Serializable {
     private static final long serialVersionUID = 2923904943046448547L;

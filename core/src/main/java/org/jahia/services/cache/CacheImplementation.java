@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -46,11 +46,11 @@ import java.util.Collection;
 import java.util.Set;
 
 /**
- * 
+ *
  * User: Serge Huber
  * Date: Jul 12, 2005
  * Time: 3:31:00 PM
- * 
+ *
  */
 public interface CacheImplementation<K, V> {
     @Deprecated
@@ -66,11 +66,11 @@ public interface CacheImplementation<K, V> {
      */
     void put(K key, String[] groups, V value);
 
-    boolean isEmpty();    
-    
+    boolean isEmpty();
+
     int size();
-    
-    Collection<K> getKeys();    
+
+    Collection<K> getKeys();
 
     /**
      * Get the number of groups for this cache. This is an approximate value
@@ -84,7 +84,7 @@ public interface CacheImplementation<K, V> {
      * Get the total number of keys in all the groups of this cache. This is
      * an approximate value as it is not cached.
      * @return a long representing the number of keys in all the groups.
-     */    
+     */
     public long getGroupsKeysTotal();
 
     void flushAll(boolean propagate);
@@ -94,7 +94,7 @@ public interface CacheImplementation<K, V> {
     void remove(K key);
 
     public String getName();
-    
+
     public void setName(String name);
 
     Set<GroupCacheKey> getGroupKeys(String groupName);

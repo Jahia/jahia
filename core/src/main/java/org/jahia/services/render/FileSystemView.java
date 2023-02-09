@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ import javax.servlet.RequestDispatcher;
  * User: toto
  * Date: Sep 28, 2009
  * Time: 7:20:38 PM
- * 
+ *
  * @deprecated in favour of {@link BundleView}
  */
 @Deprecated
@@ -83,7 +83,7 @@ public class FileSystemView implements Comparable<View>, View {
     public static final String THUMBNAIL = "image";
 
     private static Map<String,Properties> propCache = new ConcurrentHashMap<String, Properties>();
-    
+
     public static void clearPropertiesCache() {
         propCache.clear();
     }
@@ -131,10 +131,10 @@ public class FileSystemView implements Comparable<View>, View {
 //            if (TemplateUtils.isResourceAvailable(thumbnail)) {
 //                properties.put(THUMBNAIL, Jahia.getContextPath() + thumbnail);
 //            }
-            
+
             propCache.put(propName, properties);
         }
-        
+
         if(defaultProps) {
             this.defaultProperties = properties;
         } else {

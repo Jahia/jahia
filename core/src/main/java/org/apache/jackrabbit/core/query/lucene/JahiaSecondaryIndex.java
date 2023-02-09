@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -77,9 +77,9 @@ public class JahiaSecondaryIndex extends JahiaSearchIndex {
             this.add = add;
         }
     }
-    
+
     private List<DelayedIndexUpdate> delayedUpdates = Collections.synchronizedList(new LinkedList<DelayedIndexUpdate>());
-    
+
     private JahiaSearchIndex mainIndex;
 
     private SpellChecker spellChecker;
@@ -88,7 +88,7 @@ public class JahiaSecondaryIndex extends JahiaSearchIndex {
 
     /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param mainIndex
      *            the main search index instance
      */
@@ -118,7 +118,7 @@ public class JahiaSecondaryIndex extends JahiaSearchIndex {
         }
 
         long startTime = System.currentTimeMillis();
-        
+
         index = new MultiIndex(this, excludedIDs);
         if (index.numDocs() == 0) {
             Path rootPath;
@@ -131,11 +131,11 @@ public class JahiaSecondaryIndex extends JahiaSearchIndex {
             index.createInitialIndex(context.getItemStateManager(),
                     context.getRootId(), rootPath);
         }
-        
+
         log.info("Creation of initial index finished in {} ms", System.currentTimeMillis() - startTime);
 
         startTime = System.currentTimeMillis();
-        
+
         log.info("Running consistency check...");
         try {
             ConsistencyCheck check = runConsistencyCheck();
@@ -143,7 +143,7 @@ public class JahiaSecondaryIndex extends JahiaSearchIndex {
         } catch (Exception e) {
             log.warn("Failed to run consistency check on index: " + e);
         }
-        
+
         log.info("Consistency check took {} ms", System.currentTimeMillis() - startTime);
 
         initSpellChecker();

@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -61,7 +61,7 @@ import org.apache.logging.log4j.util.Strings;
  * version of the jar if available.
  * <p>
  * If the message of the throwable contains a carriage return or line feed character, it gets encoded
- * to prevent log injection. 
+ * to prevent log injection.
  */
 @Plugin(name = "SafeExtendedThrowablePatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "sxEx", "sxThrowable", "sxException" })
@@ -70,7 +70,7 @@ public final class SafeExtendedThrowablePatternConverter extends ThrowablePatter
     private static final String NESTED_STACKTRACE_LINE_START = "\n\t\tat";
     /**
      * Private constructor.
-     * 
+     *
      * @param config
      * @param options options, may be null.
      */
@@ -111,7 +111,7 @@ public final class SafeExtendedThrowablePatternConverter extends ThrowablePatter
             appendExtendedStackTrace(toAppendTo, extStackTrace);
         }
     }
-    
+
     private void appendExtendedStackTrace(final StringBuilder toAppendTo, final String extStackTrace) {
         if (!options.allLines() || !Strings.LINE_SEPARATOR.equals(options.getSeparator())) {
             toAppendTo.append(replaceLineSeparator(extStackTrace));
@@ -122,14 +122,14 @@ public final class SafeExtendedThrowablePatternConverter extends ThrowablePatter
             } else {
                 toAppendTo.append(extStackTrace);
             }
-        }        
+        }
     }
-    
+
     private String replaceLineSeparator(String extStackTrace) {
         String[] array = extStackTrace.split(Strings.LINE_SEPARATOR);
         return StringUtils.join(array, options.getSeparator(), 0, options.minLines(array.length));
     }
-    
+
     private int indexOfMessageWithCRLF(String extStackTrace) {
         int messageStartIndex = 0;
         int stackTraceStartIndex;
@@ -148,7 +148,7 @@ public final class SafeExtendedThrowablePatternConverter extends ThrowablePatter
         } while (messageStartIndex != -1 && stackTraceStartIndex != -1);
         return -1;
     }
-    
+
     private int getNextNestedMessageIndex(String extStackTrace, int stackTraceStartIndex) {
         return getNextIndex(extStackTrace.indexOf("Caused by:", stackTraceStartIndex),
                 extStackTrace.indexOf("Suppressed:", stackTraceStartIndex));
@@ -168,7 +168,7 @@ public final class SafeExtendedThrowablePatternConverter extends ThrowablePatter
             return Math.min(firstIndex, secondIndex);
         }
     }
-    
+
     private String replaceLineSeparatorInMessages(String extStackTrace, int messageWithCRLFIndex) {
         final StringBuilder sb = new StringBuilder(extStackTrace);
         do {
@@ -179,7 +179,7 @@ public final class SafeExtendedThrowablePatternConverter extends ThrowablePatter
         } while (messageWithCRLFIndex != -1);
         return sb.toString();
     }
-    
+
     private int indexOfNestedExceptionMessageWithCRLF(StringBuilder extStackTrace, int startIndex) {
         int stackTraceStartIndex;
         do {
@@ -196,13 +196,13 @@ public final class SafeExtendedThrowablePatternConverter extends ThrowablePatter
                     return startIndex;
                 }
             }
-            startIndex = stackTraceStartIndex; 
+            startIndex = stackTraceStartIndex;
         } while (startIndex != -1 && stackTraceStartIndex != -1);
         return -1;
     }
-    
+
     private StringBuilder replaceCRLF(StringBuilder toAppendTo, int start, int end) {
-        for (int i = end - 1; i >= start; i--) { 
+        for (int i = end - 1; i >= start; i--) {
             final char c = toAppendTo.charAt(i);
             switch (c) {
                 case '\r':

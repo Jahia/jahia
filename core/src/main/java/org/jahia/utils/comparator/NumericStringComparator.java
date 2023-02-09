@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ import java.util.Locale;
 
 /**
  * This class allows sorting of string by their Numeric values also so A1,A10,A2 are sorted like A1,A2,A10
- * or 1B,10B,2B are sorted like 1B,2B,10B. 
+ * or 1B,10B,2B are sorted like 1B,2B,10B.
  * @author cedric.mailleux@jahia.com
  * Date: 7 déc. 2006
  * Time: 17:48:00

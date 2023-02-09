@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -64,7 +64,7 @@ import java.util.Map;
  */
 public class JCRMountPointNode extends JCRProtectedNodeAbstractDecorator {
     private static final Logger logger = LoggerFactory.getLogger(JCRMountPointNode.class);
-    
+
     public static final String MOUNT_POINT_PROPERTY_NAME = "mountPoint";
     public static final String MOUNT_STATUS_PROPERTY_NAME = "mountStatus";
     public static final String MOUNT_SUFFIX = "-mount";
@@ -84,7 +84,7 @@ public class JCRMountPointNode extends JCRProtectedNodeAbstractDecorator {
         if (node.hasPermission(PERMISSION_TO_READ_PROPERTIES)) {
             return true;
         } else if (isRestrictReadForAllProperties()) {
-            // if we restrict access to all properties for unauthorized users, we do not allow to read any of them 
+            // if we restrict access to all properties for unauthorized users, we do not allow to read any of them
             return false;
         }
 
@@ -109,7 +109,7 @@ public class JCRMountPointNode extends JCRProtectedNodeAbstractDecorator {
     /**
      * Flag to restrict read access to all properties of this mount point node for users which do not have appropriate permission
      * {@link #PERMISSION_TO_READ_PROPERTIES}. If <code>true</code>, all properties will be protected by default for unauthorized users.
-     * 
+     *
      * @return <code>true</code> if the access to all properties of this node should be restricted for all unauthorized users
      */
     private boolean isRestrictReadForAllProperties() {

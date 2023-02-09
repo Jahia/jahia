@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -47,9 +47,9 @@ import java.util.Collections;
 
 /**
  * Represents facet data for using in a JSP view.
- * 
+ *
  * @author Sergiy Shyrkov
- * 
+ *
  * @since 7.2.3.1
  */
 public class FacetData {
@@ -69,7 +69,7 @@ public class FacetData {
 
     /**
      * Returns a collection of currently active values for this face, based on corresponding request parameter values.
-     * 
+     *
      * @return a collection of currently active values for this facet or an empty collections if there are no active values
      */
     public Collection<String> getActiveValues() {
@@ -78,7 +78,7 @@ public class FacetData {
 
     /**
      * The regular expression for the request parameter names of this facet (used in calculating the drilldown URL).
-     * 
+     *
      * @return regular expression for the request parameter names of this facet (used in calculating the drilldown URL)
      */
     public String getParameterNameRegex() {
@@ -87,7 +87,7 @@ public class FacetData {
 
     /**
      * Returns the name of the request parameter, this facet is using to submit its active values.
-     * 
+     *
      * @return the name of the request parameter, this facet is using to submit its active values
      */
     public String getValueParameterName() {

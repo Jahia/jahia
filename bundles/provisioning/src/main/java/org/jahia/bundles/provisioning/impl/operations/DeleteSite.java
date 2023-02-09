@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -40,7 +40,6 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.bundles.provisioning.impl.operations;
 
 import org.jahia.services.provisioning.Operation;
@@ -73,7 +72,7 @@ public class DeleteSite implements Operation {
     @Reference
     private JahiaSitesService sitesService;
 
-    @Reference 
+    @Reference
     private JCRTemplate jcrTemplate;
 
     @Override
@@ -84,7 +83,7 @@ public class DeleteSite implements Operation {
     @Override
     public void perform(Map<String, Object> entry, ExecutionContext executionContext) {
         final String siteKey = (String) entry.get("siteKey");
-        
+
         try {
             jcrTemplate.doExecuteWithSystemSession(session -> {
                 try {

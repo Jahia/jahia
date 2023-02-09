@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ public class InitLangBarAttributes extends AbstractJahiaTag {
 
 
     public static final String GO_TO_HOME_PAGE = "goToHomePage";
-    // order attribute authorized values 
+    // order attribute authorized values
     public static final String JAHIA_ADMIN_RANKING = "<jahia_admin_ranking>";
 
     private static final LanguageCodesComparator languageCodesComparator = new LanguageCodesComparator();
@@ -78,9 +78,9 @@ public class InitLangBarAttributes extends AbstractJahiaTag {
 
     // onLanguageSwitch attribute authorized values
     public static final String STAY_ON_CURRENT_PAGE = "stayOnCurrentPage";
-    
+
     private boolean activeLanguagesOnly;
-    
+
     private String order;
 
     public int doEndTag() throws JspException {
@@ -167,7 +167,7 @@ public class InitLangBarAttributes extends AbstractJahiaTag {
     public void setActiveLanguagesOnly(boolean activeLanguagesOnly) {
         this.activeLanguagesOnly = activeLanguagesOnly;
     }
-    
+
     public void setOrder(String order) {
         this.order = order;
     }

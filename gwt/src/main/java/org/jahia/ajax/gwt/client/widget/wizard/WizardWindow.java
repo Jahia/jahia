@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -128,7 +128,7 @@ public class WizardWindow extends Window {
             doNext();
         }
     }
-    
+
     /**
      * Performs operation on the cancel button click;
      */
@@ -138,10 +138,10 @@ public class WizardWindow extends Window {
 
     public void doNext() {
         if (!cards.get(currentStep).isValid()) return;
-        
+
         // execute next action
         cards.get(currentStep).next();
-        
+
         if (currentStep + 1 == cards.size()) {
             cards.get(currentStep).notifyFinishListeners();
 //            hide();
@@ -354,7 +354,7 @@ public class WizardWindow extends Window {
 
     /**
      * Resets the UI of all cards from the the specified one.
-     * 
+     *
      * @param index
      *            the card index to start after
      */
@@ -366,10 +366,10 @@ public class WizardWindow extends Window {
             }
         }
     }
-    
+
     /**
      * Adds the specified card to the wizard and link the previous one with it.
-     * 
+     *
      * @param card
      *            the wizard card to be added
      * @return this wizard window object

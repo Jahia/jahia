@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -72,9 +72,9 @@ public abstract class ObjectKey implements
     private static final long serialVersionUID = 7375719911472500146L;
 
     private static Map<String, ObjectKeyInterface> keyTypeInstances;
-    
+
     public static final String OBJECT_TYPE = "object";
-    
+
     static {
     	keyTypeInstances = new ConcurrentHashMap<String, ObjectKeyInterface>();
     	registerType(CategoryKey.CATEGORY_TYPE, CategoryKey.class);
@@ -224,9 +224,9 @@ public abstract class ObjectKey implements
      * @return true if the object is an instance of the ObjectKey class and
      * the value of the key is the same, false otherwise.
      */
-    public boolean equals(Object obj) { 
+    public boolean equals(Object obj) {
         if (this == obj) return true;
-        
+
         if (obj != null && this.getClass() == obj.getClass()) {
             final ObjectKey destObj = (ObjectKey) obj;
             return this.getKey().equals(destObj.getKey());

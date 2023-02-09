@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -55,12 +55,12 @@ import org.springframework.scheduling.quartz.ResourceLoaderClassLoadHelper;
 /**
  * Implementation of the {@link ResourceLoaderClassLoadHelper} utility class for loading of job and trigger related classes from Jahia
  * modules.
- * 
+ *
  * @author Thomas Draier
  * @author Sergiy Shyrkov
  */
 public class ModulesResourceLoaderClassLoadHelper extends ResourceLoaderClassLoadHelper {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(ModulesResourceLoaderClassLoadHelper.class);
 
     private Map<String, Boolean> coreClassesChecks = new ConcurrentHashMap<String, Boolean>();
@@ -93,7 +93,7 @@ public class ModulesResourceLoaderClassLoadHelper extends ResourceLoaderClassLoa
             // fallback to NoOpJob
             loadModuleClass = NoOpJob.class;
         }
-        
+
         return loadModuleClass;
     }
 }

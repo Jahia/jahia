@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ package org.jahia.utils.zip;
 
 /**
  * Filter for ZIP archive entries.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public interface PathFilter {
@@ -59,7 +59,7 @@ public interface PathFilter {
     /**
      * Tests whether or not the specified path should be included in a path
      * list.
-     * 
+     *
      * @param path
      *            the entry path to be tested
      * @return <code>true</code> if and only if this <code>path</code>

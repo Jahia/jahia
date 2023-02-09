@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ import org.jahia.utils.Patterns;
 
 /**
  * Template information including the name, the node path, the view name, an optional priority and a reference to the next template.
- * 
+ *
  * @author Thomas Draier
  */
 public class Template implements Serializable {
@@ -66,7 +66,7 @@ public class Template implements Serializable {
 
     /**
      * Initializes an instance of this class by deserializing the provided string.
-     * 
+     *
      * @param serialized
      *            the serialized form of the template
      */
@@ -83,7 +83,7 @@ public class Template implements Serializable {
 
     /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param view
      *            the view name
      * @param node
@@ -99,7 +99,7 @@ public class Template implements Serializable {
 
     /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param view
      *            the view name
      * @param node
@@ -122,7 +122,7 @@ public class Template implements Serializable {
 
     /**
      * Returns the name of the template.
-     * 
+     *
      * @return the name of the template
      */
     public String getName() {
@@ -131,7 +131,7 @@ public class Template implements Serializable {
 
     /**
      * Returns the next {@link Template} in the resolution chain.
-     * 
+     *
      * @return the next {@link Template} in the resolution chain
      */
     public Template getNext() {
@@ -151,7 +151,7 @@ public class Template implements Serializable {
 
     /**
      * Returns the node path.
-     * 
+     *
      * @return the node path
      */
     public String getNode() {
@@ -160,7 +160,7 @@ public class Template implements Serializable {
 
     /**
      * Returns the template ordering priority.
-     * 
+     *
      * @return the template ordering priority
      */
     public int getPriority() {
@@ -169,7 +169,7 @@ public class Template implements Serializable {
 
     /**
      * Returns the name of the view.
-     * 
+     *
      * @return the name of the view
      */
     public String getView() {
@@ -178,7 +178,7 @@ public class Template implements Serializable {
 
     /**
      * Returns the serialized form of this template.
-     * 
+     *
      * @return the serialized form of this template
      */
     public String serialize() {
@@ -187,7 +187,7 @@ public class Template implements Serializable {
 
     /**
      * Appends the serialized form of this template to the specified buffer.
-     * 
+     *
      * @param buffer
      *            the buffer to append a serialized form of this template to
      * @return the buffer with the serialized form of this template appended
@@ -203,7 +203,7 @@ public class Template implements Serializable {
 
     /**
      * Sets the next {@link Template} in the resolution chain.
-     * 
+     *
      * @param next
      *            the next {@link Template} in the resolution chain
      */

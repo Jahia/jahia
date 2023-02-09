@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 /**
  * Represents a dedicated tab for configuring URL mapping for content objects
  * and other SEO-related settings.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class SeoTabItem extends EditEngineTabItem {
@@ -102,8 +102,8 @@ public class SeoTabItem extends EditEngineTabItem {
             activeEditor = null;
         }
         super.setProcessed(processed);
-    }    
-    
+    }
+
     private UrlMappingEditor getEditor(NodeHolder engine, AsyncTabItem tab, String locale) {
         UrlMappingEditor editor = editorsByLanguage.get(locale);
         if (editor == null) {
@@ -115,7 +115,7 @@ public class SeoTabItem extends EditEngineTabItem {
         }
         return editor;
     }
-    
+
     public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes, List<GWTJahiaNode> chidren, GWTJahiaNodeACL acl) {
         Set<String> langs = new HashSet<String>(editorsByLanguage.keySet());
         if (langs.isEmpty()) {

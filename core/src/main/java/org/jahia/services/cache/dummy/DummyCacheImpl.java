@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ import java.util.Set;
 
 /**
  * An implementation of the {@link CacheImplementation} that disables caching.
- * 
+ *
  * @author rincevent
  */
 public class DummyCacheImpl<K, V> implements CacheImplementation<K, V> {
@@ -63,51 +63,51 @@ public class DummyCacheImpl<K, V> implements CacheImplementation<K, V> {
     }
 
     public boolean containsKey(Object key) {
-        return false;  
+        return false;
     }
 
     public V get(Object key) {
-        return null;  
+        return null;
     }
 
     public void put(Object key, String[] groups, Object value) {
-        
+
     }
 
     public boolean isEmpty() {
-        return true;  
+        return true;
     }
 
     public int size() {
-        return 0;  
+        return 0;
     }
 
     public Collection<K> getKeys() {
-        return null;  
+        return null;
     }
 
     public long getGroupsSize() {
-        return 0;  
+        return 0;
     }
 
     public long getGroupsKeysTotal() {
-        return 0;  
+        return 0;
     }
 
     public void flushAll(boolean propagate) {
-        
+
     }
 
     public void flushGroup(String groupName) {
-        
+
     }
 
     public void remove(Object key) {
-        
+
     }
 
     public String getName() {
-        return name;  
+        return name;
     }
 
     public void setName(String name) {
@@ -115,6 +115,6 @@ public class DummyCacheImpl<K, V> implements CacheImplementation<K, V> {
     }
 
     public Set<GroupCacheKey> getGroupKeys(String groupName) {
-        return Collections.emptySet(); 
+        return Collections.emptySet();
     }
 }

@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -67,20 +67,20 @@ import static org.junit.Assert.*;
 
 /**
  * This class tests different aspects of our "mark for deletion" implementation
- * 
+ *
  */
 public class MarkForDeletionIT extends AbstractJUnitTest {
     private static String DEFAULT_LANGUAGE = "en";
-    
+
     private final static String TESTSITE_NAME = "markedForDeletionTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
-    
+
     private static final String MEETING = "meeting";
     private static final String PARIS = "paris";
     private static final String GENEVA = "geneva";
     private static final String KLAGENFURT = "klagenfurt";
     private static final String DUESSELDORF = "duesseldorf";
-    
+
     private static final String DELETION_MESSAGE = "Deleted in unit test";
 
     private static final String QUERY = "select * from ["
@@ -106,7 +106,7 @@ public class MarkForDeletionIT extends AbstractJUnitTest {
         super.afterClassSetup();
         TestHelper.deleteSite(TESTSITE_NAME);
     }
-    
+
     @Before
     public void setUp() {
 
@@ -115,8 +115,8 @@ public class MarkForDeletionIT extends AbstractJUnitTest {
     @After
     public void tearDown() {
 
-    }    
-    
+    }
+
     @Test
     public void testMarkForDeletionOnUnpublished() throws Exception {
         reopenSession();
@@ -124,13 +124,13 @@ public class MarkForDeletionIT extends AbstractJUnitTest {
         JCRNodeWrapper node = editSession.getNode("/sites/markedForDeletionTest/contents/" + MEETING + 0);
         node.markForDeletion(DELETION_MESSAGE);
         editSession.save();
-        
+
         assertTrue("jmix:markedForDeletionRoot not set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
         assertTrue("jmix:markedForDeletion not set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
         assertTrue("marked for deletion comment not set", node.getPropertyAsString(Constants.MARKED_FOR_DELETION_MESSAGE).equals(DELETION_MESSAGE));
         assertTrue("j:deletionUser not set", node.hasProperty(Constants.MARKED_FOR_DELETION_USER));
         assertTrue("j:deletionDate not set", node.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
-        
+
         try {
             liveSession.getNode("/sites/markedForDeletionTest/contents/" + MEETING + 0);
             fail("Did not throw PathNotFoundException");
@@ -143,9 +143,9 @@ public class MarkForDeletionIT extends AbstractJUnitTest {
         reopenSession();
 
         jcrService.publishByMainId(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
-        
+
         reopenSession();
-        
+
         try {
             editSession.getNode("/sites/markedForDeletionTest/contents/" + MEETING + 0);
             fail("Did not throw PathNotFoundException");
@@ -165,33 +165,33 @@ public class MarkForDeletionIT extends AbstractJUnitTest {
         reopenSession();
 
         JCRNodeWrapper node = editSession.getNode("/sites/markedForDeletionTest/contents/" + MEETING + 1);
-        
+
         JCRPublicationService jcrService = ServicesRegistry.getInstance()
-                .getJCRPublicationService();        
+                .getJCRPublicationService();
         jcrService.publishByMainId(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
-        
+
         reopenSession();
-        
+
         node = editSession.getNode("/sites/markedForDeletionTest/contents/" + MEETING + 1);
-        
+
         node.markForDeletion(DELETION_MESSAGE);
         editSession.save();
-        
+
         assertTrue("jmix:markedForDeletionRoot not set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
         assertTrue("jmix:markedForDeletion not set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
         assertTrue("marked for deletion comment not set", node.getPropertyAsString(Constants.MARKED_FOR_DELETION_MESSAGE).equals(DELETION_MESSAGE));
         assertTrue("j:deletionUser not set", node.hasProperty(Constants.MARKED_FOR_DELETION_USER));
         assertTrue("j:deletionDate not set", node.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
-        
+
         JCRNodeWrapper liveNode = liveSession.getNode("/sites/markedForDeletionTest/contents/" + MEETING + 1);
         assertNotNull("Node is no longer existing in live workspace", liveNode);
 
         reopenSession();
 
         jcrService.publishByMainId(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
-        
+
         reopenSession();
-        
+
         try {
             editSession.getNode("/sites/markedForDeletionTest/contents/" + MEETING + 1);
             fail("Did not throw PathNotFoundException");
@@ -203,33 +203,33 @@ public class MarkForDeletionIT extends AbstractJUnitTest {
             fail("Did not throw PathNotFoundException");
         } catch (PathNotFoundException e) {
             // this is expected
-        }    
+        }
     }
-    
+
     @Test
     public void testMarkForDeletionWithChildren() throws Exception {
         reopenSession();
-        
+
         JCRNodeWrapper node = editSession.getNode("/sites/markedForDeletionTest/pages/page3");
-        
+
         JCRPublicationService jcrService = ServicesRegistry.getInstance()
-                .getJCRPublicationService();         
+                .getJCRPublicationService();
         jcrService.publishByMainId(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
-        
+
         reopenSession();
-        
+
         node = editSession.getNode("/sites/markedForDeletionTest/pages/page3");
         JCRNodeWrapper childNode = editSession.getNode("/sites/markedForDeletionTest/pages/page3/page31");
-        
+
         node.markForDeletion(DELETION_MESSAGE);
         editSession.save();
-        
+
         assertTrue("jmix:markedForDeletionRoot not set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
         assertTrue("jmix:markedForDeletion not set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
         assertTrue("marked for deletion comment not set", node.getPropertyAsString(Constants.MARKED_FOR_DELETION_MESSAGE).equals(DELETION_MESSAGE));
         assertTrue("j:deletionUser not set", node.hasProperty(Constants.MARKED_FOR_DELETION_USER));
         assertTrue("j:deletionDate not set", node.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
-        
+
         assertFalse("jmix:markedForDeletionRoot should not be set", childNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
         assertTrue("jmix:markedForDeletion not set", childNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
         assertFalse("marked for deletion comment should not be set on child", childNode.hasProperty(Constants.MARKED_FOR_DELETION_MESSAGE));
@@ -239,7 +239,7 @@ public class MarkForDeletionIT extends AbstractJUnitTest {
         reopenSession();
 
         jcrService.publishByMainId(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
-        
+
         reopenSession();
 
         try {
@@ -268,55 +268,55 @@ public class MarkForDeletionIT extends AbstractJUnitTest {
         } catch (PathNotFoundException e) {
             // this is expected
         }
-    }    
-    
+    }
+
     @Test
     public void testMarkForDeletionWithChildrenAlreadyMarked() throws Exception {
         reopenSession();
 
         JCRNodeWrapper node = editSession.getNode("/sites/markedForDeletionTest/pages/page2");
-        
+
         JCRPublicationService jcrService = ServicesRegistry.getInstance()
-                .getJCRPublicationService();         
+                .getJCRPublicationService();
         jcrService.publishByMainId(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
-        
+
         reopenSession();
         node = editSession.getNode("/sites/markedForDeletionTest/pages/page2/page21");
         JCRNodeWrapper parentNode = editSession.getNode("/sites/markedForDeletionTest/pages/page2");
-        
+
         node.markForDeletion(DELETION_MESSAGE);
         editSession.save();
-        
+
         assertTrue("jmix:markedForDeletionRoot not set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
         assertTrue("jmix:markedForDeletion not set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
         assertTrue("marked for deletion comment not set", node.getPropertyAsString(Constants.MARKED_FOR_DELETION_MESSAGE).equals(DELETION_MESSAGE));
         assertTrue("j:deletionUser not set", node.hasProperty(Constants.MARKED_FOR_DELETION_USER));
         assertTrue("j:deletionDate not set", node.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
-                
+
         parentNode.markForDeletion("2nd " + DELETION_MESSAGE);
         editSession.save();
-        
+
         assertTrue("jmix:markedForDeletionRoot not set", parentNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
         assertTrue("jmix:markedForDeletion not set", parentNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
         assertTrue("marked for deletion comment not set", parentNode.getPropertyAsString(Constants.MARKED_FOR_DELETION_MESSAGE).equals("2nd " + DELETION_MESSAGE));
         assertTrue("j:deletionUser not set", parentNode.hasProperty(Constants.MARKED_FOR_DELETION_USER));
         assertTrue("j:deletionDate not set", parentNode.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
-        
+
         assertFalse("jmix:markedForDeletionRoot should not be set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
         assertTrue("jmix:markedForDeletion not set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
         assertFalse("marked for deletion comment should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_MESSAGE));
         assertFalse("j:deletionUser should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_USER));
-        assertFalse("j:deletionDate should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_DATE));        
-        
+        assertFalse("j:deletionDate should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
+
         assertNotNull("Node is already deleted", liveSession.getNode("/sites/markedForDeletionTest/pages/page2"));
         assertNotNull("Node is already deleted", liveSession.getNode("/sites/markedForDeletionTest/pages/page2/page21"));
 
         reopenSession();
 
         jcrService.publishByMainId(parentNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
-        
+
         reopenSession();
-        
+
         try {
             editSession.getNode("/sites/markedForDeletionTest/pages/page2/page21");
             fail("Did not throw PathNotFoundException");
@@ -342,53 +342,53 @@ public class MarkForDeletionIT extends AbstractJUnitTest {
             fail("Did not throw PathNotFoundException");
         } catch (PathNotFoundException e) {
             // this is expected
-        }        
+        }
     }
-    
+
     @Test
     public void testUnmarkForDeletionWithChildren() throws Exception {
         reopenSession();
-       
+
         JCRNodeWrapper node = editSession.getNode("/sites/markedForDeletionTest/pages/page1");
-        
+
         JCRPublicationService jcrService = ServicesRegistry.getInstance()
-                .getJCRPublicationService();         
+                .getJCRPublicationService();
         jcrService.publishByMainId(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
-        
+
         reopenSession();
         node = editSession.getNode("/sites/markedForDeletionTest/pages/page1");
         JCRNodeWrapper childNode = editSession.getNode("/sites/markedForDeletionTest/pages/page1/page11");
-        
+
         node.markForDeletion(DELETION_MESSAGE);
         editSession.save();
-        
+
         assertTrue("jmix:markedForDeletionRoot not set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
         assertTrue("jmix:markedForDeletion not set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
         assertTrue("marked for deletion comment not set", node.getPropertyAsString(Constants.MARKED_FOR_DELETION_MESSAGE).equals(DELETION_MESSAGE));
         assertTrue("j:deletionUser not set", node.hasProperty(Constants.MARKED_FOR_DELETION_USER));
         assertTrue("j:deletionDate not set", node.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
-        
+
         assertFalse("jmix:markedForDeletionRoot should not be set", childNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
         assertTrue("jmix:markedForDeletion not set", childNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
         assertFalse("marked for deletion comment should not be set on child", childNode.hasProperty(Constants.MARKED_FOR_DELETION_MESSAGE));
         assertFalse("j:deletionUser should not be set on child", childNode.hasProperty(Constants.MARKED_FOR_DELETION_USER));
-        assertFalse("j:deletionDate should not be set on child", childNode.hasProperty(Constants.MARKED_FOR_DELETION_DATE));        
+        assertFalse("j:deletionDate should not be set on child", childNode.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
 
-        assertNotNull("Node is already deleted", liveSession.getNode("/sites/markedForDeletionTest/pages/page1"));        
+        assertNotNull("Node is already deleted", liveSession.getNode("/sites/markedForDeletionTest/pages/page1"));
         assertNotNull("Node is already deleted", liveSession.getNode("/sites/markedForDeletionTest/pages/page1/page11"));
-        
+
         node.unmarkForDeletion();
         editSession.save();
-        
-        assertNotNull("Node is already deleted", liveSession.getNode("/sites/markedForDeletionTest/pages/page1"));        
+
+        assertNotNull("Node is already deleted", liveSession.getNode("/sites/markedForDeletionTest/pages/page1"));
         assertNotNull("Node is already deleted", liveSession.getNode("/sites/markedForDeletionTest/pages/page1/page11"));
-        
+
         assertFalse("jmix:markedForDeletionRoot should not be set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
         assertFalse("jmix:markedForDeletion should not be set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
         assertFalse("marked for deletion comment should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_MESSAGE));
         assertFalse("j:deletionDate should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
         assertFalse("j:deletionUser should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_USER));
-        
+
         assertFalse("jmix:markedForDeletionRoot should not be set", childNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
         assertFalse("jmix:markedForDeletion should not be set", childNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
         assertFalse("marked for deletion comment should not be set on child", childNode.hasProperty(Constants.MARKED_FOR_DELETION_MESSAGE));
@@ -398,15 +398,15 @@ public class MarkForDeletionIT extends AbstractJUnitTest {
         reopenSession();
 
         jcrService.publishByMainId(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
-        
+
         reopenSession();
         node = editSession.getNode("/sites/markedForDeletionTest/pages/page1");
         childNode = editSession.getNode("/sites/markedForDeletionTest/pages/page1/page11");
-        
-        assertNotNull("Node is already deleted", editSession.getNode("/sites/markedForDeletionTest/pages/page1"));        
-        assertNotNull("Node is already deleted", editSession.getNode("/sites/markedForDeletionTest/pages/page1/page11"));        
-        
-        assertNotNull("Node is already deleted", liveSession.getNode("/sites/markedForDeletionTest/pages/page1"));        
+
+        assertNotNull("Node is already deleted", editSession.getNode("/sites/markedForDeletionTest/pages/page1"));
+        assertNotNull("Node is already deleted", editSession.getNode("/sites/markedForDeletionTest/pages/page1/page11"));
+
+        assertNotNull("Node is already deleted", liveSession.getNode("/sites/markedForDeletionTest/pages/page1"));
         assertNotNull("Node is already deleted", liveSession.getNode("/sites/markedForDeletionTest/pages/page1/page11"));
 
         assertFalse("jmix:markedForDeletionRoot should not be set", node.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
@@ -414,70 +414,70 @@ public class MarkForDeletionIT extends AbstractJUnitTest {
         assertFalse("marked for deletion comment should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_MESSAGE));
         assertFalse("j:deletionUser should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_USER));
         assertFalse("j:deletionDate should not be set", node.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
-        
+
         assertFalse("jmix:markedForDeletionRoot should not be set", childNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
         assertFalse("jmix:markedForDeletion should not be set", childNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
         assertFalse("marked for deletion comment should not be set on child", childNode.hasProperty(Constants.MARKED_FOR_DELETION_MESSAGE));
         assertFalse("j:deletionUser should not be set on child", childNode.hasProperty(Constants.MARKED_FOR_DELETION_USER));
         assertFalse("j:deletionDate should not be set on child", childNode.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
-    }    
-    
+    }
+
     private static void initContent(JCRSessionWrapper session) throws RepositoryException {
         int i = 0;
         Calendar calendar = new GregorianCalendar(2000, 0, 1, 12, 0);
 
         JCRNodeWrapper node = session.getNode("/sites/markedForDeletionTest/contents");
-        session.getWorkspace().getVersionManager().checkout(node.getPath());        
+        session.getWorkspace().getVersionManager().checkout(node.getPath());
         createEvent(node, MEETING, PARIS, calendar, i++);
         createEvent(node, MEETING, GENEVA, calendar, i++);
         createEvent(node, MEETING, GENEVA, calendar, i++);
         createEvent(node, MEETING, PARIS, calendar, i++);
-        
+
         JCRNodeWrapper home = session.getNode(SITECONTENT_ROOT_NODE);
-        
+
         JCRNodeWrapper pages = home.addNode("pages", "jnt:page");
         pages.setProperty("jcr:title", "Source");
         pages.setProperty("j:templateName", "simple");
         JCRNodeWrapper page1 = pages.addNode("page1", "jnt:page");
         page1.setProperty("jcr:title", "Page1");
-        page1.setProperty("j:templateName", "simple");        
+        page1.setProperty("j:templateName", "simple");
         JCRNodeWrapper page2 = pages.addNode("page2", "jnt:page");
         page2.setProperty("jcr:title", "Page2");
-        page2.setProperty("j:templateName", "simple");        
+        page2.setProperty("j:templateName", "simple");
         JCRNodeWrapper page3 = pages.addNode("page3", "jnt:page");
         page3.setProperty("jcr:title", "Page3");
-        page3.setProperty("j:templateName", "simple");        
-        
+        page3.setProperty("j:templateName", "simple");
+
         JCRNodeWrapper page11 = page1.addNode("page11", "jnt:page");
         page11.setProperty("jcr:title", "Page1-1");
-        page11.setProperty("j:templateName", "simple");        
+        page11.setProperty("j:templateName", "simple");
         JCRNodeWrapper page12 = page1.addNode("page12", "jnt:page");
         page12.setProperty("jcr:title", "Page1-2");
-        page12.setProperty("j:templateName", "simple");        
+        page12.setProperty("j:templateName", "simple");
         JCRNodeWrapper page13 = page1.addNode("page13", "jnt:page");
         page13.setProperty("jcr:title", "Page1-3");
-        page13.setProperty("j:templateName", "simple");        
-        
+        page13.setProperty("j:templateName", "simple");
+
         JCRNodeWrapper page21 = page2.addNode("page21", "jnt:page");
         page21.setProperty("jcr:title", "Page2-1");
-        page21.setProperty("j:templateName", "simple");        
+        page21.setProperty("j:templateName", "simple");
         JCRNodeWrapper page22 = page2.addNode("page22", "jnt:page");
         page22.setProperty("jcr:title", "Page2-2");
-        page22.setProperty("j:templateName", "simple");        
+        page22.setProperty("j:templateName", "simple");
         JCRNodeWrapper page23 = page2.addNode("page23", "jnt:page");
         page23.setProperty("jcr:title", "Page2-3");
-        page23.setProperty("j:templateName", "simple");        
+        page23.setProperty("j:templateName", "simple");
 
         JCRNodeWrapper page31 = page3.addNode("page31", "jnt:page");
         page31.setProperty("jcr:title", "Page3-1");
-        page31.setProperty("j:templateName", "simple");        
+        page31.setProperty("j:templateName", "simple");
         JCRNodeWrapper page32 = page3.addNode("page32", "jnt:page");
         page32.setProperty("jcr:title", "Page3-2");
-        page32.setProperty("j:templateName", "simple");        
+        page32.setProperty("j:templateName", "simple");
         JCRNodeWrapper page33 = page3.addNode("page33", "jnt:page");
         page33.setProperty("jcr:title", "Page3-3");
-        page33.setProperty("j:templateName", "simple");        
-        
+        page33.setProperty("j:templateName", "simple");
+
         session.save();
     }
 
@@ -487,10 +487,10 @@ public class MarkForDeletionIT extends AbstractJUnitTest {
 
         long initialNoOfMarkedNodes = JCRContentUtils.size(editSession.getWorkspace().getQueryManager()
                 .createQuery(QUERY, Query.JCR_SQL2).execute().getNodes());
-        
+
         JCRNodeWrapper parent = editSession.getNode("/sites/markedForDeletionTest/contents");
         editSession.getWorkspace().getVersionManager().checkout(parent.getPath());
-        
+
         JCRNodeWrapper node = parent.addNode("mixinsAndQueryTest", "jnt:contentFolder");
 
         Calendar calendar = new GregorianCalendar(2000, 0, 1, 12, 0);
@@ -498,13 +498,13 @@ public class MarkForDeletionIT extends AbstractJUnitTest {
         createEvent(node, MEETING, GENEVA, calendar, 2);
         createEvent(node, MEETING, KLAGENFURT, calendar, 3);
         createEvent(node, MEETING, DUESSELDORF, calendar, 4);
-        
+
         editSession.save();
-        
+
         assertEquals("Failed to create 4 event sub-nodes", 4, JCRContentUtils.size(node.getNodes()));
 
         reopenSession();
-        
+
         assertEquals(
                 "Query for marked for deletion nodes delivered wrong number of results",
                 0 + initialNoOfMarkedNodes,
@@ -514,9 +514,9 @@ public class MarkForDeletionIT extends AbstractJUnitTest {
         editSession.getNode("/sites/markedForDeletionTest/contents/mixinsAndQueryTest/" + MEETING + 2).markForDeletion(DELETION_MESSAGE);
         editSession.getNode("/sites/markedForDeletionTest/contents/mixinsAndQueryTest/" + MEETING + 4).markForDeletion(DELETION_MESSAGE);
         editSession.save();
-        
+
         reopenSession();
-        
+
         assertEquals(
                 "Query for marked for deletion nodes delivered wrong number of results",
                 2 + initialNoOfMarkedNodes,
@@ -525,9 +525,9 @@ public class MarkForDeletionIT extends AbstractJUnitTest {
 
         editSession.getNode("/sites/markedForDeletionTest/contents/mixinsAndQueryTest/" + MEETING + 2).unmarkForDeletion();
         editSession.save();
-        
+
         reopenSession();
-        
+
         assertEquals(
                 "Query for marked for deletion nodes delivered wrong number of results",
                 1 + initialNoOfMarkedNodes,
@@ -536,9 +536,9 @@ public class MarkForDeletionIT extends AbstractJUnitTest {
 
         editSession.getNode("/sites/markedForDeletionTest/contents/mixinsAndQueryTest/" + MEETING + 4).unmarkForDeletion();
         editSession.save();
-        
+
         reopenSession();
-        
+
         assertEquals(
                 "Query for marked for deletion nodes delivered wrong number of results",
                 0 + initialNoOfMarkedNodes,
@@ -546,7 +546,7 @@ public class MarkForDeletionIT extends AbstractJUnitTest {
                         .createQuery(QUERY, Query.JCR_SQL2).execute().getNodes()));
 
     }
-    
+
     private static void createEvent(JCRNodeWrapper node, final String eventType, String location, Calendar calendar,
                              int i)
             throws RepositoryException {

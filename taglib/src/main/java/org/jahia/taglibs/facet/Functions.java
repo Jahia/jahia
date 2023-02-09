@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -138,7 +138,7 @@ public class Functions {
                     FacetField.Count facetCount = (FacetField.Count) facetValueObj;
                     facetKey = facetCount.getFacetField().getName();
                     facetValue = facetCount.getName();
-                } else if (facetValueObj instanceof RangeFacet.Count) {            
+                } else if (facetValueObj instanceof RangeFacet.Count) {
                     RangeFacet.Count facetCount = (RangeFacet.Count) facetValueObj;
                     facetKey = facetCount.getRangeFacet().getName();
                     facetValue = facetCount.getValue().toString();
@@ -185,7 +185,7 @@ public class Functions {
             } else if (facetValueObj instanceof RangeFacet.Count) {
                 RangeFacet.Count facetValue = (RangeFacet.Count) facetValueObj;
                 builder.append(facetValue.getRangeFacet().getName()).append(FACET_PARAM_DELIM).append(facetValue.getValue()).append(
-                        FACET_PARAM_DELIM).append(facetValue.getAsFilterQuery());                
+                        FACET_PARAM_DELIM).append(facetValue.getAsFilterQuery());
             } else if (facetValueObj instanceof Map.Entry<?, ?>) {
                 @SuppressWarnings("unchecked")
                 Map.Entry<String, Long> facetValue = (Map.Entry<String, Long>) facetValueObj;
@@ -308,7 +308,7 @@ public class Functions {
         }
         return false;
     }
-    
+
     /**
      * Check whether there is an unapplied range facet value existing in the facet. Useful in order to determine
      * whether a title/label should be displayed or not.
@@ -324,7 +324,7 @@ public class Functions {
             }
         }
         return false;
-    }    
+    }
 
     /**
      * Get the drill down prefix for a hierarchical facet value
@@ -386,7 +386,7 @@ public class Functions {
      * @param facetPath the hierarchical facet path
      * @return the index prefixed path
      */
-    
+
     public static String getIndexPrefixedPath(final String facetPath) {
     	return getIndexPrefixedPath(facetPath, null);
     }
@@ -396,13 +396,13 @@ public class Functions {
      * @param facetPath the hierarchical facet path
      * @param workspace current workspace (null = default workspace)
      * @return the index prefixed path
-     */    
+     */
     public static String getIndexPrefixedPath(final String facetPath, final String workspace) {
         try {
-        
+
             return JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(JCRSessionFactory.getInstance().getCurrentUser(), workspace, JCRSessionFactory.getInstance().getCurrentLocale(), new JCRCallback<String>() {
                 public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    int prefix = 1; 
+                    int prefix = 1;
                     JCRNodeWrapper node = session.getNode(facetPath);
                     String typeName = node.getPrimaryNodeTypeName();
                     while (typeName.equals(node.getParent().getPrimaryNodeTypeName())) {

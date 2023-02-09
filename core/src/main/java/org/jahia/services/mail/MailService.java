@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -56,16 +56,16 @@ import javax.script.ScriptException;
 
 /**
  * Jahia mail service implementation.
- * 
+ *
  * @author Serge Huber
  * Date: Jul 25, 2005
  * Time: 12:22:20 PM
  */
 public abstract class MailService extends JahiaService {
-    
+
     /**
      * Returns an instance of the mail service.
-     * 
+     *
      * @return an instance of the mail service
      */
     public static MailService getInstance() {
@@ -153,7 +153,7 @@ public abstract class MailService extends JahiaService {
     /**
      * Returns <code>true</code> if the mail service is enabled and settings
      * are valid.
-     * 
+     *
      * @return <code>true</code> if the mail service is enabled and settings
      *         are valid
      */
@@ -164,7 +164,7 @@ public abstract class MailService extends JahiaService {
 
     /**
      * Returns mail configuration settings.
-     * 
+     *
      * @return mail configuration settings
      */
     public abstract MailSettings getSettings();
@@ -172,7 +172,7 @@ public abstract class MailService extends JahiaService {
     /**
      * Checks, if the specified string is a valid e-mail address according to
      * RFC822.
-     * 
+     *
      * @param address
      *            the address to be checked
      * @param allowMultiple
@@ -210,7 +210,7 @@ public abstract class MailService extends JahiaService {
 
     /**
      * Persists the changes in mail server connection configuration.
-     * 
+     *
      * @param cfg
      *            the new mail settings to be stored
      */

@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -54,21 +54,21 @@ import org.jahia.taglibs.jcr.query.JQOMTag;
 /**
  * Superclass for tags, which are nested inside {@link QueryDefinitionTag} or {@link JQOMTag},
  * used for building queries using QOM.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public abstract class QOMBuildingTag extends AbstractJahiaTag {
 
     private static final long serialVersionUID = 1651349341403605347L;
-    
+
     private String selectorName;
-    
+
     private QOMBuilder qomBuilder;
 
     /**
      * Returns an instance of the current {@link QOMBuilder} or throws an
      * exception if the parent {@link QueryDefinitionTag} or {@link JQOMTag} is not found.
-     * 
+     *
      * @return an instance of the current {@link QOMBuilder} or throws an
      * exception if the parent {@link QueryDefinitionTag} or {@link JQOMTag} is not found
      * @throws JspTagException in case the parent {@link QueryDefinitionTag} or {@link JQOMTag}
@@ -83,14 +83,14 @@ public abstract class QOMBuildingTag extends AbstractJahiaTag {
             }
             qomBuilder = tag.getQOMBuilder();
         }
-        
+
         return qomBuilder;
     }
 
     /**
      * Returns a <code>QueryObjectModelFactory</code> with which a JCR-JQOM
      * query can be built programmatically.
-     * 
+     *
      * @return a <code>QueryObjectModelFactory</code> object
      */
     protected final QueryObjectModelFactory getQOMFactory() throws JspTagException {
@@ -128,7 +128,7 @@ public abstract class QOMBuildingTag extends AbstractJahiaTag {
 
     /**
      * Sets the node selector name.
-     * 
+     *
      * @param selectorName the node selector name
      */
     public void setSelectorName(String selectorName) {

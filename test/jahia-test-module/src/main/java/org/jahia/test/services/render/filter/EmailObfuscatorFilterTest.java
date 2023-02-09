@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ import org.junit.Test;
 import java.util.regex.Pattern;
 
 /**
- * Unit test for the e-mail obfuscation render filter. 
+ * Unit test for the e-mail obfuscation render filter.
  * User: toto
  * Date: Nov 26, 2009
  * Time: 12:19:43 PM
@@ -88,7 +88,7 @@ public class EmailObfuscatorFilterTest extends JahiaTestCase {
             }
         });
         RenderContext renderCtx = new RenderContext(getRequest(), getResponse(), getUser());
-        
+
         String result = chain.doFilter(renderCtx, null);
 
         assertFalse("Email found in result : "+result, mailPattern.matcher(result).find());

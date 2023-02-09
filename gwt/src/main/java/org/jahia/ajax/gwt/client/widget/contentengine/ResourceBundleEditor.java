@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -112,16 +112,16 @@ import com.google.gwt.user.client.Element;
 
 /**
  * Widget for editing resource bundles.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class ResourceBundleEditor extends LayoutContainer {
 
     /**
      * Custom {@link ListView} implementation that automatically scrolls into the view the selected list item.
-     * 
+     *
      * @author Sergiy Shyrkov
-     * 
+     *
      * @param <M>
      */
     protected static class AutoScrollableListView<M extends ModelData> extends ListView<M> {
@@ -565,7 +565,7 @@ public class ResourceBundleEditor extends LayoutContainer {
 
     /**
      * Returns current resource bundle values.
-     * 
+     *
      * @return current resource bundle values
      */
     public GWTResourceBundle getResourceBundle() {
@@ -574,7 +574,7 @@ public class ResourceBundleEditor extends LayoutContainer {
         if (selectedItem != null && selectedItem.getItemId().startsWith(LANGUAGE_TAB_ID)) {
             propagateChanges(selectedItem);
         }
-        
+
         GWTResourceBundle rb = new GWTResourceBundle(name);
         for (GWTResourceBundleEntry entry : bundleView.getStore().getModels()) {
             rb.getEntryMap().put(entry.getKey(), entry);

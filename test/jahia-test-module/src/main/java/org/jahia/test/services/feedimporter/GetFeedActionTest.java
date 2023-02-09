@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -78,7 +78,7 @@ import static junit.framework.TestCase.assertEquals;
 public class GetFeedActionTest extends JahiaTestCase {
 
     private final static String TESTSITE_NAME = "jcrFeedImportTest";
-    private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;    
+    private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
 
     @BeforeClass
     public static void oneTimeSetup() throws Exception {
@@ -90,7 +90,7 @@ public class GetFeedActionTest extends JahiaTestCase {
         TestHelper.deleteSite(TESTSITE_NAME);
     }
 
-    @Test    
+    @Test
     public void testGetFeedAction() throws Exception {
         /*JCRSessionWrapper session = JCRSessionFactory.getInstance()
                 .getCurrentUserSession(Constants.EDIT_WORKSPACE,
@@ -112,10 +112,10 @@ public class GetFeedActionTest extends JahiaTestCase {
 
         session.save();*/
     }
-   
+
     private void testFeed(String nodeName, String feedURL, String testNodeName) throws RepositoryException, IOException, JSONException {
         JCRSessionWrapper baseSession = JCRSessionFactory.getInstance().getCurrentUserSession();
-        JCRSiteNode site = (JCRSiteNode) baseSession.getNode(SITECONTENT_ROOT_NODE);        
+        JCRSiteNode site = (JCRSiteNode) baseSession.getNode(SITECONTENT_ROOT_NODE);
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance()
                 .getCurrentUserSession(Constants.EDIT_WORKSPACE,

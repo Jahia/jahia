@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ import java.util.Map;
  * Created : 10 mars 2010
  */
 public class Captcha extends JahiaController {
-	
+
     private DefaultKaptcha captchaProducer;
 
     /**
@@ -91,20 +91,20 @@ public class Captcha extends JahiaController {
             }
             // return a jpeg
             response.setContentType("image/jpeg");
-    
+
             WebUtils.setNoCacheHeaders(response);
-    
+
             // create the text for the image
             String capText = captchaProducer.createText();
-    
+
             // store the text in the session
             toks.get(token).put(Render.CAPTCHA, Arrays.asList(capText));
-    
+
             // create the image with the text
             BufferedImage bi = captchaProducer.createImage(capText);
-    
+
             ServletOutputStream out = response.getOutputStream();
-    
+
             // write the data out
             ImageIO.write(bi, "jpg", out);
             try {
@@ -112,7 +112,7 @@ public class Captcha extends JahiaController {
             } finally {
                 out.close();
             }
-            
+
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (Exception e) {
             DefaultErrorHandler.getInstance().handle(e, request, response);

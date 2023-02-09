@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -149,8 +149,8 @@ public class Category extends JahiaObject {
                 getRootCategories(p);
 
         return rootCategories;
-    }    
-    
+    }
+
     /**
      * @param key the key for the category to retrieve
      * @param p the Principal for which to retrieve the category, checking rights
@@ -453,7 +453,7 @@ public class Category extends JahiaObject {
     }
 
     /**
-     * Retrieves the list of child category keys for this category. 
+     * Retrieves the list of child category keys for this category.
      *
      * @return an List containing Cagegory classes
      *
@@ -486,7 +486,7 @@ public class Category extends JahiaObject {
             if (curKey instanceof CategoryKey) {
                 Category curParentCategory = (Category) Category.getChildInstance (curKey, p);
                 parentCategories.add (0, curParentCategory);
-                
+
                 parentKeys = curParentCategory.getParentObjectKeys();
                 parentKeyIter = parentKeys.iterator ();
             }
@@ -737,7 +737,7 @@ public class Category extends JahiaObject {
      * @throws JahiaException
      */
     public String getCategoryPath() throws JahiaException {
-        
+
         return categoryBean.getPath();
 
         /*
@@ -777,7 +777,7 @@ public class Category extends JahiaObject {
 
     /**
      * Returns the category key from the full category path.
-     * 
+     *
      * @param categoryPath
      *            the full category path
      * @return the category key from the full category path
@@ -785,7 +785,7 @@ public class Category extends JahiaObject {
     public static String getCategoryKey(String categoryPath) {
         return StringUtils.substringAfterLast(categoryPath, PATH_DELIMITER);
     }
-    
+
     /**
      * Returns the path representation of the form <code>/root/catKey1/catKeyB/thisCategoryKey</code>
      *

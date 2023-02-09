@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * JCR listener for purging the version history of nodes when a site is deleted.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class NodeVersionHistoryListener extends DefaultEventListener {
@@ -79,7 +79,7 @@ public class NodeVersionHistoryListener extends DefaultEventListener {
     /**
      * Processes a bundle of events to detect if this is a site deletion. If yes, a background maintenance job is started to delete the
      * version histories of site nodes.
-     * 
+     *
      * @param events
      *            a bundle of events to process
      */
@@ -127,7 +127,7 @@ public class NodeVersionHistoryListener extends DefaultEventListener {
 
     /**
      * Injects an instance of {@link SchedulerService}.
-     * 
+     *
      * @param schedulerService
      *            the schedulerService to set
      */
@@ -139,7 +139,7 @@ public class NodeVersionHistoryListener extends DefaultEventListener {
      * Disables or enables the processing of JCR events after site deletion, which triggers the background job for purging of node version
      * histories for the nodes of the deleted site.<br/>
      * Note, please, this method is only used during the execution of tests.
-     * 
+     *
      * @param disabled
      *            <code>true</code> if the listener should be disabled; <code>false</code> otherwise
      * @since 7.1.2.6

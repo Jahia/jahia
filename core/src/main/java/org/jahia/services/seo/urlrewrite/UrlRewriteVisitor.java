@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A Jahia HTML Tag attribute visitor for applying URL rewriting rules (using {@link UrlRewriteService}).
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class UrlRewriteVisitor implements HtmlTagAttributeVisitor {
@@ -86,7 +86,7 @@ public class UrlRewriteVisitor implements HtmlTagAttributeVisitor {
 
     /**
      * Applies the configured URL rewriting rules to the URL value.
-     * 
+     *
      * @see org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor#visit(String, org.jahia.services.render.RenderContext, String, String, org.jahia.services.render.Resource)
      */
     public String visit(final String attrValue, RenderContext context, String tagName, String attrName, Resource resource) {

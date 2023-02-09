@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ import org.junit.Test;
 
 /**
  * Test of the {@link AutoRegisteredBaseAuthValve}.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class AutoRegisteredBaseAuthValveTest {
@@ -124,7 +124,7 @@ public class AutoRegisteredBaseAuthValveTest {
         assertEquals("Valve is not at position 4", 4, getPosition(myValve.getId()));
         assertEquals("Valve is not after SessionAuthValve", getPosition("SessionAuthValve") + 1, getPosition(myValve.getId()));
         assertEquals("CookieAuthValve is not shifted to position 5", 5, getPosition("CookieAuthValve"));
-        
+
         // add valve second time
         count = pipeline.getValves().length;
         myValve.afterPropertiesSet();
@@ -139,7 +139,7 @@ public class AutoRegisteredBaseAuthValveTest {
         myValve.afterPropertiesSet();
         assertEquals("Valve count is wrong", count + 1, pipeline.getValves().length);
         assertEquals("Valve is not appended to the end", pipeline.getValves().length - 1, getPosition(myValve.getId()));
-        
+
         // add valve second time
         count = pipeline.getValves().length;
         myValve.afterPropertiesSet();
@@ -155,7 +155,7 @@ public class AutoRegisteredBaseAuthValveTest {
         myValve.afterPropertiesSet();
         assertEquals("Valve count is wrong", count + 1, pipeline.getValves().length);
         assertEquals("Valve is not inserted at the top", 0, getPosition(myValve.getId()));
-        
+
         // add valve second time
         count = pipeline.getValves().length;
         myValve.afterPropertiesSet();
@@ -173,7 +173,7 @@ public class AutoRegisteredBaseAuthValveTest {
         assertEquals("Valve is not at position 3", 3, getPosition(myValve.getId()));
         assertEquals("Valve is not before SessionAuthValve", getPosition("SessionAuthValve") - 1, getPosition(myValve.getId()));
         assertEquals("CookieAuthValve is not shifted to position 5", 5, getPosition("CookieAuthValve"));
-        
+
         // add valve second time
         count = pipeline.getValves().length;
         myValve.afterPropertiesSet();
@@ -190,7 +190,7 @@ public class AutoRegisteredBaseAuthValveTest {
         assertEquals("Valve count is wrong", count + 1, pipeline.getValves().length);
         assertEquals("Valve is not at position 3", 3, getPosition(myValve.getId()));
         assertEquals("SessionAuthValve is not shifted to position 4", 4, getPosition("SessionAuthValve"));
-        
+
         // add valve second time
         count = pipeline.getValves().length;
         myValve.afterPropertiesSet();

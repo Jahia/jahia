@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -63,12 +63,12 @@ import org.apache.jackrabbit.core.TestContentLoader;
 import org.jahia.services.content.JCRNodeWrapper;
 
 public class JahiaTestContentLoader extends TestContentLoader {
-    
+
     /**
      * The encoding of the test resources.
      */
-    private static final Charset ENCODING = StandardCharsets.UTF_8;    
-    
+    private static final Charset ENCODING = StandardCharsets.UTF_8;
+
     public JahiaTestContentLoader() {
         super();
     }
@@ -157,11 +157,11 @@ public class JahiaTestContentLoader extends TestContentLoader {
         Node multiReference = node.addNode("multiReference");
         multiReference.setProperty("ref",
                 new Value[] { factory.createValue(resource), factory.createValue(resReference) });
-        
+
         // NodeDefTest requires a test node with a mandatory child node
         JcrUtils.putFile(
                 node, "testFile", "text/plain",
-                new ByteArrayInputStream("Hello, World!".getBytes(StandardCharsets.UTF_8)));        
+                new ByteArrayInputStream("Hello, World!".getBytes(StandardCharsets.UTF_8)));
     }
 
     /**
@@ -178,7 +178,7 @@ public class JahiaTestContentLoader extends TestContentLoader {
 
         Node lifecycle = getOrAddNode(node, "node");
         ((NodeImpl) ((JCRNodeWrapper) lifecycle).getRealNode()).assignLifecyclePolicy(
-                ((JCRNodeWrapper) policy).getRealNode(), "identity");        
+                ((JCRNodeWrapper) policy).getRealNode(), "identity");
     }
 
     private void addExportTestData(Node node) throws RepositoryException, IOException {

@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -79,7 +79,7 @@ import junit.framework.TestSuite;
  * Time: 4:07:40 PM
  */
 public class TestServlet extends BaseTestController {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(TestServlet.class);
     private static final String TEST_ERROR_MSG = "Error executing test";
 
@@ -97,7 +97,7 @@ public class TestServlet extends BaseTestController {
             runIntegrationTests(httpServletRequest, httpServletResponse, pathInfo.substring(pathInfo.lastIndexOf('/') + 1));
         } else {
             Set<String> testCases = getAllTestCases(Boolean.valueOf(httpServletRequest.getParameter("skipCoreTests")));
-            List<String> selectedTests = new LinkedList<>(); 
+            List<String> selectedTests = new LinkedList<>();
             if (!isHtmlOutput && StringUtils.isNotEmpty(pathInfo) && !pathInfo.trim().equals("/")) {
                 Pattern testNamePattern = Pattern
                         .compile(pathInfo.length() > 1 && pathInfo.startsWith("/") ? pathInfo.substring(1) : pathInfo);
@@ -201,7 +201,7 @@ public class TestServlet extends BaseTestController {
         }
 
     }
-    
+
     private Map<Class<?>, List<Class<?>>> getTestClassesPerSuites(String... classNames) {
         Map<Class<?>, List<Class<?>>> testClassesPerSuites = new HashMap<>();
         for (String className : classNames) {
@@ -269,7 +269,7 @@ public class TestServlet extends BaseTestController {
             // here it will be caught below and reported.
             try {
                 classes = getTestClasses((Test)suiteMethod.invoke(null,  (Object[])null), classes);
-                
+
             } catch (Exception e) {
                 logger.error("Error getting classes of suite", e);
             }
@@ -278,7 +278,7 @@ public class TestServlet extends BaseTestController {
         }
         return classes;
     }
-    
+
     private List<Class<?>> getTestClasses(Test test, List<Class<?>> classes) {
         if (test instanceof TestSuite) {
             // if there is a suite method available, then try
@@ -297,7 +297,7 @@ public class TestServlet extends BaseTestController {
         }
         return classes;
     }
-    
+
     private Set<String> getIgnoreTests() {
         // Return the lists of available tests
         Set<String> ignoreTests = new HashSet<>();

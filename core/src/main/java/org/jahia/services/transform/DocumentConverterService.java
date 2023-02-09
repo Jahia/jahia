@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ import java.util.Map;
 
 /**
  * Document transformation service that uses OpenOffice for file conversion.
- * 
+ *
  * @author Fabrice Cantegrel
  * @author Sergiy Shyrkov
  */
@@ -95,7 +95,7 @@ public class DocumentConverterService implements ApplicationContextAware {
     /**
      * Converts the provided input file into output, considering provided
      * document formats.
-     * 
+     *
      * @param inputFile the source file
      * @param inputFormat description of the source file
      * @param outputFile the output file descriptor to store converted content
@@ -133,7 +133,7 @@ public class DocumentConverterService implements ApplicationContextAware {
     /**
      * Converts the provided input file into output automatically detecting file
      * mime-type by is extension.
-     * 
+     *
      * @param inputFile the source file
      * @param outputFile the output file descriptor to store converted content
      *            into
@@ -146,7 +146,7 @@ public class DocumentConverterService implements ApplicationContextAware {
     /**
      * Converts the provided input stream into output, considering provided
      * mime-types.
-     * 
+     *
      * @param inputStream the source stream
      * @param inputMimeType the input MIME type
      * @param outputStream the destination stream
@@ -161,7 +161,7 @@ public class DocumentConverterService implements ApplicationContextAware {
         File inputFile = null;
         File outputFile = null;
         try {
-            
+
             inputFile = getFile(inputStream);
             // The outputFile required by the service
             outputFile = createTempFile();
@@ -195,7 +195,7 @@ public class DocumentConverterService implements ApplicationContextAware {
         if (!isEnabled()) {
             return null;
         }
-        
+
         File outputFile = createTempFile();
 
         // convert inputFile to outputFile
@@ -283,7 +283,7 @@ public class DocumentConverterService implements ApplicationContextAware {
     /**
      * Returns the {@link DocumentFormat} based of the extension of the
      * specified file.
-     * 
+     *
      * @param file the file to detect format for
      * @return the {@link DocumentFormat} based of the extension of the
      *         specified file
@@ -337,7 +337,7 @@ public class DocumentConverterService implements ApplicationContextAware {
 
     /**
      * Initializes an instance of the document format registry.
-     * 
+     *
      * @param formatRegistry an instance of the document format registry
      */
     public void setFormatRegistry(DocumentFormatRegistry formatRegistry) {
@@ -346,7 +346,7 @@ public class DocumentConverterService implements ApplicationContextAware {
 
     /**
      * Initializes the service and starts office manager.
-     * 
+     *
      * @throws OfficeException in case of an initialization error
      */
     public void start() throws OfficeException {
@@ -359,7 +359,7 @@ public class DocumentConverterService implements ApplicationContextAware {
         } catch (Exception e) {
             logger.error("OfficeManager factory exception. Cause: " + e.getMessage(), e);
         }
-        
+
         if (officeManager == null) {
             logger.warn("OfficeManager instance is not initialized correctly. Disabling service.");
             setEnabled(false);
@@ -379,7 +379,7 @@ public class DocumentConverterService implements ApplicationContextAware {
 
     /**
      * Shuts down the office manager.
-     * 
+     *
      * @throws OfficeException in case of a shutdown error
      */
     public void stop() throws OfficeException {

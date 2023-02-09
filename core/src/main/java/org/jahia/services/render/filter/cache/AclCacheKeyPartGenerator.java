@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -135,7 +135,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
     private boolean usePerUser = false;
     private boolean useGroupsSignature = false;
-    
+
     private Set<String> groupsSignatureAclPathsToQuery;
     private String allPrincipalsWithAclQuery;
 
@@ -281,7 +281,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         return "";
 
     }
-    
+
     private void addReferenceDependency(String identifier, Set<String> aclsKeys, JCRSessionWrapper systemSession) throws RepositoryException {
         try {
             Node refNode = systemSession.getNodeByIdentifier(identifier);
@@ -473,7 +473,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             }
           });
           }
-        
+
         return (PrincipalAcl) element.getObjectValue();
     }
 
@@ -517,14 +517,14 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             }
           });
       }
-      
+
       return (Set<String>) element.getObjectValue();
     }
 
     /**
      * Checks if the specified path is relevant for the calculation of the all principals with ACLs cache entry, based on configured
      * {@link #groupsSignatureAclPathsToQuery} value.
-     * 
+     *
      * @param path the node path to check
      * @return <code>true</code> if the path is relevant for the calculation of the all principals with ACLs cache entry; <code>false</code>
      *         otherwise.
@@ -558,10 +558,10 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                     } else {
                         first = false;
                     }
-        
+
                     q.append(" ISDESCENDANTNODE('").append(JCRContentUtils.sqlEncode(path)).append("')");
                 }
-        
+
                 allPrincipalsWithAclQuery = q.toString();
             }
         }

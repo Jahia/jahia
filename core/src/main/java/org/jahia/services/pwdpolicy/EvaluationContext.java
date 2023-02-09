@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ import org.jahia.services.usermanager.JahiaUser;
 
 /**
  * The rule condition evaluation context.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 class EvaluationContext {
@@ -63,7 +63,7 @@ class EvaluationContext {
 
 	/**
 	 * Initializes an instance of this class.
-	 * 
+	 *
 	 * @param user
 	 *            the target user
 	 * @param password
@@ -85,7 +85,7 @@ class EvaluationContext {
 
 	/**
 	 * Initializes an instance of this class.
-	 * 
+	 *
 	 * @param username
 	 *            the name of the user
 	 * @param password
@@ -98,7 +98,7 @@ class EvaluationContext {
 
 	/**
 	 * Returns the password.
-	 * 
+	 *
 	 * @return the password
 	 */
 	public String getPassword() {
@@ -107,7 +107,7 @@ class EvaluationContext {
 
 	/**
 	 * Returns the user.
-	 * 
+	 *
 	 * @return the user
 	 */
 	public JCRUserNode getUser() {
@@ -117,7 +117,7 @@ class EvaluationContext {
 	/**
 	 * Returns <code>true</code> if the operation was initiated by the user
 	 * and not via administration interface.
-	 * 
+	 *
 	 * @return <code>true</code> if the operation was initiated by the user
 	 *         and not via administration interface
 	 */

@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -59,13 +59,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 /**
  * Base class for controllers, exposing repository nodes via JCR Query API.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public abstract class BaseFindController extends JahiaController {
 
     public static class PropertyFilter {
-        
+
         public static final PropertyFilter EMPTY = new PropertyFilter();
 
         private Set<String> excludes;
@@ -88,18 +88,18 @@ public abstract class BaseFindController extends JahiaController {
             this.includes = includes != null && includes.size() == 0 ? null : includes;
         }
     }
-    
+
     private static final Logger logger = LoggerFactory.getLogger(BaseFindController.class);
 
     protected int defaultLimit = 20;
-    
+
     protected boolean disabled;
 
     protected int hardLimit = 100;
 
     /**
      * The default number of results this controller will return if no limit was specified as a request parameter.
-     * 
+     *
      * @param defaultLimit
      *            default number of results this controller will return if no limit was specified as a request parameter
      */
@@ -110,7 +110,7 @@ public abstract class BaseFindController extends JahiaController {
     /**
      * Sets the "hard" limit, i.e. the maximum number of results this controller will return no matter what limit was specified as a request
      * parameter. This is done to prevent denial of service attacks or just limit the number of results to some "reasonable" amount.
-     * 
+     *
      * @param hardLimit
      *            the maximum number of results this controller will return
      */

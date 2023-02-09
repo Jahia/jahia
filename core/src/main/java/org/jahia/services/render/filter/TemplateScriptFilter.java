@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -155,7 +155,7 @@ public class TemplateScriptFilter extends AbstractFilter {
             }
 
             if (moduleInfo) {
-                output.append(outputString);                
+                output.append(outputString);
                 stopWatch.stop();
                 View view = script.getView();
                 output.append("<legend>").append("<img src=\"").append(renderContext.getURLGenerator().getContext())
@@ -166,7 +166,7 @@ public class TemplateScriptFilter extends AbstractFilter {
                         .append(" , own time: ").append(stopWatch.getTotalTimeMillis()).append("ms")
                         .append("\"/></legend>");
                 output.append("</fieldset>");
-                
+
                 outputString = output.toString();
             }
         } finally {

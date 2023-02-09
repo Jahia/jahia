@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -77,15 +77,15 @@ public abstract class CategoryService extends JahiaService {
 
     /**
      * @param user the user name executing the operation
-     *  
+     *
      * @return the root category objects (namespaces)
      *
      * @throws JahiaException thrown if there was a problem communicating with
      *                        the database
      */
     public abstract List<Category> getRootCategories(JahiaUser user)
-            throws JahiaException;    
-    
+            throws JahiaException;
+
     /**
      * @param key the key for the category to retrieve
      *
@@ -141,10 +141,10 @@ public abstract class CategoryService extends JahiaService {
      */
     public abstract List<ObjectKey> getCategoryChildKeys (Category parentCategory)
             throws JahiaException;
-    
+
     /**
      * Retrieves the child category keys that are associated with the given
-     * parent category. 
+     * parent category.
      *
      * @param parentCategory the category for which to retrieve the sub-categories
      *
@@ -154,7 +154,7 @@ public abstract class CategoryService extends JahiaService {
      *                        the database
      */
     public abstract List<Category> getCategoryChildCategories (Category parentCategory, JahiaUser user)
-            throws JahiaException;    
+            throws JahiaException;
 
     /**
      * Retrieves the parent object keys that are associated with the given
@@ -335,7 +335,7 @@ public abstract class CategoryService extends JahiaService {
     public abstract List<Category> getCategoriesContainingStringInTitle(final String string,
                                                               final String languageCode) throws JahiaException;
 
-    
+
     public abstract List<Category> findCategoriesByPropNameAndValue(String propName, String propValue, JahiaUser user);
 
     public abstract void removeProperties(String categoryId);

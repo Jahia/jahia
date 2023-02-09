@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -72,7 +72,7 @@ import org.tuckey.web.filters.urlrewrite.RewrittenUrl;
 
 /**
  * Test case for URL rewriting.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class UrlRewriteTest extends JahiaTestCase {
@@ -82,9 +82,9 @@ public class UrlRewriteTest extends JahiaTestCase {
     private static final String SECOND_LANG = "fr";
 
     private static UrlRewriteService engine;
-    
+
     private static boolean seoRulesEnabled = false;
-    private static boolean seoRemoveCmsPrefix = false;    
+    private static boolean seoRemoveCmsPrefix = false;
 
     private static final String SERVER_NAME = "urlrewrite.jahia.org";
 
@@ -133,7 +133,7 @@ public class UrlRewriteTest extends JahiaTestCase {
             engine.afterPropertiesSet();
             seoRulesEnabled = false;
             seoRemoveCmsPrefix = false;
-        }        
+        }
         engine = null;
     }
 
@@ -143,7 +143,7 @@ public class UrlRewriteTest extends JahiaTestCase {
 
     public void doLiveSiteLocalhostTest(String lang) throws Exception {
         String rewrittenLang = DEFAULT_LANG.equals(lang) ? "" : "/" + lang;
-        
+
         rewrite(SERVLET + "/render/live/" + lang + "/sites/urlRewriteSite/home.html", rewrittenLang + "/sites/urlRewriteSite/home.html");
         rewrite(SERVLET + "/render/live/" + lang + "/sites/urlRewriteSite/home.html?test=aaa",
                 rewrittenLang + "/sites/urlRewriteSite/home.html?test=aaa");
@@ -336,7 +336,7 @@ public class UrlRewriteTest extends JahiaTestCase {
     public void testLiveSiteLocalhost() throws Exception {
         doLiveSiteLocalhostTest(DEFAULT_LANG);
     }
-    
+
     @Test
     public void testLiveSiteLocalhostNonDefaultLanguage() throws Exception {
         doLiveSiteLocalhostTest(SECOND_LANG);

@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -69,7 +69,7 @@ import org.junit.Test;
 
 /**
  * Test case for the {@link HtmlFilteringInterceptor}.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class HtmlFilteringInterceptorTest extends HtmlFilteringInterceptor {
@@ -85,7 +85,7 @@ public class HtmlFilteringInterceptorTest extends HtmlFilteringInterceptor {
 		} finally {
 			IOUtils.closeQuietly(is);
 		}
-		
+
 		assertNotNull("Cannot read content from resource '" + resource+ "'", content);
 
 		return content;
@@ -133,7 +133,7 @@ public class HtmlFilteringInterceptorTest extends HtmlFilteringInterceptor {
 	@Test
 	public void testHr() throws Exception {
 		String source = loadContent("hr.txt");
-		
+
 		String out = HtmlFilteringInterceptor.filterTags(source, new HashSet<String>(Arrays.asList("script", "object", "hr")), false);
 		assertFalse("<hr/> tag was not removed", out.contains("<hr"));
 		assertTrue("other elements were incorrectly removed", out.contains("My separated text"));
@@ -143,7 +143,7 @@ public class HtmlFilteringInterceptorTest extends HtmlFilteringInterceptor {
 	@Test
 	public void testFormatting() throws Exception {
 		String source = loadContent("formatting.txt");
-		
+
 		String out = HtmlFilteringInterceptor.filterTags(source, new HashSet<String>(Arrays.asList("b", "i", "strong")), false);
 		assertFalse("<strong/> tag was not removed", out.contains("<strong"));
 		assertFalse("<i/> tag was not removed", out.contains("<i"));

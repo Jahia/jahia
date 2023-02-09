@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -47,11 +47,11 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import java.util.List;
 
 /**
- * 
+ *
  * User: toto
  * Date: Nov 5, 2008
  * Time: 2:41:30 PM
- * 
+ *
  */
 public interface UserGroupAdder {
     public void addUsersGroups(List<GWTJahiaNode> users);

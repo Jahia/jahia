@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -76,9 +76,9 @@ public interface JCRValueWrapper extends Value {
      *
      * @return The <code>PropertyDefinition</code> for the current value.
      * @throws RepositoryException   if another error occurs.
-     */       
+     */
     PropertyDefinition getDefinition() throws RepositoryException;
-    
+
     /**
      * Returns a <code>Date</code> representation of the <code>Calendar</code>'s time of this value.
      * <p>

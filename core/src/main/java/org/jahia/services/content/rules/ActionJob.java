@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -58,18 +58,18 @@ import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 
 /**
- * Background job that executes a predefined action. 
+ * Background job that executes a predefined action.
  */
 public class ActionJob extends BackgroundJob {
-	
-    public static final String NAME_PREFIX = "ACTION_JOB_"; 
-    
+
+    public static final String NAME_PREFIX = "ACTION_JOB_";
+
     private static transient Logger logger = LoggerFactory.getLogger(ActionJob.class);
 
     public static final String JOB_ACTION_TO_EXECUTE = "actionToExecute";
     public static final String JOB_NODE_UUID = "node";
     public static final String JOB_WORKSPACE = "workspace";
-    
+
     public static final String getJobGroup(String actionName) {
     	return BackgroundJob.getGroupName(ActionJob.class) + "." + actionName;
     }

@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ import org.jasypt.digest.StringDigester;
 
 /**
  * Default password digester implementation which uses supplied {@link StringDigester}.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class JasyptPasswordDigester implements PasswordDigester {
@@ -59,7 +59,7 @@ public class JasyptPasswordDigester implements PasswordDigester {
 
     /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param id
      *            the password digester ID
      * @param jasyptDigester
@@ -93,7 +93,7 @@ public class JasyptPasswordDigester implements PasswordDigester {
 
     /**
      * Enforces this digester to override the default platform's one.
-     * 
+     *
      * @param isDefault
      *            should this digester become the default one?
      */
@@ -103,7 +103,7 @@ public class JasyptPasswordDigester implements PasswordDigester {
 
     /**
      * Sets the unique identifier of this digester.
-     * 
+     *
      * @param id
      *            the unique identifier of this digester
      */

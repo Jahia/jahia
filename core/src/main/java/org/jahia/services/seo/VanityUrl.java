@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -49,9 +49,9 @@ import java.io.Serializable;
 
 /**
  * Vanity Url mapped to content
- * 
+ *
  * @author Benjamin Papez
- * 
+ *
  */
 public class VanityUrl implements Serializable {
 
@@ -105,7 +105,7 @@ public class VanityUrl implements Serializable {
     }
 
     /**
-     * Returns the vanity URL 
+     * Returns the vanity URL
      * @return the vanity URL
      */
     public String getUrl() {
@@ -131,7 +131,7 @@ public class VanityUrl implements Serializable {
     }
 
     /**
-     * Returns the language of the content object to which the vanity URL maps to 
+     * Returns the language of the content object to which the vanity URL maps to
      * @return language of the mapping
      */
     public String getLanguage() {
@@ -155,7 +155,7 @@ public class VanityUrl implements Serializable {
     }
 
     /**
-     * Sets the default flag for the URL mapping - true if mapping should be the 
+     * Sets the default flag for the URL mapping - true if mapping should be the
      * default for the language, otherwise false
      * @param defaultMapping true if mapping should be the default for the language, otherwise false
      */
@@ -181,9 +181,9 @@ public class VanityUrl implements Serializable {
     }
 
     /**
-     * Gets the UUID of the mapping node in the JCR repository or null if URL is 
+     * Gets the UUID of the mapping node in the JCR repository or null if URL is
      * not saved yet
-     * @return the UUID of the mapping node in the JCR repository or null if not saved yet 
+     * @return the UUID of the mapping node in the JCR repository or null if not saved yet
      */
     public String getIdentifier() {
         return identifier;
@@ -198,7 +198,7 @@ public class VanityUrl implements Serializable {
     }
 
     /**
-     * Gets the path of the node in the JCR repository or null if not yet set 
+     * Gets the path of the node in the JCR repository or null if not yet set
      * @return the path of the node in the JCR repository or null if not yet set
      */
     public String getPath() {

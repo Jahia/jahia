@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ import java.util.Date;
 public class GWTJahiaNodePropertyValue extends BaseTreeModel implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     private String value;
     private int type;
     private GWTJahiaNode reference;
@@ -78,7 +78,7 @@ public class GWTJahiaNodePropertyValue extends BaseTreeModel implements Serializ
         this.type = type;
         this.value = value;
     }
-    
+
     public GWTJahiaNodePropertyValue(String value, GWTJahiaNode node, int type) {
         this();
         this.type = type;
@@ -93,7 +93,7 @@ public class GWTJahiaNodePropertyValue extends BaseTreeModel implements Serializ
             this.value = reference.getUUID();
         } else if (type == GWTJahiaNodePropertyType.PAGE_LINK) {
             this.linkNode = node;
-            this.value = node.get("jnt:url"); 
+            this.value = node.get("jnt:url");
         } else {
             this.reference = node;
             this.value = node.getPath();

@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ import org.apache.commons.lang.time.DurationFormatUtils;
 
 /**
  * Convenient date utility methods.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public final class DateUtils {
@@ -89,7 +89,7 @@ public final class DateUtils {
 
     /**
      * Returns the end of the day (23:59:59:999) for today.
-     * 
+     *
      * @param date the date to be processed
      * @return the end of the day (23:59:59:999) for today
      */
@@ -99,7 +99,7 @@ public final class DateUtils {
 
     /**
      * Returns the end of the day (23:59:59:999) for the specified date.
-     * 
+     *
      * @param date the date to be processed
      * @return the end of the day (23:59:59:999) for the specified date
      */
@@ -116,16 +116,16 @@ public final class DateUtils {
 
     /**
      * Returns the start of the day (00:00:00:000) for today.
-     * 
+     *
      * @return the start of the day (00:00:00:000) for today
      */
     public static Calendar dayStart() {
         return dayStart(Calendar.getInstance());
     }
-    
+
     /**
      * Returns the start of the day (00:00:00:000) for the specified date.
-     * 
+     *
      * @param date the date to be processed
      * @return the start of the day (00:00:00:000) for the specified date
      */
@@ -143,7 +143,7 @@ public final class DateUtils {
     /**
      * Returns the {@link Calendar}'s day of week number, which corresponds to the provided day of week string. If the name is unknown,
      * <code>null</code> is returned.
-     * 
+     *
      * @param dayOfWeek
      *            the day of week name
      * @return the {@link Calendar}'s day of week number, which corresponds to the provided day of week string. If the name is unknown,
@@ -155,7 +155,7 @@ public final class DateUtils {
 
     /**
      * Returns the the end of the day cron expression (Quartz scheduler) for the specified days of week.
-     * 
+     *
      * @param daysOfWeek
      *            the day of week list
      * @return the the end of the day cron expression (Quartz scheduler) for the specified days of week
@@ -168,7 +168,7 @@ public final class DateUtils {
 
     /**
      * Returns the the start of the day cron expression (Quartz scheduler) for the specified days of week.
-     * 
+     *
      * @param daysOfWeek
      *            the day of week list
      * @return the the start of the day cron expression (Quartz scheduler) for the specified days of week
@@ -178,10 +178,10 @@ public final class DateUtils {
                 + (daysOfWeek != null && !daysOfWeek.isEmpty() ? StringUtils.join(daysOfWeek, ',')
                         : "*");
     }
-    
+
     /**
      * Returns a human-readable representation of the time taken.
-     * 
+     *
      * @param durationMillis
      *            the time take in milliseconds
      * @return a human-readable representation of the time taken

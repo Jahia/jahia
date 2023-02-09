@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -110,7 +110,7 @@ public class PaxLoggingConfigurer implements EventHandler {
                 logger.error("Cannot update logging configuration", e);
             }
         }
-        
+
         private boolean checkOsgiLogConfig(Dictionary<String, Object> properties, Map<String, Object> coreConfig) {
             boolean needsUpdate = false;
             Enumeration<String> keys = properties.keys();
@@ -126,7 +126,7 @@ public class PaxLoggingConfigurer implements EventHandler {
             }
             return needsUpdate;
         }
-        
+
         private void updateConfig(Map<String, Object> newConfig) throws IOException {
             loggerConfig.clear();
             loggerConfig.putAll(newConfig);
@@ -156,7 +156,7 @@ public class PaxLoggingConfigurer implements EventHandler {
     static Logger logger = LoggerFactory.getLogger(PaxLoggingConfigurer.class);
 
     private ServiceRegistration<EventHandler> eventHandlerServiceRegistration;
-    
+
     private ServiceTracker<ConfigurationAdmin, ConfigurationAdmin> serviceTrackerConfigAdmin;
 
     private ConfigSynchronizerTimer syncTask;
@@ -191,7 +191,7 @@ public class PaxLoggingConfigurer implements EventHandler {
         logger.info("Scheduling logging configuration synchronization task with interval of {} ms", timerPeriod);
         syncTask = new ConfigSynchronizerTimer();
         timer.schedule(syncTask, 0, timerPeriod);
-        
+
         Dictionary<String, String> props = new Hashtable<>();
         props.put(Constants.SERVICE_PID, "org.jahia.bundles.extender.jahiamodules.PaxLoggingConfigurer");
         props.put(Constants.SERVICE_DESCRIPTION, "Synchronizes Log4j configuration from Jahia core into Pax Logging configuration");

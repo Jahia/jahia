@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -74,7 +74,7 @@ public class QueryResultTest {
     private final static String TESTSITE_NAME = "jcrQueryTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
     private final static String XPATH_SITECONTENT_ROOT_NODE = "/jcr:root/sites/" + TESTSITE_NAME;
-    
+
     private final static String NEWS_NAME_PREFIX = "news_";
 
     private static final String MEETING = "meeting";
@@ -317,7 +317,7 @@ public class QueryResultTest {
                 session,
                 XPATH_SITECONTENT_ROOT_NODE
                         + "/contents/*[fn:name() = 'news' or fn:name() = 'events']//element(*, jmix:editorialContent) [@jcr:language = 'en'] order by @jcr:title",
-                Query.XPATH);        
+                Query.XPATH);
         checkResultSize(res, 50);
 
         // check descendantnodes with comparison
@@ -325,13 +325,13 @@ public class QueryResultTest {
                 session,
                 XPATH_SITECONTENT_ROOT_NODE
                         + "/contents/news//element(*, jmix:editorialContent)[not(@jcr:language) and @date = '" + ISO8601.format(new GregorianCalendar(2000, 0, 1, 12, 0)) + "']",
-                Query.XPATH);        
+                Query.XPATH);
         checkResultSize(res, 5);
 
         // check descendantnodes with freetext
         res = doQuery(session, XPATH_SITECONTENT_ROOT_NODE
                 + "/contents/news//element(*, jmix:editorialContent) [@jcr:language = 'en' and jcr:contains(., 'cucumber')]",
-                Query.XPATH);        
+                Query.XPATH);
         checkResultSize(res, 13);
     }
 
@@ -439,14 +439,14 @@ public class QueryResultTest {
         createNews(newsListNode, NEWS_NAME_PREFIX + i++, FIRST_PHONE_SENTENCE, calendar, cat3);
 
         JCRNodeWrapper newsSubListNode = createList(newsListNode, "news");
-        
+
         calendar.add(Calendar.DAY_OF_MONTH, 5);
         createNews(newsSubListNode, NEWS_NAME_PREFIX + i++, FIRST_PHONE_SENTENCE, calendar, cat3);
         createNews(newsSubListNode, NEWS_NAME_PREFIX + i++, FIRST_TELEGRAPH_SENTENCE, calendar, cat3);
         createNews(newsSubListNode, NEWS_NAME_PREFIX + i++, FIRST_TELEGRAPH_SENTENCE, calendar, cat3);
         createNews(newsSubListNode, NEWS_NAME_PREFIX + i++, FIRST_TELEGRAPH_SENTENCE, calendar, cat3);
-        
-        calendar = new GregorianCalendar(2000, 0, 1, 12, 0);        
+
+        calendar = new GregorianCalendar(2000, 0, 1, 12, 0);
         createNews(newsSubListNode, NEWS_NAME_PREFIX + i++, FIRST_TELEGRAPH_SENTENCE, calendar, cat3);
         createNews(newsSubListNode, NEWS_NAME_PREFIX + i++, FIRST_PHONE_SENTENCE, calendar, cat3);
         createNews(newsSubListNode, NEWS_NAME_PREFIX + i++, FIRST_PHONE_SENTENCE, calendar, cat3);

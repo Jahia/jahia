@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -57,26 +57,26 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Text extraction utility class for (re-)extracting text on existing document nodes.
- * 
+ *
  * @author Benjamin Papez
  */
 public final class TextExtractionHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(TextExtractionHelper.class);
-    
+
     private static final String CHECKING = "checking";
     private static final String FIXING = "fixing";
     private static final String REDOING = "redoing";
-    
-    private static boolean checkingExtractions;    
+
+    private static boolean checkingExtractions;
     private static TextExtractionChecker extractionChecker;
 
     /**
-     * Triggers the process of checking for missing text extractions check. If the <code>fixMissingExtraction</code> is set to <code>true</code> also 
+     * Triggers the process of checking for missing text extractions check. If the <code>fixMissingExtraction</code> is set to <code>true</code> also
      * tries to extract the text now.
-     * 
+     *
      * This method ensures that only one check process runs at a time.
-     * 
+     *
      * @param fixMissingExtraction
      *            if set to <code>true</code> performs the text extraction now; in case of <code>false</code> only the missing extraction count is
      *            reported, but no fix is done
@@ -95,11 +95,11 @@ public final class TextExtractionHelper {
         checkingExtractions = true;
         long timer = System.currentTimeMillis();
         final ExtractionCheckStatus status = new ExtractionCheckStatus();
-        
+
         final OutWrapper out = new OutWrapper(logger, statusOut);
 
         out.echo("Start {} missing extraction ", fixMissingExtraction ? FIXING : CHECKING);
-        
+
         extractionChecker = new TextExtractionChecker(status, fixMissingExtraction, out);
 
         try {
@@ -114,8 +114,8 @@ public final class TextExtractionHelper {
             if (status.extractable == 0) {
                 out.echo("none");
             }
-            long extractableInDefault = status.extractable; 
-            out.echo("\nMissing extractions in LIVE workspace for: ");            
+            long extractableInDefault = status.extractable;
+            out.echo("\nMissing extractions in LIVE workspace for: ");
             JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, callback);
             if (status.extractable == extractableInDefault) {
                 out.echo("none");
@@ -130,11 +130,11 @@ public final class TextExtractionHelper {
     }
 
     /**
-     * Triggers the process of checking for files (by filter), where extraction is possible. If the <code>redoExtraction</code> is set to <code>true</code> also 
+     * Triggers the process of checking for files (by filter), where extraction is possible. If the <code>redoExtraction</code> is set to <code>true</code> also
      * tries to extract the text now.
-     * 
+     *
      * This method ensures that only one check process runs at a time.
-     * 
+     *
      * @param redoExtraction
      *            if set to <code>true</code> performs the text extraction now; in case of <code>false</code> only the extraction count is
      *            reported, but not redone
@@ -153,11 +153,11 @@ public final class TextExtractionHelper {
         checkingExtractions = true;
         long timer = System.currentTimeMillis();
         final ExtractionCheckStatus status = new ExtractionCheckStatus();
-        
+
         final OutWrapper out = new OutWrapper(logger, statusOut);
 
         out.echo("Start {} extraction by filter", redoExtraction ? REDOING : CHECKING);
-        
+
         extractionChecker = new TextExtractionChecker(status, redoExtraction, filter, out);
 
         try {
@@ -194,8 +194,8 @@ public final class TextExtractionHelper {
 
         return status;
     }
-    
-    
+
+
     /**
      * Forces stop of the extraction check process if it is currently running.
      */
@@ -204,15 +204,15 @@ public final class TextExtractionHelper {
             extractionChecker.stop();
         }
     }
-    
+
     /**
      * Returns <code>true</code> if the process for checking extractions is currently running.
-     * 
+     *
      * @return <code>true</code> if the process for checking extractions is currently running; <code>false</code> otherwise
      */
     public static boolean isCheckingExtractions() {
         return checkingExtractions;
-    }    
+    }
 
     private TextExtractionHelper() {
         super();

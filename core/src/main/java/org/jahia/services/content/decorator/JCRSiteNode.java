@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -70,15 +70,15 @@ import static org.jahia.services.sites.SitesSettings.*;
 
 /**
  * JCR node representing the Jahia virtual site.
- * 
+ *
  * User: toto
  * Date: Mar 30, 2010
  * Time: 12:37:45 PM
  */
 public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     private static final Logger logger = LoggerFactory.getLogger(JCRSiteNode.class);
-    
-    private static final String CANNOT_GET_SITE_PROPERTY = "Cannot get site property "; 
+
+    private static final String CANNOT_GET_SITE_PROPERTY = "Cannot get site property ";
     private static final String CANNOT_SET_SITE_PROPERTY = "Cannot set site property ";
 
     private static List<String> toUnmodifiableList(String[] values) {
@@ -106,31 +106,31 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     }
 
     private Set<String> activeLiveLanguages;
-    
-    private List<Locale> activeLiveLanguagesAsLocales;    
-    
+
+    private List<Locale> activeLiveLanguagesAsLocales;
+
     private Set<String> inactiveLiveLanguages;
 
     private Set<String> inactiveLanguages;
-    
+
     private List<Locale> inactiveLanguagesAsLocales;
 
     private String defaultLanguage;
-    
+
     private JCRNodeWrapper home;
-    
+
     private Set<String> languages;
-    
+
     private List<Locale> languagesAsLocales;
-    
+
     private Set<String> mandatoryLanguages;
-    
+
     private Boolean mixLanguagesActive;
 
     private Boolean allowsUnlistedLanguages;
 
     private String templateFolder;
-    
+
     private List<String> allServerNames;
 
     private List<String> serverAliases;
@@ -138,9 +138,9 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     private String serverName;
 
     private JahiaTemplatesPackage templatePackage;
-    
+
     private List<String> installedModules;
-    
+
     private Set<String> installedModulesWithDependencies;
 
     public JCRSiteNode(JCRNodeWrapper node) {
@@ -357,14 +357,14 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
                     }
                     serverAliases = Collections.unmodifiableList(result);
                 } else {
-                    serverAliases = Collections.emptyList(); 
+                    serverAliases = Collections.emptyList();
                 }
             } catch (RepositoryException e) {
                 logger.error(CANNOT_GET_SITE_PROPERTY + SitesSettings.SERVER_NAME_ALIASES, e);
                 return Collections.emptyList();
             }
         }
-        
+
         return serverAliases;
     }
 
@@ -408,7 +408,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
         }
         return templateFolder;
     }
-    
+
     private String getTemplateFolderForSite() throws RepositoryException {
         String retrievedTemplateFolder = null;
         if (hasProperty(SitesSettings.TEMPLATES_SET)) {
@@ -457,10 +457,10 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
         }
         return modules;
     }
-    
+
     /**
      * Returns a set of all installed modules for this site, their direct and transitive dependencies (the whole dependency tree).
-     * 
+     *
      * @return a set of all installed modules for this site, their direct and transitive dependencies (the whole dependency tree)
      */
     public Set<String> getInstalledModulesWithAllDependencies() {
@@ -596,7 +596,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
         }
         return false;
     }
-    
+
     @Override
     public void setDefaultLanguage(String defaultLanguage) {
         try {
@@ -606,7 +606,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
             logger.error("Cannot set default language", e);
         }
     }
-    
+
     private void ensureSiteInDefaultWorkspace() throws RepositoryException {
         if ("live".equals(getSession().getWorkspace().getName())) {
             throw new UnsupportedOperationException("Get site in default workspace");
@@ -857,10 +857,10 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
         } else if (SitesSettings.ALLOWS_UNLISTED_LANGUAGES.equals(s)) {
             allowsUnlistedLanguages = value;
         }
-        
+
         return super.setProperty(s, value);
     }
-    
+
     @Override
     public JCRPropertyWrapper setProperty(String s, String[] values) throws ValueFormatException, VersionException,
             LockException, ConstraintViolationException, RepositoryException {

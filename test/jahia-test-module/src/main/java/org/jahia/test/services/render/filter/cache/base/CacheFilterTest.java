@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -97,7 +97,7 @@ public class CacheFilterTest extends JahiaTestCase {
     public static void oneTimeSetUp() throws Exception {
         try {
             isJsessionIdActive = SettingsBean.getInstance().isDisableJsessionIdParameter();
-            
+
             SettingsBean.getInstance().setDisableJsessionIdParameter(true);
 
             JahiaSite site = TestHelper.createSite(TESTSITE_NAME);
@@ -106,8 +106,8 @@ public class CacheFilterTest extends JahiaTestCase {
 
             JCRPublicationService.getInstance().publishByMainId(siteNode.getNode("search-results").getIdentifier(), Constants.EDIT_WORKSPACE,
                     Constants.LIVE_WORKSPACE, new LinkedHashSet<String>(Arrays.asList(Locale.ENGLISH.toString())),
-                    true, Collections.<String> emptyList());            
-            
+                    true, Collections.<String> emptyList());
+
             JCRNodeWrapper shared = siteNode.getNode("home");
             if (shared.hasNode("testContent")) {
                 shared.getNode("testContent").remove();
@@ -115,7 +115,7 @@ public class CacheFilterTest extends JahiaTestCase {
             if(shared.isVersioned()) session.checkout(shared);
             JCRNodeWrapper node = shared.addNode("testContent", "jnt:page");
             node.setProperty("jcr:title", "English test page");
-            node.setProperty("j:templateName", "simple");            
+            node.setProperty("j:templateName", "simple");
             node.addNode("testType2", "jnt:mainContent");
 
             JCRNodeWrapper notCacheable1 = node.addNode("testNotCacheable1", "jnt:text");
@@ -166,7 +166,7 @@ public class CacheFilterTest extends JahiaTestCase {
     public void testFixForEmptyCacheBug() throws Exception {
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
         final JCRNodeWrapper node = liveSession.getNode("/sites/"+TESTSITE_NAME+"/home/testContent");
-        
+
         String relativeUrl = "/cms/render/live/en" + node.getPath() + ".html";
         String firstResponse = getAsText(relativeUrl);
 

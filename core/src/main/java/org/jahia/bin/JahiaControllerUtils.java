@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -59,13 +59,13 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Utility class for Jahia specific action controllers.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public final class JahiaControllerUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(JahiaControllerUtils.class);
-    
+
     public static void checkUserAuthorized(JahiaUser user, String permissions)
             throws JahiaForbiddenAccessException {
         checkUserAuthorized(null, user, permissions);
@@ -99,7 +99,7 @@ public final class JahiaControllerUtils {
     /**
      * Simple utility method to retrieve an integer parameter from a request and throws an {@link JahiaBadRequestException} (results in a 400 error)
      * in case the parameter is not found.
-     * 
+     *
      * @param request
      *            The current HttpServletRequest
      * @param name
@@ -128,7 +128,7 @@ public final class JahiaControllerUtils {
 
     /**
      * Retrieves the integer value of the specified request parameter. If it does not exist, returns the provided default value.
-     * 
+     *
      * @param request
      *            The current HttpServletRequest
      * @param name
@@ -154,7 +154,7 @@ public final class JahiaControllerUtils {
     /**
      * Simple utility method to retrieve a parameter from a request and throws an {@link JahiaBadRequestException} (results in a 400 error)
      * in case the parameter is not found.
-     * 
+     *
      * @param request
      *            The current HttpServletRequest
      * @param name
@@ -175,7 +175,7 @@ public final class JahiaControllerUtils {
 
     /**
      * Retrieves the value of the specified request parameter. If it does not exist, returns the provided default value.
-     * 
+     *
      * @param request
      *            The current HttpServletRequest
      * @param name

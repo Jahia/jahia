@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ import org.json.JSONObject;
  * Time: 3:14:41 PM
  */
 public class ActionResult {
-    
+
     public static final ActionResult BAD_REQUEST = new ActionResult(HttpServletResponse.SC_BAD_REQUEST);
     public static final ActionResult INTERNAL_ERROR = new ActionResult(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     public static final ActionResult INTERNAL_ERROR_JSON = new ActionResult(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null, new JSONObject());

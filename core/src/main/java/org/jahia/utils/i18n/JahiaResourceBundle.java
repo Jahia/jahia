@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
 
 /**
  * Jahia implementation of the resource bundle, which considers module inheritance.
- * 
+ *
  * @author rincevent
  * @deprecated use {@link ResourceBundles} or {@link Messages} instead
  */
@@ -70,7 +70,7 @@ public class JahiaResourceBundle extends ResourceBundle {
     public static void flushCache() {
         ResourceBundles.flushCache();
     }
-    
+
     public JahiaResourceBundle(Locale locale, String templatesPackageName) {
         this(null, locale, templatesPackageName, null, null);
     }
@@ -134,7 +134,7 @@ public class JahiaResourceBundle extends ResourceBundle {
                 }
             }
         }
-        
+
         if (bundleLookupChain == null || bundleLookupChain.isEmpty()) {
             throw new MissingResourceException("Cannot find resource bundle for base name '"
                     + basename + "', module '" + templatesPackageName + "', site template set '"
@@ -227,7 +227,7 @@ public class JahiaResourceBundle extends ResourceBundle {
     public static ResourceBundle lookupBundle(String baseName, Locale preferredLocale) {
         return ResourceBundles.get(baseName, preferredLocale);
     }
-    
+
     /**
      * find  ResourceBundle depending on a baseName
      *
@@ -247,7 +247,7 @@ public class JahiaResourceBundle extends ResourceBundle {
             }
         }
     }
-    
+
     public static String interpolateResourceBunldeMacro(String input, Locale locale, String templatePackageName) {
         return Messages.interpolateResourceBundleMacro(input, locale,
                 ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(templatePackageName));

@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ package org.jahia.data.applications;
 import org.jahia.content.ObjectKey;
 
 /**
- * 
+ *
  * User: ktlili
  * Date: 26 janv. 2007
  * Time: 16:26:42
@@ -53,9 +53,9 @@ import org.jahia.content.ObjectKey;
 public class EntryPointObjectKey extends ObjectKey {
 
     private static final long serialVersionUID = 1135214230216807396L;
-    
+
     public static final String ENTRY_POINT_TYPE = "entrypoint";
-    
+
     /*TO DO: ckeck value of this IDInType */
     private String IDInType = "100";
     private int idInType;

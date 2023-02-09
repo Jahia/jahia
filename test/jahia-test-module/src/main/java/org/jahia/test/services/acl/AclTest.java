@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -89,7 +89,7 @@ public class AclTest {
     public static final String USER2 = "user2";
     public static final String USER3 = "user3";
     public static final String USER4 = "user4";
-    
+
     private static String homeIdentifier;
     private JCRSessionWrapper session;
     static String content1Identifier;
@@ -99,7 +99,7 @@ public class AclTest {
     private static String content21Identifier;
     private static String content22Identifier;
 
-    
+
     private static void assertRole(JCRNodeWrapper node, String principal, String grantType, String role) {
         Map<String, List<String[]>> aclEntries = node.getAclEntries();
         String path = node.getPath();
@@ -312,7 +312,7 @@ public class AclTest {
     // Test case for the https://jira.jahia.org/browse/QA-9762
     public void testPrivilegedAccess() throws Exception {
         assertAccess(ImmutableMap.of("user1", false, "user3", false));
-        
+
         JCRNodeWrapper home = session.getNodeByIdentifier(homeIdentifier);
 
         // grant group1 an editor role on home page

@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -79,7 +79,7 @@ public class ComparisonTag extends ConstraintTag {
     /**
      * Defines allowed dynamic operand types to be applied for the left operand
      * of the comparison.
-     * 
+     *
      * @author Sergiy Shyrkov
      */
     public enum OperandType {
@@ -193,7 +193,7 @@ public class ComparisonTag extends ConstraintTag {
     /**
      * Sets the sequence (a comma-separated string) of dynamic operand types to
      * be applied on the operand1 (left operand of the comparison).
-     * 
+     *
      * @param appliedOperandsSequence the sequence (a comma-separated string) of
      *            dynamic operand types to be applied on the operand1 (left
      *            operand of the comparison)

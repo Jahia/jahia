@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -82,9 +82,9 @@ public class LogoutTest extends JahiaTestCase {
     private static final String SITE_KEY = "logoutSite";
 
     private static UrlRewriteService engine;
-    
+
     private static JahiaSite defaultSite = null;
-    
+
     private static boolean seoRulesEnabled = false;
     private static boolean seoRemoveCmsPrefix = false;
 
@@ -101,11 +101,11 @@ public class LogoutTest extends JahiaTestCase {
         }
         if (seoRulesEnabled || seoRemoveCmsPrefix) {
             engine.afterPropertiesSet();
-        }      
-        
-        JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();        
+        }
+
+        JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
         defaultSite = service.getDefaultSite();
-        
+
         JahiaSite site = service.getSiteByKey(SITE_KEY);
         if (site == null) {
             site = TestHelper.createSite(SITE_KEY, "localhost", TestHelper.WEB_TEMPLATES);
@@ -117,7 +117,7 @@ public class LogoutTest extends JahiaTestCase {
         site.setDefaultLanguage("en");
         service.updateSystemSitePermissions(site);
         service.setDefaultSite(site);
-                
+
         JahiaSite siteForServerName = service.getSiteByServerName(getRequest().getServerName());
 
         // Add two page and publish one
@@ -146,17 +146,17 @@ public class LogoutTest extends JahiaTestCase {
             session.save();
         }
         jcrService.publishByMainId(session.getNode("/sites/"+SITE_KEY+"/files").getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, null);
-        jcrService.publishByMainId(session.getNode("/sites/"+SITE_KEY+"/search-results").getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, null);        
+        jcrService.publishByMainId(session.getNode("/sites/"+SITE_KEY+"/search-results").getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, null);
         jcrService.publishByMainId(session.getNode("/sites/"+SITE_KEY+"/home").getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, null);
         jcrService.publishByMainId(session.getNode("/sites/"+SITE_KEY+"/home/pubPage").getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, null);
     }
-    
+
     @AfterClass
     public static void oneTimeTearDown() throws Exception {
         if (defaultSite != null) {
             ServicesRegistry.getInstance().getJahiaSitesService().setDefaultSite(defaultSite);
             defaultSite = null;
-        }        
+        }
         TestHelper.deleteSite(SITE_KEY);
         JCRSessionFactory.getInstance().closeAllSessions();
 
@@ -166,7 +166,7 @@ public class LogoutTest extends JahiaTestCase {
             engine.afterPropertiesSet();
             seoRulesEnabled = false;
             seoRemoveCmsPrefix = false;
-        }                
+        }
         engine = null;
     }
 
@@ -179,7 +179,7 @@ public class LogoutTest extends JahiaTestCase {
         String returnUrl = perform("/en/sites/"+SITE_KEY+"/home/pubPage.html");
         assertEquals("Logout from live published page failed ", "/sites/"+SITE_KEY+"/home/pubPage.html", returnUrl);
     }
-    
+
     @Test
     public void logoutEditPub() throws Exception {
         String returnUrl = perform("/cms/render/default/en/sites/"+SITE_KEY+"/home/pubPage.html");
@@ -221,7 +221,7 @@ public class LogoutTest extends JahiaTestCase {
         loginRoot();
         return logout(url);
     }
-    
+
     protected String logout(String url) throws Exception {
         String returnUrl = null;
         String baseurl = getBaseServerURL() + Jahia.getContextPath();

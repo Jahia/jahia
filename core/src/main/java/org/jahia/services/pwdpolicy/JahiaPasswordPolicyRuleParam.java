@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * Rule parameter service object.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class JahiaPasswordPolicyRuleParam implements Serializable {
@@ -70,7 +70,7 @@ public class JahiaPasswordPolicyRuleParam implements Serializable {
 
     /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param id
      * @param name
      * @param value
@@ -92,7 +92,7 @@ public class JahiaPasswordPolicyRuleParam implements Serializable {
 
     /**
      * Returns the parameter id.
-     * 
+     *
      * @return the rule id
      */
     public String getId() {
@@ -101,7 +101,7 @@ public class JahiaPasswordPolicyRuleParam implements Serializable {
 
     /**
      * Returns the parameter name.
-     * 
+     *
      * @return the parameter name
      */
     public String getName() {
@@ -110,7 +110,7 @@ public class JahiaPasswordPolicyRuleParam implements Serializable {
 
     /**
      * Returns the value.
-     * 
+     *
      * @return the value
      */
     public String getValue() {
@@ -119,7 +119,7 @@ public class JahiaPasswordPolicyRuleParam implements Serializable {
 
     /**
      * Sets the value of id.
-     * 
+     *
      * @param id
      *            the id to set
      */
@@ -129,7 +129,7 @@ public class JahiaPasswordPolicyRuleParam implements Serializable {
 
     /**
      * Sets the value of parameter name.
-     * 
+     *
      * @param name
      *            the parameter name to set
      */
@@ -139,7 +139,7 @@ public class JahiaPasswordPolicyRuleParam implements Serializable {
 
     /**
      * Sets the value for this parameter.
-     * 
+     *
      * @param value
      *            the value for this parameter
      */

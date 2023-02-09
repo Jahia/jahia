@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ public class ServletBean implements Serializable, EntryPointDefinition {
     public final static int JSP_TYPE = 2;
     public final static String SERVLET = "SERVLET";
     public final static String JSP = "JSP";
-    private boolean isWelcomeFile = false;    
+    private boolean isWelcomeFile = false;
 
     private String name; // display name
     private String context; // the servlet context
@@ -146,9 +146,9 @@ public class ServletBean implements Serializable, EntryPointDefinition {
 
     public boolean isLoaded () {return loaded;
     }
-    public  boolean isWelcomeFile() {   
-        return isWelcomeFile;       
-    }    
+    public  boolean isWelcomeFile() {
+        return isWelcomeFile;
+    }
 
     public String getApplicationID () {
         return applicationID;
@@ -187,10 +187,10 @@ public class ServletBean implements Serializable, EntryPointDefinition {
 
     public void setLoaded (boolean loaded) {this.loaded = loaded;
     }
-    
+
     public void setIsWelcomeFile(boolean isWelcomeFile) {
         this.isWelcomeFile = isWelcomeFile;
-    }    
+    }
 
     public List getPortletModes() {
         List portletModes = new ArrayList();

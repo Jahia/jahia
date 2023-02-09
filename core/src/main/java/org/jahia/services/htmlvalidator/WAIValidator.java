@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -73,13 +73,13 @@ import org.w3c.dom.DOMException;
  * here: <br/>
  * <a href="http://ebookbrowse.com/accessibilite-adae-pdf-d316315402"
  * target="_blank">Accessiweb</a>
- * 
+ *
  * @author Xavier Lawrence
  */
 public class WAIValidator {
 
     private static final Logger logger = LoggerFactory.getLogger(WAIValidator.class);
-    
+
     private static final Pattern PATTERN = Pattern.compile("\\s+");
 
     private boolean isDataTable = true;
@@ -96,7 +96,7 @@ public class WAIValidator {
 
     /**
      * Validates a HTML fragment represented as a String.
-     * 
+     *
      * @param inputHTML
      *            The html fragment
      * @return EngineValidationHelper containing the validation errors, in case of no errors, an empty EngineValidationHelper is returned.
@@ -142,7 +142,7 @@ public class WAIValidator {
 
     /**
      * Validates an HTML fragment starting from any Node.
-     * 
+     *
      *
      * @param node
      *            The starting Node.
@@ -168,7 +168,7 @@ public class WAIValidator {
 
     /**
      * Recursive method that goes through all the nodes of the parsed HTML tree.
-     * 
+     *
      *
      * @param node
      *            The current Node being processed.
@@ -192,7 +192,7 @@ public class WAIValidator {
 
     /**
      * Method that tests the class of the given node and invokes the proper validation method.
-     * 
+     *
      *
      * @param errors
      *            The List of reported errors so far
@@ -239,7 +239,7 @@ public class WAIValidator {
     /**
      * Sets the isDataTable boolean to false and stores the level of the Node which invoked this method. The variable is used to distinguish
      * data Tables, which need to be validated, against formatting or form tables which don't.
-     * 
+     *
      * @param level
      *            The level of the Form tag being processed.
      */
@@ -254,7 +254,7 @@ public class WAIValidator {
     /**
      * If the level given in parameter is equal to the formLevel which previously set the isDataTable to false, then we have finished
      * processing the form and we can set the variable back to true.
-     * 
+     *
      * @param level
      *            The level of the tag being processed.
      */
@@ -266,7 +266,7 @@ public class WAIValidator {
 
     /**
      * Validates a link Element.
-     * 
+     *
      *
      * @param node
      *            The HTMLAnchorElement.
@@ -341,7 +341,7 @@ public class WAIValidator {
 
     /**
      * Validates an Img Element.
-     * 
+     *
      *
      * @param node
      *            The HTMLImageElement.
@@ -395,7 +395,7 @@ public class WAIValidator {
 
     /**
      * Validates an Area Element.
-     * 
+     *
      *
      * @param node
      *            The HTMLAreaElement.
@@ -450,7 +450,7 @@ public class WAIValidator {
 
 	/**
      * Validates a Table Element.
-     * 
+     *
      *
      * @param node
      *            The HTMLFormElement.
@@ -677,7 +677,7 @@ public class WAIValidator {
 
     /**
      * Validates a Form Element.
-     * 
+     *
      *
      * @param node
      *            The HTMLFormElement.
@@ -804,7 +804,7 @@ public class WAIValidator {
 
     /**
      * Validates a Frame Element.
-     * 
+     *
      *
      * @param node
      *            The HTMLFrameElement.
@@ -844,7 +844,7 @@ public class WAIValidator {
                         Result ve = new Result(getFormatted(
                                 "org.jahia.services.htmlvalidator.WAIValidator.2.5",
                                 "Missing 'title' attribute for 'frame' element",
-                                new Object[]{nameValue}), node.toString(), node.toString(), 
+                                new Object[]{nameValue}), node.toString(), node.toString(),
                                 getMessage("org.jahia.services.htmlvalidator.WAIValidator.2.5.example",
                                         ""));
                         setPosition(node, source, ve);
@@ -884,7 +884,7 @@ public class WAIValidator {
         result.setColumn(source.getColumn(node.getBegin()));
         result.setLine(source.getRow(node.getBegin()));
     }
-    
+
     private String getFormatted(String key, String defaultValue, Object[] args) {
         return Messages.format(getMessage(key, defaultValue), uiLocale, args);
     }

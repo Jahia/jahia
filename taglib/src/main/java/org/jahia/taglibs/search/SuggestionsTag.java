@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ import java.util.List;
 
 /**
  * Performs the content search and exposes search results for being displayed.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class SuggestionsTag extends ResultsTag {
@@ -68,9 +68,9 @@ public class SuggestionsTag extends ResultsTag {
     private Suggestion suggestion;
 
     private String suggestionVar = "suggestion";
-    
+
     private boolean runQuery = true;
-    
+
     private int maxTermsToSuggest = 1;
 
     @Override
@@ -83,7 +83,7 @@ public class SuggestionsTag extends ResultsTag {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.jahia.taglibs.search.ResultsTag#getDefaultCountVarName()
      */
     @Override
@@ -93,7 +93,7 @@ public class SuggestionsTag extends ResultsTag {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.jahia.taglibs.search.ResultsTag#getDefaultVarName()
      */
     @Override
@@ -103,7 +103,7 @@ public class SuggestionsTag extends ResultsTag {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.jahia.taglibs.search.ResultsTag#getSearchCriteria(org.jahia.services
      * .render.RenderContext)
@@ -117,7 +117,7 @@ public class SuggestionsTag extends ResultsTag {
     @Override
     public int doStartTag() throws JspException {
         int retVal = super.doStartTag();
-        
+
         if (retVal == SKIP_BODY && !runQuery) {
             retVal = EVAL_BODY_INCLUDE;
         } else if (retVal == EVAL_BODY_INCLUDE) {
@@ -129,20 +129,20 @@ public class SuggestionsTag extends ResultsTag {
                 SearchCriteria criteria = (SearchCriteria)pageContext.getAttribute(getSearchCriteriaVar());
                 SearchCriteria suggestedCriteria = cloneCriteria(criteria);
                 suggestedCriteria.getTerms().get(0).setTerm(allSuggestions.get(iterationCount));
-                
+
                 count = searchAndSetAttributes(suggestedCriteria, getRenderContext());
                 if (count > 0) {
                     suggestion.setSuggestedQuery(allSuggestions.get(iterationCount));
                 }
-                
+
                 iterationCount++;
             }
         }
-        
+
         return retVal;
     }
-    
-    
+
+
     /**
      * @return the suggestion
      */

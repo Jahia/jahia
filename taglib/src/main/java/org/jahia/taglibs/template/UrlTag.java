@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -61,11 +61,11 @@ public class UrlTag extends org.apache.taglibs.standard.tag.el.core.UrlTag {
     private static final long serialVersionUID = 6171288389547456742L;
 
     private Set<String> addedParams;
-    
+
     private Set<String> excludeParams;
-    
+
     private Pattern paramIncludePattern;
-    
+
     private boolean useRequestParams = false;
 
     /**
@@ -83,7 +83,7 @@ public class UrlTag extends org.apache.taglibs.standard.tag.el.core.UrlTag {
     public void setParamIncludeRegex(String paramIncludeRegex) {
         this.paramIncludePattern = Pattern.compile(paramIncludeRegex);
     }
-    
+
     public void setUseRequestParams(boolean useRequestParams) {
         this.useRequestParams = useRequestParams;
     }
@@ -112,7 +112,7 @@ public class UrlTag extends org.apache.taglibs.standard.tag.el.core.UrlTag {
                 }
             }
         }
-        
+
         return super.doEndTag();
     }
 
@@ -140,5 +140,5 @@ public class UrlTag extends org.apache.taglibs.standard.tag.el.core.UrlTag {
         paramIncludePattern = null;
         useRequestParams = false;
     }
-    
+
 }

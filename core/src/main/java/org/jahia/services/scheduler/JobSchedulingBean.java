@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -201,7 +201,7 @@ public class JobSchedulingBean implements InitializingBean, DisposableBean {
     /**
      * Checks if the scheduler is allowed to manage this type of job, i.e. it is either a RAM job or a persisted job and we are on a
      * processing server.
-     * 
+     *
      * @return Returns <code>true</code> if the scheduler is allowed to manage this type of job
      */
     private boolean isEligibleToManageJob() {

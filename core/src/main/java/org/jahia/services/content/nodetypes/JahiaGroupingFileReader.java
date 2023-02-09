@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -48,11 +48,11 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * 
+ *
  * User: toto
  * Date: Apr 30, 2008
  * Time: 3:12:14 PM
- * 
+ *
  */
 public class JahiaGroupingFileReader extends JahiaCndReader {
 
@@ -119,7 +119,7 @@ public class JahiaGroupingFileReader extends JahiaCndReader {
                     lexer.fail("Missing '" + Lexer.END_TYPE + "', found " + currentToken);
                 }
             } else {
-                lexer.fail("Unexpected token " + currentToken);                
+                lexer.fail("Unexpected token " + currentToken);
             }
             nextToken();
             if (currentTokenEquals(Lexer.LIST_DELIMITER)) {

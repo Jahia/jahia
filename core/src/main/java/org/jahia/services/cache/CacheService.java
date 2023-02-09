@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -56,13 +56,13 @@ import java.util.Map;
  */
 public abstract class CacheService extends JahiaService {
 
-    /** 
+    /**
      * <p>Returns the requested cache or creates it if it does not exist yet and <code>forceCreation</code> is set to <code>true</code>.</p>
      * <p>When the name is <code>null</code> the cache creation is canceled and a
      * <code>null</code> instance will be returned.</p>
      *
      * @param name        the cache region
-     * @param forceCreation do we need to create a new cache if it does not exist yet? 
+     * @param forceCreation do we need to create a new cache if it does not exist yet?
      *
      * @return  the new cache instance
      *

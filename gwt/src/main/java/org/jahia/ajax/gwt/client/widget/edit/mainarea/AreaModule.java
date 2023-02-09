@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -85,7 +85,7 @@ public class AreaModule extends SimpleModule {
     private String conflictsWith = null;
 
     private static int MIN_WIDTH = 100;
-    
+
     public AreaModule(String id, String path, Element divElement, String moduleType, MainModule mainModule) {
         super(id, path, divElement, mainModule);
         hasDragDrop = false;
@@ -148,8 +148,8 @@ public class AreaModule extends SimpleModule {
     @Override public void onNodeTypesLoaded() {
         if (conflictsWith != null) {
             LayoutContainer p = new HorizontalPanel();
-            
-            Text label = new Text(Messages.getWithArgs("label.areaConflicts", "Area conflicts with same name node {0}. Rename the area or the node", new String[] { conflictsWith })); 
+
+            Text label = new Text(Messages.getWithArgs("label.areaConflicts", "Area conflicts with same name node {0}. Rename the area or the node", new String[] { conflictsWith }));
             if (getWidth() >= MIN_WIDTH) {
                 p.add(label);
             } else {

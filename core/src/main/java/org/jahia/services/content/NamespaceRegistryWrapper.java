@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -53,16 +53,16 @@ import java.util.Map;
 import java.util.HashMap;
 
 /**
- * Jahia's implementation of the JCR <code>javax.jcr.NamespaceRegistry</code>. 
+ * Jahia's implementation of the JCR <code>javax.jcr.NamespaceRegistry</code>.
  * The namespace registry contains the default prefixes of the registered
- * namespaces. 
+ * namespaces.
  *
  * @author toto
  */
 public class NamespaceRegistryWrapper implements NamespaceRegistry {
     private Map<String, String> nsToPrefix = new HashMap<String, String>();
     private Map<String, String> prefixToNs = new HashMap<String, String>();
-    
+
     private static final HashSet<String> reservedPrefixes = new HashSet<String>();
     private static final HashSet<String> reservedURIs = new HashSet<String>();
 
@@ -97,16 +97,16 @@ public class NamespaceRegistryWrapper implements NamespaceRegistry {
         internalRegister(Name.NS_SV_PREFIX, Name.NS_SV_URI);
         internalRegister(Name.NS_EMPTY_PREFIX, Name.NS_DEFAULT_URI);
         internalRegister(Name.NS_XML_PREFIX, Name.NS_XML_URI);
-        internalRegister(Name.NS_REP_PREFIX, Name.NS_REP_URI);        
+        internalRegister(Name.NS_REP_PREFIX, Name.NS_REP_URI);
     }
 
     public synchronized void registerNamespace(String prefix, String uri) throws NamespaceException, UnsupportedRepositoryOperationException, AccessDeniedException, RepositoryException {
         if (prefix == null || uri == null) {
             throw new IllegalArgumentException("prefix/uri can not be null");
-        }        
+        }
         if (Name.NS_EMPTY_PREFIX.equals(prefix) || Name.NS_DEFAULT_URI.equals(uri)) {
             throw new NamespaceException("default namespace is reserved and can not be changed");
-        }        
+        }
         if (prefixToNs.containsKey(prefix)) {
             throw new NamespaceException();
         }
@@ -145,7 +145,7 @@ public class NamespaceRegistryWrapper implements NamespaceRegistry {
             throw new NamespaceException("failed to register namespace "
                     + prefix + " -> " + uri
                     + ": remapping existing prefixes is not supported.");
-        }        
+        }
 
         internalRegister(prefix, uri);
     }

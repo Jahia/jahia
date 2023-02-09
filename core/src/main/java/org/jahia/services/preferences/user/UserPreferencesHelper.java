@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -60,13 +60,13 @@ import org.jahia.utils.LanguageCodeConverters;
 
 /**
  * Helper class for accessing user preferences.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public final class UserPreferencesHelper {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(UserPreferencesHelper.class);
-    
+
     /**
      * Initializes an instance of this class.
      */
@@ -77,7 +77,7 @@ public final class UserPreferencesHelper {
     /**
      * Returns <code>true</code> if the user has explicitly disabled e-mail
      * notification in the profile.
-     * 
+     *
      * @param user
      *            the user to check preferences
      * @return <code>true</code> if the user has explicitly disabled e-mail
@@ -93,7 +93,7 @@ public final class UserPreferencesHelper {
     /**
      * Returns <code>true</code> if the user has explicitly disabled e-mail
      * notification in the profile.
-     * 
+     *
      * @param user
      *            the user to check preferences
      * @return <code>true</code> if the user has explicitly disabled e-mail
@@ -108,21 +108,21 @@ public final class UserPreferencesHelper {
 
     /**
      * Returns user's e-mail address or <code>null</code> if it is not provided.
-     * 
+     *
      * @param user
      *            the user to retrieve the e-mail address
      * @return user's e-mail address or <code>null</code> if it is not provided
      */
     public static String getEmailAddress(JCRUserNode user) {
         String email = user != null ? user.getPropertyAsString("j:email") : null;
-    
+
         return StringUtils.isNotBlank(email) ? email : null;
     }
 
     /**
      * Returns the first name for the specified user or <code>null</code> if it
      * is not provided or empty.
-     * 
+     *
      * @param user
      *            the user to retrieve the first name
      * @return the first name for the specified user or <code>null</code> if it
@@ -130,14 +130,14 @@ public final class UserPreferencesHelper {
      */
     public static String getFirstName(JCRUserNode user) {
         String name = user != null ? user.getPropertyAsString("j:firstName") : null;
-    
+
         return !StringUtils.isBlank(name) ? name : null;
     }
 
     /**
      * Returns the first + last name of the specified user or <code>null</code>
      * if none is not provided or both are empty.
-     * 
+     *
      * @param user
      *            the user to retrieve the name
      * @return the first + last name of the specified user or <code>null</code>
@@ -145,7 +145,7 @@ public final class UserPreferencesHelper {
      */
     public static String getFullName(JCRUserNode user) {
         String name = null;
-    
+
         if (user != null) {
             String firstName = getFirstName(user);
             String lastName = getLastName(user);
@@ -155,14 +155,14 @@ public final class UserPreferencesHelper {
                 name = firstName != null ? firstName : lastName;
             }
         }
-    
+
         return name != null ? name : user.getName();
     }
 
     /**
      * Returns the last name for the specified user or <code>null</code> if it
      * is not provided or empty.
-     * 
+     *
      * @param user
      *            the user to retrieve the first name
      * @return the last name for the specified user or <code>null</code> if it
@@ -170,13 +170,13 @@ public final class UserPreferencesHelper {
      */
     public static String getLastName(JCRUserNode user) {
         String name = user != null ? user.getPropertyAsString("j:lastName") : null;
-    
+
         return !StringUtils.isBlank(name) ? name : null;
     }
 
     /**
      * Returns the e-mail address with the personal name of the specified user.
-     * 
+     *
      * @param user
      *            the user to retrieve the personal name
      * @return the e-mail address with the personal name of the specified user
@@ -187,7 +187,7 @@ public final class UserPreferencesHelper {
 
     /**
      * Returns the e-mail address with the personal name of the specified user.
-     * 
+     *
      * @param email
      *            the e-mail address itself
      * @param user
@@ -199,9 +199,9 @@ public final class UserPreferencesHelper {
         if (email == null || email.length() == 0 || email.contains("<")) {
             return email;
         }
-    
+
         String recipientEmail = email;
-    
+
         if (user != null) {
             String name = getPersonalName(user);
             try {
@@ -218,14 +218,14 @@ public final class UserPreferencesHelper {
                 }
             }
         }
-    
+
         return recipientEmail;
     }
 
     /**
      * Returns the full user name (first name + last name) or the username if
      * the full name data is not provided.
-     * 
+     *
      * @param user
      *            the user to retrieve the name
      * @return the full user name (first name + last name) or the username if
@@ -233,19 +233,19 @@ public final class UserPreferencesHelper {
      */
     public static String getPersonalName(JCRUserNode user) {
         String name = null;
-    
+
         if (user != null) {
             name = getFullName(user);
             name = name != null ? name : user.getName();
         }
-    
+
         return name;
     }
 
     /**
      * Returns the preferred locale of the specified user or the first one from
      * the list of available locales.
-     * 
+     *
      * @param user
      *            the user to retrieve locale preferences
      * @return the preferred locale of the specified user or the first one from
@@ -258,7 +258,7 @@ public final class UserPreferencesHelper {
     /**
      * Returns the preferred locale of the specified user or the first one from
      * the list of available locales.
-     * 
+     *
      * @param user
      *            the user to retrieve locale preferences
      * @param fallback the fallback locale to return if no preferred locale is set for the user
@@ -277,7 +277,7 @@ public final class UserPreferencesHelper {
     /**
      * Returns the preferred locale of the specified user or the first one from
      * the list of available locales.
-     * 
+     *
      * @param user
      *            the user to retrieve locale preferences
      * @param site
@@ -290,18 +290,18 @@ public final class UserPreferencesHelper {
         String propValue = user != null ? user.getPropertyAsString("preferredLanguage") : null;
         Locale locale = propValue != null ? LanguageCodeConverters
                 .languageCodeToLocale(propValue) : null;
-    
+
         if (null == locale) {
             // property is not set --> get list of site languages
             List<Locale> siteLocales = Collections.emptyList();
             if (site != null) {
                 siteLocales = site.getLanguagesAsLocales();
             }
-    
+
             if (siteLocales == null || siteLocales.size() == 0) {
                 return JCRSessionFactory.getInstance().getCurrentLocale()!=null?JCRSessionFactory.getInstance().getCurrentLocale():SettingsBean.getInstance().getDefaultLocale();
             }
-    
+
             List<Locale> availableBundleLocales = LanguageCodeConverters.getAvailableBundleLocales();
             for (Locale siteLocale : siteLocales) {
                 if (availableBundleLocales.contains(siteLocale)) {
@@ -309,7 +309,7 @@ public final class UserPreferencesHelper {
                     locale = siteLocale;
                     break;
                 } else if (StringUtils.isNotEmpty(siteLocale.getCountry())) {
-    
+
                     Locale languageOnlyLocale = new Locale(siteLocale
                             .getLanguage());
                     if (availableBundleLocales.contains(languageOnlyLocale)) {

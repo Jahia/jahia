@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -62,14 +62,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Test cases for the resource bundle loading. 
+ * Test cases for the resource bundle loading.
  * User: ktlili
  * Date: Jan 25, 2010
  * Time: 12:35:43 PM
  */
 public class ResourceBundleTest {
     private static Logger logger = LoggerFactory.getLogger(ResourceBundleTest.class);
-    
+
     @Test
     public void lookupBundleTest() {
         JahiaTemplatesPackage pkg = ServicesRegistry.getInstance().getJahiaTemplateManagerService()

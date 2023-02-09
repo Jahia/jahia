@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -51,11 +51,11 @@ import javax.servlet.jsp.tagext.TagSupport;
 import java.util.*;
 
 /**
- * 
+ *
  * User: toto
  * Date: Dec 7, 2009
  * Time: 11:39:29 AM
- * 
+ *
  */
 public class InitPagerTag extends TagSupport {
     private static final long serialVersionUID = 3487375821225747403L;
@@ -143,7 +143,7 @@ public class InitPagerTag extends TagSupport {
                 begin = (int) ((nbPages-1) * pageSize);
                 end = begin + pageSize - 1;
             }
-            
+
             if (currentPage > nbPages) {
                 currentPage = (int)nbPages;
             }
@@ -155,7 +155,7 @@ public class InitPagerTag extends TagSupport {
             moduleMap.put("currentPage", currentPage);
             moduleMap.put("paginationActive", true);
             moduleMap.put("totalSize", totalSize);
-            moduleMap.put("sizeNotExact", sizeNotExact);            
+            moduleMap.put("sizeNotExact", sizeNotExact);
             moduleMap.put("totalSizeUnknown", totalSize == Integer.MAX_VALUE);
             pageContext.setAttribute("moduleMap",moduleMap);
             pageContext.setAttribute("begin_"+id,begin,PageContext.REQUEST_SCOPE);
@@ -164,7 +164,7 @@ public class InitPagerTag extends TagSupport {
             moduleMap.put("requestAttributesToCache", Arrays.asList("begin_"+id, "end_"+id));
         } catch (Exception e) {
             throw new JspException(e);
-        }        
+        }
         return super.doStartTag();
     }
 

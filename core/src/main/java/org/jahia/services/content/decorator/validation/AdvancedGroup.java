@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -50,13 +50,13 @@ import javax.validation.constraints.NotNull;
  * Defines the group for validation constraints, which is validated only if the validation of the default group of constraints succeeds.
  * With this group you could define for example a more functionally-oriented validation constraints, where is in the default group will
  * contain basic validations (like {@link NotNull}, {@link Min}, {@link Max} etc.).<br/>
- * 
+ *
  * Assume you have to implement a validation of a mount point node for a remote server, where you have connection parameters in node
  * properties. The default group of constraints will validate if those parameters are not null and eventually validate the syntax. And than
  * a so called "availability" constrain, which is defined in this "advanced" group, will check the remote server availability by
  * establishing a connection to it. If the first group of constraints (default) is not satisfied it is not needed to validate the "advanced"
  * constraints.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public interface AdvancedGroup {

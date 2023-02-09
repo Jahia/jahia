@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -58,10 +58,10 @@ import org.apache.solr.schema.*;
  * @author Benjamin
  */
 public class JahiaQueryParser extends QueryParser {
-    public static final BinaryField BINARY_TYPE = new BinaryField();    
-    public static final BoolField BOOLEAN_TYPE = new BoolField();    
-    public static final DateField DATE_TYPE = new DateField();    
-    public static final JackrabbitDateField JR_DATE_TYPE = new JackrabbitDateField();    
+    public static final BinaryField BINARY_TYPE = new BinaryField();
+    public static final BoolField BOOLEAN_TYPE = new BoolField();
+    public static final DateField DATE_TYPE = new DateField();
+    public static final JackrabbitDateField JR_DATE_TYPE = new JackrabbitDateField();
     public static final JackrabbitDoubleField JR_DOUBLE_TYPE = new JackrabbitDoubleField();
     public static final JackrabbitLongField JR_LONG_TYPE = new JackrabbitLongField();
     public static final DoubleField DOUBLE_TYPE = new DoubleField();
@@ -69,7 +69,7 @@ public class JahiaQueryParser extends QueryParser {
     public static final LongField LONG_TYPE = new LongField();
     public static final SortableLongField SORTABLE_LONG_TYPE = new SortableLongField();
     public static final StrField STRING_TYPE = new StrField();
-    
+
     public JahiaQueryParser(CharStream stream) {
         super(stream);
     }
@@ -89,8 +89,8 @@ public class JahiaQueryParser extends QueryParser {
             if ("*".equals(part1)) {
                 part1 = null;
             } else {
-                part1 = DATE_TYPE.toInternal(part1);                
-            } 
+                part1 = DATE_TYPE.toInternal(part1);
+            }
         } catch (Exception e) { }
         try {
             if ("*".equals(part2)) {

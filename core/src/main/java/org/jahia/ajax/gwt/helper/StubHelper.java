@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -107,7 +107,7 @@ public class StubHelper {
 
     /**
      * Returns a map of code snippets.
-     * 
+     *
      * @param fileType
      *            the type of the file to lookup snippets for, e.g. "jsp"
      * @param snippetType
@@ -160,7 +160,7 @@ public class StubHelper {
 
     /**
      * Returns the localized display label template.
-     * 
+     *
      * @param fileType
      *            the type of the file
      * @param snippetType
@@ -189,7 +189,7 @@ public class StubHelper {
 
     /**
      * Initialize a map with all data needed to render the code editor.
-     * 
+     *
      * @param path
      *            path from where we are trying to open the code editor
      * @param isNew
@@ -295,7 +295,7 @@ public class StubHelper {
 
     /**
      * Injects an instance of the {@link ContentDefinitionHelper}.
-     * 
+     *
      * @param contentDefinition
      *            an instance of the {@link ContentDefinitionHelper}
      */
@@ -305,7 +305,7 @@ public class StubHelper {
 
     /**
      * Injects the mapping between the view and node type
-     * 
+     *
      * @param nodeTypeView
      *            the mapping between the view and node type
      */
@@ -315,7 +315,7 @@ public class StubHelper {
 
     /**
      * Injection of the list of code snippets we want to display in the code editor.
-     * 
+     *
      * @param propertiesSnippetTypes
      *            List of type of snippets to be displayed in the code editor.
      */
@@ -325,7 +325,7 @@ public class StubHelper {
 
     /**
      * Passes an instance of the {@link TemplateHelper}.
-     * 
+     *
      * @param template
      *            an instance of the {@link TemplateHelper}
      */

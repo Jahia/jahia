@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -57,34 +57,34 @@ import org.jahia.services.content.JCRSessionWrapper;
 /**
  * Jahia's query service is based on the JCR QueryObjectModelFactory and thus supports all kinds of
  * complex queries specified in JSR-283 (Content Repository for Java� Technology API 2.0)
- * 
+ *
  * Queries can be created with the API by using the QueryObjectModel.
  * Jahia will also provide a query builder user interface.
- * It is also possible to use SQL-2 and the deprecated XPATH language. 
- * 
+ * It is also possible to use SQL-2 and the deprecated XPATH language.
+ *
  * As Jahia can plug-in multiple repositories via the universal content hub (UCH), the queries can be
  * converted to other languages, like the EntropySoft connector query language.
- * 
- * The query service provides methods to modify and optimize the queries to support and make use of Jahia's 
+ *
+ * The query service provides methods to modify and optimize the queries to support and make use of Jahia's
  * internal data model implementation.
- * 
+ *
  * @author Benjamin Papez
  */
 public abstract class QueryService extends JahiaService {
     /**
      * Entry point to request a ValueFactory instance
-     * 
+     *
      * @return ValueFactory
-     */    
+     */
     public abstract ValueFactory getValueFactory();
-    
+
     /**
      * Modifies the query to adapt to Jahia's internal datamodel implementation, which creates jnt:translation subnodes per locale (language).
      * Furthermore Jahia may make modifications because of performance optimization reasons.
-     * 
+     *
      * @param qom the source query object model
      * @param qomFactory query object model factory to use
-     * @param session the current JCR session used for the query 
+     * @param session the current JCR session used for the query
      * @return the modified and optimized query object model
      * @throws RepositoryException if the operation fails
      */
@@ -92,18 +92,18 @@ public abstract class QueryService extends JahiaService {
 
     /**
      * Modifies the query to adapt to Jahia's internal datamodel implementation, which creates jnt:translation subnodes per locale (language).
-     * Furthermore Jahia may make modifications because of performance optimization reasons. 
-     * 
+     * Furthermore Jahia may make modifications because of performance optimization reasons.
+     *
      * @param source the QOM Source object to use
      * @param constraint the QOM root constraint object to use
      * @param orderings the QOM ordering objects to use
      * @param columns the QOM column objects to use
      * @param qomFactory query object model factory to use
-     * @param session the current JCR session used for the query 
+     * @param session the current JCR session used for the query
      * @return the created modified and optimized query object model
      * @throws RepositoryException if the operation fails
      */
     public abstract QueryObjectModel modifyAndOptimizeQuery(Source source, Constraint constraint, Ordering[] orderings,
             Column[] columns, QueryObjectModelFactory qomFactory, JCRSessionWrapper session) throws RepositoryException;
-    
+
 }

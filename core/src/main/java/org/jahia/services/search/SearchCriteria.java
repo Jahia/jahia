@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -1839,7 +1839,7 @@ public class SearchCriteria implements Serializable {
      * Indicates if file references in site content are excluded from search results. Note, please, that the handling of this flag is search
      * provider specific. The default JCR provider considers this flag (including referenced files by default in search results). Some
      * providers may completely ignore this setting and exclude file references in any case.
-     * 
+     *
      * @return the excludeFileReferences <code>true</code>, if file references in site content are excluded from search results;
      *         <code>false</code> otherwise
      */
@@ -1850,7 +1850,7 @@ public class SearchCriteria implements Serializable {
     /**
      * Instruct the search provider how to handle the file references in site content. Note, please, the handling of this flag is optional
      * for a search provider. Default JCR search provider considers it, others may ignore it completely.
-     * 
+     *
      * @param excludeFileReferences <code>true</code> to exclude file references in the content from search results; <code>false</code> - to
      *            include them.
      */

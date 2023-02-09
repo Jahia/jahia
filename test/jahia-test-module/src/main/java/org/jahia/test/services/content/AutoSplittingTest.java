@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ import java.util.GregorianCalendar;
 
 /**
  * A unit test to validate the proper behavior of the auto-splitting algorithm when creating nodes through the API
- * 
+ *
  * @author loom Date: Jul 15, 2010 Time: 12:30:11 PM
  */
 public class AutoSplittingTest {
@@ -87,7 +87,7 @@ public class AutoSplittingTest {
     private static final String STRING_SPLIT_CONFIG = "constant,test;substring,location,3-6;firstChars,jcr:title,4;property,eventsType";
     private static final String DATE_SPLIT_CONFIG = "date,startDate,yyyy;date,startDate,MM;date,startDate,dd";
     private static final String NODENAME_SPLIT_CONFIG = "firstChars,j:nodename,1";
-    
+
     private static final String FOLDERS_SPLIT_KO_MSG = "Folders not correctly split";
     private static final String FOLDERS_SPLIT_KO_FOR_NODENAME_MSG = "Folders not correctly split for j:nodename split config";
 
@@ -121,9 +121,9 @@ public class AutoSplittingTest {
             new EventBean(BASE_DATE.plusDays(25), CONFERENCE, PARIS),
             new EventBean(BASE_DATE.plusDays(30), CONFERENCE, GENEVA),
             new EventBean(BASE_DATE.plusDays(30), CONFERENCE, GENEVA),
-            new EventBean(BASE_DATE.plusDays(35), SHOW, PARIS), 
             new EventBean(BASE_DATE.plusDays(35), SHOW, PARIS),
-            new EventBean(BASE_DATE.plusDays(40), SHOW, PARIS), 
+            new EventBean(BASE_DATE.plusDays(35), SHOW, PARIS),
+            new EventBean(BASE_DATE.plusDays(40), SHOW, PARIS),
             new EventBean(BASE_DATE.plusDays(40), SHOW, GENEVA),
             new EventBean(BASE_DATE.plusDays(40), SHOW, GENEVA),
             new EventBean(BASE_DATE.plusDays(40), SHOW, GENEVA),
@@ -296,7 +296,7 @@ public class AutoSplittingTest {
                 session.nodeExists(basePath + "/e/elektra"));
         assertTrue(FOLDERS_SPLIT_KO_FOR_NODENAME_MSG,
                 session.nodeExists(basePath + "/f/firestar"));
-        assertTrue(FOLDERS_SPLIT_KO_FOR_NODENAME_MSG, 
+        assertTrue(FOLDERS_SPLIT_KO_FOR_NODENAME_MSG,
                 session.nodeExists(basePath + "/g/gaia"));
     }
 
@@ -306,37 +306,37 @@ public class AutoSplittingTest {
                 .getCurrentUserSession(Constants.EDIT_WORKSPACE,
                         LanguageCodeConverters
                         .languageCodeToLocale(DEFAULT_LANGUAGE));
-        
+
         JCRNodeWrapper stringSplitNode = session.getNode(SITECONTENT_ROOT_NODE
                 + "/contents/stringSplit");
-        
+
         LocalDateTime newEventDate = LocalDateTime.of(2010, 1, 1, 12, 0);
         String newEventLocation = PARIS;
         String newEventType = ROAD_SHOW;
-        
+
         createEvent(stringSplitNode, newEventType,
                 newEventLocation, newEventDate, EVENTS.length);
-        
+
         JCRNodeWrapper dateSplitNode = session.getNode(SITECONTENT_ROOT_NODE
-                + "/contents/dateSplit");        
-        
+                + "/contents/dateSplit");
+
         createEvent(dateSplitNode, newEventType,
                 newEventLocation, newEventDate, EVENTS.length);
 
         createText(session.getNode(SITECONTENT_ROOT_NODE + "/contents/nodenameSplit"), "indigo");
-        
+
         session.save();
-        
+
         assertTrue(FOLDERS_SPLIT_KO_MSG, stringSplitNode.hasNode("test/"
                 + newEventLocation.substring(3, 6) + "/"
                 + newEventType.substring(0, 4) + "/"
                 + newEventType + "/"
                 + newEventType + EVENTS.length));
-        
+
         assertTrue(FOLDERS_SPLIT_KO_MSG, dateSplitNode.hasNode(yearFormatter.format(newEventDate)
                 + "/" + monthFormatter.format(newEventDate) + "/"
                 + dayFormatter.format(newEventDate) + "/"
-                + newEventType + EVENTS.length));        
+                + newEventType + EVENTS.length));
 
         assertTrue(FOLDERS_SPLIT_KO_FOR_NODENAME_MSG,
                 session.nodeExists(SITECONTENT_ROOT_NODE + "/contents/nodenameSplit/i/indigo"));

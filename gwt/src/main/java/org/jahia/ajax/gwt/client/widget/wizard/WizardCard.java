@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -147,7 +147,7 @@ public abstract class WizardCard extends LayoutContainer {
         panel.setHeaderVisible(false);
         add(panel,rowData);
     }
-    
+
 
     /**
      * Calls the isValid of the form (if set) and returns the result.
@@ -184,7 +184,7 @@ public abstract class WizardCard extends LayoutContainer {
     public void refreshLayout(){
       layout();
     }
-    
+
     public abstract void next();
 
     public boolean isUiCreated() {
@@ -203,7 +203,7 @@ public abstract class WizardCard extends LayoutContainer {
 
     public WizardCard getNextCard() {
         return nextWizardCard;
-    
+
     }
 
     public void setNextWizardCard(WizardCard nextWizardCard) {

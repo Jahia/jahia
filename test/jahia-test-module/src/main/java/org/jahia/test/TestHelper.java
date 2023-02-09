@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -90,7 +90,7 @@ import java.util.zip.ZipInputStream;
  * User: toto
  * Date: Feb 12, 2009
  * Time: 4:49:40 PM
- * 
+ *
  */
 public class TestHelper {
 
@@ -143,7 +143,7 @@ public class TestHelper {
         }
         return site;
     }
-    
+
     private static File importSharedAndGetSiteZipFileOfPrepackagedSite(String prepackedZipFileOrBundle, String siteZIPName) {
         File siteZIPFile = null;
         File sharedZIPFile = null;
@@ -183,7 +183,7 @@ public class TestHelper {
         }
         return siteZIPFile;
     }
-    
+
     private static InputStream getPrepackedSiteInputStream(String prepackedZipFileOrBundle) throws IOException {
         if (StringUtils.startsWith(prepackedZipFileOrBundle, "bundle")) {
             String[] bundleInfos = StringUtils.split(prepackedZipFileOrBundle, "#");
@@ -319,7 +319,7 @@ public class TestHelper {
     public static int createSubPages(Node currentNode, int level, int nbChildren) throws RepositoryException {
        return createSubPages(currentNode, level, nbChildren, null);
     }
-    
+
     public static int createSubPages(Node currentNode, int level, int nbChildren, String titlePrefix) throws RepositoryException {
         int pagesCreated = 0;
         if (!currentNode.isCheckedOut()) {
@@ -425,7 +425,7 @@ public class TestHelper {
 
     /**
      * Sleep for the specified amount of milliseconds.
-     * 
+     *
      * @param millis the time to sleep in milliseconds
      */
     public static void sleep(long millis) {

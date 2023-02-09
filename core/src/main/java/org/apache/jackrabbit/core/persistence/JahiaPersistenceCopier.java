@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -66,11 +66,11 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Tool for migrating the persistence store.
- * 
+ *
  * Optimized version of {@link org.apache.jackrabbit.core.persistence.PersistenceCopier}.
- * 
+ *
  * @see org.apache.jackrabbit.core.persistence.PersistenceCopier
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class JahiaPersistenceCopier {
@@ -108,7 +108,7 @@ public class JahiaPersistenceCopier {
 
     /**
      * Creates a tool for copying content from one persistence manager to another.
-     * 
+     *
      * @param source
      *            source persistence manager
      * @param target
@@ -129,7 +129,7 @@ public class JahiaPersistenceCopier {
     /**
      * Recursively copies the identified node and all its descendants. Explicitly excluded nodes and nodes that have already been copied are
      * automatically skipped.
-     * 
+     *
      * @param id
      *            identifier of the node to be copied
      * @throws RepositoryException
@@ -155,7 +155,7 @@ public class JahiaPersistenceCopier {
 
     /**
      * Copies the given node state and all associated property states to the target persistence manager.
-     * 
+     *
      * @param sourceNode
      *            source node state
      * @throws RepositoryException
@@ -228,7 +228,7 @@ public class JahiaPersistenceCopier {
 
     /**
      * Explicitly exclude the identified node from being copied. Used for excluding virtual nodes like "/jcr:system" from the copy process.
-     * 
+     *
      * @param id
      *            identifier of the node to be excluded
      */
@@ -238,7 +238,7 @@ public class JahiaPersistenceCopier {
 
     /**
      * Should be called at the end of the copying to finalize the writes.
-     * 
+     *
      * @throws ItemStateException
      */
     public void flush() throws RepositoryException {
@@ -248,9 +248,9 @@ public class JahiaPersistenceCopier {
         }
 
         totalCount += batchSize;
-        
+
         logger.info("Persisting batch of {} ({}) entries into the store", batchSize, totalCount);
-        
+
         try {
             target.store(batchLog);
         } catch (ItemStateException e) {

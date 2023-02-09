@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -127,7 +127,7 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
                 int currentField = -1;
                 String currentLine;
                 StringBuilder buf = new StringBuilder();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(mailTemplateResource.getInputStream(), "UTF-8"));                
+                BufferedReader reader = new BufferedReader(new InputStreamReader(mailTemplateResource.getInputStream(), "UTF-8"));
                 try {
                     while ((currentLine = reader.readLine()) != null) {
                         if (currentLine.contains(":")) {
@@ -145,7 +145,7 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
                     }
                 } finally {
                     IOUtils.closeQuietly(reader);
-                }          
+                }
                 setMailTemplateField(mailTemplate, currentField, buf);
                 mailTemplateRegistry.addTemplate(StringUtils.substringBeforeLast(mailTemplateResource.getFilename(), "."), mailTemplate);
             }
@@ -209,7 +209,7 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
         if (!JahiaContextLoaderListener.isRunning()) {
             return;
         }
-        
+
         if (processes != null && processes.length > 0) {
             logger.info("Found {} workflow processes to be undeployed.", processes.length);
 

@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -44,14 +44,14 @@ package org.jahia.services.pwd;
 
 /**
  * Common interface for all password encryption (hashing) operations.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public interface PasswordDigester {
 
     /**
      * Create a digest of the provided password.
-     * 
+     *
      * @param password
      *            the clear text password to be hashed
      * @return the digest of the provided password
@@ -60,21 +60,21 @@ public interface PasswordDigester {
 
     /**
      * Returns unique identifier of this digester to be able to distinguish between various hashing algorithms.
-     * 
+     *
      * @return unique identifier of this digester to be able to distinguish between various hashing algorithms
      */
     String getId();
 
     /**
      * Should this digester become the default password digester, which is used in the system?
-     * 
+     *
      * @return <code>true</code> if this digester becomes the default one, which is used in the system
      */
     boolean isDefault();
 
     /**
      * Checks, if the provided clear text password matches the specified digest, considering all aspects like salt, hashing iterations, etc.
-     * 
+     *
      * @param password
      *            the clear text password to be checked
      * @param digest

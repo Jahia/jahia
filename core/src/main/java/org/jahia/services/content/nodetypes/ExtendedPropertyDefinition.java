@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -84,13 +84,13 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
     private int index = IndexType.TOKENIZED;
     private double scoreboost = 1.;
     private String analyzer;
-    
+
     private boolean queryOrderable = true;
     private boolean fulltextSearchable = true;
     private boolean facetable = false;
     private boolean hierarchical = false;
     private String[] availableQueryOperators = Lexer.ALL_OPERATORS;
-    
+
     private Map<Locale, Map<String, String>> messageMaps = new ConcurrentHashMap<Locale, Map<String, String>>(1);
 
     public ExtendedPropertyDefinition(NodeTypeRegistry registry) {
@@ -131,7 +131,7 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
         }
         return res.toArray(new Value[res.size()]);
     }
-    
+
     public ValueConstraint[] getValueConstraintObjects() {
         ValueConstraint[] constraintObjs = null;
         try {
@@ -172,7 +172,7 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
     public void setValueConstraints(Value[] valueConstraints) {
         if (requiredType != PropertyType.BOOLEAN) {
             this.valueConstraints = valueConstraints;
-        } 
+        }
     }
 
     public Value[] getDefaultValues() {
@@ -207,7 +207,7 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
     public Value[] getDefaultValuesAsUnexpandedValue() {
        return defaultValues;
     }
-    
+
     public boolean hasDynamicDefaultValues() {
         return defaultValues.length > 0 && (defaultValues[0] instanceof DynamicValueImpl);
     }
@@ -295,7 +295,7 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
     public void setAvailableQueryOperators(String[] availableQueryOperators) {
         this.availableQueryOperators = availableQueryOperators;
     }
-    
+
     public String getMessage(String msgKeySuffix, Locale locale) {
         Map<String, String> messageMap = messageMaps.get(locale);
         if (messageMap == null) {
@@ -339,7 +339,7 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
     public void remove() {
         getDeclaringNodeType().removePropertyDefinition(this);
     }
-    
+
     @Override
     public String toString() {
         return getName();

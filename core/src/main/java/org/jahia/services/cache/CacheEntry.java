@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -141,7 +141,7 @@ public class CacheEntry<V> implements Serializable {
     public Object getProperty (final String key) {
         return properties != null ? properties.get (key) : null;
     }
-    
+
     /** <p>Returns <code>true</code> if this entry contains the mapping for the specified
      * property name <code>key</code>.</p>
      *
@@ -233,7 +233,7 @@ public class CacheEntry<V> implements Serializable {
     @Deprecated
     final public void setLastAccessedTimeNow () {
     }
-    
+
     @Deprecated
     public long getLastAccessedTimeMillis() {
         return 0;

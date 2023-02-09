@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -46,21 +46,21 @@ import java.io.Serializable;
 
 /**
  * Implementors represent results of the validation checks for imported content items.
- * 
+ *
  * @author Sergiy Shyrkov
  * @since Jahia 6.6
  */
 public interface ValidationResult {
     /**
      * Returns <code>true</code> if the current validation result is successful.
-     * 
+     *
      * @return <code>true</code> if the current validation result is successful
      */
     boolean isSuccessful();
 
     /**
      * Merges the results with the provided and returns a new instance of the {@link ValidationResult} object having "merged" results.
-     * 
+     *
      * @param toBeMergedWith
      *            a {@link ValidationResult} to merge with
      * @return the results with the provided and returns a new instance of the {@link ValidationResult} object having "merged" results

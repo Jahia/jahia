@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -129,7 +129,7 @@ public class ThreadMonitor {
     }
 
     private static final FastDateFormat DATE_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
-    
+
     private static final String DUMP_END ="\n<EndOfDump>\n\n";
 
     private static String INDENT = "    ";
@@ -153,7 +153,7 @@ public class ThreadMonitor {
     }
 
     private String dumpPrefix = "\nFull thread dump ";
-    
+
     private ThreadMXBean tmbean;
 
     private volatile static ThreadMonitor instance;
@@ -325,8 +325,8 @@ public class ThreadMonitor {
         if (toSysOut) {
             System.out.print(threadInfo);
         }
-        
-        File dumpFile = null; 
+
+        File dumpFile = null;
         if (toFile) {
             dumpFile = getNextThreadDumpFile(null);
             try {
@@ -339,7 +339,7 @@ public class ThreadMonitor {
         }
 
         releaseAlreadyDumping();
-        
+
         return dumpFile;
     }
 
@@ -375,7 +375,7 @@ public class ThreadMonitor {
 
     /**
      * Starts a background thread to do series of thread dumps with the specified interval.
-     * 
+     *
      * @param toSysOut
      *            print the generated thread dump to a System.out
      * @param toFile
@@ -446,7 +446,7 @@ public class ThreadMonitor {
 
     /**
      * Generates a string with the full thread dump information.
-     * 
+     *
      * @param writer the output writer
      */
     public void generateThreadInfo(Writer writer) {
@@ -478,7 +478,7 @@ public class ThreadMonitor {
 
     /**
      * create dump date similar to format used by 1.6 VMs
-     * 
+     *
      * @return dump date (e.g. 2007-10-25 08:00:00)
      */
     private String getDumpDate() {
@@ -487,7 +487,7 @@ public class ThreadMonitor {
 
     /**
      * Generates a string with the full thread dump information.
-     * 
+     *
      * @return the thread dump content as string
      */
     private String getFullThreadInfo() {
@@ -562,7 +562,7 @@ public class ThreadMonitor {
 
     /**
      * reset mbean server connection
-     * 
+     *
      * @param mbs
      */
     void setMBeanServerConnection(MBeanServerConnection mbs) {

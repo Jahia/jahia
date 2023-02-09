@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -51,14 +51,14 @@ import javax.servlet.http.HttpServletRequest;
  * Custom search facet functions, which are exposed into the template scope.
  *
  * @author Sergiy Shyrkov
- * 
+ *
  * @since 7.2.3.1
  */
 public class Functions {
 
     /**
      * Retrieves the data of the requested facet to be used in a JSP view when rendering facet search results.
-     * 
+     *
      * @param facetId the ID of a facet to retrieve information for
      * @param request current HTTP request instance
      * @return the data of the requested facet to be used in a JSP view when rendering facet search results

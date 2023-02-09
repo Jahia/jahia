@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -120,7 +120,7 @@ public class RequestDispatcherScript implements Script {
         if (logger.isDebugEnabled()) {
             dumpRequestAttributes(request);
         }
-        
+
         StringResponseWrapper wrapper = new StringResponseWrapper(response);
         try {
             rd.include(request, wrapper);
@@ -131,7 +131,7 @@ public class RequestDispatcherScript implements Script {
             if (e.getRootCause() instanceof RenderException) {
                 throw (RenderException)e.getRootCause();
             } else if (e.getRootCause() instanceof JahiaServiceUnavailableException) {
-                throw (JahiaServiceUnavailableException) e.getRootCause();                
+                throw (JahiaServiceUnavailableException) e.getRootCause();
             }
             throw new RenderException(e.getRootCause() != null ? e.getRootCause() : e);
         } catch (IOException e) {

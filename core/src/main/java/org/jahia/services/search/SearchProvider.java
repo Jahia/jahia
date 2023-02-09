@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -53,24 +53,24 @@ import org.jahia.services.render.RenderContext;
 public interface SearchProvider {
     /**
      * Performs a search using the SearchCriteria object, which is created with using the
-     * Jahia Search Tags or can also be created in Java classes by using the 
+     * Jahia Search Tags or can also be created in Java classes by using the
      * SearchCriteriaFactory.
-     * 
-     * @param criteria the passed SearchCriteria object, which includes all search criteria 
+     *
+     * @param criteria the passed SearchCriteria object, which includes all search criteria
      * @param context context object, containing information about current user, locale etc.
      * @return SearchResponse object with the list of hits matching the criteria
      */
     SearchResponse search(SearchCriteria criteria, RenderContext context);
-    
+
     /**
      * Returns a modified suggestion for the original query based on the spell
      * checker dictionary. If the spelling is correct or the spell checker does
      * not know how to correct the query or the provider does not support this
      * feature <code>null</code> is returned.
-     * 
+     *
      * @param originalQuery original query string
      * @param context context object, containing information about current site, workspace, locale etc.
-     * @param maxTermsToSuggest the maximum number of terms to suggest 
+     * @param maxTermsToSuggest the maximum number of terms to suggest
      * @return a modified suggestion for the original query based on the spell
      *         checker dictionary. If the spelling is correct or the spell
      *         checker does not know how to correct the query <code>null</code>

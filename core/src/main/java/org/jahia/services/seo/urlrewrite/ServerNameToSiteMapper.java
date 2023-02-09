@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * Exposes the site key for the current server name as a request attribute if the corresponding server name is mapped to a site.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class ServerNameToSiteMapper {
@@ -104,7 +104,7 @@ public class ServerNameToSiteMapper {
                 }
             }
         }
-        
+
         request.setAttribute(ATTR_NAME_SITE_KEY, targetSiteKey);
 
         return targetSiteKey;
@@ -123,15 +123,15 @@ public class ServerNameToSiteMapper {
     }
 
     private UrlRewriteService urlRewriteService;
-    
+
     private UrlRewriteService getUrlRewriteService() {
         if (urlRewriteService == null) {
-            urlRewriteService = (UrlRewriteService) SpringContextSingleton.getBean("UrlRewriteService"); 
+            urlRewriteService = (UrlRewriteService) SpringContextSingleton.getBean("UrlRewriteService");
         }
-        
+
         return urlRewriteService;
     }
-    
+
     public void canResolveSiteByServerName(HttpServletRequest request, String ctx, String language,
             String siteKey) {
         analyzeLink(request, ctx, language, siteKey, null);
@@ -139,7 +139,7 @@ public class ServerNameToSiteMapper {
 
     public void analyzeLink(HttpServletRequest request, String ctx, String language,
             String siteKey, String path) {
-        
+
         String currentSiteKey = getSiteKeyByServerName(request);
         boolean matches = currentSiteKey.equals(siteKey);
         request.setAttribute(ATTR_NAME_SITE_KEY_MATCHES, Boolean.valueOf(matches));
@@ -174,7 +174,7 @@ public class ServerNameToSiteMapper {
             request.setAttribute(ATTR_NAME_SITE_KEY_FOR_LINK, serverName);
             request.setAttribute(ATTR_NAME_SERVERNAME_FOR_LINK, serverName != null ? (request.getScheme() + "://" + serverName) : null);
         }
-        
+
         checkCmsPrefix(request, ctx, path);
 
         if (logger.isDebugEnabled()) {

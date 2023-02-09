@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ import java.util.Properties;
 public class JahiaUserImpl implements JahiaUser, Serializable {
 
     private static final long serialVersionUID = -133494787519812151L;
-    
+
     private final String name;
     private final String path;
     private final String realm;
@@ -61,7 +61,7 @@ public class JahiaUserImpl implements JahiaUser, Serializable {
 
     /**
      * Initializes a global non-root user.
-     * 
+     *
      * @param name
      *            the user name
      * @param path
@@ -77,7 +77,7 @@ public class JahiaUserImpl implements JahiaUser, Serializable {
 
     /**
      * Initializes a global user.
-     * 
+     *
      * @param name
      *            the user name
      * @param path
@@ -95,7 +95,7 @@ public class JahiaUserImpl implements JahiaUser, Serializable {
 
     /**
      * Initializes a realm-specific (site-specific) non-root user.
-     * 
+     *
      * @param name
      *            the user name
      * @param path
@@ -113,7 +113,7 @@ public class JahiaUserImpl implements JahiaUser, Serializable {
 
     /**
      * Initializes a realm-specific (site-specific) user.
-     * 
+     *
      * @param name
      *            the user name
      * @param path

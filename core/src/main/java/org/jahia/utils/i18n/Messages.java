@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ import org.jahia.utils.Patterns;
 
 /**
  * Jahia i18n message utilities.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public final class Messages {
@@ -66,7 +66,7 @@ public final class Messages {
 
     /**
      * Returns the formatted messages with placeholders substituted by argument values.
-     * 
+     *
      * @param text
      *            the message text with placeholders
      * @param arguments
@@ -79,7 +79,7 @@ public final class Messages {
 
     /**
      * Returns the formatted messages with placeholders substituted by argument values.
-     * 
+     *
      * @param text
      *            the message text with placeholders
      * @param locale
@@ -98,7 +98,7 @@ public final class Messages {
 
     /**
      * Looks up the resource bundle key considering locale and current module.
-     * 
+     *
      * @param pkg
      *            the current module
      * @param key
@@ -113,7 +113,7 @@ public final class Messages {
 
     /**
      * Looks up the resource bundle key considering locale and current module. If not found the specified default value is returned.
-     * 
+     *
      * @param pkg
      *            the current module
      * @param key
@@ -137,7 +137,7 @@ public final class Messages {
     /**
      * Looks up the resource bundle key considering locale and specified {@link ResourceBundle} instance. If not found the specified default
      * value is returned.
-     * 
+     *
      * @param bundle
      *            the resource bundle key to lookup the key
      * @param key
@@ -158,7 +158,7 @@ public final class Messages {
 
     /**
      * Looks up the resource bundle key considering locale, specified bundle name and current module.
-     * 
+     *
      * @param primaryBundleName
      *            the resource bundle name to perform lookup for the first turn
      * @param pkg
@@ -178,7 +178,7 @@ public final class Messages {
     /**
      * Looks up the resource bundle key considering locale, specified bundle name and current module. If not found the specified default
      * value is returned.
-     * 
+     *
      * @param primaryBundleName
      *            the resource bundle name to perform lookup for the first turn
      * @param pkg
@@ -202,7 +202,7 @@ public final class Messages {
 
     /**
      * Looks up the resource bundle key considering locale and specified bundle name.
-     * 
+     *
      * @param bundle
      *            the bundle name to perform the lookup, must use "resources" prefix i. e. resources.JahiaServerSettings
      * @param key
@@ -219,7 +219,7 @@ public final class Messages {
 
     /**
      * Looks up the resource bundle key considering locale and specified bundle name. If not found the specified default value is returned.
-     * 
+     *
      * @param bundle
      *            the bundle name to perform the lookup, must use "resources" prefix i. e. resources.JahiaServerSettings
      * @param key
@@ -241,13 +241,13 @@ public final class Messages {
     /**
      * Looks up the resource bundle key in the {@link ResourceBundles#JAHIA_INTERNAL_RESOURCES} bundle, considering locale. This method does
      * not throw {@link MissingResourceException} in case the key is not found, but rather returns the key itself.
-     * 
+     *
      * @param key
      *            the key to perform lookup for
      * @param locale
      *            current locale
      * @return the label for the requested key
-     * 
+     *
      * @see #getNonEmpty(String, String, Locale)
      */
     public static String getInternal(String key, Locale locale) {
@@ -257,7 +257,7 @@ public final class Messages {
     /**
      * Looks up the resource bundle key in the {@link ResourceBundles#JAHIA_INTERNAL_RESOURCES} bundle, considering locale. If not found the
      * specified default value is returned.
-     * 
+     *
      * @param key
      *            the key to perform lookup for
      * @param locale
@@ -273,7 +273,7 @@ public final class Messages {
     /**
      * Looks up the resource bundle key in the {@link ResourceBundles#JAHIA_INTERNAL_RESOURCES} bundle, considering locale. Additionally
      * placeholders are replaced with the provided arguments.
-     * 
+     *
      * @param key
      *            the key to perform lookup for
      * @param locale
@@ -289,7 +289,7 @@ public final class Messages {
     /**
      * Looks up the resource bundle key in the {@link ResourceBundles#JAHIA_INTERNAL_RESOURCES} bundle, considering locale. Additionally
      * placeholders are replaced with the provided arguments.
-     * 
+     *
      * @param key
      *            the key to perform lookup for
      * @param defaultValue
@@ -307,7 +307,7 @@ public final class Messages {
     /**
      * Looks up the resource bundle key in the specified bundle, considering locale. This method does not throw
      * {@link MissingResourceException} in case the key is not found, but rather returns the key itself.
-     * 
+     *
      * @param bundle
      *            the bundle name to perform the lookup
      * @param key
@@ -324,7 +324,7 @@ public final class Messages {
     /**
      * Looks up the resource bundle key in the {@link ResourceBundles#JAHIA_TYPES_RESOURCES} bundle, considering locale. If not found the
      * specified default value is returned.
-     * 
+     *
      * @param key
      *            the key to perform lookup for
      * @param locale
@@ -339,7 +339,7 @@ public final class Messages {
 
     /**
      * Looks up the resource bundle key in the specified bundle. Additionally placeholders are replaced with the provided arguments.
-     * 
+     *
      * @param bundle
      *            the bundle to perform the lookup in
      * @param key
@@ -355,7 +355,7 @@ public final class Messages {
 
     /**
      * Looks up the resource bundle key in the specified bundle. Additionally placeholders are replaced with the provided arguments.
-     * 
+     *
      * @param bundle
      *            the bundle to perform the lookup in
      * @param key
@@ -374,7 +374,7 @@ public final class Messages {
     /**
      * Looks up the resource bundle key in the specified bundle, considering locale. Additionally placeholders are replaced with the
      * provided arguments.
-     * 
+     *
      * @param bundle
      *            the bundle name to perform the lookup
      * @param key
@@ -392,7 +392,7 @@ public final class Messages {
 
     /**
      * Performs the interpolation (evaluation) of the resource bundle macro in the provided input.
-     * 
+     *
      * @param input
      *            the text to be interpolated
      * @param locale

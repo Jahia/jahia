@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ import org.slf4j.helpers.MessageFormatter;
 
 /**
  * SLF4J logger wrapper to also log into the provided instance of {@link PrintWriter}. Used by Groovy Console and {@link GroovyPatcher}.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class LoggerWrapper extends org.slf4j.ext.LoggerWrapper {
@@ -59,7 +59,7 @@ public class LoggerWrapper extends org.slf4j.ext.LoggerWrapper {
 
     /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param logger
      * @param fqcn
      */
@@ -101,7 +101,7 @@ public class LoggerWrapper extends org.slf4j.ext.LoggerWrapper {
     public void info(Object msg) {
         info(String.valueOf(msg));
     }
-    
+
     @Override
     public void info(String msg) {
         out(msg, null, null);

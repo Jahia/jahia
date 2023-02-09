@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ import java.util.Map;
 public class RenderInfo {
 
     private static final Logger logger = LoggerFactory.getLogger(RenderInfo.class);
-    
+
     private static ThreadLocal<RenderInfo> threadLocal = new ThreadLocal<RenderInfo>();
     private static List<RenderInfo> all = new ArrayList<>();
 
@@ -68,7 +68,7 @@ public class RenderInfo {
 
     /**
      * Enables or disables rendering data collection.
-     * 
+     *
      * @param enabled <code>true</code> to enable data collection; <code>false</code> to disable it
      */
     public static void setEnabled(boolean enabled) {
@@ -79,7 +79,7 @@ public class RenderInfo {
 
     /**
      * Checks if the rendering data collection is enabled or not.
-     * 
+     *
      * @return <code>true</code> if data collection is enabled; <code>false</code> if is it disabled
      */
     public static boolean isEnabled() {
@@ -88,7 +88,7 @@ public class RenderInfo {
 
     /**
      * Called on a start resource rendering.
-     * 
+     *
      * @param resource the resource, the recording is started for
      */
     public static void pushResource(Resource resource) {
@@ -118,7 +118,7 @@ public class RenderInfo {
 
     /**
      * "Record" a filter call event of the specified type
-     * 
+     *
      * @param filter the filter which is being called
      * @param type the filter call type
      */
@@ -131,7 +131,7 @@ public class RenderInfo {
 
     /**
      * Performs a dump of the collected data in JSON format and disables the collection of data.
-     * 
+     *
      * @return a string representation of collected data in JSON format
      */
     public static String dump() {

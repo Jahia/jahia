@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -59,30 +59,30 @@ public class Result {
     public Result() {
         super();
     }
-    
+
     public Result(String message) {
         this();
         this.message = message;
-    }    
+    }
 
     public Result(String message, String context, String code, String example) {
         this(message);
         this.context = context;
         this.code = code;
-        this.example = example;        
+        this.example = example;
     }
-    
+
     public Result(String message, String context, String code, String example, Type type) {
         this(message, context, code, example);
-        this.type = type;        
+        this.type = type;
     }
 
     /**
      * Gets the value of the line property.
-     * 
+     *
      * @return
      *     possible object is int
-     *     
+     *
      */
     public int getLine() {
         return line;
@@ -90,10 +90,10 @@ public class Result {
 
     /**
      * Sets the value of the line property.
-     * 
+     *
      * @param value
      *     allowed object is int
-     *     
+     *
      */
     public void setLine(int value) {
         this.line = value;
@@ -101,10 +101,10 @@ public class Result {
 
     /**
      * Gets the value of the column property.
-     * 
+     *
      * @return
      *     possible object is int
-     *     
+     *
      */
     public int getColumn() {
         return column;
@@ -112,10 +112,10 @@ public class Result {
 
     /**
      * Sets the value of the column property.
-     * 
+     *
      * @param value
      *     allowed object is int
-     *     
+     *
      */
     public void setColumn(int value) {
         this.column = value;
@@ -123,11 +123,11 @@ public class Result {
 
     /**
      * Gets the value of the context property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link String }
-     *     
+     *
      */
     public String getContext() {
         return context;
@@ -135,11 +135,11 @@ public class Result {
 
     /**
      * Sets the value of the context property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link String }
-     *     
+     *
      */
     public void setContext(String value) {
         this.context = value;
@@ -147,23 +147,23 @@ public class Result {
 
     /**
      * Gets the value of the message property.
-     * 
+     *
      */
     public String getMessage() {
         return this.message;
     }
-    
+
     public void setMessage(String message) {
             this.message = message;
     }
 
     /**
      * Gets the value of the errortype property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link String }
-     *     
+     *
      */
     public String getErrorType() {
         return errorType;
@@ -171,11 +171,11 @@ public class Result {
 
     /**
      * Sets the value of the errorType property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link String }
-     *     
+     *
      */
     public void setErrorType(String value) {
         this.errorType = value;
@@ -183,11 +183,11 @@ public class Result {
 
     /**
      * Gets the value of the level property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link int }
-     *     
+     *
      */
     public Integer getLevel() {
         return level;
@@ -195,11 +195,11 @@ public class Result {
 
     /**
      * Sets the value of the level property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link int }
-     *     
+     *
      */
     public void setLevel(Integer value) {
         this.level = value;

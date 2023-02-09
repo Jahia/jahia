@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -79,7 +79,7 @@ import org.jahia.services.search.SearchCriteria.Term;
 
 /**
  * Factory for retrieving {@link SearchCriteria} object data.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class SearchCriteriaFactory {
@@ -106,10 +106,10 @@ public class SearchCriteriaFactory {
         CONVERTER_UTILS_BEAN.register(ENUM_CONVERTER,
                 NodeProperty.Type.class);
         CONVERTER_UTILS_BEAN.register(ENUM_CONVERTER, Term.MatchType.class);
-        CONVERTER_UTILS_BEAN.register(ENUM_CONVERTER, Ordering.Operand.class);        
-        CONVERTER_UTILS_BEAN.register(ENUM_CONVERTER, Ordering.CaseConversion.class);        
-        CONVERTER_UTILS_BEAN.register(ENUM_CONVERTER, Ordering.Order.class);        
-        
+        CONVERTER_UTILS_BEAN.register(ENUM_CONVERTER, Ordering.Operand.class);
+        CONVERTER_UTILS_BEAN.register(ENUM_CONVERTER, Ordering.CaseConversion.class);
+        CONVERTER_UTILS_BEAN.register(ENUM_CONVERTER, Ordering.Order.class);
+
         ArrayConverter converter = new ArrayConverter(String[].class, new StringConverter());
         converter.setAllowedChars(new char[] {'.', '-', '_', ':', ' '});
         CONVERTER_UTILS_BEAN.register(converter, String[].class);
@@ -119,7 +119,7 @@ public class SearchCriteriaFactory {
      * Looks up the {@link SearchCriteria} object in the request scope. If it is
      * not found, instantiates it and populates it using current request
      * parameters.
-     * 
+     *
      * @param ctx
      *            current context object
      * @return the {@link SearchCriteria} bean with the current search
@@ -142,7 +142,7 @@ public class SearchCriteriaFactory {
                                 : pValues);
                     }
                 }
-                
+
                 new BeanUtilsBean(CONVERTER_UTILS_BEAN, new PropertyUtilsBean())
                         .populate(searchParams, properties);
 
@@ -191,7 +191,7 @@ public class SearchCriteriaFactory {
             type = NodeProperty.Type.DATE;
             break;
         case PropertyType.STRING:
-        case PropertyType.WEAKREFERENCE:	
+        case PropertyType.WEAKREFERENCE:
             if (SelectorType.CATEGORY == (propDefExt.getSelector())) {
                 type = NodeProperty.Type.CATEGORY;
             }

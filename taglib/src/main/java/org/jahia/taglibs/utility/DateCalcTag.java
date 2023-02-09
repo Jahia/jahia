@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -50,8 +50,8 @@ import org.jahia.taglibs.internal.date.AbstractDateTag;
 
 /**
  * @author Xavier Lawrence
- * 
- * 
+ *
+ *
  *         This tag can be used to add/subtract to or from a java.util.Date
  *         variable or to set fields of the date to its minimum or maximum
  *         values. The date is passed in the value attribute and must already be
@@ -75,8 +75,8 @@ public class DateCalcTag extends AbstractDateTag {
     private int minutes = 0;
 
     private int seconds = 0;
-    
-    private int milliseconds = 0;    
+
+    private int milliseconds = 0;
 
     private Date value;
 
@@ -132,7 +132,7 @@ public class DateCalcTag extends AbstractDateTag {
             }
             if (milliseconds != 0 && milliseconds > Utils.TO_MIN && milliseconds < Utils.TO_MAX) {
                 cal.add(Calendar.MILLISECOND, milliseconds);
-            }            
+            }
 
             if (months == Utils.TO_MIN) {
                 cal.set(Calendar.MONTH, cal.getActualMinimum(Calendar.MONTH));
@@ -194,7 +194,7 @@ public class DateCalcTag extends AbstractDateTag {
     public int getMilliseconds() {
         return milliseconds;
     }
-    
+
     @Override
     protected void resetState() {
         super.resetState();
@@ -204,7 +204,7 @@ public class DateCalcTag extends AbstractDateTag {
         setHours(0);
         setMinutes(0);
         setSeconds(0);
-        setMilliseconds(0);        
+        setMilliseconds(0);
         setValue(null);
         setVar(null);
     }

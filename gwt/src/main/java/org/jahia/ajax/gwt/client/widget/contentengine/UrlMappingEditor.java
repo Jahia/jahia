@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -76,7 +76,7 @@ import java.util.List;
 
 /**
  * URL mapping for the node.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class UrlMappingEditor extends LayoutContainer {
@@ -87,7 +87,7 @@ public class UrlMappingEditor extends LayoutContainer {
     private ListStore<GWTJahiaUrlMapping> store;
     /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param node
      */
     public UrlMappingEditor(GWTJahiaNode node, String locale, boolean editable) {
@@ -233,8 +233,8 @@ public class UrlMappingEditor extends LayoutContainer {
                 }
             }
 
-        });        
-        
+        });
+
         ToolBar toolBar = new ToolBar();
         Button add = new Button(Messages.get("label.add", "Add"), new SelectionListener<ButtonEvent>() {
             @Override

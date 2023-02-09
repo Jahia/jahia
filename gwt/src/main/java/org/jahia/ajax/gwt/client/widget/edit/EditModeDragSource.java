@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -51,11 +51,11 @@ import com.google.gwt.core.client.GWT;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 /**
- * 
+ *
  * User: toto
  * Date: Aug 21, 2009
  * Time: 3:56:35 PM
- * 
+ *
  */
 public class EditModeDragSource extends DragSource {
     public EditModeDragSource(Component c) {

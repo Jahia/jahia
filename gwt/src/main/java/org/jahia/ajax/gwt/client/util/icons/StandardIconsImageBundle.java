@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -96,7 +96,7 @@ public interface StandardIconsImageBundle extends ImageBundle {
     @Resource("text_tree.png")
     public AbstractImagePrototype navMenu();
 
-    @Resource("plus.png")    
+    @Resource("plus.png")
     public AbstractImagePrototype plusRound();
 
     @Resource("refresh.png")
@@ -116,14 +116,14 @@ public interface StandardIconsImageBundle extends ImageBundle {
 
     @Resource("user.png")
     public AbstractImagePrototype user();
-    
+
     @Resource("warning.png")
     public AbstractImagePrototype warning();
-    
+
     @Resource("workflow.png")
     public AbstractImagePrototype workflow();
-    
+
     @Resource("workflow_task.png")
     public AbstractImagePrototype workflowTask();
-    
+
 }

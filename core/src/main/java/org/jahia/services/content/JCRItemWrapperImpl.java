@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * Jahia wrappers around <code>javax.jcr.Item</code> to be able to inject
- * Jahia specific actions. 
+ * Jahia specific actions.
  *
  * @author toto
  */
@@ -109,20 +109,20 @@ public class JCRItemWrapperImpl implements JCRItemWrapper {
 
     /**
      * {@inheritDoc}
-     * <code>Item</code> at the specified <code>depth</code>. 
+     * <code>Item</code> at the specified <code>depth</code>.
      */
     public JCRItemWrapper getAncestor(int i) throws ItemNotFoundException, AccessDeniedException, RepositoryException {
         if (i >= provider.getDepth()) {
             return provider.getNodeWrapper((Node) item.getAncestor(i-provider.getDepth()), getSession());
         } else if (i < 0) {
-            throw new ItemNotFoundException();            
+            throw new ItemNotFoundException();
         }
         return session.getItem(StringUtils.substringBeforeLast(provider.getMountPoint(),"/")).getAncestor(i);
     }
 
     /**
      * {@inheritDoc}
-     * @throws UnsupportedRepositoryOperationException as long as Jahia doesn't support it  
+     * @throws UnsupportedRepositoryOperationException as long as Jahia doesn't support it
      */
     public JCRNodeWrapper getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
         throw new UnsupportedOperationException();
@@ -183,7 +183,7 @@ public class JCRItemWrapperImpl implements JCRItemWrapper {
     /**
      * {@inheritDoc}
      * @deprecated As of JCR 2.0, {@link javax.jcr.Session#save()} should
-     *             be used instead. 
+     *             be used instead.
      */
     public void save() throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, ReferentialIntegrityException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
         getSession().save();
@@ -210,7 +210,7 @@ public class JCRItemWrapperImpl implements JCRItemWrapper {
         getSession().removeFromCache(this);
         item.remove();
     }
-    
+
     /**
      * Returns the path of this item for use in diagnostic output.
      *

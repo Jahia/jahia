@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ import javax.servlet.jsp.JspTagException;
 /**
  * Represents constraint aggregation tag (AND or OR) that is used to conjunct
  * multiple constraints together.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public abstract class CompoundConstraintTag extends ConstraintTag {
@@ -68,7 +68,7 @@ public abstract class CompoundConstraintTag extends ConstraintTag {
 
     /**
      * Performs the conjunction/disjunction of the provided constraints.
-     * 
+     *
      * @param constraint1 the first constraint to use in the logical operation
      * @param constraint2 the first constraint to use in the logical operation
      * @return the resulting constraint

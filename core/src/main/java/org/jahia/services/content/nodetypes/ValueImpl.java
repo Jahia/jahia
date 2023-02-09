@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -57,13 +57,13 @@ import org.slf4j.Logger;
 /**
  * Implementation of the JCR's {@link Value} interface for holding property
  * values of different types.
- * 
+ *
  * @author Thomas Draier
  */
 public class ValueImpl implements Value {
-    
+
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(ValueImpl.class);
-    
+
     protected String value;
     protected int type;
 
@@ -214,7 +214,7 @@ public class ValueImpl implements Value {
     }
 
     public Binary getBinary() throws RepositoryException {
-        return null;  
+        return null;
     }
 
     public BigDecimal getDecimal() throws ValueFormatException, RepositoryException {

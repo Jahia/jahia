@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ import java.util.GregorianCalendar;
 
 /**
  * A unit test to validate the proper behavior of the auto-splitting algorithm when creating nodes through the API
- * 
+ *
  * @author loom Date: Jul 15, 2010 Time: 12:30:11 PM
  */
 public class AutoSplittingIT extends AbstractJUnitTest {
@@ -311,7 +311,7 @@ public class AutoSplittingIT extends AbstractJUnitTest {
                 session.nodeExists(basePath + "/e/elektra"));
         assertTrue("Folders not correctly split for j:nodename split config",
                 session.nodeExists(basePath + "/f/firestar"));
-        assertTrue("Folders not correctly split for j:nodename split config", 
+        assertTrue("Folders not correctly split for j:nodename split config",
                 session.nodeExists(basePath + "/g/gaia"));
     }
 
@@ -321,38 +321,38 @@ public class AutoSplittingIT extends AbstractJUnitTest {
                 .getCurrentUserSession(Constants.EDIT_WORKSPACE,
                         LanguageCodeConverters
                         .languageCodeToLocale(DEFAULT_LANGUAGE));
-        
+
         JCRNodeWrapper stringSplitNode = session.getNode(SITECONTENT_ROOT_NODE
                 + "/contents/stringSplit");
-        
+
         Date newEventDate = new GregorianCalendar(2010, 0, 1, 12,
                 0).getTime();
         String newEventLocation = PARIS;
         String newEventType = ROAD_SHOW;
-        
+
         createEvent(stringSplitNode, newEventType,
                 newEventLocation, newEventDate, EVENTS.length);
-        
+
         JCRNodeWrapper dateSplitNode = session.getNode(SITECONTENT_ROOT_NODE
-                + "/contents/dateSplit");        
-        
+                + "/contents/dateSplit");
+
         createEvent(dateSplitNode, newEventType,
                 newEventLocation, newEventDate, EVENTS.length);
 
         createText(session.getNode(SITECONTENT_ROOT_NODE + "/contents/nodenameSplit"), "indigo");
-        
+
         session.save();
-        
+
         assertTrue("Folders not correctly split", stringSplitNode.hasNode("test/"
                 + newEventLocation.substring(3, 6) + "/"
                 + newEventType.substring(0, 4) + "/"
                 + newEventType + "/"
                 + newEventType + EVENTS.length));
-        
+
         assertTrue("Folders not correctly split", dateSplitNode.hasNode(yearFormatter.format(newEventDate)
                 + "/" + monthFormatter.format(newEventDate) + "/"
                 + dayFormatter.format(newEventDate) + "/"
-                + newEventType + EVENTS.length));        
+                + newEventType + EVENTS.length));
 
         assertTrue("Folders not correctly split for j:nodename split config",
                 session.nodeExists(SITECONTENT_ROOT_NODE + "/contents/nodenameSplit/i/indigo"));

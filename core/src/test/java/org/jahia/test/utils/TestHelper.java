@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -89,7 +89,7 @@ import java.util.zip.ZipInputStream;
  * User: toto
  * Date: Feb 12, 2009
  * Time: 4:49:40 PM
- * 
+ *
  */
 public class TestHelper {
 
@@ -228,7 +228,7 @@ public class TestHelper {
                                        String prepackedZIPFile, String siteZIPName) throws Exception {
             return createSite(name, serverName, templateSet, prepackedZIPFile, siteZIPName, null);
     }
-    
+
     private static String getDefaultTemplateSet() {
         String defaultTemplatesSet = WEB_TEMPLATES;
         if (ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAnyDeployedTemplatePackage(WEB_TEMPLATES) == null) {
@@ -236,7 +236,7 @@ public class TestHelper {
         }
         return defaultTemplatesSet;
     }
-    
+
     private static JahiaSite addSiteWithoutTemplates(
             final JahiaUser currentUser, final String name,
             final String serverName, final String selectedLanguage)
@@ -424,11 +424,11 @@ public class TestHelper {
                                         Collections
                                                 .singleton("site-administrator"));
                                 session.save();
-                                
+
                                 JCRNodeWrapper home = siteNode.addNode("home", "jnt:page");
                                 home.setProperty("j:templateName", "home");
                                 home.setProperty("j:isHomePage", true);
-                                session.save();                                
+                                session.save();
                                 logger.debug("Site updated with Home Page");
                             } catch (RepositoryException e) {
                                 logger.warn("Error adding home node", e);
@@ -454,7 +454,7 @@ public class TestHelper {
     public static int createSubPages(Node currentNode, int level, int nbChildren) throws RepositoryException, LockException, ConstraintViolationException, NoSuchNodeTypeException, ItemExistsException, VersionException {
        return createSubPages(currentNode, level, nbChildren, null);
     }
-    
+
     public static int createSubPages(Node currentNode, int level, int nbChildren, String titlePrefix) throws RepositoryException, LockException, ConstraintViolationException, NoSuchNodeTypeException, ItemExistsException, VersionException {
         int pagesCreated = 0;
         if (!currentNode.isCheckedOut()) {

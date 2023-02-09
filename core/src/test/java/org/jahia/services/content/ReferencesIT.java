@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -83,13 +83,13 @@ public class ReferencesIT extends AbstractJUnitTest {
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
         session.save();
     }
-    
+
     @Override
     public void afterClassSetup() throws Exception {
         super.afterClassSetup();
         TestHelper.deleteSite(TESTSITE_NAME);
     }
-    
+
     @Before
     public void setUp() {
 
@@ -98,24 +98,24 @@ public class ReferencesIT extends AbstractJUnitTest {
     @After
     public void tearDown() {
 
-    }      
+    }
 
     /*
     [test:externalReference] > nt:base, jmix:droppableContent
     - test:simpleNode (reference)
     - test:multipleI18NNode (reference) multiple i18n
-     
+
     [test:externalWeakReference] > nt:base, jmix:droppableContent
     - test:simpleNode (weakreference)
     - test:multipleNode (weakreference) multiple
     - test:multipleI18NNode (weakreference) multiple i18n
-    */    
-    
+    */
+
     @org.junit.Test
     public void testI18NReferences() throws Exception {
-        testReferences("refTest", "test:externalReference");        
-    }    
-    
+        testReferences("refTest", "test:externalReference");
+    }
+
     @org.junit.Test
     public void testI18NWeakreferences() throws Exception {
         testReferences("weakrefTest", "test:externalWeakReference");
@@ -148,46 +148,46 @@ public class ReferencesIT extends AbstractJUnitTest {
         checkReference(textNode1, ref, "test:simpleNode", 1);
         checkReference(textNode2, ref, "test:multipleI18NNode", 1);
         checkNoReference(textNode3, "test:multipleI18NNode");
-        
+
         textNode1 = frStageNode.getNode("text1");
         textNode2 = frStageNode.getNode("text2");
-        textNode3 = frStageNode.getNode("text3");        
-        
+        textNode3 = frStageNode.getNode("text3");
+
         checkReference(textNode1, ref, "test:simpleNode", 1);
         checkNoReference(textNode2, "test:multipleI18NNode");
         checkReference(textNode3, ref, "test:multipleI18NNode", 1);
 
-        // now lets use a non-i18n session, so the reference checks must be on the translation nodes 
+        // now lets use a non-i18n session, so the reference checks must be on the translation nodes
         JCRSessionWrapper noni18nSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE);
         JCRNodeWrapper noni18nStageNode = noni18nSession.getNode(SITECONTENT_ROOT_NODE+"/home/" + testRootNodeName);
-        
+
         textNode1 = noni18nStageNode.getNode("text1");
         textNode2 = noni18nStageNode.getNode("text2");
         textNode3 = noni18nStageNode.getNode("text3");
-        
+
         checkReference(textNode1, ref, "test:simpleNode", 1);
         checkReference(textNode2, ref.getI18N(Locale.ENGLISH), "test:multipleI18NNode", 1);
-        checkReference(textNode3, ref.getI18N(Locale.FRENCH), "test:multipleI18NNode", 1);        
-    }    
-    
+        checkReference(textNode3, ref.getI18N(Locale.FRENCH), "test:multipleI18NNode", 1);
+    }
+
     private void checkReference(JCRNodeWrapper node, Node ref, String name, int expectedSize) throws RepositoryException {
         PropertyIterator pi = node.getWeakReferences();
         assertEquals("Unexpected number of references", expectedSize, pi.getSize());
         JCRPropertyWrapper prop = (JCRPropertyWrapper) pi.nextProperty();
         assertEquals("Invalid property reference",name,prop.getName());
         assertEquals("Invalid property reference",ref.getPath(),prop.getParent().getPath());
-        
-        pi = node.getWeakReferences(name);        
+
+        pi = node.getWeakReferences(name);
         assertEquals("Unexpected number of references", expectedSize, pi.getSize());
-        prop = (JCRPropertyWrapper) pi.nextProperty();        
-        assertEquals("Invalid property reference",ref.getPath(),prop.getParent().getPath());        
+        prop = (JCRPropertyWrapper) pi.nextProperty();
+        assertEquals("Invalid property reference",ref.getPath(),prop.getParent().getPath());
     }
 
     private void checkNoReference(JCRNodeWrapper node, String name) throws RepositoryException {
         PropertyIterator pi = node.getWeakReferences();
         assertEquals("Unexpected number of references", 0, pi.getSize());
-        
-        pi = node.getWeakReferences(name);        
+
+        pi = node.getWeakReferences(name);
         assertEquals("Unexpected number of references", 0, pi.getSize());
     }
 }

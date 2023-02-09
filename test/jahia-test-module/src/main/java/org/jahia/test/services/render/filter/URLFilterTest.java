@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -108,15 +108,15 @@ public class URLFilterTest extends JahiaTestCase {
 
         if (siteNode.hasNode("testPage")) {
             siteNode.getNode("testPage").remove();
-        }        
-        
+        }
+
         JCRNodeWrapper pageNode = siteNode.addNode("testPage", Constants.JAHIANT_PAGE);
         pageNode.setProperty("jcr:title", "English test page");
-        pageNode.setProperty("j:templateName", "simple");        
+        pageNode.setProperty("j:templateName", "simple");
         pageNode.addNode("testContent", "jnt:mainContent");
 
         session.save();
-        
+
         JCRSessionWrapper frenchSession = JCRSessionFactory.getInstance().getCurrentUserSession(
                 null, Locale.FRENCH);
         pageNode = frenchSession.getNode(SITECONTENT_ROOT_NODE + "/testPage");
@@ -137,9 +137,9 @@ public class URLFilterTest extends JahiaTestCase {
         if (siteNode.hasNode("testPage")) {
             siteNode.getNode("testPage").remove();
         }
-        
+
         session.save();
-        
+
         JCRSessionFactory.getInstance().closeAllSessions();
     }
 
@@ -378,9 +378,9 @@ public class URLFilterTest extends JahiaTestCase {
     public void testVanityURLResolving() throws Exception {
         JCRSessionWrapper session = JCRSessionFactory.getInstance()
                 .getCurrentUserSession(null, Locale.ENGLISH);
-        
+
         JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(TESTSITE_NAME);
-        
+
         JCRNodeWrapper pageNode = session.getNode(SITECONTENT_ROOT_NODE
                 + "/testPage");
 
@@ -446,7 +446,7 @@ public class URLFilterTest extends JahiaTestCase {
         ServicesRegistry.getInstance().getJCRPublicationService().publishByMainId(
                 pageNode.getIdentifier(), Constants.EDIT_WORKSPACE,
                 Constants.LIVE_WORKSPACE, languages, true, null);
-        
+
         urlResolver = getUrlResolverFactory().createURLResolver("/render/live/test4page", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage"));
         resolvedNode = urlResolver.getNode();
         assertTrue("Wrong node or language returned", pageNode
@@ -465,8 +465,8 @@ public class URLFilterTest extends JahiaTestCase {
         assertTrue("Wrong node or language returned", pageNode
                 .equals(resolvedNode)
                 && "en".equals(resolvedNode.getLanguage()));
-        
-        
+
+
         urlResolver = getUrlResolverFactory().createURLResolver("/render/live/test4page/french2", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage/french2"));
         try {
             resolvedNode = urlResolver.getNode();
@@ -474,25 +474,25 @@ public class URLFilterTest extends JahiaTestCase {
                     .equals(resolvedNode)
                     && "fr".equals(resolvedNode.getLanguage()));
         } catch (PathNotFoundException e) {
-        }        
+        }
 
         languages.clear();
         languages.add("fr");
         ServicesRegistry.getInstance().getJCRPublicationService().publishByMainId(
                 pageNode.getIdentifier(), Constants.EDIT_WORKSPACE,
                 Constants.LIVE_WORKSPACE, languages, true, null);
-        
+
         urlResolver = getUrlResolverFactory().createURLResolver("/render/live/test4page/french2", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage/french2"));
         resolvedNode = urlResolver.getNode();
         assertTrue("Wrong node or language returned", pageNode
                 .equals(resolvedNode)
-                && "fr".equals(resolvedNode.getLanguage()));        
-        
+                && "fr".equals(resolvedNode.getLanguage()));
+
         urlResolver = getUrlResolverFactory().createURLResolver("/render/live/test4page/french", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage/french"));
         resolvedNode = urlResolver.getNode();
         assertTrue("Wrong node or language returned", pageNode
                 .equals(resolvedNode)
-                && "fr".equals(resolvedNode.getLanguage()));        
+                && "fr".equals(resolvedNode.getLanguage()));
     }
 
     private VanityUrlService getVanityUrlService() {

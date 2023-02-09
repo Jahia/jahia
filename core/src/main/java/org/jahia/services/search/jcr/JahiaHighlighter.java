@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -214,7 +214,7 @@ public class JahiaHighlighter {
                 Arrays.sort(firstKeyTermOffsets,
                         new TermVectorOffsetInfoSorter());
                 intervalTermOffsetInfo.addAll(Arrays
-                        .asList(firstKeyTermOffsets));                
+                        .asList(firstKeyTermOffsets));
 
                 // check if each key is part of an interval, if not, it is
                 // dropped from the list
@@ -368,7 +368,7 @@ public class JahiaHighlighter {
 
             if (skip >= surround) {
 // AGDR-81: fix position of highlighted text to not start with the highlighted term, but use some
-// surrounding context at the beginning                
+// surrounding context at the beginning
 //           if (i > 0) {
                     skip -= surround;
 //                }
@@ -509,14 +509,14 @@ public class JahiaHighlighter {
         excerpt.append(fragmentEnd).append(excerptEnd);
         return excerpt.toString();
     }
-    
-    
+
+
     /**
      * Escapes input text suitable for the output format.
      * <p>
      * By default does XML-escaping. Can be overridden for
      * other formats.
-     * 
+     *
      * @param input raw text.
      * @return text suitably escaped.
      */

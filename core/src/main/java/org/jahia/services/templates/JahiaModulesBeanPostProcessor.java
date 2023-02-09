@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -47,12 +47,12 @@ import org.springframework.beans.factory.config.DestructionAwareBeanPostProcesso
 /**
  * Should be implemented by handlers that would like to be "notified" about Spring bean creation/destruction in contexts of other DX
  * modules.
- * 
+ *
  * Since DX 7.2 Spring contexts are started independently (asynchronously), so beans could be registered before the
  * JahiaModulesBeanPostProcessor causing unintended side effects.
  *
  * We recommend to use a more OSGI compliant way to perform intermodule beans communication (service trackers, osgi:list, etc.)
- * 
+ *
  * @deprecated since DX 7.2.0.0
  */
 @Deprecated

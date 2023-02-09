@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ public interface JahiaSite {
 
     /**
      * Returns the description, provided for this site.
-     * 
+     *
      * @return the description, provided for this site
      */
     public String getDescription();
@@ -75,14 +75,14 @@ public interface JahiaSite {
 
     /**
      * Returns a set of languages, which are deactivated completely for browsing and editing.
-     * 
+     *
      * @return a set of languages, which are deactivated completely for browsing and editing
      */
     public Set<String> getInactiveLanguages();
 
     /**
      * Returns a set of languages, which are not considered in live mode browsing, i.e. are currently inactive in navigation.
-     * 
+     *
      * @return a set of languages, which are not considered in live mode browsing, i.e. are currently inactive in navigation
      */
     public Set<String> getInactiveLiveLanguages();
@@ -115,7 +115,7 @@ public interface JahiaSite {
 
     /**
      * Returns a list of additional server names (aliases).
-     * 
+     *
      * @return list of additional server names (aliases)
      */
     public List<String> getServerNameAliases();
@@ -160,7 +160,7 @@ public interface JahiaSite {
 
     /**
      * Sets languages, which are completely deactivated for browsing and editing.
-     * 
+     *
      * @param inactiveLanguages
      *            the set of inactive languages
      */
@@ -168,7 +168,7 @@ public interface JahiaSite {
 
     /**
      * Sets languages, which are not considered in live mode browsing, i.e. are currently inactive in navigation.
-     * 
+     *
      * @param inactiveLiveLanguages
      *            the set of inactive languages
      */
@@ -201,7 +201,7 @@ public interface JahiaSite {
 
     /**
      * Sets a list of additional server names (aliases).
-     * 
+     *
      * @param names a list of additional server names (aliases)
      */
     public void setServerNameAliases(List<String> names);

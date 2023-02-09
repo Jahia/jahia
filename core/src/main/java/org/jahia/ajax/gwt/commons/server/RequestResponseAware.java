@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ import javax.servlet.http.HttpServletResponse;
  * current {@link HttpServletRequest} and {@link HttpServletResponse} objects. <br/>
  * Used by Jahia {@link GWTController} to propagate the request/response pair to
  * the invoked GWT service instance.
- * 
+ *
  * @see GWTController
  * @author Sergiy Shyrkov
  */
@@ -59,7 +59,7 @@ public interface RequestResponseAware {
     /**
      * Is invoked by the {@link GWTController} to propagate the request object
      * to the invoked GWT service instance.
-     * 
+     *
      * @param request
      *            current request object
      */
@@ -68,7 +68,7 @@ public interface RequestResponseAware {
     /**
      * Is invoked by the {@link GWTController} to propagate the response object
      * to the invoked GWT service instance.
-     * 
+     *
      * @param response
      *            current response object
      */

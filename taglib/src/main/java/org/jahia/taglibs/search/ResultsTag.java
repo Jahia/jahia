@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ import java.util.List;
 
 /**
  * Performs the content search and exposes search results for being displayed.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class ResultsTag extends AbstractJahiaTag {
@@ -66,16 +66,16 @@ public class ResultsTag extends AbstractJahiaTag {
     private static final long serialVersionUID = 2848686280888802590L;
 
     private String countVar;
-    
-    private String approxCountVar;    
+
+    private String approxCountVar;
 
     private SearchResponse searchResponse;
     private List<Hit<?>> hits;
 
     private String searchCriteriaBeanName;
-    
+
     private String searchResponseVar;
-    
+
     private String searchCriteriaVar;
 
     private String termVar;
@@ -93,7 +93,7 @@ public class ResultsTag extends AbstractJahiaTag {
     public int doEndTag() throws JspException {
         pageContext.removeAttribute(getVar(), PageContext.PAGE_SCOPE);
         pageContext.removeAttribute(getCountVar(), PageContext.PAGE_SCOPE);
-        pageContext.removeAttribute(getApproxCountVar(), PageContext.PAGE_SCOPE);        
+        pageContext.removeAttribute(getApproxCountVar(), PageContext.PAGE_SCOPE);
         pageContext.removeAttribute(getSearchCriteriaVar(), PageContext.PAGE_SCOPE);
         pageContext.removeAttribute(getTermVar(), PageContext.PAGE_SCOPE);
         resetState();
@@ -115,25 +115,25 @@ public class ResultsTag extends AbstractJahiaTag {
 
         return result < 0 ? SKIP_BODY : EVAL_BODY_INCLUDE;
     }
-    
+
     protected int searchAndSetAttributes(SearchCriteria criteria, RenderContext renderContext) {
         criteria.setLimit(limit);
         criteria.setOffset(offset);
 
         if (!allowEmptySearchTerm && criteria.isEmpty()) {
             // if we don't have criteria and no searches, no need to go further since we don't have any hits, no need to further process
-            // and run into an NPE with a null SearchResponse after...            
+            // and run into an NPE with a null SearchResponse after...
             return -1;
         }
-        
+
         searchResponse = ServicesRegistry.getInstance().getSearchService().search(criteria, renderContext);
         hits = searchResponse.getResults();
         pageContext.setAttribute(getVar(), hits);
-        
+
         if (StringUtils.isNotBlank(getSearchResponseVar())) {
             pageContext.setAttribute(getSearchResponseVar(), searchResponse);
         }
-        
+
         int count = hits.size();
         if (searchResponse!= null && searchResponse.hasMore()) {
             pageContext.setAttribute(getCountVar(), Integer.MAX_VALUE);
@@ -151,7 +151,7 @@ public class ResultsTag extends AbstractJahiaTag {
     /**
      * Returns the default name of the <code>countVar</code> variable if not
      * provided.
-     * 
+     *
      * @return the default name of the <code>countVar</code> variable if not
      *         provided
      */
@@ -162,22 +162,22 @@ public class ResultsTag extends AbstractJahiaTag {
     /**
      * Returns the default name of the <code>approxCountVar</code> variable if not
      * provided.
-     * 
+     *
      * @return the default name of the <code>approxCountVar</code> variable if not
      *         provided
      */
     private String getApproxCountVar() {
         return approxCountVar != null ? approxCountVar : getDefaultApproxCountVarName();
-    }    
-    
+    }
+
     protected String getDefaultCountVarName() {
         return "count";
     }
 
     protected String getDefaultApproxCountVarName() {
         return "approxCount";
-    }    
-    
+    }
+
     protected String getDefaultSearchCriteriaVarName() {
         return "searchCriteria";
     }
@@ -189,7 +189,7 @@ public class ResultsTag extends AbstractJahiaTag {
     /**
      * Returns the default name of the <code>var</code> variable if not
      * provided.
-     * 
+     *
      * @return the default name of the <code>var</code> variable if not provided
      */
     protected String getDefaultVarName() {
@@ -198,7 +198,7 @@ public class ResultsTag extends AbstractJahiaTag {
 
     /**
      * Returns a list of {@link Hit} objects that are results of the query.
-     * 
+     *
      * @return a list of {@link Hit} objects that are results of the query
      */
     public List<Hit<?>> getHits() {
@@ -207,7 +207,7 @@ public class ResultsTag extends AbstractJahiaTag {
 
     /**
      * Obtains the {@link SearchCriteria} bean to execute the search with.
-     * 
+     *
      * @param ctx current rendering context
      * @return the {@link SearchCriteria} bean to execute the search with
      */
@@ -259,10 +259,10 @@ public class ResultsTag extends AbstractJahiaTag {
     public void setCountVar(String countVar) {
         this.countVar = countVar;
     }
-    
+
     public void setApproxCountVar(String approxCountVar) {
         this.approxCountVar = approxCountVar;
-    }    
+    }
 
     public void setSearchCriteriaBeanName(String searchCriteriaBeanName) {
         this.searchCriteriaBeanName = searchCriteriaBeanName;
@@ -291,7 +291,7 @@ public class ResultsTag extends AbstractJahiaTag {
     public void setAllowEmptySearchTerm(boolean allowEmptySearchTerm) {
         this.allowEmptySearchTerm = allowEmptySearchTerm;
     }
-    
+
     protected String getSearchResponseVar() {
         return searchResponseVar;
     }

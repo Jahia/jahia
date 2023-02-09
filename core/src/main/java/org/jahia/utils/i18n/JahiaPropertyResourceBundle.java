@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ import java.util.PropertyResourceBundle;
 /**
  * Slightly modified implementation of the {@link PropertyResourceBundle} that is not throwing {@link MissingResourceException} in case the
  * key is not found.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 class JahiaPropertyResourceBundle extends PropertyResourceBundle {
@@ -63,7 +63,7 @@ class JahiaPropertyResourceBundle extends PropertyResourceBundle {
      * Gets an object for the given key from this resource bundle or one of its parents. This method first tries to obtain the object from
      * this resource bundle using {@link #handleGetObject(java.lang.String) handleGetObject}. If not successful, and the parent resource
      * bundle is not null, it calls the parent's <code>getObject</code> method. If still not successful, it returns <code>null</code>.
-     * 
+     *
      * @param key
      *            the key for the desired object
      * @exception NullPointerException

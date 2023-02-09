@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -79,7 +79,7 @@ public class JahiaRepositoryImpl extends RepositoryImpl implements ReadOnlyModeC
         /**
          * search manager (lazily instantiated)
          */
-        private SearchManager searchMgr;        
+        private SearchManager searchMgr;
 
         public JahiaWorkspaceInfo(WorkspaceConfig config) {
             super(config);
@@ -115,11 +115,11 @@ public class JahiaRepositoryImpl extends RepositoryImpl implements ReadOnlyModeC
                 return searchMgr;
             }
         }
-   
+
     }
 
     private static final Logger log = LoggerFactory.getLogger(JahiaRepositoryImpl.class);
-    
+
     public JahiaRepositoryImpl(RepositoryConfig repConfig) throws RepositoryException {
         super(repConfig);
     }
@@ -164,7 +164,7 @@ public class JahiaRepositoryImpl extends RepositoryImpl implements ReadOnlyModeC
 
     /**
      * Schedules the re-indexing of the whole repository content.
-     * 
+     *
      * @throws RepositoryException
      *             in case of a JCR-related error
      */
@@ -199,7 +199,7 @@ public class JahiaRepositoryImpl extends RepositoryImpl implements ReadOnlyModeC
 
     /**
      * Schedules the re-indexing of the repository content for the specified workspace.
-     * 
+     *
      * @param workspaceName
      *            the name of the workspace to be re-indexed
      * @throws RepositoryException
@@ -232,7 +232,7 @@ public class JahiaRepositoryImpl extends RepositoryImpl implements ReadOnlyModeC
 
     /**
      * Re-indexes the full JCR sub-tree in the specified workspace, starting from the provided node.
-     * 
+     *
      * @param startNodeId the UUID of the node to start re-indexing with
      * @param workspaceName target workspace
      * @throws RepositoryException if an error occurs while indexing a node.

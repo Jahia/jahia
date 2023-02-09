@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -61,7 +61,7 @@ public class FacetRow implements Row {
     private List<FacetField> facetFields = null;
     private List<FacetField> limitingFacets = null;
     private List<FacetField> facetDates = null;
-    private List<RangeFacet> rangeFacets = null;    
+    private List<RangeFacet> rangeFacets = null;
 
     public FacetRow() {
     }
@@ -97,14 +97,14 @@ public class FacetRow implements Row {
     public void setFacetDates(List<FacetField> facetDates) {
         this.facetDates = facetDates;
     }
-    
+
     public List<RangeFacet> getRangeFacets() {
         return rangeFacets;
-    }    
-    
+    }
+
     public void setRangeFacets(List<RangeFacet> rangeFacets) {
         this.rangeFacets = rangeFacets;
-    }    
+    }
 
     /**
      * get
@@ -130,7 +130,7 @@ public class FacetRow implements Row {
                 return f;
         return null;
     }
-    
+
     public RangeFacet getRangeFacet(String name) {
         if (rangeFacets == null)
             return null;
@@ -138,7 +138,7 @@ public class FacetRow implements Row {
             if (f.getName().equals(name))
                 return f;
         return null;
-    }    
+    }
 
     public Value[] getValues() throws RepositoryException {
         return new Value[0];

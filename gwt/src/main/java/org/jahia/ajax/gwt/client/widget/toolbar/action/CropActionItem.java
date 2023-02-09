@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -51,11 +51,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
+ *
  * User: toto
  * Date: Sep 25, 2009
  * Time: 6:56:09 PM
- * 
+ *
  */
 public class CropActionItem extends BaseActionItem {
 
@@ -78,7 +78,7 @@ public class CropActionItem extends BaseActionItem {
     }
 
     /**
-     * Defines the list of predefined image sizes. 
+     * Defines the list of predefined image sizes.
      * Each value is a String of format [width]x[height]
      * @param predefinedSizes list of predefined sizes
      */

@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ import javax.servlet.http.HttpSession;
 import java.util.*;
 
 public class DefaultPutAction extends Action {
-    
+
     private MetricsLoggingService loggingService;
 
     public MetricsLoggingService getLoggingService() {
@@ -75,15 +75,15 @@ public class DefaultPutAction extends Action {
 
     public void setLoggingService(MetricsLoggingService loggingService) {
         this.loggingService = loggingService;
-    }    
-    
+    }
+
     @Override
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource, JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         JCRNodeWrapper node = session.getNode(urlResolver.getPath());
         // Get node information before any modification as a rule can delete it
         String primaryNodeTypeName = node.getPrimaryNodeTypeName();
         session.checkout(node);
-        
+
         if (parameters.containsKey(Render.REMOVE_MIXIN)) {
             for (String mixinType : parameters.get(Render.REMOVE_MIXIN)) {
                 node.removeMixin(mixinType);
@@ -153,7 +153,7 @@ public class DefaultPutAction extends Action {
                     node.getIdentifier(), urlResolver.getPath(), primaryNodeTypeName, "nodeUpdated",
                     new JSONObject(req.getParameterMap()).toString());
         }
-        
+
         final String requestWith = req.getHeader("x-requested-with");
         if (req.getHeader("accept") != null && req.getHeader("accept").contains("application/json") && requestWith != null &&
                 requestWith.equals("XMLHttpRequest")) {

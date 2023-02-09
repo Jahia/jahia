@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -70,7 +70,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 /**
  * Performs conversion of the submitted document into specified format.
- * 
+ *
  * @author Fabrice Cantegrel
  * @author Sergiy Shyrkov
  */
@@ -81,7 +81,7 @@ public class DocumentConverter extends JahiaController {
     private DocumentConverterService converterService;
 
     private SettingsBean settingsBean;
-    
+
     private boolean requireAuthenticatedUser = true;
 
     private ModelAndView handleGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -198,7 +198,7 @@ public class DocumentConverter extends JahiaController {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Conversion service is not enabled.");
             return null;
         }
-        
+
         ModelAndView result = null;
 
         if (ServletFileUpload.isMultipartContent(request) || "get".equalsIgnoreCase(request.getMethod())) {
@@ -243,7 +243,7 @@ public class DocumentConverter extends JahiaController {
     public void setSettingsBean(SettingsBean settingsBean) {
         this.settingsBean = settingsBean;
     }
-    
+
     public static String getPath() {
         return "/cms/convert";
     }

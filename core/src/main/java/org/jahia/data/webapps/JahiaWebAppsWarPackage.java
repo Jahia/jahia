@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -64,30 +64,30 @@ public class JahiaWebAppsWarPackage {
 
    /** The WebApps list *
     * @associates JahiaWebAppDef*/
-   private List<JahiaWebAppDef> m_WebApps = new ArrayList<JahiaWebAppDef>();       
+   private List<JahiaWebAppDef> m_WebApps = new ArrayList<JahiaWebAppDef>();
 
    /** The ContextRoot for all the web apps within the war file **/
    private String m_ContextRoot ;
-   
+
    /**
     * Constructor
-    * 
+    *
     * @param (String) contextRoot , the context root of the web apps
     */
 	public JahiaWebAppsWarPackage ( String contextRoot ) {
 	   m_ContextRoot = contextRoot;
 	}
-    
+
    /**
-    * Get the WebApps List 
+    * Get the WebApps List
     *
     * @return (List) the List of webapps list
     */
    public List<JahiaWebAppDef> getWebApps(){
-      
+
       return m_WebApps;
-   
-   } 
+
+   }
 
    /**
     * Add a WebApps Definition in the Web Apps list
@@ -95,23 +95,23 @@ public class JahiaWebAppsWarPackage {
     * @param (JahiaWebAppDef) webAppDef
     */
    public void addWebAppDef(JahiaWebAppDef webAppDef ){
-      
-      m_WebApps.add(webAppDef);
-   
-   } 
 
-   
+      m_WebApps.add(webAppDef);
+
+   }
+
+
    /**
     * Returns the Context Root of this package
     *
     * @return (String) the context root
-    */    
+    */
    public String getContextRoot(){
-      
+
       return m_ContextRoot;
-      
+
    }
-    
-    
-    
+
+
+
 } // end JahiaWebAppWarPackage

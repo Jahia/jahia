@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * Password policy rule data object.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class JahiaPasswordPolicyRule implements Serializable {
@@ -100,7 +100,7 @@ public class JahiaPasswordPolicyRule implements Serializable {
 
 	/**
 	 * Initializes an instance of this class.
-	 * 
+	 *
 	 * @param id
 	 * @param name
 	 * @param active
@@ -140,7 +140,7 @@ public class JahiaPasswordPolicyRule implements Serializable {
 
 	/**
 	 * Returns the action type.
-	 * 
+	 *
 	 * @return the action type
 	 */
 	public char getAction() {
@@ -149,7 +149,7 @@ public class JahiaPasswordPolicyRule implements Serializable {
 
 	/**
 	 * Returns the actionParameters.
-	 * 
+	 *
 	 * @return the actionParameters
 	 */
 	public List<JahiaPasswordPolicyRuleParam> getActionParameters() {
@@ -159,7 +159,7 @@ public class JahiaPasswordPolicyRule implements Serializable {
 	/**
 	 * Returns the map with all action parameters, keyed by their names. The new
 	 * map is created each time this method is called.
-	 * 
+	 *
 	 * @return the map with all action parameters, keyed by their names
 	 */
 	public Map<String, String> getActionParametersValues() {
@@ -173,7 +173,7 @@ public class JahiaPasswordPolicyRule implements Serializable {
 
 	/**
 	 * Returns the condition.
-	 * 
+	 *
 	 * @return the condition
 	 */
 	public String getCondition() {
@@ -182,7 +182,7 @@ public class JahiaPasswordPolicyRule implements Serializable {
 
 	/**
 	 * Returns the conditionParameters.
-	 * 
+	 *
 	 * @return the conditionParameters
 	 */
 	public List<JahiaPasswordPolicyRuleParam> getConditionParameters() {
@@ -192,7 +192,7 @@ public class JahiaPasswordPolicyRule implements Serializable {
 	/**
 	 * Returns the map with all condition parameters, keyed by their names. The
 	 * new map is created each time this method is called.
-	 * 
+	 *
 	 * @return the map with all condition parameters, keyed by their names
 	 */
 	public Map<String, String> getConditionParametersValues() {
@@ -207,7 +207,7 @@ public class JahiaPasswordPolicyRule implements Serializable {
 
 	/**
 	 * Returns the evaluator type.
-	 * 
+	 *
 	 * @return the evaluator type
 	 */
 	public char getEvaluator() {
@@ -216,7 +216,7 @@ public class JahiaPasswordPolicyRule implements Serializable {
 
 	/**
 	 * Returns the rule id.
-	 * 
+	 *
 	 * @return the rule id
 	 */
 	public String getId() {
@@ -225,7 +225,7 @@ public class JahiaPasswordPolicyRule implements Serializable {
 
 	/**
 	 * Returns the rule name.
-	 * 
+	 *
 	 * @return the rule name
 	 */
 	public String getName() {
@@ -234,7 +234,7 @@ public class JahiaPasswordPolicyRule implements Serializable {
 
 	/**
 	 * Returns <code>true</code> if this rule is active.
-	 * 
+	 *
 	 * @return <code>true</code> if this rule is active
 	 */
 	public boolean isActive() {
@@ -245,7 +245,7 @@ public class JahiaPasswordPolicyRule implements Serializable {
 	 * Returns the <code>true</code> if the processing of further rules in the
 	 * policy is stopped if this one is violated, thus it is possible to define
 	 * exclusive rules.
-	 * 
+	 *
 	 * @return the <code>true</code> if the processing of further rules in the
 	 *         policy is stopped if this one is violated, thus it is possible to
 	 *         define exclusive rules
@@ -257,7 +257,7 @@ public class JahiaPasswordPolicyRule implements Serializable {
 	/**
 	 * Returns <code>true</code> if this is a reoccurring rule (e.g. on each
 	 * user login).
-	 * 
+	 *
 	 * @return <code>true</code> if this is a reoccurring rule (e.g. on each
 	 *         user login)
 	 */
@@ -267,7 +267,7 @@ public class JahiaPasswordPolicyRule implements Serializable {
 
 	/**
 	 * Sets the value of action.
-	 * 
+	 *
 	 * @param action
 	 *            the action to set
 	 */
@@ -277,7 +277,7 @@ public class JahiaPasswordPolicyRule implements Serializable {
 
 	/**
 	 * Sets the value of actionParameters.
-	 * 
+	 *
 	 * @param actionParameters
 	 *            the actionParameters to set
 	 */
@@ -287,7 +287,7 @@ public class JahiaPasswordPolicyRule implements Serializable {
 
 	/**
 	 * Sets the value of active flag.
-	 * 
+	 *
 	 * @param active
 	 *            the active flag value to set
 	 */
@@ -297,7 +297,7 @@ public class JahiaPasswordPolicyRule implements Serializable {
 
 	/**
 	 * Sets the value of condition.
-	 * 
+	 *
 	 * @param condition
 	 *            the condition to set
 	 */
@@ -307,7 +307,7 @@ public class JahiaPasswordPolicyRule implements Serializable {
 
 	/**
 	 * Sets the value of conditionParameters.
-	 * 
+	 *
 	 * @param conditionParameters
 	 *            the conditionParameters to set
 	 */
@@ -317,7 +317,7 @@ public class JahiaPasswordPolicyRule implements Serializable {
 
 	/**
 	 * Sets the value of evaluator.
-	 * 
+	 *
 	 * @param evaluator
 	 *            the evaluator to set
 	 */
@@ -327,7 +327,7 @@ public class JahiaPasswordPolicyRule implements Serializable {
 
 	/**
 	 * Sets the value of rule id.
-	 * 
+	 *
 	 * @param id
 	 *            the rule id to set
 	 */
@@ -339,7 +339,7 @@ public class JahiaPasswordPolicyRule implements Serializable {
 	 * Set to <code>true</code> if the processing of further rules in the
 	 * policy is stopped if this one is violated, thus it is possible to define
 	 * exclusive rules.
-	 * 
+	 *
 	 * @param lastRule
 	 *            <code>true</code> if the processing of further rules in the
 	 *            policy is stopped if this one is violated, thus it is possible
@@ -351,7 +351,7 @@ public class JahiaPasswordPolicyRule implements Serializable {
 
 	/**
 	 * Sets the value of rule name.
-	 * 
+	 *
 	 * @param name
 	 *            the rule name to set
 	 */
@@ -361,7 +361,7 @@ public class JahiaPasswordPolicyRule implements Serializable {
 
 	/**
 	 * Sets the value of parameters.
-	 * 
+	 *
 	 * @param parameters
 	 *            the parameters to set
 	 */
@@ -371,7 +371,7 @@ public class JahiaPasswordPolicyRule implements Serializable {
 
 	/**
 	 * Sets the value of periodical flag.
-	 * 
+	 *
 	 * @param periodical
 	 *            the periodical flag to set
 	 */

@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -81,7 +81,7 @@ import com.google.common.collect.Sets;
 
 /**
  * Integration test for the workflow service and related permissions.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class WorkflowPermissionsTest {
@@ -218,7 +218,7 @@ public class WorkflowPermissionsTest {
 
     /**
      * The method tests that when trying to start the publication workflow on nodes, the editor permissions are checked correctly.
-     * 
+     *
      * @throws RepositoryException in case of a JCR error
      */
     @Test
@@ -252,7 +252,7 @@ public class WorkflowPermissionsTest {
     /**
      * Performs the test by starting a publication workflow on the test content list with two text sub-nodes using the editor user. On one
      * of those sub-nodes the permissions are revoked and the editor should not be able to start workflow on it.
-     * 
+     *
      * @throws RepositoryException in case of a JCR error
      */
     @Test

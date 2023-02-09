@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -66,16 +66,16 @@ public class JCRCategory implements CategoryBean, Serializable {
 
     private static final long serialVersionUID = -7647957842076042700L;
 
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRCategory.class);    
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRCategory.class);
 
-    private String id;    
+    private String id;
 
     private String key;
 
     private String path;
-    
+
     private Node categoryNode;
-    
+
     /**
      * Initializes an instance of a JCR category.
      * @param categoryNode the node in the JCR
@@ -89,7 +89,7 @@ public class JCRCategory implements CategoryBean, Serializable {
             this.path = categoryNode.getPath();
         } catch (RepositoryException e) {
             logger.warn(e.getMessage(), e);
-        }        
+        }
     }
 
     /* (non-Javadoc)
@@ -119,7 +119,7 @@ public class JCRCategory implements CategoryBean, Serializable {
 
 
     /**
-     * Get the category node in the JCR 
+     * Get the category node in the JCR
      * @return the JCR node
      */
     public Node getCategoryNode() {

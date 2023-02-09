@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -67,19 +67,19 @@ import org.tartarus.snowball.ext.German2Stemmer;
  * LowerCaseFilter}, {@link StopFilter}, {@link SnowballFilter} for German and {@link org.apache.lucene.analysis.ASCIIFoldingFilter}.
  */
 public class GermanSnowballAnalyzer extends StopwordAnalyzerBase {
-   
+
     /**
-     * Returns a set of default German-stopwords 
-     * @return a set of default German-stopwords 
+     * Returns a set of default German-stopwords
+     * @return a set of default German-stopwords
      */
     public static final Set<?> getDefaultStopSet(){
       return GermanAnalyzer.getDefaultStopSet();
     }
-    
+
     /**
      * Contains the stopwords used with the {@link StopFilter}.
      */
-   
+
     /**
      * Contains words that should be indexed but not stemmed.
      */
@@ -92,10 +92,10 @@ public class GermanSnowballAnalyzer extends StopwordAnalyzerBase {
     public GermanSnowballAnalyzer(Version matchVersion) {
       this(matchVersion, GermanAnalyzer.getDefaultStopSet());
     }
-    
+
     /**
-     * Builds an analyzer with the given stop words 
-     * 
+     * Builds an analyzer with the given stop words
+     *
      * @param matchVersion
      *          lucene compatibility version
      * @param stopwords
@@ -104,10 +104,10 @@ public class GermanSnowballAnalyzer extends StopwordAnalyzerBase {
     public GermanSnowballAnalyzer(Version matchVersion, Set<?> stopwords) {
       this(matchVersion, stopwords, CharArraySet.EMPTY_SET);
     }
-    
+
     /**
      * Builds an analyzer with the given stop words
-     * 
+     *
      * @param matchVersion
      *          lucene compatibility version
      * @param stopwords
@@ -124,7 +124,7 @@ public class GermanSnowballAnalyzer extends StopwordAnalyzerBase {
      * Creates
      * {@link org.apache.lucene.analysis.ReusableAnalyzerBase.TokenStreamComponents}
      * used to tokenize all the text in the provided {@link Reader}.
-     * 
+     *
      * @return {@link org.apache.lucene.analysis.ReusableAnalyzerBase.TokenStreamComponents}
      *         built from a {@link StandardTokenizer} filtered with
      *         {@link StandardFilter}, {@link LowerCaseFilter}, {@link StopFilter}

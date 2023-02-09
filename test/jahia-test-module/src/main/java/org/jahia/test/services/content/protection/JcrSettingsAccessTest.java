@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -138,7 +138,7 @@ public class JcrSettingsAccessTest extends JahiaTestCase {
                 // add her into privileged group
                 groupManager.lookupGroup(null, PRIVILEGED_GROUPNAME, session).addMember(privilegedUser);
                 session.save();
-                
+
                 // this call initializes the password policy node, if it does not yet present in JCR
                 JahiaPasswordPolicyService.getInstance().getDefaultPolicy();
 
@@ -187,7 +187,7 @@ public class JcrSettingsAccessTest extends JahiaTestCase {
                     userManager.deleteUser(serverAdminUser.getPath(), session);
                     session.save();
                 }
-                
+
                 if (mountPointPath != null && session.nodeExists(mountPointPath)) {
                     session.getNode(mountPointPath).remove();
                     session.save();
@@ -267,7 +267,7 @@ public class JcrSettingsAccessTest extends JahiaTestCase {
 
             out = getAsText("/modules/api/jcr/v1/default/en/paths/settings/forgesSettings");
             assertTrue(StringUtils.contains(out, "\"type\":\"jnt:forgesServerSettings\""));
-            
+
             out = getAsText("/modules/api/jcr/v1/default/en/paths/passwordPolicy");
             assertTrue(StringUtils.contains(out, "\"type\":\"jnt:passwordPolicy\""));
 

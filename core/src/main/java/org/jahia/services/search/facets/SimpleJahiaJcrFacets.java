@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -105,7 +105,7 @@ import java.util.regex.Pattern;
 
 /**
  * A class that generates simple Facet information for a request.
- * 
+ *
  * More advanced facet implementations may compose or subclass this class to leverage any of it's functionality.
  */
 public class SimpleJahiaJcrFacets {
@@ -115,16 +115,16 @@ public class SimpleJahiaJcrFacets {
     private static final Logger logger = LoggerFactory.getLogger(SimpleJahiaJcrFacets.class);
 
     public static final String PROPNAME_INDEX_SEPARATOR = "#";
-    
-    private static final Pattern PROPERTY_FIELD_PREFIX_PATTERN = Pattern.compile("\\d+:[0-9a-zA-Z]+\\[(.*)");    
-    private static final Pattern NAME_FIELD_PREFIX_PATTERN = Pattern.compile("(\\d+):(.*)");    
+
+    private static final Pattern PROPERTY_FIELD_PREFIX_PATTERN = Pattern.compile("\\d+:[0-9a-zA-Z]+\\[(.*)");
+    private static final Pattern NAME_FIELD_PREFIX_PATTERN = Pattern.compile("(\\d+):(.*)");
     private static final Pattern UUID_PATTERN = Pattern.compile("[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}");
-    
+
     /** The main set of documents all facet counts should be relative to */
     protected OpenBitSet docs;
     /** Configuration params behavior should be driven by */
     protected SolrParams params;
-    protected SolrParams required;    
+    protected SolrParams required;
     /** Searcher to use for all calculations */
     protected IndexSearcher searcher;
 
@@ -138,21 +138,21 @@ public class SimpleJahiaJcrFacets {
     SolrParams localParams; // localParams on this particular facet command
     String facetValue;      // the field to or query to facet on (minus local params)
     OpenBitSet base;            // the base docset for this particular facet
-    String key;             // what name should the results be stored under    
-    
+    String key;             // what name should the results be stored under
+
     protected Analyzer defaultAnalyzer;
     /**
      * Name and Path resolver.
      */
     protected final NamePathResolver resolver;
-    
+
     /**
      * Name and Path resolver.
      */
     protected final Session session;
-    
+
     private NamespaceMappings nsMappings;
-    
+
     @SuppressWarnings("serial")
     public static final FieldSelector PARENT_AND_TRANSLATION_FIELDS = new FieldSelector() {
         public FieldSelectorResult accept(String fieldName) {
@@ -161,12 +161,12 @@ public class SimpleJahiaJcrFacets {
             } else if (JahiaNodeIndexer.TRANSLATION_LANGUAGE == fieldName) {
                 return FieldSelectorResult.LOAD;
             } else if (FieldNames.PARENT == fieldName) {
-                return FieldSelectorResult.LOAD;                
+                return FieldSelectorResult.LOAD;
             } else {
                 return FieldSelectorResult.NO_LOAD;
             }
         }
-    };    
+    };
 
     public SimpleJahiaJcrFacets(IndexSearcher searcher, OpenBitSet docs,
             SolrParams params, SearchIndex index, Session session, NamespaceMappings nsMappings) {
@@ -174,16 +174,16 @@ public class SimpleJahiaJcrFacets {
         this.base = this.docs = docs;
         this.params = params;
         this.required = new RequiredSolrParams(params);
-//        this.rb = rb;        
+//        this.rb = rb;
         this.resolver = NamePathResolverImpl.create(index.getNamespaceMappings());
         this.defaultAnalyzer = index.getTextAnalyzer();
         this.session = session;
-        this.nsMappings = nsMappings;        
+        this.nsMappings = nsMappings;
     }
 
     @SuppressWarnings("unused")
     void parseParams(String type, String param) throws ParseException, IOException {
-// TODO: Should we activate that and how ? - we have no request object in backend        
+// TODO: Should we activate that and how ? - we have no request object in backend
 //        localParams = QueryParsing.getLocalParams(param, req.getParams());
         localParams = QueryParsing.getLocalParams(param, params);
         base = docs;
@@ -245,11 +245,11 @@ public class SimpleJahiaJcrFacets {
           base = getDocIdSet(qlist, "");
         }*/
 
-      }    
-    
+      }
+
     /**
      * Looks at various Params to determing if any simple Facet Constraint count computations are desired.
-     * 
+     *
      * @see #getFacetQueryCounts
      * @see #getFacetFieldCounts
      * @see #getFacetDateCounts
@@ -276,7 +276,7 @@ public class SimpleJahiaJcrFacets {
         }
         return facetResponse;
     }
-    
+
     public void addException(String msg, Exception e) {
         List<String> exceptions = (List<String>)facetResponse.get("exception");
         if (exceptions == null) {
@@ -286,11 +286,11 @@ public class SimpleJahiaJcrFacets {
 
         String entry = msg + '\n' + SolrException.toStr(e);
         exceptions.add(entry);
-      }    
+      }
 
     /**
      * Returns a list of facet counts for each of the facet queries specified in the params
-     * 
+     *
      * @see FacetParams#FACET_QUERY
      */
     public NamedList<Object> getFacetQueryCounts() throws IOException, ParseException {
@@ -359,7 +359,7 @@ public class SimpleJahiaJcrFacets {
 
         NamedList<Object> counts;
         SchemaField sf = new SchemaField(fieldNameInIndex, getType(epd));
-        FieldType ft = sf.getType();        
+        FieldType ft = sf.getType();
 
         // determine what type of faceting method to use
         String method = params.getFieldParam(field, FacetParams.FACET_METHOD);
@@ -369,7 +369,7 @@ public class SimpleJahiaJcrFacets {
           enumMethod = true;
         }
         boolean multiToken = epd.isMultiple() || epd.isHierarchical();
-// --> added by jahia as we don't use the UnInvertedField class yet due to not using SolrIndexSearcher        
+// --> added by jahia as we don't use the UnInvertedField class yet due to not using SolrIndexSearcher
        enumMethod = enumMethod || multiToken;
 //        if (TrieField.getMainValuePrefix(ft) != null) {
 //          // A TrieField with multiple parts indexed per value... currently only
@@ -400,7 +400,7 @@ public class SimpleJahiaJcrFacets {
 
     /**
      * Returns a list of value constraints and the associated facet counts for each facet field specified in the params.
-     * 
+     *
      * @see FacetParams#FACET_FIELD
      * @see #getFieldMissingCount
      * @see #getFacetTermEnumCounts
@@ -418,7 +418,7 @@ public class SimpleJahiaJcrFacets {
                     String fieldNameInIndex = getFieldNameInIndex(f, fieldType, epd, locale);
 
                     parseParams(FacetParams.FACET_FIELD, f);
-                   // TODO: can we use the key to add item in result like in original Solr ??? 
+                   // TODO: can we use the key to add item in result like in original Solr ???
                     String termList = localParams == null ? null : localParams.get(CommonParams.TERMS);
                     String fieldKey = params.getFieldParam(f, "facet.key") != null ? params.getFieldParam(f, "facet.key") : "";
                     if (termList != null) {
@@ -445,7 +445,7 @@ public class SimpleJahiaJcrFacets {
         }
         return res;
     }
-    
+
     private NamedList<Object> ensureSortingAndNameResolution(String fieldSort,
             NamedList<Object> values, ExtendedPropertyDefinition fieldPropertyType,
             String facetValueRenderer, Locale locale, String fieldName) {
@@ -467,7 +467,7 @@ public class SimpleJahiaJcrFacets {
         }
         return resolvedValues;
     }
-    
+
     private NamedList<Object> resolveFieldNamesWhenUsingPropertiesField(NamedList<Object> values) {
         NamedList<Object> resolvedValues = new NamedList<>();
         for (Map.Entry<String, Object> facetValueEntry : values) {
@@ -475,9 +475,9 @@ public class SimpleJahiaJcrFacets {
             facetValueKey = PROPERTY_FIELD_PREFIX_PATTERN.matcher(facetValueKey).replaceFirst("$1") + "##q->##" + facetValueEntry.getKey();
             resolvedValues.add(facetValueKey, facetValueEntry.getValue());
         }
-        return resolvedValues;    
+        return resolvedValues;
     }
-    
+
     private NamedList<Object> resolvePropertiesWithNameValues(NamedList<Object> values, String fieldName) {
         NamedList<Object> resolvedValues = new NamedList<>();
         for (Map.Entry<String, Object> facetValueEntry : values) {
@@ -505,7 +505,7 @@ public class SimpleJahiaJcrFacets {
         }
         return resolvedValues;
     }
-    
+
     private NamedList<Object> sortValuesAfterChoiceListRenderer(NamedList<Object> values, ChoiceListRenderer renderer, ExtendedPropertyDefinition fieldPropertyType, Locale locale) {
         try {
             //use case-insensitive and locale aware collator
@@ -515,7 +515,7 @@ public class SimpleJahiaJcrFacets {
             int i = 0;
             boolean resolveReference = renderer instanceof NodeReferenceChoiceListRenderer ? true : false;
             JCRSessionWrapper currentUserSession = resolveReference ? JCRSessionFactory.getInstance().getCurrentUserSession(session.getWorkspace().getName(), locale) : null;
-            
+
             for (Map.Entry<String, Object> facetValueEntry : values) {
                 String facetValueKey = facetValueEntry.getKey();
                 Object propertyValue = facetValueKey;
@@ -525,10 +525,10 @@ public class SimpleJahiaJcrFacets {
                     } else {
                         propertyValue = currentUserSession.getNode(StringUtils.substring(facetValueKey, facetValueKey.indexOf('/')));
                     }
-                } 
+                }
                 sortedLabels.put(renderer.getStringRendering(locale, fieldPropertyType, propertyValue), i++);
             }
-            
+
             NamedList<Object> sortedValues = new NamedList<>();
             for (Integer index : sortedLabels.values()) {
                 sortedValues.add(values.getName(index), values.getVal(index));
@@ -539,7 +539,7 @@ public class SimpleJahiaJcrFacets {
             return values;
         }
     }
-    
+
     private NamedList<Object> getListedTermCounts(String field, ExtendedPropertyDefinition epd, String fieldNameInIndex, String locale, String termList) throws IOException {
         FieldType ft = getType(epd);
         List<String> terms = StrUtils.splitSmart(termList, ",", true);
@@ -551,12 +551,12 @@ public class SimpleJahiaJcrFacets {
                   base);
           res.add(term, count);
         }
-        return res;    
-      }    
+        return res;
+      }
 
     /**
      * Returns a count of the documents in the set which do not have any terms for for the specified field.
-     * 
+     *
      * @see FacetParams#FACET_MISSING
      */
     public int getFieldMissingCount(IndexSearcher searcher, OpenBitSet docs, String fieldName, String locale)
@@ -711,7 +711,7 @@ public class SimpleJahiaJcrFacets {
     /**
      * Returns a list of terms in the specified field along with the corresponding count of documents in the set that match that constraint.
      * This method uses the FilterCache to get the intersection count between <code>docs</code> and the DocSet for each term in the filter.
-     * 
+     *
      * @see FacetParams#FACET_LIMIT
      * @see FacetParams#FACET_ZEROS
      * @see FacetParams#FACET_MISSING
@@ -745,7 +745,7 @@ public class SimpleJahiaJcrFacets {
         TermDocs td = r.termDocs();
         SolrIndexSearcher.TermDocsState tdState = new SolrIndexSearcher.TermDocsState();
         tdState.tenum = te;
-        tdState.tdocs = td;        
+        tdState.tdocs = td;
 
         if (docs.size() >= mincount) {
             do {
@@ -767,7 +767,7 @@ public class SimpleJahiaJcrFacets {
 
                     if (df >= minDfFilterCache) {
                         // use the filter cache
-// TODO: use the new method ???                        
+// TODO: use the new method ???
 //                        docs.intersectionSize( searcher.getPositiveDocSet(new TermQuery(t), tdState) );
                         c = (int) OpenBitSet.intersectionCount(getDocIdSet(new TermQuery(t), locale), docs);
                     } else {
@@ -780,7 +780,7 @@ public class SimpleJahiaJcrFacets {
                                 doc = getMainDocIdForTranslations(searcher.getIndexReader()
                                         .document(doc, PARENT_AND_TRANSLATION_FIELDS), locale);
                             }
-                            
+
                             if (docs.fastGet(doc)) {
                                 c++;
                             }
@@ -853,7 +853,7 @@ public class SimpleJahiaJcrFacets {
     /**
      * Returns a list of value constraints and the associated facet counts for each facet date field, range, and interval specified in the
      * SolrParams
-     * 
+     *
      * @see FacetParams#FACET_DATE
      * @deprecated Use getFacetRangeCounts which is more generalized
      */
@@ -873,7 +873,7 @@ public class SimpleJahiaJcrFacets {
                 String msg = "Exception during facet.date of " + f;
                 logger.warn(msg, e);
                 addException(msg , e);
-              }            
+              }
         }
 
         return resOuter;
@@ -883,24 +883,24 @@ public class SimpleJahiaJcrFacets {
    */
   @Deprecated
   public void getFacetDateCounts(String dateFacet, NamedList<Object> resOuter)
-      throws IOException, ParseException, RepositoryException, JahiaException {  
-      
+      throws IOException, ParseException, RepositoryException, JahiaException {
+
       parseParams(FacetParams.FACET_DATE, dateFacet);
-      String f = facetValue;      
-      
+      String f = facetValue;
+
       final NamedList<Object> resInner = new SimpleOrderedMap<Object>();
-      String fieldName = StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR);            
+      String fieldName = StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR);
       ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(params.get("f."+f+".facet.nodetype")).getPropertyDefinition(fieldName);
       String fieldNameInIndex = getFieldNameInIndex(f, fieldName, epd, params.getFieldParam(f,
               "facet.locale"));
       String prefix = params.getFieldParam(f, FacetParams.FACET_PREFIX);
       DateField ft = StringUtils.isEmpty(prefix) ? JahiaQueryParser.DATE_TYPE : JahiaQueryParser.JR_DATE_TYPE;
       final SchemaField sf = new SchemaField(fieldNameInIndex, ft);
-      
+
 // TODO: Should we use the key now ?
       //    resOuter.add(key, resInner);
       resOuter.add(fieldName + PROPNAME_INDEX_SEPARATOR + fieldNameInIndex, resInner);
-      
+
       if (!(epd.getRequiredType() == PropertyType.DATE)) {
           throw new SolrException
           (SolrException.ErrorCode.BAD_REQUEST,
@@ -913,7 +913,7 @@ public class SimpleJahiaJcrFacets {
           minCount = (zeros != null && !zeros) ? 1 : 0;
           // current default is to include zeros.
       }
-      
+
       final String startS = required.getFieldParam(f,
               FacetParams.FACET_DATE_START);
       final Date start;
@@ -943,24 +943,24 @@ public class SimpleJahiaJcrFacets {
       final String gap = required.getFieldParam(f, FacetParams.FACET_DATE_GAP);
       final DateMathParser dmp = new DateMathParser(DateField.UTC, Locale.US);
       dmp.setNow(NOW);
-      
+
       String[] iStrs = params.getFieldParams(f,FacetParams.FACET_DATE_INCLUDE);
       // Legacy support for default of [lower,upper,edge] for date faceting
       // this is not handled by FacetRangeInclude.parseParam because
       // range faceting has differnet defaults
-      final EnumSet<FacetRangeInclude> include = 
+      final EnumSet<FacetRangeInclude> include =
         (null == iStrs || 0 == iStrs.length ) ?
-        EnumSet.of(FacetRangeInclude.LOWER, 
-                   FacetRangeInclude.UPPER, 
+        EnumSet.of(FacetRangeInclude.LOWER,
+                   FacetRangeInclude.UPPER,
                    FacetRangeInclude.EDGE)
         : FacetRangeInclude.parseParam(iStrs);
-      
+
       try {
           Date low = start;
           while (low.before(end)) {
               dmp.setNow(low);
               String label = JahiaQueryParser.DATE_TYPE.toExternal(low);
-              
+
               Date high = dmp.parseMath(gap);
               if (end.before(high)) {
                   if (params.getFieldBool(f, FacetParams.FACET_DATE_HARD_END,
@@ -981,12 +981,12 @@ public class SimpleJahiaJcrFacets {
               final boolean includeUpper =
                   (include.contains(FacetRangeInclude.UPPER) ||
                       (include.contains(FacetRangeInclude.EDGE) && high.equals(end)));
-              
+
               Query rangeQuery = getRangeQuery(ft, null, sf, prefix, low, high, includeLower, includeUpper);
 
               int count = rangeCount(rangeQuery);
               if (count >= minCount) {
-// TODO: Can we use just label here ?                  
+// TODO: Can we use just label here ?
                   resInner.add(label + PROPNAME_INDEX_SEPARATOR + rangeQuery.toString(),
                           count);
               }
@@ -1029,7 +1029,7 @@ public class SimpleJahiaJcrFacets {
                   }
               }
               if (all || others.contains(FacetDateOther.AFTER)) {
-                    Query rangeQuery = getRangeQuery(ft, null, sf, prefix, 
+                    Query rangeQuery = getRangeQuery(ft, null, sf, prefix,
                             end,
                             null,
                             (include.contains(FacetRangeInclude.OUTER) || (!(include
@@ -1054,9 +1054,9 @@ public class SimpleJahiaJcrFacets {
                   }
               }
           }
-      }  
+      }
   }
-  
+
   private Query getRangeQuery(DateField fieldType, QParser parser, SchemaField schemaField, String prefix, Date low, Date high, boolean minInclusive, boolean maxInclusive) {
       return prefixRangeQuery(fieldType.getRangeQuery(parser, schemaField, low, high, minInclusive, maxInclusive), prefix);
   }
@@ -1064,7 +1064,7 @@ public class SimpleJahiaJcrFacets {
   private Query getRangeQuery(FieldType fieldType, QParser parser, SchemaField schemaField, String prefix, String low, String high, boolean minInclusive, boolean maxInclusive) {
       return prefixRangeQuery(fieldType.getRangeQuery(parser, schemaField, low, high, minInclusive, maxInclusive), prefix);
   }
-  
+
   private Query prefixRangeQuery(Query noPrefixQuery, String prefix) {
       TermRangeQuery rangeQuery = (TermRangeQuery)noPrefixQuery;
       if (StringUtils.isNotEmpty(prefix)) {
@@ -1075,7 +1075,7 @@ public class SimpleJahiaJcrFacets {
       }
       return rangeQuery;
   }
-  
+
   /**
    * Returns a list of value constraints and the associated facet
    * counts for each facet numerical field, range, and interval
@@ -1109,7 +1109,7 @@ public class SimpleJahiaJcrFacets {
     parseParams(FacetParams.FACET_RANGE, facetRange);
     String f = facetValue;
 
-    String fieldName = StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR);            
+    String fieldName = StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR);
     ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(params.get("f."+f+".facet.nodetype")).getPropertyDefinition(fieldName);
     String fieldNameInIndex = getFieldNameInIndex(f, fieldName, epd, params.getFieldParam(f,
             "facet.locale"));
@@ -1162,7 +1162,7 @@ public class SimpleJahiaJcrFacets {
     (final SchemaField sf, final String f,
      final RangeEndpointCalculator<T> calc) throws IOException {
     String prefix = params.getFieldParam(f, FacetParams.FACET_PREFIX);
-    
+
     final NamedList<Object> res = new SimpleOrderedMap<Object>();
     final NamedList<Object> counts = new NamedList<Object>();
     res.add("counts", counts);
@@ -1175,19 +1175,19 @@ public class SimpleJahiaJcrFacets {
         (SolrException.ErrorCode.BAD_REQUEST,
          "range facet 'end' comes before 'start': "+end+" < "+start);
     }
-    
+
     final String gap = required.getFieldParam(f, FacetParams.FACET_RANGE_GAP);
-    // explicitly return the gap.  compute this early so we are more 
+    // explicitly return the gap.  compute this early so we are more
     // likely to catch parse errors before attempting math
     res.add("gap", calc.getGap(gap));
-    
+
     final int minCount = params.getFieldInt(f,FacetParams.FACET_MINCOUNT, 0);
-    
+
     final EnumSet<FacetRangeInclude> include = FacetRangeInclude.parseParam
       (params.getFieldParams(f,FacetParams.FACET_RANGE_INCLUDE));
-    
+
     T low = start;
-    
+
     while (low.compareTo(end) < 0) {
       T high = calc.addGap(low, gap);
       if (end.compareTo(high) < 0) {
@@ -1202,48 +1202,48 @@ public class SimpleJahiaJcrFacets {
           (SolrException.ErrorCode.BAD_REQUEST,
            "range facet infinite loop (is gap negative? did the math overflow?)");
       }
-      
-      final boolean includeLower = 
+
+      final boolean includeLower =
         (include.contains(FacetRangeInclude.LOWER) ||
-         (include.contains(FacetRangeInclude.EDGE) && 
+         (include.contains(FacetRangeInclude.EDGE) &&
           0 == low.compareTo(start)));
-      final boolean includeUpper = 
+      final boolean includeUpper =
         (include.contains(FacetRangeInclude.UPPER) ||
-         (include.contains(FacetRangeInclude.EDGE) && 
+         (include.contains(FacetRangeInclude.EDGE) &&
           0 == high.compareTo(end)));
-      
+
       final String lowS = calc.formatValue(low);
       final String highS = calc.formatValue(high);
 
       Query rangeQ = getRangeQuery(sf.getType(), null, sf, prefix, lowS, highS,
-              includeLower,includeUpper);      
+              includeLower,includeUpper);
       final int count = rangeCount(rangeQ);
       if (count >= minCount) {
         counts.add(lowS + PROPNAME_INDEX_SEPARATOR + rangeQ.toString(), count);
       }
-      
+
       low = high;
     }
-    
-    // explicitly return the start and end so all the counts 
+
+    // explicitly return the start and end so all the counts
     // (including before/after/between) are meaningful - even if mincount
     // has removed the neighboring ranges
     res.add("start", start);
     res.add("end", end);
-    
+
     final String[] othersP =
       params.getFieldParams(f,FacetParams.FACET_RANGE_OTHER);
     if (null != othersP && 0 < othersP.length ) {
       Set<FacetRangeOther> others = EnumSet.noneOf(FacetRangeOther.class);
-      
+
       for (final String o : othersP) {
         others.add(FacetRangeOther.get(o));
       }
-      
+
       // no matter what other values are listed, we don't do
       // anything if "none" is specified.
       if (! others.contains(FacetRangeOther.NONE) ) {
-        
+
         boolean all = others.contains(FacetRangeOther.ALL);
         final String startS = calc.formatValue(start);
         final String endS = calc.formatValue(end);
@@ -1255,25 +1255,25 @@ public class SimpleJahiaJcrFacets {
                     (include.contains(FacetRangeInclude.OUTER) ||
                      (! (include.contains(FacetRangeInclude.LOWER) ||
                          include.contains(FacetRangeInclude.EDGE)))));
-            int count = rangeCount(rangeQ);        
+            int count = rangeCount(rangeQ);
             if (count >= minCount) {
               res.add(FacetRangeOther.BEFORE.toString(), count);
               counts.add(FacetRangeOther.BEFORE.toString() + PROPNAME_INDEX_SEPARATOR + rangeQ.toString(),
                     count);
-            }  
+            }
         }
         if (all || others.contains(FacetRangeOther.AFTER)) {
           // include lower bound if "outer" or if last gap doesn't already include it
             Query rangeQ = getRangeQuery(sf.getType(), null, sf, prefix, endS, null,
                     (include.contains(FacetRangeInclude.OUTER) ||
                             (! (include.contains(FacetRangeInclude.UPPER) ||
-                                include.contains(FacetRangeInclude.EDGE)))),  
+                                include.contains(FacetRangeInclude.EDGE)))),
                            false);
             int count = rangeCount(rangeQ);
             if (count >= minCount) {
               res.add(FacetRangeOther.AFTER.toString(), count);
               counts.add(FacetRangeOther.AFTER.toString() + PROPNAME_INDEX_SEPARATOR + rangeQ.toString(), count);
-            }  
+            }
         }
         if (all || others.contains(FacetRangeOther.BETWEEN)) {
             Query rangeQ = getRangeQuery(sf.getType(), null, sf, prefix, startS, endS,
@@ -1286,13 +1286,13 @@ public class SimpleJahiaJcrFacets {
               res.add(FacetRangeOther.BETWEEN.toString(), count);
               counts.add(FacetRangeOther.BETWEEN.toString() + PROPNAME_INDEX_SEPARATOR + rangeQ.toString(),
                    count);
-            }  
+            }
         }
       }
     }
     return res;
-  }  
-  
+  }
+
   /**
    * Macro for getting the numDocs of range over docs
    * @see SolrIndexSearcher#numDocs
@@ -1315,8 +1315,8 @@ public class SimpleJahiaJcrFacets {
     return (int)OpenBitSet.intersectionCount(getDocIdSet(rangeQ, ""),
             base);
   }
-  
-  
+
+
     /**
      * Macro for getting the numDocs of a ConstantScoreRangeQuery over docs
      */
@@ -1326,10 +1326,10 @@ public class SimpleJahiaJcrFacets {
     }
 
     /**
-     * Perhaps someday instead of having a giant "instanceof" case 
-     * statement to pick an impl, we can add a "RangeFacetable" marker 
-     * interface to FieldTypes and they can return instances of these 
-     * directly from some method -- but until then, keep this locked down 
+     * Perhaps someday instead of having a giant "instanceof" case
+     * statement to pick an impl, we can add a "RangeFacetable" marker
+     * interface to FieldTypes and they can return instances of these
+     * directly from some method -- but until then, keep this locked down
      * and private.
      */
     private static abstract class RangeEndpointCalculator<T extends Comparable<T>> {
@@ -1346,7 +1346,7 @@ public class SimpleJahiaJcrFacets {
         return val.toString();
       }
       /**
-       * Parses a String param into an Range endpoint value throwing 
+       * Parses a String param into an Range endpoint value throwing
        * a useful exception if not possible
        */
       public final T getValue(final String rawval) {
@@ -1354,50 +1354,50 @@ public class SimpleJahiaJcrFacets {
           return parseVal(rawval);
         } catch (Exception e) {
           throw new SolrException(SolrException.ErrorCode.BAD_REQUEST,
-                                  "Can't parse value "+rawval+" for field: " + 
+                                  "Can't parse value "+rawval+" for field: " +
                                   field.getName(), e);
         }
       }
       /**
-       * Parses a String param into an Range endpoint. 
+       * Parses a String param into an Range endpoint.
        * Can throw a low level format exception as needed.
        */
-      protected abstract T parseVal(final String rawval) 
+      protected abstract T parseVal(final String rawval)
         throws java.text.ParseException;
 
-      /** 
-       * Parses a String param into a value that represents the gap and 
-       * can be included in the response, throwing 
+      /**
+       * Parses a String param into a value that represents the gap and
+       * can be included in the response, throwing
        * a useful exception if not possible.
        *
-       * Note: uses Object as the return type instead of T for things like 
-       * Date where gap is just a DateMathParser string 
+       * Note: uses Object as the return type instead of T for things like
+       * Date where gap is just a DateMathParser string
        */
       public final Object getGap(final String gap) {
         try {
           return parseGap(gap);
         } catch (Exception e) {
           throw new SolrException(SolrException.ErrorCode.BAD_REQUEST,
-                                  "Can't parse gap "+gap+" for field: " + 
+                                  "Can't parse gap "+gap+" for field: " +
                                   field.getName(), e);
         }
       }
 
       /**
-       * Parses a String param into a value that represents the gap and 
-       * can be included in the response. 
+       * Parses a String param into a value that represents the gap and
+       * can be included in the response.
        * Can throw a low level format exception as needed.
        *
        * Default Impl calls parseVal
        */
-      protected Object parseGap(final String rawval) 
+      protected Object parseGap(final String rawval)
         throws java.text.ParseException {
         return parseVal(rawval);
       }
 
       /**
-       * Adds the String gap param to a low Range endpoint value to determine 
-       * the corrisponding high Range endpoint value, throwing 
+       * Adds the String gap param to a low Range endpoint value to determine
+       * the corrisponding high Range endpoint value, throwing
        * a useful exception if not possible.
        */
       public final T addGap(T value, String gap) {
@@ -1410,16 +1410,16 @@ public class SimpleJahiaJcrFacets {
         }
       }
       /**
-       * Adds the String gap param to a low Range endpoint value to determine 
+       * Adds the String gap param to a low Range endpoint value to determine
        * the corrisponding high Range endpoint value.
        * Can throw a low level format exception as needed.
        */
-      protected abstract T parseAndAddGap(T value, String gap) 
+      protected abstract T parseAndAddGap(T value, String gap)
         throws java.text.ParseException;
 
     }
 
-    private static class FloatRangeEndpointCalculator 
+    private static class FloatRangeEndpointCalculator
       extends RangeEndpointCalculator<Float> {
 
       public FloatRangeEndpointCalculator(final SchemaField f) { super(f); }
@@ -1432,7 +1432,7 @@ public class SimpleJahiaJcrFacets {
         return value + Float.valueOf(gap);
       }
     }
-    private static class DoubleRangeEndpointCalculator 
+    private static class DoubleRangeEndpointCalculator
       extends RangeEndpointCalculator<Double> {
 
       public DoubleRangeEndpointCalculator(final SchemaField f) { super(f); }
@@ -1445,7 +1445,7 @@ public class SimpleJahiaJcrFacets {
         return value + Double.valueOf(gap);
       }
     }
-    private static class IntegerRangeEndpointCalculator 
+    private static class IntegerRangeEndpointCalculator
       extends RangeEndpointCalculator<Integer> {
 
       public IntegerRangeEndpointCalculator(final SchemaField f) { super(f); }
@@ -1458,7 +1458,7 @@ public class SimpleJahiaJcrFacets {
         return value + Integer.valueOf(gap);
       }
     }
-    private static class LongRangeEndpointCalculator 
+    private static class LongRangeEndpointCalculator
       extends RangeEndpointCalculator<Long> {
 
       public LongRangeEndpointCalculator(final SchemaField f) { super(f); }
@@ -1471,12 +1471,12 @@ public class SimpleJahiaJcrFacets {
         return value + Long.valueOf(gap);
       }
     }
-    private static class DateRangeEndpointCalculator 
+    private static class DateRangeEndpointCalculator
       extends RangeEndpointCalculator<Date> {
       private final Date now;
-      public DateRangeEndpointCalculator(final SchemaField f, 
-                                         final Date now) { 
-        super(f); 
+      public DateRangeEndpointCalculator(final SchemaField f,
+                                         final Date now) {
+        super(f);
         this.now = now;
         if (! (field.getType() instanceof DateField) ) {
           throw new IllegalArgumentException
@@ -1502,7 +1502,7 @@ public class SimpleJahiaJcrFacets {
         return dmp.parseMath(gap);
       }
     }
-        
+
     private OpenBitSet getDocIdSet(Query query, final String locale) {
         OpenBitSet docIds = null;
         try {
@@ -1514,15 +1514,15 @@ public class SimpleJahiaJcrFacets {
                         try {
                             int docMainDocId = getMainDocIdForTranslations(searcher.getIndexReader().document(docId, TRANSLATION_FIELDS), locale);
                             if (docMainDocId != -1) {
-                                bitset.set(docMainDocId);                        
+                                bitset.set(docMainDocId);
                             }
                         } catch (Exception e) {
                             logger.warn("Error getting index document while faceting", e);
-                        }                        
+                        }
                     }
                     bitset.set(docId);
                 }
-                
+
                 @Override
                 public boolean acceptsDocsOutOfOrder() {
                     return true;
@@ -1535,7 +1535,7 @@ public class SimpleJahiaJcrFacets {
         }
         return docIds;
     }
-    
+
     public static final FieldSelector TRANSLATION_FIELDS = new FieldSelector() {
         private static final long serialVersionUID = -1570508136556374240L;
 
@@ -1557,9 +1557,9 @@ public class SimpleJahiaJcrFacets {
             }
         }
     };
-    
+
     private static Query matchAllDocsQuery = new MatchAllDocsQuery();
-    
+
     /**
      * Returns the set of document ids matching all queries.
      * This method is cache-aware and attempts to retrieve the answer from the cache if possible.
@@ -1613,7 +1613,7 @@ public class SimpleJahiaJcrFacets {
 
       return answer;
     }
-    
+
     /** Returns the original query if it was already a positive query, otherwise
      * return the negative of the query (i.e., a positive query).
      * <p>
@@ -1654,12 +1654,12 @@ public class SimpleJahiaJcrFacets {
         }
         return newBq;
       }
-    }    
-    
+    }
+
     // only handle positive (non negative) queries
     OpenBitSet getPositiveDocSet(Query q, final String locale) throws IOException {
         OpenBitSet answer;
-        
+
 //      if (filterCache != null) {
 //        answer = filterCache.get(q);
 //        if (answer!=null) return answer;
@@ -1672,7 +1672,7 @@ public class SimpleJahiaJcrFacets {
                     try {
                         int docMainDocId = getMainDocIdForTranslations(searcher.getIndexReader().document(docId, TRANSLATION_FIELDS), locale);
                         if (docMainDocId != -1) {
-                            bitset.set(docMainDocId);                        
+                            bitset.set(docMainDocId);
                         }
                     } catch (Exception e) {
                         logger.warn("Error getting index document while faceting", e);
@@ -1680,23 +1680,23 @@ public class SimpleJahiaJcrFacets {
                 }
                 bitset.set(docId);
             }
-            
+
             @Override
             public boolean acceptsDocsOutOfOrder() {
                 return true;
             }
         });
-        answer = new OpenBitSetDISI(new DocIdBitSet(bitset).iterator(), bitset.size());        
+        answer = new OpenBitSetDISI(new DocIdBitSet(bitset).iterator(), bitset.size());
 //      answer = getDocSetNC(q,null);
 //      if (filterCache != null) filterCache.put(q,answer);
       return answer;
     }
-    
+
     // inherit javadoc
     public int maxDoc() throws IOException {
       return searcher.getIndexReader().maxDoc();
-    }    
-    
+    }
+
     private int getMainDocIdForTranslations(Document doc, String locale) {
         int docId = -1;
         Field parentNode = doc.getField(JahiaNodeIndexer.TRANSLATED_NODE_PARENT);
@@ -1714,52 +1714,52 @@ public class SimpleJahiaJcrFacets {
                     }
                 } finally {
                     docs.close();
-                }                
+                }
             } catch (IOException e) {
                 logger.debug("Can't retrive parent node of translation node", e);
             }
         }
         return docId;
     }
-    
+
     private FieldType getType(ExtendedPropertyDefinition epd) {
         FieldType type = null;
         switch (epd.getRequiredType()) {
             case PropertyType.BINARY:
                 type = JahiaQueryParser.BINARY_TYPE;
-                break;                           
+                break;
             case PropertyType.BOOLEAN:
                 type = JahiaQueryParser.BOOLEAN_TYPE;
                 break;
             case PropertyType.DATE:
                 type = epd.isFacetable() ? JahiaQueryParser.DATE_TYPE : JahiaQueryParser.JR_DATE_TYPE;
-                break;            
+                break;
             case PropertyType.DOUBLE:
                 type = epd.isFacetable() ? JahiaQueryParser.SORTABLE_DOUBLE_TYPE : JahiaQueryParser.JR_DOUBLE_TYPE;
-                break;              
+                break;
             case PropertyType.LONG:
                 type = epd.isFacetable() ? JahiaQueryParser.SORTABLE_LONG_TYPE : JahiaQueryParser.JR_LONG_TYPE;
-                break;            
+                break;
             case PropertyType.NAME:
-                type = JahiaQueryParser.STRING_TYPE;                
-                break;            
+                type = JahiaQueryParser.STRING_TYPE;
+                break;
             case PropertyType.PATH:
-                type = JahiaQueryParser.STRING_TYPE;                
-                break;            
+                type = JahiaQueryParser.STRING_TYPE;
+                break;
             case PropertyType.REFERENCE:
-                type = JahiaQueryParser.STRING_TYPE;                
-                break;                 
+                type = JahiaQueryParser.STRING_TYPE;
+                break;
             case PropertyType.STRING:
                 type = JahiaQueryParser.STRING_TYPE;
-                break;              
+                break;
             case PropertyType.URI:
-                type = JahiaQueryParser.STRING_TYPE;                
-                break;           
+                type = JahiaQueryParser.STRING_TYPE;
+                break;
             case PropertyType.WEAKREFERENCE:
-                type = JahiaQueryParser.STRING_TYPE;                
+                type = JahiaQueryParser.STRING_TYPE;
                 break;
             case PropertyType.DECIMAL:
-                throw new UnsupportedOperationException();                              
+                throw new UnsupportedOperationException();
         }
         return type;
     }

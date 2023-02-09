@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -117,7 +117,7 @@ public class VersioningTest extends JahiaTestCase {
         }
 
         loginRoot();
-        
+
         yyyy_mm_dd_hh_mm_ss = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
         languagesStringSet = new LinkedHashSet<String>();
         languagesStringSet.add(Locale.ENGLISH.toString());
@@ -283,7 +283,7 @@ public class VersioningTest extends JahiaTestCase {
     @After
     public void tearDown() throws Exception {
         logout();
-        
+
         try {
             TestHelper.deleteSite(TESTSITE_NAME);
         } catch (Exception ex) {
@@ -308,7 +308,7 @@ public class VersioningTest extends JahiaTestCase {
             String richTextIdentifier = richText.getIdentifier();
             richText.setProperty("text", "text0");
             editSession.save();
-            
+
             // First publication
             String labelForFirstPublication = publishAndLabelizedVersion(jcrPublicationService, jcrVersionService, listIdentifier);
             JCRNodeWrapper richTextLiveNode = liveSession.getNodeByUUID(richText.getIdentifier());
@@ -414,7 +414,7 @@ public class VersioningTest extends JahiaTestCase {
         }
         return Constants.LIVE_WORKSPACE+"_"+labelForPublication;
     }
-    
+
     private String getPublicationLabel() {
         String labelForPublication = null;
         do {
@@ -423,7 +423,7 @@ public class VersioningTest extends JahiaTestCase {
                             .getInstance().getTime());
 
         } while (labelForPublication.equals(lastLabelForPublication));
-        
+
         lastLabelForPublication = labelForPublication;
         return labelForPublication;
     }

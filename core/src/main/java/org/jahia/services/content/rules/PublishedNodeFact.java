@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 public class PublishedNodeFact extends AbstractNodeFact {
     boolean unpublished;
     String language;
-    
+
     public PublishedNodeFact(JCRNodeWrapper node, String language, boolean unpublished) throws RepositoryException {
         super(node);
         this.language = language;
@@ -62,7 +62,7 @@ public class PublishedNodeFact extends AbstractNodeFact {
     public String getLanguage() {
         return language;
     }
-    
+
     public String toString() {
         return (isUnpublished() ? "un" : "") + "published " + node.getPath() + (isTranslation() ? " in `" + getLanguage() + "`" : "");
     }
@@ -74,7 +74,7 @@ public class PublishedNodeFact extends AbstractNodeFact {
     public boolean isUnpublished() {
         return unpublished;
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -87,7 +87,7 @@ public class PublishedNodeFact extends AbstractNodeFact {
         return new EqualsBuilder().appendSuper(super.equals(o)).append(this.getLanguage(), that.getLanguage())
                 .append(this.isUnpublished(), that.isUnpublished()).isEquals();
     }
-    
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder().append(node).append(workspace).append(

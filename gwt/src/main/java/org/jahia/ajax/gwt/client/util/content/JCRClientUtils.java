@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -98,13 +98,13 @@ public final class JCRClientUtils {
     public final static String ALL_CONTENT = "contents";
 
     public final static String GLOBAL_REPOSITORY = "globalRepository";
-    
+
     public final static String INFO = "info";
     public final static String PRINCIPAL_ROLES_MAPPING = "principalRolesMapping";
     public final static String AUTHORIZATIONS = "authorizations";
     public final static String USAGE = "usage";
     public final static String VERSIONING = "versioning";
-    
+
     public static String cleanUpFilename(String name) {
         name = name.replaceAll("([\\*:/\\\\<>|?\"])", " ");
         name = name.trim();

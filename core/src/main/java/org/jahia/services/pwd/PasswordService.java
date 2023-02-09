@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Centralized service for password hashing and checking operations.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class PasswordService {
@@ -64,7 +64,7 @@ public class PasswordService {
 
     /**
      * Returns an instance of this service.
-     * 
+     *
      * @return an instance of this service
      */
     public static PasswordService getInstance() {
@@ -81,7 +81,7 @@ public class PasswordService {
 
     /**
      * Create a digest of the provided password, adding the used digester ID as a prefix.
-     * 
+     *
      * @param password
      *            the clear text password to be hashed
      * @return the digest of the provided password, prefixed with an ID of the used digester
@@ -92,7 +92,7 @@ public class PasswordService {
 
     /**
      * Create a digest of the provided password, adding the used digester ID as a prefix.
-     * 
+     *
      * @param password
      *            the clear text password to be hashed
      * @param strong
@@ -121,7 +121,7 @@ public class PasswordService {
      * Checks, if the provided clear text password matches the specified digest, considering all aspects like salt, hashing iterations, etc.
      * It is expected that the digest is prefixed with a digester ID to be used to the check. If there is no prefix, the legacy SHA-1 digest
      * (no salt, 1 iteration) will be used.
-     * 
+     *
      * @param password
      *            the clear text password to be checked
      * @param prefixedDigest
@@ -152,7 +152,7 @@ public class PasswordService {
 
     /**
      * Adds the password digester into the registry.
-     * 
+     *
      * @param digester
      *            the password digester to be registered
      */
@@ -191,7 +191,7 @@ public class PasswordService {
 
     /**
      * Adds the password digester to unregister.
-     * 
+     *
      * @param digesterId
      *            the ID of the password digester to be removed from the registry
      */

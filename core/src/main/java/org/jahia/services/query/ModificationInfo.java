@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ import org.jahia.services.query.QueryModifierAndOptimizerVisitor.TraversingMode;
  * This class is used to gather modification information mainly set during the INITIALIZE_MODE traversing. During traversing in
  * CHECK_FOR_MODIFICATION mode mainly only the modificationNecessary variable is set. The information of this object is then used during
  * the MODIFY_MODE traversing iteration.
- * 
+ *
  */
 class ModificationInfo {
     private TraversingMode mode = TraversingMode.INITIALIZE_MODE;
@@ -70,7 +70,7 @@ class ModificationInfo {
 
     /**
      * Constructor setting the QueryObjectModelFactory to be used for modifying the query
-     * 
+     *
      * @param queryObjectModelFactory
      *            to be used for modifying the query
      */
@@ -88,7 +88,7 @@ class ModificationInfo {
 
     /**
      * Set true when modification of the query is found to be necessary otherwise set false
-     * 
+     *
      * @param modificationNecessary
      *            true when modification of the query is necessary otherwise false
      */
@@ -112,7 +112,7 @@ class ModificationInfo {
 
     /**
      * Set the new Source, which in any case is a join when adding translation node queries
-     * 
+     *
      * @param newJoin
      *            when a new translation node is added.
      */
@@ -144,7 +144,7 @@ class ModificationInfo {
 
     /**
      * Set the new modified query object model
-     * 
+     *
      * @param newQueryObjectModel
      *            set after modification
      */
@@ -158,7 +158,7 @@ class ModificationInfo {
     public List<Constraint> getNewConstraints() {
         return newConstraints;
     }
-    
+
     public Source getModifiedSource(Source source) {
         return getNewJoin() != null ? getNewJoin() : source;
     }

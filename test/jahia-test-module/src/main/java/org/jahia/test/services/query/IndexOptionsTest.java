@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -66,9 +66,9 @@ import java.util.*;
 
 /**
  * Unit test for checking different index options
- * 
+ *
  * @author Benjamin Papez
- * 
+ *
  */
 public class IndexOptionsTest {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(IndexOptionsTest.class);
@@ -96,17 +96,17 @@ public class IndexOptionsTest {
             fail();
         }
     }
-    
+
     @Before
     public void setUp() {
 
     }
-    
+
     @After
     public void tearDown() {
-        
+
     }
-    
+
     @Test
     public void testNonIndexedFields() throws Exception {
         JCRStoreService jcrService = ServicesRegistry.getInstance()
@@ -121,21 +121,21 @@ public class IndexOptionsTest {
                 String query = "select indexFields.* from [test:fieldsWithIndexOptions] as indexFields where contains(indexFields.*, 'nonindexed')";
                 Query q = queryManager.createQuery(query, Query.JCR_SQL2);
                 QueryResult queryResult = q.execute();
-                
+
                 assertEquals("Query did not return correct number of results", 0, getResultSize(queryResult.getNodes()));
 
                 query = "//element(*, test:fieldsWithIndexOptions)[jcr:like(@nonIndexedSmallText, 'n%')]";
                 q = queryManager.createQuery(query, Query.XPATH);
                 queryResult = q.execute();
 
-                assertEquals("Query did not return correct number of results", 0, getResultSize(queryResult.getNodes()));                
+                assertEquals("Query did not return correct number of results", 0, getResultSize(queryResult.getNodes()));
             }
 
         } finally {
             session.save();
         }
     }
-    
+
     private long getResultSize(NodeIterator nodes) {
         long resultSize = nodes.getSize();
         if (resultSize == -1) {
@@ -147,7 +147,7 @@ public class IndexOptionsTest {
         }
         return resultSize;
     }
-    
+
     @Test
     public void testNoFulltextIndexedField() throws Exception {
         JCRStoreService jcrService = ServicesRegistry.getInstance()
@@ -163,7 +163,7 @@ public class IndexOptionsTest {
                 Query q = queryManager.createQuery(query, Query.JCR_SQL2);
                 QueryResult queryResult = q.execute();
 
-                assertEquals("Query did not return correct number of results", 0, getResultSize(queryResult.getNodes()));                
+                assertEquals("Query did not return correct number of results", 0, getResultSize(queryResult.getNodes()));
 
                 query = "select indexFields.* from [test:fieldsWithIndexOptions] as indexFields where indexFields.nofulltextSmallText like 'ZXY%'";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
@@ -176,7 +176,7 @@ public class IndexOptionsTest {
             session.save();
         }
     }
-    
+
     @Test
     public void testSorting() throws Exception {
         JCRStoreService jcrService = ServicesRegistry.getInstance()
@@ -291,7 +291,7 @@ public class IndexOptionsTest {
             session.save();
         }
     }
-    
+
     @Test
     public void testFulltextAndNonIndexedField() throws Exception {
         JCRStoreService jcrService = ServicesRegistry.getInstance()
@@ -311,7 +311,7 @@ public class IndexOptionsTest {
                 Set<String> results = new HashSet<String>();
                 results.add(it.nextNode().getIdentifier());
                 results.add(it.nextNode().getIdentifier());
-                assertTrue(results.containsAll(Arrays.asList("8c467cc3-a42c-4252-84b7-0b20ecc0ce30", 
+                assertTrue(results.containsAll(Arrays.asList("8c467cc3-a42c-4252-84b7-0b20ecc0ce30",
                         "225162ba-69ac-4128-a141-fd95bd8c792e")));
             }
 

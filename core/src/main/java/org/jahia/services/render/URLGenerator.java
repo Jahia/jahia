@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -198,7 +198,7 @@ public class URLGenerator {
 
     /**
      * Returns the URL for the current resource in studio mode.
-     * 
+     *
      * @return the URL for the current resource in studio mode
      */
     public String getStudio() {
@@ -207,10 +207,10 @@ public class URLGenerator {
         }
         return studio;
     }
-    
+
     /**
      * Returns the URL for the current resource in specified studio mode.
-     * 
+     *
      * @param isVisual
      *            if the visual studio mode is used
      * @return the URL for the current resource in specified studio mode
@@ -234,7 +234,7 @@ public class URLGenerator {
 
     /**
      * Returns the URL for the current resource in visual studio mode.
-     * 
+     *
      * @return the URL for the current resource in visual studio mode
      */
     public String getStudioVisual() {
@@ -243,7 +243,7 @@ public class URLGenerator {
         }
         return studioVisual;
     }
-    
+
     public String getLogout() {
         if (logout == null) {
             logout = StringUtils.defaultIfEmpty(

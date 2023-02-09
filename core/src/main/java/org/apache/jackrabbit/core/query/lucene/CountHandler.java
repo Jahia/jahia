@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ public class CountHandler {
         private boolean approxCount;
         private boolean skipChecks;
         private int approxCountLimit = SettingsBean.getInstance().getQueryApproxCountLimit();
-        
+
         /**
          * Initializes an instance of CountType.
          */
@@ -102,7 +102,7 @@ public class CountHandler {
             this.skipChecks = skipChecks;
         }
         /**
-         * If approximate count is used, return how many results should be really iterated through to 
+         * If approximate count is used, return how many results should be really iterated through to
          * then calculate the approximate number of further results
          * @return how many results should be iterated through before calculating approximate number of further results
          */
@@ -111,7 +111,7 @@ public class CountHandler {
         }
         /**
          * Sets how many results should be iterated through before calculating approximate number of further results.
-         * If not explicitly set, the queryApproxCountLimit from jahia configuration will be taken. 
+         * If not explicitly set, the queryApproxCountLimit from jahia configuration will be taken.
          * @param approxCountLimit how many results should be iterated through before calculating approximate number of further results
          */
         public void setApproxCountLimit(int approxCountLimit) {
@@ -129,11 +129,11 @@ public class CountHandler {
      */
     private static final Name REP_COUNT_LPAR = NameFactoryImpl.getInstance().create(
             Name.NS_REP_URI, COUNT_FUNC_LPAR);
-    
+
     /**
      * Regexp pattern for an optional setting of the apprximate count limit
-     */    
-    private static final Pattern APPROX_COUNT_LIMIT_PATTERN = Pattern.compile(".*approxCountLimit=(\\d*).*");    
+     */
+    private static final Pattern APPROX_COUNT_LIMIT_PATTERN = Pattern.compile(".*approxCountLimit=(\\d*).*");
 
     /**
      * Checks if there is a count function in the column names and return the count type based on its parameters.
@@ -151,7 +151,7 @@ public class CountHandler {
                     String countSettings = StringUtils.substringBetween(column, repCount, ")");
                     if (countSettings.contains("skipChecks=1")) {
                         countType.setSkipChecks(true);
-                    } 
+                    }
                     if (countSettings.contains("approximate=1")) {
                         countType.setApproxCount(true);
                     }

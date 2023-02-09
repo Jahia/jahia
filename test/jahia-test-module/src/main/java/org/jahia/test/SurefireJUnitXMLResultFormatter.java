@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -168,11 +168,11 @@ public class SurefireJUnitXMLResultFormatter extends RunListener {
     /** No arg constructor. */
     public SurefireJUnitXMLResultFormatter() {
     }
-    
+
     /** No arg constructor. */
     public SurefireJUnitXMLResultFormatter(OutputStream out) {
         setOutput(out);
-    }    
+    }
 
     /** {@inheritDoc}. */
     public void setOutput(OutputStream out) {
@@ -265,7 +265,7 @@ public class SurefireJUnitXMLResultFormatter extends RunListener {
         // would never have been called
         if (!testStarts.containsKey(test)) {
             testStarted(test);
-        }        
+        }
         Element currentTest = null;
         if (!failedTests.contains(test)) {
             currentTest = doc.createElement(TESTCASE);
@@ -324,4 +324,4 @@ public class SurefireJUnitXMLResultFormatter extends RunListener {
         nested.appendChild(doc.createCDATASection(output));
     }
 
-} 
+}

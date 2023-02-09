@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -68,14 +68,14 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * Base handler for content actions.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public abstract class Action {
 
     /**
      * Returns a single value for the specified parameter. If the parameter is not present throws the {@link JahiaBadRequestException}.
-     * 
+     *
      * @param parameters
      *            the map of action parameters
      * @param paramName
@@ -83,7 +83,7 @@ public abstract class Action {
      * @return a single value for the specified parameter. If the parameter is not present throws the {@link JahiaBadRequestException}
      * @throws JahiaBadRequestException
      *             if the specified parameter is not present in the request
-     * 
+     *
      */
     protected static String getRequiredParameter(Map<String, List<String>> parameters,
             String paramName) throws JahiaBadRequestException {
@@ -98,7 +98,7 @@ public abstract class Action {
     /**
      * Returns a single value for the specified parameter. If the parameter is
      * not present or its value is empty, returns <code>null</code>.
-     * 
+     *
      * @param parameters the map of action parameters
      * @param paramName the name of the parameter in question
      * @return a single value for the specified parameter. If the parameter is
@@ -107,11 +107,11 @@ public abstract class Action {
     protected static String getParameter(Map<String, List<String>> parameters, String paramName) {
         return getParameter(parameters, paramName, null);
     }
-    
+
     /**
      * Returns a single value for the specified parameter. If the parameter is
      * not present or its value is empty, returns the provided default value.
-     * 
+     *
      * @param parameters the map of action parameters
      * @param paramName the name of the parameter in question
      * @param defaultValue the default value to be used if the parameter is not
@@ -235,7 +235,7 @@ public abstract class Action {
 
     /**
      * Returns the current user.
-     * 
+     *
      * @return current user
      */
     protected JahiaUser getCurrentUser() {
@@ -244,7 +244,7 @@ public abstract class Action {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.jahia.bin.Action#getName()
      */
     public String getName() {
@@ -253,7 +253,7 @@ public abstract class Action {
 
     /**
      * Returns a permission, required to execute this action or <code>null</code> if no particular permission is required.
-     * 
+     *
      * @return a permission, required to execute this action or <code>null</code> if no particular permission is required
      */
     public String getRequiredPermission() {
@@ -263,7 +263,7 @@ public abstract class Action {
 
     /**
      * Returns JCR workspace name this action should be executed for; <code>null</code> if there is no required workspace.
-     * 
+     *
      * @return JCR workspace name this action should be executed for; <code>null</code> if there is no required workspace.
      */
     public String getRequiredWorkspace() {
@@ -288,35 +288,35 @@ public abstract class Action {
 
     /**
      * Returns <code>true</code> if the action can be executed only by an authenticated user.
-     * 
+     *
      * @return <code>true</code> if the action can be executed only by an authenticated user
      */
     public boolean isRequireAuthenticatedUser() {
         return requireAuthenticatedUser;
     }
-    
+
     /**
      * Sets the action name.
-     * 
+     *
      * @param name the action name
      */
     public void setName(String name) {
         this.name = name;
     }
-    
+
     /**
      * Defines if the action can be executed only by an authenticated user.
-     * 
+     *
      * @param requireAuthenticatedUser
      *            <code>true</code> if the action can be executed only by an authenticated user
      */
     public void setRequireAuthenticatedUser(boolean requireAuthenticatedUser) {
         this.requireAuthenticatedUser = requireAuthenticatedUser;
     }
-    
+
     /**
      * Defines a permission, required to execute this action or <code>null</code> if no particular permission is required.
-     * 
+     *
      * @param requiredPermission
      *            a permission, required to execute this action or <code>null</code> if no particular permission is required
      */
@@ -326,7 +326,7 @@ public abstract class Action {
 
     /**
      * Sets the JCR workspace name this action should be executed for; <code>null</code> if there is no required workspace.
-     * 
+     *
      * @param requiredWorkspace
      *            the JCR workspace name this action should be executed for; <code>null</code> if there is no required workspace
      */

@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -115,7 +115,7 @@ public class ResourceChecksumCalculator implements ApplicationListener<TemplateP
         logger.debug("Event received: {}", event);
         String prefix = "/modules/";
         if (event.getSource() instanceof String) {
-            prefix = prefix + (String) event.getSource() + "/"; 
+            prefix = prefix + (String) event.getSource() + "/";
         }
         for (Iterator<Map.Entry<String, String>> iterator = checksums.entrySet().iterator(); iterator.hasNext();) {
             Entry<String, String> entry = iterator.next();

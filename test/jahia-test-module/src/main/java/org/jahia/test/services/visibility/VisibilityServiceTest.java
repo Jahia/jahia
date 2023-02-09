@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -88,7 +88,7 @@ public class VisibilityServiceTest extends JahiaTestCase {
         site = TestHelper.createSite(TESTSITE_NAME, TestHelper.WEB_TEMPLATES);
         assertNotNull(site);
         publicationService = ServicesRegistry.getInstance().getJCRPublicationService();
-        
+
         Properties properties = new Properties();
         properties.setProperty("j:firstName", "John");
         properties.setProperty("j:lastName", "Doe");
@@ -97,9 +97,9 @@ public class VisibilityServiceTest extends JahiaTestCase {
         JCRUserNode john = ServicesRegistry.getInstance().getJahiaUserManagerService().createUser(USERNAME, PASSWORD, properties, session);
         session.getNode("/sites/" + site.getSiteKey()).grantRoles("u:" + john.getName(), ImmutableSet.of("editor-in-chief"));
         session.save();
-        
+
         session = publicationService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
-        publicationService.publishByMainId(session.getNode("/sites/" + TESTSITE_NAME + "/search-results").getIdentifier());        
+        publicationService.publishByMainId(session.getNode("/sites/" + TESTSITE_NAME + "/search-results").getIdentifier());
     }
 
     @AfterClass

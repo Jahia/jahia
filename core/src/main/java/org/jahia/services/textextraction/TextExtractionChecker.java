@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Utility class for performing text extraction check and fixing.
- * 
+ *
  * @author Benjamin Papez
  */
 class TextExtractionChecker {
@@ -74,8 +74,8 @@ class TextExtractionChecker {
             .getLogger(TextExtractionChecker.class);
 
     private final boolean fixExtraction;
-    
-    private final boolean searchByFilter;    
+
+    private final boolean searchByFilter;
 
     private boolean forceStop;
 
@@ -84,8 +84,8 @@ class TextExtractionChecker {
     private final OutWrapper out;
 
     private final ExtractionCheckStatus status;
-    
-    private final RepositoryFileFilter filter;    
+
+    private final RepositoryFileFilter filter;
 
     TextExtractionChecker(ExtractionCheckStatus status, boolean fixExtraction,
             OutWrapper out) {
@@ -94,9 +94,9 @@ class TextExtractionChecker {
         this.fixExtraction = fixExtraction;
         this.out = out;
         searchByFilter = false;
-        filter = null;        
+        filter = null;
     }
-    
+
     TextExtractionChecker(ExtractionCheckStatus status, boolean fixExtraction,
             RepositoryFileFilter filter, OutWrapper out) {
         super();
@@ -104,13 +104,13 @@ class TextExtractionChecker {
         this.fixExtraction = fixExtraction;
         this.out = out;
         searchByFilter = true;
-        this.filter = filter;        
+        this.filter = filter;
     }
 
     private void checkTextExtraction(JCRSessionWrapper session)
             throws RepositoryException {
         nodesToExtract = new ArrayList<String>();
-        
+
         QueryManager q = session.getWorkspace().getQueryManager();
         String xpath;
         if (searchByFilter) {

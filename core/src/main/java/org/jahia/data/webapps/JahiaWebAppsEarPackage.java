@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -64,15 +64,15 @@ public class JahiaWebAppsEarPackage {
 
    	/** The List of JahiaWebAppDef object *
    	 * @associates JahiaWebAppDef*/
-   	private List<JahiaWebAppDef> m_WebApps = new ArrayList<JahiaWebAppDef>();       
+   	private List<JahiaWebAppDef> m_WebApps = new ArrayList<JahiaWebAppDef>();
 
 	/** the application context in case of ear file **/
 	private String m_ApplicationContextRoot;
 
-   
+
    /**
     * Constructor
-    * 
+    *
     * @param (String) context, the application context  in case of ear file
     */
 	public JahiaWebAppsEarPackage ( String context ) {
@@ -86,10 +86,10 @@ public class JahiaWebAppsEarPackage {
     * @return (List) the List of JahiaWebAppDef object
     */
    public List<JahiaWebAppDef> getWebApps(){
-      
+
       return m_WebApps;
-   
-   } 
+
+   }
 
    /**
     * Add a WebApps Definition in the Web Apps list
@@ -97,10 +97,10 @@ public class JahiaWebAppsEarPackage {
     * @param (JahiaWebAppDef) webAppDef
     */
    public void addWebAppDef(JahiaWebAppDef webAppDef ){
-      
+
       m_WebApps.add(webAppDef);
-   
-   } 
+
+   }
 
    /**
     * Add a List of JahiaWebAppDef object at the end of the WebApps List
@@ -108,34 +108,34 @@ public class JahiaWebAppsEarPackage {
     * @param (List) the List
     */
    public void addWebAppDefs(List<JahiaWebAppDef> vec){
-      
-      m_WebApps.addAll(vec);
-   
-   } 
 
-   
+      m_WebApps.addAll(vec);
+
+   }
+
+
    /**
     * Returns the Context Root of this application
     *
     * @return (String) the context root
-    */    
+    */
    public String getContextRoot(){
-      
+
       return m_ApplicationContextRoot;
-      
+
    }
-    
+
 
    /**
     * Set the Application Context
     *
     * @param (String) the application context
-    */    
+    */
    public void setContextRoot(String context){
-      
+
       m_ApplicationContextRoot = context;
-      
+
    }
-    
-    
+
+
 } // end JahiaWebAppEarPackage

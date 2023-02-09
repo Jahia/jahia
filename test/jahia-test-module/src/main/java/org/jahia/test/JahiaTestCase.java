@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -81,7 +81,7 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * Super class for Jahia tests
- * 
+ *
  * @author Guillaume Lucazeau
  */
 public class JahiaTestCase {
@@ -90,14 +90,14 @@ public class JahiaTestCase {
         private int statusCode;
         private String statusLine;
         private String responseBody;
-        
+
         PostResult(int statusCode, String statusLine, String responseBody) {
             super();
             this.statusCode = statusCode;
             this.statusLine = statusLine;
             this.responseBody = responseBody;
         }
-        
+
         public int getStatusCode() {
             return statusCode;
         }
@@ -110,21 +110,21 @@ public class JahiaTestCase {
             return responseBody;
         }
     }
-    
+
     private static Logger logger = LoggerFactory.getLogger(JahiaTestCase.class);
-    
+
     private static final String PORT = "9090";
-    
+
     private static final String BASE_URL = "http://localhost:" + PORT;
 
     private static boolean baseUrlForTestsLogged;
-    
+
     private static SimpleCredentials rootUserCredentials;
 
     private CloseableHttpClient client;
     /**
      * Returns the <code>HttpServletRequest</code> object for the current call.
-     * 
+     *
      * @return current {@link HttpServletRequest} object
      */
     protected static final HttpServletRequest getRequest() {
@@ -133,7 +133,7 @@ public class JahiaTestCase {
 
     /**
      * Returns the <code>HttpServletResponse</code> object for the current call.
-     * 
+     *
      * @return current {@link HttpServletResponse} object
      */
     protected static final HttpServletResponse getResponse() {
@@ -147,7 +147,7 @@ public class JahiaTestCase {
     protected static final JCRUserNode getUserNode(JahiaUser admin) {
         return ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByPath(admin.getLocalPath());
     }
-    
+
     protected static final SimpleCredentials getRootUserCredentials() {
         if (rootUserCredentials == null) {
             rootUserCredentials = new SimpleCredentials("root", "root1234".toCharArray());
@@ -167,7 +167,7 @@ public class JahiaTestCase {
             Thread.currentThread().interrupt();
         }
     }
-    
+
     @SuppressWarnings("java:S2696")
     protected String getBaseServerURL() {
         HttpServletRequest req = getRequest();

@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * Represents a validation result, containing missing modules in the content to be imported.
- * 
+ *
  * @author Sergiy Shyrkov
  * @since Jahia 6.6
  */
@@ -66,7 +66,7 @@ public class MissingModulesValidationResult implements ValidationResult, Seriali
 
     /**
      * Initializes an instance of this class, merging the two validation results into one.
-     * 
+     *
      * @param result1
      *            the first validation result instance to be merged
      * @param result2
@@ -87,7 +87,7 @@ public class MissingModulesValidationResult implements ValidationResult, Seriali
 
     /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param missingModules
      *            missing modules information
      * @param targetTemplateSet
@@ -107,7 +107,7 @@ public class MissingModulesValidationResult implements ValidationResult, Seriali
 
     /**
      * Returns a set with missing modules.
-     * 
+     *
      * @return a set with missing modules
      */
     public Set<String> getMissingModules() {
@@ -116,7 +116,7 @@ public class MissingModulesValidationResult implements ValidationResult, Seriali
 
     /**
      * Returns the name of the template set, specified in the imprt file.
-     * 
+     *
      * @return the name of the template set, specified in the imprt file
      */
     public String getTargetTemplateSet() {
@@ -125,7 +125,7 @@ public class MissingModulesValidationResult implements ValidationResult, Seriali
 
     /**
      * Returns <code>true</code> if the current validation result is successful, meaning no missing templates were detected.
-     * 
+     *
      * @return <code>true</code> if the current validation result is successful, meaning no missing templates were detected
      */
     public boolean isSuccessful() {
@@ -138,7 +138,7 @@ public class MissingModulesValidationResult implements ValidationResult, Seriali
 
     /**
      * Performs a merge of current validation results with provided one.
-     * 
+     *
      * @return returns a merged view of both results
      */
     public ValidationResult merge(ValidationResult toBeMergedWith) {

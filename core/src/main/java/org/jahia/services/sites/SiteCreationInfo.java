@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ import org.springframework.core.io.Resource;
 
 /**
  * Data object to provide site creation data for the {@link JahiaSitesService}.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class SiteCreationInfo {
@@ -147,7 +147,7 @@ public class SiteCreationInfo {
 
     /**
      * Returns a helper object, used to build an instance of the {@link SiteCreationInfo}.
-     * 
+     *
      * @return a helper object, used to build an instance of the {@link SiteCreationInfo}
      */
     public static Builder builder() {

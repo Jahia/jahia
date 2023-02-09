@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -69,7 +69,7 @@ import org.jahia.services.content.QueryManagerWrapper;
 
 /**
  * Implementation of the {@link QueryManager} to support multiple providers.
- * 
+ *
  * @author Thomas Draier
  */
 public class QueryManagerImpl implements QueryManagerWrapper {
@@ -77,7 +77,7 @@ public class QueryManagerImpl implements QueryManagerWrapper {
     /**
      * Invocation handler to decorate the {@link QueryObjectModelFactory}
      * instance.
-     * 
+     *
      * @author Sergiy Shyrkov
      */
     private class QOMFactoryInvocationHandler implements InvocationHandler {
@@ -116,7 +116,7 @@ public class QueryManagerImpl implements QueryManagerWrapper {
     /**
      * Invocation handler to decorate the {@link QueryObjectModel} instance in
      * order to wrap the query result.
-     * 
+     *
      * @author Sergiy Shyrkov
      */
     private class QOMInvocationHandler implements InvocationHandler {
@@ -215,5 +215,5 @@ public class QueryManagerImpl implements QueryManagerWrapper {
         }
         return res.toArray(new String[res.size()]);
     }
-    
+
 }

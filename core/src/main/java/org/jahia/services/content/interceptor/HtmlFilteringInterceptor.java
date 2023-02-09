@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -70,7 +70,7 @@ import org.jahia.services.sites.SitesSettings;
 
 /**
  * Filters out unwanted HTML elements from the rich text property values before saving.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class HtmlFilteringInterceptor extends BaseInterceptor {
@@ -96,7 +96,7 @@ public class HtmlFilteringInterceptor extends BaseInterceptor {
     /**
      * Filters out configured "unwanted" HTML tags and returns the modified content. If no modifications needs to be done, returns the
      * original content.
-     * 
+     *
      * @param content
      *            the content to be modified
      * @param filteredTags
@@ -239,7 +239,7 @@ public class HtmlFilteringInterceptor extends BaseInterceptor {
     /**
      * if set to <code>true</code> the content between the start and end tag elements will be also removed from the output; otherwise only
      * start and end tags themselves are removed.
-     * 
+     *
      * @param removeContentBetweenTags
      *            do we remove the content between tag elements?
      */

@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -82,7 +82,7 @@ import org.slf4j.LoggerFactory;
  * Time: 15:46:07
  */
 public class JCRTagUtils {
-    
+
     private static final transient Logger logger = LoggerFactory.getLogger(JCRTagUtils.class);
 
     /**
@@ -113,7 +113,7 @@ public class JCRTagUtils {
 
     /**
      * Returns <code>true</code> if the current node has the specified type or at least one of the specified node types.
-     * 
+     *
      * @param node current node to check the type
      * @param type the node type name to match or a comma-separated list of node
      *            types (at least one should be matched)
@@ -123,7 +123,7 @@ public class JCRTagUtils {
         if (node == null) {
             throw new IllegalArgumentException("The specified node is null");
         }
-        
+
         boolean hasType = false;
         try {
             if (type.contains(",")) {
@@ -139,7 +139,7 @@ public class JCRTagUtils {
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
-        
+
         return hasType;
     }
 
@@ -150,7 +150,7 @@ public class JCRTagUtils {
     /**
      * Returns <code>true</code> if the current node has at least one child node
      * of the specified type.
-     * 
+     *
      * @param node current node whose children will be queried
      * @param type the node type name to match or a comma-separated list of node
      *            types (at least one should be matched)
@@ -181,7 +181,7 @@ public class JCRTagUtils {
      * the specified node type name. This is an advanced version of the
      * {@link #getNodes(JCRNodeWrapper, String)} method to handle multiple node
      * types.
-     * 
+     *
      * @param node current node whose children will be queried
      * @param type the node type name to match or a comma-separated list of node
      *            types (at least one should be matched)
@@ -195,7 +195,7 @@ public class JCRTagUtils {
     /**
      * Returns an iterator with the descendant nodes of the current node, which match
      * the specified node type name.
-     * 
+     *
      * @param node current node whose descendants will be queried
      * @param type the node type name to match
      * @return an iterator with the descendant nodes of the current node, which match
@@ -233,7 +233,7 @@ public class JCRTagUtils {
     /**
      * Returns all the parents of the current node that have the specified node type. If no matching node is found, an
      * empty list.
-     * 
+     *
      * @param node
      *            the current node to start the lookup from
      * @param type
@@ -253,12 +253,12 @@ public class JCRTagUtils {
         } while (node != null);
 
         return parents;
-    }    
-    
+    }
+
     /**
      * Returns the first parent of the current node that has the specified node type. If no matching node is found, <code>null</code> is
      * returned.
-     * 
+     *
      * @param node
      *            the current node to start the lookup from
      * @param type
@@ -329,10 +329,10 @@ public class JCRTagUtils {
     }
 
     /**
-     * @param inputString the string to escape 
+     * @param inputString the string to escape
      * @return the escaped string
      * @see org.apache.jackrabbit.util.Text#escapeIllegalJcrChars(String)
-     */    
+     */
     public static String escapeIllegalJcrChars(String inputString) {
         return Text.escapeIllegalJcrChars(inputString);
     }
@@ -368,7 +368,7 @@ public class JCRTagUtils {
                 }
             }
         }
-        
+
         String[] constraints = Patterns.SPACE.split(ConstraintsHelper.getConstraints(node));
         List<ExtendedNodeType> finaltypes = new ArrayList<ExtendedNodeType>();
         for (ExtendedNodeType type : types) {
@@ -409,14 +409,14 @@ public class JCRTagUtils {
         if (typelistValues == null) {
             return Collections.emptyList();
         }
-        
+
         Value[] allowedTypeValues = null;
         if (node.hasProperty("j:allowedTypes")) {
             allowedTypeValues = node.getProperty("j:allowedTypes").getValues();
         }
         if (allowedTypeValues == null && areaNode != null && areaNode.hasProperty("j:allowedTypes")) {
             allowedTypeValues = areaNode.getProperty("j:allowedTypes").getValues();
-        }   
+        }
         Set<String> allowedTypes = allowedTypeValues == null ? Collections.<String>emptySet() : new HashSet<String>(allowedTypeValues.length);
         if (allowedTypeValues != null) {
             for (Value value : allowedTypeValues) {
@@ -434,7 +434,7 @@ public class JCRTagUtils {
         }
         return !allowedTypes.isEmpty() && typeList.isEmpty() ? null : typeList;
     }
-    
+
     private static boolean isAllowedSubnodeType(String nodeType, Set<String> allowedTypes) {
         boolean isAllowed = false;
         try {
@@ -448,7 +448,7 @@ public class JCRTagUtils {
         } catch (RepositoryException e) {
             logger.warn("Nodetype " + nodeType + " not found while checking for allowed node types!", nodeType);
         }
-        
+
         return isAllowed;
     }
 
@@ -511,11 +511,11 @@ public class JCRTagUtils {
         }
         return null;
     }
-    
+
     /**
      * Returns a string with comma-separated keywords, found on the current node (or the parent one, if inheritance is considered), or an
      * empty string if no keywords are present.
-     * 
+     *
      * @param node
      *            the node to retrieve keywords from
      * @param considerInherted
@@ -533,7 +533,7 @@ public class JCRTagUtils {
             while (current != null) {
                 JCRPropertyWrapper property = current.hasProperty("j:keywords") ? current
                         .getProperty("j:keywords") : null;
-                        
+
                 if (property != null) {
                     if (property.getDefinition().isMultiple()) {
                         StringBuilder buff = new StringBuilder(64);

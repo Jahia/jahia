@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ public final class SearchUtils {
     /**
      * Retrieves the faceted result, which corresponds to the supplied facet definition ID. This call also executes the search, if it was
      * not executed in this request yet and the request contains the search criteria.
-     * 
+     *
      * @param facetDefinitionId the facet definition ID to retrieve results for
      * @param ctx current rendering context
      * @return faceted result, which corresponds to the supplied facet definition ID, or <code>null</code> if there is no information about
@@ -77,7 +77,7 @@ public final class SearchUtils {
     /**
      * Obtains the search response object for the current search, performing a search if not yet done for current request. If no search
      * criteria is found in current request parameters, null is returned.
-     * 
+     *
      * @param ctx current rendering context
      * @return the search response object or <code>null</code> if there are no search criteria in the current request
      */
@@ -88,7 +88,7 @@ public final class SearchUtils {
 
     /**
      * Retrieves the stored search response object for the specified criteria.
-     * 
+     *
      * @param searchCriteria the search criteria object
      * @param request current HTTP request
      * @return the stored search response from the request according to the search criteria or <code>null</code> if the search response
@@ -113,7 +113,7 @@ public final class SearchUtils {
 
     /**
      * Store the provided search response into the request.
-     * 
+     *
      * @param searchCriteria the search criteria object
      * @param response to store
      * @param request current HTTP request

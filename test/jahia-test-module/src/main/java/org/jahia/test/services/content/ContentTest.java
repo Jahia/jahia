@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -196,7 +196,7 @@ public class ContentTest {
 
     /**
      * Test creation / deletion of folder
-     * 
+     *
      * @throws RepositoryException
      */
     @Test
@@ -254,7 +254,7 @@ public class ContentTest {
 
     /**
      * Test file upload
-     * 
+     *
      * @throws RepositoryException
      */
     @Test
@@ -311,7 +311,7 @@ public class ContentTest {
 
     /**
      * Test simple property set
-     * 
+     *
      * @throws RepositoryException
      */
     @Test
@@ -374,7 +374,7 @@ public class ContentTest {
 
     /**
      * Test rename of a file
-     * 
+     *
      * @throws RepositoryException
      */
     @Test
@@ -396,11 +396,11 @@ public class ContentTest {
         String name = "test" + System.currentTimeMillis() + ".txt";
         JCRNodeWrapper testFile = rootNode.uploadFile(name, is, mimeType);
         session.save();
-        
+
         // now let's sleep a little to give time for Jackrabbit to index the file's content
         // otherwise setting extracted text in parallel thread will conflict with renaming in the next lines
         Thread.sleep(5000);
-        
+
         String initialTestFileIdentifier = testFile.getIdentifier();
 
         final String newname = "renamed" + name;
@@ -432,7 +432,7 @@ public class ContentTest {
 
     /**
      * Test move of a file
-     * 
+     *
      * @throws RepositoryException
      */
     @Test
@@ -465,8 +465,8 @@ public class ContentTest {
         } catch (RepositoryException e) {
             fail(providerRoot + " : move throwed exception :" + e);
         }
-        
-        session.save();        
+
+        session.save();
 
         try {
             session.getNode(providerRoot + "/" + collectionName + "/"
@@ -540,7 +540,7 @@ public class ContentTest {
 
     /**
      * Test file search
-     * 
+     *
      * @throws RepositoryException
      */
     @Test
@@ -624,7 +624,7 @@ public class ContentTest {
     /**
      * The following test: 1- creates a page with a list that contains several nodes 2- reorders list children 3- checks if the reordering
      * feature is ok
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -687,7 +687,7 @@ public class ContentTest {
 
     /**
      * Test referencing a provider file node inside the main repository.
-     * 
+     *
      * @throws RepositoryException
      * @throws UnsupportedEncodingException
      */
@@ -719,7 +719,7 @@ public class ContentTest {
         JCRNodeWrapper page = siteNode.addNode(
                 "page" + System.currentTimeMillis(), "jnt:page");
         page.setProperty("jcr:title", "test");
-        page.setProperty("j:templateName", "simple");        
+        page.setProperty("j:templateName", "simple");
         logger.debug("Create a new list");
         JCRNodeWrapper listNode = page.addNode(
                 "list" + System.currentTimeMillis(), "jnt:contentList");

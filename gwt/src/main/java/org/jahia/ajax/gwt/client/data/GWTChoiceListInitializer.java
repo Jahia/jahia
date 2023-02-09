@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -46,13 +46,13 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Field initializer GWT bean. 
+ * Field initializer GWT bean.
  *
  * @author Benjamin Papez
  */
 public class GWTChoiceListInitializer implements Serializable {
     private static final long serialVersionUID = -8594607579678260363L;
-    
+
     private List<String> dependentProperties;
     private List<GWTJahiaValueDisplayBean> displayValues;
 
@@ -65,7 +65,7 @@ public class GWTChoiceListInitializer implements Serializable {
         this.displayValues = displayValues;
         this.dependentProperties = dependentProperties;
     }
-    
+
     public List<String> getDependentProperties() {
         return dependentProperties;
     }

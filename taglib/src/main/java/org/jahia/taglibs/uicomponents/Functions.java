@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -62,7 +62,7 @@ public class Functions {
 
     /**
      * Returns the node which corresponds to the bound component of the provided property in the specified node.
-     * 
+     *
      * @param currentNode the node to get the bound component for
      * @param renderContext current render context
      * @param property the property name to lookup bound component
@@ -80,10 +80,10 @@ public class Functions {
         }
         return boundComponentNode;
     }
-    
+
     /**
      * Returns the node path which corresponds to the bound component of the provided property in the specified node.
-     * 
+     *
      * @param currentNode the node to get the bound component for
      * @param renderContext current render context
      * @param property the property name to lookup bound component
@@ -138,7 +138,7 @@ public class Functions {
 
     /**
      * Returns the node which corresponds to the bound component of the provided property in the specified node.
-     * 
+     *
      * @param currentNode the node to get the bound component for
      * @param renderContext current render context
      * @param property the property name to lookup bound component
@@ -153,7 +153,7 @@ public class Functions {
 
     /**
      * Returns the node path which corresponds to the bound component of the provided property in the specified node.
-     * 
+     *
      * @param currentNode the node to get the bound component for
      * @param renderContext current render context
      * @param property the property name to lookup bound component

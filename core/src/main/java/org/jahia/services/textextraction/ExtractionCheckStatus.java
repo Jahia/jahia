@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ import org.slf4j.helpers.MessageFormatter;
 
 /**
  * Result of the extraction check operation.
- * 
+ *
  * @author Benjamin Papez
  */
 public class ExtractionCheckStatus {
@@ -59,7 +59,7 @@ public class ExtractionCheckStatus {
 
     /**
      * Returns the number of checked items.
-     * 
+     *
      * @return the number of checked items
      */
     public long getChecked() {
@@ -68,7 +68,7 @@ public class ExtractionCheckStatus {
 
     /**
      * Returns the number of items, where extraction can be done.
-     * 
+     *
      * @return the number of items, where extraction can be done
      */
     public long getExtractable() {
@@ -77,7 +77,7 @@ public class ExtractionCheckStatus {
 
     /**
      * Returns the number of fixed text extractions.
-     * 
+     *
      * @return the number of fixed text extractions
      */
     public long getFixed() {

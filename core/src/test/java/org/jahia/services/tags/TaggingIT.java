@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ import org.testng.annotations.*;
 
 /**
  * Unit test for the Tagging feature: creating tags, assigning tags to nodes etc.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 
@@ -72,7 +72,7 @@ public class TaggingIT extends AbstractTestNGTest {
         try {
             service = (TaggingService) SpringContextSingleton
                     .getBean("org.jahia.services.tags.TaggingService");
-            
+
             TestHelper.createSite(TESTSITE_NAME, null);
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -86,7 +86,7 @@ public class TaggingIT extends AbstractTestNGTest {
             logger.error("Error setting up TaggingTest environment", e);
         }
     }
-    
+
     @BeforeMethod
     public void setUp() {
 
@@ -186,7 +186,7 @@ public class TaggingIT extends AbstractTestNGTest {
         }
     }
 
-    @Test    
+    @Test
     public void testTagTaggingService() throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Void>() {
             public Void doInJCR(JCRSessionWrapper session) throws RepositoryException {

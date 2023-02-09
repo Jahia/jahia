@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -59,24 +59,24 @@ import java.util.Set;
 
 /**
  * Permission utilities used on the GWT client to check permissions for the current user.
- * 
+ *
  * A list of permissions is cached on the client. As this list may change at runtime for instance if the client
  * connects to a different cluster node on fail-over, or if new modules with new permissions are getting deployed,
  * we are identifying different versions of the permission list with a hashcode and storing them in a map.
- * 
+ *
  * The single bits in a GWTBitSet refer to the ordered permission list items. A GWTBitSet created on the server
- * also holds the hashCode of the list it refers to. If it is detected that the client does not have that right 
- * version of the list loaded, we are trying to load it from the server. If that fails, the user has to reload the page.   
- * 
+ * also holds the hashCode of the list it refers to. If it is detected that the client does not have that right
+ * version of the list loaded, we are trying to load it from the server. If that fails, the user has to reload the page.
+ *
  * User: ktlili
  * Date: Feb 5, 2010
  * Time: 11:16:25 AM
- * 
+ *
  */
 public class PermissionsUtils {
     private static Map<Integer, List<String>> registeredPermissionCopies = new HashMap<Integer, List<String>>();
     private static int lastPermissionsHashCode;
-    private static Set<Integer> notifiedMissingHashes = new HashSet<Integer>();    
+    private static Set<Integer> notifiedMissingHashes = new HashSet<Integer>();
 
     /**
      * load permission. Implemented thanks to an ajax call or read from a javascript object
@@ -121,7 +121,7 @@ public class PermissionsUtils {
         if("root".equals(JahiaGWTParameters.getCurrentUser())) {
             return true;
         }
-        
+
         List<String> registeredPermissions = getRegisteredPermissions(permissions.getReferenceHashCode());
         // Here it is checked whether the registered permissions list with the required hashcode is present.
         if (registeredPermissions == null) {
@@ -129,7 +129,7 @@ public class PermissionsUtils {
             // While displaying the message, the matching list may have been loaded and we can continue with correct checks.
             // Otherwise deny permission and user has to reload the page.
             triggerPermissionsReload();
-            
+
             if (notifiedMissingHashes.add(permissions.getReferenceHashCode())) {
                Window.alert(Messages.get("permission.uncheckable", "There was a problem while checking permissions. If you encounter a wrongly denied permission, please try reloading the page."));
             }
@@ -171,7 +171,7 @@ public class PermissionsUtils {
             public void onFailure(Throwable caught) {
                 // ignore failures - mainly: do not bring login error
             }
-            
+
         });
     }
 }

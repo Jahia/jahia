@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -147,7 +147,7 @@ public class TextExtractionListener extends DefaultEventListener {
                             }
 
                             String eventPath = event.getPath();
-                            
+
                             // skip /jcr:system path
                             if (eventPath.startsWith("/jcr:system") || eventPath.endsWith("/j:extractedText")) {
                                 continue;
@@ -182,7 +182,7 @@ public class TextExtractionListener extends DefaultEventListener {
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
         jobDataMap.put(TextExtractorJob.JOB_PROVIDER, fileNode.getProvider().getMountPoint());
         jobDataMap.put(TextExtractorJob.JOB_PATH, fileNode.getPath());
-        jobDataMap.put(TextExtractorJob.JOB_WORKSPACE, getWorkspace());        
+        jobDataMap.put(TextExtractorJob.JOB_WORKSPACE, getWorkspace());
 
         if (logger.isDebugEnabled()) {
             logger.debug("Scheduling text extraction background job for file " + fileNode.getPath());

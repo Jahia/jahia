@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -172,7 +172,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     private static final FileCleaningTracker fileCleaningTracker = new FileCleaningTracker();
     private static final HashSet<String> siteExportNodeTypesToIgnore = Sets.newHashSet("jnt:templatesFolder", "jnt:externalUser", "jnt:workflowTask", "jmix:noImportExport");
     private static final HashSet<String> defaultExportNodeTypesToIgnore = Sets.newHashSet(Constants.JAHIANT_VIRTUALSITE, "jnt:workflowTask", "jmix:noImportExport");
-    private static final Path EXPORT_PATH; 
+    private static final Path EXPORT_PATH;
     static {
         Path exportsPath = null;
         try {
@@ -180,7 +180,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         } catch (Exception e) {
             logger.error("Invalid server directory of configured jahiaExportsDiskPath {}. Configuration or environment is broken leading to exceptions during content export.", SettingsBean.getInstance().getJahiaExportsDiskPath());
         } finally {
-            EXPORT_PATH = exportsPath; 
+            EXPORT_PATH = exportsPath;
         }
     };
     private final long scannerInterval = SettingsBean.getInstance().getJahiaSiteImportScannerInterval();

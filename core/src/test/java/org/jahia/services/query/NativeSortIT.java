@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -130,7 +130,7 @@ public class NativeSortIT extends AbstractJUnitTest {
         // check one childnode
         doQuery("SELECT * FROM [jnt:news] as news WHERE ISCHILDNODE(news, ["
                 + SITECONTENT_ROOT_NODE + "/contents/news]) ORDER BY news.[jcr:title]", 16, false);
-        
+
         // check two childnodes with or
         doQuery(
                 "SELECT * FROM [jmix:editorialContent] as content WHERE ISCHILDNODE(content, ["
@@ -157,7 +157,7 @@ public class NativeSortIT extends AbstractJUnitTest {
                         + SITECONTENT_ROOT_NODE
                         + "/contents/news]) AND contains(content.*, 'cucumber')", 10, false);
     }
-    
+
     @Test
     public void testDescendantNodeQueries() throws Exception {
 
@@ -195,7 +195,7 @@ public class NativeSortIT extends AbstractJUnitTest {
                         + SITECONTENT_ROOT_NODE + "/contents/events]) AND content.[location] = '"
                         + GENEVA + "')", 7 + 12, false);
     }
-    
+
     @Test
     public void testSortByTitle() throws Exception {
         JCRNodeWrapper newsList = createList(session.getNode(SITECONTENT_ROOT_NODE + "/contents"), "news-title-test");
@@ -210,7 +210,7 @@ public class NativeSortIT extends AbstractJUnitTest {
         createNews(newsList, "d news", null, null, null);
         createNews(newsList, "a news", null, null, null);
         session.save();
-        
+
         try {
             doQuery("SELECT * FROM [jnt:news] as news WHERE ISCHILDNODE(news, ["
                     + SITECONTENT_ROOT_NODE + "/contents/news-title-test]) ORDER BY news.[jcr:title]", 10, false);
@@ -219,7 +219,7 @@ public class NativeSortIT extends AbstractJUnitTest {
             session.save();
         }
     }
-    
+
     @Test
     public void testSortByTitleNonLatin() throws Exception {
         JCRNodeWrapper newsList = createList(session.getNode(SITECONTENT_ROOT_NODE + "/contents"), "news-title-non-latin-test");
@@ -241,7 +241,7 @@ public class NativeSortIT extends AbstractJUnitTest {
         createNews(newsList, "21 test news", null, null, null);
         createNews(newsList, "1 test news", null, null, null);
         session.save();
-        
+
         try {
             doQuery("SELECT * FROM [jnt:news] as news WHERE ISCHILDNODE(news, ["
                     + SITECONTENT_ROOT_NODE + "/contents/news-title-non-latin-test]) ORDER BY news.[jcr:title]", 17, false);
@@ -250,7 +250,7 @@ public class NativeSortIT extends AbstractJUnitTest {
             session.save();
         }
     }
-    
+
     private void checkSame(List<JCRNodeWrapper> nodes, List<JCRNodeWrapper> nodesNative,
             String query) throws RepositoryException {
         assertEquals("Result number for native and non-native sort are different for query: "
@@ -349,14 +349,14 @@ public class NativeSortIT extends AbstractJUnitTest {
         createNews(newsListNode, NEWS_NAME_PREFIX + i++, FIRST_PHONE_SENTENCE, calendar, cat3);
 
         JCRNodeWrapper newsSubListNode = createList(newsListNode, "news");
-        
+
         calendar.add(Calendar.DAY_OF_MONTH, 5);
         createNews(newsSubListNode, NEWS_NAME_PREFIX + i++, FIRST_PHONE_SENTENCE, calendar, cat3);
         createNews(newsSubListNode, NEWS_NAME_PREFIX + i++, FIRST_TELEGRAPH_SENTENCE, calendar, cat3);
         createNews(newsSubListNode, NEWS_NAME_PREFIX + i++, FIRST_TELEGRAPH_SENTENCE, calendar, cat3);
         createNews(newsSubListNode, NEWS_NAME_PREFIX + i++, FIRST_TELEGRAPH_SENTENCE, calendar, cat3);
-        
-        calendar = new GregorianCalendar(2000, 0, 1, 12, 0);        
+
+        calendar = new GregorianCalendar(2000, 0, 1, 12, 0);
         createNews(newsSubListNode, NEWS_NAME_PREFIX + i++, FIRST_TELEGRAPH_SENTENCE, calendar, cat3);
         createNews(newsSubListNode, NEWS_NAME_PREFIX + i++, FIRST_PHONE_SENTENCE, calendar, cat3);
         createNews(newsSubListNode, NEWS_NAME_PREFIX + i++, FIRST_PHONE_SENTENCE, calendar, cat3);
@@ -366,9 +366,9 @@ public class NativeSortIT extends AbstractJUnitTest {
 
     private void doQuery(final String statement, int expectedResultCount, boolean compareTimes) throws RepositoryException {
         if (logger.isDebugEnabled()) {
-            logger.debug("Query: {}", statement);                    
+            logger.debug("Query: {}", statement);
         }
-        
+
         setNativeSort(true);
         long timerNative = System.currentTimeMillis();
         List<JCRNodeWrapper> nodesNative = null;
@@ -382,7 +382,7 @@ public class NativeSortIT extends AbstractJUnitTest {
                 logger.debug("Query with native sort took {} ms", timerNative);
             }
         }
-        
+
         setNativeSort(false);
         long timer = System.currentTimeMillis();
         List<JCRNodeWrapper> nodes = null;
@@ -397,7 +397,7 @@ public class NativeSortIT extends AbstractJUnitTest {
             }
         }
         checkSame(nodes, nodesNative, statement);
-        
+
         if (compareTimes) {
             if (timerNative > timer) {
                 logger.warn(
@@ -452,7 +452,7 @@ public class NativeSortIT extends AbstractJUnitTest {
         event.setProperty("location", location);
         event.setProperty("startDate", calendar);
         if (category != null) {
-            event.addMixin("jmix:categorized");            
+            event.addMixin("jmix:categorized");
             event.setProperty("j:defaultCategory",
                     new Value[] { event.getSession().getValueFactory().createValue(category) });
         }
@@ -474,7 +474,7 @@ public class NativeSortIT extends AbstractJUnitTest {
         }
         return event;
     }
-    
+
     private static void setNativeSort(boolean enabled) {
         JahiaQueryEngine.nativeSort = enabled;
     }

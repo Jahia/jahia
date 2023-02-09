@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -76,7 +76,7 @@ import org.w3c.dom.Text;
 
 /**
  * Prints XML output of the test to a specified Writer.
- * 
+ *
  * @see FormatterElement
  */
 
@@ -202,7 +202,7 @@ public class SurefireTestNGXMLResultFormatter implements ISuiteListener,
 
     /**
      * The whole testsuite started.
-     * 
+     *
      * @param suite
      *            the testsuite.
      */
@@ -222,7 +222,7 @@ public class SurefireTestNGXMLResultFormatter implements ISuiteListener,
 
     /**
      * get the local hostname
-     * 
+     *
      * @return the name of the local host, or "localhost" if we cannot work it out
      */
     private String getHostname() {
@@ -235,7 +235,7 @@ public class SurefireTestNGXMLResultFormatter implements ISuiteListener,
 
     /**
      * The whole testsuite ended.
-     * 
+     *
      * @param suite
      *            the testsuite.
      * @throws BuildException
@@ -281,7 +281,7 @@ public class SurefireTestNGXMLResultFormatter implements ISuiteListener,
     /**
      * Invoked each time before a test will be invoked. The <code>ITestResult</code> is only partially filled with the references to class,
      * method, start millis and status.
-     * 
+     *
      * @param result
      *            the partially filled <code>ITestResult</code>
      * @see ITestResult#STARTED
@@ -292,10 +292,10 @@ public class SurefireTestNGXMLResultFormatter implements ISuiteListener,
 
     /**
      * Interface RunListener.
-     * 
+     *
      * <p>
      * A Test is finished.
-     * 
+     *
      * @param test
      *            the test.
      */
@@ -327,7 +327,7 @@ public class SurefireTestNGXMLResultFormatter implements ISuiteListener,
     /**
      * Invoked each time a method fails but has been annotated with successPercentage and this failure still keeps it within the success
      * percentage requested.
-     * 
+     *
      * @param result
      *            <code>ITestResult</code> containing information about the run test
      * @see ITestResult#SUCCESS_PERCENTAGE_FAILURE
@@ -338,7 +338,7 @@ public class SurefireTestNGXMLResultFormatter implements ISuiteListener,
 
     /**
      * Invoked each time a test fails.
-     * 
+     *
      * @param result
      *            <code>ITestResult</code> containing information about the run test
      * @see ITestResult#FAILURE
@@ -369,7 +369,7 @@ public class SurefireTestNGXMLResultFormatter implements ISuiteListener,
 
     /**
      * Invoked each time a test is skipped.
-     * 
+     *
      * @param result
      *            <code>ITestResult</code> containing information about the run test
      * @see ITestResult#SKIP
@@ -382,7 +382,7 @@ public class SurefireTestNGXMLResultFormatter implements ISuiteListener,
 
         Element nested = doc.createElement(SKIPPED);
         Element currentTest = testElements.get(getUserFriendlyTestName(result));
-        
+
         currentTest.appendChild(nested);
 
         nested.setAttribute(ATTR_MESSAGE, SKIPPED);
@@ -390,7 +390,7 @@ public class SurefireTestNGXMLResultFormatter implements ISuiteListener,
 
     /**
      * Invoked each time a test succeeds.
-     * 
+     *
      * @param result
      *            <code>ITestResult</code> containing information about the run test
      * @see ITestResult#SUCCESS
@@ -412,7 +412,7 @@ public class SurefireTestNGXMLResultFormatter implements ISuiteListener,
 
     @Override
     public void onStart(ITestContext context) {
-        // No action yet 
+        // No action yet
     }
 
     @Override

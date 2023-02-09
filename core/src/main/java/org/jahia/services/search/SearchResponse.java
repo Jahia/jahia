@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -82,7 +82,7 @@ public class SearchResponse {
         public String getValueAsString() {
             return valueAsString;
         }
-        
+
         public boolean isValueEmpty() {
             return StringUtils.isEmpty(valueAsString);
         }
@@ -107,7 +107,7 @@ public class SearchResponse {
 
         /**
          * Returns identifier of the corresponding facet definition to match this faceted result to.
-         * 
+         *
          * @return identifier of the corresponding facet definition to match this faceted result to
          */
         public String getId() {
@@ -116,9 +116,9 @@ public class SearchResponse {
 
         /**
          * Facet, requested by its string value.
-         * 
+         *
          * @param valueAsString the facet string value to retrieve facet for
-         * 
+         *
          * @return Facet, requested by its string value, or <code>null</code> if there is no corresponding facet
          */
         public Facet getFacet(String valueAsString) {
@@ -134,7 +134,7 @@ public class SearchResponse {
 
         /**
          * A list of facets.
-         * 
+         *
          * @return a list of of facets
          */
         public List<Facet> getFacets() {
@@ -143,7 +143,7 @@ public class SearchResponse {
 
         /**
          * Checks that the faceted result is empty, i.e. either it has no facets or all facets have empty values.
-         * 
+         *
          * @return <code>true</code> if the faceted result is considered as empty; <code>false</code> otherwise
          */
         public boolean isResultEmpty() {
@@ -176,7 +176,7 @@ public class SearchResponse {
 
     /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param results the search result list
      */
     public SearchResponse(List<Hit<?>> results) {
@@ -212,7 +212,7 @@ public class SearchResponse {
 
     /**
      * Retrieves the faceted result, which corresponds to the supplied facet definition ID.
-     * 
+     *
      * @param facetDefinitionId the facet definition ID to retrieve results for
      * @return faceted result, which corresponds to the supplied facet definition ID, or <code>null</code> if there is no information about
      *         that facet (or no result for that facet is present)

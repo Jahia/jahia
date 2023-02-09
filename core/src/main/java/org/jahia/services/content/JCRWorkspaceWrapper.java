@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -69,10 +69,10 @@ import java.util.*;
 /**
  * Jahia specific wrapper around <code>javax.jcr.Workspace</code> to be able to inject
  * Jahia specific actions and to manage workspaces on multiple repository providers in
- * the backend. 
- * 
- * Jahia services should use this wrapper rather than the original workspace interface to 
- * ensure that we manipulate wrapped nodes and not the ones from the underlying 
+ * the backend.
+ *
+ * Jahia services should use this wrapper rather than the original workspace interface to
+ * ensure that we manipulate wrapped nodes and not the ones from the underlying
  * implementation.
  *
  * @author toto
@@ -579,7 +579,7 @@ public class JCRWorkspaceWrapper implements Workspace {
                 }
             });
         }
-        
+
     }
 
     class LockManagerWrapper implements LockManager {

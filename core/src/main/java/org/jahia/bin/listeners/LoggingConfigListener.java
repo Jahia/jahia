@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -68,12 +68,12 @@ import org.jahia.osgi.FrameworkService;
 
 /**
  * Listener for log4j configuration initialization.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class LoggingConfigListener extends Log4jServletContextListener {
     static final Logger logger = Logger.getLogger(LoggingConfigListener.class.getName());
-    
+
     public static final String EVENT_TOPIC_LOGGING = "org/jahia/dx/logging";
     public static final String EVENT_TYPE_LOGGING_CONFIG_CHANGED = "loggingConfigurationChanged";
     private static final String JAHIA_LOG_DIR = "jahia.log.dir";
@@ -99,7 +99,7 @@ public class LoggingConfigListener extends Log4jServletContextListener {
 
     /**
      * Returns the logging level of the root logger.
-     * 
+     *
      * @return the logging level of the root logger
      */
     public static String getRootLoggerLevel() {
@@ -113,14 +113,14 @@ public class LoggingConfigListener extends Log4jServletContextListener {
 
     /**
      * Changes the level for the specified logger.
-     * 
+     *
      * @param logger the name of the logger to change the level for
      * @param level the logging level value
      */
     public static void setLoggerLevel(String logger, String level) {
         LoggerContext logContext = (LoggerContext) LogManager.getContext(false);
         Configuration config = logContext.getConfiguration();
-        // if root logger or existing logger configuration is to be updated do it, 
+        // if root logger or existing logger configuration is to be updated do it,
         // otherwise create the specific logger configuration
         if (StringUtils.isEmpty(logger) || LoggerConfig.ROOT.equals(logger)
                 || getTargetLoggerConfig(config, logger).getName().equals(logger)) {
@@ -135,11 +135,11 @@ public class LoggingConfigListener extends Log4jServletContextListener {
         FrameworkService.sendEvent(EVENT_TOPIC_LOGGING,
                 Collections.singletonMap("type", EVENT_TYPE_LOGGING_CONFIG_CHANGED), false);
     }
-    
+
     /**
      * Creates a {@link Writer} and adds a dynamic {@link WriterAppender} to the specified logger.
      * The created and returned Writer needs to be removed with removeLogAwareWriter
-     * 
+     *
      * @param logger the name of the logger obtaining the WriterAppender
      * @return the created {@link Writer}
      */
@@ -147,12 +147,12 @@ public class LoggingConfigListener extends Log4jServletContextListener {
         StringWriter stringWriter = new StringWriter();
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         final Configuration config = ctx.getConfiguration();
-        
+
         WriterAppender writerAppender = WriterAppender.newBuilder().setName(logger + "writeLogger").setTarget(stringWriter)
                 .build();
         writerAppender.start();
         config.addAppender(writerAppender);
-        
+
         LoggerConfig loggerConfig = config.getLoggerConfig(logger);
         // if a logger higher in the hierarchy is returned, we have to create the configuration for the specific logger
         if (!loggerConfig.getName().equals(logger)) {
@@ -168,7 +168,7 @@ public class LoggingConfigListener extends Log4jServletContextListener {
 
     /**
      * Removes the {@link WriterAppender} from the specified logger.
-     * 
+     *
      * @param logger the name of the logger getting the WriterAppender removed
      */
     public static void removeLogAwareWriter(String logger){

@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -55,16 +55,16 @@ import net.sf.saxon.lib.FeatureKeys;
 
 /**
  * A utility class that provides instances of a {@link TransformerFactory}.
- * 
+ *
  * @author Benjamin Papež
  */
 public class JahiaTransformerFactory {
     private static final Logger logger = LoggerFactory.getLogger(JahiaTransformerFactory.class);
-    
+
     private JahiaTransformerFactory() {
         throw new IllegalStateException("Utility class");
       }
-    
+
     /**
      * Build a new {@link TransformerFactory} using the default constructor and prevent external entities from accessing.
      */
@@ -94,7 +94,7 @@ public class JahiaTransformerFactory {
         setOptionalFeature(factory, FeatureKeys.ALLOW_EXTERNAL_FUNCTIONS, false);
         return factory;
     }
-    
+
     private static void setOptionalFeature(TransformerFactory factory, String name, boolean value) {
         try {
             factory.setFeature(name, value);

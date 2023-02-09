@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * Represents a validation result, containing missing templates in the content to be imported.
- * 
+ *
  * @author Sergiy Shyrkov
  * @since Jahia 6.6
  */
@@ -70,7 +70,7 @@ public class MissingTemplatesValidationResult implements ValidationResult, Seria
 
     /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param missing
      *            missing templates information
      * @param targetTemplateSet
@@ -95,7 +95,7 @@ public class MissingTemplatesValidationResult implements ValidationResult, Seria
 
     /**
      * Initializes an instance of this class, merging the two validation results into one.
-     * 
+     *
      * @param result1
      *            the first validation result instance to be merged
      * @param result2
@@ -122,7 +122,7 @@ public class MissingTemplatesValidationResult implements ValidationResult, Seria
 
     /**
      * Returns a Map with missing templates as keys and as value a list of element paths having that template in the import.
-     * 
+     *
      * @return a Map with missing templates as keys and as value a list of element paths having that template in the import
      */
     public Map<String, Set<String>> getMissingTemplates() {
@@ -131,7 +131,7 @@ public class MissingTemplatesValidationResult implements ValidationResult, Seria
 
     /**
      * Returns the name of the template set, specified in the imprt file.
-     * 
+     *
      * @return the name of the template set, specified in the imprt file
      */
     public String getTargetTemplateSet() {
@@ -142,7 +142,7 @@ public class MissingTemplatesValidationResult implements ValidationResult, Seria
      * If the target template set is not present on the system we verify templates against all available template sets and check how many
      * are missing in each of them. This method returns in this case a map, with template set names as keys and missing count as values. If
      * the target template set if found, the check against all other template sets is not done and this method returns an empty map.
-     * 
+     *
      * @return a map, with template set names as keys and missing count as values
      */
     public Map<String, Integer> getTemplateSetsMissingCounts() {
@@ -151,7 +151,7 @@ public class MissingTemplatesValidationResult implements ValidationResult, Seria
 
     /**
      * Returns <code>true</code> if the current validation result is successful, meaning no missing templates were detected.
-     * 
+     *
      * @return <code>true</code> if the current validation result is successful, meaning no missing templates were detected
      */
     public boolean isSuccessful() {
@@ -164,7 +164,7 @@ public class MissingTemplatesValidationResult implements ValidationResult, Seria
 
     /**
      * Performs a merge of current validation results with provided one.
-     * 
+     *
      * @return returns a merged view of both results
      */
     public ValidationResult merge(ValidationResult toBeMergedWith) {

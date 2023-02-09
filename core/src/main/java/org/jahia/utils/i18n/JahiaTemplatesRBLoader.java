@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -75,7 +75,7 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
     private ClassLoader loader = ClassLoader.getSystemClassLoader();
     private JahiaTemplatesPackage aPackage;
     private JahiaTemplateManagerService templateManagerService;
-    
+
     private static WeakHashMap<ClassLoader, Map<String, JahiaTemplatesRBLoader>> loadersCache = new WeakHashMap<ClassLoader, Map<String, JahiaTemplatesRBLoader>>();
 
     public static JahiaTemplatesRBLoader getInstance(ClassLoader loader,
@@ -105,7 +105,7 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
 
         return instance;
     }
-    
+
     /**
      * Flushes the ResourceBundle internal caches.
      * TODO use ResourceBundle#clearCache() after switch to Java 6
@@ -113,7 +113,7 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
     public static void clearCache() {
         loadersCache.clear();
     }
-    
+
     private JahiaTemplatesRBLoader(ClassLoader loader, String templatePackageName) {
         super();
         templateManagerService =  ServicesRegistry.getInstance().getJahiaTemplateManagerService();

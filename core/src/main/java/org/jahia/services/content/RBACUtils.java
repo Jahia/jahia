@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Utility class for managing roles and permissions for JCR nodes.
- * 
+ *
  * @author Sergiy Shyrkov
  * @deprecated
  */
@@ -68,7 +68,7 @@ public final class RBACUtils {
     /**
      * Creates the specified permission if it does not exist yet. Also creates all intermediate permission nodes if not present yet. The
      * {@link Session#save()} is not called by this method; it is the responsibility of the caller.
-     * 
+     *
      * @param path
      *            the path of the permission to get/create
      * @param session
@@ -107,7 +107,7 @@ public final class RBACUtils {
     /**
      * Creates the specified role if it does not exist yet. The {@link Session#save()} is not called by this method; it is the
      * responsibility of the caller.
-     * 
+     *
      * @param path
      *            the path of the role to get/create
      * @param session
@@ -138,7 +138,7 @@ public final class RBACUtils {
     /**
      * Grants the specified permission to the role. Both permission and role nodes have to exist. The {@link Session#save()} is not called
      * by this method; it is the responsibility of the caller.
-     * 
+     *
      * @param permissionPath
      *            the path of the permission to be granted
      * @param rolePath
@@ -213,7 +213,7 @@ public final class RBACUtils {
 
     /**
      * Checks if the specified permissions is already grated to the role.
-     * 
+     *
      * @param rolePath
      *            the path of the role the permission should be checked for
      * @param permissionPath
@@ -274,7 +274,7 @@ public final class RBACUtils {
     /**
      * Grants the specified permission to the role. Both permission and role nodes have to exist. The {@link Session#save()} is not called
      * by this method; it is the responsibility of the caller.
-     * 
+     *
      * @param permissionPath
      *            the path of the permission to be granted
      * @param rolePath

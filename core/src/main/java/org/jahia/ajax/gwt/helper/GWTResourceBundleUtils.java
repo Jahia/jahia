@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -68,7 +68,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Helper class for populating {@link GWTResourceBundle} data in the {@link GWTJahiaNode} instance.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public final class GWTResourceBundleUtils {
@@ -305,7 +305,7 @@ public final class GWTResourceBundleUtils {
             }
             ResourceBundle.clearCache();
             NodeTypeRegistry.getInstance().flushLabels();
-            needPermissionReload = !node.getResolveSite().getLanguages().containsAll(bundle.getLanguages()); 
+            needPermissionReload = !node.getResolveSite().getLanguages().containsAll(bundle.getLanguages());
             node.getResolveSite().setLanguages(bundle.getLanguages());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

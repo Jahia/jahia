@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -68,9 +68,9 @@ import java.util.Set;
  */
 @SuppressWarnings("squid:RedundantThrowsDeclarationCheck")
 public class JahiaSystemSession extends SessionImpl {
-    
+
     private static final AccessControlPolicy[] ACCESS_CONTROL_POLICIES = new AccessControlPolicy[0];
-    
+
     private static final String SYSTEM_PRINCIPAL_NAME = new SystemPrincipal().getName();
 
     private static SystemAccessManager systemAccessManager;
@@ -286,7 +286,7 @@ public class JahiaSystemSession extends SessionImpl {
                 AccessDeniedException, PathNotFoundException, RepositoryException {
             // allow everything
         }
-        
+
         @Override
         public void checkRepositoryPermission(int permissions) throws AccessDeniedException, RepositoryException {
             // allow everything

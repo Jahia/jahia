@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -62,13 +62,13 @@ public class ExtractedVariable {
         this.name = name;
         this.value = value;
     }
-    
+
     public ExtractedVariable(String nodePath, String name, Object value, String correspondingNodeTypeName, String correspondingPropertyName) {
         this(nodePath, name, value);
         this.correspondingNodeTypeName = correspondingNodeTypeName;
         this.correspondingPropertyName = correspondingPropertyName;
     }
-    
+
     /**
      * @return the correspondingNodeTypeName
      */
@@ -94,7 +94,7 @@ public class ExtractedVariable {
     public Object getValue() {
         return value;
     }
-    
+
     @Override
     public String toString() {
         return ReflectionToStringBuilder.toString(this);

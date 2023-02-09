@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -54,14 +54,14 @@ import org.jahia.data.applications.EntryPointInstance;
 import org.apache.pluto.container.PortletWindow;
 
 /**
- * 
+ *
  * User: Serge Huber
  * Date: 30 juil. 2008
  * Time: 12:27:46
- * 
+ *
  */
 public class JahiaPortalServletRequest extends HttpServletRequestWrapper {
-    
+
     private JahiaUser jahiaUser;
     private EntryPointInstance entryPointInstance;
     private String id;
@@ -75,7 +75,7 @@ public class JahiaPortalServletRequest extends HttpServletRequestWrapper {
         this.id = window.getId().getStringId();
         this.workspaceName = workspaceName;
         RenderContext ctx = (RenderContext) request.getAttribute("renderContext");
-        this.locale = ctx != null && ctx.getMainResource() != null ? ctx.getMainResourceLocale() : null; 
+        this.locale = ctx != null && ctx.getMainResource() != null ? ctx.getMainResourceLocale() : null;
     }
 
     public String getRemoteUser() {
@@ -97,7 +97,7 @@ public class JahiaPortalServletRequest extends HttpServletRequestWrapper {
         }
         return entryPointInstance.isUserInRole(jahiaUser, role, workspaceName);
     }
-    
+
     @Override
     public Locale getLocale() {
         return locale != null ? locale : super.getLocale();

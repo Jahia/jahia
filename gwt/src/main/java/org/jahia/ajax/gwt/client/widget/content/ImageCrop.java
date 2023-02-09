@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -94,7 +94,7 @@ public class ImageCrop extends Window {
     private NumberField top;
 
     private NumberField left;
-    
+
     public ImageCrop(final Linker linker, final GWTJahiaNode n, List<Integer[]> predefinedSizes) {
         super();
         addStyleName("image-crop");
@@ -151,7 +151,7 @@ public class ImageCrop extends Window {
         width.setPropertyEditorType(Integer.class);
         height = new NumberField();
         height.setPropertyEditorType(Integer.class);
-        
+
         String imageWidthStr = n.get("j:width");
         String imageHeightStr = n.get("j:height");
         int imageWidth = 0;
@@ -282,7 +282,7 @@ public class ImageCrop extends Window {
         setHeaderVisible(true);
         setAutoHide(false);
     }
-    
+
     public void cropSelectionChanged(int x, int y, int w, int h) {
         left.setValue(x);
         top.setValue(y);
@@ -296,7 +296,7 @@ public class ImageCrop extends Window {
             newname.setValue(n.substring(0, n.lastIndexOf("-crop")) + "-crop" + w + "x" + h
                     + (dp != -1 ? n.substring(dp, n.length()) : ""));
         }
-        
+
         GWTJahiaValueDisplayBean v = predefinedSizesBox != null ? predefinedSizesBox.getValue() : null;
         if (v != null && (w != ((Integer) v.get("width")) || h != ((Integer) v.get("height")))) {
             // if the selection is changed -> clear predefined size box selection

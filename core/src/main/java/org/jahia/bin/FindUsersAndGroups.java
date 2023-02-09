@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Controller for performing user and group mixed search.
- * 
+ *
  * @author Sergiy Shyrkov
  * @since 6.6.1.0
  */
@@ -97,10 +97,10 @@ public class FindUsersAndGroups extends FindUser {
     protected Set<JCRNodeWrapper> search(String queryTerm, HttpServletRequest request) {
 
         int limit = Math.min(getIntParameter(request, "limit", defaultLimit), hardLimit);
-        
+
         if (!queryTerm.contains("*")) {
             // append wildcard to the search term
-            queryTerm += "*"; 
+            queryTerm += "*";
         }
 
         Set<JCRUserNode> users = searchUsers(queryTerm);

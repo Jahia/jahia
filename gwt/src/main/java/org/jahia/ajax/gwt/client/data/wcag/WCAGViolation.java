@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -46,13 +46,13 @@ import com.extjs.gxt.ui.client.data.BaseModel;
 
 /**
  * Represents a single WCAG validation error/warning/info item.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class WCAGViolation extends BaseModel {
 
 	private static final long serialVersionUID = 5076304453248072003L;
-	
+
 	public WCAGViolation() {
 		super();
     }
@@ -115,11 +115,11 @@ public class WCAGViolation extends BaseModel {
 	public void setLine(Integer line) {
 		set("line", line);
 	}
-	
+
 	public void setMessage(String message) {
 		set("message", message);
 	}
-	
+
 	public void setType(String type) {
 		set("type", type);
 	}

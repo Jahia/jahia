@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -63,9 +63,9 @@ import org.jahia.services.content.nodetypes.ValueImpl;
  * Time: 11:09:45 AM
  */
 public class Now implements ValueInitializer {
-    
+
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(Now.class);
-    
+
     public Value[] getValues(ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {
         long offset = 0;
         if (params.size() == 1) {
@@ -75,12 +75,12 @@ public class Now implements ValueInitializer {
                 logger.warn("Error evaluating now() initial value with parameter '" + params.get(0) + "'. Cause: " + e.getMessage(), e);
             }
         }
-        
+
         Calendar time = new GregorianCalendar();
         if (offset != 0) {
             time.setTimeInMillis(time.getTimeInMillis() + offset);
         }
-        
-        return new Value[] { new ValueImpl(ISO8601.format(time), PropertyType.DATE, false) };        
+
+        return new Value[] { new ValueImpl(ISO8601.format(time), PropertyType.DATE, false) };
     }
 }

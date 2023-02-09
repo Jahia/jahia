@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 /**
  * Abstract action item that considers allowed node types, i.e. a selected node should have of the allowed node types for this action to be
  * enabled.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 @SuppressWarnings("serial")
@@ -61,7 +61,7 @@ public abstract class NodeTypeAwareBaseActionItem extends BaseActionItem {
 
     /**
      * Returns <code>true</code> if the provided node has none of the forbidden types and has one of the allowed node types.
-     * 
+     *
      * @param selectedNode
      *            the currently selected node
      * @return <code>true</code> if the provided node has none of the forbidden types and has one of the allowed node types
@@ -77,7 +77,7 @@ public abstract class NodeTypeAwareBaseActionItem extends BaseActionItem {
 
     /**
      * Returns <code>true</code> if all of the selected nodes pass the {@link #isNodeTypeAllowed(GWTJahiaNode)} check.
-     * 
+     *
      * @param selection
      *            currently selected nodes
      * @return <code>true</code> if all of the selected nodes pass the {@link #isNodeTypeAllowed(GWTJahiaNode)} check

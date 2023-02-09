@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -98,12 +98,12 @@ import com.google.common.collect.Sets;
 
 /**
  * Unit test for import/export functionality
- * 
+ *
  * For a better overview, the test has a 3 levels deep structure of always 3 sub-pages (named child0, child1, child2) and each of them has 3
  * content lists having 3 mainContent nodes. And on some of them we are doing operations.
- * 
+ *
  * Here is the tree to see, what is done:
- * 
+ *
  * home
  *   child0
  *     child0 - is copied
@@ -117,14 +117,14 @@ import com.google.common.collect.Sets;
  *     child2
  *       child0
  *       child1
- *       child2        
+ *       child2
  *   child1 <-> renamed-child
  *     child0
  *       child0
  *         contentList2
  *               contentList2_text2 <-> renamed text-node
  *       child1
- *       child2        
+ *       child2
  *       moved-page
  *       moved-ugc-page
  *     child1
@@ -132,13 +132,13 @@ import com.google.common.collect.Sets;
  *         contentList0_text2 <-> updated title
  *       child0
  *       child1
- *       child2        
+ *       child2
  *     child2 -> removed
  *       child0
  *       child1
- *       child2        
+ *       child2
  *     added-page-to-renamed-page
- *     added-ugc-page-to-renamed-page (live)       
+ *     added-ugc-page-to-renamed-page (live)
  *       contentListUGC
  *         contentListUGC0_text2 <-> updated title (live)
  *         contentListUGC0_text3 -> removed
@@ -157,24 +157,24 @@ import com.google.common.collect.Sets;
  *         copied-ugc-node
  *           child0
  *           child1
- *           child2                  
+ *           child2
  *       child1 -> add tag in default
- *       child2 -> add tag in live       
- *     child2  
+ *       child2 -> add tag in live
+ *     child2
  *       child0
  *       child1
- *       child2 -> ordered before child0       
- *     added-child-to-existing-subpage -> moved 
- *     added-ugc-child-to-existing-subpage (live)  -> moved 
+ *       child2 -> ordered before child0
+ *     added-child-to-existing-subpage -> moved
+ *     added-ugc-child-to-existing-subpage (live)  -> moved
  *   added-child
  *   added-child-with-subpage
  *     subpage
  *   added-ugc-child (live)
  *   added-ugc-child-with-subpage (live)  -> change ACL in live
  *     ugc-subpage (live)
- * 
+ *
  * @author Benjamin Papez
- * 
+ *
  */
 public class ImportExportTest {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(ImportExportTest.class);
@@ -198,11 +198,11 @@ public class ImportExportTest {
 
     private final static Set<String> optionalProperties = Sets.newHashSet("jcr:mixinTypes", Constants.PUBLISHED, Constants.LASTPUBLISHED,
             Constants.LASTPUBLISHEDBY, "j:deletedChildren", "j:fullpath", "j:allowsUnlistedLanguages");
-    
-    private final static Set<String> optionalNodes = Sets.newHashSet("templates");    
-    
+
+    private final static Set<String> optionalNodes = Sets.newHashSet("templates");
+
     private final static Set<String> optionalMixins = Sets.newHashSet("jmix:deletedChildren");
-    
+
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
         JahiaSite site = TestHelper.createSite(TESTSITE_NAME);
@@ -396,7 +396,7 @@ public class ImportExportTest {
                     }
                 });
         sf.closeAllSessions();
-        
+
         testExportImportWithUGCComplexChanges();
     }
 
@@ -741,7 +741,7 @@ public class ImportExportTest {
                 JahiaContextLoaderListener.getServletContext().getRealPath("/WEB-INF/etc/repository/export/cleanup.xsl"));
         ImportExportService importExportService = ServicesRegistry.getInstance().getImportExportService();
         File zipFile = null;
-        
+
         try {
             zipFile = File.createTempFile("simpleimportexporttest", ".zip");
             try (OutputStream outputStream = new FileOutputStream(zipFile)) {
@@ -866,7 +866,7 @@ public class ImportExportTest {
 
                 while (sourceSiteIt.hasNext()) {
                     JCRNodeWrapper node = (JCRNodeWrapper) sourceSiteIt.next();
-                    if (!optionalNodes.contains(node.getName())) {                    
+                    if (!optionalNodes.contains(node.getName())) {
                         sourceChildNodes.put(node.getName(), node);
                     }
                 }
@@ -968,7 +968,7 @@ public class ImportExportTest {
                             }
                         }
                     }
-                    if (sourceValues.size() != targetValues.size() 
+                    if (sourceValues.size() != targetValues.size()
                             || (isReference && !compareReferenceValues(
                                     sourceValues, targetValues, sourceSiteNode.getSession(), targetSiteNode.getSession()))
                             || (!isReference && !compareArrayValues(sourceValues, targetValues))) {

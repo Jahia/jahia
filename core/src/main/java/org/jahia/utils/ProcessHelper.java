@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ import java.util.Map;
 
 /**
  * Utility class for executing external processes.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public final class ProcessHelper {
@@ -114,7 +114,7 @@ public final class ProcessHelper {
      * Executes the external process using the provided command, arguments (optional), parameter substitution map to expand variables in the
      * command or arguments in form of <code>${variable}<code> (optional) and a working directory (optional).
      * Buffers for process output and error stream can be provided.
-     * 
+     *
      * @param command
      *            the command to be executed
      * @param arguments
@@ -141,7 +141,7 @@ public final class ProcessHelper {
      * Executes the external process using the provided command, arguments (optional), parameter substitution map to expand variables in the
      * command or arguments in form of <code>${variable}<code> (optional) and a working directory (optional).
      * Buffers for process output and error stream can be provided.
-     * 
+     *
      * @param command
      *            the command to be executed
      * @param arguments

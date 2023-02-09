@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -108,7 +108,7 @@ public class JahiaSearchManager extends SearchManager {
     /**
      * The shared item state manager instance for the workspace.
      */
-    private final SharedItemStateManager itemMgr;    
+    private final SharedItemStateManager itemMgr;
 
     public JahiaSearchManager(String workspace,
             RepositoryContext repositoryContext, QueryHandlerFactory qhf,
@@ -160,7 +160,7 @@ public class JahiaSearchManager extends SearchManager {
 
         // Jahia: node-event based nodes that need to be removed from the index.
         final Set<NodeId> nodeEventRemovedNodes = new HashSet<>(removedNodes);
-        
+
         // sort out property events
         for (EventImpl e : propEvents) {
             NodeId nodeId = e.getParentId();
@@ -174,7 +174,7 @@ public class JahiaSearchManager extends SearchManager {
                     // the node where this prop belongs to is also new
                 }
             } else if (e.getType() == Event.PROPERTY_CHANGED) {
-                // need to re-index, but set the event only if there is not already another one set for the node, 
+                // need to re-index, but set the event only if there is not already another one set for the node,
                 // or the property is j:inherit
                 if (!addedNodes.containsKey(nodeId)) {
                     addedNodes.put(nodeId, e);
@@ -187,7 +187,7 @@ public class JahiaSearchManager extends SearchManager {
                         log.warn("Exception retrieving path", ex);
                     }
                 }
-                    
+
                 removedNodes.add(nodeId);
             } else {
                 // property removed event is only generated when node still exists
@@ -199,12 +199,12 @@ public class JahiaSearchManager extends SearchManager {
         }
         try {
             addJahiaDependencies(removedNodes, addedNodes, propEvents, nodeEventRemovedNodes);
-        
+
             boolean addedNodesPresent = addedNodes.size() > 0;
             if (addedNodesPresent || !removedNodes.isEmpty()) {
                 Iterator<NodeState> addedStates = addedNodesPresent ? new NodeStateIterator(addedNodes) : Collections.<NodeState>emptyIterator();
-                Iterator<NodeId> removedIds = removedNodes.iterator();            
-            
+                Iterator<NodeId> removedIds = removedNodes.iterator();
+
                 getQueryHandler().updateNodes(removedIds, addedStates);
             }
         } catch (RepositoryException | IOException e) {
@@ -215,12 +215,12 @@ public class JahiaSearchManager extends SearchManager {
             log.debug("onEvent: indexing finished in {} ms.", System.currentTimeMillis() - time);
         }
     }
-    
+
     private void addJahiaDependencies(final Set<NodeId> removedIds,
             final Map<NodeId, EventImpl> addedStates,
             List<EventImpl> propEvents, final Set<NodeId> nodeEventRemovedIds)
             throws RepositoryException, IOException {
-        
+
         Set<NodeId> hierarchyNodeIds = getReMovedOrRenamedHierarchicalNodes(nodeEventRemovedIds);
         if (!hierarchyNodeIds.isEmpty()) {
             // if a node which is referenced with a hierarchical faceting property is moved/renamed, we need to re-index the nodes
@@ -259,7 +259,7 @@ public class JahiaSearchManager extends SearchManager {
                 Util.closeOrRelease(reader);
             }
         }
-        
+
         // index also translation subnodes, unless only properties are changed, which are excluded from copying down to
         // translation nodes
         if (!addedStates.isEmpty() && !areAllPropertiesCopyExcluded(propEvents)) {
@@ -282,7 +282,7 @@ public class JahiaSearchManager extends SearchManager {
             }
         }
     }
-    
+
     private void addIdToBeIndexed(NodeId id, Set<NodeId> removedIds, Map<NodeId, EventImpl> addedStates) throws ItemStateException {
         if (!removedIds.contains(id)
                 && !addedStates.containsKey(id)) {
@@ -292,7 +292,7 @@ public class JahiaSearchManager extends SearchManager {
             addedStates.put(id, null);
         }
     }
-    
+
     private boolean areAllPropertiesCopyExcluded(List<EventImpl> propEvents) {
         Set<Name> excludes = ((JahiaIndexingConfigurationImpl) ((SearchIndex)getQueryHandler()).getIndexingConfig()).getExcludesFromI18NCopy();
         for (final EventImpl event : propEvents) {
@@ -306,7 +306,7 @@ public class JahiaSearchManager extends SearchManager {
         }
         return true;
     }
-    
+
     private Set<NodeId> getReMovedOrRenamedHierarchicalNodes(final Set<NodeId> nodeEventRemovedIds) {
         if (nodeEventRemovedIds.isEmpty()) {
             return Collections.emptySet();
@@ -314,7 +314,7 @@ public class JahiaSearchManager extends SearchManager {
         Set<NodeId> hierarchicalNodes = new HashSet<>();
         Set<Name> hierarchicalNodeTypes = ((JahiaIndexingConfigurationImpl) ((SearchIndex)getQueryHandler()).getIndexingConfig()).getHierarchicalNodetypes();
         for (final NodeId nodeId : nodeEventRemovedIds) {
-            try { 
+            try {
                 if (hierarchicalNodeTypes.contains(((NodeState) itemMgr.getItemState(nodeId)).getNodeTypeName())) {
                     hierarchicalNodes.add(nodeId);
                 }

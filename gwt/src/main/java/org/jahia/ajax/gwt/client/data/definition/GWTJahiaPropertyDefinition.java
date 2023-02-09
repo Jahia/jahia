@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Property definition GWT bean. 
+ * Property definition GWT bean.
  *
  * User: toto
  * Date: Aug 26, 2008 - 7:37:53 PM
@@ -64,7 +64,7 @@ public class GWTJahiaPropertyDefinition extends GWTJahiaItemDefinition implement
     private List<String> valueConstraints ;
     private List<GWTJahiaNodePropertyValue> defaultValues;
     private String constraintErrorMessage;
-    
+
     private String minValue;
     private String maxValue;
 
@@ -135,7 +135,7 @@ public class GWTJahiaPropertyDefinition extends GWTJahiaItemDefinition implement
     public void setMaxValue(String maxValue) {
         this.maxValue = maxValue;
     }
-    
+
     public String getConstraintErrorMessage() {
         return constraintErrorMessage;
     }

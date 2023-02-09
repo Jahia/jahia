@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -61,14 +61,14 @@ import org.apache.jackrabbit.core.security.principal.PrincipalProviderRegistry;
  * in order to prefer local login configuration (if available) over JAAS. <br>
  * The problem was fixed in Jackrabbit 1.6 (revision 791815).
  * After upgrade to 1.6 this class should be dropped.
- * 
+ *
  * @author Sergiy Shyrkov
  *
  * @deprecated Use {@link org.apache.jackrabbit.core.security.authentication.AuthContextProvider} instead
  */
 @Deprecated
 public class JahiaAuthContextProvider extends AuthContextProvider {
-    
+
     public static class JahiaJAASAuthContext extends JAASAuthContext {
         protected JahiaJAASAuthContext(String appName,
                 CallbackHandler cbHandler, Subject subject) {
@@ -85,10 +85,10 @@ public class JahiaAuthContextProvider extends AuthContextProvider {
 
     private String applicationName;
     private LoginModuleConfig configuration;
-    
+
     /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param appName
      * @param config
      */
@@ -103,7 +103,7 @@ public class JahiaAuthContextProvider extends AuthContextProvider {
             Session session,
             PrincipalProviderRegistry principalProviderRegistry,
             String adminId, String anonymousId) throws RepositoryException {
-        
+
         CallbackHandler cbHandler = new CallbackHandlerImpl(credentials, session, principalProviderRegistry, adminId, anonymousId);
 
         if (isLocal()){

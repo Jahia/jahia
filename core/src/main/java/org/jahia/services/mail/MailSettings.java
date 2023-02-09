@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ import org.jahia.exceptions.JahiaException;
 
 /**
  * Mail configuration values.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class MailSettings implements Serializable {
@@ -100,7 +100,7 @@ public class MailSettings implements Serializable {
 
     /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param serviceEnabled
      *            is service enabled
      * @param uri
@@ -124,7 +124,7 @@ public class MailSettings implements Serializable {
 
     /**
      * Returns the from.
-     * 
+     *
      * @return the from
      */
     public String getFrom() {
@@ -133,7 +133,7 @@ public class MailSettings implements Serializable {
 
     /**
      * Returns the notificationLevel.
-     * 
+     *
      * @return the notificationLevel
      */
     public String getNotificationLevel() {
@@ -142,7 +142,7 @@ public class MailSettings implements Serializable {
 
     /**
      * Returns the notification severity.
-     * 
+     *
      * @return the notification severity
      */
     public int getNotificationSeverity() {
@@ -151,7 +151,7 @@ public class MailSettings implements Serializable {
 
     /**
      * Returns the to.
-     * 
+     *
      * @return the to
      */
     public String getTo() {
@@ -160,7 +160,7 @@ public class MailSettings implements Serializable {
 
     /**
      * Returns the mail server connection URI.
-     * 
+     *
      * @return the mail server connection URI
      */
     public String getUri() {
@@ -169,7 +169,7 @@ public class MailSettings implements Serializable {
 
     /**
      * Returns the configugationValid.
-     * 
+     *
      * @return the configugationValid
      */
     public boolean isConfigurationValid() {
@@ -178,7 +178,7 @@ public class MailSettings implements Serializable {
 
     /**
      * Returns the serviceEnabled.
-     * 
+     *
      * @return the serviceEnabled
      */
     public boolean isServiceActivated() {
@@ -187,7 +187,7 @@ public class MailSettings implements Serializable {
 
     /**
      * Sets the value of configugationValid.
-     * 
+     *
      * @param configugationValid
      *            the configugationValid to set
      */
@@ -197,7 +197,7 @@ public class MailSettings implements Serializable {
 
     /**
      * Sets the value of from.
-     * 
+     *
      * @param from
      *            the from to set
      */
@@ -207,7 +207,7 @@ public class MailSettings implements Serializable {
 
     /**
      * Sets the value of notificationLevel.
-     * 
+     *
      * @param notificationLevel
      *            the notificationLevel to set
      */
@@ -219,7 +219,7 @@ public class MailSettings implements Serializable {
 
     /**
      * Sets the value of serviceActivated.
-     * 
+     *
      * @param serviceActivated
      *            is the service activated
      */
@@ -229,7 +229,7 @@ public class MailSettings implements Serializable {
 
     /**
      * Sets the value of to.
-     * 
+     *
      * @param to
      *            the to to set
      */
@@ -239,7 +239,7 @@ public class MailSettings implements Serializable {
 
     /**
      * Sets the value of uri.
-     * 
+     *
      * @param uri
      *            the connection URI to set
      */
@@ -306,7 +306,7 @@ public class MailSettings implements Serializable {
         }
         if(uri.contains("&")) {
         	uri = StringUtils.substringBefore(uri, "&");
-        }    
+        }
         return uri;
     }
 
@@ -339,7 +339,7 @@ public class MailSettings implements Serializable {
 
     /**
      * Returns the value of the flag for workflow tasks e-mail notifications.
-     * 
+     *
      * @return <code>true</code> if the e-mail notifications for workflow tasks are globally enabled; <code>false</code> if they are
      *         disabled globally
      */
@@ -349,7 +349,7 @@ public class MailSettings implements Serializable {
 
     /**
      * Updates the flag for disabling e-mail notifications for workflow tasks.
-     * 
+     *
      * @param workflowNotificationsDisabled <code>true</code> to disable workflow task notifications; <code>false</code> to enable it
      */
     public void setWorkflowNotificationsDisabled(boolean workflowNotificationsDisabled) {

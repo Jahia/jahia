@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
 
 /**
- * 
+ *
  * User: rfelden
  * Date: 28 ao�t 2008
  * Time: 11:54:43
@@ -114,9 +114,9 @@ public class TriPanelBrowserLayout extends ContentPanel {
         }
 
         layout.add(eastPanels, new BorderLayoutData(Style.LayoutRegion.CENTER));
-        
+
         layout.setId("JahiaGxtManagerMain");
-        
+
         // layout is the main widget contained in the viewport
         add(layout);
 

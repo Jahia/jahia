@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -108,7 +108,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
     public static final Name J_ACE_ROLES = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "roles");
 
     private static final String USER_PRINCIPAL_PREFIX = "u:";
-    
+
     public static final String CHECK_VISIBILITY = "_:CHECK_VISIBILITY".intern();
 
     private static final Name J_EXTRACTED_TEXT = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "extractedText");
@@ -122,7 +122,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
 
     public static final Name J_INVALID_LANGUAGES = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "invalidLanguages");
     public static final String INVALID_LANGUAGES = "_:INVALID_LANGUAGES".intern();
-    
+
     private static final int INITIAL_COLLECTION_SIZE = 17;
     /**
      * The persistent node type registry
@@ -313,7 +313,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
         }
         return propDef;
     }
-    
+
     @java.lang.SuppressWarnings("java:S1130")
     protected ExtendedPropertyDefinition getPropertyDefinition(String fieldName) throws RepositoryException, ItemStateException {
         return getPropertyDefinitionFor(fieldName, getNodeType(), node);
@@ -421,7 +421,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
             }
         }
     }
-    
+
     private String extractTextFromHtml(String internalValue) {
         try {
             Metadata metadata = new Metadata();
@@ -437,7 +437,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
             return StringEscapeUtils.unescapeHtml(internalValue);
         }
     }
-    
+
     private void addFieldForSpellchecking(Document doc, String propertyName, String internalValue) {
         if (getIndexingConfig().shouldPropertyBeSpellchecked(propertyName) && resolveSite() != null) {
             doc.add(createFulltextField(getFullTextFieldName(site), internalValue, false));
@@ -516,7 +516,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
                 parent = (NodeState) stateProvider.getItemState(node.getParentId());
             }
             String jcrPath = resolver.getJCRPath(hierarchyMgr.getPath(node.getNodeId()));
-            // we stop either at the root (/) or in case of categories also at /sites/systemsite 
+            // we stop either at the root (/) or in case of categories also at /sites/systemsite
             while (!"/".equals(jcrPath) && (!isCategoryType || !("0:/0:sites/0:systemsite").equals(jcrPath))) {
                 parentIds.add(node.getNodeId().toString());
                 node = (NodeState) stateProvider.getItemState(node.getParentId());
@@ -652,7 +652,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
     @Override
     public Document createDoc() throws RepositoryException {
         Document doc = createDocIgnoringMissingProperties();
-        
+
         if (isAddAclUuidInIndex() && isIndexed(J_ACL)) {
             addAclUuid(doc);
         }
@@ -723,7 +723,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
             }
         }
     }
-    
+
     protected void cleanupNodeProperties(NodeState node) {
         Set<Name> props = node.getPropertyNames();
         Set<Name> toRemove = null;
@@ -777,7 +777,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
         doc.add(new Field(ACL_UUID, false, StringUtils.join(acls, " "), Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS,
                 Field.TermVector.NO));
     }
-    
+
     private boolean isAclNotInherited(ChildNodeEntry aclChildNode) throws RepositoryException, ItemStateException {
         boolean aclNotInherited = false;
         PropertyId propId = new PropertyId(aclChildNode.getId(), J_ACL_INHERITED);
@@ -787,7 +787,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
         }
         return aclNotInherited;
     }
-    
+
     private String getAce(NodeState node, ChildNodeEntry aclChildNode) throws RepositoryException, ItemStateException {
         StringBuilder ace = new StringBuilder(node.getId().toString());
         NodeState ns = (NodeState) stateProvider.getItemState(aclChildNode.getId());
@@ -845,16 +845,16 @@ public class JahiaNodeIndexer extends NodeIndexer {
     public void setUseOptimizedACEIndexation(boolean useOptimizedACEIndexation) {
         this.useOptimizedACEIndexation = useOptimizedACEIndexation;
     }
-    
+
     /**
      * If given node to index is of type jnt:translation create a JahiaTranslationNodeIndexer otherwise a JahiaNodeIndexer is created
-     * 
+     *
      * @param node The <code>NodeState</code> of the node to index
      * @param itemStateManager The persistent item state provider
      * @param nsMappings Namespace mappings to use for indexing
      * @param executor Background task executor used for full text extraction
      * @param parser Parser used for extracting text content from binary properties
-     * @param context the <code>QueryHandlerContext</code> instance 
+     * @param context the <code>QueryHandlerContext</code> instance
      * @return the <code>NodeIndexer</code> to be used for indexing the given node
      * @throws RepositoryException repository exception
      */

@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -89,10 +89,10 @@ public class DeployResourcesTestExecutionListener extends
 
         importXmlFiles(TEST_META_INF);
         importXmlFiles(MAIN_META_INF);
-        
+
         startSchedulers();
     }
-    
+
     private void startSchedulers() {
         try {
             // start schedulers
@@ -102,7 +102,7 @@ public class DeployResourcesTestExecutionListener extends
             throw new JahiaRuntimeException(e);
         }
     }
-    
+
     private void addCndFiles(String resourcePath, String systemId)
             throws Exception {
         for (File cndFile : listFiles(resourcePath, "*.cnd")) {
@@ -169,6 +169,6 @@ public class DeployResourcesTestExecutionListener extends
         File dir = new File(resourcePath);
         FileFilter fileFilter = new WildcardFileFilter(extension);
         File[] files = dir.listFiles(fileFilter);
-        return files == null ? Collections.<File>emptyList() : Arrays.<File>asList(files); 
+        return files == null ? Collections.<File>emptyList() : Arrays.<File>asList(files);
     }
 }

@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ import java.util.Date;
 
 /**
  * History record for a workflow process instance.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class HistoryWorkflowBase extends WorkflowBase {
@@ -67,7 +67,7 @@ public class HistoryWorkflowBase extends WorkflowBase {
 
     /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param processId the ID of the corresponding workflow process instance
      * @param name the name of the item
      * @param provider the provider key
@@ -94,7 +94,7 @@ public class HistoryWorkflowBase extends WorkflowBase {
     /**
      * Returns the time when the process instance ended (only not null if the
      * process instance already ended).
-     * 
+     *
      * @return the time when the process instance ended (only not null if the
      *         process instance already ended)
      */
@@ -104,7 +104,7 @@ public class HistoryWorkflowBase extends WorkflowBase {
 
     /**
      * Returns the time when the process instance was started.
-     * 
+     *
      * @return the time when the process instance was started
      */
     public Date getStartTime() {
@@ -121,7 +121,7 @@ public class HistoryWorkflowBase extends WorkflowBase {
 
     /**
      * Returns an ID of the corresponding workflow process instance.
-     * 
+     *
      * @return an ID of the corresponding workflow process instance
      */
     public String getProcessId() {
@@ -130,7 +130,7 @@ public class HistoryWorkflowBase extends WorkflowBase {
 
     /**
      * Sets the end time for the workflow process instance.
-     * 
+     *
      * @param endTime the endTime to set
      */
     public void setEndTime(Date endTime) {

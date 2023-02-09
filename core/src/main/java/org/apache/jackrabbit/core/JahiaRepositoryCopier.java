@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -61,7 +61,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Tool for migrating or backing up the Jackrabbit content repository. Optimized version of the
  * {@link org.apache.jackrabbit.core.RepositoryCopier}.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class JahiaRepositoryCopier {
@@ -73,7 +73,7 @@ public class JahiaRepositoryCopier {
     private RepositoryContext source;
 
     private RepositoryContext target;
-    
+
     public JahiaRepositoryCopier(RepositoryImpl source, RepositoryImpl target, int batchSize) {
         this.source = source.getRepositoryContext();
         this.target = target.getRepositoryContext();
@@ -87,7 +87,7 @@ public class JahiaRepositoryCopier {
      * <p>
      * This method leaves the search indexes of the target repository in an Note that both the source and the target repository must be
      * closed during the copy operation as this method requires exclusive access to the repositories.
-     * 
+     *
      * @throws RepositoryException
      *             if the copy operation fails
      */

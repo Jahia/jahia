@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ import java.util.*;
 
 /**
  * File watcher service implementation that is based on the VFS DefaultFileMonitor.
- * 
+ *
  * @author Sergiy Shyrkov
  * @see <a href="http://commons.apache.org/vfs">Commons VFS project</a>
  */
@@ -131,7 +131,7 @@ public class FileMonitor implements Serializable {
 
         /**
          * Only checks for new children. If children are removed, they'll eventually be checked.
-         * 
+         *
          * @param listener
          */
         private void checkForNewChildren(FileListener listener) {
@@ -183,7 +183,7 @@ public class FileMonitor implements Serializable {
         /**
          * Recursively fires create events for all children if recursive descent is enabled. Otherwise the create event is only fired for
          * the initial FileObject.
-         * 
+         *
          * @param child
          *            The child to add.
          * @param listener
@@ -278,7 +278,7 @@ public class FileMonitor implements Serializable {
 
     /**
      * Adds a file to be monitored.
-     * 
+     *
      * @param file
      *            The FileObject to monitor.
      */
@@ -302,7 +302,7 @@ public class FileMonitor implements Serializable {
 
     /**
      * get the number of files to check per run.
-     * 
+     *
      * @return The number of files to check per iteration.
      */
     public int getChecksPerRun() {
@@ -311,7 +311,7 @@ public class FileMonitor implements Serializable {
 
     /**
      * Get the delay between runs.
-     * 
+     *
      * @return The delay period.
      */
     public long getDelay() {
@@ -328,7 +328,7 @@ public class FileMonitor implements Serializable {
 
     /**
      * Access method to get the recursive setting when adding files for monitoring.
-     * 
+     *
      * @return true if monitoring is enabled for children.
      */
     public boolean isRecursive() {
@@ -337,7 +337,7 @@ public class FileMonitor implements Serializable {
 
     /**
      * Queues a file for addition to be monitored.
-     * 
+     *
      * @param file
      *            The FileObject to add.
      */
@@ -347,7 +347,7 @@ public class FileMonitor implements Serializable {
 
     /**
      * Queues a file for removal from being monitored.
-     * 
+     *
      * @param file
      *            The File to be removed from being monitored
      */
@@ -357,7 +357,7 @@ public class FileMonitor implements Serializable {
 
     /**
      * Removes a file from being monitored.
-     * 
+     *
      * @param file
      *            The File to remove from monitoring
      */
@@ -424,7 +424,7 @@ public class FileMonitor implements Serializable {
 
     /**
      * set the number of files to check per run. a additional delay will be added if there are more files to check
-     * 
+     *
      * @param checksPerRun
      *            a value less than 1 will disable this feature
      */
@@ -434,7 +434,7 @@ public class FileMonitor implements Serializable {
 
     /**
      * Set the delay between runs.
-     * 
+     *
      * @param delay
      *            The delay period.
      */
@@ -460,7 +460,7 @@ public class FileMonitor implements Serializable {
 
     /**
      * Access method to set the recursive setting when adding files for monitoring.
-     * 
+     *
      * @param newRecursive
      *            true if monitoring should be enabled for children.
      */

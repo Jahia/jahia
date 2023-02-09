@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 /**
  * Jahia password policy object, holding a list of rules to be enforced e.g. on
  * changing password and on login.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class JahiaPasswordPolicy implements Serializable {
@@ -74,7 +74,7 @@ public class JahiaPasswordPolicy implements Serializable {
 
 	/**
 	 * Initializes an instance of this class.
-	 * 
+	 *
 	 * @param id
 	 * @param name
 	 */
@@ -99,7 +99,7 @@ public class JahiaPasswordPolicy implements Serializable {
 
 	/**
 	 * Returns the policy id.
-	 * 
+	 *
 	 * @return the policy id
 	 */
 	public String getId() {
@@ -108,7 +108,7 @@ public class JahiaPasswordPolicy implements Serializable {
 
 	/**
 	 * Returns the policy name.
-	 * 
+	 *
 	 * @return the policy name
 	 */
 	public String getName() {
@@ -117,7 +117,7 @@ public class JahiaPasswordPolicy implements Serializable {
 
 	/**
 	 * Returns the requested policy rule.
-	 * 
+	 *
 	 * @param position
 	 *            the rule position in the list (zero-based)
 	 * @return the requested policy rule
@@ -128,7 +128,7 @@ public class JahiaPasswordPolicy implements Serializable {
 
 	/**
 	 * Returns list of rules for this policy.
-	 * 
+	 *
 	 * @return list of rules for this policy
 	 */
 	public List<JahiaPasswordPolicyRule> getRules() {
@@ -137,7 +137,7 @@ public class JahiaPasswordPolicy implements Serializable {
 
 	/**
 	 * Sets the value of policy id.
-	 * 
+	 *
 	 * @param id
 	 *            the policy id to set
 	 */
@@ -147,7 +147,7 @@ public class JahiaPasswordPolicy implements Serializable {
 
 	/**
 	 * Sets the value of policy name.
-	 * 
+	 *
 	 * @param name
 	 *            the policy name to set
 	 */
@@ -157,7 +157,7 @@ public class JahiaPasswordPolicy implements Serializable {
 
 	/**
 	 * Sets the list of rules for this policy.
-	 * 
+	 *
 	 * @param rules
 	 *            the list of rules for this policy
 	 */

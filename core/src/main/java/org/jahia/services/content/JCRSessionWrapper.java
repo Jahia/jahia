@@ -1347,6 +1347,9 @@ public class JCRSessionWrapper implements Session {
         return sessionCacheByIdentifier.get(uuid);
     }
 
+    public int getCacheSize() {
+        return sessionCacheByIdentifier.size() + sessionCacheByPath.size();
+    }
 
     public boolean isCurrentUserSession() {
         return isCurrentUserSession;

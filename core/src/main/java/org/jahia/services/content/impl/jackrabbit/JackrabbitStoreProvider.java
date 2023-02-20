@@ -58,6 +58,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.jcr.*;
+import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NodeTypeDefinition;
 import javax.jcr.nodetype.NodeTypeIterator;
 import javax.jcr.nodetype.NodeTypeManager;
@@ -277,13 +278,18 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
                     Property p = it.nextProperty();
                     if (p.getType() == PropertyType.WEAKREFERENCE) {
                         Collection<Value> refs;
-                        if (p.isMultiple()) {
-                            refs = Arrays.asList(p.getValues());
-                        } else {
-                            refs = Collections.singleton(p.getValue());
-                        }
-                        if (refs.contains(ref)) {
-                            props.add(p);
+                        try {
+                            p.getDefinition();
+                            if (p.isMultiple()) {
+                                refs = Arrays.asList(p.getValues());
+                            } else {
+                                refs = Collections.singleton(p.getValue());
+                            }
+                            if (refs.contains(ref)) {
+                                props.add(p);
+                            }
+                        } catch (ConstraintViolationException e) {
+                            logger.warn(e.getClass().getName() + ": " + e.getMessage() +", path: " + p.getPath());
                         }
                     }
                 }

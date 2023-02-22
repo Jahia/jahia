@@ -157,6 +157,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static final String PLUTO_RESOURCE = "rs";
 
     protected static final Set<String> RESERVED_PARAMETERS;
+
     static {
         RESERVED_PARAMETERS = new HashSet<String>();
         RESERVED_PARAMETERS.add(NODE_TYPE);
@@ -221,7 +222,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
      * makes browser and proxy caches work more effectively, reducing the load on server and network resources.
      *
      * @return a <code>long</code> integer specifying the time the <code>HttpServletRequest</code> object was last modified, in milliseconds
-     *         since midnight, January 1, 1970 GMT, or -1 if the time is not known
+     * since midnight, January 1, 1970 GMT, or -1 if the time is not known
      */
     protected long getLastModified(Resource resource, RenderContext renderContext)
             throws RepositoryException, IOException {
@@ -248,7 +249,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JahiaUser user) {
         RenderContext context = new RenderContext(req, resp, user);
         int index = req.getPathInfo().indexOf('/', 1);
-        if (index == -1 || index == req.getPathInfo().length()-1) {
+        if (index == -1 || index == req.getPathInfo().length() - 1) {
             throw new JahiaBadRequestException("Invalid path");
         }
         context.setServletPath(req.getServletPath() + req.getPathInfo().substring(0, index));
@@ -294,8 +295,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 cookie.setHttpOnly(Boolean.valueOf(req.getParameter(COOKIE_HTTP_ONLY)));
             }
             //Cookie value should only be a node identifier
+            //If workspace is not set, action might have been called in live (rating/forum)
             try {
-                jcrSessionFactory.getCurrentUserSession(workspace).getNodeByUUID(cookieValue);
+                jcrSessionFactory.getCurrentUserSession(StringUtils.isEmpty(workspace) ? Constants.LIVE_WORKSPACE : workspace).getNodeByUUID(cookieValue);
             } catch (RepositoryException e) {
                 throw new JahiaBadRequestException("Cookie value should be a node UUID");
             }
@@ -361,7 +363,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             try {
                 resolveSite(req, urlResolver, renderContext, resource);
             } catch (RepositoryException e) {
-                logger.warn("Cannot get site for action context",e);
+                logger.warn("Cannot get site for action context", e);
             }
 
             if (isWebflowRequest(req)) {
@@ -412,7 +414,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         Map<?, ?> parameterMap = req.getParameterMap();
 
         boolean doXSSFilter = true;
-        String token = parameterMap.get("form-token")!=null?((String[])parameterMap.get("form-token"))[0]:null;
+        String token = parameterMap.get("form-token") != null ? ((String[]) parameterMap.get("form-token"))[0] : null;
         if (token != null) {
             @SuppressWarnings("unchecked")
             Map<String, Map<String, List<String>>> toks = (Map<String, Map<String, List<String>>>) req.getSession().getAttribute("form-tokens");
@@ -425,7 +427,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 String[] parameterValues = (String[]) parameterMap.get(key);
                 List<String> stringList;
                 if (doXSSFilter && !RESERVED_PARAMETERS.contains(key)) {
-                    stringList =  new ArrayList<String>();
+                    stringList = new ArrayList<String>();
                     for (String s : parameterValues) {
                         stringList.add(xssFilter(s));
                     }
@@ -688,7 +690,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
         stringList = parameters.get(REDIRECT_TO);
         String stayOnPage =
-                !CollectionUtils.isEmpty(stringList) && !StringUtils.isBlank(stringList.get(0)) ? StringUtils.substringBeforeLast(stringList.get(0),";") :
+                !CollectionUtils.isEmpty(stringList) && !StringUtils.isBlank(stringList.get(0)) ? StringUtils.substringBeforeLast(stringList.get(0), ";") :
                         null;
 
         if (!Login.isAuthorizedRedirect(req, stayOnPage, true)) {
@@ -809,7 +811,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             if (method.equals(METHOD_GET)) {
                 Resource resource;
                 resource = urlResolver.getResource();
-                if (!StringUtils.isEmpty(urlResolver.getRedirectUrl()) && (StringUtils.isEmpty(resource.getTemplate()) || StringUtils.equals(resource.getTemplate(),"default"))) {
+                if (!StringUtils.isEmpty(urlResolver.getRedirectUrl()) && (StringUtils.isEmpty(resource.getTemplate()) || StringUtils.equals(resource.getTemplate(), "default"))) {
                     Map<String, List<String>> parameters = new HashMap<String, List<String>>();
                     parameters.put(NEW_NODE_OUTPUT_FORMAT, LIST_WITH_EMPTY_STRING);
                     parameters.put(REDIRECT_HTTP_RESPONSE_CODE, REDIRECT_CODE_MOVED_PERMANENTLY);
@@ -1014,7 +1016,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                             true);
                 } else {
                     resp.setContentType("application/json; charset=UTF-8");
-                    Map<String,String> res = new HashMap<String,String>();
+                    Map<String, String> res = new HashMap<String, String>();
                     res.put("status", errorMessage);
                     new JSONObject(res).write(resp.getWriter());
                 }
@@ -1056,7 +1058,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     || req.getHeader("accept") != null && req.getHeader("accept").contains("application/json");
             if (result.getResultCode() < 300 || returnJSON) {
                 resp.setStatus(result.getResultCode());
-                addCookie(req,resp);
+                addCookie(req, resp);
                 if (result.getJson() != null && returnJSON) {
                     try {
                         String contentType = parameters.get(RETURN_CONTENTTYPE_OVERRIDE) != null ? StringUtils.defaultIfEmpty(parameters.get(RETURN_CONTENTTYPE_OVERRIDE).get(0), null) : null;
@@ -1085,7 +1087,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     }
 
     private static void checkActionRequirements(Action action, final Action originalAction, RenderContext renderContext,
-            URLResolver urlResolver) throws RepositoryException {
+                                                URLResolver urlResolver) throws RepositoryException {
         if (action.getRequiredMethods() != null && !action.getRequiredMethods().contains(renderContext.getRequest().getMethod())) {
             throw new AccessDeniedException("Action requires " + action.getRequiredMethods());
         }
@@ -1107,9 +1109,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     /**
      * Performs all required checks for this action.
      *
-     * @param action the action to check requirements for
+     * @param action        the action to check requirements for
      * @param renderContext current render context instance
-     * @param urlResolver the URL resolver instance
+     * @param urlResolver   the URL resolver instance
      * @throws RepositoryException in case of requirements violation
      * @since 7.2.3.2
      */
@@ -1223,7 +1225,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     }
 
     public String getDefaultContentType(String templateType) {
-        if(templateType != null && defaultContentType.get(templateType) != null) {
+        if (templateType != null && defaultContentType.get(templateType) != null) {
             return defaultContentType.get(templateType);
         }
         return "text/html; charset=UTF-8";

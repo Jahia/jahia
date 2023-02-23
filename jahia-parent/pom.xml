@@ -70,10 +70,10 @@
         <springtx.version>3.2.18.RELEASE_OSGI2</springtx.version>
         <springwebflow-version>2.4.8.RELEASE</springwebflow-version>
         <jackrabbit.version>2.18.4-jahia1</jackrabbit.version>
-        <jackson.core.version>2.13.3</jackson.core.version>
-        <jackson-databind.core.version>2.13.3</jackson-databind.core.version>
-        <jackson.osgi.version>2.13.3</jackson.osgi.version>
-        <jackson-databind.osgi.version>2.13.3</jackson-databind.osgi.version>
+        <jackson.core.version>2.14.2</jackson.core.version>
+        <jackson-databind.core.version>2.14.2</jackson-databind.core.version>
+        <jackson.osgi.version>2.14.2</jackson.osgi.version>
+        <jackson-databind.osgi.version>2.14.2</jackson-databind.osgi.version>
         <lucene.version>3.6.2</lucene.version>
         <jbpm.version>6.0.0.Final</jbpm.version>
         <jbpm.version.jahia>${jbpm.version}-jahia</jbpm.version.jahia>
@@ -88,9 +88,10 @@
         <groovy.version>3.0.8</groovy.version>
         <shiro.version>1.10.0</shiro.version>
         <jodconverter.version>4.4.2</jodconverter.version>
-        <tika.version>1.28.4</tika.version>
-        <xstream.version>1.4.19</xstream.version>
+        <tika.version>1.28.5</tika.version>
+        <xstream.version>1.4.20</xstream.version>
         <jericho.version>3.4</jericho.version>
+        <woodstox.version>6.4.0</woodstox.version>
         <!--Atmosphere javascript is defined as a static resource in Jahia and has to be update manually-->
         <atmosphere.version>2.5.4-jahia</atmosphere.version>
         <atmosphere.gwt.version>2.5.2</atmosphere.gwt.version>
@@ -108,7 +109,7 @@
         <launch4j.version>3.12</launch4j.version>
         <log4j.version>2.17.2</log4j.version>
         <jahia.tomcat.version>9.0.71</jahia.tomcat.version>
-        <protobuf.java.version>3.21.0</protobuf.java.version>
+        <protobuf.java.version>3.21.12</protobuf.java.version>
 
         <driver.derby.version>10.14.2.0</driver.derby.version>
         <driver.mssql.version>9.2.1.jre8</driver.mssql.version>

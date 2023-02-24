@@ -52,6 +52,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspWriter;
 
 import org.apache.taglibs.standard.tag.common.core.Util;
+import org.apache.taglibs.standard.util.EscapeXML;
 import org.jahia.taglibs.AbstractJahiaTag;
 
 /**
@@ -456,7 +457,7 @@ public class SessionViewerTag extends AbstractJahiaTag {
             if (value instanceof Map) {
                 handleMapDisplay(out, (Map<Object, Object>) value, indent + 4);
             } else {
-                out.print(Util.escapeXml(value.toString()));
+                out.print(EscapeXML.escape(value.toString()));
             }
             out.println("</li>");
             out.print(getPadding(indent + 2));

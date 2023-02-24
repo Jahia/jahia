@@ -65,6 +65,7 @@ import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.apache.taglibs.standard.tag.common.core.ImportSupport;
+import org.apache.taglibs.standard.util.UrlUtil;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.StringResponseWrapper;
 import org.slf4j.Logger;
@@ -169,7 +170,7 @@ public class HttpClientService implements ServletContextAware {
      * @see ImportSupport#isAbsoluteUrl(String)
      */
     public static boolean isAbsoluteUrl(String url) {
-        return ImportSupport.isAbsoluteUrl(url);
+        return UrlUtil.isAbsoluteUrl(url);
     }
 
     private CloseableHttpClient fallbackHttpClient;

@@ -50,7 +50,7 @@ import net.htmlparser.jericho.StartTag;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
-import org.apache.taglibs.standard.tag.common.core.ImportSupport;
+import org.apache.taglibs.standard.util.UrlUtil;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -1885,7 +1885,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         HttpServletRequest request = getRequest();
         String loginUrl = StringUtils.defaultIfEmpty(LoginConfig.getInstance().getCustomLoginUrl(request),
                 Login.getServletPath());
-        boolean isAbsolute = ImportSupport.isAbsoluteUrl(loginUrl);
+        boolean isAbsolute = UrlUtil.isAbsoluteUrl(loginUrl);
         if (!isAbsolute) {
             if (request.getContextPath().length() > 0) {
                 // need to prepend context path

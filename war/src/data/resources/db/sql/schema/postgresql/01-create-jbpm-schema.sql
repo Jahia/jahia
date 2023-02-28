@@ -1,4 +1,3 @@
-    CREATE EXTENSION IF NOT EXISTS lo;
 
     create table jbpm_attachment (
         id int8 not null,
@@ -29,7 +28,7 @@
 
     create table jbpm_boolean_expression (
         id int8 not null,
-        expression oid,
+        expression text,
         type varchar(255),
         escalation_constraints_id int8,
         primary key (id)
@@ -82,7 +81,7 @@
 
     create table jbpm_email_header (
         id int8 not null,
-        body oid,
+        body text,
         from_address varchar(255),
         language varchar(255),
         reply_to_address varchar(255),
@@ -106,7 +105,7 @@
         id int8 not null,
         language varchar(255),
         short_text varchar(255),
-        text oid,
+        text text,
         task_subjects_id int8,
         task_names_id int8,
         task_descriptions_id int8,
@@ -280,7 +279,7 @@
     create table jbpm_task_comment (
         id int8 not null,
         added_at timestamp,
-        text oid,
+        text text,
         added_by varchar(255),
         task_data_comments_id int8,
         primary key (id)
@@ -319,227 +318,227 @@
         primary key (work_item_id)
     );
 
-    alter table jbpm_notificat_email_headers
+    alter table jbpm_notificat_email_headers 
         add constraint UK_epvmc6tmrn1wq6nu8peaywt1k unique (email_headers);
 
-    alter table jbpm_attachment
-        add constraint FK_anhlt1ywoxmhaippy7h78baxk
-        foreign key (attached_by)
+    alter table jbpm_attachment 
+        add constraint FK_anhlt1ywoxmhaippy7h78baxk 
+        foreign key (attached_by) 
         references jbpm_organizational_entity;
 
-    alter table jbpm_attachment
-        add constraint FK_s73kjv5ko89qn5xnvxulcd67g
-        foreign key (task_data_attachments_id)
+    alter table jbpm_attachment 
+        add constraint FK_s73kjv5ko89qn5xnvxulcd67g 
+        foreign key (task_data_attachments_id) 
         references jbpm_task;
 
-    alter table jbpm_boolean_expression
-        add constraint FK_nbrfj26gq8axs7ayswkuxq0i5
-        foreign key (escalation_constraints_id)
+    alter table jbpm_boolean_expression 
+        add constraint FK_nbrfj26gq8axs7ayswkuxq0i5 
+        foreign key (escalation_constraints_id) 
         references jbpm_escalation;
 
-    alter table jbpm_correlation_property_info
-        add constraint FK_91u8nc7udwpc496ldpaett8oa
-        foreign key (correlation_key)
+    alter table jbpm_correlation_property_info 
+        add constraint FK_91u8nc7udwpc496ldpaett8oa 
+        foreign key (correlation_key) 
         references jbpm_correlation_key_info;
 
-    alter table jbpm_deadline
-        add constraint FK_qd0gx9omsbf3aoghofg2v3oxr
-        foreign key (deadlines_start_dead_line_id)
+    alter table jbpm_deadline 
+        add constraint FK_qd0gx9omsbf3aoghofg2v3oxr 
+        foreign key (deadlines_start_dead_line_id) 
         references jbpm_task;
 
-    alter table jbpm_deadline
-        add constraint FK_rklcbb9hsd16cc9acp7cdvwmx
-        foreign key (deadlines_end_dead_line_id)
+    alter table jbpm_deadline 
+        add constraint FK_rklcbb9hsd16cc9acp7cdvwmx 
+        foreign key (deadlines_end_dead_line_id) 
         references jbpm_task;
 
-    alter table jbpm_delegation_delegates
-        add constraint FK_9apnaigsuutvonmkr21peocui
-        foreign key (entity_id)
+    alter table jbpm_delegation_delegates 
+        add constraint FK_9apnaigsuutvonmkr21peocui 
+        foreign key (entity_id) 
         references jbpm_organizational_entity;
 
-    alter table jbpm_delegation_delegates
-        add constraint FK_oriwrke8vcl3opfut68n472r9
-        foreign key (task_id)
+    alter table jbpm_delegation_delegates 
+        add constraint FK_oriwrke8vcl3opfut68n472r9 
+        foreign key (task_id) 
         references jbpm_task;
 
-    alter table jbpm_escalation
-        add constraint FK_7g5gvv0kep2olcpvmef7kvoi2
-        foreign key (deadline_escalation_id)
+    alter table jbpm_escalation 
+        add constraint FK_7g5gvv0kep2olcpvmef7kvoi2 
+        foreign key (deadline_escalation_id) 
         references jbpm_deadline;
 
-    alter table jbpm_event_types
-        add constraint FK_6n2ptqm4wpn907h23e6tqbbha
-        foreign key (instance_id)
+    alter table jbpm_event_types 
+        add constraint FK_6n2ptqm4wpn907h23e6tqbbha 
+        foreign key (instance_id) 
         references jbpm_process_instance_info;
 
-    alter table jbpm_i18ntext
-        add constraint FK_5innbucbtx4lfii02bnpve8p
-        foreign key (task_subjects_id)
+    alter table jbpm_i18ntext 
+        add constraint FK_5innbucbtx4lfii02bnpve8p 
+        foreign key (task_subjects_id) 
         references jbpm_task;
 
-    alter table jbpm_i18ntext
-        add constraint FK_e03i5m0xowu3tlckdntdvcmj2
-        foreign key (task_names_id)
+    alter table jbpm_i18ntext 
+        add constraint FK_e03i5m0xowu3tlckdntdvcmj2 
+        foreign key (task_names_id) 
         references jbpm_task;
 
-    alter table jbpm_i18ntext
-        add constraint FK_kqgti9te780wtpviwdnfrufr7
-        foreign key (task_descriptions_id)
+    alter table jbpm_i18ntext 
+        add constraint FK_kqgti9te780wtpviwdnfrufr7 
+        foreign key (task_descriptions_id) 
         references jbpm_task;
 
-    alter table jbpm_i18ntext
-        add constraint FK_oc0h7p2a4abkflrmdh8iib35t
-        foreign key (reassignment_documentation_id)
+    alter table jbpm_i18ntext 
+        add constraint FK_oc0h7p2a4abkflrmdh8iib35t 
+        foreign key (reassignment_documentation_id) 
         references jbpm_reassignment;
 
-    alter table jbpm_i18ntext
-        add constraint FK_me9v2v0ea50skfj700g3a2t61
-        foreign key (notification_subjects_id)
+    alter table jbpm_i18ntext 
+        add constraint FK_me9v2v0ea50skfj700g3a2t61 
+        foreign key (notification_subjects_id) 
         references jbpm_notification;
 
-    alter table jbpm_i18ntext
-        add constraint FK_9y5pivj1g7xkuicw96cu8u2i
-        foreign key (notification_names_id)
+    alter table jbpm_i18ntext 
+        add constraint FK_9y5pivj1g7xkuicw96cu8u2i 
+        foreign key (notification_names_id) 
         references jbpm_notification;
 
-    alter table jbpm_i18ntext
-        add constraint FK_sf8hq8wp349bf2pt22vjopoma
-        foreign key (notification_documentation_id)
+    alter table jbpm_i18ntext 
+        add constraint FK_sf8hq8wp349bf2pt22vjopoma 
+        foreign key (notification_documentation_id) 
         references jbpm_notification;
 
-    alter table jbpm_i18ntext
-        add constraint FK_h2gg5m9ylnih8mfjx1iunwnbe
-        foreign key (notification_descriptions_id)
+    alter table jbpm_i18ntext 
+        add constraint FK_h2gg5m9ylnih8mfjx1iunwnbe 
+        foreign key (notification_descriptions_id) 
         references jbpm_notification;
 
-    alter table jbpm_i18ntext
-        add constraint FK_esqmn5micj3ljsjadbbmyjgfc
-        foreign key (deadline_documentation_id)
+    alter table jbpm_i18ntext 
+        add constraint FK_esqmn5micj3ljsjadbbmyjgfc 
+        foreign key (deadline_documentation_id) 
         references jbpm_deadline;
 
-    alter table jbpm_notificat_email_headers
-        add constraint FK_epvmc6tmrn1wq6nu8peaywt1k
-        foreign key (email_headers)
+    alter table jbpm_notificat_email_headers 
+        add constraint FK_epvmc6tmrn1wq6nu8peaywt1k 
+        foreign key (email_headers) 
         references jbpm_email_header;
 
-    alter table jbpm_notificat_email_headers
-        add constraint FK_kf8fd1lw8m7jxkyekbsex81c8
-        foreign key (notification)
+    alter table jbpm_notificat_email_headers 
+        add constraint FK_kf8fd1lw8m7jxkyekbsex81c8 
+        foreign key (notification) 
         references jbpm_notification;
 
-    alter table jbpm_notification
-        add constraint FK_lsx8dgmw3ilrncmkruoqimm28
-        foreign key (escalation_notifications_id)
+    alter table jbpm_notification 
+        add constraint FK_lsx8dgmw3ilrncmkruoqimm28 
+        foreign key (escalation_notifications_id) 
         references jbpm_escalation;
 
-    alter table jbpm_notification_bas
-        add constraint FK_ai0cdcnws5a5ht5xpe3c01mxp
-        foreign key (entity_id)
+    alter table jbpm_notification_bas 
+        add constraint FK_ai0cdcnws5a5ht5xpe3c01mxp 
+        foreign key (entity_id) 
         references jbpm_organizational_entity;
 
-    alter table jbpm_notification_bas
-        add constraint FK_rrdpb88hvc55jslc4msf6u440
-        foreign key (task_id)
+    alter table jbpm_notification_bas 
+        add constraint FK_rrdpb88hvc55jslc4msf6u440 
+        foreign key (task_id) 
         references jbpm_notification;
 
-    alter table jbpm_notification_recipients
-        add constraint FK_je2kqu2jgy4j17wsli8ex57c7
-        foreign key (entity_id)
+    alter table jbpm_notification_recipients 
+        add constraint FK_je2kqu2jgy4j17wsli8ex57c7 
+        foreign key (entity_id) 
         references jbpm_organizational_entity;
 
-    alter table jbpm_notification_recipients
-        add constraint FK_c5x1hqb09c91br1oy949yg5i7
-        foreign key (task_id)
+    alter table jbpm_notification_recipients 
+        add constraint FK_c5x1hqb09c91br1oy949yg5i7 
+        foreign key (task_id) 
         references jbpm_notification;
 
-    alter table jbpm_people_ass_excl_owners
-        add constraint FK_9rfplx6e347cgvpt9b442vje8
-        foreign key (entity_id)
+    alter table jbpm_people_ass_excl_owners 
+        add constraint FK_9rfplx6e347cgvpt9b442vje8 
+        foreign key (entity_id) 
         references jbpm_organizational_entity;
 
-    alter table jbpm_people_ass_excl_owners
-        add constraint FK_g6xxe0615p0hu79q0d111clnl
-        foreign key (task_id)
+    alter table jbpm_people_ass_excl_owners 
+        add constraint FK_g6xxe0615p0hu79q0d111clnl 
+        foreign key (task_id) 
         references jbpm_task;
 
-    alter table jbpm_people_assignm_pot_owners
-        add constraint FK_1vlj3kfu51ukgo45p3fm4krwx
-        foreign key (entity_id)
+    alter table jbpm_people_assignm_pot_owners 
+        add constraint FK_1vlj3kfu51ukgo45p3fm4krwx 
+        foreign key (entity_id) 
         references jbpm_organizational_entity;
 
-    alter table jbpm_people_assignm_pot_owners
-        add constraint FK_1sqbvhk1obasgfp839uk387tb
-        foreign key (task_id)
+    alter table jbpm_people_assignm_pot_owners 
+        add constraint FK_1sqbvhk1obasgfp839uk387tb 
+        foreign key (task_id) 
         references jbpm_task;
 
-    alter table jbpm_people_assignm_recipients
-        add constraint FK_gcw7a7bs3m50jhvfa5jx7gg60
-        foreign key (entity_id)
+    alter table jbpm_people_assignm_recipients 
+        add constraint FK_gcw7a7bs3m50jhvfa5jx7gg60 
+        foreign key (entity_id) 
         references jbpm_organizational_entity;
 
-    alter table jbpm_people_assignm_recipients
-        add constraint FK_l5h85stwvy0aetdg6saoblec0
-        foreign key (task_id)
+    alter table jbpm_people_assignm_recipients 
+        add constraint FK_l5h85stwvy0aetdg6saoblec0 
+        foreign key (task_id) 
         references jbpm_task;
 
-    alter table jbpm_people_assignm_stakehold
-        add constraint FK_b30nkrrs9b4fmsr6lgf4rrox8
-        foreign key (entity_id)
+    alter table jbpm_people_assignm_stakehold 
+        add constraint FK_b30nkrrs9b4fmsr6lgf4rrox8 
+        foreign key (entity_id) 
         references jbpm_organizational_entity;
 
-    alter table jbpm_people_assignm_stakehold
-        add constraint FK_eblnc1w5r25dekutmwn3dujn6
-        foreign key (task_id)
+    alter table jbpm_people_assignm_stakehold 
+        add constraint FK_eblnc1w5r25dekutmwn3dujn6 
+        foreign key (task_id) 
         references jbpm_task;
 
-    alter table jbpm_people_assignments_bas
-        add constraint FK_ojn5ekkacrgupp069yrqss9pd
-        foreign key (entity_id)
+    alter table jbpm_people_assignments_bas 
+        add constraint FK_ojn5ekkacrgupp069yrqss9pd 
+        foreign key (entity_id) 
         references jbpm_organizational_entity;
 
-    alter table jbpm_people_assignments_bas
-        add constraint FK_ekd3d8qrxvxa7kq3iw5d34bfw
-        foreign key (task_id)
+    alter table jbpm_people_assignments_bas 
+        add constraint FK_ekd3d8qrxvxa7kq3iw5d34bfw 
+        foreign key (task_id) 
         references jbpm_task;
 
-    alter table jbpm_reass_potential_owners
-        add constraint FK_rm075l73m0whh7uxwnu9cx3vr
-        foreign key (entity_id)
+    alter table jbpm_reass_potential_owners 
+        add constraint FK_rm075l73m0whh7uxwnu9cx3vr 
+        foreign key (entity_id) 
         references jbpm_organizational_entity;
 
-    alter table jbpm_reass_potential_owners
-        add constraint FK_jsldbpqi48q1w9c9g99d6wnqk
-        foreign key (task_id)
+    alter table jbpm_reass_potential_owners 
+        add constraint FK_jsldbpqi48q1w9c9g99d6wnqk 
+        foreign key (task_id) 
         references jbpm_reassignment;
 
-    alter table jbpm_reassignment
-        add constraint FK_fkj43wo6ovwdhwt1q2d8ce0pd
-        foreign key (escalation_reassignments_id)
+    alter table jbpm_reassignment 
+        add constraint FK_fkj43wo6ovwdhwt1q2d8ce0pd 
+        foreign key (escalation_reassignments_id) 
         references jbpm_escalation;
 
-    alter table jbpm_task
-        add constraint FK_3flcq2koknmx53wygbeyuteng
-        foreign key (task_initiator)
+    alter table jbpm_task 
+        add constraint FK_3flcq2koknmx53wygbeyuteng 
+        foreign key (task_initiator) 
         references jbpm_organizational_entity;
 
-    alter table jbpm_task
-        add constraint FK_r4b5cbeyk3axu7rr8aek6u9w1
-        foreign key (actual_owner)
+    alter table jbpm_task 
+        add constraint FK_r4b5cbeyk3axu7rr8aek6u9w1 
+        foreign key (actual_owner) 
         references jbpm_organizational_entity;
 
-    alter table jbpm_task
-        add constraint FK_7i7nh49lv4kdks9ljkomxj2uh
-        foreign key (created_by)
+    alter table jbpm_task 
+        add constraint FK_7i7nh49lv4kdks9ljkomxj2uh 
+        foreign key (created_by) 
         references jbpm_organizational_entity;
 
-    alter table jbpm_task_comment
-        add constraint FK_bl2skw5rlmgsg4xi0f50061tm
-        foreign key (added_by)
+    alter table jbpm_task_comment 
+        add constraint FK_bl2skw5rlmgsg4xi0f50061tm 
+        foreign key (added_by) 
         references jbpm_organizational_entity;
 
-    alter table jbpm_task_comment
-        add constraint FK_nuqjfe1rpp1ad7jlfjjki6tog
-        foreign key (task_data_comments_id)
+    alter table jbpm_task_comment 
+        add constraint FK_nuqjfe1rpp1ad7jlfjjki6tog 
+        foreign key (task_data_comments_id) 
         references jbpm_task;
 
     create sequence ATTACHMENT_ID_SEQ;
@@ -585,12 +584,3 @@
     create sequence VAR_INST_LOG_ID_SEQ;
 
     create sequence WORKITEMINFO_ID_SEQ;
-
-    CREATE TRIGGER t_oid_jbpm_boolean_expression_expression BEFORE DELETE OR UPDATE ON jbpm_boolean_expression FOR EACH ROW EXECUTE FUNCTION lo_manage('expression');
-    CREATE TRIGGER t_oid_jbpm_content_content BEFORE DELETE OR UPDATE ON jbpm_content FOR EACH ROW EXECUTE FUNCTION lo_manage('content');
-    CREATE TRIGGER t_oid_jbpm_email_header_body BEFORE DELETE OR UPDATE ON jbpm_email_header FOR EACH ROW EXECUTE FUNCTION lo_manage('body');
-    CREATE TRIGGER t_oid_jbpm_i18ntext_text BEFORE DELETE OR UPDATE ON jbpm_i18ntext FOR EACH ROW EXECUTE FUNCTION lo_manage('text');
-    CREATE TRIGGER t_oid_jbpm_process_instance_info_process_instance_byte_array BEFORE DELETE OR UPDATE ON jbpm_process_instance_info FOR EACH ROW EXECUTE FUNCTION lo_manage('process_instance_byte_array');
-    CREATE TRIGGER t_oid_jbpm_session_info_rules_byte_array BEFORE DELETE OR UPDATE ON jbpm_session_info FOR EACH ROW EXECUTE FUNCTION lo_manage('rules_byte_array');
-    CREATE TRIGGER t_oid_jbpm_task_comment_text BEFORE DELETE OR UPDATE ON jbpm_task_comment FOR EACH ROW EXECUTE FUNCTION lo_manage('text');
-    CREATE TRIGGER t_oid_jbpm_work_item_info_work_item_byte_array BEFORE DELETE OR UPDATE ON jbpm_work_item_info FOR EACH ROW EXECUTE FUNCTION lo_manage('work_item_byte_array');

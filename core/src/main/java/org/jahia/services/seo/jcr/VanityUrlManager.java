@@ -396,6 +396,12 @@ public class VanityUrlManager {
         vanityUrlNode.setProperty(PROPERTY_DEFAULT, vanityUrl.isDefaultMapping());
         vanityUrlNode.setProperty(PROPERTY_FILE, vanityUrl.isFile());
 
+        //Recalculate system name
+        String newSystemName = JCRContentUtils.escapeLocalNodeName(vanityUrl.getUrl());
+        if (!vanityUrlNode.getName().equals(newSystemName)) {
+            session.move(vanityUrlNode.getPath(), vanityUrlNode.getParent().getPath() + "/" + newSystemName);
+        }
+
         if (previousDefaultVanityUrlNode != null) {
             previousDefaultVanityUrlNode.setProperty(PROPERTY_DEFAULT, false);
         }

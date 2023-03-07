@@ -124,7 +124,7 @@ public class ConfigServiceImpl implements OsgiConfigService, ConfigurationListen
         return new ConfigImpl(configuration, null, getFormat(filename));
     }
 
-    public Config getConfig(String factoryPid, String identifier) throws IOException  {
+    public Config getConfig(String factoryPid, String identifier) throws IOException {
         try {
             Configuration[] configurations = configAdmin.listConfigurations("(service.factoryPid=" + factoryPid + ")");
             if (configurations != null) {
@@ -164,7 +164,7 @@ public class ConfigServiceImpl implements OsgiConfigService, ConfigurationListen
         if (!(config instanceof ConfigImpl)) {
             throw new IllegalArgumentException("Config must have been created with ConfigService");
         }
-        Configuration configuration = ((ConfigImpl)config).getConfiguration();
+        Configuration configuration = ((ConfigImpl) config).getConfiguration();
 
         // refresh and save config
         if (configuration.getProperties() == null) {
@@ -198,7 +198,7 @@ public class ConfigServiceImpl implements OsgiConfigService, ConfigurationListen
         if (!(config instanceof ConfigImpl)) {
             throw new IllegalArgumentException("Config must have been created with ConfigService");
         }
-        Configuration configuration = ((ConfigImpl)config).getConfiguration();
+        Configuration configuration = ((ConfigImpl) config).getConfiguration();
         if (configuration.getProperties() != null) {
             awaitConfigOperation(configuration.getPid(), ThrowingRunnable.unchecked(configuration::delete));
         }
@@ -322,12 +322,13 @@ public class ConfigServiceImpl implements OsgiConfigService, ConfigurationListen
 
     /**
      * Load all available configurations
+     *
      * @return config-name/content map
      * @throws IOException exception
      */
     public Map<String, List<String>> loadConfigs() throws IOException {
         Map<String, List<String>> configurationsContent = new TreeMap<>();
-        Configuration[] configs = new Configuration[0];
+        Configuration[] configs;
         try {
             configs = configAdmin.listConfigurations(null);
         } catch (InvalidSyntaxException e) {
@@ -338,11 +339,11 @@ public class ConfigServiceImpl implements OsgiConfigService, ConfigurationListen
         for (Configuration config : configs) {
             String filename = (String) config.getProperties().get(FELIX_FILEINSTALL_FILENAME);
             if (filename != null) {
-                try (InputStream openStream = new URL(filename).openStream()){
+                try (InputStream openStream = new URL(filename).openStream()) {
                     List<String> lines = IOUtils.readLines(openStream, StandardCharsets.UTF_8);
                     configurationsContent.put(StringUtils.substringAfterLast(filename, "/"), lines);
                 } catch (FileNotFoundException e) {
-                    logger.warn("Cannot find file {}", filename, e);
+                    logger.warn("Cannot find file {}, in cluster the file might not have been replicated yet", filename);
                 }
             }
         }
@@ -351,6 +352,7 @@ public class ConfigServiceImpl implements OsgiConfigService, ConfigurationListen
 
     /**
      * Get the types of all specified configurations
+     *
      * @param configurationsContent configuration name with their content
      * @return name/type map
      * @throws IOException exception

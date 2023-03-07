@@ -85,7 +85,7 @@ jobs:
           mvn -U -ntp -s .github/maven.settings.xml -e \
             -Dimage.tag=${{steps.tags.outputs.image_tag}} \
             -Dimage.alias=`echo "latest,${{ env.PARAM_VERSION_MAJOR }}.${{ env.PARAM_VERSION_MINOR}}.${{ env.PARAM_VERSION_HF}}${{ env.PARAM_VERSION_CLASSIFIER}},${{ env.PARAM_VERSION_MAJOR }}.${{ env.PARAM_VERSION_MINOR}}${{ env.PARAM_VERSION_CLASSIFIER}},${{ env.PARAM_VERSION_MAJOR }}${{ env.PARAM_VERSION_CLASSIFIER}}"` \
-            clean deploy de.qaware.maven:go-offline-maven-plugin:resolve-dependencies \
+            clean deploy -Dmaven.resolver.transport=wagon de.qaware.maven:go-offline-maven-plugin:resolve-dependencies \
             -Pgwt-production,unit-tests,docker \
             -Dbamboo.buildNumber=${{ github.run_id }}
       - name: Compile GWT development
@@ -95,6 +95,7 @@ jobs:
           cd gwt/
           mvn -U -ntp -s ../.github/maven.settings.xml -e \
             clean deploy \
+            -Dmaven.resolver.transport=wagon \
             -Pgwt-development \
             -Dbamboo.buildNumber=${{ github.run_id }}
       - name: Build graalvm image

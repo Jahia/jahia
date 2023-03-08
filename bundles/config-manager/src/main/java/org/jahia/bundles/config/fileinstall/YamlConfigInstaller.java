@@ -50,8 +50,8 @@ import org.apache.felix.fileinstall.ArtifactListener;
 import org.apache.felix.fileinstall.internal.DirectoryWatcher;
 import org.apache.tika.io.IOUtils;
 import org.jahia.bundles.config.ConfigUtil;
-import org.jahia.bundles.config.Format;
 import org.jahia.bundles.config.impl.ConfigImpl;
+import org.jahia.bundles.config.Format;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
@@ -71,10 +71,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
+import java.util.*;
 
 import static org.jahia.bundles.config.ConfigUtil.flatten;
 
@@ -97,7 +94,6 @@ public class YamlConfigInstaller implements ArtifactInstaller, ConfigurationList
 
     /**
      * Activate
-     *
      * @param context context
      */
     @Activate
@@ -107,7 +103,7 @@ public class YamlConfigInstaller implements ArtifactInstaller, ConfigurationList
             Configuration[] configs = configAdmin.listConfigurations(null);
             if (configs != null) {
                 for (Configuration config : configs) {
-                    Dictionary<String, Object> dict = config.getProperties();
+                    Dictionary<String,Object> dict = config.getProperties();
                     String fileName = dict != null ? (String) dict.get(DirectoryWatcher.FILENAME) : null;
                     if (fileName != null) {
                         pidToFile.put(config.getPid(), fileName);
@@ -235,7 +231,7 @@ public class YamlConfigInstaller implements ArtifactInstaller, ConfigurationList
      * @return <code>true</code> if the configuration has been updated
      * @throws Exception
      */
-    private boolean setConfigFromFile(final File f) throws IOException, InvalidSyntaxException {
+    private boolean setConfigFromFile(final File f) throws IOException, InvalidSyntaxException{
         final Map<String, String> ht = new HashMap<>();
         try (InputStream in = new BufferedInputStream(new FileInputStream(f))) {
             Map<String, Object> m = yamlMapper.readValue(in, new TypeReference<Map<String, Object>>() {
@@ -269,12 +265,13 @@ public class YamlConfigInstaller implements ArtifactInstaller, ConfigurationList
     }
 
 
+
     /**
      * Remove the configuration.
      *
      * @param f File where the configuration in was defined.
      * @return <code>true</code>
-     * @throws IOException            exception
+     * @throws IOException exception
      * @throws InvalidSyntaxException exception
      */
     boolean deleteConfig(File f) throws IOException, InvalidSyntaxException {
@@ -313,7 +310,7 @@ public class YamlConfigInstaller implements ArtifactInstaller, ConfigurationList
         } else {
             Configuration newConfiguration;
             if (factoryPid != null) {
-                newConfiguration = getConfigurationAdmin().createFactoryConfiguration(factoryPid, "?");
+                newConfiguration = getConfigurationAdmin().createFactoryConfiguration(pid, "?");
             } else {
                 newConfiguration = getConfigurationAdmin().getConfiguration(pid, "?");
             }

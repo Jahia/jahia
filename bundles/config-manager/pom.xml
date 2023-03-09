@@ -49,7 +49,7 @@
     <parent>
         <groupId>org.jahia.bundles</groupId>
         <artifactId>jahia-bundles</artifactId>
-        <version>8.1.4.0-SNAPSHOT</version>
+        <version>8.1.4.0</version>
     </parent>
 
     <name>Jahia Configurations Manager</name>

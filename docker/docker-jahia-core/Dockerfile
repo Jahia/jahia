@@ -77,7 +77,7 @@ ENV GRAALVM_PATH=${INSTALL_GRAALVM:+/usr/local/graalvm}
 ENV PATH=/usr/local/graalvm/bin:${PATH}
 
 RUN echo "Retrieve latest Yourkit agent binaries..." \
-    && wget -nv -O yourkit.zip https://www.yourkit.com/download/docker/YourKit-JavaProfiler-2022.3-docker.zip -P /tmp/ \
+    && wget -nv -O yourkit.zip https://www.yourkit.com/download/docker/YourKit-JavaProfiler-2022.9-docker.zip -P /tmp/ \
     && unzip /tmp/yourkit.zip -d /usr/local \
     && rm /tmp/yourkit.zip \
     && mv /usr/local/YourKit-JavaProfiler* /usr/local/yourkit

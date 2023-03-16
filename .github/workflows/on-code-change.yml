@@ -86,7 +86,7 @@ jobs:
             -Dimage.tag=${{steps.tags.outputs.image_tag}} \
             -Dimage.alias=`echo "latest,${{ env.PARAM_VERSION_MAJOR }}.${{ env.PARAM_VERSION_MINOR}}.${{ env.PARAM_VERSION_HF}}${{ env.PARAM_VERSION_CLASSIFIER}},${{ env.PARAM_VERSION_MAJOR }}.${{ env.PARAM_VERSION_MINOR}}${{ env.PARAM_VERSION_CLASSIFIER}},${{ env.PARAM_VERSION_MAJOR }}${{ env.PARAM_VERSION_CLASSIFIER}}"` \
             clean deploy -Dmaven.resolver.transport=wagon de.qaware.maven:go-offline-maven-plugin:resolve-dependencies \
-            -Pgwt-production,unit-tests,docker \
+            -Pgwt-production,unit-tests,docker,docker-core-plugin \
             -Dbamboo.buildNumber=${{ github.run_id }}
       - name: Compile GWT development
         shell: bash
@@ -116,7 +116,7 @@ jobs:
           mvn -U -ntp -s .github/maven.settings.xml -e \
             -Dimage.tag=${{steps.tags.outputs.image_tag}} \
             clean install de.qaware.maven:go-offline-maven-plugin:resolve-dependencies \
-            -Pgwt-production,unit-tests,docker \
+            -Pgwt-production,unit-tests,docker,docker-core-plugin \
             -Dbamboo.buildNumber=${{ github.run_id }}
 
       - name: Push PR Docker image
@@ -128,7 +128,7 @@ jobs:
           mvn -U -ntp -s ../../.github/maven.settings.xml -e \
             -Dimage.tag=${{steps.tags.outputs.image_tag}} \
             deploy de.qaware.maven:go-offline-maven-plugin:resolve-dependencies \
-            -Pgwt-production,unit-tests,docker \
+            -Pgwt-production,unit-tests,docker,docker-core-plugin \
             -Dbamboo.buildNumber=${{ github.run_id }}
 
       - name: Store docker image

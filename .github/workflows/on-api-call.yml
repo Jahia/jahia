@@ -3,9 +3,9 @@
 
 name: Release on api call
 
-on: [workflow_dispatch]
+on: [ workflow_dispatch ]
 
-concurrency: 
+concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
@@ -57,16 +57,16 @@ jobs:
           fi
       - id: tags
         name: Set Output variables
-        run: | 
+        run: |
           echo "::set-output name=jahia_version::`cat jahia.version`"
           echo "::set-output name=image_tag::`cat image.tag`"
       - name: Display Output variables
-        run: | 
+        run: |
           echo "OUTPUT: jahia_version = ${{steps.tags.outputs.jahia_version}}"
           echo "OUTPUT: image_tag = ${{steps.tags.outputs.image_tag}}"
       - name: mvn clean deploy
         shell: bash
-        run: mvn -s .github/maven.settings.xml -e -Dimage.tag=${{steps.tags.outputs.image_tag}} clean deploy de.qaware.maven:go-offline-maven-plugin:resolve-dependencies -Pgwt-production,unit-tests,docker -Dbamboo.buildNumber=${{ github.run_id }}
+        run: mvn -s .github/maven.settings.xml -e -Dimage.tag=${{steps.tags.outputs.image_tag}} clean deploy de.qaware.maven:go-offline-maven-plugin:resolve-dependencies -Pgwt-production,unit-tests,docker,docker-core-plugin -Dbamboo.buildNumber=${{ github.run_id }}
       - name: Compile GWT development
         shell: bash
         run: |
@@ -90,7 +90,7 @@ jobs:
         shell: bash
         run: |
           mvn -U -ntp -s .github/maven.settings.xml -e -Dimage.tag=${{steps.tags.outputs.image_tag}} clean install de.qaware.maven:go-offline-maven-plugin:resolve-dependencies \
-            -Pgwt-production,unit-tests,docker -Dbamboo.buildNumber=${{ github.run_id }}
+            -Pgwt-production,unit-tests,docker,docker-core-plugin -Dbamboo.buildNumber=${{ github.run_id }}
       - name: Push PR Docker image
         shell: bash
         run: docker push jahia/jahia-core-dev:${{steps.tags.outputs.image_tag}}

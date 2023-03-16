@@ -50,9 +50,9 @@
     </parent>
     <artifactId>docker-distribution-parent</artifactId>
     <modelVersion>4.0.0</modelVersion>
-
+    
     <packaging>pom</packaging>
-
+    
     <properties>
         <parent.tag>${project.version}</parent.tag>
         <image.repo.classifier>-dev</image.repo.classifier>
@@ -60,7 +60,7 @@
         <image.tag>${project.version}</image.tag>
         <image.alias/>
     </properties>
-
+    
     <repositories>
         <repository>
             <id>jahia-public</id>
@@ -75,7 +75,7 @@
             </snapshots>
         </repository>
     </repositories>
-
+    
     <build>
         <plugins>
             <plugin>
@@ -121,7 +121,7 @@
                     </execution>
                 </executions>
             </plugin>
-
+            
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
@@ -158,11 +158,6 @@
     <profiles>
         <profile>
             <id>docker-plugin</id>
-            <activation>
-                <file>
-                    <exists>${basedir}/Dockerfile</exists>
-                </file>
-            </activation>
             <build>
                 <plugins>
                     <plugin>
@@ -211,11 +206,6 @@
         </profile>
         <profile>
             <id>docker-plugin-amd64-only</id>
-            <activation>
-                <file>
-                    <exists>${basedir}/Dockerfile.amd64</exists>
-                </file>
-            </activation>
             <build>
                 <plugins>
                     <plugin>
@@ -237,7 +227,7 @@
                                     <name>jahia/${image.repo}${image.repo.classifier}:${image.tag}</name>
                                     <build>
                                         <contextDir>${project.basedir}</contextDir>
-                                        <dockerFile>Dockerfile.amd64</dockerFile>
+                                        <dockerFile>Dockerfile</dockerFile>
                                         <tags>${image.alias}</tags>
                                         <args>
                                             <PARENT_TAG>${parent.tag}</PARENT_TAG>

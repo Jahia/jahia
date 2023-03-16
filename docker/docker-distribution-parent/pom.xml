@@ -46,7 +46,7 @@
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>docker-parent-core</artifactId>
-        <version>8.1.4.0</version>
+        <version>8.1.4.0-SNAPSHOT</version>
     </parent>
     <artifactId>docker-distribution-parent</artifactId>
     <modelVersion>4.0.0</modelVersion>
@@ -56,9 +56,9 @@
     <properties>
         <parent.tag>${project.version}</parent.tag>
         <image.repo.classifier>-dev</image.repo.classifier>
-        <image.repo />
+        <image.repo/>
         <image.tag>${project.version}</image.tag>
-        <image.alias />
+        <image.alias/>
     </properties>
 
     <repositories>

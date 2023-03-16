@@ -47,7 +47,7 @@
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
-        <version>8.1.4.0</version>
+        <version>8.1.4.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jahia.modules</groupId>
@@ -57,13 +57,13 @@
 
     <properties>
         <jahia-depends>default</jahia-depends>
-        <jahia-depends-skip-require-capability />
+        <jahia-depends-skip-require-capability/>
         <jahia-module-type>module</jahia-module-type>
         <jahia-static-resources>/css,/icons,/images,/img,/javascript</jahia-static-resources>
         <skip.git.commit.info>false</skip.git.commit.info>
         <embed-dependency>*; scope=compile|runtime; type=!pom; inline=false</embed-dependency>
-        <require-capability />
-        <jahia-key />
+        <require-capability/>
+        <jahia-key/>
         <sourcesRoot>${project.basedir}</sourcesRoot>
         <dockerSourcesRoot>/data/digital-factory-data/sources/</dockerSourcesRoot>
     </properties>
@@ -101,13 +101,13 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>8.1.4.0</version>
+            <version>8.1.4.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-taglib</artifactId>
-            <version>8.1.4.0</version>
+            <version>8.1.4.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -136,11 +136,11 @@
                             <additionalBuildcommands>
                                 <buildCommand>
                                     <name>org.eclipse.wst.common.project.facet.core.builder</name>
-                                    <arguments />
+                                    <arguments/>
                                 </buildCommand>
                                 <buildCommand>
                                     <name>org.eclipse.wst.validation.validationbuilder</name>
-                                    <arguments />
+                                    <arguments/>
                                 </buildCommand>
                             </additionalBuildcommands>
                         </configuration>
@@ -366,7 +366,7 @@
                     </execution>
                     <execution>
                         <id>calculate-gitbuildnumber</id>
-                        <phase />
+                        <phase/>
                     </execution>
                 </executions>
             </plugin>

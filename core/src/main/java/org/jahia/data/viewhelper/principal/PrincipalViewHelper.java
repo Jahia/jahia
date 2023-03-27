@@ -146,8 +146,7 @@ public class PrincipalViewHelper implements Serializable {
                     selectBoxFieldsSize.add(new Integer(-1));
                 }
                 try {
-                    selectBoxFieldsMethod.add(PrincipalViewHelper.class.getMethod("get" + fieldToDisplay,
-                            new Class[]{JCRNodeWrapper.class, Integer.class}));
+                    selectBoxFieldsMethod.add(PrincipalViewHelper.class.getMethod("get" + fieldToDisplay, new Class[]{JCRNodeWrapper.class, Integer.class}));
                 } catch (java.lang.NoSuchMethodException nsme) {
                     logger.error("Internal class error ! Please check Jahia code", nsme);
                 }
@@ -216,6 +215,7 @@ public class PrincipalViewHelper implements Serializable {
      * - for a Group, simply calls getDisplayName(p)
      * - for a JahiaUser, if the firstName and lastName properties are defined, they are concatenated and this method
      * returns that result. If the properties don't exist, this is equivalent to getDisplayName(p)
+     *
      * @param p
      * @return
      * @see org.jahia.data.viewhelper.principal.PrincipalViewHelper#getDisplayName(java.lang.Object)
@@ -228,12 +228,12 @@ public class PrincipalViewHelper implements Serializable {
         } else if (p instanceof JCRUserNode) {
             JCRUserNode jahiaUser = (JCRUserNode) p;
             try {
-                firstName = jahiaUser.hasProperty("j:firstName")?jahiaUser.getProperty("j:firstName").getString():"";
-                lastName= jahiaUser.hasProperty("j:lastName")?jahiaUser.getProperty("j:lastName").getString():"";
+                firstName = jahiaUser.hasProperty("j:firstName") ? jahiaUser.getProperty("j:firstName").getString() : "";
+                lastName = jahiaUser.hasProperty("j:lastName") ? jahiaUser.getProperty("j:lastName").getString() : "";
             } catch (RepositoryException e) {
                 // do nothing
             }
-        } else  if (p instanceof Principal) {
+        } else if (p instanceof Principal) {
             if (p instanceof JahiaUser) {
                 firstName = ((JahiaUser) p).getProperty("j:firstName");
                 lastName = ((JahiaUser) p).getProperty("j:lastName");
@@ -243,12 +243,13 @@ public class PrincipalViewHelper implements Serializable {
         } else {
             throw new IllegalArgumentException("getFullName only support Principal, JCRGroupNode, JCRUserNode, " + p.getClass().getName() + " is not supported ");
         }
-        String fullName = (StringUtils.isEmpty(firstName)?"":firstName) + (StringUtils.isEmpty(lastName)?"":(StringUtils.isEmpty(firstName)?"":" ") + lastName);
-        return StringUtils.isEmpty(fullName)?getDisplayName(p):fullName;
+        String fullName = (StringUtils.isEmpty(firstName) ? "" : firstName) + (StringUtils.isEmpty(lastName) ? "" : (StringUtils.isEmpty(firstName) ? "" : " ") + lastName);
+        return StringEscapeUtils.escapeXml(StringUtils.isEmpty(fullName) ? getDisplayName(p) : fullName);
     }
 
     /**
      * Return a displayable name, using resource bundles for the guest user and group.
+     *
      * @param p the principal for which to build the displayable name
      * @return a String containing the displayable name for the user, ready for display in the user interface
      */
@@ -258,7 +259,8 @@ public class PrincipalViewHelper implements Serializable {
 
     /**
      * Return a displayable name, using resource bundles for the guest user and group.
-     * @param p the principal for which to build the displayable name
+     *
+     * @param p      the principal for which to build the displayable name
      * @param locale the locale to use for looking up resource bundle values
      * @return a String containing the displayable name for the user, ready for display in the user interface
      */
@@ -293,6 +295,7 @@ public class PrincipalViewHelper implements Serializable {
     /**
      * Returns the displayable name for a group based on the group name. This method will for the moment only use
      * resource bundle to localized the guest group name.
+     *
      * @param groupName the group name to localize
      * @return the localized name for the group
      */
@@ -303,8 +306,9 @@ public class PrincipalViewHelper implements Serializable {
     /**
      * Returns the displayable name for a group based on the group name. This method will for the moment only use
      * resource bundle to localized the guest group name.
+     *
      * @param groupName the group name to localize
-     * @param locale the locale to use for looking up resource bundle values
+     * @param locale    the locale to use for looking up resource bundle values
      * @return the localized name for the group
      */
     public static String getGroupDisplayName(String groupName, Locale locale) {
@@ -317,6 +321,7 @@ public class PrincipalViewHelper implements Serializable {
     /**
      * Returns the displayable name for a user based on the user name. This method will for the moment only use a
      * resource bundle lookup to localize the guest user name.
+     *
      * @param userName the user name to localize
      * @return the localized user name
      */
@@ -327,8 +332,9 @@ public class PrincipalViewHelper implements Serializable {
     /**
      * Returns the displayable name for a user based on the user name. This method will for the moment only use a
      * resource bundle lookup to localize the guest user name.
+     *
      * @param userName the user name to localize
-     * @param locale the locale to use for looking up resource bundle values
+     * @param locale   the locale to use for looking up resource bundle values
      * @return the localized user name
      */
     public static String getUserDisplayName(String userName, Locale locale) {
@@ -421,7 +427,7 @@ public class PrincipalViewHelper implements Serializable {
     /**
      * Get the kind of principal given by one char u = user, g = group
      *
-     * @param p    The principal object
+     * @param p The principal object
      * @return The principal type
      * @since 7.0
      */
@@ -492,7 +498,7 @@ public class PrincipalViewHelper implements Serializable {
         } else {
             final JCRGroupNode group = (JCRGroupNode) p;
             // Find some group members for properties
-            final List<JCRNodeWrapper> grpMembers =  group.getProviderName().equals("default") ? group.getMembers() : null;
+            final List<JCRNodeWrapper> grpMembers = group.getProviderName().equals("default") ? group.getMembers() : null;
             final StringBuilder members = new StringBuilder().append("(");
             if (grpMembers != null) {
                 for (JCRNodeWrapper member : grpMembers) {
@@ -549,8 +555,8 @@ public class PrincipalViewHelper implements Serializable {
         final Properties searchParameters = new Properties();
         long countLimit = SettingsBean.getInstance().getJahiaJCRUserCountLimit();
         if (countLimit > 0) {
-           logger.info("Just first {} users are returned from Jahia JCR repository...", countLimit);
-           searchParameters.setProperty(JahiaUserManagerService.COUNT_LIMIT, String.valueOf(countLimit));
+            logger.info("Just first {} users are returned from Jahia JCR repository...", countLimit);
+            searchParameters.setProperty(JahiaUserManagerService.COUNT_LIMIT, String.valueOf(countLimit));
         }
         if (searchIn == null) { // Necessary condition to say there is no formular.
             logger.debug("No formular transmited. Finding all Jahia DB users.");
@@ -578,7 +584,7 @@ public class PrincipalViewHelper implements Serializable {
         return new TreeSet<>(PRINCIPAL_COMPARATOR);
     }
 
-    private static  Set<JCRUserNode> getSearchResult(String siteKey, String[] providers, JahiaUserManagerService jahiaUserManagerService, Properties searchParameters, boolean includeGlobalUsers) {
+    private static Set<JCRUserNode> getSearchResult(String siteKey, String[] providers, JahiaUserManagerService jahiaUserManagerService, Properties searchParameters, boolean includeGlobalUsers) {
         final Set<JCRUserNode> searchResults = new TreeSet<JCRUserNode>(PRINCIPAL_COMPARATOR);
         try {
             JCRSessionWrapper systemSession = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
@@ -604,7 +610,7 @@ public class PrincipalViewHelper implements Serializable {
      *                - properties
      *                - storedOn
      *                - providers
-     * @param siteKey  The site ID containing the principal to search
+     * @param siteKey The site ID containing the principal to search
      * @return a Properties object that contain the search criterium
      */
     public static Set<JCRGroupNode> getGroupSearchResult(ServletRequest request, String siteKey) {
@@ -618,15 +624,12 @@ public class PrincipalViewHelper implements Serializable {
         return getGroupSearchResult(searchIn, siteKey, searchString, searchInProps, storedOn, providers);
     }
 
-    public static Set<JCRGroupNode> getGroupSearchResult(String searchIn, String siteKey, String searchString, String[] searchInProps,
-                                           String storedOn, String[] providers) {
+    public static Set<JCRGroupNode> getGroupSearchResult(String searchIn, String siteKey, String searchString, String[] searchInProps, String storedOn, String[] providers) {
         return getGroupSearchResult(searchIn, siteKey, searchString, searchInProps, storedOn, providers, true);
     }
 
-    public static Set<JCRGroupNode> getGroupSearchResult(String searchIn, String siteKey, String searchString, String[] searchInProps,
-                                           String storedOn, String[] providers, boolean includeGlobalUsers) {
-        JahiaGroupManagerService jahiaGroupManagerService =
-                ServicesRegistry.getInstance().getJahiaGroupManagerService();
+    public static Set<JCRGroupNode> getGroupSearchResult(String searchIn, String siteKey, String searchString, String[] searchInProps, String storedOn, String[] providers, boolean includeGlobalUsers) {
+        JahiaGroupManagerService jahiaGroupManagerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         final Properties searchParameters = new Properties();
         if (searchIn == null) { // Necessary condition to say there is no formular.
             logger.debug("No formular transmited. Finding all Jahia DB users.");
@@ -654,7 +657,7 @@ public class PrincipalViewHelper implements Serializable {
         return new TreeSet<>(PRINCIPAL_COMPARATOR);
     }
 
-    private static  Set<JCRGroupNode> getGroupSearchResult(String siteKey, String[] providers, JahiaGroupManagerService jahiaGroupManagerService, Properties searchParameters, boolean includeGlobalUsers) {
+    private static Set<JCRGroupNode> getGroupSearchResult(String siteKey, String[] providers, JahiaGroupManagerService jahiaGroupManagerService, Properties searchParameters, boolean includeGlobalUsers) {
         final Set<JCRGroupNode> searchResults = new TreeSet<>(PRINCIPAL_COMPARATOR);
         try {
             JCRSessionWrapper systemSession = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
@@ -681,8 +684,7 @@ public class PrincipalViewHelper implements Serializable {
         final Set<JCRUserNode> usersWithoutJahiaAdmin = new TreeSet<JCRUserNode>(PRINCIPAL_COMPARATOR);
         usersWithoutJahiaAdmin.addAll(users);
         try {
-            final JCRGroupNode jahiaAdminGroup = ServicesRegistry.getInstance().
-                    getJahiaGroupManagerService().getAdministratorGroup(null);
+            final JCRGroupNode jahiaAdminGroup = ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(null);
             List<JCRNodeWrapper> members = jahiaAdminGroup.getMembers();
             for (JCRNodeWrapper member : members) {
                 if (member instanceof JCRUserNode) {

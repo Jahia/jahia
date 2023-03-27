@@ -365,7 +365,7 @@ public final class JCRContentUtils implements ServletContextAware {
                 buffer.append('%');
                 buffer.append(Character.toUpperCase(Character.forDigit(ch / 16, 16)));
                 buffer.append(Character.toUpperCase(Character.forDigit(ch % 16, 16)));
-            } else if (ch == '/' || ch == '\\' || Character.isWhitespace(ch)) {
+            } else if (ch == '/' || ch == '<' || ch == '>' || ch == '\\' || Character.isWhitespace(ch)) {
                 if (buffer.length() > 0) {
                     buffer.append(' ');
                 }
@@ -374,7 +374,7 @@ public final class JCRContentUtils implements ServletContextAware {
             }
         }
         // Use NFC normalization to format characters as some browser like SAFARI encode requests using NFC (QA-14109)
-        return Normalizer.normalize(buffer.toString(), Normalizer.Form.NFC);
+        return Normalizer.normalize(buffer.toString(), Normalizer.Form.NFC).trim();
     }
 
     public static String escapeNodePath(String path) {

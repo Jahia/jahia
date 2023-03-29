@@ -307,9 +307,11 @@ jobs:
           show_checklist: 'true'
           root_folder: 'core'
 
-  trigger-jahia-pack-private:
+  prepare-jahia-pack-trigger:
     runs-on: ubuntu-latest
     needs: [ build ]
+    outputs:
+      remote_branch: ${{ steps.exports.outputs.remote_branch }}
     steps:
       - name: Get branch name
         id: branch-name
@@ -321,25 +323,18 @@ jobs:
           # If we are in a PR, we use master for the remote branch
           # If we are not in a PR, we use the current branch for the remote branch
           if [[ "${{ github.event.pull_request.head.ref }}" == "" ]]; then
-            echo "Currently NOT in a PR: ${{ github.event.pull_request.head.ref }}, using ${{ steps.branch-name.outputs.current_branch }} as remote branch"
+            echo "Currently NOT in a PR (${{ github.event.pull_request.head.ref }}), using current branch: ${{ steps.branch-name.outputs.current_branch }} as remote branch"
             echo "remote_branch=${{ steps.branch-name.outputs.current_branch }}" >> $GITHUB_OUTPUT
           else
             echo "Currently in a PR with head: ${{ github.event.pull_request.head.ref }}, using master as remote branch"
             echo "remote_branch=master" >> $GITHUB_OUTPUT
           fi
-      - name: Call Jahia-pack-private
-        id: trigger-step
-        uses: jonas-schievink/workflow-proxy@v1
-        with:
-          workflow: do-it-all.yml
-          ref: ${{ steps.exports.outputs.remote_branch }}
-          repo: Jahia/jahia-pack-private
-          wait-for-completion-timeout: 2h
-          inputs: '{ "parent_image_tag": "${{needs.build.outputs.image_tag}}" }'
-          token: ${{ secrets.GH_API_TOKEN }}
-      - name: Get results of Jahia-pack-private
-        if: always()
-        shell: bash
-        run: |
-          echo "Jahia-pack-private workflow conclustion -> ${{ steps.trigger-step.outputs.workflow-conclusion }}"
-          echo "::notice title=Jahia-pack-private workflow::The following workflow has been executed: ${{ steps.trigger-step.outputs.workflow-url }} its conclusion was: ${{ steps.trigger-step.outputs.workflow-conclusion }}"
+
+  call-workflow-jahia-pack:
+    needs: [ build, prepare-jahia-pack-trigger ]
+    uses: Jahia/jahia-pack-private/.github/workflows/do-it-all.yml@master
+    secrets: inherit
+    with:
+      parent_image_tag: ${{ needs.build.outputs.parent_image_tag }}
+      target_branch: ${{ needs.build.outputs.target_branch }}
+      workflows-ref: master

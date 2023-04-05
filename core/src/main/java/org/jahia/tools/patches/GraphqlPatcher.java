@@ -42,10 +42,13 @@
  */
 package org.jahia.tools.patches;
 
-import org.jahia.osgi.BundleUtils;
+import org.jahia.osgi.FrameworkService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.json.JSONObject;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.Filter;
+import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +62,7 @@ import static org.jahia.tools.patches.Patcher.SUFFIX_INSTALLED;
  */
 public class GraphqlPatcher implements PatchExecutor {
     private static final Logger logger = LoggerFactory.getLogger(GraphqlPatcher.class);
+    private static final int TIMEOUT = 60000;
 
     @Override
     public boolean canExecute(String name, String lifecyclePhase) {
@@ -68,8 +72,18 @@ public class GraphqlPatcher implements PatchExecutor {
     @Override
     public String executeScript(String name, String scriptContent) {
         try {
+            BundleContext context = FrameworkService.getBundleContext();
+            Filter filter = context.createFilter("(component.name=graphql.kickstart.servlet.OsgiGraphQLHttpServlet)");
+            ServiceTracker<?, ?> configurationAdminTracker = new ServiceTracker<>(context, filter, null);
+            configurationAdminTracker.open();
+            Servlet servlet = (Servlet) configurationAdminTracker.waitForService(TIMEOUT);
+            configurationAdminTracker.close();
+            if (servlet == null) {
+                logger.error("Cannot find OSGi graphql servlet to execute patch");
+                return SUFFIX_FAILED;
+            }
+
             JCRSessionFactory.getInstance().setCurrentUser(JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser());
-            Servlet servlet = BundleUtils.getOsgiService(Servlet.class, "(component.name=graphql.kickstart.servlet.OsgiGraphQLHttpServlet)");
             String json = (String) servlet.getClass().getMethod("executeQuery", String.class).invoke(servlet, scriptContent);
             logger.info("Graphql execution result : {}", json);
             JSONObject object = new JSONObject(json);

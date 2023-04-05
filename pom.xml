@@ -48,7 +48,7 @@
     <parent>
         <groupId>org.jahia</groupId>
         <artifactId>jahia-parent</artifactId>
-        <version>8.1.6.0-SNAPSHOT</version>
+        <version>8.1.5.0</version>
         <relativePath>jahia-parent/pom.xml</relativePath>
     </parent>
 
@@ -63,7 +63,7 @@
         <connection>scm:git:git@github.com:Jahia/jahia-private.git</connection>
         <developerConnection>scm:git:git@github.com:Jahia/jahia-private.git</developerConnection>
         <url>https://github.com/Jahia/jahia-private</url>
-        <tag>HEAD</tag>
+        <tag>JAHIA_8_1_5_0</tag>
     </scm>
 
     <repositories>

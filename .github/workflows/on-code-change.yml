@@ -69,22 +69,12 @@ jobs:
           echo "OUTPUT: jahia_version = ${{steps.tags.outputs.jahia_version}}"
           echo "OUTPUT: image_tag = ${{steps.tags.outputs.image_tag}}"
 
-      # Series of steps only executed when pushing to master or to one of the maintenance branches
-      - uses: jahia/jahia-modules-action/docker-tags@v2
-        if: ${{ github.event_name == 'push' }}
-        with:
-          docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
-          docker_password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          version: ${{steps.tags.outputs.image_tag}}
-          repo: "jahia-core-dev"
-          dry-run: true
       - name: Build package and load all dependencies into local Maven repository
         shell: bash
         if: ${{ github.event_name == 'push' }}
         run: |
           mvn -U -ntp -s .github/maven.settings.xml -e \
             -Dimage.tag=${{steps.tags.outputs.image_tag}} \
-            -Dimage.alias=`echo "latest,${{ env.PARAM_VERSION_MAJOR }}.${{ env.PARAM_VERSION_MINOR}}.${{ env.PARAM_VERSION_HF}}${{ env.PARAM_VERSION_CLASSIFIER}},${{ env.PARAM_VERSION_MAJOR }}.${{ env.PARAM_VERSION_MINOR}}${{ env.PARAM_VERSION_CLASSIFIER}},${{ env.PARAM_VERSION_MAJOR }}${{ env.PARAM_VERSION_CLASSIFIER}}"` \
             clean deploy -Dmaven.resolver.transport=wagon de.qaware.maven:go-offline-maven-plugin:resolve-dependencies \
             -Pgwt-production,unit-tests,docker,docker-core-plugin \
             -Dbamboo.buildNumber=${{ github.run_id }}
@@ -98,6 +88,14 @@ jobs:
             -Dmaven.resolver.transport=wagon \
             -Pgwt-development \
             -Dbamboo.buildNumber=${{ github.run_id }}
+      - uses: jahia/jahia-modules-action/docker-tags@main
+        if: ${{ github.event_name == 'push' }}
+        with:
+          docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
+          docker_password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          version: ${{steps.tags.outputs.image_tag}}
+          repo: "jahia-core-dev"
+          dry-run: false
       - name: Build graalvm image
         shell: bash
         if: ${{ github.event_name == 'push' }}

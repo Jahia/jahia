@@ -50,7 +50,7 @@ jobs:
       - name: Determine tag
         shell: bash
         run: |
-          if [ "pull_request" = "${{ github.event_name }}" ]; then
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
             cp jahia.version image.tag
           else
             echo `cat jahia.version`-"${{ steps.branch-name.outputs.current_branch}}" > image.tag

@@ -150,7 +150,7 @@ public class FileServlet extends HttpServlet {
                     }
 
                     Date lastModifiedDate = n.getLastModifiedAsDate();
-                    long lastModified = lastModifiedDate != null ? lastModifiedDate.getTime() : 0;
+                    long lastModified = lastModifiedDate != null ? lastModifiedDate.getTime() : System.currentTimeMillis();
                     String eTag = generateETag(n.getIdentifier(), lastModified);
                     if (lastModifiedEntry == null) {
                         lastModifiedEntry = new FileLastModifiedCacheEntry(eTag, lastModified);

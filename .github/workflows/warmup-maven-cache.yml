@@ -1,0 +1,33 @@
+# This action generates fresh m2 cache to be used as a fall back restore key
+# https://github.com/actions/cache
+name: Warmup maven m2 cache
+
+on:
+  schedule:
+    - cron: '0 0 1 * *'
+  workflow_dispatch:
+
+jobs:
+  cache-cleanup:
+    name: Cleanup and refresh the m2 cache
+    runs-on: ubuntu-latest
+    steps:
+      # Delete the previous version of the cache
+      - uses: snnaplab/delete-branch-cache-action@v1
+        with:
+          key: jahia-default-maven-m2-cache
+      - uses: actions/checkout@v3
+      - name: Generate cache with restore key jahia-default-maven-m2-cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: jahia-default-maven-m2-cache
+      - name: Set environment variables from parameters
+        shell: bash
+        run: |
+          echo "NEXUS_USERNAME=${{ secrets.NEXUS_USERNAME }}" >> $GITHUB_ENV
+          echo "NEXUS_PASSWORD=${{ secrets.NEXUS_PASSWORD }}" >> $GITHUB_ENV          
+      - name: Fetch build dependencies
+        shell: bash
+        run: |
+          mvn -U -ntp -s .github/maven.settings.xml -Dmaven.resolver.transport=wagon de.qaware.maven:go-offline-maven-plugin:resolve-dependencies dependency:resolve

@@ -89,7 +89,7 @@ jobs:
             -Dmaven.resolver.transport=wagon \
             -Pgwt-development \
             -Dbamboo.buildNumber=${{ github.run_id }}
-      - uses: jahia/jahia-modules-action/docker-tags@main
+      - uses: jahia/jahia-modules-action/docker-tags@v2
         if: ${{ github.event_name == 'push' }}
         with:
           docker_username: ${{ secrets.DOCKERHUB_USERNAME }}

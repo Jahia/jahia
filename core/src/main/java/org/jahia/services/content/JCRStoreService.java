@@ -287,17 +287,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
      * @throws RepositoryException in case of JCR-related errors
      */
     public void deployDefinitions(String systemId, String moduleVersion, long lastModified) throws IOException, RepositoryException {
-        registerNamespaces();
-
-        for (JCRStoreProvider provider : sessionFactory.getProviders().values()) {
-            if (provider.canRegisterCustomNodeTypes()) {
-                provider.registerNamespaces();
-                provider.deployDefinitions(systemId);
-            }
-        }
-
-        logger.info("Added {} definitions, updating database cnd", systemId);
-
+        logger.info("Adding {} definitions, updating database cnd", systemId);
         synchronized (deploymentProperties) {
             // If deployment goes well, store deployed definitions in DB
             if (moduleVersion != null) {
@@ -309,6 +299,16 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
             final StringWriter out = new StringWriter();
             new JahiaCndWriter(NodeTypeRegistry.getInstance().getNodeTypes(systemId), NodeTypeRegistry.getInstance().getNamespaces(), out);
             nodeTypesDBService.saveCndFile(systemId + ".cnd", out.toString(), deploymentProperties);
+        }
+
+        logger.info("Registering {} into JCR providers", systemId);
+        registerNamespaces();
+
+        for (JCRStoreProvider provider : sessionFactory.getProviders().values()) {
+            if (provider.canRegisterCustomNodeTypes()) {
+                provider.registerNamespaces();
+                provider.deployDefinitions(systemId);
+            }
         }
     }
 

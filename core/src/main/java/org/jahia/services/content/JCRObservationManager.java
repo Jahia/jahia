@@ -96,11 +96,11 @@ public class JCRObservationManager implements ObservationManager {
     }
 
     public static void consume(List<EventWrapper> list, JCRSessionWrapper session, int operationType, int lastOperationType) throws RepositoryException {
-        if (Boolean.TRUE.equals(allEventListenersDisabled.get())) {
+        if (Boolean.TRUE.equals(allEventListenersDisabled.get()) && operationType != EXTERNAL_SYNC) {
             return;
         }
         String wspName = session.getWorkspace().getName();
-        boolean duringPublicationOnly = eventListenersAvailableDuringPublishOnly.get() != null && eventListenersAvailableDuringPublishOnly.get() > 0;
+        boolean duringPublicationOnly = eventListenersAvailableDuringPublishOnly.get() != null && eventListenersAvailableDuringPublishOnly.get() > 0 && operationType != EXTERNAL_SYNC;
         for (EventConsumer consumer : listeners) {
             DefaultEventListener castListener = consumer.listener instanceof DefaultEventListener ? (DefaultEventListener) consumer.listener : null;
             // check if the required workspace condition is matched

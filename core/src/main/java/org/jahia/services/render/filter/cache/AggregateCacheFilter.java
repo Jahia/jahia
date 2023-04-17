@@ -67,7 +67,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.springframework.context.ApplicationListener;
-import org.springframework.web.util.HtmlUtils;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -1105,7 +1104,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             }
 
             // Returns a fragment with an error comment
-            return execute("<!-- Module error : " + HtmlUtils.htmlEscape(e.getMessage()) + "-->", renderContext, resource, chain, true);
+            return execute(getErrorComment(e), renderContext, resource, chain, true);
         } catch (Exception e1) {
             return null;
         }

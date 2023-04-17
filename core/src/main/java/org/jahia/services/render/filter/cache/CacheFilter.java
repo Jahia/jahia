@@ -54,7 +54,6 @@ import org.jahia.services.render.filter.RenderChain;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.util.HtmlUtils;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
@@ -284,7 +283,7 @@ public class CacheFilter extends AbstractFilter {
 
         try {
             // Returns a fragment with an error comment
-            return execute("<!-- Module error : " + HtmlUtils.htmlEscape(e.getMessage()) + "-->", renderContext, resource, true);
+            return execute(getErrorComment(e), renderContext, resource, true);
         } catch (Exception e1) {
             return null;
         }

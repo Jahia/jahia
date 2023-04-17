@@ -49,10 +49,14 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.scripting.Script;
+import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.util.HtmlUtils;
 
 import javax.jcr.RepositoryException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -689,5 +693,14 @@ public abstract class AbstractFilter extends ConditionalExecution implements Ren
         out.append("Conditions: ").append(getConditionsSummary());
 
         return out.toString();
+    }
+
+    protected String getErrorComment(Exception e) {
+        if (SettingsBean.getInstance().isDevelopmentMode()) {
+            return "<!-- Module error : " + HtmlUtils.htmlEscape(e.getMessage()) + "-->";
+        }
+
+        String date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(new Date());
+        return "<!-- Module error : Inspect the logs to learn more about what went wrong - timestamp: " + date + " -->";
     }
 }

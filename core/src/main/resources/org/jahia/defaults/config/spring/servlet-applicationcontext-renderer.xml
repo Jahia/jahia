@@ -98,6 +98,7 @@
                     <bean class="org.jahia.bin.FindUser">
                         <property name="jahiaUserManagerService" ref="JahiaUserManagerService"/>
                         <property name="requireAuthenticatedUser" value="true"/>
+                        <property name="requiredPermission" value="adminUsers"/>
                         <property name="hardLimit" value="20"/>
                     </bean>
                 </entry>
@@ -106,12 +107,14 @@
                         <property name="jahiaUserManagerService" ref="JahiaUserManagerService"/>
                         <property name="jahiaGroupManagerService" ref="JahiaGroupManagerService"/>
                         <property name="requireAuthenticatedUser" value="true"/>
+                        <property name="requiredPermission" value="adminUsers"/>
                         <property name="hardLimit" value="20"/>
                     </bean>
                 </entry>
                 <entry key="/findUsersAndGroupsInAcl">
                     <bean class="org.jahia.bin.FindUsersAndGroupsInAcl">
                         <property name="requireAuthenticatedUser" value="true"/>
+                        <property name="requiredPermission" value="adminUsers"/>
                     </bean>
                 </entry>
                 <entry key="/findHistory/**">

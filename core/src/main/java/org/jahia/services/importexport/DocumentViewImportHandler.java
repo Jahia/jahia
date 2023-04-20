@@ -703,13 +703,6 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                     continue;
                 }
 
-                if (propDef.getRequiredType() == PropertyType.UNDEFINED) {
-                    // avoid illegal type 0
-                    //...getValueFactory().createValue(value, 0) throw a illegal type 0 exception
-                    logger.error("Couldn't resolve property type for property " + attrName + " in " + child.getPrimaryNodeTypeName() + getLocation());
-                    continue;
-                }
-
                 if (propDef.getRequiredType() == PropertyType.REFERENCE || propDef.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
                     if (attrValue.length() > 0) {
                         String[] values = propDef.isMultiple() ? Patterns.SPACE.split(attrValue) : new String[]{attrValue};
@@ -767,7 +760,11 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                         }
                     } else {
                         if (!child.getRealNode().hasProperty(attrName) || !child.getRealNode().getProperty(attrName).getString().equals(attrValue)) {
-                            child.getRealNode().setProperty(attrName, attrValue, propDef.getRequiredType());
+                            if (propDef.getRequiredType() == PropertyType.UNDEFINED) {
+                                child.getRealNode().setProperty(attrName, attrValue);
+                            } else {
+                                child.getRealNode().setProperty(attrName, attrValue, propDef.getRequiredType());
+                            }
                         }
                     }
                 }

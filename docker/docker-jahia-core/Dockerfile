@@ -68,7 +68,7 @@ RUN /bin/bash -c 'if ${INSTALL_GRAALVM:-false}; then \
         echo "Get Graalvm..." \
         && cd /usr/local \
         && wget -nv https://get.graalvm.org/jdk \
-        && /bin/bash jdk --no-progress \
+        && /bin/bash jdk --no-progress --components nodejs graalvm-ce-java11-22.3.1 \
         && mv graalvm* graalvm \
         && rm jdk; \
     fi'

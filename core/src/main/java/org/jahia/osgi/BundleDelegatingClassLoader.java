@@ -135,6 +135,8 @@ public class BundleDelegatingClassLoader extends ClassLoader implements BundleRe
                     + backingBundle + "]");
             e.initCause(ncdfe);
             throw e;
+        } catch (IllegalStateException ise) {
+            throw new IllegalStateException(String.format("Impossible to load the class %s from the bundle %s", name, this.backingBundle), ise);
         }
     }
 

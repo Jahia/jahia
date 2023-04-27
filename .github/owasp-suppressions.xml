@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+    <suppress>
+        <notes><![CDATA[
+        file name: abdera-i18n-1.1.3.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.abdera/abdera\-i18n@.*$</packageUrl>
+        <cve>CVE-2020-7791</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        False positive: apache-mime4j-core-0.8.4.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.james/apache\-mime4j\-.*@.*$</packageUrl>
+        <cve>CVE-2021-38542</cve>
+        <cve>CVE-2021-40110</cve>
+        <cve>CVE-2021-40111</cve>
+        <cve>CVE-2021-40525</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: camel-*-2.25.2.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.camel/camel\-.*@.*$</packageUrl>
+        <cve>CVE-2020-11971</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: camel-core-2.25.2.jar (shaded: org.apache.camel:spi-annotations:2.25.2)
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.camel/spi\-annotations@.*$</packageUrl>
+        <cve>CVE-2020-11971</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: commons-discovery-0.5.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/commons\-discovery/commons\-discovery@.*$</packageUrl>
+        <cve>CVE-2022-0869</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: commons-io-2.2.jar - we package newer commons-io
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/commons\-io/commons\-io@.*$</packageUrl>
+        <cve>CVE-2021-29425</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: drools-.*-6.0.0.Final.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.drools/drools\-.*@.*$</packageUrl>
+        <vulnerabilityName>CVE-2013-6468</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: gwt-servlet-2.8.2.jar (shaded: com.google.protobuf:protobuf-java:2.5.0)
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/com\.google\.protobuf/protobuf\-java@2\.5\.0$</packageUrl>
+        <cve>CVE-2021-22569</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: httpclient-4.5.6.jar - we package httpclient >= 4.5.13
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.httpcomponents/httpclient@.*$</packageUrl>
+        <cve>CVE-2020-13956</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: jackson-*-2.10.0.jar - we package jackson >= 2.10.5.1
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/com\.fasterxml\.jackson\.core/jackson\-.*@2\.10\.0$</packageUrl>
+        <cpe>cpe:/a:fasterxml:jackson-modules-java8</cpe>
+        <cpe>cpe:/a:fasterxml:jackson-databind</cpe>
+        <vulnerabilityName>CVE-2020-25649</vulnerabilityName>
+    </suppress>    
+    <suppress>
+        <notes><![CDATA[
+        file name: jasypt-1.9.1-lite.jar - we package jasypt > 1.9.1 
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.jasypt/jasypt@.*$</packageUrl>
+        <cve>CVE-2014-9970</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: jbpm-bpmn2-6.0.0.Final.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.jbpm/jbpm\-.*@.*$</packageUrl>
+        <vulnerabilityName>CVE-2013-6465</vulnerabilityName>
+        <vulnerabilityName>CVE-2019-14839</vulnerabilityName>
+        <vulnerabilityName>CVE-2021-20306</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: log4j-1.2.16.jar - we use log4j2
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/.*log4j@1\.2\.16$</packageUrl>
+        <cpe>cpe:/a:apache:log4j</cpe>
+        <vulnerabilityName>CVE-2019-17571</vulnerabilityName>
+        <vulnerabilityName>CVE-2020-9488</vulnerabilityName>
+        <vulnerabilityName>CVE-2021-4104</vulnerabilityName>
+        <vulnerabilityName>CVE-2022-23302</vulnerabilityName>
+        <vulnerabilityName>CVE-2022-23305</vulnerabilityName>
+        <vulnerabilityName>CVE-2022-23307</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: openoffice juh/ridl/unoil-4.1.2.jar 
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.openoffice/.*@.*$</packageUrl>
+        <cve>CVE-2018-11790</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: pluto-util-2.0.2.jar 
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.portals\.pluto/pluto\-.*@.*$</packageUrl>
+        <cve>CVE-2020-15250</cve>
+        <cve>CVE-2021-29425</cve>
+        <cve>CVE-2021-36737</cve>
+        <cve>CVE-2021-36738</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: spring-*-3.1.1.RELEASE.jar - we package newer spring 
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-.*@3\.1\.1.RELEASE$</packageUrl>
+        <cpe>cpe:/a:pivotal_software:spring_framework</cpe>
+        <cpe>cpe:/a:springsource:spring_framework</cpe>
+        <cpe>cpe:/a:vmware:springsource_spring_framework</cpe>
+        <cpe>cpe:/a:vmware:spring_framework</cpe>
+        <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: spring-beans-3.2.18.jahia1_OSGI.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-.*@.*$</packageUrl>
+        <cve>CVE-2022-22965</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: solr-core-3.6.2-jahia1.jar and solr-solrj-3.6.2-jahia1.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.solr/solr\-.*@.*$</packageUrl>
+        <cve>CVE-2012-6612</cve>
+        <cve>CVE-2013-6397</cve>
+        <cve>CVE-2013-6407</cve>
+        <cve>CVE-2013-6408</cve>
+        <cve>CVE-2015-8795</cve>
+        <cve>CVE-2015-8796</cve>
+        <cve>CVE-2015-8797</cve>
+        <cve>CVE-2017-3163</cve>
+        <cve>CVE-2017-3164</cve>
+        <cve>CVE-2018-11802</cve>
+        <cve>CVE-2018-1308</cve>
+        <cve>CVE-2019-0193</cve>
+        <cve>CVE-2020-13941</cve>
+        <cve>CVE-2021-27905</cve>
+        <cve>CVE-2021-29262</cve>
+        <cve>CVE-2021-29943</cve>
+        <cve>CVE-2021-44548</cve>
+        <vulnerabilityName>CVE-2014-3628</vulnerabilityName>
+        <vulnerabilityName>CVE-2017-7660</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+            False positive: tomcat-embed-jasper-9.0.16.jar - Jahia is installed with a more recent Tomcat version
+        ]]></notes>
+       <packageUrl regex="true">^pkg:maven/org\.apache\.tomcat\.embed/tomcat\-embed\-jasper@9\.0\.16$</packageUrl>
+       <cve>CVE-2019-0221</cve>
+       <cve>CVE-2019-0232</cve>
+       <cve>CVE-2019-10072</cve>
+       <cve>CVE-2019-12418</cve>
+       <cve>CVE-2019-17563</cve>
+       <cve>CVE-2020-11996</cve>
+       <cve>CVE-2020-13934</cve>
+       <cve>CVE-2020-13935</cve>
+       <cve>CVE-2020-13943</cve>
+       <cve>CVE-2020-17527</cve>
+       <cve>CVE-2020-1935</cve>
+       <cve>CVE-2020-1938</cve>
+       <cve>CVE-2020-8022</cve>
+       <cve>CVE-2020-9484</cve>
+       <cve>CVE-2021-24122</cve>
+       <cve>CVE-2021-25122</cve>
+       <cve>CVE-2021-25329</cve>
+       <cve>CVE-2021-30640</cve>
+       <cve>CVE-2021-33037</cve>
+       <cve>CVE-2021-41079</cve>
+       <cve>CVE-2021-42340</cve>
+       <cve>CVE-2022-25762</cve>
+       <cve>CVE-2022-29885</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: xercesImpl-2.12.2.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/xerces/xercesImpl@.*$</packageUrl>
+        <vulnerabilityName>CVE-2017-10355</vulnerabilityName>
+    </suppress>
+</suppressions>

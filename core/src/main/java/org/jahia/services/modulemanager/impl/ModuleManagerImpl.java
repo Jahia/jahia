@@ -382,9 +382,9 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
 
                     stopPreviousVersions(info, target);
 
-                    bundleService.start(info, target);
-
                     refreshOtherVersions(Collections.singleton(info), target);
+
+                    bundleService.start(info, target);
                 }
             });
 

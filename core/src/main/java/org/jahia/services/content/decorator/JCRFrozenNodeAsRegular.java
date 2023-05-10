@@ -94,6 +94,7 @@ public class JCRFrozenNodeAsRegular extends JCRNodeWrapperImpl {
 
     public String internalGetPath() {
         try {
+            // j:fullpath is deprecated
             Property property = objectNode.getProperty("j:fullpath");
             return property.getString();
         } catch (RepositoryException e) {
@@ -447,6 +448,7 @@ public class JCRFrozenNodeAsRegular extends JCRNodeWrapperImpl {
     public JCRItemWrapper getAncestor(int i) throws ItemNotFoundException, AccessDeniedException,
             RepositoryException {
         JCRItemWrapper ancestor = null;
+        // j:fullpath is deprecated
         Property property = objectNode.getProperty("j:fullpath");
         if (property != null) {
             StringBuilder builder = new StringBuilder("/");
@@ -476,6 +478,7 @@ public class JCRFrozenNodeAsRegular extends JCRNodeWrapperImpl {
     @Override
     public List<JCRItemWrapper> getAncestors() throws RepositoryException {
         List<JCRItemWrapper> ancestors = new ArrayList<JCRItemWrapper>();
+        // j:fullpath is deprecated
         Property property = objectNode.getProperty("j:fullpath");
         if (property != null) {
             StringBuilder builder = new StringBuilder("/");

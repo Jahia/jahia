@@ -196,6 +196,7 @@ public class ImportExportTest {
     private final static Set<String> notExportedProperties = Sets.newHashSet("jcr:lockIsDeep", "j:lockTypes", "jcr:lockOwner",
             "j:locktoken");
 
+    // j:fullpath is deprecated
     private final static Set<String> optionalProperties = Sets.newHashSet("jcr:mixinTypes", Constants.PUBLISHED, Constants.LASTPUBLISHED,
             Constants.LASTPUBLISHEDBY, "j:deletedChildren", "j:fullpath", "j:allowsUnlistedLanguages");
 

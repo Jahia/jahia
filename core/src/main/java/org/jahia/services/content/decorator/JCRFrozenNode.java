@@ -70,6 +70,7 @@ public class JCRFrozenNode extends JCRNodeDecorator {
         String frozenPrimaryType = getPropertyAsString("jcr:frozenPrimaryType");
         if (frozenPrimaryType.equals(Constants.JAHIANT_FILE)) {
             try {
+                // j:fullpath is deprecated
                 return getProvider().getHttpPath()+"/"+getSession().getWorkspace().getName() + Text.escapePath(this.getPropertyAsString("j:fullpath") + "?v=" + getParent().getName());
             } catch (RepositoryException e) {
                 logger.error("Error while retrieving fullpath property", e);
@@ -87,6 +88,7 @@ public class JCRFrozenNode extends JCRNodeDecorator {
         }
 
         try {
+            // j:fullpath is deprecated
             String path = node.getProperty("j:fullpath").getValue().getString();
             if (path.startsWith("/sites/")) {
                 return (site = new JCRSiteNode(getSession().getNode(path.substring(0, path.indexOf('/',7)))));

@@ -13,6 +13,7 @@
 
 [jmix:nodenameInfo] > mix:referenceable mixin
  - j:nodename (string) protected hidden
+ // j:fullpath is deprecated. Do not use anymore
  - j:fullpath (string) protected hidden nofulltext
 
 [jmix:systemNode] mixin

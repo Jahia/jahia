@@ -249,6 +249,7 @@ public class Constants {
     public static final String ACL = "j:acl";
     public static final String APPLY_ACL = "j:applyAcl";
     public static final String THUMBNAIL = "j:thumbnail";
+    // j:fullpath is deprecated
     public static final String FULLPATH = "j:fullpath";
     public static final String TAGS = "j:tags";
     public static final String TAG_LIST = "j:tagList";

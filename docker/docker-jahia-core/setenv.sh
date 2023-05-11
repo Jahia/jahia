@@ -19,3 +19,6 @@ export CATALINA_OPTS="${CATALINA_OPTS} -XX:+UseContainerSupport -XX:MaxRAMPercen
 
 # CVE-2021-44228
 export CATALINA_OPTS="${CATALINA_OPTS} -Dlog4j2.formatMsgNoLookups=true"
+
+# Prevent Karaf from intercepting sigterm
+export CATALINA_OPTS="${CATALINA_OPTS} -Dkaraf.handle.sigterm=false"

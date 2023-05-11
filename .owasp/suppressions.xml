@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+    <suppress>
+        <notes><![CDATA[
+        file name: abdera-i18n-*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.abdera/abdera\-i18n@.*$</packageUrl>
+        <cve>CVE-2020-7791</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        False positive: apache-mime4j-core-*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.james/apache\-mime4j\-.*@.*$</packageUrl>
+        <cve>CVE-2021-38542</cve>
+        <cve>CVE-2021-40110</cve>
+        <cve>CVE-2021-40111</cve>
+        <cve>CVE-2021-40525</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: org.apache.camel/*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.camel/.*@.*$</packageUrl>
+        <cve>CVE-2020-11971</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: class-validator:* - not used in production code
+        ]]></notes>
+        <packageUrl regex="true">^pkg:npm/class\-validator@.*$</packageUrl>
+        <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: commons-discovery-*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/commons\-discovery/commons\-discovery@.*$</packageUrl>
+        <cve>CVE-2022-0869</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: commons-io-*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/commons\-io/commons\-io@.*$</packageUrl>
+        <cve>CVE-2021-29425</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: cron-parser-core-*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/net\.redhogs\.cronparser/cron\-parser\-core@.*$</packageUrl>
+        <cpe>cpe:/a:cron_project:cron</cpe>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: decode-uri-component:* - not used in production code
+        ]]></notes>
+        <packageUrl regex="true">^pkg:npm/decode\-uri\-component@.*$</packageUrl>
+        <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: drools-.*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.drools/drools\-.*@.*$</packageUrl>
+        <vulnerabilityName>CVE-2013-6468</vulnerabilityName>
+        <vulnerabilityName>CVE-2021-41411</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: dx-base-demo-components-*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.jahia\.modules/dx\-base\-demo\-components@.*$</packageUrl>
+        <cpe>cpe:/a:gallery:gallery</cpe>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: external-provider-users-groups-*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.jahia\.modules/external\-provider\-users\-groups@.*$</packageUrl>
+        <cpe>cpe:/a:config_file_provider_project:config_file_provider</cpe>
+        <cpe>cpe:/a:list_site_pro:list_site_pro</cpe>
+        <cpe>cpe:/a:set_user_project:set_user</cpe>
+        <cpe>cpe:/a:user_project:user</cpe>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: graphql-*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/com\.graphql\-java/graphql\-.*@.*$</packageUrl>
+        <cve>CVE-2022-37734</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: gwt-servlet-2.8.2.jar (shaded: com.google.protobuf:protobuf-java:2.5.0) - false positive as gwt does not really package the code
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/com\.google\.protobuf/protobuf\-java@2\.5\.0$</packageUrl>
+        <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: httpclient-*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.httpcomponents/httpclient@.*$</packageUrl>
+        <cve>CVE-2020-13956</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: jackson-*-2.10.0.jar - we package jackson >= 2.10.5.1
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/com\.fasterxml\.jackson\.core/jackson\-.*@2\.10\.0$</packageUrl>
+        <cpe>cpe:/a:fasterxml:jackson-modules-java8</cpe>
+        <cpe>cpe:/a:fasterxml:jackson-databind</cpe>
+        <vulnerabilityName>CVE-2020-25649</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: jahia-ui-root-*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.jahia\.modules/jahia\-ui\-root@.*$</packageUrl>
+        <cpe>cpe:/a:qt:qt</cpe>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: jasypt-*.jar 
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.jasypt/jasypt@.*$</packageUrl>
+        <cve>CVE-2014-9970</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: jbpm-*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.jbpm/jbpm\-.*@.*$</packageUrl>
+        <vulnerabilityName>CVE-2013-6465</vulnerabilityName>
+        <vulnerabilityName>CVE-2019-14839</vulnerabilityName>
+        <vulnerabilityName>CVE-2021-20306</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: json-*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.json/json@.*$</packageUrl>
+        <cve>CVE-2022-45688</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: json5:*
+        ]]></notes>
+       <packageUrl regex="true">^pkg:npm/json5@.*$</packageUrl>
+       <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: org.apache.karaf.*jar
+        ]]></notes>
+       <packageUrl regex="true">^pkg:maven/org\.apache\.karaf.*/org\.apache\.karaf\..*@.*$</packageUrl>
+       <cve>CVE-2022-40145</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: kie-*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.kie/kie\-.*@.*$</packageUrl>
+        <cve>CVE-2021-41411</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: location-*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.jahia\.modules/location@.*$</packageUrl>
+        <cpe>cpe:/a:location_module_project:location</cpe>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: log4j-1.2.16.jar - we use log4j2
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/.*log4j@1\.2\.16$</packageUrl>
+        <cpe>cpe:/a:apache:log4j</cpe>
+        <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: minimist:*
+        ]]></notes>
+        <packageUrl regex="true">^pkg:npm/minimist@.*$</packageUrl>
+        <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: node-fetch:*
+        ]]></notes>
+       <packageUrl regex="true">^pkg:npm/node\-fetch@.*$</packageUrl>
+       <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: openoffice/*.jar 
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.openoffice/.*@.*$</packageUrl>
+        <cve>CVE-2018-11790</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: pluto-util-*.jar 
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.portals\.pluto/pluto\-.*@.*$</packageUrl>
+        <cve>CVE-2020-15250</cve>
+        <cve>CVE-2021-29425</cve>
+        <cve>CVE-2021-36737</cve>
+        <cve>CVE-2021-36738</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: shiro-*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.shiro/shiro\-.*@.*$</packageUrl>
+        <cve>CVE-2023-22602</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: site-settings-seo-*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.jahia\.modules/site\-settings\-seo@.*$</packageUrl>
+        <cpe>cpe:/a:list_site_pro:list_site_pro</cpe>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: spring-*-3.1.1.RELEASE.jar - we package newer spring 
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-.*@3\.1\.1.RELEASE$</packageUrl>
+        <cpe>cpe:/a:pivotal_software:spring_framework</cpe>
+        <cpe>cpe:/a:springsource:spring_framework</cpe>
+        <cpe>cpe:/a:vmware:springsource_spring_framework</cpe>
+        <cpe>cpe:/a:vmware:spring_framework</cpe>
+        <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: spring-*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-.*@.*$</packageUrl>
+        <cve>CVE-2016-1000027</cve>
+        <cve>CVE-2018-1257</cve>
+        <cve>CVE-2018-1270</cve>
+        <cve>CVE-2018-11040</cve>
+        <cve>CVE-2022-22950</cve>
+        <cve>CVE-2022-22965</cve>
+        <cve>CVE-2023-20861</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: solr-*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.solr/solr\-.*@.*$</packageUrl>
+        <cve>CVE-2012-6612</cve>
+        <cve>CVE-2013-6397</cve>
+        <cve>CVE-2013-6407</cve>
+        <cve>CVE-2013-6408</cve>
+        <cve>CVE-2015-8795</cve>
+        <cve>CVE-2015-8796</cve>
+        <cve>CVE-2015-8797</cve>
+        <cve>CVE-2017-3163</cve>
+        <cve>CVE-2017-3164</cve>
+        <cve>CVE-2018-11802</cve>
+        <cve>CVE-2018-1308</cve>
+        <cve>CVE-2019-0193</cve>
+        <cve>CVE-2020-13941</cve>
+        <cve>CVE-2021-27905</cve>
+        <cve>CVE-2021-29262</cve>
+        <cve>CVE-2021-29943</cve>
+        <cve>CVE-2021-44548</cve>
+        <vulnerabilityName>CVE-2014-3628</vulnerabilityName>
+        <vulnerabilityName>CVE-2017-7660</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: tasks-*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.jahia\.modules/tasks@.*$</packageUrl>
+        <cpe>cpe:/a:tasks:tasks</cpe>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: testng-*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.testng/testng@.*$</packageUrl>
+        <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: testng-*.jar: jquery-1.7.1.min.js
+        ]]></notes>
+        <packageUrl regex="true">^pkg:javascript/jquery@1.7.1.min$</packageUrl>
+        <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+            False positive: tomcat-embed-jasper-9.0.16.jar - Jahia is installed with a more recent Tomcat version
+        ]]></notes>
+       <packageUrl regex="true">^pkg:maven/org\.apache\.tomcat\.embed/tomcat\-embed\-jasper@9\.0\.16$</packageUrl>
+       <cve>CVE-2019-0221</cve>
+       <cve>CVE-2019-0232</cve>
+       <cve>CVE-2019-2684</cve>
+       <cve>CVE-2019-10072</cve>
+       <cve>CVE-2019-12418</cve>
+       <cve>CVE-2019-17563</cve>
+       <cve>CVE-2020-11996</cve>
+       <cve>CVE-2020-13934</cve>
+       <cve>CVE-2020-13935</cve>
+       <cve>CVE-2020-13943</cve>
+       <cve>CVE-2020-17527</cve>
+       <cve>CVE-2020-1935</cve>
+       <cve>CVE-2020-1938</cve>
+       <cve>CVE-2020-8022</cve>
+       <cve>CVE-2020-9484</cve>
+       <cve>CVE-2021-24122</cve>
+       <cve>CVE-2021-25122</cve>
+       <cve>CVE-2021-25329</cve>
+       <cve>CVE-2021-30640</cve>
+       <cve>CVE-2021-33037</cve>
+       <cve>CVE-2021-41079</cve>
+       <cve>CVE-2021-42340</cve>
+       <cve>CVE-2021-43980</cve>
+       <cve>CVE-2022-25762</cve>
+       <cve>CVE-2022-29885</cve>
+       <cve>CVE-2022-42252</cve>
+       <cve>CVE-2023-28708</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: tools-*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.jahia\.modules/tools@.*$</packageUrl>
+        <cpe>cpe:/a:apache:karaf</cpe>
+        <cpe>cpe:/a:qos:slf4j</cpe>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: ua-parser-js:*1
+        ]]></notes>
+        <packageUrl regex="true">^pkg:npm/ua\-parser\-js@.*$</packageUrl>
+        <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: velocity-tools-*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.velocity/velocity\-tools@.*$</packageUrl>
+        <cve>CVE-2020-13959</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: xercesImpl-*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/xerces/xercesImpl@.*$</packageUrl>
+        <vulnerabilityName>CVE-2009-2625</vulnerabilityName>
+        <vulnerabilityName>CVE-2017-10355</vulnerabilityName>
+    </suppress>
+</suppressions>

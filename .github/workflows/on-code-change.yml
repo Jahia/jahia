@@ -184,7 +184,7 @@ jobs:
           tests_path: ${{ env.TESTS_PATH }}
           jahia_image: ${{ env.JAHIA_IMAGE }}
           should_use_build_artifacts: false
-          should_skip_testrail: true
+          should_skip_testrail: false
           should_skip_zencrepes: true
           github_artifact_name: jahia-integ-tests-${{ github.run_number }}
           jahia_license: ${{ secrets.JAHIA_LICENSE_8X_FULL }}

@@ -6,17 +6,17 @@
     </parent>
     <artifactId>docker-jahia-core</artifactId>
     <modelVersion>4.0.0</modelVersion>
-    
+
     <packaging>pom</packaging>
-    
+
     <properties>
         <image.repo>jahia-core</image.repo>
         <image.repo.classifier>-dev</image.repo.classifier>
         <image.tag>${project.version}</image.tag>
         <image.alias />
-        <image.graalvm />
+        <image.graalvm>false</image.graalvm>
     </properties>
-    
+
     <repositories>
         <repository>
             <id>jahia-public</id>
@@ -31,7 +31,7 @@
             </snapshots>
         </repository>
     </repositories>
-    
+
     <build>
         <plugins>
             <plugin>
@@ -63,7 +63,7 @@
                                     </outputDirectory>
                                 </artifactItem>
                                 <!-- the following artifacts must be moved from pack to here ! -->
-                                
+
                                 <artifactItem>
                                     <groupId>org.jahia.server</groupId>
                                     <artifactId>shared-libraries</artifactId>
@@ -89,7 +89,7 @@
             </plugin>
         </plugins>
     </build>
-    
+
     <profiles>
         <profile>
             <id>docker-core-plugin</id>
@@ -98,7 +98,7 @@
                     <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
-                        <version>0.40.3</version>
+                        <version>0.42.1</version>
                         <executions>
                             <execution>
                                 <id>default</id>
@@ -123,8 +123,7 @@
                                         </buildx>
                                         <tags>${image.alias}</tags>
                                         <args>
-                                            <JAHIA_PLUGIN>org.jahia.server:jahia-maven-plugin:${jahia.plugin.version}
-                                            </JAHIA_PLUGIN>
+                                            <JAHIA_PLUGIN>org.jahia.server:jahia-maven-plugin:${jahia.plugin.version}</JAHIA_PLUGIN>
                                             <INSTALL_GRAALVM>${image.graalvm}</INSTALL_GRAALVM>
                                         </args>
                                         <env>
@@ -145,7 +144,7 @@
                     <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
-                        <version>0.40.3</version>
+                        <version>0.42.1</version>
                         <executions>
                             <execution>
                                 <id>default</id>
@@ -163,8 +162,7 @@
                                         <contextDir>${project.basedir}</contextDir>
                                         <tags>${image.alias}</tags>
                                         <args>
-                                            <JAHIA_PLUGIN>org.jahia.server:jahia-maven-plugin:${jahia.plugin.version}
-                                            </JAHIA_PLUGIN>
+                                            <JAHIA_PLUGIN>org.jahia.server:jahia-maven-plugin:${jahia.plugin.version}</JAHIA_PLUGIN>
                                             <INSTALL_GRAALVM>${image.graalvm}</INSTALL_GRAALVM>
                                         </args>
                                         <env>

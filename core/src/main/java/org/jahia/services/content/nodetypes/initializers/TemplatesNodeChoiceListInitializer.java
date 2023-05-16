@@ -137,7 +137,7 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
                 List<Node> templateNodes = new ArrayList<>();
                 while (niPageModels.hasNext()) {
                     Node n = niPageModels.nextNode();
-                    if(!node.getPath().startsWith(n.getPath()) && !n.isNodeType("jmix:markedForDeletion")) {
+                    if (!node.getPath().startsWith(n.getPath()) && !n.isNodeType("jmix:markedForDeletion")) {
                         templateNodes.add(n);
                     }
                 }
@@ -172,7 +172,7 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
     }
 
     private void addTemplates(List<ChoiceListValue> vs, String path, JCRSessionWrapper session, JCRNodeWrapper node, ExtendedNodeType nodetype, String templateType, String defaultTemplate, ExtendedPropertyDefinition propertyDefinition, Locale locale, Map<String, Object> context) throws RepositoryException {
-        List<JCRNodeWrapper> nodes = RenderService.getInstance().getTemplateNodes(null, path, "jnt:"+templateType, false, session);
+        List<JCRNodeWrapper> nodes = RenderService.getInstance().getTemplateNodes(null, path, "jnt:" + templateType, false, session);
         for (JCRNodeWrapper templateNode : nodes) {
             boolean ok = true;
             if (templateNode.hasProperty("j:applyOn")) {
@@ -214,15 +214,19 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
             if (ok) {
                 String templateName = templateNode.getName();
                 try {
-                    Property templateTitleProperty = templateNode.getI18N(locale).getProperty(Constants.JCR_TITLE);
-                    if (templateTitleProperty != null) {
-                        String templateTitle = templateTitleProperty.getString();
-                        if (StringUtils.isNotEmpty(templateTitle)) {
-                            templateName = templateTitle;
+                    if (templateNode.isNodeType(Constants.JAHIAMIX_RB_TITLE)) {
+                        templateName = templateNode.getDisplayableName();
+                    } else {
+                        Property templateTitleProperty = templateNode.getI18N(locale).getProperty(Constants.JCR_TITLE);
+                        if (templateTitleProperty != null) {
+                            String templateTitle = templateTitleProperty.getString();
+                            if (StringUtils.isNotEmpty(templateTitle)) {
+                                templateName = templateTitle;
+                            }
                         }
                     }
                 } catch (RepositoryException re) {
-                    logger.debug("No title for template "+templateNode.getPath()+" in locale " + locale + ", will use template system name as display name");
+                    logger.debug("No title for template {} in locale {}, will use template system name as display name", templateNode.getPath(), locale);
                 }
                 ChoiceListValue v;
                 if (propertyDefinition.getRequiredType() == PropertyType.STRING) {
@@ -234,7 +238,7 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
                     v.addProperty("defaultProperty", true);
                 }
 
-                if(templateNode.isNodeType("jnt:pageTemplate") && templateNode.hasProperty("j:templateThumbnail")) {
+                if (templateNode.isNodeType("jnt:pageTemplate") && templateNode.hasProperty("j:templateThumbnail")) {
                     v.addProperty("image", ((JCRFileNode) templateNode.getProperty("j:templateThumbnail").getNode()).getUrl());
                 }
 

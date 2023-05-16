@@ -73,7 +73,6 @@ RUN /bin/bash -c 'if ${INSTALL_GRAALVM:-false}; then \
         && rm jdk; \
     fi'
 
-ENV GRAALVM_PATH=${INSTALL_GRAALVM:+/usr/local/graalvm}
 ENV PATH=/usr/local/graalvm/bin:${PATH}
 
 RUN echo "Retrieve latest Yourkit agent binaries..." \

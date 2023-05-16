@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ -d "/usr/local/graalvm" ]; then
+    export JAVA_HOME="/usr/local/graalvm"
+fi
+
 if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
     echo "Initial container startup, configuring Jahia..."
 

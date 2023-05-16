@@ -128,6 +128,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     private static final String JS_TYPE = "javascript";
     private static final FastHashMap RANK;
+
     static {
         RANK = new FastHashMap();
         RANK.put("inlinebefore", 0);
@@ -244,7 +245,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     @Override
     @SuppressWarnings("unchecked")
     public String execute(String previousOut, RenderContext renderContext,
-            org.jahia.services.render.Resource resource, RenderChain chain) throws Exception {
+                          org.jahia.services.render.Resource resource, RenderChain chain) throws Exception {
 
         String out = previousOut;
         Source source = new Source(previousOut);
@@ -273,7 +274,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     }
 
     private void getAssetsByTarget(String out, Source source,
-            Map<String, Map<String, Map<String, Map<String, String>>>> assetsByTarget)
+                                   Map<String, Map<String, Map<String, Map<String, String>>>> assetsByTarget)
             throws UnsupportedEncodingException {
         // keep track of resource asset path with the targets it's been added in to track potential duplicates
         Map<String, Set<String>> resourceTargetsMap = new HashMap<>();
@@ -283,8 +284,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             addAssetByTarget(out, assetsByTarget, resourceTargetsMap, keys, esiResourceElement);
         }
 
-        removeDuplicates(assetsByTarget, new String[] {JS_TYPE, "css"}, resourceTargetsMap);
-        for (Map.Entry<String, Set<String>> e: resourceTargetsMap.entrySet()) {
+        removeDuplicates(assetsByTarget, new String[]{JS_TYPE, "css"}, resourceTargetsMap);
+        for (Map.Entry<String, Set<String>> e : resourceTargetsMap.entrySet()) {
             if (logger.isInfoEnabled() && e.getValue() != null && e.getValue().size() > 1) {
                 logger.info("Potential duplicate static resource with path '{}' added to these tags: {}",
                         e.getKey(), e.getValue());
@@ -293,7 +294,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     }
 
     private void addAssetByTarget(String out, Map<String, Map<String, Map<String, Map<String, String>>>> assetsByTarget,
-            Map<String, Set<String>> resourceTargetsMap, Set<String> keys, Element esiResourceElement) throws UnsupportedEncodingException {
+                                  Map<String, Set<String>> resourceTargetsMap, Set<String> keys, Element esiResourceElement) throws UnsupportedEncodingException {
         StartTag esiResourceStartTag = esiResourceElement.getStartTag();
         Map<String, Map<String, Map<String, String>>> assets;
         String targetTag = esiResourceStartTag.getAttributeValue(TARGET_TAG);
@@ -343,8 +344,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     }
 
     private String renderAjaxStaticAssets(String previousOut, RenderContext renderContext,
-            org.jahia.services.render.Resource resource, String out, Source source, OutputDocument outputDocument,
-            Map<String, Map<String, Map<String, Map<String, String>>>> assetsByTarget) throws IOException, ScriptException {
+                                          org.jahia.services.render.Resource resource, String out, Source source, OutputDocument outputDocument,
+                                          Map<String, Map<String, Map<String, Map<String, String>>>> assetsByTarget) throws IOException, ScriptException {
 
         String templateContent = getAjaxResolvedTemplate();
         if (templateContent == null) {
@@ -381,7 +382,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     }
 
     private String renderPageStaticAssets(RenderContext renderContext, org.jahia.services.render.Resource resource, Source source,
-            OutputDocument outputDocument, Map<String, Map<String, Map<String, Map<String, String>>>> assetsByTarget)
+                                          OutputDocument outputDocument, Map<String, Map<String, Map<String, Map<String, String>>>> assetsByTarget)
             throws RepositoryException, IOException, ScriptException {
         String out;
 
@@ -417,6 +418,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 if (doParse) {
                     outputDocument.replace(bodyStartTag.getEnd() - 1, bodyStartTag.getEnd(), " jahia-parse-html=\"true\">");
                 }
+                outputDocument = new OutputDocument(new Source(outputDocument.toString()));
             }
         }
         if (!assetsByTarget.containsKey(HEAD_TAG)) {
@@ -436,19 +438,19 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
      * Update resourceTargetsMap for removed duplicates
      */
     private void removeDuplicates(Map<String, Map<String, Map<String, Map<String, String>>>> assetsByTarget,
-            String[] targetedTypes, Map<String,Set<String>> resourceTargetsMap) {
+                                  String[] targetedTypes, Map<String, Set<String>> resourceTargetsMap) {
         if (!assetsByTarget.containsKey(HEAD_TAG) || !assetsByTarget.containsKey(BODY_TAG)) {
             return;
         }
 
         for (String targetedType : targetedTypes) {
-            Map<String, Map<String,String>> headPaths = assetsByTarget.get(HEAD_TAG).get(targetedType);
-            Map<String, Map<String,String>> bodyPaths = assetsByTarget.get(BODY_TAG).get(targetedType);
+            Map<String, Map<String, String>> headPaths = assetsByTarget.get(HEAD_TAG).get(targetedType);
+            Map<String, Map<String, String>> bodyPaths = assetsByTarget.get(BODY_TAG).get(targetedType);
             if (headPaths == null || bodyPaths == null) {
                 break;
             }
 
-            for (String path: bodyPaths.keySet()) {
+            for (String path : bodyPaths.keySet()) {
                 if (headPaths.containsKey(path)) {
                     headPaths.remove(path);
                     // update resourceTargetsMap
@@ -472,7 +474,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         if (templateContent != null) {
 
             final EndTag headEndTag = element.getEndTag();
-            if (headEndTag == null)  {
+            if (headEndTag == null) {
                 logger.warn("WARNING: Trying to add resources to HTML tag '{}', but didn't find corresponding end tag while rendering resource '{}'. " +
                         "Please check the structure of your HTML template", targetTag, renderContext.getRequest().getRequestURL());
                 return;
@@ -702,7 +704,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         }
 
         // Check if all key have been aggregated
-        for (Map.Entry<String, ResourcesToAggregate> entry: resourcesToAggregateMap.entrySet()) {
+        for (Map.Entry<String, ResourcesToAggregate> entry : resourcesToAggregateMap.entrySet()) {
             if (!aggregatedKey.contains(entry.getKey())) {
                 aggregatePathsAndPopulateNewEntries(entry.getValue(), newEntries, type);
                 aggregatedKey.add(entry.getKey());
@@ -720,8 +722,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         }
     }
 
-    private void aggregatePathsAndPopulateNewEntries (ResourcesToAggregate resourcesToAggregate, Map<String, Map<String,
-                                                        String>> newEntries, String type) throws IOException {
+    private void aggregatePathsAndPopulateNewEntries(ResourcesToAggregate resourcesToAggregate, Map<String, Map<String,
+            String>> newEntries, String type) throws IOException {
         if (!resourcesToAggregate.getPathsToAggregate().isEmpty()) {
             String minifiedAggregatedPath = performAggregation(resourcesToAggregate.getPathsToAggregate(), type, resourcesToAggregate.getMaxLastModified(), resourcesToAggregate.isAsync(), resourcesToAggregate.isDefer());
 
@@ -866,7 +868,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 compressor.compress(writer, -1);
             } else if (compress && type.equals("js") && !path.contains(".min")) {
                 try {
-                    JavaScriptCompressor compressor  = new JavaScriptCompressor(reader, new JavaScriptErrorReporter());
+                    JavaScriptCompressor compressor = new JavaScriptCompressor(reader, new JavaScriptErrorReporter());
                     compressor.compress(writer, -1, true, true, false, false);
                 } catch (EvaluatorException e) {
                     logger.error("Error when minifying " + path, e);
@@ -924,7 +926,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             r = getResourceFromFile(moduleId, "/" + filePath);
         } else if (key.contains(GENERATED_RESOURCES_URL_PATH)) {
             //Use case for Form Factory / Database Connector that are generating resources inside GENERATED_RESOURCES
-            r = new FileSystemResource(getFileSystemPath(StringUtils.substringAfterLast(key,GENERATED_RESOURCES_URL_PATH)));
+            r = new FileSystemResource(getFileSystemPath(StringUtils.substringAfterLast(key, GENERATED_RESOURCES_URL_PATH)));
         }
         return r;
     }
@@ -1065,6 +1067,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     /**
      * Deprecated since 7.3.1.0. Please, use {@link #setAggregateAssets(boolean)} and {@link #setCompressDuringAggregation(boolean)} instead.
+     *
      * @param aggregateAndCompress should the static assets be aggregated and compressed
      */
     @Deprecated
@@ -1128,9 +1131,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         }
 
         logger.info(
-            "Static assets: aggregation is {}, compression is {}",
-            aggregateAssets ? "ON" : "OFF",
-            compressDuringAggregation ? "ON" : "OFF"
+                "Static assets: aggregation is {}, compression is {}",
+                aggregateAssets ? "ON" : "OFF",
+                compressDuringAggregation ? "ON" : "OFF"
         );
     }
 

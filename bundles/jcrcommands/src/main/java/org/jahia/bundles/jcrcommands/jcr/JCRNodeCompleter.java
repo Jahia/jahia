@@ -84,7 +84,7 @@ public class JCRNodeCompleter extends JCRCommandSupport implements Completer {
                 JCRNodeIteratorWrapper nodes = n.getNodes();
                 while (nodes.hasNext()) {
                     JCRNodeWrapper next = (JCRNodeWrapper) nodes.nextNode();
-                    if (next.getName().startsWith(arg)) {
+                    if (next.getName().startsWith(arg) && next.getName().indexOf(' ') == -1) {
                         candidates.add(prefix + next.getName()+"/");
                     }
                 }

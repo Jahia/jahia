@@ -68,7 +68,7 @@ And :
 Install bundle from a URL (supporting all pax-url protocols). This action is triggered when `installBundle` is set to a valid URL.
 
 These additional options are available :
-- `target`: The cluster group name where the operation will be done (unset to execute on all nodes)
+- `target`: The cluster group name where the operation will be done (unset to execute on all nodes), or `local` to perform operation on a node individually using standard non-clustered module deployment
 - `autoStart`: Autostart the bundle after installation
 - `uninstallPreviousVersion`: Uninstall all other versions
 - `forceUpdate`: If true, module will be updated if it is already installed. Default is `false`
@@ -154,7 +154,7 @@ An additional command `installOrUpgradeBundle` is also available for upgrades. I
 Uninstall a bundle, based on a key composed of the symbolic name and optionally the version : `<symbolic-name>[/<version>]`
 
 These additional options are available :
-- `target`: The cluster group name where the operation will be done (unset to execute on all nodes)
+- `target`: The cluster group name where the operation will be done (unset to execute on all nodes), or `local` to perform operation on a node individually using standard non-clustered module deployment
 
 ```yaml
 - uninstallBundle: "article/3.0.0"
@@ -165,7 +165,7 @@ These additional options are available :
 Start or stop a bundle, based on a key composed of the symbolic name and optionally the version : `<symbolic-name>[/<version>]`
 
 These additional options are available :
-- `target`: The cluster group name where the operation will be done (unset to execute on all nodes)
+- `target`: The cluster group name where the operation will be done (unset to execute on all nodes), or `local` to perform operation on a node individually using standard non-clustered module deployment
 
 ```yaml
 - stopBundle: "article/3.0.0"

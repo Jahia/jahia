@@ -47,6 +47,8 @@ import com.google.code.kaptcha.impl.DefaultKaptcha;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.utils.WebUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.imageio.ImageIO;
@@ -68,6 +70,8 @@ import java.util.Map;
  */
 public class Captcha extends JahiaController {
 
+    private static Logger logger = LoggerFactory.getLogger(Captcha.class);
+
     private DefaultKaptcha captchaProducer;
 
     /**
@@ -86,6 +90,9 @@ public class Captcha extends JahiaController {
             String token = getParameter(request, "token");
             @SuppressWarnings("unchecked")
             Map<String,Map<String,List<String>>> toks = (Map<String,Map<String,List<String>>>) request.getSession().getAttribute("form-tokens");
+            if (logger.isDebugEnabled()) {
+                logger.debug("This captcha implementation is deprecated and is planned to be removed in Jahia 8.2.0.0.");
+            }
             if (toks == null || !toks.containsKey(token)) {
                 throw new JahiaBadRequestException("Unknown form token.");
             }

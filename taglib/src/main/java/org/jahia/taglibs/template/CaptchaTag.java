@@ -51,11 +51,15 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.render.URLGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Generates an image element with a captcha for validation: <code><img src="captchaUrl" alt="captcha"/></code>
  */
 public class CaptchaTag extends TagSupport {
+
+    private static Logger logger = LoggerFactory.getLogger(CaptchaTag.class);
 
     private static final String DEF_VAR_VALUE = "captchaUrl";
 
@@ -77,6 +81,10 @@ public class CaptchaTag extends TagSupport {
             String formId = (String) pageContext.findAttribute("currentFormId");
             url.append(urlGen.getContext()).append(urlGen.getCaptcha())
                     .append("?token=##formtoken(").append(formId).append(")##");
+
+            if (logger.isDebugEnabled()) {
+                out.append("<script>console.warn('This captcha implementation is deprecated and is planned to be removed in Jahia 8.2.0.0.')</script>");
+            }
 
             if (StringUtils.isNotEmpty(var)) {
                 pageContext.setAttribute(var, url);

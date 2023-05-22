@@ -70,28 +70,27 @@ public final class BundleLifecycleUtils {
     private static final Logger logger = LoggerFactory.getLogger(BundleLifecycleUtils.class);
 
     /**
-     * Collects a set of bundles, which have optional package dependencies to one of the bundles in the provided list. Inspired by the
+     * Collects a set of bundles, which have package dependencies to one of the bundles in the provided list. Inspired by the
      * DirectoryWatcher from Felix FileInstall.
      *
-     * @param bundles a collection of bundles to collect bundles with optional packages for
-     * @return a set of bundles, which have optional package dependencies to one of the bundles in the provided list. Inspired by the
+     * @param bundles a collection of bundles to collect bundles with packages for
+     * @return a set of bundles, which have package dependencies to one of the bundles in the provided list. Inspired by the
      *         DirectoryWatcher from Felix FileInstall
      */
-    private static Set<Bundle> findBundlesWithOptionalPackagesToRefresh(Collection<Bundle> bundles) {
-
-        Set<Bundle> targets = new HashSet<Bundle>(Arrays.asList(getAllBundles()));
+    private static Set<Bundle> findBundlesWithPackageImportsToRefresh(Collection<Bundle> bundles) {
+        Set<Bundle> targets = new HashSet<>(Arrays.asList(getAllBundles()));
         targets.removeAll(bundles);
 
         if (targets.isEmpty()) {
             return Collections.emptySet();
         }
 
-        // Second pass: for each bundle, check if there is any unresolved optional package that could be resolved
-        Map<Bundle, List<Clause>> imports = new HashMap<Bundle, List<Clause>>();
+        // Second pass: for each bundle, check if there is any unresolved package that could be resolved
+        Map<Bundle, List<Clause>> imports = new HashMap<>();
         for (Iterator<Bundle> it = targets.iterator(); it.hasNext();) {
             Bundle b = it.next();
             String importsStr = b.getHeaders().get(Constants.IMPORT_PACKAGE);
-            List<Clause> importsList = getOptionalImports(importsStr);
+            List<Clause> importsList = getImports(importsStr);
             if (importsList.isEmpty()) {
                 it.remove();
             } else {
@@ -103,7 +102,7 @@ public final class BundleLifecycleUtils {
         }
 
         // Third pass: compute a list of packages that are exported by our bundles and see if
-        // some exported packages can be wired to the optional imports
+        // some exported packages can be wired to the imports
         List<Clause> exports = new ArrayList<Clause>();
         for (Bundle b : bundles) {
             if (b.getState() != Bundle.UNINSTALLED) {
@@ -233,16 +232,9 @@ public final class BundleLifecycleUtils {
         return getSystemBundle().adapt(FrameworkWiring.class);
     }
 
-    private static List<Clause> getOptionalImports(String importsStr) {
+    private static List<Clause> getImports(String importsStr) {
         Clause[] imports = Parser.parseHeader(importsStr);
-        List<Clause> result = new LinkedList<Clause>();
-        for (Clause anImport : imports) {
-            String resolution = anImport.getDirective(Constants.RESOLUTION_DIRECTIVE);
-            if (Constants.RESOLUTION_OPTIONAL.equals(resolution)) {
-                result.add(anImport);
-            }
-        }
-        return result;
+        return new LinkedList<>(Arrays.asList(imports));
     }
 
     /**
@@ -303,13 +295,13 @@ public final class BundleLifecycleUtils {
      *
      * @param bundlesToRefresh the bundles to refresh
      * @param considerFragments should we also refresh the related fragment bundles?
-     * @param considerBundlesWithOptionalPackages should we consider bundles with optional package dependencies?
+     * @param considerBundlesWithImportPackage should we consider bundles with package dependencies?
      */
     public static void refreshBundles(Collection<Bundle> bundlesToRefresh, boolean considerFragments,
-            boolean considerBundlesWithOptionalPackages) {
+            boolean considerBundlesWithImportPackage) {
 
         logger.info("Requested refresh for the following {} bundle(s): {}", bundlesToRefresh.size(), bundlesToRefresh);
-        Collection<Bundle> fullBundleList = getBundlesDependencies(bundlesToRefresh, considerFragments, considerBundlesWithOptionalPackages);
+        Collection<Bundle> fullBundleList = getBundlesDependencies(bundlesToRefresh, considerFragments, considerBundlesWithImportPackage);
 
         if (fullBundleList != bundlesToRefresh) {
             // we collected some "dependencies"
@@ -340,7 +332,7 @@ public final class BundleLifecycleUtils {
         }
     }
 
-    public static Collection<Bundle> getBundlesDependencies(Collection<Bundle> bundlesToRefresh, boolean considerFragments, boolean considerBundlesWithOptionalPackages) {
+    public static Collection<Bundle> getBundlesDependencies(Collection<Bundle> bundlesToRefresh, boolean considerFragments, boolean considerBundlesWithImportPackage) {
         Collection<Bundle> fullBundleList = bundlesToRefresh;
         if (considerFragments) {
             Set<Bundle> fragments = findFragmentsForBundles(bundlesToRefresh);
@@ -349,11 +341,11 @@ public final class BundleLifecycleUtils {
                 fullBundleList.addAll(fragments);
             }
         }
-        if (considerBundlesWithOptionalPackages) {
-            Set<Bundle> bundlesWithOptionalPackages = findBundlesWithOptionalPackagesToRefresh(bundlesToRefresh);
-            if (!bundlesWithOptionalPackages.isEmpty()) {
+        if (considerBundlesWithImportPackage) {
+            Set<Bundle> bundlesWithImportPackage = findBundlesWithPackageImportsToRefresh(bundlesToRefresh);
+            if (!bundlesWithImportPackage.isEmpty()) {
                 fullBundleList = fullBundleList == bundlesToRefresh ? new HashSet<>(bundlesToRefresh) : fullBundleList;
-                fullBundleList.addAll(bundlesWithOptionalPackages);
+                fullBundleList.addAll(bundlesWithImportPackage);
             }
         }
         return fullBundleList;
@@ -453,27 +445,29 @@ public final class BundleLifecycleUtils {
      * @param bundle the bundle to update
      */
     public static void updateBundle(Bundle bundle) throws BundleException {
+        if (bundle.getState() >= Bundle.RESOLVED) {
+            boolean activeBundle = bundle.getState()== Bundle.ACTIVE;
 
-        if (bundle.getState() == Bundle.ACTIVE) {
-
-            // if the bundle is Active and provides wires to other bundle(s) we need to refresh these wires after the update
-
+            // if the bundle is resolved and provides wires to other bundle(s) we need to refresh these wires after the update
             BundleWiring bundleWiring = bundle.adapt(BundleWiring.class);
             List<BundleWire> bundleWires = bundleWiring.getProvidedWires(null);
 
             if (bundleWires != null && bundleWires.size() > 0) {
-
-                // stop manually the bundle
-                bundle.stop();
+                if (activeBundle) {
+                    // stop manually the bundle
+                    bundle.stop();
+                }
 
                 // do the update
                 bundle.update();
 
                 // refresh the wirings (Only refresh the bundle that is providing the wires)
-                refreshBundles(Collections.singleton(bundle), true, false);
+                refreshBundles(Collections.singleton(bundle), true, true);
 
-                // start manually
-                bundle.start();
+                if (activeBundle) {
+                    // start manually
+                    bundle.start();
+                }
             } else {
                 // no wires, just update the bundle directly
                 bundle.update();

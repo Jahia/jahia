@@ -265,10 +265,10 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
                 long timeTaken = System.currentTimeMillis() - startTime;
                 if (error == null) {
                     logger.info("Installation completed for bundles {} on target {} in {} ms. Operation result: {}",
-                            new Object[]{bundleResources, target, timeTaken, result});
+                            bundleResources, target, timeTaken, result);
                 } else {
                     logger.info("Installation failed for bundles {} on target {} (took {} ms). Operation error: {}",
-                            new Object[]{bundleResources, target, timeTaken, error});
+                            bundleResources, target, timeTaken, error.getMessage(), error);
                 }
             }
 
@@ -296,7 +296,7 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
 
         long startTime = System.currentTimeMillis();
         logger.info("Performing {} operation for bundle {} on target {}",
-                new Object[]{operation.getName(), bundleKey, target});
+                operation.getName(), bundleKey, target);
 
         OperationResult result = null;
         BundleInfo info = null;
@@ -321,12 +321,12 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
         } finally {
             if (error == null) {
                 logger.info("{} operation completed for bundle {} on target {} in {} ms. Operation result: {}",
-                        new Object[]{operation.getName(), bundleKey, target, System.currentTimeMillis() - startTime,
-                                result});
+                        operation.getName(), bundleKey, target, System.currentTimeMillis() - startTime,
+                        result);
             } else {
                 logger.info("{} operation failed for bundle {} on target {} (took {} ms). Operation error: {}",
-                        new Object[]{operation.getName(), bundleKey, target, System.currentTimeMillis() - startTime,
-                                error});
+                        operation.getName(), bundleKey, target, System.currentTimeMillis() - startTime,
+                        error.getMessage(), error);
             }
         }
 

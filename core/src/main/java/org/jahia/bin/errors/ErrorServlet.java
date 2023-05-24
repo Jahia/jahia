@@ -107,8 +107,7 @@ public class ErrorServlet extends HttpServlet {
                 // In case of an error in the process of the resource, fallback to Jahia error page.
                 logger.error("Unable to process error page {}", errorPagePath, e);
                 request.setAttribute("org.jahia.exception", e);
-                String theme = "jahia-anthracite";
-                getServletContext().getRequestDispatcher(getErrorPagePath("error.jsp", theme)).forward(request, response);
+                getServletContext().getRequestDispatcher(getErrorPagePath("error.jsp", null)).forward(request, response);
             }
         }
     }
@@ -144,10 +143,9 @@ public class ErrorServlet extends HttpServlet {
         }
 
         if (null == path) {
-            String theme = "jahia-anthracite";
-            path = getErrorPagePath(page, theme);
+            path = getErrorPagePath(page, null);
             if (null == path) {
-                path = getErrorPagePath("error.jsp", theme);
+                path = getErrorPagePath("error.jsp", null);
             }
         }
 

@@ -352,6 +352,13 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
+        file name: xalan-*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/xalan/xalan@.*$</packageUrl>
+        <cve>CVE-2022-42920</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
         file name: xercesImpl-*.jar
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/xerces/xercesImpl@.*$</packageUrl>

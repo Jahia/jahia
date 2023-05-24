@@ -1,0 +1,20 @@
+name: On No-Code Change
+
+on:
+  pull_request:
+    types: [ opened, reopened, synchronize ]
+    paths:
+      - '.owasp/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: 'echo "No build required"'
+      
+  sonar-analysis:
+    name: Sonar Analysis
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - run: 'echo "No Sonar analysis required"'

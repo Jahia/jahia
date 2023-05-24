@@ -32,7 +32,10 @@ if (renderContext.mainResource.contextConfiguration == 'page' && targetTag == 'H
     }
     println "</script>"
 }
-println "<script src=\"${contextPath}/javascript/initJahiaContext.js\"></script>";
+
+if(loadJahiaContext || renderContext.editMode){
+    println "<script src=\"${contextPath}/javascript/initJahiaContext.js\"></script>";
+}
 
 renderContext.request.getAttribute("staticAssets").each { resource ->
     resource.each { type ->

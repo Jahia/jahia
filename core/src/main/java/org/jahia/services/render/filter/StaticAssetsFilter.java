@@ -114,6 +114,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     private String resolvedTemplate;
     private ScriptEngineUtils scriptEngineUtils;
     private String template;
+    private boolean loadJahiaContext;
     private String templateExtension;
     private boolean aggregateAssets;
     private boolean compressDuringAggregation;
@@ -484,6 +485,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             final Bindings bindings = scriptEngine.createBindings();
 
             bindings.put("contextJsParameters", getContextJsParameters(assetsByType, renderContext));
+            bindings.put("loadJahiaContext", loadJahiaContext);
 
             if (aggregateAssets && resource.getWorkspace().equals("live")) {
                 Map<String, Map<String, String>> cssAssets = assetsByType.get("css");
@@ -1063,6 +1065,10 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         if (template != null) {
             templateExtension = StringUtils.substringAfterLast(template, ".");
         }
+    }
+
+    public void setLoadJahiaContext(boolean loadJahiaContext) {
+        this.loadJahiaContext = loadJahiaContext;
     }
 
     /**

@@ -276,6 +276,14 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
+        file name: taffydb
+        ]]></notes>
+        <packageUrl regex="true">^pkg:npm/taffydb@.*$</packageUrl>
+        <vulnerabilityName>CVE-2019-10790</vulnerabilityName>
+        <vulnerabilityName>GHSA-mxhp-79qh-mcx6</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
         file name: tasks-*.jar
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.jahia\.modules/tasks@.*$</packageUrl>

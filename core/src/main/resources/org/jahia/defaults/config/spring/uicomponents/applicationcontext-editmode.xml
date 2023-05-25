@@ -802,6 +802,11 @@
                         <value>jnt:virtualsitesFolder</value>
                     </list>
                 </property>
+                <property name="hideForTypes">
+                    <list value-type="java.lang.String">
+                        <value>jnt:category</value>
+                    </list>
+                </property>
                 <property name="defaultAutoUpdate" value="${jahia.ui.contentTab.defaultSynchronizeNameWithTitle:true}"/>
             </bean>
         </property>
@@ -839,6 +844,7 @@
                         <value>jnt:template</value>
                         <value>jnt:pageTemplate</value>
                         <value>jnt:contentTemplate</value>
+                        <value>jnt:category</value>
                     </list>
                 </property>
             </bean>
@@ -861,6 +867,11 @@
                         <value>jmix:categorized</value>
                     </list>
                 </property>
+                <property name="hideForTypes">
+                    <list value-type="java.lang.String">
+                        <value>jnt:category</value>
+                    </list>
+                </property>
             </bean>
         </property>
     </bean>
@@ -874,6 +885,11 @@
                 <property name="dataType">
                     <list>
                         <value>options</value>
+                    </list>
+                </property>
+                <property name="hideForTypes">
+                    <list value-type="java.lang.String">
+                        <value>jnt:category</value>
                     </list>
                 </property>
             </bean>
@@ -974,7 +990,13 @@
         <property name="titleKey" value="label.engineTab.vanityUrls"/>
         <property name="requiredPermission" value="viewSeoTab"/>
         <property name="tabItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.SeoTabItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.SeoTabItem">
+                <property name="hideForTypes">
+                    <list value-type="java.lang.String">
+                        <value>jnt:category</value>
+                    </list>
+                </property>
+            </bean>
         </property>
     </bean>
 

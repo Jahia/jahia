@@ -46,6 +46,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.api.observation.JackrabbitEvent;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.AdditionalEventInfo;
+import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
@@ -57,6 +58,8 @@ import javax.jcr.observation.EventListener;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Observation manager implementation
@@ -380,17 +383,29 @@ public class JCRObservationManager implements ObservationManager {
     }
 
     private static boolean checkNodeTypeNames(JCRSessionWrapper session, EventWrapper event, String[] requiredNodeTypes) throws RepositoryException {
-        if (event.getNodeTypes() == null) {
-            String nodePath = (event.getType() == Event.PROPERTY_REMOVED || event.getType() == Event.PROPERTY_CHANGED || event.getType() == Event.PROPERTY_ADDED ?
-                    StringUtils.substringBeforeLast(event.getPath(), "/")
-                    : event.getPath());
+        if (!event.nodeTypesResolved) {
             try {
-                JCRNodeWrapper node = session.getNode(nodePath);
-                event.setNodeTypes(node.getNodeTypes());
+                if (event.getNodeTypes() == null) {
+                    String nodePath = (event.getType() == Event.PROPERTY_REMOVED || event.getType() == Event.PROPERTY_CHANGED || event.getType() == Event.PROPERTY_ADDED ?
+                            StringUtils.substringBeforeLast(event.getPath(), "/")
+                            : event.getPath());
+                    JCRNodeWrapper node = session.getNode(nodePath);
+                    event.setNodeTypes(node.getNodeTypes());
+                }
+
+                if (event.getNodeTypes().contains(Constants.JAHIANT_TRANSLATION)) {
+                    String nodePath = (event.getType() == Event.PROPERTY_REMOVED || event.getType() == Event.PROPERTY_CHANGED || event.getType() == Event.PROPERTY_ADDED ?
+                            StringUtils.substringBeforeLast(event.getPath(), "/")
+                            : event.getPath());
+                    JCRNodeWrapper node = session.getNode(nodePath).getParent();
+                    event.setNodeTypes(new ArrayList<>(Stream.concat(event.getNodeTypes().stream(), node.getNodeTypes().stream()).collect(Collectors.toSet())));
+                }
             } catch (RepositoryException e) {
                 logger.debug("Could not retrieve node (type)", e);
                 event.setNodeTypes(Collections.<String>emptyList());
             }
+
+            event.setNodeTypesResolved(true);
         }
         if (event.getNodeTypes() != null && requiredNodeTypes.length > 0) {
             NodeTypeRegistry ntRegistry = NodeTypeRegistry.getInstance();
@@ -551,6 +566,7 @@ public class JCRObservationManager implements ObservationManager {
         private String mountPoint;
         private String relativeRoot;
         private String effectivePath;
+        private boolean nodeTypesResolved;
 
         EventWrapper(Event event, List<String> nodeTypes, String mountPoint, String relativeRoot, JCRSessionWrapper session) {
             this.event = event;
@@ -632,6 +648,14 @@ public class JCRObservationManager implements ObservationManager {
 
         public boolean isApiEvent() {
             return event instanceof ApiEvent;
+        }
+
+        public boolean isNodeTypesResolved() {
+            return nodeTypesResolved;
+        }
+
+        public void setNodeTypesResolved(boolean nodeTypesResolved) {
+            this.nodeTypesResolved = nodeTypesResolved;
         }
 
         /**

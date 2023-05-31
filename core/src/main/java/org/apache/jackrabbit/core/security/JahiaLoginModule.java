@@ -305,7 +305,11 @@ public class JahiaLoginModule implements LoginModule {
     }
 
     public static Credentials getCredentials(String username, String realm, List<String> deniedPathes) {
-        String userID = username != null && JahiaUserManagerService.GUEST_USERNAME.equals(username) ? GUEST : username;
+        String userID = JahiaUserManagerService.GUEST_USERNAME.equals(username) ? GUEST : username;
+        if (GUEST.equals(userID)) {
+            return getGuestCredentials();
+        }
+
         SimpleCredentials credentials = new SimpleCredentials(userID, getSystemPass(userID, deniedPathes).toCharArray());
         credentials.setAttribute(REALM_ATTRIBUTE, realm);
         return credentials;

@@ -792,39 +792,41 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         final boolean skipBinary = !Boolean.FALSE.equals(params.get(SKIP_BINARY));
         final boolean noRecurse = Boolean.TRUE.equals(params.get(NO_RECURSE));
 
-        String filename = Patterns.SPACE.matcher(rootNode.getName()).replaceAll("_");
-        File tempFile = File.createTempFile("exportTemplates-" + filename, ".xml");
+        OutputStream tmpOut = outputStream;
+        if (xsl != null) {
+            String filename = Patterns.SPACE.matcher(rootNode.getName()).replaceAll("_");
+            File tempFile = File.createTempFile("exportTemplates-" + filename, ".xml");
+            tmpOut = new DeferredFileOutputStream(1024 * 1024 * 10, tempFile);
+        }
 
-        try (OutputStream tmpOut = xsl != null ? new DeferredFileOutputStream(1024 * 1024 * 10, tempFile) : outputStream) {
-            DataWriter dw = new DataWriter(new OutputStreamWriter(tmpOut, StandardCharsets.UTF_8));
-            if (Boolean.TRUE.equals(params.get(SYSTEM_VIEW))) {
-                SystemViewExporter exporter = new SystemViewExporter(rootNode.getSession(), dw, !noRecurse, !skipBinary);
-                exporter.export(rootNode);
-            } else {
-                exportNodesUsingDocumentViewExporter(rootNode, sortedNodes, typesToIgnore, externalReferences, params, exportContext, skipBinary, noRecurse, dw);
-            }
+        DataWriter dw = new DataWriter(new OutputStreamWriter(tmpOut, StandardCharsets.UTF_8));
+        if (Boolean.TRUE.equals(params.get(SYSTEM_VIEW))) {
+            SystemViewExporter exporter = new SystemViewExporter(rootNode.getSession(), dw, !noRecurse, !skipBinary);
+            exporter.export(rootNode);
+        } else {
+            exportNodesUsingDocumentViewExporter(rootNode, sortedNodes, typesToIgnore, externalReferences, params, exportContext, skipBinary, noRecurse, dw);
+        }
 
-            if (exportContext != null) {
-                // Nodes are now exported in the .xml, so we log the time difference for this export
-                logger.info("Exported {} nodes in {} seconds", exportContext.getExportIndex(), getDuration(startSitesExportTime));
-            }
+        if (exportContext != null) {
+            // Nodes are now exported in the .xml, so we log the time difference for this export
+            logger.info("Exported {} nodes in {} seconds", exportContext.getExportIndex(), getDuration(startSitesExportTime));
+        }
 
-            dw.flush();
-            if (xsl != null) {
-                try (DeferredFileOutputStream stream = (DeferredFileOutputStream) tmpOut;
-                     InputStream inputStream = stream.isInMemory() ? new ByteArrayInputStream(stream.getData()) : new BufferedInputStream(new FileInputStream(stream.getFile()))) {
-                    fileCleaningTracker.track(stream.getFile(), inputStream);
-                    Transformer transformer = getTransformer(xsl);
-                    long startXmlCleanup = System.currentTimeMillis();
-                    if (logProgress) {
-                        // since the xml transformation can be heavy in process depending on the .xml size
-                        // we logs some basics data
-                        logger.info("Starting cleanup transformation ...");
-                        transformer.transform(new StreamSource(inputStream), new StreamResult(outputStream));
-                        logger.info("Cleanup transformation finished in {} seconds", getDuration(startXmlCleanup));
-                    } else {
-                        transformer.transform(new StreamSource(inputStream), new StreamResult(outputStream));
-                    }
+        dw.flush();
+        if (xsl != null) {
+            try (DeferredFileOutputStream stream = (DeferredFileOutputStream) tmpOut;
+                 InputStream inputStream = stream.isInMemory() ? new ByteArrayInputStream(stream.getData()) : new BufferedInputStream(new FileInputStream(stream.getFile()))) {
+                fileCleaningTracker.track(stream.getFile(), inputStream);
+                Transformer transformer = getTransformer(xsl);
+                long startXmlCleanup = System.currentTimeMillis();
+                if (logProgress) {
+                    // since the xml transformation can be heavy in process depending on the .xml size
+                    // we logs some basics data
+                    logger.info("Starting cleanup transformation ...");
+                    transformer.transform(new StreamSource(inputStream), new StreamResult(outputStream));
+                    logger.info("Cleanup transformation finished in {} seconds", getDuration(startXmlCleanup));
+                } else {
+                    transformer.transform(new StreamSource(inputStream), new StreamResult(outputStream));
                 }
             }
         }

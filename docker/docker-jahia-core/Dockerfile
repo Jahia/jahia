@@ -13,6 +13,10 @@ ARG LOG_MAX_DAYS="5"
 ARG JAHIA_PLUGIN="jahia"
 ARG DATA_FOLDER="/var/jahia"
 ARG LOGS_FOLDER="/var/log/jahia"
+ARG TARGETOS
+ARG TARGETPLATFORM
+ARG TARGETARCH
+ARG TARGETVARIANT
 
 # Container user
 ARG C_USER="tomcat"
@@ -47,6 +51,13 @@ ENV YOURKIT_ACTIVATED="false"
 
 WORKDIR /tmp
 
+RUN printf "I'm building for TARGETPLATFORM=${TARGETPLATFORM}" \
+    && printf ", TARGETOS=${TARGETOS}" \
+    && printf ", TARGETARCH=${TARGETARCH}" \
+    && printf ", TARGETVARIANT=${TARGETVARIANT} \n" \
+    && printf "With uname -s : " && uname -s \
+    && printf "and  uname -m : " && uname -m
+
 RUN apt-get update \
     && apt-get upgrade -y \
     && magick_packages="libfontconfig1 libx11-6 libharfbuzz0b libfribidi0" \
@@ -73,7 +84,7 @@ RUN /bin/bash -c 'if ${INSTALL_GRAALVM:-false}; then \
         && rm jdk; \
     fi'
 
-ENV PATH=/usr/local/graalvm/bin:${PATH}
+ENV PATH="/usr/local/graalvm/bin:${PATH}"
 
 RUN echo "Retrieve latest Yourkit agent binaries..." \
     && wget -nv -O yourkit.zip https://www.yourkit.com/download/docker/YourKit-JavaProfiler-2022.9-docker.zip -P /tmp/ \
@@ -130,6 +141,7 @@ USER ${C_USER}
 EXPOSE 8080
 EXPOSE 8101
 EXPOSE 8443
+EXPOSE 9229
 EXPOSE 10001
 
 CMD ["/usr/local/bin/entrypoint.sh"]

@@ -940,7 +940,7 @@ Anthracite.addModule("edit", {
 
                 // Page Title in Edit Made
                 if (pageTitle) {
-                    jGet.class('x-current-page-path').setAttribute('data-PAGE-NAME', pageTitle);
+                    jGet.class('x-current-page-path').setAttribute('data-PAGE-NAME', Anthracite.iframe.unEscapeHTML(pageTitle));
                 }
                 jGet.class('node-path-text-inner').setHTML(Anthracite.iframe.data.displayName);
 

@@ -101,6 +101,41 @@
         }
     },
      /**
+      * Utility function to unescape html
+      * @param str
+      */
+     unEscapeHTML: str => {
+         // this prevents any overhead from creating the object each time
+         const element = document.createElement('div');
+
+         function decodeHTMLEntities (str) {
+             if(str && typeof str === 'string') {
+                 // strip script/html tags
+                 str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '');
+                 str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '');
+                 element.innerHTML = str;
+                 str = element.textContent;
+                 element.textContent = '';
+             }
+
+             return str;
+         }
+
+         return decodeHTMLEntities(str);
+     },
+     /**
+      * Utility function to escape html
+      * @param str
+      */
+     escapeHTML: str => str.replace(/[&<>'"]/g,
+         tag => ({
+             '&': '&amp;',
+             '<': '&lt;',
+             '>': '&gt;',
+             "'": '&#39;',
+             '"': '&quot;'
+         }[tag])),
+     /**
       * Callback executed when the iframe changes SRC
       *  - Listens to the data-main-node-displayname attribute on the body tag
       * @memberof Anthracite.iframe
@@ -135,8 +170,7 @@
         }
 
         Anthracite.dev.log('::: APP ::: IFRAME ::: ONCHANGE: ' + Anthracite.data.currentApp);
-
-        Anthracite.iframe.data.displayName = attrValue;
+        Anthracite.iframe.data.displayName = Anthracite.iframe.escapeHTML(attrValue);
 
         switch (Anthracite.data.currentApp) {
             case 'edit':

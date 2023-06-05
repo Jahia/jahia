@@ -83,7 +83,7 @@ public class CaptchaTag extends TagSupport {
                     .append("?token=##formtoken(").append(formId).append(")##");
 
             if (logger.isDebugEnabled()) {
-                out.append("<script>console.warn('This captcha implementation is deprecated and is planned to be removed in Jahia 8.2.0.0.')</script>");
+                out.append("<script>console.warn('This captcha implementation is deprecated and is planned to be removed in a future version of Jahia. We recommend using alternatives such as Google reCaptcha, more details can be found here: https://academy.jahia.com/how-to-use-recaptcha-with-jahia')</script>");
             }
 
             if (StringUtils.isNotEmpty(var)) {

@@ -91,7 +91,7 @@ public class Captcha extends JahiaController {
             @SuppressWarnings("unchecked")
             Map<String,Map<String,List<String>>> toks = (Map<String,Map<String,List<String>>>) request.getSession().getAttribute("form-tokens");
             if (logger.isDebugEnabled()) {
-                logger.debug("This captcha implementation is deprecated and is planned to be removed in Jahia 8.2.0.0.");
+                logger.debug("This captcha implementation is deprecated and is planned to be removed in a future version of Jahia. We recommend using alternatives such as Google reCaptcha, more details can be found here: https://academy.jahia.com/how-to-use-recaptcha-with-jahia");
             }
             if (toks == null || !toks.containsKey(token)) {
                 throw new JahiaBadRequestException("Unknown form token.");

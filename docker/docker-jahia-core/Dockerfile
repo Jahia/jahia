@@ -138,6 +138,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 USER ${C_USER}
 
+EXPOSE 8000
 EXPOSE 8080
 EXPOSE 8101
 EXPOSE 8443

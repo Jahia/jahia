@@ -298,10 +298,10 @@ public class EditContentEngine extends AbstractContentEngine {
                         }
                     }
                     heading = heading + "&nbsp;" + Messages.getWithArgs("label.edit.engine.heading.locked.by", "[ locked by {0} ]", new String[]{infos.toString()});
-                    container.getPanel().setHeadingHtml(heading);
+                    container.getPanel().setHeadingText(heading);
                 } else if (node.getLockInfos() != null && !node.getLockInfos().isEmpty()) {
                     heading = heading + "&nbsp;" + Messages.get("label.edit.engine.heading.locked.by.you", "[ locked by you ]");
-                    container.getPanel().setHeadingHtml(heading);
+                    container.getPanel().setHeadingText(heading);
                 }
 
                 boolean doUpdateWipControls = false;

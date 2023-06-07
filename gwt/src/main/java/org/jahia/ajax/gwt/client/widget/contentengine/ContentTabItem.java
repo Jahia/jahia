@@ -49,6 +49,7 @@ import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -277,7 +278,7 @@ public class ContentTabItem extends PropertiesTabItem {
             if (JahiaGWTParameters.isDevelopmentMode()) {
                 String path = selectedNode.getPath();
                 if (path != null) {
-                    flowPanel.add(new HTML("<b>" + Messages.get("label.path") + ":</b> " + path));
+                    flowPanel.add(new HTML("<b>" + Messages.get("label.path") + ":</b> " + SafeHtmlUtils.htmlEscape(path)));
                 }
                 String id = selectedNode.getUUID();
                 if (id != null) {

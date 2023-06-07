@@ -218,7 +218,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
             if (selectedNodes.size() > 0) {
                 heading.deleteCharAt(heading.length() - 1);
             }
-            m_component.setHeadingHtml(heading.toString());
+            m_component.setHeadingText(heading.toString());
             if (selectedNodes.size() == 1) {
                 final GWTJahiaNode node = selectedNodes.get(0);
                 service.initializeEditEngine(node.getPath(), false,

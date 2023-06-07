@@ -52,6 +52,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
@@ -97,6 +98,13 @@ public class PublicationStatusGrid extends Grid<GWTJahiaPublicationInfo> {
 //        configs.add(checkboxConfig);
 
         ColumnConfig column = new ColumnConfig("title", Messages.get("label.path"), 450);
+        column.setRenderer(new TreeGridCellRenderer<GWTJahiaPublicationInfo>() {
+            @Override
+            public Object render(final GWTJahiaPublicationInfo model, String property, ColumnData config, int rowIndex,
+                                 int colIndex, ListStore listStore, Grid grid) {
+                return SafeHtmlUtils.htmlEscape(model.get("title"));
+            }
+        });
         configs.add(column);
         column = new ColumnConfig("nodetype", Messages.get("label.nodetype"), 150);
         configs.add(column);
@@ -159,6 +167,13 @@ public class PublicationStatusGrid extends Grid<GWTJahiaPublicationInfo> {
 
         column = new ColumnConfig("mainPath", Messages.get("label.parentObject", "Parent object"), 150);
         column.setHidden(true);
+        column.setRenderer(new TreeGridCellRenderer<GWTJahiaPublicationInfo>() {
+            @Override
+            public Object render(final GWTJahiaPublicationInfo model, String property, ColumnData config, int rowIndex,
+                                 int colIndex, ListStore listStore, Grid grid) {
+                return SafeHtmlUtils.htmlEscape(model.get("mainPath"));
+            }
+        });
         configs.add(column);
 
         store.groupBy("mainPath");
@@ -178,7 +193,7 @@ public class PublicationStatusGrid extends Grid<GWTJahiaPublicationInfo> {
                         "Items");
                 String v = config.getRenderer() != null ? config.getRenderer().render(data.models.get(0), null, null, 0,
                         0, null, null).toString() : data.group.substring(1);
-                return v + " (" + data.models.size() + " " + l + ")";
+                return SafeHtmlUtils.htmlEscape(v) + " (" + data.models.size() + " " + l + ")";
             }
         });
         setView(view);

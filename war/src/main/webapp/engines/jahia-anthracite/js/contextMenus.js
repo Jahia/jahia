@@ -46,7 +46,7 @@
                     break;
             }
 
-            contextMenuList.setAttribute('data-indigo-title', contextMenuTitle);
+            contextMenuList.setAttribute('data-indigo-title', Anthracite.iframe.escapeHTML(contextMenuTitle));
         }
     },
     /**

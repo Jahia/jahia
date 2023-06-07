@@ -54,6 +54,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import org.jahia.ajax.gwt.client.EmptyLinker;
@@ -669,8 +670,8 @@ public class PublicationWorkflow implements CustomWorkflow {
                         if (!unpublishableMap.containsKey(status)) {
                             unpublishableMap.put(status, new ArrayList<>());
                         }
-                        unpublishableMap.get(status).add("<span class=\"info-publication-label\"><strong>" + info.getTitle() + "</strong>" +
-                                "</span><span class=\"info-publication-path\">(" + info.getPath() + ")</span>");
+                        unpublishableMap.get(status).add("<span class=\"info-publication-label\"><strong>" + SafeHtmlUtils.htmlEscape(info.getTitle()) + "</strong>" +
+                                "</span><span class=\"info-publication-path\">(" + SafeHtmlUtils.htmlEscape(info.getPath()) + ")</span>");
                     }
 
                     for (Map.Entry<Integer, List<String>> entry : unpublishableMap.entrySet()) {

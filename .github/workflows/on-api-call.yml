@@ -3,7 +3,14 @@
 
 name: Release on api call
 
-on: [ workflow_dispatch ]
+on: 
+  workflow_dispatch:
+   inputs:
+      workflows-ref:
+        description: "ref of the centralized workflows repo that was specified in 'jobs.<name>.uses'"
+        required: false
+        default: 'master'
+        type: string
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -17,6 +24,8 @@ jobs:
       image_tag: ${{ steps.tags.outputs.image_tag }}
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.workflows-ref }}
       - name: Cache local Maven repository
         uses: actions/cache@v3
         with:
@@ -83,17 +92,6 @@ jobs:
       - name: Build graalvm image
         shell: bash
         run: mvn -s .github/maven.settings.xml -e -Dimage.tag="${{steps.tags.outputs.image_tag}}"-graalvm -Dimage.graalvm=true deploy -Dbamboo.buildNumber=${{ github.run_id }}
-      - name: Build package and load all dependencies into local Maven repository
-        shell: bash
-        run: |
-          mvn -U -ntp -s .github/maven.settings.xml -e -Dimage.tag=${{steps.tags.outputs.image_tag}} clean install de.qaware.maven:go-offline-maven-plugin:resolve-dependencies \
-            -Pgwt-production,unit-tests,docker,docker-core-plugin -Dbamboo.buildNumber=${{ github.run_id }}
-      - name: Push PR Docker image
-        shell: bash
-        run: docker push jahia/jahia-core-dev:${{steps.tags.outputs.image_tag}}
-      - name: Store docker image
-        shell: bash
-        run: docker save -o image.tar jahia/jahia-core-dev:${{steps.tags.outputs.image_tag}}
       - uses: jahia/jahia-modules-action/slack-jahia@v2
         if: ${{ failure() }}
         with:

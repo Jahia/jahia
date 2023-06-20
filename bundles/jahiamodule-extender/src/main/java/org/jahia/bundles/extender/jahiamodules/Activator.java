@@ -131,6 +131,8 @@ public class Activator implements BundleActivator {
     private static final Logger logger = LoggerFactory.getLogger(Activator.class);
 
     private static final BundleURLScanner CND_SCANNER = new BundleURLScanner("META-INF", "*.cnd", false);
+
+    private static final BundleURLScanner COMPONENTS_CND_SCANNER = new BundleURLScanner("/components", "*.cnd", true);
     private static final BundleURLScanner CFG_SCANNER = new BundleURLScanner("META-INF/configurations", "*", false);
     private static final BundleURLScanner DSL_SCANNER = new BundleURLScanner("META-INF", "*.dsl", false);
     private static final BundleURLScanner DRL_SCANNER = new BundleURLScanner("META-INF", "*.drl", false);
@@ -656,6 +658,7 @@ public class Activator implements BundleActivator {
 
         try {
             List<URL> foundURLs = CND_SCANNER.scan(bundle);
+            foundURLs.addAll(scanComponentsDefinitions(bundle));
             if (!foundURLs.isEmpty()) {
                 cndBundleObserver.addingEntries(bundle, foundURLs);
             }
@@ -681,6 +684,23 @@ public class Activator implements BundleActivator {
                     pkg.getId(), pkg.getVersion());
             start(bundle);
         }
+    }
+
+    private List<URL> scanComponentsDefinitions(Bundle bundle) {
+        List<URL> foundURLs = COMPONENTS_CND_SCANNER.scan(bundle).stream().filter(url -> {
+            String[] pathParts = StringUtils.split(url.getPath(), "/");
+
+            String fileName = pathParts[pathParts.length - 1];
+            String componentName = pathParts[pathParts.length - 2];
+            // True if the cnd file name match the component name
+            boolean correctFileName = fileName.replace(".cnd", "").equals(componentName);
+            if (!correctFileName) {
+                logger.warn("Definition file name {} does not match the component {}. The definition will be skipped", fileName, componentName);
+            }
+            return correctFileName;
+        }).collect(Collectors.toList());
+
+        return foundURLs;
     }
 
     private void checkInitialImport(Bundle bundle, JahiaTemplatesPackage pkg) {

@@ -48,7 +48,7 @@
     <parent>
         <groupId>org.jahia.bundles</groupId>
         <artifactId>jahia-bundles</artifactId>
-        <version>8.1.7.0-SNAPSHOT</version>
+        <version>8.2.0.0-SNAPSHOT</version>
     </parent>
 
     <name>JCR Commands for Karaf console</name>
@@ -104,7 +104,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>8.1.7.0-SNAPSHOT</version>
+            <version>8.2.0.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

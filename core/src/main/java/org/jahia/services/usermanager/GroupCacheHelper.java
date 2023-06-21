@@ -55,7 +55,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -291,7 +290,6 @@ public class GroupCacheHelper {
             return Collections.emptyList();
         }
 
-        @NotNull
         private Serializable internalGetMembershipByPath(String principalPath) throws RepositoryException {
             JCRNodeWrapper principalNode = JCRSessionFactory.getInstance()
                     .getCurrentSystemSession(Constants.LIVE_WORKSPACE, null, null)

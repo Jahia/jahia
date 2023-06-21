@@ -45,7 +45,6 @@ package org.jahia.services.transform;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.jetbrains.annotations.NotNull;
 import org.jodconverter.core.DocumentConverter;
 import org.jodconverter.core.document.DefaultDocumentFormatRegistry;
 import org.jodconverter.core.document.DocumentFormat;
@@ -53,7 +52,6 @@ import org.jodconverter.core.document.DocumentFormatRegistry;
 import org.jodconverter.core.office.OfficeException;
 import org.jodconverter.core.office.OfficeManager;
 import org.jodconverter.local.LocalConverter;
-import org.jodconverter.local.office.LocalOfficeManager;
 import org.jodconverter.remote.RemoteConverter;
 import org.jodconverter.remote.office.RemoteOfficeManager;
 import org.slf4j.Logger;
@@ -245,7 +243,6 @@ public class DocumentConverterService implements ApplicationContextAware {
         }
     }
 
-    @NotNull
     private DocumentConverter getDocumentConverter() {
         if (officeManager instanceof RemoteOfficeManager) {
             return RemoteConverter.make(officeManager);

@@ -55,12 +55,14 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class JahiaAccountRealm extends AuthorizingRealm {
@@ -100,7 +102,6 @@ public class JahiaAccountRealm extends AuthorizingRealm {
         return false;
     }
 
-    @NotNull
     private Set<String> getRoles(JahiaUser userNode, JCRNodeWrapper node) {
         Set<String> roles = new HashSet<>();
         Map<String, Map<String, String>> actualAclEntries = node.getActualAclEntries();

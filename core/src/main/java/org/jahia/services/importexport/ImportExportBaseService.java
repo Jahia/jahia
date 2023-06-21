@@ -94,8 +94,6 @@ import org.jahia.utils.Url;
 import org.jahia.utils.xml.JahiaSAXParserFactory;
 import org.jahia.utils.zip.DirectoryZipInputStream;
 import org.jahia.utils.zip.DirectoryZipOutputStream;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
@@ -134,7 +132,6 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-
 
 import static org.apache.commons.io.FileUtils.ONE_MB;
 
@@ -1078,7 +1075,6 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         }
     }
 
-    @Nullable
     private Locale getFinalLocale(Properties infos) {
         Locale locale = null;
         if (infos.getProperty("defaultLanguage") != null) {
@@ -2293,7 +2289,6 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         }
     }
 
-    @NotNull
     private DocumentViewImportHandler getDocumentViewImportHandlerForLiveWorkspace(String parentNodePath, Resource file, int rootBehaviour, JCRSessionWrapper session, List<String> fileList, Map<String, List<String>> references, ZipInputStream zis) throws IOException, RepositoryException {
         final DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, parentNodePath, file, fileList);
 
@@ -2315,7 +2310,6 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         return documentViewImportHandler;
     }
 
-    @NotNull
     private String getParentNodePath(String parentNodePath) {
         return parentNodePath + (parentNodePath.endsWith("/") ? "" : "/");
     }

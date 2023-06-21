@@ -43,10 +43,10 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.DistributionManagement;
 import org.apache.maven.model.Model;
-import org.apache.tika.io.IOUtils;
 import org.apache.xerces.impl.dv.util.Base64;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jahia.ajax.gwt.client.data.GWTModuleReleaseInfo;

@@ -42,9 +42,9 @@
  */
 package org.jahia.ajax.gwt.helper;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.FastDateFormat;
-import org.apache.tika.io.IOUtils;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.content.server.UploadedPendingFile;
 import org.jahia.bin.SessionNamedDataStorage;
@@ -61,7 +61,6 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.version.VersionIterator;
 import javax.jcr.version.VersionManager;
-
 import java.io.InputStream;
 import java.util.Date;
 import java.util.List;

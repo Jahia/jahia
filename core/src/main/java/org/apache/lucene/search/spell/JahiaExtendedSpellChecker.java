@@ -59,12 +59,14 @@ import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.BytesRefIterator;
 import org.apache.lucene.util.Version;
 import org.jahia.utils.LuceneUtils;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -352,7 +354,6 @@ public class JahiaExtendedSpellChecker implements java.io.Closeable {
         return false;
     }
 
-    @NotNull
     private BooleanQuery getClauses(String word, String[] sites, String language, int lengthWord) {
         BooleanQuery query = new BooleanQuery();
 
@@ -372,7 +373,6 @@ public class JahiaExtendedSpellChecker implements java.io.Closeable {
         return query;
     }
 
-    @NotNull
     private List<String> getFields(String[] sites, String language) {
         List<String> fields = new ArrayList<>();
         for (String site : sites) {

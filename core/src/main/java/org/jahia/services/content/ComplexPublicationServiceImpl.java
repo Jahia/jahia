@@ -51,7 +51,6 @@ import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.workflow.WorkflowRule;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jetbrains.annotations.Nullable;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
@@ -476,7 +475,6 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
         }
     }
 
-    @Nullable
     private WorkflowRule getWorkflowRule(WorkflowRule lastRule, String workflowAction, JCRNodeWrapper jcrNode, WorkflowRule rule) throws RepositoryException {
         if (rule != null && !rule.equals(lastRule)) {
             if (workflowService.getWorkflowRuleForAction(jcrNode, true, workflowAction) != null) {

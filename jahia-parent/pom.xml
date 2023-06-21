@@ -69,7 +69,8 @@
         <spring-beans.version>3.2.18.jahia1_OSGI</spring-beans.version>
         <springtx.version>3.2.18.RELEASE_OSGI2</springtx.version>
         <springwebflow-version>2.4.8.RELEASE</springwebflow-version>
-        <jackrabbit.version>2.18.4-jahia1</jackrabbit.version>
+        <jackrabbit.version>2.20.10-jahia1-SNAPSHOT</jackrabbit.version>
+        <oak-jackrabbit-api.version.implemented>1.48.0</oak-jackrabbit-api.version.implemented>
         <jackson.core.version>2.14.2</jackson.core.version>
         <jackson-databind.core.version>2.14.2</jackson-databind.core.version>
         <jackson.osgi.version>2.14.2</jackson.osgi.version>
@@ -88,7 +89,7 @@
         <groovy.version>3.0.8</groovy.version>
         <shiro.version>1.10.0</shiro.version>
         <jodconverter.version>4.4.2</jodconverter.version>
-        <tika.version>1.28.5</tika.version>
+        <tika.version>2.4.1</tika.version>
         <xstream.version>1.4.20</xstream.version>
         <jericho.version>3.4</jericho.version>
         <woodstox.version>6.4.0</woodstox.version>

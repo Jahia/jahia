@@ -55,17 +55,12 @@
  */
 
 
+import org.apache.commons.io.IOUtils;
 
-import java.io.BufferedInputStream;
-import java.io.DataInput;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.tika.io.IOUtils;
 
 /**
  * Get file format, image resolution, number of bits per pixel and optionally

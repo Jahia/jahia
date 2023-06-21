@@ -42,8 +42,8 @@
  */
 package org.jahia.services.workflow.jbpm;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.tika.io.IOUtils;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.workflow.jbpm.custom.email.AddressTemplate;
 import org.jahia.services.workflow.jbpm.custom.email.MailTemplate;

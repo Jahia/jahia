@@ -44,11 +44,11 @@ package org.jahia.bundles.config.fileinstall;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.WriterOutputStream;
 import org.apache.felix.fileinstall.ArtifactInstaller;
 import org.apache.felix.fileinstall.ArtifactListener;
 import org.apache.felix.fileinstall.internal.DirectoryWatcher;
-import org.apache.tika.io.IOUtils;
 import org.jahia.bundles.config.ConfigUtil;
 import org.jahia.bundles.config.impl.ConfigImpl;
 import org.jahia.bundles.config.Format;

@@ -42,7 +42,6 @@
  */
 package org.jahia.bundles.securityfilter.core;
 
-import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -113,7 +112,6 @@ public class ParserHelperTest {
         Assert.assertEquals("Check hosted origin " + origin + " on request " + request, testData.match, ParserHelper.isSameOriginFromHeader(getMockHttpServletRequest(request, header, origin), "hosted"));
     }
 
-    @NotNull
     private MockHttpServletRequest getMockHttpServletRequest(String request, String header, String headerValue) throws URISyntaxException {
         URI requestURI = new URI(request);
         MockHttpServletRequest req = new MockHttpServletRequest("GET", request);

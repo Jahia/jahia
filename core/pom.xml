@@ -440,8 +440,8 @@
         </dependency>
         <dependency>
             <groupId>org.apache.jackrabbit</groupId>
-            <artifactId>jackrabbit-api</artifactId>
-            <version>${jackrabbit.version}</version>
+            <artifactId>oak-jackrabbit-api</artifactId>
+            <version>${oak-jackrabbit-api.version.implemented}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.jackrabbit</groupId>
@@ -924,7 +924,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tika</groupId>
-            <artifactId>tika-parsers</artifactId>
+            <artifactId>tika-parsers-standard-package</artifactId>
             <version>${tika.version}</version>
             <exclusions>
                 <exclusion>

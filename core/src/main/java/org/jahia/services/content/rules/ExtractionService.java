@@ -43,9 +43,9 @@
 package org.jahia.services.content.rules;
 
 import org.apache.commons.codec.Charsets;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.BinaryImpl;
-import org.apache.tika.io.IOUtils;
 import org.apache.tika.metadata.Metadata;
 import org.drools.core.WorkingMemory;
 import org.drools.core.spi.KnowledgeHelper;
@@ -60,7 +60,6 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.nodetype.ConstraintViolationException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.GregorianCalendar;

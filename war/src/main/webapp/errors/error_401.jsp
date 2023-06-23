@@ -98,6 +98,11 @@
         <div class="login-footer">Jahia - Copyrights © 2002-2023 All Rights Reserved by Jahia Solutions Group SA.</div>
     </div>
 </section>
-
+<script>
+    var redirectInput = document.querySelector('input[name="redirect"]');
+    if (redirectInput) {
+        redirectInput.value = redirectInput.value + window.location.hash;
+    }
+</script>
 </body>
 </html>

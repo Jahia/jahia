@@ -45,11 +45,19 @@ package org.jahia.services.mail;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 
 import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.NameValuePair;
 import org.jahia.exceptions.JahiaException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Mail configuration values.
@@ -57,6 +65,8 @@ import org.jahia.exceptions.JahiaException;
  * @author Sergiy Shyrkov
  */
 public class MailSettings implements Serializable {
+
+    private static Logger logger = LoggerFactory.getLogger(MailSettings.class);
 
     private static final long serialVersionUID = -3891985143146442266L;
 
@@ -282,54 +292,47 @@ public class MailSettings implements Serializable {
     public int getPort() {
         String uri = getUri();
         int port = 0;
-        if (uri.contains("@")) {
-            uri = StringUtils.substringAfterLast(uri, "@");
+        try {
+            URI parsedUri = new URI(uri);
+            if (parsedUri.getPort() != -1) {
+                port = parsedUri.getPort();
+            }
+        } catch (URISyntaxException e) {
+            logger.error("Invalid uri", e);
         }
-        if (uri.contains(":")) {
-            String portPart = StringUtils.substringAfterLast(uri, ":");
-            port = Integer.parseInt(StringUtils.substringBefore(portPart, "["));
-        }
-
         return port;
     }
 
     public String getSmtpHost() {
         String uri = getUri();
-        if (uri.contains("@")) {
-            uri = StringUtils.substringAfterLast(uri, "@");
+        String smtpHost = "";
+        try {
+            URI parsedUri = new URI(uri);
+            smtpHost = parsedUri.getHost();
+        } catch (URISyntaxException e) {
+            logger.error("Invalid uri", e);
         }
-        if (uri.contains(":")) {
-            uri = StringUtils.substringBeforeLast(uri, ":");
-        }
-        if(uri.contains("?")) {
-            uri = StringUtils.substringBefore(uri, "?");
-        }
-        if(uri.contains("&")) {
-        	uri = StringUtils.substringBefore(uri, "&");
-        }
-        return uri;
+        return smtpHost;
     }
 
     public Map<String, String> getOptions() {
         String uri = getUri();
         Map<String, String> options = new HashMap<String, String>();
-        if (uri.contains("@")) {
-            uri = StringUtils.substringAfterLast(uri, "@");
-        }
-        if (uri.contains(":")) {
-            String portPart = StringUtils.substringAfterLast(uri, ":");
-            // check if there are any custom options, e.g.
-            // [mail.smtp.starttls.enable=true,mail.debug=true]
-            String optionsPart = StringUtils.substringBetween(portPart, "[",
-                    "]");
-            if (optionsPart != null && optionsPart.length() > 0) {
-                String props[] = StringUtils.split(optionsPart, ",");
-                for (String theProperty : props) {
-                    String keyValue[] = StringUtils.split(theProperty, "=");
-                    options.put(keyValue[0].trim(), keyValue[1].trim());
+
+        try {
+            URI parsedUri = new URI(uri);
+            String query = parsedUri.getQuery();
+
+            if (query != null) {
+                List<NameValuePair> params = URLEncodedUtils.parse(query, Charset.forName("UTF-8"));
+                for (NameValuePair param : params) {
+                    options.put(param.getName(), param.getValue());
                 }
             }
+        } catch (URISyntaxException e) {
+            logger.error("Invalid uri", e);
         }
+
         if (getUser() != null) {
             options.put("mail.smtp.auth", "true");
         }

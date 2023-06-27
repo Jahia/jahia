@@ -3,14 +3,7 @@
 
 name: Release on api call
 
-on: 
-  workflow_dispatch:
-   inputs:
-      workflows-ref:
-        description: "ref of the centralized workflows repo that was specified in 'jobs.<name>.uses'"
-        required: false
-        default: 'master'
-        type: string
+on: [ workflow_dispatch ]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -24,8 +17,6 @@ jobs:
       image_tag: ${{ steps.tags.outputs.image_tag }}
     steps:
       - uses: actions/checkout@v3
-        with:
-          ref: ${{ inputs.workflows-ref }}
       - name: Cache local Maven repository
         uses: actions/cache@v3
         with:

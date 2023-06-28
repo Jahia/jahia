@@ -23,20 +23,20 @@
         <property name="sourceMap">
             <map>
                 <!-- common -->
-                <entry key="title" value="mix:title.jcr:title"/>
-                <entry key="description" value="mix:title.jcr:description"/>
+                <entry key="dc:title" value="mix:title.jcr:title"/>
+                <entry key="dc:description" value="mix:title.jcr:description"/>
                 
                 <!-- Microsoft Office -->
-                <entry key="Application-Name" value="jmix:document.j:appName"/>
-                <entry key="Character Count" value="jmix:document.j:charCount"/>
-                <entry key="Comments" value="mix:title.jcr:description"/>
-                <entry key="Keywords" value="jmix:keywords.j:keywords"/>
-                <entry key="Page-Count" value="jmix:document.j:pageCount"/>
-                <entry key="subject" value="jmix:document.j:subject"/>
-                <entry key="Word-Count" value="jmix:document.j:wordCount"/>
+                <entry key="extended-properties:Application" value="jmix:document.j:appName"/>
+                <entry key="meta:character-count" value="jmix:document.j:charCount"/>
+                <entry key="w:Comments" value="mix:title.jcr:description"/>
+                <entry key="meta:keyword" value="jmix:keywords.j:keywords"/>
+                <entry key="meta:page-count" value="jmix:document.j:pageCount"/>
+                <entry key="dc:subject" value="jmix:document.j:subject"/>
+                <entry key="meta:word-count" value="jmix:document.j:wordCount"/>
                 
                 <!-- PDF -->
-                <entry key="producer" value="jmix:document.j:appName"/>
+                <entry key="pdf:docinfo:producer" value="jmix:document.j:appName"/>
                 
                 <!-- Image -->
                 <entry key="height" value="jmix:image.j:height"/>

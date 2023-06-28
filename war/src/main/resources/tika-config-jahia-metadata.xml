@@ -45,7 +45,7 @@
                 <mime>application/x-asp</mime>
         </parser>
 
-        <parser mame="parse-rtf" class="org.apache.tika.parser.rtf.RTFParser">
+        <parser mame="parse-rtf" class="org.apache.tika.parser.microsoft.rtf.RTFParser">
                 <mime>application/rtf</mime>
         </parser>
 
@@ -104,7 +104,7 @@
                 <mime>image/x-xcf</mime>
         </parser>
 
-        <parser name="parse-image-jpeg" class="org.apache.tika.parser.jpeg.JpegParser">
+        <parser name="parse-image-jpeg" class="org.apache.tika.parser.image.JpegParser">
                 <mime>image/jpeg</mime>
         </parser>
 

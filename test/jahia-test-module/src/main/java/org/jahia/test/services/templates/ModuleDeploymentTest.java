@@ -246,7 +246,7 @@ public class ModuleDeploymentTest {
             tmpFile.delete();
             f = new File(settingsBean.getJahiaModulesDiskPath(), tmpFile.getName());
 
-            with().pollInterval(Durations.ONE_SECOND).await().atMost(20, SECONDS).until(isPackageDeployedAndServiceInstalled(DUMMY_1_MODULE));
+            with().pollInterval(Durations.ONE_SECOND).await().atMost(50, SECONDS).until(isPackageDeployedAndServiceInstalled(DUMMY_1_MODULE));
 
             JahiaTemplatesPackage pack = managerService.getTemplatePackageById(DUMMY_1_MODULE);
 

@@ -104,6 +104,7 @@
 
                 <value>testExpandedNameValue(org.apache.jackrabbit.test.api.NameTest)</value>
                 <value>testExpandedNameValueProperty(org.apache.jackrabbit.test.api.NameTest)</value>
+                <value>testExpandedNodeTypeName(org.apache.jackrabbit.test.api.NameTest)</value>
                 <value>testResolvedIdentifierBasedPropertyValue(org.apache.jackrabbit.test.api.PathTest)</value>
                 <value>testHasCapability(org.apache.jackrabbit.test.api.SessionTest)</value>
                 <value>testNodeNotReferenceable(org.apache.jackrabbit.test.api.SetValueValueFormatExceptionTest)</value>

@@ -211,13 +211,6 @@ public class Activator implements BundleActivator {
         return moduleState == ModuleState.State.ERROR_WITH_DEFINITIONS || moduleState == ModuleState.State.INCOMPATIBLE_VERSION;
     }
 
-    private static boolean needsDefaultModuleDependency(final JahiaTemplatesPackage pkg) {
-        return !pkg.getDepends().contains(JahiaTemplatesPackage.ID_DEFAULT)
-                && !pkg.getDepends().contains(JahiaTemplatesPackage.NAME_DEFAULT)
-                && !ServicesRegistry.getInstance().getJahiaTemplateManagerService().getModulesWithNoDefaultDependency()
-                .contains(pkg.getId());
-    }
-
     @Override
     public void start(final BundleContext context) throws Exception {
 
@@ -634,9 +627,6 @@ public class Activator implements BundleActivator {
         }
 
         List<String> dependsList = pkg.getDepends();
-        if (needsDefaultModuleDependency(pkg)) {
-            dependsList.add(JahiaTemplatesPackage.ID_DEFAULT);
-        }
 
         for (String depend : dependsList) {
             if (!templatePackageRegistry.areVersionsForModuleAvailable(depend)) {

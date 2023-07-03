@@ -56,7 +56,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <jahia-depends>default</jahia-depends>
+        <jahia-depends/>
         <jahia-depends-skip-require-capability />
         <jahia-module-type>module</jahia-module-type>
         <jahia-static-resources>/css,/icons,/images,/img,/javascript</jahia-static-resources>

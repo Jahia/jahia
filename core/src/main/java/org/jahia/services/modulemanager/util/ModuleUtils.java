@@ -221,15 +221,6 @@ public class ModuleUtils {
         return (ModuleManager) SpringContextSingleton.getBean("ModuleManager");
     }
 
-    private static Set<String> getModulesWithNoDefaultDependency() {
-        if (SpringContextSingleton.getInstance().isInitialized()) {
-            return ServicesRegistry.getInstance().getJahiaTemplateManagerService().getModulesWithNoDefaultDependency();
-        } else {
-            // only the case for the unit test execution
-            return JahiaTemplateManagerService.DEFAULT_MODULES_WITH_NO_DEFAUL_DEPENDENCY;
-        }
-    }
-
     /**
      * Returns required capabilities for the specified module and its dependencies.
      *
@@ -252,20 +243,6 @@ public class ModuleUtils {
             String[] depList = ModuleUtils.toDependsArray(dependencies);
             for (String dependency : depList) {
                 dependsList.add(dependency.trim());
-            }
-        }
-
-        // check if we need to automatically add dependency to default module
-        boolean addDependencyToDefault = !dependsList.contains(JahiaTemplatesPackage.ID_DEFAULT)
-                && !dependsList.contains(JahiaTemplatesPackage.NAME_DEFAULT)
-                && !getModulesWithNoDefaultDependency().contains(moduleId);
-
-        if (addDependencyToDefault || !dependsList.isEmpty()) {
-            if (addDependencyToDefault) {
-                capabilities.add(buildClauseRequireCapability(JahiaTemplatesPackage.ID_DEFAULT));
-            }
-            for (String dependency : dependsList) {
-                capabilities.add(buildClauseRequireCapability(dependency));
             }
         }
 

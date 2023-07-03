@@ -115,7 +115,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     private static final Logger logger = LoggerFactory.getLogger(JahiaTemplateManagerService.class);
 
-    public static final Set<String> DEFAULT_MODULES_WITH_NO_DEFAUL_DEPENDENCY = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("default", "jquery", "ckeditor", "assets")));
     public static final String MODULE_TYPE_MODULE = "module";
     public static final String MODULE_TYPE_SYSTEM = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_SYSTEM;
     public static final String MODULE_TYPE_TEMPLATES_SET = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_TEMPLATES_SET;
@@ -143,7 +142,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     private SourceControlHelper scmHelper;
     private ForgeHelper forgeHelper;
     private List<String> nonManageableModules;
-    private Set<String> modulesWithNoDefaultDependency = DEFAULT_MODULES_WITH_NO_DEFAUL_DEPENDENCY;
     private Set<String> knownFragmentHosts = Collections.emptySet();
     private ModuleManager moduleManager;
 
@@ -1159,20 +1157,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      */
     public void setForgeHelper(ForgeHelper forgeHelper) {
         this.forgeHelper = forgeHelper;
-    }
-
-    public Set<String> getModulesWithNoDefaultDependency() {
-        return modulesWithNoDefaultDependency;
-    }
-
-    public void setModulesWithNoDefaultDependency(Set<String> modulesWithNoDefaultDependency) {
-        if (modulesWithNoDefaultDependency != null && !modulesWithNoDefaultDependency.isEmpty()) {
-            HashSet<String> modules = new HashSet<>(modulesWithNoDefaultDependency);
-            modules.add("default");
-            this.modulesWithNoDefaultDependency = Collections.unmodifiableSet(modules);
-        } else {
-            this.modulesWithNoDefaultDependency = DEFAULT_MODULES_WITH_NO_DEFAUL_DEPENDENCY;
-        }
     }
 
     /**

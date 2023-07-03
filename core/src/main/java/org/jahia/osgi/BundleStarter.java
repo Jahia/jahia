@@ -103,12 +103,6 @@ class BundleStarter {
                 for (String depPkg : pkg.getDepends()) {
                     dag.addEdge(pkgId, depPkg);
                 }
-                if (!pkg.getDepends().contains(JahiaTemplatesPackage.ID_DEFAULT)
-                        && !pkg.getDepends().contains(JahiaTemplatesPackage.NAME_DEFAULT)
-                        && !ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                        .getModulesWithNoDefaultDependency().contains(pkg.getId())) {
-                    dag.addEdge(pkgId, JahiaTemplatesPackage.ID_DEFAULT);
-                }
             }
 
             List<Bundle> sortedBundles = new LinkedList<>();

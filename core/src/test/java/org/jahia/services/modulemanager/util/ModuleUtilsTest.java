@@ -183,7 +183,7 @@ public class ModuleUtilsTest {
         // only default dependency (implicit)
         Attributes atts = new Attributes(ATTS_TEMPLATE);
         addCapabilities(atts);
-        assertRequires(atts, "default");
+        assertNull(atts.getValue(ATTR_NAME_REQUIRE_CAPABILITY));
 
         // only default dependency (explicit)
         atts = new Attributes(ATTS_TEMPLATE);
@@ -221,7 +221,7 @@ public class ModuleUtilsTest {
         atts = new Attributes();
         atts.put(ATTR_NAME_JAHIA_DEPENDS, "my1, my2");
         addCapabilities(atts);
-        assertRequires(atts, "default", "my1", "my2");
+        assertRequires(atts, "my1", "my2");
 
         // multiple depends, explicit default
         atts = new Attributes();
@@ -250,9 +250,7 @@ public class ModuleUtilsTest {
         atts.put(ATTR_NAME_REQUIRE_CAPABILITY, existingValue);
         atts.put(ATTR_NAME_JAHIA_DEPENDS, "my1, my2");
         addCapabilities(atts);
-        assertEquals(
-                existingValue + ',' + buildClauseRequireCapability("default") + ','
-                        + buildClauseRequireCapability("my1") + ',' + buildClauseRequireCapability("my2"),
+        assertEquals(existingValue + ',' + buildClauseRequireCapability("my1") + ',' + buildClauseRequireCapability("my2"),
                 atts.get(ATTR_NAME_REQUIRE_CAPABILITY));
     }
 

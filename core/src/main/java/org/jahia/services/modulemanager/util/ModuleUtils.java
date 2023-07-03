@@ -246,6 +246,10 @@ public class ModuleUtils {
             }
         }
 
+        for (String dependency : dependsList) {
+            capabilities.add(buildClauseRequireCapability(dependency));
+        }
+
         return capabilities;
     }
 

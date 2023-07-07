@@ -76,7 +76,7 @@ when we flush this entry we will flush the whole cache
             </list>
         </property>
     </bean>
-    
+
     <bean id="areaResourceCacheKeyPartGenerator" class="org.jahia.services.render.filter.cache.AreaResourceCacheKeyPartGenerator">
         <property name="disabled" value="#{jahiaProperties['useNewAggregateAndCacheImplementation'] != null ? !jahiaProperties['useNewAggregateAndCacheImplementation'] : false}"/>
     </bean>

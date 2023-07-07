@@ -150,6 +150,13 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     private Set<String> skipLatchForPaths;
     private Set<String> skipLatchForNodeTypes;
 
+    public AggregateCacheFilter() {
+        addCondition((renderContext, resource) -> {
+            Object toCacheWithParentFragment = resource.getModuleParams().get("toCacheWithParentFragment");
+            return toCacheWithParentFragment == null || !((Boolean) toCacheWithParentFragment);
+        });
+    }
+
     public void setDependenciesLimit(int dependenciesLimit) {
         this.dependenciesLimit = dependenciesLimit;
     }
@@ -917,7 +924,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             Map<String, String> keyAttrbs = cacheKeyGenerator.parse(cacheKey);
             JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession(renderContext.getWorkspace(), LanguageCodeConverters.languageCodeToLocale(keyAttrbs.get("language")),
                     renderContext.getFallbackLocale());
-            JCRNodeWrapper node = null;
+            JCRNodeWrapper node;
             try {
                 // Get the node associated to the fragment to generate
                 node = currentUserSession.getNode(StringUtils.replace(keyAttrbs.get("path"), PathCacheKeyPartGenerator.MAIN_RESOURCE_KEY, StringUtils.EMPTY));
@@ -960,16 +967,15 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             }
 
             renderContext.getRequest().setAttribute("skipWrapper", Boolean.TRUE);
-            Object oldInArea = (Object) renderContext.getRequest().getAttribute("inArea");
+            Object oldInArea = renderContext.getRequest().getAttribute("inArea");
             String inArea = keyAttrbs.get("inArea");
             if (StringUtils.isEmpty(inArea)) {
                 renderContext.getRequest().removeAttribute("inArea");
             } else {
                 renderContext.getRequest().setAttribute("inArea", Boolean.valueOf(inArea));
             }
-            if (areaIdentifier != null) {
-                renderContext.getRequest().setAttribute("areaListResource", currentUserSession.getNodeByIdentifier(areaIdentifier));
-            } else {
+
+            if (areaIdentifier == null) {
                 renderContext.getRequest().removeAttribute("areaListResource");
             }
             Resource resource = new Resource(node, keyAttrbs.get("templateType"), keyAttrbs.get("template"), context);

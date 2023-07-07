@@ -42,8 +42,9 @@
  */
 package org.jahia.services.usermanager;
 
+import org.apache.jackrabbit.api.security.principal.GroupPrincipal;
+
 import java.security.Principal;
-import java.security.acl.Group;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -65,11 +66,13 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Fulco Houkes
  * @version 2.2
  */
-public abstract class JahiaGroup implements JahiaPrincipal, Group {
+public abstract class JahiaGroup implements JahiaPrincipal, GroupPrincipal {
 
     private static final long serialVersionUID = 3192050315335252786L;
 
-    /** Group unique identification name */
+    /**
+     * Group unique identification name
+     */
     protected String mGroupname;
 
     /**
@@ -80,34 +83,37 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
 
     protected boolean hidden = false;
 
-    /** The site id */
+    /**
+     * The site id
+     */
     protected int mSiteID;
 
     protected boolean preloadedGroups;
 
     protected Map<String, Boolean> membership = new ConcurrentHashMap<String, Boolean>();
 
-    /** Map holding all the group members. */
+    /**
+     * Map holding all the group members.
+     */
     protected Set<Principal> mMembers;
 
     /**
      * Get grp's properties list.
      *
      * @return Return a reference on the grp's properties list, or null if no
-     *         property is present.
+     * property is present.
      */
-    public abstract Properties getProperties ();
+    public abstract Properties getProperties();
 
 
     /**
      * Retrieve the requested grp property.
      *
      * @param key Property's name.
-     *
      * @return Return the property's value of the specified key, or null if the
-     *         property does not exist.
+     * property does not exist.
      */
-    public abstract String getProperty (String key);
+    public abstract String getProperty(String key);
 
 
     /**
@@ -116,7 +122,7 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      * @param key Property's name.
      * @deprecated
      */
-    public abstract boolean removeProperty (String key);
+    public abstract boolean removeProperty(String key);
 
 
     /**
@@ -127,19 +133,18 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      * @param value Property's value.
      * @deprecated
      */
-    public abstract boolean setProperty (String key, String value);
+    public abstract boolean setProperty(String key, String value);
 
 
     /**
      * Adds the specified member to the group.
      *
      * @param principal The principal to add to this group.
-     *
      * @return Return true if the member was successfully added, false if the
-     *         principal was already a member.
+     * principal was already a member.
      * @deprecated
      */
-    public abstract boolean addMember (Principal principal);
+    public abstract boolean addMember(Principal principal);
 
     /**
      * Adds the specified members to the group.
@@ -155,9 +160,8 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      * interface.
      *
      * @param another Principal to compare with.
-     *
      * @return Return true if the principal passed in is the same as that
-     *         encapsulated by this principal, and false otherwise.
+     * encapsulated by this principal, and false otherwise.
      */
     public boolean equals(Object another) {
 
@@ -175,7 +179,7 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      *
      * @return REturn the unique group identification key.
      */
-    public String getGroupKey () {
+    public String getGroupKey() {
         return mGroupKey;
     }
 
@@ -185,7 +189,7 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      *
      * @return The unique identifier of this group.
      */
-    public String getName () {
+    public String getName() {
         return mGroupname;
     }
 
@@ -195,7 +199,7 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      *
      * @return The name of this group.
      */
-    public String getGroupname () {
+    public String getGroupname() {
         return mGroupname;
     }
 
@@ -206,7 +210,7 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      * @return int the siteID.
      * @deprecated use siteKey instead
      */
-    public int getSiteID () {
+    public int getSiteID() {
         return mSiteID;
     }
 
@@ -216,7 +220,7 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      *
      * @return A hashcode for this principal.
      */
-    public abstract int hashCode ();
+    public abstract int hashCode();
 
 
     /**
@@ -226,11 +230,10 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      * Note this method does not load automatically all members of the group if they were not preloaded before.
      *
      * @param principal The principal whose membership is to be checked.
-     *
      * @return Return true if the principal is a member of this group, false otherwise.
      * @deprecated
      */
-    public boolean isMember (Principal principal) {
+    public boolean isMember(Principal principal) {
         throw new UnsupportedOperationException("Method not supported here, use JCRGroupNode instead");
     }
 
@@ -244,7 +247,7 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      * @return An Iterator of the group members.
      * @deprecated use getMembers
      */
-    public Enumeration<Principal> members () {
+    public Enumeration<Principal> members() {
         throw new UnsupportedOperationException("Method not supported here, use JCRGroupNode instead");
     }
 
@@ -269,10 +272,10 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      * to return only the full list of members.
      *
      * @return Set a set of JahiaUsers that are all the implicit and explicit
-     *         users in this group
+     * users in this group
      * @deprecated
      */
-    public Set<Principal> getRecursiveUserMembers () {
+    public Set<Principal> getRecursiveUserMembers() {
         throw new UnsupportedOperationException("Method not supported here, use JCRGroupNode instead");
     }
 
@@ -281,12 +284,11 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      * Removes the specified member from the group.
      *
      * @param principal The principal to remove from this group.
-     *
      * @return Return true if the principal was removed, or false if the
-     *         principal was not a member.
+     * principal was not a member.
      * @deprecated
      */
-    public abstract boolean removeMember (Principal principal);
+    public abstract boolean removeMember(Principal principal);
 
 
     /**
@@ -295,7 +297,7 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      * @return Return false on error
      * @deprecated
      */
-    public boolean removeMembers () {
+    public boolean removeMembers() {
         throw new UnsupportedOperationException("Method not supported here, use JCRGroupNode instead");
     }
 
@@ -305,7 +307,7 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      *
      * @return A string representation of this group.
      */
-    public abstract String toString ();
+    public abstract String toString();
 
     /**
      * Get the name of the provider of this group.
@@ -313,7 +315,7 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      * @return String representation of the name of the provider of this group
      * @deprecated
      */
-    public abstract String getProviderName ();
+    public abstract String getProviderName();
 
 
     public boolean isPreloadedGroups() {

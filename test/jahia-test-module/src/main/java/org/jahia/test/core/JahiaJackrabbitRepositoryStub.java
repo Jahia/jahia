@@ -44,6 +44,7 @@ package org.jahia.test.core;
 
 import org.apache.jackrabbit.core.RepositoryImpl;
 import org.apache.jackrabbit.core.SessionImpl;
+import org.apache.jackrabbit.core.security.principal.GroupPrincipals;
 import org.apache.jackrabbit.test.NotExecutableException;
 import org.apache.jackrabbit.test.RepositoryStub;
 import org.apache.jackrabbit.test.RepositoryStubException;
@@ -61,7 +62,6 @@ import javax.jcr.Session;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.Principal;
-import java.security.acl.Group;
 import java.util.Collections;
 import java.util.Properties;
 
@@ -161,7 +161,7 @@ public class JahiaJackrabbitRepositoryStub extends RepositoryStub {
         JCRUserNode readOnlyUser = JahiaUserManagerService.getInstance().lookupUser(readonly.getUserID());
         if (readOnlyUser == null) {
             readOnlyUser = JahiaUserManagerService.getInstance().createUser(readonly.getUserID(), new String(readonly.getPassword()), new Properties(), (JCRSessionWrapper) session);
-            ((JCRSessionWrapper)session).getRootNode().grantRoles("u:"+readOnlyUser.getName(), Collections.singleton("privileged"));
+            ((JCRSessionWrapper) session).getRootNode().grantRoles("u:" + readOnlyUser.getName(), Collections.singleton("privileged"));
             JCRGroupNode usersGroup = JahiaGroupManagerService.getInstance().lookupGroupByPath(JahiaGroupManagerService.USERS_GROUPPATH);
             usersGroup.addMember(readOnlyUser);
             session.save();
@@ -178,7 +178,7 @@ public class JahiaJackrabbitRepositoryStub extends RepositoryStub {
 
         if (session instanceof SessionImpl) {
             for (Principal p : ((SessionImpl) session).getSubject().getPrincipals()) {
-                if (!(p instanceof Group)) {
+                if (!GroupPrincipals.isGroup(p)) {
                     knownPrincipal = p;
                 }
             }

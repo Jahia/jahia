@@ -117,8 +117,12 @@ class NodeHelper {
                 resource = new Resource(nodeForURL, "html", null, Resource.CONFIGURATION_PAGE);
             }
         }
-
-        url += nodeForURL.getPath() + ".html";
+        Template template = RenderService.getInstance().resolveTemplate(resource, renderContext);
+        if (template != null) {
+            url += nodeForURL.getPath() + ".html";
+        } else {
+            url += nodeForURL.getPath() + ".content-template.html";
+        }
 
         if (versionDate != null) {
             url += "?v=" + (versionDate.getTime());

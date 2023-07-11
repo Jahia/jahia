@@ -3,7 +3,7 @@
 
 name: Release on api call
 
-on: 
+on:
   workflow_dispatch:
   workflow_call:
 
@@ -82,9 +82,6 @@ jobs:
           version: ${{steps.tags.outputs.image_tag}}
           repo: "jahia-core-dev"
           dry-run: false
-      - name: Build graalvm image
-        shell: bash
-        run: mvn -s .github/maven.settings.xml -e -Dimage.tag="${{steps.tags.outputs.image_tag}}"-graalvm -Dimage.graalvm=true deploy -Dbamboo.buildNumber=${{ github.run_id }}
       - uses: jahia/jahia-modules-action/slack-jahia@v2
         if: ${{ failure() }}
         with:

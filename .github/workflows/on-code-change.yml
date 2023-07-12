@@ -1,6 +1,7 @@
 name: On Code Change
 
 on:
+  workflow_dispatch:
   pull_request:
     types: [ opened, reopened, synchronize ]
     paths-ignore:

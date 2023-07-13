@@ -2061,12 +2061,9 @@
                         <usedDependency>org.codehaus.groovy:groovy-jsr223</usedDependency>
                         <usedDependency>org.codehaus.groovy:groovy-xml</usedDependency>
                         <usedDependency>com.amazonaws:aws-java-sdk-s3</usedDependency>
-                        <usedDependency>org.apache.tika:tika-parsers</usedDependency>
                         <usedDependency>org.apache.felix:org.apache.felix.configadmin</usedDependency>
                         <usedDependency>com.fasterxml.jackson.core:jackson-annotations</usedDependency>
                         <usedDependency>com.fasterxml.jackson.dataformat:jackson-dataformat-cbor</usedDependency>
-                        <usedDependency>org.apache.httpcomponents:httpclient</usedDependency>
-                        <usedDependency>org.apache.httpcomponents:httpcore</usedDependency>
                         <usedDependency>org.apache.velocity:velocity</usedDependency>
                         <usedDependency>org.apache.karaf:org.apache.karaf.main</usedDependency>
                     </usedDependencies>

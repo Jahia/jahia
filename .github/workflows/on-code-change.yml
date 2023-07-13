@@ -28,6 +28,7 @@ jobs:
     outputs:
       jahia_version: ${{ steps.tags.outputs.jahia_version }}
       image_tag: ${{ steps.tags.outputs.image_tag }}
+      current_branch: ${{ steps.tags.outputs.current_branch }}
     steps:
       - uses: actions/checkout@v3
       - name: Cache local Maven repository
@@ -68,12 +69,16 @@ jobs:
       - id: tags
         name: Set Output variables
         run: |
-          echo "::set-output name=jahia_version::`cat jahia.version`"
-          echo "::set-output name=image_tag::`cat image.tag`"
+          jahia_version=$(cat jahia.version)
+          echo "jahia_version=${jahia_version}" >> $GITHUB_OUTPUT
+          image_tag=$(cat image.tag)
+          echo "image_tag=${image_tag}" >> $GITHUB_OUTPUT
+          echo "current_branch=${{ steps.branch-name.outputs.current_branch}}" >> $GITHUB_OUTPUT
       - name: Display Output variables
         run: |
           echo "OUTPUT: jahia_version = ${{steps.tags.outputs.jahia_version}}"
           echo "OUTPUT: image_tag = ${{steps.tags.outputs.image_tag}}"
+          echo "OUTPUT: current_branch = ${{steps.tags.outputs.current_branch}}"
 
       - name: Build package and load all dependencies into local Maven repository
         shell: bash
@@ -302,34 +307,15 @@ jobs:
           show_checklist: 'true'
           root_folder: 'core'
 
-  prepare-jahia-pack-trigger:
-    runs-on: ubuntu-latest
-    needs: [ build ]
-    outputs:
-      remote_branch: ${{ steps.exports.outputs.remote_branch }}
-    steps:
-      - name: Get branch name
-        id: branch-name
-        uses: tj-actions/branch-names@v6
-      - name: Preparing variables for remote branch
-        id: exports
-        shell: bash
-        run: |
-          # If we are in a PR, we use master for the remote branch
-          # If we are not in a PR, we use the current branch for the remote branch
-          if [[ "${{ github.event.pull_request.head.ref }}" == "" ]]; then
-            echo "Currently NOT in a PR (${{ github.event.pull_request.head.ref }}), using current branch: ${{ steps.branch-name.outputs.current_branch }} as remote branch"
-            echo "remote_branch=${{ steps.branch-name.outputs.current_branch }}" >> $GITHUB_OUTPUT
-          else
-            echo "Currently in a PR with head: ${{ github.event.pull_request.head.ref }}, using master as remote branch"
-            echo "remote_branch=master" >> $GITHUB_OUTPUT
-          fi
-
   call-workflow-jahia-pack:
-    needs: [ build, prepare-jahia-pack-trigger ]
+    needs: [ build ]
     uses: Jahia/jahia-pack-private/.github/workflows/do-it-all.yml@master
     secrets: inherit
     with:
-      parent_image_tag: ${{ needs.build.outputs.parent_image_tag }}
-      target_branch: ${{ needs.build.outputs.target_branch }}
+      parent_image_tag: ${{ needs.build.outputs.image_tag }}
+      target_branch: master
       workflows-ref: master
+# If there are changes in jahia-pack-private, you need to specify the branch
+# Only do this for testing purposes, do not merge!
+#      target_branch: ${{ needs.build.outputs.current_branch }}
+#      workflows-ref: ${{ needs.build.outputs.current_branch }}

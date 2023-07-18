@@ -80,6 +80,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+import static org.jahia.api.Constants.TO_CACHE_WITH_PARENT_FRAGMENT;
+
 /**
  * Module content caching filter.
  *
@@ -152,7 +154,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 
     public AggregateCacheFilter() {
         addCondition((renderContext, resource) -> {
-            Object toCacheWithParentFragment = resource.getModuleParams().get("toCacheWithParentFragment");
+            Object toCacheWithParentFragment = resource.getModuleParams().get(TO_CACHE_WITH_PARENT_FRAGMENT);
             return toCacheWithParentFragment == null || !((Boolean) toCacheWithParentFragment);
         });
     }

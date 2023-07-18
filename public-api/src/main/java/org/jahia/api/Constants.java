@@ -342,6 +342,8 @@ public class Constants {
 
     public static final String UI_THEME = "jahia.ui.theme";
 
+    public static final String TO_CACHE_WITH_PARENT_FRAGMENT = "toCacheWithParentFragment";
+
     /**
      * The set of properties that are <strong>NOT</strong> internationalized properties but are still copied to translation nodes.
      *

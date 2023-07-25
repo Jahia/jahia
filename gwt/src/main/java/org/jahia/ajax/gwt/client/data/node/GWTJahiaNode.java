@@ -270,7 +270,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public String getEscapedName() {
         String escapedName = get(ESCAPED_NAME);
-        return escapedName != null ? escapedName : (String)get(NAME);
+        return escapedName != null ? escapedName : (String) get(NAME);
     }
 
     public void setUUID(String uuid) {
@@ -597,11 +597,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
         GWTJahiaNode that = (GWTJahiaNode) o;
 
-        if (getPath() != null ? !getPath().equals(that.getPath()) : that.getPath() != null) {
-            return false;
-        }
-
-        return true;
+        return getPath() != null ? getPath().equals(that.getPath()) : that.getPath() == null;
     }
 
     @Override
@@ -680,6 +676,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     /**
      * Return a list of invalid languages for the current node.
+     *
      * @return a list of invalid languages for the current node.
      */
     public List<String> getInvalidLanguages() {
@@ -688,6 +685,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     /**
      * Set the list of invalid languages.
+     *
      * @param invalidLanguages List of invalid languages for this node.
      */
     public void setInvalidLanguages(List<String> invalidLanguages) {
@@ -714,8 +712,8 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     @Override
     public void remove(ModelData child) {
-        if (children.contains(child) && child.get("uuid") != null ) {
-            removedChildrenPaths.add(((GWTJahiaNode)child).getPath());
+        if (children.contains(child) && child.get("uuid") != null) {
+            removedChildrenPaths.add(((GWTJahiaNode) child).getPath());
         }
         super.remove(child);
     }
@@ -723,7 +721,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     @Override
     public void removeAll() {
         for (ModelData child : children) {
-            removedChildrenPaths.add(((GWTJahiaNode)child).getPath());
+            removedChildrenPaths.add(((GWTJahiaNode) child).getPath());
         }
         super.removeAll();
     }
@@ -733,7 +731,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
      *
      * @param language the language to check WIP status for
      * @return <code>true</code>if the current node is in WIP state either for all languages (all content) or for the specified language;
-     *         <code>false</code> otherwise
+     * <code>false</code> otherwise
      */
     public boolean isInWorkInProgress(String language) {
 

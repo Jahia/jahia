@@ -165,13 +165,15 @@ public class PagesTabItem extends SidePanelTabItem {
 
             @Override
             public int compare(Store<GWTJahiaNode> gwtJahiaNodeStore, GWTJahiaNode m1, GWTJahiaNode m2,
-                                         String property) {
-                if (!m1.getInheritedNodeTypes().contains(Constants.JAHIAMIX_NAVMENUITEM) && m2.getInheritedNodeTypes().contains(Constants.JAHIAMIX_NAVMENUITEM)) {
+                               String property) {
+                boolean m1IsNavItem = m1.getInheritedNodeTypes().contains(Constants.JAHIAMIX_NAVMENUITEM);
+                boolean m2IsNavItem = m2.getInheritedNodeTypes().contains(Constants.JAHIAMIX_NAVMENUITEM);
+                if (!m1IsNavItem && m2IsNavItem) {
                     return 1;
-                } else if (!m2.getInheritedNodeTypes().contains(Constants.JAHIAMIX_NAVMENUITEM) && m1.getInheritedNodeTypes().contains(Constants.JAHIAMIX_NAVMENUITEM)) {
+                } else if (!m2IsNavItem && m1IsNavItem) {
                     return -1;
                 } else {
-                    return gwtJahiaNodeStore.getModels().indexOf(m2) - gwtJahiaNodeStore.getModels().indexOf(m1);
+                    return Integer.compare(m1.get("index", -1), m2.get("index", -1));
                 }
             }
         });
@@ -184,9 +186,9 @@ public class PagesTabItem extends SidePanelTabItem {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
                 final GWTJahiaNode node = se.getSelectedItem();
                 if (node != null && !node.getPath().equals(editLinker.getMainModule().getPath()) &&
-                    !node.getNodeTypes().contains("jnt:virtualsite") && !node.getNodeTypes().contains("jnt:navMenuText") &&
+                        !node.getNodeTypes().contains("jnt:virtualsite") && !node.getNodeTypes().contains("jnt:navMenuText") &&
                         !node.getInheritedNodeTypes().contains("jmix:link")
-                        ) {
+                ) {
                     MainModule.staticGoTo(node.getPath(), null);
                 }
             }

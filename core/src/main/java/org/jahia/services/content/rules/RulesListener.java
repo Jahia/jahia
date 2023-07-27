@@ -684,8 +684,9 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
         JCRPropertyWrapper p = null;
         try {
             p = (JCRPropertyWrapper) s.getItem(path);
-        } catch (PathNotFoundException e) {
-            // the node could be moved in between
+        } catch (PathNotFoundException | ClassCastException e) {
+            // the node could be moved in between -> PathNodeFound
+            // or the property have the same name of a child node -> ClassCastException.
             try {
                 p = s.getNodeByIdentifier(eventUuid).getProperty(propertyName);
             } catch (RepositoryException infe) {

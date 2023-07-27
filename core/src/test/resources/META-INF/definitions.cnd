@@ -256,3 +256,9 @@
 [test:nodeTypeOverrideNodeTypeWithAutocreated] > test:nodeTypeToOverrideWithAutocreated
 - localProperty (string) = 'autocreated' mandatory autocreated
 - mandatoryOverridePropertyNodeType (string) = 'autocreated' autocreated
+
+ [test:sameNameChildAndPropertyParent] > jnt:content, jmix:droppableContent
+  - sameName (string)
+  + sameName (test:sameNameChildAndPropertyChild) = test:sameNameChildAndPropertyChild autocreated
+
+ [test:sameNameChildAndPropertyChild] > jnt:content, jmix:droppableContent

@@ -2318,7 +2318,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         JCRNodeWrapper copy = null;
         try {
-            copy = (JCRNodeWrapper) session.getItem(dest.getPath() + "/" + name);
+            copy = session.getNode(dest.getPath() + "/" + name);
             getSession().checkout(copy);
         } catch (PathNotFoundException ex) {
             // node does not exist

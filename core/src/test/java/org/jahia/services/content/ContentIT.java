@@ -1016,4 +1016,31 @@ public class ContentIT extends AbstractJUnitTest {
         assertFalse("Property width is still there",
                 video2.hasProperty("width"));
     }
+
+    @Test
+    public void testNodeCopySameNamePropertyAndChild() throws RepositoryException {
+        JCRNodeWrapper root = session.getNode(SITECONTENT_ROOT_NODE).addNode(
+                "testNodeCopy-source-" + System.currentTimeMillis(),
+                "jnt:contentFolder");
+
+        JCRNodeWrapper dest = session.getNode(SITECONTENT_ROOT_NODE).addNode(
+                "testNodeCopy-dest-" + System.currentTimeMillis(),
+                "jnt:contentFolder");
+
+        JCRNodeWrapper source = root.addNode("source", "test:sameNameChildAndPropertyParent");
+        source.setProperty("sameName", "some value");
+
+        session.save();
+        nodes.add(root.getIdentifier());
+        nodes.add(dest.getIdentifier());
+
+        assertTrue("Expected property sameName not found", source.hasProperty("sameName"));
+        assertNotNull("Expected child node sameName not found", source.getNode("sameName"));
+
+        source.copy(dest, "copy", true, null, 500);
+        session.save();
+        JCRNodeWrapper copy = dest.getNode("copy");
+        assertTrue("Expected property sameName not found", copy.hasProperty("sameName"));
+        assertNotNull("Expected child node sameName not found", copy.getNode("sameName"));
+    }
 }

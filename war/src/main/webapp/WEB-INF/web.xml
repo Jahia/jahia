@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <web-app xmlns="http://java.sun.com/xml/ns/javaee"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-         version="3.0" id="WebApp_Jahia">
-
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+    version="3.0" id="WebApp_Jahia">
+    
     <display-name>Jahia</display-name>
-
+    
     <context-param>
         <description>
             The location of Spring's configuration files used by the listener upon startup
@@ -23,7 +23,7 @@
             classpath*:jahia/**/applicationcontext-override-*.xml
         </param-value>
     </context-param>
-
+    
     <context-param>
         <param-name>log4jConfiguration</param-name>
         <param-value>${sys:jahia.log4j.config}</param-value>
@@ -36,7 +36,7 @@
         <param-name>log4jRefreshInterval</param-name>
         <param-value>60000</param-value>
     </context-param>
-
+    
     <context-param>
         <!-- if you have trouble with the JDK detection code, you might want
              to remove the following parameter. Please note that this is here
@@ -45,13 +45,13 @@
         <param-name>supported_jdk_versions</param-name>
         <param-value>1.8 &lt;= x &lt; 1.9, 11 &lt;= x &lt; 12, 17 &lt;= x &lt; 18</param-value>
     </context-param>
-
+    
     <context-param>
         <description>Spring Expression Language Support</description>
         <param-name>springJspExpressionSupport</param-name>
         <param-value>false</param-value>
     </context-param>
-
+    
     <filter>
         <filter-name>CompositeFilter</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
@@ -61,7 +61,7 @@
             <param-value>true</param-value>
         </init-param>
     </filter>
-
+    
     <filter-mapping>
         <filter-name>CompositeFilter</filter-name>
         <url-pattern>/*</url-pattern>
@@ -71,24 +71,24 @@
         <dispatcher>INCLUDE</dispatcher>
         <dispatcher>ASYNC</dispatcher>
     </filter-mapping>
-
+    
     <listener>
         <listener-class>org.jahia.bin.listeners.LoggingConfigListener</listener-class>
     </listener>
-
+    
     <listener>
         <listener-class>org.jahia.bin.listeners.JahiaContextLoaderListener</listener-class>
     </listener>
-
+    
     <listener>
         <listener-class>org.atmosphere.cpr.SessionSupport</listener-class>
     </listener>
-
+    
     <servlet>
         <servlet-name>WelcomeServlet</servlet-name>
         <servlet-class>org.jahia.bin.WelcomeServlet</servlet-class>
     </servlet>
-
+    
     <!-- ====================================================================== -->
     <!-- R E P O S I T O R Y   S E R V L E T                                    -->
     <!-- ====================================================================== -->
@@ -99,14 +99,14 @@
         </description>
         <servlet-name>Repository</servlet-name>
         <servlet-class>org.apache.jackrabbit.j2ee.RepositoryAccessServlet</servlet-class>
-
-
+        
+        
         <init-param>
             <description>Repository Name that is used to retrieve it via a servlet context attribute</description>
             <param-name>repository.context.attribute.name</param-name>
             <param-value>uch</param-value>
         </init-param>
-
+        
         <!--
         <init-param>
             <description>Repository Name that is used to retrieve it via JNDI</description>
@@ -132,7 +132,7 @@
             </description>
         </init-param>
         -->
-
+        
         <!--
             JNDI environment variables for creating the initial context
             (all init parameters starting with java.naming.* will be added to the initial context environment).
@@ -153,44 +153,44 @@
             <description>The URI for the RMI connection.</description>
         </init-param>
         -->
-
+        
         <load-on-startup>3</load-on-startup>
     </servlet>
-
-
-    <!-- ====================================================================== -->
-    <!-- R M I   B I N D I N G   S E R V L E T                                  -->
-    <!-- ====================================================================== -->
-    <servlet>
-      <servlet-name>RMI</servlet-name>
-      <servlet-class>org.apache.jackrabbit.servlet.remote.RemoteBindingServlet</servlet-class>
-    </servlet>
-
+    
+    
+    <!--    &lt;!&ndash; ====================================================================== &ndash;&gt;-->
+    <!--    &lt;!&ndash; R M I   B I N D I N G   S E R V L E T                                  &ndash;&gt;-->
+    <!--    &lt;!&ndash; ====================================================================== &ndash;&gt;-->
+    <!--    <servlet>-->
+    <!--      <servlet-name>RMI</servlet-name>-->
+    <!--      <servlet-class>org.apache.jackrabbit.servlet.remote.RemoteBindingServlet</servlet-class>-->
+    <!--    </servlet>-->
+    
     <servlet>
         <servlet-name>Files</servlet-name>
         <servlet-class>org.jahia.services.content.files.FileServlet</servlet-class>
         <load-on-startup>99</load-on-startup>
     </servlet>
-
+    
     <servlet>
         <servlet-name>StaticFiles</servlet-name>
         <servlet-class>org.jahia.services.content.files.StaticFileServlet</servlet-class>
         <load-on-startup>99</load-on-startup>
     </servlet>
-
-
+    
+    
     <servlet>
         <servlet-name>ValidateTicket</servlet-name>
         <servlet-class>org.jahia.bin.ValidateTicket</servlet-class>
     </servlet>
-
+    
     <servlet>
         <servlet-name>fileManagerGWTUploadService</servlet-name>
         <servlet-class>
             org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet
         </servlet-class>
     </servlet>
-
+    
     <servlet>
         <description>
             Error pages servlet, which selects the most appropriate error page to display,
@@ -202,7 +202,7 @@
         <servlet-class>org.jahia.bin.errors.ErrorServlet</servlet-class>
         <load-on-startup>99</load-on-startup>
     </servlet>
-
+    
     <!-- ====================================================================== -->
     <!-- P O R T L E T   S E R V L E T S                                        -->
     <!-- ====================================================================== -->
@@ -211,7 +211,7 @@
         <servlet-class>org.jahia.portlets.PortletServlet</servlet-class>
         <load-on-startup>10</load-on-startup>
     </servlet>
-
+    
     <servlet>
         <servlet-name>GWTDispatcherServlet</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -229,7 +229,7 @@
         </init-param>
         <load-on-startup>99</load-on-startup>
     </servlet>
-
+    
     <servlet>
         <servlet-name>RendererDispatcherServlet</servlet-name>
         <servlet-class>org.jahia.bin.JahiaDispatcherServlet</servlet-class>
@@ -248,7 +248,7 @@
         <load-on-startup>99</load-on-startup>
         <async-supported>true</async-supported>
     </servlet>
-
+    
     <!-- OSGi Proxy Servlet -->
     <servlet>
         <servlet-name>osgiProxy</servlet-name>
@@ -256,7 +256,7 @@
         <load-on-startup>1</load-on-startup>
         <async-supported>true</async-supported>
     </servlet>
-
+    
     <servlet>
         <servlet-name>graphqlOsgiProxy</servlet-name>
         <servlet-class>org.jahia.bin.GraphqlProxyServlet</servlet-class>
@@ -264,7 +264,7 @@
         <async-supported>true</async-supported>
         <multipart-config/>
     </servlet>
-
+    
     <!-- This servlet is used to indicate the end of the initialization process of Jahia, so it should always have
          the highest load-on-startup value. This servlet may also be queried to check if the server has completed
          initialization or not. -->
@@ -273,7 +273,7 @@
         <servlet-class>org.jahia.bin.EndInit</servlet-class>
         <load-on-startup>999</load-on-startup>
     </servlet>
-
+    
     <servlet>
         <description>AtmosphereServlet</description>
         <servlet-name>AtmosphereServlet</servlet-name>
@@ -306,12 +306,12 @@
             <param-name>org.atmosphere.cpr.sessionCreate</param-name>
             <param-value>false</param-value>
         </init-param>
-
+        
         <load-on-startup>1</load-on-startup>
         <!--Uncomment if you want to use Servlet 3.0 Async Support-->
         <async-supported>true</async-supported>
     </servlet>
-
+    
     <servlet>
         <servlet-name>FlowDispatcherServlet</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -333,12 +333,12 @@
         </init-param>
         <load-on-startup>99</load-on-startup>
     </servlet>
-
+    
     <servlet>
         <servlet-name>gwt-log-remote-logger-servlet</servlet-name>
         <servlet-class>com.allen_sauer.gwt.log.server.RemoteLoggerServlet</servlet-class>
     </servlet>
-
+    
     <!-- Servlet mappings -->
     <servlet-mapping>
         <servlet-name>WelcomeServlet</servlet-name>
@@ -352,47 +352,47 @@
         <servlet-name>WelcomeServlet</servlet-name>
         <url-pattern>/welcome/*</url-pattern>
     </servlet-mapping>
-
+    
     <servlet-mapping>
         <servlet-name>ValidateTicket</servlet-name>
         <url-pattern>/validateTicket</url-pattern>
     </servlet-mapping>
-
+    
     <servlet-mapping>
         <servlet-name>fileManagerGWTUploadService</servlet-name>
         <url-pattern>/gwt/fileupload/*</url-pattern>
     </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>RMI</servlet-name>
-        <url-pattern>/rmi</url-pattern>
-    </servlet-mapping>
-
+    
+    <!--    <servlet-mapping>-->
+    <!--        <servlet-name>RMI</servlet-name>-->
+    <!--        <url-pattern>/rmi</url-pattern>-->
+    <!--    </servlet-mapping>-->
+    
     <servlet-mapping>
         <servlet-name>Files</servlet-name>
         <url-pattern>/files/*</url-pattern>
     </servlet-mapping>
-
+    
     <servlet-mapping>
         <servlet-name>StaticFiles</servlet-name>
         <url-pattern>/generated-resources/*</url-pattern>
     </servlet-mapping>
-
+    
     <servlet-mapping>
         <servlet-name>JahiaContentPortlet</servlet-name>
         <url-pattern>/PlutoInvoker/*</url-pattern>
     </servlet-mapping>
-
+    
     <servlet-mapping>
         <servlet-name>ErrorServlet</servlet-name>
         <url-pattern>/error</url-pattern>
     </servlet-mapping>
-
+    
     <servlet-mapping>
         <servlet-name>GWTDispatcherServlet</servlet-name>
         <url-pattern>*.gwt</url-pattern>
     </servlet-mapping>
-
+    
     <servlet-mapping>
         <servlet-name>gwt-log-remote-logger-servlet</servlet-name>
         <url-pattern>/gwt/edit/gwt-log</url-pattern>
@@ -401,59 +401,59 @@
         <servlet-name>gwt-log-remote-logger-servlet</servlet-name>
         <url-pattern>/gwt/manager/gwt-log</url-pattern>
     </servlet-mapping>
-
+    
     <servlet-mapping>
         <servlet-name>RendererDispatcherServlet</servlet-name>
         <url-pattern>/cms/*</url-pattern>
     </servlet-mapping>
-
+    
     <servlet-mapping>
         <servlet-name>graphqlOsgiProxy</servlet-name>
         <url-pattern>/modules/graphql/*</url-pattern>
     </servlet-mapping>
-
+    
     <servlet-mapping>
         <servlet-name>osgiProxy</servlet-name>
         <url-pattern>/modules/*</url-pattern>
     </servlet-mapping>
-
+    
     <servlet-mapping>
         <!-- Mapping for the Web Console -->
         <servlet-name>osgiProxy</servlet-name>
         <url-pattern>/tools/osgi/*</url-pattern>
     </servlet-mapping>
-
+    
     <servlet-mapping>
         <servlet-name>initializationCompletedServlet</servlet-name>
         <url-pattern>/initializationCompleted/*</url-pattern>
     </servlet-mapping>
-
+    
     <servlet-mapping>
         <servlet-name>AtmosphereServlet</servlet-name>
         <url-pattern>/atmosphere/*</url-pattern>
     </servlet-mapping>
-
-
+    
+    
     <servlet-mapping>
         <servlet-name>FlowDispatcherServlet</servlet-name>
         <url-pattern>/flow/*</url-pattern>
     </servlet-mapping>
-
+    
     <session-config>
         <cookie-config>
             <path>/</path> <!-- This is needed for proper portlet external application scoped attributes to work -->
             <http-only>true</http-only>
         </cookie-config>
-    <!-- Session timeout value is set in minutes. Comment this section out
-         in order to set the timeout time back to the server's value  -->
-    <!--
-      <session-timeout>1</session-timeout>
-    -->
+        <!-- Session timeout value is set in minutes. Comment this section out
+             in order to set the timeout time back to the server's value  -->
+        <!--
+          <session-timeout>1</session-timeout>
+        -->
     </session-config>
-
+    
     <!-- ===================== Default MIME Type Mappings =================== -->
-
-
+    
+    
     <!-- When serving static resources, Tomcat will automatically generate    -->
     <!-- a "Content-Type" header based on the resource's filename extension,  -->
     <!-- based on these mappings.  Additional mappings can be added here (to  -->
@@ -818,7 +818,7 @@
     </mime-mapping>
     <mime-mapping>
         <!-- OpenDocument Drawing Template -->
-        <extension>otg </extension>
+        <extension>otg</extension>
         <mime-type>application/vnd.oasis.opendocument.graphics-template</mime-type>
     </mime-mapping>
     <mime-mapping>
@@ -834,7 +834,7 @@
     <mime-mapping>
         <!-- OpenDocument Spreadsheet Template -->
         <extension>ots</extension>
-        <mime-type>application/vnd.oasis.opendocument.spreadsheet-template </mime-type>
+        <mime-type>application/vnd.oasis.opendocument.spreadsheet-template</mime-type>
     </mime-mapping>
     <mime-mapping>
         <!-- OpenDocument Text Template -->
@@ -961,12 +961,12 @@
         <extension>shar</extension>
         <mime-type>application/x-shar</mime-type>
     </mime-mapping>
-<!--
-    <mime-mapping>
-        <extension>shtml</extension>
-        <mime-type>text/x-server-parsed-html</mime-type>
-    </mime-mapping>
--->
+    <!--
+        <mime-mapping>
+            <extension>shtml</extension>
+            <mime-type>text/x-server-parsed-html</mime-type>
+        </mime-mapping>
+    -->
     <mime-mapping>
         <extension>smf</extension>
         <mime-type>audio/x-midi</mime-type>
@@ -1184,46 +1184,46 @@
         <extension>zip</extension>
         <mime-type>application/zip</mime-type>
     </mime-mapping>
-
+    
     <welcome-file-list>
         <welcome-file>welcome</welcome-file>
     </welcome-file-list>
-
+    
     <error-page>
         <error-code>400</error-code>
         <location>/error</location>
     </error-page>
-
+    
     <error-page>
         <error-code>401</error-code>
         <location>/error</location>
     </error-page>
-
+    
     <error-page>
         <error-code>403</error-code>
         <location>/error</location>
     </error-page>
-
+    
     <error-page>
         <error-code>404</error-code>
         <location>/error</location>
     </error-page>
-
+    
     <error-page>
         <error-code>500</error-code>
         <location>/error</location>
     </error-page>
-
+    
     <error-page>
         <error-code>503</error-code>
         <location>/error</location>
     </error-page>
-
+    
     <error-page>
         <exception-type>java.lang.Exception</exception-type>
         <location>/error</location>
     </error-page>
-
+    
     <!-- JNDI Db resource -->
     <resource-ref id="ResourceRef_JahiaNormalDBConnection">
         <description>DB Connection</description>

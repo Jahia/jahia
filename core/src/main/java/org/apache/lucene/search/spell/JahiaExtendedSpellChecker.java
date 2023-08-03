@@ -643,7 +643,7 @@ public class JahiaExtendedSpellChecker implements java.io.Closeable {
        */
       // for testing purposes
       IndexSearcher createSearcher(final Directory dir) throws IOException{
-        return new IndexSearcher(IndexReader.open(dir));
+          return new IndexSearcher(dir, true);
       }
 
       /**

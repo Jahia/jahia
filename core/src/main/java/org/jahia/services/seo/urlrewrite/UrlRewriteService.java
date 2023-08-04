@@ -139,15 +139,11 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         // do first call to load the configuration and initialize the engine
         getEngine();
 
-        logger.info("URL rewriting service started in {} ms using configurations [{}]. Configuration check interval set to {} seconds.",
-                new Object[]{System.currentTimeMillis() - timer, getMergedConfigurationResources(), confReloadCheckIntervalSeconds});
+        logger.info("URL rewriting service started in {} ms using configurations [{}]. Configuration check interval set to {} seconds.", System.currentTimeMillis() - timer, getMergedConfigurationResources(), confReloadCheckIntervalSeconds);
     }
 
     private boolean hasConfigurationResources() {
-        return (configurationResources != null && !configurationResources.isEmpty())
-                || (seoConfigurationResources != null && !seoConfigurationResources.isEmpty())
-                || (lastConfigurationResources != null && !lastConfigurationResources.isEmpty());
-
+        return (configurationResources != null && !configurationResources.isEmpty()) || (seoConfigurationResources != null && !seoConfigurationResources.isEmpty()) || (lastConfigurationResources != null && !lastConfigurationResources.isEmpty());
     }
 
     private List<Resource> getMergedConfigurationResources() {
@@ -210,8 +206,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
             ApplicationContext ctx = (ApplicationContext) servletContext.getAttribute("org.springframework.web.servlet.FrameworkServlet.CONTEXT.RendererDispatcherServlet");
             if (ctx != null) {
                 mapping.addAll(ctx.getBeansOfType(HandlerMapping.class).values());
-                mapping.addAll(ctx.getParent().getBeansOfType(HandlerMapping.class)
-                        .values());
+                mapping.addAll(ctx.getParent().getBeansOfType(HandlerMapping.class).values());
                 renderMapping = mapping;
             }
         }
@@ -240,28 +235,28 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
             boolean doReload = false;
             List<Resource> result = null;
-            if (modified
-                    || confReloadCheckIntervalSeconds == 0
-                    || lastChecked == 0
-                    || lastChecked + confReloadCheckIntervalSeconds * 1000L < System.currentTimeMillis()) {
+            if (modified || confReloadCheckIntervalSeconds == 0 || lastChecked == 0 || lastChecked + confReloadCheckIntervalSeconds * 1000L < System.currentTimeMillis()) {
                 logger.debug("Checking for modifications in URL rewriter configuration resources.");
                 List<Resource> mergedConfigurationResources = getMergedConfigurationResources();
+                if (modified) {
+                    result = mergedConfigurationResources;
+                } else {
+                    // look at last modified time for resources
+                    for (Resource resource : mergedConfigurationResources) {
+                        long resourceLastModified = FileUtils.getLastModified(resource);
+                        int hash = resource.hashCode();
+                        Long previous = lastModified.get(hash);
 
-                // look at last modified time for resources
-                for (Resource resource : mergedConfigurationResources) {
-                    long resourceLastModified = FileUtils.getLastModified(resource);
-                    int hash = resource.hashCode();
-                    Long previous = lastModified.get(hash);
-
-                    // if we detected that a resource was modified since last time we checked, we don't need to look further
-                    doReload = previous == null || resourceLastModified > previous;
-                    if (doReload) {
-                        lastModified.put(hash, resourceLastModified);
-                        result = mergedConfigurationResources;
-                        break;
+                        // if we detected that a resource was modified since last time we checked, we don't need to look further
+                        doReload = previous == null || resourceLastModified > previous;
+                        if (doReload) {
+                            lastModified.put(hash, resourceLastModified);
+                            result = mergedConfigurationResources;
+                            break;
+                        }
                     }
+                    logger.debug(doReload ? "Changes detected" : "No changes detected");
                 }
-                logger.debug(doReload ? "Changes detected" : "No changes detected");
             }
 
             lastChecked = System.currentTimeMillis();
@@ -379,14 +374,11 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_PATH);
     }
 
-    public RewrittenUrl rewriteInbound(HttpServletRequest request, HttpServletResponse response)
-            throws IOException, ServletException, InvocationTargetException {
+    public RewrittenUrl rewriteInbound(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, InvocationTargetException {
         return getEngine().processRequest(request, response);
     }
 
-    public String rewriteOutbound(String url, HttpServletRequest request,
-                                  HttpServletResponse response) throws IOException, ServletException,
-            InvocationTargetException {
+    public String rewriteOutbound(String url, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, InvocationTargetException {
         return getEngine().rewriteOutbound(url, request, response);
     }
 
@@ -437,7 +429,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     public void setReservedUrlPrefixes(String reservedUrlPrefixes) {
         Set<String> prefixes = new HashSet<String>();
         if (StringUtils.isBlank(reservedUrlPrefixes)) {
-            prefixes =  Collections.emptySet();
+            prefixes = Collections.emptySet();
         } else {
             for (String prefix : StringUtils.split(reservedUrlPrefixes, ",")) {
                 if (StringUtils.isNotBlank(prefix)) {

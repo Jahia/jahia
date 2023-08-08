@@ -44,7 +44,7 @@
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    
+
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jahia-parent</artifactId>
     <name>Jahia Common Project Parent</name>
@@ -63,7 +63,7 @@
         <!-- general encoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        
+
         <pluto.version>2.0.2</pluto.version>
         <spring.version>3.2.18.RELEASE_OSGI</spring.version>
         <spring-beans.version>3.2.18.jahia1_OSGI</spring-beans.version>
@@ -111,20 +111,20 @@
         <log4j.version>2.17.2</log4j.version>
         <jahia.tomcat.version>9.0.75</jahia.tomcat.version>
         <protobuf.java.version>3.21.12</protobuf.java.version>
-        
+
         <driver.derby.version>10.14.2.0</driver.derby.version>
         <driver.mssql.version>9.4.1.jre8</driver.mssql.version>
         <driver.mysql.version>8.0.33</driver.mysql.version>
         <driver.oracle.version>21.9.0.0</driver.oracle.version>
         <driver.postgresql.version>42.6.0</driver.postgresql.version>
         <driver.mariadb.version>3.0.9</driver.mariadb.version>
-        
+
         <hibernateDialect.derby>org.hibernate.dialect.DerbyTenSevenDialect</hibernateDialect.derby>
         <hibernateDialect.mssql>org.hibernate.dialect.SQLServer2008Dialect</hibernateDialect.mssql>
         <hibernateDialect.mysql>org.hibernate.dialect.MySQL5InnoDBDialect</hibernateDialect.mysql>
         <hibernateDialect.oracle>org.hibernate.dialect.Oracle10gDialect</hibernateDialect.oracle>
         <hibernateDialect.postgresql>org.hibernate.dialect.PostgreSQL82Dialect</hibernateDialect.postgresql>
-        
+
         <!-- Meta information -->
         <jahia.manifest.vendor.name>Jahia Solutions Group SA</jahia.manifest.vendor.name>
         <jahia.manifest.vendor.id>org.jahia</jahia.manifest.vendor.id>
@@ -135,7 +135,7 @@
         <jahia.license.style>style.xml</jahia.license.style>
         <jahia.sign.storepass>password</jahia.sign.storepass>
         <jahia.sign.keystore>${user.home}/.codesign/jahia-code-signing-certificate.p12</jahia.sign.keystore>
-        
+
         <!-- plugin versions -->
         <javadoc.plugin.version>2.10.4</javadoc.plugin.version>
         <assembly.plugin.version>2.5.2</assembly.plugin.version>
@@ -180,24 +180,24 @@
         <jersey.version>2.18</jersey.version>
         <hk2.version>2.4.0-b25</hk2.version>
         <!-- End of OSGi versions -->
-        
+
         <jahia.commons.version>1.0.8</jahia.commons.version>
-        <jahia.plugin.version>6.7</jahia.plugin.version>
+        <jahia.plugin.version>6.8-SNAPSHOT</jahia.plugin.version>
         <jahia.archivers.version>${jahia.plugin.version}</jahia.archivers.version>
         <jahia.configurators.version>${jahia.plugin.version}</jahia.configurators.version>
         <jahia.deployers.version>${jahia.plugin.version}</jahia.deployers.version>
         <jahia.installers.version>${jahia.plugin.version}</jahia.installers.version>
-        
+
         <!-- Releases properties -->
         <jahia.nexus.staging.repository.id>64277f72646358</jahia.nexus.staging.repository.id>
-        
+
         <jahia.modules.importPackage>
             org.apache.naming.java,
             org.jahia.defaults.config.spring,
             org.jahia.exceptions,
             org.jahia.services
         </jahia.modules.importPackage>
-        
+
         <jahia.modules.bundle.removeheaders>
             Include-Resource,
             Private-Package,
@@ -206,12 +206,12 @@
             Jahia-Depends-Skip-Require-Capability
         </jahia.modules.bundle.removeheaders>
         <custom.modules.bundle.removeheaders>${jahia.modules.bundle.removeheaders}</custom.modules.bundle.removeheaders>
-        
+
         <graphql-java.version>13.0</graphql-java.version>
         <graphql-java-annotations.version>7.2.1</graphql-java-annotations.version>
         <graphql-java-servlet.version>9.1.0</graphql-java-servlet.version>
     </properties>
-    
+
     <developers>
         <developer>
             <name>Alexander Karmanov</name>
@@ -403,12 +403,12 @@
             <name>Xavier Lawrence</name>
         </contributor>
     </contributors>
-    
+
     <issueManagement>
         <system>Jira</system>
         <url>https://jira.jahia.org/</url>
     </issueManagement>
-    
+
     <repositories>
         <repository>
             <id>jahia-public</id>
@@ -423,7 +423,7 @@
             </snapshots>
         </repository>
     </repositories>
-    
+
     <pluginRepositories>
         <pluginRepository>
             <id>jahia-public</id>
@@ -439,7 +439,7 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
-    
+
     <profiles>
         <profile>
             <id>license</id>
@@ -723,9 +723,9 @@
                 </plugins>
             </build>
         </profile>
-    
+
     </profiles>
-    
+
     <distributionManagement>
         <repository>
             <id>jahia-releases</id>
@@ -740,7 +740,7 @@
             <url>file://${jahia.site.path}</url>
         </site>
     </distributionManagement>
-    
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -755,7 +755,7 @@
                 <version>2.1</version>
                 <scope>provided</scope>
             </dependency>
-            
+
             <!-- Apache Karaf -->
             <dependency>
                 <groupId>org.apache.karaf</groupId>
@@ -793,7 +793,7 @@
             <!-- End of Apache Karaf -->
         </dependencies>
     </dependencyManagement>
-    
+
     <build>
         <pluginManagement>
             <plugins>
@@ -903,15 +903,7 @@
                 <plugin>
                     <artifactId>maven-bundle-plugin</artifactId>
                     <groupId>org.apache.felix</groupId>
-                    <!-- QA-10988 We didn't manage to upgrade to 2.5.4 because of bugs https://issues.apache.org/jira/browse/FELIX-4556 and https://issues.apache.org/jira/browse/FELIX-4882 -->
-                    <version>5.1.2</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>biz.aQute.bnd</groupId>
-                            <artifactId>biz.aQute.bndlib</artifactId>
-                            <version>6.1.0</version>
-                        </dependency>
-                    </dependencies>
+                    <version>5.1.9</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

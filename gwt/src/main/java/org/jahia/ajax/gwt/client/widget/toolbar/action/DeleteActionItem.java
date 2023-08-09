@@ -45,6 +45,7 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTHooks;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -59,8 +60,7 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.AreaModule;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Action item responsible for deleting the content.
@@ -186,6 +186,15 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
                     final List<String> l = new ArrayList<String>();
                     for (GWTJahiaNode node : lh.getMultipleSelection()) {
                         l.add(node.getPath());
+                    }
+
+                    String hook = permanentlyDelete ? "permanentlyDelete" : "delete";
+                    if (JahiaGWTHooks.hasHook(hook)) {
+                        Map<String, Object> params = new HashMap<>();
+                        // Provide the path
+                        params.put("paths", l);
+                        JahiaGWTHooks.callHook(hook, params);
+                        return;
                     }
 
                     final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();

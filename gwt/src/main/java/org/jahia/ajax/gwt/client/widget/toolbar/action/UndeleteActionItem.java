@@ -49,6 +49,7 @@ import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTHooks;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -73,6 +74,19 @@ public class UndeleteActionItem extends NodeTypeAwareBaseActionItem {
     public void onComponentSelection() {
         final LinkerSelectionContext lh = linker.getSelectionContext();
         if (!lh.getMultipleSelection().isEmpty()) {
+            final List<String> l = new ArrayList<String>();
+            for (GWTJahiaNode node : lh.getMultipleSelection()) {
+                l.add(node.getPath());
+            }
+
+            if (JahiaGWTHooks.hasHook("undelete")) {
+                Map<String, Object> params = new HashMap<>();
+                // Provide the path
+                params.put("paths", l);
+                JahiaGWTHooks.callHook("undelete", params);
+                return;
+            }
+
             String message = null;
             if (lh.getMultipleSelection().size() > 1) {
                 message = Messages.getWithArgs(
@@ -91,10 +105,6 @@ public class UndeleteActionItem extends NodeTypeAwareBaseActionItem {
                                      new Listener<MessageBoxEvent>() {
                                          public void handleEvent(MessageBoxEvent be) {
                                              if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.YES)) {
-                                                 final List<String> l = new ArrayList<String>();
-                                                 for (GWTJahiaNode node : lh.getMultipleSelection()) {
-                                                     l.add(node.getPath());
-                                                 }
                                                  JahiaContentManagementService.App.getInstance().undeletePaths(l, new BaseAsyncCallback() {
                                                      @Override
                                                      public void onApplicationFailure(Throwable throwable) {

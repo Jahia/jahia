@@ -126,7 +126,7 @@ public class UnpublicationWorkflow extends PublicationWorkflow {
         p.add(layoutContainer, new BorderLayoutData(Style.LayoutRegion.NORTH, 25));
     }
 
-    protected void doPublish(List<GWTJahiaNodeProperty> nodeProperties, final WorkflowActionDialog dialog) {
+    protected void doPublish(List<GWTJahiaNodeProperty> nodeProperties, final WorkflowActionDialog dialog, String language) {
         final String status = Messages.get("label.publication.unpublished.task", "Unpublishing content");
         Info.display(status, status);
         WorkInProgressActionItem.setStatus(status);

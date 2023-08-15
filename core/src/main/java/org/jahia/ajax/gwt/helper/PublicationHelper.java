@@ -253,6 +253,10 @@ public class PublicationHelper {
      * @param comments
      */
     public void publish(List<String> uuids, JCRSessionWrapper session, JCRSiteNode site, List<GWTJahiaNodeProperty> properties, List<String> comments) throws GWTJahiaServiceException {
+            publish(uuids, session, site, properties, comments, null);
+    }
+
+    public void publish(List<String> uuids, JCRSessionWrapper session, JCRSiteNode site, List<GWTJahiaNodeProperty> properties, List<String> comments, String language) throws GWTJahiaServiceException {
         try {
             // todo : if workflow started on untranslated node, translation will be created and not added into the publish tree calculated here
 
@@ -275,6 +279,7 @@ public class PublicationHelper {
             jobDataMap.put(PublicationJob.SOURCE, workspaceName);
             jobDataMap.put(PublicationJob.DESTINATION, Constants.LIVE_WORKSPACE);
             jobDataMap.put(PublicationJob.CHECK_PERMISSIONS, true);
+            jobDataMap.put(PublicationJob.LANGUAGE, language);
 
             ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
         } catch (SchedulerException e) {

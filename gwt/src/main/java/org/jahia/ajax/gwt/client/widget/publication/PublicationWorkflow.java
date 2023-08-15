@@ -59,6 +59,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import org.jahia.ajax.gwt.client.EmptyLinker;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTHooks;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -230,6 +231,7 @@ public class PublicationWorkflow implements CustomWorkflow {
             button = new Button(Messages.get((cards.getComponents().size() == 1 ? "label.bypassUnpublishWorkflow" : "label.bypassUnpublishWorkflow.all"), (cards.getComponents().size() == 1 ? "Unpublish" : "Unpublish all")));
         } else {
             button = new Button(Messages.get((cards.getComponents().size() == 1 ? "label.bypassWorkflow" : "label.bypassWorkflow.all"), (cards.getComponents().size() == 1 ? "Publish" : "Publish all")));
+            button.setId("publishNowButton");
         }
 
         button.addStyleName("button-bypassworkflow");
@@ -289,7 +291,9 @@ public class PublicationWorkflow implements CustomWorkflow {
 
             @Override
             public void onSuccess(Object result) {
-                close(cards, nbWF, successMessage, statusMessage, linker, refreshData);
+                if (successMessage != null) {
+                    close(cards, nbWF, successMessage, statusMessage, linker, refreshData);
+                }
             }
         };
     }
@@ -443,7 +447,10 @@ public class PublicationWorkflow implements CustomWorkflow {
         if (!publicationInfos.isEmpty() && Boolean.TRUE.equals(publicationInfos.get(0).isAllowedToPublishWithoutWorkflow())) {
             final Button button = new Button(Messages.get(this instanceof UnpublicationWorkflow ? "label.bypassUnpublishWorkflow" : "label.bypassWorkflow", this instanceof UnpublicationWorkflow ? "Unpublish" : "Publish"));
             button.addStyleName("button-bypassworkflow");
-            button.addSelectionListener(new BypassWorkflowListener(dialog));
+            button.addSelectionListener(new BypassWorkflowListener(dialog, publicationInfos.get(0).getLanguage()));
+            if (!(this instanceof UnpublicationWorkflow)) {
+                button.setId("publishNowButton");
+            }
             return button;
         } else {
             return null;
@@ -451,23 +458,34 @@ public class PublicationWorkflow implements CustomWorkflow {
 
     }
 
-    protected void doPublish(List<GWTJahiaNodeProperty> nodeProperties, final WorkflowActionDialog dialog) {
-        final String status = Messages.get("label.publication.task", "Publishing content");
-        Info.display(status, status);
-        WorkInProgressActionItem.setStatus(status);
+    protected void doPublish(List<GWTJahiaNodeProperty> nodeProperties, final WorkflowActionDialog dialog, String language) {
+        String status = null;
+        if ("publishNowButton".equals(dialog.getButtonsBar().getItem(1).getId())) {
+            if (JahiaGWTHooks.hasHook("queuePublication")) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("message", Messages.get("label.queuePublication", "Publication is queued"));
+                JahiaGWTHooks.callHook("queuePublication", map);
+            }
+        } else {
+            status = Messages.get("label.publication.task", "Publishing content");
+            Info.display(status, status);
+            WorkInProgressActionItem.setStatus(status);
+        }
+
         final List<String> allUuids = getAllUuids();
-        JahiaContentManagementService.App.getInstance().publish(allUuids, nodeProperties, null, new BaseAsyncCallback<Object>() {
+        String finalStatus = status;
+        JahiaContentManagementService.App.getInstance().publish(allUuids, nodeProperties, null, language, new BaseAsyncCallback<Object>() {
 
             @Override
             public void onApplicationFailure(Throwable caught) {
-                WorkInProgressActionItem.removeStatus(status);
+                WorkInProgressActionItem.removeStatus(finalStatus);
                 Info.display("Cannot publish", "Cannot publish");
                 Window.alert("Cannot publish " + caught.getMessage());
             }
 
             @Override
             public void onSuccess(Object result) {
-                WorkInProgressActionItem.removeStatus(status);
+                WorkInProgressActionItem.removeStatus(finalStatus);
             }
         });
     }
@@ -511,9 +529,18 @@ public class PublicationWorkflow implements CustomWorkflow {
 
         @Override
         public void componentSelected(ButtonEvent ce) {
-            final String status = Messages.get("label.publication.task", "Publishing content");
-            Info.display(status, status);
-            WorkInProgressActionItem.setStatus(status);
+            String status = null;
+            if ("publishNowButton".equals(ce.getButton().getId())) {
+                if (JahiaGWTHooks.hasHook("queuePublication")) {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("message", Messages.get("label.queuePublication", "Publication is queued"));
+                    JahiaGWTHooks.callHook("queuePublication", map);
+                }
+            } else {
+                status = Messages.get("label.publication.task", "Publishing content");
+                Info.display(status, status);
+                WorkInProgressActionItem.setStatus(status);
+            }
 
             final List<Component> components = new ArrayList<>(cards.getComponents());
             final int[] nbWF = {components.size()};
@@ -537,7 +564,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                                         Messages.get("message.content.unpublished.error", "Cannot unpublish"), status, linker, null));
                     } else {
                         JahiaContentManagementService.App.getInstance().publish(dialog.getUuids(), null, null,
-                                getCallback(cards, nbWF, Messages.get("message.content.published", "Content published"),
+                                getCallback(cards, nbWF, null,
                                         Messages.get("message.content.published.error", "Cannot publish"), status, linker, null));
                     }
                 } else {
@@ -554,8 +581,8 @@ public class PublicationWorkflow implements CustomWorkflow {
                             getCallback(cards, nbWF, Messages.get("message.content.unpublished", "Content unpublished"),
                                     Messages.get("message.content.unpublished.error", "Cannot unpublish"), status, linker, null));
                 } else {
-                    JahiaContentManagementService.App.getInstance().publish(getAllUuids(thisWFInfo), nodeProperties, null,
-                            getCallback(cards, nbWF, Messages.get("message.content.published", "Content published"),
+                    JahiaContentManagementService.App.getInstance().publish(getAllUuids(thisWFInfo), nodeProperties, null, thisWFInfo.get(0).getLanguage(),
+                            getCallback(cards, nbWF, null,
                                     Messages.get("message.content.published.error", "Cannot publish"), status, linker, null));
                 }
             } else {
@@ -798,8 +825,11 @@ public class PublicationWorkflow implements CustomWorkflow {
 
         private final WorkflowActionDialog dialog;
 
-        public BypassWorkflowListener(WorkflowActionDialog dialog) {
+        private String language;
+
+        public BypassWorkflowListener(WorkflowActionDialog dialog, String language) {
             this.dialog = dialog;
+            this.language = language;
         }
 
         @Override
@@ -810,7 +840,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                 nodeProperties = dialog.getPropertiesEditor().getProperties();
             }
             closeDialog(dialog);
-            doPublish(nodeProperties, dialog);
+            doPublish(nodeProperties, dialog, language);
         }
     }
 }

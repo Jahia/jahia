@@ -111,6 +111,7 @@ public class PublicationStatusWindow extends LayoutContainer {
                 noWorkflow = new Button(Messages.get("label.bypassUnpublishWorkflow", "Unpublish"));
             } else {
                 noWorkflow = new Button(Messages.get("label.bypassWorkflow", "Publish"));
+                noWorkflow.setId("publishNowButton");
             }
 
             noWorkflow.addStyleName("button-noworkflow");

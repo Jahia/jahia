@@ -1531,6 +1531,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         publication.publish(uuids, retrieveCurrentSession(), getSite(), properties, comments);
     }
 
+    @Override
+    public void publish(List<String> uuids,
+                        List<GWTJahiaNodeProperty> properties, List<String> comments, String language) throws GWTJahiaServiceException {
+        publication.publish(uuids, retrieveCurrentSession(), getSite(), properties, comments, language);
+    }
+
     /**
      * Unpublish the specified path and its subnodes.
      *

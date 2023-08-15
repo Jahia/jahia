@@ -67,6 +67,7 @@ public class PublicationJob extends BackgroundJob {
     public static final String DESTINATION = "destination";
     public static final String LOCK = "lock";
     public static final String CHECK_PERMISSIONS = "checkPermissions";
+    public static final String LANGUAGE = "language";
 
     public void executeJahiaJob(JobExecutionContext jobExecutionContext) throws Exception {
         JobDetail jobDetail = jobExecutionContext.getJobDetail();

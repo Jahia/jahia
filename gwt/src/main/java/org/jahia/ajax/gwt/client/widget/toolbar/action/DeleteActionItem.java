@@ -60,11 +60,14 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.AreaModule;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Action item responsible for deleting the content.
- *
+ * <p>
  * User: toto
  * Date: Sep 25, 2009
  * Time: 6:59:06 PM
@@ -99,7 +102,7 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
                         break;
                     }
 
-                    if (selected.get("everPublished") != null && ((Boolean)selected.get("everPublished"))) {
+                    if (selected.get("everPublished") != null && ((Boolean) selected.get("everPublished"))) {
                         // the node is already published or it is locked (not for deletion)
                         enabled = false;
                         break;
@@ -112,7 +115,7 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
             enabled = !lh.isLocked();
             if (enabled) {
 
-            // if one of the selected nodes cannot be marked for deletion -> do not display the delete action
+                // if one of the selected nodes cannot be marked for deletion -> do not display the delete action
                 for (GWTJahiaNode selected : lh.getMultipleSelection()) {
                     if (!selected.canMarkForDeletion() || selected.isMarkedForDeletionRoot()) {
                         enabled = false;
@@ -188,7 +191,7 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
                         l.add(node.getPath());
                     }
 
-                    String hook = permanentlyDelete ? "permanentlyDelete" : "delete";
+                    String hook = permanentlyDelete ? "deletePermanently" : "delete";
                     if (JahiaGWTHooks.hasHook(hook)) {
                         Map<String, Object> params = new HashMap<>();
                         // Provide the path
@@ -199,18 +202,18 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
 
                     final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
 
-                        async.getUsages(l, new BaseAsyncCallback<List<GWTJahiaNodeUsage>>() {
+                    async.getUsages(l, new BaseAsyncCallback<List<GWTJahiaNodeUsage>>() {
 
-                            @Override
-                            public void onApplicationFailure(Throwable caught) {
-                                com.google.gwt.user.client.Window.alert("Cannot get status: " + caught.getMessage());
-                            }
+                        @Override
+                        public void onApplicationFailure(Throwable caught) {
+                            com.google.gwt.user.client.Window.alert("Cannot get status: " + caught.getMessage());
+                        }
 
-                            @Override
-                            public void onSuccess(List<GWTJahiaNodeUsage> result) {
-                                new DeleteItemWindow(linker, linker.getSelectionContext(), permanentlyDelete, false, JahiaGWTParameters.getBaseUrl()).show();
-                            }
-                        });
+                        @Override
+                        public void onSuccess(List<GWTJahiaNodeUsage> result) {
+                            new DeleteItemWindow(linker, linker.getSelectionContext(), permanentlyDelete, false, JahiaGWTParameters.getBaseUrl()).show();
+                        }
+                    });
                 }
             }
         });

@@ -48,7 +48,7 @@
     <parent>
         <groupId>org.jahia.test</groupId>
         <artifactId>jahia-test-parent</artifactId>
-        <version>8.1.6.0</version>
+        <version>8.1.6.1-SNAPSHOT</version>
     </parent>
     <artifactId>core-test-framework</artifactId>
     <name>Jahia Core Test Framework</name>

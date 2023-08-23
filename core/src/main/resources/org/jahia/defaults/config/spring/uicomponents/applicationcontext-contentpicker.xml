@@ -8,7 +8,7 @@
         <property name="suppressTreePublicationInfo" value="${jahia.ui.pickers.suppressPublicationInfo:false}"/>
         <property name="suppressTablePublicationInfo" value="${jahia.ui.pickers.suppressPublicationInfo:false}"/>
     </bean>
-    
+
     <!-- filepicker -->
     <bean id="filepicker" parent="abstractpicker">
         <property name="nodeTypes">
@@ -27,7 +27,6 @@
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.NewFolder"/>
-                        <ref bean="Toolbar.Item.Upload"/>
                         <ref bean="Toolbar.Item.Download"/>
                         <ref bean="Toolbar.Item.FilePreview"/>
                         <!--
@@ -60,7 +59,6 @@
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.NewFolder"/>
-                        <ref bean="Toolbar.Item.Upload"/>
                         <ref bean="Toolbar.Item.Download"/>
                         <ref bean="Toolbar.Item.FilePreview"/>
                         <ref bean="Toolbar.Item.Lock"/>
@@ -139,7 +137,6 @@
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.NewFolder"/>
-                        <ref bean="Toolbar.Item.Upload"/>
                         <ref bean="Toolbar.Item.Download"/>
                         <ref bean="Toolbar.Item.FilePreview"/>
                         <!--
@@ -172,7 +169,6 @@
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.NewFolder"/>
-                        <ref bean="Toolbar.Item.Upload"/>
                         <ref bean="Toolbar.Item.Download"/>
                         <ref bean="Toolbar.Item.FilePreview"/>
                         <ref bean="Toolbar.Item.Lock"/>

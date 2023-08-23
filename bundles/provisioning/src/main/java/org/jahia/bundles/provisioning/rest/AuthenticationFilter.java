@@ -42,8 +42,11 @@
  */
 package org.jahia.bundles.provisioning.rest;
 
+import org.jahia.osgi.BundleUtils;
+import org.jahia.params.valves.AuthValveContext;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.securityfilter.PermissionService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,9 +77,10 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
+        AuthValveContext ctx = (AuthValveContext) httpServletRequest.getAttribute(AuthValveContext.class.getName());
         try {
             JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession();
-            if (currentUserSession.getRootNode().hasPermission(REQUIRED_PERMISSION)) {
+            if (currentUserSession.getRootNode().hasPermission(REQUIRED_PERMISSION) && ctx != null && !ctx.isAuthRetrievedFromSession()) {
                 return;
             }
         } catch (RepositoryException e) {

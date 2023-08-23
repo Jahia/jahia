@@ -737,7 +737,6 @@
                                         <property name="icon" value="newNamespace"/>
                                     </bean>
                                     <ref bean="Toolbar.Item.NewFolder"/>
-                                    <ref bean="Toolbar.Item.Upload"/>
                                     <ref bean="Toolbar.Item.Download"/>
                                     <ref bean="Toolbar.Item.Rename"/>
                                     <ref bean="Toolbar.Item.EditContentRootNodeEditable"/>
@@ -1068,7 +1067,6 @@
                                     <ref bean="Toolbar.Item.NewMenuAvailable"/>
                                     <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.NewFolder"/>
-                                    <ref bean="Toolbar.Item.Upload"/>
                                     <ref bean="Toolbar.Item.Download"/>
                                     <ref bean="Toolbar.Item.DeletePermanentlyNoMarkForDeletion"/>
                                     <ref bean="Toolbar.Item.Copy"/>
@@ -1091,7 +1089,6 @@
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.NewFolder"/>
-                                    <ref bean="Toolbar.Item.Upload"/>
                                     <ref bean="Toolbar.Item.Download"/>
                                     <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.DeletePermanentlyNoMarkForDeletion"/>

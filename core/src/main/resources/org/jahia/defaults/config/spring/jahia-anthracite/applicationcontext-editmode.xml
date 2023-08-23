@@ -300,7 +300,6 @@
         <property name="items">
             <list>
                 <ref bean="Toolbar.Item.NewFolder"/>
-                <ref bean="Toolbar.Item.Upload"/>
                 <ref bean="Toolbar.Item.EditContent"/>
                 <ref bean="Toolbar.Item.Publish.ContentAndFiles"/>
                 <ref bean="Toolbar.Item.Delete"/>

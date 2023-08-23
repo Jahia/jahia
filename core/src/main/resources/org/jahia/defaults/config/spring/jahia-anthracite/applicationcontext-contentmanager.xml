@@ -342,7 +342,6 @@
                         <ref bean="Toolbar.Item.NewContent"/>
                         <ref bean="Toolbar.Item.NewPage"/>
                         <ref bean="Toolbar.Item.NewPortlet"/>
-                        <ref bean="Toolbar.Item.Upload"/>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="RepositoryExplorer.Menu.View">
                             <property name="titleKey"
                                       value="viewMenu.label"/>
@@ -381,7 +380,6 @@
                         <ref bean="Toolbar.Item.NewContent"/>
                         <ref bean="Toolbar.Item.NewPage"/>
                         <ref bean="Toolbar.Item.NewPortlet"/>
-                        <ref bean="Toolbar.Item.Upload"/>
                         <ref bean="Toolbar.Item.Download"/>
                         <ref bean="Toolbar.Item.Lock"/>
                         <ref bean="Toolbar.Item.Unlock"/>

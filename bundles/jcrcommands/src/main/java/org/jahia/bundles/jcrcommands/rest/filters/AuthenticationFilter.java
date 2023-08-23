@@ -44,6 +44,7 @@ package org.jahia.bundles.jcrcommands.rest.filters;
 
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.subject.Subject;
+import org.jahia.params.valves.AuthValveContext;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.usermanager.JahiaUser;
@@ -91,6 +92,8 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
+        AuthValveContext ctx = (AuthValveContext) httpServletRequest.getAttribute(AuthValveContext.class.getName());
+
         String username = JahiaUserManagerService.GUEST_USERNAME;
         if (JahiaUserManagerService.isGuest(user)) {
             Subject subject = getAuthenticatedSubject();
@@ -103,7 +106,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
                 JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession();
                 final JahiaUser jahiaUser = currentUserSession.getUser();
                 username = jahiaUser.getUserKey();
-                if (currentUserSession.getRootNode().hasPermission(REQUIRED_PERMISSION)) {
+                if (currentUserSession.getRootNode().hasPermission(REQUIRED_PERMISSION) && ctx != null && !ctx.isAuthRetrievedFromSession()) {
                     requestContext.setSecurityContext(new SecurityContext() {
 
                         @Override

@@ -125,9 +125,6 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
         final long fileSizeLimit = settingsBean.getJahiaFileUploadMaxSize();
         upload.setHeaderEncoding("UTF-8");
         Map<String, FileItem> uploads = new HashMap<String, FileItem>();
-        String location = null;
-        String type = null;
-        boolean unzip = false;
         LinkedHashSet<FileItem> fileItems = new LinkedHashSet<>();
         try {
             try {
@@ -176,22 +173,11 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
                         IOUtils.closeQuietly(limitedInputStream);
                     }
 
-                    if ("unzip".equals(fileItem.getFieldName())) {
-                        unzip = true;
-                    } else if ("uploadLocation".equals(fileItem.getFieldName())) {
-                        location = fileItem.getString("UTF-8");
-                    } else if ("asyncupload".equals(fileItem.getFieldName())) {
+                    if ("asyncupload".equals(fileItem.getFieldName())) {
                         String name = fileItem.getName();
                         if (name.trim().length() > 0) {
                             uploads.put(extractFileName(name, uploads), fileItem);
                         }
-                        type = "async";
-                    } else if (!fileItem.isFormField() && fileItem.getFieldName().startsWith("uploadedFile")) {
-                        String name = fileItem.getName();
-                        if (name.trim().length() > 0) {
-                            uploads.put(extractFileName(name, uploads), fileItem);
-                        }
-                        type = "sync";
                     }
                 }
                 if (sizeLimitExceededException != null) {
@@ -214,59 +200,13 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
                 return;
             }
 
-            if (type == null || type.equals("sync")) {
-                response.setContentType("text/plain");
-
-                final List<String> pathsToUnzip = new ArrayList<String>();
-                for (String fileName : uploads.keySet()) {
-                    final FileItem fileItem = uploads.get(fileName);
-                    try {
-                        StringBuilder name = new StringBuilder(fileName);
-                        final int saveResult = saveToJcr(user, fileItem, location, name);
-                        switch (saveResult) {
-                            case OK:
-                                if (unzip && fileName.toLowerCase().endsWith(".zip")) {
-                                    pathsToUnzip.add(new StringBuilder(location).append("/").append(name.toString()).toString());
-                                }
-                                printWriter.write("OK: " + UriUtils.encode(name.toString()) + "\n");
-                                break;
-                            case EXISTS:
-                                storeUploadedFile(request.getSession().getId(), fileItem);
-                                printWriter.write("EXISTS: " + UriUtils.encode(fileItem.getFieldName()) + " " + UriUtils.encode(fileItem.getName()) + " " + UriUtils.encode(fileName) + "\n");
-                                break;
-                            case READONLY:
-                                printWriter.write("READONLY: " + UriUtils.encode(fileItem.getFieldName()) + "\n");
-                                break;
-                            default:
-                                printWriter.write("UPLOAD-FAILED: " + UriUtils.encode(fileItem.getFieldName()) + "\n");
-                                break;
-                        }
-                    } catch (IOException e) {
-                        logger.error("Upload failed for file", e);
-                    }
-                }
-
-                // direct blocking unzip
-                if (unzip && pathsToUnzip.size() > 0) {
-                    try {
-                        ZipHelper zip = ZipHelper.getInstance();
-                        //todo : in which workspace do we upload ?
-                        zip.unzip(pathsToUnzip, true, JCRSessionFactory.getInstance().getCurrentUserSession(), (Locale) request.getSession().getAttribute(Constants.SESSION_UI_LOCALE));
-                    } catch (RepositoryException e) {
-                        logger.error("Auto-unzipping failed", e);
-                    } catch (GWTJahiaServiceException e) {
-                        logger.error("Auto-unzipping failed", e);
-                    }
-                }
-            } else {
-                response.setContentType("text/html");
-                for (FileItem fileItem : uploads.values()) {
-                    storeUploadedFile(request.getSession().getId(), fileItem);
-                    printWriter.write("<html><body>");
-                    String itemName = Encode.forHtmlAttribute(fileItem.getName());
-                    printWriter.write("<div id=\"uploaded\" key=\"" + itemName + "\" name=\"" + itemName + "\"></div>\n");
-                    printWriter.write("</body></html>");
-                }
+            response.setContentType("text/html");
+            for (FileItem fileItem : uploads.values()) {
+                storeUploadedFile(request.getSession().getId(), fileItem);
+                printWriter.write("<html><body>");
+                String itemName = Encode.forHtmlAttribute(fileItem.getName());
+                printWriter.write("<div id=\"uploaded\" key=\"" + itemName + "\" name=\"" + itemName + "\"></div>\n");
+                printWriter.write("</body></html>");
             }
         } finally {
             for (FileItem fileItem : fileItems) {
@@ -349,68 +289,6 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
         } while (true);
 
         return name;
-    }
-
-    private int saveToJcr(JahiaUser user, FileItem item, String location, StringBuilder name) throws IOException {
-
-        String filename = name.toString();
-        if (logger.isDebugEnabled()) {
-            logger.debug("item : {}", item);
-            logger.debug("destination : {}", location);
-            logger.debug("filename : {}", filename);
-            logger.debug("size : {}", item.getSize());
-        }
-        if (item == null || location == null || filename == null) {
-            return UNKNOWN_ERROR;
-        }
-
-
-        JCRNodeWrapper locationFolder;
-        try {
-            locationFolder = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(location);
-        } catch (RepositoryException e) {
-            logger.error(e.toString(), e);
-            return BAD_LOCATION;
-        }
-
-        if (!locationFolder.hasPermission("jcr:addChildNodes") || locationFolder.isLocked()) {
-            logger.debug("destination is not writable for user {}", (user == null ? null : user.getName()));
-            return READONLY;
-        }
-        try {
-            if (locationFolder.hasNode(JCRContentUtils.escapeLocalNodeName(filename))) {
-                return EXISTS;
-            }
-            InputStream is = item.getInputStream();
-            try {
-                boolean versioningAvailable = false;
-                if (locationFolder.getProvider().isVersioningAvailable()) {
-                    versioningAvailable = true;
-                }
-                if (versioningAvailable) {
-                    locationFolder.getSession().checkout(locationFolder);
-                }
-                JCRNodeWrapper node = locationFolder.uploadFile(filename, is, JCRContentUtils.getMimeType(filename, item.getContentType()));
-                node.getSession().save();
-                if (!node.getName().equals(filename)) {
-                    name.delete(0, name.length());
-                    name.append(node.getName());
-                }
-                // Handle potential move of the node after save
-                node = node.getSession().getNodeByIdentifier(node.getIdentifier());
-                if (node.getProvider().isVersioningAvailable()) {
-                    node.checkpoint();
-                    JCRVersionService.getInstance().addVersionLabel(node, VersioningHelper.getVersionLabel(node.getProperty("jcr:created").getDate().getTime().getTime()));
-                }
-            } finally {
-                IOUtils.closeQuietly(is);
-            }
-            locationFolder.saveSession();
-        } catch (RepositoryException e) {
-            logger.error("exception ", e);
-            return UNKNOWN_ERROR;
-        }
-        return OK;
     }
 
     @SuppressWarnings("unchecked")

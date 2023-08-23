@@ -101,6 +101,7 @@ public class JcrSessionFilter implements Filter {
                     sessionFactory.setCurrentUser(null);
                     authValveContext = new AuthValveContext((HttpServletRequest) servletRequest,
                                                 (HttpServletResponse) servletResponse, sessionFactory);
+                    servletRequest.setAttribute(AuthValveContext.class.getName(), authValveContext);
                     authPipeline.invoke(authValveContext);
                 } catch (PipelineException pe) {
                     logger.error("Error while authorizing user", pe);

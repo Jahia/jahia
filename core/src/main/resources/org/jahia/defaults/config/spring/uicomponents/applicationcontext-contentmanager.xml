@@ -453,7 +453,6 @@
                                     <ref bean="Toolbar.Item.NewContent"/>
                                     <ref bean="Toolbar.Item.NewPage"/>
                                     <ref bean="Toolbar.Item.NewPortlet"/>
-                                    <ref bean="Toolbar.Item.Upload"/>
                                     <ref bean="Toolbar.Item.Download"/>
                                     <!--
                                     <ref bean="Toolbar.Item.Webfolder"/>
@@ -531,7 +530,6 @@
                         <ref bean="Toolbar.Item.NewContent"/>
                         <ref bean="Toolbar.Item.NewPage"/>
                         <ref bean="Toolbar.Item.NewPortlet"/>
-                        <ref bean="Toolbar.Item.Upload"/>
                         <ref bean="Toolbar.Item.Download"/>
                         <ref bean="Toolbar.Item.Lock"/>
                         <ref bean="Toolbar.Item.Unlock"/>

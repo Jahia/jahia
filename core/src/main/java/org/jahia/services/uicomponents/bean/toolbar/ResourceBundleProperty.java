@@ -53,6 +53,7 @@ import javax.servlet.http.HttpServletRequest;
  * User: jahia
  * Date: 11 juil. 2008
  * Time: 10:04:15
+ * @deprecated
  */
 public class ResourceBundleProperty extends Property {
 

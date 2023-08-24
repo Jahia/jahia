@@ -55,6 +55,7 @@ import org.jahia.services.usermanager.JahiaUser;
  * Checks for the availability of the specified module (using bundle symbolic name).
  *
  * @author Sergiy Shyrkov
+ * @deprecated
  */
 public class ModuleAvailableVisibility extends Visibility {
 

@@ -50,6 +50,7 @@ import java.beans.PropertyEditorSupport;
  * Date: May 10, 2010
  * Time: 3:39:34 PM
  *
+ * @deprecated
  */
 public class RepositoryPropertyEditor extends PropertyEditorSupport {
 

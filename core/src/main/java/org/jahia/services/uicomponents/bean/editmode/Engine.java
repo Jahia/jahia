@@ -54,6 +54,7 @@ import java.util.List;
  * Date: Apr 14, 2010
  * Time: 12:34:25 PM
  *
+ * @deprecated
  */
 public class Engine implements Serializable, BeanNameAware {
     private static final long serialVersionUID = -9149012851638443411L;

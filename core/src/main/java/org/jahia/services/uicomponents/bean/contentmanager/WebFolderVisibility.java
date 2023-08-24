@@ -55,6 +55,7 @@ import org.jahia.settings.SettingsBean;
  *
  * @author Sergiy Shyrkov
  *
+ * @deprecated
  */
 public class WebFolderVisibility extends ModuleAvailableVisibility {
 

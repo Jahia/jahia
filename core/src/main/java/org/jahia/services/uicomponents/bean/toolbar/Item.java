@@ -65,6 +65,7 @@ import java.util.*;
  * User: jahia
  * Date: 7 avr. 2008
  * Time: 09:05:20
+ * @deprecated
  */
 public class Item implements Serializable, BeanNameAware, InitializingBean, DisposableBean, ApplicationContextAware {
 

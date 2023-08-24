@@ -54,6 +54,7 @@ import java.util.List;
  * User: jahia
  * Date: 7 avr. 2008
  * Time: 09:04:48
+ * @deprecated
  */
 public class Toolbar implements Serializable, BeanNameAware {
 

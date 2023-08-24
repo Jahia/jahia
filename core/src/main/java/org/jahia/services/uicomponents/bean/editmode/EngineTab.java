@@ -60,6 +60,7 @@ import java.util.*;
  * User: ktlili
  * Date: Apr 14, 2010
  * Time: 12:37:29 PM
+ * @deprecated
  */
 public class EngineTab implements Serializable, Comparable<EngineTab>, InitializingBean, DisposableBean, ApplicationContextAware {
 

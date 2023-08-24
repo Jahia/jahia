@@ -52,6 +52,7 @@ import org.jahia.services.usermanager.JahiaUser;
 
 /**
  * @author Christophe Laprun
+ * @deprecated
  */
 public class LogoutProperty extends Property {
     private LogoutConfig config;

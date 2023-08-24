@@ -48,6 +48,7 @@ import java.beans.PropertyEditorSupport;
  * Custom property editor for the {@link Visibility} value.
  *
  * @author Sergiy Shyrkov
+ * @deprecated
  */
 public class VisibilityPropertyEditor extends PropertyEditorSupport {
     public void setAsText(String text) throws IllegalArgumentException {

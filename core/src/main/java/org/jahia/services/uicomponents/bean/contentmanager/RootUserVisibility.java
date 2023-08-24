@@ -54,6 +54,7 @@ import org.jahia.services.usermanager.JahiaUser;
  * Evaluates the current user that need to be a system administrator (root).
  *
  * @author Sergiy Shyrkov
+ * @deprecated
  */
 public class RootUserVisibility extends Visibility {
 

@@ -54,6 +54,7 @@ import org.jahia.services.usermanager.JahiaUser;
  * evaluated visibility.
  *
  * @author Sergiy Shyrkov
+ * @deprecated
  */
 public class InvertedVisibility extends Visibility {
 

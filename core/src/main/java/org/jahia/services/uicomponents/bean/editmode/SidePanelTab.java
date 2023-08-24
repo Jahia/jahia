@@ -62,6 +62,7 @@ import java.util.*;
  * User: ktlili
  * Date: Apr 14, 2010
  * Time: 12:30:01 PM
+ * @deprecated
  */
 public class SidePanelTab implements Serializable, BeanNameAware, InitializingBean, DisposableBean, ApplicationContextAware {
 

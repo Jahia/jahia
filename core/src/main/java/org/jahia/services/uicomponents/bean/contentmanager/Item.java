@@ -53,6 +53,7 @@ import java.io.Serializable;
  * Date: Apr 12, 2010
  * Time: 3:03:45 PM
  *
+ * @deprecated
  */
 public class Item  implements Serializable, BeanNameAware {
     private static final long serialVersionUID = -2253720737015329049L;

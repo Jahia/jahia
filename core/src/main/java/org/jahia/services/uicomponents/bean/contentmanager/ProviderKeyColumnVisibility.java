@@ -58,6 +58,7 @@ import org.jahia.services.usermanager.JahiaUser;
  * depending on the presence of the mount points
  *
  * @author Sergiy Shyrkov
+ * @deprecated
  */
 public class ProviderKeyColumnVisibility extends Visibility {
 

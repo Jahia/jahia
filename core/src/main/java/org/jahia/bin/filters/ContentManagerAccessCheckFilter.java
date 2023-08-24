@@ -83,6 +83,7 @@ import org.springframework.context.ApplicationListener;
  * Protects access to the content manager and content picker by enforcing permission checks and validating parameters.
  *
  * @author Sergiy Shyrkov
+ * @deprecated
  */
 public class ContentManagerAccessCheckFilter implements Filter,
         ApplicationListener<TemplatePackageRedeployedEvent> {

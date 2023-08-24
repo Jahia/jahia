@@ -52,6 +52,7 @@ import org.jahia.utils.Patterns;
  * User: toto
  * Date: May 10, 2010
  * Time: 3:39:09 PM
+ * @deprecated
  */
 public class EngineTabPropertyEditor  extends PropertyEditorSupport {
 

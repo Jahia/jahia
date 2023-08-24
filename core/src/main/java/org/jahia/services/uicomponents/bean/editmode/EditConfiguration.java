@@ -58,6 +58,7 @@ import java.util.*;
  * @author ktlili
  * Date: Apr 14, 2010
  * Time: 12:26:47 PM
+ * @deprecated
  */
 public class EditConfiguration implements Serializable, BeanNameAware {
 

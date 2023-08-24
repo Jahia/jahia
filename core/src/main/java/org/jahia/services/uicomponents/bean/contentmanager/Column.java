@@ -52,6 +52,7 @@ import java.io.Serializable;
  * Date: Apr 12, 2010
  * Time: 3:03:45 PM
  *
+ * @deprecated
  */
 public class Column implements Serializable {
     private static final long serialVersionUID = 2923904943046448547L;

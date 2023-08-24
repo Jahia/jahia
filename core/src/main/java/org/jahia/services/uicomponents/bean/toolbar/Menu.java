@@ -53,6 +53,7 @@ import java.util.List;
  * User: jahia
  * Date: 7 avr. 2008
  * Time: 09:05:11
+ * @deprecated
  */
 public class Menu extends Item implements Serializable, BeanNameAware {
 

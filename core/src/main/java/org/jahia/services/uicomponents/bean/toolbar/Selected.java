@@ -54,6 +54,7 @@ import java.util.Locale;
  * User: jahia
  * Date: 8 avr. 2008
  * Time: 10:21:27
+ * @deprecated
  */
 public class Selected implements Serializable {
 

@@ -53,6 +53,7 @@ import java.util.List;
  * Date: Apr 12, 2010
  * Time: 3:03:45 PM
  *
+ * @deprecated
  */
 public class Repository implements Serializable {
     private static final long serialVersionUID = -3982496608918247314L;

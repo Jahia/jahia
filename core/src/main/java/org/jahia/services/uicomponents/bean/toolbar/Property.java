@@ -53,6 +53,7 @@ import org.jahia.services.usermanager.JahiaUser;
  * User: jahia
  * Date: 7 avr. 2008
  * Time: 09:30:53
+ * @deprecated
  */
 public class Property implements Serializable {
 

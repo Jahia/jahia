@@ -56,6 +56,7 @@ import java.util.*;
  * User: ktlili
  * Date: Apr 12, 2010
  * Time: 2:54:37 PM
+ * @deprecated
  */
 public class ManagerConfiguration implements Serializable, BeanNameAware {
 

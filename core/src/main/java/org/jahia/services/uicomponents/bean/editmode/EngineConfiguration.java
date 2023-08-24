@@ -61,6 +61,7 @@ import java.util.Map;
  * Core part of engine configuration
  * see GWTEngineConfiguration for gwt part
  * see {@link org.jahia.ajax.gwt.helper.UIConfigHelper} for link
+ * @deprecated
  */
 
 public class EngineConfiguration implements Serializable, InitializingBean, DisposableBean, ApplicationContextAware {

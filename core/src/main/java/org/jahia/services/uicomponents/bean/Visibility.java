@@ -61,6 +61,7 @@ import java.util.Locale;
  * User: jahia
  * Date: 7 avr. 2008
  * Time: 09:19:13
+ * @deprecated
  */
 public class Visibility {
     private static final Logger logger = LoggerFactory.getLogger(Visibility.class);

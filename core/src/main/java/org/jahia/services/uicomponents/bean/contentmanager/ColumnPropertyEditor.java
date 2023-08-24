@@ -54,6 +54,7 @@ import java.beans.PropertyEditorSupport;
  * Date: May 10, 2010
  * Time: 3:15:24 PM
  *
+ * @deprecated
  */
 public class ColumnPropertyEditor extends PropertyEditorSupport {
 

@@ -7,6 +7,6 @@ import org.jahia.services.modulemanager.persistence.jcr.BundleInfoJcrHelper;
 BundleInfoJcrHelper.storePersistentStates(
         BundleInfoJcrHelper.getPersistentStates()
                 .stream()
-                .filter { bpi -> !(bpi.getSymbolicName() in ["content-editor"]) }
+                .filter { bpi -> !(bpi.getSymbolicName() in ["content-editor", "jahia-category-manager"]) }
                 .collect(Collectors.toList())
 );

@@ -53,6 +53,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -127,7 +128,7 @@ public abstract class JCRProtectedNodeAbstractDecorator extends JCRNodeDecorator
      */
     protected abstract boolean canReadProperty(String propertyName) throws RepositoryException;
 
-    private boolean canGetProperty(String propertyName) throws RepositoryException {
+    public boolean canGetProperty(String propertyName) throws RepositoryException {
         return alwaysAllowSystem && getSession().isSystem() || canReadProperty(propertyName);
     }
 
@@ -184,4 +185,5 @@ public abstract class JCRProtectedNodeAbstractDecorator extends JCRNodeDecorator
     public boolean hasProperty(String s) throws RepositoryException {
         return super.hasProperty(s) && canGetProperty(s);
     }
+
 }

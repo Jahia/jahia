@@ -122,6 +122,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     private Map<String, ExtendedPropertyDefinition> applicablePropertyDefinition = new HashMap<String, ExtendedPropertyDefinition>();
     private Map<String, Boolean> hasPropertyCache = new HashMap<String, Boolean>();
     private ExtendedNodeType[] originalMixins = null;
+    public static final Set<String> forbiddenNodeTypesToCopy = new HashSet<>(Arrays.asList(JAHIAMIX_SYSTEMNODE, JAHIANT_USER, JAHIANT_GROUP));
 
     private static boolean doCopy(JCRNodeWrapper source, JCRNodeWrapper dest, String name,
                                   boolean allowsExternalSharedNodes, Map<String, List<String>> references, List<String> ignoreNodeTypes,
@@ -2338,6 +2339,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
         }
 
+        for (String nodeType : forbiddenNodeTypesToCopy) {
+            if (isNodeType(nodeType)) {
+                return false;
+            }
+        }
+
         batchCount.increment();
         if (maxBatch > 0 && batchCount.intValue() > maxBatch) {
             try {
@@ -2408,6 +2415,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return true;
     }
 
+    public boolean canGetPropertyFromDecoratedNode(String property) throws RepositoryException {
+        JCRNodeWrapper decorated =  this.getProvider().getService().decorate(this);
+        if (decorated instanceof JCRProtectedNodeAbstractDecorator) {
+            return ((JCRProtectedNodeAbstractDecorator)decorated).canGetProperty(property);
+        }
+
+        return true;
+    }
+
     @Override
     public void copyProperties(JCRNodeWrapper destinationNode, Map<String, List<String>> references) throws RepositoryException {
         PropertyIterator props = getProperties();
@@ -2416,7 +2432,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             Property property = props.nextProperty();
             boolean b = !property.getDefinition().getDeclaringNodeType().isMixin() || destinationNode.getProvider().isUpdateMixinAvailable();
             try {
-                if (!Constants.forbiddenPropertiesToCopy.contains(property.getName()) && b) {
+                if (canGetPropertyFromDecoratedNode(property.getName()) && !Constants.forbiddenPropertiesToCopy.contains(property.getName()) && b) {
                     if (property.getType() == PropertyType.REFERENCE || property.getType() == PropertyType.WEAKREFERENCE) {
                         if (property.getDefinition().isMultiple() && (property.isMultiple())) {
                             Value[] values = property.getValues();

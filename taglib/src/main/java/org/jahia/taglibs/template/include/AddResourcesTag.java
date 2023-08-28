@@ -71,7 +71,7 @@ import java.util.TreeSet;
  *
  * @author rincevent
  * @since JAHIA 6.5
- *        Created : 27 oct. 2009
+ * Created : 27 oct. 2009
  */
 public class AddResourcesTag extends AbstractJahiaTag {
     private static final long serialVersionUID = -552052631291168495L;
@@ -166,7 +166,16 @@ public class AddResourcesTag extends AbstractJahiaTag {
                     }
                 }
             }
-
+            // Add assets and its dependencies
+            aPackage = templateManagerService.getTemplatePackageById("assets");
+            if (aPackage != null && !packages.contains(aPackage)) {
+                packages.add(aPackage);
+                for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
+                    if (!packages.contains(depend)) {
+                        packages.add(depend);
+                    }
+                }
+            }
         }
 
         StringBuilder builder = new StringBuilder();
@@ -282,7 +291,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
         StringBuilder builder = new StringBuilder();
         builder.append("<jahia:resource type=\"");
         builder.append(type != null ? type : "").append("\"");
-        boolean isTypeInline = StringUtils.equals(type,"inline");
+        boolean isTypeInline = StringUtils.equals(type, "inline");
         if (!isTypeInline) {
             try {
                 builder.append(" path=\"").append(URLEncoder.encode(path != null ? path : "", "UTF-8")).append("\"");
@@ -315,7 +324,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
             builder.append(path);
             builder.append("</jahia:resource>\n");
         }
-            try {
+        try {
             pageContext.getOut().print(builder.toString());
         } catch (IOException e) {
             logger.error(e.getMessage(), e);

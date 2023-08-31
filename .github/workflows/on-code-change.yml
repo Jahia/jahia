@@ -54,7 +54,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Store project version
         shell: bash
-        run: mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec > jahia.version
+        run: mvn -T 1C -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec > jahia.version
       - name: Get branch name
         id: branch-name
         uses: tj-actions/branch-names@v6
@@ -80,11 +80,11 @@ jobs:
           echo "OUTPUT: image_tag = ${{steps.tags.outputs.image_tag}}"
           echo "OUTPUT: current_branch = ${{steps.tags.outputs.current_branch}}"
 
-      - name: Build package and load all dependencies into local Maven repository
+      - name: Build package and deploy all dependencies into remote Nexus Maven repository, push Docker images
         shell: bash
         if: ${{ github.event_name == 'push' }}
         run: |
-          mvn -U -ntp -s .github/maven.settings.xml -e \
+          mvn -T 1C -U -ntp -s .github/maven.settings.xml -e \
             -Dimage.tag=${{steps.tags.outputs.image_tag}} \
             clean deploy -Dmaven.resolver.transport=wagon de.qaware.maven:go-offline-maven-plugin:resolve-dependencies \
             -Pgwt-production,unit-tests,docker,docker-core-plugin \
@@ -94,7 +94,7 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         run: |
           cd gwt/
-          mvn -U -ntp -s ../.github/maven.settings.xml -e \
+          mvn -T 1C -U -ntp -s ../.github/maven.settings.xml -e \
             clean deploy \
             -Dmaven.resolver.transport=wagon \
             -Pgwt-development \
@@ -113,10 +113,10 @@ jobs:
         shell: bash
         if: ${{ github.event_name == 'pull_request' }}
         run: |
-          mvn -U -ntp -s .github/maven.settings.xml -e \
+          mvn -T 1C -U -ntp -s .github/maven.settings.xml -e \
             -Dimage.tag=${{steps.tags.outputs.image_tag}} \
             clean install de.qaware.maven:go-offline-maven-plugin:resolve-dependencies \
-            -Pgwt-production,unit-tests,docker,docker-core-plugin \
+            -Pgwt-production,unit-tests \
             -Dbamboo.buildNumber=${{ github.run_id }}
 
       - name: Push PR Docker image
@@ -125,26 +125,18 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         run: |
           cd docker/docker-jahia-core/
-          mvn -U -ntp -s ../../.github/maven.settings.xml -e \
+          mvn -T 1C -U -ntp -s ../../.github/maven.settings.xml -e \
             -Dimage.tag=${{steps.tags.outputs.image_tag}} \
             deploy de.qaware.maven:go-offline-maven-plugin:resolve-dependencies \
             -Pgwt-production,unit-tests,docker,docker-core-plugin \
             -Dbamboo.buildNumber=${{ github.run_id }}
 
-      - name: Store docker image
-        shell: bash
-        run: docker save -o image.tar jahia/jahia-core-dev:${{steps.tags.outputs.image_tag}}
       - uses: jahia/jahia-modules-action/slack-jahia@v2
         if: ${{ failure() && github.event_name == 'push' }}
         with:
           job-event: "fail"
           skip-docker: true
           slack-webhook: ${{ secrets.SLACK_WEBHOOK_TEAM_PRODUCT_SNAPSHOTS_NOTIFICATIONS }}
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: integration-artifacts
-          path: image.tar
 
   integration-tests:
     name: Integration Tests (Standalone)
@@ -160,26 +152,13 @@ jobs:
         with:
           node-version: 'lts/*'
       - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
-        with:
-          name: integration-artifacts
-      - name: Load docker image
-        shell: bash
-        run: |
-          docker load -i image.tar
-      - name: Prepare environment variable for Jahia Image
-        shell: bash
-        run: |
-          export JAHIA_IMAGE=jahia/jahia-core-dev:${{needs.build.outputs.image_tag}}
-          echo "JAHIA_IMAGE = ${JAHIA_IMAGE}"
-          echo "JAHIA_IMAGE=${JAHIA_IMAGE}" >> $GITHUB_ENV
       - uses: jahia/jahia-modules-action/integration-tests@v2
         with:
           module_id: jahia-root
           testrail_project: Jahia
           tests_manifest: provisioning-manifest-build.yml
           tests_path: ${{ env.TESTS_PATH }}
-          jahia_image: ${{ env.JAHIA_IMAGE }}
+          jahia_image: jahia/jahia-core-dev:${{ needs.build.outputs.image_tag }}
           should_use_build_artifacts: false
           should_skip_testrail: false
           should_skip_zencrepes: true
@@ -271,7 +250,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         shell: bash
         run: |
-          mvn -B -U -ntp -s .github/maven.settings.xml sonar:sonar -Dsonar.pullrequest.branch=${{ steps.branch-name.outputs.current_branch }} \
+          mvn -T 1C -B -U -ntp -s .github/maven.settings.xml sonar:sonar -Dsonar.pullrequest.branch=${{ steps.branch-name.outputs.current_branch }} \
           -Dsonar.pullrequest.key=${{ github.run_id }} \
           -Dsonar.pullrequest.base=${{ env.TARGET_BRANCH }} \
           -Dsonar.pullrequest.github.repository=${{ github.event.repository.name }}
@@ -288,10 +267,10 @@ jobs:
         run: |
           if [[ "${{ steps.branch-name.outputs.current_branch }}" == "master" ]];
           then
-            mvn -B -U -ntp -s .github/maven.settings.xml dependency-check:aggregate sonar:sonar \
+            mvn -T 1C -B -U -ntp -s .github/maven.settings.xml dependency-check:aggregate sonar:sonar \
                 $DEPENDENCY_CHECK_SETTINGS
           else
-            mvn -B -U -ntp -s .github/maven.settings.xml dependency-check:aggregate sonar:sonar \
+            mvn -T 1C -B -U -ntp -s .github/maven.settings.xml dependency-check:aggregate sonar:sonar \
                 -Dsonar.branch.name=$CIRCLE_BRANCH $DEPENDENCY_CHECK_SETTINGS
           fi
 

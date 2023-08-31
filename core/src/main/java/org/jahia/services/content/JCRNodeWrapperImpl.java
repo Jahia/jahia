@@ -1564,6 +1564,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     @Override
     public Node getOrCreateI18N(final Locale locale) throws RepositoryException {
+        if (isNodeType(Constants.JAHIANT_TRANSLATION)) {
+            return getParent().getOrCreateI18N(locale);
+        }
         try {
             return getI18N(locale, false);
         } catch (RepositoryException e) {

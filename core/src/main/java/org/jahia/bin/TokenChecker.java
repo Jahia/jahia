@@ -59,7 +59,6 @@ public class TokenChecker {
     public static final int VALID_TOKEN = 1;
     public static final int INVALID_TOKEN = 2;
     public static final int INVALID_HIDDEN_FIELDS = 3;
-    public static final int INVALID_CAPTCHA = 4;
 
     public static int checkToken(HttpServletRequest req, HttpServletResponse resp, Map<String, List<String>> parameters) throws UnsupportedEncodingException {
         String token = parameters.get("form-token")!=null?parameters.get("form-token").get(0):null;
@@ -98,9 +97,6 @@ public class TokenChecker {
                     List<String> stringList = entry.getValue();
                     List<String> parameterValues = parameters.get(entry.getKey());
                     if (parameterValues == null || !CollectionUtils.isEqualCollection(stringList, parameterValues)) {
-                        if (entry.getKey().equals(Render.CAPTCHA)) {
-                            return INVALID_CAPTCHA;
-                        }
                         return INVALID_HIDDEN_FIELDS;
                     }
                 }

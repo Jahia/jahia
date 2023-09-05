@@ -374,10 +374,6 @@ public class URLGenerator {
         return initializers;
     }
 
-    public String getCaptcha() {
-        return Captcha.getCaptchaServletPath();
-    }
-
     public String getBaseContribute() {
         return baseContribute;
     }

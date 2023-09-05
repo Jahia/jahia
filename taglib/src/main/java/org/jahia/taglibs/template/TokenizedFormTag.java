@@ -91,10 +91,6 @@ public class TokenizedFormTag extends BodyTagSupport {
 
     @Override
     public int doEndTag() throws JspException {
-        boolean hasCaptcha = false;
-        if (pageContext.findAttribute("hasCaptcha") != null) {
-            hasCaptcha = (Boolean) pageContext.findAttribute("hasCaptcha");
-        }
         try {
             String id = (String) pageContext.findAttribute("currentFormId");
 
@@ -136,11 +132,6 @@ public class TokenizedFormTag extends BodyTagSupport {
                 }
             }
 
-            if (hasCaptcha) {
-                // Put random number here, will be replaced by the captcha servlet with the expected value
-                hiddenInputs.put("jcrCaptcha",Arrays.asList(java.util.UUID.randomUUID().toString()));
-            }
-
             hiddenInputs.put("disableXSSFiltering", Arrays.asList(String.valueOf(disableXSSFiltering)));
             hiddenInputs.put("allowsMultipleSubmits", Arrays.asList(String.valueOf(allowsMultipleSubmits)));
             outputDocument.insert(formTag.getEnd(), "<input type=\"hidden\" name=\"disableXSSFiltering\" value=\"" + disableXSSFiltering + "\"/>");
@@ -152,7 +143,6 @@ public class TokenizedFormTag extends BodyTagSupport {
             logger.error(e.getMessage(), e);
         }
 
-        pageContext.removeAttribute("hasCaptcha",PageContext.REQUEST_SCOPE);
         pageContext.removeAttribute("currentFormId",PageContext.REQUEST_SCOPE);
 
         // Restore the aggregation for the following fragments
@@ -172,7 +162,7 @@ public class TokenizedFormTag extends BodyTagSupport {
     public int doAfterBody() throws JspException {
         return super.doAfterBody();
     }
-    
+
     @Override
     public void release() {
         resetState();

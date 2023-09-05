@@ -75,39 +75,12 @@ public class CaptchaTag extends TagSupport {
     public int doEndTag() throws JspException {
         JspWriter out = pageContext.getOut();
 
-        try {
-            URLGenerator urlGen = (URLGenerator) pageContext.findAttribute("url");
-            StringBuilder url = new StringBuilder();
-            String formId = (String) pageContext.findAttribute("currentFormId");
-            url.append(urlGen.getContext()).append(urlGen.getCaptcha())
-                    .append("?token=##formtoken(").append(formId).append(")##");
-
-            if (logger.isDebugEnabled()) {
-                out.append("<script>console.warn('This captcha implementation is deprecated and is planned to be removed in a future version of Jahia. We recommend using alternatives such as Google reCaptcha, more details can be found here: https://academy.jahia.com/how-to-use-recaptcha-with-jahia')</script>");
+        if (logger.isDebugEnabled()) {
+            try {
+                out.append("<script>console.warn('This captcha implementation has been removed. We recommend using alternatives such as Google reCaptcha, more details can be found here: https://academy.jahia.com/how-to-use-recaptcha-with-jahia')</script>");
+            } catch (IOException e) {
+                throw new JspException(e);
             }
-
-            if (StringUtils.isNotEmpty(var)) {
-                pageContext.setAttribute(var, url);
-            }
-            if (display) {
-                out.append("<img id=\"jahia-captcha-").append(formId)
-                        .append("\" alt=\"captcha\" src=\"").append(url).append("\" />");
-            }
-            if (displayReloadLink) {
-                out.append("&nbsp;")
-                        .append("<a href=\"#reload-captcha\" onclick=\"var captcha=document.getElementById('jahia-captcha-")
-                        .append(formId)
-                        .append("'); var captchaUrl=captcha.src; if (captchaUrl.indexOf('&amp;tst=') != -1){"
-                                + "captchaUrl=captchaUrl.substring(0,captchaUrl.indexOf('&amp;tst='));}"
-                                + "captchaUrl=captchaUrl+'&amp;tst='+new Date().getTime();"
-                                + " captcha.src=captchaUrl; return false;\"><img src=\"")
-                        .append(urlGen.getContext())
-                        .append("/icons/refresh.png\" alt=\"refresh\"/></a>");
-            }
-
-            pageContext.setAttribute("hasCaptcha", true, PageContext.REQUEST_SCOPE);
-        } catch (IOException e) {
-            throw new JspException(e);
         }
 
         return EVAL_PAGE;
@@ -115,14 +88,6 @@ public class CaptchaTag extends TagSupport {
 
     protected String getVar() {
         return var;
-    }
-
-    protected boolean isDisplay() {
-        return display;
-    }
-
-    protected boolean isDisplayReloadLink() {
-        return displayReloadLink;
     }
 
     @Override

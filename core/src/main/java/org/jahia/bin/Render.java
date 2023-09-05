@@ -113,7 +113,6 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static final String REDIRECT_HTTP_RESPONSE_CODE = "jcrRedirectResponseCode";
     public static final String METHOD_TO_CALL = "jcrMethodToCall";
     public static final String AUTO_CHECKIN = "jcrAutoCheckin";
-    public static final String CAPTCHA = "jcrCaptcha";
     public static final String TARGETDIRECTORY = "jcrTargetDirectory";
     public static final String TARGETNAME = "jcrTargetName";
     public static final String NORMALIZE_NODE_NAME = "jcrNormalizeNodeName";
@@ -167,7 +166,6 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         RESERVED_PARAMETERS.add(REDIRECT_TO);
         RESERVED_PARAMETERS.add(METHOD_TO_CALL);
         RESERVED_PARAMETERS.add(AUTO_CHECKIN);
-        RESERVED_PARAMETERS.add(CAPTCHA);
         RESERVED_PARAMETERS.add(TARGETDIRECTORY);
         RESERVED_PARAMETERS.add(TARGETNAME);
         RESERVED_PARAMETERS.add(Constants.JCR_MIXINTYPES);
@@ -1002,25 +1000,6 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 break;
             case TokenChecker.INVALID_TOKEN:
                 throw new AccessDeniedException("Invalid token.");
-            case TokenChecker.INVALID_CAPTCHA:
-                Map<String, String[]> formDatas = new HashMap<String, String[]>();
-                Set<Map.Entry<String, List<String>>> set = parameters.entrySet();
-                for (Map.Entry<String, List<String>> params : set) {
-                    formDatas.put(params.getKey(), params.getValue().toArray(new String[params.getValue().size()]));
-                }
-                String errorMessage = Messages.getInternal("failure.captcha", urlResolver.getLocale(), "Your captcha is invalid");
-                if (!isAjaxRequest) {
-                    req.getSession().setAttribute("formDatas", formDatas);
-                    req.getSession().setAttribute("formError", errorMessage);
-                    performRedirect(renderContext.getMainResource().getNode().getPath(), urlResolver.getPath(), req, resp, parameters,
-                            true);
-                } else {
-                    resp.setContentType("application/json; charset=UTF-8");
-                    Map<String, String> res = new HashMap<String, String>();
-                    res.put("status", errorMessage);
-                    new JSONObject(res).write(resp.getWriter());
-                }
-                return;
             case TokenChecker.INVALID_HIDDEN_FIELDS:
                 throw new AccessDeniedException();
             case TokenChecker.VALID_TOKEN:

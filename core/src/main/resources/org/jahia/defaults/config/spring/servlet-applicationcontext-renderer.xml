@@ -10,16 +10,6 @@
         </property>
     </bean>
 
-    <bean id="captchaProducer" class="com.google.code.kaptcha.impl.DefaultKaptcha">
-        <property name="config">
-            <bean class="com.google.code.kaptcha.util.Config">
-                <constructor-arg type="java.util.Properties">
-                    <value>kaptcha.border=yes</value>
-                </constructor-arg>
-            </bean>
-        </property>
-    </bean>
-
     <bean name="wfImage" class="org.jahia.bin.WorkflowImageController">
         <property name="workflowService" ref="workflowService"/>
     </bean>
@@ -136,11 +126,6 @@
                         <property name="fireLogoutEvent" value="${fireLogoutEvent:true}"/>
                         <property name="preserveSessionAttributes" value="${preserveSessionAttributesOnLogout:wemSessionId}"/>
                         <property name="userManagerService" ref="JahiaUserManagerService"/>
-                    </bean>
-                </entry>
-                <entry key="/captcha">
-                    <bean name="org.jahia.bin.Captcha" class="org.jahia.bin.Captcha">
-                        <property name="captchaProducer" ref="captchaProducer"/>
                     </bean>
                 </entry>
                 <entry key="/export/**">

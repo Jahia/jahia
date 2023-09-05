@@ -395,6 +395,7 @@
 
     <bean id="jcrVersionService" class="org.jahia.services.content.JCRVersionService" factory-method="getInstance">
         <property name="versionedTypes" value="${jahia.publication.versionedTypes:}"/>
+        <property name="excludedVersionedTypes" value="${jahia.publication.excludedVersionedTypes:}"/>
     </bean>
 
     <bean id="jcrPublicationService" class="org.jahia.services.content.JCRPublicationService"
@@ -404,6 +405,7 @@
         <property name="propertiesToSkipForReferences" value="${jahia.publicationStatus.propertiesToSkipForReferencesInternal:*,j:defaultCategory,j:sourceTemplate,j:tags,j:templateNode},${jahia.publicationStatus.propertiesToSkipForReferences:}"/>
         <property name="referencedNodeTypesToSkip" value="${jahia.publicationStatus.referencedNodeTypesToSkipInternal:jnt:page,jmix:autoPublish},${jahia.publicationStatus.referencedNodeTypesToSkip:}"/>
         <property name="versionedTypes" value="${jahia.publication.versionedTypes:}"/>
+        <property name="excludedVersionedTypes" value="${jahia.publication.excludedVersionedTypes:}"/>
         <property name="batchSize" value="${jahia.publication.batchSize:100}"/>
     </bean>
 

@@ -94,6 +94,8 @@ public class JCRPublicationService extends JahiaService {
 
     private Set<String> versionedTypes;
 
+    private Set<String> excludedVersionedTypes;
+
     private Set<PublicationEventListener> listeners = Collections.newSetFromMap(new ConcurrentHashMap<PublicationEventListener, Boolean>());
 
     private JCRPublicationService() {
@@ -522,7 +524,7 @@ public class JCRPublicationService extends JahiaService {
             }
 
             for (JCRNodeWrapper nodeWrapper : toCheckpoint) {
-                if (JCRContentUtils.needVersion(nodeWrapper, versionedTypes)) {
+                if (JCRContentUtils.needVersion(nodeWrapper, versionedTypes, excludedVersionedTypes)) {
                     checkpoint(destinationSession, nodeWrapper, destinationVersionManager);
                 }
             }
@@ -721,7 +723,7 @@ public class JCRPublicationService extends JahiaService {
         final VersionManager sourceVersionManager = sourceSession.getWorkspace().getVersionManager();
         final VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
 
-        boolean versionable = JCRContentUtils.needVersion(node, versionedTypes);
+        boolean versionable = JCRContentUtils.needVersion(node, versionedTypes, excludedVersionedTypes);
 
         final String path = node.getPath();
         String destinationPath;
@@ -891,7 +893,7 @@ public class JCRPublicationService extends JahiaService {
                 // Always checkpoint before first clone
                 for (String s : included) {
                     JCRNodeWrapper n = sourceSession.getNodeByIdentifier(s);
-                    if (JCRContentUtils.needVersion(n, versionedTypes)) {
+                    if (JCRContentUtils.needVersion(n, versionedTypes, excludedVersionedTypes)) {
                         checkpoint(sourceSession, n, sourceSession.getWorkspace().getVersionManager());
                     }
                 }
@@ -902,13 +904,13 @@ public class JCRPublicationService extends JahiaService {
                 destinationSession.getWorkspace().clone(sourceSession.getWorkspace().getName(), sourceNodePath, destinationPath, false);
                 for (String s : included) {
                     JCRNodeWrapper n = destinationSession.getNodeByIdentifier(s);
-                    if (JCRContentUtils.needVersion(n, versionedTypes)) {
+                    if (JCRContentUtils.needVersion(n, versionedTypes, excludedVersionedTypes)) {
                         toCheckpoint.add(n);
                     }
                 }
                 JCRNodeWrapper n = destinationSession.getNode(sourceNode.getCorrespondingNodePath(destinationWorkspaceName));
                 try {
-                    if (JCRContentUtils.needVersion(n.getParent(), versionedTypes)) {
+                    if (JCRContentUtils.needVersion(n.getParent(), versionedTypes, excludedVersionedTypes)) {
                         toCheckpoint.add(n.getParent());
                     }
                 } catch (ItemNotFoundException e1) {
@@ -1544,7 +1546,7 @@ public class JCRPublicationService extends JahiaService {
     }
 
     protected void addRemovedLabel(JCRNodeWrapper node, final String label) throws RepositoryException {
-        if (JCRContentUtils.needVersion(node, versionedTypes)) {
+        if (JCRContentUtils.needVersion(node, versionedTypes, excludedVersionedTypes)) {
             VersionManager versionManager = node.getSession().getWorkspace().getVersionManager();
             versionManager.getVersionHistory(node.getPath()).addVersionLabel(versionManager.getBaseVersion(node.getPath()).getName(), label, false);
         }
@@ -1604,6 +1606,10 @@ public class JCRPublicationService extends JahiaService {
 
     public void setVersionedTypes(String versionedTypes) {
         this.versionedTypes = JCRContentUtils.splitAndUnify(versionedTypes, " ,");
+    }
+
+    public void setExcludedVersionedTypes(String excludedVersionedTypes) {
+        this.excludedVersionedTypes = JCRContentUtils.splitAndUnify(excludedVersionedTypes, " ,");
     }
 
     public void addReferencedNodeTypesToSkip(String referencedNodeTypesToSkip) {

@@ -202,7 +202,7 @@ public class VersioningHelper {
                 }
                 session.save();
 
-                if(supportVersioning && JCRContentUtils.needVersion(node, versionService.getVersionedTypes())) {
+                if(supportVersioning && JCRContentUtils.needVersion(node, versionService.getVersionedTypes(), versionService.getExcludedVersionedTypes())) {
                     session.getWorkspace().getVersionManager().checkpoint(node.getPath());
                     versionService.addVersionLabel(node, getVersionLabelCurrent());
                     if (logger.isDebugEnabled()) {

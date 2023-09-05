@@ -47,6 +47,7 @@ import org.apache.commons.collections.map.UnmodifiableMap;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.stream.Streams;
 import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.core.gc.GarbageCollector;
 import org.apache.jackrabbit.util.ISO9075;
@@ -1923,16 +1924,22 @@ public final class JCRContentUtils implements ServletContextAware {
 
     /**
      * this method checks if the node type is versionable from a jahia property
-     * @param node the node we want to version
-     * @param versionedTypes the jahia property with types to version
+     *
+     * @param node                   the node we want to version
+     * @param versionedTypes         the jahia property with types to version
+     * @param excludedVersionedTypes the jahia property with types to exclude from versionedTypes
      * @return true if the node can be versioned, false if it can't
      * @throws RepositoryException
      */
-    public static boolean needVersion(JCRNodeWrapper node, Set<String> versionedTypes) throws RepositoryException {
-        for (String versionedType : versionedTypes) {
-            if (node.isNodeType(versionedType) || ((node.isNodeType(Constants.MIX_VERSIONABLE) || node.isNodeType(Constants.MIX_SIMPLEVERSIONABLE)) && node.getParent().isNodeType(versionedType))) {
-                return true;
-            }
+    public static boolean needVersion(JCRNodeWrapper node, Set<String> versionedTypes, Set<String> excludedVersionedTypes) throws RepositoryException {
+        boolean isVersionedType = Streams.stream(versionedTypes.stream()).anyMatch(node::isNodeType);
+        if (isVersionedType) {
+            // Check exclusion only for when node is a versionable type
+            return !Streams.stream(excludedVersionedTypes.stream()).anyMatch(node::isNodeType);
+        } else if (node.isNodeType(Constants.MIX_VERSIONABLE) || node.isNodeType(Constants.MIX_SIMPLEVERSIONABLE)) {
+            JCRNodeWrapper parent = node.getParent();
+            return Streams.stream(versionedTypes.stream()).anyMatch(parent::isNodeType)
+                    && !Streams.stream(excludedVersionedTypes.stream()).anyMatch(node::isNodeType);
         }
         return false;
     }

@@ -53,7 +53,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Store project version
         shell: bash
-        run: mvn -T 1C -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec > jahia.version
+        run: mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec > jahia.version
       - name: Get branch name
         id: branch-name
         uses: tj-actions/branch-names@v6
@@ -79,7 +79,7 @@ jobs:
         shell: bash
         if: ${{ github.event_name == 'push' }}
         run: |
-          mvn -T 1C -U -ntp -s .github/maven.settings.xml -e \
+          mvn -U -ntp -s .github/maven.settings.xml -e \
             -Dimage.tag=${{steps.tags.outputs.image_tag}} \
             clean deploy -Dmaven.resolver.transport=wagon de.qaware.maven:go-offline-maven-plugin:resolve-dependencies \
             -Pgwt-production,unit-tests,docker,docker-core-plugin \
@@ -89,7 +89,7 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         run: |
           cd gwt/
-          mvn -T 1C -U -ntp -s ../.github/maven.settings.xml -e \
+          mvn -U -ntp -s ../.github/maven.settings.xml -e \
             clean deploy \
             -Dmaven.resolver.transport=wagon \
             -Pgwt-development \
@@ -118,7 +118,7 @@ jobs:
         shell: bash
         if: ${{ github.event_name == 'pull_request' }}
         run: |
-          mvn -T 1C -U -ntp -s .github/maven.settings.xml -e \
+          mvn -U -ntp -s .github/maven.settings.xml -e \
             -Dimage.tag=${{steps.tags.outputs.image_tag}} \
             clean install de.qaware.maven:go-offline-maven-plugin:resolve-dependencies \
             -Pgwt-production,unit-tests \
@@ -130,7 +130,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         run: |
           cd docker/docker-jahia-core/
-          mvn -T 1C -U -ntp -s ../../.github/maven.settings.xml -e \
+          mvn -U -ntp -s ../../.github/maven.settings.xml -e \
             -Dimage.tag=${{steps.tags.outputs.image_tag}} \
             deploy de.qaware.maven:go-offline-maven-plugin:resolve-dependencies \
             -Pgwt-production,unit-tests,docker,docker-core-plugin \
@@ -255,7 +255,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         shell: bash
         run: |
-          mvn -T 1C -B -U -ntp -s .github/maven.settings.xml sonar:sonar -Dsonar.pullrequest.branch=${{ steps.branch-name.outputs.current_branch }} \
+          mvn -B -U -ntp -s .github/maven.settings.xml sonar:sonar -Dsonar.pullrequest.branch=${{ steps.branch-name.outputs.current_branch }} \
           -Dsonar.pullrequest.key=${{ github.run_id }} \
           -Dsonar.pullrequest.base=${{ env.TARGET_BRANCH }} \
           -Dsonar.pullrequest.github.repository=${{ github.event.repository.name }}
@@ -272,10 +272,10 @@ jobs:
         run: |
           if [[ "${{ steps.branch-name.outputs.current_branch }}" == "master" ]];
           then
-            mvn -T 1C -B -U -ntp -s .github/maven.settings.xml dependency-check:aggregate sonar:sonar \
+            mvn -B -U -ntp -s .github/maven.settings.xml dependency-check:aggregate sonar:sonar \
                 $DEPENDENCY_CHECK_SETTINGS
           else
-            mvn -T 1C -B -U -ntp -s .github/maven.settings.xml dependency-check:aggregate sonar:sonar \
+            mvn -B -U -ntp -s .github/maven.settings.xml dependency-check:aggregate sonar:sonar \
                 -Dsonar.branch.name=$CIRCLE_BRANCH $DEPENDENCY_CHECK_SETTINGS
           fi
 

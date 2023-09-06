@@ -281,7 +281,7 @@ public final class FrameworkService implements FrameworkListener {
             main.launch();
             setupStartupListener();
             bundleStarter.startInitialBundlesIfNeeded();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             main = null;
             logger.error("Error starting OSGi container");
             throw new JahiaRuntimeException("Error starting OSGi container", e);

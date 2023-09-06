@@ -8,7 +8,7 @@
     <repository>mvn:org.apache.karaf.features/spring/${karaf.version}/xml/features</repository>
     <repository>mvn:org.jahia.features/dx-gemini-blueprint/${project.version}/xml/features</repository>
     <repository>mvn:org.jahia.features/dx-jax-rs/${project.version}/xml/features</repository>
-    
+
     <feature name="dx-core" description="DX Core OSGi bundles" version="${project.version}">
         <details>DX Core OSGi bundles</details>
         <feature>pax-web-core</feature>

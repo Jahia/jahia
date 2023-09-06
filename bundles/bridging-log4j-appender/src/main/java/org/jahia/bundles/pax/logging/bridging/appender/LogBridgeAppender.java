@@ -87,7 +87,7 @@ public class LogBridgeAppender extends AbstractAppender {
 
     @Override
     public void append(LogEvent event) {
-        LogBridge.log(event.getLoggerName(), event.getLevel().intLevel(), event.getMessage(), event.getThrown());
+        LogBridge.log(event.getLoggerName(), event.getLevel().intLevel(), event.getMessage().getFormattedMessage(), event.getThrown());
     }
 
     private void init() {

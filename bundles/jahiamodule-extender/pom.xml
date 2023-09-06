@@ -72,7 +72,12 @@
                         <Private-Package>
                             org.jahia.bundles.extender.jahiamodules.*
                         </Private-Package>
-                        <Provide-Capability>com.jahia.server;version:Version="${project.version}"</Provide-Capability>
+                        <Provide-Capability>
+                            com.jahia.server;version:Version="${project.version}",
+                            osgi.contract;osgi.contract=JavaJSP;version:Version=2.3,
+                            osgi.contract;osgi.contract=JavaEL;version:Version=3.0,
+                            osgi.contract;osgi.contract=JavaJSTL;version:Version=1.2
+                        </Provide-Capability>
                         <Import-Package>
                             javax.el,
                             javax.servlet.jsp,

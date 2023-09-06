@@ -54,10 +54,6 @@
     <name>Jahia WAR</name>
     <packaging>war</packaging>
 
-    <properties>
-        <felix.framework.version>5.6.12</felix.framework.version>
-    </properties>
-
     <profiles>
         <profile>
             <id>eclipse-integration</id>
@@ -768,18 +764,10 @@
                         </goals>
                         <configuration>
                             <target>
-                                <replace file="${project.build.directory}/jahia/WEB-INF/karaf/system/org/apache/karaf/features/standard/${karaf.version}/standard-${karaf.version}-features.xml" failOnNoReplacements="true">
-                                    <replacetoken>org.apache.karaf.jaas.config/${karaf.version}</replacetoken>
-                                    <replacevalue>org.apache.karaf.jaas.config/${karaf.jaas.config.version}</replacevalue>
+                                <replace file="${project.build.directory}/jahia/WEB-INF/karaf/system/org/apache/karaf/features/framework/${karaf.version}/framework-${karaf.version}-features.xml" failOnNoReplacements="true">
+                                    <replacetoken>org.apache.felix/org.apache.felix.fileinstall/3.7.4</replacetoken>
+                                    <replacevalue>org.apache.felix/org.apache.felix.fileinstall/3.7.4-jahia1-SNAPSHOT</replacevalue>
                                 </replace>
-                                <replace file="${project.build.directory}/jahia/WEB-INF/karaf/system/org/apache/karaf/features/standard/${karaf.version}/standard-${karaf.version}-features.xml" failOnNoReplacements="true">
-                                    <replacetoken>pax-web-features/7.2.11</replacetoken>
-                                    <replacevalue>pax-web-features/${pax.web.api.version}</replacevalue>
-                                </replace>
-                                <delete dir="${project.build.directory}/jahia/WEB-INF/karaf/system/org/ops4j/pax/web/pax-web-features/7.2.11" />
-                                <delete dir="${project.build.directory}/jahia/WEB-INF/karaf/system/org/ops4j/pax/logging/pax-logging-log4j2/1.11.2" />
-                                <delete dir="${project.build.directory}/jahia/WEB-INF/karaf/system/org/ops4j/pax/logging/pax-logging-api/1.11.2" />
-                                <delete dir="${project.build.directory}/jahia/WEB-INF/karaf/system/org/ops4j/pax/logging/pax-logging-logback/1.11.2" />
                             </target>
                         </configuration>
                     </execution>
@@ -944,6 +932,8 @@
                                 <extraPackageExclude>com.fasterxml.jackson*</extraPackageExclude>
                                 <extraPackageExclude>org.springframework.http.converter*</extraPackageExclude>
                                 <extraPackageExclude>org.springframework.web.client*</extraPackageExclude>
+                                <extraPackageExclude>org.osgi.service*</extraPackageExclude>
+                                <extraPackageExclude>org.osgi.util*</extraPackageExclude>
                             </extraPackageExcludes>
                             <propertiesInputFile>
                                 ${project.build.directory}/filtered-resources/custom.properties

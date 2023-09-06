@@ -42,17 +42,20 @@
  */
 package org.jahia.bundles.jaxrs_osgi_extender;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * Log tracker
  */
-public class LogTracker extends ServiceTracker<LogService,LogService> implements LogService {
+public class LogTracker extends ServiceTracker<LogService, LogService> implements LogService {
     /**
      * New LogTracker
+     *
      * @param context context
      */
     public LogTracker(BundleContext context) {
@@ -77,5 +80,45 @@ public class LogTracker extends ServiceTracker<LogService,LogService> implements
         if (log != null) {
             log.log(sr, level, message, exception);
         }
+    }
+
+    public Logger getLogger(String s) {
+        LogService log = getService();
+        if (log != null) {
+            return log.getLogger(s);
+        }
+        return null;
+    }
+
+    public Logger getLogger(Class<?> aClass) {
+        LogService log = getService();
+        if (log != null) {
+            return log.getLogger(aClass);
+        }
+        return null;
+    }
+
+    public <L extends Logger> L getLogger(String s, Class<L> aClass) {
+        LogService log = getService();
+        if (log != null) {
+            return log.getLogger(s, aClass);
+        }
+        return null;
+    }
+
+    public <L extends Logger> L getLogger(Class<?> aClass, Class<L> aClass1) {
+        LogService log = getService();
+        if (log != null) {
+            return log.getLogger(aClass, aClass1);
+        }
+        return null;
+    }
+
+    public <L extends Logger> L getLogger(Bundle bundle, String s, Class<L> aClass) {
+        LogService log = getService();
+        if (log != null) {
+            return log.getLogger(bundle, s, aClass);
+        }
+        return null;
     }
 }

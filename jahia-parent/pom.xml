@@ -157,25 +157,26 @@
         <sonar.plugin.version>3.9.1.2184</sonar.plugin.version>
         <dependency.check.plugin.version>8.2.1</dependency.check.plugin.version>
         <!-- OSGi versions -->
-        <felix.configadmin.version>1.9.16</felix.configadmin.version>
+        <felix.framework.version>6.0.5</felix.framework.version>
+        <felix.configadmin.version>1.9.26</felix.configadmin.version>
         <felix.coordinator.version>1.0.2</felix.coordinator.version>
-        <felix.fileinstall.version>3.6.4-jahia3</felix.fileinstall.version>
+        <felix.fileinstall.version>3.7.4-jahia1-SNAPSHOT</felix.fileinstall.version>
         <felix.http.version>2.2.1</felix.http.version>
-        <felix.metatype.version>1.2.2</felix.metatype.version>
-        <felix.utils.version>1.11.2</felix.utils.version>
+        <felix.metatype.version>1.2.4</felix.metatype.version>
+        <felix.utils.version>1.11.8</felix.utils.version>
         <felix.webconsole.version>4.3.16-jahia3</felix.webconsole.version>
         <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
         <gemini.blueprint.core.version>1.0.2.RELEASE-jahia2</gemini.blueprint.core.version>
-        <jansi.version>1.18</jansi.version>
+        <jansi.version>2.4.0</jansi.version>
         <slf4j.version>1.7.36</slf4j.version>
-        <osgi.version>6.0.0</osgi.version>
-        <osgi.compendium.version>6.0.0</osgi.compendium.version>
-        <pax.logging.version>1.11.13</pax.logging.version>
+        <osgi.version>7.0.0</osgi.version>
+        <osgi.compendium.version>7.0.0</osgi.compendium.version>
+        <pax.logging.version>2.0.18</pax.logging.version>
         <pax.swissbox.version>1.8.3</pax.swissbox.version>
-        <pax.url.version>2.6.1</pax.url.version>
-        <pax.web.api.version>7.3.7</pax.web.api.version>
-        <pax.web.jsp.version>7.3.7-jahia2</pax.web.jsp.version>
-        <karaf.version>4.2.7</karaf.version>
+        <pax.url.version>2.6.12</pax.url.version>
+        <pax.web.api.version>7.3.28</pax.web.api.version>
+        <pax.web.jsp.version>7.3.28-jahia1</pax.web.jsp.version>
+        <karaf.version>4.3.9</karaf.version>
         <karaf.jaas.config.version>${karaf.version}</karaf.jaas.config.version>
         <jersey.version>2.18</jersey.version>
         <hk2.version>2.4.0-b25</hk2.version>

@@ -44,18 +44,18 @@
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
+    
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.jahia.bundles</groupId>
         <artifactId>jahia-bundles</artifactId>
         <version>8.2.0.0-SNAPSHOT</version>
     </parent>
-
+    
     <name>Jahia Spring Bridge</name>
     <artifactId>org.jahia.bundles.spring.bridge</artifactId>
     <packaging>bundle</packaging>
-
+    
     <build>
         <plugins>
             <plugin>
@@ -64,8 +64,47 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Require-Capability>osgi.extender;filter:="(osgi.extender=org.jahia.bundles.blueprint.extender.config)"</Require-Capability>
-                        <Provide-Capability>osgi.service;effective:=active;objectClass="org.jahia.services.modulemanager.ModuleManager"</Provide-Capability>
+                        <Require-Capability>
+                            osgi.extender;filter:="(osgi.extender=org.jahia.bundles.blueprint.extender.config)"
+                        </Require-Capability>
+                        <Provide-Capability>
+                            <![CDATA[
+                            osgi.service;objectClass:List<String>="org.jahia.services.usermanager.JahiaUserManagerService",
+                            osgi.service;objectClass:List<String>="org.jahia.api.usermanager.JahiaUserManagerService",
+                            osgi.service;objectClass:List<String>="org.jahia.services.usermanager.JahiaGroupManagerService",
+                            osgi.service;objectClass:List<String>="org.jahia.services.scheduler.SchedulerService",
+                            osgi.service;objectClass:List<String>="org.jahia.services.content.JCRStoreService",
+                            osgi.service;objectClass:List<String>="org.jahia.services.content.JCRSessionFactory",
+                            osgi.service;objectClass:List<String>="org.jahia.services.content.JCRTemplate,org.jahia.api.content.JCRTemplate",
+                            osgi.service;objectClass:List<String>="org.jahia.services.content.nodetypes.NodeTypeRegistry",
+                            osgi.service;objectClass:List<String>="org.jahia.services.content.JCRPublicationService",
+                            osgi.service;objectClass:List<String>="org.jahia.services.content.ComplexPublicationService",
+                            osgi.service;objectClass:List<String>="org.jahia.services.importexport.ImportExportService",
+                            osgi.service;objectClass:List<String>="org.jahia.services.templates.JahiaTemplateManagerService,org.jahia.api.templates.JahiaTemplateManagerService",
+                            osgi.service;objectClass:List<String>="org.jahia.services.templates.TemplatePackageRegistry",
+                            osgi.service;objectClass:List<String>="org.jahia.services.search.SearchService",
+                            osgi.service;objectClass:List<String>="org.jahia.services.deamons.filewatcher.JahiaFileWatcherService",
+                            osgi.service;objectClass:List<String>="org.jahia.services.seo.jcr.VanityUrlService",
+                            osgi.service;objectClass:List<String>="org.jahia.services.image.JahiaImageService",
+                            osgi.service;objectClass:List<String>="org.jahia.services.visibility.VisibilityService",
+                            osgi.service;objectClass:List<String>="org.jahia.services.modulemanager.ModuleManager",
+                            osgi.service;objectClass:List<String>="org.jahia.services.modulemanager.DefinitionsManagerService",
+                            osgi.service;objectClass:List<String>="org.jahia.services.mail.MailService",
+                            osgi.service;objectClass:List<String>="org.jahia.services.workflow.WorkflowService",
+                            osgi.service;objectClass:List<String>="org.jahia.services.render.RenderService",
+                            osgi.service;objectClass:List<String>="org.jahia.services.events.JournalEventReader",
+                            osgi.service;objectClass:List<String>="org.apache.camel.CamelContext",
+                            osgi.service;objectClass:List<String>="org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService",
+                            osgi.service;objectClass:List<String>="org.jahia.services.content.nodetypes.renderer.ChoiceListRendererService",
+                            osgi.service;objectClass:List<String>="org.jahia.services.seo.urlrewrite.UrlRewriteService",
+                            osgi.service;objectClass:List<String>="org.jahia.services.tags.TaggingService",
+                            osgi.service;objectClass:List<String>="org.jahia.services.wip.WIPService",
+                            osgi.service;objectClass:List<String>="org.jahia.api.settings.SettingsBean",
+                            osgi.service;objectClass:List<String>="org.jahia.services.cache.CacheProvider",
+                            osgi.service;objectClass:List<String>="org.jahia.pipelines.Pipeline",
+                            osgi.service;objectClass:List<String>="org.jahia.services.notification.HttpClientService",
+                            ]]>
+                        </Provide-Capability>
                         <Bundle-Category>jahia-bundle</Bundle-Category>
                         <Import-Package>
                             org.jahia.defaults.config.spring,
@@ -77,7 +116,7 @@
             </plugin>
         </plugins>
     </build>
-
+    
     <dependencies>
         <dependency>
             <groupId>org.jahia.server</groupId>

@@ -2,7 +2,7 @@
 # Legacy configuration - only used if org.jahia.bundles.api.security / security.legacyMode is set to true
 
 // All API calls allowed on the configured node types inside /sites/*
-permission.siteResources.nodeType=jnt:folder,jnt:page,jnt:portlet,jnt:navMenuText
+permission.siteResources.nodeType=jnt:folder,jnt:page,jnt:navMenuText
 permission.siteResources.pathPattern=/sites/.*
 
 // All API calls allowed on jnt:category

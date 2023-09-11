@@ -437,33 +437,6 @@
         </property>
     </bean>
 
-    <!-- Portlet Manager -->
-    <bean id="Toolbar.Item.PortletManager" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
-        </property>
-        <property name="titleKey" value="label.portletmanager"/>
-        <property name="icon" value="portletManager"/>
-        <property name="requiredPermission" value="portletManager"/>
-
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="url"/>
-                    <property name="value" value="$context/engines/manager.jsp?conf=portletmanager&amp;site=$siteuuid&amp;lang=$lang"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="width"/>
-                    <property name="value" value="1020"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="height"/>
-                    <property name="value" value="730"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
     <!-- Category Manager -->
     <bean id="Toolbar.Item.CategoryManager" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
@@ -1109,25 +1082,6 @@
         <property name="icon" value="newFolder"/>
     </bean>
 
-    <bean id="Toolbar.Item.NewPortlet" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewPortletActionItem"/>
-        </property>
-        <property name="titleKey" value="label.newPortlet"/>
-        <property name="icon" value="newPortlet"/>
-    </bean>
-
-    <bean id="Toolbar.Item.NewPortletFolder" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
-          parent="Toolbar.Item.NewFolder">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
-                <property name="nodeTypes" value="jnt:portletFolder"/>
-                <property name="parentTypes" value="jnt:portletFolder"/>
-                <property name="useEngine" value="false"/>
-            </bean>
-        </property>
-    </bean>
-
     <bean id="Toolbar.Item.Crop" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CropActionItem">
@@ -1486,15 +1440,6 @@
         </property>
         <property name="titleKey" value="label.workflowdashboard"/>
         <property name="icon" value="workflowDashboard"/>
-    </bean>
-
-    <bean id="Toolbar.Item.DeployPortlets" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeployPortletDefinitionActionItem"/>
-        </property>
-
-        <property name="titleKey" value="label.deployNewPortlet"/>
-        <property name="icon" value="add-application"/>
     </bean>
 
     <bean id="Toolbar.Item.PublicationManager" parent="Toolbar.Item.RestrictedPublishItem" scope="prototype">

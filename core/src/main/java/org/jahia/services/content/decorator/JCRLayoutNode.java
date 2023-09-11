@@ -112,7 +112,6 @@ public class JCRLayoutNode extends JCRNodeDecorator {
     public JCRLayoutItemNode addLayoutItem(JCRNodeWrapper portletNode, int column, int row, String status) throws RepositoryException {
         JCRNodeWrapper jcrNodeWrapper = addNode("j:item", "jnt:layoutItem");
         JCRLayoutItemNode jcrLayoutItemNode = new JCRLayoutItemNode(jcrNodeWrapper);
-        jcrLayoutItemNode.setPortlet(portletNode);
         jcrLayoutItemNode.setColumnIndex(column);
         jcrLayoutItemNode.setRowIndex(row);
         jcrLayoutItemNode.setStatus(status);

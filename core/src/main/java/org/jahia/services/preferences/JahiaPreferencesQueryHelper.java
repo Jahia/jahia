@@ -61,20 +61,6 @@ public class JahiaPreferencesQueryHelper {
         return convertToSQL(properties);
     }
 
-
-    public static String getPortletSQL(String portletName, String prefName) {
-        Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put("j:portletName", portletName);
-        properties.put("j:prefName", prefName);
-        return convertToSQL(properties);
-    }
-
-    public static String getPortletSQL(String portletName) {
-        Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put("j:portletName", portletName);
-        return convertToSQL(properties);
-    }
-
     /**
      * Convert a map of String Object to an sqlConstraint
      *

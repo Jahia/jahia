@@ -282,12 +282,6 @@
 [jnt:preferenceProvider] > nt:base, jmix:nodenameInfo
 + * (nt:base) multiple
 
-[jnt:portletPreference] > nt:base, jmix:nodenameInfo
-- j:portletName (string) nofulltext
-- j:prefName (string) nofulltext
-- j:readOnly (boolean)
-- j:values (string) multiple
-
 //---------------------------------------------------------
 // Global settings
 //---------------------------------------------------------
@@ -615,8 +609,6 @@ extends = jnt:page
 
 [jmix:structuredContent] > jmix:droppableContent, jmix:accessControllableContent mixin
 
-[jmix:portletContent] > jmix:droppableContent, jmix:accessControllableContent mixin
-
 [jmix:socialComponent] > jmix:droppableContent, jmix:accessControllableContent mixin
 
 [jmix:multimediaContent] > jmix:droppableContent, jmix:accessControllableContent mixin
@@ -852,8 +844,10 @@ extends = jnt:content
  - j:numberOfItems (long) < '[0,]'
 
 //---------------------------------------------------------
-// Portlets
+// Portlets (Deprecated - keeping for compatibility purposes)
 //---------------------------------------------------------
+
+[jmix:portletContent] > jmix:droppableContent, jmix:accessControllableContent mixin
 
 [jnt:portletDefinition] > nt:base, mix:referenceable, jmix:accessControlled, jmix:unversionedBasemetadata
  - j:name (string) nofulltext

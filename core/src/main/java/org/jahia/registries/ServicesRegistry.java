@@ -46,8 +46,6 @@ import org.apache.commons.collections.FastHashMap;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.JahiaService;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.applications.ApplicationsManagerService;
-import org.jahia.services.applications.DispatchingService;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.categories.CategoryService;
 import org.jahia.services.content.JCRPublicationService;
@@ -141,12 +139,6 @@ public class ServicesRegistry {
         return jahiaService;
     } // end getService
 
-    // @author NK 21.12.2000
-    public DispatchingService getApplicationsDispatchService() {
-        return (DispatchingService) getService(
-                "DispatchingService");
-    }
-
     /**
      * Return a reference on the DB User Manager service
      */
@@ -166,14 +158,6 @@ public class ServicesRegistry {
      */
     public JahiaFileWatcherService getJahiaFileWatcherService() {
         return (JahiaFileWatcherService) getService("JahiaFileWatcherService");
-    }
-
-    /**
-     * NK 13.02.2001
-     */
-    public ApplicationsManagerService getApplicationsManagerService() {
-        return (ApplicationsManagerService) getService(
-                "ApplicationsManagerService");
     }
 
     /**

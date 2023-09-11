@@ -48,7 +48,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.VFS;
 import org.apache.hc.core5.http.HttpHeaders;
-import org.apache.pluto.driver.PortalStartupListener;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
@@ -58,7 +57,6 @@ import org.jahia.osgi.FrameworkService;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.applications.ApplicationsManagerServiceImpl;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -71,6 +69,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.context.ContextLoader;
+import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
@@ -89,7 +88,7 @@ import java.util.regex.Pattern;
  *
  * @author Serge Huber
  */
-public class JahiaContextLoaderListener extends PortalStartupListener implements
+public class JahiaContextLoaderListener extends ContextLoaderListener implements
         ServletRequestListener,
         ServletRequestAttributeListener,
         HttpSessionListener,
@@ -163,9 +162,6 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
 
             // do initialization of all services, implementing JahiaAfterInitializationService
             initJahiaAfterInitializationServices();
-
-            // register listeners after the portal is started
-            ApplicationsManagerServiceImpl.getInstance().registerListeners();
 
             // set fallback locale
             Config.set(servletContext, Config.FMT_FALLBACK_LOCALE, (SettingsBean.getInstance().getDefaultLanguageCode() != null) ? SettingsBean

@@ -3,26 +3,12 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-    <bean id="ApplicationsManagerPortletProvider" class="org.mockito.Mockito" factory-method="mock">
-        <constructor-arg value="org.jahia.services.applications.pluto.ApplicationsManagerPlutoProvider"/>
-    </bean>
-    <bean id="ApplicationsManagerService" class="org.mockito.Mockito" factory-method="mock">
-        <!-- constructor-arg value="org.jahia.services.applications.ApplicationsManagerServiceImpl"/ -->    
-        <constructor-arg value="org.jahia.services.applications.ApplicationsManagerService"/>        
-    </bean>
-
     <bean id="JahiaPreferencesService" class="org.mockito.Mockito" factory-method="mock">
         <constructor-arg value="org.jahia.services.preferences.JahiaPreferencesService" />
     </bean>
-    
-    <bean id="PortletDispatchingProvider" class="java.lang.Object" />
-    
-    <bean id="DispatchingService" class="org.mockito.Mockito" factory-method="mock">
-        <constructor-arg value="org.jahia.services.applications.DispatchingServiceImpl" />
-    </bean>
-    
+
     <bean id="ModuleBuildHelper" class="org.mockito.Mockito" factory-method="mock">
         <constructor-arg value="org.jahia.services.templates.ModuleBuildHelper" />
-    </bean>    
+    </bean>
 
 </beans>

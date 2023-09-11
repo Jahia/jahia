@@ -794,8 +794,6 @@ public final class JCRContentUtils implements ServletContextAware {
             }
 
             return (useContext ? PREFIX : "") + folder + "jnt_file_" + icon;
-        } else if (f.isPortlet()) {
-            return (useContext ? PREFIX : "") + folder + "jnt_portlet";
         } else if (f instanceof JCRComponentNode) {
             String type = f.getName();
             ExtendedNodeType nt = primaryNodeType;

@@ -142,7 +142,7 @@
         <attribute>
             <description>jahiaType is one of : actionmenu,calendar,calendar,form,inlineediting,jobreport,layoutmanager,layoutmanager,
                 layoutmanagerbox,mediaGallery,mySettings,opensearch,pdisplay,
-                portletrender,query,rss,subscription,toolsbars,usergroup,versioncomparison</description>
+                query,rss,subscription,toolsbars,usergroup,versioncomparison</description>
             <name>jahiaType</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>

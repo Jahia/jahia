@@ -108,17 +108,11 @@ public interface JahiaContentManagementService extends RemoteService {
 
     GWTJahiaNode createFolder(String parentPath, String name) throws GWTJahiaServiceException;
 
-    GWTJahiaNode createGoogleGadgetPortletInstance(String path, String name, String script) throws GWTJahiaServiceException;
-
     GWTJahiaNode createNode(String parentPath, GWTJahiaNode newNode) throws GWTJahiaServiceException;
 
     GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNode> subNodes, Map<String, String> parentNodes, boolean forceCreation) throws GWTJahiaServiceException;
 
     GWTJahiaNode createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties) throws GWTJahiaServiceException;
-
-    GWTJahiaNode createPortletInstance(String path, GWTJahiaNewPortletInstance wiz) throws GWTJahiaServiceException;
-
-    GWTJahiaNode createRSSPortletInstance(String path, String name, String url) throws GWTJahiaServiceException;
 
     GWTJahiaNode createModule(String moduleName, String artifactId, String groupId, String siteType, String source) throws GWTJahiaServiceException;
 
@@ -148,7 +142,6 @@ public interface JahiaContentManagementService extends RemoteService {
     GWTJahiaNode deletePaths(List<String> paths) throws GWTJahiaServiceException;
 
     void deployTemplates(String templatesPath, String sitePath) throws GWTJahiaServiceException;
-    GWTJahiaPortletOutputBean drawPortletInstanceOutput(String windowID, String entryPointIDStr, String pathInfo, String queryString);
 
     void flush(String path) throws GWTJahiaServiceException;
 
@@ -336,8 +329,6 @@ public interface JahiaContentManagementService extends RemoteService {
 
     GWTJahiaCreateEngineInitBean initializeCreateEngine(String typeName, String parentPath, String targetName) throws GWTJahiaServiceException;
 
-    GWTJahiaCreatePortletInitBean initializeCreatePortletEngine(String typeName, String parentPath) throws GWTJahiaServiceException;
-
     GWTJahiaEditEngineInitBean initializeEditEngine(String nodePath, boolean tryToLockNode) throws GWTJahiaServiceException;
 
     GWTJahiaEditEngineInitBean initializeEditEngine(List<String> paths, boolean tryToLockNode) throws GWTJahiaServiceException;
@@ -394,8 +385,6 @@ public interface JahiaContentManagementService extends RemoteService {
     PagingLoadResult<GWTJahiaNode> search(GWTJahiaSearchQuery search, int limit, int offset, boolean showOnlyNodesWithTemplates) throws GWTJahiaServiceException;
 
     List<GWTJahiaNode> search(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters) throws GWTJahiaServiceException;
-
-    List<GWTJahiaPortletDefinition> searchPortlets(String match) throws GWTJahiaServiceException;
 
     PagingLoadResult<GWTJahiaNode> searchSQL(String searchString, int limit, int offset, List<String> nodeTypes, List<String> fields, boolean sortOnDisplayName) throws GWTJahiaServiceException;
 

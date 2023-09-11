@@ -142,7 +142,6 @@
                     <createSelector jcr:primaryType="jnt:permission"/>
                     <filesAndImagesSelector jcr:primaryType="jnt:permission"/>
                     <latestSelector jcr:primaryType="jnt:permission"/>
-                    <portletsSelector jcr:primaryType="jnt:permission"/>
                     <searchSelector jcr:primaryType="jnt:permission"/>
                     <sitemapSelector jcr:primaryType="jnt:permission"/>
                     <siteSettingsSelector jcr:primaryType="jnt:permission"/>
@@ -156,8 +155,6 @@
         <managers jcr:primaryType="jnt:permission">
             <categoryManager jcr:primaryType="jnt:permission"/>
             <repositoryExplorer jcr:primaryType="jnt:permission"/>
-            <portletDefinitionManager jcr:primaryType="jnt:permission"/>
-            <portletManager jcr:primaryType="jnt:permission"/>
             <workflow-dashboard-access jcr:primaryType="jnt:permission"/>
         </managers>
 

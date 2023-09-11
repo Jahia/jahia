@@ -13,111 +13,6 @@
         Import-Package:
             org.jahia.taglibs
     -->
-    <!-- Portlet decoration tags -->
-    <tag>
-        <description>Displays the GUI interface for portlet mode changes, as well
-            as the currently selected mode.
-        </description>
-        <name>portletModes</name>
-        <tag-class>org.jahia.taglibs.uicomponents.portlets.PortletModesTag</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <name>name</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>namePostFix</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <!-- Defaults to JahiaInternalResources -->
-            <name>resourceBundle</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <!-- Defaults to "portletModes" class -->
-            <name>listCSSClass</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <!-- Defaults to "current" class -->
-            <name>currentCSSClass</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>node</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>org.jahia.services.content.JCRNodeWrapper</type>
-        </attribute>
-        <attribute>
-            <name>var</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-    </tag>
-
-     <!-- portlet -->
-    <tag>
-        <description>render a portlet node.</description>
-        <name>portletRender</name>
-        <tag-class>org.jahia.taglibs.uicomponents.portlets.PortletRenderTag</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <name>portletNode</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>org.jahia.services.content.JCRNodeWrapper</type>
-        </attribute>
-        <attribute>
-            <name>windowId</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>int</type>
-        </attribute>
-    </tag>
-    <tag>
-        <description>Displays the GUI interface for window state changes, as well
-            as the currently selected state.
-        </description>
-        <name>windowStates</name>
-        <tag-class>org.jahia.taglibs.uicomponents.portlets.WindowStatesTag</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <name>name</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>namePostFix</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <!-- Defaults to JahiaInternalResources -->
-            <name>resourceBundle</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <!-- Defaults to "portletModes" class -->
-            <name>listCSSClass</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <!-- Defaults to "current" class -->
-            <name>currentCSSClass</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
 
     <tag>
         <description>Checks if there is a login error and evaluates body if true</description>
@@ -216,7 +111,7 @@
             <type>org.jahia.services.content.JCRNodeWrapper</type>
         </attribute>
     </tag>
-    
+
     <tag>
         <description>Displays an image flag corresponding to a language code</description>
         <name>displayLanguageFlag</name>
@@ -282,7 +177,7 @@
         <name>dateSelector</name>
         <path>/META-INF/tags/dateSelector.tag</path>
     </tag-file>
-    
+
     <tag-file>
         <name>folderSelector</name>
         <path>/META-INF/tags/folderSelector.tag</path>
@@ -299,7 +194,7 @@
         <example>
         	Simple usage - will replace textarea element, having 'jahia-ckeditor' as an id with instance of CKEditor after page is loaded
         		&lt;uiComponents:ckeditor selector="jahia-ckeditor"/&gt;
-        	Advanced usage - overriding the CKEditor configuration 
+        	Advanced usage - overriding the CKEditor configuration
         		&lt;uiComponents:ckeditor selector="jahia-ckeditor"&gt;
         			{
         				skin: 'kama',
@@ -308,7 +203,7 @@
         		&lt;/uiComponents:ckeditor&gt;
         </example>
     </tag-file>
-    
+
     <tag-file>
         <name>fileSelector</name>
         <path>/META-INF/tags/fileSelector.tag</path>
@@ -322,7 +217,7 @@
                 org.jahia.services.content
         -->
     </tag-file>
-    
+
     <tag-file>
         <name>loginArea</name>
         <path>/META-INF/tags/login/loginArea.tag</path>
@@ -339,7 +234,7 @@
         <name>loginUsername</name>
         <path>/META-INF/tags/login/loginUsername.tag</path>
     </tag-file>
-        
+
     <tag-file>
         <name>pageSelector</name>
         <path>/META-INF/tags/pageSelector.tag</path>

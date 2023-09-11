@@ -71,17 +71,6 @@ rule "Move to split folder"
         Move to split folder node
 end
 
-// Portlet rules
-rule "Portlet definition deleted"
-    when
-        A node is deleted
-        The node has a parent
-            - the parent has the type jnt:portletDefinitions
-    then
-        Flush ApplicationCache
-        Flush ApplicationContextCache
-end
-
 rule "notify user (create)"
     when
        A new node is created

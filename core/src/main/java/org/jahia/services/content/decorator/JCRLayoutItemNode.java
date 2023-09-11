@@ -60,14 +60,6 @@ public class JCRLayoutItemNode extends JCRNodeDecorator {
         super(node);
     }
 
-    public Node getPortlet() throws RepositoryException {
-        return getProperty("j:portlet").getNode();
-    }
-
-    public void setPortlet(JCRNodeWrapper portletNode) throws RepositoryException {
-        setProperty("j:portlet", portletNode);
-    }
-
     public int getColumnIndex() throws RepositoryException {
         return (int) getProperty("j:columnIndex").getLong();
     }

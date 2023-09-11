@@ -51,7 +51,7 @@ site_tree:
         pathPattern: /sites/.*
     - api: view.json.treeItem, view.json.tree
       node:
-        nodeType: jnt:folder, jnt:page, jnt:portlet, jnt:navMenuText
+        nodeType: jnt:folder, jnt:page, jnt:navMenuText
         pathPattern: /sites/.*
 
 open_all:
@@ -60,7 +60,7 @@ open_all:
     - always: true
   grants:
     - node:
-        nodeType: jnt:folder,jnt:page,jnt:portlet,jnt:navMenuText
+        nodeType: jnt:folder,jnt:page,jnt:navMenuText
         pathPattern: /sites/.*
 
 html_views:

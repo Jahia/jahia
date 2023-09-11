@@ -6,10 +6,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
                         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd">
 
-    <bean id="plutoProcessActionFilter" class="org.mockito.Mockito" factory-method="mock">
-        <constructor-arg value="org.jahia.services.render.filter.AbstractFilter"/>    
-    </bean>
-    
     <bean id="RenderService" class="org.mockito.Mockito" factory-method="mock">
         <constructor-arg value="org.jahia.services.render.RenderService" />
     </bean>

@@ -104,8 +104,6 @@ public class RenderContext {
     private SiteInfo siteInfo;
     private boolean forceUILocaleForJCRSession;
 
-    private boolean portletActionRequest;
-
     private boolean ugcEnabled = true;
 
     public RenderContext(HttpServletRequest request, HttpServletResponse response, JahiaUser user) {
@@ -410,14 +408,6 @@ public class RenderContext {
 
     public boolean isForceUILocaleForJCRSession() {
         return forceUILocaleForJCRSession;
-    }
-
-    public boolean isPortletActionRequest() {
-        return portletActionRequest;
-    }
-
-    public void setPortletActionRequest(boolean portletActionRequest) {
-        this.portletActionRequest = portletActionRequest;
     }
 
     public boolean isUgcEnabled() {

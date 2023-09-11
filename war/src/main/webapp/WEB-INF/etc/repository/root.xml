@@ -33,8 +33,6 @@
 
     <mounts jcr:primaryType="jnt:mounts"/>
 
-    <portletdefinitions jcr:primaryType="jnt:portletDefinitions"/>
-
     <modules jcr:primaryType="jnt:modules"/>
 
     <j:acl jcr:primaryType="jnt:acl">

@@ -359,11 +359,6 @@ public class TemplatePackageDeployer {
             v.setProperty("j:deployementDate", new GregorianCalendar());
             modified = true;
         }
-
-        if (!m.hasNode("portlets")) {
-            modified = true;
-            m.addNode("portlets", "jnt:portletFolder");
-        }
         if (!m.hasNode("files")) {
             modified = true;
             m.addNode("files", "jnt:folder");

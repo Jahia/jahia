@@ -157,7 +157,7 @@ public class RenderChain {
         }
         Integer finalFilterIndex = null;
         try {
-            for (; index < filters.size() && out == null && renderContext.getRedirect() == null && !renderContext.isPortletActionRequest(); index++) {
+            for (; index < filters.size() && out == null && renderContext.getRedirect() == null; index++) {
                 RenderFilter filter = filters.get(index);
                 if (filter.areConditionsMatched(renderContext, resource)) {
                     long timer = System.currentTimeMillis();
@@ -170,7 +170,7 @@ public class RenderChain {
                 }
             }
             index--;
-            for (; index >= 0 && renderContext.getRedirect() == null && !renderContext.isPortletActionRequest(); index--) {
+            for (; index >= 0 && renderContext.getRedirect() == null; index--) {
                 RenderFilter filter = filters.get(index);
                 if (filter.areConditionsMatched(renderContext, resource)) {
                     long timer = System.currentTimeMillis();

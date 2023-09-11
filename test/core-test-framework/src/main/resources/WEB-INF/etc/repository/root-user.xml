@@ -19,8 +19,6 @@
                 <profile jcr:primaryType="jnt:folder"/>
             </files>
 
-            <portlets jcr:primaryType="jnt:portletFolder"/>
-
             <contents jcr:primaryType="jnt:contentFolder"/>
 
             <preferences jcr:primaryType="jnt:preferences">

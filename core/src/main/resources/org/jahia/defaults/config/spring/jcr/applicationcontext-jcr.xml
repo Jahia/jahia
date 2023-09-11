@@ -112,7 +112,6 @@
                 <entry key="jnt:virtualsite" value="org.jahia.services.content.decorator.JCRSiteNode"/>
                 <entry key="nt:file" value="org.jahia.services.content.decorator.JCRFileNode"/>
                 <entry key="nt:folder" value="org.jahia.services.content.decorator.JCRFileNode"/>
-                <entry key="jnt:portlet" value="org.jahia.services.content.decorator.JCRPortletNode"/>
                 <entry key="nt:query" value="org.jahia.services.content.decorator.JCRQueryNode"/>
                 <entry key="jnt:mountPoint" value="org.jahia.services.content.decorator.JCRMountPointNode"/>
                 <entry key="jnt:layout" value="org.jahia.services.content.decorator.JCRLayoutNode"/>
@@ -124,12 +123,9 @@
                 <entry key="jnt:contentReference" value="org.jahia.services.content.decorator.JCRReferenceNode"/>
                 <entry key="jnt:contentFolderReference" value="org.jahia.services.content.decorator.JCRReferenceNode"/>
                 <entry key="jnt:nodeLink" value="org.jahia.services.content.decorator.JCRReferenceNode"/>
-                <entry key="jnt:portletReference" value="org.jahia.services.content.decorator.JCRReferenceNode"/>
                 <entry key="jnt:simplePreference"
                        value="org.jahia.services.preferences.generic.GenericJahiaPreference"/>
                 <entry key="jnt:pagePreference" value="org.jahia.services.preferences.page.PageJahiaPreference"/>
-                <entry key="jnt:portletPreference"
-                       value="org.jahia.services.applications.pluto.JahiaPortletPreference"/>
                 <entry key="jnt:user" value="org.jahia.services.content.decorator.JCRUserNode"/>
                 <entry key="jnt:group" value="org.jahia.services.content.decorator.JCRGroupNode"/>
                 <entry key="jnt:component" value="org.jahia.services.content.decorator.JCRComponentNode"/>
@@ -144,7 +140,6 @@
                 <value>jnt:contentFolder</value>
                 <value>jnt:groupsFolder</value>
                 <value>jnt:pageTemplate</value>
-                <value>jnt:portletFolder</value>
                 <value>jnt:tagList</value>
                 <value>jnt:template</value>
                 <value>jnt:templatesFolder</value>
@@ -650,7 +645,6 @@
                     <property name="templateManagerService" ref="JahiaTemplateManagerService"/>
                 </bean>
                 <bean class="org.jahia.services.importexport.validation.MissingNodetypesValidator"/>
-                <bean class="org.jahia.services.importexport.validation.MissingPortletsValidator"/>
                 <bean class="org.jahia.services.importexport.validation.ProviderAvailabilityValidator">
                     <property name="jcrSessionFactory" ref="jcrSessionFactory"/>
                 </bean>

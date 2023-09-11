@@ -28,13 +28,6 @@
         <property name="fileStorage" ref="UploadedPendingFileStorage"/>
     </bean>
 
-    <bean name="PortletHelper" class="org.jahia.ajax.gwt.helper.PortletHelper">
-        <property name="navigation" ref="NavigationHelper"/>
-        <property name="acl" ref="ACLHelper"/>
-        <property name="contentManager" ref="ContentManagerHelper"/>
-        <property name="applicationsManager" ref="ApplicationsManagerService"/>
-    </bean>
-
     <bean name="NavigationHelper" class="org.jahia.ajax.gwt.helper.NavigationHelper">
         <property name="ignoreInUsages">
             <set>

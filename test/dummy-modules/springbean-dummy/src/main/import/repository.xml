@@ -3,7 +3,6 @@
          xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
     <modules jcr:primaryType="jnt:modules">
         <springbean-dummy j:dependencies="default" j:moduleType="module" j:title="springbean-dummy" jcr:primaryType="jnt:module">
-            <portlets jcr:primaryType="jnt:portletFolder"/>
             <files jcr:primaryType="jnt:folder"/>
             <contents jcr:primaryType="jnt:contentFolder">
                 <test-contents jcr:primaryType="jnt:contentFolder">
@@ -22,4 +21,3 @@
         </springbean-dummy>
     </modules>
 </content>
-

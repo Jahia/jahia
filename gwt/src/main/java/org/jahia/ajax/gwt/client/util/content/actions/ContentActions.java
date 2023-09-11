@@ -59,7 +59,6 @@ import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.FileUploader;
 import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
-import org.jahia.ajax.gwt.client.widget.content.portlet.PortletWizardWindow;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeWindow;
 
 import java.util.*;
@@ -274,24 +273,6 @@ public class ContentActions {
             }
         }
     }
-
-    /**
-     * Show portlet wizard form
-     *
-     * @param linker
-     */
-    public static void showPortletWizard(final Linker linker) {
-        GWTJahiaNode parent = linker.getSelectionContext().getSingleSelection();
-        if (parent != null) {
-            PortletWizardWindow window = new PortletWizardWindow(linker, parent);
-            window.show();
-        }
-    }
-
-    /**
-     * Show deploy portlet form
-     * @param linker
-     */
 
     /**
      * Show content wizard with a selected node type

@@ -18,68 +18,12 @@
         <property name="cacheService" ref="JahiaCacheService"/>
         <property name="jcrStoreService" ref="JCRStoreService"/>
         <property name="providerTypes">
-            <map>
-                <entry key="portlet" value="jnt:portletPreference"/>
-            </map>
+            <map/>
         </property>
-    </bean>
-
-    <bean id="PortletDispatchingProvider" class="org.jahia.services.applications.pluto.PlutoDispatchingProvider"
-          init-method="start" destroy-method="stop"/>
-
-    <bean id="DispatchingService" class="org.jahia.services.applications.DispatchingServiceImpl"
-          parent="jahiaServiceTemplate" factory-method="getInstance">
-        <property name="dispatchingProviders">
-            <map>
-                <entry key="portlet" value-ref="PortletDispatchingProvider"/>
-            </map>
-        </property>
-        <property name="applicationsManager" ref="ApplicationsManagerService"/>
-    </bean>
-
-    <bean id="ServletContextManager" class="org.jahia.services.applications.ServletContextManager"
-          factory-method="getInstance" init-method="start">
-        <property name="cacheService" ref="JahiaCacheService"/>
     </bean>
 
     <bean id="QueryService" class="org.jahia.services.query.QueryServiceImpl"
           parent="jahiaServiceTemplate" factory-method="getInstance"/>
-
-    <bean id="ApplicationsManagerPortletProvider"
-          class="org.jahia.services.applications.pluto.ApplicationsManagerPlutoProvider" init-method="start"
-          destroy-method="stop"/>
-
-    <bean id="ApplicationsManagerService"
-          class="org.jahia.services.applications.ApplicationsManagerServiceImpl"
-          parent="jahiaServiceTemplate" factory-method="getInstance">
-        <property name="managerProviders">
-            <map>
-                <entry key="portlet" value-ref="ApplicationsManagerPortletProvider"/>
-            </map>
-        </property>
-        <property name="jcrTemplate" ref="jcrTemplate"/>
-        <property name="cacheService" ref="JahiaCacheService"/>
-        <property name="groupManagerService" ref="JahiaGroupManagerService"/>
-        <property name="servletContextManager" ref="ServletContextManager"/>
-        <property name="plutoServices" ref="PlutoServices"/>
-        <property name="defaultPortletPermissionMappings">
-            <map>
-                <entry key="createInstance" value="/roles/editor"/>
-            </map>
-        </property>
-        <property name="defaultWebAppRoleMappings">
-            <map>
-                <entry key="tomcat" value="/roles/administrator"/>
-            </map>
-        </property>
-        <property name="defaultPortletModeMappings">
-            <map>
-                <entry key="view" value="/roles/reader"/>
-                <entry key="edit" value="/roles/editor"/>
-                <entry key="help" value="/roles/editor"/>
-            </map>
-        </property>
-    </bean>
 
     <bean id="JahiaFileWatcherService"
           class="org.jahia.services.deamons.filewatcher.JahiaFileWatcherBaseService"

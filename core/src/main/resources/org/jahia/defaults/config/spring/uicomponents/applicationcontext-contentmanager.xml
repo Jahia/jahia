@@ -68,140 +68,6 @@
         <property name="forbiddenNodeTypesForDragAndDrop" ref="forbidDeleteRenameCutForNodeTypes"/>
     </bean>
 
-    <!-- portlet manager -->
-    <bean id="portletmanager" parent="abstractmanager">
-        <property name="requiredPermission" value="portletManager"/>
-        <property name="nodeTypes">
-            <list>
-                <value>jnt:portlet</value>
-                <value>jnt:portletFolder</value>
-            </list>
-        </property>
-        <property name="folderTypes">
-            <list>
-                <value>jnt:portletFolder</value>
-            </list>
-        </property>
-        <property name="excludedNodeTypes">
-            <set>
-                <value>jmix:hiddenType</value>
-            </set>
-        </property>
-        <property name="toolbars">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                <property name="items">
-                    <list>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="PortletManager.Menu.File">
-
-                            <property name="titleKey"
-                                      value="fileMenu.label"/>
-                            <property name="items">
-                                <list>
-                                    <ref bean="Toolbar.Item.NewPortletFolder"/>
-                                    <ref bean="Toolbar.Item.NewPortlet"/>
-                                </list>
-                            </property>
-                        </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="PortletManager.Menu.Edit">
-                            <property name="titleKey" value="label.edit"/>
-                            <property name="items">
-                                <list>
-                                    <ref bean="Toolbar.Item.Rename"/>
-                                    <ref bean="Toolbar.Item.Delete"/>
-                                    <ref bean="Toolbar.Item.Undelete"/>
-                                    <ref bean="Toolbar.Item.DeletePermanently"/>
-                                    <ref bean="Toolbar.Item.Separator"/>
-                                    <ref bean="Toolbar.Item.Copy"/>
-                                    <ref bean="Toolbar.Item.Cut"/>
-                                    <ref bean="Toolbar.Item.Paste"/>
-                                    <ref bean="Toolbar.Item.Separator"/>
-                                </list>
-                            </property>
-                        </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="PortletManager.Menu.View">
-                            <property name="titleKey"
-                                      value="viewMenu.label"/>
-                            <property name="items">
-                                <list>
-                                    <ref bean="Toolbar.Item.Refresh"/>
-                                    <ref bean="Toolbar.Item.Separator"/>
-                                    <ref bean="Toolbar.Item.ListView"/>
-                                    <ref bean="Toolbar.Item.ThumbsView"/>
-                                    <ref bean="Toolbar.Item.Detailedview"/>
-                                </list>
-                            </property>
-                        </bean>
-                        <ref bean="Toolbar.ItemsGroup.LanguageSwitcher"/>
-                    </list>
-                </property>
-            </bean>
-        </property>
-        <property name="contextMenu">
-            <bean id="portletmanagerContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                <property name="items">
-                    <list>
-                        <ref bean="Toolbar.Item.NewPortletFolder"/>
-                        <ref bean="Toolbar.Item.NewPortlet"/>
-                        <ref bean="Toolbar.Item.Rename"/>
-                        <ref bean="Toolbar.Item.Delete"/>
-                        <ref bean="Toolbar.Item.Undelete"/>
-                        <ref bean="Toolbar.Item.DeletePermanently"/>
-                        <ref bean="Toolbar.Item.Copy"/>
-                        <ref bean="Toolbar.Item.Cut"/>
-                        <ref bean="Toolbar.Item.Paste"/>
-                        <ref bean="Toolbar.Item.PasteReference"/>
-                        <ref bean="Toolbar.Item.Separator"/>
-                        <ref bean="Toolbar.Item.Refresh"/>
-                        <ref bean="Toolbar.Item.Publish"/>
-                    </list>
-                </property>
-            </bean>
-        </property>
-        <property name="enableFileDoubleClick" value="false"/>
-        <property name="displaySearchInPage" value="false"/>
-        <property name="displaySearchInContent" value="false"/>
-        <property name="displaySearchInDateMeta" value="true"/>
-        <property name="displaySearchInFile" value="false"/>
-        <property name="searchInContent" value="true"/>
-        <property name="searchInFile" value="true"/>
-        <property name="displaySearchInTag" value="true"/>
-        <property name="defaultView" value="detailed"/>
-
-        <!-- accordion panels-->
-        <property name="repositories">
-            <list>
-                <ref bean="repository.websiteportlets"/>
-                <ref bean="repository.myportlets"/>
-            </list>
-        </property>
-        <!-- tabs -->
-        <property name="engineTabs">
-            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                <ref bean="Engine.Tab.Info"/>
-                <ref bean="Engine.Tab.Content"/>
-                <ref bean="Engine.Tab.LiveRoles"/>
-                <ref bean="Engine.Tab.EditRoles"/>
-                <ref bean="Engine.Tab.Usages"/>
-            </list>
-        </property>
-        <!-- table columns-->
-        <property name="treeColumns">
-            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>name</value>
-            </list>
-        </property>
-        <property name="tableColumns">
-            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>icon,40,imageMenu.label</value>
-                <value>name,*,label.name</value>
-                <!--
-                                <value>locked,60,label.lock</value>
-                -->
-                <value>jcr:lastModified,100</value>
-            </list>
-        </property>
-    </bean>
-
     <!-- category manager -->
     <bean id="categorymanager" parent="abstractmanager">
         <property name="requiredPermission" value="categoryManager"/>
@@ -331,85 +197,6 @@
         </property>
     </bean>
 
-    <!-- portlet definition manager -->
-    <bean id="portletdefinitionmanager"
-          parent="abstractmanager">
-
-        <property name="requiredPermission" value="portletDefinitionManager"/>
-        <property name="nodeTypes" value="jnt:portletDefinition"/>
-        <property name="toolbars">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                <property name="items">
-                    <list>
-                        <ref bean="Toolbar.Item.DeployPortlets"/>
-                        <ref bean="Toolbar.Item.Refresh"/>
-                        <ref bean="Toolbar.Item.Delete"/>
-                        <ref bean="Toolbar.Item.Undelete"/>
-                        <ref bean="Toolbar.Item.DeletePermanently"/>
-                    </list>
-                </property>
-            </bean>
-        </property>
-        <property name="excludedNodeTypes">
-            <set>
-                <value>jmix:hiddenType</value>
-            </set>
-        </property>
-        <property name="contextMenu">
-            <bean id="portletdefinitionmanagerContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                <property name="items">
-                    <list>
-                        <ref bean="Toolbar.Item.DeployPortlets"/>
-                        <ref bean="Toolbar.Item.Refresh"/>
-                        <ref bean="Toolbar.Item.Delete"/>
-                        <ref bean="Toolbar.Item.Undelete"/>
-                        <ref bean="Toolbar.Item.DeletePermanently"/>
-                    </list>
-                </property>
-            </bean>
-        </property>
-
-        <property name="hideLeftPanel" value="true"/>
-        <property name="enableFileDoubleClick" value="false"/>
-        <property name="expandRoot" value="true"/>
-        <property name="displaySearchInPage" value="false"/>
-        <property name="displaySearchInDateMeta" value="true"/>
-        <property name="displaySearchInContent" value="false"/>
-        <property name="displaySearchInFile" value="false"/>
-        <property name="displaySearchInTag" value="true"/>
-        <property name="searchInContent" value="false"/>
-        <property name="searchInFile" value="true"/>
-        <property name="defaultView" value="list"/>
-
-        <!-- accordion panels-->
-        <property name="repositories">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-                    <property name="key" value="portletDefinitionRepository"/>
-                    <property name="paths" value="/portletdefinitions"/>
-                </bean>
-            </list>
-        </property>
-        <!-- tabs -->
-        <property name="engineTabs">
-            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                <ref bean="Engine.Tab.Portlets"/>
-                <ref bean="Engine.Tab.LiveRoles"/>
-                <ref bean="Engine.Tab.EditRoles"/>
-                <ref bean="Engine.Tab.Usages"/>
-            </list>
-        </property>
-        <!-- table columns-->
-        <property name="tableColumns">
-            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>name,*,label.name</value>
-                <value>j:context,200,label.context</value>
-            </list>
-        </property>
-
-    </bean>
-
-
     <!-- repository explorer -->
     <bean id="repositoryexplorer" parent="abstractmanager">
         <property name="requiredPermission" value="repositoryExplorer"/>
@@ -420,7 +207,6 @@
             <list>
                 <value>rep:system</value>
                 <value>jnt:referencesKeeper</value>
-                <value>jnt:portletDefinitions</value>
                 <value>jnt:acl</value>
                 <value>jnt:workflowRules</value>
                 <value>jnt:permission</value>
@@ -453,7 +239,6 @@
                                     <ref bean="Toolbar.Item.NewContentFolder"/>
                                     <ref bean="Toolbar.Item.NewContent"/>
                                     <ref bean="Toolbar.Item.NewPage"/>
-                                    <ref bean="Toolbar.Item.NewPortlet"/>
                                     <ref bean="Toolbar.Item.Download"/>
                                     <!--
                                     <ref bean="Toolbar.Item.Webfolder"/>
@@ -530,7 +315,6 @@
                         <ref bean="Toolbar.Item.NewContentFolder"/>
                         <ref bean="Toolbar.Item.NewContent"/>
                         <ref bean="Toolbar.Item.NewPage"/>
-                        <ref bean="Toolbar.Item.NewPortlet"/>
                         <ref bean="Toolbar.Item.Download"/>
                         <ref bean="Toolbar.Item.Lock"/>
                         <ref bean="Toolbar.Item.Unlock"/>
@@ -730,21 +514,6 @@
         <property name="paths" value="/mounts"/>
         <property name="titleKey"
                   value="repository.myExternalRepository.label"/>
-    </bean>
-
-
-    <bean id="repository.myportlets" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="myPortletRepository"/>
-        <property name="paths" value="$user/portlets"/>
-        <property name="titleKey"
-                  value="repository.myPortletRepository.label"/>
-    </bean>
-
-    <bean id="repository.websiteportlets" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="websitePortletRepository"/>
-        <property name="paths" value="$site/portlets"/>
-        <property name="titleKey"
-                  value="repository.websitePortletRepository.label"/>
     </bean>
 
     <bean id="repository.mycontent" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">

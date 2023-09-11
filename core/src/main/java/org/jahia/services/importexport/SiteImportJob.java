@@ -404,11 +404,6 @@ public class SiteImportJob extends BackgroundJob {
                             MissingTemplatesValidationResult missingTemplates = ((MissingTemplatesValidationResult) result);
                             builder.append(Messages.getInternalWithArguments("failure.import.missingTemplates", locale, missingTemplates.getMissingTemplates().size()))
                                     .append(missingTemplates.getMissingTemplates().keySet());
-                        } else if (result instanceof MissingPortletsValidationResult) {
-                            importErrorMessageLineStepper(builder);
-                            MissingPortletsValidationResult missingPortlets = ((MissingPortletsValidationResult) result);
-                            builder.append(Messages.getInternalWithArguments("failure.import.missingPortlets", locale, missingPortlets.getMissingPortlets().size()))
-                                    .append(missingPortlets.getMissingPortlets());
                         } else if (result instanceof ProviderAvailabilityValidatorResult) {
                             importErrorMessageLineStepper(builder);
                             ProviderAvailabilityValidatorResult providerAvailabilityValidatorResult = ((ProviderAvailabilityValidatorResult) result);

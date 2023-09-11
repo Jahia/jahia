@@ -104,17 +104,11 @@ public interface JahiaContentManagementServiceAsync {
 
     void createFolder(String parentPath, String name, AsyncCallback<GWTJahiaNode> async);
 
-    void createGoogleGadgetPortletInstance(String path, String name, String script, AsyncCallback<GWTJahiaNode> async);
-
     void createNode(String parentPath, GWTJahiaNode node, AsyncCallback<GWTJahiaNode> async);
 
     void createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNode> subNodes, Map<String, String> parentNodesType, boolean forceCreation, AsyncCallback<GWTJahiaNode> async);
 
     void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, AsyncCallback<GWTJahiaNode> asyncCallback);
-
-    void createPortletInstance(String path, GWTJahiaNewPortletInstance wiz, AsyncCallback<GWTJahiaNode> async);
-
-    void createRSSPortletInstance(String path, String name, String url, AsyncCallback<GWTJahiaNode> async);
 
     void createModule(String moduleName, String artifactId, String groupId, String siteType, String sources, AsyncCallback<GWTJahiaNode> asyncCallback);
 
@@ -129,8 +123,6 @@ public interface JahiaContentManagementServiceAsync {
     void deletePaths(List<String> paths, AsyncCallback<GWTJahiaNode> async);
 
     void deployTemplates(String templatesPath, String sitePath, AsyncCallback asyncCallback);
-
-    void drawPortletInstanceOutput(String windowID, String entryPointIDStr, String pathInfo, String queryString, AsyncCallback<GWTJahiaPortletOutputBean> async);
 
     void flush(String path, AsyncCallback<Void> asyncCallback);
 
@@ -272,8 +264,6 @@ public interface JahiaContentManagementServiceAsync {
 
     void initializeCreateEngine(String typeName, String parentPath, String targetName, AsyncCallback<GWTJahiaCreateEngineInitBean> async);
 
-    void initializeCreatePortletEngine(String typeName, String parentPath, AsyncCallback<GWTJahiaCreatePortletInitBean> async);
-
     void initializeEditEngine(String nodePath, boolean tryToLockNode, AsyncCallback<GWTJahiaEditEngineInitBean> async);
 
     void initializeEditEngine(List<String> paths, boolean tryToLockNode, AsyncCallback<GWTJahiaEditEngineInitBean> async);
@@ -332,8 +322,6 @@ public interface JahiaContentManagementServiceAsync {
     void search(GWTJahiaSearchQuery search, int limit, int offset, boolean showOnlyNodesWithTemplates, AsyncCallback<PagingLoadResult<GWTJahiaNode>> async);
 
     void search(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, AsyncCallback<List<GWTJahiaNode>> async);
-
-    void searchPortlets(String match, AsyncCallback<List<GWTJahiaPortletDefinition>> async);
 
     void searchSQL(String searchString, int limit, int offset, List<String> nodeTypes, List<String> fields, boolean sortOnDisplayName, AsyncCallback<PagingLoadResult<GWTJahiaNode>> async);
 

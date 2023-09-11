@@ -35,7 +35,6 @@
         <property name="contentDefinition" ref="ContentDefinitionHelper"/>
         <property name="contentHub" ref="ContentHubHelper"/>
         <property name="contentManager" ref="ContentManagerHelper"/>
-        <property name="portlet" ref="PortletHelper"/>
         <property name="versioning" ref="VersioningHelper"/>
         <property name="navigation" ref="NavigationHelper"/>
         <property name="properties" ref="PropertiesHelper"/>

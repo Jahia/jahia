@@ -76,7 +76,6 @@ import org.jahia.api.Constants;
 import org.jahia.bin.Export;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.Login;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.params.valves.LoginConfig;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
@@ -138,7 +137,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private PublicationHelper publication;
     private WorkflowHelper workflow;
     private VersioningHelper versioning;
-    private PortletHelper portlet;
     private ContentDefinitionHelper contentDefinition;
     private ContentHubHelper contentHub;
     private PropertiesHelper properties;
@@ -176,10 +174,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void setContentManager(ContentManagerHelper contentManager) {
         this.contentManager = contentManager;
-    }
-
-    public void setPortlet(PortletHelper portlet) {
-        this.portlet = portlet;
     }
 
     public void setNavigation(NavigationHelper navigation) {
@@ -536,15 +530,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             });
         }
        return new BasePagingLoadResult<GWTJahiaNode>(gwtJahiaNodes, offset, total);
-    }
-
-    @Override
-    public List<GWTJahiaPortletDefinition> searchPortlets(String match) throws GWTJahiaServiceException {
-        try {
-            return portlet.searchPortlets(match, getLocale(), retrieveCurrentSession(), getUILocale());
-        } catch (Exception e) {
-            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.search.portlets", getUILocale(), e.getLocalizedMessage()));
-        }
     }
 
     @Override
@@ -1124,23 +1109,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     @Override
     public GWTJahiaNode createFolder(String parentPath, String name) throws GWTJahiaServiceException {
         return contentManager.createFolder(parentPath, name, retrieveCurrentSession(), getUILocale(), getSession().getId());
-    }
-
-    @Override
-    public GWTJahiaNode createPortletInstance(String path, GWTJahiaNewPortletInstance wiz)
-            throws GWTJahiaServiceException {
-        return portlet.createPortletInstance(path, wiz, retrieveCurrentSession(), getUILocale(), getSession().getId());
-    }
-
-    @Override
-    public GWTJahiaNode createRSSPortletInstance(String path, String name, String url) throws GWTJahiaServiceException {
-        return portlet.createRSSPortletInstance(path, name, url, getSite(), retrieveCurrentSession(), getUILocale(), getSession().getId());
-    }
-
-    @Override
-    public GWTJahiaNode createGoogleGadgetPortletInstance(String path, String name, String script)
-            throws GWTJahiaServiceException {
-        return portlet.createGoogleGadgetPortletInstance(path, name, script, getSite(), retrieveCurrentSession(), getUILocale(), getSession().getId());
     }
 
     @Override
@@ -1947,20 +1915,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     @Override
-    public GWTJahiaCreatePortletInitBean initializeCreatePortletEngine(String typename, String parentpath)
-            throws GWTJahiaServiceException {
-
-        GWTJahiaCreateEngineInitBean result = initializeCreateEngine(typename, parentpath, null);
-        GWTJahiaCreatePortletInitBean portletInitBean = new GWTJahiaCreatePortletInitBean();
-        portletInitBean.setChoiceListInitializersValues(result.getChoiceListInitializersValues());
-        portletInitBean.setLanguages(result.getLanguages());
-        portletInitBean.setMixin(result.getMixin());
-        portletInitBean.setNodeType(contentDefinition.getNodeType(typename, getUILocale()));
-
-        return portletInitBean;
-    }
-
-    @Override
     public GWTJahiaEditEngineInitBean initializeEditEngine(String nodepath, boolean tryToLockNode)
             throws GWTJahiaServiceException {
         enableJcrSessionReadOnlyCache();
@@ -2487,48 +2441,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         enableJcrSessionReadOnlyCache();
         return uiConfigHelper.getGWTToolbarSet(getSite(), getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(), getRequest(), toolbarGroup);
     }
-
-    @Override
-    public GWTJahiaPortletOutputBean drawPortletInstanceOutput(String windowID, String entryPointIDStr, String pathInfo, String queryString) {
-        GWTJahiaPortletOutputBean result = new GWTJahiaPortletOutputBean();
-        try {
-            int fieldId = Integer.parseInt(windowID);
-            String portletOutput = ServicesRegistry.getInstance().getApplicationsDispatchService().getAppOutput(fieldId, entryPointIDStr, getRemoteJahiaUser(), getRequest(), getResponse(), getServletContext(), getWorkspace());
-            try {
-                JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(entryPointIDStr);
-                String nodeTypeName = node.getPrimaryNodeTypeName();
-                /** todo cleanup the hardcoded value here */
-                if ("jnt:htmlPortlet".equals(nodeTypeName)) {
-                    result.setInIFrame(false);
-                }
-                if ("jnt:contentPortlet".equals(nodeTypeName) || "jnt:rssPortlet".equals(nodeTypeName)) {
-                    result.setInContentPortlet(true);
-                }
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            }
-            result.setHtmlOutput(portletOutput);
-
-            // what we need to do now is to do special processing for <script> tags, and on the client side we will
-            // create them dynamically.
-            Source source = new Source(portletOutput);
-            source = new Source((new SourceFormatter(source)).toString());
-            List<StartTag> scriptTags = source.getAllStartTags(HTMLElementName.SCRIPT);
-            for (StartTag curScriptTag : scriptTags) {
-                if ((curScriptTag.getAttributeValue("src") != null) &&
-                        (!curScriptTag.getAttributeValue("src").equals(""))) {
-                    result.getScriptsWithSrc().add(curScriptTag.getAttributeValue("src"));
-                } else {
-                    result.getScriptsWithCode().add(curScriptTag.getElement().getContent().toString());
-                }
-            }
-
-        } catch (JahiaException e) {
-            logger.error(e.getMessage(), e);
-        }
-        return result;
-    }
-
 
     @Override
     public List<GWTJahiaSite> getAvailableSites() {

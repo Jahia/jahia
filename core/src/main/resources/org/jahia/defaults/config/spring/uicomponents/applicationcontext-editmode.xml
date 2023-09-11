@@ -325,63 +325,6 @@
 
                 <ref bean="SidePanelTab.FilesImages"/>
 
-                <!--<bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
-                    <property name="key" value="portlets"/>
-                    <property name="icon" value="tab-portlets"/>
-                    <property name="tabItem">
-                        <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.PortletBrowseTabItem">
-                            <property name="paths">
-                                <list>
-                                    <value>$sites</value>
-                                    <value>$user/portlets</value>
-                                </list>
-                            </property>
-                            <property name="folderTypes" value="jnt:portletFolder"/>
-                        </bean>
-                    </property>
-
-                    <property name="treeColumns">
-                        <list>
-                            <value>displayName,*,label.title</value>
-                        </list>
-                    </property>
-                    <property name="treeContextMenu">
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                            <property name="items">
-                                <list>
-                                    <ref bean="Toolbar.Item.NewPortletFolder"/>
-                                    <ref bean="Toolbar.Item.NewPortlet"/>
-                                    <ref bean="Toolbar.Item.EditContent"/>
-                                    <ref bean="Toolbar.Item.Delete"/>
-                                    <ref bean="Toolbar.Item.Undelete"/>
-                                    <ref bean="Toolbar.Item.DeletePermanently"/>
-                                    <ref bean="Toolbar.Item.Copy"/>
-                                    <ref bean="Toolbar.Item.Cut"/>
-                                    <ref bean="Toolbar.Item.Paste"/>
-                                    <ref bean="Toolbar.Item.PasteReference"/>
-                                </list>
-                            </property>
-                        </bean>
-                    </property>
-                    <property name="tableContextMenu">
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                            <property name="items">
-                                <list>
-                                    <ref bean="Toolbar.Item.EditContent"/>
-                                    <ref bean="Toolbar.Item.Publish"/>
-                                    <ref bean="Toolbar.Item.Delete"/>
-                                    <ref bean="Toolbar.Item.Undelete"/>
-                                    <ref bean="Toolbar.Item.DeletePermanently"/>
-                                    <ref bean="Toolbar.Item.Copy"/>
-                                    <ref bean="Toolbar.Item.Cut"/>
-                                    <ref bean="Toolbar.Item.Paste"/>
-                                    <ref bean="Toolbar.Item.PasteReference"/>
-                                </list>
-                            </property>
-                        </bean>
-                    </property>
-                    <property name="requiredPermission" value="portletsSelector"/>
-                </bean>-->
                 <ref bean="sidePanelTab.search"/>
 
                 <ref bean="sidePanelTab.categories"/>
@@ -457,7 +400,6 @@
         <property name="titleKey" value="label.managers"/>
         <property name="items">
             <list>
-                <ref bean="Toolbar.Item.PortletManager"/>
                 <ref bean="Toolbar.Item.RepositoryExplorer"/>
                 <ref bean="Toolbar.Item.CategoryManager"/>
             </list>
@@ -997,14 +939,6 @@
                     </list>
                 </property>
             </bean>
-        </property>
-    </bean>
-
-    <bean id="Engine.Tab.Portlets" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-        <property name="id" value="portlets"/>
-        <property name="titleKey" value="label.engineTab.portlets"/>
-        <property name="tabItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.PortletsTabItem"/>
         </property>
     </bean>
 

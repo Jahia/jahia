@@ -761,11 +761,6 @@ public class ContentManagerHelper {
                                 MissingTemplatesValidationResult missingTemplates = ((MissingTemplatesValidationResult) result);
                                 buffer.append(Messages.getInternalWithArguments("failure.import.missingTemplates", uiLocale, missingTemplates.getMissingTemplates().size()))
                                         .append(missingTemplates.getMissingTemplates().keySet());
-                            } else if (result instanceof MissingPortletsValidationResult) {
-                                importErrorMessageLineStepper(buffer);
-                                MissingPortletsValidationResult missingPortlets = ((MissingPortletsValidationResult) result);
-                                buffer.append(Messages.getInternalWithArguments("failure.import.missingPortlets", uiLocale, missingPortlets.getMissingPortlets().size()))
-                                        .append(missingPortlets.getMissingPortlets());
                             } else if (result instanceof ProviderAvailabilityValidatorResult) {
                                 importErrorMessageLineStepper(buffer);
                                 ProviderAvailabilityValidatorResult providerAvailabilityValidatorResult = ((ProviderAvailabilityValidatorResult) result);

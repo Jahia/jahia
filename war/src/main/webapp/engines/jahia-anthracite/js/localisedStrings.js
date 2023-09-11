@@ -43,7 +43,6 @@ Anthracite.dictionary.set("DE", {
     'pickerTitle-editoriallinkpicker': jahia_gwt_messages.label_editorialpicker,
     'pickerTitle-filemanager-anthracite': jahia_gwt_messages.label_filemanager_title,
     'pickerTitle-editorialcontentmanager-anthracite': jahia_gwt_messages.label_editorialcontentmanager_title,
-    'pickerTitle-portletmanager-anthracite': jahia_gwt_messages.label_portletmanager_title,
     'pickerTitle-repositoryexplorer-anthracite': jahia_gwt_messages.label_repositoryexplorer_title,
     'pickerTitle-categorymanager-anthracite': jahia_gwt_messages.label_categorymanager_title,
     'pickerTitle-sitemanager-anthracite': jahia_gwt_messages.label_sitemanager_title
@@ -145,7 +144,6 @@ Anthracite.dictionary.set("FR", {
     'pickerTitle-editoriallinkpicker': jahia_gwt_messages.label_editorialpicker,
     'pickerTitle-filemanager-anthracite': jahia_gwt_messages.label_filemanager_title,
     'pickerTitle-editorialcontentmanager-anthracite': jahia_gwt_messages.label_editorialcontentmanager_title,
-    'pickerTitle-portletmanager-anthracite': jahia_gwt_messages.label_portletmanager_title,
     'pickerTitle-repositoryexplorer-anthracite': jahia_gwt_messages.label_repositoryexplorer_title,
     'pickerTitle-categorymanager-anthracite': jahia_gwt_messages.label_categorymanager_title,
     'pickerTitle-sitemanager-anthracite': jahia_gwt_messages.label_sitemanager_title

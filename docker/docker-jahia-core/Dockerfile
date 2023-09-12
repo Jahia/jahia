@@ -1,4 +1,4 @@
-FROM tomcat:9-jdk11
+FROM tomcat:9-jdk11 as base
 
 LABEL maintainer="Jahia Product team <product@jahia.com>"
 
@@ -17,6 +17,11 @@ ARG TARGETOS
 ARG TARGETPLATFORM
 ARG TARGETARCH
 ARG TARGETVARIANT
+
+ARG GRAALVM_VERSION=22.3.1
+# We provide these arguments to be able to override the "guessing" that is done in the script below in case of problems
+ARG GRAALVM_ARCH
+ARG GRAALVM_URL
 
 # Container user
 ARG C_USER="tomcat"
@@ -73,6 +78,33 @@ RUN apt-get update \
         ${packages} \
     && rm -rf /var/lib/apt/lists/*
 
+ENV PATH="/usr/local/graalvm/bin:${PATH}"
+ENV JAVA_HOME=/usr/local/graalvm
+
+RUN set -ux; \
+    if [ -z ${GRAALVM_ARCH+x} ]; then \
+        GRAALVM_DL_ARCH="$(uname -m)" && \
+        if [ "$GRAALVM_DL_ARCH" = "x86_64" ]; then \
+            GRAALVM_DL_ARCH="amd64" ;\
+        else  \
+            GRAALVM_DL_ARCH="aarch64" ; \
+        fi ; \
+    else  \
+        GRAALVM_DL_ARCH=$GRAALVM_ARCH ; \
+    fi; \
+    if [ -z ${GRAALVM_URL+x} ]; then \
+        GRAALVM_DL_URL=https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${GRAALVM_VERSION}/graalvm-ce-java11-linux-${GRAALVM_DL_ARCH}-${GRAALVM_VERSION}.tar.gz ; \
+    else  \
+        GRAALVM_DL_URL = $GRAALVM_URL ; \
+    fi ; \
+    cd /usr/local && \
+    GRAALVM_SHA256="$(curl --no-progress-meter -L "$GRAALVM_DL_URL".sha256)" && \
+    curl --no-progress-meter -L --output /tmp/graalvm.tgz "$GRAALVM_DL_URL" && \
+    echo "$GRAALVM_SHA256" */tmp/graalvm.tgz | sha256sum -c && \
+    mkdir -p "/usr/local/graalvm" && \
+    tar --extract --file /tmp/graalvm.tgz --directory "/usr/local/graalvm" --strip-components 1 && \
+    /usr/local/graalvm/bin/gu install js ;
+
 RUN echo "Retrieve latest Yourkit agent binaries..." \
     && wget -nv -O yourkit.zip https://www.yourkit.com/download/docker/YourKit-JavaProfiler-2022.9-docker.zip -P /tmp/ \
     && unzip /tmp/yourkit.zip -d /usr/local \
@@ -97,6 +129,11 @@ RUN wget -nv -O maven.zip ${MAVEN_BASE_URL}/${MAVEN_VER}/binaries/apache-maven-$
 
 COPY --chown=${C_USER}:${C_GROUP} settings.xml /home/${C_USER}/.m2/settings.xml
 
+# Download jahia plugin
+USER ${C_USER}
+RUN mvn -q -Pconfiguration ${JAHIA_PLUGIN}:help
+USER root
+
 # Add scripts
 COPY bin/* /usr/local/bin/
 COPY setenv.sh /usr/local/tomcat/bin
@@ -113,11 +150,6 @@ RUN mkdir -p /etc/jahia  \
     && mkdir -p /etc/jahia/jahia \
     && chown -R ${C_USER}:${C_GROUP} /usr/local/tomcat/conf /etc/jahia
 
-# Download jahia plugin
-USER ${C_USER}
-RUN mvn -q -Pconfiguration ${JAHIA_PLUGIN}:help
-USER root
-
 STOPSIGNAL SIGINT
 
 ## fix hadolint DL4006
@@ -129,6 +161,11 @@ EXPOSE 8000
 EXPOSE 8080
 EXPOSE 8101
 EXPOSE 8443
+
+# This port is used to be able to access the GraalVM Chrome debugger tool : https://www.graalvm.org/latest/tools/chrome-debugger/
+EXPOSE 9229
+
+# This port is used for yourkit profiling
 EXPOSE 10001
 
 CMD ["/usr/local/bin/entrypoint.sh"]

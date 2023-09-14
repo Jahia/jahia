@@ -43,7 +43,6 @@
 package org.jahia.test.services.versioning;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -59,7 +58,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.version.Version;
@@ -123,6 +121,37 @@ public class VersioningTest extends JahiaTestCase {
         languagesStringSet.add(Locale.ENGLISH.toString());
     }
 
+    @Test
+    public void testExcludedVersion() throws Exception {
+        String excludedTypesVal = "";
+        JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
+        try {
+            // exclude jnt:event from versioning
+            Set<String> excludedTypes = ServicesRegistry.getInstance().getJCRVersionService().getExcludedVersionedTypes();
+            excludedTypesVal = String.join(",", excludedTypes);
+            ServicesRegistry.getInstance().getJCRVersionService().setExcludedVersionedTypes("jnt:event");
+            jcrService.setExcludedVersionedTypes("jnt:event");
+
+            // setup nodes
+            reopenSession();
+            final JCRNodeWrapper richText = createNodes(jcrService, "home_subpage1_exclude");
+
+            // verify jnt:event has been excluded from versioning i.e. version infos is empty
+            reopenSession();
+            final JCRNodeWrapper eventNode = liveSession.getNode(richText.getParent().getPath() + "/my-event");
+            List<VersionInfo> eventLiveVersionInfos = ServicesRegistry.getInstance().getJCRVersionService()
+                    .getVersionInfos(liveSession, eventNode);
+            assertTrue("There should be no versioning for jnt:event", eventLiveVersionInfos.isEmpty());
+        } catch (Exception ex) {
+            logger.warn("Exception during test", ex);
+            throw ex;
+        } finally {
+            // restore settings
+            ServicesRegistry.getInstance().getJCRVersionService().setExcludedVersionedTypes(excludedTypesVal);
+            jcrService.setExcludedVersionedTypes(excludedTypesVal);
+        }
+    }
+
 
     /**
      * Test number of version after publication
@@ -136,7 +165,7 @@ public class VersioningTest extends JahiaTestCase {
 
             reopenSession();
 
-            final JCRNodeWrapper richText = createNodes(jcrService);
+            final JCRNodeWrapper richText = createNodes(jcrService, "home_subpage1");
 
             // let's do some validation checks, first for the live workspace...
 
@@ -174,8 +203,6 @@ public class VersioningTest extends JahiaTestCase {
             }
             logger.debug("number of version: " + index[0]);
             assertEquals(NUMBER_OF_VERSIONS, index[0]);
-
-
         } catch (Exception ex) {
             logger.warn("Exception during test", ex);
             throw ex;
@@ -188,7 +215,7 @@ public class VersioningTest extends JahiaTestCase {
         liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
     }
 
-    private JCRNodeWrapper createNodes(JCRPublicationService jcrService)
+    private JCRNodeWrapper createNodes(JCRPublicationService jcrService, String subpage)
             throws RepositoryException, InterruptedException {
         JCRVersionService jcrVersionService = ServicesRegistry.getInstance().getJCRVersionService();
         JCRPublicationService jcrPublicationService = ServicesRegistry.getInstance().getJCRPublicationService();
@@ -206,7 +233,7 @@ public class VersioningTest extends JahiaTestCase {
         JCRNodeWrapper stageNode = stageRootNode.getNode("home");
 
         editSession.checkout(stageNode);
-        JCRNodeWrapper stagedSubPage = stageNode.addNode("home_subpage1", "jnt:page");
+        JCRNodeWrapper stagedSubPage = stageNode.addNode(subpage, "jnt:page");
         stagedSubPage.setProperty("jcr:title", "title0");
         stagedSubPage.setProperty("j:templateName", "simple");
 
@@ -220,6 +247,8 @@ public class VersioningTest extends JahiaTestCase {
 
         JCRNodeWrapper richText1 = stagedCol1.addNode("richText1", "jnt:bigText");
         richText1.setProperty("text", "richText0");
+        JCRNodeWrapper event = stagedCol1.addNode("my-event", "jnt:event");
+        event.setProperty("jcr:title", "My Event");
 
         JCRNodeWrapper stagedSubSubPage = stagedSubPage.addNode("home_subsubpage1", "jnt:page");
         stagedSubSubPage.setProperty("jcr:title", "subtitle0");

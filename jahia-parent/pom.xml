@@ -70,10 +70,10 @@
         <springwebflow-version>2.4.8.RELEASE</springwebflow-version>
         <jackrabbit.version>2.20.12-jahia1-SNAPSHOT</jackrabbit.version>
         <oak-jackrabbit-api.version.implemented>1.48.0</oak-jackrabbit-api.version.implemented>
-        <jackson.core.version>2.14.2</jackson.core.version>
-        <jackson-databind.core.version>2.14.2</jackson-databind.core.version>
-        <jackson.osgi.version>2.14.2</jackson.osgi.version>
-        <jackson-databind.osgi.version>2.14.2</jackson-databind.osgi.version>
+        <jackson.core.version>2.15.2</jackson.core.version>
+        <jackson-databind.core.version>2.15.2</jackson-databind.core.version>
+        <jackson.osgi.version>2.15.2</jackson.osgi.version>
+        <jackson-databind.osgi.version>2.15.2</jackson-databind.osgi.version>
         <lucene.version>3.6.2</lucene.version>
         <jbpm.version>6.0.0.Final</jbpm.version>
         <jbpm.version.jahia>${jbpm.version}-jahia</jbpm.version.jahia>
@@ -170,7 +170,7 @@
         <slf4j.version>1.7.36</slf4j.version>
         <osgi.version>7.0.0</osgi.version>
         <osgi.compendium.version>7.0.0</osgi.compendium.version>
-        <pax.logging.version>2.0.18</pax.logging.version>
+        <pax.logging.version>2.2.3</pax.logging.version>
         <pax.swissbox.version>1.8.3</pax.swissbox.version>
         <pax.url.version>2.6.12</pax.url.version>
         <pax.web.api.version>7.3.28</pax.web.api.version>
@@ -182,7 +182,7 @@
         <!-- End of OSGi versions -->
 
         <jahia.commons.version>1.0.8</jahia.commons.version>
-        <jahia.plugin.version>6.8-SNAPSHOT</jahia.plugin.version>
+        <jahia.plugin.version>6.9-SNAPSHOT</jahia.plugin.version>
         <jahia.archivers.version>${jahia.plugin.version}</jahia.archivers.version>
         <jahia.configurators.version>${jahia.plugin.version}</jahia.configurators.version>
         <jahia.deployers.version>${jahia.plugin.version}</jahia.deployers.version>

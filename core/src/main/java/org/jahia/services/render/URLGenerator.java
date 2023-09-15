@@ -488,18 +488,6 @@ public class URLGenerator {
         return login;
     }
 
-    public String getFindUser() {
-        return FindUser.getFindUserServletPath();
-    }
-
-    public String getFindUsersAndGroups() {
-        return FindUsersAndGroups.getFindUsersAndGroupsServletPath();
-    }
-
-    public String getFindUsersAndGroupsInAcl() {
-        return FindUsersAndGroupsInAcl.getFindUsersAndGroupsInAclServletPath();
-    }
-
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder(1024);

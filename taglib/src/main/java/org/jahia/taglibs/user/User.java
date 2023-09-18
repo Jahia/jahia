@@ -82,7 +82,7 @@ public class User {
                 final String[] groupArray = StringUtils.split(groups, ',');
                 for (String aGroupArray : groupArray) {
                     final String groupName = aGroupArray.trim();
-                    if (userNode.isMemberOfGroup(siteKey, groupName)) {
+                    if (userNode.isMemberOfGroup(siteKey, groupName) || userNode.isMemberOfGroup(null, groupName)) {
                         return true;
                     }
                 }
@@ -92,21 +92,7 @@ public class User {
     }
 
     public static Boolean notMemberOf(String groups, RenderContext renderContext) {
-        final JahiaUser currentUser = JCRSessionFactory.getInstance().getCurrentUser();
-        if (currentUser != null) {
-            JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByPath(currentUser.getLocalPath());
-            if (userNode != null) {
-                final String siteKey = retrieveSiteKey(renderContext);
-                final String[] groupArray = StringUtils.split(groups, ',');
-                for (String aGroupArray : groupArray) {
-                    String groupName = aGroupArray.trim();
-                    if (userNode.isMemberOfGroup(siteKey, groupName)) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
+        return !memberOf(groups, renderContext);
     }
 
     public static Collection<JCRNodeWrapper> getMembers(String group, RenderContext renderContext) {

@@ -53,7 +53,7 @@
     <artifactId>jahia-war</artifactId>
     <name>Jahia WAR</name>
     <packaging>war</packaging>
-
+    
     <profiles>
         <profile>
             <id>eclipse-integration</id>
@@ -73,11 +73,11 @@
                             <additionalBuildcommands>
                                 <buildCommand>
                                     <name>org.eclipse.wst.common.project.facet.core.builder</name>
-                                    <arguments />
+                                    <arguments/>
                                 </buildCommand>
                                 <buildCommand>
                                     <name>org.eclipse.wst.validation.validationbuilder</name>
-                                    <arguments />
+                                    <arguments/>
                                 </buildCommand>
                             </additionalBuildcommands>
                         </configuration>
@@ -85,7 +85,7 @@
                 </plugins>
             </build>
         </profile>
-
+        
         <profile>
             <id>generate-ddl</id>
             <activation>
@@ -113,8 +113,11 @@
                                             <version>${project.version}</version>
                                             <type>jar</type>
                                             <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.directory}/hibernate-entities</outputDirectory>
-                                            <includes>org/jahia/hibernate/model/JahiaDbTest.class,org/jahia/services/history/HistoryEntry.class,org/jahia/services/content/nodetypes/NodeTypesDBProvider.class</includes>
+                                            <outputDirectory>${project.build.directory}/hibernate-entities
+                                            </outputDirectory>
+                                            <includes>
+                                                org/jahia/hibernate/model/JahiaDbTest.class,org/jahia/services/history/HistoryEntry.class,org/jahia/services/content/nodetypes/NodeTypesDBProvider.class
+                                            </includes>
                                         </artifactItem>
                                     </artifactItems>
                                 </configuration>
@@ -135,7 +138,9 @@
                                 </goals>
                                 <configuration>
                                     <hibernateDialect>${hibernateDialect.derby}</hibernateDialect>
-                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/derby/00-drop-jahia-schema.sql</outputFile>
+                                    <outputFile>
+                                        ${basedir}/src/data/resources/db/sql/schema/derby/00-drop-jahia-schema.sql
+                                    </outputFile>
                                     <type>DROP</type>
                                 </configuration>
                             </execution>
@@ -146,7 +151,9 @@
                                 </goals>
                                 <configuration>
                                     <hibernateDialect>${hibernateDialect.derby}</hibernateDialect>
-                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/derby/01-create-jahia-schema.sql</outputFile>
+                                    <outputFile>
+                                        ${basedir}/src/data/resources/db/sql/schema/derby/01-create-jahia-schema.sql
+                                    </outputFile>
                                     <type>CREATE</type>
                                 </configuration>
                             </execution>
@@ -157,7 +164,9 @@
                                 </goals>
                                 <configuration>
                                     <hibernateDialect>${hibernateDialect.mssql}</hibernateDialect>
-                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/mssql/00-drop-jahia-schema.sql</outputFile>
+                                    <outputFile>
+                                        ${basedir}/src/data/resources/db/sql/schema/mssql/00-drop-jahia-schema.sql
+                                    </outputFile>
                                     <type>DROP</type>
                                 </configuration>
                             </execution>
@@ -168,7 +177,9 @@
                                 </goals>
                                 <configuration>
                                     <hibernateDialect>${hibernateDialect.mssql}</hibernateDialect>
-                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/mssql/01-create-jahia-schema.sql</outputFile>
+                                    <outputFile>
+                                        ${basedir}/src/data/resources/db/sql/schema/mssql/01-create-jahia-schema.sql
+                                    </outputFile>
                                     <type>CREATE</type>
                                 </configuration>
                             </execution>
@@ -179,7 +190,9 @@
                                 </goals>
                                 <configuration>
                                     <hibernateDialect>${hibernateDialect.mysql}</hibernateDialect>
-                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/mysql/00-drop-jahia-schema.sql</outputFile>
+                                    <outputFile>
+                                        ${basedir}/src/data/resources/db/sql/schema/mysql/00-drop-jahia-schema.sql
+                                    </outputFile>
                                     <type>DROP</type>
                                 </configuration>
                             </execution>
@@ -190,7 +203,9 @@
                                 </goals>
                                 <configuration>
                                     <hibernateDialect>${hibernateDialect.mysql}</hibernateDialect>
-                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/mysql/01-create-jahia-schema.sql</outputFile>
+                                    <outputFile>
+                                        ${basedir}/src/data/resources/db/sql/schema/mysql/01-create-jahia-schema.sql
+                                    </outputFile>
                                     <type>CREATE</type>
                                 </configuration>
                             </execution>
@@ -201,7 +216,9 @@
                                 </goals>
                                 <configuration>
                                     <hibernateDialect>${hibernateDialect.oracle}</hibernateDialect>
-                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/oracle/00-drop-jahia-schema.sql</outputFile>
+                                    <outputFile>
+                                        ${basedir}/src/data/resources/db/sql/schema/oracle/00-drop-jahia-schema.sql
+                                    </outputFile>
                                     <type>DROP</type>
                                 </configuration>
                             </execution>
@@ -212,7 +229,9 @@
                                 </goals>
                                 <configuration>
                                     <hibernateDialect>${hibernateDialect.oracle}</hibernateDialect>
-                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/oracle/01-create-jahia-schema.sql</outputFile>
+                                    <outputFile>
+                                        ${basedir}/src/data/resources/db/sql/schema/oracle/01-create-jahia-schema.sql
+                                    </outputFile>
                                     <type>CREATE</type>
                                 </configuration>
                             </execution>
@@ -223,7 +242,9 @@
                                 </goals>
                                 <configuration>
                                     <hibernateDialect>${hibernateDialect.postgresql}</hibernateDialect>
-                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/postgresql/00-drop-jahia-schema.sql</outputFile>
+                                    <outputFile>
+                                        ${basedir}/src/data/resources/db/sql/schema/postgresql/00-drop-jahia-schema.sql
+                                    </outputFile>
                                     <type>DROP</type>
                                 </configuration>
                             </execution>
@@ -234,7 +255,9 @@
                                 </goals>
                                 <configuration>
                                     <hibernateDialect>${hibernateDialect.postgresql}</hibernateDialect>
-                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/postgresql/01-create-jahia-schema.sql</outputFile>
+                                    <outputFile>
+                                        ${basedir}/src/data/resources/db/sql/schema/postgresql/01-create-jahia-schema.sql
+                                    </outputFile>
                                     <type>CREATE</type>
                                 </configuration>
                             </execution>
@@ -267,7 +290,9 @@
                                 </goals>
                                 <configuration>
                                     <hibernateDialect>${hibernateDialect.derby}</hibernateDialect>
-                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/derby/00-drop-jbpm-schema.sql</outputFile>
+                                    <outputFile>
+                                        ${basedir}/src/data/resources/db/sql/schema/derby/00-drop-jbpm-schema.sql
+                                    </outputFile>
                                     <statementType>DROP</statementType>
                                 </configuration>
                             </execution>
@@ -278,7 +303,9 @@
                                 </goals>
                                 <configuration>
                                     <hibernateDialect>${hibernateDialect.derby}</hibernateDialect>
-                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/derby/01-create-jbpm-schema.sql</outputFile>
+                                    <outputFile>
+                                        ${basedir}/src/data/resources/db/sql/schema/derby/01-create-jbpm-schema.sql
+                                    </outputFile>
                                     <statementType>CREATE</statementType>
                                 </configuration>
                             </execution>
@@ -289,7 +316,9 @@
                                 </goals>
                                 <configuration>
                                     <hibernateDialect>${hibernateDialect.mssql}</hibernateDialect>
-                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/mssql/00-drop-jbpm-schema.sql</outputFile>
+                                    <outputFile>
+                                        ${basedir}/src/data/resources/db/sql/schema/mssql/00-drop-jbpm-schema.sql
+                                    </outputFile>
                                     <statementType>DROP</statementType>
                                 </configuration>
                             </execution>
@@ -300,7 +329,9 @@
                                 </goals>
                                 <configuration>
                                     <hibernateDialect>${hibernateDialect.mssql}</hibernateDialect>
-                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/mssql/01-create-jbpm-schema.sql</outputFile>
+                                    <outputFile>
+                                        ${basedir}/src/data/resources/db/sql/schema/mssql/01-create-jbpm-schema.sql
+                                    </outputFile>
                                     <statementType>CREATE</statementType>
                                 </configuration>
                             </execution>
@@ -311,7 +342,9 @@
                                 </goals>
                                 <configuration>
                                     <hibernateDialect>${hibernateDialect.mysql}</hibernateDialect>
-                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/mysql/00-drop-jbpm-schema.sql</outputFile>
+                                    <outputFile>
+                                        ${basedir}/src/data/resources/db/sql/schema/mysql/00-drop-jbpm-schema.sql
+                                    </outputFile>
                                     <statementType>DROP</statementType>
                                 </configuration>
                             </execution>
@@ -322,7 +355,9 @@
                                 </goals>
                                 <configuration>
                                     <hibernateDialect>${hibernateDialect.mysql}</hibernateDialect>
-                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/mysql/01-create-jbpm-schema.sql</outputFile>
+                                    <outputFile>
+                                        ${basedir}/src/data/resources/db/sql/schema/mysql/01-create-jbpm-schema.sql
+                                    </outputFile>
                                     <statementType>CREATE</statementType>
                                 </configuration>
                             </execution>
@@ -333,7 +368,9 @@
                                 </goals>
                                 <configuration>
                                     <hibernateDialect>${hibernateDialect.oracle}</hibernateDialect>
-                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/oracle/00-drop-jbpm-schema.sql</outputFile>
+                                    <outputFile>
+                                        ${basedir}/src/data/resources/db/sql/schema/oracle/00-drop-jbpm-schema.sql
+                                    </outputFile>
                                     <statementType>DROP</statementType>
                                 </configuration>
                             </execution>
@@ -344,7 +381,9 @@
                                 </goals>
                                 <configuration>
                                     <hibernateDialect>${hibernateDialect.oracle}</hibernateDialect>
-                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/oracle/01-create-jbpm-schema.sql</outputFile>
+                                    <outputFile>
+                                        ${basedir}/src/data/resources/db/sql/schema/oracle/01-create-jbpm-schema.sql
+                                    </outputFile>
                                     <statementType>CREATE</statementType>
                                 </configuration>
                             </execution>
@@ -355,7 +394,9 @@
                                 </goals>
                                 <configuration>
                                     <hibernateDialect>${hibernateDialect.postgresql}</hibernateDialect>
-                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/postgresql/00-drop-jbpm-schema.sql</outputFile>
+                                    <outputFile>
+                                        ${basedir}/src/data/resources/db/sql/schema/postgresql/00-drop-jbpm-schema.sql
+                                    </outputFile>
                                     <statementType>DROP</statementType>
                                 </configuration>
                             </execution>
@@ -366,7 +407,9 @@
                                 </goals>
                                 <configuration>
                                     <hibernateDialect>${hibernateDialect.postgresql}</hibernateDialect>
-                                    <outputFile>${basedir}/src/data/resources/db/sql/schema/postgresql/01-create-jbpm-schema.sql</outputFile>
+                                    <outputFile>
+                                        ${basedir}/src/data/resources/db/sql/schema/postgresql/01-create-jbpm-schema.sql
+                                    </outputFile>
                                     <statementType>CREATE</statementType>
                                 </configuration>
                             </execution>
@@ -376,7 +419,7 @@
             </build>
         </profile>
     </profiles>
-
+    
     <dependencies>
         <dependency>
             <groupId>org.jahia.server</groupId>
@@ -403,7 +446,7 @@
             <type>war</type>
             <scope>compile</scope>
         </dependency>
-
+        
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
@@ -424,7 +467,6 @@
             <groupId>org.drools</groupId>
             <artifactId>drools-compiler</artifactId>
             <version>${drools.version}</version>
-            <classifier>nocdi</classifier>
             <scope>runtime</scope>
             <exclusions>
                 <exclusion>
@@ -501,15 +543,15 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
+        
         <!-- JSTL -->
         <dependency>
             <groupId>org.jboss.spec.javax.servlet.jstl</groupId>
             <artifactId>jboss-jstl-api_1.2_spec</artifactId>
             <version>1.1.4.Final</version>
         </dependency>
-
-
+        
+        
         <dependency>
             <!-- Required for Eclipse Gemini Blueprint when proxying classes rather then interfaces -->
             <artifactId>cglib-nodep</artifactId>
@@ -517,14 +559,14 @@
             <version>2.2.2</version>
             <scope>runtime</scope>
         </dependency>
-
+        
         <dependency>
             <!-- Felix HTTP bridge -->
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.http.proxy</artifactId>
             <version>${felix.http.version}</version>
         </dependency>
-
+        
         <dependency>
             <!-- Karaf dependency -->
             <groupId>org.apache.karaf.diagnostic</groupId>
@@ -532,11 +574,11 @@
             <scope>runtime</scope>
         </dependency>
     </dependencies>
-
+    
     <build>
         <finalName>jahia</finalName>
         <plugins>
-
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -556,8 +598,16 @@
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${project.build.directory}/jahia/WEB-INF</outputDirectory>
-                                    <includes>apache-karaf-${karaf.version}/data/**,apache-karaf-${karaf.version}/deploy,apache-karaf-${karaf.version}/etc/**,apache-karaf-${karaf.version}/system/**</includes>
-                                    <excludes>apache-karaf-${karaf.version}/lib/org*,**/demos/**,apache-karaf-${karaf.version}/etc/custom.properties,**/README, **/org.eclipse.osgi-*.jar, **/org.apache.karaf.wrapper.core-*.jar, **/org/apache/felix/org.apache.felix.fileinstall/**, **/org/apache/felix/org.apache.felix.framework/**, **/${karaf.version}/org.apache.karaf.jaas.config-${karaf.version}.jar</excludes>
+                                    <includes>
+                                        apache-karaf-${karaf.version}/data/**,apache-karaf-${karaf.version}/deploy,apache-karaf-${karaf.version}/etc/**,apache-karaf-${karaf.version}/system/**
+                                    </includes>
+                                    <excludes>
+                                        apache-karaf-${karaf.version}/lib/org*,**/demos/**,apache-karaf-${karaf.version}/etc/custom.properties,**/README,
+                                        **/org.eclipse.osgi-*.jar, **/org.apache.karaf.wrapper.core-*.jar,
+                                        **/org/apache/felix/org.apache.felix.fileinstall/**,
+                                        **/org/apache/felix/org.apache.felix.framework/**,
+                                        **/${karaf.version}/org.apache.karaf.jaas.config-${karaf.version}.jar
+                                    </excludes>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
@@ -575,37 +625,49 @@
                                     <groupId>org.jahia.bundles</groupId>
                                     <artifactId>org.jahia.bundles.pax.logging.bridging.appender</artifactId>
                                     <version>${project.version}</version>
-                                    <outputDirectory>${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}/system/org/jahia/bundles/org.jahia.bundles.pax.logging.bridging.appender/${project.version}</outputDirectory>
+                                    <outputDirectory>
+                                        ${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}/system/org/jahia/bundles/org.jahia.bundles.pax.logging.bridging.appender/${project.version}
+                                    </outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.apache.karaf.jaas</groupId>
                                     <artifactId>org.apache.karaf.jaas.config</artifactId>
                                     <version>${karaf.jaas.config.version}</version>
-                                    <outputDirectory>${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}/system/org/apache/karaf/jaas/org.apache.karaf.jaas.config/${karaf.jaas.config.version}</outputDirectory>
+                                    <outputDirectory>
+                                        ${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}/system/org/apache/karaf/jaas/org.apache.karaf.jaas.config/${karaf.jaas.config.version}
+                                    </outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.apache.felix</groupId>
                                     <artifactId>org.apache.felix.framework</artifactId>
                                     <version>${felix.framework.version}</version>
-                                    <outputDirectory>${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}/system/org/apache/felix/org.apache.felix.framework/${felix.framework.version}</outputDirectory>
+                                    <outputDirectory>
+                                        ${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}/system/org/apache/felix/org.apache.felix.framework/${felix.framework.version}
+                                    </outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.apache.felix</groupId>
                                     <artifactId>org.apache.felix.fileinstall</artifactId>
                                     <version>${felix.fileinstall.version}</version>
-                                    <outputDirectory>${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}/system/org/apache/felix/org.apache.felix.fileinstall/${felix.fileinstall.version}</outputDirectory>
+                                    <outputDirectory>
+                                        ${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}/system/org/apache/felix/org.apache.felix.fileinstall/${felix.fileinstall.version}
+                                    </outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.ops4j.pax.logging</groupId>
                                     <artifactId>pax-logging-api</artifactId>
                                     <version>${pax.logging.version}</version>
-                                    <outputDirectory>${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}/system/org/ops4j/pax/logging/pax-logging-api/${pax.logging.version}</outputDirectory>
+                                    <outputDirectory>
+                                        ${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}/system/org/ops4j/pax/logging/pax-logging-api/${pax.logging.version}
+                                    </outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.ops4j.pax.logging</groupId>
                                     <artifactId>pax-logging-log4j2</artifactId>
                                     <version>${pax.logging.version}</version>
-                                    <outputDirectory>${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}/system/org/ops4j/pax/logging/pax-logging-log4j2/${pax.logging.version}</outputDirectory>
+                                    <outputDirectory>
+                                        ${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}/system/org/ops4j/pax/logging/pax-logging-log4j2/${pax.logging.version}
+                                    </outputDirectory>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
@@ -625,16 +687,16 @@
                         <configuration>
                             <target>
                                 <move todir="${project.build.directory}/jahia/WEB-INF/karaf">
-                                    <fileset dir="${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}" />
+                                    <fileset dir="${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}"/>
                                 </move>
                                 <move todir="${project.build.directory}/karaf/etc">
-                                    <fileset dir="${project.build.directory}/jahia/WEB-INF/karaf/etc" />
+                                    <fileset dir="${project.build.directory}/jahia/WEB-INF/karaf/etc"/>
                                 </move>
                                 <move todir="${project.build.directory}/karaf/data">
-                                    <fileset dir="${project.build.directory}/jahia/WEB-INF/karaf/data" />
+                                    <fileset dir="${project.build.directory}/jahia/WEB-INF/karaf/data"/>
                                 </move>
                                 <move todir="${project.build.directory}/karaf/deploy">
-                                    <fileset dir="${project.build.directory}/jahia/WEB-INF/karaf/deploy" />
+                                    <fileset dir="${project.build.directory}/jahia/WEB-INF/karaf/deploy"/>
                                 </move>
                             </target>
                         </configuration>
@@ -649,7 +711,8 @@
                             <target>
                                 <replace file="${project.build.directory}/jahia/WEB-INF/karaf/system/org/apache/karaf/features/framework/${karaf.version}/framework-${karaf.version}-features.xml" failOnNoReplacements="true">
                                     <replacetoken>org.apache.felix/org.apache.felix.fileinstall/3.7.4</replacetoken>
-                                    <replacevalue>org.apache.felix/org.apache.felix.fileinstall/3.7.4-jahia1-SNAPSHOT</replacevalue>
+                                    <replacevalue>org.apache.felix/org.apache.felix.fileinstall/3.7.4-jahia1-SNAPSHOT
+                                    </replacevalue>
                                 </replace>
                             </target>
                         </configuration>
@@ -663,53 +726,53 @@
                         <configuration>
                             <target>
                                 <concat destfile="${project.build.directory}/ddl/derby/00-drop-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/derby" includes="00-drop-*" />
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/derby" includes="00-drop-*"/>
                                 </concat>
                                 <concat destfile="${project.build.directory}/ddl/derby/01-create-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/derby" includes="01-create-*" excludes="01-create-*-index.sql,01-create-*-triggers.sql" />
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/derby" includes="01-create-*" excludes="01-create-*-index.sql,01-create-*-triggers.sql"/>
                                 </concat>
                                 <concat destfile="${project.build.directory}/ddl/derby/01-create-jahia-core-schema.sql" append="yes" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/derby" includes="01-create-*-index.sql,01-create-*-triggers.sql" />
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/derby" includes="01-create-*-index.sql,01-create-*-triggers.sql"/>
                                 </concat>
-
+                                
                                 <concat destfile="${project.build.directory}/ddl/mssql/00-drop-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mssql" includes="00-drop-*" />
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mssql" includes="00-drop-*"/>
                                 </concat>
                                 <concat destfile="${project.build.directory}/ddl/mssql/01-create-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mssql" includes="01-create-*" excludes="01-create-*-index.sql,01-create-*-triggers.sql" />
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mssql" includes="01-create-*" excludes="01-create-*-index.sql,01-create-*-triggers.sql"/>
                                 </concat>
                                 <concat destfile="${project.build.directory}/ddl/mssql/01-create-jahia-core-schema.sql" append="yes" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mssql" includes="01-create-*-index.sql,01-create-*-triggers.sql" />
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mssql" includes="01-create-*-index.sql,01-create-*-triggers.sql"/>
                                 </concat>
-
+                                
                                 <concat destfile="${project.build.directory}/ddl/mysql/00-drop-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mysql" includes="00-drop-*" />
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mysql" includes="00-drop-*"/>
                                 </concat>
                                 <concat destfile="${project.build.directory}/ddl/mysql/01-create-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mysql" includes="01-create-*" excludes="01-create-*-index.sql,01-create-*-triggers.sql" />
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mysql" includes="01-create-*" excludes="01-create-*-index.sql,01-create-*-triggers.sql"/>
                                 </concat>
                                 <concat destfile="${project.build.directory}/ddl/mysql/01-create-jahia-core-schema.sql" append="yes" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mysql" includes="01-create-*-index.sql,01-create-*-triggers.sql" />
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mysql" includes="01-create-*-index.sql,01-create-*-triggers.sql"/>
                                 </concat>
-
+                                
                                 <concat destfile="${project.build.directory}/ddl/oracle/00-drop-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/oracle" includes="00-drop-*" />
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/oracle" includes="00-drop-*"/>
                                 </concat>
                                 <concat destfile="${project.build.directory}/ddl/oracle/01-create-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/oracle" includes="01-create-*" excludes="01-create-*-index.sql,01-create-*-triggers.sql" />
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/oracle" includes="01-create-*" excludes="01-create-*-index.sql,01-create-*-triggers.sql"/>
                                 </concat>
                                 <concat destfile="${project.build.directory}/ddl/oracle/01-create-jahia-core-schema.sql" append="yes" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/oracle" includes="01-create-*-index.sql,01-create-*-triggers.sql" />
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/oracle" includes="01-create-*-index.sql,01-create-*-triggers.sql"/>
                                 </concat>
-
+                                
                                 <concat destfile="${project.build.directory}/ddl/postgresql/00-drop-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/postgresql" includes="00-drop-*" />
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/postgresql" includes="00-drop-*"/>
                                 </concat>
                                 <concat destfile="${project.build.directory}/ddl/postgresql/01-create-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/postgresql" includes="01-create-*" excludes="01-create-*-index.sql,01-create-*-triggers.sql" />
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/postgresql" includes="01-create-*" excludes="01-create-*-index.sql,01-create-*-triggers.sql"/>
                                 </concat>
                                 <concat destfile="${project.build.directory}/ddl/postgresql/01-create-jahia-core-schema.sql" append="yes" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/postgresql" includes="01-create-*-index.sql,01-create-*-triggers.sql" />
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/postgresql" includes="01-create-*-index.sql,01-create-*-triggers.sql"/>
                                 </concat>
                             </target>
                         </configuration>
@@ -729,9 +792,12 @@
                             <addTransitiveFeatures>true</addTransitiveFeatures>
                             <descriptors>
                                 <descriptor>mvn:org.jahia.features/dx-core/${project.version}/xml/features</descriptor>
-                                <descriptor>mvn:org.jahia.features/dx-gemini-blueprint/${project.version}/xml/features</descriptor>
-                                <descriptor>mvn:org.jahia.features/dx-jax-rs/${project.version}/xml/features</descriptor>
-                                <descriptor>mvn:org.jahia.features/dx-standard/${project.version}/xml/features</descriptor>
+                                <descriptor>mvn:org.jahia.features/dx-gemini-blueprint/${project.version}/xml/features
+                                </descriptor>
+                                <descriptor>mvn:org.jahia.features/dx-jax-rs/${project.version}/xml/features
+                                </descriptor>
+                                <descriptor>mvn:org.jahia.features/dx-standard/${project.version}/xml/features
+                                </descriptor>
                             </descriptors>
                             <features>
                                 <feature>dx-standard</feature>
@@ -800,7 +866,7 @@
                     </archive>
                 </configuration>
             </plugin>
-
+            
             <plugin>
                 <groupId>org.jahia.server</groupId>
                 <artifactId>jahia-maven-plugin</artifactId>
@@ -824,7 +890,8 @@
                             <propertiesOutputFile>
                                 ${project.build.directory}/generated-resources/custom.properties
                             </propertiesOutputFile>
-                            <propertyFilePropertyName>org.osgi.framework.system.packages.generated</propertyFilePropertyName>
+                            <propertyFilePropertyName>org.osgi.framework.system.packages.generated
+                            </propertyFilePropertyName>
                         </configuration>
                     </execution>
                     <execution>
@@ -869,7 +936,7 @@
                     </execution>
                 </executions>
             </plugin>
-
+            
             <plugin>
                 <artifactId>maven-site-plugin</artifactId>
                 <executions>
@@ -881,7 +948,7 @@
                     </execution>
                 </executions>
             </plugin>
-
+            
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
@@ -956,7 +1023,7 @@
                 </executions>
             </plugin>
         </plugins>
-
+        
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -970,9 +1037,9 @@
                 <targetPath>${project.build.directory}/filtered-resources</targetPath>
             </resource>
         </resources>
-
+    
     </build>
-
+    
     <reporting>
         <plugins>
             <plugin>

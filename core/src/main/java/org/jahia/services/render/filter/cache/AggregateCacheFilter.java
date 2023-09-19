@@ -976,8 +976,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             } else {
                 renderContext.getRequest().setAttribute("inArea", Boolean.valueOf(inArea));
             }
-
-            if (areaIdentifier == null) {
+            if (areaIdentifier != null) {
+                renderContext.getRequest().setAttribute("areaListResource", currentUserSession.getNodeByIdentifier(areaIdentifier));
+            } else {
                 renderContext.getRequest().removeAttribute("areaListResource");
             }
             Resource resource = new Resource(node, keyAttrbs.get("templateType"), keyAttrbs.get("template"), context);

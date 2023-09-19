@@ -182,7 +182,7 @@
         <!-- End of OSGi versions -->
         
         <jahia.commons.version>1.0.8</jahia.commons.version>
-        <jahia.plugin.version>6.9-SNAPSHOT</jahia.plugin.version>
+        <jahia.plugin.version>6.9</jahia.plugin.version>
         <jahia.archivers.version>${jahia.plugin.version}</jahia.archivers.version>
         <jahia.configurators.version>${jahia.plugin.version}</jahia.configurators.version>
         <jahia.deployers.version>${jahia.plugin.version}</jahia.deployers.version>
@@ -206,10 +206,11 @@
             Jahia-Depends-Skip-Require-Capability
         </jahia.modules.bundle.removeheaders>
         <custom.modules.bundle.removeheaders>${jahia.modules.bundle.removeheaders}</custom.modules.bundle.removeheaders>
-        
-        <graphql-java.version>13.0</graphql-java.version>
-        <graphql-java-annotations.version>7.2.1</graphql-java-annotations.version>
-        <graphql-java-servlet.version>9.1.0</graphql-java-servlet.version>
+        <dataloader.version>3.2.0</dataloader.version>
+        <graphql-java.version>21.1</graphql-java.version>
+        <graphql-java-extended-scalars.version>21.0</graphql-java-extended-scalars.version>
+        <graphql-java-annotations.version>21.1.0-SNAPSHOT</graphql-java-annotations.version>
+        <graphql-java-servlet.version>15.1.1-jahia-SNAPSHOT</graphql-java-servlet.version>
     </properties>
     
     <developers>

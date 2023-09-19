@@ -861,6 +861,7 @@
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.VersioningTabItem">
                 <property name="showForTypesString" value="${jahia.publication.versionedTypes}"/>
+                <property name="hideForTypesString" value="${jahia.publication.excludedVersionedTypes:}"/>
             </bean>
         </property>
     </bean>

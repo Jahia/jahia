@@ -96,7 +96,7 @@ public class QueryWrapper implements Query {
     public QueryWrapper(String statement, String language, JCRSessionWrapper session, JCRSessionFactory service) throws InvalidQueryException, RepositoryException {
         this.statement = statement;
         this.language = language;
-        this.vars = new HashMap<String, Value>();
+        this.vars = new HashMap<>();
         this.session = session;
         this.service = service;
         init();
@@ -106,7 +106,7 @@ public class QueryWrapper implements Query {
         this.statement = statement;
         this.language = language;
         this.sqlStatement = sqlStatement;
-        this.vars = new HashMap<String, Value>();
+        this.vars = new HashMap<>();
         this.session = session;
         this.service = service;
         init();
@@ -116,7 +116,7 @@ public class QueryWrapper implements Query {
         this.jrQOM = qom;
         this.statement = qom.getStatement();
         this.language = Query.JCR_SQL2;
-        this.vars = new HashMap<String, Value>();
+        this.vars = new HashMap<>();
         this.session = session;
         this.service = service;
         init();
@@ -377,6 +377,9 @@ public class QueryWrapper implements Query {
             }
             if (queryOffset >= 0) {
                 query.setOffset(queryOffset);
+            }
+            for (Map.Entry<String, Value> valueEntry : vars.entrySet()) {
+                query.bindValue(valueEntry.getKey(), valueEntry.getValue());
             }
             QueryResultAdapter queryResult = new QueryResultAdapter(query.execute(), entry.getKey(), session);
             results.add(queryResult);

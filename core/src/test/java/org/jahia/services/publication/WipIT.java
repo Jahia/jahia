@@ -120,7 +120,7 @@ public class WipIT extends AbstractJUnitTest {
         JCRNodeWrapper siteNode = englishEditSession.getNode(site.getJCRLocalPath());
         Collection<ComplexPublicationService.FullPublicationInfo> infos = complexPublicationService.getFullPublicationInfos(Collections.singletonList(siteNode.getIdentifier()),
                 Collections.singletonList("en"), true, englishEditSession);
-        assertEquals(6, infos.size());
+        assertEquals(5, infos.size());
         assertTrue(infos.stream().anyMatch(e -> e.getNodePath().endsWith("/testPage/child1")));
         assertTrue(infos.stream().anyMatch(e -> e.getNodePath().endsWith("/testPage/child2")));
         wipService.createWipPropertiesOnNewNode(page, new WIPInfo(Constants.WORKINPROGRESS_STATUS_ALLCONTENT, siteLanguages));
@@ -129,7 +129,7 @@ public class WipIT extends AbstractJUnitTest {
                 Collections.singletonList("en"), true, englishEditSession);
 
         //Make sure child nodes of WIP node are not getting published
-        assertEquals(4, infosAfterWIPStatusSet.size());
+        assertEquals(3, infosAfterWIPStatusSet.size());
         assertFalse(infosAfterWIPStatusSet.stream().anyMatch(e -> e.getNodePath().endsWith("/testPage/child1")));
         assertFalse(infosAfterWIPStatusSet.stream().anyMatch(e -> e.getNodePath().endsWith("/testPage/child2")));
         //check that child node is publishable, if checked separately

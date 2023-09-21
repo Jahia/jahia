@@ -82,7 +82,7 @@ jobs:
 
       - name: Build package and deploy all dependencies into remote Nexus Maven repository, push Docker images
         shell: bash
-        if: ${{ github.event_name == 'push' }}
+        if: ${{ github.event_name != 'pull_request' }}
         run: |
           mvn -U -ntp -s .github/maven.settings.xml -e \
             -Dimage.tag=${{steps.tags.outputs.image_tag}} \
@@ -91,7 +91,7 @@ jobs:
             -Dbamboo.buildNumber=${{ github.run_id }}
       - name: Compile GWT development
         shell: bash
-        if: ${{ github.event_name == 'push' }}
+        if: ${{ github.event_name != 'pull_request' }}
         run: |
           cd gwt/
           mvn -U -ntp -s ../.github/maven.settings.xml -e \
@@ -100,7 +100,7 @@ jobs:
             -Pgwt-development \
             -Dbamboo.buildNumber=${{ github.run_id }}
       - uses: jahia/jahia-modules-action/docker-tags@v2
-        if: ${{ github.event_name == 'push' }}
+        if: ${{ github.event_name != 'pull_request' }}
         with:
           docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
           docker_password: ${{ secrets.DOCKERHUB_PASSWORD }}
@@ -132,7 +132,7 @@ jobs:
             -Dbamboo.buildNumber=${{ github.run_id }}
 
       - uses: jahia/jahia-modules-action/slack-jahia@v2
-        if: ${{ failure() && github.event_name == 'push' }}
+        if: ${{ failure() && github.event_name != 'pull_request' }}
         with:
           job-event: "fail"
           skip-docker: true

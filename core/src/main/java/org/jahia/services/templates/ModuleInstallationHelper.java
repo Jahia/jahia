@@ -216,7 +216,12 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
     }
 
     public void installModules(final List<JahiaTemplatesPackage> modules, final String sitePath,
-            final JCRSessionWrapper session) throws RepositoryException {
+                               final JCRSessionWrapper session) throws RepositoryException {
+        installModules(modules, sitePath, session, false);
+    }
+
+    public void installModules(final List<JahiaTemplatesPackage> modules, final String sitePath,
+            final JCRSessionWrapper session, boolean installModulesWithoutPages) throws RepositoryException {
         if (!sitePath.startsWith("/sites/")) {
             return;
         }
@@ -234,7 +239,7 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
                 if (moduleNode.isNodeType("jnt:module")) {
                     moduleNode = moduleNode.getNode(module.getVersion().toString());
                 }
-                synchro(moduleNode, siteNode, session, moduleName, references);
+                synchro(moduleNode, siteNode, session, moduleName, references, installModulesWithoutPages);
 
                 ReferencesHelper.resolveCrossReferences(session, references);
 
@@ -336,14 +341,14 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
     }
 
     public void synchro(JCRNodeWrapper source, JCRNodeWrapper destinationNode, JCRSessionWrapper session,
-            String moduleName, Map<String, List<String>> references) throws RepositoryException {
+            String moduleName, Map<String, List<String>> references, Boolean skipPages) throws RepositoryException {
         if (source.isNodeType("jnt:moduleVersion")) {
             session.getUuidMapping().put(source.getIdentifier(), destinationNode.getIdentifier());
             NodeIterator ni = source.getNodes();
             while (ni.hasNext()) {
                 JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
                 if (child.isNodeType("jnt:versionInfo") || child.isNodeType("jnt:moduleVersionFolder") || child.isNodeType("jnt:externalProviderExtension")
-                        || child.isNodeType("jnt:templatesFolder") || child.isNodeType("jnt:componentFolder") || child.isNodeType("jnt:permission")) {
+                        || child.isNodeType("jnt:templatesFolder") || child.isNodeType("jnt:componentFolder") || child.isNodeType("jnt:permission") || (skipPages && child.isNodeType("jnt:page"))) {
                     continue;
                 }
                 JCRNodeWrapper node;

@@ -393,6 +393,10 @@ public class JahiaSitesService extends JahiaService {
                 session);
     }
 
+    public JahiaSite addSite(final SiteCreationInfo info) throws JahiaException, IOException {
+        return addSite(info, false);
+    }
+
     /**
      * Creates the site using the specified data.
      * 
@@ -401,7 +405,7 @@ public class JahiaSitesService extends JahiaService {
      * @throws JahiaException in case of site creation issues
      * @throws IOException in case of I/O errors
      */
-    public JahiaSite addSite(final SiteCreationInfo info) throws JahiaException, IOException {
+    public JahiaSite addSite(final SiteCreationInfo info, boolean installModulesWithoutPages) throws JahiaException, IOException {
         JahiaSite site = null;
         final List<Exception> errors = new ArrayList<Exception>(1);
 
@@ -413,7 +417,7 @@ public class JahiaSitesService extends JahiaService {
                 public JahiaSite doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
                         session.getPathMapping().putAll(JCRSessionFactory.getInstance().getCurrentUserSession().getPathMapping());
-                        return addSite(info, session);
+                        return addSite(info, session, installModulesWithoutPages);
                     } catch (IOException e) {
                         errors.add(e);
                     } catch (JahiaException e) {
@@ -443,7 +447,7 @@ public class JahiaSitesService extends JahiaService {
 
     /**
      * Creates the site using the specified data.
-     * 
+     *
      * @param info the site creation information
      * @param session the current JCR session to use for site creation
      * @return the created site object
@@ -451,6 +455,20 @@ public class JahiaSitesService extends JahiaService {
      * @throws IOException in case of I/O errors
      */
     public JahiaSite addSite(SiteCreationInfo info, JCRSessionWrapper session) throws JahiaException, IOException {
+        return addSite(info, session, false);
+    }
+
+    /**
+     * Creates the site using the specified data.
+     * 
+     * @param info the site creation information
+     * @param session the current JCR session to use for site creation
+     * @param installModulesWithoutPages will not create jnt:page nodes if true
+     * @return the created site object
+     * @throws JahiaException in case of site creation issues
+     * @throws IOException in case of I/O errors
+     */
+    public JahiaSite addSite(SiteCreationInfo info, JCRSessionWrapper session, boolean installModulesWithoutPages) throws JahiaException, IOException {
         long startTime = System.currentTimeMillis();
         logger.info("Start creation of a site using data: {}", info);
         
@@ -506,7 +524,7 @@ public class JahiaSitesService extends JahiaService {
                     siteNode.setProperty(SitesSettings.INSTALLED_MODULES, new Value[]{session.getValueFactory().createValue(templatePackage /*+ ":" + aPackage.getLastVersion()*/)});
                     String target = getTargetString(siteKey);
 
-                    deployModules(target, info.getModulesToDeploy(), templateSet, session, templateService);
+                    deployModules(target, info.getModulesToDeploy(), templateSet, session, templateService, installModulesWithoutPages);
 
                     //Auto deploy all modules that define this behavior on site creation
                     final List<JahiaTemplatesPackage> availableTemplatePackages = templateService.getAvailableTemplatePackages();
@@ -623,7 +641,7 @@ public class JahiaSitesService extends JahiaService {
 
     public void deployModules(JahiaSite site, String[] modulesToDeploy, JCRSessionWrapper session) {
         final JahiaTemplateManagerService templateService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
-        deployModules(getTargetString(site.getSiteKey()), modulesToDeploy, templateService.getAnyDeployedTemplatePackage(site.getTemplatePackageName()), session, templateService);
+        deployModules(getTargetString(site.getSiteKey()), modulesToDeploy, templateService.getAnyDeployedTemplatePackage(site.getTemplatePackageName()), session, templateService, false);
     }
 
     public void updateModules(JahiaSite site, List<String> newModuleIds, JCRSessionWrapper session) {
@@ -690,13 +708,13 @@ public class JahiaSitesService extends JahiaService {
         }
     }
 
-    private void deployModules(String target, String[] modulesToDeploy, JahiaTemplatesPackage templateSet, JCRSessionWrapper session, JahiaTemplateManagerService templateService) {
+    private void deployModules(String target, String[] modulesToDeploy, JahiaTemplatesPackage templateSet, JCRSessionWrapper session, JahiaTemplateManagerService templateService, boolean installModulesWithoutPages) {
         List<JahiaTemplatesPackage> modules = moduleIdsToTemplatesPackage(modulesToDeploy != null ? Arrays.asList(modulesToDeploy) : Collections.<String>emptyList(), templateService);
         modules.add(templateService.getAnyDeployedTemplatePackage(JahiaTemplatesPackage.ID_DEFAULT));
         modules.add(templateSet);
         try {
             logger.info("Deploying modules {} to {}", modules.toString(), target);
-            templateService.installModules(modules, target, session);
+            templateService.installModules(modules, target, session, installModulesWithoutPages);
         } catch (RepositoryException re) {
             logger.error("Unable to deploy modules " + modules.toString() + " to "
                     + target + ". Cause: " + re.getMessage(), re);

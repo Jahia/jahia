@@ -589,12 +589,16 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         installModules(Collections.singletonList(module), sitePath, session);
     }
 
+    public void installModules(final List<JahiaTemplatesPackage> modules, final String sitePath, final JCRSessionWrapper session, boolean installModulesWithoutPages) throws RepositoryException {
+        moduleInstallationHelper.installModules(modules, sitePath, session, installModulesWithoutPages);
+    }
+
     public void installModules(final List<JahiaTemplatesPackage> modules, final String sitePath, final JCRSessionWrapper session) throws RepositoryException {
         moduleInstallationHelper.installModules(modules, sitePath, session);
     }
 
     public void synchro(JCRNodeWrapper source, JCRNodeWrapper destinationNode, JCRSessionWrapper session, String moduleName, Map<String, List<String>> references) throws RepositoryException {
-        moduleInstallationHelper.synchro(source, destinationNode, session, moduleName, references);
+        moduleInstallationHelper.synchro(source, destinationNode, session, moduleName, references, false);
     }
 
     public void templatesSynchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode,

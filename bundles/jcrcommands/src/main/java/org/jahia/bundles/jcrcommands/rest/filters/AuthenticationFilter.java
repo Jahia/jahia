@@ -42,8 +42,7 @@
  */
 package org.jahia.bundles.jcrcommands.rest.filters;
 
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.subject.Subject;
+
 import org.jahia.params.valves.AuthValveContext;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -56,7 +55,6 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Priority;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -81,14 +79,6 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     @Context
     HttpServletRequest httpServletRequest;
 
-    private Subject getAuthenticatedSubject() {
-        try {
-            return WebUtils.getAuthenticatedSubject(httpServletRequest);
-        } catch (AuthenticationException e) {
-            throw new NotAuthorizedException(e.getMessage(), HttpServletRequest.BASIC_AUTH);
-        }
-    }
-
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
@@ -96,8 +86,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
         String username = JahiaUserManagerService.GUEST_USERNAME;
         if (JahiaUserManagerService.isGuest(user)) {
-            Subject subject = getAuthenticatedSubject();
-            if (subject != null && subject.hasRole(REQUIRED_ROLE)) {
+            if (WebUtils.authenticatedSubjectHasRole(httpServletRequest, REQUIRED_ROLE)) {
                 // user has the required role: allow access
                 return;
             }

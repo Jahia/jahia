@@ -94,17 +94,18 @@ public final class WebUtils {
     }
 
     /**
-     * Return authenticated subject, performing login using basic authentication credentials, if provided in the current request.
+     * Get authenticated subject by performing login using basic authentication credentials, if provided in the current request.
+     * then check if this subject has the specified role.
      *
      * @param request current HTTP request
-     * @return authenticated subject, performing login using basic authentication credentials, if provided in the current request
-     * @throws AuthenticationException in case of errors during login operation
+     * @param role the role to be checked
+     * @return true if the authenticated subject has the role, false otherwise
      */
-    public static Subject getAuthenticatedSubject(HttpServletRequest request) throws AuthenticationException {
+    public static boolean authenticatedSubjectHasRole(HttpServletRequest request, String role) {
         Subject subject = SecurityUtils.getSubject();
         if (subject == null) {
             // we have no subject in the current content
-            return null;
+            return false;
         }
         if (!subject.isAuthenticated()) {
             String[] authData = getBasicAuthData(request);
@@ -112,7 +113,8 @@ public final class WebUtils {
                 subject.login(new UsernamePasswordToken(authData[0], authData[1]));
             }
         }
-        return subject;
+
+        return subject.hasRole(role);
     }
 
     /**

@@ -883,6 +883,8 @@
                                 <extraPackageExclude>org.springframework.web.client*</extraPackageExclude>
                                 <extraPackageExclude>org.osgi.service*</extraPackageExclude>
                                 <extraPackageExclude>org.osgi.util*</extraPackageExclude>
+                                <extraPackageExclude>org.apache.shiro*</extraPackageExclude>
+                                <extraPackageExclude>org.jahia.services.security.shiro*</extraPackageExclude>
                             </extraPackageExcludes>
                             <propertiesInputFile>
                                 ${project.build.directory}/filtered-resources/custom.properties

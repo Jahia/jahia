@@ -181,14 +181,22 @@ if [ "${RESTORE_PERSISTED_CONFIGURATION}" == "true" ]; then
 fi
 
 if [ "$YOURKIT_ACTIVATED" == "true" ]; then
+    if [ ! -d "/home/tomcat/yourkit" ]; then
+        echo "Retrieve latest Yourkit agent binaries..."
+        wget -nv -O yourkit.zip https://www.yourkit.com/download/docker/YourKit-JavaProfiler-2022.9-docker.zip -P /tmp/
+        unzip /tmp/yourkit.zip -d /home/tomcat
+        mv /home/tomcat/YourKit-JavaProfiler* /home/tomcat/yourkit
+        rm /tmp/yourkit.zip
+    fi
+
     case $(uname -m) in
 
     x86_64)
-      export CATALINA_OPTS="${CATALINA_OPTS} -agentpath:/usr/local/yourkit/bin/linux-x86-64/libyjpagent.so=port=10001,listen=all"
+      export CATALINA_OPTS="${CATALINA_OPTS} -agentpath:/home/tomcat/yourkit/bin/linux-x86-64/libyjpagent.so=port=10001,listen=all"
       ;;
 
     arm64)
-      export CATALINA_OPTS="${CATALINA_OPTS} -agentpath:/usr/local/yourkit/bin/linux-arm-64/libyjpagent.so=port=10001,listen=all"
+      export CATALINA_OPTS="${CATALINA_OPTS} -agentpath:/home/tomcat/yourkit/bin/linux-arm-64/libyjpagent.so=port=10001,listen=all"
       ;;
     esac
 fi

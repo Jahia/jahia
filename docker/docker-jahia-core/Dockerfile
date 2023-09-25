@@ -1,72 +1,25 @@
-FROM tomcat:9-jdk11 as base
-
-LABEL maintainer="Jahia Product team <product@jahia.com>"
+FROM tomcat:9-jdk21-openjdk-slim as base
 
 ARG DEBUG_TOOLS="false"
 ARG FFMPEG="false"
 ARG LIBREOFFICE="false"
-ARG MAVEN_VER="3.8.7"
-ARG MAVEN_BASE_URL="https://archive.apache.org/dist/maven/maven-3"
-ARG MODULES_BASE_URL="https://store.jahia.com/cms/mavenproxy/private-app-store/org/jahia/modules"
-ARG IMAGEMAGICK_BINARIES_DOWNLOAD_URL="https://imagemagick.org/archive/binaries/magick"
-ARG LOG_MAX_DAYS="5"
-ARG JAHIA_PLUGIN="jahia"
-ARG DATA_FOLDER="/var/jahia"
-ARG LOGS_FOLDER="/var/log/jahia"
-ARG TARGETOS
-ARG TARGETPLATFORM
-ARG TARGETARCH
-ARG TARGETVARIANT
+ARG IMAGEMAGICK="false"
 
 ARG GRAALVM_VERSION=22.3.1
 # We provide these arguments to be able to override the "guessing" that is done in the script below in case of problems
 ARG GRAALVM_ARCH
 ARG GRAALVM_URL
 
-# Container user
-ARG C_USER="tomcat"
-ARG C_GROUP="tomcat"
-
-ENV RESTORE_MODULE_STATES="false"
-ENV RESTORE_PERSISTED_CONFIGURATION="false"
-ENV DATA_FOLDER=${DATA_FOLDER} LOGS_FOLDER=${LOGS_FOLDER}
-ENV PROCESSING_SERVER="true"
-ENV OPERATING_MODE="development"
-ENV MAX_UPLOAD="268435456"
-ENV MAX_RAM_PERCENTAGE="80"
-ENV MAVEN_OPTS="-Xmx256m"
-ENV MAVEN_VER="${MAVEN_VER}"
-ENV JAHIA_PLUGIN="${JAHIA_PLUGIN}"
-ENV JAHIA_LICENSE=""
-
-ENV CATALINA_BASE="/usr/local/tomcat" CATALINA_HOME="/usr/local/tomcat" CATALINA_TMPDIR="/usr/local/tomcat/temp" LOG_MAX_DAYS="5" LOG_MAX_SIZE="500M"
-ENV CATALINA_OPTS="" JPDA="false" JPDA_ADDRESS="*:8000"
-
-ENV DB_VENDOR="derby_embedded" DB_HOST="mariadb" DB_NAME="jahia" DB_USER="jahia" DB_PASS="fakepassword" DB_PORT="" DB_URL=""
-ENV OVERWRITEDB="if-necessary"
-ENV SUPER_USER_PASSWORD="root1234"
-ENV DS_IN_AWS="false"
-ENV DS_IN_DB="true" DS_PATH=""
-ENV EXECUTE_PROVISIONING_SCRIPT=""
-ENV JAHIA_PROPERTIES=""
-ENV SSL_ENABLED="false" SSL_CERTIFICATE_PASSWD="changeit"
-ENV YOURKIT_ACTIVATED="false"
-
-WORKDIR /tmp
-
-RUN printf "I'm building for TARGETPLATFORM=${TARGETPLATFORM}" \
-    && printf ", TARGETOS=${TARGETOS}" \
-    && printf ", TARGETARCH=${TARGETARCH}" \
-    && printf ", TARGETVARIANT=${TARGETVARIANT} \n" \
-    && printf "With uname -s : " && uname -s \
-    && printf "and  uname -m : " && uname -m
+RUN rm -Rf /usr/local/openjdk-21/
 
 RUN apt-get update \
     && apt-get upgrade -y \
-    && magick_packages="libfontconfig1 libx11-6 libharfbuzz0b libfribidi0" \
-    && packages="apt-utils ncat wget unzip logrotate ${magick_packages} imagemagick" \
+    && packages="apt-utils curl ncat wget unzip logrotate" \
     && if ${DEBUG_TOOLS}; then \
         packages="${packages} vim binutils less procps iputils-ping htop"; \
+       fi \
+    && if ${IMAGEMAGICK}; then \
+        packages="${packages} libfontconfig1 libx11-6 libharfbuzz0b libfribidi0 imagemagick"; \
        fi \
     && if ${LIBREOFFICE}; then \
         packages="${packages} libreoffice"; \
@@ -103,13 +56,65 @@ RUN set -ux; \
     echo "$GRAALVM_SHA256" */tmp/graalvm.tgz | sha256sum -c && \
     mkdir -p "/usr/local/graalvm" && \
     tar --extract --file /tmp/graalvm.tgz --directory "/usr/local/graalvm" --strip-components 1 && \
+    rm /tmp/graalvm.tgz && \
     /usr/local/graalvm/bin/gu install js ;
 
-RUN echo "Retrieve latest Yourkit agent binaries..." \
-    && wget -nv -O yourkit.zip https://www.yourkit.com/download/docker/YourKit-JavaProfiler-2022.9-docker.zip -P /tmp/ \
-    && unzip /tmp/yourkit.zip -d /usr/local \
-    && rm /tmp/yourkit.zip \
-    && mv /usr/local/YourKit-JavaProfiler* /usr/local/yourkit
+FROM scratch
+COPY --from=base / /
+
+ARG MAVEN_VER="3.8.7"
+ARG MAVEN_BASE_URL="https://archive.apache.org/dist/maven/maven-3"
+ARG MODULES_BASE_URL="https://store.jahia.com/cms/mavenproxy/private-app-store/org/jahia/modules"
+ARG IMAGEMAGICK_BINARIES_DOWNLOAD_URL="https://imagemagick.org/archive/binaries/magick"
+ARG LOG_MAX_DAYS="5"
+ARG JAHIA_PLUGIN="jahia"
+ARG DATA_FOLDER="/var/jahia"
+ARG LOGS_FOLDER="/var/log/jahia"
+ARG TARGETOS
+ARG TARGETPLATFORM
+ARG TARGETARCH
+ARG TARGETVARIANT
+
+
+# Container user
+ARG C_USER="tomcat"
+ARG C_GROUP="tomcat"
+
+ENV RESTORE_MODULE_STATES="false"
+ENV RESTORE_PERSISTED_CONFIGURATION="false"
+ENV DATA_FOLDER=${DATA_FOLDER} LOGS_FOLDER=${LOGS_FOLDER}
+ENV PROCESSING_SERVER="true"
+ENV OPERATING_MODE="development"
+ENV MAX_UPLOAD="268435456"
+ENV MAX_RAM_PERCENTAGE="80"
+ENV MAVEN_OPTS="-Xmx256m"
+ENV MAVEN_VER="${MAVEN_VER}"
+ENV JAHIA_PLUGIN="${JAHIA_PLUGIN}"
+ENV JAHIA_LICENSE=""
+
+ENV CATALINA_BASE="/usr/local/tomcat" CATALINA_HOME="/usr/local/tomcat" CATALINA_TMPDIR="/usr/local/tomcat/temp" LOG_MAX_DAYS="5" LOG_MAX_SIZE="500M"
+ENV CATALINA_OPTS="" JPDA="false" JPDA_ADDRESS="*:8000"
+
+ENV DB_VENDOR="derby_embedded" DB_HOST="mariadb" DB_NAME="jahia" DB_USER="jahia" DB_PASS="fakepassword" DB_PORT="" DB_URL=""
+ENV OVERWRITEDB="if-necessary"
+ENV SUPER_USER_PASSWORD="root1234"
+ENV DS_IN_AWS="false"
+ENV DS_IN_DB="true" DS_PATH=""
+ENV EXECUTE_PROVISIONING_SCRIPT=""
+ENV JAHIA_PROPERTIES=""
+ENV SSL_ENABLED="false" SSL_CERTIFICATE_PASSWD="changeit"
+ENV YOURKIT_ACTIVATED="false"
+ENV PATH="/usr/local/graalvm/bin:${PATH}"
+ENV JAVA_HOME=/usr/local/graalvm
+
+WORKDIR /tmp
+
+RUN printf "I'm building for TARGETPLATFORM=${TARGETPLATFORM}" \
+    && printf ", TARGETOS=${TARGETOS}" \
+    && printf ", TARGETARCH=${TARGETARCH}" \
+    && printf ", TARGETVARIANT=${TARGETVARIANT} \n" \
+    && printf "With uname -s : " && uname -s \
+    && printf "and  uname -m : " && uname -m
 
 # Add container user and grant permissions
 RUN groupadd -g 999 ${C_GROUP}

@@ -176,7 +176,7 @@ public class WorkflowObservationManager implements HazelcastTopic.MessageListene
         if (hazelcastTopic != null) {
             Map<String, Object> m = new HashMap<>();
             m.put("type", type);
-            m.put("user", JCRSessionFactory.getInstance().getCurrentUser());
+            m.put("user", JCRSessionFactory.getInstance().getCurrentUser().getLocalPath());
             try (ObjectOutputStream oos = new ObjectOutputStream(out)) {
                 oos.writeObject(obj);
                 m.put("data", out.toByteArray());
@@ -211,7 +211,9 @@ public class WorkflowObservationManager implements HazelcastTopic.MessageListene
             Object obj;
             try (ObjectInputStream is = new ObjectInputStream(new ByteArrayInputStream((byte[]) m.get("data")))) {
                 obj = is.readObject();
-                JCRSessionFactory.getInstance().setCurrentUser((JahiaUser) m.get("user"));
+                String userKey = (String) m.get("user");
+                JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByPath(userKey).getJahiaUser();
+                JCRSessionFactory.getInstance().setCurrentUser(user);
                 if (m.get("type").equals("notifyWorkflowStarted")) {
                     notifyWorkflowStarted((Workflow) obj);
                 } else if (m.get("type").equals("notifyWorkflowEnded")) {

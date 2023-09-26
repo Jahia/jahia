@@ -77,6 +77,7 @@ import org.jahia.services.visibility.VisibilityService;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.stream.Collectors;
 
 import javax.jcr.*;
 import javax.jcr.version.Version;
@@ -118,11 +119,14 @@ class NodeHelper {
             }
         }
         Template template = RenderService.getInstance().resolveTemplate(resource, renderContext);
-        if (template != null) {
-            url += nodeForURL.getPath() + ".html";
+        String extensionName;
+        if (template != null || nodeForURL.isNodeType("jnt:page") || nodeForURL.isNodeType("jmix:mainResource")) {
+            extensionName = ".html";
         } else {
-            url += nodeForURL.getPath() + ".content-template.html";
+            extensionName = ".content-template.html";
         }
+
+        url += nodeForURL.getPath() + extensionName;
 
         if (versionDate != null) {
             url += "?v=" + (versionDate.getTime());

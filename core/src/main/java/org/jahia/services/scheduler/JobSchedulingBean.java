@@ -43,7 +43,6 @@
 package org.jahia.services.scheduler;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.ComparatorUtils;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.settings.SettingsBean;
 import org.quartz.*;
@@ -154,9 +153,7 @@ public class JobSchedulingBean implements InitializingBean, DisposableBean {
             }
 
             if (existingTrigger instanceof CronTrigger
-                    && (ComparatorUtils.naturalComparator().compare(
-                            ((CronTrigger) existingTrigger).getCronExpression(),
-                            ((CronTrigger) newTrigger).getCronExpression()) != 0)) {
+                    && (((CronTrigger) existingTrigger).getCronExpression().compareTo(((CronTrigger) newTrigger).getCronExpression())) != 0) {
                 return true;
             }
         }

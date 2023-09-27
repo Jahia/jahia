@@ -45,18 +45,16 @@ package org.jahia.services.pwdpolicy;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.apache.commons.collections.ComparatorUtils;
-
 /**
  * Represents a history entry for the user password (encrypted).
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class PasswordHistoryEntry implements Comparable<PasswordHistoryEntry>, Serializable {
 
     /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param password
      * @param modificationDate
      */
@@ -74,8 +72,7 @@ public class PasswordHistoryEntry implements Comparable<PasswordHistoryEntry>, S
 
     @SuppressWarnings("unchecked")
     public int compareTo(PasswordHistoryEntry o) {
-        return ComparatorUtils.naturalComparator().compare(
-                o.getModificationDate(), getModificationDate());
+        return o.getModificationDate().compareTo(getModificationDate());
     }
 
     @Override

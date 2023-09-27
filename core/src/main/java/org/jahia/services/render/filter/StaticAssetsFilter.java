@@ -45,7 +45,6 @@ package org.jahia.services.render.filter;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;
 import net.htmlparser.jericho.*;
-import org.apache.commons.collections.ComparatorUtils;
 import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.functors.NOPTransformer;
@@ -158,24 +157,18 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     private static final Logger logger = LoggerFactory.getLogger(StaticAssetsFilter.class);
 
     private static final Transformer LOW_CASE_TRANSFORMER = new Transformer() {
-
         @Override
         public Object transform(Object input) {
             return input != null ? input.toString().toLowerCase() : null;
         }
     };
 
-    @SuppressWarnings("unchecked")
-    private static final Comparator<String> ASSET_COMPARATOR = ComparatorUtils.transformedComparator(null, new Transformer() {
-
-        @Override
-        public Object transform(Object input) {
-            Integer rank = null;
-            if (input != null) {
-                rank = (Integer) RANK.get(input.toString());
-            }
-            return rank != null ? rank : RANK.get("unknown");
+    private static final Comparator<String> ASSET_COMPARATOR = Comparator.comparing(obj -> {
+        Integer rank = null;
+        if (obj != null) {
+            rank = (Integer) RANK.get(((Object) obj).toString());
         }
+        return rank != null ? rank : ((Integer) RANK.get("unknown"));
     });
 
     private static class AssetsScriptContext extends SimpleScriptContext {

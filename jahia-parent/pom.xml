@@ -172,10 +172,10 @@
         <osgi.compendium.version>7.0.0</osgi.compendium.version>
         <pax.logging.version>2.2.3</pax.logging.version>
         <pax.swissbox.version>1.8.3</pax.swissbox.version>
-        <pax.url.version>2.6.12</pax.url.version>
-        <pax.web.api.version>7.3.28</pax.web.api.version>
-        <pax.web.jsp.version>7.3.28-jahia1</pax.web.jsp.version>
-        <karaf.version>4.3.9</karaf.version>
+        <pax.url.version>2.6.14</pax.url.version>
+        <pax.web.api.version>7.3.29</pax.web.api.version>
+        <pax.web.jsp.version>7.3.29-jahia1-SNAPSHOT</pax.web.jsp.version>
+        <karaf.version>4.3.10</karaf.version>
         <karaf.jaas.config.version>${karaf.version}</karaf.jaas.config.version>
         <jersey.version>2.18</jersey.version>
         <hk2.version>2.4.0-b25</hk2.version>

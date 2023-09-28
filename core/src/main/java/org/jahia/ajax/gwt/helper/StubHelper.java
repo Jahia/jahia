@@ -117,43 +117,39 @@ public class StubHelper {
      * @return a map of code snippets
      */
     private Map<String, String> getCodeSnippets(String fileType, String snippetType, String nodeTypeName) {
-        Map<String, String> stub = new LinkedHashMap<String, String>();
-        InputStream is = null;
-        try {
-            ServletContext servletContext = JahiaContextLoaderListener.getServletContext();
-            @SuppressWarnings("unchecked")
-            Set<String> resources = servletContext.getResourcePaths("/WEB-INF/etc/snippets/" + fileType + "/"
-                    + snippetType + "/");
-            ExtendedNodeType n = null;
-            if (resources != null) {
-                for (String resource : resources) {
-                    String resourceName = StringUtils.substringAfterLast(resource, "/");
-                    String viewNodeType = getResourceViewNodeType(resourceName);
-                    if (nodeTypeName != null && viewNodeType != null) {
-                        // check if the view node type matches the requested one
-                        if (null == n) {
-                            try {
-                                n = NodeTypeRegistry.getInstance().getNodeType(nodeTypeName);
-                            } catch (NoSuchNodeTypeException e) {
-                                // node type not found, do nothing
-                            }
-                        }
-                        if (n != null && !n.isNodeType(viewNodeType)) {
-                            // we skip that stub as it's node type does not match the requested one
-                            continue;
+        Map<String, String> stub = new LinkedHashMap<>();
+        InputStream is;
+        ServletContext servletContext = JahiaContextLoaderListener.getServletContext();
+        @SuppressWarnings("unchecked")
+        Set<String> resources = servletContext.getResourcePaths("/WEB-INF/etc/snippets/" + fileType + "/"
+                + snippetType + "/");
+        ExtendedNodeType n = null;
+        if (resources != null) {
+            for (String resource : resources) {
+                String resourceName = StringUtils.substringAfterLast(resource, "/");
+                String viewNodeType = getResourceViewNodeType(resourceName);
+                if (nodeTypeName != null && viewNodeType != null) {
+                    // check if the view node type matches the requested one
+                    if (null == n) {
+                        try {
+                            n = NodeTypeRegistry.getInstance().getNodeType(nodeTypeName);
+                        } catch (NoSuchNodeTypeException e) {
+                            // node type not found, do nothing
                         }
                     }
-                    is = servletContext.getResourceAsStream(resource);
-                    try {
-                        stub.put(viewNodeType != null ? (resourceName + "/" + viewNodeType) : resourceName,
-                                StringUtils.join(IOUtils.readLines(is), "\n"));
-                    } finally {
-                        IOUtils.closeQuietly(is);
+                    if (n != null && !n.isNodeType(viewNodeType)) {
+                        // we skip that stub as it's node type does not match the requested one
+                        continue;
                     }
                 }
+                is = servletContext.getResourceAsStream(resource);
+                try {
+                    stub.put(viewNodeType != null ? (resourceName + "/" + viewNodeType) : resourceName,
+                            StringUtils.join(IOUtils.readLines(is), "\n"));
+                } finally {
+                    IOUtils.closeQuietly(is);
+                }
             }
-        } catch (IOException e) {
-            logger.error("Failed to read code snippets from " + fileType + "/" + snippetType, e);
         }
         return stub;
     }

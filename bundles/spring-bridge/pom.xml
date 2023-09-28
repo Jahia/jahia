@@ -103,6 +103,7 @@
                             osgi.service;objectClass:List<String>="org.jahia.services.cache.CacheProvider",
                             osgi.service;objectClass:List<String>="org.jahia.pipelines.Pipeline",
                             osgi.service;objectClass:List<String>="org.jahia.services.notification.HttpClientService",
+                            osgi.service;objectClass:List<String>="javax.sql.DataSource",
                             ]]>
                         </Provide-Capability>
                         <Bundle-Category>jahia-bundle</Bundle-Category>

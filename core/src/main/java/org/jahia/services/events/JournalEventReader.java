@@ -49,7 +49,11 @@ import org.apache.jackrabbit.core.journal.Journal;
 import org.apache.jackrabbit.core.journal.JournalException;
 import org.apache.jackrabbit.core.journal.Record;
 import org.apache.jackrabbit.core.journal.RecordIterator;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.NativeQuery;
 import org.jahia.api.Constants;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.DefaultEventListener;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
@@ -62,7 +66,12 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.EventIterator;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * Service that reads the JCR events directly from the JCR journal and passes them to the specified listeners.
@@ -78,6 +87,7 @@ public class JournalEventReader {
     private static final Logger logger = LoggerFactory.getLogger(JournalEventReader.class);
 
     private SettingsBean settingsBean;
+    private SessionFactory hibernateSessionFactory;
     private String lastProcessedRevisionFilePath;
 
     /**
@@ -271,10 +281,90 @@ public class JournalEventReader {
                 LAST_PROCESSED_JOURNAL_REVISION_FILE).getPath();
     }
 
+    public void setHibernateSessionFactory(SessionFactory hibernateSessionFactory) {
+        this.hibernateSessionFactory = hibernateSessionFactory;
+    }
+
     /**
      * Process records callback.
      */
     private abstract static class ProcessRecordCallback {
         abstract void processRecord(ChangeLogRecord r);
     }
+
+
+    public Long getGlobalRevision() {
+        try (Session session = hibernateSessionFactory.openSession()) {
+            return queryGlobalRevision(session);
+        }
+    }
+
+    public String getNodeId() {
+        return System.getProperty("cluster.node.serverId");
+    }
+
+    public Long getLocalRevision() {
+        String currentNodeServerId = System.getProperty("cluster.node.serverId");
+        if (!StringUtils.isEmpty(currentNodeServerId)) {
+            try (Session session = hibernateSessionFactory.openSession()) {
+                return queryLocalRevision(session, currentNodeServerId);
+            }
+        } else {
+            logger.warn("Unable to query localRevision, cluster.node.serverId system property not found");
+            return null;
+        }
+    }
+
+    public Map<String, Long> getRevisions() {
+        try (Session session = hibernateSessionFactory.openSession()) {
+            return queryAllLocalRevisions(session);
+        }
+    }
+
+    public Boolean isClusterSync() {
+        try (Session session = hibernateSessionFactory.openSession()) {
+            Long globalRevision = queryGlobalRevision(session);
+            if (globalRevision == null) {
+                throw new IllegalStateException("Unable to check if cluster is sync, globalRevision not found");
+            }
+
+            List<Long> revisions = new ArrayList<>(queryAllLocalRevisions(session).values());
+            revisions.add(globalRevision);
+
+            return revisions.stream().distinct().count() <= 1;
+        }
+    }
+
+    private Long queryLocalRevision(Session session, String journalId) {
+        NativeQuery<?> query = session.createSQLQuery("SELECT JOURNAL_ID, REVISION_ID FROM JR_J_LOCAL_REVISIONS WHERE JOURNAL_ID = :journalId");
+        query.setParameter("journalId", journalId);
+        Object result = query.uniqueResult();
+        if (result instanceof Object[]) {
+            return ((Number) ((Object[])result)[1]).longValue();
+        }
+        return null;
+    }
+
+    private Map<String, Long> queryAllLocalRevisions(Session session) {
+        NativeQuery<?> query = session.createSQLQuery("SELECT JOURNAL_ID, REVISION_ID FROM JR_J_LOCAL_REVISIONS");
+        List<?> results = query.getResultList();
+        if (results != null) {
+            return results.stream()
+                    .filter(obj -> obj instanceof Object[])
+                    .map(obj -> ((Object[]) obj))
+                    .collect(Collectors.toMap(obj -> obj[0].toString(), obj -> ((Number) obj[1]).longValue()));
+        }
+
+        return Collections.emptyMap();
+    }
+
+    private Long queryGlobalRevision(Session session) {
+        NativeQuery<?> query = session.createSQLQuery("SELECT REVISION_ID FROM JR_J_GLOBAL_REVISION");
+        Object result = query.uniqueResult();
+        if (result instanceof Number) {
+            return ((Number) result).longValue();
+        }
+        return null;
+    }
+
 }

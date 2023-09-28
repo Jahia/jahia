@@ -348,5 +348,6 @@
 
     <bean id="journalEventReader" class="org.jahia.services.events.JournalEventReader">
         <property name="settingsBean" ref="settingsBean"/>
+        <property name="hibernateSessionFactory" ref="sessionFactory"/>
     </bean>
 </beans>

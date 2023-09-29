@@ -70,6 +70,7 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.content.*;
 import org.jahia.services.logging.MetricsLoggingService;
+import org.jahia.services.observation.JahiaEventService;
 import org.jahia.services.render.filter.ContextPlaceholdersReplacer;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.visibility.VisibilityService;
@@ -281,7 +282,9 @@ public class FileServlet extends HttpServlet {
                         fileEntry.getBinary().dispose();
                         fileEntry.setBinary(null);
                     }
-                    SpringContextSingleton.getInstance().publishEvent(new FileDownloadEvent(this, req, fileEntry.getIdentifier(), fileKey.getPath(), fileEntry.getNodeTypes(), fileKey.getWorkspace()));
+                    FileDownloadEvent event = new FileDownloadEvent(this, req, fileEntry.getIdentifier(), fileKey.getPath(), fileEntry.getNodeTypes(), fileKey.getWorkspace());
+                    SpringContextSingleton.getInstance().publishEvent(event);
+                    ((JahiaEventService) SpringContextSingleton.getBean("jahiaEventService")).publishEvent(event);
                 } else {
                     code = HttpServletResponse.SC_NOT_FOUND;
                     res.sendError(HttpServletResponse.SC_NOT_FOUND);

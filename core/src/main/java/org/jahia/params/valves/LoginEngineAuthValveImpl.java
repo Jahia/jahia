@@ -50,6 +50,7 @@ import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.security.spi.LicenseCheckUtil;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.observation.JahiaEventService;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -139,7 +140,10 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
             }
 
             if (fireLoginEvent) {
-                SpringContextSingleton.getInstance().publishEvent(new LoginEvent(this, jahiaUser, authContext));
+                LoginEvent event = new LoginEvent(this, jahiaUser, authContext);
+                SpringContextSingleton.getInstance().publishEvent(event);
+                ((JahiaEventService) SpringContextSingleton.getBean("jahiaEventService")).publishEvent(event);
+
                 Map<String, Object> m = new HashMap<>();
                 m.put("user", jahiaUser);
                 m.put("authContext", authContext);

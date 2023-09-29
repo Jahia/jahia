@@ -54,6 +54,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.observation.JahiaEventService;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;

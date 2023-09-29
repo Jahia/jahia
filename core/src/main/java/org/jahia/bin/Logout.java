@@ -52,6 +52,7 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.observation.JahiaEventService;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.seo.urlrewrite.UrlRewriteService;
@@ -275,7 +276,10 @@ public class Logout implements Controller {
         Locale locale = (Locale) request.getSession().getAttribute(Constants.SESSION_LOCALE);
 
         if (fireLogoutEvent) {
-            SpringContextSingleton.getInstance().publishEvent(new LogoutEvent(this, request, response));
+            LogoutEvent event = new LogoutEvent(this, request, response);
+            SpringContextSingleton.getInstance().publishEvent(event);
+            ((JahiaEventService) SpringContextSingleton.getBean("jahiaEventService")).publishEvent(event);
+
             Map<String, Object> m = new HashMap<>();
             m.put("request", request);
             m.put("response", response);

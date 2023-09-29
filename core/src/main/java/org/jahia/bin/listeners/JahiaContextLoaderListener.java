@@ -59,6 +59,7 @@ import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.modulemanager.util.ModuleUtils;
+import org.jahia.services.observation.JahiaEventService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.patches.Patcher;
@@ -449,7 +450,10 @@ public class JahiaContextLoaderListener extends ContextLoaderListener implements
         logger.debug("HTTP session created: {}", se.getSession().getId());
         sessionCount++;
         if (isEventInterceptorActivated("interceptHttpSessionListenerEvents")) {
-            SpringContextSingleton.getInstance().publishEvent(new HttpSessionCreatedEvent(se.getSession()));
+            HttpSessionCreatedEvent event = new HttpSessionCreatedEvent(se.getSession());
+            SpringContextSingleton.getInstance().publishEvent(event);
+            ((JahiaEventService) SpringContextSingleton.getBean("jahiaEventService")).publishEvent(event);
+
         }
         for (HttpListener listener : getListeners()) {
             listener.sessionCreated(se);
@@ -461,7 +465,9 @@ public class JahiaContextLoaderListener extends ContextLoaderListener implements
         logger.debug("HTTP session destroyed: {}", se.getSession().getId());
         sessionCount--;
         if (isEventInterceptorActivated("interceptHttpSessionListenerEvents")) {
-            SpringContextSingleton.getInstance().publishEvent(new HttpSessionDestroyedEvent(se.getSession()));
+            HttpSessionDestroyedEvent event = new HttpSessionDestroyedEvent(se.getSession());
+            SpringContextSingleton.getInstance().publishEvent(event);
+            ((JahiaEventService) SpringContextSingleton.getBean("jahiaEventService")).publishEvent(event);
         }
         for (HttpListener listener : getListeners()) {
             listener.sessionDestroyed(se);

@@ -350,4 +350,6 @@
         <property name="settingsBean" ref="settingsBean"/>
         <property name="hibernateSessionFactory" ref="sessionFactory"/>
     </bean>
+
+    <bean id="jahiaEventService" class="org.jahia.services.observation.JahiaEventServiceImpl"/>
 </beans>

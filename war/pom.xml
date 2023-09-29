@@ -53,7 +53,7 @@
     <artifactId>jahia-war</artifactId>
     <name>Jahia WAR</name>
     <packaging>war</packaging>
-    
+
     <profiles>
         <profile>
             <id>eclipse-integration</id>
@@ -85,7 +85,7 @@
                 </plugins>
             </build>
         </profile>
-        
+
         <profile>
             <id>generate-ddl</id>
             <activation>
@@ -419,7 +419,7 @@
             </build>
         </profile>
     </profiles>
-    
+
     <dependencies>
         <dependency>
             <groupId>org.jahia.server</groupId>
@@ -446,7 +446,7 @@
             <type>war</type>
             <scope>compile</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
@@ -543,15 +543,15 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
+
         <!-- JSTL -->
         <dependency>
             <groupId>org.jboss.spec.javax.servlet.jstl</groupId>
             <artifactId>jboss-jstl-api_1.2_spec</artifactId>
             <version>1.1.4.Final</version>
         </dependency>
-        
-        
+
+
         <dependency>
             <!-- Required for Eclipse Gemini Blueprint when proxying classes rather then interfaces -->
             <artifactId>cglib-nodep</artifactId>
@@ -559,14 +559,14 @@
             <version>2.2.2</version>
             <scope>runtime</scope>
         </dependency>
-        
+
         <dependency>
             <!-- Felix HTTP bridge -->
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.http.proxy</artifactId>
             <version>${felix.http.version}</version>
         </dependency>
-        
+
         <dependency>
             <!-- Karaf dependency -->
             <groupId>org.apache.karaf.diagnostic</groupId>
@@ -574,11 +574,11 @@
             <scope>runtime</scope>
         </dependency>
     </dependencies>
-    
+
     <build>
         <finalName>jahia</finalName>
         <plugins>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -734,7 +734,7 @@
                                 <concat destfile="${project.build.directory}/ddl/derby/01-create-jahia-core-schema.sql" append="yes" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
                                     <fileset dir="${basedir}/src/data/resources/db/sql/schema/derby" includes="01-create-*-index.sql,01-create-*-triggers.sql"/>
                                 </concat>
-                                
+
                                 <concat destfile="${project.build.directory}/ddl/mssql/00-drop-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
                                     <fileset dir="${basedir}/src/data/resources/db/sql/schema/mssql" includes="00-drop-*"/>
                                 </concat>
@@ -744,7 +744,7 @@
                                 <concat destfile="${project.build.directory}/ddl/mssql/01-create-jahia-core-schema.sql" append="yes" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
                                     <fileset dir="${basedir}/src/data/resources/db/sql/schema/mssql" includes="01-create-*-index.sql,01-create-*-triggers.sql"/>
                                 </concat>
-                                
+
                                 <concat destfile="${project.build.directory}/ddl/mysql/00-drop-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
                                     <fileset dir="${basedir}/src/data/resources/db/sql/schema/mysql" includes="00-drop-*"/>
                                 </concat>
@@ -754,7 +754,7 @@
                                 <concat destfile="${project.build.directory}/ddl/mysql/01-create-jahia-core-schema.sql" append="yes" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
                                     <fileset dir="${basedir}/src/data/resources/db/sql/schema/mysql" includes="01-create-*-index.sql,01-create-*-triggers.sql"/>
                                 </concat>
-                                
+
                                 <concat destfile="${project.build.directory}/ddl/oracle/00-drop-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
                                     <fileset dir="${basedir}/src/data/resources/db/sql/schema/oracle" includes="00-drop-*"/>
                                 </concat>
@@ -764,7 +764,7 @@
                                 <concat destfile="${project.build.directory}/ddl/oracle/01-create-jahia-core-schema.sql" append="yes" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
                                     <fileset dir="${basedir}/src/data/resources/db/sql/schema/oracle" includes="01-create-*-index.sql,01-create-*-triggers.sql"/>
                                 </concat>
-                                
+
                                 <concat destfile="${project.build.directory}/ddl/postgresql/00-drop-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
                                     <fileset dir="${basedir}/src/data/resources/db/sql/schema/postgresql" includes="00-drop-*"/>
                                 </concat>
@@ -866,7 +866,7 @@
                     </archive>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.jahia.server</groupId>
                 <artifactId>jahia-maven-plugin</artifactId>
@@ -885,6 +885,8 @@
                                 <extraPackageExclude>org.osgi.util*</extraPackageExclude>
                                 <extraPackageExclude>org.apache.shiro*</extraPackageExclude>
                                 <extraPackageExclude>org.jahia.services.security.shiro*</extraPackageExclude>
+                                <extraPackageExclude>org.hibernate*</extraPackageExclude>
+                                <extraPackageExclude>org.springframework.orm*</extraPackageExclude>
                             </extraPackageExcludes>
                             <propertiesInputFile>
                                 ${project.build.directory}/filtered-resources/custom.properties
@@ -938,7 +940,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <plugin>
                 <artifactId>maven-site-plugin</artifactId>
                 <executions>
@@ -950,7 +952,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
@@ -1025,7 +1027,7 @@
                 </executions>
             </plugin>
         </plugins>
-        
+
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -1039,9 +1041,9 @@
                 <targetPath>${project.build.directory}/filtered-resources</targetPath>
             </resource>
         </resources>
-    
+
     </build>
-    
+
     <reporting>
         <plugins>
             <plugin>

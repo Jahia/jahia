@@ -43,7 +43,8 @@
         please contact the sales department at sales@jahia.com.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
@@ -119,6 +120,11 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>2.5.2</version>
+                </plugin>
+                <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>gwt-maven-plugin</artifactId>
                     <version>${gwt.version.base}</version>
@@ -146,7 +152,9 @@
                         <noServer>true</noServer>
                         <style>${gwtJavascriptStyle}</style>
                         <soyc>false</soyc>
-                        <extraJvmArgs>-Xmx1280m -Xss2048k -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory</extraJvmArgs>
+                        <extraJvmArgs>-Xmx1280m -Xss2048k
+                            -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory
+                        </extraJvmArgs>
                         <webappDirectory>${project.build.directory}/${project.build.finalName}/gwt</webappDirectory>
                         <skip>${jahia.gwt.skip}</skip>
                         <modules>
@@ -204,7 +212,9 @@
                         <configuration>
                             <artifacts>
                                 <artifact>
-                                    <file>${project.build.directory}/${project.build.finalName}/WEB-INF/lib/${project.build.finalName}.jar</file>
+                                    <file>
+                                        ${project.build.directory}/${project.build.finalName}/WEB-INF/lib/${project.build.finalName}.jar
+                                    </file>
                                     <type>jar</type>
                                 </artifact>
                             </artifacts>
@@ -296,7 +306,8 @@
             <id>gwt-development</id>
             <properties>
                 <editModuleName>org.jahia.ajax.gwt.module.edit.DevEdit</editModuleName>
-                <contentManagerModuleName>org.jahia.ajax.gwt.module.contentmanager.DevContentManager</contentManagerModuleName>
+                <contentManagerModuleName>org.jahia.ajax.gwt.module.contentmanager.DevContentManager
+                </contentManagerModuleName>
                 <emptyModuleName>org.jahia.ajax.gwt.module.empty.DevEmpty</emptyModuleName>
                 <gwtJavascriptStyle>DETAILED</gwtJavascriptStyle>
             </properties>

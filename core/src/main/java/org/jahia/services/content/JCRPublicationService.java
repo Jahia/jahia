@@ -387,7 +387,7 @@ public class JCRPublicationService extends JahiaService {
                 if (!node.isNodeType("jmix:nolive") &&
                         !toPublish.contains(node) &&
                         supportsPublication(sourceSession, node) &&
-                        !isNodeWorkinInProgress(node)) {
+                        (!isNodeWorkinInProgress(node) || node.isMarkedForDeletion())) {
                     toPublish.add(node);
                 }
             } catch (javax.jcr.ItemNotFoundException e) {

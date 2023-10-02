@@ -1,3 +1,4 @@
+    CREATE EXTENSION IF NOT EXISTS lo;
 
     create table jbpm_attachment (
         id int8 not null,
@@ -28,7 +29,7 @@
 
     create table jbpm_boolean_expression (
         id int8 not null,
-        expression text,
+        expression oid,
         type varchar(255),
         escalation_constraints_id int8,
         primary key (id)
@@ -82,7 +83,7 @@
 
     create table jbpm_email_header (
         id int8 not null,
-        body text,
+        body oid,
         from_address varchar(255),
         language varchar(255),
         reply_to_address varchar(255),
@@ -106,7 +107,7 @@
         id int8 not null,
         language varchar(255),
         short_text varchar(255),
-        text text,
+        text oid,
         task_subjects_id int8,
         task_names_id int8,
         task_descriptions_id int8,
@@ -288,7 +289,7 @@
     create table jbpm_task_comment (
         id int8 not null,
         added_at timestamp,
-        text text,
+        text oid,
         added_by varchar(255),
         task_data_comments_id int8,
         primary key (id)
@@ -593,3 +594,12 @@
     create sequence VAR_INST_LOG_ID_SEQ;
 
     create sequence WORKITEMINFO_ID_SEQ;
+
+    CREATE TRIGGER t_oid_jbpm_boolean_expression_expression BEFORE DELETE OR UPDATE ON jbpm_boolean_expression FOR EACH ROW EXECUTE FUNCTION lo_manage('expression');
+    CREATE TRIGGER t_oid_jbpm_content_content BEFORE DELETE OR UPDATE ON jbpm_content FOR EACH ROW EXECUTE FUNCTION lo_manage('content');
+    CREATE TRIGGER t_oid_jbpm_email_header_body BEFORE DELETE OR UPDATE ON jbpm_email_header FOR EACH ROW EXECUTE FUNCTION lo_manage('body');
+    CREATE TRIGGER t_oid_jbpm_i18ntext_text BEFORE DELETE OR UPDATE ON jbpm_i18ntext FOR EACH ROW EXECUTE FUNCTION lo_manage('text');
+    CREATE TRIGGER t_oid_jbpm_process_instance_info_process_instance_byte_array BEFORE DELETE OR UPDATE ON jbpm_process_instance_info FOR EACH ROW EXECUTE FUNCTION lo_manage('process_instance_byte_array');
+    CREATE TRIGGER t_oid_jbpm_session_info_rules_byte_array BEFORE DELETE OR UPDATE ON jbpm_session_info FOR EACH ROW EXECUTE FUNCTION lo_manage('rules_byte_array');
+    CREATE TRIGGER t_oid_jbpm_task_comment_text BEFORE DELETE OR UPDATE ON jbpm_task_comment FOR EACH ROW EXECUTE FUNCTION lo_manage('text');
+    CREATE TRIGGER t_oid_jbpm_work_item_info_work_item_byte_array BEFORE DELETE OR UPDATE ON jbpm_work_item_info FOR EACH ROW EXECUTE FUNCTION lo_manage('work_item_byte_array');

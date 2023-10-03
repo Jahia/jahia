@@ -48,6 +48,7 @@ import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.hc.core5.http.io.entity.PathEntity;
 import org.jahia.api.Constants;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.bin.errors.ErrorHandler;
@@ -755,6 +756,10 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     } else {
                         throw new JahiaForbiddenAccessException();
                     }
+                }
+            } catch (AccessDeniedException e) {
+                if (SettingsBean.getInstance().getString("protectedResourceAccessStrategy", "silent").equalsIgnoreCase("silent")) {
+                    throw new PathNotFoundException(urlResolver.getPath());
                 }
             } catch (PathNotFoundException e) {
 

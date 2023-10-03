@@ -59,9 +59,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.sf.ehcache.Element;
 import org.apache.catalina.servlets.RangeUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.spi.Path;
 import org.apache.jackrabbit.spi.commons.conversion.MalformedPathException;
 import org.apache.jackrabbit.util.Text;
 import org.jahia.api.Constants;
@@ -69,12 +71,15 @@ import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.observation.JahiaEventService;
+import org.jahia.services.render.SiteInfo;
 import org.jahia.services.render.filter.ContextPlaceholdersReplacer;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
@@ -142,8 +147,19 @@ public class FileServlet extends HttpServlet {
                 FileCacheEntry fileEntry = entries != null ? entries.get(fileKey.getThumbnail())
                         : null;
                 if (fileEntry == null) {
-                    JCRNodeWrapper n = getNode(fileKey);
-                    if (n == null || !n.isFile()) {
+                    JCRNodeWrapper n;
+                    try {
+                        n = getNode(fileKey);
+                    } catch (AccessDeniedException e) {
+                        if (JahiaUserManagerService.isGuest(JCRSessionFactory.getInstance().getCurrentUser())) {
+                            code = HttpServletResponse.SC_UNAUTHORIZED;
+                            res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                        } else {
+                            code = HttpServletResponse.SC_FORBIDDEN;
+                            res.sendError(HttpServletResponse.SC_FORBIDDEN);
+                        }
+                        return;
+                    } catch (PathNotFoundException e) {
                         // cannot find it or it is not a file
                         code = HttpServletResponse.SC_NOT_FOUND;
                         res.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -392,8 +408,7 @@ public class FileServlet extends HttpServlet {
         return fileEntry;
     }
 
-    protected JCRNodeWrapper getNode(FileKey fileKey) {
-        JCRNodeWrapper n = null;
+    protected JCRNodeWrapper getNode(FileKey fileKey) throws PathNotFoundException, AccessDeniedException {
         JCRSessionWrapper session = null;
         try {
             session = JCRSessionFactory.getInstance().getCurrentUserSession(fileKey.getWorkspace());
@@ -405,16 +420,19 @@ public class FileServlet extends HttpServlet {
                 session.setVersionLabel(fileKey.getVersionLabel());
             }
 
-            n = session.getNode(fileKey.getPath());
+            JCRNodeWrapper n = getNode(fileKey, session);
 
-            if (!isValid(n)) {
-                n = null;
+            if (!isValid(n) || !n.isFile()) {
+                throw new PathNotFoundException(fileKey.getPath());
             }
+
+            return n;
         } catch (RuntimeException e) {
             // throw by the session.setVersionLabel()
             logger.debug(e.getMessage(), e);
-        } catch (PathNotFoundException e) {
+        } catch (PathNotFoundException | AccessDeniedException e) {
             logger.debug(e.getMessage(), e);
+            throw e;
         } catch (RepositoryException e) {
             if (e.getCause() != null && e.getCause() instanceof MalformedPathException) {
                 logger.debug(e.getMessage(), e);
@@ -423,7 +441,32 @@ public class FileServlet extends HttpServlet {
                         + (session != null ? session.getUserID() : null), e);
             }
         }
-        return n;
+
+        throw new PathNotFoundException(fileKey.getPath());
+    }
+
+    private JCRNodeWrapper getNode(FileKey fileKey, JCRSessionWrapper session) throws RepositoryException {
+        try {
+            return session.getNode(fileKey.getPath());
+        } catch (PathNotFoundException e) {
+            if (SettingsBean.getInstance().getString("protectedResourceAccessStrategy", "silent").equalsIgnoreCase("authorizationError") && nodeExists(fileKey)) {
+                throw new AccessDeniedException();
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    private static boolean nodeExists(FileKey fileKey) throws RepositoryException {
+        try {
+            JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, fileKey.getWorkspace(), null, systemSession ->
+                    systemSession.getNode(fileKey.getPath())
+            );
+            return true;
+        } catch (PathNotFoundException ex) {
+            // node dose not exist
+            return false;
+        }
     }
 
     private boolean isValid(JCRNodeWrapper n) throws ValueFormatException, PathNotFoundException,

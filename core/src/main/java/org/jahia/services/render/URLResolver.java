@@ -53,6 +53,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import javax.jcr.AccessDeniedException;
+import javax.jcr.NoSuchWorkspaceException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
@@ -183,15 +184,17 @@ public class URLResolver {
                 try {
                     if (siteKeyByServerName != null) {
                         JCRNodeWrapper targetNode = getNode();
-                        if (siteKeyByServerName.equals(targetNode.getResolveSite().getSiteKey()) ) {
-                            VanityUrl defaultVanityUrl = getVanityUrlService()
-                                    .getVanityUrlForWorkspaceAndLocale(targetNode,
-                                            this.workspace, locale, siteKey);
+                        if (siteKeyByServerName.equals(targetNode.getResolveSite().getSiteKey())) {
+                            VanityUrl defaultVanityUrl = getVanityUrlService().getVanityUrlForWorkspaceAndLocale(targetNode, this.workspace,
+                                    locale, siteKey);
                             if (defaultVanityUrl != null && defaultVanityUrl.isActive()) {
                                 redirect(request, defaultVanityUrl);
                             }
                         }
                     }
+                } catch (NoSuchWorkspaceException e) {
+                    logger.debug("Workspace not found: {} with resolved workspace {} and path info {}",
+                            workspace, this.workspace, pathInfo);
                 } catch (PathNotFoundException e) {
                     logger.debug("Path not found: {}", urlPathInfo);
                 } catch (AccessDeniedException e) {

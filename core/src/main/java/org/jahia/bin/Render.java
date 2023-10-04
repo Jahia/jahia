@@ -48,6 +48,7 @@ import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.spi.commons.conversion.MalformedPathException;
 import org.apache.hc.core5.http.io.entity.PathEntity;
 import org.jahia.api.Constants;
 import org.jahia.bin.errors.DefaultErrorHandler;
@@ -761,8 +762,15 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 if (SettingsBean.getInstance().getString("protectedResourceAccessStrategy", "silent").equalsIgnoreCase("silent")) {
                     throw new PathNotFoundException(urlResolver.getPath());
                 }
-            } catch (PathNotFoundException e) {
-
+            } catch (RepositoryException e) {
+                if (e.getCause() instanceof MalformedPathException) {
+                    // Stop execution but wrap in PathNotFoundException to prevent
+                    // generating stack trace in jahia-errors; log 404 instead
+                    logger.debug(e.getMessage());
+                    throw new PathNotFoundException("'" + urlResolver.getPath() + "'not found");
+                } else if (!(e instanceof PathNotFoundException)) {
+                    throw e;
+                }
             }
 
             renderContext.setSiteInfo(urlResolver.getSiteInfo());

@@ -42,6 +42,7 @@
  */
 package org.jahia.test.bin;
 
+import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
@@ -272,5 +273,14 @@ public class RenderTest extends JahiaTestCase {
         assertNotNull("A proper JSONObject instance was expected, got null instead", jsonResults);
         assertTrue("body property should be "+MAIN_CONTENT_BODY + "1",jsonResults.get("body").equals(MAIN_CONTENT_BODY + "1"));
 
+    }
+
+    @Test
+    public void testMalformedPath() throws IOException {
+        String url = getBaseServerURL() + Jahia.getContextPath() + "/cms/render/default/en"
+                + SITECONTENT_ROOT_NODE + "/home/listA%20%0D";
+        try (CloseableHttpResponse resp = getHttpClient().execute(new HttpGet(url))) {
+            assertEquals("Error in response, code=" + resp.getCode(), 404, resp.getCode());
+        }
     }
 }

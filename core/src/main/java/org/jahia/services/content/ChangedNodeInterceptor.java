@@ -61,6 +61,8 @@ public class ChangedNodeInterceptor extends BaseInterceptor {
         JCRSessionWrapper session = node.getSession();
         if (!node.isNew()) {
             session.registerChangedNode(session.getNodeByIdentifier(node.getIdentifier())); // re-getting the node to eventually have the decorator
+        } else {
+            session.registerNewNode(session.getNodeByIdentifier(node.getIdentifier())); // re-getting the node to eventually have the decorator
         }
         return super.beforeSetValue(node, name, definition, originalValue);
     }
@@ -69,9 +71,11 @@ public class ChangedNodeInterceptor extends BaseInterceptor {
     public Value[] beforeSetValues(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition,
                                    Value[] originalValues) throws ValueFormatException, VersionException, LockException,
             ConstraintViolationException, RepositoryException {
+        JCRSessionWrapper session = node.getSession();
         if (!node.isNew()) {
-            JCRSessionWrapper session = node.getSession();
             session.registerChangedNode(session.getNodeByIdentifier(node.getIdentifier())); // re-getting the node to eventually have the decorator
+        } else {
+            session.registerNewNode(session.getNodeByIdentifier(node.getIdentifier())); // re-getting the node to eventually have the decorator
         }
         return super.beforeSetValues(node, name, definition, originalValues);
     }
@@ -79,9 +83,11 @@ public class ChangedNodeInterceptor extends BaseInterceptor {
     @Override
     public void beforeRemove(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition)
             throws VersionException, LockException, ConstraintViolationException, RepositoryException {
+        JCRSessionWrapper session = node.getSession();
         if (!node.isNew()) {
-            JCRSessionWrapper session = node.getSession();
             session.registerChangedNode(session.getNodeByIdentifier(node.getIdentifier())); // re-getting the node to eventually have the decorator
+        } else {
+            session.registerNewNode(session.getNodeByIdentifier(node.getIdentifier())); // re-getting the node to eventually have the decorator
         }
         super.beforeRemove(node, name, definition);
     }

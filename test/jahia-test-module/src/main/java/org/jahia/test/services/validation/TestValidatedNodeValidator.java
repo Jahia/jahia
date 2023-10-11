@@ -42,17 +42,13 @@
  */
 package org.jahia.test.services.validation;
 
-import org.hibernate.validator.constraints.Email;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.decorator.validation.JCRNodeValidator;
 import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
-import javax.validation.constraints.Future;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.util.Calendar;
 
 @FieldMatch.List({

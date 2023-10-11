@@ -12,8 +12,8 @@
     <uri>http://www.jahia.org/tags/user</uri>
 
     <function>
-        <description>Returns true if the current user is member of the specified group name or comma-separated list of
-            group names
+        <description>Returns true if the current user is member of the specified group name or at least one of the specified
+            groups (comma-separated list of group names)
         </description>
         <name>memberOf</name>
         <function-class>org.jahia.taglibs.user.User</function-class>
@@ -25,7 +25,7 @@
         </example>
     </function>
     <function>
-        <description>Returns true if the current user is NOT member of the specified group name or any of the specified
+        <description>Returns true if the current user is NOT member of the specified group name or at least one of the specified
             groups (comma-separated list of group names)
         </description>
         <name>notMemberOf</name>

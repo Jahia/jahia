@@ -43,13 +43,13 @@
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.grid.*;
-import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
@@ -66,7 +66,7 @@ import java.util.List;
 /**
  * @author : rincevent
  * @since JAHIA 6.5
- *        Created : 6 sept. 2010
+ * Created : 6 sept. 2010
  */
 public class VersioningTabItem extends EditEngineTabItem {
     private transient String locale;
@@ -127,24 +127,21 @@ public class VersioningTabItem extends EditEngineTabItem {
                         column.setSortable(false);
                         column.setHeaderHtml("Action");
                         column.setWidth(200);
-                        column.setRenderer(new GridCellRenderer() {
-                            public Object render(ModelData model, String property, ColumnData config, int rowIndex,
-                                                 int colIndex, ListStore listStore, Grid grid) {
-                                ButtonBar buttonBar = new ButtonBar();
-                                Button button = new Button(Messages.get("label.compare.with.staging.engine", "Compare With Staging"));
-                                button.addStyleName("button-compare-staging");
-                                button.setToolTip(Messages.get("label.compare.with.staging.engine", "Compare With Staging"));
-                                final GWTJahiaNodeVersion version = (GWTJahiaNodeVersion) model;
-                                button.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                                    @Override
-                                    public void componentSelected(ButtonEvent ce) {
-                                        // add 30s to the date to be sure to display the right version
-                                        new CompareEngine(version.getNode().getUUID(), VersioningTabItem.this.locale, false, version.getNode().getPath(), new Date(version.getDate().getTime() + (30l * 1000l)), engine, version.getWorkspace(), version.getLabel()).show();
-                                    }
-                                });
-                                buttonBar.add(button);
-                                return buttonBar;
-                            }
+                        column.setRenderer((model, property, config, rowIndex, colIndex, listStore, grid) -> {
+                            ButtonBar buttonBar = new ButtonBar();
+                            Button button = new Button(Messages.get("label.compare.with.staging.engine", "Compare With Staging"));
+                            button.addStyleName("button-compare-staging");
+                            button.setToolTip(Messages.get("label.compare.with.staging.engine", "Compare With Staging"));
+                            final GWTJahiaNodeVersion version = (GWTJahiaNodeVersion) model;
+                            button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                                @Override
+                                public void componentSelected(ButtonEvent ce) {
+                                    // add 1s to the date to be sure to display the right version
+                                    new CompareEngine(version.getNode().getUUID(), VersioningTabItem.this.locale, false, version.getNode().getPath(), new Date(version.getDate().getTime() + (1000L)), engine, version.getWorkspace(), version.getLabel()).show();
+                                }
+                            });
+                            buttonBar.add(button);
+                            return buttonBar;
                         });
                         configs.add(column);
                     }

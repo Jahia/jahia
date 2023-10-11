@@ -51,6 +51,9 @@ import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.regex.Pattern;
 
 /**
@@ -183,32 +186,27 @@ public class Login implements Controller {
             return authorizeNullRedirect;
         }
 
-        boolean startWithDoubleSlash = redirectUrl.startsWith("//");
-        if (redirectUrl.contains("://") || startWithDoubleSlash) {
-            if (redirectUrl.startsWith("http://") || redirectUrl.startsWith("https://") || startWithDoubleSlash) {
-                String redirectUrlAfterProtocol = StringUtils.substringAfter(redirectUrl, "//");
-                String urlBase = StringUtils.substringAfter(StringUtils.removeEnd(request.getRequestURL().toString(), request.getRequestURI()), "://");
-                if (redirectUrlAfterProtocol.startsWith(urlBase)) {
-                    return true;
-                }
+        try {
+            URI currentUri = new URI(request.getRequestURL().toString());
+            URI redirectUri = new URI(redirectUrl);
+
+            if (redirectUri.isAbsolute()) {
                 for (String authorizedRedirectHost : SettingsBean.getInstance().getAuthorizedRedirectHosts()) {
-                    if (redirectUrlAfterProtocol.startsWith(authorizedRedirectHost)) {
+                    if (redirectUri.getHost().equalsIgnoreCase(authorizedRedirectHost)) {
                         return true;
                     }
                 }
+
+                // Check if the host (domain) of the redirect URL is the same as the current URL
+                return currentUri.getHost().equalsIgnoreCase(redirectUri.getHost()) && currentUri.getPort() == redirectUri.getPort();
+            } else {
+                // Relative URL, consider it as same domain
+                return true;
             }
-            // Block non-HTTP URls, like ftp://...
+        } catch (URISyntaxException e) {
+            // Handle invalid URLs
             return false;
         }
-        // Block any other absolute URLs, like mailto:some@mail.com or even http:\\www.somedomain.com, which works on Google Chrome
-        // Second part of the test is to allow relative URLs that contain a colon in the end
-        int indexOfColon = redirectUrl.indexOf(":");
-        int indexOfSlash = redirectUrl.indexOf("/");
-        if (indexOfColon >= 0 && (indexOfSlash < 0 || indexOfColon < indexOfSlash)) {
-            return false;
-        }
-        // relative URL
-        return true;
     }
 
     // Only protected for test purposes

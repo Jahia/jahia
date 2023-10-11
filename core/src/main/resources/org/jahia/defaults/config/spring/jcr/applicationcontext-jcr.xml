@@ -643,6 +643,7 @@
                 </bean>
                 <bean class="org.jahia.services.importexport.validation.MissingTemplatesValidator">
                     <property name="templateManagerService" ref="JahiaTemplateManagerService"/>
+                    <property name="renderService" ref="RenderService"/>
                 </bean>
                 <bean class="org.jahia.services.importexport.validation.MissingNodetypesValidator"/>
                 <bean class="org.jahia.services.importexport.validation.ProviderAvailabilityValidator">

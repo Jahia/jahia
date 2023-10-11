@@ -53,15 +53,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.api.Constants;
+import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.render.RenderService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 
 /**
  * Helper class for performing a validation for missing templates in the imported content.
@@ -71,26 +76,17 @@ import org.xml.sax.Attributes;
  */
 public class MissingTemplatesValidator implements ImportValidator, ModuleDependencyAware {
 
-    private static final Logger logger = LoggerFactory.getLogger(MissingTemplatesValidator.class);
-
-    private static final Comparator<Map.Entry<String, Integer>> MISSING_COUNT_COMPARATOR = new Comparator<Map.Entry<String, Integer>>() {
-        public int compare(Map.Entry<String, Integer> entry1, Map.Entry<String, Integer> entry2) {
-            return entry1.getValue().compareTo(entry2.getValue());
-        }
-    };
-
-    private static final Pattern TEMPLATE_PATTERN = Pattern
-            .compile("(#?/sites/[^/]*|\\$currentSite)/templates/(.*)");
+    private static final Comparator<Map.Entry<String, Integer>> MISSING_COUNT_COMPARATOR = Map.Entry.comparingByValue();
 
     private Set<String> availableTemplateSets;
 
-    private Map<String, Boolean> checked = new HashMap<String, Boolean>();
+    private final Map<String, Boolean> checked = new HashMap<>();
 
     private Set<String> dependencies = Collections.emptySet();
 
-    private Map<String, Integer> missingInAllTemplateSets = new HashMap<String, Integer>();
+    private final Map<String, Integer> missingInAllTemplateSets = new HashMap<>();
 
-    private Map<String, Set<String>> missingTemplates = new TreeMap<String, Set<String>>();
+    private final Map<String, Set<String>> missingTemplates = new TreeMap<>();
 
     private Set<String> modules = Collections.emptySet();
 
@@ -99,6 +95,8 @@ public class MissingTemplatesValidator implements ImportValidator, ModuleDepende
     private boolean targetTemplateSetPresent;
 
     private JahiaTemplateManagerService templateManagerService;
+
+    private RenderService renderService;
 
     private Set<String> getAvailableTemplateSets() {
         if (null == availableTemplateSets) {
@@ -111,12 +109,12 @@ public class MissingTemplatesValidator implements ImportValidator, ModuleDepende
     public ValidationResult getResult() {
         Map<String, Integer> modulesMissingCounts = Collections.emptyMap();
         if (!missingInAllTemplateSets.isEmpty()) {
-            modulesMissingCounts = new LinkedHashMap<String, Integer>(
+            modulesMissingCounts = new LinkedHashMap<>(
                     missingInAllTemplateSets.size());
 
-            List<Map.Entry<String, Integer>> mapEntries = new LinkedList<Map.Entry<String, Integer>>(
+            List<Map.Entry<String, Integer>> mapEntries = new LinkedList<>(
                     missingInAllTemplateSets.entrySet());
-            Collections.sort(mapEntries, MISSING_COUNT_COMPARATOR);
+            mapEntries.sort(MISSING_COUNT_COMPARATOR);
             for (Map.Entry<String, Integer> entry : mapEntries) {
                 modulesMissingCounts.put(entry.getKey(), entry.getValue());
             }
@@ -127,28 +125,36 @@ public class MissingTemplatesValidator implements ImportValidator, ModuleDepende
 
     public void initDependencies(String templateSetName, List<String> modules) {
         targetTemplateSet = templateSetName;
-        this.modules = new LinkedHashSet<String>(modules);
+        this.modules = new LinkedHashSet<>(modules);
     }
 
-    private boolean isTemplatePresent(String templateName) {
+    private boolean isTemplatePresent(String templateName, ExtendedNodeType nodeType) {
         if (targetTemplateSetPresent) {
-            return templateManagerService.isTemplatePresent(templateName, dependencies);
+            boolean found = templateManagerService.isTemplatePresent(templateName, dependencies);
+            if (!found) {
+                found = isTemplateInViews(templateName, nodeType, dependencies);
+            }
+            return found;
         } else {
             // we do not have the target template set
             // will populate the information for available template sets
             for (String setName : getAvailableTemplateSets()) {
-                Set<String> dependenciesToCheck = new LinkedHashSet<String>(modules.size() + 1);
+                Set<String> dependenciesToCheck = new LinkedHashSet<>(modules.size() + 1);
                 dependenciesToCheck.add(setName);
                 dependenciesToCheck.addAll(modules);
 
                 if (!missingInAllTemplateSets.containsKey(setName)) {
-                    missingInAllTemplateSets.put(setName, Integer.valueOf(0));
+                    missingInAllTemplateSets.put(setName, 0);
                 }
                 boolean found = templateManagerService.isTemplatePresent(templateName,
                         dependenciesToCheck);
                 if (!found) {
-                    missingInAllTemplateSets.put(setName,
-                            Integer.valueOf(1 + missingInAllTemplateSets.get(setName)));
+                    found = isTemplateInViews(templateName, nodeType, dependenciesToCheck);
+
+                    if (!found) {
+                        missingInAllTemplateSets.put(setName,
+                                1 + missingInAllTemplateSets.get(setName));
+                    }
                 }
             }
 
@@ -156,16 +162,45 @@ public class MissingTemplatesValidator implements ImportValidator, ModuleDepende
         }
     }
 
+    private boolean isTemplateInViews(String templateName, ExtendedNodeType nodeType, Set<String> templateSetNames) {
+        boolean found;
+        try {
+            found = JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
+                boolean foundInViews = false;
+                for (String templateSetName : templateSetNames) {
+                    JCRSiteNode moduleNode = (JCRSiteNode) session.getNode("/modules/" + templateSetName);
+                    // let's try to resolve it as a view
+                    if (moduleNode != null) {
+                        foundInViews = renderService.getViewsSet(nodeType, moduleNode, "html")
+                                .stream()
+                                .anyMatch(v -> templateName.equals(v.getKey()) &&
+                                        "true".equals(v.getProperties().getProperty("template")));
+                        if (foundInViews)
+                            break;
+                    }
+                }
+                return foundInViews;
+            });
+        } catch (RepositoryException e) {
+            throw new RuntimeException(e);
+        }
+        return found;
+    }
+
     public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
         this.templateManagerService = templateManagerService;
     }
 
+    public void setRenderService(RenderService renderService) {
+        this.renderService = renderService;
+    }
+
     public void validate(String decodedLocalName, String decodedQName, String currentPath,
-            Attributes atts) {
+                         Attributes atts) {
         if (Constants.JAHIANT_VIRTUALSITE.equals(StringUtils.defaultString(atts
                 .getValue(Constants.JCR_PRIMARYTYPE)))) {
             // we have the site element -> initialize dependencies
-            dependencies = new LinkedHashSet<String>(modules.size() + 1);
+            dependencies = new LinkedHashSet<>(modules.size() + 1);
             dependencies.add(targetTemplateSet);
             dependencies.addAll(modules);
 
@@ -195,9 +230,16 @@ public class MissingTemplatesValidator implements ImportValidator, ModuleDepende
             }
         } else {
             // not yet checked -> do check it
-            if (!isTemplatePresent(templateName)) {
+            ExtendedNodeType nt;
+            try {
+                nt = NodeTypeRegistry.getInstance().getNodeType(StringUtils.defaultString(atts
+                        .getValue(Constants.JCR_PRIMARYTYPE)));
+            } catch (NoSuchNodeTypeException e) {
+                throw new RuntimeException(e);
+            }
+            if (nt != null && !isTemplatePresent(templateName, nt)) {
                 checked.put(templateName, Boolean.FALSE);
-                TreeSet<String> pathes = new TreeSet<String>();
+                TreeSet<String> pathes = new TreeSet<>();
                 pathes.add(currentPath);
                 missingTemplates.put(templateName, pathes);
             } else {

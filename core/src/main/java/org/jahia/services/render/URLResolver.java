@@ -379,6 +379,8 @@ public class URLResolver {
                     }
                     mappingResolved = true;
                 }
+            } catch (PathNotFoundException e) {
+                logger.debug(e.getMessage());
             } catch (RepositoryException e) {
                 logger.warn("Error when trying to resolve URL mapping: "
                         + tempPath, e);

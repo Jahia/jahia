@@ -86,7 +86,7 @@ public class ModulesProviderTest {
 
         // get default module
         templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
-        final JCRNodeWrapper dummy1 = templateManagerService.checkoutModule(null, "scm:git:git@github.com:Jahia/test-module-dummy1.git", null, "dummy1", null, s);
+        final JCRNodeWrapper dummy1 = templateManagerService.checkoutModule(null, "scm:git:https://github.com/Jahia/test-module-dummy1.git", null, "dummy1", null, s);
         root = dummy1.getNode("sources/src/main/resources");
     }
 
@@ -354,6 +354,7 @@ public class ModulesProviderTest {
         assertThat(root.hasNode("META-INF/definitions.cnd/jnt:testRenamedComponent")).isTrue();
         s.save();
         s.logout();
+        s.refresh(false);
 
         /**
          * ordering

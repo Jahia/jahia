@@ -544,6 +544,7 @@ public class PublicationWorkflow implements CustomWorkflow {
 
             final List<Component> components = new ArrayList<>(cards.getComponents());
             final int[] nbWF = {components.size()};
+            final Set<String> unpublishedUUIds = new HashSet<>();
             for (Component component : components) {
                 if (component instanceof WorkflowActionDialog) {
                     final WorkflowActionDialog dialog = (WorkflowActionDialog) component;
@@ -555,15 +556,23 @@ public class PublicationWorkflow implements CustomWorkflow {
                     dialog.getContainer().closeEngine();
                     final PublicationWorkflow customWorkflow = (PublicationWorkflow) dialog.getCustomWorkflow();
                     final List<GWTJahiaPublicationInfo> thisWFInfo = customWorkflow.getPublicationInfos();
-                    handleWorkflowActionDialog(status, nbWF, dialog, nodeProperties, customWorkflow, thisWFInfo);
+                    handleWorkflowActionDialog(status, nbWF, dialog, nodeProperties, customWorkflow, thisWFInfo, unpublishedUUIds);
                 } else if (component instanceof PublicationStatusWindow) {
                     final PublicationStatusWindow dialog = (PublicationStatusWindow) component;
+                    List<String> uuids = dialog.getUuids();
                     if (dialog.isUnpublish()) {
-                        JahiaContentManagementService.App.getInstance().unpublish(dialog.getUuids(),
+                        List<String> toBeUnpublished = new LinkedList<>();
+                        for (String uuid : uuids) {
+                            if (!unpublishedUUIds.contains(uuid)) {
+                                unpublishedUUIds.add(uuid);
+                                toBeUnpublished.add(uuid);
+                            }
+                        }
+                        JahiaContentManagementService.App.getInstance().unpublish(toBeUnpublished,
                                 getCallback(cards, nbWF, Messages.get("message.content.unpublished", "Content unpublished"),
                                         Messages.get("message.content.unpublished.error", "Cannot unpublish"), status, linker, null));
                     } else {
-                        JahiaContentManagementService.App.getInstance().publish(dialog.getUuids(), null, null,
+                        JahiaContentManagementService.App.getInstance().publish(uuids, null, null,
                                 getCallback(cards, nbWF, null,
                                         Messages.get("message.content.published.error", "Cannot publish"), status, linker, null));
                     }
@@ -574,10 +583,18 @@ public class PublicationWorkflow implements CustomWorkflow {
 
         }
 
-        private void handleWorkflowActionDialog(String status, int[] nbWF, WorkflowActionDialog dialog, List<GWTJahiaNodeProperty> nodeProperties, PublicationWorkflow customWorkflow, List<GWTJahiaPublicationInfo> thisWFInfo) {
+        private void handleWorkflowActionDialog(String status, int[] nbWF, WorkflowActionDialog dialog, List<GWTJahiaNodeProperty> nodeProperties, PublicationWorkflow customWorkflow, List<GWTJahiaPublicationInfo> thisWFInfo, Set<String> unpublishedUUIds) {
             if (thisWFInfo.get(0).isAllowedToPublishWithoutWorkflow()) {
                 if (customWorkflow instanceof UnpublicationWorkflow) {
-                    JahiaContentManagementService.App.getInstance().unpublish(getAllUuids(thisWFInfo, false, true),
+                    List<String> toBeUnpublished = new LinkedList<>();
+                    List<String> uuids = getAllUuids(thisWFInfo, false, true);
+                    for (String uuid : uuids) {
+                        if (!unpublishedUUIds.contains(uuid)) {
+                            unpublishedUUIds.add(uuid);
+                            toBeUnpublished.add(uuid);
+                        }
+                    }
+                    JahiaContentManagementService.App.getInstance().unpublish(toBeUnpublished,
                             getCallback(cards, nbWF, Messages.get("message.content.unpublished", "Content unpublished"),
                                     Messages.get("message.content.unpublished.error", "Cannot unpublish"), status, linker, null));
                 } else {

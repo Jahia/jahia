@@ -769,7 +769,7 @@ public class JCRPublicationService extends JahiaService {
                 logger.debug("Merge node end : " + path + " source v=" +
                         sourceSession.getNode(path).getBaseVersion().getName() + " , dest node v=" +
                         destinationSession.getNode(destinationPath).getBaseVersion().getName());
-           }
+            }
         }
     }
 

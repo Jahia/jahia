@@ -43,7 +43,8 @@
         please contact the sales department at sales@jahia.com.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.jahia.bundles</groupId>
@@ -55,7 +56,8 @@
     <packaging>bundle</packaging>
     <name>Jahia JAX-RS OSGi Extender</name>
     <description>
-        An OSGi extender to publish JAX-RS 2 applications to OSGi's HTTP Service. Contains Jahia Digital Experience Manager specific behavior though.
+        An OSGi extender to publish JAX-RS 2 applications to OSGi's HTTP Service. Contains Jahia Digital Experience
+        Manager specific behavior though.
     </description>
 
     <dependencies>
@@ -69,6 +71,12 @@
             <groupId>org.osgi</groupId>
             <artifactId>osgi.cmpn</artifactId>
             <version>${osgi.compendium.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi.annotation</artifactId>
+            <version>${osgi.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -169,7 +177,9 @@
                         <Bundle-Description>${project.description}</Bundle-Description>
                         <Embed-Dependency>*;scope=compile|runtime;inline=true</Embed-Dependency>
                         <Bundle-Activator>org.jahia.bundles.jaxrs_osgi_extender.Activator</Bundle-Activator>
-                        <Provide-Capability>com.jahia.modules.dependencies;moduleIdentifier=jaxrs-osgi-extender;moduleVersion:Version=${project.version}</Provide-Capability>
+                        <Provide-Capability>
+                            com.jahia.modules.dependencies;moduleIdentifier=jaxrs-osgi-extender;moduleVersion:Version=${project.version}
+                        </Provide-Capability>
                         <Import-Package>
                             javax.activation,
                             javax.annotation,

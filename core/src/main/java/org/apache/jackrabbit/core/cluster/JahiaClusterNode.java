@@ -42,6 +42,8 @@
  */
 package org.apache.jackrabbit.core.cluster;
 
+import org.apache.jackrabbit.core.JahiaRepositoryImpl;
+import org.apache.jackrabbit.core.RepositoryContext;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.journal.*;
 import org.apache.jackrabbit.core.state.ItemState;
@@ -52,7 +54,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
-
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
@@ -88,6 +89,8 @@ public class JahiaClusterNode extends ClusterNode {
     private volatile int status = NONE;
 
     private volatile boolean readOnly;
+
+    private RepositoryContext context;
 
     /**
      * Starts this cluster node.
@@ -131,6 +134,23 @@ public class JahiaClusterNode extends ClusterNode {
                     }
                 }
             }
+        }
+    }
+
+
+    @Override
+    public void setListener(WorkspaceListener listener) {
+        super.setListener(listener);
+        if (listener instanceof JahiaRepositoryImpl) {
+            context = ((JahiaRepositoryImpl)listener).getRepositoryContext();
+        }
+    }
+
+    @Override
+    protected void init() throws ClusterException {
+        super.init();
+        if (context != null) {
+            ((AbstractJournal) getJournal()).setInternalVersionManager(context.getInternalVersionManager());
         }
     }
 

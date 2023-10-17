@@ -262,4 +262,8 @@ public class JahiaRepositoryImpl extends RepositoryImpl implements ReadOnlyModeC
     public int getReadOnlyModePriority() {
         return 0;
     }
+
+    public RepositoryContext getRepositoryContext() {
+        return super.getRepositoryContext();
+    }
 }

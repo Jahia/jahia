@@ -164,7 +164,7 @@ public class JCRSessionWrapper implements Session {
     private boolean ignoreReadOnlyMode = false;
 
     public JCRSessionWrapper(JahiaUser user, Credentials credentials, boolean isSystem, String workspace, Locale locale,
-            JCRSessionFactory sessionFactory, Locale fallbackLocale) {
+                             JCRSessionFactory sessionFactory, Locale fallbackLocale) {
         this.uuid = UUID.randomUUID();
         this.user = user;
         this.credentials = credentials;
@@ -183,9 +183,9 @@ public class JCRSessionWrapper implements Session {
             activeSessions.incrementAndGet();
         }
         if (SettingsBean.getInstance().isDevelopmentMode()) {
-            thisSessionTrace = new Exception((isSystem ? "System ":"") + "Session: " + uuid + " Thread: " + Thread.currentThread().getName() + "_" + Thread.currentThread().getId() + " created " + new DateTime().toString());
+            thisSessionTrace = new Exception((isSystem ? "System " : "") + "Session: " + uuid + " Thread: " + Thread.currentThread().getName() + "_" + Thread.currentThread().getId() + " created " + new DateTime().toString());
         } else {
-            thisSessionTrace = new Exception((isSystem ? "System ":"") + "Session: " + uuid);
+            thisSessionTrace = new Exception((isSystem ? "System " : "") + "Session: " + uuid);
         }
 
         activeSessionsObjects.put(uuid, this);
@@ -452,14 +452,14 @@ public class JCRSessionWrapper implements Session {
                 }
                 String newPath = dest;
                 if (source.length() < n.getPath().length()) {
-                    newPath +=  n.getPath().substring(source.length());
+                    newPath += n.getPath().substring(source.length());
                 }
                 String localPath = newPath;
                 if (n.getProvider().getMountPoint().length() > 1) {
                     localPath = newPath.substring(n.getProvider().getMountPoint().length());
                 }
-                ((JCRNodeWrapperImpl)n).localPath = localPath;
-                ((JCRNodeWrapperImpl)n).localPathInProvider = localPath;
+                ((JCRNodeWrapperImpl) n).localPath = localPath;
+                ((JCRNodeWrapperImpl) n).localPathInProvider = localPath;
                 cacheByPath.put(newPath, n);
             }
         }
@@ -577,72 +577,72 @@ public class JCRSessionWrapper implements Session {
                         }
                     }
                 }
-            } catch (InvalidItemStateException e) {
-                logger.debug("A new node can no longer be accessed to run validation checks", e);
-            }
 
-            Map<String, Constructor<?>> validators = sessionFactory.getDefaultProvider().getValidators();
-            Set<ConstraintViolation<JCRNodeValidator>> constraintViolations = new LinkedHashSet<>();
-            for (Map.Entry<String, Constructor<?>> validatorEntry : validators.entrySet()) {
-                if (node.isNodeType(validatorEntry.getKey())) {
-                    try {
-                        JCRNodeValidator validatorDecoratedNode = (JCRNodeValidator) validatorEntry.getValue().newInstance(node);
-                        LocalValidatorFactoryBean validatorFactoryBean = sessionFactory.getValidatorFactoryBean();
+                Map<String, Constructor<?>> validators = sessionFactory.getDefaultProvider().getValidators();
+                Set<ConstraintViolation<JCRNodeValidator>> constraintViolations = new LinkedHashSet<>();
+                for (Map.Entry<String, Constructor<?>> validatorEntry : validators.entrySet()) {
+                    if (node.isNodeType(validatorEntry.getKey())) {
+                        try {
+                            JCRNodeValidator validatorDecoratedNode = (JCRNodeValidator) validatorEntry.getValue().newInstance(node);
+                            LocalValidatorFactoryBean validatorFactoryBean = sessionFactory.getValidatorFactoryBean();
 
-                        // if we are in non-import operation we enforce Default and DefaultSkipOnImportGroup
-                        // if we are in an import operation we do not enforce the DefaultSkipOnImportGroup, but rather only the Default one
-                        Set<ConstraintViolation<JCRNodeValidator>> validate = !isImportOperation ? validatorFactoryBean
-                                .validate(validatorDecoratedNode, Default.class, DefaultSkipOnImportGroup.class)
-                                : validatorFactoryBean.validate(validatorDecoratedNode, Default.class);
+                            // if we are in non-import operation we enforce Default and DefaultSkipOnImportGroup
+                            // if we are in an import operation we do not enforce the DefaultSkipOnImportGroup, but rather only the Default one
+                            Set<ConstraintViolation<JCRNodeValidator>> validate = !isImportOperation ? validatorFactoryBean
+                                    .validate(validatorDecoratedNode, Default.class, DefaultSkipOnImportGroup.class)
+                                    : validatorFactoryBean.validate(validatorDecoratedNode, Default.class);
 
-                        if (validate.isEmpty()) {
-                            // we enforce advanced validations only in case the default group succeeds
+                            if (validate.isEmpty()) {
+                                // we enforce advanced validations only in case the default group succeeds
 
-                            // if we are in non-import operation we enforce both AdvancedGroup and AdvancedSkipOnImportGroup
-                            // if we are in an import operation we do not enforce the AdvancedSkipOnImportGroup, but rather only the
-                            // AdvancedGroup one
-                            validate = !isImportOperation ? validatorFactoryBean.validate(validatorDecoratedNode,
-                                    AdvancedGroup.class, AdvancedSkipOnImportGroup.class) : validatorFactoryBean
-                                    .validate(validatorDecoratedNode, AdvancedGroup.class);
-                        }
-
-                        constraintViolations.addAll(validate);
-                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
-            }
-            for (ConstraintViolation<JCRNodeValidator> constraintViolation : constraintViolations) {
-                String propertyName;
-                try {
-                    Method propertyNameGetter = constraintViolation.getConstraintDescriptor().getAnnotation().annotationType().getMethod(
-                            "propertyName");
-                    propertyName = (String) propertyNameGetter.invoke(
-                            constraintViolation.getConstraintDescriptor().getAnnotation());
-                } catch (Exception e) {
-                    propertyName = constraintViolation.getPropertyPath().toString();
-                }
-                if (StringUtils.isNotBlank(propertyName)) {
-                    ExtendedPropertyDefinition propertyDefinition = node.getApplicablePropertyDefinition(
-                            propertyName);
-                    if (propertyDefinition == null) {
-                        propertyDefinition = node.getApplicablePropertyDefinition(propertyName.replaceFirst("_", ":"));
-                    }
-                    if (propertyDefinition != null) {
-                        Locale errorLocale = null;
-                        if (propertyDefinition.isInternationalized()) {
-                            errorLocale = getLocale();
-                            if (errorLocale == null) {
-                                continue;
+                                // if we are in non-import operation we enforce both AdvancedGroup and AdvancedSkipOnImportGroup
+                                // if we are in an import operation we do not enforce the AdvancedSkipOnImportGroup, but rather only the
+                                // AdvancedGroup one
+                                validate = !isImportOperation ? validatorFactoryBean.validate(validatorDecoratedNode,
+                                        AdvancedGroup.class, AdvancedSkipOnImportGroup.class) : validatorFactoryBean
+                                        .validate(validatorDecoratedNode, AdvancedGroup.class);
                             }
+
+                            constraintViolations.addAll(validate);
+                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                            logger.error(e.getMessage(), e);
                         }
-                        ccve = addError(ccve, new PropertyConstraintViolationException(node, constraintViolation.getMessage(), errorLocale, propertyDefinition));
+                    }
+                }
+                for (ConstraintViolation<JCRNodeValidator> constraintViolation : constraintViolations) {
+                    String propertyName;
+                    try {
+                        Method propertyNameGetter = constraintViolation.getConstraintDescriptor().getAnnotation().annotationType().getMethod(
+                                "propertyName");
+                        propertyName = (String) propertyNameGetter.invoke(
+                                constraintViolation.getConstraintDescriptor().getAnnotation());
+                    } catch (Exception e) {
+                        propertyName = constraintViolation.getPropertyPath().toString();
+                    }
+                    if (StringUtils.isNotBlank(propertyName)) {
+                        ExtendedPropertyDefinition propertyDefinition = node.getApplicablePropertyDefinition(
+                                propertyName);
+                        if (propertyDefinition == null) {
+                            propertyDefinition = node.getApplicablePropertyDefinition(propertyName.replaceFirst("_", ":"));
+                        }
+                        if (propertyDefinition != null) {
+                            Locale errorLocale = null;
+                            if (propertyDefinition.isInternationalized()) {
+                                errorLocale = getLocale();
+                                if (errorLocale == null) {
+                                    continue;
+                                }
+                            }
+                            ccve = addError(ccve, new PropertyConstraintViolationException(node, constraintViolation.getMessage(), errorLocale, propertyDefinition));
+                        } else {
+                            ccve = addError(ccve, new NodeConstraintViolationException(node, constraintViolation.getMessage(), null));
+                        }
                     } else {
                         ccve = addError(ccve, new NodeConstraintViolationException(node, constraintViolation.getMessage(), null));
                     }
-                } else {
-                    ccve = addError(ccve, new NodeConstraintViolationException(node, constraintViolation.getMessage(), null));
                 }
+            } catch (InvalidItemStateException e) {
+                logger.debug("A new node can no longer be accessed to run validation checks", e);
             }
         }
 
@@ -880,7 +880,7 @@ public class JCRSessionWrapper implements Session {
 
     /**
      * Get sessions from all providers used in this wrapper.
-     *
+     * <p>
      * This gives a direct access to the underlying implementation sessions, all operations done here will bypass the
      * JCRSessionWrapper layer. Among other things:
      *
@@ -897,7 +897,7 @@ public class JCRSessionWrapper implements Session {
 
     /**
      * Return the underlying session for a specific provider
-     *
+     * <p>
      * This gives a direct access to the underlying implementation session, all operations done here will bypass the
      * JCRSessionWrapper layer. Among other things:
      *
@@ -912,7 +912,7 @@ public class JCRSessionWrapper implements Session {
 
     /**
      * Return the underlying session for a specific provider
-     *
+     * <p>
      * This gives a direct access to the underlying implementation session, all operations done here will bypass the
      * JCRSessionWrapper layer. Among other things:
      *
@@ -1408,6 +1408,7 @@ public class JCRSessionWrapper implements Session {
 
     /**
      * Get the read only status of this session.
+     *
      * @return whether this session is read only
      */
     public boolean isReadOnly() {
@@ -1416,6 +1417,7 @@ public class JCRSessionWrapper implements Session {
 
     /**
      * Check if this session is read only, call the read only controller to report read only violation in case the session is read only.
+     *
      * @param message the message used in case of read only mode violation
      */
     public void checkReadOnly(String message) {

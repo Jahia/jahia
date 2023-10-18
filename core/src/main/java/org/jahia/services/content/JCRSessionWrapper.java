@@ -473,6 +473,12 @@ public class JCRSessionWrapper implements Session {
     }
 
     void registerNewNode(JCRNodeWrapper node) {
+        try {
+            sessionCacheByIdentifier.put(node.getIdentifier(), node);
+        } catch (RepositoryException e) {
+            // ignore
+        }
+        sessionCacheByPath.put(node.getPath(), node);
         newNodes.put(node.getPath(), node);
     }
 

@@ -46,6 +46,7 @@ import org.jahia.api.Constants;
 import org.jahia.services.content.*;
 import org.jahia.test.framework.AbstractJUnitTest;
 import org.jahia.test.utils.TestHelper;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -91,6 +92,11 @@ public class NodeTypesIT extends AbstractJUnitTest {
     @Before
     public void setUp() throws RepositoryException {
         session = JCRSessionFactory.getInstance().getCurrentUserSession();
+    }
+
+    @After
+    public void teardown() throws RepositoryException {
+        session.refresh(false);
     }
 
     @Test

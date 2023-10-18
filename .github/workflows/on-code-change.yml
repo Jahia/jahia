@@ -337,8 +337,9 @@ jobs:
   call-workflow-jahia-pack:
     needs: [ build, prepare-jahia-pack-trigger ]
     uses: Jahia/jahia-pack-private/.github/workflows/do-it-all.yml@master
+    if: ${{ github.event_name != 'pull_request' }}
     secrets: inherit
     with:
-      parent_image_tag: ${{ needs.build.outputs.parent_image_tag }}
-      target_branch: ${{ needs.build.outputs.target_branch }}
-      workflows-ref: master
+      parent_image_tag: ${{ needs.build.outputs.image_tag }}
+      target_branch: ${{ github.ref_name }}
+      workflows-ref: ${{ github.ref_name }}

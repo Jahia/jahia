@@ -27,13 +27,6 @@
     <internal:gwtGenerateDictionary/>
     <internal:gwtInit/>
     <internal:gwtImport module="manager"/>
-    <c:if test="${cfg == 'filemanager' || cfg == 'repositoryexplorer' || cfg == 'editorialcontentmanager'}">
-        <link rel="stylesheet" type="text/css" media="screen" href="${pageContext.request.contextPath}/modules/assets/css/jquery.Jcrop.min.css"/>
-        <script type="text/javascript" src="<c:url value='/modules/jquery/javascript/jquery.min.js'/>"></script>
-        <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.Jcrop.min.js'/>"></script>
-        <script type="text/javascript" src="<c:url value='/modules/assets/javascript/clippy/jquery.clippy.min.js'/>"></script>
-        <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.jahia.js'/>"></script>
-    </c:if>
 
 	<c:if test="${not empty theme}">
 		<link rel="stylesheet" type="text/css" href="<c:url value='/engines/${theme}/css/edit${themeLocale}.css'/>"/>

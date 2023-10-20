@@ -392,20 +392,6 @@
         <property name="javaScripts">
             <list>
                 <value>/modules/ckeditor/javascript/ckeditor.js</value>
-                <!--
-                <value>/modules/assets/javascript/codemirror/lib/codemirror.js</value>
-                <value>/modules/assets/javascript/codemirror/addon/edit/matchbrackets.js</value>
-                <value>/modules/assets/javascript/codemirror/addon/edit/closetag.js</value>
-                <value>/modules/assets/javascript/codemirror/mode/xml/xml.js</value>
-                <value>/modules/assets/javascript/codemirror/mode/javascript/javascript.js</value>
-                <value>/modules/assets/javascript/codemirror/mode/css/css.js</value>
-                <value>/modules/assets/javascript/codemirror/mode/less/less.js</value>
-                <value>/modules/assets/javascript/codemirror/mode/clike/clike.js</value>
-                <value>/modules/assets/javascript/codemirror/mode/htmlmixed/htmlmixed.js</value>
-                <value>/modules/assets/javascript/codemirror/mode/htmlembedded/htmlembedded.js</value>
-                <value>/modules/assets/javascript/codemirror/mode/properties/properties.js</value>
-                <value>/modules/assets/javascript/codemirror.mode.jsp.js</value>
-                -->
                 <value>/modules/assets/javascript/codemirror.jahia.min.js</value>
                 <value>/modules/assets/javascript/atmosphere-min-2.2.12.js</value>
             </list>

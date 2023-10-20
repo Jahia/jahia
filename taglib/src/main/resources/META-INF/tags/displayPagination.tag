@@ -10,7 +10,7 @@
 <%@ taglib prefix="search" uri="http://www.jahia.org/tags/search" %>
 <%@ attribute name="nbItemsList" required="false" type="java.lang.String"
               description="The input field name and ID to synchronize the seletcted item value with."  %>
-<%@ attribute name="displayNumberOfItemsPerPage" required="false" type="java.lang.Boolean" description="Display the Number Of Items Per Page select list"  %>              
+<%@ attribute name="displayNumberOfItemsPerPage" required="false" type="java.lang.Boolean" description="Display the Number Of Items Per Page select list"  %>
 <%@ attribute name="id" required="false" type="java.lang.String"
               description="The ID of the paginated list."  %>
 <%@ attribute name="nbOfPages" required="false" type="java.lang.String"
@@ -25,8 +25,6 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<template:addResources type="javascript" resources="jquery.min.js"/>
-<template:addResources type="javascript" resources="ajaxreplace.js"/>
 
 <c:if test="${empty id}">
     <c:set var="id" value="${currentNode.identifier}"/>
@@ -60,10 +58,10 @@
                         </c:if>
                     </c:forEach>
                 </c:if>
-            </c:url>            
+            </c:url>
         </c:otherwise>
     </c:choose>
-    
+
 
     <c:set target="${moduleMap}" property="basePaginationUrl" value="${basePaginationUrl}"/>
     ${extraParams}
@@ -77,15 +75,12 @@
             </div>
         </c:if>
         <div class="paginationNavigation">
-					<c:if test="${empty displayNumberOfItemsPerPage || displayNumberOfItemsPerPage eq 'true'}">        
+					<c:if test="${empty displayNumberOfItemsPerPage || displayNumberOfItemsPerPage eq 'true'}">
                 <label for="pageSizeSelector${currentNode.identifier}"><fmt:message key="pagination.itemsPerPage"/>:</label>
                 <c:url value="${basePaginationUrl}" context="/" var="selectSizeUrl">
                     <c:param name="${beginid}" value="0"/>
                 </c:url>
                         <c:set value="window.location='${fn:escapeXml(selectSizeUrl)}&${pagesizeid}='+$('#pageSizeSelector${currentNode.identifier}').val();" var="pageSizeSelectorFn"/>
-                        <c:if test="${not empty modeDispatcherId}">
-                            <c:set value="$('\#${modeDispatcherId}').load('${fn:escapeXml(fn:replace(selectSizeUrl,'.html','.html.ajax'))}&${pagesizeid}='+$('#pageSizeSelector${currentNode.identifier}').val())" var="pageSizeSelectorFn"/>
-                        </c:if>
                         <select class="pageSizeSelector" id="pageSizeSelector${currentNode.identifier}" onchange="${pageSizeSelectorFn}">
                     <c:if test="${empty nbItemsList}">
                         <c:set var="nbItemsList" value="5,10,25,50,100"/>
@@ -102,27 +97,13 @@
                     <c:param name="${endid}" value="${moduleMap.pageSize-1}"/>
                     <c:param name="${pagesizeid}" value="${moduleMap.pageSize}"/>
                 </c:url>
-                <c:if test="${not empty modeDispatcherId}">
-                    <c:set var="ajaxUrl" value="${functions:escapeJavaScript(fn:replace(beginUrl,'.html' ,'.html.ajax' ))}"/>
-                    <c:set var="beginUrl" value="$('\#${modeDispatcherId}').load('${ajaxUrl}')"/>
-                    <a class="pagerLink previousLink" href="#" onclick="${fn:escapeXml(beginUrl)}; return false"><fmt:message key="pagination.begin"/></a>
-                </c:if>
-                <c:if test="${empty modeDispatcherId}">
-                    <a class="pagerLink previousLink" href="${fn:escapeXml(beginUrl)}"><fmt:message key="pagination.begin"/></a>
-                </c:if>
+                <a class="pagerLink previousLink" href="${fn:escapeXml(beginUrl)}"><fmt:message key="pagination.begin"/></a>
                 <c:url value="${basePaginationUrl}" context="/" var="previousUrl">
                     <c:param name="${beginid}" value="${(moduleMap.currentPage-2) * moduleMap.pageSize }"/>
                     <c:param name="${endid}" value="${ (moduleMap.currentPage-1)*moduleMap.pageSize-1}"/>
                     <c:param name="${pagesizeid}" value="${moduleMap.pageSize}"/>
                 </c:url>
-                <c:if test="${not empty modeDispatcherId}">
-                    <c:set var="ajaxUrl" value="${functions:escapeJavaScript(fn:replace(previousUrl,'.html' ,'.html.ajax'))}"/>
-                    <c:set var="previousUrl" value="$('\#${modeDispatcherId}').load('${ajaxUrl}')"/>
-                    <a class="pagerLink previousLink" href="#" onclick="${fn:escapeXml(previousUrl)}; return false"><fmt:message key="pagination.previous"/></a>
-                </c:if>
-                <c:if test="${empty modeDispatcherId}">
-                    <a class="pagerLink previousLink" href="${fn:escapeXml(previousUrl)}"><fmt:message key="pagination.previous"/></a>
-                </c:if>
+                <a class="pagerLink previousLink" href="${fn:escapeXml(previousUrl)}"><fmt:message key="pagination.previous"/></a>
             </c:if>
             <c:if test="${empty nbOfPages}">
                 <c:set var="nbOfPages" value="5"/>
@@ -151,14 +132,7 @@
                         <c:param name="${pagesizeid}" value="${moduleMap.pageSize}"/>
                     </c:url>
                     <span>
-                    <c:if test="${not empty modeDispatcherId}">
-                        <c:set var="ajaxUrl" value="${functions:escapeJavaScript(fn:replace(paginationPageUrl,'.html' ,'.html.ajax'))}"/>
-                        <c:set var="paginationPageUrl" value="$('\#${modeDispatcherId}').load('${ajaxUrl}')"/>
-                        <a class="pagerLink paginationPageUrl" href="#" onclick="${fn:escapeXml(paginationPageUrl)}; return false"> ${ i }</a>
-                    </c:if>
-                    <c:if test="${empty modeDispatcherId}">
                         <a class="pagerLink paginationPageUrl" href="${fn:escapeXml(paginationPageUrl)}"> ${ i }</a>
-                    </c:if>
                     </span>
                 </c:if>
                 <c:if test="${i == moduleMap.currentPage}">
@@ -172,28 +146,14 @@
                     <c:param name="${endid}" value="${ (moduleMap.currentPage+1)*moduleMap.pageSize-1}"/>
                     <c:param name="${pagesizeid}" value="${moduleMap.pageSize}"/>
                 </c:url>
-                <c:if test="${not empty modeDispatcherId}">
-                    <c:set var="ajaxUrl" value="${functions:escapeJavaScript(fn:replace(nextUrl,'.html' ,'.html.ajax'))}"/>
-                    <c:set var="nextUrl" value="$('\#${modeDispatcherId}').load('${ajaxUrl}')"/>
-                    <a class="pagerLink nextLink" href="#" onclick="${fn:escapeXml(nextUrl)}; return false"><fmt:message key="pagination.next"/></a>
-                </c:if>
-                <c:if test="${empty modeDispatcherId}">
-                    <a class="pagerLink nextLink" href="${fn:escapeXml(nextUrl)}"><fmt:message key="pagination.next"/></a>
-                </c:if>
-                  <c:url value="${basePaginationUrl}" context="/" var="endUrl">
+                <a class="pagerLink nextLink" href="${fn:escapeXml(nextUrl)}"><fmt:message key="pagination.next"/></a>
+                <c:url value="${basePaginationUrl}" context="/" var="endUrl">
                     <c:param name="${beginid}" value="${(moduleMap.nbPages-1) * moduleMap.pageSize }"/>
                     <c:param name="${endid}" value="${(moduleMap.nbPages-1) * moduleMap.pageSize +  moduleMap.pageSize}"/>
                     <c:param name="${pagesizeid}" value="${moduleMap.pageSize}"/>
                 </c:url>
                 <c:if test="${not moduleMap.totalSizeUnknown}">
-                <c:if test="${not empty modeDispatcherId}">
-                    <c:set var="ajaxUrl" value="${functions:escapeJavaScript(fn:replace(endUrl,'.html' ,'.html.ajax'))}"/>
-                    <c:set var="endUrl" value="$('\#${modeDispatcherId}').load('${ajaxUrl}')"/>
-                    <a class="pagerLink nextLink" href="#" onclick="${fn:escapeXml(endUrl)}; return false"><fmt:message key="pagination.end"/></a>
-                </c:if>
-                <c:if test="${empty modeDispatcherId}">
-                    <a class="pagerLink nextLink" href="${fn:escapeXml(endUrl)}"><fmt:message key="pagination.end"/></a>
-                </c:if>
+                <a class="pagerLink nextLink" href="${fn:escapeXml(endUrl)}"><fmt:message key="pagination.end"/></a>
                 </c:if>
             </c:if>
         </div>

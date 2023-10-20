@@ -83,10 +83,8 @@ public class WebdavUrlCopyActionItem extends NodeTypeAwareBaseActionItem {
                     }
                 });
                 dl.add(textBox);
-                dl.add(new HTML("<span class=\"copy-to-clipboard\" title=\"" + Messages.get("label.copyToClipboard", "") + "\">" + s + "</span>"));
                 dl.setHeight(102);
                 dl.show();
-                initClippy(JahiaGWTParameters.getContextPath());
             }
         });
     }
@@ -97,8 +95,4 @@ public class WebdavUrlCopyActionItem extends NodeTypeAwareBaseActionItem {
         setEnabled(lh.getSingleSelection() != null
                 && isNodeTypeAllowed(lh.getSingleSelection()));
     }
-
-    private native void initClippy(String contextPath) /*-{
-        $wnd.jQuery('.copy-to-clipboard').clippy({clippy_path: contextPath + '/modules/assets/javascript/clippy/clippy.swf'});
-    }-*/;
 }

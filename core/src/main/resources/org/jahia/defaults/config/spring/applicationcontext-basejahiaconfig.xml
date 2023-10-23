@@ -267,8 +267,9 @@
                 <value>^/css/.*</value>
                 <value>^/engines/images/.*</value>
                 <value>^/icons/.*</value>
-                <value>^/tools/.*</value>
+                <value>^/tools$|^/tools/.*</value>
                 <value>^/modules/tools/.*</value>
+                <value>^/cms/login</value>
             </set>
         </property>
     </bean>

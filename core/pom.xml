@@ -1954,6 +1954,7 @@
                         <usedDependency>com.fasterxml.jackson.core:jackson-annotations</usedDependency>
                         <usedDependency>com.fasterxml.jackson.dataformat:jackson-dataformat-cbor</usedDependency>
                         <usedDependency>org.apache.velocity:velocity</usedDependency>
+                        <usedDependency>org.apache.karaf:org.apache.karaf.main</usedDependency>
                     </usedDependencies>
                 </configuration>
             </plugin>

@@ -208,9 +208,9 @@
         </jahia.modules.bundle.removeheaders>
         <custom.modules.bundle.removeheaders>${jahia.modules.bundle.removeheaders}</custom.modules.bundle.removeheaders>
         <dataloader.version>3.2.0</dataloader.version>
-        <graphql-java.version>21.1</graphql-java.version>
+        <graphql-java.version>21.3</graphql-java.version>
         <graphql-java-extended-scalars.version>21.0</graphql-java-extended-scalars.version>
-        <graphql-java-annotations.version>21.1.0-SNAPSHOT</graphql-java-annotations.version>
+        <graphql-java-annotations.version>21.1</graphql-java-annotations.version>
         <graphql-java-servlet.version>15.1.1-jahia-SNAPSHOT</graphql-java-servlet.version>
     </properties>
 

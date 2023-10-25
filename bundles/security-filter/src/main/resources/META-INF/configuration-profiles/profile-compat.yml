@@ -47,7 +47,7 @@ site_tree:
   grants:
     - api: view.json.treeRootItem
       node:
-        nodeType: jnt:virtualsite
+        nodeType: jnt:virtualsite, jnt:folder
         pathPattern: /sites/.*
     - api: view.json.treeItem, view.json.tree
       node:

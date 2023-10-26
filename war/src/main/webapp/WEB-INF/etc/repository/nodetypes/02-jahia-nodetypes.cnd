@@ -827,6 +827,8 @@ extends = jnt:content
 // @since Jahia 7.3.5.0
 [jmix:visibleInContentTree] mixin
 
+[jmix:hideDeleteAction] mixin
+
 //---------------------------------------------------------
 // Template studio
 //---------------------------------------------------------

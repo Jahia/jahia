@@ -321,7 +321,7 @@ public class Constants {
             MARKED_FOR_DELETION_MESSAGE, MARKED_FOR_DELETION_USER, ORIGIN_WORKSPACE, LASTPUBLISHED, LASTPUBLISHEDBY));
 
     public static final Set<String> forbiddenMixinToCopy = new HashSet<>(Arrays.asList(JAHIAMIX_WORKFLOW,
-            JAHIAMIX_MARKED_FOR_DELETION, JAHIAMIX_MARKED_FOR_DELETION_ROOT, "jmix:vanityUrlMapped"));
+            JAHIAMIX_MARKED_FOR_DELETION, JAHIAMIX_MARKED_FOR_DELETION_ROOT, "jmix:vanityUrlMapped", "jmix:hideDeleteAction"));
 
     public static final Set<String> forbiddenChildNodeTypesToCopy = new HashSet<>(Arrays.asList(JAHIAMIX_MARKED_FOR_DELETION_ROOT,
             JAHIANT_REFERENCEINFIELD, "jnt:vanityUrls"));

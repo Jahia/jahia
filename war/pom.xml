@@ -43,7 +43,8 @@
         please contact the sales department at sales@jahia.com.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
@@ -687,7 +688,8 @@
                         <configuration>
                             <target>
                                 <move todir="${project.build.directory}/jahia/WEB-INF/karaf">
-                                    <fileset dir="${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}"/>
+                                    <fileset
+                                            dir="${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}"/>
                                 </move>
                                 <move todir="${project.build.directory}/karaf/etc">
                                     <fileset dir="${project.build.directory}/jahia/WEB-INF/karaf/etc"/>
@@ -709,7 +711,9 @@
                         </goals>
                         <configuration>
                             <target>
-                                <replace file="${project.build.directory}/jahia/WEB-INF/karaf/system/org/apache/karaf/features/framework/${karaf.version}/framework-${karaf.version}-features.xml" failOnNoReplacements="true">
+                                <replace
+                                        file="${project.build.directory}/jahia/WEB-INF/karaf/system/org/apache/karaf/features/framework/${karaf.version}/framework-${karaf.version}-features.xml"
+                                        failOnNoReplacements="true">
                                     <replacetoken>org.apache.felix/org.apache.felix.fileinstall/3.7.4</replacetoken>
                                     <replacevalue>org.apache.felix/org.apache.felix.fileinstall/3.7.4-jahia1-SNAPSHOT
                                     </replacevalue>
@@ -725,54 +729,89 @@
                         </goals>
                         <configuration>
                             <target>
-                                <concat destfile="${project.build.directory}/ddl/derby/00-drop-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/derby" includes="00-drop-*"/>
+                                <concat destfile="${project.build.directory}/ddl/derby/00-drop-jahia-core-schema.sql"
+                                        encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/derby"
+                                             includes="00-drop-*"/>
                                 </concat>
-                                <concat destfile="${project.build.directory}/ddl/derby/01-create-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/derby" includes="01-create-*" excludes="01-create-*-index.sql,01-create-*-triggers.sql"/>
+                                <concat destfile="${project.build.directory}/ddl/derby/01-create-jahia-core-schema.sql"
+                                        encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/derby"
+                                             includes="01-create-*"
+                                             excludes="01-create-*-index.sql,01-create-*-triggers.sql"/>
                                 </concat>
-                                <concat destfile="${project.build.directory}/ddl/derby/01-create-jahia-core-schema.sql" append="yes" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/derby" includes="01-create-*-index.sql,01-create-*-triggers.sql"/>
-                                </concat>
-
-                                <concat destfile="${project.build.directory}/ddl/mssql/00-drop-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mssql" includes="00-drop-*"/>
-                                </concat>
-                                <concat destfile="${project.build.directory}/ddl/mssql/01-create-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mssql" includes="01-create-*" excludes="01-create-*-index.sql,01-create-*-triggers.sql"/>
-                                </concat>
-                                <concat destfile="${project.build.directory}/ddl/mssql/01-create-jahia-core-schema.sql" append="yes" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mssql" includes="01-create-*-index.sql,01-create-*-triggers.sql"/>
+                                <concat destfile="${project.build.directory}/ddl/derby/01-create-jahia-core-schema.sql"
+                                        append="yes" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/derby"
+                                             includes="01-create-*-index.sql,01-create-*-triggers.sql"/>
                                 </concat>
 
-                                <concat destfile="${project.build.directory}/ddl/mysql/00-drop-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mysql" includes="00-drop-*"/>
+                                <concat destfile="${project.build.directory}/ddl/mssql/00-drop-jahia-core-schema.sql"
+                                        encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mssql"
+                                             includes="00-drop-*"/>
                                 </concat>
-                                <concat destfile="${project.build.directory}/ddl/mysql/01-create-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mysql" includes="01-create-*" excludes="01-create-*-index.sql,01-create-*-triggers.sql"/>
+                                <concat destfile="${project.build.directory}/ddl/mssql/01-create-jahia-core-schema.sql"
+                                        encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mssql"
+                                             includes="01-create-*"
+                                             excludes="01-create-*-index.sql,01-create-*-triggers.sql"/>
                                 </concat>
-                                <concat destfile="${project.build.directory}/ddl/mysql/01-create-jahia-core-schema.sql" append="yes" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mysql" includes="01-create-*-index.sql,01-create-*-triggers.sql"/>
-                                </concat>
-
-                                <concat destfile="${project.build.directory}/ddl/oracle/00-drop-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/oracle" includes="00-drop-*"/>
-                                </concat>
-                                <concat destfile="${project.build.directory}/ddl/oracle/01-create-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/oracle" includes="01-create-*" excludes="01-create-*-index.sql,01-create-*-triggers.sql"/>
-                                </concat>
-                                <concat destfile="${project.build.directory}/ddl/oracle/01-create-jahia-core-schema.sql" append="yes" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/oracle" includes="01-create-*-index.sql,01-create-*-triggers.sql"/>
+                                <concat destfile="${project.build.directory}/ddl/mssql/01-create-jahia-core-schema.sql"
+                                        append="yes" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mssql"
+                                             includes="01-create-*-index.sql,01-create-*-triggers.sql"/>
                                 </concat>
 
-                                <concat destfile="${project.build.directory}/ddl/postgresql/00-drop-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/postgresql" includes="00-drop-*"/>
+                                <concat destfile="${project.build.directory}/ddl/mysql/00-drop-jahia-core-schema.sql"
+                                        encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mysql"
+                                             includes="00-drop-*"/>
                                 </concat>
-                                <concat destfile="${project.build.directory}/ddl/postgresql/01-create-jahia-core-schema.sql" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/postgresql" includes="01-create-*" excludes="01-create-*-index.sql,01-create-*-triggers.sql"/>
+                                <concat destfile="${project.build.directory}/ddl/mysql/01-create-jahia-core-schema.sql"
+                                        encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mysql"
+                                             includes="01-create-*"
+                                             excludes="01-create-*-index.sql,01-create-*-triggers.sql"/>
                                 </concat>
-                                <concat destfile="${project.build.directory}/ddl/postgresql/01-create-jahia-core-schema.sql" append="yes" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
-                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/postgresql" includes="01-create-*-index.sql,01-create-*-triggers.sql"/>
+                                <concat destfile="${project.build.directory}/ddl/mysql/01-create-jahia-core-schema.sql"
+                                        append="yes" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/mysql"
+                                             includes="01-create-*-index.sql,01-create-*-triggers.sql"/>
+                                </concat>
+
+                                <concat destfile="${project.build.directory}/ddl/oracle/00-drop-jahia-core-schema.sql"
+                                        encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/oracle"
+                                             includes="00-drop-*"/>
+                                </concat>
+                                <concat destfile="${project.build.directory}/ddl/oracle/01-create-jahia-core-schema.sql"
+                                        encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/oracle"
+                                             includes="01-create-*"
+                                             excludes="01-create-*-index.sql,01-create-*-triggers.sql"/>
+                                </concat>
+                                <concat destfile="${project.build.directory}/ddl/oracle/01-create-jahia-core-schema.sql"
+                                        append="yes" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/oracle"
+                                             includes="01-create-*-index.sql,01-create-*-triggers.sql"/>
+                                </concat>
+
+                                <concat destfile="${project.build.directory}/ddl/postgresql/00-drop-jahia-core-schema.sql"
+                                        encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/postgresql"
+                                             includes="00-drop-*"/>
+                                </concat>
+                                <concat destfile="${project.build.directory}/ddl/postgresql/01-create-jahia-core-schema.sql"
+                                        encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/postgresql"
+                                             includes="01-create-*"
+                                             excludes="01-create-*-index.sql,01-create-*-triggers.sql"/>
+                                </concat>
+                                <concat destfile="${project.build.directory}/ddl/postgresql/01-create-jahia-core-schema.sql"
+                                        append="yes" encoding="UTF-8" outputencoding="UTF-8" eol="lf" fixlastline="yes">
+                                    <fileset dir="${basedir}/src/data/resources/db/sql/schema/postgresql"
+                                             includes="01-create-*-index.sql,01-create-*-triggers.sql"/>
                                 </concat>
                             </target>
                         </configuration>
@@ -872,40 +911,13 @@
                 <artifactId>jahia-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>generate-package-export</id>
-                        <goals>
-                            <goal>build-framework-package-list</goal>
-                        </goals>
-                        <configuration>
-                            <extraPackageExcludes>
-                                <extraPackageExclude>com.fasterxml.jackson*</extraPackageExclude>
-                                <extraPackageExclude>org.springframework.http.converter*</extraPackageExclude>
-                                <extraPackageExclude>org.springframework.web.client*</extraPackageExclude>
-                                <extraPackageExclude>org.osgi.service*</extraPackageExclude>
-                                <extraPackageExclude>org.osgi.util*</extraPackageExclude>
-                                <extraPackageExclude>org.apache.shiro*</extraPackageExclude>
-                                <extraPackageExclude>org.jahia.services.security.shiro*</extraPackageExclude>
-                                <extraPackageExclude>org.hibernate*</extraPackageExclude>
-                                <extraPackageExclude>org.springframework.orm*</extraPackageExclude>
-                            </extraPackageExcludes>
-                            <propertiesInputFile>
-                                ${project.build.directory}/filtered-resources/custom.properties
-                            </propertiesInputFile>
-                            <propertiesOutputFile>
-                                ${project.build.directory}/generated-resources/custom.properties
-                            </propertiesOutputFile>
-                            <propertyFilePropertyName>org.osgi.framework.system.packages.generated
-                            </propertyFilePropertyName>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>generate-system-capabilities</id>
                         <goals>
                             <goal>dependencies</goal>
                         </goals>
                         <configuration>
                             <propertiesInputFile>
-                                ${project.build.directory}/generated-resources/custom.properties
+                                ${project.build.directory}/filtered-resources/custom.properties
                             </propertiesInputFile>
                             <propertiesOutputFile>
                                 ${project.build.directory}/generated-resources/custom.properties

@@ -65,7 +65,8 @@ import java.util.Collections;
 import java.util.Locale;
 import java.util.Properties;
 
-import static javax.servlet.http.HttpServletResponse.*;
+import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
+import static javax.servlet.http.HttpServletResponse.SC_OK;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -157,7 +158,7 @@ public class JsonViewAccessTest extends JahiaTestCase {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 // editor user files
                 JCRNodeWrapper userFiles = session.getNode(ServicesRegistry.getInstance().getJahiaUserManagerService()
-                        .getUserSplittingRule().getPathForUsername(EDITOR_USER_NAME))
+                                .getUserSplittingRule().getPathForUsername(EDITOR_USER_NAME))
                         .addNode("files", Constants.JAHIANT_FOLDER);
                 editorFilesPath = userFiles.getPath();
                 JCRNodeWrapper folder = userFiles.addNode("folder-1", Constants.JAHIANT_FOLDER);
@@ -258,7 +259,7 @@ public class JsonViewAccessTest extends JahiaTestCase {
         String rootPath = JCRContentUtils.getSystemSitePath() + "/categories/" + CATEGORY_NAME;
 
         // categories with sub-categories
-        String[] relativePaths = new String[] { "", "/products", "/services" };
+        String[] relativePaths = new String[]{"", "/products", "/services"};
 
         for (String path : relativePaths) {
             checkHasAccess(rootPath + path + ".json", "\"jcr:created\"");
@@ -269,7 +270,7 @@ public class JsonViewAccessTest extends JahiaTestCase {
         }
 
         // leaves
-        relativePaths = new String[] { "/products/DX", "/services/Training" };
+        relativePaths = new String[]{"/products/DX", "/services/Training"};
 
         for (String path : relativePaths) {
             checkHasAccess(rootPath + path + ".json", "\"jcr:created\"");
@@ -283,14 +284,14 @@ public class JsonViewAccessTest extends JahiaTestCase {
     @Test
     public void guestHasAccessInLiveToSiteFolders() throws RepositoryException, IOException {
         String sitePath = site.getJCRLocalPath();
-        String[] relativePaths = new String[] { "/files", "/files/folder-1", "/files/folder-2" };
+        String[] relativePaths = new String[]{"/files", "/files/folder-1", "/files/folder-2"};
 
         for (String path : relativePaths) {
             checkNoAccess(sitePath + path + ".json");
             checkHasAccess(sitePath + path + ".tree.json",
                     "/files".equals(path) ? "\"path\":\"" + sitePath + path : "[]");
             checkHasAccess(sitePath + path + ".treeItem.json", "\"path\":\"" + sitePath + path);
-            checkNoAccess(sitePath + path + ".treeRootItem.json");
+            checkHasAccess(sitePath + path + ".treeRootItem.json", "\"path\":\"" + sitePath + path);
         }
     }
 
@@ -302,7 +303,7 @@ public class JsonViewAccessTest extends JahiaTestCase {
         checkHasAccess(sitePath + ".treeRootItem.json", "\"path\":\"" + sitePath + "\"");
 
         // access for pages with sub-pages
-        String[] relativePaths = new String[] { "/home", "/home/page-a", "/home/label-c" };
+        String[] relativePaths = new String[]{"/home", "/home/page-a", "/home/label-c"};
         for (String path : relativePaths) {
             checkNoAccess(sitePath + path + ".json");
             checkHasAccess(sitePath + path + ".tree.json", "\"path\":\"" + sitePath + path);
@@ -311,7 +312,7 @@ public class JsonViewAccessTest extends JahiaTestCase {
         }
 
         // access for pages without subpages
-        relativePaths = new String[] { "/home/page-a/sub-page-1", "/home/label-c/label-sub-page-1" };
+        relativePaths = new String[]{"/home/page-a/sub-page-1", "/home/label-c/label-sub-page-1"};
 
         for (String path : relativePaths) {
             checkNoAccess(sitePath + path + ".json");
@@ -329,8 +330,8 @@ public class JsonViewAccessTest extends JahiaTestCase {
         getAsText("/cms/render/live/en/j:acl.treeItem.json", SC_NOT_FOUND);
         getAsText("/cms/render/live/en/j:acl.treeRootItem.json", SC_NOT_FOUND);
 
-        String[] relativePaths = new String[] { "/jcr:system", "/imports", "/groups", "/modules", "/referencesKeeper",
-                "/settings", "/sites", "/users" };
+        String[] relativePaths = new String[]{"/jcr:system", "/imports", "/groups", "/modules", "/referencesKeeper",
+                "/settings", "/sites", "/users"};
 
         for (String path : relativePaths) {
             checkNoAccess(path + ".json");
@@ -343,7 +344,7 @@ public class JsonViewAccessTest extends JahiaTestCase {
     @Test
     public void guestHasNoAccessInLiveToSiteFiles() throws RepositoryException, IOException {
         String sitePath = site.getJCRLocalPath();
-        String[] relativePaths = new String[] { "/files/folder-1/text-1.txt", "/files/folder-2/text-3.txt" };
+        String[] relativePaths = new String[]{"/files/folder-1/text-1.txt", "/files/folder-2/text-3.txt"};
 
         for (String path : relativePaths) {
             checkNoAccess(sitePath + path + ".json");
@@ -369,11 +370,11 @@ public class JsonViewAccessTest extends JahiaTestCase {
         getAsText(sitePath + "/j:acl.treeItem.json", SC_NOT_FOUND);
         getAsText(sitePath + "/j:acl.treeRootItem.json", SC_NOT_FOUND);
 
-        String[] relativePaths = new String[] { "/contents", "/groups", "/users", "/home/listA", "/home/listA" };
+        String[] relativePaths = new String[]{"/contents", "/groups", "/users", "/home/listA", "/home/listA"};
 
         for (String path : relativePaths) {
             checkNoAccess(sitePath + path + ".json");
-            checkNoAccess( sitePath + path + ".tree.json");
+            checkNoAccess(sitePath + path + ".tree.json");
             checkNoAccess(sitePath + path + ".treeItem.json");
             checkNoAccess(sitePath + path + ".treeRootItem.json");
         }
@@ -382,7 +383,7 @@ public class JsonViewAccessTest extends JahiaTestCase {
     @Test
     public void guestHasNoAccessInLiveToSiteUserFolders() throws RepositoryException, IOException {
         String root = editorFilesPath;
-        String[] relativePaths = new String[] { "/files", "/files/folder-1", "/files/folder-2" };
+        String[] relativePaths = new String[]{"/files", "/files/folder-1", "/files/folder-2"};
 
         for (String path : relativePaths) {
             checkNoAccess(root + path + ".json");
@@ -395,8 +396,8 @@ public class JsonViewAccessTest extends JahiaTestCase {
     @Test
     public void guestHasNoAccessInLiveToUserFilesAndFolder() throws RepositoryException, IOException {
         String root = editorFilesPath;
-        String[] relativePaths = new String[] { "", "/folder-1", "/folder-2", "/folder-1/text-1.txt",
-                "/folder-2/text-3.txt" };
+        String[] relativePaths = new String[]{"", "/folder-1", "/folder-2", "/folder-1/text-1.txt",
+                "/folder-2/text-3.txt"};
 
         for (String path : relativePaths) {
             checkNoAccess(root + path + ".json");

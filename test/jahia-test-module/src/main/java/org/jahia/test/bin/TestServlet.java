@@ -42,6 +42,8 @@
  */
 package org.jahia.test.bin;
 
+import org.jahia.osgi.BundleUtils;
+import org.jahia.osgi.FrameworkService;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.history.NodeVersionHistoryListener;
 import org.jahia.test.SurefireJUnitXMLResultFormatter;
@@ -56,6 +58,9 @@ import org.junit.runner.Result;
 import org.junit.runner.Runner;
 import org.junit.runner.manipulation.Filter;
 import org.apache.commons.lang.StringUtils;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -233,6 +238,13 @@ public class TestServlet extends BaseTestController {
                 }
             }
         }
+        // now let's add all the OSGi TestBean instances
+        List<TestBean> testBeans = getOsgiTestBeans();
+        testBeans.forEach(testBean -> {
+            if (!skipCore || !testBean.isCoreTests()) {
+                testCases.addAll(testBean.getTestCases());
+            }
+        });
         return testCases;
     }
 
@@ -249,6 +261,28 @@ public class TestServlet extends BaseTestController {
                     }
                 }
             }
+        }
+        // Now let's look into OSGi instances of the TestBean classes. We need
+        // to use the ServiceReference here because we need to also retrieve the
+        // bundle the TestBean belongs to.
+        BundleContext bundleContext = FrameworkService.getBundleContext();
+        if (bundleContext == null) {
+            return null;
+        }
+        try {
+            Collection<ServiceReference<TestBean>> testBeanReferences = bundleContext.getServiceReferences(TestBean.class, null);
+            if (testBeanReferences != null) {
+                for (ServiceReference<TestBean> testBeanReference : testBeanReferences) {
+                    TestBean testBean = bundleContext.getService(testBeanReference);
+                    for (String beanTestCase : testBean.getTestCases()) {
+                        if (beanTestCase.equals(testCase)) {
+                            return BundleUtils.getModule(testBeanReference.getBundle());
+                        }
+                    }
+                }
+            }
+        } catch (InvalidSyntaxException ise) {
+            logger.error("Error retrieving OSGi instance of TestBean classes", ise);
         }
         return null;
     }
@@ -315,6 +349,35 @@ public class TestServlet extends BaseTestController {
             }
         }
 
+        List<TestBean> testBeans = getOsgiTestBeans();
+        testBeans.forEach(testBean -> {
+            if (testBean.getIgnoredTests() != null) {
+                ignoreTests.addAll(testBean.getIgnoredTests());
+            }
+        });
+
         return ignoreTests;
+    }
+
+    private List<TestBean> getOsgiTestBeans() {
+        List<TestBean> testBeans = new ArrayList<>();
+        BundleContext bundleContext = FrameworkService.getBundleContext();
+        if (bundleContext == null) {
+            return testBeans;
+        }
+        try {
+            Collection<ServiceReference<TestBean>> testBeanReferences = bundleContext.getServiceReferences(TestBean.class, null);
+            if (testBeanReferences != null) {
+                testBeanReferences.forEach(testBeanReference -> {
+                    TestBean testBean = bundleContext.getService(testBeanReference);
+                    if (testBean != null) {
+                        testBeans.add(testBean);
+                    }
+                });
+            }
+        } catch (InvalidSyntaxException ise) {
+            logger.error("Error retrieving OSGi instance of TestBean classes", ise);
+        }
+        return testBeans;
     }
 }

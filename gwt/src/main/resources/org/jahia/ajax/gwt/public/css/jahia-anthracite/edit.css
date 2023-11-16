@@ -1,15 +1,17 @@
 .x-hide-display {
     display: none !important;
 }
+
 .x-panel-buttons-layer {
-    top:0px;
-    left:0px;
-    position:absolute;
+    top: 0px;
+    left: 0px;
+    position: absolute;
     z-index: 99999;
-    background-color:#fff;
-    border:1px solid #ccc;
-    padding:10px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
 }
+
 .x-insert-bar {
     position: absolute;
     z-index: 99999;
@@ -33,37 +35,40 @@
 }
 
 .x-panel-linker {
-    background : #ffffcc url(../images/panellinker.png) top left;
+    background: #ffffcc url(../images/panellinker.png) top left;
     color: #000 !important;
     font-weight: bold;
-    border:1px solid #ffcc33;
-    padding: 10px 5px ;
+    border: 1px solid #ffcc33;
+    padding: 10px 5px;
     vertical-align: middle;
-    horizontal-align:middle;
-    margin-bottom:10px;
-    margin-top:5px;
-    text-align:center;
+    horizontal-align: middle;
+    margin-bottom: 10px;
+    margin-top: 5px;
+    text-align: center;
     font-family: tahoma, arial, verdana, sans-serif;
     font-size: 11px;
     overflow: hidden;
 }
+
 .x-panel-linker p {
-    margin:0 !important;
-    padding:0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
+
 .x-panel-linker p.linkPath {
-    margin:0 !important;
-    padding:0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
+
 .x-panel-linker p.linkAction {
-    color:#FF0000
+    color: #FF0000
 }
 
 
 /** styles added for list module in order to make them as nice as jahia6 **/
 
 .x-panel-header-simplemodule {
-    font-family: tahoma,arial,helvetica,sans-serif;
+    font-family: tahoma, arial, helvetica, sans-serif;
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;
@@ -77,25 +82,25 @@
     border-width: 1px;
     color: #333333 !important;
     cursor: pointer;
-    display:block;
+    display: block;
     font-size: 11px;
     font-weight: bold;
     padding: 3px;
     position: relative;
     vertical-align: middle;
-    margin-bottom:10px;
+    margin-bottom: 10px;
     line-height: 16px !important;
     overflow: hidden;
-    -webkit-transition: all 0.5s ease ;
-    -moz-transition: all 0.5s ease ;
-    -o-transition: all 0.5s ease ;
-    -ms-transition: all 0.5s ease ;
-    transition: all 0.5s ease ;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+    transition: all 0.5s ease;
     text-shadow: none;
 }
 
 .x-panel-header-listmodule {
-    font-family: tahoma,arial,helvetica,sans-serif;
+    font-family: tahoma, arial, helvetica, sans-serif;
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;
@@ -109,25 +114,25 @@
     border-width: 1px;
     color: #333333 !important;
     cursor: pointer;
-    display:block;
+    display: block;
     font-size: 11px;
     font-weight: bold;
     padding: 3px;
     position: relative;
     vertical-align: middle;
-    margin-bottom:10px;
+    margin-bottom: 10px;
     line-height: 16px !important;
     overflow: hidden;
-    -webkit-transition: all 0.5s ease ;
-    -moz-transition: all 0.5s ease ;
-    -o-transition: all 0.5s ease ;
-    -ms-transition: all 0.5s ease ;
-    transition: all 0.5s ease ;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+    transition: all 0.5s ease;
     text-shadow: none;
 }
 
 .x-panel-header-areamodule {
-    font-family: tahoma,arial,helvetica,sans-serif;
+    font-family: tahoma, arial, helvetica, sans-serif;
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;
@@ -140,21 +145,21 @@
     border-width: 1px;
     color: #333 !important;
     cursor: pointer;
-    display:block;
+    display: block;
     font-size: 11px;
     font-weight: bold;
     padding: 3px;
     position: relative;
     vertical-align: middle;
-    margin-bottom:10px;
+    margin-bottom: 10px;
     text-transform: uppercase;
     line-height: 16px !important;
     overflow: hidden;
-    -webkit-transition: all 0.5s ease ;
-    -moz-transition: all 0.5s ease ;
-    -o-transition: all 0.5s ease ;
-    -ms-transition: all 0.5s ease ;
-    transition: all 0.5s ease ;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+    transition: all 0.5s ease;
     text-shadow: none;
 }
 
@@ -163,7 +168,7 @@
 }
 
 .x-panel-header-absoluteAreamodule {
-    font-family: tahoma,arial,helvetica,sans-serif;
+    font-family: tahoma, arial, helvetica, sans-serif;
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;
@@ -176,29 +181,30 @@
     border-width: 1px;
     color: #fff !important;
     cursor: pointer;
-    display:block;
+    display: block;
     font-size: 10px;
     font-weight: bold;
     padding: 3px;
     position: relative;
     vertical-align: middle;
-    margin-bottom:10px;
+    margin-bottom: 10px;
     text-transform: uppercase;
     line-height: 16px !important;
     overflow: hidden;
-    -webkit-transition: all 0.5s ease ;
-    -moz-transition: all 0.5s ease ;
-    -o-transition: all 0.5s ease ;
-    -ms-transition: all 0.5s ease ;
-    transition: all 0.5s ease ;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+    transition: all 0.5s ease;
     text-shadow: none;
 }
+
 .x-panel-header-text-absoluteAreamodule {
 
 }
 
 .x-panel-header-lockedmodule {
-    font-family: tahoma,arial,helvetica,sans-serif;
+    font-family: tahoma, arial, helvetica, sans-serif;
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;
@@ -211,28 +217,30 @@
     border-width: 1px;
     color: #EAEAEA !important;
     cursor: pointer;
-    display:block;
+    display: block;
     font-size: 10px;
     font-weight: bold;
     padding: 3px;
     position: relative;
     vertical-align: middle;
-    margin-bottom:10px;
+    margin-bottom: 10px;
     text-transform: uppercase;
     line-height: 16px !important;
     overflow: hidden;
-    -webkit-transition: all 0.5s ease ;
-    -moz-transition: all 0.5s ease ;
-    -o-transition: all 0.5s ease ;
-    -ms-transition: all 0.5s ease ;
-    transition: all 0.5s ease ;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+    transition: all 0.5s ease;
     text-shadow: none;
 }
+
 .hover-module > .x-panel-header-areamodule, .hover-module > .x-panel-header-listmodule, .hover-module > .x-panel-header-absoluteAreamodule {
     background-color: #2e8ae5;
     border-color: #297acc;
     color: #FFFFFF;
 }
+
 .hover-draggable:before {
     background: url(../images/HandleMove.svg) no-repeat top left;
     cursor: grab;
@@ -246,6 +254,7 @@
     background-size: 20px;
     background-color: #2e8ae5;
 }
+
 .x-panel-placeholder {
     margin-bottom: 10px;
 }
@@ -254,15 +263,16 @@
     float: right;
 }
 
-.label-placeholder, div.button-placeholder  {
-    display:inline-block;
+.label-placeholder, div.button-placeholder {
+    display: inline-block;
 }
+
 .label-placeholder {
-    display:none;
+    display: none;
 }
 
 button.button-placeholder, div.button-placeholder {
-    font-family: tahoma,arial,helvetica,sans-serif;
+    font-family: tahoma, arial, helvetica, sans-serif;
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;
@@ -270,7 +280,7 @@ button.button-placeholder, div.button-placeholder {
     -moz-user-select: none;
     background-color: #fff;
     background-repeat: repeat-x;
-    border-color: #ccc ;
+    border-color: #ccc;
     border-image: none;
     border-style: solid;
     border-width: 1px;
@@ -289,23 +299,26 @@ button.button-placeholder, div.button-placeholder {
     margin-bottom: 2px;
     line-height: 16px !important;
     overflow: hidden;
-    -webkit-transition: all 0.5s ease ;
-    -moz-transition: all 0.5s ease ;
-    -o-transition: all 0.5s ease ;
-    -ms-transition: all 0.5s ease ;
-    transition: all 0.5s ease ;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+    transition: all 0.5s ease;
     text-shadow: none;
 
 }
-button.button-placeholder:hover,  div.button-placeholder:hover {
+
+button.button-placeholder:hover, div.button-placeholder:hover {
     background-color: #2e8ae5;
     border-color: #297acc;
     color: #FFFFFF;
     text-decoration: none;
 }
-button.button-placeholder img, div.button-placeholder img   {
-    margin-right:5px;
+
+button.button-placeholder img, div.button-placeholder img {
+    margin-right: 5px;
 }
+
 button.button-placeholder table,
 div.button-placeholder table,
 button.button-placeholder tr,
@@ -321,7 +334,7 @@ div.button-placeholder td {
 }
 
 button.button-enable, div.button-enable {
-    font-family: tahoma,arial,helvetica,sans-serif;
+    font-family: tahoma, arial, helvetica, sans-serif;
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;
@@ -332,10 +345,10 @@ button.button-enable, div.button-enable {
     border-image: none;
     border-style: solid;
     border-width: 1px;
-    color: #FFFFFF ;
+    color: #FFFFFF;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
     cursor: pointer;
-    display:block;
+    display: block;
     font-size: 10px;
     font-weight: bold;
     padding: 2px;
@@ -343,12 +356,13 @@ button.button-enable, div.button-enable {
     vertical-align: middle;
     margin: -2px;
     overflow: hidden;
-    -webkit-transition: all 0.5s ease ;
-    -moz-transition: all 0.5s ease ;
-    -o-transition: all 0.5s ease ;
-    -ms-transition: all 0.5s ease ;
-    transition: all 0.5s ease ;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+    transition: all 0.5s ease;
 }
+
 button.button-enable:hover, div.button-enable:hover {
     background-color: #39f;
     background-repeat: repeat-x;
@@ -357,8 +371,9 @@ button.button-enable:hover, div.button-enable:hover {
     text-decoration: none;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
+
 button.button-disable, div.button-disable {
-    font-family: tahoma,arial,helvetica,sans-serif;
+    font-family: tahoma, arial, helvetica, sans-serif;
     background-color: #39f;
     background-repeat: repeat-x;
     border-color: #2A65A0;
@@ -382,12 +397,13 @@ button.button-disable, div.button-disable {
     vertical-align: middle;
     margin: -2px;
     overflow: hidden;
-    -webkit-transition: all 0.5s ease ;
-    -moz-transition: all 0.5s ease ;
-    -o-transition: all 0.5s ease ;
-    -ms-transition: all 0.5s ease ;
-    transition: all 0.5s ease ;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+    transition: all 0.5s ease;
 }
+
 button.button-disable:hover, div.button-disable:hover {
     background-image: linear-gradient(#8C8C8C, #6D6D6D);
     background: -webkit-gradient(linear, left top, left bottom, from(#8C8C8C), to(#6D6D6D));
@@ -402,30 +418,35 @@ button.button-disable:hover, div.button-disable:hover {
 .selection-top-list {
     border-top: 3px solid #cc0033;
 }
+
 .selection-bottom-list {
     border-bottom: 3px solid #cc0033;
     margin-top: -3px;
 }
+
 .selection-left-list {
     border-left: 3px solid #cc0033;
 }
+
 .selection-right-list {
     border-left: 3px solid #cc0033;
     margin-left: -3px;
 }
 
 
-
 .selection-top-simple {
     border-top: 3px solid #cc0033;
 }
+
 .selection-bottom-simple {
     border-bottom: 3px solid #cc0033;
     margin-top: -3px;
 }
+
 .selection-left-simple {
     border-left: 3px solid #cc0033;
 }
+
 .selection-right-simple {
     border-left: 3px solid #cc0033;
     margin-left: -3px;
@@ -435,13 +456,16 @@ button.button-disable:hover, div.button-disable:hover {
 .selection-top-area {
     border-top: 3px solid #cc0033;
 }
+
 .selection-bottom-area {
     border-bottom: 3px solid #cc0033;
     margin-top: -3px;
 }
+
 .selection-left-area {
     border-left: 3px solid #cc0033;
 }
+
 .selection-right-area {
     border-left: 3px solid #cc0033;
     margin-left: -3px
@@ -450,13 +474,16 @@ button.button-disable:hover, div.button-disable:hover {
 .translatable-top-list {
     border-top: 6px solid #e6d300;
 }
+
 .translatable-bottom-list {
     border-bottom: 6px solid #e6d300;
     margin-top: -6px;
 }
+
 .translatable-left-list {
     border-left: 6px solid #e6d300;
 }
+
 .translatable-right-list {
     border-left: 6px solid #e6d300;
     margin-left: -6px;
@@ -465,13 +492,16 @@ button.button-disable:hover, div.button-disable:hover {
 .translatable-top-simple {
     border-top: 6px solid #e6d300;
 }
+
 .translatable-bottom-simple {
     border-bottom: 6px solid #e6d300;
     margin-top: -6px;
 }
+
 .translatable-left-simple {
     border-left: 6px solid #e6d300;
 }
+
 .translatable-right-simple {
     border-left: 6px solid #e6d300;
     margin-left: -6px;
@@ -480,13 +510,16 @@ button.button-disable:hover, div.button-disable:hover {
 .translatable-top-area {
     border-top: 6px solid #e6d300;
 }
+
 .translatable-bottom-area {
     border-bottom: 6px solid #e6d300;
     margin-top: -6px;
 }
+
 .translatable-left-area {
     border-left: 6px solid #e6d300;
 }
+
 .translatable-right-area {
     border-left: 6px solid #e6d300;
     margin-left: -6px
@@ -508,15 +541,18 @@ button.button-disable:hover, div.button-disable:hover {
     pointer-events: none;
     border-top: 3px solid #39f;
 }
+
 .hover-bottom-list {
     pointer-events: none;
     border-bottom: 3px solid #39f;
     margin-top: -3px;
 }
+
 .hover-left-list {
     pointer-events: none;
     border-left: 3px solid #39f;
 }
+
 .hover-right-list {
     pointer-events: none;
     border-left: 3px solid #39f;
@@ -527,15 +563,18 @@ button.button-disable:hover, div.button-disable:hover {
     pointer-events: none;
     border-top: 3px solid #39f;
 }
+
 .hover-bottom-simple {
     pointer-events: none;
     border-bottom: 3px solid #39f;
     margin-top: -3px;
 }
+
 .hover-left-simple {
     pointer-events: none;
     border-left: 3px solid #39f;
 }
+
 .hover-right-simple {
     pointer-events: none;
     border-left: 3px solid #39f;
@@ -546,16 +585,19 @@ button.button-disable:hover, div.button-disable:hover {
     pointer-events: none;
     border-top: 3px solid #39f;
 }
+
 .hover-bottom-area {
     pointer-events: none;
     border-bottom: 3px solid #39f;
     margin-top: -3px;
 }
+
 .hover-left-area {
     pointer-events: none;
     border-left: 3px solid #39f;
     margin-right: -3px;
 }
+
 .hover-right-area {
     pointer-events: none;
     border-left: 3px solid #39f;
@@ -566,13 +608,16 @@ button.button-disable:hover, div.button-disable:hover {
 .hover-top-list-secondary {
     border-top: 0px solid #999;
 }
+
 .hover-bottom-list-secondary {
     border-bottom: 0px solid #999;
     margin-top: -3px;
 }
+
 .hover-left-list-secondary {
     border-left: 0px solid #999;
 }
+
 .hover-right-list-secondary {
     border-left: 0px solid #999;
     margin-left: -3px;
@@ -582,13 +627,16 @@ button.button-disable:hover, div.button-disable:hover {
 .hover-top-simple-secondary {
     border-top: 0px solid #999;
 }
+
 .hover-bottom-simple-secondary {
     border-bottom: 0px solid #999;
     margin-top: -3px;
 }
+
 .hover-left-simple-secondary {
     border-left: 0px solid #999;
 }
+
 .hover-right-simple-secondary {
     border-right: 0px solid #999;
     margin-right: -3px;
@@ -598,13 +646,16 @@ button.button-disable:hover, div.button-disable:hover {
 .hover-top-area-secondary {
     border-top: 0px solid #999;
 }
+
 .hover-bottom-area-secondary {
     border-bottom: 0px solid #999;
     margin-top: -3px;
 }
+
 .hover-left-area-secondary {
     border-left: 0px solid #999;
 }
+
 .hover-right-area-secondary {
     border-right: 0px solid #999;
     margin-right: -3px;
@@ -613,9 +664,9 @@ button.button-disable:hover, div.button-disable:hover {
 /****************************************************************************/
 .deleted-overlay {
     overflow: hidden;
-    background :#eaeaea url(../images/deleted-overlay.png) top left;
-    color:#f00;
-    font-weight:bold;
+    background: #eaeaea url(../images/deleted-overlay.png) top left;
+    color: #f00;
+    font-weight: bold;
     border: 1px solid #ccc;
     position: absolute;
     vertical-align: middle;
@@ -653,8 +704,8 @@ button.button-disable:hover, div.button-disable:hover {
     position: absolute;
     top: 0;
     left: 0;
-    color:#f00;
-    font-weight:bold;
+    color: #f00;
+    font-weight: bold;
 }
 
 .unselectedChannelOverlay {
@@ -665,173 +716,180 @@ button.button-disable:hover, div.button-disable:hover {
     border: 2px solid #ccc !important;
     padding: 5px;
     margin-bottom: 5px;
-    font-family: tahoma,arial,verdana,sans-serif;
+    font-family: tahoma, arial, verdana, sans-serif;
     font-size: 10px;
     background-color: #fff;
 
 }
+
 .studiomodeList {
     border: 2px solid #ccc !important;
     padding: 5px;
     margin-bottom: 5px;
-    font-family: tahoma,arial,verdana,sans-serif;
+    font-family: tahoma, arial, verdana, sans-serif;
     font-size: 10px;
     background-color: #eaeaea;
 }
 
-.editmodeArea  {
+.editmodeArea {
 }
 
-.studiovisualmodeArea  {
+.studiovisualmodeArea {
 
 
 }
 
 
-.jahia-template-gxt  {
+.jahia-template-gxt {
     margin-bottom: 10px;
 }
+
 .studiomodeDisabledArea {
-    min-height:100px;
+    min-height: 100px;
     overflow: hidden;
-    background-color:#d8effb;
-    padding:2px;
-    color:#111;
-    position:relative;
+    background-color: #d8effb;
+    padding: 2px;
+    color: #111;
+    position: relative;
     font-family: tahoma, arial, verdana, sans-serif;
-    font-size:11px;
+    font-size: 11px;
     margin-bottom: 10px;
     border: 1px solid #99ccff;
 }
 
 .studiomodeDisableAreaContent {
-    min-height:100px;
-    overflow:hidden;
-    padding:2px;
-    color:#111;
-    position:relative;
+    min-height: 100px;
+    overflow: hidden;
+    padding: 2px;
+    color: #111;
+    position: relative;
     font-family: tahoma, arial, verdana, sans-serif;
-    font-size:11px;
+    font-size: 11px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
-    margin-top:-10px;
-    background:#eaeaea url(../images/studiomodeDisableAreaContent-bg.png) no-repeat scroll 50% 50% ;
+    margin-top: -10px;
+    background: #eaeaea url(../images/studiomodeDisableAreaContent-bg.png) no-repeat scroll 50% 50%;
 }
+
 .studiomodeEnabledEmptyAreaContent {
-    min-height:100px;
+    min-height: 100px;
     overflow: hidden;
-    padding:2px;
-    color:#111;
-    position:relative;
+    padding: 2px;
+    color: #111;
+    position: relative;
     font-family: tahoma, arial, verdana, sans-serif;
-    font-size:11px;
+    font-size: 11px;
     margin-bottom: 10px;
     border: 1px solid #99ccff;
-    margin-top:-10px;
-    background:#d8effb url(../images/studiomodeEnabledEmptyAreaContent-bg.png) no-repeat scroll 50% 50% ;
+    margin-top: -10px;
+    background: #d8effb url(../images/studiomodeEnabledEmptyAreaContent-bg.png) no-repeat scroll 50% 50%;
 }
 
 
-.AreaInformation{
-    font-family: tahoma,arial,verdana,sans-serif;
+.AreaInformation {
+    font-family: tahoma, arial, verdana, sans-serif;
     font-size: 10px;
     font-weight: bold;
     padding: 5px;
     color: #666665 !important;
-    margin-bottom:10px;
-    display:block;
-    display:block;
-    overflow:hidden;
-}
-.studiomodeAbsoluteArea {
-    min-height:100px;
+    margin-bottom: 10px;
+    display: block;
+    display: block;
     overflow: hidden;
-    background-color:#ffcccc;
-    padding:2px;
-    color:#111;
-    position:relative;
+}
+
+.studiomodeAbsoluteArea {
+    min-height: 100px;
+    overflow: hidden;
+    background-color: #ffcccc;
+    padding: 2px;
+    color: #111;
+    position: relative;
     font-family: tahoma, arial, verdana, sans-serif;
-    font-size:11px;
+    font-size: 11px;
     margin-bottom: 10px;
     border: 1px solid #cc6666;
 }
 
 
 .studiovisualmodeAbsoluteArea {
-    min-height:100px;
+    min-height: 100px;
     overflow: hidden;
-    background-color:#ffcccc;
-    padding:2px;
-    color:#111;
-    position:relative;
+    background-color: #ffcccc;
+    padding: 2px;
+    color: #111;
+    position: relative;
     font-family: tahoma, arial, verdana, sans-serif;
-    font-size:11px;
+    font-size: 11px;
     margin-bottom: 10px;
     border: 1px solid #cc6666;
 }
 
 .mainResourceDisplay {
-    min-height:100px;
-    overflow:hidden;
-    background-color:#eaeaea;
-    padding:2px;
-    color:#111;
-    position:relative;
+    min-height: 100px;
+    overflow: hidden;
+    background-color: #eaeaea;
+    padding: 2px;
+    color: #111;
+    position: relative;
     font-family: tahoma, arial, verdana, sans-serif;
-    font-size:11px;
+    font-size: 11px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
 }
 
 .authorDisplayArea {
-    min-height:100px;
+    min-height: 100px;
     overflow: hidden;
-    padding:2px;
-    color:#111;
-    position:relative;
-    background:#d8effb url(../images/authorDisplayArea-bg.png) no-repeat scroll 50% 100% ;
+    padding: 2px;
+    color: #111;
+    position: relative;
+    background: #d8effb url(../images/authorDisplayArea-bg.png) no-repeat scroll 50% 100%;
     font-family: tahoma, arial, verdana, sans-serif;
-    font-size:11px;
+    font-size: 11px;
     margin-bottom: 10px;
     border: 1px solid #99ccff;
 }
+
 .areaTemplate {
-    min-height:100px;
+    min-height: 100px;
     overflow: hidden;
-    background-color:#d8effb;
-    padding:2px;
-    color:#111;
-    position:relative;
+    background-color: #d8effb;
+    padding: 2px;
+    color: #111;
+    position: relative;
     font-family: tahoma, arial, verdana, sans-serif;
-    font-size:11px;
+    font-size: 11px;
     margin-bottom: 10px;
     border: 1px solid #99ccff;
 }
 
 .area-liveOnly {
-    min-height:100px;
+    min-height: 100px;
     overflow: hidden;
-    background:#ccffcc url(../images/area-liveonly-bg.png) no-repeat scroll 50% 50% ;
-    padding:2px;
-    color:#111;
-    position:relative;
+    background: #ccffcc url(../images/area-liveonly-bg.png) no-repeat scroll 50% 50%;
+    padding: 2px;
+    color: #111;
+    position: relative;
     font-family: tahoma, arial, verdana, sans-serif;
-    font-size:11px;
+    font-size: 11px;
     margin-bottom: 10px;
     border: 1px solid #99cc99;
 }
+
 .dashedArea {
-    background : url(../images/placeholder-area.png) top left;
-    height:100%;
+    background: url(../images/placeholder-area.png) top left;
+    height: 100%;
 }
+
 .area-notcreated .dashedArea {
-    background : url(../images/area-notcreated.png) top left;
-    height:100%;
+    background: url(../images/area-notcreated.png) top left;
+    height: 100%;
 }
 
 .area-liveOnly .dashedArea {
-    background : url(../images/area-liveOnly.png) top left;
-    height:100%;
+    background: url(../images/area-liveOnly.png) top left;
+    height: 100%;
 }
 
 .x-form-readonly input {
@@ -841,7 +899,7 @@ button.button-disable:hover, div.button-disable:hover {
 
 
 .markedForDeletion {
-    text-decoration:line-through;
+    text-decoration: line-through;
 }
 
 .notPublished {
@@ -853,51 +911,55 @@ button.button-disable:hover, div.button-disable:hover {
 }
 
 .x-tool-pin {
-    overflow:hidden;
-    width:15px;
-    height:15px;
-    float:right;
-    cursor:pointer;
-    background:transparent no-repeat;
-    margin-right:2px;
-    background-image:url(../images/default/panel/tool-sprites.gif);
-    background-position:0 -135px;
+    overflow: hidden;
+    width: 15px;
+    height: 15px;
+    float: right;
+    cursor: pointer;
+    background: transparent no-repeat;
+    margin-right: 2px;
+    background-image: url(../images/default/panel/tool-sprites.gif);
+    background-position: 0 -135px;
 }
+
 .x-tool-pin-over {
-    overflow:hidden;
-    width:15px;
-    height:15px;
-    float:right;
-    cursor:pointer;
-    background:transparent no-repeat;
-    margin-right:2px;
-    background-image:url(../images/default/panel/tool-sprites.gif);
-    background-position:-15px -135px;
+    overflow: hidden;
+    width: 15px;
+    height: 15px;
+    float: right;
+    cursor: pointer;
+    background: transparent no-repeat;
+    margin-right: 2px;
+    background-image: url(../images/default/panel/tool-sprites.gif);
+    background-position: -15px -135px;
 }
+
 .x-tool-unpin {
-    overflow:hidden;
-    width:15px;
-    height:15px;
-    float:right;
-    cursor:pointer;
-    background:transparent no-repeat;
-    margin-right:2px;
-    background-image:url(../images/default/panel/tool-sprites.gif);
-    background-position:0 -150px;
+    overflow: hidden;
+    width: 15px;
+    height: 15px;
+    float: right;
+    cursor: pointer;
+    background: transparent no-repeat;
+    margin-right: 2px;
+    background-image: url(../images/default/panel/tool-sprites.gif);
+    background-position: 0 -150px;
 }
+
 .x-tool-unpin-over {
-    overflow:hidden;
-    width:15px;
-    height:15px;
-    float:right;
-    cursor:pointer;
-    background:transparent no-repeat;
-    margin-right:2px;
-    background-image:url(../images/default/panel/tool-sprites.gif);
-    background-position:-15px -150px;
+    overflow: hidden;
+    width: 15px;
+    height: 15px;
+    float: right;
+    cursor: pointer;
+    background: transparent no-repeat;
+    margin-right: 2px;
+    background-image: url(../images/default/panel/tool-sprites.gif);
+    background-position: -15px -150px;
 }
-.x-panel-inline-icon   {
-    margin-right:5px ;
+
+.x-panel-inline-icon {
+    margin-right: 5px;
 }
 
 /* Content tab */
@@ -906,5 +968,15 @@ button.button-disable:hover, div.button-disable:hover {
 }
 
 .x-form-textarea {
-	white-space: pre-wrap;
+    white-space: pre-wrap;
+}
+
+/* This will match all empty area: type="area" and type="absoluteArea" */
+div[type$="rea"][jahiatype="module"][isEmptyArea="true"] {
+    text-align: center;
+    font-style: italic;
+    color: rgba(0, 0, 0, 0.65);
+    margin: 5px 0;
+    background: rgb(244, 244, 244);
+    border-radius: 4px;
 }

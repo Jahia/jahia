@@ -244,31 +244,33 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                         String type = getModuleType(renderContext);
                         List<String> contributeTypes = contributeTypes(renderContext, resource.getNode());
                         String oldNodeTypes = nodeTypes;
-                        String add = "";
+                        StringBuilder add = new StringBuilder();
                         if (!nodeEditable) {
-                            add = "editable=\"false\"";
+                            add.append("editable=\"false\"");
                         }
                         if (node.isNodeType(Constants.JAHIAMIX_BOUND_COMPONENT)) {
-                            add += " bindable=\"true\"";
+                            add.append(" bindable=\"true\"");
                         }
 
                         List<Locale> existingTranslations = node.getExistingLocales();
-                        if (existingTranslations != null && existingTranslations.size() > 0) {
+                        if (existingTranslations != null && !existingTranslations.isEmpty()) {
                             try {
                                 node.getI18N(renderContext.getMainResourceLocale());
                             } catch (ItemNotFoundException e) {
-                                add += " translatable=\"" + existingTranslations.get(0) + "\"";
+                                add.append(" translatable=\"").append(existingTranslations.get(0)).append("\"");
                             }
                         }
+
+                        appendExtraAdditionalParameters(add);
 
                         Script script = null;
                         try {
                             script = RenderService.getInstance().resolveScript(resource, renderContext);
                             printModuleStart(type, node.getPath(), resource.getResolvedTemplate(),
-                                    script, add, isReferencesAllowed(node));
+                                    script, add.toString(), isReferencesAllowed(node));
                         } catch (TemplateNotFoundException e) {
                             printModuleStart(type, node.getPath(), resource.getResolvedTemplate(),
-                                    null, add, isReferencesAllowed(node));
+                                    null, add.toString(), isReferencesAllowed(node));
                         }
                         nodeTypes = oldNodeTypes;
                         currentResource.getDependencies().add(node.getCanonicalPath());
@@ -451,6 +453,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     /**
      * Returns <code>null</code> if the node we're looking at doesn't have the editable in contribution mode property, otherwise returns the value of the property.
+     *
      * @param node the node we're interested in
      * @return <code>null</code> if the node we're looking at doesn't have the editable in contribution mode property, otherwise returns the value of the property.
      * @throws RepositoryException
@@ -688,5 +691,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     public void setCheckConstraints(boolean checkConstraints) {
         // constraint are now resolved by JCRFilterTag when called by list jsp
         this.checkConstraints = checkConstraints;
+    }
+
+    protected void appendExtraAdditionalParameters(StringBuilder additionalParameters) {
     }
 }

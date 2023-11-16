@@ -59,7 +59,6 @@ import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.ItemExistsException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
@@ -184,7 +183,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                     if (logger.isDebugEnabled()) {
                         logger.debug("unable to auto create area due to the following error", e);
                     } else {
-                        logger.warn(String.format("Unable to automaticaly enable an area, cannot create node %s of type %s, because of %s", areaPath, areaType, e.getMessage()));
+                        logger.warn(String.format("Unable to automatically enable an area, cannot create node %s of type %s, because of %s", areaPath, areaType, e.getMessage()));
                     }
                 }
             } else {
@@ -213,6 +212,8 @@ public class AreaTag extends ModuleTag implements ParamParent {
                 // if the parent is locked -> disable area editing
                 additionalParameters.append(" editable=\"false\"");
             }
+
+            appendExtraAdditionalParameters(additionalParameters);
 
             printModuleStart(getModuleType(renderContext), areaPath, null, null, additionalParameters.toString(), isReferencesAllowed(resource.getNode()));
             if (enableArea && areaNode != null) {
@@ -252,16 +253,16 @@ public class AreaTag extends ModuleTag implements ParamParent {
         return Resource.CONFIGURATION_WRAPPEDCONTENT;
     }
 
-    @Override protected boolean canEdit(RenderContext renderContext) {
+    @Override
+    protected boolean canEdit(RenderContext renderContext) {
         if (path != null) {
             boolean stillInWrapper = false;
             return renderContext.isEditMode() && editable && !stillInWrapper &&
                     renderContext.getRequest().getAttribute("inArea") == null;
-        } else if(node !=null){
+        } else if (node != null) {
             return renderContext.isEditMode() && editable &&
                     renderContext.getRequest().getAttribute("inArea") == null && node.getPath().equals(renderContext.getMainResource().getNode().getPath());
-        }
-        else {
+        } else {
             return super.canEdit(renderContext);
         }
     }
@@ -274,7 +275,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
         }
         renderContext.getRequest().removeAttribute("skipWrapper");
         renderContext.getRequest().removeAttribute("inArea");
-        pageContext.setAttribute("org.jahia.emptyArea",Boolean.TRUE, PageContext.PAGE_SCOPE);
+        pageContext.setAttribute("org.jahia.emptyArea", Boolean.TRUE, PageContext.PAGE_SCOPE);
         try {
             // path is null in main resource display
             Template t = (Template) renderContext.getRequest().getAttribute("previousTemplate");
@@ -302,12 +303,12 @@ public class AreaTag extends ModuleTag implements ParamParent {
                         renderContext.getRequest().setAttribute("inArea", Boolean.TRUE);
                     }
 
-                    if(logger.isDebugEnabled()) {
-                        logger.debug("Looking for absolute area "+path+", will be searched in node "+ node.getPath() +
-                                     " saved template = "+(templateNode != null ? templateNode.serialize() : "none")+", previousTemplate set to null");
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Looking for absolute area " + path + ", will be searched in node " + node.getPath() +
+                                " saved template = " + (templateNode != null ? templateNode.serialize() : "none") + ", previousTemplate set to null");
                     }
                     node = node.getNode(path);
-                    pageContext.setAttribute("org.jahia.emptyArea",Boolean.FALSE, PageContext.PAGE_SCOPE);
+                    pageContext.setAttribute("org.jahia.emptyArea", Boolean.FALSE, PageContext.PAGE_SCOPE);
                 } catch (RepositoryException e) {
                     if (node != null) {
                         path = node.getPath() + "/" + path;
@@ -322,14 +323,14 @@ public class AreaTag extends ModuleTag implements ParamParent {
                             logger.debug(
                                     "Cannot get a node {}, relative to the home page of site {}"
                                             + " for main resource {}",
-                                    new String[] {
+                                    new String[]{
                                             path,
                                             main != null && main.getResolveSite() != null ? main.getResolveSite().getPath() : null,
-                                            main != null ? main.getPath() : null });
+                                            main != null ? main.getPath() : null});
                         } else {
                             logger.debug(
                                     "Cannot get a node {}, with level {} for main resource {}",
-                                    new String[] { path, String.valueOf(level), main != null ? main.getPath() : null });
+                                    new String[]{path, String.valueOf(level), main != null ? main.getPath() : null});
                         }
                     }
                 }
@@ -345,7 +346,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                     nodes.add(mainResource.getNode());
                     boolean isCurrentResource = false;
                     if (areaAsSubNode) {
-                        nodes.add(0,currentResource.getNode());
+                        nodes.add(0, currentResource.getNode());
                         isCurrentResource = true;
                     }
                     boolean found = false;
@@ -353,7 +354,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
                     Set<String> allPaths = renderContext.getRenderedPaths();
                     for (JCRNodeWrapper node : nodes) {
-                        if (!path.equals("*") && node.hasNode(path) && !allPaths.contains(node.getPath()+"/"+path)) {
+                        if (!path.equals("*") && node.hasNode(path) && !allPaths.contains(node.getPath() + "/" + path)) {
                             notMainResource = mainResource.getNode() != node && !node.getPath().startsWith(renderContext.getMainResource().getNode().getPath());
                             this.node = node.getNode(path);
                             if (currentResource.getNode().getParent().getPath().equals(this.node.getPath())) {
@@ -368,7 +369,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                                     break;
                                 } else {
                                     found = true;
-                                    pageContext.setAttribute("org.jahia.emptyArea",Boolean.FALSE, PageContext.PAGE_SCOPE);
+                                    pageContext.setAttribute("org.jahia.emptyArea", Boolean.FALSE, PageContext.PAGE_SCOPE);
                                     // if the processed resource is an area, set area path to this node, else set it to the generated node.
                                     renderContext.getRequest().setAttribute(AreaResourceCacheKeyPartGenerator.AREA_PATH,
                                             currentResource.getNode().isNodeType("jnt:area") ? currentResource.getNodePath() : this.node.getPath());
@@ -382,13 +383,13 @@ public class AreaTag extends ModuleTag implements ParamParent {
                         isCurrentResource = false;
                     }
                     renderContext.getRequest().setAttribute("previousTemplate", t);
-                    if(logger.isDebugEnabled()) {
-                        String tempNS = (templateNode!=null)?templateNode.serialize():null;
-                        String prevNS = (t!=null)?t.serialize():null;
-                        logger.debug("Looking for local area "+path+", will be searched in node "+ (node!=null?node.getPath():null) +
-                                     " saved template = "+tempNS+", previousTemplate set to "+prevNS);
+                    if (logger.isDebugEnabled()) {
+                        String tempNS = (templateNode != null) ? templateNode.serialize() : null;
+                        String prevNS = (t != null) ? t.serialize() : null;
+                        logger.debug("Looking for local area " + path + ", will be searched in node " + (node != null ? node.getPath() : null) +
+                                " saved template = " + tempNS + ", previousTemplate set to " + prevNS);
                     }
-                    boolean templateEdit = mainResource.getModuleParams().containsKey("templateEdit") &&mainResource.getModuleParams().get("templateEdit").equals(node.getParent().getIdentifier());
+                    boolean templateEdit = mainResource.getModuleParams().containsKey("templateEdit") && mainResource.getModuleParams().get("templateEdit").equals(node.getParent().getIdentifier());
                     if (notMainResource && !templateEdit) {
                         renderContext.getRequest().setAttribute("inArea", Boolean.TRUE);
                     }
@@ -402,13 +403,13 @@ public class AreaTag extends ModuleTag implements ParamParent {
                     renderContext.getRequest().setAttribute("previousTemplate", null);
 
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Looking for absolute area " + path + ", will be searched in node " + (node!=null?node.getPath():null) +
+                        logger.debug("Looking for absolute area " + path + ", will be searched in node " + (node != null ? node.getPath() : null) +
                                 " saved template = " + (templateNode != null ? templateNode.serialize() : "none") + ", previousTemplate set to null");
 
                     }
                     try {
                         node = (JCRNodeWrapper) session.getItem(path);
-                        pageContext.setAttribute("org.jahia.emptyArea",Boolean.FALSE, PageContext.PAGE_SCOPE);
+                        pageContext.setAttribute("org.jahia.emptyArea", Boolean.FALSE, PageContext.PAGE_SCOPE);
                     } catch (PathNotFoundException e) {
                         missingResource(renderContext, currentResource);
                     }
@@ -418,7 +419,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                 renderContext.getRequest().setAttribute("previousTemplate", null);
                 renderContext.getRequest().removeAttribute("skipWrapper");
                 node = mainResource.getNode();
-                pageContext.setAttribute("org.jahia.emptyArea",Boolean.FALSE, PageContext.PAGE_SCOPE);
+                pageContext.setAttribute("org.jahia.emptyArea", Boolean.FALSE, PageContext.PAGE_SCOPE);
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -426,20 +427,21 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
         if (node == null && logger.isDebugEnabled()) {
             logger.debug("Can not find the area node for path " + path + " with templates " + (templateNode != null ? templateNode.serialize() : "none") +
-                         "rendercontext " + renderContext + " main resource " + mainResource +
-                         " current resource " + currentResource);
+                    "rendercontext " + renderContext + " main resource " + mainResource +
+                    " current resource " + currentResource);
         }
     }
 
-    @Override public int doEndTag() throws JspException {
+    @Override
+    public int doEndTag() throws JspException {
         Object o = pageContext.getRequest().getAttribute("inArea");
         try {
             return super.doEndTag();
         } finally {
             pageContext.getRequest().setAttribute("previousTemplate", templateNode);
-            if(logger.isDebugEnabled()) {
-                        logger.debug("Restoring previous template "+(templateNode != null ? templateNode.serialize() : "none"));
-                    }
+            if (logger.isDebugEnabled()) {
+                logger.debug("Restoring previous template " + (templateNode != null ? templateNode.serialize() : "none"));
+            }
             templateNode = null;
             level = null;
             areaAsSubNode = false;
@@ -457,7 +459,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
         }
     }
 
-    protected  boolean isEmptyArea() {
+    protected boolean isEmptyArea() {
         for (String s : constraints.split(" ")) {
             if (!JCRContentUtils.getChildrenOfType(node, s).isEmpty()) {
                 return false;
@@ -466,4 +468,10 @@ public class AreaTag extends ModuleTag implements ParamParent {
         return true;
     }
 
+    @Override
+    protected void appendExtraAdditionalParameters(StringBuilder additionalParameters) {
+        if (node == null || isEmptyArea()) {
+            additionalParameters.append(" isEmptyArea=\"true\"");
+        }
+    }
 }

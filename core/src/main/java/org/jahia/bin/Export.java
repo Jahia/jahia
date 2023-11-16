@@ -137,6 +137,7 @@ public class Export extends JahiaController implements ServletContextAware {
             String exportFormat = m.group(3);
             JCRNodeWrapper exportRoot = null;
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace);
+            checkUserAuthorized(session.getNode(nodePath).getResolveSite());
             Map<String, Object> params = getRequestParams(request);
 
             if (StringUtils.isNotEmpty(request.getParameter("exportformat"))) {

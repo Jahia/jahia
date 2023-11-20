@@ -137,7 +137,6 @@ public class Export extends JahiaController implements ServletContextAware {
             String exportFormat = m.group(3);
             JCRNodeWrapper exportRoot = null;
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace);
-            checkUserAuthorized(session.getNode(nodePath).getResolveSite());
             Map<String, Object> params = getRequestParams(request);
 
             if (StringUtils.isNotEmpty(request.getParameter("exportformat"))) {
@@ -146,16 +145,20 @@ public class Export extends JahiaController implements ServletContextAware {
 
             switch (exportFormat.trim().toLowerCase()) {
                 case "all":
+                    checkUserAuthorized(session.getNode("/").getResolveSite());
                     handleExportFormatTypeAll(response, params, session);
                     break;
                 case "site":
+                    checkUserAuthorized(session.getNode("/").getResolveSite());
                     handleExportFormatTypeSite(request, response, params, session);
                     break;
                 case "xml":
+                    checkUserAuthorized(session.getNode(nodePath).getResolveSite());
                     exportRoot = request.getParameter("root") != null ? session.getNode(request.getParameter("root")) : null;
                     handleExportFormatTypeXML(request, response, nodePath, params, session, exportRoot);
                     break;
                 case "zip":
+                    checkUserAuthorized(session.getNode(nodePath).getResolveSite());
                     exportRoot = request.getParameter("root") != null ? session.getNode(request.getParameter("root")) : null;
                     handleExportFormatTypeZip(request, response, nodePath, params, session, exportRoot);
                     break;

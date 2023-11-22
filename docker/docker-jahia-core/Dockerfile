@@ -46,7 +46,7 @@ RUN set -ux; \
         GRAALVM_DL_ARCH=$GRAALVM_ARCH ; \
     fi; \
     if [ -z ${GRAALVM_URL+x} ]; then \
-        GRAALVM_DL_URL=https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${GRAALVM_VERSION}/graalvm-ce-java11-linux-${GRAALVM_DL_ARCH}-${GRAALVM_VERSION}.tar.gz ; \
+        GRAALVM_DL_URL=https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${GRAALVM_VERSION}/graalvm-ce-java17-linux-${GRAALVM_DL_ARCH}-${GRAALVM_VERSION}.tar.gz ; \
     else  \
         GRAALVM_DL_URL = $GRAALVM_URL ; \
     fi ; \

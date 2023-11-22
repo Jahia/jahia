@@ -207,6 +207,8 @@ else
   OPT="run"
 fi
 
+export CATALINA_OPTS="${CATALINA_OPTS} --add-opens=java.base/java.net=ALL-UNNAMED"
+
 rotate-jahia-logs.sh &
 
 echo "Start catalina... : /usr/local/tomcat/bin/catalina.sh $OPT"

@@ -129,9 +129,9 @@ public class ModuleParamsCacheKeyPartGenerator implements CacheKeyPartGenerator,
         }
 
         @Override
-        public Iterator<?> keys() {
-            TreeSet<Object> keys = new TreeSet<>();
-            for (Iterator<?> it = super.keys(); it.hasNext(); ) {
+        public Iterator<String> keys() {
+            TreeSet<String> keys = new TreeSet<>();
+            for (Iterator<String> it = super.keys(); it.hasNext(); ) {
                 keys.add(it.next());
             }
             return keys.iterator();

@@ -45,6 +45,7 @@ package org.jahia.bin;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.seo.urlrewrite.SessionidRemovalResponseWrapper;
 import org.jahia.settings.SettingsBean;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -53,7 +54,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.regex.Pattern;
 
 /**
@@ -85,7 +85,14 @@ public class Login implements Controller {
         // Method only called when the login is successful
         String redirect = StringUtils.defaultIfEmpty(request.getParameter("redirect"),
                 request.getContextPath() + "/welcome");
-        return response.encodeRedirectURL(Login.removeErrorParameter(redirect));
+        redirect = response.encodeRedirectURL(Login.removeErrorParameter(redirect));
+        if (SettingsBean.getInstance().isDisableJsessionIdParameter()) {
+            String s = ";" + SettingsBean.getInstance().getJsessionIdParameterName();
+            if (redirect.contains(s)) {
+                redirect = SessionidRemovalResponseWrapper.removeJsessionId(redirect);
+            }
+        }
+        return redirect;
     }
 
     /**
@@ -162,7 +169,7 @@ public class Login implements Controller {
             // remove failure redirect param before we add it again
             String[] urlParts = StringUtils.split(failureRedirectUrl, "\\?");
             StringBuilder sanitizedUrlSb = new StringBuilder(urlParts[0]);
-            if(urlParts.length > 1) {
+            if (urlParts.length > 1) {
                 String[] urlParams = StringUtils.split(urlParts[1], "&");
                 StringBuilder paramSb = new StringBuilder();
                 for (int i = 0; i < urlParams.length; i++) {
@@ -170,7 +177,7 @@ public class Login implements Controller {
                         paramSb.append(urlParams[i]);
                     }
                 }
-              if(StringUtils.isNotEmpty(paramSb.toString())) {
+                if (StringUtils.isNotEmpty(paramSb.toString())) {
                     sanitizedUrlSb.append("?").append(paramSb.toString());
                 }
 

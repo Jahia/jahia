@@ -212,6 +212,7 @@
         <graphql-java-extended-scalars.version>21.0</graphql-java-extended-scalars.version>
         <graphql-java-annotations.version>21.1</graphql-java-annotations.version>
         <graphql-java-servlet.version>15.1.1-jahia-SNAPSHOT</graphql-java-servlet.version>
+        <graalvm.version>22.3.3</graalvm.version>
     </properties>
 
     <developers>

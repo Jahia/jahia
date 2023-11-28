@@ -5,7 +5,7 @@ ARG FFMPEG="false"
 ARG LIBREOFFICE="false"
 ARG IMAGEMAGICK="false"
 
-ARG GRAALVM_VERSION=22.3.1
+ARG GRAALVM_VERSION
 # We provide these arguments to be able to override the "guessing" that is done in the script below in case of problems
 ARG GRAALVM_ARCH
 ARG GRAALVM_URL

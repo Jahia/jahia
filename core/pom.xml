@@ -1042,25 +1042,25 @@
         <dependency>
             <groupId>org.graalvm.sdk</groupId>
             <artifactId>graal-sdk</artifactId>
-            <version>22.3.1</version>
+            <version>${graalvm.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.graalvm.truffle</groupId>
             <artifactId>truffle-api</artifactId>
-            <version>22.3.1</version>
+            <version>${graalvm.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.graalvm.js</groupId>
             <artifactId>js</artifactId>
-            <version>22.3.1</version>
+            <version>${graalvm.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.graalvm.regex</groupId>
             <artifactId>regex</artifactId>
-            <version>22.3.1</version>
+            <version>${graalvm.version}</version>
         </dependency>
 
 

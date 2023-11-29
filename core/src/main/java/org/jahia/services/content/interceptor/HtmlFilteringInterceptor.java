@@ -53,14 +53,9 @@ import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
 
-import net.htmlparser.jericho.Element;
-import net.htmlparser.jericho.EndTag;
-import net.htmlparser.jericho.OutputDocument;
-import net.htmlparser.jericho.Source;
-import net.htmlparser.jericho.StartTag;
-import net.htmlparser.jericho.StartTagType;
-
 import org.apache.commons.lang.StringUtils;
+import org.owasp.html.HtmlPolicyBuilder;
+import org.owasp.html.PolicyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -83,7 +78,7 @@ public class HtmlFilteringInterceptor extends BaseInterceptor {
         }
 
         Set<String> tagSet = new HashSet<String>();
-        for (String tag : StringUtils.split(tags, " ,")) {
+        for (String tag : StringUtils.split(tags, ",")) {
             String toBeFiltered = tag.trim().toLowerCase();
             if (toBeFiltered.length() > 0) {
                 tagSet.add(toBeFiltered);
@@ -107,33 +102,21 @@ public class HtmlFilteringInterceptor extends BaseInterceptor {
      * @return filtered out content or the original one if no modifications needs to be done
      */
     protected static String filterTags(String content, Set<String> filteredTags, boolean removeContentBetweenTags) {
-        if (filteredTags.isEmpty()) {
-            return content;
-        }
 
         long timer = System.currentTimeMillis();
-        boolean modified = false;
 
-        Source src = new Source(content);
-        OutputDocument out = new OutputDocument(src);
-        for (String filteredTagName : filteredTags) {
-            for (StartTag startTag : src.getAllStartTags(filteredTagName)) {
-                if (startTag.getTagType() == StartTagType.NORMAL) {
-                    Element element = startTag.getElement();
-                    EndTag endTag = element.getEndTag();
-                    if (removeContentBetweenTags && endTag != null) {
-                        out.remove(element);
-                    } else {
-                        out.remove(startTag);
-                        if (endTag != null) {
-                            out.remove(endTag);
-                        }
-                    }
-                    modified = true;
-                }
-            }
+        HtmlPolicyBuilder builder = defaultPolicyBuilder();
+
+        if (!filteredTags.isEmpty()) {
+            builder.disallowElements(filteredTags.toArray(new String[0]));
         }
-        String result = modified ? out.toString() : content;
+
+        if (!filteredTags.isEmpty() && removeContentBetweenTags) {
+            content = defaultPolicyBuilder().disallowTextIn(filteredTags.toArray(new String[0])).toFactory().sanitize(content);
+        }
+
+        PolicyFactory policy = builder.toFactory();
+        String result = policy.sanitize(content);
 
         if (logger.isDebugEnabled()) {
             logger.debug("Filter HTML tags took " + (System.currentTimeMillis() - timer) + " ms");
@@ -161,23 +144,16 @@ public class HtmlFilteringInterceptor extends BaseInterceptor {
             return originalValue;
         }
 
-        Set<String> tags = filteredTags;
-        boolean doFiltering = false;
+        Set<String> tags;
         if (considerSiteSettingsForFiltering && node.getResolveSite().isHtmlMarkupFilteringEnabled()) {
             JCRSiteNode resolveSite = node.getResolveSite();
-            if (resolveSite != null && resolveSite.hasProperty(SitesSettings.HTML_MARKUP_FILTERING_ENABLED)) {
-                tags = convertToTagSet(resolveSite.hasProperty(
-                        SitesSettings.HTML_MARKUP_FILTERING_TAGS) ? resolveSite
-                        .getProperty(SitesSettings.HTML_MARKUP_FILTERING_TAGS).getString() : null);
-                if (tags != null && !tags.isEmpty()) {
-                    doFiltering = true;
-                }
+            tags = convertToTagSet(resolveSite.hasProperty(
+                    SitesSettings.HTML_MARKUP_FILTERING_TAGS) ? resolveSite
+                    .getProperty(SitesSettings.HTML_MARKUP_FILTERING_TAGS).getString() : null);
+            if (tags == null || tags.isEmpty()) {
+                tags = filteredTags;
             }
-        } else if (filteredTags != null && !filteredTags.isEmpty()) {
-            doFiltering = true;
-        }
-
-        if (!doFiltering) {
+        } else {
             return originalValue;
         }
 
@@ -247,4 +223,11 @@ public class HtmlFilteringInterceptor extends BaseInterceptor {
         this.removeContentBetweenTags = removeContentBetweenTags;
     }
 
+    private static HtmlPolicyBuilder defaultPolicyBuilder() {
+        return new HtmlPolicyBuilder()
+                .allowCommonBlockElements()
+                .allowCommonInlineFormattingElements()
+                .allowStyling()
+                .allowStandardUrlProtocols();
+    }
 }

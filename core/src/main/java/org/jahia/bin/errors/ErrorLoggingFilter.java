@@ -339,9 +339,11 @@ public class ErrorLoggingFilter implements Filter {
             Iterator<String> headerNames = new EnumerationIterator(request.getHeaderNames());
             while (headerNames.hasNext()) {
                 String headerName = headerNames.next();
-                String headerValue = request.getHeader(headerName);
-                info.append("\n  ").append(headerName).append(": ").append(
-                        headerValue);
+                if (!headerName.equalsIgnoreCase("authorization")) {
+                    String headerValue = request.getHeader(headerName);
+                    info.append("\n  ").append(headerName).append(": ").append(
+                            headerValue);
+                }
             }
         }
         return info.toString();

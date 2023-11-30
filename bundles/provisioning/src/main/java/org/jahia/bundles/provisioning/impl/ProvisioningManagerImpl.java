@@ -42,6 +42,7 @@
  */
 package org.jahia.bundles.provisioning.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -171,6 +172,11 @@ public class ProvisioningManagerImpl implements ProvisioningManager {
         boolean yaml = format.equalsIgnoreCase("yml") || format.equalsIgnoreCase("yaml");
         content = SettingsBean.getInstance().replaceBySubsitutor(content);
         ObjectMapper objectMapper = yaml ? yamlMapper : jsonMapper;
-        return objectMapper.readValue(content, new TypeReference<List<Map<String, Object>>>() {});
+        try {
+            return objectMapper.readValue(content, new TypeReference<List<Map<String, Object>>>() {});
+        } catch (JsonProcessingException e) {
+            e.clearLocation();
+            throw e;
+        }
     }
 }

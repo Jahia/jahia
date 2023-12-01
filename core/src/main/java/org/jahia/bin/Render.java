@@ -682,10 +682,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         if (!StringUtils.isEmpty(renderedURL)) {
             String redirect = resp.encodeRedirectURL(renderedURL);
             if (SettingsBean.getInstance().isDisableJsessionIdParameter()) {
-                String s = ";" + SettingsBean.getInstance().getJsessionIdParameterName();
-                if (redirect.contains(s)) {
-                    redirect = SessionidRemovalResponseWrapper.removeJsessionId(redirect);
-                }
+                redirect = SessionidRemovalResponseWrapper.removeJsessionId(redirect);
             }
             if (StringUtils.isEmpty(stayOnPage) || (responseCode == HttpServletResponse.SC_SEE_OTHER)) {
                 resp.setHeader("Location", Url.encodeUri(redirect, "UTF-8"));
@@ -1030,7 +1027,11 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     if (!result.isAbsoluteUrl()) {
                         performRedirect(result.getUrl(), urlResolver.getPath(), req, resp, parameters, false);
                     } else {
-                        resp.sendRedirect(resp.encodeRedirectURL(result.getUrl()));
+                        String redirectUrl = resp.encodeRedirectURL(result.getUrl());
+                        if (SettingsBean.getInstance().isDisableJsessionIdParameter()) {
+                            redirectUrl = SessionidRemovalResponseWrapper.removeJsessionId(redirectUrl);
+                        }
+                        resp.sendRedirect(redirectUrl);
                     }
                 }
             } else {

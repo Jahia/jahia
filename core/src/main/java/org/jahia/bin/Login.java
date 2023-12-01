@@ -87,10 +87,7 @@ public class Login implements Controller {
                 request.getContextPath() + "/welcome");
         redirect = response.encodeRedirectURL(Login.removeErrorParameter(redirect));
         if (SettingsBean.getInstance().isDisableJsessionIdParameter()) {
-            String s = ";" + SettingsBean.getInstance().getJsessionIdParameterName();
-            if (redirect.contains(s)) {
-                redirect = SessionidRemovalResponseWrapper.removeJsessionId(redirect);
-            }
+            redirect = SessionidRemovalResponseWrapper.removeJsessionId(redirect);
         }
         return redirect;
     }

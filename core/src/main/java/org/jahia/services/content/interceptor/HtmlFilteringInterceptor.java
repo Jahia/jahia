@@ -54,6 +54,8 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.osgi.BundleUtils;
+import org.jahia.services.content.ckeditor.CKEditorConfigurationInterface;
 import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.PolicyFactory;
 import org.slf4j.Logger;
@@ -145,8 +147,8 @@ public class HtmlFilteringInterceptor extends BaseInterceptor {
         }
 
         Set<String> tags;
+        JCRSiteNode resolveSite = node.getResolveSite();
         if (considerSiteSettingsForFiltering && node.getResolveSite().isHtmlMarkupFilteringEnabled()) {
-            JCRSiteNode resolveSite = node.getResolveSite();
             tags = convertToTagSet(resolveSite.hasProperty(
                     SitesSettings.HTML_MARKUP_FILTERING_TAGS) ? resolveSite
                     .getProperty(SitesSettings.HTML_MARKUP_FILTERING_TAGS).getString() : null);
@@ -166,7 +168,15 @@ public class HtmlFilteringInterceptor extends BaseInterceptor {
             }
         }
 
-        String result = filterTags(content, tags, removeContentBetweenTags);
+        CKEditorConfigurationInterface filteringConfig = BundleUtils.getOsgiService(CKEditorConfigurationInterface.class, null);
+
+        String result = "";
+        if (filteringConfig != null && filteringConfig.configExists(resolveSite.getSiteKey())) {
+            result = filteringConfig.getOwaspPolicyFactory(resolveSite.getSiteKey()).sanitize(content);
+        } else {
+            result = filterTags(content, tags, removeContentBetweenTags);
+        }
+
         if (result != content && !result.equals(content)) {
             modifiedValue = node.getSession().getValueFactory().createValue(result);
             if (logger.isDebugEnabled()) {

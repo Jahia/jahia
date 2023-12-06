@@ -75,6 +75,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.rules.BackgroundAction;
 import org.jahia.services.modulemanager.ModuleManager;
 import org.jahia.services.modulemanager.models.JahiaDepends;
+import org.jahia.services.observation.JahiaEventService;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
@@ -145,6 +146,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     private Set<String> knownFragmentHosts = Collections.emptySet();
     private ModuleManager moduleManager;
 
+    private JahiaEventService jahiaEventService;
+
     @Override
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
@@ -161,6 +164,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     public void setTemplatePackageDeployer(TemplatePackageDeployer deployer) {
         templatePackageDeployer = deployer;
         deployer.setService(this);
+    }
+
+    public void setJahiaEventService(JahiaEventService jahiaEventService) {
+        this.jahiaEventService = jahiaEventService;
     }
 
     public TemplatePackageDeployer getTemplatePackageDeployer() {
@@ -462,7 +469,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         if (pack.getSourcesFolder() != null) {
             setDependenciesInPom(pack.getSourcesFolder(), depends, shouldUsePropertiesInPom(pack));
         }
-        applicationEventPublisher.publishEvent(new ModuleDependenciesEvent(pack.getId(), this));
+        ModuleDependenciesEvent event = new ModuleDependenciesEvent(pack.getId(), this);
+        applicationEventPublisher.publishEvent(event);
+        jahiaEventService.publishEvent(event);
     }
 
     private boolean shouldUsePropertiesInPom(JahiaTemplatesPackage pack) {
@@ -483,7 +492,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      * @param aPackage the module that generated this event
      */
     public void fireTemplatePackageRedeployedEvent(JahiaTemplatesPackage aPackage) {
-        SpringContextSingleton.getInstance().publishEvent(new TemplatePackageRedeployedEvent(aPackage.getId()));
+        TemplatePackageRedeployedEvent event = new TemplatePackageRedeployedEvent(aPackage.getId());
+        SpringContextSingleton.getInstance().publishEvent(event);
+        jahiaEventService.publishEvent(event);
     }
 
     public void setSourcesFolderInPackage(JahiaTemplatesPackage pack, File sources) {

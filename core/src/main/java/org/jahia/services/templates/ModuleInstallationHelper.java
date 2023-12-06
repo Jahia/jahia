@@ -66,6 +66,7 @@ import javax.jcr.query.QueryManager;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -76,6 +77,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.importexport.ReferencesHelper;
+import org.jahia.services.observation.JahiaEventService;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.sites.SitesSettings;
 import org.slf4j.Logger;
@@ -97,6 +99,8 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
     private JahiaSitesService siteService;
 
     private TemplatePackageRegistry templatePackageRegistry;
+
+    private JahiaEventService jahiaEventService;
 
     private boolean addDependencyValue(JCRNodeWrapper originalNode, JCRNodeWrapper destinationNode, String propertyName)
             throws RepositoryException {
@@ -252,8 +256,10 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
 
         }
 
-        applicationEventPublisher.publishEvent(new JahiaTemplateManagerService.ModuleDeployedOnSiteEvent(sitePath,
-                ModuleInstallationHelper.class.getName()));
+        JahiaTemplateManagerService.ModuleDeployedOnSiteEvent event = new JahiaTemplateManagerService.ModuleDeployedOnSiteEvent(sitePath,
+                ModuleInstallationHelper.class.getName());
+        applicationEventPublisher.publishEvent(event);
+        jahiaEventService.publishEvent(event);
     }
 
     private void keepReference(JCRNodeWrapper destinationNode, Map<String, List<String>> references, Property property,
@@ -340,8 +346,12 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
         templatePackageRegistry = registry;
     }
 
+    public void setJahiaEventService(JahiaEventService jahiaEventService) {
+        this.jahiaEventService = jahiaEventService;
+    }
+
     public void synchro(JCRNodeWrapper source, JCRNodeWrapper destinationNode, JCRSessionWrapper session,
-            String moduleName, Map<String, List<String>> references, Boolean skipPages) throws RepositoryException {
+                        String moduleName, Map<String, List<String>> references, Boolean skipPages) throws RepositoryException {
         if (source.isNodeType("jnt:moduleVersion")) {
             session.getUuidMapping().put(source.getIdentifier(), destinationNode.getIdentifier());
             NodeIterator ni = source.getNodes();
@@ -578,8 +588,10 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
             }
         }
 
-        applicationEventPublisher.publishEvent(new JahiaTemplateManagerService.ModuleDeployedOnSiteEvent(sitePath,
-                ModuleInstallationHelper.class.getName()));
+        JahiaTemplateManagerService.ModuleDeployedOnSiteEvent event = new JahiaTemplateManagerService.ModuleDeployedOnSiteEvent(sitePath,
+                ModuleInstallationHelper.class.getName());
+        applicationEventPublisher.publishEvent(event);
+        jahiaEventService.publishEvent(event);
     }
 
     public void uninstallModulesFromAllSites(final String module, final JCRSessionWrapper session)
@@ -595,8 +607,10 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
                 if (uninstallModule(jahiaSite.getName(), session, jahiaSite, module)) {
                     return;
                 }
-                applicationEventPublisher.publishEvent(new JahiaTemplateManagerService.ModuleDeployedOnSiteEvent(
-                        jahiaSite.getName(), ModuleInstallationHelper.class.getName()));
+                JahiaTemplateManagerService.ModuleDeployedOnSiteEvent event = new JahiaTemplateManagerService.ModuleDeployedOnSiteEvent(
+                        jahiaSite.getName(), ModuleInstallationHelper.class.getName());
+                applicationEventPublisher.publishEvent(event);
+                jahiaEventService.publishEvent(event);
             }
         }
     }

@@ -177,6 +177,12 @@
 
         <dependency>
             <groupId>org.jahia.bundles</groupId>
+            <artifactId>org.jahia.bundles.ckeditor.config</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jahia.bundles</groupId>
             <artifactId>org.jahia.bundles.websocket</artifactId>
             <version>${project.version}</version>
         </dependency>

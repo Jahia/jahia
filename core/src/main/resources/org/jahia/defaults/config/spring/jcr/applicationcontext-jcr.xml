@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:util="http://www.springframework.org/schema/util"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
                         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
     <bean id="validatorFactoryBean" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
@@ -16,7 +16,8 @@
         <property name="hibernateSessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean id="nodeTypeRegistry" class="org.jahia.services.content.nodetypes.NodeTypeRegistry" factory-method="getInstance"/>
+    <bean id="nodeTypeRegistry" class="org.jahia.services.content.nodetypes.NodeTypeRegistry"
+          factory-method="getInstance"/>
 
     <bean id="AbstractJCRStoreProvider" class="org.jahia.services.content.JCRStoreProvider" abstract="true"
           init-method="start" destroy-method="stop">
@@ -27,7 +28,8 @@
         <property name="sessionFactory" ref="jcrSessionFactory"/>
     </bean>
 
-    <bean id="AbstractJCRStoreProviderPrototype" class="org.jahia.services.content.JCRStoreProvider" abstract="true" destroy-method="stop" scope="prototype">
+    <bean id="AbstractJCRStoreProviderPrototype" class="org.jahia.services.content.JCRStoreProvider" abstract="true"
+          destroy-method="stop" scope="prototype">
         <property name="userManagerService" ref="JahiaUserManagerService"/>
         <property name="groupManagerService" ref="JahiaGroupManagerService"/>
         <property name="sitesService" ref="JahiaSitesService"/>
@@ -41,7 +43,7 @@
         <property name="repository" ref="jackrabbit"/>
         <property name="mountPoint" value="/"/>
         <property name="webdavPath" value="/repository"/>
-        <property name="patcher" ref="patcher" />
+        <property name="patcher" ref="patcher"/>
         <!--
         <property name="rmibind" value="jackrabbit"/>
         -->
@@ -84,22 +86,23 @@
         <property name="availableDuringPublish" value="true"/>
     </bean>
 
-    <bean id="BaseRulesListener" class="org.jahia.services.content.rules.RulesListener" init-method="start" abstract="true">
+    <bean id="BaseRulesListener" class="org.jahia.services.content.rules.RulesListener" init-method="start"
+          abstract="true">
         <property name="globalObjects">
             <map>
                 <entry key="service"
-                    value-ref="org.jahia.services.content.rules.Service" />
+                       value-ref="org.jahia.services.content.rules.Service"/>
                 <entry key="imageService"
-                    value-ref="org.jahia.services.content.rules.ImageService" />
+                       value-ref="org.jahia.services.content.rules.ImageService"/>
                 <entry key="extractionService"
-                    value-ref="org.jahia.services.content.rules.ExtractionService" />
+                       value-ref="org.jahia.services.content.rules.ExtractionService"/>
                 <entry key="notificationService"
-                    value-ref="org.jahia.services.content.rules.RulesNotificationService" />
+                       value-ref="org.jahia.services.content.rules.RulesNotificationService"/>
                 <entry key="sitePubSubService"
-                    value-ref="sitePublisherSubscriber" />
+                       value-ref="sitePublisherSubscriber"/>
             </map>
         </property>
-        <property name="disabledRules" value="${jahia.rules.disabledConfig:}" />
+        <property name="disabledRules" value="${jahia.rules.disabledConfig:}"/>
     </bean>
 
     <bean id="JCRStoreService" class="org.jahia.services.content.JCRStoreService" parent="jahiaServiceTemplate"
@@ -130,7 +133,8 @@
                 <entry key="jnt:group" value="org.jahia.services.content.decorator.JCRGroupNode"/>
                 <entry key="jnt:component" value="org.jahia.services.content.decorator.JCRComponentNode"/>
                 <entry key="jnt:componentFolder" value="org.jahia.services.content.decorator.JCRComponentNode"/>
-                <entry key="jnt:passwordHistoryEntry" value="org.jahia.services.content.decorator.JCRPasswordHistoryEntryNode"/>
+                <entry key="jnt:passwordHistoryEntry"
+                       value="org.jahia.services.content.decorator.JCRPasswordHistoryEntryNode"/>
             </map>
         </property>
         <property name="noValidityCheckTypes">
@@ -210,7 +214,7 @@
                         </bean>
                         <bean class="org.jahia.services.render.filter.cache.RenderServiceTemplateCacheEventListener">
                         </bean>
-                        <ref bean="urlResolverListener" />
+                        <ref bean="urlResolverListener"/>
                         <bean class="org.jahia.services.history.NodeVersionHistoryListener">
                             <property name="schedulerService" ref="SchedulerService"/>
                         </bean>
@@ -228,7 +232,8 @@
                         <bean class="org.jahia.services.content.UnpublishOnLiveDeletionListener"/>
                         <bean class="org.jahia.services.content.DefaultValueListener"/>
                         <bean class="org.jahia.services.content.UGCListener">
-                            <property name="excludePropertiesFromUGCCheck" value="${jahia.ugc.excludePropertiesFromUGCCheck:j:published}"/>
+                            <property name="excludePropertiesFromUGCCheck"
+                                      value="${jahia.ugc.excludePropertiesFromUGCCheck:j:published}"/>
                         </bean>
                         <bean class="org.jahia.services.content.NodenameListener">
                             <property name="availableDuringPublish" value="true"/>
@@ -292,7 +297,7 @@
                             <property name="availableDuringPublish" value="true"/>
                         </bean>
                         <ref bean="org.jahia.services.templates.JCRModuleListener"/>
-                        <ref bean="urlResolverListener" />
+                        <ref bean="urlResolverListener"/>
                         <bean class="org.jahia.services.history.NodeVersionHistoryListener">
                             <property name="schedulerService" ref="SchedulerService"/>
                         </bean>
@@ -312,9 +317,10 @@
                 </bean>
                 <bean class="org.jahia.services.content.ChangedNodeInterceptor"/>
                 <bean class="org.jahia.services.content.interceptor.LastModifiedInterceptor"/>
-                <bean class="org.jahia.services.content.interceptor.HtmlFilteringInterceptor" parent="abstractRichTextPropertyInterceptor">
+                <bean class="org.jahia.services.content.interceptor.HtmlFilteringInterceptor"
+                      parent="abstractRichTextPropertyInterceptor">
                     <property name="considerSiteSettingsForFiltering" value="true"/>
-                    <!-- if removeContentBetweenTags is set to true also the content between the filtereed tags will be removed -->
+                    <!-- if removeContentBetweenTags is set to true also the content between the filtered tags will be removed -->
                     <property name="removeContentBetweenTags" value="false"/>
                 </bean>
                 <ref bean="urlInterceptor"/>
@@ -344,7 +350,8 @@
         <property name="urlInterceptor" ref="urlInterceptor"/>
     </bean>
 
-    <bean id="urlInterceptor" class="org.jahia.services.content.interceptor.URLInterceptor" parent="abstractRichTextPropertyInterceptor">
+    <bean id="urlInterceptor" class="org.jahia.services.content.interceptor.URLInterceptor"
+          parent="abstractRichTextPropertyInterceptor">
         <constructor-arg ref="org.jahia.services.render.filter.URLTraverser"/>
         <property name="urlReplacers">
             <list>
@@ -375,12 +382,14 @@
         </property>
     </bean>
 
-    <bean id="abstractRichTextPropertyInterceptor" class="org.jahia.services.content.interceptor.BaseInterceptor" abstract="true">
+    <bean id="abstractRichTextPropertyInterceptor" class="org.jahia.services.content.interceptor.BaseInterceptor"
+          abstract="true">
         <property name="requiredTypes" value="String"/>
         <property name="selectors" value="RichText"/>
     </bean>
 
-    <bean id="propertyInterceptorRegistrator" class="org.jahia.services.content.interceptor.PropertyInterceptorRegistrator" abstract="true">
+    <bean id="propertyInterceptorRegistrator"
+          class="org.jahia.services.content.interceptor.PropertyInterceptorRegistrator" abstract="true">
         <property name="jcrStoreService" ref="JCRStoreService"/>
     </bean>
 
@@ -397,14 +406,17 @@
           factory-method="getInstance" depends-on="loggingService">
         <property name="sessionFactory" ref="jcrSessionFactory"/>
         <property name="loggingService" ref="loggingService"/>
-        <property name="propertiesToSkipForReferences" value="${jahia.publicationStatus.propertiesToSkipForReferencesInternal:*,j:defaultCategory,j:sourceTemplate,j:tags,j:templateNode},${jahia.publicationStatus.propertiesToSkipForReferences:}"/>
-        <property name="referencedNodeTypesToSkip" value="${jahia.publicationStatus.referencedNodeTypesToSkipInternal:jnt:page,jmix:autoPublish},${jahia.publicationStatus.referencedNodeTypesToSkip:}"/>
+        <property name="propertiesToSkipForReferences"
+                  value="${jahia.publicationStatus.propertiesToSkipForReferencesInternal:*,j:defaultCategory,j:sourceTemplate,j:tags,j:templateNode},${jahia.publicationStatus.propertiesToSkipForReferences:}"/>
+        <property name="referencedNodeTypesToSkip"
+                  value="${jahia.publicationStatus.referencedNodeTypesToSkipInternal:jnt:page,jmix:autoPublish},${jahia.publicationStatus.referencedNodeTypesToSkip:}"/>
         <property name="versionedTypes" value="${jahia.publication.versionedTypes:}"/>
         <property name="excludedVersionedTypes" value="${jahia.publication.excludedVersionedTypes:}"/>
         <property name="batchSize" value="${jahia.publication.batchSize:100}"/>
     </bean>
 
-    <bean id="jackrabbit" class="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository" factory-method="getInstance"
+    <bean id="jackrabbit" class="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository"
+          factory-method="getInstance"
           init-method="start" destroy-method="stop" depends-on="JahiaTemplateManagerService,dataSource">
         <property name="configFile" value="WEB-INF/etc/repository/jackrabbit/repository.xml"/>
         <property name="servletContextAttributeName"
@@ -412,8 +424,10 @@
         <!-- the ID of the Spring bean with the definition of a background job for DataStore garbage collection -->
         <property name="dataStoreGarbageCollectorBeanId" value="DataStoreGarbageCollectorJob"/>
         <property name="settings" ref="settingsBean"/>
-        <property name="performMigrationToDataStoreIfNeeded" value="${jahia.jackrabbit.performMigrationToDataStoreIfNeeded:true}"/>
-        <property name="timeoutSwitchingToReadOnlyMode" value="${jahia.jackrabbit.cluster.timeoutSwitchingToReadOnly:60000}" />
+        <property name="performMigrationToDataStoreIfNeeded"
+                  value="${jahia.jackrabbit.performMigrationToDataStoreIfNeeded:true}"/>
+        <property name="timeoutSwitchingToReadOnlyMode"
+                  value="${jahia.jackrabbit.cluster.timeoutSwitchingToReadOnly:60000}"/>
     </bean>
 
     <bean id="rbInitializer"
@@ -480,13 +494,17 @@
           class="org.jahia.services.content.nodetypes.initializers.SortChoiceListInitializerImpl"/>
     <bean id="nodeReferenceRenderer"
           class="org.jahia.services.content.nodetypes.renderer.NodeReferenceChoiceListRenderer"/>
-    <bean id="componentTypesInitializer" class="org.jahia.services.content.nodetypes.initializers.ComponentTypesChoiceListInitializerImpl"/>
+    <bean id="componentTypesInitializer"
+          class="org.jahia.services.content.nodetypes.initializers.ComponentTypesChoiceListInitializerImpl"/>
     <bean id="channelInitializer" class="org.jahia.services.channels.ChannelChoiceListInitializer">
-        <property name="channelService" ref="ChannelService" />
+        <property name="channelService" ref="ChannelService"/>
     </bean>
-    <bean id="propertyValuesChoiceListInitializer" class="org.jahia.services.content.nodetypes.initializers.PropertyValuesChoiceListInitializer"/>
+    <bean id="propertyValuesChoiceListInitializer"
+          class="org.jahia.services.content.nodetypes.initializers.PropertyValuesChoiceListInitializer"/>
     <bean id="namespaceChoiceListInitializer"
           class="org.jahia.services.content.nodetypes.initializers.NamespaceChoiceListInitializer"/>
+    <bean id="siteLanguageInitializer"
+          class="org.jahia.services.content.nodetypes.initializers.SiteLanguagesChoiceListInitializerImpl"/>
     <bean id="choiceListInitializers"
           class="org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService"
           factory-method="getInstance">
@@ -515,6 +533,7 @@
                 <entry key="propertyValues" value-ref="propertyValuesChoiceListInitializer"/>
                 <entry key="namespace" value-ref="namespaceChoiceListInitializer"/>
                 <entry key="permissions" value-ref="permissionsInitializer"/>
+                <entry key="siteLanguage" value-ref="siteLanguageInitializer"/>
             </map>
         </property>
     </bean>
@@ -635,7 +654,8 @@
         </entry>
     </util:map>
 
-    <bean id="DocumentViewValidationHandler" class="org.jahia.services.importexport.validation.DocumentViewValidationHandler" scope="prototype">
+    <bean id="DocumentViewValidationHandler"
+          class="org.jahia.services.importexport.validation.DocumentViewValidationHandler" scope="prototype">
         <property name="validators">
             <list>
                 <bean class="org.jahia.services.importexport.validation.MissingModulesValidator">
@@ -649,38 +669,38 @@
                 <bean class="org.jahia.services.importexport.validation.ProviderAvailabilityValidator">
                     <property name="jcrSessionFactory" ref="jcrSessionFactory"/>
                 </bean>
-                <bean class="org.jahia.services.importexport.validation.ConstraintsValidator" />
-                <bean class="org.jahia.services.importexport.validation.UserValidator" >
+                <bean class="org.jahia.services.importexport.validation.ConstraintsValidator"/>
+                <bean class="org.jahia.services.importexport.validation.UserValidator">
                     <property name="userManagerService" ref="JahiaUserManagerService"/>
                 </bean>
             </list>
         </property>
     </bean>
 
-    <bean id="JCRStoreProviderChecker" class="org.jahia.services.content.JCRStoreProviderChecker" />
+    <bean id="JCRStoreProviderChecker" class="org.jahia.services.content.JCRStoreProviderChecker"/>
 
     <bean parent="jobSchedulingBean">
         <property name="jobDetail">
             <bean class="org.springframework.scheduling.quartz.JobDetailBean">
-                <property name="name" value="JCRStoreProviderCheckerJob" />
+                <property name="name" value="JCRStoreProviderCheckerJob"/>
                 <property name="jobClass"
-                          value="org.jahia.services.content.JCRStoreProviderCheckerJob" />
-                <property name="group" value="Maintenance" />
-                <property name="description" value="Check providers" />
+                          value="org.jahia.services.content.JCRStoreProviderCheckerJob"/>
+                <property name="group" value="Maintenance"/>
+                <property name="description" value="Check providers"/>
                 <property name="jobDataAsMap">
                     <map>
-                        <entry key="JCRStoreProviderChecker" value-ref="JCRStoreProviderChecker" />
+                        <entry key="JCRStoreProviderChecker" value-ref="JCRStoreProviderChecker"/>
                     </map>
                 </property>
             </bean>
         </property>
         <property name="trigger">
             <bean class="org.quartz.CronTrigger">
-                <property name="name" value="RemoteCheckerJobTrigger" />
+                <property name="name" value="RemoteCheckerJobTrigger"/>
                 <!-- execute every 10 seconds -->
-                <property name="cronExpression" value="0/10 * * * * ?" />
+                <property name="cronExpression" value="0/10 * * * * ?"/>
             </bean>
         </property>
-        <property name="ramJob" value="true" />
+        <property name="ramJob" value="true"/>
     </bean>
 </beans>

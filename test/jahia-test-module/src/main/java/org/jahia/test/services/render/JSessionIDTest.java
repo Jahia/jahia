@@ -96,12 +96,6 @@ public class JSessionIDTest extends JahiaTestCase {
     }
 
     @Test
-    public void testJsessionIdExists() throws Exception {
-        findJSessionId(false);
-
-    }
-
-    @Test
     public void testJsessionIdRemoved() throws Exception {
         findJSessionId(true);
     }

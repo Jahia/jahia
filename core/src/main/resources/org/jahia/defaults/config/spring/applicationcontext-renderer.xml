@@ -22,25 +22,17 @@
 
     <bean id="RenderService" class="org.jahia.services.render.RenderService" factory-method="getInstance">
         <property name="templateManagerService" ref="JahiaTemplateManagerService"/>
+        <property name="renderTimeMonitor" ref="RenderTimeMonitor"/>
         <property name="scriptResolvers">
             <list>
                 <ref bean="BundleScriptResolver"/>
             </list>
         </property>
-        <property name="nodeTypesWithTheme">
+        <property name="templateResolvers">
             <list>
-                <value>jnt:globalSettings</value>
-                <value>jnt:virtualsite</value>
-                <value>jnt:user</value>
-                <value>jmix:mountPointFactory</value>
+                <ref bean="jcrTemplateResolver"/>
             </list>
         </property>
-        <property name="cacheProvider" ref="ehCacheProvider"/>
-        <property name="channelService" ref="ChannelService"/>
-        <property name="renderTimeMonitor" ref="RenderTimeMonitor"/>
-        <property name="userManagerService" ref="JahiaUserManagerService"/>
-        <property name="settingsBean" ref="settingsBean"/>
-        <property name="templatesCacheLockTimeout" value="#{jahiaProperties['templatesCacheLockTimeout'] != null ? jahiaProperties['templatesCacheLockTimeout'] : (jahiaProperties['maxRequestRenderTime'] != null ? jahiaProperties['maxRequestRenderTime'] : '60000')}"/>
     </bean>
 
     <bean id="extensionObserverRegistry" class="org.jahia.osgi.ExtensionObserverRegistry" factory-method="getInstance"/>
@@ -68,6 +60,23 @@
         <property name="templateManagerService" ref="JahiaTemplateManagerService"/>
         <property name="bundleScriptFactory" ref="BundleJSR223ScriptFactory"/>
         <property name="extensionObserverRegistry" ref="extensionObserverRegistry"/>
+    </bean>
+
+    <bean id="jcrTemplateResolver" class="org.jahia.services.render.JCRTemplateResolver">
+        <property name="templateManagerService" ref="JahiaTemplateManagerService"/>
+        <property name="nodeTypesWithTheme">
+            <list>
+                <value>jnt:globalSettings</value>
+                <value>jnt:virtualsite</value>
+                <value>jnt:user</value>
+                <value>jmix:mountPointFactory</value>
+            </list>
+        </property>
+        <property name="cacheProvider" ref="ehCacheProvider"/>
+        <property name="channelService" ref="ChannelService"/>
+        <property name="userManagerService" ref="JahiaUserManagerService"/>
+        <property name="settingsBean" ref="settingsBean"/>
+        <property name="templatesCacheLockTimeout" value="#{jahiaProperties['templatesCacheLockTimeout'] != null ? jahiaProperties['templatesCacheLockTimeout'] : (jahiaProperties['maxRequestRenderTime'] != null ? jahiaProperties['maxRequestRenderTime'] : '60000')}"/>
     </bean>
 
     <bean id="templateModuleInterceptorFilter" class="org.jahia.services.render.filter.TemplateModuleInterceptorFilter">

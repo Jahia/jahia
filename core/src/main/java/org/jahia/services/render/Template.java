@@ -63,6 +63,7 @@ public class Template implements Serializable {
     public String node;
     public int priority;
     public String view;
+    private boolean external = false;
 
     /**
      * Initializes an instance of this class by deserializing the provided string.
@@ -209,6 +210,14 @@ public class Template implements Serializable {
      */
     void setNext(Template next) {
         this.next = next;
+    }
+
+    public boolean isExternal() {
+        return external;
+    }
+
+    public void setExternal(boolean external) {
+        this.external = external;
     }
 
     @Override

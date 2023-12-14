@@ -66,6 +66,11 @@ public class TemplateNodeFilter extends AbstractFilter {
                     throw new TemplateNotFoundException(resource.getTemplate());
                 }
                 renderContext.getRequest().setAttribute("templateSet", Boolean.TRUE);
+                if (template.isExternal()) {
+                    // External template handling, we delegate the render chain to this external system by skipping current filter
+                    return null;
+                }
+
                 if (logger.isDebugEnabled()) {
                     logger.debug("Template set to : " + template.serialize() + " for resource " + resource);
                 }

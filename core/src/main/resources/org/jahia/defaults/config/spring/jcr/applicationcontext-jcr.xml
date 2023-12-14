@@ -439,7 +439,9 @@
     <bean id="templatesInitializer"
           class="org.jahia.services.content.nodetypes.initializers.TemplatesChoiceListInitializerImpl"/>
     <bean id="templatesNodeInitializer"
-          class="org.jahia.services.content.nodetypes.initializers.TemplatesNodeChoiceListInitializer"/>
+          class="org.jahia.services.content.nodetypes.initializers.TemplatesNodeChoiceListInitializer">
+        <property name="jcrTemplateResolver" ref="jcrTemplateResolver" />
+    </bean>
     <bean id="renderModesInitializer"
           class="org.jahia.services.content.nodetypes.initializers.RenderModesChoiceListInitializer"/>
     <bean id="usersInitializer"

@@ -52,7 +52,7 @@ import org.jahia.services.content.decorator.JCRFileNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.render.RenderService;
+import org.jahia.services.render.JCRTemplateResolver;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 
@@ -80,6 +80,12 @@ import java.util.*;
  */
 public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(TemplatesNodeChoiceListInitializer.class);
+
+    private JCRTemplateResolver jcrTemplateResolver;
+
+    public void setJcrTemplateResolver(JCRTemplateResolver jcrTemplateResolver) {
+        this.jcrTemplateResolver = jcrTemplateResolver;
+    }
 
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param,
                                                      List<ChoiceListValue> values, Locale locale,
@@ -172,7 +178,7 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
     }
 
     private void addTemplates(List<ChoiceListValue> vs, String path, JCRSessionWrapper session, JCRNodeWrapper node, ExtendedNodeType nodetype, String templateType, String defaultTemplate, ExtendedPropertyDefinition propertyDefinition, Locale locale, Map<String, Object> context) throws RepositoryException {
-        List<JCRNodeWrapper> nodes = RenderService.getInstance().getTemplateNodes(null, path, "jnt:" + templateType, false, session);
+        List<JCRNodeWrapper> nodes = jcrTemplateResolver.getTemplateNodes(null, path, "jnt:" + templateType, false, session);
         for (JCRNodeWrapper templateNode : nodes) {
             boolean ok = true;
             if (templateNode.hasProperty("j:applyOn")) {

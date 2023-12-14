@@ -1190,7 +1190,7 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20070829-jahia1</version>
+            <version>20070829-jahia2</version>
         </dependency>
         
         <!-- Chemistry dependencies -->

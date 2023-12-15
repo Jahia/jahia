@@ -448,6 +448,13 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     String getUrl();
 
     /**
+     * Get the file content url with optional params
+     *
+     * @return the file content url
+     */
+    String getUrl(List<String> params);
+
+    /**
      * Get the absolute webdav url
      *
      * @return the absolute webdav url

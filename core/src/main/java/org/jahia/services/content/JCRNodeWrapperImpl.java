@@ -871,6 +871,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
     }
 
+    @Override
+    public String getUrl(List<String> params) {
+        return getUrl();
+    }
+
     /**
      * {@inheritDoc}
      */

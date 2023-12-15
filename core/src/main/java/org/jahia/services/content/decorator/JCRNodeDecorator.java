@@ -191,6 +191,11 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     }
 
     @Override
+    public String getUrl(List<String> params) {
+        return node.getUrl(params);
+    }
+
+    @Override
     public String getAbsoluteWebdavUrl(final HttpServletRequest request) {
         return node.getAbsoluteWebdavUrl(request);
     }

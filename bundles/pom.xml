@@ -71,7 +71,7 @@
         <module>security-filter</module>
         <module>provisioning</module>
         <module>websocket-bridge</module>
-        <module>ckeditor-config</module>
+        <module>richtext-config</module>
     </modules>
 
     <build>

@@ -42,8 +42,6 @@
  */
 package org.jahia.services.content.interceptor;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.jcr.RepositoryException;
@@ -55,7 +53,7 @@ import javax.jcr.version.VersionException;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.osgi.BundleUtils;
-import org.jahia.services.content.ckeditor.CKEditorConfigurationInterface;
+import org.jahia.services.content.richtext.RichTextConfigurationInterface;
 import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.PolicyFactory;
 import org.slf4j.Logger;
@@ -63,7 +61,6 @@ import org.slf4j.LoggerFactory;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.sites.SitesSettings;
 
 /**
  * Filters out unwanted HTML elements from the rich text property values before saving.
@@ -73,22 +70,6 @@ import org.jahia.services.sites.SitesSettings;
 public class HtmlFilteringInterceptor extends BaseInterceptor {
 
     private static Logger logger = LoggerFactory.getLogger(HtmlFilteringInterceptor.class);
-
-    private static Set<String> convertToTagSet(String tags) {
-        if (StringUtils.isEmpty(tags)) {
-            return null;
-        }
-
-        Set<String> tagSet = new HashSet<String>();
-        for (String tag : StringUtils.split(tags, ",")) {
-            String toBeFiltered = tag.trim().toLowerCase();
-            if (toBeFiltered.length() > 0) {
-                tagSet.add(toBeFiltered);
-            }
-        }
-
-        return tagSet;
-    }
 
     /**
      * Filters out configured "unwanted" HTML tags and returns the modified content. If no modifications needs to be done, returns the
@@ -105,32 +86,9 @@ public class HtmlFilteringInterceptor extends BaseInterceptor {
      */
     protected static String filterTags(String content, Set<String> filteredTags, boolean removeContentBetweenTags) {
 
-        long timer = System.currentTimeMillis();
-
-        HtmlPolicyBuilder builder = defaultPolicyBuilder();
-
-        if (!filteredTags.isEmpty()) {
-            builder.disallowElements(filteredTags.toArray(new String[0]));
-        }
-
-        if (!filteredTags.isEmpty() && removeContentBetweenTags) {
-            content = defaultPolicyBuilder().disallowTextIn(filteredTags.toArray(new String[0])).toFactory().sanitize(content);
-        }
-
-        PolicyFactory policy = builder.toFactory();
-        String result = policy.sanitize(content);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Filter HTML tags took " + (System.currentTimeMillis() - timer) + " ms");
-        }
-
-        return result;
+        // TODO remove and fix related tests see BACKLOG-22012
+        return content;
     }
-    private boolean considerSiteSettingsForFiltering;
-
-    private Set<String> filteredTags = Collections.emptySet();
-
-    private boolean removeContentBetweenTags;
 
     @Override
     public Value beforeSetValue(JCRNodeWrapper node, String name,
@@ -146,16 +104,20 @@ public class HtmlFilteringInterceptor extends BaseInterceptor {
             return originalValue;
         }
 
-        Set<String> tags;
         JCRSiteNode resolveSite = node.getResolveSite();
-        if (considerSiteSettingsForFiltering && node.getResolveSite().isHtmlMarkupFilteringEnabled()) {
-            tags = convertToTagSet(resolveSite.hasProperty(
-                    SitesSettings.HTML_MARKUP_FILTERING_TAGS) ? resolveSite
-                    .getProperty(SitesSettings.HTML_MARKUP_FILTERING_TAGS).getString() : null);
-            if (tags == null || tags.isEmpty()) {
-                tags = filteredTags;
-            }
-        } else {
+        if (!resolveSite.isHtmlMarkupFilteringEnabled()) {
+            return originalValue;
+        }
+
+        RichTextConfigurationInterface filteringConfig = BundleUtils.getOsgiService(RichTextConfigurationInterface.class, null);
+
+        if (filteringConfig == null) {
+            return originalValue;
+        }
+
+        PolicyFactory policyFactory = filteringConfig.getMergedOwaspPolicyFactory(RichTextConfigurationInterface.DEFAULT_POLICY_KEY, resolveSite.getSiteKey());
+
+        if (policyFactory == null) {
             return originalValue;
         }
 
@@ -168,14 +130,7 @@ public class HtmlFilteringInterceptor extends BaseInterceptor {
             }
         }
 
-        CKEditorConfigurationInterface filteringConfig = BundleUtils.getOsgiService(CKEditorConfigurationInterface.class, null);
-
-        String result = "";
-        if (filteringConfig != null && filteringConfig.configExists(resolveSite.getSiteKey())) {
-            result = filteringConfig.getOwaspPolicyFactory(resolveSite.getSiteKey()).sanitize(content);
-        } else {
-            result = filterTags(content, tags, removeContentBetweenTags);
-        }
+        String result = policyFactory.sanitize(content);
 
         if (result != content && !result.equals(content)) {
             modifiedValue = node.getSession().getValueFactory().createValue(result);
@@ -206,38 +161,5 @@ public class HtmlFilteringInterceptor extends BaseInterceptor {
             res[i] = beforeSetValue(node, name, definition, originalValue);
         }
         return res;
-    }
-
-    public void setConsiderSiteSettingsForFiltering(boolean considerSiteSettingsForFiltering) {
-        this.considerSiteSettingsForFiltering = considerSiteSettingsForFiltering;
-    }
-
-    public void setFilteredTags(String tagsToFilter) {
-        this.filteredTags = convertToTagSet(tagsToFilter);
-
-        if (this.filteredTags == null || this.filteredTags.isEmpty()) {
-            logger.info("No HTML tag filtering configured. Interceptor will be disabled.");
-        } else {
-            logger.info("HTML tag filtering configured fo tags: " + tagsToFilter);
-        }
-    }
-
-    /**
-     * if set to <code>true</code> the content between the start and end tag elements will be also removed from the output; otherwise only
-     * start and end tags themselves are removed.
-     *
-     * @param removeContentBetweenTags
-     *            do we remove the content between tag elements?
-     */
-    public void setRemoveContentBetweenTags(boolean removeContentBetweenTags) {
-        this.removeContentBetweenTags = removeContentBetweenTags;
-    }
-
-    private static HtmlPolicyBuilder defaultPolicyBuilder() {
-        return new HtmlPolicyBuilder()
-                .allowCommonBlockElements()
-                .allowCommonInlineFormattingElements()
-                .allowStyling()
-                .allowStandardUrlProtocols();
     }
 }

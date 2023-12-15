@@ -318,11 +318,7 @@
                 <bean class="org.jahia.services.content.ChangedNodeInterceptor"/>
                 <bean class="org.jahia.services.content.interceptor.LastModifiedInterceptor"/>
                 <bean class="org.jahia.services.content.interceptor.HtmlFilteringInterceptor"
-                      parent="abstractRichTextPropertyInterceptor">
-                    <property name="considerSiteSettingsForFiltering" value="true"/>
-                    <!-- if removeContentBetweenTags is set to true also the content between the filtered tags will be removed -->
-                    <property name="removeContentBetweenTags" value="false"/>
-                </bean>
+                      parent="abstractRichTextPropertyInterceptor"/>
                 <ref bean="urlInterceptor"/>
                 <bean class="org.jahia.services.content.interceptor.TagInterceptor">
                     <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>

@@ -402,7 +402,7 @@
 [jmix:htmlSettings]  mixin
  - j:wcagCompliance (boolean) = true indexed=no autocreated
  - j:doTagFiltering (boolean) = false indexed=no
- - j:filteredTags (string) indexed=no
+ - j:filteredTags (string) indexed=no hidden
 
 //---------------------------------------------------------
 // Rendering

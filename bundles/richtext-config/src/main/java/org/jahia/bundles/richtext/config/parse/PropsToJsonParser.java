@@ -1,4 +1,4 @@
-package org.jahia.bundles.ckeditor.config.parse;
+package org.jahia.bundles.richtext.config.parse;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -88,6 +88,9 @@ public class PropsToJsonParser {
 
         if (o == JSONObject.NULL) {
             o = new JSONObject();
+        }
+
+        if (!((JSONObject)o).has(segment)) {
             ((JSONObject)o).put(segment, arr);
         }
 
@@ -104,7 +107,7 @@ public class PropsToJsonParser {
 
     private void handleObjectInObject(JSONObject o, String segment, Object value, boolean endSegment) {
         if (endSegment) {
-            o.put(segment, value);
+            o.put(segment, handleEndSegment(segment, value));
         } else {
             JSONObject obj = o.has(segment) ? o.getJSONObject(segment) : new JSONObject();
             o.put(segment, obj);
@@ -120,7 +123,7 @@ public class PropsToJsonParser {
         }
 
         if (endSegment) {
-            ((JSONObject)o).put(segment, value);
+            ((JSONObject)o).put(segment, handleEndSegment(segment, value));
             current = o;
         } else {
             JSONObject n = new JSONObject();
@@ -129,5 +132,13 @@ public class PropsToJsonParser {
         }
 
         a.put(currentIndex, o);
+    }
+
+    private Object handleEndSegment(String segment, Object value) {
+        if (segment.equals("pattern") || !((String)value).contains(",")) {
+            return value;
+        }
+
+        return new JSONArray(((String)value).split("\\s*,\\s*"));
     }
 }

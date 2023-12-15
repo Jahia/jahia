@@ -177,7 +177,7 @@
 
         <dependency>
             <groupId>org.jahia.bundles</groupId>
-            <artifactId>org.jahia.bundles.ckeditor.config</artifactId>
+            <artifactId>org.jahia.bundles.richtext.config</artifactId>
             <version>${project.version}</version>
         </dependency>
 

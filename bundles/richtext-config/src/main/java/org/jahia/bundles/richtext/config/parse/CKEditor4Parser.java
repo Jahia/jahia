@@ -1,8 +1,8 @@
-package org.jahia.bundles.ckeditor.config.parse;
+package org.jahia.bundles.richtext.config.parse;
 
 import org.json.JSONObject;
 
-public class CKEditor5Parser extends Parser {
+public class CKEditor4Parser extends Parser {
     @Override
     public String parseToJsonString(JSONObject json) {
         return null;

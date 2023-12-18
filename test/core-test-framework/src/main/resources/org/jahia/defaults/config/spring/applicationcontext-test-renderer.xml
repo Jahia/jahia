@@ -2,15 +2,14 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:util="http://www.springframework.org/schema/util"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
-                        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
 
     <bean id="RenderService" class="org.mockito.Mockito" factory-method="mock">
-        <constructor-arg value="org.jahia.services.render.RenderService" />
+        <constructor-arg value="org.jahia.services.render.RenderService"/>
     </bean>
 
-    <bean id="org.jahia.services.render.filter.URLTraverser" class="org.jahia.services.render.filter.HtmlTagAttributeTraverser">
+    <bean id="org.jahia.services.render.filter.URLTraverser"
+          class="org.jahia.services.render.filter.HtmlTagAttributeTraverser">
         <constructor-arg>
             <map>
                 <entry key="a">
@@ -45,5 +44,9 @@
                 </entry>
             </map>
         </constructor-arg>
+    </bean>
+
+    <bean id="jcrTemplateResolver" class="org.mockito.Mockito" factory-method="mock">
+        <constructor-arg value="org.jahia.services.render.JCRTemplateResolver"/>
     </bean>
 </beans>

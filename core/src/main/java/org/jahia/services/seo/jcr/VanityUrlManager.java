@@ -55,6 +55,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.validation.ConstraintViolationException;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static org.jahia.api.Constants.JCR_LANGUAGE;
 
@@ -97,6 +98,8 @@ public class VanityUrlManager {
      * Property name specifying if it's vanity URL for a file
      */
     public static final String PROPERTY_FILE = "j:file";
+
+    public static final Pattern INVALID_CHARS = Pattern.compile("[:*?\"<>|%+]");
 
     /**
      * Property that contains a list of reserved URLs that cannot be used as vanity
@@ -631,6 +634,14 @@ public class VanityUrlManager {
         final Optional<String> anyReservedUrl = getReservedJahiaUrls().stream().filter(StringUtils.lowerCase(vanityUrl.getUrl())::matches).findAny();
         if (anyReservedUrl.isPresent()) {
             throw new ReservedUrlMappingException(String.format("%s cannot be use as a vanity as matching the reserved url %s", vanityUrl.getUrl(), anyReservedUrl.get()), anyReservedUrl.get());
+        }
+
+        if (INVALID_CHARS.matcher(vanityUrl.getUrl()).find()) {
+            throw new ConstraintViolationException("Invalid url, characters :*?\"<>|%+ are not allowed", null);
+        }
+
+        if (vanityUrl.getUrl().endsWith(".do")) {
+            throw new ConstraintViolationException("Invalid url, cannot end with .do", null);
         }
 
         NonUniqueUrlMappingException ex = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null,

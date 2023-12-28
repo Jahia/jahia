@@ -262,3 +262,12 @@
   + sameName (test:sameNameChildAndPropertyChild) = test:sameNameChildAndPropertyChild autocreated
 
  [test:sameNameChildAndPropertyChild] > jnt:content, jmix:droppableContent
+
+ [test:childContent] > jnt:content
+
+ [test:rootWithReference] > jnt:content, jmix:droppableContent
+ - childReference (weakreference) < test:childContent
+ + * (test:childContent) = test:childContent
+ + * (jnt:contentList) = jnt:contentList
+
+

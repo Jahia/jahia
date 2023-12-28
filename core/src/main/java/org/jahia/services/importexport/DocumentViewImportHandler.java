@@ -294,7 +294,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             if ("jnt:member".equals(pt) && nodes.peek().isNodeType("jnt:members") && "j:members".equals(nodes.peek().getName())) {
                 String memberRef = atts.getValue("j:member");
                 if (memberRef != null) {
-                    String referenceValue = getReferenceValue(memberRef);
+                    String referenceValue = getReferenceValue(memberRef, path);
                     JCRNodeWrapper principal;
                     if (referenceValue.startsWith("/")) {
                         for (String key : pathMapping.keySet()) {
@@ -710,7 +710,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                         for (String value : values) {
                             value = JCRMultipleValueUtils.decode(value);
                             if (!StringUtils.isEmpty(value)) {
-                                value = getReferenceValue(value);
+                                value = getReferenceValue(value, child.getPath());
                                 if (attrName.equals("j:defaultCategory") && value.startsWith("/root")) {
                                     // Map categories from legacy imports
                                     value = JCRContentUtils.getSystemSitePath() + "/categories" + StringUtils.substringAfter(value, "/root");
@@ -772,14 +772,14 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
         }
     }
 
-    private String getReferenceValue(String value) throws RepositoryException {
+    private String getReferenceValue(String value, String basePath) throws RepositoryException {
         if (value.startsWith("$currentSite")) {
             value = nodes.peek().getResolveSite().getPath() + value.substring(12);
         } else if (value.startsWith("#")) {
             value = value.substring(1);
             String rootPath = nodes.firstElement().getPath();
             if (!rootPath.equals("/")) {
-                value = nodes.get(1).getPath() + value;
+                value = (nodes.size() > 1 ? nodes.get(1).getPath() : basePath) + value;
             }
         }
         return value;

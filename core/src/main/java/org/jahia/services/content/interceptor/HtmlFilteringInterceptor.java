@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/Apache2 OR 2/JSEL
@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -42,6 +42,8 @@
  */
 package org.jahia.services.content.interceptor;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.jcr.RepositoryException;
@@ -51,16 +53,20 @@ import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
 
+import net.htmlparser.jericho.Element;
+import net.htmlparser.jericho.EndTag;
+import net.htmlparser.jericho.OutputDocument;
+import net.htmlparser.jericho.Source;
+import net.htmlparser.jericho.StartTag;
+import net.htmlparser.jericho.StartTagType;
+
 import org.apache.commons.lang.StringUtils;
-import org.jahia.osgi.BundleUtils;
-import org.jahia.services.content.richtext.RichTextConfigurationInterface;
-import org.owasp.html.HtmlPolicyBuilder;
-import org.owasp.html.PolicyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.sites.SitesSettings;
 
 /**
  * Filters out unwanted HTML elements from the rich text property values before saving.
@@ -70,6 +76,22 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 public class HtmlFilteringInterceptor extends BaseInterceptor {
 
     private static Logger logger = LoggerFactory.getLogger(HtmlFilteringInterceptor.class);
+
+    private static Set<String> convertToTagSet(String tags) {
+        if (StringUtils.isEmpty(tags)) {
+            return null;
+        }
+
+        Set<String> tagSet = new HashSet<String>();
+        for (String tag : StringUtils.split(tags, " ,")) {
+            String toBeFiltered = tag.trim().toLowerCase();
+            if (toBeFiltered.length() > 0) {
+                tagSet.add(toBeFiltered);
+            }
+        }
+
+        return tagSet;
+    }
 
     /**
      * Filters out configured "unwanted" HTML tags and returns the modified content. If no modifications needs to be done, returns the
@@ -85,14 +107,49 @@ public class HtmlFilteringInterceptor extends BaseInterceptor {
      * @return filtered out content or the original one if no modifications needs to be done
      */
     protected static String filterTags(String content, Set<String> filteredTags, boolean removeContentBetweenTags) {
+        if (filteredTags.isEmpty()) {
+            return content;
+        }
 
-        // TODO remove and fix related tests see BACKLOG-22012
-        return content;
+        long timer = System.currentTimeMillis();
+        boolean modified = false;
+
+        Source src = new Source(content);
+        OutputDocument out = new OutputDocument(src);
+        for (String filteredTagName : filteredTags) {
+            for (StartTag startTag : src.getAllStartTags(filteredTagName)) {
+                if (startTag.getTagType() == StartTagType.NORMAL) {
+                    Element element = startTag.getElement();
+                    EndTag endTag = element.getEndTag();
+                    if (removeContentBetweenTags && endTag != null) {
+                        out.remove(element);
+                    } else {
+                        out.remove(startTag);
+                        if (endTag != null) {
+                            out.remove(endTag);
+                        }
+                    }
+                    modified = true;
+                }
+            }
+        }
+        String result = modified ? out.toString() : content;
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Filter HTML tags took " + (System.currentTimeMillis() - timer) + " ms");
+        }
+
+        return result;
     }
+    private boolean considerSiteSettingsForFiltering;
+
+    private Set<String> filteredTags = Collections.emptySet();
+
+    private boolean removeContentBetweenTags;
 
     @Override
     public Value beforeSetValue(JCRNodeWrapper node, String name,
-            ExtendedPropertyDefinition definition, Value originalValue)
+                                ExtendedPropertyDefinition definition, Value originalValue)
             throws ValueFormatException, VersionException, LockException,
             ConstraintViolationException, RepositoryException {
 
@@ -104,20 +161,23 @@ public class HtmlFilteringInterceptor extends BaseInterceptor {
             return originalValue;
         }
 
-        JCRSiteNode resolveSite = node.getResolveSite();
-        if (!resolveSite.isHtmlMarkupFilteringEnabled()) {
-            return originalValue;
+        Set<String> tags = filteredTags;
+        boolean doFiltering = false;
+        if (considerSiteSettingsForFiltering && node.getResolveSite().isHtmlMarkupFilteringEnabled()) {
+            JCRSiteNode resolveSite = node.getResolveSite();
+            if (resolveSite != null && resolveSite.hasProperty(SitesSettings.HTML_MARKUP_FILTERING_ENABLED)) {
+                tags = convertToTagSet(resolveSite.hasProperty(
+                        SitesSettings.HTML_MARKUP_FILTERING_TAGS) ? resolveSite
+                        .getProperty(SitesSettings.HTML_MARKUP_FILTERING_TAGS).getString() : null);
+                if (tags != null && !tags.isEmpty()) {
+                    doFiltering = true;
+                }
+            }
+        } else if (filteredTags != null && !filteredTags.isEmpty()) {
+            doFiltering = true;
         }
 
-        RichTextConfigurationInterface filteringConfig = BundleUtils.getOsgiService(RichTextConfigurationInterface.class, null);
-
-        if (filteringConfig == null) {
-            return originalValue;
-        }
-
-        PolicyFactory policyFactory = filteringConfig.getMergedOwaspPolicyFactory(RichTextConfigurationInterface.DEFAULT_POLICY_KEY, resolveSite.getSiteKey());
-
-        if (policyFactory == null) {
+        if (!doFiltering) {
             return originalValue;
         }
 
@@ -130,8 +190,7 @@ public class HtmlFilteringInterceptor extends BaseInterceptor {
             }
         }
 
-        String result = policyFactory.sanitize(content);
-
+        String result = filterTags(content, tags, removeContentBetweenTags);
         if (result != content && !result.equals(content)) {
             modifiedValue = node.getSession().getValueFactory().createValue(result);
             if (logger.isDebugEnabled()) {
@@ -151,7 +210,7 @@ public class HtmlFilteringInterceptor extends BaseInterceptor {
 
     @Override
     public Value[] beforeSetValues(JCRNodeWrapper node, String name,
-            ExtendedPropertyDefinition definition, Value[] originalValues)
+                                   ExtendedPropertyDefinition definition, Value[] originalValues)
             throws ValueFormatException, VersionException, LockException,
             ConstraintViolationException, RepositoryException {
         Value[] res = new Value[originalValues.length];
@@ -162,4 +221,30 @@ public class HtmlFilteringInterceptor extends BaseInterceptor {
         }
         return res;
     }
+
+    public void setConsiderSiteSettingsForFiltering(boolean considerSiteSettingsForFiltering) {
+        this.considerSiteSettingsForFiltering = considerSiteSettingsForFiltering;
+    }
+
+    public void setFilteredTags(String tagsToFilter) {
+        this.filteredTags = convertToTagSet(tagsToFilter);
+
+        if (this.filteredTags == null || this.filteredTags.isEmpty()) {
+            logger.info("No HTML tag filtering configured. Interceptor will be disabled.");
+        } else {
+            logger.info("HTML tag filtering configured fo tags: " + tagsToFilter);
+        }
+    }
+
+    /**
+     * if set to <code>true</code> the content between the start and end tag elements will be also removed from the output; otherwise only
+     * start and end tags themselves are removed.
+     *
+     * @param removeContentBetweenTags
+     *            do we remove the content between tag elements?
+     */
+    public void setRemoveContentBetweenTags(boolean removeContentBetweenTags) {
+        this.removeContentBetweenTags = removeContentBetweenTags;
+    }
+
 }

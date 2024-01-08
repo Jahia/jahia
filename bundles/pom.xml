@@ -71,7 +71,6 @@
         <module>security-filter</module>
         <module>provisioning</module>
         <module>websocket-bridge</module>
-        <module>richtext-config</module>
     </modules>
 
     <build>

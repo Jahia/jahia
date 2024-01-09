@@ -74,9 +74,7 @@ public class TreeGridCellRenderer<M extends ModelData> implements GridCellRender
         AbstractImagePrototype icon = calculateIconStyle(tree, model, property, rowIndex, colIndex);
         Joint j = calcualteJoint(tree, model, property, rowIndex, colIndex);
 
-        String result = tree.getTreeView().getTemplate(model, id, text, icon, false, j, level - 1);
-        result = result.replace("class=\"x-tree3-node\"", "class=\"x-tree3-node\" title=\"" + text + "\"");
-        return result;
+        return tree.getTreeView().getTemplate(model, id, text, icon, false, j, level - 1);
     }
 
     protected Joint calcualteJoint(TreeGrid<M> grid, M model, String property, int rowIndex, int colIndex) {

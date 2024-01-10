@@ -24,7 +24,7 @@
          */
         constants: {
             SIDE_PANEL_WIDTH: 245,
-            SIDE_PANEL_WIDTH_MAX: 500
+            SIDE_PANEL_WIDTH_MAX: 900
         },
         /**
          * Used to add modules to the Anthracite Object Literal App

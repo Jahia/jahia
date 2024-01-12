@@ -160,6 +160,7 @@ jobs:
           tests_path: ${{ env.TESTS_PATH }}
           jahia_image: jahia/jahia-core-dev:${{ needs.build.outputs.image_tag }}
           should_use_build_artifacts: false
+          should_skip_notifications: false
           should_skip_testrail: false
           should_skip_zencrepes: true
           github_artifact_name: jahia-integ-tests-${{ github.run_number }}
@@ -171,6 +172,7 @@ jobs:
           tests_report_name: Test report (Standalone)
           testrail_username: ${{ secrets.TESTRAIL_USERNAME }}
           testrail_password: ${{ secrets.TESTRAIL_PASSWORD }}
+          incident_service: jahia-private
           incident_pagerduty_api_key: ${{ secrets.INCIDENT_PAGERDUTY_API_KEY }}
           incident_pagerduty_reporter_email: ${{ secrets.INCIDENT_PAGERDUTY_REPORTER_EMAIL }}
           incident_pagerduty_reporter_id: ${{ secrets.INCIDENT_PAGERDUTY_REPORTER_ID }}

@@ -195,7 +195,7 @@ if [ "$YOURKIT_ACTIVATED" == "true" ]; then
       export CATALINA_OPTS="${CATALINA_OPTS} -agentpath:/home/tomcat/yourkit/bin/linux-x86-64/libyjpagent.so=port=10001,disableall,listen=all"
       ;;
 
-    arm64)
+    aarch64)
       export CATALINA_OPTS="${CATALINA_OPTS} -agentpath:/home/tomcat/yourkit/bin/linux-arm-64/libyjpagent.so=port=10001,disableall,listen=all"
       ;;
     esac

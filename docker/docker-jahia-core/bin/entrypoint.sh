@@ -183,7 +183,7 @@ fi
 if [ "$YOURKIT_ACTIVATED" == "true" ]; then
     if [ ! -d "/home/tomcat/yourkit" ]; then
         echo "Retrieve latest Yourkit agent binaries..."
-        wget -nv -O yourkit.zip https://www.yourkit.com/download/docker/YourKit-JavaProfiler-2022.9-docker.zip -P /tmp/
+        wget -nv -O yourkit.zip https://www.yourkit.com/download/docker/YourKit-JavaProfiler-2023.9-docker.zip -P /tmp/
         unzip /tmp/yourkit.zip -d /home/tomcat
         mv /home/tomcat/YourKit-JavaProfiler* /home/tomcat/yourkit
         rm /tmp/yourkit.zip

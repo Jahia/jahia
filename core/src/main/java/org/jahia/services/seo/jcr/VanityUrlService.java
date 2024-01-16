@@ -129,11 +129,12 @@ public class VanityUrlService {
             return null;
         }
         return JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, locale,
-                new JCRCallback<VanityUrl>() {
-
-                    @Override
-                    public VanityUrl doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                session -> {
+                    if (session.nodeExists(contentNodePath)){
                         return vanityUrlManager.getVanityUrlForCurrentLocale(session.getNode(contentNodePath), siteKey, session);
+                    } else {
+                        logger.debug("Node {} does not exist in workspace {} for locale {}", contentNodePath, session.getWorkspace().getName(), locale != null ? locale.toString(): "null");
+                        return null;
                     }
                 });
     }

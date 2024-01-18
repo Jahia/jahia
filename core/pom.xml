@@ -43,7 +43,8 @@
         please contact the sales department at sales@jahia.com.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
@@ -128,7 +129,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.23.0</version>
+            <version>1.25.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -1895,7 +1896,8 @@
                         </goals>
                         <configuration>
                             <target>
-                                <echo message="${git.commit.id.abbrev}" file="${project.build.directory}/classes/META-INF/jahia-impl-marker.txt"/>
+                                <echo message="${git.commit.id.abbrev}"
+                                      file="${project.build.directory}/classes/META-INF/jahia-impl-marker.txt"/>
                             </target>
                         </configuration>
                     </execution>

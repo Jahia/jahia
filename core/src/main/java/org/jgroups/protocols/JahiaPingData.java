@@ -72,7 +72,7 @@ public class JahiaPingData extends PingData {
      * @param hazelcastPort the port number for Hazelcast communication
      */
     JahiaPingData(PingData data, String hazelcastPort) {
-        super(data.sender, null, data.is_server, data.logical_name, data.physical_addrs);
+        super(data.sender, data.isServer(), data.logical_name, data.physical_addr);
         this.hazelcastPort = hazelcastPort;
     }
 
@@ -82,8 +82,8 @@ public class JahiaPingData extends PingData {
      * @return the host address (in form of <code>&lt;address&gt;:&lt;port&gt;</code>) which is used for Hazelcast communication
      */
     public String getHazelcastAddress() {
-        if (physical_addrs != null && !physical_addrs.isEmpty()) {
-            String jGroupsAddr = physical_addrs.iterator().next().toString();
+        if (physical_addr != null) {
+            String jGroupsAddr = physical_addr.toString();
             return StringUtils.substringBeforeLast(jGroupsAddr, ":") + ":" + hazelcastPort;
         }
         return null;
@@ -92,18 +92,20 @@ public class JahiaPingData extends PingData {
     @Override
     public void readFrom(DataInput instream) throws Exception {
         super.readFrom(instream);
-        hazelcastPort = Util.readString(instream);
+        hazelcastPort = Util.readObject(instream).toString();
     }
 
     @Override
     public void writeTo(DataOutput outstream) throws Exception {
         super.writeTo(outstream);
-        Util.writeString(hazelcastPort, outstream);
+        Util.writeObject(hazelcastPort, outstream);
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {return true;}
+        if (this == o) {
+            return true;
+        }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }

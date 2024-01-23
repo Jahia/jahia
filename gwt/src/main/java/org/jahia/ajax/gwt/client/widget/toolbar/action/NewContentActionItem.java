@@ -147,6 +147,8 @@ public class NewContentActionItem extends BaseActionItem  {
                     && (!lh.isLocked() || n.isLockAllowsAdd())
                     && hasPermission(JahiaGWTParameters.getSiteNode())
                     && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions()));
+            // Checks if there is a required module for the action
+            super.handleNewLinkerSelection();
         } else {
             setEnabled(false);
         }

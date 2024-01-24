@@ -72,7 +72,8 @@ public class JahiaPingData extends PingData {
      * @param hazelcastPort the port number for Hazelcast communication
      */
     JahiaPingData(PingData data, String hazelcastPort) {
-        super(data.sender, data.isServer(), data.logical_name, data.physical_addr);
+        super(data.getAddress(), data.isServer(), data.getLogicalName(), data.getPhysicalAddr());
+        this.coord(data.isCoord());
         this.hazelcastPort = hazelcastPort;
     }
 

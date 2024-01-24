@@ -48,7 +48,7 @@
     <parent>
         <groupId>org.jahia.bundles</groupId>
         <artifactId>jahia-bundles</artifactId>
-        <version>8.1.7.1</version>
+        <version>8.1.7.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>org.jahia.bundles.blueprint.extender.config</artifactId>
@@ -81,7 +81,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>8.1.7.1</version>
+            <version>8.1.7.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 

@@ -536,7 +536,7 @@ public class TemplatePackageRegistry {
 
 
     public JahiaTemplatesPackage getPackageForResourceBundle(String resourceBundle) {
-        return packagesForResourceBundles.get(resourceBundle);
+        return (resourceBundle != null) ? packagesForResourceBundles.get(resourceBundle): null;
     }
 
     public void addPackageForResourceBundle(String bundle, JahiaTemplatesPackage module) {

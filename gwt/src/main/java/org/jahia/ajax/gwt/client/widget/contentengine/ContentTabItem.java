@@ -79,7 +79,7 @@ import java.util.*;
  * Time: 8:10:21 PM
  */
 public class ContentTabItem extends PropertiesTabItem {
-    protected int maxNameSize = 32;
+    protected int maxNameSize = 128;
 
     private transient boolean isNodeNameFieldDisplayed = false;
     protected transient Field<?> name;

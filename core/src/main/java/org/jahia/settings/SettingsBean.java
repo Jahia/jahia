@@ -430,7 +430,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             importMaxBatch = getInt("importMaxBatch", 500);
 
-            maxNameSize = getInt("jahia.jcr.maxNameSize", 32);
+            maxNameSize = getInt("jahia.jcr.maxNameSize", 128);
 
             expandImportedFilesOnDisk = getBoolean("expandImportedFilesOnDisk", false);
             expandImportedFilesOnDiskPath = getString("expandImportedFilesOnDiskPath", "/tmp");

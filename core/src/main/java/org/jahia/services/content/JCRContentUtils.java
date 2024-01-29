@@ -439,7 +439,7 @@ public final class JCRContentUtils implements ServletContextAware {
             try {
                 String newSuffix = hasExtension ? ("-" + (i++) + ext) : ("-" + (i++));
                 name = basename + newSuffix;
-                //name has a sizelimit of 32 chars
+                //name has a size limit of 128 chars
                 int maxNameSize = SettingsBean.getInstance().getMaxNameSize();
                 if (name.length() > maxNameSize) {
                     name = basename.substring(0, (basename.length() <= maxNameSize ? basename.length() : maxNameSize) - newSuffix.length()) + newSuffix;

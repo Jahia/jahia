@@ -332,10 +332,27 @@ public class WelcomeServlet extends HttpServlet {
                     return curLocale.toString();
                 }
                 if (!StringUtils.isEmpty(curLocale.getCountry())) {
-                    // check the same but for language only
+                    // check if site have one locale (language) matching only language part of browser locale
+                    // example:
+                    // - browser language: 'en_KY'
+                    // - site languages: 'fr', 'fr_FR', 'en'
+                    // return: 'en'
                     final Locale langOnlyLocale = LanguageCodeConverters.languageCodeToLocale(curLocale.getLanguage());
                     if (isLocaleSupported(site, siteLanguages, langOnlyLocale)) {
                         return langOnlyLocale.toString();
+                    }
+                } else {
+                    // check if site have one locale (language+country) matching the browser locale (that doesn't have country)
+                    // example:
+                    // - browser language: 'en'
+                    // - site languages: 'fr', 'fr_FR', 'en_KY'
+                    // return: 'en_KY'
+                    if (siteLanguages != null && !siteLanguages.isEmpty()) {
+                        for (Locale siteLanguage : siteLanguages) {
+                            if (siteLanguage.getLanguage().equals(curLocale.getLanguage()) && ensureHomePageExists(site, siteLanguage)) {
+                                return siteLanguage.toString();
+                            }
+                        }
                     }
                 }
             }

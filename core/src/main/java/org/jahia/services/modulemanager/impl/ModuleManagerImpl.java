@@ -775,15 +775,17 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
         for (Bundle b : templateManagerService.getInstalledBundles()) {
             if (b.getSymbolicName().equals(info.getSymbolicName())) {
                 String jahiaDepends = b.getHeaders().get("Jahia-Depends");
-                String[] dependencies = ModuleUtils.toDependsArray(jahiaDepends);
-                List<String> missing = Arrays.stream(dependencies)
-                        .filter(dep -> templateManagerService.getAnyDeployedTemplatePackage(dep) == null)
-                        .collect(Collectors.toList());
-                if (!missing.isEmpty()) {
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("bundle", b);
-                    map.put("dependency", missing.get(0));
-                    return map;
+                if (StringUtils.isNotBlank(jahiaDepends)) {
+                    String[] dependencies = ModuleUtils.toDependsArray(jahiaDepends);
+                    List<String> missing = Arrays.stream(dependencies)
+                            .filter(dep -> templateManagerService.getAnyDeployedTemplatePackage(dep) == null)
+                            .collect(Collectors.toList());
+                    if (!missing.isEmpty()) {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("bundle", b);
+                        map.put("dependency", missing.get(0));
+                        return map;
+                    }
                 }
             }
         }

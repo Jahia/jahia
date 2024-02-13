@@ -14,7 +14,6 @@
         <image.repo.classifier>-dev</image.repo.classifier>
         <image.tag>${project.version}</image.tag>
         <image.alias />
-        <image.graalvm>false</image.graalvm>
     </properties>
 
     <repositories>
@@ -124,7 +123,6 @@
                                         <tags>${image.alias}</tags>
                                         <args>
                                             <JAHIA_PLUGIN>org.jahia.server:jahia-maven-plugin:${jahia.plugin.version}</JAHIA_PLUGIN>
-                                            <INSTALL_GRAALVM>${image.graalvm}</INSTALL_GRAALVM>
                                         </args>
                                         <env>
                                             <JAVA_HOME>/opt/java/openjdk</JAVA_HOME>
@@ -163,7 +161,6 @@
                                         <tags>${image.alias}</tags>
                                         <args>
                                             <JAHIA_PLUGIN>org.jahia.server:jahia-maven-plugin:${jahia.plugin.version}</JAHIA_PLUGIN>
-                                            <INSTALL_GRAALVM>${image.graalvm}</INSTALL_GRAALVM>
                                         </args>
                                         <env>
                                             <JAVA_HOME>/opt/java/openjdk</JAVA_HOME>

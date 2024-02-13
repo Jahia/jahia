@@ -22,8 +22,6 @@ ARG TARGETVARIANT
 ARG C_USER="tomcat"
 ARG C_GROUP="tomcat"
 
-ARG INSTALL_GRAALVM=""
-
 ENV RESTORE_MODULE_STATES="false"
 ENV RESTORE_PERSISTED_CONFIGURATION="false"
 ENV DATA_FOLDER=${DATA_FOLDER} LOGS_FOLDER=${LOGS_FOLDER}
@@ -74,17 +72,6 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         ${packages} \
     && rm -rf /var/lib/apt/lists/*
-
-RUN /bin/bash -c 'if ${INSTALL_GRAALVM:-false}; then \
-        echo "Get Graalvm..." \
-        && cd /usr/local \
-        && wget -nv https://get.graalvm.org/jdk \
-        && /bin/bash jdk --no-progress --components nodejs graalvm-ce-java11-22.3.1 \
-        && mv graalvm* graalvm \
-        && rm jdk; \
-    fi'
-
-ENV PATH="/usr/local/graalvm/bin:${PATH}"
 
 RUN echo "Retrieve latest Yourkit agent binaries..." \
     && wget -nv -O yourkit.zip https://www.yourkit.com/download/docker/YourKit-JavaProfiler-2022.9-docker.zip -P /tmp/ \

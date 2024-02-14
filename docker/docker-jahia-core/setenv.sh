@@ -18,5 +18,8 @@ export CATALINA_OPTS="${CATALINA_OPTS} -XX:+UseContainerSupport -XX:MaxRAMPercen
 # CVE-2021-44228
 export CATALINA_OPTS="${CATALINA_OPTS} -Dlog4j2.formatMsgNoLookups=true"
 
+#XML External Entity (XXE) Processing
+export CATALINA_OPTS="${CATALINA_OPTS} -Djavax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema=com.sun.org.apache.xerces.internal.jaxp.validation.XMLSchemaFactory -Djavax.xml.transform.TransformerFactory=com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl"
+
 # Prevent Karaf from intercepting sigterm
 export CATALINA_OPTS="${CATALINA_OPTS} -Dkaraf.handle.sigterm=false"

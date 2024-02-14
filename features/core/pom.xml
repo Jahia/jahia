@@ -171,6 +171,12 @@
 
         <dependency>
             <groupId>org.jahia.bundles</groupId>
+            <artifactId>org.jahia.bundles.maintenancefilter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jahia.bundles</groupId>
             <artifactId>org.jahia.bundles.provisioning</artifactId>
             <version>${project.version}</version>
         </dependency>

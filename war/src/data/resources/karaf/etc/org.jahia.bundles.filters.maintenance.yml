@@ -1,0 +1,7 @@
+allowedResource:
+  - ^/css/.*
+  - ^/engines/images/.*
+  - ^/icons/.*
+  - ^/tools$|^/tools/.*
+  - ^/modules/tools/.*
+  - ^/cms/login

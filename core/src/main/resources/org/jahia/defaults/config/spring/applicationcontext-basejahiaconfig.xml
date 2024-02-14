@@ -261,19 +261,6 @@
 
     <bean id="org.jahia.bin.errors.handler" class="org.jahia.bin.errors.DefaultErrorHandler"/>
 
-    <bean id="MaintenanceFilter" class="org.jahia.bin.filters.MaintenanceFilter">
-        <property name="allowedResources">
-            <set>
-                <value>^/css/.*</value>
-                <value>^/engines/images/.*</value>
-                <value>^/icons/.*</value>
-                <value>^/tools$|^/tools/.*</value>
-                <value>^/modules/tools/.*</value>
-                <value>^/cms/login</value>
-            </set>
-        </property>
-    </bean>
-
     <bean id="ContentManagerAccessCheckFilter" class="org.jahia.bin.filters.ContentManagerAccessCheckFilter">
         <property name="defaultContentManager" value="repositoryexplorer"/>
         <property name="defaultContentPicker" value="filepicker"/>
@@ -304,13 +291,6 @@
                         <bean class="org.jahia.bin.filters.HttpHeadRequestFilter"/>
                     </property>
                     <property name="order" value="-5"/>
-                    <property name="matchAllUrls" value="true"/>
-                </bean>
-
-                <bean class="org.jahia.bin.filters.ServletFilter">
-                    <property name="filterName" value="MaintenanceFilter"/>
-                    <property name="filter" ref="MaintenanceFilter"/>
-                    <property name="order" value="-4"/>
                     <property name="matchAllUrls" value="true"/>
                 </bean>
 

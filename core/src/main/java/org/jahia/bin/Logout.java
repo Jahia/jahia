@@ -55,6 +55,7 @@ import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.observation.JahiaEventService;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.render.URLResolverFactory;
+import org.jahia.services.seo.urlrewrite.SessionidRemovalResponseWrapper;
 import org.jahia.services.seo.urlrewrite.UrlRewriteService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -242,18 +243,18 @@ public class Logout implements Controller {
                             redirect = request.getContextPath() + "/";
                         }
                         redirect = urlRewriteService.rewriteOutbound(redirect, request, response);
-                        response.sendRedirect(response.encodeRedirectURL(redirect));
+                        response.sendRedirect(filterRedirectUrl(response.encodeRedirectURL(redirect)));
                         return;
                     } catch (Exception e) {
                         logger.debug("Cannot redirect to "+currentUrl, e);
                     }
                 }
-                response.sendRedirect(response.encodeRedirectURL(request.getContextPath() + "/"));
+                response.sendRedirect(filterRedirectUrl(response.encodeRedirectURL(request.getContextPath() + "/")));
                 return;
             }
         }
 
-        response.sendRedirect(response.encodeRedirectURL((StringUtils.isNotEmpty(redirect) && !StringUtils.equals(redirect, "/")) ? redirect : request.getContextPath() + "/"));
+        response.sendRedirect(filterRedirectUrl(response.encodeRedirectURL((StringUtils.isNotEmpty(redirect) && !StringUtils.equals(redirect, "/")) ? redirect : request.getContextPath() + "/")));
     }
 
     /**
@@ -414,6 +415,13 @@ public class Logout implements Controller {
                 session.setAttribute(savedSessionAttribute.getKey(), savedSessionAttribute.getValue());
             }
         }
+    }
+
+    private String filterRedirectUrl(String redirect) {
+        if (SettingsBean.getInstance().isDisableJsessionIdParameter()) {
+            redirect = SessionidRemovalResponseWrapper.removeJsessionId(redirect);
+        }
+        return redirect;
     }
 
 }

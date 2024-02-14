@@ -51,6 +51,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.render.URLResolverFactory;
+import org.jahia.services.seo.urlrewrite.SessionidRemovalResponseWrapper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
@@ -268,7 +269,11 @@ public class ErrorServlet extends HttpServlet {
         if (errorCode == HttpServletResponse.SC_UNAUTHORIZED) {
             String redirectUrl = LoginConfig.getInstance().getCustomLoginUrl(request);
             if (redirectUrl != null) {
-                response.sendRedirect(response.encodeRedirectURL(redirectUrl));
+                redirectUrl = response.encodeRedirectURL(redirectUrl);
+                if (SettingsBean.getInstance().isDisableJsessionIdParameter()) {
+                    redirectUrl = SessionidRemovalResponseWrapper.removeJsessionId(redirectUrl);
+                }
+                response.sendRedirect(redirectUrl);
                 return;
             }
         }

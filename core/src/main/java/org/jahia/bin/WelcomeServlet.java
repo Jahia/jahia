@@ -54,6 +54,7 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
+import org.jahia.services.seo.urlrewrite.SessionidRemovalResponseWrapper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
@@ -133,14 +134,8 @@ public class WelcomeServlet extends HttpServlet {
 
     protected void redirect(String url, HttpServletResponse response) throws IOException {
         String targetUrl = response.encodeRedirectURL(url);
-        String jsessionIdParameterName = SettingsBean.getInstance().getJsessionIdParameterName();
-        if (targetUrl.contains(";" + jsessionIdParameterName)) {
-            if (targetUrl.contains("?")) {
-                targetUrl = StringUtils.substringBefore(targetUrl, ";" + jsessionIdParameterName + "=") + "?"
-                        + StringUtils.substringAfter(targetUrl, "?");
-            } else {
-                targetUrl = StringUtils.substringBefore(targetUrl, ";" + jsessionIdParameterName + "=");
-            }
+        if (SettingsBean.getInstance().isDisableJsessionIdParameter()) {
+            targetUrl = SessionidRemovalResponseWrapper.removeJsessionId(targetUrl);
         }
         WebUtils.setNoCacheHeaders(response);
         response.sendRedirect(targetUrl);

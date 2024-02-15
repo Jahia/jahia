@@ -460,6 +460,9 @@ public class AreaTag extends ModuleTag implements ParamParent {
     }
 
     protected boolean isEmptyArea() {
+        if (node == null) {
+            return true;
+        }
         for (String s : constraints.split(" ")) {
             if (!JCRContentUtils.getChildrenOfType(node, s).isEmpty()) {
                 return false;

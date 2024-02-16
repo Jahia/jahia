@@ -43,6 +43,7 @@
 package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.commons.iterator.VersionIteratorAdapter;
 import org.jahia.utils.comparator.NumericStringComparator;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -203,7 +204,7 @@ public class JCRVersionService extends JahiaService {
                             base = preds[0];
                         }
                     }
-                    vi = new VersionIteratorImpl(versions.iterator(), versions.size());
+                    vi = new VersionIteratorAdapter(versions);
                     break;
                 }
             }

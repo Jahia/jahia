@@ -56,6 +56,7 @@ import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.exceptions.JahiaUnauthorizedException;
+import org.jahia.exceptions.RequiredActionModeException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -1043,7 +1044,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private static void checkActionRequirements(Action action, final Action originalAction, RenderContext renderContext,
                                                 URLResolver urlResolver) throws RepositoryException {
         if (action.getRequiredMethods() != null && !action.getRequiredMethods().contains(renderContext.getRequest().getMethod())) {
-            throw new AccessDeniedException("Action requires " + action.getRequiredMethods());
+            throw new RequiredActionModeException("Action requires " + action.getRequiredMethods());
         }
 
         if (!(action instanceof SystemAction)) {

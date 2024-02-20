@@ -42,6 +42,7 @@
  */
 package org.jahia.bin.errors;
 
+import static com.google.gwt.http.client.Response.SC_METHOD_NOT_ALLOWED;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
@@ -59,12 +60,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jahia.exceptions.JahiaBadRequestException;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.exceptions.JahiaNotFoundException;
-import org.jahia.exceptions.JahiaRuntimeException;
-import org.jahia.exceptions.JahiaServiceUnavailableException;
-import org.jahia.exceptions.JahiaUnauthorizedException;
+import org.jahia.exceptions.*;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.render.AjaxRenderException;
@@ -128,6 +124,8 @@ public class DefaultErrorHandler implements ErrorHandler {
         } else if (e instanceof AccessDeniedException) {
             if (JahiaUserManagerService.isGuest(JCRSessionFactory.getInstance().getCurrentUser())) {
                 code = SC_UNAUTHORIZED;
+            } else if (e instanceof RequiredActionModeException) {
+                code = SC_METHOD_NOT_ALLOWED;
             } else {
                 code = SC_FORBIDDEN;
             }

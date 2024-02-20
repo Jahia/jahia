@@ -5,7 +5,6 @@
 
     <repository>mvn:org.ops4j.pax.web/pax-web-features/${pax.web.api.version}/xml/features</repository>
     <repository>mvn:org.apache.karaf.features/standard/${karaf.version}/xml/features</repository>
-    <repository>mvn:org.apache.karaf.features/spring/${karaf.version}/xml/features</repository>
     <repository>mvn:org.jahia.features/dx-gemini-blueprint/${project.version}/xml/features</repository>
     <repository>mvn:org.jahia.features/dx-jax-rs/${project.version}/xml/features</repository>
 
@@ -16,9 +15,7 @@
         <feature>dx-jax-rs</feature>
         <feature>shell</feature>
         <feature>scr</feature>
-        <feature>spring</feature>
         <bundle start-level="25">mvn:org.jahia.bundles/org.jahia.bundles.config.manager/${project.version}</bundle>
         <bundle start-level="35">mvn:org.jahia.bundles/org.jahia.bundles.spring.bridge/${project.version}</bundle>
     </feature>
-
 </features>

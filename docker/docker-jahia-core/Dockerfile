@@ -1,4 +1,4 @@
-FROM tomcat:9-jdk21-openjdk-slim as base
+FROM tomcat:9-jdk21-temurin as base
 
 ARG DEBUG_TOOLS="false"
 ARG FFMPEG="false"

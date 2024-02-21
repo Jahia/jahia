@@ -57,7 +57,7 @@ jobs:
         run: mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec > jahia.version
       - name: Get branch name
         id: branch-name
-        uses: tj-actions/branch-names@v6
+        uses: tj-actions/branch-names@v8
       - name: Determine tag
         shell: bash
         run: |
@@ -234,7 +234,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
       - name: Get branch name
         id: branch-name
-        uses: tj-actions/branch-names@v6
+        uses: tj-actions/branch-names@v8
       - name: Save/Restore build artifacts from cache
         uses: actions/cache@v3
         with:

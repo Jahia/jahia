@@ -287,6 +287,19 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
         scheduleJobNow(jobDetail, false);
     }
 
+    /**
+     * Schedule a job immediately
+     *
+     * When job is scheduled within a cluster, execution time can be delayed based off next scheduled run
+     * in QuartzSchedulerThread ({QuartzSchedulerThread#run()}), which is the class responsible for firing off Triggers registered
+     * within the scheduler. This timing is based off quartz.scheduler.idleWaitTime property (default 30s) with random offset added.
+     *
+     * This means jobs scheduled with this method can be delayed up to given idle wait time (30s by default).
+     *
+     * @param jobDetail the job to schedule
+     * @param useRamScheduler use ramScheduler or scheduler
+     * @throws SchedulerException if the job cannot be scheduled
+     */
     public void scheduleJobNow(JobDetail jobDetail, boolean useRamScheduler) throws SchedulerException {
         JobDataMap data = jobDetail.getJobDataMap();
         SimpleTrigger trigger = new SimpleTrigger(jobDetail.getName() + "_Trigger",

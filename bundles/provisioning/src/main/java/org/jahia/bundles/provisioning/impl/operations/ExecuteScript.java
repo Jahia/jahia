@@ -89,4 +89,9 @@ public class ExecuteScript implements Operation {
         }
 
     }
+
+    @Override
+    public String getType() {
+        return EXECUTE_SCRIPT;
+    }
 }

@@ -183,6 +183,9 @@
         <developerTools jcr:primaryType="jnt:permission">
             <developerToolsAccess jcr:primaryType="jnt:permission"/>
         </developerTools>
-    </permissions>
 
+        <provisioningApi jcr:primaryType="jnt:permission">
+            <provisioningAccess jcr:primaryType="jnt:permission" />
+        </provisioningApi>
+    </permissions>
 </content>

@@ -81,4 +81,9 @@ public class StopBundle implements Operation {
             ((Collection) executionContext.getContext().get("result")).add(Collections.singletonMap("stop", stopResults));
         }
     }
+
+    @Override
+    public String getType() {
+        return STOP_BUNDLE;
+    }
 }

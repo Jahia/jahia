@@ -88,4 +88,9 @@ public class KarafCommand implements Operation {
             logger.error("Cannot execute command {}", entry.get(KARAF_COMMAND), e);
         }
     }
+
+    @Override
+    public String getType() {
+        return KARAF_COMMAND;
+    }
 }

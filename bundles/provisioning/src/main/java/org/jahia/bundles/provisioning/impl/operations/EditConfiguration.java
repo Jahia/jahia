@@ -122,4 +122,9 @@ public class EditConfiguration implements Operation {
             logger.error("Cannot update configurations", e);
         }
     }
+
+    @Override
+    public String getType() {
+        return EDIT_CONFIGURATION;
+    }
 }

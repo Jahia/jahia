@@ -103,4 +103,8 @@ public class ImportSite implements Operation {
         }
     }
 
+    @Override
+    public String getType() {
+        return IMPORT_SITE;
+    }
 }

@@ -82,4 +82,9 @@ public class AddFeatureRepository implements Operation {
             logger.error("Invalid URL {}", url, e);
         }
     }
+
+    @Override
+    public String getType() {
+        return "addFeature";
+    }
 }

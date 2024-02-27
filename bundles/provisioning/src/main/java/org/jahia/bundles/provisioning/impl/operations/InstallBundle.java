@@ -340,4 +340,8 @@ public class InstallBundle implements Operation {
         return false;
     }
 
+    @Override
+    public String getType() {
+        return INSTALL_BUNDLE;
+    }
 }

@@ -81,4 +81,9 @@ public class StartBundle implements Operation {
             ((Collection) executionContext.getContext().get("result")).add(Collections.singletonMap("start", startResults));
         }
     }
+
+    @Override
+    public String getType() {
+        return START_BUNDLE;
+    }
 }

@@ -107,4 +107,8 @@ public class ImportZip implements Operation {
         }
     }
 
+    @Override
+    public String getType() {
+        return IMPORT;
+    }
 }

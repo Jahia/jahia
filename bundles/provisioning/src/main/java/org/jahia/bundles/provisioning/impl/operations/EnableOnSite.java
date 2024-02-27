@@ -124,4 +124,9 @@ public class EnableOnSite implements Operation {
             logger.error("Cannot enable modules", e);
         }
     }
+
+    @Override
+    public String getType() {
+        return ENABLE_ON_SITE;
+    }
 }

@@ -81,4 +81,9 @@ public class UninstallBundle implements Operation {
             ((Collection) executionContext.getContext().get("result")).add(Collections.singletonMap("uninstall", uninstallResults));
         }
     }
+
+    @Override
+    public String getType() {
+        return UNINSTALL_BUNDLE;
+    }
 }

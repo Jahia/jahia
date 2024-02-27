@@ -52,11 +52,13 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.services.provisioning.ExecutionContext;
 import org.jahia.services.provisioning.Operation;
 import org.jahia.services.provisioning.ProvisioningManager;
+import org.jahia.services.securityfilter.PermissionService;
 import org.jahia.settings.SettingsBean;
 import org.osgi.service.component.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -73,6 +75,12 @@ public class ProvisioningManagerImpl implements ProvisioningManager {
     private ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
     private ObjectMapper jsonMapper = new ObjectMapper();
 
+    private PermissionService permissionService;
+
+    @Reference
+    public void setPermissionService(PermissionService permissionService) {
+        this.permissionService = permissionService;
+    }
     /**
      * Activate
      */
@@ -144,12 +152,29 @@ public class ProvisioningManagerImpl implements ProvisioningManager {
                         .filter(op -> op.canHandle(entry))
                         .findFirst();
             if (operation.isPresent()) {
-                operation.ifPresent(op -> op.perform(entry, executionContext));
+                operation.ifPresent(op -> {
+                    if (hasPermission(op)){
+                        op.perform(entry, executionContext);
+                    }
+                });
             } else {
                 logger.warn("Operation {} not found", Joiner.on(",").withKeyValueSeparator("=").useForNull("").join(entry));
             }
         }
         );
+    }
+
+    private boolean hasPermission(Operation operation) {
+            boolean hasPermission;
+            try {
+                hasPermission = permissionService.hasPermission("provisioning." + operation.getType());
+                if (!hasPermission) {
+                    logger.warn("No permission to execute provisioning operation of type {}", operation.getType());
+                }
+                return hasPermission;
+            } catch (RepositoryException e) {
+                throw new RuntimeException(e);
+            }
     }
 
     @Override

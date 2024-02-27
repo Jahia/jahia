@@ -104,4 +104,8 @@ public class DeleteSite implements Operation {
 
     }
 
+    @Override
+    public String getType() {
+        return DELETE_SITE;
+    }
 }

@@ -78,4 +78,5 @@ public interface Operation {
     default void cleanup(ExecutionContext executionContext) {
     }
 
+    String getType();
 }

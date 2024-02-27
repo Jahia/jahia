@@ -113,4 +113,9 @@ public class InstallUninstallFeature implements Operation {
             logger.error("Unable to install {} feature. Cause: {}", featureId, e.getMessage(), e);
         }
     }
+
+    @Override
+    public String getType() {
+        return INSTALL_FEATURE;
+    }
 }

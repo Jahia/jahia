@@ -70,4 +70,8 @@ public class ConditionalOperation implements Operation {
         }
     }
 
+    @Override
+    public String getType() {
+        return IF;
+    }
 }

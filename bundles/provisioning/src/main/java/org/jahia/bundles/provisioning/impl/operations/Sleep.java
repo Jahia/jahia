@@ -74,4 +74,9 @@ public class Sleep implements Operation {
             }
         }
     }
+
+    @Override
+    public String getType() {
+        return SLEEP_OP;
+    }
 }

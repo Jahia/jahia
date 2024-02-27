@@ -109,7 +109,7 @@
 
 
         <system-administrator j:hidden="false"
-                    j:permissionNames="systemToolsAccess repository-permissions"
+                    j:permissionNames="systemToolsAccess repository-permissions provisioningAccess"
                     j:privilegedAccess="false"
                     j:roleGroup="system-role"
                     jcr:primaryType="jnt:role">
@@ -118,7 +118,7 @@
                               jcr:primaryType="jnt:translation"
                               jcr:title="System administrator"/>
             <rootNode-access j:path="/"
-                             j:permissionNames="systemToolsAccess"
+                             j:permissionNames="systemToolsAccess provisioningAccess"
                              jcr:primaryType="jnt:externalPermissions"/>
         </system-administrator>
 

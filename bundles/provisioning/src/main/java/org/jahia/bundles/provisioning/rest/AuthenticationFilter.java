@@ -48,6 +48,7 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.securityfilter.PermissionService;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,8 +70,6 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
     private static final Logger log = LoggerFactory.getLogger(AuthenticationFilter.class);
 
-    private static final String REQUIRED_PERMISSION = "systemTools";
-
     @Context
     HttpServletRequest httpServletRequest;
 
@@ -80,7 +79,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         AuthValveContext ctx = (AuthValveContext) httpServletRequest.getAttribute(AuthValveContext.class.getName());
         try {
             JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession();
-            if (currentUserSession.getRootNode().hasPermission(REQUIRED_PERMISSION) && ctx != null && !ctx.isAuthRetrievedFromSession()) {
+            if (!JahiaUserManagerService.isGuest(currentUserSession.getUser()) && ctx != null && !ctx.isAuthRetrievedFromSession()) {
                 return;
             }
         } catch (RepositoryException e) {

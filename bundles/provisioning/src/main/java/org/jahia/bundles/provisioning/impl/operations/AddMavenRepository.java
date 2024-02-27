@@ -148,4 +148,9 @@ public class AddMavenRepository implements Operation {
         }
         return url;
     }
+
+    @Override
+    public String getType() {
+        return ADD_MAVEN_REPOSITORY;
+    }
 }

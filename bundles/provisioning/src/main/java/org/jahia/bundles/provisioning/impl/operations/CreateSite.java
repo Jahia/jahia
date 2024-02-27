@@ -122,4 +122,9 @@ public class CreateSite implements Operation {
         }
         return siteInfo;
     }
+
+    @Override
+    public String getType() {
+        return CREATE_SITE;
+    }
 }

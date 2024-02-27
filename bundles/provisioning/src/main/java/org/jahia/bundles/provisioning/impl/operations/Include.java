@@ -79,4 +79,9 @@ public class Include implements Operation {
             }
         }
     }
+
+    @Override
+    public String getType() {
+        return INCLUDE_SCRIPT;
+    }
 }

@@ -261,7 +261,7 @@ jobs:
         if: ${{ github.event_name != 'pull_request' }}
         env:
           DEPENDENCY_CHECK_SETTINGS: -DfailOnError=false -DskipProvidedScope=true -DskipTestScope=true -DskipSystemScope=true
-            -DassemblyAnalyzerEnabled=false -Dformats=HTML,JSON
+            -DassemblyAnalyzerEnabled=false -Dformats=HTML,JSON -DnvdApiKey=${{ secrets.NVD_APIKEY }}
             -Dsonar.dependencyCheck.jsonReportPath=target/dependency-check-report.json
             -Dsonar.dependencyCheck.htmlReportPath=target/dependency-check-report.html
             -DdataDirectory=~/.owasp/dependency-check-data

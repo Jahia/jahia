@@ -44,12 +44,9 @@ package org.jahia.services.observation;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationListener;
-import org.springframework.core.GenericTypeResolver;
 
-import java.util.EventObject;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -58,45 +55,44 @@ import java.util.stream.Stream;
  */
 public class JahiaEventServiceImpl implements JahiaEventService {
     private final static Logger logger = LoggerFactory.getLogger(JahiaEventServiceImpl.class);
-    private final Set<EventListenerAdapter> applicationListeners = new LinkedHashSet<>();
+
+    private final Set<JahiaEventListener<? extends EventObject>> allEventListeners = ConcurrentHashMap.newKeySet();
+    // We store the listeners by type to avoid iterating over all listeners for each event
+    private final Map<Class<? extends EventObject>, Set<JahiaEventListener<? extends EventObject>>> listenersByTypeCache = new ConcurrentHashMap<>();
 
     public void addEventListener(JahiaEventListener<? extends EventObject> listener) {
-        applicationListeners.add(new EventListenerAdapter(listener));
+        allEventListeners.add(listener);
+        listenersByTypeCache.clear();
     }
 
     public void removeEventListener(JahiaEventListener<? extends EventObject> listener) {
-        applicationListeners.removeAll(applicationListeners.stream().filter(e -> e.getDelegate() == listener).collect(Collectors.toSet()));
+        allEventListeners.remove(listener);
+        listenersByTypeCache.clear();
     }
 
-    Stream<JahiaEventListener<? extends EventObject>> getApplicationListeners(EventObject event) {
-        return applicationListeners.stream().filter(a -> a.canApply(event)).map(EventListenerAdapter::getDelegate);
+    Set<JahiaEventListener<? extends EventObject>> getApplicationListeners(EventObject event) {
+        return listenersByTypeCache.computeIfAbsent(event.getClass(), this::resolveTypeListeners);
+    }
+
+    private Set<JahiaEventListener<? extends EventObject>> resolveTypeListeners(Class<? extends EventObject> eventClass) {
+        // Here we resolve the listeners that are interested in the event type by also testing if the event class is
+        // a subclass of any of the listener's accepted event types
+        return allEventListeners.stream()
+                .filter(listener -> {
+                    Class<? extends EventObject>[] acceptedEventTypes = listener.getEventTypes();
+                    return Stream.of(acceptedEventTypes).anyMatch(eventType -> eventType.isAssignableFrom(eventClass));
+                })
+                .collect(Collectors.toSet());
     }
 
     public void publishEvent(final EventObject event) {
-        getApplicationListeners(event).forEach(l -> {
+        getApplicationListeners(event).forEach(listener -> {
             try {
-                l.onEvent(event);
+                listener.onEvent(event);
             } catch (Exception e) {
                 logger.error("Error thrown in listener", e);
             }
         });
     }
 
-    private static class EventListenerAdapter {
-        private JahiaEventListener<? extends EventObject> delegate;
-        private Class<?> typeArg;
-
-        public EventListenerAdapter(JahiaEventListener<? extends EventObject> delegate) {
-            this.delegate = delegate;
-            this.typeArg = GenericTypeResolver.resolveTypeArgument(delegate.getProxiedClass(), JahiaEventListener.class);
-        }
-
-        public JahiaEventListener<? extends EventObject> getDelegate() {
-            return delegate;
-        }
-
-        public boolean canApply(EventObject event) {
-            return typeArg.isInstance(event);
-        }
-    }
 }

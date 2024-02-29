@@ -48,12 +48,19 @@ import java.util.EventObject;
 /**
  * Base listener interface
  *
- * @param <E> The event type to listen
+ * @param <E> The event type to listen for
  */
 public interface JahiaEventListener<E extends EventObject> extends EventListener {
+
+    /**
+     * Main method to handle the event
+     * @param event the event object containing the event
+     */
     void onEvent(EventObject event);
 
-    default Class<?> getProxiedClass() {
-        return getClass();
-    }
+    /**
+     * Get the event types classes this listener is listening for
+     * @return the event types classes
+     */
+    Class<E>[] getEventTypes();
 }

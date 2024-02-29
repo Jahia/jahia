@@ -1,0 +1,26 @@
+mutation {
+    jcr {
+        addPermission: mutateNodesByQuery(
+            query: "/jcr:root/permissions[not(provisioningApi/@jcr:primaryType='jnt:permission')]"
+            queryLanguage: XPATH
+        ) {
+            addChild(name: "provisioningApi", primaryNodeType: "jnt:permission") {
+                addChild(name: "provisioningAccess", primaryNodeType: "jnt:permission") {
+                    uuid
+                }
+            }
+        }
+        updateRole: mutateNode(pathOrId: "/roles/system-administrator") {
+            mutateProperty(name: "j:permissionNames") {
+                addValue(value: "provisioningAccess")
+            }
+        }
+        updateRoleRootAccess: mutateNode(
+            pathOrId: "/roles/system-administrator/rootNode-access"
+        ) {
+            mutateProperty(name: "j:permissionNames") {
+                addValue(value: "provisioningAccess")
+            }
+        }
+    }
+}

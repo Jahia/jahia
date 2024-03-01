@@ -85,6 +85,7 @@
         <camel.version>2.25.2</camel.version>
         <gwt.version.base>2.8.2</gwt.version.base>
         <gwt.version>${gwt.version.base}</gwt.version>
+        <guava.osgi.version>33.0.0-jre</guava.osgi.version>
         <jgroups.version>3.6.20.Final</jgroups.version>
         <groovy.version>3.0.8</groovy.version>
         <shiro.version>1.13.0</shiro.version>

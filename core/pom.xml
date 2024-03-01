@@ -1729,7 +1729,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>30.1.1-jre</version>
+            <version>${guava.osgi.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.findbugs</groupId>

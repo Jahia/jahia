@@ -12,14 +12,14 @@
             <TimeBasedTriggeringPolicy/>
             <ThresholdFilter level="DEBUG"/>
         </RollingFile>
-        
+
         <File name="JahiaLog"
             fileName="${sys:jahia.log.dir}/jahia.log">
             <PatternLayout
                 pattern="%d: %-5p [%t] %c: %encode{%.-500m}{CRLF}%n%sxThrowable"/>
             <ThresholdFilter level="DEBUG"/>
         </File>
-        
+
         <RollingRandomAccessFile name="GWTRPC"
             fileName="${sys:jahia.log.dir}/gwtrpc.log"
             filePattern="${sys:jahia.log.dir}gwtrpc_%d{yyyy-MM-dd}.log">
@@ -31,13 +31,13 @@
             </Policies>
             <DefaultRolloverStrategy max="5"/>
         </RollingRandomAccessFile>
-        
+
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout
                 pattern="%d: %-5p [%c{1}] - %encode{%.-500m}{CRLF}%n%sxThrowable"/>
             <ThresholdFilter level="DEBUG"/>
         </Console>
-        
+
         <RollingFile name="RollingProfilerLog"
             fileName="${sys:jahia.log.dir}jahia_profiler.log"
             filePattern="${sys:jahia.log.dir}jahia_profiler_%d{yyyy-MM-dd}.log">
@@ -46,7 +46,7 @@
             <ThresholdFilter level="DEBUG"
                 onMatch="ACCEPT" onMismatch="DENY"/>
         </RollingFile>
-        
+
         <RollingFile name="RollingJahiaAccessLog"
             fileName="${sys:jahia.log.dir}jahia_access.log"
             filePattern="${sys:jahia.log.dir}jahia_access_%d{yyyy-MM-dd}.log">
@@ -55,16 +55,16 @@
             <ThresholdFilter level="TRACE"
                 onMatch="ACCEPT" onMismatch="DENY"/>
         </RollingFile>
-        
+
         <File name="JahiaAccessLog"
             fileName="${sys:jahia.log.dir}/jahia_access.log">
             <PatternLayout pattern="%d %encode{%.-500m}{CRLF}%n"/>
             <ThresholdFilter level="TRACE"
                 onMatch="ACCEPT" onMismatch="DENY"/>
         </File>
-        
+
         <ExceptionAppender name="ExceptionLogging"/>
-        
+
         <CamelAppender name="CamelNotification"
             targetUri="direct:logs">
             <PatternLayout pattern="%d %encode{%.-500m}{CRLF}"/>
@@ -72,36 +72,36 @@
                 onMatch="ACCEPT" onMismatch="DENY"/>
         </CamelAppender>
     </Appenders>
-    
+
     <Loggers>
         <Logger name="REQUEST">
             <AppenderRef ref="RollingJahiaLog"/>
         </Logger>
-        
+
         <Logger name="SysOut">
             <AppenderRef ref="Console"/>
         </Logger>
-        
+
         <Logger name="accessLogger" additivity="false">
             <AppenderRef ref="RollingJahiaAccessLog"/>
             <AppenderRef ref="CamelNotification"/>
         </Logger>
-        
+
         <Logger name="loggingService" additivity="false"
             level="trace">
             <AppenderRef ref="RollingJahiaAccessLog"/>
             <AppenderRef ref="CamelNotification"/>
         </Logger>
-        
+
         <Logger name="profilerLoggingService" additivity="false"
             level="info">
             <AppenderRef ref="RollingProfilerLog"/>
         </Logger>
-        
+
         <Logger name="org.jahia.ajax.gwt.commons.server.GWTController" level="info">
             <AppenderRef ref="GWTRPC"/>
         </Logger>
-        
+
         <Logger name="org.apache.commons" level="error"/>
         <Logger
             name="org.apache.jackrabbit.spi.commons.nodetype.constraint.ValueConstraint"
@@ -136,6 +136,7 @@
             name="org.ops4j.pax.url.mvn.internal.AetherBasedResolver"
             level="ERROR"/>
         <Logger name="org.atmosphere.handler" level="ERROR"/>
+        <Logger name="org.apache.poi" level="WARN" />
         <Root level="info">
             <AppenderRef ref="RollingJahiaLog"/>
             <AppenderRef ref="Console"/>

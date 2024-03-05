@@ -43,7 +43,10 @@
 package org.jahia.api;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * Commmon Jahia constants.
@@ -314,8 +317,8 @@ public class Constants {
 
     public static final String JAHIAMIX_NAVMENUITEM = "jmix:navMenuItem";
 
-    public static final Set<String> forbiddenPropertiesToCopy = new HashSet<>(Arrays.asList(PROCESSID,JCR_FROZENUUID,
-            JCR_FROZENMIXINTYPES, JCR_FROZENPRIMARYTYPE,JCR_UUID,JCR_BASEVERSION,JCR_MIXINTYPES,JCR_PRIMARYTYPE,
+    public static final Set<String> forbiddenPropertiesToCopy = new HashSet<>(Arrays.asList(PROCESSID, JCR_FROZENUUID,
+            JCR_FROZENMIXINTYPES, JCR_FROZENPRIMARYTYPE, JCR_UUID, JCR_BASEVERSION, JCR_MIXINTYPES, JCR_PRIMARYTYPE,
             JCR_VERSIONHISTORY, JCR_PREDECESSORS, JCR_ISCHECKEDOUT, JCR_CREATED, JCR_CREATEDBY, "j:lockTypes",
             "j:locktoken", JCR_LOCKOWNER, JCR_LOCKISDEEP, JAHIA_SOURCE_TEMPLATE, PUBLISHED, MARKED_FOR_DELETION_DATE,
             MARKED_FOR_DELETION_MESSAGE, MARKED_FOR_DELETION_USER, ORIGIN_WORKSPACE, LASTPUBLISHED, LASTPUBLISHEDBY));
@@ -333,8 +336,8 @@ public class Constants {
     public static final String JAHIANT_ROLES = "jnt:roles";
     public static final String J_PERMISSIONNAMES = "j:permissionNames";
 
-    public static final Set<String> forbiddenPropertiesToSerialize = new HashSet<String>(Arrays.asList(PROCESSID,JCR_FROZENUUID,
-            JCR_FROZENMIXINTYPES, JCR_FROZENPRIMARYTYPE,JCR_BASEVERSION,
+    public static final Set<String> forbiddenPropertiesToSerialize = new HashSet<String>(Arrays.asList(PROCESSID, JCR_FROZENUUID,
+            JCR_FROZENMIXINTYPES, JCR_FROZENPRIMARYTYPE, JCR_BASEVERSION,
             JCR_VERSIONHISTORY, JCR_PREDECESSORS, JCR_ISCHECKEDOUT));
 
     public static final String JAHIA_PROJECT_VERSION;
@@ -346,10 +349,12 @@ public class Constants {
 
     /**
      * The set of properties that are <strong>NOT</strong> internationalized properties but are still copied to translation nodes.
-     *
+     * <p>
      * TODO: this set might not be exhaustive at the moment. Please complete if needed!
      */
     public static final Set<String> nonI18nPropertiesCopiedToTranslationNodes = new HashSet<>(Arrays.asList(PUBLISHED, LASTPUBLISHED, LASTPUBLISHEDBY));
+
+    public static final String CLUSTER_BROADCAST_TOPIC_PREFIX = "org/jahia/cluster/broadcast";
 
     static {
         Properties p = new Properties();

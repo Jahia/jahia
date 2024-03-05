@@ -53,6 +53,7 @@ import org.jahia.ajax.gwt.client.widget.poller.ProcessPollingEvent;
 import org.jahia.ajax.gwt.commons.server.ChannelHolder;
 import org.jahia.ajax.gwt.commons.server.JGroupsChannel;
 import org.jahia.ajax.gwt.commons.server.ManagedGWTResource;
+import org.jahia.osgi.FrameworkService;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.atmosphere.AtmosphereServlet;
 import org.jahia.services.content.JCRCallback;
@@ -73,6 +74,8 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import java.util.*;
+
+import static org.jahia.api.Constants.CLUSTER_BROADCAST_TOPIC_PREFIX;
 
 /**
  * User: toto
@@ -149,30 +152,7 @@ public class SchedulerHelper {
                     description += " [" + publicationTitle + "]";
                 }
 
-                List<String> publicationPathsFromJob = (List<String>) jobDataMap.get(PublicationJob.PUBLICATION_PATHS);
-                // get target paths from job if specified, if not, use uuids to get the nodes
-                if(publicationPathsFromJob != null && publicationPathsFromJob.size() > 0) {
-                    targetPaths.addAll(publicationPathsFromJob);
-                } else {
-                    final List<String> uuids = (List<String>) jobDataMap.get("publicationInfos");
-                    try {
-                        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-                            @Override
-                            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                                for (String uuid : uuids) {
-                                    try {
-                                        targetPaths.add(session.getNodeByIdentifier(uuid).getPath());
-                                    } catch (ItemNotFoundException e) {
-                                        logger.debug("Cannot get item " + uuid, e);
-                                    }
-                                }
-                                return null;
-                            }
-                        });
-                    } catch (RepositoryException e) {
-                        logger.error("Cannot get publication details", e);
-                    }
-                }
+                getPublicationPaths(jobDataMap, targetPaths);
             } else if (BackgroundJob.getGroupName(ImportJob.class).equals(jobDetail.getGroup())) {
                 String uri = (String) jobDataMap.get(ImportJob.URI);
                 if (uri != null) {
@@ -209,6 +189,33 @@ public class SchedulerHelper {
         return jobs;
     }
 
+    private void getPublicationPaths(JobDataMap jobDataMap, List<String> targetPaths) {
+        List<String> publicationPathsFromJob = (List<String>) jobDataMap.get(PublicationJob.PUBLICATION_PATHS);
+        // get target paths from job if specified, if not, use uuids to get the nodes
+        if (publicationPathsFromJob != null && publicationPathsFromJob.size() > 0) {
+            targetPaths.addAll(publicationPathsFromJob);
+        } else {
+            final List<String> uuids = (List<String>) jobDataMap.get("publicationInfos");
+            try {
+                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                    @Override
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        for (String uuid : uuids) {
+                            try {
+                                targetPaths.add(session.getNodeByIdentifier(uuid).getPath());
+                            } catch (ItemNotFoundException e) {
+                                logger.debug("Cannot get item " + uuid, e);
+                            }
+                        }
+                        return null;
+                    }
+                });
+            } catch (RepositoryException e) {
+                logger.error("Cannot get publication details", e);
+            }
+        }
+    }
+
     public List<GWTJahiaJobDetail> getActiveJobs(Locale locale) throws GWTJahiaServiceException {
         try {
             List<JobDetail> l = scheduler.getAllActiveJobs();
@@ -232,9 +239,9 @@ public class SchedulerHelper {
             List<GWTJahiaJobDetail> gwtJobList = convertToGWTJobs(jobDetails);
             final String fSortField = sortField == null ? "creationTime" : sortField;
             final int i = "ASC".equals(sortDir) ? 1 : -1;
-            gwtJobList.sort((o1, o2) -> ObjectUtils.compare(o1.get(fSortField),o2.get(fSortField)) * i);
+            gwtJobList.sort((o1, o2) -> ObjectUtils.compare(o1.get(fSortField), o2.get(fSortField)) * i);
             if (groupBy != null) {
-                gwtJobList.sort((o1, o2) -> ObjectUtils.compare(o1.get(groupBy),o2.get(groupBy)));
+                gwtJobList.sort((o1, o2) -> ObjectUtils.compare(o1.get(groupBy), o2.get(groupBy)));
             }
 
             return gwtJobList;
@@ -278,12 +285,42 @@ public class SchedulerHelper {
 
         @Override
         public void jobToBeExecuted(JobExecutionContext context) {
-            updateJobs(Arrays.asList(context.getJobDetail()), Collections.<JobDetail>emptyList());
+            JobDetail contextJobDetail = context.getJobDetail();
+            updateJobs(Collections.singletonList(contextJobDetail), Collections.<JobDetail>emptyList());
+            String topic = CLUSTER_BROADCAST_TOPIC_PREFIX + "/publication/start";
+            sendEventAcrossCluster(contextJobDetail, topic);
         }
 
         @Override
         public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
-            updateJobs(Collections.<JobDetail>emptyList(), Arrays.asList(context.getJobDetail()));
+            JobDetail contextJobDetail = context.getJobDetail();
+            updateJobs(Collections.<JobDetail>emptyList(), Collections.singletonList(contextJobDetail));
+            String topic = CLUSTER_BROADCAST_TOPIC_PREFIX + "/publication/done";
+            sendEventAcrossCluster(contextJobDetail, topic);
+        }
+
+        private void sendEventAcrossCluster(JobDetail contextJobDetail, String topic) {
+            if (BackgroundJob.getGroupName(PublicationJob.class).equals(contextJobDetail.getGroup())) {
+                List<String> publicationPaths = new ArrayList<>();
+                JobDataMap jobDataMap = contextJobDetail.getJobDataMap();
+                getPublicationPaths(jobDataMap, publicationPaths);
+                Map<String, List<String>> publicationInfos = new HashMap<>();
+                publicationInfos.put("paths", publicationPaths);
+                final String jobLocale = jobDataMap.getString(BackgroundJob.JOB_CURRENT_LOCALE);
+                if (jobLocale != null) {
+                    publicationInfos.put("language", Collections.singletonList(jobLocale));
+                }
+                final String site = jobDataMap.getString(BackgroundJob.JOB_SITEKEY);
+                if (site != null) {
+                    publicationInfos.put("siteKey", Collections.singletonList(site));
+                }
+                final String user = StringUtils.substringAfterLast(jobDataMap.getString(BackgroundJob.JOB_USERKEY), "/");
+                if (user != null) {
+                    publicationInfos.put("user", Collections.singletonList(user));
+                }
+                logger.debug("Sending {} event for publication paths: {}", topic, publicationPaths);
+                FrameworkService.sendEvent(topic, publicationInfos, true);
+            }
         }
 
         private void updateJobs(List<JobDetail> startedJob, List<JobDetail> endedJob) {
@@ -294,7 +331,7 @@ public class SchedulerHelper {
                     totalCount += startedJob.size();
                 }
                 totalCount -= endedJob.size();
-                if(totalCount < 0) {
+                if (totalCount < 0) {
                     //In case job is ended only and there is no active nor started job
                     totalCount = 0;
                 }

@@ -23,6 +23,7 @@
         <cve>CVE-2021-40110</cve>
         <cve>CVE-2021-40111</cve>
         <cve>CVE-2021-40525</cve>
+        <cve>CVE-2024-21742</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -47,6 +48,14 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
+        file name: commons-compress-*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.commons/commons\-compress@.*$</packageUrl>
+        <cve>CVE-2024-25710</cve>
+        <cve>CVE-2024-26308</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
         file name: commons-discovery-*.jar
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/commons\-discovery/commons\-discovery@.*$</packageUrl>
@@ -61,6 +70,13 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
+        file name: commons-net-2.2.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/commons\-net/commons\-net@.*$</packageUrl>
+        <cve>CVE-2021-37533</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
         file name: cron-parser-core-*.jar
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/net\.redhogs\.cronparser/cron\-parser\-core@.*$</packageUrl>
@@ -72,6 +88,13 @@
         ]]></notes>
         <packageUrl regex="true">^pkg:npm/decode\-uri\-component@.*$</packageUrl>
         <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: derby-10.14.2.0.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.derby/derby@.*$</packageUrl>
+        <cve>CVE-2022-46337</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -101,6 +124,13 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
+        file name: graal-sdk-22.3.3.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.graalvm\.sdk/graal\-sdk@.*$</packageUrl>
+        <vulnerabilityName>CVE-2023-22006</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
         file name: graphql-*.jar
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/com\.graphql\-java/graphql\-.*@.*$</packageUrl>
@@ -119,6 +149,13 @@
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.apache\.httpcomponents/httpclient@.*$</packageUrl>
         <cve>CVE-2020-13956</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: ion-java-1.0.2.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/software\.amazon\.ion/ion\-java@.*$</packageUrl>
+        <cve>CVE-2024-21634</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -245,7 +282,24 @@
         file name: openoffice/*.jar 
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.openoffice/.*@.*$</packageUrl>
+        <cve>CVE-2016-1513</cve>
+        <cve>CVE-2016-6803</cve>
+        <cve>CVE-2016-6804</cve>
+        <cve>CVE-2017-3157</cve>
+        <cve>CVE-2017-9806</cve>
         <cve>CVE-2018-11790</cve>
+        <cve>CVE-2020-13958</cve>
+        <cve>CVE-2021-30245</cve>
+        <cve>CVE-2021-33035</cve>
+        <cve>CVE-2021-40439</cve>
+        <cve>CVE-2021-41830</cve>
+        <cve>CVE-2021-41831</cve>
+        <cve>CVE-2021-41832</cve>
+        <cve>CVE-2022-37400</cve>
+        <cve>CVE-2022-37401</cve>
+        <cve>CVE-2022-38745</cve>
+        <cve>CVE-2022-47502</cve>
+        <cve>CVE-2023-47804</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -259,9 +313,10 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
-        file name: quartz-oracle-1.8.6.jar
+        file name: quartz-*.jar
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.quartz\-scheduler/quartz.*@.*$</packageUrl>
+        <cve>CVE-2019-13990</cve>
         <cve>CVE-2023-39017</cve>
     </suppress>
     <suppress>
@@ -425,6 +480,13 @@
         ]]></notes>
         <packageUrl regex="true">^pkg:npm/ua\-parser\-js@.*$</packageUrl>
         <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: velocity-1.6.4.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.velocity/velocity@.*$</packageUrl>
+        <cve>CVE-2020-13936</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[

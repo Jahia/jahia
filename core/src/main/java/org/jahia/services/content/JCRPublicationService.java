@@ -49,6 +49,7 @@ import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.osgi.FrameworkService;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.logging.MetricsLoggingService;
@@ -1075,7 +1076,13 @@ public class JCRPublicationService extends JahiaService {
             JCRObservationManager.popEventListenersAvailableDuringPublishOnly();
         }
 
+        broadcastUnpublishEventOnCluster(checkedUuids);
         return checkedUuids;
+    }
+
+    private static void broadcastUnpublishEventOnCluster(List<String> checkedUuids) {
+        String topic = CLUSTER_BROADCAST_TOPIC_PREFIX + "/publication/unpublished";
+        FrameworkService.sendEvent(topic, Collections.singletonMap("uuids", checkedUuids), true);
     }
 
 

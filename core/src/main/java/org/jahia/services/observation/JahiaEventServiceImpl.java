@@ -61,11 +61,18 @@ public class JahiaEventServiceImpl implements JahiaEventService {
     private final Map<Class<? extends EventObject>, Set<JahiaEventListener<? extends EventObject>>> listenersByTypeCache = new ConcurrentHashMap<>();
 
     public void addEventListener(JahiaEventListener<? extends EventObject> listener) {
+        if (listener == null) {
+            return;
+        }
         allEventListeners.add(listener);
         listenersByTypeCache.clear();
     }
 
     public void removeEventListener(JahiaEventListener<? extends EventObject> listener) {
+        if (listener == null) {
+            // This can happen when the list is created and no service are registered yet, we still get a call to this method
+            return;
+        }
         allEventListeners.remove(listener);
         listenersByTypeCache.clear();
     }

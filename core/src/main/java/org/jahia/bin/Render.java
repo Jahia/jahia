@@ -758,14 +758,14 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 }
             } catch (AccessDeniedException e) {
                 if (SettingsBean.getInstance().getString("protectedResourceAccessStrategy", "silent").equalsIgnoreCase("silent")) {
-                    throw new PathNotFoundException(urlResolver.getPath());
+                    throw new PathNotFoundException("'" + urlResolver.getPath() + "' not found");
                 }
             } catch (RepositoryException e) {
                 if (e.getCause() instanceof MalformedPathException) {
                     // Stop execution but wrap in PathNotFoundException to prevent
                     // generating stack trace in jahia-errors; log 404 instead
                     logger.debug(e.getMessage());
-                    throw new PathNotFoundException("'" + urlResolver.getPath() + "'not found");
+                    throw new PathNotFoundException("'" + urlResolver.getPath() + "' not found");
                 } else if (!(e instanceof PathNotFoundException)) {
                     throw e;
                 }

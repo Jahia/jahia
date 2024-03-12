@@ -165,7 +165,7 @@ public abstract class JCRProtectedNodeAbstractDecorator extends JCRNodeDecorator
     @Override
     public JCRPropertyWrapper getProperty(String s) throws PathNotFoundException, RepositoryException {
         if (!canGetProperty(s)) {
-            throw new PathNotFoundException(s);
+            throw new PathNotFoundException("Property " + s + " not found on node: " + getPath());
         }
 
         return super.getProperty(s);

@@ -43,21 +43,20 @@
 package org.jahia.services.render.filter;
 
 import org.jahia.bin.errors.ErrorFileDumper;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.Resource;
-import org.jahia.services.render.Template;
-import org.jahia.services.render.View;
+import org.jahia.services.render.*;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.profiler.Profiler;
 import org.springframework.util.StopWatch;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Stack;
+import java.util.UUID;
 
 /**
  * TemplateScriptFilter
@@ -69,6 +68,8 @@ import java.util.Stack;
 public class TemplateScriptFilter extends AbstractFilter {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(TemplateScriptFilter.class);
+
+    private static final String RENDERING_FAILURE_VIEW_KEY = "jahiaTemplateScriptFilterRenderingFailure";
 
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         Profiler profiler = (Profiler) renderContext.getRequest().getAttribute("profiler");
@@ -190,16 +191,52 @@ public class TemplateScriptFilter extends AbstractFilter {
 
     @Override
     public String getContentForError(RenderContext renderContext, Resource resource, RenderChain renderChain, Exception e) {
-        if (renderContext.isEditMode() && SettingsBean.getInstance().isDevelopmentMode()) {
+        if (renderContext.isEditMode()) {
             if (!ErrorFileDumper.isShutdown()) {
                 try {
                     ErrorFileDumper.dumpToFile(e, renderContext.getRequest());
-                } catch (IOException e1) {
-                    logger.error("Cannot log error", e1);
+                } catch (IOException errorDumpingException) {
+                    logger.error("Cannot dump error correctly", errorDumpingException);
                 }
             }
-            return "<pre>"+getExceptionDetails(e)+"</pre>";
+
+            String printedError = getExceptionDetails(e);
+            Script originalScript = (Script) renderContext.getRequest().getAttribute("script");
+            String originalViewPath = null;
+            String originalViewKey = null;
+            View originalView = originalScript != null ? originalScript.getView() : null;
+            if (originalView != null) {
+                originalViewPath = originalView.getPath();
+                originalViewKey = originalView.getKey();
+                if (RENDERING_FAILURE_VIEW_KEY.equals(originalViewKey)) {
+                    // avoid infinite loop, the error is happening when rendering the error view.
+                    return printedError;
+                }
+            }
+
+            // try to render the error using the error view
+            Resource errorResource = new Resource(resource.getNode(), "html", RENDERING_FAILURE_VIEW_KEY, "module");
+            try {
+                Script errorScript = errorResource.getScript(renderContext);
+                View errorView = errorScript != null ? errorScript.getView() : null;
+                if (errorView != null && RENDERING_FAILURE_VIEW_KEY.equals(errorView.getKey())) {
+                    errorResource.getModuleParams().put("error", e);
+                    errorResource.getModuleParams().put("errorId", UUID.randomUUID());
+                    errorResource.getModuleParams().put("printedError", printedError);
+                    errorResource.getModuleParams().put("originalViewPath", originalViewPath);
+                    errorResource.getModuleParams().put("originalViewKey", originalViewKey);
+                    return service.render(errorResource, renderContext);
+                }
+            } catch (Exception errorRenderingException) {
+                // fallback to default error rendering
+                logger.debug("Cannot render error correctly, original StackTrace will be rendered", errorRenderingException);
+                return printedError;
+            }
+
+            // fallback to default error rendering
+            return printedError;
         }
+
         return super.getContentForError(renderContext, resource, renderChain, e);
     }
 
@@ -208,6 +245,6 @@ public class TemplateScriptFilter extends AbstractFilter {
         out.append(ex.getMessage()).append("\n");
         ex.printStackTrace(new PrintWriter(out));
         out.append("\n");
-        return out.toString();
+        return "<pre>" + out + "</pre>";
     }
 }

@@ -381,7 +381,7 @@ public class JCRSessionWrapper implements Session {
                 }
             }
         }
-        throw new PathNotFoundException(path);
+        throw new PathNotFoundException("Not found: " + path);
     }
 
     private JCRNodeWrapper dereference(JCRNodeWrapper parent, String refPath) throws RepositoryException {
@@ -393,7 +393,7 @@ public class JCRSessionWrapper implements Session {
 
         String refRootName = StringUtils.substringBefore(refPath, "/");
         if (!realReferencedNode.getName().equals(refRootName)) {
-            throw new PathNotFoundException(fullPath);
+            throw new PathNotFoundException("Not found: " + fullPath);
         }
         refPath = StringUtils.substringAfter(refPath, "/");
         if (refPath.equals("")) {

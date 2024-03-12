@@ -971,7 +971,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
         }
 
-        throw new PathNotFoundException(s);
+        throw new PathNotFoundException("Not found: " + s);
     }
 
     private boolean isExternalRoot(final Node node) throws RepositoryException, ValueFormatException,
@@ -1618,7 +1618,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (epd != null) {
             return internalGetProperty(name, epd);
         } else {
-            throw new PathNotFoundException(name);
+            throw new PathNotFoundException("Property " + name + " not found on node: " + getPath());
         }
     }
 
@@ -1628,7 +1628,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             epd = getApplicablePropertyDefinition(name);
         }
         if (epd == null) {
-            throw new PathNotFoundException(name);
+            throw new PathNotFoundException("Property " + name + " not found on node: " + getPath());
         }
         if (locale != null) {
             if (epd.isInternationalized()) {

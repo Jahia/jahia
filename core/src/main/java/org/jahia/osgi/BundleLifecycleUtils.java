@@ -42,6 +42,7 @@
  */
 package org.jahia.osgi;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.felix.utils.manifest.Clause;
 import org.apache.felix.utils.manifest.Parser;
 import org.apache.felix.utils.version.VersionRange;
@@ -59,6 +60,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
+import java.util.stream.Collectors;
 
 /**
  * Convenient utilities for OSGi bundle lifecycle and framework wiring.
@@ -79,8 +81,9 @@ public final class BundleLifecycleUtils {
      */
     private static Set<Bundle> findBundlesWithPackageImportsToRefresh(Collection<Bundle> bundles) {
         Set<Bundle> targets = new HashSet<>(Arrays.asList(getAllBundles()));
-        targets.removeAll(bundles);
-
+        // Remove all bundles with the same symbolic name as the provided bundles
+        Set<String> symbolicNames = bundles.stream().map(Bundle::getSymbolicName).collect(Collectors.toSet());
+        targets.removeIf(b -> symbolicNames.contains(b.getSymbolicName()));
         if (targets.isEmpty()) {
             return Collections.emptySet();
         }

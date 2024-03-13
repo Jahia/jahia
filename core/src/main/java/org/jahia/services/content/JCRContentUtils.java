@@ -1449,14 +1449,25 @@ public final class JCRContentUtils implements ServletContextAware {
 
 
     /**
-     * Returns the number of elements in the provided iterator.
+     * Calculates the size of a {@link RangeIterator}. If the iterator's size is
+     * already known (i.e., {@link RangeIterator#getSize()} returns a value greater than 0),
+     * it returns this size directly. Otherwise, it iterates through the {@link RangeIterator}
+     * to count the number of elements.
+     * Iterator Consumption: if the iterator does not know its size upfront,
+     * the method will consume the iterator to count its elements.
+     * This is an important detail because after this method is called,
+     * the iterator cannot be reused to iterate through the elements
      *
+     * When an implementation necessitates knowing the size of data,
+     * it is advised to perform a query on the JCR to determine the count of items beneath a node, rather than relying on JCRContentUtils.size
      * @param iterator the item iterator to check the size
      * @return the number of elements in the provided iterator
      */
+    @Deprecated
     public static long size(RangeIterator iterator) {
         long size = iterator.getSize();
         if (size <= 0) {
+            logger.warn("The size of the iterator is not known, it will be consumed to calculate the size");
             size = 0;
             while (iterator.hasNext()) {
                 size++;

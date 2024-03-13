@@ -86,7 +86,9 @@ public class DeletedNodeFact implements NodeFact, ModifiedNodeFact {
         this.parent = parent;
         this.path = path;
         this.name = StringUtils.substringAfterLast(path, "/");
-        workspace = parent.getNode().getSession().getWorkspace().getName();
+        if (parent != null){
+            workspace = parent.getNode().getSession().getWorkspace().getName();
+        }
     }
 
     @Override

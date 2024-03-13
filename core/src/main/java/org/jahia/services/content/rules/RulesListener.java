@@ -566,6 +566,13 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                         e.setTypes(JCRObservationManager.getNodeTypesForDeletedNode(event));
                                         list.add(e);
                                     } catch (PathNotFoundException e) {
+                                        logger.debug("Unable to find parent node for path: " + parentPath + ". The parent has also been deleted", e);
+                                        final DeletedSubNodeFact deletedSubNodeFact = new DeletedSubNodeFact(path);
+                                        deletedSubNodeFact.setIdentifier(eventUuid);
+                                        deletedSubNodeFact.setSession(s);
+                                        deletedSubNodeFact.setOperationType(nodeFactOperationType);
+                                        deletedSubNodeFact.setTypes(JCRObservationManager.getNodeTypesForDeletedNode(event));
+                                        list.add(deletedSubNodeFact);
                                     }
                                 } else if (type == Event.PROPERTY_REMOVED) {
                                     int index = path.lastIndexOf('/');

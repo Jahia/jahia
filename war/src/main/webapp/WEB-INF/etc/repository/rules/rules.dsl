@@ -2,6 +2,7 @@
 [condition][]A new node "{name}" is created=node : AddedNodeFact ( name == "{name}", $node : this)
 [condition][]A new node is created=node : AddedNodeFact ($node : this)
 [condition][]A node is deleted=node : DeletedNodeFact ($node : this)
+[condition][]A sub node is deleted=node : DeletedSubNodeFact ($node : this)
 [condition][]A node is moved=node : MovedNodeFact ($node : this)
 [condition][]A node is published=node : PublishedNodeFact (translation == false, unpublished == false, $node : this)
 [condition][]A translation is published=node : PublishedNodeFact (translation == true, unpublished == false, $node : this)

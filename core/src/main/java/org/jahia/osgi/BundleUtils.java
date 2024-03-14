@@ -482,6 +482,11 @@ public final class BundleUtils {
     public static Object getOsgiService(String serviceClassName, String filter) {
         Object serviceInstance = null;
         BundleContext bundleContext = FrameworkService.getBundleContext();
+
+        if (bundleContext == null) {
+            return serviceInstance;
+        }
+
         Collection<ServiceReference<?>> serviceReferences;
         try {
             ServiceReference<?>[] refs = bundleContext.getAllServiceReferences(serviceClassName, filter);

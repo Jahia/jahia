@@ -49,9 +49,11 @@ import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.events.JournalEventReader;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
@@ -1082,7 +1084,15 @@ public class JCRPublicationService extends JahiaService {
 
     private static void broadcastUnpublishEventOnCluster(List<String> checkedUuids) {
         String topic = CLUSTER_BROADCAST_TOPIC_PREFIX + "/publication/unpublished";
-        FrameworkService.sendEvent(topic, Collections.singletonMap("uuids", checkedUuids), true);
+        Map<String, List<String>> map = new HashMap<>();
+        map.put("uuids", checkedUuids);
+
+        JournalEventReader reader = BundleUtils.getOsgiService(org.jahia.services.events.JournalEventReader.class, null);
+        if (reader != null) {
+            map.put("revision", Collections.singletonList(String.valueOf(reader.getGlobalRevision())));
+        }
+
+        FrameworkService.sendEvent(topic, map, true);
     }
 
 

@@ -53,6 +53,7 @@ import org.jahia.ajax.gwt.client.widget.poller.ProcessPollingEvent;
 import org.jahia.ajax.gwt.commons.server.ChannelHolder;
 import org.jahia.ajax.gwt.commons.server.JGroupsChannel;
 import org.jahia.ajax.gwt.commons.server.ManagedGWTResource;
+import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.atmosphere.AtmosphereServlet;
@@ -63,6 +64,7 @@ import org.jahia.services.content.PublicationJob;
 import org.jahia.services.content.rules.ActionJob;
 import org.jahia.services.content.rules.RuleJob;
 import org.jahia.services.content.textextraction.TextExtractorJob;
+import org.jahia.services.events.JournalEventReader;
 import org.jahia.services.importexport.ImportJob;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
@@ -318,6 +320,11 @@ public class SchedulerHelper {
                 if (user != null) {
                     publicationInfos.put("user", Collections.singletonList(user));
                 }
+                JournalEventReader reader = BundleUtils.getOsgiService(org.jahia.services.events.JournalEventReader.class, null);
+                if (reader != null) {
+                    publicationInfos.put("revision", Collections.singletonList(String.valueOf(reader.getGlobalRevision())));
+                }
+
                 logger.debug("Sending {} event for publication paths: {}", topic, publicationPaths);
                 FrameworkService.sendEvent(topic, publicationInfos, true);
             }

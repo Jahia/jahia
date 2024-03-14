@@ -9,7 +9,8 @@ BundleInfoJcrHelper.storePersistentStates(
                     !(bpi.getSymbolicName() in [
                             "content-editor",
                             "jahia-category-manager",
-                            "clustering-tools"
+                            "clustering-tools",
+                            "sdl-generator-tools"
                     ])
                 }
                 .collect(Collectors.toList())

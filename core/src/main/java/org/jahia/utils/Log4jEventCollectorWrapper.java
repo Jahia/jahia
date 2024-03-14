@@ -42,12 +42,14 @@
  */
 package org.jahia.utils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Filter.Result;
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.LogEvent;
@@ -126,6 +128,15 @@ public class Log4jEventCollectorWrapper implements AutoCloseable {
     public Log4jEventCollectorWrapper(String minLevel, String maxLevel) {
         target = Log4jEventCollector.createAppender("eventCollector",
                 LevelRangeFilter.createFilter(Level.getLevel(minLevel), Level.getLevel(maxLevel), Result.ACCEPT, Result.DENY));
+        getRootLoggerConfig().addAppender(target, Level.getLevel(minLevel), null);
+    }
+
+    public Log4jEventCollectorWrapper(String minLevel, String maxLevel, String name, final Layout<? extends Serializable> layout, boolean start) {
+        target = Log4jEventCollector.createAppender(name,
+                LevelRangeFilter.createFilter(Level.getLevel(minLevel), Level.getLevel(maxLevel), Result.ACCEPT, Result.DENY), layout);
+        if (start) {
+            target.start();
+        }
         getRootLoggerConfig().addAppender(target, Level.getLevel(minLevel), null);
     }
 

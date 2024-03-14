@@ -43,6 +43,7 @@
 package org.jahia.services.render.filter;
 
 import org.jahia.bin.errors.ErrorFileDumper;
+import org.jahia.bin.errors.StackTraceFilter;
 import org.jahia.services.render.*;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.settings.SettingsBean;
@@ -243,7 +244,7 @@ public class TemplateScriptFilter extends AbstractFilter {
     private String getExceptionDetails(Throwable ex) {
         StringWriter out = new StringWriter();
         out.append(ex.getMessage()).append("\n");
-        ex.printStackTrace(new PrintWriter(out));
+        out.append(StackTraceFilter.printStackTrace(ex));
         out.append("\n");
         return "<pre>" + out + "</pre>";
     }

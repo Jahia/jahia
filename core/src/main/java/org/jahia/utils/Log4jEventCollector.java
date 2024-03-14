@@ -79,6 +79,16 @@ public class Log4jEventCollector extends AbstractAppender {
         return new Log4jEventCollector(name, null, filter);
     }
 
+    public static Log4jEventCollector createAppender(
+            @PluginAttribute("name") final String name,
+            @PluginElement("LevelRangeFilter") final LevelRangeFilter filter, final Layout<? extends Serializable> layout) {
+        if (name == null) {
+            LOGGER.error("A name for the Appender must be specified");
+            return null;
+        }
+        return new Log4jEventCollector(name, layout, filter);
+    }
+
     private Log4jEventCollector(final String name, final Layout<? extends Serializable> layout, final LevelRangeFilter filter) {
         super(name, filter, layout, false, Property.EMPTY_ARRAY);
     }

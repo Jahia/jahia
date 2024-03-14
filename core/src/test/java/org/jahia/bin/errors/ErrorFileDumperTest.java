@@ -40,10 +40,9 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.bin;
+package org.jahia.bin.errors;
 
 import org.apache.commons.io.FileUtils;
-import org.jahia.bin.errors.ErrorFileDumper;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.RequestLoadAverage;
 import org.junit.After;

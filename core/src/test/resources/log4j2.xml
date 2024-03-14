@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<Configuration xmlns:xi="http://www.w3.org/2001/XInclude">
+<Configuration xmlns:xi="http://www.w3.org/2001/XInclude" packages="org.jahia.bin.errors,org.jahia.services.notification">
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout

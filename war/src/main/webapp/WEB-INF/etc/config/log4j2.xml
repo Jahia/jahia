@@ -3,6 +3,7 @@
 <Configuration
     packages="org.jahia.bin.errors,org.jahia.services.notification"
     monitorInterval="30">
+
     <Appenders>
         <RollingFile name="RollingJahiaLog"
             fileName="${sys:jahia.log.dir}jahia.log"

@@ -197,7 +197,12 @@ public class RenderChain {
                 }
             }
             if (out == null) {
-                throw new RenderFilterException(e);
+                if (renderContext.isEditMode()) {
+                    logger.error("Error while rendering the resource: " + resource, e);
+                    out = "<pre>An error has occurred.</pre>";
+                } else {
+                    throw new RenderFilterException(e);
+                }
             } else {
                 logger.error("Error while rendering the resource: " + resource, e);
             }

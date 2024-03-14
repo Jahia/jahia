@@ -158,7 +158,7 @@ public class DefaultErrorHandler implements ErrorHandler {
 
             if (SettingsBean.getInstance().isDevelopmentMode()) {
                 StringWriter traceWriter = new StringWriter();
-                e.printStackTrace(new PrintWriter(traceWriter));
+                traceWriter.append(StackTraceFilter.printStackTrace(e));
                 traceWriter.flush();
                 request.setAttribute("org.jahia.exception.trace", traceWriter
                         .getBuffer().toString());

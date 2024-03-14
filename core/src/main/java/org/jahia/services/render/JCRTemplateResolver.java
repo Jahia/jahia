@@ -11,6 +11,7 @@ import org.jahia.services.channels.ChannelService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -110,6 +111,29 @@ public class JCRTemplateResolver implements TemplateResolver, InitializingBean {
 
     public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
         this.templateManagerService = templateManagerService;
+    }
+
+    public boolean hasTemplate(String templateName, ExtendedNodeType nodeType, Set<String> templatePackages) throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
+            String templateType = "jnt:contentTemplate";
+            if (nodeType.isNodeType("jnt:page")) {
+                templateType = "jnt:pageTemplate";
+            }
+
+            for (String templatePackage : templatePackages) {
+                JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageById(templatePackage);
+                if (pack != null) {
+                    List<JCRNodeWrapper> templateNodes = getTemplateNodes(templateName, "/modules/" + templatePackage + "/" + pack.getVersion(),
+                            templateType, false, session);
+                    for (JCRNodeWrapper templateNode : templateNodes) {
+                        if (checkJApplyOn(templateNode, null, nodeType)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        });
     }
 
     @Override
@@ -299,22 +323,7 @@ public class JCRTemplateResolver implements TemplateResolver, InitializingBean {
 
     private void addTemplate(Resource resource, RenderContext renderContext, JCRNodeWrapper templateNode, SortedSet<Template> templates)
             throws RepositoryException {
-        if (templateNode.hasProperty("j:applyOn")) {
-            boolean ok = false;
-            Value[] values = templateNode.getProperty("j:applyOn").getValues();
-            for (Value value : values) {
-                if (resource.getNode().isNodeType(value.getString())) {
-                    ok = true;
-                    break;
-                }
-            }
-            if (values.length == 0) {
-                ok = true;
-            }
-            if (!ok) {
-                return;
-            }
-        }
+        if (!checkJApplyOn(templateNode, resource.getNode(), null)) return;
 
         if (!checkChannel(renderContext, templateNode)) return;
 
@@ -323,6 +332,28 @@ public class JCRTemplateResolver implements TemplateResolver, InitializingBean {
         templates.add(new Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view")
                 .getString() : null, templateNode.getIdentifier(), null, templateNode.getName(), templateNode
                 .hasProperty("j:priority") ? (int) templateNode.getProperty("j:priority").getLong() : 0));
+    }
+
+    private boolean checkJApplyOn(JCRNodeWrapper templateNode, JCRNodeWrapper currentNode, ExtendedNodeType currentNodeType) throws RepositoryException {
+        boolean ok = true;
+        if (templateNode.hasProperty("j:applyOn")) {
+            ok = false;
+            Value[] values = templateNode.getProperty("j:applyOn").getValues();
+            for (Value value : values) {
+                if (currentNode != null && currentNode.isNodeType(value.getString())) {
+                    ok = true;
+                    break;
+                }
+                if (currentNodeType != null && currentNodeType.isNodeType(value.getString())) {
+                    ok = true;
+                    break;
+                }
+            }
+            if (values.length == 0) {
+                ok = true;
+            }
+        }
+        return ok;
     }
 
     private boolean checkChannel(RenderContext renderContext, JCRNodeWrapper templateNode) throws RepositoryException {

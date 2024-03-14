@@ -57,12 +57,12 @@ import java.util.TreeSet;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.api.Constants;
-import org.jahia.services.content.JCRTemplate;
-import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 
 import javax.jcr.RepositoryException;
@@ -75,6 +75,8 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
  * @since Jahia 6.6
  */
 public class MissingTemplatesValidator implements ImportValidator, ModuleDependencyAware {
+
+    private static Logger logger = LoggerFactory.getLogger(MissingTemplatesValidator.class);
 
     private static final Comparator<Map.Entry<String, Integer>> MISSING_COUNT_COMPARATOR = Map.Entry.comparingByValue();
 
@@ -128,13 +130,9 @@ public class MissingTemplatesValidator implements ImportValidator, ModuleDepende
         this.modules = new LinkedHashSet<>(modules);
     }
 
-    private boolean isTemplatePresent(String templateName, ExtendedNodeType nodeType) {
+    private boolean isTemplatePresent(String templateName, ExtendedNodeType nodeType) throws RepositoryException {
         if (targetTemplateSetPresent) {
-            boolean found = templateManagerService.isTemplatePresent(templateName, dependencies);
-            if (!found) {
-                found = isTemplateInViews(templateName, nodeType, dependencies);
-            }
-            return found;
+            return renderService.hasTemplate(templateName, nodeType, dependencies);
         } else {
             // we do not have the target template set
             // will populate the information for available template sets
@@ -146,45 +144,15 @@ public class MissingTemplatesValidator implements ImportValidator, ModuleDepende
                 if (!missingInAllTemplateSets.containsKey(setName)) {
                     missingInAllTemplateSets.put(setName, 0);
                 }
-                boolean found = templateManagerService.isTemplatePresent(templateName,
-                        dependenciesToCheck);
+                boolean found = renderService.hasTemplate(templateName, nodeType, dependenciesToCheck);
                 if (!found) {
-                    found = isTemplateInViews(templateName, nodeType, dependenciesToCheck);
-
-                    if (!found) {
-                        missingInAllTemplateSets.put(setName,
-                                1 + missingInAllTemplateSets.get(setName));
-                    }
+                    missingInAllTemplateSets.put(setName,
+                            1 + missingInAllTemplateSets.get(setName));
                 }
             }
 
             return true;
         }
-    }
-
-    private boolean isTemplateInViews(String templateName, ExtendedNodeType nodeType, Set<String> templateSetNames) {
-        boolean found;
-        try {
-            found = JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
-                boolean foundInViews = false;
-                for (String templateSetName : templateSetNames) {
-                    JCRSiteNode moduleNode = (JCRSiteNode) session.getNode("/modules/" + templateSetName);
-                    // let's try to resolve it as a view
-                    if (moduleNode != null) {
-                        foundInViews = renderService.getViewsSet(nodeType, moduleNode, "html")
-                                .stream()
-                                .anyMatch(v -> templateName.equals(v.getKey()) &&
-                                        "true".equals(v.getProperties().getProperty("template")));
-                        if (foundInViews)
-                            break;
-                    }
-                }
-                return foundInViews;
-            });
-        } catch (RepositoryException e) {
-            throw new RuntimeException(e);
-        }
-        return found;
     }
 
     public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
@@ -237,12 +205,18 @@ public class MissingTemplatesValidator implements ImportValidator, ModuleDepende
             } catch (NoSuchNodeTypeException e) {
                 throw new RuntimeException(e);
             }
-            if (nt != null && !isTemplatePresent(templateName, nt)) {
-                checked.put(templateName, Boolean.FALSE);
-                TreeSet<String> pathes = new TreeSet<>();
-                pathes.add(currentPath);
-                missingTemplates.put(templateName, pathes);
-            } else {
+            try {
+                if (nt != null && !isTemplatePresent(templateName, nt)) {
+                    checked.put(templateName, Boolean.FALSE);
+                    TreeSet<String> pathes = new TreeSet<>();
+                    pathes.add(currentPath);
+                    missingTemplates.put(templateName, pathes);
+                } else {
+                    checked.put(templateName, Boolean.TRUE);
+                }
+            } catch (RepositoryException e) {
+                logger.error("Unable to check presence of the template '" + templateName
+                        + "' (will skip import check on this template and consider it present to avoid blockage). Cause: " + e.getMessage(), e);
                 checked.put(templateName, Boolean.TRUE);
             }
         }

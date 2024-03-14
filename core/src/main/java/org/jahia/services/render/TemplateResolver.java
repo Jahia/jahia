@@ -1,6 +1,9 @@
 package org.jahia.services.render;
 
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+
 import javax.jcr.RepositoryException;
+import java.util.Set;
 
 /**
  * Service used to resolve templates for full page rendering of contents like jnt:page using pageTemplate,
@@ -10,6 +13,16 @@ import javax.jcr.RepositoryException;
  * and created this interface
  */
 public interface TemplateResolver {
+
+    /**
+     * Check if a template with the given name exists for the given node type
+     * @param templateName the name of the template
+     * @param nodeType the node type for which the template must be checked
+     * @param templatePackages the set of template packages to check
+     * @return true if a template with the given name exists for the given node type
+     * @throws RepositoryException in case any things unexpected happens during the check
+     */
+    boolean hasTemplate(String templateName, ExtendedNodeType nodeType, Set<String> templatePackages) throws RepositoryException;
 
     /**
      * Resolve the template of the given resource, in the given rendering context

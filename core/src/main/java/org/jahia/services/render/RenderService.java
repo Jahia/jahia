@@ -42,6 +42,7 @@
  */
 package org.jahia.services.render;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.content.*;
@@ -254,6 +255,25 @@ public class RenderService {
             set.addAll(scriptResolver.getViewsSet(nt, site, templateType));
         }
         return set;
+    }
+
+    public boolean hasTemplate(String templateName, ExtendedNodeType nodeType, Set<String> templatePackages) throws RepositoryException {
+        if (nodeType == null) {
+            throw new IllegalArgumentException("Node type is null");
+        }
+        if (StringUtils.isEmpty(templateName)) {
+            throw new IllegalArgumentException("Template path is either null or empty");
+        }
+        if (templatePackages == null || templatePackages.isEmpty()) {
+            throw new IllegalArgumentException("The template/module set to check is empty");
+        }
+
+        for (TemplateResolver templateResolver : templateResolvers) {
+            if (templateResolver.hasTemplate(templateName, nodeType, templatePackages)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Template resolveTemplate(Resource resource, RenderContext renderContext) throws RepositoryException {

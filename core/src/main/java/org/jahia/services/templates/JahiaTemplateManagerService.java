@@ -71,6 +71,7 @@ import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.rules.BackgroundAction;
 import org.jahia.services.modulemanager.ModuleManager;
@@ -901,7 +902,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      * @param templateName    the path of the template to be checked
      * @param templateSetName the name of the target template set
      * @return <code>true</code> if the specified template is present; <code>false</code> otherwise
+     * @deprecated use {@link org.jahia.services.render.RenderService#hasTemplate(String, ExtendedNodeType, Set)} instead
      */
+    @Deprecated
     public boolean isTemplatePresent(String templateName, String templateSetName) {
         return isTemplatePresent(templateName, ImmutableSet.of(templateSetName));
     }
@@ -912,7 +915,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      * @param templateName     the path of the template to be checked
      * @param templateSetNames the set of template sets and modules we should check for the presence of the specified template
      * @return <code>true</code> if the specified template is present; <code>false</code> otherwise
+     * @deprecated use {@link org.jahia.services.render.RenderService#hasTemplate(String, ExtendedNodeType, Set)} instead
      */
+    @Deprecated
     public boolean isTemplatePresent(final String templateName, final Set<String> templateSetNames) {
 
         long timer = System.currentTimeMillis();
@@ -954,6 +959,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return present;
     }
 
+    /**
+     * @deprecated use {@link org.jahia.services.render.RenderService#hasTemplate(String, ExtendedNodeType, Set)} instead
+     */
+    @Deprecated
     private boolean isTemplatePresent(String templateName, Set<String> templateSetNames, JCRSessionWrapper session) throws RepositoryException {
 
         QueryManager queryManager = session.getWorkspace().getQueryManager();

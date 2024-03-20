@@ -114,7 +114,7 @@
         <protobuf.java.version>3.21.12</protobuf.java.version>
 
         <driver.derby.version>10.14.2.0</driver.derby.version>
-        <driver.mssql.version>9.4.1.jre11</driver.mssql.version>
+        <driver.mssql.version>12.6.1.jre11</driver.mssql.version>
         <driver.mysql.version>8.3.0</driver.mysql.version>
         <driver.oracle.version>21.13.0.0</driver.oracle.version>
         <driver.postgresql.version>42.6.1</driver.postgresql.version>

@@ -42,12 +42,13 @@
  */
 package org.jahia.tools.patches;
 
+import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.json.JSONObject;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Filter;
+import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,8 +74,8 @@ public class GraphqlPatcher implements PatchExecutor {
     public String executeScript(String name, String scriptContent) {
         try {
             BundleContext context = FrameworkService.getBundleContext();
-            Filter filter = context.createFilter("(component.name=graphql.kickstart.servlet.OsgiGraphQLHttpServlet)");
-            ServiceTracker<?, ?> configurationAdminTracker = new ServiceTracker<>(context, filter, null);
+            String filter = "(component.name=graphql.kickstart.servlet.OsgiGraphQLHttpServlet)";
+            ServiceTracker<?, ?> configurationAdminTracker = new ServiceTracker<>(context, context.createFilter(filter), null);
             configurationAdminTracker.open();
             Servlet servlet = (Servlet) configurationAdminTracker.waitForService(TIMEOUT);
             configurationAdminTracker.close();
@@ -84,6 +85,21 @@ public class GraphqlPatcher implements PatchExecutor {
             }
 
             JCRSessionFactory.getInstance().setCurrentUser(JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser());
+            String[] mutations = (String[]) servlet.getClass().getMethod("getMutations").invoke(servlet);
+            if (mutations == null || mutations.length == 0) {
+                logger.warn("No mutations found in graphql servlet, attempting to rewire graphql dxm provider.");
+                ServiceReference<?>[] serviceReferences = context.getServiceReferences("graphql.kickstart.servlet.osgi.GraphQLProvider", "(component.name=org.jahia.modules.graphql.provider.dxm.DXGraphQLProvider)");
+                if (serviceReferences == null || serviceReferences.length == 0) {
+                    logger.error("Cannot find OSGi Jahia graphql provider to rewire mutations");
+                    return SUFFIX_FAILED;
+                } else {
+                    logger.info("Refreshing Jahia graphql provider to rewire mutations, will perform patch once refreshed.");
+                    BundleLifecycleUtils.refreshBundle(serviceReferences[0].getBundle());
+                    logger.info("Refreshed Jahia graphql provider will perform patch now.");
+                }
+            } else {
+                logger.info("Found {} mutations in graphql servlet, will execute patch.", mutations.length);
+            }
             String json = (String) servlet.getClass().getMethod("executeQuery", String.class).invoke(servlet, scriptContent);
             logger.info("Graphql execution result : {}", json);
             JSONObject object = new JSONObject(json);

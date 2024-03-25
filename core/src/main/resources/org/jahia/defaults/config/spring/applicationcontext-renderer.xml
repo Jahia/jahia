@@ -121,7 +121,7 @@
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
         <property name="ajaxTemplate" value="/WEB-INF/scripts/ajaxResources.groovy"/>
         <property name="template" value="/WEB-INF/scripts/resources.groovy"/>
-        <property name="loadJahiaContext" value="${loadJahiaContext:true}"/>
+        <property name="loadJahiaContext" value="${loadJahiaContext:false}"/>
 
         <property name="aggregateAssets" value="${aggregateAssets:true}"/>
         <property name="compressDuringAggregation" value="${compressAssetsDuringAggregation:false}"/>

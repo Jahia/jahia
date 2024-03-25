@@ -221,9 +221,11 @@ public class TemplateScriptFilter extends AbstractFilter {
                 Script errorScript = errorResource.getScript(renderContext);
                 View errorView = errorScript != null ? errorScript.getView() : null;
                 if (errorView != null && RENDERING_FAILURE_VIEW_KEY.equals(errorView.getKey())) {
-                    errorResource.getModuleParams().put("error", e);
-                    errorResource.getModuleParams().put("errorId", UUID.randomUUID());
-                    errorResource.getModuleParams().put("printedError", printedError);
+                    if (SettingsBean.getInstance().isDevelopmentMode()) {
+                        errorResource.getModuleParams().put("error", e);
+                        errorResource.getModuleParams().put("errorId", UUID.randomUUID());
+                        errorResource.getModuleParams().put("printedError", printedError);
+                    }
                     errorResource.getModuleParams().put("originalViewPath", originalViewPath);
                     errorResource.getModuleParams().put("originalViewKey", originalViewKey);
                     return service.render(errorResource, renderContext);

@@ -201,6 +201,14 @@ if [ "$YOURKIT_ACTIVATED" == "true" ]; then
     esac
 fi
 
+if [ "$JAHIA_DISABLE_SNAPSHOTS_PULL" == "true" ]; then
+  echo "Snapshots from Karaf's Jahia remote maven repository are disabled"
+  sed -i 's/public@id=jahia-public@snapshots/public@id=jahia-public/g' ${DATA_FOLDER}/karaf/etc/org.ops4j.pax.url.mvn.cfg
+else
+  echo "Snapshots from Karaf's Jahia remote maven repository are enabled"
+  sed -i 's/public@id=jahia-public$/public@id=jahia-public@snapshots/g' ${DATA_FOLDER}/karaf/etc/org.ops4j.pax.url.mvn.cfg
+fi
+
 if [ "$JPDA" == "true" ]; then
   OPT="jpda run"
 else

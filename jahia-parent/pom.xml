@@ -66,6 +66,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <spring.version>3.2.18.RELEASE_OSGI</spring.version>
+        <spring-web.version>3.2.18.jahia4_OSGI</spring-web.version>
         <spring-beans.version>3.2.18.jahia2_OSGI</spring-beans.version>
         <springtx.version>3.2.18.RELEASE_OSGI2</springtx.version>
         <springwebflow-version>2.4.8.RELEASE</springwebflow-version>

@@ -68,6 +68,7 @@ public class TemplateNodeFilter extends AbstractFilter {
                 renderContext.getRequest().setAttribute("templateSet", Boolean.TRUE);
                 if (template.isExternal()) {
                     // External template handling, we delegate the render chain to this external system by skipping current filter
+                    chain.pushAttribute(renderContext.getRequest(), "inWrapper", Boolean.FALSE);
                     return null;
                 }
 

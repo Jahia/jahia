@@ -562,7 +562,11 @@ public class Service extends JahiaService {
                 actionToExecute);
         if (action != null) {
             if (node instanceof DeletedNodeFact) {
-                action.executeBackgroundAction(node.getParent().getNode());
+                if (node.getParent() != null) {
+                    action.executeBackgroundAction(node.getParent().getNode());
+                } else {
+                    logger.warn("Skipping execution of action {} on node {} as it has no parent", actionToExecute, node.getPath());
+                }
             } else {
             	action.executeBackgroundAction(((AbstractNodeFact)node).getNode());
             }

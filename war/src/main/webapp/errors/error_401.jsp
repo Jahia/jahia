@@ -28,15 +28,14 @@
 </head>
 <body>
 
-<section class="login" style="background-image: url(${pageContext.request.contextPath}/css/images/Background_Login-01.png);">
+<section class="login" style="background-image: url(${pageContext.request.contextPath}/css/images/login-background.jpg);">
     <div class="login-main">
         <div class="position-container">
-
-            <div class="logo">
-                <img src="${pageContext.request.contextPath}/css/images/dx_logo.png" alt="jahia logo">
-            </div>
-
-            <div class="login-form">
+            <div class="logo-form-container">
+                <div class="logo">
+                    <img src="${pageContext.request.contextPath}/css/images/dx_logo.png" alt="jahia logo">
+                </div>
+                <div class="login-form">
                 <ui:loginArea>
 
                     <ui:isLoginError var="loginResult">
@@ -54,48 +53,50 @@
                             </c:choose>
                         </div>
                         <div class="group">
-                            <input type="text" name="username" maxlength="250" value="${fn:escapeXml(param['username'])}" required />
+                            <label class="inputlabel" for="username"><fmt:message key="label.username"/></label>
+                            <input type="text" name="username" id="username" maxlength="250" value="${fn:escapeXml(param['username'])}" required />
                             <span class="highlight"></span>
                             <span class="bar"></span>
-                            <label class="inputlabel"><fmt:message key="label.username"/></label>
                         </div>
                         <div class="group">
-                            <input type="password" name="password" maxlength="250" autocomplete="off" required />
+                            <label class="inputlabel" for="password"><fmt:message key="label.password"/></label>
+                            <input type="password" name="password" id="password" maxlength="250" autocomplete="off" required />
                             <span class="highlight"></span>
                             <span class="bar"></span>
-                            <label class="inputlabel"><fmt:message key="label.password"/></label>
                         </div>
                     </ui:isLoginError>
 
                     <c:if test="${empty loginResult}">
                         <div class="group">
+                            <label class="inputlabel"><fmt:message key="label.username"/></label>
                             <input type="text" name="username" maxlength="250" required />
                             <span class="highlight"></span>
                             <span class="bar"></span>
-                            <label class="inputlabel"><fmt:message key="label.username"/></label>
                         </div>
                         <div class="group">
+                            <label class="inputlabel"><fmt:message key="label.password"/></label>
                             <input type="password" name="password" maxlength="250" autocomplete="off" required />
                             <span class="highlight"></span>
                             <span class="bar"></span>
-                            <label class="inputlabel"><fmt:message key="label.password"/></label>
                         </div>
                     </c:if>
 
                     <c:if test="${(not isFullReadOnly) and (not fn:contains(param.redirect, '/administration'))}">
-                        <label class="check-label no-select">
+                        <div class="check-button-container">
                             <ui:loginRememberMe name="checkbox" class="fs1" />
-                            <lb><fmt:message key="label.rememberme"/></lb>
-                        </label>
+                            <label class="check-label no-select">
+                                <fmt:message key="label.rememberme"/>
+                            </label>
+                        </div>
                     </c:if>
 
                     <button type="submit"><fmt:message key='label.login'/></button>
 
                 </ui:loginArea>
             </div>
-
+            </div>
+            <div class="login-footer">Jahia - Copyrights © 2002-2024 All Rights Reserved by Jahia Solutions Group SA.</div>
         </div>
-        <div class="login-footer">Jahia - Copyrights © 2002-2023 All Rights Reserved by Jahia Solutions Group SA.</div>
     </div>
 </section>
 <script>

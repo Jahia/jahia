@@ -12,11 +12,11 @@
 }
 
 section.login {
+	display: flex;
+	flex-direction: row-reverse;
 	font-family: 'Nunito Sans', sans-serif;
 	background-repeat: no-repeat;
 	background-size: cover;
-	padding: 0px;
-	margin: 0;
 	height: 100%;
 	width: 100%;
 	position: fixed;
@@ -25,34 +25,38 @@ section.login {
 }
 
 .login-main {
-	width: 50%;
+	width: 46%;
 	height: 100%;
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	right: 0;
-	background: #363f45;
+	padding: 40px 40px 40px 0;
 }
 
-@media screen and (max-width: 760px) {
-
+@media screen and (max-width: 820px) {
 	.login-main {
 		width: 100%;
+		padding: 40px;
 	}
 
 }
 
 .position-container {
-	width: 360px;
-	height: 370px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	height: 100%;
 	margin: auto;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	position: absolute;
+	border-radius: 4px;
+	background-color: rgba(41, 49, 54, 1);
+	box-shadow: 0 8px 20px 0 rgba(19, 28, 33, 0.4);
 }
 
+.logo-form-container {
+	flex-grow: 2;
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	justify-content: center;
+	gap: 40px;
+}
 @media screen and (max-width: 400px) {
 
 	.position-container {
@@ -63,28 +67,21 @@ section.login {
 
 .login-main .logo {
 	text-align:  center;
-	margin-bottom: 48px;
-	margin-top: 16px;
 }
 
 .login-main .logo img {
-	width: 320px;
+	width: 263px;
 }
-
-@media screen and (max-width: 400px) {
-
-	.login-main .logo img {
-		width: 90%;
-	}
-
-}
-
 
 /* Inputs */
 
 form {
-	width: 320px;
-	margin: 45px auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 16px;
+	width: 263px;
+
 }
 
 @media screen and (max-width: 400px) {
@@ -95,30 +92,18 @@ form {
 
 }
 
-
-.group {
-	position: relative;
-	margin: 42px 0;
-}
-
 input {
 	background: #fff;
 	color: #5c6164;
 	font-size: 18px;
 	padding: 8px 10px;
 	display: block;
-	width: 320px;
+	width: 263px;
+	height: 32px;
 	border: none;
-	border-radius: 0;
-	box-shadow: 0px 5px 1px -4px rgba(38, 38, 38, 0.4);
-}
-
-@media screen and (max-width: 400px) {
-
-	input {
-		width: 100%;
-	}
-
+	border-radius: 4px;
+	margin-top: 4px;
+	box-shadow: 0 5px 1px -4px rgba(38, 38, 38, 0.4);
 }
 
 input:focus {
@@ -126,7 +111,7 @@ input:focus {
 }
 
 input:focus ~ .bar:before {
-	width: 320px;
+	width: 263px;
 }
 
 input[type="password"] {
@@ -134,21 +119,21 @@ input[type="password"] {
 }
 
 label.inputlabel {
-	color: #dcdcdc;
-	font-size: 13px;
-	font-weight: normal;
-	position: absolute;
+	color: #fdfdfd;
 	pointer-events: none;
-	left: 0;
-	top: -22px;
 	-webkit-transition: 300ms ease all;
 	transition: 300ms ease all;
+	font-family: Nunito Sans, serif;
+	font-size: 14px;
+	line-height: 19px;
+	text-align: left;
+
 }
 
 .bar {
 	position: relative;
 	display: block;
-	width: 320px;
+	width: 263px;
 }
 
 .bar:before {
@@ -168,17 +153,15 @@ label.inputlabel {
 
 .login-form form button {
 	background: #00a0e3;
-	float: right;
 	border: none;
-	outline: none;
-	text-shadow: none;
-	padding: 0 16px;
-	height: 36px;
-	line-height: 34px;
-	min-width: 84px;
-	font-size: 14px;
-	font-weight: 500;
-	color: #fafafa;
+	padding: 8px 16px 8px 16px;
+	height: 32px;
+	min-width: 123px;
+	font-size: .75rem;
+	color: #fff;
+	border-radius: 4px;
+	text-transform: uppercase;
+	margin-top: 16px;
 	-webkit-transition: background-color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 	transition: background-color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
@@ -196,14 +179,14 @@ label.inputlabel {
 /* Footer copyright */
 
 .login-footer {
-	position: absolute;
-	bottom: 0;
-	width: 100%;
+	font-family: 'Nunito Sans', serif;
 	font-size: 12px;
+	font-weight: 400;
+	line-height: 16px;
 	text-align: center;
-	padding: 8px;
-	color: rgba(255, 255, 255, 0.24);
-	font-weight: 600;
+	color: rgba(253, 253, 253, 0.6);
+	width: 100%;
+	margin-bottom: 10px;
 }
 
 
@@ -229,8 +212,11 @@ select:-webkit-autofill:focus {
 /* Checkbox */
 
 input[type=checkbox] {
-	width: 20px;
-	height: 20px;
+	width: 16px;
+	height: 16px;
+	gap: 0;
+	border-radius: 4px;
+	border: 1px solid #7A7F88;
 	font: inherit;
 	vertical-align: middle;
 	-webkit-appearance: none;
@@ -239,9 +225,7 @@ input[type=checkbox] {
 	-o-appearance: none;
 	appearance: none;
 	background: transparent;
-	border-radius: .125em;
 	box-sizing: border-box;
-	border: 2px solid #dcdcdc;
 	box-shadow: inset 0 0 0 0 #00a0e3;
 	position: relative;
 	-webkit-transition: box-shadow 0.3s cubic-bezier(0.2, 0.3, 0, 1), border-color 0s linear 0.17s, -webkit-transform 0.3s cubic-bezier(0.2, 0.3, 0, 1);
@@ -312,17 +296,16 @@ input.fs1 {
 label.check-label {
 	position: relative;
 	display: block;
-	margin-bottom: 16px;
-	margin-top: -16px;
+	color: #fdfdfd;
 }
 
-label.check-label lb {
-	position: absolute;
-	top: 4px;
-	width: 164px;
-	color: #dcdcdc;
+.check-button-container {
+	display: flex;
+	align-items: center;
+	flex-direction: row;
+	justify-content: flex-start;
+	width: 100%;
 }
-
 
 /* Error message */
 

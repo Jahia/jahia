@@ -298,6 +298,12 @@ public class AutoSplittingTest {
                 session.nodeExists(basePath + "/f/firestar"));
         assertTrue(FOLDERS_SPLIT_KO_FOR_NODENAME_MSG,
                 session.nodeExists(basePath + "/g/gaia"));
+        assertTrue(FOLDERS_SPLIT_KO_FOR_NODENAME_MSG,
+                session.nodeExists(basePath + "/h/hit-girl"));
+        assertTrue(FOLDERS_SPLIT_KO_FOR_NODENAME_MSG,
+                session.nodeExists(basePath + "/i/indigo"));
+        assertTrue(FOLDERS_SPLIT_KO_FOR_NODENAME_MSG,
+                session.nodeExists(basePath + "/k/kimchi"));
     }
 
     @Test
@@ -323,7 +329,7 @@ public class AutoSplittingTest {
         createEvent(dateSplitNode, newEventType,
                 newEventLocation, newEventDate, EVENTS.length);
 
-        createText(session.getNode(SITECONTENT_ROOT_NODE + "/contents/nodenameSplit"), "indigo");
+        createText(session.getNode(SITECONTENT_ROOT_NODE + "/contents/nodenameSplit"), "test");
 
         session.save();
 
@@ -339,7 +345,7 @@ public class AutoSplittingTest {
                 + newEventType + EVENTS.length));
 
         assertTrue(FOLDERS_SPLIT_KO_FOR_NODENAME_MSG,
-                session.nodeExists(SITECONTENT_ROOT_NODE + "/contents/nodenameSplit/i/indigo"));
+                session.nodeExists(SITECONTENT_ROOT_NODE + "/contents/nodenameSplit/t/test"));
     }
 
     private static void initContent(JCRSessionWrapper session)
@@ -379,6 +385,9 @@ public class AutoSplittingTest {
         createText(nodenameSplitNode, "elektra");
         createText(nodenameSplitNode, "firestar");
         createText(nodenameSplitNode, "gaia");
+        createText(nodenameSplitNode, "hit-girl");
+        createText(nodenameSplitNode, "indigo");
+        createText(nodenameSplitNode, "kimchi");
         nodenameSplitNode.addMixin(Constants.JAHIAMIX_AUTOSPLITFOLDERS);
         nodenameSplitNode.setProperty(Constants.SPLIT_CONFIG, NODENAME_SPLIT_CONFIG);
         nodenameSplitNode.setProperty(Constants.SPLIT_NODETYPE, AUTO_SPLIT_NODETYPE);

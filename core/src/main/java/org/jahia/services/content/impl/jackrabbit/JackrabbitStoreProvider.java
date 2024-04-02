@@ -235,6 +235,14 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
 
         try {
             jntm.unregisterNodeTypes(names.toArray(new String[names.size()]));
+            try{
+                // Get nodeTypes node to avoid error in the logs when deleting a node type.
+                // The error happens if there is no access to the node /jcr:system/jcr:nodeTypes
+                // between two jahia module deletion
+                ws.getSession().getNode("/jcr:system/jcr:nodeTypes");
+            } catch (RepositoryException e) {
+                logger.debug("Error while getting nodeTypes node", e);
+            }
             logger.info("Custom node types unregistered for {} in {} ms", systemId, System.currentTimeMillis() - timer);
         } catch (ItemNotFoundException e) {
             logger.info("Couldn't unregister custom node types {}. They probably have already been unregistered.", names);

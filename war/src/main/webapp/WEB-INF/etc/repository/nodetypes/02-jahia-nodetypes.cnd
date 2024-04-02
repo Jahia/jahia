@@ -472,19 +472,6 @@
 
 [jnt:levelAbsoluteArea] > jnt:absoluteArea, jmix:hiddenType
 
-[jnt:currentUserDisplay] > jnt:content, jmix:renderableUser, jmix:layoutComponentContent, jmix:mockupStyle, jmix:studioOnly
-
-[jnt:authorDisplay] > jnt:content, jmix:renderableUser, jmix:siteComponent, jmix:mockupStyle, jmix:bindedComponent
- - j:firstName (boolean)
- - j:lastName (boolean)
- - j:title (boolean)
- - j:gender (boolean)
- - j:birthDate (boolean)
- - j:email (boolean)
- - j:picture (boolean)
- - j:about (boolean)
-
-
 [jmix:renderableMainResource] mixin
  - j:mainResourceView (string, choicelist[templates=mainresource, resourceBundle, image]) nofulltext
 
@@ -850,8 +837,6 @@
 // Portlets (Deprecated - keeping for compatibility purposes)
 //---------------------------------------------------------
 
-[jmix:portletContent] > jmix:droppableContent, jmix:accessControllableContent mixin
-
 [jnt:portletDefinition] > nt:base, mix:referenceable, jmix:accessControlled, jmix:unversionedBasemetadata
  - j:name (string) nofulltext
  - j:description (string)
@@ -872,9 +857,6 @@
 [jnt:portletFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, mix:title, jmix:list, jmix:publication
  + * (jnt:portlet) = jnt:portlet
  + * (jnt:portletFolder)
-
-[jnt:portletReference] > jnt:content, jmix:nodeReference, jmix:portletContent
- - j:node (weakreference, picker[type='portlet']) < jnt:portlet
 
 //---------------------------------------------------------
 // Internal //

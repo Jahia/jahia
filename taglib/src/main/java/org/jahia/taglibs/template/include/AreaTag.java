@@ -243,6 +243,8 @@ public class AreaTag extends ModuleTag implements ParamParent {
                 session.save();
             } catch (Exception e1) {
                 // possible race condition when page is accessed concurrently in edit mode
+                // Clean up the current session to avoid to load the failed node created.
+                session.refresh(false);
                 areaNode = areaParentNode.getNode(areaName);
             }
         }

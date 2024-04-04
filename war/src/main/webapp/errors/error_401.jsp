@@ -10,6 +10,7 @@
 <utility:setBundle basename="JahiaInternalResources"/>
 <html>
 <% pageContext.setAttribute("isFullReadOnly", Boolean.valueOf(SettingsBean.getInstance().isFullReadOnlyMode())); %>
+<% pageContext.setAttribute("buildNumber", SettingsBean.getInstance().getBuildNumber()); %>
 <head>
     <!-- Meta info -->
     <title><fmt:message key="label.login"/></title>
@@ -21,14 +22,14 @@
     <link rel="shortcut icon" href="${pageContext.request.contextPath}/favicon.ico">
 
     <!-- Import font (Nunito Sans) -->
-    <link href="${pageContext.request.contextPath}/css/loginFont.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/css/loginFont.css?${buildNumber}" rel="stylesheet">
 
     <!-- Main style -->
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/loginMain_dark.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/loginMain_dark.css?${buildNumber}">
 </head>
 <body>
 
-<section class="login" style="background-image: url(${pageContext.request.contextPath}/css/images/login-background.jpg);">
+<section class="login" style="background-image: url(${pageContext.request.contextPath}/css/images/login-background.jpg?${buildNumber});">
     <div class="login-main">
         <div class="position-container">
             <div class="logo-form-container">

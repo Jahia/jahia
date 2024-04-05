@@ -363,10 +363,10 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             }
 
             List<Element> bodyElementList = source.getAllElements(HTMLElementName.BODY);
-            if (bodyElementList.size() > 0) {
+            if (!bodyElementList.isEmpty()) {
                 Element bodyElement = bodyElementList.get(bodyElementList.size() - 1);
                 EndTag bodyEndTag = bodyElement.getEndTag();
-                outputDocument.replace(bodyEndTag.getBegin(), bodyEndTag.getBegin() + 1, "</div><");
+                outputDocument.replace(bodyEndTag.getBegin(), bodyEndTag.getBegin(), "</div>");
                 bodyElement = bodyElementList.get(0);
                 StartTag bodyStartTag = bodyElement.getStartTag();
                 outputDocument.replace(bodyStartTag.getEnd(), bodyStartTag.getEnd(), "\n" +
@@ -380,7 +380,11 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 if (doParse) {
                     outputDocument.replace(bodyStartTag.getEnd() - 1, bodyStartTag.getEnd(), " jahia-parse-html=\"true\">");
                 }
-                outputDocument = new OutputDocument(new Source(outputDocument.toString()));
+                //Rebuild also source because error in tag location index later if not.
+                //Be carefull that Jericho HTML does not handle conflicts when replacing same zone twice... without exception it skip the
+                // second.
+                source = new Source(outputDocument.toString());
+                outputDocument = new OutputDocument(source);
             }
         }
         if (!assetsByTarget.containsKey(HEAD_TAG)) {
@@ -477,8 +481,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             final String staticsAsset = writer.toString();
 
             if (StringUtils.isNotBlank(staticsAsset)) {
-                outputDocument.replace(headEndTag.getBegin(), headEndTag.getBegin() + 1,
-                        "\n" + AggregateCacheFilter.removeCacheTags(staticsAsset) + "\n<");
+                outputDocument.replace(headEndTag.getBegin(), headEndTag.getBegin(),
+                        "\n" + AggregateCacheFilter.removeCacheTags(staticsAsset) + "\n");
             }
         }
 

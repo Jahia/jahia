@@ -81,7 +81,7 @@ public class ResourceBundleTest {
         testResource(primary, pkg, "jmix_skinnable.j_skin.skins.box2", Locale.ENGLISH,
                 "Border, light title, light content");
         // Lookup a key that is only present in the DefaultJahiaTemplates.properties
-        testResource(primary, pkg, "jnt_displayMetadata.categories", Locale.ENGLISH, "Display the categories");
+        testResource(primary, pkg, "jnt_bigText_description", Locale.ENGLISH, "Rich text containing HTML");
         // Lookup a key that is only present in the JahiaTypesResources.properties
         testResource(primary, pkg, "jmix_contentmetadata.j_lastPublishingDate", Locale.ENGLISH, "Last publication");
         // Lookup a key that is only present in the JahiaInternalResources.properties
@@ -106,7 +106,7 @@ public class ResourceBundleTest {
         // Lookup a key which is not present in the JahiaWebTemplatesSpace.properties but is present in one of the RBs of dependent modules
         testResourceLegacy("jmix_skinnable.j_skin.skins.box2","Border, light title, light content",lookupModuleName,Locale.ENGLISH,siteTemplatesPackageName);
         // Lookup a key that is only present in the DefaultJahiaTemplates.properties
-        testResourceLegacy("jnt_displayMetadata.categories","Display the categories",lookupModuleName,Locale.ENGLISH,siteTemplatesPackageName);
+        testResourceLegacy("jnt_bigText_description","Rich text containing HTML",lookupModuleName,Locale.ENGLISH,siteTemplatesPackageName);
         // Lookup a key that is only present in the JahiaTypesResources.properties
         testResourceLegacy("jmix_contentmetadata.j_lastPublishingDate","Last publication",lookupModuleName,Locale.ENGLISH,siteTemplatesPackageName);
         // Lookup a key that is only present in the JahiaInternalResources.properties

@@ -75,7 +75,7 @@
             <param name="excerptProviderClass" value="org.jahia.services.search.jcr.HTMLExcerpt"/>
             <param name="indexingConfiguration" value="${jahia.jackrabbit.searchIndex.workspace.config}"/>
             <param name="indexingConfigurationClass" value="org.apache.jackrabbit.core.query.lucene.JahiaIndexingConfigurationImpl"/>            
-            <param name="spellCheckerClass" value="org.jahia.services.search.spell.CompositeSpellChecker"/>
+            <param name="spellCheckerClass" value="${jahia.jackrabbit.searchIndex.spellChecker.spellCheckerClass}"/>
 
             <!-- This next parameter allows to specify that we want to limit the initially loaded result size -->
             <param name="resultFetchSize" value="100"/>

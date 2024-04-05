@@ -562,6 +562,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     }
 
     private void initJcrSystemProperties() {
+        setSystemProperty("jahia.jackrabbit.searchIndex.spellChecker.spellCheckerClass",
+                getBoolean("jahia.jackrabbit.searchIndex.spellChecker.enabled", true) ?
+                        "org.jahia.services.search.spell.CompositeSpellChecker" :
+                        "");
 
         setSystemProperty("jahia.jackrabbit.consistencyCheck", String.valueOf(getBoolean("jahia.jackrabbit.consistencyCheck", false)));
         setSystemProperty("jahia.jackrabbit.consistencyFix", String.valueOf(getBoolean("jahia.jackrabbit.consistencyFix", false)));

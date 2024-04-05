@@ -194,12 +194,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jahia.configuration</groupId>
-            <artifactId>migrators</artifactId>
-            <version>${jahia.plugin.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.http.whiteboard</artifactId>
             <version>2.2.1</version>

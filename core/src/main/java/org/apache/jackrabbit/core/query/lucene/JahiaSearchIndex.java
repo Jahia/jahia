@@ -937,6 +937,15 @@ public class JahiaSearchIndex extends SearchIndex {
         }
     }
 
+    @Override
+    public void setSpellCheckerClass(String className) {
+        if (StringUtils.isNotEmpty(className)) {
+            super.setSpellCheckerClass(className);
+        } else {
+            log.debug("Empty value for spellCheckerClass, disabled mode.");
+        }
+    }
+
     /**
      * Executes the query on the search index.
      *

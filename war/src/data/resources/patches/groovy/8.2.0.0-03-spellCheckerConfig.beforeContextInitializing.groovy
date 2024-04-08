@@ -10,10 +10,9 @@ import org.jdom2.output.XMLOutputter
 
 private updateSpellCheckerConfig() {
     log.info("Checks JackRabbit spellChecker configuration migration required or not");
-    boolean updated = false;
-    updated = updated || updateRepositoryConfig(new File(SettingsBean.getInstance().getPathResolver().resolvePath("WEB-INF/etc/repository/jackrabbit/repository.xml")));
-    updated = updated || updateRepositoryConfig(new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "repository/workspaces/default/workspace.xml"));
-    updated = updated || updateRepositoryConfig(new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "repository/workspaces/live/workspace.xml"));
+    boolean updated = updateRepositoryConfig(new File(SettingsBean.getInstance().getPathResolver().resolvePath("WEB-INF/etc/repository/jackrabbit/repository.xml")));
+    updated = updateRepositoryConfig(new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "repository/workspaces/default/workspace.xml")) || updated;
+    updated = updateRepositoryConfig(new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "repository/workspaces/live/workspace.xml")) || updated;
     if (updated) {
         log.info("JackRabbit spellChecker configuration migrated, you can now use jahia.properties " +
                 "(jahia.jackrabbit.searchIndex.spellChecker.enabled) to disable/enable spellChecker on JackRabbit search indices.");

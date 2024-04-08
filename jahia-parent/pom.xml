@@ -70,7 +70,7 @@
         <spring-beans.version>3.2.18.jahia2_OSGI</spring-beans.version>
         <springtx.version>3.2.18.RELEASE_OSGI2</springtx.version>
         <springwebflow-version>2.4.8.RELEASE</springwebflow-version>
-        <jackrabbit.version>2.20.12-jahia1-SNAPSHOT</jackrabbit.version>
+        <jackrabbit.version>2.20.12-jahia1</jackrabbit.version>
         <oak-jackrabbit-api.version.implemented>1.48.0</oak-jackrabbit-api.version.implemented>
         <jackson.core.version>2.15.2</jackson.core.version>
         <jackson-databind.core.version>2.15.2</jackson-databind.core.version>
@@ -79,7 +79,7 @@
         <lucene.version>3.6.2</lucene.version>
         <jbpm.version>6.0.0.Final</jbpm.version>
         <jbpm.version.jahia>${jbpm.version}-jahia</jbpm.version.jahia>
-        <drools.version>6.0.0-Final-jahia1-SNAPSHOT</drools.version>
+        <drools.version>6.0.0.Final-jahia1</drools.version>
         <hibernate.version>5.5.3.Final</hibernate.version>
         <hibernate.core.version>5.5.3.Final</hibernate.core.version>
         <hibernate.validator.version>6.2.0.Final</hibernate.validator.version>
@@ -108,7 +108,7 @@
         <hamcrest.version>2.2</hamcrest.version>
         <awaitility.version>4.0.2</awaitility.version>
         <xmlunit.version>2.8.2</xmlunit.version>
-        <izpack.version>4.3.5-jahia12-SNAPSHOT</izpack.version>
+        <izpack.version>4.3.5-jahia12</izpack.version>
         <launch4j.version>3.12</launch4j.version>
         <log4j.version>2.17.2</log4j.version>
         <jahia.tomcat.version>9.0.85</jahia.tomcat.version>
@@ -162,7 +162,7 @@
         <felix.framework.version>6.0.5</felix.framework.version>
         <felix.configadmin.version>1.9.26</felix.configadmin.version>
         <felix.coordinator.version>1.0.2</felix.coordinator.version>
-        <felix.fileinstall.version>3.7.4-jahia1-SNAPSHOT</felix.fileinstall.version>
+        <felix.fileinstall.version>3.7.4-jahia1</felix.fileinstall.version>
         <felix.http.version>2.2.1</felix.http.version>
         <felix.metatype.version>1.2.4</felix.metatype.version>
         <felix.utils.version>1.11.8</felix.utils.version>
@@ -177,7 +177,7 @@
         <pax.swissbox.version>1.8.3</pax.swissbox.version>
         <pax.url.version>2.6.14</pax.url.version>
         <pax.web.api.version>7.3.29</pax.web.api.version>
-        <pax.web.jsp.version>7.3.29-jahia1-SNAPSHOT</pax.web.jsp.version>
+        <pax.web.jsp.version>7.3.29-jahia1</pax.web.jsp.version>
         <karaf.version>4.3.10</karaf.version>
         <karaf.jaas.config.version>${karaf.version}</karaf.jaas.config.version>
         <jersey.version>2.18</jersey.version>
@@ -213,7 +213,7 @@
         <graphql-java.version>21.3</graphql-java.version>
         <graphql-java-extended-scalars.version>21.0</graphql-java-extended-scalars.version>
         <graphql-java-annotations.version>21.1</graphql-java-annotations.version>
-        <graphql-java-servlet.version>15.1.1-jahia-SNAPSHOT</graphql-java-servlet.version>
+        <graphql-java-servlet.version>15.1.1-jahia</graphql-java-servlet.version>
         <graalvm.version>22.3.3</graalvm.version>
     </properties>
 

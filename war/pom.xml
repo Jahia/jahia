@@ -715,8 +715,7 @@
                                         file="${project.build.directory}/jahia/WEB-INF/karaf/system/org/apache/karaf/features/framework/${karaf.version}/framework-${karaf.version}-features.xml"
                                         failOnNoReplacements="true">
                                     <replacetoken>org.apache.felix/org.apache.felix.fileinstall/3.7.4</replacetoken>
-                                    <replacevalue>org.apache.felix/org.apache.felix.fileinstall/3.7.4-jahia1-SNAPSHOT
-                                    </replacevalue>
+                                    <replacevalue>org.apache.felix/org.apache.felix.fileinstall/${felix.fileinstall.version}</replacevalue>
                                 </replace>
                             </target>
                         </configuration>

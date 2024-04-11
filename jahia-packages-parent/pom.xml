@@ -48,7 +48,7 @@
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
-        <version>8.2.0.0</version>
+        <version>8.2.0.0-SNAPSHOT</version>
     </parent>
     <groupId>org.jahia.packages</groupId>
     <artifactId>jahia-packages-parent</artifactId>

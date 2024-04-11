@@ -47,7 +47,7 @@
     <parent>
         <groupId>org.jahia.features</groupId>
         <artifactId>jahia-features</artifactId>
-        <version>8.2.0.0</version>
+        <version>8.2.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>dx-standard</artifactId>
@@ -58,35 +58,35 @@
         <dependency>
             <groupId>org.jahia.features</groupId>
             <artifactId>dx-gemini-blueprint</artifactId>
-            <version>8.2.0.0</version>
+            <version>8.2.0.0-SNAPSHOT</version>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
         <dependency>
             <groupId>org.jahia.features</groupId>
             <artifactId>dx-jax-rs</artifactId>
-            <version>8.2.0.0</version>
+            <version>8.2.0.0-SNAPSHOT</version>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
         <dependency>
             <groupId>org.jahia.features</groupId>
             <artifactId>dx-jackson</artifactId>
-            <version>8.2.0.0</version>
+            <version>8.2.0.0-SNAPSHOT</version>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
         <dependency>
             <groupId>org.jahia.features</groupId>
             <artifactId>dx-graphql</artifactId>
-            <version>8.2.0.0</version>
+            <version>8.2.0.0-SNAPSHOT</version>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
         <dependency>
             <groupId>org.jahia.features</groupId>
             <artifactId>dx-core</artifactId>
-            <version>8.2.0.0</version>
+            <version>8.2.0.0-SNAPSHOT</version>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>

@@ -43,16 +43,17 @@
         please contact the sales department at sales@jahia.com.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.jahia.test</groupId>
         <artifactId>jahia-test-parent</artifactId>
-        <version>8.2.0.0</version>
+        <version>8.2.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>module-test-framework</artifactId>
     <name>Jahia Module Test Framework</name>
-    <version>8.2.0.0</version>
+    <version>8.2.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <description>This is the Jahia Module Test Framework for running unit/integration tests for Digital Experience
         Manager modules.
@@ -61,7 +62,7 @@
     <scm>
         <connection>scm:dummy:uri</connection>
         <developerConnection>scm:dummy:uri</developerConnection>
-        <tag>JAHIA_8_2_0_0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <repositories>
@@ -84,13 +85,13 @@
         <dependency>
             <groupId>org.jahia.test</groupId>
             <artifactId>core-test-framework</artifactId>
-            <version>8.2.0.0</version>
+            <version>8.2.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
             <type>test-jar</type>
-            <version>8.2.0.0</version>
+            <version>8.2.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

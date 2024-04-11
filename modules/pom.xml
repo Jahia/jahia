@@ -47,7 +47,7 @@
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
-        <version>8.2.0.0-SNAPSHOT</version>
+        <version>8.2.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jahia.modules</groupId>
@@ -56,7 +56,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <jahia-depends/>
+        <jahia-depends />
         <jahia-depends-skip-require-capability />
         <jahia-module-type>module</jahia-module-type>
         <jahia-static-resources>/css,/icons,/images,/img,/javascript</jahia-static-resources>
@@ -116,7 +116,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>8.2.0.0-SNAPSHOT</version>
+            <version>8.2.0.0</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -128,7 +128,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-taglib</artifactId>
-            <version>8.2.0.0-SNAPSHOT</version>
+            <version>8.2.0.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

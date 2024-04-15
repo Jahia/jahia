@@ -58,7 +58,7 @@
     <scm>
         <connection>scm:dummy:uri</connection>
         <developerConnection>scm:dummy:uri</developerConnection>
-      <tag>JAHIA-8-2-0-X-BRANCH</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <repositories>

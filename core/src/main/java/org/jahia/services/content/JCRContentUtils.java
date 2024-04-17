@@ -1467,7 +1467,7 @@ public final class JCRContentUtils implements ServletContextAware {
     public static long size(RangeIterator iterator) {
         long size = iterator.getSize();
         if (size <= 0) {
-            logger.warn("The size of the iterator is not known, it will be consumed to calculate the size");
+            logger.debug("The size of the iterator is not known, it will be consumed to calculate the size");
             size = 0;
             while (iterator.hasNext()) {
                 size++;

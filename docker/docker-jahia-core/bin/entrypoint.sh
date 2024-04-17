@@ -67,7 +67,7 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
               ;;
           "mssql")
               DB_PORT=${DB_PORT:-1433}
-              DB_URL="jdbc:sqlserver://${DB_HOST}:${DB_PORT};databaseName=${DB_NAME}"
+              DB_URL="jdbc:sqlserver://${DB_HOST}:${DB_PORT};databaseName=${DB_NAME};integratedSecurity=false;encrypt=false;trustServerCertificate=false"
               ;;
           "oracle")
               DB_PORT=${DB_PORT:-1521}

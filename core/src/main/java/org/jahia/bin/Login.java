@@ -194,7 +194,8 @@ public class Login implements Controller {
             URI currentUri = new URI(request.getRequestURL().toString());
             URI redirectUri = new URI(redirectUrl);
 
-            if (redirectUri.isAbsolute()) {
+            boolean isProtocolRelativeUrl = redirectUrl.startsWith("//");
+            if (redirectUri.isAbsolute() || isProtocolRelativeUrl) {
                 for (String authorizedRedirectHost : SettingsBean.getInstance().getAuthorizedRedirectHosts()) {
                     if (redirectUri.getHost().equalsIgnoreCase(authorizedRedirectHost)) {
                         return true;

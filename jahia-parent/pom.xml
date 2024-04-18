@@ -138,7 +138,7 @@
         <jahia.sign.keystore>${user.home}/.codesign/jahia-code-signing-certificate.p12</jahia.sign.keystore>
 
         <!-- plugin versions -->
-        <javadoc.plugin.version>2.10.4</javadoc.plugin.version>
+        <javadoc.plugin.version>3.6.3</javadoc.plugin.version>
         <assembly.plugin.version>2.5.2</assembly.plugin.version>
         <site.plugin.version>3.4</site.plugin.version>
         <war.plugin.version>2.5</war.plugin.version>
@@ -538,11 +538,10 @@
                             <execution>
                                 <id>aggregate-javadocs</id>
                                 <goals>
-                                    <goal>aggregate-jar</goal>
+                                    <goal>aggregate-no-fork</goal>
                                 </goals>
+                                <phase>prepare-package</phase>
                                 <configuration>
-                                    <attach>false</attach>
-                                    <finalName>${project.artifactId}-${project.version}-aggregate</finalName>
                                     <additionalDependencies>
                                         <additionalDependency>
                                             <groupId>com.google.gwt</groupId>
@@ -1004,9 +1003,10 @@
                         <detectOfflineLinks>false</detectOfflineLinks>
                         <minmemory>128m</minmemory>
                         <maxmemory>1g</maxmemory>
-                        <failOnError>false</failOnError>
+                        <failOnError>true</failOnError>
                         <quiet>true</quiet>
-                        <additionalparam>-Xdoclint:none --allow-script-in-comments</additionalparam>
+                        <doclint>none</doclint>
+                        <additionalOptions>--allow-script-in-comments</additionalOptions>
                     </configuration>
                 </plugin>
                 <plugin>

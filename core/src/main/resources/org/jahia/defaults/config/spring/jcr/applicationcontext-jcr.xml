@@ -172,6 +172,12 @@
                         </bean>
                         <bean class="org.jahia.services.content.LastModifiedListener">
                             <property name="publicationService" ref="jcrPublicationService"/>
+                            <property name="skipOnOperationTypes">
+                                <set value-type="java.lang.Integer">
+                                    <value type="java.lang.Integer">7</value> <!-- skip on node checkout -->
+                                    <value type="java.lang.Integer">6</value> <!-- skip on node checkin -->
+                                </set>
+                            </property>
                         </bean>
                         <bean class="org.apache.jackrabbit.core.security.PrivilegesListener"/>
                         <bean class="org.jahia.services.content.rules.RulesListener" parent="BaseRulesListener">
@@ -211,16 +217,38 @@
                                 <list/>
                             </property>
                             <property name="availableDuringPublish" value="true"/>
+                            <property name="skipOnOperationTypes">
+                                <set value-type="java.lang.Integer">
+                                    <value type="java.lang.Integer">13</value> <!-- skip on import -->
+                                </set>
+                            </property>
                         </bean>
-                        <bean class="org.jahia.services.render.filter.cache.RenderServiceTemplateCacheEventListener">
-                        </bean>
+                        <bean class="org.jahia.services.render.filter.cache.RenderServiceTemplateCacheEventListener"/>
                         <ref bean="urlResolverListener"/>
                         <bean class="org.jahia.services.history.NodeVersionHistoryListener">
                             <property name="schedulerService" ref="SchedulerService"/>
                         </bean>
-                        <bean class="org.jahia.services.mail.MailSettingsListener"/>
-                        <bean class="org.jahia.services.search.SearchSettingsListener"/>
-                        <bean class="org.jahia.services.content.PageModelListener"/>
+                        <bean class="org.jahia.services.mail.MailSettingsListener">
+                            <property name="skipOnOperationTypes">
+                                <set value-type="java.lang.Integer">
+                                    <value type="java.lang.Integer">13</value> <!-- skip on import -->
+                                </set>
+                            </property>
+                        </bean>
+                        <bean class="org.jahia.services.search.SearchSettingsListener">
+                            <property name="skipOnOperationTypes">
+                                <set value-type="java.lang.Integer">
+                                    <value type="java.lang.Integer">13</value> <!-- skip on import -->
+                                </set>
+                            </property>
+                        </bean>
+                        <bean class="org.jahia.services.content.PageModelListener">
+                            <property name="skipOnOperationTypes">
+                                <set value-type="java.lang.Integer">
+                                    <value type="java.lang.Integer">13</value> <!-- skip on import -->
+                                </set>
+                            </property>
+                        </bean>
                         <ref bean="mountPointListener"/>
                         <!--
                         <ref bean="NodeOperationEventListener" />
@@ -246,6 +274,12 @@
                         </bean>
                         <bean class="org.jahia.services.content.LastModifiedListener">
                             <property name="publicationService" ref="jcrPublicationService"/>
+                            <property name="skipOnOperationTypes">
+                                <set value-type="java.lang.Integer">
+                                    <value type="java.lang.Integer">7</value> <!-- skip on node checkout -->
+                                    <value type="java.lang.Integer">6</value> <!-- skip on node checkin -->
+                                </set>
+                            </property>
                         </bean>
                         <bean class="org.jahia.services.content.rules.RulesListener" parent="BaseRulesListener">
                             <property name="name" value="JCR Rules listener (Live)"/>

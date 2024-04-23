@@ -92,9 +92,6 @@ public class MetricsLoggingJCReventListener extends DefaultEventListener {
      * @param events The event set received.
      */
     public void onEvent(EventIterator events) {
-        if (events instanceof JCREventIterator && ((JCREventIterator)events).getOperationType() == JCRObservationManager.IMPORT) {
-            return;
-        }
         while (events.hasNext()) {
             try {
                 Event event = events.nextEvent();

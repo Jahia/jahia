@@ -108,6 +108,7 @@ public class JCRObservationManagerDispatcher implements SynchronousEventListener
      */
     @Override
     public void onEvent(EventIterator events) {
+        // Local events are stored in thread local observation manager and will be consumed after saving the session
         List<Event> external = null;
         while (events.hasNext()) {
             Event event = events.nextEvent();
@@ -115,26 +116,26 @@ public class JCRObservationManagerDispatcher implements SynchronousEventListener
                 JCRObservationManager.addEvent(event, mountPoint, relativeRoot);
             } else {
                 if (external == null) {
-                    external = new ArrayList<Event>();
+                    external = new ArrayList<>();
                 }
                 external.add(event);
             }
         }
+
+        // External events are consumed immediately, and we need to use a system session to process them.
         if (external != null) {
             final List<Event> fexternal = external;
 
             try {
-                JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null, new JCRCallback<Object>() {
-                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        List<JCRObservationManager.EventWrapper> eventWrappers = new ArrayList<JCRObservationManager.EventWrapper>();
-                        for (Event event : fexternal) {
-                            if (event.getPath().equals(relativeRoot) || event.getPath().startsWith(relativeRoot + '/')) {
-                                eventWrappers.add(JCRObservationManager.getEventWrapper(event, session, mountPoint, relativeRoot));
-                            }
+                JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null, session -> {
+                    List<JCRObservationManager.EventWrapper> eventWrappers = new ArrayList<>();
+                    for (Event event : fexternal) {
+                        if (event.getPath().equals(relativeRoot) || event.getPath().startsWith(relativeRoot + '/')) {
+                            eventWrappers.add(JCRObservationManager.getEventWrapper(event, session, mountPoint, relativeRoot));
                         }
-                        JCRObservationManager.consume(eventWrappers, session, JCRObservationManager.EXTERNAL_SYNC, JCRObservationManager.EXTERNAL_SYNC);
-                        return null;
                     }
+                    JCRObservationManager.consume(eventWrappers, session, JCRObservationManager.EXTERNAL_SYNC, JCRObservationManager.EXTERNAL_SYNC);
+                    return null;
                 });
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);

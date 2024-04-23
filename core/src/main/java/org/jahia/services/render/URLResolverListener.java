@@ -86,10 +86,6 @@ public class URLResolverListener extends DefaultEventListener implements ApiEven
             while (events.hasNext()) {
                 Event event = events.nextEvent();
 
-                if (isExternal(event)) {
-                    continue;
-                }
-
                 String path = event.getPath();
                 if (event.getType() == Event.NODE_ADDED || event.getType() == Event.NODE_REMOVED || event.getType() == Event.NODE_MOVED ||
                         path.endsWith("/j:published") || path.contains("/vanityUrlMapping/")) {

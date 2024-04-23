@@ -68,6 +68,7 @@ public abstract class DefaultEventListener implements EventListener {
     protected String workspace;
     protected boolean availableDuringPublish = false;
     protected Set<Integer> operationTypes;
+    protected Set<Integer> skipOnOperationTypes;
 
     protected DefaultEventListener() {
         propertiesToIgnore = new HashSet<String>();
@@ -115,7 +116,8 @@ public abstract class DefaultEventListener implements EventListener {
     }
 
     protected boolean isSupportedOperationType(int operationType) {
-        return operationTypes == null || operationTypes.contains(operationType);
+        return (operationTypes == null || operationTypes.contains(operationType)) &&
+                (skipOnOperationTypes == null || !skipOnOperationTypes.contains(operationType));
     }
 
     public abstract int getEventTypes();
@@ -148,12 +150,34 @@ public abstract class DefaultEventListener implements EventListener {
         return workspace;
     }
 
+    /**
+     * Set of operation types that should be processed by the event listener
+     * @param operationTypes set of operation types that should be processed by the event listener
+     */
     public void setOperationTypes(Set<Integer> operationTypes) {
         this.operationTypes = operationTypes;
     }
 
+    /**
+     * @return Operation types that should be processed by the event listener or null if all operation types should be processed
+     */
     public Set<Integer> getOperationTypes() {
         return operationTypes;
+    }
+
+    /**
+     * @return Operation types that should be skipped by the event listener or null if all operation types should be processed
+     */
+    public Set<Integer> getSkipOnOperationTypes() {
+        return skipOnOperationTypes;
+    }
+
+    /**
+     * Set of operation types that should be skipped by the event listener
+     * @param skipOnOperationTypes set of operation types that should be skipped by the event listener
+     */
+    public void setSkipOnOperationTypes(Set<Integer> skipOnOperationTypes) {
+        this.skipOnOperationTypes = skipOnOperationTypes;
     }
 
     /**

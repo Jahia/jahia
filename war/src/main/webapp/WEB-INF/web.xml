@@ -43,7 +43,7 @@
              for a reason, and the versions below are the ones we recommend.
         -->
         <param-name>supported_jdk_versions</param-name>
-        <param-value>1.8 &lt;= x &lt; 1.9, 11 &lt;= x &lt; 12, 17 &lt;= x &lt; 18</param-value>
+        <param-value>11 &lt;= x &lt; 12, 17 &lt;= x &lt; 18</param-value>
     </context-param>
 
     <context-param>

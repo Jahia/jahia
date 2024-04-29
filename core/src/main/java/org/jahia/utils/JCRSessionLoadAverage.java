@@ -46,6 +46,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 
 /**
  * A tracker for JCR sessions load.
+ * TODO: https://jira.jahia.org/browse/TECH-1808
  */
 public class JCRSessionLoadAverage extends LoadAverage {
 

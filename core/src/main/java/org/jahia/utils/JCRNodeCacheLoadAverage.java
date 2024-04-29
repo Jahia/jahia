@@ -46,6 +46,8 @@ import org.jahia.services.content.JCRSessionWrapper;
 
 /**
  * A tracker for JCR node cache load.
+ * In case of a high load, it is recommended to call session.refresh(false) to release the cache of JCR session.
+ * TODO: https://jira.jahia.org/browse/TECH-1808
  */
 public class JCRNodeCacheLoadAverage extends LoadAverage {
 

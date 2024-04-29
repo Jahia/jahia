@@ -491,18 +491,24 @@ public class JCRVersionService extends JahiaService {
 
     public void addVersionLabel(final List<String> allUuids, final String label, final String workspace)
             throws RepositoryException {
+        if (allUuids == null || allUuids.isEmpty()) {
+            return;
+        }
         JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null, new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 VersionManager versionManager = session.getWorkspace().getVersionManager();
-                for (String allUuid : allUuids) {
+                final int batchSize = 100;
+                for (int i = 0; i < allUuids.size(); i++) {
+                    String allUuid = allUuids.get(i);
                     try {
                         JCRNodeWrapper nodeWrapper = session.getNodeByUUID(allUuid);
-                        VersionHistory versionHistory = versionManager.getVersionHistory(nodeWrapper.getPath());
+                        String path = nodeWrapper.getPath();
+                        VersionHistory versionHistory = versionManager.getVersionHistory(path);
                         String labelWithWs = workspace + "_" + label;
                         if (!versionHistory.hasVersionLabel(labelWithWs)) {
-                            Version version = versionManager.getBaseVersion(nodeWrapper.getPath());
+                            Version version = versionManager.getBaseVersion(path);
                             if (logger.isDebugEnabled()) {
-                                logger.debug("Add version label " + labelWithWs + " on " + nodeWrapper.getPath() + " for version " +
+                                logger.debug("Add version label " + labelWithWs + " on " + path + " for version " +
                                         version.getName());
                             }
                             if (nodeWrapper.isVersioned() && JCRContentUtils.needVersion(nodeWrapper, versionedTypes, excludedVersionedTypes)) {
@@ -511,6 +517,14 @@ public class JCRVersionService extends JahiaService {
                         }
                     } catch (RepositoryException e) {
                         logger.debug(e.getMessage(), e);
+                    } finally {
+                        // Flush session internal cache every 100 items, to avoid memory issues
+                        // The current function can be called with a large number of UUIDs in during import.
+                        // We do not really benefit from the internal cache in current case, I would disable it if there was a way to do it easily
+                        // But for now, we just flush it every 100 items
+                        if ((i + 1) % batchSize == 0) {
+                            session.refresh(false);
+                        }
                     }
                 }
                 return null;

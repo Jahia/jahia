@@ -65,6 +65,16 @@ html_views:
   grants:
     - api: view.html
 
+ajax_views:
+  description: Can access AJAX views
+  auto_apply:
+    - always: true
+  grants:
+    - api: view.ajax
+      node:
+        excludedNodeType: jnt:virtualsite,jnt:portletFolder,jnt:groupsFolder,jnt:usersFolders
+        excludedPathPattern: /sites/[^/]+/files,/sites/[^/]+/contents
+
 provisioning:
   description: Can use provisioning
   metadata:

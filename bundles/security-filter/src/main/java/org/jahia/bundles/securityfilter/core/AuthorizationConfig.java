@@ -110,18 +110,18 @@ public class AuthorizationConfig implements ManagedServiceFactory {
 
     private void aggregateScopes() {
         aggregatedScopes = scopeDefinitions.stream().collect(Collectors.groupingBy(ScopeDefinitionImpl::getScopeName)).entrySet().stream().map(entry ->
-            new ScopeDefinitionImpl(null, entry.getKey(),
-                    entry.getValue().stream().map(ScopeDefinitionImpl::getDescription).filter(Objects::nonNull).findFirst().orElse(null),
-                    entry.getValue().stream().flatMap(s -> s.getApply().stream()).collect(Collectors.toList()),
-                    entry.getValue().stream().flatMap(s -> s.getConstraints().stream()).collect(Collectors.toList()),
-                    entry.getValue().stream().flatMap(s -> s.getGrants().stream()).collect(Collectors.toList()),
-                    entry.getValue().stream().flatMap(s -> s.getMetadata().entrySet().stream()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (v1,v2) -> {
-                        if (!v1.equals(v2)) {
-                            logger.warn("Different metadata values, using {}, ignoring {}", v1, v2);
-                        }
-                        return v1;
-                    }))
-            )
+                new ScopeDefinitionImpl(null, entry.getKey(),
+                        entry.getValue().stream().map(ScopeDefinitionImpl::getDescription).filter(Objects::nonNull).findFirst().orElse(null),
+                        entry.getValue().stream().flatMap(s -> s.getApply().stream()).collect(Collectors.toList()),
+                        entry.getValue().stream().flatMap(s -> s.getConstraints().stream()).collect(Collectors.toList()),
+                        entry.getValue().stream().flatMap(s -> s.getGrants().stream()).collect(Collectors.toList()),
+                        entry.getValue().stream().flatMap(s -> s.getMetadata().entrySet().stream()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (v1,v2) -> {
+                            if (!v1.equals(v2)) {
+                                logger.warn("Different metadata values, using {}, ignoring {}", v1, v2);
+                            }
+                            return v1;
+                        }))
+                )
         ).collect(Collectors.toList());
     }
 

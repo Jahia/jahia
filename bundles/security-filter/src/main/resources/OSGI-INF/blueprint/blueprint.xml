@@ -66,6 +66,16 @@
         </bean>
     </service>
 
+    <service interface="org.jahia.services.render.filter.RenderFilter">
+        <bean class="org.jahia.bundles.securityfilter.views.AjaxPermissionFilter">
+            <property name="description"
+                      value="Filter that checks permission configuration specifically for an AJAX request before rendering a view"/>
+            <property name="permissionService" ref="permissionService"/>
+            <property name="priority" value="26"/>
+            <property name="applyOnConfigurations" value="page"/>
+        </bean>
+    </service>
+
     <!-- JWT -->
     <bean id="jwtConfig" class="org.jahia.bundles.securityfilter.jwt.JWTConfig"/>
 

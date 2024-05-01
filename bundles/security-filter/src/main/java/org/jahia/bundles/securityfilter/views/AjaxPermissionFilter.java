@@ -64,7 +64,7 @@ public class AjaxPermissionFilter extends PermissionFilter {
         }
 
         // Otherwise, check the API permissions rules
-        String api = VIEW + ".ajax" + resource.getTemplateType() + "." + resource.getResolvedTemplate();
+        String api = VIEW + ".ajax." + resource.getTemplateType() + "." + resource.getResolvedTemplate();
         if (!permissionService.hasPermission(api, resource.getNode())) {
             throw new PermissionSecurityAccessDeniedException(api, resource.getPath());
         }

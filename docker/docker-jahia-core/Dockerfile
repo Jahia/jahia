@@ -74,7 +74,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 RUN echo "Retrieve latest Yourkit agent binaries..." \
-    && wget -nv -O yourkit.zip https://www.yourkit.com/download/docker/YourKit-JavaProfiler-2022.9-docker.zip -P /tmp/ \
+    && wget -nv -O yourkit.zip https://www.yourkit.com/download/docker/YourKit-JavaProfiler-2023.9-docker.zip -P /tmp/ \
     && unzip /tmp/yourkit.zip -d /usr/local \
     && rm /tmp/yourkit.zip \
     && mv /usr/local/YourKit-JavaProfiler* /usr/local/yourkit

@@ -42,55 +42,32 @@
  */
 package org.jahia.bundles.securityfilter.views;
 
-import org.jahia.services.securityfilter.PermissionService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
-import org.jahia.services.render.scripting.Script;
 
 /**
- * Filter that checks permission configuration before rendering a view.
+ * Filter that checks permission configuration specifically for an AJAX request before rendering a view.
  */
-public class PermissionFilter extends AbstractFilter {
-
-    protected static final String VIEW = "view";
-
-    protected PermissionService permissionService;
-
-    public void setPermissionService(PermissionService permissionService) {
-        this.permissionService = permissionService;
-    }
-
-    @Override
-    public boolean areConditionsMatched(RenderContext renderContext, Resource resource) {
-        return super.areConditionsMatched(renderContext, resource) || (resource.getModuleParams().get("forcePermissionFilterCheck") != null);
-    }
-
-    public void setApplyOnAjaxRequest(Boolean apply) {
-        if (apply) {
-            addCondition(new AjaxRequestCondition());
-        }
-    }
+public class AjaxPermissionFilter extends PermissionFilter {
 
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+        // handle only ajax requests
+        if (!renderContext.isAjaxRequest()) {
+            return null;
+        }
+
         // Bypass the check if a specific permission has been defined on the view through the requirePermissions property
         if (hasViewRequirePermissions(renderContext)) {
             return null;
         }
 
         // Otherwise, check the API permissions rules
-        String api = VIEW + "." + resource.getTemplateType() + "." + resource.getResolvedTemplate();
+        String api = VIEW + ".ajax." + resource.getTemplateType() + "." + resource.getResolvedTemplate();
         if (!permissionService.hasPermission(api, resource.getNode())) {
             throw new PermissionSecurityAccessDeniedException(api, resource.getPath());
         }
         return null;
-    }
-
-    protected boolean hasViewRequirePermissions(RenderContext renderContext) {
-        Script script = (Script) renderContext.getRequest().getAttribute("script");
-        return script != null && (script.getView().getProperties().getProperty("requirePermissions") != null
-                || script.getView().getDefaultProperties().getProperty("requirePermissions") != null);
     }
 }

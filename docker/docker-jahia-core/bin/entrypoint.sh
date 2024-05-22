@@ -55,7 +55,7 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
       case "$DB_VENDOR" in
           "mysql")
               DB_PORT=${DB_PORT:-3306}
-              DB_URL="jdbc:mysql://${DB_HOST}:${DB_PORT}/jahia?characterEncoding=UTF-8&sslMode=DISABLED"
+              DB_URL="jdbc:mysql://${DB_HOST}:${DB_PORT}/jahia?characterEncoding=UTF-8&sslMode=DISABLED&allowPublicKeyRetrieval=true"
               ;;
           "mariadb")
               DB_PORT=${DB_PORT:-3306}

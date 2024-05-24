@@ -176,7 +176,7 @@
         <pax.swissbox.version>1.8.3</pax.swissbox.version>
         <pax.url.version>2.6.14</pax.url.version>
         <pax.web.api.version>7.3.29</pax.web.api.version>
-        <pax.web.jsp.version>7.3.29-jahia1</pax.web.jsp.version>
+        <pax.web.jsp.version>7.3.29-jahia2-SNAPSHOT</pax.web.jsp.version>
         <karaf.version>4.3.10</karaf.version>
         <karaf.jaas.config.version>${karaf.version}</karaf.jaas.config.version>
         <jersey.version>2.18</jersey.version>

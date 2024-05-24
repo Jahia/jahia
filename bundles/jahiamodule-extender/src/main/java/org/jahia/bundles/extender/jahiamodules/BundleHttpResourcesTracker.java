@@ -46,12 +46,15 @@ import org.apache.commons.collections.EnumerationUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.utils.collections.MapToDictionary;
-import org.apache.jasper.*;
+import org.apache.jasper.JspCompilationContext;
+import org.apache.jasper.Options;
+import org.apache.jasper.TrimSpacesOption;
 import org.apache.jasper.compiler.JspConfig;
 import org.apache.jasper.compiler.TagPluginManager;
 import org.apache.jasper.compiler.TldCache;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.bundles.extender.jahiamodules.jsp.JahiaJspServletWrapper;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.settings.SettingsBean;
@@ -67,6 +70,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.ServletException;
 import javax.servlet.jsp.tagext.TagLibraryInfo;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
@@ -143,7 +147,11 @@ public class BundleHttpResourcesTracker extends ServiceTracker<HttpService, Http
         if (!scratchDirFile.exists()) {
             scratchDirFile.mkdirs();
         }
-        cfg.put("scratchdir", scratchDirFile.getPath());
+        try {
+            cfg.put("scratchdir", scratchDirFile.getCanonicalPath());
+        } catch (IOException e) {
+            throw new JahiaRuntimeException(e);
+        }
         cfg.put("alias", jspServletAlias);
         cfg.put("compilerSourceVM", "1.7");
         cfg.put("compilerTargetVM", "1.7");
@@ -152,9 +160,7 @@ public class BundleHttpResourcesTracker extends ServiceTracker<HttpService, Http
 
         try {
             httpService.registerServlet(jspServletAlias, jspServletWrapper, new MapToDictionary(cfg), httpContext);
-        } catch (ServletException e) {
-            logger.error("Error registering JSPs for bundle " + bundleName, e);
-        } catch (NamespaceException e) {
+        } catch (ServletException | NamespaceException e) {
             logger.error("Error registering JSPs for bundle " + bundleName, e);
         }
     }

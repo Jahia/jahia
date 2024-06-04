@@ -179,4 +179,32 @@ public class NodeTypesIT extends AbstractJUnitTest {
             Assert.assertTrue("Missing mandatory mandatoryOverrideProperty should have not be removed", session.getNode(testNodeWithMixin.getPath()).hasProperty("mandatoryOverrideProperty"));
         }
     }
+
+    @Test
+    public void autoCreatedChildShouldHaveANodeName() throws Exception {
+        // given
+        JCRNodeWrapper rootNode = session.getNode("/");
+        JCRNodeWrapper testNode1 = rootNode.addNode("sameNameChildAndPropertyParent", "test:sameNameChildAndPropertyParent");
+        testNode1.setProperty("sameName", "dummy1");
+        JCRNodeWrapper testNode2 = rootNode.addNode("nodeWithoutNodeNameInfoParent", "test:nodeWithoutNodeNameInfoParent");
+        testNode2.setProperty("sameName", "dummy2");
+
+        // when
+        session.save();
+
+        // then
+        Assert.assertTrue("Missing mandatory localProperty should have been autocreated", testNode1.hasProperty("sameName"));
+        Assert.assertTrue("Missing mandatory child node should have been autocreated", testNode1.hasNode("sameName"));
+        JCRNodeWrapper childNode1 = session.getNode("/sameNameChildAndPropertyParent/sameName");
+        Assert.assertTrue("Missing mandatory localProperty should have been auto populated", childNode1.hasProperty(Constants.NODENAME));
+        Assert.assertEquals("sameName", childNode1.getProperty(Constants.NODENAME).getValue().getString());
+
+        // then
+        Assert.assertTrue("Missing mandatory localProperty should have been autocreated", testNode2.hasProperty("sameName"));
+        Assert.assertTrue("Missing mandatory child node should have been autocreated", testNode2.hasNode("sameName"));
+        JCRNodeWrapper childNode2 = session.getNode("/nodeWithoutNodeNameInfoParent/sameName");
+        Assert.assertFalse("Node that have not the mixin " + Constants.JAHIAMIX_NODENAMEINFO + " cant have a node name",
+                childNode2.hasProperty(Constants.NODENAME));
+    }
+
 }

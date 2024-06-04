@@ -244,30 +244,35 @@
 [test:cat2ype1] > jnt:content, jmix:cat2
 
 [test:mixinToOverrideWithAutocreated] mixin
-- mandatoryOverrideProperty (string) mandatory
+ - mandatoryOverrideProperty (string) mandatory
 
 [test:nodeTypeToOverrideWithAutocreated] > nt:base
-- mandatoryOverridePropertyNodeType (string) mandatory
+ - mandatoryOverridePropertyNodeType (string) mandatory
 
 [test:nodeTypeOverrideWithAutocreated] > jnt:content, test:mixinToOverrideWithAutocreated
-- localProperty (string) = 'autocreated' mandatory autocreated
-- mandatoryOverrideProperty (string) = 'autocreated' autocreated
+ - localProperty (string) = 'autocreated' mandatory autocreated
+ - mandatoryOverrideProperty (string) = 'autocreated' autocreated
 
 [test:nodeTypeOverrideNodeTypeWithAutocreated] > test:nodeTypeToOverrideWithAutocreated
-- localProperty (string) = 'autocreated' mandatory autocreated
-- mandatoryOverridePropertyNodeType (string) = 'autocreated' autocreated
+ - localProperty (string) = 'autocreated' mandatory autocreated
+ - mandatoryOverridePropertyNodeType (string) = 'autocreated' autocreated
 
- [test:sameNameChildAndPropertyParent] > jnt:content, jmix:droppableContent
-  - sameName (string)
-  + sameName (test:sameNameChildAndPropertyChild) = test:sameNameChildAndPropertyChild autocreated
+[test:sameNameChildAndPropertyParent] > jnt:content, jmix:droppableContent
+ - sameName (string)
+ + sameName (test:sameNameChildAndPropertyChild) = test:sameNameChildAndPropertyChild autocreated
 
- [test:sameNameChildAndPropertyChild] > jnt:content, jmix:droppableContent
+[test:sameNameChildAndPropertyChild] > jnt:content, jmix:droppableContent
 
- [test:childContent] > jnt:content
+[test:nodeWithoutNodeNameInfoParent] > nt:base, jmix:droppableContent
+ - sameName (string)
+ + sameName (test:nodeWithoutNodeNameInfoChild) = test:nodeWithoutNodeNameInfoChild autocreated
 
- [test:rootWithReference] > jnt:content, jmix:droppableContent
+[test:nodeWithoutNodeNameInfoChild] > nt:base, jmix:droppableContent
+
+[test:childContent] > jnt:content
+
+[test:rootWithReference] > jnt:content, jmix:droppableContent
  - childReference (weakreference) < test:childContent
  + * (test:childContent) = test:childContent
  + * (jnt:contentList) = jnt:contentList
-
 

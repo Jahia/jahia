@@ -181,6 +181,9 @@ public class DefaultValueListener extends DefaultEventListener {
                         if (autoCreated.isNodeType("jmix:originWS")) {
                             autoCreated.setProperty("j:originWS", workspace);
                         }
+                        if (autoCreated.isNodeType(Constants.JAHIAMIX_NODENAMEINFO)) {
+                            autoCreated.setProperty(Constants.NODENAME, autoCreated.getName());
+                        }
                         handleNode(autoCreated);
                         anythingChanged = true;
                     }

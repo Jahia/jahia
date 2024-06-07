@@ -71,7 +71,6 @@ import java.util.Set;
  */
 @SuppressWarnings("serial")
 public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
-    private boolean checkPermissionOnSite;
     private String configurationName;
     private boolean updateSidePanel =true;
     private boolean updateToolbar =true;
@@ -119,7 +118,7 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
         if (!updateOnMainNodeRefresh || (noChecksInMode != null && noChecksInMode.contains(linker.getConfig().getName()))) {
             setEnabled(true);
         } else {
-            setEnabled(isNodeTypeAllowed(node) && !((EditLinker) linker).isInSettingsPage() && hasPermission(checkPermissionOnSite ? JahiaGWTParameters.getSiteNode() : node)) ;
+            setEnabled(isNodeTypeAllowed(node) && !((EditLinker) linker).isInSettingsPage() && hasPermission(node)) ;
         }
     }
 
@@ -253,8 +252,12 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
         this.updateOnMainNodeRefresh = updateOnMainNodeRefresh;
     }
 
+    /**
+     * @deprecated use requiredSitePermissions instead
+     */
+    @Deprecated
     public void setCheckPermissionOnSite(boolean checkPermissionOnSite) {
-        this.checkPermissionOnSite = checkPermissionOnSite;
+        // do nothing
     }
 
     private static native boolean replaceSwitchByOpen () /*-{

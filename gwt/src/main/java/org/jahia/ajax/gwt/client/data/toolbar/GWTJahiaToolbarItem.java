@@ -67,6 +67,7 @@ public class GWTJahiaToolbarItem implements Serializable {
     private List<String> processes;
     private Map<String, GWTJahiaProperty> properties = new HashMap<String, GWTJahiaProperty>();
     private List<String> requiredPermissions = Collections.emptyList();
+    private List<String> requiredSitePermissions = Collections.emptyList();
     private PermissionsResolver requiredPermissionsResolver = PermissionsResolver.MATCH_ALL;
     private String requiredModule;
     private boolean hideWhenDisabled = false;
@@ -203,6 +204,14 @@ public class GWTJahiaToolbarItem implements Serializable {
      */
     public final List<String> getRequiredPermissions() {
         return new ArrayList<String>(requiredPermissions);
+    }
+
+    public List<String> getRequiredSitePermissions() {
+        return new ArrayList<String>(requiredSitePermissions);
+    }
+
+    public void setRequiredSitePermissions(List<String> requiredSitePermissions) {
+        this.requiredSitePermissions = new ArrayList<String>(requiredSitePermissions);
     }
 
     /**

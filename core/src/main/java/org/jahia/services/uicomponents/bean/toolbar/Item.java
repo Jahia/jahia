@@ -91,6 +91,7 @@ public class Item implements Serializable, BeanNameAware, InitializingBean, Disp
     private Selected selected;
     private String layout;
     private List<String> requiredPermissions = Collections.emptyList();
+    private List<String> requiredSitePermissions = Collections.emptyList();
     private PermissionsStrategy requiredPermissionsStrategy = PermissionsStrategy.MATCH_ALL;
     private String requiredModule;
     private boolean hideWhenDisabled;
@@ -233,6 +234,10 @@ public class Item implements Serializable, BeanNameAware, InitializingBean, Disp
         return Collections.unmodifiableList(requiredPermissions);
     }
 
+    public List<String> getRequiredSitePermissions() {
+        return Collections.unmodifiableList(requiredSitePermissions);
+    }
+
     /**
      * Returns the permission strategy to use to interpret required permissions.
      *
@@ -270,6 +275,14 @@ public class Item implements Serializable, BeanNameAware, InitializingBean, Disp
     public final void setRequiredPermissions(List<String> requiredPermissions) {
         Objects.requireNonNull(requiredPermissions);
         this.requiredPermissions = new ArrayList<>(requiredPermissions);
+    }
+
+    public void setRequiredSitePermissions(String requiredSitePermissions) {
+        Objects.requireNonNull(requiredSitePermissions);
+        this.requiredSitePermissions = new ArrayList<String>();
+        for (String token : requiredSitePermissions.split(",")) {
+            this.requiredSitePermissions.add(token.trim());
+        }
     }
 
     /**

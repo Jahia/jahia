@@ -118,7 +118,7 @@ public class OpenWindowActionItem extends BaseActionItem {
     public void handleNewLinkerSelection() {
         Map preferences = getGwtToolbarItem().getProperties();
         final GWTJahiaProperty windowUrl = (GWTJahiaProperty) preferences.get(Constants.URL);
-        if (!hasPermission(JahiaGWTParameters.getSiteNode())) {
+        if (!hasSitePermission()) {
             setEnabled(false);
         } else {
             if (windowUrl != null && windowUrl.getValue() != null && !windowUrl.getValue().isEmpty()) {

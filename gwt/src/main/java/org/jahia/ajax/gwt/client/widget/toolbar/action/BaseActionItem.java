@@ -345,7 +345,8 @@ public abstract class BaseActionItem implements ActionItem {
     }
 
     public boolean hasPermission(final GWTJahiaNode node) {
-        return hasPermission(gwtToolbarItem, new PermissionsResolver.Matcher() {
+        return hasSitePermission() && gwtToolbarItem.getRequiredPermissionsResolver()
+                .resolve(gwtToolbarItem.getRequiredPermissions(), new PermissionsResolver.Matcher() {
             @Override
             public boolean matches(String permission) {
                 return PermissionsUtils.isPermitted(permission, node);
@@ -354,10 +355,20 @@ public abstract class BaseActionItem implements ActionItem {
     }
 
     public boolean hasPermission(final GWTBitSet permissions) {
-        return hasPermission(gwtToolbarItem, new PermissionsResolver.Matcher() {
+        return hasSitePermission() && gwtToolbarItem.getRequiredPermissionsResolver()
+                .resolve(gwtToolbarItem.getRequiredPermissions(), new PermissionsResolver.Matcher() {
             @Override
             public boolean matches(String permission) {
                 return PermissionsUtils.isPermitted(permission, permissions);
+            }
+        });
+    }
+
+    public boolean hasSitePermission() {
+        return PermissionsResolver.MATCH_ALL.resolve(gwtToolbarItem.getRequiredSitePermissions(), new PermissionsResolver.Matcher() {
+            @Override
+            public boolean matches(String permission) {
+                return PermissionsUtils.isPermitted(permission, JahiaGWTParameters.getSiteNode());
             }
         });
     }
@@ -379,9 +390,4 @@ public abstract class BaseActionItem implements ActionItem {
             }
         }
     }
-
-    private static boolean hasPermission(GWTJahiaToolbarItem item, PermissionsResolver.Matcher matcher) {
-        return item.getRequiredPermissionsResolver().resolve(item.getRequiredPermissions(), matcher);
-    }
-
 }

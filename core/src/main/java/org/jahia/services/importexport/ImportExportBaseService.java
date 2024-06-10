@@ -43,6 +43,7 @@
 package org.jahia.services.importexport;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.sf.saxon.TransformerFactoryImpl;
 import org.apache.commons.collections.set.ListOrderedSet;
@@ -181,6 +182,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         }
     };
     private final long scannerInterval = SettingsBean.getInstance().getJahiaSiteImportScannerInterval();
+    private final int maxBatch = SettingsBean.getInstance().getImportMaxBatch();
     private JahiaSitesService sitesService;
     private JahiaFileWatcherService fileWatcherService;
     private JCRStoreService jcrStoreService;
@@ -194,7 +196,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     private Map<String, Templates> xsltTemplates = new ConcurrentHashMap<>(2);
     private LegacyPidMappingTool legacyPidMappingTool = null;
     private PostImportPatcher postImportPatcher = null;
-
+    
     private ImportExportBaseService() {
     }
 
@@ -2272,20 +2274,36 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         handleImport(zis, documentViewImportHandler, REPOSITORY_XML);
 
         if (importLive && liveUuids != null) {
-            liveUuids.removeAll(documentViewImportHandler.getUuids());
-            Collections.reverse(liveUuids);
-            for (String uuid : liveUuids) {
+            // Using an hashset to remove the UUIDs (optimization)
+            if (logger.isDebugEnabled()) {
+                logger.debug(String.format("Removing %s uuids from %s uuids", documentViewImportHandler.getUuidsSet().size(), liveUuids.size()));
+            }
+            liveUuids.removeAll(documentViewImportHandler.getUuidsSet());
+            for (int i = liveUuids.size() - 1; i >= 0; i--) {
                 // Uuids have been imported in live but not in default : need to be removed
+                final String uuid = liveUuids.get(i);
                 try {
                     JCRNodeWrapper nodeToRemove = session.getNodeByIdentifier(uuid);
                     nodeToRemove.remove();
                 } catch (ItemNotFoundException | InvalidItemStateException ex) {
-                    logger.debug("Node to remove has already been removed", ex);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Node to remove has already been removed", ex);
+                    }
+                }
+
+                // Refreshing the session to prevent an high Jahia Node Cache Load
+                if (i % maxBatch == 0) {
+                    session.save(JCRObservationManager.IMPORT);
+                    session.refresh(false);
                 }
             }
         }
-        logger.debug("Saving JCR session for {}", REPOSITORY_XML);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Saving JCR session for {}", REPOSITORY_XML);
+        }
         session.save(JCRObservationManager.IMPORT);
+        // Refreshing the session to prevent an high Jahia Node Cache Load
+        session.refresh(false);
         if (logger.isInfoEnabled()) {
             logger.info("Done importing {} in {}", REPOSITORY_XML, DateUtils.formatDurationWords(System.currentTimeMillis() - timerDefault));
         }

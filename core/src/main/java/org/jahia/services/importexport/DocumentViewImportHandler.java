@@ -140,7 +140,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     private List<String> noSubNodesImport = Arrays.asList("jnt:importDropBox", "jnt:referencesKeeper");
     private List<String> noUpdateTypes = Arrays.asList("jnt:virtualsitesFolder", "jnt:usersFolder", "jnt:groupsFolder", "jnt:user");
 
-    private List<String> uuids = new ArrayList<String>();
+    private Set<String> uuidsSet = new LinkedHashSet<String>();
 
     private boolean expandImportedFilesOnDisk = SettingsBean.getInstance().isExpandImportedFilesOnDisk();
     private String expandedFolder;
@@ -310,7 +310,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                     JCRGroupNode groupNode = JahiaGroupManagerService.getInstance().lookupGroupByPath(StringUtils.substringBeforeLast(nodes.peek().getPath(), "/"), session);
                     JCRNodeWrapper member = groupNode.addMember(principal);
                     if (member != null) {
-                        uuids.add(member.getIdentifier());
+                        uuidsSet.add(member.getIdentifier());
                     }
                     nodes.push(member);
                     return;
@@ -465,7 +465,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                         uploadFile(atts, decodedQName, path, child);
 
                         setAttributes(child, atts);
-                        uuids.add(child.getIdentifier());
+                        uuidsSet.add(child.getIdentifier());
                         if (child.isFile() && currentFilePath == null) {
                             currentFilePath = child.getPath();
                         }
@@ -484,7 +484,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                             uploadFile(atts, decodedQName, path, child);
                         }
                     }
-                    uuids.add(child.getIdentifier());
+                    uuidsSet.add(child.getIdentifier());
                 }
                 if (originalUuid != null) {
                     uuidMapping.put(originalUuid, child.getIdentifier());
@@ -891,9 +891,9 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                     final NodeIterator iterator = w.getNodes();
                     while (iterator.hasNext()) {
                         final Node node = iterator.nextNode();
-                        uuids.remove(node.getIdentifier());
+                        uuidsSet.remove(node.getIdentifier());
                     }
-                    uuids.remove(w.getIdentifier());
+                    uuidsSet.remove(w.getIdentifier());
                     w.remove();
                 }
             } catch (RepositoryException e) {
@@ -1002,7 +1002,11 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     }
 
     public List<String> getUuids() {
-        return uuids;
+        return new ArrayList<>(uuidsSet);
+    }
+    
+     public Set<String> getUuidsSet() {
+        return uuidsSet;
     }
 
     public String getBaseFilesPath() {

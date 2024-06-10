@@ -63,7 +63,7 @@
         <connection>scm:git:git@github.com:Jahia/jahia-private.git</connection>
         <developerConnection>scm:git:git@github.com:Jahia/jahia-private.git</developerConnection>
         <url>https://github.com/Jahia/jahia-private</url>
-        <tag>JAHIA-8-1-7-X-BRANCH</tag>
+        <tag>JAHIA-8-1-8-X-BRANCH</tag>
     </scm>
 
     <repositories>
